@@ -36,14 +36,15 @@
 */
 package cytoscape.util.undo;
 
-import java.awt.*;
-import java.awt.event.*;
+import cytoscape.util.CytoscapeAction;
+
+import org.cytoscape.work.UndoSupport;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.undo.*;
-
-import cytoscape.util.CytoscapeAction;
+import javax.swing.event.MenuEvent;
+import javax.swing.undo.CannotUndoException;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * An action that calls redo for the most recent edit in the
@@ -52,14 +53,17 @@ import cytoscape.util.CytoscapeAction;
 public class RedoAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339875203626L;
 
+	private final UndoSupport undo;
+
 	/**
 	 * Constructs the action. 
 	 */
-	public RedoAction() {
+	public RedoAction(UndoSupport undo) {
 		super("Redo");
 		setAcceleratorCombo(KeyEvent.VK_Y, ActionEvent.CTRL_MASK);
 		setPreferredMenu("Edit");
 		setEnabled(true);
+		this.undo = undo;
 	}
 
 	/**
@@ -68,8 +72,8 @@ public class RedoAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		try {
-			if ( CyUndo.undoManager.canRedo() )
-				CyUndo.undoManager.redo();
+			if ( undo.getUndoManager().canRedo() )
+				undo.getUndoManager().redo();
 		} catch (CannotUndoException ex) {
 			System.out.println("Unable to redo: " + ex);
 			ex.printStackTrace();
@@ -81,9 +85,9 @@ public class RedoAction extends CytoscapeAction {
 	 * @param e The menu event that triggers this method call.
 	 */
 	public void menuSelected(MenuEvent e) {
-		if (CyUndo.undoManager.canRedo()) {
+		if (undo.getUndoManager().canRedo()) {
 			setEnabled(true);
-			putValue(Action.NAME, CyUndo.undoManager.getRedoPresentationName());
+			putValue(Action.NAME, undo.getUndoManager().getRedoPresentationName());
 		} else {
 			setEnabled(false);
 			putValue(Action.NAME, "Redo");

@@ -35,9 +35,10 @@
  */
 package cytoscape.plugin;
 
-import java.util.*;
-
-import cytoscape.plugin.PluginInfo.AuthorInfo;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ThemeInfo extends DownloadableInfo {
 	private Set<PluginInfo> themePlugins;

@@ -35,6 +35,7 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
+import java.awt.Frame;
 
 
 /**
@@ -46,7 +47,7 @@ public class MinMaxDialog extends javax.swing.JDialog {
 	private static MinMaxDialog dialog;
 
 	/** Creates new form MinMaxDialog */
-	private MinMaxDialog(java.awt.Frame parent, boolean modal, Double min, Double max) {
+	private MinMaxDialog(Frame parent, boolean modal, Double min, Double max) {
 		super(parent, modal);
 		this.min = min;
 		this.max = max;
@@ -67,10 +68,10 @@ public class MinMaxDialog extends javax.swing.JDialog {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static Double[] getMinMax(double min, double max) {
+	public static Double[] getMinMax(double min, double max, Frame parent) {
 		Double[] minMax = new Double[2];
-		dialog = new MinMaxDialog(Cytoscape.getDesktop(), true, min, max);
-		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
+		dialog = new MinMaxDialog(parent, true, min, max);
+		dialog.setLocationRelativeTo(parent);
 		dialog.setVisible(true);
 
 		if ((dialog.min == null) || (dialog.max == null))

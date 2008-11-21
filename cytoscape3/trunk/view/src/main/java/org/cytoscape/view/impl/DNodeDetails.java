@@ -36,19 +36,12 @@
 
 package org.cytoscape.view.impl;
 
-import cytoscape.render.stateful.NodeDetails;
 import cytoscape.render.stateful.CustomGraphic;
-
-
+import cytoscape.render.stateful.NodeDetails;
 import cytoscape.util.intr.IntObjHash;
-
 import org.cytoscape.view.Label;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Shape;
-
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -368,7 +361,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	@Deprecated public int graphicCount(int node) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
+		final DNodeView nv = (DNodeView) m_view.getNodeView(node);
 
 		return nv.getCustomGraphicCount();
 	}
@@ -382,7 +375,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	@Deprecated public Shape graphicShape(int node, int inx) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
+		final DNodeView nv = (DNodeView) m_view.getNodeView(node);
 
 		return nv.getCustomGraphicShape(inx);
 	}
@@ -396,24 +389,24 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	@Deprecated public Paint graphicPaint(int node, int inx) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
+		final DNodeView nv = (DNodeView) m_view.getNodeView(node);
 
 		return nv.getCustomGraphicPaint(inx);
 	}
     // overrides NodeDetails.customGraphicCount():
     public int customGraphicCount(final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);	
+	final DNodeView dnv = (DNodeView) m_view.getNodeView(node);	
 	return dnv.getNumCustomGraphics();
     }
 
     // overrides NodeDetails.customGraphics():
     public Iterator<CustomGraphic> customGraphics (final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
+	final DNodeView dnv = (DNodeView) m_view.getNodeView(node);
 	return dnv.customGraphicIterator();
     }
     // overrides NodeDetails.customGraphicLock():
     public Object customGraphicLock (final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
+	final DNodeView dnv = (DNodeView) m_view.getNodeView(node);
 	return dnv.customGraphicLock();	
     }
 

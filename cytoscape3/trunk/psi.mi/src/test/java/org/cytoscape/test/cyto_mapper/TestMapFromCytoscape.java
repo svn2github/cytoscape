@@ -34,11 +34,9 @@
 */
 package org.cytoscape.coreplugin.psi_mi.test.cyto_mapper;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import junit.framework.TestCase;
-
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
@@ -72,7 +70,7 @@ public class TestMapFromCytoscape extends TestCase {
 		mapper1.doMapping();
 
 		//  Now Map from Data Service Objects --> Cytocape Network Objects.
-		GraphPerspective cyNetwork = Cytoscape.createNetwork("network1");
+		CyNetwork cyNetwork = Cytoscape.createNetwork("network1");
 		MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.MATRIX_VIEW);
 		mapper2.doMapping();
 

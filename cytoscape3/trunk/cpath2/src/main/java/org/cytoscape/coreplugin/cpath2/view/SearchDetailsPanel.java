@@ -1,40 +1,22 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
+import cytoscape.Cytoscape;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
+import org.cytoscape.coreplugin.cpath2.util.NetworkMergeUtil;
+import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
+import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
+import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathResponseFormat;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
+
 import javax.swing.*;
-import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.util.*;
-import java.util.List;
-import java.net.URL;
-
-import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
-import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
-import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
-import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
-import org.cytoscape.coreplugin.cpath2.view.tree.JTreeWithCheckNodes;
-import org.cytoscape.coreplugin.cpath2.view.tree.CheckNode;
-import org.cytoscape.coreplugin.cpath2.filters.ChainedFilter;
-import org.cytoscape.coreplugin.cpath2.filters.DataSourceFilter;
-import org.cytoscape.coreplugin.cpath2.filters.EntityTypeFilter;
-import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathResponseFormat;
-import org.cytoscape.coreplugin.cpath2.util.NetworkMergeUtil;
-import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
 
 /**
  * Search Details Panel.

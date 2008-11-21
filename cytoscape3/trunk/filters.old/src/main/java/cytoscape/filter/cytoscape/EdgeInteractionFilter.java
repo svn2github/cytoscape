@@ -36,26 +36,11 @@
 
 package cytoscape.filter.cytoscape;
 
-import org.cytoscape.*;
-import org.cytoscape.GraphPerspective;
+import cytoscape.filter.model.Filter;
+import cytoscape.filter.model.FilterManager;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
-import cytoscape.data.*;
-
-import cytoscape.filter.model.*;
-
-import org.cytoscape.*;
-
-import java.awt.*;
-import java.awt.event.*;
-
-import java.beans.*;
-
-import java.util.*;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 
@@ -189,14 +174,14 @@ public class EdgeInteractionFilter implements Filter {
 			return false;
 		}
 
-		if (!(object instanceof Edge)) {
+		if (!(object instanceof CyEdge)) {
 			return false;
 		}
 
-		Edge edge = (Edge) object;
+		CyEdge edge = (CyEdge) object;
 
 		//get the list of all relevant edges
-		Node adjacentNode;
+		CyNode adjacentNode;
 
 		if (edge.isDirected()){
 			if (target == SOURCE) {
@@ -217,7 +202,7 @@ public class EdgeInteractionFilter implements Filter {
 	 * @return  DOCUMENT ME!
 	 */
 	public Class[] getPassingTypes() {
-		return new Class[] { Edge.class };
+		return new Class[] { CyEdge.class };
 	}
 
 	/**

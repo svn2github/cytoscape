@@ -3,17 +3,14 @@ package csplugins.layout.algorithms.graphPartition;
 
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-
-import org.cytoscape.*;
 import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
-import org.cytoscape.attributes.CyAttributes;
-
-import org.cytoscape.*;
-
-import org.cytoscape.view.*;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 
 /**
@@ -70,8 +67,8 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 		Collections.sort(nodes,
 		            new Comparator<LayoutNode>() {
 				public int compare(LayoutNode o1, LayoutNode o2) {
-					final Node node1 = o1.getNode();
-					final Node node2 = o2.getNode();
+					final CyNode node1 = o1.getNode();
+					final CyNode node2 = o2.getNode();
 					final int d1 = network.getDegree(node1.getRootGraphIndex());
 					final int d2 = network.getDegree(node2.getRootGraphIndex());
 					nodeAttr.setAttribute(node1.getIdentifier(), DEGREE, d1);

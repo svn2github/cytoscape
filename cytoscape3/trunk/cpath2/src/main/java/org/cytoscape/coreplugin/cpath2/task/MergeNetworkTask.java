@@ -33,14 +33,14 @@ package org.cytoscape.coreplugin.cpath2.task;
 
 // imports
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.undo.CyUndo;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.coreplugin.cpath2.cytoscape.MergeNetworkEdit;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
@@ -65,7 +65,7 @@ public class MergeNetworkTask implements Task {
     /**
      * ref to cyNetwork
      */
-    private GraphPerspective cyNetwork;
+    private CyNetwork cyNetwork;
 
     /**
      * ref to our graph reader
@@ -83,7 +83,7 @@ public class MergeNetworkTask implements Task {
      * @param cpathURL URL
      * @param cyNetwork         GraphPerspective
      */
-    public MergeNetworkTask(URL cpathURL, GraphPerspective cyNetwork) {
+    public MergeNetworkTask(URL cpathURL, CyNetwork cyNetwork) {
 
         // init member vars
         this.cpathInstanceURL = cpathURL;
@@ -134,8 +134,8 @@ public class MergeNetworkTask implements Task {
             cyNetwork.unselectAllEdges();
 
             // refs to capture new nodes and edgets
-            Set<Node> newNodes = new HashSet<Node>();
-            Set<Edge> newEdges = new HashSet<Edge>();
+            Set<CyNode> newNodes = new HashSet<CyNode>();
+            Set<CyEdge> newEdges = new HashSet<CyEdge>();
 
             // add new nodes and edges to existing network
             // tbd: worry about networks that exceed # node/edge threshold
@@ -143,11 +143,11 @@ public class MergeNetworkTask implements Task {
             final int[] edges = reader.getEdgeIndicesArray();
             for (int node : nodes) {
                 cyNetwork.addNode(node);
-                newNodes.add((Node) Cytoscape.getRootGraph().getNode(node));
+                newNodes.add((CyNode) Cytoscape.getRootGraph().getNode(node));
             }
             for (int edge : edges) {
                 cyNetwork.addEdge(edge);
-                newEdges.add((Edge) Cytoscape.getRootGraph().getEdge(edge));
+                newEdges.add((CyEdge) Cytoscape.getRootGraph().getEdge(edge));
             }
 
             // execute any post processing -
@@ -182,7 +182,7 @@ public class MergeNetworkTask implements Task {
      * @param edgeCount int
      * @return String
      */
-    private String getMergeStatus(GraphPerspective cyNetwork, int nodeCount, int edgeCount) {
+    private String getMergeStatus(CyNetwork cyNetwork, int nodeCount, int edgeCount) {
 
         NumberFormat formatter = new DecimalFormat("#,###,###");
         StringBuffer sb = new StringBuffer();

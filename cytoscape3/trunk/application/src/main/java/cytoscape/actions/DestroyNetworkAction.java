@@ -37,13 +37,11 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-
-import cytoscape.util.*;
-
-import java.awt.event.*;
+import cytoscape.util.CytoscapeAction;
+import org.cytoscape.model.CyNetwork;
 
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
 
 
 /**
@@ -76,8 +74,8 @@ public class DestroyNetworkAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		java.util.List<GraphPerspective> l = Cytoscape.getSelectedNetworks();
-		for ( GraphPerspective n : l )
+		java.util.List<CyNetwork> l = Cytoscape.getSelectedNetworks();
+		for ( CyNetwork n : l )
 			Cytoscape.destroyNetwork(n);
 	}
 

@@ -39,16 +39,12 @@ package csplugins.quickfind.util;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.IndexFactory;
-
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import org.cytoscape.Node;
-
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.task.TaskMonitor;
-
-import org.cytoscape.GraphObject;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,7 +84,7 @@ class QuickFindImpl implements QuickFind {
 	 * @param network DOCUMENT ME!
 	 * @param taskMonitor DOCUMENT ME!
 	 */
-	public synchronized void addNetwork(GraphPerspective network, TaskMonitor taskMonitor) {
+	public synchronized void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
 
 		// check args - short circuit if necessary
 		if (network.getNodeCount() == 0) {
@@ -111,7 +107,7 @@ class QuickFindImpl implements QuickFind {
             Iterator nodesIterator = network.nodesIterator();
             if (nodesIterator.hasNext())
             {
-                Node node = (Node) nodesIterator.next();
+                CyNode node = (CyNode) nodesIterator.next();
                 String bioPaxFlag = Cytoscape.getNodeAttributes().getStringAttribute
                         (node.getIdentifier(), "biopax.node_label");
                 if (bioPaxFlag != null) {
@@ -157,7 +153,7 @@ class QuickFindImpl implements QuickFind {
 	 *
 	 * @param network DOCUMENT ME!
 	 */
-	public synchronized void removeNetwork(GraphPerspective network) {
+	public synchronized void removeNetwork(CyNetwork network) {
 		networkMap.remove(networkMap);
 
 		// Notify all listeners of remove event
@@ -174,7 +170,7 @@ class QuickFindImpl implements QuickFind {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public synchronized GenericIndex getIndex(GraphPerspective network) {
+	public synchronized GenericIndex getIndex(CyNetwork network) {
 		return (GenericIndex) networkMap.get(network);
 	}
 
@@ -188,7 +184,7 @@ class QuickFindImpl implements QuickFind {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public synchronized GenericIndex reindexNetwork(GraphPerspective cyNetwork, int indexType,
+	public synchronized GenericIndex reindexNetwork(CyNetwork cyNetwork, int indexType,
 	                                                String controllingAttribute,
 	                                                TaskMonitor taskMonitor) {
         Date start = new Date();
@@ -270,7 +266,7 @@ class QuickFindImpl implements QuickFind {
 	 * @param network DOCUMENT ME!
 	 * @param hit DOCUMENT ME!
 	 */
-	public synchronized void selectHit(GraphPerspective network, Hit hit) {
+	public synchronized void selectHit(CyNetwork network, Hit hit) {
 		// Notify all listeners of event
 		for (int i = 0; i < listenerList.size(); i++) {
 			QuickFindListener listener = (QuickFindListener) listenerList.get(i);
@@ -285,7 +281,7 @@ class QuickFindImpl implements QuickFind {
 	 * @param low DOCUMENT ME!
 	 * @param high DOCUMENT ME!
 	 */
-	public synchronized void selectRange(GraphPerspective network, Number low, Number high) {
+	public synchronized void selectRange(CyNetwork network, Number low, Number high) {
 		// Notify all listeners of event
 		for (int i = 0; i < listenerList.size(); i++) {
 			QuickFindListener listener = (QuickFindListener) listenerList.get(i);
@@ -320,7 +316,7 @@ class QuickFindImpl implements QuickFind {
 		return (QuickFindListener[]) listenerList.toArray(new QuickFindListener[listenerList.size()]);
 	}
 
-	private synchronized int getGraphObjectCount(GraphPerspective network, int indexType) {
+	private synchronized int getGraphObjectCount(CyNetwork network, int indexType) {
 		if (indexType == QuickFind.INDEX_NODES) {
 			return network.getNodeCount();
 		} else {
@@ -328,7 +324,7 @@ class QuickFindImpl implements QuickFind {
 		}
 	}
 
-	private void indexNetwork(GraphPerspective network, int indexType, CyAttributes attributes,
+	private void indexNetwork(CyNetwork network, int indexType, CyAttributes attributes,
 	                          int attributeType, String controllingAttribute, GenericIndex index,
 	                          TaskMonitor taskMonitor) {
 		Date start = new Date();

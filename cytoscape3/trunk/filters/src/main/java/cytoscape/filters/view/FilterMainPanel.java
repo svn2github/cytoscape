@@ -1,51 +1,34 @@
 package cytoscape.filters.view;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
-
-import java.awt.Component;
-import javax.swing.JList;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-
 import cytoscape.Cytoscape;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.util.swing.DropDownMenuButton;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-
-import javax.swing.AbstractAction;
-
-import cytoscape.filters.FilterPlugin;
-import cytoscape.filters.util.FilterUtil;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.CompositeFilter;
-import cytoscape.filters.TopologyFilter;
+import cytoscape.filters.EdgeInteractionFilter;
+import cytoscape.filters.FilterPlugin;
 import cytoscape.filters.InteractionFilter;
 import cytoscape.filters.NodeInteractionFilter;
-import cytoscape.filters.EdgeInteractionFilter;
-
-import java.util.Collections;
-import java.util.Vector;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import java.awt.GridBagConstraints;
-import java.util.HashMap;
-import org.cytoscape.attributes.CyAttributes;
+import cytoscape.filters.TopologyFilter;
+import cytoscape.filters.util.FilterUtil;
+import cytoscape.util.swing.DropDownMenuButton;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelListener;
+import cytoscape.view.cytopanels.CytoPanelState;
+import org.cytoscape.model.CyRow;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * 

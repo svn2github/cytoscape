@@ -36,28 +36,41 @@
 
 package csplugins.layout;
 
-import cytoscape.Cytoscape;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.layout.AbstractLayout;
-
-import cytoscape.task.TaskMonitor;
-
-import org.cytoscape.*;
-
-import org.cytoscape.view.*;
-
+import org.cytoscape.view.NodeView;
 import org.jgraph.JGraph;
-
-import org.jgraph.graph.*;
-
-import org.jgraph.layout.*;
-
-import java.awt.Color;
-import java.awt.geom.Rectangle2D;
-
-import java.util.*;
+import org.jgraph.graph.CellView;
+import org.jgraph.graph.ConnectionSet;
+import org.jgraph.graph.DefaultEdge;
+import org.jgraph.graph.DefaultGraphCell;
+import org.jgraph.graph.DefaultGraphModel;
+import org.jgraph.graph.DefaultPort;
+import org.jgraph.graph.GraphConstants;
+import org.jgraph.graph.GraphLayoutCache;
+import org.jgraph.graph.GraphModel;
+import org.jgraph.graph.VertexView;
+import org.jgraph.layout.AnnealingLayoutAlgorithm;
+import org.jgraph.layout.CircleGraphLayout;
+import org.jgraph.layout.GEMLayoutAlgorithm;
+import org.jgraph.layout.JGraphLayoutAlgorithm;
+import org.jgraph.layout.JGraphLayoutSettings;
+import org.jgraph.layout.MoenLayoutAlgorithm;
+import org.jgraph.layout.RadialTreeLayoutAlgorithm;
+import org.jgraph.layout.SpringEmbeddedLayoutAlgorithm;
+import org.jgraph.layout.SugiyamaLayoutAlgorithm;
+import org.jgraph.layout.TreeLayoutAlgorithm;
 
 import javax.swing.*;
+import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -274,7 +287,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 
 		double currentProgress = 0;
 		double percentProgressPerIter = 0;
-		GraphPerspective perspective = networkView.getGraphPerspective();
+		CyNetwork perspective = networkView.getGraphPerspective();
 		Map j_giny_node_map = new HashMap(); //PrimeFinder.nextPrime(perspective.getNodeCount()));
 		Map giny_j_node_map = new HashMap(); //PrimeFinder.nextPrime(perspective.getNodeCount()));
 		Map j_giny_edge_map = new HashMap(); //PrimeFinder.nextPrime(perspective.getEdgeCount()));
@@ -304,7 +317,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		// create Vertices
 		while (node_iterator.hasNext() && !canceled) {
 			// get the GINY node and node view
-			Node giny = (Node) node_iterator.next();
+			CyNode giny = (CyNode) node_iterator.next();
 			NodeView node_view = networkView.getNodeView(giny);
 
 			DefaultGraphCell jcell = new DefaultGraphCell(giny.getIdentifier());
@@ -330,7 +343,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		percentProgressPerIter = 20 / (double) (networkView.getEdgeViewCount());
 
 		while (edge_iterator.hasNext() && !canceled) {
-			org.cytoscape.Edge giny = (org.cytoscape.Edge) edge_iterator.next();
+			CyEdge giny = (CyEdge) edge_iterator.next();
 
 			DefaultGraphCell j_source = (DefaultGraphCell) giny_j_node_map.get(giny.getSource());
 			DefaultGraphCell j_target = (DefaultGraphCell) giny_j_node_map.get(giny.getTarget());
@@ -384,7 +397,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 			if (cell_view instanceof VertexView) {
 				// ok, we found a node
 				Rectangle2D rect = graph.getCellBounds(cell_view.getCell());
-				Node giny = (Node) j_giny_node_map.get(cell_view.getCell());
+				CyNode giny = (CyNode) j_giny_node_map.get(cell_view.getCell());
 				NodeView node_view = networkView.getNodeView(giny);
 				node_view.setXPosition(rect.getX(), false);
 				node_view.setYPosition(rect.getY(), false);

@@ -38,32 +38,24 @@ package csplugins.layout.algorithms;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
-import org.cytoscape.attributes.CyAttributes;
-
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-
-import java.awt.GridLayout;
-import java.awt.Rectangle;
-
-import java.lang.Double;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.TreeMap;
-
-import javax.swing.JPanel;
 
 
 /*
@@ -128,13 +120,15 @@ public class GroupAttributesLayout extends AbstractLayout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public byte[] supportsNodeAttributes() {
-		byte[] attrs = {
-		                   CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_STRING,
-		                   CyAttributes.TYPE_FLOATING, CyAttributes.TYPE_BOOLEAN
-		               };
+	public Set<Class<?>> supportsNodeAttributes() {
+    	Set<Class<?>> ret = new HashSet<Class<?>>();
 
-		return attrs;
+   		ret.add(Integer.class);
+		ret.add(Double.class);
+		ret.add(String.class);
+		ret.add(Boolean.class);
+
+    	return ret;
 	}
 
 	/**
@@ -281,18 +275,18 @@ public class GroupAttributesLayout extends AbstractLayout {
 
 		attributeType = nodeAttributes.getType(attributeName);
 
-		Map<Comparable, List<Node>> partitionMap = new TreeMap<Comparable, List<Node>>();
-		List<Node> invalidNodes = new ArrayList<Node>();
+		Map<Comparable, List<CyNode>> partitionMap = new TreeMap<Comparable, List<CyNode>>();
+		List<CyNode> invalidNodes = new ArrayList<CyNode>();
 		makeDiscrete(partitionMap, invalidNodes);
 
-		List<List<Node>> partitionList = sort(partitionMap);
+		List<List<CyNode>> partitionList = sort(partitionMap);
 		partitionList.add(invalidNodes);
 
 		double offsetx = 0.0;
 		double offsety = 0.0;
 		double maxheight = 0.0;
 
-		for (List<Node> partition : partitionList) {
+		for (List<CyNode> partition : partitionList) {
 			if (canceled)
 				return;
 
@@ -314,14 +308,14 @@ public class GroupAttributesLayout extends AbstractLayout {
 		}
 	}
 
-	private void makeDiscrete(Map<Comparable, List<Node>> map, List<Node> invalidNodes) {
+	private void makeDiscrete(Map<Comparable, List<CyNode>> map, List<CyNode> invalidNodes) {
 		if (map == null)
 			return;
 
 		Iterator iterator = network.nodesIterator();
 
 		while (iterator.hasNext()) {
-			Node node = (Node) iterator.next();
+			CyNode node = (CyNode) iterator.next();
 
 			Comparable key = null;
 
@@ -352,22 +346,22 @@ public class GroupAttributesLayout extends AbstractLayout {
 					invalidNodes.add(node);
 			} else {
 				if (!map.containsKey(key))
-					map.put(key, new ArrayList<Node>());
+					map.put(key, new ArrayList<CyNode>());
 
 				map.get(key).add(node);
 			}
 		}
 	}
 
-	private List<List<Node>> sort(final Map<Comparable, List<Node>> map) {
+	private List<List<CyNode>> sort(final Map<Comparable, List<CyNode>> map) {
 		if (map == null)
 			return null;
 
 		List<Comparable> keys = new ArrayList<Comparable>(map.keySet());
 		Collections.sort(keys);
 
-		Comparator<Node> comparator = new Comparator<Node>() {
-			public int compare(Node node1, Node node2) {
+		Comparator<CyNode> comparator = new Comparator<CyNode>() {
+			public int compare(CyNode node1, CyNode node2) {
 				String a = node1.getIdentifier();
 				String b = node2.getIdentifier();
 
@@ -375,10 +369,10 @@ public class GroupAttributesLayout extends AbstractLayout {
 			}
 		};
 
-		List<List<Node>> sortedlist = new ArrayList<List<Node>>(map.keySet().size());
+		List<List<CyNode>> sortedlist = new ArrayList<List<CyNode>>(map.keySet().size());
 
 		for (Comparable key : keys) {
-			List<Node> partition = map.get(key);
+			List<CyNode> partition = map.get(key);
 			Collections.sort(partition, comparator);
 			sortedlist.add(partition);
 		}
@@ -386,12 +380,12 @@ public class GroupAttributesLayout extends AbstractLayout {
 		return sortedlist;
 	}
 
-	private double encircle(List<Node> partition, double offsetx, double offsety) {
+	private double encircle(List<CyNode> partition, double offsetx, double offsety) {
 		if (partition == null)
 			return 0.0;
 
 		if (partition.size() == 1) {
-			Node node = partition.get(0);
+			CyNode node = partition.get(0);
 			networkView.getNodeView(node).setXPosition(offsetx);
 			networkView.getNodeView(node).setYPosition(offsety);
 
@@ -406,7 +400,7 @@ public class GroupAttributesLayout extends AbstractLayout {
 		double phidelta = (2.0 * Math.PI) / partition.size();
 		double phi = 0.0;
 
-		for (Node node : partition) {
+		for (CyNode node : partition) {
 			double x = offsetx + radius + (radius * Math.cos(phi));
 			double y = offsety + radius + (radius * Math.sin(phi));
 			networkView.getNodeView(node).setXPosition(x);

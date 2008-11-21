@@ -44,12 +44,8 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
-
-//----------------------------------------------------------------------------
-import junit.framework.*;
-
-import java.io.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 
 //----------------------------------------------------------------------------

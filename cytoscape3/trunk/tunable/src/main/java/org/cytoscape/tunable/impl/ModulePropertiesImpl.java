@@ -34,8 +34,12 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.tunable.impl; 
+package org.cytoscape.tunable.impl;
 
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -43,13 +47,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-
-import java.awt.GridLayout;
-import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
 
 /**
  *

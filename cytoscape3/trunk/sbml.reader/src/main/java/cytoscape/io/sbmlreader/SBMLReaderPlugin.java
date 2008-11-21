@@ -37,11 +37,9 @@
 package cytoscape.io.sbmlreader;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.data.ImportHandler;
-
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  This plugin will allow the reading of an SBML level 2 file.

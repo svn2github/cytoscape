@@ -39,30 +39,20 @@ package cytoscape;
 import com.jgoodies.looks.LookUtils;
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
-
 import cytoscape.init.CyInitParams;
-
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.util.FileUtil;
+import org.apache.commons.cli.*;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
-
-import java.awt.Dimension;
-
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.swing.UIManager;
 
 
 /**
@@ -96,6 +86,23 @@ public class CyMain implements CyInitParams {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public static void main(String[] args) throws Exception {
+		CyMain app = new CyMain(args,null);
+	}
+
+	/**
+	 * Creates a new CyMain object.
+	 *
+	 * @param args  DOCUMENT ME!
+	 *
+	 * @throws Exception  DOCUMENT ME!
+	 */
+	public CyMain(CytoscapeDesktop desk) throws Exception {
+		this( new String[]{},desk );
+	}
+
+	public CyMain(String[] args,CytoscapeDesktop desk) throws Exception {
+		System.out.println("CyMain constructor");
+
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			/*
 			 * By kono 4/2/2007
@@ -109,17 +116,6 @@ public class CyMain implements CyInitParams {
 			System.setProperty("apple.awt.rendering", "VALUE_RENDER_SPEED");
 		}
 
-		CyMain app = new CyMain(args);
-	}
-
-	/**
-	 * Creates a new CyMain object.
-	 *
-	 * @param args  DOCUMENT ME!
-	 *
-	 * @throws Exception  DOCUMENT ME!
-	 */
-	public CyMain(String[] args) throws Exception {
 		props = null;
 		graphFiles = null;
 		plugins = null;
@@ -136,7 +132,7 @@ public class CyMain implements CyInitParams {
 		//	System.out.println("arg: '" + asdf + "'");
 		parseCommandLine(args);
 
-		CytoscapeInit initializer = new CytoscapeInit();
+		CytoscapeInit initializer = new CytoscapeInit(desk);
 
 		if (!initializer.init(this)) {
 			printHelp();

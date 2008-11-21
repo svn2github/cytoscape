@@ -33,17 +33,17 @@ package org.cytoscape.coreplugin.cpath2.util;
 
 // imports
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.coreplugin.cpath2.task.LoadNetworkFromUrlTask;
+import org.cytoscape.coreplugin.cpath2.task.MergeNetworkTask;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeContextMenuListener;
 import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
-import org.cytoscape.coreplugin.cpath2.task.MergeNetworkTask;
-import org.cytoscape.coreplugin.cpath2.task.LoadNetworkFromUrlTask;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -73,7 +73,7 @@ public class NetworkUtil extends Thread {
     /**
      * ref to cyNetwork
      */
-    private GraphPerspective cyNetwork;
+    private CyNetwork cyNetwork;
 
     /**
      * ref to cyNetworkTitle
@@ -108,7 +108,7 @@ public class NetworkUtil extends Thread {
      * @param merging                 boolean
      * @param nodeContextMenuListener NodeContextMenuListener
      */
-    public NetworkUtil(String cpathRequest, GraphPerspective cyNetwork,
+    public NetworkUtil(String cpathRequest, CyNetwork cyNetwork,
             boolean merging, NodeContextMenuListener nodeContextMenuListener) {
 
         // init member vars
@@ -228,7 +228,7 @@ public class NetworkUtil extends Thread {
      * @param cyNetwork GraphPerspective
      * @param doLayout  boolean
      */
-    private void postProcess(final GraphPerspective cyNetwork, boolean doLayout) {
+    private void postProcess(final CyNetwork cyNetwork, boolean doLayout) {
 
         // ref to view used below
         GraphView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());

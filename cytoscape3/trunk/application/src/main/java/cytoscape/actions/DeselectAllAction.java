@@ -43,13 +43,12 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
-
-//-------------------------------------------------------------------------
-import java.awt.event.ActionEvent;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -72,11 +71,12 @@ public class DeselectAllAction extends CytoscapeAction {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void actionPerformed(ActionEvent e) {
-		// GinyUtils.deselectAllNodes( Cytoscape.getCurrentNetworkView() );
-		// GinyUtils.deselectAllEdges( Cytoscape.getCurrentNetworkView() );
-		Cytoscape.getCurrentNetwork().unselectAllNodes();
-		Cytoscape.getCurrentNetwork().unselectAllEdges();
+	public void actionPerformed(ActionEvent ea) {
+		for ( CyNode n : Cytoscape.getCurrentNetwork().getNodeList() )
+			n.attrs().set("selected",true);
+		for ( CyEdge e : Cytoscape.getCurrentNetwork().getEdgeList() )
+			e.attrs().set("selected",true);
+
 		Cytoscape.getCurrentNetworkView().updateView();
 	}
 

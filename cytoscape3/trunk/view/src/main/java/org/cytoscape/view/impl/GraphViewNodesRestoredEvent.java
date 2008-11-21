@@ -36,17 +36,16 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Node;
-
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
-
+import java.util.List;
 
 final class GraphViewNodesRestoredEvent extends GraphViewChangeEventAdapter {
 	private final static long serialVersionUID = 1202416512142917L;
 	private final GraphView m_view;
-	private final int[] m_restoredNodeInx;
+	private final List<CyNode> m_restoredNodeInx;
 
-	GraphViewNodesRestoredEvent(GraphView view, int[] restoredNodeInx) {
+	GraphViewNodesRestoredEvent(GraphView view, List<CyNode> restoredNodeInx) {
 		super(view);
 		m_view = view;
 		m_restoredNodeInx = restoredNodeInx;
@@ -66,25 +65,11 @@ final class GraphViewNodesRestoredEvent extends GraphViewChangeEventAdapter {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final Node[] getRestoredNodes() {
-		final Node[] returnThis = new Node[m_restoredNodeInx.length];
+	public final CyNode[] getRestoredNodes() {
+		final CyNode[] returnThis = new CyNode[m_restoredNodeInx.size()];
 
 		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_view.getRootGraph().getNode(m_restoredNodeInx[i]);
-
-		return returnThis;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final int[] getRestoredNodeIndices() {
-		final int[] returnThis = new int[m_restoredNodeInx.length];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_restoredNodeInx[i];
+			returnThis[i] = m_restoredNodeInx.get(i);
 
 		return returnThis;
 	}

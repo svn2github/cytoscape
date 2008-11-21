@@ -31,22 +31,18 @@
  **/
 package org.mskcc.biopax_plugin.util.cytoscape;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.data.SelectFilter;
-
-import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.data.SelectFilter;
+import org.cytoscape.view.GraphView;
 import org.mskcc.biopax_plugin.action.DisplayBioPaxDetails;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 
 
@@ -82,7 +78,7 @@ public class NetworkListener implements PropertyChangeListener {
 	 *
 	 * @param cyNetwork Object.
 	 */
-	public void registerNetwork(GraphPerspective cyNetwork) {
+	public void registerNetwork(CyNetwork cyNetwork) {
 		cyNetworkList.add(cyNetwork.getIdentifier());
 		registerNodeSelectionEvents(cyNetwork);
 	}
@@ -92,7 +88,7 @@ public class NetworkListener implements PropertyChangeListener {
 	 *
 	 * @param cyNetwork GraphPerspective Object.
 	 */
-	private void registerNodeSelectionEvents(GraphPerspective cyNetwork) {
+	private void registerNodeSelectionEvents(CyNetwork cyNetwork) {
 		SelectFilter flagFilter = cyNetwork.getSelectFilter();
 		flagFilter.addSelectEventListener(new DisplayBioPaxDetails(bpPanel));
 		bpPanel.resetText();
@@ -137,13 +133,13 @@ public class NetworkListener implements PropertyChangeListener {
 	 */
 	private void networkCreatedEvent(PropertyChangeEvent event) {
 		// get the network
-		GraphPerspective cyNetwork = null;
+		CyNetwork cyNetwork = null;
 		Object newValue = event.getNewValue();
 
 		if (event.getPropertyName() == Cytoscape.SESSION_LOADED) {
 			cyNetwork = Cytoscape.getCurrentNetwork();
-		} else if (newValue instanceof GraphPerspective) {
-			cyNetwork = (GraphPerspective) newValue;
+		} else if (newValue instanceof CyNetwork) {
+			cyNetwork = (CyNetwork) newValue;
 		} else if (newValue instanceof String) {
 			String networkID = (String) newValue;
 			cyNetwork = Cytoscape.getNetwork(networkID);
@@ -156,14 +152,14 @@ public class NetworkListener implements PropertyChangeListener {
 	private void networkFocusEvent(PropertyChangeEvent event, boolean sessionLoaded) {
 		// get network id
 		String networkId = null;
-		GraphPerspective cyNetwork = null;
+		CyNetwork cyNetwork = null;
 		Object newValue = event.getNewValue();
 
 		if (event.getPropertyName() == Cytoscape.SESSION_LOADED) {
 			cyNetwork = Cytoscape.getCurrentNetwork();
 			networkId = cyNetwork.getIdentifier();
-		} else if (newValue instanceof GraphPerspective) {
-			cyNetwork = (GraphPerspective) newValue;
+		} else if (newValue instanceof CyNetwork) {
+			cyNetwork = (CyNetwork) newValue;
 			networkId = cyNetwork.getIdentifier();
 		} else if (newValue instanceof String) {
 			networkId = (String) newValue;
@@ -189,9 +185,9 @@ public class NetworkListener implements PropertyChangeListener {
 	}
 
 	/*
-	* Removes GraphPerspective from our list if it has just been destroyed.
+	* Removes CyNetwork from our list if it has just been destroyed.
 	*
-	* @param networkID the ID of the GraphPerspective just destroyed.
+	* @param networkID the ID of the CyNetwork just destroyed.
 	*/
 	private void networkDestroyed(String networkID) {
 		// get the index (if it exists) of this network in our list
@@ -239,7 +235,7 @@ public class NetworkListener implements PropertyChangeListener {
 	*
 	 * @return boolean if any network views that we have created remain.
 	*/
-	private boolean isBioPaxNetwork(GraphPerspective cyNetwork) {
+	private boolean isBioPaxNetwork(CyNetwork cyNetwork) {
 		// get the network attributes
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 

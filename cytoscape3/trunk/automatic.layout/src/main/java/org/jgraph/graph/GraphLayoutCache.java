@@ -10,10 +10,13 @@ import org.jgraph.event.GraphLayoutCacheEvent;
 import org.jgraph.event.GraphLayoutCacheListener;
 import org.jgraph.event.GraphModelEvent;
 
+import javax.swing.event.EventListenerList;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.CompoundEdit;
+import javax.swing.undo.UndoableEdit;
 import java.awt.geom.Rectangle2D;
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,12 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.WeakHashMap;
-
-import javax.swing.event.EventListenerList;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.CompoundEdit;
-import javax.swing.undo.UndoableEdit;
 
 
 /**

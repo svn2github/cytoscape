@@ -9,31 +9,15 @@ package org.jgraph.graph;
 
 import org.jgraph.JGraph;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Shape;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.io.Serializable;
-
 import java.util.Map;
-
-import javax.swing.JComponent;
-import javax.swing.UIManager;
 
 
 //import org.jgraph.util.Bezier;

@@ -36,21 +36,21 @@
 */
 package cytoscape.merge;
 
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.model.CyNetwork;
 
 /**
  * This class exists to allow the networks to display properly in the JList
  * panel. There's probably a better way to do this, but oh well.
  */
 class NetworkContainer {
-	GraphPerspective network;
+	CyNetwork network;
 
 	/**
 	 * Creates a new NetworkContainer object.
 	 *
 	 * @param network  DOCUMENT ME!
 	 */
-	public NetworkContainer(GraphPerspective network) {
+	public NetworkContainer(CyNetwork network) {
 		this.network = network;
 	}
 
@@ -68,7 +68,7 @@ class NetworkContainer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public GraphPerspective getNetwork() {
+	public CyNetwork getNetwork() {
 		return network;
 	}
 }

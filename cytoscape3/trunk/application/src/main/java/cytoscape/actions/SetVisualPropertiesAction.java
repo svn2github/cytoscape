@@ -43,16 +43,11 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeDesktop;
 
-import org.cytoscape.view.GraphView;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-
-import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
-import javax.swing.event.MenuEvent;
 
 
 //------------------------------------------------------------------------------
@@ -62,37 +57,15 @@ import javax.swing.event.MenuEvent;
 public class SetVisualPropertiesAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870882109L;
 	private static String title = "Open VizMapper\u2122";
-
+	private CytoscapeDesktop desktop;
 	/**
 	 * Creates a new SetVisualPropertiesAction object.
 	 */
-	public SetVisualPropertiesAction() {
-		super(title,
-		      new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_file-with-objects-16.png")));
+	public SetVisualPropertiesAction(CytoscapeDesktop desktop) {
+		super(title, new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_file-with-objects-16.png")));
 		setPreferredMenu("View");
 		setEnabled(true);
-	}
-
-	/**
-	 * Creates a new SetVisualPropertiesAction object.
-	 *
-	 * @param icon  DOCUMENT ME!
-	 */
-	public SetVisualPropertiesAction(ImageIcon icon) {
-		super(title, icon);
-		setPreferredMenu("View");
-		setEnabled(true);
-	}
-
-	/**
-	 * The constructor that takes a boolean shows no label, no matter what the
-	 * value of the boolean actually is. This makes is appropriate for an icon,
-	 * but inappropriate for the pulldown menu system.
-	 */
-	public SetVisualPropertiesAction(boolean showLabel) {
-		super(); // no title here - this is for the toolbar
-		setPreferredMenu("View");
-		setEnabled(true);
+		this.desktop = desktop;
 	}
 
 	/**
@@ -101,6 +74,6 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(1);
+		desktop.getCytoPanel(SwingConstants.WEST).setSelectedIndex(1);
 	}
 }

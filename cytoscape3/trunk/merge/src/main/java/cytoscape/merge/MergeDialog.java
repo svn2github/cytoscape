@@ -36,36 +36,19 @@
 */
 package cytoscape.merge;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
 
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 
 class MergeDialog extends JDialog {
@@ -112,7 +95,7 @@ class MergeDialog extends JDialog {
 		unselectedNetworkData = new DefaultListModel();
 
 		for (Iterator networkIt = Cytoscape.getNetworkSet().iterator(); networkIt.hasNext();) {
-			unselectedNetworkData.addElement(new NetworkContainer((GraphPerspective) networkIt.next()));
+			unselectedNetworkData.addElement(new NetworkContainer((CyNetwork) networkIt.next()));
 		}
 
 		networkList = new JList(networkData);

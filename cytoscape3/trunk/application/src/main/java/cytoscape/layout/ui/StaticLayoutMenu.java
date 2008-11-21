@@ -37,15 +37,12 @@
 package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
-
+import cytoscape.task.util.TaskManager;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 
-import cytoscape.task.util.TaskManager;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JMenuItem;
 
 
 /**
@@ -77,6 +74,6 @@ public class StaticLayoutMenu extends JMenuItem implements ActionListener {
 		layout.setSelectedOnly(false);
 
 		TaskManager.executeTask( new LayoutTask(layout,Cytoscape.getCurrentNetworkView()),
-		                         LayoutTask.getDefaultTaskConfig() );
+		                         LayoutTask.getDefaultTaskConfig(getParent()) );
 	}
 }

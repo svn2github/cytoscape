@@ -36,9 +36,7 @@
 
 package cytoscape.io.table.ui.theme;
 
-import cytoscape.io.table.TableImportPlugin;
-
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 /**
  * Iconset for Import Dialog GUI.<br>

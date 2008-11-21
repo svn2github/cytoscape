@@ -1,11 +1,12 @@
 
 package org.cytoscape.view;
 
-import java.util.Map;
-import java.util.HashMap;
 import cytoscape.render.immed.GraphGraphics;
 import org.cytoscape.view.impl.GinyUtil;
-import java.awt.Shape;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ShapeFactory {
 

@@ -7,14 +7,12 @@
 package org.jgraph.plaf.basic;
 
 import org.jgraph.JGraph;
-
 import org.jgraph.event.GraphLayoutCacheEvent;
 import org.jgraph.event.GraphLayoutCacheListener;
 import org.jgraph.event.GraphModelEvent;
 import org.jgraph.event.GraphModelListener;
 import org.jgraph.event.GraphSelectionEvent;
 import org.jgraph.event.GraphSelectionListener;
-
 import org.jgraph.graph.AbstractCellView;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.BasicMarqueeHandler;
@@ -35,21 +33,16 @@ import org.jgraph.graph.GraphSelectionModel;
 import org.jgraph.graph.GraphTransferHandler;
 import org.jgraph.graph.ParentMap;
 import org.jgraph.graph.PortView;
-
 import org.jgraph.plaf.GraphUI;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
+import javax.swing.*;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.MouseInputListener;
+import javax.swing.plaf.ActionMapUIResource;
+import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.UIResource;
+import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.event.ActionEvent;
@@ -70,35 +63,11 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.Serializable;
-
 import java.util.Map;
 import java.util.TooManyListenersException;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.CellRendererPane;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JViewport;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.TransferHandler;
-import javax.swing.UIManager;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.MouseInputListener;
-import javax.swing.plaf.ActionMapUIResource;
-import javax.swing.plaf.ComponentUI;
-import javax.swing.plaf.UIResource;
 
 
 /**

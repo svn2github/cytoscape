@@ -30,24 +30,20 @@
 package org.jgraph.layout;
 
 import org.jgraph.JGraph;
-
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.EdgeView;
 import org.jgraph.graph.GraphModel;
 import org.jgraph.graph.PortView;
 import org.jgraph.graph.VertexView;
 
-import java.awt.Point;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.JOptionPane;
 
 
 /**

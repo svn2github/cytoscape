@@ -37,8 +37,7 @@
 package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.Hit;
-
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.model.CyNetwork;
 
 
 /**
@@ -52,14 +51,14 @@ public interface QuickFindListener {
 	 *
 	 * @param network GraphPerspective Object.
 	 */
-	void networkAddedToIndex(GraphPerspective network);
+	void networkAddedToIndex(CyNetwork network);
 
 	/**
 	 * Network has been removed from the Quick Find Index.
 	 *
 	 * @param network GraphPerspective Object.
 	 */
-	void networkRemovedfromIndex(GraphPerspective network);
+	void networkRemovedfromIndex(CyNetwork network);
 
 	/**
 	 * Indexing started.
@@ -68,7 +67,7 @@ public interface QuickFindListener {
 	 * @param indexType     QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
 	 * @param controllingAttribute Controlling Attribute.
 	 */
-	void indexingStarted(GraphPerspective cyNetwork, int indexType, String controllingAttribute);
+	void indexingStarted(CyNetwork cyNetwork, int indexType, String controllingAttribute);
 
 	/**
 	 * Indexing operation ended.
@@ -82,7 +81,7 @@ public interface QuickFindListener {
 	 * @param network       the current GraphPerspective.
 	 * @param hit           hit value chosen by the user.
 	 */
-	void onUserSelection(GraphPerspective network, Hit hit);
+	void onUserSelection(CyNetwork network, Hit hit);
 
 	/**
 	 * Indicates that the user has selected a range within the QuickFind
@@ -92,5 +91,5 @@ public interface QuickFindListener {
 	 * @param low           the low value of the range.
 	 * @param high          the high value of the range.
 	 */
-	void onUserRangeSelection(GraphPerspective network, Number low, Number high);
+	void onUserRangeSelection(CyNetwork network, Number low, Number high);
 }

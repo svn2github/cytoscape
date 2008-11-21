@@ -36,19 +36,14 @@
 
 package csplugins.layout.algorithms.graphPartition;
 
-import cern.colt.list.*;
-
-import cern.colt.map.*;
-
-import org.cytoscape.GraphPerspective;
-
+import cern.colt.map.OpenIntDoubleHashMap;
+import cern.colt.map.PrimeFinder;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
-import org.cytoscape.*;
-
-import org.cytoscape.view.*;
-
-import java.util.*;
+import java.util.Iterator;
 
 
 /**
@@ -57,14 +52,14 @@ import java.util.*;
 public class Layout {
 	OpenIntDoubleHashMap nodeXMap;
 	OpenIntDoubleHashMap nodeYMap;
-	GraphPerspective gp;
+	CyNetwork gp;
 
 	/**
 	 * Creates a new Layout object.
 	 *
 	 * @param gp  DOCUMENT ME!
 	 */
-	public Layout(GraphPerspective gp) {
+	public Layout(CyNetwork gp) {
 		this.gp = gp;
 		nodeXMap = new OpenIntDoubleHashMap(PrimeFinder.nextPrime(gp.getNodeCount()));
 		nodeYMap = new OpenIntDoubleHashMap(PrimeFinder.nextPrime(gp.getNodeCount()));
@@ -138,7 +133,7 @@ public class Layout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setX(Node node, double x) {
+	public boolean setX(CyNode node, double x) {
 		return nodeXMap.put(node.getRootGraphIndex(), x);
 	}
 
@@ -150,7 +145,7 @@ public class Layout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setY(Node node, double y) {
+	public boolean setY(CyNode node, double y) {
 		return nodeYMap.put(node.getRootGraphIndex(), y);
 	}
 
@@ -208,7 +203,7 @@ public class Layout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public double getX(Node node) {
+	public double getX(CyNode node) {
 		return nodeXMap.get(node.getRootGraphIndex());
 	}
 
@@ -219,7 +214,7 @@ public class Layout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public double getY(Node node) {
+	public double getY(CyNode node) {
 		return nodeYMap.get(node.getRootGraphIndex());
 	}
 

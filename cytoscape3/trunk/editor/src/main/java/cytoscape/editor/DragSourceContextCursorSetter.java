@@ -17,11 +17,10 @@
 */
 package cytoscape.editor;
 
-import java.awt.Cursor;
-import java.awt.Point;
-import java.awt.dnd.DragSourceDragEvent;
-
 import org.cytoscape.view.GraphView;
+
+import java.awt.*;
+import java.awt.dnd.DragSourceDragEvent;
 
 
 /**

@@ -34,19 +34,15 @@
 */
 package org.cytoscape.vizmap;
 
+import org.cytoscape.view.NodeView;
+import org.cytoscape.view.ShapeFactory;
 import org.cytoscape.vizmap.icon.NodeIcon;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
-import org.cytoscape.view.ShapeFactory;
-
-import org.cytoscape.view.NodeView;
-
-import java.awt.Shape;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.Icon;
 
 /**
  * This is a replacement for ShapeNodeRealizer.java

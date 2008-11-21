@@ -36,34 +36,21 @@
  */
 package cytoscape.view;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
-import java.awt.Component;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyVetoException;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -72,9 +59,9 @@ public class NetworkViewManager implements PropertyChangeListener,
 		InternalFrameListener {
 	private JDesktopPane desktopPane;
 
-	private Map<String, JInternalFrame> networkViewMap;
+	private Map<Long, JInternalFrame> networkViewMap;
 
-	private Map<JInternalFrame, String> componentMap;
+	private Map<JInternalFrame, Long> componentMap;
 
 	protected CytoscapeDesktop cytoscapeDesktop;
 
@@ -98,8 +85,8 @@ public class NetworkViewManager implements PropertyChangeListener,
 		CyHelpBroker.getHelpBroker().enableHelp(desktopPane,
 				"network-view-manager", null);
 
-		networkViewMap = new HashMap<String, JInternalFrame>();
-		componentMap = new HashMap<JInternalFrame, String>();
+		networkViewMap = new HashMap<Long, JInternalFrame>();
+		componentMap = new HashMap<JInternalFrame, Long>();
 	}
 
 	/**
@@ -138,7 +125,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 		}
 
 		// outta here
-		return networkViewMap.get(view.getIdentifier());
+		return networkViewMap.get(view.getGraphPerspective().getSUID());
 	}
 
 	/**
@@ -147,10 +134,10 @@ public class NetworkViewManager implements PropertyChangeListener,
 	 * @param network
 	 *            DOCUMENT ME!
 	 */
-	public void updateNetworkTitle(GraphPerspective network) {
-		JInternalFrame frame = networkViewMap.get(network.getIdentifier());
+	public void updateNetworkTitle(CyNetwork network) {
+		JInternalFrame frame = networkViewMap.get(network.getSUID());
 
-		frame.setTitle(network.getTitle());
+		frame.setTitle(network.attrs().get("name",String.class));
 		frame.repaint();
 	}
 
@@ -159,7 +146,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 	 */
 	public void internalFrameActivated(InternalFrameEvent e) {
 		// System.out.println("NetworkViewManager: internalFrameActivated ");
-		String network_id = componentMap.get(e.getInternalFrame());
+		Long network_id = componentMap.get(e.getInternalFrame());
 
 		if (network_id == null) {
 			return;
@@ -231,7 +218,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 		// handle focus event
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
-			String network_id = (String) e.getNewValue();
+			Long network_id = (Long) e.getNewValue();
 			e = null;
 			unsetFocus(); // in case the newly focused network doesn't have a
 							// view
@@ -275,8 +262,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 			try {
 				f.setSelected(false);
 			} catch (PropertyVetoException pve) {
-				System.out
-						.println("NetworkViewManager: Couldn't unset focus for internal frame.");
+				System.out.println("NetworkViewManager: Couldn't unset focus for internal frame.");
 			}
 		}
 	}
@@ -285,7 +271,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 	 * Sets the focus of the passed network, if possible The Network ID
 	 * corresponds to the GraphView.getGraphPerspective().getIdentifier()
 	 */
-	protected void setFocus(String network_id) {
+	protected void setFocus(Long network_id) {
 		if (networkViewMap.containsKey(network_id)) {
 			try {
 				networkViewMap.get(network_id).setIcon(false);
@@ -300,19 +286,19 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 	protected void removeView(GraphView view) {
 		try {
-			networkViewMap.get(view.getGraphPerspective().getIdentifier()).dispose();
+			networkViewMap.get(view.getGraphPerspective().getSUID()).dispose();
 		} catch (Exception e) {
 			System.err.println("Network View unable to be killed");
 		}
 
-		networkViewMap.remove(view.getGraphPerspective().getIdentifier());
+		networkViewMap.remove(view.getGraphPerspective().getSUID());
 	}
 
 	/**
 	 * Contains a GraphView.
 	 */
 	protected void createContainer(final GraphView view) {
-		if (networkViewMap.containsKey(view.getGraphPerspective().getIdentifier())) {
+		if (networkViewMap.containsKey(view.getGraphPerspective().getSUID())) {
 			// already contains
 			return;
 		}
@@ -376,10 +362,10 @@ public class NetworkViewManager implements PropertyChangeListener,
 		iframe.setVisible(true);
 		iframe.addInternalFrameListener(this);
 
-		networkViewMap.put(view.getGraphPerspective().getIdentifier(), iframe);
-		componentMap.put(iframe, view.getGraphPerspective().getIdentifier());
+		networkViewMap.put(view.getGraphPerspective().getSUID(), iframe);
+		componentMap.put(iframe, view.getGraphPerspective().getSUID());
 
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, view
-				.getGraphPerspective().getIdentifier());
+				.getGraphPerspective().getSUID());
 	}
 }

@@ -1,15 +1,14 @@
 package org.cytoscape.coreplugin.cpath2.util;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
-
-import java.util.Set;
-import java.util.HashSet;
-
-import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Utility for Finding Groups of Networks.
@@ -23,17 +22,17 @@ public class NetworkGroupUtil {
      *
      * @return Set<GraphPerspective>
      */
-    public static Set<GraphPerspective> getNetworkSet(int type) {
+    public static Set<CyNetwork> getNetworkSet(int type) {
 
         // set to return
-        Set<GraphPerspective> networkSet = new HashSet<GraphPerspective>();
+        Set<CyNetwork> networkSet = new HashSet<CyNetwork>();
 
         // get set of cynetworks
-        Set<GraphPerspective> cyNetworks = (Set<GraphPerspective>) Cytoscape.getNetworkSet();
+        Set<CyNetwork> cyNetworks = (Set<CyNetwork>) Cytoscape.getNetworkSet();
         if (cyNetworks.size() == 0) return cyNetworks;
 
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-        for (GraphPerspective net : cyNetworks) {
+        for (CyNetwork net : cyNetworks) {
             String networkID = net.getIdentifier();
 
             String attribute = MapBioPaxToCytoscape.BIOPAX_NETWORK;

@@ -39,17 +39,18 @@
  **/
 package csplugins.layout.algorithms.hierarchicalLayout;
 
-import org.cytoscape.view.NodeView;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import java.lang.IllegalArgumentException;
-import java.lang.Integer;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Stack;
 
 
 /**

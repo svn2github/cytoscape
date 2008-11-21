@@ -1,22 +1,26 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
+import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.Cytoscape;
 import org.cytoscape.coreplugin.cpath2.task.ExecutePhysicalEntitySearch;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.view.model.Organism;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkListener;
-import javax.swing.event.HyperlinkEvent;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Vector;
-import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.util.Vector;
 
 /**
  * Search Box Panel.

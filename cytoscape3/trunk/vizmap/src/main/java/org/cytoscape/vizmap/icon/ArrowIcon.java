@@ -34,19 +34,11 @@
 */
 package org.cytoscape.vizmap.icon;
 
-import org.cytoscape.vizmap.VMMFactory;
-
 import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.VMMFactory;
 import org.cytoscape.vizmap.VisualPropertyType;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 

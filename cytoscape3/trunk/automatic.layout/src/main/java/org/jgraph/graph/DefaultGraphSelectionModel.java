@@ -7,14 +7,13 @@
 package org.jgraph.graph;
 
 import org.jgraph.JGraph;
-
 import org.jgraph.event.GraphSelectionEvent;
 import org.jgraph.event.GraphSelectionListener;
 
+import javax.swing.event.EventListenerList;
+import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.Hashtable;
@@ -23,9 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
-
-import javax.swing.event.EventListenerList;
-import javax.swing.event.SwingPropertyChangeSupport;
 
 
 /**

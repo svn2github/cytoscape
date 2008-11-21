@@ -1,21 +1,22 @@
 package cytoscape.filters.util;
 
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.filters.CompositeFilter;
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.Cursor;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.quickfind.util.TaskMonitorBase;
-import org.cytoscape.attributes.CyAttributes;
-import cytoscape.filters.FilterPlugin;
 import csplugins.widgets.autocomplete.index.GenericIndex;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.filters.CompositeFilter;
+import cytoscape.filters.FilterPlugin;
 import cytoscape.init.CyInitParams;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FilterUtil {
 		
@@ -40,19 +41,19 @@ public class FilterUtil {
 
 		pFilter.apply();
 		
-		GraphPerspective network = pFilter.getNetwork();
+		CyNetwork network = pFilter.getNetwork();
 
 		network.unselectAllNodes();
 		network.unselectAllEdges();
 		
-		final List<Node> nodes_list = network.nodesList();
-		final List<Edge> edges_list = network.edgesList();
+		final List<CyNode> nodes_list = network.nodesList();
+		final List<CyEdge> edges_list = network.edgesList();
 
 		if (pFilter.getAdvancedSetting().isNodeChecked()&& (pFilter.getNodeBits() != null)) {
 			// Select nodes
-			final List<Node> passedNodes = new ArrayList<Node>();
+			final List<CyNode> passedNodes = new ArrayList<CyNode>();
 
-			Node node = null;
+			CyNode node = null;
 
 			for (int i=0; i< pFilter.getNodeBits().length(); i++) {
 				int next_set_bit = pFilter.getNodeBits().nextSetBit(i);
@@ -66,9 +67,9 @@ public class FilterUtil {
 		}
 		if (pFilter.getAdvancedSetting().isEdgeChecked()&& (pFilter.getEdgeBits() != null)) {
 			// Select edges
-			final List<Edge> passedEdges = new ArrayList<Edge>();
+			final List<CyEdge> passedEdges = new ArrayList<CyEdge>();
 
-			Edge edge = null;
+			CyEdge edge = null;
 			for (int i=0; i< edges_list.size(); i++) {
 				int next_set_bit = pFilter.getEdgeBits().nextSetBit(i);
 				if (next_set_bit == -1) {
@@ -106,7 +107,7 @@ public class FilterUtil {
 	}
 	
 	
-	public static GenericIndex getQuickFindIndex(String pCtrlAttribute, GraphPerspective pNetwork, int pIndexType) {
+	public static GenericIndex getQuickFindIndex(String pCtrlAttribute, CyNetwork pNetwork, int pIndexType) {
 		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 		quickFind.reindexNetwork(pNetwork, pIndexType, pCtrlAttribute, new TaskMonitorBase());
 		
@@ -137,7 +138,7 @@ public class FilterUtil {
 	// If a network size (node count and edge count) is less than DYNAMIC_FILTER_THRESHOLD, return true
 	// Otherwise, return false
 	public static boolean isDynamicFilter(CompositeFilter pFilter) {
-		GraphPerspective theNetwork = pFilter.getNetwork();
+		CyNetwork theNetwork = pFilter.getNetwork();
 
 		if (theNetwork == null) {
 			return false;

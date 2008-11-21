@@ -36,15 +36,11 @@
 */
 package cytoscape.util.undo;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.undo.*;
-
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.view.CytoscapeDesktop;
+
+import org.cytoscape.work.UndoSupport;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -55,13 +51,33 @@ import java.beans.PropertyChangeListener;
  * discard policy we might have. Currently, we discard all edits if
  * the network view focus changes.
  */
-class UndoMonitor implements PropertyChangeListener {
+public class UndoMonitor implements PropertyChangeListener {
 
-	UndoMonitor() {
-		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(
+	private UndoSupport undo;
+
+	public UndoMonitor(CytoscapeDesktop desktop, UndoSupport undo) {
+		desktop.getSwingPropertyChangeSupport().addPropertyChangeListener(
 	                                            CytoscapeDesktop.NETWORK_VIEW_FOCUSED,this);
+
+		this.undo = undo;
+
+		undo.getUndoManager().setLimit( getLimit() );
 	}
 
+    private int getLimit() {
+        int lim;
+        try {
+            lim = Integer.parseInt( CytoscapeInit.getProperties().getProperty("undo.limit") );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            lim = 10;
+        }
+
+        if ( lim < 0 )
+            lim = 10;
+
+        return lim;
+    }
 
 	/**
  	 * This method listens for property change events and discards all edits
@@ -71,7 +87,7 @@ class UndoMonitor implements PropertyChangeListener {
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
-			CyUndo.undoManager.discardAllEdits();
+			undo.getUndoManager().discardAllEdits();
 		}
 	}
 }

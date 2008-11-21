@@ -35,45 +35,28 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.ui.editors.EditorFactory;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CountedIterator;
-import org.cytoscape.attributes.MultiHashMap;
-
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.calculators.Calculator;
-
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
-
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 
 /**
@@ -84,17 +67,6 @@ import javax.swing.event.ChangeListener;
  * @author kono
   */
 public abstract class ContinuousMappingEditorPanel extends JDialog implements PropertyChangeListener {
-	// Tell vizMapper main whic editor is disabled/enabled.
-	/**
-	 * DOCUMENT ME!
-	 */
-	public static final String EDITOR_WINDOW_CLOSED = "EDITOR_WINDOW_CLOSED";
-
-	/**
-	 * DOCUMENT ME!
-	 */
-	public static final String EDITOR_WINDOW_OPENED = "EDITOR_WINDOW_OPENED";
-
 	/*
 	 * Used by trackrenderers.
 	 */
@@ -109,10 +81,12 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected Object above;
 	protected static ContinuousMappingEditorPanel editor;
 	protected double lastSpinnerNumber = 0;
+	protected final CytoscapeDesktop desktop;
 
 	/** Creates new form ContinuousMapperEditorPanel */
-	public ContinuousMappingEditorPanel(final VisualPropertyType type) {
+	public ContinuousMappingEditorPanel(final VisualPropertyType type, final CytoscapeDesktop desktop) {
 		this.type = type;
+		this.desktop = desktop;
 		initComponents();
 		setVisualPropLabel();
 
@@ -121,34 +95,13 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		this.addWindowListener(new WindowAdapter() {
 				public void windowOpened(WindowEvent e) {
 					System.out.println("windowOpened");
-					firePropertyChange(EDITOR_WINDOW_OPENED, null, type);
+					firePropertyChange(EditorFactory.EDITOR_WINDOW_OPENED, null, type);
 				}
 
 				public void windowClosing(WindowEvent e) {
-					firePropertyChange(EDITOR_WINDOW_CLOSED, this, type);
+					firePropertyChange(EditorFactory.EDITOR_WINDOW_CLOSED, this, type);
 				}
 			});
-	}
-
-	/**
-	 *  Dynamically generate small icons from continuous mappers.
-	 *
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 * @param type DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static ImageIcon getIcon(final int width, final int height, VisualPropertyType type) {
-		final Class dataType = type.getDataType();
-
-		if (dataType == Color.class) {
-			return GradientEditorPanel.getIcon(width, height, type);
-		} else if (dataType == Number.class) {
-			return C2CMappingEditor.getIcon(width, height, type);
-		} else {
-			return C2DMappingEditor.getIcon(width, height, type);
-		}
 	}
 
 	protected void setSpinner() {
@@ -386,7 +339,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 	protected void minMaxButtonActionPerformed(ActionEvent evt) {
 		final Double[] newVal = MinMaxDialog.getMinMax(EditorValueRangeTracer.getTracer().getMin(type),
-		                                         EditorValueRangeTracer.getTracer().getMax(type));
+		                                         EditorValueRangeTracer.getTracer().getMax(type),
+												 desktop);
 
 		if (newVal == null)
 			return;
@@ -403,14 +357,14 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	abstract protected void addButtonActionPerformed(java.awt.event.ActionEvent evt);
 
 	private void initRangeValues() {
-		final CyAttributes attr;
+		final CyDataTable attr;
 
 		if (type.isNodeProp()) {
-			attr = Cytoscape.getNodeAttributes();
+			attr = /*TODO*/Cytoscape.getNodeAttributes();
 			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
 			                      .getNodeAppearanceCalculator().getCalculator(type);
 		} else {
-			attr = Cytoscape.getEdgeAttributes();
+			attr = /*TODO*/Cytoscape.getEdgeAttributes();
 			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
 			                      .getEdgeAppearanceCalculator().getCalculator(type);
 		}
@@ -424,28 +378,16 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 			final String controllingAttrName = mapping.getControllingAttributeName();
 
-			final MultiHashMap mhm = attr.getMultiHashMap();
-
-			List<String> attrNames = new ArrayList<String>();
-			Collections.addAll(attrNames, attr.getAttributeNames());
-
-			if (attrNames.contains(controllingAttrName) == false)
+			if ( attr.getColumnTypeMap().get(controllingAttrName) != Double.class )
 				return;
 
 			// Set range values
 			if (EditorValueRangeTracer.getTracer().getRange(type) == 0) {
-				final CountedIterator it = mhm.getObjectKeys(controllingAttrName);
-				Object key;
+
 				Double maxValue = Double.NEGATIVE_INFINITY;
 				Double minValue = Double.POSITIVE_INFINITY;
 
-				while (it.hasNext()) {
-					key = it.next();
-
-					Double val = Double.parseDouble(mhm.getAttributeValue((String) key,
-					                                                      controllingAttrName, null)
-					                                   .toString());
-
+				for ( Double val : attr.getColumnValues( controllingAttrName, Double.class ) ) {
 					if (val > maxValue)
 						maxValue = val;
 

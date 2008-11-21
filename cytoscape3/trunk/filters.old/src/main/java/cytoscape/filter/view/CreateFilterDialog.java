@@ -36,25 +36,19 @@
 
 package cytoscape.filter.view;
 
-import cytoscape.filter.model.*;
+import cytoscape.filter.model.Filter;
+import cytoscape.filter.model.FilterEditorManager;
+import cytoscape.filter.model.FilterManager;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.*;
-
-import java.util.Iterator;
-import java.util.Vector;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.Vector;
 
 
 /**

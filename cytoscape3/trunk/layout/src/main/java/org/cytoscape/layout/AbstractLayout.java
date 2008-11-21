@@ -37,31 +37,22 @@
 package org.cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
-
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesFactory;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
-import org.cytoscape.view.ViewChangeEdit;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.view.ViewChangeEdit;
+import org.cytoscape.work.UndoSupport;
 
-import org.cytoscape.RootGraph;
-import org.cytoscape.RootGraphFactory;
-
-import java.awt.Dimension;
-import java.awt.geom.Point2D;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.JPanel;
-
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.tunable.ModuleProperties;
 
 /**
  * The AbstractLayout provides nice starting point for Layouts
@@ -71,7 +62,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	// Graph Objects and Views
 	protected Set<NodeView> staticNodes;
 	protected GraphView networkView;
-	protected GraphPerspective network;
+	protected CyNetwork network;
 
 	//
 	protected boolean selectedOnly = false;
@@ -107,12 +98,14 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 
 	// Should definitely be overridden!
 	protected String propertyPrefix = "abstract";
+	protected UndoSupport undo;
 
 	/**
 	 * The Constructor is null
 	 */
-	public AbstractLayout() {
+	public AbstractLayout(UndoSupport undo) {
 		this.staticNodes = new HashSet<NodeView>();
+		this.undo = undo;
 	}
 
 	/**
@@ -158,8 +151,8 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * @return the list of supported attribute types, or null
 	 * if node attributes are not supported
 	 */
-	public byte[] supportsNodeAttributes() {
-		return null;
+	public Set<Class<?>> supportsNodeAttributes() {
+		return new HashSet<Class<?>>();
 	}
 
 	/**
@@ -170,8 +163,8 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * @return the list of supported attribute types, or null
 	 * if edge attributes are not supported
 	 */
-	public byte[] supportsEdgeAttributes() {
-		return null;
+	public Set<Class<?>> supportsEdgeAttributes() {
+		return new HashSet<Class<?>>();
 	}
 
 	/**
@@ -181,9 +174,9 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * @param attributeName The name of the attribute
 	 */
 	public void setLayoutAttribute(String attributeName) {
-		if (supportsNodeAttributes() != null) {
+		if (supportsNodeAttributes().size() > 0) {
 			nodeAttribute = attributeName;
-		} else if (supportsEdgeAttributes() != null) {
+		} else if (supportsEdgeAttributes().size() > 0) {
 			edgeAttribute = attributeName;
 		}
 	}
@@ -252,12 +245,12 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		networkView = nview;
 
 		// do some sanity checking
-		if ((networkView == null) || (networkView == GraphViewFactory.getNullGraphView()))
+		if ( networkView == null )
 			return;
 
 		this.network = networkView.getGraphPerspective();
 
-		if ((network == null) || (network == RootGraphFactory.getRootGraph().getNullGraphPerspective()))
+		if (network == null) 
 			return;
 
 		if (network.getNodeCount() <= 0)
@@ -269,7 +262,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		taskMonitor = monitor;
 
 		// set up the edit
-		undoableEdit = new ViewChangeEdit(networkView, toString() + " Layout");
+		undoableEdit = new ViewChangeEdit(networkView, toString() + " Layout", undo);
 
 		// this is overridden by children and does the actual layout
 		construct();
@@ -284,9 +277,9 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		undoableEdit.post();
 
 		// update the __layoutAlgorithm attribute
-		CyAttributes networkAttributes = CyAttributesFactory.getCyAttributes("network");
-		networkAttributes.setAttribute(network.getIdentifier(), "__layoutAlgorithm", getName());
-		networkAttributes.setUserVisible("__layoutAlgorithm", false);
+		CyRow networkAttributes = network.getCyRow(CyNetwork.HIDDEN_ATTRS);
+		network.getNetworkCyDataTables().get(CyNetwork.HIDDEN_ATTRS).createColumn("layoutAlgorithm",String.class,false);
+		networkAttributes.set("layoutAlgorithm", getName());
 
 		this.network = null;
 		this.networkView = null;

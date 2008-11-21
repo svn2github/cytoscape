@@ -37,27 +37,21 @@
 package cytoscape.io.table.reader;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.data.ontology.GeneOntology;
 import cytoscape.data.ontology.Ontology;
-
 import cytoscape.data.synonyms.Aliases;
-
+import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
+import static cytoscape.io.table.reader.TextFileDelimiters.TAB;
 import cytoscape.util.BioDataServerUtil;
 import cytoscape.util.URLUtil;
-import static cytoscape.io.table.reader.TextFileDelimiters.*;
-
-import org.cytoscape.Node;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -224,12 +218,12 @@ public class GeneAssociationReader implements TextTableReader {
 		Iterator it = Cytoscape.getCyNodesList().iterator();
 
 		String nodeID = null;
-		Node node = null;
+		CyNode node = null;
 		String attributeValue = null;
 		List<String> nodeIdList = null;
 
 		while (it.hasNext()) {
-			node = (Node) it.next();
+			node = (CyNode) it.next();
 			nodeID = node.getIdentifier();
 			attributeValue = nodeAttributes.getStringAttribute(nodeID, keyAttributeName);
 

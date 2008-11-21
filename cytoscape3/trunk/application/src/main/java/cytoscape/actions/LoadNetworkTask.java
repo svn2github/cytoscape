@@ -40,45 +40,31 @@
 // $Author: pwang $
 package cytoscape.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
-import javax.swing.JOptionPane;
-
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
-import cytoscape.data.readers.GraphReader;
-import cytoscape.init.CyInitParams;
-
-import org.cytoscape.layout.CyLayoutAlgorithm;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
-import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.view.GraphViewFactory;
 
+
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-
 import java.net.URI;
 import java.net.URL;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
-import javax.swing.JOptionPane;
 
 
 /**
@@ -96,8 +82,8 @@ public class LoadNetworkTask implements Task {
 	 * @param u the URL to load the network from
 	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
-	public static void loadURL(URL u, boolean skipMessage) {
-		loadURL(u, skipMessage, null);
+	public static void loadURL(URL u, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
+		loadURL(u, skipMessage, null, mgr, gvf,cyl, dsk);
 	}
 
 	/**
@@ -109,9 +95,9 @@ public class LoadNetworkTask implements Task {
 	 * @param file the file to load the network from
 	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
-	public static void loadFile(File file, boolean skipMessage) {
+	public static void loadFile(File file, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
 		// Create LoadNetwork Task
-		loadFile(file, skipMessage, null);
+		loadFile(file, skipMessage, null, mgr, gvf,cyl, dsk);
 	}
 
 	/**
@@ -127,9 +113,9 @@ public class LoadNetworkTask implements Task {
 	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
 	 *                        after it has been read in (provided that a view was created).
 	 */
-	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
-		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm);
-		setupTask(task, skipMessage, true);
+	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
+		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm, mgr, gvf, cyl, dsk);
+		setupTask(task, skipMessage, true,dsk);
 	}
 
 	/**
@@ -143,15 +129,15 @@ public class LoadNetworkTask implements Task {
 	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
 	 *                        after it has been read in (provided that a view was created).
 	 */
-	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
-		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm);
-		setupTask(task, skipMessage, true);
+	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
+		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm, mgr, gvf, cyl, dsk);
+		setupTask(task, skipMessage, true, dsk);
 	}
 
-	private static void setupTask(LoadNetworkTask task, boolean skipMessage, boolean cancelable) {
+	private static void setupTask(LoadNetworkTask task, boolean skipMessage, boolean cancelable, CytoscapeDesktop desk) {
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.setOwner(desk);
 		jTaskConfig.displayCloseButton(true);
 
 		if (cancelable)
@@ -166,24 +152,42 @@ public class LoadNetworkTask implements Task {
 
 	private URI uri;
 	private TaskMonitor taskMonitor;
-	private GraphReader reader;
+	private CyNetworkReader reader;
 	private String name;
 	private URL url;
 	private Thread myThread = null;
 	private boolean interrupted = false;
 	private CyLayoutAlgorithm layoutAlgorithm = null;
+	private CyReaderManager mgr; 
+	private GraphViewFactory gvf; 
+	private CyLayouts cyl; 
+	private CytoscapeDesktop dsk; 
 
-	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout) {
+	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
 		url = u;
 		name = u.toString();
 		reader = null;
 		layoutAlgorithm = layout;
+		this.mgr = mgr;
+		this.gvf = gvf;
+		this.cyl = cyl;
+		this.dsk = dsk;
 
 		// Postpone getting the reader since we want to do that in a thread
 	}
 
-	private LoadNetworkTask(File file, CyLayoutAlgorithm layout) {
-		reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
+	private LoadNetworkTask(File file, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
+		this.mgr = mgr;
+		this.gvf = gvf;
+		this.cyl = cyl;
+		this.dsk = dsk;
+		try { 
+		reader = mgr.getReader(file.getAbsolutePath());
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+			reader = null;
+		}
+
 		uri = file.toURI();
 		name = file.getName();
 		layoutAlgorithm = layout;
@@ -191,7 +195,7 @@ public class LoadNetworkTask implements Task {
 		if (reader == null) {
 			uri = null;
 			url = null;
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Unable to open file " + name,
+			JOptionPane.showMessageDialog(dsk, "Unable to open file " + name,
 			                              "File Open Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -208,7 +212,7 @@ public class LoadNetworkTask implements Task {
 		if ((reader == null) && (url != null)) {
 			try {
 				taskMonitor.setStatus("Opening URL " + url);
-				reader = Cytoscape.getImportHandler().getReader(url);
+				reader = mgr.getReader(url);
 
 				if (interrupted)
 					return;
@@ -216,8 +220,7 @@ public class LoadNetworkTask implements Task {
 				uri = url.toURI();
 			} catch (Exception e) {
 				uri = null;
-				taskMonitor.setException(e,
-				                         "Unable to connect to URL " + name + ": " + e.getMessage());
+				taskMonitor.setException(e, "Unable to connect to URL " + name + ": " + e.getMessage());
 
 				return;
 			}
@@ -237,21 +240,21 @@ public class LoadNetworkTask implements Task {
 		taskMonitor.setStatus("Reading in Network Data...");
 
 		// Remove unnecessary listeners:
-		if ((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
-		    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-			         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
-		}
+		dsk.getSwingPropertyChangeSupport()
+		         .removePropertyChangeListener(dsk.getBirdsEyeViewHandler());
 		
 		try {
 			taskMonitor.setPercentCompleted(-1);
 
 			taskMonitor.setStatus("Creating Cytoscape Network...");
 
-			GraphPerspective cyNetwork = Cytoscape.createNetwork(reader, true, null);
+			reader.read();
 
-			// Are we supposed to lay this out?
-			GraphView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+			CyNetwork cyNetwork = reader.getReadNetwork(); 
+			cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name));
+			GraphView view = gvf.createGraphView( cyNetwork );
+
+			Cytoscape.addNetwork( cyNetwork, view, cyl );
 
 			if ((layoutAlgorithm != null) && (view != null)) {
 				// Yes, do it
@@ -266,15 +269,12 @@ public class LoadNetworkTask implements Task {
 			ret_val[0] = cyNetwork;
 			ret_val[1] = uri;
 
-			if ((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
-			    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-				Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-				         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
-				Cytoscape.getDesktop().getNetworkViewManager()
-				         .firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
-				                             Cytoscape.getCurrentNetworkView().getNetwork()
-				                                      .getIdentifier());
-			}
+			dsk.getSwingPropertyChangeSupport()
+			         .addPropertyChangeListener(dsk.getBirdsEyeViewHandler());
+			dsk.getNetworkViewManager()
+			         .firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
+			                             Cytoscape.getCurrentNetworkView().getNetwork()
+			                                      .getSUID());
 
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 
@@ -302,13 +302,7 @@ public class LoadNetworkTask implements Task {
 	/**
 	 * Inform User of Network Stats.
 	 */
-
-	// Mod. by Kei 08/26/2005
-	//
-	// For the new GML format import function, added some messages
-	// for the users.
-	//
-	private void informUserOfGraphStats(GraphPerspective newNetwork) {
+	private void informUserOfGraphStats(CyNetwork newNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 

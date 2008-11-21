@@ -36,15 +36,10 @@
 */
 package cytoscape.merge;
 
-import cytoscape.Cytoscape;
-
-
-import cytoscape.util.GraphSetUtils;
 import cytoscape.util.CyNetworkNaming;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
 
 public class MergeAction extends AbstractAction {
 	public MergeAction() {

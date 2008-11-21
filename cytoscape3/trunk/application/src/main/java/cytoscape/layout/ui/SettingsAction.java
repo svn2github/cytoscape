@@ -37,22 +37,31 @@
 package cytoscape.layout.ui;
 
 import cytoscape.util.CytoscapeAction;
-import java.awt.event.ActionEvent;
+import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.layout.CyLayouts;
+
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
 
 /**
  */
 public class SettingsAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339874289357L;
 
+	private CyLayouts cyl;
+	private CytoscapeDesktop desk;
+	private LayoutMenuManager menuMgr;
 
-	public SettingsAction() {
+	public SettingsAction(CyLayouts cyl, CytoscapeDesktop desk, LayoutMenuManager menuMgr) {
 		super("Settings...");
 		setPreferredMenu("Layout");
+		this.cyl = cyl;
+		this.desk = desk;
+		this.menuMgr = menuMgr;
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog();
+		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl,desk,menuMgr);
 		settingsDialog.actionPerformed(e);
 	}
 

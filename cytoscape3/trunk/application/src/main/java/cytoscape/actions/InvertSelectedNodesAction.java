@@ -42,20 +42,15 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
-
-//-------------------------------------------------------------------------
-import org.cytoscape.Node;
-
-import java.awt.event.ActionEvent;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 
 //-------------------------------------------------------------------------
@@ -79,10 +74,13 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
-		final List<Node> selectedNodes = new ArrayList<Node>(cyNetwork.getSelectedNodes());
-		cyNetwork.selectAllNodes();
-		cyNetwork.setSelectedNodeState(selectedNodes, false);
+		final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		for ( CyNode n : cyNetwork.getNodeList() ) 
+			if ( n.attrs().get("selected",Boolean.class) == true )
+				 n.attrs().set("selected",false);
+			else
+				 n.attrs().set("selected",true);
+
 		Cytoscape.getCurrentNetworkView().updateView();
 	}
 

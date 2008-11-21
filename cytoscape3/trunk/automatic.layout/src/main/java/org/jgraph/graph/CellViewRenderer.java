@@ -8,7 +8,7 @@ package org.jgraph.graph;
 
 import org.jgraph.JGraph;
 
-import java.awt.Component;
+import java.awt.*;
 
 
 /**

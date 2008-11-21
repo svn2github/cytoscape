@@ -29,22 +29,24 @@
 */
 package cytoscape.editor.event;
 
-import org.cytoscape.view.NodeView;
-
-import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
-
-import phoebe.PhoebeCanvasDropEvent;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
+import phoebe.PhoebeCanvasDropEvent;
+
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+
+import org.cytoscape.view.NodeView;
+import phoebe.PhoebeCanvasDropEvent;
 
 
 /**
@@ -239,7 +241,7 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 			if (URL != null) {
 				// CytoscapeEditorManager.log ("Handling dropped URL = " +
 				// URLString);
-				Node cn = get_caller().addNode("node" + counter, "URL");
+				CyNode cn = get_caller().addNode("node" + counter, "URL");
 				counter++;
 				Cytoscape.getCurrentNetwork().restoreNode(cn);
 			}

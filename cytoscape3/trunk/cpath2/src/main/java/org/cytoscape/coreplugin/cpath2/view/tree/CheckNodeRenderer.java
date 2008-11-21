@@ -2,8 +2,8 @@ package org.cytoscape.coreplugin.cpath2.view.tree;
 
 import org.cytoscape.coreplugin.cpath2.view.GradientHeader;
 
-import javax.swing.tree.TreeCellRenderer;
 import javax.swing.*;
+import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 import java.net.URL;
 

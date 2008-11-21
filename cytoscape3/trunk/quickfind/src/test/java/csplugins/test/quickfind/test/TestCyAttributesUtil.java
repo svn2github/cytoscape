@@ -37,15 +37,12 @@
 package csplugins.test.quickfind.test;
 
 import csplugins.quickfind.util.CyAttributesUtil;
-
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesFactory;
-
 import junit.framework.TestCase;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,7 +136,7 @@ public class TestCyAttributesUtil extends TestCase {
 		cyAttributes.setAttribute("ID5", STRING_TYPE, "C");
 		cyAttributes.setAttribute("ID6", STRING_TYPE, "C");
 
-		GraphPerspective network = Cytoscape.createNetwork("csplugins.test");
+		CyNetwork network = Cytoscape.createNetwork("csplugins.test");
 
 		createNode("ID1", network);
 		createNode("ID2", network);
@@ -184,7 +181,7 @@ public class TestCyAttributesUtil extends TestCase {
 
 		cyAttributes.setListAttribute("ID1", LIST_TYPE, list);
 
-		GraphPerspective network = Cytoscape.createNetwork("csplugins.test");
+		CyNetwork network = Cytoscape.createNetwork("csplugins.test");
 		createNode("ID1", network);
 
 		String[] values = CyAttributesUtil.getDistinctAttributeValues(network.nodesIterator(),
@@ -193,8 +190,8 @@ public class TestCyAttributesUtil extends TestCase {
 		assertEquals("apple, banana", values[0]);
 	}
 
-	private static void createNode(String id, GraphPerspective network) {
-		Node node = Cytoscape.getCyNode(id, true);
+	private static void createNode(String id, CyNetwork network) {
+		CyNode node = Cytoscape.getCyNode(id, true);
 		network.addNode(node);
 	}
 }

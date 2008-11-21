@@ -36,23 +36,21 @@
  */
 package cytoscape.util;
 
-import java.awt.event.ActionEvent;
+import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.GraphView;
 
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.event.MenuListener;
-import javax.swing.event.MenuEvent;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.view.GraphView;
 
 /**
  *
  */
-public abstract class CytoscapeAction extends AbstractAction implements MenuListener {
+public abstract class CytoscapeAction extends AbstractAction implements CyAction, MenuListener {
 	protected String preferredMenu = null;
 	protected String preferredButtonGroup = null;
 	protected Integer menuIndex = Integer.valueOf(-1);
@@ -60,7 +58,6 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	protected int keyModifiers;
 	protected int keyCode;
 	protected String consoleName;
-	private static List<CytoscapeAction> actionList = new LinkedList<CytoscapeAction>();
 	protected boolean useCheckBoxMenuItem = false;
 
 	/**
@@ -80,7 +77,6 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 		super(name);
 		this.consoleName = name;
 		consoleName = consoleName.replaceAll(":. \'", "");
-		actionList.add(this);
 		initialize();
 	}
 
@@ -94,17 +90,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 		super(name, icon);
 		this.consoleName = name;
 		consoleName = consoleName.replaceAll(" ", "");
-		actionList.add(this);
 		initialize();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static List<CytoscapeAction> getActionList() {
-		return actionList;
 	}
 
 	/**
@@ -316,7 +302,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	/**
 	 * Indicates whether a check box menu item should be used instead of a normal one.
 	 */
-	boolean useCheckBoxMenuItem() {
+	public boolean useCheckBoxMenuItem() {
 		return useCheckBoxMenuItem;
 	}
 
@@ -355,7 +341,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	 * Enable the action if the current network exists and is not null.
 	 */
 	protected void enableForNetwork() {
-		GraphPerspective n = Cytoscape.getCurrentNetwork();
+		CyNetwork n = Cytoscape.getCurrentNetwork();
 		if ( n == null || n == Cytoscape.getNullNetwork() ) 
 			setEnabled(false);
 		else
@@ -366,7 +352,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	 * Enable the action if the current network and view exist and are not null.
 	 */
 	protected void enableForNetworkAndView() {
-		GraphPerspective n = Cytoscape.getCurrentNetwork();
+		CyNetwork n = Cytoscape.getCurrentNetwork();
 		if ( n == null || n == Cytoscape.getNullNetwork() ) {
 			setEnabled(false);
 			return;

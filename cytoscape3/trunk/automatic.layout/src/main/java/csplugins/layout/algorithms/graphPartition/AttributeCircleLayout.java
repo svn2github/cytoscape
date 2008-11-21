@@ -34,28 +34,21 @@ package csplugins.layout.algorithms.graphPartition;
 
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-
-import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
-
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
-import org.cytoscape.attributes.CyAttributes;
-
+import org.cytoscape.model.CyRow;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
 
-import org.cytoscape.view.*;
-
-import java.awt.GridLayout;
-
-import java.util.*;
-
-import javax.swing.JPanel;
-
-import org.cytoscape.*;
-import org.cytoscape.data.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 
 /**
@@ -103,13 +96,19 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public byte[] supportsNodeAttributes() {
+	public Set<Class<?>> supportsNodeAttributes() {
+		Set<Class<?>> ret = new HashSet<Class<?>>();
 		if (!supportNodeAttributes)
-			return null;
+			return ret;
 
-		byte[] all = { -1 };
+		ret.add(Integer.class);
+		ret.add(Double.class);
+		ret.add(String.class);
+		ret.add(Boolean.class);
+		ret.add(List.class);
+		ret.add(Map.class);
 
-		return all;
+		return ret;
 	}
 
 	/**

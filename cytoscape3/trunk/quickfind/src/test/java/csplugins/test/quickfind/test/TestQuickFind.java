@@ -39,20 +39,16 @@ package csplugins.test.quickfind.test;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.quickfind.util.TaskMonitorBase;
-
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.NumberIndex;
 import csplugins.widgets.autocomplete.index.TextIndex;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
 import junit.framework.TestCase;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.util.List;
 
@@ -75,19 +71,19 @@ public class TestQuickFind extends TestCase {
 	 */
 	public void testNodeIndexing() {
 		//  Create Sample Network
-		GraphPerspective cyNetwork = Cytoscape.createNetwork("network1");
-		Node node0 = Cytoscape.getCyNode("rain", true);
-		Node node1 = Cytoscape.getCyNode("rainbow", true);
-		Node node2 = Cytoscape.getCyNode("rabbit", true);
-		Node node3 = Cytoscape.getCyNode("yellow", true);
+		CyNetwork cyNetwork = Cytoscape.createNetwork("network1");
+		CyNode node0 = Cytoscape.getCyNode("rain", true);
+		CyNode node1 = Cytoscape.getCyNode("rainbow", true);
+		CyNode node2 = Cytoscape.getCyNode("rabbit", true);
+		CyNode node3 = Cytoscape.getCyNode("yellow", true);
 		cyNetwork.addNode(node0);
 		cyNetwork.addNode(node1);
 		cyNetwork.addNode(node2);
 		cyNetwork.addNode(node3);
 
-		Edge edge0 = Cytoscape.getCyEdge(node0, node1, Semantics.INTERACTION, "pp", true);
-		Edge edge1 = Cytoscape.getCyEdge(node0, node2, Semantics.INTERACTION, "pp", true);
-		Edge edge2 = Cytoscape.getCyEdge(node0, node3, Semantics.INTERACTION, "pp", true);
+		CyEdge edge0 = Cytoscape.getCyEdge(node0, node1, Semantics.INTERACTION, "pp", true);
+		CyEdge edge1 = Cytoscape.getCyEdge(node0, node2, Semantics.INTERACTION, "pp", true);
+		CyEdge edge2 = Cytoscape.getCyEdge(node0, node3, Semantics.INTERACTION, "pp", true);
 		cyNetwork.addEdge(edge0);
 		cyNetwork.addEdge(edge1);
 		cyNetwork.addEdge(edge2);
@@ -160,11 +156,11 @@ public class TestQuickFind extends TestCase {
 		//  Verify Embedded Edges
 		assertEquals(2, hits[0].getAssociatedObjects().length);
 
-		Edge edge = (Edge) hits[1].getAssociatedObjects()[0];
+		CyEdge edge = (CyEdge) hits[1].getAssociatedObjects()[0];
 		assertEquals("rain (pp) yellow", edge.getIdentifier());
 	}
 
-	private void addNodeAttributes(Node node0, Node node1, Node node2, Node node3) {
+	private void addNodeAttributes(CyNode node0, CyNode node1, CyNode node2, CyNode node3) {
 		//  Create Sample String Attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		nodeAttributes.setAttribute(node0.getIdentifier(), LOCATION, CYTOPLASM);
@@ -185,7 +181,7 @@ public class TestQuickFind extends TestCase {
 		nodeAttributes.setAttribute(node3.getIdentifier(), SCORE, 2.1);
 	}
 
-	private void addEdgeAttributes(Edge edge0, Edge edge1, Edge edge2) {
+	private void addEdgeAttributes(CyEdge edge0, CyEdge edge1, CyEdge edge2) {
 		//  Create Sample String Attributes
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		edgeAttributes.setAttribute(edge0.getIdentifier(), PMID, "12345");
@@ -196,7 +192,7 @@ public class TestQuickFind extends TestCase {
 	/**
 	 * Validate that we can index all attributes.
 	 */
-	private void validateIndexAllAttributes(QuickFind quickFind, GraphPerspective cyNetwork,
+	private void validateIndexAllAttributes(QuickFind quickFind, CyNetwork cyNetwork,
 	                                        TaskMonitorBase monitor) {
 		TextIndex textIndex;
 		Hit[] hits;
@@ -222,7 +218,7 @@ public class TestQuickFind extends TestCase {
 		assertEquals(NUCLEUS, hits[0].getKeyword());
 	}
 
-	private void validateIntegerIndex(QuickFind quickFind, GraphPerspective cyNetwork,
+	private void validateIntegerIndex(QuickFind quickFind, CyNetwork cyNetwork,
 	                                  TaskMonitorBase monitor) {
 		NumberIndex numberIndex = (NumberIndex) quickFind.reindexNetwork(cyNetwork,
 		                                                                 QuickFind.INDEX_NODES,
@@ -233,14 +229,14 @@ public class TestQuickFind extends TestCase {
 		List list = numberIndex.getRange(1, 2);
 		assertEquals(2, list.size());
 
-		Node node0 = (Node) list.get(0);
+		CyNode node0 = (CyNode) list.get(0);
 		assertEquals("rabbit", node0.getIdentifier());
 
-		Node node1 = (Node) list.get(1);
+		CyNode node1 = (CyNode) list.get(1);
 		assertEquals("yellow", node1.getIdentifier());
 	}
 
-	private void validateDoubleIndex(QuickFind quickFind, GraphPerspective cyNetwork,
+	private void validateDoubleIndex(QuickFind quickFind, CyNetwork cyNetwork,
 	                                 TaskMonitorBase monitor) {
 		NumberIndex numberIndex = (NumberIndex) quickFind.reindexNetwork(cyNetwork,
 		                                                                 QuickFind.INDEX_NODES,
@@ -251,10 +247,10 @@ public class TestQuickFind extends TestCase {
 		List list = numberIndex.getRange(0.0, 5.0);
 		assertEquals(2, list.size());
 
-		Node node0 = (Node) list.get(0);
+		CyNode node0 = (CyNode) list.get(0);
 		assertEquals("yellow", node0.getIdentifier());
 
-		Node node1 = (Node) list.get(1);
+		CyNode node1 = (CyNode) list.get(1);
 		assertEquals("rainbow", node1.getIdentifier());
 
 		//  Validate that upper bound is inclusive

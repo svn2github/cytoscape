@@ -36,32 +36,33 @@
 
 package csplugins.layout.algorithms.force;
 
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import org.cytoscape.layout.*;
-import csplugins.layout.LayoutPartition;
+import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
-import csplugins.layout.EdgeWeighter;
-import csplugins.layout.algorithms.graphPartition.*;
-
-import org.cytoscape.view.GraphView;
-import org.cytoscape.attributes.CyAttributes;
-
-import org.cytoscape.tunable.TunableFactory;
-import org.cytoscape.tunable.Tunable;
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
+import cytoscape.CytoscapeInit;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
+import prefuse.util.force.DragForce;
+import prefuse.util.force.EulerIntegrator;
+import prefuse.util.force.ForceItem;
+import prefuse.util.force.ForceSimulator;
+import prefuse.util.force.Integrator;
+import prefuse.util.force.NBodyForce;
+import prefuse.util.force.RungeKuttaIntegrator;
+import prefuse.util.force.SpringForce;
 
-import java.awt.GridLayout;
-import java.awt.Dimension;
-
-import java.util.*;
-
-import javax.swing.JPanel;
-
-import prefuse.util.force.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * This class wraps the Prefuse force-directed layout algorithm.
@@ -239,12 +240,15 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		return true;
 	}
 
-	public byte[] supportsEdgeAttributes() {
+	public Set<Class<?>> supportsEdgeAttributes() {
+		Set<Class<?>> ret = new HashSet<Class<?>>();
 		if (!supportWeights)
-			return null;
-		byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
+			return ret;
 
-		return attrs;
+		ret.add( Integer.class );
+		ret.add( Double.class );
+
+		return ret;
 	}
 
 	public List getInitialAttributeList() {

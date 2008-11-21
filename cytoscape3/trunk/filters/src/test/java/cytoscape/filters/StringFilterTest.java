@@ -1,12 +1,11 @@
 package cytoscape.filters;
 
-import cytoscape.filters.StringFilter;
-import java.util.BitSet;
-
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.quickfind.util.TaskMonitorBase;
 import csplugins.widgets.autocomplete.index.TextIndex;
+
+import java.util.BitSet;
 
 public class StringFilterTest extends FilterTest {
 

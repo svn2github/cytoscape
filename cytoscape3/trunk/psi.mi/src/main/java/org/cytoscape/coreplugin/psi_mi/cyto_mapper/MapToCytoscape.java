@@ -34,14 +34,10 @@
 */
 package org.cytoscape.coreplugin.psi_mi.cyto_mapper;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.Semantics;
-
-import org.cytoscape.Node;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.Mapper;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapperException;
 import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
@@ -52,7 +48,11 @@ import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 import org.cytoscape.coreplugin.psi_mi.util.AttributeUtil;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -221,7 +221,7 @@ public class MapToCytoscape implements Mapper {
 		int[] nodeIndices = new int[nodeList.size()];
 
 		for (int i = 0; i < nodeList.size(); i++) {
-			Node node = (Node) nodeList.get(i);
+			CyNode node = (CyNode) nodeList.get(i);
 			nodeIndices[i] = node.getRootGraphIndex();
 		}
 
@@ -237,7 +237,7 @@ public class MapToCytoscape implements Mapper {
 		int[] edgeIndices = new int[edgeList.size()];
 
 		for (int i = 0; i < edgeList.size(); i++) {
-			Edge edge = (Edge) edgeList.get(i);
+			CyEdge edge = (CyEdge) edgeList.get(i);
 			edgeIndices[i] = edge.getRootGraphIndex();
 		}
 
@@ -465,15 +465,15 @@ public class MapToCytoscape implements Mapper {
 	private void createEdge(Interactor interactor1, Interactor interactor2,
 	                        Interaction interaction, HashMap nodeMap, HashMap edgeMap) {
 		//  Get Matching Nodes
-		Node node1 = (Node) nodeMap.get(interactor1.getName());
-		Node node2 = (Node) nodeMap.get(interactor2.getName());
+		CyNode node1 = (CyNode) nodeMap.get(interactor1.getName());
+		CyNode node2 = (CyNode) nodeMap.get(interactor2.getName());
 
 		//  Create node1 --> node2 edge key
 		String key = this.createEdgeKey(node1, node2, interaction);
 		log("Creating edge:  " + key);
 
 		//  Create Edge between node1 and node2.
-		Edge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, key, true);
+		CyEdge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, key, true);
 
 		//  Now get the new edge and set the edge identifier.
 		edge.setIdentifier(key);
@@ -505,7 +505,7 @@ public class MapToCytoscape implements Mapper {
 	/**
 	 * Determines if an edge already exists between the two nodes.
 	 */
-	private boolean edgeExists(Node node1, Node node2, Interaction interaction, HashMap edgeMap) {
+	private boolean edgeExists(CyNode node1, CyNode node2, Interaction interaction, HashMap edgeMap) {
 		//  Create node1 --> node2 edge key
 		String key1 = this.createEdgeKey(node1, node2, interaction);
 
@@ -533,7 +533,7 @@ public class MapToCytoscape implements Mapper {
 		//HashMap nodemap;
 		if (!inGraph) {
 			//  Create New Node via getCyNode Method.
-			Node node = Cytoscape.getCyNode(name, true);
+			CyNode node = Cytoscape.getCyNode(name, true);
 			//  Add New Node to Network
 			nodeList.add(node);
 
@@ -558,7 +558,7 @@ public class MapToCytoscape implements Mapper {
 	 * @param interactor Interactor object.
 	 * @param cyNode     Node.
 	 */
-	protected void mapNodeAttributes(Interactor interactor, Node cyNode) {
+	protected void mapNodeAttributes(Interactor interactor, CyNode cyNode) {
 		//  Map All Interactor Attributes
 		HashMap attributeMap = interactor.getAllAttributes();
 		Iterator iterator = attributeMap.keySet().iterator();
@@ -604,7 +604,7 @@ public class MapToCytoscape implements Mapper {
 	 * @param interaction Interaction object.
 	 * @param cyEdge      Edge object.
 	 */
-	protected void mapEdgeAttributes(Interaction interaction, Edge cyEdge) {
+	protected void mapEdgeAttributes(Interaction interaction, CyEdge cyEdge) {
 		HashMap attributeMap = interaction.getAllAttributes();
 		Iterator iterator = attributeMap.keySet().iterator();
 
@@ -696,7 +696,7 @@ public class MapToCytoscape implements Mapper {
 	 * @param node2 Second node.
 	 * @return HashKey.
 	 */
-	private String createEdgeKey(Node node1, Node node2, Interaction interaction) {
+	private String createEdgeKey(CyNode node1, CyNode node2, Interaction interaction) {
 		String node1Ident = node1.getIdentifier();
 		String node2Ident = node2.getIdentifier();
 		String interactionType = getInteractionTypeId(interaction);

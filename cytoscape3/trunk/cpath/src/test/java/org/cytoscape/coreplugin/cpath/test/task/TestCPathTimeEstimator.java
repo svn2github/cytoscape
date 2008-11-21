@@ -35,7 +35,6 @@
 package org.cytoscape.coreplugin.cpath.test.task;
 
 import junit.framework.TestCase;
-
 import org.cytoscape.coreplugin.cpath.task.CPathTimeEstimator;
 
 

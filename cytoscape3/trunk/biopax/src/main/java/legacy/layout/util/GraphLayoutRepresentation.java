@@ -37,7 +37,6 @@
 package legacy.layout.util;
 
 import legacy.layout.GraphLayout;
-
 import legacy.util.GraphTopologyRepresentation;
 
 

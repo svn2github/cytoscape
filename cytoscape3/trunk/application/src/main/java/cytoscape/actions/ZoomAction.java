@@ -43,14 +43,9 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
 
-import org.cytoscape.view.GraphView;
-
 import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
 
 
 /**
@@ -84,6 +79,6 @@ public class ZoomAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		Cytoscape.getCurrentNetworkView().setZoom(factor);
+		zoom();	
 	}
 }

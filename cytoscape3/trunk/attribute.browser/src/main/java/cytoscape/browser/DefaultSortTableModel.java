@@ -23,10 +23,9 @@
 */
 package cytoscape.browser;
 
+import javax.swing.table.DefaultTableModel;
 import java.util.Collections;
 import java.util.Vector;
-
-import javax.swing.table.DefaultTableModel;
 
 
 /**

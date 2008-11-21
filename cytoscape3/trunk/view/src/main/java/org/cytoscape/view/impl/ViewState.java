@@ -36,17 +36,18 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
-import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.ViewChangeEdit;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -57,9 +58,9 @@ public class ViewState {
 
 	protected double scaleFactor;
 	protected Point2D center;
-	protected Map<Node, Point2D.Double> points;
-	protected Map<Edge, List> anchors;
-	protected Map<Edge, Integer> linetype;
+	protected Map<CyNode, Point2D.Double> points;
+	protected Map<CyEdge, List> anchors;
+	protected Map<CyEdge, Integer> linetype;
 	protected GraphView view;
 	protected ViewChangeEdit.SavedObjs savedObjs;
 
@@ -81,17 +82,17 @@ public class ViewState {
 		// node views, which can disappear between when this edit
 		// is created and when it is used.
 		if (whatToSave == ViewChangeEdit.SavedObjs.ALL || whatToSave == ViewChangeEdit.SavedObjs.NODES) {
-			points = new HashMap<Node, Point2D.Double>();
-			for (Node n: (List<Node>)view.getGraphPerspective().nodesList()) {
+			points = new HashMap<CyNode, Point2D.Double>();
+			for (CyNode n: view.getGraphPerspective().getNodeList()) {
 				NodeView nv = view.getNodeView(n);
 				points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
 			}
 		}
 
 		if (whatToSave == ViewChangeEdit.SavedObjs.ALL || whatToSave == ViewChangeEdit.SavedObjs.EDGES) {
-			anchors = new HashMap<Edge, List>();
-			linetype = new HashMap<Edge, Integer>();
-			for (Edge e: (List<Edge>)view.getGraphPerspective().edgesList()) {
+			anchors = new HashMap<CyEdge, List>();
+			linetype = new HashMap<CyEdge, Integer>();
+			for (CyEdge e: view.getGraphPerspective().getEdgeList()) {
 				EdgeView ev = view.getEdgeView(e);
 				anchors.put(e, ev.getBend().getHandles());
 				linetype.put(e, ev.getLineType());
@@ -100,11 +101,11 @@ public class ViewState {
 
 		if (whatToSave == ViewChangeEdit.SavedObjs.SELECTED ||
 		    whatToSave == ViewChangeEdit.SavedObjs.SELECTED_NODES ) {
-			points = new HashMap<Node, Point2D.Double>();
+			points = new HashMap<CyNode, Point2D.Double>();
 
-			Iterator<Node> nodeIter = view.getSelectedNodes().iterator();
+			Iterator<CyNode> nodeIter = view.getSelectedNodes().iterator();
 			while (nodeIter.hasNext()) {
-				Node n = nodeIter.next();
+				CyNode n = nodeIter.next();
 				NodeView nv = view.getNodeView(n);
 				points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
 			}
@@ -112,12 +113,12 @@ public class ViewState {
 
 		if (whatToSave == ViewChangeEdit.SavedObjs.SELECTED ||
 		    whatToSave == ViewChangeEdit.SavedObjs.SELECTED_EDGES ) {
-			anchors = new HashMap<Edge, List>();
-			linetype = new HashMap<Edge, Integer>();
+			anchors = new HashMap<CyEdge, List>();
+			linetype = new HashMap<CyEdge, Integer>();
 
-			Iterator<Edge> edgeIter = view.getSelectedEdges().iterator();
+			Iterator<CyEdge> edgeIter = view.getSelectedEdges().iterator();
 			while (edgeIter.hasNext()) {
-				Edge e = edgeIter.next();
+				CyEdge e = edgeIter.next();
 				EdgeView ev = view.getEdgeView(e);
 				anchors.put(e, ev.getBend().getHandles());
 				linetype.put(e, ev.getLineType());
@@ -158,7 +159,7 @@ public class ViewState {
 			if (vs.points == null || points.size() != vs.points.size()) {
 				return false;
 			}
-			for (Node n: points.keySet()) {
+			for (CyNode n: points.keySet()) {
 				if ( !points.get(n).equals( vs.points.get(n) ) ) {
 					return false;
 				}
@@ -169,7 +170,7 @@ public class ViewState {
 			if (vs.anchors == null || anchors.size() != vs.anchors.size()) {
 				return false;
 			}
-			for (Edge e: anchors.keySet()) {
+			for (CyEdge e: anchors.keySet()) {
 				if ( !anchors.get(e).equals(vs.anchors.get(e))) {
 					return false;
 				}
@@ -192,7 +193,7 @@ public class ViewState {
 
 		if (points != null) {
 			// Use nodes as keys because they are less volatile than views...
-			for (Node n: points.keySet()) {
+			for (CyNode n: points.keySet()) {
 				NodeView nv = view.getNodeView(n);
 				Point2D.Double p = points.get(n);
 				nv.setXPosition(p.getX());
@@ -205,7 +206,7 @@ public class ViewState {
 		view.updateView();
 
 		if (anchors != null) {
-			for (Edge e: anchors.keySet()) {
+			for (CyEdge e: anchors.keySet()) {
 				EdgeView ev = view.getEdgeView(e);
 				ev.getBend().setHandles( anchors.get(e) );
 				ev.setLineType( linetype.get(e).intValue() );

@@ -34,20 +34,6 @@
  */
 package cytoscape.editor.editors;
 
-import org.cytoscape.view.NodeView;
-
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
@@ -58,12 +44,20 @@ import cytoscape.editor.event.PaletteNetworkEditEventHandler;
 import cytoscape.editor.impl.CytoShapeIcon;
 import cytoscape.editor.impl.ShapePalette;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.EdgeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.view.GraphView;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -93,12 +87,12 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 	/**
 	 * main data structures for all node and edge attributes
 	 */
-	public static org.cytoscape.attributes.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+	public static org.cytoscape.model.CyRow nodeAttribs = Cytoscape.getNodeAttributes();
 
 	/**
 	 * 
 	 */
-	public static org.cytoscape.attributes.CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
+	public static org.cytoscape.model.CyRow edgeAttribs = Cytoscape.getEdgeAttributes();
 	private ShapePalette shapePalette;
 
 	// MLC 12/16/06 BEGIN:

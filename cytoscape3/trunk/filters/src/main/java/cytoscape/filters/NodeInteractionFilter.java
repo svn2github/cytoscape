@@ -36,9 +36,11 @@
 
 package cytoscape.filters;
 
-import org.cytoscape.Node;
-import java.util.*;
 import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNode;
+
+import java.util.BitSet;
+import java.util.List;
 
 
 public class NodeInteractionFilter extends InteractionFilter {
@@ -79,7 +81,7 @@ public class NodeInteractionFilter extends InteractionFilter {
 			passFilter.apply();			
 		}	
 
-		List<Node> nodes_list = null;
+		List<CyNode> nodes_list = null;
 
 		// NodeInteractionFilter will select node only
 		nodes_list = network.nodesList();
@@ -88,7 +90,7 @@ public class NodeInteractionFilter extends InteractionFilter {
 			
         if ((nodeType != NODE_UNDEFINED)&&(!passFilter.getName().equalsIgnoreCase("None"))) {
             for (int i=0; i<objectCount; i++) {
-                    if (isHit((Node)nodes_list.get(i))) {
+                    if (isHit((CyNode)nodes_list.get(i))) {
                             node_bits.set(i);
                     }
             }
@@ -102,7 +104,7 @@ public class NodeInteractionFilter extends InteractionFilter {
 	}
 
 
-	private boolean isHit(Node pNode) {
+	private boolean isHit(CyNode pNode) {
 		
 		// Get the list of relevant edges for this node
 		List adjacentEdges = null;

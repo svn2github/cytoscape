@@ -14,9 +14,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.geom.Rectangle2D;
-
 import java.io.Serializable;
-
 import java.util.Map;
 
 

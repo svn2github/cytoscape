@@ -42,16 +42,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import org.cytoscape.vizmap.calculators.*;
-
-import org.cytoscape.vizmap.mappings.*;
-
-import junit.framework.*;
-
-import java.io.*;
-
-//----------------------------------------------------------------------------
-import java.util.*;
+import junit.framework.TestCase;
 
 
 //----------------------------------------------------------------------------

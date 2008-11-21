@@ -1,52 +1,44 @@
 package cytoscape.filters.view;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
-import cytoscape.filters.AtomicFilter;
-import cytoscape.filters.CompositeFilter;
-import cytoscape.filters.CyFilter;
-import cytoscape.filters.TopologyFilter;
-import cytoscape.filters.InteractionFilter;
-import cytoscape.filters.StringFilter;
-import cytoscape.filters.NumericFilter;
-import cytoscape.filters.Relation;
-import cytoscape.filters.util.FilterUtil;
-import cytoscape.filters.view.EditRangeDialog;
-import java.util.List;
-import java.util.Vector;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.MouseInputAdapter;
-
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
-import csplugins.widgets.autocomplete.view.TextIndexComboBox;
+import csplugins.quickfind.util.TaskMonitorBase;
 import csplugins.widgets.autocomplete.index.GenericIndex;
+import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.NumberIndex;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.view.ComboBoxFactory;
-import csplugins.widgets.autocomplete.index.Hit;
+import csplugins.widgets.autocomplete.view.TextIndexComboBox;
 import csplugins.widgets.slider.JRangeSliderExtended;
+import cytoscape.Cytoscape;
+import cytoscape.filters.AtomicFilter;
+import cytoscape.filters.CompositeFilter;
+import cytoscape.filters.CyFilter;
+import cytoscape.filters.InteractionFilter;
+import cytoscape.filters.NumericFilter;
+import cytoscape.filters.Relation;
+import cytoscape.filters.StringFilter;
+import cytoscape.filters.TopologyFilter;
+import cytoscape.filters.util.FilterUtil;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.view.GraphView;
 import prefuse.data.query.NumberRangeModel;
 import prefuse.util.ui.JRangeSlider;
-import csplugins.quickfind.util.TaskMonitorBase;
-import org.cytoscape.view.GraphView;
+
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
-import java.awt.Component;
-import javax.swing.JRadioButton;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.Vector;
 
 public class FilterSettingPanel extends JPanel {
 	private static final ImageIcon plusIcon = new ImageIcon(
@@ -60,7 +52,7 @@ public class FilterSettingPanel extends JPanel {
 	
 	private CompositeFilter theFilter;
 	private FilterMainPanel parentPanel;
-	private GraphPerspective currentNetwork = null;
+	private CyNetwork currentNetwork = null;
 	private TopoFilterPanel topoPanel = null;
 	private InteractionFilterPanel interactionPanel = null;
 	
@@ -309,7 +301,7 @@ public class FilterSettingPanel extends JPanel {
 			return;
 		}
 		
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 
 		for (int i=0; i<children.size(); i++) {
 			CyFilter child = children.get(i);

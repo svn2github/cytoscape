@@ -37,13 +37,12 @@
 package cytoscape.io.table;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyMenus;
 import cytoscape.io.table.actions.ImportAnnotationAndOntologyAction;
 import cytoscape.io.table.actions.ImportAttributeTableAction;
 import cytoscape.io.table.actions.ImportNetworkTableAction;
-
-import org.osgi.framework.BundleContext;
+import cytoscape.view.CyMenus;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 
 /**

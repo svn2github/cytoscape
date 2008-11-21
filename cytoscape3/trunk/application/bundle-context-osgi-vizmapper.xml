@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+
+	<!-- Pull-down menu items -->
+	<osgi:service id="createNewStyleActionService" ref="createNewStyleAction"
+		interface="cytoscape.visual.ui.VizMapperAction" />
+	<osgi:service id="removeStyleActionService" ref="removeStyleAction"
+		interface="cytoscape.visual.ui.VizMapperAction" />
+	<osgi:service id="renameStyleActionService" ref="renameStyleAction"
+		interface="cytoscape.visual.ui.VizMapperAction" />
+	<osgi:service id="copyStyleActionService" ref="copyStyleAction"
+		interface="cytoscape.visual.ui.VizMapperAction" />
+	<osgi:service id="createLegendActionService" ref="createLegendAction"
+		interface="cytoscape.visual.ui.VizMapperAction" />
+
+	<!-- Mapping generator services -->
+	<osgi:service id="rainbowGeneratorService" ref="rainbowGenerator"
+		interface="cytoscape.visual.ui.util.DiscreteValueMapGenerator">
+	</osgi:service>
+	<osgi:service id="rainbowOscGeneratorService" ref="rainbowOscGenerator"
+		interface="cytoscape.visual.ui.util.DiscreteValueMapGenerator" />
+	<osgi:service id="randomColorGeneratorService" ref="randomColorGenerator"
+		interface="cytoscape.visual.ui.util.DiscreteValueMapGenerator" />
+
+
+	<osgi:service id="removeMappingActionService" ref="removeMappingAction"
+		interface="cytoscape.visual.ui.VizMapperAction">
+		<osgi:service-properties>
+			<entry key="service.type" value="vizmapUI.contextMenu" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:set id="vizMapperActionServiceRef" interface="cytoscape.visual.ui.VizMapperAction"
+		cardinality="0..N">
+		<osgi:listener bind-method="onBind" unbind-method="onUnbind"
+			ref="menuManager" />
+	</osgi:set>
+
+</beans>

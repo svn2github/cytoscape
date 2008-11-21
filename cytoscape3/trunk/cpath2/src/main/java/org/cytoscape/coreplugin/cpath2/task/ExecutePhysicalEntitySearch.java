@@ -2,15 +2,13 @@ package org.cytoscape.coreplugin.cpath2.task;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import cytoscape.Cytoscape;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
-import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
+import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
+import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 
-import javax.swing.*;
 import java.util.List;
 
 /**

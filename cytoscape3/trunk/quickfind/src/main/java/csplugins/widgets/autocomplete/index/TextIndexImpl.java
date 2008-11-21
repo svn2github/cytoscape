@@ -38,8 +38,12 @@ package csplugins.widgets.autocomplete.index;
 
 import java.text.ParseException;
 import java.text.RuleBasedCollator;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**

@@ -31,81 +31,81 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.visual.ui;
-
-import org.cytoscape.view.GraphView;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JPanel;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-import org.cytoscape.view.GraphViewFactory;
-import cytoscape.Cytoscape;
-import org.cytoscape.RootGraph;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
 
+import cytoscape.Cytoscape;
 
 /**
  * Panel to show the default properties visually (as graphics).
- *
+ * 
  * @version 0.6
  * @since Cytoscape 2.5
  * @author kono
-  */
+ */
 public class DefaultViewPanel extends JPanel {
+
 	private final static long serialVersionUID = 1202339876691085L;
+
 	private static final int PADDING = 20;
 	private GraphView view;
 	private GraphView oldView;
-	private static GraphPerspective dummyNet;
+	private static CyNetwork dummyNet;
 	private Color background;
 
 	/*
 	 * Dummy graph component
 	 */
-	private final Node source;
-	private final Node target;
-	private final Edge edge;
+	private final CyNode source;
+	private final CyNode target;
+	private final CyEdge edge;
 	private Component canvas = null;
 
+	// Will be injected by DI Container
+	private CyNetworkFactory cyNetworkFactory;
+	private GraphViewFactory graphViewFactory;
 
-	/**
-	 * Creates a new NodeFullDetailView object.
-	 */
-	public DefaultViewPanel() {
+	public DefaultViewPanel(CyNetworkFactory cyNetworkFactory, GraphViewFactory graphViewFactory) {
 
-		source = Cytoscape.getCyNode("Source",true);
-		target = Cytoscape.getCyNode("Target",true);
-		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(), "interaction");
+		this.cyNetworkFactory = cyNetworkFactory;
+		this.graphViewFactory = graphViewFactory;
+		
+		dummyNet = cyNetworkFactory.getInstance();
 
-		List<Node> nodes = new ArrayList<Node>();
-		List<Edge> edges = new ArrayList<Edge>();
-		nodes.add(source);
-		nodes.add(target);
-		edges.add(edge);
+		source = dummyNet.addNode();
+		source.attrs().set("name", "Source");
 
-		dummyNet = Cytoscape.getRootGraph().createGraphPerspective(nodes, edges);
-		dummyNet.setTitle("Default Appearance");
+		target = dummyNet.addNode();
+		target.attrs().set("name", "Target");
 
-		view = GraphViewFactory.createGraphView(dummyNet);
-		view.setIdentifier(dummyNet.getIdentifier());
+		edge = dummyNet.addEdge(source, target, true);
+		edge.attrs().set("name", "Source (interaction) Target");
+
+		dummyNet.attrs().set("name", "Default Appearance");
+
+		view = graphViewFactory.createGraphView(dummyNet);
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
 		Cytoscape.getVisualMappingManager().setNetworkView(view);
-		
+
 		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
 
 		background = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                      .getGlobalAppearanceCalculator().getDefaultBackgroundColor();
+				.getGlobalAppearanceCalculator().getDefaultBackgroundColor();
 		this.setBackground(background);
 	}
 
@@ -117,7 +117,7 @@ public class DefaultViewPanel extends JPanel {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Component getCanvas() {
@@ -140,11 +140,12 @@ public class DefaultViewPanel extends JPanel {
 	protected void updateView() {
 		if (view != null) {
 			Cytoscape.getVisualMappingManager().setNetworkView(view);
-			Cytoscape.getVisualMappingManager().setVisualStyleForView(view, Cytoscape.getVisualMappingManager().getVisualStyle());
+			Cytoscape.getVisualMappingManager().setVisualStyleForView(view,
+					Cytoscape.getVisualMappingManager().getVisualStyle());
 
 			final Dimension panelSize = this.getSize();
 			view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
-			                        (int) panelSize.getHeight() - PADDING));
+					(int) panelSize.getHeight() - PADDING));
 			view.fitContent();
 			canvas = (view.getComponent());
 
@@ -165,7 +166,7 @@ public class DefaultViewPanel extends JPanel {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public GraphView getView() {

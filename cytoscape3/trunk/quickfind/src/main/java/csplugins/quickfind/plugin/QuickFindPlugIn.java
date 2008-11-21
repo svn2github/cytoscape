@@ -39,53 +39,38 @@ package csplugins.quickfind.plugin;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.quickfind.util.QuickFindListener;
-
-import csplugins.quickfind.view.QuickFindPanel;
-
 import csplugins.quickfind.util.TaskMonitorBase;
-
+import csplugins.quickfind.view.QuickFindPanel;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.NumberIndex;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.view.TextIndexComboBox;
-
 import csplugins.widgets.slider.JRangeSliderExtended;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-
-import org.cytoscape.view.GraphView;
-
 import cytoscape.Cytoscape;
-import cytoscape.plugin.CytoscapePlugin;
-
 import cytoscape.util.CytoscapeToolBar;
-
 import cytoscape.view.CyMenus;
 import cytoscape.view.CytoscapeDesktop;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
-
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 import prefuse.data.query.NumberRangeModel;
-
-import java.awt.Component;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import java.util.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleActivator;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Quick Find PlugIn.
@@ -154,7 +139,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 
 		//  If a network already exists within Cytoscape, index it
-		final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+		final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 
 		if ((cyNetwork != null) && (cyNetwork.getNodeCount() > 0)) {
 			//  Run Indexer in separate background daemon thread.
@@ -178,7 +163,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 
 		if (event.getPropertyName() != null) {
 			if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_CREATED)) {
-				final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 
 				//  Run Indexer in separate background daemon thread.
 				Thread thread = new Thread() {
@@ -190,7 +175,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 				thread.start();
 			} else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
 				GraphView networkView = (GraphView) event.getNewValue();
-				GraphPerspective cyNetwork = networkView.getGraphPerspective();
+				CyNetwork cyNetwork = networkView.getGraphPerspective();
 				quickFind.removeNetwork(cyNetwork);
 				swapCurrentNetwork(quickFind);
 			} else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)) {
@@ -204,7 +189,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 	 * If no network view has focus, disable quick find.
 	 */
 	private void swapCurrentNetwork(QuickFind quickFind) {
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 		boolean networkHasFocus = false;
 
 		if (network != null) {
@@ -230,7 +215,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 	 *
 	 * @param network GraphPerspective Object.
 	 */
-	public void networkAddedToIndex(GraphPerspective network) {
+	public void networkAddedToIndex(CyNetwork network) {
 		//  No-op
 	}
 
@@ -239,7 +224,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 	 *
 	 * @param network GraphPerspective Object.
 	 */
-	public void networkRemovedfromIndex(GraphPerspective network) {
+	public void networkRemovedfromIndex(CyNetwork network) {
 		//  No-op
 	}
 
@@ -250,7 +235,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 	 * @param indexType     QuickFind.INDEX_NODES or QuickFind.INDEX_EDGES.
 	 * @param controllingAttribute Controlling Attribute.
 	 */
-	public void indexingStarted(GraphPerspective cyNetwork, int indexType, String controllingAttribute) {
+	public void indexingStarted(CyNetwork cyNetwork, int indexType, String controllingAttribute) {
 		quickFindToolBar.indexingInProgress();
 	}
 
@@ -259,7 +244,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 	 */
 	public void indexingEnded() {
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-		GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 		GenericIndex index = quickFind.getIndex(cyNetwork);
 		quickFindToolBar.setIndex(index);
 		quickFindToolBar.enableAllQuickFindButtons();
@@ -272,7 +257,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 	 * @param network the current GraphPerspective.
 	 * @param hit     hit value chosen by the user.
 	 */
-	public void onUserSelection(final GraphPerspective network, Hit hit) {
+	public void onUserSelection(final CyNetwork network, Hit hit) {
 		network.unselectAllNodes();
 		network.unselectAllEdges();
 
@@ -288,7 +273,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 		SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-					final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+					final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 					GenericIndex index = quickFind.getIndex(cyNetwork);
 
 					if (index.getIndexType() == QuickFind.INDEX_NODES) {
@@ -300,9 +285,9 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 						List nodeList = new ArrayList();
 
 						for (int i = 0; i < list.size(); i++) {
-							Edge edge = (Edge) list.get(i);
-							Node sourceNode = (Node) edge.getSource();
-							Node targetNode = (Node) edge.getTarget();
+							CyEdge edge = (CyEdge) list.get(i);
+							CyNode sourceNode = (CyNode) edge.getSource();
+							CyNode targetNode = (CyNode) edge.getTarget();
 							nodeList.add(sourceNode);
 							nodeList.add(targetNode);
 						}
@@ -314,8 +299,8 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 					//  If only one node is selected, auto-adjust zoom factor
 					//  so that node does not take up whole screen.
 					if (graphObjects.length == 1) {
-						if (graphObjects[0] instanceof Node) {
-							Node node = (Node) graphObjects[0];
+						if (graphObjects[0] instanceof CyNode) {
+							CyNode node = (CyNode) graphObjects[0];
 
 							//  Obtain dimensions of current InnerCanvas
 							GraphView graphView = Cytoscape.getCurrentNetworkView();
@@ -344,7 +329,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 	 * @param lowValue  the low value of the range.
 	 * @param highValue the high value of the range.
 	 */
-	public void onUserRangeSelection(GraphPerspective network, Number lowValue, Number highValue) {
+	public void onUserRangeSelection(CyNetwork network, Number lowValue, Number highValue) {
 		try {
 			QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 			GenericIndex index = quickFind.getIndex(network);
@@ -360,7 +345,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 		}
 	}
 
-	private void selectNodes(final GraphPerspective cyNetwork, List rangeList) {
+	private void selectNodes(final CyNetwork cyNetwork, List rangeList) {
 		//  First, do we have any edges selected?  If so, unselect them all
 		Set selectedEdgeSet = cyNetwork.getSelectFilter().getSelectedEdges();
 
@@ -392,7 +377,7 @@ public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
 			});
 	}
 
-	private void selectEdges(final GraphPerspective cyNetwork, List rangeList) {
+	private void selectEdges(final CyNetwork cyNetwork, List rangeList) {
 		//  First, do we have any nodes selected?  If so, unselect them all
 		Set selectedNodeSet = cyNetwork.getSelectFilter().getSelectedNodes();
 
@@ -450,7 +435,7 @@ class UserSelectionListener implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		//  Get Current Network
-		final GraphPerspective currentNetwork = Cytoscape.getCurrentNetwork();
+		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
 
 		//  Get Current User Selection
 		Object o = comboBox.getSelectedItem();
@@ -488,7 +473,7 @@ class RangeSelectionListener implements ChangeListener {
 	 */
 	public void stateChanged(ChangeEvent e) {
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-		final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+		final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 		GenericIndex index = quickFind.getIndex(cyNetwork);
 		NumberRangeModel model = (NumberRangeModel) slider.getModel();
 
@@ -515,7 +500,7 @@ class NetworkModifiedListener implements PropertyChangeListener {
         if (event.getPropertyName() != null) {
             if (event.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
 
-				final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
                 if (cyNetwork.nodesList() != null) {
 
 					// this network may not have been added to quick find - 

@@ -2,12 +2,10 @@
 package cytoscape.linkout;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.view.CytoscapeDesktop;
 
-import org.cytoscape.view.*;
-
-import java.beans.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 
 /**

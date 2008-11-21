@@ -34,39 +34,18 @@
 */
 package cytoscape.io.table.ui;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.bookmarks.Attribute;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
-
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.data.readers.GraphReader;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.BookmarksUtil;
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.FileUtil;
-import cytoscape.util.URLUtil;
-
-import cytoscape.util.swing.ColumnResizer;
-import cytoscape.util.swing.JStatusBar;
-
 import cytoscape.io.table.reader.AttributeAndOntologyMappingParameters;
 import cytoscape.io.table.reader.AttributeMappingParameters;
 import cytoscape.io.table.reader.DefaultAttributeTableReader;
 import cytoscape.io.table.reader.ExcelAttributeSheetReader;
 import cytoscape.io.table.reader.ExcelNetworkSheetReader;
 import cytoscape.io.table.reader.GeneAssociationReader;
-import static cytoscape.io.table.reader.GeneAssociationTags.DB_OBJECT_SYMBOL;
-import static cytoscape.io.table.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
-import static cytoscape.io.table.reader.GeneAssociationTags.GO_ID;
-import static cytoscape.io.table.reader.GeneAssociationTags.TAXON;
+import static cytoscape.io.table.reader.GeneAssociationTags.*;
 import cytoscape.io.table.reader.NetworkTableMappingParameters;
 import cytoscape.io.table.reader.NetworkTableReader;
 import cytoscape.io.table.reader.OntologyAnnotationReader;
@@ -74,56 +53,50 @@ import cytoscape.io.table.reader.TextFileDelimiters;
 import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
 import cytoscape.io.table.reader.TextTableReader;
 import cytoscape.io.table.reader.TextTableReader.ObjectType;
-import static cytoscape.io.table.reader.TextTableReader.ObjectType.EDGE;
-import static cytoscape.io.table.reader.TextTableReader.ObjectType.NETWORK;
-import static cytoscape.io.table.reader.TextTableReader.ObjectType.NODE;
+import static cytoscape.io.table.reader.TextTableReader.ObjectType.*;
 import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.NOT_LOADED_COLOR;
 import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.ONTOLOGY_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.ITEM_FONT;
-import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.LABEL_FONT;
-import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.TITLE_FONT;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.BOOLEAN_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.FLOAT_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.ID_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.INT_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.LIST_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.LOCAL_SOURCE_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.REMOTE_SOURCE_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.REMOTE_SOURCE_ICON_LARGE;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.RIGHT_ARROW_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON_LARGE;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.STRING_ICON;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
+import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.*;
+import static cytoscape.io.table.ui.theme.ImportDialogIconSets.*;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.util.BookmarksUtil;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
+import cytoscape.util.URLUtil;
+import cytoscape.util.swing.ColumnResizer;
+import cytoscape.util.swing.JStatusBar;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.jdesktop.layout.GroupLayout;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Frame;
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.xml.bind.JAXBException;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -132,30 +105,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
-
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
-import javax.swing.ToolTipManager;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
-
-import javax.xml.bind.JAXBException;
 
 
 /**
@@ -2750,20 +2699,20 @@ private void setOntologyInAnnotationComboBox() {
 				it = Cytoscape.getCyNodesList().iterator();
 
 				while (it.hasNext()) {
-					Node node = (Node) it.next();
+					CyNode node = (CyNode) it.next();
 					valueSet.add(node.getIdentifier());
 				}
 			} else if (objType == EDGE) {
 				it = Cytoscape.getCyEdgesList().iterator();
 
 				while (it.hasNext()) {
-					valueSet.add(((Edge) it.next()).getIdentifier());
+					valueSet.add(((CyEdge) it.next()).getIdentifier());
 				}
 			} else {
 				it = Cytoscape.getNetworkSet().iterator();
 
 				while (it.hasNext()) {
-					valueSet.add(((GraphPerspective) it.next()).getTitle());
+					valueSet.add(((CyNetwork) it.next()).getTitle());
 				}
 			}
 		} else {

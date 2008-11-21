@@ -35,63 +35,23 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-// $Revision: 13022 $
-// $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
-// $Author: mes $
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.data.ImportHandler;
-
-import cytoscape.data.readers.GMLException;
-import cytoscape.data.readers.GMLReader;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.data.readers.InteractionsReader;
-import cytoscape.data.readers.XGMMLReader;
-
 import cytoscape.dialogs.ImportNetworkDialog;
-
-import cytoscape.ding.CyGraphLOD;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.layout.CyLayouts;
 
-import cytoscape.view.CyMenus;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
-
-import javax.swing.JOptionPane;
-
-import javax.xml.bind.JAXBException;
 
 
 /**
@@ -100,34 +60,25 @@ import javax.xml.bind.JAXBException;
  */
 public class ImportGraphFileAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339869779868L;
-	protected CyMenus windowMenu;
+
+	private CytoscapeDesktop desktop;
+	private CyReaderManager rdmgr;
+	private GraphViewFactory gvf;
+	private CyLayouts cyLayouts;
 
 	/**
 	 * Constructor.
-	 *
-	 * @param windowMenu
-	 *            WindowMenu Object.
 	 */
-	public ImportGraphFileAction(CyMenus windowMenu) {
+	public ImportGraphFileAction(CytoscapeDesktop desktop, CyReaderManager rdmgr, GraphViewFactory gvf, CyLayouts cyLayouts ) {
 		super("Network (multiple file types)...");
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_L, ActionEvent.CTRL_MASK);
-		this.windowMenu = windowMenu;
 
 		setName("load");
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param windowMenu
-	 *            WindowMenu Object.
-	 * @param label
-	 *            boolean label.
-	 */
-	public ImportGraphFileAction(CyMenus windowMenu, boolean label) {
-		super();
-		this.windowMenu = windowMenu;
+		this.desktop = desktop;
+		this.rdmgr = rdmgr;
+		this.gvf = gvf;
+		this.cyLayouts = cyLayouts;
 	}
 
 	/**
@@ -151,7 +102,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		ImportNetworkDialog fd = null;
 
 		try {
-			fd = new ImportNetworkDialog(Cytoscape.getDesktop(), true);
+			fd = new ImportNetworkDialog(desktop, true, rdmgr.getFileFilters());
 		} catch (Exception e1) {
 			System.out.println("start dialog error");
 			e1.printStackTrace();
@@ -162,7 +113,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		}
 
 		fd.pack();
-		fd.setLocationRelativeTo(Cytoscape.getDesktop());
+		fd.setLocationRelativeTo(desktop);
 		fd.setVisible(true);
 
 		if (fd.getStatus() == false) {
@@ -173,7 +124,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			String URLstr = fd.getURLStr();
 			System.out.println("URL: "+URLstr);
 			try {
-				LoadNetworkTask.loadURL(new URL(URLstr), false);
+				LoadNetworkTask.loadURL(new URL(URLstr), false, rdmgr, gvf, cyLayouts,desktop);
 			} catch (MalformedURLException e3) {
 				JOptionPane.showMessageDialog(fd, "URL error!", "Warning",
 			 	                             JOptionPane.INFORMATION_MESSAGE);
@@ -198,13 +149,13 @@ public class ImportGraphFileAction extends CytoscapeAction {
 						messages.add(files[i].getName());
 					}
 	
-					LoadNetworkTask.loadFile(files[i], skipMessage);
+					LoadNetworkTask.loadFile(files[i], skipMessage, rdmgr, gvf, cyLayouts,desktop);
 				}
 	
 				if (files.length != 1) {
 					JOptionPane messagePane = new JOptionPane();
-					messagePane.setLocation(Cytoscape.getDesktop().getLocationOnScreen());
-					messagePane.showMessageDialog(Cytoscape.getDesktop(), messages.toArray(),
+					messagePane.setLocation(desktop.getLocationOnScreen());
+					messagePane.showMessageDialog(desktop, messages.toArray(),
 					                              "Multiple Network Files Loaded",
 					                              JOptionPane.INFORMATION_MESSAGE);
 				}

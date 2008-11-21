@@ -1,37 +1,40 @@
 package org.mskcc.biopax_plugin.view;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Edge;
 import cytoscape.Cytoscape;
-import org.cytoscape.view.GraphView;
 import cytoscape.actions.GinyUtils;
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
-import java.util.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
-import org.cytoscape.view.EdgeView;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Edge Filter Dialog.
  */
 public class EdgeFilterUi extends JDialog {
-    private GraphPerspective cyNetwork;
+    private CyNetwork cyNetwork;
     private HashSet checkBoxSet;
 
     /**
      * Constructor.
      * @param cyNetwork GraphPerspective Object.
      */
-    public EdgeFilterUi(GraphPerspective cyNetwork) {
+    public EdgeFilterUi(CyNetwork cyNetwork) {
         this.cyNetwork = cyNetwork;
         initGui();
     }
@@ -47,7 +50,7 @@ public class EdgeFilterUi extends JDialog {
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
         Iterator edgeIterator = cyNetwork.edgesIterator();
         while (edgeIterator.hasNext()) {
-            Edge edge = (Edge) edgeIterator.next();
+            CyEdge edge = (CyEdge) edgeIterator.next();
             String interactionType = edgeAttributes.getStringAttribute(edge.getIdentifier(),
                     Semantics.INTERACTION);
             interactionSet.add(interactionType);
@@ -102,7 +105,7 @@ public class EdgeFilterUi extends JDialog {
  * Apply Edge Filter.
  */
 class ApplyEdgeFilter implements ActionListener {
-    private GraphPerspective cyNetwork;
+    private CyNetwork cyNetwork;
     private HashSet checkBoxSet;
 
     /**
@@ -110,7 +113,7 @@ class ApplyEdgeFilter implements ActionListener {
      * @param cyNetwork     GraphPerspective Object.
      * @param checkBoxSet   Set of JCheckBox Objects.
      */
-    public ApplyEdgeFilter (GraphPerspective cyNetwork, HashSet checkBoxSet) {
+    public ApplyEdgeFilter (CyNetwork cyNetwork, HashSet checkBoxSet) {
         this.cyNetwork = cyNetwork;
         this.checkBoxSet = checkBoxSet;
     }
@@ -142,7 +145,7 @@ class ApplyEdgeFilter implements ActionListener {
 
         int allEdgeIds[] = new int[edgeList.size()];
         for (int i=0; i< edgeList.size(); i++) {
-            Edge edge = (Edge) edgeList.get(i);
+            CyEdge edge = (CyEdge) edgeList.get(i);
             String interactionType = edgeAttributes.getStringAttribute(edge.getIdentifier(),
                     Semantics.INTERACTION);
             if (!selectedInteractionSet.contains(interactionType)) {
@@ -155,7 +158,7 @@ class ApplyEdgeFilter implements ActionListener {
         GinyUtils.unHideAll(networkView);
         ArrayList edgeViewList = new ArrayList();
         for (int i=0; i<edgeSet.size(); i++) {
-            Edge edge = (Edge) edgeSet.get(i);
+            CyEdge edge = (CyEdge) edgeSet.get(i);
             EdgeView edgeView = networkView.getEdgeView(edge);
             edgeViewList.add(edgeView);
 

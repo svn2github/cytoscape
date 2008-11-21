@@ -36,27 +36,17 @@
 
 package cytoscape.layout.manual;
 
+import cytoscape.Cytoscape;
 import cytoscape.layout.manual.control.ControlPanel;
 import cytoscape.layout.manual.control.ControlPanelAction;
-
 import cytoscape.layout.manual.rotate.RotatePanel;
 import cytoscape.layout.manual.rotate.RotatePanelAction;
-
 import cytoscape.layout.manual.scale.ScalePanel;
 import cytoscape.layout.manual.scale.ScalePanelAction;
-
-import cytoscape.Cytoscape;
-
-import cytoscape.plugin.CytoscapePlugin;
-
-import java.awt.Dimension;
-
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.SwingConstants;
-
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+import javax.swing.*;
 
 
 /**

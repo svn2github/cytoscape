@@ -36,13 +36,18 @@ package org.cytoscape.coreplugin.cpath.ui;
 
 import org.cytoscape.coreplugin.cpath.action.ExecuteQuery;
 import org.cytoscape.coreplugin.cpath.action.UpdateSearchRequest;
-import org.cytoscape.coreplugin.cpath.model.*;
+import org.cytoscape.coreplugin.cpath.model.MaxHitsOption;
+import org.cytoscape.coreplugin.cpath.model.OrganismOption;
+import org.cytoscape.coreplugin.cpath.model.SearchBundle;
+import org.cytoscape.coreplugin.cpath.model.SearchBundleList;
+import org.cytoscape.coreplugin.cpath.model.SearchRequest;
+import org.cytoscape.coreplugin.cpath.model.SearchResponse;
+import org.cytoscape.coreplugin.cpath.model.UserSelection;
 import org.cytoscape.coreplugin.cpath.util.CPathProperties;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Observable;

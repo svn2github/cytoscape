@@ -32,14 +32,11 @@
  */
 package csplugins.layout;
 
-import org.cytoscape.*;
-
-import org.cytoscape.view.*;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.NodeView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 
 /**
@@ -61,7 +58,7 @@ public class LayoutNode {
 	private double y;
 	private double dispX;
 	private double dispY;
-	private Node node;
+	private CyNode node;
 	private NodeView nodeView;
 	private int index;
 	private boolean isLocked = false;
@@ -81,7 +78,7 @@ public class LayoutNode {
 	 */
 	public LayoutNode(NodeView nodeView, int index) {
 		this.nodeView = nodeView;
-		this.node = (Node) nodeView.getNode();
+		this.node = (CyNode) nodeView.getNode();
 		this.index = index;
 		this.x = nodeView.getXPosition();
 		this.y = nodeView.getYPosition();
@@ -94,7 +91,7 @@ public class LayoutNode {
 	 *
 	 * @return    Node that is associated with this LayoutNode
 	 */
-	public Node getNode() {
+	public CyNode getNode() {
 		return this.node;
 	}
 

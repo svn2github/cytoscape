@@ -1,30 +1,27 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.cytopanels.*;
-import cytoscape.view.CytoscapeDesktop;
-
-import org.cytoscape.coreplugin.cpath2.task.SelectPhysicalEntity;
-import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
-import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
-import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
-import org.cytoscape.coreplugin.cpath2.view.model.ExtendedRecordWrapper;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelListener;
+import cytoscape.view.cytopanels.CytoPanelState;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
+import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
+import org.cytoscape.coreplugin.cpath2.task.SelectPhysicalEntity;
+import org.cytoscape.coreplugin.cpath2.view.model.ExtendedRecordWrapper;
+import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
+import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
+import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Document;
-import java.util.List;
-import java.util.HashMap;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Search Hits Panel.

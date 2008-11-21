@@ -1,30 +1,14 @@
 /* vim: set ts=2: */
 package csplugins.layout.algorithms.graphPartition;
 
-import cern.colt.list.*;
-
-import cern.colt.map.*;
-
+import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-import csplugins.layout.EdgeWeighter;
-
-import cytoscape.Cytoscape;
-
+import org.cytoscape.model.CyNode;
 import org.cytoscape.layout.AbstractLayout;
 
-import cytoscape.task.TaskMonitor;
-
-import org.cytoscape.view.GraphView;
-
-
-import java.lang.Throwable;
-
-import java.util.*;
-
-import javax.swing.JOptionPane;
-
-import org.cytoscape.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -131,8 +115,8 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		} else if (staticNodes != null && staticNodes.size() > 0) {
 			// Someone has programmatically locked a set of nodes -- construct
 			// the list of unlocked nodes
-			List<Node> unlockedNodes = new ArrayList();
-			for (Node node: (List<Node>)network.nodesList()) {
+			List<CyNode> unlockedNodes = new ArrayList();
+			for (CyNode node: (List<CyNode>)network.nodesList()) {
 				if (!isLocked(networkView.getNodeView(node.getRootGraphIndex()))) {
 					unlockedNodes.add(node);
 				}

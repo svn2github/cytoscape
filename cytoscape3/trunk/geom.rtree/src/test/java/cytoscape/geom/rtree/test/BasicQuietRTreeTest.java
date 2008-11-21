@@ -37,7 +37,6 @@
 package cytoscape.geom.rtree.test;
 
 import cytoscape.geom.rtree.RTree;
-
 import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
 

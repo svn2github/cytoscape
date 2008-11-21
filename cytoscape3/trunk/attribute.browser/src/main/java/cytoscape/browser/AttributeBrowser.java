@@ -34,34 +34,29 @@
  */
 package cytoscape.browser;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
+import cytoscape.Cytoscape;
+import cytoscape.browser.ui.AttributeBrowserToolBar;
+import cytoscape.browser.ui.CyAttributeBrowserTable;
+import cytoscape.view.cytopanels.CytoPanelListener;
+import cytoscape.view.cytopanels.CytoPanelState;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowUtils;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.SwingPropertyChangeSupport;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.TableColumnModel;
-import javax.swing.event.SwingPropertyChangeSupport;
-import org.cytoscape.GraphObject;
-import cytoscape.browser.ui.AttributeBrowserToolBar;
-import cytoscape.browser.ui.CyAttributeBrowserTable;
-import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
-import cytoscape.view.cytopanels.CytoPanelListener;
-import cytoscape.view.cytopanels.CytoPanelState;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

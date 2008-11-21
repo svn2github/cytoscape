@@ -36,14 +36,12 @@
  */
 package cytoscape.plugin;
 
-import org.cytoscape.*;
-import cytoscape.*;
+import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,7 +95,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
    * @param network
    * @return
 	 */
-	public GraphPerspective interpretScript(String[] args, GraphPerspective network) {
+	public CyNetwork interpretScript(String[] args, CyNetwork network) {
 		return null;
 	}
 

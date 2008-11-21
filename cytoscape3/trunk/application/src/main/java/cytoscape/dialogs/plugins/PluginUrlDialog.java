@@ -3,49 +3,22 @@
  */
 package cytoscape.dialogs.plugins;
 
-import org.cytoscape.*;
-import cytoscape.*;
-
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeVersion;
 import cytoscape.bookmarks.Bookmarks;
-//import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
-
 import cytoscape.dialogs.preferences.BookmarkDialog;
-
-import cytoscape.plugin.DownloadableInfo;
-//import cytoscape.plugin.DownloadableType;
-//import cytoscape.plugin.ManagerException;
-import cytoscape.plugin.ManagerUtil;
-//import cytoscape.plugin.PluginInfo;
-import cytoscape.plugin.PluginManager;
-import cytoscape.plugin.PluginInquireAction;
-import cytoscape.plugin.PluginStatus;
-import cytoscape.plugin.PluginManagerInquireTask;
-
+import cytoscape.plugin.*;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.BookmarksUtil;
-
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
-import java.awt.Component;
-//import java.awt.Dimension;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-//import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-import javax.swing.WindowConstants;
 
 /**
  * @author skillcoy
@@ -61,7 +34,7 @@ public class PluginUrlDialog extends JDialog {
 	/**
 	 * Creates a new PluginUrlDialog object.
 	 */
-	public PluginUrlDialog(JDialog owner) {
+	public PluginUrlDialog(Dialog owner) {
 		super(owner, "Plugin Download Sites");
 		parentDialog = (PluginManageDialog) owner;
 		setLocationRelativeTo(owner);
@@ -86,7 +59,7 @@ public class PluginUrlDialog extends JDialog {
 		try {
 			theBookmarks = Cytoscape.getBookmarks();
 		} catch (Exception E) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			JOptionPane.showMessageDialog(getOwner(),
 					"Failed to retrieve bookmarks for plugin download sites.",
 					"Error", JOptionPane.ERROR_MESSAGE);
 			E.printStackTrace();
@@ -113,7 +86,7 @@ public class PluginUrlDialog extends JDialog {
 			(SelectedSite.getHref(), new UrlAction(parentDialog, SelectedSite.getHref()));
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.setOwner(getOwner());
 		jTaskConfig.displayCloseButton(false);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(true);
@@ -128,9 +101,9 @@ public class PluginUrlDialog extends JDialog {
 	// add - opens the bookmarks dialog to add a new download site
 	private void addSiteHandler(java.awt.event.ActionEvent evt) {
 		try {
-	final int preEdit = BookmarksUtil.getDataSourceList(
+			final int preEdit = BookmarksUtil.getDataSourceList(
 					bookmarkCategory, theBookmarks.getCategory()).size();
-			BookmarkDialog bDialog = new BookmarkDialog(Cytoscape.getDesktop(), "plugins");
+			BookmarkDialog bDialog = new BookmarkDialog((Dialog)getOwner(), "plugins");
 
 			// for some reason the windowStateListener wasn't getting the event
 			// so I have to use this one
@@ -169,7 +142,7 @@ public class PluginUrlDialog extends JDialog {
 		} catch (Exception E) {
 			JOptionPane
 					.showMessageDialog(
-							Cytoscape.getDesktop(),
+							getOwner(),
 							"Failed to get bookmarks.  Go to Edit->Preferences->Bookmarks to edit your plugin download sites.",
 							"Error", JOptionPane.ERROR_MESSAGE);
 			E.printStackTrace();

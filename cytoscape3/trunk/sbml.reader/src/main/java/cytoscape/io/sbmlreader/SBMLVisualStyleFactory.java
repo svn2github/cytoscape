@@ -36,22 +36,24 @@
 
 package cytoscape.io.sbmlreader;
 
-import org.cytoscape.*;
 import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.GlobalAppearanceCalculator;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.calculators.BasicCalculator;
+import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.mappings.PassThroughMapping;
 
-import cytoscape.data.Semantics;
-
-import cytoscape.view.CytoscapeDesktop;
-
-import org.cytoscape.vizmap.*;
-
-import org.cytoscape.vizmap.calculators.*;
-
-import org.cytoscape.vizmap.mappings.*;
-
-import org.cytoscape.view.EdgeView;
-
-import java.awt.Color;
+import java.awt.*;
 
 
 /**
@@ -83,7 +85,7 @@ public class SBMLVisualStyleFactory {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static VisualStyle createVisualStyle(GraphPerspective network) {
+	public static VisualStyle createVisualStyle(CyNetwork network) {
 		VisualMappingManager vmManager = Cytoscape.getVisualMappingManager();
 		NodeAppearanceCalculator nodeAppCalc = new NodeAppearanceCalculator();
 		EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator();

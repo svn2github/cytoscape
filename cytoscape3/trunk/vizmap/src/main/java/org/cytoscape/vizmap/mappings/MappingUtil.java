@@ -36,59 +36,47 @@
 */
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesFactory;
-
-import java.lang.*;
-
 
 /**
  * Provides simple utility methods for the Mapping classes.
  */
 public class MappingUtil {
+
+	public static final byte TYPE_COMPLEX = -4;
+	public static final byte TYPE_SIMPLE_MAP = -3;
+	public static final byte TYPE_SIMPLE_LIST = -2;
+	public static final byte TYPE_UNDEFINED = -1;
+	public static final byte TYPE_BOOLEAN = 1;
+	public static final byte TYPE_FLOATING = 2;
+	public static final byte TYPE_INTEGER = 3;
+	public static final byte TYPE_STRING = 4;
+
     /**
      * This method determines the type of the attr used and
      * returns a string representation of it.
      */
+	 // TODO figure out how to serialize new-school attrs
     public static String getAttributeTypeString(String base, String attr) {
-        Byte B = new Byte(getAttributeType(base, attr));
+        Byte B = new Byte(TYPE_UNDEFINED);
 
         return B.toString();
     }
 
-    /**
-     * This method determines the type of the attribute used
-     * for the mapping. The purpose is to support discrete attrs
-     * aside from strings.
-     */
-    public static byte getAttributeType(String base, String attr) {
-        byte b = CyAttributes.TYPE_UNDEFINED;
-
-        if (base.startsWith("node"))
-            b = CyAttributesFactory.getCyAttributes("node")
-                         .getType(attr);
-        else if (base.startsWith("edge"))
-            b = CyAttributesFactory.getCyAttributes("edge")
-                         .getType(attr);
-
-        return b;
-    }
 
     /**
      * This method returns an object of the specified type
      * based on the string read from the props file.
      */
     public static Object parseObjectType(String key, byte attrType) {
-        if (attrType == CyAttributes.TYPE_INTEGER)
+        if (attrType == TYPE_INTEGER)
             return Integer.valueOf(key);
-        else if (attrType == CyAttributes.TYPE_FLOATING)
+        else if (attrType == TYPE_FLOATING)
             return new Double(key);
-        else if (attrType == CyAttributes.TYPE_BOOLEAN)
+        else if (attrType == TYPE_BOOLEAN)
             return new Boolean(key);
 
         // assume string
         else
-
             return key;
     }
 }

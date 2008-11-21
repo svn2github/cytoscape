@@ -36,105 +36,26 @@
 */
 package org.cytoscape.layout;
 
-import org.cytoscape.layout.algorithms.GridNodeLayout;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.Map;
 
 
-/**
- * CyLayouts is a singleton class that is used to register all available
- * layout algorithms.  
- */
-public class CyLayouts {
-	private static HashMap<String, CyLayoutAlgorithm> layoutMap;
-	private static HashMap<CyLayoutAlgorithm, String> menuNameMap;
+public interface CyLayouts {
 
-	static {
-		new CyLayouts();
-	}
+	String PREF_MENU_KEY = "preferredMenu";
+	String PREF_MENU_DEFAULT = "Cytoscape Layouts";
+	String DEFAULT_LAYOUT_NAME = "grid";
 
-	private CyLayouts() {
-		layoutMap = new HashMap<String,CyLayoutAlgorithm>();
-		menuNameMap = new HashMap<CyLayoutAlgorithm,String>();
+	void addLayout(CyLayoutAlgorithm layout, Map props);
 
-		addLayout(new GridNodeLayout(), "Cytoscape Layouts");
-	}
+	void removeLayout(CyLayoutAlgorithm layout, Map props);
 
-	/**
-	 * Add a layout to the layout manager's list.  If menu is "null"
-	 * it will be assigned to the "none" menu, which is not displayed.
-	 * This can be used to register layouts that are to be used for
-	 * specific algorithmic purposes, but not, in general, supposed
-	 * to be for direct user use.
-	 *
-	 * @param layout The layout to be added
-	 * @param menu The menu that this should appear under
-	 */
-	public static void addLayout(CyLayoutAlgorithm layout, String menu) {
-		layoutMap.put(layout.getName(),layout);
-		menuNameMap.put(layout,menu);
-	}
+	CyLayoutAlgorithm getLayout(String name);
 
-	/**
-	 * Remove a layout from the layout maanger's list.
-	 *
-	 * @param layout The layout to remove
-	 */
-	public static void removeLayout(CyLayoutAlgorithm layout) {
-		layoutMap.remove(layout.getName());
-		menuNameMap.remove(layout);
-	}
+	Collection<CyLayoutAlgorithm> getAllLayouts(); 
 
-	/**
-	 * Get the layout named "name".  If "name" does
-	 * not exist, this will return null
-	 *
-	 * @param name String representing the name of the layout
-	 * @return the layout of that name or null if it is not reigstered
-	 */
-	public static CyLayoutAlgorithm getLayout(String name) {
-		if (layoutMap.containsKey(name))
-			return layoutMap.get(name);
-		return null;
-	}
+	CyLayoutAlgorithm getDefaultLayout(); 
 
-	/**
-	 * Get all of the available layouts.
-	 *
-	 * @return a Collection of all the available layouts
-	 */
-	public static Collection<CyLayoutAlgorithm> getAllLayouts() {
-		return layoutMap.values();
-	}
-
-	/**
-	 * Get the default layout.  This is either the grid layout or a layout
-	 * chosen by the user via the setting of the "layout.default" property.
-	 *
-	 * @return CyLayoutAlgorithm to use as the default layout algorithm
-	 */
-	public static CyLayoutAlgorithm getDefaultLayout() {
-		// See if the user has set the layout.default property
-//		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
-//
-//		if ((defaultLayout == null) || !layoutMap.containsKey(defaultLayout)) {
-//			defaultLayout = "grid";
-//		}
-		String defaultLayout = "grid"; 
-
-		CyLayoutAlgorithm l = layoutMap.get(defaultLayout);
-
-		return l;
-	}
-
-	// Ack.
-	public static String getMenuName(CyLayoutAlgorithm layout) {
-		return menuNameMap.get(layout); 
-	}
+	String getMenuName(CyLayoutAlgorithm layout); 
 }

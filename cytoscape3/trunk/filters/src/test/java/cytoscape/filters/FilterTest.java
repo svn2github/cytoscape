@@ -1,22 +1,22 @@
 package cytoscape.filters;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-import junit.framework.TestCase;
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
+import junit.framework.TestCase;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 public class FilterTest extends TestCase {
 	
 	protected void initNetwork() {
 		cyNetwork = Cytoscape.createNetwork("network1");
-		Node node0 = Cytoscape.getCyNode("rain", true);
-		Node node1 = Cytoscape.getCyNode("rainbow", true);
-		Node node2 = Cytoscape.getCyNode("rabbit", true);
-		Node node3 = Cytoscape.getCyNode("yellow", true);
-		Node node4 = Cytoscape.getCyNode("undir_test_node", true);
+		CyNode node0 = Cytoscape.getCyNode("rain", true);
+		CyNode node1 = Cytoscape.getCyNode("rainbow", true);
+		CyNode node2 = Cytoscape.getCyNode("rabbit", true);
+		CyNode node3 = Cytoscape.getCyNode("yellow", true);
+		CyNode node4 = Cytoscape.getCyNode("undir_test_node", true);
 		
 		// adding node4 last, so that it will be in last place in cyNetwork.nodesList()
 		// and thus not affect those tests which don't involve edge directionality
@@ -27,10 +27,10 @@ public class FilterTest extends TestCase {
 		cyNetwork.addNode(node3);
 		
 		
-		Edge edge0 = Cytoscape.getCyEdge(node0, node1, Semantics.INTERACTION, "pp", true);
-		Edge edge1 = Cytoscape.getCyEdge(node0, node2, Semantics.INTERACTION, "pp", true);
-		Edge edge2 = Cytoscape.getCyEdge(node0, node3, Semantics.INTERACTION, "pp", true);
-		Edge edge3 = Cytoscape.getCyEdge(node0, node4, Semantics.INTERACTION, "pp", true, false);
+		CyEdge edge0 = Cytoscape.getCyEdge(node0, node1, Semantics.INTERACTION, "pp", true);
+		CyEdge edge1 = Cytoscape.getCyEdge(node0, node2, Semantics.INTERACTION, "pp", true);
+		CyEdge edge2 = Cytoscape.getCyEdge(node0, node3, Semantics.INTERACTION, "pp", true);
+		CyEdge edge3 = Cytoscape.getCyEdge(node0, node4, Semantics.INTERACTION, "pp", true, false);
 		
 		cyNetwork.addEdge(edge3);
 		cyNetwork.addEdge(edge0);
@@ -91,5 +91,5 @@ public class FilterTest extends TestCase {
 	protected static final String RANK = "rank";
 	protected static final String SCORE = "score";
 	protected static final String PMID = "pmid";
-	protected GraphPerspective cyNetwork;
+	protected CyNetwork cyNetwork;
 }

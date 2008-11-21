@@ -6,17 +6,15 @@
  */
 package org.jgraph.plaf.basic;
 
+import javax.swing.plaf.UIResource;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
-
-import javax.swing.plaf.UIResource;
 
 
 /**

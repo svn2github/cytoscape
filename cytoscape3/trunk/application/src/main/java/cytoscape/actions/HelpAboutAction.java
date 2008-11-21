@@ -36,17 +36,11 @@
 */
 package cytoscape.actions;
 
-import cytoscape.CytoscapeVersion;
-
 import cytoscape.util.CreditScreen;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CyHelpBroker;
-
-import java.awt.event.ActionEvent;
-
-import java.lang.*;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 
 /**

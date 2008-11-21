@@ -37,13 +37,11 @@
 package cytoscape.actions;
 
 import cytoscape.util.CytoscapeAction;
-
 import cytoscape.view.CyHelpBroker;
 
+import javax.help.CSH;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
-import javax.help.CSH;
 
 /**
  * Really just a wrapper for the CSH.DisplayHelpFromSource action.

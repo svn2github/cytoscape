@@ -36,15 +36,16 @@
 
 package cytoscape.filters;
 
-import java.util.List;
-import cytoscape.Cytoscape;
-import java.util.Hashtable;
-import java.util.BitSet;
-import java.util.LinkedList;
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import csplugins.quickfind.util.QuickFind;
+import cytoscape.Cytoscape;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+
+import java.util.BitSet;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 
 public class CompositeFilter implements CyFilter {
 
@@ -58,7 +59,7 @@ public class CompositeFilter implements CyFilter {
 	protected String description;
 	protected AdvancedSetting advancedSetting = null;
 	//private int indexType = -1; //QuickFind.INDEX_NODES //QuickFind.INDEX_EDGES 
-	protected GraphPerspective network;
+	protected CyNetwork network;
 
 	protected Hashtable compositeNotTab = new Hashtable<CompositeFilter, Boolean>();
 	
@@ -73,7 +74,7 @@ public class CompositeFilter implements CyFilter {
 		children = new LinkedList<CyFilter>();
 	}
 		
-	public void setNetwork(GraphPerspective pNetwork) {
+	public void setNetwork(CyNetwork pNetwork) {
 		if (network != null && network == pNetwork) {
 			return;
 		}
@@ -89,7 +90,7 @@ public class CompositeFilter implements CyFilter {
 		childChanged();
 	}
 	
-	public GraphPerspective getNetwork(){
+	public CyNetwork getNetwork(){
 		return network;
 	}
 
@@ -104,19 +105,19 @@ public class CompositeFilter implements CyFilter {
 	
 	public boolean passesFilter(Object obj) {
 		
-		List<Node> nodes_list = null;
-		List<Edge> edges_list=null;
+		List<CyNode> nodes_list = null;
+		List<CyEdge> edges_list=null;
 
 		int index = -1;
-		if (obj instanceof Node) {
+		if (obj instanceof CyNode) {
 			nodes_list = network.nodesList();
-			index = nodes_list.lastIndexOf((Node) obj);	
+			index = nodes_list.lastIndexOf((CyNode) obj);
 			return node_bits.get(index);			
 		}
 		
-		if (obj instanceof Edge) {
+		if (obj instanceof CyEdge) {
 			edges_list = network.edgesList();
-			index = edges_list.lastIndexOf((Edge) obj);	
+			index = edges_list.lastIndexOf((CyEdge) obj);
 			return edge_bits.get(index);			
 		}
 		

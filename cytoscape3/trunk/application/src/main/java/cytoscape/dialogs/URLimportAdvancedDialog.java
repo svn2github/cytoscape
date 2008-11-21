@@ -36,40 +36,25 @@ package cytoscape.dialogs;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
-
 import cytoscape.util.BookmarksUtil;
 import cytoscape.util.ProxyHandler;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.xml.bind.JAXBException;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import java.io.IOException;
-
 import java.net.Proxy;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import javax.xml.bind.JAXBException;
 
 
 /**
@@ -346,7 +331,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener,
 
 		// Load the Bookmarks object from given xml file  
 		try {
-			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURL());
+			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURI().toURL());
 		} catch (IOException e) {
 			System.out.println("IOException -- bookmarkSource");
 		} catch (JAXBException e) {

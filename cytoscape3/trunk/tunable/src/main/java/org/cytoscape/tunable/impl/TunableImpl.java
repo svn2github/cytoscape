@@ -1,43 +1,24 @@
 // vim: set ts=2: */
-package org.cytoscape.tunable.impl; 
+package org.cytoscape.tunable.impl;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesFactory;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.tunable.Tunable;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
- 
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+import java.util.Map;
 
 
 /**
@@ -65,7 +46,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 	
 	private boolean immutable = false;
 
-	private CyAttributes attrs = null;
+	private CyDataTable attrs = null;
 
 
 	/**
@@ -93,7 +74,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 	 *	     is a specific type for the attributes.
 	 */
 	public TunableImpl(String name, String desc, int type, Object value, Object lowerBound,
-	    Object upperBound, int flag, boolean immutable, CyAttributes attrs) {
+	    Object upperBound, int flag, boolean immutable, CyDataTable attrs) {
 		this.name = name;
 		this.desc = desc;
 		this.type = type;
@@ -392,15 +373,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 	 * @return a JComponent with an entry for each attribute
 	 */
 	 @SuppressWarnings("unchecked")  // TODO REVIEW THIS CODE!
-	private JComponent getAttributePanel(CyAttributes attributes) {
-		// Check and see if the user passed the attributes list in the constructor
-		if (attributes == null) {
-			// Nope, get it
-			if (type == NODEATTRIBUTE)
-				attributes = CyAttributesFactory.getCyAttributes("node");
-			else if (type == EDGEATTRIBUTE)
-				attributes = CyAttributesFactory.getCyAttributes("edge");
-		}
+	private JComponent getAttributePanel(CyDataTable attributes) {
 
 		final List<String> list = new ArrayList<String>();
 
@@ -410,19 +383,17 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 		}
 
 		if (attributes != null) {
-			final String[] attList = attributes.getAttributeNames();
+			Map<String,Class<?>> typeMap = attributes.getColumnTypeMap();
+			Set<String> keys = typeMap.keySet();
 
-			for (int i = 0; i < attList.length; i++) {
-				// Is this attribute user visible?
-				if (!attributes.getUserVisible(attList[i]))
-					continue;
-
-				byte type = attributes.getType(attList[i]);
+			for (String key : keys) {
+				
+				Class<?> type = typeMap.get(key); 
 
 				if (((flag & NUMERICATTRIBUTE) == 0)
-				    || ((type == CyAttributes.TYPE_FLOATING) 
-				    || (type == CyAttributes.TYPE_INTEGER))) {
-					list.add(attList[i]);
+				    || ((type == Integer.class) 
+				    || (type == Double.class))) {
+					list.add(key);
 				}
 			}
 		}

@@ -37,11 +37,9 @@
 package csplugins.test.widgets.test.unitTests.text;
 
 import csplugins.quickfind.util.QuickFind;
-
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.IndexFactory;
 import csplugins.widgets.autocomplete.index.TextIndex;
-
 import junit.framework.TestCase;
 
 

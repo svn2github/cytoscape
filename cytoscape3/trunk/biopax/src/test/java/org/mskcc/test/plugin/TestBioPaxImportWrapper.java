@@ -32,7 +32,6 @@
 package org.mskcc.test.plugin;
 
 import junit.framework.TestCase;
-
 import org.mskcc.biopax_plugin.plugin.BioPaxFilter;
 
 import java.io.File;

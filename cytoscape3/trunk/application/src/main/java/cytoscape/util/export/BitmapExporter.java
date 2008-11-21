@@ -1,13 +1,12 @@
 package cytoscape.util.export;
 
+import org.cytoscape.view.GraphView;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.view.GraphView;
 
 /**
  * Bitmap exporter by the ImageIO class.

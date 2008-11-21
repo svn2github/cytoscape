@@ -4,16 +4,14 @@
  */
 package cytoscape.actions;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.GraphView;
+
+import java.awt.event.ActionEvent;
 
 
 /**
@@ -26,18 +24,28 @@ public class NewNetworkAction extends CytoscapeAction {
 
 	private static final long serialVersionUID = -5729080768973677821L;
 
+	private CyNetworkFactory cnf;
+	private GraphViewFactory gvf;
+
 	/**
 	 * Creates a new NewNetworkAction object.
 	 */
-	public NewNetworkAction() {
+	public NewNetworkAction(CyNetworkFactory f, GraphViewFactory g) {
 		super("Empty Network");
 		setPreferredMenu("File.New.Network");
+		cnf = f;
+		gvf = g;
 	}
 
 	/**
 	 * create the new network and view
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GraphPerspective newNet = Cytoscape.createNetwork( CyNetworkNaming.getSuggestedNetworkTitle("Network") );
+		CyNetwork newNet = cnf.getInstance();
+		newNet.attrs().set("name","Network");
+		System.out.println("newNet: " + newNet.getSUID());
+		GraphView view = gvf.createGraphView(newNet);
+		// TODO figure this out
+		Cytoscape.addNetwork(newNet, view, null);
 	}
 }

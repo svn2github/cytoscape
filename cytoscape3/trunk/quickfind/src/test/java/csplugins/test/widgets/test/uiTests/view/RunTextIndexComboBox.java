@@ -37,16 +37,14 @@
 package csplugins.test.widgets.test.uiTests.view;
 
 import csplugins.test.widgets.test.unitTests.view.TestTextIndexComboBox;
-
 import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.view.ComboBoxFactory;
 import csplugins.widgets.autocomplete.view.TextIndexComboBox;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.*;
 
 
 /**

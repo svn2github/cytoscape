@@ -22,10 +22,8 @@
 package org.jgraph.layout;
 
 import org.jgraph.JGraph;
-
 import org.jgraph.event.GraphModelEvent;
 import org.jgraph.event.GraphModelListener;
-
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.CellMapper;
 import org.jgraph.graph.CellView;
@@ -34,12 +32,11 @@ import org.jgraph.graph.GraphConstants;
 import org.jgraph.graph.GraphModel;
 import org.jgraph.graph.VertexView;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;

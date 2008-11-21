@@ -35,12 +35,8 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.util.URLUtil;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import java.net.URL;
 
 /**
  * Object describes a plugin

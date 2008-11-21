@@ -37,7 +37,107 @@
 			<artifactId>osgi_R4_compendium</artifactId>
 			<optional>true</optional>
 		</dependency>
-        <!-- gui stuff -->
+
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-mock</artifactId>
+			<version>1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-extender</artifactId>
+			<version>1.1.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-core</artifactId>
+			<version>1.1.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
+			<version>1.5.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.api</artifactId>
+			<version>1.5.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.log4j</artifactId>
+			<version>1.5.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-io</artifactId>
+			<version>1.1.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>2.5.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>2.5.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>2.5.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>2.5.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>2.5.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.aopalliance</groupId>
+			<artifactId>com.springsource.org.aopalliance</artifactId>
+			<version>1.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>edu.emory.mathcs.backport</groupId>
+			<artifactId>com.springsource.edu.emory.mathcs.backport</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.log4j</groupId>
+			<artifactId>com.springsource.org.apache.log4j</artifactId>
+			<version>1.2.15</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Enable annotation config for Spring -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>com.springsource.javax.annotation</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<!-- gui stuff -->
 		<dependency>
 			<groupId>cytoscape-temp</groupId>
 			<artifactId>l2fprod-common-all</artifactId>
@@ -54,14 +154,14 @@
 			<version>1.0.2</version>
 		</dependency>
 
-        <!-- unit testing -->
+		<!-- unit testing -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-        <!-- xml stuff -->
+		<!-- xml stuff -->
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>com.springsource.org.jdom</artifactId>
@@ -84,14 +184,14 @@
 			<scope>runtime</scope>
 		</dependency>
 
-        <!-- java help -->
+		<!-- java help -->
 		<dependency>
 			<groupId>cytoscape-sun</groupId>
 			<artifactId>jhall</artifactId>
 			<version>1.0</version>
 		</dependency>
 
-        <!-- for bookmarks and session -->
+		<!-- for bookmarks and session -->
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-xjc</artifactId>
@@ -114,26 +214,20 @@
 			<version>2.0.8</version>
 		</dependency>
 
-        <!-- look and feel -->
+		<!-- look and feel -->
 		<dependency>
 			<groupId>com.jgoodies</groupId>
 			<artifactId>looks</artifactId>
 			<version>2.1.2</version>
 		</dependency>
 
-        <!-- drag and drop interfaces -->
+		<!-- drag and drop interfaces -->
 		<dependency>
 			<groupId>phoebe</groupId>
 			<artifactId>phoebe.dnd</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-        <!-- for ontology stuff -->
-		<dependency>
-			<groupId>biojava</groupId>
-			<artifactId>biojava</artifactId>
-			<version>1.4</version>
-		</dependency>
 		<dependency>
 			<groupId>org.freehep</groupId>
 			<artifactId>freehep-graphicsio-pdf</artifactId>
@@ -165,14 +259,14 @@
 			<version>2.0.2</version>
 		</dependency>
 
-        <!-- our custom version of CLI -->
+		<!-- our custom version of CLI -->
 		<dependency>
 			<groupId>org.apache</groupId>
 			<artifactId>commons.cli</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-        <!-- graphics export -->
+		<!-- graphics export -->
 		<dependency>
 			<groupId>org.freehep</groupId>
 			<artifactId>freehep-export</artifactId>
@@ -209,8 +303,8 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>undo</groupId>
-			<artifactId>undo</artifactId>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>work</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -218,10 +312,10 @@
 			<artifactId>task</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-        <!-- core libs -->
+		<!-- core libs -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>network</artifactId>
+			<artifactId>model</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -231,7 +325,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>attributes</artifactId>
+			<artifactId>io</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

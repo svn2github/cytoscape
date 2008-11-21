@@ -36,28 +36,15 @@
 
 package cytoscape.filter.cytoscape;
 
-import org.cytoscape.*;
-import org.cytoscape.GraphPerspective;
-
-import cytoscape.data.*;
-
-import cytoscape.filter.model.*;
-
-import org.cytoscape.*;
 import cytoscape.Cytoscape;
+import cytoscape.filter.model.Filter;
+import cytoscape.filter.model.FilterManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import java.beans.*;
-
-import java.util.*;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -190,15 +177,15 @@ public class NodeInteractionFilter implements Filter {
 			return false;
 		}
 
-		if (!(object instanceof Node)) {
+		if (!(object instanceof CyNode)) {
 			return false;
 		}
 
-		Node node = (Node) object;
+		CyNode node = (CyNode) object;
 
 		//get the list of all relevant edges
 		List adjacentEdges;
-		GraphPerspective myPerspective = Cytoscape.getCurrentNetwork();
+		CyNetwork myPerspective = Cytoscape.getCurrentNetwork();
 
 		if (target == SOURCE) {
 			adjacentEdges = myPerspective.getAdjacentEdgesList(node, true, false, true);
@@ -226,7 +213,7 @@ public class NodeInteractionFilter implements Filter {
 	 * @return  DOCUMENT ME!
 	 */
 	public Class[] getPassingTypes() {
-		return new Class[] { Node.class };
+		return new Class[] { CyNode.class };
 	}
 
 	/**

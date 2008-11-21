@@ -31,35 +31,31 @@
  **/
 package org.mskcc.biopax_plugin.plugin;
 
+import cytoscape.Cytoscape;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
+import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
+import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
-import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
-import org.cytoscape.view.GraphView;
-
-import cytoscape.Cytoscape;
-import cytoscape.util.CyNetworkNaming;
-import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.readers.GraphReader;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-
-import java.net.URLDecoder;
-
-import org.cytoscape.GraphPerspective;
-import org.jdom.Element;
-import org.jdom.JDOMException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * GraphReader Implementation for BioPAX Files.
@@ -165,7 +161,7 @@ public class BioPaxGraphReader implements GraphReader {
 	 *
 	 * @param cyNetwork GraphPerspective object.
 	 */
-	public void doPostProcessing(GraphPerspective cyNetwork) {
+	public void doPostProcessing(CyNetwork cyNetwork) {
 		/**
 		 * Sets a network attribute which indicates this network
 		 * is a biopax network

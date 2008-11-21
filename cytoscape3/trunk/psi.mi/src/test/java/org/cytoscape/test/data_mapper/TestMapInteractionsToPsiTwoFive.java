@@ -34,11 +34,9 @@
 */
 package org.cytoscape.coreplugin.psi_mi.test.data_mapper;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import junit.framework.TestCase;
-
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiTwoFive;
@@ -46,13 +44,11 @@ import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.*;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 
-import java.io.File;
-import java.io.StringWriter;
-
-import java.util.ArrayList;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import java.io.File;
+import java.io.StringWriter;
+import java.util.ArrayList;
 
 
 /**
@@ -78,7 +74,7 @@ public class TestMapInteractionsToPsiTwoFive extends TestCase {
 		assertEquals(6, interactions.size());
 
 		//  Second, map to Cytoscape objects
-		GraphPerspective network = Cytoscape.createNetwork("network1");
+		CyNetwork network = Cytoscape.createNetwork("network1");
 		MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.SPOKE_VIEW);
 		mapper2.doMapping();
 		addToCyNetwork(mapper2, network);
@@ -120,7 +116,7 @@ public class TestMapInteractionsToPsiTwoFive extends TestCase {
 		assertTrue("XML Indentation Test has failed.  ", writer.toString().startsWith(expected));
 	}
 
-	private void addToCyNetwork(MapToCytoscape mapper, GraphPerspective cyNetwork) {
+	private void addToCyNetwork(MapToCytoscape mapper, CyNetwork cyNetwork) {
 		//  Add new nodes/edges to network
 		int[] nodeIndices = mapper.getNodeIndices();
 		int[] edgeIndices = mapper.getEdgeIndices();

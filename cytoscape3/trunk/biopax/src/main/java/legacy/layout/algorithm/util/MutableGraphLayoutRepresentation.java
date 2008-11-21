@@ -37,7 +37,6 @@
 package legacy.layout.algorithm.util;
 
 import legacy.layout.algorithm.MutableGraphLayout;
-
 import legacy.layout.util.GraphLayoutRepresentation;
 
 

@@ -34,23 +34,16 @@
 */
 package cytoscape.browser.ui;
 
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-
 import cytoscape.browser.AttributeModel;
 import cytoscape.browser.DataObjectType;
 import cytoscape.browser.DataTableModel;
 import cytoscape.browser.MultiDataEditAction;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 /**

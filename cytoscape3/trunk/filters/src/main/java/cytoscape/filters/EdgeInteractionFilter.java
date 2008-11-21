@@ -36,15 +36,13 @@
 
 package cytoscape.filters;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import java.util.*;
-
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import csplugins.quickfind.util.QuickFind;
-import csplugins.widgets.autocomplete.index.GenericIndex;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
 
 
 public class EdgeInteractionFilter extends InteractionFilter {
@@ -87,7 +85,7 @@ public class EdgeInteractionFilter extends InteractionFilter {
 		}	
 		BitSet passFilter_nodeBits = passFilter.getNodeBits();
 
-		List<Edge> edges_list = null;
+		List<CyEdge> edges_list = null;
 
 		// EdgeInteractionFilter will select edge only
 		edges_list = network.edgesList();
@@ -96,7 +94,7 @@ public class EdgeInteractionFilter extends InteractionFilter {
 
 		if (nodeType != NODE_UNDEFINED) {
 			for (int i=0; i<objectCount; i++) {
-				if (isHit((Edge)edges_list.get(i), passFilter_nodeBits)) {
+				if (isHit((CyEdge)edges_list.get(i), passFilter_nodeBits)) {
 					edge_bits.set(i);
 				}
 			}
@@ -110,10 +108,10 @@ public class EdgeInteractionFilter extends InteractionFilter {
 	}
 
 
-	private boolean isHit(Edge pEdge, BitSet pPassFilter_nodeBits) {
+	private boolean isHit(CyEdge pEdge, BitSet pPassFilter_nodeBits) {
 		
 		// Get the list of relevant nodes for this edge
-		List<Node> adjacentNodes = new ArrayList<Node>();
+		List<CyNode> adjacentNodes = new ArrayList<CyNode>();
 		
 		if (pEdge.isDirected()){
 			if (nodeType == NODE_SOURCE) {

@@ -34,31 +34,22 @@
 */
 package cytoscape.browser;
 
-import static cytoscape.browser.DataObjectType.EDGES;
-import static cytoscape.browser.DataObjectType.NETWORK;
-import static cytoscape.browser.DataObjectType.NODES;
-
-import cytoscape.browser.ui.CyAttributeBrowserTable;
-
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
-
+import static cytoscape.browser.DataObjectType.*;
+import cytoscape.browser.ui.CyAttributeBrowserTable;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowUtils;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
-
+import org.cytoscape.view.NodeView;
 import org.cytoscape.vizmap.GlobalAppearanceCalculator;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphObject;
-import org.cytoscape.Node;
-
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.NodeView;
-
-import java.awt.Color;
-
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -67,8 +58,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
-
-import javax.swing.table.DefaultTableModel;
 
 
 /**
@@ -320,7 +309,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		int k = 0;
 
 		while (it.hasNext()) {
-			GraphPerspective network = (GraphPerspective) it.next();
+			CyNetwork network = (CyNetwork) it.next();
 			String id = network.getIdentifier();
 
 			data_vector[k][0] = id;
@@ -340,7 +329,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			int j = 0;
 
 			while (it.hasNext()) {
-				GraphPerspective network = (GraphPerspective) it.next();
+				CyNetwork network = (CyNetwork) it.next();
 				Object value = getAttributeValue(type, network.getIdentifier(), attributeName);
 
 				data_vector[j][i] = value;
@@ -369,13 +358,13 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 				internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
 
 				if (objectType == NODES) {
-					nv = netView.getNodeView((Node) obj);
+					nv = netView.getNodeView((CyNode) obj);
 
 					if (nv != null) {
 						nv.setSelectedPaint(selectedNodeColor);
 					}
 				} else if (objectType == EDGES) {
-					edgeView = netView.getEdgeView((Edge) obj);
+					edgeView = netView.getEdgeView((CyEdge) obj);
 
 					if (edgeView != null) {
 						edgeView.setSelectedPaint(selectedEdgeColor);

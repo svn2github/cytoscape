@@ -34,26 +34,22 @@
 */
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiOne;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiTwoFive;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-
 import java.util.ArrayList;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 
 /**
@@ -100,7 +96,7 @@ public class SaveAsPsiTask implements Task {
 			}
 
 			FileWriter f = new FileWriter(fileName);
-			GraphPerspective netToSave = Cytoscape.getCurrentNetwork();
+			CyNetwork netToSave = Cytoscape.getCurrentNetwork();
 
 			//  First, map to Data Service Objects
 			MapFromCytoscape mapper1 = new MapFromCytoscape(netToSave);

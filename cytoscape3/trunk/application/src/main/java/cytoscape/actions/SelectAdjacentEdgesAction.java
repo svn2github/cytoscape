@@ -43,23 +43,17 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.Node;
-
-import org.cytoscape.Edge;
-
 import cytoscape.util.CytoscapeAction;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyDataTableUtil;
 
-//-------------------------------------------------------------------------
-import java.awt.event.ActionEvent;
-
-import java.util.Set;
-
-import java.util.HashMap;
 
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 //-------------------------------------------------------------------------
 /**
@@ -81,25 +75,18 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void actionPerformed(ActionEvent e) {
-		// GinyUtils.selectAllEdges( Cytoscape.getCurrentNetworkView() );
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
-		HashMap<Edge,Edge> edgeMap = new HashMap<Edge,Edge>();
+	public void actionPerformed(ActionEvent ev) {
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		Set<CyEdge> edgeSet = new HashSet<CyEdge>();
 
 		// Get the list of selected nodes
-		for (Node node: (Set<Node>)network.getSelectedNodes()) {
+		for (CyNode node: CyDataTableUtil.getNodesInState(network,"selected",true)) {
 			// Get the list of edges connected to this node
-			int[] edgeIndices = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), true, true, true);
-			// For each node, select the appropriate edges
-			if (edgeIndices == null)
-				continue;
-
-			for (int i = 0; i < edgeIndices.length; i++)  {
-				Edge edge = (Edge)network.getEdge(edgeIndices[i]);
-				edgeMap.put(edge,edge);
-			}
+			edgeSet.addAll( network.getAdjacentEdgeList(node,CyEdge.Type.ANY) );
 		}
-		network.setSelectedEdgeState(edgeMap.keySet(), true);
+
+		for ( CyEdge e : edgeSet )
+			e.attrs().set("selected",true);
 
 		if (Cytoscape.getCurrentNetworkView() != null) {
 			Cytoscape.getCurrentNetworkView().updateView();

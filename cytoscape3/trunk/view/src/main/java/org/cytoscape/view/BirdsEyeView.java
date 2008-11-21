@@ -36,25 +36,17 @@
 
 package org.cytoscape.view;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Point;
-import java.awt.Dimension;
+import org.cytoscape.view.impl.ContentChangeListener;
+import org.cytoscape.view.impl.DGraphView;
+import org.cytoscape.view.impl.ViewportChangeListener;
+
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.impl.DGraphView;
-import org.cytoscape.view.impl.ContentChangeListener;
-import org.cytoscape.view.impl.ViewportChangeListener;
 
 /**
  * DOCUMENT ME!

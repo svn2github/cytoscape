@@ -23,13 +23,10 @@
 */
 package cytoscape.browser.ui;
 
-import java.awt.Component;
-
-import javax.swing.Icon;
-import javax.swing.JTable;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+import java.awt.*;
 
 
 

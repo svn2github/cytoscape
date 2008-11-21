@@ -37,14 +37,9 @@
 */
 package org.cytoscape.groups;
 
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
-import org.cytoscape.RootGraph;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -87,35 +82,35 @@ public interface CyGroup {
 	 *
 	 * @return list of nodes in the group
 	 */
-	public List<Node> getNodes();
+	public List<CyNode> getNodes();
 
 	/**
 	 * Get the CyNode that represents this group
 	 *
 	 * @return CyNode representing the group
 	 */
-	public Node getGroupNode();
+	public CyNode getGroupNode();
 
 	/**
 	 * Get an iterator over all of the nodes in this group
 	 *
 	 * @return node iterator
 	 */
-	public Iterator<Node> getNodeIterator();
+	public Iterator<CyNode> getNodeIterator();
 
 	/**
 	 * Get all of the edges completely contained within this group
 	 *
 	 * @return list of edges in the group
 	 */
-	public List<Edge> getInnerEdges();
+	public List<CyEdge> getInnerEdges();
 
 	/**
 	 * Get all of the edges partially contained within this group
 	 *
 	 * @return list of edges in the group
 	 */
-	public List<Edge> getOuterEdges();
+	public List<CyEdge> getOuterEdges();
 
 	/**
 	 * Add an outer edge to the map.  Some viewers may need to do this
@@ -123,7 +118,7 @@ public interface CyGroup {
 	 *
 	 * @param edge the CyEdge to add to the outer edge map
 	 */
-	public void addOuterEdge(Edge edge);
+	public void addOuterEdge(CyEdge edge);
 
 	/**
 	 * Add an inner edge to the map.  Some viewers may need to do this
@@ -131,7 +126,7 @@ public interface CyGroup {
 	 *
 	 * @param edge the CyEdge to add to the innter edge map
 	 */
-	public void addInnerEdge(Edge edge);
+	public void addInnerEdge(CyEdge edge);
 
 	/**
 	 * Determine if a node is a member of this group
@@ -139,7 +134,7 @@ public interface CyGroup {
 	 * @param node the CyNode to test
 	 * @return true if node is a member of the group
 	 */
-	public boolean contains(Node node);
+	public boolean contains(CyNode node);
 
 	/**
 	 * Set the state of the group
@@ -174,7 +169,7 @@ public interface CyGroup {
 	 *
 	 * @param node the node to add
 	 */
-	public void addNode ( Node node );
+	public void addNode ( CyNode node );
 
 
 	/**
@@ -182,5 +177,5 @@ public interface CyGroup {
 	 *
 	 * @param node the node to remove
 	 */
-	public void removeNode ( Node node );
+	public void removeNode ( CyNode node );
 }

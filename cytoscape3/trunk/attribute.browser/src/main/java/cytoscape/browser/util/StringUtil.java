@@ -29,10 +29,9 @@ package cytoscape.browser.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
-import java.util.Vector;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**

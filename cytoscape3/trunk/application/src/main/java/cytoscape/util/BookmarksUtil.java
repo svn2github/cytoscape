@@ -38,22 +38,18 @@ import cytoscape.bookmarks.Attribute;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
-
 import cytoscape.data.readers.BookmarkReader;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import java.net.URL;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -186,7 +182,7 @@ public abstract class BookmarksUtil {
 
 		// Load the Bookmarks object from given xml file  
 		try {
-			theBookmarks = BookmarksUtil.getBookmarks(pBookmarkFile.toURL());
+			theBookmarks = BookmarksUtil.getBookmarks(pBookmarkFile.toURI().toURL());
 		} catch (IOException e) {
 			System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
 		} catch (JAXBException e) {

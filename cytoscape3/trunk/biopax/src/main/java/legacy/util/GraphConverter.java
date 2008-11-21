@@ -5,19 +5,14 @@
 package legacy.util;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.Edge;
-
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.NodeView;
-
 import legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
 import legacy.layout.algorithm.util.MutablePolyEdgeGraphLayoutRepresentation;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.geom.Point2D;
-
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -121,7 +116,7 @@ public final class GraphConverter {
 		}
 
 		public int getEdgeNodeIndex(int edgeIndex, boolean sourceNode) {
-			Edge edge = m_edgeTranslation[edgeIndex].getEdge();
+			CyEdge edge = m_edgeTranslation[edgeIndex].getEdge();
 			int ginyNInx;
 
 			if (sourceNode) {
@@ -362,7 +357,7 @@ public final class GraphConverter {
 				}
 			}
 
-			Edge currentEdge = currentEdgeView.getEdge();
+			CyEdge currentEdge = currentEdgeView.getEdge();
 			int ginySourceNodeIndex = currentEdge.getSource().getRootGraphIndex();
 			int ginyTargetNodeIndex = currentEdge.getTarget().getRootGraphIndex();
 			int nativeSourceNodeIndex = ((Integer) nodeIndexTranslation.get(Integer.valueOf(ginySourceNodeIndex)))

@@ -1,15 +1,10 @@
 package cytoscape.filters;
 
-import cytoscape.filters.Relation;
-import cytoscape.filters.StringFilter;
-import cytoscape.filters.NumericFilter;
-import cytoscape.filters.CompositeFilter;
-import java.util.BitSet;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.quickfind.util.TaskMonitorBase;
-import csplugins.widgets.autocomplete.index.NumberIndex;
-import csplugins.widgets.autocomplete.index.TextIndex;
+
+import java.util.BitSet;
 
 public class CompositeFilterTest extends FilterTest {
 

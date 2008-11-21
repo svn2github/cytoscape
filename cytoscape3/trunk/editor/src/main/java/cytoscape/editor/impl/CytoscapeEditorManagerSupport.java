@@ -41,32 +41,26 @@
 */
 package cytoscape.editor.impl;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
-
-import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
-
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.GraphPerspectiveChangeEvent;
+import org.cytoscape.model.GraphPerspectiveChangeListener;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
-import org.cytoscape.GraphPerspectiveChangeEvent;
-import org.cytoscape.GraphPerspectiveChangeListener;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 
 /**
@@ -168,9 +162,9 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 				// DON'T call the one argument createNetwork()--it will end up setting
 				// our current visual style to  "default" thru CytoscapeDesktop
 				// event listener:
-				// GraphPerspective newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
+				// CyNetwork newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
 				// DON'T create a GraphView:
-				 GraphPerspective newNet = Cytoscape.createNetwork(new int[] {  }, new int[] {  },
+				 CyNetwork newNet = Cytoscape.createNetwork(new int[] {  }, new int[] {  },
 				 					   CytoscapeEditorManager.createUniqueNetworkName(),
 									   null,
 									   false);
@@ -288,7 +282,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		//CytoscapeEditorManager.log("Got property change: " + e.getPropertyName());
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)) {
 			String netId = e.getNewValue().toString();
-			GraphPerspective net = Cytoscape.getNetwork(netId);
+			CyNetwork net = Cytoscape.getNetwork(netId);
 			net.addGraphPerspectiveChangeListener(this);
 		}
 
@@ -373,7 +367,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 	public void graphPerspectiveChanged(GraphPerspectiveChangeEvent event) {
 		// careful: this event can represent both hidden nodes and hidden edges
 		// if a hide node operation implicitly hid its incident edges
-		GraphPerspective net = Cytoscape.getCurrentNetwork();
+		CyNetwork net = Cytoscape.getCurrentNetwork();
 
 		// CytoscapeEditorManager.log ("GraphPerspectiveChanged for network: " + net);
 		boolean nodeChanges = false; // only create the set if we need it

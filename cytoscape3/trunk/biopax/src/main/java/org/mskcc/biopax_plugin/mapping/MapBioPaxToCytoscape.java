@@ -31,25 +31,17 @@
  **/
 package org.mskcc.biopax_plugin.mapping;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
+import cytoscape.task.TaskMonitor;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.MultiHashMapDefinition;
-
-import cytoscape.task.TaskMonitor;
-
-import org.cytoscape.Edge;
-
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.output.XMLOutputter;
-
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxCellularLocationMap;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxChemicalModificationMap;
@@ -59,9 +51,13 @@ import org.mskcc.biopax_plugin.util.rdf.RdfConstants;
 import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 import org.mskcc.biopax_plugin.util.rdf.RdfUtil;
 
-import java.util.*;
-
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -223,7 +219,7 @@ public class MapBioPaxToCytoscape {
 		int[] nodeIndices = new int[nodeList.size()];
 
 		for (int i = 0; i < nodeList.size(); i++) {
-			Node node = (Node) nodeList.get(i);
+			CyNode node = (CyNode) nodeList.get(i);
 			nodeIndices[i] = node.getRootGraphIndex();
 		}
 
@@ -239,7 +235,7 @@ public class MapBioPaxToCytoscape {
 		int[] edgeIndices = new int[edgeList.size()];
 
 		for (int i = 0; i < edgeList.size(); i++) {
-			Edge edge = (Edge) edgeList.get(i);
+			CyEdge edge = (CyEdge) edgeList.get(i);
 			edgeIndices[i] = edge.getRootGraphIndex();
 		}
 
@@ -262,12 +258,12 @@ public class MapBioPaxToCytoscape {
 	 *
 	 * @param cyNetwork GraphPerspective Object.
 	 */
-	public static void repairCanonicalName(GraphPerspective cyNetwork) {
+	public static void repairCanonicalName(CyNetwork cyNetwork) {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		Iterator iter = cyNetwork.nodesIterator();
 
 		while (iter.hasNext()) {
-			Node node = (Node) iter.next();
+			CyNode node = (CyNode) iter.next();
 			String label = nodeAttributes.getStringAttribute(node.getIdentifier(),
 			                                                 BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
 
@@ -283,12 +279,12 @@ public class MapBioPaxToCytoscape {
 	 *
 	 * @param cyNetwork GraphPerspective Object.
 	 */
-	public static void repairNetworkName(final GraphPerspective cyNetwork) {
+	public static void repairNetworkName(final CyNetwork cyNetwork) {
 
 		try {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 			Iterator iter = cyNetwork.nodesIterator();
-			Node node = (Node) iter.next();
+			CyNode node = (CyNode) iter.next();
 
 			if (node != null) {
 				String pathwayName = nodeAttributes.getStringAttribute(node.getIdentifier(),
@@ -333,7 +329,7 @@ public class MapBioPaxToCytoscape {
 			}
 
 			//  Create node symbolizing the interaction
-			Node interactionNode = Cytoscape.getCyNode(id, true);
+			CyNode interactionNode = Cytoscape.getCyNode(id, true);
 
 			//  Add New Interaction Node to Network
 			nodeList.add(interactionNode);
@@ -373,7 +369,7 @@ public class MapBioPaxToCytoscape {
 
 			//  Get the node symbolizing the interaction
 			String name = interactionElement.getName();
-			Node interactionNode = Cytoscape.getCyNode(id, true);
+			CyNode interactionNode = Cytoscape.getCyNode(id, true);
 
 			if (bpConstants.isConversionInteraction(name)) {
 				addConversionInteraction(interactionNode, interactionElement);
@@ -425,7 +421,7 @@ public class MapBioPaxToCytoscape {
 			name = bpNameUtil.getNodeName(name, e);
 
 			//  Create New Node via getCyNode Method
-			Node node = Cytoscape.getCyNode(id, true);
+			CyNode node = Cytoscape.getCyNode(id, true);
 
 			//  Add New Node to Network
 			nodeList.add(node);
@@ -524,13 +520,13 @@ public class MapBioPaxToCytoscape {
 				if (localCreatedNodes.get(cyNodeId).equals(complexCPathId)) {
 
 					// get Cynode for this complexElement
-					Node complexNode = Cytoscape.getCyNode(cyNodeId);
+					CyNode complexNode = Cytoscape.getCyNode(cyNodeId);
 					//  get all components.  There can be 0 or more
 					for (Element complexMemberElement : (List<Element>)rdfQuery.getNodes(complexElement, "COMPONENTS/*/PHYSICAL-ENTITY/*")) {
-						Node complexMemberNode = getComplexNode(complexElement, complexNode.getIdentifier(), complexMemberElement); 
+						CyNode complexMemberNode = getComplexNode(complexElement, complexNode.getIdentifier(), complexMemberElement);
 						if (complexMemberNode != null) {
 							// create edge, set attributes
-							Edge edge = Cytoscape.getCyEdge(complexNode, complexMemberNode, Semantics.INTERACTION,
+							CyEdge edge = Cytoscape.getCyEdge(complexNode, complexMemberNode, Semantics.INTERACTION,
 															CONTAINS, true);
 							edgeAttributes.setAttribute(edge.getIdentifier(), BIOPAX_EDGE_TYPE, CONTAINS);
 							edgeList.add(edge);
@@ -554,7 +550,7 @@ public class MapBioPaxToCytoscape {
 	 * Adds a Physical Interaction, such as a binding interaction between
 	 * two proteins.
 	 */
-	private void addPhysicalInteraction(Node interactionNode, Element interactionElement) {
+	private void addPhysicalInteraction(CyNode interactionNode, Element interactionElement) {
 		//  Add all Participants
 		//  There can be 0 or more PARTICIPANT Elements
 		List participantElements = rdfQuery.getNodes(interactionElement, "PARTICIPANTS");
@@ -568,7 +564,7 @@ public class MapBioPaxToCytoscape {
 	/**
 	 * Adds a Conversion Interaction.
 	 */
-	private void addConversionInteraction(Node interactionNode, Element interactionElement) {
+	private void addConversionInteraction(CyNode interactionNode, Element interactionElement) {
 		//  Add Left Side of Reaction
 		//  There can be 0 or more LEFT Elements
 		List leftSideElements = rdfQuery.getNodes(interactionElement, LEFT);
@@ -591,7 +587,7 @@ public class MapBioPaxToCytoscape {
 	/**
 	 * Add Edges Between Interaction Node and Physical Entity Nodes.
 	 */
-	private void linkNodes(Element interactionElement, Node nodeA, Element participantElement,
+	private void linkNodes(Element interactionElement, CyNode nodeA, Element participantElement,
 	                       String type) {
 		//  Get all Physical Entities.  There can be 0 or more
 		List physicalEntityList = rdfQuery.getNodes(participantElement, "*/PHYSICAL-ENTITY/*");
@@ -601,13 +597,13 @@ public class MapBioPaxToCytoscape {
 
 		for (int i = 0; i < physicalEntityList.size(); i++) {
 			Element physicalEntity = (Element) physicalEntityList.get(i);
-			Node nodeB = getCyNode(interactionElement, physicalEntity, type);
+			CyNode nodeB = getCyNode(interactionElement, physicalEntity, type);
 
 			if (nodeB == null) {
 				return;
 			}
 
-			Edge edge = null;
+			CyEdge edge = null;
 
 			if (type.equals(RIGHT) || type.equals(COFACTOR) || type.equals(PARTICIPANT)) {
 				edge = Cytoscape.getCyEdge(nodeA, nodeB, Semantics.INTERACTION, type, true);
@@ -627,7 +623,7 @@ public class MapBioPaxToCytoscape {
 	private void addControlInteraction(Element interactionElement) {
 		//  Get the Interaction Node represented by this Interaction Element
 		String interactionId = BioPaxUtil.extractRdfId(interactionElement);
-		Node interactionNode = Cytoscape.getCyNode(interactionId);
+		CyNode interactionNode = Cytoscape.getCyNode(interactionId);
 
 		//  Get the Controlled Element
 		//  For now, we assume there is only 1 controlled element
@@ -636,7 +632,7 @@ public class MapBioPaxToCytoscape {
 		if (controlledList.size() == 1) {
 			Element controlledElement = (Element) controlledList.get(0);
 			String controlledId = BioPaxUtil.extractRdfId(controlledElement);
-			Node controlledNode = Cytoscape.getCyNode(controlledId);
+			CyNode controlledNode = Cytoscape.getCyNode(controlledId);
 
 			if (controlledNode == null) {
 				this.warningList.add(new String("Warning!  Cannot find:  " + controlledId));
@@ -652,7 +648,7 @@ public class MapBioPaxToCytoscape {
 
 				//  Create Edge from Control Interaction Node to the
 				//  Controlled Node
-				Edge edge = Cytoscape.getCyEdge(interactionNode, controlledNode,
+				CyEdge edge = Cytoscape.getCyEdge(interactionNode, controlledNode,
 				                                Semantics.INTERACTION, typeStr, true);
 				//Cytoscape.setEdgeAttributeValue(edge, BIOPAX_EDGE_TYPE, typeStr);
 				Cytoscape.getEdgeAttributes()
@@ -692,7 +688,7 @@ public class MapBioPaxToCytoscape {
 			if (coFactorPhysEntityList.size() == 1) {
 				Element physicalEntity = (Element) coFactorPhysEntityList.get(0);
 				String coFactorId = BioPaxUtil.extractRdfId(physicalEntity);
-				Node coFactorNode = Cytoscape.getCyNode(coFactorId);
+				CyNode coFactorNode = Cytoscape.getCyNode(coFactorId);
 
 				if (coFactorNode == null) {
 					coFactorNode = getCyNode(interactionElement, physicalEntity,
@@ -747,7 +743,7 @@ public class MapBioPaxToCytoscape {
 	 * @param type           String
 	 * @return Node
 	 */
-	private Node getCyNode(Element bindingElement, Element physicalEntity, String type) {
+	private CyNode getCyNode(Element bindingElement, Element physicalEntity, String type) {
 
 		// setup a few booleans used later on
 		boolean isComplex = physicalEntity.getName().equals(BioPaxConstants.COMPLEX);
@@ -798,7 +794,7 @@ public class MapBioPaxToCytoscape {
 		}
 
 		// haven't seen this node before, lets create a new one
-		Node node = Cytoscape.getCyNode(cyNodeId, true);
+		CyNode node = Cytoscape.getCyNode(cyNodeId, true);
 		nodeList.add(node);
 		node.setIdentifier(cyNodeId);
 
@@ -829,7 +825,7 @@ public class MapBioPaxToCytoscape {
 	 * @param complexMemberElement Element
 	 * @return Node
 	 */
-	private Node getComplexNode(Element complexElement, String complexNodeId, Element complexMemberElement) {
+	private CyNode getComplexNode(Element complexElement, String complexNodeId, Element complexMemberElement) {
 
 		// extract id
 		String complexMemberId = BioPaxUtil.extractRdfId(complexMemberElement);
@@ -879,7 +875,7 @@ public class MapBioPaxToCytoscape {
 		}
 
 		// haven't seen this node before, lets create a new one
-		Node complexMemberNode = Cytoscape.getCyNode(complexMemberNodeId, true);
+		CyNode complexMemberNode = Cytoscape.getCyNode(complexMemberNodeId, true);
 		nodeList.add(complexMemberNode);
 		complexMemberNode.setIdentifier(complexMemberNodeId);
 
@@ -1155,7 +1151,7 @@ public class MapBioPaxToCytoscape {
 	/**
 	 * A helper function to set common node attributes.
 	 */
-	private void setNodeAttributes(Node node, String name, String type, String id, String label) {
+	private void setNodeAttributes(CyNode node, String name, String type, String id, String label) {
 		String nodeID = node.getIdentifier();
 		CyAttributes attributes = Cytoscape.getNodeAttributes();
 

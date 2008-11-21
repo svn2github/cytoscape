@@ -43,18 +43,14 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.dialogs.preferences.BookmarkDialog;
-
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeDesktop;
 
-import java.awt.event.ActionEvent;
-
-import java.io.IOException;
-
-import javax.swing.JFrame;
-
+import javax.swing.*;
 import javax.xml.bind.JAXBException;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 
 /**
@@ -62,14 +58,16 @@ import javax.xml.bind.JAXBException;
  */
 public class BookmarkAction extends CytoscapeAction {
 	private final static long serialVersionUID = 120233986993206L;
+	private CytoscapeDesktop desktop;
 	/**
 	 * Creates a new BookmarkAction object.
 	 */
-	public BookmarkAction() {
+	public BookmarkAction(CytoscapeDesktop desktop) {
 		super("Bookmarks...");
 
 		System.out.println("BookmarkAction()...");
 		setPreferredMenu("Edit.Preferences");
+		this.desktop = desktop;
 	}
 
 	/**
@@ -81,16 +79,14 @@ public class BookmarkAction extends CytoscapeAction {
 		BookmarkDialog bookmarkDialog;
 
 		try {
-			bookmarkDialog = new BookmarkDialog((JFrame) Cytoscape.getDesktop());
+			bookmarkDialog = new BookmarkDialog((JFrame) desktop);
 			bookmarkDialog.setVisible(true);
 		} catch (JAXBException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
 		// bookmarkDialog.refresh();
-	} // actionPerformed
+	} 
 }

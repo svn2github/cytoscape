@@ -36,25 +36,20 @@
 
 package cytoscape.io.table;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.io.table.reader.ExcelNetworkSheetReader;
 import cytoscape.io.table.reader.NetworkTableMappingParameters;
 import cytoscape.io.table.reader.NetworkTableReader;
 import cytoscape.io.table.reader.TextFileDelimiters;
-
 import junit.framework.TestCase;
-
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 
 import java.io.File;
 import java.io.FileInputStream;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,7 +111,7 @@ public class ExcelNetworkSheetReaderTest extends TestCase {
 
 		reader = new ExcelNetworkSheetReader(wb.getSheetName(0), sheet, mapping);
 
-		GraphPerspective net = Cytoscape.createNetwork(reader, false, null);
+		CyNetwork net = Cytoscape.createNetwork(reader, false, null);
 
 		/*
 		 * test cases
@@ -160,7 +155,7 @@ public class ExcelNetworkSheetReaderTest extends TestCase {
 		                                                                          null, null, 0, 1,
 		                                                                          2, null);
 
-		GraphPerspective net = null; 
+		CyNetwork net = null;
 		try {
 			reader = new ExcelNetworkSheetReader(wb.getSheetName(0), sheet, mapping, 1);
 			net = Cytoscape.createNetwork(reader, false, null);

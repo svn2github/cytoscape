@@ -1,37 +1,23 @@
 package org.cytoscape.view;
 
 // java
-import java.awt.Image;
-import java.awt.Dimension;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Paint;
-import java.awt.Container;
-
-import java.awt.geom.Point2D;
-
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-
-import javax.swing.JLayeredPane;
-import javax.swing.JComponent;
-
-import java.util.Iterator;
-import java.util.List;
-
-// giny
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-import org.cytoscape.RootGraph;
-import org.cytoscape.GraphPerspective;
 
 import cytoscape.render.stateful.GraphLOD;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import phoebe.PhoebeCanvasDropListener;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.KeyListener;
-
-import phoebe.*;
+import java.awt.geom.Point2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author xmas
@@ -66,9 +52,9 @@ public static int NODE_X_POSITION = 0;
 
 
 
-  public  GraphPerspective getGraphPerspective();
+  public CyNetwork getGraphPerspective();
   
-  public GraphPerspective getNetwork();
+  public CyNetwork getNetwork();
 
 
   //----------------------------------------//
@@ -97,7 +83,7 @@ public static int NODE_X_POSITION = 0;
   /**
    * @return a list of the selected NodeView
    */
-  public List<Node> getSelectedNodes();
+  public List<CyNode> getSelectedNodes();
 
   /**
    * @return an int array of the graph perspective indices of the selected edges
@@ -107,7 +93,7 @@ public static int NODE_X_POSITION = 0;
   /**
    * @return a list of the selected EdgeView
    */
-  public List<Edge> getSelectedEdges();
+  public List<CyEdge> getSelectedEdges();
 
   /**
    * Adds a new GraphViewChangeListener to this GraphViews list of listeners.
@@ -138,44 +124,14 @@ public static int NODE_X_POSITION = 0;
    * @param node_index the index of a node to have a view created for it
    * @return a new NodeView based on the node with the given index
    */
-  public  NodeView addNodeView(int node_index);
+  public  NodeView addNodeView(CyNode n);
       
   /**
    * @param edge_index the index of an edge
    * @return the newly created edgeview
    */
-  public  EdgeView addEdgeView(int edge_index);
+  public  EdgeView addEdgeView(CyEdge e);
       
-  /**
-   * To facilitate adding Custome EdgeViews
-   * It is recomended that All Custom Edge Views follow the patterns outlined
-   * in PEdgeView and BasicPEdgeView.  
-   * @param class_name the name of the class that implements EdgeView and esnted PEdge
-   * @param edge_index the index of the edge
-   */
-  public EdgeView addEdgeView(String class_name, int edge_index);
-      
-  /**
-   * To facilitate adding Custome NodeViews
-   * It is recomended that All Custom Node Views follow the patterns outlined
-   * in PNodeView and BasicPNodeView.  
-   * @param class_name the name of the class that implements NodeView and esnted PNode
-   * @param node_index the index of the node
-   */
-  public NodeView addNodeView(String class_name, int node_index);
-  
-  /**
-   * Add in a NodeView for a Node in the GraphPerspective.
-   * Note that this means that if there already was a NodeView for this node,
-   * the new NodeView will take its place.
-   * @return If it is replacing, it returns the <B>old</B> NodeView.
-   * @return If it is new, it returns the <B>new</b> NodeView.
-   */
-  public NodeView addNodeView(
-                              int node_index,
-                              NodeView node_view_replacement);
-  
-
   /**
    * This will entirely remove a NodeView/EdgeView from the GraphView.  This is different than
    * @see #hideGraphObject as that method simply stops showing the node/edge.  This method 
@@ -191,7 +147,7 @@ public static int NODE_X_POSITION = 0;
    * will destroy the object.  It will be returned though, so that a reference can be kept 
    * for undo purposes.
    */
-  public NodeView removeNodeView ( Node node );
+  public NodeView removeNodeView ( CyNode node );
 
    /**
    * This will entirely remove a NodeView/EdgeView from the GraphView.  This is different than
@@ -215,7 +171,7 @@ public static int NODE_X_POSITION = 0;
    * will destroy the object.  It will be returned though, so that a reference can be kept 
    * for undo purposes.
    */
-  public EdgeView removeEdgeView ( Edge edge );
+  public EdgeView removeEdgeView ( CyEdge edge );
 
   /**
    * This will entirely remove a NodeView/EdgeView from the GraphView.  This is different than
@@ -229,12 +185,12 @@ public static int NODE_X_POSITION = 0;
   /**
    * @return The Unique Identifier of this GraphView
    */
-  public String getIdentifier();
+  public Long getIdentifier();
     
   /**
    * @param new_identifier The New Identifier for this GraphView
    */
-  public void setIdentifier(String new_identifier);
+  public void setIdentifier(Long new_identifier);
    
   /**
    * @return The Current Zoom Level
@@ -257,11 +213,6 @@ public static int NODE_X_POSITION = 0;
   public void updateView();
         
   /**
-   * @return the root graph of the GraphPerspective that we are actually a view on
-   */
-  public RootGraph getRootGraph();
-  
-  /**
    * nodeViewsIterator only returns the NodeViews that are explicitly
    * associated with this GraphView
    */
@@ -282,7 +233,7 @@ public static int NODE_X_POSITION = 0;
    *
    * @return The NodeView of the given Node
    */
-  public NodeView getNodeView(Node node);
+  public NodeView getNodeView(CyNode node);
         
   /**
    * @param index the index of the node whose view is requested
@@ -300,8 +251,8 @@ public static int NODE_X_POSITION = 0;
    * @return The list of EdgeViews connecting these two nodes. Possibly null.
    */
   public  java.util.List<EdgeView> getEdgeViewsList(
-                                          Node oneNode,
-                                          Node otherNode);
+                                          CyNode oneNode,
+                                          CyNode otherNode);
   
   /**
    * @return a List of indicies
@@ -324,7 +275,7 @@ public static int NODE_X_POSITION = 0;
   /**
    * @return the EdgeView that corresponds to the given Edge
    */
-  public EdgeView getEdgeView(Edge edge);
+  public EdgeView getEdgeView(CyEdge edge);
   
   /**
    * @return the number of edges

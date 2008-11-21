@@ -1,8 +1,8 @@
 package org.cytoscape.view;
 
+import org.cytoscape.model.CyEdge;
+
 import java.awt.*;
-import java.awt.geom.*;
-import org.cytoscape.*;
 
 
 public interface EdgeView  extends GraphViewObject {
@@ -54,7 +54,7 @@ public interface EdgeView  extends GraphViewObject {
   /**
    * @return the Edge to which we are a view on
    */
-  public Edge getEdge();
+  public CyEdge getEdge();
 
 
   /**

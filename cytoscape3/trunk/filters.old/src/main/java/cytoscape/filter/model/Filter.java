@@ -36,10 +36,6 @@
 
 package cytoscape.filter.model;
 
-import cytoscape.filter.view.FilterEditor;
-
-import java.beans.PropertyChangeListener;
-
 import javax.swing.event.SwingPropertyChangeSupport;
 
 

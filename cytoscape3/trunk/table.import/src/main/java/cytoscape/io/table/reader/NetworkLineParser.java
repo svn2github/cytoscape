@@ -37,12 +37,10 @@
 package cytoscape.io.table.reader;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,15 +91,15 @@ public class NetworkLineParser {
 	 * @param parts DOCUMENT ME!
 	 */
 	public void parseEntry(String[] parts) {
-		final Edge edge = addNodeAndEdge(parts);
+		final CyEdge edge = addNodeAndEdge(parts);
 
 		if (edge != null) {
 			addEdgeAttributes(edge, parts);
 		}
 	}
 
-	private Edge addNodeAndEdge(final String[] parts) {
-		final Node source;
+	private CyEdge addNodeAndEdge(final String[] parts) {
+		final CyNode source;
 		
 		if (nmp.getSourceIndex().equals(-1) == false && (nmp.getSourceIndex() <= (parts.length - 1)) && (parts[nmp.getSourceIndex()] != null)) {
 			source = Cytoscape.getCyNode(parts[nmp.getSourceIndex()].trim(), true);
@@ -110,7 +108,7 @@ public class NetworkLineParser {
 			source = null;
 		}
 		
-		final Node target;
+		final CyNode target;
 
 		if (nmp.getTargetIndex().equals(-1) == false && (nmp.getTargetIndex() <= (parts.length - 1)) && (parts[nmp.getTargetIndex()] != null)) {
 			target = Cytoscape.getCyNode(parts[nmp.getTargetIndex()].trim(), true);
@@ -134,14 +132,14 @@ public class NetworkLineParser {
 			interaction = parts[nmp.getInteractionIndex()].trim();
 		}
 
-		final Edge edge;
+		final CyEdge edge;
 		edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, directed_edges);
 		edgeList.add(edge.getRootGraphIndex());
 		
 		return edge;
 	}
 
-	private void addEdgeAttributes(final Edge edge, final String[] parts) {
+	private void addEdgeAttributes(final CyEdge edge, final String[] parts) {
 		for (int i = 0; i < parts.length; i++) {
 			if ((i != nmp.getSourceIndex()) && (i != nmp.getTargetIndex())
 			    && (i != nmp.getInteractionIndex()) && parts[i] != null ) {

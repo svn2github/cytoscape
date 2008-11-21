@@ -1,9 +1,8 @@
 package cytoscape.filters;
 
-import cytoscape.filters.StringFilter;
-import cytoscape.filters.CompositeFilter;
-import java.util.BitSet;
 import csplugins.quickfind.util.QuickFind;
+
+import java.util.BitSet;
 
 public class NodeInteractionFilterTest extends FilterTest {
 

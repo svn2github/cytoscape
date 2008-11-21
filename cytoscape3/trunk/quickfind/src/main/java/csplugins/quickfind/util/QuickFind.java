@@ -38,10 +38,8 @@ package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.Hit;
-
-import org.cytoscape.GraphPerspective;
-
 import cytoscape.task.TaskMonitor;
+import org.cytoscape.model.CyNetwork;
 
 
 /**
@@ -91,7 +89,7 @@ import cytoscape.task.TaskMonitor;
  * <LI>By default, this class will automatically index node objects based on the
  * their unique node identifier, e.g. node.getIdentifier().</LI>
  * <LI>You can index by a different attribute by calling the
- * {@link QuickFind#reindexNetwork(GraphPerspective, int, String,
+ * {@link QuickFind#reindexNetwork(org.cytoscape.CyNetwork , int, String,
  * cytoscape.task.TaskMonitor)}.
  * <LI>You can specify any attribute name you like.  However, QuickFind
  * is not yet capable of indexing attributes of type CyAttributes.TYPE_COMPLEX.
@@ -151,7 +149,7 @@ public interface QuickFind {
 	 * @param network     Cytoscape Network.
 	 * @param taskMonitor TaskMonitor Object.
 	 */
-	void addNetwork(GraphPerspective network, TaskMonitor taskMonitor);
+	void addNetwork(CyNetwork network, TaskMonitor taskMonitor);
 
 	/**
 	 * Removes the specified network from the global index.
@@ -161,7 +159,7 @@ public interface QuickFind {
 	 *
 	 * @param network GraphPerspective Object.
 	 */
-	void removeNetwork(GraphPerspective network);
+	void removeNetwork(CyNetwork network);
 
 	/**
 	 * Gets the index associated with the specified network.
@@ -169,7 +167,7 @@ public interface QuickFind {
 	 * @param network Cytoscape Network.
 	 * @return Index Object.
 	 */
-	GenericIndex getIndex(GraphPerspective network);
+	GenericIndex getIndex(CyNetwork network);
 
 	/**
 	 * Reindexes a network with the specified controlling attribute.
@@ -190,7 +188,7 @@ public interface QuickFind {
 	 *                             progress of task.
 	 * @return GenericIndex Object.
 	 */
-	GenericIndex reindexNetwork(GraphPerspective cyNetwork, int indexType, String controllingAttribute,
+	GenericIndex reindexNetwork(CyNetwork cyNetwork, int indexType, String controllingAttribute,
 	                            TaskMonitor taskMonitor);
 
 	/**
@@ -199,7 +197,7 @@ public interface QuickFind {
 	 * @param network       the current GraphPerspective.
 	 * @param hit           Hit chosen by the user.
 	 */
-	void selectHit(GraphPerspective network, Hit hit);
+	void selectHit(CyNetwork network, Hit hit);
 
 	/**
 	 * Select a range in QuickFind.
@@ -208,7 +206,7 @@ public interface QuickFind {
 	 * @param low           the low value of the range.
 	 * @param high          the high value of the range.
 	 */
-	void selectRange(GraphPerspective network, Number low, Number high);
+	void selectRange(CyNetwork network, Number low, Number high);
 
 	/**
 	 * Adds a new QuickFind Listener.

@@ -37,21 +37,14 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.view.cytopanels.CytoPanelName;
-import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.view.CytoscapeDesktop;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-
-import javax.swing.Action;
-import javax.swing.SwingConstants;
-import javax.swing.JCheckBoxMenuItem;
-
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
 
 /**
  *
@@ -64,24 +57,14 @@ public class CytoPanelAction extends CytoscapeAction {
 
 	protected String title;
 	protected int position;
+	private CytoscapeDesktop desktop;
 
-	public CytoPanelAction(CytoPanelName cp, boolean show) {
-		this(cp.getTitle(), cp.getCompassDirection(), show);
-	}
-
-	/**
-	 * Base class for displaying cytopanel menu items. 
-	 *
-	 * @param title The title that will be coupled with "show" and "hide" in the menu. 
-	 * @param position The SwingConstants.SOUTH,EAST,WEST,etc. position of the cyto panel.
-	 * @param show Whether the cytopanel is initially shown at startup or not. Only used
-	 * to define the initial title.
-	 */
-	private CytoPanelAction(String title,int position, boolean show) {
-		super(show ? HIDE + " " + title : SHOW + " " + title);
-		this.title = title;
-		this.position = position;
+	public CytoPanelAction(CytoPanelName cp, boolean show, CytoscapeDesktop desktop) {
+		super(show ? HIDE + " " + cp.getTitle() : SHOW + " " + cp.getTitle());
+		this.title = cp.getTitle();
+		this.position = cp.getCompassDirection();
 		setPreferredMenu("View");
+		this.desktop = desktop;
 	}
 
 	/**
@@ -91,14 +74,14 @@ public class CytoPanelAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent ev) {
 	
-		CytoPanelState curState = Cytoscape.getDesktop().getCytoPanel(position).getState();
+		CytoPanelState curState = desktop.getCytoPanel(position).getState();
 
 		if (curState == CytoPanelState.HIDE) {
-			Cytoscape.getDesktop().getCytoPanel(position).setState(CytoPanelState.DOCK);
+			desktop.getCytoPanel(position).setState(CytoPanelState.DOCK);
 			//putValue(Action.NAME, HIDE + " " + title);
 
 		} else {
-			Cytoscape.getDesktop().getCytoPanel(position).setState(CytoPanelState.HIDE);
+			desktop.getCytoPanel(position).setState(CytoPanelState.HIDE);
 			//putValue(Action.NAME, SHOW + " " + title);
 		}
 	} 
@@ -107,7 +90,7 @@ public class CytoPanelAction extends CytoscapeAction {
 	 * This dynamically sets the title of the menu based on the state of the CytoPanel.
 	 */
 	public void menuSelected(MenuEvent me) {
-		CytoPanelState curState = Cytoscape.getDesktop().getCytoPanel(position).getState();
+		CytoPanelState curState = desktop.getCytoPanel(position).getState();
 		if (curState == CytoPanelState.HIDE) {
 			putValue(Action.NAME, SHOW + " " + title);
 		} else {

@@ -37,10 +37,10 @@
 package cytoscape.visual.ui;
 
 import org.cytoscape.view.EdgeContextMenuListener;
-
 import org.cytoscape.view.EdgeView;
+import cytoscape.visual.ui.editors.EditorFactory;
 
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 
 
 /**
@@ -49,7 +49,10 @@ import javax.swing.JPopupMenu;
  */
 class EdgeBypassMenuListener
     implements EdgeContextMenuListener {
-    EdgeBypassMenuListener() {
+
+	private EditorFactory ef;
+    EdgeBypassMenuListener(EditorFactory ef) {
+		this.ef = ef;
     }
 
     /**
@@ -57,7 +60,7 @@ class EdgeBypassMenuListener
      * @param menu popup menu to add the Bypass menu
      */
     public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
-        EdgeBypass eb = new EdgeBypass();
+        EdgeBypass eb = new EdgeBypass(ef);
 
         if (menu == null)
             menu = new JPopupMenu();

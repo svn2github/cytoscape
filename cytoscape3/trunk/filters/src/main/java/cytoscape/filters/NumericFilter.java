@@ -36,18 +36,14 @@
 
 package cytoscape.filters;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import java.util.*;
-
 import csplugins.quickfind.util.QuickFind;
-import csplugins.widgets.autocomplete.index.TextIndex;
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-import cytoscape.filters.util.FilterUtil;
-import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.NumberIndex;
+import cytoscape.filters.util.FilterUtil;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+
+import java.util.BitSet;
+import java.util.List;
 
 
 /**
@@ -94,8 +90,8 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 	
 	public void apply() {
 				
-		List<Node> nodes_list = null;
-		List<Edge> edges_list=null;
+		List<CyNode> nodes_list = null;
+		List<CyEdge> edges_list=null;
 
 		int objectCount = -1;
 		if (index_type == QuickFind.INDEX_NODES) {
@@ -133,12 +129,12 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 		int index;		
 		if (index_type == QuickFind.INDEX_NODES) {
 			for (Object obj : list) {
-				index = nodes_list.lastIndexOf((Node) obj);
+				index = nodes_list.lastIndexOf((CyNode) obj);
 				node_bits.set(index, true);
 			}
 		} else if (index_type == QuickFind.INDEX_EDGES) {
 			for (Object obj : list) {
-				index = edges_list.lastIndexOf((Edge) obj);
+				index = edges_list.lastIndexOf((CyEdge) obj);
 				edge_bits.set(index, true);
 			}
 		}		

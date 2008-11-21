@@ -35,26 +35,13 @@
 package cytoscape.util;
 
 import org.jdom.Comment;
-
-/**
- * Utility script to create an up-to-date jnlp file for Cytoscape webstart.
- *
- * It uses the plugin manifest files to figure out the CytoscapePlugin classes
- * or attempts to guess by looking for a class in the jar file with "Plugin" in the name.
- *
- * Meant to use as a standalone script through an ant bulidfile.
- */
 import org.jdom.Document;
 import org.jdom.Element;
-
 import org.jdom.output.XMLOutputter;
 
 import java.io.File;
 import java.io.FileWriter;
-
 import java.util.ArrayList;
-
-//import org.jdom.output.Format; //jdom vs 1.0, currently on 0.9
 import java.util.HashMap;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;

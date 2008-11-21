@@ -33,10 +33,10 @@ package org.cytoscape.coreplugin.cpath2.util;
 
 // imports 
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeContextMenuListener;
 import org.cytoscape.view.NodeView;
@@ -78,7 +78,7 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
     public void propertyChange(PropertyChangeEvent event) {
 
         if (event.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
-            GraphPerspective cyNetwork = (GraphPerspective) ((Object[]) event.getNewValue())[0];
+            CyNetwork cyNetwork = (CyNetwork) ((Object[]) event.getNewValue())[0];
             if (cyNetwork != null && isBioPaxNetwork(cyNetwork)) {
                 // setup the context menu
                 GraphView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
@@ -112,7 +112,7 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
 
         // generate menu url
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-        Node cyNode = (Node) nodeView.getNode();
+        CyNode cyNode = (CyNode) nodeView.getNode();
         String biopaxID = nodeAttributes.getStringAttribute(cyNode.getIdentifier(), MapNodeAttributes.BIOPAX_RDF_ID);
         biopaxID = biopaxID.replace("CPATH-", "");
         String neighborhoodParam = "Neighborhood: " + nodeAttributes.getStringAttribute(cyNode.getIdentifier(), BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
@@ -174,10 +174,10 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
     /*
       * Method determines if given network is a biopax network.
       *
-      * @param cyNetwork GraphPerspective
+      * @param cyNetwork CyNetwork
       * @return boolean if any network views that we have created remain.
       */
-    private boolean isBioPaxNetwork(GraphPerspective cyNetwork) {
+    private boolean isBioPaxNetwork(CyNetwork cyNetwork) {
 
         // get the network attributes
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();

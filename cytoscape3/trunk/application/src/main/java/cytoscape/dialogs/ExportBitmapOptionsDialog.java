@@ -1,12 +1,19 @@
 package cytoscape.dialogs;
 
-import javax.swing.*;
-import javax.swing.border.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.text.*;
-
 import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
+
+import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 /**
  * Options dialog for exporting to bitmap images.
@@ -33,9 +40,9 @@ public class ExportBitmapOptionsDialog extends JDialog
 	 * @param imageHeight The image height to be exported
 	 * @param listener The action will be called when the "OK" button is clicked
 	 */
-	public ExportBitmapOptionsDialog(int imageWidth, int imageHeight)
+	public ExportBitmapOptionsDialog(int imageWidth, int imageHeight, CytoscapeDesktop desk)
 	{
-		super(Cytoscape.getDesktop(), "Export Bitmap Options");
+		super(desk, "Export Bitmap Options");
 		this.originalWidth = imageWidth;
 		this.originalHeight = imageHeight;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -222,7 +229,7 @@ public class ExportBitmapOptionsDialog extends JDialog
 
 		updateOnZoom(1.0);
 
-		setLocationRelativeTo(Cytoscape.getDesktop());
+		setLocationRelativeTo(desk);
 		pack();
 	}
 

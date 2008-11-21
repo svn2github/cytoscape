@@ -32,13 +32,10 @@
 package org.mskcc.test.biopax;
 
 import junit.framework.TestCase;
-
 import org.jdom.Element;
-
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 
 import java.io.FileReader;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

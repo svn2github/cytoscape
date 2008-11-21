@@ -36,34 +36,31 @@
 */
 package cytoscape.layout.ui;
 
-import cytoscape.Cytoscape;
-
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
+import cytoscape.view.CyMenus;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collection;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
-
-import javax.swing.JMenu;
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import java.util.*;
 
 
 public class LayoutMenuManager implements MenuListener {
 
-	private static Map<String, List<CyLayoutAlgorithm>> menuAlgorithmMap;
-	private static Map<String, LayoutMenu> menuMap;
-	private static Set<CyLayoutAlgorithm> existingLayouts;
+	private Map<String, List<CyLayoutAlgorithm>> menuAlgorithmMap;
+	private Map<String, LayoutMenu> menuMap;
+	private Set<CyLayoutAlgorithm> existingLayouts;
 
-	static {
+	private CyLayouts cyLayouts;
+
+	public LayoutMenuManager(CyMenus cyMenus, CyLayouts cyLayouts) {
 		menuAlgorithmMap = new HashMap<String,List<CyLayoutAlgorithm>>();
 		menuMap = new HashMap<String,LayoutMenu>();
 		existingLayouts = new HashSet<CyLayoutAlgorithm>();
+		this.cyLayouts = cyLayouts;
+
+		cyMenus.getLayoutMenu().addMenuListener(this);
 	}
 
 	public void menuCanceled(MenuEvent e) { };
@@ -79,12 +76,12 @@ public class LayoutMenuManager implements MenuListener {
 	private void updateMenus(JMenu parentMenu) {
 
 		// first add all layouts from cylayouts if they're not already there
-		for ( CyLayoutAlgorithm la : CyLayouts.getAllLayouts() ) 
+		for ( CyLayoutAlgorithm la : cyLayouts.getAllLayouts() ) 
 			if ( !existingLayouts.contains(la) )
 				addLayout(la);
 
 		// now remove any existing layouts that are no longer in cylayouts
-		Set<CyLayoutAlgorithm> newLayouts = new HashSet<CyLayoutAlgorithm>(CyLayouts.getAllLayouts());
+		Set<CyLayoutAlgorithm> newLayouts = new HashSet<CyLayoutAlgorithm>(cyLayouts.getAllLayouts());
 		for ( CyLayoutAlgorithm la : existingLayouts ) 
 			if ( !newLayouts.contains(la) )
 				removeLayout(la);
@@ -107,7 +104,7 @@ public class LayoutMenuManager implements MenuListener {
 
 	private void addLayout(CyLayoutAlgorithm layout) {
 		
-		String menuName = CyLayouts.getMenuName(layout);
+		String menuName = cyLayouts.getMenuName(layout);
 		if (menuName == null )
 			return;	
 
@@ -124,7 +121,7 @@ public class LayoutMenuManager implements MenuListener {
 
 		// make sure the menu is set up
 		if ( !menuMap.containsKey(menuName) ) {
-			LayoutMenu menu = new LayoutMenu(menuName);
+			LayoutMenu menu = new LayoutMenu(menuName, this);
 			menuMap.put(menuName, menu);
 		}
 
@@ -154,7 +151,7 @@ public class LayoutMenuManager implements MenuListener {
 	 * @param menu The name of the menu
 	 * @return a List of all layouts associated with this menu (could be null)
 	 */
-	static List<CyLayoutAlgorithm> getLayoutsInMenu(String menu) {
+	List<CyLayoutAlgorithm> getLayoutsInMenu(String menu) {
 		return menuAlgorithmMap.get(menu);
 	}
 
@@ -163,7 +160,7 @@ public class LayoutMenuManager implements MenuListener {
 	 *
 	 * @return a Collection of Strings representing each of the menus
 	 */
-	static Set<String> getLayoutMenuNames() {
+	Set<String> getLayoutMenuNames() {
 		return menuAlgorithmMap.keySet();
 	}
 }

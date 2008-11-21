@@ -36,24 +36,25 @@
  */
 package cytoscape.visual.ui;
 
-import org.cytoscape.Node;
+import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.vizmap.VisualPropertyType;
+import cytoscape.visual.ui.editors.EditorFactory;
 
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.vizmap.VisualPropertyType;
-
 
 class NodeBypass extends VizMapBypass {
-	JMenuItem addMenu(Node n) {
-		graphObj = n;
-		attrs = Cytoscape.getNodeAttributes();
 
+	NodeBypass(EditorFactory ef) {
+		super(ef);
+	}
+
+	JMenuItem addMenu(CyNode n) {
+		graphObj = n;
 		JMenu menu = new JMenu("Visual Mapping Bypass");
 		menu.add(new JLabel("Change Node Visualization"));
 		menu.addSeparator();

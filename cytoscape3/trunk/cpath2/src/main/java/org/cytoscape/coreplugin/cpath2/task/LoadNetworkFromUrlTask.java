@@ -40,27 +40,20 @@
 // $Author: pwang $
 package org.cytoscape.coreplugin.cpath2.task;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.data.readers.GraphReader;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
+import org.cytoscape.model.CyNetwork;
 
+import javax.swing.*;
 import java.io.IOException;
-
 import java.net.URL;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
-import javax.swing.JOptionPane;
 
 /**
  * Task to load a new network from a URL.
@@ -116,7 +109,7 @@ public class LoadNetworkFromUrlTask implements Task {
                 return;
             }
 			taskMonitor.setStatus("Creating Cytoscape Network...");
-			GraphPerspective cyNetwork = Cytoscape.createNetwork(reader, true, null);
+			CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
 			Object[] ret_val = new Object[2];
 			ret_val[0] = cyNetwork;
@@ -142,7 +135,7 @@ public class LoadNetworkFromUrlTask implements Task {
 	/**
 	 * Inform User of Network Stats.
 	 */
-	private void informUserOfGraphStats(GraphPerspective newNetwork) {
+	private void informUserOfGraphStats(CyNetwork newNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 

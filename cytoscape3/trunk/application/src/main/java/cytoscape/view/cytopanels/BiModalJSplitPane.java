@@ -42,18 +42,10 @@
 // our package
 package cytoscape.view.cytopanels;
 
-import java.awt.Component;
-import java.awt.Container;
-
-// imports
-import java.awt.Point;
-import java.awt.Rectangle;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-
-import javax.swing.JFrame;
-import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
 
 
 /**

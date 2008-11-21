@@ -29,7 +29,6 @@
 package org.jgraph.layout;
 
 import org.jgraph.JGraph;
-
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.EdgeView;
@@ -38,9 +37,8 @@ import org.jgraph.graph.GraphLayoutCache;
 import org.jgraph.graph.PortView;
 import org.jgraph.graph.VertexView;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;

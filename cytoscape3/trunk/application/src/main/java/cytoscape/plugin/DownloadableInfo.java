@@ -35,11 +35,11 @@
  */
 package cytoscape.plugin;
 
-import java.net.URL;
+import org.cytoscape.io.read.URLUtil;
 
-import cytoscape.util.URLUtil;
-import java.util.Set;
+import java.net.URL;
 import java.util.HashSet;
+import java.util.Set;
 
 public abstract class DownloadableInfo {
 	protected String versionMatch = "^\\d+\\.\\d+";

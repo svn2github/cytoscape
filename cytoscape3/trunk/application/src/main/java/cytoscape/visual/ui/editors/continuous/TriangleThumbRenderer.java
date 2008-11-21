@@ -3,14 +3,8 @@ package cytoscape.visual.ui.editors.continuous;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.ThumbRenderer;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.RenderingHints;
-
-import javax.swing.JComponent;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

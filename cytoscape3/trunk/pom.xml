@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <name>Cytoscape Core</name>
 
@@ -105,6 +105,29 @@
   <packaging>pom</packaging>
 
   <repositories>
+      <repository>
+          <id>cytoscape_snapshots</id>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <name>Cytoscape Snapshots</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+       </repository>
+       <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+       <repository>
+          <id>cytoscape_releases</id>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <name>Cytoscape Releases</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+       </repository>
     <!-- for biojava -->
     <repository>
       <id>wwmm</id>
@@ -164,6 +187,7 @@
           <!--  some example Pax-Runner settings -->
           <provision>
             <param>--platform=felix</param>
+            <param>--version=1.0.4</param>
             <param>--profiles=minimal</param>
             <param>--vmOptions=-Xbootclasspath/a:bundles/com.jgoodies.looks_2.1.2.jar:bundles/cytoscape-sun.jhall_1.0.0.jar</param>
           </provision>
@@ -186,11 +210,12 @@
           <target>1.5</target>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
-          <!--
-						compilerArguments> <Xlint:all></Xlint:all>
-						<Xlint:-path></Xlint:-path> <Xmaxwarns>10000</Xmaxwarns>
-						<Xmaxerrs>10000</Xmaxerrs> </compilerArguments
-					-->
+          <compilerArguments>
+            <!-- <Xlint:all></Xlint:all> 
+						<Xlint:-path></Xlint:-path> -->
+            <Xmaxwarns>10000</Xmaxwarns>
+            <Xmaxerrs>10000</Xmaxerrs>
+          </compilerArguments>
         </configuration>
       </plugin>
     </plugins>
@@ -245,7 +270,6 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <excludePackageNames>*.impl</excludePackageNames>
-          <aggregate>true</aggregate>
         </configuration>
         <reportSets>
           <reportSet>
@@ -273,25 +297,23 @@
     <module>util.intr</module>
     <module>graph.fixed</module>
     <module>graph.dynamic</module>
-    <module>network</module>
     <module>render.immed</module>
     <module>geom.spacial</module>
     <module>render.stateful</module>
     <module>geom.rtree</module>
     <module>render.export</module>
-    <module>attributes</module>
     <module>tunable</module>
     <module>task</module>
     <module>view</module>
-    <module>undo</module>
     <module>phoebe.dnd</module>
-    <module>automatic.layout</module>
     <module>layout</module>
     <module>wrappers</module>
     <module>vizmap</module>
     <module>commons.cli</module>
     <module>io</module>
     <module>application</module>
+    <!--
+    <module>automatic.layout</module>
     <module>cpath</module>
     <module>merge</module>
     <module>math.xform</module>
@@ -307,8 +329,9 @@
     <module>manual.layout</module>
     <module>quickfind</module>
     <module>table.import</module>
-    <!--
+    <module>ontology</module>
 	-->
   </modules>
 
 </project>
+

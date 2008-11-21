@@ -36,23 +36,19 @@
 */
 package cytoscape.layout.ui;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.layout.CyLayoutAlgorithm;
-
 import org.cytoscape.view.GraphView;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.List;
-
-import javax.swing.JMenu;
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -65,16 +61,18 @@ import javax.swing.event.MenuListener;
 public class LayoutMenu extends JMenu implements MenuListener {
 	private final static long serialVersionUID = 1202339874255880L;
 	List<CyLayoutAlgorithm> subMenuList;
+	LayoutMenuManager menuMgr;
 
 	/**
 	 * Creates a new LayoutMenu object.
 	 *
 	 * @param menuName  DOCUMENT ME!
 	 */
-	public LayoutMenu(String menuName) {
+	public LayoutMenu(String menuName, LayoutMenuManager menuMgr) {
 		super(menuName);
 		addMenuListener(this);
 		subMenuList = new ArrayList<CyLayoutAlgorithm>();
+		this.menuMgr = menuMgr;
 	}
 
 	/**
@@ -128,19 +126,24 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		this.removeAll();
 
 		// Figure out if we have anything selected
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
-		Set selectedNodes = network.getSelectedNodes();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		boolean someSelected = false; 
+		if ( network != null ) {
+			List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
+			someSelected = (selectedNodes.size() > 0);
+		}
+
 		boolean enableMenuItem = checkEnabled(); 
 
 		// Now, add each layout, as appropriate
-		for (CyLayoutAlgorithm layout: LayoutMenuManager.getLayoutsInMenu(getText())) {
+		for (CyLayoutAlgorithm layout: menuMgr.getLayoutsInMenu(getText())) {
 			// Make sure we don't have any lingering locked nodes
 			layout.unlockAllNodes();
 
-			if ((layout.supportsNodeAttributes() != null)
-			    || (layout.supportsEdgeAttributes() != null)) {
+			if ((layout.supportsNodeAttributes().size() > 0)
+			    || (layout.supportsEdgeAttributes().size() > 0)) {
 				super.add(new DynamicLayoutMenu(layout,enableMenuItem));
-			} else if (layout.supportsSelectedOnly() && (selectedNodes.size() > 0)) {
+			} else if (layout.supportsSelectedOnly() && someSelected) {
 				super.add(new DynamicLayoutMenu(layout,enableMenuItem));
 			} else {
 				super.add(new StaticLayoutMenu(layout,enableMenuItem));
@@ -149,7 +152,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	}
 
 	private boolean checkEnabled() {
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 		if ( network == null || network == Cytoscape.getNullNetwork() )
 			return false;
 

@@ -34,48 +34,30 @@
 */
 package cytoscape.browser.ui;
 
-import static cytoscape.browser.DataObjectType.EDGES;
-import static cytoscape.browser.DataObjectType.NETWORK;
-import static cytoscape.browser.DataObjectType.NODES;
+import cytoscape.Cytoscape;
+import cytoscape.actions.ImportEdgeAttributesAction;
+import cytoscape.actions.ImportExpressionMatrixAction;
+import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.browser.AttributeBrowser;
+import cytoscape.browser.AttributeModel;
+import cytoscape.browser.DataObjectType;
+import static cytoscape.browser.DataObjectType.*;
+import cytoscape.browser.DataTableModel;
+import cytoscape.util.swing.CheckBoxJList;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowUtils;
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.layout.LayoutStyle;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
-
-import cytoscape.browser.AttributeBrowser;
-import cytoscape.browser.AttributeBrowserPlugin;
-import cytoscape.browser.AttributeModel;
-import cytoscape.browser.DataObjectType;
-import cytoscape.browser.DataTableModel;
-import cytoscape.Cytoscape;
-import cytoscape.actions.ImportEdgeAttributesAction;
-import cytoscape.actions.ImportExpressionMatrixAction;
-import cytoscape.actions.ImportNodeAttributesAction;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
-import cytoscape.dialogs.NetworkMetaDataDialog;
-import cytoscape.util.swing.CheckBoxJList;
 
 
 /**

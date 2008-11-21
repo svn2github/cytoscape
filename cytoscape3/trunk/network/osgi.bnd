@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 
-Export-Package: org.cytoscape,org.cytoscape.data,org.cytoscape.groups
-Private-Package: org.cytoscape.impl,org.cytoscape.data.impl
+Export-Package: org.cytoscape.model.network,org.cytoscape.model.network.events,org.cytoscape.groups
+Private-Package: org.cytoscape.model.network.internal,org.cytoscape.model.network.events.internal

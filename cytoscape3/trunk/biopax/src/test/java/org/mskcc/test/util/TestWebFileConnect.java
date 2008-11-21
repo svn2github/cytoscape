@@ -32,7 +32,6 @@
 package org.mskcc.test.util;
 
 import junit.framework.TestCase;
-
 import org.mskcc.biopax_plugin.util.net.WebFileConnect;
 
 import java.io.File;

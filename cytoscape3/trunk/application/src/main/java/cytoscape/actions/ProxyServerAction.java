@@ -43,18 +43,12 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
-import cytoscape.dialogs.preferences.*;
 import cytoscape.dialogs.preferences.ProxyServerDialog;
-
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeDesktop;
 
-import org.cytoscape.view.GraphView;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
 
 
 /**
@@ -62,13 +56,15 @@ import javax.swing.JFrame;
  */
 public class ProxyServerAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870267736L;
+	private CytoscapeDesktop desktop;
 	/**
 	 * Creates a new ProxyServerAction object.
 	 */
-	public ProxyServerAction() {
+	public ProxyServerAction(CytoscapeDesktop desktop) {
 		super("Proxy Server...");
 
 		setPreferredMenu("Edit.Preferences");
+		this.desktop = desktop;
 	}
 
 	/**
@@ -77,7 +73,7 @@ public class ProxyServerAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		ProxyServerDialog proxyServerDialog = new ProxyServerDialog((JFrame) Cytoscape.getDesktop());
+		ProxyServerDialog proxyServerDialog = new ProxyServerDialog((JFrame) desktop);
 		//proxyServerDialog.refresh();
 		proxyServerDialog.setVisible(true);
 	} // actionPerformed

@@ -42,29 +42,18 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.vizmap.VisualPropertyType;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.ValueParser;
+import org.cytoscape.vizmap.VisualPropertyType;
+//import org.jdesktop.swingx.border.DropShadowBorder;
 
-import org.jdesktop.swingx.border.DropShadowBorder;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-
+import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeListener;
 
 
 //----------------------------------------------------------------------------
@@ -172,7 +161,7 @@ public class PassThroughMapping implements ObjectMapping {
 	 * @param network DOCUMENT ME!
 	 * @param preserveMapping DOCUMENT ME!
 	 */
-	public void setControllingAttributeName(String attrName, GraphPerspective network,
+	public void setControllingAttributeName(String attrName, CyNetwork network,
 	                                        boolean preserveMapping) {
 		this.attrName = attrName;
 	}
@@ -197,7 +186,7 @@ public class PassThroughMapping implements ObjectMapping {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public JPanel getUI(JDialog parent, GraphPerspective network) {
+	public JPanel getUI(JDialog parent, CyNetwork network) {
 		//construct a UI to view/edit this mapping; only needs to view/set
 		//the controlling attribute name
 		JPanel p = new JPanel();
@@ -217,12 +206,12 @@ public class PassThroughMapping implements ObjectMapping {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object calculateRangeValue(Map attrBundle) {
+	public Object calculateRangeValue(CyRow attrBundle) {
 		if (attrBundle == null || attrName == null)
 			return null;
 
 		//extract the data value for our controlling attribute
-		final Object attrValue = attrBundle.get(attrName);
+		final Object attrValue = attrBundle.getRaw(attrName);
 
 		if (attrValue == null)
 			return null;
@@ -312,7 +301,7 @@ public class PassThroughMapping implements ObjectMapping {
 		title.setHorizontalTextPosition(SwingConstants.CENTER);
 		title.setVerticalTextPosition(SwingConstants.CENTER);
 		title.setPreferredSize(new Dimension(200, 50));
-		title.setBorder(new DropShadowBorder());
+//		title.setBorder(new DropShadowBorder());
 		p.setBackground(Color.white);
 		p.add(title, SwingConstants.CENTER);
 

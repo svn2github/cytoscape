@@ -42,24 +42,19 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyDataTableUtil;
 
-//-------------------------------------------------------------------------
-import org.cytoscape.Node;
-
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.KeyStroke;
-
-import javax.swing.event.MenuEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -83,11 +78,13 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final GraphPerspective currentNetwork = Cytoscape.getCurrentNetwork();
-		final List<Node> selectedNodes = new ArrayList<Node>(currentNetwork.getSelectedNodes());
+		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+		final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(currentNetwork,"selected",true);
 
-		for (final Iterator it = selectedNodes.iterator(); it.hasNext();) {
-			currentNetwork.setSelectedNodeState(currentNetwork.neighborsList((Node) it.next()), true);
+		for ( CyNode currentNode : selectedNodes ) {
+			for ( CyNode n : currentNetwork.getNeighborList(currentNode,CyEdge.Type.ANY) ) {
+				n.attrs().set("selected",true);
+			}
 		}
 
 		Cytoscape.getCurrentNetworkView().updateView();

@@ -34,13 +34,11 @@
 */
 package org.cytoscape.coreplugin.psi_mi.cyto_mapper;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.Mapper;
 import org.cytoscape.coreplugin.psi_mi.model.AttributeBag;
 import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
@@ -61,7 +59,7 @@ import java.util.List;
  * @author Ethan Cerami
  */
 public class MapFromCytoscape implements Mapper {
-	private GraphPerspective cyNetwork;
+	private CyNetwork cyNetwork;
 	private CyAttributes nodeAttributes;
 	private CyAttributes edgeAttributes;
 
@@ -75,7 +73,7 @@ public class MapFromCytoscape implements Mapper {
 	 *
 	 * @param cyNetwork GraphPerspective Object.
 	 */
-	public MapFromCytoscape(GraphPerspective cyNetwork) {
+	public MapFromCytoscape(CyNetwork cyNetwork) {
 		this.cyNetwork = cyNetwork;
 		this.nodeAttributes = Cytoscape.getNodeAttributes();
 		this.edgeAttributes = Cytoscape.getEdgeAttributes();
@@ -91,11 +89,11 @@ public class MapFromCytoscape implements Mapper {
 
 		while (edgesIterator.hasNext()) {
 			Interaction interaction = new Interaction();
-			Edge edge = (Edge) edgesIterator.next();
+			CyEdge edge = (CyEdge) edgesIterator.next();
 
 			if (edge != null) {
-				Node sourceNode = (Node) edge.getSource();
-				Node targetNode = (Node) edge.getTarget();
+				CyNode sourceNode = (CyNode) edge.getSource();
+				CyNode targetNode = (CyNode) edge.getTarget();
 				Interactor sourceInteractor = new Interactor();
 				Interactor targetInteractor = new Interactor();
 				transferNodeAttributes(sourceNode, sourceInteractor);
@@ -126,7 +124,7 @@ public class MapFromCytoscape implements Mapper {
 	 * @param edge        Cytoscape Edge.
 	 * @param interaction Data Service Interaction Object.
 	 */
-	private void transferEdgeAttributes(Edge edge, Interaction interaction) {
+	private void transferEdgeAttributes(CyEdge edge, Interaction interaction) {
 		String[] attributeNames = edgeAttributes.getAttributeNames();
 		transferAllAttributes(attributeNames, edgeAttributes, edge.getIdentifier(), interaction);
 	}
@@ -137,7 +135,7 @@ public class MapFromCytoscape implements Mapper {
 	 * @param node       Cytoscape Node.
 	 * @param interactor Data Service Interactor object.
 	 */
-	private void transferNodeAttributes(Node node, Interactor interactor) {
+	private void transferNodeAttributes(CyNode node, Interactor interactor) {
 		interactor.setName(node.getIdentifier());
 
 		String[] attributeNames = nodeAttributes.getAttributeNames();

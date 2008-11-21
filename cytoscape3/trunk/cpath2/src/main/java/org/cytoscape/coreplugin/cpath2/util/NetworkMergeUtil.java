@@ -1,15 +1,15 @@
 package org.cytoscape.coreplugin.cpath2.util;
 
-import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
-import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
-import org.cytoscape.coreplugin.cpath2.view.SearchDetailsPanel;
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.coreplugin.cpath2.view.SearchDetailsPanel;
+import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
 import javax.swing.*;
+import java.net.URL;
 import java.util.Set;
 import java.util.Vector;
-import java.net.URL;
 
 /**
  * Network Merge Utility.
@@ -25,12 +25,12 @@ public class NetworkMergeUtil {
         int downloadMode = cPathProperties.getDownloadMode();
 
         //  Get networks which we could merge with.
-        Set<GraphPerspective> networkSet = NetworkGroupUtil.getNetworkSet(downloadMode);
+        Set<CyNetwork> networkSet = NetworkGroupUtil.getNetworkSet(downloadMode);
 
         networkVector = new Vector();
         networkVector.add(new NetworkWrapper(null));
         if (networkSet != null && networkSet.size() > 0) {
-            for (GraphPerspective net : networkSet) {
+            for (CyNetwork net : networkSet) {
                 NetworkWrapper netWrapper = new NetworkWrapper (net);
                 networkVector.add(netWrapper);
             }

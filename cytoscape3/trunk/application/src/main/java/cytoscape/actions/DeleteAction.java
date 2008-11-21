@@ -28,11 +28,6 @@
  */
 package cytoscape.actions;
 
-import org.cytoscape.GraphObject;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
@@ -41,11 +36,18 @@ import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
-import cytoscape.Cytoscape;
-import cytoscape.actions.DeleteEdit;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.undo.CyUndo;
+import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.work.UndoSupport;
+
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
 
 
 /**
@@ -59,6 +61,8 @@ import org.cytoscape.view.GraphView;
 public class DeleteAction extends CytoscapeAction {
 	private static final long serialVersionUID = -5769255815829787466L;
 
+	private CyRootNetworkFactory cyRootNetworkFactory;
+	
 	/**
 	 * 
 	 */
@@ -66,11 +70,13 @@ public class DeleteAction extends CytoscapeAction {
 
 	private GraphObject graphObj = null;
 
+	private final UndoSupport undo;
+
 	/**
 	 * action for deleting selected Cytoscape nodes and edges
 	 */
-	public DeleteAction() {
-		this(null);
+	public DeleteAction(final UndoSupport undo, final CyRootNetworkFactory root) {
+		this(null,undo,root);
 	}
 
 	/**
@@ -80,11 +86,13 @@ public class DeleteAction extends CytoscapeAction {
 	 * @param obj the object to be deleted
 	 */
 
-	public DeleteAction(GraphObject obj) {
+	public DeleteAction(GraphObject obj, final UndoSupport undo, final CyRootNetworkFactory root) {
 		super(ACTION_TITLE);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
 		graphObj = obj;
+		this.undo = undo;
+		cyRootNetworkFactory = root; 
 	}
 
 
@@ -95,80 +103,65 @@ public class DeleteAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent ae) {
 
 		GraphView myView = Cytoscape.getCurrentNetworkView();
-		GraphPerspective cyNet = myView.getGraphPerspective();
-		List<Edge> edgeViews = myView.getSelectedEdges();
-		List<Node> nodeViews = myView.getSelectedNodes();
-		Node cyNode;
-		Edge cyEdge;
+
+		// delete from the base CySubNetwork so that our changes can be undone 
+		CySubNetwork cyNet = cyRootNetworkFactory.convert( myView.getNetwork() ).getBaseNetwork();
+		List<CyEdge> edgeViews = myView.getSelectedEdges();
+		List<CyNode> nodeViews = myView.getSelectedNodes();
+		CyNode cyNode;
+		CyEdge cyEdge;
 
 		// if an argument exists, add it to the appropriate list
 		if (graphObj != null ) {
-			if ( graphObj instanceof Node) {
-				cyNode = (Node) graphObj;
+			if ( graphObj instanceof CyNode) {
+				cyNode = (CyNode) graphObj;
 				if ( !nodeViews.contains(cyNode) )
 					nodeViews.add(cyNode);
-			} else if ( graphObj instanceof Edge) {
-				cyEdge = (Edge) graphObj;
+			} else if ( graphObj instanceof CyEdge) {
+				cyEdge = (CyEdge) graphObj;
 				if ( !edgeViews.contains(cyEdge) )
 					edgeViews.add(cyEdge);
 			}
 		}
 
-		Set<Integer> edgeIndices = new HashSet<Integer>();
-		Set<Integer> nodeIndices = new HashSet<Integer>();
+		Set<CyEdge> edges = new HashSet<CyEdge>();
+		Set<CyNode> nodes = new HashSet<CyNode>();
 
 		// add all node indices
 		for (int i = 0; i < nodeViews.size(); i++) {
 			cyNode = nodeViews.get(i);
-			nodeIndices.add(cyNode.getRootGraphIndex());
-
-			// add adjacent edge indices for each node 
-			int[] edgesList = cyNet.getAdjacentEdgeIndicesArray(cyNode.getRootGraphIndex(),true,true,true);
-			for ( int x = 0; x < edgesList.length; x++ )
-				edgeIndices.add(edgesList[x]);
+			nodes.add(cyNode);
 		}
 
 		// add all selected edge indices
 		for (int i = 0; i < edgeViews.size(); i++) {
 			cyEdge = edgeViews.get(i); 
-			edgeIndices.add( cyEdge.getRootGraphIndex() );
+			edges.add( cyEdge );
 		}
 
-		// convert
-		int i = 0;
-		int[] edgeInd = new int[edgeIndices.size()];
-		for (Integer ei : edgeIndices) 
-			edgeInd[i++] = ei.intValue();
-
-		i = 0;
-		int[] nodeInd = new int[nodeIndices.size()];
-		for (Integer ni : nodeIndices) 
-			nodeInd[i++] = ni.intValue();
-
-		// AJK: 03/08/2008 pass in myself to DeleteEdit so that I can be signaled to reenable
-		//    menu item upon undo
-//		CyUndo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodeInd,edgeInd) );
-		CyUndo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodeInd,edgeInd, this) );
+		undo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodes,edges,this) );
 		
 		// delete the actual nodes and edges
-		cyNet.hideEdges(edgeInd);
-		cyNet.hideNodes(nodeInd);
+
+		for ( CyNode nd : nodes )
+			cyNet.removeNode(nd);
+		for ( CyEdge ed : edges )
+			cyNet.removeEdge(ed);
 
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNet);
 	}
 
     public void menuSelected(MenuEvent me) {
-        GraphPerspective n = Cytoscape.getCurrentNetwork();
-        if ( n == null || n == Cytoscape.getNullNetwork() ) {
+        CyNetwork n = Cytoscape.getCurrentNetwork();
+        if ( n == null ) {
             setEnabled(false);
             return;
         }
 
-        java.util.Set nodes = n.getSelectedNodes();
-        java.util.Set edges = n.getSelectedEdges();
+        List<CyNode> nodes = CyDataTableUtil.getNodesInState(n,"selected",true);
+        List<CyEdge> edges = CyDataTableUtil.getEdgesInState(n,"selected",true);
 
-        if ( ( nodes != null && nodes.size() > 0 ) || 
-		     ( edges != null && edges.size() > 0 ) )
+        if ( nodes.size() > 0 || edges.size() > 0 )
             setEnabled(true);
         else
             setEnabled(false);

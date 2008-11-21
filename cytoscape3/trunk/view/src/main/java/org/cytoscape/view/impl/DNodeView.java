@@ -38,31 +38,18 @@ package org.cytoscape.view.impl;
 
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.render.stateful.NodeDetails;
-
-
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewChangeListener;
 import org.cytoscape.view.Label;
 import org.cytoscape.view.NodeView;
-import org.cytoscape.view.EdgeView;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.TexturePaint;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -123,7 +110,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	DNodeView(DGraphView view, int inx) {
 		m_view = view;
-		m_inx = ~inx;
+		m_inx = inx;
 		m_selected = false;
 		m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
 		m_selectedPaint = Color.yellow;
@@ -146,9 +133,9 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Node getNode() {
+	public CyNode getNode() {
 		synchronized (m_view.m_lock) {
-			return m_view.m_structPersp.getNode(~m_inx);
+			return m_view.m_perspective.getNode(m_inx);
 		}
 	}
 
@@ -158,7 +145,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public int getGraphPerspectiveIndex() {
-		return ~m_inx;
+		return m_inx;
 	}
 
 	/**
@@ -167,7 +154,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public int getRootGraphIndex() {
-		return ~m_inx;
+		return m_inx;
 	}
 
 	/**
@@ -515,7 +502,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public int getDegree() {
 		// This method is totally ridiculous.
-		return m_view.getGraphPerspective().getDegree(~m_inx);
+		return m_view.getNetwork().getAdjacentEdgeList(getNode(),CyEdge.Type.ANY).size();
 	}
 
 	/**
@@ -690,8 +677,7 @@ public class DNodeView implements NodeView, Label {
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-				                                                          new int[] { ~m_inx }));
+				listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view, DGraphView.makeList(getNode())));
 		}
 	}
 
@@ -728,8 +714,7 @@ public class DNodeView implements NodeView, Label {
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-				                                                            new int[] { ~m_inx }));
+				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view, DGraphView.makeList( getNode())));
 		}
 	}
 

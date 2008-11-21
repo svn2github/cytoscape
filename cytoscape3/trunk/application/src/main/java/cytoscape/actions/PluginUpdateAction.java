@@ -3,40 +3,35 @@
  */
 package cytoscape.actions;
 
-import java.awt.event.ActionEvent;
-
 import cytoscape.Cytoscape;
-
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.util.CytoscapeAction;
-
 import cytoscape.dialogs.plugins.PluginUpdateDialog;
-
 import cytoscape.plugin.DownloadableInfo;
-import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
-import cytoscape.plugin.ManagerException;
 import cytoscape.plugin.PluginStatus;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeDesktop;
 
-import java.util.List;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
+import java.util.List;
 
 public class PluginUpdateAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870238849L;
-	public PluginUpdateAction() {
+	private CytoscapeDesktop desktop;
+	public PluginUpdateAction(CytoscapeDesktop desktop) {
 		super("Update Plugins");
 		setPreferredMenu("Plugins");
 
 		if (PluginManager.usingWebstartManager()) {
 			setEnabled(false);
 		}
+
+		this.desktop = desktop;
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		PluginUpdateDialog Dialog = new PluginUpdateDialog(Cytoscape
-				.getDesktop());
+		PluginUpdateDialog Dialog = new PluginUpdateDialog(desktop);
 		ArrayList<String> XmlIncorrect = new ArrayList<String>();
 		ArrayList<String> BadXml = new ArrayList<String>();
 		
@@ -48,7 +43,7 @@ public class PluginUpdateAction extends CytoscapeAction {
 
 			// Configure JTask Dialog Pop-Up Box
 //			JTaskConfig jTaskConfig = new JTaskConfig();
-//			jTaskConfig.setOwner(Cytoscape.getDesktop());
+//			jTaskConfig.setOwner(desktop);
 //			jTaskConfig.displayCloseButton(false);
 //			jTaskConfig.displayStatus(true);
 //			jTaskConfig.setAutoDispose(true);
@@ -85,14 +80,14 @@ public class PluginUpdateAction extends CytoscapeAction {
 			if (updateFound) {
 				Dialog.setVisible(true);
 			} else {
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+				JOptionPane.showMessageDialog(desktop,
 						"No updates available for currently installed plugins.",
 						"Plugin Updates", JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else {
 			JOptionPane
 					.showMessageDialog(
-							Cytoscape.getDesktop(),
+							desktop,
 							"Plugin updates are not available when using Cytoscape through webstart",
 							"Plugin Update", JOptionPane.INFORMATION_MESSAGE);
 		}

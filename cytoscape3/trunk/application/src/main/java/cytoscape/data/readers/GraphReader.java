@@ -36,17 +36,8 @@
 */
 package cytoscape.data.readers;
 
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.attributes.CyAttributes;
-
-import cytoscape.task.TaskMonitor;
-
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
-
-import org.cytoscape.RootGraph;
-
-import org.cytoscape.view.GraphView;
 
 import java.io.IOException;
 
@@ -88,7 +79,7 @@ public interface GraphReader {
 	/**
 	 * Execute whatever post-processing is required.
 	 */
-	public void doPostProcessing(GraphPerspective network);
+	public void doPostProcessing(CyNetwork network);
 
 	/**
 	 * Gets the name of the network.

@@ -5,47 +5,29 @@
  */
 package cytoscape.dialogs;
 
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.FocusListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.ActionEvent; 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.lang.reflect.Method;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.ToolTipManager;
-import javax.xml.bind.JAXBException;
-
 import cytoscape.Cytoscape;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
-import cytoscape.data.ImportHandler;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
 import cytoscape.util.BookmarksUtil;
-import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
+
+import org.cytoscape.io.CyFileFilter;
+
+import javax.swing.*;
+import javax.xml.bind.JAXBException;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
 
 /**
@@ -66,13 +48,16 @@ public class ImportNetworkDialog extends JDialog
 	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
 	
+	private CyFileFilter[] tempCFF;
 
 	/** Creates new form NetworkImportDialog
 	 * @throws IOException
 	 * @throws JAXBException */
-	public ImportNetworkDialog(java.awt.Frame parent, boolean modal)
+	public ImportNetworkDialog(Frame parent, boolean modal, CyFileFilter[] filters)
 	    throws JAXBException, IOException {
 		super(parent, modal);
+
+		tempCFF = filters;
 
 		setTitle("Import Network");
 		initComponents();
@@ -366,11 +351,8 @@ public class ImportNetworkDialog extends JDialog
 	}
 
 	private void selectNetworkFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		CyFileFilter[] tempCFF = (CyFileFilter[]) Cytoscape.getImportHandler()
-		                                                   .getAllFilters(ImportHandler.GRAPH_NATURE)
-		                                                   .toArray(new CyFileFilter[0]);
 
-		networkFiles = FileUtil.getFiles("Import Network Files", FileUtil.LOAD, tempCFF);
+		networkFiles = FileUtil.getFiles(this,"Import Network Files", FileUtil.LOAD, tempCFF);
 
 		if (networkFiles != null) {
 			/*
@@ -414,8 +396,6 @@ public class ImportNetworkDialog extends JDialog
 					importButtonActionPerformed(e);
 				} else // case for remote import
 				 {
-					//doURLimport(e);
-					//createURLimportTask(e);
 					URLstr = bookmarkEditor.getURLstr().trim();
 					importButtonActionPerformed(e);
 				}
@@ -425,7 +405,6 @@ public class ImportNetworkDialog extends JDialog
 		}
 
 		if (_actionObject instanceof JTextField) {
-			// createURLimportTask(e);
 			URLstr = bookmarkEditor.getURLstr().trim();
 			importButtonActionPerformed(e);
 		}
@@ -458,104 +437,6 @@ public class ImportNetworkDialog extends JDialog
 	 */
 	public void focusLost(FocusEvent e) { };
 
-	private void createURLimportTask(java.awt.event.ActionEvent e) {
-		String theURLstr = bookmarkEditor.getURLstr().trim();
-		URL theURL = null;
-
-		try {
-			theURL = new URL(theURLstr);
-		} catch (MalformedURLException e1) {
-			JOptionPane.showMessageDialog(this, "URL error!", "Warning",
-			                              JOptionPane.INFORMATION_MESSAGE);
-
-			return;
-		}
-
-		// Create Task
-		Task task = new URLdownloadTask(theURL, e);
-
-		// Configure JTask Dialog Pop-Up Box
-		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
-		jTaskConfig.displayCloseButton(false);
-		jTaskConfig.displayStatus(true);
-		jTaskConfig.setAutoDispose(true);
-		jTaskConfig.displayCancelButton(true);
-
-		// Execute Task in New Thread; pop open JTask Dialog Box.
-		TaskManager.executeTask(task, jTaskConfig);
-	}
-
-	private class URLdownloadTask implements Task {
-		private TaskMonitor taskMonitor;
-		URL url;
-		java.awt.event.ActionEvent e;
-
-		public URLdownloadTask(URL url, java.awt.event.ActionEvent e) {
-			this.url = url;
-			this.e = e;
-		}
-
-		public void run() {
-			taskMonitor.setStatus("Downloading ...");
-			taskMonitor.setPercentCompleted(-1);
-
-			doURLimport(url, e, taskMonitor);
-
-			taskMonitor.setPercentCompleted(100);
-			taskMonitor.setStatus("Downloading successfully from " + url.toString());
-		}
-
-		public void halt() {
-		}
-
-		public void setTaskMonitor(TaskMonitor monitor) throws IllegalThreadStateException {
-			this.taskMonitor = monitor;
-		}
-
-		public String getTitle() {
-			return "URL downloading";
-		}
-	}
-
-	private void doURLimport(URL url, java.awt.event.ActionEvent e, TaskMonitor taskMonitor) {
-		cytoscape.data.ImportHandler theHandler = Cytoscape.getImportHandler();
-		cytoscape.data.readers.GraphReader reader = null;
-
-		try {
-			reader = theHandler.getReader(url);
-			if (reader == null )
-				return;
-
-			// See if the reader supports setTaskMonitor.  We need to use reflection
-			// to provide backwards comptibility for those readers that do not inherit 
-			// from AbstractGraphReader
-			Method[] mlist = reader.getClass().getDeclaredMethods();
-			for (int i = 0; i < mlist.length; i++) {
-				Method m = mlist[i];
-				if (m.getName().equals("setTaskMonitor")) {
-					m.invoke(reader, taskMonitor);
-					break;
-				}
-			}
-			reader.read();
-
-		} catch (MalformedURLException e1) {
-			JOptionPane.showMessageDialog(this, "URL error!", "Warning",
-			                              JOptionPane.INFORMATION_MESSAGE);
-		} catch (FileNotFoundException e2) {
-			JOptionPane.showMessageDialog(this,
-			                              "File was not found! Please make sure the URL is correct!",
-			                              "Warning", JOptionPane.INFORMATION_MESSAGE);
-		} catch (IOException e3) {
-			JOptionPane.showMessageDialog(this,
-			                              "IO error! May caused by server-name, proxy, write-permission.",
-			                              "Warning", JOptionPane.INFORMATION_MESSAGE);
-		} catch (Exception e4) {
-			JOptionPane.showMessageDialog(this, "Failed to download from URL!", "Warning",
-			                              JOptionPane.INFORMATION_MESSAGE);
-		}
-	}
 
 	class LocalRemoteListener implements java.awt.event.ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent e) {

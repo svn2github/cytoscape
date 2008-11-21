@@ -36,27 +36,23 @@
 package cytoscape.dialogs.plugins;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.plugin.DownloadableInfo;
-import cytoscape.plugin.ThemeInfo;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.PluginManager;
-
+import cytoscape.plugin.ThemeInfo;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.OpenBrowser;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-
-import java.util.List;
-
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.util.List;
 
 public class PluginManageDialog extends javax.swing.JDialog implements
 		TreeSelectionListener, ActionListener {
@@ -91,12 +87,13 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	}
 
 	private String baseSiteLabel = "Plugins available for download from: ";
-
+/*
 	public PluginManageDialog() {
 		this.setTitle("Manage Plugins");
 		initComponents();
 		initTree();
 	}
+	*/
 
 	public PluginManageDialog(javax.swing.JDialog owner) {
 		super(owner, "Manage Plugins");
@@ -612,7 +609,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.setOwner(getOwner());
 		jTaskConfig.displayCloseButton(false);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(true);
@@ -647,41 +644,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 	}
 
-	public static void main(String[] args) {
-		PluginManageDialog pd = new PluginManageDialog();
-		List<DownloadableInfo> Plugins = new java.util.ArrayList<DownloadableInfo>();
-
-		PluginInfo infoC = new PluginInfo("1", "A Plugin");
-		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
-		Plugins.add(infoC);
-
-		infoC = new PluginInfo("2", "B Plugin");
-		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
-		Plugins.add(infoC);
-
-		infoC = new PluginInfo("3", "C");
-		infoC.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
-		Plugins.add(infoC);
-
-		pd.addCategory(cytoscape.plugin.Category.NONE.toString(), Plugins,
-				PluginInstallStatus.AVAILABLE);
-
-		List<DownloadableInfo> Outdated = new java.util.ArrayList<DownloadableInfo>();
-
-		PluginInfo infoOD = new PluginInfo("11", "CyGoose");
-		infoOD.addCytoscapeVersion("2.3");
-		Outdated.add(infoOD);
-
-		infoOD = new PluginInfo("12", "Y");
-		infoOD.addCytoscapeVersion("2.3");
-		Outdated.add(infoOD);
-
-		pd.addCategory("Outdated", Outdated, PluginInstallStatus.AVAILABLE);
-
-		pd.setMessage("Foo bar");
-		
-		pd.setVisible(true);
-	}
 
 	/** Returns an ImageIcon, or null if the path was invalid. */
 	private javax.swing.ImageIcon createImageIcon(String path,

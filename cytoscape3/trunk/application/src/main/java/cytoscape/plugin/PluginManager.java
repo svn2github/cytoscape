@@ -36,29 +36,21 @@
 
 package cytoscape.plugin;
 
-import cytoscape.*;
-
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.CytoscapeVersion;
+import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.ZipUtil;
-import cytoscape.task.TaskMonitor;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList; // import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-
+import java.util.*;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;

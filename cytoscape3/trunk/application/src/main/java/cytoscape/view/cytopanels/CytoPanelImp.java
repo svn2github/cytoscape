@@ -44,40 +44,14 @@ package cytoscape.view.cytopanels;
 
 import cytoscape.Cytoscape;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-
-// imports
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import java.util.ArrayList;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
 
 
 /**
@@ -739,7 +713,11 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 			// SOUTH_WEST is used for manualLayout, it is nested in cytoPanel_1
 			if (compassDirection == SwingConstants.SOUTH_WEST) {
-				((CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)).validate();
+				//((CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)).validate();
+				try {
+					this.getParent().getParent().validate();
+				} catch (Exception e) {
+				}
 			}
 		}
 	}

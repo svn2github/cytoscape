@@ -34,23 +34,12 @@
 */
 package cytoscape.util.swing;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-
-import java.util.HashSet;
-import java.util.List;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.util.HashSet;
+import java.util.List;
 
 
 /**

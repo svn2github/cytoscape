@@ -32,19 +32,12 @@
 package org.mskcc.biopax_plugin.view;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.attributes.CyAttributes;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.mskcc.biopax_plugin.action.LaunchExternalBrowser;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
-import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
-import org.mskcc.biopax_plugin.util.biopax.BioPaxPlainEnglish;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
-
-import java.awt.*;
-
-import java.util.List;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxPlainEnglish;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -52,7 +45,13 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
-import javax.swing.text.html.*;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.ParagraphView;
+import javax.swing.text.html.StyleSheet;
+import java.awt.*;
+import java.util.List;
 
 
 /**
@@ -203,7 +202,7 @@ public class BioPaxDetailsPanel extends JPanel {
     }
 
     private void addCPathLink(String nodeID, StringBuffer buf) {
-        GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+        CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
         String serverName = networkAttributes.getStringAttribute(cyNetwork.getIdentifier(),
             "CPATH_SERVER_NAME");

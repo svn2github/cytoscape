@@ -36,17 +36,16 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Node;
-
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
-
+import java.util.List;
 
 final class GraphViewNodesSelectedEvent extends GraphViewChangeEventAdapter {
 	private final static long serialVersionUID = 1202416512158746L;
 	private final GraphView m_view;
-	private final int[] m_selectedNodeInx;
+	private final List<CyNode> m_selectedNodeInx;
 
-	GraphViewNodesSelectedEvent(GraphView view, int[] selectedNodeInx) {
+	GraphViewNodesSelectedEvent(GraphView view, List<CyNode> selectedNodeInx) {
 		super(view);
 		m_view = view;
 		m_selectedNodeInx = selectedNodeInx;
@@ -66,25 +65,11 @@ final class GraphViewNodesSelectedEvent extends GraphViewChangeEventAdapter {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final Node[] getSelectedNodes() {
-		final Node[] returnThis = new Node[m_selectedNodeInx.length];
+	public final CyNode[] getSelectedNodes() {
+		final CyNode[] returnThis = new CyNode[m_selectedNodeInx.size()];
 
 		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_view.getRootGraph().getNode(m_selectedNodeInx[i]);
-
-		return returnThis;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final int[] getSelectedNodeIndices() {
-		final int[] returnThis = new int[m_selectedNodeInx.length];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_selectedNodeInx[i];
+			returnThis[i] = m_selectedNodeInx.get(i);
 
 		return returnThis;
 	}

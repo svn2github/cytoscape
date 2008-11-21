@@ -37,11 +37,8 @@
 package cytoscape.actions;
 
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CyHelpBroker;
 
 import java.awt.event.ActionEvent;
-
-import javax.swing.*;
 
 
 /**

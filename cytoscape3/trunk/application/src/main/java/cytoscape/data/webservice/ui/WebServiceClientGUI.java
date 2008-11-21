@@ -34,14 +34,12 @@
 */
 package cytoscape.data.webservice.ui;
 
-import java.awt.Container;
-import java.util.List;
-
-import javax.swing.Icon;
-import javax.swing.JMenuItem;
-
-import org.cytoscape.view.NodeView;
 import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 /**
  * Web service client which has custom component should implements this interface.

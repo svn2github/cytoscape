@@ -41,22 +41,15 @@ package org.cytoscape.view.impl;
 
 // import
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.NodeView;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Composite;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 
 
 /**
@@ -74,7 +67,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	/**
 	 * Our reference to the GraphPerspective our view belongs to
 	 */
-	private GraphPerspective m_graphPerspective;
+	private CyNetwork m_cyNetwork;
 
 	/**
 	 * Our reference to the DGraphView we live within
@@ -89,29 +82,29 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	/*
 	 * Map of component(s) to hidden node(s)
 	 */
-	private Map<Component, Node> m_componentToNodeMap;
+	private Map<Component, CyNode> m_componentToNodeMap;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param graphPerspective GraphPerspective
+	 * @param cyNetwork GraphPerspective
 	 * @param dGraphView DGraphView
 	 * @param innerCanvas InnerCanvas
 	 * @param backgroundColor Color
 	 * @param isVisible boolean
 	 * @param isOpaque boolean
 	 */
-	public ArbitraryGraphicsCanvas(GraphPerspective graphPerspective, DGraphView dGraphView,
+	public ArbitraryGraphicsCanvas(CyNetwork cyNetwork, DGraphView dGraphView,
 	                               InnerCanvas innerCanvas, Color backgroundColor,
 	                               boolean isVisible, boolean isOpaque) {
 		// init members
-		m_graphPerspective = graphPerspective;
+		m_cyNetwork = cyNetwork;
 		m_dGraphView = dGraphView;
 		m_innerCanvas = innerCanvas;
 		m_backgroundColor = backgroundColor;
 		m_isVisible = isVisible;
 		m_isOpaque = isOpaque;
-		m_componentToNodeMap = new HashMap<Component, Node>();
+		m_componentToNodeMap = new HashMap<Component, CyNode>();
 	}
 
 	/**
@@ -120,10 +113,9 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	public Component add(Component component) {
 		if (USE_REPOSITION_CODE) {
 			// create an "anchor node"
-			int nodeIndex = m_graphPerspective.getRootGraph().createNode();
-			Node node = m_graphPerspective.getRootGraph().getNode(nodeIndex);
-			node.setIdentifier(component.toString());
-			m_graphPerspective.restoreNode(node);
+			CyNode node = m_cyNetwork.addNode();
+			node.attrs().set("name",component.toString());
+			//m_cyNetwork.restoreNode(node);
 
 			// set its node view coordinates
 			NodeView nodeView = m_dGraphView.getNodeView(node);
@@ -229,7 +221,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 		// interate through the components
 		for (Component c : components) {
 			// get node
-			Node node = m_componentToNodeMap.get(c);
+			CyNode node = m_componentToNodeMap.get(c);
 
 			// get node view
 			NodeView nodeView = m_dGraphView.getNodeView(node);

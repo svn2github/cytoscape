@@ -37,16 +37,15 @@
 
 package cytoscape.editor.impl;
 
+import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.model.CyNetwork;
+
+import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.SwingConstants;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-import cytoscape.view.CytoscapeDesktop;
 
 /**
  * Used to switch to the Editor cytopanel when a new empty network is created.
@@ -54,7 +53,7 @@ import cytoscape.view.CytoscapeDesktop;
 class NewEmptyNetworkListener implements PropertyChangeListener {
 	
 	// AJK: 03/13/2008 need to check that network is NEW as well as empty
-	private List<GraphPerspective> networksSeen = new ArrayList<GraphPerspective>();
+	private List<CyNetwork> networksSeen = new ArrayList<CyNetwork>();
 
 	NewEmptyNetworkListener() {
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
@@ -65,7 +64,7 @@ class NewEmptyNetworkListener implements PropertyChangeListener {
 
 		// listen for new views that get created 
 		if ( e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
-			GraphPerspective net = Cytoscape.getCurrentNetwork();
+			CyNetwork net = Cytoscape.getCurrentNetwork();
 
 			// only if the network in question doesn't have any nodes (i.e. it's an
 			// empty network), do we automatically switch to the editor

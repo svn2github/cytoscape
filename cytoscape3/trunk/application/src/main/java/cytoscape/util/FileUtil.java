@@ -38,25 +38,17 @@ package cytoscape.util;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.task.TaskMonitor;
 
-import java.awt.Component;
-import java.awt.FileDialog;
+import org.cytoscape.io.CyFileFilter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
 import java.net.URL;
-
 import java.util.Iterator;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import org.cytoscape.io.read.URLUtil;
 
 
 /**
@@ -95,7 +87,7 @@ public abstract class FileUtil {
 	 * @param load_save_custom a flag for the type of file dialog
 	 */
 	public static File getFile(String title, int load_save_custom) {
-		return getFile(title, load_save_custom, new CyFileFilter[] {  }, null, null);
+		return getFile(title, load_save_custom, new CyFileFilter[] { }, null, null);
 	}
 
 	/**
@@ -144,10 +136,10 @@ public abstract class FileUtil {
 	 * @param load_save_custom a flag for the type of file dialog
 	 * @param filters an array of CyFileFilters that let you filter
 	 *                based on extension
-	 */
 	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters) {
-		return getFiles(null, title, load_save_custom, filters, null, null, true);
+		return getFiles(, title, load_save_custom, filters, null, null, true);
 	}
+	 */
 
     /**
      * Returns an array of File objects, this method should be used instead
@@ -229,9 +221,8 @@ public abstract class FileUtil {
 	public static File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters,
 	                              String start_dir, String custom_approve_text, boolean multiselect) {
 
-		if (parent == null) {
-			parent = Cytoscape.getDesktop();
-		}
+		if (parent == null) 
+		 	throw new NullPointerException("Parent component is null");	
 
 		File start = null;
 
@@ -246,22 +237,14 @@ public abstract class FileUtil {
 		//System.out.println( "Os name: "+osName );
 		if (osName.startsWith("Mac")) {
 			// this is a Macintosh, use the AWT style file dialog
-			FileDialog chooser = new FileDialog(Cytoscape.getDesktop(), title, load_save_custom);
+			FileDialog chooser = new FileDialog((Frame)parent, title, load_save_custom);
 
 			// we can only set the one filter; therefore, create a special
 			// version of CyFileFilter that contains all extensions
-			CyFileFilter fileFilter = new CyFileFilter();
+			// TODO fix this so we actually use the filters we're given
+//			CyFileFilter fileFilter = new CyFileFilter(new String[]{},new String[]{},"All network files");
 
-			for (int i = 0; i < filters.length; i++) {
-				Iterator iter;
-
-				for (iter = filters[i].getExtensionSet().iterator(); iter.hasNext();) {
-					fileFilter.addExtension((String) iter.next());
-				}
-			}
-
-			fileFilter.setDescription("All network files");
-			chooser.setFilenameFilter(fileFilter);
+//			chooser.setFilenameFilter(fileFilter);
 
 			chooser.setVisible(true);
 

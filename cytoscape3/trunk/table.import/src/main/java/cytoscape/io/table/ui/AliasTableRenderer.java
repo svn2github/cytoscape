@@ -36,24 +36,14 @@
 
 package cytoscape.io.table.ui;
 
-import org.cytoscape.attributes.CyAttributes;
 import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.KEY_FONT;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.BOOLEAN_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.FLOAT_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.INT_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.LIST_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.STRING_ICON;
+import static cytoscape.io.table.ui.theme.ImportDialogIconSets.*;
+import org.cytoscape.model.CyRow;
 
-import java.awt.Color;
-import java.awt.Component;
-
-import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.util.List;
 
 
 /**

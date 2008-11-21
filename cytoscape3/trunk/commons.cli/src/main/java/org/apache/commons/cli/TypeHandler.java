@@ -126,7 +126,6 @@ public class TypeHandler {
 	public static Number createNumber(String str) {
 		// Needs to be able to create
 		try {
-			// do searching for decimal point etc, but atm just make an Integer
 			return NumberUtils.createNumber(str);
 		} catch (NumberFormatException nfe) {
 			System.err.println(nfe.getMessage());

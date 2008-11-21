@@ -36,36 +36,29 @@
 
 package csplugins.quickfind.view;
 
-import csplugins.quickfind.util.*;
-
+import csplugins.quickfind.util.CyAttributesUtil;
+import csplugins.quickfind.util.QuickFind;
+import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.widgets.autocomplete.index.GenericIndex;
-
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.Semantics;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Vector;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Vector;
 
 
 /**
@@ -92,7 +85,7 @@ public class QuickFindConfigDialog extends JDialog {
 	/**
 	 * Current Network
 	 */
-	private GraphPerspective currentNetwork;
+	private CyNetwork currentNetwork;
 
 	/**
 	 * Current Index
@@ -567,7 +560,7 @@ public class QuickFindConfigDialog extends JDialog {
  */
 class ReindexQuickFind implements Task {
 	private String newAttributeKey;
-	private GraphPerspective cyNetwork;
+	private CyNetwork cyNetwork;
 	private int indexType;
 	private TaskMonitor taskMonitor;
 
@@ -577,7 +570,7 @@ class ReindexQuickFind implements Task {
 	 * @param indexType       Index Type.
 	 * @param newAttributeKey New Attribute Key for Indexing.
 	 */
-	ReindexQuickFind(GraphPerspective cyNetwork, int indexType, String newAttributeKey) {
+	ReindexQuickFind(CyNetwork cyNetwork, int indexType, String newAttributeKey) {
 		this.cyNetwork = cyNetwork;
 		this.indexType = indexType;
 		this.newAttributeKey = newAttributeKey;
@@ -659,7 +652,7 @@ class DetermineDistinctValuesTask implements Task {
 		taskMonitor.setPercentCompleted(-1);
 
 		//  Obtain distinct attribute values
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes attributes = parentDialog.getCyAttributes();
 
 		Iterator iterator;

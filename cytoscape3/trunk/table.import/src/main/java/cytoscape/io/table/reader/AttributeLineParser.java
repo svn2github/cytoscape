@@ -35,12 +35,11 @@
 package cytoscape.io.table.reader;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.RootGraph;
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.io.table.reader.TextTableReader.ObjectType;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.RootGraph;
+import org.cytoscape.model.CyRow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,10 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-import org.cytoscape.RootGraph;
 
 
 /**
@@ -203,7 +198,7 @@ public class AttributeLineParser {
 		switch (mapping.getObjectType()) {
 			case NODE:
 
-				Node node = Cytoscape.getCyNode(primaryKey);
+				CyNode node = Cytoscape.getCyNode(primaryKey);
 
 				if ((mapping.getCaseSensitive() == false) && (node == null)) {
 					// This is extremely slow, but we have no choice.
@@ -257,7 +252,7 @@ public class AttributeLineParser {
 
 			case EDGE:
 
-				Edge edge = Cytoscape.getRootGraph().getEdge(primaryKey);
+				CyEdge edge = Cytoscape.getRootGraph().getEdge(primaryKey);
 
 				if ((mapping.getCaseSensitive() == false) && (edge == null)) {
 					// This is extremely slow, but we have no choice.

@@ -34,18 +34,13 @@
 */
 package org.cytoscape.coreplugin.psi_mi.test.cyto_mapper;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
-import org.cytoscape.Edge;
-
 import junit.framework.TestCase;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
@@ -82,7 +77,7 @@ public class TestMapToCytoscape extends TestCase {
 		mapper1.doMapping();
 
 		//  Now Map to Cytocape Network Objects.
-		GraphPerspective network = Cytoscape.createNetwork("network1");
+		CyNetwork network = Cytoscape.createNetwork("network1");
 		MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.MATRIX_VIEW);
 		mapper2.doMapping();
 		addToCyNetwork(mapper2, network);
@@ -98,10 +93,10 @@ public class TestMapToCytoscape extends TestCase {
 
 		//  Verify one of the nodes in the graph
 		//  First find correct index value
-		Node node1 = null;
+		CyNode node1 = null;
 
 		while (nodeIterator.hasNext()) {
-			Node node = (Node) nodeIterator.next();
+			CyNode node = (CyNode) nodeIterator.next();
 
 			if (node.getIdentifier().equals("YDL065C")) {
 				node1 = node;
@@ -113,10 +108,10 @@ public class TestMapToCytoscape extends TestCase {
 
 		//  Verify edge in the graph
 		//  First find correct index value
-		Edge edge1 = null;
+		CyEdge edge1 = null;
 
 		while (edgeIterator.hasNext()) {
-			Edge edge = (Edge) edgeIterator.next();
+			CyEdge edge = (CyEdge) edgeIterator.next();
 
 			if (edge.getIdentifier().equals("YCR038C (classical two hybrid:11283351) YDR532C")) {
 				edge1 = edge;
@@ -127,8 +122,8 @@ public class TestMapToCytoscape extends TestCase {
 		assertEquals("YCR038C (classical two hybrid:11283351) YDR532C", edgeId1);
 
 		//  Verify source / target nodes of edge
-		Node sourceNode = (Node) edge1.getSource();
-		Node targetNode = (Node) edge1.getTarget();
+		CyNode sourceNode = (CyNode) edge1.getSource();
+		CyNode targetNode = (CyNode) edge1.getTarget();
 		assertEquals("YCR038C", sourceNode.getIdentifier());
 		assertEquals("YDR532C", targetNode.getIdentifier());
 
@@ -179,15 +174,15 @@ public class TestMapToCytoscape extends TestCase {
 		MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions(xml, interactions);
 		mapper1.doMapping();
 
-		//  Create GraphPerspective, and pre-populate it with some existing data.
-		GraphPerspective network = Cytoscape.createNetwork("network2");
-		Node node1 = Cytoscape.getCyNode("YDL065C", true);
-		Node node2 = Cytoscape.getCyNode("YCR038C", true);
+		//  Create CyNetwork, and pre-populate it with some existing data.
+		CyNetwork network = Cytoscape.createNetwork("network2");
+		CyNode node1 = Cytoscape.getCyNode("YDL065C", true);
+		CyNode node2 = Cytoscape.getCyNode("YCR038C", true);
 		network.addNode(node1);
 		network.addNode(node2);
 
 		//  Create Edge between node1 and node2.
-		Edge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, "pp", true);
+		CyEdge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, "pp", true);
 		edge.setIdentifier("YDL065C (classical two hybrid, pmid:  11283351) " + "YCR038C");
 
 		//  Now map interactions to cyNetwork.
@@ -222,8 +217,8 @@ public class TestMapToCytoscape extends TestCase {
 		MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions(xml, interactions);
 		mapper1.doMapping();
 
-		//  Create GraphPerspective
-		GraphPerspective network = Cytoscape.createNetwork("network3");
+		//  Create CyNetwork
+		CyNetwork network = Cytoscape.createNetwork("network3");
 
 		//  Now map interactions to cyNetwork.
 		MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.MATRIX_VIEW);
@@ -242,7 +237,7 @@ public class TestMapToCytoscape extends TestCase {
 		int counter = 0;
 
 		while (edgeIterator.hasNext()) {
-			Edge edge = (Edge) edgeIterator.next();
+			CyEdge edge = (CyEdge) edgeIterator.next();
 			String id = edge.getIdentifier();
 
 			if (id.equals("A (classical two hybrid:11283351) C")) {
@@ -279,8 +274,8 @@ public class TestMapToCytoscape extends TestCase {
 		MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions(xml, interactions);
 		mapper1.doMapping();
 
-		//  Create GraphPerspective
-		GraphPerspective network = Cytoscape.createNetwork("network3");
+		//  Create CyNetwork
+		CyNetwork network = Cytoscape.createNetwork("network3");
 
 		//  Now map interactions to cyNetwork.
 		MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.SPOKE_VIEW);
@@ -299,7 +294,7 @@ public class TestMapToCytoscape extends TestCase {
 		int counter = 0;
 
 		while (edgeIterator.hasNext()) {
-			Edge edge = (Edge) edgeIterator.next();
+			CyEdge edge = (CyEdge) edgeIterator.next();
 			String id = edge.getIdentifier();
 
 			if (id.equals("A (classical two hybrid:11283351) B")) {
@@ -328,8 +323,8 @@ public class TestMapToCytoscape extends TestCase {
 		MapPsiTwoFiveToInteractions mapper1 = new MapPsiTwoFiveToInteractions(xml, interactions);
 		mapper1.doMapping();
 
-		//  Create GraphPerspective
-		GraphPerspective network = Cytoscape.createNetwork("network");
+		//  Create CyNetwork
+		CyNetwork network = Cytoscape.createNetwork("network");
 
 		//  Now map interactions to cyNetwork.
 		MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.SPOKE_VIEW);
@@ -348,7 +343,7 @@ public class TestMapToCytoscape extends TestCase {
 		int counter = 0;
 
 		while (edgeIterator.hasNext()) {
-			Edge edge = (Edge) edgeIterator.next();
+			CyEdge edge = (CyEdge) edgeIterator.next();
 			String id = edge.getIdentifier().trim();
 
 			if (id.equals("kaib_synp7 (pull down:kaib-kaia-2:10064581) kaia_synp7")) {
@@ -378,15 +373,15 @@ public class TestMapToCytoscape extends TestCase {
 		MapPsiOneToInteractions mapper1 = new MapPsiOneToInteractions(xml, interactions);
 		mapper1.doMapping();
 
-		//  Create GraphPerspective
-		GraphPerspective network = Cytoscape.createNetwork("network");
+		//  Create CyNetwork
+		CyNetwork network = Cytoscape.createNetwork("network");
 
 		//  Now map interactions to cyNetwork.
 		MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.SPOKE_VIEW);
 		mapper2.doMapping();
 		addToCyNetwork(mapper2, network);
 
-		Node node = Cytoscape.getCyNode("HGNC:7733", false);
+		CyNode node = Cytoscape.getCyNode("HGNC:7733", false);
 		assertEquals("HGNC:7733", node.getIdentifier());
 
 		int[] edges = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), true, true, true);
@@ -419,14 +414,14 @@ public class TestMapToCytoscape extends TestCase {
 		System.out.println("Mapping to Cytoscape Network");
 		System.out.println("Number of Interactions:  " + allInteractions.size());
 
-		GraphPerspective network = Cytoscape.createNetwork("network1");
+		CyNetwork network = Cytoscape.createNetwork("network1");
 		MapToCytoscape mapper2 = new MapToCytoscape(allInteractions, MapToCytoscape.MATRIX_VIEW);
 		addToCyNetwork(mapper2, network);
 		mapper2.doMapping();
 		System.out.println("DONE");
 	}
 
-	private void addToCyNetwork(MapToCytoscape mapper, GraphPerspective cyNetwork) {
+	private void addToCyNetwork(MapToCytoscape mapper, CyNetwork cyNetwork) {
 		//  Add new nodes/edges to network
 		int[] nodeIndices = mapper.getNodeIndices();
 		int[] edgeIndices = mapper.getEdgeIndices();

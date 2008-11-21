@@ -39,7 +39,6 @@ package org.cytoscape.vizmap;
 import org.cytoscape.view.Label;
 
 import java.text.DecimalFormat;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

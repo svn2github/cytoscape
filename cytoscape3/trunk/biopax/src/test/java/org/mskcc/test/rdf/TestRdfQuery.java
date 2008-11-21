@@ -32,14 +32,11 @@
 package org.mskcc.test.rdf;
 
 import junit.framework.TestCase;
-
 import org.jdom.Element;
-
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 
 import java.io.FileReader;
-
 import java.util.List;
 
 

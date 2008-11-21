@@ -1,7 +1,7 @@
 
 package org.cytoscape.tunable;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 
 public interface Tunable {

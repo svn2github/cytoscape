@@ -1,35 +1,38 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.Node;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.VisualStyle;
-import cytoscape.data.webservice.*;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceException;
+import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.NetworkImportWebServiceClient;
+import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.WebServiceClientImpl;
+import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.ui.WebServiceClientGUI;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
-import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
+import org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.task.ExpandNode;
 import org.cytoscape.coreplugin.cpath2.util.NullTaskMonitor;
-import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
-import org.cytoscape.coreplugin.cpath2.view.TabUi;
 import org.cytoscape.coreplugin.cpath2.view.SearchHitsPanel;
-import org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2;
-import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
+import org.cytoscape.coreplugin.cpath2.view.TabUi;
+import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
+import org.cytoscape.vizmap.VisualStyle;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.cytoscape.view.NodeView;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.Node;
 
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
@@ -94,7 +97,7 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
 
     public List<JMenuItem> getNodeContextMenuItems(NodeView nodeView) {
         GraphView networkView = (GraphView) nodeView.getGraphView();
-        GraphPerspective cyNetwork = networkView.getGraphPerspective();
+        CyNetwork cyNetwork = networkView.getGraphPerspective();
         CyAttributes networkAttributes  = Cytoscape.getNetworkAttributes();
         Boolean b = networkAttributes.getBooleanAttribute(cyNetwork.getIdentifier(), 
                 BinarySifVisualStyleUtil.BINARY_NETWORK);

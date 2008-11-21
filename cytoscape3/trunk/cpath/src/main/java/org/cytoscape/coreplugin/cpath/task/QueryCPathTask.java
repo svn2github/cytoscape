@@ -34,22 +34,27 @@
 */
 package org.cytoscape.coreplugin.cpath.task;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import org.cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.coreplugin.cpath.model.*;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.coreplugin.cpath.model.CPathException;
+import org.cytoscape.coreplugin.cpath.model.EmptySetException;
+import org.cytoscape.coreplugin.cpath.model.OrganismOption;
+import org.cytoscape.coreplugin.cpath.model.SearchBundle;
+import org.cytoscape.coreplugin.cpath.model.SearchBundleList;
+import org.cytoscape.coreplugin.cpath.model.SearchRequest;
+import org.cytoscape.coreplugin.cpath.model.SearchResponse;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 import org.cytoscape.coreplugin.cpath.ui.Console;
 import org.cytoscape.coreplugin.cpath.util.CPathProperties;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.GraphView;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -179,7 +184,7 @@ public class QueryCPathTask implements Task {
             increment = LARGER_INCREMENT;
         }
 
-        //  Create GraphPerspective
+        //  Create CyNetwork
         String title = searchRequest.toString();
 
         if (title.length() > 25) {
@@ -187,7 +192,7 @@ public class QueryCPathTask implements Task {
         }
 
         //  Create Network w/o view
-        GraphPerspective cyNetwork = Cytoscape.createNetwork(title, false);
+        CyNetwork cyNetwork = Cytoscape.createNetwork(title, false);
 
         GraphReader graphReader = null;
         while (index < endIndex && !isInterrupted) {
@@ -239,7 +244,7 @@ public class QueryCPathTask implements Task {
         return graphReader;
     }
 
-    private void addToCyNetwork (GraphReader reader, GraphPerspective cyNetwork) {
+    private void addToCyNetwork (GraphReader reader, CyNetwork cyNetwork) {
         //  Add new nodes/edges to network
         int nodeIndices[] = reader.getNodeIndicesArray();
         int edgeIndices[] = reader.getEdgeIndicesArray();
@@ -251,7 +256,7 @@ public class QueryCPathTask implements Task {
         }
     }
 
-    private GraphView createNetworkView (GraphPerspective cyNetwork) {
+    private GraphView createNetworkView (CyNetwork cyNetwork) {
         //  Conditionally Create a View, based on Number of Nodes.
         //  GetViewThreshold is settable by the End User.
         logToConsole("Total Number of Nodes in Network:  "

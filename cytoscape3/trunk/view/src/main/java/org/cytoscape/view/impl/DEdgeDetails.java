@@ -36,19 +36,16 @@
 
 package org.cytoscape.view.impl;
 
-import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.render.immed.EdgeAnchors;
-
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.MinIntHeap;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-
+import java.awt.*;
 import java.util.HashMap;
 
 
@@ -238,16 +235,18 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public EdgeAnchors anchors(int edge) {
-		final EdgeAnchors returnThis = (EdgeAnchors) (m_view.getEdgeView(~edge));
+		final EdgeAnchors returnThis = (EdgeAnchors) (m_view.getEdgeView(edge));
 
 		if (returnThis.numAnchors() > 0)
 			return returnThis;
 
-		final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
+		final CyNetwork graph = m_view.m_perspective;
+		final CyEdge edgeObj = graph.getEdge(edge);
 
-		if (graph.edgeSource(edge) == graph.edgeTarget(edge)) { // Self-edge.
+		if (edgeObj.getSource() == edgeObj.getTarget()) { // Self-edge.
 
-			final int node = graph.edgeSource(edge);
+			final CyNode nodeObj = edgeObj.getSource();
+			final int node = nodeObj.getIndex(); 
 			m_view.m_spacial.exists(node, m_extentsBuff, 0);
 
 			final double w = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
@@ -256,15 +255,15 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			final double y = (((double) m_extentsBuff[1]) + m_extentsBuff[3]) / 2.0d;
 			final double nodeSize = Math.max(w, h);
 			int i = 0;
-			final IntIterator selfEdges = graph.edgesConnecting(node, node, true, true, true);
+			java.util.List<CyEdge> selfEdges = graph.getConnectingEdgeList(nodeObj,nodeObj,CyEdge.Type.ANY);
 
-			while (selfEdges.hasNext()) {
-				final int e2 = selfEdges.nextInt();
+			for ( CyEdge e2obj : selfEdges ) {
+				final int e2 = e2obj.getIndex();
 
 				if (e2 == edge)
 					break;
 
-				if (((EdgeAnchors) m_view.getEdgeView(~e2)).numAnchors() == 0)
+				if (((EdgeAnchors) m_view.getEdgeView(e2)).numAnchors() == 0)
 					i++;
 			}
 
@@ -288,15 +287,12 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		}
 
 		while (true) {
-			{
-				final IntIterator otherEdges = graph.edgesConnecting(graph.edgeSource(edge),
-				                                                     graph.edgeTarget(edge), true,
-				                                                     true, true);
-				m_heap.empty();
+			java.util.List<CyEdge> selfEdges = graph.getConnectingEdgeList(edgeObj.getSource(),edgeObj.getTarget(),CyEdge.Type.ANY);
 
-				while (otherEdges.hasNext())
-					m_heap.toss(otherEdges.nextInt());
-			}
+			m_heap.empty();
+
+			for ( CyEdge e : selfEdges ) 
+				m_heap.toss(e.getIndex());
 
 			final IntEnumerator otherEdges = m_heap.orderedElements(false);
 			int otherEdge = otherEdges.nextInt();
@@ -304,24 +300,24 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			if (otherEdge == edge)
 				break;
 
-			int i = (((EdgeAnchors) m_view.getEdgeView(~otherEdge)).numAnchors() == 0) ? 1 : 0;
+			int i = (((EdgeAnchors) m_view.getEdgeView(otherEdge)).numAnchors() == 0) ? 1 : 0;
 
 			while (true) {
 				if (edge == (otherEdge = otherEdges.nextInt()))
 					break;
 
-				if (((EdgeAnchors) m_view.getEdgeView(~otherEdge)).numAnchors() == 0)
+				if (((EdgeAnchors) m_view.getEdgeView(otherEdge)).numAnchors() == 0)
 					i++;
 			}
 
 			final int inx = i;
-			m_view.m_spacial.exists(graph.edgeSource(edge), m_extentsBuff, 0);
+			m_view.m_spacial.exists(edgeObj.getSource().getIndex(), m_extentsBuff, 0);
 
 			final double srcW = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
 			final double srcH = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
 			final double srcX = (((double) m_extentsBuff[0]) + m_extentsBuff[2]) / 2.0d;
 			final double srcY = (((double) m_extentsBuff[1]) + m_extentsBuff[3]) / 2.0d;
-			m_view.m_spacial.exists(graph.edgeTarget(edge), m_extentsBuff, 0);
+			m_view.m_spacial.exists(edgeObj.getTarget().getIndex(), m_extentsBuff, 0);
 
 			final double trgW = ((double) m_extentsBuff[2]) - m_extentsBuff[0];
 			final double trgH = ((double) m_extentsBuff[3]) - m_extentsBuff[1];
@@ -367,8 +363,8 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public float anchorSize(int edge, int anchorInx) {
-		if (m_view.getEdgeView(~edge).isSelected()
-		    && (((DEdgeView) m_view.getEdgeView(~edge)).numAnchors() > 0))
+		if (m_view.getEdgeView(edge).isSelected()
+		    && (((DEdgeView) m_view.getEdgeView(edge)).numAnchors() > 0))
 			return m_view.getAnchorSize();
 		else
 
@@ -384,7 +380,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint anchorPaint(int edge, int anchorInx) {
-		if (((DEdgeView) (m_view.getEdgeView(~edge))).m_lineType == DEdgeView.STRAIGHT_LINES)
+		if (((DEdgeView) (m_view.getEdgeView(edge))).m_lineType == DEdgeView.STRAIGHT_LINES)
 			anchorInx = anchorInx / 2;
 
 		if (m_view.m_selectedAnchors.count((edge << 6) | anchorInx) > 0)

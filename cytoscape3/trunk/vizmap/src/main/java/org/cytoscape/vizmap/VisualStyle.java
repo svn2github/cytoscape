@@ -42,9 +42,9 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import java.util.Vector;
-
 import org.cytoscape.vizmap.calculators.Calculator;
+
+import java.util.Vector;
 
 
 //----------------------------------------------------------------------------

@@ -35,56 +35,40 @@
 package cytoscape.io.table.ui;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
-import cytoscape.util.URLUtil;
-
-import cytoscape.util.swing.ColumnResizer;
-
 import cytoscape.io.table.reader.GeneAssociationTags;
 import cytoscape.io.table.reader.TextFileDelimiters;
 import cytoscape.io.table.ui.ImportTextTableDialog.FileTypes;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.ALIAS_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.ONTOLOGY_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.PRIMARY_KEY_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.SPECIES_COLOR;
+import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.*;
 import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.LABEL_FONT;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.RIGHT_ARROW_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.TEXT_FILE_ICON;
-
-import org.apache.poi.hssf.model.Model;
-import org.apache.poi.hssf.model.Workbook;
+import static cytoscape.io.table.ui.theme.ImportDialogIconSets.*;
+import cytoscape.util.URLUtil;
+import cytoscape.util.swing.ColumnResizer;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSDocument;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-
+import org.cytoscape.model.CyRow;
 import org.jdesktop.layout.GroupLayout;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -92,27 +76,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
-import javax.imageio.ImageIO;
-
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 
 /**

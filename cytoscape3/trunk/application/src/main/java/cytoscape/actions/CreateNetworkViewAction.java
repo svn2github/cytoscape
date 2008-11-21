@@ -36,29 +36,22 @@
  */
 package cytoscape.actions;
 
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
-import cytoscape.actions.CreateNetworkViewTask;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
-import javax.swing.JOptionPane;
-
-import javax.swing.event.MenuEvent;
-
-import org.cytoscape.GraphPerspective;
 
 
 /**
@@ -69,19 +62,12 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	/**
 	 * Creates a new CreateNetworkViewAction object.
 	 */
-	public CreateNetworkViewAction() {
+	private final CytoscapeDesktop desktop;
+	public CreateNetworkViewAction(CytoscapeDesktop desktop) {
 		super("Create View");
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_V, ActionEvent.ALT_MASK);
-	}
-
-	/**
-	 * Creates a new CreateNetworkViewAction object.
-	 *
-	 * @param label  DOCUMENT ME!
-	 */
-	public CreateNetworkViewAction(boolean label) {
-		super();
+		this.desktop = desktop;
 	}
 
 	/**
@@ -90,8 +76,8 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
-		createViewFromCurrentNetwork(cyNetwork);
+		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		createViewFromCurrentNetwork(cyNetwork,desktop);
 	}
 
 	/**
@@ -99,12 +85,13 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 *
 	 * @param cyNetwork DOCUMENT ME!
 	 */
-	public static void createViewFromCurrentNetwork(GraphPerspective cyNetwork) {
+	// TODO - Move this somewhere else since it's used elsewhere
+	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork, CytoscapeDesktop desk) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 
 		if (cyNetwork.getNodeCount() > Integer.parseInt(CytoscapeInit.getProperties()
 		                                                             .getProperty("secondaryViewThreshold"))) {
-			int n = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(),
+			int n = JOptionPane.showConfirmDialog(desk,
 			                                      "Network contains "
 			                                      + formatter.format(cyNetwork.getNodeCount())
 			                                      + " nodes and "
@@ -118,7 +105,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			if (n == JOptionPane.YES_OPTION) {
 				Cytoscape.createNetworkView(cyNetwork);
 			} else {
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+				JOptionPane.showMessageDialog(desk,
 				                              "Create View Request Cancelled by User.");
 			}
 		} else {
@@ -130,7 +117,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			JTaskConfig jTaskConfig = new JTaskConfig();
 
 			jTaskConfig.displayCancelButton(false);
-			jTaskConfig.setOwner(Cytoscape.getDesktop());
+			jTaskConfig.setOwner(desk);
 			jTaskConfig.displayCloseButton(false);
 			jTaskConfig.displayStatus(true);
 			jTaskConfig.setAutoDispose(true);
@@ -144,12 +131,12 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * Sets the state of the action before rendering the menu. 
 	 */
 	public void menuSelected(MenuEvent e) {
-		GraphPerspective currNet = Cytoscape.getCurrentNetwork();
+		CyNetwork currNet = Cytoscape.getCurrentNetwork();
 		if ( currNet == null || currNet == Cytoscape.getNullNetwork() ) {
 			setEnabled(false);
 			return;
 		}
-		GraphView currView = Cytoscape.getNetworkView(currNet.getIdentifier());
+		GraphView currView = Cytoscape.getNetworkView(currNet.getSUID());
 		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
 			setEnabled(true);
 		else
@@ -160,10 +147,10 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 
 
 class CreateNetworkViewTask implements Task {
-	private GraphPerspective network;
+	private CyNetwork network;
 	private TaskMonitor taskMonitor;
 
-	CreateNetworkViewTask(GraphPerspective network) {
+	CreateNetworkViewTask(CyNetwork network) {
 		this.network = network;
 	}
 
@@ -174,11 +161,11 @@ class CreateNetworkViewTask implements Task {
 		try {
 			Cytoscape.createNetworkView(network);
 		} catch (Exception e) {
-			taskMonitor.setException(e, "Could not create network view for network: " + network.getTitle());
+			taskMonitor.setException(e, "Could not create network view for network: " + network.attrs().get("name",String.class));
 		}
 
 		taskMonitor.setPercentCompleted(100);
-		taskMonitor.setStatus("Network view successfully create for:  " + network.getTitle());
+		taskMonitor.setStatus("Network view successfully create for:  " + network.attrs().get("name",String.class));
 	}
 
 	public void halt() { }

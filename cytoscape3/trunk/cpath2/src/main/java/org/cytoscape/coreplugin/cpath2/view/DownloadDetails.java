@@ -1,28 +1,24 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
-import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
+import cytoscape.Cytoscape;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathResponseFormat;
-import org.cytoscape.coreplugin.cpath2.util.NetworkGroupUtil;
+import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathResponseFormat;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
-import java.util.Set;
-import java.util.HashMap;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
 
 /**
  * Download Details Frame.
@@ -135,7 +131,7 @@ public class DownloadDetails extends JDialog {
      * Downloads interaction bundles in a new thread.
      */
     private void downloadInteractions() {
-        GraphPerspective networkToMerge = null;
+        CyNetwork networkToMerge = null;
         JComboBox networkComboBox = mergePanel.getNetworkComboBox();
         if (networkComboBox != null) {
             NetworkWrapper netWrapper = (NetworkWrapper) networkComboBox.getSelectedItem();
@@ -146,7 +142,7 @@ public class DownloadDetails extends JDialog {
         downloadInteractions(networkToMerge);
     }
 
-    public void downloadInteractions(GraphPerspective networkToMerge) {
+    public void downloadInteractions(CyNetwork networkToMerge) {
         String networkTitle = peName + ":  Network";
         CPathWebService webApi = CPathWebServiceImpl.getInstance();
 

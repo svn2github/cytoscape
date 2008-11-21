@@ -36,13 +36,12 @@
 
 package cytoscape.io.table.ui;
 
-import org.cytoscape.attributes.CyAttributes;
 import static cytoscape.io.table.reader.TextFileDelimiters.*;
+import org.cytoscape.model.CyRow;
 
-import java.awt.Frame;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-
-import javax.swing.DefaultComboBoxModel;
 
 /**
  *

@@ -36,24 +36,13 @@
 
 package org.cytoscape.vizmap;
 
-import org.cytoscape.attributes.CyAttributes;
-
-import org.cytoscape.vizmap.ValueParser;
-import org.cytoscape.vizmap.ObjectToString;
-
-
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
+import java.awt.*;
 import java.util.Properties;
-import java.util.Map;
-import java.util.HashMap;
-
-import java.awt.Color;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphObject;
-import org.cytoscape.Node;
 
 
 /**
@@ -67,21 +56,15 @@ public class Appearance {
 	private static final String NODE_SIZE_LOCKED = ".nodeSizeLocked";
 	protected Object[] vizProps;
 	protected boolean nodeSizeLocked = true;
-	protected CyAttributes attrs;
 
 	/**
 	 * Creates a new Appearance object.
 	 */
-	public Appearance(CyAttributes attrs) {
-		this.attrs = attrs;
+	public Appearance() {
 		vizProps = new Object[VisualPropertyType.values().length];
 
 		for (VisualPropertyType type : VisualPropertyType.values())
 					vizProps[type.ordinal()] = type.getVisualProperty().getDefaultAppearanceObject();
-	}
-
-	public CyAttributes getCyAttributes() {
-		return attrs;
 	}
 
 	/**
@@ -255,7 +238,7 @@ public class Appearance {
 	 * @return A clone of this Appearance. 
 	 */
 	public Object clone() {
-		Appearance ga = new Appearance(attrs);
+		Appearance ga = new Appearance();
 		ga.copy(this);
 
 		return ga;
@@ -265,17 +248,15 @@ public class Appearance {
 	 * Applies the visual bypass values specified in the node (edge) attributes
 	 * for the specified node (edge) to the node (edge). 
 	 *
-	 * @param n The {@link Node} or {@link Edge} object that the visual bypass 
+	 * @param n The {@link org.cytoscape.CyNode} or {@link org.cytoscape.CyEdge} object that the visual bypass
 	 *          should be applied to.
 	 */
 	public void applyBypass(final GraphObject n) {
 		if (n == null)
 			return;
 
-		final String id = n.getIdentifier();
-
 		for (VisualPropertyType type : VisualPropertyType.values()) {
-			Object bypass = getBypass(attrs, id, type);
+			Object bypass = getBypass(n,type); 
 
 			if (bypass != null)
 				vizProps[type.ordinal()] = bypass;
@@ -290,10 +271,10 @@ public class Appearance {
 	 *
 	 * You really shouldn't have any reason to use this method!
 	 */
-    static Object getBypass( CyAttributes xattrs, String id, VisualPropertyType type ) {
+    static Object getBypass( GraphObject n, VisualPropertyType type ) {
 		String attrName = type.getBypassAttrName();
 
-        final String value = xattrs.getStringAttribute(id, attrName);
+        final String value = n.attrs().get(attrName, String.class);
 
         if (value == null)
             return null;
@@ -312,7 +293,7 @@ public class Appearance {
 
         // now check to see that the attribute actually specifies black,
         // and isn't returning black by default
-        final String v = xattrs.getStringAttribute(id, attrName);
+        final String v = n.attrs().get(attrName, String.class); 
 
         if (v == null)
             return null;

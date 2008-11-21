@@ -36,28 +36,16 @@
  */
 package org.cytoscape.vizmap;
 
-import org.cytoscape.vizmap.LabelPosition;
-
 import org.cytoscape.view.Label;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Point2D;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import javax.swing.JPanel;
 
 // 
 // TODO - this really shouldn't be here.  There should be support for an icon, but

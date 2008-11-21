@@ -24,15 +24,13 @@
 */
 package cytoscape.editor;
 
-import org.cytoscape.Node;
+import cytoscape.editor.event.NetworkEditEventAdapter;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.data.SelectEventListener;
 
 import java.awt.geom.Point2D;
 import java.util.List;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-import org.cytoscape.data.SelectEventListener;
-import cytoscape.editor.event.NetworkEditEventAdapter;
 
 
 /**
@@ -127,7 +125,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 *            assign a violet diamond shape to a 'smallMolecule' node type.
 	 * @return the Node that has been either reused or created.
 	 */
-	public Node addNode(String nodeName, String attribute, String value);
+	public CyNode addNode(String nodeName, String attribute, String value);
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
@@ -160,7 +158,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 *            position at which to add the node
 	 * @return the Node that has been either reused or created.
 	 */
-	public Node addNode(String nodeName, String attribute, String value, Point2D location);
+	public CyNode addNode(String nodeName, String attribute, String value, Point2D location);
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
@@ -180,7 +178,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 *            between nodes and edges.
 	 * @return the Node that has been either reused or created.
 	 */
-	public Node addNode(String nodeName, String nodeType);
+	public CyNode addNode(String nodeName, String nodeType);
 
 	/**
 	 * wrapper for adding a node in Cytoscape. This is intended to be called by
@@ -195,7 +193,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 *            unique identifier for the node.
 	 * @return the Node that has been either reused or created.
 	 */
-	public Node addNode(String nodeName);
+	public CyNode addNode(String nodeName);
 
 	/**
 	 *
@@ -225,7 +223,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @return the Edge that has either been reused or created
 	 *
 	 */
-	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
+	public CyEdge addEdge(CyNode node_1, CyNode node_2, String attribute, Object attribute_value,
 	                      boolean create, boolean directed, String edgeType);
 
 	/**
@@ -249,7 +247,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @return the Edge that has been created
 	 *
 	 */
-	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value);
+	public CyEdge addEdge(CyNode node_1, CyNode node_2, String attribute, Object attribute_value);
 
 	/**
 	 *
@@ -275,7 +273,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @return the Edge that has been created
 	 *
 	 */
-	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
+	public CyEdge addEdge(CyNode node_1, CyNode node_2, String attribute, Object attribute_value,
 	                      String edgeType);
 
 	/**
@@ -303,7 +301,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @return the Edge that has either been reused or created
 	 *
 	 */
-	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
+	public CyEdge addEdge(CyNode node_1, CyNode node_2, String attribute, Object attribute_value,
 	                      boolean create);
 
 	/**
@@ -312,7 +310,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @param node
 	 *            the node to be deleted
 	 */
-	public void deleteNode(Node node);
+	public void deleteNode(CyNode node);
 
 	/**
 	 * Deletes (hides) an edge from the current network
@@ -320,7 +318,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @param edge
 	 *            the edge to be deleted
 	 */
-	public void deleteEdge(Edge edge);
+	public void deleteEdge(CyEdge edge);
 
 	/**
 	 *

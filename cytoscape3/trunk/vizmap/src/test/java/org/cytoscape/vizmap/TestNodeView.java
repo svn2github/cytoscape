@@ -34,20 +34,14 @@
 */
 package org.cytoscape.vizmap;
 
-import org.cytoscape.Node;
-
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.Label;
 import org.cytoscape.view.NodeView;
-import org.cytoscape.view.EdgeView;
-
 import cytoscape.render.stateful.CustomGraphic;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Paint;
-import java.awt.Stroke;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 
@@ -97,7 +91,7 @@ public class TestNodeView implements NodeView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node getNode() {
+	public CyNode getNode() {
 		return null;
 	}
 

@@ -37,16 +37,11 @@
 package cytoscape.util;
 
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JCheckBoxMenuItem;
 
 
 /**
@@ -114,7 +109,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 * otherwise delegate to addAction( String, Action ) with the value of its
 	 * preferredMenu property, or null if it does not have that property.
 	 */
-	public boolean addAction(Action action) {
+	public boolean addAction(CyAction action) {
 		return addAction(action, NO_INDEX);
 	}
 
@@ -126,21 +121,17 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean addAction(Action action, int index) {
+	public boolean addAction(CyAction action, int index) {
 		String menu_name = null;
 
-		if (action instanceof CytoscapeAction) {
-			if (((CytoscapeAction) action).isInMenuBar()) {
-				menu_name = ((CytoscapeAction) action).getPreferredMenu();
+			if (action.isInMenuBar()) {
+				menu_name = action.getPreferredMenu();
 			} else {
 				return false;
 			}
-		} else {
-			menu_name = DEFAULT_MENU_SPECIFIER;
-		}
 
 		if (index != NO_INDEX) {
-			((CytoscapeAction) action).setPreferredIndex(index);
+			action.setPreferredIndex(index);
 		}
 
 		return addAction(menu_name, action);
@@ -154,7 +145,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean addAction(String menu_name, Action action) {
+	private boolean addAction(String menu_name, CyAction action) {
 		// At present we allow an Action to be in this menu bar only once.
 		JMenuItem menu_item = null;
 
@@ -174,18 +165,14 @@ public class CytoscapeMenuBar extends JMenuBar {
 		// If it wants to be anywhere in particular, try to put it there..
 		Object index_object = Integer.valueOf(-1);
 
-		if (action instanceof CytoscapeAction) {
-			index_object = ((CytoscapeAction) action).getPrefferedIndex();
+		index_object = action.getPrefferedIndex();
 
-			if (((CytoscapeAction) action).isAccelerated()) {
-				menu_item.setAccelerator(javax.swing.KeyStroke.getKeyStroke(((CytoscapeAction) action)
-				                                                            .getKeyCode(),
-				                                                            ((CytoscapeAction) action)
-				                                                            .getKeyModifiers()));
-			}
-			
-			menu.addMenuListener((CytoscapeAction)action);
+		if (action.isAccelerated()) {
+			menu_item.setAccelerator(javax.swing.KeyStroke.getKeyStroke(action.getKeyCode(),
+				                                                        action.getKeyModifiers()));
 		}
+			
+		menu.addMenuListener(action);
 
 		if (index_object != null) {
 			int index = -1;
@@ -257,7 +244,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 * determined my its preferredMenu property if it is present; otherwise by
 	 * defaultMenuSpecifier.
 	 */
-	public boolean removeAction(Action action) {
+	public boolean removeAction(CyAction action) {
 		if (actionMenuItemMap == null) {
 			return false;
 		}
@@ -270,14 +257,10 @@ public class CytoscapeMenuBar extends JMenuBar {
 
 		String menu_name = null;
 
-		if (action instanceof CytoscapeAction) {
-			if (((CytoscapeAction) action).isInMenuBar()) {
-				menu_name = ((CytoscapeAction) action).getPreferredMenu();
-			} else {
-				return false;
-			}
+		if (action.isInMenuBar()) {
+			menu_name = action.getPreferredMenu();
 		} else {
-			menu_name = DEFAULT_MENU_SPECIFIER;
+			return false;
 		}
 
 		if (menu_name == null) {
@@ -410,10 +393,9 @@ public class CytoscapeMenuBar extends JMenuBar {
 	/**
 	 * Factory method for instantiating the menuItems in the menu. 
 	 */
-	protected JMenuItem createJMenuItem(Action action) {
-		if ( action instanceof CytoscapeAction ) 
-			if ( ((CytoscapeAction)action).useCheckBoxMenuItem() )
-				return new JCheckBoxMenuItem(action);
+	protected JMenuItem createJMenuItem(CyAction action) {
+		if ( action.useCheckBoxMenuItem() )
+			return new JCheckBoxMenuItem(action);
 
 		return new JMenuItem(action);
 	}

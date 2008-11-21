@@ -36,17 +36,18 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Edge;
-
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.GraphView;
+import java.util.List;
+
 
 
 final class GraphViewEdgesRestoredEvent extends GraphViewChangeEventAdapter {
 	private final static long serialVersionUID = 120241651269164L;
 	private final GraphView m_view;
-	private final int[] m_restoredEdgeInx;
+	private final List<CyEdge> m_restoredEdgeInx;
 
-	GraphViewEdgesRestoredEvent(GraphView view, int[] restoredEdgeInx) {
+	GraphViewEdgesRestoredEvent(GraphView view, List<CyEdge> restoredEdgeInx) {
 		super(view);
 		m_view = view;
 		m_restoredEdgeInx = restoredEdgeInx;
@@ -66,25 +67,11 @@ final class GraphViewEdgesRestoredEvent extends GraphViewChangeEventAdapter {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final Edge[] getRestoredEdges() {
-		final Edge[] returnThis = new Edge[m_restoredEdgeInx.length];
+	public final CyEdge[] getRestoredEdges() {
+		final CyEdge[] returnThis = new CyEdge[m_restoredEdgeInx.size()];
 
 		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_view.getRootGraph().getEdge(m_restoredEdgeInx[i]);
-
-		return returnThis;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final int[] getRestoredEdgeIndices() {
-		final int[] returnThis = new int[m_restoredEdgeInx.length];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_restoredEdgeInx[i];
+			returnThis[i] = m_restoredEdgeInx.get(i);
 
 		return returnThis;
 	}

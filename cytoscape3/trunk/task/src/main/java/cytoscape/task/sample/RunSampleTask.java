@@ -37,9 +37,7 @@
 package cytoscape.task.sample;
 
 import cytoscape.task.Task;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
 
 import javax.swing.*;

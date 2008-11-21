@@ -7,35 +7,23 @@
 package org.jgraph.graph;
 
 import org.jgraph.JGraph;
-
 import org.jgraph.event.GraphSelectionEvent;
 import org.jgraph.event.GraphSelectionListener;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.event.CellEditorListener;
+import javax.swing.plaf.FontUIResource;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import java.util.EventObject;
 import java.util.Vector;
-
-import javax.swing.Icon;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.event.CellEditorListener;
-import javax.swing.plaf.FontUIResource;
 
 
 /**

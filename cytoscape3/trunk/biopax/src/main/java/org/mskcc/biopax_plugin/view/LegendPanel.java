@@ -1,15 +1,14 @@
 package org.mskcc.biopax_plugin.view;
 
+import cytoscape.Cytoscape;
 import org.mskcc.biopax_plugin.util.net.WebFileConnect;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import java.awt.*;
-import java.net.URL;
 import java.io.IOException;
-
-import cytoscape.Cytoscape;
+import java.net.URL;
 
 /**
  * Displays the Default Visual Style Legend for the BioPAX Mapper.

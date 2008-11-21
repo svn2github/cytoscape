@@ -37,9 +37,8 @@
 package cytoscape.merge;
 
 import cytoscape.Cytoscape;
-
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * This is a plugin which is used to merge different graph objects into a single

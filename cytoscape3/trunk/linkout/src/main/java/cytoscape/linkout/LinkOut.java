@@ -3,28 +3,25 @@ package cytoscape.linkout;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.util.OpenBrowser;
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
-import java.awt.Color;
-import java.awt.Font;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.AbstractAction;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
 
 
 /**
@@ -83,7 +80,7 @@ public class LinkOut {
 			final NodeView mynode = (NodeView) node;
 
 			// Get the set of attribute names for this node
-			Node n = mynode.getNode();
+			CyNode n = mynode.getNode();
 			String nodeId = n.getIdentifier();
 
 			for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
@@ -234,7 +231,7 @@ public class LinkOut {
 			final EdgeView myedge = (EdgeView) edge;
 
 			// Replace edge attributes with values
-			Edge ed = myedge.getEdge();
+			CyEdge ed = myedge.getEdge();
 
 			for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
 				String propKey = (String) e.nextElement();

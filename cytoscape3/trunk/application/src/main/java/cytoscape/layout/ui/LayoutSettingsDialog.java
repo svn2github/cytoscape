@@ -38,35 +38,21 @@
 package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-
 import cytoscape.task.util.TaskManager;
+import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayouts;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.*;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Set;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-import javax.swing.WindowConstants.*;
-import javax.swing.border.*;
-import javax.swing.text.Position;
 
 
 /**
@@ -86,12 +72,19 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private JComboBox algorithmSelector; // Which algorithm we're using
 	private JPanel algorithmPanel; // The panel this algorithm uses
 
+	private CyLayouts cyLayouts;
+	private CytoscapeDesktop desktop;
+	private LayoutMenuManager menuMgr;
+
 	/**
 	 * Creates a new LayoutSettingsDialog object.
 	 */
-	public LayoutSettingsDialog() {
-		super(Cytoscape.getDesktop(), "Layout Settings", false);
+	public LayoutSettingsDialog(CyLayouts cyLayouts, CytoscapeDesktop desktop, LayoutMenuManager menuMgr) {
+		super(desktop, "Layout Settings", false);
 		initializeOnce(); // Initialize the components we only do once
+		this.cyLayouts = cyLayouts;
+		this.desktop = desktop;
+		this.menuMgr = menuMgr;
 	}
 
 	/**
@@ -112,7 +105,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			// Layout using the current layout
 			updateAllSettings();
 			TaskManager.executeTask( new LayoutTask(currentLayout,Cytoscape.getCurrentNetworkView()),
-			                         LayoutTask.getDefaultTaskConfig() );
+			                         LayoutTask.getDefaultTaskConfig(getParent()) );
 		} else if (command.equals("cancel")) {
 			// Call revertSettings for each layout
 			revertAllSettings();
@@ -121,7 +114,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			// OK, initialize and display
 			initialize();
 			pack();
-			setLocationRelativeTo(Cytoscape.getDesktop());
+			setLocationRelativeTo(desktop);
 			setVisible(true);
 		}
 	}
@@ -186,7 +179,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		algorithmSelector.addItem("Select algorithm to view settings");
 
 		// Get the list of known layout menus
-		Set<String> menus = LayoutMenuManager.getLayoutMenuNames();
+		Set<String> menus = menuMgr.getLayoutMenuNames();
 	
 		for (String menu : menus) {
 
@@ -194,7 +187,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 				algorithmSelector.addItem(menu);
 			}
 
-			for (CyLayoutAlgorithm algo : LayoutMenuManager.getLayoutsInMenu(menu)) {
+			for (CyLayoutAlgorithm algo : menuMgr.getLayoutsInMenu(menu)) {
 				if (algo.getSettingsPanel() != null) {
 					algorithmSelector.addItem(algo);
 				}
@@ -203,13 +196,13 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	}
 
 	private void updateAllSettings() {
-		for ( CyLayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
+		for ( CyLayoutAlgorithm algo : cyLayouts.getAllLayouts() ) { 
 			algo.updateSettings();
 		}
 	}
 
 	private void revertAllSettings() {
-		for ( CyLayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
+		for ( CyLayoutAlgorithm algo : cyLayouts.getAllLayouts() ) { 
 			algo.revertSettings();
 		}
 	}

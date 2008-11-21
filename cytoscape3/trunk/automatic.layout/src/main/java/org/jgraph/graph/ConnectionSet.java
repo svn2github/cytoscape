@@ -7,7 +7,6 @@
 package org.jgraph.graph;
 
 import java.io.Serializable;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;

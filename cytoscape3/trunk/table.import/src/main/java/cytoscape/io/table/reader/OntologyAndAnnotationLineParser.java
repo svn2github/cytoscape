@@ -37,13 +37,10 @@
 package cytoscape.io.table.reader;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.io.table.reader.TextTableReader.ObjectType;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +142,7 @@ public class OntologyAndAnnotationLineParser {
 		switch (mapping.getObjectType()) {
 			case NODE:
 
-				Node node = Cytoscape.getCyNode(primaryKey);
+				CyNode node = Cytoscape.getCyNode(primaryKey);
 
 				if (node == null) {
 					for (String alias : aliasSet) {
@@ -169,7 +166,7 @@ public class OntologyAndAnnotationLineParser {
 
 			case EDGE:
 
-				Edge edge = Cytoscape.getCyEdge(primaryKey);
+				CyEdge edge = Cytoscape.getCyEdge(primaryKey);
 
 				if (edge == null) {
 					for (String alias : aliasSet) {

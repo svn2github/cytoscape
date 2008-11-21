@@ -36,10 +36,7 @@
 
 package cytoscape.filter.view;
 
-import cytoscape.filter.model.*;
-
 import javax.swing.*;
-import javax.swing.tree.*;
 
 
 //import org.cytoscape.*;

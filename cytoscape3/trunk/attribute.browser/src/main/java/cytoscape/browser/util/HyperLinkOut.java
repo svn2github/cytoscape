@@ -34,26 +34,16 @@
 */
 package cytoscape.browser.util;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.ontology.DBCrossReferences;
-
 import cytoscape.util.OpenBrowser;
 
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import java.net.MalformedURLException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 
 /**

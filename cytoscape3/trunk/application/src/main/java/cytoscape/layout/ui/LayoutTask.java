@@ -37,13 +37,12 @@
 package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.GraphView;
+import java.awt.Container; 
 
 /**
  * A wrapper for applying a layout in a task. Use it something like
@@ -102,7 +101,7 @@ public class LayoutTask implements Task {
 	 * This method returns a default TaskConfig object.
 	 * @return a default JTaskConfig object.
 	 */
-	public static JTaskConfig getDefaultTaskConfig() {
+	public static JTaskConfig getDefaultTaskConfig(Container owner) {
 		JTaskConfig result = new JTaskConfig();
 
 		result.displayCancelButton(true);
@@ -111,7 +110,7 @@ public class LayoutTask implements Task {
 		result.displayTimeElapsed(false);
 		result.setAutoDispose(true);
 		result.setModal(true);
-		result.setOwner(Cytoscape.getDesktop());
+		result.setOwner(owner);
 
 		return result;
 	}

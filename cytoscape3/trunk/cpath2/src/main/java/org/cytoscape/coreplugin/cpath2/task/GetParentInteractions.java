@@ -1,18 +1,18 @@
 package org.cytoscape.coreplugin.cpath2.task;
 
+import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.Node;
-import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
-import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
+import org.cytoscape.coreplugin.cpath2.view.InteractionBundlePanel;
 import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
-import org.cytoscape.coreplugin.cpath2.view.InteractionBundlePanel;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
+import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
 import javax.swing.*;
@@ -22,9 +22,9 @@ public class GetParentInteractions implements Task {
     private TaskMonitor taskMonitor;
     private CPathWebService webApi = CPathWebServiceImpl.getInstance();
     private InteractionBundleModel interactionBundleModel;
-    private Node node;
+    private CyNode node;
 
-    public GetParentInteractions (Node node) {
+    public GetParentInteractions (CyNode node) {
         this.cpathId = Long.parseLong(node.getIdentifier());
         this.node = node;
     }

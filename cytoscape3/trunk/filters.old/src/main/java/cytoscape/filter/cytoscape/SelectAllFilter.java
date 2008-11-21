@@ -36,26 +36,11 @@
 
 package cytoscape.filter.cytoscape;
 
- 
 
-import org.cytoscape.*;
+import cytoscape.filter.model.Filter;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
-import cytoscape.data.*;
-
-import cytoscape.filter.model.*;
-
-import org.cytoscape.*;
-
-import java.awt.*;
-import java.awt.event.*;
-
-import java.beans.*;
-
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 
@@ -127,7 +112,7 @@ public class SelectAllFilter implements Filter {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean passesFilter(Object object) {
-		if (object instanceof Node || object instanceof Edge) {
+		if (object instanceof CyNode || object instanceof CyEdge) {
 			return true;
 		} else {
 			return false;
@@ -140,7 +125,7 @@ public class SelectAllFilter implements Filter {
 	 * @return  DOCUMENT ME!
 	 */
 	public Class[] getPassingTypes() {
-		return new Class[] { Node.class, Edge.class };
+		return new Class[] { CyNode.class, CyEdge.class };
 	}
 
 	/**

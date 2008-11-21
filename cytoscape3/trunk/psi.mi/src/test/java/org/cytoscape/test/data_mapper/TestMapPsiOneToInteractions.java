@@ -35,7 +35,6 @@
 package org.cytoscape.coreplugin.psi_mi.test.data_mapper;
 
 import junit.framework.TestCase;
-
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
 import org.cytoscape.coreplugin.psi_mi.model.Interaction;
@@ -45,7 +44,6 @@ import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 
 import java.io.File;
-
 import java.util.ArrayList;
 
 

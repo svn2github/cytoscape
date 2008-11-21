@@ -37,17 +37,15 @@
 package cytoscape.filter.cytoscape;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
-import cytoscape.filter.view.*;
-
-import java.beans.*;
-
-import java.util.*;
+import org.cytoscape.model.CyRow;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Iterator;
+import java.util.Vector;
 
 
 /**

@@ -5,15 +5,15 @@
  */
 package cytoscape.browser.ui;
 
-import cytoscape.browser.DataTableModel;
 import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
+import cytoscape.browser.DataTableModel;
+import org.cytoscape.model.CyRow;
 import org.jdesktop.layout.GroupLayout;
-import java.awt.Frame;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.AbstractListModel;
-import javax.swing.JDialog;
 
 /**
  *

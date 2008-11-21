@@ -36,7 +36,7 @@
 
 package cytoscape.io.table.ui.theme;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * Color theme for Import Dialogs.<br>

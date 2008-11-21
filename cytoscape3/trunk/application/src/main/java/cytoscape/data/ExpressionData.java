@@ -44,21 +44,17 @@
 //--------------------------------------------------------------------
 package cytoscape.data;
 
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
-//--------------------------------------------------------------------
-import cytoscape.data.readers.TextFileReader;
-import cytoscape.data.readers.TextJarReader;
-
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.util.FileUtil;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 
-import java.io.*;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -168,8 +164,8 @@ public class ExpressionData implements Serializable {
 	Vector<String> geneNames;
 	Vector<String> geneDescripts;
 	Vector<String> condNames;
-	Hashtable<String,Integer> geneNameToIndex;
-	Hashtable<String,Integer> condNameToIndex;
+	Map<String,Integer> geneNameToIndex;
+	Map<String,Integer> condNameToIndex;
 	double minExp;
 	double maxExp;
 	double minSig;
@@ -321,13 +317,13 @@ public class ExpressionData implements Serializable {
 			geneNameToIndex.clear();
 		}
 
-		geneNameToIndex = new Hashtable<String,Integer>();
+		geneNameToIndex = new HashMap<String,Integer>();
 
 		if (condNameToIndex != null) {
 			condNameToIndex.clear();
 		}
 
-		condNameToIndex = new Hashtable<String,Integer>();
+		condNameToIndex = new HashMap<String,Integer>();
 		minExp = Double.MAX_VALUE;
 		maxExp = Double.MIN_VALUE;
 		minSig = Double.MAX_VALUE;
@@ -348,7 +344,7 @@ public class ExpressionData implements Serializable {
 	 * @throws IOException Error loading / parsing the Expression Data File.
 	 */
 	public boolean loadData(String filename, String keyAttributeName) throws IOException {
-		Hashtable<String,List<String>> attributeToId = new Hashtable<String,List<String>>();
+		Map<String,List<String>> attributeToId = new HashMap<String,List<String>>();
 
 		if (filename == null)
 			return false;
@@ -516,38 +512,19 @@ public class ExpressionData implements Serializable {
 		return true;
 	}
 
-	private Object getAttributeValue(byte type, String id, String att) {
-		if (type == CyAttributes.TYPE_INTEGER)
-			return Cytoscape.getNodeAttributes().getIntegerAttribute(id, att);
-		else if (type == CyAttributes.TYPE_FLOATING)
-			return Cytoscape.getNodeAttributes().getDoubleAttribute(id, att);
-		else if (type == CyAttributes.TYPE_BOOLEAN)
-			return Cytoscape.getNodeAttributes().getBooleanAttribute(id, att);
-		else if (type == CyAttributes.TYPE_STRING)
-			return Cytoscape.getNodeAttributes().getStringAttribute(id, att);
-		else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-			return Cytoscape.getNodeAttributes().getListAttribute(id, att);
-		else if (type == CyAttributes.TYPE_SIMPLE_MAP)
-			return Cytoscape.getNodeAttributes().getMapAttribute(id, att);
+	private Map<String,List<String>> getAttributeToIdList(String keyAttributeName) {
+		Map<String,List<String>> attributeToIdList = new HashMap<String,List<String>>();
+		List<CyNode> allNodes = Cytoscape.getCyNodesList();
 
-		return null;
-	}
-
-	private Hashtable<String,List<String>> getAttributeToIdList(String keyAttributeName) {
-		Hashtable<String,List<String>> attributeToIdList = new Hashtable<String,List<String>>();
-		List<Node> allNodes = Cytoscape.getCyNodesList();
-		byte attributeType = Cytoscape.getNodeAttributes().getType(keyAttributeName);
-
-		for (Node node : allNodes) {
-			String nodeName = node.getIdentifier();
-			Object attrValue = getAttributeValue(attributeType, nodeName, keyAttributeName);
+		for (CyNode node : allNodes) {
+			String nodeName = node.attrs().get("name",String.class);
+			Object attrValue = node.attrs().getRaw(keyAttributeName);
 
 			if (attrValue != null) {
-				String attributeValue = getAttributeValue(attributeType, nodeName, keyAttributeName)
-				                            .toString();
+				String attributeValue = attrValue.toString();
 
 				if (attributeValue != null) {
-					if (!attributeToIdList.contains(attributeValue)) {
+					if (!attributeToIdList.containsKey(attributeValue)) {
 						ArrayList<String> newGeneList = new ArrayList<String>();
 						newGeneList.add(nodeName);
 						attributeToIdList.put(attributeValue, newGeneList);
@@ -559,7 +536,7 @@ public class ExpressionData implements Serializable {
 			}
 		}
 
-		return (attributeToIdList);
+		return attributeToIdList;
 	}
 
 	// Check if the name of the second column is "COMMON" or "DESCRIPT"
@@ -648,7 +625,7 @@ public class ExpressionData implements Serializable {
 	}
 
 	private void parseOneLine(String oneLine, int lineCount, boolean sig_vals,
-	                          boolean mappingByAttribute, Hashtable<String,List<String>> attributeToId, boolean hasCOMMON)
+	                          boolean mappingByAttribute, Map<String,List<String>> attributeToId, boolean hasCOMMON)
 	    throws IOException {
 		// 
 		// Step 1: divide the line into input tokens, and parse through
@@ -1063,25 +1040,38 @@ public class ExpressionData implements Serializable {
 	/**
 	 * Copies ExpressionData data structure into CyAttributes data structure.
 	 *
-	 * @param nodeAttribs Node Attributes Object.
+	 * @param nodeAttribs Node Attributes CyDataTable.
 	 * @param taskMonitor Task Monitor. Can be null.
 	 */
-	public void copyToAttribs(CyAttributes nodeAttribs, TaskMonitor taskMonitor) {
+	public void copyToAttribs(CyDataTable table, TaskMonitor taskMonitor) {
 		String[] condNames = getConditionNames();
+
+		// first set up the columns
+		table.createColumn("geneName",String.class,true);
 
 		for (int condNum = 0; condNum < condNames.length; condNum++) {
 			String condName = condNames[condNum];
 			String eStr = condName + "exp";
 			String sStr = condName + "sig";
+			table.createColumn(eStr,Double.class,false);
+			table.createColumn(sStr,Double.class,false);
+		}
 
-			for (int i = 0; i < geneNames.size(); i++) {
-				String canName = geneNames.get(i);
+		// now create the rows and populate
+		for (int i = 0; i < geneNames.size(); i++) {
+			CyRow row = table.addRow();
+			String canName = geneNames.get(i);
+
+			for (int condNum = 0; condNum < condNames.length; condNum++) {
+				String condName = condNames[condNum];
+				String eStr = condName + "exp";
+				String sStr = condName + "sig";
 
 				mRNAMeasurement mm = getMeasurement(canName, condName);
 
 				if (mm != null) {
-					nodeAttribs.setAttribute(canName, eStr, new Double(mm.getRatio()));
-					nodeAttribs.setAttribute(canName, sStr, new Double(mm.getSignificance()));
+					row.set(eStr, new Double(mm.getRatio()));
+					row.set(sStr, new Double(mm.getSignificance()));
 				}
 
 				// Report on Progress to the Task Monitor.

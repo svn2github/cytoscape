@@ -35,11 +35,7 @@
 package org.cytoscape.coreplugin.cpath.task;
 
 import cytoscape.Cytoscape;
-
-import cytoscape.data.ImportHandler;
-
 import cytoscape.data.readers.GraphReader;
-
 import org.cytoscape.coreplugin.cpath.model.CPathException;
 import org.cytoscape.coreplugin.cpath.model.EmptySetException;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;

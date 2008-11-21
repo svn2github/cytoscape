@@ -45,7 +45,6 @@ package cytoscape.util;
 import cytoscape.CytoscapeInit;
 
 import java.io.IOException;
-
 import java.util.Properties;
 
 

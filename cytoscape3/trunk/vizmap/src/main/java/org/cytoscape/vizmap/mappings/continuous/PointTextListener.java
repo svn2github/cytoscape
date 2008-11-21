@@ -44,12 +44,10 @@ package org.cytoscape.vizmap.mappings.continuous;
 
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 
+import javax.swing.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-
 import java.text.NumberFormat;
-
-import javax.swing.*;
 
 
 /**

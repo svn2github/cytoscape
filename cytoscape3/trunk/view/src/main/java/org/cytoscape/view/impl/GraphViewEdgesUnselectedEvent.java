@@ -36,17 +36,16 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Edge;
-
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.GraphView;
-
+import java.util.List;
 
 final class GraphViewEdgesUnselectedEvent extends GraphViewChangeEventAdapter {
 	private final static long serialVersionUID = 1202416512105252L;
 	private final GraphView m_view;
-	private final int[] m_unselectedEdgeInx;
+	private final List<CyEdge> m_unselectedEdgeInx;
 
-	GraphViewEdgesUnselectedEvent(GraphView view, int[] unselectedEdgeInx) {
+	GraphViewEdgesUnselectedEvent(GraphView view, List<CyEdge> unselectedEdgeInx) {
 		super(view);
 		m_view = view;
 		m_unselectedEdgeInx = unselectedEdgeInx;
@@ -66,25 +65,11 @@ final class GraphViewEdgesUnselectedEvent extends GraphViewChangeEventAdapter {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final Edge[] getUnselectedEdges() {
-		final Edge[] returnThis = new Edge[m_unselectedEdgeInx.length];
+	public final CyEdge[] getUnselectedEdges() {
+		final CyEdge[] returnThis = new CyEdge[m_unselectedEdgeInx.size()];
 
 		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_view.getRootGraph().getEdge(m_unselectedEdgeInx[i]);
-
-		return returnThis;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final int[] getUnselectedEdgeIndices() {
-		final int[] returnThis = new int[m_unselectedEdgeInx.length];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_unselectedEdgeInx[i];
+			returnThis[i] = m_unselectedEdgeInx.get(i);
 
 		return returnThis;
 	}

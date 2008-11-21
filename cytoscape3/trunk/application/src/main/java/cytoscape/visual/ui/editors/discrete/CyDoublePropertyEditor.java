@@ -34,15 +34,14 @@
 */
 package cytoscape.visual.ui.editors.discrete;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
-import javax.swing.JTextField;
-
 import com.l2fprod.common.beans.editor.DoublePropertyEditor;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
 import cytoscape.Cytoscape;
+import cytoscape.visual.ui.VizMapperMainPanel;
+
+import javax.swing.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 
 /**
@@ -55,12 +54,12 @@ public class CyDoublePropertyEditor extends DoublePropertyEditor {
 	/**
 	 * Creates a new CyStringPropertyEditor object.
 	 */
-	public CyDoublePropertyEditor() {
+	public CyDoublePropertyEditor(final VizMapperMainPanel vmp) {
 		super();
 
 		((JTextField) editor).addFocusListener(new FocusListener() {
 				public void focusGained(FocusEvent e) {
-					final Item item = (Item) Cytoscape.getDesktop().getVizMapperUI().getSelectedItem();
+					final Item item = (Item) vmp.getSelectedItem();
 					selected = item.getProperty().getDisplayName();
 					setCurrentValue();
 				}

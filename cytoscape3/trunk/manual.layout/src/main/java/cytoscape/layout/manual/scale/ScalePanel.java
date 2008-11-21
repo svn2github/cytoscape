@@ -36,38 +36,19 @@
 
 package cytoscape.layout.manual.scale;
 
-import cytoscape.layout.manual.common.*;
-
 import cytoscape.Cytoscape;
-
-//import cytoscape.util.CytoscapeAction;
-//import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
-
-import org.cytoscape.view.GraphView;
+import cytoscape.layout.manual.common.CheckBoxTracker;
+import cytoscape.layout.manual.common.GraphConverter2;
+import cytoscape.layout.manual.common.PolymorphicSlider;
+import cytoscape.layout.manual.common.SliderStateTracker;
 import org.cytoscape.view.ViewChangeEdit;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.util.Hashtable;
-
-import javax.swing.JCheckBox;
-
-//import javax.swing.JMenu;
-import javax.swing.JDialog;
-
-//import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.util.Hashtable;
 
 
 /**

@@ -43,21 +43,9 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
 
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.view.*;
-
-//-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
-import java.awt.geom.Rectangle2D;
-
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.AbstractAction;
 
 
 //-------------------------------------------------------------------------

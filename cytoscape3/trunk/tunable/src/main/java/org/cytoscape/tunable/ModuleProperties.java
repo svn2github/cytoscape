@@ -36,10 +36,10 @@
 
 package org.cytoscape.tunable;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-import javax.swing.JPanel;
 
 /**
  * 

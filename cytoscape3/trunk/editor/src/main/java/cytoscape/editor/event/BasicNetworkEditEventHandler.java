@@ -31,27 +31,23 @@
 */
 package cytoscape.editor.event;
 
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.NodeView;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
 import cytoscape.editor.impl.SIF_Interpreter;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 // TODO: No instance variables should be protected--only private and
 //       all access by subclasses should be thru set/get methods.
@@ -362,18 +358,18 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 *
 	 * @param location works in Canvas coordinates
 	 */
-	public Edge finishEdge(Point2D location, NodeView target) {
+	public CyEdge finishEdge(Point2D location, NodeView target) {
 		NodeView source = node;
 
-		Node source_node = source.getNode();
-		Node target_node = target.getNode();
+		CyNode source_node = source.getNode();
+		CyNode target_node = target.getNode();
 
 		String edgeAttrValue =  BasicNetworkEditEventHandler.DEFAULT_EDGE;
 		if (this.getEdgeAttributeValue() != null){ edgeAttrValue = this.getEdgeAttributeValue();}
 		
 		boolean directed = CytoscapeEditorManager.EdgeTypeIsDirected(edgeAttrValue);
 		
-		Edge myEdge = _caller.addEdge(source_node, target_node,
+		CyEdge myEdge = _caller.addEdge(source_node, target_node,
 		                              cytoscape.data.Semantics.INTERACTION,
 		                              edgeAttrValue, true, directed,
 		                              edgeAttrValue);
@@ -416,8 +412,8 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 *
 	 * @param location    point of mouse press (in Canvas coordinates)
 	 */
-	public Node createNode(Point2D location) {
-		Node cn = null;
+	public CyNode createNode(Point2D location) {
+		CyNode cn = null;
 		cn = _caller.addNode("node" + counter, this.getNodeAttributeName(),
 		                     this.getNodeAttributeValue(), location);
 		counter++;

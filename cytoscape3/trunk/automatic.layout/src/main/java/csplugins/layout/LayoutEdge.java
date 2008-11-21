@@ -32,11 +32,7 @@
  */
 package csplugins.layout;
 
-import csplugins.layout.LayoutNode;
-
-import org.cytoscape.*;
-import org.cytoscape.attributes.CyAttributes;
-import cytoscape.Cytoscape;
+import org.cytoscape.model.CyEdge;
 
 /**
  * The LayoutEdge class.  This class is used as a container for information
@@ -50,7 +46,7 @@ public class LayoutEdge {
 	private LayoutNode v2;
 	private double weight = 0.5;
 	private double logWeight;
-	private Edge edge;
+	private CyEdge edge;
 
 	/**
 	 * An empty constructor
@@ -64,7 +60,7 @@ public class LayoutEdge {
 	 *
 	 * @param    edge    Edge that this LayoutEdge represents
 	 */
-	public LayoutEdge(Edge edge) {
+	public LayoutEdge(CyEdge edge) {
 		this.edge = edge;
 	}
 
@@ -76,7 +72,7 @@ public class LayoutEdge {
 	 * @param    v1    The LayoutNode that represents the source of the edge
 	 * @param    v2    The LayoutNode that represents the target of the edge
 	 */
-	public LayoutEdge(Edge edge, LayoutNode v1, LayoutNode v2) {
+	public LayoutEdge(CyEdge edge, LayoutNode v1, LayoutNode v2) {
 		this.edge = edge;
 		this.v1 = v1;
 		this.v2 = v2;
@@ -167,7 +163,7 @@ public class LayoutEdge {
 	 *
 	 * @return     The Edge for this LayoutEdge
 	 */
-	public Edge getEdge() {
+	public CyEdge getEdge() {
 		return this.edge;
 	}
 

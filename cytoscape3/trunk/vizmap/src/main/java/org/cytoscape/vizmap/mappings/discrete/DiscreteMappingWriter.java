@@ -42,13 +42,11 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings.discrete;
 
-import org.cytoscape.vizmap.mappings.MappingUtil;
-
 import org.cytoscape.vizmap.ObjectToString;
+import org.cytoscape.vizmap.mappings.MappingUtil;
 
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.TreeMap;
 import java.util.SortedMap;
 
 

@@ -8,10 +8,9 @@ package org.jgraph.graph;
 
 import org.jgraph.JGraph;
 
-import java.awt.Component;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.util.Map;
 
 

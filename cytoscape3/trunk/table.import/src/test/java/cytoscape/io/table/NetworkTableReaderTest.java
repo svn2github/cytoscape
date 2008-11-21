@@ -36,19 +36,15 @@
 
 package cytoscape.io.table;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.io.table.reader.NetworkTableMappingParameters;
 import cytoscape.io.table.reader.NetworkTableReader;
 import cytoscape.io.table.reader.TextFileDelimiters;
-
 import junit.framework.TestCase;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +105,7 @@ public class NetworkTableReaderTest extends TestCase {
 
 		reader = new NetworkTableReader(network.getName(), network.toURL(), mapping, 0, null);
 
-		GraphPerspective net = Cytoscape.createNetwork(reader, false, null);
+		CyNetwork net = Cytoscape.createNetwork(reader, false, null);
 
 		/*
 		 * test cases

@@ -2,8 +2,8 @@ package org.cytoscape.coreplugin.cpath2.filters;
 
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Chained Filter.

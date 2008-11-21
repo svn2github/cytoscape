@@ -36,29 +36,16 @@
 
 package cytoscape.filter.cytoscape;
 
- 
 
-import org.cytoscape.*;
-import org.cytoscape.GraphPerspective;
-
-import cytoscape.data.*;
-
-import cytoscape.filter.model.*;
-
-import org.cytoscape.*;
 import cytoscape.Cytoscape;
+import cytoscape.filter.model.Filter;
+import cytoscape.filter.model.FilterManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import java.beans.*;
-
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.util.HashSet;
+import java.util.Iterator;
 
 
 /**
@@ -73,7 +60,7 @@ public class NodeTopologyFilter implements Filter {
 	protected Integer count;
 	protected Integer distance;
 	protected HashSet seenNodes;
-	protected GraphPerspective myPerspective;
+	protected CyNetwork myPerspective;
 
 	/**
 	 * 
@@ -177,15 +164,15 @@ public class NodeTopologyFilter implements Filter {
 	 * matches any of the Text from the TextField
 	 */
 	public boolean passesFilter(Object object) {
-		if (object instanceof Node) {
+		if (object instanceof CyNode) {
 			seenNodes = new HashSet();
 			seenNodes.add(object);
 			myPerspective = Cytoscape.getCurrentNetwork();
 
-			int totalSum = countNeighbors((Node) object, 0);
+			int totalSum = countNeighbors((CyNode) object, 0);
 			Filter filter = FilterManager.defaultManager().getFilter(this.filter);
 
-			if (filter.passesFilter((Node) object)) {
+			if (filter.passesFilter((CyNode) object)) {
 				totalSum -= 1;
 			}
 
@@ -195,7 +182,7 @@ public class NodeTopologyFilter implements Filter {
 		}
 	}
 
-	private int countNeighbors(Node currentNode, int currentDistance) {
+	private int countNeighbors(CyNode currentNode, int currentDistance) {
 		Filter filter = FilterManager.defaultManager().getFilter(this.filter);
 		int sum = 0;
 
@@ -218,7 +205,7 @@ public class NodeTopologyFilter implements Filter {
 			Iterator nodeIt = neighbors.iterator();
 
 			while (nodeIt.hasNext() && (sum < count.intValue())) {
-				Node nextNode = (Node) nodeIt.next();
+				CyNode nextNode = (CyNode) nodeIt.next();
 
 				if (!seenNodes.contains(nextNode)) {
 					seenNodes.add(nextNode);
@@ -244,7 +231,7 @@ public class NodeTopologyFilter implements Filter {
 	 * @return  DOCUMENT ME!
 	 */
 	public Class[] getPassingTypes() {
-		return new Class[] { Node.class };
+		return new Class[] { CyNode.class };
 	}
 
 	/**

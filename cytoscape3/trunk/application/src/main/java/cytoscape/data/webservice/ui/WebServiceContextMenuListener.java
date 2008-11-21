@@ -37,7 +37,6 @@
 package cytoscape.data.webservice.ui;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.view.CytoscapeDesktop;
 
 import java.beans.PropertyChangeEvent;
@@ -48,7 +47,13 @@ import java.beans.PropertyChangeListener;
  *
  */
 public class WebServiceContextMenuListener implements PropertyChangeListener {
-	private WebServiceContextMenu cMenu = null;
+
+	private WebServiceContextMenu cMenu; 
+
+	public WebServiceContextMenuListener() {
+		cMenu = new WebServiceContextMenu();
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+	}
 
 	/**
 	 *  Add expander.
@@ -57,9 +62,6 @@ public class WebServiceContextMenuListener implements PropertyChangeListener {
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			if (cMenu == null)
-				cMenu = new WebServiceContextMenu();
-
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(cMenu);
 			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(cMenu);
 		}

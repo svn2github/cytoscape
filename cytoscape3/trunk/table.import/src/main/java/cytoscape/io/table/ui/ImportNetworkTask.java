@@ -36,17 +36,11 @@
 
 package cytoscape.io.table.ui;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.readers.GraphReader;
-
+import cytoscape.io.table.reader.TextTableReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
-import cytoscape.io.table.reader.TextTableReader;
-
-import java.io.IOException;
 
 import java.net.URL;
 

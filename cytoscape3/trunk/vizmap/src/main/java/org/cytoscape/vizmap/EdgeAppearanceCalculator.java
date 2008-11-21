@@ -42,17 +42,11 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import org.cytoscape.GraphPerspective;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.vizmap.calculators.BasicCalculator;
 import org.cytoscape.vizmap.calculators.Calculator;
-
 import org.cytoscape.vizmap.mappings.ObjectMapping;
-
-import org.cytoscape.Edge;
-
-import java.awt.Color;
-import java.awt.Font;
 
 import java.util.Properties;
 
@@ -120,7 +114,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 * object, compute an appearance for the requested Edge in the supplied
 	 * CyNetwork. A new EdgeApperance object will be created.
 	 */
-	public EdgeAppearance calculateEdgeAppearance(Edge edge, GraphPerspective network) {
+	public EdgeAppearance calculateEdgeAppearance(CyEdge edge, CyNetwork network) {
 		EdgeAppearance appr = (EdgeAppearance) defaultAppearance.clone();
 		calculateEdgeAppearance(appr, edge, network);
 
@@ -133,7 +127,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 	 * CyNetwork. The supplied EdgeAppearance object will be changed to hold the
 	 * new values.
 	 */
-	public void calculateEdgeAppearance(EdgeAppearance appr, Edge edge, GraphPerspective network) {
+	public void calculateEdgeAppearance(EdgeAppearance appr, CyEdge edge, CyNetwork network) {
 		appr.copy(defaultAppearance); // set default values
 
 		for (Calculator c : calcs)

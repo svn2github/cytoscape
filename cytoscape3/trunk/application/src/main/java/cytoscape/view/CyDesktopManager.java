@@ -36,13 +36,10 @@
 */
 package cytoscape.view;
 
-import javax.swing.DefaultDesktopManager;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
-
 import cytoscape.Cytoscape;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *
@@ -55,13 +52,11 @@ public class CyDesktopManager  {
 	public static int MINIMUM_WIN_WIDTH = 200;
 	public static int MINIMUM_WIN_HEIGHT = 200;
 		
-	protected static JDesktopPane desktop;
-	private CyDesktopManager() {
-		desktop = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane();
-	}
+	private CyDesktopManager() { }
 			
 	//Closes all open windows
-	public  void closeAllWindows() {
+	public  void closeAllWindows(CytoscapeDesktop desk) {
+		JDesktopPane desktop = desk.getNetworkViewManager().getDesktopPane();
 		JInternalFrame[] allFrames = desktop.getAllFrames();
 		for (int i= allFrames.length -1; i>=0; i--) {
 			allFrames[i].dispose();			
@@ -90,9 +85,8 @@ public class CyDesktopManager  {
 	
 	
 	// Arrange all windows in the desktop according to the given style
-	public static void arrangeFrames(Arrange pStyle) {
-		if (desktop == null)
-			new CyDesktopManager();
+	public static void arrangeFrames(CytoscapeDesktop desk, Arrange pStyle) {
+		JDesktopPane desktop = desk.getNetworkViewManager().getDesktopPane();
 		
 		final Dimension desktopSize = desktop.getSize();
 		

@@ -42,25 +42,24 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeMap;
-import java.util.SortedMap;
-
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.event.ChangeListener;
-
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.SubjectBase;
+import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteLegend;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteMappingReader;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteMappingWriter;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteRangeCalculator;
-import org.cytoscape.vizmap.ValueParser;
+
+import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 
 /**
@@ -217,7 +216,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 *
 	 * @param    attrName    The name of the new attribute to map to
 	 */
-	public void setControllingAttributeName(String attrName, GraphPerspective n, boolean preserveMapping) {
+	public void setControllingAttributeName(String attrName, CyNetwork n, boolean preserveMapping) {
 		this.attrName = attrName;
 
 		if (preserveMapping == false) {
@@ -262,7 +261,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 * @param attrBundle A Bundle of Attributes.
 	 * @return Mapping object.
 	 */
-	public Object calculateRangeValue(Map attrBundle) {
+	public Object calculateRangeValue(CyRow attrBundle) {
 		final DiscreteRangeCalculator calculator = new DiscreteRangeCalculator(treeMap, attrName);
 
 		return calculator.calculateRangeValue(attrBundle);

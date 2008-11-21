@@ -31,13 +31,11 @@
  **/
 package org.mskcc.biopax_plugin.plugin;
 
-import org.mskcc.biopax_plugin.view.BioPaxContainer;
-
 import cytoscape.CytoscapeInit;
 import cytoscape.data.ImportHandler;
-
-import org.osgi.framework.BundleContext;
+import org.mskcc.biopax_plugin.view.BioPaxContainer;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 import java.util.Properties;
 

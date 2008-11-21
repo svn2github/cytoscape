@@ -36,17 +36,16 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Node;
-
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
-
+import java.util.List;
 
 final class GraphViewNodesHiddenEvent extends GraphViewChangeEventAdapter {
 	private final static long serialVersionUID = 1202416512123636L;
 	private final GraphView m_view;
-	private final int[] m_hiddenNodeInx;
+	private final List<CyNode> m_hiddenNodeInx;
 
-	GraphViewNodesHiddenEvent(GraphView view, int[] hiddenNodeInx) {
+	GraphViewNodesHiddenEvent(GraphView view, List<CyNode> hiddenNodeInx) {
 		super(view);
 		m_view = view;
 		m_hiddenNodeInx = hiddenNodeInx;
@@ -66,25 +65,11 @@ final class GraphViewNodesHiddenEvent extends GraphViewChangeEventAdapter {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final Node[] getHiddenNodes() {
-		final Node[] returnThis = new Node[m_hiddenNodeInx.length];
+	public final CyNode[] getHiddenNodes() {
+		final CyNode[] returnThis = new CyNode[m_hiddenNodeInx.size()];
 
 		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_view.getRootGraph().getNode(m_hiddenNodeInx[i]);
-
-		return returnThis;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final int[] getHiddenNodeIndices() {
-		final int[] returnThis = new int[m_hiddenNodeInx.length];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_hiddenNodeInx[i];
+			returnThis[i] = m_hiddenNodeInx.get(i);
 
 		return returnThis;
 	}

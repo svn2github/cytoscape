@@ -35,39 +35,23 @@
 package cytoscape.dialogs.preferences;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
-
 import cytoscape.util.BookmarksUtil;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.xml.bind.JAXBException;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import java.io.IOException;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import javax.xml.bind.JAXBException;
 
 
 /**
@@ -90,8 +74,19 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	public BookmarkDialog(JFrame pParent) throws JAXBException, IOException {
+	public BookmarkDialog(Dialog pParent) throws JAXBException, IOException {
 		super(pParent, true);
+		basicInit();
+		this.setLocationRelativeTo(pParent);
+	}
+
+	public BookmarkDialog(Frame pParent) throws JAXBException, IOException {
+		super(pParent, true);
+		basicInit();
+		this.setLocationRelativeTo(pParent);
+	}
+
+	private void basicInit() throws JAXBException, IOException {
 		this.setTitle("Bookmark manager");
 
 		initComponents();
@@ -100,7 +95,6 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 		loadBookmarks();
 
 		setSize(new Dimension(500, 250));
-		this.setLocationRelativeTo(pParent);
 	}
 
 	/**
@@ -109,9 +103,18 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	public BookmarkDialog(JFrame pParent, String pCategoryName) throws JAXBException, IOException {
+	public BookmarkDialog(Dialog pParent, String pCategoryName) throws JAXBException, IOException {
 		this(pParent);
+		categoryInit(pCategoryName);
+	}
 
+	public BookmarkDialog(Frame pParent, String pCategoryName) throws JAXBException, IOException {
+		this(pParent);
+		categoryInit(pCategoryName);
+	}
+
+
+	private void categoryInit(String pCategoryName) throws JAXBException, IOException {
 		Dimension winSize = this.getSize();
 		
 		// Set the given category the selected item in comboBox
@@ -574,50 +577,5 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 		private javax.swing.JTextField tfURL;
 
 		// End of variables declaration
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		JDialog theDialog = new BookmarkDialog();
-		theDialog.setPreferredSize(new Dimension(350, 400));
-		theDialog.pack();
-		theDialog.setVisible(true);
-	}
-
-	// for test only
-	/**
-	 * Creates a new BookmarkDialog object.
-	 */
-	public BookmarkDialog() {
-		this.setTitle("Bookmark manager");
-
-		theBookmarks = getTestBookmarks();
-		initComponents();
-		bookmarkCategory = cmbCategory.getSelectedItem().toString();
-		// theBookmarks = Cytoscape.getBookmarks();
-		loadBookmarks();
-	}
-
-	// For test only, remove after test pass
-	private Bookmarks getTestBookmarks() {
-		Bookmarks tmpBookmarks = null;
-
-		java.io.File tmpBookmarkFile = new java.io.File("bookmarks_kei.xml");
-		System.out.println("tmpBookmarkFile =" + tmpBookmarkFile.getAbsolutePath());
-
-		// Load the Bookmarks object from given xml file
-		try {
-			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURL());
-		} catch (IOException e) {
-			System.out.println("IOException -- bookmarkSource");
-		} catch (JAXBException e) {
-			System.out.println("JAXBException -- bookmarkSource");
-		} catch (Exception e) {
-			System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
-		}
-
-		return tmpBookmarks;
 	}
 }

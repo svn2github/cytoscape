@@ -36,57 +36,28 @@
  */
 package cytoscape.view;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.view.GraphView;
-
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
-
-import cytoscape.data.webservice.ui.NetworkExpanderListener;
-import cytoscape.data.webservice.ui.WebServiceContextMenuListener;
-import cytoscape.util.undo.CyUndo;
-
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
-
+//import cytoscape.visual.ui.VizMapperMainPanel;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
-import cytoscape.visual.ui.VizMapBypassNetworkListener;
-import cytoscape.visual.ui.VizMapperMainPanel;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import java.util.HashMap;
-import java.util.List;
-
-import javax.help.HelpBroker;
-import javax.help.HelpSet;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -171,11 +142,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 
 	/**
-	 * The GraphViewController for all NetworkViews that we know about
-	 */
-	protected GraphViewController graphViewController;
-
-	/**
 	 * Provides Operations for Mapping Data Attributes of CyNetworks to
 	 * GraphViews
 	 */
@@ -183,8 +149,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * New VizMapper UI
-	 */
 	protected VizMapperMainPanel vizmapperUI;
+	 */
 
 	/**
 	 * Current network and view.
@@ -225,7 +191,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop() {
+	public CytoscapeDesktop(CyMenus cyMenus) {
 		super("Cytoscape Desktop (New Session)");
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
@@ -245,7 +211,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		networkPanel = new NetworkPanel(this);
 		networkPanel.setNavigator(bevh.getBirdsEyeView());
 
-		cyMenus = new CyMenus();
+		this.cyMenus = cyMenus; 
 
 /*
 		 Listener Setup
@@ -288,14 +254,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		this.getSwingPropertyChangeSupport().addPropertyChangeListener(networkPanel);
 		networkPanel.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
-		// add a listener for node bypass
-		Cytoscape.getSwingPropertyChangeSupport()
-		         .addPropertyChangeListener(new VizMapBypassNetworkListener());
-
-    // Web Service Client context menu.
-    Cytoscape.getSwingPropertyChangeSupport()
-        .addPropertyChangeListener(new WebServiceContextMenuListener());
-
 		// initialize Menus
 		cyMenus.initializeMenus();
 
@@ -312,7 +270,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// Set up the VizMapper
 		//setupVizMapper();
-		getVizMapperUI();
+		//getVizMapperUI();
+		vmm = Cytoscape.getVisualMappingManager();
 
 /*
 		don't automatically close window. Let Cytoscape.exit(returnVal)
@@ -384,7 +343,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *
 	 * @param newNetwork DOCUMENT ME!
 	 */
-	public void setNewNetwork(GraphPerspective newNetwork) {
+	public void setNewNetwork(CyNetwork newNetwork) {
 	}
 
 
@@ -392,10 +351,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *  Returns new vizmapper GUI.
 	 *
 	 * @return  DOCUMENT ME!
-	 */
 	public VizMapperMainPanel getVizMapperUI() {
 		if (vizmapperUI == null) {
-			this.vmm = Cytoscape.getVisualMappingManager();
 			vizmapperUI = VizMapperMainPanel.getVizMapperUI();
 			getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
 			this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
@@ -403,6 +360,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		return vizmapperUI;
 	}
+	 */
 
 	// ----------------------------------------//
 	// Focus Management
@@ -417,7 +375,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		return null; // TODO why does this return null, should the method just return void instead?
 	}
 
-	protected void updateFocus(String network_id) {
+	protected void updateFocus(Long network_id) {
 		final VisualStyle old_style = vmm.getVisualStyle();
 		final GraphView old_view = Cytoscape.getCurrentNetworkView();
 
@@ -450,20 +408,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *
 	 * @param network_id DOCUMENT ME!
 	 */
-	public void setFocus(String network_id) {
+	public void setFocus(Long network_id) {
 		pcs.firePropertyChange(new PropertyChangeEvent(this, NETWORK_VIEW_FOCUSED, null, network_id));
 		pcs.firePropertyChange(new PropertyChangeEvent(this, NETWORK_VIEW_FOCUS, null, network_id));
-	}
-
-	/**
-	 * TO keep things clearer there is one GraphView Controller per
-	 * CytoscapeDesktop
-	 */
-	public GraphViewController getGraphViewController() {
-		if (graphViewController == null)
-			graphViewController = new GraphViewController();
-
-		return graphViewController;
 	}
 
 	/**
@@ -483,27 +430,30 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	@SuppressWarnings("unchecked")
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == NETWORK_VIEW_CREATED) {
-			// add the new view to the GraphViewController
-			getGraphViewController().addGraphView((GraphView) e.getNewValue());
+			// Used to be here for the GraphViewController, but now that listening
+			// is handled by the GraphView itself.
+
 			// pass on the event
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
+		} else  if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
 			// get focus event from NetworkViewManager
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
 			// get Focus from NetworkPanel
-			updateFocus(e.getNewValue().toString());
+			updateFocus((Long)e.getNewValue());
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEWS_SELECTED) {
-			Cytoscape.setSelectedNetworkViews( (List<String>)(e.getNewValue()) );
-			Cytoscape.setSelectedNetworks( (List<String>)(e.getNewValue()) );
+			Cytoscape.setSelectedNetworkViews( (List<Long>)(e.getNewValue()) );
+			Cytoscape.setSelectedNetworks( (List<Long>)(e.getNewValue()) );
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
+			System.out.println("getting and refiring NETWORK_CREATED");
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
+			setFocus( Cytoscape.getCurrentNetwork().getSUID() );
 
 			// Check new session or not
 			if ((Cytoscape.getNetworkSet().size() == 0)
@@ -518,10 +468,12 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 					Cytoscape.createNewSession();
 			}
 		} else if (e.getPropertyName() == NETWORK_VIEW_DESTROYED) {
-			// remove the view from the GraphViewController
-			getGraphViewController().removeGraphView((GraphView) e.getNewValue());
+			// Used to be here for the GraphViewController, but now that listening
+			// is handled by the GraphView itself.
+
 			// pass on the event
 			pcs.firePropertyChange(e);
+			setFocus( Cytoscape.getCurrentNetwork().getSUID() );
 		}
 	}
 
@@ -684,7 +636,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public BirdsEyeViewHandler getBirdsEyeViewHandler() {
 		if(bevh == null) {
-			bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane());
+			bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane(),this);
 		}
 		
 		return bevh;

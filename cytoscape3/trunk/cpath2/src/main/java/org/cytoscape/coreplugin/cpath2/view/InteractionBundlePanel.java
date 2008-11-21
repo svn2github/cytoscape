@@ -1,7 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.cpath2.filters.ChainedFilter;
 import org.cytoscape.coreplugin.cpath2.filters.DataSourceFilter;
 import org.cytoscape.coreplugin.cpath2.filters.EntityTypeFilter;
@@ -20,9 +20,12 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+import java.util.HashSet;
 import java.util.List;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Interaction Bundle Panel.
@@ -38,7 +41,7 @@ public class InteractionBundlePanel extends JPanel {
     private JTreeWithCheckNodes tree;
     private CollapsablePanel filterPanel;
     private JDialog dialog;
-    private GraphPerspective mergeNetwork;
+    private CyNetwork mergeNetwork;
 
     public InteractionBundlePanel(InteractionBundleModel
             interactionBundleModel, JDialog dialog) {
@@ -47,7 +50,7 @@ public class InteractionBundlePanel extends JPanel {
     }
 
     public InteractionBundlePanel(InteractionBundleModel
-            interactionBundleModel, GraphPerspective mergeNetwork, JDialog dialog) {
+            interactionBundleModel, CyNetwork mergeNetwork, JDialog dialog) {
         this(interactionBundleModel);
         this.dialog = dialog;
         this.mergeNetwork = mergeNetwork;

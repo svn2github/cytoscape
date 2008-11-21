@@ -39,9 +39,7 @@ package cytoscape.graph.layout.impl;
 import com.nerius.math.xform.AffineTransform3D;
 import com.nerius.math.xform.Scale3D;
 import com.nerius.math.xform.Translation3D;
-
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
-
 import cytoscape.util.intr.IntEnumerator;
 
 

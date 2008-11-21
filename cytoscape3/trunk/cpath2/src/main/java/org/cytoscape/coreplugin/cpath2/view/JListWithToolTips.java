@@ -2,7 +2,6 @@ package org.cytoscape.coreplugin.cpath2.view;
 
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.OrganismType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.XRefType;
 import org.cytoscape.coreplugin.cpath2.view.model.ExtendedRecordWrapper;
 
 import javax.swing.*;

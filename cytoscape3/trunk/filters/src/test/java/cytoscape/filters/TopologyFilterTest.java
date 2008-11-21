@@ -1,11 +1,8 @@
 package cytoscape.filters;
 
-import cytoscape.filters.NumericFilter;
-import cytoscape.filters.CompositeFilter;
-import cytoscape.filters.TopologyFilter;
-import java.util.BitSet;
-
 import csplugins.quickfind.util.QuickFind;
+
+import java.util.BitSet;
 
 public class TopologyFilterTest extends FilterTest {
 

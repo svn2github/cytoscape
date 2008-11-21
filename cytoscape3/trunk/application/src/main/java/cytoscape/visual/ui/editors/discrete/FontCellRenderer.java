@@ -2,10 +2,8 @@ package cytoscape.visual.ui.editors.discrete;
 
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
-import java.awt.Component;
-import java.awt.Font;
-
-import javax.swing.JTable;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

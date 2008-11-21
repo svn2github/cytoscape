@@ -38,12 +38,10 @@ package cytoscape.io.table.ui;
 import cytoscape.Cytoscape;
 import static cytoscape.data.servers.OntologyServer.OntologyType.BASIC;
 import static cytoscape.data.servers.OntologyServer.OntologyType.GO;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
 import java.io.IOException;
-
 import java.net.URL;
 
 

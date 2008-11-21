@@ -1,23 +1,27 @@
 package org.cytoscape.coreplugin.cpath2.test;
 
+import cytoscape.Cytoscape;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceEventSupport;
+import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.WebServiceClient;
 import junit.framework.TestCase;
-import cytoscape.data.webservice.*;
+import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathResponseFormat;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CytoscapeCPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
-import cytoscape.Cytoscape;
-import cytoscape.CyMain;
-import org.cytoscape.coreplugin.cpath2.web_service.*;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 
-import java.util.List;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.beans.PropertyChangeListener;
+import java.util.List;
 
 /**
  * Test Harness for the CytosacpeCPathWebService.

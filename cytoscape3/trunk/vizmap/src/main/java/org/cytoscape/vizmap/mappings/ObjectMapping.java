@@ -42,26 +42,22 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.GraphPerspective;
-
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.model.CyRow;
 
-
-//----------------------------------------------------------------------------
+import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.event.ChangeListener;
 
 
 //----------------------------------------------------------------------------
 /**
  * Mappings should implement this interface. Mappings are classes that map from
  * a value stored in the edge attributes or node attributes HashMap in
- * {@link cytoscape.CyAttributes}. The range of the mapping depends on the
+ * {@link org.cytoscape.model.CyRow}. The range of the mapping depends on the
  * {@link cytoscape.visual.calculators.AbstractCalculator} that owns
  * the mapping.
  * <p>
@@ -105,7 +101,7 @@ public interface ObjectMapping extends Cloneable {
      * provided so that the current values for the given attribute name can
      * be loaded for UI purposes. Null values for the network argument are allowed.
      */
-    void setControllingAttributeName(String attrName, GraphPerspective network,
+    void setControllingAttributeName(String attrName, CyNetwork network,
         boolean preserveMapping);
 
     /**
@@ -135,7 +131,7 @@ public interface ObjectMapping extends Cloneable {
      */
     public void removeChangeListener(ChangeListener l);
 
-    Object calculateRangeValue(Map attrBundle);
+    Object calculateRangeValue(CyRow attrBundle);
 
     JPanel getLegend(VisualPropertyType type);
 

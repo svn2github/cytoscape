@@ -29,29 +29,16 @@
 */
 package cytoscape.editor.impl;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
-
 import cytoscape.Cytoscape;
-import org.cytoscape.vizmap.VisualMappingManager;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.DragSourceContextCursorSetter;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
 import org.cytoscape.view.GraphView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**

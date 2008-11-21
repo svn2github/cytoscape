@@ -6,10 +6,9 @@
  */
 package org.jgraph.plaf.basic;
 
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import javax.swing.*;
+import javax.swing.plaf.UIResource;
+import java.awt.*;
 import java.awt.dnd.DropTargetContext;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -17,12 +16,6 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JComponent;
-import javax.swing.Scrollable;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
-import javax.swing.plaf.UIResource;
 
 
 /**

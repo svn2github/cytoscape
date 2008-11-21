@@ -36,16 +36,12 @@ package cytoscape.ding;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.render.stateful.GraphLOD;
+import org.cytoscape.view.GraphView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.cytoscape.view.GraphView;
 
 
 /**
@@ -80,7 +76,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 		if (e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED) {
 			init();
 
-			java.util.Map<String,GraphView> networkViewMap = cytoscape.Cytoscape.getNetworkViewMap();
+			java.util.Map<Long,GraphView> networkViewMap = cytoscape.Cytoscape.getNetworkViewMap();
 			java.util.Iterator<GraphView> foo = networkViewMap.values().iterator();
 
 			while (foo.hasNext()) {

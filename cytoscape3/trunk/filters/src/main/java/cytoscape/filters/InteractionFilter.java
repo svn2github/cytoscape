@@ -36,7 +36,7 @@
 
 package cytoscape.filters;
 
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.model.CyNetwork;
 
 
 public class InteractionFilter extends CompositeFilter {
@@ -127,7 +127,7 @@ public class InteractionFilter extends CompositeFilter {
 	}
 	
 				
-	public void setNetwork(GraphPerspective pNetwork) {
+	public void setNetwork(CyNetwork pNetwork) {
 		if (network != null && network == pNetwork) {
 			return;
 		}

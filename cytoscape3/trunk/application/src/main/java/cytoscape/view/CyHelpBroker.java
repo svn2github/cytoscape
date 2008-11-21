@@ -36,10 +36,9 @@
  */
 package cytoscape.view;
 
-import java.net.URL;
-
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
+import java.net.URL;
 
 
 /**

@@ -34,35 +34,23 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
+import cytoscape.Cytoscape;
+import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
+import org.cytoscape.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 //import cytoscape.visual.ui.LabelPlacerGraphic;
 
 

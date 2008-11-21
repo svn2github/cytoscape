@@ -49,18 +49,11 @@ package cytoscape.util;
 
 
 //----------------------------------------------------------------------
-import java.awt.*;
-import java.awt.event.*;
-
-import java.lang.*;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 //---------------------------------------------------------------------------------------

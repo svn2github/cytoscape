@@ -1,7 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
-import javax.swing.border.Border;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 

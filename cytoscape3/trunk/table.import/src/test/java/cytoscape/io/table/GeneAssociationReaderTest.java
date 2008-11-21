@@ -36,24 +36,16 @@
 
 package cytoscape.io.table;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.data.ontology.GeneOntology;
-
 import cytoscape.data.servers.OntologyServer.OntologyType;
-
-import cytoscape.io.table.reader.GeneAssociationReader;
-
 import junit.framework.TestCase;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.net.URISyntaxException;
-
 import java.util.Iterator;
 
 
@@ -70,7 +62,7 @@ public class GeneAssociationReaderTest extends TestCase {
 	private static final String GO_SLIM = "src/test/resources/testData/annotation/goslim_generic.obo";
 	private static final String GAL_NETWORK = "src/test/resources/testData/galFiltered.sif";
 	private static final String GENE_ASSOCIATION = "src/test/resources/testData/annotation/gene_association.sgd";
-	private GraphPerspective gal;
+	private CyNetwork gal;
 	private CyAttributes nodeAttr;
 
 	protected void setUp() throws Exception {

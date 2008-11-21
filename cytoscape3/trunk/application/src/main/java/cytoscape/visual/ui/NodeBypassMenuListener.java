@@ -37,15 +37,13 @@
 package cytoscape.visual.ui;
 
 import org.cytoscape.view.NodeContextMenuListener;
-
 import org.cytoscape.view.NodeView;
+import cytoscape.visual.ui.editors.EditorFactory;
 
-import java.awt.Color;
-import java.awt.Font;
 
-import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 
 /**
@@ -53,7 +51,9 @@ import javax.swing.border.EmptyBorder;
  * When a node is selected it calls bypass andd add
  */
 class NodeBypassMenuListener implements NodeContextMenuListener {
-	NodeBypassMenuListener() {
+	private EditorFactory ef;
+	NodeBypassMenuListener(EditorFactory ef) {
+		this.ef = ef;
 	}
 
 	/**
@@ -61,7 +61,7 @@ class NodeBypassMenuListener implements NodeContextMenuListener {
 	 * @param menu popup menu to add the Bypass menu
 	 */
 	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-		NodeBypass nb = new NodeBypass();
+		NodeBypass nb = new NodeBypass(ef);
 
 		if (menu == null)
 			menu = new JPopupMenu();
@@ -69,7 +69,7 @@ class NodeBypassMenuListener implements NodeContextMenuListener {
 		/*
 		 * Add Node ID as label.
 		 */
-		final String nodeID = nodeView.getNode().getIdentifier();
+		final String nodeID = nodeView.getNode().attrs().get("name",String.class);
 		final JLabel nodeLabel = new JLabel(nodeID);
 
 		if (menu == null)

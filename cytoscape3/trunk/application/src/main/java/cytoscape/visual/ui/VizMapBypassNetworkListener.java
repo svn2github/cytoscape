@@ -37,8 +37,9 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.ui.editors.EditorFactory;
+
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -49,6 +50,13 @@ import java.beans.PropertyChangeListener;
  * the views are created.
  */
 public class VizMapBypassNetworkListener implements PropertyChangeListener {
+
+	private EditorFactory ef;
+	public VizMapBypassNetworkListener(EditorFactory ef) {
+		this.ef = ef;
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+	}
+
 	/**
 	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
 	 * node and edge context menu listeners to the view.
@@ -56,10 +64,10 @@ public class VizMapBypassNetworkListener implements PropertyChangeListener {
 	 */
 	public void propertyChange(PropertyChangeEvent evnt) {
 		if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener();
+			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
 
-			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener();
+			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener(ef);
 			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
 		}
 	}

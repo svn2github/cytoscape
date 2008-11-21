@@ -1,8 +1,8 @@
 package org.cytoscape.coreplugin.cpath2.view.model;
 
 import javax.swing.table.DefaultTableModel;
-import java.util.Vector;
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Pathway Table Model.

@@ -44,11 +44,17 @@ package cytoscape.actions;
 
 
 //-------------------------------------------------------------------------
-import org.cytoscape.*;
 
-import org.cytoscape.view.*;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -85,19 +91,13 @@ public class GinyUtils {
 			return;
 		}
 
-		for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext();) {
-			NodeView nview = (NodeView) i.next();
+		for ( CyNode n1 : view.getSelectedNodes() ) {
+			NodeView nview = view.getNodeView(n1);
 			view.showGraphObject(nview);
 
-			int[] na = view.getGraphPerspective().neighborsArray(nview.getGraphPerspectiveIndex());
-
-			for (int i2 = 0; i2 < na.length; ++i2) {
-				int[] edges = view.getGraphPerspective()
-				                  .getEdgeIndicesArray(nview.getGraphPerspectiveIndex(), na[i2],
-				                                       true, true);
-
-				for (int j = 0; j < edges.length; ++j) {
-					view.showGraphObject(view.getEdgeView(edges[j]));
+			for ( CyNode n2 : view.getGraphPerspective().getNeighborList(n1,CyEdge.Type.ANY) ) {
+				for ( CyEdge e : view.getGraphPerspective().getConnectingEdgeList(n1,n2,CyEdge.Type.ANY) ) {
+					view.showGraphObject( view.getEdgeView( e ) );
 				}
 			}
 		}
@@ -140,22 +140,14 @@ public class GinyUtils {
 
 		for (Iterator i = view.getNodeViewsIterator(); i.hasNext();) {
 			NodeView nview = (NodeView) i.next();
-			Node n = nview.getNode();
+			CyNode n1 = nview.getNode();
 
 			view.showGraphObject(nview);
 
-			int[] na = view.getGraphPerspective().neighborsArray(nview.getGraphPerspectiveIndex());
-
-			for (int i2 = 0; i2 < na.length; ++i2) {
-				int[] edges = view.getGraphPerspective()
-				                  .getEdgeIndicesArray(nview.getGraphPerspectiveIndex(), na[i2],
-				                                       true);
-
-				if (edges != null)
-					for (int j = 0; j < edges.length; ++j) {
-						EdgeView ev = view.getEdgeView(edges[j]);
-						view.showGraphObject(ev);
-					}
+			for ( CyNode n2 : view.getGraphPerspective().getNeighborList(n1,CyEdge.Type.ANY) ) {
+				for ( CyEdge e : view.getGraphPerspective().getConnectingEdgeList(n1,n2,CyEdge.Type.ANY) ) {
+					view.showGraphObject( view.getEdgeView( e ) );
+				}
 			}
 		}
 
@@ -244,15 +236,14 @@ public class GinyUtils {
 			return;
 		}
 
-		GraphPerspective graphPerspective = view.getGraphPerspective();
+		CyNetwork cyNetwork = view.getGraphPerspective();
 		Set<NodeView> nodeViewsToSelect = new HashSet<NodeView>();
 
 		for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext();) {
 			NodeView nview = (NodeView) i.next();
-			Node n = nview.getNode();
+			CyNode n = nview.getNode();
 
-			for (Iterator ni = graphPerspective.neighborsList(n).iterator(); ni.hasNext();) {
-				Node neib = (Node) ni.next();
+			for ( CyNode neib : cyNetwork.getNeighborList(n,CyEdge.Type.ANY) ) {
 				NodeView neibview = view.getNodeView(neib);
 				nodeViewsToSelect.add(neibview);
 			}

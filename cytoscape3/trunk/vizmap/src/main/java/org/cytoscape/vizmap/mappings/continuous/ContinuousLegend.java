@@ -36,30 +36,18 @@
 */
 package org.cytoscape.vizmap.mappings.continuous;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.mappings.LegendTable;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
-
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.mappings.LegendTable;
 //import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 //import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
 //import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;

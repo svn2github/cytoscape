@@ -3,6 +3,10 @@
  */
 package cytoscape.plugin;
 
+import cytoscape.task.util.TaskManager;
+import org.cytoscape.io.read.URLUtil;
+import cytoscape.util.ZipUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +18,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-
-import cytoscape.task.util.TaskManager;
-import cytoscape.util.URLUtil;
-import cytoscape.util.ZipUtil;
 
 /**
  * @author skillcoy

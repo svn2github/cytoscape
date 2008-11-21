@@ -36,33 +36,26 @@
 */
 package cytoscape.layout.ui;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
-import org.cytoscape.layout.CyLayoutAlgorithm;
-
-import org.cytoscape.view.GraphView;
-
 import cytoscape.task.util.TaskManager;
-
-import org.cytoscape.Node;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 
 /**
@@ -76,7 +69,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	private final static long serialVersionUID = 1202339874245069L;
 	private CyLayoutAlgorithm layout;
 	private static final String NOATTRIBUTE = "(none)";
-	private Set<Node> selectedNodes;
+	private Set<CyNode> selectedNodes;
 
 	/**
 	 * Creates a new DynamicLayoutMenu object.
@@ -87,7 +80,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		super(layout.toString());
 		addMenuListener(this);
 		this.layout = layout;
-		selectedNodes = new HashSet<Node>();
+		selectedNodes = new HashSet<CyNode>();
 		setEnabled(enabled);
 	}
 
@@ -117,20 +110,20 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		this.removeAll();
 
 		// Base the menu structure only on the current network. 
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 
 		// First, do we support selectedOnly?
-		selectedNodes = network.getSelectedNodes();
+		selectedNodes = new HashSet<CyNode>(CyDataTableUtil.getNodesInState(network,"selected",true));
 
 		if (layout.supportsSelectedOnly() && (selectedNodes.size() > 0)) {
 			// Add selected node/all nodes menu
-			addSelectedOnlyMenus();
-		} else if (layout.supportsNodeAttributes() != null) {
+			addSelectedOnlyMenus(network);
+		} else if (layout.supportsNodeAttributes().size() > 0) {
 			// Add node attributes menus
-			addNodeAttributeMenus(this, false);
-		} else if (layout.supportsEdgeAttributes() != null) {
+			addNodeAttributeMenus(this, network, false);
+		} else if (layout.supportsEdgeAttributes().size() > 0) {
 			// Add edge attributes menus
-			addEdgeAttributeMenus(this, false);
+			addEdgeAttributeMenus(this, network, false);
 		} else {
 
 			// No special menus, so make sure we layout all selected
@@ -139,24 +132,24 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 				layout.setSelectedOnly(false);
 				layout.setLayoutAttribute(null);
 				TaskManager.executeTask( new LayoutTask(layout, view),
-				                         LayoutTask.getDefaultTaskConfig() );
+				                         LayoutTask.getDefaultTaskConfig(getParent()) );
 			}
 		}
 	}
 
-	private void addNodeAttributeMenus(JMenu parent, boolean selectedOnly) {
+	private void addNodeAttributeMenus(JMenu parent, CyNetwork net, boolean selectedOnly) {
 		// Get the node attributes
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		CyDataTable nodeAttributes = net.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
 		addAttributeMenus(parent, nodeAttributes, layout.supportsNodeAttributes(), selectedOnly);
 	}
 
-	private void addEdgeAttributeMenus(JMenu parent, boolean selectedOnly) {
+	private void addEdgeAttributeMenus(JMenu parent, CyNetwork net, boolean selectedOnly) {
 		// Get the edge attributes
-		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		CyDataTable edgeAttributes = net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
 		addAttributeMenus(parent, edgeAttributes, layout.supportsEdgeAttributes(), selectedOnly);
 	}
 
-	private void addAttributeMenus(JMenu parent, CyAttributes attributes, byte[] typeList,
+	private void addAttributeMenus(JMenu parent, CyDataTable attributes, Set<Class<?>> typeSet,
 	                               boolean selectedOnly) {
 		// Add any special attributes
 		List specialList = layout.getInitialAttributeList();
@@ -167,34 +160,27 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 			}
 		}
 
-		String[] attList = attributes.getAttributeNames();
-
-		for (int i = 0; i < attList.length; i++) {
-			if (!attributes.getUserVisible(attList[i]))
-				continue;
-			byte type = attributes.getType(attList[i]);
-
-			for (int t = 0; t < typeList.length; t++) {
-				if ((typeList[t] == -1) || (typeList[t] == type))
-					parent.add(new LayoutAttributeMenuItem(attList[i], selectedOnly));
-			}
+		for ( String col : attributes.getColumnTypeMap().keySet() ) {
+			Class<?> type = attributes.getColumnTypeMap().get(col);
+			if ( typeSet.contains( type ) )
+				parent.add(new LayoutAttributeMenuItem(col, selectedOnly));
 		}
 	}
 
-	private void addSelectedOnlyMenus() {
+	private void addSelectedOnlyMenus(final CyNetwork net) {
 		JMenuItem allNodes;
 		JMenuItem selNodes;
 
-		if ((layout.supportsNodeAttributes() != null) || (layout.supportsEdgeAttributes() != null)) {
+		if ((layout.supportsNodeAttributes().size() > 0) || (layout.supportsEdgeAttributes().size() > 0)) {
 			allNodes = new JMenu("All Nodes");
 			selNodes = new JMenu("Selected Nodes Only");
 
-			if (layout.supportsNodeAttributes() != null) {
-				addNodeAttributeMenus((JMenu) allNodes, false);
-				addNodeAttributeMenus((JMenu) selNodes, true);
+			if (layout.supportsNodeAttributes().size() > 0) {
+				addNodeAttributeMenus((JMenu) allNodes, net, false);
+				addNodeAttributeMenus((JMenu) selNodes, net, true);
 			} else {
-				addEdgeAttributeMenus((JMenu) allNodes, false);
-				addEdgeAttributeMenus((JMenu) selNodes, true);
+				addEdgeAttributeMenus((JMenu) allNodes, net, false);
+				addEdgeAttributeMenus((JMenu) selNodes, net, true);
 			}
 		} else {
 			allNodes = new LayoutAttributeMenuItem("All Nodes", false);
@@ -230,7 +216,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 
 						while (nodeViews.hasNext()) {
 							NodeView nv = (NodeView) nodeViews.next();
-							Node node = nv.getNode();
+							CyNode node = nv.getNode();
 	
 							if (!selectedNodes.contains(node))
 								layout.lockNode(nv);
@@ -238,13 +224,13 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 					}
 				}
 
-				if ((layout.supportsNodeAttributes() != null)
-				    || (layout.supportsEdgeAttributes() != null)) {
+				if ((layout.supportsNodeAttributes().size() > 0)
+				    || (layout.supportsEdgeAttributes().size() > 0)) {
 					layout.setLayoutAttribute(e.getActionCommand());
 				}
 
 				TaskManager.executeTask( new LayoutTask(layout, netView), 
-				                         LayoutTask.getDefaultTaskConfig() );
+				                         LayoutTask.getDefaultTaskConfig(getParent()) );
 			}
 		}
 	}

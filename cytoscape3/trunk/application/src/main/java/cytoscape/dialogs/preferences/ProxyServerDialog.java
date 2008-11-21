@@ -36,21 +36,16 @@ package cytoscape.dialogs.preferences;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.util.ProxyHandler;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 
 /**

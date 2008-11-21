@@ -36,22 +36,18 @@
 
 package cytoscape.io.table;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
-
 import cytoscape.io.table.reader.AttributeMappingParameters;
 import cytoscape.io.table.reader.DefaultAttributeTableReader;
 import cytoscape.io.table.reader.TextFileDelimiters;
-import static cytoscape.io.table.reader.TextFileDelimiters.*;
+import static cytoscape.io.table.reader.TextFileDelimiters.COMMA;
+import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
 import cytoscape.io.table.reader.TextTableReader;
-
 import junit.framework.TestCase;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,10 +85,10 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 		File galNetwork = new File(NETWORK_FILE2);
 
 		//
-		GraphPerspective net = Cytoscape.createNetworkFromFile(network.getAbsolutePath());
+		CyNetwork net = Cytoscape.createNetworkFromFile(network.getAbsolutePath());
 		File source = new File(DATA_FILE);
 
-		GraphPerspective galNet = Cytoscape.createNetworkFromFile(galNetwork.getAbsolutePath());
+		CyNetwork galNet = Cytoscape.createNetworkFromFile(galNetwork.getAbsolutePath());
 
 		File galSource = new File(DATA_FILE2);
 

@@ -36,22 +36,20 @@
  */
 package cytoscape.visual.ui;
 
-import org.cytoscape.GraphObject;
-
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
 import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.ObjectToString;
+import cytoscape.visual.ui.editors.EditorFactory;
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 
 /**
@@ -59,23 +57,26 @@ import org.cytoscape.vizmap.ObjectToString;
  * Node and Edge bypass classes.
  */
 abstract class VizMapBypass {
-	protected Frame parent = Cytoscape.getDesktop();
 	protected VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-	protected CyAttributes attrs = null;
 	protected GraphObject graphObj = null;
 
 	abstract protected List<String> getBypassNames();
 
+	protected EditorFactory editorFactory;
+
+	VizMapBypass(EditorFactory editorFactory) {
+		this.editorFactory = editorFactory;
+	}
+
 	protected void addResetAllMenuItem(JMenu menu) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("Reset All") {
-	private final static long serialVersionUID = 1202339876700753L;
+				private final static long serialVersionUID = 1202339876700753L;
 				public void actionPerformed(ActionEvent e) {
 					List<String> names = getBypassNames();
-					String id = graphObj.getIdentifier();
+					CyRow row = graphObj.attrs();
 
 					for (String attrName : names)
-						if (attrs.hasAttribute(id, attrName))
-							attrs.deleteAttribute(id, attrName);
+						row.set("name",""); // TODO should be null instead?
 
 					Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
@@ -86,12 +87,11 @@ abstract class VizMapBypass {
 
 	protected void addResetMenuItem(JMenu menu, final VisualPropertyType type) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + type.getName() + " ]") {
-	private final static long serialVersionUID = 1202339876709140L;
+				private final static long serialVersionUID = 1202339876709140L;
 				public void actionPerformed(ActionEvent e) {
-					String id = graphObj.getIdentifier();
+					CyRow row = graphObj.attrs();
 
-					if (attrs.hasAttribute(id, type.getBypassAttrName()))
-						attrs.deleteAttribute(id, type.getBypassAttrName());
+					row.set(type.getBypassAttrName(),""); // TODO set to null instead?
 
 					Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
@@ -102,12 +102,12 @@ abstract class VizMapBypass {
 
 	protected void addMenuItem(JMenu menu, final VisualPropertyType type) {
 		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
-	private final static long serialVersionUID = 1202339876717506L;
+				private final static long serialVersionUID = 1202339876717506L;
 				public void actionPerformed(ActionEvent e) {
 					Object obj = null;
 
 					try {
-						obj = EditorFactory.showDiscreteEditor(type);
+						obj = editorFactory.showDiscreteEditor(type);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						obj = null;
@@ -117,7 +117,10 @@ abstract class VizMapBypass {
 						return;
 
 					String val = ObjectToString.getStringValue(obj);
-					attrs.setAttribute(graphObj.getIdentifier(), type.getBypassAttrName(), val);
+					CyDataTable table = graphObj.attrs().getDataTable();
+					if ( !table.getColumnTypeMap().containsKey( type.getBypassAttrName() ) )
+						table.createColumn( type.getBypassAttrName(), String.class, false );
+					graphObj.attrs().set(type.getBypassAttrName(), val);
 					Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
@@ -136,8 +139,7 @@ abstract class VizMapBypass {
 			}
 		}
 
-		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(),
-		                                             type.getBypassAttrName());
+		String attrString = graphObj.attrs().get(type.getBypassAttrName(),String.class);
 
 		if ((attrString == null) || (attrString.length() == 0))
 			jmi.setSelected(false);

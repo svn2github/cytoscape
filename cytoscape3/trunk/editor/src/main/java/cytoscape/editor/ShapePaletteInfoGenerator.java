@@ -24,11 +24,10 @@
 */
 package cytoscape.editor;
 
-import java.util.Iterator;
+import org.cytoscape.vizmap.VisualPropertyType;
 
 import javax.swing.event.ChangeListener;
-
-import org.cytoscape.vizmap.VisualPropertyType;
+import java.util.Iterator;
 
 
 /**

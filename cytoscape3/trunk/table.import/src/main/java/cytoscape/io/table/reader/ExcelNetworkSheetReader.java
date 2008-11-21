@@ -36,11 +36,10 @@
 
 package cytoscape.io.table.reader;
 
-import org.cytoscape.attributes.CyAttributes;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.cytoscape.model.CyRow;
 
 import java.io.IOException;
 

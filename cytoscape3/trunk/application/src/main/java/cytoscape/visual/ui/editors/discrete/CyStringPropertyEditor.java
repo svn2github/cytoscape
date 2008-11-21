@@ -40,13 +40,11 @@ import com.l2fprod.common.beans.editor.StringPropertyEditor;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.LookAndFeelTweaks;
 
+import javax.swing.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import javax.swing.JTextField;
 
 
 /**

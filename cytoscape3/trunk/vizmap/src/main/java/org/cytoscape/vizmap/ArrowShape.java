@@ -36,11 +36,13 @@ package org.cytoscape.vizmap;
 
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.ShapeFactory;
-import javax.swing.Icon;
-import java.util.Map;
+import org.cytoscape.vizmap.icon.ArrowIcon;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
-import java.awt.Shape;
-import org.cytoscape.vizmap.icon.*; 
+import java.util.Map;
 
 /**
  * Defines arrow shapes.<br>

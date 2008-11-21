@@ -33,11 +33,9 @@ package org.mskcc.biopax_plugin.view;
 
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 
-import java.awt.*;
-
-import java.io.FileReader;
-
 import javax.swing.*;
+import java.awt.*;
+import java.io.FileReader;
 
 
 /**

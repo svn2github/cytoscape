@@ -45,8 +45,9 @@ package org.cytoscape.vizmap.mappings.discrete;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.SortedMap;
+
+import org.cytoscape.model.CyRow;
 
 
 /**
@@ -71,12 +72,12 @@ public class DiscreteRangeCalculator {
      * @param attrBundle Attribute Bundle.
      * @return Object.
      */
-    public Object calculateRangeValue(Map attrBundle) {
+    public Object calculateRangeValue(CyRow attrBundle) {
         if ((attrBundle == null) || (attrName == null))
             return null;
 
         //extract the data value for our controlling attribute name
-        Object attrValue = attrBundle.get(attrName);
+        Object attrValue = attrBundle.getRaw(attrName);
 
         if (attrValue == null)
             return null;

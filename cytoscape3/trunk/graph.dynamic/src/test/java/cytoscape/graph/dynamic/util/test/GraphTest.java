@@ -38,11 +38,8 @@ package cytoscape.graph.dynamic.util.test;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.DynamicGraphFactory;
-
 import cytoscape.util.intr.IntEnumerator;
-import cytoscape.util.intr.IntIterator;
-
-import junit.framework.*;
+import junit.framework.TestCase;
 
 import java.util.HashMap;
 

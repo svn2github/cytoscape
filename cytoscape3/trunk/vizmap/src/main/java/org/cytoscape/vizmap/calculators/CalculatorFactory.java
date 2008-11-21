@@ -38,10 +38,6 @@ package org.cytoscape.vizmap.calculators;
 
 import org.cytoscape.vizmap.VisualPropertyType;
 
-import org.cytoscape.vizmap.mappings.ObjectMapping;
-
-import java.lang.reflect.Constructor;
-
 import java.util.Properties;
 
 

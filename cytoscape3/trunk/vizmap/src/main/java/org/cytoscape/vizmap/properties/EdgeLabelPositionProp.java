@@ -34,12 +34,12 @@
  */
 package org.cytoscape.vizmap.properties;
 
-import org.cytoscape.vizmap.*;
-import org.cytoscape.vizmap.parsers.*;
-import org.cytoscape.view.EdgeView;
-import java.util.Properties;
+import org.cytoscape.vizmap.LabelPosition;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.parsers.LabelPositionParser;
 
-import javax.swing.Icon;
+import javax.swing.*;
+import java.util.Properties;
 
 
 /**

@@ -35,25 +35,20 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.ui.EditorFactory;
-
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.ui.editors.EditorFactory;
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
-
 import org.jdesktop.swingx.multislider.Thumb;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
-
 import java.util.List;
-
-import javax.swing.ImageIcon;
 
 
 /**
@@ -67,15 +62,19 @@ import javax.swing.ImageIcon;
 public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	private final static long serialVersionUID = 1213748837197780L;
 	/**
-	 * Creates a new C2DMappingEditor object.
+	 * Creates a C2DMappingEditor object.
 	 *
 	 * @param type DOCUMENT ME!
 	 */
-	public C2DMappingEditor(VisualPropertyType type) {
-		super(type);
+
+	private EditorFactory editorFactory;
+
+	public C2DMappingEditor(VisualPropertyType type, EditorFactory editorFactory, CytoscapeDesktop desk) {
+		super(type,desk);
 		this.iconPanel.setVisible(false);
 		this.belowPanel.setVisible(false);
 		this.abovePanel.setVisible(false);
+		this.editorFactory = editorFactory;
 		setSlider();
 	}
 
@@ -90,12 +89,12 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualPropertyType type) {
-		editor = new C2DMappingEditor(type);
+	                                VisualPropertyType type, CytoscapeDesktop parent, EditorFactory ef) {
+		editor = new C2DMappingEditor(type,ef,parent);
 		editor.setSize(new Dimension(width, height));
 		editor.setTitle(title);
 		editor.setAlwaysOnTop(true);
-		editor.setLocationRelativeTo(Cytoscape.getDesktop());
+		editor.setLocationRelativeTo(parent);
 		editor.setVisible(true);
 
 		return editor;
@@ -107,8 +106,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
-	                                VisualPropertyType type) {
-		editor = new C2DMappingEditor(type);
+	                                VisualPropertyType type, CytoscapeDesktop desk) {
+		editor = new C2DMappingEditor(type,null,desk);
 
 		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;
@@ -130,8 +129,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getLegend(final int width, final int height,
-	                                  final VisualPropertyType type) {
-		editor = new C2DMappingEditor(type);
+	                                  final VisualPropertyType type, CytoscapeDesktop desk) {
+		editor = new C2DMappingEditor(type,null,desk);
 
 		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;
@@ -260,17 +259,15 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
-					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e
-					                                                                                                                                                                                                                                                   .getX(),
-					                                                                           e
-					                                                                                                                                                                                                                                                     .getY());
+					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e.getX(),
+					                                                                           e.getY());
 
 					Object newValue = null;
 
 					if (e.getClickCount() == 2) {
 						try {
 							setAlwaysOnTop(false);
-							newValue = EditorFactory.showDiscreteEditor(type);
+							newValue = editorFactory.showDiscreteEditor(type);
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						} finally {

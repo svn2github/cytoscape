@@ -37,48 +37,27 @@
 
 package cytoscape.view;
 
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-
-import cytoscape.actions.*; // * because we need access to all actions!
-
-import cytoscape.layout.ui.SettingsAction;
+import cytoscape.actions.*;
 import cytoscape.layout.ui.LayoutMenuManager;
-
-import cytoscape.util.undo.UndoAction;
-import cytoscape.util.undo.RedoAction;
-
-import cytoscape.util.CytoscapeAction;
+import cytoscape.layout.ui.SettingsAction;
+import cytoscape.util.CyAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
-
+import cytoscape.util.undo.RedoAction;
+import cytoscape.util.undo.UndoAction;
 import cytoscape.view.cytopanels.CytoPanelName;
 
 import org.cytoscape.view.GraphViewChangeEvent;
 import org.cytoscape.view.GraphViewChangeListener;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import javax.help.CSH;
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import javax.help.CSH;
-import javax.help.HelpBroker;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.KeyStroke;
-import javax.swing.MenuElement;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import java.util.Map;
 
 
 /**
@@ -143,6 +122,8 @@ public class CyMenus implements GraphViewChangeListener {
 		layoutMenu = menuBar.getMenu("Layout");
 		opsMenu = menuBar.getMenu("Plugins");
 		helpMenu = menuBar.getMenu("Help");
+
+		System.out.println("cyMenus finished construction");
 	}
 
 	/**
@@ -241,34 +222,42 @@ public class CyMenus implements GraphViewChangeListener {
 	/**
 	 * Add the menu item. 
 	 *
-	 * @param action
+	 * @param action The action to be added
+	 * @param props A map of properties that will be ignored
 	 */
-	public void addAction(CytoscapeAction action) {
-		addCytoscapeAction(action);
+	public void addAction(CyAction action, Map props) {
+		addAction( action );
 	}
 
 	/**
-	 * Add the menu item in a specific position
+	 * Remove the menu item. 
 	 *
-	 * @param action
-	 * @param index
+	 * @param action The action to be removed
+	 * @param props A map of properties that will be ignored
 	 */
-	public void addAction(CytoscapeAction action, int index) {
-		addCytoscapeAction(action, index);
-	}
-
-	/**
-	 * Takes a CytoscapeAction and will add it to the MenuBar or the Toolbar as
-	 * is appropriate.
-	 */
-	public void addCytoscapeAction(CytoscapeAction action) {
+	public void removeAction(CyAction action, Map props) {
 		if (action.isInMenuBar()) {
-			getMenuBar().addAction(action);
+			getMenuBar().removeAction(action);
 		}
 
 		if (action.isInToolBar()) {
-			getToolBar().addAction(action);
+			getToolBar().removeAction(action);
 		}
+	}
+
+
+	/**
+	 * Takes a CyAction and will add it to the MenuBar or the Toolbar as
+	 * is appropriate.
+	 */
+	public void addAction(CyAction action) {
+		if (action.isInMenuBar()) {
+			getMenuBar().addAction(action);
+		} 
+
+		if (action.isInToolBar()) {
+			getToolBar().addAction(action);
+		} 
 	}
 
 	/**
@@ -277,7 +266,7 @@ public class CyMenus implements GraphViewChangeListener {
 	 * @param action
 	 * @param index
 	 */
-	public void addCytoscapeAction(CytoscapeAction action, int index) {
+	public void addAction(CyAction action, int index) {
 		if (action.isInMenuBar()) {
 			getMenuBar().addAction(action, index);
 		}
@@ -306,10 +295,10 @@ public class CyMenus implements GraphViewChangeListener {
 	 *
 	 * Any calls to this method after the first will do nothing.
 	 */
-	public void initializeMenus() {
+	void initializeMenus() {
 		if (!menusInitialized) {
 			menusInitialized = true;
-			fillMenuBar();
+	//		fillMenuBar();
 			fillToolBar();
 		}
 	}
@@ -317,7 +306,6 @@ public class CyMenus implements GraphViewChangeListener {
 	/**
 	 * Fills the previously created menu bar with a large number of items with
 	 * attached action listener objects.
-	 */
 	private void fillMenuBar() {
 
 		//
@@ -326,42 +314,42 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// New submenu
 		addAction(new NewSessionAction());
-		addAction(new NewWindowSelectedNodesOnlyAction());
+		addAction(new NewWindowSelectedNodesOnlyAction(null));
 		addAction(new NewWindowSelectedNodesEdgesAction());
 		addAction(new CloneGraphInNewWindowAction());
-		addAction(new NewNetworkAction());
+		addAction(new NewNetworkAction(null));
 
-		addAction(new OpenSessionAction(),1);
-		addAction(new SaveSessionAction("Save"),2);
-		addAction(new SaveSessionAsAction("Save As..."),3);
+	//	addAction(new OpenSessionAction(),1);
+	//	addAction(new SaveSessionAction("Save"),2);
+	//	addAction(new SaveSessionAsAction("Save As..."),3);
 
-    fileMenu.add(new JSeparator(), 2);
-    fileMenu.add(new JSeparator(), 5);
+ //   fileMenu.add(new JSeparator(), 2);
+   // fileMenu.add(new JSeparator(), 5);
 
 		// Import submenu
-		addAction(new ImportGraphFileAction(this));
+	//	addAction(new ImportGraphFileAction(this));
 		addAction(new WebServiceNetworkImportAction());
 		
-		loadSubMenu.add(new JSeparator());
+//		loadSubMenu.add(new JSeparator());
 
-		addAction(new ImportNodeAttributesAction());
-		addAction(new ImportEdgeAttributesAction());
-		addAction(new ImportExpressionMatrixAction());
+	//	addAction(new ImportNodeAttributesAction());
+	//	addAction(new ImportEdgeAttributesAction());
+	//	addAction(new ImportExpressionMatrixAction());
 
-		loadSubMenu.add(new JSeparator());
+//		loadSubMenu.add(new JSeparator());
 
-		addAction(new ImportVizmapAction());
+	//	addAction(new ImportVizmapAction());
 
 		
-		loadSubMenu.add(new JSeparator());
+//		loadSubMenu.add(new JSeparator());
 		// Save submenu
-		addAction(new ExportAsXGMMLAction());
-		addAction(new ExportAsGMLAction());
-		addAction(new ExportAsInteractionsAction());
-		addAction(new ExportNodeAttributesAction());
-		addAction(new ExportEdgeAttributesAction());
-		addAction(new ExportVizmapAction());
-		addAction(new ExportAsGraphicsAction());
+	//	addAction(new ExportAsXGMMLAction());
+	//	addAction(new ExportAsGMLAction());
+	//	addAction(new ExportAsInteractionsAction());
+	//	addAction(new ExportNodeAttributesAction());
+	//	addAction(new ExportEdgeAttributesAction());
+	//	addAction(new ExportVizmapAction());
+	//	addAction(new ExportAsGraphicsAction());
 
 		addAction(new PrintAction());
 		fileMenu.add(new JSeparator());
@@ -467,24 +455,26 @@ public class CyMenus implements GraphViewChangeListener {
 
 		addAction(new HelpAboutAction());
 	}
+	 */
 
 	/**
 	 * Fills the toolbar for easy access to commonly used actions.
 	 */
 	private void fillToolBar() {
-		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
-		openSessionButton.setToolTipText("Open Session File...");
-		openSessionButton.setIcon(new ImageIcon(getClass()
-		                                            .getResource("/images/ximian/stock_open.png")));
-		openSessionButton.setBorderPainted(false);
-		openSessionButton.setRolloverEnabled(true);
+		// TODO enable these!
+//		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
+//		openSessionButton.setToolTipText("Open Session File...");
+//		openSessionButton.setIcon(new ImageIcon(getClass()
+//		                                            .getResource("/images/ximian/stock_open.png")));
+//		openSessionButton.setBorderPainted(false);
+//		openSessionButton.setRolloverEnabled(true);
 
-		saveButton = toolBar.add(new SaveSessionAction());
-		saveButton.setToolTipText("Save Current Session As...");
-		saveButton.setIcon(new ImageIcon(getClass().getResource("/images/ximian/stock_save.png")));
+//		saveButton = toolBar.add(new SaveSessionAction());
+//		saveButton.setToolTipText("Save Current Session As...");
+//		saveButton.setIcon(new ImageIcon(getClass().getResource("/images/ximian/stock_save.png")));
 
-		saveButton.setBorderPainted(false);
-		saveButton.setRolloverEnabled(true);
+//		saveButton.setBorderPainted(false);
+//		saveButton.setRolloverEnabled(true);
 
 		toolBar.addSeparator();
 
@@ -586,11 +576,12 @@ public class CyMenus implements GraphViewChangeListener {
 		toolBar.add(helpButton);
 
 		toolBar.addSeparator();
-
+/* TODO - re-enable
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
 		vizButton.setIcon(new ImageIcon(getClass()
 		                                    .getResource("/images/ximian/stock_file-with-objects.png")));
 		vizButton.setToolTipText("Open VizMapper\u2122");
 		vizButton.setBorderPainted(false);
+		*/
 	} 
 }

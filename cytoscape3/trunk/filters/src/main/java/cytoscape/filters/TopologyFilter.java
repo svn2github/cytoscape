@@ -36,15 +36,15 @@
 
 package cytoscape.filters;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
-import java.util.*;
-
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-import csplugins.quickfind.util.QuickFind;
-import csplugins.widgets.autocomplete.index.GenericIndex;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class TopologyFilter extends CompositeFilter {
@@ -118,8 +118,8 @@ public class TopologyFilter extends CompositeFilter {
 			passFilter.apply();                     
 		}       
 
-		List<Node> nodes_list = null;
-		List<Edge> edges_list=null;
+		List<CyNode> nodes_list = null;
+		List<CyEdge> edges_list=null;
 
 		int objectCount = -1;
 
@@ -132,7 +132,7 @@ public class TopologyFilter extends CompositeFilter {
 			Object [] nodeArray = network.nodesList().toArray();
 			int rootgraphIndex = -1;
 			for (int i=0; i<objectCount; i++) {
-				rootgraphIndex = network.getIndex((Node)nodeArray[i]);
+				rootgraphIndex = network.getIndex((CyNode)nodeArray[i]);
 				indexMap.put(Integer.valueOf(rootgraphIndex), Integer.valueOf(i));
 			}
 
@@ -180,7 +180,7 @@ public class TopologyFilter extends CompositeFilter {
 			Object [] nodeArray = neighborSet.toArray();
 			for (int i=0; i< nodeArray.length; i++) {
 				//int nodeIndex = network.nodesList().indexOf(nodeArray[i]); //This works, but very slow
-				int rootgraphIndex = network.getIndex((Node)nodeArray[i]);
+				int rootgraphIndex = network.getIndex((CyNode)nodeArray[i]);
 				int nodeIndex = pIndexMap.get(Integer.valueOf(rootgraphIndex)).intValue();                          
 
 				if (!passFilter.getNodeBits().get(nodeIndex)) {
@@ -205,11 +205,11 @@ public class TopologyFilter extends CompositeFilter {
 			return;
 		}
 		
-		List neighbors = network.neighborsList((Node)pObj);
+		List neighbors = network.neighborsList((CyNode)pObj);
 
 		Iterator nodeIt = neighbors.iterator();
 		while (nodeIt.hasNext()) {
-			Node nextNode = (Node) nodeIt.next();
+			CyNode nextNode = (CyNode) nodeIt.next();
 
 			if (!pNeighborSet.contains(nextNode)) {
 				pNeighborSet.add(nextNode);
@@ -273,7 +273,7 @@ public class TopologyFilter extends CompositeFilter {
 		name = pName;
 	}
 
-	public void setNetwork(GraphPerspective pNetwork) {
+	public void setNetwork(CyNetwork pNetwork) {
 		if (network != null && network == pNetwork) {
 			return;
 		}

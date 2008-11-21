@@ -36,7 +36,7 @@
 
 package cytoscape.io.table.reader;
 
-import static cytoscape.io.table.reader.TextTableReader.ObjectType.*;
+import static cytoscape.io.table.reader.TextTableReader.ObjectType.EDGE;
 
 import java.util.List;
 

@@ -31,32 +31,24 @@
  **/
 package org.mskcc.biopax_plugin.util.cytoscape;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.ding.CyGraphLOD;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
+import legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
+import legacy.layout.impl.SpringEmbeddedLayouter2;
+import legacy.util.GraphConverter;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.NodeView;
-
-import legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
-
-import legacy.layout.impl.SpringEmbeddedLayouter2;
-
-import legacy.util.GraphConverter;
-
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
-import java.util.Iterator;
-
 import javax.swing.*;
+import java.util.Iterator;
 
 
 /**
@@ -73,7 +65,7 @@ public class CyNetworkViewUtil {
 	 * @param executeSpringLayout Flag to Execute Spring Layout.
 	 * @param applyVisualStyle    Flag to Apply Current Visual Style.
 	 */
-	public static void createNetworkView(GraphPerspective cyNetwork, TaskMonitor taskMonitor,
+	public static void createNetworkView(CyNetwork cyNetwork, TaskMonitor taskMonitor,
 	                                     boolean executeSpringLayout, boolean applyVisualStyle) {
 		// hack to make sure progress bar get set to 100%
 		// after network creation is complete
@@ -122,7 +114,7 @@ public class CyNetworkViewUtil {
 	 * @param applyVisualStyle Flag to Apply Current Visual Style.
 	 * @return GraphView
 	 */
-	private static GraphView createGraphView(GraphPerspective cyNetwork, boolean applyVisualStyle) {
+	private static GraphView createGraphView(CyNetwork cyNetwork, boolean applyVisualStyle) {
 		final GraphView view = GraphViewFactory.createGraphView(cyNetwork);
 
 		view.setIdentifier(cyNetwork.getIdentifier());
@@ -156,7 +148,7 @@ public class CyNetworkViewUtil {
 		Iterator i = networkView.getGraphPerspective().nodesIterator();
 
 		if (i.hasNext()) {
-			Node node = (Node) i.next();
+			CyNode node = (CyNode) i.next();
 			NodeView nodeView = networkView.getNodeView(node);
 			double xPos = nodeView.getXPosition();
 			double yPos = nodeView.getYPosition();

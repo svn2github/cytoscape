@@ -39,13 +39,10 @@ package cytoscape.io.table.ui;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 
-import java.awt.Frame;
-
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
-
 import java.net.MalformedURLException;
-
-import javax.swing.JDialog;
 
 
 /*

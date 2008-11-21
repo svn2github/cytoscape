@@ -37,12 +37,9 @@
 package cytoscape.io.table.ui;
 
 import cytoscape.Cytoscape;
+import cytoscape.io.table.reader.TextTableReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
-import cytoscape.io.table.reader.TextTableReader;
-
-import java.io.IOException;
 
 
 /**

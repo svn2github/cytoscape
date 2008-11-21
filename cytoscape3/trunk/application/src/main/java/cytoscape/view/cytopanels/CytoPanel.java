@@ -44,9 +44,9 @@ package cytoscape.view.cytopanels;
 
 
 // imports
-import java.awt.Component;
 
-import javax.swing.Icon;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

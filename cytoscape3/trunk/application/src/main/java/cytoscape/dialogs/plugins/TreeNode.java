@@ -37,9 +37,8 @@ package cytoscape.dialogs.plugins;
 
 import cytoscape.plugin.DownloadableInfo;
 
-import java.util.Vector;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
+import java.util.Vector;
 
 public class TreeNode extends DefaultMutableTreeNode {
 	private final static long serialVersionUID = 1202339870185674L;

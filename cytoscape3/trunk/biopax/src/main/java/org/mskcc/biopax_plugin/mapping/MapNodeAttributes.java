@@ -33,21 +33,17 @@ package org.mskcc.biopax_plugin.mapping;
 
 
 // imports
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
+
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.attributes.CountedIterator;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.MultiHashMapDefinition;
-
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
-
 import org.jdom.Element;
-
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxEntityParser;
@@ -60,7 +56,6 @@ import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -231,7 +226,7 @@ public class MapNodeAttributes {
 
 		while (nodeIterator.hasNext()) {
 			// get node id
-			Node node = (Node) nodeIterator.next();
+			CyNode node = (CyNode) nodeIterator.next();
 			String nodeID = node.getIdentifier();
 
 			// get node element
@@ -403,7 +398,7 @@ public class MapNodeAttributes {
 	 */
 	public static void customNodes(GraphView networkView) {
 		// grab node attributes
-		GraphPerspective cyNetwork = networkView.getGraphPerspective();
+		CyNetwork cyNetwork = networkView.getGraphPerspective();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		// iterate through the nodes
@@ -411,7 +406,7 @@ public class MapNodeAttributes {
 
 		if (nodesIt.hasNext()) {
 			// grab the node
-			Node node = (Node) nodesIt.next();
+			CyNode node = (CyNode) nodesIt.next();
 
 			// get chemical modifications
 			int count = 0;
@@ -514,10 +509,10 @@ public class MapNodeAttributes {
 	/**
 	 * Based on given arguments, adds proper custom node shape to node.
 	 */
-	private static void addCustomShapes(GraphView networkView, Node node, String shapeType,
+	private static void addCustomShapes(GraphView networkView, CyNode node, String shapeType,
 	                                    int modificationCount) {
 		// create refs to help views
-		GraphPerspective cyNetwork = networkView.getGraphPerspective();
+		CyNetwork cyNetwork = networkView.getGraphPerspective();
 		NodeView nodeView = networkView.getNodeView(node);
 
 		// KONO 10/28/2008 these methods has been removed.

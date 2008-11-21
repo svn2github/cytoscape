@@ -37,20 +37,14 @@
 package cytoscape.view;
 
 import cytoscape.Cytoscape;
-
 import org.cytoscape.view.BirdsEyeView;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentListener;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentEvent;
-
+import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
 
 /**
  * This class handles the creation of the BirdsEyeView navigation object 
@@ -59,14 +53,16 @@ import javax.swing.JInternalFrame;
 class BirdsEyeViewHandler implements PropertyChangeListener {
 	final BirdsEyeView bev;
 	FrameListener frameListener = new FrameListener();
+	final CytoscapeDesktop desktop;
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
 	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	BirdsEyeViewHandler(Component desktopPane) {
+	BirdsEyeViewHandler(Component desktopPane, final CytoscapeDesktop desktop) {
+		this.desktop = desktop;
 		bev = new BirdsEyeView(Cytoscape.getCurrentNetworkView(), desktopPane) {
-	private final static long serialVersionUID = 1213748836623570L;
+				private final static long serialVersionUID = 1213748836623570L;
 				public Dimension getMinimumSize() {
 					return new Dimension(180, 180);
 				}
@@ -94,7 +90,7 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 		// doesn't already have one.
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED)
 		{
-			JDesktopPane desktopPane = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane();
+			JDesktopPane desktopPane = desktop.getNetworkViewManager().getDesktopPane();
 			if (desktopPane == null)
 				return;
 

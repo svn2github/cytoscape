@@ -36,18 +36,13 @@ package cytoscape.data.webservice;
 
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 import cytoscape.data.webservice.ui.WebServiceClientGUI;
-
 import org.cytoscape.tunable.ModuleProperties;
-
-import java.awt.Container;
-
-import java.util.List;
-
-import javax.swing.Icon;
-import javax.swing.JMenuItem;
-
-import org.cytoscape.view.NodeView;
 import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 
 /**

@@ -37,26 +37,17 @@
 package cytoscape.layout.manual.rotate;
 
 import cytoscape.Cytoscape;
-
+import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
+import cytoscape.layout.manual.common.CheckBoxTracker;
+import cytoscape.layout.manual.common.GraphConverter2;
+import cytoscape.layout.manual.common.PolymorphicSlider;
+import cytoscape.layout.manual.common.SliderStateTracker;
 import org.cytoscape.view.ViewChangeEdit;
-import org.cytoscape.view.GraphView;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-
-import cytoscape.layout.manual.common.*;
-
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
+import java.awt.*;
 
 /**
  *

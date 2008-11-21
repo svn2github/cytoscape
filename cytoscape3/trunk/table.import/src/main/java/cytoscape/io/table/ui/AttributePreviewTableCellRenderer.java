@@ -36,44 +36,18 @@
 
 package cytoscape.io.table.ui;
 
-import org.cytoscape.attributes.CyAttributes;
-import static cytoscape.io.table.reader.TextFileDelimiters.*;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.ALIAS_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.EDGE_ATTR_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.HEADER_BACKGROUND_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.HEADER_UNSELECTED_BACKGROUND_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.INTERACTION_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.NOT_SELECTED_COL_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.ONTOLOGY_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.PRIMARY_KEY_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.SELECTED_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.SOURCE_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.SPECIES_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.TARGET_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.UNSELECTED_COLOR;
-import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.SELECTED_COL_FONT;
-import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.SELECTED_FONT;
-import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.UNSELECTED_FONT;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.BOOLEAN_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.CHECKED_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.FLOAT_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.INTEGER_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.LIST_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.STRING_ICON;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.UNCHECKED_ICON;
+import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
+import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.*;
+import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.*;
+import static cytoscape.io.table.ui.theme.ImportDialogIconSets.*;
+import org.cytoscape.model.CyRow;
 
-import java.awt.Color;
-import java.awt.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

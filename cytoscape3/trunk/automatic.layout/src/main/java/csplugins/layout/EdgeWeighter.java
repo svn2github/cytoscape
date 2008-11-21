@@ -32,19 +32,14 @@
  */
 package csplugins.layout;
 
-import java.lang.Math;
-import java.util.List;
-
-import csplugins.layout.LayoutEdge;
-
-import org.cytoscape.Edge;
-
-import org.cytoscape.tunable.TunableFactory;
-import org.cytoscape.tunable.Tunable;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowFactory;
 import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesFactory;
+import java.util.List;
 
 enum WeightTypes {
 	GUESS("Heuristic"),
@@ -161,7 +156,7 @@ public class EdgeWeighter {
 	}
 
 	public void setWeight(LayoutEdge layoutEdge) {
-		Edge edge = layoutEdge.getEdge();
+		CyEdge edge = layoutEdge.getEdge();
 		CyAttributes edgeAttributes = CyAttributesFactory.getCyAttributes("edge");
 		double eValue = 0.5;
 

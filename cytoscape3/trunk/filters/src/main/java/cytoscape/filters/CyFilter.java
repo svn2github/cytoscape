@@ -36,8 +36,9 @@
 
 package cytoscape.filters;
 
-import java.util.*;
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.model.CyNetwork;
+
+import java.util.BitSet;
 
 public interface CyFilter { //extends Filter{
 	public BitSet getNodeBits();
@@ -48,8 +49,8 @@ public interface CyFilter { //extends Filter{
 	public String getName();
 	public void setName(String pName);
 
-	public void setNetwork(GraphPerspective pNetwork);
-	public GraphPerspective getNetwork();
+	public void setNetwork(CyNetwork pNetwork);
+	public CyNetwork getNetwork();
 	
 	public void childChanged();
 	public CyFilter getParent();	

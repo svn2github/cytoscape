@@ -38,9 +38,7 @@ import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 import org.cytoscape.tunable.ModuleProperties;
 
 import java.io.Serializable;
-
 import java.lang.reflect.Method;
-
 import java.util.ArrayList;
 import java.util.Collection;
 

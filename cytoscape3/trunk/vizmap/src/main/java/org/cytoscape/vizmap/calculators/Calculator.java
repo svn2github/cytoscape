@@ -43,21 +43,16 @@
 package org.cytoscape.vizmap.calculators;
 
 
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.vizmap.Appearance;
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 
-//------------------------------------------------------------------------------
-
+import javax.swing.event.ChangeListener;
 import java.util.Properties;
 import java.util.Vector;
-
-import javax.swing.event.ChangeListener;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 
 
 //------------------------------------------------------------------------------
@@ -139,7 +134,7 @@ public interface Calculator extends Cloneable {
      * @param e DOCUMENT ME!
      * @param net DOCUMENT ME!
      */
-    public void apply(Appearance appr, Edge e, GraphPerspective net);
+    public void apply(Appearance appr, CyEdge e, CyNetwork net);
 
     /**
      * DOCUMENT ME!
@@ -148,7 +143,7 @@ public interface Calculator extends Cloneable {
      * @param n DOCUMENT ME!
      * @param net DOCUMENT ME!
      */
-    public void apply(Appearance appr, Node n, GraphPerspective net);
+    public void apply(Appearance appr, CyNode n, CyNetwork net);
 
     /**
      * DOCUMENT ME!

@@ -36,50 +36,39 @@
 
 package cytoscape.io.sbmlreader;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
 import cytoscape.data.readers.AbstractGraphReader;
 import cytoscape.data.readers.GraphReader;
+import jigcell.sbml2.KineticLaw;
+import jigcell.sbml2.Model;
+import jigcell.sbml2.ModifierSpeciesReference;
+import jigcell.sbml2.Parameter;
+import jigcell.sbml2.Reaction;
+import jigcell.sbml2.SBMLLevel2Document;
+import jigcell.sbml2.Species;
+import jigcell.sbml2.SpeciesReference;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
 
-import org.cytoscape.view.GraphView;
-import cytoscape.view.CytoscapeDesktop;
-
-import org.cytoscape.vizmap.*;
-
-import org.cytoscape.Node;
-
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
-
-import jigcell.sbml2.*;
-
-import java.awt.Dimension;
-import java.awt.Toolkit;
-
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
-
-import java.util.*;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /*
- * Created on September 27, 2005, 9:23 AM
- * This generates the Dialog for the loading of an SBML file and does the processing
- * of the SBML file using the java SBML2 library.
- */
+* Created on September 27, 2005, 9:23 AM
+* This generates the Dialog for the loading of an SBML file and does the processing
+* of the SBML file using the java SBML2 library.
+*/
 
 /**
  * @author  W.P.A. Ligtenberg, Eindhoven University of Technology
@@ -151,7 +140,7 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 
 		for (Iterator i = listOfSpecies.iterator(); i.hasNext();) {
 			Species species = (Species) i.next();
-			Node node = Cytoscape.getCyNode(species.getId(), true);
+			CyNode node = Cytoscape.getCyNode(species.getId(), true);
 			nodeAttributes.setAttribute(species.getId(), "sbml name", species.getName());
 			nodeAttributes.setAttribute(species.getId(), "sbml type", "species");
 			nodeAttributes.setAttribute(species.getId(), "sbml id", species.getId());
@@ -176,7 +165,7 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 
 		for (Iterator i = listOfReactions.iterator(); i.hasNext();) {
 			Reaction reaction = (Reaction) i.next();
-			Node node = Cytoscape.getCyNode(reaction.getId(), true);
+			CyNode node = Cytoscape.getCyNode(reaction.getId(), true);
 			nodeAttributes.setAttribute(reaction.getId(), "sbml type", "reaction");
 			nodeAttributes.setAttribute(reaction.getId(), "sbml id", reaction.getId());
 
@@ -191,8 +180,8 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 
 			for (Iterator j = products.iterator(); j.hasNext();) {
 				SpeciesReference species = (SpeciesReference) j.next();
-				Node product = Cytoscape.getCyNode(species.getSpecies(), false);
-				Edge edge = Cytoscape.getCyEdge(node, product, Semantics.INTERACTION,
+				CyNode product = Cytoscape.getCyNode(species.getSpecies(), false);
+				CyEdge edge = Cytoscape.getCyEdge(node, product, Semantics.INTERACTION,
 				                                  "reaction-product", true);
 				edgeIds.add(edge.getRootGraphIndex());
 			}
@@ -202,8 +191,8 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 
 			for (Iterator j = reactants.iterator(); j.hasNext();) {
 				SpeciesReference species = (SpeciesReference) j.next();
-				Node reactant = Cytoscape.getCyNode(species.getSpecies(), false);
-				Edge edge = Cytoscape.getCyEdge(node, reactant, Semantics.INTERACTION,
+				CyNode reactant = Cytoscape.getCyNode(species.getSpecies(), false);
+				CyEdge edge = Cytoscape.getCyEdge(node, reactant, Semantics.INTERACTION,
 				                                  "reaction-reactant", true);
 				edgeIds.add(edge.getRootGraphIndex());
 			}
@@ -213,8 +202,8 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 
 			for (Iterator j = modifiers.iterator(); j.hasNext();) {
 				ModifierSpeciesReference species = (ModifierSpeciesReference) j.next();
-				Node modifier = Cytoscape.getCyNode(species.getSpecies(), false);
-				Edge edge = Cytoscape.getCyEdge(modifier, node, Semantics.INTERACTION,
+				CyNode modifier = Cytoscape.getCyNode(species.getSpecies(), false);
+				CyEdge edge = Cytoscape.getCyEdge(modifier, node, Semantics.INTERACTION,
 				                                  "reaction-modifier", true);
 				edgeIds.add(edge.getRootGraphIndex());
 			}
@@ -238,7 +227,7 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 	 *
 	 * @param network DOCUMENT ME!
 	 */
-	public void doPostProcessing(GraphPerspective network) {
+	public void doPostProcessing(CyNetwork network) {
 		// Set SBML specific visual style
 		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = manager.getCalculatorCatalog();

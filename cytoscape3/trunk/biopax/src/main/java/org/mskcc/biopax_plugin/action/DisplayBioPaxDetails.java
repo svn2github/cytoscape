@@ -31,25 +31,21 @@
  **/
 package org.mskcc.biopax_plugin.action;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.data.SelectEvent;
 import org.cytoscape.data.SelectEventListener;
-
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
-import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.cytoscape.CySessionUtil;
-import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
+import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
-
-import java.awt.*;
-
-import java.util.HashSet;
-import java.util.Iterator;
+import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.HashSet;
+import java.util.Iterator;
 
 
 /**
@@ -99,10 +95,10 @@ public class DisplayBioPaxDetails implements SelectEventListener {
 
 			if (event.getEventType() && (totalNumNodesSelected == 1)) {
 				Iterator iterator = set.iterator();
-				Node node = (Node) iterator.next();
+				CyNode node = (CyNode) iterator.next();
 
 				//  Get the BioPAX Util Object from the current network
-				GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+				CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 				String id = node.getIdentifier();
 
 				if (id != null) {

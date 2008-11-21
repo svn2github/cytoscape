@@ -35,20 +35,16 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
-
+import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
-
 import org.jdesktop.swingx.multislider.TrackRenderer;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-
 import java.beans.PropertyChangeEvent;
-
-import javax.swing.ImageIcon;
 
 
 /**
@@ -73,8 +69,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 *
 	 * @param type DOCUMENT ME!
 	 */
-	public C2CMappingEditor(VisualPropertyType type) {
-		super(type);
+	public C2CMappingEditor(VisualPropertyType type, CytoscapeDesktop desk) {
+		super(type,desk);
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);
 		pack();
@@ -96,12 +92,12 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @param type DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualPropertyType type) {
-		editor = new C2CMappingEditor(type);
+	                                VisualPropertyType type, CytoscapeDesktop desk) {
+		editor = new C2CMappingEditor(type,desk);
 		editor.setSize(new Dimension(width, height));
 		editor.setTitle(title);
 		editor.setAlwaysOnTop(true);
-		editor.setLocationRelativeTo(Cytoscape.getDesktop());
+		editor.setLocationRelativeTo(desk);
 		editor.setVisible(true);
 
 		return editor;
@@ -113,8 +109,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
-	                                VisualPropertyType type) {
-		editor = new C2CMappingEditor(type);
+	                                VisualPropertyType type, CytoscapeDesktop desk) {
+		editor = new C2CMappingEditor(type,desk);
 
 		TrackRenderer rend = editor.slider.getTrackRenderer();
 
@@ -137,11 +133,10 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getLegend(final int width, final int height,
-	                                  final VisualPropertyType type) {
-		editor = new C2CMappingEditor(type);
+	                                  final VisualPropertyType type,CytoscapeDesktop desk) {
+		editor = new C2CMappingEditor(type,desk);
 
-		final ContinuousTrackRenderer rend = (ContinuousTrackRenderer) editor.slider
-		                                                                                                                                       .getTrackRenderer();
+		final ContinuousTrackRenderer rend = (ContinuousTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
 		return rend.getLegend(width, height);

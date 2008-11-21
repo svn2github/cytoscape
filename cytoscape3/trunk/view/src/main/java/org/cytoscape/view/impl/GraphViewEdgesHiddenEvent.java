@@ -36,17 +36,17 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Edge;
-
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.GraphView;
+import java.util.List;
 
 
 final class GraphViewEdgesHiddenEvent extends GraphViewChangeEventAdapter {
 	private final static long serialVersionUID = 120241651250257L;
 	private final GraphView m_view;
-	private final int[] m_hiddenEdgeInx;
+	private final List<CyEdge> m_hiddenEdgeInx;
 
-	GraphViewEdgesHiddenEvent(GraphView view, int[] hiddenEdgeInx) {
+	GraphViewEdgesHiddenEvent(GraphView view, List<CyEdge> hiddenEdgeInx) {
 		super(view);
 		m_view = view;
 		m_hiddenEdgeInx = hiddenEdgeInx;
@@ -66,26 +66,13 @@ final class GraphViewEdgesHiddenEvent extends GraphViewChangeEventAdapter {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final Edge[] getHiddenEdges() {
-		final Edge[] returnThis = new Edge[m_hiddenEdgeInx.length];
+	public final CyEdge[] getHiddenEdges() {
+		final CyEdge[] returnThis = new CyEdge[m_hiddenEdgeInx.size()];
 
 		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_view.getRootGraph().getEdge(m_hiddenEdgeInx[i]);
+			returnThis[i] = m_hiddenEdgeInx.get(i);
 
 		return returnThis;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final int[] getHiddenEdgeIndices() {
-		final int[] returnThis = new int[m_hiddenEdgeInx.length];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_hiddenEdgeInx[i];
-
-		return returnThis;
-	}
 }

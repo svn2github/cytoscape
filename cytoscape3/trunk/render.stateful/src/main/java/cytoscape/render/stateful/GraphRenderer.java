@@ -36,21 +36,18 @@
 
 package cytoscape.render.stateful;
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.geom.spacial.SpacialIndex2D;
-
-import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
-
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.Iterator;
@@ -116,7 +113,7 @@ public final class GraphRenderer {
 	 *   objKeys in nodePositions (the SpacialIndex2D parameter) and vice versa.
 	 * @param nodePositions defines the positions and extents of nodes in graph;
 	 *   each entry (objKey) in this structure must correspond to a node in graph
-	 *   (the FixedGraph parameter) and vice versa; the order in which nodes are
+	 *   (the CyNetwork parameter) and vice versa; the order in which nodes are
 	 *   rendered is defined by a non-reversed overlap query on this structure.
 	 * @param lod defines the different levels of detail; an appropriate level
 	 *   of detail is chosen based on the results of method calls on this
@@ -141,7 +138,7 @@ public final class GraphRenderer {
 	 * @return bits representing the level of detail that was rendered; the
 	 *   return value is a bitwise-or'ed value of the LOD_* constants.
 	 */
-	public final static int renderGraph(final FixedGraph graph, final SpacialIndex2D nodePositions,
+	public final static int renderGraph(final CyNetwork graph, final SpacialIndex2D nodePositions,
 	                                    final GraphLOD lod, final NodeDetails nodeDetails,
 	                                    final EdgeDetails edgeDetails, final IntHash nodeBuff,
 	                                    final GraphGraphics grafx, final Paint bgPaint,
@@ -206,8 +203,8 @@ public final class GraphRenderer {
 			                                                                     yMax, null, 0,
 			                                                                     false);
 			final int visibleNodeCount = nodeHits.numRemaining();
-			final int totalNodeCount = graph.nodes().numRemaining();
-			final int totalEdgeCount = graph.edges().numRemaining();
+			final int totalNodeCount = graph.getNodeCount();
+			final int totalEdgeCount = graph.getEdgeCount();
 			renderEdges = lod.renderEdges(visibleNodeCount, totalNodeCount, totalEdgeCount);
 
 			if (renderEdges > 0) {
@@ -244,13 +241,11 @@ public final class GraphRenderer {
 					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3]))
 						runningNodeCount++;
 
-					final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
-					final int touchingEdgeCount = touchingEdges.numRemaining();
+					final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
 
-					for (int j = 0; j < touchingEdgeCount; j++) {
-						final int edge = touchingEdges.nextInt();
-						final int otherNode = node ^ graph.edgeSource(edge)
-						                      ^ graph.edgeTarget(edge);
+					for ( CyEdge e : touchingEdges ) {
+						final int edge = e.getIndex(); 
+						final int otherNode = node ^ e.getSource().getIndex() ^ e.getTarget().getIndex();
 
 						if (nodeBuff.get(otherNode) < 0)
 							runningEdgeCount++;
@@ -336,13 +331,11 @@ public final class GraphRenderer {
 					final float nodeX = (floatBuff1[0] + floatBuff1[2]) / 2;
 					final float nodeY = (floatBuff1[1] + floatBuff1[3]) / 2;
 
-					final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
-					final int touchingEdgeCount = touchingEdges.numRemaining();
-
-					for (int j = 0; j < touchingEdgeCount; j++) {
-						final int edge = touchingEdges.nextInt();
-						final int otherNode = node ^ graph.edgeSource(edge)
-						                      ^ graph.edgeTarget(edge);
+					java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
+					for ( CyEdge e : touchingEdges ) {
+						final int edge = e.getIndex();
+						final int otherNode = node ^ e.getSource().getIndex()
+						                      ^ e.getTarget().getIndex();
 
 						if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
 							nodePositions.exists(otherNode, floatBuff2, 0);
@@ -362,12 +355,13 @@ public final class GraphRenderer {
 				while (nodeHits.numRemaining() > 0) {
 					final int node = nodeHits.nextExtents(floatBuff1, 0);
 					final byte nodeShape = nodeDetails.shape(node);
-					final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
-
-					while (touchingEdges.numRemaining() > 0) {
-						final int edge = touchingEdges.nextInt();
-						final int otherNode = node ^ graph.edgeSource(edge)
-						                      ^ graph.edgeTarget(edge);
+					//final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
+					java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
+					for ( CyEdge e : touchingEdges ) {
+					//while (touchingEdges.numRemaining() > 0) {
+						final int edge = e.getIndex(); 
+						final int otherNode = node ^ e.getSource().getIndex()
+						                      ^ e.getTarget().getIndex();
 
 						if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
 
@@ -384,7 +378,7 @@ public final class GraphRenderer {
 							final float[] srcExtents;
 							final float[] trgExtents;
 
-							if (node == graph.edgeSource(edge)) {
+							if (node == graph.getEdge(edge).getSource().getIndex()) {
 								srcShape = nodeShape;
 								trgShape = otherNodeShape;
 								srcExtents = floatBuff1;

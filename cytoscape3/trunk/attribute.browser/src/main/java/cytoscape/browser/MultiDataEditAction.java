@@ -36,22 +36,18 @@
 
 package cytoscape.browser;
 
-import cytoscape.browser.ui.ActionName;
 import cytoscape.Cytoscape;
+import cytoscape.browser.ui.ActionName;
+import static cytoscape.browser.ui.ActionName.*;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
 
-import org.cytoscape.attributes.CyAttributes;
-
-import org.cytoscape.GraphObject;
-
+import javax.swing.*;
+import javax.swing.undo.AbstractUndoableEdit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JOptionPane;
-import javax.swing.undo.AbstractUndoableEdit;
-
-import static cytoscape.browser.ui.ActionName.*;
 
 
 /**

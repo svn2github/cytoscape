@@ -32,7 +32,6 @@
 package org.mskcc.test.biopax;
 
 import junit.framework.TestCase;
-
 import org.mskcc.biopax_plugin.util.biopax.BioPaxFileChecker;
 import org.mskcc.biopax_plugin.util.net.WebFileConnect;
 

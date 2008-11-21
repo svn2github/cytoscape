@@ -36,23 +36,16 @@
  */
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
+import cytoscape.ding.CyGraphAllLOD;
+import cytoscape.ding.CyGraphLOD;
+import cytoscape.render.stateful.GraphLOD;
 import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.view.GraphView;
 
-import cytoscape.ding.CyGraphLOD;
-import cytoscape.ding.CyGraphAllLOD;
-import cytoscape.render.stateful.GraphLOD;
-
-import java.awt.event.ActionEvent;
-
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
-import javax.swing.Action;
+import java.awt.event.ActionEvent;
 
 
 /**

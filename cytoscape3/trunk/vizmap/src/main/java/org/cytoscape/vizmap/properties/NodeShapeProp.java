@@ -34,19 +34,15 @@
  */
 package org.cytoscape.vizmap.properties;
 
+import org.cytoscape.view.NodeView;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualPropertyType;
-
+import org.cytoscape.vizmap.icon.NodeIcon;
 import org.cytoscape.vizmap.parsers.NodeShapeParser;
 
-import org.cytoscape.vizmap.icon.NodeIcon;
-
-import org.cytoscape.view.NodeView;
-
+import javax.swing.*;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.Icon;
 
 
 /**

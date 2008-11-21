@@ -5,33 +5,23 @@
 package csplugins.layout.algorithms.graphPartition;
 
 import cern.colt.list.IntArrayList;
-
 import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.map.PrimeFinder;
-
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
-
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-
-import org.cytoscape.GraphPerspective;
-
+import cytoscape.CytoscapeInit;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
 
-import org.cytoscape.*;
-
-import cytoscape.CytoscapeInit;
-
-import java.awt.GridLayout;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.JPanel;
 
 
 /**
@@ -415,7 +405,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int[] neighborsArray(GraphPerspective network, int nodeIndex) {
+	public int[] neighborsArray(CyNetwork network, int nodeIndex) {
 		// Get a list of edges
 		int[] edges = network.getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
 		int[] neighbors = new int[edges.length];

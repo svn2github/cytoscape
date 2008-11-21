@@ -37,14 +37,14 @@
 package cytoscape.filters;
 
 
-import java.util.*;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-
 import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.GenericIndex;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+
+import java.util.BitSet;
+import java.util.List;
 
 
 public abstract class AtomicFilter implements CyFilter {
@@ -57,7 +57,7 @@ public abstract class AtomicFilter implements CyFilter {
 	protected String name; // Name of the filter
 	protected String controllingAttribute = null;
 	protected boolean negation = false;
-	protected GraphPerspective network = null;
+	protected CyNetwork network = null;
 	
 	protected int index_type = QuickFind.INDEX_NODES;
 
@@ -66,11 +66,11 @@ public abstract class AtomicFilter implements CyFilter {
 	public AtomicFilter() {
 	}
 	
-	public void setNetwork(GraphPerspective pNetwork) {
+	public void setNetwork(CyNetwork pNetwork) {
 		network = pNetwork;
 	}
 
-	public GraphPerspective getNetwork() {
+	public CyNetwork getNetwork() {
 		return network;
 	}
 
@@ -104,15 +104,15 @@ public abstract class AtomicFilter implements CyFilter {
 	public boolean passesFilter(Object obj) {
 		
 		int index = -1;
-		if (obj instanceof Node) {
-			List<Node> nodes_list = network.nodesList();
-			index = nodes_list.indexOf((Node) obj);	
+		if (obj instanceof CyNode) {
+			List<CyNode> nodes_list = network.nodesList();
+			index = nodes_list.indexOf((CyNode) obj);
 			return node_bits.get(index);			
 		}
 		
-		if (obj instanceof Edge) {
-			List<Edge> edges_list = network.edgesList();
-			index = edges_list.indexOf((Edge) obj);	
+		if (obj instanceof CyEdge) {
+			List<CyEdge> edges_list = network.edgesList();
+			index = edges_list.indexOf((CyEdge) obj);
 			return edge_bits.get(index);			
 		}		
 		

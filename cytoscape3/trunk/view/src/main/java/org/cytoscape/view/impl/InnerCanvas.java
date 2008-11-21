@@ -36,83 +36,48 @@
 
 package org.cytoscape.view.impl;
 
-import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
-
-import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.render.export.ImageImposter;
-
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
-
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
-
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
-
-import org.cytoscape.Node;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.view.EdgeContextMenuListener;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphViewChangeListener;
-import org.cytoscape.view.NodeView;
 import org.cytoscape.view.NodeContextMenuListener;
-import org.cytoscape.view.EdgeContextMenuListener;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.view.ViewChangeEdit;
+import org.cytoscape.work.UndoSupport;
+import phoebe.PhoebeCanvasDropEvent;
+import phoebe.PhoebeCanvasDropListener;
+import phoebe.PhoebeCanvasDroppable;
 
-// AJK: 04/02/06 BEGIN
-import phoebe.*;
-
-//import java.awt.*;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Paint;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.datatransfer.DataFlavor;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-
-//import java.awt.event.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
-import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
-
-import java.util.*;
-
-// AJK: 04/26/06 BEGIN
-//    for tooltips
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.JToolTip;
-import javax.swing.TransferHandler;
-
-import java.awt.FontMetrics;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Vector;
 
 // AJK: 04/26/06 END
 /**
@@ -191,15 +156,18 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public Vector<NodeContextMenuListener> nodeContextMenuListeners = new Vector<NodeContextMenuListener>();
 
+	private UndoSupport m_undo;
+
 	/**
 	 * DOCUMENT ME!
 	 */
 	public Vector<EdgeContextMenuListener> edgeContextMenuListeners = new Vector<EdgeContextMenuListener>();
 
-	InnerCanvas(Object lock, DGraphView view) {
+	InnerCanvas(Object lock, DGraphView view, UndoSupport undo) {
 		super();
 		m_lock = lock;
 		m_view = view;
+		m_undo = undo;
 		m_lod[0] = new GraphLOD(); // Default LOD.
 		m_hash = new IntHash();
 		m_backgroundColor = Color.white;
@@ -267,7 +235,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
-				m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+				m_lastRenderDetail = GraphRenderer.renderGraph(m_view.m_perspective,
 				                                               m_view.m_spacial, m_lod[0],
 				                                               m_view.m_nodeDetails,
 				                                               m_view.m_edgeDetails, m_hash,
@@ -334,7 +302,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
+			GraphRenderer.renderGraph(m_view.m_perspective, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
@@ -355,7 +323,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
+			GraphRenderer.renderGraph(m_view.m_perspective, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
@@ -507,8 +475,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						final int edge = chosenAnchor >>> 6;
 						final int anchorInx = chosenAnchor & 0x0000003f;
 						//****** Save remove handle
-						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Remove Edge Handle");
-						((DEdgeView) m_view.getEdgeView(~edge)).removeHandle(anchorInx);
+						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Remove Edge Handle",m_undo);
+						((DEdgeView) m_view.getEdgeView(edge)).removeHandle(anchorInx);
 						m_button1NodeDrag = false;
 					} else {
 						final boolean wasSelected = m_view.m_selectedAnchors.count(chosenAnchor) > 0;
@@ -536,11 +504,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						m_ptBuff[1] = m_lastYMousePos;
 						m_view.xformComponentToNodeCoords(m_ptBuff);
 						//******* Store current handle list *********
-						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Add Edge Handle");
+						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Add Edge Handle",m_undo);
 						final int chosenInx = ((DEdgeView) m_view.getEdgeView(chosenEdge))
 																														.addHandleFoo(new Point2D.Float((float) m_ptBuff[0],
 																														(float) m_ptBuff[1]));
-						m_view.m_selectedAnchors.insert(((~chosenEdge) << 6) | chosenInx);
+						m_view.m_selectedAnchors.insert(((chosenEdge) << 6) | chosenInx);
 					}
 
 					final boolean wasSelected = m_view.getEdgeView(chosenEdge).isSelected();
@@ -587,36 +555,28 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (listener != null) {
 				if ((unselectedNodes != null) && (unselectedNodes.length > 0))
 					listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-					                                                            unselectedNodes));
+				                                                            DGraphView.makeNodeList(unselectedNodes,m_view)));
 
 				if ((unselectedEdges != null) && (unselectedEdges.length > 0))
 					listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
-					                                                            unselectedEdges));
+				                                                            DGraphView.makeEdgeList(unselectedEdges,m_view)));
 
 				if (chosenNode != 0) {
 					if (chosenNodeSelected > 0)
 						listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-						                                                          new int[] {
-						                                                              chosenNode
-						                                                          }));
+							DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
 					else if (chosenNodeSelected < 0)
 						listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-						                                                            new int[] {
-						                                                                chosenNode
-						                                                            }));
+							DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
 				}
 
 				if (chosenEdge != 0) {
 					if (chosenEdgeSelected > 0)
 						listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
-						                                                          new int[] {
-						                                                              chosenEdge
-						                                                          }));
+							DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
 					else if (chosenEdgeSelected < 0)
 						listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
-						                                                            new int[] {
-						                                                                chosenEdge
-						                                                            }));
+							DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
 				}
 			}
 
@@ -625,13 +585,13 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			repaint();
 		} else if (e.getButton() == MouseEvent.BUTTON2) {
 			//******** Save all node positions
-			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move");
+			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
 			m_currMouseButton = 2;
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
 		} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
 			//******** Save all node positions
-			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move");
+			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
 			m_currMouseButton = 3;
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
@@ -686,7 +646,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 								while (nodesXSect.numRemaining() > 0) {
 									final int nodeXSect = nodesXSect.nextInt();
 
-									if (m_view.m_selectedNodes.count(~nodeXSect) == 0)
+									if (m_view.m_selectedNodes.count(nodeXSect) == 0)
 										m_stack2.push(nodeXSect);
 								}
 
@@ -749,7 +709,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 								while (edgesXSect.numRemaining() > 0) {
 									final int edgeXSect = edgesXSect.nextInt();
 
-									if (m_view.m_selectedEdges.count(~edgeXSect) == 0)
+									if (m_view.m_selectedEdges.count(edgeXSect) == 0)
 										m_stack.push(edgeXSect);
 								}
 
@@ -777,11 +737,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 					if (listener != null) {
 						if ((selectedNodes != null) && (selectedNodes.length > 0))
 							listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-							                                                          selectedNodes));
+					                                                          DGraphView.makeNodeList(selectedNodes,m_view)));
 
 						if ((selectedEdges != null) && (selectedEdges.length > 0))
 							listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
-							                                                          selectedEdges));
+					                                                          DGraphView.makeEdgeList(selectedEdges,m_view)));
 					}
 
 					// Repaint after listener events are fired because listeners may
@@ -815,7 +775,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (m_button1NodeDrag) {
 				//*****SAVE SELECTED NODE & EDGE POSITIONS******
 				if (m_undoable_edit == null) {
-					m_undoable_edit = new ViewChangeEdit(m_view, ViewChangeEdit.SavedObjs.SELECTED, "Move");
+					m_undoable_edit = new ViewChangeEdit(m_view, ViewChangeEdit.SavedObjs.SELECTED, "Move",m_undo);
 				}
 				synchronized (m_lock) {
 					m_ptBuff[0] = m_lastXMousePos;
@@ -871,7 +831,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						final int edgeAndAnchor = anchorsToMove.nextInt();
 						final int edge = edgeAndAnchor >>> 6;
 						final int anchorInx = edgeAndAnchor & 0x0000003f;
-						final DEdgeView ev = (DEdgeView) m_view.getEdgeView(~edge);
+						final DEdgeView ev = (DEdgeView) m_view.getEdgeView(edge);
 						ev.getHandleInternal(anchorInx, m_floatBuff1);
 						ev.moveHandleInternal(anchorInx, m_floatBuff1[0] + deltaX,
 						                      m_floatBuff1[1] + deltaY);
@@ -994,7 +954,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 					final int edgeAndAnchor = anchorsToMove.nextInt();
 					final int edge = edgeAndAnchor >>> 6;
 					final int anchorInx = edgeAndAnchor & 0x0000003f;
-					final DEdgeView ev = (DEdgeView) m_view.getEdgeView(~edge);
+					final DEdgeView ev = (DEdgeView) m_view.getEdgeView(edge);
 					ev.getHandleInternal(anchorInx, m_floatBuff1);
 
 					if (code == KeyEvent.VK_UP) {
@@ -1061,24 +1021,26 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		edgeNodesEnum = m_stack.elements();
 		stack.empty();
 
-		final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
+		//final FixedGraph graph = (FixedGraph) m_view.m_perspective;
+		final CyNetwork graph = m_view.m_perspective;
 
 		if ((m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0) {
 			// We won't need to look up arrows and their sizes.
 			for (int i = 0; i < edgeNodesCount; i++) {
 				final int node = edgeNodesEnum.nextInt(); // Positive.
+				final CyNode nodeObj = graph.getNode(node);
 
 				if (!m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0))
 					continue; /* Will happen if e.g. node was removed. */
 
 				final float nodeX = (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) / 2;
 				final float nodeY = (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) / 2;
-				final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
+				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, CyEdge.Type.ANY);
 
-				while (touchingEdges.numRemaining() > 0) {
-					final int edge = touchingEdges.nextInt(); // Positive.
+				for ( CyEdge e : touchingEdges ) {	
+					final int edge = e.getIndex(); // Positive.
 					final int otherNode =  // Positive.
-					                      node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+					                      node ^ e.getSource().getIndex() ^ e.getTarget().getIndex(); 
 
 					if (m_hash.get(otherNode) < 0) {
 						m_view.m_spacial.exists(otherNode, m_view.m_extentsBuff, 0);
@@ -1088,7 +1050,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						m_line.setLine(nodeX, nodeY, otherNodeX, otherNodeY);
 
 						if (m_line.intersects(xMin, yMin, xMax - xMin, yMax - yMin))
-							stack.push(~edge);
+							stack.push(edge);
 					}
 				}
 
@@ -1098,17 +1060,18 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 			for (int i = 0; i < edgeNodesCount; i++) {
 				final int node = edgeNodesEnum.nextInt(); // Positive.
+				final CyNode nodeObj = graph.getNode(node);
 
 				if (!m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0))
 					continue; /* Will happen if e.g. node was removed. */
 
 				final byte nodeShape = m_view.m_nodeDetails.shape(node);
-				final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
+				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, CyEdge.Type.ANY);
 
-				while (touchingEdges.numRemaining() > 0) {
-					final int edge = touchingEdges.nextInt(); // Positive.
+				for ( CyEdge e : touchingEdges ) {	
+					final int edge = e.getIndex(); // Positive.
 					final double segThicknessDiv2 = m_view.m_edgeDetails.segmentThickness(edge) / 2.0d;
-					final int otherNode = node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+					final int otherNode = node ^ e.getSource().getIndex() ^ e.getTarget().getIndex();
 
 					if (m_hash.get(otherNode) < 0) {
 						m_view.m_spacial.exists(otherNode, m_extentsBuff2, 0);
@@ -1119,7 +1082,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						final float[] srcExtents;
 						final float[] trgExtents;
 
-						if (node == graph.edgeSource(edge)) {
+						if (node == e.getSource().getIndex()) {
 							srcShape = nodeShape;
 							trgShape = otherNodeShape;
 							srcExtents = m_view.m_extentsBuff;
@@ -1170,7 +1133,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						if (m_path2.intersects(xMin - segThicknessDiv2, yMin - segThicknessDiv2,
 						                       (xMax - xMin) + (segThicknessDiv2 * 2),
 						                       (yMax - yMin) + (segThicknessDiv2 * 2)))
-							stack.push(~edge);
+							stack.push(edge);
 					}
 				}
 
@@ -1374,7 +1337,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		NodeView nv = m_view.getPickedNodeView(event.getPoint());
 
 		if (nv != null) {
-			String nodeLabel = nv.getNode().getIdentifier();
+			String nodeLabel = nv.getNode().attrs().get("name",String.class);
 			JPopupMenu menu = new JPopupMenu(nodeLabel);
 			menu.setLabel(nodeLabel);
 
@@ -1391,7 +1354,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		EdgeView ev = m_view.getPickedEdgeView(event.getPoint());
 
 		if (ev != null) {
-			String edgeLabel = ev.getEdge().getIdentifier();
+			String edgeLabel = ev.getEdge().attrs().get("name",String.class);
 			JPopupMenu menu = new JPopupMenu(edgeLabel);
 			menu.setLabel(edgeLabel);
 
@@ -1480,5 +1443,4 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	public boolean isNodeMovementDisabled(){
 		return !(this.NodeMovement);
 	}
-	
 }

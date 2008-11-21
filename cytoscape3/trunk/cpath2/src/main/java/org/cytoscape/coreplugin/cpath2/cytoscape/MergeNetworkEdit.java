@@ -33,11 +33,11 @@ package org.cytoscape.coreplugin.cpath2.cytoscape;
 
 // imports
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
@@ -55,17 +55,17 @@ public class MergeNetworkEdit extends CyAbstractEdit {
     /**
      * ref to GraphPerspective that we are modifying
      */
-    private GraphPerspective cyNetwork;
+    private CyNetwork cyNetwork;
 
     /**
      * ref to map: node is key, value is node position
      */
-    private Map<Node, Point2D.Double> cyNodes;
+    private Map<CyNode, Point2D.Double> cyNodes;
 
     /**
      * ref to edge set
      */
-    private Set<Edge> cyEdges;
+    private Set<CyEdge> cyEdges;
 
     /**
      * Constructor.
@@ -74,7 +74,7 @@ public class MergeNetworkEdit extends CyAbstractEdit {
      * @param cyNodes   Set<Node>
      * @param cyEdges   Set<Edge>
      */
-    public MergeNetworkEdit(GraphPerspective cyNetwork, Set<Node> cyNodes, Set<Edge> cyEdges) {
+    public MergeNetworkEdit(CyNetwork cyNetwork, Set<CyNode> cyNodes, Set<CyEdge> cyEdges) {
         super("Merge Network");
 
         // check args
@@ -85,10 +85,10 @@ public class MergeNetworkEdit extends CyAbstractEdit {
         this.cyNetwork = cyNetwork;
         this.cyEdges = cyEdges;
 
-        this.cyNodes = new HashMap<Node, Point2D.Double>();
+        this.cyNodes = new HashMap<CyNode, Point2D.Double>();
         GraphView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
         if (view != null || view != Cytoscape.getNullNetworkView()) {
-            for (Node cyNode : cyNodes) {
+            for (CyNode cyNode : cyNodes) {
                 NodeView nv = view.getNodeView(cyNode);
                 Point2D.Double point = new Point2D.Double(nv.getXPosition(), nv.getYPosition());
                 this.cyNodes.put(cyNode, point);
@@ -103,12 +103,12 @@ public class MergeNetworkEdit extends CyAbstractEdit {
         super.undo();
 
         // iterate through nodes and hide each one
-        for (Node cyNode : cyNodes.keySet()) {
+        for (CyNode cyNode : cyNodes.keySet()) {
             cyNetwork.hideNode(cyNode);
         }
 
         // iteracte through edges and hide each one
-        for (Edge cyEdge : cyEdges) {
+        for (CyEdge cyEdge : cyEdges) {
             cyNetwork.hideEdge(cyEdge);
         }
 
@@ -128,7 +128,7 @@ public class MergeNetworkEdit extends CyAbstractEdit {
         if (view != null || view != Cytoscape.getNullNetworkView()) {
 
             // iterate through nodes and restore each one (also set proper position)
-            for (Node cyNode : cyNodes.keySet()) {
+            for (CyNode cyNode : cyNodes.keySet()) {
                 cyNetwork.restoreNode(cyNode);
                 Point2D.Double point = cyNodes.get(cyNode);
                 NodeView nv = view.getNodeView(cyNode);
@@ -137,7 +137,7 @@ public class MergeNetworkEdit extends CyAbstractEdit {
             }
 
             // interate through edges and restore each one...
-            for (Edge cyEdge : cyEdges) {
+            for (CyEdge cyEdge : cyEdges) {
                 cyNetwork.restoreEdge(cyEdge);
             }
 

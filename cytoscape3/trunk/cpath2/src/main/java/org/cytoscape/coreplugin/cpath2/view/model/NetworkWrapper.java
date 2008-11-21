@@ -1,15 +1,15 @@
 package org.cytoscape.coreplugin.cpath2.view.model;
 
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.model.CyNetwork;
 
 public class NetworkWrapper {
-    private GraphPerspective network;
+    private CyNetwork network;
 
-    public NetworkWrapper (GraphPerspective network) {
+    public NetworkWrapper (CyNetwork network) {
         this.network = network;
     }
 
-    public GraphPerspective getNetwork() {
+    public CyNetwork getNetwork() {
         return network;
     }
 

@@ -34,14 +34,16 @@
  */
 package org.cytoscape.vizmap;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.parsers.ArrowShapeParser;
+import org.cytoscape.vizmap.parsers.ColorParser;
+import org.cytoscape.vizmap.parsers.DoubleParser;
+import org.cytoscape.vizmap.parsers.FloatParser;
+import org.cytoscape.vizmap.parsers.FontParser;
+import org.cytoscape.vizmap.parsers.LabelPositionParser;
+import org.cytoscape.vizmap.parsers.LineStyleParser;
+import org.cytoscape.vizmap.parsers.NodeShapeParser;
+import org.cytoscape.vizmap.parsers.StringParser;
 import org.cytoscape.vizmap.properties.EdgeColorProp;
 import org.cytoscape.vizmap.properties.EdgeFontFaceProp;
 import org.cytoscape.vizmap.properties.EdgeFontSizeProp;
@@ -76,8 +78,10 @@ import org.cytoscape.vizmap.properties.NodeShapeProp;
 import org.cytoscape.vizmap.properties.NodeSizeProp;
 import org.cytoscape.vizmap.properties.NodeToolTipProp;
 import org.cytoscape.vizmap.properties.NodeWidthProp;
-import org.cytoscape.vizmap.parsers.*;
-import org.cytoscape.vizmap.ValueParser;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Enum for calculator types.<br>

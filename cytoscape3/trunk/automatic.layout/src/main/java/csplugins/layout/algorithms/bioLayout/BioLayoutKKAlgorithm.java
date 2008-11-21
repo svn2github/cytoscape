@@ -36,30 +36,17 @@ import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.Profile;
-
-
-
-import org.cytoscape.tunable.ModuleProperties;
+import cytoscape.CytoscapeInit;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
 
-import cytoscape.CytoscapeInit;
-
-import org.cytoscape.view.*;
-
-import java.awt.Dimension;
-
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
-
-import org.cytoscape.*;
-import org.cytoscape.data.*;
 
 
 /**

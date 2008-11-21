@@ -36,28 +36,24 @@
 package cytoscape.io.table.reader;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
-
 import cytoscape.data.synonyms.Aliases;
-import static cytoscape.io.table.reader.TextFileDelimiters.*;
+import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
+import static cytoscape.io.table.reader.TextFileDelimiters.TAB;
 import cytoscape.io.table.reader.TextTableReader.ObjectType;
-import static cytoscape.io.table.reader.TextTableReader.ObjectType.*;
-
+import static cytoscape.io.table.reader.TextTableReader.ObjectType.NETWORK;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowUtils;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 
 /**
  * Parameter object for text table <---> CyAttributes mapping.<br>
@@ -170,9 +166,9 @@ public class AttributeMappingParameters implements MappingParameter {
 		if (this.objectType == NETWORK) {
 			networkTitle2ID = new HashMap<String, String>();
 
-			Set<GraphPerspective> networkSet = Cytoscape.getNetworkSet();
+			Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
 
-			for (GraphPerspective net : networkSet) {
+			for (CyNetwork net : networkSet) {
 				networkTitle2ID.put(net.getTitle(), net.getIdentifier());
 			}
 		} else {
@@ -443,7 +439,7 @@ public class AttributeMappingParameters implements MappingParameter {
 			switch (objectType) {
 				case NODE:
 
-					Node node = (Node) it.next();
+					CyNode node = (CyNode) it.next();
 					objectID = node.getIdentifier();
 
 					if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {
@@ -456,7 +452,7 @@ public class AttributeMappingParameters implements MappingParameter {
 
 				case EDGE:
 
-					Edge edge = (Edge) it.next();
+					CyEdge edge = (CyEdge) it.next();
 					objectID = edge.getIdentifier();
 
 					if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {

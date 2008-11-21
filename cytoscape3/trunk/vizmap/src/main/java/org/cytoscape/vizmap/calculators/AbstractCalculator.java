@@ -42,34 +42,22 @@
 //------------------------------------------------------------------------------
 package org.cytoscape.vizmap.calculators;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.Appearance;
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.mappings.MappingFactory;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 
-//------------------------------------------------------------------------------
-
-import java.awt.GridBagConstraints;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
-import java.util.Arrays;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphObject;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 
 
 //------------------------------------------------------------------------------
@@ -121,7 +109,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param c DOCUMENT ME!
 	 * @param type DOCUMENT ME!
 	 */
-	 @SuppressWarnings("unchecked") // TODO figure this one out
+//	 @SuppressWarnings("unchecked") // TODO figure this one out
 	public AbstractCalculator(String name, ObjectMapping m, VisualPropertyType type) {
 		if (type == null)
 			throw new NullPointerException("Type parameter for Calculator is null");
@@ -269,7 +257,7 @@ public abstract class AbstractCalculator implements Calculator {
 	/**
 	 * updateAttribute is called when the currently selected attribute changes.
 	 * Any changes needed in the mapping UI should be performed at this point.
-	 * Use {@link #updateAttribute(String, GraphPerspective, int)} for best
+	 * Use {@link #updateAttribute(String, org.cytoscape.CyNetwork , int)} for best
 	 * performance.
 	 *
 	 * @param attrName
@@ -281,7 +269,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @throws IllegalArgumentException
 	 *             if the given object mapping isn't in this calculator.
 	 */
-	void updateAttribute(String attrName, GraphPerspective network, ObjectMapping m)
+	void updateAttribute(String attrName, CyNetwork network, ObjectMapping m)
 	    throws IllegalArgumentException {
 		int mapIndex = this.mappings.indexOf(m);
 
@@ -308,7 +296,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if the given object mapping index is out of bounds.
 	 */
-	void updateAttribute(String attrName, GraphPerspective network, int mIndex)
+	void updateAttribute(String attrName, CyNetwork network, int mIndex)
 	    throws ArrayIndexOutOfBoundsException {
 		ObjectMapping m = (ObjectMapping) this.mappings.get(mIndex);
 		m.setControllingAttributeName(attrName, network, false);
@@ -368,26 +356,15 @@ public abstract class AbstractCalculator implements Calculator {
 	}
 
 	/**
-	 * Returns a map of attribute names to single values.
-	 *
-	 * @param canonicalName
-	 *            The attribute name returned from the CyNode or CyEdge.
-	 * @return Map of the attribute names to values.
-	 */
-	protected Map getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
-		return CyAttributesUtils.getAttributes(canonicalName, cyAttrs);
-	}
-
-	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param appr DOCUMENT ME!
 	 * @param e DOCUMENT ME!
 	 * @param net DOCUMENT ME!
 	 */
-	public void apply(Appearance appr, Edge e, GraphPerspective net) {
-		//System.out.println("AbstractCalculator.apply(edge) " + type.toString());
-		Object o = getRangeValue(e,appr.getCyAttributes());
+	public void apply(Appearance appr, CyEdge e, CyNetwork net) {
+
+		Object o = getMapping(0).calculateRangeValue(e.attrs());
 
 		// default has already been set - no need to do anything
 		if (o == null)
@@ -403,28 +380,15 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param n DOCUMENT ME!
 	 * @param net DOCUMENT ME!
 	 */
-	public void apply(Appearance appr, Node n, GraphPerspective net) {
-		//System.out.println("AbstractCalculator.apply(node) " + type.toString());
-		Object o = getRangeValue(n,appr.getCyAttributes());
+	public void apply(Appearance appr, CyNode n, CyNetwork net) {
+		
+		Object o = getMapping(0).calculateRangeValue(n.attrs());
 
 		// default has already been set - no need to do anything
 		if (o == null)
 			return;
 
 		appr.set(type, o);
-	}
-
-	@SuppressWarnings("unchecked") // TODO again, this should be fixed as part of CyAttributes
-	                               // this one is also related to bug 247!!!
-	protected Object getRangeValue(GraphObject obj,CyAttributes attrs) {
-		if (obj == null)
-			return null;
-
-		final String nodeID = obj.getIdentifier();
-		final Map attrBundle = getAttrBundle(nodeID,attrs);
-		attrBundle.put(AbstractCalculator.ID, obj.getIdentifier());
-
-		return getMapping(0).calculateRangeValue(attrBundle);
 	}
 
 	/**

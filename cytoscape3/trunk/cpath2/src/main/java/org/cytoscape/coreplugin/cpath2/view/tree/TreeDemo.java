@@ -2,11 +2,14 @@ package org.cytoscape.coreplugin.cpath2.view.tree;
 
 import org.cytoscape.coreplugin.cpath2.view.CollapsablePanel;
 
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.tree.TreeNode;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Enumeration;
 
 /**
  * Tree Demo.  Used to debug JTreeWithCheckNodes.

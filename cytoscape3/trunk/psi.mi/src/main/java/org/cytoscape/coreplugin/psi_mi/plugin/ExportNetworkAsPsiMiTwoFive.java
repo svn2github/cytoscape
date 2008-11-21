@@ -35,17 +35,13 @@
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 
 import java.awt.event.ActionEvent;
-
 import java.io.File;
 
 

@@ -44,14 +44,10 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.vizmap.mappings.LinearNumberToColorInterpolator;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-//----------------------------------------------------------------------------
-import junit.framework.*;
-
-import java.awt.Color;
-
-import java.io.*;
+import java.awt.*;
 
 
 //----------------------------------------------------------------------------

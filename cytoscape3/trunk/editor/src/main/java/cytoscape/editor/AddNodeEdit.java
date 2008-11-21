@@ -1,13 +1,12 @@
 
 package cytoscape.editor;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-
-import org.cytoscape.view.NodeView;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 /**
  * An edit used by the Editor when adding new nodes to a network.
@@ -16,12 +15,12 @@ public class AddNodeEdit extends CyAbstractEdit {
 
 	// MLC 05/09/07:
 	private static final long serialVersionUID = 4869581496913388294L;
-	protected GraphPerspective net;
-	protected Node node;
+	protected CyNetwork net;
+	protected CyNode node;
 	protected double xPos = 0.0;
 	protected double yPos = 0.0;
 
-	public AddNodeEdit(GraphPerspective net, Node node) {
+	public AddNodeEdit(CyNetwork net, CyNode node) {
 		super("Add Node");
 		if ( net == null || node == null )
 			throw new IllegalArgumentException("network or node is null"); 

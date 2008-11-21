@@ -36,47 +36,17 @@
 
 package cytoscape.layout.manual.common;
 
-import cytoscape.layout.manual.rotate.RotatePanel;
-import cytoscape.layout.manual.rotate.RotationLayouter;
-
-import cytoscape.layout.manual.scale.ScaleLayouter;
-import cytoscape.layout.manual.scale.ScalePanel;
-
 import cytoscape.Cytoscape;
-
-
-import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
-
-import cytoscape.util.CytoscapeAction;
-
 import cytoscape.view.CytoscapeDesktop;
-
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelListener;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JCheckBox;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.data.SelectEvent;
 import org.cytoscape.data.SelectEventListener;
+
+import javax.swing.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -105,7 +75,7 @@ public class CheckBoxTracker implements SelectEventListener, PropertyChangeListe
 
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
-			GraphPerspective curr = Cytoscape.getCurrentNetwork();
+			CyNetwork curr = Cytoscape.getCurrentNetwork();
 			String nid = curr.getIdentifier();
 
 			// only add this as a listener if it hasn't been done already

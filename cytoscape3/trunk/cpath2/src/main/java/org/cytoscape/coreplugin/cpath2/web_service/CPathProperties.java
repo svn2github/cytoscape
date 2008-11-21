@@ -1,12 +1,10 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
-import cytoscape.CytoscapeInit;
-
-import java.util.Properties;
-import java.util.ArrayList;
-import java.io.IOException;
-
 import org.cytoscape.coreplugin.cpath2.view.model.Organism;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * Contains cPath Specific Properties

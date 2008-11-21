@@ -42,16 +42,11 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import org.cytoscape.GraphPerspective;
-
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.vizmap.parsers.ColorParser;
-import org.cytoscape.vizmap.ObjectToString;
 
-//----------------------------------------------------------------------------
-import java.awt.Color;
-
+import java.awt.*;
 import java.lang.reflect.Method;
-
 import java.util.Properties;
 
 
@@ -175,7 +170,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 * Constructs a new GlobalAppearance object containing the values for the
 	 * known global visual attributes.
 	 */
-	public GlobalAppearance calculateGlobalAppearance(GraphPerspective network) {
+	public GlobalAppearance calculateGlobalAppearance(CyNetwork network) {
 		GlobalAppearance appr = new GlobalAppearance();
 		calculateGlobalAppearance(appr, network);
 
@@ -186,7 +181,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 * The supplied GlobalAppearance object will be changed to hold new values
 	 * for the known global visual attributes.
 	 */
-	public void calculateGlobalAppearance(GlobalAppearance appr, GraphPerspective network) {
+	public void calculateGlobalAppearance(GlobalAppearance appr, CyNetwork network) {
 		appr.setBackgroundColor(calculateBackgroundColor(network));
 		appr.setNodeSelectionColor(calculateNodeSelectionColor(network));
 		appr.setNodeReverseSelectionColor(calculateNodeReverseSelectionColor(network));
@@ -219,7 +214,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 * Currently no calculators are supported for global visual attributes, so
 	 * this method simply returns the default background color.
 	 */
-	public Color calculateBackgroundColor(GraphPerspective network) {
+	public Color calculateBackgroundColor(CyNetwork network) {
 		return defaultBackgroundColor;
 	}
 
@@ -315,7 +310,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Color calculateNodeSelectionColor(GraphPerspective network) {
+	public Color calculateNodeSelectionColor(CyNetwork network) {
 		return defaultNodeSelectionColor;
 	}
 
@@ -326,7 +321,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Color calculateNodeReverseSelectionColor(GraphPerspective network) {
+	public Color calculateNodeReverseSelectionColor(CyNetwork network) {
 		return defaultNodeReverseSelectionColor;
 	}
 
@@ -337,7 +332,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Color calculateEdgeSelectionColor(GraphPerspective network) {
+	public Color calculateEdgeSelectionColor(CyNetwork network) {
 		return defaultEdgeSelectionColor;
 	}
 
@@ -348,7 +343,7 @@ public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Color calculateEdgeReverseSelectionColor(GraphPerspective network) {
+	public Color calculateEdgeReverseSelectionColor(CyNetwork network) {
 		return defaultEdgeReverseSelectionColor;
 	}
 

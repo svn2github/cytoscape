@@ -34,28 +34,18 @@
  */
 package org.cytoscape.vizmap.properties;
 
-import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.VisualPropertyType;
-
-import org.cytoscape.vizmap.parsers.LabelPositionParser;
-
-import org.cytoscape.vizmap.LabelPlacerGraphic;
-import org.cytoscape.vizmap.icon.NodeIcon;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
-
 import org.cytoscape.view.Label;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.vizmap.LabelPlacerGraphic;
+import org.cytoscape.vizmap.LabelPosition;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.icon.NodeIcon;
+import org.cytoscape.vizmap.parsers.LabelPositionParser;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-
 import java.util.Properties;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 
 
 /**

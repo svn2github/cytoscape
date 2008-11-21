@@ -1,15 +1,13 @@
 /*$Id: LinkOutPlugin.java 13020 2008-02-11 21:55:44Z mes $*/
 package cytoscape.linkout;
 
-import org.cytoscape.*;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.view.*;
-
-import java.util.*;
-
-import org.osgi.framework.BundleContext;
+import org.cytoscape.model.CyNetwork;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -32,7 +30,7 @@ public class LinkOutPlugin implements BundleActivator {
 			Set networkSet = Cytoscape.getNetworkSet();
 
 			for (Iterator it = networkSet.iterator(); it.hasNext();) {
-				GraphPerspective cyNetwork = (GraphPerspective) it.next();
+				CyNetwork cyNetwork = (CyNetwork) it.next();
 
 				LinkOutNodeContextMenuListener nodeMenuListener = new LinkOutNodeContextMenuListener();
 				Cytoscape.getNetworkView(cyNetwork.getIdentifier()).addNodeContextMenuListener(nodeMenuListener);

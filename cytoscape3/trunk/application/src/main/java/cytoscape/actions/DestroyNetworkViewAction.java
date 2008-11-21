@@ -37,16 +37,11 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-
 import cytoscape.util.CytoscapeAction;
-
 import org.cytoscape.view.GraphView;
 
-import java.awt.event.ActionEvent;
-import java.util.LinkedList;
-
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
 
 
 /**

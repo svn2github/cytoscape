@@ -36,15 +36,11 @@
  */
 package org.cytoscape.vizmap;
 
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.vizmap.calculators.*;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.vizmap.calculators.BasicCalculator;
+import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
-
-import org.cytoscape.Node;
-
-import java.awt.Color;
-import java.awt.Font;
 
 import java.util.Properties;
 
@@ -85,7 +81,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * object, compute an appearance for the requested Node in the supplied
      * CyNetwork. A new NodeApperance object will be created.
      */
-    public NodeAppearance calculateNodeAppearance(Node node, GraphPerspective network) {
+    public NodeAppearance calculateNodeAppearance(CyNode node, CyNetwork network) {
         NodeAppearance appr = new NodeAppearance();
         calculateNodeAppearance(appr, node, network);
 
@@ -122,7 +118,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * CyNetwork. The supplied NodeAppearance object will be changed to hold the
      * new values.
      */
-    public void calculateNodeAppearance(NodeAppearance appr, Node node, GraphPerspective network) {
+    public void calculateNodeAppearance(NodeAppearance appr, CyNode node, CyNetwork network) {
         appr.copy(defaultAppearance); // set defaults and node lock state
 
         for (Calculator nc : calcs)

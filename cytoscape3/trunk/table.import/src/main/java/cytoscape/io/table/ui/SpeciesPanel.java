@@ -7,15 +7,12 @@ package cytoscape.io.table.ui;
 
 import cytoscape.CytoscapeInit;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.net.URL;
-
 import java.util.StringTokenizer;
-
-import javax.swing.JPanel;
 
 
 /**

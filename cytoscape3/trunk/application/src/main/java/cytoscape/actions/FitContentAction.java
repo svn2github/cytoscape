@@ -42,19 +42,10 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
 
-import org.cytoscape.view.GraphView;
-
-//-------------------------------------------------------------------------
-import org.cytoscape.view.*;
-
 import java.awt.event.ActionEvent;
-
-import java.util.Iterator;
 
 
 //-------------------------------------------------------------------------

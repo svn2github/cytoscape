@@ -37,39 +37,17 @@
 package cytoscape.filters.util;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import org.cytoscape.attributes.CyAttributes;
-
-import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.AtomicFilter;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.NumericFilter;
 import cytoscape.filters.StringFilter;
-
-import cytoscape.filters.view.FilterMainPanel;
-
-import csplugins.quickfind.util.QuickFind;
-import cytoscape.util.CytoscapeAction;
-
-
-import java.beans.PropertyChangeEvent;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 
 
 class ApplyFilterThread extends Thread {
@@ -99,12 +77,12 @@ class ApplyFilterThread extends Thread {
 		CyAttributes data = null;
 		String name = "";
 
-		if (pObject instanceof Node) {
+		if (pObject instanceof CyNode) {
 			data = Cytoscape.getNodeAttributes();
-			name = ((Node) pObject).getIdentifier();
+			name = ((CyNode) pObject).getIdentifier();
 		} else {
 			data = Cytoscape.getEdgeAttributes();
-			name = ((Edge) pObject).getIdentifier();
+			name = ((CyEdge) pObject).getIdentifier();
 		}
 
 		if (name == null) {
@@ -212,18 +190,18 @@ class ApplyFilterThread extends Thread {
 	}
 
 	protected void testObjects(CompositeFilter pCompositeFilter) {
-		final GraphPerspective network = Cytoscape.getCurrentNetwork();
+		final CyNetwork network = Cytoscape.getCurrentNetwork();
 
-		final List<Node> nodes_list = network.nodesList();
-		final List<Edge> edges_list = network.edgesList();
+		final List<CyNode> nodes_list = network.nodesList();
+		final List<CyEdge> edges_list = network.edgesList();
 
 		if (pCompositeFilter == null)
 			return;
 
 		if (pCompositeFilter.getAdvancedSetting().isNodeChecked()) {
-			final List<Node> passedNodes = new ArrayList<Node>();
+			final List<CyNode> passedNodes = new ArrayList<CyNode>();
 
-			for (Node node : nodes_list) {
+			for (CyNode node : nodes_list) {
 				try {
 					if (passesCompositeFilter(node, pCompositeFilter)) {
 						passedNodes.add(node);
@@ -240,9 +218,9 @@ class ApplyFilterThread extends Thread {
 		}
 
 		if (pCompositeFilter.getAdvancedSetting().isEdgeChecked()) {
-			final List<Edge> passedEdges = new ArrayList<Edge>();
+			final List<CyEdge> passedEdges = new ArrayList<CyEdge>();
 
-			for (Edge edge : edges_list) {
+			for (CyEdge edge : edges_list) {
 				try {
 					if (passesCompositeFilter(edge, pCompositeFilter)) {
 						passedEdges.add(edge);

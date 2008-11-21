@@ -38,22 +38,12 @@ package cytoscape.util;
 
 import cytoscape.util.shadegrown.WindowUtilities;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import java.net.URL;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JWindow;
-import javax.swing.Timer;
 
 
 /**

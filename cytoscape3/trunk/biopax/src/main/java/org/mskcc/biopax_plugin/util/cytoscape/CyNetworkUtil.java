@@ -31,12 +31,11 @@
  **/
 package org.mskcc.biopax_plugin.util.cytoscape;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.CytoscapeInit;
+import org.cytoscape.model.CyNetwork;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
 import java.util.ArrayList;
 
 
@@ -53,7 +52,7 @@ public class CyNetworkUtil {
 	 * @param warningList ArrayList of Warning Messages.
 	 * @return Human Readable String.
 	 */
-	public static String getNetworkStats(GraphPerspective network, ArrayList warningList) {
+	public static String getNetworkStats(CyNetwork network, ArrayList warningList) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 

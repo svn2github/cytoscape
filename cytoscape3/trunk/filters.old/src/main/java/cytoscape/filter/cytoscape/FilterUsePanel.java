@@ -36,34 +36,26 @@
 
 package cytoscape.filter.cytoscape;
 
-import org.cytoscape.*;
-
-import cytoscape.data.*;
-
-import cytoscape.view.*;
-
-import cytoscape.filter.model.*;
-
-import cytoscape.filter.view.*;
-
-import org.cytoscape.*;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.view.*;
-
-import phoebe.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-
-import java.beans.*;
-
-import java.util.*;
-import java.util.List;
+import cytoscape.filter.model.Filter;
+import cytoscape.filter.model.FilterEditorManager;
+import cytoscape.filter.model.FilterManager;
+import cytoscape.filter.view.CreateFilterDialog;
+import cytoscape.filter.view.FilterEditorPanel;
+import cytoscape.filter.view.FilterListPanel;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -278,10 +270,10 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener, Ac
 		// Should not use this... Event should fire only once in the filtering
 		// process!
 		if (passes) {
-			if (object instanceof Node) {
-				Cytoscape.getCurrentNetwork().setSelectedNodeState((Node) object, true);
-			} else if (object instanceof Edge) {
-				Cytoscape.getCurrentNetwork().setSelectedEdgeState((Edge) object, true);
+			if (object instanceof CyNode) {
+				Cytoscape.getCurrentNetwork().setSelectedNodeState((CyNode) object, true);
+			} else if (object instanceof CyEdge) {
+				Cytoscape.getCurrentNetwork().setSelectedEdgeState((CyEdge) object, true);
 			}
 		}
 	}
@@ -296,10 +288,10 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener, Ac
 
 	protected void testObjects() {
 		final Filter filter = filterListPanel.getSelectedFilter();
-		final GraphPerspective network = Cytoscape.getCurrentNetwork();
+		final CyNetwork network = Cytoscape.getCurrentNetwork();
 
-		final List<Node> nodes_list = network.nodesList();
-		final List<Edge> edges_list = network.edgesList();
+		final List<CyNode> nodes_list = network.nodesList();
+		final List<CyEdge> edges_list = network.edgesList();
 
 		if (filter != null) {
 			final Class[] passingTypes = filter.getPassingTypes();
@@ -316,10 +308,10 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener, Ac
 			}
 
 			for (int idx = 0; idx < passingTypes.length; idx++) {
-				if (passingTypes[idx].equals(Node.class)) {
-					final List<Node> passedNodes = new ArrayList<Node>();
+				if (passingTypes[idx].equals(CyNode.class)) {
+					final List<CyNode> passedNodes = new ArrayList<CyNode>();
 
-					for (Node node : nodes_list) {
+					for (CyNode node : nodes_list) {
 						try {
 							if (filter.passesFilter(node)) {
 								passedNodes.add(node);
@@ -353,10 +345,10 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener, Ac
 					}
 
 					fireEvent(passedNodes, TYPE_NODE);
-				} else if (passingTypes[idx].equals(Edge.class)) {
-					final List<Edge> passedEdges = new ArrayList<Edge>();
+				} else if (passingTypes[idx].equals(CyEdge.class)) {
+					final List<CyEdge> passedEdges = new ArrayList<CyEdge>();
 
-					for (Edge edge : edges_list) {
+					for (CyEdge edge : edges_list) {
 						try {
 							if (filter.passesFilter(edge)) {
 								passedEdges.add(edge);
@@ -405,9 +397,9 @@ public class FilterUsePanel extends JPanel implements PropertyChangeListener, Ac
 		int taskCount = 0;
 
 		for (int idx = 0; idx < pClassTypes.length; idx++) {
-			if (pClassTypes[idx].equals(Node.class)) {
+			if (pClassTypes[idx].equals(CyNode.class)) {
 				taskCount += pNodeList.size();
-			} else if (pClassTypes[idx].equals(Edge.class)) {
+			} else if (pClassTypes[idx].equals(CyEdge.class)) {
 				taskCount += pEdgeList.size();
 			}
 		}

@@ -35,10 +35,10 @@
  */
 package cytoscape.plugin;
 
-import java.util.List;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+
+import java.util.List;
 
 public class PluginManagerInquireTask implements Task {
 

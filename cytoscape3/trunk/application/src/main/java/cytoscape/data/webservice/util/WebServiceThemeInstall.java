@@ -2,17 +2,17 @@ package cytoscape.data.webservice.util;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.webservice.ui.UnifiedNetworkImportDialog;
-import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.Category;
 import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.ManagerUtil;
-import cytoscape.plugin.Category;
-
+import cytoscape.plugin.PluginManager;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class WebServiceThemeInstall {
 
@@ -57,7 +57,7 @@ public class WebServiceThemeInstall {
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.setOwner(unifiedNetworkImportDialog);
 		jTaskConfig.displayCloseButton(false);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(true);
@@ -68,7 +68,7 @@ public class WebServiceThemeInstall {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 unifiedNetworkImportDialog.resetGUI();
-                JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                JOptionPane.showMessageDialog(unifiedNetworkImportDialog,
                                 "Web Services Pack Successfully Installed.",
                                 "Installation Successfull", JOptionPane.INFORMATION_MESSAGE);
             }

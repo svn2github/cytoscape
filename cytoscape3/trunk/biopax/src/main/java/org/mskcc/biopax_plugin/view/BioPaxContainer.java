@@ -31,19 +31,17 @@
  **/
 package org.mskcc.biopax_plugin.view;
 
-import org.cytoscape.GraphPerspective;
-import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
+import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
-
-import java.awt.*;
+import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
+import javax.swing.event.HyperlinkListener;
+import java.awt.*;
 
 
 /**
@@ -130,7 +128,7 @@ public class BioPaxContainer extends JPanel {
      */
     public void showLegend() {
         CardLayout cl = (CardLayout)(cards.getLayout());
-        GraphPerspective network = Cytoscape.getCurrentNetwork();
+        CyNetwork network = Cytoscape.getCurrentNetwork();
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
         Boolean isBioPaxNetwork = networkAttributes.getBooleanAttribute(network.getIdentifier(),
                 MapBioPaxToCytoscape.BIOPAX_NETWORK);

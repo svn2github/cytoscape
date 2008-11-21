@@ -40,28 +40,21 @@
 // $Author: mes $
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.Semantics;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.util.FileUtil;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
-import cytoscape.util.*;
-
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.view.*;
-
-import java.awt.event.ActionEvent;
-
-import java.io.*;
-
-import java.util.*;
-
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
-
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -98,7 +91,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 			return false;
 		}
 
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 
 		try {
 			FileReader fin = new FileReader(name);
@@ -118,14 +111,13 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 
 			// loop through all the node of the graph
 			// selecting those in the file
-			List<Node> nodeList = network.nodesList();
-			Node[] nodes = (Node[]) nodeList.toArray(new Node[0]);
+			List<CyNode> nodeList = network.getNodeList();
+			CyNode[] nodes = (CyNode[]) nodeList.toArray(new CyNode[0]);
 
 			for (int i = 0; i < nodes.length; i++) {
-				Node node = nodes[i];
+				CyNode node = nodes[i];
 				boolean select = false;
-				String canonicalName = node.getIdentifier();
-				List synonyms = Semantics.getAllSynonyms(canonicalName, network);
+				List synonyms = Semantics.getAllSynonyms(node, network);
 
 				for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
 					if (fileNodes.contains((String) synI.next())) {
@@ -139,7 +131,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 					//GraphView view = Cytoscape.getCurrentNetworkView();
 					//NodeView nv = view.getNodeView(node.getRootGraphIndex());
 					//nv.setSelected(true);
-					network.setSelectedNodeState(node, true);
+					node.attrs().set("selected",true);
 				}
 			}
 		} catch (Exception e) {

@@ -35,16 +35,11 @@ package csplugins.layout.algorithms.bioLayout;
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-import csplugins.layout.Profile;
-
-import org.cytoscape.tunable.ModuleProperties;
+import cytoscape.CytoscapeInit;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
 
-import cytoscape.CytoscapeInit;
-
-import java.awt.Dimension;
-
+import java.awt.*;
 import java.util.ArrayList;
 
 /**

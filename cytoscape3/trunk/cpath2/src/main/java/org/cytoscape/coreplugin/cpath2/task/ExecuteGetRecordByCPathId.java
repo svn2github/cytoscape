@@ -2,34 +2,37 @@ package org.cytoscape.coreplugin.cpath2.task;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.util.CyNetworkNaming;
+import cytoscape.data.readers.GraphReader;
 import cytoscape.ding.CyGraphLOD;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathResponseFormat;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
-import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
-import org.cytoscape.coreplugin.cpath2.web_service.*;
+import org.cytoscape.vizmap.VisualStyle;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.Attribute;
 import org.jdom.Namespace;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
+import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
-import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
 import javax.swing.*;
 import java.io.File;
@@ -52,7 +55,7 @@ public class ExecuteGetRecordByCPathId implements Task {
     private long ids[];
     private String networkTitle;
     private boolean haltFlag = false;
-    private GraphPerspective mergedNetwork;
+    private CyNetwork mergedNetwork;
     private CPathResponseFormat format;
     private final static String CPATH_SERVER_NAME_ATTRIBUTE = "CPATH_SERVER_NAME";
     private final static String CPATH_SERVER_DETAILS_URL = "CPATH_SERVER_DETAILS_URL";
@@ -83,7 +86,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      * @param mergedNetwork Network to merge into.
      */
     public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
-            String networkTitle, GraphPerspective mergedNetwork) {
+            String networkTitle, CyNetwork mergedNetwork) {
         this.webApi = webApi;
         this.ids = ids;
         this.format = format;
@@ -159,7 +162,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 taskMonitor.setPercentCompleted(-1);
             }
 
-            GraphPerspective cyNetwork = null;
+            CyNetwork cyNetwork = null;
             // Branch, based on download mode.
             if (format == CPathResponseFormat.BINARY_SIF) {
                 // create network, without the view.
@@ -211,7 +214,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      * Add Node Links Back to cPath Instance.
      * @param cyNetwork GraphPerspective.
      */
-    private void addLinksToCPathInstance(GraphPerspective cyNetwork) {
+    private void addLinksToCPathInstance(CyNetwork cyNetwork) {
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
         CPathProperties props = CPathProperties.getInstance();
         String serverName = props.getCPathServerName();
@@ -234,7 +237,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      *
      * @param cyNetwork Cytoscape Network Object.
      */
-    private void postProcessingBinarySif(final GraphPerspective cyNetwork) {
+    private void postProcessingBinarySif(final CyNetwork cyNetwork) {
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
         //  Init the node attribute meta data, e.g. description, visibility, etc.
@@ -302,7 +305,7 @@ public class ExecuteGetRecordByCPathId implements Task {
      *
      * @param cyNetwork Cytoscape Network Object.
      */
-    private void postProcessingBioPAX(final GraphPerspective cyNetwork) {
+    private void postProcessingBioPAX(final CyNetwork cyNetwork) {
         if (haltFlag == false) {
             if (mergedNetwork != null) {
                 mergeNetworks(cyNetwork);
@@ -331,16 +334,16 @@ public class ExecuteGetRecordByCPathId implements Task {
     }
 
 
-    private void mergeNetworks(GraphPerspective cyNetwork) {
+    private void mergeNetworks(CyNetwork cyNetwork) {
         taskMonitor.setStatus("Merging Network...");
         List nodeList = cyNetwork.nodesList();
         for (int i = 0; i < nodeList.size(); i++) {
-            Node node = (Node) nodeList.get(i);
+            CyNode node = (CyNode) nodeList.get(i);
             mergedNetwork.addNode(node);
         }
         List edgeList = cyNetwork.edgesList();
         for (int i = 0; i < edgeList.size(); i++) {
-            Edge edge = (Edge) edgeList.get(i);
+            CyEdge edge = (CyEdge) edgeList.get(i);
             mergedNetwork.addEdge(edge);
         }
 
@@ -392,7 +395,7 @@ public class ExecuteGetRecordByCPathId implements Task {
     /**
      * Gets Details for Each Node from Web Service API.
      */
-    private void getNodeDetails (GraphPerspective cyNetwork,  CyAttributes nodeAttributes) {
+    private void getNodeDetails (CyNetwork cyNetwork,  CyAttributes nodeAttributes) {
         if (taskMonitor != null) {
             taskMonitor.setStatus("Retrieving node details...");
             taskMonitor.setPercentCompleted(0);
@@ -409,7 +412,7 @@ public class ExecuteGetRecordByCPathId implements Task {
             System.out.println ("Getting node details, batch:  " + i);
             long ids[] = new long [currentList.size()];
             for (int j=0; j<currentList.size(); j++) {
-                Node node = (Node) currentList.get(j);
+                CyNode node = (CyNode) currentList.get(j);
                 ids[j] = Long.valueOf(node.getIdentifier());
             }
             try {
@@ -443,7 +446,7 @@ public class ExecuteGetRecordByCPathId implements Task {
         }
     }
 
-    private ArrayList createBatchArray(GraphPerspective cyNetwork) {
+    private ArrayList createBatchArray(CyNetwork cyNetwork) {
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         int max_ids_per_request = 50;
         ArrayList masterList = new ArrayList();
@@ -451,7 +454,7 @@ public class ExecuteGetRecordByCPathId implements Task {
         Iterator nodeIterator = cyNetwork.nodesIterator();
         int counter = 0;
         while (nodeIterator.hasNext()) {
-            Node node = (Node) nodeIterator.next();
+            CyNode node = (CyNode) nodeIterator.next();
             String label = nodeAttributes.getStringAttribute(node.getIdentifier(),
                     BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
 
@@ -472,7 +475,7 @@ public class ExecuteGetRecordByCPathId implements Task {
         return masterList;
     }
 
-    private GraphView createNetworkView (GraphPerspective network, String title, CyLayoutAlgorithm
+    private GraphView createNetworkView (CyNetwork network, String title, CyLayoutAlgorithm
             layout, VisualStyle vs) {
 
 		if (Cytoscape.viewExists(network.getIdentifier())) {
