@@ -36,6 +36,8 @@ package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.ui.editors.EditorFactory;
+
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.vizmap.VisualPropertyType;
@@ -65,17 +67,6 @@ import java.util.List;
  * @author kono
   */
 public abstract class ContinuousMappingEditorPanel extends JDialog implements PropertyChangeListener {
-	// Tell vizMapper main whic editor is disabled/enabled.
-	/**
-	 * DOCUMENT ME!
-	 */
-	public static final String EDITOR_WINDOW_CLOSED = "EDITOR_WINDOW_CLOSED";
-
-	/**
-	 * DOCUMENT ME!
-	 */
-	public static final String EDITOR_WINDOW_OPENED = "EDITOR_WINDOW_OPENED";
-
 	/*
 	 * Used by trackrenderers.
 	 */
@@ -104,11 +95,11 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		this.addWindowListener(new WindowAdapter() {
 				public void windowOpened(WindowEvent e) {
 					System.out.println("windowOpened");
-					firePropertyChange(EDITOR_WINDOW_OPENED, null, type);
+					firePropertyChange(EditorFactory.EDITOR_WINDOW_OPENED, null, type);
 				}
 
 				public void windowClosing(WindowEvent e) {
-					firePropertyChange(EDITOR_WINDOW_CLOSED, this, type);
+					firePropertyChange(EditorFactory.EDITOR_WINDOW_CLOSED, this, type);
 				}
 			});
 	}

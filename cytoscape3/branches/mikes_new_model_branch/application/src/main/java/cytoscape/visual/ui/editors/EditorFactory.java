@@ -50,6 +50,15 @@ import javax.swing.table.TableCellRenderer;
 public class EditorFactory {
 
 	private Set<EditorDisplayer> displayers;
+	/**
+	 * DOCUMENT ME!
+	 */
+	public static final String EDITOR_WINDOW_OPENED = "EDITOR_WINDOW_OPENED";
+	// Tell vizMapper main whic editor is disabled/enabled.
+	/**
+	 * DOCUMENT ME!
+	 */
+	public static final String EDITOR_WINDOW_CLOSED = "EDITOR_WINDOW_CLOSED";
 
 	public EditorFactory() {
 		displayers = new HashSet<EditorDisplayer>();

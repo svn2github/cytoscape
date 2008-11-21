@@ -141,7 +141,6 @@ import cytoscape.visual.ui.action.VizMapperUtil;
 import cytoscape.visual.ui.appearance.ColorManager;
 import cytoscape.visual.ui.appearance.IconManager;
 import cytoscape.visual.ui.editors.EditorFactory;
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
 
 /**
@@ -1746,9 +1745,9 @@ public class VizMapperMainPanel extends JPanel implements
 	}
 
 	private void manageWindow(final String status, VisualPropertyType vpt, Object source) {
-		if (status.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)) {
+		if (status.equals(EditorFactory.EDITOR_WINDOW_OPENED)) {
 			this.editorWindowManager.put(vpt, (JDialog) source);
-		} else if (status.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
+		} else if (status.equals(EditorFactory.EDITOR_WINDOW_CLOSED)) {
 			final VisualPropertyType type = vpt;
 
 			/*
@@ -1798,7 +1797,7 @@ public class VizMapperMainPanel extends JPanel implements
 
 		for (VisualPropertyType vpt : typeSet) {
 			JDialog window = editorWindowManager.get(vpt);
-			manageWindow(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED, vpt, null);
+			manageWindow(EditorFactory.EDITOR_WINDOW_CLOSED, vpt, null);
 			window.dispose();
 			keySet.add(vpt);
 		}
@@ -1826,11 +1825,11 @@ public class VizMapperMainPanel extends JPanel implements
 		/*
 		 * Managing editor windows.
 		 */
-		if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)
-				|| e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
+		if (e.getPropertyName().equals(EditorFactory.EDITOR_WINDOW_OPENED)
+				|| e.getPropertyName().equals(EditorFactory.EDITOR_WINDOW_CLOSED)) {
 			manageWindow(e.getPropertyName(), (VisualPropertyType) e .getNewValue(), e.getSource());
 
-			if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED))
+			if (e.getPropertyName().equals(EditorFactory.EDITOR_WINDOW_CLOSED))
 				editorWindowManager.remove((VisualPropertyType) e.getNewValue());
 
 			return;
