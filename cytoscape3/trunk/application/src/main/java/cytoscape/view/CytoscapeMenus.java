@@ -37,27 +37,13 @@
 
 package cytoscape.view;
 
-import cytoscape.actions.*;
-import cytoscape.layout.ui.LayoutMenuManager;
-import cytoscape.layout.ui.SettingsAction;
 import cytoscape.util.CyAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.CyMenuBar;
 import cytoscape.util.CyToolBar;
-import cytoscape.util.undo.RedoAction;
-import cytoscape.util.undo.UndoAction;
-import cytoscape.view.cytopanels.CytoPanelName;
 
-import org.cytoscape.view.GraphViewChangeEvent;
-import org.cytoscape.view.GraphViewChangeListener;
-
-import javax.help.CSH;
-import javax.swing.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import javax.swing.JMenu;
 
 import java.util.Map;
 
@@ -70,9 +56,7 @@ import java.util.Map;
  * writers can use this function to specify the location of the menu item.
  * </p>
  */
-public class CytoscapeMenus implements GraphViewChangeListener, CyMenus {
-
-	boolean menusInitialized = false;
+public class CytoscapeMenus implements CyMenus {
 
 	CytoscapeMenuBar menuBar;
 	CytoscapeToolBar toolBar;
@@ -90,18 +74,6 @@ public class CytoscapeMenus implements GraphViewChangeListener, CyMenus {
 	JMenu vizMenu;
 	JMenu helpMenu;
 	JMenu opsMenu;
-
-	JButton openSessionButton;
-	JButton saveButton;
-	JButton zoomInButton;
-	JButton zoomOutButton;
-	JButton zoomSelectedButton;
-	JButton zoomDisplayAllButton;
-	JButton showAllButton;
-	JButton hideSelectedButton;
-	JButton annotationButton;
-	JButton helpButton;
-	JButton vizButton;
 
 	/**
 	 * Creates a new CytoscapeMenus object. This will construct the basic bar objects, 
@@ -124,8 +96,6 @@ public class CytoscapeMenus implements GraphViewChangeListener, CyMenus {
 		layoutMenu = menuBar.getMenu("Layout");
 		opsMenu = menuBar.getMenu("Plugins");
 		helpMenu = menuBar.getMenu("Help");
-
-		System.out.println("cyMenus finished construction");
 	}
 
 	/**
@@ -277,317 +247,4 @@ public class CytoscapeMenus implements GraphViewChangeListener, CyMenus {
 			getToolBar().addAction(action);
 		}
 	}
-
-	/**
-	 * We are not listening for any GraphViewChangeEvents.  MenuItems are responsible for
-	 * updating their own state, which is generally accomplished by implementing the menuSelected() 
-	 * method.
-	 *
-	 * @param e
-	 */
-	public void graphViewChanged(GraphViewChangeEvent e) { }
-
-
-	/**
-	 * This method should be called by the creator of this object after the
-	 * constructor has finished. It fills the previously created menu and tool
-	 * bars with items and action listeners that respond when those items are
-	 * activated. This needs to come after the constructor is done, because some
-	 * of the listeners try to access this object in their constructors.
-	 *
-	 * Any calls to this method after the first will do nothing.
-	 */
-	void initializeMenus() {
-		if (!menusInitialized) {
-			menusInitialized = true;
-	//		fillMenuBar();
-			fillToolBar();
-		}
-	}
-
-	/**
-	 * Fills the previously created menu bar with a large number of items with
-	 * attached action listener objects.
-	private void fillMenuBar() {
-
-		//
-		// File menu
-		// 
-
-		// New submenu
-		addAction(new NewSessionAction());
-		addAction(new NewWindowSelectedNodesOnlyAction(null));
-		addAction(new NewWindowSelectedNodesEdgesAction());
-		addAction(new CloneGraphInNewWindowAction());
-		addAction(new NewNetworkAction(null));
-
-	//	addAction(new OpenSessionAction(),1);
-	//	addAction(new SaveSessionAction("Save"),2);
-	//	addAction(new SaveSessionAsAction("Save As..."),3);
-
- //   fileMenu.add(new JSeparator(), 2);
-   // fileMenu.add(new JSeparator(), 5);
-
-		// Import submenu
-	//	addAction(new ImportGraphFileAction(this));
-		addAction(new WebServiceNetworkImportAction());
-		
-//		loadSubMenu.add(new JSeparator());
-
-	//	addAction(new ImportNodeAttributesAction());
-	//	addAction(new ImportEdgeAttributesAction());
-	//	addAction(new ImportExpressionMatrixAction());
-
-//		loadSubMenu.add(new JSeparator());
-
-	//	addAction(new ImportVizmapAction());
-
-		
-//		loadSubMenu.add(new JSeparator());
-		// Save submenu
-	//	addAction(new ExportAsXGMMLAction());
-	//	addAction(new ExportAsGMLAction());
-	//	addAction(new ExportAsInteractionsAction());
-	//	addAction(new ExportNodeAttributesAction());
-	//	addAction(new ExportEdgeAttributesAction());
-	//	addAction(new ExportVizmapAction());
-	//	addAction(new ExportAsGraphicsAction());
-
-		addAction(new PrintAction());
-		fileMenu.add(new JSeparator());
-		addAction(new ExitAction());
-		fileMenu.add(new JSeparator());
-
-		//
-		// Edit menu
-		//
-		addAction(new UndoAction());
-		addAction(new RedoAction());
-
-		editMenu.add(new JSeparator());
-
-		addAction(new CreateNetworkViewAction());
-		addAction(new DestroyNetworkViewAction());
-		addAction(new DestroyNetworkAction());
-
-		editMenu.add(new JSeparator());
-
-		addAction(new DeleteAction());
-		
-		editMenu.add(new JSeparator());
-
-		addAction(new PreferenceAction());
-		addAction(new BookmarkAction());
-		addAction(new ProxyServerAction());
-		//
-		// Select menu
-		//
-		SelectionModeAction sma  = new SelectionModeAction();
-		selectMenu.add(sma);
-		selectMenu.addMenuListener(sma);
-
-		addAction(new InvertSelectedNodesAction());
-		addAction(new HideSelectedNodesAction());
-		addAction(new UnHideSelectedNodesAction());
-
-		addAction(new SelectAllNodesAction());
-		addAction(new DeSelectAllNodesAction());
-		addAction(new SelectFirstNeighborsAction());
-		addAction(new SelectConnectedNodesAction());
-		addAction(new AlphabeticalSelectionAction());
-		addAction(new ListFromFileSelectionAction());
-
-		addAction(new InvertSelectedEdgesAction());
-		addAction(new HideSelectedEdgesAction());
-		addAction(new UnHideSelectedEdgesAction());
-		addAction(new SelectAllEdgesAction());
-		addAction(new SelectAdjacentEdgesAction());
-		addAction(new DeSelectAllEdgesAction());
-		addAction(new BendSelectedEdgesAction());
-		addAction(new StraightenSelectedEdgesAction());
-
-		selectMenu.addSeparator();
-
-		addAction(new SelectAllAction());
-		addAction(new DeselectAllAction());
-
-		selectMenu.addSeparator();
-
-		//
-		// View menu
-		// 
-		addAction(new CytoPanelAction(CytoPanelName.WEST,true));
-		addAction(new CytoPanelAction(CytoPanelName.SOUTH,true));
-		addAction(new CytoPanelAction(CytoPanelName.EAST,false));
-		
-		viewMenu.add(new JSeparator());
-		
-		addAction(new ShowGraphicsDetailsAction());
-
-		viewMenu.add(new JSeparator());
-
-		addAction(new SetVisualPropertiesAction());
-		viewMenu.add(new JSeparator());
-		
-		viewMenu.add(new ArrangeAction());
-		
-		//
-		// Layout menu
-		//
-		layoutMenu.addSeparator();
-		addAction(new SettingsAction() );
-		layoutMenu.addSeparator();
-		layoutMenu.addMenuListener( new LayoutMenuManager() );
-
-		//
-		// Plugin menu
-		//
-		addAction(new PluginManagerAction());
-		addAction(new PluginUpdateAction());
-
-		opsMenu.addSeparator();
-
-		// 
-		// Help menu
-		//
-		addAction(new HelpContentsAction());
-		addAction(new HelpContactHelpDeskAction());
-
-		helpMenu.addSeparator();
-
-		addAction(new HelpAboutAction());
-	}
-	 */
-
-	/**
-	 * Fills the toolbar for easy access to commonly used actions.
-	 */
-	private void fillToolBar() {
-		// TODO enable these!
-//		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
-//		openSessionButton.setToolTipText("Open Session File...");
-//		openSessionButton.setIcon(new ImageIcon(getClass()
-//		                                            .getResource("/images/ximian/stock_open.png")));
-//		openSessionButton.setBorderPainted(false);
-//		openSessionButton.setRolloverEnabled(true);
-
-//		saveButton = toolBar.add(new SaveSessionAction());
-//		saveButton.setToolTipText("Save Current Session As...");
-//		saveButton.setIcon(new ImageIcon(getClass().getResource("/images/ximian/stock_save.png")));
-
-//		saveButton.setBorderPainted(false);
-//		saveButton.setRolloverEnabled(true);
-/*
-		toolBar.addSeparator();
-
-		toolBar.addAction( new ZoomAction(1.1) );
-
-		toolBar.addSeparator();
-
-		final ZoomAction zoom_in = new ZoomAction(1.1);
-		zoomInButton = new JButton();
-		zoomInButton.setIcon(new ImageIcon(getClass().getResource("/images/ximian/stock_zoom-in.png")));
-		zoomInButton.setToolTipText("Zoom In");
-		zoomInButton.setBorderPainted(false);
-		zoomInButton.setRolloverEnabled(true);
-		zoomInButton.addMouseListener(new MouseListener() {
-				public void mouseClicked(MouseEvent e) {
-					zoom_in.zoom();
-				}
-
-				public void mouseEntered(MouseEvent e) {
-				}
-
-				public void mouseExited(MouseEvent e) {
-				}
-
-				public void mousePressed(MouseEvent e) {
-					zoomInButton.setSelected(true);
-				}
-
-				public void mouseReleased(MouseEvent e) {
-					zoomInButton.setSelected(false);
-				}
-			});
-
-		final ZoomAction zoom_out = new ZoomAction(0.9);
-		zoomOutButton = new JButton();
-		zoomOutButton.setIcon(new ImageIcon(getClass()
-		                                        .getResource("/images/ximian/stock_zoom-out.png")));
-		zoomOutButton.setToolTipText("Zoom Out");
-		zoomOutButton.setBorderPainted(false);
-		zoomOutButton.setRolloverEnabled(true);
-		zoomOutButton.addMouseListener(new MouseListener() {
-				public void mouseClicked(MouseEvent e) {
-					zoom_out.zoom();
-				}
-
-				public void mouseEntered(MouseEvent e) {
-				}
-
-				public void mouseExited(MouseEvent e) {
-				}
-
-				public void mousePressed(MouseEvent e) {
-					zoomOutButton.setSelected(true);
-				}
-
-				public void mouseReleased(MouseEvent e) {
-					zoomOutButton.setSelected(false);
-				}
-			});
-
-		zoomOutButton.addMouseWheelListener(new MouseWheelListener() {
-				public void mouseWheelMoved(MouseWheelEvent e) {
-					if (e.getWheelRotation() < 0) {
-						zoom_in.zoom();
-					} else {
-						zoom_out.zoom();
-					}
-				}
-			});
-		zoomInButton.addMouseWheelListener(new MouseWheelListener() {
-				public void mouseWheelMoved(MouseWheelEvent e) {
-					if (e.getWheelRotation() < 0) {
-						zoom_in.zoom();
-					} else {
-						zoom_out.zoom();
-					}
-				}
-			});
-
-		toolBar.add(zoomOutButton);
-		toolBar.add(zoomInButton);
-		zoomSelectedButton = toolBar.add(new ZoomSelectedAction());
-		zoomSelectedButton.setIcon(new ImageIcon(getClass()
-		                                             .getResource("/images/ximian/stock_zoom-object.png")));
-		zoomSelectedButton.setToolTipText("Zoom Selected Region");
-		zoomSelectedButton.setBorderPainted(false);
-
-		zoomDisplayAllButton = toolBar.add(new FitContentAction());
-		zoomDisplayAllButton.setIcon(new ImageIcon(getClass()
-		                                               .getResource("/images/ximian/stock_zoom-1.png")));
-		zoomDisplayAllButton.setToolTipText("Zoom out to display all of current Network");
-		zoomDisplayAllButton.setBorderPainted(false);
-
-		toolBar.addSeparator();
-
-		helpButton = new JButton();
-		helpButton.addActionListener(new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker()));
-		helpButton.setIcon(new ImageIcon(getClass().getResource("/images/ximian/stock_help.png")));
-		helpButton.setToolTipText("Help");
-		helpButton.setBorderPainted(false);
-
-		toolBar.add(helpButton);
-
-		toolBar.addSeparator();
-*/
-/* TODO - re-enable
-		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
-		vizButton.setIcon(new ImageIcon(getClass()
-		                                    .getResource("/images/ximian/stock_file-with-objects.png")));
-		vizButton.setToolTipText("Open VizMapper\u2122");
-		vizButton.setBorderPainted(false);
-		*/
-	} 
 }
