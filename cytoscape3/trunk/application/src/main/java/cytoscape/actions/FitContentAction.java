@@ -68,7 +68,7 @@ public class FitContentAction extends CytoscapeAction {
 	}
 
 	public String getPreferredButtonGroup() {
-   		return "s-zoom";
+   		return "c-zoom";
    	}	
 
 	/**

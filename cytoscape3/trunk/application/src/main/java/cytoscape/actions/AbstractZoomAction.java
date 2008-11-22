@@ -67,7 +67,7 @@ abstract class AbstractZoomAction extends CytoscapeAction {
     }
 
 	public String getPreferredButtonGroup() {
-		return "m-zoom";
+		return "c-zoom";
 	}
 
 	/**

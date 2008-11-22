@@ -66,6 +66,11 @@ public interface CyAction extends Action, MenuListener {
 	 int getKeyModifiers();
 	 String getPreferredMenu();
 	 void setPreferredMenu(String new_preferred);
+	 /**
+	  * Buttons will be grouped according to name.  Buttons are added 
+	  * sequentially to groups as the service is registered. Groups are
+	  * ordered lexicographically within the toolbar.
+	  */
 	 String getPreferredButtonGroup();
 	 void setPreferredButtonGroup(String new_preferred);
 	 boolean useCheckBoxMenuItem();

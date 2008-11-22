@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.SortedMap;
+import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -50,6 +52,7 @@ public class CytoscapeToolBar extends JToolBar implements CyToolBar {
 	private final static long serialVersionUID = 1202339868655256L;
 	private Map<CyAction,JButton> actionButtonMap; 
 	private SortedMap<String,Integer> groupNameCount; 
+	private List<JButton> buttonList; 
 
 	/**
 	 * Default constructor delegates to the superclass void constructor and then
@@ -59,6 +62,7 @@ public class CytoscapeToolBar extends JToolBar implements CyToolBar {
 		super("Cytoscape Tools");
 		actionButtonMap = new HashMap<CyAction,JButton>();
 		groupNameCount = new TreeMap<String,Integer>();
+		buttonList = new ArrayList<JButton>();
 	}
 
 	/**
@@ -89,11 +93,21 @@ public class CytoscapeToolBar extends JToolBar implements CyToolBar {
 		if ( button_group_name == null )
 			button_group_name = "";
 
-		//add(button, getActionIndex(button_group_name) );
-		add(button);
 		actionButtonMap.put(action, button);
+		int addInd = getActionIndex(button_group_name);
+		buttonList.add(addInd, button );
+
+		addButtons();
 
 		return true;
+	}
+
+	private void addButtons() {
+		for ( JButton b : buttonList) 
+			remove(b);
+		for ( JButton b : buttonList) 
+			add(b);
+		validate();
 	}
 
 
@@ -112,7 +126,6 @@ public class CytoscapeToolBar extends JToolBar implements CyToolBar {
 			index += groupCount; 
 			if ( name.equals( groupName ) ) {
 				groupNameCount.put( groupName, groupCount + 1 );
-				index++;
 				break;
 			}
 		}
