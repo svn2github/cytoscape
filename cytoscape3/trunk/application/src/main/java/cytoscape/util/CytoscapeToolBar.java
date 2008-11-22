@@ -39,14 +39,17 @@ package cytoscape.util;
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.SortedMap;
 
 
 /**
  *
  */
-public class CytoscapeToolBar extends JToolBar {
+public class CytoscapeToolBar extends JToolBar implements CyToolBar {
 	private final static long serialVersionUID = 1202339868655256L;
-	protected Map<CyAction,JButton> actionButtonMap = null;
+	private Map<CyAction,JButton> actionButtonMap; 
+	private SortedMap<String,Integer> groupNameCount; 
 
 	/**
 	 * Default constructor delegates to the superclass void constructor and then
@@ -54,13 +57,8 @@ public class CytoscapeToolBar extends JToolBar {
 	 */
 	public CytoscapeToolBar() {
 		super("Cytoscape Tools");
-		initializeCytoscapeToolBar();
-	}
-
-	/**
-	 * Envelop if you wish.  Presently does nothing.
-	 */
-	protected void initializeCytoscapeToolBar() {
+		actionButtonMap = new HashMap<CyAction,JButton>();
+		groupNameCount = new TreeMap<String,Integer>();
 	}
 
 	/**
@@ -69,64 +67,64 @@ public class CytoscapeToolBar extends JToolBar {
 	 * preferredButtonGroup property, or null if it does not have that property.
 	 */
 	public boolean addAction(CyAction action) {
-		String button_group_name = null;
 
-			if (action.isInToolBar()) {
-				button_group_name = action.getPreferredButtonGroup();
-			} else {
-				return false;
-			}
-
-		return addAction(button_group_name, action);
-	} 
-
-	/**
-	 * Note that this presently ignores the button group name.
-	 */
-	private boolean addAction(String button_group_name, CyAction action) {
-		// At present we allow an Action to be in this tool bar only once.
-		JButton button = null;
-
-		if (actionButtonMap != null) {
-			button = actionButtonMap.get(action);
-		}
-
-		if (button != null) {
+		if (!action.isInToolBar()) 
 			return false;
-		}
 
-		button = createJButton(action);
+		// At present we allow an Action to be in this tool bar only once.
+		if ( actionButtonMap.containsKey( action ) )
+			return false;
+
+		JButton button = new JButton(action); 
 		button.setBorderPainted(false);
 		button.setRolloverEnabled(true);
+		button.setText("");
 
 		//  If SHORT_DESCRIPTION exists, use this as tool-tip
 		String shortDescription = (String) action.getValue(Action.SHORT_DESCRIPTION);
-
-		if (shortDescription != null) {
+		if (shortDescription != null) 
 			button.setToolTipText(shortDescription);
-		}
 
-		// TODO: Do something with the preferred button group.
+		String button_group_name = action.getPreferredButtonGroup();
+		if ( button_group_name == null )
+			button_group_name = "";
+
+		//add(button, getActionIndex(button_group_name) );
 		add(button);
-
-		//add( action );
-		if (actionButtonMap == null) {
-			actionButtonMap = createActionButtonMap();
-		}
-
 		actionButtonMap.put(action, button);
 
 		return true;
-	} // addAction( button_group_name, action )
+	}
+
+
+	/**
+	 * Returns the appropriate index for placing the action as the last item in 
+	 * a group where the groups themselves are ordered lexicographically by name.
+	 */
+	private int getActionIndex(String name) {
+		if ( !groupNameCount.containsKey(name) )
+			groupNameCount.put(name,0);
+		
+		int index = 0;
+
+		for ( String groupName : groupNameCount.keySet() ) {
+			final int groupCount = groupNameCount.get(groupName).intValue();
+			index += groupCount; 
+			if ( name.equals( groupName ) ) {
+				groupNameCount.put( groupName, groupCount + 1 );
+				index++;
+				break;
+			}
+		}
+		//System.out.println("calculated action index: " + index + " for group name: " + name);
+		return index;
+	}
 
 	/**
 	 * If the given Action has an absent or false inToolBar property, return;
 	 * otherwise if there's a button for the action, remove it.
 	 */
 	public boolean removeAction(CyAction action) {
-		if (actionButtonMap == null) {
-			return false;
-		}
 
 		JButton button = actionButtonMap.remove(action);
 
@@ -139,25 +137,7 @@ public class CytoscapeToolBar extends JToolBar {
 		return true;
 	} 
 
-	/**
-	 * CytoscapeToolBars are unique -- this equals() method returns true
-	 * iff the other object == this.
-	 */
-	public boolean equals(Object other_object) {
-		return (this == other_object);
-	} 
-
-	/**
-	 * Factory method for instantiating the buttons in the toolbar.
-	 */
-	protected JButton createJButton(CyAction action) {
-		return new JButton(action);
-	}
-
-	/**
-	 * Factory method for instantiating the action->button map.
-	 */
-	protected Map<CyAction,JButton> createActionButtonMap() {
-		return new HashMap<CyAction,JButton>();
+	public JToolBar getJToolBar() {
+		return this;
 	}
 } 

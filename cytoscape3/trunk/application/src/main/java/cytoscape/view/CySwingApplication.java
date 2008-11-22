@@ -1,5 +1,6 @@
+
 /*
- File: CyMenus.java
+ File: CySwingApplication.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,36 +35,15 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package cytoscape.view;
 
-import javax.swing.JMenu;
-import cytoscape.util.CyMenuBar;
-import cytoscape.util.CyToolBar;
-import cytoscape.util.CyAction;
-import java.util.Map;
+import cytoscape.view.cytopanels.CytoPanel;
+import javax.swing.JFrame;
 
-// TODO clean up the menus offered - these should match what's implemented
-public interface CyMenus { 
+public interface CySwingApplication { 
 
-	public CyMenuBar getMenuBar();
-	public CyToolBar getToolBar();
+	public CyMenus getCyMenus(); 
+	public CytoPanel getCytoPanel(int compassDirection); 
+	public JFrame getJFrame();
 
-	public JMenu getFileMenu();
-	public JMenu getLoadSubMenu();
-	public JMenu getSaveSubMenu();
-	public JMenu getEditMenu();
-	public JMenu getViewMenu();
-	public JMenu getSelectMenu();
-	public JMenu getLayoutMenu();
-	public JMenu getVizMenu();
-	public JMenu getHelpMenu();
-	public JMenu getOperationsMenu();
-	public JMenu getNewNetworkMenu();
-
-	public void addAction(CyAction action, Map props);
-	public void removeAction(CyAction action, Map props);
-
-	public void addAction(CyAction action);
-	public void addAction(CyAction action, int index);
 }

@@ -1,5 +1,5 @@
 /*
-  File: FitContentAction.java
+  File: CyMenuBar.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,49 +34,28 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-//-------------------------------------------------------------------------
-// $Revision: 13022 $
-// $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
-// $Author: mes $
-//-------------------------------------------------------------------------
-package cytoscape.actions;
-
-import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
-
-import java.awt.event.ActionEvent;
-import javax.swing.ImageIcon;
+package cytoscape.util;
 
 
-//-------------------------------------------------------------------------
-/**
- *
- */
-public class FitContentAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869547666L;
-	/**
-	 * Creates a new FitContentAction object.
-	 */
-	public FitContentAction() {
-		super("",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-1.png")));
-		putValue(SHORT_DESCRIPTION,"Zoom out to display all of current Network");
-	}
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 
-	public boolean isInToolBar() {
-		return true;
-	}
 
-	public String getPreferredButtonGroup() {
-   		return "s-zoom";
-   	}	
+// TODO clean up this interface - too many redundant interfaces
+public interface CyMenuBar { 
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		Cytoscape.getCurrentNetworkView().fitContent();
-	}
+	public void setDefaultMenuSpecifier(String menu_name);
+	public String getDefaultMenuSpecifier();
+	public boolean addAction(CyAction action);
+	public boolean addAction(CyAction action, int index);
+	public boolean removeAction(CyAction action);
+	public JMenu getMenu(String menu_string);
+	public JMenu getMenu(String menu_string, int parentPosition);
+	public boolean equals(Object other_object);
+	public String getIdentifier();
+	public void setIdentifier(String new_identifier);
+	public String toString();
+	public JMenu createJMenu(String title);
+
+	public JMenuBar getJMenuBar();
 }

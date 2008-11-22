@@ -1,5 +1,5 @@
 /*
-  File: FitContentAction.java
+  File: CyToolBar.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,49 +34,15 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+package cytoscape.util;
 
-//-------------------------------------------------------------------------
-// $Revision: 13022 $
-// $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
-// $Author: mes $
-//-------------------------------------------------------------------------
-package cytoscape.actions;
+import javax.swing.JToolBar;
 
-import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
-
-import java.awt.event.ActionEvent;
-import javax.swing.ImageIcon;
-
-
-//-------------------------------------------------------------------------
 /**
  *
  */
-public class FitContentAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869547666L;
-	/**
-	 * Creates a new FitContentAction object.
-	 */
-	public FitContentAction() {
-		super("",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-1.png")));
-		putValue(SHORT_DESCRIPTION,"Zoom out to display all of current Network");
-	}
-
-	public boolean isInToolBar() {
-		return true;
-	}
-
-	public String getPreferredButtonGroup() {
-   		return "s-zoom";
-   	}	
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		Cytoscape.getCurrentNetworkView().fitContent();
-	}
+public interface CyToolBar { 
+	public boolean addAction(CyAction action);
+	public boolean removeAction(CyAction action);
+	public JToolBar getJToolBar();
 }

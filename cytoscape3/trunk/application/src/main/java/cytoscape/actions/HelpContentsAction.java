@@ -38,8 +38,10 @@ package cytoscape.actions;
 
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyHelpBroker;
+import cytoscape.Cytoscape;
 
 import javax.help.CSH;
+import javax.swing.ImageIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -55,10 +57,19 @@ public class HelpContentsAction extends CytoscapeAction {
 	 * Creates a new HelpContentsAction object.
 	 */
 	public HelpContentsAction() {
-		super("Contents...");
+		super("Contents...",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_help.png")));
 		setPreferredMenu("Help");
 		setAcceleratorCombo(KeyEvent.VK_F1, 0);
+		putValue(SHORT_DESCRIPTION,"Help");
 		csh = new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker());
+	}
+
+	public boolean isInToolBar() {
+		return true;
+	}
+
+	public String getPreferredButtonGroup() {
+		return "z-help";
 	}
 
 	/**

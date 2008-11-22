@@ -1,5 +1,5 @@
 /*
-  File: ZoomAction.java
+  File: ZoomInAction.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,50 +35,20 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//-------------------------------------------------------------------------
-// $Revision: 12968 $
-// $Date: 2008-02-06 15:34:25 -0800 (Wed, 06 Feb 2008) $
-// $Author: mes $
-//-------------------------------------------------------------------------
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
-
-import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
 
 
 /**
  *
  */
-public class ZoomAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339870966892L;
-	double factor;
+public class ZoomInAction extends AbstractZoomAction {
+	private final static long serialVersionUID = 1202555870966892L;
 
-	/**
-	 * Creates a new ZoomAction object.
-	 *
-	 * @param factor  DOCUMENT ME!
-	 */
-	public ZoomAction(double factor) {
-		super();
-		this.factor = factor;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void zoom() {
-		Cytoscape.getCurrentNetworkView()
-		         .setZoom(Cytoscape.getCurrentNetworkView().getZoom() * factor);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		zoom();	
+	public ZoomInAction() {
+		super(1.1, new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-in.png")),
+			"Zoom In");
 	}
 }

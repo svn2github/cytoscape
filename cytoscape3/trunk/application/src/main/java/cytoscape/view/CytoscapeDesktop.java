@@ -63,7 +63,7 @@ import java.util.List;
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
-public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
+public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, CySwingApplication {
 	private final static long serialVersionUID = 1202339866271348L;
 	protected long lastPluginRegistryUpdate;
 	protected int returnVal;
@@ -255,7 +255,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		networkPanel.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
 		// initialize Menus
-		cyMenus.initializeMenus();
+		//cyMenus.initializeMenus();
 
 		// create the CytoscapeDesktop
 		BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
@@ -263,10 +263,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// note - proper networkViewManager has been properly selected in
 		// setupCytoPanels()
 		main_panel.add(masterPane, BorderLayout.CENTER);
-		main_panel.add(cyMenus.getToolBar(), BorderLayout.NORTH);
+		main_panel.add(cyMenus.getToolBar().getJToolBar(), BorderLayout.NORTH);
 		// Remove status bar.
 		initStatusBar(main_panel);
-		setJMenuBar(cyMenus.getMenuBar());
+		setJMenuBar(cyMenus.getMenuBar().getJMenuBar());
 
 		// Set up the VizMapper
 		//setupVizMapper();
@@ -642,4 +642,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		return bevh;
 	}
 
+	public JFrame getJFrame() {
+		return this;
+	}
 }

@@ -29,6 +29,8 @@
 	                interface="org.cytoscape.work.UndoSupport">
 	</osgi:reference>
 
+	<osgi:service id="cyMenusService" ref="cytoscapeMenus" interface="cytoscape.view.CyMenus"/>
+
 	<osgi:service id="importGraphFileActionService" ref="importGraphFileAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="newWindowSelectedNodesOnlyActionService" ref="newWindowSelectedNodesOnlyAction" interface="cytoscape.util.CyAction"/>
 
@@ -80,8 +82,13 @@
 	<osgi:service id="cytoPanelSouthActionService" ref="cytoPanelSouthAction" interface="cytoscape.util.CyAction"/>
 
 	<osgi:service id="cytoPanelEastActionService" ref="cytoPanelEastAction" interface="cytoscape.util.CyAction"/>
+	<osgi:service id="zoomOutActionService" ref="zoomOutAction" interface="cytoscape.util.CyAction"/>
+	<osgi:service id="zoomInActionService" ref="zoomInAction" interface="cytoscape.util.CyAction"/>
+	<osgi:service id="zoomSelectedActionService" ref="zoomSelectedAction" interface="cytoscape.util.CyAction"/>
+	<osgi:service id="fitContentActionService" ref="fitContentAction" interface="cytoscape.util.CyAction"/>
+
     <osgi:set id="cyActionSet" interface="cytoscape.util.CyAction" cardinality="0..N">
-        <osgi:listener bind-method="addAction" unbind-method="removeAction" ref="cyMenus"/>
+        <osgi:listener bind-method="addAction" unbind-method="removeAction" ref="cytoscapeMenus"/>
     </osgi:set>
 
 	<!-- visual property editor services -->

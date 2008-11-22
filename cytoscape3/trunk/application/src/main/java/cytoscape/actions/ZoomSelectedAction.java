@@ -46,6 +46,7 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 
 import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
 
 
 //-------------------------------------------------------------------------
@@ -58,7 +59,16 @@ public class ZoomSelectedAction extends CytoscapeAction {
 	 * Creates a new ZoomSelectedAction object.
 	 */
 	public ZoomSelectedAction() {
-		super();
+		super("",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-object.png")));
+		putValue(SHORT_DESCRIPTION,"Zoom Selected Region");
+	}
+
+	public boolean isInToolBar() {
+		return true;
+	}
+
+    public String getPreferredButtonGroup() {
+		return "c-zoom";
 	}
 
 	/**

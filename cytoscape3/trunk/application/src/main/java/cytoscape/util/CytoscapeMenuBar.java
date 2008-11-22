@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
 /**
  *
  */
-public class CytoscapeMenuBar extends JMenuBar {
+public class CytoscapeMenuBar extends JMenuBar implements CyMenuBar {
 	private final static long serialVersionUID = 1202339868642259L;
 	/**
 	 *
@@ -398,5 +398,9 @@ public class CytoscapeMenuBar extends JMenuBar {
 			return new JCheckBoxMenuItem(action);
 
 		return new JMenuItem(action);
+	}
+
+	public JMenuBar getJMenuBar() {
+		return this;
 	}
 }

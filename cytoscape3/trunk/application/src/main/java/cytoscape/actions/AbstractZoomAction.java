@@ -1,5 +1,5 @@
 /*
-  File: FitContentAction.java
+  File: AbstractZoomAction.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,41 +35,40 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//-------------------------------------------------------------------------
-// $Revision: 13022 $
-// $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
-// $Author: mes $
-//-------------------------------------------------------------------------
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import org.cytoscape.view.GraphView;
 import cytoscape.util.CytoscapeAction;
-
-import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
+import java.awt.event.ActionEvent;
 
 
-//-------------------------------------------------------------------------
 /**
  *
  */
-public class FitContentAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869547666L;
+abstract class AbstractZoomAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870966892L;
+	double factor;
+
 	/**
-	 * Creates a new FitContentAction object.
+	 * Creates a new ZoomAction object.
+	 *
+	 * @param factor  DOCUMENT ME!
 	 */
-	public FitContentAction() {
-		super("",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-1.png")));
-		putValue(SHORT_DESCRIPTION,"Zoom out to display all of current Network");
+	AbstractZoomAction(double factor, ImageIcon icon, String toolTip) {
+		super("", icon); 
+		this.factor = factor;
+		putValue(SHORT_DESCRIPTION,toolTip);
 	}
 
 	public boolean isInToolBar() {
-		return true;
-	}
+        return true;
+    }
 
 	public String getPreferredButtonGroup() {
-   		return "s-zoom";
-   	}	
+		return "m-zoom";
+	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -77,6 +76,8 @@ public class FitContentAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		Cytoscape.getCurrentNetworkView().fitContent();
+		GraphView curr = Cytoscape.getCurrentNetworkView();
+		if ( curr != null )
+		         curr.setZoom(curr.getZoom() * factor);
 	}
 }

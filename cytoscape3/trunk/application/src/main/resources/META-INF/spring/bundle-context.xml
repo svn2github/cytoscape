@@ -17,10 +17,10 @@
 	<context:annotation-config />
 
 	<!-- for initialization -->
-	<bean name="cyMenus" class="cytoscape.view.CyMenus"/>
+	<bean name="cytoscapeMenus" class="cytoscape.view.CytoscapeMenus"/>
 
 	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop">
-		<constructor-arg ref="cyMenus"/>
+		<constructor-arg ref="cytoscapeMenus"/>
 	</bean>
 
 	<bean name="editorFactory" class="cytoscape.visual.ui.editors.EditorFactory"/>
@@ -36,8 +36,6 @@
 		<constructor-arg ref="defaultViewPanel"/>
 		<constructor-arg ref="editorFactory"/>
 	</bean>
-
-
 	-->
 
 	<bean name="cyMain" class="cytoscape.CyMain">
@@ -120,7 +118,7 @@
 	</bean>
 	<!-- not a CyAction, but adds menu -->
 	<bean id="layoutMenuManager" class="cytoscape.layout.ui.LayoutMenuManager">
-		<constructor-arg ref="cyMenus"/>
+		<constructor-arg ref="cytoscapeMenus"/>
 		<constructor-arg ref="cyLayoutsServiceRef"/>
 	</bean>
 	<bean id="settingsAction" class="cytoscape.layout.ui.SettingsAction">
@@ -141,7 +139,7 @@
 	<!-- not a CyAction, but adds menu -->
 	<bean id="arrangeAction" class="cytoscape.actions.ArrangeAction">
 		<constructor-arg ref="cytoscapeDesktop"/>
-		<constructor-arg ref="cyMenus"/>
+		<constructor-arg ref="cytoscapeMenus"/>
 	</bean>
 
 	<bean id="cytoPanelWestAction" class="cytoscape.actions.CytoPanelAction">
@@ -159,7 +157,10 @@
 		<constructor-arg value="false"/>
 		<constructor-arg ref="cytoscapeDesktop"/>
 	</bean>
-
+	<bean id="zoomInAction" class="cytoscape.actions.ZoomInAction"/>
+	<bean id="zoomOutAction" class="cytoscape.actions.ZoomOutAction"/>
+	<bean id="zoomSelectedAction" class="cytoscape.actions.ZoomSelectedAction"/>
+	<bean id="fitContentAction" class="cytoscape.actions.FitContentAction"/>
 
 	<!-- Other stuff to be started -->
 	<bean id="undoMonitor" class="cytoscape.util.undo.UndoMonitor">
