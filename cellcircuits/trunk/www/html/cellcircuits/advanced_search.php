@@ -2,8 +2,29 @@
 include_once 'db.php';
 include_once 'cc_utils.php';
 
+$pub_code = "";
+if (isset ($_GET['pub_code'])) {
+	$pub_code = $_GET['pub_code'];
+}
+
+//$pub_code = 'gersten2008';	
+
+// Convert the pub_code to pub_id	
+$pub_id = 0;
+$is_published = true;
+if ($pub_code != "") {
+	$record = getPublicationRecordFromPubCode($pub_code, $connection);
+	$pub_id = $record['publication_auto_id'];
+	$is_published = $record['is_published'];
+	if ($pub_id == "") {
+		?>No such publication! <?php
+		exit();
+	}
+}
+
+
 // get the publication list -- id, cover_image, xml, html, pdf
-$publications = getAllPublications($connection);
+$publications = getAllPublications($connection, $pub_id);
 
 	//echo "Number of publications = ".count($publications)."\n";
 	for ($i=0; $i<count($publications); $i++) {
@@ -14,7 +35,7 @@ $publications = getAllPublications($connection);
 		//echo "coverimage_id=".$publication['coverimage_id']."\n";
 	}
 	
-$distinct_species = getSpeciesFromDB($connection);
+$distinct_species = getSpeciesFromDB($connection, $pub_id);
 //echo "Number of species =".count($all_species)."<br>\n";
 //print_array($distinct_species);
 
@@ -130,9 +151,15 @@ function pvaluewin(){
       <td align="center" valign="top" colspan="1">      </td>
     </tr>
   </table>
-
-  <br />
-  <table align="center" cellspacing=0 cellpadding=5 border="0">
+<?php if (!$is_published) { ?>
+<p>&nbsp;</p>
+<p><center><em><b>Note:</b></em> This data set is not published yet, thus is not available through the public interface of CellCircuits web site.</center> <br />
+</p> &nbsp;
+<p>
+  <?php } ?>    
+  
+</p>
+<table align="center" cellspacing=0 cellpadding=5 border="0">
     <!--<tr bgcolor="white"> -->
     <tr>
       <th colspan="8" align="center" valign="center">
@@ -233,6 +260,7 @@ for ($i=0; $i<count($publications)/2; $i++) {
 </center>
 
 <input type="hidden" name="results_page" value="1" checked="checked" />
+<input type="hidden" name="pub_id" value="<?php echo $pub_id;?>" checked="checked" />
 
 </form>
 
@@ -241,9 +269,15 @@ for ($i=0; $i<count($publications)/2; $i++) {
 
 
 <?php
-function getAllPublications($connection){
+function getAllPublications($connection, $pub_id){
 
-	$dbQuery  = "SELECT * from publications";
+	$dbQuery  = "SELECT * FROM publications ";
+	if ($pub_id != 0) {
+		$dbQuery .= "WHERE publication_auto_id ='$pub_id'";
+	}
+	else {
+		$dbQuery .= "WHERE is_published =true";
+	}
 	
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
@@ -284,9 +318,13 @@ function print_array($myArray) {
 	}
 }
 
-function getSpeciesFromDB($connection) {
+function getSpeciesFromDB($connection, $pub_id) {
 	$dbQuery  = "SELECT distinct species from network_file_info ";
 	
+	if ($pub_id != 0) {
+		$dbQuery .= "WHERE publication_id ='$pub_id'";
+	}
+
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
 		showerror();
