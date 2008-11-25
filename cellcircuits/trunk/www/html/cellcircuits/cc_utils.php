@@ -155,6 +155,30 @@ function getPublicationRecord($rawdata_id, $connection) {
 	return $record;
 }
 
+// Get publication record based on the given pub_code
+function getPublicationRecordFromPubCode($pub_code, $connection) {
+
+	$dbQuery = "select publication_auto_id, pmid, cover_image_id, pdf_file_id, supplement_file_id, pubmed_html_full from publications where pub_code='".$pub_code."'";
+
+	// Run the query
+	if (!($result = @ mysql_query($dbQuery, $connection)))
+		showerror();
+
+	if( @ mysql_num_rows($result) == 0) {
+		// Not found
+		return -1;
+	}
+
+	$record['publication_auto_id'] = @ mysql_result($result, 0, "publication_auto_id");
+	$record['pmid'] = @ mysql_result($result, 0, "pmid");
+	$record['cover_image_id'] = @ mysql_result($result, 0, "cover_image_id");
+	$record['pdf_file_id'] = @ mysql_result($result, 0, "pdf_file_id");
+	$record['supplement_file_id'] = @ mysql_result($result, 0, "supplement_file_id");
+	$record['pubmed_html_full'] = @ mysql_result($result, 0, "pubmed_html_full");
+	$record['is_published'] = @ mysql_result($result, 0, "is_published");
+
+	return $record;
+}
 
 //Update the status value in table submission_data
 function updateStatus($rawdata_id, $connection, $newStatus) {
