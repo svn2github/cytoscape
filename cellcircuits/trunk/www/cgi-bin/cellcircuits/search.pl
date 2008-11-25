@@ -69,7 +69,7 @@ if(param("search_query"))
 	#print "pval_thresh = $pval_thresh<br>\n";
 	
     my $queryInput = CCDB::Driver::process_query($query);
-
+	
     appendHumanGeneIdentifiers($queryInput, $species);
 
     if(!defined($queryInput)) {
@@ -174,7 +174,7 @@ sub getAllSpecies {
 sub getAllPublications {
     my ($dbh) = @_;
 
-	my $get_pubInfo_sth = $dbh->prepare("select publication_auto_id from publications");
+	my $get_pubInfo_sth = $dbh->prepare("select publication_auto_id from publications where is_published = true");
 	$get_pubInfo_sth->execute();
 	
 	my @all_pub_ids = ();
