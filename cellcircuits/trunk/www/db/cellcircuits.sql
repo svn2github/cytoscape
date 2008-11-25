@@ -58,6 +58,8 @@ CREATE TABLE publications (
 	-- network_image_format varchar(10), -- gif, jpg, png
 	cover_image_id		int,	
 	pdf_file_id			int default -1,
+	pub_code			varchar(30) default 'none',
+	is_published		boolean default true,	
 	time_stamp			timestamp default CURRENT_TIMESTAMP	
 );
 
