@@ -321,7 +321,7 @@ if (!($tried && $validated)) {
 				?>
 					<input name="btnSubmit" type="submit" id="btnSubmit" value="Submit" />
 				  &nbsp;&nbsp;	
-					<input name="btnSubmit" type="submit" id="btnSubmit" value="Go Back" />
+				<!--	<input name="btnSubmit" type="submit" id="btnSubmit" value="Go Back" /> -->
 				<?php
 			}
 			else {	 // mode = 'edit'
