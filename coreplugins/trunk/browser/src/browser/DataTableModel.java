@@ -367,20 +367,6 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
 			for (GraphObject obj : graphObjects) {
 				internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
-
-				if (objectType == NODES) {
-					nv = netView.getNodeView((Node) obj);
-
-					if (nv != null) {
-						nv.setSelectedPaint(selectedNodeColor);
-					}
-				} else if (objectType == EDGES) {
-					edgeView = netView.getEdgeView((Edge) obj);
-
-					if (edgeView != null) {
-						edgeView.setSelectedPaint(selectedEdgeColor);
-					}
-				}
 			}
 		}
 
