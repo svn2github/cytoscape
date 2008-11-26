@@ -1,7 +1,0 @@
-#-----------------------------------------------------------------
-# Use this file to add customized Bnd instructions for the bundle
-#-----------------------------------------------------------------
-
-
-Export-Package: org.cytoscape.model.network,org.cytoscape.model.network.events,org.cytoscape.groups
-Private-Package: org.cytoscape.model.network.internal,org.cytoscape.model.network.events.internal
