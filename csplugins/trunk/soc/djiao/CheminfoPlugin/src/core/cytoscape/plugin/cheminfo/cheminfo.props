@@ -17,6 +17,15 @@ cheminfo.menu=Cheminformatics Tools
 cheminfo.menu.2ddepiction=Depict 2D Structure
 cheminfo.menu.similarity=Calculate Similarity
 cheminfo.menu.similarity.tanimoto=Tanimoto Coefficients
+cheminfo.menu.similarity.tanimoto.selectedNodes=Selected Nodes Only
+cheminfo.menu.similarity.tanimoto.allNodes=All Nodes
+cheminfo.menu.2ddepiction.selectedEdges=Show table of compounds from selected edges
+cheminfo.menu.2ddepiction.thisEdge=Show 2D structure(s) from this edge
+cheminfo.menu.2ddepiction.allEdges=Show table of compounds from all edges
+cheminfo.menu.2ddepiction.selectedNodes=Show table of compounds from selected nodes
+cheminfo.menu.2ddepiction.thisNode=Show 2D structure(s) from this node
+cheminfo.menu.2ddepiction.allNodes=Show table of compounds from all nodes
+cheminfo.menu.settings=Settings...
 
 ##
 # 2D Structure Depictor Messages

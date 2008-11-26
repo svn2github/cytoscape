@@ -35,44 +35,33 @@
 
 package cytoscape.plugin.cheminfo;
 
+import giny.model.GraphObject;
 import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Set;
 
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.TableColumn;
+import javax.swing.JSeparator;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -80,37 +69,49 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.cheminfo.similarity.CDKTanimotoScore;
-import cytoscape.plugin.cheminfo.structure.MoleculeViewDialog;
-import cytoscape.plugin.cheminfo.structure.StructureDepictor;
-import cytoscape.plugin.cheminfo.table.ChemTable;
-import cytoscape.plugin.cheminfo.table.ChemTableSorter;
-import cytoscape.plugin.cheminfo.table.EdgeTable;
-import cytoscape.plugin.cheminfo.table.MoleculeCellRenderer;
-import cytoscape.plugin.cheminfo.table.NodeTable;
-import cytoscape.plugin.cheminfo.table.TextAreaRenderer;
-import cytoscape.util.URLUtil;
+import cytoscape.task.Task;
+import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.visual.VisualStyle;
 import ding.view.DGraphView;
 import ding.view.NodeContextMenuListener;
+import ding.view.EdgeContextMenuListener;
+
+import cytoscape.plugin.cheminfo.model.Compound;
+import cytoscape.plugin.cheminfo.model.Compound.AttriType;
+import cytoscape.plugin.cheminfo.ui.ChemInfoSettingsDialog;
+import cytoscape.plugin.cheminfo.tasks.CreateCompoundTableTask;
+import cytoscape.plugin.cheminfo.tasks.CreatePopupTask;
+import cytoscape.plugin.cheminfo.tasks.TanimotoScorerTask;;
+
 
 /**
  * This plugin adds cheminformatics tools to Cytoscape.
  */
 public class ChemInfoPlugin extends CytoscapePlugin implements
-		NodeContextMenuListener, PropertyChangeListener, ActionListener {
+		NodeContextMenuListener, EdgeContextMenuListener, PropertyChangeListener, 
+		MenuListener,ActionListener {
 	
-	private HashMap<String, Object[]> attrMap;
+	static public CyLogger logger = CyLogger.getLogger(ChemInfoPlugin.class);
+	static private String pubChemURL = "http://pubchem.ncbi.nlm.nih.gov/";
+	static private String pubChemSearch = pubChemURL+"search/search.cgi?cmd=search&q_type=dt&simp_schtp=fs&q_data=";
+	static private String chemSpiderURL = "http://www.chemspider.com/";
+	static private String chemSpiderSearch = chemSpiderURL+"Search.aspx?q=";
+	static private String cebiURL = "http://www.ebi.ac.uk/";
+	static private String cebiSearch = cebiURL+"chebi/searchFreeText.do?searchString=";
 
-	private JMenu menu = null;
 	private NodeView nodeView = null;
+	private EdgeView edgeView = null;
 	private Properties systemProps = null;
+	private ChemInfoSettingsDialog settingsDialog = null; 
+	private Properties cytoProps;
 	
-	public enum AttriType { smiles, inchi };
-
+	/**
+ 	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
+ 	 * Add our listeners and create the main menu.
+ 	 */
 	public ChemInfoPlugin() {
 		try {
 			// Set ourselves up to listen for new networks
@@ -120,8 +121,11 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 
 			((DGraphView) Cytoscape.getCurrentNetworkView())
 					.addNodeContextMenuListener(this);
+			((DGraphView) Cytoscape.getCurrentNetworkView())
+					.addEdgeContextMenuListener(this);
 		} catch (ClassCastException ccex) {
-			ccex.printStackTrace();
+			logger.error("Unable to setup network listeners: "+ccex.getMessage(), ccex);
+			return;
 		}
 
 		// Loading properties
@@ -131,58 +135,92 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 					"cheminfo.props"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Unable to load properties: "+e.getMessage(), e);
+			return;
 		}
 
-		this.menu = buildMenu();
+		try {
+			JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getOperationsMenu();
+			JMenu menu = new JMenu(systemProps.getProperty("cheminfo.menu"));
+			menu.addMenuListener(this);
+			pluginMenu.add(menu);
 		
-		this.attrMap = new HashMap<String, Object[]>();
-		
-		Properties cytoProps = CytoscapeInit.getProperties();
-		cytoProps.put("nodelinkouturl.Entrez.PubChem(InChI)", "http://www.ncbi.nlm.nih.gov/sites/entrez?term=\"%ID%\"[InChI]&cmd=search&db=pccompound");
+			cytoProps = CytoscapeInit.getProperties();
+			settingsDialog = new ChemInfoSettingsDialog();
+		} catch (Exception e) {
+			logger.error("Unable to initialize menus: "+e.getMessage(), e);
+		}
 	}
 
+	/**
+ 	 * NodeContextMenuListener method to add our context menu to a specific
+ 	 * NodeView.  We create our menu entries dynamically depending on whether
+ 	 * this node has compound information defined.
+ 	 *
+ 	 * @param nodeView the nodeView whose context menu we're creating
+ 	 * @param pmenu the menu we're adding our menu to
+ 	 */
 	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu pmenu) {
 		this.nodeView = nodeView;
+		this.edgeView = null;
 		if (pmenu == null) {
 			pmenu = new JPopupMenu();
 		}
-		pmenu.add(menu);
-	}
-
-	/**
-	 * Builds the popup menu
-	 * 
-	 * @return
-	 */
-	public JMenu buildMenu() {
 		JMenu menu = new JMenu(systemProps.getProperty("cheminfo.menu"));
-		JMenuItem depict = buildMenuItem("cheminfo.menu.2ddepiction",
-				"cheminfo.menu.2ddepiction");
-		menu.add(depict);
-		JMenu simMenu = new JMenu(systemProps
-				.getProperty("cheminfo.menu.similarity"));
-		menu.add(simMenu);
-		JMenuItem tanimoto = buildMenuItem("cheminfo.menu.similarity.tanimoto",
-				"cheminfo.menu.similarity.tanimoto");
-		simMenu.add(tanimoto);
-		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(menu);
-		return menu;
+		pmenu.add(buildPopupMenu(menu, false, nodeView));
 	}
 
 	/**
-	 * Builds a menu item in the popup menu
-	 * 
-	 * @param label
-	 * @param command
-	 * @return
-	 */
-	public JMenuItem buildMenuItem(String label, String command) {
-		JMenuItem item = new JMenuItem(systemProps.getProperty(label));
-		item.setActionCommand(command);
-		item.addActionListener(this);
-		return item;
+ 	 * EdgeContextMenuListener method to add our context menu to a specific
+ 	 * EdgeView.  We create our menu entries dynamically depending on whether
+ 	 * this edge has compound information defined.
+ 	 *
+ 	 * @param edgeView the edgeView whose context menu we're creating
+ 	 * @param pmenu the menu we're adding our menu to
+ 	 */
+	public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu pmenu) {
+		this.edgeView = edgeView;
+		this.nodeView = null;
+		if (pmenu == null) {
+			pmenu = new JPopupMenu();
+		}
+		JMenu menu = new JMenu(systemProps.getProperty("cheminfo.menu"));
+		pmenu.add(buildPopupMenu(menu, true, edgeView));
 	}
+
+
+	/**
+ 	 * MenuListener: menuCanceled (not used)
+ 	 */
+	public void menuCanceled (MenuEvent e) {};
+
+	/**
+ 	 * MenuListener: menuDeselected (not used)
+ 	 */
+	public void menuDeselected (MenuEvent e) {};
+
+	/**
+ 	 * MenuListener: menuSelected is called when the user
+ 	 * selects our main menu. This method will populate the submenu
+ 	 * depending on what is selected, the presence of attributes
+ 	 * that contain compound descriptors, and the type of object
+ 	 * that has been selected.
+ 	 *
+ 	 * @param e the menu event
+ 	 */
+	public void menuSelected (MenuEvent e) {
+		JMenu m = (JMenu)e.getSource();
+
+		// remove the current entries
+		Component[] subMenus = m.getMenuComponents();
+		for (int i = 0; i < subMenus.length; i++) { m.remove(subMenus[i]); }
+		JMenu depict = new JMenu(systemProps.getProperty("cheminfo.menu.2ddepiction"));
+		addEdgeDepictionMenus(depict, null);
+		addNodeDepictionMenus(depict, null);
+		m.add(depict);
+		addSimilarityMenu(m);
+		addSettingsMenu(m);
+	};
 
 	/**
 	 * Detect that a new network view has been created and add our node context
@@ -193,68 +231,180 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 			// Add menu to the context dialog
 			((CyNetworkView) evt.getNewValue())
 					.addNodeContextMenuListener(this);
+			((CyNetworkView) evt.getNewValue())
+					.addEdgeContextMenuListener(this);
 		}
+	}
+
+
+	/**
+	 * Builds the popup menu for context menus
+	 * 
+	 * @param menu the menu we're going add our items to
+	 * @param edge if 'true' then this is an edge context
+	 * @param context the NodeView or EdgeView this menu is for
+	 * @return the updated menu
+	 */
+	private JMenu buildPopupMenu(JMenu menu, boolean edge, Object context) {
+		if (edge) {
+			addEdgeDepictionMenus(menu, (EdgeView)context);
+			updateLinkOut(((EdgeView)context).getEdge());
+		} else {
+			addNodeDepictionMenus(menu, (NodeView)context);
+			updateLinkOut(((NodeView)context).getNode());
+		}
+		addSimilarityMenu(menu);
+		addSettingsMenu(menu);
+		return menu;
 	}
 
 	/**
-	 * Get an attribute from a node
+	 * Builds the popup menu for edge depiction
 	 * 
-	 * @param node
-	 * @param attr
-	 * @return
+	 * @param menu the menu we're going add our items to
+	 * @param edgeContext the EdgeView this menu is for
 	 */
-	public static String getAttribute(CyNode node, String attr) {
-		CyAttributes attributes = Cytoscape.getNodeAttributes();
-		String value = attributes
-				.getStringAttribute(node.getIdentifier(), attr);
-		if (null == value || "".equals(value)) {
-			// Now search for smiles
-			String[] names = attributes.getAttributeNames();
-			for (String string : names) {
-				if (attr.equalsIgnoreCase(string)) {
-					value = attributes.getStringAttribute(node.getIdentifier(),
-							string);
-					break;
-				}
+	private void addEdgeDepictionMenus(JMenu menu, EdgeView edgeContext) {
+		// Check and see if we have any edge attributes
+		Collection<CyEdge> selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
+
+		if (edgeContext == null) {
+			// Populating main menu
+			JMenuItem item = buildMenuItem("cheminfo.menu.2ddepiction.allEdges",
+				                             "cheminfo.menu.2ddepiction.allEdges");
+			if (!settingsDialog.hasEdgeCompounds(null))
+				item.setEnabled(false);
+			menu.add(item);
+			if (selectedEdges != null && selectedEdges.size() > 0) {
+				item = buildMenuItem("cheminfo.menu.2ddepiction.selectedEdges",
+			  	                   "cheminfo.menu.2ddepiction.selectedEdges");
+				if (!settingsDialog.hasEdgeCompounds(selectedEdges))
+					item.setEnabled(false);
+				menu.add(item);
 			}
+			return;
 		}
-		return value;
-	}
-	
-	public static String getSmiles(CyNode node, String attribute, AttriType attrType) {
-		String smiles = getAttribute(node, attribute);
-		if (attrType != AttriType.smiles) {
-			if (attrType == AttriType.inchi) {
-				smiles = convertInchiToSmiles(smiles);
-			}
+
+		// Populating popup menu
+		JMenu depict = new JMenu(systemProps.getProperty("cheminfo.menu.2ddepiction"));
+
+		depict.add(buildMenuItem("cheminfo.menu.2ddepiction.thisEdge",
+		                         "cheminfo.menu.2ddepiction.thisEdge"));
+
+		if (selectedEdges == null) selectedEdges = new ArrayList();
+
+		if (!selectedEdges.contains(edgeContext.getEdge()))
+			selectedEdges.add((CyEdge)edgeContext.getEdge());
+
+		if (selectedEdges.size() > 1) {
+			depict.add(buildMenuItem("cheminfo.menu.2ddepiction.selectedEdges",
+			                         "cheminfo.menu.2ddepiction.selectedEdges"));
 		}
-		return smiles;
+		if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
+			depict.setEnabled(false);
+		}
+		menu.add(depict);
+
+		return;
 	}
 
 	/**
-	 * Use chemspider web service to translate an InChI string to SMILES
+	 * Builds the popup menu for node depiction
 	 * 
-	 * @param inchi
-	 * @return
+	 * @param menu the menu we're going add our items to
+	 * @param nodeContext the NodeView this menu is for
 	 */
-	public static String convertInchiToSmiles(String inchi) {
-		String url = "http://www.chemspider.com/inchi.asmx/InChIToSMILES?inchi="
-				+ inchi.trim();
-		String smiles = null;
-		try {
-			String result = URLUtil.download(new URL(url));
-			Pattern pattern = Pattern.compile(".*<[^>]*>([^<]*)</string>");
-			Matcher matcher = pattern.matcher(result);
-			if (matcher.find()) {
-				smiles = matcher.group(1);
+	private void addNodeDepictionMenus(JMenu menu, NodeView nodeContext) {
+		// Check and see if we have any node attributes
+		Collection<CyNode> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+
+		if (nodeContext == null) {
+			// Populating main menu
+			JMenuItem item = buildMenuItem("cheminfo.menu.2ddepiction.allNodes",
+				                            "cheminfo.menu.2ddepiction.allNodes");
+			if (!settingsDialog.hasNodeCompounds(null))
+				item.setEnabled(false);
+			menu.add(item);
+			if (selectedNodes != null && selectedNodes.size() > 0) {
+				item = buildMenuItem("cheminfo.menu.2ddepiction.selectedNodes",
+			  	                   "cheminfo.menu.2ddepiction.selectedNodes");
+				if (!settingsDialog.hasNodeCompounds(selectedNodes))
+					item.setEnabled(false);
+				menu.add(item);
 			}
-		} catch (MalformedURLException muex) {
-			muex.printStackTrace();
-		} catch (IOException ioex) {
-			ioex.printStackTrace();
+			return;
 		}
 
-		return smiles;
+		// Populating popup menu
+		JMenu depict = new JMenu(systemProps.getProperty("cheminfo.menu.2ddepiction"));
+
+		depict.add(buildMenuItem("cheminfo.menu.2ddepiction.thisNode",
+		                         "cheminfo.menu.2ddepiction.thisNode"));
+
+		if (selectedNodes == null) selectedNodes = new ArrayList();
+
+		if (!selectedNodes.contains(nodeContext.getNode()))
+			selectedNodes.add((CyNode)nodeContext.getNode());
+
+		if (selectedNodes.size() > 1) {
+			depict.add(buildMenuItem("cheminfo.menu.2ddepiction.selectedNodes",
+			                         "cheminfo.menu.2ddepiction.selectedNodes"));
+		}
+		if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
+			depict.setEnabled(false);
+		}
+		menu.add(depict);
+
+		return;
+	}
+
+	/**
+	 * Builds the popup menu for similarity calculations
+	 * 
+	 * @param menu the menu we're going add our items to
+	 */
+	private void addSimilarityMenu(JMenu menu) {
+		JMenu simMenu = new JMenu(systemProps
+				.getProperty("cheminfo.menu.similarity"));
+		menu.add(simMenu);
+		Set<GraphObject> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+		if (selectedNodes != null && selectedNodes.size() > 1) {
+			JMenu tanMenu = new JMenu(systemProps.getProperty("cheminfo.menu.similarity.tanimoto"));
+			tanMenu.add(buildMenuItem("cheminfo.menu.similarity.tanimoto.allNodes",
+			                          "cheminfo.menu.similarity.tanimoto.allNodes"));
+			tanMenu.add(buildMenuItem("cheminfo.menu.similarity.tanimoto.selectedNodes",
+			                          "cheminfo.menu.similarity.tanimoto.selectedNodes"));
+			simMenu.add(tanMenu);
+		} else {
+			JMenuItem tanimoto = buildMenuItem("cheminfo.menu.similarity.tanimoto",
+				"cheminfo.menu.similarity.tanimoto.allNodes");
+			simMenu.add(tanimoto);
+		}
+		return;
+	}
+
+	/**
+ 	 * Adds the Settings menu item
+ 	 *
+ 	 * @param menu the menu to add our Settings menu to
+ 	 */
+	private void addSettingsMenu(JMenu menu) {
+		menu.add(new JSeparator());
+		menu.add(buildMenuItem("cheminfo.menu.settings","cheminfo.menu.settings"));
+	}
+
+	/**
+	 * Builds a menu item in the popup menu
+	 * 
+	 * @param label
+	 * @param command
+	 * @return
+	 */
+	private JMenuItem buildMenuItem(String label, String command) {
+		JMenuItem item = new JMenuItem(systemProps.getProperty(label));
+		item.setActionCommand(command);
+		item.addActionListener(this);
+		return item;
 	}
 
 	/*
@@ -265,287 +415,32 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 	public void actionPerformed(ActionEvent evt) {
 		String cmd = evt.getActionCommand();
 		
-		final Object[] attr;
-		// First let the user choose the attribute that contains the smiles/inchi code
-		if (this.attrMap.containsKey(Cytoscape.getCurrentNetwork().getIdentifier())) {
-			attr = attrMap.get(Cytoscape.getCurrentNetwork().getIdentifier());
-		} else {
-			CyAttributes attributes = Cytoscape.getNodeAttributes();
-			attr = showAttributeDialog(attributes.getAttributeNames());
-			attrMap.put(Cytoscape.getCurrentNetwork().getIdentifier(), attr);
-		}
-		
-		if (cmd.equals("cheminfo.menu.2ddepiction")) {
-			final List nodes = Cytoscape.getCurrentNetworkView()
-					.getSelectedNodes();
-			if (nodes.size() > 1) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						depictMultipleNodes(nodes, Cytoscape
-								.getCurrentNetworkView(), (String)attr[0], (AttriType)attr[1]);
-					}
-				});
-			} else if (nodes.size() == 1) {
-				CyNode node = (CyNode) nodeView.getNode();
-				depictSingleNode(node, (String)attr[0], (AttriType)attr[1]);
-			}
-		} else if (cmd.equals("cheminfo.menu.similarity.tanimoto")) {
-			final int finalChoice = showSimilarityOptionDialog(0);
-			
-			if (finalChoice == 0) {
-				final CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						calculateTanimotoOnSelectedNodes(networkView, (String)attr[0], (AttriType)attr[1]);
-					}
-				});
-			} else if (finalChoice == 1) {
-				final CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						calculateTanimotoOnAllNodes(networkView, (String)attr[0], (AttriType)attr[1]);
-					}
-				});
-			}
+		if (cmd.equals("cheminfo.menu.settings")) {
+			// Bring up the settings dialog
+			settingsDialog.pack();
+			settingsDialog.setVisible(true);
+		} else if (cmd.equals("cheminfo.menu.2ddepiction.thisNode")) {
+			// Bring up the popup-style of depiction
+			createPopup(nodeView, settingsDialog);
+		} else if (cmd.equals("cheminfo.menu.2ddepiction.selectedNodes")) {
+			// Bring up the compound table
+			createTable(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog);
+		} else if (cmd.equals("cheminfo.menu.2ddepiction.allNodes")) {
+			createTable((Collection<GraphObject>)Cytoscape.getCurrentNetwork().nodesList(), settingsDialog);
+		} else if (cmd.equals("cheminfo.menu.2ddepiction.thisEdge")) {
+			createPopup(edgeView, settingsDialog);
+		} else if (cmd.equals("cheminfo.menu.2ddepiction.selectedEdges")) {
+			// Bring up the compound table
+			createTable(Cytoscape.getCurrentNetwork().getSelectedEdges(), settingsDialog);
+		} else if (cmd.equals("cheminfo.menu.2ddepiction.allEdges")) {
+			createTable((Collection<GraphObject>)Cytoscape.getCurrentNetwork().edgesList(), settingsDialog);
+		} else if (cmd.equals("cheminfo.menu.similarity.tanimoto.selectedNodes")) {
+			createScoreTable(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog, false);
+		} else if (cmd.equals("cheminfo.menu.similarity.tanimoto.allNodes")) {
+			createScoreTable((Collection<GraphObject>)Cytoscape.getCurrentNetwork().nodesList(), settingsDialog, true);
 		}
 	}
 	
-	private void calculateTanimotoOnAllNodes(CyNetworkView origView, String attribute, AttriType attrType) {
-		CyNetwork origNet = origView.getNetwork();
-		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
-
-		int nodeIndices[] = origNet.getNodeIndicesArray();
-		int edgeIndices[] = new int[0];	
-		
-		CyNetwork newNet = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
-                new int[0],
-                origNet.getTitle() + " copy", 
-				null,
-				true);
-		
-		List nodeList = newNet.nodesList();
-		
-		List rows = new ArrayList();
-		for (int i = 0; i < nodeList.size(); i++) {
-			CyNode node1 = (CyNode)nodeList.get(i);
-			for (int j = i+1; j < nodeList.size(); j++) {
-				List row = new ArrayList();
-				CyNode node2 = (CyNode)nodeList.get(j);
-				CDKTanimotoScore scorer = new CDKTanimotoScore(node1, node2, attribute, AttriType.smiles);
-				CyEdge edge = Cytoscape.getCyEdge(node1, node2, "interaction", "similarity", true, true);
-				CyAttributes attrs = Cytoscape.getEdgeAttributes();
-				double score = scorer.calculateSimilarity();
-				attrs.setAttribute(edge.getIdentifier(), "tanimoto", score); 
-				newNet.addEdge(edge);
-				
-				row.add(edge.getIdentifier());
-				row.add(node1.getIdentifier());
-				row.add(node2.getIdentifier());
-				row.add(score);
-				rows.add(row);
-			}
-		}
-		
-		CyNetworkView newView = Cytoscape.getNetworkView(newNet.getIdentifier());
-		if ( newView != null || newView != Cytoscape.getNullNetworkView() ) {
-
-        	// Use nodes as keys because they are less volatile than views...
-	        Iterator ni = origView.getGraphPerspective().nodesIterator();
-			while (ni.hasNext()) {
-				Node n = (Node) ni.next();
-
-				NodeView onv = origView.getNodeView(n);
-				NodeView nnv = newView.getNodeView(n);
-
-				nnv.setXPosition(onv.getXPosition());
-				nnv.setYPosition(onv.getYPosition());
-			}
-
-			newView.setZoom(origView.getZoom());
-			Point2D origCenter = ((DGraphView)origView).getCenter();
-			((DGraphView)newView).setCenter(origCenter.getX(), origCenter.getY());
-
-			Cytoscape.getVisualMappingManager().setVisualStyle(vs);
-		}
-		
-		// Select all edges and nodes 
-		Iterator it = newView.getEdgeViewsIterator();
-		while (it.hasNext()) {
-			EdgeView ev = (EdgeView)it.next();
-			ev.setSelected(true);
-		}
-		it = newView.getNodeViewsIterator();
-		while (it.hasNext()) {
-			NodeView nv = (NodeView)it.next();
-			nv.setSelected(true);
-		}		
-		
-		List colNames = new ArrayList();
-		colNames.add("Edge ID");
-		colNames.add("Node1 ID");
-		colNames.add("Node2 ID");
-		colNames.add("Tanimoto Coefficient");
-		ChemTableSorter sorter = new ChemTableSorter(rows, colNames);
-		
-		ChemTable table = new EdgeTable(sorter, newView.getIdentifier(), attribute, attrType);
-
-		table.getColumnModel().getColumn(1).setCellRenderer(
-				new TextAreaRenderer());
-		
-		table.getColumnModel().getColumn(2).setCellRenderer(
-				new TextAreaRenderer());		
-
-		table.setColumnSelectionAllowed(false);
-		table.setRowSelectionAllowed(true);
-		table.setSelectionBackground(Color.CYAN);
-
-		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-		//networkView.getNetwork().addSelectEventListener(table);
-		sorter.setTableHeader(table.getTableHeader());
-		table.showTableDialog("Show Similarity Scores");		
-	}
-
-		
-		
-	private void calculateTanimotoOnSelectedNodes(CyNetworkView nv, String attribute, AttriType attrType) {
-		CyNetwork network = nv.getNetwork();
-		network.selectAllEdges();
-		network.selectAllNodes();
-		List edges = network.edgesList();
-		List rows = new ArrayList();
-		for (Object obj: edges) {
-			CyEdge edge = (CyEdge)obj;
-			CyNode node1 = (CyNode)edge.getSource();
-			CyNode node2 = (CyNode)edge.getTarget();
-			List row = new ArrayList();
-			row.add(edge.getIdentifier());
-			row.add(node1.getIdentifier());
-			row.add(node2.getIdentifier());
-			CDKTanimotoScore scorer = new CDKTanimotoScore(node1, node2, attribute, attrType);
-			CyAttributes attrs = Cytoscape.getEdgeAttributes();
-			double score = scorer.calculateSimilarity();
-			attrs.setAttribute(edge.getIdentifier(), "tanimoto", score); 
-			row.add(score);
-			rows.add(row);
-		}
-		List colNames = new ArrayList();
-		colNames.add("Edge ID");
-		colNames.add("Node1 ID");
-		colNames.add("Node2 ID");
-		colNames.add("Tanimoto Coefficient");
-		ChemTableSorter sorter = new ChemTableSorter(rows, colNames);
-		
-		ChemTable table = new EdgeTable(sorter, nv.getIdentifier(), attribute, attrType);
-
-		table.getColumnModel().getColumn(1).setCellRenderer(
-				new TextAreaRenderer());
-		
-		table.getColumnModel().getColumn(2).setCellRenderer(
-				new TextAreaRenderer());		
-
-		table.setColumnSelectionAllowed(false);
-		table.setRowSelectionAllowed(true);
-		table.setSelectionBackground(Color.CYAN);
-
-		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-		//networkView.getNetwork().addSelectEventListener(table);
-		sorter.setTableHeader(table.getTableHeader());
-		table.showTableDialog("Show Similarity Scores");				
-		
-	}
-
-	/**
-	 * Returns true if a string is null or blank
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static boolean isBlank(String str) {
-		return null == str || "".equals(str.trim());
-	}
-
-	/**
-	 * Depict 2D structure for multiple nodes
-	 * 
-	 * @param nodes
-	 */
-	private void depictMultipleNodes(List nodes, CyNetworkView networkView, String attribute, AttriType attrType) {
-		List rows = new ArrayList();
-		for (Object node : nodes) {
-			NodeView nodeView = (NodeView) node;
-			// depictSingleNode((CyNode)nodeView.getNode());
-			StructureDepictor depictor = new StructureDepictor(
-					(CyNode) nodeView.getNode(), attribute, attrType);
-			// Image image = depictor.
-			String text = depictor.getMoleculeString();
-			String id = nodeView.getNode().getIdentifier();
-			List row = new ArrayList();
-			row.add(id);
-			row.add(text);
-			row.add(depictor);
-			rows.add(row);
-		}
-
-		List colNames = new ArrayList();
-		colNames.add("Identifier");
-		colNames.add("Smiles/InChI");
-		colNames.add("2D Structure");
-
-		ChemTableSorter sorter = new ChemTableSorter(rows, colNames);
-		NodeTable table = new NodeTable(sorter, networkView.getIdentifier(), attribute, attrType);
-		table.setStructureColumn(2);
-		table.setRowHeight(121);
-
-		TableColumn col = table.getColumnModel().getColumn(
-				table.getStructureColumn());
-		col.setWidth(121);
-		col.setPreferredWidth(121);
-		col.setResizable(false);
-		MoleculeCellRenderer mcr = new MoleculeCellRenderer(new Dimension(120,
-				120));
-		col.setCellRenderer(mcr);
-
-		table.getColumnModel().getColumn(1).setPreferredWidth(250);
-		table.getColumnModel().getColumn(1).setCellRenderer(
-				new TextAreaRenderer());
-
-		table.setColumnSelectionAllowed(false);
-		table.setRowSelectionAllowed(true);
-		table.setSelectionBackground(Color.CYAN);
-
-		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-		networkView.getNetwork().addSelectEventListener(table);
-		sorter.setTableHeader(table.getTableHeader());
-		table.showTableDialog("Show 2D Structures");
-	}
-
-	/**
-	 * Depict 2D structure for a single node
-	 * 
-	 * @param node
-	 */
-	private void depictSingleNode(CyNode node, String attribute, AttriType attrType) {
-		StructureDepictor depictor = new StructureDepictor(node, attribute, attrType);
-		if (null == depictor.getMoleculeString()
-				|| "".equals(depictor.getMoleculeString())) {
-			displayErrorDialog("cheminfo.depictor.noSmilesError");
-			return;
-		}
-		MoleculeViewDialog dialog = new MoleculeViewDialog(Cytoscape
-				.getDesktop());
-		dialog.setSize(320, 320);
-		if (dialog.setDepictor(depictor)) {
-			dialog.setLocationRelativeTo(Cytoscape.getDesktop());
-			dialog.pack();
-			dialog.setVisible(true);
-		} else {
-			displayErrorDialog("cheminfo.system.error");
-		}
-	}
-
 	/**
 	 * Display an error message
 	 * 
@@ -558,79 +453,70 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 	}
 
 	/**
-	 * Display a message
-	 * 
-	 * @param message
-	 */
-	public void displayMessageDialog(String messageKey) {
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), systemProps
-				.getProperty(messageKey), "ChemInfo Plugin Message",
-				JOptionPane.PLAIN_MESSAGE);
-	}
-	
-	private Object[] showAttributeDialog(String[] attributes) {
-		JComboBox combo = new JComboBox(attributes);
-		JPanel pane = new JPanel();
-		pane.setLayout(new BorderLayout());
-		pane.add(combo, BorderLayout.CENTER);
-		
-		final ButtonGroup group = new ButtonGroup();
-		JRadioButton radio1 = new JRadioButton("SMILES");
-		JRadioButton radio2 = new JRadioButton("InChI");
-		group.add(radio1);
-		group.add(radio2);
-		radio1.setSelected(true);
-		JPanel box = new JPanel();
-		JLabel label = new JLabel("Type of attribute value:");
-		box.setLayout(new BoxLayout(box, BoxLayout.PAGE_AXIS));
-		box.add(label);
-		box.add(radio1);
-		box.add(radio2);
-		pane.add(box, BorderLayout.SOUTH);
-		
-		JOptionPane editPane = new JOptionPane(pane);
-		JDialog dialog = editPane.createDialog(Cytoscape.getDesktop(), "Test");
-		dialog.show();
-		String value = (String)combo.getSelectedItem();
-		return new Object[] { value, radio1.isSelected()? AttriType.smiles : AttriType.inchi };
+ 	 * Create a 2D popup dialog for this node or edge
+ 	 *
+ 	 * @param view the nodeView or edgeView we're going to pull the compounds from
+ 	 * @param dialog the settings dialog
+ 	 */
+	private void createPopup(Object view, ChemInfoSettingsDialog dialog) {
+    CreatePopupTask loader = new CreatePopupTask(view, dialog);
+		TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+  }
+
+	/**
+ 	 * Create a compound table for this group of nodes or edges
+ 	 *
+ 	 * @param selection the nodes or edges we're going to pull the compounds from
+ 	 * @param dialog the settings dialog
+ 	 */
+	private void createTable(Collection<GraphObject>selection, ChemInfoSettingsDialog dialog) {
+		CreateCompoundTableTask loader = new CreateCompoundTableTask(selection, dialog);
+		TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 	}
 
-	private int showSimilarityOptionDialog(int selected) {
-		JRadioButton[] radioButtons = new JRadioButton[4];
-		final ButtonGroup group = new ButtonGroup();
-		for (int i = 0; i < 2; i++) {
-			radioButtons[i] = createRadioButton("cheminfo.similarity.nodeset."
-					+ i);
-			group.add(radioButtons[i]);
-		}
-		radioButtons[selected].setSelected(true);
-		JPanel box = new JPanel();
-		JLabel label = new JLabel(systemProps
-				.getProperty("cheminfo.similarity.nodeset"));
-		box.setLayout(new BoxLayout(box, BoxLayout.PAGE_AXIS));
-		box.add(label);
-
-		for (int i = 0; i < 2; i++) {
-			box.add(radioButtons[i]);
-		}
-		box.setBorder(new TitledBorder("Options:"));
-
-		JPanel pane = new JPanel(new BorderLayout());
-		pane.add(box, BorderLayout.NORTH);
-
-		JOptionPane editPane = new JOptionPane(pane);
-		JDialog dialog = editPane.createDialog(Cytoscape.getDesktop(), "Test");
-		dialog.show();
-		int selectedOption = -1;
-		for (int i = 0; i < 2; i++) {
-			if (radioButtons[i].isSelected()) {
-				selectedOption = i;
-			}
-		}
-		return selectedOption;
+	/**
+ 	 * Calculate the tanimoto coefficients for each pair of compounds
+ 	 *
+ 	 * @param selection the nodes or edges we're going to pull the compounds from
+ 	 * @param dialog the settings dialog
+ 	 * @param newNetwork if 'true' a new network is created and 
+ 	 */
+	private void createScoreTable(Collection<GraphObject>selection, ChemInfoSettingsDialog dialog, boolean newNetwork) {
+		TanimotoScorerTask scorer = new TanimotoScorerTask(selection, dialog, newNetwork);
+		TaskManager.executeTask(scorer, scorer.getDefaultTaskConfig());
 	}
 
-	private JRadioButton createRadioButton(String messageKey) {
-		return new JRadioButton(systemProps.getProperty(messageKey));
+
+	/**
+ 	 * Add our compound-dependent linkouts to the linkout properties
+ 	 *
+ 	 * @param go the object (Node or Edge) we're adding our linkout to
+ 	 */
+	private void updateLinkOut(GraphObject go) {
+
+		CyAttributes attributes = null;
+		String type = null;
+		if (go instanceof Node) {
+			attributes = Cytoscape.getNodeAttributes();
+			type = "node";
+		} else {
+			attributes = Cytoscape.getEdgeAttributes();
+			type = "edge";
+		}
+
+		// Only get the loaded compounds so our popup menus don't get really slow
+		List<Compound> cList = Compound.getCompounds(go, attributes,
+                                                 settingsDialog.getCompoundAttributes(type,AttriType.smiles),
+                                                 settingsDialog.getCompoundAttributes(type,AttriType.inchi), true);
+
+		if (cList == null || cList.size() == 0) {
+			cytoProps.remove(type+"linkouturl.Entrez.PubChem");
+			cytoProps.remove(type+"linkouturl.ChemSpider");
+			cytoProps.remove(type+"linkouturl.ChEBI");
+		} else {
+			cytoProps.put(type+"linkouturl.Entrez.PubChem", pubChemSearch+cList.get(0).getMoleculeString());
+			cytoProps.put(type+"linkouturl.ChemSpider", chemSpiderSearch+cList.get(0).getMoleculeString());
+			cytoProps.put(type+"linkouturl.ChEBI", cebiSearch+cList.get(0).getMoleculeString());
+		}
 	}
 }
