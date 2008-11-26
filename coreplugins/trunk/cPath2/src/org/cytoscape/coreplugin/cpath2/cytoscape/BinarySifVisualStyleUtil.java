@@ -23,12 +23,12 @@ public class BinarySifVisualStyleUtil {
     public final static String BINARY_SIF_VISUAL_STYLE = "Binary_SIF_Version_1";
     public final static String BINARY_NETWORK = "BINARY_NETWORK";
     public final static String COMPONENT_OF = "COMPONENT_OF";
-    public final static String COMPONENT_IN_SAME = "COMPONENT_IN_SAME";
+    public final static String COMPONENT_IN_SAME = "IN_SAME_COMPONENT";
     public final static String SEQUENTIAL_CATALYSIS = "SEQUENTIAL_CATALYSIS";
-    public final static String CONTROLS_STATE_CHANGE = "CONTROLS_STATE_CHANGE";
-    public final static String CONTROLS_METABOLIC_CHANGE = "CONTROLS_METABOLIC_CHANGE";
-    public final static String PARTICIPATES_CONVERSION = "PARTICIPATES_CONVERSION";
-    public final static String PARTICIPATES_INTERACTION = "PARTICIPATES_INTERACTION";
+    public final static String CONTROLS_STATE_CHANGE = "STATE_CHANGE";
+    public final static String CONTROLS_METABOLIC_CHANGE = "METABOLIC_CATALYSIS";
+    public final static String PARTICIPATES_CONVERSION = "REACTS_WITH";
+    public final static String PARTICIPATES_INTERACTION = "INTERACTS_WITH";
     public final static String CO_CONTROL_INDEPENDENT_SIMILAR = "CO_CONTROL_INDEPENDENT_SIMILAR";
     public final static String CO_CONTROL_INDEPENDENT_ANTI = "CO_CONTROL_INDEPENDENT_ANTI";
     public final static String CO_CONTROL_DEPENDENT_SIMILAR = "CO_CONTROL_DEPENDENT_SIMILAR";
