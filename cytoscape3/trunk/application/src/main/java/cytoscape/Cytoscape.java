@@ -382,7 +382,7 @@ public abstract class Cytoscape {
 					// don't system exit since we are running as part
 					// of a bigger application. Instead, dispose of the
 					// desktop.
-					getDesktop().dispose();
+					defaultDesktop.dispose();
 				} else {
 					System.exit(returnVal);
 				}
@@ -411,7 +411,7 @@ public abstract class Cytoscape {
 		// Confirm user to save current session or not.
 		//
 		Object[] options = { "Yes, save and quit", "No, just quit", "Cancel" };
-		int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), msg,
+		int n = JOptionPane.showOptionDialog(defaultDesktop, msg,
 		                                     "Save Networks Before Quitting?",
 		                                     JOptionPane.YES_NO_OPTION,
 		                                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -871,13 +871,6 @@ public abstract class Cytoscape {
 	public static void setDesktop(CytoscapeDesktop desk ) {
 		if ( desk != null )
 			defaultDesktop = desk;
-	}
-	/**
-	 * @return the reference to the One CytoscapeDesktop
-	 */
-	public static CytoscapeDesktop getDesktop() {
-		
-		return defaultDesktop;
 	}
 
 	/**
