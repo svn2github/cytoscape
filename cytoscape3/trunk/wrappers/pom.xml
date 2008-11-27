@@ -1,42 +1,41 @@
 <?xml version="1.0" encoding="ANSI_X3.4-1968"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<parent>
-		<groupId>cytoscape</groupId>
-		<artifactId>core</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>cytoscape.core</groupId>
-	<artifactId>wrappers</artifactId>
-	<name></name>
-	<packaging>pom</packaging>
-	<modules>
-		<module>cytoscape-temp.swingx</module>
-		<module>org.freehep.export</module>
-		<module>org.freehep.graphics2d</module>
-		<module>org.freehep.graphicsio</module>
-		<module>org.freehep.graphicsio-emf</module>
-		<module>org.freehep.graphicsio-pdf</module>
-		<module>org.freehep.graphicsio-ps</module>
-		<module>org.freehep.graphicsio-svg</module>
-		<module>org.freehep.graphicsio-swf</module>
-		<module>org.freehep.io</module>
-		<module>org.freehep.swing</module>
-		<module>org.freehep.util</module>
-		<module>org.freehep.xml</module>
-		<module>com.jgoodies.looks</module>
-		<module>biojava</module>
-		<module>com.sun.xml.fastinfoset.FastInfoset</module>
-		<module>cytoscape-sun.jhall</module>
-		<module>com.sun.xml.bind.jaxb-xjc</module>
-		<module>net.java.dev.swing-layout</module>
-		<module>cytoscape-temp.l2fprod-common-all</module>
-		<module>com.sun.xml.bind.jaxb-impl</module>
-		<module>javax.xml.jaxb-api</module>
-		<module>javax.xml.stream.stax-api</module>
-		<module>cytoscape-temp.sbml2</module>
-		<module>colt</module>
-	</modules>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <parent>
+    <groupId>cytoscape</groupId>
+    <artifactId>core</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cytoscape.core</groupId>
+  <artifactId>wrappers</artifactId>
+
+  <name></name>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>cytoscape-temp.swingx</module>
+    <module>org.freehep.export</module>
+    <module>org.freehep.graphics2d</module>
+    <module>org.freehep.graphicsio</module>
+    <module>org.freehep.graphicsio-emf</module>
+    <module>org.freehep.graphicsio-pdf</module>
+    <module>org.freehep.graphicsio-ps</module>
+    <module>org.freehep.graphicsio-svg</module>
+    <module>org.freehep.graphicsio-swf</module>
+    <module>org.freehep.io</module>
+    <module>org.freehep.swing</module>
+    <module>org.freehep.util</module>
+    <module>org.freehep.xml</module>
+    <module>com.jgoodies.looks</module>
+    <module>biojava</module>
+    <module>cytoscape-sun.jhall</module>
+    <module>net.java.dev.swing-layout</module>
+    <module>cytoscape-temp.l2fprod-common-all</module>
+    <module>cytoscape-temp.sbml2</module>
+    <module>colt</module>
+  </modules>
+
 </project>
