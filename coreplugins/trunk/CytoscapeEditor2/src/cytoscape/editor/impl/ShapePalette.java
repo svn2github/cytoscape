@@ -44,13 +44,16 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
+import javax.swing.border.TitledBorder;
 
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.DragSourceContextCursorSetter;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
 import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
 
 
 /**
@@ -93,6 +96,23 @@ public class ShapePalette extends JPanel {
 
 		_controlPane = new JPanel();
 		_controlPane.setLayout(new BoxLayout(_controlPane, BoxLayout.Y_AXIS));
+		_controlPane.setPreferredSize(new Dimension(300, 200));
+		TitledBorder t2 = BorderFactory.createTitledBorder("Instructions:");
+		_controlPane.setBorder(t2);
+		String instructions = new String ("To add a node: " + 
+				"drag/drop a node shape onto the network view.\n" +
+				"To add an edge: " + "drag/drop an edge " + 
+				"shape onto source node, then click on target node.\n" +
+				"To add interactions: double-click on an empty space and enter " +
+				"a line of SIF. ");
+		
+		JTextArea instructionsArea = new JTextArea(instructions);
+		instructionsArea.setLineWrap(true);
+		instructionsArea.setWrapStyleWord(true);
+		instructionsArea.setBackground(Cytoscape.getDesktop().getBackground());
+		_controlPane.add(instructionsArea);
+		_controlPane.setBackground(Cytoscape.getDesktop().getBackground());
+		
 
 		listModel = new DefaultListModel();
 		dataList = new JList(listModel);
@@ -108,10 +128,11 @@ public class ShapePalette extends JPanel {
 		scrollPane.setBorder(BorderFactory.createEtchedBorder());
 		dataList.setBackground(Cytoscape.getDesktop().getBackground());
 		scrollPane.setBackground(Cytoscape.getDesktop().getBackground());
-
+ 
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.setLayout(new BorderLayout());
+		this.add(_controlPane, BorderLayout.NORTH);
 		this.add(scrollPane, BorderLayout.CENTER);
 		this.setPreferredSize(new Dimension(300, 300));
 		this.setMaximumSize(new Dimension(300, 300));
