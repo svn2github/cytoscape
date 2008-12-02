@@ -1,0 +1,2 @@
+Private-Package: org.cytoscape.webservice.client.*
+Export-Package: org.cytoscape.webservice.client
