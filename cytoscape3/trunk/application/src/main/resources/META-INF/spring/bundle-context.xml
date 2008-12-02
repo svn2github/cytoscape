@@ -62,9 +62,6 @@
 	</bean>
 	<bean id="newWindowSelectedNodesEdgesAction" class="cytoscape.actions.NewWindowSelectedNodesEdgesAction"/>
 	<bean id="cloneGraphInNewWindowAction" class="cytoscape.actions.CloneGraphInNewWindowAction"/>
-	<bean id="webServiceNetworkImportAction" class="cytoscape.actions.WebServiceNetworkImportAction">
-		<constructor-arg ref="cytoscapeDesktop"/>
-	</bean>
 	<bean id="printAction" class="cytoscape.actions.PrintAction"/>
 	<bean id="exitAction" class="cytoscape.actions.ExitAction"/>
 	<bean id="undoAction" class="cytoscape.util.undo.UndoAction">
@@ -168,7 +165,6 @@
 		<constructor-arg ref="undoSupportServiceRef"/>
 	</bean>
 
-	<bean id="webServiceContextMenuListener" class="cytoscape.data.webservice.ui.WebServiceContextMenuListener"/>
 	<bean id="vizMapBypassNetworkListener" class="cytoscape.visual.ui.VizMapBypassNetworkListener">
 		<constructor-arg ref="editorFactory"/>
 	</bean>

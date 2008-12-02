@@ -38,7 +38,6 @@
 	<osgi:service id="newWindowSelectedNodesEdgesActionService" ref="newWindowSelectedNodesEdgesAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="cloneGraphInNewWindowActionService" ref="cloneGraphInNewWindowAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="newNetworkActionService" ref="newNetworkAction" interface="cytoscape.util.CyAction"/>
-	<osgi:service id="webServiceNetworkImportActionService" ref="webServiceNetworkImportAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="printActionService" ref="printAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="exitActionService" ref="exitAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="undoActionService" ref="undoAction" interface="cytoscape.util.CyAction"/>
