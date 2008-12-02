@@ -49,6 +49,7 @@ public class SIF_Interpreter {
 								.xformComponentToNodeCoords(nextLocn);
 						nv1.setOffset(nextLocn[0], nextLocn[1]);
 					} else {
+						Cytoscape.getCurrentNetwork().restoreNode(node1);
 						nv1 = Cytoscape.getCurrentNetworkView().getNodeView(
 								node1);
 					}
