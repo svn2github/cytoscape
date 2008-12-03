@@ -41,9 +41,10 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -67,6 +68,7 @@ import cytoscape.editor.event.BasicNetworkEditEventHandler;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeToolBar;
+import cytoscape.util.undo.CyAbstractEdit;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
@@ -502,6 +504,80 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 * the CytoscapeEditor in lieu of making direct modifications to the
 	 * Cytoscape model. Thus, it provides an insulating level of abstraction
 	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
+	 * for portability and extensibility of the editor.
+	 * 
+	 * This particular method adds the edge without firing an event, such as
+	 * would be done in a 'batch' operation such as 'ConnectSelectedNodes'
+	 *
+	 * @param node_1
+	 *            Node at one end of the edge
+	 * @param node_2
+	 *            Node at the other end of the edge
+	 * @param attribute
+	 *            the attribute of the edge to be searched, a common one is
+	 *            Semantics.INTERACTION
+	 * @param attribute_value
+	 *            a value for the attribute, like "pp" or "default"
+	 * @param create
+	 *            if true, then create an edge if one does not already exist.
+	 *            Otherwise, return the edge if it already exists.
+	 * @param edgeType
+	 *            a value for the "EdgeType" attribute assigned to the edge.
+	 *            This can be used in conjunction with the Visual Mapper.
+	 * @return the CyEdge that has either been reused or created
+	 *
+	 */
+	public CyEdge addEdgeWithoutFiringEvent (Node node_1, Node node_2, String attribute, Object attribute_value,
+	                      boolean create, String edgeType) {
+		// first see if edge already exists. If it does, then
+		// there is no need to set up undoable edit or fire event
+		CyEdge edge;
+		boolean uniqueEdge = true;
+		edge = Cytoscape.getCyEdge(node_1, node_2, attribute, attribute_value, false, true); // edge is directed
+
+		if (edge != null) {
+			uniqueEdge = false;
+		} else {
+			edge = Cytoscape.getCyEdge(node_1, node_2, attribute, attribute_value, create, true); // edge is directed
+		}
+
+		if (edge != null) {
+			CyNetwork net = Cytoscape.getCurrentNetwork();
+			net.restoreEdge(edge);
+
+			if (uniqueEdge) {
+				if (edgeType != null) {
+					Cytoscape.getEdgeAttributes()
+					         .setAttribute(edge.getIdentifier(), CytoscapeEditorManager.EDGE_TYPE,
+					                       edgeType);
+				}
+
+//				CyUndo.getUndoableEditSupport().postEdit( new AddEdgeEdit(net,edge) );
+//
+//				Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
+//				                             CytoscapeEditorManager.CYTOSCAPE_EDITOR, net);
+
+				Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(this);
+			}
+		}
+       // MLC 07/13/07 BEGIN:
+		// tooltips are now handles as vismap entries:
+		// set tooltip
+		// if (edge != null) {
+		//	 EdgeView ev = Cytoscape.getCurrentNetworkView().getEdgeView(edge);
+		//	 ev.setToolTip(edge.getIdentifier());
+		// }
+//MLC 07/13/07 END.
+		return edge;
+	}
+	
+	
+	/**
+	 *
+	 * wrapper for adding an edge in Cytoscape. This is intended to be called by
+	 * the CytoscapeEditor in lieu of making direct modifications to the
+	 * Cytoscape model. Thus, it provides an insulating level of abstraction
+	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
 	 * for portability and extensibility of the editor. This version always
 	 * creates an edge, whether or not one already exists.
 	 *
@@ -829,6 +905,8 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 				}
 			}
 
+			Set<Integer> edgeIndices = new HashSet<Integer>();
+			
 			for (int i = 0; i < (nodes.size() - 1); i++) {
 				NodeView nv = (NodeView) nodes.get(i);
 				CyNode firstCyNode = (CyNode) nv.getNode();
@@ -836,10 +914,86 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 				for (int j = i + 1; j < nodes.size(); j++) {
 					NodeView nv2 = (NodeView) nodes.get(j);
 					CyNode secondCyNode = (CyNode) nv2.getNode();
-					addEdge(firstCyNode, secondCyNode, Semantics.INTERACTION, edgeTypeValue, true,
+					CyEdge myedge = addEdgeWithoutFiringEvent (firstCyNode, secondCyNode, Semantics.INTERACTION, edgeTypeValue, true,
 					        edgeTypeName);
+					edgeIndices.add(myedge.getRootGraphIndex());
 				}
 			}
+			
+			// convert
+			int i = 0;
+			int[] edgeInd = new int[edgeIndices.size()];
+			for (Integer ei : edgeIndices) 
+				edgeInd[i++] = ei.intValue();
+			
+			CyNetwork net = Cytoscape.getCurrentNetwork();
+			CyUndo.getUndoableEditSupport().postEdit( new ConnectEdit(net,edgeInd, this) );
+
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
+			                             CytoscapeEditorManager.CYTOSCAPE_EDITOR, net);
+			
 		}
 	}
+
+	/**
+	 * An undoable edit that will undo and redo connection of nodes and edges.
+	 */ 
+	class ConnectEdit extends CyAbstractEdit {
+
+//		private static final long serialVersionUID = -1164181258019250610L;
+
+		int[] edges;
+
+		CyNetwork net;
+		// AJK: 03082008 ConnectSelectedNodesAction to be reenabled upon undo
+		ConnectSelectedNodesAction connectAction;
+		
+
+		ConnectEdit(CyNetwork net, int[] edgeInd) {
+			super("Connect Selected Nodes");
+			if ( net == null )
+				throw new IllegalArgumentException("network is null");
+			this.net = net;
+
+			edges = new int[edgeInd.length];
+			for ( int i = 0; i < edgeInd.length; i++ ) 
+				edges[i] = edgeInd[i];
+			
+		}
+
+		// AJK: 03082008 DeleteAction to be reenabled upon undo
+		ConnectEdit(CyNetwork net, int[] edgeInd,	ConnectSelectedNodesAction connectAction) {
+			this (net, edgeInd);
+			this.connectAction = connectAction;
+		}
+		
+		
+		
+		
+			
+
+		public void redo() {
+			super.redo();
+
+			net.restoreEdges(edges);
+			CyNetworkView netView = Cytoscape.getNetworkView(net.getIdentifier());				
+			netView.redrawGraph(true, true);
+	        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
+	        // AJK: 03082008 disable ConnectSelectedNodesAction 
+	        connectAction.setEnabled(false);
+		}
+
+		public void undo() {
+		 	super.undo();
+
+			net.hideEdges(edges);
+			CyNetworkView netView = Cytoscape.getNetworkView(net.getIdentifier());				
+
+			netView.redrawGraph(true, true);
+	        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
+	        // AJK: 03082008 re-enable ConnectSelectedNodesAction 
+	        connectAction.setEnabled(true);
+		}
+	}
+	
 }
