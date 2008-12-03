@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/util
+           http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<description>
+		Configuration file for VizMapper GUI.
+	</description>
+
+
+	<!--
+		Setting (property) file for VizMapper GUI. This bean can be injected
+		as a regular Java Property object.
+	-->
+	<util:properties id="vizmapUIProps"
+		location="/META-INF/spring/config/vmgui.prop" />
+
+	<context:property-placeholder location="/META-INF/spring/config/vmgui.prop" />
+	<context:annotation-config />
+
+
+	<!-- Visual property editors -->
+	<bean name="editorFactory" class="org.cytoscape.vizmap.gui.editors.EditorFactory" />
+
+	<bean id="vizMapBypassNetworkListener" class="org.cytoscape.vizmap.gui.VizMapBypassNetworkListener">
+		<constructor-arg ref="editorFactory" />
+	</bean>
+
+	<bean id="continuousColor"
+		class="org.cytoscape.vizmap.gui.internal.editors.ContinuousColor" />
+
+	<bean id="continuousContinuous"
+		class="org.cytoscape.vizmap.gui.internal.editors.ContinuousContinuous" />
+
+	<bean id="continuousDiscrete"
+		class="org.cytoscape.vizmap.gui.internal.editors.ContinuousDiscrete">
+		<constructor-arg ref="editorFactory" />
+	</bean>
+	<bean id="discreteArrowShape"
+		class="org.cytoscape.vizmap.gui.internal.editors.DiscreteArrowShape" />
+
+	<bean id="discreteColor" class="org.cytoscape.vizmap.gui.internal.editors.DiscreteColor" />
+
+	<bean id="discreteFont" class="org.cytoscape.vizmap.gui.internal.editors.DiscreteFont" />
+
+	<bean id="discreteLabelPosition"
+		class="org.cytoscape.vizmap.gui.internal.editors.DiscreteLabelPosition" />
+
+	<bean id="discreteLineStyle"
+		class="org.cytoscape.vizmap.gui.internal.editors.DiscreteLineStyle" />
+
+	<bean id="discreteNodeShape"
+		class="org.cytoscape.vizmap.gui.internal.editors.DiscreteNodeShape" />
+	<bean id="discreteNumber"
+		class="org.cytoscape.vizmap.gui.internal.editors.DiscreteNumber" />
+
+	<bean id="discreteString"
+		class="org.cytoscape.vizmap.gui.internal.editors.DiscreteString" />
+
+
+	<!-- This is a Bean definition file for Vizmapper GUI. -->
+	<bean id="colorMgr" class="org.cytoscape.vizmap.gui.theme.ColorManager"
+		scope="singleton">
+	</bean>
+	<bean id="iconManager" class="org.cytoscape.vizmap.gui.theme.IconManager"
+		scope="singleton" />
+	<bean id="menuManager" class="org.cytoscape.vizmap.gui.VizMapperMenuManager"
+		scope="singleton" depends-on="iconManager" autowire="autodetect">
+		<property name="generateMenuLabel" value="${vizMapperMainPanel.menu.generateMenu}" />
+		<property name="generateIconId" value="${vizMapperMainPanel.menu.generateMenu.icon}" />
+	</bean>
+
+	<bean name="defaultViewPanel" class="org.cytoscape.vizmap.gui.DefaultViewPanel"
+		scope="singleton">
+		<description>
+			Create default view panel.	
+		</description>
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+		<constructor-arg ref="graphViewFactoryServiceRef" />
+	</bean>
+
+	<bean name="defAppBldr" class="org.cytoscape.vizmap.gui.DefaultAppearenceBuilder"
+		scope="singleton" depends-on="defaultViewPanel">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="defaultViewPanel" />
+		<constructor-arg ref="editorFactory" />
+	</bean>
+
+	<bean name="vmm" class="org.cytoscape.vizmap.VisualMappingManager" />
+
+	<bean name="vizMapperUtil" class="org.cytoscape.vizmap.gui.util.VizMapperUtil"
+		depends-on="vmm"></bean>
+
+
+	<!-- Menu commands for Vizmapper -->
+	<bean name="createNewStyleAction" class="org.cytoscape.vizmap.gui.CreateNewStyleAction"
+		autowire="autodetect" depends-on="vizMapperMainPanel">
+		<property name="menuLabel"
+			value="${vizMapperMainPanel.menu.createNewStyleAction}" />
+		<property name="iconId"
+			value="${vizMapperMainPanel.menu.createNewStyleAction.icon}" />
+	</bean>
+	<bean name="removeStyleAction" class="org.cytoscape.vizmap.gui.RemoveStyleAction"
+		autowire="autodetect" depends-on="vizMapperMainPanel">
+		<property name="menuLabel" value="${vizMapperMainPanel.menu.removeStyleAction}" />
+		<property name="iconId"
+			value="${vizMapperMainPanel.menu.removeStyleAction.icon}" />
+	</bean>
+	<bean name="renameStyleAction" class="org.cytoscape.vizmap.gui.RenameStyleAction"
+		autowire="autodetect" depends-on="vizMapperMainPanel">
+		<property name="menuLabel" value="${vizMapperMainPanel.menu.renameStyleAction}" />
+		<property name="iconId"
+			value="${vizMapperMainPanel.menu.renameStyleAction.icon}" />
+	</bean>
+
+	<bean name="copyStyleAction" class="org.cytoscape.vizmap.gui.CopyStyleAction"
+		autowire="autodetect" depends-on="vizMapperMainPanel">
+		<property name="menuLabel" value="${vizMapperMainPanel.menu.copyStyleAction}" />
+		<property name="iconId"
+			value="${vizMapperMainPanel.menu.copyStyleAction.icon}" />
+	</bean>
+	<bean name="createLegendAction" class="org.cytoscape.vizmap.gui.CreateLegendAction"
+		autowire="autodetect" depends-on="vizMapperMainPanel">
+		<property name="menuLabel"
+			value="${vizMapperMainPanel.menu.createLegendAction}" />
+		<property name="iconId"
+			value="${vizMapperMainPanel.menu.createLegendAction.icon}" />
+	</bean>
+
+	<!--
+		Value generators: generate discrete mapping from simple algorithms.
+	-->
+	<bean name="rainbowGenerator"
+		class="org.cytoscape.vizmap.gui.internal.util.RainbowColorMappingGenerator"
+		scope="singleton" depends-on="generateValueAction" />
+	<bean name="rainbowOscGenerator"
+		class="org.cytoscape.vizmap.gui.internal.util.RainbowOscColorMappingGenerator"
+		scope="singleton" depends-on="generateValueAction" />
+	<bean name="randomColorGenerator"
+		class="org.cytoscape.vizmap.gui.internal.util.RandomColorMappingGenerator"
+		scope="singleton" depends-on="generateValueAction" />
+	<bean name="generateValueAction" class="org.cytoscape.vizmap.gui.GenerateValueAction"
+		scope="singleton" depends-on="vizMapperMainPanel">
+	</bean>
+
+
+	<!-- Context Menu Commands -->
+	<bean name="removeMappingAction" class="org.cytoscape.vizmap.gui.RemoveMappingAction"
+		depends-on="vizMapperMainPanel" autowire="autodetect">
+		<property name="menuLabel"
+			value="${vizMapperMainPanel.menu.removeMappingAction}" />
+		<property name="iconId"
+			value="${vizMapperMainPanel.menu.removeMappingAction.icon}" />
+	</bean>
+
+
+	<bean name="vizMapperMainPanel" class="org.cytoscape.vizmap.gui.VizMapperMainPanel"
+		depends-on="colorMgr,
+		iconManager, defAppBldr, vizMapperUtil, menuManager">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="defAppBldr" />
+		<constructor-arg ref="iconManager" />
+		<constructor-arg ref="colorMgr" />
+		<constructor-arg ref="vmm" />
+		<constructor-arg ref="editorFactory" />
+		<constructor-arg ref="menuManager" />
+	</bean>
+</beans>
