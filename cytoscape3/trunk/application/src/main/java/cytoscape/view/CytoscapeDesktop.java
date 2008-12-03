@@ -38,26 +38,44 @@ package cytoscape.view;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
+
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
-//import cytoscape.visual.ui.VizMapperMainPanel;
+
 import org.cytoscape.model.CyNetwork;
+
 import org.cytoscape.view.GraphView;
+
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.SwingPropertyChangeSupport;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.util.HashMap;
 import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.SwingPropertyChangeSupport;
 
 
 /**
@@ -108,7 +126,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	 *
 	 */
 	public static final String VIZMAP_ENABLED = "VIZMAP_ENABLED";
-
 	private static final String SMALL_ICON = "/images/c16.png";
 
 	// --------------------//
@@ -202,55 +219,55 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 		// ------------------------------//
 		// Set up the Panels, Menus, and Event Firing
 		networkViewManager = new NetworkViewManager(this);
-		
+
 		getBirdsEyeViewHandler();
-		
+
 		getSwingPropertyChangeSupport().addPropertyChangeListener(bevh);
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(bevh);
 
 		networkPanel = new NetworkPanel(this);
 		networkPanel.setNavigator(bevh.getBirdsEyeView());
 
-		this.cyMenus = cyMenus; 
+		this.cyMenus = cyMenus;
 
-/*
-		 Listener Setup
-		 ----------------------------------------
-		 |----------|
-		 | CyMenus  |
-		 |----------|
-		 |
-		 |
-		 |-----|      |---------|    |------|  |-------|
-		 | N P |------| Desktop |----| NVM  |--| Views |
-		 |-----|      |---------|    |------|  |-------|
-		 |
-		 |
-		 |-----------|
-		 | Cytoscape |
-		 |-----------|
-*/
+		/*
+		         Listener Setup
+		         ----------------------------------------
+		         |----------|
+		         | CyMenus  |
+		         |----------|
+		         |
+		         |
+		         |-----|      |---------|    |------|  |-------|
+		         | N P |------| Desktop |----| NVM  |--| Views |
+		         |-----|      |---------|    |------|  |-------|
+		         |
+		         |
+		         |-----------|
+		         | Cytoscape |
+		         |-----------|
+		*/
 
-/*
-		The CytoscapeDesktop listens to NETWORK_VIEW_CREATED events,
-		and passes them on, The NetworkPanel listens for them
-		The Desktop also keeps Cytoscape up2date, but NOT via events
-*/
+		/*
+		        The CytoscapeDesktop listens to NETWORK_VIEW_CREATED events,
+		        and passes them on, The NetworkPanel listens for them
+		        The Desktop also keeps Cytoscape up2date, but NOT via events
+		*/
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
-/*
-		The Networkviewmanager listens to the CytoscapeDesktop to know when
-		to put new NetworkViews in the userspace and to get passed focus events
-		from the NetworkPanel. The CytoscapeDesktop also listens to the NVM
-*/
+		/*
+		        The Networkviewmanager listens to the CytoscapeDesktop to know when
+		        to put new NetworkViews in the userspace and to get passed focus events
+		        from the NetworkPanel. The CytoscapeDesktop also listens to the NVM
+		*/
 		this.getSwingPropertyChangeSupport().addPropertyChangeListener(networkViewManager);
 		networkViewManager.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
-/*
-		The NetworkPanel listens to the CytoscapeDesktop for
-		NETWORK_CREATED_EVENTS a as well as for passing focused events from the Networkviewmanager.
-		The CytoscapeDesktop also listens to the NetworkPanel
-*/
+		/*
+		        The NetworkPanel listens to the CytoscapeDesktop for
+		        NETWORK_CREATED_EVENTS a as well as for passing focused events from the Networkviewmanager.
+		        The CytoscapeDesktop also listens to the NetworkPanel
+		*/
 		this.getSwingPropertyChangeSupport().addPropertyChangeListener(networkPanel);
 		networkPanel.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
@@ -273,10 +290,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 		//getVizMapperUI();
 		vmm = Cytoscape.getVisualMappingManager();
 
-/*
-		don't automatically close window. Let Cytoscape.exit(returnVal)
-		handle this, based upon user confirmation.
-*/
+		/*
+		        don't automatically close window. Let Cytoscape.exit(returnVal)
+		        handle this, based upon user confirmation.
+		*/
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 		addWindowListener(new WindowAdapter() {
@@ -346,19 +363,18 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	public void setNewNetwork(CyNetwork newNetwork) {
 	}
 
-
 	/**
 	 *  Returns new vizmapper GUI.
 	 *
 	 * @return  DOCUMENT ME!
 	public VizMapperMainPanel getVizMapperUI() {
-		if (vizmapperUI == null) {
-			vizmapperUI = VizMapperMainPanel.getVizMapperUI();
-			getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
-			this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
-		}
+	    if (vizmapperUI == null) {
+	        vizmapperUI = VizMapperMainPanel.getVizMapperUI();
+	        getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
+	        this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
+	    }
 
-		return vizmapperUI;
+	    return vizmapperUI;
 	}
 	 */
 
@@ -372,6 +388,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	 */
 	public VisualStyle setVisualStyle(VisualStyle style) {
 		vmm.setVisualStyle(style);
+
 		return null; // TODO why does this return null, should the method just return void instead?
 	}
 
@@ -379,28 +396,28 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 		final VisualStyle old_style = vmm.getVisualStyle();
 		final GraphView old_view = Cytoscape.getCurrentNetworkView();
 
-    // set the current Network/View
-    Cytoscape.setCurrentNetwork(network_id);
+		// set the current Network/View
+		Cytoscape.setCurrentNetwork(network_id);
 
-    if (Cytoscape.setCurrentNetworkView(network_id)) {
-      // deal with the new Network
-      final GraphView new_view = Cytoscape.getCurrentNetworkView();
+		if (Cytoscape.setCurrentNetworkView(network_id)) {
+			// deal with the new Network
+			final GraphView new_view = Cytoscape.getCurrentNetworkView();
 
-      VisualMappingManager visMgr = new VisualMappingManager();
-      VisualStyle new_style = visMgr.getVisualStyleForView(new_view);
+			VisualMappingManager visMgr = new VisualMappingManager();
+			VisualStyle new_style = visMgr.getVisualStyleForView(new_view);
 
-      if (new_style == null)
-        new_style = vmm.getCalculatorCatalog().getVisualStyle("default");
+			if (new_style == null)
+				new_style = vmm.getCalculatorCatalog().getVisualStyle("default");
 
-      vmm.setNetworkView(new_view);
+			vmm.setNetworkView(new_view);
 
-      if (new_style.getName().equals(old_style.getName()) == false) {
-        vmm.setVisualStyle(new_style);
+			if (new_style.getName().equals(old_style.getName()) == false) {
+				vmm.setVisualStyle(new_style);
 
-        // Is this necessary?
-        Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
-      }
-    }
+				// Is this necessary?
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+			}
+		}
 	}
 
 	/**
@@ -435,16 +452,16 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 
 			// pass on the event
 			pcs.firePropertyChange(e);
-		} else  if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
+		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
 			// get focus event from NetworkViewManager
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
 			// get Focus from NetworkPanel
-			updateFocus((Long)e.getNewValue());
+			updateFocus((Long) e.getNewValue());
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEWS_SELECTED) {
-			Cytoscape.setSelectedNetworkViews( (List<Long>)(e.getNewValue()) );
-			Cytoscape.setSelectedNetworks( (List<Long>)(e.getNewValue()) );
+			Cytoscape.setSelectedNetworkViews((List<Long>) (e.getNewValue()));
+			Cytoscape.setSelectedNetworks((List<Long>) (e.getNewValue()));
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
 			System.out.println("getting and refiring NETWORK_CREATED");
@@ -453,7 +470,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
-			setFocus( Cytoscape.getCurrentNetwork().getSUID() );
+			setFocus(Cytoscape.getCurrentNetwork().getSUID());
 
 			// Check new session or not
 			if ((Cytoscape.getNetworkSet().size() == 0)
@@ -473,7 +490,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 
 			// pass on the event
 			pcs.firePropertyChange(e);
-			setFocus( Cytoscape.getCurrentNetwork().getSUID() );
+			setFocus(Cytoscape.getCurrentNetwork().getSUID());
 		}
 	}
 
@@ -635,13 +652,18 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	 * @return  DOCUMENT ME!
 	 */
 	public BirdsEyeViewHandler getBirdsEyeViewHandler() {
-		if(bevh == null) {
-			bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane(),this);
+		if (bevh == null) {
+			bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane(), this);
 		}
-		
+
 		return bevh;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public JFrame getJFrame() {
 		return this;
 	}
