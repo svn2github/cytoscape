@@ -1,6 +1,0 @@
-#-----------------------------------------------------------------
-# Use this file to add customized Bnd instructions for the bundle
-#-----------------------------------------------------------------
-
-Export-Package: org.cytoscape.vizmap.gui, org.cytoscape.vizmap.gui.editors, org.cytoscape.vizmap.gui.theme, org.cytoscape.vizmap.gui.util
-Private-Package: org.cytoscape.vizmap.gui.internal, org.cytoscape.vizmap.gui.internal.* 
