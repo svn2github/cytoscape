@@ -3,6 +3,6 @@
 #-----------------------------------------------------------------
 
 Spring-Context: META-INF/spring/*.xml
-Private-Package: ${bundle.symbolicName}.internal,org.cytoscape.event.internal,${bundle.symbolicName}.events.internal
+Private-Package: ${bundle.symbolicName}.internal,${bundle.symbolicName}.events.internal
 Export-Package: ${bundle.symbolicName},${bundle.symbolicName}.events,
 
