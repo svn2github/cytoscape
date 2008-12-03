@@ -48,6 +48,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
+import javax.swing.event.MenuEvent;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -163,6 +164,9 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 	 */
 	public BasicCytoscapeEditor() {
 		super();
+		ConnectSelectedNodesAction connectAction = new ConnectSelectedNodesAction();
+		connectAction.setPreferredMenu("Edit");
+		Cytoscape.getDesktop().getCyMenus().addAction(connectAction);
 	}
 
 	/**
@@ -620,29 +624,29 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		// if not, then add an item
 		// TODO: look for routines to find a menu item given a string; there
 		// should be such a utility
-		JMenu editMenu = Cytoscape.getDesktop().getCyMenus().getEditMenu();
-		boolean foundConnectSelected = false;
-		CytoscapeEditorManager.log("item count = " + editMenu.getItemCount());
-
-		for (int i = 0; i < editMenu.getItemCount(); i++) {
-			JMenuItem jIt = editMenu.getItem(i);
-
-			if (jIt != null) {
-				String name = jIt.getText();
-
-				if (name.equals(_connectedTitle)) {
-					foundConnectSelected = true;
-
-					break;
-				}
-			}
-		}
-
-		if (!foundConnectSelected) {
-			ConnectSelectedNodesAction connectAction = new ConnectSelectedNodesAction();
-			connectAction.setPreferredMenu("Edit");
-			Cytoscape.getDesktop().getCyMenus().addAction(connectAction);
-		}
+//		JMenu editMenu = Cytoscape.getDesktop().getCyMenus().getEditMenu();
+//		boolean foundConnectSelected = false;
+//		CytoscapeEditorManager.log("item count = " + editMenu.getItemCount());
+//
+//		for (int i = 0; i < editMenu.getItemCount(); i++) {
+//			JMenuItem jIt = editMenu.getItem(i);
+//
+//			if (jIt != null) {
+//				String name = jIt.getText();
+//
+//				if (name.equals(_connectedTitle)) {
+//					foundConnectSelected = true;
+//
+//					break;
+//				}
+//			}
+//		}
+//
+//		if (!foundConnectSelected) {
+//			ConnectSelectedNodesAction connectAction = new ConnectSelectedNodesAction();
+//			connectAction.setPreferredMenu("Edit");
+//			Cytoscape.getDesktop().getCyMenus().addAction(connectAction);
+//		}
 
 		_cyMenus = Cytoscape.getDesktop().getCyMenus();
 
@@ -770,7 +774,26 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		public String getName() {
 			return _connectedTitle;
 		}
+		
+	    public void menuSelected(MenuEvent me) {
+	        CyNetwork n = Cytoscape.getCurrentNetwork();
+	        if ( n == null || n == Cytoscape.getNullNetwork() ) {
+	            setEnabled(false);
+	            return;
+	        }
 
+	        java.util.Set nodes = n.getSelectedNodes();
+	        if ( nodes != null && nodes.size() > 0 ) 
+	        {
+	 
+	        	setEnabled(true); 	
+	        }
+	            
+	        else
+	            setEnabled(false);
+	    }
+
+	    
 		public void actionPerformed(ActionEvent e) {
 			CyNetworkView view = Cytoscape.getCurrentNetworkView();
 			java.util.List nodes = view.getSelectedNodes();
