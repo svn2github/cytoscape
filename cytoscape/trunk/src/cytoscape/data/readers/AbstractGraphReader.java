@@ -36,32 +36,17 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.util.CyNetworkNaming;
-
-import cytoscape.view.CyNetworkView;
-
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.layout.CyLayouts;
-import cytoscape.layout.CyLayoutAlgorithm;
-
-import giny.model.RootGraph;
-
 import giny.view.GraphView;
-import giny.view.NodeView;
 
 import java.io.File;
 import java.io.IOException;
 
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.JPanel;
+import cytoscape.CyNetwork;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
+import cytoscape.task.TaskMonitor;
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.view.CyNetworkView;
 
 
 /**
