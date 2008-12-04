@@ -32,14 +32,15 @@ my %xmlEl = (
 );
 
 my $dbh;
-my ($BaseUrl, $XmlFileLoc, $HttpLoc, $Host, $UserName, $PassWord, $Help);
+my ($BaseUrl, $XmlFileLoc, $HttpLoc, $Host, $UserName, $PassWord, $Debug, $Help);
 
 GetOptions ("loc=s" => \$XmlFileLoc,
-						"url=s" => \$BaseUrl,
-						"host=s" => \$Host, 
-						"user=s" => \$UserName, 
-						"passwd=s" => \$PassWord, 
-						"help" => \$Help);
+			"url=s" => \$BaseUrl,
+			"host=s" => \$Host, 
+			"user=s" => \$UserName, 
+			"passwd=s" => \$PassWord, 
+			"debug" => \$Debug,
+			"help" => \$Help);
 
 
 usage("Help:") if ($Help);
@@ -56,9 +57,6 @@ my $XMLPi = $Doc->setXMLDecl($Doc->createXMLDecl ('1.0', 'UTF-16'));
 my $Root = $Doc->createElement("project");
 $Doc->appendChild($Root);
 addProjectInfo();
-
-
-
 
 # --- create the plugin list --- #
 
@@ -123,11 +121,16 @@ FROM plugin_list L
 WHERE V.status = 'published' AND V.plugin_file_id is not NULL
 ); 
 
-	$pluginSql .= "AND V.theme_only = 'no' " if (!$ThemeOnly || $ThemeOnly eq 'no');
+	$pluginSql .= "AND V.theme_only != 'yes' " if (!$ThemeOnly || $ThemeOnly eq 'no');
 	$pluginSql .= "AND V.version_auto_id = $PluginVersionId " if ($PluginVersionId);
 	$pluginSql .= "ORDER BY L.name";
 
-	return $dbh->selectall_arrayref($pluginSql);
+
+	my $pluginsRef = $dbh=>selectall_arrayref($pluginSql);
+	print "$pluginSql\n" . Dumper $pluginsRef 	if ($Debug);
+	
+	return $pluginsRef;
+	#return $dbh->selectall_arrayref($pluginSql);
 	}
 
 # set up the <project> element and the global info for the xml doc
