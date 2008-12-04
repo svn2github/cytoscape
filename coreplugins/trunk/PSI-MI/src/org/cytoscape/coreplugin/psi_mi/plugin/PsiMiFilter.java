@@ -43,6 +43,9 @@ import cytoscape.util.CyFileFilter;
 import java.io.File;
 import java.io.IOException;
 
+import java.net.URL;
+import java.net.URLConnection;
+
 
 /**
  * PsiMi Filter class.  Extends CyFileFilter for integration into the Cytoscape ImportHandler
@@ -113,6 +116,32 @@ public class PsiMiFilter extends CyFileFilter {
 	}
 
 	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param url DOCUMENT ME!
+	 * @param contentType DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean accept(URL url, String contentType) {
+		// Check for matching content type
+		if ((contentType != null) && (contentTypes != null)
+		    && (contentTypes.get(contentType) != null))
+			return true;
+
+		try {
+			final String header = getHeader(url);
+
+			if (header.indexOf("<entrySet") > -1)
+				return true;
+		} catch (IOException e) {
+			return false;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Gets the appropirate GraphReader object.
 	 *
 	 * @param fileName File Name.
@@ -120,5 +149,17 @@ public class PsiMiFilter extends CyFileFilter {
 	 */
 	public GraphReader getReader(String fileName) {
 		return new PsiMiGraphReader(fileName);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param url DOCUMENT ME!
+	 * @param conn DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public GraphReader getReader(URL url, URLConnection conn) {
+		return new PsiMiGraphReader(url.toString());
 	}
 }

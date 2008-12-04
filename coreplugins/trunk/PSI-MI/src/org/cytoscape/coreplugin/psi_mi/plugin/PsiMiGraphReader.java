@@ -34,16 +34,7 @@
 */
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
-import cytoscape.CyNetwork;
-
-import cytoscape.data.CyAttributes;
-
 import cytoscape.data.readers.AbstractGraphReader;
-
-import giny.model.RootGraph;
-
-import giny.view.GraphView;
-import giny.view.NodeView;
 
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
@@ -53,7 +44,6 @@ import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -110,8 +100,8 @@ public class PsiMiGraphReader extends AbstractGraphReader {
 			nodeIndices = mapper2.getNodeIndices();
 			edgeIndices = mapper2.getEdgeIndices();
 		} catch (Throwable e) {
-            e.printStackTrace();
-            throw new IOException(e.getMessage());
+			e.printStackTrace();
+			throw new IOException(e.getMessage());
 		}
 	}
 
