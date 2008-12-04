@@ -40,62 +40,22 @@
 // $Author$
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.logger.CyLogger;
-
-import cytoscape.data.ImportHandler;
-
-import cytoscape.data.readers.GMLException;
-import cytoscape.data.readers.GMLReader;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.data.readers.InteractionsReader;
-import cytoscape.data.readers.XGMMLReader;
-
-import cytoscape.data.servers.BioDataServer;
-
-import cytoscape.dialogs.ImportNetworkDialog;
-
-import cytoscape.ding.CyGraphLOD;
-import cytoscape.ding.DingNetworkView;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.CyNetworkNaming;
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CyMenus;
-
 import java.awt.event.ActionEvent;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.swing.JOptionPane;
-
 import javax.xml.bind.JAXBException;
+
+import cytoscape.Cytoscape;
+import cytoscape.dialogs.ImportNetworkDialog;
+import cytoscape.logger.CyLogger;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyMenus;
 
 
 /**
