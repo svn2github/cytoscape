@@ -245,6 +245,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 */
 	public void groupWillBeRemoved(CyGroup group) { 
 		MetaNode mn = MetaNode.getMetaNode(group);
+		if (mn == null) return;
 		// Expand the group in any views that it's collapsed
 		mn.expand(true, null, true);
 
