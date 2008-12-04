@@ -36,6 +36,8 @@ package cytoscape.data;
 
 import cytoscape.data.readers.GraphReader;
 
+import cytoscape.logger.CyLogger;
+
 import cytoscape.task.TaskMonitor;
 
 import cytoscape.task.ui.JTask;
@@ -45,7 +47,6 @@ import cytoscape.util.GMLFileFilter;
 import cytoscape.util.ProxyHandler;
 import cytoscape.util.SIFFileFilter;
 import cytoscape.util.XGMMLFileFilter;
-import cytoscape.logger.CyLogger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -93,7 +94,7 @@ public class ImportHandler {
 	/**
 	 * Set of all registered CyFileFilter Objects.
 	 */
-	protected static Set cyFileFilters = new HashSet();
+	protected static Set<CyFileFilter> cyFileFilters = new HashSet<CyFileFilter>();
 
 	/**
 	 * Constructor.
@@ -159,16 +160,10 @@ public class ImportHandler {
 	 */
 	public GraphReader getReader(String fileName) {
 		//  check if fileType is available
-		CyFileFilter cff;
-
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			cff = (CyFileFilter) it.next();
-
-			if (cff.accept(fileName)) {
+		for (CyFileFilter cff : cyFileFilters) {			
+			if (cff.accept(fileName))
 				return cff.getReader(fileName);
-			}
 		}
-
 		return null;
 	}
 
@@ -180,7 +175,6 @@ public class ImportHandler {
 	 */
 	public GraphReader getReader(URL url) {
 		// check if fileType is available
-		CyFileFilter cff;
 
 		// Open up the connection
 		Proxy pProxyServer = ProxyHandler.getProxyServer();
@@ -192,51 +186,52 @@ public class ImportHandler {
 			else
 				conn = url.openConnection(pProxyServer);
 		} catch (IOException ioe) {
-			CyLogger.getLogger().error("Unable to open "+url+": "+ioe.getMessage(), ioe);
+			CyLogger.getLogger().error("Unable to open " + url + ": " + ioe.getMessage(), ioe);
+
 			return null;
 		}
+
 		// Ensure we are reading the real content from url,
 		// and not some out-of-date cached content:
 		conn.setUseCaches(false);
 
 		// Get the content-type
 		String contentType = conn.getContentType();
-		if ( contentType == null )
+
+		if (contentType == null)
 			contentType = "";
 
 		// CyLogger.getLogger().info("Content-type: "+contentType);
-
 		int cend = contentType.indexOf(';');
+
 		if (cend >= 0)
 			contentType = contentType.substring(0, cend);
 
-		for (Iterator it = cyFileFilters.iterator(); it.hasNext();) {
-			cff = (CyFileFilter) it.next();
-
+		for (CyFileFilter cff: cyFileFilters) {
 			if (cff.accept(url, contentType)) {
 				// CyLogger.getLogger().info("Found reader: "+cff.getDescription());
 				GraphReader reader = cff.getReader(url, conn);
+
 				// Does the reader support the url,connection constructor?
 				if (reader != null) {
 					// Yes, return it
 					return reader;
 				}
+
 				// No, see if we can find another one that does
 			}
 		}
-		
+
 		// If the content type is text/plain or text/html or text/xml
 		// then write a temp file and handle things that way
-		if (contentType.contains("text/html") ||
-		    contentType.contains("text/plain") ||
-		    contentType.contains("text/xml") ||
-            contentType.contains("application/rdf+xml")) {
+		if (contentType.contains("text/html") || contentType.contains("text/plain")
+		    || contentType.contains("text/xml") || contentType.contains("application/rdf+xml")) {
 			File tmpFile = null;
 
 			try {
 				tmpFile = downloadFromURL(url, null);
 			} catch (Exception e) {
-				CyLogger.getLogger().error("Failed to download from URL: "+url, e);
+				CyLogger.getLogger().error("Failed to download from URL: " + url, e);
 			}
 
 			if (tmpFile != null) {
@@ -245,7 +240,6 @@ public class ImportHandler {
 		}
 
 		// CyLogger.getLogger().info("No reader for: "+url.toString());
-
 		return null;
 	}
 
@@ -464,9 +458,11 @@ public class ImportHandler {
 			conn = url.openConnection();
 		else
 			conn = url.openConnection(pProxyServer);
+
 		// Ensure we are reading the real content from url,
 		// and not some out-of-date cached content:
 		conn.setUseCaches(false);
+
 		// create the temp file
 		File tmpFile = createTempFile(conn, url);
 

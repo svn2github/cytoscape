@@ -34,19 +34,15 @@
 */
 package cytoscape.util;
 
-import cytoscape.data.ImportHandler;
-
-import cytoscape.data.readers.GraphReader;
-import cytoscape.data.readers.XGMMLReader;
-
-import cytoscape.logger.CyLogger;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-
 import java.net.URL;
 import java.net.URLConnection;
+
+import cytoscape.data.ImportHandler;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.data.readers.XGMMLReader;
+import cytoscape.logger.CyLogger;
 
 /**
  * FileFilter for Reading in XGMML Files.
@@ -67,7 +63,7 @@ public class XGMMLFileFilter extends CyFileFilter {
 	/**
 	 * Content Types
 	 */
-	private static String[] contentTypes = { "text/xgmml", "text/xgmml+xml" };
+	private static String[] xgmmlContentTypes = { "text/xgmml", "text/xgmml+xml" };
 
 	/**
 	 * Filter Description.
@@ -81,8 +77,8 @@ public class XGMMLFileFilter extends CyFileFilter {
 		super(fileExtensions, description, fileNature);
 
 		// Add our content types
-		for (int i = 0; i < contentTypes.length; i++)
-			addContentType(contentTypes[i]);
+		for (int i = 0; i < xgmmlContentTypes.length; i++)
+			addContentType(xgmmlContentTypes[i]);
 	}
 
 	/**
@@ -147,6 +143,24 @@ public class XGMMLFileFilter extends CyFileFilter {
 			}
 		}
 
+		return false;
+	}
+	
+	public boolean accept(URL url, String contentType) {
+		// Check for matching content type
+		if ((contentType != null) && (contentTypes != null) && 
+		    (contentTypes.get(contentType) != null)) {
+			return true;
+		}
+		
+		try {
+			final String header = getHeader(url).toLowerCase();
+			if (header.indexOf("www.cs.rpi.edu/xgmml") > 0)
+				return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 		return false;
 	}
 }

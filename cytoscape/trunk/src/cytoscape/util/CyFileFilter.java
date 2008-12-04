@@ -38,14 +38,20 @@ package cytoscape.util;
 
 import cytoscape.data.readers.GraphReader;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import java.net.URL;
+import java.net.URLConnection;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
-
-import java.net.URL;
-import java.net.URLConnection;
 
 import javax.swing.filechooser.FileFilter;
 
@@ -61,13 +67,11 @@ import javax.swing.filechooser.FileFilter;
  * @author Brad Kohlenberg
  */
 public class CyFileFilter extends FileFilter implements FilenameFilter {
-	private static String TYPE_UNKNOWN = "Type Unknown";
-	private static String HIDDEN_FILE = "Hidden File";
 	private Hashtable filters = null;
 	private String description = null;
 	private String fullDescription = null;
 	private boolean useExtensionsInDescription = true;
-	private Hashtable contentTypes = null;
+	protected Hashtable contentTypes = null;
 	protected GraphReader reader = null;
 	protected String fileNature = "UNKNOWN";
 
@@ -187,9 +191,8 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	public boolean accept(File f) {
 		if (f != null) {
 			//  If there are no filters, always accept
-			if (filters.size() == 0) {
+			if (filters.size() == 0)
 				return true;
-			}
 
 			if (f.isDirectory()) {
 				return true;
@@ -226,21 +229,22 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	}
 
 	/**
- 	 * Returns true if this class is capable of processing the specified URL
- 	 *
- 	 * @param url the URL
- 	 * @param contentType the content-type of the URL
- 	 *
- 	 */
+	  * Returns true if this class is capable of processing the specified URL
+	  *
+	  * @param url the URL
+	  * @param contentType the content-type of the URL
+	  *
+	  */
 	public boolean accept(URL url, String contentType) {
 		// Check for matching content type
-		if ((contentType != null) && (contentTypes != null) && 
-		    (contentTypes.get(contentType) != null)) {
+		if ((contentType != null) && (contentTypes != null)
+		    && (contentTypes.get(contentType) != null)) {
 			return true;
 		}
-		
+
 		// No content-type match -- try for an extnsion match
 		String extension = getExtension(url.getFile());
+
 		if ((extension != null) && (filters.get(extension) != null)) {
 			return true;
 		}
@@ -308,7 +312,7 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	 * Adds a content-type to filter against.
 	 * <p/>
 	 * For example: the following code will create a filter that filters
-	 * out all streams except those that are of type "text/xgmml+xml" 
+	 * out all streams except those that are of type "text/xgmml+xml"
 	 * and "text/xgmml":
 	 * <p/>
 	 * ExampleFileFilter filter = new ExampleFileFilter();
@@ -466,13 +470,47 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 	protected String getHeader(File file) throws IOException {
 		FileReader reader = null;
 		BufferedReader bufferedReader = null;
-
+		String header = null;
+		
 		try {
 			reader = new FileReader(file);
 			bufferedReader = new BufferedReader(reader);
 
+			header = parseHeader(bufferedReader);
+		} finally {
+			if (bufferedReader != null)
+				bufferedReader.close();
+
+			if (reader != null)
+				reader.close();
+			
+			bufferedReader = null;
+			reader = null;
+		}
+		
+		return header;
+	}
+
+	protected String getHeader(URL url) throws IOException {
+		String header = null;
+		BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+		try {
+			header = parseHeader(br);
+		} finally {
+			if(br!= null)
+				br.close();
+			br = null;
+		}
+
+		return header;
+	}
+
+	private String parseHeader(BufferedReader bufferedReader) throws IOException {
+		StringBuffer header = new StringBuffer();
+
+		try {
 			String line = bufferedReader.readLine();
-			StringBuffer header = new StringBuffer();
+
 			int numLines = 0;
 
 			while ((line != null) && (numLines < 20)) {
@@ -480,16 +518,11 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 				line = bufferedReader.readLine();
 				numLines++;
 			}
-
-			return header.toString();
 		} finally {
-			if (bufferedReader != null) {
+			if (bufferedReader != null)
 				bufferedReader.close();
-			}
-
-			if (reader != null) {
-				reader.close();
-			}
 		}
+
+		return header.toString();
 	}
 }

@@ -561,13 +561,14 @@ public class CyAttributesUtils {
 		// Extract ids
 		if (type == AttributeType.NODE) {
 			attr = Cytoscape.getNodeAttributes();
+
 			final List<Node> nodes = Cytoscape.getRootGraph().nodesList();
 
-			for (Node node : nodes) {
+			for (Node node : nodes)
 				ids.add(node.getIdentifier());
-			}
 		} else if (type == AttributeType.EDGE) {
 			attr = Cytoscape.getEdgeAttributes();
+
 			final List<Edge> edges = Cytoscape.getRootGraph().edgesList();
 
 			for (Edge edge : edges) {
@@ -581,9 +582,10 @@ public class CyAttributesUtils {
 
 		String value;
 
-		for (String id : ids) {
-			if (attrDataType == CyAttributes.TYPE_SIMPLE_LIST) {
-				List l = attr.getListAttribute(id, attrName);
+		List<Object> l = null;
+		if (attrDataType == CyAttributes.TYPE_SIMPLE_LIST) {
+			for (String id : ids) {
+				l = attr.getListAttribute(id, attrName);
 
 				if ((l != null) && (l.size() > 0)) {
 					for (Object obj : l) {
@@ -594,12 +596,14 @@ public class CyAttributesUtils {
 						}
 					}
 				}
-			} else if (attrDataType == CyAttributes.TYPE_STRING) {
+			}
+		} else if (attrDataType == CyAttributes.TYPE_STRING) {
+			for (String id : ids) {
+				// Extract attribute value from ID
 				value = attr.getStringAttribute(id, attrName);
 
-				if ((value != null) && value.equals(attrValue)) {
-					result.add(value);
-				}
+				if ((value != null) && value.equals(attrValue))
+					result.add(id);
 			}
 		}
 
