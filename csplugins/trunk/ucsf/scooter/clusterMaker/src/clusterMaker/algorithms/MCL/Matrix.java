@@ -1,5 +1,7 @@
 package clusterMaker.algorithms.MCL;
 
+import cytoscape.task.TaskMonitor;
+
 public class Matrix {
 
 	private MatrixVector[] vectors;
@@ -9,8 +11,6 @@ public class Matrix {
 	private double inflatedThresh;
 	private int size;
 	public int numClusters = -1;
-	private double[][] graph;
-	
 	
 	
 	public Matrix(double[][] graph, double inflationParameter,int number_iterations,double clusteringThresh)
@@ -27,7 +27,6 @@ public class Matrix {
 		//Create set of vectors defining matrix
 		for(int i = 0; i < size; i++)
 			vectors[i] = new MatrixVector(graph[i],i,inflatedThresh);
-		this.graph = toArray();
 	}
 	
 	//return array represetion of matrix
@@ -36,9 +35,7 @@ public class Matrix {
 		double[][] graph = new double[size][size];
 		
 		for (int i=0; i < size; i++)
-			for (int j =0; j <size; j++)
-				graph[i][j] = vectors[i].getIndex(j);
-				
+			graph[i] = vectors[i].toArray();
 		
 		return graph;
 	}
@@ -46,12 +43,12 @@ public class Matrix {
 	//Multiply Matrix by self
 	private void expand()
 	{
-		double[][] graph = toArray();
-		
 		double[][] d = new double[this.size][this.size];
+		System.out.println("Multiplying");
 		for(int i=0; i < size; i++) {
-			d[i] = vectors[i].matrixMultiply(graph);
+			d[i] = vectors[i].matrixMultiply(vectors);
 		}
+		System.out.println("Updating");
 		for(int i=0; i < size; i++) {
 			vectors[i].updateVector(d[i]);
 		}
@@ -65,18 +62,7 @@ public class Matrix {
 			vectors[i].inflate(inflationParameter);
 	}
 	
-	//Iterate over expansion and inflation
-	private void iterateMCL()
-	{
-		
-		for (int i=0; i<number_iterations; i++)
-		{
-			expand();
-			inflate();
-		}
-	}
-	
-	
+/*
 	private void inflate2(){
 		double sum[] = new double[graph.length];
 		for (int i = 0; i < sum.length; i++) {
@@ -127,14 +113,20 @@ public class Matrix {
 		
 		return value;
 	}
-	
+*/	
 	
 	
 	//Runs MCL and returns array mapping node indices to clusters
-	public double[] cluster()
+	public double[] cluster(TaskMonitor monitor)
 	{
 		Clustering clustering = new Clustering(size,clusteringThresh);
-		iterateMCL();	
+		for (int i=0; i<number_iterations; i++)
+		{
+			monitor.setStatus("Iteration: "+(i+1)+" expanding");
+			expand();
+			monitor.setStatus("Iteration: "+(i+1)+" inflating");
+			inflate();
+		}
 		// System.out.println("Clustering Matrix");
 		double[] clusterMatrix = clustering.clusterMatrix(toArray());
 		numClusters = clustering.numClusters;

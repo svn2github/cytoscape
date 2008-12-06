@@ -54,14 +54,17 @@ import clusterMaker.ui.ClusterViz;
 
 public class MCLCluster extends AbstractClusterAlgorithm {
 	
-	double inflation_parameter = 2.5;
+	double inflation_parameter = 2.0;
 	int rNumber = 8;
 	double clusteringThresh = 1e-15;
 	boolean takeNegLOG = false;
+	boolean createNewNetwork = false;
+	double maxResidual = 0.001;
 
 	String dataAttribute = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
+	RunMCL runMCL = null;
 
 	public MCLCluster() {
 		super();
@@ -104,8 +107,19 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.INTEGER, new Integer(8),
 		                                  (Object)null, (Object)null, 0));
 
+		// Number of iterations
+		clusterProperties.add(new Tunable("maxResidual",
+		                                  "The maximum residual value",
+		                                  Tunable.DOUBLE, new Double(.001),
+		                                  (Object)null, (Object)null, 0));
+
 		//Whether or not take -LOG of Edge-Weights
-		clusterProperties.add(new Tunable("takeNegLOG","Take the -LOG of Edge Weights in Network",Tunable.BOOLEAN, new Boolean(false)));
+		clusterProperties.add(new Tunable("takeNegLOG","Take the -LOG of Edge Weights in Network",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
+
+		// Whether or not to create a new network from the results
+		clusterProperties.add(new Tunable("createNewNetwork","Create a new network with independent clusters",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
 
 		clusterProperties.add(new Tunable("attributeListGroup",
 		                                  "Source for array data",
@@ -134,11 +148,15 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 
 		Tunable t = clusterProperties.get("inflation_parameter");
 		if ((t != null) && (t.valueChanged() || force))
-		        inflation_parameter = ((Double) t.getValue()).doubleValue();
+			inflation_parameter = ((Double) t.getValue()).doubleValue();
 
 		t = clusterProperties.get("clusteringThresh");
 		if ((t != null) && (t.valueChanged() || force))
-		        inflation_parameter = ((Double) t.getValue()).doubleValue();
+			clusteringThresh = ((Double) t.getValue()).doubleValue();
+
+		t = clusterProperties.get("maxResidual");
+		if ((t != null) && (t.valueChanged() || force))
+			maxResidual = ((Double) t.getValue()).doubleValue();
 
 		t = clusterProperties.get("rNumber");
 		if ((t != null) && (t.valueChanged() || force))
@@ -147,6 +165,10 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		t = clusterProperties.get("takeNegLOG");
 		if ((t != null) && (t.valueChanged() || force))
 			takeNegLOG = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("createNewNetwork");
+		if ((t != null) && (t.valueChanged() || force))
+			createNewNetwork = ((Boolean) t.getValue()).booleanValue();
 		
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -161,11 +183,16 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 			logger.debug("Performing MCL clustering with attributes: "+dataAttribute);
 
 		//Cluster the nodes
-		RunMCL runMCL = new RunMCL("cluster", dataAttribute, inflation_parameter, 
-		                           rNumber, clusteringThresh, takeNegLOG, logger);
-		runMCL.run();
-	       
+		runMCL = new RunMCL("cluster", dataAttribute, inflation_parameter, 
+		                           rNumber, clusteringThresh, maxResidual, 
+		                           takeNegLOG, createNewNetwork, logger);
+		runMCL.run(monitor);
+
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
+	}
+
+	public void halt() {
+		runMCL.halt();
 	}
 }
