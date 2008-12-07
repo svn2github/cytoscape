@@ -364,7 +364,7 @@ public class RunMCL {
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
 
 		// Create the new network
-		CyNetwork net = Cytoscape.createNetwork(currentNetwork.getTitle()+" clustered");
+		CyNetwork net = Cytoscape.createNetwork(currentNetwork.getTitle()+"--clustered",currentNetwork,false);
 
 		for (Cluster cluster: cMap) {
 			// Get the list of nodes
