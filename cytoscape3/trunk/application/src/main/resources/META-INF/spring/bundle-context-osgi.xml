@@ -142,13 +142,11 @@
 			ref="cytoscapeMenus" />
 	</osgi:set>
 
-
-
 	<!--
 		Finally, Export Cytoscape Desktop itself as a service. Other desktop
 		components (like VizMapper GUI) can use it through DI
 	-->
 	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop"
-		interface="cytoscape.view.Desktop" />
+		interface="cytoscape.view.CySwingApplication" />
 
 </beans>

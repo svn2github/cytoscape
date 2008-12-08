@@ -17,10 +17,10 @@
 	<context:annotation-config />
 
 	<!-- Menu bar -->
-	<bean name="cytoscapeMenus" class="cytoscape.view.CytoscapeMenus" />
+	<bean name="cytoscapeMenus" class="cytoscape.view.CytoscapeMenus" scope="singleton"/>
 
 	<!-- Cytoscape Desktop -->
-	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop">
+	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop" scope="singleton">
 		<constructor-arg ref="cytoscapeMenus" />
 	</bean>
 
