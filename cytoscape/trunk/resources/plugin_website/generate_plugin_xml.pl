@@ -343,8 +343,6 @@ sub createPluginNode
 	$PluginUlrEl->appendChild($Doc->createTextNode($FileUrl));
 	$PluginEl->appendChild($PluginUlrEl);
 	
-	print Dumper @plugin if ($PluginName eq 'MiSink' and $ReleaseDate eq '2008-05-28');
-	
 	my $FileTag = addFileInfo($PluginFileId);
 
 	if ($FileTag)
