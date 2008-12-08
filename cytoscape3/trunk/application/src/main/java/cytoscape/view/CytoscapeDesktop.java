@@ -36,21 +36,6 @@
  */
 package cytoscape.view;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeVersion;
-
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import org.cytoscape.model.CyNetwork;
-
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -58,10 +43,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,11 +60,23 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
+
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeVersion;
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanelState;
+
 
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
-public class CytoscapeDesktop extends JFrame implements Desktop, PropertyChangeListener, CySwingApplication {
+public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, CySwingApplication {
 	private final static long serialVersionUID = 1202339866271348L;
 	protected long lastPluginRegistryUpdate;
 	protected int returnVal;
@@ -162,7 +157,7 @@ public class CytoscapeDesktop extends JFrame implements Desktop, PropertyChangeL
 	 * Provides Operations for Mapping Data Attributes of CyNetworks to
 	 * GraphViews
 	 */
-	protected VisualMappingManager vmm;
+	private VisualMappingManager vmm;
 
 	/**
 	 * New VizMapper UI
@@ -288,7 +283,6 @@ public class CytoscapeDesktop extends JFrame implements Desktop, PropertyChangeL
 		// Set up the VizMapper
 		//setupVizMapper();
 		//getVizMapperUI();
-		vmm = Cytoscape.getVisualMappingManager();
 
 		/*
 		        don't automatically close window. Let Cytoscape.exit(returnVal)
@@ -403,8 +397,8 @@ public class CytoscapeDesktop extends JFrame implements Desktop, PropertyChangeL
 			// deal with the new Network
 			final GraphView new_view = Cytoscape.getCurrentNetworkView();
 
-			VisualMappingManager visMgr = new VisualMappingManager();
-			VisualStyle new_style = visMgr.getVisualStyleForView(new_view);
+			
+			VisualStyle new_style = vmm.getVisualStyleForView(new_view);
 
 			if (new_style == null)
 				new_style = vmm.getCalculatorCatalog().getVisualStyle("default");
@@ -667,4 +661,9 @@ public class CytoscapeDesktop extends JFrame implements Desktop, PropertyChangeL
 	public JFrame getJFrame() {
 		return this;
 	}
+
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
+	}
+
 }
