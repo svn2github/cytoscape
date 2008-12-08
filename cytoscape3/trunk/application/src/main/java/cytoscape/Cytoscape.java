@@ -39,46 +39,37 @@
 package cytoscape;
 
 //import cytoscape.actions.SaveSessionAction;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.data.ExpressionData;
-//import cytoscape.data.ImportHandler;
-import cytoscape.data.Semantics;
-import cytoscape.data.readers.BookmarkReader;
-//import cytoscape.data.readers.CyAttributesReader;
-import cytoscape.data.readers.GraphReader;
-//import cytoscape.data.servers.OntologyServer;
-import cytoscape.ding.CyGraphLOD;
-import cytoscape.init.CyInitParams;
-import cytoscape.util.FileUtil;
-import cytoscape.view.CytoscapeDesktop;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
-import org.cytoscape.vizmap.VMMFactory;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
-
-import javax.swing.*;
-import javax.swing.event.SwingPropertyChangeSupport;
-import javax.xml.bind.JAXBException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.swing.JOptionPane;
+import javax.swing.event.SwingPropertyChangeSupport;
+import javax.xml.bind.JAXBException;
+
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.vizmap.VMMFactory;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
+
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.data.ExpressionData;
+import cytoscape.data.readers.BookmarkReader;
+import cytoscape.init.CyInitParams;
+import cytoscape.view.CytoscapeDesktop;
 
 
 /**
