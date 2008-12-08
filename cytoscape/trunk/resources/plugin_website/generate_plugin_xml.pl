@@ -53,7 +53,7 @@ dbConnect();
 
 # Create the xml document
 my $Doc = XML::DOM::Document->new();
-my $XMLPi = $Doc->setXMLDecl($Doc->createXMLDecl ('1.0', 'UTF-16'));
+my $XMLPi = $Doc->setXMLDecl($Doc->createXMLDecl ('1.0', 'UTF-8'));
 my $Root = $Doc->createElement("project");
 $Doc->appendChild($Root);
 addProjectInfo();
@@ -90,9 +90,8 @@ foreach my $theme (@$Themes)
 $Root->appendChild($ThemeListEl);
 
 # format the xml in some basic manner, doesn't seem to be a nice lib for pretty formatting of xml
-#my $Xml = $Doc->toString();
-my $Xml = $Root->toString();
-$Xml =~  s/></>\n</g;
+my $Xml = $Doc->toString();
+$Xml =~  s/></>\n</g if $Debug;
 $Xml =~ s/^\s+//;
 
 open(XMLOUT, ">$XmlFile") || die "Failed to open $XmlFile: $!";
