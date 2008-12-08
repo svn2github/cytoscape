@@ -43,27 +43,32 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.model.subnetwork.CyRootNetwork;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
+
 import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CySubNetwork;
 
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
+
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
-import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
+
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.swing.event.MenuEvent;
+
 
 /**
  *
@@ -72,6 +77,9 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870134859L;
 	private final CyRootNetworkFactory cyroot;
 	private final GraphViewFactory gvf;
+	
+	private VisualMappingManager vmm;
+
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
 	 */
@@ -99,32 +107,33 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 		if (Cytoscape.viewExists(current_network.getSUID())) {
 			current_network_view = Cytoscape.getNetworkView(current_network.getSUID());
-		} 
+		}
 
-		List<CyNode> nodes = CyDataTableUtil.getNodesInState(current_network,"selected",true);
+		List<CyNode> nodes = CyDataTableUtil.getNodesInState(current_network, "selected", true);
 
 		Set<CyEdge> edges = new HashSet<CyEdge>();
-		for ( CyNode n1 : nodes ) {
-			for ( CyNode n2 : nodes ) {
-				edges.addAll( current_network.getConnectingEdgeList(n1,n2,CyEdge.Type.ANY) );
+
+		for (CyNode n1 : nodes) {
+			for (CyNode n2 : nodes) {
+				edges.addAll(current_network.getConnectingEdgeList(n1, n2, CyEdge.Type.ANY));
 			}
 		}
 
-		CySubNetwork new_network = cyroot.convert(current_network).addSubNetwork( nodes, new ArrayList<CyEdge>(edges) );
+		CySubNetwork new_network = cyroot.convert(current_network)
+		                                 .addSubNetwork(nodes, new ArrayList<CyEdge>(edges));
 		new_network.attrs().set("name", CyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
 
-		GraphView new_view = gvf.createGraphView( new_network ); 
+		GraphView new_view = gvf.createGraphView(new_network);
 
 		if (new_view == null) {
 			return;
 		}
 
-        String vsName = "default";
-       
-	   	VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-        // keep the node positions
+		String vsName = "default";
+
+		// keep the node positions
 		if (current_network_view != Cytoscape.getNullNetworkView()) {
-			for ( CyNode node : new_network.getNodeList() ) {
+			for (CyNode node : new_network.getNodeList()) {
 				new_view.getNodeView(node)
 				        .setOffset(current_network_view.getNodeView(node).getXPosition(),
 				                   current_network_view.getNodeView(node).getYPosition());
@@ -133,29 +142,45 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			new_view.fitContent();
 
 			// Set visual style
-			VisualStyle newVS = vmm.getVisualStyleForView( current_network_view );
-
+			VisualStyle newVS = vmm.getVisualStyleForView(current_network_view);
 
 			if (newVS != null) {
-                vsName = newVS.getName();
-				vmm.setVisualStyleForView( new_view, newVS );
+				vsName = newVS.getName();
+				vmm.setVisualStyleForView(new_view, newVS);
 			}
 		}
-        vmm.setVisualStyle(vsName);
+
+		vmm.setVisualStyle(vsName);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void menuSelected(MenuEvent e) {
-        CyNetwork n = Cytoscape.getCurrentNetwork();
-        if ( n == null || n == Cytoscape.getNullNetwork() ) {
-           	setEnabled(false); 
+		CyNetwork n = Cytoscape.getCurrentNetwork();
+
+		if ((n == null) || (n == Cytoscape.getNullNetwork())) {
+			setEnabled(false);
+
 			return;
 		}
 
-        List<CyNode> nodes = CyDataTableUtil.getNodesInState(n,"selected",true);
+		List<CyNode> nodes = CyDataTableUtil.getNodesInState(n, "selected", true);
 
-        if ( nodes.size() > 0 )
-            setEnabled(true);
-        else
-            setEnabled(false);
+		if (nodes.size() > 0)
+			setEnabled(true);
+		else
+			setEnabled(false);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vmm DOCUMENT ME!
+	 */
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
 	}
 }
