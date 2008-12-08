@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>application</name>
+	<comment>A network visualization and analysis application.</comment>
+	<projects>
+		<project>attributes</project>
+		<project>commons.cli</project>
+		<project>cruft.obo</project>
+		<project>geom.rtree</project>
+		<project>geom.spacial</project>
+		<project>graph.dynamic</project>
+		<project>graph.fixed</project>
+		<project>layout</project>
+		<project>network</project>
+		<project>phoebe.dnd</project>
+		<project>render.export</project>
+		<project>render.immed</project>
+		<project>render.stateful</project>
+		<project>task</project>
+		<project>tunable</project>
+		<project>undo</project>
+		<project>util.intr</project>
+		<project>view</project>
+		<project>vizmap</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+</projectDescription>

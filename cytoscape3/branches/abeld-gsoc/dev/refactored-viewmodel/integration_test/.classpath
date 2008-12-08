@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry kind="src" path="target/generated-sources/jaxb"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar"/>
+	<classpathentry kind="src" path="/attributes"/>
+	<classpathentry kind="var" path="M2_REPO/biojava/biojava/1.4/biojava-1.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.1/commons-lang-2.1.jar"/>
+	<classpathentry kind="src" path="/commons.cli"/>
+	<classpathentry kind="var" path="M2_REPO/concurrent/concurrent/1.0/concurrent-1.0.jar"/>
+	<classpathentry kind="src" path="/cruft.obo"/>
+	<classpathentry kind="var" path="M2_REPO/com/sun/xml/fastinfoset/FastInfoset/1.1.1/FastInfoset-1.1.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-export/2.0.3/freehep-export-2.0.3.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-graphics2d/2.0/freehep-graphics2d-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-graphicsio/2.0/freehep-graphicsio-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-graphicsio-emf/2.0/freehep-graphicsio-emf-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-graphicsio-pdf/2.0/freehep-graphicsio-pdf-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-graphicsio-ps/2.0/freehep-graphicsio-ps-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-graphicsio-svg/2.0/freehep-graphicsio-svg-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-graphicsio-swf/2.0/freehep-graphicsio-swf-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-io/2.0.1/freehep-io-2.0.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-swing/2.0.2/freehep-swing-2.0.2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-util/2.0.1/freehep-util-2.0.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freehep/freehep-xml/2.0.1/freehep-xml-2.0.1.jar"/>
+	<classpathentry kind="src" path="/geom.rtree"/>
+	<classpathentry kind="src" path="/geom.spacial"/>
+	<classpathentry kind="src" path="/graph.dynamic"/>
+	<classpathentry kind="src" path="/graph.fixed"/>
+	<classpathentry kind="var" path="M2_REPO/com/lowagie/itext/2.0.6/itext-2.0.6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/xml/jaxb-api/2.0/jaxb-api-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-impl/2.0/jaxb-impl-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-xjc/2.0/jaxb-xjc-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/jdom/jdom/1.0/jdom-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/cytoscape-sun/jhall/1.0/jhall-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/xml/jsr173/1.0/jsr173-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/cytoscape-temp/l2fprod-common-all/1.0/l2fprod-common-all-1.0.jar"/>
+	<classpathentry kind="src" path="/layout"/>
+	<classpathentry kind="var" path="M2_REPO/com/jgoodies/looks/2.1.2/looks-2.1.2.jar"/>
+	<classpathentry kind="src" path="/network"/>
+	<classpathentry kind="var" path="M2_REPO/org/netbeans/openide-lookup/1.9-patched-1.0/openide-lookup-1.9-patched-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/osgi/osgi_R4_compendium/1.0/osgi_R4_compendium-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar"/>
+	<classpathentry kind="src" path="/phoebe.dnd"/>
+	<classpathentry kind="src" path="/render.export"/>
+	<classpathentry kind="src" path="/render.immed"/>
+	<classpathentry kind="src" path="/render.stateful"/>
+	<classpathentry kind="var" path="M2_REPO/net/java/dev/swing-layout/swing-layout/1.0.2/swing-layout-1.0.2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/cytoscape-temp/swingx/1.0/swingx-1.0.jar"/>
+	<classpathentry kind="src" path="/task"/>
+	<classpathentry kind="src" path="/tunable"/>
+	<classpathentry kind="src" path="/undo"/>
+	<classpathentry kind="src" path="/util.intr"/>
+	<classpathentry kind="src" path="/view"/>
+	<classpathentry kind="src" path="/vizmap"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
