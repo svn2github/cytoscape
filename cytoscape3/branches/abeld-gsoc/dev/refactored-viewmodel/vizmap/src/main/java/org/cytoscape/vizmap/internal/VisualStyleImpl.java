@@ -1,0 +1,118 @@
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+package org.cytoscape.vizmap.internal;
+
+import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.CyNetworkView;
+import org.cytoscape.viewmodel.View;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.MappingCalculator;
+import org.cytoscape.event.CyEventHelper;
+import java.util.Map;
+import java.util.HashMap;
+
+/**
+ */
+public class VisualStyleImpl implements VisualStyle {
+    private Map<VisualProperty<?>, MappingCalculator> calculators;
+    private Map<VisualProperty<?>, Object> perVSDefaults;
+    private CyEventHelper eventHelper;
+	public VisualStyleImpl(final CyEventHelper eventHelper) {
+		if (eventHelper == null)
+			throw new NullPointerException("CyEventHelper is null");
+		this.eventHelper = eventHelper;
+		calculators = new HashMap<VisualProperty<?>, MappingCalculator>();
+		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
+		
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
+    public void setMappingCalculator(MappingCalculator c){
+	calculators.put(c.getVisualProperty(), c);
+    }
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param t DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+    public MappingCalculator getMappingCalculator(VisualProperty<?> t){
+	return calculators.get(t);
+    }
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param <T> DOCUMENT ME!
+	 * @param vp DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+    public <T> T getDefault(VisualProperty<T> vp){
+	return (T) perVSDefaults.get(vp);
+    }
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param <T> DOCUMENT ME!
+	 * @param vp DOCUMENT ME!
+	 * @param value DOCUMENT ME!
+	 */
+    public <T> void setDefault(VisualProperty<T> vp, T value){
+	perVSDefaults.put(vp, value);
+    }
+
+	// ??
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param v DOCUMENT ME!
+	 */
+    public void apply(CyNetworkView view){
+	for (View v: view.getAllViews()){
+	    for (MappingCalculator c: calculators.values()) {
+		c.apply(v);
+	    } // FIXME: apply defaults!!
+	}
+    }
+}
