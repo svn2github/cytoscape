@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,72 +34,71 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.viewmodel;
+package org.cytoscape.viewmodel.internal;
 
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.viewmodel.View;
+import org.cytoscape.viewmodel.VisualProperty;
 
-import java.util.List;
-
+import java.util.HashMap;
 
 /**
- * Contains the visual representation of a Network.
+ * The base interface that defines the methods used to set visual properties
+ * for nodes, edges, and networks.
+ *
+ * Think of it as a row in the viewmodel table.  
  */
-public interface CyNetworkView {
+public class RowOrientedViewImpl<T> implements View<T>  {
+    private T source;
+    private HashMap vpValues;
+    private long suid;
+    
+    public RowOrientedViewImpl(T source){
+	suid = IdFactory.getNextSUID();
+	this.source = source;
+	vpValues = new HashMap<VisualProperty, Object>();
+    }
 	/**
-	 * Returns the network this view was created for.  The network is immutable for this
-	 * view, so there is no way to set it.
+	 * The VisualProperty object identifies which visual property to set and the Object
+	 * determines the value.   We should probably consider doing something more type safe like
+	 * what we're doing for Attributes.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @param <T>  DOCUMENT ME!
+	 * @param vp  DOCUMENT ME!
+	 * @param o  DOCUMENT ME!
 	 */
-	public CyNetwork getNetwork();
+    public <T> void setVisualProperty(VisualProperty<T> vp, T o){
+	vpValues.put(vp, o);
+    }
 
 	/**
-	 * Returns a View for a specified Node.
+	 * Getting visual properties in this way incurs lots of casting. We should probably
+	 * consider doing something more type safe like what we're doing for Attributes.
 	 *
-	 * @param n  DOCUMENT ME!
+	 * @param <T>  DOCUMENT ME!
+	 * @param vp  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public View<CyNode> getCyNodeView(CyNode n);
+    public <T> T getVisualProperty(VisualProperty<T> vp){
+	return (T) vpValues.get(vp);
+    }
 
 	/**
-	 * Returns a list of Views for all CyNodes in the network.
+	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List<View<CyNode>> getCyNodeViews();
+    public T getSource(){
+	return source;
+    }
 
-	/**
-	 * Returns a View for a specified Edge.
-	 *
-	 * @param n  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public View<CyEdge> getCyEdgeView(CyEdge n);
+        /**
+         *  DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
+        public long getSUID() {
+                return suid;
+        }
 
-	/**
-	 * Returns a list of Views for all CyEdges in the network.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<View<CyEdge>> getCyEdgeViews();
-
-	/**
-	 * Returns the view for this Network.
-	 * i.e. returns the object that stores the Network VisualProperty values
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-    public View<CyNetwork> getNetworkView();
-
-	/**
-	 * Returns a list of all View including those for Nodes, Edges, and Network.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<View<?extends GraphObject>> getAllViews();
 }

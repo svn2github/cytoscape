@@ -32,73 +32,62 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+package org.cytoscape.viewmodel.internal;
 
-package org.cytoscape.viewmodel;
-
-import org.cytoscape.model.CyEdge;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.viewmodel.CyNetworkViewFactory;
+import org.cytoscape.viewmodel.CyNetworkView;
 
-import java.util.List;
-
+import java.util.HashMap;
 
 /**
- * Contains the visual representation of a Network.
+ * 
  */
-public interface CyNetworkView {
-	/**
-	 * Returns the network this view was created for.  The network is immutable for this
-	 * view, so there is no way to set it.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyNetwork getNetwork();
+public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
+	private CyEventHelper eventHelper;
 
 	/**
-	 * Returns a View for a specified Node.
-	 *
-	 * @param n  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * For setter injection (hmm. whats that?)
 	 */
-	public View<CyNode> getCyNodeView(CyNode n);
+	public RowOrientedNetworkViewFactoryImpl() {
+	}
 
 	/**
-	 * Returns a list of Views for all CyNodes in the network.
+	 *  DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @param eventHelper DOCUMENT ME!
 	 */
-	public List<View<CyNode>> getCyNodeViews();
+	public void setEventHelper(CyEventHelper eventHelper) {
+		this.eventHelper = eventHelper;
+	}
 
 	/**
-	 * Returns a View for a specified Edge.
-	 *
-	 * @param n  DOCUMENT ME!
+	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public View<CyEdge> getCyEdgeView(CyEdge n);
+	public CyEventHelper getEventHelper() {
+		return this.eventHelper;
+	}
 
 	/**
-	 * Returns a list of Views for all CyEdges in the network.
+	 * Creates a new CyNetworkFactoryImpl object.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @param h  DOCUMENT ME!
 	 */
-	public List<View<CyEdge>> getCyEdgeViews();
+	public RowOrientedNetworkViewFactoryImpl(final CyEventHelper eventHelper) {
+		if (eventHelper == null)
+			throw new NullPointerException("CyEventHelper is null");
+		this.eventHelper = eventHelper;
+	}
 
 	/**
-	 * Returns the view for this Network.
-	 * i.e. returns the object that stores the Network VisualProperty values
+	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-    public View<CyNetwork> getNetworkView();
-
-	/**
-	 * Returns a list of all View including those for Nodes, Edges, and Network.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<View<?extends GraphObject>> getAllViews();
+    public CyNetworkView getNetworkViewFor(CyNetwork network){
+	return new RowOrientedNetworkViewImpl(eventHelper, network);
+    }
 }

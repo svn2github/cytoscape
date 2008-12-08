@@ -32,73 +32,13 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel;
 
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.GraphObject;
-
-import java.util.List;
-
 
 /**
- * Contains the visual representation of a Network.
+ * 
  */
-public interface CyNetworkView {
-	/**
-	 * Returns the network this view was created for.  The network is immutable for this
-	 * view, so there is no way to set it.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyNetwork getNetwork();
-
-	/**
-	 * Returns a View for a specified Node.
-	 *
-	 * @param n  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public View<CyNode> getCyNodeView(CyNode n);
-
-	/**
-	 * Returns a list of Views for all CyNodes in the network.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<View<CyNode>> getCyNodeViews();
-
-	/**
-	 * Returns a View for a specified Edge.
-	 *
-	 * @param n  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public View<CyEdge> getCyEdgeView(CyEdge n);
-
-	/**
-	 * Returns a list of Views for all CyEdges in the network.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<View<CyEdge>> getCyEdgeViews();
-
-	/**
-	 * Returns the view for this Network.
-	 * i.e. returns the object that stores the Network VisualProperty values
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-    public View<CyNetwork> getNetworkView();
-
-	/**
-	 * Returns a list of all View including those for Nodes, Edges, and Network.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<View<?extends GraphObject>> getAllViews();
+public interface CyNetworkViewFactory {
+    CyNetworkView getNetworkViewFor(CyNetwork network);
 }
