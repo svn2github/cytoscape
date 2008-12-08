@@ -126,11 +126,9 @@ WHERE V.status = 'published' AND V.plugin_file_id is not NULL
 	$pluginSql .= "ORDER BY L.name";
 
 
-	my $pluginsRef = $dbh=>selectall_arrayref($pluginSql);
-	print "$pluginSql\n" . Dumper $pluginsRef 	if ($Debug);
-	
+	my $pluginsRef = $dbh->selectall_arrayref($pluginSql);
+	#print "$pluginSql\n" . Dumper $pluginsRef 	if ($Debug);
 	return $pluginsRef;
-	#return $dbh->selectall_arrayref($pluginSql);
 	}
 
 # set up the <project> element and the global info for the xml doc
@@ -297,7 +295,8 @@ sub createPluginNode
 			$License, $LicenseReq, $Category, $PluginVersion, 
 			$ReleaseDate, $CyVersion, $PluginFileId, 
 			$PluginVersionId, $ThemeOnly) = @plugin;
-	
+
+		
 	if (isNull($PluginName, $UniqueId, $PluginVersion, $CyVersion, $PluginVersionId))
 		{
 		warn "One of the following required parameters was null in the database, skipping this plugin: 
@@ -343,6 +342,8 @@ sub createPluginNode
 	my $PluginUlrEl = $Doc->createElement('url');
 	$PluginUlrEl->appendChild($Doc->createTextNode($FileUrl));
 	$PluginEl->appendChild($PluginUlrEl);
+	
+	print Dumper @plugin if ($PluginName eq 'MiSink' and $ReleaseDate eq '2008-05-28');
 	
 	my $FileTag = addFileInfo($PluginFileId);
 
@@ -397,11 +398,15 @@ sub addFileInfo
 	{
 	my $PluginFileId = shift || return 0;
 
+	print "addFileInfo($PluginFileId)\n" if $Debug; 	
+
 	my ($FileType, $FileName) = $dbh->selectrow_array
 		("SELECT file_type, file_name 
 			FROM plugin_files 
 			WHERE plugin_file_auto_id = $PluginFileId");
-
+	
+	print "$FileType, $FileName\n" if $Debug;
+	
 	if (!$FileName)
 		{
 		warn "Missing a plugin name for plugin_file_auto_id $PluginFileId";
@@ -419,6 +424,8 @@ sub addFileInfo
 		elsif (isZip($FileType))
 			{ $FileType = "zip"; }
 		}
+	print "\tFile type: $FileType\n" if $Debug;		
+		
 	$PluginFileType->appendChild( $Doc->createTextNode($FileType) );
 	return $PluginFileType;
 	}
@@ -437,14 +444,14 @@ sub isZip
 	{
 	# application/x-zip-compressed
 	my $Type = shift || warn "No string passed to isZip method";
-	$Type =~ /^application\/x-zip-compressed$/ ? return 1: return 0;
+	$Type =~ /^application\/(zip|x-zip-compressed)$/ ? return 1: return 0;
 	}
 
 sub isJar
 	{
 	# application/x-jar  application/x-java-archive
 	my $Type = shift || warn "No string passed to isJar method";
-	$Type =~ /^application\/x-[jar|java\-archive]/ ? return 1: return 0;
+	$Type =~ /^application\/x-(jar|java-archive)/ ? return 1: return 0;
 	}
 
 
@@ -472,7 +479,6 @@ Usage: $0 -loc <some dir> -host <db host> -user <db user name> -passwd <db passw
   -passwd :   Database password.                        REQUIRED
   -host :     Database host name,                       OPTIONAL
               defaults to localhost                       
-
   [-help : See this message]
 );
 	exit(-1);
