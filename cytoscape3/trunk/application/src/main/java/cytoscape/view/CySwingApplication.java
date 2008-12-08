@@ -1,4 +1,3 @@
-
 /*
  File: CySwingApplication.java
 
@@ -38,12 +37,67 @@
 package cytoscape.view;
 
 import cytoscape.view.cytopanels.CytoPanel;
+
 import javax.swing.JFrame;
+import javax.swing.event.SwingPropertyChangeSupport;
 
-public interface CySwingApplication { 
 
-	public CyMenus getCyMenus(); 
-	public CytoPanel getCytoPanel(int compassDirection); 
+/**
+ *
+  */
+public interface CySwingApplication {
+	/**
+	 *
+	 */
+	public static final String NETWORK_VIEWS_SELECTED = "NETWORK_VIEWS_SELECTED";
+
+	/**
+	 *
+	 */
+	public static final String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
+
+	/**
+	 *
+	 */
+	public static final String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
+
+	/**
+	 *
+	 */
+	public static final String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
+
+	/**
+	 *
+	 */
+	public static final String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public CyMenus getCyMenus();
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param compassDirection DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public CytoPanel getCytoPanel(int compassDirection);
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public JFrame getJFrame();
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public SwingPropertyChangeSupport getSwingPropertyChangeSupport();
 }

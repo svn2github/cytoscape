@@ -86,31 +86,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	 */
 	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(950, 700);
 
-	/**
-	 *
-	 */
-	public static final String NETWORK_VIEWS_SELECTED = "NETWORK_VIEWS_SELECTED";
-
-	/**
-	 *
-	 */
-	public static final String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
-
-	/**
-	 *
-	 */
-	public static final String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
-
-	/**
-	 *
-	 */
-	public static final String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
-
-	/**
-	 *
-	 */
-	public static final String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
-
 	// state variables
 	/**
 	 *
@@ -420,8 +395,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	 * @param network_id DOCUMENT ME!
 	 */
 	public void setFocus(Long network_id) {
-		pcs.firePropertyChange(new PropertyChangeEvent(this, NETWORK_VIEW_FOCUSED, null, network_id));
-		pcs.firePropertyChange(new PropertyChangeEvent(this, NETWORK_VIEW_FOCUS, null, network_id));
+		pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEW_FOCUSED, null, network_id));
+		pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEW_FOCUS, null, network_id));
 	}
 
 	/**
@@ -440,20 +415,20 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	 */
 	@SuppressWarnings("unchecked")
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == NETWORK_VIEW_CREATED) {
+		if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
 			// Used to be here for the GraphViewController, but now that listening
 			// is handled by the GraphView itself.
 
 			// pass on the event
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
+		} else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED) {
 			// get focus event from NetworkViewManager
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
+		} else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUS) {
 			// get Focus from NetworkPanel
 			updateFocus((Long) e.getNewValue());
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == NETWORK_VIEWS_SELECTED) {
+		} else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEWS_SELECTED) {
 			Cytoscape.setSelectedNetworkViews((List<Long>) (e.getNewValue()));
 			Cytoscape.setSelectedNetworks((List<Long>) (e.getNewValue()));
 			pcs.firePropertyChange(e);
@@ -478,7 +453,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 				if (result == JOptionPane.YES_OPTION)
 					Cytoscape.createNewSession();
 			}
-		} else if (e.getPropertyName() == NETWORK_VIEW_DESTROYED) {
+		} else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_DESTROYED) {
 			// Used to be here for the GraphViewController, but now that listening
 			// is handled by the GraphView itself.
 

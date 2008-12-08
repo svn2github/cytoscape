@@ -152,7 +152,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 			return;
 		}
 
-		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
+		firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null,
 				network_id);
 	}
 
@@ -217,7 +217,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 	public void propertyChange(PropertyChangeEvent e) {
 
 		// handle focus event
-		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
+		if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUS) {
 			Long network_id = (Long) e.getNewValue();
 			e = null;
 			unsetFocus(); // in case the newly focused network doesn't have a
@@ -230,14 +230,14 @@ public class NetworkViewManager implements PropertyChangeListener,
 		}
 
 		// handle putting a newly created GraphView into a Container
-		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+		else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
 			GraphView new_view = (GraphView) e.getNewValue();
 			createContainer(new_view);
 			e = null;
 		}
 
 		// handle a NetworkView destroyed
-		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
+		else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_DESTROYED) {
 			GraphView view = (GraphView) e.getNewValue();
 			removeView(view);
 			e = null;
@@ -365,7 +365,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 		networkViewMap.put(view.getGraphPerspective().getSUID(), iframe);
 		componentMap.put(iframe, view.getGraphPerspective().getSUID());
 
-		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, view
+		firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null, view
 				.getGraphPerspective().getSUID());
 	}
 }

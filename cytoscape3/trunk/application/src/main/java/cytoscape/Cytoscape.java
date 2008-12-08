@@ -69,6 +69,7 @@ import cytoscape.bookmarks.Bookmarks;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.readers.BookmarkReader;
 import cytoscape.init.CyInitParams;
+import cytoscape.view.CySwingApplication;
 import cytoscape.view.CytoscapeDesktop;
 
 
@@ -1058,7 +1059,7 @@ public abstract class Cytoscape {
 			}
 		}
 
-		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_DESTROYED, null, view);
+		firePropertyChange(CySwingApplication.NETWORK_VIEW_DESTROYED, null, view);
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		getNetworkViewMap().remove(viewID);
@@ -1098,7 +1099,7 @@ public abstract class Cytoscape {
 		}
 
 		firePropertyChange(NETWORK_CREATED, null, network.getSUID());
-		firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
+		firePropertyChange(cytoscape.view.CySwingApplication.NETWORK_VIEW_CREATED, null, view);
 	}
 
 	/**

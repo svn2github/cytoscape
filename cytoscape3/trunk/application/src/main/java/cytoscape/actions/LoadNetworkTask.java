@@ -47,6 +47,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.view.CySwingApplication;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.util.CyNetworkNaming;
 import org.cytoscape.model.CyNetwork;
@@ -272,7 +273,7 @@ public class LoadNetworkTask implements Task {
 			dsk.getSwingPropertyChangeSupport()
 			         .addPropertyChangeListener(dsk.getBirdsEyeViewHandler());
 			dsk.getNetworkViewManager()
-			         .firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
+			         .firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null,
 			                             Cytoscape.getCurrentNetworkView().getNetwork()
 			                                      .getSUID());
 

@@ -38,6 +38,7 @@ package cytoscape.util.undo;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.view.CySwingApplication;
 import cytoscape.view.CytoscapeDesktop;
 
 import org.cytoscape.work.UndoSupport;
@@ -57,7 +58,7 @@ public class UndoMonitor implements PropertyChangeListener {
 
 	public UndoMonitor(CytoscapeDesktop desktop, UndoSupport undo) {
 		desktop.getSwingPropertyChangeSupport().addPropertyChangeListener(
-	                                            CytoscapeDesktop.NETWORK_VIEW_FOCUSED,this);
+	                                            CySwingApplication.NETWORK_VIEW_FOCUSED,this);
 
 		this.undo = undo;
 
@@ -86,7 +87,7 @@ public class UndoMonitor implements PropertyChangeListener {
 	 * @param e The change event.
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+		if (e.getPropertyName().equals(CySwingApplication.NETWORK_VIEW_FOCUSED)) {
 			undo.getUndoManager().discardAllEdits();
 		}
 	}

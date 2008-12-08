@@ -79,16 +79,16 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 	 * @param e The event triggering this method. 
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if ((e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED)
-		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS)
-		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED)
+		if ((e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED)
+		    || (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUS)
+		    || (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_DESTROYED)
 		    || (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			bev.changeView(Cytoscape.getCurrentNetworkView());
 		}
 
 		// Add the frameListener to the currently focused view if it
 		// doesn't already have one.
-		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED)
+		if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED)
 		{
 			JDesktopPane desktopPane = desktop.getNetworkViewManager().getDesktopPane();
 			if (desktopPane == null)

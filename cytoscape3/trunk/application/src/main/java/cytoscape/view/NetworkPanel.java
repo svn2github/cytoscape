@@ -369,7 +369,7 @@ public class NetworkPanel extends JPanel
 		}
 
 		 System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
-		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
+		pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEW_FOCUS,
 	                                                   null, node.getNetworkID()));
 
 		// creates a list of all selected networks 
@@ -385,7 +385,7 @@ public class NetworkPanel extends JPanel
 		}
 
 		if ( networkList.size() > 0 ) {
-			pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEWS_SELECTED,
+			pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEWS_SELECTED,
 		                                                   null, networkList));
 		} 
 	}
@@ -401,7 +401,7 @@ public class NetworkPanel extends JPanel
 			addNetwork((Long) e.getNewValue(), (Long) e.getOldValue());
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			removeNetwork((Long) e.getNewValue());
-		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
+		} else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED) {
 			if ( e.getSource() != this )
 				focusNetworkNode((Long) e.getNewValue());
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
