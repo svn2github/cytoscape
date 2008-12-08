@@ -26,7 +26,7 @@ public class PluginProperties extends Properties {
 		NAME("pluginName", true), DESCRIPTION("pluginDescription", true),
 		VERSION("pluginVersion", true), CYTOSCAPE_VERSION("cytoscapeVersion", true),
 		CATEGORY("pluginCategory", true),
-		PROJECT_URL("projectURL", false), AUTHORS("pluginAuthorsIntsitutions", false),
+		PROJECT_URL("projectURL", false), AUTHORS("pluginAuthorsInstitutions", false),
 		RELEASE_DATE("releaseDate", false), UNIQUE_ID("uniqueID", false),
 		DOWNLOAD_URL("downloadURL", false);
 		
@@ -149,7 +149,12 @@ public class PluginProperties extends Properties {
 		if (containsKey(PluginProperty.AUTHORS.getPropertyKey())) {
 			// split up the value and add each
 			String AuthorProp = getProperty(PluginProperty.AUTHORS.getPropertyKey());
-			String[] AuthInst = AuthorProp.split(";");
+
+      // bug fix, misspelled the property file key but need to be sure anyone who used the
+      // misspelling is taken care of for now
+      if (AuthorProp == null) 
+        AuthorProp = getProperty("pluginAuthorsIntsitutions");
+      String[] AuthInst = AuthorProp.split(";");
 
 			for (String ai: AuthInst) {
 				String[] CurrentAI = ai.split(":");
