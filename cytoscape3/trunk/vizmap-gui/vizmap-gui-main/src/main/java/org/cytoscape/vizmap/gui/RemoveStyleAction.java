@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 
 import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
 import cytoscape.Cytoscape;
@@ -15,7 +16,7 @@ public class RemoveStyleAction extends AbstractVizMapperAction {
 
 	public void actionPerformed(ActionEvent e) {
 		if (vmm.getVisualStyle().getName().equals(
-				VizMapperMainPanel.DEFAULT_VS_NAME)) {
+				VisualMappingManager.DEFAULT_VS_NAME)) {
 			JOptionPane.showMessageDialog(vizMapperMainPanel,
 					"You cannot delete default style.", "Cannot remove style!",
 					JOptionPane.ERROR_MESSAGE);
@@ -36,7 +37,7 @@ public class RemoveStyleAction extends AbstractVizMapperAction {
 
 			// try to switch to the default style
 			VisualStyle currentStyle = catalog
-					.getVisualStyle(VizMapperMainPanel.DEFAULT_VS_NAME);
+					.getVisualStyle(VisualMappingManager.DEFAULT_VS_NAME);
 
 			/*
 			 * Update Visual Mapping Browser.

@@ -160,12 +160,6 @@ public class VizMapperMainPanel extends JPanel implements
 	
 	private final static long serialVersionUID = 1202339867854959L;
 
-	// Default Visual Style Name
-	protected static final String DEFAULT_VS_NAME = "default";
-
-	/*
-	 * Fields which will be injected by Spring.
-	 */
 	@Resource
 	private CySwingApplication cytoscapeDesktop;
 	@Resource
