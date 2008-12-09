@@ -130,7 +130,10 @@ public class VisualMappingManagerImpl extends SubjectBaseImpl implements VisualM
 	 * @see org.cytoscape.vizmap.VisualMappingManager#getNetwork()
 	 */
 	public CyNetwork getNetwork() {
-		return networkView.getGraphPerspective();
+		if(networkView != null)
+			return networkView.getGraphPerspective();
+		else
+			return null;
 	}
 
 	/* (non-Javadoc)
@@ -210,13 +213,15 @@ public class VisualMappingManagerImpl extends SubjectBaseImpl implements VisualM
 	 * @see org.cytoscape.vizmap.VisualMappingManager#applyNodeAppearances(org.cytoscape.model.CyNetwork, org.cytoscape.view.GraphView)
 	 */
 	public void applyNodeAppearances(final CyNetwork network, final GraphView network_view) {
+		if(network == null || network_view == null)
+			return;
+		
 		final NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
 
-		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
-			NodeView nodeView = (NodeView) i.next();
-			CyNode node = nodeView.getNode();
-
-			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network);
+		NodeView nodeView;
+		for (Iterator<NodeView> i = network_view.getNodeViewsIterator(); i.hasNext();) {
+			nodeView = i.next();
+			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, nodeView.getNode(), network);
 			myNodeApp.applyAppearance(nodeView);
 		}
 	}
@@ -232,13 +237,14 @@ public class VisualMappingManagerImpl extends SubjectBaseImpl implements VisualM
 	 * @see org.cytoscape.vizmap.VisualMappingManager#applyEdgeAppearances(org.cytoscape.model.CyNetwork, org.cytoscape.view.GraphView)
 	 */
 	public void applyEdgeAppearances(final CyNetwork network, final GraphView network_view) {
+		if(network == null || network_view == null)
+			return;
+		
 		final EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
 
 		EdgeView edgeView;
-
-		for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext();) {
-			edgeView = (EdgeView) i.next();
-
+		for (Iterator<EdgeView> i = network_view.getEdgeViewsIterator(); i.hasNext();) {
+			edgeView = i.next();
 			if (edgeView == null)
 
 				// WARNING: This is a hack, edgeView should not be null, but
@@ -261,6 +267,9 @@ public class VisualMappingManagerImpl extends SubjectBaseImpl implements VisualM
 	 * @see org.cytoscape.vizmap.VisualMappingManager#applyGlobalAppearances(org.cytoscape.model.CyNetwork, org.cytoscape.view.GraphView)
 	 */
 	public void applyGlobalAppearances(CyNetwork network, GraphView network_view) {
+		if(network == null || network_view == null)
+			return;
+		
 		GlobalAppearanceCalculator globalAppearanceCalculator = activeVS.getGlobalAppearanceCalculator();
 		globalAppearanceCalculator.calculateGlobalAppearance(myGlobalApp, network);
 
@@ -292,6 +301,9 @@ public class VisualMappingManagerImpl extends SubjectBaseImpl implements VisualM
 	 * @see org.cytoscape.vizmap.VisualMappingManager#vizmapNode(org.cytoscape.view.NodeView, org.cytoscape.view.GraphView)
 	 */
 	public void vizmapNode(NodeView nodeView, GraphView network_view) {
+		if(nodeView == null || network_view == null)
+			return;
+		
 		CyNode node = nodeView.getNode();
 		NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
 		nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network_view.getGraphPerspective());
@@ -302,6 +314,8 @@ public class VisualMappingManagerImpl extends SubjectBaseImpl implements VisualM
 	 * @see org.cytoscape.vizmap.VisualMappingManager#vizmapEdge(org.cytoscape.view.EdgeView, org.cytoscape.view.GraphView)
 	 */
 	public void vizmapEdge(EdgeView edgeView, GraphView network_view) {
+		if(edgeView == null || network_view == null)
+			return;
 		CyEdge edge = edgeView.getEdge();
 		EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
 		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network_view.getGraphPerspective());
