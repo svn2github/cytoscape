@@ -5,6 +5,7 @@
 use strict;
 #use warnings;
 
+use Encode;
 use Data::Dumper;
 use XML::DOM;
 use Getopt::Long;
@@ -159,6 +160,7 @@ sub createIdNode
 sub createNameNode
 	{
 	my $Name = shift;
+	$Name = fixEncoding($Name);
 	my $NameEl = $Doc->createElement($xmlEl{'name'});
 	$NameEl->appendChild($Doc->createTextNode($Name));
 	return $NameEl;
@@ -167,6 +169,7 @@ sub createNameNode
 sub createDescNode
 	{
 	my $Desc = shift;
+	$Desc = fixEncoding($Desc);
 	my $DescEl = $Doc->createElement($xmlEl{'desc'});
 	$DescEl->appendChild($Doc->createTextNode( stripBadHex($Desc) ));
 	return $DescEl;
@@ -180,6 +183,7 @@ sub createCyVersionNode
 	
 	foreach my $v (@cyVersions)
 		{ 
+		$v = fixEncoding($v);
 		my $VersionEl = $Doc->createElement($xmlEl{'version'});
 		$VersionEl->appendChild($Doc->createTextNode($v));
 		$CyVersionsEl->appendChild($VersionEl);
@@ -191,6 +195,7 @@ sub createCyVersionNode
 sub createReleaseDateNode
 	{
 	my $ReleaseDate = shift;
+	$ReleaseDate = fixEncoding($ReleaseDate);
 	my $RelDateEl = $Doc->createElement('release_date');
 	$RelDateEl->appendChild($Doc->createTextNode($ReleaseDate));
 	return $RelDateEl;	
@@ -200,7 +205,7 @@ sub createVersionNode
 	{
 	my $VersionElName = shift;
 	my $Version = shift;
-	
+	$Version = fixEncoding($Version);
 	my $VersEl = $Doc->createElement($VersionElName);
 	$VersEl->appendChild($Doc->createTextNode($Version));
 	return $VersEl;
@@ -325,7 +330,7 @@ sub createPluginNode
 		my $LicenseEl = $Doc->createElement($xmlEl{'license'});
 		my $LicenseTextEl = $Doc->createElement('text') ;
 		$LicenseEl->appendChild($LicenseTextEl);
-		my $TextNode = $Doc->createTextNode( stripBadHex($License) );
+		my $TextNode = $Doc->createTextNode( fixEncoding($License) );
 		$LicenseTextEl->appendChild($TextNode);
 		$PluginEl->appendChild($LicenseEl);
 		}
@@ -376,11 +381,13 @@ sub addAuthors
 		{
 		my $AuthorElement = $Doc->createElement('author');
 		my $Name = $Doc->createElement('name');
+		$author->[0] = fixEncoding($author->[0]);
 		$Name->appendChild($Doc->createTextNode($author->[0]));
 		$AuthorElement->appendChild($Name);
 		
 		my $Inst = $Doc->createElement('institution');
 		$Inst->appendChild($Doc->createTextNode($author->[1]));
+		$author->[1] = fixEncoding($author->[1]);
 		$AuthorElement->appendChild($Inst);
 		
 		$AuthorList->appendChild($AuthorElement);
@@ -452,6 +459,13 @@ sub isJar
 	}
 
 
+# encode everything UTF8
+sub fixEncoding
+	{
+	my $string = shift;
+	$string = stripBadHex($string);
+	return encode("UTF8", $string);
+	}
 
 # connect to database
 sub dbConnect
