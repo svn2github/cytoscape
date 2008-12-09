@@ -32,7 +32,7 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 
 		// Create the new style
 		final VisualStyle newStyle = new VisualStyle(name);
-		final List<Calculator> calcs = new ArrayList<Calculator>(visualMappingManager
+		final List<Calculator> calcs = new ArrayList<Calculator>(vmm
 				.getCalculatorCatalog().getCalculators());
 		final Calculator dummy = calcs.get(0);
 		newStyle.getNodeAppearanceCalculator().setCalculator(dummy);
@@ -40,11 +40,11 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 		final GraphView currentView = Cytoscape.getCurrentNetworkView();
 
 		// add it to the catalog
-		visualMappingManager.getCalculatorCatalog().addVisualStyle(newStyle);
+		vmm.getCalculatorCatalog().addVisualStyle(newStyle);
 		// Apply the new style
-		visualMappingManager.setVisualStyle(newStyle);
+		vmm.setVisualStyle(newStyle);
 
-		visualMappingManager.setVisualStyleForView(currentView, newStyle);
+		vmm.setVisualStyleForView(currentView, newStyle);
 
 		vizMapperMainPanel.removeMapping(dummy.getVisualPropertyType());
 
@@ -61,7 +61,7 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 					.getDefaultImageManager().get(name));
 		}
 
-		visualMappingManager.setNetworkView(currentView);
+		vmm.setNetworkView(currentView);
 		vizMapperMainPanel.switchVS(name);
 	}
 }

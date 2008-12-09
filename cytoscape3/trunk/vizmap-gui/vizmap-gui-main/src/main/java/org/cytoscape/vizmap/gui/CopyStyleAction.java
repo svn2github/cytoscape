@@ -15,7 +15,7 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 	private static final long serialVersionUID = 1244735696944563618L;
 
 	public void actionPerformed(ActionEvent e) {
-		final VisualStyle currentStyle = visualMappingManager.getVisualStyle();
+		final VisualStyle currentStyle = vmm.getVisualStyle();
 		VisualStyle clone = null;
 		final GraphView targetView = Cytoscape.getCurrentNetworkView();
 
@@ -34,8 +34,8 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 		clone.setName(newName);
 
 		// add new style to the catalog
-		visualMappingManager.getCalculatorCatalog().addVisualStyle(clone);
-		visualMappingManager.setVisualStyle(clone);
+		vmm.getCalculatorCatalog().addVisualStyle(clone);
+		vmm.setVisualStyle(clone);
 
 		final JPanel defPanel = defAppBldr.getDefaultView(newName);
 		final GraphView view = (GraphView) ((DefaultViewPanel) defPanel)
@@ -49,7 +49,7 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel.getDefaultImageManager().get(newName));
 		}
 
-		visualMappingManager.setNetworkView(targetView);
+		vmm.setNetworkView(targetView);
 		vizMapperMainPanel.switchVS(newName);
 	}
 

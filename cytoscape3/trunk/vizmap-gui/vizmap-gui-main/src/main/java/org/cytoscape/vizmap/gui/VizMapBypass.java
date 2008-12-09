@@ -50,6 +50,7 @@ import org.cytoscape.model.GraphObject;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 import cytoscape.Cytoscape;
@@ -60,7 +61,7 @@ import cytoscape.Cytoscape;
  * Node and Edge bypass classes.
  */
 abstract class VizMapBypass {
-	protected VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+	protected VisualMappingManager vmm;
 	protected GraphObject graphObj = null;
 
 	abstract protected List<String> getBypassNames();
@@ -134,11 +135,11 @@ abstract class VizMapBypass {
 		
 		// Check node size lock state 
 		if(type.equals(VisualPropertyType.NODE_SIZE)) {
-			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
+			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
 				jmi.setEnabled(false);
 			}
 		} else if(type.equals(VisualPropertyType.NODE_WIDTH) || type.equals(VisualPropertyType.NODE_HEIGHT)) {
-			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
+			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
 				jmi.setEnabled(false);
 			}
 		}
@@ -151,5 +152,9 @@ abstract class VizMapBypass {
 			jmi.setSelected(true);
 			addResetMenuItem(menu, type);
 		}
+	}
+	
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
 	}
 }

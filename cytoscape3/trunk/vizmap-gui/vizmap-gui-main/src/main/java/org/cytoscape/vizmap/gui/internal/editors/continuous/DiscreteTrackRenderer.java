@@ -34,9 +34,27 @@
 */
 package org.cytoscape.vizmap.gui.internal.editors.continuous;
 
-import cytoscape.Cytoscape;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
+
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
@@ -44,13 +62,7 @@ import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import static org.cytoscape.vizmap.VisualPropertyType.*;
 //import cytoscape.visual.ui.LabelPlacerGraphic;
 
 
@@ -88,6 +100,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	// HTML document fot tooltip text.
 	private List<String> rangeTooltips;
 	private JXMultiThumbSlider slider;
+	private VisualMappingManager vmm;
 
 	/**
 	 * Creates a new DiscreteTrackRenderer object.
@@ -107,11 +120,11 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		this.type = type;
 
 		if (type.isNodeProp())
-			title = Cytoscape.getVisualMappingManager().getVisualStyle()
+			title = vmm.getVisualStyle()
 			                 .getNodeAppearanceCalculator().getCalculator(type).getMapping(0)
 			                 .getControllingAttributeName();
 		else
-			title = Cytoscape.getVisualMappingManager().getVisualStyle()
+			title = vmm.getVisualStyle()
 			                 .getEdgeAppearanceCalculator().getCalculator(type).getMapping(0)
 			                 .getControllingAttributeName();
 
@@ -563,8 +576,8 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		g.setColor(ICON_COLOR);
 		g.setStroke(STROKE2);
 
-		switch (type) {
-			case NODE_SHAPE:
+		if(type.equals(NODE_SHAPE)) {
+			
 
 				final VisualPropertyIcon icon = (VisualPropertyIcon) type.getVisualProperty()
 				                                                         .getIconSet().get(key);
@@ -572,15 +585,13 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				icon.setIconWidth(size);
 				g.fill(icon.getShape());
 
-				break;
-
-			case EDGE_SRCARROW_SHAPE:
-			case EDGE_TGTARROW_SHAPE:
+		} else if(type.equals(EDGE_SRCARROW_SHAPE) ||
+				type.equals(EDGE_TGTARROW_SHAPE)) {
 
 				final VisualPropertyIcon arrowIcon = ((VisualPropertyIcon) type.getVisualProperty()
 				                                                         .getIconSet().get(key));
 				if(arrowIcon == null) {
-					break;
+					return;
 				}
 				final int newSize = size;
 				arrowIcon.setIconHeight(newSize);
@@ -590,10 +601,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				arrowIcon.paintIcon(this, g, x, y);
 				g.translate(newSize, 0);
 
-				break;
-
-			case NODE_FONT_FACE:
-			case EDGE_FONT_FACE:
+		} else if(type.equals(NODE_FONT_FACE) || type.equals(EDGE_FONT_FACE)) {
 
 				final Font font = (Font) key;
 				final String fontName = font.getFontName();
@@ -606,10 +614,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fontName);
 				g.drawString(fontName, (size / 2) - (stringWidth / 2), size + smallFontSize + 2);
 
-				break;
-
-			case NODE_LINE_STYLE:
-			case EDGE_LINE_STYLE:
+		} else if(type.equals(NODE_LINE_STYLE) || type.equals(EDGE_LINE_STYLE)) {
 
 				final Stroke stroke = ((LineStyle) key).getStroke(2.0f);
 				final int newSize2 = (int) (size * 1.5);
@@ -621,7 +626,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				g.drawLine(size - 1, 1, 1, newSize2 - 1);
 				g.translate(0, size * 0.25);
 
-				break;
+
 
 // TODO
 //			case NODE_LABEL_POSITION:
@@ -631,18 +636,13 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 //				lp.paint(g);
 //
 //				break;
-
-			case NODE_LABEL:
-			case NODE_TOOLTIP:
-			case EDGE_LABEL:
-			case EDGE_TOOLTIP:
+		} else if ( type.equals(NODE_LABEL) ||
+				type.equals(NODE_TOOLTIP) ||
+				type.equals(EDGE_LABEL) ||
+				type.equals(EDGE_TOOLTIP) ) {
 				if(key != null) {
 					g.drawString(key.toString(), 0, g.getFont().getSize()*2);
 				}
-				break;
-
-			default:
-				break;
 		}
 
 		g.translate(-x, -y);
@@ -830,5 +830,9 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
 
 		return (((position / 100) * valueRange) + minValue);
+	}
+	
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
 	}
 }

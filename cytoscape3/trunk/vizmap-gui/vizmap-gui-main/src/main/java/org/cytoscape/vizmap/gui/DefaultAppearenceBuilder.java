@@ -31,30 +31,54 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.vizmap.gui;
 
-import cytoscape.Cytoscape;
-import cytoscape.util.CyColorChooser;
+import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
+import static org.cytoscape.vizmap.VisualPropertyType.NODE_SIZE;
+import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
+
 import org.cytoscape.vizmap.GlobalAppearanceCalculator;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
-import static org.cytoscape.vizmap.VisualPropertyType.*;
-
+import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import cytoscape.Cytoscape;
+import cytoscape.util.CyColorChooser;
 
 
 /**
@@ -62,12 +86,12 @@ import java.util.TreeSet;
  * This is a modal dialog.
  *
  * <p>
- *     Basic idea is the following:
- *  <ul>
- *      <li>Build dummy network with 2 nodes and 1 edge.</li>
- *      <li>Edit the default appearence of the dummy network</li>
- *      <li>Create a image from the dummy.</li>
- *  </ul>
+ * Basic idea is the following:
+ * <ul>
+ * <li>Build dummy network with 2 nodes and 1 edge.</li>
+ * <li>Edit the default appearence of the dummy network</li>
+ * <li>Create a image from the dummy.</li>
+ * </ul>
  * </p>
  *
  * @version 0.5
@@ -78,8 +102,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 	private final static long serialVersionUID = 1202339876675416L;
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
-	private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
-	                                                      .getNodeAppearanceCalculator();
+	private VisualMappingManager vmm;
+	private final NodeAppearanceCalculator nac;
 
 	static {
 		EDGE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getEdgeVisualPropertyList());
@@ -87,23 +111,28 @@ public class DefaultAppearenceBuilder extends JDialog {
 	}
 
 	private EditorFactory editorFactory;
-
 	
-	public DefaultAppearenceBuilder() {
-		
-	}
+
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
 	 *
-	 * @param parent DOCUMENT ME!
-	 * @param modal DOCUMENT ME!
+	 * @param parent
+	 *            DOCUMENT ME!
+	 * @param modal
+	 *            DOCUMENT ME!
 	 */
-	public DefaultAppearenceBuilder(Frame parent, final DefaultViewPanel mainView, final EditorFactory editorFactory) {
-		super(parent, true);
-		this.mainView = mainView; 
+	public DefaultAppearenceBuilder(final DefaultViewPanel mainView,
+	                                final EditorFactory editorFactory, VisualMappingManager vmm) {
+		super();
+		this.vmm = vmm;
+		nac = this.vmm.getVisualStyle().getNodeAppearanceCalculator();
+		this.setModal(true);
+		this.mainView = mainView;
 		this.editorFactory = editorFactory;
 		initComponents();
 		buildList();
+		
+		
 
 		this.addComponentListener(new ComponentAdapter() {
 				public void componentResized(ComponentEvent e) {
@@ -115,17 +144,17 @@ public class DefaultAppearenceBuilder extends JDialog {
 	/**
 	 * DOCUMENT ME!
 	 *
-	 * @param parent DOCUMENT ME!
+	 * @param parent
+	 *            DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public JPanel showDialog(Frame parent) {
-		setLocationRelativeTo(parent);
+	public JPanel showDialog(Component parent) {
 		setSize(900, 400);
 		lockSize();
 		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
 		mainView.updateView();
-		setLocationRelativeTo(parent); // WTF?
+		setLocationRelativeTo(parent);
 		setVisible(true);
 
 		return getPanel();
@@ -137,15 +166,13 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public JPanel getDefaultView(String vsName) {
-		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-		mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                            .getGlobalAppearanceCalculator()
-		                                            .getDefaultBackgroundColor());
+		vmm.setVisualStyle(vsName);
+		mainView.updateBackgroungColor(vmm.getVisualStyle().getGlobalAppearanceCalculator()
+		                                  .getDefaultBackgroundColor());
 		mainView.updateView();
 
 		return getPanel();
 	}
-
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -192,8 +219,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			});
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Default Appearance for "
-		         + Cytoscape.getVisualMappingManager().getVisualStyle().getName());
+		setTitle("Default Appearance for " + vmm.getVisualStyle().getName());
 		mainView.setBorder(new javax.swing.border.LineBorder(java.awt.Color.darkGray, 1, true));
 
 		org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(mainView);
@@ -249,8 +275,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					
-					Cytoscape.getVisualMappingManager().setNetworkView(Cytoscape.getCurrentNetworkView());
+					vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 					dispose();
 				}
@@ -340,9 +365,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 				VisualPropertyType type = (VisualPropertyType) list.getSelectedValue();
 				newValue = editorFactory.showDiscreteEditor(this, type);
 
-				if ( newValue != null )
-					type.setDefault(Cytoscape.getVisualMappingManager().getVisualStyle(), newValue);
-
+				if (newValue != null)
+					type.setDefault(vmm.getVisualStyle(), newValue);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -360,17 +384,17 @@ public class DefaultAppearenceBuilder extends JDialog {
 			Color newColor = CyColorChooser.showDialog(this, "Choose new color.", Color.white);
 
 			try {
-				Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalAppearanceCalculator()
-				         .setDefaultColor(selected, newColor);
+				vmm.getVisualStyle().getGlobalAppearanceCalculator()
+				   .setDefaultColor(selected, newColor);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 
 			buildList();
-			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+			Cytoscape.redrawGraph(vmm.getNetworkView());
 
 			if (selected.equals("Background Color")) {
-				Cytoscape.getVisualMappingManager().applyGlobalAppearances();
+				vmm.applyGlobalAppearances();
 				mainView.updateBackgroungColor(newColor);
 			}
 
@@ -392,13 +416,13 @@ public class DefaultAppearenceBuilder extends JDialog {
 	private JXList globalList;
 	private org.jdesktop.swingx.JXPanel jXPanel1;
 
-	//	private org.jdesktop.swingx.JXPanel jXPanel2;
+	// private org.jdesktop.swingx.JXPanel jXPanel2;
 	private org.jdesktop.swingx.JXTitledPanel jXTitledPanel1;
 
 	// End of variables declaration
 	protected DefaultViewPanel mainView;
 
-	//	 End of variables declaration
+	// End of variables declaration
 	private JPanel getPanel() {
 		return mainView;
 	}
@@ -436,8 +460,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			}
 		}
 
-		GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                          .getGlobalAppearanceCalculator();
+		GlobalAppearanceCalculator gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
 		DefaultListModel gModel = new DefaultListModel();
 		globalList.setModel(gModel);
 
@@ -477,6 +500,15 @@ public class DefaultAppearenceBuilder extends JDialog {
 		repaint();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vmm DOCUMENT ME!
+	 */
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
+	}
+
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339876646385L;
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 14);
@@ -509,8 +541,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			if (value instanceof VisualPropertyType
 			    && (((VisualPropertyType) value).getDataType() == String.class)) {
-				final Object defVal = ((VisualPropertyType) value).getDefault(Cytoscape.getVisualMappingManager()
-				                                                                       .getVisualStyle());
+				final Object defVal = ((VisualPropertyType) value).getDefault(vmm.getVisualStyle());
 
 				if (defVal != null) {
 					this.setToolTipText((String) defVal);
@@ -535,6 +566,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 */
 	class GlobalIcon extends VisualPropertyIcon {
 		private final static long serialVersionUID = 1202339876659938L;
+
 		public GlobalIcon(String name, Color color) {
 			super(name, color);
 		}

@@ -16,6 +16,7 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
@@ -68,13 +69,13 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 			if (type.isNodeProp()) {
 				attr = targetNetworkView.getNetwork().getNodeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
-				oMap = visualMappingManager.getVisualStyle().getNodeAppearanceCalculator()
+				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator()
 						.getCalculator(type).getMapping(0);
 				nOre = ObjectMapping.NODE_MAPPING;
 			} else {
 				attr = targetNetworkView.getNetwork().getEdgeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
-				oMap = visualMappingManager.getVisualStyle().getEdgeAppearanceCalculator()
+				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator()
 						.getCalculator(type).getMapping(0);
 				nOre = ObjectMapping.EDGE_MAPPING;
 			}
@@ -156,7 +157,7 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 			valueMap = generator.generateMap(attrSet);
 			
 			dm.putAll(valueMap);
-			visualMappingManager.setNetworkView(targetNetworkView);
+			vmm.setNetworkView(targetNetworkView);
 			Cytoscape.redrawGraph(targetNetworkView);
 
 			vizMapperMainPanel.getPropertySheetPanel().removeProperty(prop);

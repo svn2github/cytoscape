@@ -38,6 +38,7 @@ package org.cytoscape.vizmap.gui.internal.editors.discrete;
 
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import javax.swing.*;

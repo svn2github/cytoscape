@@ -34,6 +34,18 @@
  */
 package org.cytoscape.vizmap.gui;
 
+import cytoscape.Cytoscape;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNode;
+
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
+
+import org.cytoscape.vizmap.VisualMappingManager;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -41,26 +53,16 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
-
-import cytoscape.Cytoscape;
 
 /**
  * Panel to show the default properties visually (as graphics).
- * 
+ *
  * @version 0.6
  * @since Cytoscape 2.5
  * @author kono
  */
 public class DefaultViewPanel extends JPanel {
-
 	private final static long serialVersionUID = 1202339876691085L;
-
 	private static final int PADDING = 20;
 	private GraphView view;
 	private GraphView oldView;
@@ -78,12 +80,19 @@ public class DefaultViewPanel extends JPanel {
 	// Will be injected by DI Container
 	private CyNetworkFactory cyNetworkFactory;
 	private GraphViewFactory graphViewFactory;
+	private VisualMappingManager vmm;
 
-	public DefaultViewPanel(CyNetworkFactory cyNetworkFactory, GraphViewFactory graphViewFactory) {
-
+	/**
+	 * Creates a new DefaultViewPanel object.
+	 *
+	 * @param cyNetworkFactory  DOCUMENT ME!
+	 * @param graphViewFactory  DOCUMENT ME!
+	 */
+	public DefaultViewPanel(CyNetworkFactory cyNetworkFactory, GraphViewFactory graphViewFactory, VisualMappingManager vmm) {
 		this.cyNetworkFactory = cyNetworkFactory;
 		this.graphViewFactory = graphViewFactory;
-		
+		this.vmm = vmm;
+
 		dummyNet = cyNetworkFactory.getInstance();
 
 		source = dummyNet.addNode();
@@ -100,12 +109,11 @@ public class DefaultViewPanel extends JPanel {
 		view = graphViewFactory.createGraphView(dummyNet);
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
-		Cytoscape.getVisualMappingManager().setNetworkView(view);
+		this.vmm.setNetworkView(view);
 
-		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
+		oldView = this.vmm.getNetworkView();
 
-		background = Cytoscape.getVisualMappingManager().getVisualStyle()
-				.getGlobalAppearanceCalculator().getDefaultBackgroundColor();
+		background = this.vmm.getVisualStyle().getGlobalAppearanceCalculator().getDefaultBackgroundColor();
 		this.setBackground(background);
 	}
 
@@ -117,7 +125,7 @@ public class DefaultViewPanel extends JPanel {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Component getCanvas() {
@@ -129,7 +137,7 @@ public class DefaultViewPanel extends JPanel {
 	 */
 	public void clean() {
 		Cytoscape.destroyNetwork(dummyNet);
-		Cytoscape.getVisualMappingManager().setNetworkView(oldView);
+		vmm.setNetworkView(oldView);
 		dummyNet = null;
 		canvas = null;
 	}
@@ -139,13 +147,12 @@ public class DefaultViewPanel extends JPanel {
 	 */
 	protected void updateView() {
 		if (view != null) {
-			Cytoscape.getVisualMappingManager().setNetworkView(view);
-			Cytoscape.getVisualMappingManager().setVisualStyleForView(view,
-					Cytoscape.getVisualMappingManager().getVisualStyle());
+			vmm.setNetworkView(view);
+			vmm.setVisualStyleForView(view, vmm.getVisualStyle());
 
 			final Dimension panelSize = this.getSize();
 			view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
-					(int) panelSize.getHeight() - PADDING));
+			                           (int) panelSize.getHeight() - PADDING));
 			view.fitContent();
 			canvas = (view.getComponent());
 
@@ -156,7 +163,7 @@ public class DefaultViewPanel extends JPanel {
 			this.add(canvas);
 
 			canvas.setLocation(PADDING / 2, PADDING / 2);
-			Cytoscape.getVisualMappingManager().applyAppearances();
+			vmm.applyAppearances();
 
 			if ((background != null) && (canvas != null)) {
 				canvas.setBackground(background);
@@ -166,10 +173,19 @@ public class DefaultViewPanel extends JPanel {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public GraphView getView() {
 		return view;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vmm DOCUMENT ME!
+	 */
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
 	}
 }

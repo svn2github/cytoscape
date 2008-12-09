@@ -44,109 +44,143 @@ package org.cytoscape.vizmap.gui;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+
 import cytoscape.util.FileUtil;
-import org.cytoscape.io.read.URLUtil;
 import cytoscape.util.ZipUtil;
+
+import org.cytoscape.io.read.URLUtil;
+
 import org.cytoscape.vizmap.CalculatorCatalogFactory;
 import org.cytoscape.vizmap.CalculatorIO;
-import org.cytoscape.vizmap.VMMFactory;
 import org.cytoscape.vizmap.VisualMappingManager;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.net.URL;
+
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
 
+/**
+ *
+ */
 public class VizMapListener implements PropertyChangeListener {
+	/**
+	 * 
+	 */
+	public static final String VIZMAP_PROPS_FILE_NAME = "vizmap.props";
+	private VisualMappingManager vmm;
 
-	public static final String VIZMAP_PROPS_FILE_NAME = "vizmap.props";	
-		
-		public void propertyChange(PropertyChangeEvent e) {
-           if (e.getPropertyName() == VisualMappingManager.SAVE_VIZMAP_PROPS) {
-                // This section is for saving VS in a vizmap.props file.
-                // If signal contains no new value, Cytoscape consider it as a
-                // default file. Otherwise, save it as a user file.
-                File propertiesFile = null;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void propertyChange(PropertyChangeEvent e) {
+		if (e.getPropertyName() == vmm.SAVE_VIZMAP_PROPS) {
+			// This section is for saving VS in a vizmap.props file.
+			// If signal contains no new value, Cytoscape consider it as a
+			// default file. Otherwise, save it as a user file.
+			File propertiesFile = null;
 
-                if (e.getNewValue() == null)
-                    propertiesFile = CytoscapeInit.getConfigFile(VIZMAP_PROPS_FILE_NAME);
-                else
-                    propertiesFile = new File((String) e.getNewValue());
+			if (e.getNewValue() == null)
+				propertiesFile = CytoscapeInit.getConfigFile(VIZMAP_PROPS_FILE_NAME);
+			else
+				propertiesFile = new File((String) e.getNewValue());
 
-                if (propertiesFile != null) {
-                    Set test = CalculatorCatalogFactory.getCalculatorCatalog().getVisualStyleNames();
-                    Iterator it = test.iterator();
-                    System.out.println("Saving the following Visual Styles: ");
+			if (propertiesFile != null) {
+				Set test = CalculatorCatalogFactory.getCalculatorCatalog().getVisualStyleNames();
+				Iterator it = test.iterator();
+				System.out.println("Saving the following Visual Styles: ");
 
-                    while (it.hasNext())
-                        System.out.println("    - " + it.next().toString());
+				while (it.hasNext())
+					System.out.println("    - " + it.next().toString());
 
-                    CalculatorIO.storeCatalog(CalculatorCatalogFactory.getCalculatorCatalog(), propertiesFile);
-                    System.out.println("Vizmap saved to: " + propertiesFile);
-                }
-            } else if ((e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED) ||
-                       (e.getPropertyName() == VisualMappingManager.VIZMAP_LOADED)) {
-                // This section is for restoring VS from a file.
+				CalculatorIO.storeCatalog(CalculatorCatalogFactory.getCalculatorCatalog(),
+				                          propertiesFile);
+				System.out.println("Vizmap saved to: " + propertiesFile);
+			}
+		} else if ((e.getPropertyName() == vmm.VIZMAP_RESTORED)
+		           || (e.getPropertyName() == vmm.VIZMAP_LOADED)) {
+			// This section is for restoring VS from a file.
 
-                // only clear the existing vizmap.props if we're restoring
-                // from a session file
-                if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED)
-                    CalculatorCatalogFactory.getCalculatorCatalog().clearProps();
+			// only clear the existing vizmap.props if we're restoring
+			// from a session file
+			if (e.getPropertyName() == vmm.VIZMAP_RESTORED)
+				CalculatorCatalogFactory.getCalculatorCatalog().clearProps();
 
-                // get the new vizmap.props and apply it the existing properties
-                Object vizmapSource = e.getNewValue();
-                System.out.println("vizmapSource: '" + vizmapSource.toString() + "'");
-				Properties props = new Properties();
+			// get the new vizmap.props and apply it the existing properties
+			Object vizmapSource = e.getNewValue();
+			System.out.println("vizmapSource: '" + vizmapSource.toString() + "'");
 
-                try {
-                    InputStream is = null;
+			Properties props = new Properties();
 
-                    if (vizmapSource.getClass() == URL.class)
-                        // is = ((URL) vizmapSource).openStream();
-                        // Use URLUtil to get the InputStream since we might be using a proxy server 
-        				// and because pages may be cached:
-                        is = URLUtil.getBasicInputStream((URL) vizmapSource);                     
-                    else if (vizmapSource.getClass() == String.class) {
-                        // if its a RESTORED event the vizmap
-                        // file will be in a zip file.
-                        if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED) {
-                            is = ZipUtil.readFile((String) vizmapSource,
-                                    ".*vizmap.props");
+			try {
+				InputStream is = null;
 
-                            // if its a LOADED event the vizmap file
-                            // will be a normal file.
-                        } else
-                            is = FileUtil.getInputStream((String) vizmapSource);
-                    }
+				if (vizmapSource.getClass() == URL.class)
+					// is = ((URL) vizmapSource).openStream();
+					// Use URLUtil to get the InputStream since we might be using a proxy server 
+					// and because pages may be cached:
+					is = URLUtil.getBasicInputStream((URL) vizmapSource);
+				else if (vizmapSource.getClass() == String.class) {
+					// if its a RESTORED event the vizmap
+					// file will be in a zip file.
+					if (e.getPropertyName() == vmm.VIZMAP_RESTORED) {
+						is = ZipUtil.readFile((String) vizmapSource, ".*vizmap.props");
 
-                    if (is != null) {
-						props.load(is);
-                        is.close();
-                    }
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+						// if its a LOADED event the vizmap file
+						// will be a normal file.
+					} else
+						is = FileUtil.getInputStream((String) vizmapSource);
+				}
 
-                CalculatorCatalogFactory.getCalculatorCatalog().appendProps(props);
+				if (is != null) {
+					props.load(is);
+					is.close();
+				}
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 
-                System.out.println("Applying visual styles from: " + vizmapSource.toString());
+			CalculatorCatalogFactory.getCalculatorCatalog().appendProps(props);
 
-                // In the situation where the old visual style has been overwritten
-                // with a new visual style of the same name, then make sure it is
-                // reapplied.
-                final VisualMappingManager vmm = VMMFactory.getVisualMappingManager();
-                vmm.setVisualStyle(vmm.getVisualStyle().getName());
-				vmm.setVisualStyleForView( Cytoscape.getCurrentNetworkView(), vmm.getVisualStyle() );
-                Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
-            }
-        }
+			System.out.println("Applying visual styles from: " + vizmapSource.toString());
+
+			// In the situation where the old visual style has been overwritten
+			// with a new visual style of the same name, then make sure it is
+			// reapplied.
+			vmm.setVisualStyle(vmm.getVisualStyle().getName());
+			vmm.setVisualStyleForView(Cytoscape.getCurrentNetworkView(), vmm.getVisualStyle());
+			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+		}
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vmm DOCUMENT ME!
+	 */
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualMappingManager getVmm() {
+		return vmm;
+	}
 }

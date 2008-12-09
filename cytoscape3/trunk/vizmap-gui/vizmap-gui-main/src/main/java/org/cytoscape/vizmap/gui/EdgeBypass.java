@@ -39,6 +39,7 @@ package org.cytoscape.vizmap.gui;
 import cytoscape.Cytoscape;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 import javax.swing.*;

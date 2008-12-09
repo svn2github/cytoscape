@@ -12,7 +12,7 @@ public class CreateLegendAction extends AbstractVizMapperAction {
 		final SwingWorker worker = new SwingWorker() {
 			public Object construct() {
 				LegendDialog ld = new LegendDialog(menuItem,
-						visualMappingManager.getVisualStyle());
+						vmm.getVisualStyle());
 				ld.setLocationRelativeTo(menuItem);
 				ld.setVisible(true);
 

@@ -51,11 +51,11 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 					}
 
 					if (type.isNodeProp()) {
-						visualMappingManager.getVisualStyle()
+						vmm.getVisualStyle()
 								.getNodeAppearanceCalculator()
 								.removeCalculator(type);
 					} else {
-						visualMappingManager.getVisualStyle()
+						vmm.getVisualStyle()
 								.getEdgeAppearanceCalculator()
 								.removeCalculator(type);
 					}
@@ -80,7 +80,7 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 					vizMapperMainPanel.removeProperty(curProp);
 
 					vizMapperMainPanel.getPropertyMap().get(
-							visualMappingManager.getVisualStyle().getName())
+							vmm.getVisualStyle().getName())
 							.add(prop);
 					vizMapperMainPanel.getPropertySheetPanel().repaint();
 				}

@@ -38,6 +38,7 @@ import cytoscape.Cytoscape;
 
 import org.cytoscape.model.CyDataTable;
 
+import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
@@ -94,6 +95,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected Object above;
 	protected static ContinuousMappingEditorPanel editor;
 	protected double lastSpinnerNumber = 0;
+	
+	protected VisualMappingManager vmm;
 
 	/** Creates new form ContinuousMapperEditorPanel */
 	public ContinuousMappingEditorPanel(final VisualPropertyType type) {
@@ -373,11 +376,11 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 		if (type.isNodeProp()) {
 			attr = Cytoscape.getNodeAttributes();
-			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
+			calculator = vmm.getVisualStyle()
 			                      .getNodeAppearanceCalculator().getCalculator(type);
 		} else {
 			attr = Cytoscape.getEdgeAttributes();
-			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
+			calculator = vmm.getVisualStyle()
 			                      .getEdgeAppearanceCalculator().getCalculator(type);
 		}
 
@@ -520,7 +523,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				slider.repaint();
 				repaint();
 
-				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+				Cytoscape.redrawGraph(vmm.getNetworkView());
 			} else {
 				valueSpinner.setEnabled(false);
 				valueSpinner.setValue(0);
@@ -562,7 +565,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				      .setLocation((int) ((slider.getSize().width - 12) * newPosition), 0);
 
 				updateMap();
-				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+				Cytoscape.redrawGraph(vmm.getNetworkView());
 
 				slider.getSelectedThumb().repaint();
 				slider.getParent().repaint();
@@ -572,4 +575,9 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 			}
 		}
 	}
+	
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
+	}
+	
 }

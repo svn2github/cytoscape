@@ -14,7 +14,7 @@ public class RemoveStyleAction extends AbstractVizMapperAction {
 	private static final long serialVersionUID = -916650015995966595L;
 
 	public void actionPerformed(ActionEvent e) {
-		if (visualMappingManager.getVisualStyle().getName().equals(
+		if (vmm.getVisualStyle().getName().equals(
 				VizMapperMainPanel.DEFAULT_VS_NAME)) {
 			JOptionPane.showMessageDialog(vizMapperMainPanel,
 					"You cannot delete default style.", "Cannot remove style!",
@@ -24,14 +24,14 @@ public class RemoveStyleAction extends AbstractVizMapperAction {
 		}
 
 		// make sure the user really wants to do this
-		final String styleName = visualMappingManager.getVisualStyle().getName();
+		final String styleName = vmm.getVisualStyle().getName();
 		final String checkString = "Are you sure you want to permanently delete"
 				+ " the visual style '" + styleName + "'?";
 		int ich = JOptionPane.showConfirmDialog(vizMapperMainPanel, checkString,
 				"Confirm Delete Style", JOptionPane.YES_NO_OPTION);
 
 		if (ich == JOptionPane.YES_OPTION) {
-			final CalculatorCatalog catalog = visualMappingManager.getCalculatorCatalog();
+			final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 			catalog.removeVisualStyle(styleName);
 
 			// try to switch to the default style
@@ -48,8 +48,8 @@ public class RemoveStyleAction extends AbstractVizMapperAction {
 			vizMapperMainPanel.getDefaultImageManager().remove(styleName);
 			vizMapperMainPanel.getPropertyMap().remove(styleName);
 
-			visualMappingManager.setVisualStyle(currentStyle);
-			visualMappingManager.setVisualStyleForView(visualMappingManager.getNetworkView(), currentStyle);
+			vmm.setVisualStyle(currentStyle);
+			vmm.setVisualStyleForView(vmm.getNetworkView(), currentStyle);
 			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 		}
 	}

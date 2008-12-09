@@ -14,7 +14,7 @@ public class RenameStyleAction extends AbstractVizMapperAction {
 	private static final long serialVersionUID = -3823557783901332855L;
 
 	public void actionPerformed(ActionEvent e) {
-		final VisualStyle currentStyle = visualMappingManager.getVisualStyle();
+		final VisualStyle currentStyle = vmm.getVisualStyle();
 		final String oldName = currentStyle.getName();
 		final String name = vizMapperUtil.getStyleName(vizMapperMainPanel, currentStyle);
 
@@ -33,12 +33,12 @@ public class RenameStyleAction extends AbstractVizMapperAction {
 		 */
 		currentStyle.setName(name);
 
-		visualMappingManager.getCalculatorCatalog().removeVisualStyle(oldName);
-		visualMappingManager.getCalculatorCatalog()
+		vmm.getCalculatorCatalog().removeVisualStyle(oldName);
+		vmm.getCalculatorCatalog()
 				.addVisualStyle(currentStyle);
 
-		visualMappingManager.setVisualStyle(currentStyle);
-		visualMappingManager.setVisualStyleForView(visualMappingManager
+		vmm.setVisualStyle(currentStyle);
+		vmm.setVisualStyleForView(vmm
 				.getNetworkView(), currentStyle);
 
 		/*

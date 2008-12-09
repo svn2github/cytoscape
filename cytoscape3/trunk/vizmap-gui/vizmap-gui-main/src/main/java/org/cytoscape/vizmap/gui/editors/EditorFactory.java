@@ -39,6 +39,7 @@ import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.table.TableCellRenderer;
@@ -75,7 +76,7 @@ public class EditorFactory {
 	 * @param ed DOCUMENT ME!
 	 * @param props DOCUMENT ME!
 	 */
-	public void addEditorDisplayer(final EditorDisplayer ed) {
+	public void addEditorDisplayer(EditorDisplayer ed, Map properties) {
 		displayers.add(ed);
 	}
 
@@ -85,7 +86,7 @@ public class EditorFactory {
 	 * @param ed DOCUMENT ME!
 	 * @param props DOCUMENT ME!
 	 */
-	public void removeEditorDisplayer(final EditorDisplayer ed) {
+	public void removeEditorDisplayer(EditorDisplayer ed, Map properties) {
 		displayers.remove(ed);
 	}
 

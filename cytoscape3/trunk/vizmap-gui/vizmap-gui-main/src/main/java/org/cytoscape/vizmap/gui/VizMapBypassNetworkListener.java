@@ -36,14 +36,13 @@
  */
 package org.cytoscape.vizmap.gui;
 
-import cytoscape.Cytoscape;
-import cytoscape.view.Desktop;
-
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
+
+import cytoscape.Cytoscape;
+import cytoscape.view.CySwingApplication;
 
 
 /**
@@ -64,7 +63,7 @@ public class VizMapBypassNetworkListener implements PropertyChangeListener {
 	 * @param evnt The event we're hearing.
 	 */
 	public void propertyChange(PropertyChangeEvent evnt) {
-		if (evnt.getPropertyName() == Desktop.NETWORK_VIEW_CREATED) {
+		if (evnt.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
 			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
 

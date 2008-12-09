@@ -39,6 +39,7 @@ package org.cytoscape.vizmap.gui;
 import cytoscape.Cytoscape;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 

@@ -14,7 +14,7 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements
 	
 	protected VizMapperUtil vizMapperUtil;
 	protected DefaultAppearenceBuilder defAppBldr;
-	protected VisualMappingManager visualMappingManager;
+	protected VisualMappingManager vmm;
 	protected VizMapperMainPanel vizMapperMainPanel;
 	protected IconManager iconManager;
 	protected String menuLabel;
@@ -33,9 +33,9 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements
 		this.defAppBldr = defAppBldr;
 	}
 
-	public void setVisualMappingManager(
-			VisualMappingManager visualMappingManager) {
-		this.visualMappingManager = visualMappingManager;
+	public void setVmm(
+			VisualMappingManager vmm) {
+		this.vmm = vmm;
 	}
 
 	public void setVizMapperMainPanel(VizMapperMainPanel vizMapperMainPanel) {
