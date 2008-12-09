@@ -5,7 +5,7 @@
 use strict;
 #use warnings;
 
-use Encode;
+use Encode 'encode';
 use Data::Dumper;
 use XML::DOM;
 use Getopt::Long;
