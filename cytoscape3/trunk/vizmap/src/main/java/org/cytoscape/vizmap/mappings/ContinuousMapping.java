@@ -45,7 +45,7 @@ package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.vizmap.SubjectBase;
+import org.cytoscape.vizmap.SubjectBaseImpl;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousLegend;
@@ -72,7 +72,7 @@ import java.util.Properties;
  * cytoscape.visual.mappings.continuous.README.txt.
  *
  */
-public class ContinuousMapping extends SubjectBase implements ObjectMapping {
+public class ContinuousMapping extends SubjectBaseImpl implements ObjectMapping {
 	Object defaultObj; //  the default value held by this mapping
 	Class rangeClass; //  the class of values held by this mapping
 	String attrName; //  the name of the controlling data attribute

@@ -56,7 +56,7 @@ import java.util.Properties;
  * of the graph window. Currently dynamic calculators for these values are not
  * supported, only default values.
  */
-public class GlobalAppearanceCalculator extends SubjectBase implements Cloneable {
+public class GlobalAppearanceCalculator extends SubjectBaseImpl implements Cloneable {
 	/*
 	 * Set default colors
 	 */

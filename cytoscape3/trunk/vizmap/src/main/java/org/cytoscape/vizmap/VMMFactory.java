@@ -6,7 +6,7 @@ public class VMMFactory {
 	
 	public static VisualMappingManager getVisualMappingManager() {
 		if ( vmm == null )
-			vmm = new VisualMappingManager();
+			vmm = new VisualMappingManagerImpl();
 
 		return vmm; 
 	}

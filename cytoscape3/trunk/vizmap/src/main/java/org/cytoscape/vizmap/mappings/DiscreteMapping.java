@@ -45,7 +45,7 @@ package org.cytoscape.vizmap.mappings;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.SubjectBase;
+import org.cytoscape.vizmap.SubjectBaseImpl;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteLegend;
@@ -67,7 +67,7 @@ import java.util.TreeMap;
  * The data value is extracted from a bundle of attributes by using a
  * specified data attribute name.
  */
-public class DiscreteMapping extends SubjectBase implements ObjectMapping {
+public class DiscreteMapping extends SubjectBaseImpl implements ObjectMapping {
 	Object defaultObj; // the default value held by this mapping
 	Class rangeClass; // the valid range class for this mapping
 	String attrName; // the name of the controlling data attribute

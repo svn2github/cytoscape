@@ -1,7 +1,6 @@
-/*
- File: VisualMappingManager.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -33,149 +32,94 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
+
 package org.cytoscape.vizmap;
 
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-//import cytoscape.CytoscapeInit;
-
 
 /**
- * Top-level class for controlling the visual appearance of nodes and edges
- * according to data attributes, as well as some global visual attributes. This
- * class holds a reference to a NetworkView that displays the network, a
- * CalculatorCatalog that holds the set of known visual styles and calculators,
- * and a current VisualStyle that is used to determine the values of the visual
- * attributes. A Logger is also supplied to report errors.
- * <P>
- *
- * Note that a null VisualStyle is not allowed; this class always provides at
- * least a default object.
- * <P>
- *
- * The key methods are the apply* methods. These methods first recalculate the
- * visual appearances by delegating to the calculators contained in the current
- * visual style. The usual return value of these methods is an Appearance object
- * that contains the visual attribute values; these values are then applied to
- * the network by calling the appropriate set methods in the graph view API.
- * <P>
- */
-public class VisualMappingManager extends SubjectBase {
-
-    public static String VIZMAP_RESTORED = "VIZMAP_RESTORED";
-	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
-	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
-
-	// for tracking which styles are applied to which views
-	private Map<GraphView,VisualStyle> viewStyleMap = new HashMap<GraphView,VisualStyle>();
-	
-	// Catalog of visual styles and calculators.
-	// This is the actual object to store styles.
-	private CalculatorCatalog catalog;
-	
-	private GraphView networkView; // the object displaying the network
-	private VisualStyle activeVS; // the currently active visual style
-
-	// reusable appearance objects
-	private NodeAppearance myNodeApp = new NodeAppearance();
-	private EdgeAppearance myEdgeApp = new EdgeAppearance();
-	private GlobalAppearance myGlobalApp = new GlobalAppearance();
-
-	private static final String DEF_STYLE_NAME = "default";
+ * 
+  */
+public interface VisualMappingManager extends SubjectBase {
+	/**
+	 * 
+	 */
+	public static String VIZMAP_RESTORED = "VIZMAP_RESTORED";
 
 	/**
-	 * Creates a new VisualMappingManager object.
-	 *
-	 * @param networkView DOCUMENT ME!
+	 * 
 	 */
-	public VisualMappingManager() {
-		this.catalog = CalculatorCatalogFactory.getCalculatorCatalog();
-		
-		// TODO figure out where to get properties from
-//		// Try to find default style name from prop.
-//		String defStyle = CytoscapeInit.getProperties().getProperty("defaultVisualStyle");
-//
-//		if (defStyle == null)
-//			defStyle = DEF_STYLE_NAME;
+	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
 
-		VisualStyle vs = catalog.getVisualStyle(DEF_STYLE_NAME);
-
-		if (vs == null)
-			vs = catalog.getVisualStyle(DEF_STYLE_NAME);
-
-		setVisualStyle(vs);
-	}
+	/**
+	 * 
+	 */
+	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
 
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param new_view DOCUMENT ME!
 	 */
-	public void setNetworkView(final GraphView new_view) {
-		this.networkView = new_view;
-	}
+	public void setNetworkView(final GraphView new_view);
 
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public GraphView getNetworkView() {
-		return networkView;
-	}
+	public GraphView getNetworkView();
 
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public CyNetwork getNetwork() {
-		return networkView.getGraphPerspective();
-	}
+	public CyNetwork getNetwork();
 
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public CalculatorCatalog getCalculatorCatalog() {
-		return catalog;
-	}
+	public CalculatorCatalog getCalculatorCatalog();
 
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public VisualStyle getVisualStyle(String name) {
-		return catalog.getVisualStyle(name);
-	}
+	public VisualStyle getVisualStyle(String name);
 
-	public VisualStyle getVisualStyle() {
-		return activeVS;
-	}
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualStyle getVisualStyle();
 
-	public VisualStyle getVisualStyleForView( GraphView g ) {
-		if ( !viewStyleMap.containsKey(g) ) 
-			viewStyleMap.put( g, catalog.getVisualStyle(DEF_STYLE_NAME) );
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param g DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualStyle getVisualStyleForView(GraphView g);
 
-		return viewStyleMap.get(g);
-	}
-
-	public void setVisualStyleForView( GraphView g, VisualStyle vs ) {
-		if ( g != null && vs != null )
-			viewStyleMap.put(g,vs);
-	}
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param g DOCUMENT ME!
+	 * @param vs DOCUMENT ME!
+	 */
+	public void setVisualStyleForView(GraphView g, VisualStyle vs);
 
 	/**
 	 * Sets a new visual style, and returns the old style. Also fires an event
@@ -183,17 +127,7 @@ public class VisualMappingManager extends SubjectBase {
 	 *
 	 * If the argument is null, the previous visual style is simply returned.
 	 */
-	public VisualStyle setVisualStyle(final VisualStyle vs) {
-		
-		if ((vs != null) && (vs != activeVS)) {
-			VisualStyle tmp = activeVS;
-			activeVS = vs;
-			fireStateChanged();
-
-			return tmp;
-		} else
-			return activeVS;
-	}
+	public VisualStyle setVisualStyle(final VisualStyle vs);
 
 	/**
 	 * Sets a new visual style. Attempts to get the style with the given name
@@ -203,82 +137,42 @@ public class VisualMappingManager extends SubjectBase {
 	 * If no visual style with the given name is found, no change is made, an
 	 * error message is passed to the logger, and null is returned.
 	 */
-	public VisualStyle setVisualStyle(final String newVSName) {
-		final VisualStyle vs = catalog.getVisualStyle(newVSName);
-
-		if (vs != null)
-			return setVisualStyle(vs);
-		else
-			return activeVS;
-	}
+	public VisualStyle setVisualStyle(final String newVSName);
 
 	/**
 	 * Recalculates and reapplies all of the node appearances. The visual
 	 * attributes are calculated by delegating to the NodeAppearanceCalculator
 	 * member of the current visual style.
 	 */
-	public void applyNodeAppearances() {
-		applyNodeAppearances(getNetwork(), getNetworkView());
-	}
+	public void applyNodeAppearances();
 
 	/**
 	 * Recalculates and reapplies all of the node appearances. The visual
 	 * attributes are calculated by delegating to the NodeAppearanceCalculator
 	 * member of the current visual style.
 	 */
-	public void applyNodeAppearances(final CyNetwork network, final GraphView network_view) {
-		final NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
-
-		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
-			NodeView nodeView = (NodeView) i.next();
-			CyNode node = nodeView.getNode();
-
-			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network);
-			myNodeApp.applyAppearance(nodeView);
-		}
-	}
+	public void applyNodeAppearances(final CyNetwork network, final GraphView network_view);
 
 	/**
 	 * Recalculates and reapplies all of the edge appearances. The visual
 	 * attributes are calculated by delegating to the EdgeAppearanceCalculator
 	 * member of the current visual style.
 	 */
-	public void applyEdgeAppearances() {
-		applyEdgeAppearances(getNetwork(), getNetworkView());
-	}
+	public void applyEdgeAppearances();
 
 	/**
 	 * Recalculates and reapplies all of the edge appearances. The visual
 	 * attributes are calculated by delegating to the EdgeAppearanceCalculator
 	 * member of the current visual style.
 	 */
-	public void applyEdgeAppearances(final CyNetwork network, final GraphView network_view) {
-		final EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
-
-		EdgeView edgeView;
-
-		for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext();) {
-			edgeView = (EdgeView) i.next();
-
-			if (edgeView == null)
-
-				// WARNING: This is a hack, edgeView should not be null, but
-				// for now do this! (iliana)
-				continue;
-
-			edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edgeView.getEdge(), network);
-			myEdgeApp.applyAppearance(edgeView);
-		}
-	}
+	public void applyEdgeAppearances(final CyNetwork network, final GraphView network_view);
 
 	/**
 	 * Recalculates and reapplies the global visual attributes. The
 	 * recalculation is done by delegating to the GlobalAppearanceCalculator
 	 * member of the current visual style.
 	 */
-	public void applyGlobalAppearances() {
-		applyGlobalAppearances(getNetwork(), getNetworkView());
-	}
+	public void applyGlobalAppearances();
 
 	/**
 	 * Recalculates and reapplies the global visual attributes. The
@@ -290,35 +184,14 @@ public class VisualMappingManager extends SubjectBase {
 	 * @param network_view
 	 *            the view to apply to
 	 */
-	public void applyGlobalAppearances(CyNetwork network, GraphView network_view) {
-		GlobalAppearanceCalculator globalAppearanceCalculator = activeVS.getGlobalAppearanceCalculator();
-		globalAppearanceCalculator.calculateGlobalAppearance(myGlobalApp, network);
-
-		// setup proper background colors
-		network_view.setBackgroundPaint(myGlobalApp.getBackgroundColor());
-
-		// will ignore sloppy & reverse selection color for now
-
-		for ( CyNode node : network.getNodeList() )
-			network_view.getNodeView(node).setSelectedPaint(myGlobalApp.getNodeSelectionColor());
-
-		for ( CyEdge edge : network.getEdgeList() )
-			network_view.getEdgeView(edge).setSelectedPaint(myGlobalApp.getEdgeSelectionColor());
-	}
+	public void applyGlobalAppearances(CyNetwork network, GraphView network_view);
 
 	/**
 	 * Recalculates and reapplies all of the node, edge, and global visual
 	 * attributes. This method delegates to, in order, applyNodeAppearances,
 	 * applyEdgeAppearances, and applyGlobalAppearances.
 	 */
-	public void applyAppearances() {
-		/** first apply the node appearance to all nodes */
-		applyNodeAppearances();
-		/** then apply the edge appearance to all edges */
-		applyEdgeAppearances();
-		/** now apply global appearances */
-		applyGlobalAppearances();
-	}
+	public void applyAppearances();
 
 	/**
 	 * DOCUMENT ME!
@@ -326,12 +199,7 @@ public class VisualMappingManager extends SubjectBase {
 	 * @param nodeView DOCUMENT ME!
 	 * @param network_view DOCUMENT ME!
 	 */
-	public void vizmapNode(NodeView nodeView, GraphView network_view) {
-		CyNode node = nodeView.getNode();
-		NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
-		nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network_view.getGraphPerspective());
-		myNodeApp.applyAppearance(nodeView);
-	}
+	public void vizmapNode(NodeView nodeView, GraphView network_view);
 
 	/**
 	 * DOCUMENT ME!
@@ -339,10 +207,5 @@ public class VisualMappingManager extends SubjectBase {
 	 * @param edgeView DOCUMENT ME!
 	 * @param network_view DOCUMENT ME!
 	 */
-	public void vizmapEdge(EdgeView edgeView, GraphView network_view) {
-		CyEdge edge = edgeView.getEdge();
-		EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
-		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network_view.getGraphPerspective());
-		myEdgeApp.applyAppearance(edgeView);
-	}
+	public void vizmapEdge(EdgeView edgeView, GraphView network_view);
 }
