@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.vizmap;
 
 import org.cytoscape.model.CyNetwork;
@@ -44,23 +42,28 @@ import org.cytoscape.view.NodeView;
 
 
 /**
- * 
+ *
   */
 public interface VisualMappingManager extends SubjectBase {
 	/**
-	 * 
+	 * Name of the default Visual Style
 	 */
-	public static String VIZMAP_RESTORED = "VIZMAP_RESTORED";
+	public static final String DEFAULT_VS_NAME = "default";
 
 	/**
-	 * 
+	 *
 	 */
-	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
+	public static final String VIZMAP_RESTORED = "VIZMAP_RESTORED";
 
 	/**
-	 * 
+	 *
 	 */
-	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
+	public static final String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
+
+	/**
+	 *
+	 */
+	public static final String VIZMAP_LOADED = "VIZMAP_LOADED";
 
 	/**
 	 * DOCUMENT ME!
