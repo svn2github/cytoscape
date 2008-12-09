@@ -17,11 +17,14 @@
 	<context:annotation-config />
 
 	<!-- Menu bar -->
-	<bean name="cytoscapeMenus" class="cytoscape.view.CytoscapeMenus" scope="singleton"/>
+	<bean name="cytoscapeMenus" class="cytoscape.view.CytoscapeMenus"
+		scope="singleton" />
 
 	<!-- Cytoscape Desktop -->
-	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop" scope="singleton">
+	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop"
+		scope="singleton" depends-on="vmmServiceRef">
 		<constructor-arg ref="cytoscapeMenus" />
+		<property name="vmm" ref="vmmServiceRef" />
 	</bean>
 
 	<!-- cyMain.  Currently working as a builder for application. -->

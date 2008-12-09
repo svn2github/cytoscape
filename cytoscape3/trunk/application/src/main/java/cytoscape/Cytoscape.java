@@ -1807,6 +1807,9 @@ public abstract class Cytoscape {
 	 * This is a temporary utility method and will eventually be refactored away.
 	 */
 	public static void redrawGraph(GraphView view) {
+		if(view == null)
+			return;
+		
 		VMMFactory.getVisualMappingManager().setNetworkView(view);
 		VMMFactory.getVisualMappingManager().applyAppearances();
 		view.updateView();
