@@ -76,11 +76,10 @@ public interface MappingCalculator {
 	 */
 	public VisualProperty<?> getVisualProperty();
 
-	// ??
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public void apply(View<?> v);
+	public Object getValue(View<?> v);
 }

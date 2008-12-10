@@ -35,7 +35,10 @@
 
 package org.cytoscape.vizmap.internal;
 
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.VisualPropertyCatalog;
 import org.cytoscape.viewmodel.CyNetworkView;
 import org.cytoscape.viewmodel.View;
 import org.cytoscape.vizmap.VisualStyle;
@@ -43,6 +46,8 @@ import org.cytoscape.vizmap.MappingCalculator;
 import org.cytoscape.event.CyEventHelper;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Collection;
 
 /**
  */
@@ -50,10 +55,16 @@ public class VisualStyleImpl implements VisualStyle {
     private Map<VisualProperty<?>, MappingCalculator> calculators;
     private Map<VisualProperty<?>, Object> perVSDefaults;
     private CyEventHelper eventHelper;
-	public VisualStyleImpl(final CyEventHelper eventHelper) {
+    private VisualPropertyCatalog vpCatalog;
+
+    public VisualStyleImpl(final CyEventHelper eventHelper, final VisualPropertyCatalog vpCatalog) {
 		if (eventHelper == null)
 			throw new NullPointerException("CyEventHelper is null");
+		if (vpCatalog == null)
+			throw new NullPointerException("vpCatalog is null");
+
 		this.eventHelper = eventHelper;
+		this.vpCatalog = vpCatalog;
 		calculators = new HashMap<VisualProperty<?>, MappingCalculator>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
 		
@@ -109,10 +120,59 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param v DOCUMENT ME!
 	 */
     public void apply(CyNetworkView view){
-	for (View v: view.getAllViews()){
-	    for (MappingCalculator c: calculators.values()) {
-		c.apply(v);
-	    } // FIXME: apply defaults!!
+	List<View<CyNode>> nodeviews = view.getCyNodeViews();
+	List<View<CyEdge>> edgeviews = view.getCyEdgeViews();
+	    
+	applyImpl(nodeviews, vpCatalog.collectionOfVisualProperties(nodeviews, edgeviews,
+								    VisualProperty.GraphObjectType.NODE), true);
+	applyImpl(edgeviews, vpCatalog.collectionOfVisualProperties(nodeviews, edgeviews,
+							       VisualProperty.GraphObjectType.EDGE));
+	applyImpl(view.getNetworkView(),
+		  vpCatalog.collectionOfVisualProperties(VisualProperty.GraphObjectType.NETWORK));
+    }
+
+    // FIXME: this is just a workaround -- somehow the proper, generic
+    // method didn't want to compile for me
+    public void applyImpl(List<View<CyEdge>>views, Collection<VisualProperty> visualProperties){
+	for (View v: views) {
+	    applyImpl(v, visualProperties);
+	}
+    }
+
+    public void applyImpl(List<View<CyNode>>views, Collection<VisualProperty> visualProperties, boolean nodes){
+	for (View v: views) {
+	    applyImpl(v, visualProperties);
+	}
+    }
+    /*
+    public void applyImpl(List<View<CyEdge>>views, Collection<VisualProperty> visualProperties){
+	for (View v: views) {
+	    applyImpl(v, visualProperties);
+	}
+    }
+
+    public void applyImpl(List<View<CyNode>>views, Collection<VisualProperty> visualProperties){
+	for (View v: views) {
+	    applyImpl(v, visualProperties);
+	}
+    }
+    */
+    /*
+    public void applyImpl(List<View<?>>views, Collection<VisualProperty> visualProperties){
+	for (View v: views) {
+	    applyImpl(v, visualProperties);
+	}
+	}*/
+    public void applyImpl(View<?> view, Collection<VisualProperty> visualProperties){
+	if (true /* FIXME: only if viewmodel value not locked by bypass */){
+	    for (VisualProperty vp: visualProperties){
+		Object o = null;
+		MappingCalculator c = getMappingCalculator(vp);
+		if (c != null) { o = c.getValue(view);}
+		if (o == null) { o = perVSDefaults.get(vp); }
+		if (o == null) { o = vp.getDefault(); } // global default
+		view.setVisualProperty(vp, o);
+	    }
 	}
     }
 }

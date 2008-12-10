@@ -41,6 +41,8 @@ import org.cytoscape.vizmap.events.VisualStyleCreatedEvent;
 import org.cytoscape.vizmap.events.VisualStyleCreatedListener;
 import org.cytoscape.vizmap.events.internal.VisualStyleCreatedEventImpl;
 
+import org.cytoscape.viewmodel.VisualPropertyCatalog;
+
 import org.cytoscape.event.CyEventHelper;
 import java.util.List;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 
 
 	private CyEventHelper eventHelper;
+    private VisualPropertyCatalog vpCatalog;
 
 	/**
 	 * For setter injection (hmm. whats that?)
@@ -81,19 +84,31 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 		return this.eventHelper;
 	}
 
+	public void setVisualPropertyCatalog(VisualPropertyCatalog vpCatalog) {
+	    this.vpCatalog = vpCatalog;
+	}
+
+	public VisualPropertyCatalog getVisualPropertyCatalog() {
+		return this.vpCatalog;
+	}
+
 	/**
 	 *
 	 * @param h  DOCUMENT ME!
 	 */
-	public VisualStyleCatalogImpl(final CyEventHelper eventHelper) {
+    public VisualStyleCatalogImpl(final CyEventHelper eventHelper,
+				  final VisualPropertyCatalog vpCatalog) {
 		if (eventHelper == null)
 			throw new NullPointerException("CyEventHelper is null");
+		if (vpCatalog == null)
+			throw new NullPointerException("vpCatalog is null");
 		this.eventHelper = eventHelper;
+		this.vpCatalog = vpCatalog;
 		visualStyles = new ArrayList<VisualStyle>();
 	}
 
     public VisualStyle createVisualStyle(){
-	VisualStyle newVS = new VisualStyleImpl(eventHelper);
+	VisualStyle newVS = new VisualStyleImpl(eventHelper, vpCatalog);
 	visualStyles.add(newVS);
 	eventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
 					 VisualStyleCreatedListener.class);
