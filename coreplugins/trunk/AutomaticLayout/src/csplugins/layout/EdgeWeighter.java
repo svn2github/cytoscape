@@ -227,7 +227,7 @@ public class EdgeWeighter {
 			logOverflow = false;
 		}
 
-		if ((edge.getWeight() <= minWeightCutoff) ||	
+		if ((edge.getWeight() < minWeightCutoff) ||	
 		    (edge.getWeight() > maxWeightCutoff))
 			return false;
 
@@ -240,7 +240,7 @@ public class EdgeWeighter {
 				weight = edge.getLogWeight();
 				// logger.debug("Log weight = "+weight);
 				if (weight == logWeightCeiling)
-					weight = maxLogWeight;
+					weight = maxLogWeight+1;
 				weight = logNormalize(weight);
 				// logger.debug(" normalized weight = "+weight);
 			} else {
@@ -252,7 +252,7 @@ public class EdgeWeighter {
 			weight = edge.getLogWeight();
 			// logger.debug("Log weight = "+weight);
 			if (weight == logWeightCeiling)
-				weight = maxLogWeight;
+				weight = maxLogWeight+1;
 			weight = logNormalize(weight);
 			// logger.debug(" normalized weight = "+weight);
 			break;
