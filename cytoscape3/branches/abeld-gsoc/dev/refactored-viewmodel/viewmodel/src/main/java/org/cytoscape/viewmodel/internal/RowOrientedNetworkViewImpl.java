@@ -39,6 +39,15 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.events.AddedEdgeEvent;
+import org.cytoscape.model.events.AddedNodeEvent;
+import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
+import org.cytoscape.model.events.AboutToRemoveNodeEvent;
+import org.cytoscape.model.events.AddedEdgeListener;
+import org.cytoscape.model.events.AddedNodeListener;
+import org.cytoscape.model.events.AboutToRemoveEdgeListener;
+import org.cytoscape.model.events.AboutToRemoveNodeListener;
+
 import org.cytoscape.viewmodel.CyNetworkView;
 import org.cytoscape.viewmodel.View;
 
@@ -48,7 +57,11 @@ import java.util.ArrayList;
 /**
  * 
  */
-public class RowOrientedNetworkViewImpl implements CyNetworkView {
+public class RowOrientedNetworkViewImpl implements CyNetworkView,
+						   AddedEdgeListener, 
+						   AddedNodeListener, 
+						   AboutToRemoveEdgeListener, 
+						   AboutToRemoveNodeListener {
     private CyEventHelper eventHelper;
     private CyNetwork network;
     private HashMap<CyNode, RowOrientedViewImpl<CyNode>> nodeViews;
@@ -139,4 +152,42 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView {
 	result.add(networkView);
 	return result;
     }
+    /* Handle events in model and update accordingly: */
+	public void handleEvent(AddedEdgeEvent e) {
+	    System.out.println("handling event: "+e);
+		if ( network != e.getSource() )
+			return;
+
+		CyEdge edge = e.getEdge();
+		edgeViews.put(edge, new RowOrientedViewImpl<CyEdge>(edge));
+		// FIXME: fire events!
+	}
+
+	public void handleEvent(AddedNodeEvent e) {
+	    System.out.println("handling event: "+e);
+		if ( network != e.getSource() )
+			return;
+
+		CyNode node = e.getNode();
+		nodeViews.put(node, new RowOrientedViewImpl<CyNode>(node));
+	}
+
+	public void handleEvent(AboutToRemoveEdgeEvent e) {
+	    System.out.println("handling event: "+e);
+		if ( network != e.getSource() )
+			return;
+
+		CyEdge edge = e.getEdge();
+		edgeViews.remove(edge);
+	}
+
+	public void handleEvent(AboutToRemoveNodeEvent e) {
+	    System.out.println("handling event: "+e);
+		if ( network != e.getSource() )
+			return;
+
+		CyNode node = e.getNode();
+		edgeViews.remove(node);
+
+	}
 }

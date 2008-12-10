@@ -84,7 +84,7 @@ public class CyMain{
 	    System.out.println("NetworkFactory:"+f);
 	}
     public CyMain(CyNetworkFactory f, CyNetworkViewFactory vf) throws Exception {
-	    System.out.println("hello world! -- with only factory");
+	    System.out.println("hello world! -- factories");
 	    System.out.println("NetworkFactory:"+f);
 	    CyNetwork network = f.getInstance();
 	    CyNode n1 = network.addNode();
@@ -92,13 +92,26 @@ public class CyMain{
 	    CyEdge e1 = network.addEdge(n1, n2, false);
 	    System.out.println("nodes:"+network.getNodeCount()+" edges:"+network.getEdgeCount());
 	    CyNetworkView view = vf.getNetworkViewFor(network);
-	    System.out.println("NetworkView:"+view);
+	    dumpViewmodelState(view);
+	    // mutate model, see whether viewmodel updates
+	    CyNode n3 = network.addNode();
+	    CyEdge e2 = network.addEdge(n1, n3, false);
+	    dumpViewmodelState(view);
+	    System.out.println(view.getCyNodeView(n3));
+	    System.out.println(view.getCyEdgeView(e2));
+
+	    // create visual style, add an example MappingCalculator, dump values
+	}
+
+    public void dumpViewmodelState(CyNetworkView view){
+	    System.out.println("----------------------------------------------------");
+	    System.out.println("dumping state of:"+view);
 	    for (View<?extends GraphObject>v: view.getAllViews()){
 		System.out.println("one View:"+v);
-		System.out.println("source:"+v.getSource());
+		System.out.println("    source:"+v.getSource());
 	    }
-
-	}
+	    System.out.println("----------------------------------------------------");
+    }
 
     public CyMain(CyNetworkFactory f) throws Exception {
 	    System.out.println("hello world! -- with only NetworkFactory");
