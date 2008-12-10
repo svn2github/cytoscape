@@ -99,12 +99,19 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	public Collection<VisualProperty> collectionOfVisualProperties(){
 		return collectionOfVisualProperties(null, null);
 	}
-	public Collection<VisualProperty> collectionOfVisualProperties(CyNetworkView networkview){
+
+    public Collection<VisualProperty> collectionOfVisualProperties(VisualProperty.GraphObjectType objectType){
+	return collectionOfVisualProperties(null, null, objectType);
+	}
+
+    public Collection<VisualProperty> collectionOfVisualProperties(CyNetworkView networkview,
+								   VisualProperty.GraphObjectType objectType){
 		if (networkview != null){
 			return collectionOfVisualProperties(networkview.getCyNodeViews(),
-							    networkview.getCyEdgeViews());
+							    networkview.getCyEdgeViews(),
+							    objectType);
 		} else {
-			return collectionOfVisualProperties(null, null);
+		    return collectionOfVisualProperties(null, null, objectType);
 		}
 	}
 	/**
@@ -114,11 +121,11 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	 * 
 	 * Note: returns the same as collectionOfVisualProperties() if both args are null.
 	 */
-	public Collection<VisualProperty> collectionOfVisualProperties(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews){
+    public Collection<VisualProperty> collectionOfVisualProperties(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews, VisualProperty.GraphObjectType objectType){
 
 		Collection<VisualProperty> allVisualProperties = visualProperties.values();
 		if (nodeviews == null && edgeviews == null)
-			return allVisualProperties;
+		    return filterForObjectType(allVisualProperties, objectType);
 		//System.out.println("making list of VisualProperties in use:");
 		Set <VisualProperty> toRemove = new HashSet<VisualProperty>();
 		for (DependentVisualPropertyCallback callback: callbacks.values()){
@@ -128,80 +135,15 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 		Set <VisualProperty> result = new HashSet<VisualProperty>(allVisualProperties);
 		result.removeAll(toRemove);
 		//System.out.println("len of result:"+result.size());
-		return result;
+		return filterForObjectType(result, objectType);
 	}
 
-	/**
-	 * Returns the collection of all defined edge VisualProperties.
-	 */
-	public Collection<VisualProperty> getEdgeVisualProperties(){
-		return getEdgeVisualProperties(null, null);
-	}
-	public Collection<VisualProperty> getEdgeVisualProperties(CyNetworkView networkview){
-		return getEdgeVisualProperties(networkview.getCyNodeViews(),
-						 networkview.getCyEdgeViews());
-	}
-	public Collection<VisualProperty> getEdgeVisualProperties(View<CyEdge> edgeview){
-		Collection<View<CyEdge>> edgeviews = new ArrayList<View<CyEdge>>();
-		edgeviews.add(edgeview);
-
-		return getEdgeVisualProperties(null, edgeviews);
-	}
-	/**
-	 * Returns the collection of all edge VisualProperties that are in use for
-	 * the given GraphObjects.
-	 * 
-	 * Note: returns all defined edge VisualProperties if both args are null.
-	 */
-	public Collection<VisualProperty> getEdgeVisualProperties(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews){
-		ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
-		for (VisualProperty vp: collectionOfVisualProperties(nodeviews, edgeviews)){
-			if (vp.getObjectType() == VisualProperty.GraphObjectType.EDGE){
-				continue;
-			} else {
-				result.add(vp);
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Returns the collection of all defined node VisualProperties.
-	 */
-	public Collection<VisualProperty> getNodeVisualProperties(){
-		return getNodeVisualProperties(null, null);
-	}
-	public Collection<VisualProperty> getNodeVisualProperties(CyNetworkView networkview){
-		return getNodeVisualProperties(networkview.getCyNodeViews(), networkview.getCyEdgeViews());
-	}
-	public Collection<VisualProperty> getNodeVisualProperties(View<CyNode> nv){
-		Collection<View<CyNode>> nodeviews = new ArrayList<View<CyNode>>();
-		nodeviews.add(nv);
-		return getNodeVisualProperties(nodeviews, null);
-	}
-	/**
-	 * Returns the collection of all node VisualProperties that are in use for
-	 * the given GraphObjects.
-	 * 
-	 * Note: returns all defined node VisualProperties if both args are null.
-	 */
-	public Collection<VisualProperty> getNodeVisualProperties(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews){
-		ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
-		for (VisualProperty vp: collectionOfVisualProperties(nodeviews, edgeviews)){
-			if (vp.getObjectType() == VisualProperty.GraphObjectType.NODE){
-				result.add(vp);
-			}
-		}
-		return result;
-	}
-
-    /**
-     * Returns the collection of all defined node VisualProperties.
-     */
-    public Collection<VisualProperty> getNetworkVisualProperties(){
+    /* return collection of only those that have a matching objectType */
+    private Collection<VisualProperty> filterForObjectType(Collection<VisualProperty> vps,
+							   VisualProperty.GraphObjectType objectType){
 	ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
-	for (VisualProperty vp: visualProperties.values()){
-	    if (vp.getObjectType() == VisualProperty.GraphObjectType.NETWORK){
+	for (VisualProperty vp: vps){
+	    if (vp.getObjectType() == objectType){
 		result.add(vp);
 	    }
 	}

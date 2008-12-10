@@ -55,58 +55,25 @@ public interface VisualPropertyCatalog {
      */
     public Collection<VisualProperty> collectionOfVisualProperties();
 
-    public Collection<VisualProperty> collectionOfVisualProperties(CyNetworkView networkview);
+    public Collection<VisualProperty> collectionOfVisualProperties(VisualProperty.GraphObjectType objectType);
+
+    public Collection<VisualProperty> collectionOfVisualProperties(CyNetworkView networkview,
+							 VisualProperty.GraphObjectType objectType);
 
     /**
      * Returns the collection of all those VisualProperties that are in use for
      * the given GraphObjects. I.e. these are the VisualProperties, for which
      * setting a value will actually change the displayed graph.
      * 
-     * Note: returns the same as collectionOfVisualProperties() if both args are null.
+     * Note: returns the same as collectionOfVisualProperties() if
+     * both args are null.  Note: using
+     * VisualProperty.GraphObjectType.NETWORK for objectType is not
+     * really usefull. For network VPs, use
+     * collectionOfVisualProperties(VisualProperty.GraphObjectType
+     * objectType) instead.
      */
     public Collection<VisualProperty> collectionOfVisualProperties(Collection<View<CyNode>> nodeviews,
-								   Collection<View<CyEdge>> edgeviews);
+								   Collection<View<CyEdge>> edgeviews,
+								   VisualProperty.GraphObjectType objectType);
 
-    
-    /**
-     * Returns the collection of all defined edge VisualProperties.
-     */
-    public Collection<VisualProperty> getEdgeVisualProperties();
-
-    public Collection<VisualProperty> getEdgeVisualProperties(CyNetworkView networkview);
-
-    public Collection<VisualProperty> getEdgeVisualProperties(View<CyEdge> edgeview);
-
-    /**
-     * Returns the collection of all edge VisualProperties that are in use for
-     * the given GraphObjects.
-     * 
-     * Note: returns all defined edge VisualProperties if both args are null.
-     */
-    public Collection<VisualProperty> getEdgeVisualProperties(Collection<View<CyNode>> nodeviews,
-							  Collection<View<CyEdge>> edgeviews);
-    /**
-     * Returns the collection of all defined node VisualProperties.
-     */
-    public Collection<VisualProperty> getNodeVisualProperties();
-
-    public Collection<VisualProperty> getNodeVisualProperties(CyNetworkView networkview);
-
-
-    public Collection<VisualProperty> getNodeVisualProperties(View<CyNode> nv);
-
-    /**
-     * Returns the collection of all node VisualProperties that are in use for
-     * the given GraphObjects.
-     * 
-     * Note: returns all defined node VisualProperties if both args are null.
-     */
-    public Collection<VisualProperty> getNodeVisualProperties(Collection<View<CyNode>> nodeviews,
-							      Collection<View<CyEdge>> edgeviews);
- 
-    /**
-     * Returns the collection of all defined node VisualProperties.
-     */
-    public Collection<VisualProperty> getNetworkVisualProperties();
- 
 }
