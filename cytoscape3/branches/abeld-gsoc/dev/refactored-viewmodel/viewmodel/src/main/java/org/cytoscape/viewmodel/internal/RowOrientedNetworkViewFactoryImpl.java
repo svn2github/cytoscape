@@ -41,11 +41,17 @@ import org.cytoscape.viewmodel.CyNetworkView;
 
 import java.util.HashMap;
 
+import org.osgi.framework.BundleContext;
+
 /**
  * 
  */
 public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 	private CyEventHelper eventHelper;
+    private BundleContext bundleContext;
+
+    
+	
 
 	/**
 	 * For setter injection (hmm. whats that?)
@@ -71,15 +77,27 @@ public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 		return this.eventHelper;
 	}
 
+    public void setBundleContext(BundleContext bundleContext) {
+	this.bundleContext = bundleContext;
+    }
+    public BundleContext getBundleContext() {
+	return bundleContext;
+    }
+
+
 	/**
 	 * Creates a new CyNetworkFactoryImpl object.
 	 *
 	 * @param h  DOCUMENT ME!
 	 */
-	public RowOrientedNetworkViewFactoryImpl(final CyEventHelper eventHelper) {
+    public RowOrientedNetworkViewFactoryImpl(final CyEventHelper eventHelper,
+					     final BundleContext bundleContext) {
 		if (eventHelper == null)
 			throw new NullPointerException("CyEventHelper is null");
+		if (bundleContext == null)
+			throw new NullPointerException("bundleContext is null");
 		this.eventHelper = eventHelper;
+		this.bundleContext = bundleContext;
 	}
 
 	/**
@@ -88,6 +106,6 @@ public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 	 * @return  DOCUMENT ME!
 	 */
     public CyNetworkView getNetworkViewFor(CyNetwork network){
-	return new RowOrientedNetworkViewImpl(eventHelper, network);
+	return new RowOrientedNetworkViewImpl(eventHelper, network, bundleContext);
     }
 }

@@ -17,5 +17,6 @@
 	
 	<bean id="cyNetworkViewFactory" class="org.cytoscape.viewmodel.internal.RowOrientedNetworkViewFactoryImpl">
 	  <property name="eventHelper" ref="cyEventHelperServiceRef"></property>
+	  <property name="bundleContext" ref="bundleContext"></property>
 	</bean>
 </beans>

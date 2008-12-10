@@ -54,6 +54,9 @@ import org.cytoscape.viewmodel.View;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+
+import org.osgi.framework.BundleContext;
+
 /**
  * 
  */
@@ -62,14 +65,16 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView,
 						   AddedNodeListener, 
 						   AboutToRemoveEdgeListener, 
 						   AboutToRemoveNodeListener {
+    private BundleContext bc;
     private CyEventHelper eventHelper;
     private CyNetwork network;
     private HashMap<CyNode, RowOrientedViewImpl<CyNode>> nodeViews;
     private HashMap<CyEdge, RowOrientedViewImpl<CyEdge>> edgeViews;
     private RowOrientedViewImpl<CyNetwork> networkView;
 
-    public RowOrientedNetworkViewImpl(CyEventHelper eventHelper, CyNetwork network){
+    public RowOrientedNetworkViewImpl(CyEventHelper eventHelper, CyNetwork network, BundleContext bc){
 	this.eventHelper = eventHelper;
+	this.bc = bc;
 	this.network = network;
 	nodeViews = new HashMap<CyNode, RowOrientedViewImpl<CyNode>>();
 	edgeViews = new HashMap<CyEdge, RowOrientedViewImpl<CyEdge>>();
@@ -81,6 +86,13 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView,
 	    edgeViews.put(edge, new RowOrientedViewImpl<CyEdge>(edge));
 	}
 	networkView = new RowOrientedViewImpl<CyNetwork>(network);
+
+	//  register event listeners:
+	bc.registerService(AddedEdgeListener.class.getName(), this, null);
+	bc.registerService(AddedNodeListener.class.getName(), this, null);
+	bc.registerService(AboutToRemoveEdgeListener.class.getName(), this, null);
+	bc.registerService(AboutToRemoveNodeListener.class.getName(), this, null);
+	// FIXME: how are we going to un-register?
     }
 	/**
 	 * Returns the network this view was created for.  The network is immutable for this
