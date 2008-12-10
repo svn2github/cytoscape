@@ -603,6 +603,11 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				if (group.getViewer() != null && group.getViewer().equals(groupViewer.getViewerName())) {
 					// Only present reasonable choices to the user
 					MetaNode metaNode = MetaNode.getMetaNode(group.getGroupNode());
+					if (metaNode == null) {
+						metaNode = new MetaNode(group);
+						groupCreated(group);
+					}
+
 					if ((command == Command.COLLAPSE && metaNode.isCollapsed(view)) ||
 					    (command == Command.EXPAND && metaNode.isCollapsed(view))) 
 						continue;
@@ -810,7 +815,11 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		 */
 		private void collapse() {
 			MetaNode mNode = MetaNode.getMetaNode(group);
-			mNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
+			if (mNode == null) {
+				MetaNode newNode = new MetaNode(group);
+				groupCreated(group);
+				newNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
+			}
 		}
 
 		/**
@@ -818,6 +827,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		 */
 		private void expand() {
 			MetaNode mNode = MetaNode.getMetaNode(group);
+			if (mNode == null) {
+				mNode = new MetaNode(group);
+				groupCreated(group);
+			}
 			mNode.expand(recursive, Cytoscape.getCurrentNetworkView(), true);
 		}
 
@@ -826,6 +839,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
  		 */
 		private void createNetworkFromGroup() {
 			MetaNode mNode = MetaNode.getMetaNode(group);
+			if (mNode == null) {
+				mNode = new MetaNode(group);
+				groupCreated(group);
+			}
 			mNode.createNetworkFromGroup();
 		}
 
