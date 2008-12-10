@@ -50,6 +50,12 @@ import org.cytoscape.model.events.AboutToRemoveNodeListener;
 
 import org.cytoscape.viewmodel.CyNetworkView;
 import org.cytoscape.viewmodel.View;
+import org.cytoscape.viewmodel.events.SubsetCreatedListener;
+import org.cytoscape.viewmodel.events.SubsetChangedListener;
+import org.cytoscape.viewmodel.events.SubsetDestroyedListener;
+import org.cytoscape.viewmodel.events.internal.SubsetCreatedEventImpl;
+import org.cytoscape.viewmodel.events.internal.SubsetChangedEventImpl;
+import org.cytoscape.viewmodel.events.internal.SubsetDestroyedEventImpl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -211,6 +217,8 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView,
     }
     public void createSubset(String name, Set<View<?extends GraphObject>> subset){
 	subsets.put(name, subset);
+	eventHelper.fireSynchronousEvent(new SubsetCreatedEventImpl(this, name),
+					 SubsetCreatedListener.class);
     }
 
     public void addToSubset(String name, Set<View<?extends GraphObject>> toAdd){
@@ -219,12 +227,22 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView,
 	    throw new NullPointerException("non-existent subset");
 
 	subset.addAll(toAdd);
+	eventHelper.fireSynchronousEvent(new SubsetChangedEventImpl(this, name),
+					 SubsetChangedListener.class);
+
     }
     public void removeFromSubset(String name, Set<View<?extends GraphObject>> toRemove){
 	Set<View<?extends GraphObject>> subset = subsets.get(name);
 	if (subset == null)
 	    throw new NullPointerException("non-existent subset");
 	subset.removeAll(toRemove);
+	eventHelper.fireSynchronousEvent(new SubsetChangedEventImpl(this, name),
+					 SubsetChangedListener.class);
     }
+    public void deleteSubset(String name){
+	subsets.remove(name);
+	eventHelper.fireSynchronousEvent(new SubsetDestroyedEventImpl(this, name),
+					 SubsetDestroyedListener.class);
 
+    }
 }

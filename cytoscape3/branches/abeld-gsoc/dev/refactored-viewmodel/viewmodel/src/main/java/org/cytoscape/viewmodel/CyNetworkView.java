@@ -114,4 +114,5 @@ public interface CyNetworkView {
 
     public void addToSubset(String name, Set<View<?extends GraphObject>> toAdd);
     public void removeFromSubset(String name, Set<View<?extends GraphObject>> toRemove);
+    public void deleteSubset(String name);
 }
