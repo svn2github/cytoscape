@@ -35,66 +35,15 @@
 
 package org.cytoscape.viewmodel;
 
-import javax.swing.Icon;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
+import java.util.Collection;
+import java.util.Set;
 
-/**
- * FIXME
- * Think of it as a column in the viewmodel table.
- */
-public interface VisualProperty<T> {
-
-    // FIXME: shouldn't Strings be used instead, with "NODE", "EDGE",
-    // "NETWORK" being the canonical values?
-    // shouldn't presentations be able to extend this list?
-    enum GraphObjectType{
-	NODE,
-	EDGE,
-	NETWORK;
-    }
-    public VisualProperty.GraphObjectType getObjectType();
-
-	/**
-	 * The type of object represented by this property.
-	 *
-	 * @return  DOCUMENT ME!
+public abstract class DependentVisualPropertyCallback {
+	/** Called when mapping results change.
+	 * @return the set of VisualProperties to hide
 	 */
-	public Class<T> getType();
-
-	/**
-	 * The default value of this property.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public T getDefault();
-
-	/**
-	 * Used for hashes identifying this property.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getID();
-
-	/**
-	 * For presentation to humans.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getName();
-
-	/**
-	 * Returns an Icon for this VisualProperty based on the input value.
-	 *
-	 * @param value  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Icon getIcon(T value);
-
-	/**
-	 * 
-	 * 
-	 * @return callback, or null if there isn't one
-	 */
-	public DependentVisualPropertyCallback dependentVisualPropertyCallback();
+	public abstract Set<VisualProperty> changed(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews, Collection<VisualProperty> current_vps);
 }
