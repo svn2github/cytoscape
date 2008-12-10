@@ -33,43 +33,18 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.vizmap.internal;
+package org.cytoscape.vizmap.events.internal;
 
-import org.cytoscape.vizmap.VisualStyleCatalog;
+import org.cytoscape.event.CyEvent;
 import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.events.VisualStyleCreatedEvent;
-import org.cytoscape.vizmap.events.VisualStyleCreatedListener;
-import org.cytoscape.vizmap.events.internal.VisualStyleCreatedEventImpl;
-
-import org.cytoscape.event.CyEventHelper;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
- * We need a list of currently-used VisualStyles somewhere (?)
- * This is it.
- * It is also a VisualStyle factory
- */
-public class VisualStyleCatalogImpl implements VisualStyleCatalog {
-    private List<VisualStyle> visualStyles;
-
-
-	private CyEventHelper eventHelper;
-
-	/**
-	 * For setter injection (hmm. whats that?)
-	 */
-	public VisualStyleCatalogImpl() {
-	    visualStyles = new ArrayList<VisualStyle>();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param eventHelper DOCUMENT ME!
-	 */
-	public void setEventHelper(CyEventHelper eventHelper) {
-		this.eventHelper = eventHelper;
+ * DOCUMENT ME!
+  */
+public class  AbstractVisualStyleEvent {
+    private VisualStyle vs;
+	public AbstractVisualStyleEvent(VisualStyle vs) {
+	    this.vs = vs;
 	}
 
 	/**
@@ -77,31 +52,8 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyEventHelper getEventHelper() {
-		return this.eventHelper;
+	public VisualStyle getSource() {
+		return vs;
 	}
 
-	/**
-	 *
-	 * @param h  DOCUMENT ME!
-	 */
-	public VisualStyleCatalogImpl(final CyEventHelper eventHelper) {
-		if (eventHelper == null)
-			throw new NullPointerException("CyEventHelper is null");
-		this.eventHelper = eventHelper;
-		visualStyles = new ArrayList<VisualStyle>();
-	}
-
-    public VisualStyle createVisualStyle(){
-	VisualStyle newVS = new VisualStyleImpl(eventHelper);
-	visualStyles.add(newVS);
-	eventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
-					 VisualStyleCreatedListener.class);
-
-	return newVS;
-    }
-
-    public List<VisualStyle> listOfVisualStyles(){
-	return visualStyles; // FIXME: should return copy?
-    }
 }
