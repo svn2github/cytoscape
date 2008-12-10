@@ -111,7 +111,7 @@ public class RunMCL {
 			if(edgeWeight < minEdgeWeight)
 				minEdgeWeight = edgeWeight;
 		      
-			/*Add edge to graph*/
+			/*Add edge to matrix*/
 			sourceIndex = nodes.indexOf(edge.getSource());
 			targetIndex = nodes.indexOf(edge.getTarget());
 			//graph[targetIndex][sourceIndex] = edgeWeight;
@@ -218,13 +218,13 @@ public class RunMCL {
 
 		logger.info("Creating groups");
 
-		// Now, create the groups
-		List<String> groupList = createGroups(clusters);
-
 		// Finally, if we're supposed to, create the new network
 		if (createNewNetwork)
 		 	createClusteredNetwork(clusters);
 		
+		// Now, create the groups
+		List<String> groupList = createGroups(clusters);
+
 		// Now notify the metanode viewer
 		CyGroup group = CyGroupManager.findGroup(groupList.get(0));
 		CyGroupManager.setGroupViewer(group, "metaNode", Cytoscape.getCurrentNetworkView(), true);
@@ -365,6 +365,7 @@ public class RunMCL {
 
 		// Create the new network
 		CyNetwork net = Cytoscape.createNetwork(currentNetwork.getTitle()+"--clustered",currentNetwork,false);
+		HashMap<CyEdge,CyEdge> edgeMap = new HashMap();
 
 		for (Cluster cluster: cMap) {
 			// Get the list of nodes
@@ -372,11 +373,21 @@ public class RunMCL {
 			// Get the list of edges
 			List<CyEdge> edgeList = currentNetwork.getConnectingEdges(nodeList);
 			for (CyNode node: nodeList) { net.addNode(node); }
-			for (CyEdge edge: edgeList) { net.addEdge(edge); }
+			for (CyEdge edge: edgeList) { 
+				net.addEdge(edge); 
+				edgeMap.put(edge,edge);
+			}
 		}
 
 		// Create the network view
 		CyNetworkView view = Cytoscape.createNetworkView(net);
+
+		// OK, now we need to explicitly remove any edges from our old network
+		// that should not be in the new network (why is this necessary????)
+		// for (CyEdge edge: edges) {
+		// 	if (!edgeMap.containsKey(edge))
+		// 		net.hideEdge(edge);
+		// }
 
 		// Get the current visual mapper
 		VisualStyle vm = Cytoscape.getVisualMappingManager().getVisualStyle();

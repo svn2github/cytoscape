@@ -199,15 +199,23 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 			return;
 		}
 
+		if (monitor != null)
+			monitor.setStatus("Initializaing");
+
 		// Start by cleaning up and resetting
 		EisenCluster.resetAttributes();
 
 		// Cluster the attributes, if requested
-		if (clusterAttributes && attributeArray.length > 1)
-			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true, logger, debug);
+		if (clusterAttributes && attributeArray.length > 1) {
+			if (monitor != null)
+				monitor.setStatus("Clustering attributes");
+			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true, logger, debug, monitor);
+		}
 
+		if (monitor != null)
+			monitor.setStatus("Clustering nodes");
 		// Cluster the nodes
-		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, false, logger, debug);
+		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, false, logger, debug, monitor);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

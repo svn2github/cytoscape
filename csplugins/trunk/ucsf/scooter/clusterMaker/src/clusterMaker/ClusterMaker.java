@@ -49,6 +49,7 @@ import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
+import cytoscape.view.CytoscapeDesktop;
 
 // clusterMaker imports
 import clusterMaker.ui.ClusterSettingsDialog;
@@ -98,8 +99,10 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz));
 		menu.add(item);
 		
+		// Catch new network loaded and change events so we can update our visualization menus
 		Cytoscape.getPropertyChangeSupport()
         .addPropertyChangeListener( Cytoscape.NETWORK_LOADED, this );
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
@@ -110,7 +113,9 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ( evt.getPropertyName() == Cytoscape.NETWORK_LOADED || 
-		     evt.getPropertyName() == ClusterAlgorithm.CLUSTER_COMPUTED){
+		     evt.getPropertyName() == ClusterAlgorithm.CLUSTER_COMPUTED ||
+		     evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ||
+		     evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED ){
 			updateVizMenus();
     }
 	}

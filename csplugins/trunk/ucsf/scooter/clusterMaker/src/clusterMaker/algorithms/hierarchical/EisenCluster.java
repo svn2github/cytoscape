@@ -67,7 +67,7 @@ public class EisenCluster {
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
 	                      ClusterMethod clusterMethod, boolean transpose, CyLogger log,
-	                      boolean dbg) {
+	                      boolean dbg, TaskMonitor monitor) {
 
 		logger = log;
 		debug = dbg;
@@ -78,11 +78,17 @@ public class EisenCluster {
 			if (debug)
 				logger.debug("Attribute: '"+weightAttributes[att]+"'");
 
+		if (monitor != null) 
+			monitor.setStatus("Creating distance matrix");
+
 		// Create the matrix
 		Matrix matrix = new Matrix(weightAttributes, transpose);
 
 		// Create a weight vector of all ones (we don't use individual weighting, yet)
 		matrix.setUniformWeights();
+
+		if (monitor != null) 
+			monitor.setStatus("Clustering...");
 
 		// Cluster
 		TreeNode[] nodeList = treeCluster(matrix, metric, clusterMethod);
@@ -101,6 +107,9 @@ public class EisenCluster {
 				}
 			}
 		}
+
+		if (monitor != null) 
+			monitor.setStatus("Creating tree");
 
 		// Join the nodes
 		double[] nodeOrder = new double[nodeList.length];
@@ -163,6 +172,8 @@ public class EisenCluster {
 		// Finally, create the group hierarchy
 		// The root is the last entry in our nodeList
 		if (!matrix.isTransposed()) {
+			if (monitor != null) 
+				monitor.setStatus("Creating groups");
 			CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 			String netID = Cytoscape.getCurrentNetwork().getIdentifier();
 			ArrayList<String> groupNames = new ArrayList(nodeList.length);
@@ -239,8 +250,6 @@ public class EisenCluster {
 			netAttr.deleteAttribute(netID, ARRAY_ORDER_ATTRIBUTE);
 		if (netAttr.hasAttribute(netID, NODE_ORDER_ATTRIBUTE))
 			netAttr.deleteAttribute(netID, NODE_ORDER_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, GROUP_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, GROUP_ATTRIBUTE);
 		if (netAttr.hasAttribute(netID, CLUSTER_ATTR_ATTRIBUTE))
 			netAttr.deleteAttribute(netID, CLUSTER_ATTR_ATTRIBUTE);
 		if (netAttr.hasAttribute(netID, CLUSTER_NODE_ATTRIBUTE))
@@ -255,6 +264,7 @@ public class EisenCluster {
 			List<String>clList = (List<String>)netAttr.getListAttribute(netID, GROUP_ATTRIBUTE);
 			for (String groupName: clList) {
 				CyGroup group = CyGroupManager.findGroup(groupName);
+				// XXX FIXME XXX This doesn't seem to be working
 				if (group != null)
 					CyGroupManager.removeGroup(group);
 			}
@@ -715,6 +725,7 @@ public class EisenCluster {
 
 	private static CyGroup createGroups(Matrix matrix, TreeNode nodeList[], TreeNode node, List<String>groupNames) {
 		ArrayList<CyNode>memberList = new ArrayList(2);
+		logger.debug("Creating groups");
 
 		// Do a right-first descend of the tree
 		if (node.getRight() < 0) {
@@ -738,8 +749,10 @@ public class EisenCluster {
 		// System.out.println("Creating group "+node.getName()+" with nodes "+memberList.get(0).getIdentifier()+" and "+memberList.get(1).getIdentifier());
 
 		// Create the group for this level
+		logger.debug("Creating group "+node.getName());
 		CyGroup group = CyGroupManager.createGroup(node.getName(), memberList, null);
 		if (group == null) {
+			logger.debug("...already exists -- removing");
 			// Hmmm....the group already exists -- clean it up
 			group = CyGroupManager.findGroup(node.getName());
 			// Remove the group
