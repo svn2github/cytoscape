@@ -37,6 +37,7 @@ package org.cytoscape.vizmap.internal;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.VisualPropertyCatalog;
 import org.cytoscape.viewmodel.CyNetworkView;
@@ -124,45 +125,19 @@ public class VisualStyleImpl implements VisualStyle {
 	List<View<CyEdge>> edgeviews = view.getCyEdgeViews();
 	    
 	applyImpl(nodeviews, vpCatalog.collectionOfVisualProperties(nodeviews, edgeviews,
-								    VisualProperty.GraphObjectType.NODE), true);
+								    VisualProperty.GraphObjectType.NODE));
 	applyImpl(edgeviews, vpCatalog.collectionOfVisualProperties(nodeviews, edgeviews,
 							       VisualProperty.GraphObjectType.EDGE));
 	applyImpl(view.getNetworkView(),
 		  vpCatalog.collectionOfVisualProperties(VisualProperty.GraphObjectType.NETWORK));
     }
 
-    // FIXME: this is just a workaround -- somehow the proper, generic
-    // method didn't want to compile for me
-    public void applyImpl(List<View<CyEdge>>views, Collection<VisualProperty> visualProperties){
+    public <T extends GraphObject> void applyImpl(List<View<T>>views, Collection<VisualProperty> visualProperties){
 	for (View v: views) {
 	    applyImpl(v, visualProperties);
 	}
     }
 
-    public void applyImpl(List<View<CyNode>>views, Collection<VisualProperty> visualProperties, boolean nodes){
-	for (View v: views) {
-	    applyImpl(v, visualProperties);
-	}
-    }
-    /*
-    public void applyImpl(List<View<CyEdge>>views, Collection<VisualProperty> visualProperties){
-	for (View v: views) {
-	    applyImpl(v, visualProperties);
-	}
-    }
-
-    public void applyImpl(List<View<CyNode>>views, Collection<VisualProperty> visualProperties){
-	for (View v: views) {
-	    applyImpl(v, visualProperties);
-	}
-    }
-    */
-    /*
-    public void applyImpl(List<View<?>>views, Collection<VisualProperty> visualProperties){
-	for (View v: views) {
-	    applyImpl(v, visualProperties);
-	}
-	}*/
     public void applyImpl(View<?> view, Collection<VisualProperty> visualProperties){
 	for (VisualProperty vp: visualProperties){
 	    if (view.getByPass(vp) == null){ // only if no bypass is defined
