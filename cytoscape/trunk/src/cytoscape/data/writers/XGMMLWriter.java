@@ -499,12 +499,10 @@ public class XGMMLWriter {
 		 * In case node is hidden, we cannot get the show and extract node
 		 * view.
 		 */
-		boolean hiddenNodeFlag = false;
 		if (nodeView == null) return;
 
 		if (nodeView.getWidth() == -1) {
 			networkView.showGraphObject(nodeView);
-			hiddenNodeFlag = true;
 		}
 
 		writeElement("<graphics");
