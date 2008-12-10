@@ -47,14 +47,14 @@ import java.util.HashMap;
  *
  * Think of it as a row in the viewmodel table.  
  */
-public class RowOrientedViewImpl<T> implements View<T>  {
-    private T source;
+public class RowOrientedViewImpl<S> implements View<S>  {
+    private S source;
     private HashMap vpValues;
     private HashMap bypassValues;
 
     private long suid;
     
-    public RowOrientedViewImpl(T source){
+    public RowOrientedViewImpl(S source){
 	suid = IdFactory.getNextSUID();
 	this.source = source;
 	vpValues = new HashMap<VisualProperty, Object>();
@@ -91,7 +91,7 @@ public class RowOrientedViewImpl<T> implements View<T>  {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-    public T getSource(){
+    public S getSource(){
 	return source;
     }
 

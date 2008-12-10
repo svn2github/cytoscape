@@ -45,7 +45,7 @@ import org.cytoscape.model.Identifiable;
  *
  * Think of it as a row in the viewmodel table.  
  */
-public interface View<T> extends Identifiable {
+public interface View<S> extends Identifiable {
 	/**
 	 * The VisualProperty object identifies which visual property to set and the Object
 	 * determines the value.   We should probably consider doing something more type safe like
@@ -110,5 +110,5 @@ public interface View<T> extends Identifiable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public T getSource();
+	public S getSource();
 }
