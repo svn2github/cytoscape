@@ -261,7 +261,7 @@ public class CytoscapeInit {
 			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
 
 			for (Throwable t : pluginLoadingErrors) {
-				logger.warn("Plugin loading error: "+t.toString());
+				logger.warn("Plugin loading error: "+t.toString(),t);
 			}
 
 			mgr.clearErrorList();
