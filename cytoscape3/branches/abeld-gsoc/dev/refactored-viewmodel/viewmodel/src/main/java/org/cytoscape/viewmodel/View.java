@@ -68,6 +68,43 @@ public interface View<T> extends Identifiable {
 	 */
 	public <T> T getVisualProperty(VisualProperty<T> vp);
 
+
+	/**
+	 * Sets ByPass value. This value won't be override by
+	 * VisualStyle or such, until it is cleared.
+	 *
+	 * Note: this should only be used when the user, interactively
+	 * sets a bypass either through the gui or through a scripting
+	 * api. All other access should be done by defining an
+	 * appropriate MappingCalculator.
+	 *
+	 * @param <T>  DOCUMENT ME!
+	 * @param vp  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public <T> void setByPass(VisualProperty<T> vp, T o);
+
+	/**
+	 * clears ByPass, signifying that the value for vp can be set
+	 * next time a VisualStyle is applied.
+	 *
+	 * @param <T>  DOCUMENT ME!
+	 * @param vp  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public <T> void clearByPass(VisualProperty<T> vp);
+
+	/**
+	 *
+	 * Can also be used to query whether there is a bypass set by
+	 * checking whether returned value is null.
+	 *
+	 * @returns the value set as bypass, or null, if bypass is not set for this vp.
+	 */
+	public <T> T getByPass(VisualProperty<T> vp);
+
 	/**
 	 *  DOCUMENT ME!
 	 *

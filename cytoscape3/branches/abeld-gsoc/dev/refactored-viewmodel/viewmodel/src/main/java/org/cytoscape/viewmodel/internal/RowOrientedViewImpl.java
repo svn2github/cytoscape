@@ -50,12 +50,15 @@ import java.util.HashMap;
 public class RowOrientedViewImpl<T> implements View<T>  {
     private T source;
     private HashMap vpValues;
+    private HashMap bypassValues;
+
     private long suid;
     
     public RowOrientedViewImpl(T source){
 	suid = IdFactory.getNextSUID();
 	this.source = source;
 	vpValues = new HashMap<VisualProperty, Object>();
+	bypassValues = new HashMap<VisualProperty, Object>();
     }
 	/**
 	 * The VisualProperty object identifies which visual property to set and the Object
@@ -101,4 +104,45 @@ public class RowOrientedViewImpl<T> implements View<T>  {
                 return suid;
         }
 
+	/**
+	 * Sets ByPass value. This value won't be override by
+	 * VisualStyle or such, until it is cleared.
+	 *
+	 * Note: this should only be used when the user, interactively
+	 * sets a bypass either through the gui or through a scripting
+	 * api. All other access should be done by defining an
+	 * appropriate MappingCalculator.
+	 *
+	 * @param <T>  DOCUMENT ME!
+	 * @param vp  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public <T> void setByPass(VisualProperty<T> vp, T o){
+	    	bypassValues.put(vp, o);
+	}
+
+	/**
+	 * clears ByPass, signifying that the value for vp can be set
+	 * next time a VisualStyle is applied.
+	 *
+	 * @param <T>  DOCUMENT ME!
+	 * @param vp  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public <T> void clearByPass(VisualProperty<T> vp){
+	    bypassValues.remove(vp);
+	}
+
+	/**
+	 *
+	 * Can also be used to query whether there is a bypass set by
+	 * checking whether returned value is null.
+	 *
+	 * @returns the value set as bypass, or null, if bypass is not set for this vp.
+	 */
+	public <T> T getByPass(VisualProperty<T> vp){
+	    return (T) bypassValues.get(vp);
+	}
 }

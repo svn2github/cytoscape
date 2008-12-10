@@ -164,8 +164,8 @@ public class VisualStyleImpl implements VisualStyle {
 	}
 	}*/
     public void applyImpl(View<?> view, Collection<VisualProperty> visualProperties){
-	if (true /* FIXME: only if viewmodel value not locked by bypass */){
-	    for (VisualProperty vp: visualProperties){
+	for (VisualProperty vp: visualProperties){
+	    if (view.getByPass(vp) == null){ // only if no bypass is defined
 		Object o = null;
 		MappingCalculator c = getMappingCalculator(vp);
 		if (c != null) { o = c.getValue(view);}
