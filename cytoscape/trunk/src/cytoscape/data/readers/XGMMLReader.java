@@ -546,12 +546,16 @@ public class XGMMLReader extends AbstractGraphReader {
 		int tempid = 0;
 		EdgeView view = null;
 		HashMap<CyEdge, Attributes> edgeGraphicsMap = parser.getEdgeGraphics();
+		if (edgeGraphicsMap == null) return;
 
 		for (CyEdge edge: edgeGraphicsMap.keySet()) {
 			view = myView.getEdgeView(edge.getRootGraphIndex());
 
-			if ((edgeGraphicsMap != null) && (view != null)) {
+			if (view != null) {
 				layoutEdgeGraphics(edgeGraphicsMap.get(edge), view, graphStyle, buildStyle);
+			} else {
+				// If we don't have a view, assume that this is a hidden edge
+				myView.getGraphPerspective().hideEdge(edge);
 			}
 		}
 	}
@@ -667,11 +671,12 @@ public class XGMMLReader extends AbstractGraphReader {
 		if (groupMap != null) {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
+			CyGroup newGroup = null;
+			String viewer = null;
 			for (CyNode groupNode: groupMap.keySet()) {
-				CyGroup newGroup = null;
 				List<CyNode> childList = groupMap.get(groupNode);
-				String viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
-				                                                  CyGroup.GROUP_VIEWER_ATTR);
+				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
+				                                           CyGroup.GROUP_VIEWER_ATTR);
 
 				// Note that we need to leave the group node in the network so that the saved
 				// location information (if there is any) can be utilized by the group viewer.
@@ -690,9 +695,12 @@ public class XGMMLReader extends AbstractGraphReader {
 						CyGroupManager.createGroup(groupNode, childList, viewer);
 					} else {
 						// Either the group doesn't have a viewer or it has a different viewer -- change it
-						CyGroupManager.setGroupViewer(newGroup, viewer, view, true);
+						CyGroupManager.setGroupViewer(newGroup, viewer, view, false);
 					}
 				}
+			}
+			if (view != null && view != Cytoscape.getNullNetworkView()) {
+				CyGroupManager.setGroupViewer(newGroup, viewer, view, true);
 			}
 		}
 
