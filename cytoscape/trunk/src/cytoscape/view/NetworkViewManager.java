@@ -102,9 +102,6 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 		desktopPane = new JDesktopPane();
 		pcs = new SwingPropertyChangeSupport(this);
 
-		// add Help hooks
-		cytoscapeDesktop.getHelpBroker().enableHelp(desktopPane, "network-view-manager", null);
-
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 
 		networkViewMap = new HashMap<String, JInternalFrame>();

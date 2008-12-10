@@ -42,6 +42,7 @@ import cytoscape.view.CyHelpBroker;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
 
 import javax.help.CSH;
 
@@ -59,7 +60,6 @@ public class HelpContentsAction extends CytoscapeAction {
 		super("Contents...");
 		setPreferredMenu("Help");
 		setAcceleratorCombo(KeyEvent.VK_F1, 0);
-		csh = new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker());
 	}
 
 	/**
@@ -68,6 +68,14 @@ public class HelpContentsAction extends CytoscapeAction {
 	 * @param e The triggering event - passed to CSH.DisplayHelpFromSource.actionPerformed(e)  
 	 */
 	public void actionPerformed(ActionEvent e) {
+		if ( csh == null ) {
+			try {
+			csh = new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker());
+			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(null, "Help cannot be started. Please see the manual onthe Cytoscape website instead: http://cytoscape.org.", "ERROR", JOptionPane.ERROR_MESSAGE);		
+				return;
+			}
+		}
 		csh.actionPerformed(e);
 	}
 }

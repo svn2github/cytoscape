@@ -44,12 +44,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import javax.help.CSH;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JSeparator;
+import javax.swing.JOptionPane;
 
 import cytoscape.actions.*;
 import cytoscape.layout.ui.LayoutMenuManager;
@@ -590,7 +593,20 @@ public class CyMenus implements GraphViewChangeListener {
 		toolBar.addSeparator();
 
 		helpButton = new JButton();
-		helpButton.addActionListener(new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker()));
+		helpButton.addActionListener( new ActionListener() { 
+			private CSH.DisplayHelpFromSource csh;
+			public void actionPerformed(ActionEvent e) {
+				if ( csh == null ) {
+					try {
+					csh = new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker());
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(null, "Help cannot be started. Please see the manual on the Cytoscape website instead: http://cytoscape.org.", "ERROR", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
+				csh.actionPerformed(e);
+			}
+		});
 		helpButton.setIcon(new ImageIcon(getClass().getResource("images/ximian/stock_help.png")));
 		helpButton.setToolTipText("Help");
 		helpButton.setBorderPainted(false);
