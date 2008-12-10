@@ -458,7 +458,7 @@ public class CytoscapeSessionReader {
 
 			for (String URLstr : URLstrList) {
 				int index = URLstr.lastIndexOf("/");
-				String fileName = pluginName + "_" + URLstr.substring(index + 1);
+				String fileName = System.getProperty("java.io.tmpdir")+File.separator+pluginName + "_" + URLstr.substring(index + 1);
 
 				theFile = new File(fileName);
 
