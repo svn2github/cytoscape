@@ -304,7 +304,7 @@ public class Compound {
  	 * @param attrType the type of the compound descriptor (inchi or smiles)
  	 * @param noStructures if 'true' get the structures on a separate thread
  	 */
-	protected Compound(GraphObject source, String attribute, String mstring, 
+	public Compound(GraphObject source, String attribute, String mstring, 
 	                   AttriType attrType, boolean noStructures) {
 		this.source = source;
 		this.attribute = attribute;

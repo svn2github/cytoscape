@@ -296,7 +296,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		if (!selectedEdges.contains(edgeContext.getEdge()))
 			selectedEdges.add((CyEdge)edgeContext.getEdge());
 
-		if (selectedEdges.size() > 1) {
+		if (selectedEdges.size() > 0) {
 			depict.add(buildMenuItem("cheminfo.menu.2ddepiction.selectedEdges",
 			                         "cheminfo.menu.2ddepiction.selectedEdges"));
 		}
@@ -346,7 +346,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		if (!selectedNodes.contains(nodeContext.getNode()))
 			selectedNodes.add((CyNode)nodeContext.getNode());
 
-		if (selectedNodes.size() > 1) {
+		if (selectedNodes.size() > 0) {
 			depict.add(buildMenuItem("cheminfo.menu.2ddepiction.selectedNodes",
 			                         "cheminfo.menu.2ddepiction.selectedNodes"));
 		}

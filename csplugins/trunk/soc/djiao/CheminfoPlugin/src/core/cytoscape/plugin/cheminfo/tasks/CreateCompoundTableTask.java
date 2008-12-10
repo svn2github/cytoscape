@@ -45,8 +45,6 @@ import giny.model.Node;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
 
 import cytoscape.plugin.cheminfo.model.Compound;
 import cytoscape.plugin.cheminfo.model.Compound.AttriType;
@@ -58,10 +56,9 @@ import cytoscape.plugin.cheminfo.ui.CompoundTable;
  * objects passed in its constructor and then creates a JTable that provides
  * an interface to view the compound information.
  */
-public class CreateCompoundTableTask implements Task {
+public class CreateCompoundTableTask extends AbstractCompoundTask {
 	Collection<GraphObject> selection;
 	ChemInfoSettingsDialog settingsDialog;
-	TaskMonitor monitor;
 	CompoundTable tableDialog = null;
 
 	/**
@@ -70,15 +67,12 @@ public class CreateCompoundTableTask implements Task {
  	 * @param selection the group of graph objects that should be included in the table
  	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
  	 */
-	public CreateCompoundTableTask(Collection<GraphObject> selection, ChemInfoSettingsDialog dialog) {
+	public CreateCompoundTableTask(Collection<GraphObject> selection, ChemInfoSettingsDialog dialog, int maxCompounds) {
 		this.selection = selection;
 		this.settingsDialog = dialog;
-	}
-
-	public void halt() {};
-
-	public void setTaskMonitor(TaskMonitor monitor) {
-		this.monitor = monitor;
+		this.canceled = false;
+		this.maxCompounds = maxCompounds;
+		this.compoundCount = 0;
 	}
 
 	public String getTitle() {
@@ -104,9 +98,11 @@ public class CreateCompoundTableTask implements Task {
 			type = "edge";
 		}
 
-		List<Compound> cList = Compound.getCompounds(selection, attributes, 
-				   																			 settingsDialog.getCompoundAttributes(type,AttriType.smiles),
-					   																		 settingsDialog.getCompoundAttributes(type,AttriType.inchi));
+		List<Compound> cList = getCompounds(selection, attributes, 
+				   															settingsDialog.getCompoundAttributes(type,AttriType.smiles),
+					   														settingsDialog.getCompoundAttributes(type,AttriType.inchi));
+		if (cList.size() == 0 || canceled) return;
+
 		if (tableDialog == null) {
 			tableDialog = new CompoundTable(cList);
 			tableDialog.setVisible(true);
@@ -115,20 +111,6 @@ public class CreateCompoundTableTask implements Task {
 			tableDialog.setVisible(true);
 		}
 
-	}
-
-	public JTaskConfig getDefaultTaskConfig() {
-		JTaskConfig result = new JTaskConfig();
-
-		result.displayCancelButton(false);
-		result.displayCloseButton(false);
-		result.displayStatus(true);
-		result.displayTimeElapsed(false);
-		result.setAutoDispose(true);
-		result.setModal(false);
-		result.setOwner(Cytoscape.getDesktop());
-
-	return result;
 	}
 
 }

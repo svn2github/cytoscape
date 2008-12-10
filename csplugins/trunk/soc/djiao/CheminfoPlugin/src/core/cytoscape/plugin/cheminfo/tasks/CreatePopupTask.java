@@ -44,8 +44,6 @@ import giny.view.NodeView;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
 
 import cytoscape.plugin.cheminfo.model.Compound;
 import cytoscape.plugin.cheminfo.model.Compound.AttriType;
@@ -58,10 +56,9 @@ import cytoscape.plugin.cheminfo.ui.CompoundPopup;
  * object passed in its constructor and then creates a popup Dialog that provides
  * a 2D image of all of the compuonds defined.
  */
-public class CreatePopupTask implements Task {
+public class CreatePopupTask extends AbstractCompoundTask {
 	Object view;
 	ChemInfoSettingsDialog dialog;
-	TaskMonitor monitor;
 
 	/**
  	 * Creates the task.
@@ -69,15 +66,12 @@ public class CreatePopupTask implements Task {
  	 * @param object the graph object that we're creating the popup for
  	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
  	 */
-  public CreatePopupTask(Object object, ChemInfoSettingsDialog dialog) {
+  public CreatePopupTask(Object object, ChemInfoSettingsDialog dialog, int maxCompounds) {
 		this.view = object;
 		this.dialog = dialog;
-	}
-
-	public void halt() {};
-
-	public void setTaskMonitor(TaskMonitor monitor) {
-		this.monitor = monitor;
+		this.canceled = false;
+		this.maxCompounds = maxCompounds;
+		this.compoundCount = 0;
 	}
 
 	public String getTitle() {
@@ -101,24 +95,11 @@ public class CreatePopupTask implements Task {
 			go = ((EdgeView)view).getEdge();
 		}
 
-		List<Compound> cList = Compound.getCompounds(go, attributes,
-                                                 dialog.getCompoundAttributes(type,AttriType.smiles),
-                                                 dialog.getCompoundAttributes(type,AttriType.inchi), false);
-
-    CompoundPopup popup = new CompoundPopup(cList, go);
-	}
-		
-	public JTaskConfig getDefaultTaskConfig() {
-		JTaskConfig result = new JTaskConfig();
-
-		result.displayCancelButton(false);
-		result.displayCloseButton(false);
-		result.displayStatus(true);
-		result.displayTimeElapsed(false);
-		result.setAutoDispose(true);
-		result.setModal(false);
-		result.setOwner(Cytoscape.getDesktop());
-
-		return result;
+		List<Compound> cList = getCompounds(go, attributes,
+                                        dialog.getCompoundAttributes(type,AttriType.smiles),
+                                        dialog.getCompoundAttributes(type,AttriType.inchi), false);
+		if (cList.size() > 0 && !canceled) {
+    	CompoundPopup popup = new CompoundPopup(cList, go);
+		}
 	}
 }

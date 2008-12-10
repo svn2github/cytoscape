@@ -78,6 +78,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	private static List<String> inCHIAttributes = null;
 	private ChemInfoProperties properties;
 	private JPanel tunablePanel;
+	private int maxCompounds = 0;
 
 	public ChemInfoSettingsDialog() {
 		super(Cytoscape.getDesktop(), "Chemical Informatics Plugin Settings Dialog", false);
@@ -166,6 +167,11 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		if ((t != null) && (t.valueChanged() || force)) {
 			inCHIAttributes = getListFromTunable((Object [])t.getLowerBound(), (String)t.getValue());
 		}
+
+		t = properties.get("maxCompounds");
+		if ((t != null) && (t.valueChanged() || force)) {
+			maxCompounds = ((Integer) t.getValue()).intValue();
+		}
 	}
 
 	public ChemInfoProperties getProperties() {
@@ -227,6 +233,10 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		return false;
 	}
 
+	public int getMaxCompounds() {
+		return maxCompounds;
+	}
+
 	private List<String> getMatchingAttributes(CyAttributes attributes, List<String> compoundAttributes) {
 		// Get the names of all of the object attributes
 		String[] attrNames = attributes.getAttributeNames();
@@ -257,12 +267,17 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	}
 
 	private void initializeProperties() {
+		Tunable t = new Tunable("maxCompunds",
+		                "Maximum number of compounds to show in opup",
+		                Tunable.INTEGER, new Integer(0));
+		properties.add(t);
+
 		List<String>possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
 		                                                  Cytoscape.getEdgeAttributes());
 
-		Tunable t = new Tunable("attributeGroup",
-		                        "Attribute Settings",
-		                        Tunable.GROUP, new Integer(2));
+		t = new Tunable("attributeGroup",
+		                "Attribute Settings",
+		                Tunable.GROUP, new Integer(2));
 		properties.add(t);
 		String smilesDefaults = getDefaults(possibleAttributes, defaultSmilesAttributes);
 		t = new Tunable("smilesAttributes",
