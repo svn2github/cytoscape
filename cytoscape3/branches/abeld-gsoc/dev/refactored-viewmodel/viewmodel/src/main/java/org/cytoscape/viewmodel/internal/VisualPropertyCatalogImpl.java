@@ -51,7 +51,6 @@ import java.util.HashMap;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 
@@ -135,18 +134,18 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	/**
 	 * Returns the collection of all defined edge VisualProperties.
 	 */
-	public List<VisualProperty> getEdgeVisualPropertyList(){
-		return getEdgeVisualPropertyList(null, null);
+	public Collection<VisualProperty> getEdgeVisualProperties(){
+		return getEdgeVisualProperties(null, null);
 	}
-	public Collection<VisualProperty> getEdgeVisualPropertyList(CyNetworkView networkview){
-		return getEdgeVisualPropertyList(networkview.getCyNodeViews(),
+	public Collection<VisualProperty> getEdgeVisualProperties(CyNetworkView networkview){
+		return getEdgeVisualProperties(networkview.getCyNodeViews(),
 						 networkview.getCyEdgeViews());
 	}
-	public Collection<VisualProperty> getEdgeVisualPropertyList(View<CyEdge> edgeview){
-		List<View<CyEdge>> edgeviews = new ArrayList<View<CyEdge>>();
+	public Collection<VisualProperty> getEdgeVisualProperties(View<CyEdge> edgeview){
+		Collection<View<CyEdge>> edgeviews = new ArrayList<View<CyEdge>>();
 		edgeviews.add(edgeview);
 
-		return getEdgeVisualPropertyList(null, edgeviews);
+		return getEdgeVisualProperties(null, edgeviews);
 	}
 	/**
 	 * Returns the collection of all edge VisualProperties that are in use for
@@ -154,7 +153,7 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	 * 
 	 * Note: returns all defined edge VisualProperties if both args are null.
 	 */
-	public List<VisualProperty> getEdgeVisualPropertyList(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews){
+	public Collection<VisualProperty> getEdgeVisualProperties(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews){
 		ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
 		for (VisualProperty vp: collectionOfVisualProperties(nodeviews, edgeviews)){
 			if (vp.getObjectType() == VisualProperty.GraphObjectType.EDGE){
@@ -169,16 +168,16 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	/**
 	 * Returns the collection of all defined node VisualProperties.
 	 */
-	public List<VisualProperty> getNodeVisualPropertyList(){
-		return getNodeVisualPropertyList(null, null);
+	public Collection<VisualProperty> getNodeVisualProperties(){
+		return getNodeVisualProperties(null, null);
 	}
-	public Collection<VisualProperty> getNodeVisualPropertyList(CyNetworkView networkview){
-		return getNodeVisualPropertyList(networkview.getCyNodeViews(), networkview.getCyEdgeViews());
+	public Collection<VisualProperty> getNodeVisualProperties(CyNetworkView networkview){
+		return getNodeVisualProperties(networkview.getCyNodeViews(), networkview.getCyEdgeViews());
 	}
-	public Collection<VisualProperty> getNodeVisualPropertyList(View<CyNode> nv){
-		List<View<CyNode>> nodeviews = new ArrayList<View<CyNode>>();
+	public Collection<VisualProperty> getNodeVisualProperties(View<CyNode> nv){
+		Collection<View<CyNode>> nodeviews = new ArrayList<View<CyNode>>();
 		nodeviews.add(nv);
-		return getNodeVisualPropertyList(nodeviews, null);
+		return getNodeVisualProperties(nodeviews, null);
 	}
 	/**
 	 * Returns the collection of all node VisualProperties that are in use for
@@ -186,7 +185,7 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	 * 
 	 * Note: returns all defined node VisualProperties if both args are null.
 	 */
-	public List<VisualProperty> getNodeVisualPropertyList(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews){
+	public Collection<VisualProperty> getNodeVisualProperties(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews){
 		ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
 		for (VisualProperty vp: collectionOfVisualProperties(nodeviews, edgeviews)){
 			if (vp.getObjectType() == VisualProperty.GraphObjectType.NODE){
@@ -195,4 +194,17 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 		}
 		return result;
 	}
+
+    /**
+     * Returns the collection of all defined node VisualProperties.
+     */
+    public Collection<VisualProperty> getNetworkVisualProperties(){
+	ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
+	for (VisualProperty vp: visualProperties.values()){
+	    if (vp.getObjectType() == VisualProperty.GraphObjectType.NETWORK){
+		result.add(vp);
+	    }
+	}
+	return result;
+    }
 }

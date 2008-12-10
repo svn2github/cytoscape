@@ -39,7 +39,6 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface VisualPropertyCatalog {
 
@@ -72,11 +71,11 @@ public interface VisualPropertyCatalog {
     /**
      * Returns the collection of all defined edge VisualProperties.
      */
-    public List<VisualProperty> getEdgeVisualPropertyList();
+    public Collection<VisualProperty> getEdgeVisualProperties();
 
-    public Collection<VisualProperty> getEdgeVisualPropertyList(CyNetworkView networkview);
+    public Collection<VisualProperty> getEdgeVisualProperties(CyNetworkView networkview);
 
-    public Collection<VisualProperty> getEdgeVisualPropertyList(View<CyEdge> edgeview);
+    public Collection<VisualProperty> getEdgeVisualProperties(View<CyEdge> edgeview);
 
     /**
      * Returns the collection of all edge VisualProperties that are in use for
@@ -84,17 +83,17 @@ public interface VisualPropertyCatalog {
      * 
      * Note: returns all defined edge VisualProperties if both args are null.
      */
-    public List<VisualProperty> getEdgeVisualPropertyList(Collection<View<CyNode>> nodeviews,
+    public Collection<VisualProperty> getEdgeVisualProperties(Collection<View<CyNode>> nodeviews,
 							  Collection<View<CyEdge>> edgeviews);
     /**
      * Returns the collection of all defined node VisualProperties.
      */
-    public List<VisualProperty> getNodeVisualPropertyList();
+    public Collection<VisualProperty> getNodeVisualProperties();
 
-    public Collection<VisualProperty> getNodeVisualPropertyList(CyNetworkView networkview);
+    public Collection<VisualProperty> getNodeVisualProperties(CyNetworkView networkview);
 
 
-    public Collection<VisualProperty> getNodeVisualPropertyList(View<CyNode> nv);
+    public Collection<VisualProperty> getNodeVisualProperties(View<CyNode> nv);
 
     /**
      * Returns the collection of all node VisualProperties that are in use for
@@ -102,6 +101,12 @@ public interface VisualPropertyCatalog {
      * 
      * Note: returns all defined node VisualProperties if both args are null.
      */
-    public List<VisualProperty> getNodeVisualPropertyList(Collection<View<CyNode>> nodeviews,
-							  Collection<View<CyEdge>> edgeviews);
+    public Collection<VisualProperty> getNodeVisualProperties(Collection<View<CyNode>> nodeviews,
+							      Collection<View<CyEdge>> edgeviews);
+ 
+    /**
+     * Returns the collection of all defined node VisualProperties.
+     */
+    public Collection<VisualProperty> getNetworkVisualProperties();
+ 
 }
