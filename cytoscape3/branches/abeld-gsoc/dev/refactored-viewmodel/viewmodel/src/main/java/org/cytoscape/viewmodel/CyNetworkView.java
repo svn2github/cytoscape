@@ -41,7 +41,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
 
 import java.util.List;
-
+import java.util.Set;
 
 /**
  * Contains the visual representation of a Network.
@@ -101,4 +101,17 @@ public interface CyNetworkView {
 	 * @return  DOCUMENT ME!
 	 */
 	public List<View<?extends GraphObject>> getAllViews();
+
+    /**
+     * 
+     *
+     */
+    public Set<View<?extends GraphObject>> getSubset(String name);
+    /**
+     * If subset already exists, replaces it with given Set
+     */
+    public void createSubset(String name, Set<View<?extends GraphObject>> subset);
+
+    public void addToSubset(String name, Set<View<?extends GraphObject>> toAdd);
+    public void removeFromSubset(String name, Set<View<?extends GraphObject>> toRemove);
 }

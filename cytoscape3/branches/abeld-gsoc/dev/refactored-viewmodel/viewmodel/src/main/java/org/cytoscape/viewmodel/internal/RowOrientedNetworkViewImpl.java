@@ -53,6 +53,7 @@ import org.cytoscape.viewmodel.View;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 
 import org.osgi.framework.BundleContext;
@@ -70,6 +71,7 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView,
     private CyNetwork network;
     private HashMap<CyNode, RowOrientedViewImpl<CyNode>> nodeViews;
     private HashMap<CyEdge, RowOrientedViewImpl<CyEdge>> edgeViews;
+    private HashMap<String, Set<View<?extends GraphObject>>> subsets;
     private RowOrientedViewImpl<CyNetwork> networkView;
 
     public RowOrientedNetworkViewImpl(CyEventHelper eventHelper, CyNetwork network, BundleContext bc){
@@ -78,6 +80,7 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView,
 	this.network = network;
 	nodeViews = new HashMap<CyNode, RowOrientedViewImpl<CyNode>>();
 	edgeViews = new HashMap<CyEdge, RowOrientedViewImpl<CyEdge>>();
+	subsets = new HashMap<String, Set<View<?extends GraphObject>>>();
 	for (CyNode node: network.getNodeList()){
 	    nodeViews.put(node, new RowOrientedViewImpl<CyNode>(node));
 	}
@@ -202,4 +205,26 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView,
 		edgeViews.remove(node);
 
 	}
+
+    public Set<View<?extends GraphObject>> getSubset(String name){
+	return subsets.get(name);
+    }
+    public void createSubset(String name, Set<View<?extends GraphObject>> subset){
+	subsets.put(name, subset);
+    }
+
+    public void addToSubset(String name, Set<View<?extends GraphObject>> toAdd){
+	Set<View<?extends GraphObject>> subset = subsets.get(name);
+	if (subset == null)
+	    throw new NullPointerException("non-existent subset");
+
+	subset.addAll(toAdd);
+    }
+    public void removeFromSubset(String name, Set<View<?extends GraphObject>> toRemove){
+	Set<View<?extends GraphObject>> subset = subsets.get(name);
+	if (subset == null)
+	    throw new NullPointerException("non-existent subset");
+	subset.removeAll(toRemove);
+    }
+
 }
