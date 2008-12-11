@@ -36,24 +36,21 @@
 
 package csplugins.layout.algorithms.circularLayout;
 
-import csplugins.layout.*;
+import csplugins.layout.LayoutEdge;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutPartition;
 
-import csplugins.layout.algorithms.graphPartition.*;
+import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
 
-//import org.cytoscape.coreplugin.cpath.model.MaxHitsOption;
 import csplugins.layout.algorithms.hierarchicalLayout.Edge;
 import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 
-//import cytoscape.editor.AddEdgeEdit;
-//import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 
-//import cytoscape.render.stateful.NodeDetails;
 import cytoscape.task.TaskMonitor;
 
-//import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.awt.GridLayout;
@@ -62,7 +59,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-//import java.util.List;
 import javax.swing.JPanel;
 
 
@@ -110,7 +106,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean supportsSelectedOnly() {
-		return false;
+		return true;
 	}
 
 	/**

@@ -40,9 +40,12 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
-import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
 
 import giny.model.GraphPerspective;
 import giny.model.Node;
@@ -76,7 +79,7 @@ import javax.swing.JPanel;
 /**
  *
  */
-public class GroupAttributesLayout extends AbstractLayout {
+public class GroupAttributesLayout extends AbstractGraphPartition {
 	/*
 	  Layout parameters:
 	    - spacingx: Horizontal spacing (on the x-axis) between two partitions in a row.
@@ -283,30 +286,37 @@ public class GroupAttributesLayout extends AbstractLayout {
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void construct() {
+	public void layoutPartion(LayoutPartition partition) {
+		if (canceled) return;
+
 		taskMonitor.setStatus("Initializing");
 		initialize(); // Calls initialize_local
+
+		System.out.println("layoutPartion");
 
 		nodeAttributes = Cytoscape.getNodeAttributes();
 
 		attributeType = nodeAttributes.getType(attributeName);
 
-		Map<Comparable, List<Node>> partitionMap = new TreeMap<Comparable, List<Node>>();
-		List<Node> invalidNodes = new ArrayList<Node>();
-		makeDiscrete(partitionMap, invalidNodes);
+		Map<Comparable, List<LayoutNode>> partitionMap = new TreeMap<Comparable, List<LayoutNode>>();
+		List<LayoutNode> invalidNodes = new ArrayList<LayoutNode>();
+		System.out.println("makeDiscrete");
+		makeDiscrete(partition, partitionMap, invalidNodes);
 
-		List<List<Node>> partitionList = sort(partitionMap);
+		List<List<LayoutNode>> partitionList = sort(partitionMap);
 		partitionList.add(invalidNodes);
 
 		double offsetx = 0.0;
 		double offsety = 0.0;
 		double maxheight = 0.0;
 
-		for (List<Node> partition : partitionList) {
+		System.out.println("looping: "+partitionList.size()+" groups");
+		for (List<LayoutNode> part : partitionList) {
 			if (canceled)
 				return;
 
-			double radius = encircle(partition, offsetx, offsety);
+			System.out.println("encircle: "+part.size()+" nodes");
+			double radius = encircle(partition, part, offsetx, offsety);
 
 			double diameter = 2.0 * radius;
 
@@ -324,14 +334,13 @@ public class GroupAttributesLayout extends AbstractLayout {
 		}
 	}
 
-	private void makeDiscrete(Map<Comparable, List<Node>> map, List<Node> invalidNodes) {
+	private void makeDiscrete(LayoutPartition partition, Map<Comparable, List<LayoutNode>> map, List<LayoutNode> invalidNodes) {
 		if (map == null)
 			return;
 
-		Iterator iterator = network.nodesIterator();
-
-		while (iterator.hasNext()) {
-			Node node = (Node) iterator.next();
+		for (LayoutNode node: partition.getNodeList()) {
+			if (canceled)
+					break;
 
 			Comparable key = null;
 
@@ -362,22 +371,22 @@ public class GroupAttributesLayout extends AbstractLayout {
 					invalidNodes.add(node);
 			} else {
 				if (!map.containsKey(key))
-					map.put(key, new ArrayList<Node>());
+					map.put(key, new ArrayList<LayoutNode>());
 
 				map.get(key).add(node);
 			}
 		}
 	}
 
-	private List<List<Node>> sort(final Map<Comparable, List<Node>> map) {
+	private List<List<LayoutNode>> sort(final Map<Comparable, List<LayoutNode>> map) {
 		if (map == null)
 			return null;
 
 		List<Comparable> keys = new ArrayList<Comparable>(map.keySet());
 		Collections.sort(keys);
 
-		Comparator<Node> comparator = new Comparator<Node>() {
-			public int compare(Node node1, Node node2) {
+		Comparator<LayoutNode> comparator = new Comparator<LayoutNode>() {
+			public int compare(LayoutNode node1, LayoutNode node2) {
 				String a = node1.getIdentifier();
 				String b = node2.getIdentifier();
 
@@ -385,10 +394,10 @@ public class GroupAttributesLayout extends AbstractLayout {
 			}
 		};
 
-		List<List<Node>> sortedlist = new ArrayList<List<Node>>(map.keySet().size());
+		List<List<LayoutNode>> sortedlist = new ArrayList<List<LayoutNode>>(map.keySet().size());
 
 		for (Comparable key : keys) {
-			List<Node> partition = map.get(key);
+			List<LayoutNode> partition = map.get(key);
 			Collections.sort(partition, comparator);
 			sortedlist.add(partition);
 		}
@@ -396,31 +405,33 @@ public class GroupAttributesLayout extends AbstractLayout {
 		return sortedlist;
 	}
 
-	private double encircle(List<Node> partition, double offsetx, double offsety) {
+	private double encircle(LayoutPartition partition, List<LayoutNode> nodeList, double offsetx, double offsety) {
 		if (partition == null)
 			return 0.0;
 
-		if (partition.size() == 1) {
-			Node node = partition.get(0);
-			networkView.getNodeView(node).setXPosition(offsetx);
-			networkView.getNodeView(node).setYPosition(offsety);
+		if (nodeList.size() == 1) {
+			LayoutNode node = nodeList.get(0);
+			node.setX(offsetx);
+			node.setY(offsety);
+			partition.moveNodeToLocation(node);
 
 			return 0.0;
 		}
 
-		double radius = radmult * Math.sqrt(partition.size());
+		double radius = radmult * Math.sqrt(nodeList.size());
 
 		if (radius < minrad)
 			radius = minrad;
 
-		double phidelta = (2.0 * Math.PI) / partition.size();
+		double phidelta = (2.0 * Math.PI) / nodeList.size();
 		double phi = 0.0;
 
-		for (Node node : partition) {
+		for (LayoutNode node : nodeList) {
 			double x = offsetx + radius + (radius * Math.cos(phi));
 			double y = offsety + radius + (radius * Math.sin(phi));
-			networkView.getNodeView(node).setXPosition(x);
-			networkView.getNodeView(node).setYPosition(y);
+			node.setX(x);
+			node.setY(y);
+			partition.moveNodeToLocation(node);
 			phi += phidelta;
 		}
 
