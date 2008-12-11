@@ -83,27 +83,13 @@ public interface View<S> extends Identifiable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public <T> void setByPass(VisualProperty<T> vp, T o);
-
-	/**
-	 * clears ByPass, signifying that the value for vp can be set
-	 * next time a VisualStyle is applied.
-	 *
-	 * @param <T>  DOCUMENT ME!
-	 * @param vp  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public <T> void clearByPass(VisualProperty<T> vp);
+	public void setByPassLock(VisualProperty<?> vp, boolean setLock);
 
 	/**
 	 *
-	 * Can also be used to query whether there is a bypass set by
-	 * checking whether returned value is null.
-	 *
-	 * @returns the value set as bypass, or null, if bypass is not set for this vp.
+	 * @returns true if current VisualProperty value should not be modified
 	 */
-	public <T> T getByPass(VisualProperty<T> vp);
+	public boolean getByPassLock(VisualProperty<?> vp);
 
 	/**
 	 *  DOCUMENT ME!

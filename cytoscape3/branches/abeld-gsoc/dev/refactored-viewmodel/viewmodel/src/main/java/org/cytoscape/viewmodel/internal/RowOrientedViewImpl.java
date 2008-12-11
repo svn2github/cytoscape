@@ -50,7 +50,8 @@ import java.util.HashMap;
 public class RowOrientedViewImpl<S> implements View<S>  {
     private S source;
     private HashMap vpValues;
-    private HashMap bypassValues;
+    // note: this surely could be done more effiiently...:
+    private HashMap<VisualProperty, Boolean> bypassLocks;
 
     private long suid;
     
@@ -58,7 +59,7 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	suid = IdFactory.getNextSUID();
 	this.source = source;
 	vpValues = new HashMap<VisualProperty, Object>();
-	bypassValues = new HashMap<VisualProperty, Object>();
+	bypassLocks = new HashMap<VisualProperty, Boolean>();
     }
 	/**
 	 * The VisualProperty object identifies which visual property to set and the Object
@@ -105,11 +106,11 @@ public class RowOrientedViewImpl<S> implements View<S>  {
         }
 
 	/**
-	 * Sets ByPass value. This value won't be override by
+	 * Lock current value. This value won't be overriden by
 	 * VisualStyle or such, until it is cleared.
 	 *
-	 * Note: this should only be used when the user, interactively
-	 * sets a bypass either through the gui or through a scripting
+	 * Note: this should only be used when the user interactively
+	 * sets a bypass, either through the gui or through a scripting
 	 * api. All other access should be done by defining an
 	 * appropriate MappingCalculator.
 	 *
@@ -118,31 +119,21 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public <T> void setByPass(VisualProperty<T> vp, T o){
-	    	bypassValues.put(vp, o);
-	}
-
-	/**
-	 * clears ByPass, signifying that the value for vp can be set
-	 * next time a VisualStyle is applied.
-	 *
-	 * @param <T>  DOCUMENT ME!
-	 * @param vp  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public <T> void clearByPass(VisualProperty<T> vp){
-	    bypassValues.remove(vp);
+	public void setByPassLock(VisualProperty<?> vp, boolean setLock){
+	    bypassLocks.put(vp, new Boolean(setLock));
 	}
 
 	/**
 	 *
-	 * Can also be used to query whether there is a bypass set by
-	 * checking whether returned value is null.
-	 *
-	 * @returns the value set as bypass, or null, if bypass is not set for this vp.
+	 * @returns true if current VisualProperty value should not be modified
 	 */
-	public <T> T getByPass(VisualProperty<T> vp){
-	    return (T) bypassValues.get(vp);
+	public boolean getByPassLock(VisualProperty<?> vp){
+	    Boolean value = bypassLocks.get(vp);
+	    if (value == null){
+		return false;
+	    } else {
+		return value.booleanValue();
+	    }
 	}
+
 }
