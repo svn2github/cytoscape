@@ -40,6 +40,7 @@ import cytoscape.Cytoscape;
 import cytoscape.bookmarks.Attribute;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.CyAttributes;
 
@@ -266,6 +267,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private File[] inputFiles;
 
+	private CyLogger logger;
+
 	/**
 	 * Creates new form ImportAttributesDialog
 	 *
@@ -304,6 +307,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		updateComponents();
 
 		previewPanel.addPropertyChangeListener(this);
+
+		logger = CyLogger.getLogger( ImportTextTableDialog.class );
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -813,8 +818,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						try {
 							selectAttributeFileButtonActionPerformed(evt);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							
+							JOptionPane.showMessageDialog(ImportTextTableDialog.this, "<html>Could not read selected file.<p>See <b>Help->Error Dialog</b> for further details.</html>", "ERROR", JOptionPane.ERROR_MESSAGE);
+							logger.warn("Could not read selected file.", e);
 						}
 					}
 				});
