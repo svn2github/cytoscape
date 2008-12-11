@@ -282,7 +282,7 @@
 		       destdir="${build.classes}" 
 		       nowarn="off" 
 		       debug="true" 
-		       source="1.6" 
+		       source="1.5" 
 		       optimize="on" 
 		       includeAntRuntime="false" 
 		       deprecation="yes">
