@@ -145,8 +145,9 @@ public class PluginManagerAction extends CytoscapeAction {
 
 	
 	private class ManagerAction extends PluginInquireAction {
+    private CyLogger logger = CyLogger.getLogger(ManagerAction.class);
 
-		private PluginManageDialog dialog;
+    private PluginManageDialog dialog;
 		private String title;
 		private String url;
 
@@ -165,12 +166,15 @@ public class PluginManagerAction extends CytoscapeAction {
 			if (isExceptionThrown()) {
 				if (getIOException() != null) {
 					// failed to read the given url
-					dialog.setError(PluginManageDialog.CommonError.NOXML.toString());
+          logger.error(getIOException().getMessage(), getIOException());
+          dialog.setError(PluginManageDialog.CommonError.NOXML.toString());
 				} else if (getJDOMException() != null) {
 					// failed to parse the xml file at the url
-					dialog.setError(PluginManageDialog.CommonError.BADXML.toString());
+          logger.error(getJDOMException().getMessage(), getJDOMException());
+          dialog.setError(PluginManageDialog.CommonError.BADXML.toString());
 				} else {
-					dialog.setError(getException().getMessage());
+          logger.error(getException().getMessage(), getException());
+          dialog.setError(getException().getMessage());
 				}
 			} else {
 				List<DownloadableInfo> Unique = ManagerUtil.getUnique(Mgr.getDownloadables(PluginStatus.CURRENT), Results);
