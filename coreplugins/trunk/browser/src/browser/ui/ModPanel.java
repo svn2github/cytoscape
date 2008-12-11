@@ -50,6 +50,7 @@ import browser.AttributeModel;
 import browser.DataObjectType;
 import browser.DataTableModel;
 import browser.MultiDataEditAction;
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 
@@ -364,5 +365,9 @@ public class ModPanel extends JPanel implements ActionListener {
 		}
 
 		cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
+
+		Cytoscape.getSwingPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+
 	}
 }
