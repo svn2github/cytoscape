@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.awt.*;
 
 /** Singleton dialog */
 public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
@@ -147,7 +148,6 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
     Messages.add(msg);
     // Make sure it gets added back in
     this.messageMap.put(level, Messages);
-
 		messageAdded = true;
 
 		if (isVisible()) 
@@ -159,9 +159,6 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
     	MessagePane.setText(sb.toString());
 			messageAdded = false;
 			} 
-		else if (level.equals(LogLevel.LOG_ERROR))
-		 	{ setVisible(true); }
-
 
 		if ((level == LogLevel.LOG_ERROR || level == LogLevel.LOG_WARN) 
 		    && isVisible())
