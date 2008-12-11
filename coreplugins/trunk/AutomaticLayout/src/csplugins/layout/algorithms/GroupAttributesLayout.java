@@ -292,15 +292,12 @@ public class GroupAttributesLayout extends AbstractGraphPartition {
 		taskMonitor.setStatus("Initializing");
 		initialize(); // Calls initialize_local
 
-		System.out.println("layoutPartion");
-
 		nodeAttributes = Cytoscape.getNodeAttributes();
 
 		attributeType = nodeAttributes.getType(attributeName);
 
 		Map<Comparable, List<LayoutNode>> partitionMap = new TreeMap<Comparable, List<LayoutNode>>();
 		List<LayoutNode> invalidNodes = new ArrayList<LayoutNode>();
-		System.out.println("makeDiscrete");
 		makeDiscrete(partition, partitionMap, invalidNodes);
 
 		List<List<LayoutNode>> partitionList = sort(partitionMap);
@@ -310,12 +307,10 @@ public class GroupAttributesLayout extends AbstractGraphPartition {
 		double offsety = 0.0;
 		double maxheight = 0.0;
 
-		System.out.println("looping: "+partitionList.size()+" groups");
 		for (List<LayoutNode> part : partitionList) {
 			if (canceled)
 				return;
 
-			System.out.println("encircle: "+part.size()+" nodes");
 			double radius = encircle(partition, part, offsetx, offsety);
 
 			double diameter = 2.0 * radius;
