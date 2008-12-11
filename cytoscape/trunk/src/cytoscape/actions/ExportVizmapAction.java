@@ -74,7 +74,7 @@ public class ExportVizmapAction extends CytoscapeAction {
 		String name;
 
 		try {
-			name = FileUtil.getFile("Export Vizmaper as property file", FileUtil.SAVE,
+			name = FileUtil.getFile("Export Vizmap property file", FileUtil.SAVE,
 			                        new CyFileFilter[] {  }).toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled
