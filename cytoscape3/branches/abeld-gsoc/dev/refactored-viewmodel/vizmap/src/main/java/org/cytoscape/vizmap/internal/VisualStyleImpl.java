@@ -132,7 +132,8 @@ public class VisualStyleImpl implements VisualStyle {
 		  vpCatalog.collectionOfVisualProperties(VisualProperty.GraphObjectType.NETWORK));
     }
 
-    public <T extends GraphObject> void applyImpl(List<View<T>>views, Collection<VisualProperty> visualProperties){
+    // note: can't use applyImpl(List<View<?>>views ... ) because that does not compile
+    public <T> void applyImpl(List<View<T>>views, Collection<VisualProperty> visualProperties){
 	for (View v: views) {
 	    applyImpl(v, visualProperties);
 	}
@@ -140,13 +141,15 @@ public class VisualStyleImpl implements VisualStyle {
 
     public void applyImpl(View<?> view, Collection<VisualProperty> visualProperties){
 	for (VisualProperty vp: visualProperties){
-	    if (view.getByPass(vp) == null){ // only if no bypass is defined
-		Object o = null;
+	    if (! view.isValueLocked(vp)){ // only if no bypass is defined
 		MappingCalculator c = getMappingCalculator(vp);
-		if (c != null) { o = c.getValue(view);}
-		if (o == null) { o = perVSDefaults.get(vp); }
-		if (o == null) { o = vp.getDefault(); } // global default
-		view.setVisualProperty(vp, o);
+		if (c != null) { c.apply(view);}
+		else {
+		    Object o = null;
+		    o = perVSDefaults.get(vp);
+		    if (o == null) { o = vp.getDefault(); } // global default
+		    view.setVisualProperty(vp, o);
+		}
 	    }
 	}
     }

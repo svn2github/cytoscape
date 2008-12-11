@@ -81,5 +81,5 @@ public interface MappingCalculator {
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public Object getValue(View<?> v);
+	public void apply(View<?> v);
 }
