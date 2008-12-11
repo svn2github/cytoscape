@@ -71,7 +71,9 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 * @param o  DOCUMENT ME!
 	 */
     public <T> void setVisualProperty(VisualProperty<T> vp, T o){
-	vpValues.put(vp, o);
+		Boolean b = bypassLocks.get(vp);
+		if ( b == null || !b.booleanValue() )
+			vpValues.put(vp, o);
     }
 
 	/**
@@ -84,7 +86,11 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 * @return  DOCUMENT ME!
 	 */
     public <T> T getVisualProperty(VisualProperty<T> vp){
-	return (T) vpValues.get(vp);
+		T ret = (T) vpValues.get(vp);
+		if ( ret == null )
+			return vp.getDefault();
+		else
+			return ret;
     }
 
 	/**
