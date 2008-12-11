@@ -83,13 +83,13 @@ public interface View<S> extends Identifiable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public void setByPassLock(VisualProperty<?> vp, boolean setLock);
+	public void setValueLock(VisualProperty<?> vp, boolean setLock);
 
 	/**
 	 *
 	 * @returns true if current VisualProperty value should not be modified
 	 */
-	public boolean getByPassLock(VisualProperty<?> vp);
+	public boolean isValueLocked(VisualProperty<?> vp);
 
 	/**
 	 *  DOCUMENT ME!

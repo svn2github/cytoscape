@@ -119,7 +119,7 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public void setByPassLock(VisualProperty<?> vp, boolean setLock){
+	public void setValueLock(VisualProperty<?> vp, boolean setLock){
 	    bypassLocks.put(vp, new Boolean(setLock));
 	}
 
@@ -127,7 +127,7 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 *
 	 * @returns true if current VisualProperty value should not be modified
 	 */
-	public boolean getByPassLock(VisualProperty<?> vp){
+	public boolean isValueLocked(VisualProperty<?> vp){
 	    Boolean value = bypassLocks.get(vp);
 	    if (value == null){
 		return false;
