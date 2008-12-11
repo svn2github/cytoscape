@@ -39,13 +39,17 @@ import org.cytoscape.vizmap.VisualStyleCatalog;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.events.VisualStyleCreatedEvent;
 import org.cytoscape.vizmap.events.VisualStyleCreatedListener;
+import org.cytoscape.vizmap.events.VisualStyleDestroyedListener;
 import org.cytoscape.vizmap.events.internal.VisualStyleCreatedEventImpl;
+import org.cytoscape.vizmap.events.internal.VisualStyleDestroyedEventImpl;
 
 import org.cytoscape.viewmodel.VisualPropertyCatalog;
 
 import org.cytoscape.event.CyEventHelper;
+import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * We need a list of currently-used VisualStyles somewhere (?)
@@ -53,7 +57,7 @@ import java.util.ArrayList;
  * It is also a VisualStyle factory
  */
 public class VisualStyleCatalogImpl implements VisualStyleCatalog {
-    private List<VisualStyle> visualStyles;
+    private Set<VisualStyle> visualStyles;
 
 
 	private CyEventHelper eventHelper;
@@ -63,7 +67,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	 * For setter injection (hmm. whats that?)
 	 */
 	public VisualStyleCatalogImpl() {
-	    visualStyles = new ArrayList<VisualStyle>();
+	    visualStyles = new HashSet<VisualStyle>();
 	}
 
 	/**
@@ -104,7 +108,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 			throw new NullPointerException("vpCatalog is null");
 		this.eventHelper = eventHelper;
 		this.vpCatalog = vpCatalog;
-		visualStyles = new ArrayList<VisualStyle>();
+		visualStyles = new HashSet<VisualStyle>();
 	}
 
     public VisualStyle createVisualStyle(){
@@ -117,6 +121,13 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
     }
 
     public List<VisualStyle> listOfVisualStyles(){
-	return visualStyles; // FIXME: should return copy?
+	return new ArrayList(visualStyles);
+    }
+
+    public void removeVisualStyle(VisualStyle vs){
+	visualStyles.remove(vs);
+	eventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs),
+					 VisualStyleDestroyedListener.class);
+	
     }
 }

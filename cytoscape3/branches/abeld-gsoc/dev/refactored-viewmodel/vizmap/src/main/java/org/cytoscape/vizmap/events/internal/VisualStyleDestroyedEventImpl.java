@@ -33,19 +33,18 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.vizmap;
+package org.cytoscape.vizmap.events.internal;
 
-import java.util.List;
+import org.cytoscape.event.CyEvent;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.events.VisualStyleDestroyedEvent;
 
 /**
- * We need a list of currently-used VisualStyles somewhere (?)
- * This is it.
- * It is also a VisualStyle factory
- */
-public interface VisualStyleCatalog {
-
-	public VisualStyle createVisualStyle();
-
-    public List<VisualStyle> listOfVisualStyles();
-    public void removeVisualStyle(VisualStyle vs);
+ * DOCUMENT ME!
+  */
+public class VisualStyleDestroyedEventImpl extends AbstractVisualStyleEvent
+    implements VisualStyleDestroyedEvent {
+    public VisualStyleDestroyedEventImpl(VisualStyle vs) {
+	super(vs);
+    }
 }
