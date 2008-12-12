@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -38,6 +39,12 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
+//import java.awt.event.FocusAdapter;
+import java.awt.event.FocusListener;
+import java.awt.event.FocusEvent;
+
+//import java.awt.event.KeyAdapter;
+//import java.awt.event.KeyEvent;
 
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
@@ -61,6 +68,8 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyNetworkView;
 
 import javax.swing.event.ChangeEvent;
+import javax.swing.text.JTextComponent;
+
 import java.awt.Component;
 import javax.swing.JRadioButton;
 
@@ -214,6 +223,11 @@ public class FilterSettingPanel extends JPanel {
 
 			ActionListener listener = new UserSelectionListener(comboBox);
 			comboBox.addFinalSelectionListener(listener);
+						
+			final JTextComponent editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
+			ComboBoxFocusListener focuslistener = new ComboBoxFocusListener(comboBox);
+			editor.addFocusListener(focuslistener);
+			
 		} catch (Exception e) {
 			logger.error("Exception in FilterSettingpanel.getTextIndexComboBox()");
 		}
@@ -280,7 +294,7 @@ public class FilterSettingPanel extends JPanel {
 		
 		MyMouseInputAdapter myMouseInputAdapter = new MyMouseInputAdapter();		
 		rangeSlider.addMouseMotionListener(myMouseInputAdapter);
-		
+
 		return rangeSlider;
 	}
 	
@@ -293,7 +307,7 @@ public class FilterSettingPanel extends JPanel {
 			if (_obj instanceof JRangeSliderExtended) {
 				_range = (JRangeSliderExtended) _obj;
 				_model = (NumberRangeModel) _range.getModel();
-				toolTipText = _model.getLowValue() + " ~ " + _model.getHighValue(); 
+				toolTipText = _model.getLowValue() + " ~ " + _model.getHighValue() + " Double-click to edit"; 
 				_range.setToolTipText(toolTipText);
 			}
 		}
@@ -317,10 +331,11 @@ public class FilterSettingPanel extends JPanel {
 	}
 	
 	
-	//  Refresh indices for widget after nertwork switch
+	//  Refresh indices for widget after network switch or Cytoscape.ATTRIBUTES_CHANGED event is received
 	// The method may be triggered by event of NETWORK_VIEW_FOCUSED
 	public void refreshIndicesForWidgets(){
 		// Check if each widget has associatd index, if not, try to create one
+		//System.out.println("FilterSettingpanel:refreshIndicesForWidgets()...\n");
 		List<CyFilter> children = theFilter.getChildren();
 		if ((children == null)||(children.size() == 0)) {
 			return;
@@ -331,11 +346,10 @@ public class FilterSettingPanel extends JPanel {
 		for (int i=0; i<children.size(); i++) {
 			CyFilter child = children.get(i);
 			if (child instanceof StringFilter) {
-				if (pnlCustomSettings.getComponent(i*5+2) instanceof TextIndexComboBox) {
-					TextIndexComboBox theBox = (TextIndexComboBox) pnlCustomSettings.getComponent(i*5+2);
+				if (pnlCustomSettings.getComponent(i*5+3) instanceof TextIndexComboBox) {
+					TextIndexComboBox theBox = (TextIndexComboBox) pnlCustomSettings.getComponent(i*5+3);
 					if (network != null) {
 						CyNetworkView networkView = Cytoscape.getNetworkView(network.getIdentifier());
-
 						if (networkView != Cytoscape.getNullNetworkView()) {
 							TextIndex textIndex = createTextIndex((StringFilter) child);;
 							if (textIndex != null) {
@@ -348,8 +362,8 @@ public class FilterSettingPanel extends JPanel {
 				}
 			}
 			if (child instanceof NumericFilter) {
-				if (pnlCustomSettings.getComponent(i*5+2) instanceof JRangeSliderExtended) {
-					JRangeSliderExtended theSlider = (JRangeSliderExtended) pnlCustomSettings.getComponent(i*5+2);
+				if (pnlCustomSettings.getComponent(i*5+3) instanceof JRangeSliderExtended) {
+					JRangeSliderExtended theSlider = (JRangeSliderExtended) pnlCustomSettings.getComponent(i*5+3);
 					if (network != null) {
 						CyNetworkView networkView = Cytoscape.getNetworkView(network.getIdentifier());
 
@@ -462,7 +476,7 @@ public class FilterSettingPanel extends JPanel {
 		}
 		//
 		if ((attributeType == CyAttributes.TYPE_INTEGER)
-				||(attributeType == CyAttributes.TYPE_FLOATING)||(attributeType == CyAttributes.TYPE_BOOLEAN)) {
+				||(attributeType == CyAttributes.TYPE_FLOATING)) {
 				retFilter = new NumericFilter();
 				retFilter.setControllingAttribute(pCtrlAttribute);
 				retFilter.setIndexType(pIndexType);		
@@ -472,7 +486,7 @@ public class FilterSettingPanel extends JPanel {
 				retFilter.setIndex(quickFind.getIndex(Cytoscape.getCurrentNetwork()));
 				
 		}
-		else if ((attributeType == CyAttributes.TYPE_STRING)||(attributeType == CyAttributes.TYPE_SIMPLE_LIST)) {
+		else if ((attributeType == CyAttributes.TYPE_STRING)||(attributeType == CyAttributes.TYPE_SIMPLE_LIST)||(attributeType == CyAttributes.TYPE_BOOLEAN)) {
 				retFilter = new StringFilter();	
 				retFilter.setControllingAttribute(pCtrlAttribute);
 				retFilter.setIndexType(pIndexType);
@@ -482,7 +496,7 @@ public class FilterSettingPanel extends JPanel {
 				retFilter.setIndex(quickFind.getIndex(Cytoscape.getCurrentNetwork()));
 		}
 		else {
-				logger.error("AttributeType is not numeric/string/list!");
+				logger.error("AttributeType is not numeric/string/list/boolean!");
 		}
 
 		return retFilter;
@@ -768,6 +782,32 @@ public class FilterSettingPanel extends JPanel {
 			}
 		}
 		
+	}
+	
+	// Fix Bug #0001940
+	class ComboBoxFocusListener implements FocusListener {
+		private TextIndexComboBox comboBox = null;
+		public ComboBoxFocusListener (TextIndexComboBox comboBox) {
+			this.comboBox = comboBox;
+		}
+		
+		public void focusLost(FocusEvent e) {
+			// sync the StringFilter with the UI
+			final JTextComponent editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
+			String userInput = editor.getText();
+
+			// Determine the row index of the TextIndexCombobox in the customSetting panel
+			int widgetIndex = getChildIndexFromComponent(comboBox); 
+							
+			//Update theFilter Object
+			List<CyFilter> theFilterlist = theFilter.getChildren();
+			
+			StringFilter theStringFilter = (StringFilter) theFilterlist.get(widgetIndex);
+			theStringFilter.setSearchStr(userInput);
+		}
+		public void focusGained(FocusEvent e) {
+			// do nothing
+		}
 	}
 	
 	
@@ -1243,7 +1283,8 @@ public class FilterSettingPanel extends JPanel {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
-        add(pnlCustomSettings, gridBagConstraints);
+        add(new JScrollPane(pnlCustomSettings), gridBagConstraints);
+        //add(pnlCustomSettings, gridBagConstraints);
 
         btnAdd.setText("Add Widgets");
         jPanel1.add(btnAdd);
