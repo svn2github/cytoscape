@@ -101,7 +101,7 @@ public class ProcessingTunableList{
 				resultpane = new JPanel();
 				for(Handler guihandler : list){
 					//if(((Guihandler)guihandler).getClass()==GroupHandler.class) continue;
-					panes = ((Guihandler) guihandler).update(); // A VERIFIER SI UPDATE
+					panes = ((Guihandler) guihandler).update();
 					//((Guihandler) guihandler).handle();
 					resultpane.add(panes);
 				}

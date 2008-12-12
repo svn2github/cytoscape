@@ -21,7 +21,6 @@ public class Input implements Command {
 	final public static int LIST = 6;
 	final public static int GROUP = 7;
 	final public static int BUTTON = 8;
-	final public static int LIST2 = 9;
 	
 
 	@Tunable(description="try with integer", type=Integer.class,flag=Param.Nothing)
@@ -33,8 +32,8 @@ public class Input implements Command {
 	@Tunable(description="try with boundeddouble", type=BoundedDouble.class,flag=Param.UseSlider)
 	public BoundedDouble double1 = new BoundedDouble(new Double(15.4),new Double(0.0),new Double(200.0),new Boolean(true),new Boolean(true));
 	
-	//@Tunable(description="try with list", type=JList.class, flag=Param.MultiSelect)
-	//public JList list = new JList(new Object[] {"d","d","f"});
+	@Tunable(description="try with list", type=JList.class, flag=Param.MultiSelect)
+	public JList list = new JList(new Object[] {"d","d","f"});
 	
 	
 	/*

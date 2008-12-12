@@ -10,7 +10,6 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD,ElementType.TYPE}) // says we're just looking at fields and  methods
 
 public @interface Tunable{
-
 	String[] description();
 //	int type();
 	Class<?> type();
@@ -23,5 +22,6 @@ public @interface Tunable{
 	//String[] data();
 	
 	public enum Param { UseSlider, Nothing,MultiSelect }
+	
 	
 }

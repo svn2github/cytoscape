@@ -2,6 +2,7 @@
 package Factory;
 
 import TunableDefinition.*;
+import TunableDefinition.Tunable.Param;
 
 import java.awt.List;
 import java.lang.reflect.*;
@@ -20,11 +21,12 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 	Tunable t;
 
 	JList listIn;
-	List listOut=new List();
+	JList listOut;
 	String[] data;
 	Object[] values;
 	Boolean multiselect;
 	String title;
+
 	
 	public ListHandler(Field f, Object o, Tunable t){
 		this.f = f;
@@ -37,35 +39,21 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 		try{
 			listIn = (JList) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		values = listIn.getSelectedValues();
-		DefaultListModel model = new DefaultListModel();
-		int pos=0;
-		for(Object ii : values){
-			model.add(pos,ii);
-			pos++;
-		}
 		
-		for(int i=0;i<3;i++){
-			listIn.setSelectedIndex(i);
-			System.out.println("listesortir:"+listIn.getSelectedValue());
-			listOut.add(listIn.getSelectedValue().toString());
-		}
-		//System.out.println("listesortir:"+listOut.getItem(0));
-
-		
-		//list.setListData(data);
-		//list.addListSelectionListener(this);
-		//list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	
-		//if(multiselect)list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		listIn.addListSelectionListener(this);
+		listIn.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		if(t.flag()==Param.MultiSelect)listIn.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		pane.add(new JLabel(title));
-		//pane.add(new JScrollPane(list));
+		JScrollPane scrollpane = new JScrollPane(listIn);
+		pane.add(scrollpane);
 		return pane;
 	}
 	
 	public void handle(){
-		//list.setListData(values);	
+		listOut = new JList(values);
+		//listOut.setListData(values);	
 		try{
-		//	f.set(o, list);
+			f.set(o, listOut);
 		}catch(Exception e){e.printStackTrace();}	
 		
 	}
@@ -83,24 +71,29 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 	}
 
 	
-	@Override
 	public void valueChanged(ListSelectionEvent event) {
-	//	values = list.getSelectedValues();
+		values = listIn.getSelectedValues();
 		}
 
-	@Override
 	public Tunable getTunable() {
 		return t;
 	}
 
 
 	public JPanel update() {
-
-		return null;
+		JPanel result = new JPanel();
+		if(values!=null){
+			listOut = new JList(values);
+			JScrollPane resultscroll = new JScrollPane(listOut);
+			result.add(resultscroll);
+		}
+		return result;
 	}
 
 	public void cancel() {
-		
+		try{
+			f.set(o, listIn);
+		}catch(Exception e){e.printStackTrace();}
 	}
 
 

@@ -20,13 +20,12 @@ public abstract class HiddenTunableInterceptor<H extends Handler> implements Tun
 	
 	public LinkedList<H> intercept(Command command){
 		
-		//PropertiesImpl properties = new PropertiesImpl("TunableSampler");
-		
 		LinkedList<H> HandlerTunablesList = new LinkedList<H>();
 		for(Field field : command.getClass().getFields()){
 			if(field.isAnnotationPresent(Tunable.class)){
 				try{
 					Tunable tunable = field.getAnnotation(Tunable.class);
+					
 					H handler = factory.getHandlerType(field, command, tunable);
 					if(handler!=null) HandlerTunablesList.add(handler);
 					

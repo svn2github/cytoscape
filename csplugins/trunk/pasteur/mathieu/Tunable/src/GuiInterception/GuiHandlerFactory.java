@@ -6,17 +6,18 @@ import HandlerFactory.HandlerFactory;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Iterator;
-
 import javax.swing.JList;
-
 import Properties.PropertiesImpl;
 import TunableDefinition.Tunable;
+import Command.*;
 import TunableDefinition.Tunable.Param;
 
 public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 
+
 	Command command = new Input();
 	public Guihandler getHandlerType(Field f, Object o, Tunable t){
+		Command command = new Input();
 
 		if(t.type()==BoundedInteger.class)
 			return new BoundedIntegerHandler(f,o,t);
