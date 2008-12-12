@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal;
 
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;

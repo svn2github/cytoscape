@@ -1,7 +1,8 @@
-/*
- File: EdgeBypassMenuListener.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ File: BypassHack.java 
+
+ Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -34,37 +35,33 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal.bypass;
 
-import org.cytoscape.view.EdgeContextMenuListener;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.vizmap.gui.editors.EditorFactory;
-
-import javax.swing.*;
-
+import org.cytoscape.model.GraphObject;
 
 /**
- * EdgeBypassMenuListener implements EdgeContextMenuListener
- * When a node is selected it calls bypass andd add
+ * ARgh.  This is a horrible, horrible hack that allows LabelPosition to
+ * be set dynamically for vizmap bypass as you drag the icon around in
+ * the label position dialog.  This class provides access to the current
+ * node (or edge) that has had it's context menu clicked.  This class allows
+ * the dialog to get the node then set the bypass value as things move rather
+ * than waiting for the user to click OK. This could be used by other 
+ * VisualPropertyTypes in a similar fashion, but currently isn't.
+ * <b>This code should NEVER propagate to newer versions of Cytoscape!!!</b>
+ * This should be handled in a completely different way in the future.
  */
-class EdgeBypassMenuListener
-    implements EdgeContextMenuListener {
+public class BypassHack {
+	private static GraphObject curr = null;
 
-	private EditorFactory ef;
-    EdgeBypassMenuListener(EditorFactory ef) {
-		this.ef = ef;
-    }
+	static void setCurrentObject(GraphObject o) {
+		curr = o;
+	}
 
-    /**
-     * @param nodeView The clicked EdgeView
-     * @param menu popup menu to add the Bypass menu
-     */
-    public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
-        EdgeBypass eb = new EdgeBypass(ef);
+	public static GraphObject getCurrentObject() {
+		return curr;
+	}
 
-        if (menu == null)
-            menu = new JPopupMenu();
-
-        menu.add(eb.addMenu(edgeView.getEdge()));
-    }
+	static void finished() {
+		curr = null;
+	}
 }

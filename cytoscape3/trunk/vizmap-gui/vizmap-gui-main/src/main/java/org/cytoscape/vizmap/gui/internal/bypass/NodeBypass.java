@@ -1,5 +1,5 @@
 /*
- File: NodeBypassMenuListener.java
+ File: NodeBypass.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,52 +34,50 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal.bypass;
 
-import org.cytoscape.view.NodeContextMenuListener;
-import org.cytoscape.view.NodeView;
+import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
-/**
- * NodeBypassMenuListener implements NodeContextMenuListener
- * When a node is selected it calls bypass andd add
- */
-class NodeBypassMenuListener implements NodeContextMenuListener {
-	private EditorFactory ef;
-	NodeBypassMenuListener(EditorFactory ef) {
-		this.ef = ef;
+class NodeBypass extends VizMapBypass {
+
+	NodeBypass(EditorFactory ef) {
+		super(ef);
 	}
 
-	/**
-	 * @param nodeView The clicked NodeView
-	 * @param menu popup menu to add the Bypass menu
-	 */
-	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-		NodeBypass nb = new NodeBypass(ef);
+	JMenuItem addMenu(CyNode n) {
+		graphObj = n;
+		JMenu menu = new JMenu("Visual Mapping Bypass");
+		menu.add(new JLabel("Change Node Visualization"));
+		menu.addSeparator();
+		// horrible, horrible hack
+		BypassHack.setCurrentObject(n);
 
-		if (menu == null)
-			menu = new JPopupMenu();
+		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
+			addMenuItem(menu, type);
 
-		/*
-		 * Add Node ID as label.
-		 */
-		final String nodeID = nodeView.getNode().attrs().get("name",String.class);
-		final JLabel nodeLabel = new JLabel(nodeID);
+		menu.addSeparator();
 
-		if (menu == null)
-			menu = new JPopupMenu();
+		addResetAllMenuItem(menu);
 
-		nodeLabel.setForeground(new Color(10, 50, 250, 150));
-		nodeLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
-		nodeLabel.setBorder(new EmptyBorder(5, 10, 5, 5));
-		menu.add(nodeLabel);
+		return menu;
+	}
 
-		menu.add(nb.addMenu(nodeView.getNode()));
+	protected List<String> getBypassNames() {
+		List<String> l = new ArrayList<String>();
+
+		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
+			l.add(type.getBypassAttrName());
+
+		return l;
 	}
 }

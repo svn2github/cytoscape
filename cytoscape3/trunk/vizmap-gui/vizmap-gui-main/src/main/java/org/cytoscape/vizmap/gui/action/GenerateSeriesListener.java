@@ -44,8 +44,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.gui.VizMapperMainPanel;
-import org.cytoscape.vizmap.gui.VizMapperProperty;
+import org.cytoscape.vizmap.gui.internal.VizMapperMainPanel;
+import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 

@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;

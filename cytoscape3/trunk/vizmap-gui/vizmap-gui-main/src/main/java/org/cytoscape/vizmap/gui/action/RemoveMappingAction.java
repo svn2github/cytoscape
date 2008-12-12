@@ -7,8 +7,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.gui.AbstractVizMapperPanel;
-import org.cytoscape.vizmap.gui.VizMapperProperty;
+import org.cytoscape.vizmap.gui.internal.AbstractVizMapperPanel;
+import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;

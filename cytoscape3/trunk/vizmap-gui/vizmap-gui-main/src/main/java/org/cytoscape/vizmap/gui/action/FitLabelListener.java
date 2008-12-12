@@ -52,8 +52,8 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.gui.AbstractVizMapperPanel;
-import org.cytoscape.vizmap.gui.VizMapperProperty;
+import org.cytoscape.vizmap.gui.internal.AbstractVizMapperPanel;
+import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 

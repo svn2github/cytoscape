@@ -47,7 +47,7 @@ import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.gui.BypassHack;
+import org.cytoscape.vizmap.gui.internal.bypass.BypassHack;
 
 import javax.swing.*;
 import java.awt.*;

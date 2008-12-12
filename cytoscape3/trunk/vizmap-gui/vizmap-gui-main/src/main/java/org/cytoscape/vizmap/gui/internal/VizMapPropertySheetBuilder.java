@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal;
 
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_LABEL_POSITION;
 

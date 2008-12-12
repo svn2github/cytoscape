@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -61,6 +61,8 @@ import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.vizmap.gui.action.VizMapperUIAction;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.vizmap.gui.theme.ColorManager;

@@ -1,5 +1,5 @@
 /*
- File: NodeBypass.java
+ File: EdgeBypassMenuListener.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,50 +34,37 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal.bypass;
 
-import cytoscape.Cytoscape;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.EdgeContextMenuListener;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
-
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
-class NodeBypass extends VizMapBypass {
+/**
+ * EdgeBypassMenuListener implements EdgeContextMenuListener
+ * When a node is selected it calls bypass andd add
+ */
+class EdgeBypassMenuListener
+    implements EdgeContextMenuListener {
 
-	NodeBypass(EditorFactory ef) {
-		super(ef);
-	}
+	private EditorFactory ef;
+    EdgeBypassMenuListener(EditorFactory ef) {
+		this.ef = ef;
+    }
 
-	JMenuItem addMenu(CyNode n) {
-		graphObj = n;
-		JMenu menu = new JMenu("Visual Mapping Bypass");
-		menu.add(new JLabel("Change Node Visualization"));
-		menu.addSeparator();
-		// horrible, horrible hack
-		BypassHack.setCurrentObject(n);
+    /**
+     * @param nodeView The clicked EdgeView
+     * @param menu popup menu to add the Bypass menu
+     */
+    public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
+        EdgeBypass eb = new EdgeBypass(ef);
 
-		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
-			addMenuItem(menu, type);
+        if (menu == null)
+            menu = new JPopupMenu();
 
-		menu.addSeparator();
-
-		addResetAllMenuItem(menu);
-
-		return menu;
-	}
-
-	protected List<String> getBypassNames() {
-		List<String> l = new ArrayList<String>();
-
-		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
-			l.add(type.getBypassAttrName());
-
-		return l;
-	}
+        menu.add(eb.addMenu(edgeView.getEdge()));
+    }
 }

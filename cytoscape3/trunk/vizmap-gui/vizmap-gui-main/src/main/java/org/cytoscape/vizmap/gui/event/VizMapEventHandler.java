@@ -5,8 +5,8 @@ import java.beans.PropertyChangeEvent;
 import javax.annotation.Resource;
 
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.gui.VizMapPropertySheetBuilder;
-import org.cytoscape.vizmap.gui.VizMapperMainPanel;
+import org.cytoscape.vizmap.gui.internal.VizMapPropertySheetBuilder;
+import org.cytoscape.vizmap.gui.internal.VizMapperMainPanel;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 

@@ -44,8 +44,8 @@ import javax.swing.JMenuItem;
 
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.gui.DefaultViewPanel;
-import org.cytoscape.vizmap.gui.VizMapperProperty;
+import org.cytoscape.vizmap.gui.internal.DefaultViewPanel;
+import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 
 import com.l2fprod.common.propertysheet.Property;
 

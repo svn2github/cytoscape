@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal;
 
 import java.awt.Color;
 import java.awt.Point;

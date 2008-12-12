@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.gui.DefaultViewPanel;
+import org.cytoscape.vizmap.gui.internal.DefaultViewPanel;
 
 import cytoscape.Cytoscape;
 

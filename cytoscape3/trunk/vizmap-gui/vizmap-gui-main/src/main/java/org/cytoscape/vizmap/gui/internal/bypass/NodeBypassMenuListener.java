@@ -1,5 +1,5 @@
 /*
- File: VizMapBypassNetworkListener.java
+ File: NodeBypassMenuListener.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,41 +34,52 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal.bypass;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
+import org.cytoscape.view.NodeContextMenuListener;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
-import cytoscape.Cytoscape;
-import cytoscape.view.CySwingApplication;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 
 /**
- * Adds NodeView and EdgeView vizmap bypass listeners to network views as
- * the views are created.
+ * NodeBypassMenuListener implements NodeContextMenuListener
+ * When a node is selected it calls bypass andd add
  */
-public class VizMapBypassNetworkListener implements PropertyChangeListener {
-
+class NodeBypassMenuListener implements NodeContextMenuListener {
 	private EditorFactory ef;
-	public VizMapBypassNetworkListener(EditorFactory ef) {
+	NodeBypassMenuListener(EditorFactory ef) {
 		this.ef = ef;
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	/**
-	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
-	 * node and edge context menu listeners to the view.
-	 * @param evnt The event we're hearing.
+	 * @param nodeView The clicked NodeView
+	 * @param menu popup menu to add the Bypass menu
 	 */
-	public void propertyChange(PropertyChangeEvent evnt) {
-		if (evnt.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
-			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
-			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
+	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
+		NodeBypass nb = new NodeBypass(ef);
 
-			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener(ef);
-			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
-		}
+		if (menu == null)
+			menu = new JPopupMenu();
+
+		/*
+		 * Add Node ID as label.
+		 */
+		final String nodeID = nodeView.getNode().attrs().get("name",String.class);
+		final JLabel nodeLabel = new JLabel(nodeID);
+
+		if (menu == null)
+			menu = new JPopupMenu();
+
+		nodeLabel.setForeground(new Color(10, 50, 250, 150));
+		nodeLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+		nodeLabel.setBorder(new EmptyBorder(5, 10, 5, 5));
+		menu.add(nodeLabel);
+
+		menu.add(nb.addMenu(nodeView.getNode()));
 	}
 }

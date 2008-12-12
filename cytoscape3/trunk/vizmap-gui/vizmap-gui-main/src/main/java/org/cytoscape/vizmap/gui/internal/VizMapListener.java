@@ -40,7 +40,7 @@
 // $Date: 2008-02-04 11:10:30 -0800 (Mon, 04 Feb 2008) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;

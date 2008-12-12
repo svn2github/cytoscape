@@ -2,7 +2,6 @@ package org.cytoscape.vizmap.gui.action;
 
 import java.awt.event.ActionEvent;
 
-import org.cytoscape.vizmap.gui.LegendDialog;
 
 import cytoscape.util.SwingWorker;
 

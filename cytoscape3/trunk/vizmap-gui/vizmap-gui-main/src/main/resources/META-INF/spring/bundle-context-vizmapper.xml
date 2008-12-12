@@ -28,7 +28,7 @@
 	<bean name="editorFactory"
 		class="org.cytoscape.vizmap.gui.internal.editors.EditorFactoryImpl" />
 
-	<bean id="vizMapBypassNetworkListener" class="org.cytoscape.vizmap.gui.VizMapBypassNetworkListener">
+	<bean id="vizMapBypassNetworkListener" class="org.cytoscape.vizmap.gui.internal.bypass.VizMapBypassNetworkListener">
 		<constructor-arg ref="editorFactory" />
 	</bean>
 
@@ -70,13 +70,13 @@
 	</bean>
 	<bean id="iconManager" class="org.cytoscape.vizmap.gui.theme.IconManager"
 		scope="singleton" />
-	<bean id="menuManager" class="org.cytoscape.vizmap.gui.VizMapperMenuManager"
+	<bean id="menuManager" class="org.cytoscape.vizmap.gui.internal.VizMapperMenuManager"
 		scope="singleton" depends-on="iconManager" autowire="autodetect">
 		<property name="generateMenuLabel" value="${vizMapperMainPanel.menu.generateMenu}" />
 		<property name="generateIconId" value="${vizMapperMainPanel.menu.generateMenu.icon}" />
 	</bean>
 
-	<bean name="defaultViewPanel" class="org.cytoscape.vizmap.gui.DefaultViewPanel"
+	<bean name="defaultViewPanel" class="org.cytoscape.vizmap.gui.internal.DefaultViewPanel"
 		scope="singleton">
 		<description>
 			Create default view panel.	
@@ -86,7 +86,7 @@
 		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
-	<bean name="defViewEditor" class="org.cytoscape.vizmap.gui.DefaultViewEditor"
+	<bean name="defViewEditor" class="org.cytoscape.vizmap.gui.internal.DefaultViewEditorImpl"
 		scope="singleton" depends-on="defaultViewPanel">
 		<constructor-arg ref="defaultViewPanel" />
 		<constructor-arg ref="editorFactory" />
@@ -168,22 +168,22 @@
 			value="${vizMapperMainPanel.menu.removeMappingAction.icon}" />
 	</bean>
 
-	<bean id="vizMapPropertySheetBuilder" class="org.cytoscape.vizmap.gui.VizMapPropertySheetBuilder"
+	<bean id="vizMapPropertySheetBuilder" class="org.cytoscape.vizmap.gui.internal.VizMapPropertySheetBuilder"
 		depends-on="vizMapPropertyBuilder">
 		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
-	<bean id="vizMapPropertyBuilder" class="org.cytoscape.vizmap.gui.VizMapPropertyBuilder" />
+	<bean id="vizMapPropertyBuilder" class="org.cytoscape.vizmap.gui.internal.VizMapPropertyBuilder" />
 	<bean id="vizMapEventHandlerManager"
 		class="org.cytoscape.vizmap.gui.event.VizMapEventHandlerManager" />
 
-	<bean id="editorWindowManager" class="org.cytoscape.vizmap.gui.EditorWindowManager">
+	<bean id="editorWindowManager" class="org.cytoscape.vizmap.gui.internal.EditorWindowManager">
 		<constructor-arg ref="editorFactory" />
 		<constructor-arg ref="rendReg" />
 		<constructor-arg ref="propertySheetPanel" />
 	</bean>
 
-	<bean name="vizMapperMainPanel" class="org.cytoscape.vizmap.gui.VizMapperMainPanel"
+	<bean name="vizMapperMainPanel" class="org.cytoscape.vizmap.gui.internal.VizMapperMainPanel"
 		depends-on="colorMgr,
 		iconManager, defViewEditor, vizMapperUtil, menuManager, propertySheetPanel, editorWindowManager">
 		<constructor-arg ref="cytoscapeDesktopServiceRef" />

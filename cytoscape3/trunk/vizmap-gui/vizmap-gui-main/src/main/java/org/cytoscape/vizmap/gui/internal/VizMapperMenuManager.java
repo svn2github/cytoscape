@@ -1,10 +1,11 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal;
 
 import java.util.Map;
 
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
+import org.cytoscape.vizmap.gui.action.VizMapperUIAction;
 import org.cytoscape.vizmap.gui.theme.IconManager;
 
 

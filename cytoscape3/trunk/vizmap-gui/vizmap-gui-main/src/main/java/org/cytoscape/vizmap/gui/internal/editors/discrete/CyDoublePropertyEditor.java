@@ -39,7 +39,7 @@ import java.awt.event.FocusListener;
 
 import javax.swing.JTextField;
 
-import org.cytoscape.vizmap.gui.VizMapperMainPanel;
+import org.cytoscape.vizmap.gui.internal.VizMapperMainPanel;
 
 import com.l2fprod.common.beans.editor.DoublePropertyEditor;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;

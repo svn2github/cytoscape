@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.internal;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.gui.DefaultViewEditor;
 
 public class DefaultViewMouseListener extends MouseAdapter {
 
@@ -33,7 +34,7 @@ public class DefaultViewMouseListener extends MouseAdapter {
 			final Long focus = net.getSUID();
 
 			final DefaultViewPanel panel = (DefaultViewPanel) defViewEditor
-					.showDialog(null);
+					.showEditor(null);
 			vizMapperMainPanel.updateDefaultImage(targetName, (GraphView) panel.getView(),
 					vizMapperMainPanel.getDefaultViewPanel().getSize());
 			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel.getDefaultImageManager().get(targetName));
