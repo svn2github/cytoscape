@@ -130,7 +130,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
 		{	
 			refreshAttributeCMB();
-			replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());					
+			replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
+			
+			FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get((CompositeFilter)cmbSelectFilter.getSelectedItem());
+			if (theSettingPanel != null) {
+				theSettingPanel.refreshIndicesForWidgets();
+			}
 		}
 		if (e.getPropertyName().equalsIgnoreCase(CytoscapeDesktop.NETWORK_VIEW_FOCUSED))
 		{	
@@ -185,7 +190,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				if (!attributes.getUserVisible(attributeNames[i])) {
 					continue;
 				}
-				if ((type == CyAttributes.TYPE_INTEGER)||(type == CyAttributes.TYPE_FLOATING)||(type == CyAttributes.TYPE_STRING)||(type == CyAttributes.TYPE_SIMPLE_LIST)) {
+				if ((type == CyAttributes.TYPE_INTEGER)||(type == CyAttributes.TYPE_FLOATING)||(type == CyAttributes.TYPE_BOOLEAN)||(type == CyAttributes.TYPE_STRING)||(type == CyAttributes.TYPE_SIMPLE_LIST)) {
 					attributeList.add(pType+"."+attributeNames[i]);
 				}
 			} //for loop
