@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,9 +31,8 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
-package org.cytoscape.vizmap.gui;
+ */
+package org.cytoscape.vizmap.gui.action;
 
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
@@ -46,6 +44,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
 import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.gui.VizMapperMainPanel;
+import org.cytoscape.vizmap.gui.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 
@@ -58,11 +58,15 @@ import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
-
 /**
  *
  */
 public class GenerateSeriesListener extends AbstractVizMapperAction {
+	public GenerateSeriesListener() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	private final static long serialVersionUID = 121374883715581L;
 	private DiscreteMapping dm;
 
@@ -76,14 +80,14 @@ public class GenerateSeriesListener extends AbstractVizMapperAction {
 		/*
 		 * Check Selected poperty
 		 */
-		final int selectedRow = vizMapperMainPanel.getPropertySheetPanel().getTable()
-		                                          .getSelectedRow();
+		final int selectedRow = propertySheetPanel
+				.getTable().getSelectedRow();
 
 		if (selectedRow < 0)
 			return;
 
-		final Item item = (Item) vizMapperMainPanel.getPropertySheetPanel().getTable()
-		                                           .getValueAt(selectedRow, 0);
+		final Item item = (Item) propertySheetPanel
+				.getTable().getValueAt(selectedRow, 0);
 		final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
 		final Object hidden = prop.getHiddenObject();
 
@@ -96,14 +100,16 @@ public class GenerateSeriesListener extends AbstractVizMapperAction {
 			final int nOre;
 
 			if (type.isNodeProp()) {
-				attr = targetNetwork.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-				          .getMapping(0);
+				attr = targetNetwork.getNodeCyDataTables().get(
+						CyNetwork.DEFAULT_ATTRS);
+				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator()
+						.getCalculator(type).getMapping(0);
 				nOre = ObjectMapping.NODE_MAPPING;
 			} else {
-				attr = targetNetwork.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-				          .getMapping(0);
+				attr = targetNetwork.getEdgeCyDataTables().get(
+						CyNetwork.DEFAULT_ATTRS);
+				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator()
+						.getCalculator(type).getMapping(0);
 				nOre = ObjectMapping.EDGE_MAPPING;
 			}
 
@@ -115,19 +121,16 @@ public class GenerateSeriesListener extends AbstractVizMapperAction {
 			// final Set<Object> attrSet =
 			// loadKeys(oMap.getControllingAttributeName(), attr,
 			// oMap, nOre);
-			final Set<Object> attrSet = new TreeSet<Object>(attr.getColumnValues(oMap
-			                                                                                                           .getControllingAttributeName(),
-			                                                                     attr.getColumnTypeMap()
-			                                                                         .get(oMap
-			                                                                                                              .getControllingAttributeName())));
+			final Set<Object> attrSet = new TreeSet<Object>(attr
+					.getColumnValues(oMap.getControllingAttributeName(), attr
+							.getColumnTypeMap().get(
+									oMap.getControllingAttributeName())));
 
-			final String start = JOptionPane.showInputDialog(vizMapperMainPanel
-			                                                                                                                 .getPropertySheetPanel(),
-			                                                 "Please enter start value (1st number in the series)",
-			                                                 "0");
-			final String increment = JOptionPane.showInputDialog(vizMapperMainPanel
-			                                                                                                                     .getPropertySheetPanel(),
-			                                                     "Please enter increment", "1");
+			final String start = JOptionPane.showInputDialog(propertySheetPanel,
+					"Please enter start value (1st number in the series)", "0");
+			final String increment = JOptionPane.showInputDialog(
+					propertySheetPanel,
+					"Please enter increment", "1");
 
 			if ((increment == null) || (start == null))
 				return;
@@ -160,23 +163,24 @@ public class GenerateSeriesListener extends AbstractVizMapperAction {
 			vmm.setNetworkView(targetView);
 			Cytoscape.redrawGraph(targetView);
 
-			vizMapperMainPanel.getPropertySheetPanel().removeProperty(prop);
+			propertySheetPanel.removeProperty(prop);
 
 			final VizMapperProperty newRootProp = new VizMapperProperty();
 
 			if (type.isNodeProp())
-				vizMapperMainPanel.buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
-				                                    .getCalculator(type), newRootProp,
-				                                 VizMapperMainPanel.NODE_VISUAL_MAPPING);
+				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle()
+						.getNodeAppearanceCalculator().getCalculator(type),
+						newRootProp, VizMapperMainPanel.NODE_VISUAL_MAPPING, propertySheetPanel);
 			else
-				vizMapperMainPanel.buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
-				                                    .getCalculator(type), newRootProp,
-				                                 VizMapperMainPanel.EDGE_VISUAL_MAPPING);
+				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle()
+						.getEdgeAppearanceCalculator().getCalculator(type),
+						newRootProp, VizMapperMainPanel.EDGE_VISUAL_MAPPING, propertySheetPanel);
 
-			vizMapperMainPanel.removeProperty(prop);
-			vizMapperMainPanel.getPropertyMap().get(vmm.getVisualStyle().getName()).add(newRootProp);
+			vizMapPropertySheetBuilder.removeProperty(prop);
+			vizMapPropertySheetBuilder.getPropertyMap().get(vmm.getVisualStyle().getName())
+					.add(newRootProp);
 
-			vizMapperMainPanel.expandLastSelectedItem(type.getName());
+			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
 		} else {
 			System.out.println("Invalid.");
 		}

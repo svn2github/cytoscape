@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.action;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.gui.DefaultViewPanel;
 
 import cytoscape.Cytoscape;
 
@@ -20,9 +21,13 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 	 */
 	private static final long serialVersionUID = 3359340478989439229L;
 
+	public CreateNewStyleAction() {
+		super();
+	}
 
 	public void actionPerformed(ActionEvent e) {
-		final String name = vizMapperUtil.getStyleName(vizMapperMainPanel,null);
+		final String name = vizMapperUtil
+				.getStyleName(vizMapperMainPanel, null);
 
 		/*
 		 * If name is null, do not create style.
@@ -46,12 +51,15 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 
 		vmm.setVisualStyleForView(currentView, newStyle);
 
-		vizMapperMainPanel.removeMapping(dummy.getVisualPropertyType());
+		vizMapperMainPanel.getPropertyChangeSupport().firePropertyChange(
+				"REMOVE_MAPPING", null, dummy.getVisualPropertyType());
+		// vizMapperMainPanel.removeMapping(dummy.getVisualPropertyType());
 
 		final JPanel defPanel = defAppBldr.getDefaultView(name);
 		final GraphView view = (GraphView) ((DefaultViewPanel) defPanel)
 				.getView();
-		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel().getSize();
+		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()
+				.getSize();
 
 		if (view != null) {
 			System.out.println("Creating Default Image for new visual style "

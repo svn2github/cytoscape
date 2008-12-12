@@ -36,15 +36,16 @@
  */
 package org.cytoscape.vizmap.gui;
 
-import cytoscape.Cytoscape;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.gui.editors.EditorFactory;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 class EdgeBypass extends VizMapBypass {
 	EdgeBypass(EditorFactory ef) {

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,41 +31,46 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.action;
 
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import cytoscape.Cytoscape;
-
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.vizmap.VisualPropertyType;
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_FONT_SIZE;
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
-import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
 
 import java.awt.event.ActionEvent;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.gui.AbstractVizMapperPanel;
+import org.cytoscape.vizmap.gui.VizMapperProperty;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
+
+import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+
+import cytoscape.Cytoscape;
 
 /**
  *
  */
 public class FitLabelListener extends AbstractVizMapperAction {
+
+	public FitLabelListener() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	private final static long serialVersionUID = 121374883744077L;
 	private DiscreteMapping dm;
 
@@ -80,14 +84,13 @@ public class FitLabelListener extends AbstractVizMapperAction {
 		/*
 		 * Check Selected poperty
 		 */
-		final int selectedRow = vizMapperMainPanel.getPropertySheetPanel().getTable()
-		                                          .getSelectedRow();
+		final int selectedRow = propertySheetPanel.getTable().getSelectedRow();
 
 		if (selectedRow < 0)
 			return;
 
-		final Item item = (Item) vizMapperMainPanel.getPropertySheetPanel().getTable()
-		                                           .getValueAt(selectedRow, 0);
+		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
+				selectedRow, 0);
 		final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
 		final Object hidden = prop.getHiddenObject();
 
@@ -99,13 +102,15 @@ public class FitLabelListener extends AbstractVizMapperAction {
 			final CyDataTable attr;
 
 			if (type.isNodeProp()) {
-				attr = targetNetwork.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-				          .getMapping(0);
+				attr = targetNetwork.getNodeCyDataTables().get(
+						CyNetwork.DEFAULT_ATTRS);
+				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator()
+						.getCalculator(type).getMapping(0);
 			} else {
-				attr = targetNetwork.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-				          .getMapping(0);
+				attr = targetNetwork.getEdgeCyDataTables().get(
+						CyNetwork.DEFAULT_ATTRS);
+				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator()
+						.getCalculator(type).getMapping(0);
 			}
 
 			if ((oMap instanceof DiscreteMapping) == false)
@@ -113,29 +118,34 @@ public class FitLabelListener extends AbstractVizMapperAction {
 
 			dm = (DiscreteMapping) oMap;
 
-			final Calculator nodeLabelCalc = vmm.getVisualStyle().getNodeAppearanceCalculator()
-			                                    .getCalculator(VisualPropertyType.NODE_LABEL);
+			final Calculator nodeLabelCalc = vmm.getVisualStyle()
+					.getNodeAppearanceCalculator().getCalculator(
+							VisualPropertyType.NODE_LABEL);
 
 			if (nodeLabelCalc == null) {
 				return;
 			}
 
-			final String ctrAttrName = nodeLabelCalc.getMapping(0).getControllingAttributeName();
+			final String ctrAttrName = nodeLabelCalc.getMapping(0)
+					.getControllingAttributeName();
 			dm.setControllingAttributeName(ctrAttrName, targetNetwork, false);
 
 			// final Set<Object> attrSet =
 			// loadKeys(oMap.getControllingAttributeName(), attr, oMap);
-			if (vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked()) {
+			if (vmm.getVisualStyle().getNodeAppearanceCalculator()
+					.getNodeSizeLocked()) {
 				return;
 			}
 
 			DiscreteMapping wm = null;
 
 			if ((type == NODE_WIDTH)) {
-				wm = (DiscreteMapping) vmm.getVisualStyle().getNodeAppearanceCalculator()
-				                          .getCalculator(NODE_WIDTH).getMapping(0);
+				wm = (DiscreteMapping) vmm.getVisualStyle()
+						.getNodeAppearanceCalculator()
+						.getCalculator(NODE_WIDTH).getMapping(0);
 
-				wm.setControllingAttributeName(ctrAttrName, targetNetwork, false);
+				wm.setControllingAttributeName(ctrAttrName, targetNetwork,
+						false);
 
 				Set<Object> attrSet1;
 
@@ -150,21 +160,20 @@ public class FitLabelListener extends AbstractVizMapperAction {
 					// attr, wm,
 					// ObjectMapping.NODE_MAPPING);
 					attrSet1 = new TreeSet<Object>(attr.getColumnValues(oMap
-					                                                                                                                                     .getControllingAttributeName(),
-					                                                    attr.getColumnTypeMap()
-					                                                        .get(oMap
-					                                                                                                                                        .getControllingAttributeName())));
+							.getControllingAttributeName(), attr
+							.getColumnTypeMap().get(
+									oMap.getControllingAttributeName())));
 				}
 
-				Integer height = ((Number) (vmm.getVisualStyle().getNodeAppearanceCalculator()
-				                               .getDefaultAppearance().get(NODE_FONT_SIZE)))
-				                                                                                                                                                 .intValue();
-				vmm.getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance()
-				   .set(NODE_HEIGHT, height * 2.5);
+				Integer height = ((Number) (vmm.getVisualStyle()
+						.getNodeAppearanceCalculator().getDefaultAppearance()
+						.get(NODE_FONT_SIZE))).intValue();
+				vmm.getVisualStyle().getNodeAppearanceCalculator()
+						.getDefaultAppearance().set(NODE_HEIGHT, height * 2.5);
 
-				Integer fontSize = ((Number) vmm.getVisualStyle().getNodeAppearanceCalculator()
-				                                .getDefaultAppearance().get(NODE_FONT_SIZE))
-				                                                                                                                                                       .intValue();
+				Integer fontSize = ((Number) vmm.getVisualStyle()
+						.getNodeAppearanceCalculator().getDefaultAppearance()
+						.get(NODE_FONT_SIZE)).intValue();
 				int strLen;
 
 				String labelString = null;
@@ -200,11 +209,13 @@ public class FitLabelListener extends AbstractVizMapperAction {
 							strLen = longest;
 
 							if (strLen > 25) {
-								valueMap.put(((CyNode) node).attrs().get("name", String.class),
-								             strLen * fontSize * 0.6);
+								valueMap.put(((CyNode) node).attrs().get(
+										"name", String.class), strLen
+										* fontSize * 0.6);
 							} else {
-								valueMap.put(((CyNode) node).attrs().get("name", String.class),
-								             strLen * fontSize * 0.8);
+								valueMap.put(((CyNode) node).attrs().get(
+										"name", String.class), strLen
+										* fontSize * 0.8);
 							}
 						}
 					}
@@ -236,10 +247,12 @@ public class FitLabelListener extends AbstractVizMapperAction {
 					}
 				}
 			} else if ((type == NODE_HEIGHT)) {
-				wm = (DiscreteMapping) vmm.getVisualStyle().getNodeAppearanceCalculator()
-				                          .getCalculator(NODE_HEIGHT).getMapping(0);
+				wm = (DiscreteMapping) vmm.getVisualStyle()
+						.getNodeAppearanceCalculator().getCalculator(
+								NODE_HEIGHT).getMapping(0);
 
-				wm.setControllingAttributeName(ctrAttrName, targetNetwork, false);
+				wm.setControllingAttributeName(ctrAttrName, targetNetwork,
+						false);
 
 				Set<Object> attrSet1;
 
@@ -254,15 +267,14 @@ public class FitLabelListener extends AbstractVizMapperAction {
 					// attr, wm,
 					// ObjectMapping.NODE_MAPPING);
 					attrSet1 = new TreeSet<Object>(attr.getColumnValues(oMap
-					                                                                                                                                                                                                                                             .getControllingAttributeName(),
-					                                                    attr.getColumnTypeMap()
-					                                                        .get(oMap
-					                                                                                                                                                                                                                                                .getControllingAttributeName())));
+							.getControllingAttributeName(), attr
+							.getColumnTypeMap().get(
+									oMap.getControllingAttributeName())));
 				}
 
-				Integer fontSize = ((Number) vmm.getVisualStyle().getNodeAppearanceCalculator()
-				                                .getDefaultAppearance().get(NODE_FONT_SIZE))
-				                                                                                                                                                                                                                                                         .intValue();
+				Integer fontSize = ((Number) vmm.getVisualStyle()
+						.getNodeAppearanceCalculator().getDefaultAppearance()
+						.get(NODE_FONT_SIZE)).intValue();
 				int strLen;
 
 				String labelString = null;
@@ -286,8 +298,9 @@ public class FitLabelListener extends AbstractVizMapperAction {
 
 						if (strLen != 0) {
 							listObj = text.split("\\n");
-							valueMap.put(((CyNode) node).attrs().get("name", String.class),
-							             listObj.length * fontSize * 1.6);
+							valueMap.put(((CyNode) node).attrs().get("name",
+									String.class), listObj.length * fontSize
+									* 1.6);
 						}
 					}
 				} else {
@@ -315,23 +328,28 @@ public class FitLabelListener extends AbstractVizMapperAction {
 			vmm.setNetworkView(targetView);
 			Cytoscape.redrawGraph(targetView);
 
-			vizMapperMainPanel.getPropertySheetPanel().removeProperty(prop);
+			propertySheetPanel.removeProperty(prop);
 
 			final VizMapperProperty newRootProp = new VizMapperProperty();
 
 			if (type.isNodeProp())
-				vizMapperMainPanel.buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
-				                                    .getCalculator(type), newRootProp,
-				                                 VizMapperMainPanel.NODE_VISUAL_MAPPING);
+				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+						vmm.getVisualStyle().getNodeAppearanceCalculator()
+								.getCalculator(type), newRootProp,
+						AbstractVizMapperPanel.NODE_VISUAL_MAPPING,
+						propertySheetPanel);
 			else
-				vizMapperMainPanel.buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
-				                                    .getCalculator(type), newRootProp,
-				                                 VizMapperMainPanel.EDGE_VISUAL_MAPPING);
+				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+						vmm.getVisualStyle().getEdgeAppearanceCalculator()
+								.getCalculator(type), newRootProp,
+						AbstractVizMapperPanel.EDGE_VISUAL_MAPPING,
+						propertySheetPanel);
 
-			vizMapperMainPanel.removeProperty(prop);
-			vizMapperMainPanel.getPropertyMap().get(vmm.getVisualStyle().getName()).add(newRootProp);
+			vizMapPropertySheetBuilder.removeProperty(prop);
+			vizMapPropertySheetBuilder.getPropertyMap().get(
+					vmm.getVisualStyle().getName()).add(newRootProp);
 
-			vizMapperMainPanel.expandLastSelectedItem(type.getName());
+			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
 		} else {
 			System.out.println("Invalid.");
 		}

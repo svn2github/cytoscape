@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,59 +33,23 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.vizmap.gui.internal.editors.discrete;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+package org.cytoscape.vizmap.gui.event;
 
-import javax.swing.JTextField;
-
-import org.cytoscape.vizmap.gui.VizMapperMainPanel;
-
-import com.l2fprod.common.beans.editor.DoublePropertyEditor;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+import java.beans.PropertyChangeEvent;
 
 
 /**
  *
  */
-public class CyDoublePropertyEditor extends DoublePropertyEditor {
-	private Object currentValue;
-	private Object selected;
-
+public class AttributeUpdateEventHandler extends VizMapEventHandler {
 	/**
-	 * Creates a new CyStringPropertyEditor object.
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
 	 */
-	public CyDoublePropertyEditor(final VizMapperMainPanel vmp) {
-		super();
-
-		((JTextField) editor).addFocusListener(new FocusListener() {
-				public void focusGained(FocusEvent e) {
-					final Item item = (Item) vmp.getSelectedItem();
-					selected = item.getProperty().getDisplayName();
-					setCurrentValue();
-				}
-
-				public void focusLost(FocusEvent arg0) {
-					checkChange();
-				}
-			});
-	}
-
-	private void setCurrentValue() {
-		this.currentValue = super.getValue();
-	}
-
-	private void checkChange() {
-		Number newValue = (Number) super.getValue();
-
-		if (newValue.doubleValue() <= 0) {
-			newValue = 0;
-			currentValue = 0;
-			((JTextField) editor).setText("0");
-			editor.repaint();
-		}
-
-		firePropertyChange(selected, newValue);
+	@Override
+	public void processEvent(PropertyChangeEvent e) {
+		vizMapPropertySheetBuilder.setAttrComboBox();
 	}
 }

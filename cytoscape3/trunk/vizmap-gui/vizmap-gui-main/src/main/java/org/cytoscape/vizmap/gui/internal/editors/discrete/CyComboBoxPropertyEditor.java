@@ -19,20 +19,31 @@ package org.cytoscape.vizmap.gui.internal.editors.discrete;
 
 import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
 
-import javax.swing.*;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 
 /**
  * ComboBoxPropertyEditor. <br>
  *
  */
-public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
+public class CyComboBoxPropertyEditor extends AbstractPropertyEditor implements PropertyChangeListener {
 	private final static long serialVersionUID = 120233986911049L;
+
 	/*
 	 * Color & Font theme
 	 */
@@ -42,13 +53,21 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 	private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private Object oldValue;
 	private Icon[] icons;
+	
+	private String editorName;
 
+	public CyComboBoxPropertyEditor() {
+		this(null);
+	}
+	
 	/**
 	 * Creates a new CyComboBoxPropertyEditor object.
 	 */
-	public CyComboBoxPropertyEditor() {
+	public CyComboBoxPropertyEditor(String editorName) {
+		this.editorName = editorName;
 		editor = new JComboBox() {
-	private final static long serialVersionUID = 1213748837100875L;
+				private final static long serialVersionUID = 1213748837100875L;
+
 				public void setSelectedItem(Object anObject) {
 					oldValue = getSelectedItem();
 					super.setSelectedItem(anObject);
@@ -63,15 +82,13 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 				}
 
 				public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-					
-					if(combo.getSelectedItem() == null && combo.getItemCount() != 0) {
+					if ((combo.getSelectedItem() == null) && (combo.getItemCount() != 0)) {
 						combo.setSelectedIndex(0);
 						CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
-                                combo.getItemAt(0));
-					} else 
-					CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
-					                                                 combo.getSelectedItem());
-					
+						                                                 combo.getItemAt(0));
+					} else
+						CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
+						                                                 combo.getSelectedItem());
 				}
 
 				public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
@@ -85,6 +102,7 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 				}
 			});
 		combo.setSelectedIndex(-1);
+		
 	}
 
 	/**
@@ -132,7 +150,8 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 	 */
 	public void setAvailableValues(Object[] values) {
 		((JComboBox) editor).setModel(new DefaultComboBoxModel(values));
-		if(((JComboBox) editor).getItemCount() != 0){
+
+		if (((JComboBox) editor).getItemCount() != 0) {
 			((JComboBox) editor).setSelectedIndex(0);
 		}
 	}
@@ -147,7 +166,8 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 	}
 
 	public class Renderer extends DefaultListCellRenderer {
-	private final static long serialVersionUID = 1213748837110925L;
+		private final static long serialVersionUID = 1213748837110925L;
+
 		public Component getListCellRendererComponent(JList list, Object value, int index,
 		                                              boolean isSelected, boolean cellHasFocus) {
 			Component component = super.getListCellRendererComponent(list,
@@ -166,7 +186,7 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 				component = new JLabel("Select Value!");
 				component.setForeground(SELECTED);
 				((JLabel) component).setFont(new Font("SansSerif", Font.BOLD, 12));
-			} else if(value == null && ((JComboBox) editor).getItemCount() != 0) {
+			} else if ((value == null) && (((JComboBox) editor).getItemCount() != 0)) {
 				component = new JLabel(((JComboBox) editor).getItemAt(0).toString());
 				component.setForeground(SELECTED);
 				((JLabel) component).setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -206,5 +226,12 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 		public int hashCode() {
 			return (value == null) ? 0 : value.hashCode();
 		}
+	}
+
+	public void propertyChange(PropertyChangeEvent e) {
+		if(e.getPropertyName().equals("UPDATE_COMBOBOX") && e.getOldValue().equals(editorName)) {
+			setAvailableValues((Object[]) e.getNewValue());
+		}
+		
 	}
 }

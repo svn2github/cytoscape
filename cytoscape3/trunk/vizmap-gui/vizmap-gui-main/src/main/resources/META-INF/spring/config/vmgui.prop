@@ -16,8 +16,8 @@ vizMapperMainPanel.menu.createLegendAction.icon=legendIcon
 vizMapperMainPanel.menu.generateMenu=Generate Discrete Values
 vizMapperMainPanel.menu.modifyMenu=Modify Discrete Values
 vizMapperMainPanel.menu.removeMappingAction=Delete mapping
+vizMapperMainPanel.menu.lockNodeSizeAction=Lock Node Width/Height
 
 # Icon names for right-click menu.
 vizMapperMainPanel.menu.removeMappingAction.icon=delIcon
 vizMapperMainPanel.menu.generateMenu.icon=rndIcon
-

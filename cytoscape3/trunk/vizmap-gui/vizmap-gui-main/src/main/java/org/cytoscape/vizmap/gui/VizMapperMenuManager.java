@@ -64,7 +64,7 @@ public class VizMapperMenuManager {
 	 * (non-Javadoc)
 	 * @see cytoscape.view.ServiceListener#onBind(java.lang.Object, java.util.Map)
 	 */
-	public void onBind(VizMapperAction action, Map properties) {
+	public void onBind(VizMapperUIAction action, Map properties) {
 		System.out.println("@@@@@@@@@@@@@@@@@@@@ binding service:");
 		if(generateValues == null && iconManager != null) {
 			// for value generators.
@@ -88,6 +88,6 @@ public class VizMapperMenuManager {
 		}
 	}
 
-	public void onUnbind(VizMapperAction service, Map properties) {
+	public void onUnbind(VizMapperUIAction service, Map properties) {
 	}
 }

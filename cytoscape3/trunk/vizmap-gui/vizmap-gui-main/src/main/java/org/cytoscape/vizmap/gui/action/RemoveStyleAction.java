@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.action;
 
 import java.awt.event.ActionEvent;
 
@@ -11,6 +11,11 @@ import org.cytoscape.vizmap.VisualStyle;
 import cytoscape.Cytoscape;
 
 public class RemoveStyleAction extends AbstractVizMapperAction {
+
+	public RemoveStyleAction() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	private static final long serialVersionUID = -916650015995966595L;
 
@@ -47,7 +52,7 @@ public class RemoveStyleAction extends AbstractVizMapperAction {
 					currentStyle.getName());
 			vizMapperMainPanel.switchVS(currentStyle.getName());
 			vizMapperMainPanel.getDefaultImageManager().remove(styleName);
-			vizMapperMainPanel.getPropertyMap().remove(styleName);
+			vizMapPropertySheetBuilder.getPropertyMap().remove(styleName);
 
 			vmm.setVisualStyle(currentStyle);
 			vmm.setVisualStyleForView(vmm.getNetworkView(), currentStyle);

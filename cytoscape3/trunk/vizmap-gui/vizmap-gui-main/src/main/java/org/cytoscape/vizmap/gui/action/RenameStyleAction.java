@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.action;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -12,6 +12,10 @@ import com.l2fprod.common.propertysheet.Property;
 public class RenameStyleAction extends AbstractVizMapperAction {
 
 	private static final long serialVersionUID = -3823557783901332855L;
+	
+	public RenameStyleAction() {
+		super();
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		final VisualStyle currentStyle = vmm.getVisualStyle();
@@ -48,9 +52,9 @@ public class RenameStyleAction extends AbstractVizMapperAction {
 		vizMapperMainPanel.getVsNameComboBox().setSelectedItem(name);
 		vizMapperMainPanel.getVsNameComboBox().removeItem(oldName);
 
-		final List<Property> props = vizMapperMainPanel.getPropertyMap().get(
+		final List<Property> props = vizMapPropertySheetBuilder.getPropertyMap().get(
 				oldName);
-		vizMapperMainPanel.getPropertyMap().put(name, props);
-		vizMapperMainPanel.getPropertyMap().remove(oldName);
+		vizMapPropertySheetBuilder.getPropertyMap().put(name, props);
+		vizMapPropertySheetBuilder.getPropertyMap().remove(oldName);
 	}
 }

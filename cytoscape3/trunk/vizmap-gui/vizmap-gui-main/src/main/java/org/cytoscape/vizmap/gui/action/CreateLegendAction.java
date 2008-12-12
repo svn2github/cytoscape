@@ -1,10 +1,17 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.action;
 
 import java.awt.event.ActionEvent;
+
+import org.cytoscape.vizmap.gui.LegendDialog;
 
 import cytoscape.util.SwingWorker;
 
 public class CreateLegendAction extends AbstractVizMapperAction {
+
+	public CreateLegendAction() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	private static final long serialVersionUID = 707566797144402515L;
 

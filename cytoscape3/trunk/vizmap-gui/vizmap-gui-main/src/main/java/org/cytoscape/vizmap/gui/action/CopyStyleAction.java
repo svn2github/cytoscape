@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.action;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -7,10 +7,16 @@ import javax.swing.JPanel;
 
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.gui.DefaultViewPanel;
 
 import cytoscape.Cytoscape;
 
 public class CopyStyleAction extends AbstractVizMapperAction {
+
+	public CopyStyleAction() {
+		super();
+
+	}
 
 	private static final long serialVersionUID = 1244735696944563618L;
 
@@ -25,7 +31,8 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 			System.err.println("Clone not supported exception!");
 		}
 
-		final String newName = vizMapperUtil.getStyleName(vizMapperMainPanel, clone);
+		final String newName = vizMapperUtil.getStyleName(vizMapperMainPanel,
+				clone);
 
 		if ((newName == null) || (newName.trim().length() == 0)) {
 			return;
@@ -40,13 +47,15 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 		final JPanel defPanel = defAppBldr.getDefaultView(newName);
 		final GraphView view = (GraphView) ((DefaultViewPanel) defPanel)
 				.getView();
-		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel().getSize();
+		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()
+				.getSize();
 
 		if (view != null) {
 			System.out.println("Creating Default Image for new visual style "
 					+ newName);
 			vizMapperMainPanel.updateDefaultImage(newName, view, panelSize);
-			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel.getDefaultImageManager().get(newName));
+			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
+					.getDefaultImageManager().get(newName));
 		}
 
 		vmm.setNetworkView(targetView);

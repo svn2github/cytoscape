@@ -85,7 +85,7 @@ public class VizMapListener implements PropertyChangeListener {
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == vmm.SAVE_VIZMAP_PROPS) {
+		if (e.getPropertyName() == VisualMappingManager.SAVE_VIZMAP_PROPS) {
 			// This section is for saving VS in a vizmap.props file.
 			// If signal contains no new value, Cytoscape consider it as a
 			// default file. Otherwise, save it as a user file.
@@ -108,13 +108,13 @@ public class VizMapListener implements PropertyChangeListener {
 				                          propertiesFile);
 				System.out.println("Vizmap saved to: " + propertiesFile);
 			}
-		} else if ((e.getPropertyName() == vmm.VIZMAP_RESTORED)
-		           || (e.getPropertyName() == vmm.VIZMAP_LOADED)) {
+		} else if ((e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED)
+		           || (e.getPropertyName() == VisualMappingManager.VIZMAP_LOADED)) {
 			// This section is for restoring VS from a file.
 
 			// only clear the existing vizmap.props if we're restoring
 			// from a session file
-			if (e.getPropertyName() == vmm.VIZMAP_RESTORED)
+			if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED)
 				CalculatorCatalogFactory.getCalculatorCatalog().clearProps();
 
 			// get the new vizmap.props and apply it the existing properties
@@ -134,7 +134,7 @@ public class VizMapListener implements PropertyChangeListener {
 				else if (vizmapSource.getClass() == String.class) {
 					// if its a RESTORED event the vizmap
 					// file will be in a zip file.
-					if (e.getPropertyName() == vmm.VIZMAP_RESTORED) {
+					if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED) {
 						is = ZipUtil.readFile((String) vizmapSource, ".*vizmap.props");
 
 						// if its a LOADED event the vizmap file
@@ -175,12 +175,4 @@ public class VizMapListener implements PropertyChangeListener {
 		this.vmm = vmm;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public VisualMappingManager getVmm() {
-		return vmm;
-	}
 }

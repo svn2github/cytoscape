@@ -34,34 +34,33 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.vizmap.gui;
-
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import cytoscape.Cytoscape;
-
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyNetwork;
-
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+package org.cytoscape.vizmap.gui.action;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.gui.VizMapperMainPanel;
+import org.cytoscape.vizmap.gui.VizMapperProperty;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
+
+import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+
+import cytoscape.Cytoscape;
+
 
 /**
  *
  */
-public class BrightnessListener extends AbstractVizMapperAction {
+public class ModifyBrightnessAction extends AbstractVizMapperAction {
 	private final static long serialVersionUID = 121374883775182L;
 	private DiscreteMapping dm;
 	protected static final int DARKER = 1;
@@ -73,7 +72,7 @@ public class BrightnessListener extends AbstractVizMapperAction {
 	 *
 	 * @param type  DOCUMENT ME!
 	 */
-	public BrightnessListener(final int type) {
+	public ModifyBrightnessAction(final int type) {
 		this.functionType = type;
 	}
 
@@ -87,13 +86,13 @@ public class BrightnessListener extends AbstractVizMapperAction {
 		/*
 		 * Check Selected poperty
 		 */
-		final int selectedRow = vizMapperMainPanel.getPropertySheetPanel().getTable()
+		final int selectedRow = propertySheetPanel.getTable()
 		                                          .getSelectedRow();
 
 		if (selectedRow < 0)
 			return;
 
-		final Item item = (Item) vizMapperMainPanel.getPropertySheetPanel().getTable()
+		final Item item = (Item) propertySheetPanel.getTable()
 		                                           .getValueAt(selectedRow, 0);
 		final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
 		final Object hidden = prop.getHiddenObject();
@@ -163,23 +162,23 @@ public class BrightnessListener extends AbstractVizMapperAction {
 			vmm.setNetworkView(targetView);
 			Cytoscape.redrawGraph(targetView);
 
-			vizMapperMainPanel.getPropertySheetPanel().removeProperty(prop);
+			propertySheetPanel.removeProperty(prop);
 
 			final VizMapperProperty newRootProp = new VizMapperProperty();
 
 			if (type.isNodeProp())
-				vizMapperMainPanel.buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
+				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
 				                                    .getCalculator(type), newRootProp,
-				                                 VizMapperMainPanel.NODE_VISUAL_MAPPING);
+				                                 VizMapperMainPanel.NODE_VISUAL_MAPPING, propertySheetPanel);
 			else
-				vizMapperMainPanel.buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
+				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
 				                                    .getCalculator(type), newRootProp,
-				                                 VizMapperMainPanel.EDGE_VISUAL_MAPPING);
+				                                 VizMapperMainPanel.EDGE_VISUAL_MAPPING, propertySheetPanel);
 
-			vizMapperMainPanel.removeProperty(prop);
-			vizMapperMainPanel.getPropertyMap().get(vmm.getVisualStyle().getName()).add(newRootProp);
+			vizMapPropertySheetBuilder.removeProperty(prop);
+			vizMapPropertySheetBuilder.getPropertyMap().get(vmm.getVisualStyle().getName()).add(newRootProp);
 
-			vizMapperMainPanel.expandLastSelectedItem(type.getName());
+			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
 		} else {
 			System.out.println("Invalid.");
 		}

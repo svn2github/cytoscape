@@ -1,6 +1,5 @@
-package org.cytoscape.vizmap.gui;
+package org.cytoscape.vizmap.gui.action;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,15 +7,13 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.annotation.Resource;
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.gui.VizMapperProperty;
 import org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
@@ -26,6 +23,11 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import cytoscape.Cytoscape;
 
 public class GenerateValueAction extends AbstractVizMapperAction {
+
+	public GenerateValueAction() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	private final static long serialVersionUID = 1213748836986412L;
 	
@@ -40,13 +42,13 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 	public void actionPerformed(ActionEvent e) {
 		
 		// Check Selected property
-		final int selectedRow = vizMapperMainPanel.getPropertySheetPanel().getTable()
+		final int selectedRow = propertySheetPanel.getTable()
 				.getSelectedRow();
 
 		if (selectedRow < 0)
 			return;
 
-		final Item item = (Item) vizMapperMainPanel.getPropertySheetPanel().getTable()
+		final Item item = (Item) propertySheetPanel.getTable()
 				.getValueAt(selectedRow, 0);
 		final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
 		final Object hidden = prop.getHiddenObject();
@@ -160,7 +162,7 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 			vmm.setNetworkView(targetNetworkView);
 			Cytoscape.redrawGraph(targetNetworkView);
 
-			vizMapperMainPanel.getPropertySheetPanel().removeProperty(prop);
+			propertySheetPanel.removeProperty(prop);
 
 //			final VizMapperProperty newRootProp = new VizMapperProperty();
 //
