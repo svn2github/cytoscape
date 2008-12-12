@@ -44,7 +44,7 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 		vmm.getCalculatorCatalog().addVisualStyle(clone);
 		vmm.setVisualStyle(clone);
 
-		final JPanel defPanel = defAppBldr.getDefaultView(newName);
+		final JPanel defPanel = defViewEditor.getDefaultView(newName);
 		final GraphView view = (GraphView) ((DefaultViewPanel) defPanel)
 				.getView();
 		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()

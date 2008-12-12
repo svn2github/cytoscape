@@ -94,7 +94,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	@Resource
 	protected CySwingApplication cytoscapeDesktop;
 	@Resource
-	protected DefaultAppearenceBuilder defAppBldr;
+	protected DefaultViewEditor defViewEditor;
 	@Resource
 	protected VisualMappingManager vmm;
 	@Resource
@@ -153,7 +153,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	protected static final long serialVersionUID = -6839011300709287662L;
 
 	public AbstractVizMapperPanel(CySwingApplication desktop,
-			DefaultAppearenceBuilder dab, IconManager iconMgr,
+			DefaultViewEditor defViewEditor, IconManager iconMgr,
 			ColorManager colorMgr, VisualMappingManager vmm,
 			VizMapperMenuManager menuMgr, EditorFactory editorFactory,
 			PropertySheetPanel propertySheetPanel,
@@ -161,7 +161,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 			VizMapEventHandlerManager vizMapEventHandlerManager, EditorWindowManager editorWindowManager) {
 
 		this.cytoscapeDesktop = desktop;
-		this.defAppBldr = dab;
+		this.defViewEditor = defViewEditor;
 		this.iconMgr = iconMgr;
 		this.colorMgr = colorMgr;
 		this.vmm = vmm;
@@ -463,5 +463,9 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 
 	public JComboBox getVsNameComboBox() {
 		return vsNameComboBox;
+	}
+	
+	public JPanel getDefaultViewPanel() {
+		return this.defaultViewImagePanel;
 	}
 }

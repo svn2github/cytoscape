@@ -63,6 +63,7 @@ import javax.swing.JPanel;
  */
 public class DefaultViewPanel extends JPanel {
 	private final static long serialVersionUID = 1202339876691085L;
+	
 	private static final int PADDING = 20;
 	private GraphView view;
 	private GraphView oldView;

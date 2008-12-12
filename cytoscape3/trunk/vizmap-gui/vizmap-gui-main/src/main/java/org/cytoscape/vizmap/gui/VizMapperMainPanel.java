@@ -100,7 +100,7 @@ import cytoscape.view.CySwingApplication;
  * <li>Visual Mapping Browser
  * </ul>
  * 
- * @version 0.6
+ * @version 0.8
  * @since Cytoscape 2.5
  * @author Keiichiro Ono
  * @param <syncronized>
@@ -130,20 +130,20 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * @param editorFactory
 	 */
 	public VizMapperMainPanel(CySwingApplication desktop,
-			DefaultAppearenceBuilder dab, IconManager iconMgr,
+			DefaultViewEditor defViewEditor, IconManager iconMgr,
 			ColorManager colorMgr, VisualMappingManager vmm,
 			VizMapperMenuManager menuMgr, EditorFactory editorFactory,
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager, EditorWindowManager editorWindowManager) {
-		super(desktop, dab, iconMgr, colorMgr, vmm, menuMgr, editorFactory,
+		super(desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr, editorFactory,
 				propertySheetPanel, vizMapPropertySheetBuilder,
 				vizMapEventHandlerManager, editorWindowManager);
 
-		buildVizMapperGUI();
+		initPanel();
 	}
 
-	private void buildVizMapperGUI() {
+	private void initPanel() {
 		vmm.addChangeListener(this);
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
@@ -272,7 +272,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		if (defImg == null) {
 			// Default image is not available in the buffer. Create a new one.
 			updateDefaultImage(vsName,
-					(GraphView) ((DefaultViewPanel) defAppBldr
+					(GraphView) ((DefaultViewPanel) defViewEditor
 							.getDefaultView(vsName)).getView(),
 					defaultViewImagePanel.getSize());
 			defImg = defaultImageManager.get(vsName);
@@ -315,7 +315,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		for (String name : vsNames) {
 			getVsNameComboBox().addItem(name);
-			defPanel = defAppBldr.getDefaultView(name);
+			defPanel = defViewEditor.getDefaultView(name);
 			view = (GraphView) ((DefaultViewPanel) defPanel).getView();
 
 			if (view != null)
@@ -416,37 +416,11 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		defaultImageButton.setIcon(new ImageIcon(defImage));
 		defaultViewImagePanel.add(defaultImageButton, BorderLayout.CENTER);
-		defaultImageButton.addMouseListener(new DefaultMouseListener());
+		defaultImageButton.addMouseListener(new DefaultViewMouseListener(vmm, this, defViewEditor));
 	}
 
 	public JPanel getDefaultPanel() {
 		return defaultViewImagePanel;
-	}
-
-	class DefaultMouseListener extends MouseAdapter {
-		public void mouseClicked(MouseEvent e) {
-			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
-				final CyNetwork net = vmm.getNetwork();
-
-				if (net == null)
-					return;
-
-				final String targetName = vmm.getVisualStyle().getName();
-				final Long focus = net.getSUID();
-
-				final DefaultViewPanel panel = (DefaultViewPanel) defAppBldr
-						.showDialog(null);
-				updateDefaultImage(targetName, (GraphView) panel.getView(),
-						defaultViewImagePanel.getSize());
-				setDefaultViewImagePanel(defaultImageManager.get(targetName));
-
-				vmm.setNetworkView(getTargetView());
-				vmm.setVisualStyle(targetName);
-
-				// cytoscapeDesktop.setFocus(focus);
-				// cytoscapeDesktop.repaint();
-			}
-		}
 	}
 
 	/**

@@ -44,7 +44,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.gui.DefaultAppearenceBuilder;
+import org.cytoscape.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.vizmap.gui.EditorWindowManager;
 import org.cytoscape.vizmap.gui.VizMapPropertySheetBuilder;
 import org.cytoscape.vizmap.gui.VizMapperMainPanel;
@@ -65,7 +65,7 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	@Resource
 	protected VizMapperUtil vizMapperUtil;
 	@Resource
-	protected DefaultAppearenceBuilder defAppBldr;
+	protected DefaultViewEditor defViewEditor;
 	@Resource
 	protected VisualMappingManager vmm;
 	@Resource
@@ -109,8 +109,8 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	 *
 	 * @param defAppBldr DOCUMENT ME!
 	 */
-	public void setDefaultAppearenceBuilder(DefaultAppearenceBuilder defAppBldr) {
-		this.defAppBldr = defAppBldr;
+	public void setDefaultAppearenceBuilder(DefaultViewEditor defViewEditor) {
+		this.defViewEditor = defViewEditor;
 	}
 
 	/**

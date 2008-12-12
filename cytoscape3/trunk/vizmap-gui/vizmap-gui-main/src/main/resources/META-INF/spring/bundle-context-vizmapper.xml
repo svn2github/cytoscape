@@ -77,7 +77,7 @@
 	</bean>
 
 	<bean name="defaultViewPanel" class="org.cytoscape.vizmap.gui.DefaultViewPanel"
-		scope="singleton" depends-on="vmmServiceRef">
+		scope="singleton">
 		<description>
 			Create default view panel.	
 		</description>
@@ -86,7 +86,7 @@
 		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
-	<bean name="defAppBldr" class="org.cytoscape.vizmap.gui.DefaultAppearenceBuilder"
+	<bean name="defViewEditor" class="org.cytoscape.vizmap.gui.DefaultViewEditor"
 		scope="singleton" depends-on="defaultViewPanel">
 		<constructor-arg ref="defaultViewPanel" />
 		<constructor-arg ref="editorFactory" />
@@ -94,8 +94,7 @@
 	</bean>
 
 
-	<bean name="vizMapperUtil" class="org.cytoscape.vizmap.gui.util.VizMapperUtil"
-		depends-on="vmmServiceRef"></bean>
+	<bean name="vizMapperUtil" class="org.cytoscape.vizmap.gui.util.VizMapperUtil" />
 
 
 	<!-- Menu commands for Vizmapper -->
@@ -158,8 +157,7 @@
 	<bean id="emptyBoxRenderer" class="javax.swing.table.DefaultTableCellRenderer" />
 	<bean id="filledBoxRenderer" class="javax.swing.table.DefaultTableCellRenderer" />
 
-	<bean id="propertySheetPanel"
-		class="com.l2fprod.common.propertysheet.PropertySheetPanel" />
+	<bean id="propertySheetPanel" class="com.l2fprod.common.propertysheet.PropertySheetPanel" />
 
 	<!-- Context Menu Commands -->
 	<bean name="removeMappingAction" class="org.cytoscape.vizmap.gui.action.RemoveMappingAction"
@@ -187,9 +185,9 @@
 
 	<bean name="vizMapperMainPanel" class="org.cytoscape.vizmap.gui.VizMapperMainPanel"
 		depends-on="colorMgr,
-		iconManager, defAppBldr, vizMapperUtil, menuManager, propertySheetPanel, editorWindowManager">
+		iconManager, defViewEditor, vizMapperUtil, menuManager, propertySheetPanel, editorWindowManager">
 		<constructor-arg ref="cytoscapeDesktopServiceRef" />
-		<constructor-arg ref="defAppBldr" />
+		<constructor-arg ref="defViewEditor" />
 		<constructor-arg ref="iconManager" />
 		<constructor-arg ref="colorMgr" />
 		<constructor-arg ref="vmmServiceRef" />

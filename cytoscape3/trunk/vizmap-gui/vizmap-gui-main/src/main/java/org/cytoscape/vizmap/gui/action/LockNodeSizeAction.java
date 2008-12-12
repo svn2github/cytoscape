@@ -143,7 +143,7 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 		final String targetName = vmm.getVisualStyle().getName();
 
 		vizMapperMainPanel.updateDefaultImage(targetName,
-		                                      (GraphView) ((DefaultViewPanel) defAppBldr
+		                                      (GraphView) ((DefaultViewPanel) defViewEditor
 		                                                                                                                                     .getDefaultView(targetName))
 		                                      .getView(),
 		                                      vizMapperMainPanel.getDefaultPanel().getSize());

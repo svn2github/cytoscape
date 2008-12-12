@@ -70,7 +70,6 @@ import org.cytoscape.vizmap.GlobalAppearanceCalculator;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.jdesktop.swingx.JXList;
@@ -98,8 +97,10 @@ import cytoscape.util.CyColorChooser;
  * @since Cytoscape 2.5
  * @author kono
  */
-public class DefaultAppearenceBuilder extends JDialog {
+public class DefaultViewEditor extends JDialog {
+	
 	private final static long serialVersionUID = 1202339876675416L;
+	
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
 	private VisualMappingManager vmm;
@@ -121,7 +122,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @param modal
 	 *            DOCUMENT ME!
 	 */
-	public DefaultAppearenceBuilder(final DefaultViewPanel mainView,
+	public DefaultViewEditor(final DefaultViewPanel mainView,
 	                                final EditorFactory editorFactory, VisualMappingManager vmm) {
 		super();
 		this.vmm = vmm;
