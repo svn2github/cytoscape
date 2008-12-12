@@ -1,3 +1,4 @@
+/*
 package Factory;
 
 
@@ -128,3 +129,4 @@ public class GroupHandler implements Guihandler{
 		return null;
 	}
 }
+*/

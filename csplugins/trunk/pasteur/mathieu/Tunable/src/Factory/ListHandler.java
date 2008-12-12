@@ -1,7 +1,9 @@
+
 package Factory;
 
 import TunableDefinition.*;
 
+import java.awt.List;
 import java.lang.reflect.*;
 
 import javax.swing.*;
@@ -17,7 +19,8 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 	Object o;
 	Tunable t;
 
-	JList list;
+	JList listIn;
+	List listOut=new List();
 	String[] data;
 	Object[] values;
 	Boolean multiselect;
@@ -27,29 +30,42 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 		this.f = f;
 		this.o = o;
 		this.t = t;
-		this.title=t.description();
-		if(t.flag()==4)this.multiselect=true;
-		this.data=t.data();
 	}
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();
 		try{
-			list = (JList) f.get(o);
+			listIn = (JList) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		list.setListData(data);
-		list.addListSelectionListener(this);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	
-		if(multiselect)list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		values = listIn.getSelectedValues();
+		DefaultListModel model = new DefaultListModel();
+		int pos=0;
+		for(Object ii : values){
+			model.add(pos,ii);
+			pos++;
+		}
+		
+		for(int i=0;i<3;i++){
+			listIn.setSelectedIndex(i);
+			System.out.println("listesortir:"+listIn.getSelectedValue());
+			listOut.add(listIn.getSelectedValue().toString());
+		}
+		//System.out.println("listesortir:"+listOut.getItem(0));
+
+		
+		//list.setListData(data);
+		//list.addListSelectionListener(this);
+		//list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	
+		//if(multiselect)list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		pane.add(new JLabel(title));
-		pane.add(new JScrollPane(list));
+		//pane.add(new JScrollPane(list));
 		return pane;
 	}
 	
 	public void handle(){
-		list.setListData(values);	
+		//list.setListData(values);	
 		try{
-			f.set(o, list);
+		//	f.set(o, list);
 		}catch(Exception e){e.printStackTrace();}	
 		
 	}
@@ -59,9 +75,9 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 		JPanel resultpane = new JPanel();
 		if(values!=null){
 			try{
-				list = (JList) f.get(o);
+		//		list = (JList) f.get(o);
 			}catch(Exception e){e.printStackTrace();}
-			resultpane.add(new JScrollPane(list));
+			//resultpane.add(new JScrollPane(list));
 		}
 		return resultpane;
 	}
@@ -69,7 +85,7 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 	
 	@Override
 	public void valueChanged(ListSelectionEvent event) {
-		values = list.getSelectedValues();
+	//	values = list.getSelectedValues();
 		}
 
 	@Override
@@ -77,27 +93,22 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 		return t;
 	}
 
-	@Override
+
 	public JPanel update() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
-	@Override
 	public void cancel() {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+
 	public Field getField() {
-		// TODO Auto-generated method stub
-		return null;
+		return f;
 	}
 
-	@Override
 	public Object getObject() {
-		// TODO Auto-generated method stub
-		return null;
+		return o;
 	}
 }

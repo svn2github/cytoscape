@@ -3,6 +3,8 @@ package Factory;
 import java.lang.reflect.*;
 import javax.swing.*;
 import java.awt.Color;
+
+import Command.BoundedInteger;
 import GuiInterception.Guihandler;
 import TunableDefinition.Tunable;
 import TunableDefinition.Tunable.Param;
@@ -10,7 +12,7 @@ import Properties.PropertiesImpl;
 import Slider.*;
 
 
-public class IntegerHandler implements Guihandler{
+public class BoundedIntegerHandler implements Guihandler{
 	
 	Field f;
 	Tunable t;
@@ -18,44 +20,74 @@ public class IntegerHandler implements Guihandler{
 	JTextField jtf;
 	MySlider slider;
 	
+	Boolean useslider=false;
 	String title;
+	Integer upperbound;
+	Integer lowerbound;
 	String value;
 	Boolean available;
 	Integer i;
 
+	BoundedInteger input;
+	BoundedInteger output;
 	
 	
-	public IntegerHandler(Field f, Object o, Tunable t){
+	public BoundedIntegerHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.t=t;
 		this.o=o;
 		this.available=t.available();
-		try{
-			this.value=f.get(o).toString();
-		}catch(Exception e){e.printStackTrace();}
 		this.title=f.getName();
+		try{
+			this.input = (BoundedInteger) f.get(o);
+		}catch(Exception e){e.printStackTrace();}
+		
+		this.lowerbound =input.getLowerBound();
+		this.upperbound = input.getUpperBound();
+		if(t.flag()==Param.UseSlider)this.useslider=true;
 	}
 	
 	
 	public void handle(){
-		i = Integer.parseInt(jtf.getText());
-
-		if(available!=true) i=Integer.parseInt(value);
+		if(useslider==true){
+			Number s = slider.getValue();
+			i = s.intValue();
+		}
+		else i = Integer.parseInt(jtf.getText());
+		if(i>= lowerbound && i<=upperbound){
+			output = new BoundedInteger(i,lowerbound,upperbound,true,true);
+			try {
+				if (i != null) f.set(o,output);
+			} catch (Exception e) { e.printStackTrace();}
+		}
+		else{
+			output = new BoundedInteger(input.getValue(),lowerbound,upperbound,true,true);
+			try {
+				if (i != null) f.set(o,output);
+			} catch (Exception e) { e.printStackTrace();}
+		}
 		
-		try {
-			if (i != null) f.set(o,i);
-		} catch (Exception e) { e.printStackTrace();}
 	}
 
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();
-		jtf = new JTextField(value);
-		if(available!=true){
-			jtf.setEnabled(false);
-			jtf.setBackground(Color.GRAY);
-		}			
-		pane.add(jtf);
+		try{
+			if(available==true){
+				if(useslider==true  && lowerbound!=null && upperbound!=null){
+						slider = new MySlider(title,lowerbound.intValue(),upperbound.intValue(),input.getValue().doubleValue());
+						pane.add(slider);			
+				}
+			}
+			else{
+				jtf = new JTextField(value);
+				jtf.setEnabled(false);
+				jtf.setBackground(Color.GRAY);
+				//pane.add(new JLabel(title));
+				pane.add(jtf);
+			}
+			
+		}catch (Exception e){e.printStackTrace();}
 		return pane;
 	}
 	
@@ -78,19 +110,21 @@ public class IntegerHandler implements Guihandler{
 
 
 	public void cancel(){
-		i = Integer.parseInt(value);
 		try{
-			f.set(o, i);
+			f.set(o, f.get(o));
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
 	
 	
 	public JPanel update(){
-		i = Integer.parseInt(jtf.getText());
-		if(available!=true)		i = Integer.parseInt(value);
-		jtf= new JTextField(i.toString());
+		if(available==true){
+			Number s = slider.getValue();
+			i = s.intValue();
+		}
+		else i = Integer.parseInt(value);
 		JPanel result = new JPanel();
+		jtf= new JTextField(i.toString());
 		result.add(jtf);
 		return result;
 	}

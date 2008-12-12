@@ -13,5 +13,4 @@ public interface HandlerFactory<H extends Handler>{
 	
 	 H getHandlerType(Field f, Object o, Tunable t);
 	 
-	
 }

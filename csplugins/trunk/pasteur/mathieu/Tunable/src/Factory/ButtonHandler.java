@@ -1,3 +1,4 @@
+/*
 package Factory;
 
 import GuiInterception.*;
@@ -129,3 +130,4 @@ public class ButtonHandler implements Guihandler,ActionListener{
 	}
 
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package Factory;
 
 
@@ -91,3 +92,4 @@ public class StringHandler implements Guihandler{
 	
 
 }
+*/

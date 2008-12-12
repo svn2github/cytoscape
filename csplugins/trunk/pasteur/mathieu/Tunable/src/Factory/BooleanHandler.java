@@ -1,3 +1,4 @@
+/*
 package Factory;
 
 
@@ -105,3 +106,4 @@ public class BooleanHandler implements Guihandler{
 		return o;
 	}
 }
+*/

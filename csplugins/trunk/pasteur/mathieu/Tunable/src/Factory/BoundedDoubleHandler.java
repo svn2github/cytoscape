@@ -1,20 +1,21 @@
-/*
 package Factory;
 
 
 import java.awt.Color;
 import java.lang.reflect.*;
-
 import javax.swing.*;
 import GuiInterception.Guihandler;
 import TunableDefinition.Tunable;
+import TunableDefinition.Tunable.Param;
+
 import java.lang.Object;
 import Properties.PropertiesImpl;
 import Slider.*;
+import Command.*;
 
 
 
-public class DoubleHandler implements Guihandler{
+public class BoundedDoubleHandler implements Guihandler{
 	
 	Field f;
 	Tunable t;
@@ -24,27 +25,27 @@ public class DoubleHandler implements Guihandler{
 	
 	Double upperbound;
 	Double lowerbound;
-	String value;
+	Double value;
 	String title;
 	Boolean useslider;
 	Boolean available;
 	Double handlevalue;
-
+	BoundedDouble input;
+	BoundedDouble output;
 	
-	
-	public DoubleHandler(Field f, Object o, Tunable t){
+	public BoundedDoubleHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.t=t;
 		this.o=o;
-		this.value=t.value();
 		try{
-			f.set(o,Double.parseDouble(value));
+			this.input=(BoundedDouble) f.get(o);	
 		}catch(Exception e){e.printStackTrace();}
-		this.title=t.description();
+		this.title=f.getName();
+		this.value=input.getValue();
 		this.available=t.available();
-		this.upperbound=t.upperbound();
-		this.lowerbound=t.lowerbound();
-		if(t.flag()==8)this.useslider=true;
+		this.upperbound=input.getUpperBound();
+		this.lowerbound=input.getLowerBound();
+		if(t.flag()==Param.UseSlider)this.useslider=true;
 	}
 	
 	
@@ -53,9 +54,10 @@ public class DoubleHandler implements Guihandler{
 			Number s = slider.getValue();
 			handlevalue = s.doubleValue();
 		}
-		else handlevalue = Double.parseDouble(value);
+		else handlevalue = value;
 		try {
-			if ( handlevalue != null ) f.set(o,handlevalue);
+			output = new BoundedDouble(handlevalue,lowerbound,upperbound,true,true);
+			if ( handlevalue != null ) f.set(o,output);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 
@@ -66,12 +68,12 @@ public class DoubleHandler implements Guihandler{
 		try{
 			if(available==true){
 				if(useslider==true  && lowerbound!=null && upperbound!=null){				
-					slider = new MySlider(title,lowerbound.doubleValue(),upperbound.doubleValue(),Double.parseDouble(f.get(o).toString()));
+					slider = new MySlider(title,lowerbound.doubleValue(),upperbound.doubleValue(),value.doubleValue());
 					pane.add(slider);
 				}
 			}
 			else{
-				jtf = new JTextField(value);
+				jtf = new JTextField(value.toString());
 				jtf.setEnabled(false);
 				jtf.setBackground(Color.GRAY);
 			}
@@ -100,7 +102,7 @@ public class DoubleHandler implements Guihandler{
 			Number s = slider.getValue();
 			handlevalue = s.doubleValue();
 		}
-		else handlevalue = Double.parseDouble(value);
+		else handlevalue =value;
 		jtf = new JTextField(handlevalue.toString());
 		JPanel result = new JPanel();
 		result.add(jtf);
@@ -109,8 +111,9 @@ public class DoubleHandler implements Guihandler{
 	
 	
 	public void cancel(){
+		output = new BoundedDouble(value,lowerbound,upperbound,true,true);
 		try{
-			f.set(o,Double.parseDouble(value));
+			f.set(o,output);
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
@@ -130,4 +133,3 @@ public class DoubleHandler implements Guihandler{
 		return o;
 	}
 }
-*/

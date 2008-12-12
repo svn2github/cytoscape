@@ -45,8 +45,8 @@ public class ProcessingTunableList{
 		
 			for(Handler guihandler : list){
 				
-				if(((Guihandler)guihandler).getClass()==GroupHandler.class)
-					continue;
+				//if(((Guihandler)guihandler).getClass()==GroupHandler.class)
+					//continue;
 				properties.setAll(((Guihandler)guihandler).getTunable(),((Guihandler)guihandler).getObject(),((Guihandler)guihandler).getField());
 				properties.add();
 				
@@ -100,7 +100,7 @@ public class ProcessingTunableList{
 				resultframe = new JFrame("ResultFrame");
 				resultpane = new JPanel();
 				for(Handler guihandler : list){
-					if(((Guihandler)guihandler).getClass()==GroupHandler.class) continue;
+					//if(((Guihandler)guihandler).getClass()==GroupHandler.class) continue;
 					panes = ((Guihandler) guihandler).update(); // A VERIFIER SI UPDATE
 					//((Guihandler) guihandler).handle();
 					resultpane.add(panes);
@@ -118,32 +118,31 @@ public class ProcessingTunableList{
 		
 			if(command.equals("save")){
 				for(Handler guihandler : list){
-					if(guihandler.getClass()!=GroupHandler.class){
+					//if(guihandler.getClass()!=GroupHandler.class){
 						((Guihandler) guihandler).handle();
-						
-					}
+					//}
 				}
 			properties.saveProperties(prop);
-			resultframe = new JFrame("SavedValues");
-			resultframe.setContentPane(properties.getSavedValue());
-			resultframe.pack();
-			resultframe.setLocation(200, 300);
-			resultframe.setVisible(true);
+			//resultframe = new JFrame("SavedValues");
+			//resultframe.setContentPane(properties.getSavedValue());
+			//resultframe.pack();
+			//resultframe.setLocation(200, 300);
+			//resultframe.setVisible(true);
 			}
 			
 			
 			if(command.equals("cancel")){
 				for(Handler guihandler : list){
-					if(guihandler.getClass()!=GroupHandler.class){
+				//	if(guihandler.getClass()!=GroupHandler.class){
 						((Guihandler) guihandler).cancel();
-					}
+					//}
 				}
 				properties.revertProperties();
-				resultframe = new JFrame("DefaultValues = Values canceled");
-				resultframe.setContentPane(properties.getDefaultValue());
-				resultframe.pack();
-				resultframe.setLocation(200, 400);
-				resultframe.setVisible(true);
+				//resultframe = new JFrame("DefaultValues = Values canceled");
+				//resultframe.setContentPane(properties.getDefaultValue());
+				//resultframe.pack();
+				//resultframe.setLocation(200, 400);
+				//resultframe.setVisible(true);
 			}
 			
 			

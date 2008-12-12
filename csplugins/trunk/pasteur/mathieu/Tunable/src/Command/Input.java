@@ -1,7 +1,11 @@
 package Command;
 
 
-import TunableDefinition.Tunable;
+import java.awt.List;
+import java.util.Vector;
+
+import TunableDefinition.*;
+import TunableDefinition.Tunable.Param;
 import javax.swing.*;
 
 
@@ -19,23 +23,21 @@ public class Input implements Command {
 	final public static int BUTTON = 8;
 	final public static int LIST2 = 9;
 	
-	// Flags
-	final public static int NoInput = 0x1;
-	final public static int NumericAttribute = 0x2;
-	final public static int MultiSelect = 0x4;
-	final public static int UseSlider = 0x8;
+
+	@Tunable(description="try with integer", type=Integer.class,flag=Param.Nothing)
+	public Integer integer1 = new Integer(10);
 	
-	// Available
-	final public static boolean True=true;
-	final public static boolean False=false;
-		
+	@Tunable(description="try with boundedinteger", type=BoundedInteger.class,flag=Param.UseSlider)
+	public BoundedInteger integer2 = new BoundedInteger(new Integer(50),new Integer(10),new Integer(200),new Boolean(true),new Boolean(true));
 	
-	//ADD LISTSCROLLER IF "MULTISELECT" FOR LIST AND ATTRIBUTES
+	@Tunable(description="try with boundeddouble", type=BoundedDouble.class,flag=Param.UseSlider)
+	public BoundedDouble double1 = new BoundedDouble(new Double(15.4),new Double(0.0),new Double(200.0),new Boolean(true),new Boolean(true));
+	
+	//@Tunable(description="try with list", type=JList.class, flag=Param.MultiSelect)
+	//public JList list = new JList(new Object[] {"d","d","f"});
 	
 	
-	@Tunable(description="Integer", flag=UseSlider, type=INTEGER, available=True, lowerbound=0, upperbound=200, data={}, value="10")
-	public Integer integer1;
-	
+	/*
 	@Tunable(description="Integer", flag=UseSlider, type=INTEGER, available=True, lowerbound=0, upperbound=200, data={}, value="15")
 	public Integer integer2;
 	
@@ -63,7 +65,7 @@ public class Input implements Command {
 	@Tunable(description="Group", flag=NoInput, type=GROUP, available=True, lowerbound=0, upperbound=200, data={}, value="")
 	public Integer Group4;
 	
-	/*
+	
 	@Tunable(description="Button", flag=NoInput, type=BUTTON, available=True, lowerbound=0, upperbound=200, data={}, value="false")
 	public JButton T4 = new JButton();
 	
