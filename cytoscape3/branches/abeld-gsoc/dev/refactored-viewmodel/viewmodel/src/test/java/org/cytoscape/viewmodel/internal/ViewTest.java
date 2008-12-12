@@ -75,12 +75,36 @@ public class ViewTest extends TestCase {
 	public void testGetDefaultVisualProperty() {
 		Color c = view.getVisualProperty(nodeColor);
 		assertEquals( "expect color blue", Color.BLUE, c );
+
+		Double d = view.getVisualProperty(edgeWidth);
+		assertEquals( "expect 1.0",  Double.valueOf(1.0), d );
 	}
 
 	public void testSetVisualProperty() {
 		view.setVisualProperty(nodeColor,Color.RED);
 		Color c = view.getVisualProperty(nodeColor);
 		assertEquals( "expect color red",  Color.RED, c );
+
+		view.setVisualProperty(edgeWidth,Double.valueOf(3.0));
+		Double d = view.getVisualProperty(edgeWidth);
+		assertEquals( "expect 3.0",  Double.valueOf(3.0), d );
+	}
+
+	public void testNullSetVisualProperty() {
+		try {
+		view.setVisualProperty(null,Color.RED);
+		} catch ( NullPointerException npe ) {
+			return;	
+		}
+		fail("didn't catch NullPointerException as expected");
+	}
+
+	// TODO Is this right?  Should we allow null visual property values or
+	// should we return the default?
+	public void testSetNullVisualProperty() {
+		view.setVisualProperty(nodeColor,null);
+		Color c = view.getVisualProperty(nodeColor);
+		assertNull( c ); 
 	}
 
 	public void testSetValueLock() {

@@ -48,12 +48,13 @@ import java.util.HashMap;
  * Think of it as a row in the viewmodel table.  
  */
 public class RowOrientedViewImpl<S> implements View<S>  {
-    private S source;
-    private HashMap vpValues;
+    private final S source;
+    private final HashMap<VisualProperty,Object> vpValues;
     // note: this surely could be done more effiiently...:
-    private HashMap<VisualProperty, Boolean> bypassLocks;
+    private final HashMap<VisualProperty,Boolean> bypassLocks;
 
-    private long suid;
+    private final long suid;
+    private static final String VP_IS_NULL = "VisualProperty is null";
     
     public RowOrientedViewImpl(S source){
 	suid = IdFactory.getNextSUID();
@@ -71,9 +72,10 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 * @param o  DOCUMENT ME!
 	 */
     public <T> void setVisualProperty(VisualProperty<T> vp, T o){
-		Boolean b = bypassLocks.get(vp);
-		if ( b == null || !b.booleanValue() )
-			vpValues.put(vp, o);
+	if ( vp == null ) throw new NullPointerException(VP_IS_NULL);
+	Boolean b = bypassLocks.get(vp);
+	if ( b == null || !b.booleanValue() )
+		vpValues.put(vp, o);
     }
 
 	/**
@@ -86,11 +88,11 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 * @return  DOCUMENT ME!
 	 */
     public <T> T getVisualProperty(VisualProperty<T> vp){
-		T ret = (T) vpValues.get(vp);
-		if ( ret == null )
-			return vp.getDefault();
-		else
-			return ret;
+	if ( vp == null ) throw new NullPointerException(VP_IS_NULL);
+	if ( vpValues.containsKey( vp ) )
+		return (T) vpValues.get(vp);
+	else
+		return vp.getDefault();
     }
 
 	/**
@@ -126,6 +128,7 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 * @return  DOCUMENT ME!
 	 */
 	public void setValueLock(VisualProperty<?> vp, boolean setLock){
+	    if ( vp == null ) throw new NullPointerException(VP_IS_NULL);
 	    bypassLocks.put(vp, new Boolean(setLock));
 	}
 
@@ -134,6 +137,7 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 * @returns true if current VisualProperty value should not be modified
 	 */
 	public boolean isValueLocked(VisualProperty<?> vp){
+	    if ( vp == null ) throw new NullPointerException(VP_IS_NULL);
 	    Boolean value = bypassLocks.get(vp);
 	    if (value == null){
 		return false;
