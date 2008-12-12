@@ -459,7 +459,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
  	 * @param dialog the settings dialog
  	 */
 	private void createPopup(Object view, ChemInfoSettingsDialog dialog) {
-    CreatePopupTask loader = new CreatePopupTask(view, dialog);
+    CreatePopupTask loader = new CreatePopupTask(view, dialog, dialog.getMaxCompounds());
 		TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
   }
 
@@ -470,7 +470,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
  	 * @param dialog the settings dialog
  	 */
 	private void createTable(Collection<GraphObject>selection, ChemInfoSettingsDialog dialog) {
-		CreateCompoundTableTask loader = new CreateCompoundTableTask(selection, dialog);
+		CreateCompoundTableTask loader = new CreateCompoundTableTask(selection, dialog, dialog.getMaxCompounds());
 		TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 	}
 
