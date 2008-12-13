@@ -273,7 +273,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		if (defImg == null) {
 			// Default image is not available in the buffer. Create a new one.
 			updateDefaultImage(vsName,
-					(GraphView) ((DefaultViewPanel) defViewEditor
+					(GraphView) ((DefaultViewPanelImpl) defViewEditor
 							.getDefaultView(vsName)).getView(),
 					defaultViewImagePanel.getSize());
 			defImg = defaultImageManager.get(vsName);
@@ -317,7 +317,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		for (String name : vsNames) {
 			getVsNameComboBox().addItem(name);
 			defPanel = defViewEditor.getDefaultView(name);
-			view = (GraphView) ((DefaultViewPanel) defPanel).getView();
+			view = (GraphView) ((DefaultViewPanelImpl) defPanel).getView();
 
 			if (view != null)
 				updateDefaultImage(name, view, panelSize);

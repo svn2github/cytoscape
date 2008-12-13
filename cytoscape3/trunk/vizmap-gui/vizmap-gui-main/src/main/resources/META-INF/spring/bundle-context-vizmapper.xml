@@ -76,7 +76,7 @@
 		<property name="generateIconId" value="${vizMapperMainPanel.menu.generateMenu.icon}" />
 	</bean>
 
-	<bean name="defaultViewPanel" class="org.cytoscape.vizmap.gui.internal.DefaultViewPanel"
+	<bean name="defaultViewPanel" class="org.cytoscape.vizmap.gui.internal.DefaultViewPanelImpl"
 		scope="singleton">
 		<description>
 			Create default view panel.	

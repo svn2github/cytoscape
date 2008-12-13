@@ -61,7 +61,7 @@ import javax.swing.JPanel;
  * @since Cytoscape 2.5
  * @author kono
  */
-public class DefaultViewPanel extends JPanel {
+public class DefaultViewPanelImpl extends JPanel {
 	private final static long serialVersionUID = 1202339876691085L;
 	
 	private static final int PADDING = 20;
@@ -89,7 +89,7 @@ public class DefaultViewPanel extends JPanel {
 	 * @param cyNetworkFactory  DOCUMENT ME!
 	 * @param graphViewFactory  DOCUMENT ME!
 	 */
-	public DefaultViewPanel(CyNetworkFactory cyNetworkFactory, GraphViewFactory graphViewFactory, VisualMappingManager vmm) {
+	public DefaultViewPanelImpl(CyNetworkFactory cyNetworkFactory, GraphViewFactory graphViewFactory, VisualMappingManager vmm) {
 		this.cyNetworkFactory = cyNetworkFactory;
 		this.graphViewFactory = graphViewFactory;
 		this.vmm = vmm;

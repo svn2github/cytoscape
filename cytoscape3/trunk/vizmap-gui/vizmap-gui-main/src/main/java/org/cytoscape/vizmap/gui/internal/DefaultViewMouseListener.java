@@ -33,7 +33,7 @@ public class DefaultViewMouseListener extends MouseAdapter {
 			final String targetName = vmm.getVisualStyle().getName();
 			final Long focus = net.getSUID();
 
-			final DefaultViewPanel panel = (DefaultViewPanel) defViewEditor
+			final DefaultViewPanelImpl panel = (DefaultViewPanelImpl) defViewEditor
 					.showEditor(null);
 			vizMapperMainPanel.updateDefaultImage(targetName, (GraphView) panel.getView(),
 					vizMapperMainPanel.getDefaultViewPanel().getSize());

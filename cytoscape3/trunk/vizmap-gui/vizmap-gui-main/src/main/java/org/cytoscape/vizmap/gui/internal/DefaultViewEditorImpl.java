@@ -123,7 +123,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	 * @param modal
 	 *            DOCUMENT ME!
 	 */
-	public DefaultViewEditorImpl(final DefaultViewPanel mainView,
+	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
 	                                final EditorFactory editorFactory, VisualMappingManager vmm) {
 		super();
 		this.vmm = vmm;
@@ -415,7 +415,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	private org.jdesktop.swingx.JXTitledPanel jXTitledPanel1;
 
 	// End of variables declaration
-	protected DefaultViewPanel mainView;
+	protected DefaultViewPanelImpl mainView;
 
 	// End of variables declaration
 	private JPanel getPanel() {

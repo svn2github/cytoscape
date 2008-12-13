@@ -44,7 +44,7 @@ import javax.swing.JMenuItem;
 
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.gui.internal.DefaultViewPanel;
+import org.cytoscape.vizmap.gui.internal.DefaultViewPanelImpl;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 
 import com.l2fprod.common.propertysheet.Property;
@@ -143,7 +143,7 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 		final String targetName = vmm.getVisualStyle().getName();
 
 		vizMapperMainPanel.updateDefaultImage(targetName,
-		                                      (GraphView) ((DefaultViewPanel) defViewEditor
+		                                      (GraphView) ((DefaultViewPanelImpl) defViewEditor
 		                                                                                                                                     .getDefaultView(targetName))
 		                                      .getView(),
 		                                      vizMapperMainPanel.getDefaultPanel().getSize());

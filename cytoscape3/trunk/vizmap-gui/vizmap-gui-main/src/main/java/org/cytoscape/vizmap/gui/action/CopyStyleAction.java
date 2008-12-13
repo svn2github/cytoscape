@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.gui.internal.DefaultViewPanel;
+import org.cytoscape.vizmap.gui.internal.DefaultViewPanelImpl;
 
 import cytoscape.Cytoscape;
 
@@ -45,7 +45,7 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 		vmm.setVisualStyle(clone);
 
 		final JPanel defPanel = defViewEditor.getDefaultView(newName);
-		final GraphView view = (GraphView) ((DefaultViewPanel) defPanel)
+		final GraphView view = (GraphView) ((DefaultViewPanelImpl) defPanel)
 				.getView();
 		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()
 				.getSize();
