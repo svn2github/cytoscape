@@ -36,6 +36,9 @@ package clusterMaker.ui;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +64,7 @@ import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 
 // Giny imports
 import giny.model.Node;
@@ -86,7 +90,10 @@ import clusterMaker.treeview.model.TreeViewModel;
  * The ClusterViz class provides the primary interface to the
  * Cytoscape plugin mechanism
  */
-public class TreeView extends TreeViewApp implements Observer, GraphViewChangeListener, ClusterViz {
+public class TreeView extends TreeViewApp implements Observer, 
+                                                     GraphViewChangeListener, 
+                                                     PropertyChangeListener, 
+                                                     ClusterViz {
 	private URL codeBase = null;
 	private ViewFrame viewFrame = null;
 	protected TreeSelectionI geneSelection = null;
@@ -186,6 +193,12 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 		myView = Cytoscape.getCurrentNetworkView();
 		myNetwork = Cytoscape.getCurrentNetwork();
 		myView.addGraphViewChangeListener(this);
+
+		// Set up to listen for changes in the network view
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().
+		                       addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUS, this);
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().
+		                       addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 	}
 
 	public void update(Observable o, Object arg) {
@@ -267,6 +280,27 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 			// that range
 			Set<CyEdge> edges = myNetwork.getSelectedEdges();
 			setEdgeSelection(edges, true);
+		}
+	}
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ( evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ||
+		     evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED ) {
+
+			// The user has changed the network view -- we want to switch our
+			// view to go along with it
+
+			// Remove our listener from this network
+			myView.removeGraphViewChangeListener(this);
+
+			// Switch to the new network view
+			myView = Cytoscape.getNetworkView((String)evt.getNewValue());
+
+			// Get the network for this view
+			myNetwork = myView.getNetwork();
+
+			// Add ourselves to the new network as a listener
+			myView.addGraphViewChangeListener(this);
 		}
 	}
 
