@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui.event;
+package org.cytoscape.vizmap.gui.internal.event;
 
 import java.beans.PropertyChangeEvent;
 
@@ -7,7 +7,7 @@ import org.cytoscape.vizmap.VisualStyle;
 import cytoscape.Cytoscape;
 import cytoscape.view.NetworkPanel;
 
-public class ViewFocusEventHandler extends VizMapEventHandler {
+public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 
 	@Override
 	public void processEvent(PropertyChangeEvent e) {

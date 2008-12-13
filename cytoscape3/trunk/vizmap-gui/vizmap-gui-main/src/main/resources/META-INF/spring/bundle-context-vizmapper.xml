@@ -175,7 +175,9 @@
 
 	<bean id="vizMapPropertyBuilder" class="org.cytoscape.vizmap.gui.internal.VizMapPropertyBuilder" />
 	<bean id="vizMapEventHandlerManager"
-		class="org.cytoscape.vizmap.gui.event.VizMapEventHandlerManager" />
+		class="org.cytoscape.vizmap.gui.internal.event.VizMapEventHandlerManagerImpl">
+		<constructor-arg ref="vizMapPropertySheetBuilder" />
+	</bean>
 
 	<bean id="editorWindowManager" class="org.cytoscape.vizmap.gui.internal.EditorWindowManager">
 		<constructor-arg ref="editorFactory" />

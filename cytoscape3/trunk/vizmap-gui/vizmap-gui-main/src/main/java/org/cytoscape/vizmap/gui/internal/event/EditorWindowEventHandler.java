@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui.event;
+package org.cytoscape.vizmap.gui.internal.event;
 
 import java.beans.PropertyChangeEvent;
 
@@ -8,7 +8,7 @@ import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.gui.internal.EditorWindowManager;
 
-public class EditorWindowEventHandler extends VizMapEventHandler {
+public class EditorWindowEventHandler extends AbstractVizMapEventHandler {
 	
 	@Resource
 	EditorWindowManager editorWindowManager;

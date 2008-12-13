@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui.event;
+package org.cytoscape.vizmap.gui.internal.event;
 
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.Constructor;
@@ -26,7 +26,7 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
 import cytoscape.Cytoscape;
 
-public class CellEditorEventHandler extends VizMapEventHandler {
+public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 	// Keeps current discrete mappings. NOT PERMANENT
 	protected final Map<String, Map<Object, Object>> discMapBuffer;

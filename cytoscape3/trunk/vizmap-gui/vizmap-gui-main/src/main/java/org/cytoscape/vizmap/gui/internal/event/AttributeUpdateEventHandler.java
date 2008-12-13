@@ -34,15 +34,22 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.vizmap.gui.event;
+package org.cytoscape.vizmap.gui.internal.event;
 
 import java.beans.PropertyChangeEvent;
+
+import org.cytoscape.vizmap.gui.internal.VizMapPropertySheetBuilder;
 
 
 /**
  *
  */
-public class AttributeUpdateEventHandler extends VizMapEventHandler {
+public class AttributeUpdateEventHandler extends AbstractVizMapEventHandler {
+	
+	public AttributeUpdateEventHandler(VizMapPropertySheetBuilder vizMapPropertySheetBuilder) {
+		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
+	}
+	
 	/**
 	 *  DOCUMENT ME!
 	 *

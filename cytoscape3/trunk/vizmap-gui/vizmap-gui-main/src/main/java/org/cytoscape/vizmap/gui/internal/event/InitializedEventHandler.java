@@ -1,8 +1,8 @@
-package org.cytoscape.vizmap.gui.event;
+package org.cytoscape.vizmap.gui.internal.event;
 
 import java.beans.PropertyChangeEvent;
 
-public class InitializedEventHandler extends VizMapEventHandler {
+public class InitializedEventHandler extends AbstractVizMapEventHandler {
 
 	@Override
 	public void processEvent(PropertyChangeEvent e) {
