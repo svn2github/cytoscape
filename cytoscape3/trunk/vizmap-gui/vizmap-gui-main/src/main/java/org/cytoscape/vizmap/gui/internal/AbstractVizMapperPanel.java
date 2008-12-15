@@ -65,9 +65,9 @@ import org.cytoscape.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.gui.event.VizMapEventHandlerManager;
+import org.cytoscape.vizmap.gui.internal.util.VizMapperUtil;
 import org.cytoscape.vizmap.gui.theme.ColorManager;
 import org.cytoscape.vizmap.gui.theme.IconManager;
-import org.cytoscape.vizmap.gui.util.VizMapperUtil;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 

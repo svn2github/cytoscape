@@ -96,7 +96,9 @@
 	</bean>
 
 
-	<bean name="vizMapperUtil" class="org.cytoscape.vizmap.gui.util.VizMapperUtil" />
+	<bean name="vizMapperUtil" class="org.cytoscape.vizmap.gui.internal.util.VizMapperUtil">
+		<constructor-arg ref="vmmServiceRef" />
+	</bean>
 
 
 	<!--
@@ -140,8 +142,6 @@
 		<property name="iconId"
 			value="${vizMapperMainPanel.menu.createLegendAction.icon}" />
 	</bean>
-
-
 
 	<!--
 		Value generators: generate discrete mapping from simple algorithms.

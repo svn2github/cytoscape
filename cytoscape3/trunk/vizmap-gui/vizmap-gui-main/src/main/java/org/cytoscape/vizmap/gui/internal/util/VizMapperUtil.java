@@ -1,8 +1,7 @@
-package org.cytoscape.vizmap.gui.util;
+package org.cytoscape.vizmap.gui.internal.util;
 
 import java.awt.Component;
 
-import javax.annotation.Resource;
 import javax.swing.JOptionPane;
 
 import org.cytoscape.vizmap.VisualMappingManager;
@@ -10,8 +9,11 @@ import org.cytoscape.vizmap.VisualStyle;
 
 public class VizMapperUtil {
 
-	@Resource
-	VisualMappingManager vmm;
+	private VisualMappingManager vmm;
+
+	public VizMapperUtil(VisualMappingManager vmm) {
+		this.vmm = vmm;
+	}
 
 	/**
 	 * Get a new Visual Style name

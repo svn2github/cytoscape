@@ -50,8 +50,8 @@ import org.cytoscape.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.vizmap.gui.internal.EditorWindowManager;
 import org.cytoscape.vizmap.gui.internal.VizMapPropertySheetBuilder;
 import org.cytoscape.vizmap.gui.internal.VizMapperMainPanel;
+import org.cytoscape.vizmap.gui.internal.util.VizMapperUtil;
 import org.cytoscape.vizmap.gui.theme.IconManager;
-import org.cytoscape.vizmap.gui.util.VizMapperUtil;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
