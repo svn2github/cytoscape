@@ -34,10 +34,11 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.vizmap.gui.action;
+package org.cytoscape.vizmap.gui.internal.action;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.swing.AbstractAction;
@@ -45,6 +46,7 @@ import javax.swing.JMenuItem;
 
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.vizmap.gui.internal.EditorWindowManager;
 import org.cytoscape.vizmap.gui.internal.VizMapPropertySheetBuilder;
 import org.cytoscape.vizmap.gui.internal.VizMapperMainPanel;
@@ -57,7 +59,7 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 /**
  * Action class to process commands.
  */
-public abstract class AbstractVizMapperAction extends AbstractAction implements VizMapperUIAction,
+public abstract class AbstractVizMapperAction extends AbstractAction implements VizMapUIAction,
                                                                                 PropertyChangeListener {
 	private static final long serialVersionUID = 1499424630636172107L;
 	
@@ -80,6 +82,9 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	
 	@Resource
 	protected EditorWindowManager editorWindowManager;
+	
+	@Resource
+	protected Properties vizmapUIResource;
 	
 	protected String menuLabel;
 	protected String iconId;
@@ -171,6 +176,10 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 		}
 
 		return menuItem;
+	}
+	
+	public void execute() {
+		// Should be implemented by the action classes.
 	}
 
 	/**

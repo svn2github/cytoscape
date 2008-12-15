@@ -1,7 +1,7 @@
 /*
  * LegendDialog.java
  */
-package org.cytoscape.vizmap.gui.action;
+package org.cytoscape.vizmap.gui.internal.action;
 
 import org.cytoscape.vizmap.EdgeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;

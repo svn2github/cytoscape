@@ -33,7 +33,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.vizmap.gui.action;
+package org.cytoscape.vizmap.gui.internal.action;
 
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_FONT_SIZE;
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
@@ -64,9 +64,9 @@ import cytoscape.Cytoscape;
 /**
  *
  */
-public class FitLabelListener extends AbstractVizMapperAction {
+public class FitLabelAction extends AbstractVizMapperAction {
 
-	public FitLabelListener() {
+	public FitLabelAction() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

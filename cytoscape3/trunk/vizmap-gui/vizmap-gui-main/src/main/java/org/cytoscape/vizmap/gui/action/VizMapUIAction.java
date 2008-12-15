@@ -2,6 +2,7 @@ package org.cytoscape.vizmap.gui.action;
 
 import javax.swing.JMenuItem;
 
-public interface VizMapperUIAction {
+public interface VizMapUIAction {
 	public JMenuItem getMenu();
+	public void execute();
 }

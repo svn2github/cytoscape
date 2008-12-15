@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui.action;
+package org.cytoscape.vizmap.gui.internal.action;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;

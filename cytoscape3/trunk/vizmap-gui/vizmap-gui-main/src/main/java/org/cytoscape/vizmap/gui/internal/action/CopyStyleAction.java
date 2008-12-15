@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap.gui.action;
+package org.cytoscape.vizmap.gui.internal.action;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -15,7 +15,6 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 
 	public CopyStyleAction() {
 		super();
-
 	}
 
 	private static final long serialVersionUID = 1244735696944563618L;

@@ -5,14 +5,18 @@ import java.util.Map;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
-import org.cytoscape.vizmap.gui.action.VizMapperUIAction;
+import org.cytoscape.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.vizmap.gui.theme.IconManager;
 
 
 public class VizMapperMenuManager {
 
+	// Menu items under the tool button
 	private JPopupMenu mainMenu;
+	
+	// Context menu
 	private JPopupMenu rightClickMenu;
+	
 	private JMenu generateValues;
 
 	private IconManager iconManager;
@@ -65,7 +69,7 @@ public class VizMapperMenuManager {
 	 * (non-Javadoc)
 	 * @see cytoscape.view.ServiceListener#onBind(java.lang.Object, java.util.Map)
 	 */
-	public void onBind(VizMapperUIAction action, Map properties) {
+	public void onBind(VizMapUIAction action, Map properties) {
 		System.out.println("@@@@@@@@@@@@@@@@@@@@ binding service:");
 		if(generateValues == null && iconManager != null) {
 			// for value generators.
@@ -89,6 +93,6 @@ public class VizMapperMenuManager {
 		}
 	}
 
-	public void onUnbind(VizMapperUIAction service, Map properties) {
+	public void onUnbind(VizMapUIAction service, Map properties) {
 	}
 }
