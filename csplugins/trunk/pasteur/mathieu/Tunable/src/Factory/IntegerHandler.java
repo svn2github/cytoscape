@@ -5,8 +5,6 @@ import javax.swing.*;
 import java.awt.Color;
 import GuiInterception.Guihandler;
 import TunableDefinition.Tunable;
-import TunableDefinition.Tunable.Param;
-import Properties.PropertiesImpl;
 import Slider.*;
 
 
@@ -21,7 +19,7 @@ public class IntegerHandler implements Guihandler{
 	String title;
 	String value;
 	Boolean available;
-	Integer i;
+	Integer inte;
 
 	
 	
@@ -38,12 +36,12 @@ public class IntegerHandler implements Guihandler{
 	
 	
 	public void handle(){
-		i = Integer.parseInt(jtf.getText());
+		inte = Integer.parseInt(jtf.getText());
 
-		if(available!=true) i=Integer.parseInt(value);
+		if(available!=true) inte=Integer.parseInt(value);
 		
 		try {
-			if (i != null) f.set(o,i);
+			if (inte != null) f.set(o,inte);
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
@@ -63,37 +61,40 @@ public class IntegerHandler implements Guihandler{
 	
 	public JPanel getresultpanel(){
 		JPanel result = new JPanel();
-			try{
-				jtf = new JTextField((f.get(o)).toString());
-				if(available==false){
-					jtf.setEnabled(false);
-					jtf.setBackground(Color.GRAY);
+		try{
+			jtf = new JTextField((f.get(o)).toString());
+			if(available==false){
+				jtf.setEnabled(false);
+				jtf.setBackground(Color.GRAY);
 			}			
-			}catch (Exception e){e.printStackTrace();}
+		}catch (Exception e){e.printStackTrace();}
 		result.add(new JLabel(title));
 		result.add(jtf);
 		return result;
-
 	}
 
 
 	public void cancel(){
-		i = Integer.parseInt(value);
+		inte = Integer.parseInt(value);
 		try{
-			f.set(o, i);
+			f.set(o, inte);
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
 	
 	
+	
+	
 	public JPanel update(){
-		i = Integer.parseInt(jtf.getText());
-		if(available!=true)		i = Integer.parseInt(value);
-		jtf= new JTextField(i.toString());
 		JPanel result = new JPanel();
-		result.add(jtf);
+		if(available==true){
+			inte = Integer.parseInt(jtf.getText());
+		}
+		result.add(new JTextField(inte.toString()));
 		return result;
 	}
+	
+	
 
 	
 	public void	setValue(Object object){

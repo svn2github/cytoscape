@@ -1,15 +1,13 @@
-/*
+
 package Factory;
 
 
 import java.awt.Color;
 import java.lang.reflect.*;
-
 import javax.swing.*;
 import GuiInterception.Guihandler;
 import TunableDefinition.Tunable;
 import java.lang.Object;
-import Properties.PropertiesImpl;
 import Slider.*;
 
 
@@ -22,13 +20,10 @@ public class DoubleHandler implements Guihandler{
 	JTextField jtf;	
 	MySlider slider;
 	
-	Double upperbound;
-	Double lowerbound;
 	String value;
 	String title;
-	Boolean useslider;
 	Boolean available;
-	Double handlevalue;
+	Double doub;
 
 	
 	
@@ -36,83 +31,82 @@ public class DoubleHandler implements Guihandler{
 		this.f=f;
 		this.t=t;
 		this.o=o;
-		this.value=t.value();
-		try{
-			f.set(o,Double.parseDouble(value));
-		}catch(Exception e){e.printStackTrace();}
-		this.title=t.description();
+		this.title=f.getName();					
 		this.available=t.available();
-		this.upperbound=t.upperbound();
-		this.lowerbound=t.lowerbound();
-		if(t.flag()==8)this.useslider=true;
+		try{
+			this.value=f.get(o).toString();
+		}catch(Exception e){e.printStackTrace();}
 	}
 	
 	
 	public void handle(){
-		if(available==true){
-			Number s = slider.getValue();
-			handlevalue = s.doubleValue();
-		}
-		else handlevalue = Double.parseDouble(value);
+		doub= Double.parseDouble(jtf.getText());
+		
+		if(available==true) doub=Double.parseDouble(value);
 		try {
-			if ( handlevalue != null ) f.set(o,handlevalue);
+			if (doub != null ) f.set(o,doub);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 
 	
 	
+	
+	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();		
-		try{
-			if(available==true){
-				if(useslider==true  && lowerbound!=null && upperbound!=null){				
-					slider = new MySlider(title,lowerbound.doubleValue(),upperbound.doubleValue(),Double.parseDouble(f.get(o).toString()));
-					pane.add(slider);
-				}
-			}
-			else{
-				jtf = new JTextField(value);
-				jtf.setEnabled(false);
-				jtf.setBackground(Color.GRAY);
-			}
-		}catch (Exception e){e.printStackTrace();}
+		jtf = new JTextField(value);
+		if(available!=true){
+			jtf.setEnabled(false);
+			jtf.setBackground(Color.GRAY);
+		}
+		pane.add(jtf);
 		return pane;
 	}
 
 	
 	public JPanel getresultpanel(){
 		JPanel result = new JPanel();
-		try{
-			jtf = new JTextField(f.get(o).toString());
-			if(available==false){
-				jtf.setBackground(Color.GRAY);
-				jtf.setEnabled(false);
-			}
-		}catch (Exception e){e.printStackTrace();}		
+			try{
+				jtf = new JTextField((f.get(o)).toString());
+				if(available==false){
+					jtf.setEnabled(false);
+					jtf.setBackground(Color.GRAY);
+			}			
+			}catch (Exception e){e.printStackTrace();}
 		result.add(new JLabel(title));
 		result.add(jtf);
 		return result;
 	}
+	
+	
+
 
 
 	public JPanel update(){
-		if(available==true){
-			Number s = slider.getValue();
-			handlevalue = s.doubleValue();
-		}
-		else handlevalue = Double.parseDouble(value);
-		jtf = new JTextField(handlevalue.toString());
 		JPanel result = new JPanel();
-		result.add(jtf);
+		if(available==true)	doub = Double.parseDouble(jtf.getText());
+		result.add(new JTextField(doub.toString()));
 		return result;
 	}
 	
 	
+	
+	
+	
+	
 	public void cancel(){
 		try{
-			f.set(o,Double.parseDouble(value));
+			f.set(o, Double.parseDouble(value));
 		}catch(Exception e){e.printStackTrace();}
 	}
+		
+	
+	public void	setValue(Object object){
+		try{
+			f.set(o, object);
+		}catch(Exception e){e.printStackTrace();}
+	}
+	
 	
 	
 
@@ -130,4 +124,3 @@ public class DoubleHandler implements Guihandler{
 		return o;
 	}
 }
-*/

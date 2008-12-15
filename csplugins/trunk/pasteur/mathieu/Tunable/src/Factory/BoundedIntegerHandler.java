@@ -3,12 +3,10 @@ package Factory;
 import java.lang.reflect.*;
 import javax.swing.*;
 import java.awt.Color;
-
 import Command.BoundedInteger;
 import GuiInterception.Guihandler;
 import TunableDefinition.Tunable;
 import TunableDefinition.Tunable.Param;
-import Properties.PropertiesImpl;
 import Slider.*;
 
 
@@ -24,7 +22,7 @@ public class BoundedIntegerHandler implements Guihandler{
 	String title;
 	Integer upperbound;
 	Integer lowerbound;
-	String value;
+	Integer value;
 	Boolean available;
 	Integer i;
 
@@ -42,6 +40,7 @@ public class BoundedIntegerHandler implements Guihandler{
 			this.input = (BoundedInteger) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		
+		this.value=input.getValue();
 		this.lowerbound =input.getLowerBound();
 		this.upperbound = input.getUpperBound();
 		if(t.flag()==Param.UseSlider)this.useslider=true;
@@ -75,7 +74,7 @@ public class BoundedIntegerHandler implements Guihandler{
 		try{
 			if(available==true){
 				if(useslider==true  && lowerbound!=null && upperbound!=null){
-						slider = new MySlider(title,lowerbound.intValue(),upperbound.intValue(),input.getValue().doubleValue());
+						slider = new MySlider(title,lowerbound.intValue(),upperbound.intValue(),value.intValue());
 						pane.add(slider);			
 				}
 			}
@@ -122,7 +121,7 @@ public class BoundedIntegerHandler implements Guihandler{
 			Number s = slider.getValue();
 			i = s.intValue();
 		}
-		else i = Integer.parseInt(value);
+		else i = value;
 		JPanel result = new JPanel();
 		jtf= new JTextField(i.toString());
 		result.add(jtf);

@@ -2,8 +2,6 @@ package HandlerFactory;
 
 
 import java.lang.reflect.*;
-
-import Properties.PropertiesImpl;
 import TunableDefinition.Tunable;
 
 

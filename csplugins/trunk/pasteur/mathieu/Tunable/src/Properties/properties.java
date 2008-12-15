@@ -1,10 +1,7 @@
 package Properties;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Properties;
-//import java.util.Properties;
 import javax.swing.JPanel;
 import TunableDefinition.Tunable;
 
@@ -43,7 +40,7 @@ public interface properties{
 	 *
 	 * @return HashMap containing the resulting properties
 	 */
-	public HashMap getProperties(Properties props);
+	public HashMap<?, ?> getProperties(Properties props);
 
 	/**
 	 * Used to add modified properties to props parameter 

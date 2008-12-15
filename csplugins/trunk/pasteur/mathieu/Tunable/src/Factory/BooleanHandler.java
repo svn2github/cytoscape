@@ -1,4 +1,4 @@
-/*
+
 package Factory;
 
 
@@ -19,7 +19,8 @@ public class BooleanHandler implements Guihandler{
 	JTextField jtf;
 	JCheckBox jcb;
 	
-	Boolean status;
+	Boolean status=null;	
+	String value;
 	Boolean available;
 	String title;
 	
@@ -28,29 +29,30 @@ public class BooleanHandler implements Guihandler{
 		this.t=t;
 		this.o=o;
 		this.available = t.available();
-		this.status = Boolean.parseBoolean(t.value());
+		
 		try{
-			f.set(o,status);
+			this.value=f.get(o).toString();
 		}catch(Exception e){e.printStackTrace();}
-		this.title=t.description();
+		this.title=f.getName();
 	}
 	
 	public void handle(){
 		status = jcb.isSelected();
 		
+		if(available!=true) status=Boolean.parseBoolean(value);
+			
 		try {
-			f.set(o,status);
+			if(status!=null)f.set(o,status);
 		} catch(Exception e){e.printStackTrace();}
 		}
+		
+	
 	
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();
-		//text = t.value();  OR  text = (f.get(o)).toString();  TAKE THE LAST STATE(OBJECT) BUT need to INITIALIZE the Object
-		try{
-			jcb = new JCheckBox(title,Boolean.parseBoolean(f.get(o).toString()));
-		}catch(Exception e){e.printStackTrace();}
-		if(available==false){
+		jcb = new JCheckBox(title,Boolean.parseBoolean(value));
+		if(available!=true){
 			jcb.setBackground(Color.GRAY);
 			jcb.setEnabled(false);
 		}
@@ -61,37 +63,43 @@ public class BooleanHandler implements Guihandler{
 	
 	public JPanel getresultpanel(){
 		JPanel result = new JPanel();
-		if(available==true){
-			try{
-					status = Boolean.parseBoolean(f.get(o).toString());
-			}catch (Exception e){e.printStackTrace();}
+		try{
+			status = Boolean.parseBoolean(f.get(o).toString());
 			jcb = new JCheckBox(title,status);
-		}
-		else{
-			jcb = new JCheckBox(title,status);
-			jcb.setBackground(Color.GRAY);
-			jcb.setEnabled(false);
-		}
+			if(available!=true){
+				jcb.setBackground(Color.GRAY);
+				jcb.setEnabled(false);
+			}
+		}catch (Exception e){e.printStackTrace();}
 		result.add(jcb);
 		return result;
 	}
-
+	
+	
+	
+	
 
 
 	public JPanel update() {
-		status = jcb.isSelected();
-		jcb = new JCheckBox(title,status);
 		JPanel result = new JPanel();
-		result.add(jcb);
+		if(available==true){
+			status = jcb.isSelected();
+		}
+		result.add(new JCheckBox(title,status));
 		return result;
-	}
-
+	}	
+	
+	
 
 	public void cancel() {
+		status = Boolean.parseBoolean(value);
 		try{
 			f.set(o,status);
 		}catch(Exception e){e.printStackTrace();}
 	}
+	
+	
+	
 	
 	public Tunable getTunable() {
 		return t;
@@ -106,4 +114,3 @@ public class BooleanHandler implements Guihandler{
 		return o;
 	}
 }
-*/

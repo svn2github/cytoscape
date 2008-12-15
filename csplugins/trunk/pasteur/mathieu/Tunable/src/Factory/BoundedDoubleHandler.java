@@ -7,9 +7,7 @@ import javax.swing.*;
 import GuiInterception.Guihandler;
 import TunableDefinition.Tunable;
 import TunableDefinition.Tunable.Param;
-
 import java.lang.Object;
-import Properties.PropertiesImpl;
 import Slider.*;
 import Command.*;
 

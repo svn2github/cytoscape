@@ -3,14 +3,13 @@ package Interceptors;
 import Command.Command;
 import HandlerFactory.Handler;
 import HandlerFactory.HandlerFactory;
-import Properties.PropertiesImpl;
 import TunableDefinition.Tunable;
 import java.lang.reflect.*;
 import java.util.LinkedList;
 
 
 
-public abstract class HiddenTunableInterceptor<H extends Handler> implements TunableInterceptor{
+public abstract class HiddenTunableInterceptor<H extends Handler> implements TunableInterceptor<H>{
 	
 	protected HandlerFactory<H> factory;
 

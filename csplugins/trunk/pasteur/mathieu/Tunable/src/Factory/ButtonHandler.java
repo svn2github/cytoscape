@@ -1,14 +1,12 @@
-/*
+
 package Factory;
 
 import GuiInterception.*;
 import TunableDefinition.Tunable;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.*;
-
 import javax.swing.*;
 
 
@@ -18,7 +16,8 @@ public class ButtonHandler implements Guihandler,ActionListener{
 	Object o;
 	Tunable t;
 
-	AbstractButton button;
+	JButton buttonIn;
+	JButton buttonOut;
 	Object lowerbound;
 	String title;
 	String value;
@@ -28,43 +27,39 @@ public class ButtonHandler implements Guihandler,ActionListener{
 		this.f = f;
 		this.o = o;
 		this.t = t;
-		this.title=t.description();
-		this.value=t.value();
-		try{
-			button = (AbstractButton) f.get(o);
-			button.setSelected(Boolean.parseBoolean(value));
-			f.set(o,button);
-		}catch(Exception e){e.printStackTrace();}
+		this.title=f.getName();
 	}
 
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();
 		try{
-			button.setSelected(Boolean.parseBoolean(value));
-			button = (AbstractButton) f.get(o);
+			buttonIn = (JButton) f.get(o);
 		}catch (Exception e){e.printStackTrace();}
-		//button.setSelected(false);
-		button.setText(title);
-		button.addActionListener(this);
-		//pane.add(new JLabel(title));
-		pane.add(button);
+		buttonIn.setText(title);
+		buttonIn.setBackground(Color.GRAY);
+		buttonIn.addActionListener(this);
+		pane.add(buttonIn);
 		return pane;
 	}
 	
 	public void handle(){
-			try{
-				f.set(o, button);
-			}catch(Exception e){e.printStackTrace();}
+		buttonOut = new JButton();
+		buttonOut.setBackground(Color.RED);
+		if(buttonIn.isSelected()) buttonOut.setBackground(Color.GREEN);
+		try{
+			f.set(o, buttonOut);
+		}catch(Exception e){e.printStackTrace();}
 	}
 
-	
+
+
 	public JPanel getresultpanel(){
-		JPanel resultpane = new JPanel();
+	/*	JPanel resultpane = new JPanel();
 		jtf = new JTextField("Clicked off");
 		jtf.setBackground(Color.RED);
 		try{
-			button=(AbstractButton) f.get(o);
+		//	button=(AbstractButton) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		if(button.isSelected()){
 			jtf.setText("Clicked on");
@@ -72,6 +67,7 @@ public class ButtonHandler implements Guihandler,ActionListener{
 		}
 		resultpane.add(jtf);
 		return resultpane;
+	*/	return null;
 	}
 
 
@@ -79,55 +75,46 @@ public class ButtonHandler implements Guihandler,ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		//if(e.getActionCommand().equals(t.description())){
-			button.setSelected(true);
+			buttonIn.setSelected(true);
 		//}			
 	}
 
 
-	@Override
-	public Tunable getTunable() {
-		// TODO Auto-generated method stub
-		return t;
-	}
 
 
 	@Override
 	public JPanel update() {
 		JPanel result = new JPanel();
-		jtf = new JTextField("Has not been Clicked");
-		jtf.setBackground(Color.RED);
-		if(button.isSelected()){
-			jtf.setText("Has been Clicked");
-			jtf.setBackground(Color.GREEN);
+		JButton handlebutton=null;
+		handlebutton = new JButton();
+		handlebutton.setBackground(Color.RED);
+		if(buttonIn.isSelected()){
+			handlebutton.setBackground(Color.GREEN);
 		}
-		result.add(jtf);
+		result.add(handlebutton);
 		return result;
 	}
+	
+	
 
-
-	@Override
 	public void cancel() {
 		try{
-			button = (AbstractButton) f.get(o);
-			button.setSelected(Boolean.parseBoolean(value));
+			f.set(o,buttonIn);
 		}catch(Exception e){e.printStackTrace();}
-		// TODO Auto-generated method stub
 		
 	}
 
 
-	@Override
+	public Tunable getTunable() {
+		return t;
+	}	
+	
 	public Field getField() {
-		// TODO Auto-generated method stub
-		return null;
+		return f;
 	}
 
 
-	@Override
 	public Object getObject() {
-		// TODO Auto-generated method stub
-		return null;
+		return o;
 	}
-
 }
-*/

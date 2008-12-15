@@ -3,10 +3,7 @@ package Factory;
 
 import TunableDefinition.*;
 import TunableDefinition.Tunable.Param;
-
-import java.awt.List;
 import java.lang.reflect.*;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -75,9 +72,7 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 		values = listIn.getSelectedValues();
 		}
 
-	public Tunable getTunable() {
-		return t;
-	}
+
 
 
 	public JPanel update() {
@@ -90,12 +85,17 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 		return result;
 	}
 
+	
 	public void cancel() {
 		try{
 			f.set(o, listIn);
 		}catch(Exception e){e.printStackTrace();}
 	}
 
+	
+	public Tunable getTunable() {
+		return t;
+	}
 
 	public Field getField() {
 		return f;

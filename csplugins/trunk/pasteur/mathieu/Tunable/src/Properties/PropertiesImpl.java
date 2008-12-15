@@ -1,5 +1,6 @@
 package Properties; 
-//kbkgkghgfgfg
+
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -8,11 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 import TunableDefinition.Tunable;
 
 
@@ -59,7 +57,7 @@ public class PropertiesImpl implements properties {
 	
 	public void initializeProperties(Properties props) {
 		getProperties(props);
-		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
+		for (Iterator<Field> iter = tunablesList.iterator(); iter.hasNext();) {
 			//Tunable tunable = (Tunable) iter.next();
 			Field field = (Field) iter.next();
 			String property = field.getName();
@@ -92,7 +90,7 @@ public class PropertiesImpl implements properties {
 		savedPropertyMap = new HashMap<String,String>();
 
 		// Find all properties with this prefix
-		Enumeration iter = props.propertyNames();
+		Enumeration<?> iter = props.propertyNames();
 		while (iter.hasMoreElements()) {
 			String property = (String) iter.nextElement();
 
@@ -128,8 +126,8 @@ public class PropertiesImpl implements properties {
 	
 	public void revertProperties() {
 		propertyMap = new HashMap<String,String>();
-		Set keys = savedPropertyMap.keySet();
-		for (Iterator iter = keys.iterator(); iter.hasNext();) {
+		Set<String> keys = savedPropertyMap.keySet();
+		for (Iterator<String> iter = keys.iterator(); iter.hasNext();) {
 			String key = (String) iter.next();
 			propertyMap.put(new String(key), new String((String) savedPropertyMap.get(key)));
 			System.out.println("default value for " + key + " = " + propertyMap.get(key));	
@@ -138,7 +136,7 @@ public class PropertiesImpl implements properties {
 
 
 	public void saveProperties(Properties props) { // DANS PropertyMap
-		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
+		for (Iterator<Field> iter = tunablesList.iterator(); iter.hasNext();) {
 			Field field = (Field) iter.next();
 			String property = field.getName();
 			try{
@@ -167,7 +165,7 @@ public class PropertiesImpl implements properties {
 		JPanel pane = new JPanel();
 		JTextField tf = null;
 		
-		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
+		for (Iterator<Field> iter = tunablesList.iterator(); iter.hasNext();) {
 			Field field = (Field) iter.next();
 			String property = field.getName();
 			if (propertyMap.containsKey(property)) {
@@ -185,7 +183,7 @@ public class PropertiesImpl implements properties {
 		JPanel pane = new JPanel();
 		JTextField tf = null;
 		
-		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
+		for (Iterator<Field> iter = tunablesList.iterator(); iter.hasNext();) {
 			Field field = (Field) iter.next();
 			String property = field.getName();
 			if (savedPropertyMap.containsKey(property)) {

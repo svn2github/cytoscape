@@ -18,8 +18,6 @@ public class application{
 	public static Command commander = new Input();
 	private static ProcessingTunableList tunablelist;
 	public static TunableInterceptor<Handler> ti = new GuiTunableInterceptor();
-
-	
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
 	
 	

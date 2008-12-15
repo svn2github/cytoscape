@@ -1,9 +1,6 @@
 package Command;
 
 
-import java.awt.List;
-import java.util.Vector;
-
 import TunableDefinition.*;
 import TunableDefinition.Tunable.Param;
 import javax.swing.*;
@@ -29,47 +26,30 @@ public class Input implements Command {
 	@Tunable(description="try with boundedinteger", type=BoundedInteger.class,flag=Param.UseSlider)
 	public BoundedInteger integer2 = new BoundedInteger(new Integer(50),new Integer(10),new Integer(200),new Boolean(true),new Boolean(true));
 	
+	@Tunable(description ="try with double", type=Double.class,flag=Param.Nothing)
+	public Double double1 = new Double(3.4);
+	
 	@Tunable(description="try with boundeddouble", type=BoundedDouble.class,flag=Param.UseSlider)
-	public BoundedDouble double1 = new BoundedDouble(new Double(15.4),new Double(0.0),new Double(200.0),new Boolean(true),new Boolean(true));
+	public BoundedDouble double2 = new BoundedDouble(new Double(15.4),new Double(0.0),new Double(200.0),new Boolean(true),new Boolean(true));
 	
 	@Tunable(description="try with list", type=JList.class, flag=Param.MultiSelect)
 	public JList list = new JList(new Object[] {"d","d","f"});
 	
+	@Tunable(description="try with boolean",type=Boolean.class ,flag=Param.Nothing)
+	public Boolean boolean1 = new Boolean(false);
+	
+	@Tunable(description="try with string", type=String.class, flag=Param.Nothing)
+	public String string1 = new String("cytoscape");
+	
+	@Tunable(description="try with button", type=JButton.class, flag=Param.Nothing)
+	public JButton button1 = new JButton();
 	
 	/*
-	@Tunable(description="Integer", flag=UseSlider, type=INTEGER, available=True, lowerbound=0, upperbound=200, data={}, value="15")
-	public Integer integer2;
-	
 	@Tunable(description="Group", flag=NoInput, type=GROUP, available=True, lowerbound=0, upperbound=200, data={}, value="")
-	public Integer Group1;
-	
-	@Tunable(description="Double", flag=UseSlider, type=DOUBLE, available=True, lowerbound=0, upperbound=150, data={}, value="12.4")
-	public Double double1;
-	
-	@Tunable(description="Group", flag=NoInput, type=GROUP, available=True, lowerbound=0, upperbound=200, data={}, value="")
-	public Integer Group2;
-	
-	@Tunable(description="String", flag=NoInput, type=STRING, available=True, lowerbound=0, upperbound=200, data={}, value="dad")
-	public String string1;
-	
-	@Tunable(description="Group", flag=NoInput, type=GROUP, available=True, lowerbound=0, upperbound=200, data={}, value="")
-	public Integer Group3;
-	
-	@Tunable(description="Boolean", flag=NoInput, type=BOOLEAN, available=True, lowerbound=0, upperbound=200, data={}, value="false")
-	public Boolean boolean1;
-	
-	@Tunable(description="Boolean", flag=NoInput, type=BOOLEAN, available=True, lowerbound=0, upperbound=200, data={}, value="true")
-	public Boolean boolean2;
-	
-	@Tunable(description="Group", flag=NoInput, type=GROUP, available=True, lowerbound=0, upperbound=200, data={}, value="")
-	public Integer Group4;
-	
-	
+	public Integer Group3;	
+		
 	@Tunable(description="Button", flag=NoInput, type=BUTTON, available=True, lowerbound=0, upperbound=200, data={}, value="false")
 	public JButton T4 = new JButton();
-	
-	@Tunable(description="List", flag=MultiSelect, type=LIST, available=True, lowerbound=0, upperbound=200, data ={"aa","bb","cc","dd"}, value="")
-	public JList T5 = new JList();
 	*/
 
 	//@Tunable(description="Attribute", flag=MultiSelect, type=NODEATTRIBUTE, available=TRUE, lowerbound=0, upperbound=200, data ={"aa","bb","cc","dd"}, value="")
