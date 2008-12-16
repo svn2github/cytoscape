@@ -76,6 +76,7 @@ import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.vizmap.gui.event.VizMapEventHandlerManager;
@@ -273,7 +274,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		if (defImg == null) {
 			// Default image is not available in the buffer. Create a new one.
 			updateDefaultImage(vsName,
-					(GraphView) ((DefaultViewPanelImpl) defViewEditor
+					(GraphView) ((DefaultViewPanel) defViewEditor
 							.getDefaultView(vsName)).getView(),
 					defaultViewImagePanel.getSize());
 			defImg = defaultImageManager.get(vsName);
@@ -317,7 +318,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		for (String name : vsNames) {
 			getVsNameComboBox().addItem(name);
 			defPanel = defViewEditor.getDefaultView(name);
-			view = (GraphView) ((DefaultViewPanelImpl) defPanel).getView();
+			view = (GraphView) ((DefaultViewPanel) defPanel).getView();
 
 			if (view != null)
 				updateDefaultImage(name, view, panelSize);

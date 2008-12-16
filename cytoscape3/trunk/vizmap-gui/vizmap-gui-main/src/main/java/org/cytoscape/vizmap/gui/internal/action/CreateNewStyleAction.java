@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.gui.internal.DefaultViewPanelImpl;
+import org.cytoscape.vizmap.gui.DefaultViewPanel;
 
 import cytoscape.Cytoscape;
 
@@ -56,7 +56,7 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 		// vizMapperMainPanel.removeMapping(dummy.getVisualPropertyType());
 
 		final JPanel defPanel = defViewEditor.getDefaultView(name);
-		final GraphView view = (GraphView) ((DefaultViewPanelImpl) defPanel)
+		final GraphView view = (GraphView) ((DefaultViewPanel) defPanel)
 				.getView();
 		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()
 				.getSize();

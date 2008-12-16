@@ -34,24 +34,21 @@
  */
 package org.cytoscape.vizmap.gui.internal;
 
-import cytoscape.Cytoscape;
-
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNode;
-
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
-
-import org.cytoscape.vizmap.VisualMappingManager;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.gui.DefaultViewPanel;
 
 
 /**
@@ -61,12 +58,11 @@ import javax.swing.JPanel;
  * @since Cytoscape 2.5
  * @author kono
  */
-public class DefaultViewPanelImpl extends JPanel {
+public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	private final static long serialVersionUID = 1202339876691085L;
 	
 	private static final int PADDING = 20;
 	private GraphView view;
-	private GraphView oldView;
 	private static CyNetwork dummyNet;
 	private Color background;
 
@@ -78,9 +74,6 @@ public class DefaultViewPanelImpl extends JPanel {
 	private final CyEdge edge;
 	private Component canvas = null;
 
-	// Will be injected by DI Container
-	private CyNetworkFactory cyNetworkFactory;
-	private GraphViewFactory graphViewFactory;
 	private VisualMappingManager vmm;
 
 	/**
@@ -90,8 +83,6 @@ public class DefaultViewPanelImpl extends JPanel {
 	 * @param graphViewFactory  DOCUMENT ME!
 	 */
 	public DefaultViewPanelImpl(CyNetworkFactory cyNetworkFactory, GraphViewFactory graphViewFactory, VisualMappingManager vmm) {
-		this.cyNetworkFactory = cyNetworkFactory;
-		this.graphViewFactory = graphViewFactory;
 		this.vmm = vmm;
 
 		dummyNet = cyNetworkFactory.getInstance();
@@ -112,8 +103,6 @@ public class DefaultViewPanelImpl extends JPanel {
 		view.getNodeView(target).setOffset(150, 10);
 		this.vmm.setNetworkView(view);
 
-		oldView = this.vmm.getNetworkView();
-
 		background = this.vmm.getVisualStyle().getGlobalAppearanceCalculator().getDefaultBackgroundColor();
 		this.setBackground(background);
 	}
@@ -124,24 +113,6 @@ public class DefaultViewPanelImpl extends JPanel {
 		repaint();
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Component getCanvas() {
-		return canvas;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void clean() {
-		Cytoscape.destroyNetwork(dummyNet);
-		vmm.setNetworkView(oldView);
-		dummyNet = null;
-		canvas = null;
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -155,7 +126,7 @@ public class DefaultViewPanelImpl extends JPanel {
 			view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
 			                           (int) panelSize.getHeight() - PADDING));
 			view.fitContent();
-			canvas = (view.getComponent());
+			canvas = view.getComponent();
 
 			for (MouseListener listener : canvas.getMouseListeners())
 				canvas.removeMouseListener(listener);
@@ -172,21 +143,18 @@ public class DefaultViewPanelImpl extends JPanel {
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	/* (non-Javadoc)
+	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewPanel#getView()
 	 */
 	public GraphView getView() {
 		return view;
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vmm DOCUMENT ME!
+	
+	/* (non-Javadoc)
+	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewPanel#getRendererComponent()
 	 */
-	public void setVmm(VisualMappingManager vmm) {
-		this.vmm = vmm;
+	public Component getRendererComponent() {
+		return canvas;
 	}
+	
 }
