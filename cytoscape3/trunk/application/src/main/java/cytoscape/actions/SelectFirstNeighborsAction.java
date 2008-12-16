@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -66,8 +66,8 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	/**
 	 * Creates a new SelectFirstNeighborsAction object.
 	 */
-	public SelectFirstNeighborsAction() {
-		super("First neighbors of selected nodes");
+	public SelectFirstNeighborsAction(CyNetworkManager netmgr) {
+		super("First neighbors of selected nodes",netmgr);
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(KeyEvent.VK_6, ActionEvent.CTRL_MASK);
 	}
@@ -78,7 +78,7 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+		final CyNetwork currentNetwork = netmgr.getCurrentNetwork();
 		final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(currentNetwork,"selected",true);
 
 		for ( CyNode currentNode : selectedNodes ) {
@@ -87,7 +87,7 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 			}
 		}
 
-		Cytoscape.getCurrentNetworkView().updateView();
+		netmgr.getCurrentNetworkView().updateView();
 	} // actionPerformed
 
     public void menuSelected(MenuEvent e) {

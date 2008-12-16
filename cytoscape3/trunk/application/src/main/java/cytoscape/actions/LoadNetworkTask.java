@@ -40,6 +40,7 @@
 // $Author: pwang $
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.task.Task;
@@ -83,8 +84,8 @@ public class LoadNetworkTask implements Task {
 	 * @param u the URL to load the network from
 	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
-	public static void loadURL(URL u, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
-		loadURL(u, skipMessage, null, mgr, gvf,cyl, dsk);
+	public static void loadURL(URL u, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
+		loadURL(u, skipMessage, null, mgr, gvf,cyl, dsk,netmgr);
 	}
 
 	/**
@@ -96,9 +97,9 @@ public class LoadNetworkTask implements Task {
 	 * @param file the file to load the network from
 	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
-	public static void loadFile(File file, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
+	public static void loadFile(File file, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
 		// Create LoadNetwork Task
-		loadFile(file, skipMessage, null, mgr, gvf,cyl, dsk);
+		loadFile(file, skipMessage, null, mgr, gvf,cyl, dsk,netmgr);
 	}
 
 	/**
@@ -114,8 +115,8 @@ public class LoadNetworkTask implements Task {
 	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
 	 *                        after it has been read in (provided that a view was created).
 	 */
-	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
-		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm, mgr, gvf, cyl, dsk);
+	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
+		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm, mgr, gvf, cyl, dsk,netmgr);
 		setupTask(task, skipMessage, true,dsk);
 	}
 
@@ -130,8 +131,8 @@ public class LoadNetworkTask implements Task {
 	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
 	 *                        after it has been read in (provided that a view was created).
 	 */
-	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
-		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm, mgr, gvf, cyl, dsk);
+	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
+		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm, mgr, gvf, cyl, dsk,netmgr);
 		setupTask(task, skipMessage, true, dsk);
 	}
 
@@ -163,8 +164,9 @@ public class LoadNetworkTask implements Task {
 	private GraphViewFactory gvf; 
 	private CyLayouts cyl; 
 	private CytoscapeDesktop dsk; 
+	private CyNetworkManager netmgr; 
 
-	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
+	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
 		url = u;
 		name = u.toString();
 		reader = null;
@@ -173,15 +175,17 @@ public class LoadNetworkTask implements Task {
 		this.gvf = gvf;
 		this.cyl = cyl;
 		this.dsk = dsk;
+		this.netmgr = netmgr;
 
 		// Postpone getting the reader since we want to do that in a thread
 	}
 
-	private LoadNetworkTask(File file, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk) {
+	private LoadNetworkTask(File file, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
 		this.mgr = mgr;
 		this.gvf = gvf;
 		this.cyl = cyl;
 		this.dsk = dsk;
+		this.netmgr = netmgr;
 		try { 
 		reader = mgr.getReader(file.getAbsolutePath());
 		} catch (IOException ioe) {
@@ -252,10 +256,10 @@ public class LoadNetworkTask implements Task {
 			reader.read();
 
 			CyNetwork cyNetwork = reader.getReadNetwork(); 
-			cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name));
+			cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name,netmgr));
 			GraphView view = gvf.createGraphView( cyNetwork );
 
-			Cytoscape.addNetwork( cyNetwork, view, cyl );
+			netmgr.addNetwork( cyNetwork, view, cyl );
 
 			if ((layoutAlgorithm != null) && (view != null)) {
 				// Yes, do it
@@ -274,7 +278,7 @@ public class LoadNetworkTask implements Task {
 			         .addPropertyChangeListener(dsk.getBirdsEyeViewHandler());
 			dsk.getNetworkViewManager()
 			         .firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null,
-			                             Cytoscape.getCurrentNetworkView().getNetwork()
+			                             netmgr.getCurrentNetworkView().getNetwork()
 			                                      .getSUID());
 
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);

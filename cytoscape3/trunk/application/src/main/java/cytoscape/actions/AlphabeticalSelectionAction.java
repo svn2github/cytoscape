@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.data.CyNetworkUtilities;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
@@ -66,8 +66,8 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 	/**
 	 * Creates a new AlphabeticalSelectionAction object.
 	 */
-	public AlphabeticalSelectionAction(CytoscapeDesktop desktop) {
-		super("By Name...");
+	public AlphabeticalSelectionAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super("By Name...",netmgr);
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_F, ActionEvent.CTRL_MASK);
 		this.desktop = desktop;
@@ -87,10 +87,10 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 
 		if ((e.getSource() == searchField) || (e.getSource() == search)) {
 			String search_string = searchField.getText();
-			CyNetworkUtilities.selectNodesStartingWith(Cytoscape.getCurrentNetwork(),
+			CyNetworkUtilities.selectNodesStartingWith(netmgr.getCurrentNetwork(),
 			                                           search_string,
-			                                           Cytoscape.getCurrentNetworkView());
-			Cytoscape.getCurrentNetworkView().updateView();
+			                                           netmgr.getCurrentNetworkView());
+			netmgr.getCurrentNetworkView().updateView();
 
 			return;
 		}
@@ -100,7 +100,7 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 
 		dialog.setVisible(true);
 
-		Cytoscape.getCurrentNetworkView().updateView();
+		netmgr.getCurrentNetworkView().updateView();
 	}
 
 	private JDialog createDialog() {

@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 
 import javax.swing.event.MenuEvent;
@@ -57,8 +57,8 @@ public class HideSelectedEdgesAction extends CytoscapeAction {
 	/**
 	 * Creates a new HideSelectedEdgesAction object.
 	 */
-	public HideSelectedEdgesAction() {
-		super("Hide edge selection");
+	public HideSelectedEdgesAction(CyNetworkManager netmgr) {
+		super("Hide edge selection",netmgr);
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H, ActionEvent.ALT_MASK);
 	}
@@ -69,7 +69,7 @@ public class HideSelectedEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GinyUtils.hideSelectedEdges(Cytoscape.getCurrentNetworkView());
+		GinyUtils.hideSelectedEdges(netmgr.getCurrentNetworkView());
 	}
 
     public void menuSelected(MenuEvent e) {

@@ -36,7 +36,6 @@
 
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.cytopanels.CytoPanelName;
 import cytoscape.view.cytopanels.CytoPanelState;
@@ -45,6 +44,7 @@ import cytoscape.view.CytoscapeDesktop;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
+import cytoscape.CyNetworkManager;
 
 /**
  *
@@ -59,8 +59,8 @@ public class CytoPanelAction extends CytoscapeAction {
 	protected int position;
 	private CytoscapeDesktop desktop;
 
-	public CytoPanelAction(CytoPanelName cp, boolean show, CytoscapeDesktop desktop) {
-		super(show ? HIDE + " " + cp.getTitle() : SHOW + " " + cp.getTitle());
+	public CytoPanelAction(CytoPanelName cp, boolean show, CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super(show ? HIDE + " " + cp.getTitle() : SHOW + " " + cp.getTitle(),netmgr);
 		this.title = cp.getTitle();
 		this.position = cp.getCompassDirection();
 		setPreferredMenu("View");

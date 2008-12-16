@@ -42,6 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 
@@ -58,8 +59,8 @@ public class FitContentAction extends CytoscapeAction {
 	/**
 	 * Creates a new FitContentAction object.
 	 */
-	public FitContentAction() {
-		super("",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-1.png")));
+	public FitContentAction(CyNetworkManager netmgr) {
+		super("",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-1.png")),netmgr);
 		putValue(SHORT_DESCRIPTION,"Zoom out to display all of current Network");
 	}
 
@@ -77,6 +78,6 @@ public class FitContentAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		Cytoscape.getCurrentNetworkView().fitContent();
+		netmgr.getCurrentNetworkView().fitContent();
 	}
 }

@@ -28,6 +28,7 @@
  */
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
@@ -75,8 +76,8 @@ public class DeleteAction extends CytoscapeAction {
 	/**
 	 * action for deleting selected Cytoscape nodes and edges
 	 */
-	public DeleteAction(final UndoSupport undo, final CyRootNetworkFactory root) {
-		this(null,undo,root);
+	public DeleteAction(final UndoSupport undo, final CyRootNetworkFactory root,CyNetworkManager netmgr) {
+		this(null,undo,root,netmgr);
 	}
 
 	/**
@@ -86,8 +87,8 @@ public class DeleteAction extends CytoscapeAction {
 	 * @param obj the object to be deleted
 	 */
 
-	public DeleteAction(GraphObject obj, final UndoSupport undo, final CyRootNetworkFactory root) {
-		super(ACTION_TITLE);
+	public DeleteAction(GraphObject obj, final UndoSupport undo, final CyRootNetworkFactory root, CyNetworkManager netmgr) {
+		super(ACTION_TITLE,netmgr);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
 		graphObj = obj;
@@ -102,7 +103,7 @@ public class DeleteAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent ae) {
 
-		GraphView myView = Cytoscape.getCurrentNetworkView();
+		GraphView myView = netmgr.getCurrentNetworkView();
 
 		// delete from the base CySubNetwork so that our changes can be undone 
 		CySubNetwork cyNet = cyRootNetworkFactory.convert( myView.getNetwork() ).getBaseNetwork();
@@ -139,7 +140,7 @@ public class DeleteAction extends CytoscapeAction {
 			edges.add( cyEdge );
 		}
 
-		undo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodes,edges,this) );
+		undo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodes,edges,this,netmgr) );
 		
 		// delete the actual nodes and edges
 
@@ -152,7 +153,7 @@ public class DeleteAction extends CytoscapeAction {
 	}
 
     public void menuSelected(MenuEvent me) {
-        CyNetwork n = Cytoscape.getCurrentNetwork();
+        CyNetwork n = netmgr.getCurrentNetwork();
         if ( n == null ) {
             setEnabled(false);
             return;

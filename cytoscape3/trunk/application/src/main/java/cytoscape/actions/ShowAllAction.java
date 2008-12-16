@@ -37,6 +37,7 @@
 
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 
@@ -51,8 +52,8 @@ public class ShowAllAction extends CytoscapeAction {
 	/**
 	 * Creates a new ShowAllAction object.
 	 */
-	public ShowAllAction() {
-		super();
+	public ShowAllAction(CyNetworkManager netmgr) {
+		super(netmgr);
 	}
 
 	/**
@@ -61,6 +62,6 @@ public class ShowAllAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GinyUtils.unHideAll( Cytoscape.getCurrentNetworkView() );
+		GinyUtils.unHideAll( netmgr.getCurrentNetworkView() );
 	}
 }

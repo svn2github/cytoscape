@@ -36,7 +36,7 @@
 */
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNetwork;
 
@@ -52,20 +52,11 @@ public class DestroyNetworkAction extends CytoscapeAction {
 	/**
 	 * Creates a new DestroyNetworkAction object.
 	 */
-	public DestroyNetworkAction() {
-		super("Destroy Network");
+	public DestroyNetworkAction(CyNetworkManager netmgr) {
+		super("Destroy Network",netmgr);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_W,
 		                    ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK);
-	}
-
-	/**
-	 * Creates a new DestroyNetworkAction object.
-	 *
-	 * @param label  DOCUMENT ME!
-	 */
-	public DestroyNetworkAction(boolean label) {
-		super();
 	}
 
 	/**
@@ -74,18 +65,9 @@ public class DestroyNetworkAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		java.util.List<CyNetwork> l = Cytoscape.getSelectedNetworks();
+		java.util.List<CyNetwork> l = netmgr.getSelectedNetworks();
 		for ( CyNetwork n : l )
-			Cytoscape.destroyNetwork(n);
-	}
-
-	/**
-	 * @deprecated Use Cytoscape.destroyNetwork(Cytoscape.getCurrentNetwork()) instead.
-	 * Will be gone 11/2008.
-	 */
-	@Deprecated
-	public static void destroyCurrentNetwork() {
-		Cytoscape.destroyNetwork(Cytoscape.getCurrentNetwork());
+			netmgr.destroyNetwork(n);
 	}
 
 	/**

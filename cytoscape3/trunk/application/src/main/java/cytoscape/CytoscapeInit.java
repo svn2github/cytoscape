@@ -36,7 +36,6 @@
  */
 package cytoscape;
 
-//import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.init.CyInitParams;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CytoscapeDesktop;
@@ -114,8 +113,9 @@ public class CytoscapeInit {
 	/**
 	 * Creates a new CytoscapeInit object.
 	 */
-	public CytoscapeInit(CytoscapeDesktop desktop) {
+	public CytoscapeInit(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
 		Cytoscape.setDesktop( desktop );
+		Cytoscape.setNetworkManager( netmgr );
 		this.desktop = desktop;
 	}
 
@@ -426,6 +426,8 @@ public class CytoscapeInit {
 
 	private void setUpAttributesChangedListener() {
 		/*
+		 * TODO - WTF?
+		 *
 		 * This cannot be done in CytoscapeDesktop construction (like the other
 		 * menus) because we need CytoscapeDesktop created first. This is
 		 * because CytoPanel menu item listeners need to register for CytoPanel
@@ -434,7 +436,6 @@ public class CytoscapeInit {
 		 * desktop.getCytoPanel(...)
 		 * desktop.getCyMenus().initCytoPanelMenus(); Add a
 		 * listener that will apply vizmaps every time attributes change
-		 */
 		PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
@@ -445,6 +446,7 @@ public class CytoscapeInit {
 		};
 
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(attsChangeListener);
+		 */
 	}
 
 	// Load all requested networks

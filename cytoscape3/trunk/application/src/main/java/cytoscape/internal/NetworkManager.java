@@ -35,7 +35,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape;
+package cytoscape.internal;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -53,6 +53,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+
+import cytoscape.CyNetworkManager;
 
 
 public class NetworkManager implements CyNetworkManager {
@@ -82,18 +84,15 @@ public class NetworkManager implements CyNetworkManager {
 		return currentNetwork;
 	}
 
-	public void setCurrentNetwork(final CyNetwork net) {
-		if ( net == null )
-			throw new NullPointerException("network is null");
-	
-		if ( !networkMap.containsKey( net.getSUID() ) ) 
+	public void setCurrentNetwork(final long networkId) {
+		if ( !networkMap.containsKey( networkId ) ) 
 			throw new IllegalArgumentException("network is not recognized by this NetworkManager");
 
-		currentNetwork = net;
+		currentNetwork = networkMap.get(networkId);
 
         // reset selected networks
         selectedNetworks.clear();
-        selectedNetworks.add(net);
+        selectedNetworks.add(currentNetwork);
 
 //		eh.fireSynchronousEvent( new SetCurrentNetworkEvent(net), SetCurrentNetworkListener.class );
 	}
@@ -126,15 +125,12 @@ public class NetworkManager implements CyNetworkManager {
 		return currentNetworkView;
 	}
 
-	public void setCurrentNetworkView(final GraphView view) {
-		if ( view == null )
-			throw new NullPointerException("view is null");
-
-		if ( !networkMap.containsKey( view.getNetwork().getSUID() ) ||
-		     !networkViewMap.containsKey( view.getNetwork().getSUID() ) )
+	public void setCurrentNetworkView(final long viewId) {
+		if ( !networkMap.containsKey( viewId ) ||
+		     !networkViewMap.containsKey( viewId ) )
 			throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
 
-		currentNetworkView = view;
+		currentNetworkView = networkViewMap.get(viewId);
 
         // reset selected network views
         selectedNetworkViews.clear();
@@ -293,7 +289,7 @@ public class NetworkManager implements CyNetworkManager {
 		if ( view != null ) {
 			networkViewMap.put(network.getSUID(), view);
 
-			setCurrentNetworkView(networkViewMap.get( network.getSUID() ));
+			setCurrentNetworkView( network.getSUID() );
 
 			if ( cyLayouts != null )
 				cyLayouts.getDefaultLayout().doLayout(view);

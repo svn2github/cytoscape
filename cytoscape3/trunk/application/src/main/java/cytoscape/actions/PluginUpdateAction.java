@@ -3,7 +3,7 @@
  */
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.dialogs.plugins.PluginUpdateDialog;
 import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.PluginManager;
@@ -19,8 +19,8 @@ import java.util.List;
 public class PluginUpdateAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870238849L;
 	private CytoscapeDesktop desktop;
-	public PluginUpdateAction(CytoscapeDesktop desktop) {
-		super("Update Plugins");
+	public PluginUpdateAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super("Update Plugins",netmgr);
 		setPreferredMenu("Plugins");
 
 		if (PluginManager.usingWebstartManager()) {

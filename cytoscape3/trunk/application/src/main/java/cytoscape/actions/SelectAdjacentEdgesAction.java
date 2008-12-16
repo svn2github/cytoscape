@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -64,8 +64,8 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 	/**
 	 * Creates a new SelectAdjacentEdgesAction object.
 	 */
-	public SelectAdjacentEdgesAction() {
-		super("Select adjacent edges");
+	public SelectAdjacentEdgesAction(CyNetworkManager netmgr) {
+		super("Select adjacent edges",netmgr);
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_E, ActionEvent.ALT_MASK);
 	}
@@ -76,7 +76,7 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent ev) {
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = netmgr.getCurrentNetwork();
 		Set<CyEdge> edgeSet = new HashSet<CyEdge>();
 
 		// Get the list of selected nodes
@@ -88,8 +88,8 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 		for ( CyEdge e : edgeSet )
 			e.attrs().set("selected",true);
 
-		if (Cytoscape.getCurrentNetworkView() != null) {
-			Cytoscape.getCurrentNetworkView().updateView();
+		if (netmgr.getCurrentNetworkView() != null) {
+			netmgr.getCurrentNetworkView().updateView();
 		}
 	} // action performed
 

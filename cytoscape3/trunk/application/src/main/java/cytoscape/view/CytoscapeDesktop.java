@@ -67,6 +67,7 @@ import org.cytoscape.vizmap.VisualStyle;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
+import cytoscape.CyNetworkManager;
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelImp;
@@ -175,11 +176,15 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	//
 	private BirdsEyeViewHandler bevh;
 
+	private CyNetworkManager netmgr;
+
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop(CyMenus cyMenus) {
+	public CytoscapeDesktop(CyMenus cyMenus, CyNetworkManager netmgr) {
 		super("Cytoscape Desktop (New Session)");
+
+		this.netmgr = netmgr;
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
 
@@ -188,14 +193,14 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 
 		// ------------------------------//
 		// Set up the Panels, Menus, and Event Firing
-		networkViewManager = new NetworkViewManager(this);
+		networkViewManager = new NetworkViewManager(this, netmgr);
 
 		getBirdsEyeViewHandler();
 
 		getSwingPropertyChangeSupport().addPropertyChangeListener(bevh);
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(bevh);
 
-		networkPanel = new NetworkPanel(this);
+		networkPanel = new NetworkPanel(this, netmgr);
 		networkPanel.setNavigator(bevh.getBirdsEyeView());
 
 		this.cyMenus = cyMenus;
@@ -363,29 +368,28 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 
 	protected void updateFocus(Long network_id) {
 		final VisualStyle old_style = vmm.getVisualStyle();
-		final GraphView old_view = Cytoscape.getCurrentNetworkView();
+		final GraphView old_view = netmgr.getCurrentNetworkView();
 
 		// set the current Network/View
-		Cytoscape.setCurrentNetwork(network_id);
+		netmgr.setCurrentNetwork(network_id);
 
-		if (Cytoscape.setCurrentNetworkView(network_id)) {
-			// deal with the new Network
-			final GraphView new_view = Cytoscape.getCurrentNetworkView();
+		netmgr.setCurrentNetworkView(network_id);
+		// deal with the new Network
+		final GraphView new_view = netmgr.getCurrentNetworkView();
 
 			
-			VisualStyle new_style = vmm.getVisualStyleForView(new_view);
+		VisualStyle new_style = vmm.getVisualStyleForView(new_view);
 
-			if (new_style == null)
-				new_style = vmm.getCalculatorCatalog().getVisualStyle("default");
+		if (new_style == null)
+			new_style = vmm.getCalculatorCatalog().getVisualStyle("default");
 
-			vmm.setNetworkView(new_view);
+		vmm.setNetworkView(new_view);
 
-			if (new_style.getName().equals(old_style.getName()) == false) {
-				vmm.setVisualStyle(new_style);
+		if (new_style.getName().equals(old_style.getName()) == false) {
+			vmm.setVisualStyle(new_style);
 
-				// Is this necessary?
-				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
-			}
+			// Is this necessary?
+			Cytoscape.redrawGraph(netmgr.getCurrentNetworkView());
 		}
 	}
 
@@ -429,8 +433,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 			updateFocus((Long) e.getNewValue());
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEWS_SELECTED) {
-			Cytoscape.setSelectedNetworkViews((List<Long>) (e.getNewValue()));
-			Cytoscape.setSelectedNetworks((List<Long>) (e.getNewValue()));
+			netmgr.setSelectedNetworkViews((List<Long>) (e.getNewValue()));
+			netmgr.setSelectedNetworks((List<Long>) (e.getNewValue()));
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
 			System.out.println("getting and refiring NETWORK_CREATED");
@@ -439,10 +443,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
-			setFocus(Cytoscape.getCurrentNetwork().getSUID());
+			setFocus(netmgr.getCurrentNetwork().getSUID());
 
 			// Check new session or not
-			if ((Cytoscape.getNetworkSet().size() == 0)
+			if ((netmgr.getNetworkSet().size() == 0)
 			    && (Cytoscape.getSessionstate() != Cytoscape.SESSION_OPENED)) {
 				String message = "Do you want to create a new session?.\n(All attributes will be lost!)";
 
@@ -459,7 +463,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 
 			// pass on the event
 			pcs.firePropertyChange(e);
-			setFocus(Cytoscape.getCurrentNetwork().getSUID());
+			setFocus(netmgr.getCurrentNetwork().getSUID());
 		}
 	}
 
@@ -622,7 +626,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	 */
 	public BirdsEyeViewHandler getBirdsEyeViewHandler() {
 		if (bevh == null) {
-			bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane(), this);
+			bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane(),this, netmgr);
 		}
 
 		return bevh;

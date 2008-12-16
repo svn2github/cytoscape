@@ -37,7 +37,7 @@
 
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import org.cytoscape.view.GraphView;
 import cytoscape.util.CytoscapeAction;
 import javax.swing.ImageIcon;
@@ -56,8 +56,8 @@ abstract class AbstractZoomAction extends CytoscapeAction {
 	 *
 	 * @param factor  DOCUMENT ME!
 	 */
-	AbstractZoomAction(double factor, ImageIcon icon, String toolTip) {
-		super("", icon); 
+	AbstractZoomAction(double factor, ImageIcon icon, String toolTip,CyNetworkManager netmgr) {
+		super("", icon,netmgr); 
 		this.factor = factor;
 		putValue(SHORT_DESCRIPTION,toolTip);
 	}
@@ -76,7 +76,7 @@ abstract class AbstractZoomAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GraphView curr = Cytoscape.getCurrentNetworkView();
+		GraphView curr = netmgr.getCurrentNetworkView();
 		if ( curr != null )
 		         curr.setZoom(curr.getZoom() * factor);
 	}

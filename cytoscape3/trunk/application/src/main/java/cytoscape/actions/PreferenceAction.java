@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.dialogs.preferences.PreferencesDialog;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
@@ -60,8 +60,8 @@ public class PreferenceAction extends CytoscapeAction {
 	 * Creates a new PreferenceAction object.
 	 */
 	private CytoscapeDesktop desktop;
-	public PreferenceAction(CytoscapeDesktop desktop) {
-		super("Properties...");
+	public PreferenceAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super("Properties...",netmgr);
 		this.desktop = desktop;
 		System.out.println("PreferenceAction()...");
 		setPreferredMenu("Edit.Preferences");

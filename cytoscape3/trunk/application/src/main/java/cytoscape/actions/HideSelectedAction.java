@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
@@ -64,18 +64,9 @@ public class HideSelectedAction extends CytoscapeAction {
 	/**
 	 * Creates a new HideSelectedAction object.
 	 */
-	public HideSelectedAction() {
-		super("Hide Selected");
+	public HideSelectedAction(CyNetworkManager netmgr) {
+		super("Hide Selected",netmgr);
 		setPreferredMenu("Select.Edges");
-	}
-
-	/**
-	 * Creates a new HideSelectedAction object.
-	 *
-	 * @param label  DOCUMENT ME!
-	 */
-	public HideSelectedAction(boolean label) {
-		super();
 	}
 
 	/**
@@ -85,11 +76,11 @@ public class HideSelectedAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// Get the selected nodes:
-		CyNetwork curr = Cytoscape.getCurrentNetwork();
+		CyNetwork curr = netmgr.getCurrentNetwork();
 		List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(curr,"selected",true);
 		List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(curr,"selected",true); 
-		GinyUtils.hideSelectedNodes(Cytoscape.getCurrentNetworkView());
-		GinyUtils.hideSelectedEdges(Cytoscape.getCurrentNetworkView());
+		GinyUtils.hideSelectedNodes(netmgr.getCurrentNetworkView());
+		GinyUtils.hideSelectedEdges(netmgr.getCurrentNetworkView());
 
 		// unselect the nodes and edges
 		for ( CyNode n : selectedNodes )

@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
@@ -83,8 +83,8 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
 	 */
-	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r, final GraphViewFactory gvf) {
-		super("From selected nodes, all edges");
+	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r, final GraphViewFactory gvf, CyNetworkManager netmgr) {
+		super("From selected nodes, all edges",netmgr);
 		setPreferredMenu("File.New.Network");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);
 		cyroot = r;
@@ -98,15 +98,15 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// save the vizmapper catalog
-		CyNetwork current_network = Cytoscape.getCurrentNetwork();
+		CyNetwork current_network = netmgr.getCurrentNetwork();
 
-		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
+		if (current_network == null)
 			return;
 
 		GraphView current_network_view = null;
 
-		if (Cytoscape.viewExists(current_network.getSUID())) {
-			current_network_view = Cytoscape.getNetworkView(current_network.getSUID());
+		if (netmgr.viewExists(current_network.getSUID())) {
+			current_network_view = netmgr.getNetworkView(current_network.getSUID());
 		}
 
 		List<CyNode> nodes = CyDataTableUtil.getNodesInState(current_network, "selected", true);
@@ -121,7 +121,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 		CySubNetwork new_network = cyroot.convert(current_network)
 		                                 .addSubNetwork(nodes, new ArrayList<CyEdge>(edges));
-		new_network.attrs().set("name", CyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
+		new_network.attrs().set("name", CyNetworkNaming.getSuggestedSubnetworkTitle(current_network,netmgr));
 
 		GraphView new_view = gvf.createGraphView(new_network);
 
@@ -132,7 +132,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		String vsName = "default";
 
 		// keep the node positions
-		if (current_network_view != Cytoscape.getNullNetworkView()) {
+		if (current_network_view != null) {
 			for (CyNode node : new_network.getNodeList()) {
 				new_view.getNodeView(node)
 				        .setOffset(current_network_view.getNodeView(node).getXPosition(),
@@ -159,9 +159,9 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void menuSelected(MenuEvent e) {
-		CyNetwork n = Cytoscape.getCurrentNetwork();
+		CyNetwork n = netmgr.getCurrentNetwork();
 
-		if ((n == null) || (n == Cytoscape.getNullNetwork())) {
+		if (n == null) {
 			setEnabled(false);
 
 			return;

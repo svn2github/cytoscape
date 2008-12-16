@@ -303,8 +303,6 @@ public abstract class Cytoscape {
 	protected static Map<Long,GraphView> networkViewMap;
 	protected static Map<Long, CyNetwork> networkMap;
 	protected static CytoscapeDesktop defaultDesktop;
-	protected static Long currentNetworkID;
-	protected static Long currentNetworkViewID;
 
 	/**
 	 * Used by session writer. If this is null, session writer opens the file
@@ -315,40 +313,8 @@ public abstract class Cytoscape {
 	private static String currentSessionFileName;
 	private static Bookmarks bookmarks;
 
-//	private static ImportHandler importHandler = new ImportHandler();
+	private static CyNetworkManager netmgr;
 
-	/**
-	 * The list analog to the currentNetworkViewID
-	 */
-	protected static LinkedList<GraphView> selectedNetworkViews = new LinkedList<GraphView>();
-
-	/**
-	 * The list analog to the currentNetworkID
-	 */
-	protected static LinkedList<CyNetwork> selectedNetworks = new LinkedList<CyNetwork>();
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	public static ImportHandler getImportHandler() {
-		return importHandler;
-	}
-	 */
-
-	/**
-	 * @return a null object. 
-	 */
-	public static GraphView getNullNetworkView() {
-		return null;
-	}
-
-	/**
-	 * @return a null object 
-	 */
-	public static CyNetwork getNullNetwork() {
-		return null;
-	}
 
 	/**
 	 * Shuts down Cytoscape, after giving plugins time to react.
@@ -392,7 +358,7 @@ public abstract class Cytoscape {
 	 */
 	private static boolean confirmQuit() {
 		final String msg = "Do you want to save your session?";
-		int networkCount = Cytoscape.getNetworkSet().size();
+		int networkCount = netmgr.getNetworkSet().size();
 
 		// If there is no network, just quit.
 		if (networkCount == 0) {
@@ -460,7 +426,7 @@ public abstract class Cytoscape {
 	 */
 	public static List<CyNode> getCyNodesList() {
 		List<CyNode> allNodes = new ArrayList<CyNode>();
-		for ( CyNetwork net : getNetworkSet() )
+		for ( CyNetwork net : netmgr.getNetworkSet() )
 			allNodes.addAll( net.getNodeList() );
 
 		return allNodes;
@@ -471,7 +437,7 @@ public abstract class Cytoscape {
 	 */
 	public static List<CyEdge> getCyEdgesList() {
 		List<CyEdge> allEdges = new ArrayList<CyEdge>();
-		for ( CyNetwork net : getNetworkSet() )
+		for ( CyNetwork net : netmgr.getNetworkSet() )
 			allEdges.addAll( net.getEdgeList() );
 
 		return allEdges;
@@ -727,135 +693,6 @@ public abstract class Cytoscape {
 	 */	
 
 
-	// --------------------//
-	// Network Methods
-	// --------------------//
-
-	/**
-	 * Return the Network that currently has the Focus. Can be different from
-	 * getCurrentNetworkView
-	 */
-	public static CyNetwork getCurrentNetwork() {
-		if ((currentNetworkID == null) || !(getNetworkMap().containsKey(currentNetworkID)))
-			return null;
-
-		CyNetwork network = getNetworkMap().get(currentNetworkID);
-
-		return network;
-	}
-
-	/**
-	 * Return a List of all available GraphPerspective
-	 */
-	public static Set<CyNetwork> getNetworkSet() {
-		return new java.util.LinkedHashSet<CyNetwork>(getNetworkMap().values());
-	}
-
-	/**
-	 * @return the GraphPerspective that has the given identifier or null 
-	 *         (see {@link #getNullNetwork()}) if there is no such network.
-	 */
-	public static CyNetwork getNetwork(long id) {
-		return getNetworkMap().get(id);
-	}
-
-	/**
-	 * @return a GraphView for the given ID, if one exists, otherwise
-	 *         returns null
-	 */
-	public static GraphView getNetworkView(long network_id) {
-		return getNetworkViewMap().get(network_id);
-	}
-
-	/**
-	 * @return if a view exists for a given network id
-	 */
-	public static boolean viewExists(long network_id) {
-		return getNetworkViewMap().containsKey(network_id);
-	}
-
-	/**
-	 * Return the GraphView that currently has the focus. Can be different
-	 * from getCurrentNetwork
-	 */
-	public static GraphView getCurrentNetworkView() {
-		if (currentNetworkViewID == null) 
-			return null;
-		return getNetworkViewMap().get(currentNetworkViewID);
-	}
-
-	/**
-	 * Returns the list of currently selected networks.
-	 */
-    public static List<GraphView> getSelectedNetworkViews() {
-        GraphView view = getCurrentNetworkView();
-
-        if (!selectedNetworkViews.contains(view))
-            selectedNetworkViews.add(view);
-
-        return new ArrayList<GraphView>(selectedNetworkViews);
-    }
-
-    /**
-     * Sets the selected network views.
-     */
-    public static void setSelectedNetworkViews(final List<Long> viewIDs) {
-        selectedNetworkViews.clear();
-
-        if (viewIDs == null)
-            return;
-
-        for (Long id : viewIDs) {
-            GraphView nview = getNetworkViewMap().get(id);
-
-            if (nview != null) {
-                selectedNetworkViews.add(nview);
-            }
-        }
-
-        GraphView cv = getCurrentNetworkView();
-
-        if (!selectedNetworkViews.contains(cv)) {
-            selectedNetworkViews.add(cv);
-        }
-    }
-
-	/**
-	 * Returns the list of selected networks.
-	 */
-	public static List<CyNetwork> getSelectedNetworks() {
-        CyNetwork curr = getCurrentNetwork();
-
-        if (!selectedNetworks.contains(curr))
-            selectedNetworks.add(curr);
-
-        return new ArrayList<CyNetwork>(selectedNetworks);
-	}
-
-	/**
-	 * Sets the list of selected networks.
-	 */
-	public static void setSelectedNetworks(final List<Long> ids) {
-        selectedNetworks.clear();
-
-        if (ids == null)
-            return;
-
-        for (Long id : ids) {
-            CyNetwork n = getNetworkMap().get(id);
-
-            if (n != null) {
-                selectedNetworks.add(n);
-            }
-        }
-
-        CyNetwork cn = getCurrentNetwork();
-
-        if (!selectedNetworks.contains(cn)) {
-            selectedNetworks.add(cn);
-        }
-	}
-
 	/**
 	 * Don't use this!.
 	 * TODO resolve how the desktop is accessed. 
@@ -866,554 +703,12 @@ public abstract class Cytoscape {
 	}
 
 	/**
+	 * Don't use this!.
 	 */
-    public static void setCurrentNetwork(Long id) {
-        //System.out.println("- TRY setting current network" + id);
-        if (getNetworkMap().containsKey(id)) {
-            //System.out.println("- SUCCEED setting current network " + id);
-            currentNetworkID = id;
-
-            // reset selected networks
-            selectedNetworks.clear();
-            selectedNetworks.add(getNetworkMap().get(id));
-        }
-    }
-
-    /**
-     * @return true if there is network view, false if not
-     */
-    public static boolean setCurrentNetworkView(Long id) {
-        //System.out.println("= TRY setting current network VIEW " + id);
-        if (getNetworkViewMap().containsKey(id)) {
-            //System.out.println("= SUCCEED setting current network VIEW " + id);
-            currentNetworkViewID = id;
-
-            // reset selected network views
-            selectedNetworkViews.clear();
-            selectedNetworkViews.add(getNetworkViewMap().get(id));
-
-            return true;
-        }
-
-        return false;
-    }
-
-	/**
-	 * This Map has keys that are Strings ( network_ids ) and values that are
-	 * networks.
-	 */
-	protected static Map<Long, CyNetwork> getNetworkMap() {
-		if (networkMap == null) {
-			networkMap = new HashMap<Long, CyNetwork>();
-		}
-
-		return networkMap;
+	static void setNetworkManager(CyNetworkManager nm) {
+		if ( nm != null )
+			netmgr = nm;	
 	}
-
-	/**
-	 * This Map has keys that are Strings ( network_ids ) and values that are
-	 * networkviews.
-	 */
-	public static Map<Long,GraphView> getNetworkViewMap() {
-		if (networkViewMap == null) {
-			networkViewMap = new HashMap<Long,GraphView>();
-		}
-
-		return networkViewMap;
-	}
-
-	/**
-	 * destroys the given network
-	 */
-	public static void destroyNetwork(Long network_id) {
-		destroyNetwork(getNetworkMap().get(network_id));
-	}
-
-	/**
-	 * destroys the given network
-	 */
-	public static void destroyNetwork(CyNetwork network) {
-		destroyNetwork(network, false);
-	}
-
-	/**
-	 * destroys the given network
-	 *
-	 * @param network
-	 *            the network to be destroyed
-	 * @param destroy_unique
-	 *            if this is true, then all Nodes and Edges that are in this
-	 *            network, but no other are also destroyed.
-	 */
-    public static void destroyNetwork(CyNetwork network, boolean destroy_unique) {
-        if (network == null) 
-            return;
-
-        getSelectedNetworks().remove(network);
-
-        final long networkId = network.getSUID();
-
-        firePropertyChange(NETWORK_DESTROYED, null, networkId);
-
-		for ( CyNode n : network.getNodeList() )
-			n.attrs().set("selected",false);
-		for ( CyEdge e : network.getEdgeList() )
-			e.attrs().set("selected",false);
-
-        final Map<Long, CyNetwork> nmap = getNetworkMap();
-        nmap.remove(networkId);
-
-        if (networkId == currentNetworkID) {
-            if (nmap.size() <= 0) {
-                currentNetworkID = null;
-            } else {
-                // randomly pick a network to become the current network
-                for (Long key : nmap.keySet()) {
-                    currentNetworkID = key;
-
-                    break;
-                }
-            }
-        }
-
-        if (viewExists(networkId))
-            destroyNetworkView(network);
-
-        if (destroy_unique) {
-            final List<CyNode> nodes = new ArrayList<CyNode>();
-            final List<CyEdge> edges = new ArrayList<CyEdge>();
-
-            final Collection<CyNetwork> networks = networkMap.values();
-
-            for (CyNode node : nodes) {
-                boolean add = true;
-
-                for (CyNetwork net : networks) {
-                    if (net.containsNode(node)) {
-                        add = false;
-
-                        continue;
-                    }
-                }
-
-                if (add)
-                    nodes.add(node);
-            }
-
-            for (CyEdge edge : edges) {
-                boolean add = true;
-
-                for (CyNetwork net : networks) {
-                    if (net.containsEdge(edge)) {
-                        add = false;
-
-                        continue;
-                    }
-                }
-
-                if (add)
-                    edges.add(edge);
-            }
-
-            for (CyNode node : nodes) {
-                node = null;
-            }
-
-            for (CyEdge edge : edges) {
-                edge = null;
-            }
-        }
-
-        // theoretically this should not be set to null till after the events
-        // firing is done
-        network = null;
-
-    }
-
-
-
-
-	/**
-	 * destroys the networkview, including any layout information
-	 */
-	public static void destroyNetworkView(GraphView view) {
-		if (view == null)
-			return;
-
-		getSelectedNetworkViews().remove(view);
-
-		Long viewID = view.getNetwork().getSUID();
-
-		if (viewID.equals(currentNetworkViewID)) {
-			if (getNetworkViewMap().size() <= 0)
-				currentNetworkViewID = null;
-			else {
-				// depending on which randomly chosen currentNetworkID we get, 
-				// we may or may not have a view for it.
-				GraphView newCurr = (GraphView) (getNetworkViewMap().get(currentNetworkID));
-
-				if (newCurr != null)
-					currentNetworkViewID = newCurr.getIdentifier();
-				else
-					currentNetworkViewID = null;
-			}
-		}
-
-		firePropertyChange(CySwingApplication.NETWORK_VIEW_DESTROYED, null, view);
-		// theoretically this should not be set to null till after the events
-		// firing is done
-		getNetworkViewMap().remove(viewID);
-		view = null;
-	}
-
-	/**
-	 * destroys the networkview, including any layout information
-	 */
-	public static void destroyNetworkView(long network_view_id) {
-		destroyNetworkView(getNetworkViewMap().get(network_view_id));
-	}
-
-	/**
-	 * destroys the networkview, including any layout information
-	 */
-	public static void destroyNetworkView(CyNetwork network) {
-		destroyNetworkView(getNetworkViewMap().get(network.getSUID()));
-	}
-
-	public static void addNetwork(CyNetwork network, GraphView view, CyLayouts cyLayouts) {
-		getNetworkMap().put(network.getSUID(), network);
-
-		if ( view != null ) {
-			getNetworkViewMap().put(network.getSUID(), view);
-
-			setCurrentNetworkView(network.getSUID());
-
-			setSelectionMode(Cytoscape.getSelectionMode(), view);
-	
-			if ( cyLayouts != null )
-				cyLayouts.getDefaultLayout().doLayout(view);
-
-			view.fitContent();
-
-			redrawGraph(view);
-		}
-
-		firePropertyChange(NETWORK_CREATED, null, network.getSUID());
-		firePropertyChange(cytoscape.view.CySwingApplication.NETWORK_VIEW_CREATED, null, view);
-	}
-
-	/**
-	 * Creates a new, empty Network.
-	 *
-	 * @param title
-	 *            the title of the new network.
-	public static CyNetwork createNetwork(String title) {
-		return createNetwork(new int[] {  }, new int[] {  }, title, null, true);
-	}
-	 */
-
-	/**
-	 * Creates a new, empty Network.
-	 *
-	 * @param title
-	 *            the title of the new network.
-	 * @param create_view
-	 *            if the size of the network is under the node limit, create a
-	 *            view
-	public static CyNetwork createNetwork(String title, boolean create_view) {
-		return createNetwork(new int[] {  }, new int[] {  }, title, null, create_view);
-	}
-	 */
-
-	/**
-	 * Creates a new, empty Network.
-	 *
-	 * @param title
-	 *            the title of the new network.
-	 * @param create_view
-	 *            if the size of the network is under the node limit, create a
-	 *            view
-	public static CyNetwork createNetwork(String title, CyNetwork parent, boolean create_view) {
-		return createNetwork(new int[] {  }, new int[] {  }, title, parent, create_view);
-	}
-	 */
-
-	/**
-	 * Creates a new Network. A view will be created automatically.
-	 *
-	 * @param nodes
-	 *            the indeces of nodes
-	 * @param edges
-	 *            the indeces of edges
-	 * @param title
-	 *            the title of the new network.
-	public static CyNetwork createNetwork(int[] nodes, int[] edges, String title) {
-		return createNetwork(nodes, edges, title, null, true);
-	}
-	 */
-
-	/**
-	 * Creates a new Network. A view will be created automatically.
-	 *
-	 * @param nodes
-	 *            a collection of nodes
-	 * @param edges
-	 *            a collection of edges
-	 * @param title
-	 *            the title of the new network.
-	public static CyNetwork createNetwork(Collection<CyNode> nodes, Collection<CyEdge> edges, String title) {
-		return createNetwork(nodes, edges, title, null, true);
-	}
-	 */
-
-	/**
-	 * Creates a new Network, that inherits from the given ParentNetwork. A view
-	 * will be created automatically.
-	 *
-	 * @param nodes
-	 *            the indeces of nodes
-	 * @param edges
-	 *            the indeces of edges
-	 * @param child_title
-	 *            the title of the new network.
-	 * @param parent
-	 *            the parent of the this Network
-	public static CyNetwork createNetwork(int[] nodes, int[] edges, String child_title,
-	                                      CyNetwork parent) {
-		return createNetwork(nodes, edges, child_title, parent, true);
-	}
-	 */
-
-	/**
-	 * Creates a new Network, that inherits from the given ParentNetwork
-	 *
-	 * @param nodes
-	 *            the indeces of nodes
-	 * @param edges
-	 *            the indeces of edges
-	 * @param child_title
-	 *            the title of the new network.
-	 * @param parent
-	 *            the parent of the this Network
-	 * @param create_view
-	 *            whether or not a view will be created
-	public static CyNetwork createNetwork(int[] nodes, int[] edges, String child_title,
-	                                      CyNetwork parent, boolean create_view) {
-		CyNetwork network = getRootGraph().createGraphPerspective(nodes, edges);
-		addNetwork(network, child_title, parent, create_view);
-
-		return network;
-	}
-	 */
-
-	/**
-	 * Creates a new Network, that inherits from the given ParentNetwork. A view
-	 * will be created automatically.
-	 *
-	 * @param nodes
-	 *            the indeces of nodes
-	 * @param edges
-	 *            the indeces of edges
-	 * @param parent
-	 *            the parent of the this Network
-	public static CyNetwork createNetwork(Collection<CyNode> nodes, Collection<CyEdge> edges, String child_title,
-	                                      CyNetwork parent) {
-		return createNetwork(nodes, edges, child_title, parent, true);
-	}
-	 */
-
-	/**
-	 * Creates a new Network, that inherits from the given ParentNetwork.
-	 *
-	 * @param nodes
-	 *            the indeces of nodes
-	 * @param edges
-	 *            the indeces of edges
-	 * @param parent
-	 *            the parent of the this Network
-	 * @param create_view
-	 *            whether or not a view will be created
-	public static CyNetwork createNetwork(Collection<CyNode> nodes, Collection<CyEdge> edges, String child_title,
-	                                      CyNetwork parent, boolean create_view) {
-		CyNetwork network = getRootGraph().createGraphPerspective(nodes, edges);
-		addNetwork(network, child_title, parent, create_view);
-
-		return network;
-	}
-	 */
-
-	/**
-	 * Creates a GraphPerspective from a file. The file type is determined by the
-	 * suffix of the file.* Uses the new ImportHandler and thus the passed in
-	 * location should be a file of a recognized "Graph Nature". The "Nature" of
-	 * a file is a new way to tell what a file is beyond it's filetype e.g.
-	 * galFiltered.sif is, in addition to being a .sif file, the file is also of
-	 * Graph "Nature". Other files of Graph Nature include GML and XGMML. Beyond
-	 * Graph Nature there are Node, Edge, and Properties Nature.
-	 *
-	 * A view will be created automatically.
-	 *
-	 * @param location
-	 *            the location of the file
-	public static CyNetwork createNetworkFromFile(String location) {
-		return createNetworkFromFile(location, true);
-	}
-	 */
-
-	/**
-	 * Creates a GraphPerspective from a file. The file type is determined by the
-	 * suffix of the file.* Uses the new ImportHandler and thus the passed in
-	 * location should be a file of a recognized "Graph Nature". The "Nature" of
-	 * a file is a new way to tell what a file is beyond it's filetype e.g.
-	 * galFiltered.sif is, in addition to being a .sif file, the file is also of
-	 * Graph "Nature". Other files of Graph Nature include GML and XGMML. Beyond
-	 * Graph Nature there are Node, Edge, and Properties Nature.
-	 *
-	 * @param loc
-	 *            location of importable file
-	 * @param create_view
-	 *            whether or not a view will be created
-	 * @return a network based on the specified file or null if the file type is
-	 *         supported but the file is not of Graph Nature.
-	public static CyNetwork createNetworkFromFile(String loc, boolean create_view) {
-		return createNetwork(importHandler.getReader(loc), create_view, null);
-	}
-	 */
-
-	/**
-	 * Creates a GraphPerspective from a URL. The file type is determined by the
-	 * suffix of the file or, if one does't exist, the contentType of the data.
-	 * Uses the new ImportHandler and thus the passed in
-	 * location should be a file of a recognized "Graph Nature". The "Nature" of
-	 * a file is a new way to tell what a file is beyond it's filetype e.g.
-	 * galFiltered.sif is, in addition to being a .sif file, the file is also of
-	 * Graph "Nature". Other files of Graph Nature include GML and XGMML. Beyond
-	 * Graph Nature there are Node, Edge, and Properties Nature.
-	 *
-	 * @param url
-	 *            url of importable file
-	 * @param create_view
-	 *            whether or not a view will be created
-	 * @return a network based on the specified file or null if the file type is
-	 *         supported but the file is not of Graph Nature.
-	public static CyNetwork createNetworkFromURL(URL url, boolean create_view) {
-		return createNetwork(importHandler.getReader(url), create_view, null);
-	}
-	 */
-
-	/**
-	 * Creates a cytoscape.data.GraphPerspective from a reader. Neccesary with
-	 * cesssions.
-	 * <p>
-	 * This operation may take a long time to complete. It is a good idea NOT to
-	 * call this method from the AWT event handling thread. This operation
-	 * assumes the reader is of type .xgmml since this should only be called by
-	 * the cessions reader which opens .xgmml files from the zipped cytoscape
-	 * session.
-	 *
-	 * @param reader
-	 *            the graphreader that will read in the network
-	 * @param create_view
-	 *            whether or not a view will be created
-	public static CyNetwork createNetwork(final GraphReader reader, final boolean create_view,
-	                                      final CyNetwork parent) {
-		if (reader == null) {
-			throw new RuntimeException("Couldn't read specified file.");
-		}
-
-		// have the GraphReader read the given file
-
-		// Explanation for code below: the code below recasts an IOException
-		// into a RuntimeException, so that the exception can still be thrown
-		// without having to change the method signature. This is less than
-		// ideal, but the only sure way to ensure API stability for plugins.
-		try {
-			reader.read();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-
-		final String title = reader.getNetworkName();
-
-		// get the RootGraph indices of the nodes and
-		// edges that were just created
-		final int[] nodes = reader.getNodeIndicesArray();
-		final int[] edges = reader.getEdgeIndicesArray();
-
-		if (nodes == null) {
-			System.err.println("reader returned null nodes");
-		}
-
-		if (edges == null) {
-			System.err.println("reader returned null edges");
-		}
-
-		final CyNetwork network = getRootGraph().createGraphPerspective(nodes, edges);
-		addNetwork(network, title, parent, false);
-
-		if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-		                                                            .getProperty("viewThreshold")))) {
-			createNetworkView(network,title,reader.getLayoutAlgorithm());
-		}
-
-		// Execute any necessary post-processing.
-		reader.doPostProcessing(network);
-
-		return network;
-	}
-	 */
-
-	// --------------------//
-	// Network Data Methods
-	// --------------------//
-
-	/**
-	 * Gets Global Node Attributes.
-	 *
-	 * @return CyDataTable Object.
-	 */
-	public static CyDataTable getNodeAttributes() {
-		CyNetwork n = getCurrentNetwork();
-		if ( n == null )
-			return null;
-		else
-			return n.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-	}
-
-	/**
-	 * Gets Global Edge Attributes
-	 *
-	 * @return CyDataTable Object.
-	 */
-	public static CyDataTable getEdgeAttributes() {
-		CyNetwork n = getCurrentNetwork();
-		if ( n == null )
-			return null;
-		else
-			return n.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-	}
-
-	/**
-	 * Gets Global Network Attributes.
-	 *
-	 * @return CyDataTable Object.
-	 */
-	public static CyDataTable getNetworkAttributes() {
-		CyNetwork n = getCurrentNetwork();
-		if ( n == null )
-			return null;
-		else
-			return n.getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-	}
-
-	/**
-	 * Gets Global Network Attributes.
-	 *
-	 * @return CyDataTable Object.
-	public static CyDataTable getOntologyAttributes() {
-		return ontologyAttributes;
-	}
-	 */
 
 	/**
 	 *  DOCUMENT ME!
@@ -1437,7 +732,6 @@ public abstract class Cytoscape {
 	 * Load Expression Data
 	 */
 
-	// TODO: remove the JOption Pane stuff
 	public static boolean loadExpressionData(String filename, boolean copy_atts) {
 		try {
 			expressionData = new ExpressionData(filename);
@@ -1449,7 +743,8 @@ public abstract class Cytoscape {
 		}
 
 		if (copy_atts) {
-			expressionData.copyToAttribs(getNodeAttributes(), null);
+			// TODO where to add the expression attrs
+			//expressionData.copyToAttribs(getNodeAttributes(), null);
 			firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 		}
 
@@ -1457,170 +752,6 @@ public abstract class Cytoscape {
 		Cytoscape.firePropertyChange(Cytoscape.EXPRESSION_DATA_LOADED, null, expressionData);
 
 		return true;
-	}
-
-	/**
-	 * Loads Node and Edge attribute data into Cytoscape from the given file
-	 * locations. Currently, the only supported attribute types are of the type
-	 * "name = value".
-	 *
-	 * @param nodeAttrLocations
-	 *            an array of node attribute file locations. May be null.
-	 * @param edgeAttrLocations
-	 *            an array of edge attribute file locations. May be null.
-	public static void loadAttributes(String[] nodeAttrLocations, String[] edgeAttrLocations) {
-		// check to see if there are Node Attributes passed
-		if (nodeAttrLocations != null) {
-			for (int i = 0; i < nodeAttrLocations.length; ++i) {
-				try {
-					InputStreamReader reader = new InputStreamReader(FileUtil.getInputStream(nodeAttrLocations[i]));
-					CyAttributesReader.loadAttributes(nodeAttributes, reader);
-					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new IllegalArgumentException("Failure loading node attribute data: "
-					                                   + nodeAttrLocations[i] + "  because of:"
-					                                   + e.getMessage());
-				}
-			}
-		}
-
-		// Check to see if there are Edge Attributes Passed
-		if (edgeAttrLocations != null) {
-			for (int j = 0; j < edgeAttrLocations.length; ++j) {
-				try {
-					InputStreamReader reader = new InputStreamReader(FileUtil.getInputStream(edgeAttrLocations[j]));
-					CyAttributesReader.loadAttributes(edgeAttributes, reader);
-					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new IllegalArgumentException("Failure loading edge attribute data: "
-					                                   + edgeAttrLocations[j] + "  because of:"
-					                                   + e.getMessage());
-				}
-			}
-		}
-	}
-	 */
-
-	/**
-	 * This will replace the bioDataServer.
-	public static OntologyServer buildOntologyServer() {
-		try {
-			ontologyServer = new OntologyServer();
-		} catch (Exception e) {
-			System.err.println("Could not build OntologyServer.");
-			e.printStackTrace();
-
-			return null;
-		}
-
-		return ontologyServer;
-	}
-	 */
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	public static OntologyServer getOntologyServer() {
-		return ontologyServer;
-	}
-	 */
-
-	// ------------------------------//
-	// GraphView Creation Methods
-	// ------------------------------//
-
-	/**
-	 * Creates a GraphView, but doesn't do anything with it. Ifnn's you want
-	 * to use it
-	 *
-	 * @link {CytoscapeDesktop}
-	 * @param network
-	 *            the network to create a view of
-	 */
-	public static GraphView createNetworkView(CyNetwork network) {
-		return createNetworkView(network, network.attrs().get("name",String.class), null, null);
-	}
-
-	/**
-	 * Creates a GraphView, but doesn't do anything with it. Ifnn's you want
-	 * to use it
-	 *
-	 * @link {CytoscapeDesktop}
-	 * @param network
-	 *            the network to create a view of
-	 * @param title
-	 *            the title to use for the view
-	 */
-	public static GraphView createNetworkView(CyNetwork network, String title) {
-		return createNetworkView(network, title, null, null);
-	}
-
-	/**
-	 * Creates a GraphView, but doesn't do anything with it. Ifnn's you want
-	 * to use it
-	 *
-	 * @link {CytoscapeDesktop}
-	 * @param network
-	 *            the network to create a view of
-	 * @param title
-	 *            the title to use for the view
-	 * @param layout
-	 *            the CyLayoutAlgorithm to use to lay this out by default
-	 */
-	public static GraphView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout) {
-		return createNetworkView(network,title,layout,null);
-	}
-
-
-	public static GraphView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout,
-	                                              VisualStyle vs) {
-		if (network == null) {
-			return null;
-		}
-
-		if (Cytoscape.viewExists(network.getSUID())) {
-			return getNetworkView(network.getSUID());
-		}
-
-		/* TODONOW
-		final GraphView view = GraphViewFactory.createGraphView(network);
-		view.setGraphLOD(new CyGraphLOD());
-		view.setIdentifier(network.getSUID());
-		getNetworkViewMap().put(network.getSUID(), view);
-
-		// TODO:  Evaluate this hack.  It is done to make sure that current network view
-		// is set for listeners of NETWORK_VIEW_CREATED.  Apparently in Cytoscape 2.6
-		// the NetworkViewManager heard the CREATED event first, and was able to set the
-		// value in time for others.  Not so in 3.0.  
-		// Ideally we would just get rid of getCurrentNetworkView().
-		setCurrentNetworkView(network.getSUID());
-
-		setSelectionMode(Cytoscape.getSelectionMode(), view);
-
-		if (vs != null) {
-			VMMFactory.getVisualMappingManager().setVisualStyleForView(view,vs);
-			VMMFactory.getVisualMappingManager().setVisualStyle(vs);
-			VMMFactory.getVisualMappingManager().setNetworkView(view);
-		}
-
-		if (layout == null) {
-			layout = CyLayouts.getDefaultLayout();
-		}
-
-		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
-
-		layout.doLayout(view);
-
-		view.fitContent();
-
-		redrawGraph(view);
-
-		return view;
-		*/
-		return null;
 	}
 
 
@@ -1655,9 +786,8 @@ public abstract class Cytoscape {
 	public static void setSelectionMode(int selectionMode) {
 		// set the selection mode on all the views
 		String network_id;
-		Map<Long,GraphView> networkViewMap = getNetworkViewMap();
 
-		for ( GraphView view : networkViewMap.values() ) {
+		for ( GraphView view : netmgr.getNetworkViewSet() ) {
 			setSelectionMode(selectionMode, view);
 		}
 
@@ -1740,10 +870,10 @@ public abstract class Cytoscape {
 
     public static void createNewSession() {
         // Destroy all networks
-        Set<CyNetwork> netSet = getNetworkSet();
+        Set<CyNetwork> netSet = netmgr.getNetworkSet();
 
         for (CyNetwork net : netSet)
-            destroyNetwork(net, true);
+            netmgr.destroyNetwork(net);
 
         setCurrentSessionFileName(null);
         firePropertyChange(ATTRIBUTES_CHANGED, null, null);
@@ -1751,23 +881,6 @@ public abstract class Cytoscape {
         System.gc();
     }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	public static String getOntologyRootID() {
-		return ontologyRootID;
-	}
-	 */
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
-	public static void setOntologyRootID(String id) {
-		ontologyRootID = id;
-	}
-	 */
 
 	/**
 	 *  DOCUMENT ME!

@@ -37,6 +37,7 @@
 package cytoscape.util.undo;
 
 import cytoscape.util.CytoscapeAction;
+import cytoscape.CyNetworkManager;
 
 import org.cytoscape.work.UndoSupport;
 
@@ -58,8 +59,8 @@ public class UndoAction extends CytoscapeAction {
 	/**
 	 * Constructs the action.
 	 */
-	public UndoAction(UndoSupport undo) {
-		super("Undo");
+	public UndoAction(UndoSupport undo,CyNetworkManager netmgr) {
+		super("Undo",netmgr);
 		setAcceleratorCombo(KeyEvent.VK_Z, ActionEvent.CTRL_MASK);
 		setPreferredMenu("Edit");
 		setEnabled(true);

@@ -43,6 +43,7 @@
 //---------------------------------------------------------------------------------------
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.bookmarks.Bookmarks;
@@ -63,8 +64,8 @@ public class PluginManagerAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870172822L;
 	private String bookmarkCategory = "plugins";
 	private CytoscapeDesktop desktop;
-	public PluginManagerAction(CytoscapeDesktop desktop) {
-		super("Manage Plugins");
+	public PluginManagerAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super("Manage Plugins",netmgr);
 		setPreferredMenu("Plugins");
 		this.desktop = desktop;
 	}

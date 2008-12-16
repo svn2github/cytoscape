@@ -38,7 +38,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -60,8 +60,8 @@ public class SelectConnectedNodesAction extends CytoscapeAction {
 	/**
 	 * Creates a new SelectConnectedNodesAction object.
 	 */
-	public SelectConnectedNodesAction() {
-		super("Nodes connected by selected edges");
+	public SelectConnectedNodesAction(CyNetworkManager netmgr) {
+		super("Nodes connected by selected edges",netmgr);
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(KeyEvent.VK_7, ActionEvent.CTRL_MASK);
 	}
@@ -72,7 +72,7 @@ public class SelectConnectedNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+		final CyNetwork currentNetwork = netmgr.getCurrentNetwork();
 		final List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(currentNetwork,"selected",true);
 
 		for (CyEdge edge: selectedEdges) {
@@ -80,7 +80,7 @@ public class SelectConnectedNodesAction extends CytoscapeAction {
 			edge.getTarget().attrs().set("selected",true);
 		}
 
-		Cytoscape.getCurrentNetworkView().updateView();
+		netmgr.getCurrentNetworkView().updateView();
 	} // actionPerformed
 
     public void menuSelected(MenuEvent e) {

@@ -37,6 +37,7 @@
 
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import javax.swing.ImageIcon;
 
@@ -47,8 +48,8 @@ import javax.swing.ImageIcon;
 public class ZoomInAction extends AbstractZoomAction {
 	private final static long serialVersionUID = 1202555870966892L;
 
-	public ZoomInAction() {
+	public ZoomInAction(CyNetworkManager netmgr) {
 		super(1.1, new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-in.png")),
-			"Zoom In");
+			"Zoom In",netmgr);
 	}
 }

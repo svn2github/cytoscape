@@ -37,6 +37,7 @@
 package cytoscape.view;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import org.cytoscape.view.BirdsEyeView;
 
 import javax.swing.*;
@@ -54,14 +55,16 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 	final BirdsEyeView bev;
 	FrameListener frameListener = new FrameListener();
 	final CytoscapeDesktop desktop;
+	final CyNetworkManager netmgr;
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
 	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	BirdsEyeViewHandler(Component desktopPane, final CytoscapeDesktop desktop) {
+	BirdsEyeViewHandler(Component desktopPane, final CytoscapeDesktop desktop, final CyNetworkManager netmgr) {
 		this.desktop = desktop;
-		bev = new BirdsEyeView(Cytoscape.getCurrentNetworkView(), desktopPane) {
+		this.netmgr = netmgr;
+		bev = new BirdsEyeView(netmgr.getCurrentNetworkView(), desktopPane) {
 				private final static long serialVersionUID = 1213748836623570L;
 				public Dimension getMinimumSize() {
 					return new Dimension(180, 180);
@@ -83,7 +86,7 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 		    || (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUS)
 		    || (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_DESTROYED)
 		    || (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED)) {
-			bev.changeView(Cytoscape.getCurrentNetworkView());
+			bev.changeView(netmgr.getCurrentNetworkView());
 		}
 
 		// Add the frameListener to the currently focused view if it

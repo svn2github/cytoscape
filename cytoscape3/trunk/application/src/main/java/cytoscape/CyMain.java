@@ -86,7 +86,7 @@ public class CyMain implements CyInitParams {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public static void main(String[] args) throws Exception {
-		CyMain app = new CyMain(args,null);
+		CyMain app = new CyMain(args,null,null);
 	}
 
 	/**
@@ -96,11 +96,11 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @throws Exception  DOCUMENT ME!
 	 */
-	public CyMain(CytoscapeDesktop desk) throws Exception {
-		this( new String[]{},desk );
+	public CyMain(CytoscapeDesktop desk,CyNetworkManager netmgr) throws Exception {
+		this( new String[]{},desk,netmgr );
 	}
 
-	public CyMain(String[] args,CytoscapeDesktop desk) throws Exception {
+	public CyMain(String[] args,CytoscapeDesktop desk,CyNetworkManager netmgr) throws Exception {
 		System.out.println("CyMain constructor");
 
 		if (System.getProperty("os.name").startsWith("Mac")) {
@@ -132,7 +132,7 @@ public class CyMain implements CyInitParams {
 		//	System.out.println("arg: '" + asdf + "'");
 		parseCommandLine(args);
 
-		CytoscapeInit initializer = new CytoscapeInit(desk);
+		CytoscapeInit initializer = new CytoscapeInit(desk,netmgr);
 
 		if (!initializer.init(this)) {
 			printHelp();

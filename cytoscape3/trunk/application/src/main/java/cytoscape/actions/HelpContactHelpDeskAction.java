@@ -36,6 +36,7 @@
  */
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 
 import java.awt.event.ActionEvent;
@@ -51,8 +52,8 @@ public class HelpContactHelpDeskAction extends CytoscapeAction {
 	/**
 	 * Creates a new HelpContactHelpDeskAction object.
 	 */
-	public HelpContactHelpDeskAction() {
-		super("Contact Help Desk");
+	public HelpContactHelpDeskAction(CyNetworkManager netmgr) {
+		super("Contact Help Desk",netmgr);
 		setPreferredMenu("Help");
 	}
 

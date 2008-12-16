@@ -38,6 +38,7 @@ package cytoscape.view;
 
 import cytoscape.CyNetworkTitleChange;
 import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.actions.CreateNetworkViewAction;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.swing.AbstractTreeTableModel;
@@ -101,15 +102,17 @@ public class NetworkPanel extends JPanel
 	private BiModalJSplitPane split;
 	private final NetworkTreeTableModel treeTableModel;
 	private final CytoscapeDesktop desktop;
+	private final CyNetworkManager netmgr;
 
 	/**
 	 * Constructor for the Network Panel.
 	 *
 	 * @param desktop
 	 */
-	public NetworkPanel(final CytoscapeDesktop desktop) {
+	public NetworkPanel(final CytoscapeDesktop desktop, final CyNetworkManager netmgr) {
 		super();
 		this.desktop = desktop;
+		this.netmgr = netmgr;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
@@ -172,7 +175,7 @@ public class NetworkPanel extends JPanel
 
 		// action listener which performs the tasks associated with the popup
 		// listener
-		popupActionListener = new PopupActionListener(desktop);
+		popupActionListener = new PopupActionListener(desktop,netmgr);
 		editNetworkTitle.addActionListener(popupActionListener);
 		createViewItem.addActionListener(popupActionListener);
 		destroyViewItem.addActionListener(popupActionListener);
@@ -291,7 +294,7 @@ public class NetworkPanel extends JPanel
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
 			System.out.println("NetworkPanel: addNetwork " + network_id);
-			NetworkTreeNode dmtn = new NetworkTreeNode(Cytoscape.getNetwork(network_id).attrs().get("name",String.class), network_id);
+			NetworkTreeNode dmtn = new NetworkTreeNode(netmgr.getNetwork(network_id).attrs().get("name",String.class), network_id);
 
 			if (parent_id != null && getNetworkNode(parent_id) != null) {
 				getNetworkNode(parent_id).add(dmtn);
@@ -407,7 +410,7 @@ public class NetworkPanel extends JPanel
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
 			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
 			Long newID = cyNetworkTitleChange.getNetworkIdentifier();
-			CyNetwork _network = Cytoscape.getNetwork(newID);
+			CyNetwork _network = netmgr.getNetwork(newID);
 			if (_network != null) {
 				updateTitle(_network);				
 			}
@@ -471,12 +474,12 @@ public class NetworkPanel extends JPanel
 			if (column == 0)
 				return ((DefaultMutableTreeNode) node).getUserObject();
 			else if (column == 1) {
-				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
+				CyNetwork cyNetwork = netmgr.getNetwork(((NetworkTreeNode) node).getNetworkID());
 
 				return "" + cyNetwork.getNodeCount() + "(" + CyDataTableUtil.getNodesInState(cyNetwork,"selected",true).size()
 				       + ")";
 			} else if (column == 2) {
-				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
+				CyNetwork cyNetwork = netmgr.getNetwork(((NetworkTreeNode) node).getNetworkID());
 
 				return "" + cyNetwork.getEdgeCount() + "(" + CyDataTableUtil.getEdgesInState(cyNetwork,"selected",true).size()
 				       + ")";
@@ -532,13 +535,13 @@ public class NetworkPanel extends JPanel
 
 		private boolean hasView(Object value) {
 			NetworkTreeNode node = (NetworkTreeNode) value;
-			CyNetwork n = Cytoscape.getNetwork(node.getNetworkID());
+			CyNetwork n = netmgr.getNetwork(node.getNetworkID());
 			if ( n != null )
 				setToolTipText(n.attrs().get("name",String.class));
 			else
 				setToolTipText("Root");
 
-			return Cytoscape.viewExists(node.getNetworkID());
+			return netmgr.viewExists(node.getNetworkID());
 		}
 	}
 
@@ -580,12 +583,12 @@ public class NetworkPanel extends JPanel
 					TreePath treePath = tree.getPathForRow(row);
 					Long networkID = ((NetworkTreeNode) treePath.getLastPathComponent()).getNetworkID();
 
-					CyNetwork cyNetwork = Cytoscape.getNetwork(networkID);
+					CyNetwork cyNetwork = netmgr.getNetwork(networkID);
 
 					if (cyNetwork != null) {
 						/* disable or enable specific options with respect to
 						 the actual network that is selected */
-						if (Cytoscape.viewExists(networkID)) {
+						if (netmgr.viewExists(networkID)) {
 							// disable the view creation item
 							createViewItem.setEnabled(false);
 							destroyViewItem.setEnabled(true);
@@ -642,9 +645,11 @@ class PopupActionListener implements ActionListener {
 	 */
 	protected CyNetwork cyNetwork;
 	private CytoscapeDesktop desktop;
+	private CyNetworkManager netmgr;
 
-	public PopupActionListener(CytoscapeDesktop desktop) {
+	public PopupActionListener(CytoscapeDesktop desktop,CyNetworkManager netmgr) {
 		this.desktop = desktop;
+		this.netmgr = netmgr;
 	}
 
 	/**
@@ -655,22 +660,24 @@ class PopupActionListener implements ActionListener {
 
 		// Figure out the appropriate action
 		if (label == DESTROY_VIEW) {
-			Cytoscape.destroyNetworkView(cyNetwork);
-		} // end of if ()
+			long vid = cyNetwork.getSUID();
+			if ( netmgr.viewExists(vid) ) 
+				netmgr.destroyNetworkView(netmgr.getNetworkView(vid));
+		} 
 		else if (label == CREATE_VIEW) {
 			CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork,desktop);
-		} // end of if ()
+		}
 		else if (label == DESTROY_NETWORK) {
-			Cytoscape.destroyNetwork(cyNetwork);
-		} // end of if ()
+			netmgr.destroyNetwork(cyNetwork);
+		}
 		else if (label == EDIT_TITLE) {
-			CyNetworkNaming.editNetworkTitle(cyNetwork, desktop);
+			CyNetworkNaming.editNetworkTitle(cyNetwork, desktop, netmgr);
 			desktop.getNetworkPanel().updateTitle(cyNetwork);
-		} // end of if ()
+		}
 		else {
 			// throw an exception here?
 			System.err.println("Unexpected network panel popup option");
-		} // end of else
+		}
 	}
 
 	/**

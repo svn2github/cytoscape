@@ -1,6 +1,7 @@
 
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 import org.cytoscape.view.GraphView;
@@ -23,8 +24,9 @@ class DeleteEdit extends CyAbstractEdit {
 	double[] yPos;
 	CySubNetwork net;
 	DeleteAction deleteAction;
+	CyNetworkManager netmgr;
 	
-	DeleteEdit(CySubNetwork net, Set<CyNode> nodes, Set<CyEdge> edges,	DeleteAction deleteAction) {
+	DeleteEdit(CySubNetwork net, Set<CyNode> nodes, Set<CyEdge> edges,	DeleteAction deleteAction, CyNetworkManager netmgr) {
 		super("Delete");
 		this.deleteAction = deleteAction;
 		if ( net == null )
@@ -42,7 +44,7 @@ class DeleteEdit extends CyAbstractEdit {
 		// save the positions of the nodes
 		xPos = new double[nodes.size()]; 
 		yPos = new double[nodes.size()]; 
-		GraphView netView = Cytoscape.getNetworkView(net.getSUID());
+		GraphView netView = netmgr.getNetworkView(net.getSUID());
 		if ( netView != null ) {
 			int i = 0;
 			for ( CyNode n : nodes ) {
@@ -61,7 +63,7 @@ class DeleteEdit extends CyAbstractEdit {
 		for ( CyEdge e : edges )
 			net.removeEdge(e);
 
-		GraphView netView = Cytoscape.getNetworkView(net.getSUID());	
+		GraphView netView = netmgr.getNetworkView(net.getSUID());	
 		Cytoscape.redrawGraph(netView);
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
         deleteAction.setEnabled(false);
@@ -75,8 +77,8 @@ class DeleteEdit extends CyAbstractEdit {
 		for ( CyEdge e : edges )
 			net.addEdge(e);
 
-		GraphView netView = Cytoscape.getNetworkView(net.getSUID());
-		if ( netView != null && netView != Cytoscape.getNullNetworkView() ) {
+		GraphView netView = netmgr.getNetworkView(net.getSUID());
+		if ( netView != null ) {
 			int i = 0;
 			for ( CyNode n : nodes ) {
 				NodeView nv = netView.getNodeView(n);

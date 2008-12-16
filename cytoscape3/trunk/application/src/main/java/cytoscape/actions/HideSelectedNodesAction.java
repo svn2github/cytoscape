@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 
 import javax.swing.event.MenuEvent;
@@ -58,19 +58,10 @@ public class HideSelectedNodesAction extends CytoscapeAction {
 	/**
 	 * Creates a new HideSelectedNodesAction object.
 	 */
-	public HideSelectedNodesAction() {
-		super("Hide node selection");
+	public HideSelectedNodesAction(CyNetworkManager netmgr) {
+		super("Hide node selection",netmgr);
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK);
-	}
-
-	/**
-	 * Creates a new HideSelectedNodesAction object.
-	 *
-	 * @param label  DOCUMENT ME!
-	 */
-	public HideSelectedNodesAction(boolean label) {
-		super();
 	}
 
 	/**
@@ -79,7 +70,7 @@ public class HideSelectedNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GinyUtils.hideSelectedNodes(Cytoscape.getCurrentNetworkView());
+		GinyUtils.hideSelectedNodes(netmgr.getCurrentNetworkView());
 	}
 
     public void menuSelected(MenuEvent e) {

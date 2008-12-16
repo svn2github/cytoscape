@@ -61,10 +61,10 @@ import java.util.HashSet;
 public interface CyNetworkManager {
 
 	public CyNetwork getCurrentNetwork();
-	public void setCurrentNetwork(final CyNetwork net);
+	public void setCurrentNetwork(final long network_id);
 
 	public GraphView getCurrentNetworkView();
-	public void setCurrentNetworkView(final GraphView view);
+	public void setCurrentNetworkView(final long view_id);
 
 	public Set<CyNetwork> getNetworkSet();
 	public Set<GraphView> getNetworkViewSet();
@@ -74,7 +74,6 @@ public interface CyNetworkManager {
 
 	public boolean networkExists(long network_id);
 	public boolean viewExists(long network_id);
-
 
 	public List<CyNetwork> getSelectedNetworks();
     public List<GraphView> getSelectedNetworkViews();

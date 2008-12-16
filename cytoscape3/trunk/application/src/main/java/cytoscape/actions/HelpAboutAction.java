@@ -36,6 +36,7 @@
 */
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CreditScreen;
 import cytoscape.util.CytoscapeAction;
 
@@ -51,8 +52,8 @@ public class HelpAboutAction extends CytoscapeAction {
 	/**
 	 * Creates a new HelpAboutAction object.
 	 */
-	public HelpAboutAction() {
-		super("About...");
+	public HelpAboutAction(CyNetworkManager netmgr) {
+		super("About...",netmgr);
 		setPreferredMenu("Help");
 	}
 

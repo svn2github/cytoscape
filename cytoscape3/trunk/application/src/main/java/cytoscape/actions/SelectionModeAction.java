@@ -36,6 +36,7 @@
 */
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
@@ -57,9 +58,11 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 	JCheckBoxMenuItem nodes; 
 	JCheckBoxMenuItem edges; 
 	JCheckBoxMenuItem nodesAndEdges; 
+	CyNetworkManager netmgr;
 
-	public SelectionModeAction() {
+	public SelectionModeAction(CyNetworkManager netmgr) {
 		super("Mouse Drag Selects");
+		this.netmgr = netmgr;
 
 		ButtonGroup modeGroup = new ButtonGroup();
 		nodes = new JCheckBoxMenuItem(new AbstractAction("Nodes Only") {
@@ -118,7 +121,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 		// nodes.setSelected(true);
 		nodesAndEdges.setSelected(true);
 
-		GraphView view = Cytoscape.getCurrentNetworkView();
+		GraphView view = netmgr.getCurrentNetworkView();
 		if ( view != null ) { 
 			view.enableNodeSelection();
 			view.enableEdgeSelection();
@@ -131,8 +134,8 @@ public class SelectionModeAction extends JMenu implements MenuListener {
     public void menuDeselected(MenuEvent e) {}
 
     public void menuSelected(MenuEvent e) {
-       	CyNetwork n = Cytoscape.getCurrentNetwork();
-		if ( n == null || n == Cytoscape.getNullNetwork() ) {
+       	CyNetwork n = netmgr.getCurrentNetwork();
+		if ( n == null ) {
 			nodes.setEnabled(false);	
 			edges.setEnabled(false);	
 			nodesAndEdges.setEnabled(false);	

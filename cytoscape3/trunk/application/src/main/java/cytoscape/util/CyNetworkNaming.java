@@ -36,7 +36,7 @@
 */
 package cytoscape.util;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
 
 import javax.swing.*;
@@ -56,12 +56,12 @@ public class CyNetworkNaming {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static String getSuggestedSubnetworkTitle(CyNetwork parentNetwork) {
+	public static String getSuggestedSubnetworkTitle(CyNetwork parentNetwork, CyNetworkManager netmgr) {
 		for (int i = 0; true; i++) {
 			String nameCandidate = parentNetwork.attrs().get("name",String.class) + "--child"
 			                       + ((i == 0) ? "" : ("." + i));
 
-			if (!isNetworkTitleTaken(nameCandidate))
+			if (!isNetworkTitleTaken(nameCandidate,netmgr))
 				return nameCandidate;
 		}
 	}
@@ -73,25 +73,19 @@ public class CyNetworkNaming {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static String getSuggestedNetworkTitle(String desiredTitle) {
+	public static String getSuggestedNetworkTitle(String desiredTitle, CyNetworkManager netmgr) {
 		for (int i = 0; true; i++) {
 			String titleCandidate = desiredTitle + ((i == 0) ? "" : ("." + i));
 
-			if (!isNetworkTitleTaken(titleCandidate))
+			if (!isNetworkTitleTaken(titleCandidate,netmgr))
 				return titleCandidate;
 		}
 	}
 
-	private static boolean isNetworkTitleTaken(String titleCandidate) {
-		Set existingNetworks = Cytoscape.getNetworkSet();
-		Iterator iter = existingNetworks.iterator();
-
-		while (iter.hasNext()) {
-			CyNetwork existingNetwork = (CyNetwork) iter.next();
-
+	private static boolean isNetworkTitleTaken(String titleCandidate, CyNetworkManager netmgr) {
+		for (CyNetwork existingNetwork : netmgr.getNetworkSet() ) 
 			if (existingNetwork.attrs().get("name",String.class).equals(titleCandidate))
 				return true;
-		}
 
 		return false;
 	}
@@ -102,7 +96,7 @@ public class CyNetworkNaming {
 	 * this will assign that title to the given CyNetwork
 	 * @para network is the CyNetwork whose title is to be changed
 	 */
-	public static void editNetworkTitle(CyNetwork network, Component parent) {
+	public static void editNetworkTitle(CyNetwork network, Component parent, CyNetworkManager netmgr) {
 		String pname = network.attrs().get("name",String.class);
 		String name = null;
 		String sname = "";
@@ -126,8 +120,8 @@ public class CyNetworkNaming {
 				name = pname;
 
 				break;
-			} else if (isNetworkTitleTaken(name)) {
-				sname = getSuggestedNetworkTitle(name);
+			} else if (isNetworkTitleTaken(name,netmgr)) {
+				sname = getSuggestedNetworkTitle(name,netmgr);
 				value = JOptionPane.showOptionDialog(parent,
 				                                     "That network title already exists, try again or use \""
 				                                     + sname + "\" instead: ",

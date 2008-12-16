@@ -36,7 +36,7 @@
  */
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.ding.CyGraphAllLOD;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.render.stateful.GraphLOD;
@@ -58,19 +58,10 @@ public class ShowGraphicsDetailsAction extends CytoscapeAction {
 	/**
 	 * Creates a new ShowGraphicsDetailsAction object.
 	 */
-	public ShowGraphicsDetailsAction() {
-		super("Show Graphics Details");
+	public ShowGraphicsDetailsAction(CyNetworkManager netmgr) {
+		super("Show Graphics Details",netmgr);
 		setPreferredMenu("View");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_S, ActionEvent.ALT_MASK);
-	}
-
-	/**
-	 * Creates a new ShowGraphicsDetailsAction object.
-	 *
-	 * @param label  DOCUMENT ME!
-	 */
-	public ShowGraphicsDetailsAction(boolean label) {
-		super();
 	}
 
 	/**
@@ -79,9 +70,9 @@ public class ShowGraphicsDetailsAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GraphView currView = Cytoscape.getCurrentNetworkView();
+		GraphView currView = netmgr.getCurrentNetworkView();
 		if (!showFlag) {
-			currView.setGraphLOD(new CyGraphLOD());
+			currView.setGraphLOD(new CyGraphLOD(netmgr));
 		} else {
 			currView.setGraphLOD(new CyGraphAllLOD());
 		}
@@ -91,8 +82,8 @@ public class ShowGraphicsDetailsAction extends CytoscapeAction {
 	 * Sets the state of the action before rendering the menu. 
 	 */
 	public void menuSelected(MenuEvent e) {
-		GraphView currView = Cytoscape.getCurrentNetworkView();
-		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
+		GraphView currView = netmgr.getCurrentNetworkView();
+		if ( currView == null )
 			setEnabled(false);
 		else {
 			setEnabled(true);

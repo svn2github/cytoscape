@@ -37,7 +37,7 @@
 */
 package cytoscape.layout.ui;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.layout.CyLayoutAlgorithm;
@@ -75,16 +75,18 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private CyLayouts cyLayouts;
 	private CytoscapeDesktop desktop;
 	private LayoutMenuManager menuMgr;
+	private CyNetworkManager netmgr;
 
 	/**
 	 * Creates a new LayoutSettingsDialog object.
 	 */
-	public LayoutSettingsDialog(CyLayouts cyLayouts, CytoscapeDesktop desktop, LayoutMenuManager menuMgr) {
+	public LayoutSettingsDialog(CyLayouts cyLayouts, CytoscapeDesktop desktop, LayoutMenuManager menuMgr, CyNetworkManager netmgr) {
 		super(desktop, "Layout Settings", false);
 		initializeOnce(); // Initialize the components we only do once
 		this.cyLayouts = cyLayouts;
 		this.desktop = desktop;
 		this.menuMgr = menuMgr;
+		this.netmgr = netmgr;
 	}
 
 	/**
@@ -104,7 +106,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		} else if (command.equals("execute")) {
 			// Layout using the current layout
 			updateAllSettings();
-			TaskManager.executeTask( new LayoutTask(currentLayout,Cytoscape.getCurrentNetworkView()),
+			TaskManager.executeTask( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()),
 			                         LayoutTask.getDefaultTaskConfig(getParent()) );
 		} else if (command.equals("cancel")) {
 			// Call revertSettings for each layout

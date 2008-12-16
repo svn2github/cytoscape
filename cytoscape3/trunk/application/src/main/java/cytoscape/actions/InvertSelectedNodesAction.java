@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -62,8 +62,8 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 	/**
 	 * Creates a new InvertSelectedNodesAction object.
 	 */
-	public InvertSelectedNodesAction() {
-		super("Invert node selection");
+	public InvertSelectedNodesAction(CyNetworkManager netmgr) {
+		super("Invert node selection",netmgr);
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_I, ActionEvent.CTRL_MASK);
 	}
@@ -74,14 +74,14 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		final CyNetwork cyNetwork = netmgr.getCurrentNetwork();
 		for ( CyNode n : cyNetwork.getNodeList() ) 
 			if ( n.attrs().get("selected",Boolean.class) == true )
 				 n.attrs().set("selected",false);
 			else
 				 n.attrs().set("selected",true);
 
-		Cytoscape.getCurrentNetworkView().updateView();
+		netmgr.getCurrentNetworkView().updateView();
 	}
 
     public void menuSelected(MenuEvent e) {

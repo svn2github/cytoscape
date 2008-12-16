@@ -38,6 +38,7 @@
 package cytoscape.actions;
 
 import cytoscape.util.CytoscapeAction;
+import cytoscape.CyNetworkManager;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -50,8 +51,8 @@ public class UnHideSelectedNodesAction extends CytoscapeAction {
 	/**
 	 * Creates a new UnHideSelectedNodesAction object.
 	 */
-	public UnHideSelectedNodesAction() {
-		super("Show all nodes");
+	public UnHideSelectedNodesAction(CyNetworkManager netmgr) {
+		super("Show all nodes",netmgr);
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H,
 		                    ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK);
@@ -63,7 +64,7 @@ public class UnHideSelectedNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GinyUtils.unHideAll(cytoscape.Cytoscape.getCurrentNetworkView());
+		GinyUtils.unHideAll(netmgr.getCurrentNetworkView());
 	} 
 
     public void menuSelected(MenuEvent e) {

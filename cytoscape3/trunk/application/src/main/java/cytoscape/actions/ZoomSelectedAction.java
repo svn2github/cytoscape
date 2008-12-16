@@ -42,6 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 
@@ -58,8 +59,8 @@ public class ZoomSelectedAction extends CytoscapeAction {
 	/**
 	 * Creates a new ZoomSelectedAction object.
 	 */
-	public ZoomSelectedAction() {
-		super("",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-object.png")));
+	public ZoomSelectedAction(CyNetworkManager netmgr) {
+		super("",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-object.png")),netmgr);
 		putValue(SHORT_DESCRIPTION,"Zoom Selected Region");
 	}
 
@@ -77,7 +78,7 @@ public class ZoomSelectedAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		Cytoscape.getCurrentNetworkView().fitSelected();
-		Cytoscape.getCurrentNetworkView().updateView();
+		netmgr.getCurrentNetworkView().fitSelected();
+		netmgr.getCurrentNetworkView().updateView();
 	}
 }

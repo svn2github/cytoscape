@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
@@ -59,8 +59,8 @@ public class BendSelectedEdgesAction extends CytoscapeAction {
 	/**
 	 * Creates a new BendSelectedEdgesAction object.
 	 */
-	public BendSelectedEdgesAction() {
-		super("Smooth selected edges");
+	public BendSelectedEdgesAction(CyNetworkManager netmgr) {
+		super("Smooth selected edges",netmgr);
 		setPreferredMenu("Select.Edges");
 	}
 
@@ -70,7 +70,7 @@ public class BendSelectedEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GraphView view = Cytoscape.getCurrentNetworkView();
+		GraphView view = netmgr.getCurrentNetworkView();
 		final int[] selectedEdges = view.getSelectedEdgeIndices();
 
 		if (selectedEdges != null) {

@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.dialogs.preferences.ProxyServerDialog;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
@@ -60,8 +60,8 @@ public class ProxyServerAction extends CytoscapeAction {
 	/**
 	 * Creates a new ProxyServerAction object.
 	 */
-	public ProxyServerAction(CytoscapeDesktop desktop) {
-		super("Proxy Server...");
+	public ProxyServerAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super("Proxy Server...",netmgr);
 
 		setPreferredMenu("Edit.Preferences");
 		this.desktop = desktop;

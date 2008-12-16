@@ -36,7 +36,7 @@
 */
 package cytoscape.layout.ui;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyDataTableUtil;
@@ -62,17 +62,19 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	private final static long serialVersionUID = 1202339874255880L;
 	List<CyLayoutAlgorithm> subMenuList;
 	LayoutMenuManager menuMgr;
+	private CyNetworkManager netmgr;
 
 	/**
 	 * Creates a new LayoutMenu object.
 	 *
 	 * @param menuName  DOCUMENT ME!
 	 */
-	public LayoutMenu(String menuName, LayoutMenuManager menuMgr) {
+	public LayoutMenu(String menuName, LayoutMenuManager menuMgr, CyNetworkManager netmgr) {
 		super(menuName);
 		addMenuListener(this);
 		subMenuList = new ArrayList<CyLayoutAlgorithm>();
 		this.menuMgr = menuMgr;
+		this.netmgr = netmgr;
 	}
 
 	/**
@@ -126,7 +128,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		this.removeAll();
 
 		// Figure out if we have anything selected
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = netmgr.getCurrentNetwork();
 		boolean someSelected = false; 
 		if ( network != null ) {
 			List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
@@ -142,22 +144,22 @@ public class LayoutMenu extends JMenu implements MenuListener {
 
 			if ((layout.supportsNodeAttributes().size() > 0)
 			    || (layout.supportsEdgeAttributes().size() > 0)) {
-				super.add(new DynamicLayoutMenu(layout,enableMenuItem));
+				super.add(new DynamicLayoutMenu(layout,enableMenuItem,netmgr));
 			} else if (layout.supportsSelectedOnly() && someSelected) {
-				super.add(new DynamicLayoutMenu(layout,enableMenuItem));
+				super.add(new DynamicLayoutMenu(layout,enableMenuItem,netmgr));
 			} else {
-				super.add(new StaticLayoutMenu(layout,enableMenuItem));
+				super.add(new StaticLayoutMenu(layout,enableMenuItem,netmgr));
 			}
 		}
 	}
 
 	private boolean checkEnabled() {
-		CyNetwork network = Cytoscape.getCurrentNetwork();
-		if ( network == null || network == Cytoscape.getNullNetwork() )
+		CyNetwork network = netmgr.getCurrentNetwork();
+		if ( network == null )
 			return false;
 
-		GraphView view = Cytoscape.getCurrentNetworkView();
-		if ( view == null || view == Cytoscape.getNullNetworkView() )
+		GraphView view = netmgr.getCurrentNetworkView();
+		if ( view == null )
 			return false;
 		else
 			return true;

@@ -34,6 +34,7 @@
 */
 package cytoscape.ding;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.render.stateful.GraphLOD;
@@ -58,13 +59,15 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	protected int nodeLabelThreshold;
 	protected int edgeArrowThreshold;
 	protected int edgeLabelThreshold;
+	private CyNetworkManager netmgr;
 
 	/**
 	 * Creates a new CyGraphLOD object.
 	 */
-	public CyGraphLOD() {
+	public CyGraphLOD(CyNetworkManager netmgr) {
 		init();
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		this.netmgr = netmgr;
 	}
 
 	/**
@@ -75,13 +78,9 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED) {
 			init();
-
-			java.util.Map<Long,GraphView> networkViewMap = cytoscape.Cytoscape.getNetworkViewMap();
-			java.util.Iterator<GraphView> foo = networkViewMap.values().iterator();
-
-			while (foo.hasNext()) {
-				foo.next().setGraphLOD(this);
-			}
+			
+			for (GraphView foo : netmgr.getNetworkViewSet() )
+				foo.setGraphLOD(this);
 		}
 	}
 
@@ -101,7 +100,6 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 		        System.out.println("  edgeLabelThreshold: " + edgeLabelThreshold);
 		*/
 
-		//Cytoscape.getCurrentNetworkView().updateView();
 	}
 
 	protected int getInt(String key, int defaultValue) {

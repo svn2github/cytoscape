@@ -36,6 +36,7 @@
 */
 package cytoscape.layout.ui;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.layout.CyLayouts;
@@ -52,8 +53,8 @@ public class SettingsAction extends CytoscapeAction {
 	private CytoscapeDesktop desk;
 	private LayoutMenuManager menuMgr;
 
-	public SettingsAction(CyLayouts cyl, CytoscapeDesktop desk, LayoutMenuManager menuMgr) {
-		super("Settings...");
+	public SettingsAction(CyLayouts cyl, CytoscapeDesktop desk, LayoutMenuManager menuMgr, CyNetworkManager netmgr) {
+		super("Settings...",netmgr);
 		setPreferredMenu("Layout");
 		this.cyl = cyl;
 		this.desk = desk;
@@ -61,7 +62,7 @@ public class SettingsAction extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl,desk,menuMgr);
+		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl,desk,menuMgr,netmgr);
 		settingsDialog.actionPerformed(e);
 	}
 

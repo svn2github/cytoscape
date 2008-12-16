@@ -39,6 +39,7 @@ package cytoscape.util.undo;
 import cytoscape.util.CytoscapeAction;
 
 import org.cytoscape.work.UndoSupport;
+import cytoscape.CyNetworkManager;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -58,8 +59,8 @@ public class RedoAction extends CytoscapeAction {
 	/**
 	 * Constructs the action. 
 	 */
-	public RedoAction(UndoSupport undo) {
-		super("Redo");
+	public RedoAction(UndoSupport undo, CyNetworkManager netmgr) {
+		super("Redo",netmgr);
 		setAcceleratorCombo(KeyEvent.VK_Y, ActionEvent.CTRL_MASK);
 		setPreferredMenu("Edit");
 		setEnabled(true);

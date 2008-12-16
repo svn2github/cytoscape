@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -65,8 +65,8 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	/**
 	 * Creates a new CloneGraphInNewWindowAction object.
 	 */
-	public CloneGraphInNewWindowAction() {
-		super("Clone current network");
+	public CloneGraphInNewWindowAction(CyNetworkManager netmgr) {
+		super("Clone current network",netmgr);
 		setPreferredMenu("File.New.Network");
 	}
 

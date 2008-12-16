@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNode;
 
@@ -58,8 +58,8 @@ public class SelectAllNodesAction extends CytoscapeAction {
 	/**
 	 * Creates a new SelectAllNodesAction object.
 	 */
-	public SelectAllNodesAction() {
-		super("Select all nodes");
+	public SelectAllNodesAction(CyNetworkManager netmgr) {
+		super("Select all nodes",netmgr);
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK);
 	}
@@ -70,11 +70,11 @@ public class SelectAllNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		for ( CyNode n : Cytoscape.getCurrentNetwork().getNodeList() )
+		for ( CyNode n : netmgr.getCurrentNetwork().getNodeList() )
 			n.attrs().set("selected",true);
 
-		if (Cytoscape.getCurrentNetworkView() != null) {
-			Cytoscape.getCurrentNetworkView().updateView();
+		if (netmgr.getCurrentNetworkView() != null) {
+			netmgr.getCurrentNetworkView().updateView();
 		}
 	}
 

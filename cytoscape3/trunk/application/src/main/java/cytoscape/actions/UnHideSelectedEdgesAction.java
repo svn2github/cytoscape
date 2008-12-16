@@ -37,6 +37,7 @@
 
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 
 import javax.swing.event.MenuEvent;
@@ -50,8 +51,8 @@ public class UnHideSelectedEdgesAction extends CytoscapeAction {
 	/**
 	 * Creates a new UnHideSelectedEdgesAction object.
 	 */
-	public UnHideSelectedEdgesAction() {
-		super("Show all edges");
+	public UnHideSelectedEdgesAction(CyNetworkManager netmgr) {
+		super("Show all edges",netmgr);
 		setPreferredMenu("Select.Edges");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H,
 		                    ActionEvent.ALT_MASK | ActionEvent.SHIFT_MASK);
@@ -63,7 +64,7 @@ public class UnHideSelectedEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GinyUtils.unHideAll(cytoscape.Cytoscape.getCurrentNetworkView());
+		GinyUtils.unHideAll(netmgr.getCurrentNetworkView());
 	} 
 
     public void menuSelected(MenuEvent e) {

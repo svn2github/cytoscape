@@ -42,7 +42,6 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
 import cytoscape.dialogs.preferences.BookmarkDialog;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
@@ -51,6 +50,7 @@ import javax.swing.*;
 import javax.xml.bind.JAXBException;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import cytoscape.CyNetworkManager;
 
 
 /**
@@ -62,8 +62,8 @@ public class BookmarkAction extends CytoscapeAction {
 	/**
 	 * Creates a new BookmarkAction object.
 	 */
-	public BookmarkAction(CytoscapeDesktop desktop) {
-		super("Bookmarks...");
+	public BookmarkAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super("Bookmarks...",netmgr);
 
 		System.out.println("BookmarkAction()...");
 		setPreferredMenu("Edit.Preferences");

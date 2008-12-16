@@ -37,6 +37,7 @@
 
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
@@ -63,8 +64,8 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 	/**
 	 * Creates a new NewWindowSelectedNodesEdgesAction object.
 	 */
-	public NewWindowSelectedNodesEdgesAction() {
-		super("From selected nodes, selected edges");
+	public NewWindowSelectedNodesEdgesAction(CyNetworkManager netmgr) {
+		super("From selected nodes, selected edges",netmgr);
 		setPreferredMenu("File.New.Network");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N,
 		                    ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK);
@@ -90,7 +91,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 		List<CyEdge> edges = CyDataTableUtil.getEdgesInState(current_network,"selected",true); 
 
 		CyNetwork new_network = Cytoscape.createNetwork(nodes, edges,
-		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
+		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network, netmgr),
 		                                                current_network);
 
 		String title = " selection";
@@ -121,8 +122,8 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-        CyNetwork n = Cytoscape.getCurrentNetwork();
-        if ( n == null || n == Cytoscape.getNullNetwork() ) {
+        CyNetwork n = netmgr.getCurrentNetwork();
+        if ( n == null ) {
            	setEnabled(false); 
 			return;
 		}

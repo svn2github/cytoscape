@@ -45,6 +45,7 @@ package cytoscape.actions;
 
 //-------------------------------------------------------------------------
 
+import cytoscape.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;

@@ -36,6 +36,7 @@
  */
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
@@ -63,8 +64,8 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * Creates a new CreateNetworkViewAction object.
 	 */
 	private final CytoscapeDesktop desktop;
-	public CreateNetworkViewAction(CytoscapeDesktop desktop) {
-		super("Create View");
+	public CreateNetworkViewAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super("Create View",netmgr);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_V, ActionEvent.ALT_MASK);
 		this.desktop = desktop;
@@ -76,7 +77,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		CyNetwork cyNetwork = netmgr.getCurrentNetwork();
 		createViewFromCurrentNetwork(cyNetwork,desktop);
 	}
 
@@ -103,12 +104,14 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			                                      JOptionPane.YES_NO_OPTION);
 
 			if (n == JOptionPane.YES_OPTION) {
-				Cytoscape.createNetworkView(cyNetwork);
+			// TODO
+				//Cytoscape.createNetworkView(cyNetwork);
 			} else {
 				JOptionPane.showMessageDialog(desk,
 				                              "Create View Request Cancelled by User.");
 			}
 		} else {
+			// TODO
 //			Cytoscape.createNetworkView(cyNetwork);
 			// Create Task
 			CreateNetworkViewTask task = new CreateNetworkViewTask(cyNetwork);
@@ -131,13 +134,13 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * Sets the state of the action before rendering the menu. 
 	 */
 	public void menuSelected(MenuEvent e) {
-		CyNetwork currNet = Cytoscape.getCurrentNetwork();
-		if ( currNet == null || currNet == Cytoscape.getNullNetwork() ) {
+		CyNetwork currNet = netmgr.getCurrentNetwork();
+		if ( currNet == null ) {
 			setEnabled(false);
 			return;
 		}
-		GraphView currView = Cytoscape.getNetworkView(currNet.getSUID());
-		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
+		GraphView currView = netmgr.getNetworkView(currNet.getSUID());
+		if ( currView == null )
 			setEnabled(true);
 		else
 			setEnabled(false);
@@ -159,7 +162,8 @@ class CreateNetworkViewTask implements Task {
 		taskMonitor.setPercentCompleted(-1);
 
 		try {
-			Cytoscape.createNetworkView(network);
+			// TODO
+			//Cytoscape.createNetworkView(network);
 		} catch (Exception e) {
 			taskMonitor.setException(e, "Could not create network view for network: " + network.attrs().get("name",String.class));
 		}

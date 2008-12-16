@@ -40,7 +40,7 @@
 // $Author: mes $
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.data.Semantics;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
@@ -65,8 +65,8 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 	/**
 	 * Creates a new ListFromFileSelectionAction object.
 	 */
-	public ListFromFileSelectionAction() {
-		super("From File...");
+	public ListFromFileSelectionAction(CyNetworkManager netmgr) {
+		super("From File...",netmgr);
 		setPreferredMenu("Select.Nodes");
 	}
 
@@ -77,7 +77,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		boolean cancelSelectionAction = !selectFromFile();
-		Cytoscape.getCurrentNetworkView().updateView();
+		netmgr.getCurrentNetworkView().updateView();
 	}
 
 	private boolean selectFromFile() {
@@ -91,7 +91,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 			return false;
 		}
 
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = netmgr.getCurrentNetwork();
 
 		try {
 			FileReader fin = new FileReader(name);
@@ -128,7 +128,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 				}
 
 				if (select) {
-					//GraphView view = Cytoscape.getCurrentNetworkView();
+					//GraphView view = netmgr.getCurrentNetworkView();
 					//NodeView nv = view.getNodeView(node.getRootGraphIndex());
 					//nv.setSelected(true);
 					node.attrs().set("selected",true);

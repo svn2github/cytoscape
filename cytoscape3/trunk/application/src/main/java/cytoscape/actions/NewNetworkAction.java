@@ -4,7 +4,7 @@
  */
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -30,8 +30,8 @@ public class NewNetworkAction extends CytoscapeAction {
 	/**
 	 * Creates a new NewNetworkAction object.
 	 */
-	public NewNetworkAction(CyNetworkFactory f, GraphViewFactory g) {
-		super("Empty Network");
+	public NewNetworkAction(CyNetworkFactory f, GraphViewFactory g, CyNetworkManager netmgr) {
+		super("Empty Network",netmgr);
 		setPreferredMenu("File.New.Network");
 		cnf = f;
 		gvf = g;
@@ -46,6 +46,6 @@ public class NewNetworkAction extends CytoscapeAction {
 		System.out.println("newNet: " + newNet.getSUID());
 		GraphView view = gvf.createGraphView(newNet);
 		// TODO figure this out
-		Cytoscape.addNetwork(newNet, view, null);
+		netmgr.addNetwork(newNet, view, null);
 	}
 }

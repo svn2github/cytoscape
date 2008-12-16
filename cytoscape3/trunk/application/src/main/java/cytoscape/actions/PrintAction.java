@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.CytoscapeInit;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.view.GraphView;
@@ -65,8 +65,8 @@ public class PrintAction extends CytoscapeAction {
 	/**
 	 * Creates a new PrintAction object.
 	 */
-	public PrintAction() {
-		super(MENU_LABEL);
+	public PrintAction(CyNetworkManager netmgr) {
+		super(MENU_LABEL,netmgr);
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK);
 	}
@@ -77,7 +77,7 @@ public class PrintAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GraphView curr = Cytoscape.getCurrentNetworkView();
+		GraphView curr = netmgr.getCurrentNetworkView();
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 
 		// Export text as shape/font based on user's setting

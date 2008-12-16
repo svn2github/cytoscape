@@ -38,6 +38,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import javax.swing.ImageIcon;
 
 
@@ -47,8 +48,8 @@ import javax.swing.ImageIcon;
 public class ZoomOutAction extends AbstractZoomAction {
 	private final static long serialVersionUID = 1202444870966892L;
 
-	public ZoomOutAction() {
+	public ZoomOutAction(CyNetworkManager netmgr) {
 		super(0.9, new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_zoom-out.png")),
-			"Zoom Out");
+			"Zoom Out",netmgr);
 	}
 }

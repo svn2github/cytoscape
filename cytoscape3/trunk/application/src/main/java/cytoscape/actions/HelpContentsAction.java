@@ -36,6 +36,7 @@
 */
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyHelpBroker;
 import cytoscape.Cytoscape;
@@ -56,8 +57,8 @@ public class HelpContentsAction extends CytoscapeAction {
 	/**
 	 * Creates a new HelpContentsAction object.
 	 */
-	public HelpContentsAction() {
-		super("Contents...",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_help.png")));
+	public HelpContentsAction(CyNetworkManager netmgr) {
+		super("Contents...",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_help.png")),netmgr);
 		setPreferredMenu("Help");
 		setAcceleratorCombo(KeyEvent.VK_F1, 0);
 		putValue(SHORT_DESCRIPTION,"Help");

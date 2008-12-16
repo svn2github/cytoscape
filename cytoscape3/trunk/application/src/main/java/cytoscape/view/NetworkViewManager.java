@@ -36,7 +36,7 @@
  */
 package cytoscape.view;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.CytoscapeInit;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
@@ -70,14 +70,17 @@ public class NetworkViewManager implements PropertyChangeListener,
 	protected int MINIMUM_WIN_WIDTH = 200;
 	protected int MINIMUM_WIN_HEIGHT = 200;
 
+	private CyNetworkManager netmgr;
+
 	/**
 	 * Creates a new NetworkViewManager object.
 	 * 
 	 * @param desktop
 	 *            DOCUMENT ME!
 	 */
-	public NetworkViewManager(CytoscapeDesktop desktop) {
+	public NetworkViewManager(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
 		this.cytoscapeDesktop = desktop;
+		this.netmgr = netmgr;
 		desktopPane = new JDesktopPane();
 		pcs = new SwingPropertyChangeSupport(this);
 
@@ -225,7 +228,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 			setFocus(network_id);
 
 			if (this.getDesktopPane() != null) {
-				Cytoscape.getCurrentNetworkView().addTransferComponent(this.getDesktopPane());
+				netmgr.getCurrentNetworkView().addTransferComponent(this.getDesktopPane());
 			}
 		}
 
@@ -309,7 +312,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 				true, true);
 		iframe.addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
-				Cytoscape.destroyNetworkView(view);
+				netmgr.destroyNetworkView(view);
 			}
 		});
 		desktopPane.add(iframe);

@@ -36,6 +36,7 @@
  */
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
@@ -53,8 +54,8 @@ public class NewSessionAction extends CytoscapeAction {
 	 * Creates a new NewSessionAction object.
 	 */
 	private final CytoscapeDesktop desktop;
-	public NewSessionAction(final CytoscapeDesktop desktop) {
-		super("Session");
+	public NewSessionAction(final CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super("Session",netmgr);
 		setPreferredMenu("File.New");
 		this.desktop = desktop;
 	}

@@ -39,6 +39,7 @@ package cytoscape.layout.ui;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 import cytoscape.view.CyMenus;
+import cytoscape.CyNetworkManager;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -51,14 +52,16 @@ public class LayoutMenuManager implements MenuListener {
 	private Map<String, List<CyLayoutAlgorithm>> menuAlgorithmMap;
 	private Map<String, LayoutMenu> menuMap;
 	private Set<CyLayoutAlgorithm> existingLayouts;
+	private CyNetworkManager netmgr;
 
 	private CyLayouts cyLayouts;
 
-	public LayoutMenuManager(CyMenus cyMenus, CyLayouts cyLayouts) {
+	public LayoutMenuManager(CyMenus cyMenus, CyLayouts cyLayouts, CyNetworkManager netmgr) {
 		menuAlgorithmMap = new HashMap<String,List<CyLayoutAlgorithm>>();
 		menuMap = new HashMap<String,LayoutMenu>();
 		existingLayouts = new HashSet<CyLayoutAlgorithm>();
 		this.cyLayouts = cyLayouts;
+		this.netmgr = netmgr;
 
 		cyMenus.getLayoutMenu().addMenuListener(this);
 	}
@@ -121,7 +124,7 @@ public class LayoutMenuManager implements MenuListener {
 
 		// make sure the menu is set up
 		if ( !menuMap.containsKey(menuName) ) {
-			LayoutMenu menu = new LayoutMenu(menuName, this);
+			LayoutMenu menu = new LayoutMenu(menuName, this, netmgr);
 			menuMap.put(menuName, menu);
 		}
 

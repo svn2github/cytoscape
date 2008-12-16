@@ -42,6 +42,7 @@
 //------------------------------------------------------------------------------
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
@@ -61,8 +62,8 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 	/**
 	 * Creates a new SetVisualPropertiesAction object.
 	 */
-	public SetVisualPropertiesAction(CytoscapeDesktop desktop) {
-		super(title, new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_file-with-objects-16.png")));
+	public SetVisualPropertiesAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+		super(title, new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_file-with-objects-16.png")),netmgr);
 		setPreferredMenu("View");
 		setEnabled(true);
 		this.desktop = desktop;

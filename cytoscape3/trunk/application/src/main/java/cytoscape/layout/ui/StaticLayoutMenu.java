@@ -36,7 +36,7 @@
 */
 package cytoscape.layout.ui;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import cytoscape.task.util.TaskManager;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 
@@ -52,16 +52,18 @@ import java.awt.event.ActionListener;
 public class StaticLayoutMenu extends JMenuItem implements ActionListener {
 	private final static long serialVersionUID = 1202339874301391L;
 	private CyLayoutAlgorithm layout;
+	private CyNetworkManager netmgr;
 
 	/**
 	 * Creates a new StaticLayoutMenu object.
 	 *
 	 * @param layout  DOCUMENT ME!
 	 */
-	public StaticLayoutMenu(CyLayoutAlgorithm layout,boolean enabled) {
+	public StaticLayoutMenu(CyLayoutAlgorithm layout,boolean enabled,CyNetworkManager netmgr) {
 		super(layout.toString());
 		addActionListener(this);
 		this.layout = layout;
+		this.netmgr = netmgr;
 		setEnabled(enabled);
 	}
 
@@ -73,7 +75,7 @@ public class StaticLayoutMenu extends JMenuItem implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		layout.setSelectedOnly(false);
 
-		TaskManager.executeTask( new LayoutTask(layout,Cytoscape.getCurrentNetworkView()),
+		TaskManager.executeTask( new LayoutTask(layout,netmgr.getCurrentNetworkView()),
 		                         LayoutTask.getDefaultTaskConfig(getParent()) );
 	}
 }

@@ -36,6 +36,7 @@
  */
 package cytoscape.actions;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.view.GraphView;
@@ -52,20 +53,12 @@ public class DestroyNetworkViewAction extends CytoscapeAction {
 	/**
 	 * Creates a new DestroyNetworkViewAction object.
 	 */
-	public DestroyNetworkViewAction() {
-		super("Destroy View");
+	public DestroyNetworkViewAction(CyNetworkManager netmgr) {
+		super("Destroy View",netmgr);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_W, ActionEvent.CTRL_MASK);
 	}
 
-	/**
-	 * Creates a new DestroyNetworkViewAction object.
-	 *
-	 * @param label  DOCUMENT ME!
-	 */
-	public DestroyNetworkViewAction(boolean label) {
-		super();
-	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -74,21 +67,13 @@ public class DestroyNetworkViewAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// Get the list first, then iterate. If you do this:
-		//     for ( GraphView cv : Cytoscape.getSelectedNetworkViews() )
+		//     for ( GraphView cv : netmgr.getSelectedNetworkViews() )
 		// you will notice that the list of selected networks changes
 		// as you iterate through it.  This is due to events getting fired
 		// as a result of the deletion.
-		java.util.List<GraphView> l = Cytoscape.getSelectedNetworkViews();
+		java.util.List<GraphView> l = netmgr.getSelectedNetworkViews();
 		for ( GraphView cv : l )
-			Cytoscape.destroyNetworkView(cv);
-	}
-
-	/**
-	 * @deprecated Use Cytoscape.destroyNetworkView() instead. Will go 11/2008.
-	 */
-	@Deprecated
-	public static void destroyViewFromCurrentNetwork() {
-		Cytoscape.destroyNetworkView(Cytoscape.getCurrentNetwork());
+			netmgr.destroyNetworkView(cv);
 	}
 
 	public void menuSelected(MenuEvent e) {

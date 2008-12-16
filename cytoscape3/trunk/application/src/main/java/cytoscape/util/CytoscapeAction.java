@@ -36,7 +36,7 @@
  */
 package cytoscape.util;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
@@ -59,12 +59,14 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	protected int keyCode;
 	protected String consoleName;
 	protected boolean useCheckBoxMenuItem = false;
+	protected CyNetworkManager netmgr;
 
 	/**
 	 * @beaninfo (rwb)
 	 */
-	public CytoscapeAction() {
+	public CytoscapeAction(CyNetworkManager netmgr) {
 		super();
+		this.netmgr = netmgr;
 		initialize();
 	}
 
@@ -73,9 +75,10 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 *
 	 * @param name  DOCUMENT ME!
 	 */
-	public CytoscapeAction(String name) {
+	public CytoscapeAction(String name, CyNetworkManager netmgr) {
 		super(name);
 		this.consoleName = name;
+		this.netmgr = netmgr;
 		consoleName = consoleName.replaceAll(":. \'", "");
 		initialize();
 	}
@@ -86,9 +89,10 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * @param name  DOCUMENT ME!
 	 * @param icon  DOCUMENT ME!
 	 */
-	public CytoscapeAction(String name, javax.swing.Icon icon) {
+	public CytoscapeAction(String name, javax.swing.Icon icon, CyNetworkManager netmgr) {
 		super(name, icon);
 		this.consoleName = name;
+		this.netmgr = netmgr;
 		consoleName = consoleName.replaceAll(" ", "");
 		initialize();
 	}
@@ -341,8 +345,8 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * Enable the action if the current network exists and is not null.
 	 */
 	protected void enableForNetwork() {
-		CyNetwork n = Cytoscape.getCurrentNetwork();
-		if ( n == null || n == Cytoscape.getNullNetwork() ) 
+		CyNetwork n = netmgr.getCurrentNetwork();
+		if ( n == null ) 
 			setEnabled(false);
 		else
 			setEnabled(true);
@@ -352,14 +356,14 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * Enable the action if the current network and view exist and are not null.
 	 */
 	protected void enableForNetworkAndView() {
-		CyNetwork n = Cytoscape.getCurrentNetwork();
-		if ( n == null || n == Cytoscape.getNullNetwork() ) {
+		CyNetwork n = netmgr.getCurrentNetwork();
+		if ( n == null ) {
 			setEnabled(false);
 			return;
 		}
 		
-		GraphView v = Cytoscape.getCurrentNetworkView();
-		if ( v == null || v == Cytoscape.getNullNetworkView() )
+		GraphView v = netmgr.getCurrentNetworkView();
+		if ( v == null )
 			setEnabled(false);
 		else
 			setEnabled(true);

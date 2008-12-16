@@ -32,6 +32,10 @@
 	<osgi:reference id="undoSupportServiceRef" interface="org.cytoscape.work.UndoSupport">
 	</osgi:reference>
 
+	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper">
+	</osgi:reference>
+
+	<!-- define services that application provides -->
 	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
 		interface="cytoscape.view.CyMenus" />
 
@@ -153,5 +157,8 @@
 	-->
 	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop"
 		interface="cytoscape.view.CySwingApplication" />
+
+	<osgi:service id="cyNetworkManagerService" ref="networkManager"
+		interface="cytoscape.CyNetworkManager" />
 
 </beans>
