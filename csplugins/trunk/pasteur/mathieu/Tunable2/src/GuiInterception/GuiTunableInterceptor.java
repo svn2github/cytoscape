@@ -1,57 +1,91 @@
 package GuiInterception;
 
-import java.lang.reflect.*;
-import java.lang.annotation.*;
-import java.util.*;
-import java.awt.*;
+
+import java.security.acl.Group;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.event.*;
-import Command.command;
-import Tunable.*;
-import HandlerFactory.*;
+import Factory.GroupHandler;
 import java.util.List;
 
 
 public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> {
 
-	private Component parent;
-	public JFrame inframe;
+
+	public static JFrame inframe;
 	public JFrame outframe;
+	static JPanel tunpan = null;
+	//static JPanel resultpane = new JPanel();
 	
-	public GuiTunableInterceptor(Component parent, JFrame inframe,JFrame outframe) {
+	public GuiTunableInterceptor(JFrame inframe,JFrame outframe) {
 		super( new GuiHandlerFactory() );
-		this.parent = parent;
 		this.inframe=inframe;
 		this.outframe=outframe;
 	}
+
 
 	protected void process(List<Guihandler> list) {
 			JPanel mainPanel = new JPanel();
 			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 			Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+			JPanel tunpane=new JPanel();
+			TitledBorder titleBorder = null;
 			for (Guihandler guihandler : list) {
-				TitledBorder titleBorder = BorderFactory.createTitledBorder(selBorder,(guihandler.getField().getName()));
-				titleBorder.setTitlePosition(TitledBorder.LEFT);
-				titleBorder.setTitlePosition(TitledBorder.TOP);
-				JPanel tunpane = guihandler.getInputPanel();
-				tunpane.setBorder(titleBorder);
-				mainPanel.add(tunpane);
+				if(guihandler.getclass()!=Group.class){
+					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
+					titleBorder.setTitlePosition(TitledBorder.LEFT);
+					titleBorder.setTitlePosition(TitledBorder.TOP);
+					tunpane.add(guihandler.getInputPanel());
+				}
+				if(guihandler.getclass()==Group.class){
+					tunpane.setBorder(titleBorder);
+					mainPanel.add(tunpane);
+				
+					tunpane=new JPanel();
+					tunpane.removeAll();
+				}
 			}
+			
+		//	JButton button = new JButton("OK");
+		//	mainPanel.add(button);
+		//	button.addActionListener(new myActionListener(list));
+		//	button.setActionCommand("OK");
 			inframe.setContentPane(mainPanel);
 			inframe.pack();
 			inframe.setLocation(500, 400);
 			inframe.setVisible(true);
-
 	}
 	
+//	private static class myActionListener implements ActionListener{
+//		
+//		List<Guihandler>list;
+//		public myActionListener(List<Guihandler> list){
+//			this.list=list;
+//		}
+//		
+//		public void actionPerformed(ActionEvent ae){
+//			String command = ae.getActionCommand();
+//			if(command.equals("OK")){
+//				resultpane.removeAll();
+//				for(Guihandler guihandler : list){
+//					if(guihandler.getClass()==GroupHandler.class) continue;
+//					tunpan = guihandler.update();
+//					//((Guihandler) guihandler).handle(); NOT SURE
+//					resultpane.add(tunpan);
+//				}
+//				inframe.dispose();
+//			}		
+//		}
+//	}
+	
+	
+	
 	protected void display(List<Guihandler> list) {
+		
 		JPanel resultpane = new JPanel();
-		JPanel tunpan = null;
 		for(Guihandler guihandler : list){
-			//if(((Guihandler)guihandler).getClass()==GroupHandler.class) continue;
+			if(guihandler.getClass()==GroupHandler.class) continue;
 			tunpan = guihandler.update();
 			//((Guihandler) guihandler).handle(); NOT SURE
 			resultpane.add(tunpan);

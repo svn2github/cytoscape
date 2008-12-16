@@ -149,7 +149,15 @@ public class BoundedIntegerHandler implements Guihandler{
 
 	public Object getObject() {
 		return o;
-	}	
+	}
+
+
+	@Override
+	public Class<?> getclass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 //	@Override
 //	public void stateChanged(ChangeEvent CE) {

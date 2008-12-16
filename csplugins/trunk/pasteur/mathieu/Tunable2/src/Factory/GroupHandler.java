@@ -9,6 +9,7 @@ import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import java.lang.Object;
 //import Properties.PropertiesImpl;;
+import java.security.acl.Group;
 
 
 
@@ -94,4 +95,12 @@ public class GroupHandler implements Guihandler{
 	public Object getObject() {
 		return o;
 	}
+
+
+	@Override
+	public Class<?> getclass() {
+		// TODO Auto-generated method stub
+		return Group.class;
+	}
+
 }

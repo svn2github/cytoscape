@@ -4,11 +4,10 @@ package Main;
 import javax.swing.*;
 import GuiInterception.*;
 import Command.*;
-import GuiInterception.*;
 import HandlerFactory.Handler;
 import java.awt.event.*;
 import java.util.LinkedList;
-
+import Props.*;
 
 public class application{
 	
@@ -19,7 +18,8 @@ public class application{
 	private static JMenuItem menuItem;
 	public static command commander = new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
-	public static TunableInterceptor ti=null;
+	public static TunableInterceptor ti = null;
+	public static PropInterceptor pi = null;
 	
 		
 	public static void main(String[] args){
@@ -91,8 +91,11 @@ public class application{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
 			if(command.equals("save")){
-				outputframe.dispose();
-				ti.Save();
+				if(ti!=null){
+					outputframe.dispose();
+					ti.Save();
+				}
+				else System.out.println("No input");
 			}
 		}
 	}
@@ -103,8 +106,11 @@ public class application{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
 			if(command.equals("output")){
-				inputframe.dispose();
-				ti.Display();
+				if(ti!=null){
+					inputframe.dispose();
+					ti.Display();
+				}
+				else System.out.println("no input");
 			}
 		}
 	}
@@ -114,7 +120,10 @@ public class application{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
 			if(command.equals("input")){
-				ti.Process();
+				if(ti!=null){
+					ti.Process();
+				}
+				else System.out.println("No input");
 			}
 		}
 	}
@@ -126,8 +135,9 @@ public class application{
 			if(command.equals("catch")){
 				inputframe=new JFrame("InputParameters");
 				outputframe=new JFrame("OutputParameters");
-				ti = new GuiTunableInterceptor(mainframe,inputframe,outputframe);
+				ti = new GuiTunableInterceptor(inputframe,outputframe);
 				ti.intercept(commander);
+				pi = new LoadPropsInterceptor();
 			}
 		}
 	}

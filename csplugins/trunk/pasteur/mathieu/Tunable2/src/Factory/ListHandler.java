@@ -6,6 +6,9 @@ import java.lang.reflect.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
 import GuiInterception.*;
 
 
@@ -103,4 +106,12 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 	public Object getObject() {
 		return o;
 	}
+
+	@Override
+	public Class<?> getclass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

@@ -18,22 +18,23 @@ public abstract class HiddenTunableInterceptor<T extends Handler> implements Tun
 	protected HandlerFactory<T> factory;
 	List<T> handlerList = new LinkedList<T>();
 	
+	
 	public HiddenTunableInterceptor(HandlerFactory<T> tunablehandlerfactory) {
 		this.factory=tunablehandlerfactory;
 	}
+	
 	
 	public final void intercept(command command){	
 		for(Field field : command.getClass().getFields()){
 			if(field.isAnnotationPresent(Tunable.class)){
 				try{
 					Tunable tunable = field.getAnnotation(Tunable.class);
-					T handler = factory.getHandlerType(field, command, tunable);
+					T handler = factory.getHandler(field, command, tunable);
 					if(handler!=null) handlerList.add(handler);
 					
 				}catch (Exception e){e.printStackTrace();}			
 			}
 		}
-//	process(handlerList);
 	}
 	
 

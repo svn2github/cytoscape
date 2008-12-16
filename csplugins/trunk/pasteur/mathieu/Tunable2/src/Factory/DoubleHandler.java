@@ -121,4 +121,13 @@ public class DoubleHandler implements Guihandler{
 	public Object getObject() {
 		return o;
 	}
+
+
+	@Override
+	public Class<?> getclass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

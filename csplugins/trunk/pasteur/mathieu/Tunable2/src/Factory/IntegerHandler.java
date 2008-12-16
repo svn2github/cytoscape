@@ -11,7 +11,7 @@ public class IntegerHandler implements Guihandler{
 	Field f;
 	Tunable t;
 	Object o;
-	JTextField jtf;
+	JTextField jtf=new JTextField();
 	
 	String title;
 	String value;
@@ -54,7 +54,7 @@ public class IntegerHandler implements Guihandler{
 		return pane;
 	}
 	
-
+	
 	
 	public JPanel getresultpanel(){
 		JPanel result = new JPanel();
@@ -115,6 +115,13 @@ public class IntegerHandler implements Guihandler{
 
 	public Object getObject() {
 		return o;
+	}
+
+
+	@Override
+	public Class<?> getclass() {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 	
 //	@Override

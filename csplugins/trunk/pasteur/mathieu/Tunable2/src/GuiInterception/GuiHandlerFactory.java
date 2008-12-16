@@ -4,6 +4,8 @@ import Command.*;
 import Factory.*;
 import HandlerFactory.HandlerFactory;
 import java.lang.reflect.*;
+import java.security.acl.Group;
+
 import javax.swing.JButton;
 import javax.swing.JList;
 import Tunable.Tunable;
@@ -14,7 +16,7 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 
 
 	command command = new input();
-	public Guihandler getHandlerType(Field f, Object o, Tunable t){
+	public Guihandler getHandler(Field f, Object o, Tunable t){
 		
 		Class<?> type = f.getType();
 		
@@ -32,14 +34,14 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 			return new BooleanHandler(f,o,t);
 		if(type== String.class)
 			return new StringHandler(f,o,t);
+		if(type==Group.class)
+			return new GroupHandler(f,o,t);
 		//if(t.type()== JButton.class)
-		//	return new ButtonHandler(f,o,t);
-		
-		if(t.type()==Double.class)
-			return new DoubleHandler(f,o,t);
-		
+		//	return new ButtonHandler(f,o,t);		
 		return null;
-			
+		
+		
+		
 /*			switch(t.type()){
 				case 0://INTEGER
 					return new IntegerHandler(f,o,t);
