@@ -6,36 +6,63 @@
 	default-lazy-init="false">
 
 
+	<!-- Import Desktop Service -->
+	<osgi:reference id="cytoscapeDesktopServiceRef"
+		interface="cytoscape.view.CySwingApplication" />
+
+	<osgi:reference id="vmmServiceRef"
+		interface="org.cytoscape.vizmap.VisualMappingManager" />
+
+	<!-- Reference to the network factory service -->
+	<osgi:reference id="cyNetworkFactoryServiceRef"
+		interface="org.cytoscape.model.CyNetworkFactory">
+	</osgi:reference>
+
+	<osgi:reference id="graphViewFactoryServiceRef"
+		interface="org.cytoscape.view.GraphViewFactory">
+	</osgi:reference>
+
 	<!-- Pull-down menu items -->
 	<osgi:service id="createNewStyleActionService" ref="createNewStyleAction"
-		interface="cytoscape.visual.ui.VizMapperAction" />
+		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="removeStyleActionService" ref="removeStyleAction"
-		interface="cytoscape.visual.ui.VizMapperAction" />
+		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="renameStyleActionService" ref="renameStyleAction"
-		interface="cytoscape.visual.ui.VizMapperAction" />
+		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="copyStyleActionService" ref="copyStyleAction"
-		interface="cytoscape.visual.ui.VizMapperAction" />
+		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="createLegendActionService" ref="createLegendAction"
-		interface="cytoscape.visual.ui.VizMapperAction" />
+		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
 
 	<!-- Mapping generator services -->
 	<osgi:service id="rainbowGeneratorService" ref="rainbowGenerator"
-		interface="cytoscape.visual.ui.util.DiscreteValueMapGenerator">
+		interface="org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator">
+		<osgi:service-properties>
+			<entry key="service.type" value="vizmapUI.contextMenu" />
+		</osgi:service-properties>
 	</osgi:service>
 	<osgi:service id="rainbowOscGeneratorService" ref="rainbowOscGenerator"
-		interface="cytoscape.visual.ui.util.DiscreteValueMapGenerator" />
+		interface="org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator">
+		<osgi:service-properties>
+			<entry key="service.type" value="vizmapUI.contextMenu" />
+		</osgi:service-properties>
+	</osgi:service>
 	<osgi:service id="randomColorGeneratorService" ref="randomColorGenerator"
-		interface="cytoscape.visual.ui.util.DiscreteValueMapGenerator" />
-
-
-	<osgi:service id="removeMappingActionService" ref="removeMappingAction"
-		interface="cytoscape.visual.ui.VizMapperAction">
+		interface="org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator">
 		<osgi:service-properties>
 			<entry key="service.type" value="vizmapUI.contextMenu" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:set id="vizMapperActionServiceRef" interface="cytoscape.visual.ui.VizMapperAction"
+	<osgi:service id="removeMappingActionService" ref="removeMappingAction"
+		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction">
+		<osgi:service-properties>
+			<entry key="service.type" value="vizmapUI.contextMenu" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:set id="vizMapperActionServiceRef"
+		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction"
 		cardinality="0..N">
 		<osgi:listener bind-method="onBind" unbind-method="onUnbind"
 			ref="menuManager" />
@@ -67,7 +94,8 @@
 	<osgi:service id="discreteStringService" ref="discreteString"
 		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
 
-	<osgi:set id="editorSet" interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer"
+	<osgi:set id="editorSet"
+		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer"
 		cardinality="0..N">
 		<osgi:listener bind-method="addEditorDisplayer"
 			unbind-method="removeEditorDisplayer" ref="editorFactory" />

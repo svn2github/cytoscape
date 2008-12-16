@@ -45,8 +45,9 @@ import org.cytoscape.view.Label;
 import org.cytoscape.vizmap.LabelPlacerGraphic;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.ObjectToString;
+import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.gui.BypassHack;
+import org.cytoscape.vizmap.gui.internal.bypass.BypassHack;
 
 import javax.swing.*;
 import java.awt.*;
@@ -63,6 +64,7 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 	private final static long serialVersionUID = 1202339876929138L;
 	protected LabelPosition lp;
 	protected LabelPosition newlp;
+	private VisualMappingManager vmm;
 
 	/**
 	 *  DOCUMENT ME!
@@ -157,8 +159,12 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 				String val = ObjectToString.getStringValue(newlp);
 				// TODO check if attr has been created or not and create if necessary
 				go.attrs().set(VisualPropertyType.NODE_LABEL_POSITION.getBypassAttrName(), val);
-				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+				Cytoscape.redrawGraph(vmm.getNetworkView());
 			}
 		}
+	}
+	
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
 	}
 }

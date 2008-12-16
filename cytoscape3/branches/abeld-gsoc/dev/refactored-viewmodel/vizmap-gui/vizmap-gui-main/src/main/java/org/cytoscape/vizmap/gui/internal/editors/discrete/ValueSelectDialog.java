@@ -40,7 +40,6 @@ import static org.cytoscape.vizmap.VisualPropertyType.NODE_SHAPE;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.geom.Point2D;
@@ -58,6 +57,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.jdesktop.swingx.border.DropShadowBorder;
@@ -80,6 +81,8 @@ public class ValueSelectDialog extends JDialog {
 	private Object originalValue;
 	
 	private boolean canceled = false;
+
+	private VisualMappingManager vmm;
 
 	/**
 	 * Static method to show dialog and get a value from user.
@@ -106,7 +109,7 @@ public class ValueSelectDialog extends JDialog {
 		setList();
 		
 		// get original value and sete the selected item.
-		originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance().get(type);
+		originalValue = vmm.getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance().get(type);
 	}
 
 	/**
@@ -296,5 +299,9 @@ public class ValueSelectDialog extends JDialog {
 
 			return this;
 		}
+	}
+	
+	public void setVmm(VisualMappingManager vmm) {
+		this.vmm = vmm;
 	}
 }

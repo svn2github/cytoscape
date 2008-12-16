@@ -35,6 +35,7 @@
 package org.cytoscape.vizmap.gui.internal.editors.continuous;
 
 import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 
 import java.util.HashMap;
 import java.util.Map;
