@@ -34,16 +34,18 @@
 */
 package cytoscape.util.swing;
 
-import cytoscape.Cytoscape;
-import cytoscape.util.OpenBrowser;
-
-import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
+import java.awt.Component;
+import java.awt.Window;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.awt.Frame;
+
+import javax.swing.Icon;
+import javax.swing.JEditorPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+
+import cytoscape.util.OpenBrowser;
 
 
 /**
@@ -95,8 +97,11 @@ public class AboutDialog extends javax.swing.JDialog implements HyperlinkListene
 	}
 
 	/** Creates new form WSAboutDialog */
-	public AboutDialog(Frame parent, boolean modal) {
-		super(parent, modal);
+	public AboutDialog(Window parent, boolean modal) {
+		// TODO: This is supported only in Java 6...
+		//super(parent, modal);
+		super();
+		this.setModal(modal);
 		initComponents();
 		mainEditorPane.setEditable(false);
 		mainEditorPane.addHyperlinkListener(this);
