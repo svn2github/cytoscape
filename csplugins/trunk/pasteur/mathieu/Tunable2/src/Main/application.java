@@ -19,7 +19,7 @@ public class application{
 	public static command commander = new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
 	public static TunableInterceptor ti = null;
-	public static PropInterceptor pi = null;
+	public static TunableInterceptor pi = null;
 	
 		
 	public static void main(String[] args){
@@ -137,7 +137,7 @@ public class application{
 				outputframe=new JFrame("OutputParameters");
 				ti = new GuiTunableInterceptor(inputframe,outputframe);
 				ti.intercept(commander);
-				pi = new LoadPropsInterceptor();
+				pi = new LoadPropsInterceptor(null);
 			}
 		}
 	}
