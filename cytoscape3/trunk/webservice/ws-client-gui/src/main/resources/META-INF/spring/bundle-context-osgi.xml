@@ -6,6 +6,8 @@
 	default-lazy-init="false">
 
 
+	<osgi:reference id="cyDesktopServiceRef" interface="cytoscape.view.CySwingApplication" />
+	<osgi:reference id="cyNetworkManagerServiceRef" interface="cytoscape.CyNetworkManager" />
 
 
 </beans>

@@ -2,7 +2,9 @@ package org.cytoscape.webservice.client.gui;
 
 import java.awt.event.ActionEvent;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CySwingApplication;
 import cytoscape.view.CytoscapeDesktop;
 
 public class WebServiceNetworkImportAction extends CytoscapeAction {
@@ -10,10 +12,11 @@ public class WebServiceNetworkImportAction extends CytoscapeAction {
 	/**
 	 * Creates a new FitContentAction object.
 	 */
-	private final CytoscapeDesktop desktop;
+	private final CySwingApplication desktop;
 	private final UnifiedNetworkImportDialog dialog;
-	public WebServiceNetworkImportAction(final CytoscapeDesktop desktop) {
-		super("Network from web services...");
+	
+	public WebServiceNetworkImportAction(final CySwingApplication desktop, CyNetworkManager cyNetworkManager) {
+		super("Network from web services...", cyNetworkManager);
 		setPreferredMenu("File.Import");
 		this.desktop = desktop;
 		dialog = new UnifiedNetworkImportDialog(desktop,false);

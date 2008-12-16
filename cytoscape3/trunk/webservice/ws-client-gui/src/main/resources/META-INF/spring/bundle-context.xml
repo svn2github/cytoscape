@@ -16,6 +16,13 @@
 
 	<context:annotation-config />
 
+	<bean id="unifiedNetworkImportDialog"
+		class="org.cytoscape.webservice.client.gui.UnifiedNetworkImportDialog">
+		<constructor-arg ref="cyDesktopServiceRef" />
+		<constructor-arg type="java.lang.Boolean" value="true" />
+		<property name="cyNetworkManager" ref="cyNetworkManagerServiceRef" />
+	</bean>
+
 	<!--
 		bean id="webServiceNetworkImportAction"
 		class="cytoscape.actions.WebServiceNetworkImportAction">
