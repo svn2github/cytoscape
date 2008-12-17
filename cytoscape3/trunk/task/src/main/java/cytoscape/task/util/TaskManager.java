@@ -74,7 +74,11 @@ public class TaskManager {
 		}
 
 		//  Instantiate a new JTask UI Component
-		JTask jTask = new JTask(task, config);
+		JTask jTask; 
+		if ( config.isOwnerFrame() )
+			jTask = new JTask(config.getOwnerFrame(), task, config);
+		else
+			jTask = new JTask(config.getOwnerDialog(), task, config);
 
 		//  Tell task to report progress to JTask
 		task.setTaskMonitor(jTask);

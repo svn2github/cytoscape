@@ -161,8 +161,16 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
 	 * @param task   Task we are monitoring, and may need to cancel.
 	 * @param config JTaskConfig Object.
 	 */
-	public JTask(Task task, JTaskConfig config) {
-		super((Frame) config.getOwner(), task.getTitle(), config.getModal());
+	public JTask(Dialog d, Task task, JTaskConfig config) {
+		super( d, task.getTitle(), config.getModal());
+		this.task = task;
+		this.taskTitle = task.getTitle();
+		this.config = config;
+		init();
+	}
+
+	public JTask(Frame f, Task task, JTaskConfig config) {
+		super( f, task.getTitle(), config.getModal());
 		this.task = task;
 		this.taskTitle = task.getTitle();
 		this.config = config;

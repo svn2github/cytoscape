@@ -82,7 +82,9 @@ public class JTaskConfig {
 	 * Owner, such as a JFrame.
 	 * Primarily used to center the JTask component relative to the owner.
 	 */
-	private Container owner;
+	private Frame ownerFrame;
+	private Dialog ownerDialog;
+	private boolean useFrame;
 
 	/**
 	 * Milliseconds until popup.
@@ -162,11 +164,42 @@ public class JTaskConfig {
 	 * If set to null, the JTask component will be centered relative to the
 	 * user's screen.
 	 *
-	 * @param owner Owner container.  May be null.
+	 * @param owner Owner container.  May NOT be null.
 	 */
+	// TODO Why is this a Container?  It should be a Component.
 	public void setOwner(Container owner) {
-		this.owner = owner;
+		setOwnerComponent((Component)owner);
 	}
+
+	public void setOwnerComponent(Component owner) {
+        if (owner == null)
+            throw new NullPointerException("component is null");
+
+        if (owner instanceof Frame) {
+			ownerFrame = (Frame)owner;
+			useFrame = true;
+			return;
+		} else if ( owner instanceof Dialog) {
+			ownerDialog = (Dialog)owner;
+			useFrame = false;
+			return;
+		} else {
+            setOwnerComponent(owner.getParent());
+		}
+	}
+
+	public boolean isOwnerFrame() {
+		return useFrame;
+	}
+
+	public Frame getOwnerFrame() {
+		return ownerFrame;
+	}
+
+	public Dialog getOwnerDialog() {
+		return ownerDialog;
+	}
+
 
 	/**
 	 * Enables modality of the JTask Dialog box.
@@ -263,10 +296,10 @@ public class JTaskConfig {
 	/**
 	 * Gets JTask Owner object.
 	 *
-	 * @return Container owner object.
+	 * @return Component owner object.
 	 */
-	Container getOwner() {
-		return owner;
+	Component getOwner() {
+		return useFrame ? ownerFrame : ownerDialog;
 	}
 
 	/**
