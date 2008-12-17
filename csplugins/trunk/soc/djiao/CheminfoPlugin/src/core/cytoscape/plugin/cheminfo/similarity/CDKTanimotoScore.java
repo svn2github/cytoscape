@@ -25,17 +25,14 @@ public class CDKTanimotoScore extends SimilarityScore {
 
 	@Override
 	public double calculateSimilarity() {
-		IMolecule m1 = compound1.getIMolecule();
-		IMolecule m2 = compound2.getIMolecule();
+		BitSet fp1 = compound1.getFingerprint();
+		BitSet fp2 = compound2.getFingerprint();
 		
 		double score = Double.MIN_VALUE;
-		if (m1 != null && m2 != null) {
-			Fingerprinter fper = new Fingerprinter();
+		if (fp1 != null && fp2 != null) {
 			try {
-				BitSet fp1 = fper.getFingerprint(m1);
-				BitSet fp2 = fper.getFingerprint(m2);
 				score = Tanimoto.calculate(fp1, fp2);
-			} catch (Exception ex) {
+			} catch (Exception e) {
 				score = 0.0;
 			}
 		}

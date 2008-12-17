@@ -42,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -58,14 +59,18 @@ import cytoscape.util.URLUtil;
 
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
+import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.inchi.InChIGenerator;
 import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.inchi.InChIToStructure;
+import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
-import org.openscience.cdk.tools.MFAnalyser;
+// import org.openscience.cdk.tools.MFAnalyser;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
 import net.sf.jniinchi.INCHI_RET;
 
@@ -293,6 +298,7 @@ public class Compound {
 	protected boolean gettingImage;
 	private AttriType attrType;
 	private IMolecule iMolecule;
+	private BitSet fingerPrint;
 
 	/**
  	 * The constructor is called from the various static getCompound methods to create a compound and store it in
@@ -313,6 +319,7 @@ public class Compound {
 		this.renderedImage = null;
 		this.gettingImage = false;
 		this.iMolecule = null;
+		this.fingerPrint = null;
 		if (attrType == AttriType.inchi) {
 			// Convert to smiles 
 			this.smilesStr = convertInchiToSmiles(mstring);
@@ -323,8 +330,13 @@ public class Compound {
 							.getInstance());
 			try {
 				iMolecule = sp.parseSmiles(this.smilesStr);
+				Fingerprinter fp = new Fingerprinter();
+				fingerPrint = fp.getFingerprint(iMolecule);
 			} catch (InvalidSmilesException e) {
 				iMolecule = null;
+				fingerPrint = null;
+			} catch (CDKException e1) {
+				fingerPrint = null;
 			}
 		}
 
@@ -345,16 +357,6 @@ public class Compound {
 			this.renderedImage = depictWithUCSFSmi2Gif();
 			return;
 		}
-
-		// Get the image in a thread
-		this.gettingImage = true;
-		Runnable t = new Runnable() {
-			public void run() {
-				renderedImage = depictWithUCSFSmi2Gif();
-				gettingImage = false;
-			}
-		};
-    new Thread(t).start();
 
 	}
 
@@ -402,6 +404,15 @@ public class Compound {
 	public IMolecule getIMolecule() {
 		return iMolecule;
 	}
+
+	/**
+ 	 * Return the CDK fingerprint for this compound
+ 	 *
+ 	 * @return the fingerprint for this compound
+ 	 */
+	public BitSet getFingerprint() {
+		return fingerPrint;
+	}
 	
 	/**
  	 * Return true if this compound has a moleculeString
@@ -430,10 +441,8 @@ public class Compound {
  	 * @return the fetched image
  	 */
 	public Image getImage() {
-		while (gettingImage) { 
-			try {
-				Thread.sleep(100);
-			} catch (Exception e) {}
+		if (renderedImage == null) {
+			renderedImage = depictWithUCSFSmi2Gif();
 		}
 		return renderedImage;
 	}
@@ -443,15 +452,11 @@ public class Compound {
  	 *
  	 * @return the molecular weight
  	 */
-	public float getMolecularWeight() {
+	public double getMolecularWeight() {
 		if (iMolecule == null) return 0.0f;
 
-		MFAnalyser mfa = new MFAnalyser(iMolecule);
-		try {
-			return mfa.getCanonicalMass();
-		} catch (Exception e) {
-			return 0.0f;
-		}
+		IMolecularFormula mfa = MolecularFormulaManipulator.getMolecularFormula(iMolecule);
+		return MolecularFormulaManipulator.getTotalMassNumber(mfa);
 	}
 
 	/**
@@ -459,11 +464,11 @@ public class Compound {
  	 *
  	 * @return the exact mass
  	 */
-	public float getExactMass() {
+	public double getExactMass() {
 		if (iMolecule == null) return 0.0f;
 
-		MFAnalyser mfa = new MFAnalyser(iMolecule);
-		return mfa.getMass();
+		IMolecularFormula mfa = MolecularFormulaManipulator.getMolecularFormula(iMolecule);
+		return MolecularFormulaManipulator.getTotalExactMass(mfa);
 	}
 	
 	/**
@@ -528,7 +533,7 @@ public class Compound {
 		try {
 			// Get the factory	
 			InChIGeneratorFactory factory = new InChIGeneratorFactory();
-			InChIToStructure intostruct = factory.getInChIToStructure(inchi);
+			InChIToStructure intostruct = factory.getInChIToStructure(inchi, DefaultChemObjectBuilder.getInstance());
 
 		// Get the structure
 		INCHI_RET ret = intostruct.getReturnStatus();

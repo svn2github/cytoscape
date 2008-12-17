@@ -79,6 +79,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	private ChemInfoProperties properties;
 	private JPanel tunablePanel;
 	private int maxCompounds = 0;
+	private double tcCutoff = 0.25;
 
 	public ChemInfoSettingsDialog() {
 		super(Cytoscape.getDesktop(), "Chemical Informatics Plugin Settings Dialog", false);
@@ -172,6 +173,11 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		if ((t != null) && (t.valueChanged() || force)) {
 			maxCompounds = ((Integer) t.getValue()).intValue();
 		}
+
+		t = properties.get("tcCutoff");
+		if ((t != null) && (t.valueChanged() || force)) {
+			tcCutoff = ((Double) t.getValue()).doubleValue();
+		}
 	}
 
 	public ChemInfoProperties getProperties() {
@@ -237,6 +243,10 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		return maxCompounds;
 	}
 
+	public double getTcCutoff() {
+		return tcCutoff;
+	}
+
 	private List<String> getMatchingAttributes(CyAttributes attributes, List<String> compoundAttributes) {
 		// Get the names of all of the object attributes
 		String[] attrNames = attributes.getAttributeNames();
@@ -271,6 +281,12 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		                "Maximum number of compounds to show in opup",
 		                Tunable.INTEGER, new Integer(0));
 		properties.add(t);
+
+		t = new Tunable("tcCutoff",
+		                "Minimum tanimoto value to consider for edge creation",
+		                Tunable.DOUBLE, new Double(0.25));
+		properties.add(t);
+
 
 		List<String>possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
 		                                                  Cytoscape.getEdgeAttributes());

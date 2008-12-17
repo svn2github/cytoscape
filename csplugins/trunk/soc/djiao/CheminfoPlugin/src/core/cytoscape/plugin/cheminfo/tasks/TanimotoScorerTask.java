@@ -71,6 +71,7 @@ public class TanimotoScorerTask implements Task {
 	ChemInfoSettingsDialog settingsDialog;
 	TaskMonitor monitor;
 	boolean createNewNetwork = false;
+	boolean canceled = false;
 
 	/**
  	 * Creates the task.
@@ -85,7 +86,9 @@ public class TanimotoScorerTask implements Task {
 		this.createNewNetwork = newNetwork;
 	}
 
-	public void halt() {};
+	public void halt() {
+		canceled = true;
+	};
 
 	public void setTaskMonitor(TaskMonitor monitor) {
 		this.monitor = monitor;
@@ -107,6 +110,9 @@ public class TanimotoScorerTask implements Task {
 		CyNetworkView newNetworkView = null;
 		CyNetwork newNet = null;
 		VisualStyle vs = null;
+		double tcCutoff = 0.25;
+		if (settingsDialog != null)
+			tcCutoff = settingsDialog.getTcCutoff();
 
 		setPercentComplete(0);
 
@@ -120,8 +126,10 @@ public class TanimotoScorerTask implements Task {
 
 		double count = 0;
 		for (GraphObject go1: selection) {
+			if (canceled) break;
 			CyNode node1 = (CyNode)go1;
 			setStatus("Calculating tanimoto coefficients for "+node1.getIdentifier());
+			System.out.println("Calculating tanimoto coefficients for "+node1.getIdentifier());
 			List<Compound> cList1 = Compound.getCompounds(node1, attributes, 
 																										settingsDialog.getCompoundAttributes("node",AttriType.smiles),
 																										settingsDialog.getCompoundAttributes("node",AttriType.inchi), true);
@@ -129,20 +137,10 @@ public class TanimotoScorerTask implements Task {
 				continue;
 
 			for (GraphObject go2: selection) {
+				if (canceled) break;
 				CyNode node2 = (CyNode)go2;
-				// Create the edge if we're supposed to
-				CyEdge edge = null;
-				if (createNewNetwork) {
-					edge = Cytoscape.getCyEdge(node1, node2, "interaction", "similarity", true, true);
-					// Add it to our new network
-					newNet.addEdge(edge);
-				} else {
-					// Otherwise, get the edges connecting these nodes (if any)
-					int[] node_indices = {node1.getRootGraphIndex(), node2.getRootGraphIndex()};
-					int[] edge_indices = origNetwork.getConnectingEdgeIndicesArray(node_indices);
-					if (edge_indices == null || edge_indices.length == 0) continue;
-					edge = (CyEdge)origNetwork.getEdge(edge_indices[0]);
-				}
+				if (node2 == node1 && cList1.size() <= 1) 
+					continue;
 
 				List<Compound> cList2 = Compound.getCompounds(node2, attributes, 
 																											settingsDialog.getCompoundAttributes("node",AttriType.smiles),
@@ -157,14 +155,35 @@ public class TanimotoScorerTask implements Task {
 				for (Compound compound1: cList1) {
 					if (compound1 == null) continue;
 					for (Compound compound2: cList2) {
+						if (canceled) break;
 						if (compound2 == null) continue;
 
+						// System.out.print("   Calculating tc for "+node1.getIdentifier()+" vs. "+node2.getIdentifier());
 						CDKTanimotoScore scorer = new CDKTanimotoScore(compound1, compound2);
 						double score = scorer.calculateSimilarity();
+						// System.out.println("...done");
 						averageScore = averageScore + score/nScores;
 						if (score > maxScore) maxScore = score;
 						if (score < minScore) minScore = score;
 					}
+				}
+
+				// Create the edge if we're supposed to
+				CyEdge edge = null;
+				if (createNewNetwork) {
+					if (averageScore <= tcCutoff)
+						continue;
+					// System.out.print("   Creating and edge between "+node1.getIdentifier()+" and "+node2.getIdentifier());
+					edge = Cytoscape.getCyEdge(node1, node2, "interaction", "similarity", true, true);
+					// Add it to our new network
+					newNet.addEdge(edge);
+					// System.out.println("...done");
+				} else {
+					// Otherwise, get the edges connecting these nodes (if any)
+					int[] node_indices = {node1.getRootGraphIndex(), node2.getRootGraphIndex()};
+					int[] edge_indices = origNetwork.getConnectingEdgeIndicesArray(node_indices);
+					if (edge_indices == null || edge_indices.length == 0) continue;
+					edge = (CyEdge)origNetwork.getEdge(edge_indices[0]);
 				}
 
 				if (nScores > 1) {
@@ -197,7 +216,7 @@ public class TanimotoScorerTask implements Task {
 	public JTaskConfig getDefaultTaskConfig() {
 		JTaskConfig result = new JTaskConfig();
 
-		result.displayCancelButton(false);
+		result.displayCancelButton(true);
 		result.displayCloseButton(false);
 		result.displayStatus(true);
 		result.displayTimeElapsed(false);

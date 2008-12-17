@@ -249,7 +249,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,Sele
 			case 2:
 				return cmpd.getMoleculeString();
 			case 3:
-				float mw = cmpd.getMolecularWeight();
+				double mw = cmpd.getMolecularWeight();
 				if (mw == 0.0f) return null;
 				return Double.valueOf(mw);
 			case 4:
