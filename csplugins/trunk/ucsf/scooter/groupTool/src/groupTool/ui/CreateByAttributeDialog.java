@@ -187,8 +187,19 @@ public class CreateByAttributeDialog extends JDialog
 			while (nodeIter.hasNext()) {
 				// Get the node
 				CyNode node = nodeIter.next();
+				// Get the attribute type
+				byte type = nodeAttributes.getType(attribute);
+				String key = null;
+
 				// Get the attribute value (if any)
-				String key = nodeAttributes.getStringAttribute(node.getIdentifier(), attribute);
+				if (type == CyAttributes.TYPE_STRING)
+					key = nodeAttributes.getStringAttribute(node.getIdentifier(), attribute);
+				else if (type == CyAttributes.TYPE_INTEGER) {
+					Integer kInt = nodeAttributes.getIntegerAttribute(node.getIdentifier(), attribute);
+					if (kInt != null) {
+						key = kInt.toString();
+					}
+				}
 				if (key == null) continue;
 				if (!nodeMap.containsKey(key))
 					nodeMap.put(key, new ArrayList());
