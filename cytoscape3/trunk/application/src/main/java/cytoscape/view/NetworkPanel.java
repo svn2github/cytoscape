@@ -36,6 +36,17 @@
  */
 package cytoscape.view;
 
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
+import cytoscape.events.NetworkAddedEvent;
+import cytoscape.events.NetworkAddedListener;
+import cytoscape.events.NetworkViewAddedEvent;
+import cytoscape.events.NetworkViewAddedListener;
+import cytoscape.events.NetworkAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkAboutToBeDestroyedListener;
+import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
+
 import cytoscape.CyNetworkTitleChange;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetworkManager;
@@ -45,6 +56,7 @@ import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
 import cytoscape.view.cytopanels.BiModalJSplitPane;
+import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyDataTableUtil;
 
@@ -87,7 +99,13 @@ public class NetworkPanel extends JPanel
 			   SelectedNodesListener,
 			   SelectedEdgesListener,
 			   UnselectedNodesListener,
-			   UnselectedEdgesListener {
+			   UnselectedEdgesListener,
+			   SetCurrentNetworkViewListener,
+			   NetworkAddedListener,
+			   NetworkViewAddedListener,
+			   NetworkAboutToBeDestroyedListener,
+			   NetworkViewAboutToBeDestroyedListener 
+			   {
 	private final static long serialVersionUID = 1213748836763243L;
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 	private final JTreeTable treeTable;
@@ -99,25 +117,31 @@ public class NetworkPanel extends JPanel
 	private JMenuItem destroyViewItem;
 	private JMenuItem destroyNetworkItem;
 	private JMenuItem editNetworkTitle;
-	private BiModalJSplitPane split;
+	//private BiModalJSplitPane split;
+	private JSplitPane split;
 	private final NetworkTreeTableModel treeTableModel;
-	private final CytoscapeDesktop desktop;
 	private final CyNetworkManager netmgr;
+	private final NetworkViewManager viewmgr;
+	private final GraphViewFactory gvf;
+	private Long currentViewID;
 
 	/**
 	 * Constructor for the Network Panel.
 	 *
 	 * @param desktop
 	 */
-	public NetworkPanel(final CytoscapeDesktop desktop, final CyNetworkManager netmgr) {
+	public NetworkPanel(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, final BirdsEyeViewHandler bird, final GraphViewFactory gvf) {
 		super();
-		this.desktop = desktop;
 		this.netmgr = netmgr;
+		this.viewmgr = viewmgr;
+		this.gvf = gvf;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
 		treeTable = new JTreeTable(treeTableModel);
 		initialize();
+		setNavigator(bird.getBirdsEyeView());
+		currentViewID = null;
 
 		/*
 		 * Remove CTR-A for enabling select all function in the main window.
@@ -130,6 +154,7 @@ public class NetworkPanel extends JPanel
 				treeTable.setInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, map);
 			}
 		}
+
 		
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED, this);
 	}
@@ -156,8 +181,7 @@ public class NetworkPanel extends JPanel
 
 		JScrollPane scroll = new JScrollPane(treeTable);
 
-		split = new BiModalJSplitPane(desktop, JSplitPane.VERTICAL_SPLIT,
-		                              BiModalJSplitPane.MODE_SHOW_SPLIT, scroll, navigatorPanel);
+		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scroll, navigatorPanel);
 		split.setResizeWeight(1);
 
 		add(split);
@@ -175,7 +199,7 @@ public class NetworkPanel extends JPanel
 
 		// action listener which performs the tasks associated with the popup
 		// listener
-		popupActionListener = new PopupActionListener(desktop,netmgr);
+		popupActionListener = new PopupActionListener(this,netmgr,gvf);
 		editNetworkTitle.addActionListener(popupActionListener);
 		createViewItem.addActionListener(popupActionListener);
 		destroyViewItem.addActionListener(popupActionListener);
@@ -263,7 +287,30 @@ public class NetworkPanel extends JPanel
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
 		// updates the title in the networkViewMap
-		desktop.getNetworkViewManager().updateNetworkTitle(network);
+		viewmgr.updateNetworkTitle(network);
+	}
+
+	public void handleEvent(NetworkAboutToBeDestroyedEvent nde) {
+		removeNetwork( nde.getNetwork().getSUID() );
+	}
+
+	public void handleEvent(NetworkAddedEvent e) {
+		addNetwork(e.getNetwork().getSUID(), -1l);
+	}
+
+	public void handleEvent(SetCurrentNetworkViewEvent e) {
+		long curr = e.getNetworkView().getNetwork().getSUID();
+		System.out.println("NetworkPanel setting current network view: " + curr);
+		if ( currentViewID == null || curr != currentViewID.longValue() )  
+			focusNetworkNode(curr);
+	}
+
+	public void handleEvent(NetworkViewAboutToBeDestroyedEvent nde) {
+		treeTable.getTree().updateUI();
+	}
+
+	public void handleEvent(NetworkViewAddedEvent nde) {
+		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(SelectedNodesEvent event) {
@@ -281,8 +328,6 @@ public class NetworkPanel extends JPanel
 	public void handleEvent(UnselectedEdgesEvent event) {
 		treeTable.getTree().updateUI();
 	}
-
-
 
 	/**
 	 *  DOCUMENT ME!
@@ -328,6 +373,11 @@ public class NetworkPanel extends JPanel
 		DefaultMutableTreeNode node = getNetworkNode(network_id);
 
 		if (node != null) {
+			System.out.println("NetworkPanel - setting currentViewID");
+			// do this first so that events triggered by subequent lines don't
+			// recurse unecessarily
+			currentViewID = network_id;
+
 			// fires valueChanged if the network isn't already selected
 			treeTable.getTree().getSelectionModel().setSelectionPath(new TreePath(node.getPath()));
 			treeTable.getTree().scrollPathToVisible(new TreePath(node.getPath()));
@@ -371,9 +421,10 @@ public class NetworkPanel extends JPanel
 			return;
 		}
 
-		 System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
-		pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEW_FOCUS,
-	                                                   null, node.getNetworkID()));
+//		 System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
+//		pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEW_FOCUS,
+//	                                                   null, node.getNetworkID()));
+		netmgr.setCurrentNetworkView( node.getNetworkID() );
 
 		// creates a list of all selected networks 
 		List<Long> networkList = new LinkedList<Long>();
@@ -388,8 +439,9 @@ public class NetworkPanel extends JPanel
 		}
 
 		if ( networkList.size() > 0 ) {
-			pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEWS_SELECTED,
-		                                                   null, networkList));
+//			pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEWS_SELECTED,
+//		                                                   null, networkList));
+			netmgr.setSelectedNetworkViews( networkList );
 		} 
 	}
 
@@ -399,15 +451,15 @@ public class NetworkPanel extends JPanel
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
-			System.out.println("net panel received Cytoscape.NETWORK_CREATED");
-			addNetwork((Long) e.getNewValue(), (Long) e.getOldValue());
-		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
-			removeNetwork((Long) e.getNewValue());
-		} else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED) {
-			if ( e.getSource() != this )
-				focusNetworkNode((Long) e.getNewValue());
-		} else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
+//		if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
+//			System.out.println("net panel received Cytoscape.NETWORK_CREATED");
+//			addNetwork((Long) e.getNewValue(), (Long) e.getOldValue());
+//		} else  if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+//			removeNetwork((Long) e.getNewValue());
+//		} else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED) {
+//			if ( e.getSource() != this )
+//				focusNetworkNode((Long) e.getNewValue());
+	/*	} else*/ if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
 			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
 			Long newID = cyNetworkTitleChange.getNetworkIdentifier();
 			CyNetwork _network = netmgr.getNetwork(newID);
@@ -492,7 +544,7 @@ public class NetworkPanel extends JPanel
 			if (column == 0) {
 				((DefaultMutableTreeNode) node).setUserObject(aValue);
 			} else
-				JOptionPane.showMessageDialog(desktop, "Error: assigning value at in NetworkPanel");
+				JOptionPane.showMessageDialog(NetworkPanel.this, "Error: assigning value at in NetworkPanel");
 			// This function is not used to set node and edge values.
 		}
 	}
@@ -644,12 +696,14 @@ class PopupActionListener implements ActionListener {
 	 * associated with the JTable that originated the popup event
 	 */
 	protected CyNetwork cyNetwork;
-	private CytoscapeDesktop desktop;
+	private NetworkPanel panel;
 	private CyNetworkManager netmgr;
+	private GraphViewFactory gvf;
 
-	public PopupActionListener(CytoscapeDesktop desktop,CyNetworkManager netmgr) {
-		this.desktop = desktop;
+	public PopupActionListener(NetworkPanel panel,CyNetworkManager netmgr,GraphViewFactory gvf) {
+		this.panel = panel;
 		this.netmgr = netmgr;
+		this.gvf = gvf;
 	}
 
 	/**
@@ -665,14 +719,14 @@ class PopupActionListener implements ActionListener {
 				netmgr.destroyNetworkView(netmgr.getNetworkView(vid));
 		} 
 		else if (label == CREATE_VIEW) {
-			CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork,desktop);
+			CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork,panel,gvf,netmgr);
 		}
 		else if (label == DESTROY_NETWORK) {
 			netmgr.destroyNetwork(cyNetwork);
 		}
 		else if (label == EDIT_TITLE) {
-			CyNetworkNaming.editNetworkTitle(cyNetwork, desktop, netmgr);
-			desktop.getNetworkPanel().updateTitle(cyNetwork);
+			CyNetworkNaming.editNetworkTitle(cyNetwork, panel, netmgr);
+			panel.updateTitle(cyNetwork);
 		}
 		else {
 			// throw an exception here?

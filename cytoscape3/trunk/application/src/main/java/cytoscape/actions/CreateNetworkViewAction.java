@@ -47,10 +47,12 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
+import java.awt.Container;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -64,11 +66,16 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * Creates a new CreateNetworkViewAction object.
 	 */
 	private final CytoscapeDesktop desktop;
-	public CreateNetworkViewAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+	private final CyNetworkManager netmgr;
+	private final GraphViewFactory gvf;
+
+	public CreateNetworkViewAction(CytoscapeDesktop desktop, CyNetworkManager netmgr, GraphViewFactory gvf) {
 		super("Create View",netmgr);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_V, ActionEvent.ALT_MASK);
 		this.desktop = desktop;
+		this.netmgr = netmgr;
+		this.gvf = gvf;
 	}
 
 	/**
@@ -78,7 +85,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		CyNetwork cyNetwork = netmgr.getCurrentNetwork();
-		createViewFromCurrentNetwork(cyNetwork,desktop);
+		createViewFromCurrentNetwork(cyNetwork,desktop,gvf,netmgr);
 	}
 
 	/**
@@ -87,12 +94,12 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * @param cyNetwork DOCUMENT ME!
 	 */
 	// TODO - Move this somewhere else since it's used elsewhere
-	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork, CytoscapeDesktop desk) {
+	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork, Container parent, GraphViewFactory gvf, CyNetworkManager netmgr) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 
 		if (cyNetwork.getNodeCount() > Integer.parseInt(CytoscapeInit.getProperties()
 		                                                             .getProperty("secondaryViewThreshold"))) {
-			int n = JOptionPane.showConfirmDialog(desk,
+			int n = JOptionPane.showConfirmDialog(parent,
 			                                      "Network contains "
 			                                      + formatter.format(cyNetwork.getNodeCount())
 			                                      + " nodes and "
@@ -107,20 +114,20 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			// TODO
 				//Cytoscape.createNetworkView(cyNetwork);
 			} else {
-				JOptionPane.showMessageDialog(desk,
+				JOptionPane.showMessageDialog(parent,
 				                              "Create View Request Cancelled by User.");
 			}
 		} else {
 			// TODO
 //			Cytoscape.createNetworkView(cyNetwork);
 			// Create Task
-			CreateNetworkViewTask task = new CreateNetworkViewTask(cyNetwork);
+			CreateNetworkViewTask task = new CreateNetworkViewTask(cyNetwork,gvf,netmgr);
 
 			// Configure JTask Dialog Pop-Up Box
 			JTaskConfig jTaskConfig = new JTaskConfig();
 
 			jTaskConfig.displayCancelButton(false);
-			jTaskConfig.setOwner(desk);
+			jTaskConfig.setOwner(parent);
 			jTaskConfig.displayCloseButton(false);
 			jTaskConfig.displayStatus(true);
 			jTaskConfig.setAutoDispose(true);
@@ -152,9 +159,13 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 class CreateNetworkViewTask implements Task {
 	private CyNetwork network;
 	private TaskMonitor taskMonitor;
+	private final CyNetworkManager netmgr;
+	private final GraphViewFactory gvf;
 
-	CreateNetworkViewTask(CyNetwork network) {
+	CreateNetworkViewTask(CyNetwork network, GraphViewFactory gvf, CyNetworkManager netmgr) {
 		this.network = network;
+		this.gvf = gvf;
+		this.netmgr = netmgr;
 	}
 
 	public void run() {
@@ -162,8 +173,8 @@ class CreateNetworkViewTask implements Task {
 		taskMonitor.setPercentCompleted(-1);
 
 		try {
-			// TODO
-			//Cytoscape.createNetworkView(network);
+			GraphView view = gvf.createGraphView( network );
+			netmgr.addNetworkView( view );
 		} catch (Exception e) {
 			taskMonitor.setException(e, "Could not create network view for network: " + network.attrs().get("name",String.class));
 		}

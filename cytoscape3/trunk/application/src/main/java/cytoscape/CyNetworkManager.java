@@ -84,5 +84,6 @@ public interface CyNetworkManager {
 	public void destroyNetwork(CyNetwork network);
 	public void destroyNetworkView(GraphView view);
 
-	public void addNetwork(CyNetwork network, GraphView view, CyLayouts cyLayouts);
+	public void addNetwork(CyNetwork network);
+	public void addNetworkView(GraphView view);
 }

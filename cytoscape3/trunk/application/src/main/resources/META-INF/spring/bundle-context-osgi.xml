@@ -161,4 +161,31 @@
 	<osgi:service id="cyNetworkManagerService" ref="networkManager"
 		interface="cytoscape.CyNetworkManager" />
 
+	<!-- register listener services -->
+	<osgi:service id="networkPanelSelectedNodesListenerService" ref="networkPanel"
+		interface="org.cytoscape.model.events.SelectedNodesListener" />
+	<osgi:service id="networkPanelSelectedEdgesListenerService" ref="networkPanel"
+		interface="org.cytoscape.model.events.SelectedEdgesListener" />
+	<osgi:service id="networkPanelUnselectedNodesListenerService" ref="networkPanel"
+		interface="org.cytoscape.model.events.UnselectedNodesListener" />
+	<osgi:service id="networkPanelUnselectedEdgesListenerService" ref="networkPanel"
+		interface="org.cytoscape.model.events.UnselectedEdgesListener" />
+	<osgi:service id="networkPanelSetCurrentNetworkViewListenerService" ref="networkPanel"
+		interface="cytoscape.events.SetCurrentNetworkViewListener" />
+	<osgi:service id="networkPanelNetworkAddedListenerService" ref="networkPanel"
+		interface="cytoscape.events.NetworkAddedListener" />
+	<osgi:service id="networkPanelNetworkViewAddedListenerService" ref="networkPanel"
+		interface="cytoscape.events.NetworkViewAddedListener" />
+	<osgi:service id="networkPanelNetworkAboutToBeDestroyedListenerService" ref="networkPanel"
+		interface="cytoscape.events.NetworkAboutToBeDestroyedListener" />
+	<osgi:service id="networkPanelNetworkViewAboutToBeDestroyedListenerService" ref="networkPanel"
+		interface="cytoscape.events.NetworkViewAboutToBeDestroyedListener" />
+
+	<osgi:service id="networkViewManagerNetworkAddedListenerService" ref="networkViewManager"
+		interface="cytoscape.events.NetworkViewAddedListener" />
+	<osgi:service id="networkViewManagerNetworkViewAboutToBeDestroyedListenerService" ref="networkViewManager"
+		interface="cytoscape.events.NetworkViewAboutToBeDestroyedListener" />
+	<osgi:service id="networkViewManagerSetCurrentNetworkViewListenerService" ref="networkViewManager"
+		interface="cytoscape.events.SetCurrentNetworkViewListener" />
+	
 </beans>

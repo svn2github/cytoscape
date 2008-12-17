@@ -41,6 +41,13 @@ import cytoscape.CytoscapeInit;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
+import cytoscape.events.NetworkViewAddedEvent;
+import cytoscape.events.NetworkViewAddedListener;
+import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
+
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
@@ -55,15 +62,18 @@ import java.util.Map;
 /**
  * 
  */
-public class NetworkViewManager implements PropertyChangeListener,
-		InternalFrameListener {
+public class NetworkViewManager implements 
+		PropertyChangeListener,
+		InternalFrameListener, 
+		NetworkViewAddedListener, 
+		NetworkViewAboutToBeDestroyedListener, 
+		SetCurrentNetworkViewListener
+		{
 	private JDesktopPane desktopPane;
 
 	private Map<Long, JInternalFrame> networkViewMap;
 
 	private Map<JInternalFrame, Long> componentMap;
-
-	protected CytoscapeDesktop cytoscapeDesktop;
 
 	protected SwingPropertyChangeSupport pcs;
 
@@ -72,14 +82,15 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 	private CyNetworkManager netmgr;
 
+	private Long currentViewId;
+
 	/**
 	 * Creates a new NetworkViewManager object.
 	 * 
 	 * @param desktop
 	 *            DOCUMENT ME!
 	 */
-	public NetworkViewManager(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
-		this.cytoscapeDesktop = desktop;
+	public NetworkViewManager(CyNetworkManager netmgr) {
 		this.netmgr = netmgr;
 		desktopPane = new JDesktopPane();
 		pcs = new SwingPropertyChangeSupport(this);
@@ -90,6 +101,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 		networkViewMap = new HashMap<Long, JInternalFrame>();
 		componentMap = new HashMap<JInternalFrame, Long>();
+		currentViewId = null;
 	}
 
 	/**
@@ -151,12 +163,13 @@ public class NetworkViewManager implements PropertyChangeListener,
 		// System.out.println("NetworkViewManager: internalFrameActivated ");
 		Long network_id = componentMap.get(e.getInternalFrame());
 
-		if (network_id == null) {
+		if ( ( network_id == null ) ||
+		     ( currentViewId != null && network_id.equals( currentViewId ) ) )
 			return;
-		}
 
-		firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null,
-				network_id);
+//		firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null,
+//				network_id);
+		netmgr.setCurrentNetworkView( network_id );
 	}
 
 	/**
@@ -219,48 +232,19 @@ public class NetworkViewManager implements PropertyChangeListener,
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 
-		// handle focus event
-		if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUS) {
-			Long network_id = (Long) e.getNewValue();
-			e = null;
-			unsetFocus(); // in case the newly focused network doesn't have a
-							// view
-			setFocus(network_id);
-
-			if (this.getDesktopPane() != null) {
-				netmgr.getCurrentNetworkView().addTransferComponent(this.getDesktopPane());
-			}
-		}
-
-		// handle putting a newly created GraphView into a Container
-		else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
-			GraphView new_view = (GraphView) e.getNewValue();
-			createContainer(new_view);
-			e = null;
-		}
-
-		// handle a NetworkView destroyed
-		else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_DESTROYED) {
-			GraphView view = (GraphView) e.getNewValue();
-			removeView(view);
-			e = null;
-		}
 	}
 
-	/**
-	 * Fires a PropertyChangeEvent
-	 */
-	public void firePropertyChange(String property_type, Object old_value,
-			Object new_value) {
-		pcs.firePropertyChange(new PropertyChangeEvent(this, property_type,
-				old_value, new_value));
-	}
 
-	/**
-	 * Used to unset the focus of all the views. This is for the situation when
-	 * a network is focused but the network doesn't have a view.
-	 */
-	protected void unsetFocus() {
+	public void handleEvent(SetCurrentNetworkViewEvent e) {
+		System.out.println("NetworkViewManager - attempting to set current network view ");
+		GraphView currV = e.getNetworkView();
+		Long network_id = Long.valueOf(currV.getNetwork().getSUID());
+
+		// make sure we're not redundant
+		if ( currentViewId != null && currentViewId.equals(network_id) )
+			return;
+	
+		// unset focus on frames
 		for (JInternalFrame f : networkViewMap.values()) {
 			try {
 				f.setSelected(false);
@@ -268,23 +252,33 @@ public class NetworkViewManager implements PropertyChangeListener,
 				System.out.println("NetworkViewManager: Couldn't unset focus for internal frame.");
 			}
 		}
-	}
 
-	/**
-	 * Sets the focus of the passed network, if possible The Network ID
-	 * corresponds to the GraphView.getGraphPerspective().getIdentifier()
-	 */
-	protected void setFocus(Long network_id) {
+		// set focus
 		if (networkViewMap.containsKey(network_id)) {
 			try {
+				currentViewId = network_id;
 				networkViewMap.get(network_id).setIcon(false);
 				networkViewMap.get(network_id).show();
 				// fires internalFrameActivated
 				networkViewMap.get(network_id).setSelected(true);
-			} catch (Exception e) {
+			} catch (Exception ex) {
 				System.err.println("Network View unable to be focused");
 			}
 		}
+
+		if (getDesktopPane() != null) {
+			currV.addTransferComponent(getDesktopPane());
+		}
+	}
+
+	public void handleEvent(NetworkViewAboutToBeDestroyedEvent nvde) {
+		System.out.println("NetworkViewManager - network view destroyed ");
+		removeView(nvde.getNetworkView());
+	}
+
+	public void handleEvent(NetworkViewAddedEvent nvae) {
+		System.out.println("NetworkViewManager - network view added: " + nvae.getNetworkView().getNetwork().getSUID());
+		createContainer(nvae.getNetworkView());
 	}
 
 	protected void removeView(GraphView view) {
@@ -368,7 +362,8 @@ public class NetworkViewManager implements PropertyChangeListener,
 		networkViewMap.put(view.getGraphPerspective().getSUID(), iframe);
 		componentMap.put(iframe, view.getGraphPerspective().getSUID());
 
-		firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null, view
-				.getGraphPerspective().getSUID());
+//		firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null, view
+//				.getGraphPerspective().getSUID());
+		netmgr.setCurrentNetworkView( view.getNetwork().getSUID() );
 	}
 }

@@ -24,12 +24,30 @@
 	<!-- Menu bar -->
 	<bean name="cytoscapeMenus" class="cytoscape.view.CytoscapeMenus" scope="singleton" />
 
+	<bean name="networkViewManager" class="cytoscape.view.NetworkViewManager" scope="singleton">
+		<constructor-arg ref="networkManager" />
+	</bean>
+
+	<bean name="birdsEyeViewHandler" class="cytoscape.view.BirdsEyeViewHandler" scope="singleton">
+		<constructor-arg ref="networkViewManager" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+
+	<bean name="networkPanel" class="cytoscape.view.NetworkPanel" scope="singleton">
+		<constructor-arg ref="networkViewManager" />
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="birdsEyeViewHandler" />
+		<constructor-arg ref="graphViewFactoryServiceRef" />
+	</bean>
+
+
 	<!-- Cytoscape Desktop -->
 	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop"
 		scope="singleton" depends-on="vmmServiceRef">
 		<constructor-arg ref="cytoscapeMenus" />
 		<constructor-arg ref="networkManager" />
-		<property name="vmm" ref="vmmServiceRef" />
+		<constructor-arg ref="networkViewManager" />
+		<constructor-arg ref="networkPanel" />
 	</bean>
 
 	<!-- cyMain.  Currently working as a builder for application. -->
@@ -83,6 +101,7 @@
 	<bean id="createNetworkViewAction" class="cytoscape.actions.CreateNetworkViewAction">
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="graphViewFactoryServiceRef" />
 	</bean>
 	<bean id="destroyNetworkViewAction" class="cytoscape.actions.DestroyNetworkViewAction">
 		<constructor-arg ref="networkManager" />

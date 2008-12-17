@@ -245,8 +245,8 @@ public class LoadNetworkTask implements Task {
 		taskMonitor.setStatus("Reading in Network Data...");
 
 		// Remove unnecessary listeners:
-		dsk.getSwingPropertyChangeSupport()
-		         .removePropertyChangeListener(dsk.getBirdsEyeViewHandler());
+//		dsk.getSwingPropertyChangeSupport()
+//		         .removePropertyChangeListener(dsk.getBirdsEyeViewHandler());
 		
 		try {
 			taskMonitor.setPercentCompleted(-1);
@@ -259,7 +259,11 @@ public class LoadNetworkTask implements Task {
 			cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name,netmgr));
 			GraphView view = gvf.createGraphView( cyNetwork );
 
-			netmgr.addNetwork( cyNetwork, view, cyl );
+			cyl.getDefaultLayout().doLayout(view);
+			view.fitContent();
+
+			netmgr.addNetwork( cyNetwork );
+			netmgr.addNetworkView( view );
 
 			if ((layoutAlgorithm != null) && (view != null)) {
 				// Yes, do it
@@ -274,14 +278,14 @@ public class LoadNetworkTask implements Task {
 			ret_val[0] = cyNetwork;
 			ret_val[1] = uri;
 
-			dsk.getSwingPropertyChangeSupport()
-			         .addPropertyChangeListener(dsk.getBirdsEyeViewHandler());
-			dsk.getNetworkViewManager()
-			         .firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null,
-			                             netmgr.getCurrentNetworkView().getNetwork()
-			                                      .getSUID());
+//			dsk.getSwingPropertyChangeSupport()
+//			         .addPropertyChangeListener(dsk.getBirdsEyeViewHandler());
+//			dsk.getNetworkViewManager()
+//			         .firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null,
+//			                             netmgr.getCurrentNetworkView().getNetwork()
+//			                                      .getSUID());
 
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
+//			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 
 			if (cyNetwork != null) {
 				informUserOfGraphStats(cyNetwork);
