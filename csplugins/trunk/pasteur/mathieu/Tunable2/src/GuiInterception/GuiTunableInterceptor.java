@@ -8,15 +8,20 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import Factory.GroupHandler;
 import java.util.List;
+import java.util.Properties;
+
+import Properties.*
+;
 
 
 public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> {
 
 
-	public static JFrame inframe;
+	public JFrame inframe;
 	public JFrame outframe;
 	static JPanel tunpan = null;
-	//static JPanel resultpane = new JPanel();
+	PropertiesImpl properties=null;
+	Properties prop = new Properties();
 	
 	public GuiTunableInterceptor(JFrame inframe,JFrame outframe) {
 		super( new GuiHandlerFactory() );
@@ -26,6 +31,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 
 	protected void process(List<Guihandler> list) {
+			properties = new PropertiesImpl("TunableSampler");
 			JPanel mainPanel = new JPanel();
 			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 			Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -33,6 +39,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			TitledBorder titleBorder = null;
 			for (Guihandler guihandler : list) {
 				if(guihandler.getclass()!=Group.class){
+					properties.setAll(guihandler.getTunable(),guihandler.getObject(),guihandler.getField());
+					properties.add();
 					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
 					titleBorder.setTitlePosition(TitledBorder.LEFT);
 					titleBorder.setTitlePosition(TitledBorder.TOP);
@@ -47,6 +55,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				}
 			}
 			
+			properties.initializeProperties(prop);
 		//	JButton button = new JButton("OK");
 		//	mainPanel.add(button);
 		//	button.addActionListener(new myActionListener(list));
@@ -84,9 +93,24 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	protected void display(List<Guihandler> list) {
 		
 		JPanel resultpane = new JPanel();
+		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		TitledBorder titleBorder = null;
+		tunpan=new JPanel();
 		for(Guihandler guihandler : list){
-			if(guihandler.getClass()==GroupHandler.class) continue;
-			tunpan = guihandler.update();
+			if(guihandler.getclass()!=Group.class){
+				titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
+				titleBorder.setTitlePosition(TitledBorder.LEFT);
+				titleBorder.setTitlePosition(TitledBorder.TOP);
+				tunpan.add(guihandler.update());
+			}
+			if(guihandler.getclass()==Group.class){
+				tunpan.setBorder(titleBorder);
+				resultpane.add(tunpan);
+			
+				tunpan=new JPanel();
+				tunpan.removeAll();
+			}
+//			tunpan = guihandler.update();
 			//((Guihandler) guihandler).handle(); NOT SURE
 			resultpane.add(tunpan);
 		}
@@ -98,12 +122,13 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	
 	protected void save(List<Guihandler> list){
 		for(Guihandler guihandler : list) guihandler.handle();	
+		properties.saveProperties(prop);
 		//properties.saveProperties(prop);
 	}
 	
 	protected void cancel(List<Guihandler> list){
-		for(Guihandler guihandler : list) guihandler.cancel();	
-		//properties.saveProperties(prop);
+		for(Guihandler guihandler : list) guihandler.cancel();
+		properties.revertProperties();
 	}
 	
 	

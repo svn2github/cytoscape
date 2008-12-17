@@ -1,12 +1,15 @@
 package Main;
 
-
+import java.util.*;
 import javax.swing.*;
 import GuiInterception.*;
 import Command.*;
 import HandlerFactory.Handler;
 import java.awt.event.*;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+
 import Props.*;
 
 public class application{
@@ -16,14 +19,18 @@ public class application{
 	public static JFrame outputframe;
 	private static JPanel pane;
 	private static JMenuItem menuItem;
-	public static command commander = new input();
+	public static Properties properties;
+	public static command commander=new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
 	public static TunableInterceptor ti = null;
 	public static TunableInterceptor pi = null;
 	
 		
 	public static void main(String[] args){
-            	CreateGUIandStart();
+
+	//	commander = new input<String>(choices);
+		pi = new LoadPropsInterceptor(properties);
+        CreateGUIandStart();
     }
 
 	
@@ -137,7 +144,7 @@ public class application{
 				outputframe=new JFrame("OutputParameters");
 				ti = new GuiTunableInterceptor(inputframe,outputframe);
 				ti.intercept(commander);
-				pi = new LoadPropsInterceptor(null);
+				
 			}
 		}
 	}

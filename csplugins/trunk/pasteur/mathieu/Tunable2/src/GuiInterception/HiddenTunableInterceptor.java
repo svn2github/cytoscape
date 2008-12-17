@@ -8,10 +8,6 @@ import java.lang.reflect.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-
 
 public abstract class HiddenTunableInterceptor<T extends Handler> implements TunableInterceptor{
 	
