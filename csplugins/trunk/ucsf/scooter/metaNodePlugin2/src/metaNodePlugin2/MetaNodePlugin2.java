@@ -816,10 +816,11 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		private void collapse() {
 			MetaNode mNode = MetaNode.getMetaNode(group);
 			if (mNode == null) {
-				MetaNode newNode = new MetaNode(group);
+				mNode = new MetaNode(group);
+				if (mNode == null) return;
 				groupCreated(group);
-				newNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
 			}
+			mNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
 		}
 
 		/**
