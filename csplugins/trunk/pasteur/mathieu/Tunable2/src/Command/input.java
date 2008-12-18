@@ -24,7 +24,7 @@ public class input implements command {
 	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
 	public Group Group1;
 
-	@Tunable(description="List", type=List.class, flag=Param.MultiSelect)
+	@Tunable(description="List", type=List.class, flag=Param.Nothing)
 	public List<String> list;
 
 	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
