@@ -52,15 +52,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * This class handles the creation of the BirdsEyeView navigation object 
  * and handles the events which change view seen. 
  */
 class BirdsEyeViewHandler implements 
-	PropertyChangeListener,
 	SetCurrentNetworkListener,
 	SetCurrentNetworkViewListener,
 	NetworkViewDestroyedListener
@@ -105,6 +102,10 @@ class BirdsEyeViewHandler implements
 		setFocus();
 	}
 
+	public void handleEvent(NetworkViewDestroyedEvent e) {
+		bev.changeView(netmgr.getCurrentNetworkView());
+	}
+
 	private void setFocus() {
 		JDesktopPane desktopPane = viewmgr.getDesktopPane();
 		if (desktopPane == null)
@@ -122,41 +123,6 @@ class BirdsEyeViewHandler implements
 
 		if (!hasListener)
 			frame.addComponentListener(frameListener);
-	}
-
-	public void handleEvent(NetworkViewDestroyedEvent e) {
-		bev.changeView(netmgr.getCurrentNetworkView());
-	}
-
-	public void propertyChange(PropertyChangeEvent e) {
-		if ((e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED)
-		    || (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUS)
-		    || (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_DESTROYED)
-		    || (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED)) {
-			bev.changeView(netmgr.getCurrentNetworkView());
-		}
-
-		// Add the frameListener to the currently focused view if it
-		// doesn't already have one.
-		if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED)
-		{
-			JDesktopPane desktopPane = viewmgr.getDesktopPane();
-			if (desktopPane == null)
-				return;
-
-			JInternalFrame frame = desktopPane.getSelectedFrame();
-			if (frame == null)
-				return;
-
-			boolean hasListener = false;
-			ComponentListener[] listeners = frame.getComponentListeners();
-			for(int i = 0; i < listeners.length; i++)
-				if (listeners[i] == frameListener)
-					hasListener = true;
-
-			if (!hasListener)
-				frame.addComponentListener(frameListener);
-		}
 	}
 
 	/**

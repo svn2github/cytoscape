@@ -244,10 +244,6 @@ public class LoadNetworkTask implements Task {
 
 		taskMonitor.setStatus("Reading in Network Data...");
 
-		// Remove unnecessary listeners:
-//		dsk.getSwingPropertyChangeSupport()
-//		         .removePropertyChangeListener(dsk.getBirdsEyeViewHandler());
-		
 		try {
 			taskMonitor.setPercentCompleted(-1);
 
@@ -273,19 +269,6 @@ public class LoadNetworkTask implements Task {
 
 			netmgr.addNetwork( cyNetwork );
 			netmgr.addNetworkView( view );
-
-//			Object[] ret_val = new Object[2];
-//			ret_val[0] = cyNetwork;
-//			ret_val[1] = uri;
-
-//			dsk.getSwingPropertyChangeSupport()
-//			         .addPropertyChangeListener(dsk.getBirdsEyeViewHandler());
-//			dsk.getNetworkViewManager()
-//			         .firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null,
-//			                             netmgr.getCurrentNetworkView().getNetwork()
-//			                                      .getSUID());
-
-//			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 
 			if (cyNetwork != null) {
 				informUserOfGraphStats(cyNetwork);
