@@ -11,12 +11,21 @@ import java.util.Set;
  * A TextPresentation that shows network as an Adjacency Matrix
  */
 public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
+    private final VisualProperty<String> headerText =
+	new VisualPropertyImpl<String>("HEADER_TEXT", "text printed as header",
+				       "---[ Adjacency Matrix]---", String.class,
+				       VisualProperty.GraphObjectType.NETWORK);
     private CyNetworkView view;
+    private Set<VisualProperty> visualProperties = null;
     public AdjMatrixTextRenderer(CyNetworkView view){
 	this.view = view;
     }
     public String render(){
-	return "AdjMatrixTextRenderer for: "+view;
+	StringBuilder sb = new StringBuilder();
+	sb.append("\n "+view.getNetworkView().getVisualProperty(headerText));
+	sb.append("\n AdjMatrixTextRenderer for: \n "+view);
+	return sb.toString();
+	//return "AdjMatrixTextRenderer for: \n "+view;
     }
 
 
@@ -26,7 +35,19 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 	 * @return  DOCUMENT ME!
 	 */
     public Set<VisualProperty> getVisualProperties(){
-	return new HashSet<VisualProperty>();
+	if (visualProperties == null){
+	    populateListOfVisualProperties();
+	}
+	return new HashSet<VisualProperty>(visualProperties);
+    }
+    private void populateListOfVisualProperties(){
+	visualProperties = new HashSet<VisualProperty>();
+	visualProperties.add(headerText);
+
+	/* FIXME: define text renderer
+	visualProperties.add(new DiscreteVisualProperty("TEXT_NODE_RENDERER", TextNodeRenderer.class,
+							true, range, null);
+	*/
     }
 
 	/**
