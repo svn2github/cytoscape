@@ -45,36 +45,12 @@ import org.cytoscape.model.CyNetworkFactory;
  */
 public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	
-	private CyEventHelper help;
-
-	/**
-	 * For setter injection
-	 */
-	public CyNetworkFactoryImpl() {
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param help DOCUMENT ME!
-	 */
-	public void setHelp(CyEventHelper help) {
-		this.help = help;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyEventHelper getHelp() {
-		return this.help;
-	}
+	private final CyEventHelper help;
 
 	/**
 	 * Creates a new CyNetworkFactoryImpl object.
 	 *
-	 * @param h  DOCUMENT ME!
+	 * @param help An instance of CyEventHelper. 
 	 */
 	public CyNetworkFactoryImpl(final CyEventHelper help) {
 		if (help == null)
@@ -84,9 +60,7 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * {@inheritDoc}
 	 */
 	public CyNetwork getInstance() {
 		//return new MGraph(help);

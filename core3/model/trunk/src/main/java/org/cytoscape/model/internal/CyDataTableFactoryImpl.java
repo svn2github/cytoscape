@@ -52,14 +52,11 @@ import org.cytoscape.event.CyEventHelper;
  */
 class CyDataTableFactoryImpl implements CyDataTableFactory {
 
-	Map<Long,CyDataTable> tables;
-	CyEventHelper help;
+	private final Map<Long,CyDataTable> tables;
+	private final CyEventHelper help;
 
-	public void setHelp(CyEventHelper help) {
+	CyDataTableFactoryImpl(CyEventHelper help) {
 		this.help = help;
-	}
-
-	CyDataTableFactoryImpl() {
 		tables = new HashMap<Long,CyDataTable>();
 	}
 

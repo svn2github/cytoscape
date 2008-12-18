@@ -57,7 +57,7 @@ import java.util.List;
  * <ul><li>A <b>CyRootNetwork</b> is a {@link CyNetwork} that
  * adds methods for maintaining the meta-network.
  * All {@link CyNode}s and {@link CyEdge}s in all {@link CySubNetwork}s
- * that are part of this CyRootNetwork, including all {@link CyMetaNodes}.
+ * that are part of this CyRootNetwork, including all {@link CyMetaNode}s.
  * <li>A {@link CySubNetwork} is a group of nodes and edges
  * that are a sub-network of a {@link CyRootNetwork}.  The
  * {@link CySubNetwork} can be represented within another {@link CySubNetwork}

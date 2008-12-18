@@ -16,17 +16,16 @@
 	<context:annotation-config/>
 	
 	<bean id="cyNetworkFactory" class="org.cytoscape.model.internal.CyNetworkFactoryImpl">
-		<property name="help" ref="cyEventHelper"></property>
+		<constructor-arg ref="cyEventHelper" />
 	</bean>
 
 	<bean id="cyDataTableFactory" class="org.cytoscape.model.internal.CyDataTableFactoryImpl">
-		<property name="help" ref="cyEventHelper"></property>
+		<constructor-arg ref="cyEventHelper" />
 	</bean>
 
-	<bean id="cyRootNetworkFactory" class="org.cytoscape.model.internal.CyRootNetworkFactoryImpl">
-	</bean>
+	<bean id="cyRootNetworkFactory" class="org.cytoscape.model.internal.CyRootNetworkFactoryImpl"/>
 	
 	<bean id="cyEventHelper" class="org.cytoscape.event.internal.CyEventHelperImpl">
-		<property name="bc" ref="bundleContext"></property>
+		<constructor-arg ref="bundleContext" />
 	</bean>
 </beans>

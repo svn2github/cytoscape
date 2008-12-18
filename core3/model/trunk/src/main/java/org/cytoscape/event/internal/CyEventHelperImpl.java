@@ -56,15 +56,8 @@ import java.util.concurrent.Executors;
 public class CyEventHelperImpl implements CyEventHelper {
 	private static final Executor EXEC = Executors.newCachedThreadPool();
 	
-	private BundleContext bc;
+	private final BundleContext bc;
 
-	public void setBc(BundleContext bc) {
-		this.bc = bc;
-	}
-	
-	public CyEventHelperImpl() {
-	}
-	
 	/**
 	 * Creates a new CyEventHelperImpl object.
 	 *
@@ -91,8 +84,10 @@ public class CyEventHelperImpl implements CyEventHelper {
 			Method method = listenerClass.getMethod("handleEvent",
 			                                        event.getClass().getInterfaces()[0]);
 
-			for (L listener : listeners)
+			for (L listener : listeners) {
+//				System.out.println("firing event: " + event.getClass().toString() + "  for listener: " + listener.getClass().toString());
 				method.invoke(listener, event);
+			}
 		} catch (NoSuchMethodException e) {
 			System.err.println("Listener doesn't implement \"handleEvent\" method: "
 			                   + listenerClass.getName());
@@ -102,7 +97,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 			                   + listenerClass.getName());
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			System.err.println("Listener can't exectue \"handleEvent\" method: "
+			System.err.println("Listener can't execute \"handleEvent\" method: "
 			                   + listenerClass.getName());
 			e.printStackTrace();
 		}
@@ -169,7 +164,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 
 	private <L extends CyListener> List<L> getListeners(Class<L> listenerClass) {
 		List<L> ret = new LinkedList<L>();
-
+		
 		if (bc == null)
 			return ret;
 

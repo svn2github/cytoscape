@@ -44,7 +44,8 @@ import java.util.Map;
  * CyNetwork is the primary class for algorithm writing.  All algorithms should take a 
  * CyNetwork as input, and do their best to only use the API of CyNetwork.  CyNetwork
  * provides a straightforward interface to a simple graph.  For an interface to a
- * more complicated subgraph, see {@link CyRootNetwork} and {@link CySubnetwork}, both
+ * more complicated subgraph, see {@link org.cytoscape.model.subnetwork.CyRootNetwork} 
+ * and {@link org.cytoscape.model.subnetwork.CySubNetwork}, both
  * of which inherit from CyNetwork.
  *
  * The CyNetwork interface provides most of the methods a plugin would need to create
@@ -76,8 +77,8 @@ public interface CyNetwork extends Identifiable, GraphObject {
 
 	/**
 	 * Remove a node from the network and delete the node (if it only exists in 
-	 * this network).  See {@link CyRootNetwork} for information about having the
-	 * same node in two networks.
+	 * this network).  See {@link org.cytoscape.model.subnetwork.CyRootNetwork} 
+	 * for information about having the same node in two networks.
 	 *
 	 * @param node the node to be deleted
 	 * @return true if the node was successfully deleted
@@ -96,8 +97,8 @@ public interface CyNetwork extends Identifiable, GraphObject {
 
 	/**
 	 * Remove an edge from the network and delete the edge (if it only exists in
-	 * this network).  See {@link CyRootNetwork} for information about having the
-	 * same edge in two networks.
+	 * this network).  See {@link org.cytoscape.model.subnetwork.CyRootNetwork} 
+	 * for information about having the same edge in two networks.
 	 *
 	 * @param edge the edge to be deleted
 	 * @return true if the edge was successfully deleted

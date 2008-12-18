@@ -44,7 +44,7 @@ import java.util.Set;
 
 /**
  * A CySubNetwork is a {@link CyNetwork} that is contained within a parent
- * {@link CyNewtork}.  See the description in {@link CyRootNetwork} for
+ * {@link CyNetwork}.  See the description in {@link CyRootNetwork} for
  * a more complete description of Cytoscape's meta-network model.
  */
 public interface CySubNetwork extends CyNetwork {
