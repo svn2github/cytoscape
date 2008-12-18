@@ -16,35 +16,41 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	Field f;
 	Object o;
 	Tunable t;
-	java.util.List<T> list;
+	List<T> listIn;
 	ListMultipleSelection<T> LMS;
 	private Object[] x;
 	private List<T> selected = new ArrayList<T>();
 	JList jlist;
+	Boolean available;
 	
 	
 	public ListMultipleHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.o=o;
 		this.t=t;
+		this.available=t.available();
 		try{
-			list=(List<T>) f.get(o);
+			listIn=(List<T>) f.get(o);
+		}catch(Exception e){e.printStackTrace();}
+		LMS= new ListMultipleSelection<T>(listIn);
+	}
+
+
+	
+	public void cancel() {
+		try{
+			f.set(o, listIn);
 		}catch(Exception e){e.printStackTrace();}
 	}
 
-	@Override
-	public void cancel() {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
+	
 	public Field getField() {
 		return f;
 	}
 
 	public JPanel getInputPanel() {
 		JPanel result = new JPanel();
-		LMS= new ListMultipleSelection<T>(list);
 		jlist = new JList(LMS.getPossibleValues().toArray());
 		jlist.addListSelectionListener(this);
 		jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -61,42 +67,46 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 		return t;
 	}
 
-	@Override
 	public Class<?> getclass() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
 	public JPanel getresultpanel() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+
+	
 	public void handle() {
-		// TODO Auto-generated method stub
-		
+		if(available==true){
+			try{
+				f.set(o, selected);
+			}catch(Exception e){e.printStackTrace();}
+		}
+		else{
+			try{
+				f.set(o, listIn);
+			}catch(Exception e){e.printStackTrace();}
+		}	
 	}
 
-	@Override
+	
 	public JPanel update() {
 		JPanel resultpane = new JPanel();
-		System.out.println(x.length);
-		selected = castObject(x);
-		LMS.setSelectedValues(selected);
-
-		JList listout=new JList(selected.toArray());
-		
-		JScrollPane scroll = new JScrollPane(listout);
-		resultpane.add(scroll);
+		if(x!=null){
+			selected = castObject(x);
+			LMS.setSelectedValues(selected);
+		}
+		resultpane.add(new JScrollPane(new JList(selected.toArray())));
 		return resultpane;
 	}
 
+	
 	public void valueChanged(ListSelectionEvent le) {
-		x = jlist.getSelectedValues();
-		
+		x = jlist.getSelectedValues();		
 	}
+	
 	
 	public ArrayList<T> castObject(Object[] in){
 		ArrayList<T> array = new ArrayList<T>();

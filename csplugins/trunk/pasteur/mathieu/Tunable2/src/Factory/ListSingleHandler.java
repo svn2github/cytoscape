@@ -21,51 +21,47 @@ public class ListSingleHandler<T> implements Guihandler,ListSelectionListener{
 	Object o;
 	Tunable t;
 	
-	java.util.List<T> list;
+	List<T> listIn;
 	ListSingleSelection<T> LSS;
 	JList jlist;
 	private T selected;
-	
+	Boolean available;
+	ArrayList<T> array;
 	
 	
 	public ListSingleHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.o=o;
-		this.t=t;	
+		this.t=t;
+		this.available=t.available();
+		try{
+			listIn =  (List<T>) f.get(o);
+		}catch(Exception e){e.printStackTrace();}
+		LSS= new ListSingleSelection<T>(listIn);
 	}
 
 	
 	
 	public JPanel getInputPanel(){
-		JPanel returnpane = new JPanel();
-		try{
-			list =  (List<T>) f.get(o);
-		}catch(Exception e){e.printStackTrace();}
-		LSS= new ListSingleSelection<T>(list);
-		//LSS.getPossibleValues();
-		
+		JPanel returnpane = new JPanel();		
 		jlist=new JList(LSS.getPossibleValues().toArray());
 		jlist.addListSelectionListener(this);
-		jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-		
+		jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);		
 		JScrollPane scrollpane = new JScrollPane(jlist);
 		returnpane.add(scrollpane);
 		return returnpane;
-		
-		
 	}
 
 
 
-	@Override
 	public void cancel() {
-		// TODO Auto-generated method stub
-		
+		try{
+			f.set(o, listIn);
+		}catch(Exception e){e.printStackTrace();}
 	}
 
-
-
+	
+	
 	public Field getField() {
 		return f;
 	}
@@ -74,58 +70,53 @@ public class ListSingleHandler<T> implements Guihandler,ListSelectionListener{
 		return o;
 	}
 
-
-
 	public Tunable getTunable() {
 		return t;
 	}
 
 
-
-	@Override
 	public Class<?> getclass() {
 		return null;
 	}
 
 
 
-	@Override
 	public JPanel getresultpanel() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 
-	@Override
 	public void handle() {
-		// TODO Auto-generated method stub
-		
+		List<T> listOut = new ArrayList<T>();
+		listOut.add(selected);
+		if(available==true){
+			try{
+				f.set(o,listOut);
+			}catch(Exception e){e.printStackTrace();}
+		}
+		else{
+			try{
+				f.set(o,listIn);
+			}catch(Exception e){e.printStackTrace();}
+		}
 	}
+	
+		
 
-
-
-	@Override
 	public JPanel update() {
 		JPanel result = new JPanel();
-		LSS.setSelectedValue(selected);
-		ArrayList<T> array = new ArrayList<T>();
-		array.add(selected);
-
-		JList listout=new JList(array.toArray());
-		
-		JScrollPane scrollpane = new JScrollPane(listout);
-		result.add(scrollpane);
+		array = new ArrayList<T>();
+		if(selected!=null){
+			LSS.setSelectedValue(selected);
+			array.add(selected);
+		}
+		result.add(new JScrollPane(new JList(array.toArray())));
 		return result;
 	}
 
 	public void valueChanged(ListSelectionEvent evt) {
-		//selected=LSS.getSelectedValue();
 		selected = (T)jlist.getSelectedValue();
-		
-	}
+	}	
 
-
-	
-	
 }
