@@ -1,12 +1,17 @@
 package org.cytoscape.presentation.internal;
 
 import org.cytoscape.presentation.TextPresentation;
+import org.cytoscape.presentation.TextNodeRenderer;
 import org.cytoscape.viewmodel.CyNetworkView;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.Renderer;
+import org.cytoscape.viewmodel.View;
+import org.cytoscape.model.CyNode;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Arrays;
+
 /**
  * A TextPresentation that shows network as an Adjacency Matrix
  */
@@ -15,6 +20,14 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 	new VisualPropertyImpl<String>("HEADER_TEXT", "text printed as header",
 				       "---[ Adjacency Matrix]---", String.class,
 				       VisualProperty.GraphObjectType.NETWORK);
+
+
+    private final VisualProperty<TextNodeRenderer> nodeRenderer =
+	new DiscreteVisualProperty<TextNodeRenderer>("TEXT_NODE_RENDERER", "node Renderer",
+						     TextNodeRenderer.class,
+						     Arrays.asList((TextNodeRenderer)new TextNodeRendererImpl()),
+						     VisualProperty.GraphObjectType.NETWORK);
+
     private CyNetworkView view;
     private Set<VisualProperty> visualProperties = null;
     public AdjMatrixTextRenderer(CyNetworkView view){
@@ -24,8 +37,12 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 	StringBuilder sb = new StringBuilder();
 	sb.append("\n "+view.getNetworkView().getVisualProperty(headerText));
 	sb.append("\n AdjMatrixTextRenderer for: \n "+view);
+	// render each node:
+	for (View<CyNode> nodeView: view.getCyNodeViews()){
+	    TextNodeRenderer renderer = nodeView.getVisualProperty(nodeRenderer);
+	    sb.append("\n"+renderer.render());
+	}
 	return sb.toString();
-	//return "AdjMatrixTextRenderer for: \n "+view;
     }
 
 
@@ -43,11 +60,6 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
     private void populateListOfVisualProperties(){
 	visualProperties = new HashSet<VisualProperty>();
 	visualProperties.add(headerText);
-
-	/* FIXME: define text renderer
-	visualProperties.add(new DiscreteVisualProperty("TEXT_NODE_RENDERER", TextNodeRenderer.class,
-							true, range, null);
-	*/
     }
 
 	/**
