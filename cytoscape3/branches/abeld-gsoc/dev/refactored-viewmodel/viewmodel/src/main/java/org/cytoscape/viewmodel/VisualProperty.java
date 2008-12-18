@@ -44,9 +44,12 @@ import javax.swing.Icon;
  */
 public interface VisualProperty<T> {
 
-    // FIXME: shouldn't Strings be used instead, with "NODE", "EDGE",
-    // "NETWORK" being the canonical values?
-    // shouldn't presentations be able to extend this list?
+    /** FIXME: Strings be used instead, with "NODE", "EDGE",
+     * "NETWORK" being the canonical values?
+     *
+     * Or, even better, is there a way to specify 'non-generic subclass of View<S>?'
+     * (That being the actual constraint we want to enforce.)
+     */
     enum GraphObjectType{
 	NODE,
 	EDGE,
