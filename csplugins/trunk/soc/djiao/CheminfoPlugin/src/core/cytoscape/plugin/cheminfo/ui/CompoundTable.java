@@ -132,8 +132,8 @@ public class CompoundTable extends JDialog implements ListSelectionListener,Sele
 		table = new JTable(sorter);
 		sorter.setTableHeader(table.getTableHeader());
 
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.setDefaultRenderer(Image.class, new ImageRenderer());
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+		table.setDefaultRenderer(Compound.class, new CompoundRenderer());
 		table.setDefaultRenderer(String.class, new StringRenderer());
 		table.setRowHeight(DEFAULT_IMAGE_SIZE);
 
@@ -143,7 +143,6 @@ public class CompoundTable extends JDialog implements ListSelectionListener,Sele
 		columnModel.getColumn(1).setPreferredWidth(100);
 		columnModel.getColumn(2).setPreferredWidth(200);
 		columnModel.getColumn(3).setPreferredWidth(100);
-		columnModel.getColumn(4).setResizable(false);
 		columnModel.getColumn(4).setPreferredWidth(DEFAULT_IMAGE_SIZE);
 
 		// Add our mouse listener (specific for 2D image popup)
@@ -233,7 +232,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,Sele
 			case 3:
 				return Double.class;
 			case 4:
-				return Image.class;
+				return Compound.class;
 			}
 			return null;
 		}
@@ -253,21 +252,24 @@ public class CompoundTable extends JDialog implements ListSelectionListener,Sele
 				if (mw == 0.0f) return null;
 				return Double.valueOf(mw);
 			case 4:
-				return cmpd.getImage();
+				return cmpd;
 			}
 			return null;
 		}
 	}
 
-	class ImageRenderer implements TableCellRenderer {
+	class CompoundRenderer implements TableCellRenderer {
 		private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 		                                        boolean hasFocus, int row, int column) {
 			adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			Image resizedImage = ((Image)value).getScaledInstance(DEFAULT_IMAGE_SIZE, -1, Image.SCALE_SMOOTH);
-			JLabel l = new JLabel(new ImageIcon(resizedImage));
 			Compound c = compoundList.get(row);
+			TableColumn clm = table.getColumnModel().getColumn(column);
+			int width = clm.getPreferredWidth();
+			table.setRowHeight(width);
+			Image resizedImage = c.getImage(width,width);
+			JLabel l = new JLabel(new ImageIcon(resizedImage));
 			rowMap.put(c.getSource(), Integer.valueOf(row));
 			l.setBackground(adaptee.getBackground());
 			l.setForeground(adaptee.getForeground());

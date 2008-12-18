@@ -67,7 +67,7 @@ import cytoscape.plugin.cheminfo.ui.ChemInfoSettingsDialog;
  * in a new network.
  */
 public class TanimotoScorerTask implements Task {
-	Collection<GraphObject> selection;
+	List<GraphObject> selection;
 	ChemInfoSettingsDialog settingsDialog;
 	TaskMonitor monitor;
 	boolean createNewNetwork = false;
@@ -81,7 +81,7 @@ public class TanimotoScorerTask implements Task {
  	 * @param newNetwork if 'true' create a new network
  	 */
 	public TanimotoScorerTask(Collection<GraphObject> selection, ChemInfoSettingsDialog dialog, boolean newNetwork) {
-		this.selection = selection;
+		this.selection = new ArrayList(selection);
 		this.settingsDialog = dialog;
 		this.createNewNetwork = newNetwork;
 	}
@@ -125,20 +125,22 @@ public class TanimotoScorerTask implements Task {
 		}
 
 		double count = 0;
-		for (GraphObject go1: selection) {
+		int selectionCount = selection.size();
+		for (int index1 = 0; index1 < selectionCount; index1++) {
+			CyNode node1 = (CyNode)selection.get(index1);
 			if (canceled) break;
-			CyNode node1 = (CyNode)go1;
 			setStatus("Calculating tanimoto coefficients for "+node1.getIdentifier());
-			System.out.println("Calculating tanimoto coefficients for "+node1.getIdentifier());
+			// System.out.println("Calculating tanimoto coefficients for "+node1.getIdentifier());
 			List<Compound> cList1 = Compound.getCompounds(node1, attributes, 
 																										settingsDialog.getCompoundAttributes("node",AttriType.smiles),
 																										settingsDialog.getCompoundAttributes("node",AttriType.inchi), true);
 			if (cList1 == null || cList1.size() == 0)
 				continue;
 
-			for (GraphObject go2: selection) {
+			for (int index2 = 0; index2 < index1; index2++) {
 				if (canceled) break;
-				CyNode node2 = (CyNode)go2;
+				CyNode node2 = (CyNode)selection.get(index2);
+
 				if (node2 == node1 && cList1.size() <= 1) 
 					continue;
 

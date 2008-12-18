@@ -35,6 +35,7 @@
 
 package cytoscape.plugin.cheminfo.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -69,7 +70,7 @@ import cytoscape.plugin.cheminfo.model.Compound.AttriType;
 public class CompoundPopup extends JDialog implements ComponentListener {
 	
 	private List<Compound> compoundList;
-	private Map<Component, Image> imageMap;
+	private Map<Component, Compound> imageMap;
 
 	public CompoundPopup(List<Compound> compoundList, GraphObject go) {
 		super(Cytoscape.getDesktop());
@@ -81,8 +82,9 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 			setTitle("2D Structures for Edge "+((CyEdge)go).getIdentifier());
 		}
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBackground(Color.WHITE);
 
-		addImages(-1);
+		addImages(400);
 		pack();
 		setVisible(true);
 	}
@@ -94,12 +96,12 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 		Component labelComponent = e.getComponent();
 		// Get our new width
 		int width = labelComponent.getWidth();
+		int height = labelComponent.getHeight();
 		// Is it in our map?
 		if (imageMap.containsKey(labelComponent)) {
 			JLabel label = (JLabel)(labelComponent);
-			Image img = imageMap.get(labelComponent);
-			Image resizedImage = img.getScaledInstance(width, -1, Image.SCALE_SMOOTH);
-			label.setIcon(new ImageIcon(resizedImage));
+			Image img = imageMap.get(labelComponent).getImage(width,height);
+			label.setIcon(new ImageIcon(img));
 		}
 	}
 
@@ -112,15 +114,10 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 
 		for (Compound compound: compoundList) {
 			// Get the image
-			Image img = compound.getImage();
-			if (width == -1)
-				width = img.getWidth(null);
-			// resize it
-			Image resizedImage = img.getScaledInstance(width/nCols, -1, Image.SCALE_SMOOTH);
-			JLabel label = new JLabel(new ImageIcon(resizedImage));
-			// label.setPreferredSize(new Dimension(width/nCols,width/nCols));
+			Image img = compound.getImage(width/nCols, width/nCols);
+			JLabel label = new JLabel(new ImageIcon(img));
 			label.addComponentListener(this);
-			imageMap.put(label, img);
+			imageMap.put(label, compound);
 			add (label);
 		}
 	}

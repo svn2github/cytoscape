@@ -35,7 +35,11 @@
 
 package cytoscape.plugin.cheminfo.model;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -58,6 +62,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.util.URLUtil;
 
 import org.openscience.cdk.Molecule;
+import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
@@ -67,6 +72,10 @@ import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.inchi.InChIToStructure;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.renderer.ISimpleRenderer2D;
+import org.openscience.cdk.renderer.Java2DRenderer;
+import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 // import org.openscience.cdk.tools.MFAnalyser;
@@ -295,10 +304,12 @@ public class Compound {
 	private String moleculeString;
 	private String attribute;
 	protected Image renderedImage;
-	protected boolean gettingImage;
+	protected boolean laidOut;
 	private AttriType attrType;
 	private IMolecule iMolecule;
 	private BitSet fingerPrint;
+	private int lastImageWidth = -1;
+	private int lastImageHeight = -1;
 
 	/**
  	 * The constructor is called from the various static getCompound methods to create a compound and store it in
@@ -317,7 +328,7 @@ public class Compound {
 		this.moleculeString = mstring;
 		this.attrType = attrType;
 		this.renderedImage = null;
-		this.gettingImage = false;
+		this.laidOut = false;
 		this.iMolecule = null;
 		this.fingerPrint = null;
 		if (attrType == AttriType.inchi) {
@@ -330,14 +341,20 @@ public class Compound {
 							.getInstance());
 			try {
 				iMolecule = sp.parseSmiles(this.smilesStr);
-				Fingerprinter fp = new Fingerprinter();
-				fingerPrint = fp.getFingerprint(iMolecule);
 			} catch (InvalidSmilesException e) {
 				iMolecule = null;
-				fingerPrint = null;
-			} catch (CDKException e1) {
-				fingerPrint = null;
+				logger.error("Unable to parse SMILES: "+smilesStr+": "+e.getMessage());
 			}
+		}
+
+		// At this point, we should have an IMolecule
+		try { 
+			if (iMolecule != null) {
+				Fingerprinter fp = new Fingerprinter();
+				fingerPrint = fp.getFingerprint(iMolecule);
+			}
+		} catch (CDKException e1) {
+			fingerPrint = null;
 		}
 
 		List<Compound> mapList = null;
@@ -352,12 +369,13 @@ public class Compound {
 		mapList.add(this);
 		Compound.compoundMap.put(source, mapList);
 
+/*
 		if (!noStructures) {
 			// Get the image right now
-			this.renderedImage = depictWithUCSFSmi2Gif();
-			return;
+			// this.renderedImage = depictWithUCSFSmi2Gif();
+			// this.renderedImage = depictWithCDK();
 		}
-
+*/
 	}
 
 	/**
@@ -441,8 +459,14 @@ public class Compound {
  	 * @return the fetched image
  	 */
 	public Image getImage() {
-		if (renderedImage == null) {
-			renderedImage = depictWithUCSFSmi2Gif();
+		return getImage(360,360);
+	}
+
+	public Image getImage(int width, int height) {
+		if (lastImageWidth != width || lastImageHeight != height || renderedImage == null) {
+			renderedImage = depictWithCDK(width, height);
+			lastImageWidth = width;
+			lastImageHeight = height;
 		}
 		return renderedImage;
 	}
@@ -521,6 +545,48 @@ public class Compound {
 		}
 		return image;
 	}	
+
+	public Image depictWithCDK() {
+		return depictWithCDK(180, 180);
+	}
+
+	public Image depictWithCDK(int width, int height) {
+		BufferedImage bufferedImage = null;
+
+		try {
+			if (!laidOut) {
+				CDKHueckelAromaticityDetector.detectAromaticity(iMolecule);
+				StructureDiagramGenerator sdg = new StructureDiagramGenerator();
+				sdg.setMolecule(iMolecule);
+				sdg.generateCoordinates();
+				this.iMolecule = sdg.getMolecule();
+				laidOut = true;
+			}
+
+			Renderer2DModel model = new Renderer2DModel();
+			model.setDrawNumbers(false);
+			model.setUseAntiAliasing(true);
+			model.setColorAtomsByType(true); 
+			model.setShowExplicitHydrogens(true);
+			model.setShowImplicitHydrogens(true);
+			model.setShowAromaticity(true); 
+			model.setShowReactionBoxes(false);
+			model.setKekuleStructure(false);
+			model.setBackColor(Color.WHITE);
+
+			ISimpleRenderer2D renderer = new Java2DRenderer(model);
+			bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			Graphics2D graphics = bufferedImage.createGraphics();
+			graphics.setColor(Color.WHITE);
+			graphics.fillRect(0,0,width,height);
+			Rectangle2D bbox = new Rectangle2D.Double(0,0,width,height);
+			renderer.paintMolecule(iMolecule, graphics, bbox);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return bufferedImage;
+	}
 
 	/**
 	 * Convert from an InChI string to a SMILES string
