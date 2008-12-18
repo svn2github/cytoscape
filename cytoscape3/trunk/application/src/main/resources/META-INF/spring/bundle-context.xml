@@ -45,7 +45,6 @@
 	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop"
 		scope="singleton" depends-on="vmmServiceRef">
 		<constructor-arg ref="cytoscapeMenus" />
-		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkPanel" />
 	</bean>

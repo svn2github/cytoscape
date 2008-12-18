@@ -38,6 +38,14 @@ package cytoscape.view;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetworkManager;
+
+import cytoscape.events.SetCurrentNetworkListener;
+import cytoscape.events.SetCurrentNetworkEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.NetworkViewDestroyedListener;
+import cytoscape.events.NetworkViewDestroyedEvent;
+
 import org.cytoscape.view.BirdsEyeView;
 
 import javax.swing.*;
@@ -51,7 +59,12 @@ import java.beans.PropertyChangeListener;
  * This class handles the creation of the BirdsEyeView navigation object 
  * and handles the events which change view seen. 
  */
-class BirdsEyeViewHandler implements PropertyChangeListener {
+class BirdsEyeViewHandler implements 
+	PropertyChangeListener,
+	SetCurrentNetworkListener,
+	SetCurrentNetworkViewListener,
+	NetworkViewDestroyedListener
+	{
 	final BirdsEyeView bev;
 	FrameListener frameListener = new FrameListener();
 	final NetworkViewManager viewmgr;
@@ -82,6 +95,39 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 	 *
 	 * @param e The event triggering this method. 
 	 */
+	public void handleEvent(SetCurrentNetworkEvent e) {
+		bev.changeView(netmgr.getCurrentNetworkView());
+		setFocus();
+	}
+
+	public void handleEvent(SetCurrentNetworkViewEvent e) {
+		bev.changeView(netmgr.getCurrentNetworkView());
+		setFocus();
+	}
+
+	private void setFocus() {
+		JDesktopPane desktopPane = viewmgr.getDesktopPane();
+		if (desktopPane == null)
+			return;
+
+		JInternalFrame frame = desktopPane.getSelectedFrame();
+		if (frame == null)
+			return;
+
+		boolean hasListener = false;
+		ComponentListener[] listeners = frame.getComponentListeners();
+		for(int i = 0; i < listeners.length; i++)
+			if (listeners[i] == frameListener)
+				hasListener = true;
+
+		if (!hasListener)
+			frame.addComponentListener(frameListener);
+	}
+
+	public void handleEvent(NetworkViewDestroyedEvent e) {
+		bev.changeView(netmgr.getCurrentNetworkView());
+	}
+
 	public void propertyChange(PropertyChangeEvent e) {
 		if ((e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED)
 		    || (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUS)

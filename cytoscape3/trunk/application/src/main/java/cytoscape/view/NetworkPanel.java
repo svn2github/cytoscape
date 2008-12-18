@@ -38,6 +38,8 @@ package cytoscape.view;
 
 import cytoscape.events.SetCurrentNetworkViewEvent;
 import cytoscape.events.SetCurrentNetworkViewListener;
+import cytoscape.events.SetCurrentNetworkEvent;
+import cytoscape.events.SetCurrentNetworkListener;
 import cytoscape.events.NetworkAddedEvent;
 import cytoscape.events.NetworkAddedListener;
 import cytoscape.events.NetworkViewAddedEvent;
@@ -101,6 +103,7 @@ public class NetworkPanel extends JPanel
 			   UnselectedNodesListener,
 			   UnselectedEdgesListener,
 			   SetCurrentNetworkViewListener,
+			   SetCurrentNetworkListener,
 			   NetworkAddedListener,
 			   NetworkViewAddedListener,
 			   NetworkAboutToBeDestroyedListener,
@@ -123,7 +126,7 @@ public class NetworkPanel extends JPanel
 	private final CyNetworkManager netmgr;
 	private final NetworkViewManager viewmgr;
 	private final GraphViewFactory gvf;
-	private Long currentViewID;
+	private Long currentNetId;
 
 	/**
 	 * Constructor for the Network Panel.
@@ -141,7 +144,7 @@ public class NetworkPanel extends JPanel
 		treeTable = new JTreeTable(treeTableModel);
 		initialize();
 		setNavigator(bird.getBirdsEyeView());
-		currentViewID = null;
+		currentNetId = null;
 
 		/*
 		 * Remove CTR-A for enabling select all function in the main window.
@@ -291,41 +294,58 @@ public class NetworkPanel extends JPanel
 	}
 
 	public void handleEvent(NetworkAboutToBeDestroyedEvent nde) {
+		System.out.println("NetworkPanel: network about to be destroyed " + nde.getNetwork().getSUID()); 
 		removeNetwork( nde.getNetwork().getSUID() );
 	}
 
 	public void handleEvent(NetworkAddedEvent e) {
+		System.out.println("NetworkPanel: network added " + e.getNetwork().getSUID()); 
 		addNetwork(e.getNetwork().getSUID(), -1l);
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
+		System.out.println("NetworkPanel: set current network view " + e.getNetworkView().getNetwork().getSUID()); 
 		long curr = e.getNetworkView().getNetwork().getSUID();
-		System.out.println("NetworkPanel setting current network view: " + curr);
-		if ( currentViewID == null || curr != currentViewID.longValue() )  
+		//System.out.println("NetworkPanel setting current network view: " + curr);
+		if ( currentNetId == null || curr != currentNetId.longValue() )  
+			focusNetworkNode(curr);
+	}
+
+	public void handleEvent(SetCurrentNetworkEvent e) {
+		System.out.println("NetworkPanel: set current network " + e.getNetwork().getSUID()); 
+		long curr = e.getNetwork().getSUID();
+		//System.out.println("NetworkPanel setting current network view: " + curr);
+		if ( currentNetId == null || curr != currentNetId.longValue() )  
 			focusNetworkNode(curr);
 	}
 
 	public void handleEvent(NetworkViewAboutToBeDestroyedEvent nde) {
+		System.out.println("NetworkPanel: network view about to be destroyed " + nde.getNetworkView().getNetwork().getSUID()); 
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(NetworkViewAddedEvent nde) {
+		System.out.println("NetworkPanel: network view added " + nde.getNetworkView().getNetwork().getSUID()); 
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(SelectedNodesEvent event) {
+		System.out.println("NetworkPanel: selected nodes ");
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(SelectedEdgesEvent event) {
+		System.out.println("NetworkPanel: selected edges ");
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(UnselectedNodesEvent event) {
+		System.out.println("NetworkPanel: unselected nodes ");
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(UnselectedEdgesEvent event) {
+		System.out.println("NetworkPanel: unselected edges ");
 		treeTable.getTree().updateUI();
 	}
 
@@ -338,7 +358,7 @@ public class NetworkPanel extends JPanel
 	public void addNetwork(Long network_id, Long parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
-			System.out.println("NetworkPanel: addNetwork " + network_id);
+			//System.out.println("NetworkPanel: addNetwork " + network_id);
 			NetworkTreeNode dmtn = new NetworkTreeNode(netmgr.getNetwork(network_id).attrs().get("name",String.class), network_id);
 
 			if (parent_id != null && getNetworkNode(parent_id) != null) {
@@ -359,7 +379,7 @@ public class NetworkPanel extends JPanel
 			// this is necessary because valueChanged is not fired above 
 			focusNetworkNode(network_id);
 		} else {
-			System.out.println("addNetwork getNetworkTreeNode returned: " + getNetworkNode(network_id).getNetworkID());
+			//System.out.println("addNetwork getNetworkTreeNode returned: " + getNetworkNode(network_id).getNetworkID());
 		}
 	}
 
@@ -369,14 +389,14 @@ public class NetworkPanel extends JPanel
 	 * @param network_id DOCUMENT ME!
 	 */
 	public void focusNetworkNode(Long network_id) {
-		System.out.println("NetworkPanel: focus network node");
+		//System.out.println("NetworkPanel: focus network node");
 		DefaultMutableTreeNode node = getNetworkNode(network_id);
 
 		if (node != null) {
-			System.out.println("NetworkPanel - setting currentViewID");
+		//	System.out.println("NetworkPanel - setting currentNetId");
 			// do this first so that events triggered by subequent lines don't
 			// recurse unecessarily
-			currentViewID = network_id;
+			currentNetId = network_id;
 
 			// fires valueChanged if the network isn't already selected
 			treeTable.getTree().getSelectionModel().setSelectionPath(new TreePath(node.getPath()));
@@ -411,20 +431,20 @@ public class NetworkPanel extends JPanel
 	 * @param e DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		 System.out.println("NetworkPanel: valueChanged - " + e.getSource().getClass().getName()); 
+		 //System.out.println("NetworkPanel: valueChanged - " + e.getSource().getClass().getName()); 
 		JTree mtree = treeTable.getTree();
 
 		// sets the "current" network based on last node in the tree selected
 		NetworkTreeNode node = (NetworkTreeNode) mtree.getLastSelectedPathComponent();
 		if ( node == null || node.getUserObject() == null ) {
-			 System.out.println("NetworkPanel: null node - returning");
+		//	 System.out.println("NetworkPanel: null node - returning");
 			return;
 		}
 
 //		 System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
 //		pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEW_FOCUS,
 //	                                                   null, node.getNetworkID()));
-		netmgr.setCurrentNetworkView( node.getNetworkID() );
+		netmgr.setCurrentNetwork( node.getNetworkID() );
 
 		// creates a list of all selected networks 
 		List<Long> networkList = new LinkedList<Long>();

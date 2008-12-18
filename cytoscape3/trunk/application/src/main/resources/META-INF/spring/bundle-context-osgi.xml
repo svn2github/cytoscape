@@ -172,6 +172,8 @@
 		interface="org.cytoscape.model.events.UnselectedEdgesListener" />
 	<osgi:service id="networkPanelSetCurrentNetworkViewListenerService" ref="networkPanel"
 		interface="cytoscape.events.SetCurrentNetworkViewListener" />
+	<osgi:service id="networkPanelSetCurrentNetworkListenerService" ref="networkPanel"
+		interface="cytoscape.events.SetCurrentNetworkListener" />
 	<osgi:service id="networkPanelNetworkAddedListenerService" ref="networkPanel"
 		interface="cytoscape.events.NetworkAddedListener" />
 	<osgi:service id="networkPanelNetworkViewAddedListenerService" ref="networkPanel"
@@ -181,11 +183,21 @@
 	<osgi:service id="networkPanelNetworkViewAboutToBeDestroyedListenerService" ref="networkPanel"
 		interface="cytoscape.events.NetworkViewAboutToBeDestroyedListener" />
 
-	<osgi:service id="networkViewManagerNetworkAddedListenerService" ref="networkViewManager"
+	<osgi:service id="networkViewManagerNetworkViewAddedListenerService" ref="networkViewManager"
 		interface="cytoscape.events.NetworkViewAddedListener" />
 	<osgi:service id="networkViewManagerNetworkViewAboutToBeDestroyedListenerService" ref="networkViewManager"
 		interface="cytoscape.events.NetworkViewAboutToBeDestroyedListener" />
 	<osgi:service id="networkViewManagerSetCurrentNetworkViewListenerService" ref="networkViewManager"
 		interface="cytoscape.events.SetCurrentNetworkViewListener" />
+	<osgi:service id="networkViewManagerSetCurrentNetworkListenerService" ref="networkViewManager"
+		interface="cytoscape.events.SetCurrentNetworkListener" />
+
+	<osgi:service id="birdsEyeViewHandlerSetCurrentNetworkViewListenerService" ref="birdsEyeViewHandler"
+		interface="cytoscape.events.SetCurrentNetworkViewListener" />
+	<osgi:service id="birdsEyeViewHandlerSetCurrentNetworkListenerService" ref="birdsEyeViewHandler"
+		interface="cytoscape.events.SetCurrentNetworkListener" />
+	<osgi:service id="birdsEyeViewHandlerNetworkViewDestroyedListenerService" ref="birdsEyeViewHandler"
+		interface="cytoscape.events.NetworkViewDestroyedListener" />
+
 	
 </beans>

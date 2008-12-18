@@ -47,6 +47,8 @@ import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
 import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
 import cytoscape.events.SetCurrentNetworkViewEvent;
 import cytoscape.events.SetCurrentNetworkViewListener;
+import cytoscape.events.SetCurrentNetworkEvent;
+import cytoscape.events.SetCurrentNetworkListener;
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
@@ -67,20 +69,21 @@ public class NetworkViewManager implements
 		InternalFrameListener, 
 		NetworkViewAddedListener, 
 		NetworkViewAboutToBeDestroyedListener, 
-		SetCurrentNetworkViewListener
+		SetCurrentNetworkViewListener,
+		SetCurrentNetworkListener
 		{
-	private JDesktopPane desktopPane;
+	private final JDesktopPane desktopPane;
 
-	private Map<Long, JInternalFrame> networkViewMap;
+	private final Map<Long, JInternalFrame> networkViewMap;
 
-	private Map<JInternalFrame, Long> componentMap;
+	private final Map<JInternalFrame, Long> componentMap;
 
 	protected SwingPropertyChangeSupport pcs;
 
-	protected int MINIMUM_WIN_WIDTH = 200;
-	protected int MINIMUM_WIN_HEIGHT = 200;
+	protected final int MINIMUM_WIN_WIDTH = 200;
+	protected final int MINIMUM_WIN_HEIGHT = 200;
 
-	private CyNetworkManager netmgr;
+	private final CyNetworkManager netmgr;
 
 	private Long currentViewId;
 
@@ -96,8 +99,7 @@ public class NetworkViewManager implements
 		pcs = new SwingPropertyChangeSupport(this);
 
 		// add Help hooks
-		CyHelpBroker.getHelpBroker().enableHelp(desktopPane,
-				"network-view-manager", null);
+		CyHelpBroker.getHelpBroker().enableHelp(desktopPane, "network-view-manager", null);
 
 		networkViewMap = new HashMap<Long, JInternalFrame>();
 		componentMap = new HashMap<JInternalFrame, Long>();
@@ -140,7 +142,7 @@ public class NetworkViewManager implements
 		}
 
 		// outta here
-		return networkViewMap.get(view.getGraphPerspective().getSUID());
+		return networkViewMap.get(view.getNetwork().getSUID());
 	}
 
 	/**
@@ -163,12 +165,9 @@ public class NetworkViewManager implements
 		// System.out.println("NetworkViewManager: internalFrameActivated ");
 		Long network_id = componentMap.get(e.getInternalFrame());
 
-		if ( ( network_id == null ) ||
-		     ( currentViewId != null && network_id.equals( currentViewId ) ) )
+		if ( network_id == null ) 
 			return;
 
-//		firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null,
-//				network_id);
 		netmgr.setCurrentNetworkView( network_id );
 	}
 
@@ -237,13 +236,27 @@ public class NetworkViewManager implements
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		System.out.println("NetworkViewManager - attempting to set current network view ");
-		GraphView currV = e.getNetworkView();
-		Long network_id = Long.valueOf(currV.getNetwork().getSUID());
 
+		setFocus(Long.valueOf(e.getNetworkView().getNetwork().getSUID()));
+
+	}
+
+	public void handleEvent(SetCurrentNetworkEvent e) {
+		System.out.println("NetworkViewManager - attempting to set current network");
+
+		setFocus(Long.valueOf(e.getNetwork().getSUID()));
+	}
+
+
+	private void setFocus(Long network_id) {
 		// make sure we're not redundant
-		if ( currentViewId != null && currentViewId.equals(network_id) )
+		if ( currentViewId != null && currentViewId.equals(network_id) ) {
+			System.out.println("setfocus return - redund");
 			return;
-	
+		}
+
+		currentViewId = network_id;
+
 		// unset focus on frames
 		for (JInternalFrame f : networkViewMap.values()) {
 			try {
@@ -256,18 +269,22 @@ public class NetworkViewManager implements
 		// set focus
 		if (networkViewMap.containsKey(network_id)) {
 			try {
-				currentViewId = network_id;
-				networkViewMap.get(network_id).setIcon(false);
-				networkViewMap.get(network_id).show();
+				System.out.println("should updated selection");
+				JInternalFrame curr = networkViewMap.get(network_id);
+
+				curr.setIcon(false);
+				curr.show();
 				// fires internalFrameActivated
-				networkViewMap.get(network_id).setSelected(true);
+				curr.setSelected(true);
+		
+				GraphView view = netmgr.getNetworkView(network_id);
+				if ( view != null )
+					view.addTransferComponent(desktopPane);
 			} catch (Exception ex) {
 				System.err.println("Network View unable to be focused");
 			}
-		}
-
-		if (getDesktopPane() != null) {
-			currV.addTransferComponent(getDesktopPane());
+		} else {
+			System.out.println("asdf");
 		}
 	}
 

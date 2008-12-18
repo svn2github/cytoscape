@@ -134,7 +134,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 				layout.setSelectedOnly(false);
 				layout.setLayoutAttribute(null);
 				TaskManager.executeTask( new LayoutTask(layout, view),
-				                         LayoutTask.getDefaultTaskConfig(getParent()) );
+				                         LayoutTask.getDefaultTaskConfig(this) );
 			}
 		}
 	}
@@ -232,7 +232,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 				}
 
 				TaskManager.executeTask( new LayoutTask(layout, netView), 
-				                         LayoutTask.getDefaultTaskConfig(getParent()) );
+				                         LayoutTask.getDefaultTaskConfig(this) );
 			}
 		}
 	}

@@ -259,12 +259,6 @@ public class LoadNetworkTask implements Task {
 			cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name,netmgr));
 			GraphView view = gvf.createGraphView( cyNetwork );
 
-			cyl.getDefaultLayout().doLayout(view);
-			view.fitContent();
-
-			netmgr.addNetwork( cyNetwork );
-			netmgr.addNetworkView( view );
-
 			if ((layoutAlgorithm != null) && (view != null)) {
 				// Yes, do it
 				// Layouts are, in general cancelable
@@ -272,11 +266,17 @@ public class LoadNetworkTask implements Task {
 				taskMonitor.setStatus("Performing layout...");
 				layoutAlgorithm.doLayout(view, taskMonitor);
 				taskMonitor.setStatus("Layout complete");
+			} else {
+				cyl.getDefaultLayout().doLayout(view);
 			}
+			view.fitContent();
 
-			Object[] ret_val = new Object[2];
-			ret_val[0] = cyNetwork;
-			ret_val[1] = uri;
+			netmgr.addNetwork( cyNetwork );
+			netmgr.addNetworkView( view );
+
+//			Object[] ret_val = new Object[2];
+//			ret_val[0] = cyNetwork;
+//			ret_val[1] = uri;
 
 //			dsk.getSwingPropertyChangeSupport()
 //			         .addPropertyChangeListener(dsk.getBirdsEyeViewHandler());

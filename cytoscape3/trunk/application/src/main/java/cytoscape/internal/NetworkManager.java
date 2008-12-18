@@ -88,6 +88,7 @@ public class NetworkManager implements CyNetworkManager {
 			if ( !networkMap.containsKey( networkId ) ) 
 				throw new IllegalArgumentException("network is not recognized by this NetworkManager");
 
+			System.out.println("setting current network: " + networkId);
 			currentNetwork = networkMap.get(networkId);
 
 			// reset selected networks
@@ -133,7 +134,11 @@ public class NetworkManager implements CyNetworkManager {
 		synchronized (this) {
 			if ( !networkMap.containsKey( viewId ) ||
 			     !networkViewMap.containsKey( viewId ) )
-			throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
+				throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
+
+			System.out.println("setting current network view: " + networkViewMap.get(viewId));
+			
+			setCurrentNetwork( viewId );
 
 			currentNetworkView = networkViewMap.get(viewId);
 
