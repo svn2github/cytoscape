@@ -74,6 +74,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -137,7 +138,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 		setLocationRelativeTo((Component) parent);
 
-		about = new AboutDialog((Component) desktop, true);
+		about = new AboutDialog((Window) desktop, true);
 
 		// Register as listener.
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
