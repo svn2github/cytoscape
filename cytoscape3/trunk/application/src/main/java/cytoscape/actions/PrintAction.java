@@ -84,8 +84,10 @@ public class PrintAction extends CytoscapeAction {
 		boolean exportTextAsShape = new Boolean(CytoscapeInit.getProperties()
 		                                                     .getProperty("exportTextAsShape"))
 															 .booleanValue();
+		// TODO NEED RENDERER
 		curr.setPrintingTextAsShape(exportTextAsShape);
 
+		// TODO NEED RENDERER
 		printJob.setPrintable(curr.getPrintable());
 
 		if (printJob.printDialog()) {

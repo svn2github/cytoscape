@@ -139,6 +139,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 				                   current_network_view.getNodeView(node).getYPosition());
 			}
 
+			// TODO NEED RENDERER
 			new_view.fitContent();
 
 			// Set visual style

@@ -74,6 +74,7 @@ public class GinyUtils {
 			return;
 		}
 
+		// TODO NEED RENDERER
 		for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext();) {
 			NodeView nview = (NodeView) i.next();
 			view.hideGraphObject(nview);
@@ -92,10 +93,12 @@ public class GinyUtils {
 			return;
 		}
 
+		// TODO NEED RENDERER
 		for ( CyNode n1 : view.getSelectedNodes() ) {
 			NodeView nview = view.getNodeView(n1);
 			view.showGraphObject(nview);
 
+			// TODO NEED RENDERER
 			for ( CyNode n2 : view.getGraphPerspective().getNeighborList(n1,CyEdge.Type.ANY) ) {
 				for ( CyEdge e : view.getGraphPerspective().getConnectingEdgeList(n1,n2,CyEdge.Type.ANY) ) {
 					view.showGraphObject( view.getEdgeView( e ) );
@@ -116,11 +119,13 @@ public class GinyUtils {
 			return;
 		}
 
+		// TODO NEED RENDERER
 		for (Iterator i = view.getNodeViewsIterator(); i.hasNext();) {
 			NodeView nview = (NodeView) i.next();
 			view.showGraphObject(nview);
 		}
 
+		// TODO NEED RENDERER
 		for (Iterator ei = view.getEdgeViewsList().iterator(); ei.hasNext();) {
 			EdgeView eview = (EdgeView) ei.next();
 			view.showGraphObject(eview);
@@ -139,6 +144,7 @@ public class GinyUtils {
 			return;
 		}
 
+		// TODO NEED RENDERER
 		for (Iterator i = view.getNodeViewsIterator(); i.hasNext();) {
 			NodeView nview = (NodeView) i.next();
 			CyNode n1 = nview.getNode();
@@ -165,6 +171,7 @@ public class GinyUtils {
 			return;
 		}
 
+		// TODO NEED RENDERER
 		for (Iterator i = view.getSelectedEdges().iterator(); i.hasNext();) {
 			EdgeView eview = (EdgeView) i.next();
 			view.hideGraphObject(eview);
@@ -183,6 +190,7 @@ public class GinyUtils {
 			return;
 		}
 
+		// TODO NEED RENDERER
 		for (Iterator i = view.getSelectedEdges().iterator(); i.hasNext();) {
 			EdgeView eview = (EdgeView) i.next();
 			view.showGraphObject(eview);
@@ -340,6 +348,7 @@ public class GinyUtils {
 			return;
 		}
 
+		// TODO NEED RENDERER
 		for (Iterator i = view.getEdgeViewsList().iterator(); i.hasNext();) {
 			EdgeView eview = (EdgeView) i.next();
 			view.hideGraphObject(eview);
@@ -358,6 +367,7 @@ public class GinyUtils {
 			return;
 		}
 
+		// TODO NEED RENDERER
 		for (Iterator i = view.getEdgeViewsList().iterator(); i.hasNext();) {
 			EdgeView eview = (EdgeView) i.next();
 			view.showGraphObject(eview);

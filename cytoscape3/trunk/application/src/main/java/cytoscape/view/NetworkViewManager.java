@@ -278,6 +278,7 @@ public class NetworkViewManager implements
 				curr.setSelected(true);
 		
 				GraphView view = netmgr.getNetworkView(network_id);
+				// TODO NEED RENDERER
 				if ( view != null )
 					view.addTransferComponent(desktopPane);
 			} catch (Exception ex) {
@@ -329,6 +330,7 @@ public class NetworkViewManager implements
 		desktopPane.add(iframe);
 
 
+		// TODO NEED RENDERER
 		iframe.setContentPane( view.getContainer(iframe.getLayeredPane()) );
 
 		iframe.pack();

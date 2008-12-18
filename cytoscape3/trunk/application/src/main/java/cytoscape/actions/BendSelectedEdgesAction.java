@@ -76,6 +76,7 @@ public class BendSelectedEdgesAction extends CytoscapeAction {
 		if (selectedEdges != null) {
 			for (int i = 0; i < selectedEdges.length; i++) {
 				EdgeView ev = view.getEdgeView(selectedEdges[i]);
+				// TODO NEED RENDERER
 				ev.setLineType(EdgeView.CURVED_LINES);
 			}
 

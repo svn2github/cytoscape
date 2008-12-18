@@ -23,6 +23,7 @@ public class PDFExporter implements Exporter
 
 	public void export(GraphView view, FileOutputStream stream) throws IOException
 	{
+		// TODO NEED RENDERER
 		view.setPrintingTextAsShape(!exportTextAsFont);
 		
 		Rectangle pageSize = PageSize.LETTER;
@@ -38,9 +39,11 @@ public class PDFExporter implements Exporter
 			} else {
 				g = cb.createGraphicsShapes(pageSize.getWidth(), pageSize.getHeight());
 			}
+			// TODO NEED RENDERER
 			double imageScale = Math.min(pageSize.getWidth()  / ((double) view.getComponent().getWidth()),
 			                             pageSize.getHeight() / ((double) view.getComponent().getHeight()));
 			g.scale(imageScale, imageScale);
+			// TODO NEED RENDERER
 			view.print(g);
 			g.dispose();
 		}

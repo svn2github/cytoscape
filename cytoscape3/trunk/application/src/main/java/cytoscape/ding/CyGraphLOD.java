@@ -80,6 +80,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 			init();
 			
 			for (GraphView foo : netmgr.getNetworkViewSet() )
+				// TODO NEED RENDERER
 				foo.setGraphLOD(this);
 		}
 	}

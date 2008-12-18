@@ -300,8 +300,6 @@ public abstract class Cytoscape {
 	// Test
 	protected static Object pcs2 = new Object();
 	protected static PropertyChangeSupport newPcs = new PropertyChangeSupport(pcs2);
-	protected static Map<Long,GraphView> networkViewMap;
-	protected static Map<Long, CyNetwork> networkMap;
 	protected static CytoscapeDesktop defaultDesktop;
 
 	/**
@@ -809,19 +807,25 @@ public abstract class Cytoscape {
 		// then, based on selection mode, enable node and/or edge selection
 		switch (selectionMode) {
 			case SELECT_NODES_ONLY:
+				// TODO NEED RENDERER
 				view.disableEdgeSelection();
+				// TODO NEED RENDERER
 				view.enableNodeSelection();
 
 				break;
 
 			case SELECT_EDGES_ONLY:
+				// TODO NEED RENDERER
 				view.disableNodeSelection();
+				// TODO NEED RENDERER
 				view.enableEdgeSelection();
 
 				break;
 
 			case SELECT_NODES_AND_EDGES:
+				// TODO NEED RENDERER
 				view.enableNodeSelection();
+				// TODO NEED RENDERER
 				view.enableEdgeSelection();
 
 				break;

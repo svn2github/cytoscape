@@ -265,6 +265,7 @@ public class LoadNetworkTask implements Task {
 			} else {
 				cyl.getDefaultLayout().doLayout(view);
 			}
+			// TODO NEED RENDERER
 			view.fitContent();
 
 			netmgr.addNetwork( cyNetwork );

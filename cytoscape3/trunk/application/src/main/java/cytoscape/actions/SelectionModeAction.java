@@ -123,6 +123,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 
 		GraphView view = netmgr.getCurrentNetworkView();
 		if ( view != null ) { 
+			// TODO NEED RENDERER
 			view.enableNodeSelection();
 			view.enableEdgeSelection();
 		}

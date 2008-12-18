@@ -74,6 +74,7 @@ public class StraightenSelectedEdgesAction extends CytoscapeAction {
 		final int[] selectedEdges = view.getSelectedEdgeIndices();
 
 		if (selectedEdges != null) {
+			// TODO NEED RENDERER
 			for (int i = 0; i < selectedEdges.length; i++) {
 				EdgeView ev = view.getEdgeView(selectedEdges[i]);
 				ev.setLineType(EdgeView.STRAIGHT_LINES);

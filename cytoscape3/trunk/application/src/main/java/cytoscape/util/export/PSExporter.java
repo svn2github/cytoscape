@@ -18,6 +18,7 @@ public class PSExporter implements Exporter
 
 	public void export(GraphView view, FileOutputStream stream) throws IOException
 	{
+		// TODO NEED RENDERER
 		view.setPrintingTextAsShape(!exportTextAsFont);
 		
 		Properties p = new Properties();
@@ -25,11 +26,13 @@ public class PSExporter implements Exporter
 		p.setProperty("org.freehep.graphicsio.AbstractVectorGraphicsIO.TEXT_AS_SHAPES",
 		              Boolean.toString(!exportTextAsFont)); 
 
+		// TODO NEED RENDERER
 	    PSGraphics2D g = new PSGraphics2D(stream, view.getComponent()); 
 	    g.setMultiPage(false); // true for PS file
 	    g.setProperties(p); 
 
 	    g.startExport(); 
+		// TODO NEED RENDERER
 	    view.print(g); 
 	    g.endExport();
 

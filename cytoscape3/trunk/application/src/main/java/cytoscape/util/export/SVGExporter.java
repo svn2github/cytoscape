@@ -20,8 +20,10 @@ public class SVGExporter implements Exporter
 
 	public void export(GraphView view, FileOutputStream stream) throws IOException
 	{
+		// TODO NEED RENDERER
 		view.setPrintingTextAsShape(!exportTextAsFont);
 		
+		// TODO NEED RENDERER
 		SVGGraphics2D g = new SVGGraphics2D(stream, view.getComponent());
 
 		// this sets text as shape
@@ -31,6 +33,7 @@ public class SVGExporter implements Exporter
 		g.setProperties(p);
 
 		g.startExport();
+		// TODO NEED RENDERER
 		view.print(g);
 		g.endExport();
 	}

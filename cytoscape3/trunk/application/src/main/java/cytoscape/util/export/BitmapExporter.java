@@ -38,12 +38,15 @@ public class BitmapExporter implements Exporter
 
 	public void export(GraphView view, FileOutputStream stream) throws IOException
 	{
+		// TODO NEED RENDERER
 		int width  = (int) (view.getComponent().getWidth() * scale);
+		// TODO NEED RENDERER
 		int height = (int) (view.getComponent().getHeight() * scale);
 
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
 		g.scale(scale, scale);
+		// TODO NEED RENDERER
 		view.printNoImposter(g);
 		g.dispose();
 		

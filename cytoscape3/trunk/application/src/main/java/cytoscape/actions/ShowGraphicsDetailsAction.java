@@ -72,8 +72,10 @@ public class ShowGraphicsDetailsAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		GraphView currView = netmgr.getCurrentNetworkView();
 		if (!showFlag) {
+			// TODO NEED RENDERER
 			currView.setGraphLOD(new CyGraphLOD(netmgr));
 		} else {
+			// TODO NEED RENDERER
 			currView.setGraphLOD(new CyGraphAllLOD());
 		}
 	}
@@ -88,6 +90,7 @@ public class ShowGraphicsDetailsAction extends CytoscapeAction {
 		else {
 			setEnabled(true);
 			// Get the current graph LOD
+			// TODO NEED RENDERER
 			GraphLOD lod = currView.getGraphLOD();
 			if (CyGraphLOD.class.isInstance(lod)) {
 				putValue(Action.NAME, "Show Graphics Details");

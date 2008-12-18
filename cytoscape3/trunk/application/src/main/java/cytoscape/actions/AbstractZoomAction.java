@@ -78,6 +78,7 @@ abstract class AbstractZoomAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		GraphView curr = netmgr.getCurrentNetworkView();
 		if ( curr != null )
-		         curr.setZoom(curr.getZoom() * factor);
+			// TODO NEED RENDERER?
+			curr.setZoom(curr.getZoom() * factor);
 	}
 }
