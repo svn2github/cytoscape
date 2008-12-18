@@ -77,6 +77,7 @@ import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
 
@@ -106,6 +107,8 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	private static final Set<VisualPropertyType> NODE_PROPS;
 	private VisualMappingManager vmm;
 	private final NodeAppearanceCalculator nac;
+	
+	private CyNetworkManager cyNetworkManager;
 
 	static {
 		EDGE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getEdgeVisualPropertyList());
@@ -124,9 +127,10 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	 *            DOCUMENT ME!
 	 */
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
-	                                final EditorFactory editorFactory, VisualMappingManager vmm) {
+	                                final EditorFactory editorFactory, VisualMappingManager vmm, CyNetworkManager cyNetworkManager) {
 		super();
 		this.vmm = vmm;
+		this.cyNetworkManager = cyNetworkManager;
 		nac = this.vmm.getVisualStyle().getNodeAppearanceCalculator();
 		this.setModal(true);
 		this.mainView = mainView;
@@ -270,8 +274,8 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+					vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+					Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 					dispose();
 				}
 			});
@@ -367,7 +371,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			}
 
 			buildList();
-			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 			mainView.updateView();
 			mainView.repaint();
 		}

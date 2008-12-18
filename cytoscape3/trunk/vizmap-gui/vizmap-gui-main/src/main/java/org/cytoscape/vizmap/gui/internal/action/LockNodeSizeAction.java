@@ -79,7 +79,7 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 			switchNodeSizeLock(false);
 		}
 
-		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+		Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 	}
 
 	/**

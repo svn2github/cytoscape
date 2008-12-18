@@ -28,7 +28,7 @@ import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
-import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
 
 public class VizMapPropertyBuilder {
 
@@ -44,6 +44,9 @@ public class VizMapPropertyBuilder {
 
 	@Resource
 	private EditorFactory editorFactory;
+	
+	@Resource
+	private CyNetworkManager cyNetworkManager;
 
 	/*
 	 * Build one property for one visual property.
@@ -53,7 +56,7 @@ public class VizMapPropertyBuilder {
 			PropertySheetPanel propertySheetPanel) {
 		final VisualPropertyType type = calc.getVisualPropertyType();
 
-		final CyNetwork targetNetwork = Cytoscape.getCurrentNetwork();
+		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 		/*
 		 * Set one calculator
 		 */

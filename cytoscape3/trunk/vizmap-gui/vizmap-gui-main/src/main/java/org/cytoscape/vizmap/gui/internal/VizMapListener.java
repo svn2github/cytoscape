@@ -42,6 +42,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.gui.internal;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -78,6 +79,13 @@ public class VizMapListener implements PropertyChangeListener {
 	 */
 	public static final String VIZMAP_PROPS_FILE_NAME = "vizmap.props";
 	private VisualMappingManager vmm;
+	
+	private CyNetworkManager cyNetworkManager;
+	
+	public VizMapListener(VisualMappingManager vmm, CyNetworkManager cyNetworkManager) {
+		this.cyNetworkManager = cyNetworkManager;
+		this.vmm = vmm;
+	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -161,8 +169,8 @@ public class VizMapListener implements PropertyChangeListener {
 			// with a new visual style of the same name, then make sure it is
 			// reapplied.
 			vmm.setVisualStyle(vmm.getVisualStyle().getName());
-			vmm.setVisualStyleForView(Cytoscape.getCurrentNetworkView(), vmm.getVisualStyle());
-			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+			vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(), vmm.getVisualStyle());
+			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		}
 	}
 

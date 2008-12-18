@@ -40,8 +40,6 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
@@ -89,6 +87,7 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.view.CySwingApplication;
 
@@ -137,10 +136,11 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VizMapperMenuManager menuMgr, EditorFactory editorFactory,
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
-			VizMapEventHandlerManager vizMapEventHandlerManager, EditorWindowManager editorWindowManager) {
-		super(desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr, editorFactory,
-				propertySheetPanel, vizMapPropertySheetBuilder,
-				vizMapEventHandlerManager, editorWindowManager);
+			VizMapEventHandlerManager vizMapEventHandlerManager,
+			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager) {
+		super(desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
+				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
+				vizMapEventHandlerManager, editorWindowManager, cyNetworkManager);
 
 		initPanel();
 	}
@@ -150,7 +150,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				new VizMapListener());
+				new VizMapListener(vmm, cyNetworkManager));
 
 		registerCellEditorListeners();
 		addVisualStyleChangeAction();
@@ -159,15 +159,18 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		propertySheetPanel.setSorting(true);
 
 		// TODO Register these listeners as services
-//		AttrEventListener ael1 = new AttrEventListener(this, getTargetNetwork()
-//				.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS),
-//				nodeAttrEditor, nodeNumericalAttrEditor);
-//		AttrEventListener ael2 = new AttrEventListener(this, getTargetNetwork()
-//				.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS),
-//				edgeAttrEditor, edgeNumericalAttrEditor);
-//		AttrEventListener ael3 = new AttrEventListener(this, getTargetNetwork()
-//				.getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS), null,
-//				null);
+		// AttrEventListener ael1 = new AttrEventListener(this,
+		// getTargetNetwork()
+		// .getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS),
+		// nodeAttrEditor, nodeNumericalAttrEditor);
+		// AttrEventListener ael2 = new AttrEventListener(this,
+		// getTargetNetwork()
+		// .getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS),
+		// edgeAttrEditor, edgeNumericalAttrEditor);
+		// AttrEventListener ael3 = new AttrEventListener(this,
+		// getTargetNetwork()
+		// .getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS), null,
+		// null);
 		refreshUI();
 
 		cytoscapeDesktop.getCytoPanel(SwingConstants.WEST).add(
@@ -194,7 +197,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				final String vsName = (String) getVsNameComboBox()
 						.getSelectedItem();
 				if (vsName != null) {
-					if (getTargetView().equals(Cytoscape.getNullNetworkView()))
+					if (getTargetView() == null)
 						switchVS(vsName, false);
 					else
 						switchVS(vsName, true);
@@ -418,7 +421,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		defaultImageButton.setIcon(new ImageIcon(defImage));
 		defaultViewImagePanel.add(defaultImageButton, BorderLayout.CENTER);
-		defaultImageButton.addMouseListener(new DefaultViewMouseListener(vmm, this, defViewEditor));
+		defaultImageButton.addMouseListener(new DefaultViewMouseListener(vmm,
+				this, defViewEditor));
 	}
 
 	public JPanel getDefaultPanel() {
@@ -602,8 +606,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				+ vmm.getVisualStyle().getName());
 
 		if ((selectedName == null) || (currentName == null)
-				|| (curView == null)
-				|| curView.equals(Cytoscape.getNullNetworkView()))
+				|| (curView == null) )
 			return;
 
 		// Update GUI based on CalcCatalog's state.

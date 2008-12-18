@@ -32,9 +32,9 @@ public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 			}
 		}
 
-		vizMapperMainPanel.setTargetNetwork(Cytoscape.getNetwork((Long) (e
+		vizMapperMainPanel.setTargetNetwork(cyNetworkManager.getNetwork((Long) (e
 				.getNewValue())));
-		vizMapperMainPanel.setTargetView(Cytoscape.getNetworkView((Long) (e
+		vizMapperMainPanel.setTargetView(cyNetworkManager.getNetworkView((Long) (e
 				.getNewValue())));
 
 	}

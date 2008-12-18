@@ -11,6 +11,7 @@ import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.vizmap.gui.DefaultViewPanel;
 
+
 public class DefaultViewMouseListener extends MouseAdapter {
 
 	private VisualMappingManager vmm;

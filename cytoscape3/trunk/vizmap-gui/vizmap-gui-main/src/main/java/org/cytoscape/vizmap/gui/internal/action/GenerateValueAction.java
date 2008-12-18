@@ -55,7 +55,7 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 
 		if (hidden instanceof VisualPropertyType) {
 			
-			final GraphView targetNetworkView = Cytoscape.getCurrentNetworkView();
+			final GraphView targetNetworkView = cyNetworkManager.getCurrentNetworkView();
 			
 			final VisualPropertyType type = (VisualPropertyType) hidden;
 

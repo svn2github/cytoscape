@@ -34,6 +34,7 @@
 */
 package org.cytoscape.vizmap.gui.internal.editors.continuous;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 
 import org.cytoscape.model.CyDataTable;
@@ -61,6 +62,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -95,6 +97,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected Object above;
 	protected static ContinuousMappingEditorPanel editor;
 	protected double lastSpinnerNumber = 0;
+	
+	protected CyNetworkManager cyNetworkManager;
 	
 	protected VisualMappingManager vmm;
 
@@ -363,7 +367,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		EditorValueRangeTracer.getTracer().setMin(type, newVal[0]);
 		EditorValueRangeTracer.getTracer().setMax(type, newVal[1]);
 		updateMap();
-		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+		Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		this.repaint();
 	}
 
@@ -372,49 +376,50 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	abstract protected void addButtonActionPerformed(java.awt.event.ActionEvent evt);
 
 	private void initRangeValues() {
+		final Map<String, CyDataTable> attrs;
+		
 		final CyDataTable attr;
-
 		if (type.isNodeProp()) {
-			attr = Cytoscape.getNodeAttributes();
+			attrs = cyNetworkManager.getCurrentNetwork().getNodeCyDataTables();
 			calculator = vmm.getVisualStyle()
 			                      .getNodeAppearanceCalculator().getCalculator(type);
 		} else {
-			attr = Cytoscape.getEdgeAttributes();
+			attrs = cyNetworkManager.getCurrentNetwork().getEdgeCyDataTables();
 			calculator = vmm.getVisualStyle()
 			                      .getEdgeAppearanceCalculator().getCalculator(type);
 		}
 
 		if (calculator == null)
 			return;
-
-		// Assume this calc only returns cont. mapping.
-		if (calculator.getMapping(0).getClass() == ContinuousMapping.class) {
-			mapping = (ContinuousMapping) calculator.getMapping(0);
-
-			final String controllingAttrName = mapping.getControllingAttributeName();
-
-			if (attr.getColumnTypeMap().get(controllingAttrName) != Double.class)
-				return;
-
-			// Set range values
-			if (EditorValueRangeTracer.getTracer().getRange(type) == 0) {
-				Double maxValue = Double.NEGATIVE_INFINITY;
-				Double minValue = Double.POSITIVE_INFINITY;
-
-				for (Double val : attr.getColumnValues(controllingAttrName, Double.class)) {
-					if (val > maxValue)
-						maxValue = val;
-
-					if (val < minValue)
-						minValue = val;
-				}
-
-				EditorValueRangeTracer.getTracer().setMax(type, maxValue);
-				EditorValueRangeTracer.getTracer().setMin(type, minValue);
-			}
-
-			allPoints = mapping.getAllPoints();
-		}
+		//TODO: fix the following section
+//		// Assume this calc only returns cont. mapping.
+//		if (calculator.getMapping(0).getClass() == ContinuousMapping.class) {
+//			mapping = (ContinuousMapping) calculator.getMapping(0);
+//
+//			final String controllingAttrName = mapping.getControllingAttributeName();
+//
+//			if (attr.getColumnTypeMap().get(controllingAttrName) != Double.class)
+//				return;
+//
+//			// Set range values
+//			if (EditorValueRangeTracer.getTracer().getRange(type) == 0) {
+//				Double maxValue = Double.NEGATIVE_INFINITY;
+//				Double minValue = Double.POSITIVE_INFINITY;
+//
+//				for (Double val : attr.getColumnValues(controllingAttrName, Double.class)) {
+//					if (val > maxValue)
+//						maxValue = val;
+//
+//					if (val < minValue)
+//						minValue = val;
+//				}
+//
+//				EditorValueRangeTracer.getTracer().setMax(type, maxValue);
+//				EditorValueRangeTracer.getTracer().setMin(type, minValue);
+//			}
+//
+//			allPoints = mapping.getAllPoints();
+//		}
 	}
 
 	protected void setSidePanelIconColor(Color below, Color above) {

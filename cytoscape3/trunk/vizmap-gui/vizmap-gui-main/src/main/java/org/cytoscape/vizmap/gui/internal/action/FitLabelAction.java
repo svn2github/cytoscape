@@ -78,8 +78,8 @@ public class FitLabelAction extends AbstractVizMapperAction {
 	 * User wants to Seed the Discrete Mapper with Random Color Values.
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final CyNetwork targetNetwork = Cytoscape.getCurrentNetwork();
-		final GraphView targetView = Cytoscape.getCurrentNetworkView();
+		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
+		final GraphView targetView = cyNetworkManager.getCurrentNetworkView();
 
 		/*
 		 * Check Selected poperty

@@ -42,7 +42,7 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 		final Calculator dummy = calcs.get(0);
 		newStyle.getNodeAppearanceCalculator().setCalculator(dummy);
 
-		final GraphView currentView = Cytoscape.getCurrentNetworkView();
+		final GraphView currentView = cyNetworkManager.getCurrentNetworkView();
 
 		// add it to the catalog
 		vmm.getCalculatorCatalog().addVisualStyle(newStyle);
