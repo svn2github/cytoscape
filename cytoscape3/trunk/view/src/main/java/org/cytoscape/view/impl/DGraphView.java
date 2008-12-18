@@ -353,7 +353,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
 
 		// from DingNetworkView
-		this.title = m_perspective.attrs().get("title",String.class);
+		this.title = m_perspective.attrs().get("name",String.class);
 
 		for ( CyNode nn : m_perspective.getNodeList() ) 
 			addNodeView( nn );
