@@ -28,7 +28,6 @@ public class application{
 		
 	public static void main(String[] args){
 
-	//	commander = new input<String>(choices);
 		pi = new LoadPropsInterceptor(properties);
         CreateGUIandStart();
     }

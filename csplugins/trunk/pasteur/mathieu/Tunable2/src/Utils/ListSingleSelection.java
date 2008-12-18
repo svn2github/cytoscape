@@ -3,7 +3,7 @@ package Utils;
 import java.util.List;
 
 
-public class ListSingleSelection<T> extends ListSelection<T> implements list{
+public class ListSingleSelection<T> extends ListSelection<T>{
 	private T selected;
 
 

@@ -5,19 +5,23 @@ import Factory.*;
 import HandlerFactory.HandlerFactory;
 import java.lang.reflect.*;
 import java.security.acl.Group;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JList;
 import Tunable.Tunable;
+import Tunable.Tunable.Param;
+//import Utils.ListSelection;
+import Utils.ListSingleSelection;
 import Sliders.*;
 
 
-public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
+public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 
 
 	command command = new input();
 	public Guihandler getHandler(Field f, Object o, Tunable t){
-		
+		Param parameter= t.flag();
 		Class<?> type = f.getType();
 		
 		if(type== BoundedInteger.class)
@@ -26,8 +30,6 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 			return new BoundedDoubleHandler(f,o,t);
 		if(type== Integer.class)
 			return new IntegerHandler(f,o,t);
-		if(type== JList.class)
-			return new ListHandler(f,o,t);
 		if(type== Double.class)
 			return new DoubleHandler(f,o,t);
 		if(type==Boolean.class)
@@ -36,8 +38,12 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 			return new StringHandler(f,o,t);
 		if(type==Group.class)
 			return new GroupHandler(f,o,t);
-		//if(t.type()== JButton.class)
-		//	return new ButtonHandler(f,o,t);		
+		if(type == List.class){
+			if(parameter==Param.MultiSelect){
+				return new ListMultipleHandler<T>(f,o,t);
+			}
+			else	return new ListSingleHandler<T>(f,o,t);
+		}
 		return null;
 		
 		

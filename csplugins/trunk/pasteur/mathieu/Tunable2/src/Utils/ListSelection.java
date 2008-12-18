@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 class ListSelection<T> {
 
 	protected final List<T> values;

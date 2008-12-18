@@ -2,13 +2,13 @@ package Factory;
 
 import Tunable.*;
 import Tunable.Tunable.Param;
+import Utils.ListSingleSelection;
+
 import java.lang.reflect.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-
+import java.util.List;
 import GuiInterception.*;
 
 
@@ -25,16 +25,21 @@ public class ListHandler implements Guihandler,ListSelectionListener{
 	Object[] values;
 	Boolean multiselect;
 	String title;
-
+	ListSingleSelection test;
+	
 	
 	public ListHandler(Field f, Object o, Tunable t){
 		this.f = f;
 		this.o = o;
 		this.t = t;
+		try{
+		this.test=(ListSingleSelection) f.get(o);
+		}catch(Exception e){e.printStackTrace();}
 	}
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();
+		
 		try{
 			listIn = (JList) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
