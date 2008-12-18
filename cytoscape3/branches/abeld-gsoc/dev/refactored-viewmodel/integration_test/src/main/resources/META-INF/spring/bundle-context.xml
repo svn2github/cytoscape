@@ -20,5 +20,6 @@
 	<bean name="cyMain" class="cytoscape.CyMain">
 	  <constructor-arg ref="cyNetworkFactoryServiceRef" />
 	  <constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+	  <constructor-arg ref="networkPresentationFactoryServiceRef" />
 	</bean>
 </beans>

@@ -13,4 +13,9 @@
 		interface="org.cytoscape.viewmodel.CyNetworkViewFactory">
 	</osgi:reference>
 
+	<osgi:reference id="networkPresentationFactoryServiceRef"
+		interface="org.cytoscape.presentation.NetworkPresentationFactory">
+	</osgi:reference>
+
+
 </beans>

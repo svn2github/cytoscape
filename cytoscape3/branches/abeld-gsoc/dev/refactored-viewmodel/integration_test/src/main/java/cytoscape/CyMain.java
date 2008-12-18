@@ -45,6 +45,9 @@ import org.cytoscape.viewmodel.CyNetworkView;
 import org.cytoscape.viewmodel.CyNetworkViewFactory;
 import org.cytoscape.viewmodel.View;
 
+import org.cytoscape.presentation.NetworkPresentationFactory;
+import org.cytoscape.presentation.TextPresentation;
+
 /**
  * This is the main startup class for Cytoscape. This parses the command line
  * and implements CyInitParams so that it can be used to initialize cytoscape.
@@ -83,7 +86,8 @@ public class CyMain{
 	    System.out.println("hello world! -- with args");
 	    System.out.println("NetworkFactory:"+f);
 	}
-    public CyMain(CyNetworkFactory f, CyNetworkViewFactory vf) throws Exception {
+    public CyMain(CyNetworkFactory f, CyNetworkViewFactory vf,
+		  NetworkPresentationFactory pf) throws Exception {
 	    System.out.println("hello world! -- factories");
 	    System.out.println("NetworkFactory:"+f);
 	    CyNetwork network = f.getInstance();
@@ -101,6 +105,8 @@ public class CyMain{
 	    System.out.println(view.getCyEdgeView(e2));
 
 	    // create visual style, add an example MappingCalculator, dump values
+	    TextPresentation p = pf.getTextPresentationFor(view);
+	    System.out.println(p.render());
 	}
 
     public void dumpViewmodelState(CyNetworkView view){

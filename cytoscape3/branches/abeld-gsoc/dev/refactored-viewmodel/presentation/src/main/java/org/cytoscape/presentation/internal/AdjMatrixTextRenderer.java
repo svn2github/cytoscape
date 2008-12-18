@@ -3,6 +3,7 @@ package org.cytoscape.presentation.internal;
 import org.cytoscape.presentation.TextPresentation;
 import org.cytoscape.viewmodel.CyNetworkView;
 import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.Renderer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +37,7 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 	 * @return  DOCUMENT ME!
 	 */
     public VisualProperty<?> parseVisualProperty(String s){
-	throw new Exception("can't happen");
+	throw new RuntimeException("can't happen");
     }
 
 	/**
@@ -47,6 +48,6 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 	 * @return  DOCUMENT ME!
 	 */
     public String getVisualPropertyString(VisualProperty<?> vp){
-	throw new Exception("can't happen");
+	throw new RuntimeException("can't happen");
     }
 }
