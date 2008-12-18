@@ -38,8 +38,6 @@
 package org.cytoscape.viewmodel.internal;
 
 import org.cytoscape.viewmodel.*;
-import javax.swing.Icon;
-
 
 /**
  * DOCUMENT ME!
@@ -78,15 +76,6 @@ public class EdgeWidthVisualProperty implements VisualProperty<Double> {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getName() { return "Edge Width"; }
-
-	/**
-	 * Returns an Icon for this VisualProperty based on the input value.
-	 *
-	 * @param value  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Icon getIcon(Double value) { return null; }
 
 	/**
 	 * 

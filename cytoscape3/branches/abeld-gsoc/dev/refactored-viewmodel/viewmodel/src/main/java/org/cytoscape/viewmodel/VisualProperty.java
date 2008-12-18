@@ -35,9 +35,6 @@
 
 package org.cytoscape.viewmodel;
 
-import javax.swing.Icon;
-
-
 /**
  * FIXME
  * Think of it as a column in the viewmodel table.
@@ -84,15 +81,6 @@ public interface VisualProperty<T> {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getName();
-
-	/**
-	 * Returns an Icon for this VisualProperty based on the input value.
-	 *
-	 * @param value  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Icon getIcon(T value);
 
 	/**
 	 * 
