@@ -199,7 +199,7 @@ public class EditorFactoryImpl implements EditorFactory {
 	public PropertyEditor getDefaultComboBoxEditor(String editorName) {
 		PropertyEditor editor = comboBoxEditors.get(editorName);
 		if (editor == null) {
-			editor = new CyComboBoxPropertyEditor(editorName);
+			editor = new CyComboBoxPropertyEditor();
 			comboBoxEditors.put(editorName, editor);
 		}
 		return editor;

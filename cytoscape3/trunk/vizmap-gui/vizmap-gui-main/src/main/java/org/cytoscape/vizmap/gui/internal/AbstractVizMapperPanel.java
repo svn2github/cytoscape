@@ -94,6 +94,12 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	/*
 	 * Resources which will be injected through DI Container
 	 */
+	
+	// Listeners for attribute-related events
+	protected AttributeEventsListener nodeAttrListener;
+	protected AttributeEventsListener edgeAttrListener;
+	protected AttributeEventsListener networkAttrListener;
+	
 	@Resource
 	protected CySwingApplication cytoscapeDesktop;
 	@Resource

@@ -61,14 +61,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.model.events.ColumnDeletedEvent;
-import org.cytoscape.model.events.ColumnDeletedListener;
-import org.cytoscape.model.events.RowSetEvent;
-import org.cytoscape.model.events.RowSetListener;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
@@ -114,10 +107,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	private boolean ignore = false;
 	private String lastVSName = null;
 
-	// Current networks/views
-	private CyNetwork targetNetwork;
-	private GraphView targetView;
-
 	/**
 	 * Create new instance of VizMapperMainPanel object. GUI layout is handled
 	 * by abstract class.
@@ -157,20 +146,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		// By default, force to sort property by prop name.
 		propertySheetPanel.setSorting(true);
-
-		// TODO Register these listeners as services
-		// AttrEventListener ael1 = new AttrEventListener(this,
-		// getTargetNetwork()
-		// .getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS),
-		// nodeAttrEditor, nodeNumericalAttrEditor);
-		// AttrEventListener ael2 = new AttrEventListener(this,
-		// getTargetNetwork()
-		// .getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS),
-		// edgeAttrEditor, edgeNumericalAttrEditor);
-		// AttrEventListener ael3 = new AttrEventListener(this,
-		// getTargetNetwork()
-		// .getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS), null,
-		// null);
+		
 		refreshUI();
 
 		cytoscapeDesktop.getCytoPanel(SwingConstants.WEST).add(
@@ -197,7 +173,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				final String vsName = (String) getVsNameComboBox()
 						.getSelectedItem();
 				if (vsName != null) {
-					if (getTargetView() == null)
+					if (cyNetworkManager.getCurrentNetworkView() == null)
 						switchVS(vsName, false);
 					else
 						switchVS(vsName, true);
@@ -224,7 +200,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		editorWindowManager.closeAllEditorWindows();
 
-		vmm.setNetworkView(getTargetView());
+		vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
 		vmm.setVisualStyle(vsName);
 
 		if (vizMapPropertySheetBuilder.getPropertyMap().containsKey(vsName)) {
@@ -264,10 +240,10 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			updateAttributeList();
 		}
 
-		vmm.setVisualStyleForView(getTargetView(), vmm.getVisualStyle(vsName));
+		vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(), vmm.getVisualStyle(vsName));
 
 		if (redraw)
-			Cytoscape.redrawGraph(getTargetView());
+			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 		/*
 		 * Draw default view
@@ -327,7 +303,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				updateDefaultImage(name, view, panelSize);
 		}
 
-		vmm.setNetworkView(getTargetView());
+		vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
 
 		// Switch back to the original style.
 		switchVS(style.getName());
@@ -422,7 +398,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		defaultImageButton.setIcon(new ImageIcon(defImage));
 		defaultViewImagePanel.add(defaultImageButton, BorderLayout.CENTER);
 		defaultImageButton.addMouseListener(new DefaultViewMouseListener(vmm,
-				this, defViewEditor));
+				this, defViewEditor, cyNetworkManager));
 	}
 
 	public JPanel getDefaultPanel() {
@@ -573,9 +549,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		List<? extends GraphObject> obj;
 
 		if (nOre == ObjectMapping.NODE_MAPPING) {
-			obj = getTargetView().getGraphPerspective().getNodeList();
+			obj = cyNetworkManager.getCurrentNetworkView().getGraphPerspective().getNodeList();
 		} else {
-			obj = getTargetView().getGraphPerspective().getEdgeList();
+			obj = cyNetworkManager.getCurrentNetworkView().getGraphPerspective().getEdgeList();
 		}
 
 		for (GraphObject o : obj) {
@@ -585,7 +561,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		return ids;
 	}
 
-	// /**
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -597,7 +572,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				.getSelectedItem();
 		final String currentName = vmm.getVisualStyle().getName();
 
-		final GraphView curView = getTargetView();
+		final GraphView curView = cyNetworkManager.getCurrentNetworkView();
 
 		if (ignore)
 			return;
@@ -689,195 +664,5 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		final JTable table = propertySheetPanel.getTable();
 
 		return table.getModel().getValueAt(table.getSelectedRow(), 0);
-	}
-
-	public void setTargetNetwork(CyNetwork targetNetwork) {
-		this.targetNetwork = targetNetwork;
-	}
-
-	public CyNetwork getTargetNetwork() {
-		return targetNetwork;
-	}
-
-	public void setTargetView(GraphView targetView) {
-		this.targetView = targetView;
-	}
-
-	public GraphView getTargetView() {
-		return targetView;
-	}
-
-	// **************************************************************************
-	// MultiHashMapListenerAdaptor
-	private class AttrEventListener implements ColumnDeletedListener,
-			RowSetListener {
-		// ref to members
-		private final JPanel container;
-		private final CyDataTable attr;
-		private final PropertyEditor attrEditor;
-		private final PropertyEditor numericalAttrEditor;
-		private final List<String> attrEditorNames;
-		private final List<String> numericalAttrEditorNames;
-
-		/**
-		 * Constructor.
-		 * 
-		 * @param cyAttributes
-		 *            CyDataTable
-		 */
-		AttrEventListener(JPanel container, CyDataTable cyAttributes,
-				PropertyEditor attrEditor, PropertyEditor numericalAttrEditor) {
-			// init some members
-			this.attr = cyAttributes;
-			this.container = container;
-			this.attrEditor = attrEditor;
-			this.numericalAttrEditor = numericalAttrEditor;
-			this.attrEditorNames = new ArrayList<String>();
-			this.numericalAttrEditorNames = new ArrayList<String>();
-
-			// populate our lists
-			populateLists();
-		}
-
-		/**
-		 * Our implementation of MultiHashMapListener.attributeValueAssigned().
-		 * 
-		 * @param objectKey
-		 *            String
-		 * @param attributeName
-		 *            String
-		 * @param keyIntoValue
-		 *            Object[]
-		 * @param oldAttributeValue
-		 *            Object
-		 * @param newAttributeValue
-		 *            Object
-		 */
-		public void handleEvent(RowSetEvent e) {
-			CyRow row = e.getSource();
-			String attributeName = e.getColumnName();
-
-			// we do not process network attributes
-			if (attr == getTargetNetwork().getNetworkCyDataTables().get(
-					CyNetwork.DEFAULT_ATTRS))
-				return;
-
-			// conditional repaint container
-			boolean repaint = false;
-
-			// this code gets called a lot
-			// so i've decided to keep the next two if statements as is,
-			// rather than create a shared general routine to call
-
-			// if attribute is not in attrEditorNames, add it if we support its
-			// type
-			if (!attrEditorNames.contains(attributeName)) {
-				attrEditorNames.add(attributeName);
-				Collections.sort(attrEditorNames);
-				// attrEditor.setAvailableValues(attrEditorNames.toArray());
-				spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "attrEditor",
-						attrEditorNames.toArray());
-				repaint = true;
-			}
-
-			// if attribute is not contained in numericalAttrEditorNames, add it
-			// if we support its class
-			if (!numericalAttrEditorNames.contains(attributeName)) {
-				Class<?> dataClass = attr.getColumnTypeMap().get(attributeName);
-
-				if ((dataClass == Integer.class) || (dataClass == Double.class)) {
-					numericalAttrEditorNames.add(attributeName);
-					Collections.sort(numericalAttrEditorNames);
-					// numericalAttrEditor.setAvailableValues(numericalAttrEditorNames.toArray());
-					spcs.firePropertyChange("UPDATE_AVAILABLE_VAL",
-							"numericalAttrEditorNames",
-							numericalAttrEditorNames.toArray());
-					repaint = true;
-				}
-			}
-
-			if (repaint)
-				container.repaint();
-		}
-
-		/**
-		 * Our implementation of
-		 * MultiHashMapListener.allAttributeValuesRemoved()
-		 * 
-		 * @param objectKey
-		 *            String
-		 * @param attributeName
-		 *            String
-		 */
-		public void handleEvent(ColumnDeletedEvent e) {
-			String attributeName = e.getColumnName();
-
-			// we do not process network attributes
-			if (attr == getTargetNetwork().getNetworkCyDataTables().get(
-					CyNetwork.DEFAULT_ATTRS))
-				return;
-
-			// conditional repaint container
-			boolean repaint = false;
-
-			// this code gets called a lot
-			// so i've decided to keep the next two if statements as is,
-			// rather than create a shared general routine to call
-
-			// if attribute is in attrEditorNames, remove it
-			if (attrEditorNames.contains(attributeName)) {
-				attrEditorNames.remove(attributeName);
-				Collections.sort(attrEditorNames);
-				// attrEditor.setAvailableValues(attrEditorNames.toArray());
-				spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "attrEditor",
-						attrEditorNames.toArray());
-				repaint = true;
-			}
-
-			// if attribute is in numericalAttrEditorNames, remove it
-			if (numericalAttrEditorNames.contains(attributeName)) {
-				numericalAttrEditorNames.remove(attributeName);
-				Collections.sort(numericalAttrEditorNames);
-				// numericalAttrEditor.setAvailableValues(numericalAttrEditorNames.toArray());
-				spcs.firePropertyChange("UPDATE_AVAILABLE_VAL",
-						"numericalAttrEditor", numericalAttrEditorNames
-								.toArray());
-				repaint = true;
-			}
-
-			if (repaint)
-				container.repaint();
-		}
-
-		/**
-		 * Method to populate attrEditorNames & numericalAttrEditorNames on
-		 * object instantiation.
-		 */
-		private void populateLists() {
-			// get attribute names & sort
-
-			// populate attrEditorNames & numericalAttrEditorNames
-			// TODO - this is bad and is only hear to get things working
-			// initially
-			if (attr == null)
-				return;
-
-			List<String> names = new ArrayList<String>(attr.getColumnTypeMap()
-					.keySet());
-			Collections.sort(names);
-			attrEditorNames.add("ID");
-
-			byte type;
-			Class<?> dataClass;
-
-			for (String name : names) {
-				attrEditorNames.add(name);
-				dataClass = attr.getColumnTypeMap().get(name);
-
-				if ((dataClass == Integer.class) || (dataClass == Double.class)) {
-					numericalAttrEditorNames.add(name);
-				}
-			}
-		}
 	}
 }

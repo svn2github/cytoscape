@@ -11,18 +11,22 @@ import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.vizmap.gui.DefaultViewPanel;
 
+import cytoscape.CyNetworkManager;
+
 
 public class DefaultViewMouseListener extends MouseAdapter {
 
 	private VisualMappingManager vmm;
 	private VizMapperMainPanel vizMapperMainPanel;
 	private DefaultViewEditor defViewEditor;
+	private CyNetworkManager cyNetworkManager;
 
 	public DefaultViewMouseListener(VisualMappingManager vmm,
-			VizMapperMainPanel panel, DefaultViewEditor defViewEditor) {
+			VizMapperMainPanel panel, DefaultViewEditor defViewEditor, CyNetworkManager cyNetworkManager) {
 		this.vmm = vmm;
 		this.vizMapperMainPanel = panel;
 		this.defViewEditor = defViewEditor;
+		this.cyNetworkManager = cyNetworkManager;
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -41,7 +45,7 @@ public class DefaultViewMouseListener extends MouseAdapter {
 					vizMapperMainPanel.getDefaultViewPanel().getSize());
 			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel.getDefaultImageManager().get(targetName));
 
-			vmm.setNetworkView(vizMapperMainPanel.getTargetView());
+			vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
 			vmm.setVisualStyle(targetName);
 
 			//cytoscapeDesktop.setFocus(focus);

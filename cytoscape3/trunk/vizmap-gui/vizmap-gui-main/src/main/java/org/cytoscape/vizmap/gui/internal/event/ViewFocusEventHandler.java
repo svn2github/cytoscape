@@ -18,11 +18,11 @@ public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 		final VisualStyle vs = vmm.getVisualStyleForView(vmm.getNetworkView());
 
 		if (vs != null) {
-			vmm.setNetworkView(vizMapperMainPanel.getTargetView());
+			vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
 
 			if (vs.getName().equals(
 					vizMapperMainPanel.getVsNameComboBox().getSelectedItem())) {
-				Cytoscape.redrawGraph(vizMapperMainPanel.getTargetView());
+				Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 			} else {
 				vizMapperMainPanel.switchVS(vs.getName(), false);
 				vizMapperMainPanel.getVsNameComboBox().setSelectedItem(
@@ -32,10 +32,10 @@ public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 			}
 		}
 
-		vizMapperMainPanel.setTargetNetwork(cyNetworkManager.getNetwork((Long) (e
-				.getNewValue())));
-		vizMapperMainPanel.setTargetView(cyNetworkManager.getNetworkView((Long) (e
-				.getNewValue())));
+//		vizMapperMainPanel.setTargetNetwork(cyNetworkManager.getNetwork((Long) (e
+//				.getNewValue())));
+//		vizMapperMainPanel.setTargetView(cyNetworkManager.getNetworkView((Long) (e
+//				.getNewValue())));
 
 	}
 

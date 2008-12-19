@@ -13,8 +13,8 @@ public class DefaultSelectableValues implements EditorDisplayer {
 	
 	private final CyComboBoxPropertyEditor editor;
 	
-	public DefaultSelectableValues(String name) {
-		this.editor = new CyComboBoxPropertyEditor(name);
+	public DefaultSelectableValues() {
+		this.editor = new CyComboBoxPropertyEditor();
 	}
 
 	public PropertyEditor getCellEditor() {

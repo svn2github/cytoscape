@@ -51,11 +51,11 @@ public class VizMapPropertyBuilder {
 	/*
 	 * Build one property for one visual property.
 	 */
-	public void buildProperty(Calculator calc,
-			VizMapperProperty calculatorTypeProp, String rootCategory,
-			PropertySheetPanel propertySheetPanel) {
+	public void buildProperty(final Calculator calc,
+			final VizMapperProperty calculatorTypeProp, final String rootCategory,
+			final PropertySheetPanel propertySheetPanel) {
+		
 		final VisualPropertyType type = calc.getVisualPropertyType();
-
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 		/*
 		 * Set one calculator
