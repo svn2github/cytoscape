@@ -1,0 +1,398 @@
+
+<project name="dual" default="usage" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Display usage information                                           -->
+  <!-- =================================================================== -->
+  <target name="usage">
+	<echo message="----------------------------------------------------------"/>
+	<echo message="      Dual Layout Application Build System "/>
+	<echo message="----------------------------------------------------------"/>
+	<echo message="  Usage:"/>
+	<echo message="     ant &lt;target&gt; (CLASSPATH must include junit.jar"/>
+	<echo message="                         and ANT_HOME must be set)"/>
+	<echo message="       OR"/>
+	<echo message="     build.sh &lt;target&gt; "/>
+	<echo message=" "/>
+	<echo message=" Available targets are:"/>
+	<echo message="   all             -> creates all project jars,"/>
+	<echo message="                      docs, runs tests, signs jars"/>
+	<echo message="   jar             -> creates all project jars"/>
+	<echo message="   jar-tests       -> creates junit test jars"/>
+	<echo message="   runtests        -> runs junit tests"/>
+	<echo message="   docs            -> generates the javadoc documentation"/>
+	<echo message="   sign            -> signs all jars (requires keystore)"/>
+	<echo message="   clean           -> removes all created jars and "/>
+	<echo message="                      class files"/>
+	<echo message="   run             -> runs the project jar"/>
+	<echo message="   all-dist        -> creates distribution of all project"/>
+	<echo message="                      files"/>
+	<echo message="   bin-dist        -> creates distribution of binary "/>
+	<echo message="                      project files"/>
+	<echo message="   src-dist        -> creates distribution of src "/>
+	<echo message="                      project files"/>
+	<echo message="   usage           -> (default) displays this screen"/>
+	<echo message="----------------------------------------------------------"/>
+	<echo message=" See also the build.xml file and README for more help."/>
+	<echo message="----------------------------------------------------------"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init">
+    <tstamp/>
+	<property name="name" value="dual"/>
+    <property name="version" value="0.1"/>
+
+    <echo message="Building ${name} version ${version} ..."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="fork" value="false"/>
+
+    <!-- Define the directories -->
+	<property name="src" value="src"/>
+	<property name="build" value="build"/>
+	<property name="tests" value="tests"/>
+	<property name="etc" value="etc"/>
+	<property name="logs" value="logs"/>
+	<property name="lib" value="lib"/>
+
+    <property name="root.dir" value="."/>
+    <property name="lib.dir" value="${root.dir}/${lib}"/>
+    <property name="src.dir" value="${root.dir}/${src}"/>
+    <property name="tests.dir" value="${root.dir}/${tests}"/>
+    <property name="build.dir" value="${root.dir}/${build}"/>
+    <property name="doc.dir" value="${root.dir}/docs"/>
+    <property name="javadoc.dir" value="${doc.dir}/api"/>
+    <property name="manifest.dir" value="${root.dir}/manifest"/>
+    <property name="examples.dir" value="${root.dir}/examples"/>
+    <property name="etc.dir" value="${root.dir}/etc"/>
+    <property name="log.dir" value="${root.dir}/${logs}" />
+
+
+	<!-- Define the variables necessary for signing jars -->
+    <property name="keystore" value="${etc}/myKeystore" />
+    <property name="sign.alias" value="msmoot@ucsd.edu" />
+    <property name="sign.password" value="msmoot@ucsd.edu" />
+
+	<!-- Define the relevant files -->
+    <property name="project.jar" value="${name}.jar"/>
+    <property name="test.jar" value="${name}-tests.jar"/>
+    <property name="project.manifest" value="${manifest.dir}/${name}.MF"/>
+    <property name="test.manifest" value="${manifest.dir}/test-${name}.MF"/>
+
+	<!-- Define the distribution relevant files -->
+    <property name="dist.all.name" value="${name}_${version}" />
+    <property name="dist.bin.name" value="${name}_bin_${version}" />
+    <property name="dist.src.name" value="${name}_src_${version}" />
+    <property name="dist.all" value="${dist.all.name}.tar.gz" />
+    <property name="dist.bin" value="${dist.bin.name}.tar.gz" />
+    <property name="dist.src" value="${dist.src.name}.tar.gz" />
+
+	<!-- Define the main classes -->
+	<property name="main.class" value="dual.DualLayoutMain"/>
+	<property name="test.main.class" value="AllTests"/>
+
+	<!-- Define the class path - Defaults to everything in the lib.dir -->
+    <path id="project.class.path">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+    </path>
+
+	<!-- Define the junit class path - It needs to find what we just built -->
+    <path id="junit.class.path">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${root.dir}">
+			<include name="*.jar"/>
+		</fileset>
+    </path>
+
+
+	<!-- Create a property that is a string listing the jars in the -->
+	<!-- classpath separated by a space, used for manifest creation. -->
+	<pathconvert property="manifest.class.path.string"
+	             pathsep=" ">
+	  <path refid="project.class.path"/>
+      <mapper type="regexp" from="${lib.dir}/(.*)" to="${lib}/\1"/>
+	</pathconvert>
+
+	<!-- Make sure all jars are present for building -->
+    <condition property="build.ok">
+	  <and> 
+	    <available file="${root.dir}/build.xml" /> <!-- dummy -->
+	  </and>
+	</condition>
+
+	<!-- Make sure tests is in the right place -->
+    <condition property="tests.ok">
+	  <and> 
+		<available file="${tests.dir}" />
+		<available file="${examples.dir}" />
+	  </and>
+	</condition>
+
+	<!-- Make sure we've got the keystore -->
+    <condition property="sign.ok">
+	  <and> 
+		<available file="${keystore}" />
+	  </and>
+	</condition>
+ 	<echo message="Successfully ran init task!"/>
+    
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the project                                                -->
+  <!-- =================================================================== -->
+  <target name="compile" 
+  		  depends="init" 
+		  if="build.ok" >
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${log.dir}"/>
+    <javac srcdir="${src.dir}"
+           classpathref="project.class.path"
+           destdir="${build.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+	   nowarn="yes"
+           fork="${fork}"/>
+ 	<echo message="Successfully ran compile task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the manifest file  for the project jar                      -->
+  <!-- =================================================================== -->
+  <target name="manifest" 
+          depends="init" 
+		  if="build.ok">
+	<mkdir dir="${manifest.dir}"/>
+  	<manifest file="${project.manifest}">
+	  <attribute name="Main-Class" value="${main.class}"/>
+	  <attribute name="Class-Path" value="${manifest.class.path.string}"/> 
+	</manifest>
+ 	<echo message="Successfully ran manifest task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the manifest file  for the test jar                         -->
+  <!-- =================================================================== -->
+  <target name="test-manifest" 
+          depends="init" 
+		  if="build.ok">
+	<mkdir dir="${manifest.dir}"/>
+  	<manifest file="${test.manifest}">
+	  <attribute name="Main-Class" value="${test.main.class}"/>
+	  <attribute name="Class-Path" value="${manifest.class.path.string}"/> 
+	</manifest>
+ 	<echo message="Successfully ran manifest task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the project jar file                                        -->
+  <!-- =================================================================== -->
+  <target name="jar" 
+  	      depends="compile,manifest"
+		  if="build.ok">
+	<mkdir dir="${lib.dir}"/>
+    <jar destfile="${project.jar}" 
+		 manifest="${project.manifest}">
+      <fileset dir="${build.dir}"
+               includes="**"/>
+    </jar>
+ 	<echo message="Successfully ran jar task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the tests                                                  -->
+  <!-- =================================================================== -->
+  <target name="compile-tests"
+  		  depends="compile" 
+		  if="tests.ok" >
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${tests.dir}"
+           classpathref="project.class.path"
+           destdir="${build.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+   <echo message="Successfully ran compile-tests task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the project-tests.jar file                                  -->
+  <!-- =================================================================== -->
+  <target name="jar-tests" 
+  		  depends="compile-tests,test-manifest"
+		  if="tests.ok">
+    <mkdir dir="${build.dir}/examples"/>
+	<copy todir="${build.dir}/examples">
+	    <fileset dir="${root.dir}/examples"/>
+    </copy>
+    <jar jarfile="${test.jar}"
+		 manifest="${test.manifest}"
+         basedir="${build.dir}" >
+	</jar>
+ 	<echo message="Successfully ran tests task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in project-tests.jar                                 -->
+  <!-- =================================================================== -->
+  <target name="runtests" 
+  	      depends="jar-tests"
+		  if="tests.ok">
+    <mkdir dir="${log.dir}"/>
+    <junit printsummary="yes"
+           haltonfailure="yes"
+           maxmemory="256m">
+      <classpath refid="junit.class.path"/>
+      <formatter type="plain" 
+	             usefile="true" />
+      <batchtest fork="yes" 
+	  			 todir="${log.dir}" 
+				 if="tests.ok">
+        <fileset dir="${tests.dir}"
+				 includes="**/*Test.java"
+				 excludes="**/AllTests.java" />
+      </batchtest> 
+    </junit>
+ 	<echo message="Successfully ran runtests task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Signs the project.jar file.                                         -->
+  <!-- =================================================================== -->
+  <target name="sign" 
+          depends="jar"
+		  if="sign.ok">
+    <signjar jar="${project.jar}"
+             keystore="${keystore}" 
+             alias="${sign.alias}" 
+             storepass="${sign.password}"/>
+ 	<echo message="Successfully ran sign task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="jar,docs,runtests" /> 
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" 
+  		  depends="init" > 
+    <mkdir dir="${javadoc.dir}"/>
+    <javadoc sourcepath="${src.dir}"
+             destdir="${javadoc.dir}"
+             packagenames="*"
+             classpathref="project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${name} API"
+             doctitle="${name}" />
+ 	<echo message="Successfully ran docs task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates a distribution (.tar.gz) file for this software package.    -->
+  <!-- Includes both source and compiled binaries.                         -->
+  <!-- =================================================================== -->
+  <target name="all-dist" 
+          depends="all">
+    <tar destfile="${root.dir}/${dist.all}" 
+         compression="gzip">
+      <tarfileset dir="${root.dir}" 
+	              prefix="${dist.all.name}" >
+        <exclude name="${keystore}"/>
+        <exclude name="${dist.all}"/>
+        <exclude name="${dist.bin}"/>
+        <exclude name="${dist.src}"/>
+        <include name="**"/>
+      </tarfileset>
+    </tar>
+ 	<echo message="Successfully ran all-dist task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates a distribution (.tar.gz) file for this software package.    -->
+  <!-- Only includes jars. No src.                                         -->
+  <!-- =================================================================== -->
+  <target name="bin-dist" 
+          depends="all">
+    <tar destfile="${root.dir}/${dist.bin}" 
+         compression="gzip">
+      <tarfileset dir="${root.dir}" 
+	              prefix="${dist.bin.name}" >
+        <exclude name="${keystore}"/>
+        <exclude name="${build}/**"/>
+        <exclude name="${logs}/**"/>
+        <exclude name="${src}/**"/>
+        <exclude name="${tests}/**"/>
+        <exclude name="${dist.all}"/>
+        <exclude name="${dist.bin}"/>
+        <exclude name="${dist.src}"/>
+        <include name="**"/>
+      </tarfileset>
+    </tar>
+ 	<echo message="Successfully ran bin-dist task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates a distribution (.tar.gz) file for this software package.    -->
+  <!-- Includes just source and no binaries.                               -->
+  <!-- =================================================================== -->
+  <target name="src-dist" 
+          depends="clean">
+    <tar destfile="${root.dir}/${dist.src}" 
+         compression="gzip">
+      <tarfileset dir="${root.dir}" 
+	              prefix="${dist.src.name}" >
+        <exclude name="${keystore}"/>
+        <include name="**"/>
+      </tarfileset>
+    </tar>
+ 	<echo message="Successfully ran src-dist task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" 
+  		  depends="init">
+    <delete dir="${build.dir}"/>
+    <delete dir="${javadoc.dir}"/>
+    <delete dir="${log.dir}"/>
+    <delete dir="${manifest.dir}"/>
+    <delete file="${project.jar}"/>
+    <delete file="${test.jar}"/>
+ 	<echo message="Successfully ran clean task!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Run the application you just built.                                 -->
+  <!-- =================================================================== -->
+  <target name="run" depends="all">
+    <java jar="${project.jar}"
+          classpathref="project.class.path"
+          fork="true">
+		  <!-- <arg value="change.this"/> -->
+    </java>
+  </target>
+
+</project>
+
+<!-- End of file -->
