@@ -1,16 +1,14 @@
 package Main;
 
-import java.util.*;
 import javax.swing.*;
 import GuiInterception.*;
 import Command.*;
 import HandlerFactory.Handler;
 import java.awt.event.*;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
-
 import Props.*;
+
 
 public class application{
 	

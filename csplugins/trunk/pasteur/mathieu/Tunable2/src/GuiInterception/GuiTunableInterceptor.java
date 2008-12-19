@@ -6,12 +6,9 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import Factory.GroupHandler;
 import java.util.List;
 import java.util.Properties;
-
-import Properties.*
-;
+import Properties.*;
 
 
 public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> {
@@ -24,7 +21,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	Properties prop = new Properties();
 	
 	public GuiTunableInterceptor(JFrame inframe,JFrame outframe) {
-		super( new GuiHandlerFactory() );
+		super( new GuiHandlerFactory<Guihandler>() );
 		this.inframe=inframe;
 		this.outframe=outframe;
 	}

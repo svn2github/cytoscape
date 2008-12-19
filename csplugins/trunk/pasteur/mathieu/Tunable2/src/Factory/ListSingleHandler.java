@@ -2,18 +2,14 @@ package Factory;
 
 import GuiInterception.Guihandler;
 import Tunable.*;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import Utils.*;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 
 public class ListSingleHandler<T> implements Guihandler,ListSelectionListener{
 	
@@ -29,6 +25,7 @@ public class ListSingleHandler<T> implements Guihandler,ListSelectionListener{
 	ArrayList<T> array;
 	
 	
+	@SuppressWarnings("unchecked")
 	public ListSingleHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.o=o;
@@ -115,6 +112,7 @@ public class ListSingleHandler<T> implements Guihandler,ListSelectionListener{
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void valueChanged(ListSelectionEvent evt) {
 		selected = (T)jlist.getSelectedValue();
 	}	

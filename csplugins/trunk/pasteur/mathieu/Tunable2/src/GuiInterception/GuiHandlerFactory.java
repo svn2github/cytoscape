@@ -6,7 +6,6 @@ import HandlerFactory.HandlerFactory;
 import java.lang.reflect.*;
 import java.security.acl.Group;
 import java.util.List;
-import javax.swing.JButton;
 import Tunable.Tunable;
 import Tunable.Tunable.Param;
 import Sliders.*;
@@ -41,28 +40,5 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			else	return new ListSingleHandler<T>(f,o,t);
 		}
 		return null;
-		
-		
-		
-/*			switch(t.type()){
-				case 0://INTEGER
-					return new IntegerHandler(f,o,t);
-				case 1://DOUBLE
-				//	return new DoubleHandler(f,o,t);
-				case 2://BOOLEAN
-				//	return new BooleanHandler(f,o,t);
-				case 3://STRING
-				//	return new StringHandler(f,o,t);
-				//case 5 & 6:
-				//	return new AttributeHandler(f,o,t);
-				case 6://LIST
-				//	return new ListHandler(f,o,t);
-				case 7://GROUP
-				//	return new GroupHandler(f,o,t);
-				case 8://BUTTON
-				//	return new ButtonHandler(f,o,t);
-				default:return null;
-			}
-	*/
 	}
 }

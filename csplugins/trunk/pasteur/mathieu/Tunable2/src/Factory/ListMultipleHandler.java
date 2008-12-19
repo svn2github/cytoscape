@@ -24,6 +24,7 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	Boolean available;
 	
 	
+	@SuppressWarnings("unchecked")
 	public ListMultipleHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.o=o;
@@ -108,6 +109,7 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public ArrayList<T> castObject(Object[] in){
 		ArrayList<T> array = new ArrayList<T>();
 		T value;
