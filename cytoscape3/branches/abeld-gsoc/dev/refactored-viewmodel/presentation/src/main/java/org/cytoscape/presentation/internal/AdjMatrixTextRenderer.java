@@ -10,7 +10,10 @@ import org.cytoscape.model.CyNode;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 import java.util.Arrays;
+
+import org.osgi.framework.BundleContext;
 
 /**
  * A TextPresentation that shows network as an Adjacency Matrix
@@ -21,17 +24,20 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 				       "---[ Adjacency Matrix]---", String.class,
 				       VisualProperty.GraphObjectType.NETWORK);
 
-
-    private final VisualProperty<TextNodeRenderer> nodeRenderer =
-	new DiscreteVisualProperty<TextNodeRenderer>("TEXT_NODE_RENDERER", "node Renderer",
-						     TextNodeRenderer.class,
-						     Arrays.asList((TextNodeRenderer)new TextNodeRendererImpl()),
-						     VisualProperty.GraphObjectType.NETWORK);
+    // FIXME: this should be VisualProperty<>, only temporary hack to print registered renderers
+    private final DiscreteVisualProperty<TextNodeRenderer> nodeRenderer;
 
     private CyNetworkView view;
     private Set<VisualProperty> visualProperties = null;
-    public AdjMatrixTextRenderer(CyNetworkView view){
+    public AdjMatrixTextRenderer(CyNetworkView view, BundleContext bc){
 	this.view = view;
+	// FIXME: this should be statically intialized, but how do we get the BundleContext then?
+	nodeRenderer =
+	new DiscreteVisualProperty<TextNodeRenderer>("TEXT_NODE_RENDERER", "node Renderer",
+						     TextNodeRenderer.class,
+						     new TextNodeRendererImpl(),
+						     VisualProperty.GraphObjectType.NETWORK,
+						     bc);
     }
     public String render(){
 	StringBuilder sb = new StringBuilder();
@@ -42,6 +48,9 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 	    TextNodeRenderer renderer = nodeView.getVisualProperty(nodeRenderer);
 	    sb.append("\n"+renderer.render());
 	}
+	Set<TextNodeRenderer> renderers = nodeRenderer.getValues();
+	System.out.println("available nodeRenderers: "+renderers.size());
+	System.out.println(renderers);
 	return sb.toString();
     }
 

@@ -3,6 +3,7 @@
 #-----------------------------------------------------------------
 
 Spring-Context: META-INF/spring/*.xml
+Bundle-Activator: org.cytoscape.presentation.internal.RendererActivator
 Private-Package: ${bundle.symbolicName}.internal,${bundle.symbolicName}.events.internal
 Export-Package: ${bundle.symbolicName},${bundle.symbolicName}.events,
 

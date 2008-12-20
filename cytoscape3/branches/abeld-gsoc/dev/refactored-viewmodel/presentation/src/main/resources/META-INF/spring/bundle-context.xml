@@ -16,5 +16,6 @@
 	<context:annotation-config/>
 	
 	<bean id="networkPresentationFactory" class="org.cytoscape.presentation.internal.NetworkPresentationFactoryImpl">
+	  <property name="bundleContext" ref="bundleContext"></property>
 	</bean>
 </beans>
