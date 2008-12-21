@@ -21,6 +21,7 @@
 	</bean>
 
 	<bean id="visualPropertyCatalog" class="org.cytoscape.viewmodel.internal.VisualPropertyCatalogImpl">
+	  <property name="bundleContext" ref="bundleContext"></property>
 	</bean>
 
 </beans>

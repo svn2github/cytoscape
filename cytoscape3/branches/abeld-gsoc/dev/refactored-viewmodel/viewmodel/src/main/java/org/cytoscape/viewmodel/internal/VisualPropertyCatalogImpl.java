@@ -53,40 +53,57 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * The singleton class that holds all currently defined VisualProperties.
  */
 public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 
-	/* Mapping from UID to VisualProperty */
-	private HashMap <String, VisualProperty> visualProperties = new HashMap<String, VisualProperty>();
-	
-	private HashMap <String, DependentVisualPropertyCallback>callbacks = new HashMap<String, DependentVisualPropertyCallback>(); 
-	
-	public void addVisualPropertiesOfRenderer(Renderer renderer){
-		for(VisualProperty vp: renderer.getVisualProperties()){
-			addVisualProperty(vp);
-		}
+
+    private BundleContext bundleContext;
+	/**
+	 * For setter injection (hmm. whats that?)
+	 */
+    public VisualPropertyCatalogImpl() {
+    }
+
+    public void setBundleContext(BundleContext bundleContext) {
+	this.bundleContext = bundleContext;
+    }
+    public BundleContext getBundleContext() {
+	return bundleContext;
+    }
+
+	/**
+	 * Creates a new CyNetworkFactoryImpl object.
+	 *
+	 * @param h  DOCUMENT ME!
+	 */
+    public VisualPropertyCatalogImpl(final BundleContext bundleContext) {
+		if (bundleContext == null)
+			throw new NullPointerException("bundleContext is null");
+		this.bundleContext = bundleContext;
 	}
+
+
+	public void addVisualPropertiesOfRenderer(Renderer renderer){
+	    throw new RuntimeException("not applicable");
+ 	}
 
 	/** Add a top-level VisualProperty. Note: this is most likely _not_ what you want to use */
 	public void addVisualProperty(VisualProperty vp){
-		String name = vp.getName();
-		if (visualProperties.containsKey(name)){
-			System.out.println("Error: VisualProperty already exsists!");
-		} else {
-			DependentVisualPropertyCallback callback = vp.dependentVisualPropertyCallback();
-			if (callback != null)
-				callbacks.put(vp.getName(), callback);
-
-			visualProperties.put(name, vp);
-		}
+	    throw new RuntimeException("not applicable");
 	}
 
 	public VisualProperty getVisualProperty(String name){
-		return visualProperties.get(name);
+	    for (VisualProperty vp: readAllVisualPropertiesFromOSGI()){
+		if (vp.getID().equals(name)){
+		    return vp;
+		}
+	    }
+	    return null; // no matching VisualProperty found
 	}
 	
 	/**
@@ -123,14 +140,15 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	 */
     public Collection<VisualProperty> collectionOfVisualProperties(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews, VisualProperty.GraphObjectType objectType){
 
-		Collection<VisualProperty> allVisualProperties = visualProperties.values();
+		Collection<VisualProperty> allVisualProperties = readAllVisualPropertiesFromOSGI();
 		if (nodeviews == null && edgeviews == null)
 		    return filterForObjectType(allVisualProperties, objectType);
 		//System.out.println("making list of VisualProperties in use:");
 		Set <VisualProperty> toRemove = new HashSet<VisualProperty>();
+		/* temprarily callback-usage is removed (all callbacks ignored) FIXME FIXME
 		for (DependentVisualPropertyCallback callback: callbacks.values()){
 			toRemove.addAll(callback.changed(nodeviews, edgeviews, allVisualProperties));
-		}
+			} */
 		//System.out.println("removing:"+toRemove.size());
 		Set <VisualProperty> result = new HashSet<VisualProperty>(allVisualProperties);
 		result.removeAll(toRemove);
@@ -148,5 +166,39 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	    }
 	}
 	return result;
+    }
+    private Collection<VisualProperty> readAllVisualPropertiesFromOSGI(){
+	Set<VisualProperty> ret = new HashSet<VisualProperty>();
+	for (Renderer renderer: getAllRenderersFromOSGI()){
+	    ret.addAll(renderer.getVisualProperties());
+	}
+	return ret;
+    }
+    private Collection<Renderer> getAllRenderersFromOSGI(){
+	Set<Renderer> ret = new HashSet<Renderer>();
+	System.out.println("listing values");
+	if (bundleContext == null)
+	    return ret;
+	System.out.println("listing values2");
+	try {
+	    ServiceReference[] sr = bundleContext.getServiceReferences(Renderer.class.getName(),
+								       null);
+	    
+	    if (sr != null){
+		System.out.println("len servicereferences:"+sr.length);
+		for (ServiceReference r : sr) {
+		    System.out.println("listing values3");
+		    Renderer renderer = (Renderer) bundleContext.getService(r);
+		    
+		    if (renderer != null)
+			ret.add(renderer);
+		}
+	    } else {
+		System.out.println("sr is null");
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	return ret;
     }
 }
