@@ -19,4 +19,8 @@
 	  <property name="eventHelper" ref="cyEventHelperServiceRef"></property>
 	  <property name="bundleContext" ref="bundleContext"></property>
 	</bean>
+
+	<bean id="visualPropertyCatalog" class="org.cytoscape.viewmodel.internal.VisualPropertyCatalogImpl">
+	</bean>
+
 </beans>

@@ -14,8 +14,11 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="visualPropertyCatalogService"
+		ref="visualPropertyCatalog" interface="org.cytoscape.viewmodel.VisualPropertyCatalog">
+	</osgi:service>
+
 	<osgi:reference id="cyEventHelperServiceRef"
 		interface="org.cytoscape.event.CyEventHelper">
 	</osgi:reference>
-
 </beans>

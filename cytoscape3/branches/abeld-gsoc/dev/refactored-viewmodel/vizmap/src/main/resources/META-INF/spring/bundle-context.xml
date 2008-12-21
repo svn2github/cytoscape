@@ -16,11 +16,9 @@
 
 	<context:annotation-config />
 
-	<!-- cyMain.  Currently working as a builder for application. -->
-	<bean name="cyMain" class="cytoscape.CyMain">
-	  <constructor-arg ref="cyNetworkFactoryServiceRef" />
-	  <constructor-arg ref="cyNetworkViewFactoryServiceRef" />
-	  <constructor-arg ref="networkPresentationFactoryServiceRef" />
-	  <constructor-arg ref="visualStyleCatalogServiceRef" />
+	<bean id="visualStyleCatalog" class="org.cytoscape.vizmap.internal.VisualStyleCatalogImpl">
+	  <property name="eventHelper" ref="cyEventHelperServiceRef"></property>
+	  <property name="visualPropertyCatalog" ref="visualPropertyCatalogRef"></property>
 	</bean>
+
 </beans>

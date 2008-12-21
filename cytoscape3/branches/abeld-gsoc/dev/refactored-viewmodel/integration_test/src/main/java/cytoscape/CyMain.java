@@ -41,9 +41,8 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.GraphObject;
 
-import org.cytoscape.viewmodel.CyNetworkView;
-import org.cytoscape.viewmodel.CyNetworkViewFactory;
-import org.cytoscape.viewmodel.View;
+import org.cytoscape.viewmodel.*;
+import org.cytoscape.vizmap.*;
 
 import org.cytoscape.presentation.NetworkPresentationFactory;
 import org.cytoscape.presentation.TextPresentation;
@@ -87,7 +86,7 @@ public class CyMain{
 	    System.out.println("NetworkFactory:"+f);
 	}
     public CyMain(CyNetworkFactory f, CyNetworkViewFactory vf,
-		  NetworkPresentationFactory pf) throws Exception {
+		  NetworkPresentationFactory pf, VisualStyleCatalog vsc) throws Exception {
 	    System.out.println("hello world! -- factories");
 	    System.out.println("NetworkFactory:"+f);
 	    CyNetwork network = f.getInstance();
@@ -105,6 +104,13 @@ public class CyMain{
 	    System.out.println(view.getCyEdgeView(e2));
 
 	    // create visual style, add an example MappingCalculator, dump values
+	    VisualStyle myStyle = vsc.createVisualStyle();
+	    /*MappingCalculator nodeLabel = 
+		new PassthroughMappingCalculator("id", vpCatalog.getVisualProperty("NODE_LABEL"));
+	    myStyle.setMappingCalculator(nodeLabel); */
+	    System.out.println(myStyle);
+	    myStyle.apply(view);
+	    // TODO: add passthroughMapping to copy id to nodeLabel
 	    TextPresentation p = pf.getTextPresentationFor(view);
 	    System.out.println(p.render());
 	}

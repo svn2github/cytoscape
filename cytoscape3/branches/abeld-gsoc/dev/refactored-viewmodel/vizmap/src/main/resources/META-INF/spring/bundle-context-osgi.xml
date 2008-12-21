@@ -5,20 +5,15 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<osgi:reference id="cyNetworkFactoryServiceRef"
-		interface="org.cytoscape.model.CyNetworkFactory">
+	<osgi:service id="visualStyleCatalogService"
+		ref="visualStyleCatalog" interface="org.cytoscape.vizmap.VisualStyleCatalog">
+	</osgi:service>
+
+	<osgi:reference id="cyEventHelperServiceRef"
+		interface="org.cytoscape.event.CyEventHelper">
 	</osgi:reference>
 
-	<osgi:reference id="cyNetworkViewFactoryServiceRef"
-		interface="org.cytoscape.viewmodel.CyNetworkViewFactory">
+	<osgi:reference id="visualPropertyCatalogRef"
+		interface="org.cytoscape.viewmodel.VisualPropertyCatalog">
 	</osgi:reference>
-
-	<osgi:reference id="networkPresentationFactoryServiceRef"
-		interface="org.cytoscape.presentation.NetworkPresentationFactory">
-	</osgi:reference>
-
-	<osgi:reference id="visualStyleCatalogServiceRef"
-		interface="org.cytoscape.vizmap.VisualStyleCatalog">
-	</osgi:reference>
-
 </beans>
