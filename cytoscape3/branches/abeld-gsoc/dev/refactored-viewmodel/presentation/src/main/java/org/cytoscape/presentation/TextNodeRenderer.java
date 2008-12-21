@@ -3,7 +3,7 @@ package org.cytoscape.presentation;
 import java.util.Set;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.Renderer;
-
+import org.cytoscape.viewmodel.View;
 
 /**
  * Should be implemented as a service.
@@ -12,7 +12,7 @@ import org.cytoscape.viewmodel.Renderer;
  */
 public interface TextNodeRenderer extends Renderer {
 
-    public String render();
+    public String render(View<?> view);
 
 
 	/**

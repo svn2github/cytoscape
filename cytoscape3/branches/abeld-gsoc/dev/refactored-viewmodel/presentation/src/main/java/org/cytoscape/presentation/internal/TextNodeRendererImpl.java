@@ -3,12 +3,19 @@ package org.cytoscape.presentation.internal;
 import java.util.Set;
 import java.util.HashSet;
 import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.View;
 import org.cytoscape.presentation.TextNodeRenderer;
 
 public class TextNodeRendererImpl implements TextNodeRenderer   {
+    private final VisualProperty<String> nodeLabel =
+	new VisualPropertyImpl<String>("NODE_LABEL", "node label (string)",
+				       "default label", String.class,
+				       VisualProperty.GraphObjectType.NODE);
 
-    public String render(){
-	return "oneTextNode";
+
+    public String render(View<?> view){
+	String label = view.getVisualProperty(nodeLabel);
+	return label;
     }
 
 

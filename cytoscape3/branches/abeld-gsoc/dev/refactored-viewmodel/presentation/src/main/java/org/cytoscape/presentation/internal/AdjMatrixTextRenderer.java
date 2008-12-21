@@ -46,11 +46,14 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 	// render each node:
 	for (View<CyNode> nodeView: view.getCyNodeViews()){
 	    TextNodeRenderer renderer = nodeView.getVisualProperty(nodeRenderer);
-	    sb.append("\n"+renderer.render());
+	    sb.append("\n"+renderer.render(nodeView));
 	}
+	/*
+	//just testing DiscreteVisualProperty:
 	Set<TextNodeRenderer> renderers = nodeRenderer.getValues();
 	System.out.println("available nodeRenderers: "+renderers.size());
 	System.out.println(renderers);
+	*/
 	return sb.toString();
     }
 
