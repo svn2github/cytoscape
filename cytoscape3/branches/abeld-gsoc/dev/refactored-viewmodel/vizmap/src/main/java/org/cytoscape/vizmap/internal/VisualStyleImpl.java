@@ -133,13 +133,13 @@ public class VisualStyleImpl implements VisualStyle {
     }
 
     // note: can't use applyImpl(List<View<?>>views ... ) because that does not compile
-    public <T> void applyImpl(List<View<T>>views, Collection<VisualProperty> visualProperties){
+    public <T extends GraphObject> void applyImpl(List<View<T>>views, Collection<VisualProperty> visualProperties){
 	for (View v: views) {
 	    applyImpl(v, visualProperties);
 	}
     }
 
-    public void applyImpl(View<?> view, Collection<VisualProperty> visualProperties){
+    public <T extends GraphObject> void applyImpl(View<T> view, Collection<VisualProperty> visualProperties){
 	for (VisualProperty vp: visualProperties){
 	    if (! view.isValueLocked(vp)){ // only if no bypass is defined
 		MappingCalculator c = getMappingCalculator(vp);

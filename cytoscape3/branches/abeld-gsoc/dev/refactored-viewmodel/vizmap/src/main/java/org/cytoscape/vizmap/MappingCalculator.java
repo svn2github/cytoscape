@@ -35,6 +35,7 @@
 
 package org.cytoscape.vizmap;
 
+import org.cytoscape.model.GraphObject;
 import org.cytoscape.viewmodel.View;
 import org.cytoscape.viewmodel.VisualProperty;
 
@@ -47,7 +48,7 @@ import org.cytoscape.viewmodel.VisualProperty;
  *
  * Or should the mapping calculator map from Attr to Class<?>?
  */
-public interface MappingCalculator {
+public interface MappingCalculator<T> {
 	/**
 	 * The attribute to be mapped.
 	 *
@@ -67,19 +68,22 @@ public interface MappingCalculator {
 	 *
 	 * @param vp  DOCUMENT ME!
 	 */
-	public void setVisualProperty(VisualProperty<?> vp);
+	public void setVisualProperty(VisualProperty<T> vp);
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty<?> getVisualProperty();
+	public VisualProperty<T> getVisualProperty();
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Since current MappingCalculators map from Attributes to
+	 *  VisualProperties, have to restrict View<?> to those
+	 *  generic types that have CyAttributes; currently this is
+	 *  GraphObject.
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public void apply(View<?> v);
+	public <V extends GraphObject> void apply(View<V> v);
 }
