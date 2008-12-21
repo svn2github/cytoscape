@@ -4,9 +4,10 @@ import java.util.Set;
 import java.util.HashSet;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.View;
+import org.cytoscape.viewmodel.Renderer;
 import org.cytoscape.presentation.TextNodeRenderer;
 
-public class TextNodeRendererImpl implements TextNodeRenderer   {
+public class TextNodeRendererImpl implements TextNodeRenderer, Renderer  {
     private final VisualProperty<String> nodeLabel =
 	new VisualPropertyImpl<String>("NODE_LABEL", "node label (string)",
 				       "default label", String.class,
@@ -25,7 +26,9 @@ public class TextNodeRendererImpl implements TextNodeRenderer   {
 	 * @return  DOCUMENT ME!
 	 */
     public Set<VisualProperty> getVisualProperties(){
-	return new HashSet<VisualProperty>();
+	Set<VisualProperty> ret = new HashSet<VisualProperty>();
+	ret.add(nodeLabel);
+	return ret;
     }
 
 	/**

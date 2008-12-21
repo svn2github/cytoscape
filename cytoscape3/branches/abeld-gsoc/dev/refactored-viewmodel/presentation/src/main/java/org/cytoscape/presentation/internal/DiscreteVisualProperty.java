@@ -59,17 +59,13 @@ public class DiscreteVisualProperty<T> implements VisualProperty<T> {
      */
     public Set<T> getValues(){ // copy-paste-modified from CyEventHelperImpl in core3/model
 	Set<T> ret = new HashSet<T>();
-	System.out.println("listing values");
 	if (bc == null)
 	    return ret;
-	System.out.println("listing values2");
 	try {
 	    ServiceReference[] sr = bc.getServiceReferences(dataType.getName(), null);
 	    
 	    if (sr != null){
-		System.out.println("len servicereferences:"+sr.length);
 		for (ServiceReference r : sr) {
-		    System.out.println("listing values3");
 		    T value = (T) bc.getService(r);
 		    
 		    if (value != null)

@@ -38,6 +38,7 @@ package org.cytoscape.presentation.internal;
 
 import org.cytoscape.presentation.TextPresentation;
 import org.cytoscape.presentation.TextNodeRenderer;
+import org.cytoscape.viewmodel.Renderer;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -63,9 +64,15 @@ public class RendererActivator implements BundleActivator {
 		//regSet.add( reg );
 
 		props = new Hashtable();
+
+		// register both as Renderer and as value for DiscreteVisualProperty
+		TextNodeRenderer renderer = new TextNodeRendererImpl();
 		ServiceRegistration reg = bc.registerService(TextNodeRenderer.class.getName(),
-							     new TextNodeRendererImpl(),props);
+							     renderer,props);
 		regSet.add( reg );
+		reg = bc.registerService(Renderer.class.getName(), renderer,props);
+		regSet.add( reg );
+
 
 	}
 
