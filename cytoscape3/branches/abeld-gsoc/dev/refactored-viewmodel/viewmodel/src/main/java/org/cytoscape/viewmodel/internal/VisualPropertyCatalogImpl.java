@@ -176,18 +176,14 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
     }
     private Collection<Renderer> getAllRenderersFromOSGI(){
 	Set<Renderer> ret = new HashSet<Renderer>();
-	System.out.println("listing values");
 	if (bundleContext == null)
 	    return ret;
-	System.out.println("listing values2");
 	try {
 	    ServiceReference[] sr = bundleContext.getServiceReferences(Renderer.class.getName(),
 								       null);
 	    
 	    if (sr != null){
-		System.out.println("len servicereferences:"+sr.length);
 		for (ServiceReference r : sr) {
-		    System.out.println("listing values3");
 		    Renderer renderer = (Renderer) bundleContext.getService(r);
 		    
 		    if (renderer != null)
