@@ -10,32 +10,38 @@ public class IntPropHandler implements PropHandler {
 	Object o;
 	String propKey;
 
+	
 	public IntPropHandler(Field f, Object o, Tunable t) {
 		this.f = f;
 		this.o = o;
-		propKey = t.description() + "." + f.getName();
+		propKey = f.getName();
 	}
 
 	
 	public Properties getProps() {
 		Properties p = new Properties();
-
 		try {
-			p.put(propKey, Integer.toString(f.getInt(o)));
+			p.put(propKey,f.get(o).toString());
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();
 		}
-
 		return p;
 	}
 
+	
+	public void add(Properties p) {
+		try{
+			p.put(propKey,f.get(o));
+		}catch(Exception e){e.printStackTrace();}
+	}
+	
+	
 	public void setProps(Properties p) {
 		try {
 			if (p.containsKey(propKey)) {
-				String val = p.getProperty(propKey);
-
+				String val = p.get(propKey).toString();
 				if (val != null)
-					f.setInt(o, Integer.valueOf(val));
+					f.set(o, Integer.valueOf(val));
 			}
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();

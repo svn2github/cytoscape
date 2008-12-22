@@ -1,14 +1,14 @@
 package Main;
 
 import javax.swing.*;
+
+import Props.*;
 import GuiInterception.*;
 import Command.*;
 import HandlerFactory.Handler;
 import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Properties;
-import Props.*;
-
 
 public class application{
 	
@@ -17,16 +17,22 @@ public class application{
 	public static JFrame outputframe;
 	private static JPanel pane;
 	private static JMenuItem menuItem;
-	public static Properties properties;
+	//public static Properties properties;
 	public static command commander=new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
+	
+	static Properties InputProperties = new Properties();
+	static TunableInterceptor lp = new LoadPropsInterceptor(InputProperties);
+	static Properties store = new Properties();
+	static TunableInterceptor sp = new StorePropsInterceptor(store);
+	static TunableInterceptor canceled = new StorePropsInterceptor(InputProperties);
+	
 	public static TunableInterceptor ti = null;
 	public static TunableInterceptor pi = null;
 	
 		
 	public static void main(String[] args){
-
-		pi = new LoadPropsInterceptor(properties);
+		//pi = new LoadPropsInterceptor(properties);
         CreateGUIandStart();
     }
 
@@ -85,6 +91,9 @@ public class application{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
 			if(command.equals("cancel")){
+				lp.ProcessProperties();
+				sp.ProcessProperties();
+				System.out.println("OutputProperties = "+store);
 			ti.Cancel();
 			}
 		}
@@ -95,9 +104,12 @@ public class application{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
 			if(command.equals("save")){
+				sp.intercept(commander);
+				sp.ProcessProperties();
+				System.out.println("OutputProperties = "+store);
 				if(ti!=null){
 					outputframe.dispose();
-					ti.Save();
+					//ti.Save();
 				}
 				else System.out.println("No input");
 			}
@@ -142,6 +154,9 @@ public class application{
 				ti = new GuiTunableInterceptor(inputframe,outputframe);
 				ti.intercept(commander);
 				
+				lp.intercept(commander);
+				lp.addProperties();
+				System.out.println("InputProperties = "+InputProperties);
 			}
 		}
 	}

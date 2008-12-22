@@ -48,22 +48,7 @@ public class StringHandler implements Guihandler{
 		}catch (Exception e){e.printStackTrace();}
 		pane.add(jtf);
 		return pane;
-	}
-
-	
-	
-	public JPanel getresultpanel(){
-		JPanel result = new JPanel();
-		try{
-			jtf = new JTextField(f.get(o).toString());
-		}catch (Exception e){e.printStackTrace();}
-		result.add(new JLabel(title));
-		result.add(jtf);
-		return result;
-	}
-	
-	
-	
+	}	
 
 
 	public JPanel update() {
@@ -72,7 +57,10 @@ public class StringHandler implements Guihandler{
 		if(available==true){
 			text = jtf.getText();
 		}
-		result.add(new JTextField(text));
+		try{
+			f.set(o, text);
+			result.add(new JTextField(f.get(o).toString()));
+		}catch(Exception e){e.printStackTrace();}
 		return result;
 	}	
 	
@@ -101,6 +89,12 @@ public class StringHandler implements Guihandler{
 
 	@Override
 	public Class<?> getclass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}

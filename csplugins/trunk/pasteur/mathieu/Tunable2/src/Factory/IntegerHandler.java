@@ -12,7 +12,6 @@ public class IntegerHandler implements Guihandler{
 	Tunable t;
 	Object o;
 	JTextField jtf=new JTextField();
-	
 	String title;
 	String value;
 	Boolean available;
@@ -30,13 +29,11 @@ public class IntegerHandler implements Guihandler{
 		}catch(Exception e){e.printStackTrace();}
 		this.title=f.getName();
 	}
-	
+
 	
 	public void handle(){
 		inte = Integer.parseInt(jtf.getText());
-
 		if(available!=true) inte=Integer.parseInt(value);
-		
 		try {
 			if (inte != null) f.set(o,inte);
 		} catch (Exception e) { e.printStackTrace();}
@@ -55,44 +52,17 @@ public class IntegerHandler implements Guihandler{
 	}
 	
 	
-	
-	public JPanel getresultpanel(){
-		JPanel result = new JPanel();
-		try{
-			jtf = new JTextField((f.get(o)).toString());
-			if(available==false){
-				jtf.setEnabled(false);
-				jtf.setBackground(Color.GRAY);
-			}			
-		}catch (Exception e){e.printStackTrace();}
-		result.add(new JLabel(title));
-		result.add(jtf);
-		return result;
-	}
-
-
-	public void cancel(){
-		inte = Integer.parseInt(value);
-		try{
-			f.set(o, inte);
-		}catch(Exception e){e.printStackTrace();}
-	}
-	
-	
-	
-	
-	
 	public JPanel update(){
 		JPanel result = new JPanel();
-		if(available==true){
-			inte = Integer.parseInt(jtf.getText());
-		}
-		result.add(new JTextField(inte.toString()));
+		if(available==true)	inte = Integer.parseInt(jtf.getText());
+		else inte = Integer.parseInt(value);
+		try{
+			if(inte!=null)f.set(o, inte);
+			result.add(new JTextField(f.get(o).toString()));
+		}catch(Exception e){e.printStackTrace();}
 		return result;
 	}
 	
-	
-
 	
 	public void	setValue(Object object){
 		try{
@@ -101,41 +71,29 @@ public class IntegerHandler implements Guihandler{
 	}
 	
 	
-	@Override
+	
+	
 	public Tunable getTunable() {
 		return t;
 	}
-
-
-	@Override
 	public Field getField() {
 		return f;
 	}
-	
-
 	public Object getObject() {
 		return o;
 	}
-
-
-	@Override
 	public Class<?> getclass() {
-		// TODO Auto-generated method stub
 		return null;
-	}	
+	}
+	public Integer getValue() {
+		return inte;
+	}
+
+
 	
-//	@Override
-//	public void stateChanged(ChangeEvent CE) {
-//		JSlider source = (JSlider) CE.getSource();
-//			//if(!source.getValueIsAdjusting())
-//		jtf.setText(String.valueOf(source.getValue()));
-//			
-//		
-//	}
-//
-//	@Override
-//	public void actionPerformed(ActionEvent ae) {
-//		if(ae.getSource()!=jtf.getText())
-//		slider.setValue(Integer.parseInt(jtf.getText()));
-//	}
+	@Override
+	public void cancel() {
+		// TODO Auto-generated method stub
+		
+	}	
 }

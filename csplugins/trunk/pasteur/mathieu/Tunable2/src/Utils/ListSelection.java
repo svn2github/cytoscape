@@ -22,3 +22,4 @@ class ListSelection<T> {
 		return new ArrayList<T>(values);
 	}
 }
+

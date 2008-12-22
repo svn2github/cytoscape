@@ -50,10 +50,18 @@ public abstract class HiddenTunableInterceptor<T extends Handler> implements Tun
 		cancel(handlerList);
 	}
 
+	public final void ProcessProperties(){
+		processProps(handlerList);
+	}
+	
+	public final void addProperties(){
+		addProps(handlerList);
+	}
+	
 	protected abstract void cancel(List<T> handlerList);
 	protected abstract void save(List<T> handlerList);
 	protected abstract void display(List<T> handlerList);
 	protected abstract void process(List<T> handlerList);
-	
-	
+	protected abstract void processProps(List<T> handlerList);
+	protected abstract void addProps(List<T> handlerList);
 }

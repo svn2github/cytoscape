@@ -119,5 +119,13 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 		}
 	return array;
 	}
+
+
+
+	@Override
+	public Object getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

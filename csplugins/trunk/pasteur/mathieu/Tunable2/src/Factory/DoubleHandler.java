@@ -5,6 +5,7 @@ package Factory;
 import java.awt.Color;
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import java.lang.Object;
@@ -47,9 +48,6 @@ public class DoubleHandler implements Guihandler{
 	}
 
 	
-	
-	
-	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();		
 		jtf = new JTextField(value);
@@ -61,35 +59,18 @@ public class DoubleHandler implements Guihandler{
 		return pane;
 	}
 
-	
-	public JPanel getresultpanel(){
-		JPanel result = new JPanel();
-			try{
-				jtf = new JTextField((f.get(o)).toString());
-				if(available==false){
-					jtf.setEnabled(false);
-					jtf.setBackground(Color.GRAY);
-			}			
-			}catch (Exception e){e.printStackTrace();}
-		result.add(new JLabel(title));
-		result.add(jtf);
-		return result;
-	}
-	
-	
-
 
 
 	public JPanel update(){
 		JPanel result = new JPanel();
 		if(available==true)	doub = Double.parseDouble(jtf.getText());
-		result.add(new JTextField(doub.toString()));
+		else doub = Double.parseDouble(value);
+		try{
+			if(doub!=null)f.set(o, doub);
+			result.add(new JTextField(f.get(o).toString()));
+		}catch(Exception e){e.printStackTrace();}
 		return result;
 	}
-	
-	
-	
-	
 	
 	
 	public void cancel(){
@@ -125,6 +106,13 @@ public class DoubleHandler implements Guihandler{
 
 	@Override
 	public Class<?> getclass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Object getValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}

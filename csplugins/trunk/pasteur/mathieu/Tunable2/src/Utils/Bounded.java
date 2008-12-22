@@ -46,12 +46,14 @@ public class Bounded<O extends Comparable<String>>{
 		return upperBool;
 	}
 	
-	public void setValue(O v) {
+	public void setValue(O v){
 		if (v == null)
 			throw new NullPointerException("value is null!");
 
-		int up = v.compareTo((String) upperBound);
-
+		//int up = v.compareTo((String) upperBound);
+		int up = Integer.parseInt((String) v) - Integer.parseInt((String) upperBound);
+		
+		
 		if (upperBool) {
 			if (up >= 0)
 				throw new IllegalArgumentException("value is greater than or equal to upper limit");
@@ -60,8 +62,8 @@ public class Bounded<O extends Comparable<String>>{
 				throw new IllegalArgumentException("value is greater than upper limit");
 		}
 
-		int low = v.compareTo((String) lowerBound);
-
+		//int low = v.compareTo((String) lowerBound);
+		int low = Integer.parseInt((String) v) - Integer.parseInt((String) lowerBound);
 		if (lowerBool) {
 			if (low <= 0)
 				throw new IllegalArgumentException("value is less than or equal to lower limit");
@@ -69,7 +71,6 @@ public class Bounded<O extends Comparable<String>>{
 			if (low < 0)
 				throw new IllegalArgumentException("value is less than lower limit");
 		}
-
 		value = v;
 	}
 	

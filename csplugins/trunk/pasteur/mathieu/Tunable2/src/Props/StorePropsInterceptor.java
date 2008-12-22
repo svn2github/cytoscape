@@ -16,7 +16,7 @@ public class StorePropsInterceptor extends HiddenTunableInterceptor<PropHandler>
 		this.inputProps = inputProps;
 	}
 
-	protected void process(java.util.List<PropHandler> lh) {
+	protected void processProps(java.util.List<PropHandler> lh) {
 		for (PropHandler p : lh) {
 			inputProps.putAll(p.getProps());
 		}
@@ -30,5 +30,17 @@ public class StorePropsInterceptor extends HiddenTunableInterceptor<PropHandler>
 	}
 
 	protected void save(List<PropHandler> handlerList) {
+	}
+
+	@Override
+	protected void process(List<PropHandler> handlerList) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void addProps(List<PropHandler> handlerList) {
+		// TODO Auto-generated method stub
+		
 	}
 }

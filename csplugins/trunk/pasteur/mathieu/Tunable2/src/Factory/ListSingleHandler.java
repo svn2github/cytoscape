@@ -115,6 +115,14 @@ public class ListSingleHandler<T> implements Guihandler,ListSelectionListener{
 	@SuppressWarnings("unchecked")
 	public void valueChanged(ListSelectionEvent evt) {
 		selected = (T)jlist.getSelectedValue();
+	}
+
+
+
+	@Override
+	public Object getValue() {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 
 }

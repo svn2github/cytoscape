@@ -2,19 +2,20 @@ package Props;
 
 
 import java.util.*;
+
 import GuiInterception.HiddenTunableInterceptor;
 
 
 public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> {
 	private Properties inputProps;
 
-	public LoadPropsInterceptor(final Properties inputProps) {
+	public LoadPropsInterceptor(final Properties inputProps){
 		super(new PropHandlerFactory());
 		this.inputProps = inputProps;
 	}
-	protected void process(java.util.List<PropHandler> lh) {
-		for (PropHandler p : lh) {
-			p.setProps(inputProps);
+	protected void addProps(java.util.List<PropHandler> lh) {
+		for (PropHandler p : lh){
+			p.add(inputProps);
 		}
 	}
 	
@@ -26,4 +27,14 @@ public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> 
 	
 	protected void save(List<PropHandler> handlerList) {	
 	}
+
+	protected void process(List<PropHandler> handlerList) {		
+	}
+	
+	protected void processProps(List<PropHandler> lh) {
+		for (PropHandler p : lh) {
+			p.setProps(inputProps);
+		}
+	}
+
 }

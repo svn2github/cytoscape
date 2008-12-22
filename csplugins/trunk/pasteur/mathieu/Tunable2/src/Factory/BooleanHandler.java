@@ -19,7 +19,7 @@ public class BooleanHandler implements Guihandler{
 	JTextField jtf;
 	JCheckBox jcb;
 	
-	Boolean status=null;	
+	Boolean bool=null;	
 	String value;
 	Boolean available;
 	String title;
@@ -31,19 +31,19 @@ public class BooleanHandler implements Guihandler{
 		this.available = t.available();
 		
 		try{
-			this.value=f.get(o).toString();
+			this.bool=(Boolean) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		this.title=f.getName();
 	}
 	
 	public void handle(){
-		status = jcb.isSelected();
-		
-		if(available!=true) status=Boolean.parseBoolean(value);
-			
-		try {
-			if(status!=null)f.set(o,status);
-		} catch(Exception e){e.printStackTrace();}
+//		status = jcb.isSelected();
+//		
+//		if(available!=true) status=Boolean.parseBoolean(value);
+//			
+//		try {
+//			if(status!=null)f.set(o,status);
+//		} catch(Exception e){e.printStackTrace();}
 		}
 		
 	
@@ -51,7 +51,7 @@ public class BooleanHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();
-		jcb = new JCheckBox(title,Boolean.parseBoolean(value));
+		jcb = new JCheckBox(title,bool.booleanValue());
 		if(available!=true){
 			jcb.setBackground(Color.GRAY);
 			jcb.setEnabled(false);
@@ -59,42 +59,24 @@ public class BooleanHandler implements Guihandler{
 		pane.add(jcb);
 		return pane;
 	}
-
-	
-	public JPanel getresultpanel(){
-		JPanel result = new JPanel();
-		try{
-			status = Boolean.parseBoolean(f.get(o).toString());
-			jcb = new JCheckBox(title,status);
-			if(available!=true){
-				jcb.setBackground(Color.GRAY);
-				jcb.setEnabled(false);
-			}
-		}catch (Exception e){e.printStackTrace();}
-		result.add(jcb);
-		return result;
-	}
-	
-	
-	
 	
 
 
 	public JPanel update() {
 		JPanel result = new JPanel();
-		if(available==true){
-			status = jcb.isSelected();
-		}
-		result.add(new JCheckBox(title,status));
-		return result;
-	}	
+		try{
+			f.set(o, jcb.isSelected());
+			result.add(new JCheckBox(title,(Boolean) f.get(o)));
+		}catch(Exception e){e.printStackTrace();}
+	return result;
+	}
 	
 	
 
 	public void cancel() {
-		status = Boolean.parseBoolean(value);
+		bool = Boolean.parseBoolean(value);
 		try{
-			f.set(o,status);
+			f.set(o,bool);
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
@@ -116,6 +98,12 @@ public class BooleanHandler implements Guihandler{
 
 	@Override
 	public Class<?> getclass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}

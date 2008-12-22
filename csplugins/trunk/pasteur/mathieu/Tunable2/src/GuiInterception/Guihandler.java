@@ -10,11 +10,11 @@ import javax.swing.*;
 public interface Guihandler extends Handler{
 	public void handle();
 	public JPanel getInputPanel();
-	public JPanel getresultpanel();
 	public Tunable getTunable();
 	public Field getField();
 	public Object getObject();
 	public JPanel update();
-	public void cancel();
 	public Class<?> getclass();
+	public void cancel();
+	public Object getValue();
 }

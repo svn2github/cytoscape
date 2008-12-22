@@ -14,15 +14,14 @@ public class StringPropHandler implements PropHandler {
 	public StringPropHandler(Field f, Object o, Tunable t) {
 		this.f = f;
 		this.o = o;
-		propKey = t.description() + "." + f.getName();
+		propKey = f.getName();
 	}
 
 
 	public Properties getProps() {
 		Properties p = new Properties();
-
 		try {
-			p.put(propKey, (String) f.get(o));
+			p.put(propKey,f.get(o));
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();
 		}
@@ -34,12 +33,17 @@ public class StringPropHandler implements PropHandler {
 		try {
 			if (p.containsKey(propKey)) {
 				String val = p.getProperty(propKey);
-
 				if (val != null)
 					f.set(o, val);
 			}
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();
 		}
+	}
+
+	public void add(Properties p) {
+		try{
+			p.put(propKey,f.get(o));
+		}catch(Exception e){e.printStackTrace();}
 	}
 }

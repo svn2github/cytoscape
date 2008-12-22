@@ -11,4 +11,6 @@ public interface TunableInterceptor {
 	public void Display();
 	public void Save();	
 	public void Cancel();
+	public void ProcessProperties();
+	public void addProperties();
 }

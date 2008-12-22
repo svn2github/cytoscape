@@ -9,6 +9,7 @@ import java.util.List;
 import Tunable.Tunable;
 import Tunable.Tunable.Param;
 import Utils.Bounded;
+import Utils.ListSingleSelection;
 import Sliders.*;
 
 
@@ -31,12 +32,15 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			return new GroupHandler(f,o,t);
 		if(type==Bounded.class)
 			return new BoundedHandler(f,o,t);
-		if(type == List.class){
-			if(parameter==Param.MultiSelect){
-				return new ListMultipleHandler<T>(f,o,t);
-			}
-			else	return new ListSingleHandler<T>(f,o,t);
-		}
+		if(type==ListSingleSelection.class)
+			return new ListSingleHandler2<String>(f,o,t);
+		
+//		if(type == List.class){
+//			if(parameter==Param.MultiSelect){
+//				return new ListMultipleHandler<T>(f,o,t);
+//			}
+//			else	return new ListSingleHandler<T>(f,o,t);
+//		}
 		return null;
 	}
 }

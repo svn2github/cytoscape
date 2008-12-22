@@ -18,9 +18,9 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 	public JFrame inframe;
 	public JFrame outframe;
-	static JPanel tunpan = null;
-	PropertiesImpl properties=null;
-	Properties prop = new Properties();
+	static JPanel tunPane = null;
+	//PropertiesImpl properties=null;
+	//Properties prop = new Properties();
 	
 	public GuiTunableInterceptor(JFrame inframe,JFrame outframe) {
 		super( new GuiHandlerFactory<Guihandler>() );
@@ -30,7 +30,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 
 	protected void process(List<Guihandler> list) {
-			properties = new PropertiesImpl("TunableSampler");
+			//properties = new PropertiesImpl("TunableSampler");
 			JPanel mainPanel = new JPanel();
 			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 			Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -38,8 +38,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			TitledBorder titleBorder = null;
 			for (Guihandler guihandler : list) {
 				if(guihandler.getclass()!=Group.class){
-					properties.setAll(guihandler.getTunable(),guihandler.getObject(),guihandler.getField());
-					properties.add();
+					//properties.setAll(guihandler.getTunable(),guihandler.getObject(),guihandler.getField());
+					//properties.add();
 					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
 					titleBorder.setTitlePosition(TitledBorder.LEFT);
 					titleBorder.setTitlePosition(TitledBorder.TOP);
@@ -48,70 +48,40 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				if(guihandler.getclass()==Group.class){
 					tunpane.setBorder(titleBorder);
 					mainPanel.add(tunpane);
-				
 					tunpane=new JPanel();
 					tunpane.removeAll();
 				}
 			}
-			
-			properties.initializeProperties(prop);
-		//	JButton button = new JButton("OK");
-		//	mainPanel.add(button);
-		//	button.addActionListener(new myActionListener(list));
-		//	button.setActionCommand("OK");
+			//properties.initializeProperties(prop);
 			inframe.setContentPane(mainPanel);
 			inframe.pack();
 			inframe.setLocation(500, 400);
 			inframe.setVisible(true);
 	}
 	
-//	private static class myActionListener implements ActionListener{
-//		
-//		List<Guihandler>list;
-//		public myActionListener(List<Guihandler> list){
-//			this.list=list;
-//		}
-//		
-//		public void actionPerformed(ActionEvent ae){
-//			String command = ae.getActionCommand();
-//			if(command.equals("OK")){
-//				resultpane.removeAll();
-//				for(Guihandler guihandler : list){
-//					if(guihandler.getClass()==GroupHandler.class) continue;
-//					tunpan = guihandler.update();
-//					//((Guihandler) guihandler).handle(); NOT SURE
-//					resultpane.add(tunpan);
-//				}
-//				inframe.dispose();
-//			}		
-//		}
-//	}
-	
 	
 	
 	protected void display(List<Guihandler> list) {
-		
 		JPanel resultpane = new JPanel();
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = null;
-		tunpan=new JPanel();
+		tunPane = new JPanel();
+		
 		for(Guihandler guihandler : list){
 			if(guihandler.getclass()!=Group.class){
 				titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
 				titleBorder.setTitlePosition(TitledBorder.LEFT);
 				titleBorder.setTitlePosition(TitledBorder.TOP);
-				tunpan.add(guihandler.update());
+				tunPane.add(guihandler.update());
+				//System.out.println(guihandler.getValue());
 			}
 			if(guihandler.getclass()==Group.class){
-				tunpan.setBorder(titleBorder);
-				resultpane.add(tunpan);
-			
-				tunpan=new JPanel();
-				tunpan.removeAll();
+				tunPane.setBorder(titleBorder);
+				resultpane.add(tunPane);
+				tunPane=new JPanel();
+				tunPane.removeAll();
 			}
-//			tunpan = guihandler.update();
-			//((Guihandler) guihandler).handle(); NOT SURE
-			resultpane.add(tunpan);
+			resultpane.add(tunPane);
 		}
 		outframe.setContentPane(resultpane);
 		outframe.pack();
@@ -119,16 +89,31 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		outframe.setVisible(true);
 	}
 	
+	
+	//A reprendre!
 	protected void save(List<Guihandler> list){
 		for(Guihandler guihandler : list)	guihandler.handle();
-		properties.saveProperties(prop);
+		//properties.saveProperties(prop);
 	}
 	
 	protected void cancel(List<Guihandler> list){
 		for(Guihandler guihandler : list) guihandler.cancel();
-		properties.revertProperties();
+		//properties.revertProperties();
 	}
-	
-	
+
+
+	@Override
+	protected void processProps(List<Guihandler> handlerList) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	protected void addProps(List<Guihandler> handlerList) {
+		// TODO Auto-generated method stub
+		
+	}
+		
 	
 }
