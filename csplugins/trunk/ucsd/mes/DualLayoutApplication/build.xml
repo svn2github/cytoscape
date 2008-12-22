@@ -203,6 +203,9 @@
   	      depends="compile,manifest"
 		  if="build.ok">
 	<mkdir dir="${lib.dir}"/>
+    <unjar dest="${build.dir}">
+       <fileset dir="${lib.dir}"/>
+    </unjar>
     <jar destfile="${project.jar}" 
 		 manifest="${project.manifest}">
       <fileset dir="${build.dir}"
