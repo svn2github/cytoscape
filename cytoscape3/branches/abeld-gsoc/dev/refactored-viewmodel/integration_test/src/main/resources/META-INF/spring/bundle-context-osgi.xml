@@ -21,4 +21,7 @@
 		interface="org.cytoscape.vizmap.VisualStyleCatalog">
 	</osgi:reference>
 
+	<osgi:reference id="visualPropertyCatalogServiceRef"
+		interface="org.cytoscape.viewmodel.VisualPropertyCatalog">
+	</osgi:reference>
 </beans>

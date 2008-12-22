@@ -22,5 +22,6 @@
 	  <constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 	  <constructor-arg ref="networkPresentationFactoryServiceRef" />
 	  <constructor-arg ref="visualStyleCatalogServiceRef" />
+	  <constructor-arg ref="visualPropertyCatalogServiceRef" />
 	</bean>
 </beans>

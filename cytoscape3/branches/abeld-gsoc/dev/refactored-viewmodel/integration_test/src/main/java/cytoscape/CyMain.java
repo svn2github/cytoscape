@@ -86,12 +86,15 @@ public class CyMain{
 	    System.out.println("NetworkFactory:"+f);
 	}
     public CyMain(CyNetworkFactory f, CyNetworkViewFactory vf,
-		  NetworkPresentationFactory pf, VisualStyleCatalog vsc) throws Exception {
+		  NetworkPresentationFactory pf, VisualStyleCatalog vsc,
+		  VisualPropertyCatalog vpCatalog) throws Exception {
 	    System.out.println("hello world! -- factories");
 	    System.out.println("NetworkFactory:"+f);
 	    CyNetwork network = f.getInstance();
 	    CyNode n1 = network.addNode();
+	    n1.attrs().set("name", "node 1");
 	    CyNode n2 = network.addNode();
+	    n2.attrs().set("name", "node 2");
 	    CyEdge e1 = network.addEdge(n1, n2, false);
 	    System.out.println("nodes:"+network.getNodeCount()+" edges:"+network.getEdgeCount());
 	    CyNetworkView view = vf.getNetworkViewFor(network);
@@ -105,10 +108,11 @@ public class CyMain{
 
 	    // create visual style, add an example MappingCalculator, dump values
 	    VisualStyle myStyle = vsc.createVisualStyle();
-	    /*MappingCalculator nodeLabel = 
-		new PassthroughMappingCalculator("id", vpCatalog.getVisualProperty("NODE_LABEL"));
-	    myStyle.setMappingCalculator(nodeLabel); */
-	    System.out.println(myStyle);
+	    VisualProperty nodeLabel = vpCatalog.getVisualProperty("NODE_LABEL");
+	    MappingCalculator nodeLabelCalculator = new PassthroughMappingCalculator("name", nodeLabel,
+										     String.class);
+	    myStyle.setMappingCalculator(nodeLabelCalculator);
+	    
 	    myStyle.apply(view);
 	    // TODO: add passthroughMapping to copy id to nodeLabel
 	    TextPresentation p = pf.getTextPresentationFor(view);
