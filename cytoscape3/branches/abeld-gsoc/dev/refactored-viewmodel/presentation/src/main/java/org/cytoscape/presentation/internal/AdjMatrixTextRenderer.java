@@ -19,12 +19,13 @@ import org.osgi.framework.BundleContext;
  * A TextPresentation that shows network as an Adjacency Matrix
  */
 public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
-    private final VisualProperty<String> headerText =
+    private static final VisualProperty<String> headerText =
 	new VisualPropertyImpl<String>("HEADER_TEXT", "text printed as header",
 				       "---[ Adjacency Matrix]---", String.class,
 				       VisualProperty.GraphObjectType.NETWORK);
 
     // FIXME: this should be VisualProperty<>, only temporary hack to print registered renderers
+    // FIXME: this should be 'static' too, but then we can't pass in the BundleContext object
     private final DiscreteVisualProperty<TextNodeRenderer> nodeRenderer;
 
     private CyNetworkView view;
@@ -49,7 +50,7 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 	    sb.append("\n"+renderer.render(nodeView));
 	}
 	/*
-	//just testing DiscreteVisualProperty:
+	//just testing DiscreteVisualProperty: -- FIXME: move to unittests
 	Set<TextNodeRenderer> renderers = nodeRenderer.getValues();
 	System.out.println("available nodeRenderers: "+renderers.size());
 	System.out.println(renderers);

@@ -8,7 +8,7 @@ import org.cytoscape.viewmodel.Renderer;
 import org.cytoscape.presentation.TextNodeRenderer;
 
 public class TextNodeRendererImpl implements TextNodeRenderer, Renderer  {
-    private final VisualProperty<String> nodeLabel =
+    private static final VisualProperty<String> nodeLabel =
 	new VisualPropertyImpl<String>("NODE_LABEL", "node label (string)",
 				       "default label", String.class,
 				       VisualProperty.GraphObjectType.NODE);
