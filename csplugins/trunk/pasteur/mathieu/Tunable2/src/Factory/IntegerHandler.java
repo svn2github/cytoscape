@@ -32,10 +32,8 @@ public class IntegerHandler implements Guihandler{
 
 	
 	public void handle(){
-		inte = Integer.parseInt(jtf.getText());
-		if(available!=true) inte=Integer.parseInt(value);
 		try {
-			if (inte != null) f.set(o,inte);
+				f.set(o,Integer.parseInt(jtf.getText()));
 		} catch (Exception e) { e.printStackTrace();}
 	}
 

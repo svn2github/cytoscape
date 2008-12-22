@@ -36,15 +36,11 @@ public class BooleanHandler implements Guihandler{
 		this.title=f.getName();
 	}
 	
-	public void handle(){
-//		status = jcb.isSelected();
-//		
-//		if(available!=true) status=Boolean.parseBoolean(value);
-//			
-//		try {
-//			if(status!=null)f.set(o,status);
-//		} catch(Exception e){e.printStackTrace();}
-		}
+	public void handle(){			
+		try {
+			f.set(o,jcb.isSelected());
+		} catch(Exception e){e.printStackTrace();}
+	}
 		
 	
 	

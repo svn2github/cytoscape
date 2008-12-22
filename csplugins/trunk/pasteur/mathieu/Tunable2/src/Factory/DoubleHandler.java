@@ -39,14 +39,10 @@ public class DoubleHandler implements Guihandler{
 	
 	
 	public void handle(){
-		doub= Double.parseDouble(jtf.getText());
-		
-		if(available==true) doub=Double.parseDouble(value);
-		try {
-			if (doub != null ) f.set(o,doub);
-		} catch (Exception e) { e.printStackTrace(); }
+		try{
+			if(doub!=null)f.set(o, Double.parseDouble(jtf.getText()));
+		}catch(Exception e){e.printStackTrace();}
 	}
-
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();		

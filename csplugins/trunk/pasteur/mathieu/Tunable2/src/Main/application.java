@@ -76,8 +76,7 @@ public class application{
 		menuItem.setActionCommand("cancel");
 		menu3.add(menuItem);
 	
-		
-
+	
 		mainframe.setContentPane(pane);
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainframe.setLocation(400, 300);
@@ -104,14 +103,16 @@ public class application{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
 			if(command.equals("save")){
+				if(ti!=null){
+					outputframe.dispose();
+					inputframe.dispose();
+					ti.Save();
+				}
+				else System.out.println("No input");
 				sp.intercept(commander);
 				sp.ProcessProperties();
 				System.out.println("OutputProperties = "+store);
-				if(ti!=null){
-					outputframe.dispose();
-					//ti.Save();
-				}
-				else System.out.println("No input");
+
 			}
 		}
 	}

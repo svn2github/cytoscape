@@ -32,10 +32,8 @@ public class StringHandler implements Guihandler{
 	}
 	
 	public void handle(){
-		String valuehandle = jtf.getText();
-		if(available!=true) valuehandle= value;
 		try {
-			if (valuehandle!=null)f.set(o,valuehandle);
+			f.set(o,jtf.getText());
 		} catch (Exception e) {e.printStackTrace();}
 	}
 	
