@@ -67,13 +67,9 @@ public class RendererActivator implements BundleActivator {
 
 		// register both as Renderer and as value for DiscreteVisualProperty
 		TextNodeRenderer renderer = new TextNodeRendererImpl();
-		ServiceRegistration reg = bc.registerService(TextNodeRenderer.class.getName(),
+		ServiceRegistration reg = bc.registerService(new String []{TextNodeRenderer.class.getName(),Renderer.class.getName()},
 							     renderer,props);
 		regSet.add( reg );
-		reg = bc.registerService(Renderer.class.getName(), renderer,props);
-		regSet.add( reg );
-
-
 	}
 
 	public void stop(BundleContext bc) {
