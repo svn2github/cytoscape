@@ -65,11 +65,12 @@ public class KCluster {
 	static boolean debug = false;
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
-	                      int nClusters, int nIterations, boolean transpose, 
-	                      CyLogger log, boolean dbg) {
+	                      int nClusters, int nIterations, boolean createGroups,
+	                      boolean transpose, CyLogger log, boolean dbg) {
 
 		logger = log;
 		debug = dbg;
+
 		String keyword = "GENE";
 		if (transpose) keyword = "ARRY";
 
@@ -103,21 +104,23 @@ public class KCluster {
 		if (!matrix.isTransposed()) {
 			List<String> groupNames = new ArrayList();
 
-			// Create our groups
-			CyGroup group = null;
-			for (String clusterName: groupMap.keySet()) {
-				List<CyNode> memberList = groupMap.get(clusterName);
-				groupNames.add(clusterName);
+			if (createGroups) {
+				// Create our groups
+				CyGroup group = null;
+				for (String clusterName: groupMap.keySet()) {
+					List<CyNode> memberList = groupMap.get(clusterName);
+					groupNames.add(clusterName);
 
-				if (debug)
-					logger.debug("Creating group: "+clusterName);
+					if (debug)
+						logger.debug("Creating group: "+clusterName);
 
-				// Create the group
-				group = CyGroupManager.createGroup(clusterName, memberList, null);
-				if (group != null) 
-					CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), false);
+					// Create the group
+					group = CyGroupManager.createGroup(clusterName, memberList, null);
+					if (group != null) 
+						CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), false);
+				}
+				CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
 			}
-			CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
 
 			CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 			String netID = Cytoscape.getCurrentNetwork().getIdentifier();

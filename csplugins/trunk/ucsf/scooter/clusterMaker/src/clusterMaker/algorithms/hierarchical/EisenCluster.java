@@ -66,7 +66,8 @@ public class EisenCluster {
 	static CyLogger logger;
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
-	                      ClusterMethod clusterMethod, boolean transpose, CyLogger log,
+	                      ClusterMethod clusterMethod, boolean transpose, 
+	                      boolean createGroups, CyLogger log,
 	                      boolean dbg, TaskMonitor monitor) {
 
 		logger = log;
@@ -177,8 +178,10 @@ public class EisenCluster {
 			CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 			String netID = Cytoscape.getCurrentNetwork().getIdentifier();
 			ArrayList<String> groupNames = new ArrayList(nodeList.length);
-			CyGroup top = createGroups(matrix, nodeList, nodeList[nodeList.length-1], groupNames);
-			CyGroupManager.setGroupViewer(top, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
+			if (createGroups) {
+				CyGroup top = createGroups(matrix, nodeList, nodeList[nodeList.length-1], groupNames);
+				CyGroupManager.setGroupViewer(top, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
+			}
 			// Remember this in the _hierarchicalGroups attribute
 			netAttr.setListAttribute(netID, GROUP_ATTRIBUTE, groupNames);
 		}

@@ -75,6 +75,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	ClusterMethod clusterMethod =  ClusterMethod.AVERAGE_LINKAGE;
 	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
 	boolean clusterAttributes = false;
+	boolean createGroups = true;
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
@@ -140,6 +141,11 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		                                  "Cluster attributes as well as nodes", 
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
+		// Whether or not to create groups
+		clusterProperties.add(new Tunable("createGroups",
+		                                  "Create groups from clusters", 
+		                                  Tunable.BOOLEAN, new Boolean(true)));
+
 		clusterProperties.initializeProperties();
 		updateSettings(true);
 	}
@@ -163,6 +169,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		t = clusterProperties.get("clusterAttributes");
 		if ((t != null) && (t.valueChanged() || force))
 			clusterAttributes = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("createGroups");
+		if ((t != null) && (t.valueChanged() || force))
+			createGroups = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -209,13 +219,15 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		if (clusterAttributes && attributeArray.length > 1) {
 			if (monitor != null)
 				monitor.setStatus("Clustering attributes");
-			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true, logger, debug, monitor);
+			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, 
+			                     true, createGroups, logger, debug, monitor);
 		}
 
 		if (monitor != null)
 			monitor.setStatus("Clustering nodes");
 		// Cluster the nodes
-		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, false, logger, debug, monitor);
+		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, 
+			                   false, createGroups, logger, debug, monitor);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

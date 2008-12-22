@@ -73,6 +73,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	int rNumber = 0;
 	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
 	boolean clusterAttributes = false;
+	boolean createGroups = true;
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
@@ -144,6 +145,11 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		                                  "Cluster attributes as well as nodes", 
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
+		// Whether or not to create groups
+		clusterProperties.add(new Tunable("createGroups",
+		                                  "Create groups from clusters", 
+		                                  Tunable.BOOLEAN, new Boolean(true)));
+
 		clusterProperties.initializeProperties();
 		updateSettings(true);
 	}
@@ -171,6 +177,10 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		t = clusterProperties.get("clusterAttributes");
 		if ((t != null) && (t.valueChanged() || force))
 			clusterAttributes = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("createGroups");
+		if ((t != null) && (t.valueChanged() || force))
+			createGroups = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -203,10 +213,12 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1)
-			KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, true, logger, debug);
+			KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
+			                 true, createGroups, logger, debug);
 
 		// Cluster the nodes
-		KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, false, logger, debug);
+		KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
+			               false, createGroups, logger, debug);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
