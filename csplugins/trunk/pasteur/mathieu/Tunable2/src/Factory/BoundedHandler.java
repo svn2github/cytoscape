@@ -106,11 +106,11 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 				boundedObject.setValue((String)value);
 			}
 		}
-		if(t.type() == Double.class){
+		if(t.type() == Double.class || t.type() == double.class){
 			value =(O) jtf.getText();
 			doub=Double.parseDouble((String)value);
 		}
-		if(t.type() == Integer.class){
+		if(t.type() == Integer.class || t.type() == int.class){
 			value =(O) jtf.getText();
 			inte=Integer.parseInt((String)value);
 		}
@@ -163,7 +163,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			}catch(Exception e){e.printStackTrace();}
 		}
 		
-		if(t.type() == Double.class){
+		if(t.type() == Double.class || t.type() == double.class){
 			value =(O) jtf.getText();
 			doub = Double.parseDouble((String)value);
 			try{
@@ -171,7 +171,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 				jtf=new JTextField(f.get(o).toString());
 			}catch(Exception e){e.printStackTrace();}
 		}
-		if(t.type() == Integer.class){
+		if(t.type() == Integer.class || t.type() == int.class){
 			value =(O) jtf.getText();
 			inte = Integer.parseInt((String)value);
 			try{
