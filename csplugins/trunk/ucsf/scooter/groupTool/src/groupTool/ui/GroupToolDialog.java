@@ -191,6 +191,8 @@ public class GroupToolDialog extends JDialog
 			if (groupName == null) return;
 			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, null);
 		} else if ("delete".equals(e.getActionCommand())) {
+			// Don't listen until we're done
+			CyGroupManager.removeGroupChangeListener(this);
 			int rows[] = groupTable.getSelectedRows();
 			for (int row = 0; row < rows.length; row++) {
 				String groupName = (String) groupTable.getValueAt(rows[row], 0);
@@ -198,6 +200,8 @@ public class GroupToolDialog extends JDialog
 				if (group == null) continue;
 				CyGroupManager.removeGroup(group);
 			}
+			tableModel.updateTable();
+			CyGroupManager.addGroupChangeListener(this);
 		} else if ("createByAttributes".equals(e.getActionCommand())) {
 			// Get the list of group viewers
 			CreateByAttributeDialog d = new CreateByAttributeDialog(Cytoscape.getDesktop());
