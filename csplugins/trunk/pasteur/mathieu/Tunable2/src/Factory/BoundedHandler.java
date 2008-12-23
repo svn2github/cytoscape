@@ -22,9 +22,13 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	O upperBound;
 	O lowerBound;
 	String title;
-	Number val;
 	O value;
 	Number result = null;
+	
+	Double doub;
+	String doubval;
+	Integer inte;
+	String inteval;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -34,10 +38,20 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 		this.t=t;
 		if(t.flag()==Param.DoubleSlider || t.flag()==Param.IntegerSlider) this.useslider=true;
 		try{
-			boundedObject = (Bounded) f.get(o);
+			if(t.type() == Double.class || t.type() == double.class){
+				doub = (Double) f.get(o);
+				doubval = f.get(o).toString();
+			}
+			else if(t.type() == Integer.class || t.type() == int.class){
+				inte = (Integer) f.get(o);
+				inteval = f.get(o).toString();
+			}
+			else if(t.type() == Bounded.class){
+				boundedObject = (Bounded) f.get(o);
+				this.upperBound=(O) boundedObject.getUpperBound();
+				this.lowerBound=(O)boundedObject.getLowerBound();
+			}
 		}catch(Exception e){e.printStackTrace();}
-		this.upperBound=(O) boundedObject.getUpperBound();
-		this.lowerBound=(O)boundedObject.getLowerBound();
 		this.title=f.getName();
 	}
 
@@ -54,6 +68,14 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			}
 		inputPane.add(slider);
 		}
+		else if(t.type() == Double.class){
+			jtf = new JTextField(doubval);
+			inputPane.add(jtf);
+		}
+		else if(t.type() == Integer.class){
+			jtf = new JTextField(inteval);
+			inputPane.add(jtf);
+		}
 		else{
 			jtf = new JTextField(5);
 			inputPane.add(jtf);
@@ -64,26 +86,38 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 
 	@SuppressWarnings("unchecked")
 	public void handle() {
-		if(t.flag()==Param.DoubleSlider){
+		if(t.flag() == Param.DoubleSlider){
 			result=slider.getValue().doubleValue();
 			boundedObject.setValue(result.toString());
 		}
-		if(t.flag()==Param.IntegerSlider){
+		if(t.flag() == Param.IntegerSlider){
 			result=slider.getValue().intValue();
 			boundedObject.setValue(result.toString());
 		}
-		if(t.flag()==Param.Double) {
+		if(t.flag() == Param.Double) {
 			if(jtf.getText().isEmpty()==false){
 				value =(O) jtf.getText();
 				boundedObject.setValue((String) value);
 			}
 		}
-		if(t.flag()==Param.Integer) {
+		if(t.flag() == Param.Integer) {
+			if(jtf.getText().isEmpty()==false){
+				value =(O) jtf.getText();
+				boundedObject.setValue((String)value);
+			}
+		}
+		if(t.type() == Double.class){
 			value =(O) jtf.getText();
-			boundedObject.setValue((String)value);
+			doub=Double.parseDouble((String)value);
+		}
+		if(t.type() == Integer.class){
+			value =(O) jtf.getText();
+			inte=Integer.parseInt((String)value);
 		}
 		try{
-			f.set(o, boundedObject);
+			if(t.type() == Double.class)f.set(o,doub);
+			else if(t.type() == Integer.class)f.set(o,inte);
+			else f.set(o,boundedObject);
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
@@ -92,7 +126,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	@SuppressWarnings("unchecked")
 	public JPanel update() {
 		JPanel resultPane = new JPanel();
-		if(t.flag()==Param.DoubleSlider){
+		if(t.flag() == Param.DoubleSlider){
 			result=slider.getValue().doubleValue();
 			boundedObject.setValue(result.toString());
 			try{
@@ -100,7 +134,8 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 				jtf=new JTextField(boundedObject.getValue());
 			}catch(Exception e){e.printStackTrace();}
 		}
-		if(t.flag()==Param.IntegerSlider){
+		
+		if(t.flag() == Param.IntegerSlider){
 			result=slider.getValue().intValue();
 			boundedObject.setValue(result.toString());
 			try{
@@ -108,7 +143,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 				jtf=new JTextField(boundedObject.getValue());
 			}catch(Exception e){e.printStackTrace();}
 		}
-		if(t.flag()==Param.Double) {
+		if(t.flag() == Param.Double){
 			if(jtf.getText().isEmpty()==false){
 				value =(O) jtf.getText();
 				boundedObject.setValue((String) value);
@@ -118,7 +153,8 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 				}catch(Exception e){e.printStackTrace();}
 			}
 		}
-		if(t.flag()==Param.Integer) {
+		
+		if(t.flag() == Param.Integer){
 			value =(O) jtf.getText();
 			boundedObject.setValue((String)value);
 			try{
@@ -127,22 +163,27 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			}catch(Exception e){e.printStackTrace();}
 		}
 		
+		if(t.type() == Double.class){
+			value =(O) jtf.getText();
+			doub = Double.parseDouble((String)value);
+			try{
+				f.set(o, doub);
+				jtf=new JTextField(f.get(o).toString());
+			}catch(Exception e){e.printStackTrace();}
+		}
+		if(t.type() == Integer.class){
+			value =(O) jtf.getText();
+			inte = Integer.parseInt((String)value);
+			try{
+				f.set(o, inte);
+				jtf=new JTextField(f.get(o).toString());
+			}catch(Exception e){e.printStackTrace();}
+		}
+		
 		resultPane.add(jtf);
 		return resultPane;
 	}
-
 	
-	
-	
-//	public Object getValue(){
-//		try{
-//			boundtest = (Bounded<String>) f.get(o);
-//		}catch(Exception e){e.printStackTrace();}
-//		Object value = boundtest.getValue();
-//		//System.out.println("value="+value.toString());
-//		return value;
-//	}
-//	
 	
 	public Object getObject() {
 		return o;
@@ -158,7 +199,6 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	}
 
 	public Object getValue() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

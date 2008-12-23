@@ -11,20 +11,21 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 
 
 	public Guihandler getHandler(Field f, Object o, Tunable t){
+		
 		Class<?> type = f.getType();
 		
-		if(type== Integer.class)
-			return new IntegerHandler(f,o,t);
-		if(type== Double.class)
-			return new DoubleHandler(f,o,t);
-		if(type==Boolean.class)
-			return new BooleanHandler(f,o,t);
-		if(type== String.class)
-			return new StringHandler(f,o,t);
-		if(type==Group.class)
-			return new GroupHandler(f,o,t);
-		if(type==Bounded.class)
+		if(type == Integer.class || type == int.class)//Test with BoundedHandler instead of IntegerHandler
+			return new BoundedHandler<String>(f,o,t);
+		if(type == Double.class || type == double.class)//TEST with BoundedHandler instead of DoubleHandler
+			return new BoundedHandler<String>(f,o,t);
+		if(type == Bounded.class)
 			return new BoundedHandler<String>(f,o,t);		
+		if(type == Boolean.class)
+			return new BooleanHandler(f,o,t);
+		if(type == String.class)
+			return new StringHandler(f,o,t);
+		if(type == Group.class)
+			return new GroupHandler(f,o,t);
 		if(type == ListSingleSelection.class)
 			return new ListSingleHandler<String>(f,o,t);
 		if(type == ListMultipleSelection.class)
