@@ -40,7 +40,7 @@ public class DoubleHandler implements Guihandler{
 	
 	public void handle(){
 		try{
-			if(doub!=null)f.set(o, Double.parseDouble(jtf.getText()));
+			f.set(o, Double.parseDouble(jtf.getText()));
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
@@ -67,13 +67,6 @@ public class DoubleHandler implements Guihandler{
 		}catch(Exception e){e.printStackTrace();}
 		return result;
 	}
-	
-	
-	public void cancel(){
-		try{
-			f.set(o, Double.parseDouble(value));
-		}catch(Exception e){e.printStackTrace();}
-	}
 		
 	
 	public void	setValue(Object object){
@@ -88,30 +81,14 @@ public class DoubleHandler implements Guihandler{
 	public Tunable getTunable() {
 		return t;
 	}
-
-
 	public Field getField() {
 		return f;
 	}
-
-
 	public Object getObject() {
 		return o;
 	}
-
-
-	@Override
 	public Class<?> getclass() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-	@Override
-	public Object getValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

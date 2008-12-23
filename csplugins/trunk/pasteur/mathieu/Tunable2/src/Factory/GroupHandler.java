@@ -80,10 +80,6 @@ public class GroupHandler implements Guihandler{
 	}
 	
 	
-	public void cancel(){
-	}
-	
-	
 	public Tunable getTunable() {
 		return t;
 	}
@@ -97,17 +93,7 @@ public class GroupHandler implements Guihandler{
 	}
 
 
-	@Override
 	public Class<?> getclass() {
-		// TODO Auto-generated method stub
 		return Group.class;
 	}
-
-
-	@Override
-	public Object getValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

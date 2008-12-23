@@ -16,12 +16,13 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	Field f;
 	Object o;
 	Tunable t;
-	List<T> listIn;
+
 	ListMultipleSelection<T> LMS;
-	private Object[] x;
-	private List<T> selected = new ArrayList<T>();
+	private List<T> selected;
 	JList jlist;
 	Boolean available;
+	Object[] array;
+	
 	
 	
 	@SuppressWarnings("unchecked")
@@ -31,81 +32,52 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 		this.t=t;
 		this.available=t.available();
 		try{
-			listIn=(List<T>) f.get(o);
+			LMS=(ListMultipleSelection<T>) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		LMS= new ListMultipleSelection<T>(listIn);
-	}
-
-
-	
-	public void cancel() {
-		try{
-			f.set(o, listIn);
-		}catch(Exception e){e.printStackTrace();}
-	}
-
-	
-	
-	public Field getField() {
-		return f;
 	}
 
 	public JPanel getInputPanel() {
-		JPanel result = new JPanel();
+		JPanel returnpane = new JPanel();
+		array=null;
+		selected=null;
 		jlist = new JList(LMS.getPossibleValues().toArray());
 		jlist.addListSelectionListener(this);
 		jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		JScrollPane scroll = new JScrollPane(jlist);
-		result.add(scroll);
-		return result;
+		JScrollPane scrollpane = new JScrollPane(jlist);
+		returnpane.add(scrollpane);
+		return returnpane;
 	}
-
-	public Object getObject() {
-		return o;
-	}
-
-	public Tunable getTunable() {
-		return t;
-	}
-
-	public Class<?> getclass() {
-		return null;
-	}
-
-
-	public JPanel getresultpanel() {
-		return null;
-	}
-
-
 	
 	public void handle() {
-		if(available==true){
+		if(array!=null){
+			selected = castObject(array);
+			LMS.setSelectedValues(selected);
 			try{
-				f.set(o, selected);
+				f.set(o, LMS);
 			}catch(Exception e){e.printStackTrace();}
 		}
-		else{
-			try{
-				f.set(o, listIn);
-			}catch(Exception e){e.printStackTrace();}
-		}	
 	}
-
+	
+	
 	
 	public JPanel update() {
 		JPanel resultpane = new JPanel();
-		if(x!=null){
-			selected = castObject(x);
+		if(array!=null){
+			selected = castObject(array);
 			LMS.setSelectedValues(selected);
+			try{
+				f.set(o, LMS);
+				resultpane.add(new JScrollPane(new JList(LMS.getSelectedValues().toArray())));
+			}catch(Exception e){e.printStackTrace();}
 		}
-		resultpane.add(new JScrollPane(new JList(selected.toArray())));
 		return resultpane;
 	}
 
 	
+	
+	
 	public void valueChanged(ListSelectionEvent le) {
-		x = jlist.getSelectedValues();		
+		array = jlist.getSelectedValues();		
 	}
 	
 	
@@ -118,14 +90,20 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 			array.add(i, value);
 		}
 	return array;
+	}	
+	
+	
+	public Object getObject() {
+		return o;
 	}
-
-
-
-	@Override
-	public Object getValue() {
-		// TODO Auto-generated method stub
+	public Field getField() {
+		return f;
+	}
+	public Tunable getTunable() {
+		return t;
+	}
+	public Class<?> getclass() {
 		return null;
 	}
-	
+
 }

@@ -63,15 +63,6 @@ public class StringHandler implements Guihandler{
 	}	
 	
 	
-	
-
-	public void cancel() {
-		try{
-			f.set(o,value);
-		}catch(Exception e){e.printStackTrace();}
-		
-	}
-	
 
 	public Tunable getTunable(){
 		return t;
@@ -85,15 +76,7 @@ public class StringHandler implements Guihandler{
 		return o;
 	}
 
-	@Override
 	public Class<?> getclass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getValue() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

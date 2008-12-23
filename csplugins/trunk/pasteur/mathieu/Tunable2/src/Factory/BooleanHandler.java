@@ -68,17 +68,6 @@ public class BooleanHandler implements Guihandler{
 	}
 	
 	
-
-	public void cancel() {
-		bool = Boolean.parseBoolean(value);
-		try{
-			f.set(o,bool);
-		}catch(Exception e){e.printStackTrace();}
-	}
-	
-	
-	
-	
 	public Tunable getTunable() {
 		return t;
 	}
@@ -94,12 +83,6 @@ public class BooleanHandler implements Guihandler{
 
 	@Override
 	public Class<?> getclass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}

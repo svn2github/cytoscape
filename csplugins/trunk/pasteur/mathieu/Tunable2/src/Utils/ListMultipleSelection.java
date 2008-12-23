@@ -18,12 +18,14 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 
 
 	public void setSelectedValues(final List<T> vals) {
-		if (vals == null) throw new NullPointerException("value list is null");
-
-		for (T v : vals)
-			if (!values.contains(v))
-				throw new IllegalArgumentException("value not contained is list of possible values");
-
+		String test= vals.get(0).toString();
+		if(test.equals("")==false){
+			if (vals == null) throw new NullPointerException("value list is null");
+			
+			for (T v : vals)
+				if (!values.contains(v))
+					throw new IllegalArgumentException("value not contained is list of possible values");
+		}
 		selected = new ArrayList<T>(vals);
 	}
 }

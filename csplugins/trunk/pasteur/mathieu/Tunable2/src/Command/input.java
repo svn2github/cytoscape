@@ -1,14 +1,13 @@
 package Command;
 
 
+import java.awt.Button;
 import java.security.acl.Group;
 import Tunable.*;
 import Tunable.Tunable.Param;
 import Utils.*;
-import Sliders.*;
 import java.util.ArrayList;
 import java.util.List;
-import Utils.*;
 
 
 public class input<O extends Comparable<String>> implements command {
@@ -28,6 +27,7 @@ public class input<O extends Comparable<String>> implements command {
 	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
 	public Group Group2;
 	
+	@SuppressWarnings("unchecked")
 	@Tunable(description="BoundedObject",type=Bounded.class,flag=Param.Double)
 	public Bounded<O> boundObject= new Bounded<O>((O)"0", (O)"100", true, true);
 	
@@ -46,24 +46,51 @@ public class input<O extends Comparable<String>> implements command {
 	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
 	public Group Group5;
 
-	/*
-	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
-	public Group Group2;
-	
-	@Tunable(description="List", type=List.class, flag=Param.Nothing)
+	@Tunable(description="ListSingleSelection", type=List.class, flag=Param.Nothing)
 	public ListSingleSelection<String> dayNames;
 
-	@Tunable(description="try with button", type=JButton.class, flag=Param.Nothing)
-	public JButton button1 = new JButton();			
-*/
+	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
+	public Group Group6;
+	
+	@Tunable(description="ListMultipleSelection", type=List.class, flag=Param.MultiSelect)
+	public ListMultipleSelection<String> monthNames;
 
+	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
+	public Group Group7;
+	
+	@Tunable(description="Button", type=Button.class, flag=Param.Nothing)
+	public myButton button1 = new myButton();
+
+	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
+	public Group Group8;
+
+	
+	
 	public input()
 	{
-			java.util.List<String> choices = new ArrayList<String>();
-			choices.add("A");
-			choices.add("B");
-			choices.add("C");
-			//dayNames =new ListSingleSelection<String>(choices);
+			java.util.List<String> days = new ArrayList<String>();
+			java.util.List<String> months = new ArrayList<String>();	
+			days.add("Monday");
+			days.add("Tuesday");
+			days.add("Wednesday");
+			days.add("Thursday");
+			days.add("Friday");
+			days.add("Saturday");
+			days.add("Sunday");
+			dayNames =new ListSingleSelection<String>(days);
+			months.add("January");
+			months.add("February");
+			months.add("March");
+			months.add("April");
+			months.add("May");
+			months.add("June");
+			months.add("July");
+			months.add("August");
+			months.add("September");
+			months.add("October");
+			months.add("November");
+			months.add("December");	
+			monthNames =new ListMultipleSelection<String>(months);			
 	}
 }
 

@@ -15,6 +15,4 @@ public interface Guihandler extends Handler{
 	public Object getObject();
 	public JPanel update();
 	public Class<?> getclass();
-	public void cancel();
-	public Object getValue();
 }

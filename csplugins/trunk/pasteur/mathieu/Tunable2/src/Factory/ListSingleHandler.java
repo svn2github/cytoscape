@@ -1,30 +1,31 @@
 package Factory;
 
-import GuiInterception.Guihandler;
-import Tunable.*;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
-import Utils.*;
-import javax.swing.*;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import GuiInterception.Guihandler;
+import Tunable.Tunable;
+import Utils.ListSingleSelection;
 
 
-public class ListSingleHandler<T> implements Guihandler,ListSelectionListener{
-	
+public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	Field f;
 	Object o;
 	Tunable t;
 	
-	List<T> listIn;
 	ListSingleSelection<T> LSS;
 	JList jlist;
 	private T selected;
 	Boolean available;
 	ArrayList<T> array;
 	
-	
+
 	@SuppressWarnings("unchecked")
 	public ListSingleHandler(Field f, Object o, Tunable t){
 		this.f=f;
@@ -32,15 +33,16 @@ public class ListSingleHandler<T> implements Guihandler,ListSelectionListener{
 		this.t=t;
 		this.available=t.available();
 		try{
-			listIn =  (List<T>) f.get(o);
+			LSS =  (ListSingleSelection<T>) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		LSS= new ListSingleSelection<T>(listIn);
 	}
 
-	
-	
-	public JPanel getInputPanel(){
-		JPanel returnpane = new JPanel();		
+
+
+	@Override
+	public JPanel getInputPanel() {
+		JPanel returnpane = new JPanel();
+		selected=null;
 		jlist=new JList(LSS.getPossibleValues().toArray());
 		jlist.addListSelectionListener(this);
 		jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);		
@@ -51,78 +53,45 @@ public class ListSingleHandler<T> implements Guihandler,ListSelectionListener{
 
 
 
-	public void cancel() {
-		try{
-			f.set(o, listIn);
-		}catch(Exception e){e.printStackTrace();}
+	public void handle() {
+		if(selected!=null){
+			LSS.setSelectedValue(selected);
+			try{
+				f.set(o,LSS);
+			}catch(Exception e){e.printStackTrace();}
+		}
+	}
+		
+
+
+	public JPanel update() {
+		JPanel result = new JPanel();
+		if(selected!=null){
+			LSS.setSelectedValue(selected);	
+			try{
+				f.set(o,LSS);
+				result.add(new JTextField((String) LSS.getSelectedValue()));
+			}catch(Exception e){e.printStackTrace();}
+		}
+		return result;
 	}
 
-	
-	
-	public Field getField() {
-		return f;
+
+	@SuppressWarnings("unchecked")
+	public void valueChanged(ListSelectionEvent e) {
+		selected = (T) jlist.getSelectedValue();
 	}
 
 	public Object getObject() {
 		return o;
 	}
-
 	public Tunable getTunable() {
 		return t;
 	}
-
-
+	public Field getField() {
+		return f;
+	}
 	public Class<?> getclass() {
 		return null;
 	}
-
-
-
-	public JPanel getresultpanel() {
-		return null;
-	}
-
-
-
-	public void handle() {
-		List<T> listOut = new ArrayList<T>();
-		listOut.add(selected);
-		if(available==true){
-			try{
-				f.set(o,listOut);
-			}catch(Exception e){e.printStackTrace();}
-		}
-		else{
-			try{
-				f.set(o,listIn);
-			}catch(Exception e){e.printStackTrace();}
-		}
-	}
-	
-		
-
-	public JPanel update() {
-		JPanel result = new JPanel();
-		array = new ArrayList<T>();
-		if(selected!=null){
-			LSS.setSelectedValue(selected);
-			array.add(selected);
-		}
-		result.add(new JScrollPane(new JList(array.toArray())));
-		return result;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void valueChanged(ListSelectionEvent evt) {
-		selected = (T)jlist.getSelectedValue();
-	}
-
-
-
-	@Override
-	public Object getValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}	
-
 }

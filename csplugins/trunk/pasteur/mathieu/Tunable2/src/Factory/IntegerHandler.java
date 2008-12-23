@@ -83,15 +83,4 @@ public class IntegerHandler implements Guihandler{
 	public Class<?> getclass() {
 		return null;
 	}
-	public Integer getValue() {
-		return inte;
-	}
-
-
-	
-	@Override
-	public void cancel() {
-		// TODO Auto-generated method stub
-		
-	}	
 }

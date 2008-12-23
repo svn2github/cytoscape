@@ -17,9 +17,12 @@ public class ListSingleSelection<T> extends ListSelection<T>{
 	}
 
 	public void setSelectedValue(T val) {
-		if (!values.contains(val))
-			throw new IllegalArgumentException("value not contained in list of possible values");
-
+		String test=val.toString();
+		if(test.equals("")==false){
+			if (!values.contains(val))
+				throw new IllegalArgumentException("value not contained in list of possible values");
+		}	
 		selected = val;
 	}
+	
 }

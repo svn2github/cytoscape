@@ -18,6 +18,7 @@ public class application{
 	private static JPanel pane;
 	private static JMenuItem menuItem;
 	//public static Properties properties;
+	@SuppressWarnings("unchecked")
 	public static command commander=new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
 	
@@ -51,7 +52,7 @@ public class application{
 		menuItem.setActionCommand("catch");
 		menu1.add(menuItem);
 		
-		JMenu menu2 = new JMenu("Display");
+		JMenu menu2 = new JMenu("Parameters");
 		MenuBar.add(menu2);
 		menuItem = new JMenuItem("Input");
 		menuItem.addActionListener(new myActionListener2());
@@ -64,7 +65,7 @@ public class application{
 		menu2.add(menuItem);
 
 		
-		JMenu menu3 = new JMenu("Action");
+		JMenu menu3 = new JMenu("Properties");
 		MenuBar.add(menu3);
 		menuItem = new JMenuItem("Save");
 		menuItem.addActionListener(new myActionListener4());
@@ -92,8 +93,8 @@ public class application{
 			if(command.equals("cancel")){
 				lp.ProcessProperties();
 				sp.ProcessProperties();
-				System.out.println("OutputProperties = "+store);
-			ti.Cancel();
+				System.out.println("OutputCanceledProperties = "+store);
+			//ti.Cancel();
 			}
 		}
 	}
@@ -111,7 +112,7 @@ public class application{
 				else System.out.println("No input");
 				sp.intercept(commander);
 				sp.ProcessProperties();
-				System.out.println("OutputProperties = "+store);
+				System.out.println("OutputSavedProperties = "+store);
 
 			}
 		}

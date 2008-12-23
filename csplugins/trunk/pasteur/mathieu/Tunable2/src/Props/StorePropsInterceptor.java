@@ -1,18 +1,14 @@
 package Props;
 
-
-import Tunable.*;
-import java.lang.annotation.*;
-import java.lang.reflect.*;
 import java.util.*;
-
 import GuiInterception.*;
+
 
 public class StorePropsInterceptor extends HiddenTunableInterceptor<PropHandler> {
 	private Properties inputProps;
 
 	public StorePropsInterceptor(Properties inputProps) {
-		super(new PropHandlerFactory());
+		super(new PropHandlerFactory<PropHandler>());
 		this.inputProps = inputProps;
 	}
 
@@ -32,15 +28,10 @@ public class StorePropsInterceptor extends HiddenTunableInterceptor<PropHandler>
 	protected void save(List<PropHandler> handlerList) {
 	}
 
-	@Override
-	protected void process(List<PropHandler> handlerList) {
-		// TODO Auto-generated method stub
-		
+	protected void process(List<PropHandler> handlerList) {		
 	}
 
-	@Override
 	protected void addProps(List<PropHandler> handlerList) {
-		// TODO Auto-generated method stub
 		
 	}
 }

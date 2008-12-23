@@ -42,13 +42,6 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	}
 
 
-	@Override
-	public void cancel() {
-		try{
-			f.set(o,boundedObject);
-		}catch(Exception e){e.printStackTrace();}
-	}
-
 
 	public JPanel getInputPanel() {
 		JPanel inputPane = new JPanel();
@@ -69,6 +62,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public void handle() {
 		if(t.flag()==Param.DoubleSlider){
 			result=slider.getValue().doubleValue();

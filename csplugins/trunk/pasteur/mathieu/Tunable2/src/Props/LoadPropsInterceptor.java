@@ -10,7 +10,7 @@ public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> 
 	private Properties inputProps;
 
 	public LoadPropsInterceptor(final Properties inputProps){
-		super(new PropHandlerFactory());
+		super(new PropHandlerFactory<PropHandler>());
 		this.inputProps = inputProps;
 	}
 	protected void addProps(java.util.List<PropHandler> lh) {

@@ -7,11 +7,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.util.List;
-import java.util.Properties;
-
-import Factory.BoundedHandler;
-import Properties.*;
-
 
 public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> {
 
@@ -97,7 +92,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	}
 	
 	protected void cancel(List<Guihandler> list){
-		for(Guihandler guihandler : list) guihandler.cancel();
 		//properties.revertProperties();
 	}
 

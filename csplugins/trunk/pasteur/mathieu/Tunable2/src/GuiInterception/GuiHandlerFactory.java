@@ -1,23 +1,16 @@
 package GuiInterception;
 
-
 import Factory.*;
 import HandlerFactory.HandlerFactory;
 import java.lang.reflect.*;
 import java.security.acl.Group;
-import java.util.List;
 import Tunable.Tunable;
-import Tunable.Tunable.Param;
-import Utils.Bounded;
-import Utils.ListSingleSelection;
-import Sliders.*;
-
+import Utils.*;
 
 public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 
 
 	public Guihandler getHandler(Field f, Object o, Tunable t){
-		Param parameter= t.flag();
 		Class<?> type = f.getType();
 		
 		if(type== Integer.class)
@@ -31,16 +24,13 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 		if(type==Group.class)
 			return new GroupHandler(f,o,t);
 		if(type==Bounded.class)
-			return new BoundedHandler(f,o,t);
-		if(type==ListSingleSelection.class)
-			return new ListSingleHandler2<String>(f,o,t);
-		
-//		if(type == List.class){
-//			if(parameter==Param.MultiSelect){
-//				return new ListMultipleHandler<T>(f,o,t);
-//			}
-//			else	return new ListSingleHandler<T>(f,o,t);
-//		}
+			return new BoundedHandler<String>(f,o,t);		
+		if(type == ListSingleSelection.class)
+			return new ListSingleHandler<String>(f,o,t);
+		if(type == ListMultipleSelection.class)
+			return new ListMultipleHandler<String>(f,o,t);
+		if(type == myButton.class)
+			return new ButtonHandler(f,o,t);
 		return null;
 	}
 }
