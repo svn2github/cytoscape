@@ -65,7 +65,7 @@ public class application{
 		menu2.add(menuItem);
 
 		
-		JMenu menu3 = new JMenu("Properties");
+		JMenu menu3 = new JMenu("Values");
 		MenuBar.add(menu3);
 		menuItem = new JMenuItem("Save");
 		menuItem.addActionListener(new myActionListener4());
