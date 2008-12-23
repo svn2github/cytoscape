@@ -210,7 +210,14 @@ public class TreeView extends TreeViewApp implements Observer,
 			for (int i = 0; i < selections.length; i++) {
 				String nodeName = geneInfo.getHeader(selections[i])[0];
 				CyNode node = Cytoscape.getCyNode(nodeName, false);
-				if (node != null) selectedNodes.add(node);
+				// Now see if this network has this node
+				if (node != null && !myNetwork.containsNode(node)) {
+					// No, try dropping any suffixes from the node name
+					String[] tokens = nodeName.split(" ");
+					node = Cytoscape.getCyNode(tokens[0], false);
+				}
+				if (node != null)
+					selectedNodes.add(node);
 			}
 			// System.out.println("Selecting "+selectedNodes.size()+" nodes");
 			if (!dataModel.isSymmetrical() || selectedArrays.size() == 0) {
@@ -235,13 +242,20 @@ public class TreeView extends TreeViewApp implements Observer,
 			for (int i = 0; i < selections.length; i++) {
 				String nodeName = arrayInfo.getHeader(selections[i])[0];
 				CyNode node = Cytoscape.getCyNode(nodeName, false);
-				if (node != null) selectedArrays.add(node);
+				if (node != null && !myNetwork.containsNode(node)) {
+					// No, try dropping any suffixes from the node name
+					String[] tokens = nodeName.split(" ");
+					node = Cytoscape.getCyNode(tokens[0], false);
+				}
+				if (node != null)
+					selectedArrays.add(node);
 			}
 		}
 
 		// If we've gotten here, we want to select edges
 		myView.removeGraphViewChangeListener(this); // For efficiency reasons, remove our listener for now
 		myNetwork.unselectAllEdges();
+
 		// myNetwork.unselectAllNodes();
 		HashMap<CyEdge,CyEdge>edgesToSelect = new HashMap();
 		for (CyNode node1: selectedNodes) {
@@ -250,7 +264,9 @@ public class TreeView extends TreeViewApp implements Observer,
 			for (CyNode node2: selectedArrays) {
 				nodes[1] = node2.getRootGraphIndex();
 				int edges[] = myNetwork.getConnectingEdgeIndicesArray(nodes);
-				if (edges == null) continue;
+				if (edges == null) {
+					continue;
+				}
 				for (int i = 0; i < edges.length; i++) {
 					CyEdge connectingEdge = (CyEdge)myNetwork.getEdge(edges[i]);
 					edgesToSelect.put(connectingEdge, connectingEdge);
@@ -261,6 +277,8 @@ public class TreeView extends TreeViewApp implements Observer,
 		// myView.redrawGraph(false,false);
 		// Add our listener back
 		myView.addGraphViewChangeListener(this);
+		selectedNodes = null;
+		selectedArrays = null;
 	}
 
 	public void graphViewChanged(GraphViewChangeEvent event) {

@@ -522,6 +522,8 @@ class GlobalView extends ModelViewProduced
 				startPoint.translate(-1, 0); 
 				endPoint.translate(1, 0); 
 				break;
+			default:
+				return;
 			}
 		} else {
 			switch (c) {
@@ -543,7 +545,9 @@ class GlobalView extends ModelViewProduced
 				break;
 			case KeyEvent.VK_SHIFT:
 				// should we do something if shift is pressed during drag?
-				break;
+				return;
+			default:
+				return;
 			}
 		}
 		// make sure it all fits...
