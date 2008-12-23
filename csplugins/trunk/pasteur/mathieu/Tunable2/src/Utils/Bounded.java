@@ -52,7 +52,7 @@ public class Bounded<O extends Comparable<String>>{
 
 		//int up = v.compareTo((String) upperBound);
 		String test = v.toString();
-		if(test.equals("")==false){
+		if(test.equals("null")==false){
 			int up = Integer.parseInt((String) v) - Integer.parseInt((String) upperBound);
 			
 			

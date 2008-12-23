@@ -34,7 +34,7 @@ public class BoundedPropHandler implements PropHandler {
 
 	
 	public void add(Properties p) {
-		boundedobject.setValue(""); //Need to initialize the value
+		boundedobject.setValue("null"); //Need to initialize the value
 		try{
 			p.put(propKey,boundedobject.getValue());
 		}catch(Exception e){e.printStackTrace();}
