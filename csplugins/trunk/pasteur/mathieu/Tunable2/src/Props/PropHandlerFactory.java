@@ -17,12 +17,12 @@ public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 		
 		Class<?> type = f.getType();
 
-		if ((type == int.class || type == Integer.class))//TEST with BoundedPropHandler instead of IntegerPropHandler
-			return new BoundedPropHandler(f, o, t);
+		if ((type == int.class || type == Integer.class))
+			return new IntPropHandler(f, o, t);//return new BoundedPropHandler(f,o,t);
 		else if(type == Bounded.class)
 			return new BoundedPropHandler(f,o,t);
-		else if(type == Double.class || type == double.class)//TEST with BoundedPropHandler instead of DoublePropHandler
-			return new BoundedPropHandler(f,o,t);
+		else if(type == Double.class || type == double.class)
+			return new DoublePropHandler(f,o,t);//return new BoundedPropHandler(f,o,t);
 		else if (type == String.class)
 			return new StringPropHandler(f, o, t);
 		else if(type == Boolean.class)

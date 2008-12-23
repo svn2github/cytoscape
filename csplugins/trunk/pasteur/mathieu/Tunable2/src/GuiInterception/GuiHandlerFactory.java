@@ -14,10 +14,10 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 		
 		Class<?> type = f.getType();
 		
-		if(type == Integer.class || type == int.class)//Test with BoundedHandler instead of IntegerHandler
-			return new BoundedHandler<String>(f,o,t);
-		if(type == Double.class || type == double.class)//TEST with BoundedHandler instead of DoubleHandler
-			return new BoundedHandler<String>(f,o,t);
+		if(type == Integer.class || type == int.class)
+			return new IntegerHandler(f,o,t);//new BoundedHandler<String>(f,o,t);
+		if(type == Double.class || type == double.class)
+			return new DoubleHandler(f,o,t);//new BoundedHandler<String>(f,o,t);
 		if(type == Bounded.class)
 			return new BoundedHandler<String>(f,o,t);		
 		if(type == Boolean.class)
