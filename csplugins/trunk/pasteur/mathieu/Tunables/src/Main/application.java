@@ -80,7 +80,7 @@ public class application{
 	
 		mainframe.setContentPane(pane);
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainframe.setLocation(400, 300);
+		mainframe.setLocation(50,50);
 		mainframe.setSize(200, 200);
 		mainframe.pack();
 		mainframe.setVisible(true);	
@@ -140,6 +140,8 @@ public class application{
 			if(command.equals("input")){
 				if(ti!=null){
 					ti.Process();
+					lp.addProperties();
+					System.out.println("InputProperties = "+InputProperties);
 				}
 				else System.out.println("No input");
 			}
@@ -157,8 +159,8 @@ public class application{
 				ti.intercept(commander);
 				
 				lp.intercept(commander);
-				lp.addProperties();
-				System.out.println("InputProperties = "+InputProperties);
+//				lp.addProperties();
+//				System.out.println("InputProperties = "+InputProperties);
 			}
 		}
 	}

@@ -14,6 +14,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	public JFrame inframe;
 	public JFrame outframe;
 	static JPanel tunPane = null;
+	boolean processdone = false;
 	//PropertiesImpl properties=null;
 	//Properties prop = new Properties();
 	
@@ -27,7 +28,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	protected void process(List<Guihandler> list) {
 			//properties = new PropertiesImpl("TunableSampler");
 			JPanel mainPanel = new JPanel();
-			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+			//mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 			Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 			JPanel tunpane=new JPanel();
 			TitledBorder titleBorder = null;
@@ -50,8 +51,9 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			//properties.initializeProperties(prop);
 			inframe.setContentPane(mainPanel);
 			inframe.pack();
-			inframe.setLocation(500, 400);
+			inframe.setLocation(100, 200);
 			inframe.setVisible(true);
+			processdone=true;
 	}
 	
 	
@@ -61,31 +63,32 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = null;
 		tunPane = new JPanel();
-		
-		for(Guihandler guihandler : list){
-			if(guihandler.getclass()!=Group.class){
-				titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-				titleBorder.setTitlePosition(TitledBorder.LEFT);
-				titleBorder.setTitlePosition(TitledBorder.TOP);
-				tunPane.add(guihandler.update());
-				//System.out.println(guihandler.getValue());
-			}
-			if(guihandler.getclass()==Group.class){
-				tunPane.setBorder(titleBorder);
+		if(processdone==true){
+			for(Guihandler guihandler : list){
+				if(guihandler.getclass()!=Group.class){
+					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
+					titleBorder.setTitlePosition(TitledBorder.LEFT);
+					titleBorder.setTitlePosition(TitledBorder.TOP);
+					tunPane.add(guihandler.update());
+					//System.out.println(guihandler.getValue());
+				}
+				if(guihandler.getclass()==Group.class){
+					tunPane.setBorder(titleBorder);
+					resultpane.add(tunPane);
+					tunPane=new JPanel();
+					tunPane.removeAll();
+				}
 				resultpane.add(tunPane);
-				tunPane=new JPanel();
-				tunPane.removeAll();
 			}
-			resultpane.add(tunPane);
+			outframe.setContentPane(resultpane);
+			outframe.pack();
+			outframe.setLocation(100, 500);
+			outframe.setVisible(true);
 		}
-		outframe.setContentPane(resultpane);
-		outframe.pack();
-		outframe.setLocation(400, 600);
-		outframe.setVisible(true);
+		else System.out.println("No input displayed");
 	}
 	
-	
-	//A reprendre!
+
 	protected void save(List<Guihandler> list){
 		for(Guihandler guihandler : list)	guihandler.handle();
 		//properties.saveProperties(prop);
