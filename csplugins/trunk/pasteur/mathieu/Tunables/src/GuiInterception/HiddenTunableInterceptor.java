@@ -34,6 +34,7 @@ public abstract class HiddenTunableInterceptor<T extends Handler> implements Tun
 	}
 	
 
+
 	public final void Process(){
 		process(handlerList);
 	}
@@ -58,6 +59,7 @@ public abstract class HiddenTunableInterceptor<T extends Handler> implements Tun
 		addProps(handlerList);
 	}
 	
+
 	protected abstract void cancel(List<T> handlerList);
 	protected abstract void save(List<T> handlerList);
 	protected abstract void display(List<T> handlerList);

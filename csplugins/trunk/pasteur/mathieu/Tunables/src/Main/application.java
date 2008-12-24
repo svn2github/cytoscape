@@ -93,7 +93,7 @@ public class application{
 			if(command.equals("cancel")){
 				lp.ProcessProperties();
 				sp.ProcessProperties();
-				System.out.println("OutputCanceledProperties = "+store);
+				System.out.println("OutputCanceledProperties = " + store);
 			//ti.Cancel();
 			}
 		}
@@ -112,7 +112,7 @@ public class application{
 				else System.out.println("No input");
 				sp.intercept(commander);
 				sp.ProcessProperties();
-				System.out.println("OutputSavedProperties = "+store);
+				System.out.println("OutputSavedProperties = " + store);
 
 			}
 		}
@@ -141,7 +141,7 @@ public class application{
 				if(ti!=null){
 					ti.Process();
 					lp.addProperties();
-					System.out.println("InputProperties = "+InputProperties);
+					System.out.println("InputProperties = " + InputProperties);
 				}
 				else System.out.println("No input");
 			}

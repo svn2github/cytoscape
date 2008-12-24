@@ -3,22 +3,26 @@ package Factory;
 import GuiInterception.*;
 import Tunable.*;
 import Utils.myButton;
+import java.awt.Button;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.*;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+
 
 public class ButtonHandler implements Guihandler{
 	
 	Field f;
 	Object o;
 	Tunable t;
-	
+
 	String title;
 	myButton button;
 	Boolean selected=null;
-	
+
 	
 	@SuppressWarnings("deprecation")
 	public ButtonHandler(Field f, Object o, Tunable t){
@@ -34,11 +38,11 @@ public class ButtonHandler implements Guihandler{
 
 
 	public void handle(){ 
-	if(selected == true) button.setSelected(true);
-	else button.setSelected(false);
-	try{
-		f.set(o,button);
-	}catch(Exception e){e.printStackTrace();}			
+		if(selected == true) button.setSelected(true);
+		else button.setSelected(false);
+		try{
+			f.set(o,button);
+		}catch(Exception e){e.printStackTrace();}			
 	}
 
 
@@ -56,6 +60,7 @@ public class ButtonHandler implements Guihandler{
 
 	public JPanel update() {
 		JPanel resultpane = new JPanel();
+		System.out.println("button selected = " + selected);
 		if(selected == true) button.setselected(true);
 		else button.setselected(false);
 		try{
@@ -69,7 +74,7 @@ public class ButtonHandler implements Guihandler{
 		public void actionPerformed(ActionEvent ae) {
 			if(ae.getActionCommand().equals(title)){
 				button.setselected(true);
-				selected=button.getselected();		
+				selected=button.getselected();
 			}
 		}
 	}
@@ -85,6 +90,6 @@ public class ButtonHandler implements Guihandler{
 		return o;
 	}
 	public Class<?> getclass() {
-		return null;
+		return Button.class;
 	}
 }
