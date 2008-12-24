@@ -203,7 +203,7 @@ public class TreeView extends TreeViewApp implements Observer,
 
 	public void update(Observable o, Object arg) {
 		if (o == geneSelection) {
-			selectedNodes = new ArrayList();
+			selectedNodes.clear();
 			int[] selections = geneSelection.getSelectedIndexes();
 			HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
 			String [] names = geneInfo.getNames();
@@ -233,7 +233,7 @@ public class TreeView extends TreeViewApp implements Observer,
 			// We only care about array selection for symmetrical models
 			if (!dataModel.isSymmetrical())
 				return;
-			selectedArrays = new ArrayList();
+			selectedArrays.clear();
 			int[] selections = arraySelection.getSelectedIndexes();
 			if (selections.length == dataModel.nExpr())
 				return;
@@ -277,8 +277,8 @@ public class TreeView extends TreeViewApp implements Observer,
 		// myView.redrawGraph(false,false);
 		// Add our listener back
 		myView.addGraphViewChangeListener(this);
-		selectedNodes = null;
-		selectedArrays = null;
+		selectedNodes.clear();
+		selectedArrays.clear();
 	}
 
 	public void graphViewChanged(GraphViewChangeEvent event) {
