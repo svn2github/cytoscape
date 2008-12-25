@@ -32,60 +32,64 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel;
+
 
 /**
  * FIXME
  * Think of it as a column in the viewmodel table.
+ * @param <T> the dataType of the VisualProperty, ie. what kind of objects are the values
  */
 public interface VisualProperty<T> {
-
-    /** FIXME: Strings be used instead, with "NODE", "EDGE",
-     * "NETWORK" being the canonical values?
-     *
-     * Or, even better, is there a way to specify 'non-generic subclass of View<S>?'
-     * (That being the actual constraint we want to enforce.)
-     */
-    enum GraphObjectType{
-	NODE,
-	EDGE,
-	NETWORK;
-    }
-    public VisualProperty.GraphObjectType getObjectType();
+	/** FIXME: Strings be used instead, with "NODE", "EDGE",
+	 * "NETWORK" being the canonical values?
+	 *
+	 * Or, even better, is there a way to specify 'non-generic subclass of {@link View<S>}?'
+	 * (That being the actual constraint we want to enforce.)
+	 */
+	enum GraphObjectType {
+		NODE,
+		EDGE,
+		NETWORK;
+	}
+	/**
+	 * Returns what type of objects this VisualProperty stores values for.
+	 * @return the object type
+	 */
+	VisualProperty.GraphObjectType getObjectType();
 
 	/**
 	 * The type of object represented by this property.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Class<T> getType();
+	Class<T> getType();
 
 	/**
 	 * The default value of this property.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public T getDefault();
+	T getDefault();
 
 	/**
 	 * Used for hashes identifying this property.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getID();
+	String getID();
 
 	/**
 	 * For presentation to humans.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getName();
+	String getName();
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @return callback, or null if there isn't one
 	 */
-	public DependentVisualPropertyCallback dependentVisualPropertyCallback();
+	DependentVisualPropertyCallback dependentVisualPropertyCallback();
 }

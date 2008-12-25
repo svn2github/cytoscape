@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,21 +32,23 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel.internal;
 
-import java.awt.Color;
 import org.cytoscape.viewmodel.*;
 
+import java.awt.Color;
 
 
 /**
  * DOCUMENT ME!
   */
 public class NodeColorVisualProperty implements VisualProperty<Color> {
-
-
-    public VisualProperty.GraphObjectType getObjectType() {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualProperty.GraphObjectType getObjectType() {
 		return VisualProperty.GraphObjectType.NODE;
 	}
 
@@ -57,36 +57,43 @@ public class NodeColorVisualProperty implements VisualProperty<Color> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Class<Color> getType() { return Color.class; }
+	public Class<Color> getType() {
+		return Color.class;
+	}
 
 	/**
 	 * The default value of this property.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Color getDefault() { return Color.BLUE; }
+	public Color getDefault() {
+		return Color.BLUE;
+	}
 
 	/**
 	 * Used for hashes identifying this property.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getID() { return "NODE_COLOR"; }
+	public String getID() {
+		return "NODE_COLOR";
+	}
 
 	/**
 	 * For presentation to humans.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getName() { return "Node Color"; }
+	public String getName() {
+		return "Node Color";
+	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @return callback, or null if there isn't one
 	 */
 	public DependentVisualPropertyCallback dependentVisualPropertyCallback() {
 		return null;
 	}
-
 }

@@ -42,5 +42,10 @@ package org.cytoscape.presentation;
  * interface, but that might be inappropriate.
  */
 public interface TextPresentation {
-    public String render();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	String render();
 }

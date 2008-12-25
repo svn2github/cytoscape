@@ -32,15 +32,21 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel.events;
 
 import org.cytoscape.event.CyEvent;
+
 import org.cytoscape.viewmodel.CyNetworkView;
+
 
 /**
  * DOCUMENT ME!
   */
 public interface SubsetChangedEvent extends CyEvent<String> {
-    public CyNetworkView getNetworkView();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	CyNetworkView getNetworkView();
 }

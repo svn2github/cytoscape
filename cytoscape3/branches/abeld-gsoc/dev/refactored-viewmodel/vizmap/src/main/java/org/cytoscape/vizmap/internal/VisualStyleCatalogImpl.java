@@ -32,24 +32,22 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.vizmap.internal;
 
-import org.cytoscape.vizmap.VisualStyleCatalog;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.viewmodel.VisualPropertyCatalog;
 import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.events.VisualStyleCreatedEvent;
+import org.cytoscape.vizmap.VisualStyleCatalog;
 import org.cytoscape.vizmap.events.VisualStyleCreatedListener;
 import org.cytoscape.vizmap.events.VisualStyleDestroyedListener;
 import org.cytoscape.vizmap.events.internal.VisualStyleCreatedEventImpl;
 import org.cytoscape.vizmap.events.internal.VisualStyleDestroyedEventImpl;
 
-import org.cytoscape.viewmodel.VisualPropertyCatalog;
-
-import org.cytoscape.event.CyEventHelper;
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * We need a list of currently-used VisualStyles somewhere (?)
@@ -57,17 +55,15 @@ import java.util.HashSet;
  * It is also a VisualStyle factory
  */
 public class VisualStyleCatalogImpl implements VisualStyleCatalog {
-    private Set<VisualStyle> visualStyles;
-
-
+	private Set<VisualStyle> visualStyles;
 	private CyEventHelper eventHelper;
-    private VisualPropertyCatalog vpCatalog;
+	private VisualPropertyCatalog vpCatalog;
 
 	/**
 	 * For setter injection (hmm. whats that?)
 	 */
 	public VisualStyleCatalogImpl() {
-	    visualStyles = new HashSet<VisualStyle>();
+		visualStyles = new HashSet<VisualStyle>();
 	}
 
 	/**
@@ -75,7 +71,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	 *
 	 * @param eventHelper DOCUMENT ME!
 	 */
-	public void setEventHelper(CyEventHelper eventHelper) {
+	public void setEventHelper(final CyEventHelper eventHelper) {
 		this.eventHelper = eventHelper;
 	}
 
@@ -88,10 +84,20 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 		return this.eventHelper;
 	}
 
-	public void setVisualPropertyCatalog(VisualPropertyCatalog vpCatalog) {
-	    this.vpCatalog = vpCatalog;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vpCatalog DOCUMENT ME!
+	 */
+	public void setVisualPropertyCatalog(final VisualPropertyCatalog vpCatalog) {
+		this.vpCatalog = vpCatalog;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public VisualPropertyCatalog getVisualPropertyCatalog() {
 		return this.vpCatalog;
 	}
@@ -100,34 +106,50 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	 *
 	 * @param h  DOCUMENT ME!
 	 */
-    public VisualStyleCatalogImpl(final CyEventHelper eventHelper,
-				  final VisualPropertyCatalog vpCatalog) {
+	public VisualStyleCatalogImpl(final CyEventHelper eventHelper,
+	                              final VisualPropertyCatalog vpCatalog) {
 		if (eventHelper == null)
 			throw new NullPointerException("CyEventHelper is null");
+
 		if (vpCatalog == null)
 			throw new NullPointerException("vpCatalog is null");
+
 		this.eventHelper = eventHelper;
 		this.vpCatalog = vpCatalog;
 		visualStyles = new HashSet<VisualStyle>();
 	}
 
-    public VisualStyle createVisualStyle(){
-	VisualStyle newVS = new VisualStyleImpl(eventHelper, vpCatalog);
-	visualStyles.add(newVS);
-	eventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
-					 VisualStyleCreatedListener.class);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualStyle createVisualStyle() {
+		final VisualStyle newVS = new VisualStyleImpl(eventHelper, vpCatalog);
+		visualStyles.add(newVS);
+		eventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
+		                                 VisualStyleCreatedListener.class);
 
-	return newVS;
-    }
+		return newVS;
+	}
 
-    public List<VisualStyle> listOfVisualStyles(){
-	return new ArrayList(visualStyles);
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public List<VisualStyle> listOfVisualStyles() {
+		return new ArrayList<VisualStyle>(visualStyles);
+	}
 
-    public void removeVisualStyle(VisualStyle vs){
-	visualStyles.remove(vs);
-	eventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs),
-					 VisualStyleDestroyedListener.class);
-	
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vs DOCUMENT ME!
+	 */
+	public void removeVisualStyle(final VisualStyle vs) {
+		visualStyles.remove(vs);
+		eventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs),
+		                                 VisualStyleDestroyedListener.class);
+	}
 }

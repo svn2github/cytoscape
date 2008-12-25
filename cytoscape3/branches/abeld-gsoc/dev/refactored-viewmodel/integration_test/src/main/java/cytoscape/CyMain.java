@@ -35,17 +35,20 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 package cytoscape;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.GraphObject;
 
-import org.cytoscape.viewmodel.*;
-import org.cytoscape.vizmap.*;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
 
 import org.cytoscape.presentation.NetworkPresentationFactory;
 import org.cytoscape.presentation.TextPresentation;
+
+import org.cytoscape.viewmodel.*;
+
+import org.cytoscape.vizmap.*;
+
 
 /**
  * This is the main startup class for Cytoscape. This parses the command line
@@ -55,8 +58,7 @@ import org.cytoscape.presentation.TextPresentation;
  * Look and Feel is modified for jgoodies 2.1.4 by Kei Ono
  * </p>
  */
-public class CyMain{
-
+public class CyMain {
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -65,7 +67,8 @@ public class CyMain{
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public static void main(String[] args) throws Exception {
-	    System.out.println("hello world! -- main");
+		System.out.println("hello world! -- main");
+
 		CyMain app = new CyMain(args);
 	}
 
@@ -77,71 +80,117 @@ public class CyMain{
 	 * @throws Exception  DOCUMENT ME!
 	 */
 	public CyMain() throws Exception {
-		this( new String[]{});
-	    System.out.println("hello world! -- empty");
+		this(new String[] {  });
+		System.out.println("hello world! -- empty");
 	}
 
-    public CyMain(String[] args, CyNetworkFactory f) throws Exception {
-	    System.out.println("hello world! -- with args");
-	    System.out.println("NetworkFactory:"+f);
-	}
-    public CyMain(CyNetworkFactory f, CyNetworkViewFactory vf,
-		  NetworkPresentationFactory pf, VisualStyleCatalog vsc,
-		  VisualPropertyCatalog vpCatalog) throws Exception {
-	    System.out.println("hello world! -- factories");
-	    System.out.println("NetworkFactory:"+f);
-	    CyNetwork network = f.getInstance();
-	    CyNode n1 = network.addNode();
-	    n1.attrs().set("name", "node 1");
-	    CyNode n2 = network.addNode();
-	    n2.attrs().set("name", "node 2");
-	    CyEdge e1 = network.addEdge(n1, n2, false);
-	    System.out.println("nodes:"+network.getNodeCount()+" edges:"+network.getEdgeCount());
-	    CyNetworkView view = vf.getNetworkViewFor(network);
-	    dumpViewmodelState(view);
-	    // mutate model, see whether viewmodel updates
-	    CyNode n3 = network.addNode();
-	    CyEdge e2 = network.addEdge(n1, n3, false);
-	    dumpViewmodelState(view);
-	    System.out.println(view.getCyNodeView(n3));
-	    System.out.println(view.getCyEdgeView(e2));
-
-	    // create visual style, add an example MappingCalculator, dump values
-	    VisualStyle myStyle = vsc.createVisualStyle();
-	    VisualProperty nodeLabel = vpCatalog.getVisualProperty("NODE_LABEL");
-	    MappingCalculator nodeLabelCalculator = new PassthroughMappingCalculator("name", nodeLabel,
-										     String.class);
-	    myStyle.setMappingCalculator(nodeLabelCalculator);
-	    
-	    myStyle.apply(view);
-	    // TODO: add passthroughMapping to copy id to nodeLabel
-	    TextPresentation p = pf.getTextPresentationFor(view);
-	    System.out.println(p.render());
+	/**
+	 * Creates a new CyMain object.
+	 *
+	 * @param args  DOCUMENT ME!
+	 * @param f  DOCUMENT ME!
+	 *
+	 * @throws Exception  DOCUMENT ME!
+	 */
+	public CyMain(String[] args, CyNetworkFactory f) throws Exception {
+		System.out.println("hello world! -- with args");
+		System.out.println("NetworkFactory:" + f);
 	}
 
-    public void dumpViewmodelState(CyNetworkView view){
-	    System.out.println("----------------------------------------------------");
-	    System.out.println("dumping state of:"+view);
-	    for (View<?extends GraphObject>v: view.getAllViews()){
-		System.out.println("one View:"+v);
-		System.out.println("    source:"+v.getSource());
-	    }
-	    System.out.println("----------------------------------------------------");
-    }
+	/**
+	 * Creates a new CyMain object.
+	 *
+	 * @param f  DOCUMENT ME!
+	 * @param vf  DOCUMENT ME!
+	 * @param pf  DOCUMENT ME!
+	 * @param vsc  DOCUMENT ME!
+	 * @param vpCatalog  DOCUMENT ME!
+	 *
+	 * @throws Exception  DOCUMENT ME!
+	 */
+	public CyMain(CyNetworkFactory f, CyNetworkViewFactory vf, NetworkPresentationFactory pf,
+	              VisualStyleCatalog vsc, VisualPropertyCatalog vpCatalog)
+	    throws Exception {
+		System.out.println("hello world! -- factories");
+		System.out.println("NetworkFactory:" + f);
 
-    public CyMain(CyNetworkFactory f) throws Exception {
-	    System.out.println("hello world! -- with only NetworkFactory");
-	    System.out.println("NetworkFactory:"+f);
-	    CyNetwork network = f.getInstance();
-	    CyNode n1 = network.addNode();
-	    CyNode n2 = network.addNode();
-	    CyEdge e1 = network.addEdge(n1, n2, false);
-	    System.out.println("nodes:"+network.getNodeCount()+" edges:"+network.getEdgeCount());
+		CyNetwork network = f.getInstance();
+		CyNode n1 = network.addNode();
+		n1.attrs().set("name", "node 1");
+
+		CyNode n2 = network.addNode();
+		n2.attrs().set("name", "node 2");
+
+		CyEdge e1 = network.addEdge(n1, n2, false);
+		System.out.println("nodes:" + network.getNodeCount() + " edges:" + network.getEdgeCount());
+
+		CyNetworkView view = vf.getNetworkViewFor(network);
+		dumpViewmodelState(view);
+
+		// mutate model, see whether viewmodel updates
+		CyNode n3 = network.addNode();
+		CyEdge e2 = network.addEdge(n1, n3, false);
+		dumpViewmodelState(view);
+		System.out.println(view.getCyNodeView(n3));
+		System.out.println(view.getCyEdgeView(e2));
+
+		// create visual style, add an example MappingCalculator, dump values
+		VisualStyle myStyle = vsc.createVisualStyle();
+		VisualProperty<String> nodeLabel = (VisualProperty<String>)vpCatalog.getVisualProperty("NODE_LABEL");
+		MappingCalculator<?> nodeLabelCalculator = new PassthroughMappingCalculator<String>("name", nodeLabel,
+		                                                                         String.class);
+		myStyle.setMappingCalculator(nodeLabelCalculator);
+
+		myStyle.apply(view);
+
+		// TODO: add passthroughMapping to copy id to nodeLabel
+		TextPresentation p = pf.getTextPresentationFor(view);
+		System.out.println(p.render());
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param view DOCUMENT ME!
+	 */
+	public void dumpViewmodelState(CyNetworkView view) {
+		System.out.println("----------------------------------------------------");
+		System.out.println("dumping state of:" + view);
 
-    public CyMain(String[] args) throws Exception {
-	    System.out.println("hello world! -- with naked args");
+		for (View<?extends GraphObject> v : view.getAllViews()) {
+			System.out.println("one View:" + v);
+			System.out.println("    source:" + v.getSource());
+		}
+
+		System.out.println("----------------------------------------------------");
 	}
 
+	/**
+	 * Creates a new CyMain object.
+	 *
+	 * @param f  DOCUMENT ME!
+	 *
+	 * @throws Exception  DOCUMENT ME!
+	 */
+	public CyMain(CyNetworkFactory f) throws Exception {
+		System.out.println("hello world! -- with only NetworkFactory");
+		System.out.println("NetworkFactory:" + f);
+
+		CyNetwork network = f.getInstance();
+		CyNode n1 = network.addNode();
+		CyNode n2 = network.addNode();
+		CyEdge e1 = network.addEdge(n1, n2, false);
+		System.out.println("nodes:" + network.getNodeCount() + " edges:" + network.getEdgeCount());
+	}
+
+	/**
+	 * Creates a new CyMain object.
+	 *
+	 * @param args  DOCUMENT ME!
+	 *
+	 * @throws Exception  DOCUMENT ME!
+	 */
+	public CyMain(String[] args) throws Exception {
+		System.out.println("hello world! -- with naked args");
+	}
 }

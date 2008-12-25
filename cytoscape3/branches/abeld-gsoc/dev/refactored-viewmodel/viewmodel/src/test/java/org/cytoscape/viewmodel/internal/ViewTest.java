@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel.internal;
 
 import junit.framework.Assert;
@@ -45,87 +42,117 @@ import junit.framework.TestSuite;
 import org.cytoscape.viewmodel.*;
 import org.cytoscape.viewmodel.internal.*;
 
-import java.util.*;
 import java.awt.Color;
 
+import java.util.*;
 
+
+/**
+ *
+ */
 public class ViewTest extends TestCase {
-
 	View<String> view;
 	VisualProperty<Color> nodeColor;
 	VisualProperty<Double> edgeWidth;
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void setUp() {
 		view = new RowOrientedViewImpl("homer");
 		nodeColor = new NodeColorVisualProperty();
 		edgeWidth = new EdgeWidthVisualProperty();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void tearDown() {
 		view = null;
 		nodeColor = null;
 		edgeWidth = null;
 	}
 
-
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void testGetSource() {
-		assertTrue( view.getSource().equals("homer") );
+		assertTrue(view.getSource().equals("homer"));
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void testGetDefaultVisualProperty() {
 		Color c = view.getVisualProperty(nodeColor);
-		assertEquals( "expect color blue", Color.BLUE, c );
+		assertEquals("expect color blue", Color.BLUE, c);
 
 		Double d = view.getVisualProperty(edgeWidth);
-		assertEquals( "expect 1.0",  Double.valueOf(1.0), d );
+		assertEquals("expect 1.0", Double.valueOf(1.0), d);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void testSetVisualProperty() {
-		view.setVisualProperty(nodeColor,Color.RED);
-		Color c = view.getVisualProperty(nodeColor);
-		assertEquals( "expect color red",  Color.RED, c );
+		view.setVisualProperty(nodeColor, Color.RED);
 
-		view.setVisualProperty(edgeWidth,Double.valueOf(3.0));
+		Color c = view.getVisualProperty(nodeColor);
+		assertEquals("expect color red", Color.RED, c);
+
+		view.setVisualProperty(edgeWidth, Double.valueOf(3.0));
+
 		Double d = view.getVisualProperty(edgeWidth);
-		assertEquals( "expect 3.0",  Double.valueOf(3.0), d );
+		assertEquals("expect 3.0", Double.valueOf(3.0), d);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void testNullSetVisualProperty() {
 		try {
-		view.setVisualProperty(null,Color.RED);
-		} catch ( NullPointerException npe ) {
-			return;	
+			view.setVisualProperty(null, Color.RED);
+		} catch (NullPointerException npe) {
+			return;
 		}
+
 		fail("didn't catch NullPointerException as expected");
 	}
 
 	// TODO Is this right?  Should we allow null visual property values or
-	// should we return the default?
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void testSetNullVisualProperty() {
-		view.setVisualProperty(nodeColor,null);
+		view.setVisualProperty(nodeColor, null);
+
 		Color c = view.getVisualProperty(nodeColor);
-		assertNull( c ); 
+		assertNull(c);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void testSetValueLock() {
-		view.setVisualProperty(nodeColor,Color.GREEN);
+		view.setVisualProperty(nodeColor, Color.GREEN);
+
 		Color c = view.getVisualProperty(nodeColor);
-		assertEquals( "expect color green",  Color.GREEN, c );
+		assertEquals("expect color green", Color.GREEN, c);
 
-		view.setValueLock(nodeColor, true);
-		assertTrue( view.isValueLocked(nodeColor) );
-		assertFalse( view.isValueLocked(edgeWidth) );
+		view.setLockedValue(nodeColor, Color.GREEN);
+		assertTrue(view.isValueLocked(nodeColor));
+		assertFalse(view.isValueLocked(edgeWidth));
 
-		view.setVisualProperty(nodeColor,Color.RED);
+		view.setVisualProperty(nodeColor, Color.RED);
 		c = view.getVisualProperty(nodeColor);
-		assertEquals( "expect color green",  Color.GREEN, c );
-		
-		view.setValueLock(nodeColor, false);
-		assertFalse( view.isValueLocked(nodeColor) );
-		assertFalse( view.isValueLocked(edgeWidth) );
+		assertEquals("expect color green", Color.GREEN, c);
 
-		view.setVisualProperty(nodeColor,Color.RED);
+		view.clearValueLock(nodeColor);
+		assertFalse(view.isValueLocked(nodeColor));
+		assertFalse(view.isValueLocked(edgeWidth));
+
+		view.setVisualProperty(nodeColor, Color.RED);
 		c = view.getVisualProperty(nodeColor);
-		assertEquals( "expect color red",  Color.RED, c );
+		assertEquals("expect color red", Color.RED, c);
 	}
 }

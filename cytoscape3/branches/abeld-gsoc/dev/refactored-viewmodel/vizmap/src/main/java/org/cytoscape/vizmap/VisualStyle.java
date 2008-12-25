@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.vizmap;
 
 import org.cytoscape.viewmodel.CyNetworkView;
@@ -51,7 +49,7 @@ public interface VisualStyle {
 	 *
 	 * @param c DOCUMENT ME!
 	 */
-	public void setMappingCalculator(MappingCalculator c);
+	void setMappingCalculator(MappingCalculator<?> c);
 
 	/**
 	 *  DOCUMENT ME!
@@ -60,7 +58,7 @@ public interface VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public MappingCalculator getMappingCalculator(VisualProperty<?> t);
+	MappingCalculator<?> getMappingCalculator(VisualProperty<?> t);
 
 	/**
 	 *  DOCUMENT ME!
@@ -70,7 +68,7 @@ public interface VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public <T> T getDefault(VisualProperty<T> prop);
+	<T> T getDefault(VisualProperty<T> prop);
 
 	/**
 	 *  DOCUMENT ME!
@@ -79,7 +77,7 @@ public interface VisualStyle {
 	 * @param vp DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
-	public <T> void setDefault(VisualProperty<T> vp, T value);
+	<T> void setDefault(VisualProperty<T> vp, T value);
 
 	// ??
 	/**
@@ -87,5 +85,5 @@ public interface VisualStyle {
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public void apply(CyNetworkView v);
+	void apply(CyNetworkView v);
 }

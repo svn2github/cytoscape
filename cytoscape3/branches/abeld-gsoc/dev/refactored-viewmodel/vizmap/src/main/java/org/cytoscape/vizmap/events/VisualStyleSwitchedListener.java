@@ -32,15 +32,18 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.vizmap.events;
 
 import org.cytoscape.event.CyListener;
 
 
 /**
- * Listener for VisualStyleSwitchedEvent. 
+ * Listener for VisualStyleSwitchedEvent.
  */
 public interface VisualStyleSwitchedListener extends CyListener {
-	void handleEvent(VisualStyleSwitchedEvent  e);
+	/**
+	 * DOCUMENT ME!
+	 * @param e DOCUMENT ME!
+	 */
+	void handleEvent(VisualStyleSwitchedEvent e);
 }

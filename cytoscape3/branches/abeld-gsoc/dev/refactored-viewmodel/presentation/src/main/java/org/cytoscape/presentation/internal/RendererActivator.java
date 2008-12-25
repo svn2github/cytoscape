@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,48 +32,57 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.presentation.internal;
-
-import org.cytoscape.presentation.TextPresentation;
-import org.cytoscape.presentation.TextNodeRenderer;
-import org.cytoscape.viewmodel.Renderer;
-
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
-public class RendererActivator implements BundleActivator {
+import org.cytoscape.presentation.TextNodeRenderer;
+import org.cytoscape.viewmodel.Renderer;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
+
+/**
+ *
+ */
+public class RendererActivator implements BundleActivator {
 	private Set<ServiceRegistration> regSet;
 
-	public void start(BundleContext bc) {
-		System.out.println("demo presentation RendererActivator start");	
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param bc DOCUMENT ME!
+	 */
+	public void start(final BundleContext bc) {
+		System.out.println("demo presentation RendererActivator start");
 		// initialize the set of registrations
 		regSet = new HashSet<ServiceRegistration>();
-
 
 		Hashtable props = new Hashtable();
 		//ServiceRegistration reg = bc.registerService(TextPresentation.class.getName(),
 		//					     new AdjMatrixTextRenderer(),props);
 		//regSet.add( reg );
-
 		props = new Hashtable();
 
 		// register both as Renderer and as value for DiscreteVisualProperty
-		TextNodeRenderer renderer = new TextNodeRendererImpl();
-		ServiceRegistration reg = bc.registerService(new String []{TextNodeRenderer.class.getName(),Renderer.class.getName()},
-							     renderer,props);
-		regSet.add( reg );
+		final TextNodeRenderer renderer = new TextNodeRendererImpl();
+		final ServiceRegistration reg = bc.registerService(new String[] {
+		                                                 TextNodeRenderer.class.getName(),
+		                                                 Renderer.class.getName()
+		                                             }, renderer, props);
+		regSet.add(reg);
 	}
 
-	public void stop(BundleContext bc) {
-		for ( ServiceRegistration reg : regSet )
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param bc DOCUMENT ME!
+	 */
+	public void stop(final BundleContext bc) {
+		for (ServiceRegistration reg : regSet)
 			reg.unregister();
 	}
-
 }

@@ -35,23 +35,21 @@
 package org.cytoscape.viewmodel.internal;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.viewmodel.CyNetworkViewFactory;
-import org.cytoscape.viewmodel.CyNetworkView;
 
-import java.util.HashMap;
+import org.cytoscape.model.CyNetwork;
+
+import org.cytoscape.viewmodel.CyNetworkView;
+import org.cytoscape.viewmodel.CyNetworkViewFactory;
 
 import org.osgi.framework.BundleContext;
 
+
 /**
- * 
+ *
  */
 public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 	private CyEventHelper eventHelper;
-    private BundleContext bundleContext;
-
-    
-	
+	private BundleContext bundleContext;
 
 	/**
 	 * For setter injection (hmm. whats that?)
@@ -64,7 +62,7 @@ public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 	 *
 	 * @param eventHelper DOCUMENT ME!
 	 */
-	public void setEventHelper(CyEventHelper eventHelper) {
+	public void setEventHelper(final CyEventHelper eventHelper) {
 		this.eventHelper = eventHelper;
 	}
 
@@ -77,26 +75,12 @@ public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 		return this.eventHelper;
 	}
 
-    public void setBundleContext(BundleContext bundleContext) {
-	this.bundleContext = bundleContext;
-    }
-    public BundleContext getBundleContext() {
-	return bundleContext;
-    }
-
-
 	/**
-	 * Creates a new CyNetworkFactoryImpl object.
+	 *  DOCUMENT ME!
 	 *
-	 * @param h  DOCUMENT ME!
+	 * @param bundleContext DOCUMENT ME!
 	 */
-    public RowOrientedNetworkViewFactoryImpl(final CyEventHelper eventHelper,
-					     final BundleContext bundleContext) {
-		if (eventHelper == null)
-			throw new NullPointerException("CyEventHelper is null");
-		if (bundleContext == null)
-			throw new NullPointerException("bundleContext is null");
-		this.eventHelper = eventHelper;
+	public void setBundleContext(final BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 
@@ -105,7 +89,35 @@ public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-    public CyNetworkView getNetworkViewFor(CyNetwork network){
-	return new RowOrientedNetworkViewImpl(eventHelper, network, bundleContext);
-    }
+	public BundleContext getBundleContext() {
+		return bundleContext;
+	}
+
+	/**
+	 * Creates a new CyNetworkFactoryImpl object.
+	 *
+	 * @param eventHelper DOCUMENT ME!
+	 * @param bundleContext DOCUMENT ME!
+	 */
+	public RowOrientedNetworkViewFactoryImpl(final CyEventHelper eventHelper,
+	                                         final BundleContext bundleContext) {
+		if (eventHelper == null)
+			throw new NullPointerException("CyEventHelper is null");
+
+		if (bundleContext == null)
+			throw new NullPointerException("bundleContext is null");
+
+		this.eventHelper = eventHelper;
+		this.bundleContext = bundleContext;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param network for which the CyNetworkView is to be created
+	 * @return  DOCUMENT ME!
+	 */
+	public CyNetworkView getNetworkViewFor(final CyNetwork network) {
+		return new RowOrientedNetworkViewImpl(eventHelper, network, bundleContext);
+	}
 }

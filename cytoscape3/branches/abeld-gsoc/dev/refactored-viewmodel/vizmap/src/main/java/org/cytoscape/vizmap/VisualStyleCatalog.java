@@ -32,10 +32,10 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.vizmap;
 
 import java.util.List;
+
 
 /**
  * We need a list of currently-used VisualStyles somewhere (?)
@@ -43,9 +43,24 @@ import java.util.List;
  * It is also a VisualStyle factory
  */
 public interface VisualStyleCatalog {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	VisualStyle createVisualStyle();
 
-	public VisualStyle createVisualStyle();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	List<VisualStyle> listOfVisualStyles();
 
-    public List<VisualStyle> listOfVisualStyles();
-    public void removeVisualStyle(VisualStyle vs);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vs DOCUMENT ME!
+	 */
+	void removeVisualStyle(VisualStyle vs);
 }

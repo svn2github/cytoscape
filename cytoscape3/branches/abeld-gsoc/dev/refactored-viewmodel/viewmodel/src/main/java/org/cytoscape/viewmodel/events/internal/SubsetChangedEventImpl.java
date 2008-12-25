@@ -32,17 +32,22 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel.events.internal;
 
-import org.cytoscape.viewmodel.events.SubsetChangedEvent;
 import org.cytoscape.viewmodel.CyNetworkView;
+
 
 /**
  * DOCUMENT ME!
   */
-public class  SubsetChangedEventImpl extends AbstractSubsetEvent {
-    public  SubsetChangedEventImpl(CyNetworkView networkView, String subsetName){
-	super(networkView, subsetName);
-    }
+public class SubsetChangedEventImpl extends AbstractSubsetEvent {
+	/**
+	 * Creates a new SubsetChangedEventImpl object.
+	 *
+	 * @param networkView  DOCUMENT ME!
+	 * @param subsetName  DOCUMENT ME!
+	 */
+	public SubsetChangedEventImpl(final CyNetworkView networkView, final String subsetName) {
+		super(networkView, subsetName);
+	}
 }

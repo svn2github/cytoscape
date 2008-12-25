@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel.internal;
 
 import org.cytoscape.viewmodel.View;
@@ -41,27 +39,37 @@ import org.cytoscape.viewmodel.VisualProperty;
 
 import java.util.HashMap;
 
+
 /**
  * The base interface that defines the methods used to set visual properties
  * for nodes, edges, and networks.
  *
- * Think of it as a row in the viewmodel table.  
+ * Think of it as a row in the viewmodel table.
+ * 
+ * @param <S> the base (model-level) object for which this is a View. For example, CyNode or CyEdge
  */
-public class RowOrientedViewImpl<S> implements View<S>  {
-    private final S source;
-    private final HashMap<VisualProperty,Object> vpValues;
-    // note: this surely could be done more effiiently...:
-    private final HashMap<VisualProperty,Boolean> bypassLocks;
+public class RowOrientedViewImpl<S> implements View<S> {
+	private static final String VP_IS_NULL = "VisualProperty is null";
 
-    private final long suid;
-    private static final String VP_IS_NULL = "VisualProperty is null";
-    
-    public RowOrientedViewImpl(S source){
-	suid = IdFactory.getNextSUID();
-	this.source = source;
-	vpValues = new HashMap<VisualProperty, Object>();
-	bypassLocks = new HashMap<VisualProperty, Boolean>();
-    }
+	private final S source;
+	private final HashMap<VisualProperty<?>, Object> vpValues;
+
+	// note: this surely could be done more efficiently...:
+	private final HashMap<VisualProperty<?>, Boolean> bypassLocks;
+	private final long suid;
+
+	/**
+	 * Creates a new RowOrientedViewImpl object.
+	 *
+	 * @param source  DOCUMENT ME!
+	 */
+	public RowOrientedViewImpl(final S source) {
+		suid = IdFactory.getNextSUID();
+		this.source = source;
+		vpValues = new HashMap<VisualProperty<?>, Object>();
+		bypassLocks = new HashMap<VisualProperty<?>, Boolean>();
+	}
+
 	/**
 	 * The VisualProperty object identifies which visual property to set and the Object
 	 * determines the value.   We should probably consider doing something more type safe like
@@ -71,12 +79,15 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 * @param vp  DOCUMENT ME!
 	 * @param o  DOCUMENT ME!
 	 */
-    public <T> void setVisualProperty(VisualProperty<T> vp, T o){
-	if ( vp == null ) throw new NullPointerException(VP_IS_NULL);
-	Boolean b = bypassLocks.get(vp);
-	if ( b == null || !b.booleanValue() )
-		vpValues.put(vp, o);
-    }
+	public <T> void setVisualProperty(final VisualProperty<T> vp, final T o) {
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		final Boolean b = bypassLocks.get(vp);
+
+		if ((b == null) || !b.booleanValue())
+			vpValues.put(vp, o);
+	}
 
 	/**
 	 * Getting visual properties in this way incurs lots of casting. We should probably
@@ -87,63 +98,83 @@ public class RowOrientedViewImpl<S> implements View<S>  {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-    public <T> T getVisualProperty(VisualProperty<T> vp){
-	if ( vp == null ) throw new NullPointerException(VP_IS_NULL);
-	if ( vpValues.containsKey( vp ) )
-		return (T) vpValues.get(vp);
-	else
-		return vp.getDefault();
-    }
+	public <T> T getVisualProperty(final VisualProperty<T> vp) {
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		if (vpValues.containsKey(vp))
+			return (T) vpValues.get(vp);
+		else
+
+			return vp.getDefault();
+	}
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-    public S getSource(){
-	return source;
-    }
-
-        /**
-         *  DOCUMENT ME!
-         *
-         * @return  DOCUMENT ME!
-         */
-        public long getSUID() {
-                return suid;
-        }
+	public S getSource() {
+		return source;
+	}
 
 	/**
-	 * Lock current value. This value won't be overriden by
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public long getSUID() {
+		return suid;
+	}
+
+	/**
+	 * Sets ByPass value. This value won't be override by
 	 * VisualStyle or such, until it is cleared.
 	 *
-	 * Note: this should only be used when the user interactively
-	 * sets a bypass, either through the gui or through a scripting
+	 * Note: this should only be used when the user, interactively
+	 * sets a bypass either through the gui or through a scripting
 	 * api. All other access should be done by defining an
 	 * appropriate MappingCalculator.
 	 *
 	 * @param <T>  DOCUMENT ME!
-	 * @param vp  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @param vp  The visualProperty for which to set the value
+	 * @param value the value to set
 	 */
-	public void setValueLock(VisualProperty<?> vp, boolean setLock){
-	    if ( vp == null ) throw new NullPointerException(VP_IS_NULL);
-	    bypassLocks.put(vp, new Boolean(setLock));
+	public <T> void setLockedValue(final VisualProperty<T> vp, final T value){
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		setVisualProperty(vp, value);
+		bypassLocks.put(vp, Boolean.TRUE);
 	}
 
 	/**
-	 *
-	 * @returns true if current VisualProperty value should not be modified
+	 * @param vp the VisualProperty
+	 * @return true if current VisualProperty value is locked
 	 */
-	public boolean isValueLocked(VisualProperty<?> vp){
-	    if ( vp == null ) throw new NullPointerException(VP_IS_NULL);
-	    Boolean value = bypassLocks.get(vp);
-	    if (value == null){
-		return false;
-	    } else {
-		return value.booleanValue();
-	    }
+	public boolean isValueLocked(final VisualProperty<?> vp){
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		final Boolean value = bypassLocks.get(vp);
+
+		if (value == null) {
+			return false;
+		} else {
+			return value.booleanValue();
+		}
 	}
 
+	/**
+	 * Clear value lock for given VisualProperty.
+	 * 
+	 * @param vp the VisualProperty 
+	 */
+	public void clearValueLock(final VisualProperty<?> vp){
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		bypassLocks.put(vp, Boolean.FALSE);
+
+	}
 }

@@ -32,17 +32,17 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel.internal;
 
+
 // note: copy-pasted from org.cytoscape.model.internal
-class IdFactory {
-        private IdFactory() {
-        }
+final class IdFactory {
+	private static long count = 1;
 
-        private static long count = 1;
+	private IdFactory() {
+	}
 
-        static synchronized long getNextSUID() {
-                return count++;
-        }
+	static synchronized long getNextSUID() {
+		return count++;
+	}
 }

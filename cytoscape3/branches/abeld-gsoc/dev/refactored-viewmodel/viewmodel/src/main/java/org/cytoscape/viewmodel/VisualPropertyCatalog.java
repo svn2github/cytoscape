@@ -32,48 +32,76 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel;
-
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
 
 import java.util.Collection;
 
+
+/**
+ *
+  */
 public interface VisualPropertyCatalog {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param renderer DOCUMENT ME!
+	 */
+	void addVisualPropertiesOfRenderer(Renderer renderer);
 
-    public void addVisualPropertiesOfRenderer(Renderer renderer);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param name DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	VisualProperty<?> getVisualProperty(String name);
 
-    public VisualProperty getVisualProperty(String name);
+	/**
+	 * Returns the collection of all defined VisualProperties. Note that not all
+	 * of these will be actually in use. For showing in a UI, use of ... is
+	 * recommended ... FIXME
+	 *
+	 * @return the Collection of all defined VisualProperties
+	 */
+	Collection<VisualProperty<?>> collectionOfVisualProperties();
 
-    /**
-     * Returns the collection of all defined VisualProperties. Note that not all
-     * of these will be actually in use. For showing in a UI, use of ... is
-     * recommended ... FIXME
-     * 
-     * @return the Collection of all defined VisualProperties
-     */
-    public Collection<VisualProperty> collectionOfVisualProperties();
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param objectType DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	Collection<VisualProperty<?>> collectionOfVisualProperties(VisualProperty.GraphObjectType objectType);
 
-    public Collection<VisualProperty> collectionOfVisualProperties(VisualProperty.GraphObjectType objectType);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param networkview DOCUMENT ME!
+	 * @param objectType DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	Collection<VisualProperty<?>> collectionOfVisualProperties(CyNetworkView networkview,
+	                                                           VisualProperty.GraphObjectType objectType);
 
-    public Collection<VisualProperty> collectionOfVisualProperties(CyNetworkView networkview,
-							 VisualProperty.GraphObjectType objectType);
-
-    /**
-     * Returns the collection of all those VisualProperties that are in use for
-     * the given GraphObjects. I.e. these are the VisualProperties, for which
-     * setting a value will actually change the displayed graph.
-     * 
-     * Note: returns the same as collectionOfVisualProperties() if
-     * both args are null.  Note: using
-     * VisualProperty.GraphObjectType.NETWORK for objectType is not
-     * really usefull. For network VPs, use
-     * collectionOfVisualProperties(VisualProperty.GraphObjectType
-     * objectType) instead.
-     */
-    public Collection<VisualProperty> collectionOfVisualProperties(Collection<View<CyNode>> nodeviews,
-								   Collection<View<CyEdge>> edgeviews,
-								   VisualProperty.GraphObjectType objectType);
-
+	/**
+	 * Returns the collection of all those VisualProperties that are in use for
+	 * the given GraphObjects. I.e. these are the VisualProperties, for which
+	 * setting a value will actually change the displayed graph.
+	 *
+	 * Note: returns the same as collectionOfVisualProperties() if
+	 * arg is null.
+	 *
+	 * Note: using VisualProperty.GraphObjectType.NETWORK for objectType is not
+	 * really useful. For network VPs, use collectionOfVisualProperties(VisualProperty.GraphObjectType
+	 * objectType) instead.
+	 *
+	 * @param views for which the filtering is to be done
+	 * @param objectType for which to filter
+	 * @return VisualProperties, filtered with the DependentVisualProperty callbacks
+	 */
+	Collection<VisualProperty<?>> collectionOfVisualProperties(Collection<? extends View<?>> views,
+	                                                           VisualProperty.GraphObjectType objectType);
 }

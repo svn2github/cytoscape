@@ -32,18 +32,21 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel;
-
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
 
 import java.util.Collection;
 import java.util.Set;
 
+
+/**
+ *
+ */
 public abstract class DependentVisualPropertyCallback {
 	/** Called when mapping results change.
-	 * @return the set of VisualProperties to hide
+	 * @param views the views for which the filtering is to be done
+	 * @param currentVisualProperties the current list of VisualProperties
+	 * @return the set of VisualProperties to hide (most likely subset of currentVisualProperties)
 	 */
-	public abstract Set<VisualProperty> changed(Collection<View<CyNode>> nodeviews, Collection<View<CyEdge>> edgeviews, Collection<VisualProperty> current_vps);
+	public abstract Set<VisualProperty<?>> changed(Collection<? extends View<?>> views,
+	                                               Collection<? extends VisualProperty<?>> currentVisualProperties);
 }

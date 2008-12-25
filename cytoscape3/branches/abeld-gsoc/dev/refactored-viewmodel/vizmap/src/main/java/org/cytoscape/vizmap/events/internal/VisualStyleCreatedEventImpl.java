@@ -32,19 +32,23 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.vizmap.events.internal;
 
-import org.cytoscape.event.CyEvent;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.events.VisualStyleCreatedEvent;
+
 
 /**
  * DOCUMENT ME!
   */
 public class VisualStyleCreatedEventImpl extends AbstractVisualStyleEvent
     implements VisualStyleCreatedEvent {
-    public VisualStyleCreatedEventImpl(VisualStyle vs) {
-	super(vs);
-    }
+	/**
+	 * Creates a new VisualStyleCreatedEventImpl object.
+	 *
+	 * @param vs  DOCUMENT ME!
+	 */
+	public VisualStyleCreatedEventImpl(final VisualStyle vs) {
+		super(vs);
+	}
 }

@@ -32,19 +32,24 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.vizmap.events.internal;
 
-import org.cytoscape.event.CyEvent;
 import org.cytoscape.vizmap.VisualStyle;
+
 
 /**
  * DOCUMENT ME!
   */
-public class  AbstractVisualStyleEvent {
-    private VisualStyle vs;
-	public AbstractVisualStyleEvent(VisualStyle vs) {
-	    this.vs = vs;
+public class AbstractVisualStyleEvent {
+	private VisualStyle vs;
+
+	/**
+	 * Creates a new AbstractVisualStyleEvent object.
+	 *
+	 * @param vs  DOCUMENT ME!
+	 */
+	public AbstractVisualStyleEvent(final VisualStyle vs) {
+		this.vs = vs;
 	}
 
 	/**
@@ -55,5 +60,4 @@ public class  AbstractVisualStyleEvent {
 	public VisualStyle getSource() {
 		return vs;
 	}
-
 }

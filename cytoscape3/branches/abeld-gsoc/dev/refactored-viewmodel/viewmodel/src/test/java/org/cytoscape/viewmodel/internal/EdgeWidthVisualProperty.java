@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,18 +32,21 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel.internal;
 
 import org.cytoscape.viewmodel.*;
+
 
 /**
  * DOCUMENT ME!
   */
 public class EdgeWidthVisualProperty implements VisualProperty<Double> {
-
-
-    public VisualProperty.GraphObjectType getObjectType() {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualProperty.GraphObjectType getObjectType() {
 		return VisualProperty.GraphObjectType.EDGE;
 	}
 
@@ -54,36 +55,43 @@ public class EdgeWidthVisualProperty implements VisualProperty<Double> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Class<Double> getType() { return Double.class; }
+	public Class<Double> getType() {
+		return Double.class;
+	}
 
 	/**
 	 * The default value of this property.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Double getDefault() { return Double.valueOf(1.0); }
+	public Double getDefault() {
+		return Double.valueOf(1.0);
+	}
 
 	/**
 	 * Used for hashes identifying this property.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getID() { return "EDGE_WIDTH"; }
+	public String getID() {
+		return "EDGE_WIDTH";
+	}
 
 	/**
 	 * For presentation to humans.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getName() { return "Edge Width"; }
+	public String getName() {
+		return "Edge Width";
+	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @return callback, or null if there isn't one
 	 */
 	public DependentVisualPropertyCallback dependentVisualPropertyCallback() {
 		return null;
 	}
-
 }

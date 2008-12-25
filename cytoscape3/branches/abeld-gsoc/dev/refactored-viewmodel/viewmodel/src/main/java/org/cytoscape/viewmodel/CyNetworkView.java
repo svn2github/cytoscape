@@ -32,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel;
 
 import org.cytoscape.model.CyEdge;
@@ -42,6 +41,7 @@ import org.cytoscape.model.GraphObject;
 
 import java.util.List;
 import java.util.Set;
+
 
 /**
  * Contains the visual representation of a Network.
@@ -53,7 +53,7 @@ public interface CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyNetwork getNetwork();
+	CyNetwork getNetwork();
 
 	/**
 	 * Returns a View for a specified Node.
@@ -62,14 +62,14 @@ public interface CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public View<CyNode> getCyNodeView(CyNode n);
+	View<CyNode> getCyNodeView(CyNode n);
 
 	/**
 	 * Returns a list of Views for all CyNodes in the network.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List<View<CyNode>> getCyNodeViews();
+	List<View<CyNode>> getCyNodeViews();
 
 	/**
 	 * Returns a View for a specified Edge.
@@ -78,14 +78,14 @@ public interface CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public View<CyEdge> getCyEdgeView(CyEdge n);
+	View<CyEdge> getCyEdgeView(CyEdge n);
 
 	/**
 	 * Returns a list of Views for all CyEdges in the network.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List<View<CyEdge>> getCyEdgeViews();
+	List<View<CyEdge>> getCyEdgeViews();
 
 	/**
 	 * Returns the view for this Network.
@@ -93,26 +93,51 @@ public interface CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-    public View<CyNetwork> getNetworkView();
+	View<CyNetwork> getNetworkView();
 
 	/**
 	 * Returns a list of all View including those for Nodes, Edges, and Network.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List<View<?extends GraphObject>> getAllViews();
+	List<View<?extends GraphObject>> getAllViews();
 
-    /**
-     * 
-     *
-     */
-    public Set<View<?extends GraphObject>> getSubset(String name);
-    /**
-     * If subset already exists, replaces it with given Set
-     */
-    public void createSubset(String name, Set<View<?extends GraphObject>> subset);
+	/**
+	 * Returns the given subset.
+	 *
+	 * @param name name of the subset to return
+	 * @return the subset
+	 */
+	Set<View<?extends GraphObject>> getSubset(String name);
 
-    public void addToSubset(String name, Set<View<?extends GraphObject>> toAdd);
-    public void removeFromSubset(String name, Set<View<?extends GraphObject>> toRemove);
-    public void deleteSubset(String name);
+	/**
+	 * If subset already exists, replaces it with given Set.
+	 *
+	 * @param name name of the subset
+	 * @param subset the Views the subset will contain
+	 */
+	void createSubset(String name, Set<View<?extends GraphObject>> subset);
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param name DOCUMENT ME!
+	 * @param toAdd DOCUMENT ME!
+	 */
+	void addToSubset(String name, Set<View<?extends GraphObject>> toAdd);
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param name DOCUMENT ME!
+	 * @param toRemove DOCUMENT ME!
+	 */
+	void removeFromSubset(String name, Set<View<?extends GraphObject>> toRemove);
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param name DOCUMENT ME!
+	 */
+	void deleteSubset(String name);
 }

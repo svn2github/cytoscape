@@ -32,10 +32,10 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.vizmap;
 
 import org.cytoscape.model.GraphObject;
+
 import org.cytoscape.viewmodel.View;
 import org.cytoscape.viewmodel.VisualProperty;
 
@@ -47,6 +47,7 @@ import org.cytoscape.viewmodel.VisualProperty;
  * property.
  *
  * Or should the mapping calculator map from Attr to Class<?>?
+ * @param <T> DOCUMENT ME!
  */
 public interface MappingCalculator<T> {
 	/**
@@ -54,28 +55,28 @@ public interface MappingCalculator<T> {
 	 *
 	 * @param name  DOCUMENT ME!
 	 */
-	public void setMappingAttributeName(String name);
+	void setMappingAttributeName(String name);
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getMappingAttributeName();
+	String getMappingAttributeName();
 
 	/**
 	 * The visual property the attribute gets mapped to.
 	 *
 	 * @param vp  DOCUMENT ME!
 	 */
-	public void setVisualProperty(VisualProperty<T> vp);
+	void setVisualProperty(VisualProperty<T> vp);
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty<T> getVisualProperty();
+	VisualProperty<T> getVisualProperty();
 
 	/**
 	 *  Since current MappingCalculators map from Attributes to
@@ -83,7 +84,8 @@ public interface MappingCalculator<T> {
 	 *  generic types that have CyAttributes; currently this is
 	 *  GraphObject.
 	 *
+	 * @param <V> DOCUMENT ME!
 	 * @param v DOCUMENT ME!
 	 */
-	public <V extends GraphObject> void apply(View<V> v);
+	<V extends GraphObject> void apply(View<V> v);
 }

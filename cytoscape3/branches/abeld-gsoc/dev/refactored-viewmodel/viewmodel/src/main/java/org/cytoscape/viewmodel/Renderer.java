@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel;
 
 import java.util.Set;
@@ -42,7 +40,7 @@ import java.util.Set;
 /**
  * Should be implemented as a service.
  * 'Renderer' is simply anything that provides VisualProperties.
- * With a 'VisualProperties as annotations' this won't be needed. 
+ * With a 'VisualProperties as annotations' this won't be needed.
  */
 public interface Renderer {
 	/**
@@ -50,7 +48,7 @@ public interface Renderer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Set<VisualProperty> getVisualProperties();
+	Set<VisualProperty<?>> getVisualProperties();
 
 	/**
 	 * Given a String, returns a VisualProperty object.
@@ -59,14 +57,14 @@ public interface Renderer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty<?> parseVisualProperty(String s);
+	VisualProperty<?> parseVisualProperty(String s);
 
 	/**
-	 * Returns a string suitable for parsing by {Renderer#parseVisualProperty(String s)}
+	 * Returns a string suitable for parsing by {Renderer#parseVisualProperty(String s)}.
 	 *
 	 * @param vp  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getVisualPropertyString(VisualProperty<?> vp);
+	String getVisualPropertyString(VisualProperty<?> vp);
 }

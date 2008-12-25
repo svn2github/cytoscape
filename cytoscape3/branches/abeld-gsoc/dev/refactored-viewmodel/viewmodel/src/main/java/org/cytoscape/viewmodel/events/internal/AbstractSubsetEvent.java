@@ -32,30 +32,46 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.viewmodel.events.internal;
-
-import org.cytoscape.viewmodel.events.SubsetDestroyedEvent;
-import org.cytoscape.viewmodel.CyNetworkView;
 
 import org.cytoscape.event.CyEvent;
 
+import org.cytoscape.viewmodel.CyNetworkView;
+
+
 /**
- * Usefull because all subset events need to store CyNetworkView and subset Name, too
+ * Useful because all subset events need to store CyNetworkView and subset Name, too.
  */
 public class AbstractSubsetEvent implements CyEvent<String> {
-    private CyNetworkView networkView;
-    private String subsetName;
-    public AbstractSubsetEvent(CyNetworkView networkView, String subsetName){
-	this.networkView = networkView;
-	this.subsetName = subsetName;
+	private CyNetworkView networkView;
+	private String subsetName;
 
-    }
-    public CyNetworkView getNetworkView(){
-	return networkView;
-    }
+	/**
+	 * Creates a new AbstractSubsetEvent object.
+	 *
+	 * @param networkView  DOCUMENT ME!
+	 * @param subsetName  DOCUMENT ME!
+	 */
+	public AbstractSubsetEvent(final CyNetworkView networkView, final String subsetName) {
+		this.networkView = networkView;
+		this.subsetName = subsetName;
+	}
 
-    public String getSource(){
-	return subsetName;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public CyNetworkView getNetworkView() {
+		return networkView;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String getSource() {
+		return subsetName;
+	}
 }
