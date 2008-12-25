@@ -1,0 +1,9 @@
+
+There are two checkstyle configurations included in this package. 
+The first (checkstyle-build) is run at build time and validates basic 
+formatting only.  The second (checkstyle-site) is run in the site phase 
+and does more complete checking.  The goal is to strike a balance 
+between maintaining basic formatting guidelines without being overly
+strick, while at the same time providing feedback on design issues 
+to be fixed prior to release.
+
