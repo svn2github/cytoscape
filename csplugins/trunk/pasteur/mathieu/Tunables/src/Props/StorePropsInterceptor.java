@@ -20,9 +20,6 @@ public class StorePropsInterceptor extends HiddenTunableInterceptor<PropHandler>
 	}
 
 
-	protected void cancel(List<PropHandler> handlerList) {
-	}
-
 	protected void display(List<PropHandler> handlerList) {
 	}
 

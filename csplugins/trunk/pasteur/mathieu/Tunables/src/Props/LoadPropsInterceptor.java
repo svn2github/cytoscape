@@ -19,9 +19,6 @@ public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> 
 		}
 	}
 	
-	protected void cancel(List<PropHandler> handlerList) {	
-	}
-
 	protected void display(List<PropHandler> handlerList) {
 	}
 	
@@ -36,6 +33,5 @@ public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> 
 			p.setProps(inputProps);
 		}
 	}
-
 
 }
