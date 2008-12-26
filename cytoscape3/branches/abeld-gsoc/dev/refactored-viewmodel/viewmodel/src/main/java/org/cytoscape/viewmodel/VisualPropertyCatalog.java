@@ -73,7 +73,7 @@ public interface VisualPropertyCatalog {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	Collection<VisualProperty<?>> collectionOfVisualProperties(VisualProperty.GraphObjectType objectType);
+	Collection<VisualProperty<?>> collectionOfVisualProperties(String objectType);
 
 	/**
 	 *  DOCUMENT ME!
@@ -84,7 +84,7 @@ public interface VisualPropertyCatalog {
 	 * @return  DOCUMENT ME!
 	 */
 	Collection<VisualProperty<?>> collectionOfVisualProperties(CyNetworkView networkview,
-	                                                           VisualProperty.GraphObjectType objectType);
+	                                                           String objectType);
 
 	/**
 	 * Returns the collection of all those VisualProperties that are in use for
@@ -102,6 +102,6 @@ public interface VisualPropertyCatalog {
 	 * @param objectType for which to filter
 	 * @return VisualProperties, filtered with the DependentVisualProperty callbacks
 	 */
-	Collection<VisualProperty<?>> collectionOfVisualProperties(Collection<? extends View<?>> views,
-	                                                           VisualProperty.GraphObjectType objectType);
+	Collection<VisualProperty<?>> collectionOfVisualProperties(Collection<?extends View<?>> views,
+	                                                           String objectType);
 }

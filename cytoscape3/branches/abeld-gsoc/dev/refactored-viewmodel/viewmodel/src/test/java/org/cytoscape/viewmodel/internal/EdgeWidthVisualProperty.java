@@ -46,8 +46,8 @@ public class EdgeWidthVisualProperty implements VisualProperty<Double> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty.GraphObjectType getObjectType() {
-		return VisualProperty.GraphObjectType.EDGE;
+	public String getObjectType() {
+		return VisualProperty.EDGE;
 	}
 
 	/**

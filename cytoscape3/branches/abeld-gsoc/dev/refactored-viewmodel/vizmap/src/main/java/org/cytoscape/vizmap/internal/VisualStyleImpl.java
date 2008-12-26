@@ -135,11 +135,11 @@ public class VisualStyleImpl implements VisualStyle {
 		final List<View<CyEdge>> edgeviews = view.getCyEdgeViews();
 
 		applyImpl(nodeviews,
-		          vpCatalog.collectionOfVisualProperties(nodeviews, VisualProperty.GraphObjectType.NODE));
+		          vpCatalog.collectionOfVisualProperties(nodeviews, VisualProperty.NODE));
 		applyImpl(edgeviews,
-		          vpCatalog.collectionOfVisualProperties(edgeviews, VisualProperty.GraphObjectType.EDGE));
+		          vpCatalog.collectionOfVisualProperties(edgeviews, VisualProperty.EDGE));
 		applyImpl(view.getNetworkView(),
-		          vpCatalog.collectionOfVisualProperties(VisualProperty.GraphObjectType.NETWORK));
+		          vpCatalog.collectionOfVisualProperties(VisualProperty.NETWORK));
 	}
 
 	// note: can't use applyImpl(List<View<?>>views ... ) because that does not compile

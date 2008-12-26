@@ -146,6 +146,7 @@ public class CyMain {
 		// TODO: add passthroughMapping to copy id to nodeLabel
 		TextPresentation p = pf.getTextPresentationFor(view);
 		System.out.println(p.render());
+		
 	}
 
 	/**

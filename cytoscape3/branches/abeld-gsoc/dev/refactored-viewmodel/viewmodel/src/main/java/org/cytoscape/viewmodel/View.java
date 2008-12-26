@@ -46,10 +46,23 @@ import org.cytoscape.model.Identifiable;
  * @param <S> the base (model-level) object for which this is a View. For example, CyNode or CyEdge
  */
 public interface View<S> extends Identifiable {
+	/**
+	 * @param <T> DOCUMENT ME!
+	 * @param vp the VisualProperty
+	 * @param o DOCUMENT ME!
+	 */
 	<T> void setVisualProperty(VisualProperty<T> vp, T o);
-
+	/**
+	 * @param <T> DOCUMENT ME!
+	 * @param vp the VisualProperty
+	 * @return DOCUMENT ME!
+	 */
 	<T> T getVisualProperty(VisualProperty<T> vp);
-
+	/**
+	 * @param <T> DOCUMENT ME!
+	 * @param vp the VisualProperty
+	 * @param value DOCUMENT ME!
+	 */
 	<T> void setLockedValue(VisualProperty<T> vp, T value);
 
 	/**

@@ -48,8 +48,8 @@ public class NodeColorVisualProperty implements VisualProperty<Color> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty.GraphObjectType getObjectType() {
-		return VisualProperty.GraphObjectType.NODE;
+	public String getObjectType() {
+		return VisualProperty.NODE;
 	}
 
 	/**

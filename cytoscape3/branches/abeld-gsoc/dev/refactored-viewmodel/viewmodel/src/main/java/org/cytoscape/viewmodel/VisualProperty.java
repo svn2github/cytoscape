@@ -38,25 +38,33 @@ package org.cytoscape.viewmodel;
 /**
  * FIXME
  * Think of it as a column in the viewmodel table.
+ *
+ * Uses String constants as ObjectTypes, ie. to seperate NodeVisualProperties from EdgeVisualProperties, etc.
+ * Ideally, we could use Class<? extends View<?>> or something like that, but unfortunately that is impossible due to type erasure.
+ *
  * @param <T> the dataType of the VisualProperty, ie. what kind of objects are the values
  */
 public interface VisualProperty<T> {
-	/** FIXME: Strings be used instead, with "NODE", "EDGE",
-	 * "NETWORK" being the canonical values?
-	 *
-	 * Or, even better, is there a way to specify 'non-generic subclass of {@link View<S>}?'
-	 * (That being the actual constraint we want to enforce.)
+	/**
+	 * Canonical ObjectType string for CyNode.
 	 */
-	enum GraphObjectType {
-		NODE,
-		EDGE,
-		NETWORK;
-	}
+	String NODE = "NODE";
+	/**
+	 * Canonical ObjectType string for CyEdge.
+	 */
+	String EDGE = "EDGE";
+	/**
+	 * Canonical ObjectType string for CyNetwork.
+	 */
+	String NETWORK = "NETWORK";
+
 	/**
 	 * Returns what type of objects this VisualProperty stores values for.
-	 * @return the object type
+	 * canonical values are VisualProperty.NODE, etc.
+	 *
+	 * @return the string describing the object type
 	 */
-	VisualProperty.GraphObjectType getObjectType();
+	String getObjectType();
 
 	/**
 	 * The type of object represented by this property.

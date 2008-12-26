@@ -143,7 +143,7 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Collection<VisualProperty<?>> collectionOfVisualProperties(final VisualProperty.GraphObjectType objectType) {
+	public Collection<VisualProperty<?>> collectionOfVisualProperties(final String objectType) {
 		return collectionOfVisualProperties((Collection<View<?>>) null, objectType);
 	}
 
@@ -156,7 +156,7 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	 * @return  DOCUMENT ME!
 	 */
 	public Collection<VisualProperty<?>> collectionOfVisualProperties(final CyNetworkView networkview,
-	                                                                  final VisualProperty.GraphObjectType objectType) {
+	                                                                  final String objectType) {
 		if (networkview != null) {
 			// FIXME: could filter Views based on objectType, right here
 			final Collection<View<?>> views = new HashSet<View<?>>(networkview.getCyNodeViews());
@@ -179,7 +179,7 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	 * @return VisualProperties
 	 */
 	public Collection<VisualProperty<?>> collectionOfVisualProperties(final Collection<? extends View<?>> views,
-	                                                                  final VisualProperty.GraphObjectType objectType) {
+	                                                                  final String objectType) {
 		final Collection<VisualProperty<?>> allVisualProperties = readAllVisualPropertiesFromOSGI();
 
 		if (views == null)
@@ -207,7 +207,7 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 
 	/* return collection of only those that have a matching objectType */
 	private Collection<VisualProperty<?>> filterForObjectType(final Collection<VisualProperty<?>> vps,
-	                                                          final VisualProperty.GraphObjectType objectType) {
+	                                                          final String objectType) {
 		final ArrayList<VisualProperty<?>> result = new ArrayList<VisualProperty<?>>();
 
 		for (VisualProperty<?> vp : vps) {

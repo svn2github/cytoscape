@@ -58,14 +58,14 @@ import java.util.*;
  * added/removed. (Maybe UI will listen directly to OSGi events, maybe
  * DiscreteVisualProperty will wrap OSGi events, so that UI can be
  * OSGi-agnostic.)
- *
+ * @param <T> DOCUMENT ME!
  */
 public class DiscreteVisualProperty<T> implements VisualProperty<T> {
 	private String id;
 	private String name;
 	private T defaultValue;
 	private Class<T> dataType;
-	private VisualProperty.GraphObjectType objectType;
+	private String objectType;
 	private DependentVisualPropertyCallback callback;
 	private BundleContext bc;
 
@@ -80,7 +80,7 @@ public class DiscreteVisualProperty<T> implements VisualProperty<T> {
 	 * @param bc  DOCUMENT ME!
 	 */
 	public DiscreteVisualProperty(final String id, final String name, final Class<T> dataType, final T defaultValue,
-	                              final VisualProperty.GraphObjectType objectType, final BundleContext bc) {
+	                              final String objectType, final BundleContext bc) {
 		this(id, name, dataType, defaultValue, objectType, null, bc);
 	}
 
@@ -96,7 +96,7 @@ public class DiscreteVisualProperty<T> implements VisualProperty<T> {
 	 * @param bc  DOCUMENT ME!
 	 */
 	public DiscreteVisualProperty(final String id, final String name, final Class<T> dataType, final T defaultValue,
-	                              final VisualProperty.GraphObjectType objectType,
+	                              final String objectType,
 	                              final DependentVisualPropertyCallback callback, final BundleContext bc) {
 		this.id = id;
 		this.name = name;
@@ -114,6 +114,7 @@ public class DiscreteVisualProperty<T> implements VisualProperty<T> {
 	 *
 	 * This implementation simply queries the OSGi framework for all
 	 * services implementing dataType interface.
+	 * @return DOCUMENT ME!
 	 */
 	public Set<T> getValues() { // copy-paste-modified from CyEventHelperImpl in core3/model
 
@@ -147,7 +148,7 @@ public class DiscreteVisualProperty<T> implements VisualProperty<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty.GraphObjectType getObjectType() {
+	public String getObjectType() {
 		return objectType;
 	}
 

@@ -50,7 +50,7 @@ public class VisualPropertyImpl<T> implements VisualProperty<T> {
 	private String name;
 	private T defaultValue;
 	private Class<T> dataType;
-	private VisualProperty.GraphObjectType objectType;
+	private String objectType;
 	private DependentVisualPropertyCallback callback;
 
 	/**
@@ -63,7 +63,7 @@ public class VisualPropertyImpl<T> implements VisualProperty<T> {
 	 * @param objectType  DOCUMENT ME!
 	 */
 	public VisualPropertyImpl(final String id, final String name, final T defaultValue, final Class<T> dataType,
-	                          final VisualProperty.GraphObjectType objectType) {
+	                          final String objectType) {
 		this(id, name, defaultValue, dataType, objectType, null);
 	}
 
@@ -78,7 +78,7 @@ public class VisualPropertyImpl<T> implements VisualProperty<T> {
 	 * @param callback  DOCUMENT ME!
 	 */
 	public VisualPropertyImpl(final String id, final String name, final T defaultValue, final Class<T> dataType,
-	                          final VisualProperty.GraphObjectType objectType,
+	                          final String objectType,
 	                          final DependentVisualPropertyCallback callback) {
 		this.id = id;
 		this.name = name;
@@ -93,7 +93,7 @@ public class VisualPropertyImpl<T> implements VisualProperty<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty.GraphObjectType getObjectType() {
+	public String getObjectType() {
 		return objectType;
 	}
 
