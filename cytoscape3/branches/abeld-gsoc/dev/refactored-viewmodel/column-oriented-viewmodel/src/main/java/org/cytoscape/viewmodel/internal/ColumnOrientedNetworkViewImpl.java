@@ -51,6 +51,7 @@ import org.cytoscape.model.events.AddedNodeListener;
 
 import org.cytoscape.viewmodel.CyNetworkView;
 import org.cytoscape.viewmodel.View;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.events.SubsetChangedListener;
 import org.cytoscape.viewmodel.events.SubsetCreatedListener;
 import org.cytoscape.viewmodel.events.SubsetDestroyedListener;
@@ -79,7 +80,8 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 	private HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>> edgeViews;
 	private HashMap<String, Set<View<?extends GraphObject>>> subsets;
 	private ColumnOrientedViewImpl<CyNetwork> networkView;
-
+	private HashMap<VisualProperty<?>, ColumnOrientedViewColumn<?>> columns;
+	
 	/**
 	 * Creates a new ColumnOrientedNetworkViewImpl object.
 	 *
@@ -95,16 +97,17 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 		nodeViews = new HashMap<CyNode, ColumnOrientedViewImpl<CyNode>>();
 		edgeViews = new HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>>();
 		subsets = new HashMap<String, Set<View<?extends GraphObject>>>();
-
+		columns = new HashMap<VisualProperty<?>, ColumnOrientedViewColumn<?>>();
+		
 		for (CyNode node : network.getNodeList()) {
-			nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node));
+			nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node, this));
 		}
 
 		for (CyEdge edge : network.getEdgeList()) {
-			edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge));
+			edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge, this));
 		}
 
-		networkView = new ColumnOrientedViewImpl<CyNetwork>(network);
+		networkView = new ColumnOrientedViewImpl<CyNetwork>(network, this);
 
 		//  register event listeners:
 		bc.registerService(AddedEdgeListener.class.getName(), this, null);
@@ -199,7 +202,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 			return;
 
 		final CyEdge edge = e.getEdge();
-		edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge));
+		edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge, this)); // FIXME: View creation here and in initializer: should be in one place
 
 		// FIXME: fire events!
 	}
@@ -214,7 +217,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 			return;
 
 		final CyNode node = e.getNode();
-		nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node));
+		nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node, this));
 	}
 
 	/**
@@ -243,6 +246,18 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 		edgeViews.remove(e.getNode());
 	}
 
+	public <T> ColumnOrientedViewColumn<T> getColumn(final VisualProperty<T> vp){
+		if (vp == null)
+			throw new NullPointerException("VisualProperty must not be null");
+		if (columns.containsKey(vp)){
+			return (ColumnOrientedViewColumn<T>) columns.get(vp);
+		} else { // create column
+			ColumnOrientedViewColumn<T> column = new ColumnOrientedViewColumn<T>(vp);
+			columns.put(vp, column);
+			return column;
+		}
+	}
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
