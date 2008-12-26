@@ -145,13 +145,5 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	public Field getField() {
 		return f;
 	}
-	public Class<?> getclass() {
-		return null;
-	}
-
-	public Object getValue() {
-		return null;
-	}
-
 
 }
