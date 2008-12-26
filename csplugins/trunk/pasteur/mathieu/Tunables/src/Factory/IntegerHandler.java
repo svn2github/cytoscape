@@ -2,7 +2,6 @@ package Factory;
 
 import java.lang.reflect.*;
 import javax.swing.*;
-import java.awt.Color;
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 
@@ -13,8 +12,6 @@ public class IntegerHandler implements Guihandler{
 	Object o;
 	JTextField jtf=new JTextField();
 	String title;
-	String value;
-	Boolean available;
 	Integer inte;
 
 	
@@ -23,9 +20,8 @@ public class IntegerHandler implements Guihandler{
 		this.f=f;
 		this.t=t;
 		this.o=o;
-		this.available=t.available();
 		try{
-			this.value=f.get(o).toString();
+			this.inte=(Integer)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		this.title=f.getName();
 	}
@@ -40,11 +36,7 @@ public class IntegerHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();
-		jtf = new JTextField(value);
-		if(available!=true){
-			jtf.setEnabled(false);
-			jtf.setBackground(Color.GRAY);
-		}			
+		jtf = new JTextField(inte.toString());		
 		pane.add(jtf);
 		return pane;
 	}
@@ -52,8 +44,7 @@ public class IntegerHandler implements Guihandler{
 	
 	public JPanel update(){
 		JPanel result = new JPanel();
-		if(available==true)	inte = Integer.parseInt(jtf.getText());
-		else inte = Integer.parseInt(value);
+		inte = Integer.parseInt(jtf.getText());
 		try{
 			if(inte!=null)f.set(o, inte);
 			result.add(new JTextField(f.get(o).toString()));
