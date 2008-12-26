@@ -30,7 +30,6 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 		this.f=f;
 		this.o=o;
 		this.t=t;
-		this.available=t.available();
 		try{
 			LMS=(ListMultipleSelection<T>) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
