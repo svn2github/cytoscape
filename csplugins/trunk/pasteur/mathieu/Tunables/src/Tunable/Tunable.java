@@ -9,5 +9,5 @@ public @interface Tunable{
 	public String description();
 	public Class<?> type();
 	public Param flag();	
-	public enum Param { IntegerSlider,DoubleSlider,Integer,Double,Nothing,MultiSelect }	
+	public enum Param {IntegerSlider,DoubleSlider,Integer,Double,Nothing}	
 }

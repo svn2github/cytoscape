@@ -5,6 +5,7 @@ import HandlerFactory.HandlerFactory;
 import java.lang.reflect.*;
 import java.security.acl.Group;
 import Tunable.Tunable;
+import Tunable.Tunable.Param;
 import Utils.*;
 
 public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
@@ -29,7 +30,7 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 		if(type == ListSingleSelection.class)
 			return new ListSingleHandler<String>(f,o,t);
 		if(type == ListMultipleSelection.class)
-			return new ListMultipleHandler<String>(f,o,t);
+			return new ListMultipleHandler<String>(f,o,t);		
 		if(type == myButton.class)
 			return new ButtonHandler(f,o,t);
 		return null;

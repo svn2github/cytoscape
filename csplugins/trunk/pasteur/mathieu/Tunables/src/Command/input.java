@@ -52,7 +52,7 @@ public class input<O extends Comparable<String>> implements command {
 	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
 	public Group Group6;
 	
-	@Tunable(description="ListMultipleSelection", type=List.class, flag=Param.MultiSelect)
+	@Tunable(description="ListMultipleSelection", type=List.class, flag=Param.Nothing)
 	public ListMultipleSelection<String> monthNames;
 
 	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
@@ -77,7 +77,7 @@ public class input<O extends Comparable<String>> implements command {
 			days.add("Friday");
 			days.add("Saturday");
 			days.add("Sunday");
-			dayNames =new ListSingleSelection<String>(days);
+			dayNames = new ListSingleSelection<String>(days);
 			months.add("January");
 			months.add("February");
 			months.add("March");
@@ -90,7 +90,7 @@ public class input<O extends Comparable<String>> implements command {
 			months.add("October");
 			months.add("November");
 			months.add("December");	
-			monthNames =new ListMultipleSelection<String>(months);			
+			monthNames = new ListMultipleSelection<String>(months);
 	}
 }
 
