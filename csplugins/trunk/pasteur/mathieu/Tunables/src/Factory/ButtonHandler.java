@@ -3,11 +3,9 @@ package Factory;
 import GuiInterception.*;
 import Tunable.*;
 import Utils.myButton;
-import java.awt.Button;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.*;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -18,10 +16,8 @@ public class ButtonHandler implements Guihandler{
 	Field f;
 	Object o;
 	Tunable t;
-
 	String title;
 	myButton button;
-	Boolean selected=null;
 
 	
 	@SuppressWarnings("deprecation")
@@ -37,10 +33,9 @@ public class ButtonHandler implements Guihandler{
 	}
 
 
-	public void handle(){ 
-		if(selected == true) button.setSelected(true);
-		else button.setSelected(false);
+	public void handle(){
 		try{
+			button = (myButton)f.get(o);
 			f.set(o,button);
 		}catch(Exception e){e.printStackTrace();}			
 	}
@@ -49,7 +44,6 @@ public class ButtonHandler implements Guihandler{
 	public JPanel getInputPanel() {
 		JPanel inputpane = new JPanel();
 		button.setselected(false);
-		selected=button.getselected();
 		button.setActionCommand(title);
 		button.addActionListener(new myActionListener());
 		inputpane.add(button);
@@ -60,11 +54,10 @@ public class ButtonHandler implements Guihandler{
 
 	public JPanel update() {
 		JPanel resultpane = new JPanel();
-		System.out.println("button selected = " + selected);
-		if(selected == true) button.setselected(true);
-		else button.setselected(false);
 		try{
-			f.set(o,button);
+			button = (myButton) f.get(o);
+		}catch(Exception e){e.printStackTrace();}
+		try{
 			resultpane.add(new JTextField("statut = "+ button.getselected()));
 		}catch(Exception e){e.printStackTrace();}		
 		return resultpane;
@@ -72,9 +65,12 @@ public class ButtonHandler implements Guihandler{
 	
 	public class myActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae) {
-			if(ae.getActionCommand().equals(title)){
+			String command=ae.getActionCommand();
+			if(command.equals(title)){
 				button.setselected(true);
-				selected=button.getselected();
+				try{
+					f.set(o, button);
+				}catch(Exception e){e.printStackTrace();}
 			}
 		}
 	}

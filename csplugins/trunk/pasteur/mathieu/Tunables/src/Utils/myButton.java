@@ -2,6 +2,7 @@ package Utils;
 
 import javax.swing.JButton;
 
+@SuppressWarnings("serial")
 public class myButton extends JButton{
 
 	private Boolean selected;

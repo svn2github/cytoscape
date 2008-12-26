@@ -1,15 +1,12 @@
 package GuiInterception;
 
 
-import java.awt.Button;
 import java.security.acl.Group;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-
 import Utils.myButton;
-
 import java.util.List;
 import java.awt.event.*;
 
@@ -22,7 +19,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	public JFrame outframe;
 	static JPanel tunPane = null;
 	boolean processdone = false;
-	myButton test;
+	myButton button;
 	List<Guihandler> list;
 	Guihandler guihandler;
 	
@@ -58,17 +55,32 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			inframe.setLocation(100, 200);
 			inframe.setVisible(true);
 			processdone=true;
+			
+			//Test to display the OutputFrame when Button is selected
 			for(Guihandler guihandler :list){
-				if(guihandler.getField().getType()==Button.class){
+				if(guihandler.getField().getType()==myButton.class){
 					try{
-					test = (myButton) guihandler.getField().get(guihandler.getObject());
-					test.addActionListener(new myActionListener());
-					this.guihandler=guihandler;
-					test.setActionCommand("test");
+						button = (myButton) guihandler.getField().get(guihandler.getObject());
+						button.addActionListener(new myActionListener());
+						this.guihandler=guihandler;
+						button.setActionCommand(guihandler.getField().getName());
 					}catch(Exception e){e.printStackTrace();}
 				}
 			}
 	}
+	
+	private class myActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent event){
+			if(event.getActionCommand().equals(guihandler.getField().getName())){
+				button.setselected(true);
+				try{
+					guihandler.getField().set(guihandler.getObject(), button);
+				}catch(Exception e){e.printStackTrace();}
+				display(list);	
+			}
+		}
+	}
+	
 	
 	
 	
@@ -102,21 +114,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		else System.out.println("No input displayed");
 	}
 
-	
-	private class myActionListener implements ActionListener{
-		public void actionPerformed(ActionEvent event){
-			if(event.getActionCommand().equals("test")){
-				test.setselected(true);
-				try{
-					guihandler.getField().set(guihandler.getObject(), test);
-					myButton tt = (myButton) guihandler.getField().get(guihandler.getObject());
-					System.out.println(tt.getselected());
-				}catch(Exception e){e.printStackTrace();}
-				display(list);
-				
-			}
-		}
-	}
 		
 	protected void save(List<Guihandler> list){
 		for(Guihandler guihandler : list)	guihandler.handle();

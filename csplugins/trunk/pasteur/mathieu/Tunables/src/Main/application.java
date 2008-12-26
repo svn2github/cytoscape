@@ -19,16 +19,15 @@ public class application{
 	private static JMenuItem menuItem;
 	public static command commander = new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
-	
 	static Properties InputProperties = new Properties();
 	static TunableInterceptor lp = new LoadPropsInterceptor(InputProperties);
 	static Properties store = new Properties();
 	static TunableInterceptor sp = new StorePropsInterceptor(store);
 	static TunableInterceptor canceled = new StorePropsInterceptor(InputProperties);
-	
 	public static TunableInterceptor ti = null;
 	
-		
+	
+	
 	public static void main(String[] args){
         CreateGUIandStart();
     }
@@ -90,7 +89,12 @@ public class application{
 				lp.ProcessProperties();
 				sp.ProcessProperties();
 				System.out.println("OutputCanceledProperties = " + store);
-			//ti.Cancel();
+				JFrame prop = new JFrame("Canceled Properties");
+				JPanel pane = new JPanel();
+				pane.add(new JTextArea(store.toString()));
+				prop.setContentPane(pane);
+				prop.setVisible(true);
+				prop.pack();
 			}
 		}
 	}
@@ -108,8 +112,13 @@ public class application{
 				else System.out.println("No input");
 				sp.intercept(commander);
 				sp.ProcessProperties();
+				JFrame prop = new JFrame("Saved Properties");
+				JPanel pane = new JPanel();
+				pane.add(new JTextArea(store.toString()));
+				prop.setContentPane(pane);
+				prop.setVisible(true);
+				prop.pack();
 				System.out.println("OutputSavedProperties = " + store);
-
 			}
 		}
 	}
