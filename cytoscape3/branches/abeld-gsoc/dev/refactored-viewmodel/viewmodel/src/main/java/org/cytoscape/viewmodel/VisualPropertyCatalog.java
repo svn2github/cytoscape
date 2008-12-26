@@ -102,6 +102,6 @@ public interface VisualPropertyCatalog {
 	 * @param objectType for which to filter
 	 * @return VisualProperties, filtered with the DependentVisualProperty callbacks
 	 */
-	Collection<VisualProperty<?>> collectionOfVisualProperties(Collection<?extends View<?>> views,
+	Collection<VisualProperty<?>> collectionOfVisualProperties(Collection<? extends View<?>> views,
 	                                                           String objectType);
 }

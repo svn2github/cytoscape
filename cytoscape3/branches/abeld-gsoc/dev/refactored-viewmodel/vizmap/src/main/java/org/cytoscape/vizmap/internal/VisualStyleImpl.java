@@ -151,7 +151,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param visualProperties DOCUMENT ME!
 	 */
 	public <T extends GraphObject> void applyImpl(final List<View<T>> views,
-	                                              final Collection<VisualProperty<?>> visualProperties) {
+	                                              final Collection<? extends VisualProperty<?>> visualProperties) {
 		for (View<T> v : views) {
 			applyImpl(v, visualProperties);
 		}
@@ -165,7 +165,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param visualProperties DOCUMENT ME!
 	 */
 	public <T extends GraphObject> void applyImpl(final View<T> view,
-	                                              final Collection<VisualProperty<?>> visualProperties) {
+	                                              final Collection<? extends VisualProperty<?>> visualProperties) {
 		for (VisualProperty<?> vp : visualProperties) {
 			if (!view.isValueLocked(vp)) { // only if no bypass is defined
 

@@ -206,7 +206,7 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	}
 
 	/* return collection of only those that have a matching objectType */
-	private Collection<VisualProperty<?>> filterForObjectType(final Collection<VisualProperty<?>> vps,
+	private Collection<VisualProperty<?>> filterForObjectType(final Collection<? extends VisualProperty<?>> vps,
 	                                                          final String objectType) {
 		final ArrayList<VisualProperty<?>> result = new ArrayList<VisualProperty<?>>();
 
