@@ -30,7 +30,6 @@ public class GroupHandler implements Guihandler{
 		this.t=t;
 		this.o=o;
 		this.title=t.description();
-		this.available=t.available();
 	}
 	
 	
@@ -92,8 +91,4 @@ public class GroupHandler implements Guihandler{
 		return o;
 	}
 
-
-	public Class<?> getclass() {
-		return Group.class;
-	}
 }
