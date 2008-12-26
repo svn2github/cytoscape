@@ -13,7 +13,6 @@ public class BooleanHandler implements Guihandler{
 	Field f;
 	Tunable t;
 	Object o;
-	JTextField jtf;
 	JCheckBox jcb;
 	Boolean bool=null;	
 	String title;

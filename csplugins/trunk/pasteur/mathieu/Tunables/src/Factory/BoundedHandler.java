@@ -73,18 +73,19 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			result=slider.getValue().intValue();
 			boundedObject.setValue(result.toString());
 		}
-		if(t.flag() == Param.Double) {
+		if(t.flag() == Param.Double){
 			if(jtf.getText().isEmpty()==false){
 				value =(O) jtf.getText();
 				boundedObject.setValue((String) value);
 			}
 		}
-		if(t.flag() == Param.Integer) {
+		if(t.flag() == Param.Integer){
 			if(jtf.getText().isEmpty()==false){
 				value =(O) jtf.getText();
-				boundedObject.setValue((String)value);
+				boundedObject.setValue((String) value);
 			}
 		}
+			
 		try{
 			f.set(o,boundedObject);
 		}catch(Exception e){e.printStackTrace();}

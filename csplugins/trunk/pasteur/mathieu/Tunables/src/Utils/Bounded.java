@@ -1,8 +1,7 @@
 package Utils;
 
 
-public class Bounded<O extends Comparable<String>>{
-	
+public class Bounded<O extends Comparable<String>>{	
 	O value;
 	O lowerBound;
 	O upperBound;
@@ -49,12 +48,12 @@ public class Bounded<O extends Comparable<String>>{
 	public void setValue(O v){
 		if (v == null)
 			throw new NullPointerException("value is null!");
+		
+		//int up = Integer.parseInt((String) v) - Integer.parseInt((String) upperBound);
+		int up = v.compareTo((String) upperBound);//Compare the first character!!!!!!!!!!!!!
+		System.out.println("upper = "+upperBound+" and v = "+v+" and compare = "+up);
 
-		//int up = v.compareTo((String) upperBound);
-		String test = v.toString();
-		if(test.equals("null")==false){
-			int up = Integer.parseInt((String) v) - Integer.parseInt((String) upperBound);
-			
+		if(v.toString().equals("null")==false){
 			
 			if (upperBool) {
 				if (up >= 0)
@@ -64,8 +63,8 @@ public class Bounded<O extends Comparable<String>>{
 					throw new IllegalArgumentException("value is greater than upper limit");
 			}
 	
-			//int low = v.compareTo((String) lowerBound);
-			int low = Integer.parseInt((String) v) - Integer.parseInt((String) lowerBound);
+			int low = v.compareTo((String)lowerBound);
+			//int low = Integer.parseInt((String) v) - Integer.parseInt((String) lowerBound);
 			if (lowerBool) {
 				if (low <= 0)
 					throw new IllegalArgumentException("value is less than or equal to lower limit");
