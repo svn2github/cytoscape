@@ -89,7 +89,4 @@ public class ButtonHandler implements Guihandler{
 	public Object getObject() {
 		return o;
 	}
-	public Class<?> getclass() {
-		return Button.class;
-	}
 }
