@@ -57,7 +57,7 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 	                                                                                        "text printed as header",
 	                                                                                        "---[ Adjacency Matrix]---",
 	                                                                                        String.class,
-	                                                                                        VisualProperty.GraphObjectType.NETWORK);
+	                                                                                        VisualProperty.NETWORK);
 
 	// FIXME: this should be VisualProperty<>, only temporary hack to print registered renderers
 	// FIXME: this should be 'static' too, but then we can't pass in the BundleContext object
@@ -78,7 +78,7 @@ public class AdjMatrixTextRenderer implements TextPresentation, Renderer {
 		                                                            "node Renderer",
 		                                                            TextNodeRenderer.class,
 		                                                            new TextNodeRendererImpl(),
-		                                                            VisualProperty.GraphObjectType.NETWORK,
+		                                                            VisualProperty.NETWORK,
 		                                                            bc);
 	}
 

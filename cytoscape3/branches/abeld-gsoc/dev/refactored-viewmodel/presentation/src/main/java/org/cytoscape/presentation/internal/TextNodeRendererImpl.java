@@ -54,7 +54,7 @@ public class TextNodeRendererImpl implements TextNodeRenderer, Renderer {
 	                                                                                       "node label (string)",
 	                                                                                       "default label",
 	                                                                                       String.class,
-	                                                                                       VisualProperty.GraphObjectType.NODE);
+	                                                                                       VisualProperty.NODE);
 
 	/**
 	 *  DOCUMENT ME!
