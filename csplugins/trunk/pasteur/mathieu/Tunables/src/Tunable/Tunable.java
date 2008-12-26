@@ -8,7 +8,6 @@ import java.lang.annotation.*;
 public @interface Tunable{
 	public String description();
 	public Class<?> type();
-	public Param flag();
-	public boolean available() default true;	
+	public Param flag();	
 	public enum Param { IntegerSlider,DoubleSlider,Integer,Double,Nothing,MultiSelect }	
 }
