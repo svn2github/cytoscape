@@ -6,7 +6,6 @@ import HandlerFactory.Handler;
 import Tunable.Tunable;
 import javax.swing.*;
 
-
 public interface Guihandler extends Handler{
 	public void handle();
 	public JPanel getInputPanel();
@@ -14,5 +13,4 @@ public interface Guihandler extends Handler{
 	public Field getField();
 	public Object getObject();
 	public JPanel update();
-	public Class<?> getclass();
 }
