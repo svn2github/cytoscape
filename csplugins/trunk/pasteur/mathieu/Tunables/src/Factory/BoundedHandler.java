@@ -33,11 +33,9 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 		this.t=t;
 		if(t.flag()==Param.DoubleSlider || t.flag()==Param.IntegerSlider) this.useslider=true;
 		try{
-			if(t.type() == Bounded.class){
-				boundedObject = (Bounded) f.get(o);
-				this.upperBound=(O) boundedObject.getUpperBound();
-				this.lowerBound=(O)boundedObject.getLowerBound();
-			}
+			boundedObject = (Bounded) f.get(o);
+			this.upperBound=(O) boundedObject.getUpperBound();
+			this.lowerBound=(O)boundedObject.getLowerBound();
 		}catch(Exception e){e.printStackTrace();}
 		this.title=f.getName();
 	}
@@ -101,7 +99,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			boundedObject.setValue(result.toString());
 			try{
 				f.set(o, boundedObject);
-				jtf=new JTextField(boundedObject.getValue());
+				jtf=new JTextField(boundedObject.getValue().toString());
 			}catch(Exception e){e.printStackTrace();}
 		}
 		
@@ -110,7 +108,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			boundedObject.setValue(result.toString());
 			try{
 				f.set(o, boundedObject);
-				jtf=new JTextField(boundedObject.getValue());
+				jtf=new JTextField(boundedObject.getValue().toString());
 			}catch(Exception e){e.printStackTrace();}
 		}
 		if(t.flag() == Param.Double){
@@ -119,17 +117,17 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 				boundedObject.setValue((String) value);
 				try{
 					f.set(o, boundedObject);
-					jtf=new JTextField(boundedObject.getValue());
+					jtf=new JTextField(boundedObject.getValue().toString());
 				}catch(Exception e){e.printStackTrace();}
 			}
 		}
 		
 		if(t.flag() == Param.Integer){
 			value =(O) jtf.getText();
-			boundedObject.setValue((String)value);
+			boundedObject.setValue((String) value);
 			try{
 				f.set(o, boundedObject);
-				jtf=new JTextField(boundedObject.getValue());
+				jtf=new JTextField(boundedObject.getValue().toString());
 			}catch(Exception e){e.printStackTrace();}
 		}		
 		resultPane.add(jtf);

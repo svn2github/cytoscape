@@ -28,7 +28,7 @@ public class input<O extends Comparable<String>> implements command {
 	public Group Group2;
 	
 	@SuppressWarnings("unchecked")
-	@Tunable(description="BoundedObject",type=Bounded.class,flag=Param.Integer)
+	@Tunable(description="BoundedObject",type=Bounded.class,flag=Param.Double)
 	public Bounded<O> boundObject= new Bounded<O>((O)"0",(O)"100", true, true);
 	
 	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
