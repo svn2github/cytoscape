@@ -17,9 +17,7 @@ public class application{
 	public static JFrame outputframe;
 	private static JPanel pane;
 	private static JMenuItem menuItem;
-	//public static Properties properties;
-	@SuppressWarnings("unchecked")
-	public static command commander=new input();
+	public static command commander = new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
 	
 	static Properties InputProperties = new Properties();
@@ -29,11 +27,9 @@ public class application{
 	static TunableInterceptor canceled = new StorePropsInterceptor(InputProperties);
 	
 	public static TunableInterceptor ti = null;
-	public static TunableInterceptor pi = null;
 	
 		
 	public static void main(String[] args){
-		//pi = new LoadPropsInterceptor(properties);
         CreateGUIandStart();
     }
 
