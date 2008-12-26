@@ -2,10 +2,8 @@
 package Factory;
 
 
-import java.awt.Color;
 import java.lang.reflect.*;
 import javax.swing.*;
-
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import java.lang.Object;
@@ -18,10 +16,7 @@ public class DoubleHandler implements Guihandler{
 	Tunable t;
 	Object o;
 	JTextField jtf;	
-	
-	String value;
 	String title;
-	Boolean available;
 	Double doub;
 
 	
@@ -31,9 +26,8 @@ public class DoubleHandler implements Guihandler{
 		this.t=t;
 		this.o=o;
 		this.title=f.getName();					
-		this.available=t.available();
 		try{
-			this.value=f.get(o).toString();
+			this.doub=(Double)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
@@ -46,11 +40,7 @@ public class DoubleHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();		
-		jtf = new JTextField(value);
-		if(available!=true){
-			jtf.setEnabled(false);
-			jtf.setBackground(Color.GRAY);
-		}
+		jtf = new JTextField(doub.toString());
 		pane.add(jtf);
 		return pane;
 	}
@@ -59,8 +49,7 @@ public class DoubleHandler implements Guihandler{
 
 	public JPanel update(){
 		JPanel result = new JPanel();
-		if(available==true)	doub = Double.parseDouble(jtf.getText());
-		else doub = Double.parseDouble(value);
+		doub = Double.parseDouble(jtf.getText());
 		try{
 			if(doub!=null)f.set(o, doub);
 			result.add(new JTextField(f.get(o).toString()));
@@ -86,9 +75,6 @@ public class DoubleHandler implements Guihandler{
 	}
 	public Object getObject() {
 		return o;
-	}
-	public Class<?> getclass() {
-		return null;
 	}
 
 }
