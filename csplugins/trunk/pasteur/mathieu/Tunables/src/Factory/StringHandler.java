@@ -7,7 +7,6 @@ import GuiInterception.Guihandler;
 import Tunable.Tunable;
 
 
-
 public class StringHandler implements Guihandler{
 	
 	Field f;
@@ -17,14 +16,12 @@ public class StringHandler implements Guihandler{
 	JTextField jtf;
 	String title;
 	String value;
-	Boolean available;
 	
 	
 	public StringHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.t=t;
 		this.o=o;
-		this.available=t.available();
 		this.title=f.getName();
 		try{
 			this.value = f.get(o).toString();
@@ -52,9 +49,7 @@ public class StringHandler implements Guihandler{
 	public JPanel update() {
 		JPanel result = new JPanel();
 		String text=null;
-		if(available==true){
-			text = jtf.getText();
-		}
+		text = jtf.getText();
 		try{
 			f.set(o, text);
 			result.add(new JTextField(f.get(o).toString()));
@@ -74,10 +69,6 @@ public class StringHandler implements Guihandler{
 
 	public Object getObject(){
 		return o;
-	}
-
-	public Class<?> getclass() {
-		return null;
 	}
 
 }
