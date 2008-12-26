@@ -2,11 +2,8 @@
 package Factory;
 
 
-import java.awt.Color;
 import java.lang.reflect.*;
-
 import javax.swing.*;
-
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 
@@ -18,18 +15,13 @@ public class BooleanHandler implements Guihandler{
 	Object o;
 	JTextField jtf;
 	JCheckBox jcb;
-	
 	Boolean bool=null;	
-	String value;
-	Boolean available;
 	String title;
 	
 	public BooleanHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.t=t;
 		this.o=o;
-		this.available = t.available();
-		
 		try{
 			this.bool=(Boolean) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
@@ -48,10 +40,6 @@ public class BooleanHandler implements Guihandler{
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel();
 		jcb = new JCheckBox(title,bool.booleanValue());
-		if(available!=true){
-			jcb.setBackground(Color.GRAY);
-			jcb.setEnabled(false);
-		}
 		pane.add(jcb);
 		return pane;
 	}
@@ -80,11 +68,4 @@ public class BooleanHandler implements Guihandler{
 	public Object getObject() {
 		return o;
 	}
-
-	@Override
-	public Class<?> getclass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
