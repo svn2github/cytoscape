@@ -48,7 +48,7 @@ import java.util.HashMap;
  * 
  * @param <S> the base (model-level) object for which this is a View. For example, CyNode or CyEdge
  */
-public class RowOrientedViewImpl<S> implements View<S> {
+public class ColumnOrientedViewImpl<S> implements View<S> {
 	private static final String VP_IS_NULL = "VisualProperty is null";
 
 	private final S source;
@@ -59,11 +59,11 @@ public class RowOrientedViewImpl<S> implements View<S> {
 	private final long suid;
 
 	/**
-	 * Creates a new RowOrientedViewImpl object.
+	 * Creates a new ColumnOrientedViewImpl object.
 	 *
 	 * @param source  DOCUMENT ME!
 	 */
-	public RowOrientedViewImpl(final S source) {
+	public ColumnOrientedViewImpl(final S source) {
 		suid = IdFactory.getNextSUID();
 		this.source = source;
 		vpValues = new HashMap<VisualProperty<?>, Object>();

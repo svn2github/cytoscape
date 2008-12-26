@@ -59,7 +59,7 @@ public class ViewTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		view = new RowOrientedViewImpl("homer");
+		view = new ColumnOrientedViewImpl("homer");
 		nodeColor = new NodeColorVisualProperty();
 		edgeWidth = new EdgeWidthVisualProperty();
 	}

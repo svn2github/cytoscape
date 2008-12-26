@@ -15,7 +15,7 @@
 
 	<context:annotation-config/>
 	
-	<bean id="cyNetworkViewFactory" class="org.cytoscape.viewmodel.internal.RowOrientedNetworkViewFactoryImpl">
+	<bean id="cyNetworkViewFactory" class="org.cytoscape.viewmodel.internal.ColumnOrientedNetworkViewFactoryImpl">
 	  <property name="eventHelper" ref="cyEventHelperServiceRef"></property>
 	  <property name="bundleContext" ref="bundleContext"></property>
 	</bean>

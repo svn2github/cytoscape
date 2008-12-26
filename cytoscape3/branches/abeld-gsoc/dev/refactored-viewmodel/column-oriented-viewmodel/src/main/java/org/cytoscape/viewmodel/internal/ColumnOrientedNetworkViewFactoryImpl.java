@@ -47,14 +47,14 @@ import org.osgi.framework.BundleContext;
 /**
  *
  */
-public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
+public class ColumnOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 	private CyEventHelper eventHelper;
 	private BundleContext bundleContext;
 
 	/**
 	 * For setter injection (hmm. whats that?)
 	 */
-	public RowOrientedNetworkViewFactoryImpl() {
+	public ColumnOrientedNetworkViewFactoryImpl() {
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 	 * @param eventHelper DOCUMENT ME!
 	 * @param bundleContext DOCUMENT ME!
 	 */
-	public RowOrientedNetworkViewFactoryImpl(final CyEventHelper eventHelper,
+	public ColumnOrientedNetworkViewFactoryImpl(final CyEventHelper eventHelper,
 	                                         final BundleContext bundleContext) {
 		if (eventHelper == null)
 			throw new NullPointerException("CyEventHelper is null");
@@ -118,6 +118,6 @@ public class RowOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
 	 * @return  DOCUMENT ME!
 	 */
 	public CyNetworkView getNetworkViewFor(final CyNetwork network) {
-		return new RowOrientedNetworkViewImpl(eventHelper, network, bundleContext);
+		return new ColumnOrientedNetworkViewImpl(eventHelper, network, bundleContext);
 	}
 }

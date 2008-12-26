@@ -69,42 +69,42 @@ import java.util.Set;
 /**
  *
  */
-public class RowOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeListener,
+public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeListener,
                                                    AddedNodeListener, AboutToRemoveEdgeListener,
                                                    AboutToRemoveNodeListener {
 	private BundleContext bc;
 	private CyEventHelper eventHelper;
 	private CyNetwork network;
-	private HashMap<CyNode, RowOrientedViewImpl<CyNode>> nodeViews;
-	private HashMap<CyEdge, RowOrientedViewImpl<CyEdge>> edgeViews;
+	private HashMap<CyNode, ColumnOrientedViewImpl<CyNode>> nodeViews;
+	private HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>> edgeViews;
 	private HashMap<String, Set<View<?extends GraphObject>>> subsets;
-	private RowOrientedViewImpl<CyNetwork> networkView;
+	private ColumnOrientedViewImpl<CyNetwork> networkView;
 
 	/**
-	 * Creates a new RowOrientedNetworkViewImpl object.
+	 * Creates a new ColumnOrientedNetworkViewImpl object.
 	 *
 	 * @param eventHelper  DOCUMENT ME!
 	 * @param network  DOCUMENT ME!
 	 * @param bc  DOCUMENT ME!
 	 */
-	public RowOrientedNetworkViewImpl(final CyEventHelper eventHelper, final CyNetwork network,
+	public ColumnOrientedNetworkViewImpl(final CyEventHelper eventHelper, final CyNetwork network,
 	                                  final BundleContext bc) {
 		this.eventHelper = eventHelper;
 		this.bc = bc;
 		this.network = network;
-		nodeViews = new HashMap<CyNode, RowOrientedViewImpl<CyNode>>();
-		edgeViews = new HashMap<CyEdge, RowOrientedViewImpl<CyEdge>>();
+		nodeViews = new HashMap<CyNode, ColumnOrientedViewImpl<CyNode>>();
+		edgeViews = new HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>>();
 		subsets = new HashMap<String, Set<View<?extends GraphObject>>>();
 
 		for (CyNode node : network.getNodeList()) {
-			nodeViews.put(node, new RowOrientedViewImpl<CyNode>(node));
+			nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node));
 		}
 
 		for (CyEdge edge : network.getEdgeList()) {
-			edgeViews.put(edge, new RowOrientedViewImpl<CyEdge>(edge));
+			edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge));
 		}
 
-		networkView = new RowOrientedViewImpl<CyNetwork>(network);
+		networkView = new ColumnOrientedViewImpl<CyNetwork>(network);
 
 		//  register event listeners:
 		bc.registerService(AddedEdgeListener.class.getName(), this, null);
@@ -199,7 +199,7 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeListe
 			return;
 
 		final CyEdge edge = e.getEdge();
-		edgeViews.put(edge, new RowOrientedViewImpl<CyEdge>(edge));
+		edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge));
 
 		// FIXME: fire events!
 	}
@@ -214,7 +214,7 @@ public class RowOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeListe
 			return;
 
 		final CyNode node = e.getNode();
-		nodeViews.put(node, new RowOrientedViewImpl<CyNode>(node));
+		nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node));
 	}
 
 	/**
