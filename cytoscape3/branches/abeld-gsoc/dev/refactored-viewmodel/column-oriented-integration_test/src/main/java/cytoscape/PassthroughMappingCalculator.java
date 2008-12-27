@@ -37,6 +37,7 @@
 package cytoscape;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.cytoscape.model.*;
 
@@ -102,16 +103,42 @@ public class PassthroughMappingCalculator implements MappingCalculator {
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public <T, V extends GraphObject> void apply(ViewColumn<T> column, Collection<? extends View<V>> views){
-		for (View<V> v: views){
-			CyRow row = v.getSource().attrs();
-			if (row.contains(attributeName, column.getDataType()) ){
-				// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
-				final T value = row.get(attributeName, column.getDataType());
-				column.setValue(v, value);
-			} else {
-				System.out.println("no attribute value found, skipping!");
+	public <T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views){
+		if (views.size() < 1)
+			return; // empty list, nothing to do
+		CyRow row = views.get(0).getSource().attrs();
+		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attributeName);
+		// since attributes can only store certain types of Objects, it is enough to test for these:
+		Class<?> vpType = vp.getType();
+		// FIXME: also check that column's vp is internally-stored vp!
+		if (vpType.isAssignableFrom(attrType)){
+			// can simply copy object without any conversion
+			for (View<V> v: views){
+				row = v.getSource().attrs();
+				if (row.contains(attributeName, attrType) ){
+					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
+					final T value = (T) row.get(attributeName, attrType);
+					column.setValue(v, value);
+				} else {
+					System.out.println("no attribute value found, skipping!");
+				}
 			}
+		} else if (String.class.isAssignableFrom(vpType)){
+			// can convert any object to string, so no need to check attribute type
+			// also, since we have to convert the Object here, can't use checkAndDoCopy()
+			ViewColumn<String> c = (ViewColumn<String>) column;
+			for (View<V> v: views){
+				row = v.getSource().attrs();
+				if (row.contains(attributeName, attrType) ){
+					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
+					final Object value = (Object) row.get(attributeName, attrType);
+					c.setValue(v, value.toString());
+				} else {
+					System.out.println("no attribute value found, skipping!");
+				}
+			}
+		} else {	
+			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType()); 
 		}
 	}
 }

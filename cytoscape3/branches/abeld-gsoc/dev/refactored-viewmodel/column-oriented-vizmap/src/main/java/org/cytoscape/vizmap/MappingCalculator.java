@@ -34,7 +34,7 @@
 */
 package org.cytoscape.vizmap;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.cytoscape.model.GraphObject;
 
@@ -91,5 +91,5 @@ public interface MappingCalculator {
 	 * @param column DOCUMENT ME!
 	 * @param views DOCUMENT ME!
 	 */
-	<T, V extends GraphObject> void apply(ViewColumn<T> column, Collection<? extends View<V>> views);
+	<T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views);
 }

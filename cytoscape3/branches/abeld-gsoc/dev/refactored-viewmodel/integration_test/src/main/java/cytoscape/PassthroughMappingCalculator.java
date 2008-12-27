@@ -102,11 +102,41 @@ public class PassthroughMappingCalculator implements MappingCalculator {
 	 */
 	public <V extends GraphObject> void apply(final View<V> v, Object defaultValue) {
 		CyRow row = v.getSource().attrs();
-		if (row.contains(attributeName, vp.getType()) ){
-			final Object value = v.getSource().attrs().get(attributeName, vp.getType());
-			v.setVisualProperty((VisualProperty<Object>)vp, value);
+		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attributeName);
+		// since attributes can only store certain types of Objects, it is enough to test for these:
+		Class<?> vpType = vp.getType();
+		if (vpType.isAssignableFrom(attrType)){
+			// can simply copy object without any conversion
+			doCopy(v, row, defaultValue, attrType, vpType);
+		} else if (String.class.isAssignableFrom(vpType)){
+			// can convert any object to string, so no need to check attribute type
+			// also, since we have to convert the Object here, can't use doCopy()
+			if (row.contains(attributeName, attrType) ){
+				final Object value = v.getSource().attrs().get(attributeName, attrType);
+				v.setVisualProperty((VisualProperty<String>)vp, value.toString());
+			} else { // apply per-VS or global default where attribute is not found:
+				v.setVisualProperty((VisualProperty<String>)vp, defaultValue.toString());
+			}
+		} else {	
+			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType()); 
+		}
+		// FIXME: handle List & Map
+	}
+	/** 
+	 * Copy, without any conversion apart from possible upcast from attrType to vpType.
+	 * 
+	 * vpType is guaranteed to be a superclass (or the same as) attrType
+	 * 
+	 * Putting this in a separate method makes it possible to make it parametric.
+	 * 
+	 * @param <T> the type-parameter of the VisualProperty vp
+	 */
+	private <T, V extends GraphObject> void doCopy(final View<V> v, CyRow row, Object defaultValue, Class<?> attrType, Class<T>vpType){
+		if (row.contains(attributeName, attrType) ){
+			final T value = (T) v.getSource().attrs().get(attributeName, attrType);
+			v.setVisualProperty((VisualProperty<T>)vp, value);
 		} else { // apply per-VS or global default where attribute is not found
-			v.setVisualProperty((VisualProperty<Object>)vp, defaultValue);
+			v.setVisualProperty((VisualProperty<T>)vp, (T)defaultValue);
 		}
 	}
 }
