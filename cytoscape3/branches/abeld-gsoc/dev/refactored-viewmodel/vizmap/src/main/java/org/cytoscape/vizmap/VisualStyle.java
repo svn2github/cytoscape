@@ -49,7 +49,7 @@ public interface VisualStyle {
 	 *
 	 * @param c DOCUMENT ME!
 	 */
-	void setMappingCalculator(MappingCalculator<?> c);
+	void setMappingCalculator(MappingCalculator c);
 
 	/**
 	 *  DOCUMENT ME!
@@ -58,7 +58,7 @@ public interface VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	MappingCalculator<?> getMappingCalculator(VisualProperty<?> t);
+	MappingCalculator getMappingCalculator(VisualProperty<?> t);
 
 	/**
 	 *  DOCUMENT ME!

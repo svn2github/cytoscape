@@ -57,7 +57,7 @@ import java.util.Map;
 /**
  */
 public class VisualStyleImpl implements VisualStyle {
-	private Map<VisualProperty<?>, MappingCalculator<?>> calculators;
+	private Map<VisualProperty<?>, MappingCalculator> calculators;
 	private Map<VisualProperty<?>, Object> perVSDefaults;
 	private CyEventHelper eventHelper;
 	private VisualPropertyCatalog vpCatalog;
@@ -77,7 +77,7 @@ public class VisualStyleImpl implements VisualStyle {
 
 		this.eventHelper = eventHelper;
 		this.vpCatalog = vpCatalog;
-		calculators = new HashMap<VisualProperty<?>, MappingCalculator<?>>();
+		calculators = new HashMap<VisualProperty<?>, MappingCalculator>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
 	}
 
@@ -86,7 +86,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 *
 	 * @param c DOCUMENT ME!
 	 */
-	public void setMappingCalculator(final MappingCalculator<?> c) {
+	public void setMappingCalculator(final MappingCalculator c) {
 		calculators.put(c.getVisualProperty(), c);
 	}
 
@@ -97,7 +97,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public MappingCalculator<?> getMappingCalculator(final VisualProperty<?> t) {
+	public MappingCalculator getMappingCalculator(final VisualProperty<?> t) {
 		return calculators.get(t);
 	}
 
@@ -167,22 +167,24 @@ public class VisualStyleImpl implements VisualStyle {
 	public <T extends GraphObject> void applyImpl(final View<T> view,
 	                                              final Collection<? extends VisualProperty<?>> visualProperties) {
 		for (VisualProperty<?> vp : visualProperties) {
+			Object defaultValue = null;
+			defaultValue = perVSDefaults.get(vp);
+
+			if (defaultValue == null) {
+				defaultValue = vp.getDefault();
+			}
+
 			if (!view.isValueLocked(vp)) { // only if no bypass is defined
 
-				final MappingCalculator<?> c = getMappingCalculator(vp);
+				final MappingCalculator c = getMappingCalculator(vp);
+
 
 				if (c != null) {
-					c.apply(view);
+					c.apply(view, defaultValue);
 				} else {
-					Object o = null;
-					o = perVSDefaults.get(vp);
-
-					if (o == null) {
-						o = vp.getDefault();
-					} // global default
 					//Class<?> klass = vp.getType();
 					View v = view; // FIXME FIXME
-					v.setVisualProperty(vp, o);
+					v.setVisualProperty(vp, defaultValue);
 				}
 			}
 		}

@@ -45,21 +45,18 @@ import org.cytoscape.vizmap.*;
 
 /**
  */
-public class PassthroughMappingCalculator<T> implements MappingCalculator<T> {
+public class PassthroughMappingCalculator implements MappingCalculator {
 	private String attributeName;
-	private VisualProperty<T> vp;
-	private Class<T> dataType;
+	private VisualProperty<?> vp;
 
 	/**
 	 * dataType is the type of the _attribute_ !!
 	 * currently we force that to be the same as the VisualProperty;
 	 * FIXME: allow different once? but how to coerce?
 	 */
-	public PassthroughMappingCalculator(final String attributeName, final VisualProperty<T> vp,
-	                                    final Class<T> dataType) {
+	public PassthroughMappingCalculator(final String attributeName, final VisualProperty<?> vp) {
 		this.attributeName = attributeName;
 		this.vp = vp;
-		this.dataType = dataType;
 	}
 
 	/**
@@ -85,7 +82,7 @@ public class PassthroughMappingCalculator<T> implements MappingCalculator<T> {
 	 *
 	 * @param vp  DOCUMENT ME!
 	 */
-	public void setVisualProperty(final VisualProperty<T> vp) {
+	public void setVisualProperty(final VisualProperty<?> vp) {
 		this.vp = vp;
 	}
 
@@ -94,7 +91,7 @@ public class PassthroughMappingCalculator<T> implements MappingCalculator<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty<T> getVisualProperty() {
+	public VisualProperty<?> getVisualProperty() {
 		return vp;
 	}
 
@@ -103,14 +100,13 @@ public class PassthroughMappingCalculator<T> implements MappingCalculator<T> {
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public <V extends GraphObject> void apply(final View<V> v) {
+	public <V extends GraphObject> void apply(final View<V> v, Object defaultValue) {
 		CyRow row = v.getSource().attrs();
-		if (row.contains(attributeName, dataType) ){
-			// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
-			final T value = v.getSource().attrs().get(attributeName, dataType);
-			v.setVisualProperty(vp, value);
-		} else {
-			System.out.println("no attribute value found, skipping!");
+		if (row.contains(attributeName, vp.getType()) ){
+			final Object value = v.getSource().attrs().get(attributeName, vp.getType());
+			v.setVisualProperty((VisualProperty<Object>)vp, value);
+		} else { // apply per-VS or global default where attribute is not found
+			v.setVisualProperty((VisualProperty<Object>)vp, defaultValue);
 		}
 	}
 }

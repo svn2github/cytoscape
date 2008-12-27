@@ -49,7 +49,7 @@ import org.cytoscape.viewmodel.VisualProperty;
  * Or should the mapping calculator map from Attr to Class<?>?
  * @param <T> DOCUMENT ME!
  */
-public interface MappingCalculator<T> {
+public interface MappingCalculator {
 	/**
 	 * The attribute to be mapped.
 	 *
@@ -69,14 +69,14 @@ public interface MappingCalculator<T> {
 	 *
 	 * @param vp  DOCUMENT ME!
 	 */
-	void setVisualProperty(VisualProperty<T> vp);
+	void setVisualProperty(VisualProperty<?> vp);
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	VisualProperty<T> getVisualProperty();
+	VisualProperty<?> getVisualProperty();
 
 	/**
 	 *  Since current MappingCalculators map from Attributes to
@@ -87,5 +87,5 @@ public interface MappingCalculator<T> {
 	 * @param <V> DOCUMENT ME!
 	 * @param v DOCUMENT ME!
 	 */
-	<V extends GraphObject> void apply(View<V> v);
+	<V extends GraphObject> void apply(View<V> v, Object defaultValue);
 }

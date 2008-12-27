@@ -145,8 +145,7 @@ public class CyMain {
 		// create visual style, add an example MappingCalculator, dump values
 		VisualStyle myStyle = vsc.createVisualStyle();
 		VisualProperty<String> nodeLabel = (VisualProperty<String>)vpCatalog.getVisualProperty("NODE_LABEL");
-		MappingCalculator<?> nodeLabelCalculator = new PassthroughMappingCalculator<String>("name", nodeLabel,
-		                                                                         String.class);
+		MappingCalculator nodeLabelCalculator = new PassthroughMappingCalculator("name", nodeLabel);
 		myStyle.setMappingCalculator(nodeLabelCalculator);
 
 		myStyle.apply(view);
@@ -170,7 +169,7 @@ public class CyMain {
 			System.out.println("now mapping Double attribute to Number VP with PassthroughMappingCalculator:");
 			myStyle = vsc.createVisualStyle();
 			VisualProperty<Number> aNumberVP = (VisualProperty<Number>)vpCatalog.getVisualProperty("A_NUMBER_VP");
-			MappingCalculator<Number> numberCalculator = new PassthroughMappingCalculator<Number>("weight", aNumberVP, Number.class);
+			MappingCalculator numberCalculator = new PassthroughMappingCalculator("weight", aNumberVP);
 			myStyle.setMappingCalculator(numberCalculator);
 			myStyle.apply(view);
 			System.out.println(p.render());
@@ -183,7 +182,7 @@ public class CyMain {
 			System.out.println("now mapping Integer attribute to Number VP with PassthroughMappingCalculator:");
 			myStyle = vsc.createVisualStyle();
 			VisualProperty<Number> aNumberVP = (VisualProperty<Number>)vpCatalog.getVisualProperty("A_NUMBER_VP");
-			MappingCalculator<Number> numberCalculator = new PassthroughMappingCalculator<Number>("age", aNumberVP, Number.class);
+			MappingCalculator numberCalculator = new PassthroughMappingCalculator("age", aNumberVP);
 			myStyle.setMappingCalculator(numberCalculator);
 			myStyle.apply(view);
 			System.out.println(p.render());
