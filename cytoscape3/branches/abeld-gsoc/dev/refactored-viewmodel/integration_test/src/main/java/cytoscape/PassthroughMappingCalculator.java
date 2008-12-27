@@ -104,7 +104,13 @@ public class PassthroughMappingCalculator<T> implements MappingCalculator<T> {
 	 * @param v DOCUMENT ME!
 	 */
 	public <V extends GraphObject> void apply(final View<V> v) {
-		final T value = v.getSource().attrs().get(attributeName, dataType);
-		v.setVisualProperty(vp, value);
+		CyRow row = v.getSource().attrs();
+		if (row.contains(attributeName, dataType) ){
+			// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
+			final T value = v.getSource().attrs().get(attributeName, dataType);
+			v.setVisualProperty(vp, value);
+		} else {
+			System.out.println("no attribute value found, skipping!");
+		}
 	}
 }
