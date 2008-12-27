@@ -117,10 +117,18 @@ public class CyMain {
 		CyNetwork network = f.getInstance();
 		CyNode n1 = network.addNode();
 		n1.attrs().set("name", "node 1");
-
+		n1.attrs().getDataTable().createColumn("age", Integer.class, false);
+		n1.attrs().getDataTable().createColumn("weight", Double.class, false);
+		n1.attrs().set("age", Integer.valueOf(16));
+		n1.attrs().set("weight", Double.valueOf(16.3));
+		
 		CyNode n2 = network.addNode();
 		n2.attrs().set("name", "node 2");
-
+		n2.attrs().getDataTable().createColumn("age", Integer.class, false);
+		n2.attrs().getDataTable().createColumn("weight", Double.class, false);
+		n2.attrs().set("age", Integer.valueOf(42));
+		n2.attrs().set("weight", Double.valueOf(42));
+		
 		CyEdge e1 = network.addEdge(n1, n2, false);
 		System.out.println("nodes:" + network.getNodeCount() + " edges:" + network.getEdgeCount());
 
@@ -146,7 +154,45 @@ public class CyMain {
 		// TODO: add passthroughMapping to copy id to nodeLabel
 		TextPresentation p = pf.getTextPresentationFor(view);
 		System.out.println(p.render());
-		
+		try{
+			System.out.println("now mapping Integer attribute to String VP with PassthroughMappingCalculator:");
+			myStyle = vsc.createVisualStyle();
+			nodeLabelCalculator.setMappingAttributeName("age");
+			myStyle.setMappingCalculator(nodeLabelCalculator);
+			myStyle.apply(view);
+			System.out.println(p.render());
+			System.out.println("succeeded");
+		} catch (ClassCastException exc){
+			System.out.println("java.lang.ClassCastException");
+			//exc.printStackTrace();
+		}
+		try{
+			System.out.println("now mapping Double attribute to Number VP with PassthroughMappingCalculator:");
+			myStyle = vsc.createVisualStyle();
+			VisualProperty<Number> aNumberVP = (VisualProperty<Number>)vpCatalog.getVisualProperty("A_NUMBER_VP");
+			MappingCalculator<Number> numberCalculator = new PassthroughMappingCalculator<Number>("weight", aNumberVP, Number.class);
+			myStyle.setMappingCalculator(numberCalculator);
+			myStyle.apply(view);
+			System.out.println(p.render());
+			System.out.println("succeeded");
+		} catch (ClassCastException exc){
+			System.out.println("java.lang.ClassCastException");
+			exc.printStackTrace();
+		}
+		try{
+			System.out.println("now mapping Integer attribute to Number VP with PassthroughMappingCalculator:");
+			myStyle = vsc.createVisualStyle();
+			VisualProperty<Number> aNumberVP = (VisualProperty<Number>)vpCatalog.getVisualProperty("A_NUMBER_VP");
+			MappingCalculator<Number> numberCalculator = new PassthroughMappingCalculator<Number>("age", aNumberVP, Number.class);
+			myStyle.setMappingCalculator(numberCalculator);
+			myStyle.apply(view);
+			System.out.println(p.render());
+			System.out.println("succeeded");
+		} catch (ClassCastException exc){
+			System.out.println("java.lang.ClassCastException");
+			//exc.printStackTrace();
+		}
+
 	}
 
 	/**
