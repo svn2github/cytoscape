@@ -103,6 +103,10 @@ public class VisualStyleImpl implements VisualStyle {
 		return calculators.get(t);
 	}
 
+	public MappingCalculator removeMappingCalculator(final VisualProperty<?> t) {
+		return calculators.remove(t);
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

@@ -61,6 +61,14 @@ public interface VisualStyle {
 	MappingCalculator getMappingCalculator(VisualProperty<?> t);
 
 	/**
+	 *  Removes the mapping for the given VisualProperty
+	 *
+	 * @param t DOCUMENT ME!
+	 *
+	 * @return  the removed MappingCalculator (null if one was not defined for the VisualProperty)
+	 */
+	MappingCalculator removeMappingCalculator(VisualProperty<?> t);
+	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param <T> DOCUMENT ME!
