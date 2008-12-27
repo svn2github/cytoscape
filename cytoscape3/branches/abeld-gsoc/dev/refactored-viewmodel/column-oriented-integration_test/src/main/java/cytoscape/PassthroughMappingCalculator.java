@@ -36,6 +36,8 @@
 
 package cytoscape;
 
+import java.util.Collection;
+
 import org.cytoscape.model.*;
 
 import org.cytoscape.viewmodel.*;
@@ -45,21 +47,18 @@ import org.cytoscape.vizmap.*;
 
 /**
  */
-public class PassthroughMappingCalculator<T> implements MappingCalculator<T> {
+public class PassthroughMappingCalculator implements MappingCalculator {
 	private String attributeName;
-	private VisualProperty<T> vp;
-	private Class<T> dataType;
+	private VisualProperty<?> vp;
 
 	/**
 	 * dataType is the type of the _attribute_ !!
 	 * currently we force that to be the same as the VisualProperty;
 	 * FIXME: allow different once? but how to coerce?
 	 */
-	public PassthroughMappingCalculator(final String attributeName, final VisualProperty<T> vp,
-	                                    final Class<T> dataType) {
+	public <T> PassthroughMappingCalculator(final String attributeName, final VisualProperty<T> vp) {
 		this.attributeName = attributeName;
 		this.vp = vp;
-		this.dataType = dataType;
 	}
 
 	/**
@@ -85,7 +84,7 @@ public class PassthroughMappingCalculator<T> implements MappingCalculator<T> {
 	 *
 	 * @param vp  DOCUMENT ME!
 	 */
-	public void setVisualProperty(final VisualProperty<T> vp) {
+	public void setVisualProperty(final VisualProperty<?> vp) {
 		this.vp = vp;
 	}
 
@@ -94,7 +93,7 @@ public class PassthroughMappingCalculator<T> implements MappingCalculator<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty<T> getVisualProperty() {
+	public VisualProperty<?> getVisualProperty() {
 		return vp;
 	}
 
@@ -103,8 +102,16 @@ public class PassthroughMappingCalculator<T> implements MappingCalculator<T> {
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public <V extends GraphObject> void apply(final View<V> v) {
-		final T value = v.getSource().attrs().get(attributeName, dataType);
-		v.setVisualProperty(vp, value);
+	public <T, V extends GraphObject> void apply(ViewColumn<T> column, Collection<? extends View<V>> views){
+		for (View<V> v: views){
+			CyRow row = v.getSource().attrs();
+			if (row.contains(attributeName, column.getDataType()) ){
+				// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
+				final T value = row.get(attributeName, column.getDataType());
+				column.setValue(v, value);
+			} else {
+				System.out.println("no attribute value found, skipping!");
+			}
+		}
 	}
 }

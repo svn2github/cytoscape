@@ -38,6 +38,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
+import org.cytoscape.viewmodel.internal.ColumnOrientedViewColumn;
 
 import java.util.List;
 import java.util.Set;
@@ -102,6 +103,7 @@ public interface CyNetworkView {
 	 */
 	List<View<?extends GraphObject>> getAllViews();
 
+	<T> ViewColumn<T> getColumn(final VisualProperty<T> vp);
 	/**
 	 * Returns the given subset.
 	 *

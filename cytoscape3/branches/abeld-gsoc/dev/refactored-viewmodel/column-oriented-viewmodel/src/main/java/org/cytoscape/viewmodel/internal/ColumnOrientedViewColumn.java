@@ -3,13 +3,14 @@ package org.cytoscape.viewmodel.internal;
 import java.util.HashMap;
 
 import org.cytoscape.viewmodel.View;
+import org.cytoscape.viewmodel.ViewColumn;
 import org.cytoscape.viewmodel.VisualProperty;
 
 /**
  * A column in the viewmodel table
  * @param <T> the data type of the VisualProperty this belongs to
  */
-public class ColumnOrientedViewColumn<T> {
+public class ColumnOrientedViewColumn<T> implements ViewColumn<T> {
 	private static final String VIEW_IS_NULL = "View is null";
 
 	private final HashMap<View<?>, T> values;
@@ -28,14 +29,18 @@ public class ColumnOrientedViewColumn<T> {
 		this.bypassLocks= new HashMap<View<?>, Boolean>();
 		this.defaultValue = vp.getDefault();
 	}
+	public Class<T> getDataType(){
+		return vp.getType();
+	}
 	public T getValue(View<?> view){
 		if (view == null)
 			throw new NullPointerException(VIEW_IS_NULL);
 
-		if (values.containsKey(view))
+		if (values.containsKey(view)){
 			return values.get(view);
-		else
+		} else {
 			return defaultValue;
+		}
 	}
 	public void setValue(View<?> view, T value){
 		if (view == null)
@@ -46,6 +51,14 @@ public class ColumnOrientedViewColumn<T> {
 		if ((b == null) || !b.booleanValue())
 			values.put(view, value);
 	}
+	/**
+	 * Used by VisualStyle.apply to set the per-VisualStyle default value
+	 * @param value the per-VisualStyle default value
+	 */
+	public void setDefaultValue(T value){
+		defaultValue = value;
+	}
+	
 	public void setLockedValue(final View<?> view, final T value){
 		if (view == null)
 			throw new NullPointerException(VIEW_IS_NULL);

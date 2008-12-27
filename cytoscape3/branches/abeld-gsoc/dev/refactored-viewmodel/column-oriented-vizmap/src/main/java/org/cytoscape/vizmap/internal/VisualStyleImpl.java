@@ -42,12 +42,14 @@ import org.cytoscape.model.GraphObject;
 
 import org.cytoscape.viewmodel.CyNetworkView;
 import org.cytoscape.viewmodel.View;
+import org.cytoscape.viewmodel.ViewColumn;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.VisualPropertyCatalog;
 
 import org.cytoscape.vizmap.MappingCalculator;
 import org.cytoscape.vizmap.VisualStyle;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +59,7 @@ import java.util.Map;
 /**
  */
 public class VisualStyleImpl implements VisualStyle {
-	private Map<VisualProperty<?>, MappingCalculator<?>> calculators;
+	private Map<VisualProperty<?>, MappingCalculator> calculators;
 	private Map<VisualProperty<?>, Object> perVSDefaults;
 	private CyEventHelper eventHelper;
 	private VisualPropertyCatalog vpCatalog;
@@ -77,7 +79,7 @@ public class VisualStyleImpl implements VisualStyle {
 
 		this.eventHelper = eventHelper;
 		this.vpCatalog = vpCatalog;
-		calculators = new HashMap<VisualProperty<?>, MappingCalculator<?>>();
+		calculators = new HashMap<VisualProperty<?>, MappingCalculator>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
 	}
 
@@ -86,7 +88,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 *
 	 * @param c DOCUMENT ME!
 	 */
-	public void setMappingCalculator(final MappingCalculator<?> c) {
+	public void setMappingCalculator(final MappingCalculator c) {
 		calculators.put(c.getVisualProperty(), c);
 	}
 
@@ -97,7 +99,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public MappingCalculator<?> getMappingCalculator(final VisualProperty<?> t) {
+	public MappingCalculator getMappingCalculator(final VisualProperty<?> t) {
 		return calculators.get(t);
 	}
 
@@ -134,11 +136,11 @@ public class VisualStyleImpl implements VisualStyle {
 		final List<View<CyNode>> nodeviews = view.getCyNodeViews();
 		final List<View<CyEdge>> edgeviews = view.getCyEdgeViews();
 
-		applyImpl(nodeviews,
+		applyImpl(view, nodeviews,
 		          vpCatalog.collectionOfVisualProperties(nodeviews, VisualProperty.NODE));
-		applyImpl(edgeviews,
+		applyImpl(view, edgeviews,
 		          vpCatalog.collectionOfVisualProperties(edgeviews, VisualProperty.EDGE));
-		applyImpl(view.getNetworkView(),
+		applyImpl(view, Arrays.asList(view.getNetworkView()),
 		          vpCatalog.collectionOfVisualProperties(VisualProperty.NETWORK));
 	}
 
@@ -150,41 +152,28 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param views DOCUMENT ME!
 	 * @param visualProperties DOCUMENT ME!
 	 */
-	public <T extends GraphObject> void applyImpl(final List<View<T>> views,
+	public <T extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<T>> views,
 	                                              final Collection<? extends VisualProperty<?>> visualProperties) {
-		for (View<T> v : views) {
-			applyImpl(v, visualProperties);
+		for (VisualProperty<?> vp: visualProperties){
+			applyImpl(view, views, vp);
 		}
 	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param <T> DOCUMENT ME!
-	 * @param view DOCUMENT ME!
+	 * @param views DOCUMENT ME!
 	 * @param visualProperties DOCUMENT ME!
 	 */
-	public <T extends GraphObject> void applyImpl(final View<T> view,
-	                                              final Collection<? extends VisualProperty<?>> visualProperties) {
-		for (VisualProperty<?> vp : visualProperties) {
-			if (!view.isValueLocked(vp)) { // only if no bypass is defined
-
-				final MappingCalculator<?> c = getMappingCalculator(vp);
-
-				if (c != null) {
-					c.apply(view);
-				} else {
-					Object o = null;
-					o = perVSDefaults.get(vp);
-
-					if (o == null) {
-						o = vp.getDefault();
-					} // global default
-					//Class<?> klass = vp.getType();
-					View v = view; // FIXME FIXME
-					v.setVisualProperty(vp, o);
-				}
-			}
+	public <T, V extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<V>> views, final VisualProperty<T> vp) {
+		ViewColumn<T> column = view.getColumn(vp);
+		final MappingCalculator c = getMappingCalculator(vp);
+		final T perVSDefault = getDefault(vp);
+		if (perVSDefault != null){
+			column.setDefaultValue(perVSDefault);
+		}
+		if (c != null) {
+			c.apply(column, views);
 		}
 	}
 }

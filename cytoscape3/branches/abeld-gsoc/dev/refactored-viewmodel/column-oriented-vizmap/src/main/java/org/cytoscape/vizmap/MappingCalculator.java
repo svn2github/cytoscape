@@ -34,9 +34,12 @@
 */
 package org.cytoscape.vizmap;
 
+import java.util.Collection;
+
 import org.cytoscape.model.GraphObject;
 
 import org.cytoscape.viewmodel.View;
+import org.cytoscape.viewmodel.ViewColumn;
 import org.cytoscape.viewmodel.VisualProperty;
 
 
@@ -49,7 +52,7 @@ import org.cytoscape.viewmodel.VisualProperty;
  * Or should the mapping calculator map from Attr to Class<?>?
  * @param <T> DOCUMENT ME!
  */
-public interface MappingCalculator<T> {
+public interface MappingCalculator {
 	/**
 	 * The attribute to be mapped.
 	 *
@@ -69,14 +72,14 @@ public interface MappingCalculator<T> {
 	 *
 	 * @param vp  DOCUMENT ME!
 	 */
-	void setVisualProperty(VisualProperty<T> vp);
+	void setVisualProperty(VisualProperty<?> vp);
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	VisualProperty<T> getVisualProperty();
+	VisualProperty<?> getVisualProperty();
 
 	/**
 	 *  Since current MappingCalculators map from Attributes to
@@ -85,7 +88,8 @@ public interface MappingCalculator<T> {
 	 *  GraphObject.
 	 *
 	 * @param <V> DOCUMENT ME!
-	 * @param v DOCUMENT ME!
+	 * @param column DOCUMENT ME!
+	 * @param views DOCUMENT ME!
 	 */
-	<V extends GraphObject> void apply(View<V> v);
+	<T, V extends GraphObject> void apply(ViewColumn<T> column, Collection<? extends View<V>> views);
 }
