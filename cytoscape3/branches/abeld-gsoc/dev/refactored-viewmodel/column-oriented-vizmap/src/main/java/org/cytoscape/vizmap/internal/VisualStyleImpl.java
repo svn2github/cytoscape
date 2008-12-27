@@ -174,6 +174,11 @@ public class VisualStyleImpl implements VisualStyle {
 		}
 		if (c != null) {
 			c.apply(column, views);
+		} else {
+			// reset all rows to allow usage of default value:
+			for (View<V>v: views){
+				column.clearValue(v);
+			}
 		}
 	}
 }

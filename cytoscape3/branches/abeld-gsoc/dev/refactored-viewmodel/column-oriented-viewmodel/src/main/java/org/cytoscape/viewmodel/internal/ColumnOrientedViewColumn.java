@@ -51,6 +51,12 @@ public class ColumnOrientedViewColumn<T> implements ViewColumn<T> {
 		if ((b == null) || !b.booleanValue())
 			values.put(view, value);
 	}
+	public void clearValue(View<?> view){
+		if (view == null)
+			throw new NullPointerException(VIEW_IS_NULL);
+
+		values.remove(view);
+	}
 	/**
 	 * Used by VisualStyle.apply to set the per-VisualStyle default value
 	 * @param value the per-VisualStyle default value

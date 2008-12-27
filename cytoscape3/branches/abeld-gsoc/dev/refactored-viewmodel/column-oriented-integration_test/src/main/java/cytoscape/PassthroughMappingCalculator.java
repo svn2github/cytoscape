@@ -119,22 +119,22 @@ public class PassthroughMappingCalculator implements MappingCalculator {
 					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
 					final T value = (T) row.get(attributeName, attrType);
 					column.setValue(v, value);
-				} else {
-					System.out.println("no attribute value found, skipping!");
+				} else { // remove value so that default value will be used:
+					column.clearValue(v);
 				}
 			}
 		} else if (String.class.isAssignableFrom(vpType)){
 			// can convert any object to string, so no need to check attribute type
 			// also, since we have to convert the Object here, can't use checkAndDoCopy()
-			ViewColumn<String> c = (ViewColumn<String>) column;
+			ViewColumn<String> c = (ViewColumn<String>) column; // have  to cast here, even though previous check ensures that T is java.util.String
 			for (View<V> v: views){
 				row = v.getSource().attrs();
 				if (row.contains(attributeName, attrType) ){
 					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
 					final Object value = (Object) row.get(attributeName, attrType);
 					c.setValue(v, value.toString());
-				} else {
-					System.out.println("no attribute value found, skipping!");
+				} else { // remove value so that default value will be used:
+					c.clearValue(v);
 				}
 			}
 		} else {	

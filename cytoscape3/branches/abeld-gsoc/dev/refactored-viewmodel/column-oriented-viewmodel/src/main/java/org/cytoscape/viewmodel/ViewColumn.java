@@ -19,6 +19,14 @@ public interface ViewColumn<T> {
 	void setValue(View<?> view, T value);
 	
 	/**
+	 * Remove the value stored for the given view.
+	 * 
+	 * This is needed to allow reverting the value for a given view to "the default value, whatever that is".
+	 * 
+	 * @param view the View for which to clear the value 
+	 */
+	void clearValue(View<?> view);
+	/**
 	 * Used by VisualStyle.apply to set the per-VisualStyle default value
 	 * @param value the per-VisualStyle default value
 	 */
