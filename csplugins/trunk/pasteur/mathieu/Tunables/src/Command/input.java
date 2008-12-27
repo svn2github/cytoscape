@@ -6,6 +6,7 @@ import java.security.acl.Group;
 import Tunable.*;
 import Tunable.Tunable.Param;
 import Utils.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +28,8 @@ public class input<O extends Comparable<String>> implements command {
 	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
 	public Group Group2;
 	
-	@SuppressWarnings("unchecked")
-	@Tunable(description="BoundedObject",type=Bounded.class,flag=Param.Double)
-	public Bounded<O> boundObject= new Bounded<O>((O)"0",(O)"100", true, true);
+	@Tunable(description="BoundedObject",type=Bounded.class,flag=Param.Integer)
+	public Bounded<String> boundObject = new Bounded<String>("0","100", true, true);
 	
 	@Tunable(description="Group",type=Group.class,flag=Param.Nothing)
 	public Group Group3;

@@ -65,22 +65,22 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	public void handle() {
 		if(t.flag() == Param.DoubleSlider){
 			result=slider.getValue().doubleValue();
-			boundedObject.setValue(result.toString());
+			boundedObject.setValue(result.toString(),Double.class);
 		}
 		if(t.flag() == Param.IntegerSlider){
 			result=slider.getValue().intValue();
-			boundedObject.setValue(result.toString());
+			boundedObject.setValue(result.toString(),Integer.class);
 		}
 		if(t.flag() == Param.Double){
 			if(jtf.getText().isEmpty()==false){
 				value =(O) jtf.getText();
-				boundedObject.setValue((String) value);
+				boundedObject.setValue((String) value,Double.class);
 			}
 		}
 		if(t.flag() == Param.Integer){
 			if(jtf.getText().isEmpty()==false){
 				value =(O) jtf.getText();
-				boundedObject.setValue((String) value);
+				boundedObject.setValue((String) value,Integer.class);
 			}
 		}
 			
@@ -90,47 +90,33 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	}
 	
 
-
 	@SuppressWarnings("unchecked")
 	public JPanel update() {
 		JPanel resultPane = new JPanel();
 		if(t.flag() == Param.DoubleSlider){
 			result=slider.getValue().doubleValue();
-			boundedObject.setValue(result.toString());
-			try{
-				f.set(o, boundedObject);
-				jtf=new JTextField(boundedObject.getValue().toString());
-			}catch(Exception e){e.printStackTrace();}
+			boundedObject.setValue(result.toString(),Double.class);
 		}
-		
 		if(t.flag() == Param.IntegerSlider){
 			result=slider.getValue().intValue();
-			boundedObject.setValue(result.toString());
-			try{
-				f.set(o, boundedObject);
-				jtf=new JTextField(boundedObject.getValue().toString());
-			}catch(Exception e){e.printStackTrace();}
+			boundedObject.setValue(result.toString(),Integer.class);
 		}
 		if(t.flag() == Param.Double){
 			if(jtf.getText().isEmpty()==false){
 				value =(O) jtf.getText();
-				boundedObject.setValue((String) value);
-				try{
-					f.set(o, boundedObject);
-					jtf=new JTextField(boundedObject.getValue().toString());
-				}catch(Exception e){e.printStackTrace();}
+				boundedObject.setValue((String) value,Double.class);
+		}
+		}
+		if(t.flag() == Param.Integer){
+			if(jtf.getText().isEmpty()==false){
+				value =(O) jtf.getText();
+				boundedObject.setValue((String) value,Integer.class);
 			}
 		}
-		
-		if(t.flag() == Param.Integer){
-			value =(O) jtf.getText();
-			boundedObject.setValue((String) value);
-			try{
-				f.set(o, boundedObject);
-				jtf=new JTextField(boundedObject.getValue().toString());
-			}catch(Exception e){e.printStackTrace();}
-		}		
-		resultPane.add(jtf);
+		try{
+			f.set(o,boundedObject);
+			resultPane.add(new JTextField(boundedObject.getValue()));
+		}catch(Exception e){e.printStackTrace();}
 		return resultPane;
 	}
 	

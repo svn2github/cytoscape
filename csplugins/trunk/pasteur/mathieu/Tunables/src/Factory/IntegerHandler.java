@@ -26,7 +26,7 @@ public class IntegerHandler implements Guihandler{
 		this.title=f.getName();
 	}
 
-	
+
 	public void handle(){
 		try {
 				f.set(o,Integer.parseInt(jtf.getText()));
@@ -59,9 +59,6 @@ public class IntegerHandler implements Guihandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	
-	
-	
 	public Tunable getTunable() {
 		return t;
 	}
@@ -70,8 +67,5 @@ public class IntegerHandler implements Guihandler{
 	}
 	public Object getObject() {
 		return o;
-	}
-	public Class<?> getclass() {
-		return null;
 	}
 }
