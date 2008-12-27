@@ -56,6 +56,12 @@ public class TextNodeRendererImpl implements TextNodeRenderer, Renderer {
 	                                                                                       String.class,
 	                                                                                       VisualProperty.NODE);
 
+	private static final VisualProperty<Number> aNumberVP = new VisualPropertyImpl<Number>("A_NUMBER_VP",
+            "a Number-valued VP",
+            Integer.valueOf(0),
+            Number.class,
+            VisualProperty.NODE);
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -65,8 +71,8 @@ public class TextNodeRendererImpl implements TextNodeRenderer, Renderer {
 	 */
 	public String render(final View<?> view) {
 		final String label = view.getVisualProperty(nodeLabel);
-
-		return label;
+		Number n = view.getVisualProperty(aNumberVP);
+		return label+" my number:"+n.toString();
 	}
 
 	/**
@@ -77,6 +83,7 @@ public class TextNodeRendererImpl implements TextNodeRenderer, Renderer {
 	public Set<VisualProperty<?>> getVisualProperties() {
 		final Set<VisualProperty<?>> ret = new HashSet<VisualProperty<?>>();
 		ret.add(nodeLabel);
+		ret.add(aNumberVP);
 
 		return ret;
 	}
