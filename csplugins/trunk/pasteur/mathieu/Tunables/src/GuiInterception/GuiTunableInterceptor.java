@@ -89,6 +89,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			panes.add(lssPane);
 			listPane = new ListSingleSelection<JPanel>(panes);
 			
+			
 			for (Guihandler guihandler : list){
 				type = guihandler.getField().getType();
 				String name = type.getSimpleName();
@@ -197,7 +198,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				try{
 					guihandler.getField().set(guihandler.getObject(), button);
 				}catch(Exception e){e.printStackTrace();}
-				display(list);	
+				display(list);
+				inframe.dispose();
 			}
 		}
 	}
@@ -210,12 +212,13 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		JPanel resultpane = new JPanel();
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = null;
-		tunPane = new JPanel();
+		//tunPane = new JPanel();
+		
+		for(int i = 0;i<listPane.getPossibleValues().size();i++){
+			listPane.getPossibleValues().get(i).removeAll();
+		}
 		if(processdone==true){
-			for(int i=0;i<listPane.getPossibleValues().size();i++){
-				listPane.getPossibleValues().get(i).removeAll();
-			}
-			resultpane.removeAll();
+			//resultpane.removeAll();
 			for (Guihandler guihandler : list){
 				type = guihandler.getField().getType();
 				String name = type.getSimpleName();
