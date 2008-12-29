@@ -29,6 +29,7 @@ public class input<O extends Comparable<String>> implements command {
 	public ListSingleSelection<String> dayNames;
 	@Tunable(description="ListMultipleSelection", type=List.class, flag=Param.Nothing)
 	public ListMultipleSelection<String> monthNames;
+	
 	@Tunable(description="Button", type=Button.class, flag=Param.Nothing)
 	public myButton button1 = new myButton();
 

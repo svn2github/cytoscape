@@ -25,7 +25,7 @@ public class application{
 	static TunableInterceptor sp = new StorePropsInterceptor(store);
 	static TunableInterceptor canceled = new StorePropsInterceptor(InputProperties);
 	public static TunableInterceptor ti = null;
-	
+	static JMenu menu1 = new JMenu("Tunables");
 	
 	
 	public static void main(String[] args){
@@ -36,11 +36,10 @@ public class application{
 	
 	public static void CreateGUIandStart(){
 		mainframe = new JFrame("TunableSampler");
-		pane = new JPanel();
 		JMenuBar MenuBar = new JMenuBar();
 		mainframe.setJMenuBar(MenuBar);
 		
-		JMenu menu1 = new JMenu("Tunables");
+		
 		MenuBar.add(menu1);
 		menuItem = new JMenuItem("CatchTunable");
 		menuItem.addActionListener(new myActionListener1());
@@ -73,7 +72,6 @@ public class application{
 		menu3.add(menuItem);
 	
 	
-		mainframe.setContentPane(pane);
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainframe.setLocation(50,50);
 		mainframe.setSize(200, 200);
@@ -158,14 +156,13 @@ public class application{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
 			if(command.equals("catch")){
-				inputframe=new JFrame("InputParameters");
-				outputframe=new JFrame("OutputParameters");
+				inputframe = new JFrame("InputParameters");
+				outputframe = new JFrame("OutputParameters");
 				ti = new GuiTunableInterceptor(inputframe,outputframe);
 				ti.intercept(commander);
-				
 				lp.intercept(commander);
+				menu1.setEnabled(false);
 //				lp.addProperties();
-//				System.out.println("InputProperties = "+InputProperties);
 			}
 		}
 	}

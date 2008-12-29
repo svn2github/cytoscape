@@ -44,9 +44,9 @@ public class IntegerHandler implements Guihandler{
 	
 	public JPanel update(){
 		JPanel result = new JPanel();
-		inte = Integer.parseInt(jtf.getText());
+		//inte = Integer.parseInt(jtf.getText());
 		try{
-			if(inte!=null)f.set(o, inte);
+			if(inte!=null)f.set(o, Integer.parseInt(jtf.getText()));
 			result.add(new JTextField(f.get(o).toString()));
 		}catch(Exception e){e.printStackTrace();}
 		return result;

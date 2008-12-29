@@ -180,7 +180,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			
 			//Test to display the OutputFrame when Button is selected
 			for(Guihandler guihandler :list){
-				if(guihandler.getField().getType()==myButton.class){
+				if(guihandler.getField().getType() == myButton.class){
 					try{
 						button = (myButton) guihandler.getField().get(guihandler.getObject());
 						button.addActionListener(new myActionListener());
@@ -198,8 +198,9 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				try{
 					guihandler.getField().set(guihandler.getObject(), button);
 				}catch(Exception e){e.printStackTrace();}
-				display(list);
 				inframe.dispose();
+				display(list);
+				
 			}
 		}
 	}
@@ -210,6 +211,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	protected void display(List<Guihandler> list) {
 		this.list=list;
 		JPanel resultpane = new JPanel();
+		resultpane.removeAll();
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = null;
 		//tunPane = new JPanel();
@@ -218,7 +220,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			listPane.getPossibleValues().get(i).removeAll();
 		}
 		if(processdone==true){
-			//resultpane.removeAll();
 			for (Guihandler guihandler : list){
 				type = guihandler.getField().getType();
 				String name = type.getSimpleName();

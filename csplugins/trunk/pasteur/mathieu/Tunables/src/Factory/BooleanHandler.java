@@ -47,8 +47,9 @@ public class BooleanHandler implements Guihandler{
 
 	public JPanel update() {
 		JPanel result = new JPanel();
+		//bool = jcb.isSelected();
 		try{
-			f.set(o, jcb.isSelected());
+			f.set(o,jcb.isSelected());
 			result.add(new JCheckBox(title,(Boolean) f.get(o)));
 		}catch(Exception e){e.printStackTrace();}
 	return result;
