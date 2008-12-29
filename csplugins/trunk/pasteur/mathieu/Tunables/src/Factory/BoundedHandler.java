@@ -105,7 +105,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			if(jtf.getText().isEmpty()==false){
 				value =(O) jtf.getText();
 				boundedObject.setValue((String) value,Double.class);
-		}
+			}
 		}
 		if(t.flag() == Param.Integer){
 			if(jtf.getText().isEmpty()==false){

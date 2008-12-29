@@ -52,7 +52,7 @@ public class Bounded<String extends Comparable<String>>{
 		
 		if(v.toString().equals("null")==false){
 			Double val = Double.parseDouble(v.toString());
-			//System.out.println("val="+val.intValue());
+//			System.out.println("val="+val.intValue());
 			
 			if(boundedclass==Double.class){
 				
@@ -76,8 +76,8 @@ public class Bounded<String extends Comparable<String>>{
 						throw new IllegalArgumentException("value is less than lower limit");
 				}
 				
-				v=(String) val;
-				System.out.println("v pour val(double)"+ v);
+				v=(String) Double.toString(val);
+//				System.out.println("v pour val(double)"+ v);
 			}
 			else if(boundedclass==Integer.class){
 				//Integer val = Integer.parseInt(v.toString());
@@ -102,11 +102,11 @@ public class Bounded<String extends Comparable<String>>{
 						throw new IllegalArgumentException("value is less than lower limit");
 				}
 			v=(String) Integer.toString(valu);
-			System.out.println("v pour valu(int) ="+ v);
+//			System.out.println("v pour valu(int) ="+ v);
 			}
 		}
 		value = v;
-		System.out.println("value="+value);
+//		System.out.println("value="+value);
 	}
 	
 }
