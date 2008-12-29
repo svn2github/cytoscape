@@ -100,10 +100,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	}
 
 	public ClusterViz getVisualizer() {
-		if (treeView == null)
-			treeView = new TreeView();
+		// if (treeView == null)
+		// 	treeView = new TreeView();
 
-		return treeView;
+		return new TreeView();
 	}
 
 	protected void initializeProperties() {

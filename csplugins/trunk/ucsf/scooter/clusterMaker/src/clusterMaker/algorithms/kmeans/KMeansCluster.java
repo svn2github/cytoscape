@@ -98,10 +98,10 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	}
 
 	public ClusterViz getVisualizer() {
-		if (knnView == null)
-			knnView = new KnnView();
+		// if (knnView == null)
+		// 	knnView = new KnnView();
 
-		return knnView;
+		return new KnnView();
 	}
 
 	protected void initializeProperties() {
