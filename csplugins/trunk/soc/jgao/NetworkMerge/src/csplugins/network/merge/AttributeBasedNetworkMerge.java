@@ -301,7 +301,7 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
                             keyTypes = null;
                     } else if (type_to==CyAttributes.TYPE_SIMPLE_LIST ) {
                             type = cyAttributes.getType(attr_mc);
-                            if (type<0 && type!=CyAttributes.TYPE_SIMPLE_LIST) { //TODO: improve
+                            if (type<0) { //TODO: improve
                                     type = MultiHashMapDefinition.TYPE_STRING;
                             }
                             keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
