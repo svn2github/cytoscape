@@ -58,5 +58,10 @@
                         <artifactId>swing-layout</artifactId>
                         <version>1.0.2</version>
                 </dependency>
+                <dependency>
+                        <groupId>cytoscape-temp</groupId>
+                        <artifactId>l2fprod-common-all</artifactId>
+                        <version>1.0</version>
+                </dependency>
 	</dependencies>
 </project>
