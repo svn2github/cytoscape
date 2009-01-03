@@ -55,6 +55,8 @@ import org.cytoscape.vizmap.gui.theme.IconManager;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
+import cytoscape.CyNetworkManager;
+
 
 /**
  * Action class to process commands.
@@ -69,6 +71,8 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	protected DefaultViewEditor defViewEditor;
 	@Resource
 	protected VisualMappingManager vmm;
+	@Resource
+	protected CyNetworkManager cyNetworkManager;
 	@Resource
 	protected VizMapperMainPanel vizMapperMainPanel;
 	@Resource

@@ -10,8 +10,13 @@
 	<osgi:reference id="cytoscapeDesktopServiceRef"
 		interface="cytoscape.view.CySwingApplication" />
 
+	<!-- Visual Mapping Manager Service -->
 	<osgi:reference id="vmmServiceRef"
 		interface="org.cytoscape.vizmap.VisualMappingManager" />
+
+	<!-- Network Manager -->
+	<osgi:reference id="cyNetworkManagerServiceRef"
+		interface="cytoscape.CyNetworkManager" />
 
 	<!-- Reference to the network factory service -->
 	<osgi:reference id="cyNetworkFactoryServiceRef"
@@ -61,8 +66,7 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:set id="vizMapperActionServiceRef"
-		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction"
+	<osgi:set id="vizMapperActionServiceRef" interface="org.cytoscape.vizmap.gui.action.VizMapUIAction"
 		cardinality="0..N">
 		<osgi:listener bind-method="onBind" unbind-method="onUnbind"
 			ref="menuManager" />

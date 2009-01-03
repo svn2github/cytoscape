@@ -22,7 +22,7 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 	public void actionPerformed(ActionEvent e) {
 		final VisualStyle currentStyle = vmm.getVisualStyle();
 		VisualStyle clone = null;
-		final GraphView targetView = Cytoscape.getCurrentNetworkView();
+		final GraphView targetView = cyNetworkManager.getCurrentNetworkView();
 
 		try {
 			clone = (VisualStyle) currentStyle.clone();

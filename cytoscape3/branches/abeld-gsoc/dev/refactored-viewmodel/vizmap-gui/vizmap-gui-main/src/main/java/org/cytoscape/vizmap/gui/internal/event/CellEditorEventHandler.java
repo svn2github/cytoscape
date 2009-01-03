@@ -29,7 +29,8 @@ import cytoscape.Cytoscape;
 public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 	// Keeps current discrete mappings. NOT PERMANENT
-	protected final Map<String, Map<Object, Object>> discMapBuffer;
+	private final Map<String, Map<Object, Object>> discMapBuffer;
+
 
 	public CellEditorEventHandler() {
 		discMapBuffer = new HashMap<String, Map<Object, Object>>();
@@ -109,10 +110,10 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 				CyDataTable attr;
 
 				if (type.isNodeProp()) {
-					attr = vizMapperMainPanel.getTargetNetwork()
+					attr = cyNetworkManager.getCurrentNetwork()
 							.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 				} else {
-					attr = vizMapperMainPanel.getTargetNetwork()
+					attr = cyNetworkManager.getCurrentNetwork()
 							.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 				}
 
@@ -177,10 +178,10 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			final CyDataTable attrForTest;
 
 			if (type.isNodeProp()) {
-				attrForTest = vizMapperMainPanel.getTargetNetwork()
+				attrForTest = cyNetworkManager.getCurrentNetwork()
 						.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 			} else {
-				attrForTest = vizMapperMainPanel.getTargetNetwork()
+				attrForTest = cyNetworkManager.getCurrentNetwork()
 						.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 			}
 
@@ -241,12 +242,14 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
 						vmm.getVisualStyle().getNodeAppearanceCalculator()
 								.getCalculator(type), newRootProp,
-								AbstractVizMapperPanel.NODE_VISUAL_MAPPING, propertySheetPanel);
+						AbstractVizMapperPanel.NODE_VISUAL_MAPPING,
+						propertySheetPanel);
 			else
 				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
 						vmm.getVisualStyle().getEdgeAppearanceCalculator()
 								.getCalculator(type), newRootProp,
-								AbstractVizMapperPanel.EDGE_VISUAL_MAPPING, propertySheetPanel);
+						AbstractVizMapperPanel.EDGE_VISUAL_MAPPING,
+						propertySheetPanel);
 
 			vizMapPropertySheetBuilder.removeProperty(typeRootProp);
 
@@ -261,8 +264,8 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			vizMapPropertySheetBuilder.updateTableView();
 
 			// Finally, update graph view and focus.
-			vmm.setNetworkView(vizMapperMainPanel.getTargetView());
-			Cytoscape.redrawGraph(vizMapperMainPanel.getTargetView());
+			vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 			return;
 		}
@@ -296,11 +299,11 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		ctrAttrName = mapping.getControllingAttributeName();
 
 		if (type.isNodeProp()) {
-			attr = vizMapperMainPanel.getTargetNetwork().getNodeCyDataTables().get(
-					CyNetwork.DEFAULT_ATTRS);
+			attr = cyNetworkManager.getCurrentNetwork().getNodeCyDataTables()
+					.get(CyNetwork.DEFAULT_ATTRS);
 		} else {
-			attr = vizMapperMainPanel.getTargetNetwork().getEdgeCyDataTables().get(
-					CyNetwork.DEFAULT_ATTRS);
+			attr = cyNetworkManager.getCurrentNetwork().getEdgeCyDataTables()
+					.get(CyNetwork.DEFAULT_ATTRS);
 		}
 
 		// Byte attrType = attr.getType(ctrAttrName);
@@ -351,8 +354,8 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		vizMapPropertySheetBuilder.updateTableView();
 
 		propertySheetPanel.repaint();
-		vmm.setNetworkView(vizMapperMainPanel.getTargetView());
-		Cytoscape.redrawGraph(vizMapperMainPanel.getTargetView());
+		vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+		Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 	}
 
@@ -441,12 +444,14 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
 					vmm.getVisualStyle().getNodeAppearanceCalculator()
 							.getCalculator(type), newRootProp,
-							AbstractVizMapperPanel.NODE_VISUAL_MAPPING, propertySheetPanel);
+					AbstractVizMapperPanel.NODE_VISUAL_MAPPING,
+					propertySheetPanel);
 		else
 			vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
 					vmm.getVisualStyle().getEdgeAppearanceCalculator()
 							.getCalculator(type), newRootProp,
-							AbstractVizMapperPanel.EDGE_VISUAL_MAPPING, propertySheetPanel);
+					AbstractVizMapperPanel.EDGE_VISUAL_MAPPING,
+					propertySheetPanel);
 
 		vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
 
@@ -459,7 +464,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		}
 
 		// vmm.getNetworkView().redrawGraph(false, true);
-		Cytoscape.redrawGraph(vizMapperMainPanel.getTargetView());
+		Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		parent = null;
 	}
 

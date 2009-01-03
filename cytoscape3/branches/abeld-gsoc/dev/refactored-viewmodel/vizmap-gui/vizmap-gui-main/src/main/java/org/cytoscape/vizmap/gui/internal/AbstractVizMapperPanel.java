@@ -77,6 +77,7 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
+import cytoscape.CyNetworkManager;
 import cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.view.CySwingApplication;
 
@@ -93,12 +94,19 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	/*
 	 * Resources which will be injected through DI Container
 	 */
+	
+	// Listeners for attribute-related events
+	protected AttributeEventsListener nodeAttrListener;
+	protected AttributeEventsListener edgeAttrListener;
+	protected AttributeEventsListener networkAttrListener;
+	
 	@Resource
 	protected CySwingApplication cytoscapeDesktop;
 	@Resource
 	protected DefaultViewEditor defViewEditor;
 	@Resource
 	protected VisualMappingManager vmm;
+
 	@Resource
 	protected ColorManager colorMgr;
 	@Resource
@@ -146,10 +154,12 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	protected PropertyRendererRegistry rendReg;
 	@Resource
 	protected PropertyEditorRegistry editorReg;
-	
+
 	protected VizMapEventHandlerManager vizMapEventHandlerManager;
-	
+
 	protected EditorWindowManager editorWindowManager;
+
+	protected CyNetworkManager cyNetworkManager;
 
 	protected SwingPropertyChangeSupport spcs;
 	protected static final long serialVersionUID = -6839011300709287662L;
@@ -160,7 +170,8 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 			VizMapperMenuManager menuMgr, EditorFactory editorFactory,
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
-			VizMapEventHandlerManager vizMapEventHandlerManager, EditorWindowManager editorWindowManager) {
+			VizMapEventHandlerManager vizMapEventHandlerManager,
+			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager) {
 
 		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
@@ -173,9 +184,9 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 		this.vizMapEventHandlerManager = vizMapEventHandlerManager;
 		this.editorWindowManager = editorWindowManager;
-		
+		this.cyNetworkManager = cyNetworkManager;
 		spcs = new SwingPropertyChangeSupport(this);
-		
+
 		defaultImageManager = new HashMap<String, Image>();
 
 		initComponents();
@@ -317,8 +328,8 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 		vsSelectPanelLayout.setHorizontalGroup(vsSelectPanelLayout
 				.createParallelGroup(GroupLayout.LEADING).add(
 						vsSelectPanelLayout.createSequentialGroup()
-								.addContainerGap().add(getVsNameComboBox(), 0, 146,
-										Short.MAX_VALUE).addPreferredGap(
+								.addContainerGap().add(getVsNameComboBox(), 0,
+										146, Short.MAX_VALUE).addPreferredGap(
 										LayoutStyle.RELATED).add(optionButton,
 										GroupLayout.PREFERRED_SIZE, 64,
 										GroupLayout.PREFERRED_SIZE)
@@ -379,7 +390,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	public PropertyChangeSupport getPropertyChangeSupport() {
 		return this.spcs;
 	}
-	
+
 	public Map<String, Image> getDefaultImageManager() {
 		return this.defaultImageManager;
 	}
@@ -466,7 +477,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	public JComboBox getVsNameComboBox() {
 		return vsNameComboBox;
 	}
-	
+
 	public JPanel getDefaultViewPanel() {
 		return this.defaultViewImagePanel;
 	}

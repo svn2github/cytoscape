@@ -11,6 +11,8 @@ import org.cytoscape.vizmap.gui.internal.VizMapperMainPanel;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
+import cytoscape.CyNetworkManager;
+
 public abstract class AbstractVizMapEventHandler implements VizMapEventHandler {
 	
 	@Resource
@@ -24,6 +26,9 @@ public abstract class AbstractVizMapEventHandler implements VizMapEventHandler {
 	
 	@Resource
 	protected PropertySheetPanel propertySheetPanel;
+	
+	@Resource
+	protected CyNetworkManager cyNetworkManager;
 	
 	public AbstractVizMapEventHandler() {
 	}

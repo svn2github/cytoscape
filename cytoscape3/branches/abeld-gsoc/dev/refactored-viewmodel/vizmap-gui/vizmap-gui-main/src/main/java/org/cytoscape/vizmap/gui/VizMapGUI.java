@@ -46,15 +46,6 @@ import javax.swing.JPanel;
   */
 public interface VizMapGUI {
 	
-	/**
-	 * Register rendering engine.
-	 * This GUI responds only to the Views associated with this rendering engine.
-	 * 
-	 * @param renderignEngineID
-	 */
-	public void setRenderingEngineID(String renderignEngineID);
-	public String getRenderingEngineID();
-	
 	
 	public DefaultViewEditor getDefaultViewEditor();
 	public void setDefaultViewEditor(final DefaultViewEditor defViewEditor);

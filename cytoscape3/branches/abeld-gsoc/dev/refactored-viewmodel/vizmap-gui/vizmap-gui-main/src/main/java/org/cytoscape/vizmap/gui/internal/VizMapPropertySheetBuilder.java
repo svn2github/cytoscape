@@ -45,6 +45,8 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
+import cytoscape.CyNetworkManager;
+
 /**
  * Maintain property sheet table states.
  * 
@@ -86,6 +88,9 @@ public class VizMapPropertySheetBuilder {
 
 	@Resource
 	private VizMapperMenuManager menuMgr;
+	
+	@Resource
+	private CyNetworkManager cyNetworkManager;
 
 	/*
 	 * Keeps Properties in the browser.
@@ -418,13 +423,12 @@ public class VizMapPropertySheetBuilder {
 		}
 	}
 
+	//TODO: this should be gone
 	public void setAttrComboBox() {
+		// Attribute Names
 		final List<String> names = new ArrayList<String>();
 
-//		// TODO This function is not working now.
-//		if (getTargetNetwork() == null)
-//			return;
-//
+	
 //		CyDataTable attr = /* TODO */getTargetNetwork().getNodeCyDataTables()
 //				.get(CyNetwork.DEFAULT_ATTRS);
 //

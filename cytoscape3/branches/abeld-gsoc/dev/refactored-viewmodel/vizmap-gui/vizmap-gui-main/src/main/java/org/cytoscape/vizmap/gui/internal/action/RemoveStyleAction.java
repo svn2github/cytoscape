@@ -56,7 +56,7 @@ public class RemoveStyleAction extends AbstractVizMapperAction {
 
 			vmm.setVisualStyle(currentStyle);
 			vmm.setVisualStyleForView(vmm.getNetworkView(), currentStyle);
-			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		}
 	}
 

@@ -181,7 +181,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		updateMap();
 
-		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+		Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 		slider.repaint();
 		repaint();

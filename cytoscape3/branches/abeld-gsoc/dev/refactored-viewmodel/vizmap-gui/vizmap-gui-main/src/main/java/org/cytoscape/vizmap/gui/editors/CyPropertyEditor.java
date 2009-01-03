@@ -1,7 +1,6 @@
-/*
- File: VizMapBypassNetworkListener.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -33,45 +32,26 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-package org.cytoscape.vizmap.gui.internal.bypass;
+*/
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+package org.cytoscape.vizmap.gui.editors;
 
-import org.cytoscape.vizmap.gui.editors.EditorFactory;
+import java.awt.Component;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
-import cytoscape.view.CySwingApplication;
+import java.beans.PropertyEditor;
 
 
 /**
- * Adds NodeView and EdgeView vizmap bypass listeners to network views as
- * the views are created.
+ *  Property editor object which will be shared by Cytoscape desktop application.
+ *  Maybe separated into a new bundle.
+  *
+ * @param <E>  DOCUMENT ME!
  */
-public class VizMapBypassNetworkListener implements PropertyChangeListener {
-
-	private EditorFactory ef;
-	private CyNetworkManager cyNetworkManager;
-	
-	public VizMapBypassNetworkListener(EditorFactory ef, CyNetworkManager cyNetworkManager) {
-		this.ef = ef;
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-	}
-
+public interface CyPropertyEditor<E extends Component> extends PropertyEditor {
 	/**
-	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
-	 * node and edge context menu listeners to the view.
-	 * @param evnt The event we're hearing.
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
 	 */
-	public void propertyChange(PropertyChangeEvent evnt) {
-		if (evnt.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
-			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
-			cyNetworkManager.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
-
-			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener(ef);
-			cyNetworkManager.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
-		}
-	}
+	public E getEditorComponent();
 }
