@@ -8,7 +8,7 @@ import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 import com.l2fprod.common.propertysheet.Property;
@@ -17,7 +17,7 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
 public class EditorWindowManager {
 
-	private Map<VisualPropertyType, JDialog> editorWindowMap;
+	private Map<VisualProperty, JDialog> editorWindowMap;
 
 	private PropertyRendererRegistry rendReg;
 	private EditorFactory editorFactory;
@@ -29,15 +29,15 @@ public class EditorWindowManager {
 		this.rendReg = rendReg;
 		this.propertySheetPanel = propertySheetPanel;
 
-		editorWindowMap = new HashMap<VisualPropertyType, JDialog>();
+		editorWindowMap = new HashMap<VisualProperty, JDialog>();
 	}
 
-	public void manageWindow(final String status, VisualPropertyType vpt,
+	public void manageWindow(final String status, VisualProperty vpt,
 			Object source) {
 		if (status.equals(EditorFactory.EDITOR_WINDOW_OPENED)) {
 			this.editorWindowMap.put(vpt, (JDialog) source);
 		} else if (status.equals(EditorFactory.EDITOR_WINDOW_CLOSED)) {
-			final VisualPropertyType type = vpt;
+			final VisualProperty type = vpt;
 
 			/*
 			 * Update icon
@@ -82,21 +82,21 @@ public class EditorWindowManager {
 	}
 
 	public void closeAllEditorWindows() {
-		Set<VisualPropertyType> typeSet = editorWindowMap.keySet();
-		Set<VisualPropertyType> keySet = new HashSet<VisualPropertyType>();
+		Set<VisualProperty> typeSet = editorWindowMap.keySet();
+		Set<VisualProperty> keySet = new HashSet<VisualProperty>();
 
-		for (VisualPropertyType vpt : typeSet) {
+		for (VisualProperty vpt : typeSet) {
 			JDialog window = editorWindowMap.get(vpt);
 			manageWindow(EditorFactory.EDITOR_WINDOW_CLOSED, vpt, null);
 			window.dispose();
 			keySet.add(vpt);
 		}
 
-		for (VisualPropertyType type : keySet)
+		for (VisualProperty type : keySet)
 			editorWindowMap.remove(type);
 	}
 
-	public void removeEditorWindow(VisualPropertyType type) {
+	public void removeEditorWindow(VisualProperty type) {
 		JDialog editor = editorWindowMap.get(type);
 		if (editor == null)
 			return;
@@ -105,7 +105,7 @@ public class EditorWindowManager {
 		editorWindowMap.remove(type);
 	}
 
-	public boolean isRegistered(VisualPropertyType type) {
+	public boolean isRegistered(VisualProperty type) {
 		if (editorWindowMap.get(type) != null)
 			return true;
 		else

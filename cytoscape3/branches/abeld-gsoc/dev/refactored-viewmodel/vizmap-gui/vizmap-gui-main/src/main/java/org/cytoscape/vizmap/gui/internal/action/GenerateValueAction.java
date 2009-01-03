@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
@@ -53,11 +53,11 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 		final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
 		final Object hidden = prop.getHiddenObject();
 
-		if (hidden instanceof VisualPropertyType) {
+		if (hidden instanceof VisualProperty) {
 			
 			final GraphView targetNetworkView = cyNetworkManager.getCurrentNetworkView();
 			
-			final VisualPropertyType type = (VisualPropertyType) hidden;
+			final VisualProperty type = (VisualProperty) hidden;
 
 			Map valueMap = new HashMap();
 			final long seed = System.currentTimeMillis();

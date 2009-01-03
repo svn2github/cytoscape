@@ -46,7 +46,7 @@ import org.cytoscape.model.GraphObject;
  * node (or edge) that has had it's context menu clicked.  This class allows
  * the dialog to get the node then set the bypass value as things move rather
  * than waiting for the user to click OK. This could be used by other 
- * VisualPropertyTypes in a similar fashion, but currently isn't.
+ * VisualPropertys in a similar fashion, but currently isn't.
  * <b>This code should NEVER propagate to newer versions of Cytoscape!!!</b>
  * This should be handled in a completely different way in the future.
  */

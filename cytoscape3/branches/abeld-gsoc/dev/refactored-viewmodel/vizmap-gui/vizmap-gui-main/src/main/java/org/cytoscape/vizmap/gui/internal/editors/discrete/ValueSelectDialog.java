@@ -34,9 +34,9 @@
 */
 package org.cytoscape.vizmap.gui.internal.editors.discrete;
 
-import static org.cytoscape.vizmap.VisualPropertyType.EDGE_SRCARROW_SHAPE;
-import static org.cytoscape.vizmap.VisualPropertyType.EDGE_TGTARROW_SHAPE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_SHAPE;
+import static org.cytoscape.viewmodel.VisualProperty.EDGE_SRCARROW_SHAPE;
+import static org.cytoscape.viewmodel.VisualProperty.EDGE_TGTARROW_SHAPE;
+import static org.cytoscape.viewmodel.VisualProperty.NODE_SHAPE;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -58,8 +58,8 @@ import javax.swing.SwingConstants;
 
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
@@ -74,7 +74,7 @@ import cytoscape.Cytoscape;
 public class ValueSelectDialog extends JDialog {
 	private final static long serialVersionUID = 1202339876950593L;
 	
-	private final VisualPropertyType type;
+	private final VisualProperty type;
 	private Map shapeMap;
 	private List<Object> orderedKeyList;
 	
@@ -91,7 +91,7 @@ public class ValueSelectDialog extends JDialog {
 	 * @param parent
 	 * @return
 	 */
-	public static Object showDialog(Component parentComponent, VisualPropertyType type) {
+	public static Object showDialog(Component parentComponent, VisualProperty type) {
 	
 		final ValueSelectDialog dialog = new ValueSelectDialog(type, true);
 		dialog.setLocationRelativeTo(parentComponent);
@@ -99,7 +99,7 @@ public class ValueSelectDialog extends JDialog {
 		return dialog.getValue();
 	}
 
-	private ValueSelectDialog(VisualPropertyType type, boolean modal) {
+	private ValueSelectDialog(VisualProperty type, boolean modal) {
 		super();
 		this.setModal(modal);
 		this.type = type;

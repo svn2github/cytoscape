@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 
 public interface EditorFactory {
 
@@ -45,7 +45,7 @@ public interface EditorFactory {
 	 *             DOCUMENT ME!
 	 */
 	public Object showDiscreteEditor(Component parentComponent,
-			VisualPropertyType type) throws Exception;
+			VisualProperty type) throws Exception;
 
 	/**
 	 * Display continuous value editor.
@@ -59,7 +59,7 @@ public interface EditorFactory {
 	 *             DOCUMENT ME!
 	 */
 	public Object showContinuousEditor(Component parentComponent,
-			VisualPropertyType type) throws Exception;
+			VisualProperty type) throws Exception;
 
 	/**
 	 *  DOCUMENT ME!
@@ -75,7 +75,7 @@ public interface EditorFactory {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public PropertyEditor getDiscreteCellEditor(VisualPropertyType type);
+	public PropertyEditor getDiscreteCellEditor(VisualProperty type);
 
 	/**
 	 *  DOCUMENT ME!
@@ -84,7 +84,7 @@ public interface EditorFactory {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public TableCellRenderer getDiscreteCellRenderer(VisualPropertyType type);
+	public TableCellRenderer getDiscreteCellRenderer(VisualProperty type);
 
 	/**
 	 *  DOCUMENT ME!
@@ -93,7 +93,7 @@ public interface EditorFactory {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public PropertyEditor getContinuousCellEditor(VisualPropertyType type);
+	public PropertyEditor getContinuousCellEditor(VisualProperty type);
 
 	/**
 	 *  DOCUMENT ME!
@@ -104,7 +104,7 @@ public interface EditorFactory {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public TableCellRenderer getContinuousCellRenderer(VisualPropertyType type,
+	public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
 			int w, int h);
 
 	public PropertyEditor getDefaultComboBoxEditor(String editorName);

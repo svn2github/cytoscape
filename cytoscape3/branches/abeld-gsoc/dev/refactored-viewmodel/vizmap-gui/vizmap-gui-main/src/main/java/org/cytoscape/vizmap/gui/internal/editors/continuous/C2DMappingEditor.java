@@ -44,7 +44,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
@@ -71,7 +71,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 	private EditorFactory editorFactory;
 
-	public C2DMappingEditor(VisualPropertyType type, EditorFactory editorFactory) {
+	public C2DMappingEditor(VisualProperty type, EditorFactory editorFactory) {
 		super(type);
 		this.iconPanel.setVisible(false);
 		this.belowPanel.setVisible(false);
@@ -91,7 +91,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualPropertyType type, Component parentComponent, EditorFactory ef) {
+	                                VisualProperty type, Component parentComponent, EditorFactory ef) {
 		editor = new C2DMappingEditor(type,ef);
 		editor.setSize(new Dimension(width, height));
 		editor.setTitle(title);
@@ -108,7 +108,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
-	                                VisualPropertyType type) {
+	                                VisualProperty type) {
 		editor = new C2DMappingEditor(type,null);
 
 		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
@@ -131,7 +131,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getLegend(final int width, final int height,
-	                                  final VisualPropertyType type) {
+	                                  final VisualProperty type) {
 		editor = new C2DMappingEditor(type,null);
 
 		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {

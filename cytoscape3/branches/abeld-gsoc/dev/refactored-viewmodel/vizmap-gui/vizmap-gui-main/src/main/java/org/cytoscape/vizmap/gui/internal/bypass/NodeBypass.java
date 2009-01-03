@@ -38,8 +38,8 @@ package org.cytoscape.vizmap.gui.internal.bypass;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 
@@ -62,7 +62,7 @@ class NodeBypass extends VizMapBypass {
 		// horrible, horrible hack
 		BypassHack.setCurrentObject(n);
 
-		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
+		for (VisualProperty type : VisualProperty.getNodeVisualPropertyList())
 			addMenuItem(menu, type);
 
 		menu.addSeparator();
@@ -75,7 +75,7 @@ class NodeBypass extends VizMapBypass {
 	protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
+		for (VisualProperty type : VisualProperty.getNodeVisualPropertyList())
 			l.add(type.getBypassAttrName());
 
 		return l;

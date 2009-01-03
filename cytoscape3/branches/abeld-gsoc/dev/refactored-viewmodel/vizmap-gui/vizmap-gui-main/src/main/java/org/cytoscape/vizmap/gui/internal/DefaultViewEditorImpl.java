@@ -34,9 +34,9 @@
  */
 package org.cytoscape.vizmap.gui.internal;
 
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_SIZE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
+import static org.cytoscape.viewmodel.VisualProperty.NODE_HEIGHT;
+import static org.cytoscape.viewmodel.VisualProperty.NODE_SIZE;
+import static org.cytoscape.viewmodel.VisualProperty.NODE_WIDTH;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -69,7 +69,7 @@ import javax.swing.SwingConstants;
 import org.cytoscape.vizmap.GlobalAppearanceCalculator;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
@@ -103,16 +103,16 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	
 	private final static long serialVersionUID = 1202339876675416L;
 	
-	private static final Set<VisualPropertyType> EDGE_PROPS;
-	private static final Set<VisualPropertyType> NODE_PROPS;
+	private static final Set<VisualProperty> EDGE_PROPS;
+	private static final Set<VisualProperty> NODE_PROPS;
 	private VisualMappingManager vmm;
 	private final NodeAppearanceCalculator nac;
 	
 	private CyNetworkManager cyNetworkManager;
 
 	static {
-		EDGE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getEdgeVisualPropertyList());
-		NODE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getNodeVisualPropertyList());
+		EDGE_PROPS = new TreeSet<VisualProperty>(VisualProperty.getEdgeVisualPropertyList());
+		NODE_PROPS = new TreeSet<VisualProperty>(VisualProperty.getNodeVisualPropertyList());
 	}
 
 	private EditorFactory editorFactory;
@@ -361,7 +361,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 					list = edgeList;
 				}
 
-				VisualPropertyType type = (VisualPropertyType) list.getSelectedValue();
+				VisualProperty type = (VisualProperty) list.getSelectedValue();
 				newValue = editorFactory.showDiscreteEditor(this, type);
 
 				if (newValue != null)
@@ -437,7 +437,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		DefaultListModel model = new DefaultListModel();
 		nodeList.setModel(model);
 
-		for (VisualPropertyType type : NODE_PROPS) {
+		for (VisualProperty type : NODE_PROPS) {
 			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getVisualProperty()
 			                                                              .getDefaultIcon());
 			nodeIcon.setLeftPadding(15);
@@ -448,7 +448,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		DefaultListModel eModel = new DefaultListModel();
 		edgeList.setModel(eModel);
 
-		for (VisualPropertyType type : EDGE_PROPS) {
+		for (VisualProperty type : EDGE_PROPS) {
 			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getVisualProperty()
 			                                                              .getDefaultIcon());
 
@@ -536,9 +536,9 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			this.setVerticalAlignment(SwingConstants.CENTER);
 			this.setIconTextGap(55);
 
-			if (value instanceof VisualPropertyType
-			    && (((VisualPropertyType) value).getDataType() == String.class)) {
-				final Object defVal = ((VisualPropertyType) value).getDefault(vmm.getVisualStyle());
+			if (value instanceof VisualProperty
+			    && (((VisualProperty) value).getDataType() == String.class)) {
+				final Object defVal = ((VisualProperty) value).getDefault(vmm.getVisualStyle());
 
 				if (defVal != null) {
 					this.setToolTipText((String) defVal);

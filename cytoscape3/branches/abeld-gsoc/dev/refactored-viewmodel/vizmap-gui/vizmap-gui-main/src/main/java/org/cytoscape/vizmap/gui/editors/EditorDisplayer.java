@@ -34,7 +34,7 @@
 */
 package org.cytoscape.vizmap.gui.editors;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 
 import java.awt.Component;
 
@@ -56,9 +56,9 @@ public interface EditorDisplayer {
 
 	public Type getEditorType();
 
-	public Object showEditor(Component parentComponent, VisualPropertyType type);
+	public Object showEditor(Component parentComponent, VisualProperty type);
 
 	public PropertyEditor getCellEditor();
 
-	public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height);
+	public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height);
 }

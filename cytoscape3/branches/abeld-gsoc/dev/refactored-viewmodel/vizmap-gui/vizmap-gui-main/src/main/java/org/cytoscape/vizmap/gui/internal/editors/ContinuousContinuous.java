@@ -7,7 +7,7 @@ import java.beans.PropertyEditor;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.vizmap.gui.internal.editors.continuous.C2CMappingEditor;
 
@@ -27,7 +27,7 @@ public class ContinuousContinuous implements EditorDisplayer {
 		return EditorDisplayer.Type.CONTINUOUS;
 	}
 
-	public Object showEditor(Component parentComponent, VisualPropertyType type) {
+	public Object showEditor(Component parentComponent, VisualProperty type) {
 		return C2CMappingEditor.showDialog(450, 350,"Continuous Editor for " + type.getName(),type, parentComponent);
 	}
 
@@ -35,7 +35,7 @@ public class ContinuousContinuous implements EditorDisplayer {
 		return null;
     }
 
-    public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
+    public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height) {
 		continuousRenderer.setIcon(C2CMappingEditor.getIcon(width,height, type));
 		return continuousRenderer;
     }

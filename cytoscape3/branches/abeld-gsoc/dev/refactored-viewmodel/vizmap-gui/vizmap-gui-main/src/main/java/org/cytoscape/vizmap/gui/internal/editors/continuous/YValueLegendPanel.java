@@ -1,6 +1,6 @@
 package org.cytoscape.vizmap.gui.internal.editors.continuous;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,14 +14,14 @@ import java.awt.geom.AffineTransform;
   */
 public class YValueLegendPanel extends JPanel {
 	private final static long serialVersionUID = 1202339877453677L;
-    private VisualPropertyType type;
+    private VisualProperty type;
 
     /**
      * Creates a new IconPanel object.
      *
      * @param type DOCUMENT ME!
      */
-    public YValueLegendPanel(VisualPropertyType type) {
+    public YValueLegendPanel(VisualProperty type) {
         this.type = type;
         this.setPreferredSize(new Dimension());
     }

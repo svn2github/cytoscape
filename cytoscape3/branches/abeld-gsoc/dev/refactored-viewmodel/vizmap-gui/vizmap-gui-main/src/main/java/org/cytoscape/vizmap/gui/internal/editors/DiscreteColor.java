@@ -8,7 +8,7 @@ import java.beans.PropertyEditor;
 
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.CyColorCellRenderer;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.CyColorPropertyEditor;
@@ -34,7 +34,7 @@ public class DiscreteColor implements EditorDisplayer {
 		return EditorDisplayer.Type.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualPropertyType type) {
+	public Object showEditor(Component parentComponent, VisualProperty type) {
 		return CyColorChooser.showDialog(parentComponent, "Select Color...",null);
 	}
 
@@ -42,7 +42,7 @@ public class DiscreteColor implements EditorDisplayer {
 		return colorCellEditor;	
     }
 
-    public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
+    public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height) {
    		colorCellRenderer.setForeground(Color.DARK_GRAY);
 		colorCellRenderer.setOddBackgroundColor(new Color(150, 150, 150, 20));
 		colorCellRenderer.setEvenBackgroundColor(Color.white);

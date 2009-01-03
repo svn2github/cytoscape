@@ -49,7 +49,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 
@@ -64,7 +64,7 @@ import cytoscape.util.CyColorChooser;
  */
 public class BelowAndAbovePanel extends JPanel {
 	private final static long serialVersionUID = 1202339876961477L;
-	private VisualPropertyType type;
+	private VisualProperty type;
 	private Color boxColor;
 	private boolean below;
 	private Object value;
@@ -84,7 +84,7 @@ public class BelowAndAbovePanel extends JPanel {
 	 * @param below
 	 *            DOCUMENT ME!
 	 */
-	public BelowAndAbovePanel(VisualPropertyType type, Color color, boolean below) {
+	public BelowAndAbovePanel(VisualProperty type, Color color, boolean below) {
 		this.boxColor = color;
 		this.below = below;
 		this.type = type;
@@ -103,7 +103,7 @@ public class BelowAndAbovePanel extends JPanel {
 	 * @param type DOCUMENT ME!
 	 * @param below DOCUMENT ME!
 	 */
-	public BelowAndAbovePanel(VisualPropertyType type, boolean below) {
+	public BelowAndAbovePanel(VisualProperty type, boolean below) {
 		this(type, Color.DARK_GRAY, below);
 	}
 

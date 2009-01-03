@@ -38,8 +38,8 @@ package org.cytoscape.vizmap.gui.internal.editors.discrete;
 
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.VisualProperty;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.VisualProperty;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,7 +76,7 @@ public class LabelPositionCellRenderer extends DefaultCellRenderer {
 
 		if ((value != null) && value instanceof LabelPosition) {
 			final LabelPosition lp = (LabelPosition) value;
-			final VisualProperty prop = VisualPropertyType.NODE_LABEL_POSITION
+			final VisualProperty prop = VisualProperty.NODE_LABEL_POSITION
 			                                   .getVisualProperty();
 			label.setIcon(prop.getIcon(lp));
 			label.setVerticalAlignment(SwingConstants.CENTER);

@@ -43,7 +43,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 
@@ -95,13 +95,13 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 			boolean isNodeSizeExist = false;
 
 			for (Property prop : props) {
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_SIZE.getName()))
+				if (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName()))
 					isNodeSizeExist = true;
 
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_HEIGHT.getName())) {
+				if (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName())) {
 					nodeHeight = (VizMapperProperty) prop;
 					propertySheetPanel.removeProperty(prop);
-				} else if (prop.getDisplayName().equals(VisualPropertyType.NODE_WIDTH.getName())) {
+				} else if (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName())) {
 					nodeWidth = (VizMapperProperty) prop;
 					propertySheetPanel.removeProperty(prop);
 				}
@@ -115,15 +115,15 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 			boolean isNodeHExist = false;
 
 			for (Property prop : props) {
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_SIZE.getName())) {
+				if (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName())) {
 					nodeSize = (VizMapperProperty) prop;
 					propertySheetPanel.removeProperty(prop);
 				}
 
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_WIDTH.getName()))
+				if (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName()))
 					isNodeWExist = true;
 
-				if (prop.getDisplayName().equals(VisualPropertyType.NODE_HEIGHT.getName()))
+				if (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName()))
 					isNodeHExist = true;
 			}
 

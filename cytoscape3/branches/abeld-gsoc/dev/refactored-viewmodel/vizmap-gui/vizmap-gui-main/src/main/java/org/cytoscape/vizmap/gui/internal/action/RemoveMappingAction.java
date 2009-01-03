@@ -6,7 +6,7 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.internal.AbstractVizMapperPanel;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 
@@ -34,7 +34,7 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 			Property curProp = item.getProperty();
 
 			if (curProp instanceof VizMapperProperty) {
-				final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
+				final VisualProperty type = (VisualProperty) ((VizMapperProperty) curProp)
 						.getHiddenObject();
 
 				if (type == null)
@@ -87,7 +87,7 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 		}
 	}
 
-	private void removeMapping(final VisualPropertyType type) {
+	private void removeMapping(final VisualProperty type) {
 		if (type.isNodeProp()) {
 			vmm.getVisualStyle().getNodeAppearanceCalculator()
 					.removeCalculator(type);
@@ -135,7 +135,7 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 	
 	public void propertyChange(PropertyChangeEvent e) {
 		if(e.getPropertyName().equals("REMOVE_MAPPING") && e.getNewValue() != null) {
-			removeMapping((VisualPropertyType) e.getNewValue());
+			removeMapping((VisualProperty) e.getNewValue());
 		}
 	}
 

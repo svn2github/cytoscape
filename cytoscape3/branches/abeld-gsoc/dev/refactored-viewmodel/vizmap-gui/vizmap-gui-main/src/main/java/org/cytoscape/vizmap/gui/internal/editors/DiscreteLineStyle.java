@@ -8,7 +8,7 @@ import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.CyComboBoxPropertyEditor;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.ShapeCellRenderer;
@@ -22,7 +22,7 @@ public class DiscreteLineStyle implements EditorDisplayer {
     private final CyComboBoxPropertyEditor lineCellEditor; 
 
 	public DiscreteLineStyle() { 
-    	lineCellRenderer = new ShapeCellRenderer( VisualPropertyType.EDGE_LINE_STYLE);
+    	lineCellRenderer = new ShapeCellRenderer( VisualProperty.EDGE_LINE_STYLE);
     	lineCellEditor = new CyComboBoxPropertyEditor();
 	}
 
@@ -34,8 +34,8 @@ public class DiscreteLineStyle implements EditorDisplayer {
 		return EditorDisplayer.Type.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualPropertyType type) {
-		return ValueSelectDialog.showDialog(parentComponent, VisualPropertyType.EDGE_LINE_STYLE);
+	public Object showEditor(Component parentComponent, VisualProperty type) {
+		return ValueSelectDialog.showDialog(parentComponent, VisualProperty.EDGE_LINE_STYLE);
 	}
 
     public PropertyEditor getCellEditor() {
@@ -53,7 +53,7 @@ public class DiscreteLineStyle implements EditorDisplayer {
 		return lineCellEditor;
     }
 
-    public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
+    public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height) {
 		return lineCellRenderer;	
     }
 }

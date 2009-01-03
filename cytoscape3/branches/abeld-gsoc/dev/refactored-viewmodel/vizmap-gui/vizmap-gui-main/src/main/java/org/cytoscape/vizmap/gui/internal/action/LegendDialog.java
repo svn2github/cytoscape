@@ -5,7 +5,7 @@ package org.cytoscape.vizmap.gui.internal.action;
 
 import org.cytoscape.vizmap.EdgeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
@@ -80,18 +80,18 @@ public class LegendDialog extends JDialog {
 		for (Calculator calc : nodeCalcs) {
 			// AAARGH
 			if (nac.getNodeSizeLocked()) {
-				if (calc.getVisualPropertyType() == VisualPropertyType.NODE_WIDTH)
+				if (calc.getVisualProperty() == VisualProperty.NODE_WIDTH)
 					continue;
-				else if (calc.getVisualPropertyType() == VisualPropertyType.NODE_HEIGHT)
+				else if (calc.getVisualProperty() == VisualProperty.NODE_HEIGHT)
 					continue;
 			} else {
-				if (calc.getVisualPropertyType() == VisualPropertyType.NODE_SIZE)
+				if (calc.getVisualProperty() == VisualProperty.NODE_SIZE)
 					continue;
 			}
 
 			om = calc.getMapping(0);
 
-			JPanel mleg = om.getLegend(calc.getVisualPropertyType());
+			JPanel mleg = om.getLegend(calc.getVisualProperty());
 
 			// Add passthrough mappings to the top since they don't
 			// display anything besides the title.
@@ -109,7 +109,7 @@ public class LegendDialog extends JDialog {
 		for (Calculator calc : edgeCalcs) {
 			om = calc.getMapping(0);
 
-			JPanel mleg = om.getLegend(calc.getVisualPropertyType());
+			JPanel mleg = om.getLegend(calc.getVisualProperty());
 
 			// Add passthrough mappings to the top since they don't
 			// display anything besides the title.

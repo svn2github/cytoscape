@@ -40,7 +40,7 @@ import cytoscape.Cytoscape;
 import org.cytoscape.model.CyDataTable;
 
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
@@ -88,7 +88,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	 */
 	protected static final String BELOW_VALUE_CHANGED = "BELOW_VALUE_CHANGED";
 	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
-	protected VisualPropertyType type;
+	protected VisualProperty type;
 	protected Calculator calculator;
 	protected ContinuousMapping mapping;
 	protected List<ContinuousMappingPoint> allPoints;
@@ -103,7 +103,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected VisualMappingManager vmm;
 
 	/** Creates new form ContinuousMapperEditorPanel */
-	public ContinuousMappingEditorPanel(final VisualPropertyType type) {
+	public ContinuousMappingEditorPanel(final VisualProperty type) {
 		this.type = type;
 		initComponents();
 		setVisualPropLabel();

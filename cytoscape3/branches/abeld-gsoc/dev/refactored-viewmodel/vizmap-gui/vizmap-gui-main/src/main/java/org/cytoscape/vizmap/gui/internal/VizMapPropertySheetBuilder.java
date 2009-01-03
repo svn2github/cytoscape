@@ -1,6 +1,6 @@
 package org.cytoscape.vizmap.gui.internal;
 
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_LABEL_POSITION;
+import static org.cytoscape.viewmodel.VisualProperty.NODE_LABEL_POSITION;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -27,7 +27,7 @@ import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
@@ -97,7 +97,7 @@ public class VizMapPropertySheetBuilder {
 	 */
 	private Map<String, List<Property>> propertyMap;
 
-	private List<VisualPropertyType> unusedVisualPropType;
+	private List<VisualProperty> unusedVisualPropType;
 
 	public VizMapPropertySheetBuilder(VisualMappingManager vmm) {
 		this.vmm = vmm;
@@ -248,7 +248,7 @@ public class VizMapPropertySheetBuilder {
 
 	private void setPropertyFromCalculator(List<Calculator> calcList,
 			String rootCategory, List<Property> propRecord) {
-		VisualPropertyType type = null;
+		VisualProperty type = null;
 
 		for (Calculator calc : calcList) {
 			final VizMapperProperty calculatorTypeProp = new VizMapperProperty();
@@ -260,7 +260,7 @@ public class VizMapPropertySheetBuilder {
 			if ((editor == null)
 					&& (calculatorTypeProp.getCategory().equals(
 							"Unused Properties") == false)) {
-				type = (VisualPropertyType) calculatorTypeProp
+				type = (VisualProperty) calculatorTypeProp
 						.getHiddenObject();
 
 				if (type.isNodeProp()) {
@@ -280,7 +280,7 @@ public class VizMapPropertySheetBuilder {
 		buildList();
 		Collections.sort(getUnusedVisualPropType());
 
-		for (VisualPropertyType type : getUnusedVisualPropType()) {
+		for (VisualProperty type : getUnusedVisualPropType()) {
 			VizMapperProperty prop = new VizMapperProperty();
 			prop.setCategory(AbstractVizMapperPanel.CATEGORY_UNUSED);
 			prop.setDisplayName(type.getName());
@@ -293,7 +293,7 @@ public class VizMapPropertySheetBuilder {
 	}
 
 	private void buildList() {
-		unusedVisualPropType = new ArrayList<VisualPropertyType>();
+		unusedVisualPropType = new ArrayList<VisualProperty>();
 
 		final VisualStyle vs = vmm.getVisualStyle();
 		final NodeAppearanceCalculator nac = vs.getNodeAppearanceCalculator();
@@ -301,7 +301,7 @@ public class VizMapPropertySheetBuilder {
 
 		ObjectMapping mapping = null;
 
-		for (VisualPropertyType type : VisualPropertyType.values()) {
+		for (VisualProperty type : VisualProperty.values()) {
 			Calculator calc = nac.getCalculator(type);
 
 			if (calc == null) {
@@ -344,18 +344,18 @@ public class VizMapPropertySheetBuilder {
 				final Object type = ((VizMapperProperty) parent)
 						.getHiddenObject();
 
-				if (type instanceof VisualPropertyType) {
+				if (type instanceof VisualProperty) {
 					ObjectMapping mapping;
 
-					if (((VisualPropertyType) type).isNodeProp())
+					if (((VisualProperty) type).isNodeProp())
 						mapping = vmm.getVisualStyle()
 								.getNodeAppearanceCalculator().getCalculator(
-										((VisualPropertyType) type))
+										((VisualProperty) type))
 								.getMapping(0);
 					else
 						mapping = vmm.getVisualStyle()
 								.getEdgeAppearanceCalculator().getCalculator(
-										((VisualPropertyType) type))
+										((VisualProperty) type))
 								.getMapping(0);
 
 					if (mapping instanceof ContinuousMapping) {
@@ -364,7 +364,7 @@ public class VizMapPropertySheetBuilder {
 						int wi = table.getCellRect(0, 1, true).width;
 						final TableCellRenderer cRenderer = editorFactory
 								.getContinuousCellRenderer(
-										(VisualPropertyType) type, wi, 70);
+										(VisualProperty) type, wi, 70);
 						rendReg.registerRenderer(shownProp, cRenderer);
 					}
 				}
@@ -490,7 +490,7 @@ public class VizMapPropertySheetBuilder {
 		return this.vizMapPropertyBuilder;
 	}
 
-	public List<VisualPropertyType> getUnusedVisualPropType() {
+	public List<VisualProperty> getUnusedVisualPropType() {
 		return unusedVisualPropType;
 	}
 }

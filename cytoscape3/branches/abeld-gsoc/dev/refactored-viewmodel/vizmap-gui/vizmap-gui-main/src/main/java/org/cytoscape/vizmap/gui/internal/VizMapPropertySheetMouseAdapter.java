@@ -10,7 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
@@ -25,7 +25,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 
 	private VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	private PropertySheetPanel propertySheetPanel;
-	private Map<VisualPropertyType, JDialog> editorWindowManager;
+	private Map<VisualProperty, JDialog> editorWindowManager;
 
 	@Resource
 	private VisualMappingManager vmm;
@@ -38,7 +38,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 	public VizMapPropertySheetMouseAdapter(
 			VizMapPropertySheetBuilder sheetBuilder,
 			PropertySheetPanel propertySheetPanel,
-			Map<VisualPropertyType, JDialog> editorWindowManager) {
+			Map<VisualProperty, JDialog> editorWindowManager) {
 		this.vizMapPropertySheetBuilder = sheetBuilder;
 		this.propertySheetPanel = propertySheetPanel;
 		this.editorWindowManager = editorWindowManager;
@@ -69,7 +69,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 					&& category.equalsIgnoreCase("Unused Properties")) {
 				((VizMapperProperty) curProp).setEditable(true);
 
-				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
+				VisualProperty type = (VisualProperty) ((VizMapperProperty) curProp)
 						.getHiddenObject();
 				propertySheetPanel.removeProperty(curProp);
 
@@ -114,14 +114,14 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 				/*
 				 * Single left-click
 				 */
-				VisualPropertyType type = null;
+				VisualProperty type = null;
 
 				if ((curProp.getParentProperty() == null)
-						&& ((VizMapperProperty) curProp).getHiddenObject() instanceof VisualPropertyType)
-					type = (VisualPropertyType) ((VizMapperProperty) curProp)
+						&& ((VizMapperProperty) curProp).getHiddenObject() instanceof VisualProperty)
+					type = (VisualProperty) ((VizMapperProperty) curProp)
 							.getHiddenObject();
 				else if (curProp.getParentProperty() != null)
-					type = (VisualPropertyType) ((VizMapperProperty) curProp
+					type = (VisualProperty) ((VizMapperProperty) curProp
 							.getParentProperty()).getHiddenObject();
 				else
 

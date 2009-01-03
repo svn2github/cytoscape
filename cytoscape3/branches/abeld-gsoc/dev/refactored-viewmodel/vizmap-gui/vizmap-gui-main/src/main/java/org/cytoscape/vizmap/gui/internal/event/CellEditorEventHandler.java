@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.vizmap.CalculatorCatalog;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.calculators.BasicCalculator;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.internal.AbstractVizMapperPanel;
@@ -58,7 +58,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 				selected, 0);
 		VizMapperProperty prop = (VizMapperProperty) selectedItem.getProperty();
 
-		VisualPropertyType type = null;
+		VisualProperty type = null;
 		String ctrAttrName = null;
 
 		VizMapperProperty typeRootProp = null;
@@ -69,7 +69,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			 * This is a controlling attr name change signal.
 			 */
 			typeRootProp = (VizMapperProperty) prop;
-			type = (VisualPropertyType) ((VizMapperProperty) prop)
+			type = (VisualProperty) ((VizMapperProperty) prop)
 					.getHiddenObject();
 			ctrAttrName = (String) e.getNewValue();
 		} else if ((prop.getParentProperty() == null)
@@ -84,7 +84,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			if (prop.getParentProperty() == null)
 				return;
 
-			type = (VisualPropertyType) ((VizMapperProperty) prop
+			type = (VisualProperty) ((VizMapperProperty) prop
 					.getParentProperty()).getHiddenObject();
 		}
 
@@ -370,7 +370,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			return;
 		}
 
-		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop
+		final VisualProperty type = (VisualProperty) ((VizMapperProperty) prop
 				.getParentProperty()).getHiddenObject();
 		final String newCalcName = vmm.getVisualStyle().getName() + "-"
 				+ type.getName() + "-" + newMapName;
@@ -468,7 +468,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		parent = null;
 	}
 
-	private Calculator getNewCalculator(final VisualPropertyType type,
+	private Calculator getNewCalculator(final VisualProperty type,
 			final String newMappingName, final String newCalcName) {
 		System.out.println("Mapper = " + newMappingName);
 

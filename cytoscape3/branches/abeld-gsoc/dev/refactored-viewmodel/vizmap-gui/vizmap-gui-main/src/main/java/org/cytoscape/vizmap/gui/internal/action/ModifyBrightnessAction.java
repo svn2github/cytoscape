@@ -46,7 +46,7 @@ import java.util.TreeSet;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
@@ -97,8 +97,8 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 		final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
 		final Object hidden = prop.getHiddenObject();
 
-		if (hidden instanceof VisualPropertyType) {
-			final VisualPropertyType type = (VisualPropertyType) hidden;
+		if (hidden instanceof VisualProperty) {
+			final VisualProperty type = (VisualProperty) hidden;
 
 			final Map valueMap = new HashMap();
 			final ObjectMapping oMap;

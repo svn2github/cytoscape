@@ -15,7 +15,7 @@ import javax.swing.table.TableCellRenderer;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
@@ -55,7 +55,7 @@ public class VizMapPropertyBuilder {
 			final VizMapperProperty calculatorTypeProp, final String rootCategory,
 			final PropertySheetPanel propertySheetPanel) {
 		
-		final VisualPropertyType type = calc.getVisualPropertyType();
+		final VisualProperty type = calc.getVisualProperty();
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 		/*
 		 * Set one calculator
@@ -107,7 +107,7 @@ public class VizMapPropertyBuilder {
 			if (targetNetwork == null)
 				return;
 
-			if (calc.getVisualPropertyType().isNodeProp()) {
+			if (calc.getVisualProperty().isNodeProp()) {
 				attr = targetNetwork.getNodeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				it = targetNetwork.getNodeList().iterator();
@@ -202,7 +202,7 @@ public class VizMapPropertyBuilder {
 	/*
 	 * Set value, title, and renderer for each property in the category.
 	 */
-	private void setDiscreteProps(VisualPropertyType type, Map discMapping,
+	private void setDiscreteProps(VisualProperty type, Map discMapping,
 			Set<Object> attrKeys, PropertyEditor editor,
 			TableCellRenderer rend, DefaultProperty parent) {
 		if (attrKeys == null)

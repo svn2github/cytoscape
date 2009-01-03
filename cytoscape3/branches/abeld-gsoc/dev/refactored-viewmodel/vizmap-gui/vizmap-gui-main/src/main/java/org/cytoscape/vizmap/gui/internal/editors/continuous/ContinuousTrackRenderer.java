@@ -38,7 +38,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.jdesktop.swingx.JXMultiThumbSlider;
@@ -98,7 +98,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	private Map<Integer, Point> verticesList;
 	private int selectedIdx;
 	private Point dragOrigin;
-	private VisualPropertyType type;
+	private VisualProperty type;
 	private ContinuousMapping cMapping;
 	private String title;
 	private Number below;
@@ -116,7 +116,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	 * @param below  DOCUMENT ME!
 	 * @param above  DOCUMENT ME!
 	 */
-	public ContinuousTrackRenderer(VisualPropertyType type, Number below, Number above) {
+	public ContinuousTrackRenderer(VisualProperty type, Number below, Number above) {
 		this.below = below;
 		this.above = above;
 		this.type = type;

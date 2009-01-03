@@ -64,7 +64,7 @@ import javax.swing.event.PopupMenuListener;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.vizmap.gui.DefaultViewPanel;
@@ -492,7 +492,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		VizMapperProperty prop = ((VizMapperProperty) curProp);
 
-		if (prop.getHiddenObject() instanceof VisualPropertyType
+		if (prop.getHiddenObject() instanceof VisualProperty
 				&& (prop.getDisplayName().contains("Mapping Type") == false)
 				&& (prop.getValue() != null)
 				&& (prop.getValue().toString().startsWith("Please select") == false)) {
@@ -510,7 +510,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				}
 			}
 
-			VisualPropertyType type = ((VisualPropertyType) prop
+			VisualProperty type = ((VisualProperty) prop
 					.getHiddenObject());
 
 			Class dataType = type.getDataType();
@@ -526,8 +526,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			// series.setEnabled(true);
 			// }
 			//
-			// if ((type == VisualPropertyType.NODE_WIDTH)
-			// || (type == VisualPropertyType.NODE_HEIGHT)) {
+			// if ((type == VisualProperty.NODE_WIDTH)
+			// || (type == VisualProperty.NODE_HEIGHT)) {
 			// fit.setEnabled(true);
 			// }
 		}

@@ -11,7 +11,7 @@ import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.CyComboBoxPropertyEditor;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.ShapeCellRenderer;
@@ -25,7 +25,7 @@ public class DiscreteNodeShape implements EditorDisplayer {
 	private final CyComboBoxPropertyEditor shapeCellEditor; 
 
 	public DiscreteNodeShape() { 
-		shapeCellRenderer = new ShapeCellRenderer(VisualPropertyType.NODE_SHAPE);
+		shapeCellRenderer = new ShapeCellRenderer(VisualProperty.NODE_SHAPE);
 		shapeCellEditor = new CyComboBoxPropertyEditor();
 	}
 
@@ -37,8 +37,8 @@ public class DiscreteNodeShape implements EditorDisplayer {
 		return EditorDisplayer.Type.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualPropertyType type) {
-		return ValueSelectDialog.showDialog(parentComponent, VisualPropertyType.NODE_SHAPE);
+	public Object showEditor(Component parentComponent, VisualProperty type) {
+		return ValueSelectDialog.showDialog(parentComponent, VisualProperty.NODE_SHAPE);
 	}
 
     public PropertyEditor getCellEditor() {
@@ -73,7 +73,7 @@ public class DiscreteNodeShape implements EditorDisplayer {
 		return shapeCellEditor;
     }
 
-    public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
+    public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height) {
 		return shapeCellRenderer;	
     }
 

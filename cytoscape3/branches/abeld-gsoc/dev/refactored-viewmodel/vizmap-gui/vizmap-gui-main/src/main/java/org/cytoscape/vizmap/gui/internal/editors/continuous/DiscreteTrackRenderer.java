@@ -55,14 +55,14 @@ import javax.swing.SwingUtilities;
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
-import static org.cytoscape.vizmap.VisualPropertyType.*;
+import static org.cytoscape.viewmodel.VisualProperty.*;
 //import cytoscape.visual.ui.LabelPlacerGraphic;
 
 
@@ -90,7 +90,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 //	private double maxValue;
 	private Object below;
 	private Object above;
-	private VisualPropertyType type;
+	private VisualProperty type;
 	private String title;
 
 	// Mainly for Icons
@@ -111,7 +111,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * @param below  DOCUMENT ME!
 	 * @param above  DOCUMENT ME!
 	 */
-	public DiscreteTrackRenderer(VisualPropertyType type,
+	public DiscreteTrackRenderer(VisualProperty type,
 	                             Object below, Object above) {
 
 		this.below = below;

@@ -48,7 +48,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
@@ -77,7 +77,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public GradientEditorPanel(VisualPropertyType type) {
+	public GradientEditorPanel(VisualProperty type) {
 		super(type);
 		iconPanel.setVisible(false);
 		initSlider();
@@ -97,7 +97,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @param type DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualPropertyType type, Component parentComponent) {
+	                                VisualProperty type, Component parentComponent) {
 		editor = new GradientEditorPanel(type);
 		editor.setSize(new Dimension(width, height));
 		editor.setTitle(title);
@@ -119,7 +119,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getLegend(final int width, final int height,
-	                                  final VisualPropertyType type) {
+	                                  final VisualProperty type) {
 		editor = new GradientEditorPanel(type);
 
 		CyGradientTrackRenderer rend = (CyGradientTrackRenderer) editor.slider.getTrackRenderer();
@@ -134,7 +134,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
-	                                VisualPropertyType type) {
+	                                VisualProperty type) {
 		editor = new GradientEditorPanel(type);
 
 		CyGradientTrackRenderer rend = (CyGradientTrackRenderer) editor.slider.getTrackRenderer();

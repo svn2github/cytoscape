@@ -36,7 +36,7 @@
 
 package org.cytoscape.vizmap.gui.internal.editors;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.CyDoublePropertyEditor;
 
@@ -90,7 +90,7 @@ public class DiscreteNumber implements EditorDisplayer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object showEditor(Component parentComponent, VisualPropertyType type) {
+	public Object showEditor(Component parentComponent, VisualProperty type) {
 		return JOptionPane.showInputDialog(parentComponent, "Please enter a new numeric value:");
 	}
 
@@ -112,7 +112,7 @@ public class DiscreteNumber implements EditorDisplayer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
+	public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height) {
 		return numberCellRenderer;
 	}
 }

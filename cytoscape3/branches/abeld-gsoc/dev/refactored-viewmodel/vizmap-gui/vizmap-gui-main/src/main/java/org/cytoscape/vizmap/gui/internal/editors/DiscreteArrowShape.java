@@ -11,7 +11,7 @@ import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.CyComboBoxPropertyEditor;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.ShapeCellRenderer;
@@ -26,7 +26,7 @@ public class DiscreteArrowShape implements EditorDisplayer {
 
 	public DiscreteArrowShape() { 
     	arrowCellEditor = new CyComboBoxPropertyEditor();
-    	arrowShapeCellRenderer = new ShapeCellRenderer(VisualPropertyType.EDGE_TGTARROW_SHAPE);
+    	arrowShapeCellRenderer = new ShapeCellRenderer(VisualProperty.EDGE_TGTARROW_SHAPE);
 	}
 
 	public Class<?> getDataType() {
@@ -37,8 +37,8 @@ public class DiscreteArrowShape implements EditorDisplayer {
 		return EditorDisplayer.Type.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualPropertyType type) {
-		return ValueSelectDialog.showDialog(parentComponent, VisualPropertyType.EDGE_SRCARROW_SHAPE);
+	public Object showEditor(Component parentComponent, VisualProperty type) {
+		return ValueSelectDialog.showDialog(parentComponent, VisualProperty.EDGE_SRCARROW_SHAPE);
 	}
 
     public PropertyEditor getCellEditor() {
@@ -62,7 +62,7 @@ public class DiscreteArrowShape implements EditorDisplayer {
 		return arrowCellEditor;
     }
 
-    public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
+    public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height) {
 		return arrowShapeCellRenderer;	
     }
 

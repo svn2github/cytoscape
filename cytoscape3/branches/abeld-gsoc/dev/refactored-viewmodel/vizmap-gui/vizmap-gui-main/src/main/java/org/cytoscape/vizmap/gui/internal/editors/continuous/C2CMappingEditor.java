@@ -36,7 +36,7 @@ package org.cytoscape.vizmap.gui.internal.editors.continuous;
 
 import cytoscape.Cytoscape;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
 
@@ -74,7 +74,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 *
 	 * @param type DOCUMENT ME!
 	 */
-	public C2CMappingEditor(VisualPropertyType type) {
+	public C2CMappingEditor(VisualProperty type) {
 		super(type);
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);
@@ -97,7 +97,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @param type DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualPropertyType type, Component parentComponent) {
+	                                VisualProperty type, Component parentComponent) {
 		editor = new C2CMappingEditor(type);
 		editor.setSize(new Dimension(width, height));
 		editor.setTitle(title);
@@ -114,7 +114,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
-	                                VisualPropertyType type) {
+	                                VisualProperty type) {
 		editor = new C2CMappingEditor(type);
 
 		TrackRenderer rend = editor.slider.getTrackRenderer();
@@ -138,7 +138,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getLegend(final int width, final int height,
-	                                  final VisualPropertyType type) {
+	                                  final VisualProperty type) {
 		editor = new C2CMappingEditor(type);
 
 		final ContinuousTrackRenderer rend = (ContinuousTrackRenderer) editor.slider

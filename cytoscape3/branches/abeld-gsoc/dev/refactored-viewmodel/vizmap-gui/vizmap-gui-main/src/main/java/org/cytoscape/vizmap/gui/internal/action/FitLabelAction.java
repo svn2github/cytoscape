@@ -35,9 +35,9 @@
 
 package org.cytoscape.vizmap.gui.internal.action;
 
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_FONT_SIZE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
+import static org.cytoscape.viewmodel.VisualProperty.NODE_FONT_SIZE;
+import static org.cytoscape.viewmodel.VisualProperty.NODE_HEIGHT;
+import static org.cytoscape.viewmodel.VisualProperty.NODE_WIDTH;
 
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.internal.AbstractVizMapperPanel;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
@@ -94,8 +94,8 @@ public class FitLabelAction extends AbstractVizMapperAction {
 		final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
 		final Object hidden = prop.getHiddenObject();
 
-		if (hidden instanceof VisualPropertyType) {
-			final VisualPropertyType type = (VisualPropertyType) hidden;
+		if (hidden instanceof VisualProperty) {
+			final VisualProperty type = (VisualProperty) hidden;
 
 			final Map valueMap = new HashMap();
 			final ObjectMapping oMap;
@@ -120,7 +120,7 @@ public class FitLabelAction extends AbstractVizMapperAction {
 
 			final Calculator nodeLabelCalc = vmm.getVisualStyle()
 					.getNodeAppearanceCalculator().getCalculator(
-							VisualPropertyType.NODE_LABEL);
+							VisualProperty.NODE_LABEL);
 
 			if (nodeLabelCalc == null) {
 				return;

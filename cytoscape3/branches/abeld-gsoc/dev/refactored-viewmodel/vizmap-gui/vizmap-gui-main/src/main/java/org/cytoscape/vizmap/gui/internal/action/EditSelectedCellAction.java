@@ -43,7 +43,7 @@ import javax.annotation.Resource;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
@@ -96,7 +96,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 			return;
 		}
 
-		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop
+		final VisualProperty type = (VisualProperty) ((VizMapperProperty) prop
 		                                                                                      .getParentProperty())
 		                                .getHiddenObject();
 

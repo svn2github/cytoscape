@@ -44,7 +44,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 class EdgeBypass extends VizMapBypass {
@@ -59,7 +59,7 @@ class EdgeBypass extends VizMapBypass {
 		// horrible, horrible hack
 		BypassHack.setCurrentObject( e );
 
-		for ( VisualPropertyType type : VisualPropertyType.getEdgeVisualPropertyList() ) 
+		for ( VisualProperty type : VisualProperty.getEdgeVisualPropertyList() ) 
 			addMenuItem(menu, type);
 
         addResetAllMenuItem(menu);
@@ -70,7 +70,7 @@ class EdgeBypass extends VizMapBypass {
     protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for ( VisualPropertyType type : VisualPropertyType.getEdgeVisualPropertyList() )
+		for ( VisualProperty type : VisualProperty.getEdgeVisualPropertyList() )
 			l.add( type.getBypassAttrName() );
 		
 		return l;

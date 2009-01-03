@@ -37,8 +37,8 @@
 package org.cytoscape.vizmap.gui.internal.editors.discrete;
 
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import javax.swing.*;
@@ -54,14 +54,14 @@ import java.util.Map;
 public class ShapeCellRenderer extends DefaultCellRenderer {
 	private final static long serialVersionUID = 1202339868999601L;
 	private final Map<Object, Icon> icons;
-	private VisualPropertyType type;
+	private VisualProperty type;
 
 	/**
 	 * Creates a new ShapeCellRenderer object.
 	 *
 	 * @param type DOCUMENT ME!
 	 */
-	public ShapeCellRenderer(VisualPropertyType type) {
+	public ShapeCellRenderer(VisualProperty type) {
 		this.type = type;
 		icons = type.getVisualProperty().getIconSet();
 	}
@@ -98,8 +98,8 @@ public class ShapeCellRenderer extends DefaultCellRenderer {
 			final VisualPropertyIcon shapeIcon = (VisualPropertyIcon) icons.get(value);
 
 			if (shapeIcon != null) {
-				if (type.equals(VisualPropertyType.EDGE_SRCARROW_SHAPE)
-				    || type.equals(VisualPropertyType.EDGE_TGTARROW_SHAPE)) {
+				if (type.equals(VisualProperty.EDGE_SRCARROW_SHAPE)
+				    || type.equals(VisualProperty.EDGE_TGTARROW_SHAPE)) {
 					shapeIcon.setIconHeight(16);
 					shapeIcon.setIconWidth(40);
 					shapeIcon.setBottomPadding(-6);

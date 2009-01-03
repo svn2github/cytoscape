@@ -52,8 +52,8 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 		vmm.setVisualStyleForView(currentView, newStyle);
 
 		vizMapperMainPanel.getPropertyChangeSupport().firePropertyChange(
-				"REMOVE_MAPPING", null, dummy.getVisualPropertyType());
-		// vizMapperMainPanel.removeMapping(dummy.getVisualPropertyType());
+				"REMOVE_MAPPING", null, dummy.getVisualProperty());
+		// vizMapperMainPanel.removeMapping(dummy.getVisualProperty());
 
 		final JPanel defPanel = defViewEditor.getDefaultView(name);
 		final GraphView view = (GraphView) ((DefaultViewPanel) defPanel)

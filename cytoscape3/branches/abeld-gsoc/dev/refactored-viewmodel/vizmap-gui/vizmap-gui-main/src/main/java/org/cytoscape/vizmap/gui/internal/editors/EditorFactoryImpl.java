@@ -45,7 +45,7 @@ import java.util.Set;
 
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.CyComboBoxPropertyEditor;
@@ -88,7 +88,7 @@ public class EditorFactoryImpl implements EditorFactory {
 		displayers.remove(ed);
 	}
 
-	private EditorDisplayer findEditor(VisualPropertyType type,
+	private EditorDisplayer findEditor(VisualProperty type,
 			EditorDisplayer.Type edType) {
 		final Class<?> dataType = type.getDataType();
 
@@ -106,10 +106,10 @@ public class EditorFactoryImpl implements EditorFactory {
 	 * 
 	 * @see
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#showDiscreteEditor(java
-	 * .awt.Component, org.cytoscape.vizmap.VisualPropertyType)
+	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
 	 */
 	public Object showDiscreteEditor(Component parentComponent,
-			VisualPropertyType type) throws Exception {
+			VisualProperty type) throws Exception {
 		return findEditor(type, EditorDisplayer.Type.DISCRETE).showEditor(
 				parentComponent, type);
 	}
@@ -119,10 +119,10 @@ public class EditorFactoryImpl implements EditorFactory {
 	 * 
 	 * @see
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#showContinuousEditor(java
-	 * .awt.Component, org.cytoscape.vizmap.VisualPropertyType)
+	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
 	 */
 	public Object showContinuousEditor(Component parentComponent,
-			VisualPropertyType type) throws Exception {
+			VisualProperty type) throws Exception {
 		return findEditor(type, EditorDisplayer.Type.CONTINUOUS).showEditor(
 				parentComponent, type);
 	}
@@ -146,9 +146,9 @@ public class EditorFactoryImpl implements EditorFactory {
 	 * 
 	 * @see
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellEditor(
-	 * org.cytoscape.vizmap.VisualPropertyType)
+	 * org.cytoscape.viewmodel.VisualProperty)
 	 */
-	public PropertyEditor getDiscreteCellEditor(VisualPropertyType type) {
+	public PropertyEditor getDiscreteCellEditor(VisualProperty type) {
 		return findEditor(type, EditorDisplayer.Type.DISCRETE).getCellEditor();
 	}
 
@@ -157,9 +157,9 @@ public class EditorFactoryImpl implements EditorFactory {
 	 * 
 	 * @see
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellRenderer
-	 * (org.cytoscape.vizmap.VisualPropertyType)
+	 * (org.cytoscape.viewmodel.VisualProperty)
 	 */
-	public TableCellRenderer getDiscreteCellRenderer(VisualPropertyType type) {
+	public TableCellRenderer getDiscreteCellRenderer(VisualProperty type) {
 		return findEditor(type, EditorDisplayer.Type.DISCRETE).getCellRenderer(
 				type, 0, 0);
 	}
@@ -169,9 +169,9 @@ public class EditorFactoryImpl implements EditorFactory {
 	 * 
 	 * @see
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellEditor
-	 * (org.cytoscape.vizmap.VisualPropertyType)
+	 * (org.cytoscape.viewmodel.VisualProperty)
 	 */
-	public PropertyEditor getContinuousCellEditor(VisualPropertyType type) {
+	public PropertyEditor getContinuousCellEditor(VisualProperty type) {
 		return findEditor(type, EditorDisplayer.Type.CONTINUOUS)
 				.getCellEditor();
 	}
@@ -181,9 +181,9 @@ public class EditorFactoryImpl implements EditorFactory {
 	 * 
 	 * @see
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellRenderer
-	 * (org.cytoscape.vizmap.VisualPropertyType, int, int)
+	 * (org.cytoscape.viewmodel.VisualProperty, int, int)
 	 */
-	public TableCellRenderer getContinuousCellRenderer(VisualPropertyType type,
+	public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
 			int w, int h) {
 		return findEditor(type, EditorDisplayer.Type.CONTINUOUS)
 				.getCellRenderer(type, w, h);

@@ -49,7 +49,7 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 import cytoscape.Cytoscape;
@@ -88,7 +88,7 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 	}
 
-	protected void addResetMenuItem(JMenu menu, final VisualPropertyType type) {
+	protected void addResetMenuItem(JMenu menu, final VisualProperty type) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + type.getName() + " ]") {
 				private final static long serialVersionUID = 1202339876709140L;
 				public void actionPerformed(ActionEvent e) {
@@ -103,7 +103,7 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 	}
 
-	protected void addMenuItem(final JMenu menu, final VisualPropertyType type) {
+	protected void addMenuItem(final JMenu menu, final VisualProperty type) {
 		
 		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
 				private final static long serialVersionUID = 1202339876717506L;
@@ -133,11 +133,11 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 		
 		// Check node size lock state 
-		if(type.equals(VisualPropertyType.NODE_SIZE)) {
+		if(type.equals(VisualProperty.NODE_SIZE)) {
 			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
 				jmi.setEnabled(false);
 			}
-		} else if(type.equals(VisualPropertyType.NODE_WIDTH) || type.equals(VisualPropertyType.NODE_HEIGHT)) {
+		} else if(type.equals(VisualProperty.NODE_WIDTH) || type.equals(VisualProperty.NODE_HEIGHT)) {
 			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
 				jmi.setEnabled(false);
 			}

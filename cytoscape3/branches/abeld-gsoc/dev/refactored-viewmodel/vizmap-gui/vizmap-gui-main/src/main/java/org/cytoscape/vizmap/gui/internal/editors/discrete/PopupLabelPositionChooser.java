@@ -46,7 +46,7 @@ import org.cytoscape.vizmap.LabelPlacerGraphic;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.internal.bypass.BypassHack;
 
 import javax.swing.*;
@@ -158,7 +158,7 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 			if ( go != null ) {
 				String val = ObjectToString.getStringValue(newlp);
 				// TODO check if attr has been created or not and create if necessary
-				go.attrs().set(VisualPropertyType.NODE_LABEL_POSITION.getBypassAttrName(), val);
+				go.attrs().set(VisualProperty.NODE_LABEL_POSITION.getBypassAttrName(), val);
 				Cytoscape.redrawGraph(vmm.getNetworkView());
 			}
 		}
