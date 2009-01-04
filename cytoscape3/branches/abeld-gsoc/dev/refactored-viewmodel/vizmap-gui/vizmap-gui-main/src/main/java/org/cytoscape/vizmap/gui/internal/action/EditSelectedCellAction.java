@@ -49,7 +49,7 @@ import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
-import org.cytoscape.vizmap.mappings.PassThroughMapping;
+import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
 
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
@@ -118,7 +118,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 			attr = targetNetwork.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 		}
 
-		if (mapping instanceof ContinuousMapping || mapping instanceof PassThroughMapping)
+		if (mapping instanceof ContinuousMapping || mapping instanceof PassthroughMappingCalculator)
 			return;
 
 		Object newValue = null;

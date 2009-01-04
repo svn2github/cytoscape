@@ -9,7 +9,7 @@ import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
-import org.cytoscape.vizmap.mappings.PassThroughMapping;
+import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
 import org.freehep.util.export.ExportDialog;
 
 import javax.swing.*;
@@ -95,7 +95,7 @@ public class LegendDialog extends JDialog {
 
 			// Add passthrough mappings to the top since they don't
 			// display anything besides the title.
-			if (om instanceof PassThroughMapping)
+			if (om instanceof PassthroughMappingCalculator)
 				legend.add(mleg, 0);
 			else
 				legend.add(mleg);
@@ -113,7 +113,7 @@ public class LegendDialog extends JDialog {
 
 			// Add passthrough mappings to the top since they don't
 			// display anything besides the title.
-			if (om instanceof PassThroughMapping)
+			if (om instanceof PassthroughMappingCalculator)
 				legend.add(mleg, 0);
 			else
 				legend.add(mleg);

@@ -21,7 +21,7 @@ import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
-import org.cytoscape.vizmap.mappings.PassThroughMapping;
+import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -160,7 +160,7 @@ public class VizMapPropertyBuilder {
 				TableCellRenderer crenderer = editorFactory
 						.getContinuousCellRenderer(type, wi, 70);
 				rendReg.registerRenderer(graphicalView, crenderer);
-			} else if ((firstMap.getClass() == PassThroughMapping.class)
+			} else if ((firstMap.getClass() == PassthroughMappingCalculator.class)
 					&& (attrName != null)) {
 				// Passthrough
 				String id;

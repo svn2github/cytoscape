@@ -18,7 +18,7 @@ import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
-import org.cytoscape.vizmap.mappings.PassThroughMapping;
+import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
@@ -272,7 +272,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 		// Return if not a Discrete Mapping.
 		if (mapping instanceof ContinuousMapping
-				|| mapping instanceof PassThroughMapping)
+				|| mapping instanceof PassthroughMappingCalculator)
 			return;
 
 		Object key = null;
@@ -418,7 +418,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 				oldMappingTypeName = "Discrete Mapper";
 			else if (oldCalc.getMapping(0) instanceof ContinuousMapping)
 				oldMappingTypeName = "Continuous Mapper";
-			else if (oldCalc.getMapping(0) instanceof PassThroughMapping)
+			else if (oldCalc.getMapping(0) instanceof PassthroughMappingCalculator)
 				oldMappingTypeName = "Passthrough Mapper";
 			else
 				oldMappingTypeName = null;
