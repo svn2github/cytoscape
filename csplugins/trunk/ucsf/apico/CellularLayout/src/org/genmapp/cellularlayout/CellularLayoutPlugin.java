@@ -3,6 +3,7 @@ package org.genmapp.cellularlayout;
 import giny.view.NodeView;
 
 import java.awt.GridLayout;
+import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.JPanel;
@@ -24,7 +25,7 @@ import cytoscape.plugin.CytoscapePlugin;
 public class CellularLayoutPlugin extends CytoscapePlugin {
 
 	/**
-	 * The constructor registers our layout algorithm.  The CyLayouts mechanism 
+	 * The constructor registers our layout algorithm. The CyLayouts mechanism
 	 * will worry about how to get it in the right menu, etc.
 	 */
 	public CellularLayoutPlugin() {
@@ -46,14 +47,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			super();
 			layoutProperties = new LayoutProperties(getName());
 			layoutProperties.add(new Tunable("nodeSpacing",
-			                                 "Spacing between nodes",
-			                                 Tunable.DOUBLE, new Double(80.0)));
+					"Spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
 
-		  // We've now set all of our tunables, so we can read the property 
+			// We've now set all of our tunables, so we can read the property
 			// file now and adjust as appropriate
 			layoutProperties.initializeProperties();
 
-			// Finally, update everything.  We need to do this to update
+			// Finally, update everything. We need to do this to update
 			// any of our values based on what we read from the property file
 			updateSettings(true);
 
@@ -68,8 +68,9 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 		/**
 		 * Signals that we want to update our internal settings
-		 *
-		 * @param force force the settings to be updated, if true
+		 * 
+		 * @param force
+		 *            force the settings to be updated, if true
 		 */
 		public void updateSettings(boolean force) {
 			layoutProperties.updateValues();
@@ -88,75 +89,72 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 		public LayoutProperties getSettings() {
 			return layoutProperties;
 		}
-	
+
 		/**
 		 * Returns the short-hand name of this algorithm
-		 *
-		 * @return  short-hand name
+		 * 
+		 * @return short-hand name
 		 */
 		public String getName() {
 			return "cellular-layout";
 		}
-	
+
 		/**
-		 *  Returns the user-visible name of this layout
-		 *
-		 * @return  user visible name
+		 * Returns the user-visible name of this layout
+		 * 
+		 * @return user visible name
 		 */
 		public String toString() {
 			return "Cellular Layout";
 		}
-	
+
 		/**
-		 *  Return true if we support performing our layout on a 
-		 * limited set of nodes
-		 *
-		 * @return  true if we support selected-only layout
+		 * Return true if we support performing our layout on a limited set of
+		 * nodes
+		 * 
+		 * @return true if we support selected-only layout
 		 */
 		public boolean supportsSelectedOnly() {
-			return true;
+			return false;
 		}
-	
+
 		/**
-		 * Returns the types of node attributes supported by
-		 * this algorithm. 
-		 *
-		 * @return the list of supported attribute types, or null
-		 * if node attributes are not supported
+		 * Returns the types of node attributes supported by this algorithm.
+		 * 
+		 * @return the list of supported attribute types, or null if node
+		 *         attributes are not supported
 		 */
 		public byte[] supportsNodeAttributes() {
 			return null;
 		}
 
 		/**
-		 * Returns the types of edge attributes supported by
-		 * this algorithm.  
-		 *
-		 * @return the list of supported attribute types, or null
-		 * if edge attributes are not supported
+		 * Returns the types of edge attributes supported by this algorithm.
+		 * 
+		 * @return the list of supported attribute types, or null if edge
+		 *         attributes are not supported
 		 */
 		public byte[] supportsEdgeAttributes() {
 			return null;
 		}
-	
+
 		/**
-		 * Returns a JPanel to be used as part of the Settings dialog for this layout
-		 * algorithm.
-		 *
+		 * Returns a JPanel to be used as part of the Settings dialog for this
+		 * layout algorithm.
+		 * 
 		 */
 		public JPanel getSettingsPanel() {
-			JPanel panel = new JPanel(new GridLayout(0,1));
+			JPanel panel = new JPanel(new GridLayout(0, 1));
 			panel.add(layoutProperties.getTunablePanel());
 
 			return panel;
 		}
 
-	
 		/**
-		 *  DOCUMENT ME!
+		 * The layout protocol...
 		 */
 		public void construct() {
-			// This creates the default square layout.
+
 			double currX = 0.0d;
 			double currY = 0.0d;
 			double initialX = 0.0d;
@@ -164,63 +162,108 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			int columns;
 			int nodeCount = 0;
 
-			taskMonitor.setStatus("Initializing");
+			taskMonitor.setStatus("Sizing up subcellular regions");
 			taskMonitor.setPercentCompleted(1);
-	
-			// Selected only?
-			if (selectedOnly) {
-				// Yes, our size and starting points need to be different
-				nodeCount = networkView.nodeCount() - staticNodes.size();
+
+			// Create regions from cellular template
+
+			// Hard-coded templates
+			new Region("RECT", "000000", 5000.0, 1500.0, 10000.0, 1000.0, 0.0,
+					"extracellular");
+			new Region("ARC", "000000", 5000.0, 2500.0, 10000.0, 600.0, 3.14,
+					"plasma membrane");
+			new Region("RECT", "000000", 5000.0, 8000.0, 10000.0, 5000.0, 0.0,
+					"cytoplasm");
+			new Region("OVAL", "000000", 7500.0, 10000.0, 4000.0, 3000.0, 0.0,
+					"nucleus");
+
+			// Set additional parameters
+			RegionManager.getRegionByAtt("extracellular").setFillWidth(true);
+			RegionManager.getRegionByAtt("plasma membrane").setFillWidth(true);
+			RegionManager.getRegionByAtt("cytoplasm").setFillWidth(true);
+			RegionManager.getRegionByAtt("extracellular").setVisibleBorder(
+					false);
+			RegionManager.getRegionByAtt("plasma membrane").setVisibleBorder(
+					true);
+			RegionManager.getRegionByAtt("cytoplasm").setVisibleBorder(true);
+
+			// TODO: Size up regions
+			double maxfillWidth = RegionManager.getMaxFillWidth();
+			double maxfillHeight = RegionManager.getMaxFillHeight();
+
+			// Layout template
+			Collection<Region> allRegions = RegionManager.getAllRegions();
+			for (Region r : allRegions) {
+				nodeCount = r.getNodeViews().size() + 1;
 				columns = (int) Math.sqrt(nodeCount);
-	
-				// Calculate our starting point as the geographical center of the
-				// selected nodes.
+				initialX = r.getCenterX() - r.getWidth() / 2;
+				initialY = r.getCenterY() - r.getHeight() / 2;
+
+				taskMonitor.setStatus("Moving nodes");
+
 				Iterator nodeViews = networkView.getNodeViewsIterator();
-	
+				int count = 0;
+
 				while (nodeViews.hasNext()) {
 					NodeView nView = (NodeView) nodeViews.next();
-	
-					if (!isLocked(nView)) {
-						initialX += (nView.getXPosition() / nodeCount);
-						initialY += (nView.getYPosition() / nodeCount);
-					}
-				}
-	
-				// initialX and initialY reflect the center of our grid, so we
-				// need to offset by distance*columns/2 in each direction
-				initialX = initialX - ((distanceBetweenNodes * (columns - 1)) / 2);
-				initialY = initialY - ((distanceBetweenNodes * (columns - 1)) / 2);
-				currX = initialX;
-				currY = initialY;
-			} else {
-				columns = (int) Math.sqrt(networkView.nodeCount());
-				nodeCount = networkView.nodeCount();
-			}
+					taskMonitor.setPercentCompleted((count / nodeCount) * 100);
 
-			taskMonitor.setStatus("Moving nodes");
-	
-			Iterator nodeViews = networkView.getNodeViewsIterator();
-			int count = 0;
-	
-			while (nodeViews.hasNext()) {
-				NodeView nView = (NodeView) nodeViews.next();
-				taskMonitor.setPercentCompleted((count/nodeCount)*100);
-	
-				if (isLocked(nView)) {
-					continue;
-				}
-	
-				nView.setOffset(currX, currY);
-				count++;
-	
-				if (count == columns) {
-					count = 0;
-					currX = initialX;
-					currY += distanceBetweenNodes;
-				} else {
-					currX += distanceBetweenNodes;
+					if (isLocked(nView)) {
+						continue;
+					}
+
+					nView.setOffset(currX, currY);
+					count++;
+
+					if (count == columns) {
+						count = 0;
+						currX = initialX;
+						currY += distanceBetweenNodes;
+					} else {
+						currX += distanceBetweenNodes;
+					}
 				}
 			}
 		}
+
+		/**
+		 * // Selected only? if (selectedOnly) { // Yes, our size and starting
+		 * points need to be different nodeCount = networkView.nodeCount() -
+		 * staticNodes.size(); columns = (int) Math.sqrt(nodeCount);
+		 * 
+		 * // Calculate our starting point as the geographical center of // the
+		 * // selected nodes. Iterator nodeViews =
+		 * networkView.getNodeViewsIterator();
+		 * 
+		 * while (nodeViews.hasNext()) { NodeView nView = (NodeView)
+		 * nodeViews.next();
+		 * 
+		 * if (!isLocked(nView)) { initialX += (nView.getXPosition() /
+		 * nodeCount); initialY += (nView.getYPosition() / nodeCount); } }
+		 * 
+		 * // initialX and initialY reflect the center of our grid, so we //
+		 * need to offset by distance*columns/2 in each direction initialX =
+		 * initialX - ((distanceBetweenNodes * (columns - 1)) / 2); initialY =
+		 * initialY - ((distanceBetweenNodes * (columns - 1)) / 2); currX =
+		 * initialX; currY = initialY; } else { columns = (int)
+		 * Math.sqrt(networkView.nodeCount()); nodeCount =
+		 * networkView.nodeCount(); }
+		 * 
+		 * taskMonitor.setStatus("Moving nodes");
+		 * 
+		 * Iterator nodeViews = networkView.getNodeViewsIterator(); int count =
+		 * 0;
+		 * 
+		 * while (nodeViews.hasNext()) { NodeView nView = (NodeView)
+		 * nodeViews.next(); taskMonitor.setPercentCompleted((count / nodeCount)
+		 * * 100);
+		 * 
+		 * if (isLocked(nView)) { continue; }
+		 * 
+		 * nView.setOffset(currX, currY); count++;
+		 * 
+		 * if (count == columns) { count = 0; currX = initialX; currY +=
+		 * distanceBetweenNodes; } else { currX += distanceBetweenNodes; } } }
+		 */
 	}
 }
