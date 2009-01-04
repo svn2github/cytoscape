@@ -78,8 +78,6 @@ public class ContinuousMapping implements MappingCalculator {
 	/**
 	 *  Constructor.
 	 *    @param    defaultObj default object to map to
-	 *    @param    mapType    Type of mapping, one of
-	 *  {@link ObjectMapping#EDGE_MAPPING} or {@link ObjectMapping#NODE_MAPPING}
 	 */
 	public ContinuousMapping(Object defaultObj) throws IllegalArgumentException {
 
@@ -136,7 +134,6 @@ public class ContinuousMapping implements MappingCalculator {
 
 	/**
 	 * Gets the Name of the Controlling Attribute.
-	 * Required by the ObjectMapping interface.
 	 * @return Attribute Name.
 	 */
 	public String getControllingAttributeName() {
@@ -144,10 +141,8 @@ public class ContinuousMapping implements MappingCalculator {
 	}
 
 	/**
-	 * Sets the Name of the Controlling Attribte.
+	 * Sets the Name of the Controlling Attribute.
 	 * @param attrName Attribute Name.
-	 * @param network CytoscapeNetwork Object.
-	 * @param preserveMapping Flag to preserve mapping.
 	 */
 	public void setControllingAttributeName(String attrName) {
 		this.attrName = attrName;

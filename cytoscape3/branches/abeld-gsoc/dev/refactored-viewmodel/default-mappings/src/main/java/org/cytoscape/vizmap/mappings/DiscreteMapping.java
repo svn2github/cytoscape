@@ -69,8 +69,6 @@ public class DiscreteMapping implements MappingCalculator {
 	/**
 	 * Constructor.
 	 * @param defObj Default Object.
-	 * @param mapType Map Type, ObjectMapping.EDGE_MAPPING or
-	 * ObjectMapping.NODE_MAPPING.
 	 */
 	public DiscreteMapping(Object defObj) {
 		this(defObj, null);
@@ -80,8 +78,6 @@ public class DiscreteMapping implements MappingCalculator {
 	 * Constructor.
 	 * @param defObj Default Object.
 	 * @param attrName Controlling Attribute Name.
-	 * @param mapType Map Type, ObjectMapping.EDGE_MAPPING or
-	 * ObjectMapping.NODE_MAPPING.
 	*/
 	public DiscreteMapping(Object defObj, String attrName) {
 		treeMap = new TreeMap<Object,Object>();
@@ -195,25 +191,12 @@ public class DiscreteMapping implements MappingCalculator {
 
 	/**
 	 * Gets the Name of the Controlling Attribute.
-	 * Required by the ObjectMapping interface.
-	 * @return Attribue Name.
+	 * @return Attribute Name.
 	 */
 	public String getControllingAttributeName() {
 		return attrName;
 	}
 
-	/**
-	 * Call whenever the controlling attribute changes. If preserveMapping
-	 * is true, all the currently stored mappings are unchanged; otherwise
-	 * all the mappings are cleared. In either case, this method calls
-	 * {@link #getUI} to rebuild the UI for this mapping, which in turn calls
-	 * loadKeys to load the current data values for the new attribute.
-	 * <p>
-	 * Called by event handler from AbstractCalculator
-	 * {@link cytoscape.visual.calculators.AbstractCalculator}.
-	 *
-	 * @param    attrName    The name of the new attribute to map to
-	 */
 	public void setControllingAttributeName(String attrName) {
 		this.attrName = attrName;
 	}
