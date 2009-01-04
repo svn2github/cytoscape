@@ -36,7 +36,7 @@
 */
 
 //LinearNumberToColorInterpolator.java
-package org.cytoscape.vizmap.mappings;
+package org.cytoscape.vizmap.mappings.interpolators;
 
 import java.awt.*;
 

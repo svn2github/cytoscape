@@ -42,22 +42,13 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.SubjectBaseImpl;
-import org.cytoscape.vizmap.ValueParser;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.mappings.discrete.DiscreteLegend;
-import org.cytoscape.vizmap.mappings.discrete.DiscreteMappingReader;
-import org.cytoscape.vizmap.mappings.discrete.DiscreteMappingWriter;
-import org.cytoscape.vizmap.mappings.discrete.DiscreteRangeCalculator;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.viewmodel.View;
+import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.vizmap.MappingCalculator;
 
-import javax.swing.*;
-import javax.swing.event.ChangeListener;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -67,12 +58,11 @@ import java.util.TreeMap;
  * The data value is extracted from a bundle of attributes by using a
  * specified data attribute name.
  */
-public class DiscreteMapping extends SubjectBaseImpl implements ObjectMapping {
+public class DiscreteMapping implements MappingCalculator {
 	Object defaultObj; // the default value held by this mapping
-	Class rangeClass; // the valid range class for this mapping
+	Class<?> rangeClass; // the valid range class for this mapping
 	String attrName; // the name of the controlling data attribute
-	protected byte mapType; //  node or edge; specifies which attributes
-	                        //  to use.
+	private VisualProperty<?> vp;
 	private SortedMap<Object,Object> treeMap; //  contains the actual map elements (sorted)
 	private Object lastKey;
 
@@ -82,8 +72,8 @@ public class DiscreteMapping extends SubjectBaseImpl implements ObjectMapping {
 	 * @param mapType Map Type, ObjectMapping.EDGE_MAPPING or
 	 * ObjectMapping.NODE_MAPPING.
 	 */
-	public DiscreteMapping(Object defObj, byte mapType) {
-		this(defObj, null, mapType);
+	public DiscreteMapping(Object defObj) {
+		this(defObj, null);
 	}
 
 	/**
@@ -93,38 +83,71 @@ public class DiscreteMapping extends SubjectBaseImpl implements ObjectMapping {
 	 * @param mapType Map Type, ObjectMapping.EDGE_MAPPING or
 	 * ObjectMapping.NODE_MAPPING.
 	*/
-	public DiscreteMapping(Object defObj, String attrName, byte mapType) {
+	public DiscreteMapping(Object defObj, String attrName) {
 		treeMap = new TreeMap<Object,Object>();
 
 		this.defaultObj = defObj;
 		this.rangeClass = defObj.getClass();
 
-		if ((mapType != ObjectMapping.EDGE_MAPPING) && (mapType != ObjectMapping.NODE_MAPPING))
-			throw new IllegalArgumentException("Unknown mapping type " + mapType);
-
-		this.mapType = mapType;
-
 		if (attrName != null)
-			setControllingAttributeName(attrName, null, false);
+			setControllingAttributeName(attrName);
+	}
+	
+	public void setMappingAttributeName(String name){
+		attrName = name;
 	}
 
-	/**
-	 * Clones the Object.
-	 * @return DiscreteMapping Object.
-	 */
-	public Object clone() {
-		final DiscreteMapping clone = new DiscreteMapping(defaultObj, attrName, mapType);
+	public String getMappingAttributeName(){
+		return attrName;
+	}
 
-		//  Copy over all listeners...
-		for (ChangeListener listener : observers) {
-			clone.addChangeListener(listener);
+	public void setVisualProperty(VisualProperty<?> vp){
+		this.vp = vp;
+	}
+
+	public VisualProperty<?> getVisualProperty(){
+		return vp;
+	}
+
+	public <V extends GraphObject> void apply(View<V> v, Object defaultValue){
+		CyRow row = v.getSource().attrs();
+		// check types:
+		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attrName);
+		Class<?> vpType = vp.getType();
+		if (vpType.isAssignableFrom(rangeClass)){
+			// should check here?
+			// if (keyClass.isAssignableFrom(attrType)) 
+			doMap(v, row, defaultValue, attrType, vpType);
+		} else {
+			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType());
 		}
-
-		clone.putAll(treeMap);  // TODO we used to clone treeMap, but I don't think it's necessary
-
-		return clone;
 	}
 
+	/** 
+	 * Read attribute from row, map it and apply it.
+	 * 
+	 * types are guaranteed to be correct (? FIXME: check this)
+	 * 
+	 * Putting this in a separate method makes it possible to make it type-parametric.
+	 * 
+	 * @param <T> the type-parameter of the VisualProperty vp
+	 * @param <K> the type-parameter of the key stored in the mapping (the object read as an attribute value has to be is-a K)
+	 * @param <V> the type-parameter of the View
+	 */
+	private <T,K, V extends GraphObject> void doMap(final View<V> v, CyRow row, Object defaultValue, Class<K> attrType, Class<T>vpType){
+		if (row.contains(attrName, attrType) ){
+			final K key = (K) v.getSource().attrs().get(attrName, attrType);
+			if (treeMap.containsKey(key)){
+				final T value = (T) treeMap.get(key);
+				v.setVisualProperty((VisualProperty<T>)vp, value);
+			} else { // use per-mapping default
+				v.setVisualProperty((VisualProperty<T>)vp, (T)defaultObj);
+			}
+		} else { // apply per-VS or global default where attribute is not found
+			v.setVisualProperty((VisualProperty<T>)vp, (T)defaultValue);
+		}
+	}
+	
 	/**
 	 * Gets Value for Specified Key.
 	 * @param key String Key.
@@ -142,7 +165,7 @@ public class DiscreteMapping extends SubjectBaseImpl implements ObjectMapping {
 	public void putMapValue(Object key, Object value) {
 		lastKey = key;
 		treeMap.put(key, value);
-		fireStateChanged();
+		//fireStateChanged();
 	}
 
 	/**
@@ -170,31 +193,6 @@ public class DiscreteMapping extends SubjectBaseImpl implements ObjectMapping {
 		return treeMap;
 	}
 
-	// AJK: 05/05/06 END
-
-	/**
-	 * Gets the Range Class.
-	 * Required by the ObjectMapping interface.
-	 * @return Class object.
-	 */
-	public Class getRangeClass() {
-		return rangeClass;
-	}
-
-	/**
-	 * Gets Accepted Data Classes.
-	 * Required by the ObjectMapping interface.
-	 * @return ArrayList of Class objects.
-	 */
-	public Class[] getAcceptedDataClasses() {
-		Class[] ret = {
-		                  String.class, Number.class, Integer.class, Double.class, Float.class,
-		                  Long.class, Short.class, NodeShape.class, List.class
-		              };
-
-		return ret;
-	}
-
 	/**
 	 * Gets the Name of the Controlling Attribute.
 	 * Required by the ObjectMapping interface.
@@ -216,65 +214,7 @@ public class DiscreteMapping extends SubjectBaseImpl implements ObjectMapping {
 	 *
 	 * @param    attrName    The name of the new attribute to map to
 	 */
-	public void setControllingAttributeName(String attrName, CyNetwork n, boolean preserveMapping) {
+	public void setControllingAttributeName(String attrName) {
 		this.attrName = attrName;
-
-		if (preserveMapping == false) {
-			treeMap = new TreeMap<Object,Object>();
-		}
-	}
-
-	/**
-	 * Customizes this object by applying mapping defintions described by the
-	 * supplied Properties argument.
-	 * Required by the ObjectMapping interface.
-	 * @param props Properties Object.
-	 * @param baseKey Base Key for finding properties.
-	 * @param parser ValueParser Object.
-	 */
-	public void applyProperties(Properties props, String baseKey, ValueParser parser) {
-		DiscreteMappingReader reader = new DiscreteMappingReader(props, baseKey, parser);
-		String contValue = reader.getControllingAttributeName();
-
-		if (contValue != null)
-			setControllingAttributeName(contValue, null, false);
-
-		this.treeMap = reader.getMap();
-	}
-
-	/**
-	 * Returns a Properties object with entries suitable for customizing this
-	 * object via the applyProperties method.
-	 * Required by the ObjectMapping interface.
-	 * @param baseKey Base Key for creating properties.
-	 * @return Properties Object.
-	 */
-	public Properties getProperties(String baseKey) {
-		DiscreteMappingWriter writer = new DiscreteMappingWriter(attrName, baseKey, treeMap);
-
-		return writer.getProperties();
-	}
-
-	/**
-	 * Calculates the Range Value.
-	 * Required by the ObjectMapping interface.
-	 * @param attrBundle A Bundle of Attributes.
-	 * @return Mapping object.
-	 */
-	public Object calculateRangeValue(CyRow attrBundle) {
-		final DiscreteRangeCalculator calculator = new DiscreteRangeCalculator(treeMap, attrName);
-
-		return calculator.calculateRangeValue(attrBundle);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vpt DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public JPanel getLegend(VisualPropertyType vpt) {
-		return new DiscreteLegend(treeMap, attrName, vpt);
 	}
 }

@@ -40,7 +40,7 @@
 // $Date: 2007-07-17 10:16:16 -0700 (Tue, 17 Jul 2007) $
 // $Author: kono $
 //----------------------------------------------------------------------------
-package org.cytoscape.vizmap.mappings.continuous;
+package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 
