@@ -211,7 +211,7 @@ public class BelowAndAbovePanel extends JPanel {
 					cMapping.getPoint(cMapping.getPointCount() - 1).setRange(brv);
 				}
 
-				cMapping.fireStateChanged();
+				//cMapping.fireStateChanged();
 
 				// Update view.
 				//Cytoscape.redrawGraph(vmm.getNetworkView());

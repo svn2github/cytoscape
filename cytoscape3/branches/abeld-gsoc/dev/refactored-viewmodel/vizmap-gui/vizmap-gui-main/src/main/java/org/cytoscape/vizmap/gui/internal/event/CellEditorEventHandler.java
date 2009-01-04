@@ -219,19 +219,16 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 				if (saved == null) {
 					discMapBuffer.put(curMappingName,
 							((DiscreteMapping) mapping).getAll());
-					mapping.setControllingAttributeName(ctrAttrName, vmm
-							.getNetwork(), false);
+					mapping.setControllingAttributeName(ctrAttrName);
 				} else if (saved != null) {
 					// Mapping exists
 					discMapBuffer.put(curMappingName,
 							((DiscreteMapping) mapping).getAll());
-					mapping.setControllingAttributeName(ctrAttrName, vmm
-							.getNetwork(), false);
+					mapping.setControllingAttributeName(ctrAttrName);
 					((DiscreteMapping) mapping).putAll(saved);
 				}
 			} else {
-				mapping.setControllingAttributeName(ctrAttrName, vmm
-						.getNetwork(), false);
+				mapping.setControllingAttributeName(ctrAttrName);
 			}
 
 			propertySheetPanel.removeProperty(typeRootProp);
@@ -393,13 +390,11 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		 */
 		if (newCalc == null) {
 			newCalc = getNewCalculator(type, newMapName, newCalcName);
-			newCalc.getMapping(0).setControllingAttributeName(
-					(String) attrName, null, true);
+			newCalc.getMapping(0).setControllingAttributeName((String) attrName);
 			vmm.getCalculatorCatalog().addCalculator(newCalc);
 		}
 
-		newCalc.getMapping(0).setControllingAttributeName((String) attrName,
-				null, true);
+		newCalc.getMapping(0).setControllingAttributeName((String) attrName);
 
 		if (type.isNodeProp()) {
 			vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(
@@ -429,8 +424,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			if (vmm.getCalculatorCatalog().getCalculator(type, oldCalcName) == null) {
 				final Calculator newC = getNewCalculator(type,
 						oldMappingTypeName, oldCalcName);
-				newC.getMapping(0).setControllingAttributeName(
-						(String) attrName, null, false);
+				newC.getMapping(0).setControllingAttributeName((String) attrName);
 				vmm.getCalculatorCatalog().addCalculator(newC);
 			}
 		}

@@ -128,7 +128,7 @@ public class FitLabelAction extends AbstractVizMapperAction {
 
 			final String ctrAttrName = nodeLabelCalc.getMapping(0)
 					.getControllingAttributeName();
-			dm.setControllingAttributeName(ctrAttrName, targetNetwork, false);
+			dm.setControllingAttributeName(ctrAttrName);
 
 			// final Set<Object> attrSet =
 			// loadKeys(oMap.getControllingAttributeName(), attr, oMap);
@@ -144,8 +144,7 @@ public class FitLabelAction extends AbstractVizMapperAction {
 						.getNodeAppearanceCalculator()
 						.getCalculator(NODE_WIDTH).getMapping(0);
 
-				wm.setControllingAttributeName(ctrAttrName, targetNetwork,
-						false);
+				wm.setControllingAttributeName(ctrAttrName);
 
 				Set<Object> attrSet1;
 
@@ -181,7 +180,7 @@ public class FitLabelAction extends AbstractVizMapperAction {
 				int longest = 0;
 
 				if (attr.getColumnTypeMap().get(ctrAttrName) == List.class) {
-					wm.setControllingAttributeName("ID", targetNetwork, false);
+					wm.setControllingAttributeName("ID");
 
 					attrSet1 = new TreeSet<Object>();
 
@@ -251,8 +250,7 @@ public class FitLabelAction extends AbstractVizMapperAction {
 						.getNodeAppearanceCalculator().getCalculator(
 								NODE_HEIGHT).getMapping(0);
 
-				wm.setControllingAttributeName(ctrAttrName, targetNetwork,
-						false);
+				wm.setControllingAttributeName(ctrAttrName);
 
 				Set<Object> attrSet1;
 
@@ -281,7 +279,7 @@ public class FitLabelAction extends AbstractVizMapperAction {
 				String[] listObj;
 
 				if (attr.getColumnTypeMap().get(ctrAttrName) == List.class) {
-					wm.setControllingAttributeName("ID", targetNetwork, false);
+					wm.setControllingAttributeName("ID");
 
 					attrSet1 = new TreeSet<Object>();
 

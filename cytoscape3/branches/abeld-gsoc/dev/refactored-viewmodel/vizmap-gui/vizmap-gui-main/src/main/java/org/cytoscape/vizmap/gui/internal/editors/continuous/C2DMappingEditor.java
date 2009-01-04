@@ -47,7 +47,7 @@ import javax.swing.ImageIcon;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
-import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
+import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.multislider.Thumb;
 
 import cytoscape.Cytoscape;
@@ -242,7 +242,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			slider.getModel().removeThumb(selectedIndex);
 			mapping.removePoint(selectedIndex);
 			updateMap();
-			mapping.fireStateChanged();
+			//mapping.fireStateChanged();
 
 			//Cytoscape.redrawGraph(vmm.getNetworkView());
 			repaint();

@@ -51,7 +51,7 @@ import javax.swing.SwingUtilities;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
+import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
@@ -203,7 +203,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 			slider.getModel().removeThumb(selectedIndex);
 			mapping.removePoint(selectedIndex);
 			updateMap();
-			mapping.fireStateChanged();
+			//mapping.fireStateChanged();
 
 			//Cytoscape.redrawGraph(vmm.getNetworkView());
 			repaint();
@@ -240,7 +240,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 				brv.greaterValue = newColor;
 			}
 
-			cMapping.fireStateChanged();
+			//cMapping.fireStateChanged();
 
 			//Cytoscape.redrawGraph(vmm.getNetworkView());
 			slider.repaint();

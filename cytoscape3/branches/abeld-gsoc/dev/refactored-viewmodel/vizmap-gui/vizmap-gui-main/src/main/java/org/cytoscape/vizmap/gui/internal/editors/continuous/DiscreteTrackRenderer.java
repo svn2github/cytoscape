@@ -58,7 +58,7 @@ import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
+import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
