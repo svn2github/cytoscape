@@ -81,7 +81,6 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
-		final GraphView targetView = cyNetworkManager.getCurrentNetworkView();
 
 		/*
 		 * Check Selected poperty
@@ -159,8 +158,8 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 			}
 
 			dm.putAll(valueMap);
-			vmm.setNetworkView(targetView);
-			Cytoscape.redrawGraph(targetView);
+			//vmm.setNetworkView(targetView);
+			//Cytoscape.redrawGraph(targetView);
 
 			propertySheetPanel.removeProperty(prop);
 

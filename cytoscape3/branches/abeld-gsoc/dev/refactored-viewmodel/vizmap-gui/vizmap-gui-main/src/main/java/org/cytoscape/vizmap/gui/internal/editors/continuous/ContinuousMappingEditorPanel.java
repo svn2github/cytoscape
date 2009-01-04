@@ -367,7 +367,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		EditorValueRangeTracer.getTracer().setMin(type, newVal[0]);
 		EditorValueRangeTracer.getTracer().setMax(type, newVal[1]);
 		updateMap();
-		Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		this.repaint();
 	}
 
@@ -528,7 +528,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				slider.repaint();
 				repaint();
 
-				Cytoscape.redrawGraph(vmm.getNetworkView());
+				//Cytoscape.redrawGraph(vmm.getNetworkView());
 			} else {
 				valueSpinner.setEnabled(false);
 				valueSpinner.setValue(0);
@@ -570,7 +570,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				      .setLocation((int) ((slider.getSize().width - 12) * newPosition), 0);
 
 				updateMap();
-				Cytoscape.redrawGraph(vmm.getNetworkView());
+				//Cytoscape.redrawGraph(vmm.getNetworkView());
 
 				slider.getSelectedThumb().repaint();
 				slider.getParent().repaint();

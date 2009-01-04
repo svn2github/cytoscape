@@ -170,7 +170,7 @@ public class VizMapListener implements PropertyChangeListener {
 			// reapplied.
 			vmm.setVisualStyle(vmm.getVisualStyle().getName());
 			vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(), vmm.getVisualStyle());
-			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+			//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		}
 	}
 

@@ -107,7 +107,6 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 		final CyDataTable attr;
 
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
-		final GraphView targetView = cyNetworkManager.getCurrentNetworkView();
 		
 		if (type.isNodeProp()) {
 			mapping = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
@@ -163,7 +162,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 		 * Update table and current network view.
 		 */
 		table.repaint();
-		vmm.setNetworkView(targetView);
-		Cytoscape.redrawGraph(targetView);
+		//vmm.setNetworkView(targetView);
+		//Cytoscape.redrawGraph(targetView);
 	}
 }

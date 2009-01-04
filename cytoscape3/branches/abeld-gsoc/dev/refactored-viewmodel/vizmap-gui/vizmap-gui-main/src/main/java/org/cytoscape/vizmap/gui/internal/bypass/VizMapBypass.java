@@ -81,7 +81,7 @@ abstract class VizMapBypass {
 					for (String attrName : names)
 						row.set("name",""); // TODO should be null instead?
 
-					Cytoscape.redrawGraph(vmm.getNetworkView());
+					//Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
 			});
@@ -96,7 +96,7 @@ abstract class VizMapBypass {
 
 					row.set(type.getBypassAttrName(),""); // TODO set to null instead?
 
-					Cytoscape.redrawGraph(vmm.getNetworkView());
+					//Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
 			});
@@ -125,7 +125,7 @@ abstract class VizMapBypass {
 					if ( !table.getColumnTypeMap().containsKey( type.getBypassAttrName() ) )
 						table.createColumn( type.getBypassAttrName(), String.class, false );
 					graphObj.attrs().set(type.getBypassAttrName(), val);
-					Cytoscape.redrawGraph(vmm.getNetworkView());
+					//Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
 			});

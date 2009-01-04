@@ -579,7 +579,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 					cMapping.fireStateChanged();
 
-					Cytoscape.redrawGraph(vmm.getNetworkView());
+					//Cytoscape.redrawGraph(vmm.getNetworkView());
 					slider.repaint();
 				}
 
@@ -613,7 +613,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 				cMapping.fireStateChanged();
 
 				// Update view.
-				Cytoscape.redrawGraph(vmm.getNetworkView());
+				//Cytoscape.redrawGraph(vmm.getNetworkView());
 
 				slider.repaint();
 				repaint();
@@ -644,7 +644,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 				cMapping.fireStateChanged();
 
 				// Update view.
-				Cytoscape.redrawGraph(vmm.getNetworkView());
+				//Cytoscape.redrawGraph(vmm.getNetworkView());
 
 				slider.repaint();
 				repaint();
@@ -713,7 +713,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			if (dragFlag == true) {
 				dragFlag = false;
 				cMapping.fireStateChanged();
-				Cytoscape.redrawGraph(vmm.getNetworkView());
+				//Cytoscape.redrawGraph(vmm.getNetworkView());
 			}
 		}
 

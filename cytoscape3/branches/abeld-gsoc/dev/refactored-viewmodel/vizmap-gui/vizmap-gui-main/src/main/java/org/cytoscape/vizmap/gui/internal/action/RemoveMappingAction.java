@@ -96,7 +96,7 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 					.removeCalculator(type);
 		}
 
-		Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 		final Property[] props = propertySheetPanel
 				.getProperties();

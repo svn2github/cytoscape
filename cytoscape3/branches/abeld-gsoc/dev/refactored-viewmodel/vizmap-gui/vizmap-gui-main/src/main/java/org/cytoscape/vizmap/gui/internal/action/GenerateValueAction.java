@@ -159,8 +159,8 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 			valueMap = generator.generateMap(attrSet);
 			
 			dm.putAll(valueMap);
-			vmm.setNetworkView(targetNetworkView);
-			Cytoscape.redrawGraph(targetNetworkView);
+			//vmm.setNetworkView(targetNetworkView);
+			//Cytoscape.redrawGraph(targetNetworkView);
 
 			propertySheetPanel.removeProperty(prop);
 

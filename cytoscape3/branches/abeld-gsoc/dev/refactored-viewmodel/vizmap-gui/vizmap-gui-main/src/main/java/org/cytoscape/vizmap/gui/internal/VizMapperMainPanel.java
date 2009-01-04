@@ -242,8 +242,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(), vmm.getVisualStyle(vsName));
 
-		if (redraw)
-			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		//if (redraw)
+		//	Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 		/*
 		 * Draw default view

@@ -264,8 +264,8 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			vizMapPropertySheetBuilder.updateTableView();
 
 			// Finally, update graph view and focus.
-			vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+			//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+			//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 			return;
 		}
@@ -354,8 +354,8 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		vizMapPropertySheetBuilder.updateTableView();
 
 		propertySheetPanel.repaint();
-		vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-		Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+		//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 	}
 
@@ -464,7 +464,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		}
 
 		// vmm.getNetworkView().redrawGraph(false, true);
-		Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		parent = null;
 	}
 

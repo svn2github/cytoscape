@@ -159,7 +159,7 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 				String val = ObjectToString.getStringValue(newlp);
 				// TODO check if attr has been created or not and create if necessary
 				go.attrs().set(VisualProperty.NODE_LABEL_POSITION.getBypassAttrName(), val);
-				Cytoscape.redrawGraph(vmm.getNetworkView());
+				//Cytoscape.redrawGraph(vmm.getNetworkView());
 			}
 		}
 	}

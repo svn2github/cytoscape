@@ -22,7 +22,7 @@ public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 
 			if (vs.getName().equals(
 					vizMapperMainPanel.getVsNameComboBox().getSelectedItem())) {
-				Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+				//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 			} else {
 				vizMapperMainPanel.switchVS(vs.getName(), false);
 				vizMapperMainPanel.getVsNameComboBox().setSelectedItem(

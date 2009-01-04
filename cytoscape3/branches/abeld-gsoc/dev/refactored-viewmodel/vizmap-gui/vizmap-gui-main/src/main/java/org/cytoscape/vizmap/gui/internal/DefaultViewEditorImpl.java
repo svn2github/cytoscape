@@ -274,8 +274,8 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-					Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+					//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+					//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 					dispose();
 				}
 			});
@@ -371,7 +371,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			}
 
 			buildList();
-			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+			//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 			mainView.updateView();
 			mainView.repaint();
 		}
@@ -390,7 +390,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			}
 
 			buildList();
-			Cytoscape.redrawGraph(vmm.getNetworkView());
+			//Cytoscape.redrawGraph(vmm.getNetworkView());
 
 			if (selected.equals("Background Color")) {
 				vmm.applyGlobalAppearances();

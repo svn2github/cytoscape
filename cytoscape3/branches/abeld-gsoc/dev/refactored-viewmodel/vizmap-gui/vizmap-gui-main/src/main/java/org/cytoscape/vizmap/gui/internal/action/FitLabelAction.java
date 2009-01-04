@@ -325,8 +325,8 @@ public class FitLabelAction extends AbstractVizMapperAction {
 
 			wm.putAll(valueMap);
 
-			vmm.setNetworkView(targetView);
-			Cytoscape.redrawGraph(targetView);
+			//vmm.setNetworkView(targetView);
+			//Cytoscape.redrawGraph(targetView);
 
 			propertySheetPanel.removeProperty(prop);
 
