@@ -48,7 +48,7 @@ import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
 
 import com.l2fprod.common.propertysheet.PropertySheetTable;
@@ -103,7 +103,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 		/*
 		 * Extract calculator
 		 */
-		final ObjectMapping mapping;
+		final MappingCalculator mapping;
 		final CyDataTable attr;
 
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();

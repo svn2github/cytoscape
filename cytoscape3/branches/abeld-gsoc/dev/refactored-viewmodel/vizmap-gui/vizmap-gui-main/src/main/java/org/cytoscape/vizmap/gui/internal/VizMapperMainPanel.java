@@ -73,7 +73,7 @@ import org.cytoscape.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.vizmap.gui.theme.ColorManager;
 import org.cytoscape.vizmap.gui.theme.IconManager;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
@@ -348,7 +348,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 	/*
 	 * private Set<Object> loadKeys(final String attrName, final CyDataTable
-	 * attrs, final ObjectMapping mapping, final int nOre) { if
+	 * attrs, final MappingCalculator mapping, final int nOre) { if
 	 * (attrName.equals("ID")) { return loadID(nOre); }
 	 * 
 	 * Map mapAttrs; mapAttrs = CyAttributesUtils.getAttribute(attrName, attrs);
@@ -548,7 +548,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		List<? extends GraphObject> obj;
 
-		if (nOre == ObjectMapping.NODE_MAPPING) {
+		if (nOre == MappingCalculator.NODE_MAPPING) {
 			obj = cyNetworkManager.getCurrentNetworkView().getGraphPerspective().getNodeList();
 		} else {
 			obj = cyNetworkManager.getCurrentNetworkView().getGraphPerspective().getEdgeList();

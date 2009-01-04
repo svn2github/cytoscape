@@ -14,7 +14,7 @@ import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -127,7 +127,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 
 					return;
 
-				final ObjectMapping selectedMapping;
+				final MappingCalculator selectedMapping;
 				Calculator calc = null;
 
 				if (type.isNodeProp()) {

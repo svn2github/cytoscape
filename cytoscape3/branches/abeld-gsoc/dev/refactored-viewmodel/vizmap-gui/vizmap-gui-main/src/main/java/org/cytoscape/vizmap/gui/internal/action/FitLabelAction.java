@@ -55,7 +55,7 @@ import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.internal.AbstractVizMapperPanel;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
@@ -98,7 +98,7 @@ public class FitLabelAction extends AbstractVizMapperAction {
 			final VisualProperty type = (VisualProperty) hidden;
 
 			final Map valueMap = new HashMap();
-			final ObjectMapping oMap;
+			final MappingCalculator oMap;
 			final CyDataTable attr;
 
 			if (type.isNodeProp()) {
@@ -157,7 +157,7 @@ public class FitLabelAction extends AbstractVizMapperAction {
 				} else {
 					// attrSet1 = loadKeys(wm.getControllingAttributeName(),
 					// attr, wm,
-					// ObjectMapping.NODE_MAPPING);
+					// MappingCalculator.NODE_MAPPING);
 					attrSet1 = new TreeSet<Object>(attr.getColumnValues(oMap
 							.getControllingAttributeName(), attr
 							.getColumnTypeMap().get(
@@ -263,7 +263,7 @@ public class FitLabelAction extends AbstractVizMapperAction {
 				} else {
 					// attrSet1 = loadKeys(wm.getControllingAttributeName(),
 					// attr, wm,
-					// ObjectMapping.NODE_MAPPING);
+					// MappingCalculator.NODE_MAPPING);
 					attrSet1 = new TreeSet<Object>(attr.getColumnValues(oMap
 							.getControllingAttributeName(), attr
 							.getColumnTypeMap().get(

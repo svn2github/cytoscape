@@ -20,7 +20,7 @@ import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;
@@ -67,7 +67,7 @@ public class VizMapPropertyBuilder {
 		/*
 		 * Mapping 0 is always currently used mapping.
 		 */
-		final ObjectMapping firstMap = calc.getMapping(0);
+		final MappingCalculator firstMap = calc.getMapping(0);
 		String attrName;
 
 		if (firstMap != null) {
@@ -113,14 +113,14 @@ public class VizMapPropertyBuilder {
 				it = targetNetwork.getNodeList().iterator();
 				editorReg.registerEditor(calculatorTypeProp, editorFactory
 						.getDefaultComboBoxEditor("nodeAttrEditor"));
-				nodeOrEdge = ObjectMapping.NODE_MAPPING;
+				nodeOrEdge = MappingCalculator.NODE_MAPPING;
 			} else {
 				attr = targetNetwork.getEdgeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				it = targetNetwork.getNodeList().iterator();
 				editorReg.registerEditor(calculatorTypeProp, editorFactory
 						.getDefaultComboBoxEditor("edgeAttrEditor"));
-				nodeOrEdge = ObjectMapping.EDGE_MAPPING;
+				nodeOrEdge = MappingCalculator.EDGE_MAPPING;
 			}
 
 			/*

@@ -8,7 +8,7 @@ import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
 import org.freehep.util.export.ExportDialog;
 
@@ -64,7 +64,7 @@ public class LegendDialog extends JDialog {
 		final EdgeAppearanceCalculator eac = visualStyle.getEdgeAppearanceCalculator();
 		final List<Calculator> edgeCalcs = eac.getCalculators();
 
-		ObjectMapping om;
+		MappingCalculator om;
 
 		/*
 		 * Set layout

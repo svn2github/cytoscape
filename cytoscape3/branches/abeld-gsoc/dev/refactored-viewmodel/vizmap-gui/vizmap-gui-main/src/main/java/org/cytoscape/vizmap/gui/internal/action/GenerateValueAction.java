@@ -16,7 +16,7 @@ import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
@@ -63,7 +63,7 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 			final long seed = System.currentTimeMillis();
 			final Random rand = new Random(seed);
 
-			final ObjectMapping oMap;
+			final MappingCalculator oMap;
 
 			final CyDataTable attr;
 			final int nOre;
@@ -73,13 +73,13 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 						CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator()
 						.getCalculator(type).getMapping(0);
-				nOre = ObjectMapping.NODE_MAPPING;
+				nOre = MappingCalculator.NODE_MAPPING;
 			} else {
 				attr = targetNetworkView.getNetwork().getEdgeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator()
 						.getCalculator(type).getMapping(0);
-				nOre = ObjectMapping.EDGE_MAPPING;
+				nOre = MappingCalculator.EDGE_MAPPING;
 			}
 
 			// This function is for discrete mapping only.

@@ -50,7 +50,7 @@ import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
@@ -100,7 +100,7 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 			final VisualProperty type = (VisualProperty) hidden;
 
 			final Map valueMap = new HashMap();
-			final ObjectMapping oMap;
+			final MappingCalculator oMap;
 
 			final CyDataTable attr;
 			final int nOre;
@@ -109,12 +109,12 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 				attr = targetNetwork.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 				          .getMapping(0);
-				nOre = ObjectMapping.NODE_MAPPING;
+				nOre = MappingCalculator.NODE_MAPPING;
 			} else {
 				attr = targetNetwork.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 				          .getMapping(0);
-				nOre = ObjectMapping.EDGE_MAPPING;
+				nOre = MappingCalculator.EDGE_MAPPING;
 			}
 
 			if ((oMap instanceof DiscreteMapping) == false) {

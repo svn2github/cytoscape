@@ -17,7 +17,7 @@ import org.cytoscape.vizmap.gui.internal.AbstractVizMapperPanel;
 import org.cytoscape.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
 
 import com.l2fprod.common.propertysheet.Property;
@@ -91,7 +91,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		/*
 		 * Mapping type changed
 		 */
-		if (prop.getHiddenObject() instanceof ObjectMapping
+		if (prop.getHiddenObject() instanceof MappingCalculator
 				|| prop.getDisplayName().equals("Mapping Type")) {
 			System.out.println("Mapping type changed: "
 					+ prop.getHiddenObject());
@@ -151,7 +151,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		/*
 		 * Extract calculator
 		 */
-		ObjectMapping mapping;
+		MappingCalculator mapping;
 		final Calculator curCalc;
 
 		if (type.isNodeProp()) {
@@ -491,9 +491,9 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		final byte mapType; // node or edge calculator
 
 		if (type.isNodeProp())
-			mapType = ObjectMapping.NODE_MAPPING;
+			mapType = MappingCalculator.NODE_MAPPING;
 		else
-			mapType = ObjectMapping.EDGE_MAPPING;
+			mapType = MappingCalculator.EDGE_MAPPING;
 
 		final Object defaultObj = type.getDefault(vmm.getVisualStyle());
 
@@ -501,10 +501,10 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 				+ type.getName());
 
 		final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
-		ObjectMapping mapper = null;
+		MappingCalculator mapper = null;
 
 		try {
-			mapper = (ObjectMapping) mapperCon.newInstance(invokeArgs);
+			mapper = (MappingCalculator) mapperCon.newInstance(invokeArgs);
 		} catch (Exception exc) {
 			System.err.println("Error creating mapping");
 

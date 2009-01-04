@@ -36,7 +36,7 @@ import org.cytoscape.vizmap.icon.ArrowIcon;
 import org.cytoscape.vizmap.icon.NodeIcon;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.MappingCalculator;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -299,7 +299,7 @@ public class VizMapPropertySheetBuilder {
 		final NodeAppearanceCalculator nac = vs.getNodeAppearanceCalculator();
 		final EdgeAppearanceCalculator eac = vs.getEdgeAppearanceCalculator();
 
-		ObjectMapping mapping = null;
+		MappingCalculator mapping = null;
 
 		for (VisualProperty type : VisualProperty.values()) {
 			Calculator calc = nac.getCalculator(type);
@@ -345,7 +345,7 @@ public class VizMapPropertySheetBuilder {
 						.getHiddenObject();
 
 				if (type instanceof VisualProperty) {
-					ObjectMapping mapping;
+					MappingCalculator mapping;
 
 					if (((VisualProperty) type).isNodeProp())
 						mapping = vmm.getVisualStyle()
