@@ -69,7 +69,7 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 					.getDefaultImageManager().get(name));
 		}
 
-		vmm.setNetworkView(currentView);
+		//vmm.setNetworkView(currentView);
 		vizMapperMainPanel.switchVS(name);
 	}
 }

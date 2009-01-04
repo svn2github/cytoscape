@@ -101,7 +101,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 		view = graphViewFactory.createGraphView(dummyNet);
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
-		this.vmm.setNetworkView(view);
+		//this.vmm.setNetworkView(view);
 
 		background = this.vmm.getVisualStyle().getGlobalAppearanceCalculator().getDefaultBackgroundColor();
 		this.setBackground(background);
@@ -119,7 +119,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	 */
 	protected void updateView() {
 		if (view != null) {
-			vmm.setNetworkView(view);
+			//vmm.setNetworkView(view);
 			vmm.setVisualStyleForView(view, vmm.getVisualStyle());
 
 			final Dimension panelSize = this.getSize();

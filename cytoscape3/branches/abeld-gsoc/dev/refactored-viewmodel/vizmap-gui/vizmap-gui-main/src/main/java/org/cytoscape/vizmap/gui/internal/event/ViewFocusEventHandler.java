@@ -18,7 +18,7 @@ public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 		final VisualStyle vs = vmm.getVisualStyleForView(vmm.getNetworkView());
 
 		if (vs != null) {
-			vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+			//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
 
 			if (vs.getName().equals(
 					vizMapperMainPanel.getVsNameComboBox().getSelectedItem())) {

@@ -57,7 +57,7 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 					.getDefaultImageManager().get(newName));
 		}
 
-		vmm.setNetworkView(targetView);
+		//vmm.setNetworkView(targetView);
 		vizMapperMainPanel.switchVS(newName);
 	}
 

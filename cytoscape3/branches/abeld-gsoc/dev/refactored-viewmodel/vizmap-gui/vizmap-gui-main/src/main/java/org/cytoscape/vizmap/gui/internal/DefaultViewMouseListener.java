@@ -45,8 +45,8 @@ public class DefaultViewMouseListener extends MouseAdapter {
 					vizMapperMainPanel.getDefaultViewPanel().getSize());
 			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel.getDefaultImageManager().get(targetName));
 
-			vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-			vmm.setVisualStyle(targetName);
+			//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+			//vmm.setVisualStyle(targetName);
 
 			//cytoscapeDesktop.setFocus(focus);
 			// cytoscapeDesktop.repaint();

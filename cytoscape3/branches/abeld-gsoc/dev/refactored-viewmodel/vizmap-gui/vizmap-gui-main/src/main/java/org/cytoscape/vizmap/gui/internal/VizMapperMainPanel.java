@@ -200,8 +200,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		editorWindowManager.closeAllEditorWindows();
 
-		vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-		vmm.setVisualStyle(vsName);
+		//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+		//vmm.setVisualStyle(vsName);
 
 		if (vizMapPropertySheetBuilder.getPropertyMap().containsKey(vsName)) {
 			final List<Property> props = vizMapPropertySheetBuilder
@@ -303,7 +303,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				updateDefaultImage(name, view, panelSize);
 		}
 
-		vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+		//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
 
 		// Switch back to the original style.
 		switchVS(style.getName());
