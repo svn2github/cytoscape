@@ -48,7 +48,7 @@ import org.cytoscape.presentation.TextPresentation;
 import org.cytoscape.viewmodel.*;
 
 import org.cytoscape.vizmap.*;
-
+import org.cytoscape.vizmap.mappings.*;
 
 /**
  * This is the main startup class for Cytoscape. This parses the command line

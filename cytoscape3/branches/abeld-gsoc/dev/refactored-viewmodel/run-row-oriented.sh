@@ -14,6 +14,10 @@ cd presentation
 mvn clean install
 cd ..
 
+cd default-mappings
+mvn clean install
+cd ..
+
 cd integration_test
 mvn clean install
 mvn pax:run

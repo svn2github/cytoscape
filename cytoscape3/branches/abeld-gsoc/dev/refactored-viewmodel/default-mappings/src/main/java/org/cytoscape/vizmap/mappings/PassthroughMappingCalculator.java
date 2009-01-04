@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape;
+package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.model.*;
 
