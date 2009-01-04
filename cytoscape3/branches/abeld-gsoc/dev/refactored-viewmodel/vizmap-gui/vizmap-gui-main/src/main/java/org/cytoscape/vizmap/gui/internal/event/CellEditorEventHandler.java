@@ -487,20 +487,12 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			return null;
 		}
 
-		// create the mapper
-		final byte mapType; // node or edge calculator
-
-		if (type.isNodeProp())
-			mapType = MappingCalculator.NODE_MAPPING;
-		else
-			mapType = MappingCalculator.EDGE_MAPPING;
-
 		final Object defaultObj = type.getDefault(vmm.getVisualStyle());
 
 		System.out.println("defobj = " + defaultObj.getClass() + ", Type = "
 				+ type.getName());
 
-		final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
+		final Object[] invokeArgs = { defaultObj};
 		MappingCalculator mapper = null;
 
 		try {

@@ -543,6 +543,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * 
 	 * @return
 	 */
+	/* not used any more, but since code that did use it is present in this file (commented out) I'll leave it here -- abeld
 	private Set<Object> loadID(final int nOre) {
 		Set<Object> ids = new TreeSet<Object>();
 
@@ -560,7 +561,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		return ids;
 	}
-
+	 */
 	/**
 	 * DOCUMENT ME!
 	 * 

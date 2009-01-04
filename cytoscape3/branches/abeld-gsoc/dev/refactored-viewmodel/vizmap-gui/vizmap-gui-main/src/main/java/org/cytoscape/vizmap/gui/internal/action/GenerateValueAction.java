@@ -66,20 +66,17 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 			final MappingCalculator oMap;
 
 			final CyDataTable attr;
-			final int nOre;
 
 			if (type.isNodeProp()) {
 				attr = targetNetworkView.getNetwork().getNodeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator()
 						.getCalculator(type).getMapping(0);
-				nOre = MappingCalculator.NODE_MAPPING;
 			} else {
 				attr = targetNetworkView.getNetwork().getEdgeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator()
 						.getCalculator(type).getMapping(0);
-				nOre = MappingCalculator.EDGE_MAPPING;
 			}
 
 			// This function is for discrete mapping only.

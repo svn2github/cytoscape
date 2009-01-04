@@ -102,7 +102,6 @@ public class VizMapPropertyBuilder {
 
 			final CyDataTable attr;
 			final Iterator it;
-			final int nodeOrEdge;
 
 			if (targetNetwork == null)
 				return;
@@ -113,14 +112,12 @@ public class VizMapPropertyBuilder {
 				it = targetNetwork.getNodeList().iterator();
 				editorReg.registerEditor(calculatorTypeProp, editorFactory
 						.getDefaultComboBoxEditor("nodeAttrEditor"));
-				nodeOrEdge = MappingCalculator.NODE_MAPPING;
 			} else {
 				attr = targetNetwork.getEdgeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				it = targetNetwork.getNodeList().iterator();
 				editorReg.registerEditor(calculatorTypeProp, editorFactory
 						.getDefaultComboBoxEditor("edgeAttrEditor"));
-				nodeOrEdge = MappingCalculator.EDGE_MAPPING;
 			}
 
 			/*
@@ -130,8 +127,6 @@ public class VizMapPropertyBuilder {
 					&& (attrName != null)) {
 				final Map discMapping = ((DiscreteMapping) firstMap).getAll();
 
-				// final Set<Object> attrSet = loadKeys(attrName, attr,
-				// firstMap, nodeOrEdge);
 				final Set<Object> attrSet = new TreeSet<Object>(
 						attr
 								.getColumnValues(

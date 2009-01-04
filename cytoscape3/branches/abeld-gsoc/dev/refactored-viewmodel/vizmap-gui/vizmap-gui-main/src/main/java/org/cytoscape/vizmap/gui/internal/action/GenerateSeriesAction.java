@@ -96,20 +96,17 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 			final Map valueMap = new HashMap();
 			final MappingCalculator oMap;
 			final CyDataTable attr;
-			final int nOre;
 
 			if (type.isNodeProp()) {
 				attr = targetNetwork.getNodeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator()
 						.getCalculator(type).getMapping(0);
-				nOre = MappingCalculator.NODE_MAPPING;
 			} else {
 				attr = targetNetwork.getEdgeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator()
 						.getCalculator(type).getMapping(0);
-				nOre = MappingCalculator.EDGE_MAPPING;
 			}
 
 			if ((oMap instanceof DiscreteMapping) == false)
@@ -117,9 +114,6 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 
 			dm = (DiscreteMapping) oMap;
 
-			// final Set<Object> attrSet =
-			// loadKeys(oMap.getControllingAttributeName(), attr,
-			// oMap, nOre);
 			final Set<Object> attrSet = new TreeSet<Object>(attr
 					.getColumnValues(oMap.getControllingAttributeName(), attr
 							.getColumnTypeMap().get(
