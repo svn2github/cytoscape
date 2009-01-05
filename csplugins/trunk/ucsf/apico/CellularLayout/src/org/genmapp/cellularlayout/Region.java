@@ -80,7 +80,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.attName = "BasicCellularComponents"; // hard-coded, for now
 
 		this.nodeViews = populateNodeViews();
-		this.nodeCount = this.nodeViews.size() + 1;
+		this.nodeCount = this.nodeViews.size();
 		this.columns = (int) Math.sqrt(this.nodeCount);
 		
 		// graphics

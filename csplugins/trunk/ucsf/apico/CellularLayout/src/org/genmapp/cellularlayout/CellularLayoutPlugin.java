@@ -172,16 +172,16 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			RegionManager.clearRegionAttMap();
 
 			// Hard-coded templates
-			Region a = new Region("RECT", "000000", 6254.75, 1837.25, 8670.5, 1185.5, 0.0,
-					"extracellular region");
-			Region b = new Region("LINE", "000000", 6232.25, 2677.25, 8535.5, 29.0, 0.0,
-					"plasma membrane");
-			Region c = new Region("RECT", "000000", 6269.75, 4747.25, 8640.5, 3765.5, 0.0,
-					"cytoplasm");
-			Region d = new Region("OVAL", "000000", 7979.75, 5002.25, 4620.5, 2685.5, 0.0,
-					"nucleus");
-			Region e = new Region("RECT", "000000", 11797.25, 3719.75, 1335.5, 2340.5, 0.0,
-					"unassigned");
+			Region a = new Region("Rectangle", "000000", 6254.75, 1837.25,
+					8670.5, 1185.5, 0.0, "extracellular region");
+			Region b = new Region("Line", "000000", 6232.25, 2677.25, 8535.5,
+					29.0, 0.0, "plasma membrane");
+			Region c = new Region("Rectangle", "000000", 6269.75, 4747.25,
+					8640.5, 3765.5, 0.0, "cytoplasm");
+			Region d = new Region("Oval", "000000", 7979.75, 5002.25, 4620.5,
+					2685.5, 0.0, "nucleus");
+			Region e = new Region("Rectangle", "000000", 11797.25, 3719.75,
+					1335.5, 2340.5, 0.0, "unassigned");
 
 			// Set additional parameters
 			RegionManager.getRegionByAtt("extracellular region")
@@ -199,22 +199,24 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Collection<Region> allRegions = RegionManager.getAllRegions();
 			for (Region r : allRegions) {
 				// max scale
-				if (r.getShape() != "LINE") {
+				if (r.getShape() != "Line") {
 					int col = r.getColumns();
-//					System.out.println("col: "+r.getAttValue()+col);
-					double scaleX = (col * distanceBetweenNodes) / r.getRegionWidth();
-					double scaleY = (col * distanceBetweenNodes)
+					// System.out.println("col: "+r.getAttValue()+col);
+					double scaleX = ((col + 1) * distanceBetweenNodes)
+							/ r.getRegionWidth();
+					double scaleY = ((col + 1) * distanceBetweenNodes)
 							/ r.getRegionHeight();
 					double scaleAreaSqrt = Math.sqrt(scaleX * scaleY);
-//					System.out.println("scaleX,Y,Area: " + scaleX + ","
-//							+ scaleY + "," + scaleAreaSqrt);
+					System.out.println("scaleX,Y,Area: " + scaleX + ","
+							+ scaleY + "," + scaleAreaSqrt);
 					// use area to scale regions efficiently
 					if (scaleAreaSqrt > maxScaleFactor)
 						maxScaleFactor = scaleAreaSqrt;
 				} else { // handle linear regions
-					int col = r.getNodeViews().size() + 1; // columns == count
+					int col = r.getNodeCount(); // columns == count
 					// width == length, for a line
-					double scaleX = (col * distanceBetweenNodes) / r.getRegionWidth();
+					double scaleX = ((col + 1) * distanceBetweenNodes)
+							/ r.getRegionWidth();
 					if (scaleX > maxScaleFactor)
 						maxScaleFactor = scaleX;
 				}
@@ -230,7 +232,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 			// apply max scale and min pan to all regions
 			for (Region r : allRegions) {
-				if (r.getShape() != "LINE") {
+				if (r.getShape() != "Line") {
 					r.setRegionWidth(r.getRegionWidth() * maxScaleFactor);
 					r.setRegionHeight(r.getRegionHeight() * maxScaleFactor);
 				} else { // handle linear regions
@@ -244,17 +246,17 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				r.setCenterX(r.getCenterX() * maxScaleFactor);
 				r.setCenterY(r.getCenterY() * maxScaleFactor);
 			}
-			
+
 			// GRAPHICS
 			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-			DingCanvas aLayer = dview.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+			DingCanvas aLayer = dview
+					.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
 			aLayer.add(a);
 			aLayer.add(b);
 			aLayer.add(c);
 			aLayer.add(d);
 			aLayer.add(e);
 			Cytoscape.getCurrentNetworkView().fitContent();
-
 
 			// LAYOUT REGIONS:
 			int taskNodeCount = networkView.nodeCount();
@@ -268,15 +270,20 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				// down, e.g., if the linear layout of nodes is 2.8 times
 				// the width of the scaled region, then there will be 3 rows
 				// and you will want to shift up 1 row from center to start.
-				startX = r.getCenterX() - r.getRegionWidth() / 2;
+				startX = r.getCenterX() - r.getRegionWidth() / 2
+						+ distanceBetweenNodes;
 				startY = r.getCenterY()
-						- Math.floor((nodeCount * distanceBetweenNodes)
-								/ r.getRegionWidth()) * distanceBetweenNodes / 2;
-//				System.out.println("Region: " + r.getAttValue() + "("
-//						+ r.getNodeViews().size() + ")" + " startX,Y: "
-//						+ startX + "," + startY + "   X,Y,W,H: "
-//						+ r.getCenterX() + "," + r.getCenterY() + ","
-//						+ r.getRegionWidth() + "," + r.getRegionHeight());
+						- Math.floor((nodeCount
+								/ Math.floor(r.getRegionWidth()
+										/ distanceBetweenNodes -1 )) - 0.3)
+						* distanceBetweenNodes / 2;
+				System.out.println("Region: " + r.getAttValue() + "("
+						+ r.getNodeCount() + ")" + " startX,Y: "
+						+ startX + "," + startY + "   X,Y,W,H: "
+						+ r.getCenterX() + "," + r.getCenterY() + ","
+						+ r.getRegionWidth() + "," + r.getRegionHeight() +","+ ((nodeCount
+								/ Math.floor(r.getRegionWidth()
+										/ distanceBetweenNodes -1 )) - 0.6));
 				nextX = startX;
 				nextY = startY;
 
@@ -284,8 +291,10 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 				int remainingCount = nodeCount; // count nodes left to layout
 				int colCount = 0; // count nodes per row
-				double fillPotential = (nodeCount * distanceBetweenNodes)
+				double fillPotential = ((nodeCount + 2) * distanceBetweenNodes)
 						/ r.getRegionWidth(); // check for full row
+				double bump = ((nodeCount + 1) * distanceBetweenNodes)
+						/ r.getRegionWidth();
 
 				for (NodeView nv : nodeViews) {
 					taskMonitor
@@ -295,30 +304,29 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 						continue;
 					}
 
-					if (fillPotential < 1) {
-						nextX += (distanceBetweenNodes / fillPotential)/3;
-					}
 					nv.setOffset(nextX, nextY);
 					remainingCount--;
 					colCount++;
 					taskCount++;
 
 					// check for end of row
-					double fillRatio = (colCount * distanceBetweenNodes)
+					double fillRatio = ((colCount + 2) * distanceBetweenNodes)
 							/ r.getRegionWidth();
-//					System.out.println("Count: " + colCount + ","
-//							+ remainingCount + "::" + fillRatio + "::"
-//							+ fillPotential);
+					System.out.println("Count: " + colCount + ","
+							+ remainingCount + "::" + fillRatio + "::"
+							+ fillPotential);
 
 					if (fillRatio >= 1) { // reached end of row
 						colCount = 0;
 						nextX = startX;
 						nextY += distanceBetweenNodes;
 						// check fill potential of next row
-						fillPotential = ((remainingCount - 1) * distanceBetweenNodes)
+						fillPotential = ((remainingCount + 1) * distanceBetweenNodes)
 								/ r.getRegionWidth();
-					} else if (fillPotential < 1) { // a short row
-						nextX += (distanceBetweenNodes / fillPotential)*2/3;
+						bump = (remainingCount * distanceBetweenNodes)
+								/ r.getRegionWidth();
+					} else if (fillPotential < 1 ){ // short row
+						nextX += (distanceBetweenNodes / bump);
 					} else { // next column in normal row
 						nextX += distanceBetweenNodes;
 					}
