@@ -3,24 +3,36 @@ package org.genmapp.cellularlayout;
 import giny.model.Node;
 import giny.view.NodeView;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JComponent;
+
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.view.CyNetworkView;
+import ding.view.DGraphView;
+import ding.view.InnerCanvas;
+import ding.view.ViewportChangeListener;
 
-public class Region {
+public class Region extends JComponent implements ViewportChangeListener {
 
 	// shape and parameters from template
 	private String shape; // Line, Arc, Oval, Rectangle
 	private Color color;
 	private double centerX;
 	private double centerY;
-	private double width; 
+	private double width;
 	private double height;
 	private double rotation;
 	private String attValue;
@@ -28,14 +40,18 @@ public class Region {
 	// additional parameters not from template
 	private String attName;
 	private List<String> nestedAttValues; // values represented by attValue
-	private CyNetworkView myView;
 	private List<NodeView> nodeViews;
 	private int nodeCount;
 	private int columns;
 	private boolean visibleBorder;
 
+	// graphics
+	protected DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+	private static final int TRANSLUCENCY_LEVEL = (int) (255 * .10);
+	
 	public Region(String shape, String color, double centerX, double centerY,
 			double width, double height, double rotation, String attValue) {
+		super();
 
 		this.shape = shape;
 		this.color = Color.decode(color); // decode hexadecimal string
@@ -46,7 +62,7 @@ public class Region {
 		this.rotation = rotation;
 		this.attValue = attValue;
 		RegionManager.addRegion(this.attValue, this);
-
+		
 		// nested terms based on Nathan's GO tree analysis
 		if (this.attValue.equals("extracellular region"))
 			nestedAttValues = Arrays.asList("extracellular region", "secreted");
@@ -62,12 +78,15 @@ public class Region {
 
 		// additional parameters
 		this.attName = "BasicCellularComponents"; // hard-coded, for now
-		this.myView = Cytoscape.getCurrentNetworkView();
 
-		// and node views
 		this.nodeViews = populateNodeViews();
-		this.nodeCount = this.nodeViews.size() +1;
+		this.nodeCount = this.nodeViews.size() + 1;
 		this.columns = (int) Math.sqrt(this.nodeCount);
+		
+		// graphics
+		setBounds(getVOutline().getBounds());
+		dview.addViewportChangeListener(this);
+
 	}
 
 	private List<NodeView> populateNodeViews() {
@@ -134,137 +153,104 @@ public class Region {
 		return buf.toString();
 	}
 	
-	/**
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 
+	// graphics 
+	protected double getRegionLeft() {
+		return (this.centerX - this.width/2);
+	}
+	protected double getRegionTop() {
+		return (this.centerY - this.height/2);
+	}
+
 	public void setBounds(double x, double y, double width, double height) {
-
-		// set member vars
-		this.x1 = x;
-		this.y1 = y;
-		this.w1 = width;
-		this.h1 = height;
-
-		// our bounds have changed, create a new image with new size
-		if ((width > 0) && (height > 0)) {
-			// make room for handles
-			image = new BufferedImage(((int) width + HANDLE_SIZE),
-					((int) height + HANDLE_SIZE), BufferedImage.TYPE_INT_ARGB);
-		}
-
-		// update nodeView coordinates of Layout Region for Groups/xGMML export
-		Point2D[] corners = new Point2D[] { new Point2D.Double(x, y),
-				new Point2D.Double(x + width, y + height) };
-		try {
-			AffineTransform xfrm = ((DGraphView) getMyView()).getCanvas()
-					.getAffineTransform().createInverse();
-			Point2D[] newCorners = new Point2D[2];
-			xfrm.transform(corners, 0, newCorners, 0, 2);
-			nodeX1 = (newCorners[0].getX());
-			nodeY1 = (newCorners[0].getY());
-			nodeW1 = (newCorners[1].getX() - newCorners[0].getX());
-			nodeH1 = (newCorners[1].getY() - newCorners[0].getY());
-
-			if (myGroup != null) {
-				CyNode groupNode = this.myGroup.getGroupNode();
-				CyAttributes attributes = Cytoscape.getNodeAttributes();
-				attributes.setAttribute(groupNode.getIdentifier(),
-						BubbleRouterPlugin.REGION_X_ATT, nodeX1);
-				attributes.setAttribute(groupNode.getIdentifier(),
-						BubbleRouterPlugin.REGION_Y_ATT, nodeY1);
-				attributes.setAttribute(groupNode.getIdentifier(),
-						BubbleRouterPlugin.REGION_W_ATT, nodeW1);
-				attributes.setAttribute(groupNode.getIdentifier(),
-						BubbleRouterPlugin.REGION_H_ATT, nodeH1);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		setBounds((int)x, (int)y, (int)width, (int)height);
 	}
-*/
-	/**
-	 * @param g
-	 
-	public void paint(Graphics g) {
-
-		// only paint if we have an image to paint onto
-		if (image != null) {
-
-			// before anything, lets make sure we have a color
-			Color currentColor = (paint instanceof Color) ? (Color) paint
-					: null;
-			if (currentColor == null) {
-				System.out
-						.println("LayoutRegion.paint(), currentColor is null");
-				return;
-			}
-
-			// pick a base color for fill
-			Color fillBaseColor = Color.blue;
-
-			// set proper translucency for fill color
-			Color fillColor = new Color(fillBaseColor.getRed(), fillBaseColor
-					.getGreen(), fillBaseColor.getBlue(), TRANSLUCENCY_LEVEL);
-
-			// set visable edge/rim color
-			Color drawColor = new Color(currentColor.getRed(), currentColor
-					.getGreen(), currentColor.getBlue());
-
-			// image to draw
-			Graphics2D image2D = image.createGraphics();
-
-			// draw into the image
-			Composite origComposite = image2D.getComposite();
-			image2D
-					.setComposite(AlphaComposite
-							.getInstance(AlphaComposite.SRC));
-
-			// leave space for handles
-			// first clear background in case region has been deselected
-			VisualStyle vs = Cytoscape.getVisualMappingManager()
-					.getVisualStyle();
-			GlobalAppearanceCalculator gCalc = vs
-					.getGlobalAppearanceCalculator();
-			Color backgroundColor = gCalc.getDefaultBackgroundColor();
-			image2D.setPaint(backgroundColor);
-			image2D.fillRect(0, 0, image.getWidth(), image.getHeight());
-			image2D.setPaint(fillColor);
-			image2D.fillRect(HANDLE_SIZE / 2, HANDLE_SIZE / 2, image
-					.getWidth(null)
-					- HANDLE_SIZE, image.getHeight(null) - HANDLE_SIZE);
-			image2D.setColor(new Color(0, 0, 0, 255));
-			if (regionAttributeValues != null) {
-				image2D.drawString(regionAttributeValues.toString(), 20, 20);
-			}
-
-			image2D.setColor(drawColor);
-
-			// leave space for handles
-			// adds thickness to border
-			image2D.drawRect(1 + (HANDLE_SIZE / 2), 1 + (HANDLE_SIZE / 2),
-					image.getWidth(null) - 3 - HANDLE_SIZE, image
-							.getHeight(null)
-							- 3 - HANDLE_SIZE);
-			// give border dimensionality
-			image2D.draw3DRect(HANDLE_SIZE / 2, HANDLE_SIZE / 2, image
-					.getWidth(null)
-					- 1 - HANDLE_SIZE, image.getHeight(null) - 1 - HANDLE_SIZE,
-					true);
-
-			// draw handles for stretching if selected
-			if (this.isSelected()) {
-				drawHandles(image2D);
-			}
-
-			image2D.setComposite(origComposite);
-			((Graphics2D) g).drawImage(image, null, 0, 0);
-
-		}
+	
+	public final void paint(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g.create();
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		doPaint(g2d);
 	}
-*/
+		
+	protected java.awt.Shape relativeToBounds(java.awt.Shape s) {
+		Rectangle r = getBounds();
+		AffineTransform f = new AffineTransform();
+		f.translate(-r.x, -r.y);
+		return f.createTransformedShape(s);
+	}
+	
+	protected java.awt.Shape viewportTransform(java.awt.Shape s) {
+		InnerCanvas canvas = dview.getCanvas();
+				
+		AffineTransform f = canvas.getAffineTransform();
+		if(f != null) 	return f.createTransformedShape(s);
+		else 			return s;
+	}
+	
+	public void viewportChanged(int w, int h, double newXCenter, double newYCenter, double newScaleFactor) {
+		InnerCanvas canvas = dview.getCanvas();
+		
+		AffineTransform f = canvas.getAffineTransform();
+					
+		if(f == null) return;
+		
+		java.awt.Shape outline = getVOutline();
+		
+		Rectangle b = outline.getBounds();
+		Point2D pstart = f.transform(new Point2D.Double(b.x, b.y), null);
+		setBounds(pstart.getX(), pstart.getY(), b.width * newScaleFactor, b.height * newScaleFactor);
+	}
+	
+	public Rectangle2D.Double getVRectangle() {
+		return new Rectangle2D.Double(getRegionLeft(), getRegionTop(), getRegionWidth(), getRegionHeight());
+	}
+
+	public java.awt.Shape getVOutline() {
+		Rectangle2D.Double r = getVRectangle();
+		r.width = r.width + 2;
+		r.height = r.height + 2;
+		AffineTransform f = new AffineTransform();
+		f.rotate(this.rotation, getCenterX(), getCenterY());
+		java.awt.Shape outline = f.createTransformedShape(r);
+		return outline;
+	}
+		
+	public void doPaint(Graphics2D g2d) {
+
+		Rectangle b = relativeToBounds(viewportTransform(getVRectangle())).getBounds();
+
+		Color fillcolor = Color.blue;
+		Color fillColor = new Color(fillcolor.getRed(), fillcolor
+				.getGreen(), fillcolor.getBlue(), TRANSLUCENCY_LEVEL);
+		Color linecolor = Color.black;
+		
+		int sw = 1;
+		int x = b.x;
+		int y = b.y;
+		int w = b.width - sw - 1;
+		int h = b.height - sw - 1;
+		int cx = x + w/2;
+		int cy = y + h/2;
+						
+		java.awt.Shape s = null;
+
+		//TODO
+		s = new Rectangle(x,y,w,h);
+
+
+		AffineTransform t = new AffineTransform();
+		t.rotate(this.rotation, cx, cy);
+		s = t.createTransformedShape(s);
+		
+		//TODO
+//		g2d.setColor(fillcolor);
+//		g2d.fill(s);
+
+
+		g2d.setColor(linecolor);
+		g2d.setStroke(new BasicStroke());
+		g2d.draw(s);
+	}
 	/**
 	 * @return the nodeViews
 	 */
@@ -296,19 +282,17 @@ public class Region {
 	}
 
 	/**
-     * Note: for a Line, width == length, irrespective of orientation
-	 * 
-	 * @return the width
+	 * @return the centerX
 	 */
-	public double getWidth() {
-		return width;
+	public double getCenterX() {
+		return centerX;
 	}
 
 	/**
-	 * @return the height
+	 * @return the centerY
 	 */
-	public double getHeight() {
-		return height;
+	public double getCenterY() {
+		return centerY;
 	}
 
 	/**
@@ -330,10 +314,26 @@ public class Region {
 	/**
 	 * Note: for a Line, width == length, irrespective of orientation
 	 * 
+	 * @return the width
+	 */
+	public double getRegionWidth() {
+		return width;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public double getRegionHeight() {
+		return height;
+	}
+
+	/**
+	 * Note: for a Line, width == length, irrespective of orientation
+	 * 
 	 * @param width
 	 *            the width to set
 	 */
-	public void setWidth(double width) {
+	public void setRegionWidth(double width) {
 		this.width = width;
 	}
 
@@ -341,7 +341,7 @@ public class Region {
 	 * @param height
 	 *            the height to set
 	 */
-	public void setHeight(double height) {
+	public void setRegionHeight(double height) {
 		this.height = height;
 	}
 
@@ -350,20 +350,6 @@ public class Region {
 	 */
 	public String getAttValue() {
 		return attValue;
-	}
-
-	/**
-	 * @return the centerX
-	 */
-	public double getCenterX() {
-		return centerX;
-	}
-
-	/**
-	 * @return the centerY
-	 */
-	public double getCenterY() {
-		return centerY;
 	}
 
 	/**
@@ -386,5 +372,7 @@ public class Region {
 	public String getShape() {
 		return shape;
 	}
+
+
 
 }

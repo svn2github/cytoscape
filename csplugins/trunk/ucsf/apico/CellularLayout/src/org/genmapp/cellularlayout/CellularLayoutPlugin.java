@@ -8,18 +8,21 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import cytoscape.Cytoscape;
 import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 import cytoscape.plugin.CytoscapePlugin;
+import ding.view.DGraphView;
+import ding.view.DingCanvas;
 
 /**
  * CellularLayoutPlugin is the main plugin class. It sets the layout menu items,
  * compares available attribute values with available cellular templates, and
  * performs the layout. Basically, it does it all!
  * 
- * @author Alexander Pico, Allan Kuchinsky, Scooter Morris.
+ * @author Alexander Pico, Allan Kuchinsky, Scooter Morris, Thomas Kelder.
  * 
  */
 public class CellularLayoutPlugin extends CytoscapePlugin {
@@ -159,8 +162,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			double nextY = 0.0d;
 			double startX = 0.0d;
 			double startY = 0.0d;
-			int columns;
-			int nodeCount = 0;
+			int nodeCount = 0; // count nodes per region
 			List<NodeView> nodeViews;
 
 			taskMonitor.setStatus("Sizing up subcellular regions");
@@ -170,16 +172,16 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			RegionManager.clearRegionAttMap();
 
 			// Hard-coded templates
-			new Region("RECT", "000000", 5000.0, 500.0, 10000.0, 1000.0, 0.0,
+			Region a = new Region("RECT", "000000", 6254.75, 1837.25, 8670.5, 1185.5, 0.0,
 					"extracellular region");
-			new Region("ARC", "000000", 5000.0, 1300.0, 10000.0, 600.0, 3.14,
+			Region b = new Region("LINE", "000000", 6232.25, 2677.25, 8535.5, 29.0, 0.0,
 					"plasma membrane");
-			new Region("RECT", "000000", 5000.0, 3300.0, 10000.0, 4000.0, 0.0,
+			Region c = new Region("RECT", "000000", 6269.75, 4747.25, 8640.5, 3765.5, 0.0,
 					"cytoplasm");
-			new Region("OVAL", "000000", 7500.0, 4300.0, 4000.0, 3000.0, 0.0,
+			Region d = new Region("OVAL", "000000", 7979.75, 5002.25, 4620.5, 2685.5, 0.0,
 					"nucleus");
-			new Region("RECT", "000000", 11000.0, 2300.0, 1000.0, 3000.0, 0.0,
-			"unassigned");
+			Region e = new Region("RECT", "000000", 11797.25, 3719.75, 1335.5, 2340.5, 0.0,
+					"unassigned");
 
 			// Set additional parameters
 			RegionManager.getRegionByAtt("extracellular region")
@@ -197,29 +199,29 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Collection<Region> allRegions = RegionManager.getAllRegions();
 			for (Region r : allRegions) {
 				// max scale
-				if (r.getShape() != "Line") {
+				if (r.getShape() != "LINE") {
 					int col = r.getColumns();
-					double scaleX = (col + (col + 1) * distanceBetweenNodes)
-							/ r.getWidth();
-					double scaleY = (col + (col + 1) * distanceBetweenNodes)
-							/ r.getHeight();
+//					System.out.println("col: "+r.getAttValue()+col);
+					double scaleX = (col * distanceBetweenNodes) / r.getRegionWidth();
+					double scaleY = (col * distanceBetweenNodes)
+							/ r.getRegionHeight();
 					double scaleAreaSqrt = Math.sqrt(scaleX * scaleY);
-					System.out.println("scaleX,Y,Area: "+scaleX+","+scaleY+","+scaleAreaSqrt);
+//					System.out.println("scaleX,Y,Area: " + scaleX + ","
+//							+ scaleY + "," + scaleAreaSqrt);
 					// use area to scale regions efficiently
 					if (scaleAreaSqrt > maxScaleFactor)
 						maxScaleFactor = scaleAreaSqrt;
 				} else { // handle linear regions
 					int col = r.getNodeViews().size() + 1; // columns == count
-					double scaleX = (col + (col + 1) * distanceBetweenNodes)
-							/ r.getWidth(); // width == length, for a line
+					// width == length, for a line
+					double scaleX = (col * distanceBetweenNodes) / r.getRegionWidth();
 					if (scaleX > maxScaleFactor)
 						maxScaleFactor = scaleX;
 				}
 
 				// min pan
-				double x = r.getCenterX() - r.getWidth() / 2;
-				double y = r.getCenterY() - r.getHeight() / 2;
-				System.out.println("panX,Y: "+x+","+y);
+				double x = r.getCenterX() - r.getRegionWidth() / 2;
+				double y = r.getCenterY() - r.getRegionHeight() / 2;
 				if (x < minPanX)
 					minPanX = x;
 				if (y < minPanY)
@@ -228,51 +230,63 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 			// apply max scale and min pan to all regions
 			for (Region r : allRegions) {
-				if (r.getShape() != "Line") {
-					r.setWidth(r.getWidth() * maxScaleFactor);
-					r.setHeight(r.getHeight() * maxScaleFactor);
+				if (r.getShape() != "LINE") {
+					r.setRegionWidth(r.getRegionWidth() * maxScaleFactor);
+					r.setRegionHeight(r.getRegionHeight() * maxScaleFactor);
 				} else { // handle linear regions
-					r.setWidth(r.getWidth() * maxScaleFactor);
+					r.setRegionWidth(r.getRegionWidth() * maxScaleFactor);
 					// width == length, for a line
 				}
 
 				r.setCenterX(r.getCenterX() - minPanX);
 				r.setCenterY(r.getCenterY() - minPanY);
-				
+
 				r.setCenterX(r.getCenterX() * maxScaleFactor);
 				r.setCenterY(r.getCenterY() * maxScaleFactor);
 			}
+			
+			// GRAPHICS
+			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
+			DingCanvas aLayer = dview.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+			aLayer.add(a);
+			aLayer.add(b);
+			aLayer.add(c);
+			aLayer.add(d);
+			aLayer.add(e);
+			Cytoscape.getCurrentNetworkView().fitContent();
+
 
 			// LAYOUT REGIONS:
 			int taskNodeCount = networkView.nodeCount();
-			int taskCount = 0;
+			int taskCount = 0; // count all nodes in all regions to layout
 			for (Region r : allRegions) {
 				nodeViews = r.getNodeViews();
 				nodeCount = r.getNodeCount();
-				columns = r.getColumns();
 
 				// start x at left plus spacer
 				// start y at center minus half of the number of rows rounded
 				// down, e.g., if the linear layout of nodes is 2.8 times
 				// the width of the scaled region, then there will be 3 rows
 				// and you will want to shift up 1 row from center to start.
-				startX = r.getCenterX() - r.getWidth() / 2
-						+ distanceBetweenNodes; 
+				startX = r.getCenterX() - r.getRegionWidth() / 2;
 				startY = r.getCenterY()
-						- Math.floor((nodeCount + (nodeCount + 1)
-								* distanceBetweenNodes)
-								/ r.getWidth()) * distanceBetweenNodes / 2;
-				System.out.println("Region: " + r.getAttValue() + "("
-						+ r.getNodeViews().size() + ")" + " startX,Y: "
-						+ startX + "," + startY + "   X,Y,W,H: "
-						+ r.getCenterX() + "," + r.getCenterY() + ","
-						+ r.getWidth() + "," + r.getHeight());
+						- Math.floor((nodeCount * distanceBetweenNodes)
+								/ r.getRegionWidth()) * distanceBetweenNodes / 2;
+//				System.out.println("Region: " + r.getAttValue() + "("
+//						+ r.getNodeViews().size() + ")" + " startX,Y: "
+//						+ startX + "," + startY + "   X,Y,W,H: "
+//						+ r.getCenterX() + "," + r.getCenterY() + ","
+//						+ r.getRegionWidth() + "," + r.getRegionHeight());
 				nextX = startX;
 				nextY = startY;
 
 				taskMonitor.setStatus("Moving nodes");
 
-				int count = 0;
+				int remainingCount = nodeCount; // count nodes left to layout
+				int colCount = 0; // count nodes per row
+				double fillPotential = (nodeCount * distanceBetweenNodes)
+						/ r.getRegionWidth(); // check for full row
+
 				for (NodeView nv : nodeViews) {
 					taskMonitor
 							.setPercentCompleted((taskCount / taskNodeCount) * 100);
@@ -281,25 +295,37 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 						continue;
 					}
 
+					if (fillPotential < 1) {
+						nextX += (distanceBetweenNodes / fillPotential)/3;
+					}
 					nv.setOffset(nextX, nextY);
-					count++;
+					remainingCount--;
+					colCount++;
 					taskCount++;
-					
 
-					if ((count + (count + 1) * distanceBetweenNodes)
-							/ r.getWidth() >= 1) { // reached end of row
-						count = 0;
+					// check for end of row
+					double fillRatio = (colCount * distanceBetweenNodes)
+							/ r.getRegionWidth();
+//					System.out.println("Count: " + colCount + ","
+//							+ remainingCount + "::" + fillRatio + "::"
+//							+ fillPotential);
+
+					if (fillRatio >= 1) { // reached end of row
+						colCount = 0;
 						nextX = startX;
 						nextY += distanceBetweenNodes;
-					} else if ((nodeCount + (nodeCount + 1) * distanceBetweenNodes)
-							/ r.getWidth() < 1){ // a short row
-						nextX += distanceBetweenNodes / ((nodeCount + (nodeCount + 1) * distanceBetweenNodes)
-						/ r.getWidth()); //adjusted for fewer nodes
-					} else {
+						// check fill potential of next row
+						fillPotential = ((remainingCount - 1) * distanceBetweenNodes)
+								/ r.getRegionWidth();
+					} else if (fillPotential < 1) { // a short row
+						nextX += (distanceBetweenNodes / fillPotential)*2/3;
+					} else { // next column in normal row
 						nextX += distanceBetweenNodes;
 					}
 				}
+				r.repaint();
 			}
+			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 		}
 		/**
 		 * // Selected only? if (selectedOnly) { // Yes, our size and starting
