@@ -13,9 +13,11 @@ import java.util.Properties;
 public class application{
 	
 	private static JFrame mainframe;
+
+	
 	public static JFrame inputframe;
 	public static JFrame outputframe;
-	private static JPanel pane;
+	//private static JPanel pane;
 	private static JMenuItem menuItem;
 	public static command commander = new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
@@ -87,16 +89,19 @@ public class application{
 				lp.ProcessProperties();
 				sp.ProcessProperties();
 				System.out.println("OutputCanceledProperties = " + store);
-				JFrame prop = new JFrame("Canceled Properties");
-				JPanel pane = new JPanel();
-				pane.add(new JTextArea(store.toString()));
-				prop.setContentPane(pane);
-				prop.setVisible(true);
-				prop.pack();
+//				mainframe.dispose();
+//				outputframe.dispose();
+//				inputframe.dispose();
+//				JFrame prop = new JFrame("Canceled Properties");
+//				JPanel pane = new JPanel();
+//				pane.add(new JTextArea(store.toString()));
+//				prop.setContentPane(pane);
+//				prop.setVisible(true);
+//				prop.pack();			
 			}
 		}
 	}
-
+	
 	
 	private static class myActionListener4 implements ActionListener{
 		public void actionPerformed(ActionEvent ae){
@@ -110,13 +115,13 @@ public class application{
 				else System.out.println("No input");
 				sp.intercept(commander);
 				sp.ProcessProperties();
-				JFrame prop = new JFrame("Saved Properties");
-				JPanel pane = new JPanel();
-				pane.add(new JTextArea(store.toString()));
-				prop.setContentPane(pane);
-				prop.setVisible(true);
-				prop.pack();
 				System.out.println("OutputSavedProperties = " + store);
+//				JFrame prop = new JFrame("Saved Properties");
+//				JPanel pane = new JPanel();
+//				pane.add(new JTextArea(store.toString()));
+//				prop.setContentPane(pane);
+//				prop.setVisible(true);
+//				prop.pack();
 			}
 		}
 	}
@@ -156,13 +161,12 @@ public class application{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
 			if(command.equals("catch")){
-				inputframe = new JFrame("InputParameters");
-				outputframe = new JFrame("OutputParameters");
+				inputframe = new JFrame("Input Parameters");
+				outputframe = new JFrame("Output Parameters");
 				ti = new GuiTunableInterceptor(inputframe,outputframe);
 				ti.intercept(commander);
 				lp.intercept(commander);
 				menu1.setEnabled(false);
-//				lp.addProperties();
 			}
 		}
 	}

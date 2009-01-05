@@ -102,75 +102,11 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 						listPane.getPossibleValues().get(i).setBorder(titleBorder);		
 					}
 				}
-//				if(type == Integer.class){
-//					intPane.add(guihandler.getInputPanel());
-//					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-//					titleBorder.setTitlePosition(TitledBorder.LEFT);
-//					titleBorder.setTitlePosition(TitledBorder.TOP);
-//					intPane.setBorder(titleBorder);	
-//				}
-//				if(type == Double.class){
-//					doubPane.add(guihandler.getInputPanel());
-//					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-//					titleBorder.setTitlePosition(TitledBorder.LEFT);
-//					titleBorder.setTitlePosition(TitledBorder.TOP);
-//					doubPane.setBorder(titleBorder);
-//				}
-//				if(type == String.class){
-//					stringPane.add(guihandler.getInputPanel());
-//					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-//					titleBorder.setTitlePosition(TitledBorder.LEFT);
-//					titleBorder.setTitlePosition(TitledBorder.TOP);
-//					stringPane.setBorder(titleBorder);
-//				}				
-//				if(type == Boolean.class){
-//					boolPane.add(guihandler.getInputPanel());
-//					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-//					titleBorder.setTitlePosition(TitledBorder.LEFT);
-//					titleBorder.setTitlePosition(TitledBorder.TOP);
-//					boolPane.setBorder(titleBorder);
-//				}
-//				if(type == Bounded.class){
-//					boundPane.add(guihandler.getInputPanel());
-//					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-//					titleBorder.setTitlePosition(TitledBorder.LEFT);
-//					titleBorder.setTitlePosition(TitledBorder.TOP);
-//					boundPane.setBorder(titleBorder);
-//				}
-//				if(type == ListSingleSelection.class){
-//					lssPane.add(guihandler.getInputPanel());
-//					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-//					titleBorder.setTitlePosition(TitledBorder.LEFT);
-//					titleBorder.setTitlePosition(TitledBorder.TOP);
-//					lssPane.setBorder(titleBorder);
-//				}
-//				if(type == ListMultipleSelection.class){
-//					lmsPane.add(guihandler.getInputPanel());
-//					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-//					titleBorder.setTitlePosition(TitledBorder.LEFT);
-//					titleBorder.setTitlePosition(TitledBorder.TOP);
-//					lmsPane.setBorder(titleBorder);
-//				}
-//				if(type == myButton.class){
-//					buttonPane.add(guihandler.getInputPanel());
-//					titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-//					titleBorder.setTitlePosition(TitledBorder.LEFT);
-//					titleBorder.setTitlePosition(TitledBorder.TOP);
-//					buttonPane.setBorder(titleBorder);
-//				}
 			}
-//			if(intPane.getComponentCount()!=0) mainPanel.add(intPane);
-//			if(doubPane.getComponentCount()!=0) mainPanel.add(doubPane);
-//			if(stringPane.getComponentCount()!=0) mainPanel.add(stringPane);
-//			if(boolPane.getComponentCount()!=0) mainPanel.add(boolPane);
-//			if(boundPane.getComponentCount()!=0) mainPanel.add(boundPane);
-//			if(lssPane.getComponentCount()!=0) mainPanel.add(lssPane);
-//			if(lmsPane.getComponentCount()!=0) mainPanel.add(lmsPane);
-//			if(buttonPane.getComponentCount()!=0) mainPanel.add(buttonPane);
-			
 			for(int i=0;i<listPane.getPossibleValues().size();i++){
 				mainPanel.add(listPane.getPossibleValues().get(i));
 			}
+			
 			
 			inframe.setContentPane(mainPanel);
 			inframe.pack();
@@ -261,8 +197,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	}
 
 		
-	protected void save(List<Guihandler> list){
-		for(Guihandler guihandler : list)	guihandler.handle();
+	protected void save(List<Guihandler> handlerlist){
+		for(Guihandler guihandler : handlerlist)	guihandler.handle();
 	}
 
 	protected void addProps(List<Guihandler> handlerList){	
