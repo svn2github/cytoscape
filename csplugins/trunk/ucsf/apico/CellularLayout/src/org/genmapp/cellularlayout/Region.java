@@ -46,19 +46,21 @@ public class Region extends JComponent implements ViewportChangeListener {
 	private int columns;
 	private int area;
 	private boolean visibleBorder;
-	
+
 	// dimensions of free, non-overlapping space available for nodes
 	private double freeCenterX;
 	private double freeCenterY;
 	private double freeWidth;
 	private double freeHeight;
+	private List<Region> regionsOverlapped = new ArrayList<Region>();
 
 	// graphics
 	protected DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
 	private static final int TRANSLUCENCY_LEVEL = (int) (255 * .10);
-	
+
 	public Region(String shape, String color, double centerX, double centerY,
-			double width, double height, int zorder, double rotation, String attValue) {
+			double width, double height, int zorder, double rotation,
+			String attValue) {
 		super();
 
 		this.shape = shape;
@@ -67,12 +69,12 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.centerY = centerY;
 		this.width = width;
 		this.height = height;
-		this.area = (int) (width*height);
+		this.area = (int) (width * height);
 		this.zorder = zorder;
 		this.rotation = rotation;
 		this.attValue = attValue;
 		RegionManager.addRegion(this.attValue, this);
-		
+
 		// nested terms based on Nathan's GO tree analysis
 		if (this.attValue.equals("extracellular region"))
 			nestedAttValues = Arrays.asList("extracellular region", "secreted");
@@ -97,7 +99,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.freeWidth = width;
 		this.freeHeight = height;
 
-		
 		// graphics
 		setBounds(getVOutline().getBounds());
 		dview.addViewportChangeListener(this);
@@ -167,50 +168,58 @@ public class Region extends JComponent implements ViewportChangeListener {
 		}
 		return buf.toString();
 	}
-	
-	// graphics 
+
+	// graphics
 	public void setBounds(double x, double y, double width, double height) {
-		setBounds((int)x, (int)y, (int)width, (int)height);
+		setBounds((int) x, (int) y, (int) width, (int) height);
 	}
-	
+
 	public final void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g.create();
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		Graphics2D g2d = (Graphics2D) g.create();
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		doPaint(g2d);
 	}
-		
+
 	protected java.awt.Shape relativeToBounds(java.awt.Shape s) {
 		Rectangle r = getBounds();
 		AffineTransform f = new AffineTransform();
 		f.translate(-r.x, -r.y);
 		return f.createTransformedShape(s);
 	}
-	
+
 	protected java.awt.Shape viewportTransform(java.awt.Shape s) {
 		InnerCanvas canvas = dview.getCanvas();
-				
+
 		AffineTransform f = canvas.getAffineTransform();
-		if(f != null) 	return f.createTransformedShape(s);
-		else 			return s;
+		if (f != null)
+			return f.createTransformedShape(s);
+		else
+			return s;
 	}
-	
-	public void viewportChanged(int w, int h, double newXCenter, double newYCenter, double newScaleFactor) {
+
+	public void viewportChanged(int w, int h, double newXCenter,
+			double newYCenter, double newScaleFactor) {
 		InnerCanvas canvas = dview.getCanvas();
-		
+
 		AffineTransform f = canvas.getAffineTransform();
-					
-		if(f == null) return;
-		
+
+		if (f == null)
+			return;
+
 		java.awt.Shape outline = getVOutline();
-		
+
 		Rectangle b = outline.getBounds();
 		Point2D pstart = f.transform(new Point2D.Double(b.x, b.y), null);
-		setBounds(pstart.getX(), pstart.getY(), b.width * newScaleFactor, b.height * newScaleFactor);
+		setBounds(pstart.getX(), pstart.getY(), b.width * newScaleFactor,
+				b.height * newScaleFactor);
 	}
-	
+
 	public Rectangle2D.Double getVRectangle() {
-		return new Rectangle2D.Double(getRegionLeft(), getRegionTop(), getRegionWidth(), getRegionHeight());
+		return new Rectangle2D.Double(getRegionLeft(), getRegionTop(),
+				getRegionWidth(), getRegionHeight());
 	}
 
 	public java.awt.Shape getVOutline() {
@@ -222,90 +231,66 @@ public class Region extends JComponent implements ViewportChangeListener {
 		java.awt.Shape outline = f.createTransformedShape(r);
 		return outline;
 	}
-		
+
 	public void doPaint(Graphics2D g2d) {
 
-		Rectangle b = relativeToBounds(viewportTransform(getVRectangle())).getBounds();
+		Rectangle b = relativeToBounds(viewportTransform(getVRectangle()))
+				.getBounds();
 
 		Color fillcolor = Color.blue;
-		Color fillColor = new Color(fillcolor.getRed(), fillcolor
-				.getGreen(), fillcolor.getBlue(), TRANSLUCENCY_LEVEL);
+		Color fillColor = new Color(fillcolor.getRed(), fillcolor.getGreen(),
+				fillcolor.getBlue(), TRANSLUCENCY_LEVEL);
 		Color linecolor = Color.black;
-		if (!this.visibleBorder){
+		if (!this.visibleBorder) {
 			linecolor = Color.lightGray;
 		}
-		
+
 		int sw = 1;
 		int x = b.x;
 		int y = b.y;
 		int w = b.width - sw - 1;
 		int h = b.height - sw - 1;
-		int cx = x + w/2;
-		int cy = y + h/2;
-						
+		int cx = x + w / 2;
+		int cy = y + h / 2;
+
 		java.awt.Shape s = null;
 
-		//TODO
-		s = new Rectangle(x,y,w,h);
-
+		// TODO
+		s = new Rectangle(x, y, w, h);
 
 		AffineTransform t = new AffineTransform();
 		t.rotate(this.rotation, cx, cy);
 		s = t.createTransformedShape(s);
-		
-		//TODO
-//		g2d.setColor(fillcolor);
-//		g2d.fill(s);
 
+		// TODO
+		// g2d.setColor(fillcolor);
+		// g2d.fill(s);
 
 		g2d.setColor(linecolor);
 		g2d.setStroke(new BasicStroke());
 		g2d.draw(s);
 	}
-	
+
 	/**
-	 * transforms nodeviews and identify set that overlap with provided region.
-     * 
+	 * identifies set of node views that overlap with provided region.
+	 * 
 	 * @param nodeViews
 	 * @param from
-	 * @return NodeViews within boundary of current region 
-	 */ 
+	 * @return NodeViews within boundary of current region
+	 */
 	public static List bounded(List<NodeView> nodeViews, Region r) {
-		Rectangle2D from = r.getBounds();
 		List<NodeView> boundedNodeViews = new ArrayList<NodeView>();
-		double[] topLeft2 = new double[2];
-		double fromMinX = 0; // no buffer here
-		double fromMinY = 0;
-		double[] bottomRight2 = new double[2];
-		double fromMaxX = 0; // no buffer here
-		double fromMaxY = 0;
-		if (from != null) {
-			topLeft2[0] = from.getMinX();
-			topLeft2[1] = from.getMinY();
-			((DGraphView) Cytoscape.getCurrentNetworkView())
-					.xformComponentToNodeCoords(topLeft2);
-			fromMinX = topLeft2[0]; // no buffer here
-			fromMinY = topLeft2[1];
-
-			bottomRight2[0] = from.getMaxX();
-			bottomRight2[1] = from.getMaxY();
-			((DGraphView) Cytoscape.getCurrentNetworkView())
-					.xformComponentToNodeCoords(bottomRight2);
-			fromMaxX = bottomRight2[0]; // no buffer here
-			fromMaxY = bottomRight2[1];
-
-		}
 		double currentX;
 		double currentY;
-		// first calculate the min/max x and y for the list of *relevant* nodeviews
+		// first calculate the min/max x and y for the list of *relevant*
+		// nodeviews
 		Iterator<NodeView> it = nodeViews.iterator();
 		while (it.hasNext()) {
 			NodeView nv = it.next();
 			currentX = nv.getXPosition();
 			currentY = nv.getYPosition();
-			if ((from == null)
-					|| ((currentX > fromMinX) && (currentX < fromMaxX)
-							&& (currentY > fromMinY) && (currentY < fromMaxY))) {
+			if (currentX > r.getRegionLeft() && currentX < r.getRegionRight()
+							&& currentY > r.getRegionTop() && currentY < r.getRegionBottom()) {
 				boundedNodeViews.add(nv);
 			}
 		}
@@ -406,33 +391,33 @@ public class Region extends JComponent implements ViewportChangeListener {
 	public void setRegionHeight(double height) {
 		this.height = height;
 	}
-	
+
 	/**
 	 * @return
 	 */
 	public double getRegionLeft() {
-		return (this.centerX - this.width/2);
+		return (this.centerX - this.width / 2);
 	}
-	
+
 	/**
 	 * @return
 	 */
 	public double getRegionTop() {
-		return (this.centerY - this.height/2);
+		return (this.centerY - this.height / 2);
 	}
 
 	/**
 	 * @return
 	 */
 	public double getRegionRight() {
-		return (this.centerX + this.width/2);
+		return (this.centerX + this.width / 2);
 	}
-	
+
 	/**
 	 * @return
 	 */
 	public double getRegionBottom() {
-		return (this.centerY + this.height/2);
+		return (this.centerY + this.height / 2);
 	}
 
 	/**
@@ -443,7 +428,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 	}
 
 	/**
-	 * @param area the area to set
+	 * @param area
+	 *            the area to set
 	 */
 	public void setArea(int area) {
 		this.area = area;
@@ -492,7 +478,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 	}
 
 	/**
-	 * @param freeCenterX the freeCenterX to set
+	 * @param freeCenterX
+	 *            the freeCenterX to set
 	 */
 	public void setFreeCenterX(double freeCenterX) {
 		this.freeCenterX = freeCenterX;
@@ -506,7 +493,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 	}
 
 	/**
-	 * @param freeCenterY the freeCenterY to set
+	 * @param freeCenterY
+	 *            the freeCenterY to set
 	 */
 	public void setFreeCenterY(double freeCenterY) {
 		this.freeCenterY = freeCenterY;
@@ -520,7 +508,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 	}
 
 	/**
-	 * @param freeWidth the freeWidth to set
+	 * @param freeWidth
+	 *            the freeWidth to set
 	 */
 	public void setFreeWidth(double freeWidth) {
 		this.freeWidth = freeWidth;
@@ -534,12 +523,30 @@ public class Region extends JComponent implements ViewportChangeListener {
 	}
 
 	/**
-	 * @param freeHeight the freeHeight to set
+	 * @param freeHeight
+	 *            the freeHeight to set
 	 */
 	public void setFreeHeight(double freeHeight) {
 		this.freeHeight = freeHeight;
 	}
 
+	/**
+	 * returns list of regions that are overlapped by a given region
+	 * 
+	 * @return the regionsOverlapped
+	 */
+	public List<Region> getRegionsOverlapped() {
+		return regionsOverlapped;
+	}
 
+	/**
+	 * add to list of regions that are overlapped by a given region
+	 * 
+	 * @param regionsOverlapped
+	 *            the regionsOverlapped to set
+	 */
+	public void setRegionsOverlapped(Region r) {
+		this.regionsOverlapped.add(r);
+	}
 
 }

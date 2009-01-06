@@ -196,7 +196,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 			// SIZE UP REGIONS:
 			Collection<Region> allRegions = RegionManager.getAllRegions();
-			
+
 			// calculate the maximum scale factor minimum pan among all regions
 			double maxScaleFactor = Double.MIN_VALUE;
 			double minPanX = Double.MAX_VALUE;
@@ -211,8 +211,8 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					double scaleY = ((col + 1) * distanceBetweenNodes)
 							/ r.getRegionHeight();
 					double scaleAreaSqrt = Math.sqrt(scaleX * scaleY);
-					System.out.println("scaleX,Y,Area: " + scaleX + ","
-							+ scaleY + "," + scaleAreaSqrt);
+//					System.out.println("scaleX,Y,Area: " + scaleX + ","
+//							+ scaleY + "," + scaleAreaSqrt);
 					// use area to scale regions efficiently
 					if (scaleAreaSqrt > maxScaleFactor)
 						maxScaleFactor = scaleAreaSqrt;
@@ -266,21 +266,12 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			int taskNodeCount = networkView.nodeCount();
 			int taskCount = 0; // count all nodes in all regions to layout
 			Region[] sra = RegionManager.getSortedRegionArray();
-			for (int i=sra.length-1; i >= 0; i--) { //count down from largest to smallest
+			for (int i = sra.length - 1; i >= 0; i--) { // count down from
+				// largest to smallest
 				Region r = sra[i];
-				
-				// oil & water
-				System.out.println("Sorted: "+ sra[i].getAttValue()+"="+sra[i].getArea());
-				Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
-				List<NodeView> nodeViewsToExclude = new ArrayList<NodeView>();
-				while (it.hasNext()) {
-					Node node = (Node) it.next();
-					NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(node);
-					
-				}
+				// System.out.println("Sorted: "+
+				// sra[i].getAttValue()+"="+sra[i].getArea());
 
-				
-				// get back to laying out the region
 				nodeViews = r.getNodeViews();
 				nodeCount = r.getNodeCount();
 
@@ -292,17 +283,17 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				startX = r.getCenterX() - r.getRegionWidth() / 2
 						+ distanceBetweenNodes;
 				startY = r.getCenterY()
-						- Math.floor((nodeCount
-								/ Math.floor(r.getRegionWidth()
-										/ distanceBetweenNodes -1 )) - 0.3)
+						- Math.floor((nodeCount / Math.floor(r.getRegionWidth()
+								/ distanceBetweenNodes - 1)) - 0.3)
 						* distanceBetweenNodes / 2;
-				System.out.println("Region: " + r.getAttValue() + "("
-						+ r.getNodeCount() + ")" + " startX,Y: "
-						+ startX + "," + startY + "   X,Y,W,H: "
-						+ r.getCenterX() + "," + r.getCenterY() + ","
-						+ r.getRegionWidth() + "," + r.getRegionHeight() +","+ ((nodeCount
-								/ Math.floor(r.getRegionWidth()
-										/ distanceBetweenNodes -1 )) - 0.6));
+				 System.out.println("Region: " + r.getAttValue() + "("
+				 + r.getNodeCount() + ")" + " startX,Y: "
+				 + startX + "," + startY + "   X,Y,W,H: "
+				 + r.getCenterX() + "," + r.getCenterY() + ","
+				 + r.getRegionWidth() + "," + r.getRegionHeight() +","+
+				 ((nodeCount
+				 / Math.floor(r.getRegionWidth()
+				 / distanceBetweenNodes -1 )) - 0.6));
 				nextX = startX;
 				nextY = startY;
 
@@ -331,9 +322,9 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					// check for end of row
 					double fillRatio = ((colCount + 2) * distanceBetweenNodes)
 							/ r.getRegionWidth();
-					System.out.println("Count: " + colCount + ","
-							+ remainingCount + "::" + fillRatio + "::"
-							+ fillPotential);
+					// System.out.println("Count: " + colCount + ","
+					// + remainingCount + "::" + fillRatio + "::"
+					// + fillPotential);
 
 					if (fillRatio >= 1) { // reached end of row
 						colCount = 0;
@@ -344,54 +335,204 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 								/ r.getRegionWidth();
 						bump = (remainingCount * distanceBetweenNodes)
 								/ r.getRegionWidth();
-					} else if (fillPotential < 1 ){ // short row
+					} else if (fillPotential < 1) { // short row
 						nextX += (distanceBetweenNodes / bump);
 					} else { // next column in normal row
 						nextX += distanceBetweenNodes;
 					}
 				}
 				r.repaint();
+
+				// oil & water
+				if (r.getRegionsOverlapped().size() > 0) {
+					List<NodeView> nvToCheck = new ArrayList<NodeView>();
+					List<NodeView> nvToMove = new ArrayList<NodeView>();
+					for (Region or : r.getRegionsOverlapped()) {
+						nvToCheck.addAll(or.getNodeViews());
+						nvToCheck.removeAll(r.getNodeViews());
+
+						// returns node views that are within the bounds of this
+						// region
+						nvToMove = Region.bounded(nvToCheck, r);
+
+						// determine closest edge per excludedNodeView and move
+						// node to mirror distance relative to new region
+						int countN = 0;
+						int countS = 0;
+						int countE = 0;
+						int countW = 0;
+						List<Double> pastN = new ArrayList<Double>();
+						List<Double> pastS = new ArrayList<Double>();
+						List<Double> pastE = new ArrayList<Double>();
+						List<Double> pastW = new ArrayList<Double>();
+
+						for (NodeView nv : nvToMove) {
+
+							double nvX = nv.getXPosition();
+							double nvY = nv.getYPosition();
+
+							// distance between node and boundary around all
+							// regions
+							double farNorth = nvY - r.getRegionTop();
+							double farSouth = r.getRegionBottom() - nvY;
+							double farWest = nvX - r.getRegionLeft();
+							double farEast = r.getRegionRight() - nvX;
+
+							// rule out directions where there is not enough
+							// room in overlapped region
+							if (!((r.getRegionTop() - or.getRegionTop())> distanceBetweenNodes)){
+								farNorth = Double.MAX_VALUE;
+							}
+							if (!((r.getRegionLeft() - or.getRegionLeft())> distanceBetweenNodes)){
+								farWest = Double.MAX_VALUE;
+							}
+							if (!((or.getRegionBottom() - r.getRegionBottom()) > distanceBetweenNodes)){
+								farSouth = Double.MAX_VALUE;
+							}
+							if (!((or.getRegionRight() - r.getRegionRight()) > distanceBetweenNodes)){
+								farEast = Double.MAX_VALUE;
+							}
+
+							if (farNorth < farSouth) {
+								if (farNorth < farEast) { 
+									if (farNorth < farWest) {
+										countN = 1;
+										for (double pN : pastN) {
+											if (pN <= nvX
+													+ distanceBetweenNodes / 2
+													&& pN >= nvX
+															- distanceBetweenNodes
+															/ 2) {
+												countN++;
+											}
+										}
+										nv.setYPosition(nvY
+												- (farNorth + countN
+														* distanceBetweenNodes
+														/ 2));
+										pastN.add(nvX);
+									} else { 
+										countW = 1;
+										for (double pW : pastW) {
+											if (pW <= nvY
+													+ distanceBetweenNodes / 2
+													&& pW >= nvY
+															- distanceBetweenNodes
+															/ 2) {
+												countW++;
+											}
+										}
+										nv.setXPosition(nvX
+												+ (farWest + countW
+														* distanceBetweenNodes
+														/ 2));
+										pastW.add(nvY);
+									}
+								} else if (farEast < farWest) {
+									countE = 1;
+									for (double pE : pastE) {
+										if (pE <= nvY + distanceBetweenNodes
+												/ 2
+												&& pE >= nvY
+														- distanceBetweenNodes
+														/ 2) {
+											countE++;
+										}
+									}
+									nv
+											.setXPosition(nvX
+													- (farEast + countE
+															* distanceBetweenNodes
+															/ 2));
+									pastE.add(nvY);
+								} else {
+									countW = 1;
+									for (double pW : pastW) {
+										if (pW <= nvY + distanceBetweenNodes
+												/ 2
+												&& pW >= nvY
+														- distanceBetweenNodes
+														/ 2) {
+											countW++;
+										}
+									}
+									nv
+											.setXPosition(nvX
+													+ (farWest + countW
+															* distanceBetweenNodes
+															/ 2));
+									pastW.add(nvY);
+								}
+
+							} else if (farSouth < farEast) {
+								if (farSouth < farWest) {
+									countS = 1;
+									for (double pS : pastN) {
+										if (pS <= nvX + distanceBetweenNodes
+												/ 2
+												&& pS >= nvX
+														- distanceBetweenNodes
+														/ 2) {
+											countS++;
+										}
+									}
+									nv
+											.setYPosition(nvY
+													+ (farSouth + countS
+															* distanceBetweenNodes
+															/ 2));
+									pastS.add(nvX);
+								} else {
+									countW = 1;
+									for (double pW : pastW) {
+										if (pW <= nvY + distanceBetweenNodes
+												/ 2
+												&& pW >= nvY
+														- distanceBetweenNodes
+														/ 2) {
+											countW++;
+										}
+									}
+									nv
+											.setXPosition(nvX
+													+ (farWest + countW
+															* distanceBetweenNodes
+															/ 2));
+									pastW.add(nvY);
+								}
+							} else if (farEast < farWest) {
+								countE = 1;
+								for (double pE : pastE) {
+									if (pE <= nvY + distanceBetweenNodes / 2
+											&& pE >= nvY - distanceBetweenNodes
+													/ 2) {
+										countE++;
+									}
+								}
+								nv.setXPosition(nvX
+										- (farEast + countE
+												* distanceBetweenNodes / 2));
+								pastE.add(nvY);
+							} else {
+								countW = 1;
+								for (double pW : pastW) {
+									if (pW <= nvY + distanceBetweenNodes / 2
+											&& pW >= nvY - distanceBetweenNodes
+													/ 2) {
+										countW++;
+									}
+								}
+								nv.setXPosition(nvX
+										+ (farWest + countW
+												* distanceBetweenNodes / 2));
+								pastW.add(nvY);
+							}
+						}
+
+					}
+				}
 			}
 			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 		}
-		/**
-		 * // Selected only? if (selectedOnly) { // Yes, our size and starting
-		 * points need to be different nodeCount = networkView.nodeCount() -
-		 * staticNodes.size(); columns = (int) Math.sqrt(nodeCount);
-		 * 
-		 * // Calculate our starting point as the geographical center of // the
-		 * // selected nodes. Iterator nodeViews =
-		 * networkView.getNodeViewsIterator();
-		 * 
-		 * while (nodeViews.hasNext()) { NodeView nView = (NodeView)
-		 * nodeViews.next();
-		 * 
-		 * if (!isLocked(nView)) { initialX += (nView.getXPosition() /
-		 * nodeCount); initialY += (nView.getYPosition() / nodeCount); } }
-		 * 
-		 * // initialX and initialY reflect the center of our grid, so we //
-		 * need to offset by distance*columns/2 in each direction initialX =
-		 * initialX - ((distanceBetweenNodes * (columns - 1)) / 2); initialY =
-		 * initialY - ((distanceBetweenNodes * (columns - 1)) / 2); currX =
-		 * initialX; currY = initialY; } else { columns = (int)
-		 * Math.sqrt(networkView.nodeCount()); nodeCount =
-		 * networkView.nodeCount(); }
-		 * 
-		 * taskMonitor.setStatus("Moving nodes");
-		 * 
-		 * Iterator nodeViews = networkView.getNodeViewsIterator(); int count =
-		 * 0;
-		 * 
-		 * while (nodeViews.hasNext()) { NodeView nView = (NodeView)
-		 * nodeViews.next(); taskMonitor.setPercentCompleted((count / nodeCount)
-		 * * 100);
-		 * 
-		 * if (isLocked(nView)) { continue; }
-		 * 
-		 * nView.setOffset(currX, currY); count++;
-		 * 
-		 * if (count == columns) { count = 0; currX = initialX; currY +=
-		 * distanceBetweenNodes; } else { currX += distanceBetweenNodes; } } }
-		 */
 	}
 }
