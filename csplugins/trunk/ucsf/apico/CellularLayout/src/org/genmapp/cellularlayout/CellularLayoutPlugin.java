@@ -1,9 +1,12 @@
 package org.genmapp.cellularlayout;
 
+import giny.model.Node;
 import giny.view.NodeView;
 
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -173,15 +176,15 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 			// Hard-coded templates
 			Region a = new Region("Rectangle", "000000", 6254.75, 1837.25,
-					8670.5, 1185.5, 0.0, "extracellular region");
+					8670.5, 1185.5, 100, 0.0, "extracellular region");
 			Region b = new Region("Line", "000000", 6232.25, 2677.25, 8535.5,
-					29.0, 0.0, "plasma membrane");
-			Region c = new Region("Rectangle", "000000", 6269.75, 4747.25,
-					8640.5, 3765.5, 0.0, "cytoplasm");
+					29.0, 200, 0.0, "plasma membrane");
 			Region d = new Region("Oval", "000000", 7979.75, 5002.25, 4620.5,
-					2685.5, 0.0, "nucleus");
+					2685.5, 200, 0.0, "nucleus");
+			Region c = new Region("Rectangle", "000000", 6269.75, 4747.25,
+					8640.5, 3765.5, 100, 0.0, "cytoplasm");
 			Region e = new Region("Rectangle", "000000", 11797.25, 3719.75,
-					1335.5, 2340.5, 0.0, "unassigned");
+					1335.5, 2340.5, 100, 0.0, "unassigned");
 
 			// Set additional parameters
 			RegionManager.getRegionByAtt("extracellular region")
@@ -192,11 +195,12 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			RegionManager.getRegionByAtt("nucleus").setVisibleBorder(true);
 
 			// SIZE UP REGIONS:
+			Collection<Region> allRegions = RegionManager.getAllRegions();
+			
 			// calculate the maximum scale factor minimum pan among all regions
 			double maxScaleFactor = Double.MIN_VALUE;
 			double minPanX = Double.MAX_VALUE;
 			double minPanY = Double.MAX_VALUE;
-			Collection<Region> allRegions = RegionManager.getAllRegions();
 			for (Region r : allRegions) {
 				// max scale
 				if (r.getShape() != "Line") {
@@ -249,19 +253,34 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 			// GRAPHICS
 			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-			DingCanvas aLayer = dview
+			DingCanvas bCanvas = dview
 					.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-			aLayer.add(a);
-			aLayer.add(b);
-			aLayer.add(c);
-			aLayer.add(d);
-			aLayer.add(e);
+			bCanvas.add(a);
+			bCanvas.add(b);
+			bCanvas.add(c);
+			bCanvas.add(d);
+			bCanvas.add(e);
 			Cytoscape.getCurrentNetworkView().fitContent();
 
 			// LAYOUT REGIONS:
 			int taskNodeCount = networkView.nodeCount();
 			int taskCount = 0; // count all nodes in all regions to layout
-			for (Region r : allRegions) {
+			Region[] sra = RegionManager.getSortedRegionArray();
+			for (int i=sra.length-1; i >= 0; i--) { //count down from largest to smallest
+				Region r = sra[i];
+				
+				// oil & water
+				System.out.println("Sorted: "+ sra[i].getAttValue()+"="+sra[i].getArea());
+				Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
+				List<NodeView> nodeViewsToExclude = new ArrayList<NodeView>();
+				while (it.hasNext()) {
+					Node node = (Node) it.next();
+					NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(node);
+					
+				}
+
+				
+				// get back to laying out the region
 				nodeViews = r.getNodeViews();
 				nodeCount = r.getNodeCount();
 

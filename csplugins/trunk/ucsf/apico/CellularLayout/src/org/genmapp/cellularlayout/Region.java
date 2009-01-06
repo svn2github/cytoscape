@@ -34,6 +34,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 	private double centerY;
 	private double width;
 	private double height;
+	private int zorder;
 	private double rotation;
 	private String attValue;
 
@@ -43,14 +44,21 @@ public class Region extends JComponent implements ViewportChangeListener {
 	private List<NodeView> nodeViews;
 	private int nodeCount;
 	private int columns;
+	private int area;
 	private boolean visibleBorder;
+	
+	// dimensions of free, non-overlapping space available for nodes
+	private double freeCenterX;
+	private double freeCenterY;
+	private double freeWidth;
+	private double freeHeight;
 
 	// graphics
 	protected DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
 	private static final int TRANSLUCENCY_LEVEL = (int) (255 * .10);
 	
 	public Region(String shape, String color, double centerX, double centerY,
-			double width, double height, double rotation, String attValue) {
+			double width, double height, int zorder, double rotation, String attValue) {
 		super();
 
 		this.shape = shape;
@@ -59,6 +67,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.centerY = centerY;
 		this.width = width;
 		this.height = height;
+		this.area = (int) (width*height);
+		this.zorder = zorder;
 		this.rotation = rotation;
 		this.attValue = attValue;
 		RegionManager.addRegion(this.attValue, this);
@@ -82,6 +92,11 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.nodeViews = populateNodeViews();
 		this.nodeCount = this.nodeViews.size();
 		this.columns = (int) Math.sqrt(this.nodeCount);
+		this.freeCenterX = centerX;
+		this.freeCenterY = centerY;
+		this.freeWidth = width;
+		this.freeHeight = height;
+
 		
 		// graphics
 		setBounds(getVOutline().getBounds());
@@ -154,13 +169,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 	}
 	
 	// graphics 
-	protected double getRegionLeft() {
-		return (this.centerX - this.width/2);
-	}
-	protected double getRegionTop() {
-		return (this.centerY - this.height/2);
-	}
-
 	public void setBounds(double x, double y, double width, double height) {
 		setBounds((int)x, (int)y, (int)width, (int)height);
 	}
@@ -223,6 +231,9 @@ public class Region extends JComponent implements ViewportChangeListener {
 		Color fillColor = new Color(fillcolor.getRed(), fillcolor
 				.getGreen(), fillcolor.getBlue(), TRANSLUCENCY_LEVEL);
 		Color linecolor = Color.black;
+		if (!this.visibleBorder){
+			linecolor = Color.lightGray;
+		}
 		
 		int sw = 1;
 		int x = b.x;
@@ -251,6 +262,57 @@ public class Region extends JComponent implements ViewportChangeListener {
 		g2d.setStroke(new BasicStroke());
 		g2d.draw(s);
 	}
+	
+	/**
+	 * transforms nodeviews and identify set that overlap with provided region.
+     * 
+	 * @param nodeViews
+	 * @param from
+	 * @return NodeViews within boundary of current region 
+	 */ 
+	public static List bounded(List<NodeView> nodeViews, Region r) {
+		Rectangle2D from = r.getBounds();
+		List<NodeView> boundedNodeViews = new ArrayList<NodeView>();
+		double[] topLeft2 = new double[2];
+		double fromMinX = 0; // no buffer here
+		double fromMinY = 0;
+		double[] bottomRight2 = new double[2];
+		double fromMaxX = 0; // no buffer here
+		double fromMaxY = 0;
+		if (from != null) {
+			topLeft2[0] = from.getMinX();
+			topLeft2[1] = from.getMinY();
+			((DGraphView) Cytoscape.getCurrentNetworkView())
+					.xformComponentToNodeCoords(topLeft2);
+			fromMinX = topLeft2[0]; // no buffer here
+			fromMinY = topLeft2[1];
+
+			bottomRight2[0] = from.getMaxX();
+			bottomRight2[1] = from.getMaxY();
+			((DGraphView) Cytoscape.getCurrentNetworkView())
+					.xformComponentToNodeCoords(bottomRight2);
+			fromMaxX = bottomRight2[0]; // no buffer here
+			fromMaxY = bottomRight2[1];
+
+		}
+		double currentX;
+		double currentY;
+		// first calculate the min/max x and y for the list of *relevant* nodeviews
+		Iterator<NodeView> it = nodeViews.iterator();
+		while (it.hasNext()) {
+			NodeView nv = it.next();
+			currentX = nv.getXPosition();
+			currentY = nv.getYPosition();
+			if ((from == null)
+					|| ((currentX > fromMinX) && (currentX < fromMaxX)
+							&& (currentY > fromMinY) && (currentY < fromMaxY))) {
+				boundedNodeViews.add(nv);
+			}
+		}
+
+		return boundedNodeViews;
+	}
+
 	/**
 	 * @return the nodeViews
 	 */
@@ -344,6 +406,55 @@ public class Region extends JComponent implements ViewportChangeListener {
 	public void setRegionHeight(double height) {
 		this.height = height;
 	}
+	
+	/**
+	 * @return
+	 */
+	public double getRegionLeft() {
+		return (this.centerX - this.width/2);
+	}
+	
+	/**
+	 * @return
+	 */
+	public double getRegionTop() {
+		return (this.centerY - this.height/2);
+	}
+
+	/**
+	 * @return
+	 */
+	public double getRegionRight() {
+		return (this.centerX + this.width/2);
+	}
+	
+	/**
+	 * @return
+	 */
+	public double getRegionBottom() {
+		return (this.centerY + this.height/2);
+	}
+
+	/**
+	 * @return the area
+	 */
+	public int getArea() {
+		return area;
+	}
+
+	/**
+	 * @param area the area to set
+	 */
+	public void setArea(int area) {
+		this.area = area;
+	}
+
+	/**
+	 * @return the zorder
+	 */
+	public int getZorder() {
+		return zorder;
+	}
 
 	/**
 	 * @return the attValue
@@ -371,6 +482,62 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 */
 	public String getShape() {
 		return shape;
+	}
+
+	/**
+	 * @return the freeCenterX
+	 */
+	public double getFreeCenterX() {
+		return freeCenterX;
+	}
+
+	/**
+	 * @param freeCenterX the freeCenterX to set
+	 */
+	public void setFreeCenterX(double freeCenterX) {
+		this.freeCenterX = freeCenterX;
+	}
+
+	/**
+	 * @return the freeCenterY
+	 */
+	public double getFreeCenterY() {
+		return freeCenterY;
+	}
+
+	/**
+	 * @param freeCenterY the freeCenterY to set
+	 */
+	public void setFreeCenterY(double freeCenterY) {
+		this.freeCenterY = freeCenterY;
+	}
+
+	/**
+	 * @return the freeWidth
+	 */
+	public double getFreeWidth() {
+		return freeWidth;
+	}
+
+	/**
+	 * @param freeWidth the freeWidth to set
+	 */
+	public void setFreeWidth(double freeWidth) {
+		this.freeWidth = freeWidth;
+	}
+
+	/**
+	 * @return the freeHeight
+	 */
+	public double getFreeHeight() {
+		return freeHeight;
+	}
+
+	/**
+	 * @param freeHeight the freeHeight to set
+	 */
+	public void setFreeHeight(double freeHeight) {
+		this.freeHeight = freeHeight;
 	}
 
 
