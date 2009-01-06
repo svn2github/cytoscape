@@ -12,23 +12,20 @@ import java.util.Properties;
 
 public class application{
 	
-	private static JFrame mainframe;
-
+	private static JFrame mainframe = new JFrame("TunableSampler");;
+	public static JFrame outputframe = new JFrame("Results");
 	
-	public static JFrame inputframe;
-	public static JFrame outputframe;
-	//private static JPanel pane;
 	private static JMenuItem menuItem;
 	public static command commander = new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
+	public static TunableInterceptor ti = null;
+
 	static Properties InputProperties = new Properties();
 	static TunableInterceptor lp = new LoadPropsInterceptor(InputProperties);
 	static Properties store = new Properties();
 	static TunableInterceptor sp = new StorePropsInterceptor(store);
 	static TunableInterceptor canceled = new StorePropsInterceptor(InputProperties);
-	public static TunableInterceptor ti = null;
-	static JMenu menu1 = new JMenu("Tunables");
-	
+
 	
 	public static void main(String[] args){
         CreateGUIandStart();
@@ -37,33 +34,25 @@ public class application{
 	
 	
 	public static void CreateGUIandStart(){
-		mainframe = new JFrame("TunableSampler");
+		
 		JMenuBar MenuBar = new JMenuBar();
 		mainframe.setJMenuBar(MenuBar);
+		ti = new GuiTunableInterceptor(mainframe,outputframe);
+		ti.intercept(commander);
+		lp.intercept(commander);
+	
 		
+		if(ti!=null){
+			ti.Process();
+			lp.addProperties();
+			System.out.println("InputProperties = " + InputProperties);
+		}
+		else System.out.println("No input");
 		
-		MenuBar.add(menu1);
-		menuItem = new JMenuItem("CatchTunable");
-		menuItem.addActionListener(new myActionListener1());
-		menuItem.setActionCommand("catch");
-		menu1.add(menuItem);
-		
-		JMenu menu2 = new JMenu("Parameters");
-		MenuBar.add(menu2);
-		menuItem = new JMenuItem("Input");
-		menuItem.addActionListener(new myActionListener2());
-		menuItem.setActionCommand("input");
-		menu2.add(menuItem);
-
-		menuItem = new JMenuItem("Output");
-		menuItem.addActionListener(new myActionListener3());
-		menuItem.setActionCommand("output");
-		menu2.add(menuItem);
-
 		
 		JMenu menu3 = new JMenu("Values");
 		MenuBar.add(menu3);
-		menuItem = new JMenuItem("Save");
+		menuItem = new JMenuItem("Save settings");
 		menuItem.addActionListener(new myActionListener4());
 		menuItem.setActionCommand("save");
 		menu3.add(menuItem);
@@ -72,13 +61,18 @@ public class application{
 		menuItem.addActionListener(new myActionListener5());
 		menuItem.setActionCommand("cancel");
 		menu3.add(menuItem);
-	
+
+		menuItem = new JMenuItem("Done");
+		menuItem.addActionListener(new myActionListener3());
+		menuItem.setActionCommand("done");
+		menu3.add(menuItem);
+
 	
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainframe.setLocation(50,50);
-		mainframe.setSize(200, 200);
-		mainframe.pack();
-		mainframe.setVisible(true);	
+//		mainframe.setLocation(50,50);
+//		mainframe.setSize(200, 200);
+//		mainframe.pack();
+//		mainframe.setVisible(true);
 	}
 
 
@@ -88,16 +82,7 @@ public class application{
 			if(command.equals("cancel")){
 				lp.ProcessProperties();
 				sp.ProcessProperties();
-				System.out.println("OutputCanceledProperties = " + store);
-//				mainframe.dispose();
-//				outputframe.dispose();
-//				inputframe.dispose();
-//				JFrame prop = new JFrame("Canceled Properties");
-//				JPanel pane = new JPanel();
-//				pane.add(new JTextArea(store.toString()));
-//				prop.setContentPane(pane);
-//				prop.setVisible(true);
-//				prop.pack();			
+				System.out.println("OutputCanceledProperties = " + store);			
 			}
 		}
 	}
@@ -109,19 +94,13 @@ public class application{
 			if(command.equals("save")){
 				if(ti!=null){
 					outputframe.dispose();
-					inputframe.dispose();
+					//inputframe.dispose();
 					ti.Save();
 				}
 				else System.out.println("No input");
 				sp.intercept(commander);
 				sp.ProcessProperties();
 				System.out.println("OutputSavedProperties = " + store);
-//				JFrame prop = new JFrame("Saved Properties");
-//				JPanel pane = new JPanel();
-//				pane.add(new JTextArea(store.toString()));
-//				prop.setContentPane(pane);
-//				prop.setVisible(true);
-//				prop.pack();
 			}
 		}
 	}
@@ -131,42 +110,12 @@ public class application{
 	private static class myActionListener3 implements ActionListener{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
-			if(command.equals("output")){
+			if(command.equals("done")){
 				if(ti!=null){
-					inputframe.dispose();
 					ti.Display();
+					ti.Process();
 				}
 				else System.out.println("no input");
-			}
-		}
-	}
-	
-	
-	private static class myActionListener2 implements ActionListener{
-		public void actionPerformed(ActionEvent ae){
-			String command = ae.getActionCommand();
-			if(command.equals("input")){
-				if(ti!=null){
-					ti.Process();
-					lp.addProperties();
-					System.out.println("InputProperties = " + InputProperties);
-				}
-				else System.out.println("No input");
-			}
-		}
-	}
-
-		
-	private static class myActionListener1 implements ActionListener{
-		public void actionPerformed(ActionEvent ae){
-			String command = ae.getActionCommand();
-			if(command.equals("catch")){
-				inputframe = new JFrame("Input Parameters");
-				outputframe = new JFrame("Output Parameters");
-				ti = new GuiTunableInterceptor(inputframe,outputframe);
-				ti.intercept(commander);
-				lp.intercept(commander);
-				menu1.setEnabled(false);
 			}
 		}
 	}

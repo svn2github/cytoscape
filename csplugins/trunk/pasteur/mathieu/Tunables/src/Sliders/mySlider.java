@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -31,14 +32,15 @@ public class mySlider extends JComponent {
     private JTextField m_field;
     private List       m_listeners;
     
-    
+    private int majortickspace;
+
     private int m_smin = 0;
     private int m_srange = 100;
     
 
-    public mySlider(String title, double min, double max, double value) {
-        this(title, new Double(min), new Double(max), new Double(value));
-    }
+//    public mySlider(String title, double min, double max, double value) {
+//        this(title, new Double(min), new Double(max), new Double(value));
+//    }
     
 
 //    public MySlider(String title, float min, float max, float value) {
@@ -67,16 +69,27 @@ public class mySlider extends JComponent {
         m_label  = new JLabel();//title
         m_field  = new JTextField(4);
         m_listeners = new ArrayList();
+        //m_field.setBorder(null);
         
-        m_field.setBorder(null);
-        
+        majortickspace = (max.intValue()-min.intValue())/5;
+
+        Hashtable labelTable = new Hashtable();
+
+        int i=m_min.intValue();
+        int j=0;
+        while(i <= m_max.intValue()){
+        	labelTable.put(j,new JLabel(new Integer(i).toString()));
+        	i+=majortickspace;
+        	j+=20;   	
+        }
+        m_slider.setMajorTickSpacing(20);
+        m_slider.setMinorTickSpacing(5);
+        m_slider.setLabelTable(labelTable);
+        m_slider.setPaintTicks(true);
+        m_slider.setPaintLabels(true);
         setSliderValue();
         setFieldValue();
-        
         initUI();
-        
-	    //m_slider.setLabelTable(createLabels(m_slider));
-		//m_slider.setPaintLabels(true);
     }
     
 
@@ -132,7 +145,7 @@ public class mySlider extends JComponent {
         });
         
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        add(m_label);
+//       add(m_label);
         add(m_slider);
         add(m_field);
     }
@@ -147,7 +160,7 @@ public class mySlider extends JComponent {
 
     
 //	private Hashtable createLabels(JSlider slider) {
-//		return slider.createStandardLabels(200/4);
+//		return slider.createStandardLabels(m_min.intValue(),majortickspace);
 //	}
 
     

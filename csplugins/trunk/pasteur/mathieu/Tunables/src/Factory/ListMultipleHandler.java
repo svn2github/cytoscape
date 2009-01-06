@@ -1,6 +1,8 @@
 package Factory;
 
 import Tunable.*;
+
+import java.awt.BorderLayout;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +38,17 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	}
 
 	public JPanel getInputPanel() {
-		JPanel returnpane = new JPanel();
+		JPanel returnpane = new JPanel(new BorderLayout());
 		array=null;
 		selected=null;
+		JTextArea jta = new JTextArea(f.getType().getSimpleName());
+		jta.setBackground(null);
 		jlist = new JList(LMS.getPossibleValues().toArray());
 		jlist.addListSelectionListener(this);
 		jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JScrollPane scrollpane = new JScrollPane(jlist);
-		returnpane.add(scrollpane);
+		returnpane.add(scrollpane,BorderLayout.EAST);
+		returnpane.add(jta,BorderLayout.WEST);
 		return returnpane;
 	}
 	

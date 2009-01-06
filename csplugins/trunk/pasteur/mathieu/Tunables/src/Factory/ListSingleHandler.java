@@ -1,10 +1,16 @@
 package Factory;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+
+import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -24,6 +30,8 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	private T selected;
 	Boolean available;
 	ArrayList<T> array;
+	JComboBox combo;
+	String days;
 	
 
 	@SuppressWarnings("unchecked")
@@ -40,16 +48,31 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 
 	@Override
 	public JPanel getInputPanel() {
-		JPanel returnpane = new JPanel();
-		selected=null;
-		jlist=new JList(LSS.getPossibleValues().toArray());
-		jlist.addListSelectionListener(this);
-		jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);		
-		JScrollPane scrollpane = new JScrollPane(jlist);
-		returnpane.add(scrollpane);
+		JPanel returnpane = new JPanel(new BorderLayout());
+		selected = null;
+//		jlist=new JList(LSS.getPossibleValues().toArray());
+//		jlist.addListSelectionListener(this);
+//		jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		JScrollPane scrollpane = new JScrollPane(jlist);
+//		returnpane.add(scrollpane);
+
+		JTextArea jta = new JTextArea(f.getType().getSimpleName());
+		jta.setBackground(null);
+		combo = new JComboBox(LSS.getPossibleValues().toArray());
+		combo.insertItemAt(f.getName(),0);
+//		combo.addItem(f.getName());
+		combo.setSelectedIndex(0);
+		combo.addActionListener(new myActionListener1());
+		returnpane.add(combo,BorderLayout.EAST);
+		returnpane.add(jta,BorderLayout.WEST);
 		return returnpane;
 	}
 
+	public class myActionListener1 implements ActionListener{
+		public void actionPerformed(ActionEvent event){
+			selected = (T) combo.getSelectedItem();
+		}
+	}
 
 
 	public void handle() {

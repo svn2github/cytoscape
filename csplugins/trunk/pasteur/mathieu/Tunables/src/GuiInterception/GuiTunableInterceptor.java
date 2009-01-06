@@ -14,6 +14,10 @@ import Utils.myButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.*;
 
 
@@ -23,6 +27,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 	public JFrame inframe;
 	public JFrame outframe;
+	JPanel mainPanel;
 	static JPanel tunPane = null;
 	boolean processdone = false;
 	myButton button;
@@ -33,14 +38,15 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	
 	public GuiTunableInterceptor(JFrame inframe,JFrame outframe) {
 		super( new GuiHandlerFactory<Guihandler>() );
-		this.inframe=inframe;
-		this.outframe=outframe;
+		this.inframe = inframe;
+		this.outframe = outframe;
 	}
 
 
 	protected void process(List<Guihandler> list) {
 			this.list=list;
-			JPanel mainPanel = new JPanel();
+			mainPanel = new JPanel();
+			mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
 			Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 			TitledBorder titleBorder = null;
 //			JPanel tunpane=new JPanel();
@@ -60,57 +66,100 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 //			}
 			
 			
-			JPanel intPane = new JPanel();
-			intPane.setName("Integer");
-			JPanel doubPane =  new JPanel();
-			doubPane.setName("Double");
-			JPanel stringPane =  new JPanel();
-			stringPane.setName("String");
-			JPanel boolPane = new JPanel();
-			boolPane.setName("Boolean");
-			JPanel boundPane = new JPanel();
-			boundPane.setName("Bounded");
-			JPanel lmsPane = new JPanel();
-			lmsPane.setName("ListMultipleSelection");
-			JPanel lssPane = new JPanel();
-			lssPane.setName("ListSingleSelection");
-			JPanel buttonPane = new JPanel();
-			buttonPane.setName("myButton");
-			
-			
+//			JPanel intPane = new JPanel();
+//			intPane.setName("Integer");
+//			JPanel doubPane =  new JPanel();
+//			doubPane.setName("Double");
+//			JPanel stringPane =  new JPanel();
+//			stringPane.setName("String");
+//			JPanel boolPane = new JPanel();
+//			boolPane.setName("Boolean");
+//			JPanel boundPane = new JPanel();
+//			boundPane.setName("Bounded");
+//			JPanel lmsPane = new JPanel();
+//			lmsPane.setName("ListMultipleSelection");
+//			JPanel lssPane = new JPanel();
+//			lssPane.setName("ListSingleSelection");
+//			JPanel buttonPane = new JPanel();
+//			buttonPane.setName("myButton");
+//			
+//			
+//			java.util.List<JPanel> panes = new ArrayList<JPanel>();
+//			panes.add(intPane);
+//			panes.add(doubPane);
+//			panes.add(stringPane);
+//			panes.add(boolPane);
+//			panes.add(boundPane);
+//			panes.add(buttonPane);
+//			panes.add(lmsPane);
+//			panes.add(lssPane);
+//			listPane = new ListSingleSelection<JPanel>(panes);
+//			
+//			
+//			for (Guihandler guihandler : list){
+//				type = guihandler.getField().getType();
+//				String name = type.getSimpleName();
+//				for(int i = 0;i<listPane.getPossibleValues().size();i++){
+//					if(listPane.getPossibleValues().get(i).getName().equals(name)){
+//						listPane.getPossibleValues().get(i).add(guihandler.getInputPanel());
+//						titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
+//						titleBorder.setTitlePosition(TitledBorder.LEFT);
+//						titleBorder.setTitlePosition(TitledBorder.TOP);
+//						listPane.getPossibleValues().get(i).setBorder(titleBorder);		
+//					}
+//				}
+//			}
+//			for(int i=0;i<listPane.getPossibleValues().size();i++){
+//				mainPanel.add(listPane.getPossibleValues().get(i));
+//			}
+
 			java.util.List<JPanel> panes = new ArrayList<JPanel>();
-			panes.add(intPane);
-			panes.add(doubPane);
-			panes.add(stringPane);
-			panes.add(boolPane);
-			panes.add(boundPane);
-			panes.add(buttonPane);
-			panes.add(lmsPane);
-			panes.add(lssPane);
+			JPanel init = new JPanel();
+			init.setName("init");
+			panes.add(init);
 			listPane = new ListSingleSelection<JPanel>(panes);
+			String group=null;
+			String type=null;
 			
-			
-			for (Guihandler guihandler : list){
-				type = guihandler.getField().getType();
-				String name = type.getSimpleName();
-				for(int i = 0;i<listPane.getPossibleValues().size();i++){
-					if(listPane.getPossibleValues().get(i).getName().equals(name)){
-						listPane.getPossibleValues().get(i).add(guihandler.getInputPanel());
-						titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-						titleBorder.setTitlePosition(TitledBorder.LEFT);
-						titleBorder.setTitlePosition(TitledBorder.TOP);
-						listPane.getPossibleValues().get(i).setBorder(titleBorder);		
+			for(Guihandler guihandler : list){
+				boolean exist=false;
+				int nbpane=0;
+				group = guihandler.getTunable().group();
+				type = guihandler.getField().getType().getSimpleName();
+				for(int i=0;i<listPane.getPossibleValues().size();i++){
+					if(listPane.getPossibleValues().get(i).getName().equals(group)){
+						exist=true;
+						nbpane=i;
 					}
 				}
+				if(exist==true){
+					listPane.getPossibleValues().get(nbpane).add(guihandler.getInputPanel());
+				}
+				else{
+					JPanel pane = new JPanel();
+					pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));
+					pane.add(guihandler.getInputPanel());
+
+					titleBorder = BorderFactory.createTitledBorder(group);
+					titleBorder.setTitleColor(Color.blue);
+					titleBorder.setTitlePosition(TitledBorder.LEFT);
+					titleBorder.setTitlePosition(TitledBorder.TOP);
+					pane.setBorder(titleBorder);
+					pane.setName(group);
+					panes.add(pane);
+					listPane=new ListSingleSelection<JPanel>(panes);		
+				}
 			}
+			panes.remove(0);
+			listPane=new ListSingleSelection<JPanel>(panes);
+			
 			for(int i=0;i<listPane.getPossibleValues().size();i++){
 				mainPanel.add(listPane.getPossibleValues().get(i));
 			}
 			
-			
 			inframe.setContentPane(mainPanel);
 			inframe.pack();
-			inframe.setLocation(100, 200);
+			inframe.setLocation(200, 200);
 			inframe.setVisible(true);
 			processdone=true;
 			
@@ -150,7 +199,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		resultpane.removeAll();
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = null;
-		//tunPane = new JPanel();
 		
 		for(int i = 0;i<listPane.getPossibleValues().size();i++){
 			listPane.getPossibleValues().get(i).removeAll();

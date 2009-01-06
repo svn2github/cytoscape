@@ -1,6 +1,7 @@
 package Factory;
 
 
+import java.awt.BorderLayout;
 import java.lang.reflect.*;
 import javax.swing.*;
 import GuiInterception.Guihandler;
@@ -37,11 +38,14 @@ public class StringHandler implements Guihandler{
 	
 	
 	public JPanel getInputPanel(){
-		JPanel pane = new JPanel();
+		JPanel pane = new JPanel(new BorderLayout());
+		JTextArea jta = new JTextArea(f.getName());
+		jta.setBackground(null);
+		pane.add(jta,BorderLayout.WEST);
 		try{
 			jtf = new JTextField(value,10);
 		}catch (Exception e){e.printStackTrace();}
-		pane.add(jtf);
+		pane.add(jtf,BorderLayout.EAST);
 		return pane;
 	}	
 

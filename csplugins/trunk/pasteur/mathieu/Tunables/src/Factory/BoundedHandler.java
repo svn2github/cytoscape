@@ -2,6 +2,8 @@ package Factory;
 
 import GuiInterception.*;
 import Tunable.*;
+
+import java.awt.BorderLayout;
 import java.lang.reflect.*;
 import javax.swing.JPanel;
 import Utils.*;
@@ -43,20 +45,26 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 
 
 	public JPanel getInputPanel() {
-		JPanel inputPane = new JPanel();
+		JPanel inputPane = new JPanel(new BorderLayout());
+		
 		if(useslider==true){
 			if(t.flag()==Param.DoubleSlider){
-				slider = new mySlider((java.lang.String) title,Double.parseDouble((String) lowerBound),Double.parseDouble((String) upperBound),Double.parseDouble((String) lowerBound));
+				Double initvalue = Double.parseDouble((String)lowerBound)+(Double.parseDouble((String)upperBound)-Double.parseDouble((String) lowerBound))/2;
+				slider = new mySlider((java.lang.String) title,Double.parseDouble((String) lowerBound),Double.parseDouble((String) upperBound),initvalue.doubleValue());
 			}
 			if(t.flag()==Param.IntegerSlider){
-				slider = new mySlider((java.lang.String) title,Integer.parseInt((String) lowerBound),Integer.parseInt((String) upperBound),Integer.parseInt((String) lowerBound));
+				Integer initvalue = Integer.parseInt((String)lowerBound)+(Integer.parseInt((String)upperBound)-Integer.parseInt((String) lowerBound))/2;
+				slider = new mySlider((java.lang.String) title,Integer.parseInt((String) lowerBound),Integer.parseInt((String) upperBound),initvalue.intValue());
 			}
-		inputPane.add(slider);
+		inputPane.add(slider,BorderLayout.EAST);
 		}
 		else{
 			jtf = new JTextField(5);
-			inputPane.add(jtf);
+			inputPane.add(jtf,BorderLayout.EAST);
 		}
+		JTextArea jta = new JTextArea(t.flag().toString());
+		jta.setBackground(null);
+		inputPane.add(jta,BorderLayout.WEST);
 		return inputPane;
 	}
 
