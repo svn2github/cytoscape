@@ -87,12 +87,15 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 
 
 	public JPanel update() {
-		JPanel result = new JPanel();
+		JPanel result = new JPanel(new BorderLayout());
+		JTextArea jta = new JTextArea(f.getName());
+		jta.setBackground(null);
+		result.add(jta,BorderLayout.WEST);
 		if(selected!=null){
 			LSS.setSelectedValue(selected);	
 			try{
 				f.set(o,LSS);
-				result.add(new JTextField((String) LSS.getSelectedValue()));
+				result.add(new JTextField((String) LSS.getSelectedValue()),BorderLayout.EAST);
 			}catch(Exception e){e.printStackTrace();}
 		}
 		return result;

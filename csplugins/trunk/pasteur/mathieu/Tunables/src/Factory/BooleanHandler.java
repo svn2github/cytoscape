@@ -5,6 +5,7 @@ package Factory;
 import java.awt.BorderLayout;
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 
@@ -51,11 +52,16 @@ public class BooleanHandler implements Guihandler{
 
 
 	public JPanel update() {
-		JPanel result = new JPanel();
+		JPanel result = new JPanel(new BorderLayout());
+		JTextArea jta = new JTextArea(f.getName());
+		jta.setBackground(null);
+		result.add(jta,BorderLayout.WEST);
 		//bool = jcb.isSelected();
 		try{
+			JCheckBox checkbox = new JCheckBox();
 			f.set(o,jcb.isSelected());
-			result.add(new JCheckBox(title,(Boolean) f.get(o)));
+			checkbox.setSelected((Boolean) f.get(o));
+			result.add(checkbox,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 	return result;
 	}

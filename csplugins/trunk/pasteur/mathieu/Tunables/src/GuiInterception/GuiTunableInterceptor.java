@@ -159,7 +159,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			
 			inframe.setContentPane(mainPanel);
 			inframe.pack();
-			inframe.setLocation(200, 200);
+			inframe.setLocation(100, 100);
 			inframe.setVisible(true);
 			processdone=true;
 			
@@ -196,6 +196,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	protected void display(List<Guihandler> list) {
 		this.list=list;
 		JPanel resultpane = new JPanel();
+		resultpane.setLayout(new BoxLayout(resultpane,BoxLayout.PAGE_AXIS));
 		resultpane.removeAll();
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = null;
@@ -203,23 +204,62 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		for(int i = 0;i<listPane.getPossibleValues().size();i++){
 			listPane.getPossibleValues().get(i).removeAll();
 		}
-		if(processdone==true){
-			for (Guihandler guihandler : list){
-				type = guihandler.getField().getType();
-				String name = type.getSimpleName();
-				for(int i = 0;i<listPane.getPossibleValues().size();i++){
-					if(listPane.getPossibleValues().get(i).getName().equals(name)){
-						listPane.getPossibleValues().get(i).add(guihandler.update());
-						titleBorder = BorderFactory.createTitledBorder(selBorder,guihandler.getTunable().description());
-						titleBorder.setTitlePosition(TitledBorder.LEFT);
-						titleBorder.setTitlePosition(TitledBorder.TOP);
-						listPane.getPossibleValues().get(i).setBorder(titleBorder);		
-					}
+		java.util.List<JPanel> panes = new ArrayList<JPanel>();
+		JPanel init = new JPanel();
+		init.setName("init");
+		panes.add(init);
+		listPane = new ListSingleSelection<JPanel>(panes);
+		String group = null;
+		String type = null;
+		
+		for(Guihandler guihandler : list){
+			boolean exist=false;
+			int nbpane=0;
+			group = guihandler.getTunable().group();
+			type = guihandler.getField().getType().getSimpleName();
+			for(int i=0;i<listPane.getPossibleValues().size();i++){
+				if(listPane.getPossibleValues().get(i).getName().equals(group)){
+					exist=true;
+					nbpane=i;
 				}
 			}
-			for(int i=0;i<listPane.getPossibleValues().size();i++){
-				resultpane.add(listPane.getPossibleValues().get(i));
+			if(exist==true){
+				listPane.getPossibleValues().get(nbpane).add(guihandler.update());
 			}
+			else{
+				JPanel pane = new JPanel();
+				pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));
+				pane.add(guihandler.update());
+
+				titleBorder = BorderFactory.createTitledBorder(group);
+				titleBorder.setTitleColor(Color.blue);
+				titleBorder.setTitlePosition(TitledBorder.LEFT);
+				titleBorder.setTitlePosition(TitledBorder.TOP);
+				pane.setBorder(titleBorder);
+				pane.setName(group);
+				panes.add(pane);
+				listPane=new ListSingleSelection<JPanel>(panes);		
+			}
+		}
+		panes.remove(0);
+		listPane=new ListSingleSelection<JPanel>(panes);
+		
+		for(int i=0;i<listPane.getPossibleValues().size();i++){
+			resultpane.add(listPane.getPossibleValues().get(i));
+		}
+		
+		outframe.setContentPane(resultpane);
+		outframe.pack();
+		outframe.setLocation(500, 100);
+		outframe.setVisible(true);
+	}
+			
+			
+			
+			
+			
+			
+			
 			
 //			for(Guihandler guihandler : list){
 //				if(guihandler.getField().getType()!=Group.class){
@@ -236,13 +276,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 //				}
 //				resultpane.add(tunPane);
 //			}
-			outframe.setContentPane(resultpane);
-			outframe.pack();
-			outframe.setLocation(100, 500);
-			outframe.setVisible(true);
-		}
-		else System.out.println("No input displayed");
-	}
 
 		
 	protected void save(List<Guihandler> handlerlist){

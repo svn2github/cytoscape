@@ -4,11 +4,18 @@ import GuiInterception.*;
 import Tunable.*;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.lang.reflect.*;
+
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import Utils.*;
 import Tunable.Tunable.Param;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+
 import Sliders.*;
 
 public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
@@ -46,6 +53,15 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 
 	public JPanel getInputPanel() {
 		JPanel inputPane = new JPanel(new BorderLayout());
+		
+		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		TitledBorder titleBorder = null;
+		titleBorder = BorderFactory.createTitledBorder(f.getType().getSimpleName());
+		titleBorder.setTitleColor(Color.blue);
+		titleBorder.setTitlePosition(TitledBorder.LEFT);
+		titleBorder.setTitlePosition(TitledBorder.TOP);
+
+		inputPane.setBorder(titleBorder);
 		
 		if(useslider==true){
 			if(t.flag()==Param.DoubleSlider){
@@ -100,7 +116,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 
 	@SuppressWarnings("unchecked")
 	public JPanel update() {
-		JPanel resultPane = new JPanel();
+		JPanel resultPane = new JPanel(new BorderLayout());
 		if(t.flag() == Param.DoubleSlider){
 			result=slider.getValue().doubleValue();
 			boundedObject.setValue(result.toString(),Double.class);
@@ -121,9 +137,13 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 				boundedObject.setValue((String) value,Integer.class);
 			}
 		}
+		JTextArea jta = new JTextArea(f.getName());
+		jta.setBackground(null);
+		resultPane.add(jta,BorderLayout.WEST);
+		
 		try{
 			f.set(o,boundedObject);
-			resultPane.add(new JTextField(boundedObject.getValue()));
+			resultPane.add(new JTextField(boundedObject.getValue()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return resultPane;
 	}

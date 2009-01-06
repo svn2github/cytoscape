@@ -65,13 +65,16 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	
 	
 	public JPanel update() {
-		JPanel resultpane = new JPanel();
+		JPanel resultpane = new JPanel(new BorderLayout());
+		JTextArea jta = new JTextArea(f.getName());
+		jta.setBackground(null);
+		resultpane.add(jta,BorderLayout.WEST);
 		if(array!=null){
 			selected = castObject(array);
 			LMS.setSelectedValues(selected);
 			try{
 				f.set(o, LMS);
-				resultpane.add(new JScrollPane(new JList(LMS.getSelectedValues().toArray())));
+				resultpane.add(new JScrollPane(new JList(LMS.getSelectedValues().toArray())),BorderLayout.EAST);
 			}catch(Exception e){e.printStackTrace();}
 		}
 		return resultpane;

@@ -67,11 +67,14 @@ public class DoubleHandler implements Guihandler{
 
 
 	public JPanel update(){
-		JPanel result = new JPanel();
+		JPanel result = new JPanel(new BorderLayout());
+		JTextArea jta = new JTextArea(f.getName());
+		jta.setBackground(null);
+		result.add(jta,BorderLayout.WEST);
 		doub = Double.parseDouble(jtf.getText());
 		try{
 			if(doub!=null)f.set(o, doub);
-			result.add(new JTextField(f.get(o).toString()));
+			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return result;
 	}
