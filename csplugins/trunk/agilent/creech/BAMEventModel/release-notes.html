@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<TITLE>BAM Event Model Release Notes (v0.2)</TITLE>
+</HEAD>
+<BODY>
+
+<H1>BAM Event Model Release Notes (v0.2)</H1>
+This version has an API for handling batching for efficiency.
+<OL>
+<LI> Various EventManager changes:
+<OL TYPE=a>
+<LI> removed the 3 argument dispatch()
+<LI> renamed dispatchDelayed() to dispatchAccumulated().
+<LI> added registerInterest (Class<Notifier>,...) and unregisterInterest (Class<Notifier>,...).
+<LI> added startAccumulating ().
+</OL>
+<P><LI>Various EventConditions changes:
+<OL type=a>
+<LI> Removed isClassEvent().
+<LI>Removed getSynchModel().
+<LI>Added getDeliveryOptions().
+</OL>
+<P><LI>Added DeliveryTiming, DeliveryOptions, and DeliveryMethod.
+<P><LI>Changed EventReceiver-->Listener.
+<P><LI> Removed EventFactory.SINGLETON in favor of adding ConcreteEventFactory.getInstance().
+<P>Placing a constant in EventFactory interface was poluting the interface.
+
+<P><LI>Added several JUnit tests.
+<P>InstanceAndArgFeatureTest shows the existing core3
+model along side BAM for creating an instance notification with
+multiple arguments.</P>
+<P>BatchTest shows the API with nested batches along with events received
+immediately (but does not solve the deletion problem).</P>
+</OL>
+<H1>Prior Notes</H1>
+<H2>BAM Event Model Release Notes (v0.1)</H2>
+Initial release.
+<HR>
+<SMALL><EM>This page was last updated: 01/05/09</EM></SMALL>
+
+</BODY>
+</HTML>

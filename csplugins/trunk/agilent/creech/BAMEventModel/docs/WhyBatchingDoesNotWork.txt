@@ -1,0 +1,205 @@
+I was originally gung-ho about adding a batching ability to event
+handling, but I now believe the complexity and problems it
+adds far outweigh the things it solves. I also think there are some
+simple event handling strategies that can be used to eliminate its 
+need.
+
+Why Add Batching?
+-----------------
+
+The main reason for adding batching is to improve mass operation
+efficiency.
+
+In this case, batch analysis is used to reduce the number of
+notifications when mass operations are performed (operations that are
+performed on many objects at once, such as adding a set of CyNodes
+and CyEdges).
+
+To see how batching could help, consider the example where we might
+have a refreshDisplay() method that redraws a GraphView whenever a
+NodeView is added to the GraphView. Cleanly, this can be performed by
+calling this refreshDisplay() method from a GraphView listener that
+listens to NODE.ADDED notifications. The efficiency problem comes when
+a large set of NodeViews are added to the GraphView. In this case, a
+large number of refreshDisplay() calls would occur in rapid
+succession.
+
+Notice that simply moving the events into a batch does nothing to
+improve efficiency. If anything, it will slow down notification since
+the batch has to be created (and analyzed). The batch is only useful
+when it is analyzed to find matching notifications and then collapses
+these notifications down into one notification that is chained to the
+other notifications. In our refreshDisplay() example, the listener
+would be called once to refresh the display. This call would contain a
+chain to the other matching NODE.ADDED notifications where the
+listener can decide whether it is important to inspect the chain or
+not (we wouldn't care in this case).
+
+It seems like there are relatively few places where batching for
+efficiency would be a win, such as adding or deleting many nodes and
+edges at a time. As discussed below, deletion doesn't work with
+batching so this reduces the set useful cases even further.
+
+A simple alternative to help with mass operation efficiency is to
+have the actions that perform the mass operations perform one
+notification passing in all the objects affected by the
+operation. This even works for mass deletions where the notification
+can be performed before all the items are deleted (see deletion issue
+below). This does require careful structuring to avoid using the
+common underlying methods that might fire single object
+notifications. In some cases, parameterized or multiple versions of
+some methods may need to be created--one that fires notifications and
+one that doesn't.  Here's an example of a CyNetwork method for
+deleting a list of nodes:
+
+  public void delete (List<CyNode> toDel) {
+     // Check that the list of nodes is ok to delete:
+     checkOkToDelete (toDel);
+     // notify about deletion:
+     List<CyNode> supportingInfo = new ArrayList<CyNode>(toDel.size());
+     supportingInfo.addAll (toDel);
+     EventNotification<CyNetwork> note =
+         factory.createEventNotification(this, // notifier
+					 this, // context
+				    factory.createEventAction("NODES.REMOVING"), // EventAction
+					 supportingInfo // supportingInfo
+					);     
+     // actually delete:
+     for (CyNode node : toDel) {
+        delete (node);
+     }
+  }
+
+If this approach is taken for handling mass operations, then there
+should probably only be one type of notification (e.g., just
+"NODES.REMOVING" versus both a "NODE.REMOVING" and a
+"NODES.REMOVING"). This way listeners aren't forced to listen for
+and handle two different events to cover all the bases.
+
+Problems Added by Batching 
+--------------------------
+
+Adding batching to the event model adds more complexity and various
+new problems:
+
+
+1. Batching Doesn't Work for Object Removal
+
+   Where batching breaks down is for removing objects. This is because
+   listeners need to find out about deleted objects before they are
+   deleted. This is the only time the objects exist and have all of
+   their state for use by listeners. Having this state available is
+   crucial for all but the simplest bookkeeping listeners.
+   Unfortunately batching is putting off notifications until a bunch
+   of actions are performed--the removed objects will be gone by the
+   time the notifications are delivered. 
+
+   To make clear the importance of deletion-based listeners being able
+   to peruse the structure before the deletion, consider a node
+   deletion listener that must do special processing when a CyNode
+   represents a HyperEdge Connector Node:
+
+   private class ProcessHyperEdgesNodeRemovedListener implements Listener<CyNetwork,EventNotification<CyNetwork>> {
+    public void receiveNotification (EventNotification<CyNetwork> note) {	
+       // First element of supporting info is the node to be removed:
+       CyNode removedNode = (CyNode)net.getSupportingInfo().get(0);
+       // This might be determined by looking at the attributes of the CyNode, or
+       // other characteristics:
+       if (isAHyperEdgeConnectorNode(removedNode)) {
+           // Perform special HyperEdge processing here.
+       }
+     }
+   }
+
+   One possible solution to the object removal problem is to never
+   batch deletion events.  The problem with this is that it might lead
+   to hard to predict notification behavior in that we might have
+   removals interleaved with other events that are being batched. The
+   removal notifications would be fired before the other events, even
+   though the other events preceded the removals in time.  This
+   solution also adds complexity to the API where now the semantics of
+   notification actions must be defined and used by the
+   EventManager. So, a removal event would have to be classified as
+   DeliveryTiming.DELIVER_IMMEDIATELY in all cases.
+
+   Another possible solution to fix batching for deletion is to have
+   the whole batch work as a transaction similar to the Eclipse
+   Modeling Framework with Transactions
+   (http://help.eclipse.org/ganymede/index.jsp?topic=/org.eclipse.emf.transaction.doc/references/overview/listeners.html). In
+   this solution, a CommandStack is used that contains all the
+   operations to perform to Resources in a ResourceSet. In this way,
+   "pre-commit" events can be considered before anything is actually
+   deleted or changed. The problem with this solution is that it is
+   unclear how to extend the concept of URI-based Resources to handle
+   all of Cytoscape. Also, there may be a large performance hit when
+   using such a transaction-based environment which would nullify the
+   whole purpose of having batches.
+
+2. Listeners Called via Batching May Display Different Behavior Than
+   Listeners Called via Unbatched Notifications
+
+   By having batching, listeners may behave unintentionally behave
+   differently in a batch versus not being in a batch.  To see this,
+   consider a CyNetwork copy() method that looks like:
+
+   public CyNetwork copy () {
+     CyNetwork copyNet = new CyNetwork();
+     copyNodes(copyNet); // will fire NODE.ADDED notifications in the
+                         // copied CyNetwork
+     copyEdges(copyNet);
+     copyAttributes(copyNet);
+   }
+
+  and a Listener like:
+
+   private class NodeAddedListener implements Listener<CyNetwork,EventNotification<CyNetwork>> {
+    public void receiveNotification (EventNotification<CyNetwork> note) {	
+       // First element of supporting info is the added node:
+       CyNode addedNode = (CyNode)net.getSupportingInfo().get(0);
+
+       List<CyEdge> edges = addedNode.getAdjacentEdgeList(CyEdge.Type.ANY);
+           // How many edges do we have here?
+     }
+   }
+
+   If copy() is not batched, all calls to NodeAddedListener will have
+   no edges.  If copy() were batched, the entire copy of the CyNetwork
+   would be completed before any NodeAddedLisener is ever called. In
+   this case, the NodeAddedListner would find edges ( edges where
+   connected to these nodes).  This may seem like a good thing in that
+   by using batching we could have all the CyNodes, CyEdges, and
+   attributes constructed so that listeners could make maximal usage
+   of them. However, the important thing to note is that the behavior
+   is not consistent with non-batched behavior. This means that a
+   listener may act one way when called from batches and another when
+   not batched.
+
+3. Mixing Batched and Unbatched Notifications is Dangerous
+
+   I don't have a good example of this, but there seems to be the
+   danger of an unbatched notification obtaining unexpected results
+   because notifications surrounding it were batched and so haven't
+   yet been executed.
+
+4. Added Complexity to the Model
+
+   Batching adds extra complexity to the API and to the event handling
+   implementation. This, in turn, adds extra complexity for users
+   writing and understanding how the system works.
+
+   Batching even affects the amount of information that must be passed
+   to listeners.  For example if we have batching, we must make
+   available both the old value and new value in the supporting
+   information. We can't just use the existing value of an object to
+   get the new value, since a value may be changed by different
+   actions before the batch is processed. For example, we might have a
+   CyNode node1, where the value of an attribute was changed twice,
+   then later the notifications are processed, such as:
+
+      ATTRIBUTE.CHANGED "canonicalName" "foo"
+      ...
+      ATTRIBUTE.CHANGED "canonicalName" "fee"
+
+   If the new value is not also passed to the listener, a look at
+   node1's "canonicalName" attribute would specify a value of "fee"
+   for the first change when in reality it was "foo".
