@@ -44,7 +44,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 
 		private ArrayList<Object> nodeAttributeValues = setupNodeAttributeValues();
 		private static final String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
-		private HashMap<Object, Set<Node>> attributeValueNodeMap = new HashMap<Object, Set<Node>>();
+		private HashMap<Object, List<Node>> attributeValueNodeMap = new HashMap<Object, List<Node>>();
 		
 
 		public PartitionNetworkPlugin () {
@@ -95,14 +95,15 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 
 
 			public void actionPerformed(ActionEvent e) {
-//				System.out.println("populating nodes for attribute: " + attributeName);
 				populateNodes(attributeName);
 		      
 		      Set<Object> attributeValues = attributeValueNodeMap.keySet();
+//		      System.out.println ("building subnets for attribute key set: " + attributeValues);
+		      CyNetwork net = Cytoscape.getCurrentNetwork();
 		      for (Object val : attributeValues)
 		      {
-		    	  System.out.println("building subnet for attribute value: " + val.toString());
-		    	  buildSubNetwork(Cytoscape.getCurrentNetwork(), val.toString());
+//		    	  System.out.println("building subnet for attribute value: " + val.toString());
+		    	  buildSubNetwork(net, val.toString());
 		      }
 		      tileNetworkViews();
 			}
@@ -110,8 +111,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 	
 			public void populateNodes (String attributeName) {
 				
-				HashMap <String, List<Node>> attributeValueNodeMap = new HashMap <String,  List<Node>>();
-				
+					
 				CyAttributes attribs = Cytoscape.getNodeAttributes();
 				Iterator<Node> it = Cytoscape.getCurrentNetwork().nodesIterator();
 				List<Node> selectedNodes;
@@ -125,7 +125,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 					if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
 						List valList = attribs.getListAttribute(node.getIdentifier(),
 								attributeName);
-						System.out.println ("Got values for node: " + node + " = " + valList);
+//						System.out.println ("Got values for node: " + node + " = " + valList);
 						// iterate through all elements in the list
 						if (valList != null && valList.size() > 0) {
 							terms = new String[valList.size()];
@@ -146,12 +146,12 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 					// loop through elements in array below and match
 					if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
 						for (Object o : nodeAttributeValues) {
-							System.out.println ("checking node value " + val + " against " + o.toString());
+//							System.out.println ("checking node value " + val + " against " + o.toString());
 							if (val.indexOf(o.toString()) >= 0) {
 								selectedNodes = attributeValueNodeMap.get(o);
 								if (selectedNodes == null)
 								{
-									selectedNodes = new ArrayList();
+									selectedNodes = new ArrayList<Node>();
 									selectedNodes.add(node);
 									attributeValueNodeMap.put(o.toString(), selectedNodes);
 								}
@@ -160,8 +160,8 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 									selectedNodes.add(node);
 									attributeValueNodeMap.put(o.toString(), selectedNodes);
 								}
-								System.out.println ("selected nodes for value: " + o.toString() + " = " + 
-										selectedNodes);
+//								System.out.println ("selected nodes for value: " + o.toString() + " = " + 
+//										selectedNodes);
 							}
 						}
 					} 
@@ -187,18 +187,15 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 			 * @param current_network
 			 */
 			public void buildSubNetwork (CyNetwork current_network, String attributeValue) {
-
-				if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
-					return;
-
+	
 				CyNetworkView current_network_view = null;
 
 				if (Cytoscape.viewExists(current_network.getIdentifier())) {
 					current_network_view = Cytoscape.getNetworkView(current_network.getIdentifier());
 				} // end of if ()
 
-				Set nodes = attributeValueNodeMap.get(attributeValue);
-				System.out.println("Got nodes for attributeValue: " + attributeValue + " = " + nodes);
+				List nodes = attributeValueNodeMap.get(attributeValue);
+//				System.out.println("Got nodes for attributeValue: " + attributeValue + " = " + nodes);
 				if (nodes == null)
 				{
 					return;
