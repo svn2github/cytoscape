@@ -9,26 +9,34 @@ import java.util.ArrayList;
 
 public class input<O extends Comparable<String>> implements command {
 	
-	@Tunable(description="Integer",group="Numeric")
+	@Tunable(description="Integer",group="Group1")
 	public Integer integer1 = new Integer(10);
-	@Tunable(description="Boolean",group="Boolean")
+	@Tunable(description="Boolean",group="Group2")
 	public Boolean boolean1 = new Boolean(false);
-	@Tunable(description = "String",group="String Tunables")
+	@Tunable(description="Integer",group="Group2")
+	public Integer integer3 = new Integer(45);
+	
+	@Tunable(description = "String",group="Group2")
 	public String string1 = new String("cytoscape");
-	@Tunable(description="BoundedObject",flag=Param.IntegerSlider,group="Numeric")
+	@Tunable(description="Bounded",flag=Param.IntegerSlider,group="Group1")
 	public Bounded<String> boundObject1 = new Bounded<String>("-100","100", true, true);
-	@Tunable(description ="Double",group="Numeric")
+	@Tunable(description ="Double",group="Group1")
 	public Double double1 = new Double(3.4);
-	@Tunable(description="BoundedObject",flag=Param.DoubleSlider,group="Numeric")
+	@Tunable(description="Bounded",flag=Param.DoubleSlider,group="Group1")
 	public Bounded<String> boundObject2 = new Bounded<String>("-10","10", true, true);
-	@Tunable(description="Integer",group="Numeric")
+	@Tunable(description="Integer",group="Group1")
 	public Integer integer2 = new Integer(33);
-	@Tunable(description="Boolean",group="Boolean")
+	@Tunable(description="Boolean",group="Group2")
 	public Boolean boolean2 = new Boolean(true);
-	@Tunable(description="ListSingleSelection",group="List Tunables")
+	@Tunable(description="List",group="Group3")
 	public ListSingleSelection<String> dayNames;
-	@Tunable(description="ListMultipleSelection",group="List Tunables")
+	@Tunable(description="List",group="Group3")
 	public ListMultipleSelection<String> monthNames;
+	@Tunable(description ="Double")
+	public Double double2 = new Double(5.6);
+	@Tunable(description ="Double")
+	public Double double3 = new Double(15.9);
+	
 	
 	public input()
 	{

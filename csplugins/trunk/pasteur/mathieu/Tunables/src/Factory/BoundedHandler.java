@@ -56,7 +56,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 		titleBorder.setTitlePosition(TitledBorder.LEFT);
 		titleBorder.setTitlePosition(TitledBorder.TOP);
 
-		inputPane.setBorder(titleBorder);
+		//inputPane.setBorder(titleBorder);
 		
 		if(useslider==true){
 			if(t.flag()==Param.DoubleSlider){

@@ -27,7 +27,7 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	private T selected;
 	Boolean available;
 	ArrayList<T> array;
-	JComboBox combo;
+	JComboBox combobox;
 	String days;
 	
 
@@ -47,19 +47,13 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	public JPanel getInputPanel() {
 		JPanel returnpane = new JPanel(new BorderLayout());
 		selected = null;
-//		jlist=new JList(LSS.getPossibleValues().toArray());
-//		jlist.addListSelectionListener(this);
-//		jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		JScrollPane scrollpane = new JScrollPane(jlist);
-//		returnpane.add(scrollpane);
-
-		JTextArea jta = new JTextArea(f.getType().getSimpleName());
+		JTextArea jta = new JTextArea(t.description());
 		jta.setBackground(null);
-		combo = new JComboBox(LSS.getPossibleValues().toArray());
-		combo.insertItemAt(f.getName(),0);
-		combo.setSelectedIndex(0);
-		combo.addActionListener(new myActionListener1());
-		returnpane.add(combo,BorderLayout.EAST);
+		combobox = new JComboBox(LSS.getPossibleValues().toArray());
+		combobox.insertItemAt(f.getName(),0);
+		combobox.setSelectedIndex(0);
+		combobox.addActionListener(new myActionListener1());
+		returnpane.add(combobox,BorderLayout.EAST);
 		returnpane.add(jta,BorderLayout.WEST);
 		return returnpane;
 	}
@@ -67,7 +61,7 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	public class myActionListener1 implements ActionListener{
 		@SuppressWarnings("unchecked")
 		public void actionPerformed(ActionEvent event){
-			selected = (T) combo.getSelectedItem();
+			selected = (T) combobox.getSelectedItem();
 		}
 	}
 

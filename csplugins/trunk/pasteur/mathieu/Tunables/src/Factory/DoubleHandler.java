@@ -49,7 +49,7 @@ public class DoubleHandler implements Guihandler{
 		titleBorder.setTitlePosition(TitledBorder.LEFT);
 		titleBorder.setTitlePosition(TitledBorder.TOP);
 
-		pane.setBorder(titleBorder);
+		//pane.setBorder(titleBorder);
 		
 		JTextArea jta = new JTextArea(f.getName());
 		jta.setBackground(null);

@@ -37,10 +37,14 @@ public class application{
 		
 		JMenuBar MenuBar = new JMenuBar();
 		mainframe.setJMenuBar(MenuBar);
+		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		
 		ti = new GuiTunableInterceptor(mainframe,outputframe);
 		ti.intercept(commander);
 		lp.intercept(commander);
 	
+
 		
 		if(ti!=null){
 			ti.Process();
@@ -48,7 +52,6 @@ public class application{
 			System.out.println("InputProperties = " + InputProperties);
 		}
 		else System.out.println("No input");
-		
 		
 		JMenu menu3 = new JMenu("Values");
 		MenuBar.add(menu3);
@@ -66,13 +69,6 @@ public class application{
 		menuItem.addActionListener(new myActionListener3());
 		menuItem.setActionCommand("done");
 		menu3.add(menuItem);
-
-	
-		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		mainframe.setLocation(50,50);
-//		mainframe.setSize(200, 200);
-//		mainframe.pack();
-//		mainframe.setVisible(true);
 	}
 
 
@@ -94,7 +90,6 @@ public class application{
 			if(command.equals("save")){
 				if(ti!=null){
 					outputframe.dispose();
-					//inputframe.dispose();
 					ti.Save();
 				}
 				else System.out.println("No input");
