@@ -1,25 +1,22 @@
 package cytoscape.partitionNetwork;
 
 import giny.model.Node;
-import giny.view.NodeView;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.swing.SwingUtilities;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyDesktopManager;
 import cytoscape.view.CyNetworkView;
@@ -45,6 +42,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 		private ArrayList<Object> nodeAttributeValues = setupNodeAttributeValues();
 		private static final String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
 		private HashMap<Object, List<Node>> attributeValueNodeMap = new HashMap<Object, List<Node>>();
+		private List<CyNetworkView> views = new ArrayList();
 		
 
 		public PartitionNetworkPlugin () {
@@ -105,7 +103,9 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 //		    	  System.out.println("building subnet for attribute value: " + val.toString());
 		    	  buildSubNetwork(net, val.toString());
 		      }
-		      tileNetworkViews();
+		      
+		      tileNetworkViews(); // tile and fit content in each view
+		      
 			}
 
 	
@@ -212,21 +212,28 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 				if (new_view == Cytoscape.getNullNetworkView()) {
 					return;
 				}
+				
+				views.add(new_view);
 
 		        String vsName = "default";
 		        
-		        // keep the node positions
+		        
+		        
+		        // apply layout
 				if (current_network_view != Cytoscape.getNullNetworkView()) {
 					Iterator i = new_network.nodesIterator();
 
-					while (i.hasNext()) {
-						Node node = (Node) i.next();
-						new_view.getNodeView(node)
-						        .setOffset(current_network_view.getNodeView(node).getXPosition(),
-						                   current_network_view.getNodeView(node).getYPosition());
-					}
-
-					new_view.fitContent();
+//					while (i.hasNext()) {
+//						Node node = (Node) i.next();
+//						new_view.getNodeView(node)
+//						        .setOffset(current_network_view.getNodeView(node).getXPosition(),
+//						                   current_network_view.getNodeView(node).getYPosition());
+//					}
+//
+//					new_view.fitContent();
+					
+					CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
+					layout.doLayout(new_view);
 
 					// Set visual style
 					VisualStyle newVS = current_network_view.getVisualStyle();
@@ -246,6 +253,13 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 				SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							CyDesktopManager.arrangeFrames(CyDesktopManager.Arrange.GRID);
+						      // finally loop through the network views and fitContent
+						      for (CyNetworkView view : views)
+						      {
+						    	  Cytoscape.setCurrentNetworkView(view.getIdentifier());
+						    	  view.fitContent();
+						      }
+						      
 						}
 					});
 			}
