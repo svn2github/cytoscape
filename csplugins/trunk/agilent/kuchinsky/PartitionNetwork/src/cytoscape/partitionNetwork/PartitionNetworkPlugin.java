@@ -44,7 +44,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 
 		private ArrayList<Object> nodeAttributeValues = setupNodeAttributeValues();
 		private static final String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
-		private HashMap<String, SortedSet<Object>> attributeValueNodeMap;
+		private HashMap<Object, Set<Node>> attributeValueNodeMap = new HashMap<Object, Set<Node>>();
 		
 
 		public PartitionNetworkPlugin () {
@@ -95,7 +95,16 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 
 
 			public void actionPerformed(ActionEvent e) {
-		      populateNodes(attributeName);
+//				System.out.println("populating nodes for attribute: " + attributeName);
+				populateNodes(attributeName);
+		      
+		      Set<Object> attributeValues = attributeValueNodeMap.keySet();
+		      for (Object val : attributeValues)
+		      {
+		    	  System.out.println("building subnet for attribute value: " + val.toString());
+		    	  buildSubNetwork(Cytoscape.getCurrentNetwork(), val.toString());
+		      }
+		      tileNetworkViews();
 			}
 
 	
@@ -105,7 +114,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 				
 				CyAttributes attribs = Cytoscape.getNodeAttributes();
 				Iterator<Node> it = Cytoscape.getCurrentNetwork().nodesIterator();
-				List<Node> selectedNodes = new ArrayList<Node>();
+				List<Node> selectedNodes;
 	
 				while (it.hasNext()) {
 	
@@ -116,6 +125,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 					if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
 						List valList = attribs.getListAttribute(node.getIdentifier(),
 								attributeName);
+						System.out.println ("Got values for node: " + node + " = " + valList);
 						// iterate through all elements in the list
 						if (valList != null && valList.size() > 0) {
 							terms = new String[valList.size()];
@@ -136,26 +146,25 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 					// loop through elements in array below and match
 					if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
 						for (Object o : nodeAttributeValues) {
+							System.out.println ("checking node value " + val + " against " + o.toString());
 							if (val.indexOf(o.toString()) >= 0) {
-								selectedNodes.add(node);
-								
+								selectedNodes = attributeValueNodeMap.get(o);
+								if (selectedNodes == null)
+								{
+									selectedNodes = new ArrayList();
+									selectedNodes.add(node);
+									attributeValueNodeMap.put(o.toString(), selectedNodes);
+								}
+								else if (!selectedNodes.contains(node))
+								{
+									selectedNodes.add(node);
+									attributeValueNodeMap.put(o.toString(), selectedNodes);
+								}
+								System.out.println ("selected nodes for value: " + o.toString() + " = " + 
+										selectedNodes);
 							}
-
 						}
 					} 
-					}
-
-				}
-
-				
-				
-				// setSelectedNodeState(selectedNodes, true);
-				System.out.println("Selected " + selectedNodes.size()
-						+ " nodes for layout in "
-						+ nodeAttributeValues.toString());
-
-				// only run layout if some nodes are selected
-				if (selectedNodes.size() > 0) {
 				}
 			}
 			
@@ -188,7 +197,12 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 					current_network_view = Cytoscape.getNetworkView(current_network.getIdentifier());
 				} // end of if ()
 
-				Set nodes = current_network.getSelectedNodes();
+				Set nodes = attributeValueNodeMap.get(attributeValue);
+				System.out.println("Got nodes for attributeValue: " + attributeValue + " = " + nodes);
+				if (nodes == null)
+				{
+					return;
+				}
 
 				CyNetwork new_network = Cytoscape.createNetwork(nodes,
 				                                                current_network.getConnectingEdges(new ArrayList(nodes)),
