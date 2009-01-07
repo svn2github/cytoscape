@@ -2,21 +2,18 @@ package Factory;
 
 import GuiInterception.*;
 import Tunable.*;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.lang.reflect.*;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import Utils.*;
 import Tunable.Tunable.Param;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-
 import Sliders.*;
+
+
 
 public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	
@@ -53,8 +50,6 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 
 	public JPanel getInputPanel() {
 		JPanel inputPane = new JPanel(new BorderLayout());
-		
-		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = null;
 		titleBorder = BorderFactory.createTitledBorder(f.getType().getSimpleName());
 		titleBorder.setTitleColor(Color.blue);

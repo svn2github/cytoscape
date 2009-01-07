@@ -5,14 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import GuiInterception.Guihandler;
@@ -60,7 +57,6 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 		jta.setBackground(null);
 		combo = new JComboBox(LSS.getPossibleValues().toArray());
 		combo.insertItemAt(f.getName(),0);
-//		combo.addItem(f.getName());
 		combo.setSelectedIndex(0);
 		combo.addActionListener(new myActionListener1());
 		returnpane.add(combo,BorderLayout.EAST);
@@ -69,6 +65,7 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	}
 
 	public class myActionListener1 implements ActionListener{
+		@SuppressWarnings("unchecked")
 		public void actionPerformed(ActionEvent event){
 			selected = (T) combo.getSelectedItem();
 		}
@@ -115,8 +112,5 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	}
 	public Field getField() {
 		return f;
-	}
-	public Class<?> getclass() {
-		return null;
 	}
 }

@@ -6,10 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.lang.reflect.*;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import java.lang.Object;
@@ -46,8 +43,6 @@ public class DoubleHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());
-		
-		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = null;
 		titleBorder = BorderFactory.createTitledBorder(f.getType().getSimpleName());
 		titleBorder.setTitleColor(Color.blue);
