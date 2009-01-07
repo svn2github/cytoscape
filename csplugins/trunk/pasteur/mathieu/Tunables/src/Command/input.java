@@ -1,35 +1,33 @@
 package Command;
 
 
-import java.awt.Button;
 import Tunable.*;
 import Tunable.Tunable.Param;
 import Utils.*;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class input<O extends Comparable<String>> implements command {
 	
-	@Tunable(description="Integer", type=Integer.class,flag=Param.Nothing,group="Numeric Tunables")
+	@Tunable(description="Integer",group="Numeric")
 	public Integer integer1 = new Integer(10);
-	@Tunable(description="Boolean",type=Boolean.class ,flag=Param.Nothing,group="Boolean Tunables")
+	@Tunable(description="Boolean",group="Boolean")
 	public Boolean boolean1 = new Boolean(false);
-	@Tunable(description = "String",type=String.class,flag=Param.Nothing,group="String Tunables")
+	@Tunable(description = "String",group="String Tunables")
 	public String string1 = new String("cytoscape");
-	@Tunable(description="BoundedObject",type=Bounded.class,flag=Param.IntegerSlider,group="Numeric Tunables")
+	@Tunable(description="BoundedObject",flag=Param.IntegerSlider,group="Numeric")
 	public Bounded<String> boundObject1 = new Bounded<String>("-100","100", true, true);
-	@Tunable(description ="Double", type=Double.class,flag=Param.Nothing,group="Numeric Tunables")
+	@Tunable(description ="Double",group="Numeric")
 	public Double double1 = new Double(3.4);
-	@Tunable(description="BoundedObject",type=Bounded.class,flag=Param.DoubleSlider,group="Numeric Tunables")
+	@Tunable(description="BoundedObject",flag=Param.DoubleSlider,group="Numeric")
 	public Bounded<String> boundObject2 = new Bounded<String>("-10","10", true, true);
-	@Tunable(description="Integer", type=Integer.class,flag=Param.Nothing,group="Numeric Tunables")
+	@Tunable(description="Integer",group="Numeric")
 	public Integer integer2 = new Integer(33);
-	@Tunable(description="Boolean",type=Boolean.class ,flag=Param.Nothing,group="Boolean Tunables")
+	@Tunable(description="Boolean",group="Boolean")
 	public Boolean boolean2 = new Boolean(true);
-	@Tunable(description="ListSingleSelection", type=List.class, flag=Param.Nothing,group="List Tunables")
+	@Tunable(description="ListSingleSelection",group="List Tunables")
 	public ListSingleSelection<String> dayNames;
-	@Tunable(description="ListMultipleSelection", type=List.class, flag=Param.Nothing,group="List Tunables")
+	@Tunable(description="ListMultipleSelection",group="List Tunables")
 	public ListMultipleSelection<String> monthNames;
 	
 	public input()

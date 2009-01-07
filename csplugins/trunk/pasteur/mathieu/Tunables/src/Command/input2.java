@@ -1,67 +1,64 @@
 package Command;
 
 
-import java.awt.Button;
 import java.security.acl.Group;
 import Tunable.*;
 import Tunable.Tunable.Param;
 import Utils.*;
-
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class input2<O extends Comparable<String>> implements command {
 	
-	@Tunable(description="Integer", type=Integer.class,flag=Param.Nothing,group="")
+	@Tunable(description="Integer",group="")
 	public Integer integer1 = new Integer(10);
 	
-	@Tunable(description="Integer", type=Integer.class,flag=Param.Nothing,group="")
+	@Tunable(description="Integer",group="")
 	public Integer integer2 = new Integer(33);
 	
-	@Tunable(description="Group",type=Group.class,flag=Param.Nothing,group="")
+	@Tunable(description="Group",group="")
 	public Group Group1;
 
-	@Tunable(description = "String",type=String.class,flag=Param.Nothing,group="")
+	@Tunable(description = "String",group="")
 	public String string1 = new String("cytoscape");
 	
-	@Tunable(description="Group",type=Group.class,flag=Param.Nothing,group="")
+	@Tunable(description="Group",group="")
 	public Group Group2;
 	
-	@Tunable(description="BoundedObject",type=Bounded.class,flag=Param.Double,group="")
+	@Tunable(description="BoundedObject",flag=Param.Double,group="")
 	public Bounded<String> boundObject = new Bounded<String>("0","100", true, true);
 	
-	@Tunable(description="Group",type=Group.class,flag=Param.Nothing,group="")
+	@Tunable(description="Group",group="")
 	public Group Group3;
 	
-	@Tunable(description ="Double", type=Double.class,flag=Param.Nothing,group="")
+	@Tunable(description ="Double",group="")
 	public Double double1 = new Double(3.4);
 	
-	@Tunable(description="Group",type=Group.class,flag=Param.Nothing,group="")
+	@Tunable(description="Group",group="")
 	public Group Group4;
 	
-	@Tunable(description="Boolean",type=Boolean.class ,flag=Param.Nothing,group="")
+	@Tunable(description="Boolean",group="")
 	public Boolean boolean1 = new Boolean(false);
 
-	@Tunable(description="Group",type=Group.class,flag=Param.Nothing,group="")
+	@Tunable(description="Group",group="")
 	public Group Group5;
 
-	@Tunable(description="ListSingleSelection", type=List.class, flag=Param.Nothing,group="")
+	@Tunable(description="ListSingleSelection",group="")
 	public ListSingleSelection<String> dayNames;
 
-	@Tunable(description="Group",type=Group.class,flag=Param.Nothing,group="")
+	@Tunable(description="Group",group="")
 	public Group Group6;
 	
-	@Tunable(description="ListMultipleSelection", type=List.class, flag=Param.Nothing,group="")
+	@Tunable(description="ListMultipleSelection",group="")
 	public ListMultipleSelection<String> monthNames;
 
-	@Tunable(description="Group",type=Group.class,flag=Param.Nothing,group="")
+	@Tunable(description="Group",group="")
 	public Group Group7;
 	
-	@Tunable(description="Button", type=Button.class, flag=Param.Nothing,group="")
+	@Tunable(description="Button",group="")
 	public myButton button1 = new myButton();
 
-	@Tunable(description="Group",type=Group.class,flag=Param.Nothing,group="")
+	@Tunable(description="Group",group="")
 	public Group Group8;
 
 	
