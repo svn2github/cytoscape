@@ -63,17 +63,26 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 			list.add("cell-cell signaling"); 
 			list.add("cell cycle");
 			list.add("cell proliferation");
-			list.add("death");
-			list.add("cell organization and biogenesis");
+			list.add("cell death");
+			list.add("cytoskeleton organization and biogenesis");
 			list.add("protein metabolism");
-			list.add("DNA metabolism");
-			list.add("RNA metabolism");
+			list.add("DNA metabolic process");
+			list.add("RNA metabolic process");
+			list.add("carbohydrate metabolic process");
 			list.add("transcription");
 			list.add("metabolism");
 			list.add("stress response");
 			list.add("transport");
 			list.add("developmental processes");
 			list.add("signal transduction");
+			list.add("response to stress");
+			list.add("response to biotic stimulus");
+			list.add("protein transport");
+			list.add("lipid metabolic process");
+			list.add("ion transport");
+			list.add("embryonic development");
+			list.add("cell growth");
+			list.add("cell differentiation");
 	 
 			return list;
 		}
