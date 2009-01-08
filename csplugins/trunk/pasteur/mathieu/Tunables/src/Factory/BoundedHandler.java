@@ -107,6 +107,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 
 	@SuppressWarnings("unchecked")
 	public JPanel update() {
+		//java.text.DecimalFormat df = new java.text.DecimalFormat("###.###");
 		JPanel resultPane = new JPanel(new BorderLayout());
 		if(t.flag() == Param.DoubleSlider){
 			result=slider.getValue().doubleValue();
