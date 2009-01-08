@@ -36,6 +36,9 @@ public class input<O extends Comparable<String>> implements command {
 	public Double double2 = new Double(5.6);
 	@Tunable(description ="Double")
 	public Double double3 = new Double(15.9);
+	@Tunable(description ="Double")
+	public Double double4 = new Double(67.4);
+	
 	
 	
 	public input()
