@@ -16,12 +16,12 @@ public class input<O extends Comparable<String>> implements command {
 	public Integer integer3 = new Integer(45);
 	@Tunable(description = "String",group="Group2")
 	public String string1 = new String("cytoscape");
-	@Tunable(description="Bounded",flag=Param.Integer,group="Group1")
-	public Bounded<String> boundObject1 = new Bounded<String>("-100","100", true, true);
+	@Tunable(description="Bounded",flag=Param.Double,group="Group1")
+	public Bounded<String> boundObject1 = new Bounded<String>("-10","10", true, true);
 	@Tunable(description ="Double",group="Group1")
 	public Double double1 = new Double(3.4);
 	@Tunable(description="Bounded",flag=Param.DoubleSlider,group="Group1")
-	public Bounded<String> boundObject2 = new Bounded<String>("-3","3", true, true);
+	public Bounded<String> boundObject2 = new Bounded<String>("-2","40", true, true);
 	@Tunable(description="Integer",group="Group1")
 	public Integer integer2 = new Integer(33);
 	@Tunable(description="Boolean",group="Group2")

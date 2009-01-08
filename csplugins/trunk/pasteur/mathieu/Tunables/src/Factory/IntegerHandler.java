@@ -41,7 +41,7 @@ public class IntegerHandler implements Guihandler{
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		pane.add(jta,BorderLayout.WEST);
-		jtf = new JTextField(inte.toString());		
+		jtf = new JTextField(inte.toString(),15);		
 		pane.add(jtf,BorderLayout.EAST);
 		return pane;
 	}

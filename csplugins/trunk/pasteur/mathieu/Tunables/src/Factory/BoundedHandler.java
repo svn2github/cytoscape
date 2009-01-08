@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 import Utils.*;
 import Tunable.Tunable.Param;
 import javax.swing.*;
-import Sliders.*;
 
 
 public class BoundedHandler<O extends Comparable<String>> implements Guihandler{

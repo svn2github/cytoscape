@@ -39,7 +39,7 @@ public class DoubleHandler implements Guihandler{
 		JPanel pane = new JPanel(new BorderLayout());		
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
-		jtf = new JTextField(doub.toString());
+		jtf = new JTextField(doub.toString(),15);
 		pane.add(jta,BorderLayout.WEST);
 		pane.add(jtf,BorderLayout.EAST);
 		return pane;

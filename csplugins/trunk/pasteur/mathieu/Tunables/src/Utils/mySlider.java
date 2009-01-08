@@ -1,6 +1,5 @@
 package Utils;
 
-
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -32,35 +31,12 @@ public class mySlider extends JComponent {
     private JTextField m_field;
     private List       m_listeners;
     
-    java.text.DecimalFormat df = new java.text.DecimalFormat("###.#######");
+    java.text.DecimalFormat df = new java.text.DecimalFormat("##.##");
     
-    private int majortickspace;
-
+    private Number majortickspace;
     private int m_smin = 0;
     private int m_srange = 100;
-    
-
-//    public mySlider(String title, double min, double max, double value) {
-//        this(title, new Double(min), new Double(max), new Double(value));
-//    }
-    
-
-//    public MySlider(String title, float min, float max, float value) {
-//        this(title, new Float(min), new Float(max), new Float(value));
-//    }
-//    
-//    public MySlider(String title, int min, int max, int value) {
-//        this(title, new Integer(min), new Integer(max), new Integer(value));
-//        m_smin = min;
-//        m_srange = max-min;
-//        m_slider.setMinimum(min);
-//        m_slider.setMaximum(max);
-//        setValue(new Integer(value));
-//    }
-//    
-//    public MySlider(String title, long min, long max, long value) {
-//        this(title, new Long(min), new Long(max), new Long(value));
-//    }
+  
 
     
     public mySlider(String title, Number min, Number max, Number value) {
@@ -71,18 +47,32 @@ public class mySlider extends JComponent {
         m_label  = new JLabel();//title
         m_field  = new JTextField(4);
         m_listeners = new ArrayList();
-        //m_field.setBorder(null);
-        
-        majortickspace = (max.intValue()-min.intValue())/5;
 
         Hashtable labelTable = new Hashtable();
-
-        int i=m_min.intValue();
-        int j=0;
-        while(i <= m_max.intValue()){
-        	labelTable.put(j,new JLabel(new Integer(i).toString()));
-        	i+=majortickspace;
-        	j+=20;   	
+        majortickspace = (max.doubleValue()-min.doubleValue())/5;
+        if(m_value instanceof Double){
+        	majortickspace = (max.doubleValue()-min.doubleValue())/5;
+        	Double majortick = new Double(majortickspace.doubleValue());
+            double i=m_min.doubleValue();
+	        int j=0;
+	        while(i <= m_max.doubleValue()){
+	        	labelTable.put(j,new JLabel(new Float(i).toString()));
+	        	i+=majortick;
+	        	j+=20;   	
+	        }
+	        
+        }
+        else{
+        	majortickspace = (max.doubleValue()-min.doubleValue())/5;
+        	//Integer majortick = new Integer(majortickspace.intValue());
+        	Double majortick = new Double(majortickspace.doubleValue());
+        	double i=m_min.doubleValue();
+	        int j=0;
+	        while(i <= m_max.intValue()){
+	        	labelTable.put(j,new JLabel(new Integer((int) i).toString()));
+	        	i+=majortick;
+	        	j+=20;   	
+	        }
         }
         m_slider.setMajorTickSpacing(20);
         m_slider.setMinorTickSpacing(5);
