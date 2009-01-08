@@ -1,0 +1,2 @@
+Bundle-Activator: cytoscape.work.internal.Activator
+Export-Package: cytoscape.work
