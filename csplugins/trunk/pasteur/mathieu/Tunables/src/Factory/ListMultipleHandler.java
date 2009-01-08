@@ -20,10 +20,11 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	Tunable t;
 
 	ListMultipleSelection<T> LMS;
-	private List<T> selected;
+	private List<T> selected=null;
 	JList jlist;
 	Boolean available;
-	Object[] array;
+	Object[] array=null;
+	String title;
 	
 	
 	
@@ -35,13 +36,12 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 		try{
 			LMS=(ListMultipleSelection<T>) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
+		this.title=t.description();
 	}
 
 	public JPanel getInputPanel() {
 		JPanel returnpane = new JPanel(new BorderLayout());
-		array=null;
-		selected=null;
-		JTextArea jta = new JTextArea(f.getType().getSimpleName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		jlist = new JList(LMS.getPossibleValues().toArray());
 		jlist.addListSelectionListener(this);
@@ -66,7 +66,7 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	
 	public JPanel update() {
 		JPanel resultpane = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		resultpane.add(jta,BorderLayout.WEST);
 		if(array!=null){
@@ -109,8 +109,4 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	public Tunable getTunable() {
 		return t;
 	}
-	public Class<?> getclass() {
-		return null;
-	}
-
 }

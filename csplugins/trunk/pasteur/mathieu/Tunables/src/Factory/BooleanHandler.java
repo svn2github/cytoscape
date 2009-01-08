@@ -26,7 +26,7 @@ public class BooleanHandler implements Guihandler{
 		try{
 			this.bool=(Boolean) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		this.title=f.getName();
+		this.title=t.description();
 	}
 	
 	public void handle(){			
@@ -40,7 +40,7 @@ public class BooleanHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		pane.add(jta,BorderLayout.WEST);
 		jcb = new JCheckBox();
@@ -53,10 +53,9 @@ public class BooleanHandler implements Guihandler{
 
 	public JPanel update() {
 		JPanel result = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
-		//bool = jcb.isSelected();
 		try{
 			JCheckBox checkbox = new JCheckBox();
 			f.set(o,jcb.isSelected());
@@ -70,12 +69,9 @@ public class BooleanHandler implements Guihandler{
 	public Tunable getTunable() {
 		return t;
 	}
-
-
 	public Field getField() {
 		return f;
 	}
-
 	public Object getObject() {
 		return o;
 	}

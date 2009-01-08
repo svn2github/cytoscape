@@ -28,7 +28,7 @@ public class DoubleHandler implements Guihandler{
 		this.f=f;
 		this.t=t;
 		this.o=o;
-		this.title=f.getName();					
+		this.title=t.description();					
 		try{
 			this.doub=(Double)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
@@ -42,16 +42,8 @@ public class DoubleHandler implements Guihandler{
 	}
 	
 	public JPanel getInputPanel(){
-		JPanel pane = new JPanel(new BorderLayout());
-		TitledBorder titleBorder = null;
-		titleBorder = BorderFactory.createTitledBorder(f.getType().getSimpleName());
-		titleBorder.setTitleColor(Color.blue);
-		titleBorder.setTitlePosition(TitledBorder.LEFT);
-		titleBorder.setTitlePosition(TitledBorder.TOP);
-
-		//pane.setBorder(titleBorder);
-		
-		JTextArea jta = new JTextArea(f.getName());
+		JPanel pane = new JPanel(new BorderLayout());		
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		jtf = new JTextField(doub.toString());
 		pane.add(jta,BorderLayout.WEST);
@@ -63,7 +55,7 @@ public class DoubleHandler implements Guihandler{
 
 	public JPanel update(){
 		JPanel result = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
 		doub = Double.parseDouble(jtf.getText());
@@ -81,9 +73,6 @@ public class DoubleHandler implements Guihandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	
-	
-
 	public Tunable getTunable() {
 		return t;
 	}
@@ -93,5 +82,4 @@ public class DoubleHandler implements Guihandler{
 	public Object getObject() {
 		return o;
 	}
-
 }

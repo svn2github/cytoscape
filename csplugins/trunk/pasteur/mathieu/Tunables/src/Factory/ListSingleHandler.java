@@ -29,6 +29,7 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	ArrayList<T> array;
 	JComboBox combobox;
 	String days;
+	String title;
 	
 
 	@SuppressWarnings("unchecked")
@@ -39,6 +40,8 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 		try{
 			LSS =  (ListSingleSelection<T>) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
+		this.title=t.description();
+		this.days=f.getName();
 	}
 
 
@@ -47,10 +50,10 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	public JPanel getInputPanel() {
 		JPanel returnpane = new JPanel(new BorderLayout());
 		selected = null;
-		JTextArea jta = new JTextArea(t.description());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		combobox = new JComboBox(LSS.getPossibleValues().toArray());
-		combobox.insertItemAt(f.getName(),0);
+		combobox.insertItemAt(days,0);
 		combobox.setSelectedIndex(0);
 		combobox.addActionListener(new myActionListener1());
 		returnpane.add(combobox,BorderLayout.EAST);
@@ -79,7 +82,7 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 
 	public JPanel update() {
 		JPanel result = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
 		if(selected!=null){

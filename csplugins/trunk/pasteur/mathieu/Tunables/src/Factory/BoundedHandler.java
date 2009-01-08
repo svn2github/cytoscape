@@ -43,21 +43,13 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			this.upperBound=(O) boundedObject.getUpperBound();
 			this.lowerBound=(O)boundedObject.getLowerBound();
 		}catch(Exception e){e.printStackTrace();}
-		this.title=f.getName();
+		this.title=t.description() + " " + t.flag();
 	}
 
 
 
 	public JPanel getInputPanel() {
-		JPanel inputPane = new JPanel(new BorderLayout());
-		TitledBorder titleBorder = null;
-		titleBorder = BorderFactory.createTitledBorder(f.getType().getSimpleName());
-		titleBorder.setTitleColor(Color.blue);
-		titleBorder.setTitlePosition(TitledBorder.LEFT);
-		titleBorder.setTitlePosition(TitledBorder.TOP);
-
-		//inputPane.setBorder(titleBorder);
-		
+		JPanel inputPane = new JPanel(new BorderLayout());		
 		if(useslider==true){
 			if(t.flag()==Param.DoubleSlider){
 				Double initvalue = Double.parseDouble((String)lowerBound)+(Double.parseDouble((String)upperBound)-Double.parseDouble((String) lowerBound))/2;
@@ -73,7 +65,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			jtf = new JTextField(5);
 			inputPane.add(jtf,BorderLayout.EAST);
 		}
-		JTextArea jta = new JTextArea(t.flag().toString());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		inputPane.add(jta,BorderLayout.WEST);
 		return inputPane;
@@ -132,7 +124,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 				boundedObject.setValue((String) value,Integer.class);
 			}
 		}
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		resultPane.add(jta,BorderLayout.WEST);
 		
@@ -153,5 +145,4 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	public Field getField() {
 		return f;
 	}
-
 }

@@ -1,10 +1,8 @@
 package Factory;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.lang.reflect.*;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 
@@ -27,7 +25,7 @@ public class IntegerHandler implements Guihandler{
 		try{
 			this.inte=(Integer)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		this.title=f.getName();
+		this.title=t.description();
 	}
 
 
@@ -40,15 +38,7 @@ public class IntegerHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());
-		TitledBorder titleBorder = null;
-		titleBorder = BorderFactory.createTitledBorder(f.getType().getSimpleName());
-		titleBorder.setTitleColor(Color.blue);
-		titleBorder.setTitlePosition(TitledBorder.LEFT);
-		titleBorder.setTitlePosition(TitledBorder.TOP);
-
-		//pane.setBorder(titleBorder);
-
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		pane.add(jta,BorderLayout.WEST);
 		jtf = new JTextField(inte.toString());		
@@ -59,10 +49,9 @@ public class IntegerHandler implements Guihandler{
 	
 	public JPanel update(){
 		JPanel result = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
-		//inte = Integer.parseInt(jtf.getText());
 		try{
 			if(inte!=null)f.set(o, Integer.parseInt(jtf.getText()));
 			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);

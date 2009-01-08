@@ -37,8 +37,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			this.list=list;
 			mainPanel = new JPanel();
 			mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
-			Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-			mainPanel.setBorder(selBorder);
 			TitledBorder titleBorder = null;
 
 			java.util.List<JPanel> panes = new ArrayList<JPanel>();
@@ -46,120 +44,43 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			init.setName("init");
 			panes.add(init);
 			listPane = new ListSingleSelection<JPanel>(panes);
-			String group=null;
-			
-			java.util.List<JPanel> inpanes = new ArrayList<JPanel>();
-			inpanes.add(init);
-			ListSingleSelection<JPanel> inlistPane = new ListSingleSelection<JPanel>(inpanes);
-
-			
-			String type = null;
-			boolean exist;
-			int nbpanesametype;
-			boolean exist2;
-			
+			String group=null;			
 
 			for(Guihandler guihandler : list){
-				exist=false;
+				boolean exist=false;
 				int nbpane=0;
-				exist2=false;
-				nbpanesametype=0;
-				
-				type = guihandler.getTunable().description();	
-				group = guihandler.getTunable().group();
-				
-				if(group.equals("")){
-					JPanel pane = guihandler.getInputPanel();
-					pane.setName(group);
-					panes.add(pane);
-				}
-				else{
-					for(int i=0;i<listPane.getPossibleValues().size();i++){
+				group = guihandler.getTunable().group();	
+				for(int i=0;i<listPane.getPossibleValues().size();i++){
 						if(listPane.getPossibleValues().get(i).getName().equals(group)){
 							exist=true;
 							nbpane=i;
 						}
-					}
+				}
 
-					if(exist==true){
-						for(int j=0;j<inlistPane.getPossibleValues().size();j++){
-							if(inlistPane.getPossibleValues().get(j).getName().equals(group+type)){
-								exist2=true;
-								nbpanesametype=j;
-							}
-						}
-						if(exist2==true){
-							inlistPane.getPossibleValues().get(nbpanesametype).add(guihandler.getInputPanel());
-						}
-						else{
-							JPanel inpane = new JPanel();
-							inpane.setLayout(new BoxLayout(inpane,BoxLayout.PAGE_AXIS));
-							inpane.setName(group+type);
-							inpane.add(guihandler.getInputPanel());
-							listPane.getPossibleValues().get(nbpane).add(inpane);
+				if(exist==true){
+					listPane.getPossibleValues().get(nbpane).add(guihandler.getInputPanel());
+				}
+				else{
+					JPanel pane = new JPanel();						
+					pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));
+					pane.add(guihandler.getInputPanel());
 
-							titleBorder = BorderFactory.createTitledBorder(type);
-							titleBorder.setTitleColor(Color.red);
-							titleBorder.setTitlePosition(TitledBorder.LEFT);
-							titleBorder.setTitlePosition(TitledBorder.TOP);
-							inpane.setBorder(titleBorder);
-							
-							inpanes.add(inpane);
-							inlistPane=new ListSingleSelection<JPanel>(inpanes);
-							
-						}
-					}
-					else{
-						JPanel pane = new JPanel();
-						JPanel inpane = new JPanel();
-						
-						inpane.setLayout(new BoxLayout(inpane,BoxLayout.PAGE_AXIS));
-						pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));
-						
-						pane.setName(group);
-						inpane.setName(group+type);
-						
-						inpane.add(guihandler.getInputPanel());
-						pane.add(inpane);
-						
-						titleBorder = BorderFactory.createTitledBorder(group);
-						titleBorder.setTitleColor(Color.blue);
-						titleBorder.setTitlePosition(TitledBorder.LEFT);
-						titleBorder.setTitlePosition(TitledBorder.TOP);
-						pane.setBorder(titleBorder);
-						
-						titleBorder = BorderFactory.createTitledBorder(type);
-						titleBorder.setTitleColor(Color.red);
-						titleBorder.setTitlePosition(TitledBorder.LEFT);
-						titleBorder.setTitlePosition(TitledBorder.TOP);
-						inpane.setBorder(titleBorder);
-							
-						inpanes.add(inpane);
-						panes.add(pane);
-						inlistPane = new ListSingleSelection<JPanel>(inpanes);
-						listPane=new ListSingleSelection<JPanel>(panes);		
-					}
+					titleBorder = BorderFactory.createTitledBorder(group);
+					titleBorder.setTitleColor(Color.blue);
+					titleBorder.setTitlePosition(TitledBorder.LEFT);
+					titleBorder.setTitlePosition(TitledBorder.TOP);
+					pane.setBorder(titleBorder);
+					pane.setName(group);	
+					panes.add(pane);
+					listPane=new ListSingleSelection<JPanel>(panes);		
 				}
 			}
 			panes.remove(0);
 			listPane=new ListSingleSelection<JPanel>(panes);
-			inpanes.remove(0);
-			inlistPane = new ListSingleSelection<JPanel>(inpanes);
 			
 			for(int i=0;i<listPane.getPossibleValues().size();i++){
-				if(listPane.getPossibleValues().get(i).getName().equals("")){
-					mainPanel.add(listPane.getPossibleValues().get(i));
-				}
-				else{
-					for(int j=0;j<inlistPane.getPossibleValues().size();j++){
-						if(inlistPane.getPossibleValues().get(j).getName().contains(listPane.getPossibleValues().get(i).getName()))
-						listPane.getPossibleValues().get(i).add(inlistPane.getPossibleValues().get(j));
-					}
-					mainPanel.add(listPane.getPossibleValues().get(i));
-				}
-				
+				mainPanel.add(listPane.getPossibleValues().get(i));
 			}
-			
 			
 			
 			inframe.setContentPane(mainPanel);

@@ -28,9 +28,9 @@ public class input<O extends Comparable<String>> implements command {
 	public Integer integer2 = new Integer(33);
 	@Tunable(description="Boolean",group="Group2")
 	public Boolean boolean2 = new Boolean(true);
-	@Tunable(description="List",group="Group3")
+	@Tunable(description="ListSingleSelection",group="Group3")
 	public ListSingleSelection<String> dayNames;
-	@Tunable(description="List",group="Group3")
+	@Tunable(description="ListMultipleSelection",group="Group3")
 	public ListMultipleSelection<String> monthNames;
 	@Tunable(description ="Double")
 	public Double double2 = new Double(5.6);

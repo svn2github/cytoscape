@@ -23,7 +23,7 @@ public class StringHandler implements Guihandler{
 		this.f=f;
 		this.t=t;
 		this.o=o;
-		this.title=f.getName();
+		this.title=t.description();
 		try{
 			this.value = f.get(o).toString();
 		}catch(Exception e){e.printStackTrace();}
@@ -39,7 +39,7 @@ public class StringHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		pane.add(jta,BorderLayout.WEST);
 		try{
@@ -52,31 +52,23 @@ public class StringHandler implements Guihandler{
 
 	public JPanel update() {
 		JPanel result = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(f.getName());
+		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
-
-		String text=null;
-		text = jtf.getText();
 		try{
-			f.set(o, text);
+			f.set(o, jtf.getText());
 			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return result;
 	}	
 	
-	
-
 	public Tunable getTunable(){
 		return t;
 	}
-
 	public Field getField(){
 		return f;
 	}
-
 	public Object getObject(){
 		return o;
 	}
-
 }

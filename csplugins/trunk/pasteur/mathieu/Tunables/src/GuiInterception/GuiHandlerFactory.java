@@ -24,8 +24,6 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			return new BooleanHandler(f,o,t);
 		if(type == String.class)
 			return new StringHandler(f,o,t);
-		if(type == Group.class)
-			return new GroupHandler(f,o,t);
 		if(type == ListSingleSelection.class)
 			return new ListSingleHandler<String>(f,o,t);
 		if(type == ListMultipleSelection.class)

@@ -25,7 +25,7 @@ public class ButtonHandler implements Guihandler{
 		this.f=f;
 		this.o=o;
 		this.t=t;
-		this.title=f.getName();
+		this.title=t.description();
 		try{
 			button = (myButton)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
