@@ -3,6 +3,7 @@ package Factory;
 import java.awt.BorderLayout;
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 
@@ -38,7 +39,8 @@ public class IntegerHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(title);
+		JTextField jta = new JTextField(title,5);
+		jta.setBorder(null);
 		jta.setBackground(null);
 		pane.add(jta,BorderLayout.WEST);
 		jtf = new JTextField(inte.toString(),15);		
