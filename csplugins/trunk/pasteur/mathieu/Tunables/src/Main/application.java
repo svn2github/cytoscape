@@ -1,11 +1,17 @@
 package Main;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 
 import Props.*;
 import GuiInterception.*;
 import Command.*;
 import HandlerFactory.Handler;
+
+import java.awt.Color;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
 import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -31,20 +37,16 @@ public class application{
         CreateGUIandStart();
     }
 
-	
-	
 	public static void CreateGUIandStart(){
 		
 		JMenuBar MenuBar = new JMenuBar();
+		
 		mainframe.setJMenuBar(MenuBar);
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		
 		ti = new GuiTunableInterceptor(mainframe,outputframe);
 		ti.intercept(commander);
 		lp.intercept(commander);
-	
-
 		
 		if(ti!=null){
 			ti.Process();
@@ -53,22 +55,25 @@ public class application{
 		}
 		else System.out.println("No input");
 		
-		JMenu menu3 = new JMenu("Values");
-		MenuBar.add(menu3);
+		JMenu menu = new JMenu("Values");
+		MenuBar.add(menu);
+		
 		menuItem = new JMenuItem("Save settings");
 		menuItem.addActionListener(new myActionListener4());
 		menuItem.setActionCommand("save");
-		menu3.add(menuItem);
+		menu.add(menuItem);
 		
 		menuItem = new JMenuItem("Cancel");
 		menuItem.addActionListener(new myActionListener5());
 		menuItem.setActionCommand("cancel");
-		menu3.add(menuItem);
+		menu.add(menuItem);
 
 		menuItem = new JMenuItem("Done");
 		menuItem.addActionListener(new myActionListener3());
 		menuItem.setActionCommand("done");
-		menu3.add(menuItem);
+		menu.add(menuItem);
+		
+		mainframe.pack();
 	}
 
 
