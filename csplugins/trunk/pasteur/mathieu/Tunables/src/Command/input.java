@@ -1,6 +1,5 @@
 package Command;
 
-
 import Tunable.*;
 import Tunable.Tunable.Param;
 import Utils.*;
@@ -15,10 +14,9 @@ public class input<O extends Comparable<String>> implements command {
 	public Boolean boolean1 = new Boolean(false);
 	@Tunable(description="Integer",group="Group2")
 	public Integer integer3 = new Integer(45);
-	
 	@Tunable(description = "String",group="Group2")
 	public String string1 = new String("cytoscape");
-	@Tunable(description="Bounded",flag=Param.IntegerSlider,group="Group1")
+	@Tunable(description="Bounded",flag=Param.Integer,group="Group1")
 	public Bounded<String> boundObject1 = new Bounded<String>("-100","100", true, true);
 	@Tunable(description ="Double",group="Group1")
 	public Double double1 = new Double(3.4);
