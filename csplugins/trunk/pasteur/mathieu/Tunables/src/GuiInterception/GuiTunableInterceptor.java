@@ -2,14 +2,13 @@ package GuiInterception;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import Utils.ListSingleSelection;
 import Utils.myButton;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
+import java.awt.MenuBar;
 import java.awt.event.*;
 
 
@@ -19,6 +18,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	public JFrame inframe;
 	public JFrame outframe;
 	JPanel mainPanel;
+	MenuBar menu;
 	static JPanel tunPane = null;
 	boolean processdone = false;
 	myButton button;
