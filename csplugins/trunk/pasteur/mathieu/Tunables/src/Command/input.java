@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class input<O extends Comparable<String>> implements command {
 	
-	@Tunable(description="This is a test for Integer",group="Group1")
+	@Tunable(description="This is a description for Integer",group="Group1")
 	public Integer integer1 = new Integer(10);
 	@Tunable(description="Boolean",group="Group2")
 	public Boolean boolean1 = new Boolean(false);
