@@ -3,16 +3,12 @@ package Factory;
 import GuiInterception.*;
 import Tunable.*;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.lang.reflect.*;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import Utils.*;
 import Tunable.Tunable.Param;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import Sliders.*;
-
 
 
 public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
@@ -83,13 +79,21 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			boundedObject.setValue(result.toString(),Integer.class);
 		}
 		if(t.flag() == Param.Double){
-			if(jtf.getText().isEmpty()==false){
+			//if(jtf.getText().isEmpty()==false){
+			if(jtf.getText().equals("")){
+				boundedObject.setValue("0",Double.class);
+			}
+			else{
 				value =(O) jtf.getText();
 				boundedObject.setValue((String) value,Double.class);
 			}
 		}
 		if(t.flag() == Param.Integer){
-			if(jtf.getText().isEmpty()==false){
+			//if(jtf.getText().isEmpty()==false){
+			if(jtf.getText().equals("")){
+				boundedObject.setValue("0",Integer.class);
+			}
+			else{
 				value =(O) jtf.getText();
 				boundedObject.setValue((String) value,Integer.class);
 			}
@@ -113,13 +117,21 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			boundedObject.setValue(result.toString(),Integer.class);
 		}
 		if(t.flag() == Param.Double){
-			if(jtf.getText().isEmpty()==false){
+			//if(jtf.getText().isEmpty()==false){
+			if(jtf.getText().equals("")){
+				boundedObject.setValue("0.0",Double.class);
+			}
+			else{
 				value =(O) jtf.getText();
 				boundedObject.setValue((String) value,Double.class);
 			}
 		}
 		if(t.flag() == Param.Integer){
-			if(jtf.getText().isEmpty()==false){
+			//if(jtf.getText().isEmpty()==false){
+			if(jtf.getText().equals("")){
+				boundedObject.setValue("0",Integer.class);
+			}
+			else{
 				value =(O) jtf.getText();
 				boundedObject.setValue((String) value,Integer.class);
 			}

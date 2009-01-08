@@ -1,16 +1,11 @@
-
 package Factory;
 
-
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.lang.reflect.*;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import java.lang.Object;
-
 
 
 public class DoubleHandler implements Guihandler{
@@ -21,7 +16,6 @@ public class DoubleHandler implements Guihandler{
 	JTextField jtf;	
 	String title;
 	Double doub;
-
 	
 	
 	public DoubleHandler(Field f, Object o, Tunable t){

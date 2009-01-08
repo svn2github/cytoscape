@@ -46,7 +46,6 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 
 
 
-	@Override
 	public JPanel getInputPanel() {
 		JPanel returnpane = new JPanel(new BorderLayout());
 		selected = null;
