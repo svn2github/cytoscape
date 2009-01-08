@@ -202,6 +202,8 @@ abstract class TreeDrawer extends Observable implements Observer {
 	public static final int CORRELATION = 0;
 	/** type of header which can be used to set branch heights */
 	public static final int TIME = 1;
+	/** allow for a little arithmetic error */
+	public static final double EPSILON = .00000001;
 	public void setBranchHeights(HeaderInfo nodeInfo, HeaderInfo rowInfo) {
 		if (rootNode == null) return;
 		int nameIndex = nodeInfo.getIndex("TIME");
@@ -263,8 +265,15 @@ abstract class TreeDrawer extends Observable implements Observer {
 				Double d = new Double(nodeInfo.getHeader(j)[nameIndex]);
 				double corr = d.doubleValue();
 				if (type == CORRELATION) {
+
+					// Account for a litle arithmetic fudge
+					if (corr > (1.0+EPSILON))
+						corr = 1.0;
+					else if (corr < -(1.0+EPSILON))
+						corr = -1.0;
+
 					if ((corr  < -1.0) || (corr > 1.0)) {
-						System.out.println("Got illegal correlation " + corr + " at line j");
+						System.out.println("Got illegal correlation " + corr + " at line "+j);
 					}
 					current.setCorr(corr);
 				} else {

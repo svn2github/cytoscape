@@ -74,6 +74,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
 	boolean clusterAttributes = false;
 	boolean createGroups = true;
+	boolean ignoreMissing = false;
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
@@ -145,6 +146,11 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		                                  "Cluster attributes as well as nodes", 
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
+		// For expression data, we might want to exclude missing data
+		clusterProperties.add(new Tunable("ignoreMissing",
+		                                  "Ignore nodes with no data",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
+
 		// Whether or not to create groups
 		clusterProperties.add(new Tunable("createGroups",
 		                                  "Create groups from clusters", 
@@ -177,6 +183,10 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		t = clusterProperties.get("clusterAttributes");
 		if ((t != null) && (t.valueChanged() || force))
 			clusterAttributes = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("ignoreMissing");
+		if ((t != null) && (t.valueChanged() || force))
+			ignoreMissing = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("createGroups");
 		if ((t != null) && (t.valueChanged() || force))
@@ -214,11 +224,11 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1)
 			KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
-			                 true, createGroups, logger, debug);
+			                 true, createGroups, ignoreMissing, logger, debug);
 
 		// Cluster the nodes
 		KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
-			               false, createGroups, logger, debug);
+			               false, createGroups, ignoreMissing, logger, debug);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

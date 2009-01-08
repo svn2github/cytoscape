@@ -78,7 +78,7 @@ public class Matrix {
 	 * @param transpose true if we are transposing this matrix 
 	 *                  (clustering columns instead of rows)
 	 */
-	public Matrix(String[] weightAttributes, boolean transpose) {
+	public Matrix(String[] weightAttributes, boolean transpose, boolean ignoreMissing) {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		this.transpose = transpose;
 
@@ -91,7 +91,7 @@ public class Matrix {
 			for (int i = 0; i < weightAttributes.length; i++) {
 				attributeArray[i] = weightAttributes[i].substring(5);
 			}
-			buildGeneArrayMatrix(network, attributeArray, transpose);
+			buildGeneArrayMatrix(network, attributeArray, transpose, ignoreMissing);
 			symmetrical = false;
 		} else if (weightAttributes.length == 1 && weightAttributes[0].startsWith("edge.")) {
 			buildSymmetricalMatrix(network, weightAttributes[0].substring(5));
@@ -394,7 +394,8 @@ public class Matrix {
 		}
 	}
 
-	private void buildGeneArrayMatrix(CyNetwork network, String[] weightAttributes, boolean transpose) {
+	private void buildGeneArrayMatrix(CyNetwork network, String[] weightAttributes, 
+	                                  boolean transpose, boolean ignoreMissing) {
 		// Get the list of nodes
 		List<CyNode>nodeList = network.nodesList();
 
@@ -421,23 +422,27 @@ public class Matrix {
 				// Get the attribute type
 				if (nodeAttributes.getType(attr) == CyAttributes.TYPE_INTEGER) {
 					Integer intVal = nodeAttributes.getIntegerAttribute(node.getIdentifier(), attr);
-					value = Double.valueOf(intVal.doubleValue());
+					if (intVal != null)
+						value = Double.valueOf(intVal.doubleValue());
 				} else if (nodeAttributes.getType(attr) == CyAttributes.TYPE_FLOATING) {
 					value = nodeAttributes.getDoubleAttribute(node.getIdentifier(), attr);
 				} else {
 					continue; // At some point, handle lists?
 				}
-				// Set it
-				thisCondMap.put(attr, value);
+				if (!ignoreMissing || value != null) {
+					// Set it
+					thisCondMap.put(attr, value);
+				}
 			}
-			nodeCondMap.put(node, thisCondMap);
+			if (!ignoreMissing || thisCondMap.size() > 0)
+				nodeCondMap.put(node, thisCondMap);
 		}
 
 		// We've got all of the information, get our counts and create the
 		// matrix
 		if (transpose) {
 			this.nRows = condList.size();
-			this.nColumns = nodeList.size();
+			this.nColumns = nodeCondMap.size();
 			this.matrix = new Double[nRows][nColumns];
 			this.rowLabels = new String[nRows];
 			this.columnLabels = new String[nColumns];
@@ -446,9 +451,12 @@ public class Matrix {
 
 			int column = 0;
 			for (CyNode node: nodeList) {
+				if (!nodeCondMap.containsKey(node))
+					continue;
+
+				HashMap<String,Double>thisCondMap = nodeCondMap.get(node);
 				this.columnLabels[column] = node.getIdentifier();
 				this.columnNodes[column] = node;
-				HashMap<String,Double>thisCondMap = nodeCondMap.get(node);
 				for (int row=0; row < this.nRows; row++) {
 					String rowLabel = this.rowLabels[row];
 					if (thisCondMap.containsKey(rowLabel)) {
@@ -458,7 +466,7 @@ public class Matrix {
 				column++;
 			}
 		} else {
-			this.nRows = nodeList.size();
+			this.nRows = nodeCondMap.size();
 			this.nColumns = condList.size();
 			this.rowLabels = new String[nRows];
 			this.rowNodes = new CyNode[nRows];
@@ -468,6 +476,8 @@ public class Matrix {
 
 			int row = 0;
 			for (CyNode node: nodeList) {
+				if (!nodeCondMap.containsKey(node))
+					continue;
 				this.rowLabels[row] = node.getIdentifier();
 				this.rowNodes[row] = node;
 				HashMap<String,Double>thisCondMap = nodeCondMap.get(node);

@@ -76,6 +76,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
 	boolean clusterAttributes = false;
 	boolean createGroups = true;
+	boolean ignoreMissing = false;
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
@@ -141,6 +142,11 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		                                  "Cluster attributes as well as nodes", 
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
+		// For expression data, we might want to exclude missing data
+		clusterProperties.add(new Tunable("ignoreMissing",
+		                                  "Ignore nodes with no data",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
+
 		// Whether or not to create groups
 		clusterProperties.add(new Tunable("createGroups",
 		                                  "Create groups from clusters", 
@@ -173,6 +179,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		t = clusterProperties.get("createGroups");
 		if ((t != null) && (t.valueChanged() || force))
 			createGroups = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("ignoreMissing");
+		if ((t != null) && (t.valueChanged() || force))
+			ignoreMissing = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -220,14 +230,14 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 			if (monitor != null)
 				monitor.setStatus("Clustering attributes");
 			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, 
-			                     true, createGroups, logger, debug, monitor);
+			                     true, createGroups, ignoreMissing, logger, debug, monitor);
 		}
 
 		if (monitor != null)
 			monitor.setStatus("Clustering nodes");
 		// Cluster the nodes
 		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, 
-			                   false, createGroups, logger, debug, monitor);
+			                   false, createGroups, ignoreMissing, logger, debug, monitor);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

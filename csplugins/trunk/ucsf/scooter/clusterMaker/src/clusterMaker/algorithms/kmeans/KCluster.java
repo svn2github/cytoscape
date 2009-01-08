@@ -65,8 +65,9 @@ public class KCluster {
 	static boolean debug = false;
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
-	                      int nClusters, int nIterations, boolean createGroups,
-	                      boolean transpose, CyLogger log, boolean dbg) {
+	                      int nClusters, int nIterations, boolean createGroups, 
+	                      boolean ignoreMissing, boolean transpose, CyLogger log, 
+	                      boolean dbg) {
 
 		logger = log;
 		debug = dbg;
@@ -75,7 +76,7 @@ public class KCluster {
 		if (transpose) keyword = "ARRY";
 
 		// Create the matrix
-		Matrix matrix = new Matrix(weightAttributes, transpose);
+		Matrix matrix = new Matrix(weightAttributes, transpose, ignoreMissing);
 
 		// Create a weight vector of all ones (we don't use individual weighting, yet)
 		matrix.setUniformWeights();
