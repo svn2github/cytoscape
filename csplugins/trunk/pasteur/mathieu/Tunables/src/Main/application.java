@@ -1,20 +1,14 @@
 package Main;
 
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-
 import Props.*;
 import GuiInterception.*;
 import Command.*;
 import HandlerFactory.Handler;
-
-import java.awt.Color;
-import java.awt.Menu;
-import java.awt.MenuBar;
-import java.awt.MenuItem;
 import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Properties;
+
 
 public class application{
 	
@@ -22,6 +16,7 @@ public class application{
 	public static JFrame outputframe = new JFrame("Results");
 	
 	private static JMenuItem menuItem;
+	private static JButton button;
 	public static command commander = new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
 	public static TunableInterceptor ti = null;
@@ -43,7 +38,7 @@ public class application{
 		
 		mainframe.setJMenuBar(MenuBar);
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		ti = new GuiTunableInterceptor(mainframe,outputframe);
 		ti.intercept(commander);
 		lp.intercept(commander);
