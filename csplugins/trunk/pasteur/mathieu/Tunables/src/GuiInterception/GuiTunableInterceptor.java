@@ -82,7 +82,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				mainPanel.add(listPane.getPossibleValues().get(i));
 			}
 			
-			
 			inframe.setContentPane(mainPanel);
 			inframe.pack();
 			inframe.setLocation(100, 100);
