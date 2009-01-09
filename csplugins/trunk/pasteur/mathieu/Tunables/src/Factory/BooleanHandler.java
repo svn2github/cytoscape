@@ -34,9 +34,6 @@ public class BooleanHandler implements Guihandler{
 			f.set(o,jcb.isSelected());
 		} catch(Exception e){e.printStackTrace();}
 	}
-		
-	
-	
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());
@@ -51,8 +48,6 @@ public class BooleanHandler implements Guihandler{
 		pane.add(jcb,BorderLayout.EAST);
 		return pane;
 	}
-	
-
 
 	public JPanel update() {
 		JPanel result = new JPanel(new BorderLayout());
