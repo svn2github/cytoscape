@@ -1,8 +1,0 @@
-GO molecular function, level 4
-# a list with three members
-AP1G1 = (intracellular::clathrin adaptor::intracellular transporter)
-HSD17B2 = (membrane::intracellular)
-E2F4 = (DNA binding)
-# a scalar
-CDH3 = cell adhesion molecule
-

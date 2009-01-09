@@ -1,6 +1,0 @@
-This is some nonsense text for
-a unit test.
-Please don't remove.
-
-Or only remove once TextFileReaderTest.java 
-has been removed.
