@@ -1,11 +1,8 @@
 package Factory;
 
 import java.awt.BorderLayout;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
 import java.lang.reflect.*;
 import javax.swing.*;
-
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 
