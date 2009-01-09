@@ -90,7 +90,7 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 			LSS.setSelectedValue(selected);	
 			try{
 				f.set(o,LSS);
-				result.add(new JTextField((String) LSS.getSelectedValue()),BorderLayout.EAST);
+				result.add(new JTextField(LSS.getSelectedValue().toString()),BorderLayout.EAST);
 			}catch(Exception e){e.printStackTrace();}
 		}
 		return result;

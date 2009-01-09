@@ -12,24 +12,23 @@ import Tunable.Tunable.Param;
 import javax.swing.*;
 
 
-public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
+public class BoundedHandler implements Guihandler{
 	
 	Field f;
 	Tunable t;
 	Object o;
 	
-	Bounded<String> boundedObject;
+	Bounded boundedObject;
 	Boolean useslider=false;
 	JTextField jtf;
 	mySlider slider;
-	O upperBound;
-	O lowerBound;
+	Object upperBound;
+	Object lowerBound;
 	String title;
-	O value;
+	Object value;
 	Number result = null;
 	
 	
-	@SuppressWarnings("unchecked")
 	public BoundedHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.o=o;
@@ -37,8 +36,8 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 		if(t.flag()==Param.DoubleSlider || t.flag()==Param.IntegerSlider) this.useslider=true;
 		try{
 			boundedObject = (Bounded) f.get(o);
-			this.upperBound=(O) boundedObject.getUpperBound();
-			this.lowerBound=(O)boundedObject.getLowerBound();
+			this.upperBound= boundedObject.getUpperBound();
+			this.lowerBound= boundedObject.getLowerBound();
 		}catch(Exception e){e.printStackTrace();}
 		this.title=t.description() + " " + t.flag();
 	}
@@ -62,8 +61,7 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			jtf = new JTextField(11);
 			jtf.setHorizontalAlignment(JTextField.RIGHT);
 			inputPane.add(jtf,BorderLayout.EAST);
-		}
-		
+		}	
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
@@ -74,7 +72,6 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 	}
 
 
-	@SuppressWarnings("unchecked")
 	public void handle() {
 		if(t.flag() == Param.DoubleSlider){
 			result=slider.getValue().doubleValue();
@@ -85,33 +82,29 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			boundedObject.setValue(result.toString(),Integer.class);
 		}
 		if(t.flag() == Param.Double){
-			//if(jtf.getText().isEmpty()==false){
 			if(jtf.getText().equals("")){
-				boundedObject.setValue("0",Double.class);
+				//boundedObject.setValue("0.0",Double.class);
 			}
 			else{
-				value =(O) jtf.getText();
-				boundedObject.setValue((String) value,Double.class);
+				value = jtf.getText();
+				boundedObject.setValue(value.toString(),Double.class);
 			}
 		}
 		if(t.flag() == Param.Integer){
-			//if(jtf.getText().isEmpty()==false){
 			if(jtf.getText().equals("")){
-				boundedObject.setValue("0",Integer.class);
+				//boundedObject.setValue("0",Integer.class);
 			}
 			else{
-				value =(O) jtf.getText();
-				boundedObject.setValue((String) value,Integer.class);
+				value = jtf.getText();
+				boundedObject.setValue(value.toString(),Integer.class);
 			}
 		}
-			
 		try{
 			f.set(o,boundedObject);
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
 
-	@SuppressWarnings("unchecked")
 	public JPanel update() {
 		//java.text.DecimalFormat df = new java.text.DecimalFormat("###.###");
 		JPanel resultPane = new JPanel(new BorderLayout());
@@ -124,23 +117,21 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			boundedObject.setValue(result.toString(),Integer.class);
 		}
 		if(t.flag() == Param.Double){
-			//if(jtf.getText().isEmpty()==false){
 			if(jtf.getText().equals("")){
-				boundedObject.setValue("0.0",Double.class);
+				//boundedObject.setValue("0.0",Double.class);
 			}
 			else{
-				value =(O) jtf.getText();
-				boundedObject.setValue((String) value,Double.class);
+				value = jtf.getText();
+				boundedObject.setValue(value.toString(),Double.class);
 			}
 		}
 		if(t.flag() == Param.Integer){
-			//if(jtf.getText().isEmpty()==false){
 			if(jtf.getText().equals("")){
-				boundedObject.setValue("0",Integer.class);
+				//boundedObject.setValue("0",Integer.class);
 			}
 			else{
-				value =(O) jtf.getText();
-				boundedObject.setValue((String) value,Integer.class);
+				value = jtf.getText();
+				boundedObject.setValue(value.toString(),Integer.class);
 			}
 		}
 		JTextArea jta = new JTextArea(title);

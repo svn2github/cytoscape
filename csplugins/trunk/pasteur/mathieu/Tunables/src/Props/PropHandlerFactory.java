@@ -19,6 +19,10 @@ public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 
 		if ((type == int.class || type == Integer.class))
 			return new IntPropHandler(f, o, t);
+		else if ((type == float.class || type == Float.class))
+			return new FloatPropHandler(f, o, t);
+		else if ((type == long.class || type == Long.class))
+			return new LongPropHandler(f, o, t);
 		else if(type == Bounded.class)
 			return new BoundedPropHandler(f,o,t);
 		else if(type == Double.class || type == double.class)

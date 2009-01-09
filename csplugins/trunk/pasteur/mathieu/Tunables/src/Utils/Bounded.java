@@ -1,9 +1,6 @@
 package Utils;
 
-
-
-@SuppressWarnings("hiding")
-public class Bounded<String extends Comparable<String>>{	
+public class Bounded{	
 	String value;
 	String lowerBound;
 	String upperBound;
@@ -47,7 +44,6 @@ public class Bounded<String extends Comparable<String>>{
 		return upperBool;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void setValue(String v,Class<?> boundedclass){
 		if (v == null)
 			throw new NullPointerException("value is null!");

@@ -21,6 +21,7 @@ import Utils.stringLib;
 
 
 
+@SuppressWarnings("serial")
 public class mySlider extends JComponent {
 
     private Number     m_min, m_max, m_value;
@@ -29,7 +30,8 @@ public class mySlider extends JComponent {
     private JLabel     m_label;
     private JSlider    m_slider;
     private JTextField m_field;
-    private List       m_listeners;
+    @SuppressWarnings("unchecked")
+	private List       m_listeners;
     
     java.text.DecimalFormat df = new java.text.DecimalFormat("##.##");
     
@@ -39,12 +41,13 @@ public class mySlider extends JComponent {
   
 
     
-    public mySlider(String title, Number min, Number max, Number value) {
+    @SuppressWarnings("unchecked")
+	public mySlider(String title, Number min, Number max, Number value) {
         m_min    = min;
         m_max    = max;
         m_value  = value;
         m_slider = new JSlider();
-        m_label  = new JLabel();//title
+        m_label  = new JLabel();
         m_field  = new JTextField(4);
         m_field.setHorizontalAlignment(JTextField.RIGHT);
         m_listeners = new ArrayList();
@@ -65,7 +68,6 @@ public class mySlider extends JComponent {
         }
         else{
         	majortickspace = (max.doubleValue()-min.doubleValue())/5;
-        	//Integer majortick = new Integer(majortickspace.intValue());
         	Double majortick = new Double(majortickspace.doubleValue());
         	double i=m_min.doubleValue();
 	        int j=0;
@@ -150,12 +152,6 @@ public class mySlider extends JComponent {
         int sw = fm.stringWidth(s);
         return ( sw > c.getWidth() );
     }
-
-    
-//	private Hashtable createLabels(JSlider slider) {
-//		return slider.createStandardLabels(m_min.intValue(),majortickspace);
-//	}
-
     
 
     public Number getValue() {
@@ -198,7 +194,7 @@ public class mySlider extends JComponent {
             double max = m_max.doubleValue();
             val = m_smin + (int)Math.round(m_srange*((value-min)/(max-min)));
         } else {
-            long value = m_value.longValue();
+        	long value = m_value.longValue();
             long min = m_min.longValue();
             long max = m_max.longValue();
             val = m_smin + (int)((m_srange*(value-min))/(max-min));
@@ -208,34 +204,28 @@ public class mySlider extends JComponent {
     
   
     private Number getFieldValue() {
-        if ( m_value instanceof Double || m_value instanceof Float ) {
+        if ( m_value instanceof Double || m_value instanceof Float ){
             double v;
             try {
                 v = Double.parseDouble(m_field.getText());
             } catch ( Exception e ) {
-                // TODO handle exception
                 return m_value;
             }
             if ( v < m_min.doubleValue() || v > m_max.doubleValue() ) {
-                // TODO handle exception
-                return m_value;
+            	return m_value;
             }
-            return m_value instanceof Double ? (Number)new Double(v) 
-                                             : new Float((float)v);
+            return m_value instanceof Double ? (Number)new Double(v) : new Float((float)v);
         } else {
             long v;
             try {
                 v = Long.parseLong(m_field.getText());
             } catch ( Exception e ) {
-                // TODO handle exception
                 return m_value;
             }
             if ( v < m_min.longValue() || v > m_max.longValue() ) {
-                // TODO handle exception
                 return m_value;
             }
-            return m_value instanceof Long ? (Number)new Long(v) 
-                                           : new Integer((int)v);
+            return m_value instanceof Long ? (Number)new Long(v) : new Integer((int)v);
         }
     }
     
@@ -243,19 +233,14 @@ public class mySlider extends JComponent {
     private void setFieldValue() {
         String text;
         if ( m_value instanceof Double || m_value instanceof Float )
-        	text = df.format(m_value.doubleValue());
-            //text = stringLib.formatNumber(m_value.doubleValue(),3);
+        	text = stringLib.formatNumber(m_value.doubleValue(),3);
         else
             text = String.valueOf(m_value.longValue());
         m_field.setText(text);
     }
     
- 
-    
-    
-    
-    
-    public void addChangeListener(ChangeListener cl) {
+    @SuppressWarnings("unchecked")
+	public void addChangeListener(ChangeListener cl) {
         if ( !m_listeners.contains(cl) )
             m_listeners.add(cl);
     }
@@ -264,47 +249,13 @@ public class mySlider extends JComponent {
         m_listeners.remove(cl);
     }
     
-    protected void fireChangeEvent() {
+    @SuppressWarnings("unchecked")
+	protected void fireChangeEvent() {
         Iterator iter = m_listeners.iterator();
         ChangeEvent evt = new ChangeEvent(this); 
         while ( iter.hasNext() ) {
             ChangeListener cl = (ChangeListener)iter.next();
             cl.stateChanged(evt);
         }
-    }
-    
-//    public void setBackground(Color c) {
-//        m_field.setBackground(c);
-//        m_label.setBackground(c);
-//        m_slider.setBackground(c);
-//        super.setBackground(c);
-//    }
-//    
-//    public void setForeground(Color c) {
-//        m_field.setForeground(c);
-//        m_label.setForeground(c);
-//        m_slider.setForeground(c);
-//        super.setForeground(c);
-//    }
-//    
-//    public void setFont(Font f) {
-//        m_field.setFont(f);
-//        m_label.setFont(f);
-//        m_slider.setFont(f);
-//        super.setFont(f);
-//    }
-//    
-//    public void setPreferredSize(Dimension d) {
-//        int fw = Math.min(40, d.width/5);
-//        int lw = Math.min(100, (d.width-fw)/2);
-//        int sw = d.width-fw-lw;
-//        super.setPreferredSize(d);
-//        Dimension dd = new Dimension(lw, d.height);
-//        m_label.setPreferredSize(dd);
-//        dd = new Dimension(sw, d.height);
-//        m_slider.setPreferredSize(dd);
-//        dd = new Dimension(fw, d.height);
-//        m_field.setPreferredSize(dd);
-//    }
-    
+    }   
 }

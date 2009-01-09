@@ -21,7 +21,7 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 		if(type == Long.class || type == long.class)
 			return new LongHandler(f,o,t);
 		if(type == Bounded.class)
-			return new BoundedHandler<String>(f,o,t);		
+			return new BoundedHandler(f,o,t);		
 		if(type == Boolean.class)
 			return new BooleanHandler(f,o,t);
 		if(type == String.class)

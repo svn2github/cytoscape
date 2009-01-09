@@ -26,7 +26,7 @@ public class input2<O extends Comparable<String>> implements command {
 	public Group Group2;
 	
 	@Tunable(description="BoundedObject",flag=Param.Double,group="")
-	public Bounded<String> boundObject = new Bounded<String>("0","100", true, true);
+	public Bounded boundObject = new Bounded("0","100", true, true);
 	
 	@Tunable(description="Group",group="")
 	public Group Group3;
