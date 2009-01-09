@@ -16,8 +16,10 @@ public class GuiHandlerFactory implements HandlerFactory<GuiHandler> {
 			return new IntHandler(f,o,t);
 		else if ( type == String.class ) 
 			return new StringHandler(f,o,t);
-		else if ( type == Bounded.class ) 
-			return new BoundedHandler(f,o,t);
+		else if ( type == BoundedInteger.class ) 
+			return new BoundedIntegerHandler(f,o,t);
+		else if ( type == BoundedDouble.class ) 
+			return new BoundedDoubleHandler(f,o,t);
 		return null;
 	}
 }

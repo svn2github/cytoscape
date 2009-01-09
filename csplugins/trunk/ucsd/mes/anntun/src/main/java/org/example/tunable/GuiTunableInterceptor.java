@@ -24,6 +24,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 
 	protected void process(java.util.List<GuiHandler> lh) {
 			JPanel mainPanel = new JPanel();
+			mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
 			for (GuiHandler gh : lh) {
 				mainPanel.add(gh.getJPanel());
 			}

@@ -41,12 +41,14 @@ package org.example.tunable.util;
  *
  * @param <N>  DOCUMENT ME!
  */
-public final class Bounded<N extends Comparable<N>> {
-	private N value;
-	final private N lower;
-	final private N upper;
-	final boolean upperStrict;
-	final boolean lowerStrict;
+abstract class AbstractBounded<N extends Comparable<N>> {
+
+	protected N value;
+
+	final protected N lower;
+	final protected N upper;
+	final protected boolean upperStrict;
+	final protected boolean lowerStrict;
 
 	/**
 	 * Creates a new Bounded object.
@@ -56,7 +58,7 @@ public final class Bounded<N extends Comparable<N>> {
 	 * @param lowerStrict  DOCUMENT ME!
 	 * @param upperStrict  DOCUMENT ME!
 	 */
-	public Bounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
+	AbstractBounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
 		if (lower == null)
 			throw new NullPointerException("lower bound is null!");
 
@@ -148,9 +150,5 @@ public final class Bounded<N extends Comparable<N>> {
 		}
 
 		value = v;
-	}
-
-	public Class<?> getType() {
-		return lower.getClass();
 	}
 }
