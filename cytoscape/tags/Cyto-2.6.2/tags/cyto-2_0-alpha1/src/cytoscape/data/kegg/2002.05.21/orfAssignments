@@ -1,0 +1,789 @@
+VNG0006G	251	Glutamate metabolism
+VNG0006G	530	Aminosugars metabolism
+VNG0008G	520	Nucleotide sugars metabolism
+VNG0008G	522	Erythromycin biosynthesis
+VNG0009G	520	Nucleotide sugars metabolism
+VNG0009G	522	Erythromycin biosynthesis
+VNG0046G	40	Pentose and glucuronate interconversions
+VNG0046G	500	Starch and sucrose metabolism
+VNG0046G	520	Nucleotide sugars metabolism
+VNG0047G	520	Nucleotide sugars metabolism
+VNG0047G	522	Erythromycin biosynthesis
+VNG0063G	52	Galactose metabolism
+VNG0063G	520	Nucleotide sugars metabolism
+VNG0064G	520	Nucleotide sugars metabolism
+VNG0064G	522	Erythromycin biosynthesis
+VNG0065G	52	Galactose metabolism
+VNG0065G	520	Nucleotide sugars metabolism
+VNG0095G	10	Glycolysis / Gluconeogenesis
+VNG0095G	472	D-Arginine and D-ornithine metabolism
+VNG0099G	3010	Ribosome
+VNG0149G	500	Starch and sucrose metabolism
+VNG0149G	790	Folate biosynthesis
+VNG0161G	220	Urea cycle and metabolism of amino groups
+VNG0161G	251	Glutamate metabolism
+VNG0161G	330	Arginine and proline metabolism
+VNG0161G	471	D-Glutamine and D-glutamate metabolism
+VNG0161G	910	Nitrogen metabolism
+VNG0177G	3010	Ribosome
+VNG0228G	230	Purine metabolism
+VNG0228G	251	Glutamate metabolism
+VNG0245G	240	Pyrimidine metabolism
+VNG0254G	3022	Transcription factors
+VNG0259G	190	Oxidative phosphorylation
+VNG0281G	260	Glycine, serine and threonine metabolism
+VNG0305G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG0307G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG0308G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG0315G	3022	Transcription factors
+VNG0324G	10	Glycolysis / Gluconeogenesis
+VNG0324G	230	Purine metabolism
+VNG0324G	620	Pyruvate metabolism
+VNG0324G	710	Carbon fixation
+VNG0326G	271	Methionine metabolism
+VNG0326G	450	Selenoamino acid metabolism
+VNG0326G	970	Aminoacyl-tRNA biosynthesis
+VNG0327G	251	Glutamate metabolism
+VNG0327G	252	Alanine and aspartate metabolism
+VNG0327G	410	beta-Alanine metabolism
+VNG0327G	430	Taurine and hypotaurine metabolism
+VNG0327G	650	Butanoate metabolism
+VNG0330G	620	Pyruvate metabolism
+VNG0330G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG0371G	120	Bile acid biosynthesis
+VNG0371G	360	Phenylalanine metabolism
+VNG0371G	600	Sphingoglycolipid metabolism
+VNG0382G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG0387G	280	Valine, leucine and isoleucine degradation
+VNG0387G	290	Valine, leucine and isoleucine biosynthesis
+VNG0387G	770	Pantothenate and CoA biosynthesis
+VNG0390G	520	Nucleotide sugars metabolism
+VNG0390G	522	Erythromycin biosynthesis
+VNG0403G	330	Arginine and proline metabolism
+VNG0403G	970	Aminoacyl-tRNA biosynthesis
+VNG0412G	790	Folate biosynthesis
+VNG0414G	230	Purine metabolism
+VNG0414G	670	One carbon pool by folate
+VNG0415G	230	Purine metabolism
+VNG0415G	252	Alanine and aspartate metabolism
+VNG0426G	3020	RNA polymerase
+VNG0428G	62	Fatty acid biosynthesis (path 2)
+VNG0428G	71	Fatty acid metabolism
+VNG0428G	280	Valine, leucine and isoleucine degradation
+VNG0428G	310	Lysine degradation
+VNG0428G	380	Tryptophan metabolism
+VNG0428G	410	beta-Alanine metabolism
+VNG0428G	632	Benzoate degradation
+VNG0428G	640	Propanoate metabolism
+VNG0428G	650	Butanoate metabolism
+VNG0444G	300	Lysine biosynthesis
+VNG0448G	240	Pyrimidine metabolism
+VNG0461G	252	Alanine and aspartate metabolism
+VNG0461G	970	Aminoacyl-tRNA biosynthesis
+VNG0473G	20	Citrate cycle (TCA cycle)
+VNG0473G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG0474G	20	Citrate cycle (TCA cycle)
+VNG0474G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG0481G	280	Valine, leucine and isoleucine degradation
+VNG0481G	640	Propanoate metabolism
+VNG0484G	10	Glycolysis / Gluconeogenesis
+VNG0484G	620	Pyruvate metabolism
+VNG0484G	640	Propanoate metabolism
+VNG0484G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG0502G	251	Glutamate metabolism
+VNG0502G	252	Alanine and aspartate metabolism
+VNG0502G	272	Cysteine metabolism
+VNG0502G	330	Arginine and proline metabolism
+VNG0502G	350	Tyrosine metabolism
+VNG0502G	360	Phenylalanine metabolism
+VNG0502G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG0502G	710	Carbon fixation
+VNG0502G	950	Alkaloid biosynthesis I
+VNG0521G	3030	DNA polymerase
+VNG0541G	260	Glycine, serine and threonine metabolism
+VNG0541G	750	Vitamin B6 metabolism
+VNG0550G	3010	Ribosome
+VNG0551G	3010	Ribosome
+VNG0559G	230	Purine metabolism
+VNG0563G	130	Ubiquinone biosynthesis
+VNG0563G	190	Oxidative phosphorylation
+VNG0593G	100	Sterol biosynthesis
+VNG0606G	272	Cysteine metabolism
+VNG0606G	450	Selenoamino acid metabolism
+VNG0606G	920	Sulfur metabolism
+VNG0610G	130	Ubiquinone biosynthesis
+VNG0623G	280	Valine, leucine and isoleucine degradation
+VNG0623G	640	Propanoate metabolism
+VNG0627G	20	Citrate cycle (TCA cycle)
+VNG0627G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG0628G	220	Urea cycle and metabolism of amino groups
+VNG0628G	251	Glutamate metabolism
+VNG0628G	330	Arginine and proline metabolism
+VNG0628G	471	D-Glutamine and D-glutamate metabolism
+VNG0628G	910	Nitrogen metabolism
+VNG0629G	251	Glutamate metabolism
+VNG0629G	252	Alanine and aspartate metabolism
+VNG0629G	272	Cysteine metabolism
+VNG0629G	330	Arginine and proline metabolism
+VNG0629G	350	Tyrosine metabolism
+VNG0629G	360	Phenylalanine metabolism
+VNG0629G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG0629G	710	Carbon fixation
+VNG0629G	950	Alkaloid biosynthesis I
+VNG0630G	740	Riboflavin metabolism
+VNG0632G	230	Purine metabolism
+VNG0633G	230	Purine metabolism
+VNG0635G	130	Ubiquinone biosynthesis
+VNG0635G	190	Oxidative phosphorylation
+VNG0636G	130	Ubiquinone biosynthesis
+VNG0636G	190	Oxidative phosphorylation
+VNG0637G	130	Ubiquinone biosynthesis
+VNG0637G	190	Oxidative phosphorylation
+VNG0639G	130	Ubiquinone biosynthesis
+VNG0639G	190	Oxidative phosphorylation
+VNG0640G	130	Ubiquinone biosynthesis
+VNG0640G	190	Oxidative phosphorylation
+VNG0643G	130	Ubiquinone biosynthesis
+VNG0643G	190	Oxidative phosphorylation
+VNG0646G	130	Ubiquinone biosynthesis
+VNG0646G	190	Oxidative phosphorylation
+VNG0647G	130	Ubiquinone biosynthesis
+VNG0647G	190	Oxidative phosphorylation
+VNG0648G	130	Ubiquinone biosynthesis
+VNG0648G	190	Oxidative phosphorylation
+VNG0651G	230	Purine metabolism
+VNG0653G	280	Valine, leucine and isoleucine degradation
+VNG0653G	640	Propanoate metabolism
+VNG0657G	190	Oxidative phosphorylation
+VNG0662G	190	Oxidative phosphorylation
+VNG0665G	190	Oxidative phosphorylation
+VNG0666G	190	Oxidative phosphorylation
+VNG0673G	280	Valine, leucine and isoleucine degradation
+VNG0673G	640	Propanoate metabolism
+VNG0678G	62	Fatty acid biosynthesis (path 2)
+VNG0678G	71	Fatty acid metabolism
+VNG0678G	120	Bile acid biosynthesis
+VNG0678G	280	Valine, leucine and isoleucine degradation
+VNG0678G	360	Phenylalanine metabolism
+VNG0679G	120	Bile acid biosynthesis
+VNG0679G	360	Phenylalanine metabolism
+VNG0679G	600	Sphingoglycolipid metabolism
+VNG0681G	62	Fatty acid biosynthesis (path 2)
+VNG0681G	71	Fatty acid metabolism
+VNG0681G	280	Valine, leucine and isoleucine degradation
+VNG0681G	310	Lysine degradation
+VNG0681G	380	Tryptophan metabolism
+VNG0681G	632	Benzoate degradation
+VNG0681G	650	Butanoate metabolism
+VNG0734G	3022	Transcription factors
+VNG0752G	52	Galactose metabolism
+VNG0752G	520	Nucleotide sugars metabolism
+VNG0771G	10	Glycolysis / Gluconeogenesis
+VNG0771G	53	Ascorbate and aldarate metabolism
+VNG0771G	71	Fatty acid metabolism
+VNG0771G	120	Bile acid biosynthesis
+VNG0771G	280	Valine, leucine and isoleucine degradation
+VNG0771G	310	Lysine degradation
+VNG0771G	330	Arginine and proline metabolism
+VNG0771G	340	Histidine metabolism
+VNG0771G	380	Tryptophan metabolism
+VNG0771G	410	beta-Alanine metabolism
+VNG0771G	561	Glycerolipid metabolism
+VNG0771G	620	Pyruvate metabolism
+VNG0771G	631	1,2-Dichloroethane degradation
+VNG0771G	640	Propanoate metabolism
+VNG0771G	650	Butanoate metabolism
+VNG0775G	120	Bile acid biosynthesis
+VNG0775G	360	Phenylalanine metabolism
+VNG0775G	600	Sphingoglycolipid metabolism
+VNG0777G	561	Glycerolipid metabolism
+VNG0784G	260	Glycine, serine and threonine metabolism
+VNG0784G	561	Glycerolipid metabolism
+VNG0787G	3010	Ribosome
+VNG0790G	3010	Ribosome
+VNG0796G	271	Methionine metabolism
+VNG0796G	272	Cysteine metabolism
+VNG0796G	450	Selenoamino acid metabolism
+VNG0796G	910	Nitrogen metabolism
+VNG0808G	251	Glutamate metabolism
+VNG0808G	350	Tyrosine metabolism
+VNG0808G	650	Butanoate metabolism
+VNG0841G	910	Nitrogen metabolism
+VNG0860G	3020	RNA polymerase
+VNG0862G	340	Histidine metabolism
+VNG0864G	230	Purine metabolism
+VNG0867G	252	Alanine and aspartate metabolism
+VNG0867G	910	Nitrogen metabolism
+VNG0869G	3022	Transcription factors
+VNG0876G	230	Purine metabolism
+VNG0893G	240	Pyrimidine metabolism
+VNG0896G	240	Pyrimidine metabolism
+VNG0905G	51	Fructose and mannose metabolism
+VNG0931G	62	Fatty acid biosynthesis (path 2)
+VNG0931G	71	Fatty acid metabolism
+VNG0931G	120	Bile acid biosynthesis
+VNG0931G	280	Valine, leucine and isoleucine degradation
+VNG0931G	360	Phenylalanine metabolism
+VNG0997G	10	Glycolysis / Gluconeogenesis
+VNG0997G	620	Pyruvate metabolism
+VNG0997G	640	Propanoate metabolism
+VNG0997G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1001G	230	Purine metabolism
+VNG1027G	10	Glycolysis / Gluconeogenesis
+VNG1027G	31	Inositol metabolism
+VNG1027G	51	Fructose and mannose metabolism
+VNG1027G	561	Glycerolipid metabolism
+VNG1027G	710	Carbon fixation
+VNG1030G	561	Glycerolipid metabolism
+VNG1033G	340	Histidine metabolism
+VNG1033G	350	Tyrosine metabolism
+VNG1033G	360	Phenylalanine metabolism
+VNG1033G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1055G	520	Nucleotide sugars metabolism
+VNG1055G	522	Erythromycin biosynthesis
+VNG1070G	561	Glycerolipid metabolism
+VNG1073G	71	Fatty acid metabolism
+VNG1075G	130	Ubiquinone biosynthesis
+VNG1079G	130	Ubiquinone biosynthesis
+VNG1081G	130	Ubiquinone biosynthesis
+VNG1089G	230	Purine metabolism
+VNG1089G	252	Alanine and aspartate metabolism
+VNG1097G	272	Cysteine metabolism
+VNG1097G	970	Aminoacyl-tRNA biosynthesis
+VNG1103G	3010	Ribosome
+VNG1104G	3010	Ribosome
+VNG1105G	3010	Ribosome
+VNG1108G	3010	Ribosome
+VNG1121G	251	Glutamate metabolism
+VNG1121G	252	Alanine and aspartate metabolism
+VNG1121G	272	Cysteine metabolism
+VNG1121G	330	Arginine and proline metabolism
+VNG1121G	350	Tyrosine metabolism
+VNG1121G	360	Phenylalanine metabolism
+VNG1121G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1121G	710	Carbon fixation
+VNG1121G	950	Alkaloid biosynthesis I
+VNG1125G	20	Citrate cycle (TCA cycle)
+VNG1125G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1128G	20	Citrate cycle (TCA cycle)
+VNG1128G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1132G	3010	Ribosome
+VNG1133G	3010	Ribosome
+VNG1134G	3010	Ribosome
+VNG1136G	3020	RNA polymerase
+VNG1137G	3010	Ribosome
+VNG1138G	3010	Ribosome
+VNG1139G	3010	Ribosome
+VNG1140G	3020	RNA polymerase
+VNG1141G	3020	RNA polymerase
+VNG1142G	10	Glycolysis / Gluconeogenesis
+VNG1142G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1143G	3010	Ribosome
+VNG1145G	100	Sterol biosynthesis
+VNG1150G	100	Sterol biosynthesis
+VNG1150G	900	Terpenoid biosynthesis
+VNG1153G	251	Glutamate metabolism
+VNG1153G	860	Porphyrin and chlorophyll metabolism
+VNG1153G	970	Aminoacyl-tRNA biosynthesis
+VNG1157G	3010	Ribosome
+VNG1158G	3010	Ribosome
+VNG1159G	3010	Ribosome
+VNG1160G	230	Purine metabolism
+VNG1160G	240	Pyrimidine metabolism
+VNG1170G	3010	Ribosome
+VNG1172G	260	Glycine, serine and threonine metabolism
+VNG1172G	271	Methionine metabolism
+VNG1172G	272	Cysteine metabolism
+VNG1172G	450	Selenoamino acid metabolism
+VNG1172G	920	Sulfur metabolism
+VNG1191G	120	Bile acid biosynthesis
+VNG1191G	360	Phenylalanine metabolism
+VNG1191G	600	Sphingoglycolipid metabolism
+VNG1201G	51	Fructose and mannose metabolism
+VNG1204G	220	Urea cycle and metabolism of amino groups
+VNG1204G	251	Glutamate metabolism
+VNG1204G	330	Arginine and proline metabolism
+VNG1204G	471	D-Glutamine and D-glutamate metabolism
+VNG1204G	910	Nitrogen metabolism
+VNG1208G	340	Histidine metabolism
+VNG1209G	340	Histidine metabolism
+VNG1211G	340	Histidine metabolism
+VNG1212G	340	Histidine metabolism
+VNG1212G	910	Nitrogen metabolism
+VNG1216G	10	Glycolysis / Gluconeogenesis
+VNG1216G	710	Carbon fixation
+VNG1219G	240	Pyrimidine metabolism
+VNG1230G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1232G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1241G	740	Riboflavin metabolism
+VNG1251G	500	Starch and sucrose metabolism
+VNG1251G	790	Folate biosynthesis
+VNG1256G	740	Riboflavin metabolism
+VNG1259G	240	Pyrimidine metabolism
+VNG1301G	272	Cysteine metabolism
+VNG1301G	450	Selenoamino acid metabolism
+VNG1301G	920	Sulfur metabolism
+VNG1305G	230	Purine metabolism
+VNG1306G	20	Citrate cycle (TCA cycle)
+VNG1306G	190	Oxidative phosphorylation
+VNG1306G	632	Benzoate degradation
+VNG1306G	650	Butanoate metabolism
+VNG1306G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1308G	20	Citrate cycle (TCA cycle)
+VNG1308G	190	Oxidative phosphorylation
+VNG1308G	632	Benzoate degradation
+VNG1308G	650	Butanoate metabolism
+VNG1308G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1309G	20	Citrate cycle (TCA cycle)
+VNG1309G	190	Oxidative phosphorylation
+VNG1309G	632	Benzoate degradation
+VNG1309G	650	Butanoate metabolism
+VNG1309G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1310G	20	Citrate cycle (TCA cycle)
+VNG1310G	190	Oxidative phosphorylation
+VNG1310G	632	Benzoate degradation
+VNG1310G	650	Butanoate metabolism
+VNG1310G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1313G	62	Fatty acid biosynthesis (path 2)
+VNG1313G	71	Fatty acid metabolism
+VNG1313G	280	Valine, leucine and isoleucine degradation
+VNG1313G	310	Lysine degradation
+VNG1313G	380	Tryptophan metabolism
+VNG1313G	410	beta-Alanine metabolism
+VNG1313G	632	Benzoate degradation
+VNG1313G	640	Propanoate metabolism
+VNG1313G	650	Butanoate metabolism
+VNG1341G	61	Fatty acid biosynthesis (path 1)
+VNG1356G	20	Citrate cycle (TCA cycle)
+VNG1356G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1367G	3060	Protein export
+VNG1414G	260	Glycine, serine and threonine metabolism
+VNG1414G	310	Lysine degradation
+VNG1414G	460	Cyanoamino acid metabolism
+VNG1414G	670	One carbon pool by folate
+VNG1414G	680	Methane metabolism
+VNG1416G	630	Glyoxylate and dicarboxylate metabolism
+VNG1416G	670	One carbon pool by folate
+VNG1432G	330	Arginine and proline metabolism
+VNG1432G	410	beta-Alanine metabolism
+VNG1433G	3010	Ribosome
+VNG1435G	260	Glycine, serine and threonine metabolism
+VNG1435G	300	Lysine biosynthesis
+VNG1444G	340	Histidine metabolism
+VNG1458G	100	Sterol biosynthesis
+VNG1458G	900	Terpenoid biosynthesis
+VNG1478G	670	One carbon pool by folate
+VNG1478G	770	Pantothenate and CoA biosynthesis
+VNG1481G	272	Cysteine metabolism
+VNG1481G	920	Sulfur metabolism
+VNG1482G	120	Bile acid biosynthesis
+VNG1482G	360	Phenylalanine metabolism
+VNG1482G	600	Sphingoglycolipid metabolism
+VNG1493G	230	Purine metabolism
+VNG1493G	251	Glutamate metabolism
+VNG1494G	3010	Ribosome
+VNG1498G	500	Starch and sucrose metabolism
+VNG1515G	240	Pyrimidine metabolism
+VNG1529G	640	Propanoate metabolism
+VNG1532G	20	Citrate cycle (TCA cycle)
+VNG1532G	252	Alanine and aspartate metabolism
+VNG1532G	620	Pyruvate metabolism
+VNG1541G	20	Citrate cycle (TCA cycle)
+VNG1541G	640	Propanoate metabolism
+VNG1541G	660	C5-Branched dibasic acid metabolism
+VNG1541G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1542G	20	Citrate cycle (TCA cycle)
+VNG1542G	640	Propanoate metabolism
+VNG1542G	660	C5-Branched dibasic acid metabolism
+VNG1542G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1551G	860	Porphyrin and chlorophyll metabolism
+VNG1553G	860	Porphyrin and chlorophyll metabolism
+VNG1555G	860	Porphyrin and chlorophyll metabolism
+VNG1557G	860	Porphyrin and chlorophyll metabolism
+VNG1567G	860	Porphyrin and chlorophyll metabolism
+VNG1568G	860	Porphyrin and chlorophyll metabolism
+VNG1573G	860	Porphyrin and chlorophyll metabolism
+VNG1574G	860	Porphyrin and chlorophyll metabolism
+VNG1576G	860	Porphyrin and chlorophyll metabolism
+VNG1582G	340	Histidine metabolism
+VNG1582G	350	Tyrosine metabolism
+VNG1582G	360	Phenylalanine metabolism
+VNG1582G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1601G	260	Glycine, serine and threonine metabolism
+VNG1603G	260	Glycine, serine and threonine metabolism
+VNG1606G	260	Glycine, serine and threonine metabolism
+VNG1606G	670	One carbon pool by folate
+VNG1606G	910	Nitrogen metabolism
+VNG1615G	72	Synthesis and degradation of ketone bodies
+VNG1615G	280	Valine, leucine and isoleucine degradation
+VNG1615G	650	Butanoate metabolism
+VNG1624G	620	Pyruvate metabolism
+VNG1624G	710	Carbon fixation
+VNG1644G	230	Purine metabolism
+VNG1644G	240	Pyrimidine metabolism
+VNG1646G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1647G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1648G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1649G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG1668G	3010	Ribosome
+VNG1673G	240	Pyrimidine metabolism
+VNG1680G	100	Sterol biosynthesis
+VNG1680G	900	Terpenoid biosynthesis
+VNG1686G	790	Folate biosynthesis
+VNG1689G	3010	Ribosome
+VNG1690G	3010	Ribosome
+VNG1691G	3010	Ribosome
+VNG1692G	3010	Ribosome
+VNG1693G	3010	Ribosome
+VNG1695G	3010	Ribosome
+VNG1697G	3010	Ribosome
+VNG1698G	3010	Ribosome
+VNG1700G	3010	Ribosome
+VNG1701G	3010	Ribosome
+VNG1702G	3010	Ribosome
+VNG1703G	3010	Ribosome
+VNG1705G	3010	Ribosome
+VNG1706G	3010	Ribosome
+VNG1707G	3010	Ribosome
+VNG1709G	3010	Ribosome
+VNG1711G	3010	Ribosome
+VNG1713G	3010	Ribosome
+VNG1714G	3010	Ribosome
+VNG1715G	3010	Ribosome
+VNG1716G	3010	Ribosome
+VNG1718G	3010	Ribosome
+VNG1719G	3060	Protein export
+VNG1724G	230	Purine metabolism
+VNG1727G	240	Pyrimidine metabolism
+VNG1729G	240	Pyrimidine metabolism
+VNG1767G	330	Arginine and proline metabolism
+VNG1774G	860	Porphyrin and chlorophyll metabolism
+VNG1797G	260	Glycine, serine and threonine metabolism
+VNG1814G	240	Pyrimidine metabolism
+VNG1814G	251	Glutamate metabolism
+VNG1815G	240	Pyrimidine metabolism
+VNG1815G	251	Glutamate metabolism
+VNG1818G	100	Sterol biosynthesis
+VNG1818G	900	Terpenoid biosynthesis
+VNG1821G	10	Glycolysis / Gluconeogenesis
+VNG1821G	71	Fatty acid metabolism
+VNG1821G	120	Bile acid biosynthesis
+VNG1821G	350	Tyrosine metabolism
+VNG1821G	561	Glycerolipid metabolism
+VNG1829G	230	Purine metabolism
+VNG1829G	251	Glutamate metabolism
+VNG1830G	240	Pyrimidine metabolism
+VNG1835G	260	Glycine, serine and threonine metabolism
+VNG1835G	970	Aminoacyl-tRNA biosynthesis
+VNG1844G	252	Alanine and aspartate metabolism
+VNG1844G	460	Cyanoamino acid metabolism
+VNG1844G	910	Nitrogen metabolism
+VNG1850G	240	Pyrimidine metabolism
+VNG1851G	30	Pentose phosphate pathway
+VNG1859G	30	Pentose phosphate pathway
+VNG1873G	20	Citrate cycle (TCA cycle)
+VNG1873G	480	Glutathione metabolism
+VNG1873G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG1875G	100	Sterol biosynthesis
+VNG1883G	252	Alanine and aspartate metabolism
+VNG1884G	760	Nicotinate and nicotinamide metabolism
+VNG1887G	10	Glycolysis / Gluconeogenesis
+VNG1926G	10	Glycolysis / Gluconeogenesis
+VNG1926G	290	Valine, leucine and isoleucine biosynthesis
+VNG1926G	620	Pyruvate metabolism
+VNG1926G	650	Butanoate metabolism
+VNG1929G	240	Pyrimidine metabolism
+VNG1932G	130	Ubiquinone biosynthesis
+VNG1932G	190	Oxidative phosphorylation
+VNG1939G	230	Purine metabolism
+VNG1945G	230	Purine metabolism
+VNG1946G	630	Glyoxylate and dicarboxylate metabolism
+VNG1946G	670	One carbon pool by folate
+VNG1967G	561	Glycerolipid metabolism
+VNG1969G	561	Glycerolipid metabolism
+VNG1971G	561	Glycerolipid metabolism
+VNG1972G	561	Glycerolipid metabolism
+VNG1987G	3060	Protein export
+VNG1988G	3060	Protein export
+VNG1992G	10	Glycolysis / Gluconeogenesis
+VNG1992G	30	Pentose phosphate pathway
+VNG1992G	500	Starch and sucrose metabolism
+VNG2003G	240	Pyrimidine metabolism
+VNG2005G	340	Histidine metabolism
+VNG2005G	970	Aminoacyl-tRNA biosynthesis
+VNG2010G	3010	Ribosome
+VNG2011G	730	Thiamine metabolism
+VNG2017G	300	Lysine biosynthesis
+VNG2017G	970	Aminoacyl-tRNA biosynthesis
+VNG2031G	251	Glutamate metabolism
+VNG2031G	760	Nicotinate and nicotinamide metabolism
+VNG2032G	62	Fatty acid biosynthesis (path 2)
+VNG2032G	71	Fatty acid metabolism
+VNG2032G	280	Valine, leucine and isoleucine degradation
+VNG2032G	310	Lysine degradation
+VNG2032G	380	Tryptophan metabolism
+VNG2032G	410	beta-Alanine metabolism
+VNG2032G	632	Benzoate degradation
+VNG2032G	640	Propanoate metabolism
+VNG2032G	650	Butanoate metabolism
+VNG2043G	230	Purine metabolism
+VNG2043G	730	Thiamine metabolism
+VNG2047G	3010	Ribosome
+VNG2048G	3010	Ribosome
+VNG2051G	3020	RNA polymerase
+VNG2053G	3020	RNA polymerase
+VNG2063G	62	Fatty acid biosynthesis (path 2)
+VNG2063G	71	Fatty acid metabolism
+VNG2063G	120	Bile acid biosynthesis
+VNG2063G	280	Valine, leucine and isoleucine degradation
+VNG2063G	360	Phenylalanine metabolism
+VNG2071G	71	Fatty acid metabolism
+VNG2072G	260	Glycine, serine and threonine metabolism
+VNG2072G	970	Aminoacyl-tRNA biosynthesis
+VNG2076G	3010	Ribosome
+VNG2082G	3030	DNA polymerase
+VNG2087G	340	Histidine metabolism
+VNG2093G	251	Glutamate metabolism
+VNG2093G	550	Peptidoglycan biosynthesis
+VNG2093G	910	Nitrogen metabolism
+VNG2100G	260	Glycine, serine and threonine metabolism
+VNG2102G	20	Citrate cycle (TCA cycle)
+VNG2102G	630	Glyoxylate and dicarboxylate metabolism
+VNG2108G	260	Glycine, serine and threonine metabolism
+VNG2108G	750	Vitamin B6 metabolism
+VNG2118G	240	Pyrimidine metabolism
+VNG2122G	280	Valine, leucine and isoleucine degradation
+VNG2122G	290	Valine, leucine and isoleucine biosynthesis
+VNG2122G	770	Pantothenate and CoA biosynthesis
+VNG2135G	190	Oxidative phosphorylation
+VNG2135G	193	ATP Synthesis
+VNG2135G	195	Photosynthesis
+VNG2138G	190	Oxidative phosphorylation
+VNG2138G	193	ATP Synthesis
+VNG2138G	195	Photosynthesis
+VNG2139G	190	Oxidative phosphorylation
+VNG2139G	193	ATP Synthesis
+VNG2139G	195	Photosynthesis
+VNG2140G	190	Oxidative phosphorylation
+VNG2140G	193	ATP Synthesis
+VNG2140G	195	Photosynthesis
+VNG2141G	190	Oxidative phosphorylation
+VNG2141G	193	ATP Synthesis
+VNG2141G	195	Photosynthesis
+VNG2142G	190	Oxidative phosphorylation
+VNG2142G	193	ATP Synthesis
+VNG2142G	195	Photosynthesis
+VNG2143G	190	Oxidative phosphorylation
+VNG2143G	193	ATP Synthesis
+VNG2143G	195	Photosynthesis
+VNG2144G	190	Oxidative phosphorylation
+VNG2144G	193	ATP Synthesis
+VNG2144G	195	Photosynthesis
+VNG2158G	61	Fatty acid biosynthesis (path 1)
+VNG2159G	51	Fructose and mannose metabolism
+VNG2184G	3022	Transcription factors
+VNG2190G	290	Valine, leucine and isoleucine biosynthesis
+VNG2190G	970	Aminoacyl-tRNA biosynthesis
+VNG2193G	190	Oxidative phosphorylation
+VNG2195G	190	Oxidative phosphorylation
+VNG2201G	500	Starch and sucrose metabolism
+VNG2201G	790	Folate biosynthesis
+VNG2203G	30	Pentose phosphate pathway
+VNG2203G	230	Purine metabolism
+VNG2206G	51	Fructose and mannose metabolism
+VNG2208G	380	Tryptophan metabolism
+VNG2208G	970	Aminoacyl-tRNA biosynthesis
+VNG2217G	10	Glycolysis / Gluconeogenesis
+VNG2217G	290	Valine, leucine and isoleucine biosynthesis
+VNG2217G	620	Pyruvate metabolism
+VNG2217G	650	Butanoate metabolism
+VNG2218G	10	Glycolysis / Gluconeogenesis
+VNG2218G	290	Valine, leucine and isoleucine biosynthesis
+VNG2218G	620	Pyruvate metabolism
+VNG2218G	650	Butanoate metabolism
+VNG2219G	10	Glycolysis / Gluconeogenesis
+VNG2219G	620	Pyruvate metabolism
+VNG2220G	10	Glycolysis / Gluconeogenesis
+VNG2220G	20	Citrate cycle (TCA cycle)
+VNG2220G	260	Glycine, serine and threonine metabolism
+VNG2220G	620	Pyruvate metabolism
+VNG2222G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG2223G	290	Valine, leucine and isoleucine biosynthesis
+VNG2223G	970	Aminoacyl-tRNA biosynthesis
+VNG2224G	330	Arginine and proline metabolism
+VNG2232G	380	Tryptophan metabolism
+VNG2232G	970	Aminoacyl-tRNA biosynthesis
+VNG2237G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG2237G	970	Aminoacyl-tRNA biosynthesis
+VNG2243G	3022	Transcription factors
+VNG2247G	340	Histidine metabolism
+VNG2251G	271	Methionine metabolism
+VNG2251G	450	Selenoamino acid metabolism
+VNG2267G	3060	Protein export
+VNG2269G	3060	Protein export
+VNG2272G	30	Pentose phosphate pathway
+VNG2272G	710	Carbon fixation
+VNG2276G	51	Fructose and mannose metabolism
+VNG2283G	252	Alanine and aspartate metabolism
+VNG2283G	970	Aminoacyl-tRNA biosynthesis
+VNG2284G	340	Histidine metabolism
+VNG2286G	660	C5-Branched dibasic acid metabolism
+VNG2294G	340	Histidine metabolism
+VNG2295G	340	Histidine metabolism
+VNG2322G	860	Porphyrin and chlorophyll metabolism
+VNG2326G	860	Porphyrin and chlorophyll metabolism
+VNG2330G	860	Porphyrin and chlorophyll metabolism
+VNG2331G	860	Porphyrin and chlorophyll metabolism
+VNG2332G	860	Porphyrin and chlorophyll metabolism
+VNG2338G	3030	DNA polymerase
+VNG2352G	260	Glycine, serine and threonine metabolism
+VNG2352G	970	Aminoacyl-tRNA biosynthesis
+VNG2356G	130	Ubiquinone biosynthesis
+VNG2367G	20	Citrate cycle (TCA cycle)
+VNG2367G	620	Pyruvate metabolism
+VNG2367G	630	Glyoxylate and dicarboxylate metabolism
+VNG2367G	710	Carbon fixation
+VNG2367G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG2368G	500	Starch and sucrose metabolism
+VNG2368G	790	Folate biosynthesis
+VNG2373G	380	Tryptophan metabolism
+VNG2373G	910	Nitrogen metabolism
+VNG2374G	260	Glycine, serine and threonine metabolism
+VNG2374G	300	Lysine biosynthesis
+VNG2383G	230	Purine metabolism
+VNG2383G	240	Pyrimidine metabolism
+VNG2384G	230	Purine metabolism
+VNG2384G	240	Pyrimidine metabolism
+VNG2417G	3030	DNA polymerase
+VNG2418G	300	Lysine biosynthesis
+VNG2418G	440	Aminophosphonate metabolism
+VNG2418G	930	Caprolactam degradation
+VNG2420G	271	Methionine metabolism
+VNG2420G	920	Sulfur metabolism
+VNG2421G	271	Methionine metabolism
+VNG2421G	272	Cysteine metabolism
+VNG2423G	260	Glycine, serine and threonine metabolism
+VNG2424G	260	Glycine, serine and threonine metabolism
+VNG2430G	260	Glycine, serine and threonine metabolism
+VNG2430G	750	Vitamin B6 metabolism
+VNG2436G	220	Urea cycle and metabolism of amino groups
+VNG2436G	252	Alanine and aspartate metabolism
+VNG2436G	330	Arginine and proline metabolism
+VNG2437G	220	Urea cycle and metabolism of amino groups
+VNG2437G	252	Alanine and aspartate metabolism
+VNG2437G	330	Arginine and proline metabolism
+VNG2447G	310	Lysine degradation
+VNG2447G	350	Tyrosine metabolism
+VNG2447G	360	Phenylalanine metabolism
+VNG2447G	600	Sphingoglycolipid metabolism
+VNG2447G	626	Nitorobenzene degradation
+VNG2447G	627	1,4-Dichlorobenzene degradation
+VNG2447G	628	Fluorene degradation
+VNG2447G	629	Carbazole degradation
+VNG2447G	643	Styrene degradation
+VNG2459G	3060	Protein export
+VNG2462G	3060	Protein export
+VNG2467G	3010	Ribosome
+VNG2469G	3010	Ribosome
+VNG2499G	71	Fatty acid metabolism
+VNG2499G	310	Lysine degradation
+VNG2499G	380	Tryptophan metabolism
+VNG2499G	632	Benzoate degradation
+VNG2504G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG2504G	970	Aminoacyl-tRNA biosynthesis
+VNG2505G	400	Phenylalanine, tyrosine and tryptophan biosynthesis
+VNG2505G	970	Aminoacyl-tRNA biosynthesis
+VNG2507G	240	Pyrimidine metabolism
+VNG2513G	10	Glycolysis / Gluconeogenesis
+VNG2513G	53	Ascorbate and aldarate metabolism
+VNG2513G	71	Fatty acid metabolism
+VNG2513G	120	Bile acid biosynthesis
+VNG2513G	280	Valine, leucine and isoleucine degradation
+VNG2513G	310	Lysine degradation
+VNG2513G	330	Arginine and proline metabolism
+VNG2513G	340	Histidine metabolism
+VNG2513G	380	Tryptophan metabolism
+VNG2513G	410	beta-Alanine metabolism
+VNG2513G	561	Glycerolipid metabolism
+VNG2513G	620	Pyruvate metabolism
+VNG2513G	631	1,2-Dichloroethane degradation
+VNG2513G	640	Propanoate metabolism
+VNG2513G	650	Butanoate metabolism
+VNG2514G	3010	Ribosome
+VNG2533G	240	Pyrimidine metabolism
+VNG2537G	130	Ubiquinone biosynthesis
+VNG2547G	290	Valine, leucine and isoleucine biosynthesis
+VNG2547G	970	Aminoacyl-tRNA biosynthesis
+VNG2570G	240	Pyrimidine metabolism
+VNG2574G	20	Citrate cycle (TCA cycle)
+VNG2574G	630	Glyoxylate and dicarboxylate metabolism
+VNG2574G	720	Reductive carboxylate cycle (CO2 fixation)
+VNG2596G	340	Histidine metabolism
+VNG2606G	730	Thiamine metabolism
+VNG2624G	740	Riboflavin metabolism
+VNG2629G	10	Glycolysis / Gluconeogenesis
+VNG2629G	51	Fructose and mannose metabolism
+VNG2629G	52	Galactose metabolism
+VNG2629G	500	Starch and sucrose metabolism
+VNG2629G	522	Erythromycin biosynthesis
+VNG2640G	260	Glycine, serine and threonine metabolism
+VNG2640G	670	One carbon pool by folate
+VNG2640G	910	Nitrogen metabolism
+VNG2648G	3010	Ribosome
+VNG2650G	260	Glycine, serine and threonine metabolism
+VNG2650G	300	Lysine biosynthesis
+VNG2657G	3010	Ribosome
+VNG2658G	3010	Ribosome
+VNG2662G	3020	RNA polymerase
+VNG2664G	3020	RNA polymerase
+VNG2665G	3020	RNA polymerase
+VNG2666G	3020	RNA polymerase
+VNG2668G	3020	RNA polymerase
+VNG6037G	3022	Transcription factors
+VNG6050G	3022	Transcription factors
+VNG6053G	190	Oxidative phosphorylation
+VNG6055G	190	Oxidative phosphorylation
+VNG6074G	240	Pyrimidine metabolism
+VNG6075G	240	Pyrimidine metabolism
+VNG6081G	100	Sterol biosynthesis
+VNG6081G	900	Terpenoid biosynthesis
+VNG6140G	3022	Transcription factors
+VNG6211G	53	Ascorbate and aldarate metabolism
+VNG6211G	130	Ubiquinone biosynthesis
+VNG6211G	230	Purine metabolism
+VNG6211G	330	Arginine and proline metabolism
+VNG6211G	350	Tyrosine metabolism
+VNG6211G	351	1,1,1-Trichloro-2,2-bis(4-chlorophenyl)ethane (DDT) degradation
+VNG6211G	360	Phenylalanine metabolism
+VNG6211G	380	Tryptophan metabolism
+VNG6211G	440	Aminophosphonate metabolism
+VNG6211G	620	Pyruvate metabolism
+VNG6211G	628	Fluorene degradation
+VNG6211G	750	Vitamin B6 metabolism
+VNG6211G	940	Flavonoids, stilbene and lignin biosynthesis
+VNG6211G	950	Alkaloid biosynthesis I
+VNG6270G	561	Glycerolipid metabolism
+VNG6294G	380	Tryptophan metabolism
+VNG6294G	680	Methane metabolism
+VNG6309G	240	Pyrimidine metabolism
+VNG6309G	252	Alanine and aspartate metabolism
+VNG6311G	240	Pyrimidine metabolism
+VNG6311G	252	Alanine and aspartate metabolism
+VNG6312G	330	Arginine and proline metabolism
+VNG6312G	970	Aminoacyl-tRNA biosynthesis
+VNG6315G	220	Urea cycle and metabolism of amino groups
+VNG6315G	330	Arginine and proline metabolism
+VNG6316G	251	Glutamate metabolism
+VNG6316G	330	Arginine and proline metabolism
+VNG6316G	910	Nitrogen metabolism
+VNG6351G	3022	Transcription factors
+VNG6362G	3030	DNA polymerase
+VNG6389G	3022	Transcription factors
+VNG6438G	3022	Transcription factors
+VNG6445G	100	Sterol biosynthesis
+VNG6445G	900	Terpenoid biosynthesis
+VNG6451G	240	Pyrimidine metabolism
+VNG6452G	240	Pyrimidine metabolism
+VNG6471G	190	Oxidative phosphorylation
+VNG6473G	190	Oxidative phosphorylation
+VNG6476G	3022	Transcription factors

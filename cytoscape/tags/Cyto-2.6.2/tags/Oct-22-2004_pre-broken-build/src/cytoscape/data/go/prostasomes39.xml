@@ -1,0 +1,4356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Revision$
+     $Date$
+     $Author$
+  -->
+
+<annotation species="Homo sapiens" 
+            type="all GO ontologies"
+            ontology="goOntologies.xml">
+
+  <term>
+    <entity> 6PGD </entity>
+    <id> 0004616 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> 6PGD </entity>
+    <id> 0005489 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> 6PGD </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> 6PGD </entity>
+    <id> 0009051 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ACLY </entity>
+    <id> 0000287 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ACLY </entity>
+    <id> 0003878 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ACLY </entity>
+    <id> 0005524 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ACLY </entity>
+    <id> 0016829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ACLY </entity>
+    <id> 0006101 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ACLY </entity>
+    <id> 0006200 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ACLY </entity>
+    <id> 0008610 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ACLY </entity>
+    <id> 0015936 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ACLY </entity>
+    <id> 0009346 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ALFC </entity>
+    <id> 0004332 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ALFC </entity>
+    <id> 0016829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ALFC </entity>
+    <id> 0006000 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ALFC </entity>
+    <id> 0006096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AMPN </entity>
+    <id> 0004177 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AMPN </entity>
+    <id> 0004179 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AMPN </entity>
+    <id> 0004872 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AMPN </entity>
+    <id> 0008237 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AMPN </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AMPN </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AMPN </entity>
+    <id> 0009405 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AMPN </entity>
+    <id> 0005888 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0004623 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0016209 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0016224 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0016685 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0016686 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0016687 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0006804 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0006804 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0009395 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0016042 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0005764 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AOP2 </entity>
+    <id> 0005829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AT2A </entity>
+    <id> 0000287 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AT2A </entity>
+    <id> 0004005 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AT2A </entity>
+    <id> 0005524 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AT2A </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AT2A </entity>
+    <id> 0006812 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AT2A </entity>
+    <id> 0008152 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> AT2A </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ATY1 </entity>
+    <id> 0000287 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ATY1 </entity>
+    <id> 0004005 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ATY1 </entity>
+    <id> 0005524 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ATY1 </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ATY1 </entity>
+    <id> 0006812 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ATY1 </entity>
+    <id> 0008152 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ATY1 </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0005509 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0003754 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0003755 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0004600 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0008565 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0016853 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0006457 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0006457 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0006960 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0008166 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0005509 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0005509 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> CYPH </entity>
+    <id> 0007242 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHA6 </entity>
+    <id> 0004030 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHA6 </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHA6 </entity>
+    <id> 0006066 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHA6 </entity>
+    <id> 0006629 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHC3 </entity>
+    <id> 0004090 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHC3 </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHC3 </entity>
+    <id> 0008152 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHC3 </entity>
+    <id> 0005829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHSO </entity>
+    <id> 0003939 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHSO </entity>
+    <id> 0004024 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHSO </entity>
+    <id> 0008270 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHSO </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHSO </entity>
+    <id> 0006060 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DHSO </entity>
+    <id> 0007601 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DPP4 </entity>
+    <id> 0004177 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DPP4 </entity>
+    <id> 0004274 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DPP4 </entity>
+    <id> 0004287 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DPP4 </entity>
+    <id> 0005209 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DPP4 </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DPP4 </entity>
+    <id> 0016805 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DPP4 </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DPP4 </entity>
+    <id> 0006955 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> DPP4 </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ENOA </entity>
+    <id> 0000287 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ENOA </entity>
+    <id> 0004634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ENOA </entity>
+    <id> 0016829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ENOA </entity>
+    <id> 0006096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ENOA </entity>
+    <id> 0000015 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ESTD </entity>
+    <id> 0004091 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ESTD </entity>
+    <id> 0004759 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ESTD </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ESTD </entity>
+    <id> 0000004 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> ESTD </entity>
+    <id> 0016023 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> G3P2 </entity>
+    <id> 0004365 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> G3P2 </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> G3P2 </entity>
+    <id> 0006096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> G3P2 </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GGT1 </entity>
+    <id> 0003840 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GGT1 </entity>
+    <id> 0004629 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GGT1 </entity>
+    <id> 0008270 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GGT1 </entity>
+    <id> 0008415 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GGT1 </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GGT1 </entity>
+    <id> 0006520 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GGT1 </entity>
+    <id> 0006750 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GGT1 </entity>
+    <id> 0005624 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GGT1 </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000263 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0004871 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007186 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007189 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005834 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003924 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006400 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003924 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006955 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000079 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006349 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005524 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003924 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006400 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007015 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008372 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003746 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006414 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007242 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003746 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006414 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006955 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0004364 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006803 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007417 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005524 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016301 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000166 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005524 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005554 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003746 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006414 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005245 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006816 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0017076 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000004 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0004765 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005524 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008652 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003677 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007242 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003928 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0015031 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0015631 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007049 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007242 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005813 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005875 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003929 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008565 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000074 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006259 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006405 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006611 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006886 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007052 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005643 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005717 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000004 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005886 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003800 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003924 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006917 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006955 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0009405 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003800 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003924 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006955 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005099 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007242 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008151 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007015 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0030175 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000004 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008372 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007266 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0001506 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006809 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003934 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0001506 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006559 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006729 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006809 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000074 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007266 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008284 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0004613 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016831 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006006 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006094 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003924 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005215 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008047 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008270 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006886 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005622 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005092 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008536 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005098 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005625 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005643 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005095 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005099 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005516 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007148 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005884 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016020 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007012 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007155 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000004 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008372 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005070 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005100 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007266 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0030041 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005884 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008151 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006955 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007166 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008151 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016020 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005070 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005100 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007011 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007266 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005070 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005100 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007010 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007266 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003723 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0004003 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0004004 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005515 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008565 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006606 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006810 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007265 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003779 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005095 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005099 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005516 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007148 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0015629 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003677 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008060 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008277 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007242 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005886 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005099 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007242 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003930 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016020 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007048 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0004613 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0030145 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006006 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006094 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005739 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007015 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007015 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007162 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016322 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005856 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005912 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005515 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0019839 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006886 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007601 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005794 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016020 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003924 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003931 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007015 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005856 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003677 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005478 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008565 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006888 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005783 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005794 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0004017 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005524 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016301 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005739 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005099 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003723 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008565 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0030159 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006606 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006810 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007253 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007265 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008134 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006350 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007275 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003677 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008060 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008277 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005634 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005478 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008565 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0006888 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005783 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005794 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003928 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0015031 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003924 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000004 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003723 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0005525 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0000004 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0008372 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0003925 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> GTP </entity>
+    <id> 0007264 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IDHC </entity>
+    <id> 0004450 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IDHC </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IDHC </entity>
+    <id> 0005975 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IDHC </entity>
+    <id> 0006092 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IDHC </entity>
+    <id> 0006097 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IDHC </entity>
+    <id> 0006099 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IDHC </entity>
+    <id> 0006102 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IDHC </entity>
+    <id> 0005829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IMD2 </entity>
+    <id> 0003938 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IMD2 </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IMD2 </entity>
+    <id> 0006164 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> IMD2 </entity>
+    <id> 0006177 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KCRB </entity>
+    <id> 0004111 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KCRB </entity>
+    <id> 0016772 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KCRB </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KLK3 </entity>
+    <id> 0004263 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KLK3 </entity>
+    <id> 0004295 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KLK3 </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KLK3 </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LGUL </entity>
+    <id> 0004462 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LGUL </entity>
+    <id> 0016829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LGUL </entity>
+    <id> 0005975 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LIPL </entity>
+    <id> 0004465 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LIPL </entity>
+    <id> 0005323 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LIPL </entity>
+    <id> 0008201 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LIPL </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LIPL </entity>
+    <id> 0006631 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LIPL </entity>
+    <id> 0006869 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LIPL </entity>
+    <id> 0008015 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LIPL </entity>
+    <id> 0016042 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LIPL </entity>
+    <id> 0005576 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LX1B </entity>
+    <id> 0005489 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LX1B </entity>
+    <id> 0005506 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LX1B </entity>
+    <id> 0016165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LX1B </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LX1B </entity>
+    <id> 0006118 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LX1B </entity>
+    <id> 0006631 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> LX1B </entity>
+    <id> 0019370 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MDHC </entity>
+    <id> 0004470 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MDHC </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MDHC </entity>
+    <id> 0030060 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MDHC </entity>
+    <id> 0006099 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MDHC </entity>
+    <id> 0005829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0005509 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0008217 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0005615 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0008021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0004339 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0004553 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0004558 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0004562 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0005975 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0005983 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> MGA </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008654 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0009039 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016151 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006807 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0004245 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016020 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005201 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008234 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016197 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005576 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0004245 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008237 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0007048 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0007267 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005887 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008246 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008609 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008610 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005777 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005777 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008234 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008234 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0000166 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0004197 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0007443 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005604 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0004307 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006629 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008654 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0004105 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006644 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0009058 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005625 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016020 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005554 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0000004 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0008372 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0007155 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0007588 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005887 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0003975 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016932 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006629 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005783 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016021 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0004105 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006644 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0006656 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0009058 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> NEP </entity>
+    <id> 0005783 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PDX1 </entity>
+    <id> 0016209 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PDX1 </entity>
+    <id> 0001501 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PDX1 </entity>
+    <id> 0008283 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PDX2 </entity>
+    <id> 0005489 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PDX2 </entity>
+    <id> 0008379 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PDX2 </entity>
+    <id> 0016209 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PDX2 </entity>
+    <id> 0006979 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PDX2 </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PEPC </entity>
+    <id> 0004194 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PEPC </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PEPC </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PEPC </entity>
+    <id> 0007586 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PEPC </entity>
+    <id> 0005615 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PPAP </entity>
+    <id> 0003993 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PPAP </entity>
+    <id> 0004725 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PPAP </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PPAP </entity>
+    <id> 0000074 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PPAP </entity>
+    <id> 0005576 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> SPSY </entity>
+    <id> 0004766 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> SPSY </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> SPSY </entity>
+    <id> 0016768 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> SPSY </entity>
+    <id> 0006555 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> SPSY </entity>
+    <id> 0006595 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TMS2 </entity>
+    <id> 0004263 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TMS2 </entity>
+    <id> 0004295 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TMS2 </entity>
+    <id> 0005044 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TMS2 </entity>
+    <id> 0016787 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TMS2 </entity>
+    <id> 0006508 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TMS2 </entity>
+    <id> 0005887 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TPIS </entity>
+    <id> 0004807 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TPIS </entity>
+    <id> 0016853 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TPIS </entity>
+    <id> 0006094 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TPIS </entity>
+    <id> 0006096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TPIS </entity>
+    <id> 0006098 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TPIS </entity>
+    <id> 0006633 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> TPIS </entity>
+    <id> 0008152 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> UBA1 </entity>
+    <id> 0004839 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> UBA1 </entity>
+    <id> 0016874 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> UBA1 </entity>
+    <id> 0006260 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> UBA1 </entity>
+    <id> 0006464 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> UBA1 </entity>
+    <id> 0006512 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KPY1 </entity>
+    <id> 0000287 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KPY1 </entity>
+    <id> 0004743 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KPY1 </entity>
+    <id> 0004743 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KPY1 </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KPY1 </entity>
+    <id> 0006096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KPY1 </entity>
+    <id> 0005829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KAP2 </entity>
+    <id> 0008603 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KAP2 </entity>
+    <id> 0030552 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KAP2 </entity>
+    <id> 0006468 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KAP2 </entity>
+    <id> 0007242 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KAP2 </entity>
+    <id> 0005624 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KAP2 </entity>
+    <id> 0005737 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KAP2 </entity>
+    <id> 0005886 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> KAP2 </entity>
+    <id> 0005952 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PGK1 </entity>
+    <id> 0004618 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PGK1 </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> PGK1 </entity>
+    <id> 0006096 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016301 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0003774 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0003779 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005516 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005524 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008570 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006941 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007517 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008213 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005863 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016459 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0003781 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007148 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007345 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007601 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0015629 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005523 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006942 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007517 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005861 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005164 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006917 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006955 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007267 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005887 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0003779 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006937 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007517 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0004024 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0004314 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0004320 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008270 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008757 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016294 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016295 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016296 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016491 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016788 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016829 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006520 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006633 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005509 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008307 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006937 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007517 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005859 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016459 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0004674 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0016740 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006468 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006915 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008624 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0003779 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008307 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006941 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007155 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007517 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005863 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0003781 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007012 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007148 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008283 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0015629 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007155 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007399 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007411 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0003780 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007148 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005856 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007148 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007165 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007399 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007411 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0005057 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0007257 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008625 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0008189 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006916 </id>
+    <name> n/a </name>
+  </term>
+
+  <term>
+    <entity> FAS </entity>
+    <id> 0006968 </id>
+    <name> n/a </name>
+  </term>
+
+</annotation>

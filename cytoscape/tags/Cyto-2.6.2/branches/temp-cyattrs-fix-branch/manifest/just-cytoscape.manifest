@@ -1,0 +1,2 @@
+Main-Class: cytoscape.CyMain
+Class-Path: . colt.jar coltginy.jar luna.jar junit.jar giny.jar piccolo.jar piccolox.jar glf.jar phoebe.jar looks-1.1.3.jar getopt.jar jdom.jar jnlp.jar tclib.jar xerces.jar xml-apis.jar freehep-base.jar freehep-graphicsio-pdf.jar freehep-graphics2d.jar freehep-graphicsio-ps.jar freehep-graphicsio-gif.jar freehep-graphicsio-svg.jar freehep-graphicsio-swf.jar freehep-graphicsio.jar

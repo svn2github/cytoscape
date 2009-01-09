@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/map_1_0.dtd">
+
+<map version="1.0">
+	<mapID target="intro" url="html/Introduction.html" />
+
+	<mapID target="quick-tour" url="html/Quick_Tour.html" />
+	<mapID target="menus" url="html/Quick_Tour.html#menus" />
+	<mapID target="network-view-manager"
+		url="html/Quick_Tour.html#network-view-manager" />
+
+	<mapID target="launching" url="html/Launching.html" />
+	<mapID target="cmd-line-args" url="html/Command_Line_Arguments.html" />
+	<mapID target="building-networks"
+		url="html/Building_and_Storing_Interaction_Networks.html" />
+	<mapID target="loading-expression-data"
+		url="html/Loading_Gene_Expression_Data.html" />
+	<mapID target="filters" url="html/Filters.html" />
+
+	<mapID target="navigation" url="html/Navigation_and_Layout.html" />
+	<mapID target="toolbar"
+		url="html/Navigation_and_Layout.html#toolbar" />
+	<mapID target="toolbar-load"
+		url="html/Navigation_and_Layout.html#toolbar-load" />
+	<mapID target="toolbar-zoom"
+		url="html/Navigation_and_Layout.html#toolbar-zoom" />
+	<mapID target="toolbar-hide"
+		url="html/Navigation_and_Layout.html#toolbar-hide" />
+	<mapID target="toolbar-annotate"
+		url="html/Navigation_and_Layout.html#toolbar-annotate" />
+	<mapID target="toolbar-setVisProps"
+		url="html/Navigation_and_Layout.html#toolbar-setVisProps" />
+	<mapID target="toolbar-changeVisStyle"
+		url="html/Navigation_and_Layout.html#toolbar-changeVisProps" />
+	<mapID target="networkLayout"
+		url="html/Navigation_and_Layout.html#networkLayout" />
+
+	<mapID target="attributes" url="html/Node_and_Edge_Attributes.html" />
+	<mapID target="visual-styles" url="html/Visual_Styles.html" />
+	<mapID target="cytoscape-editor" url="html/Editing_Networks.html" />
+	<mapID target="cytopanels" url="html/CytoPanels.html" />
+	<mapID target="annotation" url="html/Annotation.html" />
+	<mapID target="acknowledgements" url="html/Acknowledgements.html" />
+</map>

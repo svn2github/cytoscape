@@ -1,0 +1,10 @@
+edge.color.controller=homology
+edge.color.homology.type=continuous
+
+edge.color.homology.min.value=0.0
+edge.color.homology.min.color=0,0,0
+
+edge.color.homology.max.value=100.0
+edge.color.homology.max.color=255,255,255
+
+

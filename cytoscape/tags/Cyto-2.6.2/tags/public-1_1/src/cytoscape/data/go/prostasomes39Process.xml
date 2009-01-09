@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Revision$
+     $Date$
+     $Author$
+  -->
+
+<annotation species="Homo sapiens"
+            type="process"
+            ontology="goOntologies.xml">
+
+<term>
+  <entity> 6PGD </entity>
+  <id> 9051 </id>
+</term>
+
+
+<term>
+  <entity> ACLY </entity>
+  <id> 6101 </id>
+</term>
+
+
+<term>
+  <entity> ACLY </entity>
+  <id> 6200 </id>
+</term>
+
+
+<term>
+  <entity> ACLY </entity>
+  <id> 8610 </id>
+</term>
+
+
+<term>
+  <entity> ACLY </entity>
+  <id> 15936 </id>
+</term>
+
+
+<term>
+  <entity> ALFC </entity>
+  <id> 6000 </id>
+</term>
+
+
+<term>
+  <entity> ALFC </entity>
+  <id> 6096 </id>
+</term>
+
+
+<term>
+  <entity> AMPN </entity>
+  <id> 6508 </id>
+</term>
+
+
+<term>
+  <entity> AMPN </entity>
+  <id> 9405 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 6804 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 6804 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 9395 </id>
+</term>
+
+
+<term>
+  <entity> AOP2 </entity>
+  <id> 16042 </id>
+</term>
+
+
+<term>
+  <entity> AT2A </entity>
+  <id> 6812 </id>
+</term>
+
+
+<term>
+  <entity> AT2A </entity>
+  <id> 8152 </id>
+</term>
+
+
+<term>
+  <entity> ATY1 </entity>
+  <id> 6812 </id>
+</term>
+
+
+<term>
+  <entity> ATY1 </entity>
+  <id> 8152 </id>
+</term>
+
+
+<term>
+  <entity> CYPH </entity>
+  <id> 6457 </id>
+</term>
+
+
+<term>
+  <entity> CYPH </entity>
+  <id> 6457 </id>
+</term>
+
+
+<term>
+  <entity> CYPH </entity>
+  <id> 6960 </id>
+</term>
+
+
+<term>
+  <entity> CYPH </entity>
+  <id> 8166 </id>
+</term>
+
+
+<term>
+  <entity> DHA6 </entity>
+  <id> 6066 </id>
+</term>
+
+
+<term>
+  <entity> DHA6 </entity>
+  <id> 6629 </id>
+</term>
+
+
+<term>
+  <entity> DHC3 </entity>
+  <id> 8152 </id>
+</term>
+
+
+<term>
+  <entity> DHSO </entity>
+  <id> 6060 </id>
+</term>
+
+
+<term>
+  <entity> DHSO </entity>
+  <id> 7601 </id>
+</term>
+
+
+<term>
+  <entity> DPP4 </entity>
+  <id> 6508 </id>
+</term>
+
+
+<term>
+  <entity> DPP4 </entity>
+  <id> 6955 </id>
+</term>
+
+
+<term>
+  <entity> ENOA </entity>
+  <id> 6096 </id>
+</term>
+
+
+<term>
+  <entity> ESTD </entity>
+  <id> 4 </id>
+</term>
+
+
+<term>
+  <entity> G3P2 </entity>
+  <id> 6096 </id>
+</term>
+
+
+<term>
+  <entity> GGT1 </entity>
+  <id> 6520 </id>
+</term>
+
+
+<term>
+  <entity> GGT1 </entity>
+  <id> 6750 </id>
+</term>
+
+
+<term>
+  <entity> GTP </entity>
+  <id> 6803 </id>
+</term>
+
+
+<term>
+  <entity> GTP </entity>
+  <id> 7417 </id>
+</term>
+
+
+<term>
+  <entity> IDHC </entity>
+  <id> 5975 </id>
+</term>
+
+
+<term>
+  <entity> IDHC </entity>
+  <id> 6092 </id>
+</term>
+
+
+<term>
+  <entity> IDHC </entity>
+  <id> 6097 </id>
+</term>
+
+
+<term>
+  <entity> IDHC </entity>
+  <id> 6099 </id>
+</term>
+
+
+<term>
+  <entity> IDHC </entity>
+  <id> 6102 </id>
+</term>
+
+
+<term>
+  <entity> IMD2 </entity>
+  <id> 6164 </id>
+</term>
+
+
+<term>
+  <entity> IMD2 </entity>
+  <id> 6177 </id>
+</term>
+
+
+<term>
+  <entity> KLK3 </entity>
+  <id> 6508 </id>
+</term>
+
+
+<term>
+  <entity> LGUL </entity>
+  <id> 5975 </id>
+</term>
+
+
+<term>
+  <entity> LIPL </entity>
+  <id> 6631 </id>
+</term>
+
+
+<term>
+  <entity> LIPL </entity>
+  <id> 6869 </id>
+</term>
+
+
+<term>
+  <entity> LIPL </entity>
+  <id> 8015 </id>
+</term>
+
+
+<term>
+  <entity> LIPL </entity>
+  <id> 16042 </id>
+</term>
+
+
+<term>
+  <entity> LX1B </entity>
+  <id> 6118 </id>
+</term>
+
+
+<term>
+  <entity> LX1B </entity>
+  <id> 6631 </id>
+</term>
+
+
+<term>
+  <entity> LX1B </entity>
+  <id> 19370 </id>
+</term>
+
+
+<term>
+  <entity> MDHC </entity>
+  <id> 6099 </id>
+</term>
+
+
+<term>
+  <entity> MGA </entity>
+  <id> 5975 </id>
+</term>
+
+
+<term>
+  <entity> MGA </entity>
+  <id> 5983 </id>
+</term>
+
+
+<term>
+  <entity> NEP </entity>
+  <id> 6508 </id>
+</term>
+
+
+<term>
+  <entity> NEP </entity>
+  <id> 7048 </id>
+</term>
+
+
+<term>
+  <entity> NEP </entity>
+  <id> 7267 </id>
+</term>
+
+
+<term>
+  <entity> PDX1 </entity>
+  <id> 1501 </id>
+</term>
+
+
+<term>
+  <entity> PDX1 </entity>
+  <id> 8283 </id>
+</term>
+
+
+<term>
+  <entity> PDX2 </entity>
+  <id> 6979 </id>
+</term>
+
+
+<term>
+  <entity> PEPC </entity>
+  <id> 6508 </id>
+</term>
+
+
+<term>
+  <entity> PEPC </entity>
+  <id> 7586 </id>
+</term>
+
+
+<term>
+  <entity> PPAP </entity>
+  <id> 74 </id>
+</term>
+
+
+<term>
+  <entity> SPSY </entity>
+  <id> 6555 </id>
+</term>
+
+
+<term>
+  <entity> SPSY </entity>
+  <id> 6595 </id>
+</term>
+
+
+<term>
+  <entity> TMS2 </entity>
+  <id> 6508 </id>
+</term>
+
+
+<term>
+  <entity> TPIS </entity>
+  <id> 6094 </id>
+</term>
+
+
+<term>
+  <entity> TPIS </entity>
+  <id> 6096 </id>
+</term>
+
+
+<term>
+  <entity> TPIS </entity>
+  <id> 6098 </id>
+</term>
+
+
+<term>
+  <entity> TPIS </entity>
+  <id> 6633 </id>
+</term>
+
+
+<term>
+  <entity> TPIS </entity>
+  <id> 8152 </id>
+</term>
+
+
+<term>
+  <entity> UBA1 </entity>
+  <id> 6260 </id>
+</term>
+
+
+<term>
+  <entity> UBA1 </entity>
+  <id> 6464 </id>
+</term>
+
+
+<term>
+  <entity> UBA1 </entity>
+  <id> 6512 </id>
+</term>
+
+
+<term>
+  <entity> KPY1 </entity>
+  <id> 6096 </id>
+</term>
+
+
+<term>
+  <entity> KAP2 </entity>
+  <id> 6468 </id>
+</term>
+
+
+<term>
+  <entity> KAP2 </entity>
+  <id> 7242 </id>
+</term>
+
+
+<term>
+  <entity> PGK1 </entity>
+  <id> 6096 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 6520 </id>
+</term>
+
+
+<term>
+  <entity> FAS </entity>
+  <id> 6633 </id>
+</term>
+
+
+</annotation>

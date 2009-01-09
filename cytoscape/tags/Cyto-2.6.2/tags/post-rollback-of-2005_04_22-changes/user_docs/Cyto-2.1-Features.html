@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8">
+  <title>Cytoscape 2.1 Features</title>
+  <meta name="GENERATOR" content="OpenOffice.org 1.1.0  (Linux)">
+  <meta name="AUTHOR" content="Administrator">
+  <meta name="CREATED" content="20050217;16530000">
+  <meta name="CHANGED" content="20050217;17521400">
+</head>
+<body lang="en-US" style="color: rgb(0, 0, 0);" link="#0000ff" dir="ltr">
+<h1 style="text-align: center; font-family: helvetica,arial,sans-serif;"><font
+ size="5" style="font-size: 20pt;">Cytoscape
+2.1 Features</font></h1>
+<p style="text-align: center; font-family: helvetica,arial,sans-serif;"><font
+ size="2" style="font-size: 11pt;">22
+February 2005</font></p>
+<p align="justify"
+ style="margin-left: 0.5in; margin-right: 0.5in; font-family: helvetica,arial,sans-serif;"><i>Cytoscape
+2.1 is the latest release
+of the open source bioinformatics software platform for <b>visualizing
+</b>molecular interaction networks and <b>integrating </b>these
+interactions with gene expression profiles and other state data.</i></p>
+<p align="justify"
+ style="margin-left: 0.5in; margin-right: 0.5in; font-family: helvetica,arial,sans-serif;">
+<i>The 2.1 release of Cytoscape
+includes: major performance improvements for loading, manipulating
+and managing large networks; new layout and visual attribute
+operations; support for new external data formats; usability
+improvements; and bug fixes.</i></p>
+<span style="font-family: helvetica,arial,sans-serif;"><br>
+</span>
+<h2 style="font-style: normal; font-family: helvetica,arial,sans-serif;"><u>Performance
+Improvements</u></h2>
+<h3 style="font-family: helvetica,arial,sans-serif;">Optimization and
+Run-Time Performance
+Improvements</h3>
+<p style="font-family: helvetica,arial,sans-serif;">Performance
+Optimization of Graph Model</p>
+<ul style="font-family: helvetica,arial,sans-serif;">
+  <li>Large graphs are now supported
+(&gt;100K
+nodes, edges, depending on system)</li>
+  <li>The 2.1 release features
+significant
+performance improvements for graph loading, creation, and miscellaneous
+graph operations (&gt; 2 - 10x improvements for some operations)</li>
+</ul>
+<h2 style="font-style: normal; font-family: helvetica,arial,sans-serif;"><u>New
+Features and
+Functionality</u></h2>
+<h3 style="font-family: helvetica,arial,sans-serif;">VizMapper</h3>
+<p style="font-family: helvetica,arial,sans-serif;">Node
+label color control has been added.</p>
+<h3 style="font-family: helvetica,arial,sans-serif;">Graph Model and
+Operations</h3>
+<p style="font-family: helvetica,arial,sans-serif;">New
+layout features are available, providing new operations on selected
+nodes:</p>
+<ul style="font-family: helvetica,arial,sans-serif;">
+  <li>Layout selected nodes</li>
+  <li>Rotate selected nodes</li>
+</ul>
+<h3 style="font-family: helvetica,arial,sans-serif;">External Data
+Support</h3>
+<p style="font-family: helvetica,arial,sans-serif;">A
+direct cPath Interface is available via a new cPath plug-in. </p>
+<p style="font-family: helvetica,arial,sans-serif;">cPath
+is a freely available, open-source protein-protein interaction
+database from Memorial Sloan-Kettering Cancer Center. Using cPath, a
+researcher can search for specific protein-protein interaction
+records, inspect matching records, and export them to a third-party
+database or visualization application, such as Cytoscape. More
+information about cPath is available at
+http://www.cbio.mskcc.org/cpath</p>
+<p style="font-family: helvetica,arial,sans-serif;">Support
+for new data import and export formats has been added:</p>
+<ul style="font-family: helvetica,arial,sans-serif;">
+  <li>GEO SOFT</li>
+  <li>PSI-MI Level 1</li>
+</ul>
+<h3 style="font-family: helvetica,arial,sans-serif;">Usability
+Improvements</h3>
+<p style="font-family: helvetica,arial,sans-serif;">Headless
+mode operation is now supported.</p>
+<p style="font-family: helvetica,arial,sans-serif;">Headless
+mode allows users to now run their own Cytoscape processing/analysis
+jobs without creating the GUI and user interaction components or
+requiring user intervention.</p>
+<p style="font-family: helvetica,arial,sans-serif;">New
+Progress Bar Manager/Threading Control/Task Framework.</p>
+<p style="font-family: helvetica,arial,sans-serif;">Progress
+Bar and Task control has been added for the following longer-running
+operations:</p>
+<font face="Arial, sans-serif"
+ style="font-family: helvetica,arial,sans-serif;">
+Load Operations</font>
+<ul style="font-family: helvetica,arial,sans-serif;">
+  <li>SIF files</li>
+  <li>GML Files</li>
+  <li>Node Attributes</li>
+  <li>Edge Attributes</li>
+  <li>Expression Data</li>
+</ul>
+<font face="Arial, sans-serif"
+ style="font-family: helvetica,arial,sans-serif;">Save Operations</font>
+<ul style="font-family: helvetica,arial,sans-serif;">
+  <li>SIF files</li>
+  <li>GML files</li>
+  <li>Node Attributes</li>
+  <li>Edge Attributes</li>
+  <ul>
+  </ul>
+</ul>
+<font face="Arial, sans-serif"
+ style="font-family: helvetica,arial,sans-serif;">Layout</font>
+<ul style="font-family: helvetica,arial,sans-serif;">
+  <li>Spring Embedded Layout</li>
+  <li>y-Layouts</li>
+  <li>Visual Attributes/VizMap</li>
+</ul>
+<p style="font-family: helvetica,arial,sans-serif;">A
+new Threading/Task Framework and associated GUI components have been
+added to the Cytoscape core architecture which allows for visual
+feedback and user control for longer-running tasks. A progress bar
+API is available for communicating activity and status to users for
+operations which formerly blocked the GUI, thereby improving
+usability and perceived performance of the application. Many load,
+save, and layout operations now utilize the Threading/Task Framework.<br>
+<br>
+</p>
+<span style="font-family: helvetica,arial,sans-serif;">
+</span>
+<p style="font-family: helvetica,arial,sans-serif;">On-line
+Help System</p>
+<ul style="font-family: helvetica,arial,sans-serif;">
+  <li>On-line help and content for
+Cytoscape</li>
+  <li>On-line help framework for plug-in
+developers</li>
+</ul>
+<p style="font-family: helvetica,arial,sans-serif;">An
+on-line help system supporting topic-based, indexed,
+context-sensitive and full-text search is now available. The on-line
+help system is based on JavaHelp technology, and supports
+the standard on-line help conventions, including “F1” (function
+key F1) and Help menu activated help system invocation. Current help
+content is derived and indexed from the Cytoscape 2.1 User Manual.</p>
+<h2 style="font-style: normal; font-family: helvetica,arial,sans-serif;"><u>Documentation</u></h2>
+<h3 style="font-family: helvetica,arial,sans-serif;">Technical
+Documentation</h3>
+<ul style="font-family: helvetica,arial,sans-serif;">
+  <li>Updated User Documentation</li>
+  <li>Updated and expanded Developer
+Documentation,
+including new JavaDoc format API documentation for Cytoscape classes</li>
+</ul>
+<p style="font-family: helvetica,arial,sans-serif;">The
+2.1 release of Cytoscape includes updates to the user and developer
+documentation. Updated APIs and more complete “JavaDoc”'s
+capturing new, changed and deprecated APIs introduced by the core
+changes in the Cytoscape 2.1 release are included for developers and
+plug-in writers.</p>
+<h2 style="font-style: normal; font-family: helvetica,arial,sans-serif;"><u>Core
+Plug-Ins</u></h2>
+<p style="font-family: helvetica,arial,sans-serif;">Five
+“core” plug-ins are bundled and distributed with Cytoscape 2.1. These
+plug-ins offer fundamental operations of value to many users,
+and are included in the basic distribution.</p>
+<p style="font-family: helvetica,arial,sans-serif;"><br>
+</p>
+<center style="font-family: helvetica,arial,sans-serif;">
+<table style="width: 80%;" border="1" bordercolor="#000000"
+ cellpadding="2" cellspacing="0">
+  <col width="132"> <col width="172"> <col width="281"> <thead> <tr
+ valign="top">
+    <td width="132">
+    <p><b>Plug-In Name</b></p>
+    </td>
+    <td width="172">
+    <p><b>JAR file</b></p>
+    </td>
+    <td style="width: 281px;">
+    <p><b>Description</b></p>
+    </td>
+  </tr>
+  </thead> <tbody>
+    <tr valign="top">
+      <td width="132">
+      <p>Filter</p>
+      </td>
+      <td width="172">
+      <p>filter.jar</p>
+      </td>
+      <td width="281">
+      <p>Provides
+filtering functionality; adds filter icon, filters menu and filtering
+dialog box</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td style="width: 132px;">
+      <p>yFiles Layouts</p>
+      </td>
+      <td width="172">
+      <p>yLayouts.jar</p>
+      </td>
+      <td style="width: 281px;">
+      <p>Provides yFiles layouts functionality; adds
+yFiles submenu to layout menu</p>
+Layouts provided:<br>
+&nbsp; - Circular<br>
+&nbsp; - Organic<br>
+&nbsp; - Hierarchic<br>
+&nbsp; - Random<br>
+&nbsp; - MirrorX<br>
+&nbsp; - MirrorY<br>
+&nbsp; - Orthogonal<br>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="132">
+      <p>Align</p>
+      </td>
+      <td width="172">
+      <p>control.jar</p>
+      </td>
+      <td width="281">
+      <p>Provides
+alignment/distribution functionality; adds align menu item to layout
+menu and align/distribute dialog box</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="132">
+      <p>Hierarchical
+Layout</p>
+      </td>
+      <td width="172">
+      <p>HierarchicalLayout.jar</p>
+      </td>
+      <td width="281">
+      <p>Provides
+hierarchical layout functionality; adds hierarchical layout menu item
+to layout menu</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="132">
+      <p>Web Search</p>
+      </td>
+      <td width="172">
+      <p>yeast-context.jar</p>
+      </td>
+      <td width="281">
+      <p>Provides graph
+object-based general web search functionality; launches Google search
+against selected node or edge name</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="132">
+      <p>Yeast
+context-sensitive menu</p>
+      </td>
+      <td width="172">
+      <p>yeast-context.jar</p>
+      </td>
+      <td width="281">
+      <p>Provides
+Yeast-specific web search capabilities</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<p
+ style="margin-bottom: 0in; text-align: center; font-family: helvetica,arial,sans-serif;"><i><b>Table
+1. Core Plug-ins</b></i></p>
+<p style="font-family: helvetica,arial,sans-serif;"><br>
+</p>
+<p style="font-family: helvetica,arial,sans-serif;"><i>The
+Cytoscape Collaboration © 2005 </i>
+</p>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Building and Storing Interaction Networks</title>
+</head>
+<body>
+<h1 class="western" style="page-break-before: always;">Building and
+Storing Interaction Networks</h1>
+Cytoscape reads an interaction network in two
+ways: from a simple interaction file (SIF or .sif format) or from a
+standard format known as Graph Markup Language (GML or .gml format).
+SIF specifies nodes and interactions only, while GML stores
+additional information about network layout and allows network data
+exchange with a variety of other network display programs. Typically,
+SIF is used to import interactions when building a network
+for the first time, since it is easy to create in a text editor or
+spreadsheet. Once the interactions have been loaded and layout has
+been performed, the network may be saved to and subsequently reloaded
+from GML format in future Cytoscape sessions. Both SIF and GML are
+ASCII text files, and you can edit and view them in a regular text
+editor. Additionally, GML is supported by some other network
+visualization tools.
+<h2><b>SIF FORMAT </b></h2>
+The simple interactions format is
+convenient for building a graph from a list of interactions. It also
+makes it easy to combine different interaction sets into a larger
+network, or add new interactions to an existing data set. The main
+disadvantage is that this format does not include any layout
+information, forcing Cytoscape to re-compute a new layout of the
+network each time it is loaded.
+<br>
+<br>
+Lines in the SIF file specify a
+source node, a relationship type (or edge type), and one or more
+target nodes:
+<br>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">nodeA
+&lt;relationship type&gt; nodeB</font></font>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">nodeC
+&lt;relationship type&gt; nodeA</font></font>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">nodeD
+&lt;relationship type&gt; nodeE nodeF nodeB</font></font>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">nodeG</font></font>
+<br>
+<font face="Courier, Courier New, monospace"><font size="2">...</font></font>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">nodeY
+&lt;relationship type&gt; nodeZ</font></font>
+<br>
+<br>
+A more specific example is:
+<br>
+<br>
+<code><font face="Courier New, monospace"><font size="2">node1
+typeA node2</font></font><font size="2"><font
+ face="Courier New, monospace"><br>
+</font></font><font face="Courier New, monospace"><font size="2">node2
+typeB node3 node4 node5</font></font><font size="2"><font
+ face="Courier New, monospace"><br>
+</font></font><font face="Courier New, monospace"><font size="2">node0</font></font></code>
+<br>
+<br>
+The first line identifies two nodes,
+called <font face="Courier New, monospace"><font size="2">node1</font></font>
+and <font face="Courier New, monospace"><font size="2">node2</font></font>,
+and a single relationship between <font face="Courier New, monospace"><font
+ size="2">node1</font></font>
+and <font face="Courier New, monospace"><font size="2">node2</font></font>
+of type <font face="Courier New, monospace"><font size="2">typeA</font></font>.
+The second line specifies three new nodes, <font
+ face="Courier New, monospace"><font size="2">node3</font></font>,
+<font face="Courier New, monospace"><font size="2">node4</font></font>,
+and <font face="Courier New, monospace"><font size="2">node5</font></font>;
+here "node2" refers to the same node as in the first line.
+The second line also specifies three relationships, all of type <font
+ face="Courier New, monospace"><font size="2">typeB</font></font>
+and with <font face="Courier New, monospace"><font size="2">node2</font></font>
+as the source, with <font face="Courier New, monospace"><font size="2">node3</font></font>,
+<font face="Courier New, monospace"><font size="2">node4</font></font>,
+and <font face="Courier New, monospace"><font size="2">node5</font></font>
+as the targets, respectively. This second form is simply shorthand
+for specifying multiple relationships of the same type with the same
+source node. The third line indicates how to specify a node that has
+no relationships with other nodes. This form is not needed for nodes
+that do have relationships, since the specification of the
+relationship implicitly identifies the nodes as well.
+<br>
+<br>
+Duplicate entries are allowed and
+indicate multiple edges between the same nodes. For example, the
+following specifies three edges between the same pair of nodes, two
+of type <font face="Courier New, monospace"><font size="2">pp</font></font>
+and one of type <font face="Courier New, monospace"><font size="2">pd</font></font>:
+<br>
+<br>
+<font face="Courier New, monospace"><font size="2"><span lang="nb-NO">node1
+pp node2</span></font></font><span lang="nb-NO"><font size="2"><font
+ face="Courier New, monospace"><br>
+</font></font></span><font face="Courier New, monospace"><font size="2"><span
+ lang="nb-NO">node1
+pp node2</span></font></font><span lang="nb-NO"><font size="2"><font
+ face="Courier New, monospace"><br>
+</font></font></span><font face="Courier New, monospace"><font size="2"><span
+ lang="nb-NO">node1
+pd node2</span></font></font>
+<br>
+<br>
+Edges connecting a node to itself
+(self-edges) are also allowed:
+<br>
+<br>
+<font face="Courier New, monospace"><font size="2">node1
+pp node1</font></font>
+<br>
+<br>
+Every node and edge in Cytoscape has
+an identifying name, most commonly used with the node and edge data
+attribute structures. Node names must be unique as identically names
+nodes will be treated as identical nodes. The name of each node will
+be the name in this file by default (unless another string is mapped
+to display on the node using the visual mapper &#8211; see <i>9. Visual
+Styles</i>).
+The name of each edge will be formed from the name of the source and
+target nodes plus the interaction type: for example, <font
+ face="Courier New, monospace"><font size="2">sourceName
+edgeType targetName</font></font>.
+<br>
+<br>
+The tag <font size="2"><font face="Courier, Courier New, monospace">&lt;interaction
+type&gt;</font></font> should be one of:
+<br>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">pp</font></font>
+.................. protein &#8211; protein interaction
+<br>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">pd</font></font>
+.................. protein -&gt; DNA&nbsp;
+(e.g.
+transcription factor binding upstream of a regulating gene.)
+<br>
+<br>
+Any text string will work, but the
+above are the conventions that have been followed thus far.
+<br>
+<br>
+Additional interaction types are also
+possible, but not widely used, e.g.:
+<br>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">pr</font></font>
+.................. protein -&gt; reaction
+<br>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">rc</font></font>
+.................. reaction -&gt; compound <br>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">cr</font></font>
+.................. compound -&gt; reaction
+<br>
+<br>
+<font size="2"><font face="Courier, Courier New, monospace">gl</font></font>
+.................. genetic lethal relationship
+<br>
+<br>
+<font face="Courier New, monospace">pm</font>
+.................. protein-metabolite interaction <br>
+<br>
+<font face="Courier New, monospace">mp</font>
+.................. metabolite-protein interaction <br>
+<br>
+Even whole words or concatenated words
+may be used to define other types of relationships e.g. <font size="2"
+ style="font-size: 9pt;"><font face="Courier New, monospace">geneFusion,
+cogInference, pullsDown, activates, degrades, inactivates, inhibits,</font>
+<font face="Courier New, monospace">phosphorylates, upRegulates</font></font>
+<br>
+<b><br>
+Delimiters</b>. Whitespace (space
+or tab) is used to delimit the names in the simple interactions file
+format. However, in some cases spaces are desired in a node name or
+edge type. The standard is that, if the file contains any tab
+characters, then tabs are used to delimit the fields and spaces are
+considered part of the name. If the file contains no tabs, then any
+spaces are delimiters that separate names (and names cannot contain
+spaces).
+<br>
+<br>
+If your network unexpectedly
+contains no edges and node names that look like edge names, it
+probably means your file contains a stray tab that's fooling the
+parser. On the other hand, if your network has nodes whose names are
+half of a full name, then you probably meant to use tabs to separate
+node names with spaces.
+<br>
+<br>
+Networks in simple interactions
+format are often stored in files with a ".sif" extension,
+and Cytoscape recognizes this extension when browsing a directory for
+files of this type.
+<h2><b>GML FORMAT</b></h2>
+In contrast to SIF, GML is a rich
+graph format language supported by many other network visualization
+packages. The GML file format specification is available at:
+<br>
+<font color="#0000ff"><u><a
+ href="http://www.infosun.fmi.uni-passau.de/Graphlet/GML/"><font
+ size="2"><font face="Courier, Courier New, monospace">http://www.infosun.fmi.uni-passau.de/Graphlet/GML/</font></font></a></u></font>
+<br>
+<br>
+It is generally not necessary to
+modify the content of a GML file directly. Once a network is built
+in SIF format and then laid out, the layout is preserved by saving to
+and loading from GML. Colors and other visual attribute defined in
+the GML file are not currently honored by Cytoscape, only the node
+labels and layout information.
+<br>
+<br>
+<b>COMMANDS:</b>
+<br>
+Load and save network files using
+the File menu of Cytoscape. Network files may also be loaded directly
+from the command line using the &#8211;i (SIF format) or -g (GML format)
+options.
+<br>
+<br>
+<b>FOR EXAMPLE:</b>
+<br>
+<br>
+<img src="images/Cytoscape2_0Manual_html_m7b3f9049.png" name="Graphic13"
+ style="border: 0px solid ; width: 296px; height: 106px;" title=""
+ alt=""><br>
+<br>
+To
+load a sample molecular interaction network in SIF format, use the
+menu <u>File / Load / Graph</u>.<b> </b> In the resulting file
+dialog box, select the file &#8220;sampleData/galFiltered.sif&#8221;. After a
+few seconds, a small network of 331 nodes should appear in the main
+window. To load the same interaction network as a GML, use the menu:
+<u>File / Load / Graph</u> again. In the resulting file dialog box,
+select the file &#8220;sampleData/galFiltered.gml&#8221;. Node and edge
+attribute files as well as expression data and extra annotation can
+be loaded as well.
+<br>
+<br>
+<b>NODE NAMING ISSUES IN CYTOSCAPE:</b>
+<br>
+<br>
+Typically, genes are represented by
+nodes, and interactions (or other biological relationships) are
+represented by edges between nodes. For compactness, a gene also
+represents its corresponding protein. Nodes may also be used to
+represent compounds and reactions (or anything else) instead of
+genes.
+<br>
+If a network of genes or proteins is
+to be integrated with Gene Ontology (GO) annotation or gene
+expression data, the gene names must exactly match the systematic ORF
+names specified in the other data files. We strongly encourage
+naming genes and proteins by their systematic ORF name or standard
+accession number; common names may be displayed on the screen for
+ease of interpretation, so long as these are available to the program
+in the annotation directory or in a node attribute file. Cytoscape
+ships with all yeast ORF-to-common name mappings in a synonym table
+within the annotation/ directory. Other organisms will be supported
+in the future.
+<br>
+<br>
+Why do we recommend using standard
+gene names? All of the external data formats recognized by Cytoscape
+provide data associated with particular names of particular objects.
+For example, a network of protein-protein interactions would list the
+names of the proteins, and the attribute and expression data would
+likewise be indexed by the name of the object.
+<br>
+<br>
+The problem is in connecting data
+from different data sources that don't necessarily use the same name
+for the same object. For example, genes are commonly referred to by
+different names, including a formal "location on the chromosome"
+identifier and one or more common names that are used by ordinary
+researchers when talking about that gene. Additionally, database
+identifiers from every database where the gene is stored may be used
+to refer to a gene (e.g. protein accession numbers from Swiss-Prot).
+If one data source uses the formal name while a different data source
+used a common name or identifier, then Cytoscape must figure out that
+these two different names really refer to the same biological entity.
+<br>
+<br>
+Cytoscape has two strategies for
+dealing with this naming issue, one simple and one more complex. The
+simple strategy is to simply assume that every data source uses the
+same set of names for every object. If this is the case, then
+Cytoscape can easily connect all of the different data sources.
+<br>
+<br>
+To handle data sources with
+different sets of names, as is usually the case when manually
+integrating gene information from different sources, Cytoscape needs
+a data server that provides synonym information (See section <i>Appendix:
+Annotation Server Format</i>).
+A synonym table gives a canonical name for each object in a given
+organism and one or more recognized synonyms for that object. Note
+that the synonym table itself defines what set of names are the
+"canonical" names. For example, in budding yeast the ORF
+names are commonly used as the canonical names.
+<br>
+<br>
+If a synonym server is available,
+then by default Cytoscape will convert every name that appears in a
+data file to the associated canonical name. Unrecognized names will
+be preserved. This conversion of names to a common set allows
+Cytoscape to connect the genes present in different data sources,
+even if they have different names &#8211; as long as those names are
+recognized by the synonym server.
+<p class="western" align="left">For this to work, Cytoscape must
+also be provided with the species to which the objects belong, since
+the data server requires the species in order to uniquely identify
+the object referred to by a particular name. This is usually done in
+Cytoscape by specifying the species name on the command line with the
+&#8211;s option or by adding a line to the cytoscape.props file of the
+form:</p>
+<p class="western" align="left"><font face="Courier New, monospace"><font
+ size="2">defaultSpeciesName=Saccharomyces
+cerevisiae</font></font></p>
+<p class="western" align="left">The automatic canonicalization of
+names can be turned off with the -c command line argument (i.e. java
+-jar cytoscape.jar -c) or by not loading any annotation. This
+canonicalization of names currently does not apply to expression
+data. Expression data should use the same names as the other data
+sources or use the canonical names as defined by the synonym table.</p>
+<p class="western" align="left" style="page-break-before: always;"></p>
+</body>
+</html>

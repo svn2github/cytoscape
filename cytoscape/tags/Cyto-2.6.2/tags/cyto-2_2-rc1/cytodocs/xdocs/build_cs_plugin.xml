@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <author>Ethan Cerami</author>
+        <title>How To Build Cytoscape Plug Ins</title>
+    </properties>
+    <body>
+        <section name="About this document">
+            <P>This document explains the basics of building Cytoscape plug
+            ins. It is primarily written for new Cytoscape developers.</P>
+        </section>
+        <section name="Building Cytoscape Plug-Ins: Overview">
+            <P>There are three main steps to building a Cytoscape plug
+            in:</P>
+            <UL>
+                <LI>Create a class that extends the Cytoscape AbstractPlugIn class.</LI>
+		<LI>Register your plug in within the cytoscape.props configuration file, 
+			or load your Plug In via the Cytoscape menu:  File:Load:Plugin
+			Jar file.
+		</LI>
+		<LI>Obfuscate your Plug-In.  Complete details from Owen are provided below.
+		</LI>
+            </UL>
+        </section>
+        <section name="Extending AbstractPlugIn">
+            <P> For the first step, you need to create a new class that extends the Cytoscape
+                AbstractPlugIn class.  The full source code for AbstractPlugIn
+                is provided below:
+            </P>
+            <source><![CDATA[
+package cytoscape;
+
+/**
+ * AbstractPlugin is the class that all plugins must subclass;
+ * the interface is simple - the constructor must take a single
+ * {@link cytoscape.CytoscapeWindow CytoscapeWindow} argument,
+ * and there must be a {@link #describe describe} method
+ * returning a String description of the plugin.
+ */
+public abstract class AbstractPlugin {
+    /**
+     * this method's presence is superfluous;
+     * it is only here so that you don't have to
+     * call super(cytoscapeWindow) in your ctor.
+     */
+    public AbstractPlugin() { }
+    /**
+     * required constructor for plugins takes a single
+     * {@link cytoscape.CytoscapeWindow CytoscapeWindow} argument.
+     */
+    public AbstractPlugin(CytoscapeWindow cytoscapeWindow) { }
+    /**
+     * method returning a String description of the plugin.
+     */
+    public String describe() { return new String("No description."); }
+}            
+]]></source>
+            <P>As you can see from the code above, new plug ins are
+            required to have two things:
+            <UL>
+            	<LI>First, your class must provide a constructor that receives
+            	a CytoscapeWindow object.  The CytoscapeWindow is the
+            	main Cytoscape class, and provides access to the full
+            	set of Cytoscape menus and graph objects.</LI>
+            	<LI>Second, your class must provide an implementation of
+            	the describe() method.  This method should return a short
+            	description of what your plug in actually does.</LI>
+           	</UL>
+            </P>
+            <P>By way of example, let's build a simple plug in that
+            counts the number of nodes currently selected by the user.
+            From a user perspective, here's how it works:  the user
+            selects zero or more nodes in the main Cytoscape window,
+            and then selects menu PlugIns --&gt;  Count Number of Selected
+            Nodes.
+			</P>
+			<P>
+			To build this simple plug in, we will create two classes.  The
+			first class, NodeCounter will extend Abstract PlugIn, and add a
+			menu item to the plug in drop down menu.  The second class, NodeCounterTask
+			will peform the actual node counting. 			
+			</P>
+			<P>The source code for the NodeCounter is provided below:</P>
+			<source>
+<![CDATA[
+package csplugins.tutorial;
+
+import cytoscape.AbstractPlugin;
+import cytoscape.CytoscapeWindow;
+
+import javax.swing.*;
+
+/**
+ * Node Counter Plug In.
+ * Illustrates the basics of building Cytoscape plug ins.
+ *
+ * @author Ethan Cerami
+ */
+public class NodeCounter extends AbstractPlugin {
+
+    /**
+     * Constructor.
+     * @param cWindow Main Cytoscape Window object.
+     */
+    public NodeCounter(CytoscapeWindow cWindow) {
+        NodeCounterTask task = new NodeCounterTask (cWindow);
+        JMenu menu = cWindow.getOperationsMenu();
+        JMenuItem item = new JMenuItem("Count Number of Selected Nodes");
+        item.addActionListener(task);
+        menu.add(item);
+    }
+
+    /**
+     * Describes the plug in.
+     * @return short plug in description.
+     */
+    public String describe() {
+        return new String ("Counts number of selected nodes");
+    }
+}
+]]>			
+			</source>
+            <P>As required by the AbstractPlugin class, our class
+            provides a constructor that receives a CytoscapeWindow
+            object, and provides an implementation of the describe()
+            method.  Also, note that you can add new items to the 
+            Cytoscape Plug In menu via the getOperationsMenu() method.
+            In this case, we add a single new item to the plug in
+            menu, and specify that the NodeCounterTask will receive
+            these events.
+            </P>
+            <P>The source code for the NodeCounterTask is provided
+            below:
+            </P>
+			<source>
+<![CDATA[
+package csplugins.tutorial;
+
+import cytoscape.CytoscapeWindow;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+import y.view.Graph2D;
+import y.base.NodeCursor;
+
+import javax.swing.*;
+
+/**
+ * Counts Number of Selected Nodes.
+ * Displays Number of Nodes within a simple Dialog Box.
+ *
+ * @author Ethan Cerami
+ */
+public class NodeCounterTask implements ActionListener {
+    private CytoscapeWindow cWindow;
+
+    /**
+     * Constructor.
+     * @param cWindow Main Cytoscape Window Object.
+     */
+    public NodeCounterTask (CytoscapeWindow cWindow) {
+        this.cWindow = cWindow;
+    }
+
+    /**
+     * Receives Menu item select event.
+     * @param event Menu Item Selected.
+     */
+    public void actionPerformed(ActionEvent event) {
+        //  Get Graph from Cytoscape Window
+        Graph2D graph = cWindow.getGraph();
+        //  Get All Selected Nodes and count them
+        NodeCursor nodeCursor = graph.selectedNodes();
+        int numNodesSelected = nodeCursor.size();
+        //  Display Simple Dialog Box
+        JOptionPane.showMessageDialog (cWindow, "Number of selected nodes:  "
+                +numNodesSelected);
+    }
+}
+]]>
+		</source>
+		<P>This class waits for the user to select the "Count Number of
+		Nodes" item from the plug in menu.  When the user selects the menu
+		item, actionPerformed() is called, and we use the Graph2D object
+		to determine the total number of selected nodes.    
+		</P>
+        </section>
+        <section name="Configuring Cytoscape to Use Your Plug In">
+            <P>To use your new Plug In, you need to modify your cytoscape.props configuration file.
+		    (Actually, this is no longer necessary.  See next section on 
+		    "Automatically Loading Plug Ins" for details.)
+            There are a few options here, but the simplest option is to automatically load your
+            new plug in. Just give your plug in a name, and specify the fully qualified class
+            name. The syntax looks like this: </P>
+            <source>plugin.[PlugIn Name].load=[Fully Qualified Class Name] </source>
+            <P>For example, this loads our Node Counter plug in:</P>
+            <source>plugin.node_counter.load=csplugins.tutorial.NodeCounter</source>
+            <P>You can also specify conditional plug in loading.  In
+            this mode, Cytoscape will only load your plug in if 
+            the user loads a specific type of data/attribute file.
+            The general syntax for this is as follows:
+            </P>
+            <source>
+<![CDATA[
+#--------------------------------------------------------------------
+# plugins. for each plugin, specify
+#
+#   1. the full name of the class to be loaded.
+#   2. the file extension which tells cytoscape to load the plugin
+#   3. the attribute name which, if present in node or edge attributes,
+#      tells cytoscape to load the plugin
+#--------------------------------------------------------------------
+plugin.bar.className=csplugins.demo.Bar
+plugin.bar.fileExtension=bar
+plugin.bar.attributeName=bar            
+]]>
+			</source>  
+        </section>
+        <section name="Automatically Loading Plug Ins">
+        <P>
+		The core Cytoscape code now has a new feature for automatically loading plugins 
+		from jar files.  Here are the steps:
+        	<UL>
+        	<LI>Create a jar file for your specific plug in.  For example,
+        	you could jar up all the code in the example above, and name
+        	it nodecounter.jar.  For a quick overview of creating jar
+        	files, see the <A HREF="http://java.sun.com/docs/books/tutorial/jar/basics/build.html">
+		Sun Java Tutorial on Creating Jar Files</A>.  Additional details are provided 
+		below.</LI>
+		<LI>Run cytoscape, and select File:Load:Plug In Jar File.</LI>
+        	</UL>
+        	</P>
+        </section>
+	<section name="Creating an Obfuscated Plug-In Jar File">
+	<P>
+		<source>
+<![CDATA[
+Making an obfuscated plugin jar to work with Cytoscape is basically a
+six step process:
+
+A) take the un-obfuscated jar
+B) add your classes
+C) concatenate the "exclude" criteria and
+   the old log file (obf table) to create the new obf table
+D) RetroGuard it.
+E) make a list of the classes that need to be in your plugin
+   that aren't in the basic cytoscape.jar
+F) RGpatch it.
+
+Below, the steps are spelled out in greater detail.
+
+1. Make an un-obfuscated jar (optional)
+
+To see the jar loading functionality work, use an un-obfuscated
+Cytoscape build; to make your jar, get all classes necessary into a
+single .jar file:
+
+jar cvf YOURJARFILE.jar `find csplugins/YOURPLUGINDIR -name "*.class"
+-print`
+
+Examples of this can be seen in cytoscape/tools/jars/makefile .
+
+The result of this should be a .jar file that can be loaded using
+Cytoscape's File->Load->Plugin Jar File option.
+
+
+2. Make an obfuscated jar
+
+Having seen the basic .jar loading work, you'll want to obfuscate the
+jar so that any Cytoscape user could use it.  You'll need:
+
+  an un-obfuscated cytoscape.jar
+  the script.rgs file that is used for obfuscation exclusions
+  the cytoscape-obf-1_1.log file that contains the obfuscation table
+
+A) take the un-obfuscated jar (cytoscape.jar, with yFiles classes visible)
+
+B) add your classes
+
+   cp cytoscape.jar cytoscape-extra.jar
+   jar uvf cytoscape-extra.jar `find csplugins/YOURPLUGINDIR -name
+"*.class" -print`
+
+C) concatenate the "exclude" criteria and
+   the old log file (obf table) to create the new obf table
+
+   cat script.rgs cytoscape-obf-1_1.log > usable_obf_table-1_1.log
+
+D) RetroGuard it.
+
+   java -cp retroguard.jar RetroGuard cytoscape-extra.jar
+cytoscape-extra-obf.jar usable_obf_table-1_1.log cytoscape-obf-1_1-extra.log
+
+E) make a list of the classes that need to be in your plugin
+   that aren't in the basic cytoscape.jar
+
+   find csplugins/YOURPLUGINDIR -name "*.class" -print >
+cytoscape/tools/jars/MyPlugin-Extract.txt
+
+F) RGpatch it.
+        java -cp retroguard.jar RGpatch cytoscape-extra-obf.jar
+MyPlugin.jar cytoscape-obf-1_1-extra.log MyPlugin-Extract.txt
+
+Test out the resulting jar using the jar loading feature of Cytoscape!
+]]>
+		</source>
+		</P>
+	</section>
+    </body>
+</document>

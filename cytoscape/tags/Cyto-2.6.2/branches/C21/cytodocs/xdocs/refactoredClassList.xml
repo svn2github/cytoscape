@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<document>
+  <body>
+	<section name="list of refactored classes">
+    	<p>
+	    <pre>
+List of new and modified classes in round 1 of the refactoring process.
+
+new classes:
+
+cytoscape.Cytoscape		holds globally unique objects
+cytoscape.Project		represents contents of a project file
+cytoscape.unitTests.ProjectTest    unitTest of same
+
+cytoscape.data.CyNetwork	holds a graph and associated data
+cytoscape.data.NetworkFactory	methods for constructing CyNetwork objects
+cytoscape.data.unitTests.CyNetworkTest
+cytoscape.data.unitTests.NetworkFactoryTest
+
+cytoscape.view.NetworkView	interface useful for algorithms operating on
+				a network and its view 
+cytoscape.view.CyWindow		window displaying a network, isa NetworkView
+cytoscape.view.CytoscapeMenus	constructs the menu and tool bars
+cytoscape.view.EditGraphMode	allows user to modify the graph
+cytoscape.view.ReadOnlyGraphMode  doesn't allow the user to modify the graph
+
+cytoscape.visual.CalculatorCatalogFactory  loads the vizmapper catalog
+
+cytoscape.actions.*		many different action classes that respond
+				to menu items
+
+modified classes:
+
+cytoscape.CytoscapeWindow	many changes
+cytoscape.CytoscapeConfig	moved debugLog from CytoscapeWindow to here
+cytoscape.unitTests.CoreSuite   added some tests
+
+cytoscape.browsers.NodeBrosingMode \
+cytoscape.dialogs.ShrinkExpandUI    | modified to use a reference to
+cytoscape.dialogs.ShrinkExpand     /  NetworkView instead of CytoscapeWindow
+
+</pre>
+    	</p>
+	</section>
+  </body>
+</document>
+

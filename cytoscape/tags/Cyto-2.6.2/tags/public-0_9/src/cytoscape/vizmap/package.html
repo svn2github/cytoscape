@@ -1,0 +1,107 @@
+<html>
+<head>
+  <!-- $Revision$
+       $Date$
+       $Author$
+    -->
+</head>
+<body>
+This package implements a framework for one-to-one mappings between
+attributes. The variable mapped from is called the <em>domain</em>
+attributes, while the variable mapped to is called the <em>range</em>
+attributes. The set of known range attributes is specified, and the
+domain attribute to map to a given range attribute is dynamically
+specified and can be changed.
+<p>
+Consider the following special case. Nodes and edges have various visual
+properties, such as color, size, style, etc. In addition, each node and
+edge has some data associated with it. We want each visual property to be
+controlled by one of the data attributes (or to take some default value),
+and want to be able to change this dynamically. Here the data attributes
+are the domain attributes and the visual attributes are the range attributes.
+
+<p>
+The attributes for nodes and edges come as a Map where the keys are
+Strings (the name of the attribute) and the value is either a Number
+or a String (in either case, the value of the attribute for that node/edge).
+Thus, for every visual attribute we need (1) the name of the data attribute
+to use, and (2) an object that knows how to map data attributes to visual
+attributes. The AttributeMapper class holds these two pieces of information
+for every visual attribute, plus a set of default values, and uses this to
+return a visual attribute value when given a Map of data attributes and the
+particular visual attribute desired.
+
+<p>
+The classes that actually perform the mapping implement the ValueMapper
+interface.  This interface has one method: given an Object to map from, it
+returns the Object mapped to. There are two different types of mappings:
+discrete and continuous (and thus two implementations of ValueMapper;
+DiscreteMapper and ContinuousMapper). In a discrete mapping, every data
+value is associated with a specified visual value, and the mapping is
+performed via a lookup table. This is appropriate when the data attribute
+can take only a finite (and usually small) number of values. In a
+continuous mapping, the data attribute either has a continuous range or can
+take too many values for a discrete mapping to be feasible. In this case,
+visual values are defined for a finite group of data values called boundary
+values, and the visual value for any other data value is calculated by
+interpolating between the visual values for the bracketing boundary values.
+The BoundaryRangeValues class and the Interpolator heirarchy are used by
+the ContinuousMapper to do its work.
+
+<p>
+Note that one can map from a continuous data attribute to a discrete visual
+attribute, such as node shape; here "interpolation" simply has a different
+meaning since averaging range values does not necessarily make sense. A
+sensible implementation would be an interpolator that simply returns one
+of the adjacent boundary values; this represents "binning" the continuous
+data attribute so that each bin maps to a particular visual value.
+
+<p>
+Note that all of the above is quite abstract; in fact, most of the classes
+mentioned so far operate only on abstract objects without any knowledge of
+their type, and use the terms "domainAttribute" and "rangeAttribute" rather
+than "data attribute" and "visual attribute". However, eventually one needs
+to know something about what the particular visual attributes are and how
+to interpolate them. This information is contained in the
+VizMapperCategories class (which implements the AttributeMapperCategories
+interface). This class defines the visual attributes as static Integer
+constants and provides useful information such as sensible default values
+and a suitable Interpolator for each visual attribute, as well as wrapper
+functions around an AttributeMapper object that return the exact type of
+value via a cast operation. Additionally, for each visual attribute a
+special Interpolator class must be written to interpolate the specific
+values (see, for example, LinearNumberToColorInterpolator).
+
+<p>
+Finally, at some point the mapping of data attributes to visual attributes,
+including the mapping of specific data attribute values to specific visual
+attribute values, must be built. This is done through Properties objects
+and the AttributeMapperPropertiesAdapter class. A Properties object is a
+Map of String keys to String values, and is usually stored in a file where
+each line is of the form <code>key=value</code>. These Properties can be
+used to define the mapping from data values to visual values; see the
+header for AttributeMapperPropertiesAdapter for more on how this is done.
+The AttributeMapperPropertiesAdapter parses a Properties object and builds
+a suitable AttributeMapper object, using a VizMapperCategories object to
+provide specific information such as the key String for each visual attribute
+and how to parse a String into an appropriate value Object.
+
+<p>
+Because of the difficulties of building the mapping structure, currently
+the only supported constructs are discrete mappings from a String domain
+attribute to any class of range attribute, and continuous mappings from a
+Number domain attribute to any class of range attribute.  Extending the
+former would require a complicated system of runtime determination of the
+class of the domain attribute in order to create the key of the key-value
+pair, which extending the latter would again require runtime class
+determination in order to create the correct type of Interpolator (assuming
+one has been written for objects of that class!).  This isn't a problem for
+the range attributes since these are predefined by an object implementing
+the AttributeMapperCategories interface, such as VizMapperCategories.
+
+
+<p>
+See the documentation for each class for more information.
+
+</body>
+</html>
