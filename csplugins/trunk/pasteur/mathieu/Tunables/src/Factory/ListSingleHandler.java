@@ -38,15 +38,14 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 		this.o=o;
 		this.t=t;
 		try{
-			LSS =  (ListSingleSelection<T>) f.get(o);
+			LSS = (ListSingleSelection<T>) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		this.title=t.description();
 		this.days=f.getName();
 	}
 
-
-
-	public JPanel getInputPanel() {
+	public JPanel getInputPanel(){
+		
 		JPanel returnpane = new JPanel(new BorderLayout());
 		selected = null;
 		JTextArea jta = new JTextArea(title);
