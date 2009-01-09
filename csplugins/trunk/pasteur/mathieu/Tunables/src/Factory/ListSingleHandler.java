@@ -50,13 +50,15 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 		JPanel returnpane = new JPanel(new BorderLayout());
 		selected = null;
 		JTextArea jta = new JTextArea(title);
+		jta.setLineWrap(true);
+		jta.setWrapStyleWord(true);
+		returnpane.add(jta);
 		jta.setBackground(null);
-		combobox = new JComboBox(LSS.getPossibleValues().toArray());
+		jta.setEditable(false);		combobox = new JComboBox(LSS.getPossibleValues().toArray());
 		combobox.insertItemAt(days,0);
 		combobox.setSelectedIndex(0);
 		combobox.addActionListener(new myActionListener1());
 		returnpane.add(combobox,BorderLayout.EAST);
-		returnpane.add(jta,BorderLayout.WEST);
 		return returnpane;
 	}
 

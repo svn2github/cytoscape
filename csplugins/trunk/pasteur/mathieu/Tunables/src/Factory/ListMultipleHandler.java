@@ -42,13 +42,16 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	public JPanel getInputPanel() {
 		JPanel returnpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
+		jta.setLineWrap(true);
+		jta.setWrapStyleWord(true);
+		returnpane.add(jta);
 		jta.setBackground(null);
+		jta.setEditable(false);
 		jlist = new JList(LMS.getPossibleValues().toArray());
 		jlist.addListSelectionListener(this);
 		jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JScrollPane scrollpane = new JScrollPane(jlist);
 		returnpane.add(scrollpane,BorderLayout.EAST);
-		returnpane.add(jta,BorderLayout.WEST);
 		return returnpane;
 	}
 	

@@ -41,8 +41,11 @@ public class BooleanHandler implements Guihandler{
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
+		jta.setLineWrap(true);
+		jta.setWrapStyleWord(true);
+		pane.add(jta);
 		jta.setBackground(null);
-		pane.add(jta,BorderLayout.WEST);
+		jta.setEditable(false);
 		jcb = new JCheckBox();
 		jcb.setSelected(bool.booleanValue());
 		pane.add(jcb,BorderLayout.EAST);

@@ -3,6 +3,7 @@ package Factory;
 import java.awt.BorderLayout;
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import java.lang.Object;
@@ -37,10 +38,15 @@ public class DoubleHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());		
+
 		JTextArea jta = new JTextArea(title);
+		jta.setLineWrap(true);
+		jta.setWrapStyleWord(true);
+		pane.add(jta);
 		jta.setBackground(null);
-		jtf = new JTextField(doub.toString(),15);
-		pane.add(jta,BorderLayout.WEST);
+		jta.setEditable(false);
+		jtf = new JTextField(doub.toString(),11);
+		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		pane.add(jtf,BorderLayout.EAST);
 		return pane;
 	}

@@ -1,6 +1,8 @@
 package Factory;
 
 import java.awt.BorderLayout;
+import java.awt.ComponentOrientation;
+import java.awt.Dimension;
 import java.lang.reflect.*;
 import javax.swing.*;
 
@@ -39,11 +41,14 @@ public class IntegerHandler implements Guihandler{
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());
-		JTextField jta = new JTextField(title,5);
-		jta.setBorder(null);
+		JTextArea jta = new JTextArea(title);
+		jta.setLineWrap(true);
+		jta.setWrapStyleWord(true);
+		pane.add(jta);
 		jta.setBackground(null);
-		pane.add(jta,BorderLayout.WEST);
-		jtf = new JTextField(inte.toString(),15);		
+		jta.setEditable(false);
+		jtf = new JTextField(inte.toString(),11);
+		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		pane.add(jtf,BorderLayout.EAST);
 		return pane;
 	}

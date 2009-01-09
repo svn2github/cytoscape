@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class input<O extends Comparable<String>> implements command {
 	
-	@Tunable(description="This is a description for Integer",group="Group1")
+	@Tunable(description="This is an Integer with a long tunable's description to test the wrapping",group="Group1")
 	public Integer integer1 = new Integer(10);
 	@Tunable(description="Boolean",group="Group2")
 	public Boolean boolean1 = new Boolean(false);
@@ -37,6 +37,10 @@ public class input<O extends Comparable<String>> implements command {
 	@Tunable(description ="Double")
 	public Double double4 = new Double(67.4);
 	
+	@Tunable(description ="Float",group="Group4")
+	public Float float1 = new Float(67.4);
+	@Tunable(description ="Long",group="Group4")
+	public Long long1 = new Long((long)168765578);
 	
 	
 	public input()

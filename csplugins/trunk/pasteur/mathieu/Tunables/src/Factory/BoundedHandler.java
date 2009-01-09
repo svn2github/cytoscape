@@ -5,6 +5,8 @@ import Tunable.*;
 import java.awt.BorderLayout;
 import java.lang.reflect.*;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
 import Utils.*;
 import Tunable.Tunable.Param;
 import javax.swing.*;
@@ -60,9 +62,13 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 			jtf = new JTextField(5);
 			inputPane.add(jtf,BorderLayout.EAST);
 		}
+		
 		JTextArea jta = new JTextArea(title);
+		jta.setLineWrap(true);
+		jta.setWrapStyleWord(true);
+		inputPane.add(jta);
 		jta.setBackground(null);
-		inputPane.add(jta,BorderLayout.WEST);
+		jta.setEditable(false);
 		return inputPane;
 	}
 

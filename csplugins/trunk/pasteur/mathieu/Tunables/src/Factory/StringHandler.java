@@ -4,6 +4,7 @@ package Factory;
 import java.awt.BorderLayout;
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 
@@ -40,11 +41,15 @@ public class StringHandler implements Guihandler{
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
+		jta.setLineWrap(true);
+		jta.setWrapStyleWord(true);
+		pane.add(jta);
 		jta.setBackground(null);
-		pane.add(jta,BorderLayout.WEST);
+		jta.setEditable(false);
 		try{
-			jtf = new JTextField(value,10);
+			jtf = new JTextField(value,11);
 		}catch (Exception e){e.printStackTrace();}
+		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		pane.add(jtf,BorderLayout.EAST);
 		return pane;
 	}	
