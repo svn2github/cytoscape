@@ -48,9 +48,9 @@
 					<archive>
 						<manifest>
 <!--							
-							<mainClass>org.example.AppGUI</mainClass>
--->
 							<mainClass>org.example.AppCL</mainClass> 
+-->
+							<mainClass>org.example.AppGUI</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

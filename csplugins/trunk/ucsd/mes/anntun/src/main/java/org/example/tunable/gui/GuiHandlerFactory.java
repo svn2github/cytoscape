@@ -3,6 +3,7 @@ package org.example.tunable.gui;
 
 import java.lang.reflect.*;
 import org.example.tunable.*;
+import org.example.tunable.util.*;
 
 public class GuiHandlerFactory implements HandlerFactory<GuiHandler> {
 	public GuiHandler getHandler(Method m, Object o, Tunable t) {
@@ -15,7 +16,8 @@ public class GuiHandlerFactory implements HandlerFactory<GuiHandler> {
 			return new IntHandler(f,o,t);
 		else if ( type == String.class ) 
 			return new StringHandler(f,o,t);
-		else
-			return null;
+		else if ( type == Bounded.class ) 
+			return new BoundedHandler(f,o,t);
+		return null;
 	}
 }
