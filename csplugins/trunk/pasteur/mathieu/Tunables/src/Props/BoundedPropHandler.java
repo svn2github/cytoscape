@@ -13,7 +13,8 @@ public class BoundedPropHandler implements PropHandler {
 	String propKey;
 	Bounded boundedobject;
 
-
+	
+	@SuppressWarnings("unchecked")
 	public BoundedPropHandler(Field f, Object o, Tunable t) {
 		this.f = f;
 		this.o = o;
