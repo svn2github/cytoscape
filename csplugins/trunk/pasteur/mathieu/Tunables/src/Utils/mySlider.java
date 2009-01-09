@@ -46,6 +46,7 @@ public class mySlider extends JComponent {
         m_slider = new JSlider();
         m_label  = new JLabel();//title
         m_field  = new JTextField(4);
+        m_field.setHorizontalAlignment(JTextField.RIGHT);
         m_listeners = new ArrayList();
 
         Hashtable labelTable = new Hashtable();

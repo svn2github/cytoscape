@@ -59,7 +59,8 @@ public class BoundedHandler<O extends Comparable<String>> implements Guihandler{
 		inputPane.add(slider,BorderLayout.EAST);
 		}
 		else{
-			jtf = new JTextField(5);
+			jtf = new JTextField(11);
+			jtf.setHorizontalAlignment(JTextField.RIGHT);
 			inputPane.add(jtf,BorderLayout.EAST);
 		}
 		
