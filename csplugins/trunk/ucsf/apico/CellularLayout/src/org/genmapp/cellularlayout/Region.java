@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -53,6 +54,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 	private double freeWidth;
 	private double freeHeight;
 	private List<Region> regionsOverlapped = new ArrayList<Region>();
+	private List<Region> overlappingRegions = new ArrayList<Region>();
 
 	// graphics
 	protected DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
@@ -242,7 +244,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 				fillcolor.getBlue(), TRANSLUCENCY_LEVEL);
 		Color linecolor = Color.black;
 		if (!this.visibleBorder) {
-			linecolor = Color.lightGray;
+			linecolor = Color.blue;
 		}
 
 		int sw = 1;
@@ -547,6 +549,20 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 */
 	public void setRegionsOverlapped(Region r) {
 		this.regionsOverlapped.add(r);
+	}
+
+	/**
+	 * @return the overlappingRegions
+	 */
+	public List<Region> getOverlappingRegions() {
+		return overlappingRegions;
+	}
+
+	/**
+	 * @param overlappingRegions the overlappingRegions to set
+	 */
+	public void setOverlappingRegions(Region r) {
+		this.overlappingRegions.add(r);
 	}
 
 }

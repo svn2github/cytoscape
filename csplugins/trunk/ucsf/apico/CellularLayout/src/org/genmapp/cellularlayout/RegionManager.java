@@ -74,8 +74,10 @@ public class RegionManager {
 					// know when and where to apply "oil & water" exclusion.
 					if (r.getArea() > newRegion.getArea()){
 						newRegion.setRegionsOverlapped(r);
+						r.setOverlappingRegions(newRegion);
 					} else {
 						r.setRegionsOverlapped(newRegion);
+						newRegion.setOverlappingRegions(r);
 					}
 				}
 			}

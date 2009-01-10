@@ -1,12 +1,10 @@
 package org.genmapp.cellularlayout;
 
-import giny.model.Node;
 import giny.view.NodeView;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -175,16 +173,109 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			RegionManager.clearRegionAttMap();
 
 			// Hard-coded templates
-			Region a = new Region("Rectangle", "000000", 6254.75, 1837.25,
-					8670.5, 1185.5, 100, 0.0, "extracellular region");
-			Region b = new Region("Line", "000000", 6232.25, 2677.25, 8535.5,
-					29.0, 200, 0.0, "plasma membrane");
-			Region d = new Region("Oval", "000000", 7979.75, 5002.25, 4620.5,
-					2685.5, 200, 0.0, "nucleus");
-			Region c = new Region("Rectangle", "000000", 6269.75, 4747.25,
-					8640.5, 3765.5, 100, 0.0, "cytoplasm");
-			Region e = new Region("Rectangle", "000000", 11797.25, 3719.75,
-					1335.5, 2340.5, 100, 0.0, "unassigned");
+			String Color;
+			String CenterX;
+			String CenterY;
+			String Width;
+			String Height;
+			String ZOrder;
+			String Rotation;
+			String cG;
+			Double xG;
+			Double yG;
+			Double wG;
+			Double hG;
+			int zG;
+			Double rG;
+
+			 Color="999999";
+			 CenterX="3254.75";
+			 CenterY="3337.25";
+			 Width="1200.5";
+			 Height="400.5" ;
+			 ZOrder="16384" ;
+			 Rotation="0.0";
+			cG = Color;
+			xG = Double.parseDouble(CenterX);
+			yG = Double.parseDouble(CenterY);
+			wG = Double.parseDouble(Width);
+			hG = Double.parseDouble(Height);
+			zG = Integer.parseInt(ZOrder);
+			rG = Double.parseDouble(Rotation);
+
+			Region a = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
+					"extracellular region");
+
+			 Color="000000" ;
+			 CenterX="6232.25";
+			 CenterY="2690.25";
+			 Width="8535.5" ;
+			 Height="100.5" ;
+			 ZOrder="16384" ;
+			 Rotation="0.0";
+			cG = Color;
+			xG = Double.parseDouble(CenterX);
+			yG = Double.parseDouble(CenterY);
+			wG = Double.parseDouble(Width);
+			hG = Double.parseDouble(Height);
+			zG = Integer.parseInt(ZOrder);
+			rG = Double.parseDouble(Rotation);
+
+			Region b = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
+					"plasma membrane");
+
+			Color="000000";
+			CenterX="7979.75" ;
+			CenterY="5002.25";
+			Width="2620.5" ;
+			Height="2685.5";
+			ZOrder="16384";
+			Rotation="0.0";
+			cG = Color;
+			xG = Double.parseDouble(CenterX);
+			yG = Double.parseDouble(CenterY);
+			wG = Double.parseDouble(Width);
+			hG = Double.parseDouble(Height);
+			zG = Integer.parseInt(ZOrder);
+			rG = Double.parseDouble(Rotation);
+
+			Region d = new Region("Oval", cG, xG, yG, wG, hG, zG, rG, "nucleus");
+
+			Color="999999";
+			CenterX="6269.75";
+			CenterY="4747.25";
+			Width="8640.5" ;
+			Height="3765.5" ;
+			ZOrder="16384" ;
+			Rotation="0.0" ;
+			cG = Color;
+			xG = Double.parseDouble(CenterX);
+			yG = Double.parseDouble(CenterY);
+			wG = Double.parseDouble(Width);
+			hG = Double.parseDouble(Height);
+			zG = Integer.parseInt(ZOrder);
+			rG = Double.parseDouble(Rotation);
+
+			Region c = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
+					"cytoplasm");
+
+			Color="999999";
+			CenterX="11797.25" ;
+			CenterY="3719.75";
+			Width="1335.5";
+			Height="2340.5";
+			ZOrder="16384" ;
+			Rotation="0.0";
+			cG = Color;
+			xG = Double.parseDouble(CenterX);
+			yG = Double.parseDouble(CenterY);
+			wG = Double.parseDouble(Width);
+			hG = Double.parseDouble(Height);
+			zG = Integer.parseInt(ZOrder);
+			rG = Double.parseDouble(Rotation);
+
+			Region e = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
+					"unassigned");
 
 			// Set additional parameters
 			RegionManager.getRegionByAtt("extracellular region")
@@ -196,6 +287,82 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 			// SIZE UP REGIONS:
 			Collection<Region> allRegions = RegionManager.getAllRegions();
+			
+			// calculate free space in overlapped regions
+			for (Region r : allRegions){
+				
+				Double comX = 0.0d;
+				Double comY = 0.0d;
+				
+				List<Region> orList = r.getOverlappingRegions();
+				int orListSize = orList.size();
+				Double[][] xy = new Double[orListSize*4][2];
+				int i = 0;
+				for (Region or : orList){
+					// define points to exclude
+					System.out.println("Check: "+ i +","+orListSize+":"+or.getAttValue());
+					xy[i][0] = or.getRegionLeft();
+					xy[i][1] = or.getRegionTop();
+					i++;
+					xy[i][0] = or.getRegionLeft();
+					xy[i][1] = or.getRegionBottom();
+					i++;
+					xy[i][0] = or.getRegionRight();
+					xy[i][1] = or.getRegionTop();
+					i++;
+					xy[i][0] = or.getRegionRight();
+					xy[i][1] = or.getRegionBottom();
+					i++;
+		
+					// define center of overlapped region
+					comX += or.getCenterX();
+					comY += or.getCenterY();
+				}
+				if (orListSize > 1){
+					comX = comX / orList.size();
+					comY = comY / orList.size();
+				} else {
+					comX = r.getCenterX();
+					comY = r.getCenterY();
+				}
+				// check center against overlapping regions
+				boolean skip = false;
+				for (Region or : orList){
+					if (comX > or.getRegionLeft() && comX < or.getRegionRight() && comY > or.getRegionTop() && comY < or.getRegionBottom()){
+						skip = true;
+						System.out.println("check2: skip!");
+					}
+				}
+				if (skip)
+					continue;
+				
+				// initialize with full rectangle;
+				Double freeL = r.getRegionLeft();
+				Double freeR = r.getRegionRight();
+				Double freeT = r.getRegionTop();
+				Double freeB = r.getRegionBottom();
+				
+				// shrink to fit free area around center
+				// adapted from ex2_1.m by E. Alpaydin, i2ml, Learning a rectangle
+				for (i = 0; i < orListSize * 4; i++){
+					Double x = xy[i][0];
+					Double y = xy[i][1];
+					if (x > freeL && x < freeR && y > freeT && y < freeB){
+						if (x < comX)
+							freeL = x;
+						else if (x > comX)
+							freeR = x;
+						else if (y < comY)
+							freeT = y;
+						else if (y > comY)
+							freeB = y;
+					}
+				}
+				r.setFreeCenterX((freeL + freeR) / 2);
+				r.setFreeCenterY((freeT + freeB) /2);
+				r.setFreeWidth(freeR - freeL);
+				r.setFreeHeight(freeB - freeT);
+			}
 
 			// calculate the maximum scale factor minimum pan among all regions
 			double maxScaleFactor = Double.MIN_VALUE;
@@ -205,22 +372,29 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				// max scale
 				if (r.getShape() != "Line") {
 					int col = r.getColumns();
-					// System.out.println("col: "+r.getAttValue()+col);
+					System.out.println("col: " + r.getAttValue() + col);
 					double scaleX = ((col + 1) * distanceBetweenNodes)
-							/ r.getRegionWidth();
+							/ r.getFreeWidth();
 					double scaleY = ((col + 1) * distanceBetweenNodes)
-							/ r.getRegionHeight();
+							/ r.getFreeHeight();
 					double scaleAreaSqrt = Math.sqrt(scaleX * scaleY);
-//					System.out.println("scaleX,Y,Area: " + scaleX + ","
-//							+ scaleY + "," + scaleAreaSqrt);
+					System.out.println("scaleX,Y,Area: " + scaleX + ","
+							+ scaleY + "," + scaleAreaSqrt);
 					// use area to scale regions efficiently
 					if (scaleAreaSqrt > maxScaleFactor)
 						maxScaleFactor = scaleAreaSqrt;
-				} else { // handle linear regions
+				} else { // TODO: handle linear regions
 					int col = r.getNodeCount(); // columns == count
-					// width == length, for a line
-					double scaleX = ((col + 1) * distanceBetweenNodes)
-							/ r.getRegionWidth();
+					// max(width,height) == length, for a line
+					double scaleX;
+					if (r.getFreeWidth() > r.getFreeHeight()) {
+						scaleX = ((col + 1) * distanceBetweenNodes)
+								/ r.getFreeWidth();
+					} else {
+						scaleX = ((col + 1) * distanceBetweenNodes)
+								/ r.getFreeHeight();
+					}
+
 					if (scaleX > maxScaleFactor)
 						maxScaleFactor = scaleX;
 				}
@@ -239,9 +413,17 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				if (r.getShape() != "Line") {
 					r.setRegionWidth(r.getRegionWidth() * maxScaleFactor);
 					r.setRegionHeight(r.getRegionHeight() * maxScaleFactor);
-				} else { // handle linear regions
-					r.setRegionWidth(r.getRegionWidth() * maxScaleFactor);
-					// width == length, for a line
+					r.setFreeWidth(r.getFreeWidth() * maxScaleFactor);
+					r.setFreeHeight(r.getFreeHeight() * maxScaleFactor);
+				} else { // TODO: handle linear regions
+					if (r.getRegionWidth() > r.getRegionHeight()) {
+						r.setRegionWidth(r.getRegionWidth() * maxScaleFactor);
+						r.setFreeWidth(r.getFreeWidth() * maxScaleFactor);
+					} else {
+						r.setRegionHeight(r.getRegionHeight() * maxScaleFactor);
+						r.setFreeHeight(r.getFreeHeight() * maxScaleFactor);
+					}
+
 				}
 
 				r.setCenterX(r.getCenterX() - minPanX);
@@ -249,7 +431,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 				r.setCenterX(r.getCenterX() * maxScaleFactor);
 				r.setCenterY(r.getCenterY() * maxScaleFactor);
-			}
+
+				r.setFreeCenterX(r.getFreeCenterX() - minPanX);
+				r.setFreeCenterY(r.getFreeCenterY() - minPanY);
+
+				r.setFreeCenterX(r.getFreeCenterX() * maxScaleFactor);
+				r.setFreeCenterY(r.getFreeCenterY() * maxScaleFactor);
+}
 
 			// GRAPHICS
 			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
@@ -280,20 +468,32 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				// down, e.g., if the linear layout of nodes is 2.8 times
 				// the width of the scaled region, then there will be 3 rows
 				// and you will want to shift up 1 row from center to start.
-				startX = r.getCenterX() - r.getRegionWidth() / 2
+				startX = r.getFreeCenterX() - r.getFreeWidth() / 2
 						+ distanceBetweenNodes;
 				startY = r.getCenterY()
-						- Math.floor((nodeCount / Math.floor(r.getRegionWidth()
+						- Math.floor((nodeCount / Math.floor(r.getFreeWidth()
 								/ distanceBetweenNodes - 1)) - 0.3)
 						* distanceBetweenNodes / 2;
-				 System.out.println("Region: " + r.getAttValue() + "("
-				 + r.getNodeCount() + ")" + " startX,Y: "
-				 + startX + "," + startY + "   X,Y,W,H: "
-				 + r.getCenterX() + "," + r.getCenterY() + ","
-				 + r.getRegionWidth() + "," + r.getRegionHeight() +","+
-				 ((nodeCount
-				 / Math.floor(r.getRegionWidth()
-				 / distanceBetweenNodes -1 )) - 0.6));
+				System.out.println("Region: "
+						+ r.getAttValue()
+						+ "("
+						+ r.getNodeCount()
+						+ ")"
+						+ " startX,Y: "
+						+ startX
+						+ ","
+						+ startY
+						+ "   X,Y,W,H: "
+						+ r.getFreeCenterX()
+						+ ","
+						+ r.getFreeCenterY()
+						+ ","
+						+ r.getFreeWidth()
+						+ ","
+						+ r.getFreeHeight()
+						+ ","
+						+ ((nodeCount / Math.floor(r.getFreeWidth()
+								/ distanceBetweenNodes - 1)) - 0.6));
 				nextX = startX;
 				nextY = startY;
 
@@ -302,9 +502,9 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				int remainingCount = nodeCount; // count nodes left to layout
 				int colCount = 0; // count nodes per row
 				double fillPotential = ((nodeCount + 2) * distanceBetweenNodes)
-						/ r.getRegionWidth(); // check for full row
+						/ r.getFreeWidth(); // check for full row
 				double bump = ((nodeCount + 1) * distanceBetweenNodes)
-						/ r.getRegionWidth();
+						/ r.getFreeWidth();
 
 				for (NodeView nv : nodeViews) {
 					taskMonitor
@@ -321,7 +521,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 					// check for end of row
 					double fillRatio = ((colCount + 2) * distanceBetweenNodes)
-							/ r.getRegionWidth();
+							/ r.getFreeWidth();
 					// System.out.println("Count: " + colCount + ","
 					// + remainingCount + "::" + fillRatio + "::"
 					// + fillPotential);
@@ -332,9 +532,9 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 						nextY += distanceBetweenNodes;
 						// check fill potential of next row
 						fillPotential = ((remainingCount + 1) * distanceBetweenNodes)
-								/ r.getRegionWidth();
+								/ r.getFreeWidth();
 						bump = (remainingCount * distanceBetweenNodes)
-								/ r.getRegionWidth();
+								/ r.getFreeWidth();
 					} else if (fillPotential < 1) { // short row
 						nextX += (distanceBetweenNodes / bump);
 					} else { // next column in normal row
@@ -380,21 +580,21 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 							// rule out directions where there is not enough
 							// room in overlapped region
-							if (!((r.getRegionTop() - or.getRegionTop())> distanceBetweenNodes)){
+							if (!((r.getRegionTop() - or.getRegionTop()) > distanceBetweenNodes)) {
 								farNorth = Double.MAX_VALUE;
 							}
-							if (!((r.getRegionLeft() - or.getRegionLeft())> distanceBetweenNodes)){
+							if (!((r.getRegionLeft() - or.getRegionLeft()) > distanceBetweenNodes)) {
 								farWest = Double.MAX_VALUE;
 							}
-							if (!((or.getRegionBottom() - r.getRegionBottom()) > distanceBetweenNodes)){
+							if (!((or.getRegionBottom() - r.getRegionBottom()) > distanceBetweenNodes)) {
 								farSouth = Double.MAX_VALUE;
 							}
-							if (!((or.getRegionRight() - r.getRegionRight()) > distanceBetweenNodes)){
+							if (!((or.getRegionRight() - r.getRegionRight()) > distanceBetweenNodes)) {
 								farEast = Double.MAX_VALUE;
 							}
 
 							if (farNorth < farSouth) {
-								if (farNorth < farEast) { 
+								if (farNorth < farEast) {
 									if (farNorth < farWest) {
 										countN = 1;
 										for (double pN : pastN) {
@@ -411,7 +611,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 														* distanceBetweenNodes
 														/ 2));
 										pastN.add(nvX);
-									} else { 
+									} else {
 										countW = 1;
 										for (double pW : pastW) {
 											if (pW <= nvY
