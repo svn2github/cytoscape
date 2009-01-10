@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="4.1.4" transformSequenceNumber="2">
+<install4j version="4.1.5" transformSequenceNumber="2">
   <directoryPresets config="./cytoscape-v${compiler:sys.version}" />
   <application name="Cytoscape" distributionSourceDir="" applicationId="5211-3645-3154-2580" mediaDir="dist" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.version}_${compiler:sys.platform}" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" keepModificationTimes="false" shortName="Cytoscape" publisher="Cytoscape Consortium" publisherWeb="http://cytoscape.org" version="@version@" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" installerName="" javaMinVersion="1.5.0" javaMaxVersion="" allowBetaVM="true" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="false">
@@ -140,6 +140,23 @@
             <serializedBean>
               <java class="java.beans.XMLDecoder">
                 <object class="com.install4j.runtime.beans.screens.FileAssociationsScreen" />
+              </java>
+            </serializedBean>
+            <condition />
+            <validation />
+            <preActivation />
+            <postActivation />
+            <actions />
+            <formComponents />
+          </screen>
+          <screen name="" id="50" beanClass="com.install4j.runtime.beans.screens.DefaultInfoScreen" enabled="true" commentSet="false" comment="" rollbackBarrier="false" backButton="2" finishScreen="false">
+            <serializedBean>
+              <java class="java.beans.XMLDecoder">
+                <object class="com.install4j.runtime.beans.screens.DefaultInfoScreen">
+                  <void property="displayedText">
+                    <string>To automatically open .cys files with this version of Cytoscape, you must manually set 'Open with' in the 'Get Info' panel and select 'Change all'. The file association performed by this installation only sets this version of Cytoscape as one possible application, not necessarily the default, for .cys files. Double-clicking on a .cys file may open an older version of Cytoscape if the new version is not manually set as the default application.</string>
+                  </void>
+                </object>
               </java>
             </serializedBean>
             <condition />
@@ -350,7 +367,9 @@
     <win32 name="Windows" id="11" mediaFileName="" installDir="Cytoscape_v${compiler:sys.version}" overridePrincipalLanguage="true" requires64bit="false" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" customInstallBaseDir="" createUninstallIcon="true" contentFilesType="1" downloadURL="" runAsAdmin="false">
       <excludedLaunchers />
       <excludedComponents />
-      <excludedBeans />
+      <excludedBeans>
+        <bean refId="50" />
+      </excludedBeans>
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude />
       <variables />
@@ -358,7 +377,9 @@
     <unixInstaller name="Unix Installer" id="12" mediaFileName="" installDir="Cytoscape_v${compiler:sys.version}" overridePrincipalLanguage="true" requires64bit="false" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" customInstallBaseDir="" createUninstallIcon="true" contentFilesType="1" downloadURL="">
       <excludedLaunchers />
       <excludedComponents />
-      <excludedBeans />
+      <excludedBeans>
+        <bean refId="50" />
+      </excludedBeans>
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude />
       <variables />
