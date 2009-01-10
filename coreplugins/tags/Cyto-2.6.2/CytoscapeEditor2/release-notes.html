@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>CytoscapeEditor Release Notes (version 2.60)</title>
+</head>
+<body>
+
+<h1>CytoscapeEditor Release Notes (version 2.60)</h1>
+<ol>
+<li>Patched Editor so that mouse, key, and drop events are ignored
+when the Editor tab of the CytoPanel is not active.</li>
+<li><p></p>Fixed the "ESC" key to correctly stop drop of an edge.</li>
+</ol>
+
+<h1>Prior Notes</h1>
+
+<h2>CytoscapeEditor Release Notes (version 2.53)</h2>
+<ol>
+<li>Fixed bug where palette was being redrawn when the Editor tab wasn't
+    selected.</li>
+<li><p></p>Some code cleanup changes to CytoscapeEditorManagerSupport.</li>
+</ol>
+
+<h2>CytoscapeEditor Release Notes (version 2.52)</h2>
+<ol>
+
+<li>Changed File->New-Network->EmptyNetwork (NewNetworkAction) to not
+produce an extra (accidental) CyNetworkView and to set the visual
+style of the new network to be the VisualMappingManager's current
+visual style.</li>
+
+<li><p></p>Removed arrowhead on default "Directed Edge" edge palette entry in
+DefaultCytoscapeEditor.</li>
+
+<li><p></p>Fixed so that clicking on the Editor tab would correctly show the correct
+editor palette for a given visual style (for sublass editors).
+
+<p></p>This required stopping the creation of a CyNetworkView in
+CytoscapeEditorManagerSupport.onComponentSelected() that would be set
+to the default visual style thereby resetting the editor palette for
+subclasses (like the HyperEdgeEditor).</li>
+
+<li><p></p>Changed call to buildVisualStyle() in
+CytoscapeEditorManager.initializeEditor() to occur before
+VisualMappingManager.setVisualStyle() is called.</li>
+
+</ol>
+
+
+<h2>CytoscapeEditor Release Notes (version 2.51)</h2>
+<ol>
+<li>Simplified CytoscapeEditor initialization with assumption that
+the CytoscapeEditor is always loaded before any extension to
+this editor.</li>
+<li><p></p>Removed unneeded definitions of getPluginInfoObject() and describe().</li>
+<li><p></p>Removed manual setting of EdgeView tooltips, since tooltips should
+now be set using Visual Styles.</li>
+<li><p></p>Fixed NPE bug in CyotscapeEditorManger.register() where
+CytoscapeEditorManager.log() statements were being called without null
+pointer check.</li>
+<li><p></p>Updated missed deprecated code reference to use new Cytoscape 2.5
+    VizMap API.</li>
+</ol>
+
+<h2>CytoscapeEditor Release Notes (version 2.50)</h2>
+<ol>
+<li>Made CytoscapeEditor be a good citizen for the Cytoscape PluginManager.
+<p></p> Added CytoscapeEditorPlugin.getPluginInfoObject().</li>
+<li><p></p>Updated code to use new Cytoscape 2.5 VizMap API.</li>
+<li><p></p>Fixed various deprecations and warnings.</li>
+</ol>
+
+<h2>CytoscapeEditor Release Notes (version 2.4 alfa 4)</h2>
+<ol>
+<li>Added keyboard accelerator for "Delete Selected Nodes and Edges"
+menu item.</li>
+</ol>
+
+<h2>CytoscapeEditor Release Notes (version 2.4 alfa 3)</h2>
+<ol>
+
+<li>Various changes and cleanup to allow easier subclassing of
+CytoscapeEditor and access to the DeleteAction.
+<ol>
+
+<li><p></p>Some cleanup of DeleteAction an removed 2 parameter
+       DeleteAction constructor.</li>
+<li>Cleanup and changed
+    BasicCytoscapeEditor.addNodeContextMenuItems(),
+    addEdgeContextMenuItems(), and
+    removeExistingDeleteMenuItemIfNecessary() to handle changes to
+    DeleteAction.</li>
+<li>Added CytoscapeEditorManagerSupport.getDeleteAction() and
+    DeleteAction parameter to constructor.</li>
+<li>Changed CytoscapeEditorManager.initialize() to send
+CytoscapeEditorManagerSupport the DeleteAction created for use by
+subclasses.</li>
+</ol>
+</li>
+</ol>
+
+<h2>CytoscapeEditor Release Notes (version 2.4 alfa 2)</h2>
+<ol>
+<li>Changed the CytoscapeEditor to be intelligent about what drag
+cursor is shown when performing a drag-drop from a shape palette entry
+to a CyNetworkView of interest.
+
+<p></p>Built a flexible framework using DragSourceContextCursorSetters
+to determine cursor for each palette entry.</li>
+</ol>
+
+<h2>CytoscapeEditor Release Notes (version 2.4 alfa 1)</h2>
+<ol>
+
+<li>Refactored BasicNetworkEditEventHandler.finishEdge() into smaller
+pieces for subclass usage. Cleaned up
+BasicNetworkEditEventHandler.mousePressed() and a few protected
+instance variables that should be private.</li>
+
+<li><p></p>Cleaned up code and refactored
+PaletteNetworkEditEventHandler.itemDropped() and associated methods
+for easier use by subclasses and code cleanup.</li>
+<li><p></p>Removed BioPAXNetworkEditEventHandler.</li>
+</ol>
+
+<h2>CytoscapeEditor Release Notes (version 2.3.03)</h2>
+<ol>
+
+<li>Created a new way to easily produce ShapePalette entries for
+editors.
+
+<p></p>This involves the use of new interfaces ShapePaletteInfo and
+ShapePaletteInfoGenerator and their supporting classes. Refactored
+DefaultCytoscapeEditor to use this new ShapePaletteInfoGenerator.</li>
+
+
+<li><p></p>Added ability of ShapePalette entries to handle visual style
+size information.
+
+<p></p>Changed computation of BasicCytoShapeEntity size to allow for
+ larger CytoShapeIcons. Added CytoShapeIcon constructor for handling
+ size information. Changed getIconWidth/Height() to return real width
+ and height of icon. Changed the ShapePalette JList to no longer use
+ setFixedCellHeight() since BasicCytoShapeEntitys can now have
+ different sizes.</li>
+
+<li><p></p>Added CytoShapeIcon.DEFAULT_WIDTH and DEFAULT_HEIGHT and deprecated
+  CytoShapeIcon.WIDTH &amp; HEIGHT.</li>
+<li><p></p>Removed SimpleBioPAX_Editor.</li>
+</ol>
+
+
+<h2>CytoscapeEditor Release Notes (version 2.3.02)</h2>
+<ol>
+<li>Fixed compilation problem caused by accidental release of changes
+to CytoscapeEditorManager.java.</li>
+</ol>
+
+<h2>CytoscapeEditor Release Notes (version 2.3.01)</h2>
+
+<ol>
+
+<li>CytoscapeEditorManagerSupport: Fixed updateEditorPalette() to not
+assume visualStyleName is the same as Editor name. Added some
+comments.</li>
+
+<li><p></p>BasicCytoscapeEditor: Removed setting of BIO_PAX attributes from
+addNode(). Fixed deprecated method usage in addNode().</li>
+
+<li><p></p>BasicCytoShapeEntity, ShapePalette, InvalidEditorException: Added
+generated serial version UUID for serializable classes.
+
+CytoscapeEditor: Updated to remove deprecated use of FlagEventListener
+(now is SelectEventListener)</li>
+
+<li><p></p>CytoscapeEditorManager:
+<ol>
+  <li> Fixed so visualStyleName can be different from the editor name.</li>
+  <li> Added getEditorNameForVisualStyleName() and changed
+     initializeEditor() to take a visualStyleName parameter.</li>
+  <li> Changed many instance variables to be private vs protected.</li>
+  <li> Added intialization of this manager if register() is called by
+       another plugin before this plugin is loaded.</li>
+</ol>
+</li>
+<li><p></p>CytoscapeEditorPlugin:
+<ol>
+  <li> Removed deprecated call to CytoscapeInit.getDefaultVisualStyle() in
+     initializeCytoscapeEditor().</li>
+  <li> Removed some misleading code--println that editor is loaded and
+  initialization code as though editor is initialized via a menu item,
+  when it is not.</li>
+</ol>
+</li>
+</ol>
+
+<hr />
+<p><em><small>This page was last updated: 07/09/08</small></em></p>
+
+</body>
+</html>
