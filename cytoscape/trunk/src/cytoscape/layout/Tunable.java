@@ -646,6 +646,9 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			if (checkFlag(MULTISELECT)) {
 				JList list = (JList)inputField;
 				list.setListData(listData);
+				// Get the scroll pane
+				JScrollPane listScroller = (JScrollPane)list.getParent().getParent();
+				listScroller.setPreferredSize(getPreferredSize((Object[])lowerBound));
 			} else {
 				JComboBox cbox = (JComboBox)inputField;
 				cbox.removeAllItems();
@@ -836,7 +839,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			return tunablesPanel;
 		}
 
-		JPanel tunablePanel = new JPanel(new BorderLayout(0, 2));
+		JPanel tunablePanel = new JPanel(new BorderLayout(0, 3));
 		JLabel tunableLabel = new JLabel(desc);
 		String labelLocation = BorderLayout.LINE_START;
 		String fieldLocation = BorderLayout.LINE_END;
@@ -912,12 +915,14 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		inputField.setBackground(Color.white);
 
 		tunablePanel.add(tunableLabel, labelLocation);
+		// Add a spacer
+		tunablePanel.add(new JLabel("     "), BorderLayout.CENTER);
 
 		// Special case for MULTISELECT lists
 		if ((type == LIST || type == NODEATTRIBUTE || type == EDGEATTRIBUTE) 
 			  && checkFlag(MULTISELECT)) {
 			JScrollPane listScroller = new JScrollPane(inputField);
-			listScroller.setPreferredSize(new Dimension(200,100));
+			listScroller.setPreferredSize(getPreferredSize((Object[])lowerBound));
 			tunablePanel.add(listScroller, fieldLocation);
 		} else {
 			tunablePanel.add(inputField, fieldLocation);
@@ -999,6 +1004,20 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			box.addActionListener(this);
 			return box;
 		}
+	}
+
+	private Dimension getPreferredSize(Object[] list) {
+		Dimension dim = new Dimension(300, 200);
+		if (list == null)
+			return dim;
+
+		dim.height = Math.min(list.length * 12, 300);
+		int maxString = 0;
+		for (int i = 0; i < list.length; i++)
+			maxString = Math.max(list[i].toString().length(), maxString);
+		dim.width = Math.min(maxString*12, 400);
+
+		return dim;
 	}
 
 	/**
