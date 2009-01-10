@@ -256,7 +256,6 @@ public class TreeView extends TreeViewApp implements Observer,
 		myView.removeGraphViewChangeListener(this); // For efficiency reasons, remove our listener for now
 		myNetwork.unselectAllEdges();
 
-		// myNetwork.unselectAllNodes();
 		HashMap<CyEdge,CyEdge>edgesToSelect = new HashMap();
 		for (CyNode node1: selectedNodes) {
 			int [] nodes = new int[2];

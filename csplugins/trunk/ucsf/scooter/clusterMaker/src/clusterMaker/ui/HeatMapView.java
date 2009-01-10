@@ -37,12 +37,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import java.beans.PropertyChangeSupport;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Observer;
 import java.util.Observable;
+import java.util.Set;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -64,6 +68,7 @@ import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 
 // Giny imports
 import giny.model.Node;
@@ -90,7 +95,11 @@ import clusterMaker.treeview.model.TreeViewModel;
  * The ClusterViz class provides the primary interface to the
  * Cytoscape plugin mechanism
  */
-public class HeatMapView extends TreeViewApp implements Observer, GraphViewChangeListener, ClusterViz, ClusterAlgorithm {
+public class HeatMapView extends TreeViewApp implements Observer, 
+                                                        GraphViewChangeListener, 
+                                                        PropertyChangeListener, 
+                                                        ClusterViz, 
+                                                        ClusterAlgorithm {
 	private URL codeBase = null;
 	private ViewFrame viewFrame = null;
 	protected TreeSelectionI geneSelection = null;
@@ -101,6 +110,7 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 	protected ClusterProperties clusterProperties = null;
 	protected String dataAttributes = null;
 	protected boolean canceled = false;
+	protected boolean selectedOnly = false;
 	protected PropertyChangeSupport pcs;
 
 	private	List<CyNode>selectedNodes;
@@ -169,13 +179,43 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 			netAttributes.deleteAttribute(myNetwork.getIdentifier(),EisenCluster.CLUSTER_TYPE_ATTRIBUTE);
 
 		// Set the node order to the sorted list of nodes
-		String [] nodeArray = new String[myNetwork.getNodeCount()];
-		int index = 0;
-		for (Object node:myNetwork.nodesList())
-			nodeArray[index++] = ((CyNode)node).getIdentifier();
+		String [] nodeArray = null;
+
+		// Handle selected only 
+		if (!selectedOnly) {
+			nodeArray = new String[myNetwork.getNodeCount()];
+			int index = 0;
+			for (Object node:myNetwork.nodesList())
+				nodeArray[index++] = ((CyNode)node).getIdentifier();
+		} else {
+			if (attributeArray.length == 1 && attributeArray[0].startsWith("edge.")) {
+				HashMap<CyNode,CyNode>nodeMap = new HashMap();
+				for (Object edge:myNetwork.getSelectedEdges()) {
+					CyNode node1 = (CyNode)((CyEdge)edge).getSource();
+					CyNode node2 = (CyNode)((CyEdge)edge).getTarget();
+					if (!nodeMap.containsKey(node1)) {
+						nodeMap.put(node1,node1);
+					}
+					if (!nodeMap.containsKey(node2)) {
+						nodeMap.put(node2,node2);
+					}
+				}
+				// Now construct our array
+				nodeArray = new String[nodeMap.keySet().size()];
+				int index = 0;
+				for (CyNode node: nodeMap.keySet())
+					nodeArray[index++] = node.getIdentifier();
+			} else {
+				nodeArray = new String[myNetwork.getSelectedNodes().size()];
+				int index = 0;
+				for (Object node:myNetwork.getSelectedNodes())
+					nodeArray[index++] = ((CyNode)node).getIdentifier();
+			}
+		}
 		
 		Arrays.sort(nodeArray);
-		netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.NODE_ORDER_ATTRIBUTE,Arrays.asList(nodeArray));
+		netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.NODE_ORDER_ATTRIBUTE,
+			                             Arrays.asList(nodeArray));
 
 		// Now, figure out what type of attributes
 		String attributeArray[] = getAttributeArray(dataAttributes);
@@ -185,13 +225,16 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 		// Edge attribute?
 		if (attributeArray.length == 1 && attributeArray[0].startsWith("edge.")) {
 			// Yes, symmetrical array
-			netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.ARRAY_ORDER_ATTRIBUTE,Arrays.asList(nodeArray));
-			netAttributes.setAttribute(myNetwork.getIdentifier(),EisenCluster.CLUSTER_EDGE_ATTRIBUTE, attributeArray[0]);
+			netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.ARRAY_ORDER_ATTRIBUTE,
+			                               Arrays.asList(nodeArray));
+			netAttributes.setAttribute(myNetwork.getIdentifier(),EisenCluster.CLUSTER_EDGE_ATTRIBUTE, 
+			                           attributeArray[0]);
 		} else {
 			for (int i = 0; i < attributeArray.length; i++) {
 				attributeArray[i] = attributeArray[i].substring(5);
 			}
-			netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.ARRAY_ORDER_ATTRIBUTE,Arrays.asList(attributeArray));
+			netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.ARRAY_ORDER_ATTRIBUTE,
+			                               Arrays.asList(attributeArray));
 		}
 
 		// Get our data model
@@ -217,7 +260,13 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 		// Now set up to receive selection events
 		myView = Cytoscape.getCurrentNetworkView();
 		myNetwork = Cytoscape.getCurrentNetwork();
-		// myView.addGraphViewChangeListener(this);
+		myView.addGraphViewChangeListener(this);
+
+		// Set up to listen for changes in the network view
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().
+		                       addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUS, this);
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().
+		                       addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 	}
 
 	// ClusterAlgorithm methods
@@ -228,6 +277,10 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 		                                  "Array sources",
 		                                  Tunable.LIST, "",
 		                                  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
+
+		clusterProperties.add(new Tunable("selectedOnly",
+		                                  "Display only selected nodes (or edges)",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
 
 		clusterProperties.initializeProperties();
 		updateSettings(true);
@@ -244,6 +297,10 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 		if ((t != null) && (t.valueChanged() || force)) {
 			dataAttributes = (String) t.getValue();
 		}
+
+		t = clusterProperties.get("selectedOnly");
+		if ((t != null) && (t.valueChanged() || force))
+			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 	}
 
 	public JPanel getSettingsPanel() {
@@ -280,28 +337,37 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 	//
 	public void update(Observable o, Object arg) {
 		if (o == geneSelection) {
-			selectedNodes = new ArrayList();
+			selectedNodes.clear();
 			int[] selections = geneSelection.getSelectedIndexes();
 			HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
 			String [] names = geneInfo.getNames();
 			for (int i = 0; i < selections.length; i++) {
 				String nodeName = geneInfo.getHeader(selections[i])[0];
 				CyNode node = Cytoscape.getCyNode(nodeName, false);
-				if (node != null) selectedNodes.add(node);
+				// Now see if this network has this node
+				if (node != null && !myNetwork.containsNode(node)) {
+					// No, try dropping any suffixes from the node name
+					String[] tokens = nodeName.split(" ");
+					node = Cytoscape.getCyNode(tokens[0], false);
+				}
+				if (node != null)
+					selectedNodes.add(node);
 			}
-			// myView.removeGraphViewChangeListener(this);
-			// System.out.println("Selecting "+nodes.size()+" nodes");
+			// System.out.println("Selecting "+selectedNodes.size()+" nodes");
 			if (!dataModel.isSymmetrical() || selectedArrays.size() == 0) {
+				myView.removeGraphViewChangeListener(this);
 				myNetwork.unselectAllNodes();
 				myNetwork.setSelectedNodeState(selectedNodes, true);
+				myView.redrawGraph(false,false);
+				myView.addGraphViewChangeListener(this);
 				return;
 			}
-			// myView.addGraphViewChangeListener(this);
+			return;
 		} else if (o == arraySelection) {
 			// We only care about array selection for symmetrical models
 			if (!dataModel.isSymmetrical())
 				return;
-			selectedArrays = new ArrayList();
+			selectedArrays.clear();
 			int[] selections = arraySelection.getSelectedIndexes();
 			if (selections.length == dataModel.nExpr())
 				return;
@@ -310,53 +376,132 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 			for (int i = 0; i < selections.length; i++) {
 				String nodeName = arrayInfo.getHeader(selections[i])[0];
 				CyNode node = Cytoscape.getCyNode(nodeName, false);
-				if (node != null) selectedArrays.add(node);
+				if (node != null && !myNetwork.containsNode(node)) {
+					// No, try dropping any suffixes from the node name
+					String[] tokens = nodeName.split(" ");
+					node = Cytoscape.getCyNode(tokens[0], false);
+				}
+				if (node != null)
+					selectedArrays.add(node);
 			}
 		}
 
 		// If we've gotten here, we want to select edges
+		myView.removeGraphViewChangeListener(this); // For efficiency reasons, remove our listener for now
 		myNetwork.unselectAllEdges();
-		myNetwork.unselectAllNodes();
-		List<CyEdge>edgesToSelect = new ArrayList();
+
+		HashMap<CyEdge,CyEdge>edgesToSelect = new HashMap();
 		for (CyNode node1: selectedNodes) {
 			int [] nodes = new int[2];
 			nodes[0] = node1.getRootGraphIndex();
 			for (CyNode node2: selectedArrays) {
 				nodes[1] = node2.getRootGraphIndex();
 				int edges[] = myNetwork.getConnectingEdgeIndicesArray(nodes);
-				for (int i = 0; i < edges.length; i++)
-					edgesToSelect.add((CyEdge)myNetwork.getEdge(edges[i]));
+				if (edges == null) {
+					continue;
+				}
+				for (int i = 0; i < edges.length; i++) {
+					CyEdge connectingEdge = (CyEdge)myNetwork.getEdge(edges[i]);
+					edgesToSelect.put(connectingEdge, connectingEdge);
+				}
 			}
 		}
-		myNetwork.setSelectedEdgeState(edgesToSelect, true);
+		myNetwork.setSelectedEdgeState(edgesToSelect.keySet(), true);
+		// myView.redrawGraph(false,false);
+		// Add our listener back
+		myView.addGraphViewChangeListener(this);
+		selectedNodes.clear();
+		selectedArrays.clear();
 	}
 
 	public void graphViewChanged(GraphViewChangeEvent event) {
 		// System.out.println("graphViewChanged");
-		if (event.isNodesSelectedType()) {
-			Node[] nodeArray = event.getSelectedNodes();
-			// setSelection(nodeArray, true);
-		} else if (event.isNodesUnselectedType()) {
-			Node[] nodeArray = event.getUnselectedNodes();
-			// setSelection(nodeArray, false);
+		if (event.getType() == GraphViewChangeEvent.NODES_UNSELECTED_TYPE || 
+		    event.getType() == GraphViewChangeEvent.NODES_SELECTED_TYPE) {
+			// We got a node selection event, but we're a symmetrical matrix -- not
+			// sure what to do, so for now, just return
+			if (dataModel.isSymmetrical()) return;
+			Set<CyNode> nodes = myNetwork.getSelectedNodes();
+			setNodeSelection(nodes, true);
+		} else if ((event.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE ||
+		            event.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE) &&
+		            dataModel.isSymmetrical()) {
+			// Got an edge selection (or unselection) event and we're a symmetrical matrix
+			// We want to locate the bounding box that surrounds the set of edges and select
+			// that range
+			Set<CyEdge> edges = myNetwork.getSelectedEdges();
+			setEdgeSelection(edges, true);
 		}
 	}
 
-	private void setSelection(Node[] nodeArray, boolean select) {
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ( evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ||
+		     evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED ) {
+
+			// The user has changed the network view -- we want to switch our
+			// view to go along with it
+
+			// Remove our listener from this network
+			myView.removeGraphViewChangeListener(this);
+
+			// Switch to the new network view
+			myView = Cytoscape.getNetworkView((String)evt.getNewValue());
+
+			// Get the network for this view
+			myNetwork = myView.getNetwork();
+
+			// Add ourselves to the new network as a listener
+			myView.addGraphViewChangeListener(this);
+		}
+	}
+
+	private void setEdgeSelection(Set<CyEdge> edgeArray, boolean select) {
+		HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
+		HeaderInfo arrayInfo = dataModel.getArrayHeaderInfo();
+
+		// Avoid loops -- delete ourselves as observers
+		geneSelection.deleteObserver(this);
+		arraySelection.deleteObserver(this);
+
+		// Clear everything that's currently selected
+		geneSelection.setSelectedNode(null);
+		geneSelection.deselectAllIndexes();
+		arraySelection.setSelectedNode(null);
+		arraySelection.deselectAllIndexes();
+
+		// Do the actual selection
+		for (CyEdge cyEdge: edgeArray) {
+			CyNode source = (CyNode)cyEdge.getSource();
+			CyNode target = (CyNode)cyEdge.getTarget();
+			int geneIndex = geneInfo.getHeaderIndex(source.getIdentifier());
+			int arrayIndex = arrayInfo.getHeaderIndex(target.getIdentifier());
+			geneSelection.setIndex(geneIndex, select);
+			arraySelection.setIndex(arrayIndex, select);
+		}
+
+		// Notify all of the observers
+		geneSelection.notifyObservers();
+		arraySelection.notifyObservers();
+
+		// OK, now we can listen again
+		geneSelection.addObserver(this);
+		arraySelection.addObserver(this);
+	}
+
+	// private void setNodeSelection(Node[] nodeArray, boolean select) {
+	private void setNodeSelection(Set<CyNode> nodeArray, boolean select) {
 		HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
 		geneSelection.deleteObserver(this);
 		geneSelection.setSelectedNode(null);
-		for (int index = 0; index < nodeArray.length; index++) {
-			CyNode cyNode = (CyNode) nodeArray[index];
-			// System.out.println("setting "+cyNode.getIdentifier()+" to "+select);
-			int geneIndex = geneInfo.getIndex(cyNode.getIdentifier());
+		geneSelection.deselectAllIndexes();
+		for (CyNode cyNode: nodeArray) {
+			int geneIndex = geneInfo.getHeaderIndex(cyNode.getIdentifier());
+			// System.out.println("setting "+cyNode.getIdentifier()+"("+geneIndex+") to "+select);
 			geneSelection.setIndex(geneIndex, select);
 		}
+		geneSelection.deleteObserver(this);
 		geneSelection.notifyObservers();
 		geneSelection.addObserver(this);
-		arraySelection.setSelectedNode(null);
-		arraySelection.selectAllIndexes();
-		arraySelection.notifyObservers();
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 
@@ -371,6 +516,7 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 	}
 
 	private String[] getAllAttributes() {
+		attributeArray = new String[1];
 		// Create the list by combining node and edge attributes into a single list
 		List<String> attributeList = new ArrayList<String>();
 		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");

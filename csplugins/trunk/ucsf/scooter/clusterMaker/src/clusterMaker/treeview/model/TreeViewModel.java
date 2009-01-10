@@ -134,6 +134,8 @@ public class TreeViewModel extends TVModel {
 				CyEdge edge = (CyEdge)edgeIterator.next();
 				CyNode source = (CyNode)edge.getSource();
 				CyNode target = (CyNode)edge.getTarget();
+				if (!geneList.contains(source.getIdentifier()) || !geneList.contains(target.getIdentifier()))
+					continue;
 				Double val = null;
 				if (attributeType == CyAttributes.TYPE_FLOATING) {
 					val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), attribute);

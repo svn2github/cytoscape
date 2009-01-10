@@ -49,6 +49,7 @@ import java.beans.PropertyChangeSupport;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -103,6 +104,7 @@ public class ClusterSettingsDialog extends JDialog
 		if (visualizer != null && visualizer != algorithm) 
 		                      algorithm.getPropertyChangeSupport().addPropertyChangeListener(this);
 		initializeOnce(); // Initialize the components we only do once
+		setResizable(false);
 	}
 
 	/**
@@ -175,6 +177,7 @@ public class ClusterSettingsDialog extends JDialog
 		// Create a panel for algorithm's content
 		this.algorithmPanel = currentAlgorithm.getSettingsPanel();
 		this.algorithmPanel.addComponentListener(this);
+		// this.algorithmPanel.setPreferredSize(new Dimension(500,500));
 
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = BorderFactory.createTitledBorder(selBorder,
