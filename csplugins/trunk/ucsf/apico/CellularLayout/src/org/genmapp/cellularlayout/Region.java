@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -19,6 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JComponent;
+
+import org.pathvisio.view.ShapeRegistry;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -100,6 +101,31 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.freeCenterY = centerY;
 		this.freeWidth = width;
 		this.freeHeight = height;
+		
+		// define free area inside of ovals
+		if (this.shape == "Oval"){
+			Double x = 0.0d;
+			Double y = 0.0d;
+			Double a = 0.0d;
+			Double b = 0.0d;
+			
+			if (width > height){
+				a = width/2;
+				b = height/2;
+			}else{
+				a = height/2;
+				b = width/2;
+			}
+			
+			//TODO: adapt equations to handle rotation (phi)
+			//  x=h+a(cos t)(cos phi) - b(sin t)(sin phi)
+			//  y=k+b(sin t)(cos phi) +a(cos t)(sin phi) 
+			x = centerX + a * Math.cos(Math.PI/4);
+			y = centerY + b * Math.cos(Math.PI/4);
+			
+			this.freeWidth = Math.abs(x - centerX) *2 ;
+			this.freeHeight = Math.abs(y - centerY) *2 ;
+		}
 
 		// graphics
 		setBounds(getVOutline().getBounds());
@@ -242,10 +268,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 		Color fillcolor = Color.blue;
 		Color fillColor = new Color(fillcolor.getRed(), fillcolor.getGreen(),
 				fillcolor.getBlue(), TRANSLUCENCY_LEVEL);
-		Color linecolor = Color.black;
-		if (!this.visibleBorder) {
-			linecolor = Color.blue;
-		}
+		Color linecolor = this.color;
 
 		int sw = 1;
 		int x = b.x;
@@ -258,7 +281,10 @@ public class Region extends JComponent implements ViewportChangeListener {
 		java.awt.Shape s = null;
 
 		// TODO
-		s = new Rectangle(x, y, w, h);
+//	s = new Rectangle(x, y, w, h);
+		s = ShapeRegistry.getShape (
+				this.shape,
+				x, y, w, h);
 
 		AffineTransform t = new AffineTransform();
 		t.rotate(this.rotation, cx, cy);
@@ -530,6 +556,22 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 */
 	public void setFreeHeight(double freeHeight) {
 		this.freeHeight = freeHeight;
+	}
+
+	public double getFreeLeft() {
+		return (freeCenterX - freeWidth /2);
+	}
+
+	public double getFreeRight() {
+		return (freeCenterX + freeWidth /2);
+	}
+
+	public double getFreeTop() {
+		return (freeCenterY - freeHeight /2);
+	}
+
+	public double getFreeBottom() {
+		return (freeCenterY + freeHeight /2);
 	}
 
 	/**

@@ -1,15 +1,20 @@
 package org.genmapp.cellularlayout;
 
+import giny.model.Node;
+import giny.model.RootGraph;
 import giny.view.NodeView;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JPanel;
 
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutProperties;
@@ -170,7 +175,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			taskMonitor.setPercentCompleted(1);
 
 			// CREATE REGIONS:
-			RegionManager.clearRegionAttMap();
+			RegionManager.clearAll();
 
 			// Hard-coded templates
 			String Color;
@@ -195,7 +200,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			 Height="400.5" ;
 			 ZOrder="16384" ;
 			 Rotation="0.0";
-			cG = Color;
+			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
 			wG = Double.parseDouble(Width);
@@ -213,7 +218,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			 Height="100.5" ;
 			 ZOrder="16384" ;
 			 Rotation="0.0";
-			cG = Color;
+			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
 			wG = Double.parseDouble(Width);
@@ -225,13 +230,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					"plasma membrane");
 
 			Color="000000";
-			CenterX="7979.75" ;
+			CenterX="8479.75" ;
 			CenterY="5002.25";
-			Width="2620.5" ;
+			Width="3620.5" ;
 			Height="2685.5";
 			ZOrder="16384";
 			Rotation="0.0";
-			cG = Color;
+			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
 			wG = Double.parseDouble(Width);
@@ -248,7 +253,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Height="3765.5" ;
 			ZOrder="16384" ;
 			Rotation="0.0" ;
-			cG = Color;
+			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
 			wG = Double.parseDouble(Width);
@@ -266,7 +271,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Height="2340.5";
 			ZOrder="16384" ;
 			Rotation="0.0";
-			cG = Color;
+			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
 			wG = Double.parseDouble(Width);
@@ -277,13 +282,6 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Region e = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
 					"unassigned");
 
-			// Set additional parameters
-			RegionManager.getRegionByAtt("extracellular region")
-					.setVisibleBorder(false);
-			RegionManager.getRegionByAtt("plasma membrane").setVisibleBorder(
-					true);
-			RegionManager.getRegionByAtt("cytoplasm").setVisibleBorder(false);
-			RegionManager.getRegionByAtt("nucleus").setVisibleBorder(true);
 
 			// SIZE UP REGIONS:
 			Collection<Region> allRegions = RegionManager.getAllRegions();
@@ -337,10 +335,10 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					continue;
 				
 				// initialize with full rectangle;
-				Double freeL = r.getRegionLeft();
-				Double freeR = r.getRegionRight();
-				Double freeT = r.getRegionTop();
-				Double freeB = r.getRegionBottom();
+				Double freeL = r.getFreeLeft();
+				Double freeR = r.getFreeRight();
+				Double freeT = r.getFreeTop();
+				Double freeB = r.getFreeBottom();
 				
 				// shrink to fit free area around center
 				// adapted from ex2_1.m by E. Alpaydin, i2ml, Learning a rectangle
@@ -451,6 +449,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Cytoscape.getCurrentNetworkView().fitContent();
 
 			// LAYOUT REGIONS:
+			HashMap<NodeView, Integer> nvSeen = new HashMap<NodeView, Integer>();
 			int taskNodeCount = networkView.nodeCount();
 			int taskCount = 0; // count all nodes in all regions to layout
 			Region[] sra = RegionManager.getSortedRegionArray();
@@ -497,6 +496,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				nextX = startX;
 				nextY = startY;
 
+				taskMonitor.setPercentCompleted(50);
 				taskMonitor.setStatus("Moving nodes");
 
 				int remainingCount = nodeCount; // count nodes left to layout
@@ -508,10 +508,65 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 				for (NodeView nv : nodeViews) {
 					taskMonitor
-							.setPercentCompleted((taskCount / taskNodeCount) * 100);
+							.setPercentCompleted((taskCount / taskNodeCount) * 50);
 
 					if (isLocked(nv)) {
 						continue;
+					}
+					
+					// have we already placed this node view?
+					if (nvSeen.containsKey(nv)){ 
+						// yes, then create copy
+						Node oldNode = nv.getNode();
+						String oldId = oldNode.getIdentifier();
+						String newId = oldId.concat("__").concat(nvSeen.get(nv).toString());
+						CyNode newNode = Cytoscape.getCyNode(newId, true);
+						
+						// copy attributes
+						CyAttributes attributes = Cytoscape.getNodeAttributes();
+						String[] atts = attributes.getAttributeNames();
+						for (String att : atts){
+							byte type = attributes.getType(att);
+								if (type == CyAttributes.TYPE_BOOLEAN) {
+									attributes.setAttribute(newId, att, attributes.getBooleanAttribute(oldId, att));
+								} else if (type == CyAttributes.TYPE_INTEGER) {
+									attributes.setAttribute(newId, att, attributes.getIntegerAttribute(oldId, att));
+								} else if (type == CyAttributes.TYPE_FLOATING) {
+									attributes.setAttribute(newId, att, attributes.getDoubleAttribute(oldId, att));
+								} else if (type == CyAttributes.TYPE_STRING) {
+									attributes.setAttribute(newId, att, attributes.getStringAttribute(oldId, att));
+								} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+									attributes.setListAttribute(newId, att, attributes.getListAttribute(oldId, att));
+								} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
+									attributes.setMapAttribute(newId, att, attributes.getMapAttribute(oldId, att));
+								}
+						}
+						
+						// copy edges
+						RootGraph rootGraph = Cytoscape.getRootGraph();
+						int[] edges = Cytoscape.getCurrentNetwork().getAdjacentEdgeIndicesArray(oldNode.getRootGraphIndex(), true, true, true);
+						for (int oldEdge : edges){
+							int source = rootGraph.getEdgeSourceIndex(oldEdge);
+							int target = rootGraph.getEdgeTargetIndex(oldEdge);
+							if (source == oldNode.getRootGraphIndex()){
+								source = newNode.getRootGraphIndex();
+							} else if (target == oldNode.getRootGraphIndex()){
+								target = newNode.getRootGraphIndex();
+							}
+							int newEdge = rootGraph.createEdge(source, target) ;
+							Cytoscape.getCurrentNetwork().addEdge(newEdge);
+							
+							//TODO: copy edge attributes??
+						}
+						
+						// increment hashmap count
+						nvSeen.put(nv, (nvSeen.get(nv) + 1));
+						// update nv reference
+						Cytoscape.getCurrentNetwork().addNode(newNode);
+						nv = Cytoscape.getCurrentNetworkView().getNodeView(newNode);						
+					}else {
+						// no, then add to tracking list
+						nvSeen.put(nv, 1);
 					}
 
 					nv.setOffset(nextX, nextY);

@@ -1,7 +1,13 @@
 package org.genmapp.cellularlayout;
 
+import giny.model.Node;
+import giny.view.NodeView;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.TreeMap;
 
 import cytoscape.Cytoscape;
@@ -31,13 +37,23 @@ public class RegionManager {
 		return regionAttMap.values();
 	}
 
-	public static void clearRegionAttMap() {
+	public static void clearAll() {
 		regionAttMap.clear();
 		sortedRegionMap.clear();
 		DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
 		DingCanvas bCanvas = dview
 				.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
 		bCanvas.removeAll();
+		
+		// clean up copied nodes and edges
+		Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
+		while (it.hasNext()) {
+			Node node = (Node) it.next();
+			if (node.getIdentifier().contains("__")){
+				Cytoscape.getCurrentNetwork().removeNode(node.getRootGraphIndex(), true);
+			}
+		}
+
 
 	}
 
