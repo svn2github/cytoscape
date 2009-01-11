@@ -168,6 +168,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 					if (val.indexOf(o.toString()) >= 0) {
 						nvList.add(Cytoscape.getCurrentNetworkView()
 								.getNodeView(node));
+						break; // stop searching after first hit
 					}
 
 				}

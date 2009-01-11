@@ -193,13 +193,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			int zG;
 			Double rG;
 
-			 Color="999999";
-			 CenterX="3254.75";
-			 CenterY="3337.25";
-			 Width="1200.5";
-			 Height="400.5" ;
-			 ZOrder="16384" ;
-			 Rotation="0.0";
+			Color = "999999";
+			CenterX = "3254.75";
+			CenterY = "3337.25";
+			Width = "1200.5";
+			Height = "400.5";
+			ZOrder = "16384";
+			Rotation = "0.0";
 			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
@@ -211,13 +211,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Region a = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
 					"extracellular region");
 
-			 Color="000000" ;
-			 CenterX="6232.25";
-			 CenterY="2690.25";
-			 Width="8535.5" ;
-			 Height="100.5" ;
-			 ZOrder="16384" ;
-			 Rotation="0.0";
+			Color = "000000";
+			CenterX = "6232.25";
+			CenterY = "2690.25";
+			Width = "8535.5";
+			Height = "100.5";
+			ZOrder = "16384";
+			Rotation = "0.0";
 			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
@@ -229,13 +229,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Region b = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
 					"plasma membrane");
 
-			Color="000000";
-			CenterX="8479.75" ;
-			CenterY="5002.25";
-			Width="3620.5" ;
-			Height="2685.5";
-			ZOrder="16384";
-			Rotation="0.0";
+			Color = "000000";
+			CenterX = "8479.75";
+			CenterY = "5002.25";
+			Width = "3620.5";
+			Height = "2685.5";
+			ZOrder = "16384";
+			Rotation = "0.0";
 			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
@@ -246,13 +246,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 			Region d = new Region("Oval", cG, xG, yG, wG, hG, zG, rG, "nucleus");
 
-			Color="999999";
-			CenterX="6269.75";
-			CenterY="4747.25";
-			Width="8640.5" ;
-			Height="3765.5" ;
-			ZOrder="16384" ;
-			Rotation="0.0" ;
+			Color = "999999";
+			CenterX = "6269.75";
+			CenterY = "4747.25";
+			Width = "8640.5";
+			Height = "3765.5";
+			ZOrder = "16384";
+			Rotation = "0.0";
 			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
@@ -264,13 +264,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Region c = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
 					"cytoplasm");
 
-			Color="999999";
-			CenterX="11797.25" ;
-			CenterY="3719.75";
-			Width="1335.5";
-			Height="2340.5";
-			ZOrder="16384" ;
-			Rotation="0.0";
+			Color = "999999";
+			CenterX = "11797.25";
+			CenterY = "3719.75";
+			Width = "1335.5";
+			Height = "2340.5";
+			ZOrder = "16384";
+			Rotation = "0.0";
 			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
@@ -282,23 +282,23 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Region e = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
 					"unassigned");
 
-
 			// SIZE UP REGIONS:
 			Collection<Region> allRegions = RegionManager.getAllRegions();
-			
+
 			// calculate free space in overlapped regions
-			for (Region r : allRegions){
-				
+			for (Region r : allRegions) {
+
 				Double comX = 0.0d;
 				Double comY = 0.0d;
-				
+
 				List<Region> orList = r.getOverlappingRegions();
 				int orListSize = orList.size();
-				Double[][] xy = new Double[orListSize*4][2];
+				Double[][] xy = new Double[orListSize * 4][2];
 				int i = 0;
-				for (Region or : orList){
+				for (Region or : orList) {
 					// define points to exclude
-					System.out.println("Check: "+ i +","+orListSize+":"+or.getAttValue());
+					System.out.println("Check: " + i + "," + orListSize + ":"
+							+ or.getAttValue());
 					xy[i][0] = or.getRegionLeft();
 					xy[i][1] = or.getRegionTop();
 					i++;
@@ -311,12 +311,12 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					xy[i][0] = or.getRegionRight();
 					xy[i][1] = or.getRegionBottom();
 					i++;
-		
+
 					// define center of overlapped region
 					comX += or.getCenterX();
 					comY += or.getCenterY();
 				}
-				if (orListSize > 1){
+				if (orListSize > 1) {
 					comX = comX / orList.size();
 					comY = comY / orList.size();
 				} else {
@@ -325,27 +325,30 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				}
 				// check center against overlapping regions
 				boolean skip = false;
-				for (Region or : orList){
-					if (comX > or.getRegionLeft() && comX < or.getRegionRight() && comY > or.getRegionTop() && comY < or.getRegionBottom()){
+				for (Region or : orList) {
+					if (comX > or.getRegionLeft() && comX < or.getRegionRight()
+							&& comY > or.getRegionTop()
+							&& comY < or.getRegionBottom()) {
 						skip = true;
 						System.out.println("check2: skip!");
 					}
 				}
 				if (skip)
 					continue;
-				
+
 				// initialize with full rectangle;
 				Double freeL = r.getFreeLeft();
 				Double freeR = r.getFreeRight();
 				Double freeT = r.getFreeTop();
 				Double freeB = r.getFreeBottom();
-				
+
 				// shrink to fit free area around center
-				// adapted from ex2_1.m by E. Alpaydin, i2ml, Learning a rectangle
-				for (i = 0; i < orListSize * 4; i++){
+				// adapted from ex2_1.m by E. Alpaydin, i2ml, Learning a
+				// rectangle
+				for (i = 0; i < orListSize * 4; i++) {
 					Double x = xy[i][0];
 					Double y = xy[i][1];
-					if (x > freeL && x < freeR && y > freeT && y < freeB){
+					if (x > freeL && x < freeR && y > freeT && y < freeB) {
 						if (x < comX)
 							freeL = x;
 						else if (x > comX)
@@ -357,7 +360,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					}
 				}
 				r.setFreeCenterX((freeL + freeR) / 2);
-				r.setFreeCenterY((freeT + freeB) /2);
+				r.setFreeCenterY((freeT + freeB) / 2);
 				r.setFreeWidth(freeR - freeL);
 				r.setFreeHeight(freeB - freeT);
 			}
@@ -435,7 +438,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 				r.setFreeCenterX(r.getFreeCenterX() * maxScaleFactor);
 				r.setFreeCenterY(r.getFreeCenterY() * maxScaleFactor);
-}
+			}
 
 			// GRAPHICS
 			DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
@@ -513,58 +516,71 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					if (isLocked(nv)) {
 						continue;
 					}
-					
+
 					// have we already placed this node view?
-					if (nvSeen.containsKey(nv)){ 
+					if (nvSeen.containsKey(nv)) {
 						// yes, then create copy
 						Node oldNode = nv.getNode();
 						String oldId = oldNode.getIdentifier();
-						String newId = oldId.concat("__").concat(nvSeen.get(nv).toString());
+						String newId = oldId.concat("__").concat(
+								nvSeen.get(nv).toString());
 						CyNode newNode = Cytoscape.getCyNode(newId, true);
-						
+
 						// copy attributes
 						CyAttributes attributes = Cytoscape.getNodeAttributes();
 						String[] atts = attributes.getAttributeNames();
-						for (String att : atts){
+						for (String att : atts) {
 							byte type = attributes.getType(att);
-								if (type == CyAttributes.TYPE_BOOLEAN) {
-									attributes.setAttribute(newId, att, attributes.getBooleanAttribute(oldId, att));
-								} else if (type == CyAttributes.TYPE_INTEGER) {
-									attributes.setAttribute(newId, att, attributes.getIntegerAttribute(oldId, att));
-								} else if (type == CyAttributes.TYPE_FLOATING) {
-									attributes.setAttribute(newId, att, attributes.getDoubleAttribute(oldId, att));
-								} else if (type == CyAttributes.TYPE_STRING) {
-									attributes.setAttribute(newId, att, attributes.getStringAttribute(oldId, att));
-								} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-									attributes.setListAttribute(newId, att, attributes.getListAttribute(oldId, att));
-								} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
-									attributes.setMapAttribute(newId, att, attributes.getMapAttribute(oldId, att));
-								}
+							if (type == CyAttributes.TYPE_BOOLEAN) {
+								attributes.setAttribute(newId, att, attributes
+										.getBooleanAttribute(oldId, att));
+							} else if (type == CyAttributes.TYPE_INTEGER) {
+								attributes.setAttribute(newId, att, attributes
+										.getIntegerAttribute(oldId, att));
+							} else if (type == CyAttributes.TYPE_FLOATING) {
+								attributes.setAttribute(newId, att, attributes
+										.getDoubleAttribute(oldId, att));
+							} else if (type == CyAttributes.TYPE_STRING) {
+								attributes.setAttribute(newId, att, attributes
+										.getStringAttribute(oldId, att));
+							} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+								attributes
+										.setListAttribute(newId, att,
+												attributes.getListAttribute(
+														oldId, att));
+							} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
+								attributes.setMapAttribute(newId, att,
+										attributes.getMapAttribute(oldId, att));
+							}
 						}
-						
+
 						// copy edges
 						RootGraph rootGraph = Cytoscape.getRootGraph();
-						int[] edges = Cytoscape.getCurrentNetwork().getAdjacentEdgeIndicesArray(oldNode.getRootGraphIndex(), true, true, true);
-						for (int oldEdge : edges){
+						int[] edges = Cytoscape.getCurrentNetwork()
+								.getAdjacentEdgeIndicesArray(
+										oldNode.getRootGraphIndex(), true,
+										true, true);
+						for (int oldEdge : edges) {
 							int source = rootGraph.getEdgeSourceIndex(oldEdge);
 							int target = rootGraph.getEdgeTargetIndex(oldEdge);
-							if (source == oldNode.getRootGraphIndex()){
+							if (source == oldNode.getRootGraphIndex()) {
 								source = newNode.getRootGraphIndex();
-							} else if (target == oldNode.getRootGraphIndex()){
+							} else if (target == oldNode.getRootGraphIndex()) {
 								target = newNode.getRootGraphIndex();
 							}
-							int newEdge = rootGraph.createEdge(source, target) ;
+							int newEdge = rootGraph.createEdge(source, target);
 							Cytoscape.getCurrentNetwork().addEdge(newEdge);
-							
-							//TODO: copy edge attributes??
+
+							// TODO: copy edge attributes??
 						}
-						
+
 						// increment hashmap count
 						nvSeen.put(nv, (nvSeen.get(nv) + 1));
 						// update nv reference
 						Cytoscape.getCurrentNetwork().addNode(newNode);
-						nv = Cytoscape.getCurrentNetworkView().getNodeView(newNode);						
-					}else {
+						nv = Cytoscape.getCurrentNetworkView().getNodeView(
+								newNode);
+					} else {
 						// no, then add to tracking list
 						nvSeen.put(nv, 1);
 					}
