@@ -133,15 +133,15 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 		
 		// Check node size lock state 
-		if(type.equals(VisualPropertyType.NODE_SIZE)) {
-			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
-				jmi.setEnabled(false);
-			}
-		} else if(type.equals(VisualPropertyType.NODE_WIDTH) || type.equals(VisualPropertyType.NODE_HEIGHT)) {
-			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
-				jmi.setEnabled(false);
-			}
-		}
+//		if(type.equals(VisualPropertyType.NODE_SIZE)) {
+//			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
+//				jmi.setEnabled(false);
+//			}
+//		} else if(type.equals(VisualPropertyType.NODE_WIDTH) || type.equals(VisualPropertyType.NODE_HEIGHT)) {
+//			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
+//				jmi.setEnabled(false);
+//			}
+//		}
 
 		String attrString = graphObj.attrs().get(type.getBypassAttrName(),String.class);
 

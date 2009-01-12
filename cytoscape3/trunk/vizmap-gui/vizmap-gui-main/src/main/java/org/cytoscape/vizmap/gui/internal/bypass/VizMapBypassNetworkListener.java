@@ -36,42 +36,37 @@
  */
 package org.cytoscape.vizmap.gui.internal.bypass;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
+import cytoscape.events.NetworkViewAddedEvent;
+import cytoscape.events.NetworkViewAddedListener;
+
 import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
-import cytoscape.view.CySwingApplication;
 
 
 /**
  * Adds NodeView and EdgeView vizmap bypass listeners to network views as
  * the views are created.
  */
-public class VizMapBypassNetworkListener implements PropertyChangeListener {
+public class VizMapBypassNetworkListener implements NetworkViewAddedListener {
 
 	private EditorFactory ef;
 	private CyNetworkManager cyNetworkManager;
 	
 	public VizMapBypassNetworkListener(EditorFactory ef, CyNetworkManager cyNetworkManager) {
 		this.ef = ef;
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	/**
-	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
+	 * Listens for network view added and if it hears one, it adds
 	 * node and edge context menu listeners to the view.
 	 * @param evnt The event we're hearing.
 	 */
-	public void propertyChange(PropertyChangeEvent evnt) {
-		if (evnt.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
-			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
-			cyNetworkManager.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
+	public void handleEvent(NetworkViewAddedEvent event) {
+		NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
+		event.getNetworkView().addNodeContextMenuListener(node_menu_listener);
 
-			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener(ef);
-			cyNetworkManager.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
-		}
+		EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener(ef);
+		event.getNetworkView().addEdgeContextMenuListener(edge_menu_listener);
 	}
 }

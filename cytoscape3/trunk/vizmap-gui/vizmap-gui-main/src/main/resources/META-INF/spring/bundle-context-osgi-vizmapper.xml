@@ -105,4 +105,8 @@
 			unbind-method="removeEditorDisplayer" ref="editorFactory" />
 	</osgi:set>
 
+	<osgi:service id="vizMapBypassNetworkListenerNetworkViewAddedListenerService" 
+	    ref="vizMapBypassNetworkListener"
+		interface="cytoscape.events.NetworkViewAddedListener" />
+
 </beans>

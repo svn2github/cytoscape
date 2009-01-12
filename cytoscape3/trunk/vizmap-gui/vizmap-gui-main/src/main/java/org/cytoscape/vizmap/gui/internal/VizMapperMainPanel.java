@@ -151,8 +151,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		cytoscapeDesktop.getCytoPanel(SwingConstants.WEST).add(
 				"VizMapper\u2122", this);
-		cytoscapeDesktop.getSwingPropertyChangeSupport()
-				.addPropertyChangeListener(this);
+//		cytoscapeDesktop.getSwingPropertyChangeSupport()
+//				.addPropertyChangeListener(this);
 	}
 
 	/*
