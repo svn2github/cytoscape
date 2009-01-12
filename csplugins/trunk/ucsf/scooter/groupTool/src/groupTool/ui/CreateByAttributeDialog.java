@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -116,7 +117,8 @@ public class CreateByAttributeDialog extends JDialog
 		attributeSelector.addItem("Select attribute to group by");
 		for (int i = 0; i < attrNames.length; i++) {
 			if (nodeAttributes.getType(attrNames[i]) == CyAttributes.TYPE_STRING 
-			    || nodeAttributes.getType(attrNames[i]) == CyAttributes.TYPE_INTEGER) {
+			    || nodeAttributes.getType(attrNames[i]) == CyAttributes.TYPE_INTEGER
+			    || nodeAttributes.getType(attrNames[i]) == CyAttributes.TYPE_SIMPLE_LIST) {
 				attributeSelector.addItem(attrNames[i]);
 			}
 		}
@@ -183,33 +185,39 @@ public class CreateByAttributeDialog extends JDialog
 			// Yes, see if we have any matches
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			HashMap<String,List<CyNode>>nodeMap = new HashMap();
-			Iterator<CyNode> nodeIter = network.nodesIterator();
-			while (nodeIter.hasNext()) {
-				// Get the node
-				CyNode node = nodeIter.next();
+			List<CyNode> nodes = network.nodesList();
+			for (CyNode node: nodes) {
 				// Get the attribute type
 				byte type = nodeAttributes.getType(attribute);
 				String key = null;
 
 				// Get the attribute value (if any)
-				if (type == CyAttributes.TYPE_STRING)
+				if (type == CyAttributes.TYPE_STRING) {
 					key = nodeAttributes.getStringAttribute(node.getIdentifier(), attribute);
-				else if (type == CyAttributes.TYPE_INTEGER) {
+					addKey(nodeMap,key,node);
+				} else if (type == CyAttributes.TYPE_INTEGER) {
 					Integer kInt = nodeAttributes.getIntegerAttribute(node.getIdentifier(), attribute);
 					if (kInt != null) {
 						key = kInt.toString();
 					}
+					addKey(nodeMap,key,node);
+				} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+					// For all members of the list, get the value and set (or create) the key
+					List list = nodeAttributes.getListAttribute(node.getIdentifier(), attribute);
+					// list can only be string or integer
+					for (Object obj: list) {
+						if (obj instanceof Integer) {
+							addKey(nodeMap, ((Integer)obj).toString(), node);
+						} else if (obj instanceof String) {
+							addKey(nodeMap, (String)obj, node);
+						}
+					}
 				}
-				if (key == null) continue;
-				if (!nodeMap.containsKey(key))
-					nodeMap.put(key, new ArrayList());
-				nodeMap.get(key).add(node);
 			}
 
 			Set<String>groupNames = nodeMap.keySet();
-			Iterator<String> groupIter = groupNames.iterator();
-			while (groupIter.hasNext()) {
-				String groupName = groupIter.next();
+			for (String groupName: groupNames) {
+				//System.out.println("groupName: "+groupName);
 				List<CyNode>nodeList = nodeMap.get(groupName);
 				// See if this group already exists
 				CyGroup group = CyGroupManager.findGroup(groupName);
@@ -219,11 +227,18 @@ public class CreateByAttributeDialog extends JDialog
 				}
 
 				group = CyGroupManager.createGroup(groupName, nodeList, viewer);
-				nodeAttributes.setAttribute(groupName, attribute, groupName);
+				// nodeAttributes.setAttribute(groupName, attribute, groupName);
 				CyGroupViewer groupViewer = CyGroupManager.getGroupViewer(viewer);
 				groupViewer.groupCreated(group);
 			}
 			this.dispose();
 		}
+	}
+
+	void addKey(Map<String, List<CyNode>>nodeMap, String key, CyNode node) {
+		if (key == null) return;
+		if (!nodeMap.containsKey(key))
+			nodeMap.put(key, new ArrayList());
+		nodeMap.get(key).add(node);
 	}
 }

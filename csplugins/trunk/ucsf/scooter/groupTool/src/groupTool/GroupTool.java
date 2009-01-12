@@ -73,7 +73,7 @@ import groupTool.ui.GroupToolDialog;
  */
 public class GroupTool extends CytoscapePlugin 
                        implements ActionListener {
-	public static final double VERSION = 1.0;
+	public static final double VERSION = 1.3;
 
   /**
    * Create our action and add it to the plugins menu
