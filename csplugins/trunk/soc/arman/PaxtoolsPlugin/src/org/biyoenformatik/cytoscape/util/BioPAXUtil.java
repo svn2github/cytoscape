@@ -147,7 +147,7 @@ public class BioPAXUtil {
             } else if( aInteraction instanceof control) {
                 control aControl = (control) aInteraction;
                 ControlType controlType = aControl.getCONTROL_TYPE();
-                String controlStr = controlTypeToString(controlType);
+                String controlStr = controlType.toString(); // Thanks Rex
 
                 for(process aProcess: aControl.getCONTROLLED() ) {
                     if(aProcess instanceof interaction) {
@@ -553,36 +553,6 @@ public class BioPAXUtil {
             this.nodes = nodes;
             this.edges = edges;
         }
-    }
-
-    public static String controlTypeToString(ControlType ct) {
-        // Probably the ugliest code I've written for this plugin
-        if(ct == ControlType.ACTIVATION)
-            return "ACTIVATION";
-        else if(ct == ControlType.ACTIVATION_ALLOSTERIC)
-            return "ACTIVATION_ALLOSTERIC";
-        else if(ct == ControlType.ACTIVATION_NONALLOSTERIC)
-            return "ACTIVATION_NONALLOSTERIC";
-        else if(ct == ControlType.ACTIVATION_UNKMECH)
-            return "ACTIVATION_UNKMECH";
-        else if(ct == ControlType.INHIBITION)
-            return "INHIBITION";
-        else if(ct == ControlType.INHIBITION_ALLOSTERIC)
-            return "INHIBITION_ALLOSTERIC";
-        else if(ct == ControlType.INHIBITION_COMPETITIVE)
-            return "INHIBITION_COMPETITIVE";
-        else if(ct == ControlType.INHIBITION_IRREVERSIBLE)
-            return "INHIBITION_IRREVERSIBLE";
-        else if(ct == ControlType.INHIBITION_NONCOMPETITIVE)
-            return "INHIBITION_NONCOMPETITIVE";
-        else if(ct == ControlType.INHIBITION_OTHER)
-            return "INHIBITION_OTHER";
-        else if(ct == ControlType.INHIBITION_UNCOMPETITIVE)
-            return "INHIBITION_UNCOMPETITIVE";
-        else if(ct == ControlType.INHIBITION_UNKMECH)
-            return "INHIBITION_UNKMECH";
-        else
-            return "";
     }
 
     // Wrapping the wrappers (generics support, less warnings)

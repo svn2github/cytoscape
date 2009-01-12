@@ -33,7 +33,6 @@ import cytoscape.Cytoscape;
 
 import java.awt.event.ActionEvent;
 
-import org.biyoenformatik.cytoscape.ui.MergeBioPAXDialog;
 import org.biyoenformatik.cytoscape.ui.IntegrateBioPAXDialog;
 import org.biyoenformatik.cytoscape.util.BioPAXUtil;
 

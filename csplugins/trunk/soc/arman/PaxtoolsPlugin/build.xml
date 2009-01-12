@@ -71,7 +71,7 @@
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/mysql-connector-java-5.0.7-bin.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/xml-apis.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/jta.jar"/>
-    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/paxtools-svn20080817.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/paxtools-svn20090112.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/collections-generic-4.01.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/hibernate-entitymanager.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/concurrent.jar"/>
