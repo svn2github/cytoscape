@@ -26,17 +26,25 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	Guihandler guihandler;
 	ListSingleSelection<JPanel> listPane;
 	
-	public GuiTunableInterceptor(JFrame inframe,JFrame outframe) {
+	
+	JPanel insidepane;	
+	
+	public GuiTunableInterceptor(JFrame inframe,JFrame outframe ,JPanel insidepane) {
 		super( new GuiHandlerFactory<Guihandler>() );
 		this.inframe = inframe;
 		this.outframe = outframe;
+		this.insidepane = insidepane;
 	}
 
 
 	protected void process(List<Guihandler> list) {
+			
+			insidepane.removeAll();
 			this.list=list;
-			mainPanel = new JPanel();
-			mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
+			//mainPanel = new JPanel();
+			//mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
+			//insidepane.setLayout(new BoxLayout(insidepane,BoxLayout.PAGE_AXIS));
+			
 			TitledBorder titleBorder = null;
 
 			java.util.List<JPanel> panes = new ArrayList<JPanel>();
@@ -78,13 +86,20 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			panes.remove(0);
 			listPane=new ListSingleSelection<JPanel>(panes);
 			
+//			for(int i=0;i<listPane.getPossibleValues().size();i++){
+//				mainPanel.add(listPane.getPossibleValues().get(i));
+//			}
+			insidepane.setLayout(new BoxLayout(insidepane,BoxLayout.PAGE_AXIS));
+			
 			for(int i=0;i<listPane.getPossibleValues().size();i++){
-				mainPanel.add(listPane.getPossibleValues().get(i));
+				insidepane.add(listPane.getPossibleValues().get(i));
 			}
 			
-			inframe.setContentPane(mainPanel);
+			
+			
+//			inframe.setContentPane(mainPanel);
 			inframe.pack();
-			inframe.setLocation(100, 100);
+			inframe.setLocation(50, 30);
 			inframe.setVisible(true);
 			processdone=true;
 			

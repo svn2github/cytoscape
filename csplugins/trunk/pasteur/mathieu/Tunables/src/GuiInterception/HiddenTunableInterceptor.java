@@ -27,7 +27,7 @@ public abstract class HiddenTunableInterceptor<T extends Handler> implements Tun
 					Tunable tunable = field.getAnnotation(Tunable.class);
 					T handler = factory.getHandler(field, command, tunable);
 					if(handler!=null) handlerList.add(handler);
-					
+					else System.out.println("Tunable error");
 				}catch (Exception e){e.printStackTrace();}			
 			}
 		}
