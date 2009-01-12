@@ -44,8 +44,12 @@ import metaNodePlugin2.model.AttributeHandler;
 import metaNodePlugin2.model.AttributeHandler.AttributeHandlingType;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupViewer;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.TunableListener;
 
@@ -57,6 +61,7 @@ import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -76,23 +81,29 @@ import javax.swing.border.TitledBorder;
  * options for the various metanode settings
  */
 public class MetanodeSettingsDialog extends JDialog 
-                                      implements ActionListener, TunableListener, ComponentListener {
+                                    implements ActionListener, TunableListener, ComponentListener {
 
 	private MetanodeProperties metanodeProperties;
 	private Tunable typeString = null;
 	private Tunable typeList = null;
 	private Tunable attrList = null;
 	private Tunable opacityTunable = null;
-	private Tunable sizeToBoundingBox = null;
+	private Tunable sizeToBoundingBoxTunable = null;
 	private String[] attributeArray = null;
 	private List<Tunable>tunableEnablers = null;
+	private boolean hideMetaNode = false;
+  private boolean enableHandling = false;
+  private boolean sizeToBoundingBox = false;
+	private double metanodeOpacity = 0.0f;
+	private CyGroupViewer groupViewer = null;
 
 	// Dialog components
 	JPanel tunablePanel = null;
 
-	public MetanodeSettingsDialog() {
+	public MetanodeSettingsDialog(CyGroupViewer viewer) {
 		super(Cytoscape.getDesktop(), "Metanode Attribute Handling Dialog", false);
 		metanodeProperties = new MetanodeProperties("metanode");
+		this.groupViewer = viewer;
 
 		initializeProperties();
 
@@ -119,26 +130,48 @@ public class MetanodeSettingsDialog extends JDialog
 
 		JPanel buttonBox = new JPanel();
 
-		JButton saveButton = new JButton("Save Settings");
-		saveButton.setActionCommand("save");
-		saveButton.addActionListener(this);
+		{
+			JButton button = new JButton("Save Settings");
+			button.setActionCommand("save");
+			button.addActionListener(this);
+			buttonBox.add(button);
+		}
 
-		JButton clearButton = new JButton("Clear Settings");
-		clearButton.setActionCommand("clear");
-		clearButton.addActionListener(this);
+		{
+			JButton button = new JButton("Clear Settings");
+			button.setActionCommand("clear");
+			button.addActionListener(this);
+			buttonBox.add(button);
+		}
 
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setActionCommand("cancel");
-		cancelButton.addActionListener(this);
+		{
+			JButton button = new JButton("Apply to selected");
+			button.setActionCommand("applySelected");
+			button.addActionListener(this);
+			buttonBox.add(button);
+		}
 
-		JButton doneButton = new JButton("Done");
-		doneButton.setActionCommand("done");
-		doneButton.addActionListener(this);
+		{
+			JButton button = new JButton("Apply to all");
+			button.setActionCommand("applyAll");
+			button.addActionListener(this);
+			buttonBox.add(button);
+		}
 
-		buttonBox.add(saveButton);
-		buttonBox.add(clearButton);
-		buttonBox.add(cancelButton);
-		buttonBox.add(doneButton);
+		{
+			JButton button = new JButton("Cancel");
+			button.setActionCommand("cancel");
+			button.addActionListener(this);
+			buttonBox.add(button);
+		}
+
+		{
+			JButton button = new JButton("Done");
+			button.setActionCommand("done");
+			button.addActionListener(this);
+			buttonBox.add(button);
+		}
+
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		mainPanel.add(buttonBox);
 		setContentPane(mainPanel);
@@ -160,12 +193,12 @@ public class MetanodeSettingsDialog extends JDialog
 		}
 
 		{
-			sizeToBoundingBox = new Tunable("sizeToBoundingBox",
-			                        "Size metanode to the bounding box of all children",
-			                        Tunable.BOOLEAN, new Boolean(false), 0);
-			sizeToBoundingBox.setImmutable(true);
-			sizeToBoundingBox.addTunableValueListener(this);
-			metanodeProperties.add(sizeToBoundingBox);
+			sizeToBoundingBoxTunable = new Tunable("sizeToBoundingBox",
+			                                       "Size metanode to the bounding box of all children",
+			                                       Tunable.BOOLEAN, new Boolean(false), 0);
+			sizeToBoundingBoxTunable.setImmutable(true);
+			sizeToBoundingBoxTunable.addTunableValueListener(this);
+			metanodeProperties.add(sizeToBoundingBoxTunable);
 		}
 
 		// Sliders always look better when grouped
@@ -264,7 +297,7 @@ public class MetanodeSettingsDialog extends JDialog
 		// Get our defaults and pass them down to the AttributeHandler
 		Tunable t = metanodeProperties.get("enableHandling");
 		if ((t != null) && (t.valueChanged() || force)) {
-      boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
+      enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeHandler.setEnable(enableHandling);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 			enableTunables(enableHandling);
@@ -272,22 +305,22 @@ public class MetanodeSettingsDialog extends JDialog
 
 		t = metanodeProperties.get("hideMetanodes");
 		if ((t != null) && (t.valueChanged() || force)) {
-      boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
-			MetaNode.setHideMetaNodeDefault(hideMetanode);
+      hideMetaNode = ((Boolean) t.getValue()).booleanValue();
+			MetaNode.setHideMetaNodeDefault(hideMetaNode);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 		t = metanodeProperties.get("sizeToBoundingBox");
 		if ((t != null) && (t.valueChanged() || force)) {
-      boolean sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
+      sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
 			MetaNode.setSizeToBoundingBoxDefault(sizeToBoundingBox);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 		t = metanodeProperties.get("metanodeOpacity");
 		if ((t != null) && (t.valueChanged() || force)) {
-      double metanodeOpacity = ((Double) t.getValue()).doubleValue();
-			MetaNode.setExpandedOpacity(metanodeOpacity);
+      metanodeOpacity = ((Double) t.getValue()).doubleValue();
+			MetaNode.setExpandedOpacityDefault(metanodeOpacity);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
@@ -384,6 +417,33 @@ public class MetanodeSettingsDialog extends JDialog
 		} else if (command.equals("clear")) {
 			AttributeHandler.clearSettings();
 			tunableChanged(attrList);
+		} else if (command.equals("applySelected")) {
+			updateSettings(true);
+			// Get all selected nodes
+			Set<CyNode> nodeList = Cytoscape.getCurrentNetwork().getSelectedNodes();
+			for (CyNode node: nodeList) {
+				MetaNode mn = MetaNode.getMetaNode(node);
+				if (mn != null) {
+					mn.setHideMetaNode(hideMetaNode);
+					mn.setSizeToBoundingBox(sizeToBoundingBox);
+					mn.setHideMetaNode(hideMetaNode);
+				}
+			}
+			setVisible(false);
+		} else if (command.equals("applyAll")) {
+			updateSettings(true);
+			// Get the list of groups
+			List<CyGroup> groupList = CyGroupManager.getGroupList(groupViewer);
+			// Update them
+			for (CyGroup group: groupList) {
+				MetaNode mn = MetaNode.getMetaNode(group);
+				if (mn != null) {
+					mn.setHideMetaNode(hideMetaNode);
+					mn.setSizeToBoundingBox(sizeToBoundingBox);
+					mn.setHideMetaNode(hideMetaNode);
+				}
+			}
+			setVisible(false);
 		}
 	}
 
@@ -391,9 +451,9 @@ public class MetanodeSettingsDialog extends JDialog
 		if (t.getName().equals("hideMetanodes")) {
       boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
 			if (hideMetanode)
-				sizeToBoundingBox.setImmutable(true);
+				sizeToBoundingBoxTunable.setImmutable(true);
 			else
-				sizeToBoundingBox.setImmutable(false);
+				sizeToBoundingBoxTunable.setImmutable(false);
 			MetaNode.setHideMetaNodeDefault(hideMetanode);
 		} else if (t.getName().equals("sizeToBoundingBox")) {
       boolean sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
@@ -404,7 +464,7 @@ public class MetanodeSettingsDialog extends JDialog
 			MetaNode.setSizeToBoundingBoxDefault(sizeToBoundingBox);
 		} else if (t.getName().equals("metanodeOpacity")) {
       double opacity = ((Double) t.getValue()).doubleValue();
-			MetaNode.setExpandedOpacity(opacity);
+			MetaNode.setExpandedOpacityDefault(opacity);
 		} else if (t.getName().equals("enableHandling")) {
       boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeHandler.setEnable(enableHandling);

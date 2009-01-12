@@ -90,7 +90,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	                                      GraphViewChangeListener {
 
 	public static final String viewerName = "metaNode";
-	public static final double VERSION = 1.2;
+	public static final double VERSION = 1.5;
 	public CyLogger logger = null;
 	public enum Command {
 		NONE("none"),
@@ -143,12 +143,14 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			// We also want to add ourselves to the network view focused change list
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 			          .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
+
 			// Add our context menu
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
 			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(this);
 		} catch (ClassCastException e) {
 			logger.error(e.getMessage());
 		}
+
 
 		// Create our main plugin menu
 		JMenu menu = new JMenu("MetaNode Operations");
@@ -169,7 +171,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		try {
 			// Initialize the settings dialog -- we do this here so that our properties
 			// get read in.
-			settingsDialog = new MetanodeSettingsDialog();
+			settingsDialog = new MetanodeSettingsDialog(this);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 		}
@@ -416,8 +418,17 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				this.contextNode = (CyNode)overNode.getNode();
 		}
 
-	  public void menuCanceled (MenuEvent e) {};
-		public void menuDeselected (MenuEvent e) {};
+	  public void menuCanceled (MenuEvent e) {
+			JMenu m = (JMenu)e.getSource();
+			// Clear the menu
+			m.removeAll();
+		}
+
+		public void menuDeselected (MenuEvent e) {
+			JMenu m = (JMenu)e.getSource();
+			// Clear the menu
+			m.removeAll();
+		}
 
 		/**
 		 * Process the selected menu
@@ -427,9 +438,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		public void menuSelected (MenuEvent e)
 		{
 			JMenu m = (JMenu)e.getSource();
-			// Clear the menu
-			Component[] subMenus = m.getMenuComponents();
-			for (int i = 0; i < subMenus.length; i++) { m.remove(subMenus[i]); }
+			m.removeAll();
 
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			Set currentNodes = network.getSelectedNodes();
@@ -451,10 +460,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			{
 				groupList = sortList(groupList);
 				addMenuItem(m, Command.EXPAND, groupList, contextNode, "Expand metanode");
-				addMenuItem(m, Command.COLLAPSE, groupList, contextNode, "Collapse metanode");
+				// addMenuItem(m, Command.COLLAPSE, groupList, contextNode, "Collapse metanode");
 				addMenuItem(m, Command.EXPANDNEW, groupList, contextNode, "Expand metanode");
-				addMenuItem(m, Command.REMOVE, groupList, contextNode, "Remove metanode");
-				addMenuItem(m, Command.ADD, groupList, contextNode, "Add node to metanode");
+				// addMenuItem(m, Command.REMOVE, groupList, contextNode, "Remove metanode");
+				// addMenuItem(m, Command.ADD, groupList, contextNode, "Add node to metanode");
 				addMenuItem(m, Command.DELETE, groupList, contextNode, "Remove node from metanode");
 				addMenuItem(m, Command.EXPANDALL, groupList, null, "Expand all metanodes");
 				addMenuItem(m, Command.COLLAPSEALL, groupList, null, "Collapse all metanodes");
@@ -591,26 +600,31 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			List<CyGroup>nodeGroups = null;
 			boolean foundItem = false;
 			if (groupList == null) return false;
+
 			CyNetworkView view = Cytoscape.getCurrentNetworkView();
 
 			if (command == Command.ADD && node != null) {
 				nodeGroups = node.getGroups();
 			} 
+
 			// List current named selections
 			for (CyGroup group: groupList) {
 				CyNode groupNode = group.getGroupNode();
 				List<CyGroup> parents = groupNode.getGroups();
 				if (group.getViewer() != null && group.getViewer().equals(groupViewer.getViewerName())) {
-					// Only present reasonable choices to the user
 					MetaNode metaNode = MetaNode.getMetaNode(group.getGroupNode());
+
+					// Make sure we have a metnode object for this group
 					if (metaNode == null) {
 						metaNode = new MetaNode(group);
 						groupCreated(group);
 					}
 
+					// Only present reasonable choices to the user
 					if ((command == Command.COLLAPSE && metaNode.isCollapsed(view)) ||
-					    (command == Command.EXPAND && metaNode.isCollapsed(view))) 
+					    (command == Command.EXPAND && !metaNode.isCollapsed(view))) 
 						continue;
+
 					// If command is expand and we're a child of a group that isn't
 					// yet expanded, don't give this as an option
 					if ((command == Command.EXPAND) && (parents != null) && (parents.size() > 0)) {

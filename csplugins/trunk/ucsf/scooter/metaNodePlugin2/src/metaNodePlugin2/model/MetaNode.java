@@ -83,7 +83,7 @@ public class MetaNode {
 	private static HashMap<CyNode,MetaNode> metaMap = new HashMap();
 	private static final boolean DEBUG = false;
 	private static boolean hideMetanodeDefault = true;
-	private static double metanodeOpacity = 0.;
+	private static double metanodeOpacityDefault = 0.;
 	private static boolean sizeToBoundingBoxDefault = true;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
@@ -117,6 +117,7 @@ public class MetaNode {
 
 	private boolean hideMetanode = true;
 	private boolean sizeToBoundingBox = false;
+	private double metanodeOpacity = 0.;
 
 	private CyLogger logger = null;
 
@@ -237,8 +238,8 @@ public class MetaNode {
 	 *
 	 * @param opacity the opacity (between 0 and 100)
 	 */
-	static public void setExpandedOpacity(double opacity) {
-		MetaNode.metanodeOpacity = 255*opacity/100;
+	static public void setExpandedOpacityDefault(double opacity) {
+		MetaNode.metanodeOpacityDefault = 255*opacity/100;
 	}
 
 	/**
@@ -290,6 +291,7 @@ public class MetaNode {
 		logger = CyLogger.getLogger(MetaNode.class);
 		this.hideMetanode = MetaNode.hideMetanodeDefault;
 		this.sizeToBoundingBox = MetaNode.sizeToBoundingBoxDefault;
+		this.metanodeOpacity = MetaNode.metanodeOpacityDefault;
 
 		if (DEBUG) logger.debug("Creating meta-group "+group.getGroupName());
 
@@ -631,7 +633,7 @@ public class MetaNode {
 				nodeAttributes.setAttribute(id, VisualPropertyType.NODE_SHAPE.getBypassAttrName(), "rect");
 				nodeAttributes.setAttribute(id, VisualPropertyType.NODE_HEIGHT.getBypassAttrName(), ""+metanodeSize.getHeight()+5);
 				nodeAttributes.setAttribute(id, VisualPropertyType.NODE_WIDTH.getBypassAttrName(), ""+metanodeSize.getWidth()+5);
-				nodeAttributes.setAttribute(id, VisualPropertyType.NODE_OPACITY.getBypassAttrName(), ""+MetaNode.metanodeOpacity);
+				nodeAttributes.setAttribute(id, VisualPropertyType.NODE_OPACITY.getBypassAttrName(), ""+this.metanodeOpacity);
 				Cytoscape.getVisualMappingManager().vizmapNode(nv, networkView);
 				nv.setShape(NodeView.RECTANGLE);
 				nv.setHeight(metanodeSize.getHeight()+5);
@@ -824,6 +826,16 @@ public class MetaNode {
 	public void setHideMetaNode(boolean hide) {
 		this.hideMetanode = hide;
 	}
+
+	/**
+	 * Sets the opacity of a metanode if we don't hide on expansion.
+	 *
+	 * @param opacity the opacity (between 0 and 100)
+	 */
+	public void setExpandedOpacity(double opacity) {
+		this.metanodeOpacity = 255*opacity/100;
+	}
+
 
 	/**
 	 * Returns 'true' if we hide the metnode when we expand the
