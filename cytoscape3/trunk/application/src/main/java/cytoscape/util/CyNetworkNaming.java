@@ -105,9 +105,9 @@ public class CyNetworkNaming {
 
 		while (true) {
 
-			name = JOptionPane.showInputDialog(parent,
+			name = (String) (JOptionPane.showInputDialog(parent,
 					"Please enter new network title: ", "Edit Network Title",
-							JOptionPane.QUESTION_MESSAGE);
+							JOptionPane.QUESTION_MESSAGE, null, null, pname));
 			if (name == pname)
 				break;
 			else if ((name == null) || name.trim().equals("")) {
