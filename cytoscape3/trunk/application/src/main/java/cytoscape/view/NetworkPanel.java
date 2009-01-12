@@ -49,7 +49,6 @@ import cytoscape.events.NetworkAboutToBeDestroyedListener;
 import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
 import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
 
-import cytoscape.CyNetworkTitleChange;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetworkManager;
 import cytoscape.actions.CreateNetworkViewAction;
@@ -72,7 +71,6 @@ import org.cytoscape.model.events.UnselectedEdgesEvent;
 import org.cytoscape.model.events.UnselectedEdgesListener;
 
 import javax.swing.*;
-import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -84,8 +82,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -96,8 +92,7 @@ import java.util.List;
  *
  */
 public class NetworkPanel extends JPanel 
-	implements PropertyChangeListener, 
-	           TreeSelectionListener,
+	implements TreeSelectionListener,
 			   SelectedNodesListener,
 			   SelectedEdgesListener,
 			   UnselectedNodesListener,
@@ -110,7 +105,6 @@ public class NetworkPanel extends JPanel
 			   NetworkViewAboutToBeDestroyedListener 
 			   {
 	private final static long serialVersionUID = 1213748836763243L;
-	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 	private final JTreeTable treeTable;
 	private final NetworkTreeNode root;
 	private JPanel navigatorPanel;
@@ -158,8 +152,6 @@ public class NetworkPanel extends JPanel
 			}
 		}
 
-		
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED, this);
 	}
 
 	protected void initialize() {
@@ -239,15 +231,6 @@ public class NetworkPanel extends JPanel
 	 */
 	public JPanel getNavigatorPanel() {
 		return navigatorPanel;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
-		return pcs;
 	}
 
 	/**
@@ -441,9 +424,6 @@ public class NetworkPanel extends JPanel
 			return;
 		}
 
-//		 System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
-//		pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEW_FOCUS,
-//	                                                   null, node.getNetworkID()));
 		netmgr.setCurrentNetwork( node.getNetworkID() );
 
 		// creates a list of all selected networks 
@@ -459,35 +439,10 @@ public class NetworkPanel extends JPanel
 		}
 
 		if ( networkList.size() > 0 ) {
-//			pcs.firePropertyChange(new PropertyChangeEvent(this, CySwingApplication.NETWORK_VIEWS_SELECTED,
-//		                                                   null, networkList));
 			netmgr.setSelectedNetworkViews( networkList );
 		} 
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void propertyChange(PropertyChangeEvent e) {
-//		if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
-//			System.out.println("net panel received Cytoscape.NETWORK_CREATED");
-//			addNetwork((Long) e.getNewValue(), (Long) e.getOldValue());
-//		} else  if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
-//			removeNetwork((Long) e.getNewValue());
-//		} else if (e.getPropertyName() == CySwingApplication.NETWORK_VIEW_FOCUSED) {
-//			if ( e.getSource() != this )
-//				focusNetworkNode((Long) e.getNewValue());
-	/*	} else*/ if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
-			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
-			Long newID = cyNetworkTitleChange.getNetworkIdentifier();
-			CyNetwork _network = netmgr.getNetwork(newID);
-			if (_network != null) {
-				updateTitle(_network);				
-			}
-		}
-	}
 
 	/**
 	 * Inner class that extends the AbstractTreeTableModel
@@ -747,6 +702,8 @@ class PopupActionListener implements ActionListener {
 		else if (label == EDIT_TITLE) {
 			CyNetworkNaming.editNetworkTitle(cyNetwork, panel, netmgr);
 			panel.updateTitle(cyNetwork);
+			// TODO we might consider firing an event here to let others know
+			// of the title change.
 		}
 		else {
 			// throw an exception here?

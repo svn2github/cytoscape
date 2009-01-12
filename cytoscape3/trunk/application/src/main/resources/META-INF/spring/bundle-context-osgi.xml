@@ -199,5 +199,7 @@
 	<osgi:service id="birdsEyeViewHandlerNetworkViewDestroyedListenerService" ref="birdsEyeViewHandler"
 		interface="cytoscape.events.NetworkViewDestroyedListener" />
 
+	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService" ref="undoMonitor"
+		interface="cytoscape.events.SetCurrentNetworkViewListener" />
 	
 </beans>

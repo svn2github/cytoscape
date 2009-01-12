@@ -262,7 +262,6 @@
 
 	<!-- Other stuff to be started -->
 	<bean id="undoMonitor" class="cytoscape.util.undo.UndoMonitor">
-		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 

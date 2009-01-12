@@ -54,9 +54,6 @@ import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import javax.swing.event.SwingPropertyChangeSupport;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +62,6 @@ import java.util.Map;
  * 
  */
 public class NetworkViewManager implements 
-		PropertyChangeListener,
 		InternalFrameListener, 
 		NetworkViewAddedListener, 
 		NetworkViewAboutToBeDestroyedListener, 
@@ -77,8 +73,6 @@ public class NetworkViewManager implements
 	private final Map<Long, JInternalFrame> networkViewMap;
 
 	private final Map<JInternalFrame, Long> componentMap;
-
-	protected SwingPropertyChangeSupport pcs;
 
 	protected final int MINIMUM_WIN_WIDTH = 200;
 	protected final int MINIMUM_WIN_HEIGHT = 200;
@@ -96,7 +90,6 @@ public class NetworkViewManager implements
 	public NetworkViewManager(CyNetworkManager netmgr) {
 		this.netmgr = netmgr;
 		desktopPane = new JDesktopPane();
-		pcs = new SwingPropertyChangeSupport(this);
 
 		// add Help hooks
 		CyHelpBroker.getHelpBroker().enableHelp(desktopPane, "network-view-manager", null);
@@ -104,15 +97,6 @@ public class NetworkViewManager implements
 		networkViewMap = new HashMap<Long, JInternalFrame>();
 		componentMap = new HashMap<JInternalFrame, Long>();
 		currentViewId = null;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
-		return pcs;
 	}
 
 	/**
@@ -221,16 +205,6 @@ public class NetworkViewManager implements
 	 *            DOCUMENT ME!
 	 */
 	public void internalFrameIconified(InternalFrameEvent e) {
-	}
-
-	/**
-	 * This handles all of the incoming PropertyChangeEvents. If you are going
-	 * to have multiple NetworkViewManagers, then this method should be extended
-	 * such that the desired behaviour is achieved, assuming of course that you
-	 * want your NetworkViewManagers to behave differently.
-	 */
-	public void propertyChange(PropertyChangeEvent e) {
-
 	}
 
 
@@ -381,8 +355,6 @@ public class NetworkViewManager implements
 		networkViewMap.put(view.getGraphPerspective().getSUID(), iframe);
 		componentMap.put(iframe, view.getGraphPerspective().getSUID());
 
-//		firePropertyChange(CySwingApplication.NETWORK_VIEW_FOCUSED, null, view
-//				.getGraphPerspective().getSUID());
 		netmgr.setCurrentNetworkView( view.getNetwork().getSUID() );
 	}
 }

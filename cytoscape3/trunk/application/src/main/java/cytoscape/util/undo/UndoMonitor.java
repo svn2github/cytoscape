@@ -36,15 +36,12 @@
 */
 package cytoscape.util.undo;
 
-import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.view.CySwingApplication;
-import cytoscape.view.CytoscapeDesktop;
 
 import org.cytoscape.work.UndoSupport;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
 
 
 /**
@@ -52,13 +49,11 @@ import java.beans.PropertyChangeListener;
  * discard policy we might have. Currently, we discard all edits if
  * the network view focus changes.
  */
-public class UndoMonitor implements PropertyChangeListener {
+public class UndoMonitor implements SetCurrentNetworkViewListener {
 
 	private UndoSupport undo;
 
-	public UndoMonitor(CytoscapeDesktop desktop, UndoSupport undo) {
-		desktop.getSwingPropertyChangeSupport().addPropertyChangeListener(
-	                                            CySwingApplication.NETWORK_VIEW_FOCUSED,this);
+	public UndoMonitor(UndoSupport undo) {
 
 		this.undo = undo;
 
@@ -81,15 +76,14 @@ public class UndoMonitor implements PropertyChangeListener {
     }
 
 	/**
- 	 * This method listens for property change events and discards all edits
-   	 * if it hears are NETWORK_VIEW_FOCUSED event.
+ 	 * This method listens for changes to the current network and discards all edits
+   	 * when the network changes. 
 	 *
 	 * @param e The change event.
 	 */
-	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName().equals(CySwingApplication.NETWORK_VIEW_FOCUSED)) {
+    public void handleEvent(SetCurrentNetworkViewEvent e) {
+		if ( e.getNetworkView() != null )
 			undo.getUndoManager().discardAllEdits();
-		}
-	}
+    }
 }
 

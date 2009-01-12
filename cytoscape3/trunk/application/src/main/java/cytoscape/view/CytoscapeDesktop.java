@@ -44,10 +44,6 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import javax.swing.event.SwingPropertyChangeSupport;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -72,7 +68,7 @@ import cytoscape.view.cytopanels.CytoPanelState;
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
-public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, CySwingApplication {
+public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 
 	private final static long serialVersionUID = 1202339866271348L;
 
@@ -102,11 +98,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 	 */
 	protected NetworkViewManager networkViewManager;
 
-	/**
-	 * provides support for property change events
-	 */
-	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
-
 
 	//
 	// CytoPanel Variables
@@ -135,11 +126,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 		main_panel = new JPanel();
 		main_panel.setLayout(new BorderLayout());
 
-
-		//The CytoscapeDesktop listens to NETWORK_VIEW_CREATED events,
-		//and passes them on, The NetworkPanel listens for them
-		//The Desktop also keeps Cytoscape up2date, but NOT via events
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
 		// create the CytoscapeDesktop
 		BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
@@ -234,42 +220,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener, 
 		return cyMenus;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
-		return pcs;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	@SuppressWarnings("unchecked")
-	public void propertyChange(PropertyChangeEvent e) {
-//		if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
-			// fire the event so that the NetworkPanel can catch it
-//			pcs.firePropertyChange(e);
-			// TODO find solution
-//			setFocus(netmgr.getCurrentNetwork().getSUID());
-
-			// Check new session or not
-//			if ((netmgr.getNetworkSet().size() == 0)
-//			    && (Cytoscape.getSessionstate() != Cytoscape.SESSION_OPENED)) {
-//				String message = "Do you want to create a new session?.\n(All attributes will be lost!)";
-//
-//				int result = JOptionPane.showConfirmDialog(this, message, "Create New Session?",
-//				                                           JOptionPane.YES_NO_OPTION,
-//				                                           JOptionPane.WARNING_MESSAGE, null);
-//
-	// TODO WTF?
-//				if (result == JOptionPane.YES_OPTION)
-//					Cytoscape.createNewSession();
-//			}
-	}
 
 	// ---------------------------------------------------------------------------//
 	// Cytopanels - Public and Protected methods

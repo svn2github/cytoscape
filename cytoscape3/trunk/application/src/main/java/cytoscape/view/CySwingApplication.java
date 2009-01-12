@@ -39,7 +39,6 @@ package cytoscape.view;
 import cytoscape.view.cytopanels.CytoPanel;
 
 import javax.swing.JFrame;
-import javax.swing.event.SwingPropertyChangeSupport;
 
 
 /**
@@ -94,10 +93,4 @@ public interface CySwingApplication {
 	 */
 	public JFrame getJFrame();
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public SwingPropertyChangeSupport getSwingPropertyChangeSupport();
 }
