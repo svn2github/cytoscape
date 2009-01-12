@@ -460,10 +460,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			{
 				groupList = sortList(groupList);
 				addMenuItem(m, Command.EXPAND, groupList, contextNode, "Expand metanode");
-				// addMenuItem(m, Command.COLLAPSE, groupList, contextNode, "Collapse metanode");
+				addMenuItem(m, Command.COLLAPSE, groupList, contextNode, "Collapse metanode");
 				addMenuItem(m, Command.EXPANDNEW, groupList, contextNode, "Expand metanode");
-				// addMenuItem(m, Command.REMOVE, groupList, contextNode, "Remove metanode");
-				// addMenuItem(m, Command.ADD, groupList, contextNode, "Add node to metanode");
+				addMenuItem(m, Command.REMOVE, groupList, contextNode, "Remove metanode");
+				addMenuItem(m, Command.ADD, groupList, contextNode, "Add node to metanode");
 				addMenuItem(m, Command.DELETE, groupList, contextNode, "Remove node from metanode");
 				addMenuItem(m, Command.EXPANDALL, groupList, null, "Expand all metanodes");
 				addMenuItem(m, Command.COLLAPSEALL, groupList, null, "Collapse all metanodes");
@@ -617,7 +617,6 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 					// Make sure we have a metnode object for this group
 					if (metaNode == null) {
 						metaNode = new MetaNode(group);
-						groupCreated(group);
 					}
 
 					// Only present reasonable choices to the user
