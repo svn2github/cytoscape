@@ -1,33 +1,33 @@
 package Factory;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import javax.swing.*;
 import java.awt.*;
 import GuiInterception.*;
 import Tunable.Tunable;
 import Tunable.Tunable.Param;
-import Utils.BoundedDouble;
+import Utils.BoundedLong;
 import Utils.mySlider;
 
 
-public class BoundedDoubleHandler implements Guihandler {
+public class BoundedLongHandler implements Guihandler {
 
 	Field f;
 	Object o;
 	Tunable t;
 	JTextField jtf;
-	BoundedDouble bounded;
+	BoundedLong bounded;
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
 
 	
-	public BoundedDoubleHandler(Field f, Object o, Tunable t) {
+	public BoundedLongHandler(Field f, Object o, Tunable t) {
 		this.f = f;
 		this.o = o;
 		this.t = t;
 		try {
-			this.bounded = (BoundedDouble)f.get(o);
+			this.bounded = (BoundedLong)f.get(o);
 			} catch (IllegalAccessException iae) {
 				iae.printStackTrace();}
 		this.title = t.description();
@@ -59,10 +59,10 @@ public class BoundedDoubleHandler implements Guihandler {
 	public JPanel update() {
 		JPanel resultPane = new JPanel(new BorderLayout());
 		if(useslider==true){
-			bounded.setValue(slider.getValue().doubleValue());
+			bounded.setValue(slider.getValue().longValue());
 		}
 		else{
-			bounded.setValue(Double.parseDouble(jtf.getText()));
+			bounded.setValue(Long.parseLong(jtf.getText()));
 		}
 		
 		JTextArea jta = new JTextArea(title);
@@ -79,10 +79,10 @@ public class BoundedDoubleHandler implements Guihandler {
 	
 	public void handle() {
 		if(useslider==true){
-			bounded.setValue(slider.getValue().doubleValue());
+			bounded.setValue(slider.getValue().longValue());
 		}
 		else{
-			bounded.setValue(Double.parseDouble(jtf.getText()));
+			bounded.setValue(Long.parseLong(jtf.getText()));
 		}
 		try{
 			f.set(o,bounded);

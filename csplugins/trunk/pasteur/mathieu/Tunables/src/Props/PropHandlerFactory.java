@@ -1,15 +1,9 @@
 package Props;
 
-
 import java.lang.reflect.Field;
 import Tunable.Tunable;
-import Utils.BoundedDouble;
-import Utils.BoundedInteger;
-import Utils.ListMultipleSelection;
-import Utils.ListSingleSelection;
-import Utils.myButton;
+import Utils.*;
 import HandlerFactory.HandlerFactory;
-
 
 public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 
@@ -25,6 +19,10 @@ public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 			return new BoundedDoublePropHandler(f,o,t);
 		else if(type == BoundedInteger.class)
 			return new BoundedIntegerPropHandler(f,o,t);
+		else if(type == BoundedLong.class)
+			return new BoundedLongPropHandler(f,o,t);
+		else if(type == BoundedFloat.class)
+			return new BoundedFloatPropHandler(f,o,t);
 		else if(type == Double.class || type == double.class)
 			return new DoublePropHandler(f,o,t);
 		else if (type == String.class)
