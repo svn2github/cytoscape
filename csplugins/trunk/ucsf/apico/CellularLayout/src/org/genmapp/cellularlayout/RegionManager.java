@@ -44,16 +44,16 @@ public class RegionManager {
 		DingCanvas bCanvas = dview
 				.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
 		bCanvas.removeAll();
-		
+
 		// clean up copied nodes and edges
 		Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
 		while (it.hasNext()) {
 			Node node = (Node) it.next();
-			if (node.getIdentifier().contains("__")){
-				Cytoscape.getCurrentNetwork().removeNode(node.getRootGraphIndex(), true);
+			if (node.getIdentifier().contains("__")) {
+				Cytoscape.getCurrentNetwork().removeNode(
+						node.getRootGraphIndex(), true);
 			}
 		}
-
 
 	}
 
@@ -72,28 +72,50 @@ public class RegionManager {
 		double newTop = newRegion.getRegionTop();
 		double newBottom = newRegion.getRegionBottom();
 
-		for (Region r : regionAttMap.values()) {
-			if (newRegion.getArea() == r.getArea()) {
-				newRegion.setArea(newRegion.getArea() + 1); // hack!
-			}
-			if ((newLeft > r.getRegionLeft() && newLeft < r.getRegionRight())
-					|| (newRight > r.getRegionLeft() && newRight < r
-							.getRegionRight()) || newLeft < r.getRegionLeft()
-					&& newRight > r.getRegionRight()) {
-				if ((newTop > r.getRegionTop() && newTop < r.getRegionBottom())
-						|| (newBottom > r.getRegionTop() && newBottom < r
-								.getRegionBottom())
-						|| newTop < r.getRegionTop()
-						&& newBottom > r.getRegionBottom()) {
-					// If we got this far, it means one region is overlapping
-					// the other. Now we want to flag the smaller one so we
-					// know when and where to apply "oil & water" exclusion.
-					if (r.getArea() > newRegion.getArea()){
-						newRegion.setRegionsOverlapped(r);
-						r.setOverlappingRegions(newRegion);
+		Region[] sra = getSortedRegionArray();
+		for (int i = sra.length - 1; i >= 0; i--) { // from largest to smallest
+			if (i == -1) // if first region
+				break;
+			Region r = sra[i];
+			if (newRegion.getShape() == "Line") {
+				if (newRegion.getArea() == r.getArea()) {
+					newRegion.setArea(newRegion.getArea() - 1);
+				}
+			} else { // ovals and rectangles
+				if (newRegion.getArea() == r.getArea()) {
+					// if tie, then most elongated on top
+					int eRatio = (int) ((r.getRegionWidth() / r
+							.getRegionHeight()) / (newRegion.getRegionWidth() / newRegion
+							.getRegionHeight()));
+					if (eRatio <= 1) { // tie break goes to newRegion
+						newRegion.setArea(newRegion.getArea() - 1);
 					} else {
-						r.setRegionsOverlapped(newRegion);
-						newRegion.setOverlappingRegions(r);
+						r.setArea(newRegion.getArea() - 1);
+					}
+				}
+				if ((newLeft > r.getRegionLeft() && newLeft < r
+						.getRegionRight())
+						|| (newRight > r.getRegionLeft() && newRight < r
+								.getRegionRight())
+						|| newLeft < r.getRegionLeft()
+						&& newRight > r.getRegionRight()) {
+					if ((newTop > r.getRegionTop() && newTop < r
+							.getRegionBottom())
+							|| (newBottom > r.getRegionTop() && newBottom < r
+									.getRegionBottom())
+							|| newTop < r.getRegionTop()
+							&& newBottom > r.getRegionBottom()) {
+						// If we got this far, it means one region is
+						// overlapping
+						// the other. Now we want to flag the smaller one so we
+						// know when and where to apply "oil & water" exclusion.
+						if (r.getArea() > newRegion.getArea()) {
+							newRegion.setRegionsOverlapped(r);
+							r.setOverlappingRegions(newRegion);
+						} else {
+							r.setRegionsOverlapped(newRegion);
+							newRegion.setOverlappingRegions(r);
+						}
 					}
 				}
 			}

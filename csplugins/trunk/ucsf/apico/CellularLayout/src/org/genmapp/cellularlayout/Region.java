@@ -72,6 +72,10 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.centerY = centerY;
 		this.width = width;
 		this.height = height;
+		if (width < 1) // handle extreme case
+			this.width = 1;
+		if (height < 1) // handle extreme case
+			this.height = 1;
 		this.area = (int) (width * height);
 		this.zorder = zorder;
 		this.rotation = rotation;
@@ -101,30 +105,36 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.freeCenterY = centerY;
 		this.freeWidth = width;
 		this.freeHeight = height;
-		
+
 		// define free area inside of ovals
-		if (this.shape == "Oval"){
+		if (this.shape == "Oval") {
 			Double x = 0.0d;
 			Double y = 0.0d;
 			Double a = 0.0d;
 			Double b = 0.0d;
-			
-			if (width > height){
-				a = width/2;
-				b = height/2;
-			}else{
-				a = height/2;
-				b = width/2;
+
+			if (width > height) {
+				a = width / 2;
+				b = height / 2;
+			} else {
+				a = height / 2;
+				b = width / 2;
 			}
-			
-			//TODO: adapt equations to handle rotation (phi)
-			//  x=h+a(cos t)(cos phi) - b(sin t)(sin phi)
-			//  y=k+b(sin t)(cos phi) +a(cos t)(sin phi) 
-			x = centerX + a * Math.cos(Math.PI/4);
-			y = centerY + b * Math.cos(Math.PI/4);
-			
-			this.freeWidth = Math.abs(x - centerX) *2 ;
-			this.freeHeight = Math.abs(y - centerY) *2 ;
+
+			// TODO: adapt equations to handle rotation (phi)
+			// x=h+a(cos t)(cos phi) - b(sin t)(sin phi)
+			// y=k+b(sin t)(cos phi) +a(cos t)(sin phi)
+			x = centerX + a * Math.cos(Math.PI / 4);
+			y = centerY + b * Math.cos(Math.PI / 4);
+
+			this.freeWidth = Math.abs(x - centerX) * 2;
+			this.freeHeight = Math.abs(y - centerY) * 2;
+		}
+
+		// adjust area for line shapes
+		if (this.shape == "Line") {
+			this.area = 0; // treat as 1D object
+			// this will force lines shapes to top of drawing order
 		}
 
 		// graphics
@@ -248,7 +258,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 	public Rectangle2D.Double getVRectangle() {
 		return new Rectangle2D.Double(getRegionLeft(), getRegionTop(),
-				getRegionWidth(), getRegionHeight());
+				(getRegionRight() - getRegionLeft()),
+				(getRegionBottom() - getRegionTop()));
 	}
 
 	public java.awt.Shape getVOutline() {
@@ -279,25 +290,41 @@ public class Region extends JComponent implements ViewportChangeListener {
 		int cx = x + w / 2;
 		int cy = y + h / 2;
 
-		java.awt.Shape s = null;
 
 		// TODO
-//	s = new Rectangle(x, y, w, h);
-		s = ShapeRegistry.getShape (
-				this.shape,
-				x, y, w, h);
+		// s = new Rectangle(x, y, w, h);
+		if (this.shape == "Line") {
+			Point2D src = new Point2D.Double(this.centerX, this.centerY);
+			Point2D trgt = new Point2D.Double(this.width, this.height);
+			Point2D srcT = new Point2D.Double();
+			Point2D trgtT = new Point2D.Double();
+			
+			AffineTransform t = new AffineTransform();
+			t.transform(src, srcT);
+			t.transform(trgt, trgtT);
+			
+			g2d.drawLine((int) srcT.getX(), (int) srcT.getY(),
+					(int) trgtT.getX(), (int)trgtT.getY());
+			
+		} else { // Rectangle, Oval
+			java.awt.Shape s = null;
 
-		AffineTransform t = new AffineTransform();
-		t.rotate(this.rotation, cx, cy);
-		s = t.createTransformedShape(s);
+			s = ShapeRegistry.getShape(this.shape, x, y, w, h);
 
-		// TODO
-		// g2d.setColor(fillcolor);
-		// g2d.fill(s);
+			AffineTransform t = new AffineTransform();
+			t.rotate(this.rotation, cx, cy);
+			s = t.createTransformedShape(s);
 
-		g2d.setColor(linecolor);
-		g2d.setStroke(new BasicStroke());
-		g2d.draw(s);
+			// TODO
+			// g2d.setColor(fillcolor);
+			// g2d.fill(s);
+
+			g2d.setColor(linecolor);
+			g2d.setStroke(new BasicStroke());
+			g2d.draw(s);
+
+		}
+
 	}
 
 	/**
@@ -319,7 +346,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 			currentX = nv.getXPosition();
 			currentY = nv.getYPosition();
 			if (currentX > r.getRegionLeft() && currentX < r.getRegionRight()
-							&& currentY > r.getRegionTop() && currentY < r.getRegionBottom()) {
+					&& currentY > r.getRegionTop()
+					&& currentY < r.getRegionBottom()) {
 				boundedNodeViews.add(nv);
 			}
 		}
@@ -425,28 +453,44 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 * @return
 	 */
 	public double getRegionLeft() {
-		return (this.centerX - this.width / 2);
+		if (this.shape == "Line") {
+			return (Math.min(this.centerX, this.width));
+		} else { // Rectangle, Oval
+			return (this.centerX - this.width / 2);
+		}
 	}
 
 	/**
 	 * @return
 	 */
 	public double getRegionTop() {
-		return (this.centerY - this.height / 2);
+		if (this.shape == "Line") {
+			return (Math.min(this.centerY, this.height));
+		} else { // Rectangle, Oval
+			return (this.centerY - this.height / 2);
+		}
 	}
 
 	/**
 	 * @return
 	 */
 	public double getRegionRight() {
-		return (this.centerX + this.width / 2);
+		if (this.shape == "Line") {
+			return (Math.max(this.centerX, this.width));
+		} else { // Rectangle, Oval
+			return (this.centerX + this.width / 2);
+		}
 	}
 
 	/**
 	 * @return
 	 */
 	public double getRegionBottom() {
-		return (this.centerY + this.height / 2);
+		if (this.shape == "Line") {
+			return (Math.max(this.centerY, this.height));
+		} else { // Rectangle, Oval
+			return (this.centerY + this.height / 2);
+		}
 	}
 
 	/**
@@ -560,19 +604,73 @@ public class Region extends JComponent implements ViewportChangeListener {
 	}
 
 	public double getFreeLeft() {
-		return (freeCenterX - freeWidth /2);
+		return (freeCenterX - freeWidth / 2);
 	}
 
 	public double getFreeRight() {
-		return (freeCenterX + freeWidth /2);
+		return (freeCenterX + freeWidth / 2);
 	}
 
 	public double getFreeTop() {
-		return (freeCenterY - freeHeight /2);
+		return (freeCenterY - freeHeight / 2);
 	}
 
 	public double getFreeBottom() {
-		return (freeCenterY + freeHeight /2);
+		return (freeCenterY + freeHeight / 2);
+	}
+
+	public double getLineLength() {
+		return (Math.sqrt(Math.pow((this.width - this.centerX), 2)
+				+ Math.pow((this.height - this.centerY), 2)));
+	}
+
+	public double getFreeLength() {
+		return (Math.sqrt(Math.pow((freeWidth - freeCenterX), 2)
+				+ Math.pow((freeHeight - freeCenterY), 2)));
+	}
+
+	public void setLineLength(Double l) {
+		Double oldLength = getLineLength();
+		Double halfDiff = (l - oldLength) / 2;
+		Double ratio = halfDiff / oldLength;
+		Double x = (this.width - this.centerX) * ratio;
+		Double y = (this.height - this.centerY) * ratio;
+		if (this.centerX < this.width) {
+			setCenterX((this.centerX - x));
+			setRegionWidth((this.width + x));
+		} else {
+			setCenterX((this.centerX + x));
+			setRegionWidth((this.width - x));
+		}
+		if (this.centerY < this.height) {
+			setCenterY((this.centerY - y));
+			setRegionHeight((this.height + y));
+		} else {
+			setCenterY((this.centerY + y));
+			setRegionHeight((this.height - y));
+		}
+	}
+
+	public void setFreeLength(Double l) {
+		Double oldLength = getFreeLength();
+		Double halfDiff = (l - oldLength) / 2;
+		Double ratio = halfDiff / oldLength;
+		Double x = (this.freeWidth - this.freeCenterX) * ratio;
+		Double y = (this.freeHeight - this.freeCenterY) * ratio;
+		if (this.freeCenterX < this.freeWidth) {
+			setFreeCenterX((this.freeCenterX - x));
+			setFreeWidth((this.freeWidth + x));
+		} else {
+			setFreeCenterX((this.freeCenterX + x));
+			setFreeWidth((this.freeWidth - x));
+		}
+		if (this.freeCenterY < this.freeHeight) {
+			setFreeCenterY((this.freeCenterY - y));
+			setFreeHeight((this.freeHeight + y));
+		} else {
+			setFreeCenterY((this.freeCenterY + y));
+			setFreeHeight((this.freeHeight - y));
+		}
 	}
 
 	/**
@@ -602,7 +700,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 	}
 
 	/**
-	 * @param overlappingRegions the overlappingRegions to set
+	 * @param overlappingRegions
+	 *            the overlappingRegions to set
 	 */
 	public void setOverlappingRegions(Region r) {
 		this.overlappingRegions.add(r);
