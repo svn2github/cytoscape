@@ -38,7 +38,7 @@ public class input implements command {
 	@Tunable(description ="Float",group="Group4")
 	public Float float1 = new Float(64.9084);
 	@Tunable(description ="Long",group="Group4")
-	public Long long1 = new Long(223233333);
+	public Long long1 = new Long((long)223248997);
 	@Tunable(description="ListSingleSelection with Integers",group="Group5")
 	public ListSingleSelection<Integer> listOfIntegers;
 	
