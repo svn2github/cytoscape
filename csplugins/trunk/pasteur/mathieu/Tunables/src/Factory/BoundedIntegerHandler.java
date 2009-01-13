@@ -72,7 +72,7 @@ public class BoundedIntegerHandler implements Guihandler {
 		
 		try{
 			f.set(o,bounded);
-			resultPane.add(new JTextField(bounded.getValue()),BorderLayout.EAST);
+			resultPane.add(new JTextField(bounded.getValue().toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return resultPane;
 	}

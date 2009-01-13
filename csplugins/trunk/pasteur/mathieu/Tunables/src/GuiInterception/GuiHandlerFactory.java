@@ -19,7 +19,7 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 		else if(type == Float.class || type == float.class)
 			return new FloatHandler(f,o,t);
 		else if(type == Long.class || type == long.class)
-			return new LongHandler(f,o,t);		
+			return new LongHandler(f,o,t);	
 		else if(type == BoundedDouble.class)
 			return new BoundedDoubleHandler(f,o,t);
 		else if(type == BoundedInteger.class)

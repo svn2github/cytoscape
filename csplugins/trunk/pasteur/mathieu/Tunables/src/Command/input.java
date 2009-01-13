@@ -6,8 +6,9 @@ import Utils.*;
 import java.util.ArrayList;
 
 
-public class input implements command {
+public class input<N extends Comparable<N>> implements command {
 	
+
 	@Tunable(description="This is an Integer with a long tunable's description to test the wrapping",group="Group1")
 	public Integer integer1 = new Integer(10);
 	@Tunable(description="Boolean",group="Group2")
@@ -24,18 +25,12 @@ public class input implements command {
 	public BoundedInteger bounded2 = new BoundedInteger(-5,3,10,true,true);
 	@Tunable(description="Integer",group="Group1")
 	public Integer integer2 = new Integer(33);
-	@Tunable(description="Boolean",group="Group2")
-	public Boolean boolean2 = new Boolean(true);
 	@Tunable(description="ListSingleSelection with Strings",group="Group3")
 	public ListSingleSelection<String> dayNames;
 	@Tunable(description="ListMultipleSelection",group="Group3")
 	public ListMultipleSelection<String> monthNames;
 	@Tunable(description ="Double")
 	public Double double2 = new Double(5.6);
-	@Tunable(description ="Double")
-	public Double double3 = new Double(15.9);
-	@Tunable(description ="Double")
-	public Double double4 = new Double(67.4);
 	@Tunable(description ="Float",group="Group4")
 	public Float float1 = new Float(64.9084);
 	@Tunable(description ="Long",group="Group4")
