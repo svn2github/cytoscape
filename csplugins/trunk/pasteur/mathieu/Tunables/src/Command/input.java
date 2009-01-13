@@ -6,7 +6,7 @@ import Utils.*;
 import java.util.ArrayList;
 
 
-public class input<N extends Comparable<N>> implements command {
+public class input implements command {
 	
 
 	@Tunable(description="This is an Integer with a long tunable's description to test the wrapping",group="Group1")
@@ -19,6 +19,10 @@ public class input<N extends Comparable<N>> implements command {
 	public String string1 = new String("Cytoscape");
 	@Tunable(description="BoundedDouble",group="Group1")
 	public BoundedDouble bounded1 = new BoundedDouble(-10.7,9.8,23.7,true,true);
+	@Tunable(description="BoundedFloat",flag=Param.Slider,group="Group1")
+	public BoundedFloat bounded3 = new BoundedFloat((float)-10.6,(float)15.3,(float)23.2,true,true);
+	@Tunable(description="BoundedLong",flag=Param.Slider,group="Group1")
+	public BoundedLong bounded4 = new BoundedLong((long)-10,(long)9,(long)100,false,true);
 	@Tunable(description ="Double",group="Group1")
 	public Double double1 = new Double(3.4);
 	@Tunable(description="BoundedInteger",flag=Param.Slider,group="Group1")

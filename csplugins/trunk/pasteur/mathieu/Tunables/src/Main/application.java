@@ -8,6 +8,7 @@ import Command.*;
 import HandlerFactory.Handler;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -66,6 +67,7 @@ public class application{
 		inpane2.add(button);
 		button.addActionListener(new myActionListener3());
 
+		
 		
 		ti = new GuiTunableInterceptor(mainframe,outputframe,inpane1);
 		ti.intercept(commander);

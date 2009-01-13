@@ -1,5 +1,6 @@
 package Utils;
 
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -17,7 +18,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import Utils.stringLib;
+//import Utils.stringLib;
 
 
 
@@ -54,25 +55,30 @@ public class mySlider extends JComponent {
 
         Hashtable labelTable = new Hashtable();
         majortickspace = (max.doubleValue()-min.doubleValue())/5;
-        if(m_value instanceof Double){
-        	majortickspace = (max.doubleValue()-min.doubleValue())/5;
-        	Double majortick = new Double(majortickspace.doubleValue());
-            double i=m_min.doubleValue();
+        if(m_value instanceof Double || m_value instanceof Float){
+        	Float major = new Float(majortickspace.floatValue());
+        	
+            float i = m_min.floatValue();
 	        int j=0;
 	        while(i <= m_max.doubleValue()){
-	        	labelTable.put(j,new JLabel(new Float(i).toString()));
-	        	i+=majortick;
-	        	j+=20;   	
+	        	JLabel label = new JLabel(df.format(i));
+	        	label.setFont(new Font("",Font.BOLD,9));
+	        	labelTable.put(j,label);
+	        	i+=major;
+	        	j+=20;
+
 	        }
 	        
         }
-        else{
-        	majortickspace = (max.doubleValue()-min.doubleValue())/5;
-        	Double majortick = new Double(majortickspace.doubleValue());
-        	double i=m_min.doubleValue();
+        else if(m_value instanceof Long || m_value instanceof Integer){
+        	Integer majortick = new Integer(majortickspace.intValue());
+        	int i=m_min.intValue();
 	        int j=0;
 	        while(i <= m_max.intValue()){
-	        	labelTable.put(j,new JLabel(new Integer((int) i).toString()));
+	        	JLabel label = new JLabel(df.format(i));
+	        	label.setFont(new Font("",Font.BOLD,9));
+	        	labelTable.put(j,label);
+	        	//labelTable.put(j,new JLabel(Integer.toString(i)));
 	        	i+=majortick;
 	        	j+=20;   	
 	        }
