@@ -1,10 +1,10 @@
 package Props;
 
 
-import java.lang.reflect.*;
-
-import Tunable.*;
-import Utils.Bounded;
+import java.lang.reflect.Field;
+import Tunable.Tunable;
+import Utils.BoundedDouble;
+import Utils.BoundedInteger;
 import Utils.ListMultipleSelection;
 import Utils.ListSingleSelection;
 import Utils.myButton;
@@ -14,17 +14,17 @@ import HandlerFactory.HandlerFactory;
 public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 
 	public PropHandler getHandler(Field f, Object o, Tunable t) {
-		
 		Class<?> type = f.getType();
-
 		if ((type == int.class || type == Integer.class))
 			return new IntPropHandler(f, o, t);
 		else if ((type == float.class || type == Float.class))
 			return new FloatPropHandler(f, o, t);
 		else if ((type == long.class || type == Long.class))
 			return new LongPropHandler(f, o, t);
-		else if(type == Bounded.class)
-			return new BoundedPropHandler(f,o,t);
+		else if(type == BoundedDouble.class)
+			return new BoundedDoublePropHandler(f,o,t);
+		else if(type == BoundedInteger.class)
+			return new BoundedIntegerPropHandler(f,o,t);
 		else if(type == Double.class || type == double.class)
 			return new DoublePropHandler(f,o,t);
 		else if (type == String.class)
@@ -37,7 +37,6 @@ public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 			return new ListMultiplePropHandler<T>(f,o,t);
 		else if (type == myButton.class)
 			return new ButtonPropHandler(f,o,t);
-
 		return null;
 	}
 

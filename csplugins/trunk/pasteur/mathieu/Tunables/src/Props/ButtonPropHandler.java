@@ -1,10 +1,9 @@
 package Props;
 
-import Tunable.*;
+import Tunable.Tunable;
 import Utils.myButton;
-
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.Properties;
 
 
 public class ButtonPropHandler implements PropHandler {

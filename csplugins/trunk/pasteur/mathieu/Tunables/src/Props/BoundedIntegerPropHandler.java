@@ -3,35 +3,40 @@ package Props;
 import Tunable.Tunable;
 import java.lang.reflect.Field;
 import java.util.Properties;
+import Utils.BoundedInteger;
 
 
-public class FloatPropHandler implements PropHandler {
+public class BoundedIntegerPropHandler implements PropHandler {
 	Field f;
 	Object o;
+	Tunable t;
 	String propKey;
+	BoundedInteger bounded;
 
-	
-	public FloatPropHandler(Field f, Object o, Tunable t) {
+
+
+	public BoundedIntegerPropHandler(Field f, Object o, Tunable t) {
 		this.f = f;
 		this.o = o;
+		this.t=t;
+		try{
+			this.bounded=(BoundedInteger) f.get(o);
+		}catch(Exception e){e.printStackTrace();}
 		propKey = f.getName();
 	}
 
 	
 	public Properties getProps() {
 		Properties p = new Properties();
-		try {
-			p.put(propKey,f.get(o).toString());
-		} catch (IllegalAccessException iae) {
-			iae.printStackTrace();
-		}
+		p.put(propKey, bounded.getValue());
 		return p;
 	}
 
 	
 	public void add(Properties p) {
+		bounded.setValue(bounded.getValue().intValue()); //Need to initialize the value
 		try{
-			p.put(propKey,f.get(o));
+			p.put(propKey,bounded.getValue());
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
@@ -40,11 +45,12 @@ public class FloatPropHandler implements PropHandler {
 		try {
 			if (p.containsKey(propKey)) {
 				String val = p.get(propKey).toString();
+				bounded.setValue(Integer.parseInt(val));
 				if (val != null)
-					f.set(o, Float.valueOf(val));
+					f.set(o, bounded);
 			}
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();
-		}
+			}
 	}
 }

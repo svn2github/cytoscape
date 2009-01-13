@@ -1,8 +1,6 @@
 package Props;
 
-
-import java.util.*;
-
+import java.util.Properties;
 import HandlerFactory.*;
 
 public interface PropHandler extends Handler {

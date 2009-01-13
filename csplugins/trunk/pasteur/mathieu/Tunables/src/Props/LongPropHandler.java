@@ -1,8 +1,8 @@
 package Props;
 
-import Tunable.*;
-import java.lang.reflect.*;
-import java.util.*;
+import Tunable.Tunable;
+import java.lang.reflect.Field;
+import java.util.Properties;
 
 
 public class LongPropHandler implements PropHandler {

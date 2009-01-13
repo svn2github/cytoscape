@@ -2,7 +2,7 @@ package GuiInterception;
 
 import Factory.*;
 import HandlerFactory.HandlerFactory;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
 import Tunable.Tunable;
 import Utils.*;
 
@@ -19,9 +19,11 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 		if(type == Float.class || type == float.class)
 			return new FloatHandler(f,o,t);
 		if(type == Long.class || type == long.class)
-			return new LongHandler(f,o,t);
-		if(type == Bounded.class)
-			return new BoundedHandler(f,o,t);		
+			return new LongHandler(f,o,t);		
+		if(type == BoundedDouble.class)
+			return new BoundedDoubleHandler(f,o,t);
+		if(type == BoundedInteger.class)
+			return new BoundedIntegerHandler(f,o,t);
 		if(type == Boolean.class)
 			return new BooleanHandler(f,o,t);
 		if(type == String.class)

@@ -1,6 +1,6 @@
 package Command;
 
-import Tunable.*;
+import Tunable.Tunable;
 import Tunable.Tunable.Param;
 import Utils.*;
 import java.util.ArrayList;
@@ -16,12 +16,12 @@ public class input implements command {
 	public Integer integer3 = new Integer(45);
 	@Tunable(description = "String",group="Group2")
 	public String string1 = new String("Cytoscape");
-	@Tunable(description="Bounded",flag=Param.Double,group="Group1")
-	public Bounded bounded1 = new Bounded("-10","10", true, true);
+	@Tunable(description="BoundedDouble",group="Group1")
+	public BoundedDouble bounded1 = new BoundedDouble(-10.7,9.8,23.7,true,true);
 	@Tunable(description ="Double",group="Group1")
 	public Double double1 = new Double(3.4);
-	@Tunable(description="Bounded",flag=Param.IntegerSlider,group="Group1")
-	public Bounded bounded2 = new Bounded("-2","40", true, true);
+	@Tunable(description="BoundedInteger",flag=Param.Slider,group="Group1")
+	public BoundedInteger bounded2 = new BoundedInteger(-5,3,10,true,true);
 	@Tunable(description="Integer",group="Group1")
 	public Integer integer2 = new Integer(33);
 	@Tunable(description="Boolean",group="Group2")

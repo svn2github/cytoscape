@@ -1,9 +1,9 @@
 package Props;
 
-import Tunable.*;
-import java.lang.reflect.*;
+import Tunable.Tunable;
+import java.lang.reflect.Field;
 import java.util.*;
-import Utils.*;
+import Utils.ListSingleSelection;
 
 public class ListSinglePropHandler<T> implements PropHandler {
 	Field f;

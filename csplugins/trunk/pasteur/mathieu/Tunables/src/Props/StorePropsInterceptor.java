@@ -1,7 +1,6 @@
 package Props;
 
 import java.util.*;
-
 import GuiInterception.*;
 
 
@@ -18,7 +17,6 @@ public class StorePropsInterceptor extends HiddenTunableInterceptor<PropHandler>
 			inputProps.putAll(p.getProps());
 		}
 	}
-
 
 	protected void display(List<PropHandler> handlerList) {
 	}

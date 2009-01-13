@@ -2,14 +2,11 @@ package Main;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-
 import Props.*;
 import GuiInterception.*;
 import Command.*;
 import HandlerFactory.Handler;
-
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.*;
 import java.util.LinkedList;

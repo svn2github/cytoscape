@@ -1,10 +1,9 @@
 package Props;
 
-import Tunable.*;
-import java.lang.reflect.*;
+import Tunable.Tunable;
+import java.lang.reflect.Field;
 import java.util.*;
-
-import Utils.*;
+import Utils.ListMultipleSelection;;
 
 public class ListMultiplePropHandler<T> implements PropHandler {
 	Field f;
