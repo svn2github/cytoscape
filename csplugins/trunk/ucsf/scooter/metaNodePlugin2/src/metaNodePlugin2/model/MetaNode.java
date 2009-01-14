@@ -115,6 +115,7 @@ public class MetaNode {
 	private int nDescendents = 0;
 	private Dimension metanodeSize = null;
 
+	private boolean aggregateAttributes = false;
 	private boolean hideMetanode = true;
 	private boolean sizeToBoundingBox = false;
 	private double metanodeOpacity = 0.;
@@ -292,6 +293,7 @@ public class MetaNode {
 		this.hideMetanode = MetaNode.hideMetanodeDefault;
 		this.sizeToBoundingBox = MetaNode.sizeToBoundingBoxDefault;
 		this.metanodeOpacity = MetaNode.metanodeOpacityDefault;
+		this.aggregateAttributes = AttributeHandler.getEnable();
 
 		if (DEBUG) logger.debug("Creating meta-group "+group.getGroupName());
 
@@ -834,6 +836,20 @@ public class MetaNode {
 	 */
 	public void setExpandedOpacity(double opacity) {
 		this.metanodeOpacity = 255*opacity/100;
+	}
+
+	/**
+	 * Controls whether this metanode is aggregating attributes
+	 *
+	 * @param aggregate if 'true' aggregate
+	 */
+	public void setAggregateAttributes(boolean aggregate) {
+		if (!this.aggregateAttributes && aggregate) {
+			this.aggregateAttributes = aggregate;
+			updateAttributes();
+		} else {
+			this.aggregateAttributes = aggregate;
+		}
 	}
 
 

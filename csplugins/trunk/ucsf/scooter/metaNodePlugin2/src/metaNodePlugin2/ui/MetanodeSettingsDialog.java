@@ -427,6 +427,7 @@ public class MetanodeSettingsDialog extends JDialog
 					mn.setHideMetaNode(hideMetaNode);
 					mn.setSizeToBoundingBox(sizeToBoundingBox);
 					mn.setHideMetaNode(hideMetaNode);
+					mn.setAggregateAttributes(enableHandling);
 				}
 			}
 			setVisible(false);
@@ -441,6 +442,7 @@ public class MetanodeSettingsDialog extends JDialog
 					mn.setHideMetaNode(hideMetaNode);
 					mn.setSizeToBoundingBox(sizeToBoundingBox);
 					mn.setHideMetaNode(hideMetaNode);
+					mn.setAggregateAttributes(enableHandling);
 				}
 			}
 			setVisible(false);
@@ -466,7 +468,7 @@ public class MetanodeSettingsDialog extends JDialog
       double opacity = ((Double) t.getValue()).doubleValue();
 			MetaNode.setExpandedOpacityDefault(opacity);
 		} else if (t.getName().equals("enableHandling")) {
-      boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
+      enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeHandler.setEnable(enableHandling);
 			enableTunables(enableHandling);
 		} else if (t.getName().equals("attributeList")) {
