@@ -52,14 +52,11 @@ import java.util.Properties;
  *
  */
 public abstract class OpenBrowser {
-	static String UNIX_PROTOCOL = "file:";
-//	static String UNIX_PATH = "gnome-moz-remote";
 
 	static String UNIX_PATH = "htmlview";
-	static String UNIX_FLAG = "-remote openURL";
 
-	//static String WINDOWS_PATH = "cmd.exe /c start";
 	static String MAC_PATH = "open";
+
 	private static final String WIN_PATH = "rundll32";
 	private static final String WIN_FLAG = "url.dll,FileProtocolHandler";
 
@@ -79,22 +76,18 @@ public abstract class OpenBrowser {
 
 			if (osName.startsWith("Windows")) {
 				cmd = WIN_PATH + " " + WIN_FLAG + " " + url;
-
-				// cmd = WINDOWS_PATH + " " + url;
 			} else if (osName.startsWith("Mac")) {
 				cmd = MAC_PATH + " " + url;
 			} else {
-				// cmd = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
-				if (defBrowser != null) {
+				if (defBrowser != null && !defBrowser.equals("")) {
 					cmd = defBrowser + " " + url;
-					System.out.println("Opening URL by command \"" + defBrowser + "\"");
 				} else {
 					cmd = UNIX_PATH + " " + url;
-					System.out.println("Opening URL by command \"" + UNIX_PATH + "\"");
 				}
 			}
 
-			// System.out.println("cmd=" + cmd);
+			System.out.println("Opening URL by command \"" + cmd + "\"");
+
 			Process p = Runtime.getRuntime().exec(cmd);
 
 			try {
@@ -106,8 +99,10 @@ public abstract class OpenBrowser {
 					p = Runtime.getRuntime().exec(cmd);
 				}
 			} catch (InterruptedException ex) {
+				ex.printStackTrace();
 			}
 		} catch (IOException ioe) {
+			ioe.printStackTrace();
 		}
 	}
 }
