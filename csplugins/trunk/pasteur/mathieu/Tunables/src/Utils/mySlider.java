@@ -14,8 +14,10 @@ import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.event.CaretListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 //import Utils.stringLib;
@@ -28,7 +30,6 @@ public class mySlider extends JComponent {
     private Number     m_min, m_max, m_value;
     private boolean    m_ignore = false;
     
-    private JLabel     m_label;
     private JSlider    m_slider;
     private JTextField m_field;
     @SuppressWarnings("unchecked")
@@ -48,7 +49,6 @@ public class mySlider extends JComponent {
         m_max    = max;
         m_value  = value;
         m_slider = new JSlider();
-        m_label  = new JLabel();
         m_field  = new JTextField(4);
         m_field.setHorizontalAlignment(JTextField.RIGHT);
         m_listeners = new ArrayList();
@@ -108,9 +108,20 @@ public class mySlider extends JComponent {
                 m_ignore = false;
             }
         });
+        
+//        CaretListener caretupdate = new CaretListener(){
+//        	public void caretUpdate(javax.swing.event.CaretEvent e){
+//        		JTextField text = (JTextField)e.getSource();
+//        		Double test = Double.parseDouble(text.getText());
+//        		m_value = test;
+//        		setSliderValue();
+//        	}
+//        };
+//        m_field.addCaretListener(caretupdate);
+
         m_field.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                if ( m_ignore ) return;
+            	if ( m_ignore ) return;
                 m_ignore = true;
                 Number v = getFieldValue();
                 if ( v != m_value ) {
@@ -124,29 +135,18 @@ public class mySlider extends JComponent {
                 m_ignore = false;
             }
         });
-        m_field.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                String s = m_field.getText();
-                if ( isTextObscured(m_field, s) )
-                    m_field.setToolTipText(s);
-            }
-            public void mouseExited(MouseEvent e) {
-                m_field.setToolTipText(null);
-            }
-        });
-        m_label.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                String s = m_label.getText();
-                if ( isTextObscured(m_label, s) )
-                    m_label.setToolTipText(s);
-            }
-            public void mouseExited(MouseEvent e) {
-                m_label.setToolTipText(null);
-            }
-        });
+//        m_field.addMouseListener(new MouseAdapter() {
+//            public void mouseEntered(MouseEvent e) {
+//                String s = m_field.getText();
+//                if ( isTextObscured(m_field, s) )
+//                    m_field.setToolTipText(s);
+//            }
+//            public void mouseExited(MouseEvent e) {
+//                m_field.setToolTipText(null);
+//            }
+//        });
         
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-//       add(m_label);
         add(m_slider);
         add(m_field);
     }
@@ -209,29 +209,36 @@ public class mySlider extends JComponent {
     }
     
   
-    private Number getFieldValue() {
+    private Number getFieldValue(){
+    	Double val = null;
+    	try{
+    		val = Double.parseDouble(m_field.getText());
+    	}catch(NumberFormatException nfe){
+    		JOptionPane.showMessageDialog(null, "Not a value!","Alert", JOptionPane.ERROR_MESSAGE);
+    		try{
+    			val = m_value.doubleValue();
+    		}catch(Exception e){e.printStackTrace();}
+    	}
+
         if ( m_value instanceof Double || m_value instanceof Float ){
-            double v;
-            try {
-                v = Double.parseDouble(m_field.getText());
-            } catch ( Exception e ) {
-                return m_value;
-            }
-            if ( v < m_min.doubleValue() || v > m_max.doubleValue() ) {
+            if ( val < m_min.doubleValue() || val > m_max.doubleValue()){
+            	JOptionPane.showMessageDialog(null, "Value is out of Bounds","Alert",JOptionPane.ERROR_MESSAGE);
             	return m_value;
+//            	if ( val < m_min.doubleValue())return m_min.doubleValue();
+//            	if ( val > m_max.doubleValue())return m_max.doubleValue();
+//            	return m_value;
             }
-            return m_value instanceof Double ? (Number)new Double(v) : new Float((float)v);
-        } else {
-            long v;
-            try {
-                v = Long.parseLong(m_field.getText());
-            } catch ( Exception e ) {
-                return m_value;
+            return m_value instanceof Double ? (Number)val.doubleValue() : val.floatValue();
+        }
+        else {
+            if ( val < m_min.longValue() || val > m_max.longValue() ) {
+            	JOptionPane.showMessageDialog(null, "Value is out of Bounds","Alert",JOptionPane.ERROR_MESSAGE);
+            	return m_value;
+//            	if ( val < m_min.longValue())return m_min.longValue();
+//            	if ( val > m_max.longValue())return m_max.longValue();
+//            	return m_value;
             }
-            if ( v < m_min.longValue() || v > m_max.longValue() ) {
-                return m_value;
-            }
-            return m_value instanceof Long ? (Number)new Long(v) : new Integer((int)v);
+            return m_value instanceof Long ? (Number)val.longValue() : val.intValue();
         }
     }
     

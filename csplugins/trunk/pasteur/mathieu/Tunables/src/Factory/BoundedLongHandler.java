@@ -2,6 +2,7 @@ package Factory;
 
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import java.awt.*;
 import GuiInterception.*;
 import Tunable.Tunable;
@@ -20,6 +21,7 @@ public class BoundedLongHandler implements Guihandler {
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
+	Double val;
 
 	
 	public BoundedLongHandler(Field f, Object o, Tunable t) {
@@ -62,9 +64,16 @@ public class BoundedLongHandler implements Guihandler {
 			bounded.setValue(slider.getValue().longValue());
 		}
 		else{
-			bounded.setValue(Long.parseLong(jtf.getText()));
-		}
-		
+			try{
+				val = Double.parseDouble(jtf.getText());
+			}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Long Expected", "Error", JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(bounded.getValue().toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+			bounded.setValue(val.longValue());
+		}	
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		resultPane.add(jta,BorderLayout.WEST);
@@ -82,7 +91,15 @@ public class BoundedLongHandler implements Guihandler {
 			bounded.setValue(slider.getValue().longValue());
 		}
 		else{
-			bounded.setValue(Long.parseLong(jtf.getText()));
+			try{
+				val = Double.parseDouble(jtf.getText());
+			}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Long Expected", "Error", JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(bounded.getValue().toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+			bounded.setValue(val.longValue());
 		}
 		try{
 			f.set(o,bounded);

@@ -2,6 +2,7 @@ package Factory;
 
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import java.awt.*;
 import GuiInterception.*;
 import Tunable.Tunable;
@@ -20,6 +21,7 @@ public class BoundedFloatHandler implements Guihandler {
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
+	Double val;
 
 	
 	public BoundedFloatHandler(Field f, Object o, Tunable t) {
@@ -62,13 +64,19 @@ public class BoundedFloatHandler implements Guihandler {
 			bounded.setValue(slider.getValue().floatValue());
 		}
 		else{
-			bounded.setValue(Float.parseFloat(jtf.getText()));
+			try{
+				val = Double.parseDouble(jtf.getText());
+			}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Float Expected", "Error", JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(bounded.getValue().toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+			bounded.setValue(val.floatValue());
 		}
-		
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		resultPane.add(jta,BorderLayout.WEST);
-		
 		try{
 			f.set(o,bounded);
 			resultPane.add(new JTextField(bounded.getValue().toString()),BorderLayout.EAST);
@@ -82,7 +90,15 @@ public class BoundedFloatHandler implements Guihandler {
 			bounded.setValue(slider.getValue().floatValue());
 		}
 		else{
-			bounded.setValue(Float.parseFloat(jtf.getText()));
+			try{
+				val = Double.parseDouble(jtf.getText());
+			}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Float Expected", "Error", JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(bounded.getValue().toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+			bounded.setValue(val.floatValue());
 		}
 		try{
 			f.set(o,bounded);

@@ -15,7 +15,8 @@ public class IntegerHandler implements Guihandler{
 	JTextField jtf=new JTextField();
 	String title;
 	Integer inte;
-
+	Double val = null;
+	
 	
 	
 	public IntegerHandler(Field f, Object o, Tunable t){
@@ -30,8 +31,16 @@ public class IntegerHandler implements Guihandler{
 
 
 	public void handle(){
+		try{
+			val = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Integer Expected", "Error",JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(f.get(o).toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
 		try {
-				f.set(o,Integer.parseInt(jtf.getText()));
+				f.set(o,val.intValue());
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
@@ -44,7 +53,9 @@ public class IntegerHandler implements Guihandler{
 		pane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
-		jtf = new JTextField(inte.toString(),11);
+		try{
+			jtf = new JTextField(f.get(o).toString(),11);
+		}catch(Exception e){e.printStackTrace();}
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		pane.add(jtf,BorderLayout.EAST);
 		return pane;
@@ -57,7 +68,15 @@ public class IntegerHandler implements Guihandler{
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
 		try{
-			if(inte!=null)f.set(o, Integer.parseInt(jtf.getText()));
+			val = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Integer Expected", "Error",JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(f.get(o).toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+		try{
+			if(inte!=null)f.set(o,val.intValue());
 			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return result;

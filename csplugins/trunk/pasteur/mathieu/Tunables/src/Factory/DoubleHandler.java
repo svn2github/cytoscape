@@ -17,6 +17,7 @@ public class DoubleHandler implements Guihandler{
 	JTextField jtf;	
 	String title;
 	Double doub;
+	Double val = null;
 	
 	
 	public DoubleHandler(Field f, Object o, Tunable t){
@@ -32,9 +33,18 @@ public class DoubleHandler implements Guihandler{
 	
 	public void handle(){
 		try{
-			f.set(o, Double.parseDouble(jtf.getText()));
-		}catch(Exception e){e.printStackTrace();}
+			val = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Double Expected", "Error",JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(f.get(o).toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+		try {
+				f.set(o,val.doubleValue());
+		} catch (Exception e) { e.printStackTrace();}
 	}
+	
 	
 	public JPanel getInputPanel(){
 		JPanel pane = new JPanel(new BorderLayout());		
@@ -58,9 +68,17 @@ public class DoubleHandler implements Guihandler{
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
-		doub = Double.parseDouble(jtf.getText());
 		try{
-			if(doub!=null)f.set(o, doub);
+			val = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Double Expected", "Error",JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(f.get(o).toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+
+		try{
+			if(doub!=null)f.set(o, val.doubleValue());
 			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return result;

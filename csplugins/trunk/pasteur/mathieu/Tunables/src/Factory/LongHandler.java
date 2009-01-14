@@ -17,6 +17,7 @@ public class LongHandler implements Guihandler{
 	JTextField jtf;	
 	String title;
 	Long mylong;
+	Double val = null;
 	
 	
 	public LongHandler(Field f, Object o, Tunable t){
@@ -32,8 +33,16 @@ public class LongHandler implements Guihandler{
 	
 	public void handle(){
 		try{
-			f.set(o, Long.parseLong(jtf.getText()));
-		}catch(Exception e){e.printStackTrace();}
+			val = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Long Expected", "Error",JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(f.get(o).toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+		try {
+				f.set(o,val.longValue());
+		} catch (Exception e) { e.printStackTrace();}
 	}
 	
 	public JPanel getInputPanel(){
@@ -57,9 +66,16 @@ public class LongHandler implements Guihandler{
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
-		mylong = Long.parseLong(jtf.getText());
 		try{
-			if(mylong!=null)f.set(o, mylong);
+			val = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Long Expected", "Error",JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(f.get(o).toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+		try{
+			if(mylong!=null)f.set(o, val.longValue());
 			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return result;

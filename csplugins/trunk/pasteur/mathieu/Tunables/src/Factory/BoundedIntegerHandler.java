@@ -3,7 +3,9 @@ package Factory;
 
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import java.awt.*;
+
 import GuiInterception.*;
 import Tunable.Tunable;
 import Tunable.Tunable.Param;
@@ -21,7 +23,7 @@ public class BoundedIntegerHandler implements Guihandler {
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
-
+	Double val;
 	
 	public BoundedIntegerHandler(Field f, Object o, Tunable t) {
 		this.f = f;
@@ -63,13 +65,19 @@ public class BoundedIntegerHandler implements Guihandler {
 			bounded.setValue(slider.getValue().intValue());
 		}
 		else{
-			bounded.setValue(Integer.parseInt(jtf.getText()));
+			try{
+				val = Double.parseDouble(jtf.getText());
+			}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Integer Expected", "Error", JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(bounded.getValue().toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+			bounded.setValue(val.intValue());
 		}
-		
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
-		resultPane.add(jta,BorderLayout.WEST);
-		
+		resultPane.add(jta,BorderLayout.WEST);	
 		try{
 			f.set(o,bounded);
 			resultPane.add(new JTextField(bounded.getValue().toString()),BorderLayout.EAST);
@@ -83,7 +91,15 @@ public class BoundedIntegerHandler implements Guihandler {
 			bounded.setValue(slider.getValue().intValue());
 		}
 		else{
-			bounded.setValue(Integer.parseInt(jtf.getText()));
+			try{
+				val = Double.parseDouble(jtf.getText());
+			}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Integer Expected", "Error", JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(bounded.getValue().toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+			bounded.setValue(val.intValue());
 		}
 		try{
 			f.set(o,bounded);

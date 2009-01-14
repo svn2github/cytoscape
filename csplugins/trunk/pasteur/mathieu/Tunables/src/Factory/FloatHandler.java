@@ -17,6 +17,7 @@ public class FloatHandler implements Guihandler{
 	JTextField jtf;	
 	String title;
 	Float myfloat;
+	Double val = null;
 	
 	
 	public FloatHandler(Field f, Object o, Tunable t){
@@ -32,8 +33,16 @@ public class FloatHandler implements Guihandler{
 	
 	public void handle(){
 		try{
-			f.set(o, Float.parseFloat(jtf.getText()));
-		}catch(Exception e){e.printStackTrace();}
+			val = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Float Expected", "Error",JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(f.get(o).toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+		try {
+				f.set(o,val.floatValue());
+		} catch (Exception e) { e.printStackTrace();}
 	}
 	
 	public JPanel getInputPanel(){
@@ -57,9 +66,16 @@ public class FloatHandler implements Guihandler{
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
-		myfloat = Float.parseFloat(jtf.getText());
 		try{
-			if(myfloat!=null)f.set(o, myfloat);
+			val = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				JOptionPane.showMessageDialog(null, "Float Expected", "Error",JOptionPane.ERROR_MESSAGE);
+				try{
+					val = Double.parseDouble(f.get(o).toString());
+				}catch(Exception e){e.printStackTrace();}
+			}
+		try{
+			if(myfloat!=null)f.set(o, val.floatValue());
 			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return result;

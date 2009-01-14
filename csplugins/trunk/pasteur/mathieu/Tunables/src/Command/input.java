@@ -20,13 +20,13 @@ public class input implements command {
 	@Tunable(description="BoundedDouble",group="Group1")
 	public BoundedDouble bounded1 = new BoundedDouble(-10.7,9.8,23.7,true,true);
 	@Tunable(description="BoundedFloat",flag=Param.Slider,group="Group1")
-	public BoundedFloat bounded3 = new BoundedFloat((float)-10.6,(float)15.3,(float)23.2,true,true);
+	public BoundedFloat bounded3 = new BoundedFloat((float)-10.6,(float)14.3,(float)23.2,true,true);
 	@Tunable(description="BoundedLong",flag=Param.Slider,group="Group1")
 	public BoundedLong bounded4 = new BoundedLong((long)-10,(long)9,(long)100,false,true);
 	@Tunable(description ="Double",group="Group1")
 	public Double double1 = new Double(3.4);
-	@Tunable(description="BoundedInteger",flag=Param.Slider,group="Group1")
-	public BoundedInteger bounded2 = new BoundedInteger(-5,3,10,true,true);
+	@Tunable(description="BoundedInteger",flag=Param.Nothing,group="Group1")
+	public BoundedInteger bounded2 = new BoundedInteger(-5,3,10,true,false);
 	@Tunable(description="Integer",group="Group1")
 	public Integer integer2 = new Integer(33);
 	@Tunable(description="ListSingleSelection with Strings",group="Group3")
