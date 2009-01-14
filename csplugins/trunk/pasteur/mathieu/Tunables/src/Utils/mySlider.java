@@ -152,12 +152,12 @@ public class mySlider extends JComponent {
     }
     
 
-    private static boolean isTextObscured(JComponent c, String s) {
-        Graphics g = c.getGraphics();
-        FontMetrics fm = g.getFontMetrics(c.getFont());
-        int sw = fm.stringWidth(s);
-        return ( sw > c.getWidth() );
-    }
+//    private static boolean isTextObscured(JComponent c, String s) {
+//        Graphics g = c.getGraphics();
+//        FontMetrics fm = g.getFontMetrics(c.getFont());
+//        int sw = fm.stringWidth(s);
+//        return ( sw > c.getWidth() );
+//    }
     
 
     public Number getValue() {
