@@ -1,17 +1,28 @@
 package cytoscape.partitionNetwork;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
 
 public class PartitionNetworkVisualStyleFactory {
 
@@ -32,6 +43,35 @@ public class PartitionNetworkVisualStyleFactory {
 		CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
 		
 		VisualStyle currentStyle = view.getVisualStyle();
+		
+		final String attributeName = "annotation.GO MOLECULAR_FUNCTION";
+		
+		CyAttributes attribs = Cytoscape.getNodeAttributes();
+		Map attrMap = CyAttributesUtils.getAttribute(attributeName, attribs);
+		Collection values = attrMap.values();
+		
+		List uniqueValueList = new ArrayList();
+		
+		// key will be a List attribute value, so we need to pull out individual list items
+		if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
+			for (Object o : values)
+			{
+				List oList = (List) o;
+				for (int j = 0; j < oList.size(); j++)
+				{
+					Object jObj = oList.get(j);
+					if (jObj != null)
+					{
+						if (!uniqueValueList.contains(jObj))
+						{
+							uniqueValueList.add(jObj);
+						}
+					}
+				}
+			}
+		}
+
+		
 		
 		VisualStyle clone = null;
 		try {
@@ -99,11 +139,11 @@ public class PartitionNetworkVisualStyleFactory {
 		/*
 		DiscreteMapping disMapping = new DiscreteMapping(NodeShape.ELLIPSE,
                 ObjectMapping.NODE_MAPPING);
-		disMapping.setControllingAttributeName(MOLECULAR_SPECIES, network, false);
+//		disMapping.setControllingAttributeName(MOLECULAR_SPECIES, network, false);
 	
-		disMapping.putMapValue(PROTEIN, NodeShape.ELLIPSE);
+//		disMapping.putMapValue(PROTEIN, NodeShape.ELLIPSE);
 
-		Calculator shapeCalculator = new BasicCalculator("Spectrum Mill Node Shape Calculator",
+		Calculator shapeCalculator = new BasicCalculator("Node Shape Calculator",
                            disMapping,
 							VisualPropertyType.NODE_SHAPE);
 		
@@ -118,10 +158,63 @@ public class PartitionNetworkVisualStyleFactory {
 		// set edge opacity
 		gac.setDefaultBackgroundColor(Color.white);
 		
+		
 //		VisualStyle visualStyle = new VisualStyle(PartitionNetwork_VS, nodeAppCalc, edgeAppCalc, gac);
 		VisualPropertyType type = VisualPropertyType.EDGE_OPACITY;
 		type.setDefault(clone, new Integer(50));
 		
+		type = VisualPropertyType.NODE_SHAPE;
+		type.setDefault(clone, NodeShape.ELLIPSE);
+	
+		// -------------------------- set node color to encoding of Molecular Function ------ //
+		
+		DiscreteMapping disMapping = new DiscreteMapping(Color.white,
+                ObjectMapping.NODE_MAPPING);
+		disMapping.setControllingAttributeName(attributeName, view.getNetwork(), false);
+	
+
+		/*
+		 * Create random colors
+		 */
+		final float increment = 1f / ((Number) uniqueValueList.size()).floatValue();
+
+		float hue = 0;
+		float sat = 0;
+		float br = 0;
+
+		int i = 0;
+		
+//		HashMap valueMap = new HashMap();
+		
+//		System.out.println("values for molecular function: " + values);
+		
+
+		
+		for (Object key : uniqueValueList) {
+			hue = hue + increment;
+			sat = (Math.abs(((Number) Math.cos((8 * i) / (2 * Math.PI))).floatValue()) * 0.7f)
+			      + 0.3f;
+			br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI)) + (Math.PI / 2)))
+			               .floatValue()) * 0.7f) + 0.3f;
+//			System.out.println("putting color value on key: " + key);
+			
+
+			disMapping.putMapValue(key, new Color(Color.HSBtoRGB(hue, sat, br)));
+			i++;
+		}
+		
+//		disMapping.putAll(valueMap);
+		Calculator colorCalculator = new BasicCalculator(PartitionNetwork_VS,
+                disMapping,
+					VisualPropertyType.NODE_FILL_COLOR);
+		
+		nodeAppCalc.setCalculator(colorCalculator);
+		
+		
+		
+		
+		clone.setNodeAppearanceCalculator(nodeAppCalc);
+
 		clone.setName(PartitionNetwork_VS);
 
 		return clone;

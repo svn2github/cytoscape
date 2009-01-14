@@ -14,12 +14,16 @@ import javax.swing.SwingUtilities;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.ding.CyGraphAllLOD;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyDesktopManager;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
 
@@ -43,6 +47,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 		private static final String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
 		private HashMap<Object, List<Node>> attributeValueNodeMap = new HashMap<Object, List<Node>>();
 		private List<CyNetworkView> views = new ArrayList();
+		private VisualStyle visualStyle;
 		
 
 		public PartitionNetworkPlugin () {
@@ -103,6 +108,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 
 			public void actionPerformed(ActionEvent e) {
 				populateNodes(attributeName);
+				visualStyle = buildVisualStyle();
 		      
 		      Set<Object> attributeValues = attributeValueNodeMap.keySet();
 //		      System.out.println ("building subnets for attribute key set: " + attributeValues);
@@ -224,7 +230,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 				
 				views.add(new_view);
 
-		        String vsName = "default";
+//		        String vsName = "default";
 		        
 		        
 		        
@@ -244,17 +250,49 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 //					CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
 					CyLayoutAlgorithm layout = CyLayouts.getLayout("cellular-layout");
 					layout.doLayout(new_view);
+					
+				 	// AJK: 01/13/2009 run hacked force-directed layout that restricts movement to within region
+//					layout = CyLayouts.getLayout("force-directed");
+//					layout.doLayout(new_view);
 
 					// Set visual style
-					VisualStyle newVS = current_network_view.getVisualStyle();
-
-					if (newVS != null) {
-		                vsName = newVS.getName();
-					}
+//					VisualStyle newVS = current_network_view.getVisualStyle();
+//
+//					if (newVS != null) {
+//		                vsName = newVS.getName();
+//					}
 				}
-		        Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+
+				// set graphics level of detail
+				((DingNetworkView)new_view).setGraphLOD(new CyGraphAllLOD());
+				
+		        Cytoscape.getVisualMappingManager().setVisualStyle(PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
 			}
 
+			/**
+			 * do postProcessing step of building VisualStyle
+			 * @param network
+			 */
+			public VisualStyle buildVisualStyle () {
+				
+				VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+				CalculatorCatalog catalog = manager.getCalculatorCatalog();
+
+				VisualStyle vs = 
+					catalog.getVisualStyle(PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
+
+				if (vs == null) {
+					vs = 
+						PartitionNetworkVisualStyleFactory.createVisualStyle(Cytoscape.getCurrentNetworkView());
+					catalog.addVisualStyle(vs);
+				}
+
+				manager.setVisualStyle(vs);
+				Cytoscape.getCurrentNetworkView().setVisualStyle(vs.getName());
+				Cytoscape.getCurrentNetworkView().applyVizmapper(vs);
+				return vs;
+			}
+			
 			
 			/**
 			 * layout the subnetwork views in a grid
