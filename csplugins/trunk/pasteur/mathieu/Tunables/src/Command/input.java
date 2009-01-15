@@ -11,6 +11,7 @@ public class input implements command {
 
 	@Tunable(description="This is an Integer with a long tunable's description to test the wrapping",group="Group1")
 	public Integer integer1 = new Integer(10);
+	/*
 	@Tunable(description="Boolean",group="Group2")
 	public Boolean boolean1 = new Boolean(false);
 	@Tunable(description="Integer",group="Group2")
@@ -41,7 +42,7 @@ public class input implements command {
 	public Long long1 = new Long((long)223248997);
 	@Tunable(description="ListSingleSelection with Integers",group="Group5")
 	public ListSingleSelection<Integer> listOfIntegers;
-	
+	*/
 	
 	public input()
 	{		
@@ -53,7 +54,7 @@ public class input implements command {
 			days.add("Friday");
 			days.add("Saturday");
 			days.add("Sunday");
-			dayNames = new ListSingleSelection<String>(days);
+			//dayNames = new ListSingleSelection<String>(days);
 			
 			java.util.List<String> months = new ArrayList<String>();
 			months.add("January");
@@ -68,14 +69,14 @@ public class input implements command {
 			months.add("October");
 			months.add("November");
 			months.add("December");	
-			monthNames = new ListMultipleSelection<String>(months);
+			//monthNames = new ListMultipleSelection<String>(months);
 			
 			java.util.List<Integer> testlist = new ArrayList<Integer>();
 			testlist.add(29);
 			testlist.add(26);
 			testlist.add(37);
 			testlist.add(34);
-			listOfIntegers = new ListSingleSelection<Integer>(testlist);
+			//listOfIntegers = new ListSingleSelection<Integer>(testlist);
 	}
 }
 

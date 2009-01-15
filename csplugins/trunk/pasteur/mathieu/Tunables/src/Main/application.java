@@ -48,7 +48,9 @@ public class application{
 		
 		JPanel inpane1 = new JPanel();
 		mainpane.add(inpane1);
-
+		ti = new GuiTunableInterceptor(mainframe,outputframe,inpane1);
+		ti.intercept(commander);
+		lp.intercept(commander);
 		
 		JPanel inpane2 = new JPanel();
 		inpane2.setLayout(new FlowLayout());
@@ -69,9 +71,7 @@ public class application{
 
 		
 		
-		ti = new GuiTunableInterceptor(mainframe,outputframe,inpane1);
-		ti.intercept(commander);
-		lp.intercept(commander);
+
 		
 		if(ti!=null){
 			ti.Process();

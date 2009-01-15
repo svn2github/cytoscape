@@ -73,6 +73,7 @@ public class IntegerHandler implements Guihandler{
 		jta.setBackground(null);
 		result.add(jta,BorderLayout.WEST);
 		try{
+			jtf.setBackground(Color.white);
 			val = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
 				jtf.setBackground(Color.red);
