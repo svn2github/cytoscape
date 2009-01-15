@@ -40,6 +40,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	protected void process(List<Guihandler> list) {
 			
 			insidepane.removeAll();
+			//insidepane.updateUI();
 			this.list=list;
 			//mainPanel = new JPanel();
 			//mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));

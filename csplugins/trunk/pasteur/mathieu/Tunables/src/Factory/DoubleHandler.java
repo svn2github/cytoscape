@@ -1,6 +1,9 @@
 package Factory;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 import javax.swing.*;
 
@@ -18,6 +21,8 @@ public class DoubleHandler implements Guihandler{
 	String title;
 	Double doub;
 	Double val = null;
+	String newline=System.getProperty("line.separator");
+	
 	
 	
 	public DoubleHandler(Field f, Object o, Tunable t){
@@ -35,9 +40,9 @@ public class DoubleHandler implements Guihandler{
 		try{
 			val = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
-				JOptionPane.showMessageDialog(null, "Double Expected", "Error",JOptionPane.ERROR_MESSAGE);
 				try{
 					val = Double.parseDouble(f.get(o).toString());
+					JOptionPane.showMessageDialog(null,"A double was Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
 				}catch(Exception e){e.printStackTrace();}
 			}
 		try {
@@ -56,11 +61,30 @@ public class DoubleHandler implements Guihandler{
 		jta.setBackground(null);
 		jta.setEditable(false);
 		jtf = new JTextField(doub.toString(),11);
+		jtf.addActionListener(new myActionListener());
+		
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		pane.add(jtf,BorderLayout.EAST);
 		return pane;
 	}
-
+	
+	
+	private class myActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent ae){
+			try{
+				val = Double.parseDouble(jtf.getText());
+				jtf.setBackground(Color.white);
+			}catch(NumberFormatException nfe){
+					jtf.setBackground(Color.red);
+					
+					try{
+						jtf.setText(f.get(o).toString());
+						JOptionPane.showMessageDialog(null, "A double is Expected"+newline+"Value will be set to default = "+f.get(o), "Error",JOptionPane.ERROR_MESSAGE);
+					}catch(Exception e){e.printStackTrace();}
+				}
+		}
+	}
+	
 
 
 	public JPanel update(){
@@ -71,15 +95,18 @@ public class DoubleHandler implements Guihandler{
 		try{
 			val = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
-				JOptionPane.showMessageDialog(null, "Double Expected", "Error",JOptionPane.ERROR_MESSAGE);
+				jtf.setBackground(Color.red);
+				result.setBackground(Color.red);
 				try{
 					val = Double.parseDouble(f.get(o).toString());
+					JOptionPane.showMessageDialog(null, "A double is Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
 				}catch(Exception e){e.printStackTrace();}
 			}
-
 		try{
-			if(doub!=null)f.set(o, val.doubleValue());
-			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
+			if(doub!=null)f.set(o,val.doubleValue());
+			jtf.setColumns(0);
+			jtf.setText(f.get(o).toString());
+			result.add(jtf,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return result;
 	}

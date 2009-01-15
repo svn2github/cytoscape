@@ -5,6 +5,8 @@ import java.lang.reflect.*;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import GuiInterception.*;
 import Tunable.Tunable;
@@ -24,6 +26,8 @@ public class BoundedIntegerHandler implements Guihandler {
 	Boolean useslider=false;
 	mySlider slider;
 	Double val;
+	JPanel inputPane;
+	
 	
 	public BoundedIntegerHandler(Field f, Object o, Tunable t) {
 		this.f = f;
@@ -39,15 +43,17 @@ public class BoundedIntegerHandler implements Guihandler {
 
 	
 	public JPanel getInputPanel() {
-		JPanel inputPane = new JPanel(new BorderLayout());
+		inputPane = new JPanel(new BorderLayout());
 		if(useslider==true){
-			slider = new mySlider(title,bounded.getLowerBound(),bounded.getUpperBound(),bounded.getValue());
+			slider = new mySlider(title,bounded.getLowerBound(),bounded.getUpperBound(),bounded.getValue(),bounded.isLowerBoundStrict(),bounded.isUpperBoundStrict());
 			inputPane.add(slider,BorderLayout.EAST);
 		}
 		else{
-			jtf = new JTextField(bounded.getValue().toString(),11);
-			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			inputPane.add(jtf,BorderLayout.EAST);
+//			jtf = new JTextField(bounded.getValue().toString(),11);
+//			jtf.setHorizontalAlignment(JTextField.RIGHT);
+//			inputPane.add(jtf,BorderLayout.EAST);
+			inputPane.add(bounded,BorderLayout.EAST);
+			//jtf.addActionListener(new myActionListener());
 		}
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
@@ -65,15 +71,7 @@ public class BoundedIntegerHandler implements Guihandler {
 			bounded.setValue(slider.getValue().intValue());
 		}
 		else{
-			try{
-				val = Double.parseDouble(jtf.getText());
-			}catch(NumberFormatException nfe){
-				JOptionPane.showMessageDialog(null, "Integer Expected", "Error", JOptionPane.ERROR_MESSAGE);
-				try{
-					val = Double.parseDouble(bounded.getValue().toString());
-				}catch(Exception e){e.printStackTrace();}
-			}
-			bounded.setValue(val.intValue());
+			bounded.updateValue();
 		}
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
@@ -91,22 +89,23 @@ public class BoundedIntegerHandler implements Guihandler {
 			bounded.setValue(slider.getValue().intValue());
 		}
 		else{
-			try{
-				val = Double.parseDouble(jtf.getText());
-			}catch(NumberFormatException nfe){
-				JOptionPane.showMessageDialog(null, "Integer Expected", "Error", JOptionPane.ERROR_MESSAGE);
-				try{
-					val = Double.parseDouble(bounded.getValue().toString());
-				}catch(Exception e){e.printStackTrace();}
-			}
-			bounded.setValue(val.intValue());
+			bounded.updateValue();
+//			try{
+//				val = Double.parseDouble(jtf.getText());
+//			}catch(NumberFormatException nfe){
+//				JOptionPane.showMessageDialog(null, "An Integer is Expected", "Error", JOptionPane.ERROR_MESSAGE);
+//				try{
+//					val = Double.parseDouble(bounded.getValue().toString());
+//				}catch(Exception e){e.printStackTrace();}
+//			}
+//			bounded.setValue(val.intValue());
 		}
 		try{
 			f.set(o,bounded);
 		}catch(Exception e){e.printStackTrace();}
 	}	
 	
-
+	
 	public Field getField() {
 		return f;
 	}

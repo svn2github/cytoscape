@@ -40,13 +40,13 @@ public class BoundedDoubleHandler implements Guihandler {
 	public JPanel getInputPanel() {
 		JPanel inputPane = new JPanel(new BorderLayout());
 		if(useslider==true){
-			slider = new mySlider(title,bounded.getLowerBound(),bounded.getUpperBound(),bounded.getValue());
+			slider = new mySlider(title,bounded.getLowerBound(),bounded.getUpperBound(),bounded.getValue(),bounded.isLowerBoundStrict(),bounded.isUpperBoundStrict());
 			inputPane.add(slider,BorderLayout.EAST);
 		}
 		else{
-			jtf = new JTextField(bounded.getValue().toString(),11);
-			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			inputPane.add(jtf,BorderLayout.EAST);
+			//jtf = new JTextField(bounded.getValue().toString(),11);
+			//jtf.setHorizontalAlignment(JTextField.RIGHT);
+			inputPane.add(bounded,BorderLayout.EAST);
 		}
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
@@ -64,15 +64,16 @@ public class BoundedDoubleHandler implements Guihandler {
 			bounded.setValue(slider.getValue().doubleValue());
 		}
 		else{
-			try{
-				val = Double.parseDouble(jtf.getText());
-			}catch(NumberFormatException nfe){
-				JOptionPane.showMessageDialog(null, "Double Expected", "Error", JOptionPane.ERROR_MESSAGE);
-				try{
-					val = Double.parseDouble(bounded.getValue().toString());
-				}catch(Exception e){e.printStackTrace();}
-			}
-			bounded.setValue(val.doubleValue());
+			bounded.updateValue();
+//			try{
+//				val = Double.parseDouble(jtf.getText());
+//			}catch(NumberFormatException nfe){
+//				JOptionPane.showMessageDialog(null, "Double Expected", "Error", JOptionPane.ERROR_MESSAGE);
+//				try{
+//					val = Double.parseDouble(bounded.getValue().toString());
+//				}catch(Exception e){e.printStackTrace();}
+//			}
+//			bounded.setValue(val.doubleValue());
 		}
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
@@ -91,15 +92,16 @@ public class BoundedDoubleHandler implements Guihandler {
 			bounded.setValue(slider.getValue().doubleValue());
 		}
 		else{
-			try{
-				val = Double.parseDouble(jtf.getText());
-			}catch(NumberFormatException nfe){
-				JOptionPane.showMessageDialog(null, "Double Expected", "Error", JOptionPane.ERROR_MESSAGE);
-				try{
-					val = Double.parseDouble(bounded.getValue().toString());
-				}catch(Exception e){e.printStackTrace();}
-			}
-			bounded.setValue(val.doubleValue());
+			bounded.updateValue();
+//			try{
+//				val = Double.parseDouble(jtf.getText());
+//			}catch(NumberFormatException nfe){
+//				JOptionPane.showMessageDialog(null, "Double Expected", "Error", JOptionPane.ERROR_MESSAGE);
+//				try{
+//					val = Double.parseDouble(bounded.getValue().toString());
+//				}catch(Exception e){e.printStackTrace();}
+//			}
+//			bounded.setValue(val.doubleValue());
 		}
 		try{
 			f.set(o,bounded);

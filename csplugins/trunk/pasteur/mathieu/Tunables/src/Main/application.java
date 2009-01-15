@@ -138,6 +138,7 @@ public class application{
 			String command = ae.getActionCommand();
 			if(command.equals("done")){
 				if(ti!=null){
+					//ti.Process();
 					ti.Display();
 					ti.Process();
 				}

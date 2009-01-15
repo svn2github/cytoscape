@@ -1,5 +1,6 @@
 package Utils;
 
+import java.awt.Color;
 import java.awt.Font;
 //import java.awt.FontMetrics;
 //import java.awt.Graphics;
@@ -29,29 +30,34 @@ public class mySlider extends JComponent {
 
     private Number     m_min, m_max, m_value;
     private boolean    m_ignore = false;
-    
     private JSlider    m_slider;
     private JTextField m_field;
-    @SuppressWarnings("unchecked")
 	private List       m_listeners;
+	private Number initvalue;
     
     java.text.DecimalFormat df = new java.text.DecimalFormat("##.##");
     
     private Number majortickspace;
     private int m_smin = 0;
     private int m_srange = 100;
-  
-
+    String newline=System.getProperty("line.separator");
+    Boolean upper;
+    Boolean lower;
+    
+    
     
     @SuppressWarnings("unchecked")
-	public mySlider(String title, Number min, Number max, Number value) {
+	public mySlider(String title, Number min, Number max, Number value,Boolean lowerstrict,Boolean upperstrict) {
         m_min    = min;
         m_max    = max;
         m_value  = value;
+        upper = upperstrict;
+        lower = lowerstrict;
         m_slider = new JSlider();
         m_field  = new JTextField(4);
         m_field.setHorizontalAlignment(JTextField.RIGHT);
         m_listeners = new ArrayList();
+        initvalue = value;
 
         Hashtable labelTable = new Hashtable();
         majortickspace = (max.doubleValue()-min.doubleValue())/5;
@@ -103,6 +109,26 @@ public class mySlider extends JComponent {
                 m_value = getSliderValue();
                 // set text field value
                 setFieldValue();
+                
+                if(upper == true && m_value.doubleValue() == m_max.doubleValue()){
+            		m_field.setBackground(Color.red);
+                   	JOptionPane.showMessageDialog(null, "Value ("+df.format(m_value.doubleValue())+") can not be equal to upper limit ("+df.format(m_max.doubleValue())+")","Alert",JOptionPane.ERROR_MESSAGE);
+                   	m_value = initvalue;
+                   	setSliderValue();
+                   	setFieldValue();
+                   	m_field.setBackground(Color.white);
+                   	m_slider.updateUI();
+                }
+                if(lower == true && m_value.doubleValue() == m_min.doubleValue()){
+            		m_field.setBackground(Color.red);
+                   	JOptionPane.showMessageDialog(null, "Value ("+df.format(m_value.doubleValue())+") can not be equal to lower limit ("+df.format(m_min.doubleValue())+")","Alert",JOptionPane.ERROR_MESSAGE);
+                   	m_value = initvalue;
+                   	setSliderValue();
+                   	setFieldValue();
+                   	m_field.setBackground(Color.white);
+                   	m_slider.updateUI();
+                }
+                
                 // fire event
                 fireChangeEvent();
                 m_ignore = false;
@@ -214,30 +240,52 @@ public class mySlider extends JComponent {
     	try{
     		val = Double.parseDouble(m_field.getText());
     	}catch(NumberFormatException nfe){
-    		JOptionPane.showMessageDialog(null, "Not a value!","Alert", JOptionPane.ERROR_MESSAGE);
+    		JOptionPane.showMessageDialog(null, "Please enter a Value","Alert", JOptionPane.ERROR_MESSAGE);
     		try{
     			val = m_value.doubleValue();
     		}catch(Exception e){e.printStackTrace();}
     	}
-
+    	
         if ( m_value instanceof Double || m_value instanceof Float ){
-            if ( val < m_min.doubleValue() || val > m_max.doubleValue()){
-            	JOptionPane.showMessageDialog(null, "Value is out of Bounds","Alert",JOptionPane.ERROR_MESSAGE);
+        	if ( val < m_min.doubleValue()){
+        		m_field.setBackground(Color.red);
+            	JOptionPane.showMessageDialog(null, "Value ("+val.doubleValue()+") is less than lower limit ("+df.format(m_min.doubleValue())+")"+newline+"Value will be set to default : "+m_value,"Alert",JOptionPane.ERROR_MESSAGE);
+            	setFieldValue();
+            	m_field.setBackground(Color.white);
             	return m_value;
+            }
+            if ( val > m_max.doubleValue()){
+            	m_field.setBackground(Color.red);
+            	JOptionPane.showMessageDialog(null, "Value ("+val.doubleValue()+") is much than upper limit ("+df.format(m_max.doubleValue())+")"+newline+"Value will be set to default : "+m_value,"Alert",JOptionPane.ERROR_MESSAGE);
+            	setFieldValue();
+            	m_field.setBackground(Color.white);
+            	return m_value;
+            }
 //            	if ( val < m_min.doubleValue())return m_min.doubleValue();
 //            	if ( val > m_max.doubleValue())return m_max.doubleValue();
 //            	return m_value;
-            }
+//            }
             return m_value instanceof Double ? (Number)val.doubleValue() : val.floatValue();
         }
         else {
-            if ( val < m_min.longValue() || val > m_max.longValue() ) {
-            	JOptionPane.showMessageDialog(null, "Value is out of Bounds","Alert",JOptionPane.ERROR_MESSAGE);
+            if ( val < m_min.longValue()){
+            	m_field.setBackground(Color.red);
+            	JOptionPane.showMessageDialog(null, "Value ("+val.longValue()+") is less than lower limit ("+m_min.longValue()+")"+newline+"Value will be set to default : "+m_value,"Alert",JOptionPane.ERROR_MESSAGE);
+            	setFieldValue();
+            	m_field.setBackground(Color.white);
             	return m_value;
+            }
+            if ( val > m_max.longValue()){
+            	m_field.setBackground(Color.red);
+            	JOptionPane.showMessageDialog(null, "Value ("+val.longValue()+") is much than upper limit ("+m_max.longValue()+")"+newline+"Value will be set to default : "+m_value,"Alert",JOptionPane.ERROR_MESSAGE);
+            	setFieldValue();
+            	m_field.setBackground(Color.white);
+            	return m_value;
+            }
 //            	if ( val < m_min.longValue())return m_min.longValue();
 //            	if ( val > m_max.longValue())return m_max.longValue();
 //            	return m_value;
-            }
+//            }
             return m_value instanceof Long ? (Number)val.longValue() : val.intValue();
         }
     }
