@@ -72,7 +72,7 @@ public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 					setBackground(Color.white);
 				}catch(NumberFormatException nfe){
 					setBackground(Color.red);
-					JOptionPane.showMessageDialog(null, "An "+initValue.getClass().getSimpleName() +" is Expected" , "Error",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "An "+initValue.getClass().getSimpleName() +" is Expected"+newline+"Value will be set to default = "+initValue , "Error",JOptionPane.ERROR_MESSAGE);
 					setText(initValue.toString());
 				}
 		}	
@@ -134,7 +134,7 @@ public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 			setValue((N)val);
 		}catch(NumberFormatException nfe){
 			setBackground(Color.red);
-			JOptionPane.showMessageDialog(null, "An "+initValue.getClass().getSimpleName() +" is Expected" , "Error",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "An "+initValue.getClass().getSimpleName() +" is Expected" +newline+"Value will be set to default = "+initValue, "Error",JOptionPane.ERROR_MESSAGE);
 			setText(initValue.toString());
 		}
 

@@ -240,7 +240,10 @@ public class mySlider extends JComponent {
     	try{
     		val = Double.parseDouble(m_field.getText());
     	}catch(NumberFormatException nfe){
+    		m_field.setBackground(Color.red);
     		JOptionPane.showMessageDialog(null, "Please enter a Value","Alert", JOptionPane.ERROR_MESSAGE);
+    		setFieldValue();
+    		m_field.setBackground(Color.white);
     		try{
     			val = m_value.doubleValue();
     		}catch(Exception e){e.printStackTrace();}

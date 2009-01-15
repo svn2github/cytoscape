@@ -34,6 +34,7 @@ public class LongHandler implements Guihandler{
 		try{
 			this.mylong=(Long)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
+		jtf = new JTextField(11);
 	}
 	
 	
@@ -59,7 +60,7 @@ public class LongHandler implements Guihandler{
 		pane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
-		jtf = new JTextField(mylong.toString(),11);
+		jtf.setText(mylong.toString());
 		jtf.addActionListener(new myActionListener());
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		pane.add(jtf,BorderLayout.EAST);
@@ -94,7 +95,7 @@ public class LongHandler implements Guihandler{
 			val = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
 				jtf.setBackground(Color.red);
-				result.setBackground(Color.red);
+				//result.setBackground(Color.red);
 				try{
 					val = Double.parseDouble(f.get(o).toString());
 					JOptionPane.showMessageDialog(null, "A long is Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
@@ -102,9 +103,9 @@ public class LongHandler implements Guihandler{
 			}
 		try{
 			if(mylong!=null)f.set(o,val.longValue());
-			jtf.setColumns(0);
-			jtf.setText(f.get(o).toString());
-			result.add(jtf,BorderLayout.EAST);
+			//jtf.setColumns(0);
+			//jtf.setText(f.get(o).toString());
+			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return result;
 	}
