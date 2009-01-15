@@ -389,6 +389,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			try {
 				Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalAppearanceCalculator()
 				         .setDefaultColor(selected, newColor);
+				Cytoscape.getVisualMappingManager().applyGlobalAppearances();
 			} catch (Exception e1) {
 				logger.warn("Unable to set default color!", e1);
 			}

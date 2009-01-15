@@ -381,6 +381,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		// Set background clolor
 		if (parser.getBackgroundColor() != null) {
 			myView.setBackgroundPaint(parser.getBackgroundColor());
+			graphStyle.setBackgroundColor(parser.getBackgroundColor());
 		}
 
 		// Layout nodes

@@ -313,9 +313,10 @@ public class VisualMappingManager extends SubjectBase {
 		// Set selection colors
 		Iterator nodeIt = network.nodesIterator();
 
-		while (nodeIt.hasNext())
+		while (nodeIt.hasNext()) {
 			network_view.getNodeView((CyNode) nodeIt.next())
 			            .setSelectedPaint(myGlobalApp.getNodeSelectionColor());
+		}
 
 		Iterator edgeIt = network.edgesIterator();
 

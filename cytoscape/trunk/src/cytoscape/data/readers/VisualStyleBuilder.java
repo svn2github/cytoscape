@@ -62,6 +62,7 @@ public class VisualStyleBuilder {
 
 	private int nodeMax;
 	private int edgeMax;
+	private Color backgroundColor;
 
 	/**
 	 * Build a new VisualStyleBuilder object whose output style will be called "name".
@@ -74,6 +75,7 @@ public class VisualStyleBuilder {
 
 		valueMaps = new EnumMap<VisualPropertyType,Map<Object,Object>>(VisualPropertyType.class);
 		counts = new EnumMap<VisualPropertyType,Map<Object,Integer>>(VisualPropertyType.class);
+		this.backgroundColor = null;
 	}
 
 	/**
@@ -102,6 +104,16 @@ public class VisualStyleBuilder {
 	}
 
 	/**
+	 * Set the background color for the style we build.  We need to do this because
+	 * our VisualStyleProperty stuff doesn't support global styles.
+	 * 
+	 * @param backgroundColor the color
+	 */
+	public void setBackgroundColor(Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
+
+	/**
 	 * Actually build the style using the provided properties
 	 */
 	public void buildStyle() {
@@ -111,6 +123,9 @@ public class VisualStyleBuilder {
 		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(currentStyle.getNodeAppearanceCalculator());
 		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator(currentStyle.getEdgeAppearanceCalculator());
 		GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator(currentStyle.getGlobalAppearanceCalculator());
+
+		if (backgroundColor != null)
+			gac.setDefaultBackgroundColor(backgroundColor);
 
 		nac.setNodeSizeLocked(nodeSizeLocked);
 
