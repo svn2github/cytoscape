@@ -77,6 +77,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	boolean clusterAttributes = false;
 	boolean createGroups = true;
 	boolean ignoreMissing = false;
+	boolean selectedOnly = false;
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
@@ -137,6 +138,11 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.LIST, "",
 		                                  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
 
+		// Whether or not to only cluster selected nodes/edges
+		clusterProperties.add(new Tunable("selectedOnly",
+		                                  "Only use selected nodes/edges for cluster",
+		                                  Tunable.BOOLEAN, new Boolean(true)));
+
 		// Whether or not to cluster attributes as well as nodes
 		clusterProperties.add(new Tunable("clusterAttributes",
 		                                  "Cluster attributes as well as nodes", 
@@ -184,6 +190,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		if ((t != null) && (t.valueChanged() || force))
 			ignoreMissing = ((Boolean) t.getValue()).booleanValue();
 
+		t = clusterProperties.get("selectedOnly");
+		if ((t != null) && (t.valueChanged() || force))
+			selectedOnly = ((Boolean) t.getValue()).booleanValue();
+
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
 			dataAttributes = (String) t.getValue();
@@ -230,14 +240,16 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 			if (monitor != null)
 				monitor.setStatus("Clustering attributes");
 			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, 
-			                     true, createGroups, ignoreMissing, logger, debug, monitor);
+			                     true, createGroups, ignoreMissing, 
+			                     selectedOnly, logger, debug, monitor);
 		}
 
 		if (monitor != null)
 			monitor.setStatus("Clustering nodes");
 		// Cluster the nodes
 		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, 
-			                   false, createGroups, ignoreMissing, logger, debug, monitor);
+			                   false, createGroups, ignoreMissing, 
+			                   selectedOnly, logger, debug, monitor);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

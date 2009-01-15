@@ -49,7 +49,6 @@ import cytoscape.task.TaskMonitor;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.DistanceMetric;
-import clusterMaker.algorithms.hierarchical.Matrix;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.KnnView;
 
@@ -75,6 +74,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	boolean clusterAttributes = false;
 	boolean createGroups = true;
 	boolean ignoreMissing = false;
+	boolean selectedOnly = false;
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
@@ -141,6 +141,11 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.LIST, "",
 		                                  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
 
+		// Whether or not to only cluster selected nodes/edges
+		clusterProperties.add(new Tunable("selectedOnly",
+		                                  "Only use selected nodes/edges for cluster",
+		                                  Tunable.BOOLEAN, new Boolean(true)));
+
 		// Whether or not to cluster attributes as well as nodes
 		clusterProperties.add(new Tunable("clusterAttributes",
 		                                  "Cluster attributes as well as nodes", 
@@ -184,6 +189,10 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		if ((t != null) && (t.valueChanged() || force))
 			clusterAttributes = ((Boolean) t.getValue()).booleanValue();
 
+		t = clusterProperties.get("selectedOnly");
+		if ((t != null) && (t.valueChanged() || force))
+			selectedOnly = ((Boolean) t.getValue()).booleanValue();
+
 		t = clusterProperties.get("ignoreMissing");
 		if ((t != null) && (t.valueChanged() || force))
 			ignoreMissing = ((Boolean) t.getValue()).booleanValue();
@@ -224,11 +233,11 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1)
 			KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
-			                 true, createGroups, ignoreMissing, logger, debug);
+			                 true, createGroups, ignoreMissing, selectedOnly, logger, debug);
 
 		// Cluster the nodes
 		KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
-			               false, createGroups, ignoreMissing, logger, debug);
+			               false, createGroups, ignoreMissing, selectedOnly, logger, debug);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

@@ -67,8 +67,8 @@ public class EisenCluster {
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
 	                      ClusterMethod clusterMethod, boolean transpose, 
-	                      boolean createGroups, boolean ignoreMissing, CyLogger log,
-	                      boolean dbg, TaskMonitor monitor) {
+	                      boolean createGroups, boolean ignoreMissing, boolean selectedOnly,
+	                      CyLogger log, boolean dbg, TaskMonitor monitor) {
 
 		logger = log;
 		debug = dbg;
@@ -83,7 +83,7 @@ public class EisenCluster {
 			monitor.setStatus("Creating distance matrix");
 
 		// Create the matrix
-		Matrix matrix = new Matrix(weightAttributes, transpose, ignoreMissing);
+		Matrix matrix = new Matrix(weightAttributes, transpose, ignoreMissing, selectedOnly);
 
 		// Create a weight vector of all ones (we don't use individual weighting, yet)
 		matrix.setUniformWeights();

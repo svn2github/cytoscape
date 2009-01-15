@@ -60,6 +60,8 @@ public class Matrix {
 	private CyNode columnNodes[];
 	protected boolean transpose;
 	protected boolean symmetrical;
+	protected boolean ignoreMissing;
+	protected boolean selectedOnly;
 
 	/**
 	 * Create a data matrix from the current nodes in the network.  There are two ways
@@ -78,9 +80,11 @@ public class Matrix {
 	 * @param transpose true if we are transposing this matrix 
 	 *                  (clustering columns instead of rows)
 	 */
-	public Matrix(String[] weightAttributes, boolean transpose, boolean ignoreMissing) {
+	public Matrix(String[] weightAttributes, boolean transpose, boolean ignoreMissing, boolean selectedOnly) {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		this.transpose = transpose;
+		this.ignoreMissing = ignoreMissing;
+		this.selectedOnly = selectedOnly;
 
 		// Create our local copy of the weightAtributes array
 		String[] attributeArray = new String[weightAttributes.length];
@@ -91,10 +95,10 @@ public class Matrix {
 			for (int i = 0; i < weightAttributes.length; i++) {
 				attributeArray[i] = weightAttributes[i].substring(5);
 			}
-			buildGeneArrayMatrix(network, attributeArray, transpose, ignoreMissing);
+			buildGeneArrayMatrix(network, attributeArray, transpose, ignoreMissing, selectedOnly);
 			symmetrical = false;
 		} else if (weightAttributes.length == 1 && weightAttributes[0].startsWith("edge.")) {
-			buildSymmetricalMatrix(network, weightAttributes[0].substring(5));
+			buildSymmetricalMatrix(network, weightAttributes[0].substring(5), ignoreMissing, selectedOnly);
 			symmetrical = true;
 		} else {
 			// Throw an exception?
@@ -110,6 +114,8 @@ public class Matrix {
 		this.rowWeights = new double[nRows];
 		this.columnLabels = new String[nColumns];
 		this.rowLabels = new String[nRows];
+		this.ignoreMissing = duplicate.ignoreMissing;
+		this.selectedOnly = duplicate.selectedOnly;
 
 		// Only one of these will actually be used, depending on whether
 		// we're transposed or not
@@ -154,6 +160,8 @@ public class Matrix {
 		this.rowNodes = null;
 		this.columnNodes = null;
 		this.transpose = false;
+		this.ignoreMissing = false;
+		this.selectedOnly = false;
 	}
 
 	public int nRows() { return this.nRows; }
@@ -346,7 +354,8 @@ public class Matrix {
 
 	public boolean isSymmetrical() { return this.symmetrical; }
 
-	private void buildSymmetricalMatrix(CyNetwork network, String weight) {
+	private void buildSymmetricalMatrix(CyNetwork network, String weight, 
+	                                    boolean ignoreMissing, boolean selectedOnly) {
 
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		// Get the list of edges
@@ -368,12 +377,18 @@ public class Matrix {
 		int column;
 		byte attributeType = edgeAttributes.getType(weight);
 		for (CyNode node: nodeList) {
+			boolean found = false;
+			boolean hasSelectedEdge = false;
 			this.rowLabels[index] = node.getIdentifier();
 			this.rowNodes[index] = node;
 			this.columnLabels[index] = node.getIdentifier();
 			// Get the list of adjacent edges
 			List<CyEdge> edgeList = network.getAdjacentEdgesList(node, true, true, true);
 			for (CyEdge edge: edgeList) {
+				if (selectedOnly && !network.isSelected(edge))
+				 	continue;
+				hasSelectedEdge = true;
+
 				Double val = null;
 				if (attributeType == CyAttributes.TYPE_FLOATING) {
 					val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), weight);
@@ -382,6 +397,7 @@ public class Matrix {
 					if (v != null)
 						val = Double.valueOf(v.toString());
 				}
+				if (val != null) found = true;
 				if (edge.getSource() == node) {
 					column = nodeList.indexOf(edge.getTarget());
 					matrix[index][column] = val;
@@ -390,14 +406,18 @@ public class Matrix {
 					matrix[index][column] = val;
 				}
 			}
-			index++;
+			if ((!ignoreMissing || found) && (!selectedOnly || hasSelectedEdge))
+				index++;
 		}
 	}
 
 	private void buildGeneArrayMatrix(CyNetwork network, String[] weightAttributes, 
-	                                  boolean transpose, boolean ignoreMissing) {
+	                                  boolean transpose, boolean ignoreMissing,
+	                                  boolean selectedOnly) {
 		// Get the list of nodes
 		List<CyNode>nodeList = network.nodesList();
+
+		if (selectedOnly) nodeList = new ArrayList(network.getSelectedNodes());
 
 		// For debugging purposes, sort the node list by identifier
 		nodeList = sortNodeList(nodeList);
