@@ -89,6 +89,7 @@ public class IntegerHandler implements Guihandler{
 			//jtf.setText(f.get(o).toString());
 			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
+		//jtf.setBackground(Color.white);
 		return result;
 	}
 	
