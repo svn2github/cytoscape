@@ -8,6 +8,19 @@ import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 
+/**
+ * Executes <code>Task</code>s and displays interfaces by
+ * writing to a <code>PrintStream</code>.
+ *
+ * This is better suited for applications running in headless mode.
+ *
+ * This will only periodically display information about
+ * <code>Task</code>s it is executing to prevent the screen from being flooded
+ * with messages.
+ *
+ * This cannot cancel <code>Task</code>s because it has no means for receiving
+ * input from the user.
+ */
 public class ConsoleTaskManager implements TaskManager
 {
 	final PrintStream output;
@@ -17,6 +30,9 @@ public class ConsoleTaskManager implements TaskManager
 		this.output = output;
 	}
 
+	/**
+	 * Use <code>System.out</code> as the output stream.
+	 */
 	public ConsoleTaskManager()
 	{
 		this(System.out);
@@ -25,13 +41,20 @@ public class ConsoleTaskManager implements TaskManager
 	public void execute(final Task task)
 	{
 		final Timer timer = new Timer();
-		final TaskMonitor taskMonitor = new ConsoleTaskMonitor(timer);
+		final ConsoleTaskMonitor taskMonitor = new ConsoleTaskMonitor(timer);
 
 		Runnable runnable = new Runnable()
 		{
 			public void run()
 			{
-				task.run(taskMonitor);
+				try
+				{
+					task.run(taskMonitor);
+				}
+				catch (Exception exception)
+				{
+					taskMonitor.showException(exception);
+				}
 				timer.cancel();
 			}
 		};
@@ -42,7 +65,7 @@ public class ConsoleTaskManager implements TaskManager
 
 	class ConsoleTaskMonitor implements TaskMonitor
 	{
-		static final int UPDATE_DELAY = 2000;
+		static final int UPDATE_DELAY_IN_MILLISECONDS = 2000;
 
 		final Timer timer;
 		String title = "Task";
@@ -53,7 +76,7 @@ public class ConsoleTaskManager implements TaskManager
 		public ConsoleTaskMonitor(Timer timer)
 		{
 			this.timer = timer;
-			timer.scheduleAtFixedRate(new UpdateTask(), UPDATE_DELAY, UPDATE_DELAY);
+			timer.scheduleAtFixedRate(new UpdateTask(), UPDATE_DELAY_IN_MILLISECONDS, UPDATE_DELAY_IN_MILLISECONDS);
 		}
 
 		public void setTitle(String title)
@@ -62,11 +85,6 @@ public class ConsoleTaskManager implements TaskManager
 				this.title = "Task";
 			else
 				this.title = title;
-		}
-
-		public boolean needsToCancel()
-		{
-			return false;
 		}
 
 		public void setProgress(double progress)
@@ -84,7 +102,7 @@ public class ConsoleTaskManager implements TaskManager
 			hasChanged = true;
 		}
 
-		public void setException(Throwable exception)
+		public void showException(Exception exception)
 		{
 			timer.cancel();
 			if (exception.getMessage() == null || exception.getMessage().length() == 0)

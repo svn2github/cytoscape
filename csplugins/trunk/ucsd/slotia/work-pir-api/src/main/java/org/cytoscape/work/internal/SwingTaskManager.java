@@ -14,6 +14,11 @@ import org.cytoscape.work.TaskMonitor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+/**
+ * Uses Swing components to create a user interface for the <code>Task</code>.
+ *
+ * This will not work if the application is running in headless mode.
+ */
 public class SwingTaskManager implements TaskManager
 {
 
@@ -66,8 +71,15 @@ public class SwingTaskManager implements TaskManager
 
 		public void run()
 		{
-			SwingTaskMonitor taskMonitor = new SwingTaskMonitor(owner, locale);
-			task.run(taskMonitor);
+			SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, owner, locale);
+			try
+			{
+				task.run(taskMonitor);
+			}
+			catch (Exception exception)
+			{
+				taskMonitor.showException(exception);
+			}
 			if (!taskMonitor.isShowingException())
 				taskMonitor.close();
 		}
@@ -76,6 +88,7 @@ public class SwingTaskManager implements TaskManager
 
 class SwingTaskMonitor implements TaskMonitor
 {
+	final Task		task;
 	final ResourceBundle	messages;
 	final JDialog		dialog;
 	final JLabel		statusMessageLabel;
@@ -85,10 +98,9 @@ class SwingTaskMonitor implements TaskMonitor
 	final JLabel		exceptionLabel;
 	final JTextArea		exceptionArea;
 
-	boolean cancelTask = false;
-
-	public SwingTaskMonitor(Frame owner, Locale locale)
+	public SwingTaskMonitor(Task task, Frame owner, Locale locale)
 	{
+		this.task = task;
 		messages = ResourceBundle.getBundle("SwingTaskManager", locale);
 		dialog = new JDialog(owner);
 		dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.PAGE_AXIS));
@@ -128,7 +140,14 @@ class SwingTaskMonitor implements TaskMonitor
 				close();
 			else
 			{
-				cancelTask = true;
+				Thread cancelThread = new Thread(new Runnable()
+				{
+					public void run()
+					{
+						task.cancel();
+					}
+				});
+				cancelThread.start();
 				closeButton.setEnabled(false);
 				closeButton.setText(messages.getString("canceling"));
 			}
@@ -152,7 +171,7 @@ class SwingTaskMonitor implements TaskMonitor
 		progressBar.setValue((int) (progress * 100));
 	}
 
-	public void setException(Throwable exception)
+	public void showException(Exception exception)
 	{
 		closeButton.setText(messages.getString("close"));
 		closeButton.setEnabled(true);
@@ -162,11 +181,6 @@ class SwingTaskMonitor implements TaskMonitor
 		exceptionArea.setText(stringWriter.toString());
 		exceptionPanel.setVisible(true);
 		dialog.pack();
-	}
-
-	public boolean needsToCancel()
-	{
-		return cancelTask;
 	}
 
 	public boolean isShowingException()

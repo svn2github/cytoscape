@@ -23,7 +23,8 @@ public class Activator implements BundleActivator
 			swingTaskManager,
 			new Hashtable());
 
-		swingTaskManager.execute(new MyTask());
+		//swingTaskManager.execute(new MyTask());
+		swingTaskManager.execute(new SuperTask("Example SuperTask", new MyTask(), new MyTask(), new MyTask(), new MyTask()));
 	}
 
 	public void stop(BundleContext context)
@@ -32,27 +33,28 @@ public class Activator implements BundleActivator
 
 	class MyTask implements Task
 	{
-		public void run(TaskMonitor taskMonitor)
+		boolean cancel = false;
+		public void run(TaskMonitor taskMonitor) throws java.io.IOException, java.io.FileNotFoundException
 		{
-			System.out.println("MyTask started!");
-
-			if (taskMonitor.needsToCancel()) return;
+			taskMonitor.setTitle("MyTask");
 			taskMonitor.setStatusMessage("Starting first task");
 			somethingComplicated();
+			if (cancel) return;
 			taskMonitor.setProgress(0.25);
 
-			if (taskMonitor.needsToCancel()) return;
 			taskMonitor.setStatusMessage("Starting second task");
 			somethingComplicated();
+			if (cancel) return;
 			taskMonitor.setProgress(0.50);
 
-			//taskMonitor.setException(new Throwable("Yadda"));
-			if (taskMonitor.needsToCancel()) return;
+			//if (!cancel) throw new java.io.IOException("BLAH");
+
 			taskMonitor.setStatusMessage("Starting third task");
 			somethingComplicated();
+			if (cancel) return;
 			taskMonitor.setProgress(0.75);
 
-			if (taskMonitor.needsToCancel()) return;
+			taskMonitor.setProgress(1.00);
 			taskMonitor.setStatusMessage("Starting forth task");
 			somethingComplicated();
 
@@ -61,10 +63,15 @@ public class Activator implements BundleActivator
 
 		void somethingComplicated()
 		{
-			for (double i = 0.0; i < 10000.0; i += 0.001)
+			for (double i = 0.0; i < 5000.0; i += 0.001)
 			{
 				Math.sin(Math.tan(Math.sin(Math.tan(Math.sin(Math.tan(i))))));
 			}
+		}
+
+		public void cancel()
+		{
+			cancel = true;
 		}
 	}
 }
