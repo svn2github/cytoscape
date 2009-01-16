@@ -24,8 +24,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	myButton button;
 	List<Guihandler> list;
 	Guihandler guihandler;
-	ListSingleSelection<JPanel> listPane;
-	
+	ListSingleSelection<JPanel> listInPane;
+	ListSingleSelection<JPanel> listOutPane;
 	
 	JPanel insidepane;	
 	
@@ -39,7 +39,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 	protected void getInputPanes(List<Guihandler> list) {
 			
-			insidepane.removeAll();
+			//insidepane.removeAll();
 			//insidepane.updateUI();
 			this.list=list;
 			//mainPanel = new JPanel();
@@ -52,22 +52,22 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			JPanel init = new JPanel();
 			init.setName("init");
 			panes.add(init);
-			listPane = new ListSingleSelection<JPanel>(panes);
+			listInPane = new ListSingleSelection<JPanel>(panes);
 			String group=null;			
 
 			for(Guihandler guihandler : list){
 				boolean exist=false;
 				int nbpane=0;
 				group = guihandler.getTunable().group();	
-				for(int i=0;i<listPane.getPossibleValues().size();i++){
-						if(listPane.getPossibleValues().get(i).getName().equals(group)){
+				for(int i=0;i<listInPane.getPossibleValues().size();i++){
+						if(listInPane.getPossibleValues().get(i).getName().equals(group)){
 							exist=true;
 							nbpane=i;
 						}
 				}
 
 				if(exist==true){
-					listPane.getPossibleValues().get(nbpane).add(guihandler.getInputPanel());
+					listInPane.getPossibleValues().get(nbpane).add(guihandler.getInputPanel());
 				}
 				else{
 					JPanel pane = new JPanel();						
@@ -81,17 +81,17 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					pane.setBorder(titleBorder);
 					pane.setName(group);	
 					panes.add(pane);
-					listPane=new ListSingleSelection<JPanel>(panes);		
+					listInPane=new ListSingleSelection<JPanel>(panes);		
 				}
 			}
 			panes.remove(0);
-			listPane=new ListSingleSelection<JPanel>(panes);
+			listInPane=new ListSingleSelection<JPanel>(panes);
 			
 
 			insidepane.setLayout(new BoxLayout(insidepane,BoxLayout.PAGE_AXIS));
 			
-			for(int i=0;i<listPane.getPossibleValues().size();i++){
-				insidepane.add(listPane.getPossibleValues().get(i));
+			for(int i=0;i<listInPane.getPossibleValues().size();i++){
+				insidepane.add(listInPane.getPossibleValues().get(i));
 			}
 			
 			System.out.println(insidepane.getComponentCount());
@@ -113,28 +113,29 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		resultpane.removeAll();
 		TitledBorder titleBorder = null;
 		
-		for(int i = 0;i<listPane.getPossibleValues().size();i++){
-			listPane.getPossibleValues().get(i).removeAll();
-		}
+//		for(int i = 0;i<listPane.getPossibleValues().size();i++){
+//			listPane.getPossibleValues().get(i).removeAll();
+//		}
+		
 		java.util.List<JPanel> panes = new ArrayList<JPanel>();
 		JPanel init = new JPanel();
 		init.setName("init");
 		panes.add(init);
-		listPane = new ListSingleSelection<JPanel>(panes);
+		listOutPane = new ListSingleSelection<JPanel>(panes);
 		String group = null;
 		
 		for(Guihandler guihandler : list){
 			boolean exist=false;
 			int nbpane=0;
 			group = guihandler.getTunable().group();
-			for(int i=0;i<listPane.getPossibleValues().size();i++){
-				if(listPane.getPossibleValues().get(i).getName().equals(group)){
+			for(int i=0;i<listOutPane.getPossibleValues().size();i++){
+				if(listOutPane.getPossibleValues().get(i).getName().equals(group)){
 					exist=true;
 					nbpane=i;
 				}
 			}
 			if(exist==true){
-				listPane.getPossibleValues().get(nbpane).add(guihandler.update());
+				listOutPane.getPossibleValues().get(nbpane).add(guihandler.update());
 			}
 			else{
 				JPanel pane = new JPanel();
@@ -148,14 +149,14 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				pane.setBorder(titleBorder);
 				pane.setName(group);
 				panes.add(pane);
-				listPane=new ListSingleSelection<JPanel>(panes);		
+				listOutPane=new ListSingleSelection<JPanel>(panes);		
 			}
 		}
 		panes.remove(0);
-		listPane=new ListSingleSelection<JPanel>(panes);
+		listOutPane=new ListSingleSelection<JPanel>(panes);
 		
-		for(int i=0;i<listPane.getPossibleValues().size();i++){
-			resultpane.add(listPane.getPossibleValues().get(i));
+		for(int i=0;i<listOutPane.getPossibleValues().size();i++){
+			resultpane.add(listOutPane.getPossibleValues().get(i));
 		}
 		
 		

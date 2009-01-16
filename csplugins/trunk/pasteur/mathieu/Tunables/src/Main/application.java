@@ -124,7 +124,7 @@ public class application{
 				if(ti!=null){
 					//ti.Process();
 					ti.Display();
-					ti.GetInputPanes();
+					//ti.GetInputPanes();
 				}
 				else System.out.println("no input");
 			}
