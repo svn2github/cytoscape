@@ -25,9 +25,8 @@ public class Activator implements BundleActivator
 			swingTaskManager,
 			new Hashtable());
 
-		System.out.println("=== Starting cytoscape.work ===");
-
-		swingTaskManager.execute(new MyTask());
+		//swingTaskManager.execute(new MyTask());
+		swingTaskManager.execute(new SuperTask("Example SuperTask", new MyTask(), new MyTask(), new MyTask(), new MyTask()));
 	}
 
 	public void stop(BundleContext context)
@@ -38,6 +37,7 @@ public class Activator implements BundleActivator
 	{
 		double progress = 0.0;
 		String statusMessage = "";
+		boolean cancel = false;
 
 		public void run() throws Throwable
 		{
@@ -45,17 +45,17 @@ public class Activator implements BundleActivator
 
 			statusMessage = "Starting first task";
 			somethingComplicated();
+			if (cancel) return;
 			progress = 0.25;
 
 			statusMessage = "Starting second task";
 			somethingComplicated();
+			if (cancel) return;
 			progress = 0.50;
 
-			throw new Exception("BLAH!");
-
-			/*
 			statusMessage = "Starting third task";
 			somethingComplicated();
+			if (cancel) return;
 			progress = 0.75;
 
 			statusMessage = "Starting forth task";
@@ -63,7 +63,6 @@ public class Activator implements BundleActivator
 			progress = 1.0;
 
 			System.out.println("MyTask finished!");
-			*/
 		}
 
 		void somethingComplicated()
@@ -91,6 +90,7 @@ public class Activator implements BundleActivator
 
 		public void cancel()
 		{
+			cancel = true;
 		}
 	}
 }

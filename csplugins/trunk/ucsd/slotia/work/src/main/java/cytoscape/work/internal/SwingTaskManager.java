@@ -17,21 +17,41 @@ import cytoscape.work.internal.util.Interfaces;
 public class SwingTaskManager implements TaskManager
 {
 
-	final Frame owner;
+	Frame owner;
+	Locale locale;
 
 	public SwingTaskManager()
 	{
-		this.owner = null;
+		this(null, Locale.getDefault());
 	}
 
-	public SwingTaskManager(Frame owner)
+	/**
+	 * @param owner JDialogs created by this object
+	 * will have its owner set to this parameter.
+	 * @param locale The locale to display messages in
+	 */
+	public SwingTaskManager(Frame owner, Locale locale)
+	{
+		setOwner(owner);
+		this.locale = locale;
+
+		// We call this so we get MissingResourceException thrown
+		// as early as possible in case the bundle is missing
+		ResourceBundle.getBundle("SwingTaskManager", locale);
+	}
+
+	/**
+	 * @param owner JDialogs created by this object
+	 * will have its owner set to this parameter.
+	 */
+	public void setOwner(Frame owner)
 	{
 		this.owner = owner;
 	}
 
 	public void execute(Task task)
 	{
-		TaskThread taskThread = new TaskThread(task);
+		TaskThread taskThread = new TaskThread(task, owner, locale);
 		taskThread.start();
 	}
 }
@@ -57,7 +77,7 @@ public class SwingTaskManager implements TaskManager
  * TaskDialogUpdater is called by Swing, so it must return quickly. If it does
  * not, Swing will freeze. We cannot guarantee that Task methods like
  * getProgress() or cancel() will return quickly, so we create a separate
- * Thread called TaskMonitor to call these methods. That way, if Task's 
+ * Thread called TaskMonitor to call these methods. If Task's 
  * getStatusMessage() takes a long time to return, it will freeze up
  * TaskMonitor, but it won't affect TaskDialogUpdater, and it won't freeze Swing.
  */
@@ -82,11 +102,11 @@ class TaskThread extends Thread
 	boolean cancelTask = false;	// Becomes true when the user clicks "Cancel," so task.cancel() must be called
 	Throwable exception = null;	// Becomes non-null when the Task throws an exception
 
-	public TaskThread(Task task)
+	public TaskThread(Task task, Frame owner, Locale locale)
 	{
 		this.task = task;
 		timer = new Timer(REFRESH_DELAY_IN_MILLISECONDS, new TaskDialogUpdater());
-		taskDialog = new TaskDialog();
+		taskDialog = new TaskDialog(owner, locale);
 	}
 
 	public void run()
@@ -95,7 +115,7 @@ class TaskThread extends Thread
 		taskMonitor.start();
 		timer.start();
 
-		System.out.println("TaskThread: started");
+		System.out.println("TaskThread started");
 		try
 		{
 			task.run();
@@ -104,7 +124,7 @@ class TaskThread extends Thread
 		{
 			this.exception = exception;
 		}
-		System.out.println("TaskThread: finished");
+		System.out.println("TaskThread finished");
 	}
 
 	/**
@@ -126,8 +146,7 @@ class TaskThread extends Thread
 	{
 		public void run()
 		{
-			System.out.println("TaskMonitor: started");
-
+			System.out.println("TaskMonitor started");
 			// Keep monitoring the Task while it is running
 			while (TaskThread.this.getState() != Thread.State.TERMINATED)
 			{
@@ -140,14 +159,19 @@ class TaskThread extends Thread
 				// When the thread is not RUNNABLE, it is either sleeping or waiting
 				// and is not making any progress, so it's pointless to check its state.
 				if (TaskThread.this.getState() != Thread.State.RUNNABLE)
+				{
+					System.out.println("TaskMonitor: Going back to sleep");
 					continue;
+				}
+				else
+					System.out.println("TaskMonitor: Querying");
 
 				if (cancelTask)
 				{
 					task.cancel();
 					// If the task needs to be cancelled, it does not need
 					// to be monitored anymore.
-					return;
+					break;
 				}
 
 				// Update TaskThread.title
@@ -166,7 +190,7 @@ class TaskThread extends Thread
 					progress = (int) (progressable.getProgress() * 100);
 				}
 			}
-			System.out.println("TaskMonitor: finished");
+			System.out.println("TaskMonitor finished");
 		}
 	}
 
@@ -186,10 +210,12 @@ class TaskThread extends Thread
 		final JPanel		exceptionPanel;
 		final JLabel		exceptionLabel;
 		final JTextArea		exceptionArea;
+		final ResourceBundle	messages;
 
-		public TaskDialog()
+		public TaskDialog(Frame owner, Locale locale)
 		{
-			dialog = new JDialog();
+			messages = ResourceBundle.getBundle("SwingTaskManager", locale);
+			dialog = new JDialog(owner);
 			dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.PAGE_AXIS));
 			statusMessageLabel = new JLabel();
 			progressBar = new JProgressBar(0, 100);
@@ -197,7 +223,7 @@ class TaskThread extends Thread
 				progressBar.setStringPainted(true);
 			else
 				progressBar.setIndeterminate(true);
-			closeButton = new JButton("Cancel");
+			closeButton = new JButton(messages.getString("cancel"));
 			closeButton.addActionListener(new CloseAction());
 
 			exceptionPanel = new JPanel();
@@ -226,13 +252,13 @@ class TaskThread extends Thread
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if (closeButton.getText().equals("Close"))
+				if (closeButton.getText().equals(messages.getString("close")))
 					close();
 				else
 				{
 					cancelTask = true;
 					closeButton.setEnabled(false);
-					closeButton.setText("Canceling...");
+					closeButton.setText(messages.getString("canceling"));
 				}
 			}
 		}
@@ -259,14 +285,14 @@ class TaskThread extends Thread
 
 		public void showException()
 		{
-			closeButton.setText("Close");
+			closeButton.setText(messages.getString("close"));
 			closeButton.setEnabled(true);
 			StringWriter stringWriter = new StringWriter();
 			exception.printStackTrace(new PrintWriter(stringWriter));
 			exceptionLabel.setText(exception.getMessage());
 			exceptionArea.setText(stringWriter.toString());
 			exceptionPanel.setVisible(true);
-			pack();
+			dialog.pack();
 		}
 	}
 
@@ -285,6 +311,7 @@ class TaskThread extends Thread
 	{
 		public void actionPerformed(ActionEvent e)
 		{
+			System.out.println("TaskDialogUpdater invoked at " + (new java.util.Date()).toString());
 			if (exception != null)
 				taskDialog.showException();
 
