@@ -23,7 +23,7 @@ public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> 
 	protected void save(List<PropHandler> handlerList) {	
 	}
 
-	protected void process(List<PropHandler> handlerList) {		
+	protected void getInputPanes(List<PropHandler> handlerList) {		
 	}
 	
 	protected void processProps(List<PropHandler> lh) {

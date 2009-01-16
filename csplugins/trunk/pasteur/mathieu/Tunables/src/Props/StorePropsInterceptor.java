@@ -24,7 +24,7 @@ public class StorePropsInterceptor extends HiddenTunableInterceptor<PropHandler>
 	protected void save(List<PropHandler> handlerList) {
 	}
 
-	protected void process(List<PropHandler> handlerList) {		
+	protected void getInputPanes(List<PropHandler> handlerList) {		
 	}
 
 	protected void addProps(List<PropHandler> handlerList) {

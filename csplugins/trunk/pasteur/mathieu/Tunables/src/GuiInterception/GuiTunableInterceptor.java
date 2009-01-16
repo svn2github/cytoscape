@@ -17,7 +17,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 	public JFrame inframe;
 	public JFrame outframe;
-	JPanel mainPanel;
+
 	MenuBar menu;
 	static JPanel tunPane = null;
 	boolean processdone = false;
@@ -37,7 +37,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	}
 
 
-	protected void process(List<Guihandler> list) {
+	protected void getInputPanes(List<Guihandler> list) {
 			
 			insidepane.removeAll();
 			//insidepane.updateUI();
@@ -87,54 +87,23 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			panes.remove(0);
 			listPane=new ListSingleSelection<JPanel>(panes);
 			
-//			for(int i=0;i<listPane.getPossibleValues().size();i++){
-//				mainPanel.add(listPane.getPossibleValues().get(i));
-//			}
+
 			insidepane.setLayout(new BoxLayout(insidepane,BoxLayout.PAGE_AXIS));
 			
 			for(int i=0;i<listPane.getPossibleValues().size();i++){
 				insidepane.add(listPane.getPossibleValues().get(i));
 			}
 			
+			System.out.println(insidepane.getComponentCount());
 			
-			
-//			inframe.setContentPane(mainPanel);
 			inframe.pack();
 			inframe.setLocation(50, 30);
 			inframe.setVisible(true);
 			processdone=true;
 			
-			//Test to display the OutputFrame when Button is selected
-			for(Guihandler guihandler :list){
-				if(guihandler.getField().getType() == myButton.class){
-					try{
-						button = (myButton) guihandler.getField().get(guihandler.getObject());
-						button.addActionListener(new myActionListener());
-						this.guihandler=guihandler;
-						button.setActionCommand(guihandler.getField().getName());
-					}catch(Exception e){e.printStackTrace();}
-				}
-			}
 	}
 	
-	
-	
-	
-	private class myActionListener implements ActionListener{
-		public void actionPerformed(ActionEvent event){
-			if(event.getActionCommand().equals(guihandler.getField().getName())){
-				button.setselected(true);
-				try{
-					guihandler.getField().set(guihandler.getObject(), button);
-				}catch(Exception e){e.printStackTrace();}
-				inframe.dispose();
-				display(list);
-				
-			}
-		}
-	}
-	
-	
+
 	
 	
 	protected void display(List<Guihandler> list) {
@@ -189,6 +158,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			resultpane.add(listPane.getPossibleValues().get(i));
 		}
 		
+		
+		
 		outframe.setContentPane(resultpane);
 		outframe.pack();
 		outframe.setLocation(500, 100);
@@ -206,5 +177,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	}
 
 	protected void processProps(List<Guihandler> handlerList){
-	}	
+	}
+
+
+
 }

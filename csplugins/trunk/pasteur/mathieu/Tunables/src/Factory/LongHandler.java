@@ -111,7 +111,7 @@ public class LongHandler implements Guihandler{
 		return result;
 	}
 		
-	
+
 	public void	setValue(Object object){
 		try{
 			f.set(o, object);

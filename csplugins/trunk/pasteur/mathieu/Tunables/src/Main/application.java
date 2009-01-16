@@ -74,29 +74,13 @@ public class application{
 
 		
 		if(ti!=null){
-			ti.Process();
+			ti.GetInputPanes();
 			lp.addProperties();
 			System.out.println("InputProperties = " + InputProperties);
 		}
 		else System.out.println("No input");
 
-//		JMenuBar MenuBar = new JMenuBar();
-//		mainframe.setJMenuBar(MenuBar);
-//		JMenu menu = new JMenu("Values");
-//		MenuBar.add(menu);		
-//		menuItem = new JMenuItem("Save settings");
-//		menuItem.addActionListener(new myActionListener4());
-//		menuItem.setActionCommand("save");
-//		menu.add(menuItem);
-//		menuItem = new JMenuItem("Cancel");
-//		menuItem.addActionListener(new myActionListener5());
-//		menuItem.setActionCommand("cancel");
-//		menu.add(menuItem);
-//		menuItem = new JMenuItem("Done");
-//		menuItem.addActionListener(new myActionListener3());
-//		menuItem.setActionCommand("done");
-//		menu.add(menuItem);
-		
+		mainframe.setVisible(true);
 		mainframe.pack();
 	}
 
@@ -140,7 +124,7 @@ public class application{
 				if(ti!=null){
 					//ti.Process();
 					ti.Display();
-					ti.Process();
+					ti.GetInputPanes();
 				}
 				else System.out.println("no input");
 			}
