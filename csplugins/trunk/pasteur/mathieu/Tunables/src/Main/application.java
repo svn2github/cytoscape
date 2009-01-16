@@ -17,12 +17,13 @@ import java.util.Properties;
 public class application{
 	
 	private static JFrame mainframe = new JFrame("TunableSampler");;
-	public static JFrame outputframe = new JFrame("Results");
+	private static JFrame outputframe = new JFrame("Results");
+	private static JPanel mainpane;
 	
-	public static JPanel inpane2;
+	private static JPanel inpane1;
+	private static JPanel inpane2;
 	
 	
-	//private static JMenuItem menuItem;
 	private static JButton button;
 	public static command commander = new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
@@ -41,20 +42,25 @@ public class application{
 
 	public static void CreateGUIandStart(){
 		
-		JPanel mainpane = new JPanel();
+		mainpane = new JPanel();
+		inpane1 = new JPanel();
+		inpane2 = new JPanel();
+		
+		
 		mainpane.setLayout(new BoxLayout(mainpane,BoxLayout.PAGE_AXIS));
 		mainframe.setContentPane(mainpane);
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainframe.setVisible(true);
+		inpane2.setLayout(new FlowLayout());
 		
-		JPanel inpane1 = new JPanel();
 		mainpane.add(inpane1);
+		mainpane.add(inpane2);
+		
+		
 		ti = new GuiTunableInterceptor(mainframe,outputframe,inpane1);
 		ti.intercept(commander);
 		lp.intercept(commander);
 		
-		JPanel inpane2 = new JPanel();
-		inpane2.setLayout(new FlowLayout());
-		mainpane.add(inpane2);
 		button = new JButton("save settings");
 		button.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED,Color.gray.brighter(),Color.gray.darker()));
 		button.setActionCommand("save");
@@ -69,18 +75,12 @@ public class application{
 		inpane2.add(button);
 		button.addActionListener(new myActionListener3());
 
-		
-		
-
-		
 		if(ti!=null){
 			ti.GetInputPanes();
 			lp.addProperties();
 			System.out.println("InputProperties = " + InputProperties);
 		}
 		else System.out.println("No input");
-
-		mainframe.setVisible(true);
 		mainframe.pack();
 	}
 
@@ -122,9 +122,10 @@ public class application{
 			String command = ae.getActionCommand();
 			if(command.equals("done")){
 				if(ti!=null){
-					//ti.Process();
 					ti.Display();
-					//ti.GetInputPanes();
+					outputframe.pack();
+					outputframe.setLocation(500, 100);
+					outputframe.setVisible(true);
 				}
 				else System.out.println("no input");
 			}

@@ -131,7 +131,7 @@ public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 			else if(initValue.getClass().equals(Double.class)) val = Double.parseDouble(getText());
 			else if(initValue.getClass().equals(Float.class)) val = Float.parseFloat(getText());
 			else if(initValue.getClass().equals(Long.class)) val = Long.parseLong(getText());
-			setValue((N)val);
+			setValue((N)val);			
 		}catch(NumberFormatException nfe){
 			setBackground(Color.red);
 			JOptionPane.showMessageDialog(null, "An "+initValue.getClass().getSimpleName() +" is Expected" +newline+"Value will be set to default = "+initValue, "Error",JOptionPane.ERROR_MESSAGE);

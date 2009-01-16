@@ -100,6 +100,7 @@ public class DoubleHandler implements Guihandler{
 				jtf.setBackground(Color.red);
 				//result.setBackground(Color.red);
 				try{
+					jtf.setText(f.get(o).toString());
 					val = Double.parseDouble(f.get(o).toString());
 					JOptionPane.showMessageDialog(null, "A double is Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
 				}catch(Exception e){e.printStackTrace();}

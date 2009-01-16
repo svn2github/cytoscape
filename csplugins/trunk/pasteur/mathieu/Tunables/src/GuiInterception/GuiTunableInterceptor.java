@@ -8,8 +8,6 @@ import Utils.myButton;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
-import java.awt.MenuBar;
-import java.awt.event.*;
 
 
 
@@ -17,37 +15,30 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 	public JFrame inframe;
 	public JFrame outframe;
+	public JPanel insidepane;	
+	
 
-	MenuBar menu;
-	static JPanel tunPane = null;
-	boolean processdone = false;
+	public JPanel tunPane = null;
+
 	myButton button;
 	List<Guihandler> list;
 	Guihandler guihandler;
 	ListSingleSelection<JPanel> listInPane;
 	ListSingleSelection<JPanel> listOutPane;
 	
-	JPanel insidepane;	
 	
 	public GuiTunableInterceptor(JFrame inframe,JFrame outframe ,JPanel insidepane) {
 		super( new GuiHandlerFactory<Guihandler>() );
 		this.inframe = inframe;
 		this.outframe = outframe;
 		this.insidepane = insidepane;
+		this.insidepane.setLayout(new BoxLayout(insidepane,BoxLayout.PAGE_AXIS));
+
 	}
 
 
 	protected void getInputPanes(List<Guihandler> list) {
-			
-			//insidepane.removeAll();
-			//insidepane.updateUI();
 			this.list=list;
-			//mainPanel = new JPanel();
-			//mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
-			//insidepane.setLayout(new BoxLayout(insidepane,BoxLayout.PAGE_AXIS));
-			
-			TitledBorder titleBorder = null;
-
 			java.util.List<JPanel> panes = new ArrayList<JPanel>();
 			JPanel init = new JPanel();
 			init.setName("init");
@@ -65,7 +56,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 							nbpane=i;
 						}
 				}
-
 				if(exist==true){
 					listInPane.getPossibleValues().get(nbpane).add(guihandler.getInputPanel());
 				}
@@ -74,7 +64,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));
 					pane.add(guihandler.getInputPanel());
 
-					titleBorder = BorderFactory.createTitledBorder(group);
+					TitledBorder titleBorder = BorderFactory.createTitledBorder(group);
 					titleBorder.setTitleColor(Color.blue);
 					titleBorder.setTitlePosition(TitledBorder.LEFT);
 					titleBorder.setTitlePosition(TitledBorder.TOP);
@@ -86,21 +76,10 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			}
 			panes.remove(0);
 			listInPane=new ListSingleSelection<JPanel>(panes);
-			
-
-			insidepane.setLayout(new BoxLayout(insidepane,BoxLayout.PAGE_AXIS));
-			
+	
 			for(int i=0;i<listInPane.getPossibleValues().size();i++){
 				insidepane.add(listInPane.getPossibleValues().get(i));
 			}
-			
-			System.out.println(insidepane.getComponentCount());
-			
-			inframe.pack();
-			inframe.setLocation(50, 30);
-			inframe.setVisible(true);
-			processdone=true;
-			
 	}
 	
 
@@ -111,11 +90,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		JPanel resultpane = new JPanel();
 		resultpane.setLayout(new BoxLayout(resultpane,BoxLayout.PAGE_AXIS));
 		resultpane.removeAll();
-		TitledBorder titleBorder = null;
-		
-//		for(int i = 0;i<listPane.getPossibleValues().size();i++){
-//			listPane.getPossibleValues().get(i).removeAll();
-//		}
 		
 		java.util.List<JPanel> panes = new ArrayList<JPanel>();
 		JPanel init = new JPanel();
@@ -142,7 +116,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));
 				pane.add(guihandler.update());
 
-				titleBorder = BorderFactory.createTitledBorder(group);
+				TitledBorder titleBorder = BorderFactory.createTitledBorder(group);
 				titleBorder.setTitleColor(Color.blue);
 				titleBorder.setTitlePosition(TitledBorder.LEFT);
 				titleBorder.setTitlePosition(TitledBorder.TOP);
@@ -158,13 +132,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		for(int i=0;i<listOutPane.getPossibleValues().size();i++){
 			resultpane.add(listOutPane.getPossibleValues().get(i));
 		}
-		
-		
-		
 		outframe.setContentPane(resultpane);
-		outframe.pack();
-		outframe.setLocation(500, 100);
-		outframe.setVisible(true);
 	}
 			
 
@@ -179,7 +147,4 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 	protected void processProps(List<Guihandler> handlerList){
 	}
-
-
-
 }

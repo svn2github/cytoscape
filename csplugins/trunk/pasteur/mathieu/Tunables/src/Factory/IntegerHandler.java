@@ -38,9 +38,11 @@ public class IntegerHandler implements Guihandler{
 
 	public void handle(){
 		try{
+			jtf.setBackground(Color.white);
 			val = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
 				try{
+					jtf.setBackground(Color.red);
 					val = Double.parseDouble(f.get(o).toString());
 					JOptionPane.showMessageDialog(null,"An Integer was Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
 				}catch(Exception e){e.printStackTrace();}
@@ -77,19 +79,16 @@ public class IntegerHandler implements Guihandler{
 			val = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
 				jtf.setBackground(Color.red);
-				//result.setBackground(Color.red);
 				try{
+					jtf.setText(f.get(o).toString());
 					val = Double.parseDouble(f.get(o).toString());
 					JOptionPane.showMessageDialog(null, "An Integer is Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
 				}catch(Exception e){e.printStackTrace();}
 			}
 		try{
 			if(inte!=null)f.set(o,val.intValue());
-			//jtf.setColumns(0);
-			//jtf.setText(f.get(o).toString());
 			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
-		//jtf.setBackground(Color.white);
 		return result;
 	}
 	
