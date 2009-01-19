@@ -42,25 +42,25 @@ public class ButtonHandler implements Guihandler{
 
 
 	public JPanel getInputPanel() {
-		JPanel inputpane = new JPanel();
+		JPanel inpane = new JPanel();
 		button.setselected(false);
 		button.setActionCommand(title);
 		button.addActionListener(new myActionListener());
-		inputpane.add(button);
-		return inputpane;
+		inpane.add(button);
+		return inpane;
 	}
 		
 
 
-	public JPanel update() {
-		JPanel resultpane = new JPanel();
+	public JPanel getOutputPanel() {
+		JPanel outpane = new JPanel();
 		try{
 			button = (myButton) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		try{
-			resultpane.add(new JTextField("statut = "+ button.getselected()));
+			outpane.add(new JTextField("statut = "+ button.getselected()));
 		}catch(Exception e){e.printStackTrace();}		
-		return resultpane;
+		return outpane;
 	}
 	
 	public class myActionListener implements ActionListener{

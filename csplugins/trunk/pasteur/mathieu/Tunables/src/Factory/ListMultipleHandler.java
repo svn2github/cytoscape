@@ -40,19 +40,19 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	}
 
 	public JPanel getInputPanel() {
-		JPanel returnpane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		returnpane.add(jta);
+		inpane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
 		jlist = new JList(LMS.getPossibleValues().toArray());
 		jlist.addListSelectionListener(this);
 		jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JScrollPane scrollpane = new JScrollPane(jlist);
-		returnpane.add(scrollpane,BorderLayout.EAST);
-		return returnpane;
+		inpane.add(scrollpane,BorderLayout.EAST);
+		return inpane;
 	}
 	
 	public void handle() {
@@ -67,20 +67,20 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	
 	
 	
-	public JPanel update() {
-		JPanel resultpane = new JPanel(new BorderLayout());
+	public JPanel getOutputPanel() {
+		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
-		resultpane.add(jta,BorderLayout.WEST);
+		outpane.add(jta,BorderLayout.WEST);
 		if(array!=null){
 			selected = castObject(array);
 			LMS.setSelectedValues(selected);
 			try{
 				f.set(o, LMS);
-				resultpane.add(new JScrollPane(new JList(LMS.getSelectedValues().toArray())),BorderLayout.EAST);
+				outpane.add(new JScrollPane(new JList(LMS.getSelectedValues().toArray())),BorderLayout.EAST);
 			}catch(Exception e){e.printStackTrace();}
 		}
-		return resultpane;
+		return outpane;
 	}
 
 	

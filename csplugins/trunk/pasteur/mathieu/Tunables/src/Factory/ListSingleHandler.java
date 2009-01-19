@@ -46,19 +46,19 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 
 	public JPanel getInputPanel(){
 		
-		JPanel returnpane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new BorderLayout());
 		selected = null;
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		returnpane.add(jta);
+		inpane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);		combobox = new JComboBox(LSS.getPossibleValues().toArray());
 		combobox.insertItemAt(days,0);
 		combobox.setSelectedIndex(0);
 		combobox.addActionListener(new myActionListener1());
-		returnpane.add(combobox,BorderLayout.EAST);
-		return returnpane;
+		inpane.add(combobox,BorderLayout.EAST);
+		return inpane;
 	}
 
 	public class myActionListener1 implements ActionListener{
@@ -80,19 +80,19 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 		
 
 
-	public JPanel update() {
-		JPanel result = new JPanel(new BorderLayout());
+	public JPanel getOutputPanel() {
+		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
-		result.add(jta,BorderLayout.WEST);
+		outpane.add(jta,BorderLayout.WEST);
 		if(selected!=null){
 			LSS.setSelectedValue(selected);	
 			try{
 				f.set(o,LSS);
-				result.add(new JTextField(LSS.getSelectedValue().toString()),BorderLayout.EAST);
+				outpane.add(new JTextField(LSS.getSelectedValue().toString()),BorderLayout.EAST);
 			}catch(Exception e){e.printStackTrace();}
 		}
-		return result;
+		return outpane;
 	}
 
 

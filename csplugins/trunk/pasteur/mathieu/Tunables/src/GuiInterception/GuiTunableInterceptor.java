@@ -109,12 +109,12 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				}
 			}
 			if(exist==true){
-				listOutPane.getPossibleValues().get(nbpane).add(guihandler.update());
+				listOutPane.getPossibleValues().get(nbpane).add(guihandler.getOutputPanel());
 			}
 			else{
 				JPanel pane = new JPanel();
 				pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));
-				pane.add(guihandler.update());
+				pane.add(guihandler.getOutputPanel());
 
 				TitledBorder titleBorder = BorderFactory.createTitledBorder(group);
 				titleBorder.setTitleColor(Color.blue);

@@ -20,8 +20,8 @@ public class FloatHandler implements Guihandler{
 	JTextField jtf;	
 	String title;
 	Float myfloat;
-	Double val = null;
-	String newline=System.getProperty("line.separator");
+	Double value = null;
+	String newline = System.getProperty("line.separator");
 	
 	public FloatHandler(Field f, Object o, Tunable t){
 		this.f=f;
@@ -37,38 +37,38 @@ public class FloatHandler implements Guihandler{
 	
 	public void handle(){
 		try{
-			val = Double.parseDouble(jtf.getText());
+			value = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
 				try{
-					val = Double.parseDouble(f.get(o).toString());
-					JOptionPane.showMessageDialog(null,"A float was Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
+					value = Double.parseDouble(f.get(o).toString());
+					JOptionPane.showMessageDialog(null,"A float was Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
 				}catch(Exception e){e.printStackTrace();}
 			}
 		try {
-				f.set(o,val.floatValue());
+				f.set(o,value.floatValue());
 		} catch (Exception e) { e.printStackTrace();}
 	}
 	
 	public JPanel getInputPanel(){
-		JPanel pane = new JPanel(new BorderLayout());		
+		JPanel inpane = new JPanel(new BorderLayout());		
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		pane.add(jta);
+		inpane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
 		jtf.setText(myfloat.toString());
 		jtf.addActionListener(new myActionListener());
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
-		pane.add(jtf,BorderLayout.EAST);
-		return pane;
+		inpane.add(jtf,BorderLayout.EAST);
+		return inpane;
 	}
 
 
 	private class myActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae){
 			try{
-				val = Double.parseDouble(jtf.getText());
+				value = Double.parseDouble(jtf.getText());
 				jtf.setBackground(Color.white);
 			}catch(NumberFormatException nfe){
 					jtf.setBackground(Color.red);
@@ -83,38 +83,29 @@ public class FloatHandler implements Guihandler{
 	
 	
 
-	public JPanel update(){
-		JPanel result = new JPanel(new BorderLayout());
+	public JPanel getOutputPanel(){
+		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
-		result.add(jta,BorderLayout.WEST);
+		outpane.add(jta,BorderLayout.WEST);
 		try{
 			jtf.setBackground(Color.white);
-			val = Double.parseDouble(jtf.getText());
+			value = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
 				jtf.setBackground(Color.red);
-				//result.setBackground(Color.red);
 				try{
 					jtf.setText(f.get(o).toString());
-					val = Double.parseDouble(f.get(o).toString());
-					JOptionPane.showMessageDialog(null, "A float is Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
+					value = Double.parseDouble(f.get(o).toString());
+					JOptionPane.showMessageDialog(null, "A float is Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
 				}catch(Exception e){e.printStackTrace();}
 			}
 		try{
-			if(myfloat!=null)f.set(o,val.floatValue());
-			//jtf.setColumns(0);
-			//jtf.setText(f.get(o).toString());
-			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
+			if(myfloat!=null)f.set(o,value.floatValue());
+			outpane.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
-		return result;
+		return outpane;
 	}
-		
-	
-	public void	setValue(Object object){
-		try{
-			f.set(o, object);
-		}catch(Exception e){e.printStackTrace();}
-	}
+
 	
 	public Tunable getTunable() {
 		return t;

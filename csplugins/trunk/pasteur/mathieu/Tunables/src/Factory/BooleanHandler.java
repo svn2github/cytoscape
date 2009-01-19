@@ -36,31 +36,31 @@ public class BooleanHandler implements Guihandler{
 	}
 	
 	public JPanel getInputPanel(){
-		JPanel pane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		pane.add(jta);
+		inpane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
 		jcb = new JCheckBox();
 		jcb.setSelected(bool.booleanValue());
-		pane.add(jcb,BorderLayout.EAST);
-		return pane;
+		inpane.add(jcb,BorderLayout.EAST);
+		return inpane;
 	}
 
-	public JPanel update() {
-		JPanel result = new JPanel(new BorderLayout());
+	public JPanel getOutputPanel() {
+		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
-		result.add(jta,BorderLayout.WEST);
+		outpane.add(jta,BorderLayout.WEST);
 		try{
 			JCheckBox checkbox = new JCheckBox();
 			f.set(o,jcb.isSelected());
 			checkbox.setSelected((Boolean) f.get(o));
-			result.add(checkbox,BorderLayout.EAST);
+			outpane.add(checkbox,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
-	return result;
+	return outpane;
 	}
 	
 	

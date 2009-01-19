@@ -1,14 +1,9 @@
 package Utils;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -137,7 +132,6 @@ public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 			JOptionPane.showMessageDialog(null, "An "+initValue.getClass().getSimpleName() +" is Expected" +newline+"Value will be set to default = "+initValue, "Error",JOptionPane.ERROR_MESSAGE);
 			setText(initValue.toString());
 		}
-
 		//setBackground(Color.white);
 	}
 	
@@ -183,21 +177,20 @@ public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 		int low = v.compareTo(lower);
 
 		if (lowerStrict) {
-			if (low < 0){	
+			if (low < 0){
+				setBackground(Color.red);
 				JOptionPane.showMessageDialog(null, value+" is less than lower value ("+lower+")"+newline+"Value will be set to default = "+initValue, "Error",JOptionPane.ERROR_MESSAGE);
 				value = initValue;
 			}
-			if (low == 0){	
+			if (low == 0){
+				setBackground(Color.red);
 				JOptionPane.showMessageDialog(null, value+" can not be equal to lower value ("+lower+")"+newline+"Value will be set to default = "+initValue, "Error",JOptionPane.ERROR_MESSAGE);
-				///////////throw new IllegalArgumentException("value is less than or equal to lower limit");
-				//value = lower;
 				value = initValue;
 			}
 		} else {
 			if (low < 0){
+				setBackground(Color.red);
 				JOptionPane.showMessageDialog(null, value+" is less than lower value ("+lower+")"+newline+"Value will be set to default = "+initValue, "Error",JOptionPane.ERROR_MESSAGE);
-				//////////throw new IllegalArgumentException("value is less than lower limit");
-				//value = lower;
 				value = initValue;
 			}
 		}		

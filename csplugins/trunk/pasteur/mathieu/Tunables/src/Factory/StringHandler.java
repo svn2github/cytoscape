@@ -39,32 +39,32 @@ public class StringHandler implements Guihandler{
 	
 	
 	public JPanel getInputPanel(){
-		JPanel pane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		pane.add(jta);
+		inpane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
 		try{
 			jtf = new JTextField(value,11);
 		}catch (Exception e){e.printStackTrace();}
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
-		pane.add(jtf,BorderLayout.EAST);
-		return pane;
+		inpane.add(jtf,BorderLayout.EAST);
+		return inpane;
 	}	
 
 
-	public JPanel update() {
-		JPanel result = new JPanel(new BorderLayout());
+	public JPanel getOutputPanel() {
+		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
-		result.add(jta,BorderLayout.WEST);
+		outpane.add(jta,BorderLayout.WEST);
 		try{
 			f.set(o, jtf.getText());
-			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
+			outpane.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
-		return result;
+		return outpane;
 	}	
 	
 	public Tunable getTunable(){

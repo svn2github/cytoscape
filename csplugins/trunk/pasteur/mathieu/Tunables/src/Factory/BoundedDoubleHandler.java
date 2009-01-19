@@ -17,11 +17,10 @@ public class BoundedDoubleHandler implements Guihandler {
 	Object o;
 	Tunable t;
 	JTextField jtf;
-	BoundedDouble bounded;
+	BoundedDouble myBounded;
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
-	Double val;
 
 	
 	public BoundedDoubleHandler(Field f, Object o, Tunable t) {
@@ -29,7 +28,7 @@ public class BoundedDoubleHandler implements Guihandler {
 		this.o = o;
 		this.t = t;
 		try {
-			this.bounded = (BoundedDouble)f.get(o);
+			this.myBounded = (BoundedDouble)f.get(o);
 			} catch (IllegalAccessException iae) {
 				iae.printStackTrace();}
 		this.title = t.description();
@@ -38,73 +37,50 @@ public class BoundedDoubleHandler implements Guihandler {
 
 	
 	public JPanel getInputPanel() {
-		JPanel inputPane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new BorderLayout());
 		if(useslider==true){
-			slider = new mySlider(title,bounded.getLowerBound(),bounded.getUpperBound(),bounded.getValue(),bounded.isLowerBoundStrict(),bounded.isUpperBoundStrict());
-			inputPane.add(slider,BorderLayout.EAST);
+			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
+			inpane.add(slider,BorderLayout.EAST);
 		}
-		else{
-			//jtf = new JTextField(bounded.getValue().toString(),11);
-			//jtf.setHorizontalAlignment(JTextField.RIGHT);
-			inputPane.add(bounded,BorderLayout.EAST);
-		}
+		else	inpane.add(myBounded,BorderLayout.EAST);
+		
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		inputPane.add(jta);
+		inpane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
-		return inputPane;
+		return inpane;
 	}
 	
 	
-	public JPanel update() {
-		JPanel resultPane = new JPanel(new BorderLayout());
+	public JPanel getOutputPanel() {
+		JPanel outpane = new JPanel(new BorderLayout());
 		if(useslider==true){
-			bounded.setValue(slider.getValue().doubleValue());
+			myBounded.setValue(slider.getValue().doubleValue());
 		}
-		else{
-			bounded.updateValue();
-//			try{
-//				val = Double.parseDouble(jtf.getText());
-//			}catch(NumberFormatException nfe){
-//				JOptionPane.showMessageDialog(null, "Double Expected", "Error", JOptionPane.ERROR_MESSAGE);
-//				try{
-//					val = Double.parseDouble(bounded.getValue().toString());
-//				}catch(Exception e){e.printStackTrace();}
-//			}
-//			bounded.setValue(val.doubleValue());
-		}
+		else	myBounded.updateValue();
+
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
-		resultPane.add(jta,BorderLayout.WEST);
+		outpane.add(jta,BorderLayout.WEST);
 		
 		try{
-			f.set(o,bounded);
-			resultPane.add(new JTextField(bounded.getValue().toString()),BorderLayout.EAST);
+			f.set(o,myBounded);
+			outpane.add(new JTextField(myBounded.getValue().toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
-		return resultPane;
+		return outpane;
 	}
 	
 	
 	public void handle() {
 		if(useslider==true){
-			bounded.setValue(slider.getValue().doubleValue());
+			myBounded.setValue(slider.getValue().doubleValue());
 		}
-		else{
-			bounded.updateValue();
-//			try{
-//				val = Double.parseDouble(jtf.getText());
-//			}catch(NumberFormatException nfe){
-//				JOptionPane.showMessageDialog(null, "Double Expected", "Error", JOptionPane.ERROR_MESSAGE);
-//				try{
-//					val = Double.parseDouble(bounded.getValue().toString());
-//				}catch(Exception e){e.printStackTrace();}
-//			}
-//			bounded.setValue(val.doubleValue());
-		}
+		else	myBounded.updateValue();
+
 		try{
-			f.set(o,bounded);
+			f.set(o,myBounded);
 		}catch(Exception e){e.printStackTrace();}
 	}	
 	

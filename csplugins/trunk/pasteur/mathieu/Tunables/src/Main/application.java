@@ -8,7 +8,6 @@ import Command.*;
 import HandlerFactory.Handler;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Properties;

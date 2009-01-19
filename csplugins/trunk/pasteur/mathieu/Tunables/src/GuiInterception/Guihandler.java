@@ -12,5 +12,5 @@ public interface Guihandler extends Handler{
 	public Tunable getTunable();
 	public Field getField();
 	public Object getObject();
-	public JPanel update();
+	public JPanel getOutputPanel();
 }

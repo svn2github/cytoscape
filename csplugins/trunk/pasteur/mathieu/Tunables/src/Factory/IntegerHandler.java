@@ -15,12 +15,11 @@ public class IntegerHandler implements Guihandler{
 	Field f;
 	Tunable t;
 	Object o;
-	JTextField jtf=new JTextField();
+	JTextField jtf;
 	String title;
-	Integer inte;
-	Double val = null;
-	JPanel pane;
-	String newline=System.getProperty("line.separator");
+	Integer myInteger;
+	Double value = null;
+	String newline = System.getProperty("line.separator");
 	
 	
 	
@@ -29,7 +28,7 @@ public class IntegerHandler implements Guihandler{
 		this.t=t;
 		this.o=o;
 		try{
-			this.inte=(Integer)f.get(o);
+			this.myInteger=(Integer)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		this.title=t.description();
 		jtf = new JTextField(11);
@@ -39,64 +38,64 @@ public class IntegerHandler implements Guihandler{
 	public void handle(){
 		try{
 			jtf.setBackground(Color.white);
-			val = Double.parseDouble(jtf.getText());
+			value = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
 				try{
 					jtf.setBackground(Color.red);
-					val = Double.parseDouble(f.get(o).toString());
-					JOptionPane.showMessageDialog(null,"An Integer was Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
+					value = Double.parseDouble(f.get(o).toString());
+					JOptionPane.showMessageDialog(null,"An Integer was Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
 				}catch(Exception e){e.printStackTrace();}
 			}
 		try {
-				f.set(o,val.intValue());
+				f.set(o,value.intValue());
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
 	
 	public JPanel getInputPanel(){
-		pane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		pane.add(jta);
+		inpane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
-		jtf.setText(inte.toString());
+		jtf.setText(myInteger.toString());
 		jtf.addActionListener(new myActionListener());
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
-		pane.add(jtf,BorderLayout.EAST);
-		return pane;
+		inpane.add(jtf,BorderLayout.EAST);
+		return inpane;
 	}
 	
 	
-	public JPanel update(){
-		JPanel result = new JPanel(new BorderLayout());
+	public JPanel getOutputPanel(){
+		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
-		result.add(jta,BorderLayout.WEST);
+		outpane.add(jta,BorderLayout.WEST);
 		try{
 			jtf.setBackground(Color.white);
-			val = Double.parseDouble(jtf.getText());
+			value = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
 				jtf.setBackground(Color.red);
 				try{
 					jtf.setText(f.get(o).toString());
-					val = Double.parseDouble(f.get(o).toString());
-					JOptionPane.showMessageDialog(null, "An Integer is Expected"+newline+"Value will be set to default = "+val, "Error",JOptionPane.ERROR_MESSAGE);
+					value = Double.parseDouble(f.get(o).toString());
+					JOptionPane.showMessageDialog(null, "An Integer is Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
 				}catch(Exception e){e.printStackTrace();}
 			}
 		try{
-			if(inte!=null)f.set(o,val.intValue());
-			result.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
+			if(myInteger!=null)f.set(o,value.intValue());
+			outpane.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
-		return result;
+		return outpane;
 	}
 	
 	
 	private class myActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae){
 			try{
-				val = Double.parseDouble(jtf.getText());
+				value = Double.parseDouble(jtf.getText());
 				jtf.setBackground(Color.white);
 			}catch(NumberFormatException nfe){
 					jtf.setBackground(Color.red);
