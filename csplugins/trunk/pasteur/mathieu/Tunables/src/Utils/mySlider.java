@@ -201,16 +201,22 @@ public class mySlider extends JComponent {
             int val = m_slider.getValue();
             int min = m_min.intValue();
             int max = m_max.intValue();
+            if(upper) max--;
+            if(lower) min++;
             return new Integer(min + (val-m_smin)*(max-min)/m_srange);
         } else if ( m_value instanceof Long ) {
             int val = m_slider.getValue();
             long min = m_min.longValue();
             long max = m_max.longValue();
+            if(upper) max--;
+            if(lower) min++;
             return new Long(min + (val-m_smin)*(max-min)/m_srange);
         } else {
             double f = (m_slider.getValue()-m_smin)/(double)m_srange;
             double min = m_min.doubleValue();
             double max = m_max.doubleValue();
+            if(upper) max-=0.0001;
+            if(lower) min+=0.0001;
             double val = min + f*(max-min);
             return (m_value instanceof Double ? (Number)new Double(val)
                                               : new Float((float)val));
@@ -225,11 +231,15 @@ public class mySlider extends JComponent {
             double min = m_min.doubleValue();
             double max = m_max.doubleValue();
             val = m_smin + (int)Math.round(m_srange*((value-min)/(max-min)));
+            if(upper) max-=0.0001;
+            if(lower) min+=0.0001;
         } else {
         	long value = m_value.longValue();
             long min = m_min.longValue();
             long max = m_max.longValue();
             val = m_smin + (int)((m_srange*(value-min))/(max-min));
+            if(upper) max--;
+            if(lower) min++;
         }
         m_slider.setValue(val);
     }

@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 public @interface Tunable{
 	public String description();
 	public Param flag() default Param.Nothing;
+	public Param orientation() default Param.Vertical;
 	public String group() default "";
-	public enum Param {Slider,Nothing}	
+	public enum Param {Slider,Nothing,Horizontal,Vertical}
 }

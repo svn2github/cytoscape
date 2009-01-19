@@ -74,6 +74,7 @@ public class application{
 		inpane2.add(button);
 		button.addActionListener(new myActionListener3());
 
+		
 		if(ti!=null){
 			ti.GetInputPanes();
 			lp.addProperties();

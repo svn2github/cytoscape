@@ -11,11 +11,11 @@ public class input implements command {
 
 	@Tunable(description="This is an Integer with a long tunable's description to test the wrapping",group="Group1")
 	public Integer integer1 = new Integer(10);
-	@Tunable(description="Boolean",group="Group2")
+	@Tunable(description="Boolean",group="Group2",orientation=Param.Horizontal)
 	public Boolean boolean1 = new Boolean(false);
-	@Tunable(description="Integer",group="Group2")
+	@Tunable(description="Integer",group="Group2",orientation=Param.Horizontal)
 	public Integer integer3 = new Integer(45);
-	@Tunable(description = "String",group="Group2")
+	@Tunable(description = "String",group="Group2",orientation=Param.Horizontal)
 	public String string1 = new String("Cytoscape");
 	@Tunable(description="BoundedDouble",group="Group1")
 	public BoundedDouble bounded1 = new BoundedDouble(-10.7,9.8,23.7,true,true);

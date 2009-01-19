@@ -3,11 +3,15 @@ package GuiInterception;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import Tunable.Tunable.Param;
 import Utils.ListSingleSelection;
 import Utils.myButton;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 
 
@@ -41,6 +45,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			this.list=list;
 			java.util.List<JPanel> panes = new ArrayList<JPanel>();
 			JPanel init = new JPanel();
+
 			init.setName("init");
 			panes.add(init);
 			listInPane = new ListSingleSelection<JPanel>(panes);
@@ -57,13 +62,23 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 						}
 				}
 				if(exist==true){
-					listInPane.getPossibleValues().get(nbpane).add(guihandler.getInputPanel());
+					if(guihandler.getTunable().orientation()==Param.Horizontal){
+						listInPane.getPossibleValues().get(nbpane).setLayout(new BoxLayout(listInPane.getPossibleValues().get(nbpane),BoxLayout.LINE_AXIS));
+						listInPane.getPossibleValues().get(nbpane).add(Box.createRigidArea(new Dimension(10, 0)));
+						listInPane.getPossibleValues().get(nbpane).add(guihandler.getInputPanel());
+					}
+					else{
+						listInPane.getPossibleValues().get(nbpane).setLayout(new BoxLayout(listInPane.getPossibleValues().get(nbpane),BoxLayout.PAGE_AXIS));
+						listInPane.getPossibleValues().get(nbpane).add(guihandler.getInputPanel());
+					}
 				}
 				else{
-					JPanel pane = new JPanel();						
-					pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));
+					JPanel pane = new JPanel();
+					pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));					
+					if(guihandler.getTunable().orientation()==Param.Horizontal) pane.setLayout(new BoxLayout(pane,BoxLayout.LINE_AXIS));
 					pane.add(guihandler.getInputPanel());
-
+					
+					
 					TitledBorder titleBorder = BorderFactory.createTitledBorder(group);
 					titleBorder.setTitleColor(Color.blue);
 					titleBorder.setTitlePosition(TitledBorder.LEFT);
