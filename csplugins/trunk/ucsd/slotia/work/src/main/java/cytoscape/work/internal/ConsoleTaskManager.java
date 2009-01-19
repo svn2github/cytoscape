@@ -63,7 +63,7 @@ public class ConsoleTaskManager implements TaskManager
 				task.run();
 				output.println(String.format(messages.getString("task_finished"), taskTitle));
 			}
-			catch (Throwable exception)
+			catch (Exception exception)
 			{
 				if (exception.getMessage() != null && exception.getMessage().length() != 0)
 					output.print(String.format(messages.getString("task_failed_no_message"), taskTitle));

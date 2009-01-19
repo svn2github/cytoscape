@@ -120,7 +120,7 @@ class TaskThread extends Thread
 		{
 			task.run();
 		}
-		catch (Throwable exception)
+		catch (Exception exception)
 		{
 			this.exception = exception;
 		}

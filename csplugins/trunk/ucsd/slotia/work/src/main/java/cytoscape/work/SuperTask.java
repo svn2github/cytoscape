@@ -60,7 +60,7 @@ public class SuperTask implements Task, Progressable
 		this.title = title;
 	}
 
-	public void run() throws Throwable
+	public void run() throws Exception
 	{
 		for (currentTaskIndex = 0; currentTaskIndex < subtasks.length; currentTaskIndex++)
 		{

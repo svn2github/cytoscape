@@ -39,7 +39,7 @@ public class Activator implements BundleActivator
 		String statusMessage = "";
 		boolean cancel = false;
 
-		public void run() throws Throwable
+		public void run() throws Exception
 		{
 			System.out.println("MyTask started!");
 
