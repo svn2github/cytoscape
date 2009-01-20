@@ -9,13 +9,14 @@ import java.util.ArrayList;
 public class input implements command {
 	
 
+	
 	@Tunable(description="This is an Integer with a long tunable's description to test the wrapping",group="Group1")
 	public Integer integer1 = new Integer(10);
-	@Tunable(description="Boolean",group="Group2",orientation=Param.Horizontal)
+	@Tunable(description="Boolean",group="Group2")
 	public Boolean boolean1 = new Boolean(false);
-	@Tunable(description="Integer",group="Group2",orientation=Param.Horizontal)
+	@Tunable(description="Integer",group="Group2")
 	public Integer integer3 = new Integer(45);
-	@Tunable(description = "String",group="Group2",orientation=Param.Horizontal)
+	@Tunable(description = "String",group="Group2")
 	public String string1 = new String("Cytoscape");
 	@Tunable(description="BoundedDouble",group="Group1")
 	public BoundedDouble bounded1 = new BoundedDouble(-10.7,9.8,23.7,true,true);
@@ -23,6 +24,10 @@ public class input implements command {
 	public BoundedFloat bounded3 = new BoundedFloat((float)-10.6,(float)14.3,(float)23.2,true,true);
 	@Tunable(description="BoundedLong",flag=Param.Slider,group="Group1")
 	public BoundedLong bounded4 = new BoundedLong((long)-10,(long)9,(long)100,false,true);
+	
+	@Tunable(description="Big Group1")
+	public Group group1 = new Group(false);
+
 	@Tunable(description ="Double",group="Group1")
 	public Double double1 = new Double(3.4);
 	@Tunable(description="BoundedInteger",flag=Param.Nothing,group="Group1")
@@ -33,6 +38,11 @@ public class input implements command {
 	public ListSingleSelection<String> dayNames;
 	@Tunable(description="ListMultipleSelection",group="Group3")
 	public ListMultipleSelection<String> monthNames;
+
+	@Tunable(description="Big Group2", flag=Param.Collapsable)
+	public Group group2 = new Group(false);
+
+	
 	@Tunable(description ="Double")
 	public Double double2 = new Double(5.6);
 	@Tunable(description ="Float",group="Group4")

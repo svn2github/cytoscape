@@ -13,7 +13,7 @@ public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> 
 	}
 	protected void addProps(java.util.List<PropHandler> lh) {
 		for (PropHandler p : lh){
-			p.add(inputProps);
+			if(p.getClass()!= GroupPropHandler.class) p.add(inputProps);
 		}
 	}
 	
@@ -28,7 +28,7 @@ public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> 
 	
 	protected void processProps(List<PropHandler> lh) {
 		for (PropHandler p : lh) {
-			p.setProps(inputProps);
+			if(p.getClass()!= GroupPropHandler.class) p.setProps(inputProps);
 		}
 	}
 

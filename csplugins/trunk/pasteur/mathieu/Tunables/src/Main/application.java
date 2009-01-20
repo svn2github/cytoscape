@@ -57,6 +57,7 @@ public class application{
 		
 		
 		ti = new GuiTunableInterceptor(mainframe,outputframe,inpane1);
+
 		ti.intercept(commander);
 		lp.intercept(commander);
 		

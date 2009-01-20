@@ -21,7 +21,7 @@ public class BoundedFloatHandler implements Guihandler {
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
-
+	Param[] parameters;
 	
 	public BoundedFloatHandler(Field f, Object o, Tunable t) {
 		this.f = f;
@@ -32,7 +32,10 @@ public class BoundedFloatHandler implements Guihandler {
 			} catch (IllegalAccessException iae) {
 				iae.printStackTrace();}
 		this.title = t.description();
-		if(t.flag()==Param.Slider) this.useslider=true;
+		this.parameters = t.flag();
+		for(int i=0;i<parameters.length;i++)
+			if(parameters[i]==Param.Slider) this.useslider = true;
+//		if(t.flag()==Param.Slider) this.useslider=true;
 	}
 
 	

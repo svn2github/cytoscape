@@ -8,7 +8,9 @@ import HandlerFactory.HandlerFactory;
 public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 
 	public PropHandler getHandler(Field f, Object o, Tunable t) {
+		
 		Class<?> type = f.getType();
+		
 		if ((type == int.class || type == Integer.class))
 			return new IntPropHandler(f, o, t);
 		else if ((type == float.class || type == Float.class))
@@ -35,6 +37,8 @@ public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 			return new ListMultiplePropHandler<T>(f,o,t);
 		else if (type == myButton.class)
 			return new ButtonPropHandler(f,o,t);
+		else if (type == Group.class)
+			return new GroupPropHandler(f,o,t);
 		return null;
 	}
 

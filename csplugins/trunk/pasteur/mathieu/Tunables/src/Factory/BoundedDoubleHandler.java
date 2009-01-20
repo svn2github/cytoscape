@@ -21,6 +21,7 @@ public class BoundedDoubleHandler implements Guihandler {
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
+	Param[] parameters;
 
 	
 	public BoundedDoubleHandler(Field f, Object o, Tunable t) {
@@ -32,7 +33,11 @@ public class BoundedDoubleHandler implements Guihandler {
 			} catch (IllegalAccessException iae) {
 				iae.printStackTrace();}
 		this.title = t.description();
-		if(t.flag()==Param.Slider) this.useslider=true;
+		this.parameters = t.flag();
+		System.out.println(parameters);
+		for(int i=0;i<parameters.length;i++)
+			if(parameters[i]==Param.Slider) this.useslider = true;
+//		if(t.flag()==Param.Slider) this.useslider=true;
 	}
 
 	
