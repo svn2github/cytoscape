@@ -34,7 +34,6 @@ public class BoundedDoubleHandler implements Guihandler {
 				iae.printStackTrace();}
 		this.title = t.description();
 		this.parameters = t.flag();
-		System.out.println(parameters);
 		for(int i=0;i<parameters.length;i++)
 			if(parameters[i]==Param.Slider) this.useslider = true;
 //		if(t.flag()==Param.Slider) this.useslider=true;
