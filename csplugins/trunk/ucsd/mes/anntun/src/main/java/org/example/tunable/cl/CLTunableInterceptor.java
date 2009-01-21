@@ -1,4 +1,4 @@
-package org.example.tunable;
+package org.example.tunable.cl;
 
 import java.lang.reflect.*;
 import java.lang.annotation.*;
@@ -6,7 +6,6 @@ import java.util.*;
 import org.example.command.Command;
 import org.apache.commons.cli.*;
 import org.example.tunable.*;
-import org.example.tunable.cl.*;
 
 /**
  * This would presumably be a Service.

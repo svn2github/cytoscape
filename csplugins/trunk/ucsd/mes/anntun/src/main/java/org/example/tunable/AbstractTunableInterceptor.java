@@ -44,7 +44,7 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 					 	handlerList.add( handler ); 
 
 				} catch (Throwable ex) {
-					System.out.println("tunable intercept failed: " + field.toString() );
+					System.out.println("tunable field intercept failed: " + field.toString() );
 					ex.printStackTrace();
 				}
 			}
@@ -66,7 +66,7 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 					 	handlerList.add( handler ); 
 
 				} catch (Throwable ex) {
-					System.out.println("tunable intercept failed: " + method.toString() );
+					System.out.println("tunable method intercept failed: " + method.toString() );
 					ex.printStackTrace();
 				}
 			}

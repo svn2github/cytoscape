@@ -1,4 +1,4 @@
-package org.example.tunable;
+package org.example.tunable.props;
 
 import java.lang.reflect.*;
 import java.lang.annotation.*;
@@ -8,23 +8,22 @@ import javax.swing.*;
 import java.awt.event.*;
 import org.example.command.Command;
 import org.example.tunable.*;
-import org.example.tunable.props.*;
 
 /**
  * This would presumably be service. 
  */
-public class StorePropsInterceptor extends AbstractTunableInterceptor<PropHandler> {
+public class LoadPropsInterceptor extends AbstractTunableInterceptor<PropHandler> {
 
 	private Properties inputProps;
 
-	public StorePropsInterceptor(Properties inputProps) {
+	public LoadPropsInterceptor(final Properties inputProps) {
 		super( new PropHandlerFactory() );
 		this.inputProps = inputProps; 
 	}
 
 	protected void process(java.util.List<PropHandler> lh) {
 		for ( PropHandler p : lh ) {
-			inputProps.putAll( p.getProps() );
+			p.setProps( inputProps );
 		}
 	}
 }

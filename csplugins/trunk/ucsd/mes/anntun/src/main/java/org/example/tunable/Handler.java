@@ -5,10 +5,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 
 /**
- * A place holder interface that identifies the code
- * that will set the {@link Tunable} {@link Field} in 
- * the {Object} based on whatever input this Handler
- * is able to generate.
+ * An interface that provides access to the {@link Field} or {@link Method} 
+ * being annotated, the {@link Object} being annotated, and {@link Tunable}
+ * annotation itself.  If a {@link Field} is annotated, expect the 
+ * getMethod() method to return null, and vice versa.
  */
 public interface Handler { 
 	Field getField();

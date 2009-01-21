@@ -1,6 +1,8 @@
 package org.example;
 
 import org.example.tunable.*;
+import org.example.tunable.props.*;
+import org.example.tunable.cl.*;
 import org.example.command.*;
 
 import java.util.*;

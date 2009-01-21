@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.tunable.*;
+import org.example.tunable.gui.*;
 import org.example.command.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -22,6 +23,7 @@ public class AppGUI
     private static void createAndShowGUI() {
         frame = new JFrame("Tunable Demo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(true);
 		JPanel p = new JPanel();
 		JButton b = new JButton("Process Command");
 		b.addActionListener( new MyActionListener() ); 
