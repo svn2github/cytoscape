@@ -10,8 +10,10 @@ import Utils.ListSingleSelection;
 import Utils.myButton;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 
 
@@ -54,7 +56,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			String group=null;
 			Class<?> type;
 			bigGroupPane = new JPanel();
-
+			bigGroupPane.setLayout(new BoxLayout(bigGroupPane, BoxLayout.LINE_AXIS));
 			
 			for(Guihandler guihandler : list){
 				boolean exist=false;
@@ -71,6 +73,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					titleBorder2.setTitlePosition(TitledBorder.TOP);
 					bigGroupPane.setBorder(titleBorder2);
 
+					
+					
 					Param[] parameters = guihandler.getTunable().flag();
 					for(int i=0;i<parameters.length;i++){
 						if(parameters[i]==Param.Collapsable) collapsable = true;
@@ -91,6 +95,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					panesArray.add(initPane);
 					listInPane = new ListSingleSelection<JPanel>(panesArray);
 					bigGroupPane = new JPanel();
+					bigGroupPane.setLayout(new BoxLayout(bigGroupPane,BoxLayout.LINE_AXIS));
 				}
 				
 				else{

@@ -5,12 +5,15 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
 
 public class CollapsablePanel extends JPanel implements ActionListener{
 	
+	private static final long serialVersionUID = 1L;
 	private JToggleButton myExpandButton = null;
 	private boolean expandPaneVisible=false;
 	private static String ExpandName = "Expand>>";
@@ -25,6 +28,7 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		setLayout(new BorderLayout());
 		add(rightPanel,BorderLayout.EAST);
 		rightPanel.add(myExpandButton = createButton(ExpandName));
+		leftPanel.setLayout(new BoxLayout(leftPanel,BoxLayout.LINE_AXIS));
 		add(leftPanel,BorderLayout.WEST);
 	}
 
@@ -59,17 +63,12 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 	
 	
 	private void collapsePanel(){
-
 		leftPanel.removeAll();
 	}
 		
 		
 	private void expandPanel(){
-
 			for(int i=0;i<listInPane.getPossibleValues().size();i++) leftPanel.add(listInPane.getPossibleValues().get(i));
-			updateUI();
-			invalidate();
-			validate();
 		}
 		
 	

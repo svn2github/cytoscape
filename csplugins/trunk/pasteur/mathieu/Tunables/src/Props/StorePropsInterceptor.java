@@ -14,7 +14,7 @@ public class StorePropsInterceptor extends HiddenTunableInterceptor<PropHandler>
 
 	protected void processProps(java.util.List<PropHandler> lh) {
 		for (PropHandler p : lh) {
-			inputProps.putAll(p.getProps());
+			if(p.getClass()!=GroupPropHandler.class)inputProps.putAll(p.getProps());
 		}
 	}
 
