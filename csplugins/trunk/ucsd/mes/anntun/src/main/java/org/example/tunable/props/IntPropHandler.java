@@ -6,18 +6,10 @@ import java.lang.reflect.*;
 import java.util.*;
 import org.example.tunable.*;
 
-public class IntPropHandler implements PropHandler {
-
-	Field f;
-	Object o;
-	Tunable t;
-	String propKey;
+public class IntPropHandler extends AbstractPropHandler {
 
 	public IntPropHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		this.t = t;
-		propKey = t.namespace() + "." + f.getName();	
+		super(f,o,t);
 	}
 
 	

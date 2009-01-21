@@ -9,17 +9,12 @@ import java.awt.event.*;
 import java.awt.*;
 import org.example.tunable.*;
 
-public class StringHandler implements GuiHandler, ActionListener {
+public class StringHandler extends AbstractGuiHandler {
 
-	Field f;
-	Object o;
-	Tunable t;
 	JTextField tf;
 
 	public StringHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		this.t = t;
+		super(f,o,t);
 	}
 
 	
@@ -33,10 +28,6 @@ public class StringHandler implements GuiHandler, ActionListener {
 		} catch (Exception e) { e.printStackTrace(); }
 			
 		return ret;
-	}
-
-	public void actionPerformed(ActionEvent ae) {
-		handle();
 	}
 
 	public void handle() {

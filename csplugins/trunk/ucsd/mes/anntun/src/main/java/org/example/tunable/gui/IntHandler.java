@@ -9,19 +9,13 @@ import java.awt.event.*;
 import java.awt.*;
 import org.example.tunable.*;
 
-public class IntHandler implements GuiHandler, ActionListener {
+public class IntHandler extends AbstractGuiHandler {
 
-	Field f;
-	Object o;
-	Tunable t;
 	JTextField tf;
 
 	public IntHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		this.t = t;
+		super(f,o,t);
 	}
-
 	
 	public JPanel getJPanel() {
 		JPanel ret = new JPanel();
@@ -33,10 +27,6 @@ public class IntHandler implements GuiHandler, ActionListener {
 		} catch (Exception e) { e.printStackTrace(); }
 			
 		return ret;
-	}
-
-	public void actionPerformed(ActionEvent ae) {
-		handle();
 	}
 
 	public void handle() {

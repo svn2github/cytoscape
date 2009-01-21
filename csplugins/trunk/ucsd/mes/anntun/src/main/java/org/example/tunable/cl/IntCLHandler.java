@@ -6,37 +6,15 @@ import java.util.*;
 import org.apache.commons.cli.*;
 import org.example.tunable.*;
 
-public class IntCLHandler implements CLHandler {
+public class IntCLHandler extends AbstractCLHandler {
 
-	Field f;
-	Method m;
-	Object o;
-	Tunable t;
 
 	public IntCLHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		this.t = t;
+		super(f,o,t);
 	}
 
 	public IntCLHandler(Method m, Object o, Tunable t) {
-		this.m = m;
-		this.o = o;
-		this.t = t;
-	}
-
-	private String getName() {
-		if ( f != null )
-			return f.getName();
-		else if ( m != null )
-			return m.getName();
-		else
-			return "";
-	}
-	
-	public Option getOption() {
-		String n = getName();
-		return new Option(n.substring(0,1), n, true, t.description());
+		super(m,o,t);
 	}
 
 	public void handleLine( CommandLine line ) {

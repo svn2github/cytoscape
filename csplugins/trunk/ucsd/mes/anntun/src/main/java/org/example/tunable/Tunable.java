@@ -12,4 +12,6 @@ import java.lang.annotation.*;
 public @interface Tunable {
 	String description();
 	String namespace();
+	String[] flags() default {};
+	String[] groups() default {};
 }

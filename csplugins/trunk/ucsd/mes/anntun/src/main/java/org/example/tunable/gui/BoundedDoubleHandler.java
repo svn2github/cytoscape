@@ -11,18 +11,13 @@ import java.awt.*;
 import org.example.tunable.*;
 import org.example.tunable.util.*;
 
-public class BoundedDoubleHandler implements GuiHandler, ActionListener {
+public class BoundedDoubleHandler extends AbstractGuiHandler implements GuiHandler, ActionListener {
 
-	Field f;
-	Object o;
-	Tunable t;
 	JTextField tf;
 	BoundedDouble b;
 
 	public BoundedDoubleHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		this.t = t;
+		super(f,o,t);
 		try {
 		this.b = (BoundedDouble)f.get(o);
 		} catch (IllegalAccessException iae) {
@@ -41,10 +36,6 @@ public class BoundedDoubleHandler implements GuiHandler, ActionListener {
 		} catch (Exception e) { e.printStackTrace(); }
 			
 		return ret;
-	}
-
-	public void actionPerformed(ActionEvent ae) {
-		handle();
 	}
 
 	public void handle() {

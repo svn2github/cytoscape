@@ -6,18 +6,11 @@ import java.lang.reflect.*;
 import java.util.*;
 import org.example.tunable.*;
 
-public class StringPropHandler implements PropHandler {
+public class StringPropHandler extends AbstractPropHandler {
 
-	Field f;
-	Object o;
-	Tunable t;
-	String propKey;
 
 	public StringPropHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		this.t = t;
-		propKey = t.namespace() + "." + f.getName();	
+		super(f,o,t);
 	}
 
 	
