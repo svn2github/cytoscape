@@ -2,6 +2,7 @@ package Factory;
 
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.lang.reflect.*;
 import javax.swing.*;
 
@@ -39,18 +40,25 @@ public class StringHandler implements Guihandler{
 	
 	
 	public JPanel getInputPanel(){
-		JPanel inpane = new JPanel(new BorderLayout());
+//		JPanel inpane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new GridLayout());
+		JPanel test1 = new JPanel(new BorderLayout());
+		JPanel test2 = new JPanel();
+		inpane.add(test1);
+		inpane.add(test2);
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		inpane.add(jta);
+//		inpane.add(jta);
+		test1.add(jta,BorderLayout.CENTER);
 		jta.setBackground(null);
 		jta.setEditable(false);
 		try{
 			jtf = new JTextField(value,11);
 		}catch (Exception e){e.printStackTrace();}
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
-		inpane.add(jtf,BorderLayout.EAST);
+		test2.add(jtf,BorderLayout.EAST);
+//		inpane.add(jtf,BorderLayout.EAST);
 		return inpane;
 	}	
 

@@ -1,12 +1,12 @@
 package Utils;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BoxLayout;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
@@ -21,15 +21,20 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 	private JPanel rightPanel = new JPanel();
 	private JPanel leftPanel = new JPanel();
 	ListSingleSelection<JPanel> listInPane;
+	public JFrame frame;
+	Dimension initPaneSize;
+//	Dimension initFrameSize;
 	
-	
-	public CollapsablePanel(ListSingleSelection<JPanel> list){
+	public CollapsablePanel(ListSingleSelection<JPanel> list,JFrame frame){
 		this.listInPane = list;
-		setLayout(new BorderLayout());
-		add(rightPanel,BorderLayout.EAST);
+		this.frame=frame;
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		leftPanel.setLayout(new GridLayout());
+		add(leftPanel);
+		add(rightPanel);
 		rightPanel.add(myExpandButton = createButton(ExpandName));
-		leftPanel.setLayout(new BoxLayout(leftPanel,BoxLayout.LINE_AXIS));
-		add(leftPanel,BorderLayout.WEST);
+		initPaneSize = getPreferredSize();
+//		initFrameSize = frame.getPreferredSize();
 	}
 
 	
@@ -59,17 +64,17 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		return button;
 	}
 	
-	
-	
-	
 	private void collapsePanel(){
 		leftPanel.removeAll();
+		resize(initPaneSize);
+//		repaint();
+//		frame.resize(initFrameSize);
+		frame.pack();
 	}
 		
 		
 	private void expandPanel(){
-			for(int i=0;i<listInPane.getPossibleValues().size();i++) leftPanel.add(listInPane.getPossibleValues().get(i));
+			for(int i=0;i<listInPane.getPossibleValues().size();i++)	leftPanel.add(listInPane.getPossibleValues().get(i));
+			frame.pack();
 		}
-		
-	
 }

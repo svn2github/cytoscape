@@ -3,6 +3,7 @@ package Factory;
 
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.lang.reflect.*;
 import javax.swing.*;
 
@@ -36,16 +37,23 @@ public class BooleanHandler implements Guihandler{
 	}
 	
 	public JPanel getInputPanel(){
-		JPanel inpane = new JPanel(new BorderLayout());
+//		JPanel inpane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new GridLayout());
+		JPanel test1 = new JPanel(new BorderLayout());
+		JPanel test2 = new JPanel();
+		inpane.add(test1);
+		inpane.add(test2);
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		inpane.add(jta);
+//		inpane.add(jta);
+		test1.add(jta,BorderLayout.CENTER);
 		jta.setBackground(null);
 		jta.setEditable(false);
 		jcb = new JCheckBox();
 		jcb.setSelected(bool.booleanValue());
-		inpane.add(jcb,BorderLayout.EAST);
+//		inpane.add(jcb,BorderLayout.EAST);
+		test2.add(jcb,BorderLayout.EAST);
 		return inpane;
 	}
 

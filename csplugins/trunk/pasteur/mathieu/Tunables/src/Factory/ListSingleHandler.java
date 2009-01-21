@@ -1,6 +1,7 @@
 package Factory;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
@@ -46,18 +47,25 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 
 	public JPanel getInputPanel(){
 		
-		JPanel inpane = new JPanel(new BorderLayout());
+//		JPanel inpane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new GridLayout());
+		JPanel test1 = new JPanel(new BorderLayout());
+		JPanel test2 = new JPanel();
+		inpane.add(test1);
+		inpane.add(test2);
 		selected = null;
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		inpane.add(jta);
+//		inpane.add(jta);
+		test1.add(jta,BorderLayout.CENTER);
 		jta.setBackground(null);
 		jta.setEditable(false);		combobox = new JComboBox(LSS.getPossibleValues().toArray());
 		combobox.insertItemAt(days,0);
 		combobox.setSelectedIndex(0);
 		combobox.addActionListener(new myActionListener1());
-		inpane.add(combobox,BorderLayout.EAST);
+		test2.add(combobox,BorderLayout.EAST);
+//		inpane.add(combobox,BorderLayout.EAST);
 		return inpane;
 	}
 

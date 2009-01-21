@@ -25,12 +25,12 @@ public class input implements command {
 	@Tunable(description="BoundedLong",flag=Param.Slider,group="Group1")
 	public BoundedLong bounded4 = new BoundedLong((long)-10,(long)9,(long)100,false,true);
 	
-	@Tunable(description="Big Group1")
+	@Tunable(description="Big Group1",flag=Param.Collapsable)
 	public Group group1 = new Group(false);
 
 	@Tunable(description ="Double",group="Group1")
 	public Double double1 = new Double(3.4);
-	@Tunable(description="BoundedInteger",flag=Param.Nothing,group="Group1")
+	@Tunable(description="BoundedInteger",flag={Param.Slider},group="Group1")
 	public BoundedInteger bounded2 = new BoundedInteger(-5,3,10,true,false);
 	@Tunable(description="Integer",group="Group1")
 	public Integer integer2 = new Integer(33);
@@ -39,7 +39,7 @@ public class input implements command {
 	@Tunable(description="ListMultipleSelection",group="Group3")
 	public ListMultipleSelection<String> monthNames;
 
-	@Tunable(description="Big Group2", flag=Param.Collapsable)
+	@Tunable(description="Big Group2",flag=Param.Collapsable)
 	public Group group2 = new Group(false);
 
 	

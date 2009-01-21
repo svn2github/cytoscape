@@ -2,6 +2,7 @@ package Factory;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.*;
@@ -53,17 +54,24 @@ public class LongHandler implements Guihandler{
 	}
 	
 	public JPanel getInputPanel(){
-		JPanel inpane = new JPanel(new BorderLayout());		
+//		JPanel inpane = new JPanel(new BorderLayout());
+		JPanel inpane = new JPanel(new GridLayout());
+		JPanel test1 = new JPanel(new BorderLayout());
+		JPanel test2 = new JPanel();
+		inpane.add(test1);
+		inpane.add(test2);
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		inpane.add(jta);
+//		inpane.add(jta);
+		test1.add(jta,BorderLayout.CENTER);
 		jta.setBackground(null);
 		jta.setEditable(false);
 		jtf.setText(myLong.toString());
 		jtf.addActionListener(new myActionListener());
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
-		inpane.add(jtf,BorderLayout.EAST);
+		test2.add(jtf,BorderLayout.EAST);
+//		inpane.add(jtf,BorderLayout.EAST);
 		return inpane;
 	}
 

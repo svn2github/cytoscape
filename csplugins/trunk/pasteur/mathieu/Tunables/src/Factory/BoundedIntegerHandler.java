@@ -3,7 +3,9 @@ package Factory;
 
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import java.awt.*;
+
 import GuiInterception.*;
 import Tunable.Tunable;
 import Tunable.Tunable.Param;
@@ -36,26 +38,44 @@ public class BoundedIntegerHandler implements Guihandler {
 		this.parameters=t.flag();
 		for(int i=0;i<parameters.length;i++)
 			if(parameters[i]==Param.Slider) this.useslider = true;
-//		if(t.flag()==Param.Slider) this.useslider=true;
 	}
 
 	
 	public JPanel getInputPanel() {
-		JPanel inpane = new JPanel(new BorderLayout());
-		if(useslider==true){
-			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			inpane.add(slider,BorderLayout.EAST);
-		}
-		else{
-			inpane.add(myBounded,BorderLayout.EAST);
-			//jtf.addActionListener(new myActionListener());
-		}
+//		JPanel inpane = new JPanel(new BorderLayout());
+
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		inpane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
+
+		
+		JPanel inpane = new JPanel(new GridLayout());
+		JPanel test1 = new JPanel(new BorderLayout());
+		JPanel test2 = new JPanel();
+		inpane.add(test1);
+		inpane.add(test2);
+		test1.add(jta,BorderLayout.CENTER);
+		
+		
+		if(useslider==true){
+			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
+//			inpane.add(slider,BorderLayout.EAST);
+//			inpane.add(jta);
+			test2.add(slider,BorderLayout.EAST);
+		}
+		else{
+//			inpane.add(myBounded,BorderLayout.EAST);
+			test2.add(myBounded,BorderLayout.EAST);
+//			inpane.setLayout(new GridLayout());
+//			JPanel test1 = new JPanel(new BorderLayout());
+//			JPanel test2 = new JPanel();
+//			inpane.add(test1);
+//			inpane.add(test2);
+//			test1.add(jta,BorderLayout.CENTER);
+//			test2.add(myBounded,BorderLayout.EAST);
+		}
 		return inpane;
 	}
 	

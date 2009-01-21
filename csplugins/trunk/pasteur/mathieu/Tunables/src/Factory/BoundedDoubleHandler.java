@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import javax.swing.*;
 
 import java.awt.*;
+
 import GuiInterception.*;
 import Tunable.Tunable;
 import Tunable.Tunable.Param;
@@ -41,19 +42,30 @@ public class BoundedDoubleHandler implements Guihandler {
 
 	
 	public JPanel getInputPanel() {
-		JPanel inpane = new JPanel(new BorderLayout());
-		if(useslider==true){
-			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			inpane.add(slider,BorderLayout.EAST);
-		}
-		else	inpane.add(myBounded,BorderLayout.EAST);
+		//JPanel inpane = new JPanel(new BorderLayout());
 		
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-		inpane.add(jta);
 		jta.setBackground(null);
 		jta.setEditable(false);
+		
+		JPanel inpane = new JPanel(new GridLayout());
+		JPanel test1 = new JPanel(new BorderLayout());
+		JPanel test2 = new JPanel();
+		inpane.add(test1);
+		inpane.add(test2);
+		test1.add(jta,BorderLayout.CENTER);
+		
+		if(useslider==true){
+			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
+			//inpane.add(slider,BorderLayout.EAST);
+			test2.add(slider,BorderLayout.EAST);
+		}
+		else{
+			//inpane.add(myBounded,BorderLayout.EAST);
+			test2.add(myBounded,BorderLayout.EAST);
+		}
 		return inpane;
 	}
 	
