@@ -11,7 +11,6 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD,ElementType.METHOD}) // says we're just looking at fields and  methods 
 public @interface Tunable {
 	String description();
-	String namespace();
 	String[] flags() default {};
 	String[] groups() default {};
 }

@@ -8,25 +8,26 @@ import org.example.tunable.util.BoundedDouble;
 
 public class PrintSomething implements Command {
 
-	@Tunable(description="your first name",namespace="printSomething", groups={"homer"}, flags={"collapsable"})
+	@Tunable(description="your first name", groups={"stuff"})
 	public String firstName = "homer";
 
-	@Tunable(description="your last name",namespace="printSomething" )
+	@Tunable(description="your last name", groups={"stuff","advanced"}, flags={"collapsable"} )
 	public String lastName = "simpson";
 
-	@Tunable(description="your foot size",namespace="printSomething", groups={"homer"})
+	@Tunable(description="your foot size", groups={"stuff","advanced"})
 	public BoundedDouble footSize = new BoundedDouble(5.0, 8.5, 13.5, true, false);
 
-	@Tunable(description="the number of children you have",namespace="printSomething")
+	@Tunable(description="the number of children you have")
 	public BoundedInteger kids = new BoundedInteger(0, 1, 10, true, false);
 
-	public int age;
 
 	public void execute() {
 		System.out.println("Your name is: " + firstName + " " + lastName + " your age is: " + age + " your foot size is: " + footSize.getValue() + " and you have " + kids.getValue() + " kids.");
 	}
 
-	@Tunable(description="your age",namespace="printSomething")
+	public int age;
+
+	@Tunable(description="your age")
 	public void setAge(int a) {
 		age = a;	
 	}

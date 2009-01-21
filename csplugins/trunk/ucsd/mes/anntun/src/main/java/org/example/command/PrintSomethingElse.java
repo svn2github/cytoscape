@@ -6,7 +6,7 @@ import org.example.tunable.Tunable;
 
 public class PrintSomethingElse implements Command {
 
-	@Tunable(description="the value we need",namespace="printElse")
+	@Tunable(description="the value we need")
 	private int value = 4; 
 
 

@@ -10,7 +10,7 @@ import org.example.command.Command;
 import org.example.tunable.*;
 
 /**
- * This would presumably be service. 
+ * This would get registered as a TunableInterceptor service. 
  */
 public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler> {
 
