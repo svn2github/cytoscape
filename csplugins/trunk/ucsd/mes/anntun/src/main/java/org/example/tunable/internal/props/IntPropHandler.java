@@ -1,6 +1,6 @@
 
 
-package org.example.tunable.props;
+package org.example.tunable.internal.props;
 
 import java.lang.reflect.*;
 import java.util.*;

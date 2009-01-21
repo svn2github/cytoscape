@@ -1,5 +1,5 @@
 
-package org.example.tunable.gui;
+package org.example.tunable.internal.gui;
 
 import java.lang.reflect.*;
 import java.util.*;

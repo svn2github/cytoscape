@@ -1,4 +1,4 @@
-package org.example.tunable.gui;
+package org.example.tunable.internal.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

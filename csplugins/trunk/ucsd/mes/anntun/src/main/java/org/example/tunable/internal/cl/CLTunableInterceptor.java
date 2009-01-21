@@ -1,4 +1,4 @@
-package org.example.tunable.cl;
+package org.example.tunable.internal.cl;
 
 import java.lang.reflect.*;
 import java.lang.annotation.*;

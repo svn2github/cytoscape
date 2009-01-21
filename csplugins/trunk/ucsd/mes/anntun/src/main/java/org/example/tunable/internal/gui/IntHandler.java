@@ -1,5 +1,5 @@
 
-package org.example.tunable.gui;
+package org.example.tunable.internal.gui;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -9,20 +9,19 @@ import java.awt.event.*;
 import java.awt.*;
 import org.example.tunable.*;
 
-public class StringHandler extends AbstractGuiHandler {
+public class IntHandler extends AbstractGuiHandler {
 
 	JTextField tf;
 
-	public StringHandler(Field f, Object o, Tunable t) {
+	public IntHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 	}
-
 	
 	public JPanel getJPanel() {
 		JPanel ret = new JPanel();
 		try {
 		ret.add( new JLabel( t.description() ) );
-		tf = new JTextField( (String)f.get(o), 20);
+		tf = new JTextField( Integer.toString(f.getInt(o)), 10);
 		tf.addActionListener( this );
 		ret.add( tf );
 		} catch (Exception e) { e.printStackTrace(); }
@@ -33,8 +32,8 @@ public class StringHandler extends AbstractGuiHandler {
 	public void handle() {
 		String s = tf.getText();
 		try {
-		if ( s != null )
-			f.set(o,s);
+		int n = Integer.parseInt(s);
+		f.set(o,n);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 }

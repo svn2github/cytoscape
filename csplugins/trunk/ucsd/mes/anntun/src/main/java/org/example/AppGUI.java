@@ -1,7 +1,7 @@
 package org.example;
 
 import org.example.tunable.*;
-import org.example.tunable.gui.*;
+import org.example.tunable.internal.gui.*;
 import org.example.command.*;
 import java.awt.*;
 import java.awt.event.*;
