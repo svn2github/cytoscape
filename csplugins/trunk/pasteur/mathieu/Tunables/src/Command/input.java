@@ -12,28 +12,18 @@ public class input implements command {
 	public Integer integer1 = new Integer(10);
 	@Tunable(description="BoundedDouble",group="Group1")
 	public BoundedDouble bounded1 = new BoundedDouble(-10.7,9.8,23.7,true,true);
-
 	@Tunable(description="Boolean",group="Group2")
 	public Boolean boolean1 = new Boolean(false);
 	@Tunable(description="Integer",group="Group2")
 	public Integer integer3 = new Integer(45);
 	@Tunable(description = "String",group="Group2")
 	public String string1 = new String("Cytoscape");
-	
 	@Tunable(description="BoundedFloat",flag=Param.Slider,group="Group1")
 	public BoundedFloat bounded3 = new BoundedFloat((float)-10.6,(float)14.3,(float)23.2,true,true);
 	@Tunable(description="BoundedLong",flag=Param.Slider,group="Group1")
 	public BoundedLong bounded4 = new BoundedLong((long)-10,(long)9,(long)100,false,true);
-	
 //	@Tunable(description="Big Group1",flag=Param.Collapsable)
 //	public Group group1 = new Group(false);
-	
-	@Tunable(description="Big Group1",flag=Param.Collapsable)
-	public Group biggroup1;
-	
-	@Tunable(description="Big Group2")
-	public Group biggroup2;
-	
 	@Tunable(description ="Double",group="Group1")
 	public Double double1 = new Double(3.4);
 	@Tunable(description="BoundedInteger",flag={Param.Slider},group="Group1")
@@ -44,11 +34,8 @@ public class input implements command {
 	public ListSingleSelection<String> dayNames;
 	@Tunable(description="ListMultipleSelection",group="Group3")
 	public ListMultipleSelection<String> monthNames;
-
 //	@Tunable(description="Big Group2",flag=Param.Collapsable)
 //	public Group group2 = new Group(false);
-
-	
 	@Tunable(description ="Double")
 	public Double double2 = new Double(5.6);
 	@Tunable(description ="Float",group="Group4")
@@ -57,7 +44,13 @@ public class input implements command {
 	public Long long1 = new Long((long)223248997);
 	@Tunable(description="ListSingleSelection with Integers",group="Group5")
 	public ListSingleSelection<Integer> listOfIntegers;
-
+	
+	
+	@Tunable(description="Big Group1",flag=Param.Collapsable)
+	public Group bigGroup1;
+	@Tunable(description="Big Group2")
+	public Group bigGroup2;
+	
 	
 	
 	
@@ -65,14 +58,14 @@ public class input implements command {
 	{		
 		
 			ArrayList<String> grouplist1 = new ArrayList<String>();
-			grouplist1.add("Group1");
-			grouplist1.add("Group2");
-			biggroup1 = new Group(grouplist1);
+			grouplist1.add("Group4");
+			grouplist1.add("Group3");
+			bigGroup1 = new Group(grouplist1);
 		
 			ArrayList<String> grouplist2 = new ArrayList<String>();
-			//grouplist2.add("Group2");
-			grouplist2.add("Group3");
-			biggroup2 = new Group(grouplist2);
+			grouplist2.add("Group5");
+			grouplist2.add("Group2");
+			bigGroup2 = new Group(grouplist2);
 			
 			
 			

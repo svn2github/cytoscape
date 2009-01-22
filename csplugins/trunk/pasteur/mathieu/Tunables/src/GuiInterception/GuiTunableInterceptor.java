@@ -143,6 +143,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			panesArray.remove(0);
 			listInPane = new ListSingleSelection<JPanel>(panesArray);
 			
+
+			
 			for(Guihandler guihandler : list){
 				if(guihandler.getClass()==GroupHandler.class){
 					TitledBorder titleBorder2 = null;
@@ -157,16 +159,20 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					Group test = (Group) guihandler.getObject();
 					testname = test.getValue();						
 					
+					
 					if(collapsable){
+						bigGroupPane = new JPanel();
+						try{
 						for(int i=0;i<listInPane.getPossibleValues().size();i++){
 							for(int j=0;j<testname.size();j++){
 								if(listInPane.getPossibleValues().get(i).getName().equals(testname.get(j))){
 									bigGroupPane.add(listInPane.getPossibleValues().get(i));
 									panesArray.remove(i);
-									listInPane = new ListSingleSelection<JPanel>(panesArray);
 								}
 							}
 						}
+					}catch(Exception e){e.printStackTrace();}
+						listInPane = new ListSingleSelection<JPanel>(panesArray);
 						
 						java.util.List<JPanel> collapsableArray = new ArrayList<JPanel>();
 						for(int i=0;i<bigGroupPane.getComponentCount();i++){
@@ -178,17 +184,20 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 						mainPanel.add(collapsepane);
 						collapsable = false;
 					}
+					
 					else{
 						bigGroupPane = new JPanel();
+						try{
 						for(int i=0;i<listInPane.getPossibleValues().size();i++){
 							for(int j=0;j<testname.size();j++){
 								if(listInPane.getPossibleValues().get(i).getName().equals(testname.get(j))){
 									bigGroupPane.add(listInPane.getPossibleValues().get(i));
-									panesArray.remove(i);
-									listInPane = new ListSingleSelection<JPanel>(panesArray);
+									panesArray.remove(i);									
 								}
 							}
 						}
+						listInPane = new ListSingleSelection<JPanel>(panesArray);
+						}catch(Exception e){e.printStackTrace();}
 						bigGroupPane.setBorder(titleBorder2);
 						mainPanel.add(bigGroupPane);
 					}

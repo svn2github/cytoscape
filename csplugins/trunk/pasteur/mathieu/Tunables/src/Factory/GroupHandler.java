@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
+import Utils.Group;
 
 
 
@@ -15,6 +16,7 @@ public class GroupHandler implements Guihandler{
 	Field f;
 	Object o;
 	String title;
+	Group group;
 	
 	
 	public GroupHandler(Field f, Object o,Tunable t){
@@ -22,6 +24,10 @@ public class GroupHandler implements Guihandler{
 		this.t=t;
 		this.o=o;
 		this.title = t.description();
+		try{
+			this.group=(Group) f.get(o);
+		}catch(Exception e){e.printStackTrace();}
+
 	}
 	
 	
@@ -39,6 +45,7 @@ public class GroupHandler implements Guihandler{
 		
 	}
 
+
 	
 	public Field getField() {
 		return f;
@@ -47,6 +54,6 @@ public class GroupHandler implements Guihandler{
 		return t;
 	}
 	public Object getObject() {
-		return o;
+		return group;
 	}
 }
