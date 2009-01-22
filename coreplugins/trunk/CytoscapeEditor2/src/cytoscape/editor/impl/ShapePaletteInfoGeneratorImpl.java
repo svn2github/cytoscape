@@ -53,15 +53,7 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param appearanceCalc DOCUMENT ME!
-	 * @param calcsToUse DOCUMENT ME!
-	 * @param controllingAttribute DOCUMENT ME!
-	 * @param listener DOCUMENT ME!
-	 * @param filter DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * {@inheritDoc}
 	 */
 	public Iterator<ShapePaletteInfo> buildShapePaletteInfo(Object appearanceCalc,
 	                                                        VisualPropertyType [] calcsToUse,
