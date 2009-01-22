@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sun Oct 04 05:35:56 2005
-* Modified:     Thu Oct 25 05:24:18 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Tue Dec 02 18:16:25 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Tue Dec 02 18:15:52 2008 (Michael L. Creech) creech@w235krbza760
+*  Added arrowShapeToArrow() and fixed bug where an ArrowShape was
+*  being given to CytoShapeIcon constructor.
 * Fri Jun 29 09:24:02 2007 (Michael L. Creech) creech@w235krbza760
 *  Removed deprecated use in getNodeShape() and getFillColor() in
 *  generateNodePaletteEntries().
@@ -59,6 +62,7 @@ import cytoscape.editor.impl.CytoShapeIcon;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.Arrow;
+import cytoscape.visual.ArrowShape;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.NodeShape;
@@ -173,12 +177,35 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 				shapePalette.addShape(spi.getControllingAttributeName(), spi.getKey(),
 						      // MLC 05/09/07:
 				                      // new CytoShapeIcon((Arrow) spi.getValue(VizMapUI.EDGE_TGTARROW)),
-				                      new CytoShapeIcon((Arrow) spi.getValue(VisualPropertyType.EDGE_TGTARROW_SHAPE)),
+						      // MLC 12/02/08 BEGIN:
+				                      // new CytoShapeIcon((Arrow) spi.getValue(VisualPropertyType.EDGE_TGTARROW_SHAPE)),
+						      new CytoShapeIcon(arrowShapeToArrow((ArrowShape) spi.getValue(VisualPropertyType.EDGE_TGTARROW_SHAPE))),
+						      // MLC 12/02/08 END.
 				                      spi.getKey(), // MLC 12/16/06:
 				_edgeCursorSetter);
 			}
 		}
 	}
+
+    // MLC 12/02/08 BEGIN:
+    protected Arrow arrowShapeToArrow(ArrowShape as) {
+        if (as == ArrowShape.ARROW) {
+            return Arrow.ARROW;
+        } else if (as == ArrowShape.CIRCLE) {
+            return Arrow.CIRCLE;
+        } else if (as == ArrowShape.DELTA) {
+            return Arrow.DELTA;
+        } else if (as == ArrowShape.DIAMOND) {
+            return Arrow.DIAMOND;
+        } else if (as == ArrowShape.NONE) {
+            return Arrow.NONE;
+        } else if (as == ArrowShape.T) {
+            return Arrow.T;
+        }
+
+        return null;
+    }
+    // MLC 12/02/08 END
 
 	protected void generateNodePaletteEntries(String controllingAttribute) {
 		NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
