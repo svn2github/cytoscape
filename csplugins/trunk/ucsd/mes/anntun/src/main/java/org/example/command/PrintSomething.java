@@ -8,13 +8,13 @@ import org.example.tunable.util.BoundedDouble;
 
 public class PrintSomething implements Command {
 
-	@Tunable(description="your first name", groups={"stuff"})
+	@Tunable(description="your first name", group={"stuff"})
 	public String firstName = "homer";
 
-	@Tunable(description="your last name", groups={"stuff","advanced"}, flags={"collapsable"} )
+	@Tunable(description="your last name", group={"stuff","advanced"}, flags={"collapsable"} )
 	public String lastName = "simpson";
 
-	@Tunable(description="your foot size", groups={"stuff","advanced"})
+	@Tunable(description="your foot size", group={"stuff","advanced"})
 	public BoundedDouble footSize = new BoundedDouble(5.0, 8.5, 13.5, true, false);
 
 	@Tunable(description="the number of children you have")

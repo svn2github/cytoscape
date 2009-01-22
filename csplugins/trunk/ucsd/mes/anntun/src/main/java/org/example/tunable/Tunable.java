@@ -12,5 +12,5 @@ import java.lang.annotation.*;
 public @interface Tunable {
 	String description();
 	String[] flags() default {};
-	String[] groups() default {};
+	String[] group() default {};
 }

@@ -11,7 +11,9 @@ public abstract class AbstractPropHandler extends AbstractHandler implements Pro
 
 	public AbstractPropHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-		propKey = t.namespace() + "." + f.getName();	
+		String n = f.getDeclaringClass().toString();
+
+		propKey = n.substring( n.lastIndexOf(".") + 1) + "." + f.getName();	
 	}
 	
 	public abstract Properties getProps();

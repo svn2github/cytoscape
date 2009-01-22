@@ -39,9 +39,9 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 			}
 
 			// find the proper group to put the handler panel in
-			String[] groups = gh.getTunable().groups();
+			String[] group = gh.getTunable().group();
 			String lastGroup = MAIN; 
-			for ( String g : groups ) {
+			for ( String g : group ) {
 				if ( !panels.containsKey(g) )	
 					panels.put(g,createJPanel(g,isCollapsable));			
 
