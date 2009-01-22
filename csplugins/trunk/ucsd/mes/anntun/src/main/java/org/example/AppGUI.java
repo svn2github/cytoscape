@@ -36,7 +36,7 @@ public class AppGUI
 	// the command comes from wherever
 	// it's static here to illustrate that each time we run the command
 	// the changes we make the various fields persist in the object
-	private static Command com = new PrintSomething();
+	private static Command com = new JActiveModules();
 
 	private static class MyActionListener implements ActionListener {
 			public void actionPerformed(ActionEvent ae) {

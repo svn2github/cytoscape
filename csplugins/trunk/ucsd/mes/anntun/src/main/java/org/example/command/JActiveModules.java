@@ -9,55 +9,55 @@ import java.util.*;
 public class JActiveModules implements Command {
 
 	@Tunable(description="Expression Attributes for Analysis")
-	ListMultipleSelection<String> attrs; 
+	public ListMultipleSelection<String> attrs; 
 
 	@Tunable(description="Number of Modules", group={"General Parameters"})
-	BoundedInteger numMod = new BoundedInteger(0,5,1000,false,false);
+	public BoundedInteger numMod = new BoundedInteger(0,5,1000,false,false);
 
 	@Tunable(description="Overlap Threshold", group={"General Parameters"})
-	BoundedDouble overlap = new BoundedDouble(0.0,0.8,1.0,false,false);	
+	public BoundedDouble overlap = new BoundedDouble(0.0,0.8,1.0,false,false);	
 
 	@Tunable(description="Adjust for size?", group={"General Parameters"})
-	boolean adjustForSize = true;
+	public boolean adjustForSize = true;
 
 	@Tunable(description="Regional Scoring?", group={"General Parameters"})
-	boolean regionalScoring = true;
+	public boolean regionalScoring = true;
 
 	@Tunable(description="Strategy", group={"Strategy"}, flags={"radio"})
-	ListSingleSelection<String> strategy;
+	public ListSingleSelection<String> strategy;
 
 	@Tunable(description="Search depth", group={"Strategy","Searching Parameters"})
-	int depth = 1;
+	public int depth = 1;
 
 	@Tunable(description="Search from selected nodes?", group={"Strategy","Searching Parameters"})
-	boolean searchFromSelected = true;
+	public boolean searchFromSelected = true;
 
 	@Tunable(description="Consider Max depth from start nodes?", group={"Strategy","Searching Parameters"})
-	boolean maxDepth = true;
+	public boolean maxDepth = true;
 
 	@Tunable(description="Max depth from start nodes", group={"Strategy","Searching Parameters"})
-	int maxDepthFromStart = 2;
+	public int maxDepthFromStart = 2;
 
 	@Tunable(description="Iterations", group={"Strategy","Annealing Parameters"})
-	BoundedInteger iterations = new BoundedInteger(0,2500,100000000,false,false);
+	public BoundedInteger iterations = new BoundedInteger(0,2500,100000000,false,false);
 			
 	@Tunable(description="Start Temp", group={"Strategy","Annealing Parameters"})
-	BoundedDouble startTemp = new BoundedDouble(0.0001,1.0,100.0,false,false);
+	public BoundedDouble startTemp = new BoundedDouble(0.0001,1.0,100.0,false,false);
 
 	@Tunable(description="End Temp", group={"Strategy","Annealing Parameters"})
-	BoundedDouble endTemp = new BoundedDouble(0.0001,0.01,100.0,false,false);
+	public BoundedDouble endTemp = new BoundedDouble(0.0001,0.01,100.0,false,false);
 
 	@Tunable(description="Quenching", group={"Strategy","Annealing Parameters","Annealing Extensions"})
-	boolean quenching = true;
+	public boolean quenching = true;
 
 	@Tunable(description="Hubfinding", group={"Strategy","Annealing Parameters","Annealing Extensions"})
-	boolean hubfinding = false;
+	public boolean hubfinding = false;
 
 	@Tunable(description="Hubfinding Value", group={"Strategy","Annealing Parameters","Annealing Extensions"})
-	int hubfindingValue = 10;
+	public int hubfindingValue = 10;
 
 	@Tunable(description="Seed Graph Options", group={"Strategy","Annealing Parameters"}, flags={"radio"})
-	ListSingleSelection<String> seedOption;
+	public ListSingleSelection<String> seedOption;
 
 
 	public JActiveModules() {

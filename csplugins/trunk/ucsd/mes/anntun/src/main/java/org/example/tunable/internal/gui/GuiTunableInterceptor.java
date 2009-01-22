@@ -29,6 +29,8 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 		// construct the gui
 		for (GuiHandler gh : lh) {
 			
+			//System.out.println("handling: " + gh.getField().getName());
+			
 			// figure out if the collapsable flag is set
 			boolean isCollapsable = false;
 			for ( String s : gh.getTunable().flags() ) {

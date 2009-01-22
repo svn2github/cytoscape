@@ -20,6 +20,12 @@ public class GuiHandlerFactory implements HandlerFactory<GuiHandler> {
 			return new BoundedIntegerHandler(f,o,t);
 		else if ( type == BoundedDouble.class ) 
 			return new BoundedDoubleHandler(f,o,t);
+		else if ( type == Boolean.class || type == boolean.class ) 
+			return new BooleanHandler(f,o,t);
+		else if ( type == ListSingleSelection.class ) 
+			return new ListSingleSelectionHandler(f,o,t);
+		else if ( type == ListMultipleSelection.class ) 
+			return new ListMultipleSelectionHandler(f,o,t);
 		return null;
 	}
 }
