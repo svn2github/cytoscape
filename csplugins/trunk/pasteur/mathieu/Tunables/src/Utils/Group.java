@@ -1,11 +1,17 @@
 package Utils;
 
+import java.util.ArrayList;
+
 
 public class Group{
 	
-	Boolean value;
+	ArrayList<String> title;
 	
-	public Group(Boolean val){
-		this.value=val;
+	public Group(ArrayList<String> group){
+		this.title = group;
+	}
+	
+	public ArrayList<String> getValue(){
+		return title;
 	}
 }
