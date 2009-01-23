@@ -86,8 +86,6 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements GuiH
 		}
 	}
 
-	public abstract String getState() ;
-
 	public String getName() {
         if ( f != null ) {
             return f.getName();
@@ -97,9 +95,11 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements GuiH
             return "";
 	}
 
-	public abstract void handle();
-
 	public JPanel getJPanel() {
 		return panel;
 	}
+
+	public abstract void handle();
+
+	public abstract String getState() ;
 }

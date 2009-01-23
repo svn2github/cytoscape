@@ -19,6 +19,8 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return new IntCLHandler(m,o,t);
 		else if ( type == String.class )
 			return new StringCLHandler(m,o,t);
+		else if ( type == boolean.class || type == Boolean.class )
+			return new BooleanCLHandler(m,o,t);
 		else 
 			return null;
 
@@ -31,6 +33,8 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return new IntCLHandler(f,o,t);
 		else if ( type == String.class )
 			return new StringCLHandler(f,o,t);
+		else if ( type == boolean.class || type == Boolean.class )
+			return new BooleanCLHandler(f,o,t);
 		else 
 			return null;
 	}
