@@ -42,8 +42,9 @@ public class application{
 		highpane = new JPanel();
 		lowpane = new JPanel();
 		
+		mainframe.setResizable(false);
+		outputframe.setResizable(false);
 		mainpane.setLayout(new BoxLayout(mainpane,BoxLayout.PAGE_AXIS));
-		mainframe.setContentPane(mainpane);
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainframe.setVisible(true);
 		buttonBox = Box.createHorizontalBox ();
@@ -71,8 +72,7 @@ public class application{
 			System.out.println("InputProperties = " + InputProperties);
 		}
 		else System.out.println("No input");
-		mainframe.setResizable(false);
-		outputframe.setResizable(false);
+		mainframe.setContentPane(mainpane);
 		mainframe.pack();
 	}
 

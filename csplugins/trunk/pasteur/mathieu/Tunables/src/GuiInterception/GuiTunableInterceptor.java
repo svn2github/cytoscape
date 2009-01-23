@@ -128,12 +128,9 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					Group test = (Group) guihandler.getObject();
 					testname = test.getValue();
 					
-					
 					if(collapsable){
 						int	val = listInPane.getPossibleValues().size();
 						bigGroupPaneInput = new JPanel();
-						//bigGroupPaneInput.setLayout(new BoxLayout(bigGroupPaneInput,BoxLayout.PAGE_AXIS));
-						
 						for(int i=0;i<val;i++){
 							for(int j=0;j<testname.size();j++){
 								if(listInPane.getPossibleValues().get(val-1-i).getName().equals(testname.get(j))){
@@ -143,15 +140,15 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 								}
 							}
 						}
-						
-						
+
 						//listInPane = new ListSingleSelection<JPanel>(panesArray);
+						//System.out.println(test.isCollapsed());
 						java.util.List<JPanel> collapsableArray = new ArrayList<JPanel>();
 						for(int i=0;i<bigGroupPaneInput.getComponentCount();i++){
 							collapsableArray.add((JPanel)bigGroupPaneInput.getComponent(i));
 						}
 						ListSingleSelection<JPanel> collapsableList = new ListSingleSelection<JPanel>(collapsableArray);
-						CollapsablePanel collapsepane = new CollapsablePanel(collapsableList,inframe);
+						CollapsablePanel collapsepane = new CollapsablePanel(collapsableList,inframe,test.isCollapsed());
 						collapsepane.setBorder(titleBorder2);
 						mainPanel.add(collapsepane);
 						collapsable = false;
@@ -284,7 +281,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 						collapsableArray.add((JPanel)bigGroupPaneOutput.getComponent(i));
 					}
 					ListSingleSelection<JPanel> collapsableList = new ListSingleSelection<JPanel>(collapsableArray);
-					CollapsablePanel collapsepane = new CollapsablePanel(collapsableList,outframe);
+					CollapsablePanel collapsepane = new CollapsablePanel(collapsableList,outframe,test.isCollapsed());
 					collapsepane.setBorder(titleBorder2);
 					resultPanel.add(collapsepane);
 					collapsable = false;
