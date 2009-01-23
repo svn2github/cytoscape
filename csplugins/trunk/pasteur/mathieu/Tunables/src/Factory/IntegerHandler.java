@@ -2,13 +2,11 @@ package Factory;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 import javax.swing.*;
-
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 
@@ -96,7 +94,9 @@ public class IntegerHandler implements Guihandler{
 			}
 		try{
 			if(myInteger!=null)f.set(o,value.intValue());
-			outpane.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
+			JTextField jtf2 = new JTextField(f.get(o).toString());
+			jtf2.setEditable(false);
+			outpane.add(jtf2,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return outpane;
 	}

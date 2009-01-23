@@ -27,7 +27,6 @@ public class GroupHandler implements Guihandler{
 		try{
 			this.group=(Group) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-
 	}
 	
 	

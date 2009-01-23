@@ -18,6 +18,7 @@ import java.awt.GridLayout;
 
 
 
+
 public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> {
 
 	public JFrame inframe;
@@ -28,7 +29,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 	boolean collapsable = false;
 	boolean horizontal = false;
-	JPanel bigGroupPane;
+	JPanel bigGroupPaneInput;
+	JPanel bigGroupPaneOutput;
 	myButton button;
 	List<Guihandler> list;
 	Guihandler guihandler;
@@ -41,7 +43,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		this.inframe = inframe;
 		this.outframe = outframe;
 		this.mainPanel = insidepane;
-		this.mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
+		//this.mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
 	}
 
 
@@ -54,47 +56,18 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			panesArray.add(initPane);
 			listInPane = new ListSingleSelection<JPanel>(panesArray);
 			
+			mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
 			String group = null;
 			Class<?> type;
-			bigGroupPane = new JPanel();
-			bigGroupPane.setLayout(new GridLayout());
+			bigGroupPaneInput = new JPanel();
+			bigGroupPaneInput.setLayout(new GridLayout());
 			
 			for(Guihandler guihandler : list){
 				boolean exist=false;
 				int nbpane=0;
 				group = guihandler.getTunable().group();
 				type = guihandler.getClass();
-				
-//				if(type==GroupHandler.class){
-//					panesArray.remove(0);
-//			
-//					TitledBorder titleBorder2 = BorderFactory.createTitledBorder(guihandler.getTunable().description());
-//					titleBorder2.setTitleColor(Color.red);
-//					titleBorder2.setTitlePosition(TitledBorder.LEFT);
-//					titleBorder2.setTitlePosition(TitledBorder.TOP);
-//					bigGroupPane.setBorder(titleBorder2);
-//					Param[] parameters = guihandler.getTunable().flag();
-//					for(int i=0;i<parameters.length;i++) if(parameters[i]==Param.Collapsable) collapsable = true;
-//					
-//					if(collapsable){
-//						CollapsablePanel collapsepane = new CollapsablePanel(listInPane,inframe);
-//						collapsepane.setBorder(titleBorder2);
-//						mainPanel.add(collapsepane);
-//						collapsable = false;
-//					}	
-//					else{
-//						for(int i=0;i<listInPane.getPossibleValues().size();i++)	bigGroupPane.add(listInPane.getPossibleValues().get(i));
-//						mainPanel.add(bigGroupPane);
-//					}
-//					panesArray = new ArrayList<JPanel>();
-//					initPane.setName("init");
-//					panesArray.add(initPane);
-//					listInPane = new ListSingleSelection<JPanel>(panesArray);
-//					bigGroupPane = new JPanel();
-//					bigGroupPane.setLayout(new GridLayout());
-//				}
-				
-//ELSE				
+							
 				if(type!=GroupHandler.class){
 					for(int i=0;i<listInPane.getPossibleValues().size();i++){
 						if(listInPane.getPossibleValues().get(i).getName().equals(group)){
@@ -137,13 +110,10 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				}
 			}
 
-
 			
 			ArrayList<String> testname = null;
 			panesArray.remove(0);
 			listInPane = new ListSingleSelection<JPanel>(panesArray);
-			
-
 			
 			for(Guihandler guihandler : list){
 				if(guihandler.getClass()==GroupHandler.class){
@@ -155,28 +125,30 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 					Param[] parameters = guihandler.getTunable().flag();
 					for(int i=0;i<parameters.length;i++) if(parameters[i]==Param.Collapsable) collapsable = true;
-
 					Group test = (Group) guihandler.getObject();
-					testname = test.getValue();						
+					testname = test.getValue();
 					
 					
 					if(collapsable){
-						bigGroupPane = new JPanel();
-						try{
-						for(int i=0;i<listInPane.getPossibleValues().size();i++){
+						int	val = listInPane.getPossibleValues().size();
+						bigGroupPaneInput = new JPanel();
+						//bigGroupPaneInput.setLayout(new BoxLayout(bigGroupPaneInput,BoxLayout.PAGE_AXIS));
+						
+						for(int i=0;i<val;i++){
 							for(int j=0;j<testname.size();j++){
-								if(listInPane.getPossibleValues().get(i).getName().equals(testname.get(j))){
-									bigGroupPane.add(listInPane.getPossibleValues().get(i));
-									panesArray.remove(i);
+								if(listInPane.getPossibleValues().get(val-1-i).getName().equals(testname.get(j))){
+									bigGroupPaneInput.add(listInPane.getPossibleValues().get(val-1-i));
+									panesArray.remove(val-1-i);
+									break;
 								}
 							}
 						}
-					}catch(Exception e){e.printStackTrace();}
-						listInPane = new ListSingleSelection<JPanel>(panesArray);
 						
+						
+						//listInPane = new ListSingleSelection<JPanel>(panesArray);
 						java.util.List<JPanel> collapsableArray = new ArrayList<JPanel>();
-						for(int i=0;i<bigGroupPane.getComponentCount();i++){
-							collapsableArray.add((JPanel)bigGroupPane.getComponent(i));
+						for(int i=0;i<bigGroupPaneInput.getComponentCount();i++){
+							collapsableArray.add((JPanel)bigGroupPaneInput.getComponent(i));
 						}
 						ListSingleSelection<JPanel> collapsableList = new ListSingleSelection<JPanel>(collapsableArray);
 						CollapsablePanel collapsepane = new CollapsablePanel(collapsableList,inframe);
@@ -185,32 +157,27 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 						collapsable = false;
 					}
 					
+					
 					else{
-						bigGroupPane = new JPanel();
-						try{
-						for(int i=0;i<listInPane.getPossibleValues().size();i++){
+						int	val2 = listInPane.getPossibleValues().size();
+						bigGroupPaneInput = new JPanel();
+						bigGroupPaneInput.setLayout(new BoxLayout(bigGroupPaneInput,BoxLayout.PAGE_AXIS));
+						for(int i=0;i<val2;i++){
 							for(int j=0;j<testname.size();j++){
-								if(listInPane.getPossibleValues().get(i).getName().equals(testname.get(j))){
-									bigGroupPane.add(listInPane.getPossibleValues().get(i));
-									panesArray.remove(i);									
+								if(listInPane.getPossibleValues().get(val2-1-i).getName().equals(testname.get(j))){
+									bigGroupPaneInput.add(listInPane.getPossibleValues().get(val2-1-i));
+									panesArray.remove(val2-1-i);
+									break;
 								}
 							}
 						}
-						listInPane = new ListSingleSelection<JPanel>(panesArray);
-						}catch(Exception e){e.printStackTrace();}
-						bigGroupPane.setBorder(titleBorder2);
-						mainPanel.add(bigGroupPane);
-					}
-					
+						//listInPane = new ListSingleSelection<JPanel>(panesArray);
+						bigGroupPaneInput.setBorder(titleBorder2);
+						mainPanel.add(bigGroupPaneInput);
+					}	
 				}
 			}
 			for(int i=0;i<listInPane.getPossibleValues().size();i++)	mainPanel.add(listInPane.getPossibleValues().get(i));
-//END that works
-			
-//		listInPane = new ListSingleSelection<JPanel>(panesArray);
-//		panesArray.remove(0);
-//		for(int i=0;i<listInPane.getPossibleValues().size();i++) mainPanel.add(listInPane.getPossibleValues().get(i));
-//		inframe.pack();
 	}
 
 	
@@ -218,16 +185,19 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	
 	protected void display(List<Guihandler> list) {
 		this.list=list;
-		JPanel resultPanel = new JPanel();
-		resultPanel.setLayout(new BoxLayout(resultPanel,BoxLayout.PAGE_AXIS));
-		
 		java.util.List<JPanel> panesArray2 = new ArrayList<JPanel>();
+		JPanel resultPanel = new JPanel();
 		JPanel initPane = new JPanel();
 		initPane.setName("init");
 		panesArray2.add(initPane);
-		listOutPane = new ListSingleSelection<JPanel>(panesArray2);
+		listOutPane = new ListSingleSelection<JPanel>(panesArray2);	
+		resultPanel.setLayout(new BoxLayout(resultPanel,BoxLayout.PAGE_AXIS));
+		bigGroupPaneOutput = new JPanel();
+		bigGroupPaneOutput.setLayout(new GridLayout());
 		String group = null;
 		Class<?> type = null;
+		
+		
 		
 		for(Guihandler guihandler : list){
 			boolean exist=false;
@@ -236,28 +206,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			type = guihandler.getClass();
 			
 			
-			if(type==GroupHandler.class){
-				panesArray2.remove(0);
-		
-				TitledBorder titleBorder2 = BorderFactory.createTitledBorder(guihandler.getTunable().description());
-				titleBorder2.setTitleColor(Color.red);
-				titleBorder2.setTitlePosition(TitledBorder.LEFT);
-				titleBorder2.setTitlePosition(TitledBorder.TOP);
-				bigGroupPane.setBorder(titleBorder2);
-			
-				for(int i=0;i<listOutPane.getPossibleValues().size();i++)	bigGroupPane.add(listOutPane.getPossibleValues().get(i));
-				resultPanel.add(bigGroupPane);
-				
-				
-				panesArray2 = new ArrayList<JPanel>();
-				initPane.setName("init");
-				panesArray2.add(initPane);
-				listOutPane = new ListSingleSelection<JPanel>(panesArray2);
-				bigGroupPane = new JPanel();
-				bigGroupPane.setLayout(new GridLayout());
-			}
-			
-			else{
+			if(type!=GroupHandler.class){
 				for(int i=0;i<listOutPane.getPossibleValues().size();i++){
 					if(listOutPane.getPossibleValues().get(i).getName().equals(group)){
 						exist=true;
@@ -265,10 +214,15 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					}
 				}
 				if(exist==true){
-					if(guihandler.getTunable().orientation()==Param.Horizontal){
-						listOutPane.getPossibleValues().get(nbpane).setLayout(new BoxLayout(listOutPane.getPossibleValues().get(nbpane),BoxLayout.LINE_AXIS));
-						//listInPane.getPossibleValues().get(nbpane).add(Box.createRigidArea(new Dimension(10, 0)));
+					Param[] parameters = guihandler.getTunable().flag();
+					for(int i=0;i<parameters.length;i++)
+						if(parameters[i]==Param.Horizontal) horizontal = true;
+					if(horizontal){
+						//listInPane.getPossibleValues().get(nbpane).setLayout(new BoxLayout(listInPane.getPossibleValues().get(nbpane),BoxLayout.LINE_AXIS));
+						listOutPane.getPossibleValues().get(nbpane).setLayout(new GridLayout());
+						//listInPane.getPossibleValues().get(nbpane).add(Box.createRigidArea(new Dimension(0, 0)));
 						listOutPane.getPossibleValues().get(nbpane).add(guihandler.getOutputPanel());
+						horizontal=false;
 					}
 					else{
 						listOutPane.getPossibleValues().get(nbpane).setLayout(new BoxLayout(listOutPane.getPossibleValues().get(nbpane),BoxLayout.PAGE_AXIS));
@@ -291,13 +245,72 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					panesArray2.add(pane);
 					listOutPane = new ListSingleSelection<JPanel>(panesArray2);		
 				}
-
 			}
 		}
-		listOutPane = new ListSingleSelection<JPanel>(panesArray2);
+		
+		ArrayList<String> testname = null;
 		panesArray2.remove(0);
+		listOutPane = new ListSingleSelection<JPanel>(panesArray2);
 
-		for(int i=0;i<listOutPane.getPossibleValues().size();i++)resultPanel.add(listOutPane.getPossibleValues().get(i));
+		
+		for(Guihandler guihandler : list){
+			if(guihandler.getClass()==GroupHandler.class){
+				TitledBorder titleBorder2 = null;
+				titleBorder2 = BorderFactory.createTitledBorder(guihandler.getTunable().description());
+				titleBorder2.setTitleColor(Color.red);
+				titleBorder2.setTitlePosition(TitledBorder.LEFT);
+				titleBorder2.setTitlePosition(TitledBorder.TOP);
+
+				Param[] parameters = guihandler.getTunable().flag();
+				for(int i=0;i<parameters.length;i++) if(parameters[i]==Param.Collapsable) collapsable = true;
+				Group test = (Group) guihandler.getObject();
+				testname = test.getValue();
+				
+				if(collapsable){
+					int	val = listOutPane.getPossibleValues().size();
+					bigGroupPaneOutput = new JPanel();
+					for(int i=0;i<val;i++){
+						for(int j=0;j<testname.size();j++){
+							if(listOutPane.getPossibleValues().get(val-1-i).getName().equals(testname.get(j))){
+								bigGroupPaneOutput.add(listOutPane.getPossibleValues().get(val-1-i));
+								panesArray2.remove(val-1-i);
+								break;
+							}
+						}
+					}
+					//listOutPane = new ListSingleSelection<JPanel>(panesArray2);
+					java.util.List<JPanel> collapsableArray = new ArrayList<JPanel>();
+					for(int i=0;i<bigGroupPaneOutput.getComponentCount();i++){
+						collapsableArray.add((JPanel)bigGroupPaneOutput.getComponent(i));
+					}
+					ListSingleSelection<JPanel> collapsableList = new ListSingleSelection<JPanel>(collapsableArray);
+					CollapsablePanel collapsepane = new CollapsablePanel(collapsableList,outframe);
+					collapsepane.setBorder(titleBorder2);
+					resultPanel.add(collapsepane);
+					collapsable = false;
+				}
+				
+				
+				else{
+					int	val2 = listOutPane.getPossibleValues().size();
+					bigGroupPaneOutput = new JPanel();
+					for(int i=0;i<val2;i++){
+						for(int j=0;j<testname.size();j++){
+							if(listOutPane.getPossibleValues().get(val2-1-i).getName().equals(testname.get(j))){
+								bigGroupPaneOutput.add(listOutPane.getPossibleValues().get(val2-1-i));
+								panesArray2.remove(val2-1-i);
+								break;
+							}
+						}
+					}
+					//listOutPane = new ListSingleSelection<JPanel>(panesArray2);
+					bigGroupPaneOutput.setBorder(titleBorder2);
+					resultPanel.add(bigGroupPaneOutput);
+				}	
+			}
+		}
+		
+		for(int i=0;i<listOutPane.getPossibleValues().size();i++)	resultPanel.add(listOutPane.getPossibleValues().get(i));
 		outframe.setContentPane(resultPanel);
 	}
 	

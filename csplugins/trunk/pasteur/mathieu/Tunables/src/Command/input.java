@@ -8,67 +8,61 @@ import java.util.ArrayList;
 
 public class input implements command {
 	
-	@Tunable(description="Integer",group="Group1")
-	public Integer integer1 = new Integer(10);
-	@Tunable(description="BoundedDouble",group="Group1")
-	public BoundedDouble bounded1 = new BoundedDouble(-10.7,9.8,23.7,true,true);
-	@Tunable(description="Boolean",group="Group2")
-	public Boolean boolean1 = new Boolean(false);
-	@Tunable(description="Integer",group="Group2")
-	public Integer integer3 = new Integer(45);
-	@Tunable(description = "String",group="Group2")
-	public String string1 = new String("Cytoscape");
-	@Tunable(description="BoundedFloat",flag=Param.Slider,group="Group1")
-	public BoundedFloat bounded3 = new BoundedFloat((float)-10.6,(float)14.3,(float)23.2,true,true);
-	@Tunable(description="BoundedLong",flag=Param.Slider,group="Group1")
-	public BoundedLong bounded4 = new BoundedLong((long)-10,(long)9,(long)100,false,true);
-//	@Tunable(description="Big Group1",flag=Param.Collapsable)
-//	public Group group1 = new Group(false);
-	@Tunable(description ="Double",group="Group1")
-	public Double double1 = new Double(3.4);
-	@Tunable(description="BoundedInteger",flag={Param.Slider},group="Group1")
-	public BoundedInteger bounded2 = new BoundedInteger(-5,3,10,true,false);
-	@Tunable(description="Integer",group="Group1")
-	public Integer integer2 = new Integer(33);
-	@Tunable(description="ListSingleSelection with Strings",group="Group3")
+
+	@Tunable(description = "FirstName",group="Name")
+	public String string1 = new String("John");
+	@Tunable(description = "LastName",group="Name")
+	public String string2 = new String("Smith");
+
+	@Tunable(description="Day",group="Today's date")
 	public ListSingleSelection<String> dayNames;
-	@Tunable(description="ListMultipleSelection",group="Group3")
+	@Tunable(description="Month",group="Today's date")
 	public ListMultipleSelection<String> monthNames;
-//	@Tunable(description="Big Group2",flag=Param.Collapsable)
-//	public Group group2 = new Group(false);
-	@Tunable(description ="Double")
-	public Double double2 = new Double(5.6);
-	@Tunable(description ="Float",group="Group4")
-	public Float float1 = new Float(64.9084);
-	@Tunable(description ="Long",group="Group4")
-	public Long long1 = new Long((long)223248997);
-	@Tunable(description="ListSingleSelection with Integers",group="Group5")
+	@Tunable(description="Number",group="Today's date")
 	public ListSingleSelection<Integer> listOfIntegers;
 	
+	@Tunable(description ="Identification Code",group="Other")
+	public Long long1 = new Long((long)223248997);
+	@Tunable(description="Number of children",group="Other")
+	public Integer integer1 = new Integer(0);
 	
-	@Tunable(description="Big Group1",flag=Param.Collapsable)
+	@Tunable(description="Age",flag={Param.Slider},group="Birth")
+	public BoundedInteger bounded2 = new BoundedInteger(0,18,130,false,true);
+
+	@Tunable(description="How many $ for 1 euro ?",group="Euro/Dollar")
+	public BoundedDouble bounded3 = new BoundedDouble((double)1,(double)1.4,(double)1.8,true,true);
+	@Tunable(description="Do you like Tunables",group="Tunable Test")
+	public Boolean boolean1 = new Boolean(false);
+	
+	@Tunable(description="Someone",flag=Param.Collapsable)
 	public Group bigGroup1;
-	@Tunable(description="Big Group2")
+	@Tunable(description="Questions")
 	public Group bigGroup2;
 	
+//	@Tunable(description="BoundedLong",flag=Param.Slider,group="Group1")
+//	public BoundedLong bounded4 = new BoundedLong((long)-10,(long)9,(long)100,false,true);
+//	@Tunable(description="BoundedDouble",group="Group1")
+//	public BoundedDouble bounded1 = new BoundedDouble(-10.7,9.8,23.7,true,true);
+//	@Tunable(description="Integer",group="Group2")
+//	public Integer integer3 = new Integer(45);
 	
 	
 	
 	public input()
 	{		
-		
 			ArrayList<String> grouplist1 = new ArrayList<String>();
-			grouplist1.add("Group4");
-			grouplist1.add("Group3");
-			bigGroup1 = new Group(grouplist1);
-		
+			grouplist1.add("Other");
+			grouplist1.add("Birth");
+			grouplist1.add("Name");			
+			bigGroup1 = new Group(grouplist1,false);
+
 			ArrayList<String> grouplist2 = new ArrayList<String>();
-			grouplist2.add("Group5");
-			grouplist2.add("Group2");
-			bigGroup2 = new Group(grouplist2);
-			
-			
-			
+			grouplist2.add("Euro/Dollar");
+			grouplist2.add("Tunable Test");
+			grouplist2.add("Today's date");
+			bigGroup2 = new Group(grouplist2,true);
+
+
 			java.util.List<String> days = new ArrayList<String>();
 			days.add("Monday");
 			days.add("Tuesday");
@@ -95,10 +89,11 @@ public class input implements command {
 			monthNames = new ListMultipleSelection<String>(months);
 			
 			java.util.List<Integer> testlist = new ArrayList<Integer>();
-			testlist.add(29);
-			testlist.add(26);
-			testlist.add(37);
-			testlist.add(34);
+			for(int i=1;i<=31;i++){
+			testlist.add(i);}
+//			testlist.add(26);
+//			testlist.add(37);
+//			testlist.add(34);
 			listOfIntegers = new ListSingleSelection<Integer>(testlist);
 
 	}

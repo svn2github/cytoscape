@@ -110,7 +110,9 @@ public class FloatHandler implements Guihandler{
 			}
 		try{
 			if(myfloat!=null)f.set(o,value.floatValue());
-			outpane.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
+			JTextField jtf2 = new JTextField(f.get(o).toString());
+			jtf2.setEditable(false);
+			outpane.add(jtf2,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return outpane;
 	}

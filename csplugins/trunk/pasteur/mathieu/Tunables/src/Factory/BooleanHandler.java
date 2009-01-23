@@ -67,6 +67,7 @@ public class BooleanHandler implements Guihandler{
 			f.set(o,jcb.isSelected());
 			checkbox.setSelected((Boolean) f.get(o));
 			outpane.add(checkbox,BorderLayout.EAST);
+			checkbox.setEnabled(false);
 		}catch(Exception e){e.printStackTrace();}
 	return outpane;
 	}

@@ -15,15 +15,16 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
 	private JToggleButton myExpandButton = null;
-	private boolean expandPaneVisible=false;
+	private boolean expandPaneVisible;
 	private static String ExpandName = "Expand>>";
 	private static String CollapseName = "<<Collapse";
 	private JPanel rightPanel = new JPanel();
 	private JPanel leftPanel = new JPanel();
+	
 	ListSingleSelection<JPanel> listInPane;
 	public JFrame frame;
 	Dimension initPaneSize;
-//	Dimension initFrameSize;
+	
 	
 	public CollapsablePanel(ListSingleSelection<JPanel> list,JFrame frame){
 		this.listInPane = list;
@@ -31,10 +32,12 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		leftPanel.setLayout(new GridLayout());
 		add(leftPanel);
+		leftPanel.setLayout(new BoxLayout(leftPanel,BoxLayout.PAGE_AXIS));
 		add(rightPanel);
 		rightPanel.add(myExpandButton = createButton(ExpandName));
 		initPaneSize = getPreferredSize();
-//		initFrameSize = frame.getPreferredSize();
+//		this.expandPaneVisible=!collapse;
+		//setCollapsed(expandPaneVisible);
 	}
 
 	
@@ -64,6 +67,35 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		return button;
 	}
 	
+	
+	public void setCollapsed(boolean collapsed){
+		if(collapsed){
+			myExpandButton.setSelected(true);
+			expandPanel();
+			myExpandButton.setText(CollapseName);
+			System.out.println("panel affiche");
+		}
+		else {
+			myExpandButton.setSelected(false);
+			collapsePanel();
+			myExpandButton.setText(ExpandName);
+			System.out.println("panel collapse");
+		}
+	}
+	
+	public void setButtonChanges(boolean value){
+		myExpandButton.setSelected(value);
+		if(value)myExpandButton.setText(CollapseName);
+		else myExpandButton.setText(ExpandName);
+		
+	}
+	
+	
+	
+	public boolean isCollapsed(){
+		return expandPaneVisible;
+	}
+	
 	private void collapsePanel(){
 		leftPanel.removeAll();
 		resize(initPaneSize);
@@ -75,6 +107,7 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		
 	private void expandPanel(){
 			for(int i=0;i<listInPane.getPossibleValues().size();i++)	leftPanel.add(listInPane.getPossibleValues().get(i));
+			this.repaint();
 			frame.pack();
 		}
 }

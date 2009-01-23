@@ -112,7 +112,9 @@ public class LongHandler implements Guihandler{
 			}
 		try{
 			if(myLong!=null)f.set(o,value.longValue());
-			outpane.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
+			JTextField jtf2 = new JTextField(f.get(o).toString());
+			jtf2.setEditable(false);
+			outpane.add(jtf2,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return outpane;
 	}

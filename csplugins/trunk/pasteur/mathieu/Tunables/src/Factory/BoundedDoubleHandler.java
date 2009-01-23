@@ -83,7 +83,9 @@ public class BoundedDoubleHandler implements Guihandler {
 		
 		try{
 			f.set(o,myBounded);
-			outpane.add(new JTextField(myBounded.getValue().toString()),BorderLayout.EAST);
+			JTextField jtf2 = new JTextField(myBounded.getValue().toString());
+			jtf2.setEditable(false);
+			outpane.add(jtf2,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return outpane;
 	}

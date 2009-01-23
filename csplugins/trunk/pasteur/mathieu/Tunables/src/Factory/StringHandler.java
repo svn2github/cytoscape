@@ -70,7 +70,9 @@ public class StringHandler implements Guihandler{
 		outpane.add(jta,BorderLayout.WEST);
 		try{
 			f.set(o, jtf.getText());
-			outpane.add(new JTextField(f.get(o).toString()),BorderLayout.EAST);
+			JTextField jtf2 = new JTextField(f.get(o).toString());
+			jtf2.setEditable(false);
+			outpane.add(jtf2,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return outpane;
 	}	
