@@ -30,11 +30,7 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 	 */
 	public final void intercept(Object obj) {
 		
-		System.out.println("this: " + this.hashCode());
-		System.out.println("obj: " + obj.hashCode());
-
 		if ( !handlerMap.containsKey(obj) ) {
-			System.out.println("creating new handler list");
 			//System.out.println("intercepting obj: " + obj.getClass().toString());
 			List<T> handlerList = new LinkedList<T>();
 
