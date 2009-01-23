@@ -39,11 +39,15 @@ public class AppGUI
 	private static Command com = new JActiveModules();
 
 	private static class MyActionListener implements ActionListener {
-			public void actionPerformed(ActionEvent ae) {
+			TunableInterceptor ti; 
+			public MyActionListener() {
 				// create an interceptor for this context
 				// in this cases it's a GUI, so it needs a parent Component
 				// to render the dialog
-				TunableInterceptor ti = new GuiTunableInterceptor(frame);
+				ti = new GuiTunableInterceptor(frame);
+			}
+			
+			public void actionPerformed(ActionEvent ae) {
 
 				// intercept the command and modify any tunable fields
 				ti.intercept(com);

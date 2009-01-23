@@ -11,6 +11,8 @@ public class JActiveModules implements Command {
 	@Tunable(description="Expression Attributes for Analysis")
 	public ListMultipleSelection<String> attrs; 
 
+	// everything else depends on attrs
+	
 	@Tunable(description="Number of Modules", group={"General Parameters"})
 	public BoundedInteger numMod = new BoundedInteger(0,5,1000,false,false);
 
@@ -23,8 +25,13 @@ public class JActiveModules implements Command {
 	@Tunable(description="Regional Scoring?", group={"General Parameters"})
 	public boolean regionalScoring = true;
 
+	// strategy determines whether to present the Searching or Annealing
+
 	@Tunable(description="Strategy", group={"Strategy"}, flags={"radio"})
 	public ListSingleSelection<String> strategy;
+
+
+	// search
 
 	@Tunable(description="Search depth", group={"Strategy","Searching Parameters"})
 	public int depth = 1;
@@ -35,8 +42,13 @@ public class JActiveModules implements Command {
 	@Tunable(description="Consider Max depth from start nodes?", group={"Strategy","Searching Parameters"})
 	public boolean maxDepth = true;
 
-	@Tunable(description="Max depth from start nodes", group={"Strategy","Searching Parameters"})
+	// depends on maxDepth
+
+	@Tunable(description="Max depth from start nodes", group={"Strategy","Searching Parameters"}, dependsOn="maxDepth=true")
 	public int maxDepthFromStart = 2;
+
+
+	// anneal
 
 	@Tunable(description="Iterations", group={"Strategy","Annealing Parameters"})
 	public BoundedInteger iterations = new BoundedInteger(0,2500,100000000,false,false);
@@ -53,11 +65,19 @@ public class JActiveModules implements Command {
 	@Tunable(description="Hubfinding", group={"Strategy","Annealing Parameters","Annealing Extensions"})
 	public boolean hubfinding = false;
 
-	@Tunable(description="Hubfinding Value", group={"Strategy","Annealing Parameters","Annealing Extensions"})
+	// depends on hubfinding
+
+	@Tunable(description="Hubfinding Value", group={"Strategy","Annealing Parameters","Annealing Extensions"}, dependsOn="hubfinding=true")
 	public int hubfindingValue = 10;
 
 	@Tunable(description="Seed Graph Options", group={"Strategy","Annealing Parameters"}, flags={"radio"})
 	public ListSingleSelection<String> seedOption;
+
+	// depends on seedOption
+
+	@Tunable(description="Seed", group={"Strategy","Annealing Parameters"},dependsOn="seedOption=Non-Random Starting Graph")
+	public int seed = 0;
+
 
 
 	public JActiveModules() {

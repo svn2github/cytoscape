@@ -15,19 +15,15 @@ public class StringHandler extends AbstractGuiHandler {
 
 	public StringHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-	}
 
-	
-	public JPanel getJPanel() {
-		JPanel ret = new JPanel();
+		panel = new JPanel();
 		try {
-		ret.add( new JLabel( t.description() ) );
+		panel.add( new JLabel( t.description() ) );
 		tf = new JTextField( (String)f.get(o), 20);
 		tf.addActionListener( this );
-		ret.add( tf );
+		panel.add( tf );
 		} catch (Exception e) { e.printStackTrace(); }
 			
-		return ret;
 	}
 
 	public void handle() {
@@ -36,5 +32,16 @@ public class StringHandler extends AbstractGuiHandler {
 		if ( s != null )
 			f.set(o,s);
 		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	public String getState() {
+		String s;
+		try {
+			s = (String)f.get(o);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			s = "";
+		}
+		return s;
 	}
 }

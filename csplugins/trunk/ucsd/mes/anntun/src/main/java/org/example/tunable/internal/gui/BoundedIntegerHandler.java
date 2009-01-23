@@ -23,19 +23,15 @@ public class BoundedIntegerHandler extends AbstractGuiHandler {
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();	
 		}
-	}
 
-	
-	public JPanel getJPanel() {
-		JPanel ret = new JPanel();
+		panel = new JPanel();
 		try {
-		ret.add( new JLabel( t.description() + " (max: " + b.getLowerBound().toString() + "  min: " + b.getUpperBound().toString() + ")" ) );
+		panel.add( new JLabel( t.description() + " (max: " + b.getLowerBound().toString() + "  min: " + b.getUpperBound().toString() + ")" ) );
 		tf = new JTextField( ((Integer)b.getValue()).toString(), 10);
 		tf.addActionListener( this );
-		ret.add( tf );
+		panel.add( tf );
 		} catch (Exception e) { e.printStackTrace(); }
 			
-		return ret;
 	}
 
 	public void handle() {
@@ -45,4 +41,8 @@ public class BoundedIntegerHandler extends AbstractGuiHandler {
 		b.setValue(n);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
+
+    public String getState() {
+        return b.getValue().toString();
+    }
 }

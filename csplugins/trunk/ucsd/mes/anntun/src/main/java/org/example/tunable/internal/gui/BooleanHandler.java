@@ -15,22 +15,29 @@ public class BooleanHandler extends AbstractGuiHandler {
 
 	public BooleanHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-	}
 	
-	public JPanel getJPanel() {
-		JPanel ret = new JPanel();
+		panel = new JPanel();
 		try {
 		cb = new JCheckBox( t.description(), f.getBoolean(o));
 		cb.addActionListener( this );
-		ret.add( cb );
+		panel.add( cb );
 		} catch (Exception e) { e.printStackTrace(); }
-			
-		return ret;
 	}
 
 	public void handle() {
 		try {
 		f.set(o,cb.isSelected());
 		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	public String getState() {
+		String s;
+		try {
+		s = Boolean.toString(f.getBoolean(o));
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			s = "";
+		}
+		return s;
 	}
 }

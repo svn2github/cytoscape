@@ -13,4 +13,5 @@ public @interface Tunable {
 	String description();
 	String[] flags() default {};
 	String[] group() default {};
+	String dependsOn() default "";
 }

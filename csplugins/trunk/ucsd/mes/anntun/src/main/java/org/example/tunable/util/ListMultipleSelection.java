@@ -55,6 +55,7 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 	 */
 	public ListMultipleSelection(final List<T> values) {
 		super(values);
+		selected = new ArrayList<T>();
 	}
 
 	/**

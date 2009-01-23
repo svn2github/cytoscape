@@ -15,18 +15,16 @@ public class IntHandler extends AbstractGuiHandler {
 
 	public IntHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-	}
-	
-	public JPanel getJPanel() {
-		JPanel ret = new JPanel();
+
+		panel = new JPanel();
+
 		try {
-		ret.add( new JLabel( t.description() ) );
+		panel.add( new JLabel( t.description() ) );
 		tf = new JTextField( Integer.toString(f.getInt(o)), 10);
 		tf.addActionListener( this );
-		ret.add( tf );
+		panel.add( tf );
 		} catch (Exception e) { e.printStackTrace(); }
 			
-		return ret;
 	}
 
 	public void handle() {
@@ -36,4 +34,15 @@ public class IntHandler extends AbstractGuiHandler {
 		f.set(o,n);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
+
+    public String getState() {
+		String s;
+		try {
+        s  = Integer.toString( f.getInt(o) ); 
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			s = "";
+		}
+		return s;
+    }
 }

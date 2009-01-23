@@ -21,14 +21,12 @@ public class ListMultipleSelectionHandler<T> extends AbstractGuiHandler implemen
 		try {
             lss = (ListMultipleSelection<T>) f.get(o);
         } catch(Exception e) {e.printStackTrace();}
-	}
 	
-	public JPanel getJPanel() {
-        JPanel inpane = new JPanel(new GridLayout());
+        panel = new JPanel(new GridLayout());
         JPanel test1 = new JPanel(new BorderLayout());
         JPanel test2 = new JPanel();
-        inpane.add(test1);
-        inpane.add(test2);
+        panel.add(test1);
+        panel.add(test2);
         JTextArea jta = new JTextArea(t.description());
         jta.setLineWrap(true);
         jta.setWrapStyleWord(true);
@@ -40,7 +38,6 @@ public class ListMultipleSelectionHandler<T> extends AbstractGuiHandler implemen
         jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         JScrollPane scrollpane = new JScrollPane(jlist);
         test2.add(scrollpane,BorderLayout.EAST);
-        return inpane;			
 	}
 
 	@SuppressWarnings("unchecked")
@@ -58,4 +55,11 @@ public class ListMultipleSelectionHandler<T> extends AbstractGuiHandler implemen
 		handle();
     }
 
+	public String getState() {
+		java.util.List<T> sel = lss.getSelectedValues();
+		if ( sel == null )
+			return "";
+		else
+			return sel.toString();
+	}
 }

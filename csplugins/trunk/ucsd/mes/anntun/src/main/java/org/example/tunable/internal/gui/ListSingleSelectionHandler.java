@@ -21,14 +21,12 @@ public class ListSingleSelectionHandler<T> extends AbstractGuiHandler {
 		try {
             lss = (ListSingleSelection<T>) f.get(o);
         } catch(Exception e) {e.printStackTrace();}
-	}
 	
-	public JPanel getJPanel() {
-		JPanel inpane = new JPanel(new GridLayout());
+		panel = new JPanel(new GridLayout());
 		JPanel test1 = new JPanel(new BorderLayout());
 		JPanel test2 = new JPanel();
-		inpane.add(test1);
-		inpane.add(test2);
+		panel.add(test1);
+		panel.add(test2);
 		JTextArea jta = new JTextArea(t.description());
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
@@ -39,7 +37,6 @@ public class ListSingleSelectionHandler<T> extends AbstractGuiHandler {
 		combobox.setSelectedIndex(0);
 		combobox.addActionListener(this);
 		test2.add(combobox,BorderLayout.EAST);
-        return inpane;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -51,5 +48,16 @@ public class ListSingleSelectionHandler<T> extends AbstractGuiHandler {
                 f.set(o,lss);
             }catch(Exception e){e.printStackTrace();}
         }
+	}
+
+	public String getState() {
+		selected = (T) combobox.getSelectedItem();	
+        if(selected!=null)
+            lss.setSelectedValue(selected);
+		T sel = lss.getSelectedValue();
+		if ( sel == null )
+			return "";
+		else
+			return sel.toString();
 	}
 }
