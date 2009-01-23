@@ -89,11 +89,7 @@ public class input implements command {
 			monthNames = new ListMultipleSelection<String>(months);
 			
 			java.util.List<Integer> testlist = new ArrayList<Integer>();
-			for(int i=1;i<=31;i++){
-			testlist.add(i);}
-//			testlist.add(26);
-//			testlist.add(37);
-//			testlist.add(34);
+			for(int i=1;i<=31;i++)testlist.add(i);
 			listOfIntegers = new ListSingleSelection<Integer>(testlist);
 
 	}
