@@ -4,18 +4,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-<title>CytoscapeEditor Release Notes (version 2.60)</title>
+<title>CytoscapeEditor Release Notes (version 2.62)</title>
 </head>
+
 <body>
 
-<h1>CytoscapeEditor Release Notes (version 2.60)</h1>
+<h1>CytoscapeEditor Release Notes (version 2.61)</h1>
+Various bug fixes including (numbers are Mantis bug numbers):
+<ol>
+<li>Ctrl-click on a one-button Mac brings up both the bypass menu AND creates an edge (1738)</li>
+<li><p></p>Connect Selected Nodes not undoable as an atomic action. (1384)</li>
+<li><p></p>"Connect Selected Node" not always show up (1264)</li>
+<li><p></p>Creating new edges via CTRL-click opens interfering menu on Mac (1806)</li>
+<li><p></p>Creating new edge leaves streaks on canvas (still) (1730)</li>
+<li><p></p>CytoscapeEditor in 2.6 throws exception when adding (globally) existing node (1917)</li>
+<li><p></p>Fixed ClassCastException where using the VizMapper and changing ArrowShapes could lead to a ClassCastException.</li>
+</ol>
+
+<h1>Prior Notes</h1>
+
+<h2>CytoscapeEditor Release Notes (version 2.60)</h2>
 <ol>
 <li>Patched Editor so that mouse, key, and drop events are ignored
 when the Editor tab of the CytoPanel is not active.</li>
 <li><p></p>Fixed the "ESC" key to correctly stop drop of an edge.</li>
 </ol>
-
-<h1>Prior Notes</h1>
 
 <h2>CytoscapeEditor Release Notes (version 2.53)</h2>
 <ol>
@@ -198,7 +211,7 @@ CytoscapeEditor: Updated to remove deprecated use of FlagEventListener
 </ol>
 
 <hr />
-<p><em><small>This page was last updated: 07/09/08</small></em></p>
+<p><em><small>This page was last updated: 01/25/09</small></em></p>
 
 </body>
 </html>
