@@ -16,6 +16,8 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.ding.CyGraphAllLOD;
 import cytoscape.ding.DingNetworkView;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.plugin.CytoscapePlugin;
@@ -46,9 +48,10 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 		private ArrayList<Object> nodeAttributeValues = setupNodeAttributeValues();
 		private static final String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
 		private HashMap<Object, List<Node>> attributeValueNodeMap = new HashMap<Object, List<Node>>();
-		private List<CyNetworkView> views = new ArrayList();
+		private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
 		private VisualStyle visualStyle;
-		
+		private List<CyGroup> groups = new ArrayList<CyGroup>();
+		private List<Node> unconnectedNodes = new ArrayList<Node>();		
 
 		public PartitionNetworkPlugin () {
 			PartitionNetworkAction mainAction = new PartitionNetworkAction ();
@@ -88,6 +91,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 			list.add("embryonic development");
 			list.add("cell growth");
 			list.add("cell differentiation");
+			list.add("unassigned");
 	 
 			return list;
 		}
@@ -113,13 +117,49 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 		      Set<Object> attributeValues = attributeValueNodeMap.keySet();
 //		      System.out.println ("building subnets for attribute key set: " + attributeValues);
 		      CyNetwork net = Cytoscape.getCurrentNetwork();
+		      CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
+		      
+		      // create an 'uber' view of the network as group nodes
+//				CyNetwork group_network = Cytoscape.createNetwork(net.nodesList(),
+//                        net.edgesList(), "overView", net);
+//				CyNetworkView group_view = Cytoscape.getNetworkView(group_network.getIdentifier());
+//				
 		      for (Object val : attributeValues)
 		      {
 //		    	  System.out.println("building subnet for attribute value: " + val.toString());
 		    	  buildSubNetwork(net, val.toString());
+		    	  // build a group node for the Nodes in this subnetwork
+		    	  List<Node> memberNodes = attributeValueNodeMap.get(val);
+		    	  CyGroup group = CyGroupManager.createGroup(val.toString(), memberNodes, null);
+		    	  groups.add(group);
+//		    	  CyGroupManager.setGroupViewer(group, "metaNode", view, false); // set this false later for efficiency
+//		    	  
+		    	  
+		    	  
+//		    	  MetaNode m = new MetaNode(group);
+//		    	  MetaNode.collapseAll();
 		      }
 		      
+		      // group unconnected nodes
+	    	  CyGroup group = CyGroupManager.createGroup("unConnected", unconnectedNodes, null);
+	    	  groups.add(group);
+	    	  
+	    	  // now loop through all groups and set state to 'collapsed'
+	    	  for (CyGroup g : groups)
+	    	  {
+	    		  g.setState(2);
+		    	  CyGroupManager.setGroupViewer(g, "metaNode", view, true); // set this false later for efficiency
+	    	  }
+
+//	    	  
+	    	  		      
+		      
 		      tileNetworkViews(); // tile and fit content in each view
+		      
+		      // apply force-directed layout to main network view
+				CyLayoutAlgorithm layout = CyLayouts.getLayout("cellular-layout");
+				layout.doLayout(view);
+
 		      
 			}
 
@@ -129,11 +169,26 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 					
 				CyAttributes attribs = Cytoscape.getNodeAttributes();
 				Iterator<Node> it = Cytoscape.getCurrentNetwork().nodesIterator();
-				List<Node> selectedNodes;
+				List<Node> selectedNodes = null;
+				List<Node> unassignedNodes = Cytoscape.getCurrentNetwork().nodesList();
+	
+				boolean valueFound = false;
 	
 				while (it.hasNext()) {
 	
+					valueFound = false;
 					Node node = it.next();
+					
+					// assign unconnected nodes to a special category and move on
+					int [] edges = 
+						Cytoscape.getCurrentNetwork().getAdjacentEdgeIndicesArray(node.getRootGraphIndex(),
+			    			  true, true, true);
+					if (edges.length <= 0)
+					{
+						unconnectedNodes.add(node);
+						continue;
+					}
+					
 					String val = null;
 					String terms[] = new String[1];
 					// add support for parsing List type attributes
@@ -158,8 +213,8 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 						}
 					}
 
-					// loop through elements in array below and match
 					if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
+						
 						for (Object o : nodeAttributeValues) {
 //							System.out.println ("checking node value " + val + " against " + o.toString());
 							if (val.indexOf(o.toString()) >= 0) {
@@ -167,19 +222,35 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 								if (selectedNodes == null)
 								{
 									selectedNodes = new ArrayList<Node>();
-									selectedNodes.add(node);
-									attributeValueNodeMap.put(o.toString(), selectedNodes);
 								}
-								else if (!selectedNodes.contains(node))
+								if (!selectedNodes.contains(node))
 								{
 									selectedNodes.add(node);
 									attributeValueNodeMap.put(o.toString(), selectedNodes);
+									valueFound = true;
 								}
 //								System.out.println ("selected nodes for value: " + o.toString() + " = " + 
 //										selectedNodes);
 							}
 						}
-					} 
+					}
+					if (!valueFound) 
+						// put this node in 'unassigned' category
+						// but do we need to treat separately the case where there is a value not in the template
+						// from the case where there is no value?
+					{
+						selectedNodes = attributeValueNodeMap.get("unassigned");
+						if (selectedNodes == null)
+						{
+							selectedNodes = new ArrayList<Node>();
+						}
+						if (!selectedNodes.contains(node))
+						{
+							selectedNodes.add(node);
+							attributeValueNodeMap.put("unassigned", selectedNodes);
+							valueFound = true;
+						}						
+					}
 				}
 			}
 			
@@ -281,15 +352,15 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 				VisualStyle vs = 
 					catalog.getVisualStyle(PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
 
-				if (vs == null) {
+//				if (vs == null) {
 					vs = 
 						PartitionNetworkVisualStyleFactory.createVisualStyle(Cytoscape.getCurrentNetworkView());
 					catalog.addVisualStyle(vs);
-				}
+//				}
 
-				manager.setVisualStyle(vs);
-				Cytoscape.getCurrentNetworkView().setVisualStyle(vs.getName());
-				Cytoscape.getCurrentNetworkView().applyVizmapper(vs);
+//				manager.setVisualStyle(vs);
+//				Cytoscape.getCurrentNetworkView().setVisualStyle(vs.getName());
+//				Cytoscape.getCurrentNetworkView().applyVizmapper(vs);
 				return vs;
 			}
 			

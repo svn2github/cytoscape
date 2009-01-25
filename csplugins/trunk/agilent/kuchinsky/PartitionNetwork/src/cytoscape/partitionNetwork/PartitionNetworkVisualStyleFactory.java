@@ -42,7 +42,9 @@ public class PartitionNetworkVisualStyleFactory {
 		EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator();
 		CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
 		
-		VisualStyle currentStyle = view.getVisualStyle();
+		VisualStyle currentStyle = calculatorCatalog.getVisualStyle("default");
+		
+//		VisualStyle currentStyle = view.getVisualStyle();
 		
 		final String attributeName = "annotation.GO MOLECULAR_FUNCTION";
 		
