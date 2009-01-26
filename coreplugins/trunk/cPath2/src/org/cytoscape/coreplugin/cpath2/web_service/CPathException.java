@@ -56,12 +56,18 @@ public class CPathException extends Exception {
         super(t);
         this.errorCode = errorCode;
         setErrorMessages(errorCode);
+        if (t != null) {
+            errorMessage = errorMessage + " " + t.getMessage();
+        }
     }
 
     public CPathException(int errorCode, String errorDetail) {
         this.errorDetail = errorDetail;
         this.errorCode = errorCode;
         setErrorMessages(errorCode);
+        if (errorDetail != null) {
+            errorMessage = errorMessage + " " + errorDetail;
+        }
     }
 
     /**
