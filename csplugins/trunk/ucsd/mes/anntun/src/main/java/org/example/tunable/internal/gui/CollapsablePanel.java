@@ -38,6 +38,9 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		listInPane.add(c);	
 		return c;
 	}
+	public void add(Component c, Object o) {
+		listInPane.add(c);	
+	}
 	
 	
 	public void actionPerformed(ActionEvent e) {

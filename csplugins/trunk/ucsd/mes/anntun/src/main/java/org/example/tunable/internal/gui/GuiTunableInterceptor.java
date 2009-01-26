@@ -27,18 +27,15 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 			//System.out.println("creating new JPanel");
 			final String MAIN = "";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
-			panels.put(MAIN,createJPanel(MAIN,false));
+			panels.put(MAIN,createJPanel(MAIN,null));
 
 			// construct the gui
 			for (GuiHandler gh : lh) {
-			
+		
+				// hook up dependency listeners
 				String dep = gh.getDependency();
-
-				//System.out.println("for gh " + gh.getName());
-				//System.out.println("  got dependency: " + dep);
 				if ( dep != null && !dep.equals("") ) {
 					for ( GuiHandler gh2 : lh ) {
-						//System.out.println("  checking : " + gh2.getName());
 						if ( gh2.getName().equals(dep) ) {
 							gh2.addDependent(gh);
 							break;
@@ -46,29 +43,21 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 					}
 				}
 
-				//System.out.println("handling: " + gh.getField().getName());
-			
-				// figure out if the collapsable flag is set
-				boolean isCollapsable = false;
-				for ( String s : gh.getTunable().flags() ) {
-					if ( s.equals("collapsable") ) {
-						isCollapsable = true;
-						break;
-					}
-				}
 
 				// find the proper group to put the handler panel in
 				String[] group = gh.getTunable().group();
 				String lastGroup = MAIN; 
 				for ( String g : group ) {
-					if ( !panels.containsKey(g) )	
-						panels.put(g,createJPanel(g,isCollapsable));			
-	
-					panels.get(lastGroup).add( panels.get(g) );
+					if ( !panels.containsKey(g) ) {
+						panels.put(g,createJPanel(g,gh));			
+						//System.out.println("creating " + gh.getName());
+						panels.get(lastGroup).add( panels.get(g), gh.getTunable().xorKey() );
+					}
+
 					lastGroup = g;
 				}
 
-				// add the handler panel to the group panel
+				//System.out.println("appending " + gh.getName());
 				panels.get(lastGroup).add(gh.getJPanel());
 			}
 
@@ -86,13 +75,36 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 			h.handle();
 	}
 
-	private JPanel createJPanel(String title, boolean collapse) {
-		if ( collapse )
-			return new CollapsablePanel(title);
+	private JPanel createJPanel(String title, GuiHandler gh) {
 
-		JPanel p = new JPanel();
-		p.setBorder(BorderFactory.createTitledBorder(title));
-		p.setLayout(new BoxLayout(p,BoxLayout.PAGE_AXIS));
-		return p;
+		if ( gh == null )
+			return getSimplePanel(title);
+
+		JPanel ret = null;
+
+		// figure out if the collapsable flag is set
+		for ( String s : gh.getTunable().flags() ) {
+			if ( s.equals("collapsable") ) {
+				ret = new CollapsablePanel(title);
+			}
+		}
+
+		if ( ret == null ) {
+			ret = getSimplePanel(title);
+		}
+
+		if ( gh.getTunable().xorChildren() ) {
+			JPanel p = new XorPanel(gh);
+			return p;
+		} else {
+			return ret;
+		}
+	}
+
+	private JPanel getSimplePanel(String title) {
+		JPanel ret = new JPanel();
+		ret.setBorder(BorderFactory.createTitledBorder(title));
+		ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+		return ret;
 	}
 }

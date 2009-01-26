@@ -27,13 +27,13 @@ public class JActiveModules implements Command {
 
 	// strategy determines whether to present the Searching or Annealing
 
-	@Tunable(description="Strategy", group={"Strategy"}, flags={"radio"})
+	@Tunable(description="Strategy", group={"Strategy"}, flags={"radio"}, xorChildren=true)
 	public ListSingleSelection<String> strategy;
 
 
 	// search
 
-	@Tunable(description="Search depth", group={"Strategy","Searching Parameters"})
+	@Tunable(description="Search depth", group={"Strategy","Searching Parameters"}, xorKey="Search")
 	public int depth = 1;
 
 	@Tunable(description="Search from selected nodes?", group={"Strategy","Searching Parameters"})
@@ -42,15 +42,13 @@ public class JActiveModules implements Command {
 	@Tunable(description="Consider Max depth from start nodes?", group={"Strategy","Searching Parameters"})
 	public boolean maxDepth = true;
 
-	// depends on maxDepth
-
 	@Tunable(description="Max depth from start nodes", group={"Strategy","Searching Parameters"}, dependsOn="maxDepth=true")
 	public int maxDepthFromStart = 2;
 
 
 	// anneal
 
-	@Tunable(description="Iterations", group={"Strategy","Annealing Parameters"})
+	@Tunable(description="Iterations", group={"Strategy","Annealing Parameters"}, xorKey="Anneal")
 	public BoundedInteger iterations = new BoundedInteger(0,2500,100000000,false,false);
 			
 	@Tunable(description="Start Temp", group={"Strategy","Annealing Parameters"})
@@ -65,15 +63,11 @@ public class JActiveModules implements Command {
 	@Tunable(description="Hubfinding", group={"Strategy","Annealing Parameters","Annealing Extensions"})
 	public boolean hubfinding = false;
 
-	// depends on hubfinding
-
 	@Tunable(description="Hubfinding Value", group={"Strategy","Annealing Parameters","Annealing Extensions"}, dependsOn="hubfinding=true")
 	public int hubfindingValue = 10;
 
 	@Tunable(description="Seed Graph Options", group={"Strategy","Annealing Parameters"}, flags={"radio"})
 	public ListSingleSelection<String> seedOption;
-
-	// depends on seedOption
 
 	@Tunable(description="Seed", group={"Strategy","Annealing Parameters"},dependsOn="seedOption=Non-Random Starting Graph")
 	public int seed = 0;

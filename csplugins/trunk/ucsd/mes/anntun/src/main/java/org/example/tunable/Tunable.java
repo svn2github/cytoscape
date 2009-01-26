@@ -14,4 +14,6 @@ public @interface Tunable {
 	String[] flags() default {};
 	String[] group() default {};
 	String dependsOn() default "";
+	boolean xorChildren() default false;
+	String xorKey() default "";
 }
