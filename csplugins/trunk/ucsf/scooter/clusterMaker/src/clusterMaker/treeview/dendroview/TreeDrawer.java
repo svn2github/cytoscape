@@ -267,14 +267,14 @@ abstract class TreeDrawer extends Observable implements Observer {
 				if (type == CORRELATION) {
 
 					// Account for a litle arithmetic fudge
-					if (corr > (1.0+EPSILON))
+					if (corr > 1.0)
 						corr = 1.0;
-					else if (corr < -(1.0+EPSILON))
+					else if (corr < -1.0)
 						corr = -1.0;
 
-					if ((corr  < -1.0) || (corr > 1.0)) {
-						System.out.println("Got illegal correlation " + corr + " at line "+j);
-					}
+					// if ((corr  < -1.0) || (corr > 1.0)) {
+					// 	System.out.println("Got illegal correlation " + corr + " at line "+j);
+					// }
 					current.setCorr(corr);
 				} else {
 					current.setCorr(corr);
