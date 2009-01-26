@@ -1095,8 +1095,10 @@ public class MetaNode {
 				yLocations[i] = null;
 			}
 		}
-		xCenter = xCenter / averageCount;
-		yCenter = yCenter / averageCount;
+		// xCenter = xCenter / averageCount;
+		// yCenter = yCenter / averageCount;
+		xCenter = xMin+(xMax-xMin)/2;
+		yCenter = yMin+(yMax-yMin)/2;
 
 		for (int i = 0; i < nodes.size(); i++) {
 			CyNode node = nodes.get(i);
