@@ -544,11 +544,15 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 							.getNodeView(regNode);
 					// regNv.getGraphView().disableNodeSelection();
 					nvRegList.add(regNv);
-					//regNv.setTransparency(100.0f); //maybe works on fill color only??
-					regNv.setHeight(0.1); //hack invisible! TODO: not working...
+					// regNv.setTransparency(100.0f); //maybe works on fill
+					// color only??
+					regNv.setHeight(0.1); // hack invisible! TODO: not
+					// working...
 					regNv.setWidth(0.1);
-					Cytoscape.getNodeAttributes().setAttribute(regId, "canonicalName", "");	
-					lockNode(regNv); // lock against future layout; TODO: doesn't work!
+					Cytoscape.getNodeAttributes().setAttribute(regId,
+							"canonicalName", "");
+					lockNode(regNv); // lock against future layout; TODO:
+					// doesn't work!
 					switch (j) {
 					case 0:
 						regNv.setOffset(r.getRegionLeft(), r.getRegionTop());
@@ -636,27 +640,33 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						CyAttributes attributes = Cytoscape.getNodeAttributes();
 						String[] atts = attributes.getAttributeNames();
 						for (String att : atts) {
-							byte type = attributes.getType(att);
-							if (type == CyAttributes.TYPE_BOOLEAN) {
-								attributes.setAttribute(newId, att, attributes
-										.getBooleanAttribute(oldId, att));
-							} else if (type == CyAttributes.TYPE_INTEGER) {
-								attributes.setAttribute(newId, att, attributes
-										.getIntegerAttribute(oldId, att));
-							} else if (type == CyAttributes.TYPE_FLOATING) {
-								attributes.setAttribute(newId, att, attributes
-										.getDoubleAttribute(oldId, att));
-							} else if (type == CyAttributes.TYPE_STRING) {
-								attributes.setAttribute(newId, att, attributes
-										.getStringAttribute(oldId, att));
-							} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
-								attributes
-										.setListAttribute(newId, att,
-												attributes.getListAttribute(
-														oldId, att));
-							} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
-								attributes.setMapAttribute(newId, att,
-										attributes.getMapAttribute(oldId, att));
+							if (attributes.getUserVisible(att)) { //skip hidden attributes
+								byte type = attributes.getType(att);
+								if (type == CyAttributes.TYPE_BOOLEAN) {
+									attributes.setAttribute(newId, att,
+											attributes.getBooleanAttribute(
+													oldId, att));
+								} else if (type == CyAttributes.TYPE_INTEGER) {
+									attributes.setAttribute(newId, att,
+											attributes.getIntegerAttribute(
+													oldId, att));
+								} else if (type == CyAttributes.TYPE_FLOATING) {
+									attributes.setAttribute(newId, att,
+											attributes.getDoubleAttribute(
+													oldId, att));
+								} else if (type == CyAttributes.TYPE_STRING) {
+									attributes.setAttribute(newId, att,
+											attributes.getStringAttribute(
+													oldId, att));
+								} else if (type == CyAttributes.TYPE_SIMPLE_LIST) {
+									attributes.setListAttribute(newId, att,
+											attributes.getListAttribute(oldId,
+													att));
+								} else if (type == CyAttributes.TYPE_SIMPLE_MAP) {
+									attributes.setMapAttribute(newId, att,
+											attributes.getMapAttribute(oldId,
+													att));
+								}
 							}
 						}
 
@@ -925,8 +935,8 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 
 	}
 
-	//List used to unselect register nodes. 
-	//TODO: This doesn't work with ^A or other non-mouse based selections...
+	// List used to unselect register nodes.
+	// TODO: This doesn't work with ^A or other non-mouse based selections...
 	private List<NodeView> nvRegList = new ArrayList<NodeView>();
 
 	public void mousePressed(MouseEvent e) {
