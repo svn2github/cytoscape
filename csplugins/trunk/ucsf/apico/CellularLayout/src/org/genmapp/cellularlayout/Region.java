@@ -5,6 +5,7 @@ import giny.view.NodeView;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -84,15 +85,19 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 		// nested terms based on Nathan's GO tree analysis
 		if (this.attValue.equals("extracellular region"))
-			nestedAttValues = Arrays.asList("extracellular region", "extracellular space", "secreted");
+			nestedAttValues = Arrays.asList("extracellular region",
+					"extracellular space", "secreted");
 		else if (this.attValue.equals("mitochondrion"))
-			nestedAttValues = Arrays.asList("mitochondrion", "mitochondrion lumen");
+			nestedAttValues = Arrays.asList("mitochondrion",
+					"mitochondrion lumen");
 		else if (this.attValue.equals("endoplasmic reticulum"))
-			nestedAttValues = Arrays.asList("endoplasmic reticulum", "Golgi apparatus");
+			nestedAttValues = Arrays.asList("endoplasmic reticulum",
+					"Golgi apparatus");
 		else if (this.attValue.equals("plasma membrane"))
 			nestedAttValues = Arrays.asList("plasma membrane", "cell wall");
 		else if (this.attValue.equals("cytoplasm"))
-			nestedAttValues = Arrays.asList("cytoplasm", "intracellular", "cytosol", "vacuole", "lysosome", "peroxisome");
+			nestedAttValues = Arrays.asList("cytoplasm", "intracellular",
+					"cytosol", "vacuole", "lysosome", "peroxisome");
 		else if (this.attValue.equals("nucleus"))
 			nestedAttValues = Arrays.asList("nucleus", "nucleolus",
 					"nuclear membrane", "nucleoplasm");
@@ -102,7 +107,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 			nestedAttValues = Arrays.asList(this.attValue);
 
 		// additional parameters
-		this.attName = "annotation.GO CELLULAR_COMPONENT"; // hard-coded, for now
+		this.attName = "annotation.GO CELLULAR_COMPONENT"; // hard-coded, for
+															// now
 
 		this.nodeViews = populateNodeViews();
 		this.nodeCount = this.nodeViews.size();
@@ -260,13 +266,13 @@ public class Region extends JComponent implements ViewportChangeListener {
 		Point2D pstart = f.transform(new Point2D.Double(b.x, b.y), null);
 		setBounds(pstart.getX(), pstart.getY(), b.width * newScaleFactor,
 				b.height * newScaleFactor);
-//		
-//		java.awt.Shape freeOutline = getFreeVOutline();
-//
-//		Rectangle fb = freeOutline.getBounds();
-//		Point2D fpstart = f.transform(new Point2D.Double(fb.x, fb.y), null);
-//		setBounds(fpstart.getX(), fpstart.getY(), fb.width * newScaleFactor,
-//				fb.height * newScaleFactor);
+		//		
+		// java.awt.Shape freeOutline = getFreeVOutline();
+		//
+		// Rectangle fb = freeOutline.getBounds();
+		// Point2D fpstart = f.transform(new Point2D.Double(fb.x, fb.y), null);
+		// setBounds(fpstart.getX(), fpstart.getY(), fb.width * newScaleFactor,
+		// fb.height * newScaleFactor);
 	}
 
 	public Rectangle2D.Double getVRectangle() {
@@ -291,15 +297,15 @@ public class Region extends JComponent implements ViewportChangeListener {
 				(getFreeBottom() - getFreeTop()));
 	}
 
-//	public java.awt.Shape getFreeVOutline() {
-//		Rectangle2D.Double r = getFreeVRectangle();
-//		r.width = r.width + 2;
-//		r.height = r.height + 2;
-//		AffineTransform f = new AffineTransform();
-//		f.rotate(this.rotation, getFreeCenterX(), getFreeCenterY());
-//		java.awt.Shape outline = f.createTransformedShape(r);
-//		return outline;
-//	}
+	// public java.awt.Shape getFreeVOutline() {
+	// Rectangle2D.Double r = getFreeVRectangle();
+	// r.width = r.width + 2;
+	// r.height = r.height + 2;
+	// AffineTransform f = new AffineTransform();
+	// f.rotate(this.rotation, getFreeCenterX(), getFreeCenterY());
+	// java.awt.Shape outline = f.createTransformedShape(r);
+	// return outline;
+	// }
 
 	public void doPaint(Graphics2D g2d) {
 
@@ -319,7 +325,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 		int cx = x + w / 2;
 		int cy = y + h / 2;
 
-
 		// TODO
 		// s = new Rectangle(x, y, w, h);
 		if (this.shape == "Line") {
@@ -327,14 +332,14 @@ public class Region extends JComponent implements ViewportChangeListener {
 			Point2D trgt = new Point2D.Double(this.width, this.height);
 			Point2D srcT = new Point2D.Double();
 			Point2D trgtT = new Point2D.Double();
-			
+
 			AffineTransform t = new AffineTransform();
 			t.transform(src, srcT);
 			t.transform(trgt, trgtT);
-			
-			g2d.drawLine((int) srcT.getX(), (int) srcT.getY(),
-					(int) trgtT.getX(), (int)trgtT.getY());
-			
+
+			g2d.drawLine((int) srcT.getX(), (int) srcT.getY(), (int) trgtT
+					.getX(), (int) trgtT.getY());
+
 		} else { // Rectangle, Oval
 			java.awt.Shape s = null;
 
@@ -351,42 +356,38 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.setColor(linecolor);
 			g2d.setStroke(new BasicStroke(2));
 			g2d.draw(s);
-			
+
 			// region label
 			int xLabelOffset = 5;
 			int yLabelOffset = 15;
-//			//TODO: fix coordinate system for offset
-//			if (this.getShape() == "Oval") { 
-				Rectangle fb = relativeToBounds(viewportTransform(getFreeVRectangle()))
-				.getBounds();
-				int fsw = 1;
-				int fx = fb.x;
-				int fy = fb.y;
-				int fw = fb.width - fsw - 1;
-				int fh = fb.height - fsw - 1;
-				int fcx = fx + fw / 2;
-				int fcy = fy + fh / 2;
-
-				java.awt.Shape fs = null;
-
-				fs = ShapeRegistry.getShape(this.shape, fx, fy, fw, fh);
-
-				AffineTransform ft = new AffineTransform();
-				ft.rotate(this.rotation, fcx, fcy);
-				fs = ft.createTransformedShape(fs);
-
-				g2d.setColor(Color.gray);
-				g2d.setStroke(new BasicStroke());
-				g2d.draw(fs);
+			// //TODO: debugging free region
+//			Rectangle fb = relativeToBounds(
+//					viewportTransform(getFreeVRectangle())).getBounds();
+//			int fsw = 1;
+//			int fx = fb.x;
+//			int fy = fb.y;
+//			int fw = fb.width - fsw - 1;
+//			int fh = fb.height - fsw - 1;
+//			int fcx = fx + fw / 2;
+//			int fcy = fy + fh / 2;
 //
-//				xLabelOffset =  (int)( this.getFreeLeft() - this.getRegionLeft());
-//				yLabelOffset = (int)(this.getFreeTop() - this.getRegionTop());
-//			}
+//			java.awt.Shape fs = null;
+//
+//			fs = ShapeRegistry.getShape(this.shape, fx, fy, fw, fh);
+//
+//			AffineTransform ft = new AffineTransform();
+//			ft.rotate(this.rotation, fcx, fcy);
+//			fs = ft.createTransformedShape(fs);
+//
+//			g2d.setColor(Color.gray);
+//			Font font = new Font("Arial", Font.PLAIN, 10);
+//			g2d.setFont(font);
+//
+//			g2d.draw(fs);
+
 			g2d.setColor(Color.DARK_GRAY);
 			g2d.setStroke(new BasicStroke());
 			g2d.drawString(this.attValue, xLabelOffset, yLabelOffset);
-//			System.out.println(attValue +": "+ xLabelOffset +", "+yLabelOffset);
-
 		}
 
 	}
