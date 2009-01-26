@@ -84,19 +84,25 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 		// nested terms based on Nathan's GO tree analysis
 		if (this.attValue.equals("extracellular region"))
-			nestedAttValues = Arrays.asList("extracellular region", "secreted");
+			nestedAttValues = Arrays.asList("extracellular region", "extracellular space", "secreted");
+		else if (this.attValue.equals("mitochondrion"))
+			nestedAttValues = Arrays.asList("mitochondrion", "mitochondrion lumen");
+		else if (this.attValue.equals("endoplasmic reticulum"))
+			nestedAttValues = Arrays.asList("endoplasmic reticulum", "Golgi apparatus");
 		else if (this.attValue.equals("plasma membrane"))
 			nestedAttValues = Arrays.asList("plasma membrane", "cell wall");
 		else if (this.attValue.equals("cytoplasm"))
-			nestedAttValues = Arrays.asList("cytoplasm", "intracellular");
+			nestedAttValues = Arrays.asList("cytoplasm", "intracellular", "cytosol", "vacuole", "lysosome", "peroxisome");
 		else if (this.attValue.equals("nucleus"))
 			nestedAttValues = Arrays.asList("nucleus", "nucleolus",
-					"nuclear membrane");
+					"nuclear membrane", "nucleoplasm");
+		else if (this.attValue.equals("unassigned"))
+			nestedAttValues = Arrays.asList("unassigned", "cellular_component");
 		else
 			nestedAttValues = Arrays.asList(this.attValue);
 
 		// additional parameters
-		this.attName = "BasicCellularComponents"; // hard-coded, for now
+		this.attName = "annotation.GO CELLULAR_COMPONENT"; // hard-coded, for now
 
 		this.nodeViews = populateNodeViews();
 		this.nodeCount = this.nodeViews.size();
@@ -320,8 +326,21 @@ public class Region extends JComponent implements ViewportChangeListener {
 			// g2d.fill(s);
 
 			g2d.setColor(linecolor);
-			g2d.setStroke(new BasicStroke());
+			g2d.setStroke(new BasicStroke(2));
 			g2d.draw(s);
+			
+			// region label
+			int xLabelOffset = 5;
+			int yLabelOffset = 15;
+//			//TODO: fix coordinate system for offset
+//			if (this.getShape() == "Oval") { 
+//				xLabelOffset =  (int)( this.getFreeLeft() - this.getRegionLeft());
+//				yLabelOffset = (int)(this.getFreeTop() - this.getRegionTop());
+//			}
+			g2d.setColor(Color.black);
+			g2d.setStroke(new BasicStroke());
+			g2d.drawString(this.attValue, xLabelOffset, yLabelOffset);
+			System.out.println(attValue +": "+ xLabelOffset +", "+yLabelOffset);
 
 		}
 

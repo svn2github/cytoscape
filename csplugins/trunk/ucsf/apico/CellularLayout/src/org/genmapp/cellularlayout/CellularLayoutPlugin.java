@@ -193,13 +193,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			int zG;
 			Double rG;
 
-			Color = "999999";
-			CenterX = "3254.75"; //5254
-			CenterY = "3747.25"; //4747
-			Width = "1200.5";
-			Height = "400.5";
-			ZOrder = "16384";
-			Rotation = "0.0";
+			Color="999999"; CenterX="6254.75"; CenterY="1837.25"; Width="8670.5"; Height="1185.5"; ZOrder="16384"; Rotation="0.0";
 			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
@@ -210,27 +204,61 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			Region a = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
 					"extracellular region");
 
-//			ZOrder = "12288";
-//			Color = "000000";
-//			CenterX = "1980.0";
-//			CenterY = "2625.0";
-//			Width = "10530.0";
-//			Height = "2625.0";
-//			cG = "#".concat(Color);
-//			xG = Double.parseDouble(CenterX);
-//			yG = Double.parseDouble(CenterY);
-//			wG = Double.parseDouble(Width);
-//			hG = Double.parseDouble(Height);
-//			zG = Integer.parseInt(ZOrder);
-//			rG = Double.parseDouble(Rotation);
-//			Region b = new Region("Line", cG, xG, yG, wG, hG, zG, rG,
-//					"plasma membrane");
-			
+			Color = "000000";
+			CenterX = "2767.25";
+			CenterY = "3877.25";
+			Width = "1305.5";
+			Height = "885.5";
+			ZOrder = "16384";
+			Rotation = "0.0";
+			cG = "#".concat(Color);
+			xG = Double.parseDouble(CenterX);
+			yG = Double.parseDouble(CenterY);
+			wG = Double.parseDouble(Width);
+			hG = Double.parseDouble(Height);
+			zG = Integer.parseInt(ZOrder);
+			rG = Double.parseDouble(Rotation);
+			Region f = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
+					"mitochondrion");
+
+			Color = "000000";
+			CenterX = "4987.25";
+			CenterY = "6067.5";
+			Width = "1395.5";
+			Height = "735.0";
+			ZOrder = "16384";
+			Rotation = "0.0";
+			cG = "#".concat(Color);
+			xG = Double.parseDouble(CenterX);
+			yG = Double.parseDouble(CenterY);
+			wG = Double.parseDouble(Width);
+			hG = Double.parseDouble(Height);
+			zG = Integer.parseInt(ZOrder);
+			rG = Double.parseDouble(Rotation);
+			Region g = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
+					"endoplasmic reticulum");
+
+			// ZOrder = "12288";
+			// Color = "000000";
+			// CenterX = "1980.0";
+			// CenterY = "2625.0";
+			// Width = "10530.0";
+			// Height = "2625.0";
+			// cG = "#".concat(Color);
+			// xG = Double.parseDouble(CenterX);
+			// yG = Double.parseDouble(CenterY);
+			// wG = Double.parseDouble(Width);
+			// hG = Double.parseDouble(Height);
+			// zG = Integer.parseInt(ZOrder);
+			// rG = Double.parseDouble(Rotation);
+			// Region b = new Region("Line", cG, xG, yG, wG, hG, zG, rG,
+			// "plasma membrane");
+
 			Color = "000000";
 			CenterX = "6269.75";
-			CenterY = "2425.25";
+			CenterY = "2635.25";
 			Width = "8640.5";
-			Height = "400.5";
+			Height = "380.5";
 			ZOrder = "16384";
 			Rotation = "0.0";
 			cG = "#".concat(Color);
@@ -277,10 +305,10 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					"cytoplasm");
 
 			Color = "999999";
-			CenterX = "11797.25";
-			CenterY = "3719.75";
-			Width = "1065.5";
-			Height = "1740.5";
+			CenterX = "12089.75";
+			CenterY = "4020.0";
+			Width = "1920.5";
+			Height = "3990.0";
 			ZOrder = "16384";
 			Rotation = "0.0";
 			cG = "#".concat(Color);
@@ -309,43 +337,44 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				int i = 0;
 				for (Region or : orList) {
 					// define points to exclude: corners and midpoints
-					System.out.println("Overlapping regions: " + or.getAttValue());
+					System.out.println("Overlapping regions: "
+							+ or.getAttValue());
 					xy[i][0] = or.getRegionLeft();
 					xy[i][1] = or.getRegionTop();
 					i++;
 					xy[i][0] = or.getRegionLeft();
-					xy[i][1] = or.getRegionTop() + or.getRegionHeight()/2;
+					xy[i][1] = or.getRegionTop() + or.getRegionHeight() / 2;
 					i++;
 					xy[i][0] = or.getRegionLeft();
 					xy[i][1] = or.getRegionBottom();
 					i++;
-					xy[i][0] = or.getRegionLeft() + or.getRegionWidth()/2;
+					xy[i][0] = or.getRegionLeft() + or.getRegionWidth() / 2;
 					xy[i][1] = or.getRegionBottom();
 					i++;
 					xy[i][0] = or.getRegionRight();
 					xy[i][1] = or.getRegionBottom();
 					i++;
 					xy[i][0] = or.getRegionRight();
-					xy[i][1] = or.getRegionBottom() - or.getRegionHeight()/2;
+					xy[i][1] = or.getRegionBottom() - or.getRegionHeight() / 2;
 					i++;
 					xy[i][0] = or.getRegionRight();
 					xy[i][1] = or.getRegionTop();
 					i++;
-					xy[i][0] = or.getRegionRight() - or.getRegionWidth()/2;
+					xy[i][0] = or.getRegionRight() - or.getRegionWidth() / 2;
 					xy[i][1] = or.getRegionTop();
 					i++;
-					
+
 					// define center of overlapped region
-//					comX += or.getCenterX();
-//					comY += or.getCenterY();
+					// comX += or.getCenterX();
+					// comY += or.getCenterY();
 				}
-//				if (orListSize > 1) {
-//					comX = comX / orList.size();
-//					comY = comY / orList.size();
-//				} else {
-					comX = r.getCenterX();
-					comY = r.getCenterY();
-//				}
+				// if (orListSize > 1) {
+				// comX = comX / orList.size();
+				// comY = comY / orList.size();
+				// } else {
+				comX = r.getCenterX();
+				comY = r.getCenterY();
+				// }
 				// check center against overlapping regions
 				boolean skip = false;
 				for (Region or : orList) {
@@ -364,10 +393,15 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				Double freeR = r.getFreeRight();
 				Double freeT = r.getFreeTop();
 				Double freeB = r.getFreeBottom();
+				Double freeL2 = r.getFreeLeft();
+				Double freeR2 = r.getFreeRight();
+				Double freeT2 = r.getFreeTop();
+				Double freeB2 = r.getFreeBottom();
 
 				// shrink to fit free area around center
 				// adapted from ex2_1.m by E. Alpaydin, i2ml, Learning a
 				// rectangle
+				// bias vertical areas
 				for (i = 0; i < orListSize * 8; i++) {
 					Double x = xy[i][0];
 					Double y = xy[i][1];
@@ -382,7 +416,30 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 							freeB = y;
 					}
 				}
-				if (((freeR - freeL) < (distanceBetweenNodes *2))||((freeB - freeT) < (distanceBetweenNodes *2))){
+				// bias horizontal areas
+				for (i = 0; i < orListSize * 8; i++) {
+					Double x = xy[i][0];
+					Double y = xy[i][1];
+					if (x > freeL2 && x < freeR2 && y > freeT2 && y < freeB2) {
+						if (y < comY)
+							freeT2 = y;
+						else if (y > comY)
+							freeB2 = y;
+						else if (x < comX)
+							freeL2 = x;
+						else if (x > comX)
+							freeR2 = x;
+					}
+				}
+				// if horizontal area is larger, use it
+				if (((freeR2 - freeL2) * (freeB2 - freeT2)) > ((freeR - freeL) * (freeB - freeT))) {
+					freeR = freeR2;
+					freeL = freeL2;
+					freeT = freeT2;
+					freeB = freeB2;
+				}
+				if (((freeR - freeL) < (distanceBetweenNodes * 2))
+						|| ((freeB - freeT) < (distanceBetweenNodes * 2))) {
 					continue; // skip using inner of too thin or short
 				}
 				r.setFreeCenterX((freeL + freeR) / 2);
@@ -420,17 +477,20 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 						maxScaleFactor = scaleAreaSqrt;
 				}
 
-//				// min pan
-//				if (r.getShape() == "Line") {
-//					// don't bother
-//				} else { // Rectangle, Oval
-//					double x = r.getCenterX() - r.getRegionWidth() / 2;
-//					double y = r.getCenterY() - r.getRegionHeight() / 2;
-//					if (x < minPanX)
-//						minPanX = x;
-//					if (y < minPanY)
-//						minPanY = y;
-//				}
+				// Allan hack!
+				maxScaleFactor *= 1.1;
+
+				// // min pan
+				// if (r.getShape() == "Line") {
+				// // don't bother
+				// } else { // Rectangle, Oval
+				// double x = r.getCenterX() - r.getRegionWidth() / 2;
+				// double y = r.getCenterY() - r.getRegionHeight() / 2;
+				// if (x < minPanX)
+				// minPanX = x;
+				// if (y < minPanY)
+				// minPanY = y;
+				// }
 			}
 
 			// apply max scale and min pan to all regions
@@ -445,17 +505,18 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					r.setFreeHeight(r.getFreeHeight() * maxScaleFactor);
 				}
 
-//				r.setCenterX(r.getCenterX() - minPanX);
-//				r.setCenterY(r.getCenterY() - minPanY);
+				// r.setCenterX(r.getCenterX() - minPanX);
+				// r.setCenterY(r.getCenterY() - minPanY);
 
 				r.setCenterX(r.getCenterX() * maxScaleFactor);
 				r.setCenterY(r.getCenterY() * maxScaleFactor);
 
-//				r.setFreeCenterX(r.getFreeCenterX() - minPanX);
-//				r.setFreeCenterY(r.getFreeCenterY() - minPanY);
+				// r.setFreeCenterX(r.getFreeCenterX() - minPanX);
+				// r.setFreeCenterY(r.getFreeCenterY() - minPanY);
 
 				r.setFreeCenterX(r.getFreeCenterX() * maxScaleFactor);
 				r.setFreeCenterY(r.getFreeCenterY() * maxScaleFactor);
+				
 			}
 
 			// GRAPHICS
@@ -467,6 +528,8 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			bCanvas.add(c);
 			bCanvas.add(d);
 			bCanvas.add(e);
+			bCanvas.add(f);
+			bCanvas.add(g);
 			Cytoscape.getCurrentNetworkView().fitContent();
 
 			// LAYOUT REGIONS:
