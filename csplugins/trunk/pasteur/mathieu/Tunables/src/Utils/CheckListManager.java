@@ -70,8 +70,7 @@ public class CheckListManager<T> extends MouseAdapter implements ListSelectionLi
     }
     
     
-    /*------------------------------[ MouseListener ]-------------------------------------*/ 
- 
+    
     public void mouseClicked(MouseEvent me){ 
         int index = list.locationToIndex(me.getPoint()); 
         if(index<0) 
@@ -80,15 +79,13 @@ public class CheckListManager<T> extends MouseAdapter implements ListSelectionLi
             return; 
         toggleSelection(index); 
     } 
- 
-    /*-----------------------------[ ListSelectionListener ]---------------------------------*/ 
+
  
     public void valueChanged(ListSelectionEvent e){ 
         list.repaint(list.getCellBounds(e.getFirstIndex(), e.getLastIndex())); 
     } 
  
-    /*-----------------------------[ ActionListener ]------------------------------*/ 
- 
+
     public void actionPerformed(ActionEvent e){ 
         toggleSelection(list.getSelectedIndex());
     }
