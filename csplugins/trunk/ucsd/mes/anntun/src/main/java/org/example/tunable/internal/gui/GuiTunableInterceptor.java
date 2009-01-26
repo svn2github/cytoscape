@@ -24,7 +24,6 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 
 	protected void process(java.util.List<GuiHandler> lh) {
 		if ( !panelMap.containsKey( lh ) ) {
-			//System.out.println("creating new JPanel");
 			final String MAIN = "";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
 			panels.put(MAIN,createJPanel(MAIN,null));
@@ -50,14 +49,12 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 				for ( String g : group ) {
 					if ( !panels.containsKey(g) ) {
 						panels.put(g,createJPanel(g,gh));			
-						//System.out.println("creating " + gh.getName());
 						panels.get(lastGroup).add( panels.get(g), gh.getTunable().xorKey() );
 					}
 
 					lastGroup = g;
 				}
 
-				//System.out.println("appending " + gh.getName());
 				panels.get(lastGroup).add(gh.getJPanel());
 			}
 
@@ -93,8 +90,9 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 			ret = getSimplePanel(title);
 		}
 
+		// Create an XOR panel
 		if ( gh.getTunable().xorChildren() ) {
-			JPanel p = new XorPanel(gh);
+			JPanel p = new XorPanel(title,gh);
 			return p;
 		} else {
 			return ret;

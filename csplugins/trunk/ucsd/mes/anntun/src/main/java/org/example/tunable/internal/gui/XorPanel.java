@@ -17,9 +17,8 @@ public class XorPanel extends JPanel {
 	GuiHandler gh;
 	boolean first = true;
 
-	public XorPanel(GuiHandler g) {
+	public XorPanel(String title, GuiHandler g) {
 		super();
-		//System.out.println("XOR PANEL for " + g.getName());
 		gh = g;
 		gh.addDependent( new GuiHandlerSwitchListener() ); 
 
@@ -27,12 +26,12 @@ public class XorPanel extends JPanel {
 		contentPanel = new JPanel(new CardLayout());
 
 		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
+		setBorder(BorderFactory.createTitledBorder(title));
 		super.add(switchPanel);
 		super.add(contentPanel);
 	}
 
 	public Component add(Component c) {
-		//System.out.println("adding unconstrained " + first);
 		if ( first ) {
 			switchPanel.add(c); 
 			first = false;
@@ -47,7 +46,6 @@ public class XorPanel extends JPanel {
 	}
 
 	public void add(Component c, Object constraint) {
-		//System.out.println("adding constrained " + first + "  " + constraint);
 		if ( first ) {
 			switchPanel.add(c); 
 			first = false;
@@ -70,8 +68,6 @@ public class XorPanel extends JPanel {
 		public String getDependency() { return null; }
 
 		public void checkDependency(String name, String state) {
-			//System.out.println("calling check dep " + name + " " + state);
-		
 			CardLayout cl = (CardLayout) contentPanel.getLayout();
 			cl.show(contentPanel, state);
 		}

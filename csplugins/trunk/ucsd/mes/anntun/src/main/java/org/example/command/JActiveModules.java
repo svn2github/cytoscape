@@ -27,7 +27,7 @@ public class JActiveModules implements Command {
 
 	// strategy determines whether to present the Searching or Annealing
 
-	@Tunable(description="Strategy", group={"Strategy"}, flags={"radio"}, xorChildren=true)
+	@Tunable(description="Select search strategy", group={"Strategy"}, flags={"radio"}, xorChildren=true)
 	public ListSingleSelection<String> strategy;
 
 
