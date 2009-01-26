@@ -8,21 +8,25 @@ import java.util.*;
 
 public class JActiveModules implements Command {
 
+	final String gp = "General Parameters";
+	final String strat = "Strategy";
+	final String sp = "Searching Parameters";
+
 	@Tunable(description="Expression Attributes for Analysis")
 	public ListMultipleSelection<String> attrs; 
 
 	// everything else depends on attrs
 	
-	@Tunable(description="Number of Modules", group={"General Parameters"})
+	@Tunable(description="Number of Modules", group=gp)
 	public BoundedInteger numMod = new BoundedInteger(0,5,1000,false,false);
 
-	@Tunable(description="Overlap Threshold", group={"General Parameters"})
+	@Tunable(description="Overlap Threshold", group=gp)
 	public BoundedDouble overlap = new BoundedDouble(0.0,0.8,1.0,false,false);	
 
-	@Tunable(description="Adjust for size?", group={"General Parameters"})
+	@Tunable(description="Adjust for size?", group=gp)
 	public boolean adjustForSize = true;
 
-	@Tunable(description="Regional Scoring?", group={"General Parameters"})
+	@Tunable(description="Regional Scoring?", group=gp)
 	public boolean regionalScoring = true;
 
 	// strategy determines whether to present the Searching or Annealing
@@ -33,16 +37,16 @@ public class JActiveModules implements Command {
 
 	// search
 
-	@Tunable(description="Search depth", group={"Strategy","Searching Parameters"}, xorKey="Search")
+	@Tunable(description="Search depth", group={strat,sp}, xorKey="Search")
 	public int depth = 1;
 
-	@Tunable(description="Search from selected nodes?", group={"Strategy","Searching Parameters"})
+	@Tunable(description="Search from selected nodes?", group={strat,sp})
 	public boolean searchFromSelected = true;
 
-	@Tunable(description="Consider Max depth from start nodes?", group={"Strategy","Searching Parameters"})
+	@Tunable(description="Consider Max depth from start nodes?", group={strat,sp})
 	public boolean maxDepth = true;
 
-	@Tunable(description="Max depth from start nodes", group={"Strategy","Searching Parameters"}, dependsOn="maxDepth=true")
+	@Tunable(description="Max depth from start nodes", group={strat,sp}, dependsOn="maxDepth=true")
 	public int maxDepthFromStart = 2;
 
 
