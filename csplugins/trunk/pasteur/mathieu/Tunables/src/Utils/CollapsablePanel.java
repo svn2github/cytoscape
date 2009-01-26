@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,6 +25,9 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 	ListSingleSelection<JPanel> listInPane;
 	public JFrame frame;
 	Dimension initPaneSize;
+	Dimension outPaneSize;
+	
+	Box buttonBox;
 	
 	
 	public CollapsablePanel(ListSingleSelection<JPanel> list,JFrame frame,boolean iscollapsed){
@@ -49,11 +53,14 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 				collapsePanel();
 				myExpandButton.setText (ExpandName);
 				expandPaneVisible = false;
+//				System.out.println("Taille finale : "+this.getPreferredSize());
+				//this.setPreferredSize(initPaneSize);
 			}
 			else{
 				expandPanel();
 				myExpandButton.setText (CollapseName);
 				expandPaneVisible = true;
+				outPaneSize = getPreferredSize();
 			}
 		}
 	}

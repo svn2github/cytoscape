@@ -14,11 +14,11 @@ public class input implements command {
 	@Tunable(description = "LastName",group="Name")
 	public String string2 = new String("Smith");
 
-	@Tunable(description="Day",group="Today's date")
+	@Tunable(description="Day",group="Today's date",flag=Param.Horizontal)
 	public ListSingleSelection<String> dayNames;
-	@Tunable(description="Month",group="Today's date")
+	@Tunable(description="Month",group="Today's date",flag=Param.Horizontal)
 	public ListMultipleSelection<String> monthNames;
-	@Tunable(description="Number",group="Today's date")
+	@Tunable(description="Number",group="Today's date",flag=Param.Horizontal)
 	public ListSingleSelection<Integer> listOfIntegers;
 	
 	@Tunable(description ="Identification Code",group="Other")
@@ -51,17 +51,16 @@ public class input implements command {
 	public input()
 	{		
 			ArrayList<String> grouplist1 = new ArrayList<String>();
-			grouplist1.add("Other");
+			grouplist1.add("Name");	
 			grouplist1.add("Birth");
-			grouplist1.add("Name");			
-			bigGroup1 = new Group(grouplist1,false);
+			grouplist1.add("Other");
+			bigGroup1 = new Group(grouplist1,true);
 
 			ArrayList<String> grouplist2 = new ArrayList<String>();
 			grouplist2.add("Euro/Dollar");
 			grouplist2.add("Tunable Test");
 			grouplist2.add("Today's date");
 			bigGroup2 = new Group(grouplist2,true);
-
 
 			java.util.List<String> days = new ArrayList<String>();
 			days.add("Monday");

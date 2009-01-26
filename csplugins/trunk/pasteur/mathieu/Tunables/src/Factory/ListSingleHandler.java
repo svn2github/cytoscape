@@ -89,7 +89,7 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 
 
 	public JPanel getOutputPanel() {
-		JPanel outpane = new JPanel(new BorderLayout());
+		JPanel outpane = new JPanel();
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
@@ -97,7 +97,9 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 			LSS.setSelectedValue(selected);	
 			try{
 				f.set(o,LSS);
-				outpane.add(new JTextField(LSS.getSelectedValue().toString()),BorderLayout.EAST);
+				JTextField jtf2 = new JTextField(LSS.getSelectedValue().toString());
+				jtf2.setEditable(false);
+				outpane.add(jtf2,BorderLayout.EAST);
 			}catch(Exception e){e.printStackTrace();}
 		}
 		return outpane;
@@ -107,6 +109,7 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 	@SuppressWarnings("unchecked")
 	public void valueChanged(ListSelectionEvent e) {
 		selected = (T) jlist.getSelectedValue();
+		System.out.println(selected);
 	}
 
 	public Object getObject() {

@@ -2,18 +2,21 @@ package Factory;
 
 import Tunable.*;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import Utils.*;
 import GuiInterception.*;
 
-public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
+public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener, MouseListener{
 
 	
 	Field f;
@@ -22,10 +25,11 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 
 	ListMultipleSelection<T> LMS;
 	private List<T> selected=null;
-	JList jlist;
+	static JList jlist;
 	Boolean available;
-	Object[] array=null;
+	static Object[] array=null;
 	String title;
+	CheckListManager checkListManager;
 	
 	
 	
@@ -54,9 +58,14 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 		test1.add(jta,BorderLayout.CENTER);
 		jta.setBackground(null);
 		jta.setEditable(false);
+				
 		jlist = new JList(LMS.getPossibleValues().toArray());
-		jlist.addListSelectionListener(this);
 		jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		//jlist.addMouseListener(this);
+		//jlist.addListSelectionListener(this);
+		checkListManager = new CheckListManager(jlist,LMS); 
+		 
+		
 		JScrollPane scrollpane = new JScrollPane(jlist);
 		test2.add(scrollpane,BorderLayout.EAST);
 //		inpane.add(scrollpane,BorderLayout.EAST);
@@ -64,28 +73,37 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	}
 	
 	public void handle() {
-		if(array!=null){
-			selected = castObject(array);
-			LMS.setSelectedValues(selected);
-			try{
-				f.set(o, LMS);
-			}catch(Exception e){e.printStackTrace();}
-		}
+		//if(array!=null){
+			//selected = castObject(array);
+			selected = checkListManager.getArray();
+			if(selected!=null){
+				LMS.setSelectedValues(selected);
+				try{
+					f.set(o, LMS);
+				}catch(Exception e){e.printStackTrace();}
+			}
+		//}
 	}
 	
 	
 	
 	public JPanel getOutputPanel() {
-		JPanel outpane = new JPanel(new BorderLayout());
+		JPanel outpane = new JPanel();
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
-		if(array!=null){
-			selected = castObject(array);
+		selected = checkListManager.getArray();
+
+		//checkListManager = new CheckListManager(jlist,LMS);
+		if(selected!=null){
+			//selected = castObject(array);
 			LMS.setSelectedValues(selected);
+			//selected=null;
 			try{
 				f.set(o, LMS);
-				outpane.add(new JScrollPane(new JList(LMS.getSelectedValues().toArray())),BorderLayout.EAST);
+				JScrollPane scrollpane = new JScrollPane(new JList(LMS.getSelectedValues().toArray()));
+				scrollpane.setEnabled(false);
+				outpane.add(scrollpane,BorderLayout.EAST);
 			}catch(Exception e){e.printStackTrace();}
 		}
 		return outpane;
@@ -94,8 +112,9 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	
 	
 	
+	
 	public void valueChanged(ListSelectionEvent le) {
-		array = jlist.getSelectedValues();		
+		array = jlist.getSelectedValues();
 	}
 	
 	
@@ -108,7 +127,7 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 			array.add(i, value);
 		}
 	return array;
-	}	
+	}
 	
 	
 	public Object getObject() {
@@ -119,5 +138,23 @@ public class ListMultipleHandler<T> implements Guihandler,ListSelectionListener{
 	}
 	public Tunable getTunable() {
 		return t;
+	}
+
+	public void mouseClicked(MouseEvent evt) {
+		final JList list = (JList) evt.getSource();
+			list.setSelectionBackground(Color.blue);
+			array=jlist.getSelectedValues();
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseReleased(MouseEvent e) {
 	}
 }

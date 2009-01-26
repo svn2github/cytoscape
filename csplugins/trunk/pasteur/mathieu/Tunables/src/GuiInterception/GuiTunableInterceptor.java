@@ -43,7 +43,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		this.inframe = inframe;
 		this.outframe = outframe;
 		this.mainPanel = insidepane;
-		//this.mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
 	}
 
 
@@ -131,18 +130,15 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					if(collapsable){
 						int	val = listInPane.getPossibleValues().size();
 						bigGroupPaneInput = new JPanel();
-						for(int i=0;i<val;i++){
-							for(int j=0;j<testname.size();j++){
-								if(listInPane.getPossibleValues().get(val-1-i).getName().equals(testname.get(j))){
-									bigGroupPaneInput.add(listInPane.getPossibleValues().get(val-1-i));
-									panesArray.remove(val-1-i);
+						for(int i=0;i<testname.size();i++){
+							for(int j=0;j<val;j++){
+								if(listInPane.getPossibleValues().get(val-1-j-i).getName().equals(testname.get(i))){
+									bigGroupPaneInput.add(listInPane.getPossibleValues().get(val-1-j-i));
+									panesArray.remove(val-1-j-i);
 									break;
 								}
 							}
 						}
-
-						//listInPane = new ListSingleSelection<JPanel>(panesArray);
-						//System.out.println(test.isCollapsed());
 						java.util.List<JPanel> collapsableArray = new ArrayList<JPanel>();
 						for(int i=0;i<bigGroupPaneInput.getComponentCount();i++){
 							collapsableArray.add((JPanel)bigGroupPaneInput.getComponent(i));
@@ -150,6 +146,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 						ListSingleSelection<JPanel> collapsableList = new ListSingleSelection<JPanel>(collapsableArray);
 						CollapsablePanel collapsepane = new CollapsablePanel(collapsableList,inframe,test.isCollapsed());
 						collapsepane.setBorder(titleBorder2);
+						//collapsepane.setPreferredSize(collapsepane.getPreferredSize());
 						mainPanel.add(collapsepane);
 						collapsable = false;
 					}
@@ -159,21 +156,22 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 						int	val2 = listInPane.getPossibleValues().size();
 						bigGroupPaneInput = new JPanel();
 						bigGroupPaneInput.setLayout(new BoxLayout(bigGroupPaneInput,BoxLayout.PAGE_AXIS));
-						for(int i=0;i<val2;i++){
-							for(int j=0;j<testname.size();j++){
-								if(listInPane.getPossibleValues().get(val2-1-i).getName().equals(testname.get(j))){
-									bigGroupPaneInput.add(listInPane.getPossibleValues().get(val2-1-i));
-									panesArray.remove(val2-1-i);
+						
+						for(int i=0;i<testname.size();i++){
+							for(int j=0;j<val2;j++){
+								if(listInPane.getPossibleValues().get(val2-1-j-i).getName().equals(testname.get(i))){
+									bigGroupPaneInput.add(listInPane.getPossibleValues().get(val2-1-j-i));
+									panesArray.remove(val2-1-j-i);
 									break;
 								}
 							}
 						}
-						//listInPane = new ListSingleSelection<JPanel>(panesArray);
 						bigGroupPaneInput.setBorder(titleBorder2);
 						mainPanel.add(bigGroupPaneInput);
-					}	
+					}
 				}
 			}
+			
 			for(int i=0;i<listInPane.getPossibleValues().size();i++)	mainPanel.add(listInPane.getPossibleValues().get(i));
 	}
 
@@ -260,6 +258,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 				Param[] parameters = guihandler.getTunable().flag();
 				for(int i=0;i<parameters.length;i++) if(parameters[i]==Param.Collapsable) collapsable = true;
+				//guihandler.handle();
 				Group test = (Group) guihandler.getObject();
 				testname = test.getValue();
 				
@@ -285,6 +284,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					collapsepane.setBorder(titleBorder2);
 					resultPanel.add(collapsepane);
 					collapsable = false;
+					//System.out.print(collapsepane.isCollapsed());
 				}
 				
 				
@@ -303,7 +303,8 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					//listOutPane = new ListSingleSelection<JPanel>(panesArray2);
 					bigGroupPaneOutput.setBorder(titleBorder2);
 					resultPanel.add(bigGroupPaneOutput);
-				}	
+				}
+				//System.out.println(test.isCollapsed());
 			}
 		}
 		

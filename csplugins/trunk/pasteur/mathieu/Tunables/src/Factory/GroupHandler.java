@@ -17,7 +17,7 @@ public class GroupHandler implements Guihandler{
 	Object o;
 	String title;
 	Group group;
-	
+	boolean collapsed;
 	
 	public GroupHandler(Field f, Object o,Tunable t){
 		this.f=f;
@@ -36,10 +36,18 @@ public class GroupHandler implements Guihandler{
 		return test;
 	}
 	public JPanel getOutputPanel() {
+		collapsed = group.isCollapsed();
+		try{
+			f.set(o,group);
+		}catch(Exception e){e.printStackTrace();}
 		// TODO Auto-generated method stub
 		return null;
 	}
 	public void handle() {
+		collapsed = group.isCollapsed();
+		try{
+			f.set(o,group);
+		}catch(Exception e){e.printStackTrace();}
 		// TODO Auto-generated method stub
 		
 	}
