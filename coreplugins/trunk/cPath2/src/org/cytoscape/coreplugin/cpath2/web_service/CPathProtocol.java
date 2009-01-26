@@ -75,7 +75,7 @@ public class CPathProtocol {
     /**
      * Currently Supported Version.
      */
-    public static final String CURRENT_VERSION = "3.0";
+    public static final String CURRENT_VERSION = "2.0";
 
     /**
      * Get Records By Keyword.
@@ -425,7 +425,7 @@ public class CPathProtocol {
             throws CPathException {
         if (statusCode != 200) {
             throw new CPathException(CPathException.ERROR_HTTP, "HTTP Status Code:  " + statusCode
-                + ":  " + HttpStatus.getStatusText(statusCode));
+                + ":  " + HttpStatus.getStatusText(statusCode) + ".");
         }
     }
 
@@ -440,7 +440,7 @@ public class CPathProtocol {
                 throw new EmptySetException();
             } else {
                 throw new CPathException(CPathException.ERROR_WEB_SERVICE_API,
-                    "Error Code:  " + errorCode + ", " + errorMsg);
+                    "Error Code:  " + errorCode + ", " + errorMsg + ".");
             }
         }
     }
