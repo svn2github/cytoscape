@@ -260,6 +260,13 @@ public class Region extends JComponent implements ViewportChangeListener {
 		Point2D pstart = f.transform(new Point2D.Double(b.x, b.y), null);
 		setBounds(pstart.getX(), pstart.getY(), b.width * newScaleFactor,
 				b.height * newScaleFactor);
+//		
+//		java.awt.Shape freeOutline = getFreeVOutline();
+//
+//		Rectangle fb = freeOutline.getBounds();
+//		Point2D fpstart = f.transform(new Point2D.Double(fb.x, fb.y), null);
+//		setBounds(fpstart.getX(), fpstart.getY(), fb.width * newScaleFactor,
+//				fb.height * newScaleFactor);
 	}
 
 	public Rectangle2D.Double getVRectangle() {
@@ -277,6 +284,22 @@ public class Region extends JComponent implements ViewportChangeListener {
 		java.awt.Shape outline = f.createTransformedShape(r);
 		return outline;
 	}
+
+	public Rectangle2D.Double getFreeVRectangle() {
+		return new Rectangle2D.Double(getFreeLeft(), getFreeTop(),
+				(getFreeRight() - getFreeLeft()),
+				(getFreeBottom() - getFreeTop()));
+	}
+
+//	public java.awt.Shape getFreeVOutline() {
+//		Rectangle2D.Double r = getFreeVRectangle();
+//		r.width = r.width + 2;
+//		r.height = r.height + 2;
+//		AffineTransform f = new AffineTransform();
+//		f.rotate(this.rotation, getFreeCenterX(), getFreeCenterY());
+//		java.awt.Shape outline = f.createTransformedShape(r);
+//		return outline;
+//	}
 
 	public void doPaint(Graphics2D g2d) {
 
@@ -334,13 +357,35 @@ public class Region extends JComponent implements ViewportChangeListener {
 			int yLabelOffset = 15;
 //			//TODO: fix coordinate system for offset
 //			if (this.getShape() == "Oval") { 
+				Rectangle fb = relativeToBounds(viewportTransform(getFreeVRectangle()))
+				.getBounds();
+				int fsw = 1;
+				int fx = fb.x;
+				int fy = fb.y;
+				int fw = fb.width - fsw - 1;
+				int fh = fb.height - fsw - 1;
+				int fcx = fx + fw / 2;
+				int fcy = fy + fh / 2;
+
+				java.awt.Shape fs = null;
+
+				fs = ShapeRegistry.getShape(this.shape, fx, fy, fw, fh);
+
+				AffineTransform ft = new AffineTransform();
+				ft.rotate(this.rotation, fcx, fcy);
+				fs = ft.createTransformedShape(fs);
+
+				g2d.setColor(Color.gray);
+				g2d.setStroke(new BasicStroke());
+				g2d.draw(fs);
+//
 //				xLabelOffset =  (int)( this.getFreeLeft() - this.getRegionLeft());
 //				yLabelOffset = (int)(this.getFreeTop() - this.getRegionTop());
 //			}
-			g2d.setColor(Color.black);
+			g2d.setColor(Color.DARK_GRAY);
 			g2d.setStroke(new BasicStroke());
 			g2d.drawString(this.attValue, xLabelOffset, yLabelOffset);
-			System.out.println(attValue +": "+ xLabelOffset +", "+yLabelOffset);
+//			System.out.println(attValue +": "+ xLabelOffset +", "+yLabelOffset);
 
 		}
 

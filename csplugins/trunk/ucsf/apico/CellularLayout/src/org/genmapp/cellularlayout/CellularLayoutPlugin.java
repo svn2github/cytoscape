@@ -5,6 +5,10 @@ import giny.model.RootGraph;
 import giny.view.NodeView;
 
 import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +24,7 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 
@@ -31,7 +36,22 @@ import ding.view.DingCanvas;
  * @author Alexander Pico, Allan Kuchinsky, Scooter Morris, Thomas Kelder.
  * 
  */
-public class CellularLayoutPlugin extends CytoscapePlugin {
+public class CellularLayoutPlugin extends CytoscapePlugin implements
+		MouseListener, PropertyChangeListener {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seecytoscape.plugin.CytoscapePlugin#propertyChange(java.beans.
+	 * PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent e) {
+
+		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
+					.addMouseListener(this);
+		}
+	}
 
 	/**
 	 * The constructor registers our layout algorithm. The CyLayouts mechanism
@@ -39,6 +59,11 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 	 */
 	public CellularLayoutPlugin() {
 		CyLayouts.addLayout(new CellularLayoutAlgorithm(), "Cellular Layout");
+
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener(
+						CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
+
 	}
 
 	/**
@@ -193,7 +218,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 			int zG;
 			Double rG;
 
-			Color="999999"; CenterX="6254.75"; CenterY="1837.25"; Width="8670.5"; Height="1185.5"; ZOrder="16384"; Rotation="0.0";
+			Color = "999999";
+			CenterX = "6254.75";
+			CenterY = "1837.25";
+			Width = "8670.5";
+			Height = "1185.5";
+			ZOrder = "16384";
+			Rotation = "0.0";
 			cG = "#".concat(Color);
 			xG = Double.parseDouble(CenterX);
 			yG = Double.parseDouble(CenterY);
@@ -333,7 +364,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				List<Region> orList = r.getOverlappingRegions();
 				// does not include Line shapes
 				int orListSize = orList.size();
-				Double[][] xy = new Double[orListSize * 8][2];
+				Double[][] xy = new Double[orListSize * 4][2];
 				int i = 0;
 				for (Region or : orList) {
 					// define points to exclude: corners and midpoints
@@ -343,24 +374,12 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 					xy[i][1] = or.getRegionTop();
 					i++;
 					xy[i][0] = or.getRegionLeft();
-					xy[i][1] = or.getRegionTop() + or.getRegionHeight() / 2;
-					i++;
-					xy[i][0] = or.getRegionLeft();
-					xy[i][1] = or.getRegionBottom();
-					i++;
-					xy[i][0] = or.getRegionLeft() + or.getRegionWidth() / 2;
 					xy[i][1] = or.getRegionBottom();
 					i++;
 					xy[i][0] = or.getRegionRight();
 					xy[i][1] = or.getRegionBottom();
 					i++;
 					xy[i][0] = or.getRegionRight();
-					xy[i][1] = or.getRegionBottom() - or.getRegionHeight() / 2;
-					i++;
-					xy[i][0] = or.getRegionRight();
-					xy[i][1] = or.getRegionTop();
-					i++;
-					xy[i][0] = or.getRegionRight() - or.getRegionWidth() / 2;
 					xy[i][1] = or.getRegionTop();
 					i++;
 
@@ -393,16 +412,11 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				Double freeR = r.getFreeRight();
 				Double freeT = r.getFreeTop();
 				Double freeB = r.getFreeBottom();
-				Double freeL2 = r.getFreeLeft();
-				Double freeR2 = r.getFreeRight();
-				Double freeT2 = r.getFreeTop();
-				Double freeB2 = r.getFreeBottom();
 
 				// shrink to fit free area around center
 				// adapted from ex2_1.m by E. Alpaydin, i2ml, Learning a
 				// rectangle
-				// bias vertical areas
-				for (i = 0; i < orListSize * 8; i++) {
+				for (i = 0; i < orListSize * 4; i++) {
 					Double x = xy[i][0];
 					Double y = xy[i][1];
 					if (x > freeL && x < freeR && y > freeT && y < freeB) {
@@ -410,33 +424,11 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 							freeL = x;
 						else if (x > comX)
 							freeR = x;
-						else if (y < comY)
+						if (y < comY)
 							freeT = y;
 						else if (y > comY)
 							freeB = y;
 					}
-				}
-				// bias horizontal areas
-				for (i = 0; i < orListSize * 8; i++) {
-					Double x = xy[i][0];
-					Double y = xy[i][1];
-					if (x > freeL2 && x < freeR2 && y > freeT2 && y < freeB2) {
-						if (y < comY)
-							freeT2 = y;
-						else if (y > comY)
-							freeB2 = y;
-						else if (x < comX)
-							freeL2 = x;
-						else if (x > comX)
-							freeR2 = x;
-					}
-				}
-				// if horizontal area is larger, use it
-				if (((freeR2 - freeL2) * (freeB2 - freeT2)) > ((freeR - freeL) * (freeB - freeT))) {
-					freeR = freeR2;
-					freeL = freeL2;
-					freeT = freeT2;
-					freeB = freeB2;
 				}
 				if (((freeR - freeL) < (distanceBetweenNodes * 2))
 						|| ((freeB - freeT) < (distanceBetweenNodes * 2))) {
@@ -516,7 +508,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 
 				r.setFreeCenterX(r.getFreeCenterX() * maxScaleFactor);
 				r.setFreeCenterY(r.getFreeCenterY() * maxScaleFactor);
-				
+
 			}
 
 			// GRAPHICS
@@ -542,6 +534,39 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				Region r = sra[i];
 				// System.out.println("Sorted: "+
 				// sra[i].getAttValue()+"="+sra[i].getArea());
+
+				// Place register nodes at region corners (for fit to screen)
+				for (int j = 0; j < 4; j++) {
+					String regId = r.getAttValue().concat("_" + j);
+					CyNode regNode = Cytoscape.getCyNode(regId, true);
+					Cytoscape.getCurrentNetwork().addNode(regNode);
+					NodeView regNv = Cytoscape.getCurrentNetworkView()
+							.getNodeView(regNode);
+					// regNv.getGraphView().disableNodeSelection();
+					nvRegList.add(regNv);
+					//regNv.setTransparency(100.0f); //maybe works on fill color only??
+					regNv.setHeight(0.1); //hack invisible! TODO: not working...
+					regNv.setWidth(0.1);
+					Cytoscape.getNodeAttributes().setAttribute(regId, "canonicalName", "");	
+					lockNode(regNv); // lock against future layout; TODO: doesn't work!
+					switch (j) {
+					case 0:
+						regNv.setOffset(r.getRegionLeft(), r.getRegionTop());
+						break;
+					case 1:
+						regNv.setOffset(r.getRegionLeft(), r.getRegionBottom());
+						break;
+					case 2:
+						regNv.setOffset(r.getRegionRight(), r.getRegionTop());
+						break;
+					case 3:
+						regNv
+								.setOffset(r.getRegionRight(), r
+										.getRegionBottom());
+						break;
+					}
+
+				}
 
 				nodeViews = r.getNodeViews();
 				nodeCount = r.getNodeCount();
@@ -885,6 +910,36 @@ public class CellularLayoutPlugin extends CytoscapePlugin {
 				}
 			}
 			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+		}
+	}
+
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	public void mouseExited(MouseEvent e) {
+
+	}
+
+	//List used to unselect register nodes. 
+	//TODO: This doesn't work with ^A or other non-mouse based selections...
+	private List<NodeView> nvRegList = new ArrayList<NodeView>();
+
+	public void mousePressed(MouseEvent e) {
+		for (NodeView nv : nvRegList) {
+			if (nv.isSelected())
+				nv.unselect();
+		}
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		for (NodeView nv : nvRegList) {
+			if (nv.isSelected())
+				nv.unselect();
 		}
 	}
 }
