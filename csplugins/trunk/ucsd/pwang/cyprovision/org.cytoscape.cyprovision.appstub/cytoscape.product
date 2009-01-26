@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Cytoscape" id="org.cytoscape.cyprovision.appstub.product" application="org.cytoscape.cyprovision.appstub.application" version="3.0.0" useFeatures="false">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <plugins>
+      <plugin id="biojava"/>
+      <plugin id="colt"/>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.jgoodies.looks"/>
+      <plugin id="com.nerius.math.xform"/>
+      <plugin id="com.springsource.com.lowagie.text"/>
+      <plugin id="com.springsource.edu.oswego.cs.dl.util.concurrent"/>
+      <plugin id="com.springsource.javax.activation"/>
+      <plugin id="com.springsource.org.apache.commons.codec"/>
+      <plugin id="com.springsource.org.apache.commons.httpclient"/>
+      <plugin id="com.springsource.org.apache.commons.lang"/>
+      <plugin id="com.springsource.org.apache.commons.logging"/>
+      <plugin id="com.springsource.org.apache.poi"/>
+      <plugin id="com.springsource.org.jdom"/>
+      <plugin id="com.sun.xml.bind.jaxb-impl"/>
+      <plugin id="com.sun.xml.bind.jaxb-xjc"/>
+      <plugin id="com.sun.xml.fastinfoset.FastInfoset"/>
+      <plugin id="csplugins.automatic.layout"/>
+      <plugin id="csplugins.quickfind"/>
+      <plugin id="cytoscape-sun.jhall"/>
+      <plugin id="cytoscape-temp.l2fprod-common-all"/>
+      <plugin id="cytoscape-temp.sbml2"/>
+      <plugin id="cytoscape-temp.swingx"/>
+      <plugin id="cytoscape.application"/>
+      <plugin id="cytoscape.attribute.browser"/>
+      <plugin id="cytoscape.editor"/>
+      <plugin id="cytoscape.filters"/>
+      <plugin id="cytoscape.filters.old"/>
+      <plugin id="cytoscape.geom.rtree"/>
+      <plugin id="cytoscape.geom.spacial"/>
+      <plugin id="cytoscape.graph.dynamic"/>
+      <plugin id="cytoscape.graph.fixed"/>
+      <plugin id="cytoscape.linkout"/>
+      <plugin id="cytoscape.manual.layout"/>
+      <plugin id="cytoscape.merge"/>
+      <plugin id="cytoscape.render.export"/>
+      <plugin id="cytoscape.render.immed"/>
+      <plugin id="cytoscape.render.stateful"/>
+      <plugin id="cytoscape.sbml.reader"/>
+      <plugin id="cytoscape.table.import"/>
+      <plugin id="cytoscape.task"/>
+      <plugin id="cytoscape.util.intr"/>
+      <plugin id="ie.wombat.jbdiff"/>
+      <plugin id="ie.wombat.jbdiff.test"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.xml.jaxb-api"/>
+      <plugin id="javax.xml.stream.stax-api"/>
+      <plugin id="net.java.dev.swing-layout"/>
+      <plugin id="org.apache.ant"/>
+      <plugin id="org.apache.commons.cli"/>
+      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.cytoscape.attributes"/>
+      <plugin id="org.cytoscape.coreplugin.cpath2"/>
+      <plugin id="org.cytoscape.cpath"/>
+      <plugin id="org.cytoscape.cyprovision"/>
+      <plugin id="org.cytoscape.cyprovision.appstub"/>
+      <plugin id="org.cytoscape.layout"/>
+      <plugin id="org.cytoscape.network"/>
+      <plugin id="org.cytoscape.psi.mi"/>
+      <plugin id="org.cytoscape.tunable"/>
+      <plugin id="org.cytoscape.view"/>
+      <plugin id="org.cytoscape.vizmap"/>
+      <plugin id="org.eclipse.ant.core"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.net"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility"/>
+      <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.ecf"/>
+      <plugin id="org.eclipse.ecf.filetransfer"/>
+      <plugin id="org.eclipse.ecf.identity"/>
+      <plugin id="org.eclipse.ecf.provider.filetransfer"/>
+      <plugin id="org.eclipse.ecf.provider.filetransfer.httpclient"/>
+      <plugin id="org.eclipse.ecf.provider.filetransfer.httpclient.ssl" fragment="true"/>
+      <plugin id="org.eclipse.ecf.provider.filetransfer.ssl" fragment="true"/>
+      <plugin id="org.eclipse.ecf.ssl" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin.test"/>
+      <plugin id="org.eclipse.equinox.http.jetty"/>
+      <plugin id="org.eclipse.equinox.http.servlet"/>
+      <plugin id="org.eclipse.equinox.launcher"/>
+      <plugin id="org.eclipse.equinox.launcher.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.p2.artifact.optimizers"/>
+      <plugin id="org.eclipse.equinox.p2.artifact.processors"/>
+      <plugin id="org.eclipse.equinox.p2.artifact.repository"/>
+      <plugin id="org.eclipse.equinox.p2.console"/>
+      <plugin id="org.eclipse.equinox.p2.core"/>
+      <plugin id="org.eclipse.equinox.p2.director"/>
+      <plugin id="org.eclipse.equinox.p2.director.app"/>
+      <plugin id="org.eclipse.equinox.p2.directorywatcher"/>
+      <plugin id="org.eclipse.equinox.p2.engine"/>
+      <plugin id="org.eclipse.equinox.p2.exemplarysetup"/>
+      <plugin id="org.eclipse.equinox.p2.extensionlocation"/>
+      <plugin id="org.eclipse.equinox.p2.garbagecollector"/>
+      <plugin id="org.eclipse.equinox.p2.installer"/>
+      <plugin id="org.eclipse.equinox.p2.jarprocessor"/>
+      <plugin id="org.eclipse.equinox.p2.metadata"/>
+      <plugin id="org.eclipse.equinox.p2.metadata.generator"/>
+      <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
+      <plugin id="org.eclipse.equinox.p2.publisher"/>
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins"/>
+      <plugin id="org.eclipse.equinox.p2.sar"/>
+      <plugin id="org.eclipse.equinox.p2.tools"/>
+      <plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
+      <plugin id="org.eclipse.equinox.p2.touchpoint.natives"/>
+      <plugin id="org.eclipse.equinox.p2.ui"/>
+      <plugin id="org.eclipse.equinox.p2.ui.admin"/>
+      <plugin id="org.eclipse.equinox.p2.ui.admin.rcp"/>
+      <plugin id="org.eclipse.equinox.p2.ui.sdk"/>
+      <plugin id="org.eclipse.equinox.p2.ui.sdk.scheduler"/>
+      <plugin id="org.eclipse.equinox.p2.updatechecker"/>
+      <plugin id="org.eclipse.equinox.p2.updatesite"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.ui"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.help.base"/>
+      <plugin id="org.eclipse.help.ui"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.osgi.util"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.forms"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.ui.workbench.compatibility" fragment="true"/>
+      <plugin id="org.eclipse.update.configurator"/>
+      <plugin id="org.freehep.export"/>
+      <plugin id="org.freehep.graphics2d"/>
+      <plugin id="org.freehep.graphicsio"/>
+      <plugin id="org.freehep.graphicsio-emf"/>
+      <plugin id="org.freehep.graphicsio-pdf"/>
+      <plugin id="org.freehep.graphicsio-ps"/>
+      <plugin id="org.freehep.graphicsio-svg"/>
+      <plugin id="org.freehep.graphicsio-swf"/>
+      <plugin id="org.freehep.io"/>
+      <plugin id="org.freehep.swing"/>
+      <plugin id="org.freehep.util"/>
+      <plugin id="org.freehep.xml"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.mortbay.jetty.server"/>
+      <plugin id="org.mortbay.jetty.util"/>
+      <plugin id="org.mskcc.biopax"/>
+      <plugin id="org.sat4j.core"/>
+      <plugin id="org.sat4j.pb"/>
+      <plugin id="phoebe.dnd"/>
+      <plugin id="undo"/>
+   </plugins>
+
+
+</product>
