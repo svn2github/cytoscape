@@ -178,14 +178,16 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 
 		btnAddBookmark.setText("Add");
 		btnAddBookmark.setToolTipText("Add a new bookmark");
-		btnAddBookmark.setPreferredSize(new java.awt.Dimension(63, 25));
+		//btnAddBookmark.setPreferredSize(new java.awt.Dimension(75, 25));
 		jPanel1.add(btnAddBookmark, new java.awt.GridBagConstraints());
 
 		btnEditBookmark.setText("Edit");
 		btnEditBookmark.setToolTipText("Edit a bookmark");
-		btnEditBookmark.setMaximumSize(new java.awt.Dimension(63, 25));
-		btnEditBookmark.setMinimumSize(new java.awt.Dimension(63, 25));
-		btnEditBookmark.setPreferredSize(new java.awt.Dimension(63, 25));
+/*
+		btnEditBookmark.setMaximumSize(new java.awt.Dimension(75, 25));
+		btnEditBookmark.setMinimumSize(new java.awt.Dimension(75, 25));
+		btnEditBookmark.setPreferredSize(new java.awt.Dimension(75, 25));
+*/
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
@@ -195,7 +197,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 		btnDeleteBookmark.setToolTipText("Delete a bookmark");
 		// btnDeleteBookmark.setMaximumSize(new java.awt.Dimension(63, 25));
 		// btnDeleteBookmark.setMinimumSize(new java.awt.Dimension(63, 25));
-		// btnDeleteBookmark.setPreferredSize(new java.awt.Dimension(, 25));
+		//btnDeleteBookmark.setPreferredSize(new java.awt.Dimension(, 25));
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridy = 2;
 		jPanel1.add(btnDeleteBookmark, gridBagConstraints);
