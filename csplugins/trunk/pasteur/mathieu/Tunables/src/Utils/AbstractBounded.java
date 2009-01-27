@@ -6,11 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-/**
- * A bounded number object.
- *
- * @param <N>  DOCUMENT ME!
- */
+
+@SuppressWarnings("serial")
 public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 
 	protected N value;
@@ -22,16 +19,9 @@ public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 	final protected boolean lowerStrict;
 	
 	Number val;
-    String newline=System.getProperty("line.separator");
+    String newline = System.getProperty("line.separator");
     
-	/**
-	 * Creates a new Bounded object.
-	 *
-	 * @param lower  DOCUMENT ME!
-	 * @param upper  DOCUMENT ME!
-	 * @param lowerStrict  DOCUMENT ME!
-	 * @param upperStrict  DOCUMENT ME!
-	 */
+    
 	AbstractBounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
 		super(initValue.toString(),11);
 		if (lower == null)
@@ -56,6 +46,7 @@ public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 
 
 	public class myActionListener implements ActionListener{
+		@SuppressWarnings("unchecked")
 		public void actionPerformed(ActionEvent e){
 				try{
 					if(initValue.getClass().equals(Integer.class))  val = Integer.parseInt(getText());
@@ -73,53 +64,29 @@ public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 		}	
 	}
 	
-	
-	
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+
 	public N getUpperBound() {
 		return upper;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public N getLowerBound() {
 		return lower;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public boolean isUpperBoundStrict() {
 		return upperStrict;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public boolean isLowerBoundStrict() {
 		return lowerStrict;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+
 	public N getValue() {
 		return value;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void updateValue(){
 		try{
 			if(initValue.getClass().equals(Integer.class))  val = Integer.parseInt(getText());
@@ -136,12 +103,7 @@ public class AbstractBounded<N extends Comparable<N>> extends JTextField {
 	}
 	
 	
-	
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param v DOCUMENT ME!
-	 */
+
 	public void setValue(N v) {
 		
 		if (v == null){

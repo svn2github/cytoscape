@@ -2,11 +2,7 @@ package Utils;
 
 import java.awt.Color;
 import java.awt.Font;
-//import java.awt.FontMetrics;
-//import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-//import java.awt.event.MouseAdapter;
-//import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -18,21 +14,20 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-//import javax.swing.event.CaretListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-//import Utils.stringLib;
+import Utils.stringLib;
+
 
 
 
 @SuppressWarnings("serial")
 public class mySlider extends JComponent {
-
     private Number     m_min, m_max, m_value;
     private boolean    m_ignore = false;
     private JSlider    m_slider;
     private JTextField m_field;
-	private List       m_listeners;
+	private List<Object>       m_listeners;
 	private Number initvalue;
     
     java.text.DecimalFormat df = new java.text.DecimalFormat("##.##");
@@ -40,7 +35,7 @@ public class mySlider extends JComponent {
     private Number majortickspace;
     private int m_smin = 0;
     private int m_srange = 100;
-    String newline=System.getProperty("line.separator");
+    String newline = System.getProperty("line.separator");
     Boolean upper;
     Boolean lower;
     
@@ -84,7 +79,6 @@ public class mySlider extends JComponent {
 	        	JLabel label = new JLabel(df.format(i));
 	        	label.setFont(new Font("",Font.BOLD,9));
 	        	labelTable.put(j,label);
-	        	//labelTable.put(j,new JLabel(Integer.toString(i)));
 	        	i+=majortick;
 	        	j+=20;   	
 	        }
@@ -186,7 +180,8 @@ public class mySlider extends JComponent {
 //    }
     
 
-    public Number getValue() {
+    public Number getValue(){
+    	m_value = getFieldValue();
         return m_value;
     }
 
@@ -274,10 +269,6 @@ public class mySlider extends JComponent {
             	m_field.setBackground(Color.white);
             	return m_value;
             }
-//            	if ( val < m_min.doubleValue())return m_min.doubleValue();
-//            	if ( val > m_max.doubleValue())return m_max.doubleValue();
-//            	return m_value;
-//            }
             return m_value instanceof Double ? (Number)val.doubleValue() : val.floatValue();
         }
         else {
@@ -295,10 +286,6 @@ public class mySlider extends JComponent {
             	m_field.setBackground(Color.white);
             	return m_value;
             }
-//            	if ( val < m_min.longValue())return m_min.longValue();
-//            	if ( val > m_max.longValue())return m_max.longValue();
-//            	return m_value;
-//            }
             return m_value instanceof Long ? (Number)val.longValue() : val.intValue();
         }
     }
@@ -313,7 +300,6 @@ public class mySlider extends JComponent {
         m_field.setText(text);
     }
     
-    @SuppressWarnings("unchecked")
 	public void addChangeListener(ChangeListener cl) {
         if ( !m_listeners.contains(cl) )
             m_listeners.add(cl);
