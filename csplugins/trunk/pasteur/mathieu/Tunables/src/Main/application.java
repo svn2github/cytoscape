@@ -7,7 +7,6 @@ import GuiInterception.*;
 import Command.*;
 import HandlerFactory.Handler;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -47,8 +46,8 @@ public class application{
 		mainpane.setLayout(new BoxLayout(mainpane,BoxLayout.PAGE_AXIS));
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainframe.setVisible(true);
-		buttonBox = Box.createHorizontalBox ();
-		lowpane.add (buttonBox);
+		buttonBox=Box.createHorizontalBox();
+		lowpane.add(buttonBox);
 		lowpane.setBorder (BorderFactory.createEmptyBorder (10, 10, 10, 10));
 		
 		mainpane.add(highpane);
@@ -58,13 +57,13 @@ public class application{
 		ti.intercept(commander);
 		lp.intercept(commander);
 		
-		buttonBox.add(button = createButton("save settings","save",'s'));
-		buttonBox.add (Box.createHorizontalGlue ());
-		buttonBox.add (Box.createHorizontalStrut (4));
-		buttonBox.add(button = createButton("cancel","cancel",'c'));
-		buttonBox.add (Box.createHorizontalStrut (4));
-		buttonBox.add(button = createButton("done","done",'d'));
-		buttonBox.add (Box.createHorizontalStrut (10));
+		buttonBox.add(button=createButton("save settings","save",'s'));
+		buttonBox.add(Box.createHorizontalGlue());
+		buttonBox.add(Box.createHorizontalStrut(4));
+		buttonBox.add(button=createButton("cancel","cancel",'c'));
+		buttonBox.add(Box.createHorizontalStrut(4));
+		buttonBox.add(button=createButton("done","done",'d'));
+		buttonBox.add(Box.createHorizontalStrut(10));
 		
 		if(ti!=null){
 			ti.GetInputPanes();
@@ -78,8 +77,9 @@ public class application{
 
 	
 
-	private static JButton createButton (String title,String command)  {
-		return createButton (title,command, '\0');
+	@SuppressWarnings("unused")
+	private static JButton createButton (String title,String command){
+		return createButton (title,command,'\0');
 	}
 	
 	private static JButton createButton(String title,String command,char mnemonic){
@@ -87,7 +87,7 @@ public class application{
 		button.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED,Color.gray.brighter(),Color.gray.darker()));
 		button.addActionListener(new myActionListener());
 		button.setActionCommand(command);
-		if (mnemonic != '\0') button.setMnemonic (mnemonic);
+		if(mnemonic!='\0') button.setMnemonic(mnemonic);
 		return button;
 	}
 	
