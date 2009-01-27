@@ -5,6 +5,7 @@ import java.awt.*;
 import java.lang.reflect.*;
 import java.util.List;
 import javax.swing.*;
+
 import Utils.*;
 import GuiInterception.*;
 
@@ -18,6 +19,7 @@ public class ListMultipleHandler<T> implements Guihandler{
 	Boolean available;
 	String title;
 	CheckListManager<T> checkListManager;
+	boolean valueChanged = false;
 	
 	
 	
@@ -59,12 +61,12 @@ public class ListMultipleHandler<T> implements Guihandler{
 	
 	
 	/*-------------------------------Get the JScrollPane which displays the item(s) that have been selected from the list-----------------------------------*/			
-	public JPanel getOutputPanel() {
+	public JPanel getOutputPanel(boolean changed) {
 		JPanel outpane = new JPanel();
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
-		handle();
+		//handle();
 		JScrollPane scrollpane = new JScrollPane(new JList(LMS.getSelectedValues().toArray()));
 		scrollpane.setEnabled(false);
 		outpane.add(scrollpane,BorderLayout.EAST);
@@ -77,6 +79,7 @@ public class ListMultipleHandler<T> implements Guihandler{
 	public void handle() {
 			selected = checkListManager.getArray();
 			if(selected!=null){
+				valueChanged=true;
 				LMS.setSelectedValues(selected);
 				try{
 					f.set(o, LMS);
@@ -94,5 +97,11 @@ public class ListMultipleHandler<T> implements Guihandler{
 	}
 	public Tunable getTunable() {
 		return t;
+	}
+
+
+	public boolean valueChanged() {
+		handle();
+		return valueChanged;
 	}
 }
