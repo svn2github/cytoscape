@@ -95,17 +95,14 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		
 	}
 	
-	
-	
 	public boolean isCollapsed(){
 		return expandPaneVisible;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void collapsePanel(){
 		leftPanel.removeAll();
 		resize(initPaneSize);
-//		repaint();
-//		frame.resize(initFrameSize);
 		frame.pack();
 	}
 		
