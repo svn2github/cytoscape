@@ -11,7 +11,6 @@ import Utils.Group;
 
 
 public class GroupHandler implements Guihandler{
-	
 	Tunable t;
 	Field f;
 	Object o;
@@ -19,6 +18,7 @@ public class GroupHandler implements Guihandler{
 	Group group;
 	boolean collapsed;
 	
+	/*-------------------------------Constructor-----------------------------------*/
 	public GroupHandler(Field f, Object o,Tunable t){
 		this.f=f;
 		this.t=t;
@@ -29,31 +29,23 @@ public class GroupHandler implements Guihandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	
-	public JPanel getInputPanel() {
-		JPanel test = new JPanel();
-		// TODO Auto-generated method stub
-		return test;
-	}
-	public JPanel getOutputPanel() {
-		collapsed = group.isCollapsed();
-		try{
-			f.set(o,group);
-		}catch(Exception e){e.printStackTrace();}
-		// TODO Auto-generated method stub
+	public JPanel getPanel() {
 		return null;
 	}
+	
+	public JPanel getOutputPanel() {
+		handle();
+		return null;
+	}
+
+	/*-------------------------------Set Group Object with the new "Collapsed" state-----------------------------------*/	
 	public void handle() {
 		collapsed = group.isCollapsed();
 		try{
 			f.set(o,group);
-		}catch(Exception e){e.printStackTrace();}
-		// TODO Auto-generated method stub
-		
+		}catch(Exception e){e.printStackTrace();}	
 	}
 
-
-	
 	public Field getField() {
 		return f;
 	}

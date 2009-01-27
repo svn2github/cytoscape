@@ -13,7 +13,6 @@ import Utils.mySlider;
 
 
 public class BoundedLongHandler implements Guihandler {
-
 	Field f;
 	Object o;
 	Tunable t;
@@ -24,72 +23,63 @@ public class BoundedLongHandler implements Guihandler {
 	mySlider slider;
 	Param[] parameters;
 	
+	/*-------------------------------Declaration of the BoundedObject with his parameters(description, useslider)-----------------------------------*/
 	public BoundedLongHandler(Field f, Object o, Tunable t) {
 		this.f = f;
 		this.o = o;
 		this.t = t;
-		try {
+		//Set the BoundedObject with the Tunable
+		try{
 			this.myBounded = (BoundedLong)f.get(o);
-			} catch (IllegalAccessException iae) {
-				iae.printStackTrace();}
+		}catch(IllegalAccessException iae){iae.printStackTrace();}
 		this.title = t.description();
-		this.parameters=t.flag();
-		for(int i=0;i<parameters.length;i++)
-			if(parameters[i]==Param.Slider) this.useslider = true;
-//		if(t.flag()==Param.Slider) this.useslider=true;
+		this.parameters = t.flag();
+		for(int i=0;i<parameters.length;i++) if(parameters[i]==Param.Slider) this.useslider = true;
 	}
 
 	
-	public JPanel getInputPanel() {
-//		JPanel inpane = new JPanel(new BorderLayout());
-		
+	/*-------------------------------Get the Panel with the INITIAL value-----------------------------------*/
+	public JPanel getPanel() {
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
 		jta.setBackground(null);
 		jta.setEditable(false);
-		
 		JPanel inpane = new JPanel(new GridLayout());
 		JPanel test1 = new JPanel(new BorderLayout());
 		JPanel test2 = new JPanel();
 		inpane.add(test1);
 		inpane.add(test2);
 		test1.add(jta,BorderLayout.CENTER);
-
+		//initialisation of the Slider or the bounded
 		if(useslider==true){
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-//			inpane.add(slider,BorderLayout.EAST);
 			test2.add(slider,BorderLayout.EAST);
 		}
 		else{
-//			inpane.add(myBounded,BorderLayout.EAST);
 			test2.add(myBounded,BorderLayout.EAST);
 		}
 		return inpane;
 	}
 	
 	
+	/*-------------------------------Get the Panel with the MODIFIED value-----------------------------------*/	
 	public JPanel getOutputPanel() {
 		JPanel outpane = new JPanel(new BorderLayout());
-		if(useslider==true){
-			myBounded.setValue(slider.getValue().longValue());
-		}
-		else	myBounded.updateValue();
-		
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
-		
-		try{
-			f.set(o,myBounded);
-			JTextField jtf2 = new JTextField(myBounded.getValue().toString());
-			jtf2.setEditable(false);
-			outpane.add(jtf2,BorderLayout.EAST);
-		}catch(Exception e){e.printStackTrace();}
+		//Handle the value that has been modified
+		handle();
+		//Set the Tunable's new value
+		JTextField jtf2 = new JTextField(myBounded.getValue().toString());
+		jtf2.setEditable(false);
+		outpane.add(jtf2,BorderLayout.EAST);
 		return outpane;
 	}
 	
 	
+	/*-------------------------------Handle the value of the BoundedObject-----------------------------------*/
 	public void handle() {
 		if(useslider==true){
 			myBounded.setValue(slider.getValue().longValue());

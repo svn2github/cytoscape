@@ -7,125 +7,95 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 import javax.swing.*;
-
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import java.lang.Object;
 
 
 public class DoubleHandler implements Guihandler{
-	
 	Field f;
 	Tunable t;
 	Object o;
 	JTextField jtf;	
 	String title;
-	Double myDouble;
 	Double value = null;
 	String newline = System.getProperty("line.separator");
-	
-	
-	
+
+	/*-------------------------------Constructor-----------------------------------*/		
 	public DoubleHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.t=t;
 		this.o=o;
 		this.title=t.description();					
-		try{
-			this.myDouble = (Double)f.get(o);
-		}catch(Exception e){e.printStackTrace();}
 		jtf = new JTextField(11);
 	}
+
 	
-	
-	public void handle(){
-		try{
-			value = Double.parseDouble(jtf.getText());
-		}catch(NumberFormatException nfe){
-				try{
-					value = Double.parseDouble(f.get(o).toString());
-					JOptionPane.showMessageDialog(null,"A double was Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
-				}catch(Exception e){e.printStackTrace();}
-			}
-		try {
-				f.set(o,value.doubleValue());
-		} catch (Exception e) { e.printStackTrace();}
-	}
-	
-	
-	public JPanel getInputPanel(){
-//		JPanel inpane = new JPanel(new BorderLayout());
-		
+	/*-------------------------------Get the Panel with the INITIAL value-----------------------------------*/	
+	public JPanel getPanel(){
 		JPanel inpane = new JPanel(new GridLayout());
 		JPanel test1 = new JPanel(new BorderLayout());
 		JPanel test2 = new JPanel();
 		inpane.add(test1);
-		inpane.add(test2);
-		
+		inpane.add(test2);	
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-//		inpane.add(jta);
 		test1.add(jta,BorderLayout.CENTER);
 		jta.setBackground(null);
 		jta.setEditable(false);
-		jtf.setText(myDouble.toString());
+		//Set the JTextField with the initial Double value
+		try{
+			jtf.setText(((Double)f.get(o)).toString());
+		}catch(Exception e){e.printStackTrace();}
 		jtf.addActionListener(new myActionListener());
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
-//		inpane.add(jtf,BorderLayout.EAST);
 		test2.add(jtf,BorderLayout.EAST);
 		return inpane;
 	}
-	
+
 	
 	private class myActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae){
-			try{
-				value = Double.parseDouble(jtf.getText());
-				jtf.setBackground(Color.white);
-			}catch(NumberFormatException nfe){
-					jtf.setBackground(Color.red);
-					
-					try{
-						jtf.setText(f.get(o).toString());
-						JOptionPane.showMessageDialog(null, "A double is Expected"+newline+"Value will be set to default = "+f.get(o), "Error",JOptionPane.ERROR_MESSAGE);
-					}catch(Exception e){e.printStackTrace();}
-				}
+			handle();
 		}
 	}
 	
-
-
+	
+	/*-------------------------------Get the Panel with the MODIFIED value-----------------------------------*/		
 	public JPanel getOutputPanel(){
 		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
+		//handle the new value in the field
+		handle();
 		try{
-			jtf.setBackground(Color.white);
-			value = Double.parseDouble(jtf.getText());
-		}catch(NumberFormatException nfe){
-				jtf.setBackground(Color.red);
-				try{
-					jtf.setText(f.get(o).toString());
-					value = Double.parseDouble(f.get(o).toString());
-					JOptionPane.showMessageDialog(null, "A double is Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
-				}catch(Exception e){e.printStackTrace();}
-			}
-		try{
-			if(myDouble!=null)f.set(o,value.doubleValue());
 			JTextField jtf2 = new JTextField(f.get(o).toString());
 			jtf2.setEditable(false);
 			outpane.add(jtf2,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
 		return outpane;
 	}
-		
 	
-	public void	setValue(Object object){
+	
+	/*-------------------------------Get the new value from the JTextField-----------------------------------*/	
+	public void handle(){
 		try{
-			f.set(o, object);
-		}catch(Exception e){e.printStackTrace();}
+			jtf.setBackground(Color.white);
+			value = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				//get the Text from the Field and set it to Double format
+				try{
+					jtf.setBackground(Color.red);
+					value = Double.parseDouble(f.get(o).toString());
+					JOptionPane.showMessageDialog(null,"A double was Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
+				}catch(Exception e){e.printStackTrace();}
+			}
+		//set the new value to the Double object
+		try {
+				f.set(o,value.doubleValue());
+		} catch (Exception e) { e.printStackTrace();}
 	}
 	
 	public Tunable getTunable() {

@@ -5,49 +5,39 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import javax.swing.JComboBox;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import Utils.ListSingleSelection;
 
 
-public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
+public class ListSingleHandler<T>implements Guihandler{
 	Field f;
 	Object o;
 	Tunable t;
-	
 	ListSingleSelection<T> LSS;
-	JList jlist;
 	private T selected;
 	Boolean available;
-	ArrayList<T> array;
 	JComboBox combobox;
 	String days;
 	String title;
 	
-
-	@SuppressWarnings("unchecked")
+	/*-------------------------------Constructor-----------------------------------*/	
 	public ListSingleHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.o=o;
-		this.t=t;
-		try{
-			LSS = (ListSingleSelection<T>) f.get(o);
-		}catch(Exception e){e.printStackTrace();}
+		this.t=t;		
 		this.title=t.description();
 		this.days=f.getName();
 	}
 
-	public JPanel getInputPanel(){
-		
-//		JPanel inpane = new JPanel(new BorderLayout());
+	
+	@SuppressWarnings("unchecked")
+	/*-------------------------------Get the Panel with the INITIAL items that are in the input List-----------------------------------*/	
+	public JPanel getPanel(){
 		JPanel inpane = new JPanel(new GridLayout());
 		JPanel test1 = new JPanel(new BorderLayout());
 		JPanel test2 = new JPanel();
@@ -57,18 +47,24 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-//		inpane.add(jta);
 		test1.add(jta,BorderLayout.CENTER);
 		jta.setBackground(null);
-		jta.setEditable(false);		combobox = new JComboBox(LSS.getPossibleValues().toArray());
+		jta.setEditable(false);
+		//Set the values from the input into the SingleSelection list
+		try{
+			LSS = (ListSingleSelection<T>) f.get(o);
+		}catch(Exception e){e.printStackTrace();}
+		//Set the JComboBox with the values from the input list
+		combobox = new JComboBox(LSS.getPossibleValues().toArray());
 		combobox.insertItemAt(days,0);
 		combobox.setSelectedIndex(0);
 		combobox.addActionListener(new myActionListener1());
 		test2.add(combobox,BorderLayout.EAST);
-//		inpane.add(combobox,BorderLayout.EAST);
 		return inpane;
 	}
 
+	
+	/*-------------------------------Detect the item that are selected-----------------------------------*/	
 	public class myActionListener1 implements ActionListener{
 		@SuppressWarnings("unchecked")
 		public void actionPerformed(ActionEvent event){
@@ -76,7 +72,21 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 		}
 	}
 
+	
+	/*-------------------------------Get the Panel which displays the Item that has been selected from the list-----------------------------------*/		
+	public JPanel getOutputPanel() {
+		JPanel outpane = new JPanel();
+		JTextArea jta = new JTextArea(title);
+		jta.setBackground(null);
+		outpane.add(jta,BorderLayout.WEST);
+		handle();
+		JTextField jtf2 = new JTextField(LSS.getSelectedValue().toString());
+		jtf2.setEditable(false);
+		outpane.add(jtf2,BorderLayout.EAST);
+		return outpane;
+	}
 
+	/*-------------------------------Set the SingleSelectionList Object with the item that has been selected-----------------------------------*/	
 	public void handle() {
 		if(selected!=null){
 			LSS.setSelectedValue(selected);
@@ -85,32 +95,13 @@ public class ListSingleHandler<T>implements Guihandler,ListSelectionListener{
 			}catch(Exception e){e.printStackTrace();}
 		}
 	}
-		
 
-
-	public JPanel getOutputPanel() {
-		JPanel outpane = new JPanel();
-		JTextArea jta = new JTextArea(title);
-		jta.setBackground(null);
-		outpane.add(jta,BorderLayout.WEST);
-		if(selected!=null){
-			LSS.setSelectedValue(selected);	
-			try{
-				f.set(o,LSS);
-				JTextField jtf2 = new JTextField(LSS.getSelectedValue().toString());
-				jtf2.setEditable(false);
-				outpane.add(jtf2,BorderLayout.EAST);
-			}catch(Exception e){e.printStackTrace();}
-		}
-		return outpane;
-	}
-
-
-	@SuppressWarnings("unchecked")
-	public void valueChanged(ListSelectionEvent e) {
-		selected = (T) jlist.getSelectedValue();
-		System.out.println(selected);
-	}
+	
+	
+//	@SuppressWarnings("unchecked")
+//	public void valueChanged(ListSelectionEvent e) {
+//		selected = (T) jlist.getSelectedValue();
+//	}
 
 	public Object getObject() {
 		return o;

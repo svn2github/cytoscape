@@ -7,54 +7,33 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 import javax.swing.*;
-
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import java.lang.Object;
 
 
 public class LongHandler implements Guihandler{
-	
 	Field f;
 	Tunable t;
 	Object o;
 	JTextField jtf;	
 	String title;
-	Long myLong;
 	Double value = null;
+	String newline = System.getProperty("line.separator");
 	
 	
-	String newline=System.getProperty("line.separator");
-	
-	
+	/*-------------------------------Constructor-----------------------------------*/		
 	public LongHandler(Field f, Object o, Tunable t){
 		this.f=f;
 		this.t=t;
 		this.o=o;
 		this.title=t.description();					
-		try{
-			this.myLong=(Long)f.get(o);
-		}catch(Exception e){e.printStackTrace();}
 		jtf = new JTextField(11);
 	}
 	
-	
-	public void handle(){
-		try{
-			value = Double.parseDouble(jtf.getText());
-		}catch(NumberFormatException nfe){
-				try{
-					value = Double.parseDouble(f.get(o).toString());
-					JOptionPane.showMessageDialog(null,"A Long was Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
-				}catch(Exception e){e.printStackTrace();}
-			}
-		try {
-				f.set(o,value.longValue());
-		} catch (Exception e) { e.printStackTrace();}
-	}
-	
-	public JPanel getInputPanel(){
-//		JPanel inpane = new JPanel(new BorderLayout());
+		
+	/*-------------------------------Get the Panel with the INITIAL value-----------------------------------*/	
+	public JPanel getPanel(){
 		JPanel inpane = new JPanel(new GridLayout());
 		JPanel test1 = new JPanel(new BorderLayout());
 		JPanel test2 = new JPanel();
@@ -63,15 +42,16 @@ public class LongHandler implements Guihandler{
 		JTextArea jta = new JTextArea(title);
 		jta.setLineWrap(true);
 		jta.setWrapStyleWord(true);
-//		inpane.add(jta);
 		test1.add(jta,BorderLayout.CENTER);
 		jta.setBackground(null);
 		jta.setEditable(false);
-		jtf.setText(myLong.toString());
+		//Set the JTextField with the initial Long value
+		try{
+			jtf.setText(((Long)f.get(o)).toString());
+		}catch(Exception e){e.printStackTrace();}
 		jtf.addActionListener(new myActionListener());
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		test2.add(jtf,BorderLayout.EAST);
-//		inpane.add(jtf,BorderLayout.EAST);
 		return inpane;
 	}
 
@@ -79,39 +59,20 @@ public class LongHandler implements Guihandler{
 	
 	private class myActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae){
-			try{
-				value = Double.parseDouble(jtf.getText());
-				jtf.setBackground(Color.white);
-			}catch(NumberFormatException nfe){
-					jtf.setBackground(Color.red);
-					
-					try{
-						jtf.setText(f.get(o).toString());
-						JOptionPane.showMessageDialog(null, "A long is Expected"+newline+"Value will be set to default = "+f.get(o), "Error",JOptionPane.ERROR_MESSAGE);
-					}catch(Exception e){e.printStackTrace();}
-				}
+			handle();
 		}
 	}
 	
 
+	/*-------------------------------Get the Panel with the MODIFIED value-----------------------------------*/		
 	public JPanel getOutputPanel(){
 		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
+		//handle the new value in the field
+		handle();
 		try{
-			jtf.setBackground(Color.white);
-			value = Double.parseDouble(jtf.getText());
-		}catch(NumberFormatException nfe){
-				jtf.setBackground(Color.red);
-			try{
-					jtf.setText(f.get(o).toString());
-					value = Double.parseDouble(f.get(o).toString());
-					JOptionPane.showMessageDialog(null, "A long is Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
-				}catch(Exception e){e.printStackTrace();}
-			}
-		try{
-			if(myLong!=null)f.set(o,value.longValue());
 			JTextField jtf2 = new JTextField(f.get(o).toString());
 			jtf2.setEditable(false);
 			outpane.add(jtf2,BorderLayout.EAST);
@@ -119,12 +80,26 @@ public class LongHandler implements Guihandler{
 		return outpane;
 	}
 		
-
-	public void	setValue(Object object){
+	
+	/*-------------------------------Get the new value from the JTextField-----------------------------------*/	
+	public void handle(){
 		try{
-			f.set(o, object);
-		}catch(Exception e){e.printStackTrace();}
+			jtf.setBackground(Color.white);
+			value = Double.parseDouble(jtf.getText());
+		}catch(NumberFormatException nfe){
+				//get the Text from the Field and set it to Long format
+				try{
+					jtf.setBackground(Color.red);
+					value = Double.parseDouble(f.get(o).toString());
+					JOptionPane.showMessageDialog(null,"A Long was Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
+				}catch(Exception e){e.printStackTrace();}
+			}
+		//set the new value to the Long object
+		try {
+				f.set(o,value.longValue());
+		} catch (Exception e) { e.printStackTrace();}
 	}
+
 	
 	public Tunable getTunable() {
 		return t;
