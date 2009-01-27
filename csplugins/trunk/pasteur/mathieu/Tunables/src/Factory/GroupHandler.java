@@ -33,7 +33,7 @@ public class GroupHandler implements Guihandler{
 		return null;
 	}
 	
-	public JPanel getOutputPanel() {
+	public JPanel getOutputPanel(boolean changed) {
 		handle();
 		return null;
 	}
@@ -54,5 +54,10 @@ public class GroupHandler implements Guihandler{
 	}
 	public Object getObject() {
 		return group;
+	}
+
+	public boolean valueChanged() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import GuiInterception.Guihandler;
 import Tunable.Tunable;
 import java.lang.Object;
@@ -20,7 +21,8 @@ public class LongHandler implements Guihandler{
 	String title;
 	Double value = null;
 	String newline = System.getProperty("line.separator");
-	
+	boolean valueChanged=true;
+	Long Init;
 	
 	/*-------------------------------Constructor-----------------------------------*/		
 	public LongHandler(Field f, Object o, Tunable t){
@@ -47,6 +49,7 @@ public class LongHandler implements Guihandler{
 		jta.setEditable(false);
 		//Set the JTextField with the initial Long value
 		try{
+			Init = (Long)f.get(o);
 			jtf.setText(((Long)f.get(o)).toString());
 		}catch(Exception e){e.printStackTrace();}
 		jtf.addActionListener(new myActionListener());
@@ -65,18 +68,21 @@ public class LongHandler implements Guihandler{
 	
 
 	/*-------------------------------Get the Panel with the MODIFIED value-----------------------------------*/		
-	public JPanel getOutputPanel(){
+	public JPanel getOutputPanel(boolean changed){
 		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
 		//handle the new value in the field
-		handle();
+		//handle();
 		try{
-			JTextField jtf2 = new JTextField(f.get(o).toString());
+			JTextField jtf2 = new JTextField();
+			if(changed==true)jtf2.setText(f.get(o).toString());
+			else jtf2.setText(Init.toString());		
 			jtf2.setEditable(false);
 			outpane.add(jtf2,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
+		valueChanged=true;
 		return outpane;
 	}
 		
@@ -109,5 +115,15 @@ public class LongHandler implements Guihandler{
 	}
 	public Object getObject() {
 		return o;
+	}
+
+
+
+	public boolean valueChanged(){
+		handle();
+		try{
+			if(f.get(o).equals(Init))valueChanged=false;
+		}catch(Exception e){e.printStackTrace();}
+		return valueChanged;
 	}
 }

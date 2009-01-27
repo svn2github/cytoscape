@@ -21,6 +21,8 @@ public class FloatHandler implements Guihandler{
 	String title;
 	Double value = null;
 	String newline = System.getProperty("line.separator");
+	boolean valueChanged=true;
+	Float Init;
 
 	/*-------------------------------Constructor-----------------------------------*/		
 	public FloatHandler(Field f, Object o, Tunable t){
@@ -46,6 +48,7 @@ public class FloatHandler implements Guihandler{
 		jta.setEditable(false);
 		//Set the JTextField with the initial Float value
 		try{
+			Init = (Float)f.get(o);
 			jtf.setText(((Float)f.get(o)).toString());
 		}catch(Exception e){e.printStackTrace();}
 		jtf.addActionListener(new myActionListener());
@@ -63,18 +66,21 @@ public class FloatHandler implements Guihandler{
 	
 	
 	/*-------------------------------Get the Panel with the MODIFIED value-----------------------------------*/		
-	public JPanel getOutputPanel(){
+	public JPanel getOutputPanel(boolean changed){
 		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
 		//handle the new value in the field
-		handle();
+		//handle();
 		try{
-			JTextField jtf2 = new JTextField(f.get(o).toString());
+			JTextField jtf2 = new JTextField();
+			if(changed==true)jtf2.setText(f.get(o).toString());
+			else jtf2.setText(Init.toString());		
 			jtf2.setEditable(false);
 			outpane.add(jtf2,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
+		valueChanged=true;
 		return outpane;
 	}
 	
@@ -106,5 +112,14 @@ public class FloatHandler implements Guihandler{
 	}
 	public Object getObject() {
 		return o;
+	}
+
+
+	public boolean valueChanged(){
+		handle();
+		try{
+			if(f.get(o).equals(Init))valueChanged=false;
+		}catch(Exception e){e.printStackTrace();}
+		return valueChanged;
 	}
 }

@@ -17,6 +17,8 @@ public class BooleanHandler implements Guihandler{
 	Object o;
 	JCheckBox jcb;	
 	String title;
+	Boolean Init;
+	boolean valueChanged=true;
 
 	/*-------------------------------Constructor-----------------------------------*/	
 	public BooleanHandler(Field f, Object o, Tunable t){
@@ -43,6 +45,7 @@ public class BooleanHandler implements Guihandler{
 		jta.setEditable(false);
 		//Set the CheckBox with the Boolean Tunable
 		try{
+			Init = (Boolean) f.get(o);
 			jcb.setSelected((Boolean)f.get(o));
 		}catch(Exception e){e.printStackTrace();}
 		jcb.addActionListener(new myActionListener());
@@ -52,19 +55,22 @@ public class BooleanHandler implements Guihandler{
 
 	
 	/*-------------------------------Get the Panel with the MODIFIED value-----------------------------------*/	
-	public JPanel getOutputPanel() {
+	public JPanel getOutputPanel(boolean changed) {
 		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
 		//Handle the value that has been modified
-		handle();	
+		//handle();
 		try{
 			JCheckBox checkbox = new JCheckBox();
-			checkbox.setSelected((Boolean) f.get(o));
+			if(changed==true)checkbox.setSelected((Boolean) f.get(o));
+			else checkbox.setSelected(Init);
+			//checkbox.setSelected((Boolean) f.get(o));
 			outpane.add(checkbox,BorderLayout.EAST);
 			checkbox.setEnabled(false);
 		}catch(Exception e){e.printStackTrace();}
+		valueChanged=true;
 	return outpane;
 	}
 	
@@ -91,5 +97,14 @@ public class BooleanHandler implements Guihandler{
 	}
 	public Object getObject() {
 		return o;
+	}
+
+
+	public boolean valueChanged(){
+		handle();
+		try{
+			if(f.get(o).equals(Init))valueChanged=false;
+		}catch(Exception e){e.printStackTrace();}
+		return valueChanged;
 	}
 }

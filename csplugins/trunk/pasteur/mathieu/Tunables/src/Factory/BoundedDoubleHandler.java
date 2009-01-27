@@ -23,7 +23,8 @@ public class BoundedDoubleHandler implements Guihandler {
 	Boolean useslider=false;
 	mySlider slider;
 	Param[] parameters;
-
+	boolean valueChanged=true;
+	Double Init;
 	
 	/*-------------------------------Declaration of the BoundedObject with his parameters(description, useslider)-----------------------------------*/	
 	public BoundedDoubleHandler(Field f, Object o, Tunable t) {
@@ -33,6 +34,7 @@ public class BoundedDoubleHandler implements Guihandler {
 		//Set the BoundedObject with the Tunable
 		try{
 			this.myBounded = (BoundedDouble)f.get(o);
+			this.Init = myBounded.getValue();
 		}catch(IllegalAccessException iae){iae.printStackTrace();}
 		this.title = t.description();
 		this.parameters = t.flag();
@@ -64,17 +66,21 @@ public class BoundedDoubleHandler implements Guihandler {
 	
 	
 	/*-------------------------------Get the Panel with the MODIFIED value-----------------------------------*/	
-	public JPanel getOutputPanel() {
+	public JPanel getOutputPanel(boolean changed){
 		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
 		//Handle the value that has been modified
-		handle();
+		//handle();
+		
 		//Set the Tunable's new value
-		JTextField jtf2 = new JTextField(myBounded.getValue().toString());
+		JTextField jtf2 = new JTextField();
+		if(changed==true)jtf2.setText(myBounded.getValue().toString());
+		else jtf2.setText(Init.toString());
 		jtf2.setEditable(false);
 		outpane.add(jtf2,BorderLayout.EAST);
+		valueChanged=true;
 		return outpane;
 	}
 	
@@ -100,5 +106,11 @@ public class BoundedDoubleHandler implements Guihandler {
 	}
 	public Tunable getTunable() {
 		return t;
+	}
+
+	public boolean valueChanged(){
+		handle();
+		if(myBounded.equals(Init))valueChanged=false;
+		return valueChanged;
 	}
 }

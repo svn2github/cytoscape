@@ -16,6 +16,8 @@ public class StringHandler implements Guihandler, CaretListener{
 	Object o;	
 	JTextField jtf;
 	String title;
+	boolean valueChanged=true;
+	String Init;
 	
 	/*-------------------------------Constructor-----------------------------------*/	
 	public StringHandler(Field f, Object o, Tunable t){
@@ -39,10 +41,13 @@ public class StringHandler implements Guihandler, CaretListener{
 		test1.add(jta,BorderLayout.CENTER);
 		jta.setBackground(null);
 		jta.setEditable(false);
-		//Set the TextField with the Tunable's text
+		
 		try{
+			//Set the TextField with the Tunable's text
 			jtf.setText(f.get(o).toString());
 			jtf.addCaretListener(this);
+			//Get the initial value
+			Init = f.get(o).toString();
 		}catch (Exception e){e.printStackTrace();}		
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		test2.add(jtf,BorderLayout.EAST);
@@ -51,16 +56,19 @@ public class StringHandler implements Guihandler, CaretListener{
 
 		
 	/*-------------------------------Get the Panel with the MODIFIED value-----------------------------------*/
-	public JPanel getOutputPanel() {
+	public JPanel getOutputPanel(boolean changed) {
 		JPanel outpane = new JPanel(new BorderLayout());
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
 		try{
-			JTextField jtf2 = new JTextField(f.get(o).toString());
+			JTextField jtf2 = new JTextField();
+			if(changed==true)jtf2.setText(f.get(o).toString());
+			else jtf2.setText(Init);
 			jtf2.setEditable(false);
 			outpane.add(jtf2,BorderLayout.EAST);
 		}catch(Exception e){e.printStackTrace();}
+		valueChanged=true;
 		return outpane;
 	}	
 
@@ -79,6 +87,15 @@ public class StringHandler implements Guihandler, CaretListener{
 		handle();
 	}
 
+	public boolean valueChanged(){
+		handle();
+		try{
+			if(f.get(o).equals(Init))valueChanged=false;
+		}catch(Exception e){e.printStackTrace();}
+		return valueChanged;
+	}
+
+	
 	public Tunable getTunable(){
 		return t;
 	}
