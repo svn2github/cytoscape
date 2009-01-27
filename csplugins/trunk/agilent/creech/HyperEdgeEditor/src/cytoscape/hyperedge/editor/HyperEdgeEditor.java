@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Jul 21 10:41:18 2006
-* Modified:     Thu Sep 25 09:58:42 2008 (Michael L. Creech) creech@w235krbza760
+* Modified:     Fri Jan 23 10:37:45 2009 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Fri Jan 23 10:33:36 2009 (Michael L. Creech) creech@w235krbza760
+*  Removed arrowShapeToArrow() in favor of inhertied  method.
 * Wed Dec 19 14:25:53 2007 (Michael L. Creech) creech@w235krbza760
 *  Removed addNodeContextMenuItems() and addEdgeContextMenuItems().
 * Sun Oct 21 16:15:50 2007 (Michael L. Creech) creech@w235krbza760
@@ -285,26 +287,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         }
     }
 
-    // MLC 10/20/07 BEGIN:
-    private Arrow arrowShapeToArrow(ArrowShape as) {
-        if (as == ArrowShape.ARROW) {
-            return Arrow.ARROW;
-        } else if (as == ArrowShape.CIRCLE) {
-            return Arrow.CIRCLE;
-        } else if (as == ArrowShape.DELTA) {
-            return Arrow.DELTA;
-        } else if (as == ArrowShape.DIAMOND) {
-            return Arrow.DIAMOND;
-        } else if (as == ArrowShape.NONE) {
-            return Arrow.NONE;
-        } else if (as == ArrowShape.T) {
-            return Arrow.T;
-        }
-
-        return null;
-    }
-
-    // MLC 10/20/07 END.
+ 
     protected void generateNodePaletteEntries(String controllingAttribute) {
         NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager()
                                                 .getVisualStyle()
