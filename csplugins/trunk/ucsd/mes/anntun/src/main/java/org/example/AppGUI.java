@@ -18,43 +18,34 @@ public class AppGUI
         });
     }
 
-	private static JFrame frame;
-
     private static void createAndShowGUI() {
-        frame = new JFrame("Tunable Demo");
+		JFrame frame = new JFrame("Tunable Demo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(true);
+		TunableInterceptor ti = new GuiTunableInterceptor(frame);
 		JPanel p = new JPanel();
-		JButton b = new JButton("Process Command");
-		b.addActionListener( new MyActionListener() ); 
-		p.add(b);
+		p.add( new JButton(new MyAction("Print Something", new PrintSomething(), ti)));
+		p.add( new JButton(new MyAction("JActiveModules", new JActiveModules(), ti)));
+		p.add( new JButton(new MyAction("SearchActive", new SearchActive(), ti)));
         frame.setContentPane(p);
         frame.pack();
         frame.setVisible(true);
     }
 
-	// the command comes from wherever
-	// it's static here to illustrate that each time we run the command
-	// the changes we make the various fields persist in the object
-	private static Command com = new JActiveModules();
+	private static class MyAction extends AbstractAction {
+		Command com;
+		TunableInterceptor ti;
+		MyAction(String title, Command com, TunableInterceptor ti) {
+			super(title);
+			this.com = com;
+			this.ti = ti;
+		}
+		public void actionPerformed(ActionEvent a) {
+			// intercept the command and modify any tunable fields
+			ti.intercept(com);
 
-	private static class MyActionListener implements ActionListener {
-			TunableInterceptor ti; 
-			public MyActionListener() {
-				// create an interceptor for this context
-				// in this cases it's a GUI, so it needs a parent Component
-				// to render the dialog
-				ti = new GuiTunableInterceptor(frame);
-			}
-			
-			public void actionPerformed(ActionEvent ae) {
-
-				// intercept the command and modify any tunable fields
-				ti.intercept(com);
-
-				// execute the command
-				com.execute();
-			}
-		
+			// execute the command
+			com.execute();
+		}
 	}
 }

@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 public class CollapsablePanel extends JPanel implements ActionListener {
 	
-	private static final String expandName = "Expand >>";
-	private static final String collapseName = "<< Collapse";
+	private static final String expandName = "+";
+	private static final String collapseName = "-";
 
 	private boolean expandPaneVisible;
 
@@ -28,20 +28,19 @@ public class CollapsablePanel extends JPanel implements ActionListener {
 		listInPane = new ArrayList<Component>(); 
 
 		setBorder(BorderFactory.createTitledBorder(name));
-		setLayout(new BorderLayout());
+		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
 
 		myExpandButton = new JToggleButton(expandName);		
-		myExpandButton.setPreferredSize (new Dimension (90, 20));
-		myExpandButton.setMargin (new Insets (2, 2, 2, 2));
 		myExpandButton.addActionListener(this);
 
 		buttonPanel = new JPanel();
-		buttonPanel.add(myExpandButton); 
-		super.add(buttonPanel,BorderLayout.EAST);
+		buttonPanel.setLayout(new BorderLayout());
+		buttonPanel.add(myExpandButton,BorderLayout.WEST); 
+		super.add(buttonPanel);
 
 		contentsPanel = new JPanel();
 		contentsPanel.setLayout(new BoxLayout(contentsPanel,BoxLayout.PAGE_AXIS));
-		super.add(contentsPanel,BorderLayout.WEST);
+		super.add(contentsPanel);
 	
 		expandPaneVisible = false;
 	}
