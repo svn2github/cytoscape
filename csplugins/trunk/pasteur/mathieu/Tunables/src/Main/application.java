@@ -15,16 +15,13 @@ public class application{
 	private static JFrame mainframe = new JFrame("TunableSampler");;
 	private static JFrame outputframe = new JFrame("Results");
 	private static JPanel mainpane;
-	
 	private static JPanel highpane;
 	private static JPanel lowpane;
 	private static Box buttonBox;
-	
 	public static JButton button;
 	public static command commander = new input();
 	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
 	public static TunableInterceptor ti = null;
-
 	static Properties InputProperties = new Properties();
 	static TunableInterceptor lp = new LoadPropsInterceptor(InputProperties);
 	static Properties store = new Properties();
@@ -37,26 +34,16 @@ public class application{
     }
 
 	public static void CreateGUIandStart(){
+		//Set the mainframe with the panels
 		mainpane = new JPanel();
 		highpane = new JPanel();
-		lowpane = new JPanel();
-		
+		lowpane = new JPanel();		
 		mainframe.setResizable(false);
-		outputframe.setResizable(false);
 		mainpane.setLayout(new BoxLayout(mainpane,BoxLayout.PAGE_AXIS));
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainframe.setVisible(true);
-		buttonBox=Box.createHorizontalBox();
-		lowpane.add(buttonBox);
-		lowpane.setBorder (BorderFactory.createEmptyBorder (10, 10, 10, 10));
-		
-		mainpane.add(highpane);
-		mainpane.add(lowpane);
-	
-		ti = new GuiTunableInterceptor(mainframe,outputframe,highpane);
-		ti.intercept(commander);
-		lp.intercept(commander);
-		
+		//Create the panel which will handle the 3 buttons
+		buttonBox = Box.createHorizontalBox();
 		buttonBox.add(button=createButton("save settings","save",'s'));
 		buttonBox.add(Box.createHorizontalGlue());
 		buttonBox.add(Box.createHorizontalStrut(4));
@@ -64,24 +51,36 @@ public class application{
 		buttonBox.add(Box.createHorizontalStrut(4));
 		buttonBox.add(button=createButton("done","done",'d'));
 		buttonBox.add(Box.createHorizontalStrut(10));
-		
+		lowpane.add(buttonBox);
+		lowpane.setBorder (BorderFactory.createEmptyBorder (10, 10, 10, 10));	
+		mainpane.add(highpane);
+		mainpane.add(lowpane);
+		//Declare the factories to catch the tunables, and use them
+		ti = new GuiTunableInterceptor(mainframe,outputframe,highpane);
+		//Create a handler for each tunable (by switching types)
+		ti.intercept(commander);
+		//Create a handler for properties for each kind of tunable
+		lp.intercept(commander);		
 		if(ti!=null){
+			//Thanks to handlers, get the Panels for each tunable
 			ti.GetInputPanes();
+			//Add the properties for each tunables into the Property list
 			lp.addProperties();
-			System.out.println("InputProperties = " + InputProperties);
+//			System.out.println("InputProperties = " + InputProperties);
 		}
 		else System.out.println("No input");
+		outputframe.setResizable(false);
 		mainframe.setContentPane(mainpane);
 		mainframe.pack();
 	}
 
 	
 
+/*------------------Creation of Buttons with their ActionListeners--------------------------*/
 	@SuppressWarnings("unused")
 	private static JButton createButton (String title,String command){
 		return createButton (title,command,'\0');
-	}
-	
+	}	
 	private static JButton createButton(String title,String command,char mnemonic){
 		JButton button = new JButton(title);
 		button.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED,Color.gray.brighter(),Color.gray.darker()));
@@ -90,8 +89,6 @@ public class application{
 		if(mnemonic!='\0') button.setMnemonic(mnemonic);
 		return button;
 	}
-	
-
 	private static class myActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae){
 			String command = ae.getActionCommand();
