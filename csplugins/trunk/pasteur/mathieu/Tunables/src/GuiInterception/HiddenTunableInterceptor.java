@@ -20,15 +20,24 @@ public abstract class HiddenTunableInterceptor<T extends Handler> implements Tun
 	}
 	
 	
-	public final void intercept(command command){	
+	public final void intercept(command command){
+		// Find each public field in the class.
 		for(Field field : command.getClass().getFields()){
+			// See if the field is annotated as a Tunable.
 			if(field.isAnnotationPresent(Tunable.class)){
 				try{
 					Tunable tunable = field.getAnnotation(Tunable.class);
+					// Get a handler for this particular field type and
+					// add it to the list.
+					
 					T handler = factory.getHandler(field, command, tunable);
 					if(handler!=null) handlerList.add(handler);
-					else System.out.println("Tunable error");
-				}catch (Exception e){e.printStackTrace();}			
+					else
+						System.out.println("No handler for type: " + field.getType().getName());
+				}catch (Throwable ex) {
+					System.out.println("tunable intercept failed: " + field.toString());
+					ex.printStackTrace();
+				}			
 			}
 		}
 	}
