@@ -24,8 +24,6 @@ public class input implements command {
 	public Integer integer1 = new Integer(0);
 	@Tunable(description="Age",flag={Param.Slider},group="Birth")
 	public BoundedInteger bounded2 = new BoundedInteger(0,18,130,false,true);
-	@Tunable(description="How many $ for 1 euro ?",group="Euro/Dollar")
-	public BoundedDouble bounded3 = new BoundedDouble((double)1,(double)1.4,(double)1.8,true,true);
 	@Tunable(description="Do you like Tunables",group="Tunable Test")
 	public Boolean boolean1 = new Boolean(false);
 	
@@ -52,7 +50,6 @@ public class input implements command {
 			bigGroup1 = new Group(grouplist1,true);
 
 			ArrayList<String> grouplist2 = new ArrayList<String>();
-			grouplist2.add("Euro/Dollar");
 			grouplist2.add("Tunable Test");
 			grouplist2.add("Today's date");
 			bigGroup2 = new Group(grouplist2,true);
