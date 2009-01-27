@@ -10,8 +10,9 @@ public interface Guihandler extends Handler{
 	public void handle();
 	
 	public JPanel getPanel();
-	public JPanel getOutputPanel();
-	
+	public JPanel getOutputPanel(boolean changed);
+	public boolean valueChanged();
+		
 	public Tunable getTunable();
 	public Field getField();
 	public Object getObject();
