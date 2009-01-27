@@ -18,8 +18,8 @@ public class input implements command {
 	public ListMultipleSelection<String> monthNames;
 	@Tunable(description="Number",group="Today's date",flag=Param.Horizontal)
 	public ListSingleSelection<Integer> listOfIntegers;	
-	@Tunable(description ="Identification Code",group="Other")
-	public Long long1 = new Long((long)223248997);
+//	@Tunable(description ="Identification Code",group="Other")
+//	public Long long1 = new Long((long)223248997);
 	@Tunable(description="Number of children",group="Other")
 	public Integer integer1 = new Integer(0);
 	@Tunable(description="Age",flag={Param.Slider},group="Birth")
@@ -29,8 +29,8 @@ public class input implements command {
 	
 	@Tunable(description="Someone",flag=Param.Collapsable)
 	public Group bigGroup1;
-	@Tunable(description="Questions")
-	public Group bigGroup2;
+//	@Tunable(description="Questions")
+//	public Group bigGroup2;
 	
 //	@Tunable(description="BoundedLong",flag=Param.Slider,group="Group1")
 //	public BoundedLong bounded4 = new BoundedLong((long)-10,(long)9,(long)100,false,true);
@@ -47,12 +47,12 @@ public class input implements command {
 			grouplist1.add("Name");	
 			grouplist1.add("Birth");
 			grouplist1.add("Other");
-			bigGroup1 = new Group(grouplist1,true);
+			bigGroup1 = new Group(grouplist1,false);
 
 			ArrayList<String> grouplist2 = new ArrayList<String>();
 			grouplist2.add("Tunable Test");
 			grouplist2.add("Today's date");
-			bigGroup2 = new Group(grouplist2,true);
+			//bigGroup2 = new Group(grouplist2,true);
 
 			java.util.List<String> days = new ArrayList<String>();
 			days.add("Monday");
