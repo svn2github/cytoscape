@@ -1,7 +1,5 @@
 package Utils;
 
-
-@SuppressWarnings("serial")
 public class BoundedFloat extends AbstractBounded<Float> {
 
 	/**

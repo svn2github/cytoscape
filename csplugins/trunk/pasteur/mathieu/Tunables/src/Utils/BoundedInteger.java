@@ -1,7 +1,7 @@
 package Utils;
 
-@SuppressWarnings("serial")
 public class BoundedInteger extends AbstractBounded<Integer> {
+
 
 	/**
 	 * @param lower = lower bound of the object

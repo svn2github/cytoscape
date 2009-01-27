@@ -1,6 +1,5 @@
 package Utils;
 
-@SuppressWarnings("serial")
 public class BoundedLong extends AbstractBounded<Long> {
 
 	/**
