@@ -11,78 +11,71 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-public class CollapsablePanel extends JPanel implements ActionListener{
+public class CollapsablePanel extends JPanel implements ActionListener {
 	
-	private JToggleButton myExpandButton = null;
-	private boolean expandPaneVisible=false;
-	private static String ExpandName = "Expand>>";
-	private static String CollapseName = "<<Collapse";
-	private JPanel rightPanel = new JPanel();
-	private JPanel leftPanel = new JPanel();
-	List<Component> listInPane;
+	private static final String expandName = "Expand >>";
+	private static final String collapseName = "<< Collapse";
+
+	private boolean expandPaneVisible;
+
+	private JToggleButton myExpandButton; 
+	private JPanel buttonPanel; 
+	private JPanel contentsPanel;
+
+	private List<Component> listInPane;
 	
-	
-	public CollapsablePanel(String name){
-		this.listInPane = new ArrayList<Component>(); 
+	public CollapsablePanel(String name) {
+		listInPane = new ArrayList<Component>(); 
+
 		setBorder(BorderFactory.createTitledBorder(name));
 		setLayout(new BorderLayout());
 
-		add(rightPanel,BorderLayout.EAST);
-		rightPanel.add(myExpandButton = createButton(ExpandName));
+		myExpandButton = new JToggleButton(expandName);		
+		myExpandButton.setPreferredSize (new Dimension (90, 20));
+		myExpandButton.setMargin (new Insets (2, 2, 2, 2));
+		myExpandButton.addActionListener(this);
 
-		leftPanel.setLayout(new BoxLayout(leftPanel,BoxLayout.PAGE_AXIS));
-		add(leftPanel,BorderLayout.WEST);
+		buttonPanel = new JPanel();
+		buttonPanel.add(myExpandButton); 
+		super.add(buttonPanel,BorderLayout.EAST);
+
+		contentsPanel = new JPanel();
+		contentsPanel.setLayout(new BoxLayout(contentsPanel,BoxLayout.PAGE_AXIS));
+		super.add(contentsPanel,BorderLayout.WEST);
+	
+		expandPaneVisible = false;
 	}
 
 	public Component add(Component c) {
-		listInPane.add(c);	
+		listInPane.add(c);
 		return c;
 	}
+
 	public void add(Component c, Object o) {
-		listInPane.add(c);	
+		listInPane.add(c);
 	}
 	
-	
 	public void actionPerformed(ActionEvent e) {
-		Object source = e.getSource();
-		if(source == myExpandButton){
-			if(expandPaneVisible){
+		if (e.getSource() == myExpandButton) {
+			if (expandPaneVisible)
 				collapsePanel();
-				myExpandButton.setText (ExpandName);
-				expandPaneVisible = false;
-			}
-			else{
+			else
 				expandPanel();
-				myExpandButton.setText (CollapseName);
-				expandPaneVisible = true;
-			}
 		}
 	}
 
-	
-	private JToggleButton createButton(String name){
-		JToggleButton button = new JToggleButton(name);		
-		button.setPreferredSize (new Dimension (90, 20));
-		button.setMargin (new Insets (2, 2, 2, 2));
-		button.addActionListener(this);
-		return button;
+	private void collapsePanel() {
+		contentsPanel.removeAll();
+		myExpandButton.setText(expandName);
+		expandPaneVisible = false;
 	}
-	
-	
-	
-	
-	private void collapsePanel(){
-		leftPanel.removeAll();
-	}
-		
 		
 	private void expandPanel() {
 		for ( Component c : listInPane )
-			leftPanel.add(c);
-		updateUI();
+			contentsPanel.add(c);
 		invalidate();
 		validate();
+		myExpandButton.setText(collapseName);
+		expandPaneVisible = true;
 	}
-		
-	
 }

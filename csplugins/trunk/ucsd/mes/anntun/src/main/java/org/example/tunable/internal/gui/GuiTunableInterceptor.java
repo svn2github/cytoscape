@@ -77,25 +77,21 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 		if ( gh == null )
 			return getSimplePanel(title);
 
-		JPanel ret = null;
-
-		// figure out if the collapsable flag is set
-		for ( String s : gh.getTunable().flags() ) {
-			if ( s.equals("collapsable") ) {
-				ret = new CollapsablePanel(title);
-			}
-		}
-
-		if ( ret == null ) {
-			ret = getSimplePanel(title);
-		}
-
-		// Create an XOR panel
+		// See if we need to create an XOR panel
 		if ( gh.getTunable().xorChildren() ) {
 			JPanel p = new XorPanel(title,gh);
 			return p;
+
 		} else {
-			return ret;
+			// Figure out if the collapsable flag is set
+			for ( String s : gh.getTunable().flags() ) {
+				if ( s.equals("collapsable") ) {
+					return new CollapsablePanel(title);
+				}
+			}
+
+			// We're not collapsable, so return a normal jpanel
+			return getSimplePanel(title);
 		}
 	}
 
