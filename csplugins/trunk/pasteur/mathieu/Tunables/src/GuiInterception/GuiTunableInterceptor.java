@@ -213,20 +213,20 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 						if(parameters[i]==Param.Horizontal) horizontal = true;
 					if(horizontal){
 						listOutPane.getPossibleValues().get(nbpane).setLayout(new GridLayout());
-						listOutPane.getPossibleValues().get(nbpane).add(guihandler.getOutputPanel());
+						listOutPane.getPossibleValues().get(nbpane).add(guihandler.getOutputPanel(guihandler.valueChanged()));
 						horizontal=false;
 					}
 					else{
 						listOutPane.getPossibleValues().get(nbpane).setLayout(new BoxLayout(listOutPane.getPossibleValues().get(nbpane),BoxLayout.PAGE_AXIS));
 						listOutPane.getPossibleValues().get(nbpane).add(Box.createRigidArea(new Dimension(0, 5)));
-						listOutPane.getPossibleValues().get(nbpane).add(guihandler.getOutputPanel());
+						listOutPane.getPossibleValues().get(nbpane).add(guihandler.getOutputPanel(guihandler.valueChanged()));
 					}
 				}
 				else{
 					JPanel pane = new JPanel();
 					pane.setLayout(new BoxLayout(pane,BoxLayout.PAGE_AXIS));					
 					if(guihandler.getTunable().orientation()==Param.Horizontal) pane.setLayout(new BoxLayout(pane,BoxLayout.LINE_AXIS));
-					pane.add(guihandler.getOutputPanel());
+					pane.add(guihandler.getOutputPanel(guihandler.valueChanged()));
 					TitledBorder titleBorder = BorderFactory.createTitledBorder(group);
 					titleBorder.setTitleColor(Color.blue);
 					titleBorder.setTitlePosition(TitledBorder.LEFT);
@@ -258,11 +258,11 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 				if(collapsable){
 					int	val = listOutPane.getPossibleValues().size();
 					bigGroupPaneOutput = new JPanel();
-					for(int i=0;i<val;i++){
-						for(int j=0;j<testname.size();j++){
-							if(listOutPane.getPossibleValues().get(val-1-i).getName().equals(testname.get(j))){
-								bigGroupPaneOutput.add(listOutPane.getPossibleValues().get(val-1-i));
-								panesArray2.remove(val-1-i);
+					for(int i=0;i<testname.size();i++){
+						for(int j=0;j<val;j++){
+							if(listOutPane.getPossibleValues().get(val-1-j-i).getName().equals(testname.get(i))){
+								bigGroupPaneOutput.add(listOutPane.getPossibleValues().get(val-1-j-i));
+								panesArray2.remove(val-1-j-i);
 								break;
 							}
 						}
@@ -278,15 +278,14 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 					collapsable = false;
 				}
 				
-				
 				else{
 					int	val2 = listOutPane.getPossibleValues().size();
 					bigGroupPaneOutput = new JPanel();
-					for(int i=0;i<val2;i++){
-						for(int j=0;j<testname.size();j++){
-							if(listOutPane.getPossibleValues().get(val2-1-i).getName().equals(testname.get(j))){
-								bigGroupPaneOutput.add(listOutPane.getPossibleValues().get(val2-1-i));
-								panesArray2.remove(val2-1-i);
+					for(int i=0;i<testname.size();i++){
+						for(int j=0;j<val2;j++){
+							if(listOutPane.getPossibleValues().get(val2-1-j-i).getName().equals(testname.get(i))){
+								bigGroupPaneOutput.add(listOutPane.getPossibleValues().get(val2-1-j-i));
+								panesArray2.remove(val2-1-j-i);
 								break;
 							}
 						}
