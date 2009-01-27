@@ -24,6 +24,7 @@ public class ListSingleHandler<T>implements Guihandler{
 	JComboBox combobox;
 	String days;
 	String title;
+	boolean valueChanged=false;
 	
 	/*-------------------------------Constructor-----------------------------------*/	
 	public ListSingleHandler(Field f, Object o, Tunable t){
@@ -74,12 +75,12 @@ public class ListSingleHandler<T>implements Guihandler{
 
 	
 	/*-------------------------------Get the Panel which displays the Item that has been selected from the list-----------------------------------*/		
-	public JPanel getOutputPanel() {
+	public JPanel getOutputPanel(boolean changed) {
 		JPanel outpane = new JPanel();
 		JTextArea jta = new JTextArea(title);
 		jta.setBackground(null);
 		outpane.add(jta,BorderLayout.WEST);
-		handle();
+		//handle();
 		JTextField jtf2 = new JTextField(LSS.getSelectedValue().toString());
 		jtf2.setEditable(false);
 		outpane.add(jtf2,BorderLayout.EAST);
@@ -89,6 +90,7 @@ public class ListSingleHandler<T>implements Guihandler{
 	/*-------------------------------Set the SingleSelectionList Object with the item that has been selected-----------------------------------*/	
 	public void handle() {
 		if(selected!=null){
+			valueChanged=true;
 			LSS.setSelectedValue(selected);
 			try{
 				f.set(o,LSS);
@@ -111,5 +113,11 @@ public class ListSingleHandler<T>implements Guihandler{
 	}
 	public Field getField() {
 		return f;
+	}
+
+
+	public boolean valueChanged() {
+		handle();
+		return valueChanged;
 	}
 }
