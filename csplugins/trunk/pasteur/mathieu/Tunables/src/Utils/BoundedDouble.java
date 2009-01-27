@@ -1,19 +1,17 @@
 package Utils;
 
-/**
- * A bounded double object.
- */
+
+@SuppressWarnings("serial")
 public class BoundedDouble extends AbstractBounded<Double> {
 
 	/**
-	 * Creates a new Bounded object.
-	 *
-	 * @param lower  DOCUMENT ME!
-	 * @param initValue  DOCUMENT ME!
-	 * @param upper  DOCUMENT ME!
-	 * @param lowerStrict  DOCUMENT ME!
-	 * @param upperStrict  DOCUMENT ME!
+	 * @param lower = lower bound of the object
+	 * @param initValue = initial value of the object(has to be set within the bounds)
+	 * @param upper = upper bound of the object
+	 * @param lowerStrict = if true, the value can't be equal to lowerBound
+	 * @param upperStrict = if true, the value can't be equal to upperBound
 	 */
+	
 	public BoundedDouble(final Double lower, final Double initValue, final Double upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
