@@ -37,6 +37,7 @@
 package org.example.tunable.util;
 
 import java.util.List;
+import java.util.Arrays;
 
 
 /**
@@ -46,6 +47,15 @@ import java.util.List;
  */
 public class ListSingleSelection<T> extends ListSelection<T> {
 	private T selected;
+
+	/**
+	 * Creates a new ListSingleSelection object.
+	 *
+	 * @param values  DOCUMENT ME!
+	 */
+	public ListSingleSelection(final T ... values) {
+		super(Arrays.asList(values));
+	}
 
 	/**
 	 * Creates a new ListSingleSelection object.

@@ -36,7 +36,7 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 
 			// Find each public field in the class.
 			for (Field field : obj.getClass().getFields()) {
-				//System.out.println("field " + field.getName());
+				//System.out.println("PUBLIC field " + field.getName());
 
 				// See if the field is annotated as a Tunable.
    				if (field.isAnnotationPresent(Tunable.class)) {

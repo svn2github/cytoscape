@@ -30,6 +30,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 
 			// construct the gui
 			for (GuiHandler gh : lh) {
+				//System.out.println("handler: " + gh.getName());
 		
 				// hook up dependency listeners
 				String dep = gh.getDependency();

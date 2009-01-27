@@ -38,6 +38,7 @@ package org.example.tunable.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 
 /**
@@ -47,6 +48,16 @@ import java.util.List;
  */
 public class ListMultipleSelection<T> extends ListSelection<T> {
 	private List<T> selected;
+
+	/**
+	 * Creates a new ListMultipleSelection object.
+	 *
+	 * @param values  DOCUMENT ME!
+	 */
+	public ListMultipleSelection(final T ... values) {
+		super(Arrays.asList(values));
+		selected = new ArrayList<T>();
+	}
 
 	/**
 	 * Creates a new ListMultipleSelection object.

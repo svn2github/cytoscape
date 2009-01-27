@@ -27,6 +27,7 @@ public class AppGUI
 		p.add( new JButton(new MyAction("Print Something", new PrintSomething(), ti)));
 		p.add( new JButton(new MyAction("JActiveModules", new JActiveModules(), ti)));
 		p.add( new JButton(new MyAction("SearchActive", new SearchActive(), ti)));
+		p.add( new JButton(new MyAction("Tunable Sampler", new TunableSampler(), ti)));
         frame.setContentPane(p);
         frame.pack();
         frame.setVisible(true);
