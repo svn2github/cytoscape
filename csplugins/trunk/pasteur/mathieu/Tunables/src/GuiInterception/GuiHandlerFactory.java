@@ -36,8 +36,6 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			return new ListSingleHandler<String>(f,o,t);
 		else if(type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(f,o,t);		
-		else if(type == myButton.class)
-			return new ButtonHandler(f,o,t);
 		else if(type == Group.class)
 			return new GroupHandler(f,o,t);
 		return null;
