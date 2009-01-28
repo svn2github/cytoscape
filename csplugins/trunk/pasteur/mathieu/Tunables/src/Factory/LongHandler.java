@@ -1,129 +1,64 @@
 package Factory;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 import javax.swing.*;
 
-import GuiInterception.Guihandler;
-import Tunable.Tunable;
-import java.lang.Object;
+import Tunable.*;
+import GuiInterception.AbstractGuiHandler;
 
 
-public class LongHandler implements Guihandler{
-	Field f;
-	Tunable t;
-	Object o;
-	JTextField jtf;	
-	String title;
+public class LongHandler extends AbstractGuiHandler {
+
+	JTextField jtf;
 	Double value = null;
+	Long myLong;
 	String newline = System.getProperty("line.separator");
-	boolean valueChanged=true;
-	Long Init;
-	
-	/*-------------------------------Constructor-----------------------------------*/		
-	public LongHandler(Field f, Object o, Tunable t){
-		this.f=f;
-		this.t=t;
-		this.o=o;
-		this.title=t.description();					
-		jtf = new JTextField(11);
-	}
-	
-		
-	/*-------------------------------Get the Panel with the INITIAL value-----------------------------------*/	
-	public JPanel getPanel(){
-		JPanel inpane = new JPanel(new GridLayout());
-		JPanel test1 = new JPanel(new BorderLayout());
-		JPanel test2 = new JPanel();
-		inpane.add(test1);
-		inpane.add(test2);
-		JTextArea jta = new JTextArea(title);
-		jta.setLineWrap(true);
-		jta.setWrapStyleWord(true);
-		test1.add(jta,BorderLayout.CENTER);
-		jta.setBackground(null);
-		jta.setEditable(false);
-		//Set the JTextField with the initial Long value
+
+
+	public LongHandler(Field f, Object o, Tunable t) {
+		super(f,o,t);
 		try{
-			Init = (Long)f.get(o);
-			jtf.setText(((Long)f.get(o)).toString());
+			this.myLong=(Long)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		jtf.addActionListener(new myActionListener());
-		jtf.setHorizontalAlignment(JTextField.RIGHT);
-		test2.add(jtf,BorderLayout.EAST);
-		return inpane;
-	}
-
-
-	
-	private class myActionListener implements ActionListener{
-		public void actionPerformed(ActionEvent ae){
-			handle();
-		}
-	}
-	
-
-	/*-------------------------------Get the Panel with the MODIFIED value-----------------------------------*/		
-	public JPanel getOutputPanel(boolean changed){
-		JPanel outpane = new JPanel(new BorderLayout());
-		JTextArea jta = new JTextArea(title);
-		jta.setBackground(null);
-		outpane.add(jta,BorderLayout.WEST);
-		//handle the new value in the field
-		//handle();
-		try{
-			JTextField jtf2 = new JTextField();
-			if(changed==true)jtf2.setText(f.get(o).toString());
-			else jtf2.setText(Init.toString());		
-			jtf2.setEditable(false);
-			outpane.add(jtf2,BorderLayout.EAST);
-		}catch(Exception e){e.printStackTrace();}
-		valueChanged=true;
-		return outpane;
-	}
 		
-	
-	/*-------------------------------Get the new value from the JTextField-----------------------------------*/	
-	public void handle(){
+		panel = new JPanel();
+		panel.add( new JLabel( t.description() ) );
+		try {
+			jtf = new JTextField( f.get(o).toString(), 10);
+			jtf.addActionListener( this );
+			jtf.setHorizontalAlignment(JTextField.RIGHT);
+			panel.add( jtf );
+		} catch (Exception e) { e.printStackTrace(); }
+			
+	}
+
+	public void handle() {
 		try{
 			jtf.setBackground(Color.white);
 			value = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
-				//get the Text from the Field and set it to Long format
-				try{
-					jtf.setBackground(Color.red);
-					value = Double.parseDouble(f.get(o).toString());
-					JOptionPane.showMessageDialog(null,"A Long was Expected"+newline+"Value will be set to default = "+value, "Error",JOptionPane.ERROR_MESSAGE);
-				}catch(Exception e){e.printStackTrace();}
-			}
-		//set the new value to the Long object
+			try{
+				jtf.setBackground(Color.red);
+				value = Double.parseDouble(f.get(o).toString());
+				JOptionPane.showMessageDialog(null,"A long was Expected"+newline+"Value will be set to default = "+value.longValue(), "Error",JOptionPane.ERROR_MESSAGE);
+			}catch(Exception e){e.printStackTrace();}
+		}
 		try {
-				f.set(o,value.longValue());
+			f.set(o,value.longValue());
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
 	
-	public Tunable getTunable() {
-		return t;
-	}
-	public Field getField() {
-		return f;
-	}
-	public Object getObject() {
-		return o;
-	}
 
-
-
-	public boolean valueChanged(){
-		handle();
-		try{
-			if(f.get(o).equals(Init))valueChanged=false;
-		}catch(Exception e){e.printStackTrace();}
-		return valueChanged;
-	}
+    public String getState() {
+		String s;
+		try {
+			s = f.get(o).toString();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			s = "";
+		}
+		return s;
+    }
 }

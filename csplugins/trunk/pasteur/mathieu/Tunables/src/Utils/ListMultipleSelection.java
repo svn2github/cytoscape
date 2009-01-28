@@ -1,6 +1,7 @@
 package Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -8,10 +9,15 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 	private List<T> selected;
 
 
+	public ListMultipleSelection(final T ... values) {
+		super(Arrays.asList(values));
+		selected = new ArrayList<T>();
+	}
 	public ListMultipleSelection(final List<T> values) {
 		super(values);
+		selected = new ArrayList<T>();
 	}
-
+	
 	public List<T> getSelectedValues() {
 		return new ArrayList<T>(selected);
 	}

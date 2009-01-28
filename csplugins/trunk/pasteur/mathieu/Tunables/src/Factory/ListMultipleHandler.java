@@ -1,107 +1,69 @@
+
 package Factory;
 
-import Tunable.*;
-import java.awt.*;
 import java.lang.reflect.*;
+import java.util.*;
 import java.util.List;
+
 import javax.swing.*;
+import javax.swing.event.*;
 
+import java.awt.event.*;
+import java.awt.*;
+
+import GuiInterception.AbstractGuiHandler;
+import Tunable.*;
 import Utils.*;
-import GuiInterception.*;
 
-public class ListMultipleHandler<T> implements Guihandler{
-	Field f;
-	Object o;
-	Tunable t;
-	ListMultipleSelection<T> LMS;
-	private List<T> selected = null;
-	static JList jlist;
-	Boolean available;
-	String title;
+public class ListMultipleHandler<T> extends AbstractGuiHandler implements ListSelectionListener {
+
+	ListMultipleSelection<T> lms;
+	JList jlist;
+//	T selected;
+	private List<T> selected;
 	CheckListManager<T> checkListManager;
-	boolean valueChanged = false;
+
+	public ListMultipleHandler(Field f, Object o, Tunable t) {
+		super(f,o,t);
+		try {
+            lms = (ListMultipleSelection<T>) f.get(o);
+        } catch(Exception e) {e.printStackTrace();}
 	
-	
-	
-	/*-------------------------------Constructor-----------------------------------*/	
-	public ListMultipleHandler(Field f, Object o, Tunable t){
-		this.f=f;
-		this.o=o;
-		this.t=t;
-		this.title=t.description();
+        panel = new JPanel();
+        JTextArea jta = new JTextArea(t.description());
+        jta.setLineWrap(true);
+        jta.setWrapStyleWord(true);
+        panel.add(jta);
+        jta.setBackground(null);
+        jta.setEditable(false);
+        jlist = new JList(lms.getPossibleValues().toArray());
+        jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        checkListManager = new CheckListManager<T>(jlist,lms); 
+        JScrollPane scrollpane = new JScrollPane(jlist);
+        panel.add(scrollpane);
 	}
-	
-	/*-------------------------------Get the Panel with the INITIAL items that are in the input List-----------------------------------*/	
-	@SuppressWarnings("unchecked")
-	public JPanel getPanel() {
-		JPanel inpane = new JPanel(new GridLayout());
-		JPanel test1 = new JPanel(new BorderLayout());
-		JPanel test2 = new JPanel();
-		inpane.add(test1);
-		inpane.add(test2);
-		JTextArea jta = new JTextArea(title);
-		jta.setLineWrap(true);
-		jta.setWrapStyleWord(true);
-		test1.add(jta,BorderLayout.CENTER);
-		jta.setBackground(null);
-		jta.setEditable(false);
-		//Set the items from the input list into the MultipleSelection list
-		try{
-			LMS=(ListMultipleSelection<T>) f.get(o);
-		}catch(Exception e){e.printStackTrace();}
-		//Set the JList with the available items(from MultipleSelectionList)
-		jlist = new JList(LMS.getPossibleValues().toArray());
-		jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		//Set the MultipleSelection with checkBoxes to make the multiple selection
-		checkListManager = new CheckListManager<T>(jlist,LMS); 
-		JScrollPane scrollpane = new JScrollPane(jlist);
-		test2.add(scrollpane,BorderLayout.EAST);
-		return inpane;
-	}
-	
-	
-	/*-------------------------------Get the JScrollPane which displays the item(s) that have been selected from the list-----------------------------------*/			
-	public JPanel getOutputPanel(boolean changed) {
-		JPanel outpane = new JPanel();
-		JTextArea jta = new JTextArea(title);
-		jta.setBackground(null);
-		outpane.add(jta,BorderLayout.WEST);
-		//handle();
-		JScrollPane scrollpane = new JScrollPane(new JList(LMS.getSelectedValues().toArray()));
-		scrollpane.setEnabled(false);
-		outpane.add(scrollpane,BorderLayout.EAST);
-		return outpane;
-	}	
-	
-	
-	/*-------------------------------Set the MultipleSelectionList Object with the item(s) that has been checked(selected)-----------------------------------*/	
+
 	@SuppressWarnings("unchecked")
 	public void handle() {
-			selected = checkListManager.getArray();
-			if(selected!=null){
-				valueChanged=true;
-				LMS.setSelectedValues(selected);
-				try{
-					f.set(o, LMS);
-				}catch(Exception e){e.printStackTrace();}
-			}
-	}
-	
-	
-	
-	public Object getObject() {
-		return o;
-	}
-	public Field getField() {
-		return f;
-	}
-	public Tunable getTunable() {
-		return t;
+		//T[] selected = (T[]) jlist.getSelectedValues();
+		selected = checkListManager.getArray();
+		if (selected!=null) {
+            lms.setSelectedValues(selected);
+            try{
+                f.set(o,lms);
+            }catch(Exception e){e.printStackTrace();}
+        }
 	}
 
-
-	public boolean valueChanged() {
+    public void valueChanged(ListSelectionEvent le) {
 		handle();
-		return valueChanged;
+    }
+
+	public String getState() {
+		java.util.List<T> sel = lms.getSelectedValues();
+		if ( sel == null )
+			return "";
+		else
+			return sel.toString();
 	}
 }

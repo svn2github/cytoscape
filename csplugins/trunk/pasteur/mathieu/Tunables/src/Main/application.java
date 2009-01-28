@@ -1,123 +1,75 @@
 package Main;
 
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import Props.*;
 import GuiInterception.*;
+import Props.LoadPropsInterceptor;
+import Props.StorePropsInterceptor;
 import Command.*;
-import HandlerFactory.Handler;
-import java.awt.Color;
 import java.awt.event.*;
-import java.util.LinkedList;
 import java.util.Properties;
 
-public class application{	
-	private static JFrame mainframe = new JFrame("TunableSampler");;
-	private static JFrame outputframe = new JFrame("Results");
-	private static JPanel mainpane;
-	private static JPanel highpane;
-	private static JPanel lowpane;
-	private static Box buttonBox;
-	public static JButton button;
-	public static command commander = new input();
-	public static LinkedList<Handler> TunList = new LinkedList<Handler>();
-	public static TunableInterceptor ti = null;
-	static Properties InputProperties = new Properties();
-	static TunableInterceptor lp = new LoadPropsInterceptor(InputProperties);
-	static Properties store = new Properties();
-	static TunableInterceptor sp = new StorePropsInterceptor(store);
-	static TunableInterceptor canceled = new StorePropsInterceptor(InputProperties);
+import javax.swing.*;
 
+public class application {
+
+	static Properties InitProps = new Properties();
+	static Properties store = new Properties();
+
+    static int action;
 	
-	public static void main(String[] args){
-        CreateGUIandStart();
+	public static void main(String[] args) {
+                createAndShowGUI();
+        }; 
+
+    private static void createAndShowGUI() {
+		JFrame frame = new JFrame("Tunable Demo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(true);
+		TunableInterceptor ti = new GuiTunableInterceptor(frame);
+		TunableInterceptor lpi = new LoadPropsInterceptor(InitProps);
+		TunableInterceptor spi = new StorePropsInterceptor(store);
+		
+
+		JPanel p = new JPanel();
+		p.add( new JButton(new MyAction("Print Something", new PrintSomething(), ti, lpi,spi)));
+		p.add( new JButton(new MyAction("Abstract Active", new AbstractActive(), ti, lpi,spi)));
+		p.add( new JButton(new MyAction("Input Test", new input(), ti,lpi,spi)));
+		p.add( new JButton(new MyAction("Tunable Sampler", new TunableSampler(), ti,lpi,spi)));
+        frame.setContentPane(p);
+        frame.pack();
+        frame.setVisible(true);
     }
 
-	public static void CreateGUIandStart(){
-		//Set the mainframe with the panels
-		mainpane = new JPanel();
-		highpane = new JPanel();
-		lowpane = new JPanel();		
-		mainframe.setResizable(false);
-		mainpane.setLayout(new BoxLayout(mainpane,BoxLayout.PAGE_AXIS));
-		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainframe.setVisible(true);
-		//Create the panel which will handle the 3 buttons
-		buttonBox = Box.createHorizontalBox();
-		buttonBox.add(button=createButton("save settings","save",'s'));
-		buttonBox.add(Box.createHorizontalGlue());
-		buttonBox.add(Box.createHorizontalStrut(4));
-		buttonBox.add(button=createButton("cancel","cancel",'c'));
-		buttonBox.add(Box.createHorizontalStrut(4));
-		buttonBox.add(button=createButton("done","done",'d'));
-		buttonBox.add(Box.createHorizontalStrut(10));
-		lowpane.add(buttonBox);
-		lowpane.setBorder (BorderFactory.createEmptyBorder (10, 10, 10, 10));	
-		mainpane.add(highpane);
-		mainpane.add(lowpane);
-		//Declare the factories to catch the tunables, and use them
-		ti = new GuiTunableInterceptor(mainframe,outputframe,highpane);
-		//Create a handler for each tunable (by switching types)
-		ti.intercept(commander);
-		//Create a handler for properties for each kind of tunable
-		lp.intercept(commander);		
-		if(ti!=null){
-			//Thanks to handlers, get the Panels for each tunable
-			ti.GetInputPanes();
-			//Add the properties for each tunables into the Property list
-			lp.addProperties();
-//			System.out.println("InputProperties = " + InputProperties);
+	private static class MyAction extends AbstractAction {
+		command com;
+		TunableInterceptor ti;
+		TunableInterceptor lpi;
+		TunableInterceptor spi;
+		
+		MyAction(String title, command com, TunableInterceptor ti, TunableInterceptor lpi,TunableInterceptor spi) {
+			super(title);
+			this.com = com;
+			this.ti = ti;
+			this.lpi = lpi;
+			this.spi = spi;
 		}
-		else System.out.println("No input");
-		outputframe.setResizable(false);
-		mainframe.setContentPane(mainpane);
-		mainframe.pack();
-	}
+		public void actionPerformed(ActionEvent a) {
 
-	
+			// set the initial properties
+			lpi.intercept(com);
+			System.out.println("InputProperties of "+com.getClass().getSimpleName()+ " = "+ InitProps);
+			
+			// intercept the command ,modify any tunable fields, and return the button clicked
+			action = ti.intercept(com);
+			
+			switch(action){
+				case 0: lpi.intercept(com);spi.intercept(com);break;		
+				case 1: spi.intercept(com);lpi.processProperties(com);spi.processProperties(com);break;
+				case 2: System.out.println("Done");break;//for the moment
+			}
+			System.out.println("OutputProperties of "+com.getClass().getSimpleName()+ " = "+ store);
 
-/*------------------Creation of Buttons with their ActionListeners--------------------------*/
-	@SuppressWarnings("unused")
-	private static JButton createButton (String title,String command){
-		return createButton (title,command,'\0');
-	}	
-	private static JButton createButton(String title,String command,char mnemonic){
-		JButton button = new JButton(title);
-		button.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED,Color.gray.brighter(),Color.gray.darker()));
-		button.addActionListener(new myActionListener());
-		button.setActionCommand(command);
-		if(mnemonic!='\0') button.setMnemonic(mnemonic);
-		return button;
-	}
-	private static class myActionListener implements ActionListener{
-		public void actionPerformed(ActionEvent ae){
-			String command = ae.getActionCommand();
-			if(command.equals("done")){
-				if(ti!=null){
-					ti.Display();
-					outputframe.pack();
-					outputframe.setLocation(500, 100);
-					outputframe.setVisible(true);
-				}
-				else System.out.println("no input");
-			}
-			else if(command.equals("save")){
-				if(ti!=null){
-					outputframe.dispose();
-					ti.Save();
-				}
-				else System.out.println("No input");
-				sp.intercept(commander);
-				sp.ProcessProperties();
-				System.out.println("OutputSavedProperties = " + store);
-			}
-			else if(command.equals("cancel")){
-				lp.ProcessProperties();
-				sp.ProcessProperties();
-				System.out.println("OutputCanceledProperties = " + store);
-				mainframe.dispose();
-				outputframe.dispose();
-			}
+			// execute the command
+			com.execute();
 		}
 	}
 }

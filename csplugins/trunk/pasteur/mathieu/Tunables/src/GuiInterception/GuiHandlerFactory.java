@@ -28,7 +28,7 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			return new BoundedFloatHandler(f,o,t);
 		else if(type == BoundedLong.class)
 			return new BoundedLongHandler(f,o,t);
-		else if(type == Boolean.class)
+		else if(type == Boolean.class || type == boolean.class)
 			return new BooleanHandler(f,o,t);
 		else if(type == String.class)
 			return new StringHandler(f,o,t);
@@ -36,8 +36,6 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			return new ListSingleHandler<String>(f,o,t);
 		else if(type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(f,o,t);		
-		else if(type == Group.class)
-			return new GroupHandler(f,o,t);
 		return null;
 	}
 }

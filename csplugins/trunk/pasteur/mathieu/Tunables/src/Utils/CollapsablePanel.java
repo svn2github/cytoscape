@@ -1,10 +1,16 @@
 package Utils;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -17,33 +23,39 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JToggleButton myExpandButton = null;
 	private boolean expandPaneVisible;
-	private static String ExpandName = "Expand>>";
-	private static String CollapseName = "<<Collapse";
+	private static String ExpandName = "+";
+	private static String CollapseName = "-";
 	private JPanel rightPanel = new JPanel();
-	private JPanel leftPanel = new JPanel();
-	
-	ListSingleSelection<JPanel> listInPane;
-	public JFrame frame;
-	Dimension initPaneSize;
-	Dimension outPaneSize;
-	
-	Box buttonBox;
+	private JPanel leftPanel = new JPanel();	
+	private List<Component> listInPane;
 	
 	
-	public CollapsablePanel(ListSingleSelection<JPanel> list,JFrame frame,boolean iscollapsed){
-		this.listInPane = list;
-		this.frame=frame;
+	public CollapsablePanel(String name){
+		
+		listInPane = new ArrayList<Component>();
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		leftPanel.setLayout(new GridLayout());
-		add(leftPanel);
+		
+		rightPanel = new JPanel();
+		rightPanel.setLayout(new BorderLayout());
+		setBorder(BorderFactory.createTitledBorder(name));
+		rightPanel.add(myExpandButton = createButton(ExpandName),BorderLayout.WEST);
+		super.add(rightPanel);
+		
+		leftPanel = new JPanel();
 		leftPanel.setLayout(new BoxLayout(leftPanel,BoxLayout.PAGE_AXIS));
-		add(rightPanel);
-		rightPanel.add(myExpandButton = createButton(ExpandName));
-		initPaneSize = getPreferredSize();
-		this.expandPaneVisible=!iscollapsed;
-		setCollapsed(expandPaneVisible);
+		super.add(leftPanel);
+		expandPaneVisible = false;
 	}
 
+	
+	public Component add(Component c) {
+		listInPane.add(c);
+		return c;
+	}
+
+	public void add(Component c, Object o) {
+		listInPane.add(c);
+	}
 	
 	
 	public void actionPerformed(ActionEvent e) {
@@ -53,14 +65,11 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 				collapsePanel();
 				myExpandButton.setText (ExpandName);
 				expandPaneVisible = false;
-//				System.out.println("Taille finale : "+this.getPreferredSize());
-				//this.setPreferredSize(initPaneSize);
 			}
 			else{
 				expandPanel();
 				myExpandButton.setText (CollapseName);
 				expandPaneVisible = true;
-				outPaneSize = getPreferredSize();
 			}
 		}
 	}
@@ -95,21 +104,25 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		
 	}
 	
+	
+	
 	public boolean isCollapsed(){
 		return expandPaneVisible;
 	}
 	
-
 	private void collapsePanel(){
 		leftPanel.removeAll();
-		resize(initPaneSize);
-		frame.pack();
 	}
 		
+	
 		
 	private void expandPanel(){
-			for(int i=0;i<listInPane.getPossibleValues().size();i++)	leftPanel.add(listInPane.getPossibleValues().get(i));
-			this.repaint();
-			frame.pack();
+		for ( Component c : listInPane )
+			leftPanel.add(c);
+			invalidate();
+			validate();
+//			for(int i=0;i<listInPane.getPossibleValues().size();i++)	leftPanel.add(listInPane.getPossibleValues().get(i));
+//			this.repaint();
+//			frame.pack();
 		}
 }

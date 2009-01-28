@@ -1,11 +1,15 @@
 package Utils;
 
+import java.util.Arrays;
 import java.util.List;
 
 
 public class ListSingleSelection<T> extends ListSelection<T>{
 	private T selected;
 
+	public ListSingleSelection(final T ... values) {
+		super(Arrays.asList(values));
+	}
 
 	public ListSingleSelection(final List<T> values) {
 		super(values);

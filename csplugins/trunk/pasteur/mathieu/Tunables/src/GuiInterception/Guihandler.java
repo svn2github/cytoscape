@@ -6,15 +6,22 @@ import Tunable.Tunable;
 import javax.swing.*;
 
 public interface Guihandler extends Handler{
-	
 	public void handle();
+//	public JPanel getInputPanel();
+//	public Tunable getTunable();
+//	public Field getField();
+//	public Object getObject();
+//	public JPanel getOutputPanel();
 	
-	public JPanel getPanel();
-	public JPanel getOutputPanel(boolean changed);
-	public boolean valueChanged();
-		
-	public Tunable getTunable();
-	public Field getField();
-	public Object getObject();
+	
+	
+	JPanel getJPanel();
+	String getState();
+	String getName();
 
+	void notifyDependents();
+	void addDependent(Guihandler gh);
+
+	void checkDependency(String name, String state);
+	String getDependency();
 }

@@ -1,88 +1,50 @@
 package Command;
 
 import Tunable.Tunable;
-import Tunable.Tunable.Param;
 import Utils.*;
 import java.util.ArrayList;
+import Tunable.Tunable.Param;
 
 
 public class input implements command {
 	
-	@Tunable(description = "FirstName",group="Name")
+	@Tunable(description = "FirstName",group={"Name"},flag={Param.Collapsable})
 	public String string1 = new String("John");
-	@Tunable(description = "LastName",group="Name")
+	@Tunable(description = "LastName",group={"Name"})
 	public String string2 = new String("Smith");
-	@Tunable(description="Day",group="Today's date",flag=Param.Horizontal)
-	public ListSingleSelection<String> dayNames;
-	@Tunable(description="Month",group="Today's date",flag=Param.Horizontal)
-	public ListMultipleSelection<String> monthNames;
-	@Tunable(description="Number",group="Today's date",flag=Param.Horizontal)
-	public ListSingleSelection<Integer> listOfIntegers;	
-//	@Tunable(description ="Identification Code",group="Other")
+
+	@Tunable(description="Day",group={"Today's date"})
+	public ListSingleSelection<String> days = new ListSingleSelection<String>("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday");
+
+	@Tunable(description="Month",group={"Today's date"})
+	public ListMultipleSelection<String> monthNames = new ListMultipleSelection<String>("January","February","March","April","May","June","July","August","September","October","November","December");
+//	@Tunable(description="Number",group={"Today's date"})
+//	public ListSingleSelection<Integer> listOfIntegers;
+	
+//	@Tunable(description ="Identification Code",group={"Other"})
 //	public Long long1 = new Long((long)223248997);
-	@Tunable(description="Number of children",group="Other")
+	@Tunable(description="Number of children",group={"Other"})
 	public Integer integer1 = new Integer(0);
-	@Tunable(description="Age",flag={Param.Slider},group="Birth")
+	
+	@Tunable(description="Age",flag={Param.Slider},group={"Birth"})
 	public BoundedInteger bounded2 = new BoundedInteger(0,18,130,false,true);
-	@Tunable(description="Do you like Tunables",group="Tunable Test")
-	public Boolean boolean1 = new Boolean(false);
-	
-	@Tunable(description="Someone",flag=Param.Collapsable)
-	public Group bigGroup1;
-//	@Tunable(description="Questions")
-//	public Group bigGroup2;
-	
-//	@Tunable(description="BoundedLong",flag=Param.Slider,group="Group1")
-//	public BoundedLong bounded4 = new BoundedLong((long)-10,(long)9,(long)100,false,true);
-//	@Tunable(description="BoundedDouble",group="Group1")
-//	public BoundedDouble bounded1 = new BoundedDouble(-10.7,9.8,23.7,true,true);
-//	@Tunable(description="Integer",group="Group2")
-//	public Integer integer3 = new Integer(45);
-	
-	
+
+//	@Tunable(description="Do you like Tunables",group={"Tunable Test"})
+//	public Boolean boolean1 = new Boolean(false);
+
+	@Tunable(description="Do you like Tunables",group={"Tunable Test"})
+	public boolean boolean1 = false;
+		
 	
 	public input()
-	{		
-			ArrayList<String> grouplist1 = new ArrayList<String>();
-			grouplist1.add("Name");	
-			grouplist1.add("Birth");
-			grouplist1.add("Other");
-			bigGroup1 = new Group(grouplist1,false);
-
-			ArrayList<String> grouplist2 = new ArrayList<String>();
-			grouplist2.add("Tunable Test");
-			grouplist2.add("Today's date");
-			//bigGroup2 = new Group(grouplist2,true);
-
-			java.util.List<String> days = new ArrayList<String>();
-			days.add("Monday");
-			days.add("Tuesday");
-			days.add("Wednesday");
-			days.add("Thursday");
-			days.add("Friday");
-			days.add("Saturday");
-			days.add("Sunday");
-			dayNames = new ListSingleSelection<String>(days);
-			
-			java.util.List<String> months = new ArrayList<String>();
-			months.add("January");
-			months.add("February");
-			months.add("March");
-			months.add("April");
-			months.add("May");
-			months.add("June");
-			months.add("July");
-			months.add("August");
-			months.add("September");
-			months.add("October");
-			months.add("November");
-			months.add("December");	
-			monthNames = new ListMultipleSelection<String>(months);
-			
+	{					
 			java.util.List<Integer> testlist = new ArrayList<Integer>();
 			for(int i=1;i<=31;i++)testlist.add(i);
-			listOfIntegers = new ListSingleSelection<Integer>(testlist);
+//			listOfIntegers = new ListSingleSelection<Integer>(testlist);
+	}
 
+	public void execute() {
+		System.out.println(this.getClass().getSimpleName()+" has been executed");
 	}
 }
 
