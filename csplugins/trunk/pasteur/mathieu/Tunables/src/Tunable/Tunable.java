@@ -2,14 +2,17 @@ package Tunable;
 
 import java.lang.annotation.*;
 
-@Retention(RetentionPolicy.RUNTIME) // makes this availabe for reflection
-@Target({ElementType.FIELD,ElementType.TYPE}) // says we're just looking at fields and  methods
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD,ElementType.TYPE})
 
 public @interface Tunable{
 	public String description();
-	public Param[] flag() default Param.Nothing;
-	public Param orientation() default Param.Vertical;
-	public String group() default "";
-	public enum Param {Slider,Nothing,Horizontal,Vertical,Collapsable}
+	Param[] flag() default {};
+	//String[] flag() default {};
+//	public Param[] test() default {};
+	public String[] group() default {};
+	boolean xorChildren() default false;
+	String xorKey() default "";
+	String dependsOn() default "";
+	public enum Param {Slider,Nothing,Horizontal,Vertical,Collapsable,Collapsed}
 }
-
