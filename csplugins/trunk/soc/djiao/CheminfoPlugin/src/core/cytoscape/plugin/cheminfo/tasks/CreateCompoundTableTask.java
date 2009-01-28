@@ -59,7 +59,6 @@ import cytoscape.plugin.cheminfo.ui.CompoundTable;
 public class CreateCompoundTableTask extends AbstractCompoundTask {
 	Collection<GraphObject> selection;
 	ChemInfoSettingsDialog settingsDialog;
-	CompoundTable tableDialog = null;
 
 	/**
  	 * Creates the task.
@@ -101,16 +100,9 @@ public class CreateCompoundTableTask extends AbstractCompoundTask {
 		List<Compound> cList = getCompounds(selection, attributes, 
 				   															settingsDialog.getCompoundAttributes(type,AttriType.smiles),
 					   														settingsDialog.getCompoundAttributes(type,AttriType.inchi));
-		if (cList.size() == 0 || canceled) return;
-
-		if (tableDialog == null) {
-			tableDialog = new CompoundTable(cList);
-			tableDialog.setVisible(true);
-		} else {
-			tableDialog.setCompounds(cList);
-			tableDialog.setVisible(true);
+		if (cList.size() > 0 && !canceled) {
+			CompoundTable cTable = new CompoundTable(cList);
 		}
-
 	}
 
 }

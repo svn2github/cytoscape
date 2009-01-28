@@ -50,6 +50,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,11 +74,17 @@ import org.openscience.cdk.inchi.InChIToStructure;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
+import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
+import org.openscience.cdk.modeling.builder3d.TemplateHandler3D;
 import org.openscience.cdk.renderer.ISimpleRenderer2D;
 import org.openscience.cdk.renderer.Java2DRenderer;
 import org.openscience.cdk.renderer.Renderer2DModel;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
+import org.openscience.cdk.qsar.*;
+import org.openscience.cdk.qsar.result.*;
+import org.openscience.cdk.qsar.DescriptorEngine;
+import org.openscience.cdk.qsar.descriptors.molecular.*;
 // import org.openscience.cdk.tools.MFAnalyser;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
@@ -96,11 +103,47 @@ import giny.model.GraphObject;
 
 public class Compound {
 	public enum AttriType { smiles, inchi };
+	public enum DescriptorType {
+		IMAGE ("2D Image", Compound.class),
+		ATTRIBUTE ("Attribute", String.class),
+		IDENTIFIER ("Molecular String", String.class),
+		WEIGHT ("Molecular Wt.", Double.class),
+		ALOGP ("ALogP", Double.class),
+		ALOGP2 ("ALogP2", Double.class),
+		AMR ("Molar refractivity", Double.class),
+		HBONDACCEPTOR ("HBond Acceptors", Integer.class),
+		HBONDDONOR ("HBond Donors", Integer.class),
+		LOBMAX ("Length over Breadth Max", Double.class),
+		LOBMIN ("Length over Breadth Min", Double.class),
+		RULEOFFIVE ("Rule of Five Failures", Double.class),
+		WEINERPATH ("Weiner Path", Double.class),
+		WEINERPOL ("Weiner Polarity", Double.class),
+		MASS ("Exact Mass", Double.class);
+
+		private String name;
+		private Class classType;
+		private int columnCount;
+
+		DescriptorType(String name, Class classType) {
+			this.name = name;
+			this.classType = classType;
+		}
+
+		public String toString() { return this.name; }
+		public Class getClassType() { return this.classType; }
+	}
 
 	// Class variables
 	static private HashMap<GraphObject, List<Compound>> compoundMap;
 	static private CyLogger logger = CyLogger.getLogger(Compound.class);
-
+	static private DescriptorType[] descriptorTypes = {
+		DescriptorType.IMAGE, DescriptorType.ATTRIBUTE, DescriptorType.IDENTIFIER, DescriptorType.WEIGHT,
+		DescriptorType.MASS,
+		DescriptorType.ALOGP,DescriptorType.ALOGP2,DescriptorType.AMR,
+		DescriptorType.HBONDACCEPTOR,DescriptorType.HBONDDONOR,
+		DescriptorType.LOBMAX,DescriptorType.LOBMIN,
+		DescriptorType.WEINERPATH,DescriptorType.WEINERPOL,DescriptorType.RULEOFFIVE
+	};
 
 	/********************************************************************************************************************* 
 	 *                                                Class (static) methods                                             *
@@ -227,6 +270,10 @@ public class Compound {
 		return null;
 	}
 
+	static public List<DescriptorType> getDescriptorList() {
+		return Arrays.asList(descriptorTypes);
+	}
+
 	/**
  	 * Returns all of the Compounds for a single graph object (Node or Edge) based on the designated
  	 * attribute of the specific type
@@ -310,6 +357,8 @@ public class Compound {
 	private BitSet fingerPrint;
 	private int lastImageWidth = -1;
 	private int lastImageHeight = -1;
+	private	boolean	lastImageFailed = false;
+	private DescriptorEngine descriptorEngine = null;
 
 	/**
  	 * The constructor is called from the various static getCompound methods to create a compound and store it in
@@ -368,14 +417,6 @@ public class Compound {
 		}
 		mapList.add(this);
 		Compound.compoundMap.put(source, mapList);
-
-/*
-		if (!noStructures) {
-			// Get the image right now
-			// this.renderedImage = depictWithUCSFSmi2Gif();
-			// this.renderedImage = depictWithCDK();
-		}
-*/
 	}
 
 	/**
@@ -453,6 +494,91 @@ public class Compound {
 	}
 
 	/**
+ 	 * Handle requests for various compound descriptors.  This is used primarily by the CompoundTable, but
+ 	 * could be used by other clients as well.
+ 	 */
+	public Object getDescriptor(DescriptorType type) {
+		switch(type) {
+			case IMAGE:
+				// We actually return ourselves in this case since
+				// the table needs access to the specific getImage calls
+				return this;
+			case ATTRIBUTE:
+				return getAttribute();
+			case IDENTIFIER:
+				return getMoleculeString();
+			case WEIGHT:
+				return getMolecularWeight();
+			case MASS:
+				return getExactMass();
+			case WEINERPATH:
+			case WEINERPOL:
+				{
+					if (iMolecule == null) return null;
+
+					IMolecularDescriptor descriptor = new WienerNumbersDescriptor();
+					DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(iMolecule).getValue());
+					if (type == DescriptorType.WEINERPATH)
+						return retval.get(0);
+					else
+						return retval.get(1);
+				}
+			case RULEOFFIVE:
+				{
+					if (iMolecule == null) return null;
+					IMolecularDescriptor descriptor = new RuleOfFiveDescriptor();
+					IntegerResult retval = (IntegerResult)(descriptor.calculate(iMolecule).getValue());
+					return retval.intValue();
+				}
+			case ALOGP:
+			case ALOGP2:
+			case AMR:
+				{
+					if (iMolecule == null) return null;
+					try {
+						IMolecularDescriptor descriptor = new ALOGPDescriptor();
+						DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(iMolecule).getValue());
+						if (type == DescriptorType.ALOGP)
+							return retval.get(0);
+						else if (type == DescriptorType.ALOGP2)
+							return retval.get(1);
+						else
+							return retval.get(2);
+					} catch (Exception e) {
+						logger.warning("Unable to calculate ALogP values: "+e.getMessage());
+						return null;
+					}
+				}
+			case HBONDACCEPTOR:
+				{
+					if (iMolecule == null) return null;
+					IMolecularDescriptor descriptor = new HBondAcceptorCountDescriptor();
+					IntegerResult retval = (IntegerResult)(descriptor.calculate(iMolecule).getValue());
+					return retval.intValue();
+				}
+			case HBONDDONOR:
+				{
+					if (iMolecule == null) return null;
+					IMolecularDescriptor descriptor = new HBondDonorCountDescriptor();
+					IntegerResult retval = (IntegerResult)(descriptor.calculate(iMolecule).getValue());
+					return retval.intValue();
+				}
+			case LOBMAX:
+			case LOBMIN:
+				{
+					if (iMolecule == null) return null;
+					IMolecularDescriptor descriptor = new LengthOverBreadthDescriptor();
+					DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(iMolecule).getValue());
+					if (type == DescriptorType.LOBMAX)
+						return retval.get(0);
+					else
+						return retval.get(1);
+				}
+		}
+		return null;
+	}
+
+	/**
  	 * Return the 2D image for this compound.  Note that this might sleep if we're in the process
  	 * of fetching the image already.
  	 *
@@ -463,7 +589,7 @@ public class Compound {
 	}
 
 	public Image getImage(int width, int height) {
-		if (lastImageWidth != width || lastImageHeight != height || renderedImage == null) {
+		if (lastImageWidth != width || lastImageHeight != height || (renderedImage == null && lastImageFailed == false)) {
 			renderedImage = depictWithCDK(width, height);
 			lastImageWidth = width;
 			lastImageHeight = height;
@@ -494,7 +620,20 @@ public class Compound {
 		IMolecularFormula mfa = MolecularFormulaManipulator.getMolecularFormula(iMolecule);
 		return MolecularFormulaManipulator.getTotalExactMass(mfa);
 	}
-	
+
+	/**
+ 	 * Calculate all of our molecular descriptors
+ 	 */
+	public void calculateDescriptors() {
+		if (iMolecule == null) return;
+
+		IMolecularDescriptor descriptor = new WienerNumbersDescriptor();
+		DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(iMolecule).getValue());
+		double wpath = retval.get(0);
+		double wpol = retval.get(1);
+		System.out.println("Wiener numbers: wpath = "+wpath+", polarity = "+wpol);
+	}
+
 	/**
  	 * Use the chimeraservices smi2gif service to get a 2D image of this compound.
  	 *
@@ -582,7 +721,7 @@ public class Compound {
 			Rectangle2D bbox = new Rectangle2D.Double(0,0,width,height);
 			renderer.paintMolecule(iMolecule, graphics, bbox);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warning("Unable to depict molecule with CDK depiction: "+e.getMessage(), e);
 		}
 
 		return bufferedImage;

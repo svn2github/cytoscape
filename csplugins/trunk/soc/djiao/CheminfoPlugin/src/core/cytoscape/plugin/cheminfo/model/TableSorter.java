@@ -378,6 +378,8 @@ public class TableSorter extends AbstractTableModel {
 
     private class MouseHandler extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
+						if (e.getButton() != MouseEvent.BUTTON1)
+							return;
             JTableHeader h = (JTableHeader) e.getSource();
             TableColumnModel columnModel = h.getColumnModel();
             int viewColumn = columnModel.getColumnIndexAtX(e.getX());
