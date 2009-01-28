@@ -190,6 +190,7 @@
 				<configuration>
 					<!--  some example Pax-Runner settings -->
 					<provision>
+						<param>--log=DEBUG</param>
 						<param>--platform=felix</param>
 						<param>--version=1.0.4</param>
 						<param>--profiles=minimal</param>
@@ -299,8 +300,6 @@
 		<module>poms</module>
 		<module>provision</module>
 		<module>util.intr</module>
-		<module>graph.fixed</module>
-		<module>graph.dynamic</module>
 		<module>render.immed</module>
 		<module>geom.spacial</module>
 		<module>render.stateful</module>
