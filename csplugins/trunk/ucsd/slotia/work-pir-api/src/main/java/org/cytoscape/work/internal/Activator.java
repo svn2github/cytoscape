@@ -23,8 +23,21 @@ public class Activator implements BundleActivator
 			swingTaskManager,
 			new Hashtable());
 
+		Thread.currentThread().setName("A");
+
 		//swingTaskManager.execute(new MyTask());
-		swingTaskManager.execute(new SuperTask("Example SuperTask", new MyTask(), new MyTask(), new MyTask(), new MyTask()));
+		//swingTaskManager.execute(new SuperTask("Example SuperTask", new MyTask(), new MyTask(), new MyTask(), new MyTask()));
+		ValuedTaskExecutor<Integer> myValuedTaskExecutor = new ValuedTaskExecutor<Integer>(new MyValuedTask());
+		swingTaskManager.execute(myValuedTaskExecutor);
+		try
+		{
+			Thread.sleep(100);
+			System.out.println("Done: " + myValuedTaskExecutor.get().toString());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void stop(BundleContext context)
@@ -59,6 +72,29 @@ public class Activator implements BundleActivator
 			somethingComplicated();
 
 			System.out.println("MyTask finished!");
+		}
+
+		void somethingComplicated()
+		{
+			for (double i = 0.0; i < 5000.0; i += 0.001)
+			{
+				Math.sin(Math.tan(Math.sin(Math.tan(Math.sin(Math.tan(i))))));
+			}
+		}
+
+		public void cancel()
+		{
+			cancel = true;
+		}
+	}
+
+	class MyValuedTask implements ValuedTask<Integer>
+	{
+		boolean cancel = false;
+		public Integer run(TaskMonitor taskMonitor)
+		{
+			somethingComplicated();
+			return new Integer(1);
 		}
 
 		void somethingComplicated()

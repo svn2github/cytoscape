@@ -98,6 +98,8 @@ class SwingTaskMonitor implements TaskMonitor
 	final JLabel		exceptionLabel;
 	final JTextArea		exceptionArea;
 
+	boolean disposed = false;
+
 	public SwingTaskMonitor(Task task, Frame owner, Locale locale)
 	{
 		this.task = task;
@@ -129,6 +131,7 @@ class SwingTaskMonitor implements TaskMonitor
 
 	public void close()
 	{
+		disposed = true;
 		dialog.dispose();
 	}
 
@@ -140,6 +143,7 @@ class SwingTaskMonitor implements TaskMonitor
 				close();
 			else
 			{
+				setCancelled();
 				Thread cancelThread = new Thread(new Runnable()
 				{
 					public void run()
@@ -148,24 +152,25 @@ class SwingTaskMonitor implements TaskMonitor
 					}
 				});
 				cancelThread.start();
-				closeButton.setEnabled(false);
-				closeButton.setText(messages.getString("canceling"));
 			}
 		}
 	}
 
 	public void setTitle(String title)
 	{
+		if (disposed) return;
 		dialog.setTitle(title);
 	}
 
 	public void setStatusMessage(String statusMessage)
 	{
+		if (disposed) return;
 		statusMessageLabel.setText(statusMessage);
 	}
 
 	public void setProgress(double progress)
 	{
+		if (disposed) return;
 		progressBar.setStringPainted(true);
 		progressBar.setIndeterminate(false);
 		progressBar.setValue((int) (progress * 100));
@@ -173,6 +178,7 @@ class SwingTaskMonitor implements TaskMonitor
 
 	public void showException(Exception exception)
 	{
+		if (disposed) return;
 		closeButton.setText(messages.getString("close"));
 		closeButton.setEnabled(true);
 		StringWriter stringWriter = new StringWriter();
@@ -186,5 +192,14 @@ class SwingTaskMonitor implements TaskMonitor
 	public boolean isShowingException()
 	{
 		return closeButton.getText().equals(messages.getString("close"));
+	}
+
+	public boolean setCancelled()
+	{
+		if (disposed || isShowingException())
+			return false;
+		closeButton.setEnabled(false);
+		closeButton.setText(messages.getString("canceling"));
+		return true;
 	}
 }

@@ -7,6 +7,9 @@ package org.cytoscape.work;
  * <p><code>SuperTask</code> has the following behavior:</p>
  * <ul>
  *
+ * <li><code>SuperTask</code> executes all of its subtasks
+ * in the same thread provided by <code>TaskManager</code>.</li>
+ *
  * <li><code>SuperTask</code>'s title is what is given in the
  * constructor.</li>
  *
@@ -20,6 +23,12 @@ package org.cytoscape.work;
  * However, if the subtask's title is not set, is null, or is an empty string,
  * <code>SuperTask</code> will set its status message to the subtask's status
  * message.</li>
+ *
+ * <li><code>SuperTask</code> divides its progress bar equally between
+ * each of its subtasks. For example, if there are four subtasks: when
+ * the first subtask is executing, it will set its progress to 0%; when
+ * the second subtask is executing, it will set its progress to 25%;
+ * and so on.</li>
  * </ul>
  */
 public class SuperTask implements Task
