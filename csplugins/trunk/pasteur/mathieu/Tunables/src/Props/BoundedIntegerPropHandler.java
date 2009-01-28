@@ -3,27 +3,21 @@ package Props;
 import Tunable.Tunable;
 import java.lang.reflect.Field;
 import java.util.Properties;
+import Utils.BoundedDouble;
 import Utils.BoundedInteger;
 
 
-public class BoundedIntegerPropHandler implements PropHandler {
-	Field f;
-	Object o;
-	Tunable t;
-	String propKey;
+public class BoundedIntegerPropHandler extends AbstractPropHandler {
+
 	BoundedInteger bounded;
-
-
-
+	
 	public BoundedIntegerPropHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		this.t=t;
+		super(f,o,t);
 		try{
-			this.bounded=(BoundedInteger) f.get(o);
+			this.bounded = (BoundedInteger)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		propKey = f.getName();
 	}
+
 
 	
 	public Properties getProps() {
@@ -36,7 +30,7 @@ public class BoundedIntegerPropHandler implements PropHandler {
 	public void add(Properties p) {
 		bounded.setValue(bounded.getValue().intValue()); //Need to initialize the value
 		try{
-			p.put(propKey,bounded.getValue());
+			p.put(propKey,bounded.getValue().toString());
 		}catch(Exception e){e.printStackTrace();}
 	}
 	

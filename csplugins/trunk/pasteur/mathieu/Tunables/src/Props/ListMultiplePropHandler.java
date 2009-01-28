@@ -5,19 +5,15 @@ import java.lang.reflect.Field;
 import java.util.*;
 import Utils.ListMultipleSelection;;
 
-public class ListMultiplePropHandler<T> implements PropHandler {
-	Field f;
-	Object o;
-	String propKey;
+public class ListMultiplePropHandler<T> extends AbstractPropHandler {
+	
 	ListMultipleSelection<T> LMS;
 	List<T> array;
 	
 	
 	@SuppressWarnings("unchecked")
 	public ListMultiplePropHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		propKey = f.getName();
+		super(f,o,t);
 		try{
 			LMS = (ListMultipleSelection<T>) f.get(o);
 		}catch(Exception e){e.printStackTrace();}

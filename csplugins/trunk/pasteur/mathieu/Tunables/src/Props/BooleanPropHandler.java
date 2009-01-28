@@ -2,24 +2,17 @@ package Props;
 
 import Tunable.Tunable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
 
-public class BooleanPropHandler implements PropHandler {
-	Field f;
-	Object o;
-	String propKey;
-	Boolean bool;
+public class BooleanPropHandler extends AbstractPropHandler{
 	
 	public BooleanPropHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		propKey = f.getName();
-		try{
-			bool=(Boolean) f.get(o);
-		}catch(Exception e){e.printStackTrace();}
+		super(f,o,t);
 	}
 
+	
 	
 	public Properties getProps() {
 		Properties p = new Properties();
@@ -33,7 +26,9 @@ public class BooleanPropHandler implements PropHandler {
 
 	
 	public void add(Properties p) {
-			p.put(propKey,bool);
+		try{
+			p.put(propKey,f.get(o));
+		}catch(Exception e){e.printStackTrace();}
 	}
 	
 	
@@ -48,5 +43,8 @@ public class BooleanPropHandler implements PropHandler {
 			iae.printStackTrace();
 			}
 	}
+
+
+
 
 }

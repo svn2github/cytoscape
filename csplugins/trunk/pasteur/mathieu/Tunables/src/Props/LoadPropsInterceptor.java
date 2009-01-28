@@ -11,25 +11,19 @@ public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> 
 		super(new PropHandlerFactory<PropHandler>());
 		this.inputProps = inputProps;
 	}
-	protected void addProps(java.util.List<PropHandler> lh) {
-		for (PropHandler p : lh){
-			if(p.getClass()!= GroupPropHandler.class) p.add(inputProps);
-		}
-	}
-	
-	protected void display(List<PropHandler> handlerList) {
-	}
-	
-	protected void save(List<PropHandler> handlerList) {	
-	}
 
-	protected void getInputPanes(List<PropHandler> handlerList) {		
-	}
-	
 	protected void processProps(List<PropHandler> lh) {
 		for (PropHandler p : lh) {
-			if(p.getClass()!= GroupPropHandler.class) p.setProps(inputProps);
+			p.setProps(inputProps);
 		}
 	}
+	
+	protected int process(List<PropHandler> lh) {
+		for (PropHandler p : lh) {
+			p.add(inputProps);
+		}
+		return 0;
+	}
+
 
 }

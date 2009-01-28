@@ -5,16 +5,10 @@ import java.lang.reflect.Field;
 import java.util.Properties;
 
 
-public class LongPropHandler implements PropHandler {
-	Field f;
-	Object o;
-	String propKey;
-
+public class LongPropHandler extends AbstractPropHandler {
 	
 	public LongPropHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		propKey = f.getName();
+		super(f,o,t);
 	}
 
 	

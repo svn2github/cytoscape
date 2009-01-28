@@ -29,16 +29,12 @@ public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 			return new DoublePropHandler(f,o,t);
 		else if (type == String.class)
 			return new StringPropHandler(f, o, t);
-		else if(type == Boolean.class)
+		else if(type == Boolean.class || type == boolean.class)
 			return new BooleanPropHandler(f,o,t);
 		else if (type == ListSingleSelection.class)
 			return new ListSinglePropHandler<T>(f,o,t);
 		else if (type == ListMultipleSelection.class)
 			return new ListMultiplePropHandler<T>(f,o,t);
-		else if (type == myButton.class)
-			return new ButtonPropHandler(f,o,t);
-		else if (type == Group.class)
-			return new GroupPropHandler(f,o,t);
 		return null;
 	}
 

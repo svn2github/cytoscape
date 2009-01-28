@@ -5,18 +5,14 @@ import java.lang.reflect.Field;
 import java.util.*;
 import Utils.ListSingleSelection;
 
-public class ListSinglePropHandler<T> implements PropHandler {
-	Field f;
-	Object o;
-	String propKey;
+public class ListSinglePropHandler<T> extends AbstractPropHandler {
+	
 	ListSingleSelection<T> LSS;
 
 	
 	@SuppressWarnings("unchecked")
 	public ListSinglePropHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		propKey = f.getName();
+		super(f,o,t);
 		try{
 			LSS = (ListSingleSelection<T>) f.get(o);
 		}catch(Exception e){e.printStackTrace();}

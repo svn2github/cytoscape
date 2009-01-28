@@ -1,47 +1,42 @@
 package Props;
 
-import Tunable.Tunable;
-import java.lang.reflect.Field;
-import java.util.Properties;
+import java.lang.reflect.*;
+import java.util.*;
 
-public class StringPropHandler implements PropHandler {
-	Field f;
-	Object o;
-	String propKey;
+import Tunable.*;
+
+public class StringPropHandler extends AbstractPropHandler {
 
 	public StringPropHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		propKey = f.getName();
+		super(f,o,t);
 	}
-
 
 	public Properties getProps() {
 		Properties p = new Properties();
 		try {
-			p.put(propKey,f.get(o));
-		} catch (IllegalAccessException iae) {
-			iae.printStackTrace();
-		}
-
+		p.put( propKey, (String)f.get(o) );
+        } catch (IllegalAccessException iae) {
+            iae.printStackTrace();
+        }
 		return p;
 	}
-
-	public void setProps(Properties p) {
-		try {
-			if (p.containsKey(propKey)) {
-				String val = p.getProperty(propKey);
-				if (val != null)
-					f.set(o, val);
-			}
-		} catch (IllegalAccessException iae) {
-			iae.printStackTrace();
-		}
-	}
-
+	
 	public void add(Properties p) {
 		try{
 			p.put(propKey,f.get(o));
 		}catch(Exception e){e.printStackTrace();}
+	}
+
+		
+	public void setProps(Properties p) {
+		try {
+		if ( p.containsKey( propKey ) ) {
+			String val = p.getProperty( propKey );
+			if ( val != null )
+				f.set(o, val);
+		}
+        } catch (IllegalAccessException iae) {
+            iae.printStackTrace();
+        }
 	}
 }
