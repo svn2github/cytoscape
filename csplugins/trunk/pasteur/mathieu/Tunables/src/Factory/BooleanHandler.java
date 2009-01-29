@@ -3,6 +3,7 @@ package Factory;
 
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import GuiInterception.AbstractGuiHandler;
 import Tunable.*;
 
@@ -30,6 +31,12 @@ public class BooleanHandler extends AbstractGuiHandler {
 		try {
 		f.set(o,jcb.isSelected());
 		} catch (Exception e) { e.printStackTrace(); }
+	}
+	
+	
+	public void returnPanel(){
+		panel.removeAll();
+		panel.add(new JCheckBox(t.description(),jcb.isSelected()));
 	}
 	
 	

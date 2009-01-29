@@ -3,9 +3,7 @@ package Factory;
 import java.awt.Color;
 import java.lang.reflect.*;
 import javax.swing.*;
-
 import Tunable.*;
-import Tunable.Tunable.Param;
 import GuiInterception.AbstractGuiHandler;
 
 
@@ -50,6 +48,12 @@ public class FloatHandler extends AbstractGuiHandler {
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
+	
+	public void returnPanel(){
+		panel.removeAll();
+		panel.add(new JLabel(t.description()));
+		panel.add(new JTextField(Float.toString(value.floatValue())));
+	}
 	
 
     public String getState() {

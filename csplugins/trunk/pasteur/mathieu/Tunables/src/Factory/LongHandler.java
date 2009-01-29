@@ -50,7 +50,13 @@ public class LongHandler extends AbstractGuiHandler {
 	}
 
 	
+	public void returnPanel(){
+		panel.removeAll();
+		panel.add(new JLabel(t.description()));
+		panel.add(new JTextField(Long.toString(value.longValue())));
+	}
 
+	
     public String getState() {
 		String s;
 		try {

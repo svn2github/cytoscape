@@ -3,6 +3,7 @@ package Factory;
 import java.awt.Color;
 import java.lang.reflect.*;
 import javax.swing.*;
+
 import Tunable.*;
 import GuiInterception.AbstractGuiHandler;
 
@@ -48,6 +49,12 @@ public class DoubleHandler extends AbstractGuiHandler {
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
+	
+	public void returnPanel(){
+		panel.removeAll();
+		panel.add(new JLabel(t.description()));
+		panel.add(new JTextField(Double.toString(value.doubleValue())));
+	}
 	
 
     public String getState() {

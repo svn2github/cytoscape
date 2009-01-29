@@ -66,4 +66,12 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler implements ListSe
 		else
 			return sel.toString();
 	}
+
+	@Override
+	public void returnPanel() {
+		panel.removeAll();
+		panel.add(new JLabel(t.description()));
+		panel.add(new JScrollPane(new JList(lms.getSelectedValues().toArray())));
+		
+	}
 }

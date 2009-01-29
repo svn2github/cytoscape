@@ -29,7 +29,7 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
 			} catch (IllegalAccessException iae) {
 				iae.printStackTrace();}
 		this.title = t.description();
-		for ( Param s : t.flag())if(s.equals(Param.Slider))useslider=true;
+		for ( Param s : t.flag())if(s.equals(Param.slider))useslider=true;
 		
 		panel = new JPanel();
 		if(useslider){
@@ -70,7 +70,15 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
 			} catch (Exception e) { e.printStackTrace();}
     	}
 	}
+    
+    
+	public void returnPanel(){
+		panel.removeAll();
+		panel.add(new JLabel(t.description()));
+		panel.add(new JTextField(Long.toString(myBounded.getValue())));
+	}
 
+	
     public String getState() {
         return myBounded.getValue().toString();
     }
