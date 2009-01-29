@@ -61,8 +61,9 @@ public class application {
 			// intercept the command ,modify any tunable fields, and return the button clicked
 			action = ti.intercept(com);
 			
+
 			switch(action){
-				case 0: lpi.intercept(com);spi.intercept(com);break;		
+				case 0: spi.intercept(com);break;		
 				case 1: spi.intercept(com);lpi.processProperties(com);spi.processProperties(com);break;
 				case 2: System.out.println("Done");break;//for the moment
 			}
