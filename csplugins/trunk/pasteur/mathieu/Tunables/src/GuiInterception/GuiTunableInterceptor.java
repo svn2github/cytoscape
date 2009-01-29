@@ -96,11 +96,14 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		} else {
 			// Figure out if the collapsable flag is set
 			for ( Param s : gh.getTunable().flag() ) {
-				if ( s.equals(Param.Collapsable) ) {
-					return new CollapsablePanel(title);
+				if(s.equals(Param.Collapsed)){
+					return new CollapsablePanel(title,false);
+				}
+				else if(s.equals(Param.Uncollapsed)){
+					return new CollapsablePanel(title,true);
 				}
 			}
-
+			
 			// We're not collapsable, so return a normal jpanel
 			return getSimplePanel(title);
 		}
