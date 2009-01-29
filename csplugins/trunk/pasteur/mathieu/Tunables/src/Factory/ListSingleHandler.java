@@ -46,6 +46,7 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
                 f.set(o,lss);
             }catch(Exception e){e.printStackTrace();}
         }
+        //System.out.println(lss.getSelectedValue());
 	}
 
 	public String getState() {
