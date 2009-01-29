@@ -64,7 +64,7 @@ public class application {
 
 			switch(action){
 				case 0: spi.intercept(com);break;		
-				case 1: spi.intercept(com);lpi.processProperties(com);spi.processProperties(com);break;
+				case 1: spi.intercept(com);lpi.processProperties(com);spi.processProperties(com);ti.interceptAndReinitializeObjects(com);break;
 				case 2: System.out.println("Done");break;//for the moment
 			}
 			System.out.println("OutputProperties of "+com.getClass().getSimpleName()+ " = "+ store);
