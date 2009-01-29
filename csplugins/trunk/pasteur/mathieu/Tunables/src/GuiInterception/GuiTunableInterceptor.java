@@ -3,7 +3,6 @@ package GuiInterception;
 import java.util.*;
 import java.awt.*;
 import javax.swing.*;
-import Command.command;
 import Tunable.Tunable.Param;
 import Utils.CollapsablePanel;
 import Utils.XorPanel;
