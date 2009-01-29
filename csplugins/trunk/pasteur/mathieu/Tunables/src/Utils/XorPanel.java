@@ -77,6 +77,7 @@ public class XorPanel extends JPanel {
 		public JPanel getJPanel() { return null; }
 		public void handle() {}
 		public String getState() {return null;}
+		public void returnPanel() {}
 	}
 }
 	
