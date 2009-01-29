@@ -1,6 +1,7 @@
 package Props;
 
 import java.util.*;
+
 import GuiInterception.HiddenTunableInterceptor;
 
 
@@ -25,5 +26,6 @@ public class LoadPropsInterceptor extends HiddenTunableInterceptor<PropHandler> 
 		return 0;
 	}
 
-
+	protected void getResultsPanels(List<PropHandler> handlers) {	
+	}
 }
