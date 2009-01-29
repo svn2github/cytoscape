@@ -5,9 +5,9 @@ import java.lang.reflect.Field;
 import java.util.Properties;
 
 
-public class IntPropHandler extends AbstractPropHandler {
+public class IntPropHandler extends AbstractPropHandler{
 	
-	public IntPropHandler(Field f, Object o, Tunable t) {
+	public IntPropHandler(Field f, Object o, Tunable t){
 		super(f,o,t);
 	}
 
