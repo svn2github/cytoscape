@@ -9,7 +9,7 @@ public class PrintSomething implements command {
 	@Tunable(description="your first name", group={"stuff"})
 	public String firstName = "homer";
 
-	@Tunable(description="your last name", group={"stuff","advanced"}, flag={Param.Collapsable})
+	@Tunable(description="your last name", group={"stuff","advanced"}, flag={Param.Uncollapsed})
 	public String lastName = "simpson";
 
 	@Tunable(description="your foot size", group={"stuff","advanced"},flag={Param.Slider})
