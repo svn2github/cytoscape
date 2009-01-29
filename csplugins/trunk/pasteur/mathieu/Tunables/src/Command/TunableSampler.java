@@ -20,7 +20,7 @@ public class TunableSampler implements command {
 	@Tunable(description="Test bounded double (pretend slider)", group={"Numeric Tunables","pretend double slider"})
 	public BoundedDouble boundedDub = new BoundedDouble(-10.0,1.1,10.0,false,false);
 
-	@Tunable(description="Single value edge attr", group={"Numeric Tunables","Attribute Tunables"}, flag={Param.Collapsed})
+	@Tunable(description="Single value edge attr", group={"Numeric Tunables","Attribute Tunables"}, flag={Param.collapsed})
 	public ListSingleSelection<String> edgeAttr = new ListSingleSelection<String>("interaction","canonicalName");
 	
 	@Tunable(description="Multi value node attr", group={"Numeric Tunables","Attribute Tunables"})

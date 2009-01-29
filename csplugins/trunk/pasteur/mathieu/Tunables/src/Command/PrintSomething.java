@@ -9,13 +9,13 @@ public class PrintSomething implements command {
 	@Tunable(description="your first name", group={"stuff"})
 	public String firstName = "homer";
 
-	@Tunable(description="your last name", group={"stuff","advanced"}, flag={Param.Uncollapsed})
+	@Tunable(description="your last name", group={"stuff","advanced"}, flag={Param.collapsed})
 	public String lastName = "simpson";
 
-	@Tunable(description="your foot size", group={"stuff","advanced"},flag={Param.Slider})
+	@Tunable(description="your foot size", group={"stuff","advanced"},flag={Param.slider})
 	public BoundedDouble footSize = new BoundedDouble(5.0, 8.5, 13.5, true, false);
 
-	@Tunable(description="the number of children you have")
+	@Tunable(description="the number of children you have",flag={Param.slider})
 	public BoundedInteger kids = new BoundedInteger(0, 1, 10, true, false);
 
 	@Tunable(description="Month",group={"Today's date"})
@@ -25,10 +25,8 @@ public class PrintSomething implements command {
 	public ListSingleSelection<String> dayNames = new ListSingleSelection<String>("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday");
 
 	@Tunable(description="Number of children",group={"Other"})
-	public Float float1 = new Float(0);
+	public Integer integer1 = new Integer(0);
 
-	@Tunable(description="Number of children",group={"Other"})
-	public float float2 = (float) 45.544;
 
 	
 	

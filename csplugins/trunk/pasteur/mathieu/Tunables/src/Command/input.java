@@ -8,7 +8,7 @@ import Tunable.Tunable.Param;
 
 public class input implements command {
 	
-	@Tunable(description = "FirstName",group={"Name"},flag={Param.Collapsed})
+	@Tunable(description = "FirstName",group={"Name"},flag={Param.collapsed})
 	public String string1 = new String("John");
 	@Tunable(description = "LastName",group={"Name"})
 	public String string2 = new String("Smith");
@@ -26,7 +26,7 @@ public class input implements command {
 	@Tunable(description="Number of children",group={"Other"})
 	public Integer integer1 = new Integer(0);
 	
-	@Tunable(description="Age",flag={Param.Slider},group={"Birth"})
+	@Tunable(description="Age",flag={Param.slider},group={"Birth"})
 	public BoundedInteger bounded2 = new BoundedInteger(0,18,130,false,true);
 
 //	@Tunable(description="Do you like Tunables",group={"Tunable Test"})
