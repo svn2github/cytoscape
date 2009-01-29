@@ -22,7 +22,7 @@ public abstract class HiddenTunableInterceptor<T extends Handler> implements Tun
 	}
 
 	public final int intercept(Object obj){
-		if ( !handlerMap.containsKey(obj) ) {
+		//if ( !handlerMap.containsKey(obj) ) {					//Deleted to get new Panels if we do it many times
 			List<T> handlerList = new LinkedList<T>();
 			// Find each public field in the class.
 			for (Field field : obj.getClass().getFields()) {
@@ -40,9 +40,13 @@ public abstract class HiddenTunableInterceptor<T extends Handler> implements Tun
 				}
 			}
 			handlerMap.put(obj,handlerList);
-		}
+		//}													//End of the deleted Loop
 		int action = process(handlerMap.get(obj));
 		return action;
+	}
+	
+	public final void interceptandDisplayResults(Object obj){
+		getResultsPanels(handlerMap.get(obj));
 	}
 	
 	
@@ -80,7 +84,7 @@ public abstract class HiddenTunableInterceptor<T extends Handler> implements Tun
 	
 	
 	
-	
+	protected abstract void getResultsPanels(List<T> handlers);
 	protected abstract void processProps(List<T> handlers);
 	protected abstract int process(List<T> handlers);
 }

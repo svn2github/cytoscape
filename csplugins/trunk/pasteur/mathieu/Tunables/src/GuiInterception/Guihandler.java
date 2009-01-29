@@ -14,7 +14,7 @@ public interface Guihandler extends Handler{
 //	public JPanel getOutputPanel();
 	
 	
-	
+	void returnPanel();
 	JPanel getJPanel();
 	String getState();
 	String getName();

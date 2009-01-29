@@ -55,7 +55,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 
 				panels.get(lastGroup).add(gh.getJPanel());
 			}
-
 			panelMap.put(lh,panels.get(MAIN));
 		}
 
@@ -64,16 +63,16 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 			h.notifyDependents();
 			
 		//Custom button text
-		Object[] buttons = {"save settings","cancel","done"};
+		Object[] buttons = {"OK","Cancel"};
 		int n = JOptionPane.showOptionDialog(parent,
 		    panelMap.get(lh),
 		    "Set Parameters",
 		    JOptionPane.YES_NO_CANCEL_OPTION,
-		    JOptionPane.QUESTION_MESSAGE,
+		    JOptionPane.PLAIN_MESSAGE,
 		    null,
 		    buttons,
-		    buttons[1]);
-
+		    buttons[0]);
+		
 		
 		// process the values set in the gui 
 		for ( Guihandler h : lh )
@@ -95,10 +94,10 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		} else {
 			// Figure out if the collapsable flag is set
 			for ( Param s : gh.getTunable().flag() ) {
-				if(s.equals(Param.Collapsed)){
+				if(s.equals(Param.collapsed)){
 					return new CollapsablePanel(title,false);
 				}
-				else if(s.equals(Param.Uncollapsed)){
+				else if(s.equals(Param.uncollapsed)){
 					return new CollapsablePanel(title,true);
 				}
 			}
@@ -118,7 +117,21 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	}
 
 	public void processProps(Object o) {
-	
 	}
 	
+	
+	
+	
+	
+	protected void getResultsPanels(java.util.List<Guihandler> lh) {
+		for ( Guihandler h : lh ) {
+			h.notifyDependents();
+			h.returnPanel();
+		}
+			
+		JOptionPane.showMessageDialog(parent,
+	    panelMap.get(lh),
+	    "Results",JOptionPane.PLAIN_MESSAGE);
+	}
+
 }
