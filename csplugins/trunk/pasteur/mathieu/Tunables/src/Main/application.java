@@ -55,6 +55,12 @@ public class application {
 		public void actionPerformed(ActionEvent a) {
 
 			// set the initial properties
+			InitProps = new Properties();
+			store = new Properties();
+			lpi = new LoadPropsInterceptor(InitProps);
+			spi = new StorePropsInterceptor(store);
+			
+			
 			lpi.intercept(com);
 			System.out.println("InputProperties of "+com.getClass().getSimpleName()+ " = "+ InitProps);
 			
