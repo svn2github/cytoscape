@@ -59,7 +59,7 @@ public class BoundedFloatHandler extends AbstractGuiHandler implements Guihandle
     		}catch(NumberFormatException nfe){
     			try{
     				jtf.setBackground(Color.red);
-    				value = Double.parseDouble(f.get(o).toString());
+    				value = Double.parseDouble(myBounded.getValue().toString());
     				JOptionPane.showMessageDialog(null,"An Integer was Expected"+newline+"Value will be set to default = "+value.floatValue(), "Error",JOptionPane.ERROR_MESSAGE);
     			}catch(Exception e){e.printStackTrace();}
     		}
