@@ -1,13 +1,13 @@
 
 package org.example.tunable;
 
-public interface TunableInterceptor { 
+import java.util.Map;
 
-	/**
-	 * Intercepts {@link Object} and should look
-	 * for {@link Tunable} annotated {@link Field}s in the object,
-	 * process the {@link Tunable}s using the {@link Handler}s
-	 * specified in the implementation.
-	 */
-	public void intercept(Object o);
+public interface TunableInterceptor<T extends Handler> { 
+
+	public void loadTunables(Object o);
+
+	public Map<String,T> getHandlers(Object o);
+
+	public void createUI(Object o);
 }

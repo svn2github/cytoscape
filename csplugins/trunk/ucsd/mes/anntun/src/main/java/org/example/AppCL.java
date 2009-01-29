@@ -19,8 +19,17 @@ public class AppCL
 		// args from main()
 		TunableInterceptor cl = new CLTunableInterceptor(args);
 
-		// intercept the command and modify any tunables
-		cl.intercept(com);
+		// load the tunables from the object
+		cl.loadTunables(com);
+
+		// if the object implements the interface,
+		// give the object access to the handlers
+		// created for the tunables
+		if ( com instanceof HandlerController )
+			((HandlerController)com).controlHandlers(cl.getHandlers(com));
+		
+		// create the UI based on the object
+		cl.createUI(com);
 
 		// execute the command
 		System.out.println("result of command execution:");
@@ -34,9 +43,17 @@ public class AppCL
 		// create the interceptor 
 		TunableInterceptor lp = new LoadPropsInterceptor(p);
 
-		// intercept the command and set any fields identified by
-		// property names with values from the props file 
-		lp.intercept(com);
+		// load the tunables from the object
+		lp.loadTunables(com);
+
+		// if the object implements the interface,
+		// give the object access to the handlers
+		// created for the tunables
+		if ( com instanceof HandlerController )
+			((HandlerController)com).controlHandlers(lp.getHandlers(com));
+		
+		// create the UI based on the object
+		lp.createUI(com);
 
 		// just to see what has been set
 		System.out.println("result of command execution after properties have been loaded:");
@@ -48,7 +65,17 @@ public class AppCL
 
 		// now load the properties into the appropriate tunables
 		TunableInterceptor sp = new StorePropsInterceptor(store);
-		sp.intercept(com);
+		// load the tunables from the object
+		sp.loadTunables(com);
+
+		// if the object implements the interface,
+		// give the object access to the handlers
+		// created for the tunables
+		if ( com instanceof HandlerController )
+			((HandlerController)com).controlHandlers(sp.getHandlers(com));
+		
+		// create the UI based on the object
+		sp.createUI(com);
 
 		System.out.println("result of storing properties interceptor:");
 		System.out.println(store.toString());

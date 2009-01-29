@@ -3,10 +3,14 @@
 package org.example.command;
 
 import org.example.tunable.Tunable;
+import org.example.tunable.HandlerController;
+import org.example.tunable.Handler;
 import org.example.tunable.util.BoundedInteger;
 import org.example.tunable.util.BoundedDouble;
 
-public class PrintSomething implements Command {
+import java.util.Map;
+
+public class PrintSomething implements Command, HandlerController {
 
 	@Tunable(description="your first name", group={"stuff"})
 	public String firstName = "homer";
@@ -30,5 +34,10 @@ public class PrintSomething implements Command {
 	@Tunable(description="your age")
 	public void setAge(int a) {
 		age = a;	
+	}
+
+	public void controlHandlers(Map<String,Handler> hands) {
+		for ( Handler h : hands.values() )
+			System.out.println("controlling handler for tunable: " + h.getTunable().description());
 	}
 }

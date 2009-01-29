@@ -42,8 +42,17 @@ public class AppGUI
 			this.ti = ti;
 		}
 		public void actionPerformed(ActionEvent a) {
-			// intercept the command and modify any tunable fields
-			ti.intercept(com);
+			// load the tunables from the object 
+			ti.loadTunables(com);
+
+			// if the object implements the interface,
+			// give the object access to the handlers 
+			// created for the tunables
+			if ( com instanceof HandlerController )
+				((HandlerController)com).controlHandlers(ti.getHandlers(com));
+			
+			// create the UI based on the object
+			ti.createUI(com);
 
 			// execute the command
 			com.execute();

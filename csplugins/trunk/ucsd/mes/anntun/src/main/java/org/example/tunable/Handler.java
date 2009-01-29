@@ -15,4 +15,7 @@ public interface Handler {
 	Method getMethod();
 	Object getObject();
 	Tunable getTunable();
+	void handlerChanged(Handler otherHandler);
+	void addDependentHandler(Handler otherHandler);
+	boolean removeDependentHandler(Handler otherHandler); 
 }

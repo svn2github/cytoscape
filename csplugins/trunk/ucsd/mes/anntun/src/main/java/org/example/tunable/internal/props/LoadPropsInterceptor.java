@@ -20,7 +20,12 @@ public class LoadPropsInterceptor extends AbstractTunableInterceptor<PropHandler
 		this.inputProps = inputProps; 
 	}
 
-	protected void process(java.util.List<PropHandler> lh) {
+	public void createUI(Object o) {
+		if ( !handlerMap.containsKey(o) )
+			throw new IllegalArgumentException("Interceptor does not yet know about this object");
+
+		Collection<PropHandler> lh = handlerMap.get(o).values();
+
 		for ( PropHandler p : lh ) {
 			p.setProps( inputProps );
 		}

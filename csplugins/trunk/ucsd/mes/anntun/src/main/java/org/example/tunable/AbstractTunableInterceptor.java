@@ -3,10 +3,7 @@ package org.example.tunable;
 
 import java.lang.reflect.*;
 import java.lang.annotation.*;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * An abstract implementation of {@link TunableInterceptor} that should serve as
@@ -16,11 +13,14 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 	implements TunableInterceptor {
 
 	protected HandlerFactory<T> factory;
-	protected Map<Object,List<T>> handlerMap;
+
+	// We want the linked hash map to preserve insertion order since
+	// this should also be rendering order.
+	protected Map<Object,LinkedHashMap<String,T>> handlerMap;
 
 	public AbstractTunableInterceptor(HandlerFactory<T> factory) {
 		this.factory = factory; 
-		handlerMap = new HashMap<Object,List<T>>();
+		handlerMap = new HashMap<Object,LinkedHashMap<String,T>>();
 	}
 
 	/**
@@ -28,11 +28,11 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 	 * {@link Tunable} fields in the {@link Object} and created appropriate
 	 * handlers for each field. 
 	 */
-	public final void intercept(Object obj) {
+	public final void loadTunables(Object obj) {
 		
 		if ( !handlerMap.containsKey(obj) ) {
 			//System.out.println("intercepting obj: " + obj.getClass().toString());
-			List<T> handlerList = new LinkedList<T>();
+			LinkedHashMap<String,T> handlerList = new LinkedHashMap<String,T>();
 
 			// Find each public field in the class.
 			for (Field field : obj.getClass().getFields()) {
@@ -50,7 +50,7 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 
 						if ( handler != null ) {
 							//System.out.println("   adding handler");
-						 	handlerList.add( handler ); 
+							handlerList.put(field.getName(),handler);
 						}
 	
 					} catch (Throwable ex) {
@@ -72,8 +72,9 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 						// add it to the list.
 						T handler = factory.getHandler(method,obj,tunable);
 	
-						if ( handler != null )
-						 	handlerList.add( handler ); 
+						if ( handler != null ) {
+						 	handlerList.put( method.getName(), handler ); 
+						}
 	
 					} catch (Throwable ex) {
 						System.out.println("tunable method intercept failed: " + method.toString() );
@@ -84,13 +85,14 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 
 			handlerMap.put(obj,handlerList);
 		}
-
-		process(handlerMap.get(obj));
 	}
 
-	/** 
-	 * This method gets executed by the <code>intercept(Object o)</code> method after all 
-	 * {@link Tunable}s have been extracted. This should NOT be called otherwise!
-	 */
-	protected abstract void process(List<T> handlers);
+	public Map<String,T> getHandlers(Object o) {
+		if ( o == null )
+			return null;
+		return handlerMap.get(o);
+	}
+
+	public abstract void createUI(Object o);
+
 }

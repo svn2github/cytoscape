@@ -18,9 +18,15 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		this.args = args;
 	}
 
-	protected void process(List<CLHandler> lh) {
-		Options options = new Options();
+	public void createUI(Object o) {
+
+		if ( !handlerMap.containsKey(o) )
+			throw new IllegalArgumentException("Interceptor does not yet know about this object!");
 		
+		Options options = new Options();
+
+		Collection<CLHandler> lh = handlerMap.get(o).values();
+
 		for ( CLHandler h : lh )
 			options.addOption( h.getOption() );
 
