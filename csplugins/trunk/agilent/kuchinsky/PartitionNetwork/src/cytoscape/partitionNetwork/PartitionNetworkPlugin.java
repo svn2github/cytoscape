@@ -355,7 +355,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 //				if (vs == null) {
 					vs = 
 						PartitionNetworkVisualStyleFactory.createVisualStyle(Cytoscape.getCurrentNetworkView());
-					catalog.addVisualStyle(vs);
+					//catalog.addVisualStyle(vs);
 //				}
 
 //				manager.setVisualStyle(vs);

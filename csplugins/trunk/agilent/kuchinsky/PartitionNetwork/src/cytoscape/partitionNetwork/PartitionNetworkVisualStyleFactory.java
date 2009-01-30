@@ -29,58 +29,118 @@ public class PartitionNetworkVisualStyleFactory {
 	/**
 	 * 
 	 */
-	public static final String PartitionNetwork_VS = "Partition Network Visual Style";
+	public static final String PartitionNetwork_VS = "MolecularFunction";
 	
 
 
 	public static VisualStyle createVisualStyle(CyNetworkView view) {
 		
-
-		
-		VisualMappingManager vmManager = Cytoscape.getVisualMappingManager();
-		NodeAppearanceCalculator nodeAppCalc = new NodeAppearanceCalculator();
-		EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator();
-		CalculatorCatalog calculatorCatalog = vmManager.getCalculatorCatalog();
-		
-		VisualStyle currentStyle = calculatorCatalog.getVisualStyle("default");
-		
-//		VisualStyle currentStyle = view.getVisualStyle();
-		
-		final String attributeName = "annotation.GO MOLECULAR_FUNCTION";
-		
-		CyAttributes attribs = Cytoscape.getNodeAttributes();
-		Map attrMap = CyAttributesUtils.getAttribute(attributeName, attribs);
-		Collection values = attrMap.values();
-		
-		List uniqueValueList = new ArrayList();
-		
-		// key will be a List attribute value, so we need to pull out individual list items
-		if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
-			for (Object o : values)
-			{
-				List oList = (List) o;
-				for (int j = 0; j < oList.size(); j++)
+		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
+		VisualStyle sgvStyle = catalog.getVisualStyle(PartitionNetwork_VS);
+		if (sgvStyle == null) { // Create the MF visual style
+			try {
+				sgvStyle = (VisualStyle) vmm.getVisualStyle().clone();
+			} catch (CloneNotSupportedException e) {
+				sgvStyle = new VisualStyle(PartitionNetwork_VS);
+			}
+			sgvStyle.setName(PartitionNetwork_VS);
+			NodeAppearanceCalculator nac = new MFNodeAppearanceCalculator();
+			nac.getDefaultAppearance().setNodeSizeLocked(false);
+			nac.getDefaultAppearance().set(VisualPropertyType.NODE_HEIGHT,
+					MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT);
+			nac.getDefaultAppearance().set(VisualPropertyType.NODE_WIDTH,
+					MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH);
+			nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE,
+					NodeShape.RECT);
+			nac.getDefaultAppearance().set(
+					VisualPropertyType.NODE_BORDER_COLOR, new Color(0, 0, 0));
+			nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR,
+					new Color(255, 255, 255));
+			DiscreteMapping disMapping = new DiscreteMapping(Color.white,
+	                ObjectMapping.NODE_MAPPING);
+			final String attributeName = "annotation.GO MOLECULAR_FUNCTION";	
+			CyAttributes attribs = Cytoscape.getNodeAttributes();
+			Map attrMap = CyAttributesUtils.getAttribute(attributeName, attribs);
+			Collection values = attrMap.values();
+			List uniqueValueList = new ArrayList();
+			
+			// key will be a List attribute value, so we need to pull out individual list items
+			if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
+				for (Object o : values)
 				{
-					Object jObj = oList.get(j);
-					if (jObj != null)
+					List oList = (List) o;
+					for (int j = 0; j < oList.size(); j++)
 					{
-						if (!uniqueValueList.contains(jObj))
+						Object jObj = oList.get(j);
+						if (jObj != null)
 						{
-							uniqueValueList.add(jObj);
+							if (!uniqueValueList.contains(jObj))
+							{
+								uniqueValueList.add(jObj);
+							}
 						}
 					}
 				}
 			}
+			disMapping.setControllingAttributeName(attributeName, view.getNetwork(), false);
+			/*
+			 * Create random colors
+			 */
+			final float increment = 1f / ((Number) uniqueValueList.size()).floatValue();
+			float hue = 0;
+			float sat = 0;
+			float br = 0;
+			int i = 0;
+			for (Object key : uniqueValueList) {
+				hue = hue + increment;
+				sat = (Math.abs(((Number) Math.cos((8 * i) / (2 * Math.PI))).floatValue()) * 0.7f)
+				      + 0.3f;
+				br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI)) + (Math.PI / 2)))
+				               .floatValue()) * 0.7f) + 0.3f;
+				disMapping.putMapValue(key, new Color(Color.HSBtoRGB(hue, sat, br)));
+				i++;
+			}
+			Calculator colorCalculator = new BasicCalculator(PartitionNetwork_VS,
+	                disMapping,
+						VisualPropertyType.NODE_FILL_COLOR);
+			
+			nac.setCalculator(colorCalculator);
+
+			sgvStyle.setNodeAppearanceCalculator(nac);
+			
+			GlobalAppearanceCalculator gac = sgvStyle.getGlobalAppearanceCalculator();
+			// set edge opacity
+			gac.setDefaultBackgroundColor(Color.white);
+//			VisualStyle visualStyle = new VisualStyle(PartitionNetwork_VS, nodeAppCalc, edgeAppCalc, gac);
+			VisualPropertyType type = VisualPropertyType.EDGE_OPACITY;
+			type.setDefault(sgvStyle, new Integer(200));
+			type = VisualPropertyType.NODE_SHAPE;
+			type.setDefault(sgvStyle, NodeShape.ELLIPSE);
+			sgvStyle.setGlobalAppearanceCalculator(gac);
+
+			catalog.addVisualStyle(sgvStyle);
 		}
+		CyNetworkView myView = Cytoscape.getCurrentNetworkView();
+		vmm.setNetworkView(myView);
+		vmm.setVisualStyle(sgvStyle);
+		myView.setVisualStyle(PartitionNetwork_VS);
+
+		Cytoscape.getVisualMappingManager().setNetworkView(myView);
+		Cytoscape.getVisualMappingManager().applyAppearances();
 
 		
+
 		
-		VisualStyle clone = null;
-		try {
-			clone = (VisualStyle) currentStyle.clone();
-		} catch (CloneNotSupportedException exc) {
-			CyLogger.getLogger().warn("Clone not supported exception!");
-		}
+		return sgvStyle;
+		
+		
+//		VisualStyle clone = null;
+//		try {
+//			clone = (VisualStyle) currentStyle.clone();
+//		} catch (CloneNotSupportedException exc) {
+//			CyLogger.getLogger().warn("Clone not supported exception!");
+//		}
 
 		// ------------------------------ Set node color ---------------------------//
 
@@ -155,71 +215,9 @@ public class PartitionNetworkVisualStyleFactory {
 
 		//------------------------- Create a visual style -------------------------------//
 //		GlobalAppearanceCalculator gac = vmManager.getVisualStyle().getGlobalAppearanceCalculator();
-		GlobalAppearanceCalculator gac = clone.getGlobalAppearanceCalculator();
-
-		// set edge opacity
-		gac.setDefaultBackgroundColor(Color.white);
-		
-		
-//		VisualStyle visualStyle = new VisualStyle(PartitionNetwork_VS, nodeAppCalc, edgeAppCalc, gac);
-		VisualPropertyType type = VisualPropertyType.EDGE_OPACITY;
-		type.setDefault(clone, new Integer(50));
-		
-		type = VisualPropertyType.NODE_SHAPE;
-		type.setDefault(clone, NodeShape.ELLIPSE);
-	
 		// -------------------------- set node color to encoding of Molecular Function ------ //
 		
-		DiscreteMapping disMapping = new DiscreteMapping(Color.white,
-                ObjectMapping.NODE_MAPPING);
-		disMapping.setControllingAttributeName(attributeName, view.getNetwork(), false);
-	
 
-		/*
-		 * Create random colors
-		 */
-		final float increment = 1f / ((Number) uniqueValueList.size()).floatValue();
-
-		float hue = 0;
-		float sat = 0;
-		float br = 0;
-
-		int i = 0;
-		
-//		HashMap valueMap = new HashMap();
-		
-//		System.out.println("values for molecular function: " + values);
-		
-
-		
-		for (Object key : uniqueValueList) {
-			hue = hue + increment;
-			sat = (Math.abs(((Number) Math.cos((8 * i) / (2 * Math.PI))).floatValue()) * 0.7f)
-			      + 0.3f;
-			br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI)) + (Math.PI / 2)))
-			               .floatValue()) * 0.7f) + 0.3f;
-//			System.out.println("putting color value on key: " + key);
-			
-
-			disMapping.putMapValue(key, new Color(Color.HSBtoRGB(hue, sat, br)));
-			i++;
-		}
-		
-//		disMapping.putAll(valueMap);
-		Calculator colorCalculator = new BasicCalculator(PartitionNetwork_VS,
-                disMapping,
-					VisualPropertyType.NODE_FILL_COLOR);
-		
-		nodeAppCalc.setCalculator(colorCalculator);
-		
-		
-		
-		
-		clone.setNodeAppearanceCalculator(nodeAppCalc);
-
-		clone.setName(PartitionNetwork_VS);
-
-		return clone;
 	}	
 	
 }
