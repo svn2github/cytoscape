@@ -91,8 +91,9 @@ public class Activator implements BundleActivator
 	class MyValuedTask implements ValuedTask<Integer>
 	{
 		boolean cancel = false;
-		public Integer run(TaskMonitor taskMonitor)
+		public Integer run(TaskMonitor taskMonitor) throws Exception
 		{
+			if (1 == 1) throw new Exception();
 			somethingComplicated();
 			return new Integer(1);
 		}

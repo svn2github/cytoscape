@@ -21,10 +21,23 @@ import java.io.StringWriter;
  */
 public class SwingTaskManager implements TaskManager
 {
-
+	/**
+	 * The delay between the execution of the <code>Task</code> and
+	 * showing its task dialog.
+	 *
+	 * When a <code>Task</code> is executed, <code>SwingTaskManager</code>
+	 * will not show its task dialog immediately. It will delay for a
+	 * period of time before showing the dialog. This way, short lived
+	 * <code>Task</code>s won't have a dialog box.
+	 */
+	static final int DELAY_IN_MILLISECONDS_BEFORE_SHOWING_DIALOG = 4000;
 	Frame owner;
 	Locale locale;
 
+	/**
+	 * @throws MissingResourceException when the SwingTaskManager
+	 * resource bundle is missing
+	 */
 	public SwingTaskManager()
 	{
 		this(null, Locale.getDefault());
@@ -34,6 +47,8 @@ public class SwingTaskManager implements TaskManager
 	 * @param owner JDialogs created by this object
 	 * will have its owner set to this parameter.
 	 * @param locale The locale to display messages in
+	 * @throws MissingResourceException when the SwingTaskManager
+	 * resource bundle is missing
 	 */
 	public SwingTaskManager(Frame owner, Locale locale)
 	{
@@ -46,7 +61,7 @@ public class SwingTaskManager implements TaskManager
 	}
 
 	/**
-	 * @param owner JDialogs created by this object
+	 * @param owner JDialogs created by this <code>TaskManager</code>
 	 * will have its owner set to this parameter.
 	 */
 	public void setOwner(Frame owner)
@@ -56,33 +71,37 @@ public class SwingTaskManager implements TaskManager
 
 	public void execute(final Task task)
 	{
-		Thread thread = new Thread(new TaskRunner(task));
-		thread.start();
-	}
-
-	class TaskRunner implements Runnable
-	{
-		final Task task;
-
-		public TaskRunner(Task task)
+		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, owner, locale);
+		final Thread executor = new Thread(new Runnable()
 		{
-			this.task = task;
-		}
+			public void run()
+			{
+				try
+				{
+					task.run(taskMonitor);
+				}
+				catch (Exception exception)
+				{
+					taskMonitor.showException(exception);
+				}
+				if (taskMonitor.isOpened() && !taskMonitor.isShowingException())
+					taskMonitor.close();
+			}
+		});
 
-		public void run()
+		final ActionListener delayedDisplayer = new ActionListener()
 		{
-			SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, owner, locale);
-			try
+			public void actionPerformed(ActionEvent e)
 			{
-				task.run(taskMonitor);
+				if (executor.getState() != Thread.State.TERMINATED)
+					taskMonitor.open();
 			}
-			catch (Exception exception)
-			{
-				taskMonitor.showException(exception);
-			}
-			if (!taskMonitor.isShowingException())
-				taskMonitor.close();
-		}
+		};
+		Timer timer = new Timer(DELAY_IN_MILLISECONDS_BEFORE_SHOWING_DIALOG, delayedDisplayer);
+		timer.setRepeats(false);
+
+		executor.start();
+		timer.start();
 	}
 }
 
@@ -90,25 +109,39 @@ class SwingTaskMonitor implements TaskMonitor
 {
 	final Task		task;
 	final ResourceBundle	messages;
-	final JDialog		dialog;
-	final JLabel		statusMessageLabel;
-	final JProgressBar	progressBar;
-	final JButton		closeButton;
-	final JPanel		exceptionPanel;
-	final JLabel		exceptionLabel;
-	final JTextArea		exceptionArea;
+	final Frame		owner;
 
-	boolean disposed = false;
+	JDialog		dialog			= null;
+	JLabel		statusMessageLabel	= null;
+	JProgressBar	progressBar		= null;
+	JButton		closeButton		= null;
+	JPanel		exceptionPanel		= null;
+	JLabel		exceptionLabel		= null;
+	JTextArea	exceptionArea		= null;
+
+	String		title			= null;
+	String		statusMessage		= null;
+	int		progress		= 0;
 
 	public SwingTaskMonitor(Task task, Frame owner, Locale locale)
 	{
 		this.task = task;
-		messages = ResourceBundle.getBundle("SwingTaskManager", locale);
+		this.messages = ResourceBundle.getBundle("SwingTaskManager", locale);
+		this.owner = owner;
+	}
+
+	public void open()
+	{
 		dialog = new JDialog(owner);
+		if (title != null)
+			dialog.setTitle(title);
 		dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.PAGE_AXIS));
 		statusMessageLabel = new JLabel();
+		if (statusMessage != null)
+			statusMessageLabel.setText(statusMessage);
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setIndeterminate(true);
+		progressBar.setValue(progress);
 		closeButton = new JButton(messages.getString("cancel"));
 		closeButton.addActionListener(new CloseAction());
 
@@ -131,19 +164,36 @@ class SwingTaskMonitor implements TaskMonitor
 
 	public void close()
 	{
-		disposed = true;
-		dialog.dispose();
+		if (dialog != null)
+		{
+			dialog.dispose();
+			dialog = null;
+		}
 	}
 
 	class CloseAction implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
 		{
+			// The Close button has two possible states that we need
+			// to take into account:
+			// 1. Cancel: the user has requested to cancel the task
+			// 2. Close:  the Task threw an exception, and the
+			//            dialog should close
+			
 			if (isShowingException())
-				close();
+				close(); // since we are showing an exception, close the dialog
 			else
 			{
-				setCancelled();
+				// we need to inform the Task to cancel
+
+				// change the UI to show that we are cancelling the Task
+				closeButton.setEnabled(false);
+				closeButton.setText(messages.getString("canceling"));
+
+				// we issue the Task's cancel method in its own thread
+				// to prevent Swing from freezing if the Tasks's cancel
+				// method is taking too long to finish
 				Thread cancelThread = new Thread(new Runnable()
 				{
 					public void run()
@@ -158,27 +208,37 @@ class SwingTaskMonitor implements TaskMonitor
 
 	public void setTitle(String title)
 	{
-		if (disposed) return;
-		dialog.setTitle(title);
+		this.title = title;
+		if (dialog != null)
+			dialog.setTitle(title);
 	}
 
 	public void setStatusMessage(String statusMessage)
 	{
-		if (disposed) return;
-		statusMessageLabel.setText(statusMessage);
+		this.statusMessage = statusMessage;
+		if (dialog != null)
+			statusMessageLabel.setText(statusMessage);
 	}
 
 	public void setProgress(double progress)
 	{
-		if (disposed) return;
-		progressBar.setStringPainted(true);
-		progressBar.setIndeterminate(false);
-		progressBar.setValue((int) (progress * 100));
+		this.progress = (int) (progress * 100);
+		if (dialog != null)
+		{
+			progressBar.setStringPainted(true);
+			progressBar.setIndeterminate(false);
+			progressBar.setValue(this.progress);
+		}
 	}
 
 	public void showException(Exception exception)
 	{
-		if (disposed) return;
+		// force the dialog box to be created if
+		// the Task throws an exception
+		if (dialog == null)
+			open();
+
+		// display the exception
 		closeButton.setText(messages.getString("close"));
 		closeButton.setEnabled(true);
 		StringWriter stringWriter = new StringWriter();
@@ -194,12 +254,8 @@ class SwingTaskMonitor implements TaskMonitor
 		return closeButton.getText().equals(messages.getString("close"));
 	}
 
-	public boolean setCancelled()
+	public boolean isOpened()
 	{
-		if (disposed || isShowingException())
-			return false;
-		closeButton.setEnabled(false);
-		closeButton.setText(messages.getString("canceling"));
-		return true;
+		return dialog != null;
 	}
 }
