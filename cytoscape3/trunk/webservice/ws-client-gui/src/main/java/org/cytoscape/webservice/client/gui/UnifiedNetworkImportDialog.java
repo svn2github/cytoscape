@@ -136,9 +136,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		this.setModal(modal);
 		this.desktop = parent;
 
-		setLocationRelativeTo((Component) parent);
+		setLocationRelativeTo((Component) (desktop.getJFrame()));
 
-		about = new AboutDialog((Window) desktop, true);
+		about = new AboutDialog((Window)(desktop.getJFrame()), true);
 
 		// Register as listener.
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -436,28 +436,31 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private void createInstallButtonListener(JButton installButton) {
 		installButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
-					WebServiceThemeInstall wst = new WebServiceThemeInstall(UnifiedNetworkImportDialog.this);
-					boolean displayError = false;
-
-					try {
-						cytoscape.plugin.DownloadableInfo InstalledTheme = wst.installTheme();
-
-						if (InstalledTheme == null)
-							displayError = true;
-					} catch (java.io.IOException ioe) {
-						displayError = true;
-						ioe.printStackTrace();
-					} catch (org.jdom.JDOMException jde) {
-						displayError = true;
-						jde.printStackTrace();
-					} finally {
-						if (displayError)
 							JOptionPane.showMessageDialog(UnifiedNetworkImportDialog.this,
-							                              "Failed to install the WebServiceThemePack",
-							                              "Install Error", JOptionPane.ERROR_MESSAGE);
-					}
+                             "The web service install pack feature is currently disabled pending the transition to P2.",
+						                              "Currently non-functional!", JOptionPane.ERROR_MESSAGE);
+		//			WebServiceThemeInstall wst = new WebServiceThemeInstall(UnifiedNetworkImportDialog.this);
+		//			boolean displayError = false;
 
-					setDatasource();
+		//			try {
+		//				cytoscape.plugin.DownloadableInfo InstalledTheme = wst.installTheme();
+//
+//						if (InstalledTheme == null)
+//							displayError = true;
+//					} catch (java.io.IOException ioe) {
+//						displayError = true;
+//						ioe.printStackTrace();
+//					} catch (org.jdom.JDOMException jde) {
+//						displayError = true;
+//						jde.printStackTrace();
+//					} finally {
+//						if (displayError)
+//							JOptionPane.showMessageDialog(UnifiedNetworkImportDialog.this,
+//							                              "Failed to install the WebServiceThemePack",
+//							                              "Install Error", JOptionPane.ERROR_MESSAGE);
+//					}
+
+//					setDatasource();
 				}
 			});
 	}
