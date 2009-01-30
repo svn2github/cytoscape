@@ -51,6 +51,10 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import java.io.IOException;
+import java.io.File;
+import java.io.FileWriter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +65,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -93,6 +98,7 @@ import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 import cytoscape.plugin.cheminfo.model.Compound;
@@ -118,6 +124,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 	private static int DEFAULT_IMAGE_SIZE=80;
 	private boolean hasNodes = false;
 	private boolean hasEdges = false;
+	private	CyLogger logger = CyLogger.getLogger(CompoundTable.class);
 
 	public CompoundTable (List<Compound> compoundList) {
 		super(Cytoscape.getDesktop());
@@ -196,8 +203,15 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 			JButton exportButton = new JButton("Export Table...");
 			exportButton.addActionListener(this);
 			exportButton.setActionCommand("export");
-			exportButton.setEnabled(false);
+			// exportButton.setEnabled(false);
 			buttonBox.add(exportButton);
+		}
+		{
+			JButton printButton = new JButton("Print Table...");
+			printButton.addActionListener(this);
+			printButton.setActionCommand("print");
+			// printButton.setEnabled(false);
+			buttonBox.add(printButton);
 		}
 		{
 			JButton closeButton = new JButton("Close");
@@ -257,11 +271,27 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("close")) {
 			dispose();
-		} else if (e.getActionCommand().equals("modifyColumns")) {
-			// Get the list of descriptors
-			// Get the list of Cytoscape attributes
-			// Get the list of current columns
-			// Popup dialog
+		} else if (e.getActionCommand().equals("export")) {
+			// Get the file name
+			JFileChooser chooser = new JFileChooser();
+			chooser.setDialogTitle("Export Table to File");
+			int returnVal = chooser.showSaveDialog(this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				// Open the file
+				File exportFile = chooser.getSelectedFile();
+				try {
+					// Output the table
+					tableModel.output(exportFile);
+				} catch (IOException ioe) {
+					logger.error("Unable to export file: "+ioe.getMessage());
+				}
+			}
+		} else if (e.getActionCommand().equals("print")) {
+			try {
+				table.print();
+			} catch (Exception ePrint) {
+				logger.error("Unable to print table: "+ePrint.getMessage(), ePrint);
+			}
 		} else if (e.getActionCommand().equals("export")) {
 		} else if (e.getActionCommand().startsWith("removeColumn:")) {
 			String columnNumber = e.getActionCommand().substring(13);
@@ -313,6 +343,22 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 			Compound cmpd = compoundList.get(row);
 			Column column = columns.get(col);
 			return column.getValue(cmpd);
+		}
+
+		public void output (File file) throws IOException {
+			FileWriter writer = new FileWriter(file);
+			for (int viewRow = 0; viewRow < compoundList.size(); viewRow++ ) {
+				int row = sorter.modelIndex(viewRow);
+				Compound cmpd = compoundList.get(row);
+				for (int viewCol = 0; viewCol < columns.size(); viewCol++) {
+					if (viewCol > 0)
+						writer.write("\t");
+					int col = table.convertColumnIndexToModel(viewCol);
+					columns.get(col).output(writer, cmpd);
+				}
+				writer.write("\n");
+			}
+			writer.close();
 		}
 	}
 
@@ -414,6 +460,18 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 			if (columnType == ColumnType.DESCRIPTOR)
 				return descriptor.toString();
 			return attributeName;
+		}
+
+		public void output(FileWriter writer, Compound compound) throws IOException {
+			Object obj = getValue(compound);
+			if (obj != null) {
+				// We don't handle the images, yet
+				if (obj instanceof Compound) 
+					writer.write("[2D Image]");
+				else
+					writer.write(obj.toString());
+			}
+			return;
 		}
 	}
 
