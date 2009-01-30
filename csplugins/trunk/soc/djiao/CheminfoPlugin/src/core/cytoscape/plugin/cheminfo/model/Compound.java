@@ -115,7 +115,9 @@ public class Compound {
 		HBONDDONOR ("HBond Donors", Integer.class),
 		LOBMAX ("Length over Breadth Max", Double.class),
 		LOBMIN ("Length over Breadth Min", Double.class),
+		RBONDS ("Rotatable Bonds Count", Integer.class),
 		RULEOFFIVE ("Rule of Five Failures", Double.class),
+		TPSA ("Topological Polar Surface Area", Double.class),
 		WEINERPATH ("Weiner Path", Double.class),
 		WEINERPOL ("Weiner Polarity", Double.class),
 		MASS ("Exact Mass", Double.class);
@@ -142,7 +144,9 @@ public class Compound {
 		DescriptorType.ALOGP,DescriptorType.ALOGP2,DescriptorType.AMR,
 		DescriptorType.HBONDACCEPTOR,DescriptorType.HBONDDONOR,
 		DescriptorType.LOBMAX,DescriptorType.LOBMIN,
-		DescriptorType.WEINERPATH,DescriptorType.WEINERPOL,DescriptorType.RULEOFFIVE
+		DescriptorType.RBONDS,DescriptorType.RULEOFFIVE,
+		DescriptorType.TPSA,
+		DescriptorType.WEINERPATH,DescriptorType.WEINERPOL
 	};
 
 	/********************************************************************************************************************* 
@@ -573,6 +577,20 @@ public class Compound {
 						return retval.get(0);
 					else
 						return retval.get(1);
+				}
+			case RBONDS:
+				{
+					if (iMolecule == null) return null;
+					IMolecularDescriptor descriptor = new RotatableBondsCountDescriptor();
+					IntegerResult retval = (IntegerResult)(descriptor.calculate(iMolecule).getValue());
+					return retval.intValue();
+				}
+			case TPSA:
+				{
+					if (iMolecule == null) return null;
+					IMolecularDescriptor descriptor = new TPSADescriptor();
+					DoubleResult retval = (DoubleResult)(descriptor.calculate(iMolecule).getValue());
+					return retval.doubleValue();
 				}
 		}
 		return null;
