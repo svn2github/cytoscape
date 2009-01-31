@@ -81,7 +81,9 @@ import ding.view.EdgeContextMenuListener;
 
 import cytoscape.plugin.cheminfo.model.Compound;
 import cytoscape.plugin.cheminfo.model.Compound.AttriType;
+import cytoscape.plugin.cheminfo.model.Compound.DescriptorType;
 import cytoscape.plugin.cheminfo.ui.ChemInfoSettingsDialog;
+import cytoscape.plugin.cheminfo.tasks.CreateAttributesTask;
 import cytoscape.plugin.cheminfo.tasks.CreateCompoundTableTask;
 import cytoscape.plugin.cheminfo.tasks.CreatePopupTask;
 import cytoscape.plugin.cheminfo.tasks.TanimotoScorerTask;;
@@ -219,6 +221,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		addNodeDepictionMenus(depict, null);
 		m.add(depict);
 		addSimilarityMenu(m);
+		addCreateAttributesMenu(m);
 		addSettingsMenu(m);
 	};
 
@@ -384,6 +387,45 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 	}
 
 	/**
+	 * Builds the popup menu for createing attributes from chemical descriptors
+	 * 
+	 * @param menu the menu we're going add our items to
+	 */
+	private void addCreateAttributesMenu(JMenu menu) {
+		JMenu createAttributesMenu = new JMenu(systemProps
+				.getProperty("cheminfo.menu.createattributes"));
+		menu.add(createAttributesMenu);
+		Set<GraphObject> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+		Set<GraphObject> selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
+		if ((selectedNodes != null && selectedNodes.size() > 1) ||
+		    (selectedEdges != null && selectedEdges.size() > 1)) {
+			JMenu createAll = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.allObjects"));
+			addDescriptors(createAll, null, null);
+			createAttributesMenu.add(createAll);
+			JMenu createSelected = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.selectedObjects"));
+			addDescriptors(createSelected, selectedNodes, selectedEdges);
+			createAttributesMenu.add(createSelected);
+		} else {
+			addDescriptors(createAttributesMenu, null, null);
+		}
+	}
+
+	private void addDescriptors(JMenu menu, Set<GraphObject> selectedNodes, Set<GraphObject> selectedEdges) {
+		// Get the list of descriptors
+		List<DescriptorType> dList = Compound.getDescriptorList();
+		// Add them to the menus
+		for (DescriptorType type: dList) {
+			if (type == DescriptorType.IMAGE ||
+          type == DescriptorType.ATTRIBUTE ||
+			    type == DescriptorType.IDENTIFIER) continue;
+
+			JMenuItem item = new JMenuItem(type.toString());
+			item.addActionListener(new CreateAttributesTask(selectedNodes, selectedEdges, type, settingsDialog));
+			menu.add(item);
+		}
+	}
+
+	/**
  	 * Adds the Settings menu item
  	 *
  	 * @param menu the menu to add our Settings menu to
@@ -438,6 +480,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 			createScoreTable(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog, false);
 		} else if (cmd.equals("cheminfo.menu.similarity.tanimoto.allNodes")) {
 			createScoreTable((Collection<GraphObject>)Cytoscape.getCurrentNetwork().nodesList(), settingsDialog, true);
+		} else if (cmd.equals("createAttributes")) {
 		}
 	}
 	
