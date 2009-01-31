@@ -86,6 +86,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 
 /**
@@ -121,17 +122,19 @@ public class NetworkPanel extends JPanel
 	private final NetworkViewManager viewmgr;
 	private final GraphViewFactory gvf;
 	private Long currentNetId;
+	private Properties props;
 
 	/**
 	 * Constructor for the Network Panel.
 	 *
 	 * @param desktop
 	 */
-	public NetworkPanel(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, final BirdsEyeViewHandler bird, final GraphViewFactory gvf) {
+	public NetworkPanel(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, final BirdsEyeViewHandler bird, final GraphViewFactory gvf, final Properties props) {
 		super();
 		this.netmgr = netmgr;
 		this.viewmgr = viewmgr;
 		this.gvf = gvf;
+		this.props = props;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
@@ -194,7 +197,7 @@ public class NetworkPanel extends JPanel
 
 		// action listener which performs the tasks associated with the popup
 		// listener
-		popupActionListener = new PopupActionListener(this,netmgr,gvf);
+		popupActionListener = new PopupActionListener(this,netmgr,gvf,props);
 		editNetworkTitle.addActionListener(popupActionListener);
 		createViewItem.addActionListener(popupActionListener);
 		destroyViewItem.addActionListener(popupActionListener);
@@ -674,11 +677,13 @@ class PopupActionListener implements ActionListener {
 	private NetworkPanel panel;
 	private CyNetworkManager netmgr;
 	private GraphViewFactory gvf;
+	private Properties props;
 
-	public PopupActionListener(NetworkPanel panel,CyNetworkManager netmgr,GraphViewFactory gvf) {
+	public PopupActionListener(NetworkPanel panel,CyNetworkManager netmgr,GraphViewFactory gvf,Properties props) {
 		this.panel = panel;
 		this.netmgr = netmgr;
 		this.gvf = gvf;
+		this.props = props;
 	}
 
 	/**
@@ -694,7 +699,7 @@ class PopupActionListener implements ActionListener {
 				netmgr.destroyNetworkView(netmgr.getNetworkView(vid));
 		} 
 		else if (label == CREATE_VIEW) {
-			CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork,panel,gvf,netmgr);
+			CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork,panel,gvf,netmgr,props);
 		}
 		else if (label == DESTROY_NETWORK) {
 			netmgr.destroyNetwork(cyNetwork);

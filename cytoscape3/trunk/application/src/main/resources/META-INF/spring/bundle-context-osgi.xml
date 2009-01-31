@@ -39,6 +39,9 @@
 	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
 		interface="cytoscape.view.CyMenus" />
 
+	<osgi:service id="proxyHandlerService" ref="proxyHandler"
+		interface="cytoscape.util.ProxyHandler" />
+
 	<osgi:service id="importGraphFileActionService" ref="importGraphFileAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="newWindowSelectedNodesOnlyActionService"
@@ -117,10 +120,6 @@
 	<osgi:service id="setVisualPropertiesActionService" ref="setVisualPropertiesAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="settingsActionService" ref="settingsAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="pluginManagerActionService" ref="pluginManagerAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="pluginUpdateActionService" ref="pluginUpdateAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="helpContentsActionService" ref="helpContentsAction"
 		interface="cytoscape.util.CyAction" />
@@ -201,5 +200,6 @@
 
 	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService" ref="undoMonitor"
 		interface="cytoscape.events.SetCurrentNetworkViewListener" />
+
 	
 </beans>

@@ -234,19 +234,6 @@ public class CytoscapeInit {
 	}
 
 	/**
-	 * Within the .cytoscape directory create a version-specific directory
-	 * @return the directory ".cytoscape/[cytoscape version]
-	 */
-	public static File getConfigVersionDirectory() {
-		File Parent = getConfigDirectory();
-		
-		File VersionDir = new File(Parent, (new CytoscapeVersion()).getMajorVersion());
-		VersionDir.mkdir();
-
-		return VersionDir;
-	}
-
-	/**
 	 * If .cytoscape directory does not exist, it creates it and returns it
 	 *
 	 * @return the directory ".cytoscape" in the users home directory.

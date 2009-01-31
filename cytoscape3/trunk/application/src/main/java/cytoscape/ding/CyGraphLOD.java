@@ -36,13 +36,13 @@ package cytoscape.ding;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.render.stateful.GraphLOD;
 import org.cytoscape.view.GraphView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.regex.Pattern;
+import java.util.Properties;
 
 
 /**
@@ -60,14 +60,16 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	protected int edgeArrowThreshold;
 	protected int edgeLabelThreshold;
 	private CyNetworkManager netmgr;
+	private Properties props;
 
 	/**
 	 * Creates a new CyGraphLOD object.
 	 */
-	public CyGraphLOD(CyNetworkManager netmgr) {
+	public CyGraphLOD(CyNetworkManager netmgr,Properties props) {
+		this.netmgr = netmgr;
+		this.props = props;
 		init();
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-		this.netmgr = netmgr;
 	}
 
 	/**
@@ -104,7 +106,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	}
 
 	protected int getInt(String key, int defaultValue) {
-		String val = CytoscapeInit.getProperties().getProperty(key);
+		String val = props.getProperty(key);
 
 		if (val == null)
 			return defaultValue;
@@ -121,7 +123,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	}
 
 	protected boolean getBoolean(String key, boolean defaultValue) {
-		String val = CytoscapeInit.getProperties().getProperty(key);
+		String val = props.getProperty(key);
 
 		if (val == null)
 			return defaultValue;

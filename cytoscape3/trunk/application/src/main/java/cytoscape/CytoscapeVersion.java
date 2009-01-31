@@ -24,52 +24,27 @@
  */
 package cytoscape;
 
-/** CytoscapeVersion: identify (and describe) successive versions of cytoscape. */
+import java.util.Properties;
+
+/** 
+ * Identify the version of cytoscape. 
+ */
 public class CytoscapeVersion {
-	/**
-	 * 
-	 */
-	public static String version = CytoscapeInit.getProperties().getProperty(
-			"cytoscape.version.number");
+	public String version;
 
-	private static String majorMinorVersion;
+	private String majorMinorVersion;
 
-	private static String bugFixVersion = "0";
+	private String bugFixVersion = "0";
 
-	public CytoscapeVersion() {
-		String[] Versions = version.split("\\.");
-		majorMinorVersion = Versions[0] + "." + Versions[1];
-		if (Versions.length == 3) {
-			bugFixVersion = Versions[2];
+
+	public CytoscapeVersion(Properties props) {
+		version = props.getProperty("cytoscape.version.number");
+		String[] vers = version.split("\\.");
+		majorMinorVersion = vers[0] + "." + vers[1];
+		if (vers.length == 3) {
+			bugFixVersion = vers[2];
 		}
 	}
-
-	private String[] briefHistory = {
-			"0.1   (2001/12/12) initial version",
-			"0.2   (2001/12/18) sped up node selection by name",
-			"0.3   (2001/12/20) node synonyms displayed in NodeProps dialog",
-			"0.4   (2001/12/21) edge attribute files supported",
-			"0.5   (2001/12/28) edge attributes now can control edge color",
-			"0.6   (2002/01/01) popup dialog 'relocation flash' now fixed",
-			"0.7   (2002/01/04) checkEnviroment centralized, now checks for java version",
-			"0.8   (2002/01/07) active paths dialog bounds checking fixed",
-			"0.9   (2002/01/07) IPBiodataServer.getGoTermName exception fixed",
-			"0.10  (2002/01/22) selected nodes make new window; active paths bug fixed",
-			"0.11  (2002/02/04) automatic running of active paths from command line\n"
-					+ "                 data passed to ActivePathsFinder via arrays",
-			"0.12  (2002/02/19) reorganized directories; gene common names supported",
-			"0.20  (2002/03/28) now uses plugin architecture; redesign of VizMapping underway",
-			"0.8   (2002/06/17) first alpha release",
-			"0.9   (2002/11/01) first beta release",
-			"0.95  (2002/11/04) added generic annotation",
-			"0.97  (2002/12/05) added LGPL to all source",
-			"1.0   (2003/03/05) added visual styles UI, attributes filter.",
-			"1.1   (2003/05/12) jar loader; visual styles.",
-			"2.0   (2004) now using GINY",
-			"2.1   (2005) many speed improvements.",
-			"2.2   (2005/11) more bug fixes.",
-			"2.3   (2006/06) new (faster) rendering engine.",
-			"2.4   (2006/12) various usability improvements." };
 
 	/**
 	 * Returns the string 'Cytoscape Version ' and the version number Do not use

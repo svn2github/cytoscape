@@ -50,6 +50,8 @@ import cytoscape.view.CytoscapeDesktop;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+import java.util.Properties;
+
 
 /**
  *
@@ -60,9 +62,11 @@ public class PreferenceAction extends CytoscapeAction {
 	 * Creates a new PreferenceAction object.
 	 */
 	private CytoscapeDesktop desktop;
-	public PreferenceAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+	private Properties props;
+	public PreferenceAction(CytoscapeDesktop desktop, CyNetworkManager netmgr, Properties props) {
 		super("Properties...",netmgr);
 		this.desktop = desktop;
+		this.props = props;
 		System.out.println("PreferenceAction()...");
 		setPreferredMenu("Edit.Preferences");
 	}
@@ -73,7 +77,7 @@ public class PreferenceAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		PreferencesDialog preferencesDialog = new PreferencesDialog((JFrame) desktop);
+		PreferencesDialog preferencesDialog = new PreferencesDialog((JFrame) desktop, props);
 		preferencesDialog.refresh();
 		preferencesDialog.setVisible(true);
 	} 

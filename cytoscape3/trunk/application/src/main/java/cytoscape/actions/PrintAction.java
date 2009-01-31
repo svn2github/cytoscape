@@ -43,13 +43,14 @@
 package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.CytoscapeInit;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.view.GraphView;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.awt.print.PrinterJob;
+
+import java.util.Properties;
 
 
 /**
@@ -62,13 +63,16 @@ public class PrintAction extends CytoscapeAction {
 	 */
 	public final static String MENU_LABEL = "Print...";
 
+	private Properties props;
+
 	/**
 	 * Creates a new PrintAction object.
 	 */
-	public PrintAction(CyNetworkManager netmgr) {
+	public PrintAction(CyNetworkManager netmgr,Properties props) {
 		super(MENU_LABEL,netmgr);
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK);
+		this.props = props;
 	}
 
 	/**
@@ -81,8 +85,7 @@ public class PrintAction extends CytoscapeAction {
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 
 		// Export text as shape/font based on user's setting
-		boolean exportTextAsShape = new Boolean(CytoscapeInit.getProperties()
-		                                                     .getProperty("exportTextAsShape"))
+		boolean exportTextAsShape = new Boolean( props.getProperty("exportTextAsShape"))
 															 .booleanValue();
 		// TODO NEED RENDERER
 		curr.setPrintingTextAsShape(exportTextAsShape);

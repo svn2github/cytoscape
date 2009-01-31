@@ -77,6 +77,7 @@ public class CyMain implements CyInitParams {
 	protected String[] expressionFiles;
 	protected int mode;
 	protected org.apache.commons.cli.Options options;
+	protected CytoscapeVersion ver;
 
 	/**
 	 *  DOCUMENT ME!
@@ -86,7 +87,7 @@ public class CyMain implements CyInitParams {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public static void main(String[] args) throws Exception {
-		CyMain app = new CyMain(args,null,null);
+		CyMain app = new CyMain(args,null,null,null);
 	}
 
 	/**
@@ -96,19 +97,19 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @throws Exception  DOCUMENT ME!
 	 */
-	public CyMain(CytoscapeDesktop desk,CyNetworkManager netmgr) throws Exception {
-		this( new String[]{},desk,netmgr );
+	public CyMain(CytoscapeDesktop desk,CyNetworkManager netmgr,CytoscapeVersion ver) throws Exception {
+		this( new String[]{},desk,netmgr,ver );
 	}
 
-	public CyMain(String[] args,CytoscapeDesktop desk,CyNetworkManager netmgr) throws Exception {
+	public CyMain(String[] args,CytoscapeDesktop desk,CyNetworkManager netmgr,CytoscapeVersion ver) throws Exception {
 		System.out.println("CyMain constructor");
+		this.ver = ver;
 
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			/*
 			 * By kono 4/2/2007
 			 * Fix Application name for Mac.
 			 */
-			final CytoscapeVersion ver = new CytoscapeVersion();
 			final String version = ver.getVersion();
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", version);
 			System.setProperty("apple.awt.brushMetalRounded", "true");
@@ -211,8 +212,7 @@ public class CyMain implements CyInitParams {
 		}
 
 		if (line.hasOption("v")) {
-			CytoscapeVersion version = new CytoscapeVersion();
-			System.out.println(version.getVersion());
+			System.out.println(ver.getVersion());
 			System.exit(0);
 		}
 

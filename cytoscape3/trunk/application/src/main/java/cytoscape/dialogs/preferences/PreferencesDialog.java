@@ -62,7 +62,10 @@ import java.util.Properties;
  */
 public class PreferencesDialog extends JDialog implements PropertyChangeListener {
 	private final static long serialVersionUID = 1202339873396288L;
+
 	int[] selection = null;
+	private Properties props;
+
 	JScrollPane propsTablePane = new JScrollPane();
 	JTable prefsTable = new JTable();
 	JPanel propBtnPane = new JPanel(new FlowLayout());
@@ -102,23 +105,23 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 
 			String propName = null;
  
-			if ((CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getOldValue())
-			    || (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getNewValue())) {
+			if ((props.getProperty("defaultSpeciesName") == e.getOldValue())
+			    || (props.getProperty("defaultSpeciesName") == e.getNewValue())) {
 				propName = "defaultSpeciesName";
-			} else if ((CytoscapeInit.getProperties().getProperty("defaultWebBrowser") == e
+			} else if ((props.getProperty("defaultWebBrowser") == e
 			                                                                                                                     .getOldValue())
-			           || (CytoscapeInit.getProperties().getProperty("defaultWebBrowser") == e
+			           || (props.getProperty("defaultWebBrowser") == e
 			                                                                                                                       .getNewValue())) {
 				propName = "defaultWebBrowser";
 			}
 
 			if (propName != null) {
 				// Set to new val
-				CytoscapeInit.getProperties().setProperty(propName, (String) e.getNewValue());
+				props.setProperty(propName, (String) e.getNewValue());
 				prefsTM.setProperty(propName, (String) e.getNewValue());
 				// refresh();
 				System.out.println(propName + " updated to "
-				                   + CytoscapeInit.getProperties().getProperty(propName));
+				                   + props.getProperty(propName));
 			}
 		}
 	}
@@ -187,7 +190,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	}
 
 	private void initTable() {
-		prefsTM = new PreferenceTableModel();
+		prefsTM = new PreferenceTableModel(props);
 
 		prefsTable.setAutoCreateColumnsFromModel(false);
 		prefsTable.setRowSelectionAllowed(true);
@@ -213,8 +216,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	 *
 	 * @param owner  DOCUMENT ME!
 	 */
-	public PreferencesDialog(Frame owner) {
+	public PreferencesDialog(Frame owner,Properties props) {
 		super(owner);
+		this.props = props;
 
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
@@ -405,8 +409,8 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 			// then clear Cytoscape's properties and
 			Properties newProps = new Properties();
 			callerRef.prefsTM.save(newProps);
-			CytoscapeInit.getProperties().clear();
-			CytoscapeInit.getProperties().putAll(newProps);
+			props.clear();
+			props.putAll(newProps);
 			callerRef.setVisible(false);
 
 			if (saveVizmapAsDefault) {
@@ -419,7 +423,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 				try {
 					File file = CytoscapeInit.getConfigFile("cytoscape.props");
 					FileOutputStream output = new FileOutputStream(file);
-					CytoscapeInit.getProperties().store(output, "Cytoscape Property File");
+					props.store(output, "Cytoscape Property File");
 					System.out.println("wrote Cytoscape properties file to: "
 					                   + file.getAbsolutePath());
 				} catch (Exception ex) {
@@ -462,7 +466,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			Properties oldProps = CytoscapeInit.getProperties();
+			Properties oldProps = props;
 			callerRef.prefsTM.restore(oldProps);
 			callerRef.setVisible(false);
 		}

@@ -43,9 +43,10 @@ import cytoscape.render.stateful.GraphLOD;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.view.GraphView;
 
-import javax.swing.*;
+import javax.swing.Action;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
+import java.util.Properties;
 
 
 /**
@@ -54,12 +55,14 @@ import java.awt.event.ActionEvent;
 public class ShowGraphicsDetailsAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870902858L;
 	boolean showFlag = true;
+	private Properties props;
 
 	/**
 	 * Creates a new ShowGraphicsDetailsAction object.
 	 */
-	public ShowGraphicsDetailsAction(CyNetworkManager netmgr) {
+	public ShowGraphicsDetailsAction(CyNetworkManager netmgr,Properties props) {
 		super("Show Graphics Details",netmgr);
+		this.props = props;
 		setPreferredMenu("View");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_S, ActionEvent.ALT_MASK);
 	}
@@ -73,7 +76,7 @@ public class ShowGraphicsDetailsAction extends CytoscapeAction {
 		GraphView currView = netmgr.getCurrentNetworkView();
 		if (!showFlag) {
 			// TODO NEED RENDERER
-			currView.setGraphLOD(new CyGraphLOD(netmgr));
+			currView.setGraphLOD(new CyGraphLOD(netmgr,props));
 		} else {
 			// TODO NEED RENDERER
 			currView.setGraphLOD(new CyGraphAllLOD());

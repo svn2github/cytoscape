@@ -36,7 +36,6 @@
 */
 package cytoscape.dialogs.preferences;
 
-import cytoscape.CytoscapeInit;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -57,10 +56,9 @@ public class PreferenceTableModel extends AbstractTableModel {
 	/**
 	 * Creates a new PreferenceTableModel object.
 	 */
-	public PreferenceTableModel() {
+	public PreferenceTableModel(Properties props) {
 		super();
-		// use clone of CytoscapeInit properties
-		properties = (Properties) (CytoscapeInit.getProperties().clone());
+		properties = (Properties) (props.clone());
 		loadProperties();
 	}
 

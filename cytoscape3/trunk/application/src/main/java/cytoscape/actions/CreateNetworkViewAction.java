@@ -38,8 +38,6 @@ package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -55,6 +53,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Container;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Properties;
 
 
 /**
@@ -68,14 +67,16 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	private final CytoscapeDesktop desktop;
 	private final CyNetworkManager netmgr;
 	private final GraphViewFactory gvf;
+	private final Properties props;
 
-	public CreateNetworkViewAction(CytoscapeDesktop desktop, CyNetworkManager netmgr, GraphViewFactory gvf) {
+	public CreateNetworkViewAction(CytoscapeDesktop desktop, CyNetworkManager netmgr, GraphViewFactory gvf, Properties props) {
 		super("Create View",netmgr);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_V, ActionEvent.ALT_MASK);
 		this.desktop = desktop;
 		this.netmgr = netmgr;
 		this.gvf = gvf;
+		this.props = props;
 	}
 
 	/**
@@ -85,7 +86,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		CyNetwork cyNetwork = netmgr.getCurrentNetwork();
-		createViewFromCurrentNetwork(cyNetwork,desktop,gvf,netmgr);
+		createViewFromCurrentNetwork(cyNetwork,desktop,gvf,netmgr,props);
 	}
 
 	/**
@@ -94,11 +95,10 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * @param cyNetwork DOCUMENT ME!
 	 */
 	// TODO - Move this somewhere else since it's used elsewhere
-	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork, Container parent, GraphViewFactory gvf, CyNetworkManager netmgr) {
+	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork, Container parent, GraphViewFactory gvf, CyNetworkManager netmgr, Properties props) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 
-		if (cyNetwork.getNodeCount() > Integer.parseInt(CytoscapeInit.getProperties()
-		                                                             .getProperty("secondaryViewThreshold"))) {
+		if (cyNetwork.getNodeCount() > Integer.parseInt(props.getProperty("secondaryViewThreshold"))) {
 			int n = JOptionPane.showConfirmDialog(parent,
 			                                      "Network contains "
 			                                      + formatter.format(cyNetwork.getNodeCount())
@@ -110,31 +110,25 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			                                      "Rendering Large Network",
 			                                      JOptionPane.YES_NO_OPTION);
 
-			if (n == JOptionPane.YES_OPTION) {
-			// TODO
-				//Cytoscape.createNetworkView(cyNetwork);
-			} else {
-				JOptionPane.showMessageDialog(parent,
-				                              "Create View Request Cancelled by User.");
+			if (n != JOptionPane.YES_OPTION) {
+				JOptionPane.showMessageDialog(parent, "Create View Request Cancelled by User.");
+				return;
 			}
-		} else {
-			// TODO
-//			Cytoscape.createNetworkView(cyNetwork);
-			// Create Task
-			CreateNetworkViewTask task = new CreateNetworkViewTask(cyNetwork,gvf,netmgr);
-
-			// Configure JTask Dialog Pop-Up Box
-			JTaskConfig jTaskConfig = new JTaskConfig();
-
-			jTaskConfig.displayCancelButton(false);
-			jTaskConfig.setOwner(parent);
-			jTaskConfig.displayCloseButton(false);
-			jTaskConfig.displayStatus(true);
-			jTaskConfig.setAutoDispose(true);
-
-			// Execute Task in New Thread; pop open JTask Dialog Box.
-			TaskManager.executeTask(task, jTaskConfig);
 		}
+
+		CreateNetworkViewTask task = new CreateNetworkViewTask(cyNetwork,gvf,netmgr);
+
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+
+		jTaskConfig.displayCancelButton(false);
+		jTaskConfig.setOwner(parent);
+		jTaskConfig.displayCloseButton(false);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
+
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
 	}
 
 	/**

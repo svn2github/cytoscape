@@ -45,13 +45,14 @@ import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.layout.CyLayouts;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 
 /**
@@ -65,11 +66,12 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	private CyReaderManager rdmgr;
 	private GraphViewFactory gvf;
 	private CyLayouts cyLayouts;
+	private Properties props;
 
 	/**
 	 * Constructor.
 	 */
-	public ImportGraphFileAction(CytoscapeDesktop desktop, CyReaderManager rdmgr, GraphViewFactory gvf, CyLayouts cyLayouts, CyNetworkManager netmgr ) {
+	public ImportGraphFileAction(CytoscapeDesktop desktop, CyReaderManager rdmgr, GraphViewFactory gvf, CyLayouts cyLayouts, CyNetworkManager netmgr, Properties props ) {
 		super("Network (multiple file types)...",netmgr);
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_L, ActionEvent.CTRL_MASK);
@@ -79,6 +81,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		this.rdmgr = rdmgr;
 		this.gvf = gvf;
 		this.cyLayouts = cyLayouts;
+		this.props = props;
 	}
 
 	/**
@@ -124,7 +127,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			String URLstr = fd.getURLStr();
 			System.out.println("URL: "+URLstr);
 			try {
-				LoadNetworkTask.loadURL(new URL(URLstr), false, rdmgr, gvf, cyLayouts,desktop,netmgr);
+				LoadNetworkTask.loadURL(new URL(URLstr), false, rdmgr, gvf, cyLayouts,desktop,netmgr,props);
 			} catch (MalformedURLException e3) {
 				JOptionPane.showMessageDialog(fd, "URL error!", "Warning",
 			 	                             JOptionPane.INFORMATION_MESSAGE);
@@ -149,7 +152,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 						messages.add(files[i].getName());
 					}
 	
-					LoadNetworkTask.loadFile(files[i], skipMessage, rdmgr, gvf, cyLayouts,desktop,netmgr);
+					LoadNetworkTask.loadFile(files[i], skipMessage, rdmgr, gvf, cyLayouts,desktop,netmgr,props);
 				}
 	
 				if (files.length != 1) {

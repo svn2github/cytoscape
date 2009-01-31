@@ -35,9 +35,9 @@
 package cytoscape.dialogs.preferences;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.util.ProxyHandler;
 
+import java.util.Properties;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -55,11 +55,16 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 
 	private static final long serialVersionUID = -2693844068486336199L;
 
-	/** Creates new form URLimportAdvancedDialog */
-	public ProxyServerDialog(javax.swing.JFrame pParent) {
+	private Properties props;
+	private ProxyHandler proxyHandler;
+
+	/** Creates new form ProxyServerDialog */
+	public ProxyServerDialog(javax.swing.JFrame pParent,Properties props,ProxyHandler proxyHandler) {
 		super(pParent, true);
 		this.setTitle("Proxy server setting");
 		this.setLocationRelativeTo(pParent);
+		this.props = props;
+		this.proxyHandler = proxyHandler;
 
 		initComponents();
 		initValues();
@@ -184,7 +189,7 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 	} // </editor-fold>
 
 	private void initValues() {
-		Proxy p = ProxyHandler.getProxyServer();
+		Proxy p = proxyHandler.getProxyServer();
 
 		chbUseProxy.setSelected(true);
 		cmbType.setEnabled(true);
@@ -301,10 +306,9 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 		}
 		
 		// Update the proxy server info 
-		CytoscapeInit.getProperties().setProperty(ProxyHandler.PROXY_HOST_PROPERTY_NAME, tfHost.getText().trim());
-		CytoscapeInit.getProperties().setProperty(ProxyHandler.PROXY_PORT_PROPERTY_NAME, tfPort.getText());
-		CytoscapeInit.getProperties()
-		             .setProperty(ProxyHandler.PROXY_TYPE_PROPERTY_NAME, cmbType.getSelectedItem().toString());
+		props.setProperty(ProxyHandler.PROXY_HOST_PROPERTY_NAME, tfHost.getText().trim());
+		props.setProperty(ProxyHandler.PROXY_PORT_PROPERTY_NAME, tfPort.getText());
+		props.setProperty(ProxyHandler.PROXY_TYPE_PROPERTY_NAME, cmbType.getSelectedItem().toString());
 
 		Cytoscape.firePropertyChange(Cytoscape.PREFERENCES_UPDATED, null, null);
 

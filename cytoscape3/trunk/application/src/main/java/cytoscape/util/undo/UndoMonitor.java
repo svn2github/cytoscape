@@ -36,13 +36,12 @@
 */
 package cytoscape.util.undo;
 
-import cytoscape.CytoscapeInit;
-
 import org.cytoscape.work.UndoSupport;
 
 import cytoscape.events.SetCurrentNetworkViewEvent;
 import cytoscape.events.SetCurrentNetworkViewListener;
 
+import java.util.Properties;
 
 /**
  * This class monitors the undoable edit stack and implements whatever
@@ -52,10 +51,12 @@ import cytoscape.events.SetCurrentNetworkViewListener;
 public class UndoMonitor implements SetCurrentNetworkViewListener {
 
 	private UndoSupport undo;
+	private Properties props;
 
-	public UndoMonitor(UndoSupport undo) {
+	public UndoMonitor(UndoSupport undo,Properties props) {
 
 		this.undo = undo;
+		this.props = props;
 
 		undo.getUndoManager().setLimit( getLimit() );
 	}
@@ -63,7 +64,7 @@ public class UndoMonitor implements SetCurrentNetworkViewListener {
     private int getLimit() {
         int lim;
         try {
-            lim = Integer.parseInt( CytoscapeInit.getProperties().getProperty("undo.limit") );
+            lim = Integer.parseInt( props.getProperty("undo.limit") );
         } catch ( Exception e ) {
             e.printStackTrace();
             lim = 10;

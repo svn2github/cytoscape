@@ -111,15 +111,18 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	protected JLabel statusBar;
 	protected JPanel main_panel;
 
+	private CytoscapeVersion version;
+
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel ) {
+	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel , CytoscapeVersion version) {
 		super("Cytoscape Desktop (New Session)");
 
 		this.cyMenus = cyMenus;
 		this.networkViewManager = networkViewManager;
 		this.networkPanel = networkPanel;
+		this.version = version;
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
 
@@ -162,8 +165,9 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		statusBar.setBorder(new EmptyBorder(0, 7, 5, 7));
 		statusBar.setForeground(new Color(75, 75, 75));
 		panel.add(statusBar, BorderLayout.SOUTH);
-		setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version
-		                + "              Right-click + drag  to  ZOOM             Middle-click + drag  to  PAN");
+		setStatusBarMsg("Welcome to Cytoscape " + version.getFullVersion()
+		                + "              Right-click + drag  to  ZOOM" 
+						+ "             Middle-click + drag  to  PAN");
 	}
 
 	/**

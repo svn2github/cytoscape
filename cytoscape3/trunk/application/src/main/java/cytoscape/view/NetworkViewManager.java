@@ -37,7 +37,6 @@
 package cytoscape.view;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.CytoscapeInit;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
@@ -57,6 +56,7 @@ import javax.swing.event.InternalFrameListener;
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * 
@@ -81,14 +81,17 @@ public class NetworkViewManager implements
 
 	private Long currentViewId;
 
+	private Properties props;
+
 	/**
 	 * Creates a new NetworkViewManager object.
 	 * 
 	 * @param desktop
 	 *            DOCUMENT ME!
 	 */
-	public NetworkViewManager(CyNetworkManager netmgr) {
+	public NetworkViewManager(CyNetworkManager netmgr, Properties props) {
 		this.netmgr = netmgr;
+		this.props = props;
 		desktopPane = new JDesktopPane();
 
 		// add Help hooks
@@ -341,7 +344,7 @@ public class NetworkViewManager implements
 
 		// maximize the frame if the specified property is set
 		try {
-			String max = CytoscapeInit.getProperties().getProperty("maximizeViewOnCreate");
+			String max = props.getProperty("maximizeViewOnCreate");
 
 			if ((max != null) && Boolean.parseBoolean(max))
 				iframe.setMaximum(true);

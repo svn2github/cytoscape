@@ -46,89 +46,11 @@ import java.net.Proxy;
 /**
  *
  */
-public class ProxyHandler implements PropertyChangeListener {
-    public static final String PROXY_HOST_PROPERTY_NAME = "proxy.server";
-    public static final String PROXY_TYPE_PROPERTY_NAME = "proxy.server.type";
-    public static final String PROXY_PORT_PROPERTY_NAME = "proxy.server.port";
-    private static Proxy       proxyServer = null;
+public interface ProxyHandler { 
 
-    static {
-        new ProxyHandler();
-    }
+    String PROXY_HOST_PROPERTY_NAME = "proxy.server";
+    String PROXY_TYPE_PROPERTY_NAME = "proxy.server.type";
+    String PROXY_PORT_PROPERTY_NAME = "proxy.server.port";
 
-    private ProxyHandler() {
-        Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
-    }
-
-    /**
-     * Return the Proxy representing the proxy server to use
-     * when reading and writing URLs. If no proxy server is being
-     * used, return null.
-     */
-    // TODO: Change this to *always* return a Proxy (no null value).
-    //       For a null proxy, return Proxy.NO_PROXY instead.
-    public static Proxy getProxyServer() {
-        if (proxyServer == null) {
-            loadProxyServer();
-        }
-        return proxyServer;
-    }
-
-    // TODO: Change to always setup proxyServer to a non-null value
-    // using Proxy.NO_PROXY for direct connections. Also, change to
-    // not produce a new Proxy if the proxy is the same as previous
-    // Proxy.
-    private static void loadProxyServer() {
-        String proxyName = CytoscapeInit.getProperties()
-                                        .getProperty(PROXY_HOST_PROPERTY_NAME);
-
-        if ((proxyName == null) || proxyName.equals("")) {
-            proxyServer = null;
-
-            return;
-        }
-
-        String proxyT = CytoscapeInit.getProperties()
-                                     .getProperty(PROXY_TYPE_PROPERTY_NAME);
-
-        if ((proxyT == null) || proxyT.equals("")) {
-            proxyServer = null;
-
-            return;
-        }
-
-        Proxy.Type proxyType = Proxy.Type.valueOf(proxyT);
-        String     proxyP = CytoscapeInit.getProperties()
-                                         .getProperty(PROXY_PORT_PROPERTY_NAME);
-
-        if ((proxyP == null) || proxyP.equals("")) {
-            proxyServer = null;
-
-            return;
-        }
-
-        int proxyPort = Integer.parseInt(proxyP);
-
-        proxyServer = new Proxy(proxyType,
-                                new InetSocketAddress(proxyName, proxyPort));
-    }
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     */
-    public void propertyChange(PropertyChangeEvent e) {
-        if (e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED) {
-            Proxy savedProxy = proxyServer;
-            loadProxyServer();
-
-	    // Only fire event if the proxy changed:
-            if (((proxyServer == null) && (savedProxy != null)) ||
-                ((proxyServer != null) && (!proxyServer.equals(savedProxy)))) {
-                Cytoscape.firePropertyChange(Cytoscape.PROXY_MODIFIED,
-                                             savedProxy, proxyServer);
-            }
-        }
-    }
+    Proxy getProxyServer(); 
 }

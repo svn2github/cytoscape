@@ -41,8 +41,6 @@
 package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTask;
@@ -60,13 +58,14 @@ import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.view.GraphViewFactory;
 
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Properties;
 
 
 /**
@@ -84,8 +83,8 @@ public class LoadNetworkTask implements Task {
 	 * @param u the URL to load the network from
 	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
-	public static void loadURL(URL u, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
-		loadURL(u, skipMessage, null, mgr, gvf,cyl, dsk,netmgr);
+	public static void loadURL(URL u, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr, Properties props) {
+		loadURL(u, skipMessage, null, mgr, gvf,cyl, dsk,netmgr,props);
 	}
 
 	/**
@@ -97,9 +96,9 @@ public class LoadNetworkTask implements Task {
 	 * @param file the file to load the network from
 	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
-	public static void loadFile(File file, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
+	public static void loadFile(File file, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr,Properties props) {
 		// Create LoadNetwork Task
-		loadFile(file, skipMessage, null, mgr, gvf,cyl, dsk,netmgr);
+		loadFile(file, skipMessage, null, mgr, gvf,cyl, dsk,netmgr,props);
 	}
 
 	/**
@@ -115,8 +114,8 @@ public class LoadNetworkTask implements Task {
 	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
 	 *                        after it has been read in (provided that a view was created).
 	 */
-	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
-		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm, mgr, gvf, cyl, dsk,netmgr);
+	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr,Properties props) {
+		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm, mgr, gvf, cyl, dsk,netmgr,props);
 		setupTask(task, skipMessage, true,dsk);
 	}
 
@@ -131,8 +130,8 @@ public class LoadNetworkTask implements Task {
 	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
 	 *                        after it has been read in (provided that a view was created).
 	 */
-	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
-		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm, mgr, gvf, cyl, dsk,netmgr);
+	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr, Properties props) {
+		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm, mgr, gvf, cyl, dsk,netmgr,props);
 		setupTask(task, skipMessage, true, dsk);
 	}
 
@@ -165,8 +164,9 @@ public class LoadNetworkTask implements Task {
 	private CyLayouts cyl; 
 	private CytoscapeDesktop dsk; 
 	private CyNetworkManager netmgr; 
+	private Properties props; 
 
-	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
+	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr, Properties props) {
 		url = u;
 		name = u.toString();
 		reader = null;
@@ -176,11 +176,12 @@ public class LoadNetworkTask implements Task {
 		this.cyl = cyl;
 		this.dsk = dsk;
 		this.netmgr = netmgr;
+		this.props = props;
 
 		// Postpone getting the reader since we want to do that in a thread
 	}
 
-	private LoadNetworkTask(File file, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr) {
+	private LoadNetworkTask(File file, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr, Properties props) {
 		this.mgr = mgr;
 		this.gvf = gvf;
 		this.cyl = cyl;
@@ -306,14 +307,13 @@ public class LoadNetworkTask implements Task {
 		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
 		sb.append(" edges.\n\n");
 
-		if (newNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-		                                                              .getProperty("viewThreshold"))) {
-			sb.append("Network is under "
-			          + CytoscapeInit.getProperties().getProperty("viewThreshold")
+		String thresh = props.getProperty("viewThreshold");
+
+		if (newNetwork.getNodeCount() < Integer.parseInt(thresh) ) {
+			sb.append("Network is under " + thresh 
 			          + " nodes.  A view will be automatically created.");
 		} else {
-			sb.append("Network is over "
-			          + CytoscapeInit.getProperties().getProperty("viewThreshold")
+			sb.append("Network is over " + thresh 
 			          + " nodes.  A view has not been created."
 			          + "  If you wish to view this network, use "
 			          + "\"Create View\" from the \"Edit\" menu.");
