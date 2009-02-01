@@ -1,6 +1,0 @@
-
-To run the sanity test:
-
-java -cp ./ding.jar:lib/cytoscape-geom-rtree.jar:lib/cytoscape-geom-spacial.jar:lib/cytoscape-graph-dynamic.jar:lib/cytoscape-graph-fixed.jar:lib/cytoscape-render-export.jar:lib/cytoscape-render-immed.jar:lib/cytoscape-render-stateful.jar:lib/cytoscape-util-intr.jar:lib/fing.jar:lib/fing.jar:lib/giny.jar:lib/phoebe.jar ding.view.test.SanityTest
-
-
