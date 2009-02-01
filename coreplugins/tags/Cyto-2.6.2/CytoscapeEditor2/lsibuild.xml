@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!-- Prepare to load build-common-properties file: -->
+<!-- We would like to load build-common-properties.xml from one, non-hardcoded 
+     location, but we can't figure out how: -->
+<!DOCTYPE project [
+   <!ENTITY common-properties SYSTEM "../repository/ant/build-common-properties.xml">
+<!ENTITY common-tasks SYSTEM "../repository/ant/build-common-tasks.xml">
+   ]>
+<!--This ANT file handles all the building tasks for the CytoscapeEditor package.
+   External libraries needed for compilation and testing are loaded
+   from some combination of a library repository and project-local libraries.
+   This is controlled by the contents of the build.properties file.
+   This allows for use of older versions of libraries for some packages while
+   others use newer versions of libraries.
+   All building takes place in a scratch 'build' directory which includes:
+      api-docs-location of generated javadoc documents
+      classes-location of compiled class files
+      ctrees-used for testing
+      release-the jar file for this library
+      test-data and reports for the junit test cases run.
+-->
+<project name="CytoscapeEditor" default="jar" basedir=".">
+	<echo message="${basedir}" />
+	<property name="lib.name" value="cytoscape_editor" />
+	<property name="test.subdir" value="cytoscape/editor/unittest" />
+
+	<!-- Actually load the common properties: -->
+	&common-properties;
+	<!-- Actually load the common tasks: -->
+	&common-tasks;
+
+	<property name="plugin.name" value="${ant.project.name}" />
+	<property name="plugin.loc" value="${build.release.dir}/${plugin.name}.jar" />
+	<property name="install.source.dir" value="${basedir}/install" />
+	<target name="test" depends="compile" description="compile code and run all tests and create a test report.">
+		<echo message="test.classes.root.dir = ${test.classes.root.dir}" />
+
+		<path id="test.classpath">
+			<path refid="run.classpath" />
+			<pathelement location="${build.classes.dir}" />
+		</path>
+		<junit printsummary="false" errorProperty="test.failed" failureProperty="test.failed">
+			<!-- junit requires a different classpath then standard compile: -->
+			<classpath refid="test.classpath" />
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" />
+			<batchtest todir="${test.data.dir}">
+				<fileset dir="${test.classes.root.dir}" includes="**/${test.subdir}/*Test.class" />
+			</batchtest>
+		</junit>
+		<!-- create the nice HTML, browsable report of test results: -->
+		<junitreport todir="${test.data.dir}">
+			<fileset dir="${test.data.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${test.reports.dir}" />
+		</junitreport>
+		<antcall target="display-test-report" />
+		<fail message="Test failed. Check report in ${test.reports.dir}/index.html." if="test.failed" />
+		<echo message="Tests passed. Check report in ${test.reports.dir}/index.html." />
+	</target>
+
+
+	<!-- Copy needed files into ${build.classes.dir} for jaring and testing. -->
+	<target name="add-data-files">
+		<copy todir="${build.classes.dir}/cytoscape/editor" preservelastmodified="true" file="plugin.props" />
+	</target>
+
+
+	<!-- we must do a 'clean' because we don't want to jar up any
+	     classes that are now gone from a compile: -->
+	<target name="jar" depends="clean,compile,add-data-files" description="Compile code, create plugin jar, and copy to repository and cytoscape (based on repository.release property).">
+
+		<convertpath resultId="plugin.include.jars" localPath="${local.plugin.libs}" repoPath="${repository.plugin.libs}" localLibHome="${repository.local.dir}" repoLibHome="${repository.dir}" />
+		<property name="pi-to-print" refid="plugin.include.jars" />
+		<echo message="plugin.include.jars = ${pi-to-print}" />
+		<taskdef name="pathtofileset" classname="net.sf.antcontrib.property.PathToFileSet" />
+		<!-- return a fileset of all the repository based items in our
+		     plugin.inlude.jars: -->
+		<pathtofileset name="repository.fileset" pathrefid="plugin.include.jars" dir="${repository.dir}" ignorenonrelative="true" />
+		<!-- return a fileset of all the local based items in our
+		     plugin.include.jars: -->
+		<pathtofileset name="local.fileset" pathrefid="plugin.include.jars" dir="${repository.local.dir}" ignorenonrelative="true" />
+		<unjar dest="${build.classes.dir}">
+			<fileset refid="repository.fileset" />
+			<fileset refid="local.fileset" />
+		</unjar>
+
+		<jar destfile="${plugin.loc}">
+			<manifest>
+				<attribute name="Cytoscape-Plugin" 
+				           value="cytoscape.editor.CytoscapeEditorPlugin"/>
+			</manifest>
+			<fileset dir="${build.classes.dir}">
+				<!-- skip items from the test directory: -->
+				<exclude name="${test.subdir}/" />
+			</fileset>
+		</jar>
+		<echo message="${plugin.loc} is now complete." />
+		<antcall target="release-plugin-to-cytoscape" />
+		<!-- <antcall target="release-plugin-to-genespring" /> -->
+	</target>
+
+	<target name="release-plugin-to-cytoscape" depends="check-cytohome" if="release-to-repository" description="copy plugin jar to cytoscape, when desired (based on repository.release property).">
+		<copy file="${plugin.loc}" todir="${cytoscape.plugins.dir}/core" preservelastmodified="true" />
+	</target>
+
+	<target name="release-plugin-to-genespring" if="release-to-repository" description="copy plugin jar to GeneSpring GX and GT data directories, when desired (based on repository.release property).">
+		<!-- TODO: FIX: We are having lower-level packages know about higher level ones! -->
+		<property file="${repository.ant.dir}/build-package-locations.properties" />
+		<!-- we can't have these as "depends" for this target because they will be
+		     executed before the test for 'release-to-repository' -->
+		<antcall target="release-plugin-to-gx" />
+		<antcall target="release-plugin-to-gt" />
+		<antcall target="copy-plugin-to-gxnb-data" />
+		<antcall target="copy-plugin-to-gtnb-data" />
+	</target>
+
+	<!-- copy plugin jar to GXNetworkBuilder plugins directory when necessary -->
+	<target name="copy-plugin-to-gxnb-data" if="gxnbhome.dir">
+		<copy file="${plugin.loc}" todir="${gxnbhome.dir}/data/GXInstall/Programs/GXNBPlugin/CytoscapePlugin/plugins" preservelastmodified="true" />
+	</target>
+
+	<!-- copy plugin jar to GXNetworkBuilder plugins directory when necessary -->
+	<target name="copy-plugin-to-gtnb-data" if="gtnbhome.dir">
+		<copy file="${plugin.loc}" todir="${gtnbhome.dir}/data/GTInstall/Programs/GTNBPlugin/CytoscapePlugin/plugins" preservelastmodified="true" />
+	</target>
+
+	<!-- copy plugin jar to GeneSpring GX plugins directory when necessary -->
+	<target name="release-plugin-to-gx" if="genespring.gx.plugins.dir">
+		<copy file="${plugin.loc}" todir="${genespring.gx.plugins.dir}/GXNBPlugin/CytoscapePlugin/plugins" preservelastmodified="true" />
+	</target>
+
+	<!-- copy plugin jar to GeneSpring GT plugins directory when necessary -->
+	<target name="release-plugin-to-gt" if="genespring.gt.plugins.dir">
+		<copy file="${plugin.loc}" todir="${genespring.gt.plugins.dir}/GTNBPlugin/CytoscapePlugin/plugins" preservelastmodified="true" />
+	</target>
+
+	<!-- ensure Cytoscape plugins directory is available -->
+	<target name="check-cytohome">
+		<available property="cytohome-ok" file="${cytoscape.plugins.dir}/" />
+		<fail unless="cytohome-ok" message="cytoscape.plugins.dir is not defined!" />
+	</target>
+
+	<!-- we must do a 'clean' because we don't want to jar up any
+	     classes that are now gone from a compile: -->
+	<target name="jar-middleware" depends="clean,compile,add-data-files" description="Compile code, create library jar, and copy to repository (based on repository.release property).">
+		<jar destfile="${lib.loc}">
+			<fileset dir="${build.classes.dir}">
+				<!-- skip items from the test directory: -->
+				<exclude name="${test.subdir}/" />
+				<exclude name="cytoscape/editor/plugin.props" />
+			</fileset>
+		</jar>
+		<echo message="${lib.loc} is now complete." />
+		<antcall target="release-and-update">
+			<param name="updater.target" value="${ant.project.name}" />
+		</antcall>
+	</target>
+
+	<target name="doc" depends="compile,clean-docs" description="JavaDoc ${ant.project.name}.">
+		<javadoc destdir="${apidocs.dir}" source="1.5" breakiterator="true" Windowtitle="${ant.project.name} API Docs" header="${ant.project.name}" classpathref="compile.classpath">
+			<fileset dir="${src.dir}" defaultexcludes="yes">
+				<exclude name="${test.subdir}/**" />
+				<include name="**/*.java" />
+			</fileset>
+			<doctitle>${ant.project.name} API Docs</doctitle>
+		</javadoc>
+	</target>
+
+	<target name="all" depends="clean,jar-middleware,jar,doc,test" description="Do it all--clean, compile code, create library jar, copy to repository, update dependent plugins (based on build.properties), create java docs, run tests." />
+
+
+</project>
