@@ -216,10 +216,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		// remove the current entries
 		Component[] subMenus = m.getMenuComponents();
 		for (int i = 0; i < subMenus.length; i++) { m.remove(subMenus[i]); }
-		JMenu depict = new JMenu(systemProps.getProperty("cheminfo.menu.2ddepiction"));
-		addEdgeDepictionMenus(depict, null);
-		addNodeDepictionMenus(depict, null);
-		m.add(depict);
+		addDepictionMenus(m);
 		addSimilarityMenu(m);
 		addCreateAttributesMenu(m);
 		addSettingsMenu(m);
@@ -251,14 +248,28 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 	private JMenu buildPopupMenu(JMenu menu, boolean edge, Object context) {
 		if (edge) {
 			addEdgeDepictionMenus(menu, (EdgeView)context);
+			addEdgeAttributesMenus(menu, (EdgeView)context);
 			updateLinkOut(((EdgeView)context).getEdge());
 		} else {
 			addNodeDepictionMenus(menu, (NodeView)context);
+			addNodeAttributesMenus(menu, (NodeView)context);
 			updateLinkOut(((NodeView)context).getNode());
 		}
 		addSimilarityMenu(menu);
 		addSettingsMenu(menu);
 		return menu;
+	}
+
+	/**
+ 	 * Builds the menus for depiction
+ 	 *
+ 	 * @param menu the menu we're going to add our items to
+ 	 */
+	private void addDepictionMenus(JMenu menu) {
+		JMenu depict = new JMenu(systemProps.getProperty("cheminfo.menu.2ddepiction"));
+		addEdgeDepictionMenus(depict, null);
+		addNodeDepictionMenus(depict, null);
+		menu.add(depict);
 	}
 
 	/**
@@ -299,10 +310,9 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		if (!selectedEdges.contains(edgeContext.getEdge()))
 			selectedEdges.add((CyEdge)edgeContext.getEdge());
 
-		if (selectedEdges.size() > 0) {
-			depict.add(buildMenuItem("cheminfo.menu.2ddepiction.selectedEdges",
-			                         "cheminfo.menu.2ddepiction.selectedEdges"));
-		}
+		depict.add(buildMenuItem("cheminfo.menu.2ddepiction.selectedEdges",
+		                         "cheminfo.menu.2ddepiction.selectedEdges"));
+
 		if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
 			depict.setEnabled(false);
 		}
@@ -349,10 +359,9 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		if (!selectedNodes.contains(nodeContext.getNode()))
 			selectedNodes.add((CyNode)nodeContext.getNode());
 
-		if (selectedNodes.size() > 0) {
-			depict.add(buildMenuItem("cheminfo.menu.2ddepiction.selectedNodes",
-			                         "cheminfo.menu.2ddepiction.selectedNodes"));
-		}
+		depict.add(buildMenuItem("cheminfo.menu.2ddepiction.selectedNodes",
+		                         "cheminfo.menu.2ddepiction.selectedNodes"));
+
 		if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
 			depict.setEnabled(false);
 		}
@@ -392,25 +401,112 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 	 * @param menu the menu we're going add our items to
 	 */
 	private void addCreateAttributesMenu(JMenu menu) {
-		JMenu createAttributesMenu = new JMenu(systemProps
-				.getProperty("cheminfo.menu.createattributes"));
-		menu.add(createAttributesMenu);
-		Set<GraphObject> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
-		Set<GraphObject> selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
-		if ((selectedNodes != null && selectedNodes.size() > 1) ||
-		    (selectedEdges != null && selectedEdges.size() > 1)) {
-			JMenu createAll = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.allObjects"));
-			addDescriptors(createAll, null, null);
-			createAttributesMenu.add(createAll);
-			JMenu createSelected = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.selectedObjects"));
-			addDescriptors(createSelected, selectedNodes, selectedEdges);
-			createAttributesMenu.add(createSelected);
-		} else {
-			addDescriptors(createAttributesMenu, null, null);
-		}
+		JMenu create = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes"));
+		addEdgeAttributesMenus(create, null);
+		addNodeAttributesMenus(create, null);
+		menu.add(create);
 	}
 
-	private void addDescriptors(JMenu menu, Set<GraphObject> selectedNodes, Set<GraphObject> selectedEdges) {
+	private void addNodeAttributesMenus(JMenu menu, NodeView nodeContext) {
+		// Check and see if we have any node attributes
+		Collection<CyNode> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+
+		if (nodeContext == null) {
+			// Populating main menu
+			JMenu create = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.allNodes"));
+			addDescriptors(create, Cytoscape.getCurrentNetwork().nodesList(), null);
+			if (!settingsDialog.hasNodeCompounds(null))
+				create.setEnabled(false);
+			menu.add(create);
+			if (selectedNodes != null && selectedNodes.size() > 0) {
+				create = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.selectedNodes"));
+				addDescriptors(create, selectedNodes, null);
+				if (!settingsDialog.hasNodeCompounds(selectedNodes))
+					create.setEnabled(false);
+				menu.add(create);
+			}
+			return;
+		}
+
+		JMenu create = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes"));
+
+		// Populating popup menu
+		JMenu thisNodeMenu = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.thisNode"));
+		List<CyNode> thisNode = new ArrayList();
+		thisNode.add((CyNode)nodeContext.getNode());
+		addDescriptors(thisNodeMenu, thisNode, null);
+		if (!settingsDialog.hasNodeCompounds(thisNode)) {
+			thisNodeMenu.setEnabled(false);
+		}
+		create.add(thisNodeMenu);
+
+		if (selectedNodes.size() > 1) {
+			JMenu selectedMenu = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.selectedNodes"));
+			addDescriptors(selectedMenu, selectedNodes, null);
+			if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
+				selectedMenu.setEnabled(false);
+			}
+			create.add(selectedMenu);
+		}
+
+		menu.add(create);
+
+		if (!selectedNodes.contains(nodeContext.getNode()))
+			selectedNodes.add((CyNode)nodeContext.getNode());
+
+		return;
+	}
+
+	private void addEdgeAttributesMenus(JMenu menu, EdgeView edgeContext) {
+		// Check and see if we have any node attributes
+		Collection<CyEdge> selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
+
+		if (edgeContext == null) {
+			// Populating main menu
+			JMenu create = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.allEdges"));
+			addDescriptors(create, null, Cytoscape.getCurrentNetwork().edgesList());
+			if (!settingsDialog.hasEdgeCompounds(null))
+				create.setEnabled(false);
+			menu.add(create);
+			if (selectedEdges != null && selectedEdges.size() > 0) {
+				create = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.selectedEdges"));
+				addDescriptors(create, null, selectedEdges);
+				if (!settingsDialog.hasEdgeCompounds(selectedEdges))
+					create.setEnabled(false);
+				menu.add(create);
+			}
+			return;
+		}
+
+		// Populating popup menu
+		JMenu create = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes"));
+		JMenu thisEdgeMenu = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.thisEdge"));
+		List<CyEdge> thisEdge = new ArrayList();
+		thisEdge.add((CyEdge)edgeContext.getEdge());
+		addDescriptors(thisEdgeMenu, null, thisEdge);
+		if (!settingsDialog.hasEdgeCompounds(thisEdge)) {
+			thisEdgeMenu.setEnabled(false);
+		}
+		create.add(thisEdgeMenu);
+
+		if (selectedEdges.size() > 1) {
+			JMenu selectedMenu = new JMenu(systemProps.getProperty("cheminfo.menu.createattributes.selectedEdges"));
+			addDescriptors(selectedMenu, null, selectedEdges);
+			if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
+				selectedMenu.setEnabled(false);
+			}
+			create.add(selectedMenu);
+		}
+		menu.add(create);
+
+		if (!selectedEdges.contains(edgeContext.getEdge()))
+			selectedEdges.add((CyEdge)edgeContext.getEdge());
+
+		return;
+	}
+
+	private void addDescriptors(JMenu menu, Collection<CyNode> selectedNodes, 
+	                            Collection<CyEdge> selectedEdges) {
 		// Get the list of descriptors
 		List<DescriptorType> dList = Compound.getDescriptorList();
 		// Add them to the menus

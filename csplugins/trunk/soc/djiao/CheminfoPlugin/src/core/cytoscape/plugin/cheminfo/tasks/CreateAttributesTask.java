@@ -45,7 +45,10 @@ import java.util.List;
 
 import giny.model.GraphObject;
 import giny.model.Node;
+import giny.model.Edge;
 
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.task.Task;
@@ -74,7 +77,7 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
  	 * @param selection the group of graph objects that should be included in the table
  	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
  	 */
-	public CreateAttributesTask(Collection<GraphObject> nodeSelection, Collection<GraphObject> edgeSelection,
+	public CreateAttributesTask(Collection nodeSelection, Collection edgeSelection,
 	                           DescriptorType descriptor, ChemInfoSettingsDialog settingsDialog) {
 		this.nodeSelection = nodeSelection;
 		this.edgeSelection = edgeSelection;
@@ -90,9 +93,8 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 
 	public void actionPerformed(ActionEvent e) {
 		if (nodeSelection == null && edgeSelection == null) {
-			// If nothing is selected, iterate over all nodes and edges
-			nodeSelection = Cytoscape.getCurrentNetwork().nodesList();
-			edgeSelection = Cytoscape.getCurrentNetwork().edgesList();
+			// Nothing to do
+			return;
 		}
 		// Execute
 		TaskManager.executeTask(this, this.getDefaultTaskConfig());
@@ -104,6 +106,14 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 	public void run() {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+
+		objectCount = 0;
+		totalObjects = 0;
+
+		if (nodeSelection != null && nodeSelection.size() > 0)
+			totalObjects = nodeSelection.size();
+		if (edgeSelection != null && edgeSelection.size() > 0)
+			totalObjects += edgeSelection.size();
 
 		if (nodeSelection != null && nodeSelection.size() > 0)
 			calculateDescriptors(nodeSelection, nodeAttributes, "node");
@@ -117,6 +127,10 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 	private void calculateDescriptors(Collection<GraphObject> selection, CyAttributes attributes, String type) {
 
 		boolean needList = false;
+
+		if (monitor != null)
+			monitor.setStatus("Getting compounds for "+type+"s");
+		
 		List<Compound>cList = getCompounds(selection, attributes, 
 					   							             settingsDialog.getCompoundAttributes(type,AttriType.smiles),
 						   						             settingsDialog.getCompoundAttributes(type,AttriType.inchi));
@@ -124,6 +138,9 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 		if (cList == null || cList.size() == 0) return;
 
 		HashMap<GraphObject, List<Object>> valueMap = new HashMap();
+
+		if (monitor != null)
+			monitor.setStatus("Calculating descriptors for "+type+"s");
 
 		// Second, calculate the descriptors
 		for (Compound compound: cList) {
@@ -142,6 +159,9 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 			vL.add(result);
 			valueMap.put(source, vL);
 		}
+
+		if (monitor != null)
+			monitor.setStatus("Creating "+type+" attributes");
 
 		// Finally, write them out
 		String attributeName = descriptor.toString();

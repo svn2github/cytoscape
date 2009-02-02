@@ -26,6 +26,12 @@ cheminfo.menu.2ddepiction.selectedNodes=Show table of compounds from selected no
 cheminfo.menu.2ddepiction.thisNode=Show 2D structure(s) from this node
 cheminfo.menu.2ddepiction.allNodes=Show table of compounds from all nodes
 cheminfo.menu.createattributes=Create attributes from molecular descriptors
+cheminfo.menu.createattributes.thisEdge=for this edge
+cheminfo.menu.createattributes.allEdges=for all edges
+cheminfo.menu.createattributes.selectedEdges=for selected edges
+cheminfo.menu.createattributes.thisNode=for this node
+cheminfo.menu.createattributes.allNodes=for all nodes
+cheminfo.menu.createattributes.selectedNodes=for selected nodes
 cheminfo.menu.settings=Settings...
 
 ##

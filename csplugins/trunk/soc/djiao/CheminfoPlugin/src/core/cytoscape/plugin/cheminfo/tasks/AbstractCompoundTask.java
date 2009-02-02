@@ -64,6 +64,10 @@ abstract public class AbstractCompoundTask implements Task {
 	int maxCompounds = 0;
 	int compoundCount = 0;
 
+	// These are used for our progress meeter
+	int totalObjects = 0;
+	int	objectCount = 0;
+
 	public void halt() { canceled = true; }
 
 	public void setTaskMonitor(TaskMonitor monitor) {
@@ -108,6 +112,7 @@ abstract public class AbstractCompoundTask implements Task {
 		List<Compound> cList = new ArrayList();
 		for (GraphObject go: goSet) {
 			if (done()) break;
+			updateMonitor();
 			cList.addAll(getCompounds(go, attributes, sList, iList, false));
 		}
 
@@ -221,6 +226,12 @@ abstract public class AbstractCompoundTask implements Task {
 		}
 
 		return cList;
+	}
+
+	protected void updateMonitor() {
+		if (monitor == null || totalObjects == 0) return;
+		monitor.setPercentCompleted((int)(((double)objectCount/(double)totalObjects) * 100.0));
+		objectCount++;
 	}
 
 	private boolean done() {
