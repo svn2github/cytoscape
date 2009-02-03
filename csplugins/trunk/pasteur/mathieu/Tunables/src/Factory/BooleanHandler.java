@@ -1,6 +1,8 @@
 
 package Factory;
 
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.lang.reflect.*;
 import javax.swing.*;
 
@@ -19,11 +21,15 @@ public class BooleanHandler extends AbstractGuiHandler {
 			this.myBoolean = (Boolean) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		
-		panel = new JPanel();
+		panel = new JPanel(new BorderLayout());
 		try {
-		jcb = new JCheckBox( t.description(), myBoolean.booleanValue());
-		jcb.addActionListener( this );
-		panel.add( jcb );
+			jcb = new JCheckBox();
+			jcb.setSelected(myBoolean.booleanValue());
+			JLabel label = new JLabel(t.description());
+			label.setFont(new Font(null, Font.PLAIN,12));
+			jcb.addActionListener(this);
+			panel.add(label,BorderLayout.WEST);
+			panel.add( jcb ,BorderLayout.EAST);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 
