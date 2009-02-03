@@ -44,7 +44,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 				if ( dep != null && !dep.equals("") ) {
 					for ( GuiHandler gh2 : lh ) {
 						if ( gh2.getName().equals(dep) ) {
-							gh2.addDependent(gh);
+							gh2.addHandlerListener(gh);
 							break;
 						}
 					}

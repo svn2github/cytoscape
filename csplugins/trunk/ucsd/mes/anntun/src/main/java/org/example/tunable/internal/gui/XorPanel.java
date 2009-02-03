@@ -20,7 +20,7 @@ public class XorPanel extends JPanel {
 	public XorPanel(String title, GuiHandler g) {
 		super();
 		gh = g;
-		gh.addDependent( new GuiHandlerSwitchListener() ); 
+		gh.addHandlerListener( new GuiHandlerSwitchListener() ); 
 
 		switchPanel = new JPanel(); 
 		contentPanel = new JPanel(new CardLayout());
@@ -56,29 +56,14 @@ public class XorPanel extends JPanel {
 	}
 
 
-	class GuiHandlerSwitchListener implements  GuiHandler {
+	class GuiHandlerSwitchListener implements  HandlerListener {
 
-		public Tunable getTunable() {return null;}
-		public Field getField() {return null;}
-		public Method getMethod() {return null;}
-		public Object getObject() {return null;}
-		public void actionPerformed(ActionEvent ae) { }
-		public void notifyDependents() { } 
-		public void addDependent(GuiHandler gh) { } 
-		public String getDependency() { return null; }
-
-		public void checkDependency(String name, String state) {
-			CardLayout cl = (CardLayout) contentPanel.getLayout();
-			cl.show(contentPanel, state);
+		public void handlerChanged(Handler gh) {
+			if ( gh instanceof GuiHandler ) {
+				CardLayout cl = (CardLayout) contentPanel.getLayout();
+				cl.show(contentPanel, ((GuiHandler)gh).getState());
+			}
 		}
-	
-		public String getName() { return null; }
-		public JPanel getJPanel() { return null; }
-		public void handle() {}
-		public String getState() {return null;}
-		public void handlerChanged(Handler h) {}
-		public void addHandlerListener(HandlerListener h) {}
-		public boolean removeHandlerListener(HandlerListener h) {return false;}
 	}
 }
 	

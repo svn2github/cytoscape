@@ -16,8 +16,6 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements GuiH
     private String depName;
     private String depState;
 
-	private java.util.List<GuiHandler> deps;
-
 	public AbstractGuiHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);	
         String s = t.dependsOn();
@@ -26,7 +24,6 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements GuiH
             depState = s.substring(s.indexOf("=") + 1);
         }
 	
-		deps = new LinkedList<GuiHandler>();
 		panel = new JPanel();
 	}
 
@@ -40,40 +37,42 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements GuiH
 	public void notifyDependents() {
 		String state = getState();
 		String name = getName();
-		for ( GuiHandler gh : deps )
-			gh.checkDependency( name, state ); 
+		for ( HandlerListener hl : listeners )
+			hl.handlerChanged(this);	
 	}
 
-	// add a dependency on this object 
-	public void addDependent(GuiHandler gh) {
-		//System.out.println("adding " + gh.getName() + " dependent to " + this.getName() );
-		if ( !deps.contains(gh) )
-			deps.add(gh);
-	}
 
 	public String getDependency() {
 		return depName;
 	}
 
-	public void checkDependency(String name, String state) {
+	public void handlerChanged(Handler h) {
 
-		// if we don't depend on anything, then we should be enabled
-		if ( depName == null || depState == null ) {
-			setEnabledContainer(true,panel); 
-			return;
-		}
+		if ( h instanceof GuiHandler ) {
+			GuiHandler gh = (GuiHandler)h;	
 
-		// if the dependency name matches ...
-        if ( depName.equals(name) ) {
-			// ... and the state matches, then enable 
-			if ( depState.equals(state) )
+			// if we don't depend on anything, then we should be enabled
+			if ( depName == null || depState == null ) {
 				setEnabledContainer(true,panel); 
-			// ... and the state doesn't match, then disable 
-			else	
-				setEnabledContainer(false,panel); 
+				return;
+			}
+
+			String name = gh.getName();
+			String state = gh.getState();
+
+			// if the dependency name matches ...
+   			if ( depName.equals(name) ) {
+				// ... and the state matches, then enable 
+				if ( depState.equals(state) )
+					setEnabledContainer(true,panel); 
+				// ... and the state doesn't match, then disable 
+				else	
+					setEnabledContainer(false,panel); 
+			}
 		}
 
         return;
+		
 	}
 
 	private void setEnabledContainer(boolean enable, Container c) {

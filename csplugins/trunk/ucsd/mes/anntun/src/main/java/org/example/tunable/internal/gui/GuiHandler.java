@@ -13,8 +13,6 @@ public interface GuiHandler extends Handler {
 	String getName();
 
 	void notifyDependents();
-	void addDependent(GuiHandler gh);
 
-	void checkDependency(String name, String state);
 	String getDependency();
 }
