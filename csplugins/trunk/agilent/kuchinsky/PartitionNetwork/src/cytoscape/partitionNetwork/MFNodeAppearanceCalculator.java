@@ -17,8 +17,8 @@ import cytoscape.visual.VisualPropertyType;
 
 public class MFNodeAppearanceCalculator extends NodeAppearanceCalculator {
 	
-	public static int FEATURE_NODE_WIDTH = 50;
-	public static int FEATURE_NODE_HEIGHT = 25;
+	public static int FEATURE_NODE_WIDTH = 60;
+	public static int FEATURE_NODE_HEIGHT = 30;
 	
 	public MFNodeAppearanceCalculator() {
 		
@@ -29,13 +29,13 @@ public class MFNodeAppearanceCalculator extends NodeAppearanceCalculator {
 			CyNetwork network) {
 		super.calculateNodeAppearance(appr, node, network);
 		
-		CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
-		String feature_id = node.getIdentifier();
+//		CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+//		String feature_id = node.getIdentifier();
 		
 			
-			//Node label
-			String label = nodeAttribs.getStringAttribute(feature_id, "label");
-			appr.set(VisualPropertyType.NODE_LABEL, label != null ? label : feature_id);
+//			//Node label
+//			String label = nodeAttribs.getStringAttribute(feature_id, "label");
+//			appr.set(VisualPropertyType.NODE_LABEL, label != null ? label : feature_id);
 //			
 //			//Node shape
 //			setNodeSizeLocked(false);

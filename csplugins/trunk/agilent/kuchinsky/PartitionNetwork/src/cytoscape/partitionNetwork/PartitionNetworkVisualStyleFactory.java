@@ -9,11 +9,10 @@ import java.util.Map;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
-import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.LabelPosition;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualMappingManager;
@@ -23,6 +22,7 @@ import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
 
 public class PartitionNetworkVisualStyleFactory {
 
@@ -57,8 +57,8 @@ public class PartitionNetworkVisualStyleFactory {
 					VisualPropertyType.NODE_BORDER_COLOR, new Color(0, 0, 0));
 			nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR,
 					new Color(255, 255, 255));
-			DiscreteMapping disMapping = new DiscreteMapping(Color.white,
-	                ObjectMapping.NODE_MAPPING);
+			
+			
 			final String attributeName = "annotation.GO MOLECULAR_FUNCTION";	
 			CyAttributes attribs = Cytoscape.getNodeAttributes();
 			Map attrMap = CyAttributesUtils.getAttribute(attributeName, attribs);
@@ -83,7 +83,44 @@ public class PartitionNetworkVisualStyleFactory {
 					}
 				}
 			}
-			disMapping.setControllingAttributeName(attributeName, view.getNetwork(), false);
+			PassThroughMapping passMappingLabel = new PassThroughMapping("", "canonicalName");
+			Calculator labelCalculator = new BasicCalculator(PartitionNetwork_VS,
+	                passMappingLabel,
+					VisualPropertyType.NODE_LABEL);
+			nac.setCalculator(labelCalculator);
+			DiscreteMapping disMappingNodeW = new DiscreteMapping(MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH, "register_node", ObjectMapping.NODE_MAPPING);
+			disMappingNodeW.putMapValue(Boolean.TRUE, 0.1);
+			Calculator widthCalculator = new BasicCalculator(PartitionNetwork_VS,
+	                disMappingNodeW,
+					VisualPropertyType.NODE_WIDTH);
+			nac.setCalculator(widthCalculator);
+			DiscreteMapping disMappingNodeH = new DiscreteMapping(MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT, "register_node", ObjectMapping.NODE_MAPPING);
+			disMappingNodeH.putMapValue(Boolean.TRUE, 0.1);
+			Calculator heightCalculator = new BasicCalculator(PartitionNetwork_VS,
+	                disMappingNodeH,
+					VisualPropertyType.NODE_HEIGHT);
+			nac.setCalculator(heightCalculator);
+			
+			DiscreteMapping disMappingFont = new DiscreteMapping(12, "register_node", ObjectMapping.NODE_MAPPING);
+			disMappingFont.putMapValue(Boolean.TRUE, 60);
+			Calculator fontCalculator = new BasicCalculator(PartitionNetwork_VS,
+					disMappingFont,
+					VisualPropertyType.NODE_FONT_SIZE);
+			nac.setCalculator(fontCalculator);
+			LabelPosition lp = new LabelPosition();
+			DiscreteMapping disMappingLabelPosition = new DiscreteMapping(lp, "register_node", ObjectMapping.NODE_MAPPING);
+			lp.setOffsetX(300);
+			lp.setOffsetY(50);
+			lp.setJustify(1);
+			disMappingLabelPosition.putMapValue(Boolean.TRUE, lp);
+			Calculator posCalculator = new BasicCalculator(PartitionNetwork_VS,
+					disMappingLabelPosition,
+					VisualPropertyType.NODE_LABEL_POSITION);
+			nac.setCalculator(posCalculator);
+			
+			DiscreteMapping disMappingNodeFill = new DiscreteMapping(Color.white,
+	                ObjectMapping.NODE_MAPPING);
+			disMappingNodeFill.setControllingAttributeName(attributeName, view.getNetwork(), false);
 			/*
 			 * Create random colors
 			 */
@@ -98,12 +135,12 @@ public class PartitionNetworkVisualStyleFactory {
 				      + 0.3f;
 				br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI)) + (Math.PI / 2)))
 				               .floatValue()) * 0.7f) + 0.3f;
-				disMapping.putMapValue(key, new Color(Color.HSBtoRGB(hue, sat, br)));
+				disMappingNodeFill.putMapValue(key, new Color(Color.HSBtoRGB(hue, sat, br)));
 				i++;
 			}
 			Calculator colorCalculator = new BasicCalculator(PartitionNetwork_VS,
-	                disMapping,
-						VisualPropertyType.NODE_FILL_COLOR);
+	                disMappingNodeFill,
+					VisualPropertyType.NODE_FILL_COLOR);
 			
 			nac.setCalculator(colorCalculator);
 
