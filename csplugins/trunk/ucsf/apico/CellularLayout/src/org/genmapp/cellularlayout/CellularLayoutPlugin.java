@@ -551,11 +551,18 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 					regNv.setWidth(0.1);
 					Cytoscape.getNodeAttributes().setAttribute(regId,
 							"canonicalName", "");
+					Cytoscape.getNodeAttributes().setAttribute(regId, "register_node", true);
+					Cytoscape.getNodeAttributes().setUserVisible("register_node", false);
+					Cytoscape.getNodeAttributes().setUserEditable("register_node", false);
 					lockNode(regNv); // lock against future layout; TODO:
 					// doesn't work!
 					switch (j) {
 					case 0:
 						regNv.setOffset(r.getRegionLeft(), r.getRegionTop());
+						Cytoscape.getNodeAttributes().setAttribute(regId,
+								"canonicalName", r.getAttValue());
+						regNv.setLabelOffsetX(50.0);
+						regNv.setLabelOffsetY(50.0);
 						break;
 					case 1:
 						regNv.setOffset(r.getRegionLeft(), r.getRegionBottom());
@@ -646,7 +653,8 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 									attributes.setAttribute(newId, att,
 											attributes.getBooleanAttribute(
 													oldId, att));
-								} else if (type == CyAttributes.TYPE_INTEGER) {
+								} else if (type == CyAttributes.TYPE_INTEGER && attributes.getIntegerAttribute(
+										oldId, att) != null) {
 									attributes.setAttribute(newId, att,
 											attributes.getIntegerAttribute(
 													oldId, att));

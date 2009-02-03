@@ -358,8 +358,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.draw(s);
 
 			// region label
-			int xLabelOffset = 5;
-			int yLabelOffset = 15;
+//			int xLabelOffset = 5;
+//			int yLabelOffset = 15;
 			// //TODO: debugging free region
 //			Rectangle fb = relativeToBounds(
 //					viewportTransform(getFreeVRectangle())).getBounds();
@@ -385,9 +385,9 @@ public class Region extends JComponent implements ViewportChangeListener {
 //
 //			g2d.draw(fs);
 
-			g2d.setColor(Color.DARK_GRAY);
-			g2d.setStroke(new BasicStroke());
-			g2d.drawString(this.attValue, xLabelOffset, yLabelOffset);
+//			g2d.setColor(Color.DARK_GRAY);
+//			g2d.setStroke(new BasicStroke());
+//			g2d.drawString(this.attValue, xLabelOffset, yLabelOffset);
 		}
 
 	}
