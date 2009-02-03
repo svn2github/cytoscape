@@ -3,7 +3,9 @@ package Factory;
 import java.lang.reflect.Field;
 import javax.swing.*;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import GuiInterception.*;
 import Tunable.Tunable;
@@ -31,19 +33,23 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 		this.title = t.description();
 		for ( Param s : t.flag())if(s.equals(Param.slider))useslider=true;
 		
-		panel = new JPanel();
+		panel = new JPanel(new BorderLayout());
 		if(useslider){
-			panel.add(new JLabel(title));
+			JLabel label = new JLabel(title);
+			label.setFont(new Font(null, Font.PLAIN,12));
+			panel.add(label,BorderLayout.WEST);
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			panel.add(slider);
+			panel.add(slider,BorderLayout.EAST);
 		}
 		else{
 			try {
-				panel.add( new JLabel( title + " (max: " + myBounded.getLowerBound().toString() + "  min: " + myBounded.getUpperBound().toString() + ")" ) );
+				JLabel label = new JLabel( title + " (max: " + myBounded.getLowerBound().toString() + "  min: " + myBounded.getUpperBound().toString() + ")" );
+				label.setFont(new Font(null, Font.PLAIN,12));
+				panel.add(label,BorderLayout.WEST);
 				jtf = new JTextField( ((Double)myBounded.getValue()).toString(), 10);
 				jtf.addActionListener( this );
 				jtf.setHorizontalAlignment(JTextField.RIGHT);
-				panel.add( jtf );
+				panel.add(jtf,BorderLayout.EAST);
 			} catch (Exception e) { e.printStackTrace(); }
 		}
 	}

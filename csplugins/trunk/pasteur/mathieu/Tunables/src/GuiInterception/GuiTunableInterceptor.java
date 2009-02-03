@@ -3,6 +3,8 @@ package GuiInterception;
 import java.util.*;
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
 import Tunable.Tunable.Param;
 import Utils.CollapsablePanel;
 import Utils.XorPanel;
@@ -108,7 +110,10 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	}
 	private JPanel getSimplePanel(String title) {
 		JPanel ret = new JPanel();
-		ret.setBorder(BorderFactory.createTitledBorder(title));
+		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
+		titleborder.setTitleColor(Color.BLUE);
+		ret.setBorder(titleborder);
+//		ret.setBorder(BorderFactory.createTitledBorder(title));
 		ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
 		return ret;
 	}

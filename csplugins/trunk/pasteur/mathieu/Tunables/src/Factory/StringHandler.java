@@ -1,6 +1,8 @@
 
 package Factory;
 
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.lang.reflect.*;
 import javax.swing.*;
 
@@ -14,14 +16,16 @@ public class StringHandler extends AbstractGuiHandler {
 	public StringHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 
-		panel = new JPanel();
+		panel = new JPanel(new BorderLayout());
 		try {
-			panel.add( new JLabel( t.description() ) );
-			jtf = new JTextField( (String)f.get(o), 20);
+			JLabel label = new JLabel(t.description());
+			label.setFont(new Font(null, Font.PLAIN,12));
+			panel.add(label,BorderLayout.WEST );
+			jtf = new JTextField( (String)f.get(o), 15);
 			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			jtf.addActionListener( this );
-			panel.add( jtf );
-		} catch (Exception e) { e.printStackTrace(); }
+			jtf.addActionListener(this);
+			panel.add(jtf,BorderLayout.EAST);
+		} catch (Exception e) {e.printStackTrace(); }
 			
 	}
 

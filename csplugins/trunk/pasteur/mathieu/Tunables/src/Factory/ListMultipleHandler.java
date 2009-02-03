@@ -2,13 +2,11 @@
 package Factory;
 
 import java.lang.reflect.*;
-import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.*;
 
-import java.awt.event.*;
 import java.awt.*;
 
 import GuiInterception.AbstractGuiHandler;
@@ -23,24 +21,26 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler implements ListSe
 	private List<T> selected;
 	CheckListManager<T> checkListManager;
 
+	@SuppressWarnings("unchecked")
 	public ListMultipleHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
             lms = (ListMultipleSelection<T>) f.get(o);
         } catch(Exception e) {e.printStackTrace();}
 	
-        panel = new JPanel();
+        panel = new JPanel(new BorderLayout());
         JTextArea jta = new JTextArea(t.description());
         jta.setLineWrap(true);
         jta.setWrapStyleWord(true);
-        panel.add(jta);
+        panel.add(jta,BorderLayout.BEFORE_LINE_BEGINS);
         jta.setBackground(null);
         jta.setEditable(false);
         jlist = new JList(lms.getPossibleValues().toArray());
+        jlist.setFont(new Font("sansserif",Font.PLAIN,11));
         jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         checkListManager = new CheckListManager<T>(jlist,lms); 
         JScrollPane scrollpane = new JScrollPane(jlist);
-        panel.add(scrollpane);
+        panel.add(scrollpane,BorderLayout.EAST);
 	}
 
 	@SuppressWarnings("unchecked")

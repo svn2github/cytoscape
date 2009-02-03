@@ -1,6 +1,7 @@
 package Utils;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -13,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.border.TitledBorder;
 
 
 public class CollapsablePanel extends JPanel implements ActionListener{
@@ -36,7 +38,10 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		
 		rightPanel = new JPanel();
 		rightPanel.setLayout(new BorderLayout());
-		setBorder(BorderFactory.createTitledBorder(name));
+		TitledBorder titleborder = BorderFactory.createTitledBorder(name);
+		titleborder.setTitleColor(Color.RED);
+		setBorder(titleborder);
+		//setBorder(BorderFactory.createTitledBorder(name));
 		rightPanel.add(myExpandButton = createButton(expandPaneVisible),BorderLayout.WEST);
 		super.add(rightPanel);
 				
@@ -44,8 +49,7 @@ public class CollapsablePanel extends JPanel implements ActionListener{
 		leftPanel.setLayout(new BoxLayout(leftPanel,BoxLayout.PAGE_AXIS));
 		setCollapsed(expandPaneVisible);
 		super.add(leftPanel);
-		
-		//expandPaneVisible = false;
+
 	}
 
 	

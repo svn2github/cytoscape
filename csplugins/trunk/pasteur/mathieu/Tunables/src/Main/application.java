@@ -25,8 +25,8 @@ public class application {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(true);
 		TunableInterceptor ti = new GuiTunableInterceptor(frame);
-		TunableInterceptor lpi = new LoadPropsInterceptor(InitProps);
-		TunableInterceptor spi = new StorePropsInterceptor(store);
+		TunableInterceptor lpi = null;// = new LoadPropsInterceptor(InitProps);
+		TunableInterceptor spi = null;// = new StorePropsInterceptor(store);
 		
 
 		JPanel p = new JPanel();
@@ -39,6 +39,7 @@ public class application {
         frame.setVisible(true);
     }
 
+	@SuppressWarnings("serial")
 	private static class MyAction extends AbstractAction {
 		command com;
 		TunableInterceptor ti;

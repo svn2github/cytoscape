@@ -28,7 +28,8 @@ public class CheckListManager<T> extends MouseAdapter implements ListSelectionLi
  
     public CheckListManager(JList list,ListMultipleSelection<T> LMS){
     	this.LMS=LMS;
-        this.list = list; 
+        this.list = list;
+        list.setVisibleRowCount(4);
         list.setCellRenderer(new CheckListCellRenderer(list.getCellRenderer(), selectionModel)); 
         list.registerKeyboardAction(this, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), JComponent.WHEN_FOCUSED); 
         list.addMouseListener(this); 

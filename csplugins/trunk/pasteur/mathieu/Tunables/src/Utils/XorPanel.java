@@ -3,6 +3,8 @@ package Utils;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
 import java.lang.reflect.*;
 import GuiInterception.Guihandler;
 import Tunable.*; 
@@ -25,9 +27,11 @@ public class XorPanel extends JPanel {
 
 		switchPanel = new JPanel(); 
 		contentPanel = new JPanel(new CardLayout());
-
+		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
+		titleborder.setTitleColor(Color.GREEN);
+		setBorder(titleborder);
 		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
-		setBorder(BorderFactory.createTitledBorder(title));
+		//setBorder(BorderFactory.createTitledBorder(title));
 		super.add(switchPanel);
 		super.add(contentPanel);
 	}
