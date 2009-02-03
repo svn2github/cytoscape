@@ -13,13 +13,13 @@ public abstract class AbstractHandler implements Handler {
 	protected Method m;
 	protected Object o;
 	protected Tunable t;
-	protected List<Handler> dependentHandlers;
+	protected List<HandlerListener> listeners;
 
 	public AbstractHandler(Field f, Object o, Tunable t) {
 		this.f = f;
 		this.o = o;
 		this.t = t;
-		dependentHandlers = new ArrayList<Handler>();
+		listeners = new ArrayList<HandlerListener>();
 	}
 
 	public AbstractHandler(Method m, Object o, Tunable t) {
@@ -44,19 +44,19 @@ public abstract class AbstractHandler implements Handler {
 		return t;
 	}
 
-	public void handlerChanged(Handler otherHandler) {
+	public void handlerChanged(Handler h) {
 		System.out.println("currently a no-op");
 	}
 
-	public void addDependentHandler(Handler otherHandler) {
-		if ( otherHandler == null )
+	public void addHandlerListener(HandlerListener listener) {
+		if ( listener == null )
 			return;
-		dependentHandlers.add(otherHandler);
+		listeners.add(listener);
 	}
 
-	public boolean removeDependentHandler(Handler otherHandler) {
-		if ( otherHandler == null )
+	public boolean removeHandlerListener(HandlerListener listener) {
+		if ( listener == null )
 			return false;
-		return dependentHandlers.remove(otherHandler);	
+		return listeners.remove(listener);	
 	}
 }

@@ -77,8 +77,8 @@ public class XorPanel extends JPanel {
 		public void handle() {}
 		public String getState() {return null;}
 		public void handlerChanged(Handler h) {}
-		public void addDependentHandler(Handler h) {}
-		public boolean removeDependentHandler(Handler h) {return false;}
+		public void addHandlerListener(HandlerListener h) {}
+		public boolean removeHandlerListener(HandlerListener h) {return false;}
 	}
 }
 	
