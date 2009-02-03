@@ -182,7 +182,7 @@ class SwingTaskMonitor implements TaskMonitor
 			//            dialog should close
 			
 			if (isShowingException())
-				close(); // since we are showing an exception, close the dialog
+				close();
 			else
 			{
 				// we need to inform the Task to cancel
@@ -193,7 +193,7 @@ class SwingTaskMonitor implements TaskMonitor
 
 				// we issue the Task's cancel method in its own thread
 				// to prevent Swing from freezing if the Tasks's cancel
-				// method is taking too long to finish
+				// method takes too long to finish
 				Thread cancelThread = new Thread(new Runnable()
 				{
 					public void run()
