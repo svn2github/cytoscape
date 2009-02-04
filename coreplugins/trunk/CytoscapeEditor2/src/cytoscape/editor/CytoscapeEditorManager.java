@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Tue Jul 05 11:44:41 2005
-* Modified:     Mon Aug 18 07:13:26 2008 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Feb 04 08:29:29 2009 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Wed Feb 04 08:28:38 2009 (Michael L. Creech) creech@w235krbza760
+*  Changed setEventHandlerForView() to no longer set and pass in the
+*  view to the handler.
 * Tue Jul 29 14:54:22 2008 (Michael L. Creech) creech@w235krbza760
 *  Added isEditorInOperation().
 * Thu Oct 25 05:40:57 2007 (Michael L. Creech) creech@w235krbza760
@@ -289,7 +292,6 @@ public abstract class CytoscapeEditorManager {
 			                                                           networkEditAdapterName);
 			cyEditor.setNetworkEditEventAdapter(event);
 
-			// MLC 10/24/07:
 			cyEditor.buildVisualStyle();
 
 			if ((visualStyleName != null)
@@ -305,9 +307,6 @@ public abstract class CytoscapeEditorManager {
 
 			// AJK: 09/19/05 END
 			CytoscapeEditorManager.setCurrentEditor(cyEditor);
-
-			// MLC 10/24/07:
-			// cyEditor.buildVisualStyle();
 
 			CytoscapeEditorManager.setSettingUpEditor(false);
 
@@ -551,11 +550,14 @@ public abstract class CytoscapeEditorManager {
 		}
 
 		CytoscapeEditor cyEditor = CytoscapeEditorManager.getCurrentEditor();
-		NetworkEditEventAdapter newEvent = CytoscapeEditorFactory.INSTANCE
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getNetworkEditEventAdapter(cyEditor);
+		NetworkEditEventAdapter newEvent = CytoscapeEditorFactory.INSTANCE.getNetworkEditEventAdapter(cyEditor);
 		CytoscapeEditorManager.setViewNetworkEditEventAdapter((CyNetworkView) thisView, newEvent);
-		newEvent.setView((DGraphView) view);
-		newEvent.start((DGraphView) thisView);
+		// MLC 02/03/09 BEGIN:
+		// Setting and passing the view is no longer needed since the current network view is used:
+		// newEvent.setView((DGraphView) view);
+		// newEvent.start((DGraphView) thisView);
+		newEvent.start();
+		// MLC 02/03/09 END.
 		canvas.addPhoebeCanvasDropListener(newEvent);
 	}
 
@@ -570,6 +572,8 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static void setViewNetworkEditEventAdapter(CyNetworkView view,
 	                                                  NetworkEditEventAdapter event) {
+	    // MLC 02/03/09:
+	    // log ("CEM: mapping view '" + view.getTitle() + "' to event handler '" + event + "'.");
 		viewNetworkEditEventAdapterMap.put(view, event);
 	}
 
@@ -866,7 +870,6 @@ public abstract class CytoscapeEditorManager {
 		CytoscapeEditorManager.editingEnabled = editingEnabled;
 	}
 
-    // MLC 07/09/08 BEGIN:
     public static boolean isEditorInOperation (int tabIdx) {
 	int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
 	return (idx == tabIdx);
@@ -877,7 +880,6 @@ public abstract class CytoscapeEditorManager {
     public static boolean isEditorInOperation () {
 	return isEditorInOperation (Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex());
     }
-    // MLC 07/09/08 END.
 
 	/**
 	 * @return Returns the currentShapePalette.
@@ -1023,9 +1025,9 @@ public abstract class CytoscapeEditorManager {
 	 * @param msg DOCUMENT ME!
 	 */
 	public static void log(String msg) {
-		if (isLoggingEnabled()) {
-			logger.debug(msg);
-		}
+	    if (isLoggingEnabled()) {
+		logger.debug(msg);
+	    }
 	}
 
 	// AJK: 12/06/06
