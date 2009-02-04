@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Fri Jul 31 05:36:07 2005
-* Modified:     Thu Jul 10 08:43:53 2008 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Feb 04 08:49:59 2009 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental
@@ -17,6 +17,12 @@
 *
 * Revisions:
 *
+* Tue Feb 03 10:47:55 2009 (Michael L. Creech) creech@w235krbza760
+*  Commented out all duplicate methods from NetworkEditEventAdapter.
+*  Added PropertyChangeListener to fix mantis 1978 (rubberband line
+*  continues to function after switching windows). Removed view, and
+*  canvas in favor of deriving these from the current network
+*  view. Removed caller since defined in NetworkEditEventAdapter.
 * Wed Jul 09 09:33:32 2008 (Michael L. Creech) creech@w235krbza760
 *  Added checks that Editor component is active to mouse and key event processing
 *  to avoid handling events when the editor tab isn't the current tab. Fixed
@@ -45,6 +51,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
@@ -54,7 +62,7 @@ import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
 import cytoscape.editor.impl.SIF_Interpreter;
 import cytoscape.view.CyNetworkView;
-
+import cytoscape.view.CytoscapeDesktop;
 
 // TODO: No instance variables should be protected--only private and
 //       all access by subclasses should be thru set/get methods.
@@ -77,7 +85,11 @@ import cytoscape.view.CyNetworkView;
  * dependencies upon Piccolo
  *
  */
-public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implements ActionListener, cytoscape.data.attr.MultiHashMapListener //TODO: dont need MultiHashMapListener
+// MLC 02/03/09 BEGIN:
+// public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implements ActionListener, cytoscape.data.attr.MultiHashMapListener //TODO: dont need MultiHashMapListener
+//TODO: dont need MultiHashMapListener
+public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implements ActionListener, cytoscape.data.attr.MultiHashMapListener, PropertyChangeListener
+// MLC 02/03/09 END.
  {
 	// PNodeLocator locator;
 
@@ -111,36 +123,25 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * the node that will be dropped
 	 */
 
-	// MLC 12/07/06 BEGIN:
 	// FIX: Should really change the name--this can easily be shadowed by other
 	//      local variables:
 	// protected NodeView node;
 	private NodeView node;
 
-	// MLC 12/07/06 END.
-
 	/**
 	 * the edge that will be dropped
 	 */
-
-	// MLC 12/07/06 END.
 
 	/**
 	 * flag that indicates whether there is an edge under construction
 	 */
 
-	// MLC 12/07/06:
-	// protected boolean edgeStarted;
-	// MLC 12/07/06:
 	private boolean edgeStarted;
 
 	/**
 	 * the mouse press location for the drop point
 	 */
 
-	// MLC 12/07/06:
-	// protected Point2D startPoint;
-	// MLC 12/07/06:
 	private Point2D startPoint;
 
 	/**
@@ -152,17 +153,20 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * the canvas that this event handler is listening to
 	 */
 
-	// AJK: 04/15/06 go from PCanvas to DING InnerCanvas
-	// protected PCanvas canvas;
-	protected InnerCanvas canvas;
-
-	/**
-	 * the current network view
-	 */
-
-	// AJK: 04/15/06 go from PGraphView to DGraphView
-	// protected PGraphView view;
-	protected DGraphView view;
+     // MLC 02/03/09 BEGIN:
+     // Already defined in NetworkEditEventAdapter:
+     //	// AJK: 04/15/06 go from PCanvas to DING InnerCanvas
+     //	// protected PCanvas canvas;
+     //	protected InnerCanvas canvas;
+     //     
+     //	/**
+     //	 * the current network view
+     //	 */
+     //
+     //	// AJK: 04/15/06 go from PGraphView to DGraphView
+     //	// protected PGraphView view;
+     //	protected DGraphView view;
+     // MLC 02/03/09 END.
 
 	/**
 	 * attribute used to set NODE_TYPE
@@ -184,10 +188,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 */
 	protected String edgeAttributeValue = DEFAULT_EDGE;
 
-	/**
-	 * editor that this event handler is associated with
-	 */
-	CytoscapeEditor _caller;
+
+     // MLC 02/03/09 BEGIN:
+     // Already defined in NetworkEditEventAdapter:
+     //	/**
+     //	 * editor that this event handler is associated with
+     //	 */
+     //	CytoscapeEditor _caller;
+     // MLC 02/03/09 END.
 
 	/*
 	 * for drawing rubberbanded lines
@@ -214,19 +222,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * node or edge which has been highlighted for drop or edge connection
 	 * during mouseDrag
 	 */
-	// MLC 05/10/07:
-	// private NodeView _highlightedNodeView = null;
-	// MLC 05/10/07:
-	// private EdgeView _highlightedEdgeView = null;
-
-	// private float _savedStrokeWidth = Float.NaN;
-	// MLC 05/10/07:
-	// private Cursor _savedCursor = null;
 
 	/**
 	 * Creates a new BasicNetworkEditEventHandler object.
 	 */
 	public BasicNetworkEditEventHandler() {
+		// MLC 02/03/09:
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		         .addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 	}
 
 	/**
@@ -236,27 +239,34 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	public BasicNetworkEditEventHandler(CytoscapeEditor caller) {
 		this();
 		_caller = caller;
+		// MLC 02/03/09:
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		         .addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 	}
 
 	/**
-	 *
+	 * @deprecated Use the one argument constructor--second argument is no longer used.
 	 * @param caller
 	 * @param view
 	 */
+     // TODO: Change all calls to this to use the one argument version of this method
 	public BasicNetworkEditEventHandler(CytoscapeEditor caller, CyNetworkView view) {
 		this();
 		_caller = caller;
-		this.setView((DGraphView) view);
+		// MLC 02/03/09:
+		// this.setView((DGraphView) view);
+		// MLC 02/03/09:
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		         .addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 	}
 
-	/**
-	 *
-	 */
-
-	// public PCanvas getCanvas() {
-	public InnerCanvas getCanvas() {
-		return canvas;
-	}
+     // MLC 02/03/09 BEGIN:
+     // Already defined in NetworkEditEventAdapter:
+     //	// public PCanvas getCanvas() {
+     //	public InnerCanvas getCanvas() {
+     //	    return canvas;
+     //	}
+     // MLC 02/03/09 END.
 	
 	/**
 	 * Routine which determines if we are running on mac platform
@@ -286,8 +296,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 *            inputEvent for mouse pressed
 	 * @see BasicCytoscapeEditor
 	 */
-	public void mousePressed(MouseEvent e) {
-	    // MLC 07/09/08 BEGIN:
+	@Override public void mousePressed(MouseEvent e) {
 	    // TODO: This check should really be avoided by having the editor remove all mouse and key
 	    //       listeners when the editor looses focus (another tab is clicked on).
 	    //       Since this is somewhat involved and so is left for when the editor is refactored.
@@ -295,11 +304,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		return;
 	    }
 	    CytoscapeEditorManager.log("CE: mousePressed!");
-	    // MLC 07/09/08 END.
 
 		nextPoint = e.getPoint();
 
-		NodeView nv = view.getPickedNodeView(nextPoint);
+		// MLC 02/03/09 BEGIN:
+		DGraphView cView = getCurrentDGraphView ();
+		// NodeView nv = view.getPickedNodeView(nextPoint);
+		NodeView nv = cView.getPickedNodeView(nextPoint);
+		// MLC 02/03/09 END.
 		boolean onNode = (nv != null);
 
 
@@ -307,9 +319,12 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		// because the user is adding edge anchors for bending edges in
 		// Cytoscape:
 		if (e.isControlDown()){
-			if (view.getPickedEdgeView(nextPoint) != null) {
-				return;
-			}
+		    // MLC 02/03/09 BEGIN:
+		    // if (view.getPickedEdgeView(nextPoint) != null) {
+		    if (cView.getPickedEdgeView(nextPoint) != null) {
+		    // MLC 02/03/09 END.
+			return;
+		    }
 		}
 
 		if ((onNode && !edgeStarted && (e.isControlDown()) && !(isMacPlatform())) ||
@@ -357,15 +372,12 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			//			super.mousePressed(e);
 		}
 	}
-
+	
 	/**
 	 * processed keyTypedEvents, in particular use of ESC key to interupt edge drawing
 	 */
-     // MLC 07/09/08:
-     // Actually, keyTyped only returns a char via e.getKeyChar(), keyPressed() is correct for the given code.
-	// public void keyTyped(KeyEvent e) // TODO: keyPressed does not seem to be working
-     // MLC 07/09/08:
-	public void keyPressed(KeyEvent e)
+
+	@Override public void keyPressed(KeyEvent e)
 	 {
 	    // MLC 07/09/08 BEGIN:
 	    // TODO: This check should really be avoided by having the editor remove all mouse and key
@@ -374,27 +386,57 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	    if (!CytoscapeEditorManager.isEditorInOperation()) {
 		return;
 	    }
-	    // MLC 07/09/08 END.
 		int keyVal = e.getKeyCode();
 		CytoscapeEditorManager.log("Key code for typed key = " + keyVal);
 		CytoscapeEditorManager.log("VK_ESCAPE = " + KeyEvent.VK_ESCAPE);
 		if (keyVal == KeyEvent.VK_ESCAPE) {
-			if (edgeStarted) // turn off rubberbanding if clicked
-			                 // on empty area of canvas
-			 {
-				edgeStarted = false;
-				saveX1 = Double.MIN_VALUE;
-				saveX2 = Double.MIN_VALUE;
-				saveY1 = Double.MIN_VALUE;
-				saveY2 = Double.MIN_VALUE;
-				this.setHandlingEdgeDrop(false);
-				// MLC 07/09/08 BEGIN:
-				// repaint so that the rubberband line is removed:
-				this.getCanvas().repaint();
-				// MLC 07/09/08 END.
-			}
+		    // MLC 02/03/09 BEGIN:
+		    resetDragAndDrop();
+		    //		    if (edgeStarted) // turn off rubberbanding if clicked
+		    //			// on empty area of canvas
+		    //			{
+		    //			    edgeStarted = false;
+		    //			    saveX1 = Double.MIN_VALUE;
+		    //			    saveX2 = Double.MIN_VALUE;
+		    //			    saveY1 = Double.MIN_VALUE;
+		    //			    saveY2 = Double.MIN_VALUE;
+		    //			    this.setHandlingEdgeDrop(false);
+		    //			    // repaint so that the rubberband line is removed:
+		    //			    this.getCanvas().repaint();
+		    //			}
+		    // MLC 02/03/09 END.
 		}
 	}
+     // MLC 02/03/09 BEGIN:
+     // implements PropertyChangeListener interface:
+     // Whenever we switch to another network view, make sure we stop
+     // any drag and drop going on.
+     // TODO: THis is probably not the best place for this and we need to add a removal of
+     //       the listener at the right place.
+     public void propertyChange(PropertyChangeEvent e) {
+	 if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+	     resetDragAndDrop ();
+	 }
+     }
+
+     /**
+      * Reset the state associated with being in the middle of a drag and drop operation.
+      */
+     private void resetDragAndDrop () {
+	 if (edgeStarted) // turn off rubberbanding if clicked
+	     // on empty area of canvas
+	     {
+		 edgeStarted = false;
+		 saveX1 = Double.MIN_VALUE;
+		 saveX2 = Double.MIN_VALUE;
+		 saveY1 = Double.MIN_VALUE;
+		 saveY2 = Double.MIN_VALUE;
+		 this.setHandlingEdgeDrop(false);
+		 // repaint so that the rubberband line is removed:
+		 this.getCanvas().repaint();
+	     }
+     }
+     // MLC 02/03/09 END.
 
 	/**
 	 * begin drawing an edge from the input point
@@ -420,7 +462,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 */
 	public CyEdge finishEdge(Point2D location, NodeView target) {
 		// CytoscapeEditorManager.log("finishEdge in BasicNetworkEventHandler");
-		// MLC 12/07/06 BEGIN:
 		//        edgeStarted = false;
 		//        updateEdge();
 		//
@@ -428,7 +469,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		//        saveX2 = Double.MIN_VALUE;
 		//        saveY1 = Double.MIN_VALUE;
 		//        saveY2 = Double.MIN_VALUE;
-		// MLC 12/07/06 END.
 		NodeView source = node;
 
 		Node source_node = source.getNode();
@@ -442,40 +482,10 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		                                (this.getEdgeAttributeValue() != null)
 		                                ? this.getEdgeAttributeValue()
 		                                : BasicNetworkEditEventHandler.DEFAULT_EDGE);
-		// MLC 12/07/06 BEGIN:
-		// AJK: 11/19/05 invert selection of target, which will have had its
-		// selection inverted upon mouse entry
-		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-		//        target.setSelected(!target.isSelected());
 		completeFinishEdge();
-
-		//        edge = null;
-		//        node = null;
-		//
-		//        if (isHandlingEdgeDrop()) {
-		//            this.setHandlingEdgeDrop(false);
-		//        }
-		//
-		//        // AJK: 11/19/05 invert selection of target, which will have had its
-		//        // selection inverted upon mouse entry
-		//        target.setSelected(!target.isSelected());
-		//
-		//        // AJK: 11/18/2005 invert selection of any nodes/edges that have been highlighted
-		//        invertSelections(null);
-		//
-		//        this.getCanvas().repaint();
-		//
-		//        // redraw graph so that the correct arrow is shown (but only if network
-		//        // is small enough to see the edge...
-		//        // NOTE: this is not needed
-		//        if (Cytoscape.getCurrentNetwork().getNodeCount() <= 500) {
-		//            Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
-		//        }
-		// MLC 12/07/06 END.
 		return myEdge;
 	}
 
-	// MLC 12/07/06 BEGIN:
 	/**
 	 * Perform all cleanup and refresh activities to complete
 	 * finishEdge().
@@ -508,8 +518,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		}
 	}
 
-	// MLC 12/07/06 END.
-
 	/**
 	 * create a new node at the point where mouse was pressed
 	 *
@@ -527,8 +535,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	/**
 	 * updates rendering of edge if an edge is under construction
 	 */
-	public void mouseMoved(MouseEvent e) {
-	    // MLC 07/09/08 BEGIN:
+	@Override public void mouseMoved(MouseEvent e) {
 	    // TODO: This check should really be avoided by having the editor remove all mouse and key
 	    //       listeners when the editor looses focus (another tab is clicked on).
 	    //       Since this is somewhat involved and so is left for when the editor is refactored.
@@ -536,7 +543,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		return;
 	    }
 	    // CytoscapeEditorManager.log("CE: mouseMoved!");
-	    // MLC 07/09/08 END.
 		nextPoint = e.getPoint();
 
 		if (edgeStarted) {
@@ -545,9 +551,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 
 			// if over NodeView or EdgeView, then highlight
 			// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-			NodeView nv = view.getPickedNodeView(nextPoint);
-			EdgeView ev = view.getPickedEdgeView(nextPoint);
-
+			// MLC 02/03/09 BEGIN:
+			DGraphView cView = getCurrentDGraphView();
+			// NodeView nv = view.getPickedNodeView(nextPoint);
+			// EdgeView ev = view.getPickedEdgeView(nextPoint);
+			NodeView nv = cView.getPickedNodeView(nextPoint);
+			EdgeView ev = cView.getPickedEdgeView(nextPoint);
+			// MLC 02/03/09 END.
 			if ((nv != null) || (ev != null)) {
 				//                invertSelections(nv);
 				//                } else if (ev != null) {
@@ -558,74 +568,67 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		}
 	}
 
-	/**
-	 * if hovering over a node, then highlight the node by temporarily
-	 * inverting its selection
-	 *
-	 *
-	 */
-
-	// TODO: this doesn't work because we are entering Canvas, NOT nodeview
-	public void mouseEntered(MouseEvent e) {
-		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-		//        Point2D  location = e.getPoint();
-		//        NodeView nv = view.getPickedNodeView(location);
-		//
-		//        if (nv != null) {
-		//            if (edgeStarted) {
-		//                nv.setSelected(!nv.isSelected());
-		//            }
-		//
-		//            this.getCanvas().repaint();
-		//        }
-	}
-
-	/**
-	 * revert temporary node highlighting that was done upon MouseEnter
-	 */
-	public void mouseExited(MouseEvent e) {
-		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-		//        Point2D  location = e.getPoint();
-		//        NodeView nv = view.getPickedNodeView(location);
-		//
-		//        if (nv != null) {
-		//            if (edgeStarted) {
-		//                nv.setSelected(!nv.isSelected());
-		//            }
-		//
-		//            this.getCanvas().repaint();
-		//        }
-	}
+     // MLC 02/03/09 BEGIN:
+     // Already defined in NetworkEditEventAdapter:
+     //	/**
+     //	 * if hovering over a node, then highlight the node by temporarily
+     //	 * inverting its selection
+     //	 *
+     //	 *
+     //	 */
+     //
+     //	// TODO: this doesn't work because we are entering Canvas, NOT nodeview
+     //	public void mouseEntered(MouseEvent e) {
+     //		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+     //		//        Point2D  location = e.getPoint();
+     //		//        NodeView nv = view.getPickedNodeView(location);
+     //		//
+     //		//        if (nv != null) {
+     //		//            if (edgeStarted) {
+     //		//                nv.setSelected(!nv.isSelected());
+     //		//            }
+     //		//
+     //		//            this.getCanvas().repaint();
+     //		//        }
+     //	}
+     //
+     //	/**
+     //	 * revert temporary node highlighting that was done upon MouseEnter
+     //	 */
+     //	public void mouseExited(MouseEvent e) {
+     //		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
+     //		//        Point2D  location = e.getPoint();
+     //		//        NodeView nv = view.getPickedNodeView(location);
+     //		//
+     //		//        if (nv != null) {
+     //		//            if (edgeStarted) {
+     //		//                nv.setSelected(!nv.isSelected());
+     //		//            }
+     //		//
+     //		//            this.getCanvas().repaint();
+     //		//        }
+     //	}
+     // MLC 02/03/09 END.
 
 	/**
 	 * begin or continue drawing an edge as mouse is dragged
 	 */
-	public void mouseDragged(MouseEvent e) {
-	    // MLC 07/09/08 BEGIN:
+	@Override public void mouseDragged(MouseEvent e) {
 	    // TODO: This check should really be avoided by having the editor remove all mouse and key
 	    //       listeners when the editor looses focus (another tab is clicked on).
 	    //       Since this is somewhat involved and so is left for when the editor is refactored.
 	    if (!CytoscapeEditorManager.isEditorInOperation()) {
 		return;
 	    }
-	    // MLC 07/09/08 END.
 		nextPoint = e.getPoint();
 
 		boolean onNode = false;
 		Point2D location = e.getPoint();
-		NodeView nv = view.getPickedNodeView(location);
-		// MLC 05/10/07:
-		// EdgeView ev = view.getPickedEdgeView(location);
-
-		// if over NodeView or EdgeView, then highlight
-		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-		//       if (nv != null) {
-		//            invertSelections(nv);
-		//        } else if (ev != null) {
-		//            invertSelections(ev);
-		//        } else {
-		//            invertSelections(null);
-		//        }
+		// MLC 02/03/09 BEGIN:
+		DGraphView cView = getCurrentDGraphView();
+		// NodeView nv = view.getPickedNodeView(location);
+		NodeView nv = cView.getPickedNodeView(location);
+		// MLC 02/03/09 END.
 		if (nv != null) {
 			onNode = true;
 		}
@@ -725,7 +728,12 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	/**
 	     * updates the rubberbanded edge line as the mouse is moved, works in Canvas coordinates
 	     */
-	public void updateEdge() {
+	@Override public void updateEdge() {
+	    // This can happen under certain D&D conditions where no mouse events occur before the drop
+	    // event that lead here. In this case, just start nextPoint at startPoint:
+	    if (nextPoint == null) {
+		nextPoint = startPoint;
+	    }
 		double x1 = startPoint.getX();
 		double y1 = startPoint.getY();
 		double x2 = nextPoint.getX();
@@ -742,7 +750,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 
 		nextPoint.setLocation(x2, y2);
 
-		Graphics g = canvas.getGraphics();
+		// MLC 02/03/09 BEGIN:
+		// Graphics g = canvas.getGraphics();
+		DGraphView dnv = getCurrentDGraphView();
+		InnerCanvas curCanvas = dnv.getCanvas();
+		// Graphics g = canvas.getGraphics();
+		Graphics g = curCanvas.getGraphics();
+		// MLC 02/03/09 END.
 
 		Color saveColor = g.getColor();
 
@@ -750,15 +764,19 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			// AJK: 11/07/06 BEGIN
 			//    fix for fanout bug
 			//			canvas.getGraphics().setColor(canvas.getBackground());
-			DGraphView dnv = (DGraphView) Cytoscape.getCurrentNetworkView();
-			DingCanvas backgroundCanvas = dnv.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-			g.setColor(backgroundCanvas.getBackground());
-			// AJK: 11/04/06 END
-			g.drawLine(((int) saveX1) - 1, ((int) saveY1) - 1, ((int) saveX2) + 1,
-			           ((int) saveY2) + 1);
+		    // MLC 02/03/09:
+		    // DGraphView dnv = (DGraphView) Cytoscape.getCurrentNetworkView();
+		    DingCanvas backgroundCanvas = dnv.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
+		    g.setColor(backgroundCanvas.getBackground());
+		    // AJK: 11/04/06 END
+		    g.drawLine(((int) saveX1) - 1, ((int) saveY1) - 1, ((int) saveX2) + 1,
+			       ((int) saveY2) + 1);
 		}
 
-		canvas.update(g);
+		// MLC 02/03/09 BEGIN:
+		// canvas.update(g);
+		curCanvas.update(g);
+		// MLC 02/03/09 END.
 		g.setColor(Color.BLACK);
 		g.drawLine(((int) x1) - 1, ((int) y1) - 1, ((int) x2) + 1, ((int) y2) + 1);
 		g.setColor(saveColor);
@@ -769,29 +787,32 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		saveY2 = y2;
 	}
 
-	/**
-	 *
-	 * MultiHashMapListener methods
-	 *
-	 */
-	public void attributeValueAssigned(java.lang.String objectKey, java.lang.String attributeName,
-	                                   java.lang.Object[] keyIntoValue,
-	                                   java.lang.Object oldAttributeValue,
-	                                   java.lang.Object newAttributeValue) {
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param objectKey DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 * @param keyIntoValue DOCUMENT ME!
-	 * @param attributeValue DOCUMENT ME!
-	 */
-	public void attributeValueRemoved(java.lang.String objectKey, java.lang.String attributeName,
-	                                  java.lang.Object[] keyIntoValue,
-	                                  java.lang.Object attributeValue) {
-	}
+     // MLC 02/03/09 BEGIN:
+     // Already defined in NetworkEditEventAdapter:
+     //	/**
+     //	 *
+     //	 * MultiHashMapListener methods
+     //	 *
+     //	 */
+     //	public void attributeValueAssigned(java.lang.String objectKey, java.lang.String attributeName,
+     //	                                   java.lang.Object[] keyIntoValue,
+     //	                                   java.lang.Object oldAttributeValue,
+     //	                                   java.lang.Object newAttributeValue) {
+     //	}
+     //
+     //	/**
+     //	 *  DOCUMENT ME!
+     //	 *
+     //	 * @param objectKey DOCUMENT ME!
+     //	 * @param attributeName DOCUMENT ME!
+     //	 * @param keyIntoValue DOCUMENT ME!
+     //	 * @param attributeValue DOCUMENT ME!
+     //	 */
+     //	public void attributeValueRemoved(java.lang.String objectKey, java.lang.String attributeName,
+     //	                                  java.lang.Object[] keyIntoValue,
+     //	                                  java.lang.Object attributeValue) {
+     //	}
+     // MLC 02/03/09 END.
 
 	/**
 	 *  DOCUMENT ME!
@@ -867,27 +888,29 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		this.startPoint = startPoint;
 	}
 
-	/**
-	 * @return Returns the view.
-	 */
-
-	// AJK: 04/15/06 for Cytoscape 2.3 renderer
-	// public PGraphView getView() {
-	public DGraphView getView() {
-		return view;
-	}
-
-	/**
-	 * @param view
-	 *            The view to set.
-	 *
-	 */
-
-	// AJK: 04/15/06 for Cytoscape 2.3 renderer
-	// public void setView(PGraphView view) {
-	public void setView(DGraphView view) {
-		this.view = view;
-	}
+     // MLC 02/03/09 BEGIN:
+     // Already defined in NetworkEditEventAdapter:
+     //	/**
+     //	 * @return Returns the view.
+     //	 */
+     //	// AJK: 04/15/06 for Cytoscape 2.3 renderer
+     //	// public PGraphView getView() {
+     //	public DGraphView getView() {
+     //		return view;
+     //	}
+     //
+     //	/**
+     //	 * @param view
+     //	 *            The view to set.
+     //	 *
+     //	 */
+     //
+     //	// AJK: 04/15/06 for Cytoscape 2.3 renderer
+     //	// public void setView(PGraphView view) {
+     //	public void setView(DGraphView view) {
+     //		this.view = view;
+     //	}
+     // MLC 02/03/09 END.
 
 	/**
 	 * @return Returns the flag that indicates whether we are handling the drop
@@ -909,43 +932,46 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		this.handlingEdgeDrop = handlingEdgeDrop;
 	}
 
-	/**
-	 * starts up the event handler on the input network view adds an input event
-	 * listener to the view's canvas
-	 *
-	 * @param view
-	 *            a Cytoscape network view
-	 */
-
-	// AJK: 04/15/06 for Cytoscape 2.3 renderer
-	// public void start(PGraphView view) {
-	public void start(DGraphView view) {
-		this.view = view;
-		this.canvas = view.getCanvas();
-		// canvas.addInputEventListener(this);
-		CytoscapeEditorManager.log("Started event listener: " + this);
-		canvas.addMouseListener(this);
-		canvas.addMouseMotionListener(this);
-		canvas.addKeyListener(this);
-	}
-
-	/**
-	 * stops the event handler by removing the input event listener from the
-	 * canvas this is called when the user switches between editors
-	 *
-	 */
-	public void stop() {
-		if (canvas != null) {
-			// AJK: 04/15/06 for Cytoscape 2.3 renderer
-			// canvas.removeInputEventListener(this);
-			//			CytoscapeEditorManager.log("stopped event listener: " + this);
-		    canvas.removeMouseListener(this);
-		    canvas.removeMouseMotionListener(this);
-		    canvas.removeKeyListener(this);
-		    this.view = null;
-		    this.canvas = null;
-		}
-	}
+     // MLC 02/03/09 BEGIN:
+     // Already defined in NetworkEditEventAdapter:
+     //	/**
+     //	 * starts up the event handler on the input network view adds an input event
+     //	 * listener to the view's canvas
+     //	 *
+     //	 * @param view
+     //	 *            a Cytoscape network view
+     //	 */
+     //
+     //	// AJK: 04/15/06 for Cytoscape 2.3 renderer
+     //	// public void start(PGraphView view) {
+     //	public void start(DGraphView view) {
+     //	    this.view = view;
+     //	    this.canvas = view.getCanvas();
+     //	    // canvas.addInputEventListener(this);
+     //	    CytoscapeEditorManager.log("Started event listener: " + this);
+     //	    canvas.addMouseListener(this);
+     //	    canvas.addMouseMotionListener(this);
+     //	    canvas.addKeyListener(this);
+     //	}
+     //
+     //	/**
+     //	 * stops the event handler by removing the input event listener from the
+     //	 * canvas this is called when the user switches between editors
+     //	 *
+     //	 */
+     //	public void stop() {
+     //		if (canvas != null) {
+     //			// AJK: 04/15/06 for Cytoscape 2.3 renderer
+     //			// canvas.removeInputEventListener(this);
+     //			//			CytoscapeEditorManager.log("stopped event listener: " + this);
+     //		    canvas.removeMouseListener(this);
+     //		    canvas.removeMouseMotionListener(this);
+     //		    canvas.removeKeyListener(this);
+     //		    this.view = null;
+     //		    this.canvas = null;
+     //		}
+     //	}
+     // MLC 02/03/09 END.
 
 	/**
 	 * @return Returns the edgeAttributeValue.
@@ -1007,18 +1033,21 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		this.nodeAttributeValue = nodeAttributeValue;
 	}
 
-	/**
-	 * @return Returns the _caller.
-	 */
-	public CytoscapeEditor get_caller() {
-		return _caller;
-	}
-
-	/**
-	 * @param _caller
-	 *            The _caller to set.
-	 */
-	public void set_caller(CytoscapeEditor _caller) {
-		this._caller = _caller;
-	}
+     // MLC 02/03/09 BEGIN:
+     // Already defined in NetworkEditEventAdapter:
+     //	/**
+     //	 * @return Returns the _caller.
+     //	 */
+     //	public CytoscapeEditor get_caller() {
+     //		return _caller;
+     //	}
+     //
+     //	/**
+     //	 * @param _caller
+     //	 *            The _caller to set.
+     //	 */
+     //	public void set_caller(CytoscapeEditor _caller) {
+     //		this._caller = _caller;
+     //	}
+     // MLC 02/03/09 END.
 }
