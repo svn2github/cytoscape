@@ -20,14 +20,17 @@ public class StorePropsInterceptor extends AbstractTunableInterceptor<PropHandle
 		this.inputProps = inputProps; 
 	}
 
-	public void createUI(Object o) {
-        if ( !handlerMap.containsKey(o) )
-            throw new IllegalArgumentException("Interceptor does not yet know about this object");
+	public void createUI(Object ... objs) {
 
-        Collection<PropHandler> lh = handlerMap.get(o).values();
+		for ( Object o : objs ) {	
+			if ( !handlerMap.containsKey(o) )
+				throw new IllegalArgumentException("Interceptor does not yet know about this object");
+
+			Collection<PropHandler> lh = handlerMap.get(o).values();
 		
-		for ( PropHandler p : lh ) {
-			inputProps.putAll( p.getProps() );
+			for ( PropHandler p : lh ) {
+				inputProps.putAll( p.getProps() );
+			}
 		}
 	}
 }

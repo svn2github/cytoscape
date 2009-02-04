@@ -53,4 +53,8 @@ public class BoundedDouble extends AbstractBounded<Double> {
 	public BoundedDouble(final Double lower, final Double initValue, final Double upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
+
+	public void setValue(String s) {
+		setValue( Double.valueOf(s) );
+	}
 }

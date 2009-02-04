@@ -10,10 +10,10 @@ public class TunableSampler implements Command {
 	@Tunable(description="Test boolean value")
 	public boolean testBool = false; 
 
-//	@Tunable(description="Test bounded integer", group={"Numeric Tunables"}, flags="collapsable")
-//	public BoundedInteger boundedInt = new BoundedInteger(-100,10,100,false,false);
+	@Tunable(description="Test bounded integer", group={"Numeric Tunables"})
+	public BoundedInteger boundedInt = new BoundedInteger(-100,10,100,false,false);
 
-	@Tunable(description="Test bounded integer (pretend slider)", group={"Numeric Tunables","pretend int slider"}, flags="collapsable")
+	@Tunable(description="Test bounded integer (pretend slider)", group={"Numeric Tunables","pretend int slider"}, flags={"collapsable"})
 	public BoundedInteger boundedInt2 = new BoundedInteger(-100,10,100,false,false);
 
 	@Tunable(description="Test bounded double (pretend slider)", group={"Numeric Tunables","pretend double slider"})

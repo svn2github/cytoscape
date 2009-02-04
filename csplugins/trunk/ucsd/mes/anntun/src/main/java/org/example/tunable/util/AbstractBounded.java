@@ -41,14 +41,14 @@ package org.example.tunable.util;
  *
  * @param <N>  DOCUMENT ME!
  */
-abstract class AbstractBounded<N extends Comparable<N>> {
+public abstract class AbstractBounded<N extends Comparable<N>> {
 
 	protected N value;
 
-	final protected N lower;
-	final protected N upper;
-	final protected boolean upperStrict;
-	final protected boolean lowerStrict;
+	protected N lower;
+	protected N upper;
+	protected boolean upperStrict;
+	protected boolean lowerStrict;
 
 	/**
 	 * Creates a new Bounded object.
@@ -80,7 +80,7 @@ abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public N getUpperBound() {
+	public synchronized N getUpperBound() {
 		return upper;
 	}
 
@@ -89,7 +89,7 @@ abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public N getLowerBound() {
+	public synchronized N getLowerBound() {
 		return lower;
 	}
 
@@ -98,7 +98,7 @@ abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean isUpperBoundStrict() {
+	public synchronized boolean isUpperBoundStrict() {
 		return upperStrict;
 	}
 
@@ -107,7 +107,7 @@ abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean isLowerBoundStrict() {
+	public synchronized boolean isLowerBoundStrict() {
 		return lowerStrict;
 	}
 
@@ -116,7 +116,7 @@ abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public N getValue() {
+	public synchronized N getValue() {
 		return value;
 	}
 
@@ -125,30 +125,34 @@ abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public void setValue(N v) {
+	public void setValue(final N v) {
 		if (v == null)
 			throw new NullPointerException("value is null!");
 
-		int up = v.compareTo(upper);
+		synchronized (this) {
+			final int up = v.compareTo(upper);
 
-		if (upperStrict) {
-			if (up >= 0)
-				throw new IllegalArgumentException("value is greater than or equal to upper limit");
-		} else {
-			if (up > 0)
-				throw new IllegalArgumentException("value is greater than upper limit");
+			if (upperStrict) {
+				if (up >= 0)
+					throw new IllegalArgumentException("value is greater than or equal to upper limit");
+			} else {
+				if (up > 0)
+					throw new IllegalArgumentException("value is greater than upper limit");
+			}
+
+			final int low = v.compareTo(lower);
+
+			if (lowerStrict) {
+				if (low <= 0)
+					throw new IllegalArgumentException("value is less than or equal to lower limit");
+			} else {
+				if (low < 0)
+					throw new IllegalArgumentException("value is less than lower limit");
+			}
+
+			value = v;
 		}
-
-		int low = v.compareTo(lower);
-
-		if (lowerStrict) {
-			if (low <= 0)
-				throw new IllegalArgumentException("value is less than or equal to lower limit");
-		} else {
-			if (low < 0)
-				throw new IllegalArgumentException("value is less than lower limit");
-		}
-
-		value = v;
 	}
+
+	public abstract void setValue(String s);
 }

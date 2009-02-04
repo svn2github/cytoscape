@@ -22,14 +22,19 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 		panelMap = new HashMap<Object,JPanel>();
 	}
 
-	public void createUI(Object o) {
+	public void createUI(Object ... objs ) {
 
-		if ( !handlerMap.containsKey( o ) )
-			throw new IllegalArgumentException("No Tunables exist for Object yet!");
+		java.util.List<GuiHandler> lh = new ArrayList<GuiHandler>();
 
-		Collection<GuiHandler> lh = handlerMap.get(o).values();
+		for ( Object o : objs ) {
+			if ( !handlerMap.containsKey( o ) )
+				throw new IllegalArgumentException("No Tunables exist for Object yet!");
+			
+			lh.addAll( handlerMap.get(o).values() );
+
+		}
 		
-		if ( !panelMap.containsKey( o ) ) {
+		if ( !panelMap.containsKey( objs ) ) {
 			final String MAIN = "";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
 			panels.put(MAIN,createJPanel(MAIN,null));
@@ -66,14 +71,14 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler
 				panels.get(lastGroup).add(gh.getJPanel());
 			}
 
-			panelMap.put(o,panels.get(MAIN));
+			panelMap.put(objs,panels.get(MAIN));
 		}
 
 		// get the gui into the proper state
 		for ( GuiHandler h : lh ) 
 			h.notifyDependents();
 			
-		JOptionPane.showConfirmDialog(parent, panelMap.get(o), "Set Parameters", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE ); 
+		JOptionPane.showConfirmDialog(parent, panelMap.get(objs), "Set Parameters", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE ); 
 
 		// process the values set in the gui 
 		for ( GuiHandler h : lh )

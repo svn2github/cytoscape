@@ -39,7 +39,7 @@ package org.example.tunable.util;
 /**
  * A bounded Integer object.
  */
-public class BoundedInteger extends AbstractBounded<Integer> {
+public class FlexiblyBoundedInteger extends AbstractFlexiblyBounded<Integer> {
 
 	/**
 	 * Creates a new Bounded object.
@@ -50,11 +50,19 @@ public class BoundedInteger extends AbstractBounded<Integer> {
 	 * @param lowerStrict  DOCUMENT ME!
 	 * @param upperStrict  DOCUMENT ME!
 	 */
-	public BoundedInteger(final Integer lower, final Integer initValue, final Integer upper, boolean lowerStrict, boolean upperStrict) {
+	public FlexiblyBoundedInteger(final Integer lower, final Integer initValue, final Integer upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
 
 	public void setValue(String s) {
-		setValue( Integer.valueOf(s) );
+		setValue(Integer.valueOf(s));
+	}
+
+	public void setUpperBound(String s) {
+		setUpperBound(Integer.valueOf(s));
+	}
+
+	public void setLowerBound(String s) {
+		setLowerBound(Integer.valueOf(s));
 	}
 }

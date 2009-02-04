@@ -11,15 +11,15 @@ import java.awt.*;
 import org.example.tunable.*;
 import org.example.tunable.util.*;
 
-public class BoundedDoubleHandler extends AbstractGuiHandler implements GuiHandler, ActionListener {
+public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandler {
 
 	JTextField tf;
-	BoundedDouble b;
+	T b;
 
-	public BoundedDoubleHandler(Field f, Object o, Tunable t) {
+	public BoundedHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
-		this.b = (BoundedDouble)f.get(o);
+		this.b = (T)f.get(o);
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();	
 		}
@@ -27,7 +27,7 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements GuiHandl
 		panel = new JPanel();
 		try {
 		panel.add( new JLabel( t.description() + " (max: " + b.getLowerBound().toString() + "  min: " + b.getUpperBound().toString() + ")" ) );
-		tf = new JTextField( ((Double)b.getValue()).toString(), 10);
+		tf = new JTextField( b.getValue().toString(), 10);
 		tf.addActionListener( this );
 		panel.add( tf );
 		} catch (Exception e) { e.printStackTrace(); }
@@ -37,12 +37,11 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements GuiHandl
 	public void handle() {
 		String s = tf.getText();
 		try {
-		double n = Double.parseDouble(s);
-		b.setValue(n);
+		b.setValue(s);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 
-	public String getState() {
-		return b.getValue().toString();
-	}
+    public String getState() {
+        return b.getValue().toString();
+    }
 }

@@ -93,6 +93,6 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 		return handlerMap.get(o);
 	}
 
-	public abstract void createUI(Object o);
+	public abstract void createUI(Object ... objs);
 
 }

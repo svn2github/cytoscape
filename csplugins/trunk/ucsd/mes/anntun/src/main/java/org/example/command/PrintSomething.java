@@ -7,6 +7,7 @@ import org.example.tunable.HandlerController;
 import org.example.tunable.Handler;
 import org.example.tunable.util.BoundedInteger;
 import org.example.tunable.util.BoundedDouble;
+import org.example.tunable.util.FlexiblyBoundedInteger;
 
 import java.util.Map;
 
@@ -24,9 +25,12 @@ public class PrintSomething implements Command, HandlerController {
 	@Tunable(description="the number of children you have")
 	public BoundedInteger kids = new BoundedInteger(0, 1, 10, true, false);
 
+	@Tunable(description="your yearly income" )
+	public FlexiblyBoundedInteger income = new FlexiblyBoundedInteger(0, 20000, 100000, false, false);
+
 
 	public void execute() {
-		System.out.println("Your name is: " + firstName + " " + lastName + " your age is: " + age + " your foot size is: " + footSize.getValue() + " and you have " + kids.getValue() + " kids.");
+		System.out.println("Your name is: " + firstName + " " + lastName + " your age is: " + age + " your foot size is: " + footSize.getValue() + " you have " + kids.getValue() + " kids and you make: $ " + income.getValue() + " per year");
 	}
 
 	public int age;

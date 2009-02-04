@@ -9,5 +9,5 @@ public interface TunableInterceptor<T extends Handler> {
 
 	public Map<String,T> getHandlers(Object o);
 
-	public void createUI(Object o);
+	public void createUI(Object ... obs );
 }
