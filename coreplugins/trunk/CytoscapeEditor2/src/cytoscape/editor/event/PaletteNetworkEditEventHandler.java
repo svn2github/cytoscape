@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Fri Jul 31 05:14:41 2005
-* Modified:     Wed Jul 09 10:22:30 2008 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Feb 04 09:01:03 2009 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Feb 04 08:57:26 2009 (Michael L. Creech) creech@w235krbza760
+*  Removed view in favor of deriving from the current network view.
 * Wed Jul 09 09:54:56 2008 (Michael L. Creech) creech@w235krbza760
 *  Added check that Editor component is active to itemDropped()
 *  to avoid handling events when the editor tab isn't the current tab.
@@ -79,12 +81,15 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 	}
 
 	/**
-	 *
+	 * @deprecated call single argument constructor
 	 * @param caller
 	 * @param view
 	 */
 	public PaletteNetworkEditEventHandler(CytoscapeEditor caller, CyNetworkView view) {
-		super(caller, view);
+	    // MLC 02/03/09 BEGIN:
+	    // super(caller, view);
+	    super(caller);
+	    // MLC 02/03/09 END.
 	}
 
 	protected BasicCytoShapeEntity getShapeEntityForLocation(Point location, Transferable t) {
@@ -147,10 +152,8 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 	 *
 	 */
 
-	// MLC 12/07/06 BEGIN:
 	// implements PhoebeCanvasDropListener interface:
 	public void itemDropped(PhoebeCanvasDropEvent e) {
-	    // MLC 07/09/08 BEGIN:
 	    // TODO: This check should really be avoided by having the editor remove the PhoebeCanvasDropListener
 	    //       when the editor looses focus (another tab is clicked on).
 	    //       Since this is somewhat involved and so is left for when the editor is refactored.
@@ -164,7 +167,11 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 		// AJK: 07/03/07 BEGIN
 		//    do nothing if we are not dropping on canvas for current network view
 		InnerCanvas dropCanvas = (InnerCanvas) e.getSource();
-		InnerCanvas currentCanvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
+		// MLC 02/03/09 BEGIN:
+		// InnerCanvas currentCanvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
+		InnerCanvas currentCanvas = getCurrentDGraphView().getCanvas();
+		// MLC 02/03/09 END.
+
 		if (dropCanvas != currentCanvas)
 		{
 			return;
@@ -207,14 +214,19 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 		}
 
 		// NB: targetNode is *drop* target
-		NodeView targetNode = getView().getPickedNodeView(location);
-
+		// MLC 02/03/09 BEGIN:
+		// NodeView targetNode = getView().getPickedNodeView(location);
+		// Things that add new network views, like HyperEdgeEditor sample networks, can cause the
+		// cached view to not be the correct view where we are clicking, so we use the current network view:
+		// CytoscapeEditorManager.log ("In handleDroppedEdge");
+		NodeView targetNode = getCurrentDGraphView().getPickedNodeView(location);
+		// MLC 02/03/09 END.
 		if (targetNode == null) {
 			return;
 		}
 
 		// if we reach this point, then the edge shape has been
-		// dropped onto a nod3e Begin Edge creation
+		// dropped onto a node Begin Edge creation
 		setHandlingEdgeDrop(true);
 		beginEdge(location, targetNode);
 	}
@@ -245,9 +257,6 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 			if (URL != null) {
 				// CytoscapeEditorManager.log ("Handling dropped URL = " +
 				// URLString);
-				// MLC 12/07/06:
-				// CyNode cn = _caller.addNode("node" + counter, "URL");
-				// MLC 12/07/06:
 				CyNode cn = get_caller().addNode("node" + counter, "URL");
 				counter++;
 				Cytoscape.getCurrentNetwork().restoreNode(cn);
