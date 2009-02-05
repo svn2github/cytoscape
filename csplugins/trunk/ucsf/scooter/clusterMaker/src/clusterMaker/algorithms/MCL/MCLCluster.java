@@ -59,6 +59,7 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 	double clusteringThresh = 1e-15;
 	boolean takeNegLOG = false;
 	boolean createNewNetwork = false;
+	boolean selectedOnly = false;
 	double maxResidual = 0.001;
 
 	String dataAttribute = null;
@@ -121,6 +122,10 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		clusterProperties.add(new Tunable("createNewNetwork","Create a new network with independent clusters",
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
+		// Whether or not to create a new network from the results
+		clusterProperties.add(new Tunable("selectedOnly","Cluster only selected nodes",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
+
 		clusterProperties.add(new Tunable("attributeListGroup",
 		                                  "Source for array data",
 		                                  Tunable.GROUP, new Integer(1)));
@@ -169,6 +174,10 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		t = clusterProperties.get("createNewNetwork");
 		if ((t != null) && (t.valueChanged() || force))
 			createNewNetwork = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("selectedOnly");
+		if ((t != null) && (t.valueChanged() || force))
+			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 		
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -185,7 +194,8 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		//Cluster the nodes
 		runMCL = new RunMCL("cluster", dataAttribute, inflation_parameter, 
 		                           rNumber, clusteringThresh, maxResidual, 
-		                           takeNegLOG, createNewNetwork, logger);
+		                           takeNegLOG, createNewNetwork, selectedOnly,
+		                           logger);
 		runMCL.run(monitor);
 
 		// Tell any listeners that we're done

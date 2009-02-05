@@ -1,6 +1,7 @@
 package clusterMaker.algorithms.MCL;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +38,7 @@ public class RunMCL {
 	private String nodeClusterAttributeName;
 	private String edgeAttributeName;
 	private boolean takeNegLOG;
+	private boolean selectedOnly;
 	private boolean canceled = false;
 	private CyLogger logger;
 	final static String GROUP_ATTRIBUTE = "__MCLGroups";
@@ -47,7 +49,8 @@ public class RunMCL {
 	public RunMCL(String nodeClusterAttributeName, String edgeAttributeName, 
 	              double inflationParameter, int num_iterations, 
 	              double clusteringThresh, double maxResidual,
-	              boolean takeNegLOG, boolean createNewNetwork, CyLogger logger )
+	              boolean takeNegLOG, boolean createNewNetwork, 
+	              boolean selectedOnly, CyLogger logger )
 	{
 		
 		this.nodeClusterAttributeName = nodeClusterAttributeName;
@@ -59,6 +62,7 @@ public class RunMCL {
 		this.takeNegLOG = takeNegLOG;
 		this.logger = logger;
 		this.createNewNetwork = createNewNetwork;
+		this.selectedOnly = selectedOnly;
 		// logger.info("InflationParameter = "+inflationParameter);
 		// logger.info("Iterations = "+num_iterations);
 		// logger.info("Clustering Threshold = "+clusteringThresh);
@@ -68,13 +72,20 @@ public class RunMCL {
 	
 	public void run(TaskMonitor monitor)
 	{
-		edges = Cytoscape.getCurrentNetwork().edgesList();
-		nodes = Cytoscape.getCurrentNetwork().nodesList();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		if (!selectedOnly) {
+			nodes = network.nodesList();
+			edges = network.edgesList();
+		} else {
+			nodes = new ArrayList();
+			nodes.addAll(network.getSelectedNodes());
+			edges = network.getConnectingEdges(nodes);
+		}
 		// double[][] graph = new double[this.nodes.size()][this.nodes.size()];
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
-		String networkID = Cytoscape.getCurrentNetwork().getIdentifier();
+		String networkID = network.getIdentifier();
 		// Matrix matrix;
 		double numClusters;
 		double edgeWeight;
