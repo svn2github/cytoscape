@@ -20,6 +20,8 @@ public interface Task
 	 * This method is called by the <code>Task</code>'s own thread
 	 * created by <code>TaskManager</code>.
 	 *
+	 * This method should not be called directly by the programmer.
+	 *
 	 * @param taskMonitor This is provided by <code>TaskManager</code>
 	 * to allow the <code>Task</code> to modify its user interface.
 	 *
@@ -34,14 +36,16 @@ public interface Task
 	 * This method is called when the user chooses to cancel the
 	 * <code>Task</code>.
 	 *
+	 * This method should not be called directly by the programmer.
+	 *
 	 * This method should inform the <code>Task</code> that it must
 	 * terminate execution cleanly and do any necessary cleanup
 	 * work required.
 	 *
 	 * <i>WARNING:</i> this method is called by a different
 	 * thread than the thread executing <code>run</code>.
-	 * The person writing a <code>Task</code> <i>must</i> be aware of
-	 * concurrency issues that could arise.
+	 * The programmer <i>must</i> be aware of
+	 * concurrency issues.
 	 */
 	public void cancel();
 }

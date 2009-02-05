@@ -11,14 +11,21 @@ import java.util.concurrent.TimeoutException;
  * has completed execution, one can retrieve the result by
  * calling the <code>get()</code> method.
  *
- * Here is an example of how it is used:
+ * This class is analogous to <code>FutureTask</code>, but with one
+ * crucial difference: this class does not allow different threads
+ * to cancel the <code>ValuedTask</code>, only the <code>TaskManager</code>
+ * may cancel it. This limitation was a conscious decision, since it
+ * greatly simplifies the complexity of this API.
+ *
+ * Here is an example of how it can be used:
+ * <br>
  * <code>
- * ValuedTask&lt;Integer&gt; myValuedTask = ...;
- * TaskMonitor taskMonitor = ...;
- * ValuedTaskExecutor&lt;Integer&gt; myValuedTaskExecutor = new ValuedTaskExecutor&lt;Integer&gt;(myValuedTask);
- * taskMonitor.execute(taskMonitor);
- * ...
- * Integer result = myValuedTaskExecutor.get();
+ * ValuedTask&lt;Integer&gt; myValuedTask = ...;<br>
+ * TaskMonitor taskMonitor = ...;<br>
+ * ValuedTaskExecutor&lt;Integer&gt; myValuedTaskExecutor = new ValuedTaskExecutor&lt;Integer&gt;(myValuedTask);<br>
+ * taskMonitor.execute(taskMonitor);<br>
+ * ...<br>
+ * Integer result = myValuedTaskExecutor.get();<br>
  * </code>
  */
 public class ValuedTaskExecutor<V> implements Task

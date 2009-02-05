@@ -7,6 +7,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 import org.cytoscape.work.*;
+import org.cytoscape.work.internal.swing.SwingTaskManager;
 
 public class Activator implements BundleActivator
 {
@@ -93,8 +94,11 @@ public class Activator implements BundleActivator
 		boolean cancel = false;
 		public Integer run(TaskMonitor taskMonitor) throws Exception
 		{
-			if (1 == 1) throw new Exception();
+			taskMonitor.setTitle("Whoa, mercy mercy me.");
+			taskMonitor.setStatusMessage("Things just ain't what they used to be.");
+			
 			somethingComplicated();
+			if (1 == 1) throw new Exception();
 			return new Integer(1);
 		}
 
@@ -102,6 +106,8 @@ public class Activator implements BundleActivator
 		{
 			for (double i = 0.0; i < 5000.0; i += 0.001)
 			{
+				if (cancel)
+					return;
 				Math.sin(Math.tan(Math.sin(Math.tan(Math.sin(Math.tan(i))))));
 			}
 		}
