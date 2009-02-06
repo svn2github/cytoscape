@@ -10,7 +10,9 @@ public class CyP2AdapterImpl implements CyP2Adapter{
 
 	public JFrame getCyDesktop(){
 		if (cyDesktop == null) {
-			cyDesktop = new JFrame(); //Cytoscape.getDesktop();
+			cyDesktop = new JFrame("Cytoscape Desktop frame"); //Cytoscape.getDesktop();
+			cyDesktop.setSize(600, 300);
+			cyDesktop.setVisible(true);
 		}
 		return cyDesktop;
 	
