@@ -142,6 +142,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
                 analyze == FIRST_TIME) {
             analyze = RESCORE;
             System.err.println("Analysis: score network, find clusters");
+            MCODECurrentParameters.getInstance().setParams(currentParamsCopy, resultTitlePartA + (resultCounter + 1), network.getIdentifier());
         } else if (!currentParamsCopy.getScope().equals(savedParamsCopy.getScope()) ||
                 (!currentParamsCopy.getScope().equals(MCODEParameterSet.NETWORK) &&
                         currentParamsCopy.getSelectedNodes() != savedParamsCopy.getSelectedNodes()) ||
@@ -156,12 +157,14 @@ public class MCODEScoreAndFindAction implements ActionListener {
                                         currentParamsCopy.getFluffNodeDensityCutoff() != savedParamsCopy.getFluffNodeDensityCutoff())))) {
             analyze = REFIND;
             System.err.println("Analysis: find clusters");
+            MCODECurrentParameters.getInstance().setParams(currentParamsCopy, resultTitlePartA + (resultCounter + 1), network.getIdentifier());            
         } else {
             analyze = INTERRUPTION;
             interruptedMessage = "The parameters you specified\nhave not changed.";
+            MCODECurrentParameters.getInstance().setParams(currentParamsCopy, resultTitlePartA + resultCounter, network.getIdentifier());
         }
         //finally we save the current parameters
-        MCODECurrentParameters.getInstance().setParams(currentParamsCopy, resultTitlePartA + (resultCounter + 1), network.getIdentifier());
+        //MCODECurrentParameters.getInstance().setParams(currentParamsCopy, resultTitlePartA + (resultCounter + 1), network.getIdentifier());
 
         //incase the user selected selection scope we must make sure that they selected at least 1 node
         if (currentParamsCopy.getScope().equals(MCODEParameterSet.SELECTION) && currentParamsCopy.getSelectedNodes().length < 1) {
@@ -223,7 +226,10 @@ public class MCODEScoreAndFindAction implements ActionListener {
             if (iconURL != null) {
                 Icon icon = new ImageIcon(iconURL);
                 String tip = "MCODE Cluster Finder";
-                cytoPanel.add(resultTitle, icon, resultPanel, tip);
+                try{
+                    cytoPanel.add(resultTitle, icon, resultPanel, tip);
+                }
+                catch(java.lang.ArrayIndexOutOfBoundsException e){} // exception thrown by java functions when more than one tab is added, all tabs are deleted and then a new tab is added...
             } else {
                 cytoPanel.add(resultTitle, resultPanel);
             }
