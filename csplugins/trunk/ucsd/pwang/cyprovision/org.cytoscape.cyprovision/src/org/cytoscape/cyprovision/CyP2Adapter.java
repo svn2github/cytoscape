@@ -11,4 +11,6 @@ public interface CyP2Adapter {
 	public Properties getCyProperties();
 	
 	public static String PROVISION_SERVICE_NAME = "org.cytoscape.cyprovision.CyP2Adapter";
+	public static String p2_AUTO_UPDATE_ENABLED = "p2_AUTO_UPDATE_ENABLED";
+
 }
