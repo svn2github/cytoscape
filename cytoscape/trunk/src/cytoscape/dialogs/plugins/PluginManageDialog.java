@@ -250,7 +250,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			TreeNode PluginNode = new TreeNode(CurrentPlugin);
 
 			if (node.equals(availableNode)
-					&& !CurrentPlugin.isCytoscapeVersionCurrent()) {
+					&& !CurrentPlugin.isPluginCompatibleWithCurrent()) {
 				java.util.List<TreeNode> hiddenCat = hiddenNodes.get(Category);
 				if (hiddenCat == null)
 					hiddenCat = new java.util.ArrayList<TreeNode>();

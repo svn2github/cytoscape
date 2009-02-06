@@ -126,5 +126,17 @@ public class PluginFileReaderTest extends TestCase {
 	}
 	
 	// regression test, make sure versions are working
+  public void testVersionReads () {
+    assertNotNull(reader.getPlugins());
+    assertEquals(reader.getPlugins().size(), 8);
+
+    cytoscape.CytoscapeVersion.version = "2.3.3";
+    int count = 0;
+    for (DownloadableInfo info: reader.getPlugins()) {
+      if (info.isPluginCompatibleWithCurrent()) count ++;
+    }
+  assertEquals(count, 2);
+  }
+
 
 }

@@ -41,7 +41,8 @@ public class WebServiceThemeInstall {
 		
 		 DownloadableInfo WSTheme = null;
 		 for (DownloadableInfo Theme:  DownloadableByCategory.get( Category.THEME.toString() )) {
-			 if (Theme.getName().equals(WEBSERVICE_THEME) && Theme.isCytoscapeVersionCurrent() ) {
+        if (Theme.getName().equals(WEBSERVICE_THEME) && Theme.isPluginCompatibleWithCurrent()) {
+       //if (Theme.getName().equals(WEBSERVICE_THEME) && Theme.isCytoscapeVersionCurrent() ) {
 				 if (WSTheme == null)
 					 WSTheme = Theme;
 				 

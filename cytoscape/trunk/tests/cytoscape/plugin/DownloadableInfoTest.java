@@ -190,6 +190,7 @@ public class DownloadableInfoTest extends TestCase {
 	/**
 	 * Test method for {@link cytoscape.plugin.DownloadableInfo#isCytoscapeVersionCurrent()}.
 	 */
+	/*
 	public void testIsCytoscapeVersionCurrent() {
 		di.addCytoscapeVersion("2.1");
 		assertFalse(di.isCytoscapeVersionCurrent());
@@ -197,7 +198,27 @@ public class DownloadableInfoTest extends TestCase {
 		di.addCytoscapeVersion(cytoscape.CytoscapeVersion.version);
 		assertTrue(di.isCytoscapeVersionCurrent());
 	}
+*/
+	
+	  /** test for bug #... */
+	  public void testPluginCompatible() {
+		  // at each version level (major, minor, bugfix)
+		  cytoscape.CytoscapeVersion.version = "3.6";
+		  di.addCytoscapeVersion("2.1");
+		  di.addCytoscapeVersion("3.6");
+		  assertTrue(di.isPluginCompatibleWithCurrent());
+		  
+		  cytoscape.CytoscapeVersion.version = "2.6.1";
+		  assertEquals(cytoscape.CytoscapeVersion.version, "2.6.1");
 
+		  di.addCytoscapeVersion("2.6.2");
+		  assertFalse(di.isPluginCompatibleWithCurrent());
+
+		  di.addCytoscapeVersion("2.6.1");
+		  assertTrue(di.isPluginCompatibleWithCurrent());
+	  }
+
+	
 	public void testEquals() {
 		di = new InfoObj("1234");
 		InfoObj di2 = new InfoObj("1234");

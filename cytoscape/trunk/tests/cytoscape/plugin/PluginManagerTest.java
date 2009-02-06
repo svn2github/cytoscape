@@ -11,6 +11,7 @@ import org.jdom.JDOMException;
 /**
  * @author skillcoy
  */
+@SuppressWarnings({"JavadocReference"})
 public class PluginManagerTest extends TestCase {
 	private PluginManager mgr;
 	private PluginTracker tracker;
@@ -124,7 +125,7 @@ public class PluginManagerTest extends TestCase {
 	
 	/**
 	 * Test method for
-	 * {@link cytoscape.plugin.PluginManager#getDownloadables(cytoscape.plugin.PluginTracker.PluginStatus)}.
+	 * {@link  cytoscape.plugin.PluginManager#getDownloadables(cytoscape.plugin.PluginTracker.PluginStatus)}.
 	 * TODO
 	 */
 	public void testGetPlugins() {

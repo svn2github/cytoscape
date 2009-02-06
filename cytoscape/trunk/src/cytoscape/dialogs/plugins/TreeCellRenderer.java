@@ -48,7 +48,7 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
 	private boolean isOutdated(Object value) {
 		TreeNode node = (TreeNode) value;
 		DownloadableInfo infoObj = node.getObject();
-		if (infoObj != null && !infoObj.isCytoscapeVersionCurrent()) {
+		if (infoObj != null && !infoObj.isPluginCompatibleWithCurrent()) {
 			return true;
 		}
 		return false;
