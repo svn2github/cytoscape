@@ -18,7 +18,7 @@ public class CyProvisionActivator extends Plugin {
 	// The shared instance
 	private static CyProvisionActivator plugin;
 	private ServiceRegistration registrationAdapter;
-	private String provision_service_name = "org.cytoscape.cyprovision.internal.CyP2Adapter";
+	private String provision_service_name = "org.cytoscape.cyprovision.CyP2Adapter";
 
 	private static PackageAdmin packageAdmin = null;
 	private static ServiceReference packageAdminRef = null;
@@ -27,6 +27,7 @@ public class CyProvisionActivator extends Plugin {
 	 * The constructor
 	 */
 	public CyProvisionActivator() {
+		//System.out.println("CyProvisionActivator constructor ");		
 	}
 
 	/*
@@ -38,6 +39,8 @@ public class CyProvisionActivator extends Plugin {
 		plugin = this;
 		
 		// this bundle should be started after Cytoscape initialized!!!
+		
+		//System.out.println("CyProvision.start(): register a service "+ provision_service_name);
 		
 		CyP2AdapterImpl adapter = new CyP2AdapterImpl();
 		registrationAdapter = context.registerService(provision_service_name, adapter, null);
@@ -72,6 +75,19 @@ public class CyProvisionActivator extends Plugin {
 		}
 		*/
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		super.stop(context);
+		registrationAdapter.unregister();
+
+	}
+
+	
 	public static Bundle getBundle(String symbolicName) {
 		if (packageAdmin == null)
 			return null;
@@ -87,16 +103,6 @@ public class CyProvisionActivator extends Plugin {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-		registrationAdapter.unregister();
-
-	}
 
 	/**
 	 * Returns the shared instance
