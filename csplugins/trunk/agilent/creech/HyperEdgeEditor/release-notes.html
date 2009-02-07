@@ -1,17 +1,27 @@
 <HTML>
 <HEAD>
-<TITLE>HyperEdgeEditor Release Notes (version 2.64)</TITLE>
+<TITLE>HyperEdgeEditor Release Notes (version 2.65)</TITLE>
 </HEAD>
 <BODY>
 
-<H1>HyperEdgeEditor Release Notes (version 2.64)</H1>
+<H1>HyperEdgeEditor Release Notes (version 2.65)</H1>
 <OL>
-<LI>Changed to use CyLogger in HEUtils and remove use of System.out.println.</LI>
-<P><LI>Fixed build.xml 'doc" target to avoid non-java files.</LI></P>
-<P><LI>Updated to use HyperEdge (v2.61) and LSIUtils (v0.12).</LI></P>
+<li>Fixed bug where itemDropped() would allow dropping of a palette entry
+on a NetworkView that wasn't the current network view.</li>
+<li><p></p>Minor change to use arrowShapeToArrow() method from the
+CytoscapeEditor's DefaultCytoscapeEditor.</li>
+<li><p></p>Updated to use CytoscapeEditor v2.62 and to internally no longer
+use cached NetworkViews.
 </OL>
 
 <H1>Prior Notes</H1>
+
+<H2>HyperEdgeEditor Release Notes (version 2.64)</H2>
+<OL>
+<LI>Changed to use CyLogger in HEUtils and remove use of System.out.println.</LI>
+<P><LI>Fixed build.xml "doc" target to avoid non-java files.</LI></P>
+<P><LI>Updated to use HyperEdge (v2.61) and LSIUtils (v0.12).</LI></P>
+</OL>
 
 <H2>HyperEdgeEditor Release Notes (version 2.63)</H2>
 <OL>
@@ -311,7 +321,7 @@ BioChemicalReaction.
 
 
 <HR>
-<SMALL><EM>This page was last updated: 10/08/08</EM></SMALL>
+<SMALL><EM>This page was last updated: 02/06/09</EM></SMALL>
 
 </BODY>
 </HTML>

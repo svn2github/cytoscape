@@ -6,10 +6,19 @@
 
 <UL>
 
+<LI><STRONG>HyperEdgeEditor, Version 2.65 (02/06/09)</STRONG>
+<OL>
+<li>Fixed bug where itemDropped() would allow dropping of a palette entry
+on a NetworkView that wasn't the current network view.</li>
+<li>Minor change to use arrowShapeToArrow() method from the
+CytoscapeEditor's DefaultCytoscapeEditor.</li>
+<li>Updated to use CytoscapeEditor v2.62 and to internally no longer
+use cached NetworkViews.
+</OL>
 <LI><STRONG>HyperEdgeEditor, Version 2.64 (10/08/08)</STRONG>
 <OL>
 <LI>Changed to use CyLogger in HEUtils and remove use of System.out.println.</LI>
-<LI>Fixed build.xml 'doc" target to avoid non-java files.</LI>
+<LI>Fixed build.xml "doc" target to avoid non-java files.</LI>
 <LI>Updated to use HyperEdge (v2.61) and LSIUtils (v0.12).</LI>
 </OL>
 
@@ -217,4 +226,4 @@ HyperEdgeImpl.ENTITY_TYPE_ATTRIBUTE_NAME for Nodes.
 
 </UL>
 <HR>
-<SMALL><EM>This page was last updated: 10/08/08</EM></SMALL>
+<SMALL><EM>This page was last updated: 02/06/09</EM></SMALL>
