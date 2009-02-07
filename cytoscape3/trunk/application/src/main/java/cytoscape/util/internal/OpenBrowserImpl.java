@@ -1,6 +1,5 @@
-
 /*
-  File: OpenBrowser.java
+  File: OpenBrowserImpl.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,22 +35,69 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape.util;
+//-------------------------------------------------------------------------
+// $Revision: 13206 $
+// $Date: 2008-02-26 16:37:29 -0800 (Tue, 26 Feb 2008) $
+// $Author: kono $
+//-------------------------------------------------------------------------
+package cytoscape.util.internal;
 
+import cytoscape.CytoscapeInit;
 
-/**
- *
- */
-public interface OpenBrowser {
+import java.io.IOException;
+import java.util.Properties;
 
-	String UNIX_PATH = "htmlview";
-	String MAC_PATH = "open";
-	String WIN_PATH = "rundll32 url.dll,FileProtocolHandler";
+import cytoscape.util.OpenBrowser;
+
+public class OpenBrowserImpl implements OpenBrowser {
+
+	private Properties props;
+
+	public OpenBrowserImpl(Properties props) {
+		if ( props == null )
+			throw new NullPointerException("Properties is null");	
+		this.props = props;
+	}
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param url DOCUMENT ME!
 	 */
-	void openURL(String url);
+	public void openURL(String url) {
+		String defBrowser = props.getProperty("defaultWebBrowser");
+		String osName = System.getProperty("os.name");
+
+		try {
+			String cmd;
+
+			if (osName.startsWith("Windows")) {
+				cmd = OpenBrowser.WIN_PATH + " " + url;
+			} else if (osName.startsWith("Mac")) {
+				cmd = OpenBrowser.MAC_PATH + " " + url;
+			} else {
+				if (defBrowser != null && !defBrowser.equals("")) {
+					cmd = defBrowser + " " + url;
+				} else {
+					cmd = OpenBrowser.UNIX_PATH + " " + url;
+				}
+			}
+
+			System.out.println("Opening URL by command \"" + cmd + "\"");
+
+			Process p = Runtime.getRuntime().exec(cmd);
+
+			try {
+				int exitCode = p.waitFor();
+
+				if (exitCode != 0)
+					System.err.println("Open browser command (" + cmd + ") failed!");
+
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
 }

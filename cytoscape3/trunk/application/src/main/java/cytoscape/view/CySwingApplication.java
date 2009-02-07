@@ -48,34 +48,34 @@ public interface CySwingApplication {
 	/**
 	 *
 	 */
-	public static final String NETWORK_VIEWS_SELECTED = "NETWORK_VIEWS_SELECTED";
+	String NETWORK_VIEWS_SELECTED = "NETWORK_VIEWS_SELECTED";
 
 	/**
 	 *
 	 */
-	public static final String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
+	String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
 
 	/**
 	 *
 	 */
-	public static final String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
+	String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
 
 	/**
 	 *
 	 */
-	public static final String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
+	String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
 
 	/**
 	 *
 	 */
-	public static final String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
+	String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyMenus getCyMenus();
+	CyMenus getCyMenus();
 
 	/**
 	 *  DOCUMENT ME!
@@ -84,13 +84,13 @@ public interface CySwingApplication {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CytoPanel getCytoPanel(int compassDirection);
+	CytoPanel getCytoPanel(int compassDirection);
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public JFrame getJFrame();
+	JFrame getJFrame();
 
 }

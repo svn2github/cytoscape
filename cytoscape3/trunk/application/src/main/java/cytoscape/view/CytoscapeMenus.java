@@ -38,10 +38,11 @@
 package cytoscape.view;
 
 import cytoscape.util.CyAction;
-import cytoscape.util.CytoscapeMenuBar;
-import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.CyMenuBar;
 import cytoscape.util.CyToolBar;
+
+import cytoscape.util.internal.CytoscapeMenuBar;
+import cytoscape.util.internal.CytoscapeToolBar;
 
 import javax.swing.JMenu;
 

@@ -101,10 +101,6 @@ public class CytoscapeInit {
 
 	private static CyInitParams initParams;
 
-	// Most-Recently-Used directories and files
-	private static File mrud;
-	private static File mruf;
-
 	// Error message
 	private static String ErrorMsg = "";
 
@@ -198,39 +194,6 @@ public class CytoscapeInit {
 	 */
 	public static Properties getProperties() {
 		return properties;
-	}
-
-	/**
-	 * @return the most recently used directory
-	 */
-	public static File getMRUD() {
-		if (mrud == null)
-			mrud = new File(properties.getProperty("mrud", System.getProperty("user.dir")));
-
-		return mrud;
-	}
-
-	/**
-	 * @return the most recently used file
-	 */
-	public static File getMRUF() {
-		return mruf;
-	}
-
-	/**
-	 * @param mrud
-	 *            the most recently used directory
-	 */
-	public static void setMRUD(File mrud_new) {
-		mrud = mrud_new;
-	}
-
-	/**
-	 * @param mruf
-	 *            the most recently used file
-	 */
-	public static void setMRUF(File mruf_new) {
-		mruf = mruf_new;
 	}
 
 	/**

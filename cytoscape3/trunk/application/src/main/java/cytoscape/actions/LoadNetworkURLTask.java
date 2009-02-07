@@ -1,5 +1,5 @@
 /*
- File: HelpContactHelpDeskAction.java
+ File: LoadNetworkURLTask.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,38 +34,75 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+
+// $Revision: 8703 $
+// $Date: 2006-11-06 23:17:02 -0800 (Mon, 06 Nov 2006) $
+// $Author: pwang $
 package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.OpenBrowser;
+import cytoscape.view.CySwingApplication;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.view.GraphViewFactory;
 
-import java.awt.event.ActionEvent;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Properties;
 
 
 /**
- *
+ * Specific instance of AbstractLoadNetworkTask that loads a URL. 
  */
-public class HelpContactHelpDeskAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869692169L;
-	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
-	private OpenBrowser openBrowser;
+public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
-	/**
-	 * Creates a new HelpContactHelpDeskAction object.
-	 */
-	public HelpContactHelpDeskAction(CyNetworkManager netmgr, OpenBrowser openBrowser) {
-		super("Contact Help Desk",netmgr);
-		setPreferredMenu("Help");
-		this.openBrowser = openBrowser;
+//	@Tunable(description="The URL to load")
+	public URL url;
+
+	public LoadNetworkURLTask(URL url,CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr, Properties props) {
+		super(null,mgr,gvf,cyl,dsk,netmgr,props);
+		this.url = url;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * Executes Task.
 	 */
-	public void actionPerformed(ActionEvent e) {
-		openBrowser.openURL(helpDeskURL);
+	public void run() {
+		if (url == null)
+			throw new NullPointerException("network url is null");
+
+		name = url.toString();
+
+		myThread = Thread.currentThread();
+
+		try {
+			taskMonitor.setStatus("Opening URL " + url);
+			reader = mgr.getReader(url);
+
+			if (interrupted)
+				return;
+
+			uri = url.toURI();
+		} catch (Exception e) {
+			uri = null;
+			taskMonitor.setException(e, "Unable to connect to URL " + name + ": " + e.getMessage());
+
+			return;
+		}
+
+		if (reader == null) {
+			uri = null;
+			taskMonitor.setException(null, "Unable to connect to URL " + name);
+
+			return;
+		}
+		loadNetwork(reader);
 	}
 }

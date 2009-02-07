@@ -1,7 +1,6 @@
-/*
- File: HelpContactHelpDeskAction.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -33,39 +32,16 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-package cytoscape.actions;
+*/
+package cytoscape.dialogs;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.OpenBrowser;
-
-import java.awt.event.ActionEvent;
+import java.awt.Frame;
+import org.cytoscape.io.CyFileFilter;
 
 
 /**
- *
  */
-public class HelpContactHelpDeskAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869692169L;
-	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
-	private OpenBrowser openBrowser;
+public interface ImportNetworkDialogFactory {
 
-	/**
-	 * Creates a new HelpContactHelpDeskAction object.
-	 */
-	public HelpContactHelpDeskAction(CyNetworkManager netmgr, OpenBrowser openBrowser) {
-		super("Contact Help Desk",netmgr);
-		setPreferredMenu("Help");
-		this.openBrowser = openBrowser;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		openBrowser.openURL(helpDeskURL);
-	}
+	ImportNetworkDialog getImportNetworkDialog(Frame parent, boolean modal, CyFileFilter[] filters);
 }

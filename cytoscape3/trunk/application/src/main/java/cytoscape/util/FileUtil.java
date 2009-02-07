@@ -36,19 +36,14 @@
 */
 package cytoscape.util;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import cytoscape.task.TaskMonitor;
-
 import org.cytoscape.io.CyFileFilter;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
-import java.net.URL;
-import java.util.Iterator;
-
-import org.cytoscape.io.read.URLUtil;
+import java.awt.FileDialog;
+import java.awt.Component;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.File;
 
 
 /**
@@ -56,27 +51,28 @@ import org.cytoscape.io.read.URLUtil;
  * because Mac would prefer that you use java.awt.FileDialog
  * instead of the Swing FileChooser.
  */
-public abstract class FileUtil {
-	/**
-	 *
-	 */
-	public static int LOAD = FileDialog.LOAD;
+public interface FileUtil {
 
 	/**
 	 *
 	 */
-	public static int SAVE = FileDialog.SAVE;
+	int LOAD = FileDialog.LOAD;
 
 	/**
 	 *
 	 */
-	public static int CUSTOM = LOAD + SAVE;
+	int SAVE = FileDialog.SAVE;
+
+	/**
+	 *
+	 */
+	int CUSTOM = LOAD + SAVE;
 
 	/**
 	 * A string that defines a simplified java regular expression for a URL.
 	 * This may need to be updated to be more precise.
 	 */
-	public static final String urlPattern = "^(jar\\:)?(\\w+\\:\\/+\\S+)(\\!\\/\\S*)?$";
+	String urlPattern = "^(jar\\:)?(\\w+\\:\\/+\\S+)(\\!\\/\\S*)?$";
 
 	/**
 	 * Returns a File object, this method should be used instead
@@ -86,9 +82,7 @@ public abstract class FileUtil {
 	 * @param title the title of the dialog box
 	 * @param load_save_custom a flag for the type of file dialog
 	 */
-	public static File getFile(String title, int load_save_custom) {
-		return getFile(title, load_save_custom, new CyFileFilter[] { }, null, null);
-	}
+	File getFile(String title, int load_save_custom) ;
 
 	/**
 	  * Returns a File object, this method should be used instead
@@ -100,9 +94,7 @@ public abstract class FileUtil {
 	  * @param filters an array of CyFileFilters that let you filter
 	  *                based on extension
 	  */
-	public static File getFile(String title, int load_save_custom, CyFileFilter[] filters) {
-		return getFile(title, load_save_custom, filters, null, null);
-	}
+	File getFile(String title, int load_save_custom, CyFileFilter[] filters) ;
 
 	/**
 	 * Returns a File object, this method should be used instead
@@ -119,27 +111,9 @@ public abstract class FileUtil {
 	 *                            custom text should be on the approve
 	 *                            button.
 	 */
-	public static File getFile(String title, int load_save_custom, CyFileFilter[] filters,
-	                           String start_dir, String custom_approve_text) {
-		File[] result = getFiles(title, load_save_custom, filters, start_dir, custom_approve_text,
-		                         false);
+	File getFile(String title, int load_save_custom, CyFileFilter[] filters,
+	                           String start_dir, String custom_approve_text) ;
 
-		return ((result == null) || (result.length <= 0)) ? null : result[0];
-	}
-
-	/**
-	 * Returns an array of File objects, this method should be used instead
-	 * of rolling your own JFileChooser.
-	 *
-	 * @return the location of the selcted file
-	 * @param title the title of the dialog box
-	 * @param load_save_custom a flag for the type of file dialog
-	 * @param filters an array of CyFileFilters that let you filter
-	 *                based on extension
-	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters) {
-		return getFiles(, title, load_save_custom, filters, null, null, true);
-	}
-	 */
 
     /**
      * Returns an array of File objects, this method should be used instead
@@ -151,9 +125,7 @@ public abstract class FileUtil {
      * @param filters an array of CyFileFilters that let you filter
      *                based on extension
      */
-    public static File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters) {
-        return getFiles(parent,title, load_save_custom, filters, null, null, true);
-    }
+    File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters) ;
   
 
 	/**
@@ -171,10 +143,8 @@ public abstract class FileUtil {
 	 *                            custom text should be on the approve
 	 *                            button.
 	 */
-	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
-	                              String start_dir, String custom_approve_text) {
-		 return getFiles(null, title, load_save_custom, filters, start_dir, custom_approve_text, true);
-	}
+	File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
+	                              String start_dir, String custom_approve_text) ;
 	 
 	/**
 	  * Returns a list of File objects, this method should be used instead
@@ -194,10 +164,8 @@ public abstract class FileUtil {
 	  *                    still limited to a single file because we use
 	  *                    FileDialog there -- is this fixed in Java 1.5?)
 	  */	
-	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
-          String start_dir, String custom_approve_text, boolean multiselect) {
-		return getFiles(null, title, load_save_custom, filters, start_dir, custom_approve_text, multiselect);
-	}
+	File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
+          String start_dir, String custom_approve_text, boolean multiselect) ;
 
 	/**
 	  * Returns a list of File objects, this method should be used instead
@@ -218,114 +186,8 @@ public abstract class FileUtil {
 	  *                    still limited to a single file because we use
 	  *                    FileDialog there -- is this fixed in Java 1.5?)
 	  */
-	public static File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters,
-	                              String start_dir, String custom_approve_text, boolean multiselect) {
-
-		if (parent == null) 
-		 	throw new NullPointerException("Parent component is null");	
-
-		File start = null;
-
-		if (start_dir == null) {
-			start = CytoscapeInit.getMRUD();
-		} else {
-			start = new File(start_dir);
-		}
-
-		String osName = System.getProperty("os.name");
-
-		//System.out.println( "Os name: "+osName );
-		if (osName.startsWith("Mac")) {
-			// this is a Macintosh, use the AWT style file dialog
-			FileDialog chooser = new FileDialog((Frame)parent, title, load_save_custom);
-
-			// we can only set the one filter; therefore, create a special
-			// version of CyFileFilter that contains all extensions
-			// TODO fix this so we actually use the filters we're given
-//			CyFileFilter fileFilter = new CyFileFilter(new String[]{},new String[]{},"All network files");
-
-//			chooser.setFilenameFilter(fileFilter);
-
-			chooser.setVisible(true);
-
-			if (chooser.getFile() != null) {
-				File[] result = new File[1];
-				result[0] = new File(chooser.getDirectory() + "/" + chooser.getFile());
-
-				if (chooser.getDirectory() != null) {
-					CytoscapeInit.setMRUD(new File(chooser.getDirectory()));
-				}
-
-				return result;
-			}
-
-			return null;
-		} else {
-			// this is not a mac, use the Swing based file dialog
-			JFileChooser chooser = new JFileChooser(start);
-
-			// set multiple selection, if applicable
-			chooser.setMultiSelectionEnabled(multiselect);
-
-			// set the dialog title
-			chooser.setDialogTitle(title);
-
-			// add filters
-			for (int i = 0; i < filters.length; ++i) {
-				chooser.addChoosableFileFilter(filters[i]);
-			}
-
-			File[] result = null;
-			File tmp = null;
-
-			// set the dialog type
-			if (load_save_custom == LOAD) {
-				if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
-					if (multiselect)
-						result = chooser.getSelectedFiles();
-					else if ((tmp = chooser.getSelectedFile()) != null) {
-						result = new File[1];
-						result[0] = tmp;
-					}
-				}
-			} else if (load_save_custom == SAVE) {
-				if (chooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
-					if (multiselect)
-						result = chooser.getSelectedFiles();
-					else if ((tmp = chooser.getSelectedFile()) != null) {
-						result = new File[1];
-						result[0] = tmp;
-					}
-					// FileDialog checks for overwrte, but JFileChooser does not, so we need to do
-					// so ourselves
-					for (int i = 0; i < result.length; i++) {
-						if (result[i].exists()) {
-							int answer = JOptionPane.showConfirmDialog(chooser, 
-							   "The file '"+result[i].getName()+"' already exists, are you sure you want to overwrite it?",
-							   "File exists", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-							if (answer == 1) 
-								return null;
-						}
-					}
-				}
-			} else {
-				if (chooser.showDialog(parent, custom_approve_text) == JFileChooser.APPROVE_OPTION) {
-					if (multiselect)
-						result = chooser.getSelectedFiles();
-					else if ((tmp = chooser.getSelectedFile()) != null) {
-						result = new File[1];
-						result[0] = tmp;
-					}
-				}
-			}
-
-			if ((result != null) && (start_dir == null))
-				CytoscapeInit.setMRUD(chooser.getCurrentDirectory());
-
-			return result;
-		}
-	}
-
+	File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters,
+	                              String start_dir, String custom_approve_text, boolean multiselect) ;
 
 	/**
 	 *  DOCUMENT ME!
@@ -334,9 +196,7 @@ public abstract class FileUtil {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static InputStream getInputStream(String name) {
-		return getInputStream(name, null);
-	}
+	InputStream getInputStream(String name) ;
 
 	/**
 	 *  DOCUMENT ME!
@@ -346,64 +206,21 @@ public abstract class FileUtil {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static InputStream getInputStream(String name, TaskMonitor monitor) {
-		InputStream in = null;
-
-		try {
-			if (name.matches(urlPattern)) {
-				URL u = new URL(name);
-				// in = u.openStream();
-                // Use URLUtil to get the InputStream since we might be using a proxy server 
-				// and because pages may be cached:
-				in = URLUtil.getBasicInputStream(u);
-			} else
-				in = new FileInputStream(name);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-
-			if (monitor != null)
-				monitor.setException(ioe, ioe.getMessage());
-		}
-
-		return in;
-	}
+	InputStream getInputStream(String name, TaskMonitor monitor) ;
 
 	/**
 	 *
-	 * @param filename 
-	 *		File to read in
+	 * @param filename 	File to read in
 	 *
 	 * @return  The contents of the given file as a string.
 	 */
-	public static String getInputString(String filename) {
-		try {
-			InputStream stream = getInputStream(filename);
-			return getInputString(stream);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
-
-		System.out.println("couldn't create string from '" + filename + "'");
-
-		return null;
-	}
+	String getInputString(String filename) ;
 
 	/**
 	 *
-	 * @param inputStream 
-	 *		An InputStream
+	 * @param inputStream An InputStream
 	 *
 	 * @return  The contents of the given file as a string.
 	 */
-	public static String getInputString(InputStream inputStream) throws IOException {
-		String lineSep = System.getProperty("line.separator");
-		StringBuffer sb = new StringBuffer();
-		String line = null;
-		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-
-		while ((line = br.readLine()) != null)
-			sb.append(line + lineSep);
-
-		return sb.toString();
-	}
+	String getInputString(InputStream inputStream) throws IOException ;
 }

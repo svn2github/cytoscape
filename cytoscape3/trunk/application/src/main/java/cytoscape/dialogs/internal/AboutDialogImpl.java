@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.util.swing;
+package cytoscape.dialogs.internal;
 
 import java.awt.Component;
 import java.awt.Window;
@@ -47,6 +47,8 @@ import javax.swing.event.HyperlinkListener;
 
 import cytoscape.util.OpenBrowser;
 
+import cytoscape.dialogs.AboutDialog;
+
 
 /**
  * About page for web service clients or other plugins.
@@ -54,9 +56,10 @@ import cytoscape.util.OpenBrowser;
  *
  * @author  kono
  */
-public class AboutDialog extends javax.swing.JDialog implements HyperlinkListener {
+class AboutDialogImpl extends javax.swing.JDialog implements AboutDialog {
 	private final static long serialVersionUID = 1213748837120927L;
 
+	private OpenBrowser openBrowser;
 	// Show method with full parameter set.
 	/**
 	 *  DOCUMENT ME!
@@ -97,32 +100,18 @@ public class AboutDialog extends javax.swing.JDialog implements HyperlinkListene
 	}
 
 	/** Creates new form WSAboutDialog */
-	public AboutDialog(Window parent, boolean modal) {
+	public AboutDialogImpl(Window parent, boolean modal, OpenBrowser ob) {
 		// TODO: This is supported only in Java 6...
 		//super(parent, modal);
 		super();
 		this.setModal(modal);
+		this.openBrowser = ob;
 		initComponents();
 		mainEditorPane.setEditable(false);
 		mainEditorPane.addHyperlinkListener(this);
 		setLocationRelativeTo(parent);
 		setAlwaysOnTop(true);
 	}
-
-	/**
-	 * Creates a new AboutDialog object.
-	 *
-	 * @param parent  DOCUMENT ME!
-	 * @param modal  DOCUMENT ME!
-	 * @param title  DOCUMENT ME!
-	 * @param icon  DOCUMENT ME!
-	 * @param contentURL  DOCUMENT ME!
-	public AboutDialog(Frame parent, boolean modal, String title, Icon icon, URL contentURL) {
-		super(parent, modal);
-		initComponents();
-		mainEditorPane.setContentType("text/html");
-	}
-	 */
 
 	/** This method is called from within the constructor to
 	 * initialize the form.
@@ -235,7 +224,7 @@ public class AboutDialog extends javax.swing.JDialog implements HyperlinkListene
 		String url = e.getURL().toString();
 
 		try {
-			OpenBrowser.openURL(url);
+			openBrowser.openURL(url);
 		} catch (Exception err) {
 			err.printStackTrace();
 		}

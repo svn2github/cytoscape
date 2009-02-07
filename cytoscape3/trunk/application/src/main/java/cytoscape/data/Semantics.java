@@ -36,8 +36,6 @@
  */
 package cytoscape.data;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;

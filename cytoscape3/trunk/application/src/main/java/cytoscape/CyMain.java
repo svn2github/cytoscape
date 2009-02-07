@@ -78,6 +78,7 @@ public class CyMain implements CyInitParams {
 	protected int mode;
 	protected org.apache.commons.cli.Options options;
 	protected CytoscapeVersion ver;
+	protected FileUtil fileUtil;
 
 	/**
 	 *  DOCUMENT ME!
@@ -87,7 +88,7 @@ public class CyMain implements CyInitParams {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public static void main(String[] args) throws Exception {
-		CyMain app = new CyMain(args,null,null,null);
+		CyMain app = new CyMain(args,null,null,null,null);
 	}
 
 	/**
@@ -97,13 +98,14 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @throws Exception  DOCUMENT ME!
 	 */
-	public CyMain(CytoscapeDesktop desk,CyNetworkManager netmgr,CytoscapeVersion ver) throws Exception {
-		this( new String[]{},desk,netmgr,ver );
+	public CyMain(CytoscapeDesktop desk,CyNetworkManager netmgr,CytoscapeVersion ver,FileUtil fileUtil) throws Exception {
+		this( new String[]{},desk,netmgr,ver,fileUtil );
 	}
 
-	public CyMain(String[] args,CytoscapeDesktop desk,CyNetworkManager netmgr,CytoscapeVersion ver) throws Exception {
+	public CyMain(String[] args,CytoscapeDesktop desk,CyNetworkManager netmgr,CytoscapeVersion ver,FileUtil fileUtil) throws Exception {
 		System.out.println("CyMain constructor");
 		this.ver = ver;
+		this.fileUtil = fileUtil;
 
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			/*
@@ -329,7 +331,7 @@ public class CyMain implements CyInitParams {
 				// otherwise assume it's a file/url
 			} else {
 				try {
-					InputStream in = FileUtil.getInputStream(potentialProps[i]);
+					InputStream in = fileUtil.getInputStream(potentialProps[i]);
 
 					if (in != null)
 						props.load(in);

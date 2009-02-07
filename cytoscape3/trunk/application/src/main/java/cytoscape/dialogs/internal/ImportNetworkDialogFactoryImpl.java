@@ -1,7 +1,6 @@
-/*
- File: HelpContactHelpDeskAction.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -33,39 +32,30 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-package cytoscape.actions;
+*/
+package cytoscape.dialogs.internal;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.OpenBrowser;
-
-import java.awt.event.ActionEvent;
-
+import java.awt.Frame;
+import cytoscape.util.FileUtil;
+import org.cytoscape.io.CyFileFilter;
+import cytoscape.dialogs.ImportNetworkDialog;
+import cytoscape.dialogs.ImportNetworkDialogFactory;
 
 /**
- *
  */
-public class HelpContactHelpDeskAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869692169L;
-	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
-	private OpenBrowser openBrowser;
+public class ImportNetworkDialogFactoryImpl implements ImportNetworkDialogFactory {
 
-	/**
-	 * Creates a new HelpContactHelpDeskAction object.
-	 */
-	public HelpContactHelpDeskAction(CyNetworkManager netmgr, OpenBrowser openBrowser) {
-		super("Contact Help Desk",netmgr);
-		setPreferredMenu("Help");
-		this.openBrowser = openBrowser;
+	private FileUtil fileUtil;
+	
+	public ImportNetworkDialogFactoryImpl(FileUtil fileUtil) {
+		this.fileUtil = fileUtil;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		openBrowser.openURL(helpDeskURL);
+	public ImportNetworkDialog getImportNetworkDialog(Frame frame, boolean modal, CyFileFilter[] filters) {
+		try {
+			return new  ImportNetworkDialogImpl(frame,modal,filters,fileUtil);
+		} catch (Exception ex) {
+			throw new RuntimeException("Failed to create ImportNetworkDialog",ex);
+		}
 	}
 }

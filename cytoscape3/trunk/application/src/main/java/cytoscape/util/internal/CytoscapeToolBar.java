@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.util;
+package cytoscape.util.internal;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -44,6 +44,8 @@ import java.util.SortedMap;
 import java.util.List;
 import java.util.ArrayList;
 
+import cytoscape.util.CyToolBar;
+import cytoscape.util.CyAction;
 
 /**
  *

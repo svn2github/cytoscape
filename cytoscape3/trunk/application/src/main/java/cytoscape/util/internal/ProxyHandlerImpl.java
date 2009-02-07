@@ -32,10 +32,9 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.util;
+package cytoscape.util.internal;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -43,6 +42,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Properties;
 
+import cytoscape.util.ProxyHandler;
 
 /**
  *

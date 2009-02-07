@@ -171,11 +171,13 @@ public class ExpressionData implements Serializable {
 	double minSig;
 	double maxSig;
 	Vector<Vector<mRNAMeasurement>> allMeasurements;
+	FileUtil fileUtil;
 
 	/**
 	 * Constructor. Creates an empty Expression Data object with no data.
 	 */
-	public ExpressionData() {
+	public ExpressionData(FileUtil fileUtil) {
+		this.fileUtil = fileUtil;
 		filename = null;
 		keyAttributeName = DEFAULT_KEY_ATTRIBUTE;
 		numGenes = 0;
@@ -356,7 +358,7 @@ public class ExpressionData implements Serializable {
 			attributeToId = getAttributeToIdList(keyAttributeName);
 		}
 
-		String rawText = FileUtil.getInputString(filename);
+		String rawText = fileUtil.getInputString(filename);
 		String[] lines = rawText.split(System.getProperty("line.separator"));
 
 		int lineCount = 0;

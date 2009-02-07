@@ -39,13 +39,20 @@ package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.dialogs.ImportNetworkDialog;
+import cytoscape.dialogs.ImportNetworkDialogFactory;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.layout.CyLayouts;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTask;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 
 import javax.swing.JOptionPane;
+import javax.swing.JDialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -67,11 +74,12 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	private GraphViewFactory gvf;
 	private CyLayouts cyLayouts;
 	private Properties props;
+	private ImportNetworkDialogFactory indf;
 
 	/**
 	 * Constructor.
 	 */
-	public ImportGraphFileAction(CytoscapeDesktop desktop, CyReaderManager rdmgr, GraphViewFactory gvf, CyLayouts cyLayouts, CyNetworkManager netmgr, Properties props ) {
+	public ImportGraphFileAction(CytoscapeDesktop desktop, CyReaderManager rdmgr, GraphViewFactory gvf, CyLayouts cyLayouts, CyNetworkManager netmgr, Properties props, ImportNetworkDialogFactory indf ) {
 		super("Network (multiple file types)...",netmgr);
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_L, ActionEvent.CTRL_MASK);
@@ -82,6 +90,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		this.gvf = gvf;
 		this.cyLayouts = cyLayouts;
 		this.props = props;
+		this.indf = indf;
 	}
 
 	/**
@@ -105,19 +114,17 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		ImportNetworkDialog fd = null;
 
 		try {
-			fd = new ImportNetworkDialog(desktop, true, rdmgr.getFileFilters());
+			fd = indf.getImportNetworkDialog(desktop, true, rdmgr.getFileFilters());
 		} catch (Exception e1) {
 			System.out.println("start dialog error");
 			e1.printStackTrace();
 			System.out.println("end dialog error");
-			JOptionPane.showMessageDialog(fd, "Exception: " + e1.getMessage(), "ERROR",
+			JOptionPane.showMessageDialog((JDialog)fd, "Exception: " + e1.getMessage(), "ERROR",
 			 	                             JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 
-		fd.pack();
-		fd.setLocationRelativeTo(desktop);
-		fd.setVisible(true);
+		fd.showDialog();
 
 		if (fd.getStatus() == false) {
 			return;
@@ -127,9 +134,10 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			String URLstr = fd.getURLStr();
 			System.out.println("URL: "+URLstr);
 			try {
-				LoadNetworkTask.loadURL(new URL(URLstr), false, rdmgr, gvf, cyLayouts,desktop,netmgr,props);
+				LoadNetworkURLTask task = new LoadNetworkURLTask(new URL(URLstr), rdmgr, gvf, cyLayouts,desktop,netmgr,props);
+				executeTask(task,false,desktop);
 			} catch (MalformedURLException e3) {
-				JOptionPane.showMessageDialog(fd, "URL error!", "Warning",
+				JOptionPane.showMessageDialog((JDialog)fd, "URL error!", "Warning",
 			 	                             JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else {
@@ -152,7 +160,8 @@ public class ImportGraphFileAction extends CytoscapeAction {
 						messages.add(files[i].getName());
 					}
 	
-					LoadNetworkTask.loadFile(files[i], skipMessage, rdmgr, gvf, cyLayouts,desktop,netmgr,props);
+					LoadNetworkFileTask task = new LoadNetworkFileTask(files[i], rdmgr, gvf, cyLayouts,desktop,netmgr,props);
+					executeTask(task,skipMessage,desktop);
 				}
 	
 				if (files.length != 1) {
@@ -164,5 +173,21 @@ public class ImportGraphFileAction extends CytoscapeAction {
 				}
 			}
 		}
+	}
+
+    private void executeTask(Task task, boolean skipMessage, CytoscapeDesktop desk) {
+
+        // Configure JTask Dialog Pop-Up Box
+        JTaskConfig jTaskConfig = new JTaskConfig();
+        jTaskConfig.setOwner(desk);
+        jTaskConfig.displayCloseButton(true);
+        jTaskConfig.displayCancelButton(true);
+
+        jTaskConfig.displayStatus(true);
+        jTaskConfig.setAutoDispose(skipMessage);
+
+        // Execute Task in New Thread; pops open JTask Dialog Box.
+        TaskManager.executeTask(task, jTaskConfig);
+
 	}
 }

@@ -1,7 +1,6 @@
-/*
- File: HelpContactHelpDeskAction.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -33,39 +32,29 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-package cytoscape.actions;
+*/
+package cytoscape.dialogs.internal;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
+import java.awt.Window;
+
 import cytoscape.util.OpenBrowser;
-
-import java.awt.event.ActionEvent;
-
+import cytoscape.dialogs.AboutDialog;
+import cytoscape.dialogs.AboutDialogFactory;
 
 /**
- *
  */
-public class HelpContactHelpDeskAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869692169L;
-	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
-	private OpenBrowser openBrowser;
+public class AboutDialogFactoryImpl implements AboutDialogFactory {
 
-	/**
-	 * Creates a new HelpContactHelpDeskAction object.
-	 */
-	public HelpContactHelpDeskAction(CyNetworkManager netmgr, OpenBrowser openBrowser) {
-		super("Contact Help Desk",netmgr);
-		setPreferredMenu("Help");
-		this.openBrowser = openBrowser;
+	private OpenBrowser ob;
+
+	public AboutDialogFactoryImpl(OpenBrowser ob) {	
+		if ( ob == null )
+			throw new NullPointerException("open browser class is null!");
+		else 
+			this.ob = ob;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		openBrowser.openURL(helpDeskURL);
+	public AboutDialog getAboutDialog(Window parent, boolean modal) {
+		return new AboutDialogImpl(parent,modal,ob);
 	}
 }

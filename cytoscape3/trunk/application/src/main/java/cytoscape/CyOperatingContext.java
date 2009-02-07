@@ -1,5 +1,6 @@
+
 /*
- File: HelpContactHelpDeskAction.java
+ File: CyOpertatingContext.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,38 +35,40 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.actions;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.OpenBrowser;
+package cytoscape;
 
-import java.awt.event.ActionEvent;
 
+import java.util.Properties;
+import java.io.File;
 
 /**
- *
+ * Basic access to Cytoscape's operating context. 
  */
-public class HelpContactHelpDeskAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869692169L;
-	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
-	private OpenBrowser openBrowser;
+public interface CyOperatingContext {
 
 	/**
-	 * Creates a new HelpContactHelpDeskAction object.
+	 * Returns cytoscape.props.
 	 */
-	public HelpContactHelpDeskAction(CyNetworkManager netmgr, OpenBrowser openBrowser) {
-		super("Contact Help Desk",netmgr);
-		setPreferredMenu("Help");
-		this.openBrowser = openBrowser;
-	}
+	Properties getProperties(); 
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * Get the most recently used directory.
 	 */
-	public void actionPerformed(ActionEvent e) {
-		openBrowser.openURL(helpDeskURL);
-	}
+	File getMRUD(); 
+
+	/**
+	 * Set the most recently used directory.
+	 */
+	void setMRUD(File mrud);
+
+	/**
+	 * Returns a {@link File} pointing to the config directory.
+	 */
+	File getConfigDirectory();
+
+	/**
+	 * Returns the specified file if it's found in the config directory. 
+	 */
+	File getConfigFile(String file_name);
 }

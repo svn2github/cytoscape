@@ -1,5 +1,5 @@
 /*
- File: HelpContactHelpDeskAction.java
+ File: LoadNetworkFileTask.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,38 +34,67 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+
 package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.OpenBrowser;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTask;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.view.CySwingApplication;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.view.GraphViewFactory;
 
-import java.awt.event.ActionEvent;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 
 
 /**
- *
+ * Specific instance of AbstractLoadNetworkTask that loads a File. 
  */
-public class HelpContactHelpDeskAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869692169L;
-	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
-	private OpenBrowser openBrowser;
+public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 
-	/**
-	 * Creates a new HelpContactHelpDeskAction object.
-	 */
-	public HelpContactHelpDeskAction(CyNetworkManager netmgr, OpenBrowser openBrowser) {
-		super("Contact Help Desk",netmgr);
-		setPreferredMenu("Help");
-		this.openBrowser = openBrowser;
+	//@Tunable(description="Network file to load");
+	//public File[] files;
+	private File file;
+
+	public LoadNetworkFileTask(File file,CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr, Properties props) {
+		super(null,mgr,gvf,cyl,dsk,netmgr,props);
+		this.file = file;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * Executes Task.
 	 */
-	public void actionPerformed(ActionEvent e) {
-		openBrowser.openURL(helpDeskURL);
+	public void run() {
+		//for ( File file : files ) {
+
+			try { 
+			reader = mgr.getReader(file.getAbsolutePath());
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+				reader = null;
+			}
+	
+			uri = file.toURI();
+			name = file.getName();
+	
+			if (reader == null) {
+				uri = null;
+			}
+
+			loadNetwork(reader);
+		//}
 	}
 }

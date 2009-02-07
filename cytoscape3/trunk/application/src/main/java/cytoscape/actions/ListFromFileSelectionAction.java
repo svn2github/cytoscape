@@ -62,11 +62,14 @@ import java.util.List;
  */
 public class ListFromFileSelectionAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339869837208L;
+
+	private FileUtil fileUtil;
 	/**
 	 * Creates a new ListFromFileSelectionAction object.
 	 */
-	public ListFromFileSelectionAction(CyNetworkManager netmgr) {
+	public ListFromFileSelectionAction(CyNetworkManager netmgr, FileUtil fileUtil) {
 		super("From File...",netmgr);
+		this.fileUtil = fileUtil;
 		setPreferredMenu("Select.Nodes");
 	}
 
@@ -85,7 +88,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 		final String name;
 
 		try {
-			name = FileUtil.getFile("Load Gene Selection File", FileUtil.LOAD).toString();
+			name = fileUtil.getFile("Load Gene Selection File", FileUtil.LOAD).toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled
 			return false;

@@ -42,6 +42,9 @@
 	<osgi:service id="proxyHandlerService" ref="proxyHandler"
 		interface="cytoscape.util.ProxyHandler" />
 
+	<osgi:service id="openBrowserService" ref="openBrowser"
+		interface="cytoscape.util.OpenBrowser" />
+
 	<osgi:service id="importGraphFileActionService" ref="importGraphFileAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="newWindowSelectedNodesOnlyActionService"
@@ -201,5 +204,7 @@
 	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService" ref="undoMonitor"
 		interface="cytoscape.events.SetCurrentNetworkViewListener" />
 
+	<osgi:service id="aboutDialogFactoryService" ref="aboutDialogFactory"
+		interface="cytoscape.dialogs.AboutDialogFactory" />
 	
 </beans>
