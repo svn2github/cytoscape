@@ -56,7 +56,7 @@ import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
-import cytoscape.view.cytopanels.BiModalJSplitPane;
+import cytoscape.view.BiModalJSplitPane;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyDataTableUtil;

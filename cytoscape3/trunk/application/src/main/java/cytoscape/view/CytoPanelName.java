@@ -1,7 +1,8 @@
-/*
-  File: CytoPanelState.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+  File: CytoPanelName.java
+
+  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
   The Cytoscape Consortium is:
   - Institute for Systems Biology
@@ -35,62 +36,42 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//     
-// $Id: CytoPanelState.java 9736 2007-03-20 00:25:45Z mes $
-//------------------------------------------------------------------------------
 
-// our package
-package cytoscape.view.cytopanels;
+package cytoscape.view;
 
+import javax.swing.*;
 
-/**
- *  CytoPanelState Class.  The following States are supported:
- * <UL>
- * <LI>CytoPanelState.HIDE:  Hide the CytoPanel.
- * <LI>CytoPanelState.FLOAT: Float the CytoPanel.
- * <LI>CytoPanelState.DOCK:  Dock the CytoPanel.
- * </UL>
- *
- * @author Ben Gross
+/** 
+ * An enum that maps names to compass directions.
  */
-public class CytoPanelState {
-	/*
-	 * The state name.
-	 */
-	private final String name;
+public enum CytoPanelName {
+	NORTH("Top Panel",SwingConstants.NORTH),
+	SOUTH("Data Panel",SwingConstants.SOUTH),
+	EAST("Results Panel",SwingConstants.EAST),
+	WEST("Control Panel",SwingConstants.WEST),
+	SOUTH_WEST("Tool Panel",SwingConstants.SOUTH_WEST),
+	;
 
-	/*
-	 * Private constructor.
-	 */
-	private CytoPanelState(String name) {
-		this.name = name;
+	private String title;
+	private int compassDirection;
+
+	private CytoPanelName(String title, int compassDirection) {
+		this.title = title;
+		this.compassDirection = compassDirection;
 	}
 
-	/*
-	 * In case a someone wants to translated a state into printable strings
-	 */
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 
-	/**
-	 * Hide state of a CytoPanel.
-	 */
-	public static final CytoPanelState HIDE = new CytoPanelState("hide");
+	public int getCompassDirection() {
+		return compassDirection;
+	}
 
-	/**
-	 * Float state of a CytoPanel.
-	 */
-	public static final CytoPanelState FLOAT = new CytoPanelState("float");
-
-	/**
-	 * Dock state of a CytoPanel.
-	 */
-	public static final CytoPanelState DOCK = new CytoPanelState("dock");
+	public static String getTitle(int dir) {
+		for (CytoPanelName cpn : values()) 
+			if ( dir == cpn.getCompassDirection() )
+				return cpn.getTitle();
+		return null;
+	}
 }

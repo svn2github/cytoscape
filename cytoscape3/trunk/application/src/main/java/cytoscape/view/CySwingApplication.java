@@ -36,7 +36,6 @@
  */
 package cytoscape.view;
 
-import cytoscape.view.cytopanels.CytoPanel;
 
 import javax.swing.JFrame;
 

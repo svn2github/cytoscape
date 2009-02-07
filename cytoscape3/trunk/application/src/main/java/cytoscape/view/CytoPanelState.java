@@ -1,5 +1,5 @@
 /*
-  File: CytoPanelListener.java
+  File: CytoPanelState.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,49 +36,61 @@
 */
 
 //     
-// $Id: CytoPanelListener.java 9565 2007-02-13 19:36:50Z mes $
+// $Id: CytoPanelState.java 9736 2007-03-20 00:25:45Z mes $
 //------------------------------------------------------------------------------
 
 // our package
-package cytoscape.view.cytopanels;
-
-
-// imports
-import java.util.EventListener;
+package cytoscape.view;
 
 
 /**
- * This listener interface provides the
- * mechanism to respond to CytoPanel Events.
+ *  CytoPanelState Class.  The following States are supported:
+ * <UL>
+ * <LI>CytoPanelState.HIDE:  Hide the CytoPanel.
+ * <LI>CytoPanelState.FLOAT: Float the CytoPanel.
+ * <LI>CytoPanelState.DOCK:  Dock the CytoPanel.
+ * </UL>
  *
  * @author Ben Gross
  */
-public interface CytoPanelListener extends EventListener {
-	/**
-	 * Notifies the listener on a change in the CytoPanel state.
-	 *
-	 * @param newState The new CytoPanel state - see CytoPanelState class.
+public class CytoPanelState {
+	/*
+	 * The state name.
 	 */
-	public void onStateChange(CytoPanelState newState);
+	private final String name;
+
+	/*
+	 * Private constructor.
+	 */
+	private CytoPanelState(String name) {
+		this.name = name;
+	}
+
+	/*
+	 * In case a someone wants to translated a state into printable strings
+	 */
 
 	/**
-	 * Notifies the listener when a new component on the CytoPanel is selected.
+	 *  DOCUMENT ME!
 	 *
-	 * @param componentIndex The index of the component selected.
+	 * @return  DOCUMENT ME!
 	 */
-	public void onComponentSelected(int componentIndex);
+	public String toString() {
+		return name;
+	}
 
 	/**
-	 * Notifies the listener when a component is added to the CytoPanel.
-	 *
-	 * @param count The number of components on the CytoPanel after the add.
+	 * Hide state of a CytoPanel.
 	 */
-	public void onComponentAdded(int count);
+	public static final CytoPanelState HIDE = new CytoPanelState("hide");
 
 	/**
-	 * Notifies the listener when a component is removed from the CytoPanel.
-	 *
-	 * @param count The number of components on the CytoPanel after the remove.
+	 * Float state of a CytoPanel.
 	 */
-	public void onComponentRemoved(int count);
+	public static final CytoPanelState FLOAT = new CytoPanelState("float");
+
+	/**
+	 * Dock state of a CytoPanel.
+	 */
+	public static final CytoPanelState DOCK = new CytoPanelState("dock");
 }

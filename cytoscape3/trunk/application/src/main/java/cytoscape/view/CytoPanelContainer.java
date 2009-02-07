@@ -1,8 +1,7 @@
-
 /*
-  File: CytoPanelName.java
+  File: CytoPanelContainer.java
 
-  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
   The Cytoscape Consortium is:
   - Institute for Systems Biology
@@ -36,42 +35,44 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
+//     
+// $Id: CytoPanelContainer.java 9565 2007-02-13 19:36:50Z mes $
+//------------------------------------------------------------------------------
 
-package cytoscape.view.cytopanels;
+// our package
+package cytoscape.view;
 
-import javax.swing.*;
 
-/** 
- * An enum that maps names to compass directions.
+// imports
+
+import java.awt.*;
+
+
+/**
+ * Interface for Container of CytoPanel Objects.
+ *
+ * @author Ethan Cerami
  */
-public enum CytoPanelName {
-	NORTH("Top Panel",SwingConstants.NORTH),
-	SOUTH("Data Panel",SwingConstants.SOUTH),
-	EAST("Results Panel",SwingConstants.EAST),
-	WEST("Control Panel",SwingConstants.WEST),
-	SOUTH_WEST("Tool Panel",SwingConstants.SOUTH_WEST),
-	;
+public interface CytoPanelContainer {
+	/**
+	 * Inserts CytoPanel at Specified Compass Direction.
+	 *
+	 * @param cytoPanel        CytoPanel Object.
+	 * @param compassDirection SwingConstants integer value.
+	 */
+	void insertCytoPanel(CytoPanelImp cytoPanel, int compassDirection);
 
-	private String title;
-	private int compassDirection;
+	/**
+	 * Gets Location of Container, in screen coordinates.
+	 *
+	 * @return Point Object.
+	 */
+	Point getLocationOnScreen();
 
-	private CytoPanelName(String title, int compassDirection) {
-		this.title = title;
-		this.compassDirection = compassDirection;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public int getCompassDirection() {
-		return compassDirection;
-	}
-
-	public static String getTitle(int dir) {
-		for (CytoPanelName cpn : values()) 
-			if ( dir == cpn.getCompassDirection() )
-				return cpn.getTitle();
-		return null;
-	}
+	/**
+	 * Gets Bounds of Container, relative to parent component.
+	 *
+	 * @return Rectangle Object.
+	 */
+	Rectangle getBounds();
 }

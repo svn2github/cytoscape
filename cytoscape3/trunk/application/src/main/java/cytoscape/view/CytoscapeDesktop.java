@@ -59,10 +59,10 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
 import cytoscape.CyNetworkManager;
 
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.view.BiModalJSplitPane;
+import cytoscape.view.CytoPanel;
+import cytoscape.view.CytoPanelImp;
+import cytoscape.view.CytoPanelState;
 
 
 /**

@@ -1,5 +1,5 @@
 /*
-  File: CytoPanelContainer.java
+  File: CytoPanelListener.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,43 +36,49 @@
 */
 
 //     
-// $Id: CytoPanelContainer.java 9565 2007-02-13 19:36:50Z mes $
+// $Id: CytoPanelListener.java 9565 2007-02-13 19:36:50Z mes $
 //------------------------------------------------------------------------------
 
 // our package
-package cytoscape.view.cytopanels;
+package cytoscape.view;
 
 
 // imports
-
-import java.awt.*;
+import java.util.EventListener;
 
 
 /**
- * Interface for Container of CytoPanel Objects.
+ * This listener interface provides the
+ * mechanism to respond to CytoPanel Events.
  *
- * @author Ethan Cerami
+ * @author Ben Gross
  */
-public interface CytoPanelContainer {
+public interface CytoPanelListener extends EventListener {
 	/**
-	 * Inserts CytoPanel at Specified Compass Direction.
+	 * Notifies the listener on a change in the CytoPanel state.
 	 *
-	 * @param cytoPanel        CytoPanel Object.
-	 * @param compassDirection SwingConstants integer value.
+	 * @param newState The new CytoPanel state - see CytoPanelState class.
 	 */
-	void insertCytoPanel(CytoPanelImp cytoPanel, int compassDirection);
+	public void onStateChange(CytoPanelState newState);
 
 	/**
-	 * Gets Location of Container, in screen coordinates.
+	 * Notifies the listener when a new component on the CytoPanel is selected.
 	 *
-	 * @return Point Object.
+	 * @param componentIndex The index of the component selected.
 	 */
-	Point getLocationOnScreen();
+	public void onComponentSelected(int componentIndex);
 
 	/**
-	 * Gets Bounds of Container, relative to parent component.
+	 * Notifies the listener when a component is added to the CytoPanel.
 	 *
-	 * @return Rectangle Object.
+	 * @param count The number of components on the CytoPanel after the add.
 	 */
-	Rectangle getBounds();
+	public void onComponentAdded(int count);
+
+	/**
+	 * Notifies the listener when a component is removed from the CytoPanel.
+	 *
+	 * @param count The number of components on the CytoPanel after the remove.
+	 */
+	public void onComponentRemoved(int count);
 }
