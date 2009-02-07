@@ -44,7 +44,8 @@ import cytoscape.task.ui.JTaskConfig;
 
 import cytoscape.task.util.TaskManager;
 
-import cytoscape.util.swing.AboutDialog;
+import cytoscape.dialogs.AboutDialog;
+import cytoscape.dialogs.AboutDialogFactory;
 
 import cytoscape.view.CySwingApplication;
 import cytoscape.view.CytoscapeDesktop;
@@ -124,6 +125,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private int numClients = 0;
 	private boolean cancelFlag = false;
 	private AboutDialog about;
+	private AboutDialogFactory adf;
 	private final CySwingApplication desktop;
 	private WebServiceClientManager wscm;
 	private CyWebServiceEventFactory wseFactory;
@@ -131,14 +133,15 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private CyNetworkManager cyNetworkManager;
 
 	/** Creates new form NetworkImportDialog */
-	public UnifiedNetworkImportDialog(CySwingApplication parent, boolean modal) {
+	public UnifiedNetworkImportDialog(CySwingApplication parent, boolean modal, AboutDialogFactory adf, WebServiceClientManager wscm) {
 		super();
 		this.setModal(modal);
 		this.desktop = parent;
+		this.wscm = wscm;
 
 		setLocationRelativeTo((Component) (desktop.getJFrame()));
 
-		about = new AboutDialog((Window)(desktop.getJFrame()), true);
+		about = adf.getAboutDialog((Window)(desktop.getJFrame()), true);
 
 		// Register as listener.
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);

@@ -19,16 +19,19 @@
 	<bean id="unifiedNetworkImportDialog"
 		class="org.cytoscape.webservice.client.gui.UnifiedNetworkImportDialog">
 		<constructor-arg ref="cyDesktopServiceRef" />
-		<constructor-arg value="true" />
+		<constructor-arg value="false" />
+		<constructor-arg ref="aboutDialogFactoryServiceRef" />
+		<constructor-arg ref="webServiceClientManagerServiceRef" />
 		<property name="cyNetworkManager" ref="cyNetworkManagerServiceRef" />
 	</bean>
 
-	<!--
-		bean id="webServiceNetworkImportAction"
-		class="cytoscape.actions.WebServiceNetworkImportAction">
-		<constructor-arg ref="cytoscapeDesktop" /> </bean> <bean
-		id="webServiceContextMenuListener"
-		class="org.cytoscape.webservice.client.gui.WebServiceContextMenuListener"
-		/>
-	-->
+	<bean id="webServiceNetworkImportAction" 
+	      class="org.cytoscape.webservice.client.gui.WebServiceNetworkImportAction">
+		<constructor-arg ref="cyNetworkManagerServiceRef" /> 
+		<constructor-arg ref="unifiedNetworkImportDialog" /> 
+	</bean> 
+<!--
+	<bean id="webServiceContextMenuListener" 
+	      class="org.cytoscape.webservice.client.gui.WebServiceContextMenuListener"/>
+		 -->
 </beans>

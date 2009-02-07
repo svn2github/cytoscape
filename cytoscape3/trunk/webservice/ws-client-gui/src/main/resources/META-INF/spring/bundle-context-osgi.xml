@@ -8,6 +8,13 @@
 
 	<osgi:reference id="cyDesktopServiceRef" interface="cytoscape.view.CySwingApplication" />
 	<osgi:reference id="cyNetworkManagerServiceRef" interface="cytoscape.CyNetworkManager" />
+	<osgi:reference id="aboutDialogFactoryServiceRef" interface="cytoscape.dialogs.AboutDialogFactory" />
+	<osgi:reference id="webServiceClientManagerServiceRef" 
+	                interface="org.cytoscape.webservice.client.WebServiceClientManager" />
+
+    <osgi:service id="webServiceNetworkImportActionService" 
+	              ref="webServiceNetworkImportAction" 
+				  interface="cytoscape.util.CyAction" />
 
 
 </beans>
