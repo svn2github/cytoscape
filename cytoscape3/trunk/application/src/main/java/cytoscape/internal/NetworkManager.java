@@ -278,8 +278,7 @@ public class NetworkManager implements CyNetworkManager {
 		final Long viewID = view.getNetwork().getSUID(); 
 
 		synchronized (this) {
-			if ( !networkMap.containsKey( viewID ) ||
-			     !networkViewMap.containsKey( viewID ) )
+			if ( !networkViewMap.containsKey( viewID ) )
 				throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
 
 			// TODO firing an event from within a lock!!!!
