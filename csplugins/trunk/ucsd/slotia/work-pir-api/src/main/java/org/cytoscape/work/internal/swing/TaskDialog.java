@@ -351,8 +351,18 @@ class TaskDialog extends JDialog implements ActionListener {
 		                  new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					Date currentTime = new Date();
-					String timeElapsed = StringUtils.getTimeString(currentTime.getTime() - startTime.getTime());
-					timeLabel.setText(String.format("%s elapsed", timeElapsed));
+					long timeElapsed = currentTime.getTime() - startTime.getTime();
+					String timeElapsedString = StringUtils.getTimeString(timeElapsed);
+					if (!pBar.isIndeterminate() && pBar.getValue() != 0)
+					{
+						long timeRemaining = (long) ((100.0 / pBar.getValue() - 1.0) * timeElapsed);
+						String timeRemainingString = StringUtils.getTimeString(timeRemaining);
+						timeLabel.setText(String.format("%s elapsed, %s remaining", timeElapsedString, timeRemainingString));
+					}
+					else
+					{
+						timeLabel.setText(String.format("%s elapsed", timeElapsedString));
+					}
 				}
 			});
 		timer.start();
