@@ -34,7 +34,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.view;
+package cytoscape.view.internal;
 
 import cytoscape.events.SetCurrentNetworkViewEvent;
 import cytoscape.events.SetCurrentNetworkViewListener;
@@ -56,7 +56,6 @@ import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
-import cytoscape.view.BiModalJSplitPane;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyDataTableUtil;
@@ -115,7 +114,6 @@ public class NetworkPanel extends JPanel
 	private JMenuItem destroyViewItem;
 	private JMenuItem destroyNetworkItem;
 	private JMenuItem editNetworkTitle;
-	//private BiModalJSplitPane split;
 	private JSplitPane split;
 	private final NetworkTreeTableModel treeTableModel;
 	private final CyNetworkManager netmgr;

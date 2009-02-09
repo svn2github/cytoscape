@@ -44,7 +44,7 @@ import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CySwingApplication;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 import cytoscape.util.CyNetworkNaming;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
@@ -69,8 +69,8 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 	//public File[] files;
 	private File file;
 
-	public LoadNetworkFileTask(File file,CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr, Properties props) {
-		super(null,mgr,gvf,cyl,dsk,netmgr,props);
+	public LoadNetworkFileTask(File file,CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
+		super(null,mgr,gvf,cyl,netmgr,props);
 		this.file = file;
 	}
 

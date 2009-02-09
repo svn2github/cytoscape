@@ -44,7 +44,7 @@ import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CySwingApplication;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 import cytoscape.util.CyNetworkNaming;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
@@ -78,15 +78,13 @@ abstract class AbstractLoadNetworkTask implements Task {
 	protected CyReaderManager mgr; 
 	protected GraphViewFactory gvf; 
 	protected CyLayouts cyl; 
-	protected CytoscapeDesktop dsk; 
 	protected CyNetworkManager netmgr; 
 	protected Properties props; 
 
-	public AbstractLoadNetworkTask(CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr, Properties props) {
+	public AbstractLoadNetworkTask(CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
 		this.mgr = mgr;
 		this.gvf = gvf;
 		this.cyl = cyl;
-		this.dsk = dsk;
 		this.netmgr = netmgr;
 		this.props = props;
 		layoutAlgorithm = layout;

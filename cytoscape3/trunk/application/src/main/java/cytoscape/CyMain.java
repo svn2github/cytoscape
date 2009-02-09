@@ -40,7 +40,7 @@ import com.jgoodies.looks.LookUtils;
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import cytoscape.init.CyInitParams;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 import cytoscape.util.FileUtil;
 import org.apache.commons.cli.*;
 
@@ -98,11 +98,11 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @throws Exception  DOCUMENT ME!
 	 */
-	public CyMain(CytoscapeDesktop desk,CyNetworkManager netmgr,CytoscapeVersion ver,FileUtil fileUtil) throws Exception {
+	public CyMain(CySwingApplication desk,CyNetworkManager netmgr,CytoscapeVersion ver,FileUtil fileUtil) throws Exception {
 		this( new String[]{},desk,netmgr,ver,fileUtil );
 	}
 
-	public CyMain(String[] args,CytoscapeDesktop desk,CyNetworkManager netmgr,CytoscapeVersion ver,FileUtil fileUtil) throws Exception {
+	public CyMain(String[] args,CySwingApplication desk,CyNetworkManager netmgr,CytoscapeVersion ver,FileUtil fileUtil) throws Exception {
 		System.out.println("CyMain constructor");
 		this.ver = ver;
 		this.fileUtil = fileUtil;

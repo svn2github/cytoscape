@@ -81,10 +81,12 @@ public class VizMapListener implements PropertyChangeListener {
 	private VisualMappingManager vmm;
 	
 	private CyNetworkManager cyNetworkManager;
+	private FileUtil fileUtil;
 	
-	public VizMapListener(VisualMappingManager vmm, CyNetworkManager cyNetworkManager) {
+	public VizMapListener(VisualMappingManager vmm, CyNetworkManager cyNetworkManager, FileUtil fileUtil) {
 		this.cyNetworkManager = cyNetworkManager;
 		this.vmm = vmm;
+		this.fileUtil = fileUtil;
 	}
 
 	/**
@@ -148,7 +150,7 @@ public class VizMapListener implements PropertyChangeListener {
 						// if its a LOADED event the vizmap file
 						// will be a normal file.
 					} else
-						is = FileUtil.getInputStream((String) vizmapSource);
+						is = fileUtil.getInputStream((String) vizmapSource);
 				}
 
 				if (is != null) {

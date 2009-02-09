@@ -37,7 +37,7 @@
 package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -64,12 +64,12 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	/**
 	 * Creates a new CreateNetworkViewAction object.
 	 */
-	private final CytoscapeDesktop desktop;
+	private final CySwingApplication desktop;
 	private final CyNetworkManager netmgr;
 	private final GraphViewFactory gvf;
 	private final Properties props;
 
-	public CreateNetworkViewAction(CytoscapeDesktop desktop, CyNetworkManager netmgr, GraphViewFactory gvf, Properties props) {
+	public CreateNetworkViewAction(CySwingApplication desktop, CyNetworkManager netmgr, GraphViewFactory gvf, Properties props) {
 		super("Create View",netmgr);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_V, ActionEvent.ALT_MASK);
@@ -86,7 +86,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		CyNetwork cyNetwork = netmgr.getCurrentNetwork();
-		createViewFromCurrentNetwork(cyNetwork,desktop,gvf,netmgr,props);
+		createViewFromCurrentNetwork(cyNetwork,desktop.getJFrame(),gvf,netmgr,props);
 	}
 
 	/**

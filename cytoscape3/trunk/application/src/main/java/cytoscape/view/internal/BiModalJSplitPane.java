@@ -40,12 +40,16 @@
 //------------------------------------------------------------------------------
 
 // our package
-package cytoscape.view;
+package cytoscape.view.internal;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+
+import cytoscape.view.CytoPanelContainer;
+import cytoscape.view.CytoPanelState;
+import cytoscape.view.CytoPanel;
 
 
 /**
@@ -141,36 +145,36 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 	 * @param cytoPanel        CytoPanel reference.
 	 * @param compassDirection SwingConstants integer value.
 	 */
-	public void insertCytoPanel(CytoPanelImp cytoPanel, int compassDirection) {
+	public void insertCytoPanel(CytoPanel cytoPanel, int compassDirection) {
 		boolean success = false;
 
 		switch (compassDirection) {
 			case SwingConstants.NORTH:
-				this.setTopComponent(cytoPanel);
+				this.setTopComponent(cytoPanel.getThisComponent());
 				success = true;
 
 				break;
 
 			case SwingConstants.SOUTH:
-				this.setBottomComponent(cytoPanel);
+				this.setBottomComponent(cytoPanel.getThisComponent());
 				success = true;
 
 				break;
 
 			case SwingConstants.EAST:
-				this.setRightComponent(cytoPanel);
+				this.setRightComponent(cytoPanel.getThisComponent());
 				success = true;
 
 				break;
 
 			case SwingConstants.WEST:
-				this.setLeftComponent(cytoPanel);
+				this.setLeftComponent(cytoPanel.getThisComponent());
 				success = true;
 
 				break;
 
 			case SwingConstants.SOUTH_WEST:
-				this.setBottomComponent(cytoPanel);
+				this.setBottomComponent(cytoPanel.getThisComponent());
 				success = true;
 
 				break;

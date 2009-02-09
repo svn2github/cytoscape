@@ -213,6 +213,7 @@
 		<constructor-arg ref="vizMapPropertySheetBuilder" />
 		<constructor-arg ref="vizMapEventHandlerManager" />
 		<constructor-arg ref="editorWindowManager" />
-		<constructor-arg ref="cyNetworkManagerServiceRef"></constructor-arg>
+		<constructor-arg ref="cyNetworkManagerServiceRef"/>
+		<constructor-arg ref="fileUtilServiceRef"/>
 	</bean>
 </beans>

@@ -37,8 +37,8 @@
 
 package cytoscape.actions;
 
-import cytoscape.view.CyDesktopManager;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.internal.CyDesktopManager;
+import cytoscape.view.internal.CytoscapeDesktop;
 import cytoscape.view.CyMenus;
 
 import javax.swing.*;

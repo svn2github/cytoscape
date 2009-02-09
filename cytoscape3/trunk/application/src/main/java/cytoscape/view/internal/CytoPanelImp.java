@@ -40,7 +40,7 @@
 //------------------------------------------------------------------------------
 
 // our package
-package cytoscape.view;
+package cytoscape.view.internal;
 
 import cytoscape.Cytoscape;
 
@@ -52,6 +52,12 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+
+import cytoscape.view.CytoPanel;
+import cytoscape.view.CytoPanelName;
+import cytoscape.view.CytoPanelState;
+import cytoscape.view.CytoPanelListener;
+import cytoscape.view.CytoPanelContainer;
 
 
 /**
@@ -866,5 +872,9 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 */
 	public int getCompassDirection() {
 		return compassDirection;
+	}
+
+	public Component getThisComponent() {
+		return this;
 	}
 }

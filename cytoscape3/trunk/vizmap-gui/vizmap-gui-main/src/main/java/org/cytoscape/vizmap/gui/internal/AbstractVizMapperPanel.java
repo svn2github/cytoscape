@@ -78,6 +78,7 @@ import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
 import cytoscape.CyNetworkManager;
+import cytoscape.util.FileUtil;
 import cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.view.CySwingApplication;
 
@@ -161,6 +162,8 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 
 	protected CyNetworkManager cyNetworkManager;
 
+	protected FileUtil fileUtil;
+
 	protected SwingPropertyChangeSupport spcs;
 	protected static final long serialVersionUID = -6839011300709287662L;
 
@@ -171,7 +174,8 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
-			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager) {
+			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager,
+			FileUtil fileUtil) {
 
 		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
@@ -185,6 +189,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 		this.vizMapEventHandlerManager = vizMapEventHandlerManager;
 		this.editorWindowManager = editorWindowManager;
 		this.cyNetworkManager = cyNetworkManager;
+		this.fileUtil = fileUtil;
 		spcs = new SwingPropertyChangeSupport(this);
 
 		defaultImageManager = new HashMap<String, Image>();

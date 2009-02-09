@@ -45,7 +45,7 @@ package cytoscape.actions;
 import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -58,11 +58,11 @@ import java.awt.event.ActionEvent;
 public class SetVisualPropertiesAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870882109L;
 	private static String title = "Open VizMapper\u2122";
-	private CytoscapeDesktop desktop;
+	private CySwingApplication desktop;
 	/**
 	 * Creates a new SetVisualPropertiesAction object.
 	 */
-	public SetVisualPropertiesAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+	public SetVisualPropertiesAction(CySwingApplication desktop, CyNetworkManager netmgr) {
 		super(title, new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_file-with-objects-16.png")),netmgr);
 		setPreferredMenu("View");
 		setEnabled(true);

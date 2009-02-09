@@ -70,7 +70,7 @@ import cytoscape.data.ExpressionData;
 import cytoscape.data.readers.BookmarkReader;
 import cytoscape.init.CyInitParams;
 import cytoscape.view.CySwingApplication;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 
 
 /**
@@ -300,7 +300,7 @@ public abstract class Cytoscape {
 	// Test
 	protected static Object pcs2 = new Object();
 	protected static PropertyChangeSupport newPcs = new PropertyChangeSupport(pcs2);
-	protected static CytoscapeDesktop defaultDesktop;
+	protected static CySwingApplication defaultDesktop;
 
 	/**
 	 * Used by session writer. If this is null, session writer opens the file
@@ -338,7 +338,7 @@ public abstract class Cytoscape {
 					// don't system exit since we are running as part
 					// of a bigger application. Instead, dispose of the
 					// desktop.
-					defaultDesktop.dispose();
+					defaultDesktop.getJFrame().dispose();
 				} else {
 					System.exit(returnVal);
 				}
@@ -367,7 +367,7 @@ public abstract class Cytoscape {
 		// Confirm user to save current session or not.
 		//
 		Object[] options = { "Yes, save and quit", "No, just quit", "Cancel" };
-		int n = JOptionPane.showOptionDialog(defaultDesktop, msg,
+		int n = JOptionPane.showOptionDialog(defaultDesktop.getJFrame(), msg,
 		                                     "Save Networks Before Quitting?",
 		                                     JOptionPane.YES_NO_OPTION,
 		                                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -695,7 +695,7 @@ public abstract class Cytoscape {
 	 * Don't use this!.
 	 * TODO resolve how the desktop is accessed. 
 	 */
-	public static void setDesktop(CytoscapeDesktop desk ) {
+	public static void setDesktop(CySwingApplication desk ) {
 		if ( desk != null )
 			defaultDesktop = desk;
 	}

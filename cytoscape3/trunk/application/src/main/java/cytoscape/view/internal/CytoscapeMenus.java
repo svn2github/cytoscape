@@ -35,11 +35,13 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.view;
+package cytoscape.view.internal;
 
 import cytoscape.util.CyAction;
 import cytoscape.util.CyMenuBar;
 import cytoscape.util.CyToolBar;
+
+import cytoscape.view.CyMenus;
 
 import cytoscape.util.internal.CytoscapeMenuBar;
 import cytoscape.util.internal.CytoscapeToolBar;

@@ -41,7 +41,7 @@ import cytoscape.CyNetworkManager;
 import cytoscape.dialogs.ImportNetworkDialog;
 import cytoscape.dialogs.ImportNetworkDialogFactory;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.layout.CyLayouts;
@@ -53,6 +53,7 @@ import cytoscape.task.util.TaskManager;
 
 import javax.swing.JOptionPane;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -69,7 +70,7 @@ import java.util.Properties;
 public class ImportGraphFileAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339869779868L;
 
-	private CytoscapeDesktop desktop;
+	private CySwingApplication desktop;
 	private CyReaderManager rdmgr;
 	private GraphViewFactory gvf;
 	private CyLayouts cyLayouts;
@@ -79,7 +80,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	/**
 	 * Constructor.
 	 */
-	public ImportGraphFileAction(CytoscapeDesktop desktop, CyReaderManager rdmgr, GraphViewFactory gvf, CyLayouts cyLayouts, CyNetworkManager netmgr, Properties props, ImportNetworkDialogFactory indf ) {
+	public ImportGraphFileAction(CySwingApplication desktop, CyReaderManager rdmgr, GraphViewFactory gvf, CyLayouts cyLayouts, CyNetworkManager netmgr, Properties props, ImportNetworkDialogFactory indf ) {
 		super("Network (multiple file types)...",netmgr);
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_L, ActionEvent.CTRL_MASK);
@@ -114,7 +115,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		ImportNetworkDialog fd = null;
 
 		try {
-			fd = indf.getImportNetworkDialog(desktop, true, rdmgr.getFileFilters());
+			fd = indf.getImportNetworkDialog(desktop.getJFrame(), true, rdmgr.getFileFilters());
 		} catch (Exception e1) {
 			System.out.println("start dialog error");
 			e1.printStackTrace();
@@ -134,8 +135,8 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			String URLstr = fd.getURLStr();
 			System.out.println("URL: "+URLstr);
 			try {
-				LoadNetworkURLTask task = new LoadNetworkURLTask(new URL(URLstr), rdmgr, gvf, cyLayouts,desktop,netmgr,props);
-				executeTask(task,false,desktop);
+				LoadNetworkURLTask task = new LoadNetworkURLTask(new URL(URLstr), rdmgr, gvf, cyLayouts,netmgr,props);
+				executeTask(task,false,desktop.getJFrame());
 			} catch (MalformedURLException e3) {
 				JOptionPane.showMessageDialog((JDialog)fd, "URL error!", "Warning",
 			 	                             JOptionPane.INFORMATION_MESSAGE);
@@ -160,14 +161,12 @@ public class ImportGraphFileAction extends CytoscapeAction {
 						messages.add(files[i].getName());
 					}
 	
-					LoadNetworkFileTask task = new LoadNetworkFileTask(files[i], rdmgr, gvf, cyLayouts,desktop,netmgr,props);
-					executeTask(task,skipMessage,desktop);
+					LoadNetworkFileTask task = new LoadNetworkFileTask(files[i], rdmgr, gvf, cyLayouts,netmgr,props);
+					executeTask(task,skipMessage,desktop.getJFrame());
 				}
 	
 				if (files.length != 1) {
-					JOptionPane messagePane = new JOptionPane();
-					messagePane.setLocation(desktop.getLocationOnScreen());
-					messagePane.showMessageDialog(desktop, messages.toArray(),
+					JOptionPane.showMessageDialog(desktop.getJFrame(), messages.toArray(),
 					                              "Multiple Network Files Loaded",
 					                              JOptionPane.INFORMATION_MESSAGE);
 				}
@@ -175,7 +174,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		}
 	}
 
-    private void executeTask(Task task, boolean skipMessage, CytoscapeDesktop desk) {
+    private void executeTask(Task task, boolean skipMessage, JFrame desk) {
 
         // Configure JTask Dialog Pop-Up Box
         JTaskConfig jTaskConfig = new JTaskConfig();

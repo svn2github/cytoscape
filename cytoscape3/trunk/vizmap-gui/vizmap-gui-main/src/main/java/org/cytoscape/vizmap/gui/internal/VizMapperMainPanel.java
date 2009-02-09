@@ -83,6 +83,7 @@ import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.view.CySwingApplication;
+import cytoscape.util.FileUtil;
 
 /**
  * New VizMapper UI main panel. Refactored for Cytoscape 3.
@@ -126,10 +127,11 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
-			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager) {
+			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager,
+			FileUtil fileUtil) {
 		super(desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
-				vizMapEventHandlerManager, editorWindowManager, cyNetworkManager);
+				vizMapEventHandlerManager, editorWindowManager, cyNetworkManager, fileUtil);
 
 		initPanel();
 	}
@@ -139,7 +141,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				new VizMapListener(vmm, cyNetworkManager));
+				new VizMapListener(vmm, cyNetworkManager, fileUtil));
 
 		registerCellEditorListeners();
 		addVisualStyleChangeAction();
@@ -149,8 +151,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		
 		refreshUI();
 
-		cytoscapeDesktop.getCytoPanel(SwingConstants.WEST).add(
-				"VizMapper\u2122", this);
+		cytoscapeDesktop.getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", this);
+		// TODO 
 //		cytoscapeDesktop.getSwingPropertyChangeSupport()
 //				.addPropertyChangeListener(this);
 	}
@@ -269,7 +271,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		propertySheetPanel.setSorting(true);
 
 		// Cleanup desktop.
-		// cytoscapeDesktop.repaint();
+		cytoscapeDesktop.getJFrame().repaint();
 		getVsNameComboBox().setSelectedItem(vsName);
 	}
 

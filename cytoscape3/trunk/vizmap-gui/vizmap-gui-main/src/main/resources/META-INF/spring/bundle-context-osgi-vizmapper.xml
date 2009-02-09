@@ -27,6 +27,11 @@
 		interface="org.cytoscape.view.GraphViewFactory">
 	</osgi:reference>
 
+	<osgi:reference id="fileUtilServiceRef"
+		interface="cytoscape.util.FileUtil">
+	</osgi:reference>
+
+
 	<!-- Pull-down menu items -->
 	<osgi:service id="createNewStyleActionService" ref="createNewStyleAction"
 		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />

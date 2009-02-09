@@ -38,7 +38,7 @@ package cytoscape;
 
 import cytoscape.init.CyInitParams;
 import cytoscape.util.FileUtil;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 import cytoscape.util.shadegrown.WindowUtilities;
 import org.cytoscape.model.CyNetwork;
 
@@ -104,12 +104,12 @@ public class CytoscapeInit {
 	// Error message
 	private static String ErrorMsg = "";
 
-	private CytoscapeDesktop desktop;
+	private CySwingApplication desktop;
 
 	/**
 	 * Creates a new CytoscapeInit object.
 	 */
-	public CytoscapeInit(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+	public CytoscapeInit(CySwingApplication desktop, CyNetworkManager netmgr) {
 		Cytoscape.setDesktop( desktop );
 		Cytoscape.setNetworkManager( netmgr );
 		this.desktop = desktop;
@@ -145,7 +145,7 @@ public class CytoscapeInit {
 			WindowUtilities.showSplash(image, 8000);
 
 			// set the wait cursor
-			desktop.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			desktop.getJFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 			setUpAttributesChangedListener();
 
@@ -168,10 +168,10 @@ public class CytoscapeInit {
 			// Always restore the cursor and hide the splash, even there is
 			// exception
 			WindowUtilities.hideSplash();
-			desktop.setCursor(Cursor.getDefaultCursor());
+			desktop.getJFrame().setCursor(Cursor.getDefaultCursor());
 
 			// to clean up anything that the plugins have messed up
-			desktop.repaint();
+			desktop.getJFrame().repaint();
 		}
 
 		long endtime = System.currentTimeMillis() - begintime;

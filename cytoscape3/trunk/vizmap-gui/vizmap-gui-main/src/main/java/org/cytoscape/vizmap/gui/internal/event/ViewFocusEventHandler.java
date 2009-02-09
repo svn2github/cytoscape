@@ -5,13 +5,14 @@ import java.beans.PropertyChangeEvent;
 import org.cytoscape.vizmap.VisualStyle;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.NetworkPanel;
+//import cytoscape.view.NetworkPanel;
 
 public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 
 	@Override
 	public void processEvent(PropertyChangeEvent e) {
-
+	// TODO This should happen using CyEvents rather than PropertyChangeEvent
+/* 
 		if (e.getSource().getClass() != NetworkPanel.class)
 			return;
 
@@ -31,6 +32,7 @@ public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 						.getDefaultImageManager().get(vs.getName()));
 			}
 		}
+		*/
 
 //		vizMapperMainPanel.setTargetNetwork(cyNetworkManager.getNetwork((Long) (e
 //				.getNewValue())));

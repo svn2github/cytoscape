@@ -42,7 +42,7 @@ package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 import cytoscape.util.CyNetworkNaming;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
@@ -66,8 +66,8 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 //	@Tunable(description="The URL to load")
 	public URL url;
 
-	public LoadNetworkURLTask(URL url,CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CytoscapeDesktop dsk, CyNetworkManager netmgr, Properties props) {
-		super(null,mgr,gvf,cyl,dsk,netmgr,props);
+	public LoadNetworkURLTask(URL url,CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
+		super(null,mgr,gvf,cyl,netmgr,props);
 		this.url = url;
 	}
 

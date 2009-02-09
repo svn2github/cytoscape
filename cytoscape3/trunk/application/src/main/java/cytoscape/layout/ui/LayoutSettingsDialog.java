@@ -39,7 +39,7 @@ package cytoscape.layout.ui;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.task.util.TaskManager;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 
@@ -73,15 +73,15 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private JPanel algorithmPanel; // The panel this algorithm uses
 
 	private CyLayouts cyLayouts;
-	private CytoscapeDesktop desktop;
+	private CySwingApplication desktop;
 	private LayoutMenuManager menuMgr;
 	private CyNetworkManager netmgr;
 
 	/**
 	 * Creates a new LayoutSettingsDialog object.
 	 */
-	public LayoutSettingsDialog(CyLayouts cyLayouts, CytoscapeDesktop desktop, LayoutMenuManager menuMgr, CyNetworkManager netmgr) {
-		super(desktop, "Layout Settings", false);
+	public LayoutSettingsDialog(CyLayouts cyLayouts, CySwingApplication desktop, LayoutMenuManager menuMgr, CyNetworkManager netmgr) {
+		super(desktop.getJFrame(), "Layout Settings", false);
 		initializeOnce(); // Initialize the components we only do once
 		this.cyLayouts = cyLayouts;
 		this.desktop = desktop;
@@ -116,7 +116,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			// OK, initialize and display
 			initialize();
 			pack();
-			setLocationRelativeTo(desktop);
+			setLocationRelativeTo(desktop.getJFrame());
 			setVisible(true);
 		}
 	}

@@ -60,19 +60,19 @@
 	</bean>
 
 	<!-- Menu bar -->
-	<bean name="cytoscapeMenus" class="cytoscape.view.CytoscapeMenus"  />
+	<bean name="cytoscapeMenus" class="cytoscape.view.internal.CytoscapeMenus"  />
 
-	<bean name="networkViewManager" class="cytoscape.view.NetworkViewManager" >
+	<bean name="networkViewManager" class="cytoscape.view.internal.NetworkViewManager" >
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
 
-	<bean name="birdsEyeViewHandler" class="cytoscape.view.BirdsEyeViewHandler" >
+	<bean name="birdsEyeViewHandler" class="cytoscape.view.internal.BirdsEyeViewHandler" >
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkManager" />
 	</bean>
 
-	<bean name="networkPanel" class="cytoscape.view.NetworkPanel" >
+	<bean name="networkPanel" class="cytoscape.view.internal.NetworkPanel" >
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="birdsEyeViewHandler" />
@@ -82,7 +82,7 @@
 
 
 	<!-- Cytoscape Desktop -->
-	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop" >
+	<bean name="cytoscapeDesktop" class="cytoscape.view.internal.CytoscapeDesktop" >
 		<constructor-arg ref="cytoscapeMenus" />
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkPanel" />
@@ -271,22 +271,19 @@
 	</bean>
 
 	<bean id="cytoPanelWestAction" class="cytoscape.actions.CytoPanelAction">
-		<constructor-arg type="cytoscape.view.cytopanels.CytoPanelName"
-			value="WEST" />
+		<constructor-arg type="cytoscape.view.CytoPanelName" value="WEST" />
 		<constructor-arg value="true" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />
 	</bean>
 	<bean id="cytoPanelSouthAction" class="cytoscape.actions.CytoPanelAction">
-		<constructor-arg type="cytoscape.view.cytopanels.CytoPanelName"
-			value="SOUTH" />
+		<constructor-arg type="cytoscape.view.CytoPanelName" value="SOUTH" />
 		<constructor-arg value="true" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />
 	</bean>
 	<bean id="cytoPanelEastAction" class="cytoscape.actions.CytoPanelAction">
-		<constructor-arg type="cytoscape.view.cytopanels.CytoPanelName"
-			value="EAST" />
+		<constructor-arg type="cytoscape.view.CytoPanelName" value="EAST" />
 		<constructor-arg value="false" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />

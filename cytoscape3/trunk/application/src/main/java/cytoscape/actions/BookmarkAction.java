@@ -44,7 +44,7 @@ package cytoscape.actions;
 
 import cytoscape.dialogs.preferences.BookmarkDialog;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 
 import javax.swing.*;
 import javax.xml.bind.JAXBException;
@@ -58,11 +58,11 @@ import cytoscape.CyNetworkManager;
  */
 public class BookmarkAction extends CytoscapeAction {
 	private final static long serialVersionUID = 120233986993206L;
-	private CytoscapeDesktop desktop;
+	private CySwingApplication desktop;
 	/**
 	 * Creates a new BookmarkAction object.
 	 */
-	public BookmarkAction(CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+	public BookmarkAction(CySwingApplication desktop, CyNetworkManager netmgr) {
 		super("Bookmarks...",netmgr);
 
 		System.out.println("BookmarkAction()...");
@@ -79,7 +79,7 @@ public class BookmarkAction extends CytoscapeAction {
 		BookmarkDialog bookmarkDialog;
 
 		try {
-			bookmarkDialog = new BookmarkDialog((JFrame) desktop);
+			bookmarkDialog = new BookmarkDialog(desktop.getJFrame());
 			bookmarkDialog.setVisible(true);
 		} catch (JAXBException e1) {
 			e1.printStackTrace();

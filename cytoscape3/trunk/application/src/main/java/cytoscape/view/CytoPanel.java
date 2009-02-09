@@ -211,4 +211,10 @@ public interface CytoPanel {
 	 * @return The int indicating the position in the layout.
 	 */
 	public int getCompassDirection();
+
+	/**
+	 * Returns the Component that is this CytoPanel.  This is a hack to allow
+	 * CytoPanel to be used as a Component.
+	 */
+	public Component getThisComponent();
 }

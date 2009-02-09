@@ -40,7 +40,7 @@
 //------------------------------------------------------------------------------
 
 // our package
-package cytoscape.view;
+package cytoscape.view.internal;
 
 import javax.swing.*;
 import java.awt.*;

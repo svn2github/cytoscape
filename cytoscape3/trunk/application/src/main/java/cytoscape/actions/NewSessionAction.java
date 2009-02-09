@@ -39,7 +39,7 @@ package cytoscape.actions;
 import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.CySwingApplication;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -53,8 +53,8 @@ public class NewSessionAction extends CytoscapeAction {
 	/**
 	 * Creates a new NewSessionAction object.
 	 */
-	private final CytoscapeDesktop desktop;
-	public NewSessionAction(final CytoscapeDesktop desktop, CyNetworkManager netmgr) {
+	private final CySwingApplication desktop;
+	public NewSessionAction(final CySwingApplication desktop, CyNetworkManager netmgr) {
 		super("Session",netmgr);
 		setPreferredMenu("File.New");
 		this.desktop = desktop;
@@ -71,7 +71,7 @@ public class NewSessionAction extends CytoscapeAction {
 		// Show warning
 		String warning = "Current session (all networks/attributes) will be lost.\nDo you want to continue?";
 
-		int result = JOptionPane.showConfirmDialog(desktop, warning, "Caution!",
+		int result = JOptionPane.showConfirmDialog(desktop.getJFrame(), warning, "Caution!",
 		                                           JOptionPane.YES_NO_OPTION,
 		                                           JOptionPane.WARNING_MESSAGE, null);
 
@@ -80,9 +80,9 @@ public class NewSessionAction extends CytoscapeAction {
 			Cytoscape.createNewSession();
 			// TODO should be reworked so that desktop listens for changes to the session and
 			// then updates itself
-			desktop.setTitle("Cytoscape Desktop (New Session)");
-			desktop.getNetworkPanel().repaint();
-			desktop.repaint();
+			//desktop.setTitle("Cytoscape Desktop (New Session)");
+			//desktop.getNetworkPanel().repaint();
+			//desktop.repaint();
 			Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
 			
 			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
