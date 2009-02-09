@@ -24,7 +24,7 @@ public class input implements command {
 	//public ListSingleSelection<Integer> listOfIntegers;
 	
 	@Tunable(description="Age",flag={Param.slider},group={"Person","Birth"})
-	public BoundedInteger bounded = new BoundedInteger(0,18,130,false,true);
+	public BoundedInteger bounded = new BoundedInteger(0,45,130,false,true);
 
 	
 	@Tunable(description = "Linkage",group={"Hierarchical cluster Settings"})

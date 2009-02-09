@@ -1,9 +1,12 @@
 package GuiInterception;
 
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.List;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+
 
 import Tunable.Tunable.Param;
 import Utils.CollapsablePanel;
@@ -21,7 +24,19 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		panelMap = new HashMap<java.util.List<Guihandler>,JPanel>();
 	}
 
-	protected int process(java.util.List<Guihandler> lh) {
+	public int createUI(Object... objs) {
+		
+		java.util.List<Guihandler> lh = new ArrayList<Guihandler>();
+
+		for ( Object o : objs ) {
+			if ( !handlerMap.containsKey( o ) )
+				throw new IllegalArgumentException("No Tunables exist for Object yet!");
+			
+			lh.addAll( handlerMap.get(o).values() );
+
+		}
+		
+
 		if ( !panelMap.containsKey( lh ) ) {
 			final String MAIN = "";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
@@ -117,18 +132,9 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
 		return ret;
 	}
+			
 	
-	public void processProps(java.util.List<Guihandler> list) {
-	}
-
-	public void processProps(Object o) {
-	}
-	
-	
-	
-	
-	
-	protected void getResultsPanels(java.util.List<Guihandler> lh) {
+	/*protected void getResultsPanels(java.util.List<Guihandler> lh) {
 		for ( Guihandler h : lh ) {
 			h.notifyDependents();
 			h.returnPanel();
@@ -138,5 +144,21 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 	    panelMap.get(lh),
 	    "Results",JOptionPane.PLAIN_MESSAGE);
 	}
+*/
+	
+	protected void getResultsPanels(List<Guihandler> handlerList) {
 
+		for ( Guihandler h : handlerList ) {
+			h.notifyDependents();
+			h.returnPanel();
+		}			
+		JOptionPane.showMessageDialog(parent,
+	    panelMap.get(handlerList),
+	    "Results",JOptionPane.PLAIN_MESSAGE);
+	}
+
+
+
+	protected void processProps(List<Guihandler> handlers) {}
+	public void createProperties(Object... obs) {}
 }

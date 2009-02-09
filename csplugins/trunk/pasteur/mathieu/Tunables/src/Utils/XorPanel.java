@@ -5,6 +5,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
+import HandlerFactory.*;
+
 import java.lang.reflect.*;
 import GuiInterception.Guihandler;
 import Tunable.*; 
@@ -60,6 +62,16 @@ public class XorPanel extends JPanel {
 		}
 	}
 
+	
+/*	class GuiHandlerSwitchListener implements  HandlerListener {
+
+		public void handlerChanged(Handler gh) {
+			if ( gh instanceof Guihandler ) {
+				CardLayout cl = (CardLayout) contentPanel.getLayout();
+				cl.show(contentPanel, ((Guihandler)gh).getState());
+			}
+		}
+	}*/
 
 	class GuiHandlerSwitchListener implements  Guihandler {
 
@@ -82,6 +94,18 @@ public class XorPanel extends JPanel {
 		public void handle() {}
 		public String getState() {return null;}
 		public void returnPanel() {}
+		public void addHandlerListener(HandlerListener listener) {
+			// TODO Auto-generated method stub
+			
+		}
+		public void handlerChanged(Handler otherHandler) {
+			// TODO Auto-generated method stub
+			
+		}
+		public boolean removeHandlerListener(HandlerListener listener) {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	}
 }
 	

@@ -2,6 +2,10 @@ package HandlerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import HandlerFactory.Handler;
+import HandlerFactory.HandlerListener;
+
 import Tunable.Tunable;
 
 public interface Handler{
@@ -9,4 +13,10 @@ public interface Handler{
 	Method getMethod();
 	Object getObject();
 	Tunable getTunable();
+	
+	void addHandlerListener(HandlerListener listener);
+	boolean removeHandlerListener(HandlerListener listener); 
+
+	void handlerChanged(Handler otherHandler);
+	
 }
