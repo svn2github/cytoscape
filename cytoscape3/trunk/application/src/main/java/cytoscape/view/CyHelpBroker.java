@@ -38,55 +38,25 @@ package cytoscape.view;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
-import java.net.URL;
 
 
 /**
  * This class creates the Cytoscape Help Broker for managing the JavaHelp system
  * and help set access
  */
-public class CyHelpBroker {
-	private static HelpBroker hb;
-	private static HelpSet hs;
-	private static final String HELP_RESOURCE = "/cytoscape/help/jhelpset.hs";
-
-	static {
-		new CyHelpBroker();
-	}
-
-	/**
-	 * Creates a new CyHelpBroker object.
-	 */
-	private CyHelpBroker() {
-		hb = null;
-		hs = null;
-
-		URL hsURL = getClass().getResource(HELP_RESOURCE);
-
-		try {
-			hs = new HelpSet(null, hsURL);
-			hb = hs.createHelpBroker();
-		} catch (Exception e) {
-			System.out.println("HelpSet " + e.getMessage());
-			System.out.println("HelpSet " + hs + " not found.");
-		}
-	}
+public interface CyHelpBroker {
 
 	/**
 	 * Returns the HelpBroker. 
 	 *
 	 * @return the HelpBroker. 
 	 */
-	public static HelpBroker getHelpBroker() {
-		return hb;
-	}
+	public HelpBroker getHelpBroker();
 
 	/**
 	 * Returns the HelpSet. 
 	 *
 	 * @return the HelpSet. 
 	 */
-	public static HelpSet getHelpSet() {
-		return hs;
-	}
+	public HelpSet getHelpSet();
 }

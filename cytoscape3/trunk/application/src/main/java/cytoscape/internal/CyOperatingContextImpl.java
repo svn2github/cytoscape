@@ -42,6 +42,7 @@ import cytoscape.CyOperatingContext;
 
 import java.util.Properties;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -59,6 +60,21 @@ public class CyOperatingContextImpl implements CyOperatingContext {
 		this.props = props;
 
 		mrud = new File(props.getProperty("mrud", System.getProperty("user.dir")));
+
+		loadLocalProps();
+	}
+
+	private void loadLocalProps() {
+		try {
+            File vmp = getConfigFile(PROPS);
+
+            if (vmp != null)
+                props.load(new FileInputStream(vmp));
+            else
+                System.out.println("couldn't read " + PROPS + " from " + CONFIG_DIR);
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 
 	/**
@@ -91,7 +107,7 @@ public class CyOperatingContextImpl implements CyOperatingContext {
 	public File getConfigDirectory() {
         try {
             String dirName = props.getProperty("alternative.config.dir", System.getProperty("user.home"));
-            File parent_dir = new File(dirName, ".cytoscape");
+            File parent_dir = new File(dirName, CONFIG_DIR);
 
             if (parent_dir.mkdir())
                 System.err.println("Parent_Dir: " + parent_dir + " created.");

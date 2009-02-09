@@ -37,7 +37,7 @@
 package cytoscape.dialogs.preferences;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
+import cytoscape.CyOperatingContext;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -65,6 +65,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 
 	int[] selection = null;
 	private Properties props;
+	private CyOperatingContext context;
 
 	JScrollPane propsTablePane = new JScrollPane();
 	JTable prefsTable = new JTable();
@@ -216,9 +217,10 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	 *
 	 * @param owner  DOCUMENT ME!
 	 */
-	public PreferencesDialog(Frame owner,Properties props) {
+	public PreferencesDialog(Frame owner,CyOperatingContext context) {
 		super(owner);
-		this.props = props;
+		this.context = context;
+		this.props = context.getProperties();
 
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
@@ -421,7 +423,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 
 			if (saveCyPropsAsDefault) {
 				try {
-					File file = CytoscapeInit.getConfigFile("cytoscape.props");
+					File file = context.getConfigFile("cytoscape.props");
 					FileOutputStream output = new FileOutputStream(file);
 					props.store(output, "Cytoscape Property File");
 					System.out.println("wrote Cytoscape properties file to: "

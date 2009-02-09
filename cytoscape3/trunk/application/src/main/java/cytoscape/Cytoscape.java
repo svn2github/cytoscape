@@ -68,7 +68,6 @@ import org.cytoscape.vizmap.VisualStyle;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.readers.BookmarkReader;
-import cytoscape.init.CyInitParams;
 import cytoscape.view.CySwingApplication;
 import cytoscape.view.CySwingApplication;
 
@@ -321,9 +320,6 @@ public abstract class Cytoscape {
 	 *            The return value. Zero indicates success, non-zero otherwise.
 	 */
 	public static void exit(int returnVal) {
-		int mode = CytoscapeInit.getCyInitParams().getMode();
-
-		if ((mode == CyInitParams.EMBEDDED_WINDOW) || (mode == CyInitParams.GUI)) {
 			// prompt the user about saving modified files before quitting
 			if (confirmQuit()) {
 				try {
@@ -334,21 +330,10 @@ public abstract class Cytoscape {
 
 				System.out.println("Cytoscape Exiting....");
 
-				if (mode == CyInitParams.EMBEDDED_WINDOW) {
-					// don't system exit since we are running as part
-					// of a bigger application. Instead, dispose of the
-					// desktop.
-					defaultDesktop.getJFrame().dispose();
-				} else {
-					System.exit(returnVal);
-				}
+				System.exit(returnVal);
 			} else {
 				return;
 			}
-		} else {
-			System.out.println("Cytoscape Exiting....");
-			System.exit(returnVal);
-		}
 	}
 
 	/**

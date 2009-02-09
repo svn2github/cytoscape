@@ -46,6 +46,9 @@
 		<constructor-arg ref="cyOperatingContext" />
 	</bean>
 
+	<bean name="cyHelpBroker" class="cytoscape.view.internal.CyHelpBrokerImpl" >
+	</bean>
+
 	<!-- Dialog Factories -->
 	<bean name="importNetworkDialogFactory" class="cytoscape.dialogs.internal.ImportNetworkDialogFactoryImpl">
 		<constructor-arg ref="fileUtil" />
@@ -65,6 +68,7 @@
 	<bean name="networkViewManager" class="cytoscape.view.internal.NetworkViewManager" >
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cyHelpBroker" />
 	</bean>
 
 	<bean name="birdsEyeViewHandler" class="cytoscape.view.internal.BirdsEyeViewHandler" >
@@ -162,7 +166,7 @@
 	<bean id="preferenceAction" class="cytoscape.actions.PreferenceAction">
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />
-		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cyOperatingContext" />
 	</bean>
 	<bean id="bookmarkAction" class="cytoscape.actions.BookmarkAction">
 		<constructor-arg ref="cytoscapeDesktop" />
@@ -255,6 +259,7 @@
 	</bean>
 	<bean id="helpContentsAction" class="cytoscape.actions.HelpContentsAction">
 		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="cyHelpBroker" />
 	</bean>
 	<bean id="helpContactHelpDeskAction" class="cytoscape.actions.HelpContactHelpDeskAction">
 		<constructor-arg ref="networkManager" />

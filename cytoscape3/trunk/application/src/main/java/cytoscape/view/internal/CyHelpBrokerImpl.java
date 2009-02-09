@@ -1,6 +1,5 @@
-
 /*
- File: CyOpertatingContext.java
+ File: CyHelpBroker.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,43 +34,56 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+package cytoscape.view.internal;
 
-package cytoscape;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import java.net.URL;
+import cytoscape.view.CyHelpBroker;
 
-
-import java.util.Properties;
-import java.io.File;
 
 /**
- * Basic access to Cytoscape's operating context. 
+ * This class creates the Cytoscape Help Broker for managing the JavaHelp system
+ * and help set access
  */
-public interface CyOperatingContext {
-	
-	String CONFIG_DIR = ".cytoscape";
-	String PROPS = "cytoscape.props";
+public class CyHelpBrokerImpl implements CyHelpBroker {
+	private HelpBroker hb;
+	private HelpSet hs;
+	private static final String HELP_RESOURCE = "/cytoscape/help/jhelpset.hs";
 
 	/**
-	 * Returns cytoscape.props.
+	 * Creates a new CyHelpBroker object.
 	 */
-	Properties getProperties(); 
+	public CyHelpBrokerImpl() {
+		hb = null;
+		hs = null;
+
+		URL hsURL = getClass().getResource(HELP_RESOURCE);
+
+		try {
+			hs = new HelpSet(null, hsURL);
+			hb = hs.createHelpBroker();
+		} catch (Exception e) {
+			System.out.println("HelpSet " + e.getMessage());
+			System.out.println("HelpSet " + hs + " not found.");
+		}
+	}
 
 	/**
-	 * Get the most recently used directory.
+	 * Returns the HelpBroker. 
+	 *
+	 * @return the HelpBroker. 
 	 */
-	File getMRUD(); 
+	public HelpBroker getHelpBroker() {
+		return hb;
+	}
 
 	/**
-	 * Set the most recently used directory.
+	 * Returns the HelpSet. 
+	 *
+	 * @return the HelpSet. 
 	 */
-	void setMRUD(File mrud);
-
-	/**
-	 * Returns a {@link File} pointing to the config directory.
-	 */
-	File getConfigDirectory();
-
-	/**
-	 * Returns the specified file if it's found in the config directory. 
-	 */
-	File getConfigFile(String file_name);
+	public HelpSet getHelpSet() {
+		return hs;
+	}
 }

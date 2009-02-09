@@ -87,19 +87,21 @@ public class NetworkViewManager implements
 
 	private Properties props;
 
+	private CyHelpBroker help;
+
 	/**
 	 * Creates a new NetworkViewManager object.
 	 * 
 	 * @param desktop
 	 *            DOCUMENT ME!
 	 */
-	public NetworkViewManager(CyNetworkManager netmgr, Properties props) {
+	public NetworkViewManager(CyNetworkManager netmgr, Properties props, CyHelpBroker help) {
 		this.netmgr = netmgr;
 		this.props = props;
 		desktopPane = new JDesktopPane();
 
 		// add Help hooks
-		CyHelpBroker.getHelpBroker().enableHelp(desktopPane, "network-view-manager", null);
+		help.getHelpBroker().enableHelp(desktopPane, "network-view-manager", null);
 
 		networkViewMap = new HashMap<Long, JInternalFrame>();
 		componentMap = new HashMap<JInternalFrame, Long>();
