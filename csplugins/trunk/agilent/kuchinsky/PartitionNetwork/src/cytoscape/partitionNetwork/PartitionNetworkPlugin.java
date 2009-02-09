@@ -119,50 +119,58 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 		      CyNetwork net = Cytoscape.getCurrentNetwork();
 		      CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
 		      
-		      // create an 'uber' view of the network as group nodes
-//				CyNetwork group_network = Cytoscape.createNetwork(net.nodesList(),
-//                        net.edgesList(), "overView", net);
-//				CyNetworkView group_view = Cytoscape.getNetworkView(group_network.getIdentifier());
 //				
 		      for (Object val : attributeValues)
 		      {
 //		    	  System.out.println("building subnet for attribute value: " + val.toString());
 		    	  buildSubNetwork(net, val.toString());
-		    	  // build a group node for the Nodes in this subnetwork
-		    	  List<Node> memberNodes = attributeValueNodeMap.get(val);
-		    	  CyGroup group = CyGroupManager.createGroup(val.toString(), memberNodes, null);
-		    	  groups.add(group);
-//		    	  CyGroupManager.setGroupViewer(group, "metaNode", view, false); // set this false later for efficiency
-//		    	  
-		    	  
-		    	  
-//		    	  MetaNode m = new MetaNode(group);
-//		    	  MetaNode.collapseAll();
+
 		      }
 		      
-		      // group unconnected nodes
-	    	  CyGroup group = CyGroupManager.createGroup("unConnected", unconnectedNodes, null);
-	    	  groups.add(group);
-	    	  
-	    	  // now loop through all groups and set state to 'collapsed'
-	    	  for (CyGroup g : groups)
-	    	  {
-	    		  g.setState(2);
-		    	  CyGroupManager.setGroupViewer(g, "metaNode", view, true); // set this false later for efficiency
-	    	  }
-
+		      buildMetaNodeView (net);
 //	    	  
 	    	  		      
 		      
 		      tileNetworkViews(); // tile and fit content in each view
 		      
 		      // apply force-directed layout to main network view
-				CyLayoutAlgorithm layout = CyLayouts.getLayout("cellular-layout");
-				layout.doLayout(view);
+//				CyLayoutAlgorithm layout = CyLayouts.getLayout("cellular-layout");
+//				layout.doLayout(view);
 
 		      
 			}
 
+			public void buildMetaNodeView (CyNetwork net)
+			{
+			      // create an 'uber' view of the network as group nodes
+				CyNetwork group_network = Cytoscape.createNetwork(net.nodesList(),
+                        net.edgesList(), "overView", net);
+				CyNetworkView group_view = Cytoscape.getNetworkView(group_network.getIdentifier());
+
+				for (Object val: attributeValueNodeMap.keySet())
+				{
+		    	  List<Node> memberNodes = attributeValueNodeMap.get(val);
+		    	  CyGroup group = CyGroupManager.createGroup(val.toString(), memberNodes, null);
+		    	  groups.add(group);
+				}
+			      // group unconnected nodes
+		    	  CyGroup group = CyGroupManager.createGroup("unConnected", unconnectedNodes, null);
+		    	  groups.add(group);
+		    	  
+		    	  // now loop through all groups and set state to 'collapsed'
+		    	  for (CyGroup g : groups)
+		    	  {
+		    		  g.setState(2);
+			    	  CyGroupManager.setGroupViewer(g, "metaNode", group_view, true); // set this false later for efficiency
+		    	  }
+		    	  
+					CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
+					layout.doLayout(group_view);
+			        Cytoscape.getVisualMappingManager().setVisualStyle(PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
+
+			}
+			
+			
 	
 			public void populateNodes (String attributeName) {
 				
@@ -299,39 +307,18 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 					return;
 				}
 				
-				views.add(new_view);
-
-//		        String vsName = "default";
-		        
+				views.add(new_view);		        
 		        
 		        
 		        // apply layout
 				if (current_network_view != Cytoscape.getNullNetworkView()) {
-					Iterator i = new_network.nodesIterator();
 
-//					while (i.hasNext()) {
-//						Node node = (Node) i.next();
-//						new_view.getNodeView(node)
-//						        .setOffset(current_network_view.getNodeView(node).getXPosition(),
-//						                   current_network_view.getNodeView(node).getYPosition());
-//					}
-//
-//					new_view.fitContent();
 					
 //					CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
 					CyLayoutAlgorithm layout = CyLayouts.getLayout("cellular-layout");
 					layout.doLayout(new_view);
 					
-				 	// AJK: 01/13/2009 run hacked force-directed layout that restricts movement to within region
-//					layout = CyLayouts.getLayout("force-directed");
-//					layout.doLayout(new_view);
 
-					// Set visual style
-//					VisualStyle newVS = current_network_view.getVisualStyle();
-//
-//					if (newVS != null) {
-//		                vsName = newVS.getName();
-//					}
 				}
 
 				// set graphics level of detail
