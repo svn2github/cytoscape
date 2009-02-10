@@ -39,6 +39,7 @@ public class application <T extends Handler>{
 		p.add( new JButton(new MyAction("Input Test", new input(), ti,lpi,spi)));
 		p.add( new JButton(new MyAction("Tunable Sampler", new TunableSampler(), ti,lpi,spi)));
 		p.add( new JButton(new MyAction("File Choose", new fileChoose(), ti,lpi,spi)));
+		p.add( new JButton(new MyAction("URL Choose", new URLChoose(), ti,lpi,spi)));
         frame.setContentPane(p);
         frame.pack();
         frame.setVisible(true);

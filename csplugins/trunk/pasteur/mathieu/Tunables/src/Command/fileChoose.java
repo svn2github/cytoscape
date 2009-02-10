@@ -1,25 +1,22 @@
 package Command;
 
 import java.io.File;
+
 import org.cytoscape.io.CyFileFilter;
-import cytoscape.util.FileUtil;
 import Tunable.Tunable;
-import Utils.myFileChooseDialog;
+import Utils.myFile;
 
 
 public class fileChoose implements command {
 	
 	
 	@Tunable(description = "File example",group={"Import Network File"})
-	public myFileChooseDialog file1;
+	public myFile file;
 
 	
 	public fileChoose(){
-		CyFileFilter[] filters = null;
-		FileUtil fileUtil = null;
-		File file = null;
-		file1 = new myFileChooseDialog(file,filters,fileUtil);
-		
+		File[] files = new File[1];
+		file = new myFile(files,false,new CyFileFilter[3]);
 	}
 	
 	

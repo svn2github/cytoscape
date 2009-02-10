@@ -38,8 +38,10 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			return new ListSingleHandler<String>(f,o,t);
 		else if(type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(f,o,t);
-		else if(type == myFileChooseDialog.class)
+		else if(type == myFile.class)
 			return new FileHandler(f,o,t);
+		else if(type == myURL.class)
+			return new URLHandler(f,o,t);
 		return null;
 	}
 }
