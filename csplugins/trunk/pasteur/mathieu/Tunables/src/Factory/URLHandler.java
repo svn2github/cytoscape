@@ -129,8 +129,6 @@ public class URLHandler extends AbstractGuiHandler {
 		DataSource firstDataSource = new DataSource();
 		firstDataSource.setName("");
 		firstDataSource.setHref(null);
-
-		System.out.println("bookmark = "+theBookmarks.getCategory());
 		
 		theModel.addElement(firstDataSource);
 

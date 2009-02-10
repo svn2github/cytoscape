@@ -37,8 +37,8 @@ public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 			return new ListMultiplePropHandler<T>(f,o,t);
 		else if (type == myFile.class)
 			return new FilePropHandler(f,o,t);
-		else if(type == myURL.class)
-			return new URLPropHandler(f,o,t);
+//		else if(type == myURL.class)
+//			return new URLPropHandler(f,o,t);
 		return null;
 	}
 
