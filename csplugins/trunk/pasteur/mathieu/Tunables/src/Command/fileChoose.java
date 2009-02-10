@@ -11,12 +11,13 @@ public class fileChoose implements command {
 	
 	
 	@Tunable(description = "File example",group={"Import Network File"})
-	public myFile file;
+	public myFile myfile;
 
 	
 	public fileChoose(){
-		File[] files = new File[1];
-		file = new myFile(files,false,new CyFileFilter[3]);
+//		File[] files = new File[1];
+		File file = new File("");
+		myfile = new myFile(file,false,new CyFileFilter[3]);
 	}
 	
 	
