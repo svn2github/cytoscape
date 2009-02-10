@@ -416,9 +416,9 @@ public abstract class DownloadableInfo {
  */
   public boolean isPluginCompatibleWithCurrent() {
     boolean compatible = false;
-    String[] cyVersion = new CytoscapeVersion().getFullVersion().split(versionSplit);
-
+    CytoscapeVersion cv = new CytoscapeVersion();
     for (String pluginVersion: compatibleCyVersions) {
+      String[] cyVersion = cv.getFullVersion().split(versionSplit);
       String[] plVersion = pluginVersion.split(versionSplit);
       if ( PluginVersionUtils.isVersion(pluginVersion, PluginVersionUtils.MINOR) ) {
           cyVersion = new String[]{cyVersion[0], cyVersion[1]};
