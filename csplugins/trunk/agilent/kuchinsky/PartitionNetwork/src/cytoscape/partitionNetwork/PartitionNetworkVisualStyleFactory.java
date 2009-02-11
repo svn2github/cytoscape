@@ -102,15 +102,15 @@ public class PartitionNetworkVisualStyleFactory {
 			nac.setCalculator(heightCalculator);
 			
 			DiscreteMapping disMappingFont = new DiscreteMapping(12, "register_node", ObjectMapping.NODE_MAPPING);
-			disMappingFont.putMapValue(Boolean.TRUE, 60);
+			disMappingFont.putMapValue(Boolean.TRUE, 24);
 			Calculator fontCalculator = new BasicCalculator(PartitionNetwork_VS,
 					disMappingFont,
 					VisualPropertyType.NODE_FONT_SIZE);
 			nac.setCalculator(fontCalculator);
 			LabelPosition lp = new LabelPosition();
 			DiscreteMapping disMappingLabelPosition = new DiscreteMapping(lp, "register_node", ObjectMapping.NODE_MAPPING);
-			lp.setOffsetX(300);
-			lp.setOffsetY(50);
+			lp.setOffsetX(120);
+			lp.setOffsetY(15);
 			lp.setJustify(1);
 			disMappingLabelPosition.putMapValue(Boolean.TRUE, lp);
 			Calculator posCalculator = new BasicCalculator(PartitionNetwork_VS,
