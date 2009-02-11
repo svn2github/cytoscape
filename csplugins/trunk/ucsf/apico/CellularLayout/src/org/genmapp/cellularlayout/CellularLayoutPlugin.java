@@ -368,8 +368,8 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 				int i = 0;
 				for (Region or : orList) {
 					// define points to exclude: corners and midpoints
-					System.out.println("Overlapping regions: "
-							+ or.getAttValue());
+					// System.out.println("Overlapping regions: "
+					// + or.getAttValue());
 					xy[i][0] = or.getRegionLeft();
 					xy[i][1] = or.getRegionTop();
 					i++;
@@ -456,14 +456,14 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						maxScaleFactor = scaleX;
 				} else { // Rectangle, Oval
 					int col = r.getColumns();
-					System.out.println("col: " + r.getAttValue() + col);
+					// System.out.println("col: " + r.getAttValue() + col);
 					double scaleX = ((col + 1) * distanceBetweenNodes)
 							/ r.getFreeWidth();
 					double scaleY = ((col + 1) * distanceBetweenNodes)
 							/ r.getFreeHeight();
 					double scaleAreaSqrt = Math.sqrt(scaleX * scaleY);
-					System.out.println("scaleX,Y,Area: " + scaleX + ","
-							+ scaleY + "," + scaleAreaSqrt);
+					// System.out.println("scaleX,Y,Area: " + scaleX + ","
+					// + scaleY + "," + scaleAreaSqrt);
 					// use area to scale regions efficiently
 					if (scaleAreaSqrt > maxScaleFactor)
 						maxScaleFactor = scaleAreaSqrt;
@@ -551,9 +551,12 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 					regNv.setWidth(0.1);
 					Cytoscape.getNodeAttributes().setAttribute(regId,
 							"canonicalName", "");
-					Cytoscape.getNodeAttributes().setAttribute(regId, "register_node", true);
-					Cytoscape.getNodeAttributes().setUserVisible("register_node", false);
-					Cytoscape.getNodeAttributes().setUserEditable("register_node", false);
+					Cytoscape.getNodeAttributes().setAttribute(regId,
+							"register_node", true);
+					Cytoscape.getNodeAttributes().setUserVisible(
+							"register_node", false);
+					Cytoscape.getNodeAttributes().setUserEditable(
+							"register_node", false);
 					lockNode(regNv); // lock against future layout; TODO:
 					// doesn't work!
 					switch (j) {
@@ -593,26 +596,26 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						- Math.floor((nodeCount / Math.floor(r.getFreeWidth()
 								/ distanceBetweenNodes - 1)) - 0.3)
 						* distanceBetweenNodes / 2;
-				System.out.println("Region: "
-						+ r.getAttValue()
-						+ "("
-						+ r.getNodeCount()
-						+ ")"
-						+ " startX,Y: "
-						+ startX
-						+ ","
-						+ startY
-						+ "   X,Y,W,H: "
-						+ r.getFreeCenterX()
-						+ ","
-						+ r.getFreeCenterY()
-						+ ","
-						+ r.getFreeWidth()
-						+ ","
-						+ r.getFreeHeight()
-						+ ","
-						+ ((nodeCount / Math.floor(r.getFreeWidth()
-								/ distanceBetweenNodes - 1)) - 0.6));
+				// System.out.println("Region: "
+				// + r.getAttValue()
+				// + "("
+				// + r.getNodeCount()
+				// + ")"
+				// + " startX,Y: "
+				// + startX
+				// + ","
+				// + startY
+				// + "   X,Y,W,H: "
+				// + r.getFreeCenterX()
+				// + ","
+				// + r.getFreeCenterY()
+				// + ","
+				// + r.getFreeWidth()
+				// + ","
+				// + r.getFreeHeight()
+				// + ","
+				// + ((nodeCount / Math.floor(r.getFreeWidth()
+				// / distanceBetweenNodes - 1)) - 0.6));
 				nextX = startX;
 				nextY = startY;
 
@@ -647,7 +650,10 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						CyAttributes attributes = Cytoscape.getNodeAttributes();
 						String[] atts = attributes.getAttributeNames();
 						for (String att : atts) {
-							if (attributes.getUserVisible(att) && attributes.hasAttribute(oldId, att)) { //skip hidden attributes
+							if (attributes.getUserVisible(att)
+									&& attributes.hasAttribute(oldId, att)) { // skip
+																				// hidden
+																				// attributes
 								byte type = attributes.getType(att);
 								if (type == CyAttributes.TYPE_BOOLEAN) {
 									attributes.setAttribute(newId, att,
@@ -735,7 +741,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						nextX += distanceBetweenNodes;
 					}
 				}
-				//UnCrossAction.unCross(nodeViews, false);
+				// TODO: Uncross edges doesn't work; it swaps across regions due
+				// to copies; must be using canonical name and not IDs??
+				// if (nodeViews.size() > 1 && (r.getCenterY() - startY) < 1){
+				// //if only 1 or 2 rows of nodes
+				// System.out.println("UNCROSSING: "+ r.getAttValue());
+				// UnCrossAction.unCross(nodeViews, false);
+				// }
 				r.repaint();
 
 				// oil & water
