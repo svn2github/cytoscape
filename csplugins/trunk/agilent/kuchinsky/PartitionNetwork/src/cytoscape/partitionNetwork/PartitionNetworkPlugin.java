@@ -315,6 +315,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 
 					
 //					CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
+					System.out.println("Layout: " + new_view.getTitle());
 					CyLayoutAlgorithm layout = CyLayouts.getLayout("cellular-layout");
 					layout.doLayout(new_view);
 					
