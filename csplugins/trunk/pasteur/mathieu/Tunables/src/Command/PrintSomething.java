@@ -12,6 +12,9 @@ public class PrintSomething implements command {
 	@Tunable(description="your last name", group={"stuff","advanced"}, flag={Param.collapsed})
 	public String lastName = "simpson";
 
+	@Tunable(description="Test",dependsOn="footSize=10.0")
+	public Double test = new Double(6.5);	
+	
 	@Tunable(description="your foot size", group={"stuff","advanced"},flag={Param.slider})
 	public BoundedDouble footSize = new BoundedDouble(5.0, 8.5, 13.5, true, false);
 

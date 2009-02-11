@@ -22,7 +22,7 @@ public class CheckListManager<T> extends MouseAdapter implements ListSelectionLi
     private ListSelectionModel selectionModel = new DefaultListSelectionModel(); 
     private JList list = new JList();
     ArrayList<T> arrayOut=null;
-    ArrayList arrayTest=null;
+    ArrayList<Integer> arrayTest=null;
     ListMultipleSelection<T> LMS;
     int hotspot = new JCheckBox().getPreferredSize().width; 
  
@@ -50,10 +50,10 @@ public class CheckListManager<T> extends MouseAdapter implements ListSelectionLi
             selectionModel.addSelectionInterval(index, index);}
     }
  
-    public ArrayList getArray(){
-    	
+    
+    public ArrayList<T> getArray(){
         arrayOut = new ArrayList<T>();
-        arrayTest = new ArrayList();
+        arrayTest = new ArrayList<Integer>();
     	for(int i=0;i<LMS.getPossibleValues().size();i++){
     		if(selectionModel.isSelectedIndex(i))arrayTest.add(i);
     	}
@@ -87,7 +87,7 @@ public class CheckListManager<T> extends MouseAdapter implements ListSelectionLi
     } 
  
 
-    public void actionPerformed(ActionEvent e){ 
+    public void actionPerformed(ActionEvent e){
         toggleSelection(list.getSelectedIndex());
     }
 } 

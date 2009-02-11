@@ -4,12 +4,17 @@ package GuiInterception;
 import java.lang.reflect.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.event.*;
 import java.awt.*;
 import HandlerFactory.AbstractHandler;
 import Tunable.*;
 
-public abstract class AbstractGuiHandler extends AbstractHandler implements Guihandler, ActionListener {
+public abstract class AbstractGuiHandler extends AbstractHandler implements Guihandler, ActionListener,ChangeListener,ListSelectionListener {
 
 	protected JPanel panel;
 
@@ -36,6 +41,17 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 		notifyDependents();
 	}
 
+	public void stateChanged(ChangeEvent e){
+		handle();
+		notifyDependents();
+	}
+	
+    public void valueChanged(ListSelectionEvent le) {
+    	handle();
+    	notifyDependents();
+    }
+
+	
 	// notify dependencies that this object is changing
 	public void notifyDependents() {
 		String state = getState();

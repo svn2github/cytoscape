@@ -2,6 +2,7 @@
 package Factory;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ import GuiInterception.AbstractGuiHandler;
 import Tunable.*;
 import Utils.*;
 
-public class ListMultipleHandler<T> extends AbstractGuiHandler implements ListSelectionListener {
+public class ListMultipleHandler<T> extends AbstractGuiHandler{
 
 	ListMultipleSelection<T> lms;
 	JList jlist;
@@ -38,13 +39,14 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler implements ListSe
         jlist = new JList(lms.getPossibleValues().toArray());
         jlist.setFont(new Font("sansserif",Font.PLAIN,11));
         jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        checkListManager = new CheckListManager<T>(jlist,lms); 
+        jlist.addListSelectionListener(this);
+        checkListManager = new CheckListManager<T>(jlist,lms);
         JScrollPane scrollpane = new JScrollPane(jlist);
         panel.add(scrollpane,BorderLayout.EAST);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void handle() {
+	public void handle(){
 		//T[] selected = (T[]) jlist.getSelectedValues();
 		selected = checkListManager.getArray();
 		if (selected!=null) {
@@ -55,9 +57,6 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler implements ListSe
         }
 	}
 
-    public void valueChanged(ListSelectionEvent le) {
-		handle();
-    }
 
 	public String getState() {
 		java.util.List<T> sel = lms.getSelectedValues();

@@ -49,7 +49,7 @@ public abstract class AbstractHandler implements Handler {
 	
 	
 	public void handlerChanged(Handler h) {
-		//System.out.println("currently a no-op");
+		System.out.println("currently a no-op");
 	}
 
 	public void addHandlerListener(HandlerListener listener) {

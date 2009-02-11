@@ -2,11 +2,16 @@ package Factory;
 
 import java.lang.reflect.Field;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
 import GuiInterception.*;
 import Tunable.Tunable;
 import Tunable.Tunable.Param;
@@ -14,7 +19,7 @@ import Utils.BoundedDouble;
 import Utils.mySlider;
 
 
-public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandler ,ActionListener{
+public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandler {
 	
 	JTextField jtf;
 	BoundedDouble myBounded;
@@ -39,6 +44,7 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 			label.setFont(new Font(null, Font.PLAIN,12));
 			panel.add(label,BorderLayout.WEST);
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
+			slider.addChangeListener(this);
 			panel.add(slider,BorderLayout.EAST);
 		}
 		else{
@@ -86,4 +92,5 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 	public String getState() {
 		return myBounded.getValue().toString();
 	}
+
 }
