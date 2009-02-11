@@ -1,5 +1,5 @@
 /*
-  File: WindowUtilities.java
+  File: AbstractScreen.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.util.shadegrown;
+package org.cytoscape.splash.internal; 
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,35 +42,26 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 
-/**
- * WindowUtilities keeps track of open windows and may close down the JVM when
- * all primary windows are closed (see {@link #setExitJVMWhenAllWindowsClose}
- * and {@link #addPrimaryWindow( Window )}).
- */
+abstract class AbstractScreen {
+	protected JWindow window; 
 
-// TODO: add createDialog stuff...
-public abstract class WindowUtilities implements WindowConstants {
-	protected static JWindow splashWindow = null;
-	protected static JComponent splashContent = null;
-
-	// protected static javax.swing.Timer splashTimer = null;
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param window DOCUMENT ME!
 	 */
-	public static void centerWindowOnScreen(Window window) {
+	protected void centerWindowOnScreen(Window window) {
 		centerWindowSize(window);
 		centerWindowLocation(window);
 		window.setVisible(true);
-	} // static centerWindowOnScreen( Window )
+	} 
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param window DOCUMENT ME!
 	 */
-	public static void centerWindowSize(Window window) {
+	protected void centerWindowSize(Window window) {
 		Dimension screen_size = Toolkit.getDefaultToolkit().getScreenSize();
 		GraphicsConfiguration configuration = GraphicsEnvironment.getLocalGraphicsEnvironment()
 		                                                         .getDefaultScreenDevice()
@@ -86,14 +77,14 @@ public abstract class WindowUtilities implements WindowConstants {
 		frame_size.width = (int) (screen_size.width * .75);
 		frame_size.height = (int) (screen_size.height * .75);
 		window.setSize(frame_size);
-	} // static centerWindowSize( Window )
+	} 
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param window DOCUMENT ME!
 	 */
-	public static void centerWindowLocation(Window window) {
+	protected void centerWindowLocation(Window window) {
 		Dimension screen_size = Toolkit.getDefaultToolkit().getScreenSize();
 		GraphicsConfiguration configuration = GraphicsEnvironment.getLocalGraphicsEnvironment()
 		                                                         .getDefaultScreenDevice()
@@ -110,88 +101,8 @@ public abstract class WindowUtilities implements WindowConstants {
 		                   ((screen_size.height / 2) - (frame_size.height / 2)) + screen_insets.top);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param image DOCUMENT ME!
-	 * @param milliseconds DOCUMENT ME!
-	 */
-	public static void showSplash(ImageIcon image, int milliseconds) {
-		showSplash(image, milliseconds, true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param image DOCUMENT ME!
-	 * @param milliseconds DOCUMENT ME!
-	 * @param start_timer DOCUMENT ME!
-	 */
-	public static void showSplash(ImageIcon image, int milliseconds, boolean start_timer) {
-		showSplash(new JLabel(image), milliseconds, start_timer);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param content DOCUMENT ME!
-	 * @param milliseconds DOCUMENT ME!
-	 */
-	public static void showSplash(JComponent content, int milliseconds) {
-		showSplash(content, milliseconds, true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param content DOCUMENT ME!
-	 * @param milliseconds DOCUMENT ME!
-	 * @param start_timer DOCUMENT ME!
-	 */
-	public static void showSplash(JComponent content, int milliseconds, boolean start_timer) {
-		hideSplash();
-
-		if (splashWindow == null) {
-			splashWindow = new JWindow();
-		}
-
-		splashContent = content;
-		splashWindow.getContentPane().add(splashContent);
-		splashWindow.pack();
-		centerWindowLocation(splashWindow);
-		splashWindow.setVisible(true);
-		splashWindow.setAlwaysOnTop(true);
-
-		splashContent.addMouseListener(new MouseListener() {
-				public void mouseClicked(MouseEvent e) {
-					hideSplash();
-				}
-
-				public void mouseEntered(MouseEvent e) {
-				}
-
-				public void mouseExited(MouseEvent e) {
-				}
-
-				public void mousePressed(MouseEvent e) {
-				}
-
-				public void mouseReleased(MouseEvent e) {
-				}
-			});
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public static void hideSplash() {
-		if ((splashWindow != null) && splashWindow.isVisible()) {
-			splashWindow.setVisible(false);
-
-			if (splashContent != null) {
-				splashWindow.getContentPane().remove(splashContent);
-				splashContent = null;
-			}
-		}
-	}
+    public void hideScreen() {
+        if ((window != null) && window.isVisible())
+            window.dispose();
+    }
 }

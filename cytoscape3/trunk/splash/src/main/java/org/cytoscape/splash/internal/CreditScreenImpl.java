@@ -1,5 +1,5 @@
 /*
-  File: CreditScreen.java
+  File: CreditScreenImpl.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,38 +34,44 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.util;
-
-import cytoscape.util.shadegrown.WindowUtilities;
+package org.cytoscape.splash.internal; 
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.net.URL;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.util.List;
 
+import org.cytoscape.splash.CreditScreen;
 
 /**
  *
  */
-public abstract class CreditScreen {
-	private final static long serialVersionUID = 1202339874708904L;
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param url DOCUMENT ME!
-	 * @param lines DOCUMENT ME!
-	 */
-	public static void showCredits(URL url, String lines) {
-		final JWindow window = new JWindow();
-		final ScrollingLinesPanel panel = new ScrollingLinesPanel(url, lines);
+public class CreditScreenImpl extends AbstractScreen implements CreditScreen {
+
+	private Timer timer;
+	private ImageIcon image;
+	private List<String> lines;
+
+	public CreditScreenImpl(ImageIcon image, List<String> lines) {
+		super();
+		this.image = image;
+		this.lines = lines;
+	}
+
+	public void showCredits() {
+		window = new JWindow();
+		final ScrollingLinesPanel panel = new ScrollingLinesPanel(image, lines);
 		window.add(panel);
 		window.pack();
 		window.validate();
 		window.setPreferredSize(panel.getPreferredSize());
 		window.requestFocusInWindow();
-		WindowUtilities.centerWindowLocation(window);
+		centerWindowLocation(window);
 		window.setAlwaysOnTop(true);
 		window.setVisible(true);
 
@@ -79,40 +85,37 @@ public abstract class CreditScreen {
 			}
 		};
 
-		final javax.swing.Timer timer = new javax.swing.Timer(100, scrollText);
+		timer = new Timer(100, scrollText);
 
 		window.addMouseListener(new MouseListener() {
 				public void mouseClicked(MouseEvent e) {
-					window.dispose();
-					timer.stop();
+					hideCredits();
 				}
-
-				public void mouseEntered(MouseEvent e) {
-				}
-
-				public void mouseExited(MouseEvent e) {
-				}
-
-				public void mousePressed(MouseEvent e) {
-				}
-
-				public void mouseReleased(MouseEvent e) {
-				}
+				public void mouseEntered(MouseEvent e) { }
+				public void mouseExited(MouseEvent e) { }
+				public void mousePressed(MouseEvent e) { }
+				public void mouseReleased(MouseEvent e) { }
 			});
 
 		timer.start();
 	}
 
+	public void hideCredits() {
+		hideScreen();
+		if ( timer != null )
+			timer.stop();
+	}
+
 	private static class ScrollingLinesPanel extends JPanel {
-	private final static long serialVersionUID = 1202339874718767L;
+		private final static long serialVersionUID = 1202339874718767L;
 		int yPos;
 		int xPos;
 		ImageIcon background;
-		String lines;
+		List<String> lines;
 
-		public ScrollingLinesPanel(URL url, String lines) {
+		public ScrollingLinesPanel(ImageIcon background, List<String> lines) {
 			super();
-			background = new ImageIcon(url);
+			this.background = background;
 			this.lines = lines;
 			yPos = background.getIconHeight();
 			xPos = (int) ((float) background.getIconWidth() / 2.0f);
@@ -124,20 +127,15 @@ public abstract class CreditScreen {
 			g.drawImage(background.getImage(), 0, 0, null);
 			((Graphics2D) g).setPaint(Color.white);
 
-			int end = lines.indexOf("\n");
-			int begin = 0;
 			int i = 1;
 			int y = yPos;
 
-			while (end > 0) {
-				String sub = lines.substring(begin, end);
+			for ( String sub : lines ) {
 				y = yPos + (12 * i);
 
 				if (y > 80)
 					g.drawString(sub, xPos, y);
 
-				begin = end + 1;
-				end = lines.indexOf("\n", begin);
 				i++;
 			}
 

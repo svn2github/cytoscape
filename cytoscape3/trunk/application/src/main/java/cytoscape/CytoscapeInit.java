@@ -39,7 +39,7 @@ package cytoscape;
 import cytoscape.init.CyInitParams;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CySwingApplication;
-import cytoscape.util.shadegrown.WindowUtilities;
+//import cytoscape.util.shadegrown.WindowUtilities;
 import org.cytoscape.model.CyNetwork;
 
 import javax.swing.*;
@@ -89,7 +89,6 @@ import java.util.Properties;
  * @author Cytoscape Core Team
  */
 public class CytoscapeInit {
-	private static final String SPLASH_SCREEN_LOCATION = "/images/CytoscapeSplashScreen.png";
 	
 	private static Properties properties;
 	private static Properties visualProperties;
@@ -124,29 +123,10 @@ public class CytoscapeInit {
 		try {
 			initParams = params;
 
-			// see if we are in headless mode
-			// show splash screen, if appropriate
-			System.out.println("init mode: " + initParams.getMode());
-
-		
-			// Initialize as GUI mode
-			final ImageIcon image = new ImageIcon(this.getClass()
-				                                          .getResource(SPLASH_SCREEN_LOCATION));
-			WindowUtilities.showSplash(image, 8000);
-
-			// set the wait cursor
-			desktop.getJFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-
 		} catch (Throwable t) {
 			System.out.println("Caught initialization error:");
 			t.printStackTrace();
 		} finally {
-			// Always restore the cursor and hide the splash, even there is
-			// exception
-			WindowUtilities.hideSplash();
-			desktop.getJFrame().setCursor(Cursor.getDefaultCursor());
-
 			// to clean up anything that the plugins have messed up
 			desktop.getJFrame().repaint();
 		}

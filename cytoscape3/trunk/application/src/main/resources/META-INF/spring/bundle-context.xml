@@ -267,6 +267,7 @@
 	</bean>
 	<bean id="helpAboutAction" class="cytoscape.actions.HelpAboutAction">
 		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="creditScreenServiceRef" />
 	</bean>
 
 	<!-- not a CyAction, but adds menu -->

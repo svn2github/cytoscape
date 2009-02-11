@@ -35,6 +35,9 @@
 	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper">
 	</osgi:reference>
 
+	<osgi:reference id="creditScreenServiceRef" interface="org.cytoscape.splash.CreditScreen">
+	</osgi:reference>
+
 	<!-- define services that application provides -->
 	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
 		interface="cytoscape.view.CyMenus" />

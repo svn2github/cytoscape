@@ -1,5 +1,5 @@
 /*
-  File: HelpAboutAction.java
+  File: SplashScreenImpl.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,40 +34,50 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.actions;
-
-import org.cytoscape.splash.CreditScreen;
-
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
+package org.cytoscape.splash.internal; 
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
 /**
  *
  */
-public class HelpAboutAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869681795L;
+class SplashScreenImpl extends AbstractScreen {
 
-	private CreditScreen credits;
+	private ImageIcon image;
 
-	/**
-	 * Creates a new HelpAboutAction object.
-	 */
-	public HelpAboutAction(CyNetworkManager netmgr, CreditScreen credits) {
-		super("About...",netmgr);
-		this.credits = credits;
-		setPreferredMenu("Help");
+	public SplashScreenImpl(ImageIcon image) {
+		super();
+		this.image = image;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		credits.showCredits();
+	public void showSplash() {
+		hideSplash();
+		
+		JComponent content = new JLabel(image);
+
+		window = new JWindow();
+		window.getContentPane().add(content);
+		window.pack();
+		centerWindowLocation(window);
+		window.setVisible(true);
+		window.setAlwaysOnTop(true);
+
+		content.addMouseListener(new MouseListener() {
+				public void mouseClicked(MouseEvent e) {
+					hideSplash();
+				}
+				public void mouseEntered(MouseEvent e) { }
+				public void mouseExited(MouseEvent e) { }
+				public void mousePressed(MouseEvent e) { }
+				public void mouseReleased(MouseEvent e) { }
+			});
+	}
+
+	public void hideSplash() {
+		hideScreen();
 	}
 }
