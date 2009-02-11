@@ -71,7 +71,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 	 * cellular regions mapped by node attribute.
 	 */
 	public class CellularLayoutAlgorithm extends AbstractLayout {
-		double distanceBetweenNodes = 80.0d;
+		double distanceBetweenNodes = 30.0d;
 		LayoutProperties layoutProperties = null;
 
 		/**
@@ -81,7 +81,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 			super();
 			layoutProperties = new LayoutProperties(getName());
 			layoutProperties.add(new Tunable("nodeSpacing",
-					"Spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
+					"Spacing between nodes", Tunable.DOUBLE, new Double(30.0)));
 
 			// We've now set all of our tunables, so we can read the property
 			// file now and adjust as appropriate
@@ -647,14 +647,13 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						CyAttributes attributes = Cytoscape.getNodeAttributes();
 						String[] atts = attributes.getAttributeNames();
 						for (String att : atts) {
-							if (attributes.getUserVisible(att)) { //skip hidden attributes
+							if (attributes.getUserVisible(att) && attributes.hasAttribute(oldId, att)) { //skip hidden attributes
 								byte type = attributes.getType(att);
 								if (type == CyAttributes.TYPE_BOOLEAN) {
 									attributes.setAttribute(newId, att,
 											attributes.getBooleanAttribute(
 													oldId, att));
-								} else if (type == CyAttributes.TYPE_INTEGER && attributes.getIntegerAttribute(
-										oldId, att) != null) {
+								} else if (type == CyAttributes.TYPE_INTEGER) {
 									attributes.setAttribute(newId, att,
 											attributes.getIntegerAttribute(
 													oldId, att));
@@ -736,6 +735,7 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						nextX += distanceBetweenNodes;
 					}
 				}
+				//UnCrossAction.unCross(nodeViews, false);
 				r.repaint();
 
 				// oil & water
