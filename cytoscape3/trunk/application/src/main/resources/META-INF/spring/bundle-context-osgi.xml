@@ -5,7 +5,6 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-
 	<!-- Import OSGi services -->
 	<osgi:reference id="cyNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.CyNetworkFactory">
@@ -39,6 +38,11 @@
 	</osgi:reference>
 
 	<!-- define services that application provides -->
+
+	<!-- Props are manages in this service -->
+	<osgi:service id="cyOperatingContextService" ref="cyOperatingContext"
+		interface="cytoscape.CyOperatingContext" />
+
 	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
 		interface="cytoscape.view.CyMenus" />
 
@@ -167,50 +171,52 @@
 		interface="cytoscape.CyNetworkManager" />
 
 	<!-- register listener services -->
-	<osgi:service id="networkPanelSelectedNodesListenerService" ref="networkPanel"
-		interface="org.cytoscape.model.events.SelectedNodesListener" />
-	<osgi:service id="networkPanelSelectedEdgesListenerService" ref="networkPanel"
-		interface="org.cytoscape.model.events.SelectedEdgesListener" />
-	<osgi:service id="networkPanelUnselectedNodesListenerService" ref="networkPanel"
-		interface="org.cytoscape.model.events.UnselectedNodesListener" />
-	<osgi:service id="networkPanelUnselectedEdgesListenerService" ref="networkPanel"
-		interface="org.cytoscape.model.events.UnselectedEdgesListener" />
-	<osgi:service id="networkPanelSetCurrentNetworkViewListenerService" ref="networkPanel"
-		interface="cytoscape.events.SetCurrentNetworkViewListener" />
-	<osgi:service id="networkPanelSetCurrentNetworkListenerService" ref="networkPanel"
-		interface="cytoscape.events.SetCurrentNetworkListener" />
-	<osgi:service id="networkPanelNetworkAddedListenerService" ref="networkPanel"
-		interface="cytoscape.events.NetworkAddedListener" />
-	<osgi:service id="networkPanelNetworkViewAddedListenerService" ref="networkPanel"
-		interface="cytoscape.events.NetworkViewAddedListener" />
-	<osgi:service id="networkPanelNetworkAboutToBeDestroyedListenerService" ref="networkPanel"
-		interface="cytoscape.events.NetworkAboutToBeDestroyedListener" />
-	<osgi:service id="networkPanelNetworkViewAboutToBeDestroyedListenerService" ref="networkPanel"
+	<osgi:service id="networkPanelSelectedNodesListenerService"
+		ref="networkPanel" interface="org.cytoscape.model.events.SelectedNodesListener" />
+	<osgi:service id="networkPanelSelectedEdgesListenerService"
+		ref="networkPanel" interface="org.cytoscape.model.events.SelectedEdgesListener" />
+	<osgi:service id="networkPanelUnselectedNodesListenerService"
+		ref="networkPanel" interface="org.cytoscape.model.events.UnselectedNodesListener" />
+	<osgi:service id="networkPanelUnselectedEdgesListenerService"
+		ref="networkPanel" interface="org.cytoscape.model.events.UnselectedEdgesListener" />
+	<osgi:service id="networkPanelSetCurrentNetworkViewListenerService"
+		ref="networkPanel" interface="cytoscape.events.SetCurrentNetworkViewListener" />
+	<osgi:service id="networkPanelSetCurrentNetworkListenerService"
+		ref="networkPanel" interface="cytoscape.events.SetCurrentNetworkListener" />
+	<osgi:service id="networkPanelNetworkAddedListenerService"
+		ref="networkPanel" interface="cytoscape.events.NetworkAddedListener" />
+	<osgi:service id="networkPanelNetworkViewAddedListenerService"
+		ref="networkPanel" interface="cytoscape.events.NetworkViewAddedListener" />
+	<osgi:service id="networkPanelNetworkAboutToBeDestroyedListenerService"
+		ref="networkPanel" interface="cytoscape.events.NetworkAboutToBeDestroyedListener" />
+	<osgi:service
+		id="networkPanelNetworkViewAboutToBeDestroyedListenerService" ref="networkPanel"
 		interface="cytoscape.events.NetworkViewAboutToBeDestroyedListener" />
 
-	<osgi:service id="networkViewManagerNetworkViewAddedListenerService" ref="networkViewManager"
-		interface="cytoscape.events.NetworkViewAddedListener" />
-	<osgi:service id="networkViewManagerNetworkViewAboutToBeDestroyedListenerService" ref="networkViewManager"
-		interface="cytoscape.events.NetworkViewAboutToBeDestroyedListener" />
-	<osgi:service id="networkViewManagerSetCurrentNetworkViewListenerService" ref="networkViewManager"
-		interface="cytoscape.events.SetCurrentNetworkViewListener" />
-	<osgi:service id="networkViewManagerSetCurrentNetworkListenerService" ref="networkViewManager"
-		interface="cytoscape.events.SetCurrentNetworkListener" />
+	<osgi:service id="networkViewManagerNetworkViewAddedListenerService"
+		ref="networkViewManager" interface="cytoscape.events.NetworkViewAddedListener" />
+	<osgi:service
+		id="networkViewManagerNetworkViewAboutToBeDestroyedListenerService"
+		ref="networkViewManager" interface="cytoscape.events.NetworkViewAboutToBeDestroyedListener" />
+	<osgi:service id="networkViewManagerSetCurrentNetworkViewListenerService"
+		ref="networkViewManager" interface="cytoscape.events.SetCurrentNetworkViewListener" />
+	<osgi:service id="networkViewManagerSetCurrentNetworkListenerService"
+		ref="networkViewManager" interface="cytoscape.events.SetCurrentNetworkListener" />
 
-	<osgi:service id="birdsEyeViewHandlerSetCurrentNetworkViewListenerService" ref="birdsEyeViewHandler"
-		interface="cytoscape.events.SetCurrentNetworkViewListener" />
-	<osgi:service id="birdsEyeViewHandlerSetCurrentNetworkListenerService" ref="birdsEyeViewHandler"
-		interface="cytoscape.events.SetCurrentNetworkListener" />
-	<osgi:service id="birdsEyeViewHandlerNetworkViewDestroyedListenerService" ref="birdsEyeViewHandler"
-		interface="cytoscape.events.NetworkViewDestroyedListener" />
+	<osgi:service id="birdsEyeViewHandlerSetCurrentNetworkViewListenerService"
+		ref="birdsEyeViewHandler" interface="cytoscape.events.SetCurrentNetworkViewListener" />
+	<osgi:service id="birdsEyeViewHandlerSetCurrentNetworkListenerService"
+		ref="birdsEyeViewHandler" interface="cytoscape.events.SetCurrentNetworkListener" />
+	<osgi:service id="birdsEyeViewHandlerNetworkViewDestroyedListenerService"
+		ref="birdsEyeViewHandler" interface="cytoscape.events.NetworkViewDestroyedListener" />
 
-	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService" ref="undoMonitor"
-		interface="cytoscape.events.SetCurrentNetworkViewListener" />
+	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService"
+		ref="undoMonitor" interface="cytoscape.events.SetCurrentNetworkViewListener" />
 
 	<osgi:service id="aboutDialogFactoryService" ref="aboutDialogFactory"
 		interface="cytoscape.dialogs.AboutDialogFactory" />
-	
+
 	<osgi:service id="fileUtilService" ref="fileUtil"
 		interface="cytoscape.util.FileUtil" />
-	
+
 </beans>
