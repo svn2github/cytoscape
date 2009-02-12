@@ -34,41 +34,6 @@
  */
 package org.cytoscape.webservice.client.gui;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.dialogs.AboutDialog;
-import cytoscape.dialogs.AboutDialogFactory;
-
-import cytoscape.view.CySwingApplication;
-import cytoscape.view.CytoscapeDesktop;
-
-import org.cytoscape.model.CyNetwork;
-
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
-
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
-
-import org.cytoscape.webservice.client.CyWebServiceEvent;
-import org.cytoscape.webservice.client.CyWebServiceEventFactory;
-import org.cytoscape.webservice.client.CyWebServiceException;
-import org.cytoscape.webservice.client.NetworkImportWebServiceClient;
-import org.cytoscape.webservice.client.SearchResult;
-import org.cytoscape.webservice.client.WSEventType;
-import org.cytoscape.webservice.client.WSResponseType;
-import org.cytoscape.webservice.client.WebServiceClient;
-import org.cytoscape.webservice.client.WebServiceClientManager;
-import org.cytoscape.webservice.client.gui.WebServiceClientGUI.IconSize;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -78,10 +43,8 @@ import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +61,32 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.webservice.client.CyWebServiceEvent;
+import org.cytoscape.webservice.client.CyWebServiceEventFactory;
+import org.cytoscape.webservice.client.CyWebServiceException;
+import org.cytoscape.webservice.client.NetworkImportWebServiceClient;
+import org.cytoscape.webservice.client.SearchResult;
+import org.cytoscape.webservice.client.WSEventType;
+import org.cytoscape.webservice.client.WSResponseType;
+import org.cytoscape.webservice.client.WebServiceClient;
+import org.cytoscape.webservice.client.WebServiceClientManager;
+import org.cytoscape.webservice.client.gui.WebServiceClientGUI.IconSize;
+
+import cytoscape.CyNetworkManager;
+import cytoscape.Cytoscape;
+import cytoscape.dialogs.AboutDialog;
+import cytoscape.dialogs.AboutDialogFactory;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.view.CySwingApplication;
 
 
 /**

@@ -44,7 +44,7 @@ import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.webservice.client.ClientType;
-import org.cytoscape.webservice.client.WebServiceClientImpl;
+import org.cytoscape.webservice.client.internal.WebServiceClientImpl;
 
 
 /**
