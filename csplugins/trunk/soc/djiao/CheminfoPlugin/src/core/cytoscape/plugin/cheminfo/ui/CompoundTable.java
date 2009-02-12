@@ -48,6 +48,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -540,7 +541,10 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 					};
 					new Thread(t).start();
 				}
-			} else if (e.getButton() == MouseEvent.BUTTON3 && e.getComponent() == tableHeader) {
+			} else if (e.getComponent() == tableHeader && 
+			           ((e.getButton() == MouseEvent.BUTTON3) ||
+			            (e.getButton() == MouseEvent.BUTTON1 && e.isMetaDown()) ||
+			            (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown()))) {
 				// Popup header context menu
 				JPopupMenu headerMenu = new JPopupMenu();
 				// Get our column title
