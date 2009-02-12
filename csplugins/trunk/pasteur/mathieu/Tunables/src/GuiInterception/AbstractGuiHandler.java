@@ -47,8 +47,11 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	}
 	
     public void valueChanged(ListSelectionEvent le) {
-    	handle();
-    	notifyDependents();
+    	boolean ok = le.getValueIsAdjusting();
+    	if(!ok){
+    		handle();
+    		notifyDependents();
+    	}
     }
 
 	
