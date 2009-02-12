@@ -19,8 +19,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.EdgeAppearanceCalculator;
 import org.cytoscape.vizmap.LineStyle;
@@ -45,8 +43,6 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
-import cytoscape.CyNetworkManager;
-
 /**
  * Maintain property sheet table states.
  * 
@@ -62,36 +58,24 @@ public class VizMapPropertySheetBuilder {
 	protected static final Map<Object, Icon> lineTypeIcons = LineStyle
 			.getIconSet();
 
-	@Resource
+	
 	private PropertySheetPanel propertySheetPanel;
-
 	private VisualMappingManager vmm;
 
-	@Resource
 	private PropertyRendererRegistry rendReg;
-	@Resource
 	private PropertyEditorRegistry editorReg;
 
-	@Resource
 	private DefaultTableCellRenderer emptyBoxRenderer;
-	@Resource
 	private DefaultTableCellRenderer filledBoxRenderer;
 
-	@Resource
 	private VizMapPropertyBuilder vizMapPropertyBuilder;
 
-	@Resource
 	private EditorFactory editorFactory;
 
-	@Resource
 	private ColorManager colorMgr;
 
-	@Resource
 	private VizMapperMenuManager menuMgr;
 	
-	@Resource
-	private CyNetworkManager cyNetworkManager;
-
 	/*
 	 * Keeps Properties in the browser.
 	 */
@@ -99,10 +83,14 @@ public class VizMapPropertySheetBuilder {
 
 	private List<VisualPropertyType> unusedVisualPropType;
 
-	public VizMapPropertySheetBuilder(VisualMappingManager vmm) {
+	public VizMapPropertySheetBuilder(VisualMappingManager vmm, PropertySheetPanel propertySheetPanel,
+			PropertyRendererRegistry rendReg, PropertyEditorRegistry editorReg, DefaultTableCellRenderer emptyBoxRenderer,
+			DefaultTableCellRenderer filledBoxRenderer, VizMapPropertyBuilder vizMapPropertyBuilder,
+			EditorFactory editorFactory, ColorManager colorMgr, VizMapperMenuManager menuMgr) {
 		this.vmm = vmm;
+		this.propertySheetPanel = propertySheetPanel;
+		
 		propertyMap = new HashMap<String, List<Property>>();
-
 	}
 
 	public Map<String, List<Property>> getPropertyMap() {

@@ -6,6 +6,10 @@
 	default-lazy-init="false">
 
 
+	<!-- Import Context (to access properties)  -->
+	<osgi:reference id="cyOperatingContextServiceRef"
+		interface="cytoscape.CyOperatingContext" />
+
 	<!-- Import Desktop Service -->
 	<osgi:reference id="cytoscapeDesktopServiceRef"
 		interface="cytoscape.view.CySwingApplication" />
@@ -27,8 +31,7 @@
 		interface="org.cytoscape.view.GraphViewFactory">
 	</osgi:reference>
 
-	<osgi:reference id="fileUtilServiceRef"
-		interface="cytoscape.util.FileUtil">
+	<osgi:reference id="fileUtilServiceRef" interface="cytoscape.util.FileUtil">
 	</osgi:reference>
 
 
@@ -110,8 +113,8 @@
 			unbind-method="removeEditorDisplayer" ref="editorFactory" />
 	</osgi:set>
 
-	<osgi:service id="vizMapBypassNetworkListenerNetworkViewAddedListenerService" 
-	    ref="vizMapBypassNetworkListener"
+	<osgi:service
+		id="vizMapBypassNetworkListenerNetworkViewAddedListenerService" ref="vizMapBypassNetworkListener"
 		interface="cytoscape.events.NetworkViewAddedListener" />
 
 </beans>

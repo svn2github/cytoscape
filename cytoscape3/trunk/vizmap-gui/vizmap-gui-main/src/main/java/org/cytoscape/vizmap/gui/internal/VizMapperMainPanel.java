@@ -81,9 +81,10 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
 import cytoscape.CyNetworkManager;
+import cytoscape.CyOperatingContext;
 import cytoscape.Cytoscape;
-import cytoscape.view.CySwingApplication;
 import cytoscape.util.FileUtil;
+import cytoscape.view.CySwingApplication;
 
 /**
  * New VizMapper UI main panel. Refactored for Cytoscape 3.
@@ -128,10 +129,10 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager,
-			FileUtil fileUtil) {
+			FileUtil fileUtil, CyOperatingContext context) {
 		super(desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
-				vizMapEventHandlerManager, editorWindowManager, cyNetworkManager, fileUtil);
+				vizMapEventHandlerManager, editorWindowManager, cyNetworkManager, fileUtil, context);
 
 		initPanel();
 	}
@@ -141,7 +142,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				new VizMapListener(vmm, cyNetworkManager, fileUtil));
+				new VizMapListener(vmm, cyNetworkManager, fileUtil, context));
 
 		registerCellEditorListeners();
 		addVisualStyleChangeAction();

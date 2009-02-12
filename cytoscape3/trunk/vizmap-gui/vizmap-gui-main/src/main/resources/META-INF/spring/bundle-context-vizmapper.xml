@@ -20,9 +20,9 @@
 	<util:properties id="vizmapUIResource"
 		location="/META-INF/spring/config/vizmapui.properties" />
 
-	<context:property-placeholder location="/META-INF/spring/config/vizmapui.properties" />
+	<context:property-placeholder
+		location="/META-INF/spring/config/vizmapui.properties" />
 	<context:annotation-config />
-
 
 	<!-- Visual property editors -->
 	<bean name="editorFactory"
@@ -39,7 +39,9 @@
 		class="org.cytoscape.vizmap.gui.internal.editors.ContinuousColor" />
 
 	<bean id="continuousContinuous"
-		class="org.cytoscape.vizmap.gui.internal.editors.ContinuousContinuous" />
+		class="org.cytoscape.vizmap.gui.internal.editors.ContinuousContinuous">
+		<constructor-arg ref="cyOperatingContextServiceRef" />
+	</bean>
 
 	<bean id="continuousDiscrete"
 		class="org.cytoscape.vizmap.gui.internal.editors.ContinuousDiscrete">
@@ -185,6 +187,15 @@
 		class="org.cytoscape.vizmap.gui.internal.VizMapPropertySheetBuilder"
 		depends-on="vizMapPropertyBuilder">
 		<constructor-arg ref="vmmServiceRef" />
+		<constructor-arg ref="propertySheetPanel" />
+		<constructor-arg ref="rendReg" />
+		<constructor-arg ref="editorReg" />
+		<constructor-arg ref="emptyBoxRenderer" />
+		<constructor-arg ref="filledBoxRenderer" />
+		<constructor-arg ref="vizMapPropertyBuilder" />
+		<constructor-arg ref="editorFactory" />
+		<constructor-arg ref="colorMgr" />
+		<constructor-arg ref="menuManager" />
 	</bean>
 
 	<bean id="vizMapPropertyBuilder" class="org.cytoscape.vizmap.gui.internal.VizMapPropertyBuilder" />
@@ -213,7 +224,8 @@
 		<constructor-arg ref="vizMapPropertySheetBuilder" />
 		<constructor-arg ref="vizMapEventHandlerManager" />
 		<constructor-arg ref="editorWindowManager" />
-		<constructor-arg ref="cyNetworkManagerServiceRef"/>
-		<constructor-arg ref="fileUtilServiceRef"/>
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="fileUtilServiceRef" />
+		<constructor-arg ref="cyOperatingContextServiceRef" />
 	</bean>
 </beans>

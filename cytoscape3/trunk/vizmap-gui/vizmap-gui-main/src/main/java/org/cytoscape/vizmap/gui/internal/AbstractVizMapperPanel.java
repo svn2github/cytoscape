@@ -78,6 +78,7 @@ import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
 import cytoscape.CyNetworkManager;
+import cytoscape.CyOperatingContext;
 import cytoscape.util.FileUtil;
 import cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.view.CySwingApplication;
@@ -122,6 +123,8 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	// Action (context menu) manager
 	@Resource
 	protected Set<VizMapUIAction> actionList;
+	
+	protected CyOperatingContext context;
 
 	/*
 	 * Combo Box Editors
@@ -175,7 +178,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager,
-			FileUtil fileUtil) {
+			FileUtil fileUtil, CyOperatingContext context) {
 
 		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
@@ -190,6 +193,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 		this.editorWindowManager = editorWindowManager;
 		this.cyNetworkManager = cyNetworkManager;
 		this.fileUtil = fileUtil;
+		this.context = context;
 		spcs = new SwingPropertyChangeSupport(this);
 
 		defaultImageManager = new HashMap<String, Image>();

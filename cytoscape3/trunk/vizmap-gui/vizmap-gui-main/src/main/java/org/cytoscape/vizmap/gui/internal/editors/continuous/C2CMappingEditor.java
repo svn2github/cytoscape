@@ -34,6 +34,7 @@
 */
 package org.cytoscape.vizmap.gui.internal.editors.continuous;
 
+import cytoscape.CyOperatingContext;
 import cytoscape.Cytoscape;
 
 import org.cytoscape.vizmap.VisualPropertyType;
@@ -68,14 +69,18 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 	// Default value for below and above.
 	private static final Float DEF_BELOW_AND_ABOVE = 1f;
-
+	
+	private CyOperatingContext context;
+	
 	/**
 	 * Creates a new C2CMappingEditor object.
 	 *
 	 * @param type DOCUMENT ME!
 	 */
-	public C2CMappingEditor(VisualPropertyType type) {
+	public C2CMappingEditor(VisualPropertyType type, CyOperatingContext context) {
 		super(type);
+		this.context = context;
+		
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);
 		pack();
@@ -97,8 +102,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @param type DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualPropertyType type, Component parentComponent) {
-		editor = new C2CMappingEditor(type);
+	                                VisualPropertyType type, Component parentComponent, CyOperatingContext context) {
+		editor = new C2CMappingEditor(type, context);
 		editor.setSize(new Dimension(width, height));
 		editor.setTitle(title);
 		editor.setAlwaysOnTop(true);
@@ -114,8 +119,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
-	                                VisualPropertyType type) {
-		editor = new C2CMappingEditor(type);
+	                                VisualPropertyType type, CyOperatingContext context) {
+		editor = new C2CMappingEditor(type, context);
 
 		TrackRenderer rend = editor.slider.getTrackRenderer();
 
@@ -138,8 +143,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getLegend(final int width, final int height,
-	                                  final VisualPropertyType type) {
-		editor = new C2CMappingEditor(type);
+	                                  final VisualPropertyType type, CyOperatingContext context) {
+		editor = new C2CMappingEditor(type, context);
 
 		final ContinuousTrackRenderer rend = (ContinuousTrackRenderer) editor.slider
 		                                                                                                                                         .getTrackRenderer();
@@ -257,7 +262,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
 
 		ContinuousTrackRenderer cRend = new ContinuousTrackRenderer(type, (Number) below,
-		                                                            (Number) above);
+		                                                            (Number) above, context);
 		cRend.addPropertyChangeListener(this);
 
 		slider.setThumbRenderer(thumbRend);

@@ -42,32 +42,27 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.gui.internal;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.util.FileUtil;
-import cytoscape.util.ZipUtil;
-
-import org.cytoscape.io.read.URLUtil;
-
-import org.cytoscape.vizmap.CalculatorCatalogFactory;
-import org.cytoscape.vizmap.CalculatorIO;
-import org.cytoscape.vizmap.VisualMappingManager;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
-
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+
+import org.cytoscape.io.read.URLUtil;
+import org.cytoscape.vizmap.CalculatorCatalogFactory;
+import org.cytoscape.vizmap.CalculatorIO;
+import org.cytoscape.vizmap.VisualMappingManager;
+
+import cytoscape.CyNetworkManager;
+import cytoscape.CyOperatingContext;
+import cytoscape.Cytoscape;
+import cytoscape.util.FileUtil;
+import cytoscape.util.ZipUtil;
 
 
 /**
@@ -82,11 +77,13 @@ public class VizMapListener implements PropertyChangeListener {
 	
 	private CyNetworkManager cyNetworkManager;
 	private FileUtil fileUtil;
+	private CyOperatingContext context;
 	
-	public VizMapListener(VisualMappingManager vmm, CyNetworkManager cyNetworkManager, FileUtil fileUtil) {
+	public VizMapListener(VisualMappingManager vmm, CyNetworkManager cyNetworkManager, FileUtil fileUtil, CyOperatingContext context) {
 		this.cyNetworkManager = cyNetworkManager;
 		this.vmm = vmm;
 		this.fileUtil = fileUtil;
+		this.context = context;
 	}
 
 	/**
@@ -102,7 +99,7 @@ public class VizMapListener implements PropertyChangeListener {
 			File propertiesFile = null;
 
 			if (e.getNewValue() == null)
-				propertiesFile = CytoscapeInit.getConfigFile(VIZMAP_PROPS_FILE_NAME);
+				propertiesFile = context.getConfigFile(VIZMAP_PROPS_FILE_NAME);
 			else
 				propertiesFile = new File((String) e.getNewValue());
 
