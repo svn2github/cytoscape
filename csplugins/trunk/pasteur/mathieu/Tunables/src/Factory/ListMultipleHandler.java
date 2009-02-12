@@ -1,12 +1,11 @@
-
 package Factory;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.*;
-import javax.swing.event.*;
 
 import java.awt.*;
 
@@ -18,10 +17,12 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 
 	ListMultipleSelection<T> lms;
 	JList jlist;
-//	T selected;
+	//T selected;
 	private List<T> selected;
 	CheckListManager<T> checkListManager;
+	Map<Integer,T> map;
 
+	
 	@SuppressWarnings("unchecked")
 	public ListMultipleHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
@@ -45,12 +46,30 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
         panel.add(scrollpane,BorderLayout.EAST);
 	}
 
-	@SuppressWarnings("unchecked")
+	
+
 	public void handle(){
 		//T[] selected = (T[]) jlist.getSelectedValues();
-		selected = checkListManager.getArray();
+		//jlist.setSelectionModel(checkListManager.getSelectionModel());
+		//selected = new ArrayList();
+		//System.out.println(checkListManager.getArray2().size());
+		//selected = new ArrayList<T>();
+		//System.out.println(lms.getPossibleValues().size());
+		selected = new ArrayList<T>();
+		map = checkListManager.getMap();
+		for(int i=0;i<lms.getPossibleValues().size();i++){
+			if(map.containsKey(i)){
+			selected.add((T)map.get(i));}
+		}
+		
+//		selected = checkListManager.getArray2();
+//		selected = new ArrayList<T>();
+//		System.out.println(selected);		
+//		selected.add(checkListManager.getValue());
+//		jlist.setSelectionModel(checkListManager.getSelectionModel());
+		//selected.set(i, (T)jlist.getSelectedValue());// = jlist.get
 		if (selected!=null) {
-            lms.setSelectedValues(selected);
+			lms.setSelectedValues(selected);
             try{
                 f.set(o,lms);
             }catch(Exception e){e.printStackTrace();}
