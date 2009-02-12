@@ -45,6 +45,5 @@ public class TunableSampler implements command {
 
 	public void execute() {
 		System.out.println(this.getClass().getSimpleName()+" has been executed");
-//		System.out.println("executing tunable sampler");
 	}
 }
