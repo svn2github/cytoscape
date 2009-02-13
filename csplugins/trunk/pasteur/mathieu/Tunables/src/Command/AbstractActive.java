@@ -4,6 +4,8 @@ import Tunable.Tunable;
 import Utils.*;
 import java.util.*;
 
+import org.cytoscape.command.command;
+
 public class AbstractActive implements command {
 
 	@Tunable(description="Expression Attributes for Analysis")
