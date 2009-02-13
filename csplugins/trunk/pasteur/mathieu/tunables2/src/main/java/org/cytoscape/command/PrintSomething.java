@@ -12,7 +12,7 @@ public class PrintSomething implements Command {
 	@Tunable(description="your last name", group={"stuff","advanced"}, flag={Param.collapsed})
 	public String lastName = "simpson";
 
-	@Tunable(description="Test",dependsOn="footSize=10.0")
+	@Tunable(description="Test",dependsOn="monthNames=[April]")
 	public Double test = new Double(6.5);	
 	
 	@Tunable(description="your foot size", group={"stuff","advanced"},flag={Param.slider})
