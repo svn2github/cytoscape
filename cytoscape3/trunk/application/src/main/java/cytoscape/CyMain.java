@@ -39,7 +39,6 @@ package cytoscape;
 import com.jgoodies.looks.LookUtils;
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
-import cytoscape.init.CyInitParams;
 import cytoscape.view.CySwingApplication;
 import cytoscape.util.FileUtil;
 import org.apache.commons.cli.*;
@@ -56,14 +55,13 @@ import java.util.regex.Pattern;
 
 
 /**
- * This is the main startup class for Cytoscape. This parses the command line
- * and implements CyInitParams so that it can be used to initialize cytoscape.
+ * This is the main startup class for Cytoscape. 
  *
  * <p>
  * Look and Feel is modified for jgoodies 2.1.4 by Kei Ono
  * </p>
  */
-public class CyMain implements CyInitParams {
+public class CyMain {
 	protected String[] args;
 	protected Properties props;
 	protected String[] graphFiles;
@@ -75,7 +73,6 @@ public class CyMain implements CyInitParams {
 	protected String[] nodeAttrFiles;
 	protected String[] edgeAttrFiles;
 	protected String[] expressionFiles;
-	protected int mode;
 	protected org.apache.commons.cli.Options options;
 	protected CytoscapeVersion ver;
 	protected FileUtil fileUtil;
@@ -128,7 +125,6 @@ public class CyMain implements CyInitParams {
 		edgeAttrFiles = null;
 		expressionFiles = null;
 		this.args = args;
-		mode = CyInitParams.ERROR;
 		options = new org.apache.commons.cli.Options();
 
 		parseCommandLine(args);
@@ -212,12 +208,7 @@ public class CyMain implements CyInitParams {
 			System.exit(0);
 		}
 
-		if (line.hasOption("H")) {
-			mode = CyInitParams.TEXT;
-		} else {
-			mode = CyInitParams.GUI;
-			setupLookAndFeel();
-		}
+		setupLookAndFeel();
 
 		if (line.hasOption("P"))
 			props = createProperties(line.getOptionValues("P"));
@@ -398,15 +389,6 @@ public class CyMain implements CyInitParams {
 	 */
 	public String getSessionFile() {
 		return sessionFile;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int getMode() {
-		return mode;
 	}
 
 	/**
