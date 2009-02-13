@@ -4,7 +4,7 @@ import Tunable.Tunable;
 import Utils.*;
 import java.util.*;
 
-import org.cytoscape.command.command;
+import Command.command;
 
 public class AbstractActive implements command {
 
