@@ -30,7 +30,6 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
-			
 			lh.addAll( handlerMap.get(o).values() );
 
 		}
@@ -91,6 +90,7 @@ public class GuiTunableInterceptor extends HiddenTunableInterceptor<Guihandler> 
 		
 		
 		// process the values set in the gui 
+		//USELESS BECAUSE OF LISTENERS
 		for ( Guihandler h : lh )
 			h.handle();
 		
