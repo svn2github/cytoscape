@@ -181,19 +181,11 @@ public abstract class Cytoscape {
 	 */
 	public static final String NETWORK_LOADED = "NETWORK_LOADED";
 
-	// Root ontology network in the network panel
-	/**
-	 *
-	public static final String ONTOLOGY_ROOT = "ONTOLOGY_ROOT";
-	 */
-
-	// Events for Preference Dialog (properties).
 	/**
 	 *
 	 */
 	public static final String PREFERENCE_MODIFIED = "PREFERENCE_MODIFIED";
 
-	// Signals that CytoscapeInit properties have been updated.
 	/**
 	 *
 	 */

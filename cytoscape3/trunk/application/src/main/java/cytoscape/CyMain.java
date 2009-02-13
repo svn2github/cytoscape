@@ -131,16 +131,10 @@ public class CyMain implements CyInitParams {
 		mode = CyInitParams.ERROR;
 		options = new org.apache.commons.cli.Options();
 
-		//for (String asdf: args)
-		//	System.out.println("arg: '" + asdf + "'");
 		parseCommandLine(args);
 
-		CytoscapeInit initializer = new CytoscapeInit(desk,netmgr);
-
-		if (!initializer.init(this)) {
-			printHelp();
-			Cytoscape.exit(1);
-		}
+		Cytoscape.setDesktop( desk );
+		Cytoscape.setNetworkManager( netmgr );
 	}
 
 	protected void parseCommandLine(String[] args) {
