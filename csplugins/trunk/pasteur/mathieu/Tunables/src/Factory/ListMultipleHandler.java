@@ -17,7 +17,6 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 
 	ListMultipleSelection<T> lms;
 	JList jlist;
-	//T selected;
 	private List<T> selected;
 	CheckListManager<T> checkListManager;
 	Map<Integer,T> map;
@@ -41,7 +40,7 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
         jlist.setFont(new Font("sansserif",Font.PLAIN,11));
         jlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jlist.addListSelectionListener(this);
-        checkListManager = new CheckListManager<T>(jlist,lms);
+        //checkListManager = new CheckListManager<T>(jlist,lms);
         JScrollPane scrollpane = new JScrollPane(jlist);
         panel.add(scrollpane,BorderLayout.EAST);
 	}
@@ -49,18 +48,12 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 	
 
 	public void handle(){
-		//T[] selected = (T[]) jlist.getSelectedValues();
-		//jlist.setSelectionModel(checkListManager.getSelectionModel());
-		//selected = new ArrayList();
-		//System.out.println(checkListManager.getArray2().size());
-		//selected = new ArrayList<T>();
-		//System.out.println(lms.getPossibleValues().size());
-		selected = new ArrayList<T>();
-		map = checkListManager.getMap();
-		for(int i=0;i<lms.getPossibleValues().size();i++){
-			if(map.containsKey(i)){
-			selected.add((T)map.get(i));}
-		}
+
+//		map = checkListManager.getMap();
+//		for(int i=0;i<lms.getPossibleValues().size();i++){
+//			if(map.containsKey(i)){
+//			selected.add((T)map.get(i));}
+//		}
 		
 //		selected = checkListManager.getArray2();
 //		selected = new ArrayList<T>();
@@ -68,12 +61,22 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 //		selected.add(checkListManager.getValue());
 //		jlist.setSelectionModel(checkListManager.getSelectionModel());
 		//selected.set(i, (T)jlist.getSelectedValue());// = jlist.get
-		if (selected!=null) {
-			lms.setSelectedValues(selected);
+
+		if (convertToArray(jlist.getSelectedValues())!=null) {
+			lms.setSelectedValues(convertToArray(jlist.getSelectedValues()));
             try{
                 f.set(o,lms);
             }catch(Exception e){e.printStackTrace();}
         }
+	}
+	
+	
+	public List<T> convertToArray(Object[] in){
+		List<T> list = new ArrayList<T>();
+		for(int i=0;i<in.length;i++){
+			list.add(i, (T)in[i]);
+		}
+		return (List<T>) list;
 	}
 
 
