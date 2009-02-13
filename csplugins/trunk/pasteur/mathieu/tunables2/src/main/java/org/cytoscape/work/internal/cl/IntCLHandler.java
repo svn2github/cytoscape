@@ -4,6 +4,7 @@ package org.cytoscape.work.internal.cl;
 import java.lang.reflect.*;
 import java.util.*;
 import org.apache.commons.cli.*;
+import org.cytoscape.work.AbstractCLHandler;
 import org.cytoscape.work.Tunable;
 
 
@@ -25,6 +26,7 @@ public class IntCLHandler extends AbstractCLHandler {
 		if ( line.hasOption( fc ) ) {
 			if ( f != null )
 				f.set(o,Integer.parseInt(line.getOptionValue(fc)) );
+
 			else if ( m != null )
 				m.invoke(o,Integer.parseInt(line.getOptionValue(fc)) );
 			else 

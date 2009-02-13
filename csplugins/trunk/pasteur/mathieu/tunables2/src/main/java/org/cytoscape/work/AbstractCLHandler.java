@@ -1,11 +1,10 @@
 
-package org.cytoscape.work.internal.cl;
+package org.cytoscape.work;
 
 import java.lang.reflect.*;
 import java.util.*;
 import org.apache.commons.cli.*;
-import org.cytoscape.work.AbstractHandler;
-import org.cytoscape.work.Tunable;
+import org.cytoscape.work.internal.cl.CLHandler;
 
 
 public abstract class AbstractCLHandler extends AbstractHandler implements CLHandler {

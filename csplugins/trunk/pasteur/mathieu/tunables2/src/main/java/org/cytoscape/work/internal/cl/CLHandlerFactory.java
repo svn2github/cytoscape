@@ -38,6 +38,12 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return new StringCLHandler(f,o,t);
 		else if ( type == boolean.class || type == Boolean.class )
 			return new BooleanCLHandler(f,o,t);
+		else if( type == double.class || type == Double.class)
+			return new DoubleCLHandler(f,o,t);
+		else if( type == float.class || type == Float.class)
+			return new FloatCLHandler(f,o,t);
+		else if( type == long.class || type == Long.class)
+			return new LongCLHandler(f,o,t);
 		else 
 			return null;
 	}

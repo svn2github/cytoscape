@@ -4,6 +4,7 @@ package org.cytoscape.work.internal.cl;
 import java.lang.reflect.*;
 import java.util.*;
 import org.apache.commons.cli.*;
+import org.cytoscape.work.AbstractCLHandler;
 import org.cytoscape.work.Tunable;
 
 

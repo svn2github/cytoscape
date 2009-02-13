@@ -8,14 +8,14 @@ import org.cytoscape.work.AbstractCLHandler;
 import org.cytoscape.work.Tunable;
 
 
-public class BooleanCLHandler extends AbstractCLHandler {
+public class LongCLHandler extends AbstractCLHandler {
 
 
-	public BooleanCLHandler(Field f, Object o, Tunable t) {
+	public LongCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 	}
 
-	public BooleanCLHandler(Method m, Object o, Tunable t) {
+	public LongCLHandler(Method m, Object o, Tunable t) {
 		super(m,o,t);
 	}
 
@@ -25,20 +25,12 @@ public class BooleanCLHandler extends AbstractCLHandler {
 		try {
 		if ( line.hasOption( fc ) ) {
 			if ( f != null )
-				f.set(o,Integer.parseInt(line.getOptionValue(fc)) );
+				f.set(o,Long.parseLong(line.getOptionValue(fc)) );
 			else if ( m != null )
-				m.invoke(o,Integer.parseInt(line.getOptionValue(fc)) );
+				m.invoke(o,Long.parseLong(line.getOptionValue(fc)) );
 			else 
 				throw new Exception("no Field or Method to set!");
 		}
 		} catch(Exception e) {e.printStackTrace();}
 	}
-
-    public Option getOption() {
-        String n = getName();
-        System.out.println("creating option for: " + n);
-        int ind = n.lastIndexOf(":")+1;
-        return new Option(n.substring(ind,ind+1), n, false, t.description());
-    }
-
 }
