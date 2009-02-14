@@ -40,9 +40,6 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
-//import org.cytoscape.attributes.CountedIterator;
-//import org.cytoscape.model.CyRow;
-//import org.cytoscape.attributes.MultiHashMap;
 
 import java.util.*;
 
