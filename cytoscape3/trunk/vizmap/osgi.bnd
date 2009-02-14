@@ -2,5 +2,5 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Export-Package: org.cytoscape.vizmap,org.cytoscape.vizmap.calculators,org.cytoscape.vizmap.mappings,org.cytoscape.vizmap.icon,org.cytoscape.vizmap.mappings.discrete,org.cytoscape.vizmap.mappings.continuous
+Export-Package: org.cytoscape.vizmap,org.cytoscape.vizmap.calculators,org.cytoscape.vizmap.mappings,org.cytoscape.vizmap.icon,org.cytoscape.vizmap.mappings.discrete,org.cytoscape.vizmap.mappings.continuous,org.cytoscape.vizmap.event
 Private-Package: org.cytoscape.vizmap.parsers,org.cytoscape.vizmap.properties
