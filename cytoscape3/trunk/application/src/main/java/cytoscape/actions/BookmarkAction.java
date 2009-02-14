@@ -42,16 +42,16 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
+import java.awt.event.ActionEvent;
+
+import org.cytoscape.properties.bookmark.Bookmarks;
+import org.cytoscape.property.CyProperty;
+
+import cytoscape.CyNetworkManager;
 import cytoscape.dialogs.preferences.BookmarkDialog;
+import cytoscape.util.BookmarksUtil;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
-
-import javax.swing.*;
-import javax.xml.bind.JAXBException;
-import java.awt.event.ActionEvent;
-import java.io.IOException;
-import cytoscape.CyNetworkManager;
-
 
 /**
  *
@@ -59,34 +59,30 @@ import cytoscape.CyNetworkManager;
 public class BookmarkAction extends CytoscapeAction {
 	private final static long serialVersionUID = 120233986993206L;
 	private CySwingApplication desktop;
+
+	private Bookmarks bookmarks;
+	private BookmarksUtil bkUtil;
 	/**
 	 * Creates a new BookmarkAction object.
 	 */
-	public BookmarkAction(CySwingApplication desktop, CyNetworkManager netmgr) {
-		super("Bookmarks...",netmgr);
-
+	public BookmarkAction(CySwingApplication desktop, CyNetworkManager netmgr, CyProperty<Bookmarks> bookmarkProp, BookmarksUtil bkUtil) {
+		super("Bookmarks...", netmgr);
+		this.bookmarks = bookmarkProp.getProperties();
+		this.bkUtil = bkUtil;
 		System.out.println("BookmarkAction()...");
 		setPreferredMenu("Edit.Preferences");
 		this.desktop = desktop;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		BookmarkDialog bookmarkDialog;
-
-		try {
-			bookmarkDialog = new BookmarkDialog(desktop.getJFrame());
-			bookmarkDialog.setVisible(true);
-		} catch (JAXBException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		// bookmarkDialog.refresh();
-	} 
+		final BookmarkDialog bookmarkDialog = new BookmarkDialog(desktop
+				.getJFrame(), bookmarks, bkUtil);
+		bookmarkDialog.setVisible(true);
+	}
 }

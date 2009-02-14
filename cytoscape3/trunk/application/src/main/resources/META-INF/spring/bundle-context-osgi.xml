@@ -6,13 +6,15 @@
 	default-lazy-init="false">
 
 	<!-- Import OSGi services -->
+
+	<osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
+		filter="(cyPropertyName=bookmarks)" />
+
 	<osgi:reference id="cyNetworkFactoryServiceRef"
-		interface="org.cytoscape.model.CyNetworkFactory">
-	</osgi:reference>
+		interface="org.cytoscape.model.CyNetworkFactory" />
 
 	<osgi:reference id="cyRootNetworkFactoryServiceRef"
-		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
-	</osgi:reference>
+		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory" />
 
 	<osgi:reference id="vmmServiceRef"
 		interface="org.cytoscape.vizmap.VisualMappingManager" />

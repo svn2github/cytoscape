@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,67 +31,74 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.dialogs.internal;
 
-import cytoscape.Cytoscape;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.Category;
-import cytoscape.bookmarks.DataSource;
-import cytoscape.util.BookmarksUtil;
-import cytoscape.util.FileUtil;
-
-import org.cytoscape.io.CyFileFilter;
-
-import javax.swing.*;
-import javax.xml.bind.JAXBException;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
-import cytoscape.dialogs.ImportNetworkDialog;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
+import javax.swing.ToolTipManager;
 
+import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.properties.bookmark.Bookmarks;
+import org.cytoscape.properties.bookmark.Category;
+import org.cytoscape.properties.bookmark.DataSource;
+
+import cytoscape.dialogs.ImportNetworkDialog;
+import cytoscape.util.BookmarksUtil;
+import cytoscape.util.FileUtil;
 
 /**
  * @author kono
  */
-public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDialog {
+public class ImportNetworkDialogImpl extends JDialog implements
+		ImportNetworkDialog {
 	private final static long serialVersionUID = 120233987313024L;
 	private boolean status;
 	private File[] networkFiles;
-	private Bookmarks theBookmarks = null; // get it from session
+
+	// Will be injected through DI container
+	private Bookmarks bookmarks;
+	private BookmarksUtil bkUtil;
+
 	private String bookmarkCategory = "network";
 	private String URLstr;
 	private BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
 	private String pleaseMessage = "Please provide URL or select from list";
-	
+
 	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
-	
+
 	private CyFileFilter[] tempCFF;
 
 	private FileUtil fileUtil;
 	private Component desk;
 
-	/** Creates new form NetworkImportDialog
-	 * @throws IOException
-	 * @throws JAXBException */
-	public ImportNetworkDialogImpl(Frame parent, boolean modal, CyFileFilter[] filters, FileUtil fileUtil)
-	    throws JAXBException, IOException {
+	/**
+	 * Creates new form NetworkImportDialog
+	 */
+	public ImportNetworkDialogImpl(Frame parent, boolean modal,
+			CyFileFilter[] filters, FileUtil fileUtil, Bookmarks bookmarks, BookmarksUtil bkUtil) {
 		super(parent, modal);
 		desk = parent;
-
-
-
+		this.bookmarks = bookmarks;
+		this.bkUtil = bkUtil;
+		
 		tempCFF = filters;
 		this.fileUtil = fileUtil;
 
@@ -106,33 +112,24 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 		status = false;
 		networkFiles = null;
 
-		theBookmarks = Cytoscape.getBookmarks();
-
-		// if theBookmarks doesnot exist, create an empty one
-		if (theBookmarks == null) {
-			theBookmarks = new Bookmarks();
-			Cytoscape.setBookmarks(theBookmarks);
-		}
-
 		// if bookmarkCategory "network" does not exist, create a "network" with
 		// empty DataSource
-		Category theCategory = BookmarksUtil.getCategory(bookmarkCategory,
-		                                                 theBookmarks.getCategory());
+		Category theCategory = bkUtil.getCategory(bookmarkCategory,
+				bookmarks.getCategory());
 
 		if (theCategory == null) {
 			theCategory = new Category();
 			theCategory.setName(bookmarkCategory);
 
-			List<Category> theCategoryList = theBookmarks.getCategory();
+			List<Category> theCategoryList = bookmarks.getCategory();
 			theCategoryList.add(theCategory);
 		}
-		
-		
+
 	}
 
 	/**
 	 * Get first file only.
-	 *
+	 * 
 	 * @return
 	 */
 	public File getFile() {
@@ -145,7 +142,7 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 
 	/**
 	 * Get all files selected.
-	 *
+	 * 
 	 * @return
 	 */
 	public File[] getFiles() {
@@ -153,27 +150,27 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public boolean getStatus() {
 		return status;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public boolean isRemote() {
 		return remoteRadioButton.isSelected();
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String getURLStr() {
 		return URLstr;
@@ -193,7 +190,6 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
-		
 
 		buttonGroup1 = new javax.swing.ButtonGroup();
 		titleLabel = new javax.swing.JLabel();
@@ -211,20 +207,23 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
 		titleLabel.setText("Import Network File");
 
-		radioButtonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Data Source Type"));
+		radioButtonPanel.setBorder(javax.swing.BorderFactory
+				.createTitledBorder("Data Source Type"));
 		buttonGroup1.add(localRadioButton);
 		localRadioButton.setSelected(true);
 		localRadioButton.setText("Local");
-		localRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		localRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(
+				0, 0, 0, 0));
 		localRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		localRadioButton.setToolTipText(LOCAL_TOOLTIP);
 
 		buttonGroup1.add(remoteRadioButton);
 		remoteRadioButton.setText("Remote/URL");
-		remoteRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		remoteRadioButton.setBorder(javax.swing.BorderFactory
+				.createEmptyBorder(0, 0, 0, 0));
 		remoteRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		remoteRadioButton.setToolTipText(URL_TOOLTIP);
-		
+
 		networkFileTextField.setText("Please select a network file...");
 		networkFileTextField.setName("networkFileTextField");
 		networkFileTextField.addFocusListener(this);
@@ -242,83 +241,144 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 		networkFileComboBox.setEditor(bookmarkEditor);
 		networkFileComboBox.setEditable(true);
 		networkFileComboBox.setName("networkFileComboBox");
-		networkFileComboBox.setToolTipText("<html><body>You can specify URL by the following:<ul><li>Type URL</li><li>Select from pull down menu</li><li>Drag & Drop URL from Web Browser</li></ul></body><html>");		
+		networkFileComboBox
+				.setToolTipText("<html><body>You can specify URL by the following:<ul><li>Type URL</li><li>Select from pull down menu</li><li>Drag & Drop URL from Web Browser</li></ul></body><html>");
 		final ToolTipManager tp = ToolTipManager.sharedInstance();
 		tp.setInitialDelay(1);
 		tp.setDismissDelay(7500);
-		
-		
-		org.jdesktop.layout.GroupLayout radioButtonPanelLayout = new org.jdesktop.layout.GroupLayout(radioButtonPanel);
-		radioButtonPanel.setLayout(radioButtonPanelLayout);
-		radioButtonPanelLayout.setHorizontalGroup(radioButtonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                                .add(radioButtonPanelLayout.createSequentialGroup()
-		                                                                                           .addContainerGap()
-		                                                                                           .add(localRadioButton)
-		                                                                                           .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                           .add(remoteRadioButton)
-		                                                                                           .addContainerGap(250,
-		                                                                                                            Short.MAX_VALUE)));
-		radioButtonPanelLayout.setVerticalGroup(radioButtonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                              .add(radioButtonPanelLayout.createSequentialGroup()
-		                                                                                         .add(radioButtonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                                                    .add(localRadioButton)
-		                                                                                                                    .add(remoteRadioButton))));
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+		org.jdesktop.layout.GroupLayout radioButtonPanelLayout = new org.jdesktop.layout.GroupLayout(
+				radioButtonPanel);
+		radioButtonPanel.setLayout(radioButtonPanelLayout);
+		radioButtonPanelLayout
+				.setHorizontalGroup(radioButtonPanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								radioButtonPanelLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.add(localRadioButton)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(remoteRadioButton)
+										.addContainerGap(250, Short.MAX_VALUE)));
+		radioButtonPanelLayout
+				.setVerticalGroup(radioButtonPanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								radioButtonPanelLayout
+										.createSequentialGroup()
+										.add(
+												radioButtonPanelLayout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
+														.add(localRadioButton)
+														.add(remoteRadioButton))));
+
+		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
+				getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                .add(layout.createSequentialGroup().addContainerGap()
-		                                           .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                      .add(networkFileComboBox, 0, 350,
-		                                                           Short.MAX_VALUE)
-		                                                      .add(titleLabel,
-		                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                           350,
-		                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                      .add(titleSeparator,
-		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                           350, Short.MAX_VALUE)
-		                                                      .add(radioButtonPanel,
-		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                           Short.MAX_VALUE)
-		                                                      .add(layout.createSequentialGroup()
-		                                                                 .add(networkFileTextField,
-		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      350, Short.MAX_VALUE)
-		                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                 .add(selectButton))
-		                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                           layout.createSequentialGroup()
-		                                                                 .add(importButton)
-		                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                 .add(cancelButton)))
-		                                           .addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                              .add(layout.createSequentialGroup().addContainerGap()
-		                                         .add(titleLabel).add(8, 8, 8)
-		                                         .add(titleSeparator,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                         .add(7, 7, 7)
-		                                         .add(radioButtonPanel,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                    .add(selectButton)
-		                                                    .add(networkFileTextField))
-		                                         .add(networkFileComboBox,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-		                                                          3, Short.MAX_VALUE)
-		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                    .add(cancelButton).add(importButton))
-		                                         .addContainerGap()));
+		layout
+				.setHorizontalGroup(layout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								layout
+										.createSequentialGroup()
+										.addContainerGap()
+										.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.LEADING)
+														.add(
+																networkFileComboBox,
+																0, 350,
+																Short.MAX_VALUE)
+														.add(
+																titleLabel,
+																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+																350,
+																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+														.add(
+																titleSeparator,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																350,
+																Short.MAX_VALUE)
+														.add(
+																radioButtonPanel,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																Short.MAX_VALUE)
+														.add(
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				networkFileTextField,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				350,
+																				Short.MAX_VALUE)
+																		.addPreferredGap(
+																				org.jdesktop.layout.LayoutStyle.RELATED)
+																		.add(
+																				selectButton))
+														.add(
+																org.jdesktop.layout.GroupLayout.TRAILING,
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				importButton)
+																		.addPreferredGap(
+																				org.jdesktop.layout.LayoutStyle.RELATED)
+																		.add(
+																				cancelButton)))
+										.addContainerGap()));
+		layout
+				.setVerticalGroup(layout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								layout
+										.createSequentialGroup()
+										.addContainerGap()
+										.add(titleLabel)
+										.add(8, 8, 8)
+										.add(
+												titleSeparator,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.add(7, 7, 7)
+										.add(
+												radioButtonPanel,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
+														.add(selectButton)
+														.add(
+																networkFileTextField))
+										.add(
+												networkFileComboBox,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED,
+												3, Short.MAX_VALUE)
+										.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
+														.add(cancelButton).add(
+																importButton))
+										.addContainerGap()));
 		pack();
 	} // </editor-fold>
 
@@ -360,13 +420,12 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 		DataSource firstDataSource = new DataSource();
 		firstDataSource.setName("");
 		firstDataSource.setHref(null);
-		
+
 		theModel.addElement(firstDataSource);
 
 		// Extract the URL entries
-		List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory,
-		                                                                     theBookmarks
-		                                                                                                                                                                                                                                                                                                                                                                            .getCategory());
+		List<DataSource> theDataSourceList = bkUtil.getDataSourceList(
+				bookmarkCategory, bookmarks.getCategory());
 
 		if (theDataSourceList != null) {
 			for (int i = 0; i < theDataSourceList.size(); i++) {
@@ -384,7 +443,8 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 
 	private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// See if the user just typed in the desired file
-		if (!isRemote() && networkFiles == null && networkFileTextField.getText() != null) {
+		if (!isRemote() && networkFiles == null
+				&& networkFileTextField.getText() != null) {
 			networkFiles = new File[1];
 			networkFiles[0] = new File(networkFileTextField.getText());
 		}
@@ -393,9 +453,11 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 		this.dispose();
 	}
 
-	private void selectNetworkFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void selectNetworkFileButtonActionPerformed(
+			java.awt.event.ActionEvent evt) {
 
-		networkFiles = fileUtil.getFiles(this,"Import Network Files", FileUtil.LOAD, tempCFF);
+		networkFiles = fileUtil.getFiles(this, "Import Network Files",
+				FileUtil.LOAD, tempCFF);
 
 		if (networkFiles != null) {
 			/*
@@ -403,11 +465,13 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 			 */
 			StringBuffer fileNameSB = new StringBuffer();
 			StringBuffer tooltip = new StringBuffer();
-			tooltip.append("<html><body><strong><font color=RED>The following files will be loaded:</font></strong><br>");
+			tooltip
+					.append("<html><body><strong><font color=RED>The following files will be loaded:</font></strong><br>");
 
 			for (int i = 0; i < networkFiles.length; i++) {
 				fileNameSB.append(networkFiles[i].getAbsolutePath() + ", ");
-				tooltip.append("<p>" + networkFiles[i].getAbsolutePath() + "</p>");
+				tooltip.append("<p>" + networkFiles[i].getAbsolutePath()
+						+ "</p>");
 			}
 
 			tooltip.append("</body></html>");
@@ -419,9 +483,10 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(java.awt.event.ActionEvent e) {
 		Object _actionObject = e.getSource();
@@ -435,10 +500,10 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 				selectNetworkFileButtonActionPerformed(e);
 			} else if (_btn == importButton) {
 				if (localRadioButton.isSelected()) // local import
-				 {
+				{
 					importButtonActionPerformed(e);
 				} else // case for remote import
-				 {
+				{
 					URLstr = bookmarkEditor.getURLstr().trim();
 					importButtonActionPerformed(e);
 				}
@@ -454,19 +519,20 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 	}
 
 	/**
-	 * Listen for focus events in the text field.  Mostly, this is used to
-	 * clear the text field for alternative input, but we only want to do
-	 * this when the content of the text field is our instruction text
-	 *
-	 * @param e the FocusEvent
+	 * Listen for focus events in the text field. Mostly, this is used to clear
+	 * the text field for alternative input, but we only want to do this when
+	 * the content of the text field is our instruction text
+	 * 
+	 * @param e
+	 *            the FocusEvent
 	 */
-	public void focusGained(FocusEvent e) { 
+	public void focusGained(FocusEvent e) {
 		// Get get the text from the text field
 		String text = networkFileTextField.getText();
 		// If it's our initial text, erase it.
 		if (text.equals("Please select a network file...")) {
 			networkFileTextField.setText("");
-			// We assume that the user is going to type in a filename.  If so,
+			// We assume that the user is going to type in a filename. If so,
 			// we want to set the import button to be the default
 			getRootPane().setDefaultButton(importButton);
 			importButton.setEnabled(true);
@@ -474,12 +540,13 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 	}
 
 	/**
-	 * Listen for focus lost events in the text field.  These are ignored.
-	 *
-	 * @param e the FocusEvent
+	 * Listen for focus lost events in the text field. These are ignored.
+	 * 
+	 * @param e
+	 *            the FocusEvent
 	 */
-	public void focusLost(FocusEvent e) { };
-
+	public void focusLost(FocusEvent e) {
+	};
 
 	class LocalRemoteListener implements java.awt.event.ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -503,13 +570,14 @@ public class ImportNetworkDialogImpl extends JDialog implements ImportNetworkDia
 	}
 
 	class MyCellRenderer extends JLabel implements ListCellRenderer {
-	private final static long serialVersionUID = 1202339872997986L;
+		private final static long serialVersionUID = 1202339872997986L;
+
 		public MyCellRenderer() {
 			setOpaque(true);
 		}
 
-		public Component getListCellRendererComponent(JList list, Object value, int index,
-		                                              boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
 			DataSource dataSource = (DataSource) value;
 			setText(dataSource.getName());
 

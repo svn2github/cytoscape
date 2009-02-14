@@ -31,104 +31,69 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.dialogs.preferences;
 
-import cytoscape.Cytoscape;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.DataSource;
-import cytoscape.util.BookmarksUtil;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.xml.bind.JAXBException;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import org.cytoscape.properties.bookmark.Bookmarks;
+import org.cytoscape.properties.bookmark.DataSource;
+
+import cytoscape.util.BookmarksUtil;
 
 /**
  *
  */
-public class BookmarkDialog extends JDialog implements ActionListener, ListSelectionListener,
-                                                       ItemListener {
+public class BookmarkDialog extends JDialog implements ActionListener,
+		ListSelectionListener, ItemListener {
+
 	private String bookmarkCategory;
-	private Bookmarks theBookmarks = null;
+	private Bookmarks bookmarks;
+	private BookmarksUtil bkUtil;
 
 	// private Category theCategory = new Category();;
 	private String[] bookmarkCategories = { "network", "annotation", "plugins" };
 	private final static long serialVersionUID = 1202339873340615L;
 
-	// private URL bookmarkURL;
-
-	/**
-	 * Creates new BookmarkDialog
-	 *
-	 * @throws IOException
-	 * @throws JAXBException
-	 */
-	public BookmarkDialog(Dialog pParent) throws JAXBException, IOException {
+	public BookmarkDialog(Frame pParent, Bookmarks bookmarks, BookmarksUtil bkUtil) {
 		super(pParent, true);
+		this.bookmarks = bookmarks;
+		this.bkUtil = bkUtil;
 		basicInit();
 		this.setLocationRelativeTo(pParent);
 	}
 
-	public BookmarkDialog(Frame pParent) throws JAXBException, IOException {
-		super(pParent, true);
-		basicInit();
-		this.setLocationRelativeTo(pParent);
-	}
-
-	private void basicInit() throws JAXBException, IOException {
+	private void basicInit() {
 		this.setTitle("Bookmark manager");
 
 		initComponents();
 		bookmarkCategory = cmbCategory.getSelectedItem().toString();
-		theBookmarks = Cytoscape.getBookmarks();
 		loadBookmarks();
 
 		setSize(new Dimension(500, 250));
 	}
 
-	/**
-	 * Creates new BookmarkDialog, set the selection on the given category
-	 *
-	 * @throws IOException
-	 * @throws JAXBException
-	 */
-	public BookmarkDialog(Dialog pParent, String pCategoryName) throws JAXBException, IOException {
-		this(pParent);
-		categoryInit(pCategoryName);
-	}
-
-	public BookmarkDialog(Frame pParent, String pCategoryName) throws JAXBException, IOException {
-		this(pParent);
-		categoryInit(pCategoryName);
-	}
 
 
-	private void categoryInit(String pCategoryName) throws JAXBException, IOException {
-		Dimension winSize = this.getSize();
-		
-		// Set the given category the selected item in comboBox
-		for (int i=0; i< cmbCategory.getItemCount(); i++) {
-			if (cmbCategory.getItemAt(i).toString().equalsIgnoreCase(pCategoryName)) {
-				cmbCategory.setSelectedIndex(i);
-				this.setPreferredSize(winSize);
-				this.pack();
-				break;
-			}
-		}
-	}
-		
-	
 	// Variables declaration - do not modify
 	private javax.swing.JButton btnAddBookmark;
 	private javax.swing.JButton btnDeleteBookmark;
@@ -240,18 +205,18 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	} // </editor-fold>
 
 	private void loadBookmarks() {
-		List<DataSource> theDataSourceList = BookmarksUtil.getDataSourceList(bookmarkCategory,
-		                                                                     theBookmarks
-		                                                                                                                                                                                                                  .getCategory());
+		List<DataSource> theDataSourceList = bkUtil.getDataSourceList(
+				bookmarkCategory, bookmarks.getCategory());
 
 		MyListModel theModel = new MyListModel(theDataSourceList);
 		listBookmark.setModel(theModel);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void itemStateChanged(ItemEvent e) {
 		bookmarkCategory = cmbCategory.getSelectedItem().toString();
@@ -259,9 +224,10 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
 		Object _actionObject = e.getSource();
@@ -273,31 +239,33 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 			if (_btn == btnOK) {
 				this.dispose();
 			} else if (_btn == btnAddBookmark) {
-				EditBookmarkDialog theNewDialog = new EditBookmarkDialog(this, true, theBookmarks,
-				                                                         bookmarkCategory, "new",
-				                                                         null);
+				EditBookmarkDialog theNewDialog = new EditBookmarkDialog(this,
+						true, bookmarks, bookmarkCategory, "new", null);
 				theNewDialog.setSize(300, 250);
 				theNewDialog.setLocationRelativeTo(this);
 
 				theNewDialog.setVisible(true);
 				loadBookmarks(); // reload is required to update the GUI
 			} else if (_btn == btnEditBookmark) {
-				DataSource theDataSource = (DataSource) listBookmark.getSelectedValue();
-				EditBookmarkDialog theEditDialog = new EditBookmarkDialog(this, true, theBookmarks,
-				                                                          bookmarkCategory, "edit",
-				                                                          theDataSource);
+				DataSource theDataSource = (DataSource) listBookmark
+						.getSelectedValue();
+				EditBookmarkDialog theEditDialog = new EditBookmarkDialog(this,
+						true, bookmarks, bookmarkCategory, "edit",
+						theDataSource);
 				theEditDialog.setSize(300, 250);
 				theEditDialog.setLocationRelativeTo(this);
 
 				theEditDialog.setVisible(true);
 				loadBookmarks(); // reload is required to update the GUI
 			} else if (_btn == btnDeleteBookmark) {
-				DataSource theDataSource = (DataSource) listBookmark.getSelectedValue();
+				DataSource theDataSource = (DataSource) listBookmark
+						.getSelectedValue();
 
 				MyListModel theModel = (MyListModel) listBookmark.getModel();
 				theModel.removeElement(listBookmark.getSelectedIndex());
 
-				BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
+				bkUtil.deleteBookmark(bookmarks, bookmarkCategory,
+						theDataSource);
 
 				if (theModel.getSize() == 0) {
 					btnEditBookmark.setEnabled(false);
@@ -309,7 +277,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 
 	/**
 	 * Called by ListSelectionListener interface when a table item is selected.
-	 *
+	 * 
 	 * @param pListSelectionEvent
 	 */
 	public void valueChanged(ListSelectionEvent pListSelectionEvent) {
@@ -324,7 +292,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	}
 
 	class MyListModel extends javax.swing.AbstractListModel {
-	private final static long serialVersionUID = 1202339873199984L;
+		private final static long serialVersionUID = 1202339873199984L;
 		List<DataSource> theDataSourceList = new ArrayList<DataSource>(0);
 
 		public MyListModel(List<DataSource> pDataSourceList) {
@@ -359,13 +327,14 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 
 	// class MyListCellrenderer
 	class MyListCellRenderer extends JLabel implements ListCellRenderer {
-	private final static long serialVersionUID = 1202339873310334L;
+		private final static long serialVersionUID = 1202339873310334L;
+
 		public MyListCellRenderer() {
 			setOpaque(true);
 		}
 
-		public Component getListCellRendererComponent(JList list, Object value, int index,
-		                                              boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
 			DataSource theDataSource = (DataSource) value;
 			setText(theDataSource.getName());
 			setToolTipText(theDataSource.getHref());
@@ -377,19 +346,19 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	}
 
 	public class EditBookmarkDialog extends JDialog implements ActionListener {
-	private final static long serialVersionUID = 1202339873325728L;
+		private final static long serialVersionUID = 1202339873325728L;
 		private String name;
 		private String URLstr;
 		private JDialog parent;
 		private Bookmarks theBookmarks;
 		private String categoryName;
-		private URL bookmarkURL;
 		private String mode = "new"; // new/edit
 		private DataSource dataSource = null;
 
 		/** Creates new form NewBookmarkDialog */
-		public EditBookmarkDialog(JDialog parent, boolean modal, Bookmarks pBookmarks,
-		                          String categoryName, String pMode, DataSource pDataSource) {
+		public EditBookmarkDialog(JDialog parent, boolean modal,
+				Bookmarks pBookmarks, String categoryName, String pMode,
+				DataSource pDataSource) {
 			super(parent, modal);
 			this.parent = parent;
 			this.theBookmarks = pBookmarks;
@@ -428,7 +397,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 						String msg = "Please provide a name/URL!";
 						// display info dialog
 						JOptionPane.showMessageDialog(parent, msg, "Warning",
-						                              JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.INFORMATION_MESSAGE);
 
 						return;
 					}
@@ -437,16 +406,18 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 					theDataSource.setName(name);
 					theDataSource.setHref(URLstr);
 
-					if (BookmarksUtil.isInBookmarks(bookmarkURL, categoryName, theDataSource)) {
+					if (bkUtil.isInBookmarks(bookmarks, categoryName,
+							theDataSource)) {
 						String msg = "Bookmark already existed!";
 						// display info dialog
 						JOptionPane.showMessageDialog(parent, msg, "Warning",
-						                              JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.INFORMATION_MESSAGE);
 
 						return;
 					}
 
-					BookmarksUtil.saveBookmark(theBookmarks, categoryName, theDataSource);
+					bkUtil.saveBookmark(theBookmarks, categoryName,
+							theDataSource);
 					this.dispose();
 				}
 
@@ -458,7 +429,7 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 						String msg = "URL is empty!";
 						// display info dialog
 						JOptionPane.showMessageDialog(parent, msg, "Warning",
-						                              JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.INFORMATION_MESSAGE);
 
 						return;
 					}
@@ -469,8 +440,10 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 
 					// first dellete the old one, then add (note: name is key of
 					// DataSource)
-					BookmarksUtil.deleteBookmark(theBookmarks, bookmarkCategory, theDataSource);
-					BookmarksUtil.saveBookmark(theBookmarks, categoryName, theDataSource);
+					bkUtil.deleteBookmark(theBookmarks,
+							bookmarkCategory, theDataSource);
+					bkUtil.saveBookmark(theBookmarks, categoryName,
+							theDataSource);
 					this.dispose();
 				} else if (_btn == btnCancel) {
 					this.dispose();

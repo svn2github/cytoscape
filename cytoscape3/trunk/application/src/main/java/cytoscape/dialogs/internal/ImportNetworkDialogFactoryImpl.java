@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,30 +31,44 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.dialogs.internal;
 
 import java.awt.Frame;
-import cytoscape.util.FileUtil;
+
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.properties.bookmark.Bookmarks;
+import org.cytoscape.property.CyProperty;
+
 import cytoscape.dialogs.ImportNetworkDialog;
 import cytoscape.dialogs.ImportNetworkDialogFactory;
+import cytoscape.util.BookmarksUtil;
+import cytoscape.util.FileUtil;
 
 /**
  */
-public class ImportNetworkDialogFactoryImpl implements ImportNetworkDialogFactory {
+public class ImportNetworkDialogFactoryImpl implements
+		ImportNetworkDialogFactory {
 
 	private FileUtil fileUtil;
-	
-	public ImportNetworkDialogFactoryImpl(FileUtil fileUtil) {
+	private CyProperty<Bookmarks> bookmarkProp;
+	private BookmarksUtil bkUtil;
+
+	public ImportNetworkDialogFactoryImpl(FileUtil fileUtil,
+			CyProperty<Bookmarks> bookmarkProp, BookmarksUtil bkUtil) {
 		this.fileUtil = fileUtil;
+		this.bookmarkProp = bookmarkProp;
+		this.bkUtil = bkUtil;
 	}
 
-	public ImportNetworkDialog getImportNetworkDialog(Frame frame, boolean modal, CyFileFilter[] filters) {
+	public ImportNetworkDialog getImportNetworkDialog(Frame frame,
+			boolean modal, CyFileFilter[] filters) {
 		try {
-			return new  ImportNetworkDialogImpl(frame,modal,filters,fileUtil);
+			return new ImportNetworkDialogImpl(frame, modal, filters, fileUtil,
+					bookmarkProp.getProperties(), bkUtil);
 		} catch (Exception ex) {
-			throw new RuntimeException("Failed to create ImportNetworkDialog",ex);
+			throw new RuntimeException("Failed to create ImportNetworkDialog",
+					ex);
 		}
 	}
 }

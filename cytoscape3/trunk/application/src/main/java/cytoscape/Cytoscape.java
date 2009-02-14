@@ -43,32 +43,23 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.xml.bind.JAXBException;
 
-import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.properties.bookmark.Bookmarks;
+import org.cytoscape.property.internal.bookmark.BookmarkReader;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VMMFactory;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
 
-import cytoscape.bookmarks.Bookmarks;
 import cytoscape.data.ExpressionData;
-import cytoscape.data.readers.BookmarkReader;
-import cytoscape.view.CySwingApplication;
 import cytoscape.view.CySwingApplication;
 
 
@@ -846,33 +837,6 @@ public abstract class Cytoscape {
         System.gc();
     }
 
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 *
-	 * @throws JAXBException DOCUMENT ME!
-	 * @throws IOException DOCUMENT ME!
-	 */
-	public static Bookmarks getBookmarks() throws JAXBException, IOException {
-		if (bookmarks == null) {
-			BookmarkReader reader = new BookmarkReader();
-			reader.readBookmarks();
-			bookmarks = reader.getBookmarks();
-		}
-
-		return bookmarks;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param pBookmarks DOCUMENT ME!
-	 */
-	public static void setBookmarks(Bookmarks pBookmarks) {
-		bookmarks = pBookmarks;
-	}
 
     /**
      * A static method used to create edge identifiers.

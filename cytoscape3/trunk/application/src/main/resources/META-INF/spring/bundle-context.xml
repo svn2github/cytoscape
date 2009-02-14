@@ -26,6 +26,8 @@
 
 	<!-- Cytoscape Properties (cytoscape.props) -->
 	<util:properties id="cytoscapeProperties" location="classpath:cytoscape.props"/>
+	
+	<bean name="bookmarksUtil" class="cytoscape.util.BookmarksUtil" />
 
 	<!-- Cytoscape Version -->
 	<bean name="cytoscapeVersion" class="cytoscape.CytoscapeVersion" >
@@ -53,6 +55,8 @@
 	<!-- Dialog Factories -->
 	<bean name="importNetworkDialogFactory" class="cytoscape.dialogs.internal.ImportNetworkDialogFactoryImpl">
 		<constructor-arg ref="fileUtil" />
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtil" />
 	</bean>
 	<bean name="aboutDialogFactory" class="cytoscape.dialogs.internal.AboutDialogFactoryImpl">
 		<constructor-arg ref="openBrowser" />
@@ -181,6 +185,8 @@
 	<bean id="bookmarkAction" class="cytoscape.actions.BookmarkAction">
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtil" />
 	</bean>
 	<bean id="proxyServerAction" class="cytoscape.actions.ProxyServerAction">
 		<constructor-arg ref="cytoscapeDesktop" />
