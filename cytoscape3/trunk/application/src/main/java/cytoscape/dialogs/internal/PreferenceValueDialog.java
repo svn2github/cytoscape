@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.dialogs.preferences;
+package cytoscape.dialogs.internal;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -56,7 +56,7 @@ public class PreferenceValueDialog extends JDialog {
 	JButton okButton = null;
 	JButton cancelButton = null;
 	TableModel tableModel = null;
-	PreferencesDialog callerRef = null;
+	PreferencesDialogImpl callerRef = null;
 
 	/**
 	 * Creates a new PreferenceValueDialog object.
@@ -68,7 +68,7 @@ public class PreferenceValueDialog extends JDialog {
 	 * @param tm  DOCUMENT ME!
 	 * @param title  DOCUMENT ME!
 	 */
-	public PreferenceValueDialog(Dialog owner, String name, String value, PreferencesDialog caller,
+	public PreferenceValueDialog(Dialog owner, String name, String value, PreferencesDialogImpl caller,
 	                             TableModel tm, String title) {
 		super(owner, true);
 		callerRef = caller;
@@ -113,9 +113,9 @@ public class PreferenceValueDialog extends JDialog {
 
 	class OkButtonListener implements ActionListener {
 		PreferenceValueDialog motherRef = null;
-		PreferencesDialog grandmotherRef = null;
+		PreferencesDialogImpl grandmotherRef = null;
 
-		public OkButtonListener(PreferenceValueDialog mother, PreferencesDialog grandmother) {
+		public OkButtonListener(PreferenceValueDialog mother, PreferencesDialogImpl grandmother) {
 			super();
 			motherRef = mother;
 			grandmotherRef = grandmother;
@@ -132,9 +132,9 @@ public class PreferenceValueDialog extends JDialog {
 
 	class CancelButtonListener implements ActionListener {
 		PreferenceValueDialog motherRef = null;
-		PreferencesDialog grandmotherRef = null;
+		PreferencesDialogImpl grandmotherRef = null;
 
-		public CancelButtonListener(PreferenceValueDialog mother, PreferencesDialog grandmother) {
+		public CancelButtonListener(PreferenceValueDialog mother, PreferencesDialogImpl grandmother) {
 			super();
 			motherRef = mother;
 			grandmotherRef = grandmother;

@@ -39,10 +39,11 @@ import cytoscape.Cytoscape;
 import cytoscape.render.stateful.GraphLOD;
 import org.cytoscape.view.GraphView;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.regex.Pattern;
 import java.util.Properties;
+
+import cytoscape.events.PreferencesUpdatedEvent;
+import cytoscape.events.PreferencesUpdatedListener;
 
 
 /**
@@ -53,7 +54,7 @@ import java.util.Properties;
  * To understand the significance of each method's return value, it makes
  * sense to become familiar with the API cytoscape.render.immed.GraphGraphics.
  */
-public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
+public class CyGraphLOD extends GraphLOD implements PreferencesUpdatedListener {
 	protected int coarseDetailThreshold;
 	protected int nodeBorderThreshold;
 	protected int nodeLabelThreshold;
@@ -69,7 +70,6 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 		this.netmgr = netmgr;
 		this.props = props;
 		init();
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	/**
@@ -77,14 +77,15 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED) {
+	 // TODO Since this isn't instantiated in Spring, this object is not
+	 // registered as a listener service so this method never gets called.
+	 // This should all be moved in the presentation code anyway.
+	public void handleEvent(PreferencesUpdatedEvent e) {
 			init();
 			
 			for (GraphView foo : netmgr.getNetworkViewSet() )
 				// TODO NEED RENDERER
 				foo.setGraphLOD(this);
-		}
 	}
 
 	protected void init() {

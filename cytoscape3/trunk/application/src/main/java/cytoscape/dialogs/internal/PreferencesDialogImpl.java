@@ -1,5 +1,5 @@
 /*
-  File: PreferencesDialog.java
+  File: PreferencesDialogImpl.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,7 +34,16 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.dialogs.preferences;
+package cytoscape.dialogs.internal;
+
+import org.cytoscape.event.CyEventHelper;
+
+import org.cytoscape.vizmap.event.SaveVizmapPropsEvent;
+import org.cytoscape.vizmap.event.SaveVizmapPropsListener;
+
+import cytoscape.events.PreferencesUpdatedEvent;
+import cytoscape.events.PreferencesUpdatedListener;
+import cytoscape.dialogs.PreferencesDialog;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyOperatingContext;
@@ -60,12 +69,13 @@ import java.util.Properties;
 /**
  *
  */
-public class PreferencesDialog extends JDialog implements PropertyChangeListener {
+public class PreferencesDialogImpl extends JDialog implements PreferencesDialog {
 	private final static long serialVersionUID = 1202339873396288L;
 
 	int[] selection = null;
 	private Properties props;
 	private CyOperatingContext context;
+	private CyEventHelper eh;
 
 	JScrollPane propsTablePane = new JScrollPane();
 	JTable prefsTable = new JTable();
@@ -92,41 +102,6 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	private boolean saveCyPropsAsDefault = false;
 	private boolean saveVizmapAsDefault = false;
 
-	// When properties are changed, it will be processed here.
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName().equals(Cytoscape.PREFERENCE_MODIFIED)) {
-			System.out.println("Cytoscape Prop. has changed: ");
-			System.out.println(" - Old value is " + e.getOldValue());
-			System.out.println(" - New value is " + e.getNewValue());
-
-			String propName = null;
- 
-			if ((props.getProperty("defaultSpeciesName") == e.getOldValue())
-			    || (props.getProperty("defaultSpeciesName") == e.getNewValue())) {
-				propName = "defaultSpeciesName";
-			} else if ((props.getProperty("defaultWebBrowser") == e
-			                                                                                                                     .getOldValue())
-			           || (props.getProperty("defaultWebBrowser") == e
-			                                                                                                                       .getNewValue())) {
-				propName = "defaultWebBrowser";
-			}
-
-			if (propName != null) {
-				// Set to new val
-				props.setProperty(propName, (String) e.getNewValue());
-				prefsTM.setProperty(propName, (String) e.getNewValue());
-				// refresh();
-				System.out.println(propName + " updated to "
-				                   + props.getProperty(propName));
-			}
-		}
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -134,12 +109,11 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	 * @param preferenceName DOCUMENT ME!
 	 * @param preferenceValue DOCUMENT ME!
 	 */
-	public void setParameter(TableModel tm, String preferenceName, String preferenceValue) {
+	public void setParameter(TableModel tm, final String preferenceName, final String preferenceValue) {
 		// preferences/properties
 		if (tm == prefsTM) {
-			Cytoscape.firePropertyChange(Cytoscape.PREFERENCE_MODIFIED,
-			                             prefsTM.getProperty(preferenceName), preferenceValue);
 			prefsTM.setProperty(preferenceName, preferenceValue);
+			props.setProperty(preferenceName, preferenceValue);
 		}
 
 		refresh();
@@ -217,12 +191,11 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	 *
 	 * @param owner  DOCUMENT ME!
 	 */
-	public PreferencesDialog(Frame owner,CyOperatingContext context) {
+	public PreferencesDialogImpl(Frame owner,CyOperatingContext context, CyEventHelper eh) {
 		super(owner);
 		this.context = context;
 		this.props = context.getProperties();
-
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		this.eh = eh;
 
 		initButtonPane();
 		initTable();
@@ -360,9 +333,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	}
 
 	class ModifyPropertyListener implements ActionListener {
-		PreferencesDialog callerRef = null;
+		PreferencesDialogImpl callerRef = null;
 
-		public ModifyPropertyListener(PreferencesDialog caller) {
+		public ModifyPropertyListener(PreferencesDialogImpl caller) {
 			super();
 			callerRef = caller;
 		}
@@ -372,7 +345,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 				String name = new String((String) (prefsTM.getValueAt(selection[i], 0)));
 				String value = new String((String) (prefsTM.getValueAt(selection[i], 1)));
 
-				PreferenceValueDialog pd = new PreferenceValueDialog(PreferencesDialog.this, name,
+				PreferenceValueDialog pd = new PreferenceValueDialog(PreferencesDialogImpl.this, name,
 				                                                     value, callerRef, prefsTM,
 				                                                     "Modify value...");
 			}
@@ -380,9 +353,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	}
 
 	class DeletePropertyListener implements ActionListener {
-		PreferencesDialog callerRef = null;
+		PreferencesDialogImpl callerRef = null;
 
-		public DeletePropertyListener(PreferencesDialog caller) {
+		public DeletePropertyListener(PreferencesDialogImpl caller) {
 			super();
 			callerRef = caller;
 		}
@@ -398,9 +371,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	}
 
 	class OkButtonListener implements ActionListener {
-		PreferencesDialog callerRef = null;
+		PreferencesDialogImpl callerRef = null;
 
-		public OkButtonListener(PreferencesDialog caller) {
+		public OkButtonListener(PreferencesDialogImpl caller) {
 			super();
 			callerRef = caller;
 		}
@@ -416,7 +389,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 			callerRef.setVisible(false);
 
 			if (saveVizmapAsDefault) {
-				Cytoscape.firePropertyChange(Cytoscape.SAVE_VIZMAP_PROPS, null, null);
+				eh.fireSynchronousEvent( new SaveVizmapPropsEvent() {
+					public Object getSource() { return PreferencesDialogImpl.this; }
+					}, SaveVizmapPropsListener.class );
 				saveVizmapAsDefault = false;
 				saveVizmapBtn.setSelected(false);
 			}
@@ -437,7 +412,14 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 				saveCyPropsBtn.setSelected(false);
 			}
 
-			Cytoscape.firePropertyChange(Cytoscape.PREFERENCES_UPDATED, null, null);
+			final Properties op = props;
+			final Properties np = newProps;
+
+			eh.fireSynchronousEvent( new PreferencesUpdatedEvent() {
+				public Object getSource() { return PreferencesDialogImpl.this; }
+				public Properties getOldProperties() { return op; }
+				public Properties getNewProperties() { return np; }
+				}, PreferencesUpdatedListener.class );
 		}
 	}
 
@@ -460,9 +442,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	}
 
 	class CancelButtonListener implements ActionListener {
-		PreferencesDialog callerRef = null;
+		PreferencesDialogImpl callerRef = null;
 
-		public CancelButtonListener(PreferencesDialog caller) {
+		public CancelButtonListener(PreferencesDialogImpl caller) {
 			super();
 			callerRef = caller;
 		}
@@ -476,9 +458,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 
 	class TableListener implements ListSelectionListener {
 		private ListSelectionModel model = null;
-		private PreferencesDialog motherRef = null;
+		private PreferencesDialogImpl motherRef = null;
 
-		public TableListener(PreferencesDialog mother, ListSelectionModel lsm) {
+		public TableListener(PreferencesDialogImpl mother, ListSelectionModel lsm) {
 			motherRef = mother;
 			model = lsm;
 		}
@@ -519,5 +501,10 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 
 		public void actionPerformed(ActionEvent e) {
 		}
+	}
+
+	public void showDialog() {
+		refresh();
+		setVisible(true);
 	}
 }

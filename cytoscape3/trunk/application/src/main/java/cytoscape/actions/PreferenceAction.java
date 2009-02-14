@@ -43,8 +43,8 @@
 package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.CyOperatingContext;
-import cytoscape.dialogs.preferences.PreferencesDialog;
+import cytoscape.dialogs.PreferencesDialog;
+import cytoscape.dialogs.PreferencesDialogFactory;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 
@@ -61,11 +61,11 @@ public class PreferenceAction extends CytoscapeAction {
 	 * Creates a new PreferenceAction object.
 	 */
 	private CySwingApplication desktop;
-	private CyOperatingContext context;
-	public PreferenceAction(CySwingApplication desktop, CyNetworkManager netmgr, CyOperatingContext context) {
+	private PreferencesDialogFactory pdf;
+	public PreferenceAction(CySwingApplication desktop, CyNetworkManager netmgr, PreferencesDialogFactory pdf ) {
 		super("Properties...",netmgr);
 		this.desktop = desktop;
-		this.context = context;
+		this.pdf = pdf;
 		System.out.println("PreferenceAction()...");
 		setPreferredMenu("Edit.Preferences");
 	}
@@ -76,8 +76,7 @@ public class PreferenceAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		PreferencesDialog preferencesDialog = new PreferencesDialog(desktop.getJFrame(), context);
-		preferencesDialog.refresh();
-		preferencesDialog.setVisible(true);
+		PreferencesDialog preferencesDialog = pdf.getPreferencesDialog(desktop.getJFrame()); 
+		preferencesDialog.showDialog();
 	} 
 }

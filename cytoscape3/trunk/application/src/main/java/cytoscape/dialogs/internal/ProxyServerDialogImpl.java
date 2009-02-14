@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.dialogs.preferences;
+package cytoscape.dialogs.internal;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.ProxyHandler;
@@ -47,24 +47,33 @@ import java.awt.event.ItemListener;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
+import cytoscape.dialogs.ProxyServerDialog;
+
+import org.cytoscape.event.CyEventHelper;
+
+import cytoscape.events.PreferencesUpdatedEvent;
+import cytoscape.events.PreferencesUpdatedListener;
+
 
 /**
  *
  */
-public class ProxyServerDialog extends JDialog implements ActionListener, ItemListener {
+public class ProxyServerDialogImpl extends JDialog implements ProxyServerDialog, ActionListener, ItemListener {
 
 	private static final long serialVersionUID = -2693844068486336199L;
 
 	private Properties props;
 	private ProxyHandler proxyHandler;
+	private CyEventHelper eh;
 
 	/** Creates new form ProxyServerDialog */
-	public ProxyServerDialog(javax.swing.JFrame pParent,Properties props,ProxyHandler proxyHandler) {
+	public ProxyServerDialogImpl(javax.swing.JFrame pParent,Properties props,ProxyHandler proxyHandler, CyEventHelper eh) {
 		super(pParent, true);
 		this.setTitle("Proxy server setting");
 		this.setLocationRelativeTo(pParent);
 		this.props = props;
 		this.proxyHandler = proxyHandler;
+		this.eh = eh;
 
 		initComponents();
 		initValues();
@@ -310,8 +319,17 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 		props.setProperty(ProxyHandler.PROXY_PORT_PROPERTY_NAME, tfPort.getText());
 		props.setProperty(ProxyHandler.PROXY_TYPE_PROPERTY_NAME, cmbType.getSelectedItem().toString());
 
-		Cytoscape.firePropertyChange(Cytoscape.PREFERENCES_UPDATED, null, null);
+		eh.fireSynchronousEvent( new PreferencesUpdatedEvent() {
+			public Object getSource() { return this; }
+			public Properties getNewProperties() { return props; }
+			public Properties getOldProperties() { return new Properties(); }
+			}, PreferencesUpdatedListener.class );
+
 
 		return true;
+	}
+
+	public void showDialog() {
+		setVisible(true);
 	}
 }

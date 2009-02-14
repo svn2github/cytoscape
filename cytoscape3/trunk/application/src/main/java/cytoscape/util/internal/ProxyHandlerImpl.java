@@ -36,21 +36,27 @@ package cytoscape.util.internal;
 
 import cytoscape.Cytoscape;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Properties;
 
+import cytoscape.events.PreferencesUpdatedListener;
+import cytoscape.events.PreferencesUpdatedEvent;
+import cytoscape.events.ProxyModifiedListener;
+import cytoscape.events.ProxyModifiedEvent;
+
 import cytoscape.util.ProxyHandler;
+
+import org.cytoscape.event.CyEventHelper;
 
 /**
  *
  */
-public class ProxyHandlerImpl implements ProxyHandler, PropertyChangeListener {
+public class ProxyHandlerImpl implements ProxyHandler, PreferencesUpdatedListener {
 
     private Proxy proxyServer; 
 	private Properties props;
+	private CyEventHelper eh;
 
     /**
      * Create a Proxy representing the proxy server to use
@@ -59,9 +65,9 @@ public class ProxyHandlerImpl implements ProxyHandler, PropertyChangeListener {
      */
     // TODO: Change this to *always* return a Proxy (no null value).
     //       For a null proxy, return Proxy.NO_PROXY instead.
-    public ProxyHandlerImpl(Properties props) {
+    public ProxyHandlerImpl(Properties props, CyEventHelper eh) {
 		this.props = props;
-        Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
+		this.eh = eh;
 		loadProxyServer();
     }
 
@@ -110,17 +116,18 @@ public class ProxyHandlerImpl implements ProxyHandler, PropertyChangeListener {
      *
      * @param e DOCUMENT ME!
      */
-    public void propertyChange(PropertyChangeEvent e) {
-        if (e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED) {
-            Proxy savedProxy = proxyServer;
-            loadProxyServer();
+	public void handleEvent(PreferencesUpdatedEvent e) {
+		final Proxy savedProxy = proxyServer;
+		loadProxyServer();
 
-	    // Only fire event if the proxy changed:
-            if (((proxyServer == null) && (savedProxy != null)) ||
-                ((proxyServer != null) && (!proxyServer.equals(savedProxy)))) {
-                Cytoscape.firePropertyChange(Cytoscape.PROXY_MODIFIED,
-                                             savedProxy, proxyServer);
-            }
-        }
-    }
+		// Only fire event if the proxy changed:
+		if (((proxyServer == null) && (savedProxy != null)) ||
+		    ((proxyServer != null) && (!proxyServer.equals(savedProxy)))) {
+			eh.fireSynchronousEvent( new ProxyModifiedEvent() {
+					public ProxyHandler getSource() { return ProxyHandlerImpl.this; }
+					public Proxy getNewProxy() { return proxyServer; }
+					public Proxy getOldProxy() { return savedProxy; }
+				}, ProxyModifiedListener.class );
+		}
+	}
 }

@@ -181,16 +181,6 @@ public abstract class Cytoscape {
 	 */
 	public static final String NETWORK_LOADED = "NETWORK_LOADED";
 
-	/**
-	 *
-	 */
-	public static final String PREFERENCE_MODIFIED = "PREFERENCE_MODIFIED";
-
-	/**
-	 *
-	 */
-	public static final String PREFERENCES_UPDATED = "PREFERENCES_UPDATED";
-
        /**
         * Specifies that the Proxy settings Cytoscape uses to connect to the
         * internet have been changed.
