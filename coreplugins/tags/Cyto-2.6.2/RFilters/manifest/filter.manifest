@@ -1,3 +1,0 @@
-Class-Path: .  colt.jar  cytoscape.jar
-Main-Class: filter.view.FilterView
-Cytoscape-Plugin: filter.cytoscape.CsFilter

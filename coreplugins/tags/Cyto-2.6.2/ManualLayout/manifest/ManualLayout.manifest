@@ -1,3 +1,0 @@
-Class-Path: .  cytoscape.jar
-Main-Class: ManualLayout.ManualLayoutPlugin
-Cytoscape-Plugin: ManualLayout.ManualLayoutPlugin
