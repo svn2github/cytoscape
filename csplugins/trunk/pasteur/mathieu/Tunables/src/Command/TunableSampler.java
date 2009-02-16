@@ -4,7 +4,10 @@ package Command;
 
 import Tunable.Tunable;
 import Tunable.Tunable.Param;
-import Utils.*;
+import Utils.BoundedDouble;
+import Utils.BoundedInteger;
+import Utils.ListMultipleSelection;
+import Utils.ListSingleSelection;
 
 public class TunableSampler implements command {
 

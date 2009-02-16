@@ -1,15 +1,21 @@
 package Utils;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import HandlerFactory.*;
-
-import java.lang.reflect.*;
 import GuiInterception.Guihandler;
-import Tunable.*; 
+import HandlerFactory.Handler;
+import HandlerFactory.HandlerListener;
+import Tunable.Tunable;
 
 
 public class XorPanel extends JPanel {

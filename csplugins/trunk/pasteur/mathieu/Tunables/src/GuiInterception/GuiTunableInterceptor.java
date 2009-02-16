@@ -1,11 +1,17 @@
 package GuiInterception;
 
-import java.util.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import java.util.Map;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import Tunable.Tunable.Param;
 import Utils.CollapsablePanel;

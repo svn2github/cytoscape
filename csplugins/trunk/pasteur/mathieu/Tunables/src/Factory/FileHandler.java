@@ -12,7 +12,6 @@ import javax.swing.*;
 
 import org.cytoscape.io.CyFileFilter;
 
-
 import cytoscape.util.FileUtil;
 
 import Tunable.*;

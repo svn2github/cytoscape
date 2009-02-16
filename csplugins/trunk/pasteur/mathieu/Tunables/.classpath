@@ -2,7 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/application/target/classes"/>
+	<classpathentry kind="lib" path="/application/target/classes" sourcepath="/application/target/classes"/>
 	<classpathentry kind="lib" path="/core/io/target/classes"/>
+	<classpathentry kind="lib" path="/application/target/generated-sources/xjc/cytoscape/bookmarks"/>
+	<classpathentry kind="lib" path="/application/target/generated-sources/xjc/cytoscape/generated"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

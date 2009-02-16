@@ -1,8 +1,9 @@
 package Props;
 
-import Tunable.Tunable;
 import java.lang.reflect.Field;
 import java.util.Properties;
+
+import Tunable.Tunable;
 
 
 public class BooleanPropHandler extends AbstractPropHandler{

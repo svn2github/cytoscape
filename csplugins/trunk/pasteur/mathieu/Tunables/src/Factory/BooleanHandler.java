@@ -3,11 +3,14 @@ package Factory;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.lang.reflect.*;
-import javax.swing.*;
+import java.lang.reflect.Field;
+
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import GuiInterception.AbstractGuiHandler;
-import Tunable.*;
+import Tunable.Tunable;
 
 public class BooleanHandler extends AbstractGuiHandler {
 

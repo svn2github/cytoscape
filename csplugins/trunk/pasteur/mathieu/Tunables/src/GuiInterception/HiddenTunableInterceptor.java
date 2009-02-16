@@ -1,16 +1,16 @@
 package GuiInterception;
 
-import HandlerFactory.Handler;
-import HandlerFactory.HandlerFactory;
-import Tunable.Tunable;
-import java.lang.reflect.*;
-import java.util.Collection;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import HandlerFactory.Handler;
+import HandlerFactory.HandlerFactory;
+import Tunable.Tunable;
 
 
 public abstract class HiddenTunableInterceptor<T extends Handler> implements TunableInterceptor<T>{

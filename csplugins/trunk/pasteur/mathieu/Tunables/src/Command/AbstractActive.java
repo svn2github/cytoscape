@@ -1,10 +1,12 @@
 package Command;
 
-import Tunable.Tunable;
-import Utils.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import Command.command;
+import Tunable.Tunable;
+import Utils.BoundedDouble;
+import Utils.BoundedInteger;
+import Utils.ListMultipleSelection;
 
 public class AbstractActive implements command {
 

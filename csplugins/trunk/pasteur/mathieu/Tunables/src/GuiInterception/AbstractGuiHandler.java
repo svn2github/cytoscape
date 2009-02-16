@@ -1,18 +1,21 @@
 
 package GuiInterception;
 
-import java.lang.reflect.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
+import java.util.LinkedList;
+
+import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import java.awt.event.*;
-import java.awt.*;
 import HandlerFactory.AbstractHandler;
-import Tunable.*;
+import Tunable.Tunable;
 
 public abstract class AbstractGuiHandler extends AbstractHandler implements Guihandler, ActionListener,ChangeListener,ListSelectionListener {
 
