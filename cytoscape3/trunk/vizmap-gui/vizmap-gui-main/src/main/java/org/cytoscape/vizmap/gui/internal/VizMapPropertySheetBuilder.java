@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
 import javax.swing.Icon;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -89,6 +88,14 @@ public class VizMapPropertySheetBuilder {
 			EditorFactory editorFactory, ColorManager colorMgr, VizMapperMenuManager menuMgr) {
 		this.vmm = vmm;
 		this.propertySheetPanel = propertySheetPanel;
+		this.rendReg = rendReg;
+		this.editorReg = editorReg;
+		this.emptyBoxRenderer = emptyBoxRenderer;
+		this.filledBoxRenderer = filledBoxRenderer;
+		this.vizMapPropertyBuilder = vizMapPropertyBuilder;
+		this.editorFactory = editorFactory;
+		this.colorMgr = colorMgr;
+		this.menuMgr = menuMgr;
 		
 		propertyMap = new HashMap<String, List<Property>>();
 	}

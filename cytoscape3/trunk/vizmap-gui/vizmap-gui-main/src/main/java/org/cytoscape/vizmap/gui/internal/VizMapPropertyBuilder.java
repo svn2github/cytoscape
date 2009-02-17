@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.annotation.Resource;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
@@ -32,29 +31,48 @@ import cytoscape.CyNetworkManager;
 
 public class VizMapPropertyBuilder {
 
-	@Resource
 	private PropertyRendererRegistry rendReg;
-	@Resource
 	private PropertyEditorRegistry editorReg;
 
-	@Resource
 	private DefaultTableCellRenderer emptyBoxRenderer;
-	@Resource
 	private DefaultTableCellRenderer filledBoxRenderer;
 
-	@Resource
 	private EditorFactory editorFactory;
-	
-	@Resource
+
 	private CyNetworkManager cyNetworkManager;
+
+	/**
+	 * All parameters will be injected through DI container.
+	 * 
+	 * @param rendReg
+	 * @param editorReg
+	 * @param emptyBoxRenderer
+	 * @param filledBoxRenderer
+	 * @param editorFactory
+	 * @param cyNetworkManager
+	 */
+	public VizMapPropertyBuilder(PropertyRendererRegistry rendReg,
+			PropertyEditorRegistry editorReg,
+			DefaultTableCellRenderer emptyBoxRenderer,
+			DefaultTableCellRenderer filledBoxRenderer,
+			EditorFactory editorFactory, CyNetworkManager cyNetworkManager) {
+		this.rendReg = rendReg;
+		this.editorReg = editorReg;
+		this.emptyBoxRenderer = emptyBoxRenderer;
+		this.filledBoxRenderer = filledBoxRenderer;
+		this.editorFactory = editorFactory;
+		this.cyNetworkManager = cyNetworkManager;
+
+	}
 
 	/*
 	 * Build one property for one visual property.
 	 */
 	public void buildProperty(final Calculator calc,
-			final VizMapperProperty calculatorTypeProp, final String rootCategory,
+			final VizMapperProperty calculatorTypeProp,
+			final String rootCategory,
 			final PropertySheetPanel propertySheetPanel) {
-		
+
 		final VisualPropertyType type = calc.getVisualPropertyType();
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 		/*
@@ -147,8 +165,7 @@ public class VizMapPropertyBuilder {
 						.getDiscreteCellRenderer(type), calculatorTypeProp);
 			} else if ((firstMap.getClass() == ContinuousMapping.class)
 					&& (attrName != null)) {
-				int wi = propertySheetPanel.getTable().getCellRect(0, 1,
-						true).width;
+				int wi = propertySheetPanel.getTable().getCellRect(0, 1, true).width;
 
 				VizMapperProperty graphicalView = new VizMapperProperty();
 				graphicalView

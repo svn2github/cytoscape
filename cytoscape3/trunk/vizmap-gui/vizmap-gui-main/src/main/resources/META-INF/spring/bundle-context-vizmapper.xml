@@ -198,7 +198,15 @@
 		<constructor-arg ref="menuManager" />
 	</bean>
 
-	<bean id="vizMapPropertyBuilder" class="org.cytoscape.vizmap.gui.internal.VizMapPropertyBuilder" />
+	<bean id="vizMapPropertyBuilder" class="org.cytoscape.vizmap.gui.internal.VizMapPropertyBuilder">
+		<constructor-arg ref="rendReg" />
+		<constructor-arg ref="editorReg" />
+		<constructor-arg ref="emptyBoxRenderer" />
+		<constructor-arg ref="filledBoxRenderer" />
+		<constructor-arg ref="editorFactory" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
 	<bean id="vizMapEventHandlerManager"
 		class="org.cytoscape.vizmap.gui.internal.event.VizMapEventHandlerManagerImpl">
 		<constructor-arg ref="vizMapPropertySheetBuilder" />
