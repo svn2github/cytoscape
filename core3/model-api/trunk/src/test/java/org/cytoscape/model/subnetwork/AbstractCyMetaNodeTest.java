@@ -61,7 +61,7 @@ import java.util.Map;
  * DOCUMENT ME!
   */
 public abstract class AbstractCyMetaNodeTest extends TestCase {
-	private CyRootNetwork root;
+	protected CyRootNetwork root;
 
     /**
      *  DOCUMENT ME!

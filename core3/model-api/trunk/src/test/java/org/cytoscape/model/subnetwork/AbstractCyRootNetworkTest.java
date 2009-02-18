@@ -61,8 +61,8 @@ import java.util.Map;
  * DOCUMENT ME!
   */
 public abstract class AbstractCyRootNetworkTest extends TestCase {
-	private CyRootNetwork root;
-	private CyRootNetwork root2;
+	protected CyRootNetwork root;
+	protected CyRootNetwork root2;
 
 
 	/**
