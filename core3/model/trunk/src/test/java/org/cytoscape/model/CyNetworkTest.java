@@ -61,7 +61,7 @@ import java.util.Map;
 /**
  * DOCUMENT ME!
   */
-public class CyNetworkTest extends AbstractCyNetworkCheck {
+public class CyNetworkTest extends AbstractCyNetworkTest {
 
 	/**
 	 *  DOCUMENT ME!

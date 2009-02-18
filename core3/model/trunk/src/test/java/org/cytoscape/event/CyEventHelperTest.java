@@ -55,7 +55,11 @@ import java.util.List;
 /**
  * DOCUMENT ME!
   */
-public class CyEventHelperTest extends TestCase {
+public class CyEventHelperTest extends AbstractCyEventHelperTest {
+
+	private ServiceReference reference;
+	private BundleContext bc;
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -64,11 +68,6 @@ public class CyEventHelperTest extends TestCase {
 	public static Test suite() {
 		return new TestSuite(CyEventHelperTest.class);
 	}
-
-	CyEventHelper helper;
-	ServiceReference reference;
-	BundleContext bc;
-	StubCyListenerImpl service;
 
 	/**
 	 *  DOCUMENT ME!
@@ -95,37 +94,5 @@ public class CyEventHelperTest extends TestCase {
 			};
 
 		helper = new CyEventHelperImpl(bc);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void tearDown() {
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void testSychronous() {
-		// TODO figure out why I need to cast the StubCyEventImpl
-		helper.fireSynchronousEvent((StubCyEvent) new StubCyEventImpl("homer"),
-		                            StubCyListener.class);
-		assertEquals(1, service.getNumCalls());
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void testASychronous() {
-		try {
-			// TODO figure out why I need to cast the StubCyEventImpl
-			helper.fireAsynchronousEvent((StubCyEvent) new StubCyEventImpl("marge"),
-			                             StubCyListener.class);
-			Thread.sleep(500); // TODO is there a better way to wait?
-			assertEquals(1, service.getNumCalls());
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-			fail();
-		}
 	}
 }

@@ -51,7 +51,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.TestCyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.AbstractCyNetworkCheck;
+import org.cytoscape.model.AbstractCyNetworkTest;
 
 import java.lang.RuntimeException;
 
@@ -64,7 +64,7 @@ import java.util.Map;
 /**
  * DOCUMENT ME!
   */
-public class CySubNetworkCyNetworkTest extends AbstractCyNetworkCheck {
+public class CySubNetworkCyNetworkTest extends AbstractCyNetworkTest {
 
 	/**
 	 *  DOCUMENT ME!

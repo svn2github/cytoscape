@@ -40,6 +40,7 @@ package org.cytoscape.model;
 //import org.cytoscape.model.internal.CyNetworkImpl;
 import org.cytoscape.model.internal.MGraph;
 import org.cytoscape.model.internal.ArrayGraph;
+import org.cytoscape.event.DummyCyEventHelper;
 
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 
