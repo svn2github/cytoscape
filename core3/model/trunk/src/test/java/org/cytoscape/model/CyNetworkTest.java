@@ -36,41 +36,12 @@
 
 package org.cytoscape.model;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.cytoscape.event.CyEvent;
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyListener;
-
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
-
-import java.lang.RuntimeException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * DOCUMENT ME!
   */
 public class CyNetworkTest extends AbstractCyNetworkTest {
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Test suite() {
-		return new TestSuite(CyNetworkTest.class);
-	}
 
 	/**
 	 *  DOCUMENT ME!

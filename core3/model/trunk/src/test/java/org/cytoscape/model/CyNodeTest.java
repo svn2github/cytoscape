@@ -34,33 +34,20 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.subnetwork;
+package org.cytoscape.model;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.AbstractCyNetworkTest;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.TestCyNetworkFactory;
-
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * DOCUMENT ME!
-  */
-public class CySubNetworkCyNetworkTest extends AbstractCyNetworkTest {
+ */
+public class CyNodeTest extends AbstractCyNodeTest {
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		CyRootNetwork root = TestCyNetworkFactory.getRootInstance(); 
-		CyNode n1 = root.addNode();
-		List<CyNode> list = new ArrayList<CyNode>(1);
-		list.add(n1);
-		CySubNetwork s1 = root.addSubNetwork(list);
-		
-		net = s1;
-		net.removeNode(n1);
+		net = TestCyNetworkFactory.getInstance(); 
 	}
 
 	/**

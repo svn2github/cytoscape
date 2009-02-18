@@ -36,31 +36,21 @@
 
 package org.cytoscape.model.subnetwork;
 
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.AbstractCyNetworkTest;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.model.TestCyNetworkFactory;
-
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * DOCUMENT ME!
   */
-public class CySubNetworkCyNetworkTest extends AbstractCyNetworkTest {
+public class CyRootNetworkCyNetworkTest extends AbstractCyNetworkTest {
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		CyRootNetwork root = TestCyNetworkFactory.getRootInstance(); 
-		CyNode n1 = root.addNode();
-		List<CyNode> list = new ArrayList<CyNode>(1);
-		list.add(n1);
-		CySubNetwork s1 = root.addSubNetwork(list);
-		
-		net = s1;
-		net.removeNode(n1);
+		net = TestCyNetworkFactory.getRootInstance(); 
 	}
 
 	/**
