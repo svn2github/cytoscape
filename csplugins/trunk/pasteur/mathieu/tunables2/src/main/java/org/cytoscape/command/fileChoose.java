@@ -1,6 +1,6 @@
 package org.cytoscape.command;
 
-import java.io.File;
+
 
 //import org.cytoscape.io.CyFileFilter;
 
