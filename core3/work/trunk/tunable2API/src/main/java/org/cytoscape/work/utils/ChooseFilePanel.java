@@ -10,9 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
-//import org.cytoscape.io.CyFileFilter;
-//import cytoscape.util.FileUtil;
-
 
 public class ChooseFilePanel extends JPanel implements ActionListener{
 

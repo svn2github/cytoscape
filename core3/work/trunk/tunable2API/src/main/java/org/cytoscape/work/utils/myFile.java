@@ -3,8 +3,6 @@ package org.cytoscape.work.utils;
 import java.io.File;
 import java.util.List;
 
-import org.cytoscape.io.CyFileFilter;
-
 
 public class myFile{
 	
@@ -65,9 +63,9 @@ public class myFile{
 		return modal;
 	}
 
-	public CyFileFilter[] getCyFileFilter() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public CyFileFilter[] getCyFileFilter() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 }

@@ -3,8 +3,6 @@ package org.cytoscape.work;
 
 import javax.swing.*;
 
-import org.cytoscape.work.Handler;
-
 public interface Guihandler extends Handler{
 	public void handle();
 //	public JPanel getInputPanel();

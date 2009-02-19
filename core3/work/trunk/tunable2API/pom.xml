@@ -3,10 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>tunable2API</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>tunable2API</name>
-  <url>http://maven.apache.org</url>
+  <name>${bundle.symbolicName} [${bundle.namespace}]</name>
+  <parent>
+  	<artifactId>parent</artifactId>
+  	<groupId>org.cytoscape</groupId>
+  	<version>1.0-SNAPSHOT</version>
+  </parent>
   <build>
   	<plugins>
   		<plugin>
@@ -26,6 +30,29 @@
                     </compilerArguments>
                 </configuration>
   		</plugin>
+  		<plugin>
+  			<groupId>org.ops4j</groupId>
+  			<artifactId>maven-pax-plugin</artifactId>
+  			<version>1.4</version>
+  			<extensions>true</extensions>
+  		</plugin>
+  		<plugin>
+  			<groupId>org.apache.felix</groupId>
+  			<artifactId>maven-bundle-plugin</artifactId>
+  			<version>1.4.3</version>
+  			<extensions>true</extensions>
+  		</plugin>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-jar-plugin</artifactId>
+  			<executions>
+  				<execution>
+  					<goals>
+  						<goal>test-jar</goal>
+  					</goals>
+  				</execution>
+  			</executions>
+  		</plugin>
   	</plugins>
   	</build>
   <dependencies>
@@ -34,6 +61,25 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.osgi</groupId>
+    	<artifactId>osgi_R4_core</artifactId>
+    	<version>1.0</version>
+    	<scope>provided</scope>
+    	<optional>true</optional>
+    </dependency>
+    <dependency>
+    	<groupId>org.osgi</groupId>
+    	<artifactId>osgi_R4_compendium</artifactId>
+    	<version>1.0</version>
+    	<scope>provided</scope>
+    	<optional>true</optional>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache</groupId>
+    	<artifactId>commons.cli</artifactId>
+    	<version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
