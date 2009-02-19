@@ -57,8 +57,8 @@ import javax.swing.event.ListSelectionListener;
 
 import org.cytoscape.properties.bookmark.Bookmarks;
 import org.cytoscape.properties.bookmark.DataSource;
+import org.cytoscape.property.bookmark.BookmarksUtil;
 
-import cytoscape.util.BookmarksUtil;
 
 /**
  *

@@ -46,10 +46,10 @@ import java.awt.event.ActionEvent;
 
 import org.cytoscape.properties.bookmark.Bookmarks;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.bookmark.BookmarksUtil;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.dialogs.preferences.BookmarkDialog;
-import cytoscape.util.BookmarksUtil;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 

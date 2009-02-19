@@ -39,10 +39,10 @@ import java.awt.Frame;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.properties.bookmark.Bookmarks;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.bookmark.BookmarksUtil;
 
 import cytoscape.dialogs.ImportNetworkDialog;
 import cytoscape.dialogs.ImportNetworkDialogFactory;
-import cytoscape.util.BookmarksUtil;
 import cytoscape.util.FileUtil;
 
 /**

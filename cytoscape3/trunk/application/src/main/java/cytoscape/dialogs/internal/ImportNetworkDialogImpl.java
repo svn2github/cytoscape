@@ -58,9 +58,9 @@ import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.properties.bookmark.Bookmarks;
 import org.cytoscape.properties.bookmark.Category;
 import org.cytoscape.properties.bookmark.DataSource;
+import org.cytoscape.property.bookmark.BookmarksUtil;
 
 import cytoscape.dialogs.ImportNetworkDialog;
-import cytoscape.util.BookmarksUtil;
 import cytoscape.util.FileUtil;
 
 /**

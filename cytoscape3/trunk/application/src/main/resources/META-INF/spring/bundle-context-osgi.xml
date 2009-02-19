@@ -10,6 +10,9 @@
 	<osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=bookmarks)" />
 
+	<osgi:reference id="bookmarksUtilServiceRef"
+		interface="org.cytoscape.property.bookmark.BookmarksUtil" />
+
 	<osgi:reference id="cyNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
 
@@ -51,7 +54,8 @@
 	<osgi:service id="proxyHandlerService" ref="proxyHandler">
 		<osgi:interfaces>
 			<value>cytoscape.util.ProxyHandler</value>
-			<value>cytoscape.events.PreferencesUpdatedListener</value>
+			<value>cytoscape.events.PreferencesUpdatedListener
+			</value>
 		</osgi:interfaces>
 	</osgi:service>
 
@@ -178,33 +182,50 @@
 
 	<osgi:service id="networkPanelService" ref="networkPanel">
 		<osgi:interfaces>
-			<value>org.cytoscape.model.events.SelectedNodesListener</value>
-			<value>org.cytoscape.model.events.SelectedEdgesListener</value>
-			<value>org.cytoscape.model.events.UnselectedNodesListener</value>
-			<value>org.cytoscape.model.events.UnselectedEdgesListener</value>
-			<value>cytoscape.events.SetCurrentNetworkViewListener</value>
-			<value>cytoscape.events.SetCurrentNetworkListener</value>
-			<value>cytoscape.events.NetworkAddedListener</value>
-			<value>cytoscape.events.NetworkViewAddedListener</value>
-			<value>cytoscape.events.NetworkAboutToBeDestroyedListener</value>
-			<value>cytoscape.events.NetworkViewAboutToBeDestroyedListener</value>
+			<value>org.cytoscape.model.events.SelectedNodesListener
+			</value>
+			<value>org.cytoscape.model.events.SelectedEdgesListener
+			</value>
+			<value>org.cytoscape.model.events.UnselectedNodesListener
+			</value>
+			<value>org.cytoscape.model.events.UnselectedEdgesListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkViewListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkListener
+			</value>
+			<value>cytoscape.events.NetworkAddedListener
+			</value>
+			<value>cytoscape.events.NetworkViewAddedListener
+			</value>
+			<value>cytoscape.events.NetworkAboutToBeDestroyedListener
+			</value>
+			<value>cytoscape.events.NetworkViewAboutToBeDestroyedListener
+			</value>
 		</osgi:interfaces>
 	</osgi:service>
 
-	<osgi:service id="networkViewManagerService" ref="networkViewManager"> 
+	<osgi:service id="networkViewManagerService" ref="networkViewManager">
 		<osgi:interfaces>
-			<value>cytoscape.events.NetworkViewAddedListener</value>
-			<value>cytoscape.events.NetworkViewAboutToBeDestroyedListener</value>
-			<value>cytoscape.events.SetCurrentNetworkViewListener</value>
-			<value>cytoscape.events.SetCurrentNetworkListener</value>
+			<value>cytoscape.events.NetworkViewAddedListener
+			</value>
+			<value>cytoscape.events.NetworkViewAboutToBeDestroyedListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkViewListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkListener
+			</value>
 		</osgi:interfaces>
 	</osgi:service>
 
-	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler"> 
+	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler">
 		<osgi:interfaces>
-			<value>cytoscape.events.SetCurrentNetworkViewListener</value>
-			<value>cytoscape.events.SetCurrentNetworkListener</value>
-			<value>cytoscape.events.NetworkViewDestroyedListener</value>
+			<value>cytoscape.events.SetCurrentNetworkViewListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkListener
+			</value>
+			<value>cytoscape.events.NetworkViewDestroyedListener
+			</value>
 		</osgi:interfaces>
 	</osgi:service>
 
