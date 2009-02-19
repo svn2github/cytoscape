@@ -49,7 +49,7 @@ import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.dialogs.preferences.BookmarkDialog;
+import cytoscape.dialogs.internal.BookmarkDialog;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 
