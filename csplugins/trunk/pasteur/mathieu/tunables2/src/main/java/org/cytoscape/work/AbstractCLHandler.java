@@ -2,7 +2,6 @@
 package org.cytoscape.work;
 
 import java.lang.reflect.*;
-import java.util.*;
 import org.apache.commons.cli.*;
 import org.cytoscape.work.internal.cl.CLHandler;
 
