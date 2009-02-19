@@ -5,6 +5,11 @@ import org.cytoscape.work.AbstractBounded;
 public class BoundedFloat extends AbstractBounded<Float> {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * @param lower = lower bound of the object
 	 * @param initValue = initial value of the object(has to be set within the bounds)
 	 * @param upper = upper bound of the object
