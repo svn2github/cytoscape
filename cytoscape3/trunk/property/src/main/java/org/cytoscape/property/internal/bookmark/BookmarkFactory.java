@@ -2,8 +2,8 @@ package org.cytoscape.property.internal.bookmark;
 
 import java.io.IOException;
 
-import org.cytoscape.property.BookmarkCyProperty;
 import org.cytoscape.property.PropertyFactory;
+import org.cytoscape.property.internal.BookmarkCyProperty;
 
 public class BookmarkFactory implements PropertyFactory<BookmarkCyProperty> {
 

@@ -26,7 +26,7 @@
 	<util:properties id="coreProperties" location="classpath:cytoscape.props" />
 
 	<!-- Wrap it with CyProperties interface. -->
-	<bean id="coreCyProp" class="org.cytoscape.property.DefaultCyProperty">
+	<bean id="coreCyProp" class="org.cytoscape.property.internal.DefaultCyProperty">
 		<!-- Inject java.util.Properties bean -->
 		<constructor-arg ref="coreProperties" />
 	</bean>
@@ -38,8 +38,5 @@
 	<bean id="bookmarks" factory-bean="bookmarkFactory"
 		factory-method="createProperty">
 	</bean>
-
-
-	<bean name="myExampleBean" class="org.cytoscape.property.internal.ExampleBeanImpl" />
 
 </beans>
