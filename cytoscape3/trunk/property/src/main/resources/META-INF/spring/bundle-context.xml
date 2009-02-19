@@ -39,4 +39,7 @@
 		factory-method="createProperty">
 	</bean>
 
+	<bean id="bookmarksUtil"
+		class="org.cytoscape.property.internal.bookmark.BookmarksUtilImpl" />
+
 </beans>

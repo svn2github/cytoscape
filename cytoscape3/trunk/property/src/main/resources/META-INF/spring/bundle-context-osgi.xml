@@ -29,4 +29,11 @@
 
 	</osgi:service>
 
+	<osgi:service id="bookmarksUtilService" ref="bookmarksUtil"
+		interface="org.cytoscape.property.bookmark.BookmarksUtil">
+		<osgi:service-properties>
+			<entry key="serviceType" value="property.util" />
+		</osgi:service-properties>
+	</osgi:service>
+
 </beans>
