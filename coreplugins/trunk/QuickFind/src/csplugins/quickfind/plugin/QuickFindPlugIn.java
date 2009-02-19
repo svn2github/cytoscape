@@ -208,7 +208,7 @@ public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeLi
 			CyNetworkView networkView = Cytoscape.getNetworkView(network.getIdentifier());
 
 			if (networkView != Cytoscape.getNullNetworkView()) {
-				TextIndex textIndex = (TextIndex) quickFind.getIndex(network);
+				GenericIndex textIndex = quickFind.getIndex(network);
 
 				if (textIndex != null) {
 					quickFindToolBar.setIndex(textIndex);
