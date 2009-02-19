@@ -13,7 +13,8 @@ import org.cytoscape.work.internal.props.StorePropsInterceptor;
 
 public class applicationCL
 {
-    public static void main(String[] args) {
+    @SuppressWarnings("unchecked")
+	public static void main(String[] args) {
 
 		// command comes from someplace
 		Command com = new PrintSomething();

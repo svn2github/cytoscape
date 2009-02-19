@@ -22,8 +22,11 @@ public class applicationGUI <T extends Handler>{
 
     static int action;
 	
-    static TunableInterceptor ti;
-    static TunableInterceptor lpi = null;
+    @SuppressWarnings("unchecked")
+	static TunableInterceptor ti;
+    @SuppressWarnings("unchecked")
+	static TunableInterceptor lpi = null;
+	@SuppressWarnings("unchecked")
 	static TunableInterceptor spi = null;
 	
 	public static void main(String[] args) {
@@ -52,10 +55,14 @@ public class applicationGUI <T extends Handler>{
 	@SuppressWarnings("serial")
 	private static class MyAction extends AbstractAction {
 		Command com;
+		@SuppressWarnings("unchecked")
 		TunableInterceptor ti;
+		@SuppressWarnings("unchecked")
 		TunableInterceptor lpi;
+		@SuppressWarnings("unchecked")
 		TunableInterceptor spi;
 		
+		@SuppressWarnings("unchecked")
 		MyAction(String title, Command com, TunableInterceptor ti, TunableInterceptor lpi,TunableInterceptor spi) {
 			super(title);
 			this.com = com;
@@ -63,6 +70,7 @@ public class applicationGUI <T extends Handler>{
 			this.lpi = lpi;
 			this.spi = spi;
 		}
+		@SuppressWarnings("unchecked")
 		public void actionPerformed(ActionEvent a) {
 
 			// set the initial properties
