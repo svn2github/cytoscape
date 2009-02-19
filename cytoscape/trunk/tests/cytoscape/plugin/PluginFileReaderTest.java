@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
@@ -99,7 +100,7 @@ public class PluginFileReaderTest extends TestCase {
 	 */
 	public void testGetPlugins() {
 		assertNotNull(reader.getPlugins());
-		assertEquals(reader.getPlugins().size(), 8);
+		assertEquals(reader.getPlugins().size(), 10);
 	}
 
 	public void testGetPluginsLicense() {
@@ -109,7 +110,7 @@ public class PluginFileReaderTest extends TestCase {
 
 	public void testGetThemes() {
 		assertNotNull(reader.getThemes());
-		assertEquals(reader.getThemes().size(), 2);
+		assertEquals(reader.getThemes().size(), 3);
 		assertEquals(reader.getThemes().get(0).getPlugins().size(), 2);
 		for (DownloadableInfo i: reader.getThemes()) {
 			assertEquals(i.getCategory(), Category.THEME.getCategoryText());
@@ -128,7 +129,7 @@ public class PluginFileReaderTest extends TestCase {
 	// regression test, make sure versions are working
   public void testVersionReads () {
     assertNotNull(reader.getPlugins());
-    assertEquals(reader.getPlugins().size(), 8);
+    assertEquals(reader.getPlugins().size(), 10);
 
     cytoscape.CytoscapeVersion.version = "2.3.3";
     int count = 0;
@@ -136,6 +137,25 @@ public class PluginFileReaderTest extends TestCase {
       if (info.isPluginCompatibleWithCurrent()) count ++;
     }
   assertEquals(count, 2);
+  }
+
+  // regression test to insure themes work as expected
+  public void testThemePlugins() {
+    boolean foundTheme = false;
+    assertNotNull(reader.getThemes());
+    assertEquals(reader.getThemes().size(), 3);
+
+    for (ThemeInfo info :reader.getThemes()) {
+      if (info.getID().equals("regresstionTestTheme123")) {
+        foundTheme = true;
+        assertEquals(info.getPlugins().size(), 3);
+        Map<String, List<PluginInfo>> idSort = ManagerUtil.sortByID(info.getPlugins());
+        assertTrue(idSort.containsKey("themePlugin1234"));
+        PluginInfo plugin = idSort.get("themePlugin1234").get(0);
+        assertEquals(plugin.getObjectVersion(), "1.1");
+      }
+    }
+  assertTrue(foundTheme);
   }
 
 

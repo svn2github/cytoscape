@@ -151,7 +151,7 @@ public class PluginManagerTest extends TestCase {
 
 		Url = testUrl;
 		assertNotNull(mgr.inquire(Url));
-		assertEquals(mgr.inquire(Url).size(), 10);
+		assertEquals(mgr.inquire(Url).size(), 13);
 	}
 
   public void testInquirePartialXML() {

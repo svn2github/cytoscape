@@ -110,21 +110,21 @@ with current cytoscape release versions.
 		</plugin>
 
 		<plugin>
-			<uniqueID>goodZIPPlugin777</uniqueID>
+			<uniqueID>themePlugin1234</uniqueID>
 			<name>Good Jar</name>
 			<description>
 				This plugin demonstrates the use of a zip file with the correct directories (at least one plugins/*.jar file required) and
 				a correct manifest file.
 			</description>
-			<pluginVersion>0.45</pluginVersion>
+			<pluginVersion>1.1</pluginVersion>
 
 			<cytoscapeVersions>
 				<version>current</version>
 			</cytoscapeVersions>
 
-			<filetype>zip</filetype>
+			<filetype>jar</filetype>
 			<category>Test</category>
-			<url>GoodPlugin.zip</url>
+			<url>GoodPlugin.jar</url>
 			<authorlist>
 				<author>
 					<name>George Smith</name>
@@ -133,7 +133,57 @@ with current cytoscape release versions.
 			</authorlist>
 		</plugin>
 
-		<plugin>
+    <plugin>
+      <uniqueID>themePlugin1234</uniqueID>
+      <name>Good Jar</name>
+      <description>
+        This plugin demonstrates the use of a zip file with the correct directories (at least one plugins/*.jar file required) and
+        a correct manifest file.
+      </description>
+      <pluginVersion>2.0</pluginVersion>
+
+      <cytoscapeVersions>
+        <version>current</version>
+      </cytoscapeVersions>
+
+      <filetype>jar</filetype>
+      <category>Test</category>
+      <url>GoodPlugin.jar</url>
+      <authorlist>
+        <author>
+          <name>George Smith</name>
+          <institution>UC Mars</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    
+
+    <plugin>
+      <uniqueID>goodZIPPlugin777</uniqueID>
+      <name>Good Jar</name>
+      <description>
+        This plugin demonstrates the use of a zip file with the correct directories (at least one plugins/*.jar file required) and
+        a correct manifest file.
+      </description>
+      <pluginVersion>0.45</pluginVersion>
+
+      <cytoscapeVersions>
+        <version>current</version>
+      </cytoscapeVersions>
+
+      <filetype>zip</filetype>
+      <category>Test</category>
+      <url>GoodPlugin.zip</url>
+      <authorlist>
+        <author>
+          <name>George Smith</name>
+          <institution>UC Mars</institution>
+        </author>
+      </authorlist>
+    </plugin>
+
+
+    <plugin>
 			<uniqueID>badJarPlugin123</uniqueID>
 			<name>Bad Jar</name>
 			<description>
@@ -305,7 +355,36 @@ with current cytoscape release versions.
 
 		</theme>
 
-	</themes>
+    <theme>
+      <uniqueID>regresstionTestTheme123</uniqueID>
+      <name>Regresstion Test Theme</name>
+      <description>This is just a test theme.</description>
+      <themeVersion>0.5</themeVersion>
+      <cytoscapeVersions>
+        <version>current</version>
+      </cytoscapeVersions>
+
+      <pluginlist>
+        <plugin>
+          <uniqueID>goodZIPPlugin777</uniqueID>
+          <pluginVersion>0.45</pluginVersion>
+        </plugin>
+        <plugin>
+          <uniqueID>goodJarPlugin123</uniqueID>
+          <pluginVersion>1.0</pluginVersion>
+        </plugin>
+        <plugin>
+          <uniqueID>themePlugin1234</uniqueID>
+          <pluginVersion>1.10</pluginVersion>
+        </plugin>
+
+      </pluginlist>
+    </theme>
+
+
+
+
+  </themes>
 
 
 </project>

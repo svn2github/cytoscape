@@ -120,7 +120,8 @@ public class PluginFileReader {
 				PluginXml.THEME_LIST.getTag());
 
 		if (ThemeList != null) {
-			Iterator<Element> themeI = ThemeList.getChildren(
+		  logger.debug("Theme list from xml: " + ThemeList.getChildren().size());
+				Iterator<Element> themeI = ThemeList.getChildren(
 					PluginXml.THEME.getTag()).iterator();
 
 			while (themeI.hasNext()) {
@@ -159,10 +160,10 @@ public class PluginFileReader {
 		return Plugins;
 	}
 
-	protected ThemeInfo createThemeObject(Element CurrentTheme) {
+	protected ThemeInfo  createThemeObject(Element CurrentTheme) {
 		ThemeInfo Info = (ThemeInfo) this.createBasicInfoObject(CurrentTheme,
 				DownloadableType.THEME);
-
+    logger.debug("Creating Theme: " + Info.getName() + " " + Info.getID());
 		if (Info != null) {
 			/*
 			 * add plugins this is plugins from the current download location
@@ -180,8 +181,10 @@ public class PluginFileReader {
 				Element ThemePlugin = themePluginI.next();
 
 				if (ThemePlugin.getChildren().size() == 2) {
-					for (PluginInfo pluginInfo : Plugins.get(ThemePlugin.getChildTextTrim(PluginXml.UNIQUE_ID.getTag()))) {
-						if (pluginInfo.getObjectVersion().equals(ThemePlugin.getChildTextTrim(PluginXml.PLUGIN_VERSION.getTag()))) {
+          logger.debug("Theme plugins defined shorthand");
+          for (PluginInfo pluginInfo : Plugins.get(ThemePlugin.getChildTextTrim(PluginXml.UNIQUE_ID.getTag()))) {
+            String version = Double.valueOf(ThemePlugin.getChildTextTrim(PluginXml.PLUGIN_VERSION.getTag())).toString();
+            if (pluginInfo.getObjectVersion().equals(version)) {
 							pluginInfo.setParent(Info);
 							Info.addPlugin(pluginInfo);
 						}
