@@ -15,7 +15,6 @@ import Factory.ListMultipleHandler;
 import Factory.ListSingleHandler;
 import Factory.LongHandler;
 import Factory.StringHandler;
-import Factory.URLHandler;
 import HandlerFactory.HandlerFactory;
 import Tunable.Tunable;
 import Utils.BoundedDouble;
@@ -59,8 +58,8 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			return new ListMultipleHandler<String>(f,o,t);
 		else if(type == myFile.class)
 			return new FileHandler(f,o,t);
-		else if(type == myURL.class)
-			return new URLHandler(f,o,t);
+//		else if(type == myURL.class)
+//			return new URLHandler(f,o,t);
 		return null;
 	}
 }

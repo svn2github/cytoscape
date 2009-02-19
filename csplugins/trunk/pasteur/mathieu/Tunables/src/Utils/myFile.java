@@ -2,29 +2,28 @@ package Utils;
 
 import java.io.File;
 import java.util.List;
-import org.cytoscape.io.CyFileFilter;
 
 
 public class myFile{
 	
 	File file;
 	File[] files;
-	CyFileFilter[] filters;
+	//CyFileFilter[] filters;
 	boolean modal;
 	java.util.List<String> paths;
 	
 
-	public myFile(File file,boolean modal,CyFileFilter[] filters){
-		this.filters = filters;
-		this.modal = modal;
-		this.file = file;
-	}
-	
-	public myFile(File[] files,boolean modal,CyFileFilter[] filters){
-		this.filters = filters;
-		this.modal = modal;
-		this.files = files;
-	}
+//	public myFile(File file,boolean modal,CyFileFilter[] filters){
+//		this.filters = filters;
+//		this.modal = modal;
+//		this.file = file;
+//	}
+//	
+//	public myFile(File[] files,boolean modal,CyFileFilter[] filters){
+//		this.filters = filters;
+//		this.modal = modal;
+//		this.files = files;
+//	}
 	
 	public List<String> getPaths() {
 		return paths;
@@ -56,9 +55,9 @@ public class myFile{
 		return file;
 	}
 	
-	public CyFileFilter[] getCyFileFilter(){
-		return filters;
-	}
+//	public CyFileFilter[] getCyFileFilter(){
+//		return filters;
+//	}
 
 	public boolean getModal(){
 		return modal;
