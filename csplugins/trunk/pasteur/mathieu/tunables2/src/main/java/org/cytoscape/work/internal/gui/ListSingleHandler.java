@@ -51,6 +51,7 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
         //System.out.println(lss.getSelectedValue());
 	}
 
+	@SuppressWarnings("unchecked")
 	public String getState() {
 		selected = (T) combobox.getSelectedItem();	
         if(selected!=null)

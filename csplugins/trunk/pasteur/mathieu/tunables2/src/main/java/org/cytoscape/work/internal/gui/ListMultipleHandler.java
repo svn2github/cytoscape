@@ -72,6 +72,7 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public List<T> convertToArray(Object[] in){
 		List<T> list = new ArrayList<T>();
 		if(in.length!=0){

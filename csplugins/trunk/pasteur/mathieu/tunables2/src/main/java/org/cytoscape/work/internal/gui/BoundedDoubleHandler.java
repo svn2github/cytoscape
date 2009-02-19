@@ -2,8 +2,7 @@ package org.cytoscape.work.internal.gui;
 
 import java.lang.reflect.Field;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
 
 import org.cytoscape.work.AbstractGuiHandler;
 import org.cytoscape.work.Tunable;
@@ -14,10 +13,6 @@ import org.cytoscape.work.util.mySlider;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-
 
 public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandler {
 	

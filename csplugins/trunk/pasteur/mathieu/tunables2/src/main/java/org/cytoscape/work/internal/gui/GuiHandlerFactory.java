@@ -10,7 +10,6 @@ import org.cytoscape.work.util.BoundedLong;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 import org.cytoscape.work.util.myFile;
-import org.cytoscape.work.util.myURL;
 
 public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 

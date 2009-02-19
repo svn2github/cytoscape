@@ -2,11 +2,9 @@ package org.cytoscape.work.internal.gui;
 
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import javax.swing.*;
 
 import org.cytoscape.work.AbstractGuiHandler;
