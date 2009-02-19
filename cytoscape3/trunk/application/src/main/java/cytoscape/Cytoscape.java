@@ -41,20 +41,16 @@ package cytoscape;
 //import cytoscape.actions.SaveSessionAction;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
-import javax.xml.bind.JAXBException;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.properties.bookmark.Bookmarks;
-import org.cytoscape.property.internal.bookmark.BookmarkReader;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VMMFactory;
 import org.cytoscape.vizmap.VisualMappingManager;
@@ -275,7 +271,6 @@ public abstract class Cytoscape {
 	 * KONO: 02/23/2006
 	 */
 	private static String currentSessionFileName;
-	private static Bookmarks bookmarks;
 
 	private static CyNetworkManager netmgr;
 
