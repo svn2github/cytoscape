@@ -13,7 +13,6 @@
 	<properties>
 		<bundle.symbolicName>org.cytoscape.property</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.property</bundle.namespace>
-		<spring.maven.artifact.version>2.5.5</spring.maven.artifact.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -53,25 +52,25 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>${spring.maven.artifact.version}</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>spring-osgi-mock</artifactId>
-			<version>1.0</version>
+			<version>${spring.osgi.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>spring-osgi-extender</artifactId>
-			<version>1.1.2</version>
+			<version>${spring.osgi.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>spring-osgi-core</artifactId>
-			<version>1.1.2</version>
+			<version>${spring.osgi.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -98,31 +97,31 @@
 		<dependency>
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>spring-osgi-io</artifactId>
-			<version>1.1.2</version>
+			<version>${spring.osgi.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>${spring.maven.artifact.version}</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>${spring.maven.artifact.version}</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${spring.maven.artifact.version}</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>${spring.maven.artifact.version}</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
