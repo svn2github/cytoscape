@@ -13,9 +13,6 @@
 	<properties>
 		<bundle.symbolicName>cytoscape.application</bundle.symbolicName>
 		<bundle.namespace>cytoscape</bundle.namespace>
-
-		<!-- Spring Framework Version -->
-		<spring.maven.artifact.version>2.5.5</spring.maven.artifact.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -33,6 +30,8 @@
 			<artifactId>provision</artifactId> <optional>true</optional>
 			</dependency>
 		-->
+
+		<!-- OSGi System Bundles -->
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi_R4_core</artifactId>
@@ -44,81 +43,36 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- spring -->
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>spring-osgi-mock</artifactId>
-			<version>1.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>spring-osgi-extender</artifactId>
-			<version>1.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>spring-osgi-core</artifactId>
-			<version>1.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>com.springsource.slf4j.org.apache.commons.logging
-			</artifactId>
-			<version>1.5.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>com.springsource.slf4j.api
-			</artifactId>
-			<version>1.5.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>com.springsource.slf4j.log4j
-			</artifactId>
-			<version>1.5.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>spring-osgi-io</artifactId>
-			<version>1.1.2</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- Spring Core Bundles -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>${spring.maven.artifact.version}</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>${spring.maven.artifact.version}</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${spring.maven.artifact.version}</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>${spring.maven.artifact.version}</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>${spring.maven.artifact.version}</version>
-			<scope>provided</scope>
+			<version>${spring.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.aopalliance</groupId>
@@ -127,6 +81,60 @@
 			<version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Spring Dynamic Modules -->
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-mock</artifactId>
+			<version>${spring.osgi.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-test</artifactId>
+			<version>${spring.osgi.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-extender</artifactId>
+			<version>${spring.osgi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-core</artifactId>
+			<version>${spring.osgi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-io</artifactId>
+			<version>${spring.osgi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.org.apache.commons.logging
+			</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.api
+			</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.log4j
+			</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>edu.emory.mathcs.backport</groupId>
 			<artifactId>com.springsource.edu.emory.mathcs.backport
