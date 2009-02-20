@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 
-Export-Package: ${bundle.namespace}
+Export-Package: ${bundle.namespace}, ${bundle.namespace}.util
 
