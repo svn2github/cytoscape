@@ -37,7 +37,7 @@ package cytoscape.dialogs.internal;
 import java.awt.Frame;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.properties.bookmark.Bookmarks;
+import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 

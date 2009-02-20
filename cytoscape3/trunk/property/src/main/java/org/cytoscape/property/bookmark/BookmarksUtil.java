@@ -2,10 +2,6 @@ package org.cytoscape.property.bookmark;
 
 import java.util.List;
 
-import org.cytoscape.properties.bookmark.Bookmarks;
-import org.cytoscape.properties.bookmark.Category;
-import org.cytoscape.properties.bookmark.DataSource;
-
 public interface BookmarksUtil {
 
 	/**

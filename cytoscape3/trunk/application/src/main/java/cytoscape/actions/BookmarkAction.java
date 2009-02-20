@@ -44,12 +44,9 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 
-import org.cytoscape.properties.bookmark.Bookmarks;
-import org.cytoscape.property.CyProperty;
-import org.cytoscape.property.bookmark.BookmarksUtil;
-
 import cytoscape.CyNetworkManager;
-import cytoscape.dialogs.internal.BookmarkDialog;
+import cytoscape.dialogs.BookmarkDialog;
+import cytoscape.dialogs.BookmarkDialogFactory;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 
@@ -60,15 +57,13 @@ public class BookmarkAction extends CytoscapeAction {
 	private final static long serialVersionUID = 120233986993206L;
 	private CySwingApplication desktop;
 
-	private Bookmarks bookmarks;
-	private BookmarksUtil bkUtil;
+	private BookmarkDialogFactory bookmarkDialogFactory;
 	/**
 	 * Creates a new BookmarkAction object.
 	 */
-	public BookmarkAction(CySwingApplication desktop, CyNetworkManager netmgr, CyProperty<Bookmarks> bookmarkProp, BookmarksUtil bkUtil) {
+	public BookmarkAction(CySwingApplication desktop, CyNetworkManager netmgr, BookmarkDialogFactory bookmarkDialogFactory) {
 		super("Bookmarks...", netmgr);
-		this.bookmarks = bookmarkProp.getProperties();
-		this.bkUtil = bkUtil;
+		this.bookmarkDialogFactory = bookmarkDialogFactory;
 		System.out.println("BookmarkAction()...");
 		setPreferredMenu("Edit.Preferences");
 		this.desktop = desktop;
@@ -81,8 +76,7 @@ public class BookmarkAction extends CytoscapeAction {
 	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final BookmarkDialog bookmarkDialog = new BookmarkDialog(desktop
-				.getJFrame(), bookmarks, bkUtil);
-		bookmarkDialog.setVisible(true);
+		final BookmarkDialog bookmarkDialog = bookmarkDialogFactory.getBookamrkDialog(desktop.getJFrame());
+		bookmarkDialog.showDialog();
 	}
 }

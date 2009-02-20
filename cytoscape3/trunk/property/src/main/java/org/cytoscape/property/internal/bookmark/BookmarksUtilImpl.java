@@ -37,11 +37,11 @@ package org.cytoscape.property.internal.bookmark;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cytoscape.properties.bookmark.Attribute;
-import org.cytoscape.properties.bookmark.Bookmarks;
-import org.cytoscape.properties.bookmark.Category;
-import org.cytoscape.properties.bookmark.DataSource;
+import org.cytoscape.property.bookmark.Attribute;
+import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
+import org.cytoscape.property.bookmark.Category;
+import org.cytoscape.property.bookmark.DataSource;
 
 /**
  * Utility methods for getting entries in the bookmark object.
@@ -50,8 +50,12 @@ import org.cytoscape.property.bookmark.BookmarksUtil;
  * 
  */
 public class BookmarksUtilImpl implements BookmarksUtil {
-	/* (non-Javadoc)
-	 * @see org.cytoscape.property.internal.bookmark.BookmarksUtil#getDataSourceList(java.lang.String, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.property.internal.bookmark.BookmarksUtil#getDataSourceList
+	 * (java.lang.String, java.util.List)
 	 */
 	public List<DataSource> getDataSourceList(String categoryName,
 			List<Category> categoryList) {
@@ -64,11 +68,14 @@ public class BookmarksUtilImpl implements BookmarksUtil {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cytoscape.property.internal.bookmark.BookmarksUtil#getCategory(java.lang.String, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.property.internal.bookmark.BookmarksUtil#getCategory(java
+	 * .lang.String, java.util.List)
 	 */
-	public Category getCategory(String categoryName,
-			List<Category> categoryList) {
+	public Category getCategory(String categoryName, List<Category> categoryList) {
 		Category result = null;
 
 		for (Category cat : categoryList) {
@@ -92,8 +99,12 @@ public class BookmarksUtilImpl implements BookmarksUtil {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cytoscape.property.internal.bookmark.BookmarksUtil#getAttribute(org.cytoscape.properties.bookmark.DataSource, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.property.internal.bookmark.BookmarksUtil#getAttribute(org
+	 * .cytoscape.properties.bookmark.DataSource, java.lang.String)
 	 */
 	public String getAttribute(DataSource source, String attrName) {
 		List<Attribute> attrs = source.getAttribute();
@@ -133,8 +144,13 @@ public class BookmarksUtilImpl implements BookmarksUtil {
 		return categoryList;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cytoscape.property.internal.bookmark.BookmarksUtil#saveBookmark(org.cytoscape.properties.bookmark.Bookmarks, java.lang.String, org.cytoscape.properties.bookmark.DataSource)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.property.internal.bookmark.BookmarksUtil#saveBookmark(org
+	 * .cytoscape.properties.bookmark.Bookmarks, java.lang.String,
+	 * org.cytoscape.properties.bookmark.DataSource)
 	 */
 	public void saveBookmark(Bookmarks pBookmarks, String pCategoryName,
 			DataSource pDataSource) {
@@ -165,11 +181,16 @@ public class BookmarksUtilImpl implements BookmarksUtil {
 		theObjList.add(pDataSource);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cytoscape.property.internal.bookmark.BookmarksUtil#deleteBookmark(org.cytoscape.properties.bookmark.Bookmarks, java.lang.String, org.cytoscape.properties.bookmark.DataSource)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.property.internal.bookmark.BookmarksUtil#deleteBookmark
+	 * (org.cytoscape.properties.bookmark.Bookmarks, java.lang.String,
+	 * org.cytoscape.properties.bookmark.DataSource)
 	 */
-	public boolean deleteBookmark(Bookmarks pBookmarks,
-			String pCategoryName, DataSource pDataSource) {
+	public boolean deleteBookmark(Bookmarks pBookmarks, String pCategoryName,
+			DataSource pDataSource) {
 		if (!isInBookmarks(pBookmarks, pCategoryName, pDataSource)) {
 			return false;
 		}
@@ -195,11 +216,16 @@ public class BookmarksUtilImpl implements BookmarksUtil {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cytoscape.property.internal.bookmark.BookmarksUtil#isInBookmarks(org.cytoscape.properties.bookmark.Bookmarks, java.lang.String, org.cytoscape.properties.bookmark.DataSource)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.property.internal.bookmark.BookmarksUtil#isInBookmarks(
+	 * org.cytoscape.properties.bookmark.Bookmarks, java.lang.String,
+	 * org.cytoscape.properties.bookmark.DataSource)
 	 */
-	public boolean isInBookmarks(Bookmarks pBookmarks,
-			String pCategoryName, DataSource pDataSource) {
+	public boolean isInBookmarks(Bookmarks pBookmarks, String pCategoryName,
+			DataSource pDataSource) {
 		if (pBookmarks == null) {
 			return false;
 		}

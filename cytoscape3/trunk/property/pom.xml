@@ -146,7 +146,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>com.springsource.javax.xml.bind</artifactId>
@@ -203,7 +202,7 @@
 								<include>bookmarks.xsd</include>
 								<include>xlinks-2001.xsd</include>
 							</schemaIncludes>
-							<generatePackage>org.cytoscape.properties.bookmark</generatePackage>
+							<generatePackage>org.cytoscape.property.bookmark</generatePackage>
 							<verbose>true</verbose>
 						</configuration>
 					</execution>

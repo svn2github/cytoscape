@@ -9,8 +9,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.cytoscape.io.read.URLUtil;
-import org.cytoscape.properties.bookmark.Bookmarks;
 import org.cytoscape.property.PropertyReader;
+import org.cytoscape.property.bookmark.Bookmarks;
 
 public class BookmarkReader implements PropertyReader<Bookmarks> {
 

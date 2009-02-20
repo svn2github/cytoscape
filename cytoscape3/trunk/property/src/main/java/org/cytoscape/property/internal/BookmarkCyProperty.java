@@ -3,8 +3,8 @@ package org.cytoscape.property.internal;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.cytoscape.properties.bookmark.Bookmarks;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.bookmark.Bookmarks;
 
 public class BookmarkCyProperty implements CyProperty<Bookmarks> {
 

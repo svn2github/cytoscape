@@ -1,6 +1,6 @@
 package org.cytoscape.preference.internal;
 
-import org.cytoscape.properties.bookmark.Bookmarks;
+import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.internal.BookmarkCyProperty;
 import org.cytoscape.property.internal.bookmark.BookmarkFactory;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
