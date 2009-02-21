@@ -253,7 +253,10 @@ class XGMMLParser extends DefaultHandler {
 		// Special handling for complex attributes
 		{ParseState.COMPLEXATT, "att", ParseState.COMPLEXATT, new handleComplexAttributeDone()},
 		{ParseState.GRAPH, "graph", ParseState.NONE, new handleGraphDone()},
-	};
+
+		{ParseState.NODEATT, "att", ParseState.NONE, new handleAttributeDone()},
+		{ParseState.EDGEATT, "att", ParseState.NONE, new handleAttributeDone()},
+    };
 
 	/********************************************************************
 	 * Routines to handle attributes
@@ -631,7 +634,7 @@ class XGMMLParser extends DefaultHandler {
 	 * @param length the number of bytes for this tag
 	 */
 	public void characters(char[] ch, int start, int length) {
-			currentCData = new String(ch, start, length);
+		currentCData = new String(ch, start, length);
 	}
 
 	/**
@@ -1077,6 +1080,7 @@ class XGMMLParser extends DefaultHandler {
 			return current;
 		}
 	}
+
 	class handleGroupDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			currentNode = currentGroupNode;
@@ -1089,30 +1093,41 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+	private List listAttrHolder;
+
 	class handleListAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			ObjectType objType = getType(atts.getValue("type"));
 			Object obj = getTypedAttributeValue(objType, atts);
-
-			List listAttribute = null;
-			if (objectTarget != null) 
-				listAttribute = currentAttributes.getListAttribute(objectTarget, currentAttributeID);
-
-			if (listAttribute == null) 
-				listAttribute = new ArrayList();
 
 			switch (objType) {
 			case BOOLEAN:
 			case REAL:
 			case INTEGER:
 			case STRING:
-				listAttribute.add(obj);
+				listAttrHolder.add(obj);
 			}
-			if (objectTarget != null)
-				currentAttributes.setListAttribute(objectTarget, currentAttributeID, listAttribute);
 			return current;
 		}
 	}
+
+	class handleAttributeDone implements Handler {
+		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
+
+			if (listAttrHolder != null) {
+				currentAttributes.setListAttribute(objectTarget, currentAttributeID, listAttrHolder);
+				listAttrHolder = null;
+			}
+			else if (mapAttrHolder != null)
+			{
+				currentAttributes.setMapAttribute(objectTarget, currentAttributeID, mapAttrHolder);
+				mapAttrHolder = null;
+			}
+			return current;
+		}
+	}
+
+	private Map mapAttrHolder;
 
 	class handleMapAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
@@ -1120,21 +1135,14 @@ class XGMMLParser extends DefaultHandler {
 			ObjectType objType = getType(atts.getValue("type"));
 			Object obj = getTypedAttributeValue(objType, atts);
 
-			Map mapAttribute = null;
-			if (objectTarget != null) 
-				mapAttribute = currentAttributes.getMapAttribute(objectTarget, currentAttributeID);
-			if (mapAttribute == null) 
-				mapAttribute = new HashMap();
-
 			switch (objType) {
 			case BOOLEAN:
 			case REAL:
 			case INTEGER:
 			case STRING:
-				mapAttribute.put(name, obj);
+				mapAttrHolder.put(name, obj);
 			}
-			if (objectTarget != null)
-				currentAttributes.setMapAttribute(objectTarget, currentAttributeID, mapAttribute);
+
 			return current;
 		}
 	}
@@ -1366,11 +1374,17 @@ class XGMMLParser extends DefaultHandler {
 			currentAttributeID = name;
 			if (id != null && cyAtts.hasAttribute(id, name))
 				cyAtts.deleteAttribute(id,name);
+
+            listAttrHolder = new ArrayList();
+
 			return ParseState.LISTATT;
 		case MAP:
 			currentAttributeID = name;
 			if (id != null && cyAtts.hasAttribute(id, name))
 				cyAtts.deleteAttribute(id,name);
+
+            mapAttrHolder = new HashMap();
+
 			return ParseState.MAPATT;
 		case COMPLEX:
 			currentAttributeID = name;
