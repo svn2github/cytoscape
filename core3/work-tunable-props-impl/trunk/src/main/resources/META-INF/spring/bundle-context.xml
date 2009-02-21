@@ -3,10 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
-    http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+       http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+        http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util-2.5.xsd
+        http://www.springframework.org/schema/lang
+            http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+        http://www.springframework.org/schema/osgi
+            http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
 
 	<!-- regular spring configuration file defining the beans for this
 		bundle. We've kept the osgi definitions in a separate 
@@ -15,8 +24,17 @@
 
 	<context:annotation-config/>
 
-	<!--
-	<bean id="undoSupport" class="org.cytoscape.work.internal.UndoSupportImpl"/>
-	-->
+	<!-- this creates a java.util.Properties object --> 
+	<util:properties id="tunableProperties" location="tunable.props" />
+
+	<!-- this creates a LoadPropsInterceptor object --> 
+	<bean id="loadPropsInterceptor" class="org.cytoscape.work.internal.props.LoadPropsInterceptor">
+		<constructor-arg ref="tunableProperties" />
+	</bean>
+
+	<!-- this creates a StorePropsInterceptor object --> 
+	<bean id="storePropsInterceptor" class="org.cytoscape.work.internal.props.StorePropsInterceptor">
+		<constructor-arg ref="tunableProperties" />
+	</bean>
 
 </beans>
