@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 
-Export-Package: ${bundle.namespace}, ${bundle.namespace}.util
+Export-Package: org.cytoscape.work.util, org.cytoscape.work
 
