@@ -11,4 +11,8 @@
 		ref="undoSupport" interface="org.cytoscape.work.UndoSupport">
 	</osgi:service>
 
+	<osgi:service id="guiTunableInterceptorService"
+		ref="guiTunableInterceptor" interface="org.cytoscape.work.TunableInterceptor">
+	</osgi:service>
+
 </beans>

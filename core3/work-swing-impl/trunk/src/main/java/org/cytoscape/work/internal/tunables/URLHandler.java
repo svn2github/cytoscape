@@ -12,7 +12,7 @@ import javax.xml.*;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.internal.tunables.utils.myURL;
 
-import org.cytoscape.properties.bookmark.*; 
+import org.cytoscape.property.bookmark.*; 
 //import org.cytoscape.property.bookmark.BookmarksUtil; 
 
 

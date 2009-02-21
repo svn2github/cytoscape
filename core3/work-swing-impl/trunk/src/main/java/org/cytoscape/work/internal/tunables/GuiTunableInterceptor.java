@@ -22,10 +22,13 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 	private Component parent;
 	private Map<java.util.List<Guihandler>,JPanel> panelMap;
 
-	public GuiTunableInterceptor(Component parent) {
+	public GuiTunableInterceptor() {
 		super( new GuiHandlerFactory());
-		this.parent = parent;
 		panelMap = new HashMap<java.util.List<Guihandler>,JPanel>();
+	}
+
+	public void setParent(Component c) {
+		parent = c;
 	}
 
 	public int createUI(Object... objs) {
