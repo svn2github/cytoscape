@@ -11,6 +11,7 @@ import org.cytoscape.work.internal.cl.CLTunableInterceptor;
 import org.cytoscape.work.internal.props.LoadPropsInterceptor;
 import org.cytoscape.work.internal.props.StorePropsInterceptor;
 
+
 public class applicationCL
 {
     @SuppressWarnings("unchecked")

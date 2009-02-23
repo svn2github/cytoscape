@@ -1,16 +1,21 @@
 package org.cytoscape;
 
+import java.awt.event.ActionEvent;
+import java.util.Properties;
+
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import org.cytoscape.command.*;
+import org.cytoscape.work.Handler;
+import org.cytoscape.work.HandlerController;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.internal.gui.GuiTunableInterceptor;
 import org.cytoscape.work.internal.props.LoadPropsInterceptor;
 import org.cytoscape.work.internal.props.StorePropsInterceptor;
-import org.cytoscape.work.*;
 
-import java.awt.event.*;
-import java.util.Properties;
-import javax.swing.*;
 
 
 

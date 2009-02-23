@@ -11,7 +11,7 @@ import org.cytoscape.work.util.myFile;
 public class FilePropHandler extends AbstractPropHandler {
 
 	myFile files;
-	List<String>test;
+	List<String> list;
 	
 	public FilePropHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
@@ -27,9 +27,9 @@ public class FilePropHandler extends AbstractPropHandler {
 	}
 	
 	public void add(Properties p) {
-		test = new ArrayList<String>();
-		test.add(0,"");
-		files.setPaths(test);
+		list = new ArrayList<String>();
+		list.add(0,"");
+		files.setPaths(list);
 		try{
 			p.put(propKey,files.getPaths());
 		}catch(Exception e){e.printStackTrace();}
