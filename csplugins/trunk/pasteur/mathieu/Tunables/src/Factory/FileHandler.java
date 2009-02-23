@@ -14,7 +14,6 @@ import org.cytoscape.io.CyFileFilter;
 
 import Tunable.*;
 import Utils.ChooseFilePanel;
-import Utils.FileUtilImpl;
 import Utils.myFile;
 import GuiInterception.AbstractGuiHandler;
 
