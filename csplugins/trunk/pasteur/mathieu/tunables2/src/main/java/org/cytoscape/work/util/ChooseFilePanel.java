@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.cytoscape.io.CyFileFilter;
+//import org.cytoscape.io.CyFileFilter;
 
 
 
@@ -21,14 +21,14 @@ public class ChooseFilePanel extends JPanel implements ActionListener{
 	File[] myNetworkFile;
 	myFile file;
 	java.util.List<String> paths;
-	CyFileFilter[] tempCFF;
+	//CyFileFilter[] tempCFF;
 	int LOAD = FileDialog.LOAD;
 	
 	public ChooseFilePanel(myFile infile){
 		
 		this.file = infile;
 		setLayout(new BorderLayout());
-		tempCFF = file.getCyFileFilter();
+		//tempCFF = file.getCyFileFilter();
 		jtf = new JTextField("Please select a network file...",10);	
 		add(jtf,BorderLayout.WEST);
 		JButton selectbutton = new JButton("select");
