@@ -1,6 +1,7 @@
 package org.cytoscape.work.util;
 
 import java.awt.BorderLayout;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -9,29 +10,28 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.cytoscape.io.CyFileFilter;
 
-//import org.cytoscape.io.CyFileFilter;
-//import cytoscape.util.FileUtil;
+import cytoscape.CyOperatingContext;
+import cytoscape.util.FileUtil;
 
 
+
+@SuppressWarnings("serial")
 public class ChooseFilePanel extends JPanel implements ActionListener{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	JTextField jtf;
 	File[] myNetworkFile;
 	myFile file;
 	java.util.List<String> paths;
-//	private CyFileFilter[] tempCFF;
-
+	CyFileFilter[] tempCFF;
+	int LOAD = FileDialog.LOAD;
 	
 	public ChooseFilePanel(myFile infile){
-	
+		
 		this.file = infile;
 		setLayout(new BorderLayout());
-//		tempCFF = file.getCyFileFilter();
+		tempCFF = file.getCyFileFilter();
 		jtf = new JTextField("Please select a network file...",10);	
 		add(jtf,BorderLayout.WEST);
 		JButton selectbutton = new JButton("select");
@@ -47,7 +47,8 @@ public class ChooseFilePanel extends JPanel implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("select")){
-//			myNetworkFile = FileUtil.getFiles(this,"Import Network Files", FileUtil.LOAD, tempCFF);
+			FileUtil temp = new FileUtilImpl(null);
+			myNetworkFile = temp.getFiles(this,"Import Network Files", LOAD, tempCFF);
 			if (myNetworkFile != null) {
 				/*
 				 * Accept multiple files
