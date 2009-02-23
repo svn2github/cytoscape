@@ -34,9 +34,9 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.work.internal.swing;
+package org.cytoscape.work.internal.task;
 
-import org.cytoscape.work.internal.swing.StringUtils;
+import org.cytoscape.work.internal.task.StringUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

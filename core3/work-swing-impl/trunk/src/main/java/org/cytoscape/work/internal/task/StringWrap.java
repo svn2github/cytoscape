@@ -1,4 +1,4 @@
-package org.cytoscape.work.internal.work;
+package org.cytoscape.work.internal.task;
 
 
 /*

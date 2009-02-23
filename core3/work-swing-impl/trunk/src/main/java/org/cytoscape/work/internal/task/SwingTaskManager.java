@@ -1,4 +1,4 @@
-package org.cytoscape.work.internal.work;
+package org.cytoscape.work.internal.task;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -18,6 +18,8 @@ import java.io.StringWriter;
  * Uses Swing components to create a user interface for the <code>Task</code>.
  *
  * This will not work if the application is running in headless mode.
+ *
+ * @author Samad Lotia
  */
 public class SwingTaskManager implements TaskManager
 {
