@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.cytoscape.command.Command;
 import org.cytoscape.command.*;
 import org.cytoscape.work.Handler;
 import org.cytoscape.work.HandlerController;
