@@ -2,7 +2,7 @@ package Command;
 
 import java.io.File;
 
-//import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.CyFileFilter;
 
 import Tunable.Tunable;
 import Utils.myFile;
@@ -18,7 +18,7 @@ public class fileChoose implements command {
 	public fileChoose(){
 		File[] files = new File[1];
 		File file = new File("");
-//		myfile = new myFile(file,false,new CyFileFilter[3]);
+//		myfile = new myFile(file,false,new CyFileFilter[2]);
 	}
 	
 	
