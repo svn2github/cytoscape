@@ -1,12 +1,10 @@
 package org.cytoscape.command;
 
-
-
-import org.cytoscape.io.CyFileFilter;
-
 import java.io.File;
-import org.cytoscape.work.util.*;
-import org.cytoscape.work.*;
+
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.util.myFile;
+
 
 public class fileChoose implements Command {
 	
