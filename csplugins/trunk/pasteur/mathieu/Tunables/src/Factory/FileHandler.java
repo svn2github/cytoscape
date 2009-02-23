@@ -7,8 +7,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-//import java.lang.reflect.*;
 import javax.swing.*;
+
+//import org.cytoscape.io.CyFileFilter;
 
 import Tunable.*;
 import Utils.ChooseFilePanel;
@@ -23,8 +24,8 @@ public class FileHandler extends AbstractGuiHandler {
 	File[] myNetworkFile;
 	myFile file;
 	java.util.List<String> paths;
-	//private CyFileFilter[] tempCFF;
-	//private boolean modal;
+//	private CyFileFilter[] tempCFF;
+	private boolean modal;
 	ChooseFilePanel test;
 	
 	public FileHandler(Field f, Object o, Tunable t) {
@@ -32,30 +33,30 @@ public class FileHandler extends AbstractGuiHandler {
 		try{
 			this.file= (myFile) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		//tempCFF = file.getCyFileFilter();
-		//modal = file.getModal();
+//		tempCFF = file.getCyFileFilter();
+		modal = file.getModal();
 		panel = new JPanel(new BorderLayout());
 		test = new ChooseFilePanel(file);
 		panel.add(test);
-/*		jtf = new JTextField("Please select a network file...",10);	
+		jtf = new JTextField("Please select a network file...",10);	
 		panel.add(jtf,BorderLayout.WEST);
 		JButton selectbutton = new JButton("select");
 		selectbutton.addActionListener(new myActionListener());
 		selectbutton.setActionCommand("select");
 		panel.add(selectbutton,BorderLayout.EAST);
 		paths = new ArrayList<String>();
-*/	
+	
 	}
 
 	public void handle() {	
-		/*if (myNetworkFile == null && jtf.getText() != null) {
+		if (myNetworkFile == null && jtf.getText() != null) {
 			file.setFiles(myNetworkFile);
-			file.setPaths(paths);*/
+			file.setPaths(paths);
 			file = test.getFile();
 			try {
 				f.set(o,file);
 			} catch (Exception e) { e.printStackTrace();}
-		//}
+		}
 	}
 
 	public void returnPanel(){
@@ -66,13 +67,13 @@ public class FileHandler extends AbstractGuiHandler {
 	
 	
 	
-/*	private class myActionListener implements ActionListener{
+	private class myActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae){
 			if(ae.getActionCommand().equals("select")){
-				myNetworkFile = FileUtil.getFiles(panel,"Import Network Files", FileUtil.LOAD, tempCFF);
+				//myNetworkFile = FileUtil.getFiles(panel,"Import Network Files", FileUtil.LOAD, tempCFF);
 				if (myNetworkFile != null) {
 					
-					 * Accept multiple files
+					 //Accept multiple files
 					 
 					StringBuffer fileNameSB = new StringBuffer();
 					StringBuffer tooltip = new StringBuffer();
@@ -92,7 +93,7 @@ public class FileHandler extends AbstractGuiHandler {
 			}
 		}
 	}
-*/
+
 	
     public String getState() {
     	String s;

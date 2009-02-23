@@ -63,8 +63,9 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 //		jlist.setSelectionModel(checkListManager.getSelectionModel());
 		//selected.set(i, (T)jlist.getSelectedValue());// = jlist.get
 
-		if (convertToArray(jlist.getSelectedValues())!=null) {
-			lms.setSelectedValues(convertToArray(jlist.getSelectedValues()));
+		selected = convertToArray(jlist.getSelectedValues());
+		if (selected!=null) {
+			lms.setSelectedValues(selected);
             try{
                 f.set(o,lms);
             }catch(Exception e){e.printStackTrace();}
@@ -72,12 +73,16 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public List<T> convertToArray(Object[] in){
 		List<T> list = new ArrayList<T>();
-		for(int i=0;i<in.length;i++){
-			list.add(i, (T)in[i]);
+		if(in.length!=0){
+			for(int i=0;i<in.length;i++){
+				list.add(i, (T)in[i]);
+			}
+			return (List<T>) list;
 		}
-		return (List<T>) list;
+		else return null;
 	}
 
 

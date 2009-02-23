@@ -3,7 +3,6 @@ package Utils;
 import java.io.File;
 import java.util.List;
 
-
 public class myFile{
 	
 	File file;
@@ -13,17 +12,17 @@ public class myFile{
 	java.util.List<String> paths;
 	
 
-//	public myFile(File file,boolean modal,CyFileFilter[] filters){
-//		this.filters = filters;
-//		this.modal = modal;
-//		this.file = file;
-//	}
-//	
-//	public myFile(File[] files,boolean modal,CyFileFilter[] filters){
-//		this.filters = filters;
-//		this.modal = modal;
-//		this.files = files;
-//	}
+/*	public myFile(File file,boolean modal,CyFileFilter[] filters){
+		this.filters = filters;
+		this.modal = modal;
+		this.file = file;
+	}
+	
+	public myFile(File[] files,boolean modal,CyFileFilter[] filters){
+		this.filters = filters;
+		this.modal = modal;
+		this.files = files;
+	}*/
 	
 	public List<String> getPaths() {
 		return paths;
