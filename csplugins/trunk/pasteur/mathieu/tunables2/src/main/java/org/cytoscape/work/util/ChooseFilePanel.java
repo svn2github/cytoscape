@@ -12,9 +12,6 @@ import javax.swing.JTextField;
 
 import org.cytoscape.io.CyFileFilter;
 
-import cytoscape.CyOperatingContext;
-import cytoscape.util.FileUtil;
-
 
 
 @SuppressWarnings("serial")
@@ -47,8 +44,8 @@ public class ChooseFilePanel extends JPanel implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("select")){
-			FileUtil temp = new FileUtilImpl(null);
-			myNetworkFile = temp.getFiles(this,"Import Network Files", LOAD, tempCFF);
+			//FileUtil temp = new FileUtilImpl(null);
+			//myNetworkFile = temp.getFiles(this,"Import Network Files", LOAD, tempCFF);
 			if (myNetworkFile != null) {
 				/*
 				 * Accept multiple files
