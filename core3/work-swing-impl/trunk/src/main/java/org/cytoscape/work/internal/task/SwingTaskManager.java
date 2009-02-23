@@ -4,8 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import java.util.ResourceBundle;
-import java.util.Locale;
+//import java.util.ResourceBundle;
+//import java.util.Locale;
 
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.Task;
@@ -34,7 +34,7 @@ public class SwingTaskManager implements TaskManager
 	 */
 	static final int DELAY_IN_MILLISECONDS_BEFORE_SHOWING_DIALOG = 1000;
 	Frame owner;
-	Locale locale;
+	//Locale locale;
 
 	/**
 	 * @throws MissingResourceException when the SwingTaskManager
@@ -42,7 +42,7 @@ public class SwingTaskManager implements TaskManager
 	 */
 	public SwingTaskManager()
 	{
-		this(null, Locale.getDefault());
+		this(null);
 	}
 
 	/**
@@ -52,14 +52,14 @@ public class SwingTaskManager implements TaskManager
 	 * @throws MissingResourceException when the SwingTaskManager
 	 * resource bundle is missing
 	 */
-	public SwingTaskManager(Frame owner, Locale locale)
+	public SwingTaskManager(Frame owner)
 	{
 		setOwner(owner);
-		this.locale = locale;
+//		this.locale = locale;
 
 		// We call this so we get MissingResourceException thrown
 		// as early as possible in case the bundle is missing
-		ResourceBundle.getBundle("SwingTaskManager", locale);
+		//ResourceBundle.getBundle("SwingTaskManager", locale);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class SwingTaskManager implements TaskManager
 
 	public void execute(final Task task)
 	{
-		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, owner, locale);
+		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, owner/*, locale*/);
 		final Thread executor = new Thread(new Runnable()
 		{
 			public void run()
@@ -110,7 +110,7 @@ public class SwingTaskManager implements TaskManager
 class SwingTaskMonitor implements TaskMonitor
 {
 	final Task		task;
-	final ResourceBundle	messages;
+//	final ResourceBundle	messages;
 	final Frame		owner;
 
 	TaskDialog	dialog			= null;
@@ -118,10 +118,10 @@ class SwingTaskMonitor implements TaskMonitor
 	String		statusMessage		= null;
 	int		progress		= 0;
 
-	public SwingTaskMonitor(Task task, Frame owner, Locale locale)
+	public SwingTaskMonitor(Task task, Frame owner/*, Locale locale*/)
 	{
 		this.task = task;
-		this.messages = ResourceBundle.getBundle("SwingTaskManager", locale);
+//		this.messages = ResourceBundle.getBundle("SwingTaskManager", locale);
 		this.owner = owner;
 	}
 

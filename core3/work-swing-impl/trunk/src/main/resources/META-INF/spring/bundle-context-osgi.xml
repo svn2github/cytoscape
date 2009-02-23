@@ -15,4 +15,8 @@
 		ref="guiTunableInterceptor" interface="org.cytoscape.work.TunableInterceptor">
 	</osgi:service>
 
+	<osgi:service id="swingTaskManagerService"
+		ref="swingTaskManager" interface="org.cytoscape.work.TaskManager">
+	</osgi:service>
+
 </beans>
