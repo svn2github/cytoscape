@@ -46,6 +46,7 @@ import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -78,6 +79,15 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	public CytoscapeAction(String name, CyNetworkManager netmgr) {
 		super(name);
 		this.consoleName = name;
+		this.netmgr = netmgr;
+		consoleName = consoleName.replaceAll(":. \'", "");
+		initialize();
+	}
+
+	public CytoscapeAction(Map configProps, CyNetworkManager netmgr) {
+		super((String)(configProps.get("title")));
+		this.consoleName = (String)(configProps.get("title"));
+		setPreferredMenu((String)(configProps.get("preferredMenu")));
 		this.netmgr = netmgr;
 		consoleName = consoleName.replaceAll(":. \'", "");
 		initialize();

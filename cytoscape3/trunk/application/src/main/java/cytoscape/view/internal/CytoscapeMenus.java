@@ -41,6 +41,10 @@ import cytoscape.util.CyAction;
 import cytoscape.util.CyMenuBar;
 import cytoscape.util.CyToolBar;
 
+import cytoscape.CyNetworkManager;
+
+import cytoscape.internal.task.TaskTunableAction;
+
 import cytoscape.view.CyMenus;
 
 import cytoscape.util.internal.CytoscapeMenuBar;
@@ -49,6 +53,12 @@ import cytoscape.util.internal.CytoscapeToolBar;
 import javax.swing.JMenu;
 
 import java.util.Map;
+import java.util.HashMap;
+
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TunableInterceptor;
+
 
 
 /**
@@ -78,11 +88,20 @@ public class CytoscapeMenus implements CyMenus {
 	JMenu helpMenu;
 	JMenu opsMenu;
 
+	Map<TaskFactory,CyAction> taskMap;
+
+	TaskManager taskManager;
+	TunableInterceptor interceptor;
+	CyNetworkManager netManager;
+
 	/**
 	 * Creates a new CytoscapeMenus object. This will construct the basic bar objects, 
 	 * but won't fill them with menu items and associated action listeners.
 	 */
-	public CytoscapeMenus() {
+	public CytoscapeMenus(TaskManager taskManager, TunableInterceptor interceptor, CyNetworkManager netManager) {
+		this.taskManager = taskManager;
+		this.interceptor = interceptor;
+		this.netManager = netManager;
 
 		toolBar = new CytoscapeToolBar();
 
@@ -99,6 +118,8 @@ public class CytoscapeMenus implements CyMenus {
 		layoutMenu = menuBar.getMenu("Layout");
 		opsMenu = menuBar.getMenu("Plugins");
 		helpMenu = menuBar.getMenu("Help");
+
+		taskMap = new HashMap<TaskFactory,CyAction>();
 	}
 
 	/**
@@ -217,6 +238,27 @@ public class CytoscapeMenus implements CyMenus {
 
 		if (action.isInToolBar()) {
 			getToolBar().removeAction(action);
+		}
+	}
+
+	public void addTaskFactory(TaskFactory factory, Map props) {
+		System.out.println("addTaskFactory called");
+		CyAction action = new TaskTunableAction(taskManager, interceptor, factory, props, netManager);
+		taskMap.put(factory,action);
+		addAction( action );
+	}
+
+	public void removeTaskFactory(TaskFactory factory, Map props) {
+		System.out.println("removeTaskFactory called");
+		CyAction action = taskMap.remove(factory);
+		if ( action != null ) {
+			if (action.isInMenuBar()) {
+				getMenuBar().removeAction(action);
+			}
+
+			if (action.isInToolBar()) {
+				getToolBar().removeAction(action);
+			}
 		}
 	}
 

@@ -7,6 +7,10 @@
 
 	<!-- Import OSGi services -->
 
+	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager"/>
+
+	<osgi:reference id="tunableInterceptorServiceRef" interface="org.cytoscape.work.TunableInterceptor"/>
+
 	<osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=bookmarks)" />
 
@@ -167,6 +171,12 @@
 	<osgi:set id="cyActionSet" interface="cytoscape.util.CyAction"
 		cardinality="0..N">
 		<osgi:listener bind-method="addAction" unbind-method="removeAction"
+			ref="cytoscapeMenus" />
+	</osgi:set>
+
+	<osgi:set id="taskFactorySet" interface="org.cytoscape.work.TaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addTaskFactory" unbind-method="removeTaskFactory"
 			ref="cytoscapeMenus" />
 	</osgi:set>
 

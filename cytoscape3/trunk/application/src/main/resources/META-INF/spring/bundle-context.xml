@@ -80,7 +80,11 @@
 	</bean>
 
 	<!-- Menu bar -->
-	<bean name="cytoscapeMenus" class="cytoscape.view.internal.CytoscapeMenus" />
+	<bean name="cytoscapeMenus" class="cytoscape.view.internal.CytoscapeMenus">
+		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="tunableInterceptorServiceRef" />
+		<constructor-arg ref="networkManager" />
+	</bean>
 
 	<bean name="networkViewManager" class="cytoscape.view.internal.NetworkViewManager">
 		<constructor-arg ref="networkManager" />

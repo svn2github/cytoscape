@@ -1,5 +1,5 @@
 /*
- File: CyMenus.java
+ File: TaskTunableAction.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,38 +35,52 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.view;
+package cytoscape.internal.task;
 
-import javax.swing.JMenu;
-import cytoscape.util.CyMenuBar;
-import cytoscape.util.CyToolBar;
-import cytoscape.util.CyAction;
+import java.awt.event.ActionEvent;
+
 import java.util.Map;
+
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.TaskManager;
+//import org.cytoscape.work.HandlerController;
 
-// TODO clean up the menus offered - these should match what's implemented
-public interface CyMenus { 
+import cytoscape.util.CytoscapeAction;
+import cytoscape.CyNetworkManager;
 
-	public CyMenuBar getMenuBar();
-	public CyToolBar getToolBar();
+public class TaskTunableAction extends CytoscapeAction {
 
-	public JMenu getFileMenu();
-	public JMenu getLoadSubMenu();
-	public JMenu getSaveSubMenu();
-	public JMenu getEditMenu();
-	public JMenu getViewMenu();
-	public JMenu getSelectMenu();
-	public JMenu getLayoutMenu();
-	public JMenu getVizMenu();
-	public JMenu getHelpMenu();
-	public JMenu getOperationsMenu();
-	public JMenu getNewNetworkMenu();
+	TaskFactory factory;
+	TunableInterceptor interceptor;
+	TaskManager manager;
 
-	public void addAction(CyAction action, Map props);
-	public void removeAction(CyAction action, Map props);
-	public void addTaskFactory(TaskFactory action, Map props);
-	public void removeTaskFactory(TaskFactory action, Map props);
+	public TaskTunableAction(TaskManager manager, TunableInterceptor interceptor, 
+	                  TaskFactory factory, Map serviceProps,
+					  CyNetworkManager netmgr) {
+		super(serviceProps,netmgr);
+		this.manager = manager;
+		this.factory = factory;
+		this.interceptor = interceptor;
+	}
 
-	public void addAction(CyAction action);
-	public void addAction(CyAction action, int index);
+	public void actionPerformed(ActionEvent a) {
+		Task task = factory.getTask();
+
+		// load the tunables from the object 
+		interceptor.loadTunables(task);
+
+		// if the object implements the interface,
+		// give the object access to the handlers 
+		// created for the tunables
+	//	if ( task instanceof HandlerController )
+	//		((HandlerController)task).controlHandlers(interceptor.getHandlers(task));
+		
+		// create the UI based on the object
+		interceptor.createUI(task);
+
+		// execute the task in a separate thread
+		manager.execute(task);
+	}
 }
