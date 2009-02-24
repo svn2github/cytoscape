@@ -149,7 +149,6 @@ function getPluginInfoPage($connection, $pluginList_row) {
 			$isURLonly = true;
 			$pluginInfoPage .= "<B>Download Jar/zip:</B> Please follow the Project URL to download and install manually."; //"\n<b>Download Jar/zip:</b> <a href=\"" . $versionSpecific_row["jar_url"] . "\">" . $versionSpecific_row["jar_url"] . "</a><br>";
 		} else {
-			$isURLonly = false;
 			$pluginInfoPage .= "\n<b>Download Jar/zip:</b> click <a href=\"" . 'pluginjardownload.php?id=' . $versionSpecific_row["plugin_file_id"] . "\">here</a>".getPluginFileSize($connection, $versionSpecific_row["plugin_file_id"])."<br>";
 		}
 		if ($versionSpecific_row["source_url"] != null) {
