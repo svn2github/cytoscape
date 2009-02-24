@@ -78,7 +78,9 @@ enum ParseState {
 	EDGEATT("Edge Attribute"), 
 	// Types of attributes that require special handling
   LISTATT("List Attribute"), 
+  LISTELEMENT("List Element"), 
 	MAPATT("Map Attribute"), 
+	MAPELEMENT("Map Element"), 
 	COMPLEXATT("Complex Attribute"), 
 	NODEGRAPHICS("Node Graphics"), 
 	EDGEGRAPHICS("Edge Graphics"),
@@ -226,8 +228,10 @@ class XGMMLParser extends DefaultHandler {
 		{ParseState.EDGEGRAPHICS, "att", ParseState.EDGEGRAPHICS, new handleEdgeGraphics()},
 		{ParseState.EDGEBEND, "att", ParseState.EDGEHANDLE, new handleEdgeHandle()},
 		{ParseState.EDGEHANDLE, "att", ParseState.EDGEHANDLE, new handleEdgeHandle()},
-		{ParseState.LISTATT, "att", ParseState.LISTATT, new handleListAttribute()},
-		{ParseState.MAPATT, "att", ParseState.MAPATT, new handleMapAttribute()},
+		{ParseState.LISTATT, "att", ParseState.LISTELEMENT, new handleListAttribute()},
+		{ParseState.LISTELEMENT, "att", ParseState.LISTELEMENT, new handleListAttribute()},
+		{ParseState.MAPATT, "att", ParseState.MAPELEMENT, new handleMapAttribute()},
+		{ParseState.MAPELEMENT, "att", ParseState.MAPELEMENT, new handleListAttribute()},
 		{ParseState.COMPLEXATT, "att", ParseState.COMPLEXATT, new handleComplexAttribute()},
 	};
 
@@ -254,8 +258,8 @@ class XGMMLParser extends DefaultHandler {
 		{ParseState.COMPLEXATT, "att", ParseState.COMPLEXATT, new handleComplexAttributeDone()},
 		{ParseState.GRAPH, "graph", ParseState.NONE, new handleGraphDone()},
 
-		{ParseState.NODEATT, "att", ParseState.NONE, new handleAttributeDone()},
-		{ParseState.EDGEATT, "att", ParseState.NONE, new handleAttributeDone()},
+		{ParseState.LISTATT, "att", ParseState.NONE, new handleListAttributeDone()},
+		{ParseState.MAPATT, "att", ParseState.NONE, new handleMapAttributeDone()},
     };
 
 	/********************************************************************
@@ -600,11 +604,10 @@ class XGMMLParser extends DefaultHandler {
 			for (int i = 0; i < atts.getLength(); i++) {
 				logger.debug(atts.getQName(i)+"="+atts.getValue(i)+" ");
 			}
-			logger.debug(") State: "+printState(parseState));
+			logger.debug(")");
 			*/
 
 			ParseState nextState = handleState(startParseTable, parseState, localName, atts);
-		  // logger.debug("Next state: "+printState(nextState));
 
 			stateStack.push(parseState);
 			parseState = nextState;
@@ -619,7 +622,7 @@ class XGMMLParser extends DefaultHandler {
 	 * @param qName the tag with the namespace prefix
 	 */
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-			// logger.debug("endElement("+uri+", "+localName+", "+qName+") State: "+printState(parseState));
+			// logger.debug("endElement("+uri+", "+localName+", "+qName+")");
 
 			handleState(endParseTable, parseState, localName, null);
 
@@ -1099,6 +1102,7 @@ class XGMMLParser extends DefaultHandler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			ObjectType objType = getType(atts.getValue("type"));
 			Object obj = getTypedAttributeValue(objType, atts);
+			String name = atts.getValue("name");
 
 			switch (objType) {
 			case BOOLEAN:
@@ -1111,17 +1115,17 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
-	class handleAttributeDone implements Handler {
+	class handleListAttributeDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 
-			if (listAttrHolder != null) {
-				currentAttributes.setListAttribute(objectTarget, currentAttributeID, listAttrHolder);
-				listAttrHolder = null;
-			}
-			else if (mapAttrHolder != null)
-			{
-				currentAttributes.setMapAttribute(objectTarget, currentAttributeID, mapAttrHolder);
-				mapAttrHolder = null;
+			try {
+				if (listAttrHolder != null) {
+					currentAttributes.setListAttribute(objectTarget, currentAttributeID, listAttrHolder);
+					listAttrHolder = null;
+				}
+			} catch (Exception e) {
+				String err = "XGMML attribute handling error for attribute '"+currentAttributeID+"' and object '"+objectTarget+"': "+e.getMessage();
+				throw new SAXException(err);
 			}
 			return current;
 		}
@@ -1143,6 +1147,22 @@ class XGMMLParser extends DefaultHandler {
 				mapAttrHolder.put(name, obj);
 			}
 
+			return current;
+		}
+	}
+
+	class handleMapAttributeDone implements Handler {
+		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
+
+			try {
+				if (mapAttrHolder != null) {
+					currentAttributes.setMapAttribute(objectTarget, currentAttributeID, mapAttrHolder);
+					mapAttrHolder = null;
+				}
+			} catch (Exception e) {
+				String err = "XGMML attribute handling error for attribute '"+currentAttributeID+"' and object '"+objectTarget+"': "+e.getMessage();
+				throw new SAXException(err);
+			}
 			return current;
 		}
 	}
@@ -1375,7 +1395,7 @@ class XGMMLParser extends DefaultHandler {
 			if (id != null && cyAtts.hasAttribute(id, name))
 				cyAtts.deleteAttribute(id,name);
 
-            listAttrHolder = new ArrayList();
+			listAttrHolder = new ArrayList();
 
 			return ParseState.LISTATT;
 		case MAP:
@@ -1383,7 +1403,7 @@ class XGMMLParser extends DefaultHandler {
 			if (id != null && cyAtts.hasAttribute(id, name))
 				cyAtts.deleteAttribute(id,name);
 
-            mapAttrHolder = new HashMap();
+			mapAttrHolder = new HashMap();
 
 			return ParseState.MAPATT;
 		case COMPLEX:
