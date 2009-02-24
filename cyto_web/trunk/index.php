@@ -216,13 +216,15 @@ cytoscape-discuss </a> mailing list.</p>
 </div>
 
 
-<div id="rightbox"><? include "help.php"; ?> <?
-			if ($news_option == "atom") {
-				include "feed.php";
-			}else {
-				include "news.php";
-			}
-			?> <? include "community_box.php"; include "collab.php"; ?></div>
+<div id="rightbox"><? include "help.php"; ?> 
+<?
+#			if ($news_option == "atom") {
+#				include "feed.php";
+#			}else {
+#				include "news.php";
+#			}
+?> 
+<? include "community_box.php"; include "collab.php"; ?></div>
 <p><? include "footer.php"; ?></p>
 </div>
 </body>
