@@ -49,6 +49,7 @@ import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.view.GraphViewFactory;
 
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,9 +61,9 @@ import java.util.Properties;
  */
 public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 
-	//@Tunable(description="Network file to load");
 	//public File[] files;
-	private File file;
+	@Tunable(description="Network file to load")
+	public File file;
 
 	public LoadNetworkFileTask(CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
 		super(mgr,gvf,cyl,netmgr,props);

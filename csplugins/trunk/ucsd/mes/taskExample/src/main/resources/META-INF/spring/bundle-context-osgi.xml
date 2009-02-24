@@ -27,6 +27,7 @@
 	              interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Load Network File..." />
+			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -34,6 +35,7 @@
 	              interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Load Network URL..." />
+			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>
 
