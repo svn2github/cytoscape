@@ -33,29 +33,31 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.io.read.internal.sif;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-
 /**
  * Utility class for representing one line of SIF file.
  */
-class Interaction {
+public class Interaction {
+
 	private String source;
 	private List<String> targets = new ArrayList<String>();
 	private String interactionType;
 
 	/**
 	 * Creates a new Interaction object.
-	 *
-	 * @param rawText  DOCUMENT ME!
-	 * @param delimiter  DOCUMENT ME!
+	 * 
+	 * @param rawText
+	 *            DOCUMENT ME!
+	 * @param delimiter
+	 *            DOCUMENT ME!
 	 */
-	public Interaction(String rawText, String delimiter) {
+	public Interaction(final String rawText, final String delimiter) {
 		final StringTokenizer strtok = new StringTokenizer(rawText, delimiter);
 		int counter = 0;
 
@@ -67,41 +69,40 @@ class Interaction {
 			else {
 				targets.add(strtok.nextToken().trim());
 			}
-
 			counter++;
 		}
-	} 
+	}
 
 	/**
-	 * @return The source node identifier string. 
+	 * @return The source node identifier string.
 	 */
 	public String getSource() {
 		return source;
 	}
 
 	/**
-	 * @return The interaction type string. 
+	 * @return The interaction type string.
 	 */
 	public String getType() {
 		return interactionType;
 	}
 
 	/**
-	 * @return The number of target nodes found. 
+	 * @return The number of target nodes found.
 	 */
 	public int numberOfTargets() {
 		return targets.size();
 	}
 
 	/**
-	 * @return The array of target node identifier strings. 
+	 * @return The array of target node identifier strings.
 	 */
 	public String[] getTargets() {
 		return targets.toArray(new String[0]);
-	} 
+	}
 
 	/**
-	 * @return A string rep of the interaction. 
+	 * @return A string rep of the interaction.
 	 */
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
