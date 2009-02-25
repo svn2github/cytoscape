@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+
+    <osgi:reference id="graphViewFactoryServiceRef"
+        interface="org.cytoscape.view.GraphViewFactory"/>
+
+    <osgi:reference id="cyReaderManagerServiceRef"
+        interface="org.cytoscape.io.read.CyReaderManager"/>
+
+    <osgi:reference id="cyLayoutsServiceRef"
+        interface="org.cytoscape.layout.CyLayouts"/>
+
+    <osgi:reference id="cyNetworkManagerServiceRef"
+        interface="cytoscape.CyNetworkManager"/>
+
+    <osgi:reference id="cyPropertyServiceRef"
+        interface="org.cytoscape.property.CyProperty"
+		filter="(cyPropertyName=coreSettings)" />
+
+	<osgi:service id="loadNetworkFileTaskFactoryService" ref="loadNetworkFileTaskFactory"
+	              interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Load Network File..." />
+			<entry key="preferredMenu" value="File.Import" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="loadNetworkURLTaskFactoryService" ref="loadNetworkURLTaskFactory"
+	              interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Load Network URL..." />
+			<entry key="preferredMenu" value="File.Import" />
+		</osgi:service-properties>
+	</osgi:service>
+
+</beans>
