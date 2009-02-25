@@ -13,10 +13,10 @@ public abstract class AbstractPropHandler extends AbstractHandler implements Pro
 	public AbstractPropHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		String n = f.getDeclaringClass().toString();
-
 		propKey = n.substring( n.lastIndexOf(".") + 1) + "." + f.getName();	
 	}
 	
+	public abstract void add(Properties p);
 	public abstract Properties getProps();
 	public abstract void setProps(Properties p);
 }

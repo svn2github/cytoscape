@@ -13,29 +13,15 @@ public class StorePropsInterceptor extends AbstractTunableInterceptor<PropHandle
 		this.inputProps = inputProps;
 	}
 
-	
-//	protected void processProps(List<PropHandler> lh) {
+//		protected void processProps(List<PropHandler> lh) {
 //		for (PropHandler p : lh) {
-//			p.setProps(inputProps);
+//			inputProps.putAll(p.getProps());
 //		}
 //	}
-	protected void processProps(List<PropHandler> lh) {
-		for (PropHandler p : lh) {
-			inputProps.putAll(p.getProps());
-		}
-	}
 	
-
-
-	protected void getResultsPanels(List<PropHandler> handlers) {
-	}
-
-
-	public int createUI(Object... objs) {return 0;}
-
-	public void createProperties(Object... obs) {
+	public int createUI(Object... objs) {
 		java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
-		for ( Object o : obs ) {
+		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
 			lh.addAll( handlerMap.get(o).values() );
@@ -43,5 +29,6 @@ public class StorePropsInterceptor extends AbstractTunableInterceptor<PropHandle
 		for (PropHandler p : lh) {
 			inputProps.putAll(p.getProps());
 		}
+		return 0;
 	}
 }

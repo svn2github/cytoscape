@@ -17,8 +17,6 @@ public class BoundedLongPropHandler extends AbstractPropHandler {
 			this.bounded = (BoundedLong)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 	}
-
-
 	
 	public Properties getProps() {
 		Properties p = new Properties();

@@ -13,16 +13,15 @@ public class LoadPropsInterceptor extends AbstractTunableInterceptor<PropHandler
 		this.inputProps = inputProps;
 	}
 
-	protected void processProps(List<PropHandler> lh) {
-		for (PropHandler p : lh) {
-			p.setProps(inputProps);
-		}
-	}
-	
+//	protected void processProps(List<PropHandler> lh) {
+//		for (PropHandler p : lh) {
+//			p.setProps(inputProps);
+//		}
+//	}
 
-	public void createProperties(Object... obs) {
+	public int createUI(Object... objs) {
 		java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
-		for ( Object o : obs ) {
+		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
 			
@@ -31,9 +30,6 @@ public class LoadPropsInterceptor extends AbstractTunableInterceptor<PropHandler
 		for (PropHandler p : lh) {
 			p.add(inputProps);
 		}
+		return 0;
 	}
-	
-	protected void getResultsPanels(List<PropHandler> handlers) {}
-	public int createUI(Object... objs) {return 0;}
-
 }
