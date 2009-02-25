@@ -9,10 +9,8 @@ public interface Handler{
 	Method getMethod();
 	Object getObject();
 	Tunable getTunable();
-	
 	void addHandlerListener(HandlerListener listener);
 	boolean removeHandlerListener(HandlerListener listener); 
-
 	void handlerChanged(Handler otherHandler);
 	
 }
