@@ -77,14 +77,6 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
 			} catch (Exception e) { e.printStackTrace();}
     	}
 	}
-    
-    
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Long.toString(myBounded.getValue())));
-	}
-
 	
     public String getState() {
         return myBounded.getValue().toString();

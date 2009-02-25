@@ -53,13 +53,6 @@ public class DoubleHandler extends AbstractGuiHandler {
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Double.toString(value.doubleValue())));
-	}
-	
 
     public String getState() {
 		String s;

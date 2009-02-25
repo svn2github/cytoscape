@@ -40,7 +40,6 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-		//System.out.println(this.getName() + " actionPerformed");
 		handle();
 		notifyDependents();
 	}
@@ -125,6 +124,4 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	public abstract void handle();
 
 	public abstract String getState();
-	
-	public abstract void returnPanel();
 }

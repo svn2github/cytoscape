@@ -81,13 +81,6 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
     	}
 	}
 	
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Double.toString(myBounded.getValue())));
-	}
-
 	public String getState() {
 		return myBounded.getValue().toString();
 	}

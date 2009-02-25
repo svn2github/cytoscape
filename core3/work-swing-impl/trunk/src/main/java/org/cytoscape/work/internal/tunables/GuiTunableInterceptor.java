@@ -32,17 +32,13 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 	}
 
 	public int createUI(Object... objs) {
-		
 		java.util.List<Guihandler> lh = new ArrayList<Guihandler>();
-
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
 			lh.addAll( handlerMap.get(o).values() );
 
 		}
-		
-
 		if ( !panelMap.containsKey( lh ) ) {
 			final String MAIN = "";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
@@ -62,7 +58,6 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 						}
 					}
 				}
-
 
 				// find the proper group to put the handler panel in
 				String[] group = gh.getTunable().group();
@@ -96,9 +91,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		    buttons,
 		    buttons[0]);
 		
-		
-		// process the values set in the gui 
-		//USELESS BECAUSE OF LISTENERS
+		// process the values set in the gui : USELESS BECAUSE OF LISTENERS
 		for ( Guihandler h : lh )
 			h.handle();
 		
@@ -139,33 +132,4 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
 		return ret;
 	}
-			
-	
-	/*protected void getResultsPanels(java.util.List<Guihandler> lh) {
-		for ( Guihandler h : lh ) {
-			h.notifyDependents();
-			h.returnPanel();
-		}
-			
-		JOptionPane.showMessageDialog(parent,
-	    panelMap.get(lh),
-	    "Results",JOptionPane.PLAIN_MESSAGE);
-	}
-*/
-	
-	protected void getResultsPanels(List<Guihandler> handlerList) {
-
-		for ( Guihandler h : handlerList ) {
-			h.notifyDependents();
-			h.returnPanel();
-		}			
-		JOptionPane.showMessageDialog(parent,
-	    panelMap.get(handlerList),
-	    "Results",JOptionPane.PLAIN_MESSAGE);
-	}
-
-
-
-	protected void processProps(List<Guihandler> handlers) {}
-	public void createProperties(Object... obs) {}
 }

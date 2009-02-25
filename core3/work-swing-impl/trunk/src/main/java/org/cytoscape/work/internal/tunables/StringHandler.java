@@ -36,14 +36,7 @@ public class StringHandler extends AbstractGuiHandler {
 			f.set(o,s);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
-	
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(jtf.getText()));
-	}
-	
+
 
 	public String getState() {
 		String s;

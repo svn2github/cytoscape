@@ -50,13 +50,6 @@ public class FileHandler extends AbstractGuiHandler {
 			}
 		} catch (Exception e) { e.printStackTrace();}
 	}
-
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(myFile.toString()));
-	}
 	
 
     public String getState() {

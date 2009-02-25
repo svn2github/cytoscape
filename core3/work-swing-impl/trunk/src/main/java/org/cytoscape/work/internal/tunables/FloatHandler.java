@@ -51,13 +51,6 @@ public class FloatHandler extends AbstractGuiHandler {
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Float.toString(value.floatValue())));
-	}
-	
 
     public String getState() {
 		String s;

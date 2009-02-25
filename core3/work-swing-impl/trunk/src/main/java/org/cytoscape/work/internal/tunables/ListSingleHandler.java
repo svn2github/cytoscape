@@ -61,11 +61,4 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
 			return sel.toString();
 	}
 
-	@Override
-	public void returnPanel() {
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(lss.getSelectedValue().toString()));
-		
-	}
 }

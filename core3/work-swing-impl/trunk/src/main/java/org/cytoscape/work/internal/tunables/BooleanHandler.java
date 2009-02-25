@@ -43,13 +43,7 @@ public class BooleanHandler extends AbstractGuiHandler {
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JCheckBox(t.description(),jcb.isSelected()));
-	}
-	
-	
+
 	public String getState() {
 		String s;
 		try {

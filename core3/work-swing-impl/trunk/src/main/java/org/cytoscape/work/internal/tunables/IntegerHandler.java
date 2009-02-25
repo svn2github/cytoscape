@@ -52,13 +52,6 @@ public class IntegerHandler extends AbstractGuiHandler {
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Integer.toString(value.intValue())));
-	}
-	
 
     public String getState() {
 		String s;

@@ -76,13 +76,6 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
     	}
 	}
     
-    
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Integer.toString(myBounded.getValue())));
-	}
-    
 
     public String getState() {
         return myBounded.getValue().toString();

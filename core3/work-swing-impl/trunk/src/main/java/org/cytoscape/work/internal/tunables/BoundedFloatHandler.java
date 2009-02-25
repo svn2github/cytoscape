@@ -76,14 +76,7 @@ public class BoundedFloatHandler extends AbstractGuiHandler implements Guihandle
 			} catch (Exception e) { e.printStackTrace();}
     	}
 	}
-    
-    
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Float.toString(myBounded.getValue())));
-	}
-	
+
 
     public String getState() {
         return myBounded.getValue().toString();
