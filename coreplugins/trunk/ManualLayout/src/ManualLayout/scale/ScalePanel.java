@@ -56,12 +56,15 @@ import java.awt.event.ActionListener;
 
 import java.util.Hashtable;
 
+import javax.swing.AbstractAction;
+
 import javax.swing.JCheckBox;
 
 //import javax.swing.JMenu;
 import javax.swing.JDialog;
 
 //import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -125,6 +128,7 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 
 		new CheckBoxTracker( jCheckBox );
 
+
 		setLayout(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -140,7 +144,19 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 		gbc.insets = new Insets(10, 15, 10, 15);
 		add(jSlider, gbc);
 
+		JButton clearButton = new JButton("Reset scale bar");
+		clearButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				updateSlider(0);
+			}
+		});
 		gbc.gridy = 2;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.insets = new Insets(5, 15, 5, 15);
+		add(clearButton, gbc);
+
+		gbc.gridy = 3;
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(0, 15, 0, 15);
