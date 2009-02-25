@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Hashtable;
+
 import javax.swing.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.internal.p2.ui2.DefaultMetadataURLValidator;
@@ -13,8 +15,9 @@ import org.eclipse.equinox.internal.provisional.p2.ui2.operations.ProvisioningOp
 import org.eclipse.equinox.internal.provisional.p2.ui2.operations.RepositoryOperation;
 import org.eclipse.equinox.internal.provisional.p2.ui2.policy.*;
 import org.eclipse.ui.statushandlers.StatusManager;
-
+import org.eclipse.equinox.internal.p2.ui2.model.MetadataRepositoryElement;
 //import org.eclipse.ui.statushandlers.StatusManager;
+
 
 public class AddSiteDialog extends JDialog implements ActionListener {
 
@@ -22,19 +25,34 @@ public class AddSiteDialog extends JDialog implements ActionListener {
 	private File localFile = null;
 	private RepositoryLocationValidator urlValidator;
 	private String url;
-
+	private CachedMetadataRepositories cachedMetadataRepository = null;;
+	
+	//private MetadataRepositoryElement element;
+	//private Hashtable elements = null;
+	
 	/** Creates new form AddSiteDialog */
 	public AddSiteDialog(JDialog parent, boolean modal, Policy policy) {
 		super(parent, modal);
 		this.policy = policy;
+		init();
+	}
+
+	public AddSiteDialog(JDialog parent, boolean modal, Policy policy, CachedMetadataRepositories cachedMetadataRepository) {
+		super(parent, modal);
+		this.policy = policy;
+		this.cachedMetadataRepository = cachedMetadataRepository;
+		init();
+	}
+	
+	private void init() {
 		initComponents();
 		btnArchive.setVisible(false);
 		btnLocal.addActionListener(this);
 		btnOK.addActionListener(this);
 		btnCancel.addActionListener(this);
-		urlValidator = createRepositoryLocationValidator();
+		urlValidator = createRepositoryLocationValidator();		
 	}
-
+	
 	protected RepositoryLocationValidator createRepositoryLocationValidator() {
 		DefaultMetadataURLValidator validator = new DefaultMetadataURLValidator();
 		//validator.setKnownRepositoriesFlag(repoFlag);
@@ -94,6 +112,12 @@ public class AddSiteDialog extends JDialog implements ActionListener {
 	}
 
 	protected boolean addRepository() {
+		if (cachedMetadataRepository != null){
+			// add to the HashTable only
+			cachedMetadataRepository.cachedElements.put(getUserLocation().toString(), new MetadataRepositoryElement(cachedMetadataRepository,getUserLocation(),true));
+			return true;
+		}
+		
 		if (validateRepositoryURL(false).isOK()) {
 			//System.out.println("\tadd now");
 			ProvisioningOperationRunner.schedule(getOperation(getUserLocation()), StatusManager.SHOW | StatusManager.LOG);
@@ -111,6 +135,17 @@ public class AddSiteDialog extends JDialog implements ActionListener {
 
 	}
 
+	private boolean isDuplicatedURL(String url) {
+		if (cachedMetadataRepository == null || cachedMetadataRepository.cachedElements.size() ==0){
+			return false;
+		}
+		if (cachedMetadataRepository.cachedElements.containsKey(url)){
+			return true;
+		}
+		return false;
+	}
+	
+	
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof JButton) {
 			JButton btn = (JButton) e.getSource();
@@ -120,6 +155,11 @@ public class AddSiteDialog extends JDialog implements ActionListener {
 
 				url = tfLocation.getText();
 
+				if (isDuplicatedURL(url)){
+					JOptionPane.showMessageDialog(this, "Repository URL already existed!", "Warning", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
 				if (validateRepositoryURL(true).isOK()) {
 					addRepository();
 					this.dispose();
