@@ -49,7 +49,7 @@ public class FileHandler extends AbstractGuiHandler {
 					try{
 						f.set(o,file);
 					}catch (Exception e) { e.printStackTrace();}
-					path.setText("path : "+file.getAbsolutePath());
+					path.setText(file.getAbsolutePath());
 				}
 			}
 		}
