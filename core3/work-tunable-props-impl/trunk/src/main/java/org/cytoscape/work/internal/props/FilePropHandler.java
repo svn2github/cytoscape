@@ -12,29 +12,30 @@ import org.cytoscape.work.Tunable;
 
 public class FilePropHandler extends AbstractPropHandler {
 
-	File files;
-	List<String>test;
+	File file;
+	List<String> paths;
+	String path;
 	
 	public FilePropHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
-			files = (File) f.get(o);
+			file = (File) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 	}
 
 	public Properties getProps() {
 		Properties p = new Properties();
-		p.put( propKey, files.getAbsolutePath());
+		p.put( propKey, file.getAbsolutePath());
 		return p;
 	}
 	
 	public void add(Properties p) {
-		test = new ArrayList<String>();
-		test.add(0,"");
+		//test = new ArrayList<String>();
+		//test.add(0,"");
 		// TODO
 		//files.setPaths(test);
 		try{
-			p.put(propKey,files.getAbsolutePath());
+			p.put(propKey,file.getAbsolutePath());
 		}catch(Exception e){e.printStackTrace();}
 	}
 
