@@ -19,7 +19,7 @@ public class LoadPropsInterceptor extends AbstractTunableInterceptor<PropHandler
 //		}
 //	}
 
-	public int createUI(Object... objs) {
+	public boolean createUI(Object... objs) {
 		java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
@@ -30,6 +30,6 @@ public class LoadPropsInterceptor extends AbstractTunableInterceptor<PropHandler
 		for (PropHandler p : lh) {
 			p.add(inputProps);
 		}
-		return 0;
+		return true;
 	}
 }
