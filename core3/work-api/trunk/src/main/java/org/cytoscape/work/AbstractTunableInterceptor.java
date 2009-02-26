@@ -49,5 +49,5 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 		return handlerMap.get(o);
 	}
 
-	public abstract int createUI(Object ... objs);
+	public abstract boolean createUI(Object ... objs);
 }
