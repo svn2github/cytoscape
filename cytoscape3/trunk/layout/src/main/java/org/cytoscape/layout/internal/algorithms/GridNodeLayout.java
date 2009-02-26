@@ -43,8 +43,12 @@ import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
 import org.cytoscape.work.UndoSupport;
+import org.cytoscape.tunable.TunableFactory;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
 
 import javax.swing.*;
+import java.awt.GridLayout;
 import java.util.Iterator;
 import java.util.List;
 
@@ -54,13 +58,41 @@ import java.util.List;
  * the default layout for Cytoscape data readers.
  */
 public class GridNodeLayout extends AbstractLayout {
-
+	private ModuleProperties layoutProperties;
+	private double nodeVerticalSpacing = 80.0; 
+	private double nodeHorizontalSpacing = 80.0; 
 	/**
 	 * Creates a new GridNodeLayout object.
 	 */
 	public GridNodeLayout(UndoSupport un) {
 		super(un);
+		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
+        layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing", "Horizontal spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
+        layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
 	}
+
+    public void updateSettings() {
+        updateSettings(false);
+    }
+
+    public void updateSettings(boolean force) {
+        layoutProperties.updateValues();
+
+        Tunable t = layoutProperties.get("nodeHorizontalSpacing");
+
+        if ((t != null) && (t.valueChanged() || force))
+            nodeHorizontalSpacing = ((Double) t.getValue()).doubleValue();
+
+        t = layoutProperties.get("nodeVerticalSpacing");
+
+        if ((t != null) && (t.valueChanged() || force))
+            nodeVerticalSpacing = ((Double) t.getValue()).doubleValue();
+	}
+
+    public void revertSettings() {
+        layoutProperties.revertProperties();
+    }
+
 
 	/**
 	 *  DOCUMENT ME!
@@ -90,23 +122,19 @@ public class GridNodeLayout extends AbstractLayout {
 		return true;
 	}
 
-	// We dont support node or edge attribute-based layouts
+    public JPanel getSettingsPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.add(layoutProperties.getTunablePanel());
 
-	/**
-	 * Returns a JPanel to be used as part of the Settings dialog for this layout
-	 * algorithm.
-	 *
-	 */
-	public JPanel createSettings() {
-		return null;
+       return panel;
 	}
+
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void construct() {
 		// This creates the default square layout.
-		double distanceBetweenNodes = 80.0d;
 		double currX = 0.0d;
 		double currY = 0.0d;
 		double initialX = 0.0d;
@@ -120,7 +148,6 @@ public class GridNodeLayout extends AbstractLayout {
 			// Yes, our size and starting points need to be different
 			int nodeCount = networkView.nodeCount() - staticNodes.size();
 			columns = (int) Math.sqrt(nodeCount);
-
 			// Calculate our starting point as the geographical center of the
 			// selected nodes.
 			Iterator<NodeView> nodeViews = networkView.getNodeViewsIterator();
@@ -136,8 +163,8 @@ public class GridNodeLayout extends AbstractLayout {
 
 			// initialX and initialY reflect the center of our grid, so we
 			// need to offset by distance*columns/2 in each direction
-			initialX = initialX - ((distanceBetweenNodes * (columns - 1)) / 2);
-			initialY = initialY - ((distanceBetweenNodes * (columns - 1)) / 2);
+			initialX = initialX - ((nodeHorizontalSpacing * (columns - 1)) / 2);
+			initialY = initialY - ((nodeVerticalSpacing * (columns - 1)) / 2);
 			currX = initialX;
 			currY = initialY;
 		} else {
@@ -167,9 +194,9 @@ public class GridNodeLayout extends AbstractLayout {
 			if (count == columns) {
 				count = 0;
 				currX = initialX;
-				currY += distanceBetweenNodes;
+				currY += nodeVerticalSpacing;
 			} else {
-				currX += distanceBetweenNodes;
+				currX += nodeHorizontalSpacing;
 			}
 		}
 	}
