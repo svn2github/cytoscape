@@ -21,6 +21,7 @@ import org.eclipse.equinox.internal.p2.ui2.DefaultMetadataURLValidator;
 import org.eclipse.equinox.internal.p2.ui2.ProvUIMessages;
 import org.eclipse.equinox.internal.p2.ui2.model.ElementUtils;
 import org.eclipse.equinox.internal.p2.ui2.model.MetadataRepositoryElement;
+import org.eclipse.equinox.internal.p2.ui2.viewers.RepositoryDetailsLabelProvider;
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.ui2.UpdateManagerCompatibility;
 import org.eclipse.equinox.internal.provisional.p2.ui2.dialogs.CachedMetadataRepositories;
@@ -39,7 +40,9 @@ import org.eclipse.osgi.util.NLS;
 
 import javax.swing.table.*;
 import java.util.Vector;
-
+import javax.swing.JComponent;
+import javax.swing.table.TableColumn;
+import javax.swing.JTable;
 
 public class RepositoryManipulationDialog extends JDialog implements ActionListener, ListSelectionListener {
 
@@ -59,9 +62,16 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
         
         initComponents();
 
+        // Disable auto resizing
+        //tblSites.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        //TableColumn col2 = tblSites.getColumnModel().getColumn(2); // Enabled
+        //col2.setPreferredWidth(300);
+        
 		btnRemove.setEnabled(false);
 		btnTestConnection.setEnabled(false);
+		btnTestConnection.setVisible(false); // will not implement at this time
 		btnEnable.setEnabled(false);
+		btnExport.setEnabled(false);
 		//btnOK.setEnabled(false);
 		
         btnOK.addActionListener(this);
@@ -93,17 +103,38 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
     }
     
 
+    // Selection listener
     public void valueChanged(ListSelectionEvent e){
 	
     	if (tblSites.getSelectedRow() == -1) {
     		btnRemove.setEnabled(false);
     		btnTestConnection.setEnabled(false);
-    		btnEnable.setEnabled(false);
+    		btnExport.setEnabled(false);
     	}
     	else {
     		btnRemove.setEnabled(true);
     		btnTestConnection.setEnabled(true);
-    		btnEnable.setEnabled(true); 		
+    		btnExport.setEnabled(true);
+    	}
+
+    	if (tblSites.getSelectedRowCount() == 1){
+    		int selectedRow = tblSites.getSelectedRow();
+    		
+    		SitesTableModel model = (SitesTableModel) tblSites.getModel();
+    		MetadataRepositoryElement selectedElement = model.getRowAt(selectedRow);
+    		if (selectedElement.isEnabled()){
+    			btnEnable.setText("Disable");
+    		}
+    		else {
+    			btnEnable.setText("Enable");
+    		}
+     		btnEnable.setEnabled(true); 
+     		
+     		btnRemove.setEnabled(true);
+    	}
+    	else {
+    		btnEnable.setEnabled(false);
+    		btnRemove.setEnabled(false);
     	}
 		//if (changed) {
     	//	btnOK.setEnabled(true);    			
@@ -126,13 +157,11 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
     		JButton btn = (JButton) e.getSource();
     		
     		if (btn == btnOK){
-    			System.out.println("btnOK is pressed!");
     			if (changed)
     				ElementUtils.updateRepositoryUsingElements(getElements(),null);
     			this.dispose();
     		}
     		else if (btn == btnCancel){
-    			System.out.println("btnCancel is pressed!");
     			this.dispose();
     		}
     		else if (btn == btnAdd){
@@ -145,22 +174,58 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
     			System.out.println("btntestConnection is pressed!");
     		}
     		else if (btn == btnEnable){
-    			System.out.println("btnEnable is pressed!");
+    			toggleRepositoryEnablement();
     		}
     		else if (btn == btnImport){
-    			System.out.println("btnImport is pressed!");
-       			
-    			System.out.println("Number of repository sites = "+ input.cachedElements.size());
-
+    			importRepositories();
     		}
     		else if (btn == btnExport){
-    			System.out.println("btnExport is pressed!");
+    			exportRepositories();
     		}
     	}
     }
 
-/*
+	void toggleRepositoryEnablement() {
+		
+		int selectedRow = tblSites.getSelectedRow();
+		
+		SitesTableModel model = (SitesTableModel) tblSites.getModel();
+		MetadataRepositoryElement selectedElement = model.getRowAt(selectedRow);
+
+		selectedElement.setEnabled(!selectedElement.isEnabled());
+			
+		model.refresh();
+		changed = true;
+		
+		if (selectedElement.isEnabled()){
+			btnEnable.setText("Disable");
+		}
+		else {
+			btnEnable.setText("Enable");
+		}
+	}
+
+
 	void importRepositories() {
+		Runnable newThread = new Runnable(){
+			public void run() {
+				MetadataRepositoryElement[] imported = UpdateManagerCompatibility.importSites(RepositoryManipulationDialog.this);
+				if (imported.length > 0) {
+					Hashtable repos = getInput().cachedElements;
+					changed = true;
+					for (int i = 0; i < imported.length; i++)
+						repos.put(imported[i].getLocation().toString(), imported[i]);
+					//asyncRefresh();
+					
+					// refresh the table
+					syncTableData();
+				}
+			}
+		};
+		
+		newThread.run();
+		
+		/*
 		BusyIndicator.showWhile(getShell().getDisplay(), new Runnable() {
 			public void run() {
 				MetadataRepositoryElement[] imported = UpdateManagerCompatibility.importSites(getShell());
@@ -173,8 +238,10 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
 				}
 			}
 		});
+		*/
 	}
-	
+
+	/*
 	void asyncRefresh() {
 		display.asyncExec(new Runnable() {
 			public void run() {
@@ -184,8 +251,29 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
 	}
 */
 	
-    /*
+
 	void exportRepositories() {
+		
+		Runnable newThread = new Runnable(){
+			public void run() {
+				
+				int[] selectedRows = tblSites.getSelectedRows();
+				SitesTableModel model = (SitesTableModel) tblSites.getModel();
+				
+				MetadataRepositoryElement[] elements = new MetadataRepositoryElement[selectedRows.length];//getSelectedElements();
+			
+				for (int i=0; i< selectedRows.length; i++){
+					elements[i] = model.getRowAt(selectedRows[i]);
+				}
+				
+				if (elements.length == 0)
+					elements = getElements();
+				UpdateManagerCompatibility.exportSites(RepositoryManipulationDialog.this, elements);
+			}
+		};
+		newThread.run();
+		
+		/*
 		BusyIndicator.showWhile(getShell().getDisplay(), new Runnable() {
 			public void run() {
 				MetadataRepositoryElement[] elements = getSelectedElements();
@@ -194,8 +282,9 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
 				UpdateManagerCompatibility.exportSites(getShell(), elements);
 			}
 		});
+		*/
 	}
-*/
+
 
 	void removeRepositories() {
 		
@@ -233,6 +322,9 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
 				// do nothing
 			}
 		}
+
+		syncTableData();
+		/*
 		SitesTableModel _model =  (SitesTableModel) tblSites.getModel();
 		
 		// sync the data in tableModel and in cachedMetaRepository
@@ -249,9 +341,35 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
 			_model.addRow(newElement);			
 			changed = true;			
 		}		
+		*/
 	}
 
  
+	// sync the data in tableModel and in cachedMetaRepository after the change in cachedElements
+	private void syncTableData(){
+		SitesTableModel _model =  (SitesTableModel) tblSites.getModel();
+		
+		if (input.cachedElements.size() > _model.getRowCount()) {
+			// Determine which sites are new in cachedElements
+			Hashtable clonedTable = (Hashtable) input.cachedElements.clone();
+			for (int i=0; i< _model.getRowCount(); i++){
+				if (clonedTable.containsKey(_model.getRowAt(i).getLocation().toString())){
+					clonedTable.remove(_model.getRowAt(i).getLocation().toString());
+				}
+			}
+			Object[] keyArray = clonedTable.keySet().toArray();
+
+			for (int i=0; i< keyArray.length; i++){
+				MetadataRepositoryElement newElement = (MetadataRepositoryElement) clonedTable.get(keyArray[i]);
+				_model.addRow(newElement);							
+			}
+			
+			changed = true;			
+		}		
+		
+	}
+	
+	
 	CachedMetadataRepositories getInput() {
 		if (input == null)
 			input = new CachedMetadataRepositories(policy);
@@ -270,7 +388,8 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
 			locations[i] = elements[i].getLocation();
 		return locations;
 	}
-
+	
+	/*
 	RepositoryLocationValidator getRepositoryLocationValidator() {
 		DefaultMetadataURLValidator validator = new DefaultMetadataURLValidator() {
 			protected URI[] getKnownLocations() {
@@ -280,6 +399,7 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
 		return validator;
 
 	}
+
 
 	RepositoryOperation getRepoAddOperation(URI location) {
 		return new RepositoryOperation("Cached add repo operation", new URI[] {location}) { //$NON-NLS-1$
@@ -300,6 +420,7 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
 			}
 		};
 	}
+	*/
 /////////////////////////////
 	
     class SitesTableModel extends AbstractTableModel {
@@ -359,6 +480,19 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
     		  repoElementVect.add(newElement);
     		  this.fireTableDataChanged();
     	  }    
+       	  
+       	  /*
+       	  public void updateRowAt(int row, MetadataRepositoryElement newElement){
+       		  repoElementVect.removeElementAt(row);
+       		  repoElementVect.insertElementAt(newElement, row);
+    		  this.fireTableDataChanged();
+       	  }
+       	  */
+       	  
+       	  public void refresh(){
+       		  System.out.println("SitesTableModel.refresh()...");
+       		this.fireTableDataChanged();
+       	  }
     }
     /** This method is called from within the constructor to
      * initialize the form.
