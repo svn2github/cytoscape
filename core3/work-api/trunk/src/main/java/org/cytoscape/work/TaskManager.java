@@ -6,19 +6,21 @@ package org.cytoscape.work;
  * <p><code>TaskManager</code> has the following responsibilities:</p>
  * <ul>
  *
- * <li>It executes <code>Task</code> in a thread separate from the thread
- * calling <code>execute</code>.</li>
+ * <li>executes <code>Task</code> in a thread separate from the thread
+ * calling <code>execute</code>;</li>
  *
- * <li>Sets up a user interface to display the progress of a
- * <code>Task</code></li>.
+ * <li>sets up a user interface to display the progress of a
+ * <code>Task</code>;</li>
  *
- * <li>Provides a <code>TaskMonitor</code> so the <code>Task</code> can modify
- * its interface during its execution.</li>
+ * <li>provides a <code>TaskMonitor</code> so the <code>Task</code> can modify
+ * its interface during its execution;</li>
  *
- * <li>Catches exceptions thrown by <code>Task</code> and displays it
+ * <li>catches exceptions thrown by <code>Task</code> and displays it
  * in its user interface.</li>
  *
  * </ul>
+ *
+ * @author Samad Lotia
  */
 public interface TaskManager
 {

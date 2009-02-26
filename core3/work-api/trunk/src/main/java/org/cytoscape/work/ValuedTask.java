@@ -1,21 +1,26 @@
 package org.cytoscape.work;
 
 /**
- * This interface is identical to <code>Task</code>, except it provides the means
- * for <code>run</code> to produce a result. This interface is analogous to
- * <code>Future</code>.
+ * Describes a unit of work that produces a result asynchronously.
+ * This interface is identical to <code>Task</code>, except it allows
+ * <code>run</code> to return a result. This interface is analogous to
+ * <code>java.util.concurrency.Future</code>.
+ *
  * Because a <code>ValuedTask</code> cannot be executed by a
  * <code>TaskManager</code>, an instance of this interface is typically wrapped
  * by an instance of <code>ValuedTaskExecutor</code> so that it can be
  * executed by a <code>TaskManager</code>.
+ *
+ * @author Samad Lotia
  */
 public interface ValuedTask<V>
 {
 	/**
-	 * This method is eventually called by the <code>Task</code>'s own thread
+	 * This method is eventually called by the <code>ValuedTask</code>'s own thread
 	 * created by <code>TaskManager</code>.
 	 *
-	 * This method should not be called directly by the programmer.
+	 * If one has a <code>ValuedTask</code> object, this method should not be called,
+	 * since it will be called by the <code>TaskManager</code>.
 	 *
 	 * @return a useful result to be retrieved by another thread
 	 * after the execution of this <code>ValuedTask</code> has completed.
@@ -34,7 +39,8 @@ public interface ValuedTask<V>
 	 * This method is called when the user chooses to cancel the
 	 * <code>Task</code>.
 	 *
-	 * This method should not be called directly by the programmer.
+	 * If one has a <code>ValuedTask</code> object, this method should not be called,
+	 * since it will be called by the <code>TaskManager</code>.
 	 *
 	 * This method should inform the <code>ValuedTask</code> that it must
 	 * terminate execution cleanly and do any necessary cleanup

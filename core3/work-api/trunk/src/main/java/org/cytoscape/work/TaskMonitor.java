@@ -1,7 +1,8 @@
 package org.cytoscape.work;
 
 /**
- * Provided by <code>TaskManager</code> to a <code>Task</code> so that the
+ * An instance of this interface is provided by <code>TaskManager</code>
+ * to a <code>Task</code> so that the
  * <code>Task</code> can modify its user interface during its execution.
  */
 public interface TaskMonitor

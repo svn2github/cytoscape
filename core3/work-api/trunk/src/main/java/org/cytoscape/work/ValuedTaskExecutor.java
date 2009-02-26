@@ -10,23 +10,30 @@ import java.util.concurrent.TimeoutException;
  * by <code>TaskManager</code>s. After the <code>ValuedTask</code>
  * has completed execution, one can retrieve the result by
  * calling the <code>get()</code> method.
- *
- * This class is analogous to <code>FutureTask</code>, but with one
- * crucial difference: this class does not allow different threads
- * to cancel the <code>ValuedTask</code>, only the <code>TaskManager</code>
+ * This class is analogous to <code>java.util.concurrency.FutureTask</code>.
+ * 
+ * This class does not allow other threads
+ * to run or cancel the <code>ValuedTask</code>.
+ * That is to say, the programmer must not call this class's
+ * <code>cancel</code> or <code>run</code> methods.
+ * Only the <code>TaskManager</code>
  * may cancel it. This limitation was a conscious decision, since it
- * greatly simplifies the complexity of this API.
+ * reduces the complexity of the API and its implementation.
  *
- * Here is an example of how it can be used:
+ * 
+ *
+ * Here is an example of how this class can be used:
  * <br>
  * <code>
  * ValuedTask&lt;Integer&gt; myValuedTask = ...;<br>
  * TaskMonitor taskMonitor = ...;<br>
  * ValuedTaskExecutor&lt;Integer&gt; myValuedTaskExecutor = new ValuedTaskExecutor&lt;Integer&gt;(myValuedTask);<br>
- * taskMonitor.execute(taskMonitor);<br>
+ * taskMonitor.execute(myValuedTaskExecutor);<br>
  * ...<br>
  * Integer result = myValuedTaskExecutor.get();<br>
  * </code>
+ *
+ * @author Samad Lotia
  */
 public class ValuedTaskExecutor<V> implements Task
 {
@@ -36,28 +43,39 @@ public class ValuedTaskExecutor<V> implements Task
 	public static enum State
 	{
 		/**
-		 * The <code>ValuedTask</code> is ready to be executed.
+		 * The <code>ValuedTask</code> has been created
+		 * and is ready to be executed, but the
+		 * <code>run</code> method has not yet been called.
+		 *
+		 * This is the default state of the
+		 * <code>ValuedTaskExecutor</code> when it is created.
 		 */
 		READY,
 
 		/**
-		 * The <code>ValuedTask</code> is being executed.
+		 * The <code>ValuedTask</code>'s
+		 * <code>run</code> method is currently
+		 * being executed.
 		 */
 		RUNNING,
 
 		/**
-		 * The <code>ValuedTask</code> has finished execution.
+		 * The <code>ValuedTask</code> has finished execution,
+		 * where the <code>run</code> method has finished and
+		 * returned a result.
 		 */
 		COMPLETED,
 
 		/**
-		 * The <code>ValuedTask</code> was cancelled by the user.
+		 * The <code>ValuedTask</code>'s <code>run</code> method
+		 * did not complete because the user cancelled the
+		 * <code>ValuedTask</code>.
 		 */
 		CANCELLED,
 
 		/**
-		 * The <code>ValuedTask</code> has terminated execution
-		 * by throwing an exception.
+		 * The <code>ValuedTask</code>'s <code>run</code> method
+		 * did not complete because it threw an exception.
 		 */
 		EXCEPTION_THROWN;
 	}
@@ -123,7 +141,7 @@ public class ValuedTaskExecutor<V> implements Task
 	 * @return The result of the <code>ValuedTask</code>.
 	 *
 	 * @throws InterruptedException if the current thread was interrupted
-	 * while waiting
+	 * while waiting for the result
 	 * @throws ExecutionException if the <code>ValueTask</code> threw an
 	 * exception
 	 * @throws CancellationException if the user cancelled the
