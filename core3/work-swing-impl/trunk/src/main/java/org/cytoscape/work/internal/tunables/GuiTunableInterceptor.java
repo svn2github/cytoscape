@@ -31,7 +31,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		parent = c;
 	}
 
-	public int createUI(Object... objs) {
+	public boolean createUI(Object... objs) {
 		java.util.List<Guihandler> lh = new ArrayList<Guihandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
@@ -94,8 +94,11 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		// process the values set in the gui : USELESS BECAUSE OF LISTENERS
 		for ( Guihandler h : lh )
 			h.handle();
-		
-		return n;
+	
+		if ( n == JOptionPane.OK_OPTION )
+			return true;
+		else
+			return false;
 	}
 
 	private JPanel createJPanel(String title, Guihandler gh) {
