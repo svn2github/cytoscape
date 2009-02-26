@@ -146,8 +146,8 @@ class SwingTaskMonitor implements TaskMonitor
 			// we need to inform the Task to cancel
 
 			// change the UI to show that we are cancelling the Task
-			closeButton.setEnabled(false);
-			closeButton.setText("Canceling...");
+			//closeButton.setEnabled(false);
+			//closeButton.setText("Canceling...");
 
 			// we issue the Task's cancel method in its own thread
 			// to prevent Swing from freezing if the Tasks's cancel
