@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-//import java.util.ResourceBundle;
-//import java.util.Locale;
 
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.Task;
@@ -16,8 +14,6 @@ import java.io.StringWriter;
 
 /**
  * Uses Swing components to create a user interface for the <code>Task</code>.
- *
- * This will not work if the application is running in headless mode.
  *
  * @author Samad Lotia
  */
@@ -34,12 +30,7 @@ public class SwingTaskManager implements TaskManager
 	 */
 	static final int DELAY_IN_MILLISECONDS_BEFORE_SHOWING_DIALOG = 1000;
 	Frame owner;
-	//Locale locale;
 
-	/**
-	 * @throws MissingResourceException when the SwingTaskManager
-	 * resource bundle is missing
-	 */
 	public SwingTaskManager()
 	{
 		this(null);
@@ -48,18 +39,10 @@ public class SwingTaskManager implements TaskManager
 	/**
 	 * @param owner JDialogs created by this object
 	 * will have its owner set to this parameter.
-	 * @param locale The locale to display messages in
-	 * @throws MissingResourceException when the SwingTaskManager
-	 * resource bundle is missing
 	 */
 	public SwingTaskManager(Frame owner)
 	{
 		setOwner(owner);
-//		this.locale = locale;
-
-		// We call this so we get MissingResourceException thrown
-		// as early as possible in case the bundle is missing
-		//ResourceBundle.getBundle("SwingTaskManager", locale);
 	}
 
 	/**
@@ -73,7 +56,7 @@ public class SwingTaskManager implements TaskManager
 
 	public void execute(final Task task)
 	{
-		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, owner/*, locale*/);
+		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, owner);
 		final Thread executor = new Thread(new Runnable()
 		{
 			public void run()
@@ -109,29 +92,32 @@ public class SwingTaskManager implements TaskManager
 
 class SwingTaskMonitor implements TaskMonitor
 {
+	static final String DEFAULT_TASK_TITLE = "Untitled Task";
+	static final String DEFAULT_STATUS_MESSAGE = "";
+
 	final Task		task;
-//	final ResourceBundle	messages;
 	final Frame		owner;
 
 	TaskDialog	dialog			= null;
-	String		title			= null;
-	String		statusMessage		= null;
+	String		title			= DEFAULT_TASK_TITLE;
+	String		statusMessage		= DEFAULT_STATUS_MESSAGE;
 	int		progress		= 0;
 
-	public SwingTaskMonitor(Task task, Frame owner/*, Locale locale*/)
+	public SwingTaskMonitor(Task task, Frame owner)
 	{
 		this.task = task;
-//		this.messages = ResourceBundle.getBundle("SwingTaskManager", locale);
 		this.owner = owner;
 	}
 
+	// Why is open() and setException() synchronized?
+	// It is possible that open() can be called concurrently
+	// if an exception is thrown immediately by a Task,
+	// creating an undefined state in SwingTaskMonitor.
 	public synchronized void open()
 	{
 		dialog = new TaskDialog(owner, this);
-		if (title != null)
-			dialog.setTaskTitle(title);
-		if (statusMessage != null)
-			dialog.setStatus(statusMessage);
+		dialog.setTaskTitle(title);
+		dialog.setStatus(statusMessage);
 		if (progress > 0)
 			dialog.setPercentCompleted(progress);
 	}
@@ -160,8 +146,8 @@ class SwingTaskMonitor implements TaskMonitor
 			// we need to inform the Task to cancel
 
 			// change the UI to show that we are cancelling the Task
-			//closeButton.setEnabled(false);
-			//closeButton.setText(messages.getString("canceling"));
+			closeButton.setEnabled(false);
+			closeButton.setText("Canceling...");
 
 			// we issue the Task's cancel method in its own thread
 			// to prevent Swing from freezing if the Tasks's cancel
@@ -198,6 +184,10 @@ class SwingTaskMonitor implements TaskMonitor
 			dialog.setPercentCompleted(this.progress);
 	}
 
+	// Why is open() and setException() synchronized?
+	// It is possible that open() can be called concurrently
+	// if an exception is thrown immediately by a Task,
+	// creating an undefined state in SwingTaskMonitor.
 	public synchronized void showException(Exception exception)
 	{
 		// force the dialog box to be created if
