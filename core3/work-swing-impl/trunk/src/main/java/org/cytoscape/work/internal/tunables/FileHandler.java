@@ -15,11 +15,13 @@ public class FileHandler extends AbstractGuiHandler {
 	JButton button;
 	File myFile;
 	JFileChooser fileChooser;
-
+	boolean filechoosen;
+	JTextField path;
+	
 	public FileHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		System.out.println("hello world");
-		
+		filechoosen = false;
 		fileChooser = new JFileChooser();
 
 		try{
@@ -27,9 +29,9 @@ public class FileHandler extends AbstractGuiHandler {
 		}catch(Exception e){e.printStackTrace();}
 		
 		panel = new JPanel(new BorderLayout());
-		JLabel label = new JLabel(t.description());
-		label.setFont(new Font(null, Font.PLAIN,12));
-		panel.add(label,BorderLayout.WEST);
+		path = new JTextField("path :");
+		path.setFont(new Font(null, Font.PLAIN,12));
+		panel.add(path,BorderLayout.WEST);
 		button = new JButton("Select File...");
 		button.addActionListener(this);
 		System.out.println("wtf");
@@ -38,19 +40,21 @@ public class FileHandler extends AbstractGuiHandler {
 	}
 
 	public void handle() {
-		try{
-			//File file = fileUtil.getFile("Select Network files...", FileUtil.LOAD);
+		if(!filechoosen){
 			int ret = fileChooser.showOpenDialog(null);
 			if (ret == JFileChooser.APPROVE_OPTION) {
 			    File file = fileChooser.getSelectedFile();
 				if ( file != null ) {
 					myFile = file;
-					f.set(o,file);
+					try{
+						f.set(o,file);
+					}catch (Exception e) { e.printStackTrace();}
+					path.setText("path : "+file.getAbsolutePath());
 				}
 			}
-		} catch (Exception e) { e.printStackTrace();}
+		}
+		filechoosen=true;
 	}
-	
 
     public String getState() {
 		String s;
