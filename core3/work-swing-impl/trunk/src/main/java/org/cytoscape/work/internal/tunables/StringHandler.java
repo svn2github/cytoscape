@@ -23,7 +23,7 @@ public class StringHandler extends AbstractGuiHandler {
 			panel.add(label,BorderLayout.WEST );
 			jtf = new JTextField( (String)f.get(o), 15);
 			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			jtf.addActionListener(this);
+			//jtf.addActionListener(this);
 			panel.add(jtf,BorderLayout.EAST);
 		} catch (Exception e) {e.printStackTrace(); }
 			
