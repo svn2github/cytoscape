@@ -17,6 +17,8 @@ import org.cytoscape.work.internal.tunables.utils.*;
 import org.cytoscape.work.*;
 import org.cytoscape.work.Tunable.Param;
 
+import org.springframework.core.InfrastructureProxy; // see comment where this is used!
+
 public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler> {
 
 	private Component parent;
@@ -31,7 +33,38 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		parent = c;
 	}
 
-	public boolean createUI(Object... objs) {
+	// This hack exists to handle Spring's proxy framework.  Since Spring returns
+	// a proxy object rather than the original object when requesting an OSGi
+	// service, we need this check to get at the original object where tunables
+	// are actually defined.  This code can be safely omitted if this class isn't
+	// being used with Spring.
+	public void loadTunables(Object obj) {
+		if ( obj instanceof InfrastructureProxy )
+			super.loadTunables( ((InfrastructureProxy)obj).getWrappedObject() );
+		else
+			super.loadTunables( obj );
+	}
+
+	// This hack exists to handle Spring's proxy framework.  Since Spring returns
+	// a proxy object rather than the original object when requesting an OSGi
+	// service, we need this check to get at the original object where tunables
+	// are actually defined.  This code can be safely omitted if this class isn't
+	// being used with Spring.
+	private Object[] convertProxyObjs(Object... proxyObjs) {
+		Object[] objs = new Object[proxyObjs.length];
+		int i = 0;
+		for ( Object o : proxyObjs )
+		if ( o instanceof InfrastructureProxy )
+			objs[i++] = ((InfrastructureProxy)o).getWrappedObject();
+		else
+			objs[i++] = o;
+
+		return objs;
+	}
+
+	public boolean createUI(Object... proxyObjs) {
+		Object[] objs = convertProxyObjs( proxyObjs ); 
+
 		java.util.List<Guihandler> lh = new ArrayList<Guihandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
