@@ -125,11 +125,11 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		    buttons[0]);
 		
 		// process the values set in the gui : USELESS BECAUSE OF LISTENERS
-		for ( Guihandler h : lh )
-			h.handle();
 	
-		if ( n == JOptionPane.OK_OPTION )
+		if ( n == JOptionPane.OK_OPTION ){
+			for ( Guihandler h : lh ) h.handle();
 			return true;
+		}
 		else
 			return false;
 	}
