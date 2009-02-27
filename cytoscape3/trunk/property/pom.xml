@@ -176,12 +176,6 @@
 			<artifactId>com.springsource.org.jvnet.staxex</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>io</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
 
 	</dependencies>
 

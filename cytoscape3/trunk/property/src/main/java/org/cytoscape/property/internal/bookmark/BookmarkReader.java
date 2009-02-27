@@ -2,13 +2,11 @@ package org.cytoscape.property.internal.bookmark;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.cytoscape.io.read.URLUtil;
 import org.cytoscape.property.PropertyReader;
 import org.cytoscape.property.bookmark.Bookmarks;
 
@@ -53,18 +51,6 @@ public class BookmarkReader implements PropertyReader<Bookmarks> {
 		}
 	}
 
-	/**
-	 * Read bookmarks from the specified location.
-	 * 
-	 * @param bookmarkUrl
-	 *            location of bookmarks.xml as URL
-	 * 
-	 * @throws JAXBException
-	 * @throws IOException
-	 */
-	public void readFromURL(URL bookmarkUrl) throws JAXBException, IOException {
-		readBookmarks(URLUtil.getBasicInputStream(bookmarkUrl));
-	}
 
 	public void readBookmarks(java.io.InputStream is) throws JAXBException {
 		// Use JAXB-generated methods to create data structure

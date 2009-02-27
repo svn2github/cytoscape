@@ -235,5 +235,6 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="fileUtilServiceRef" />
 		<constructor-arg ref="cyOperatingContextServiceRef" />
+		<constructor-arg ref="streamUtilServiceRef" />
 	</bean>
 </beans>

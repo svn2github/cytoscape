@@ -61,6 +61,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
@@ -129,10 +130,10 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager,
-			FileUtil fileUtil, CyOperatingContext context) {
+			FileUtil fileUtil, CyOperatingContext context, StreamUtil streamUtil) {
 		super(desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
-				vizMapEventHandlerManager, editorWindowManager, cyNetworkManager, fileUtil, context);
+				vizMapEventHandlerManager, editorWindowManager, cyNetworkManager, fileUtil, context, streamUtil);
 
 		initPanel();
 	}
@@ -142,7 +143,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				new VizMapListener(vmm, cyNetworkManager, fileUtil, context));
+				new VizMapListener(vmm, cyNetworkManager, fileUtil, context, streamUtil));
 
 		registerCellEditorListeners();
 		addVisualStyleChangeAction();

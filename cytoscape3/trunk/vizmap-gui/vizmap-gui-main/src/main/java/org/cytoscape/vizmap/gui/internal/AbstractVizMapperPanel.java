@@ -57,6 +57,7 @@ import javax.swing.JSplitPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeShape;
@@ -125,6 +126,8 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	protected Set<VizMapUIAction> actionList;
 	
 	protected CyOperatingContext context;
+	
+	protected StreamUtil streamUtil;
 
 	/*
 	 * Combo Box Editors
@@ -178,7 +181,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager,
-			FileUtil fileUtil, CyOperatingContext context) {
+			FileUtil fileUtil, CyOperatingContext context, StreamUtil streamUtil) {
 
 		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
@@ -194,6 +197,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 		this.cyNetworkManager = cyNetworkManager;
 		this.fileUtil = fileUtil;
 		this.context = context;
+		this.streamUtil = streamUtil;
 		spcs = new SwingPropertyChangeSupport(this);
 
 		defaultImageManager = new HashMap<String, Image>();

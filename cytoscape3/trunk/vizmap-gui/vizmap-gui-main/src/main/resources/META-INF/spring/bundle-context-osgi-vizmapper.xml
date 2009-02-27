@@ -6,6 +6,8 @@
 	default-lazy-init="false">
 
 
+	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil" />
+
 	<!-- Import Context (to access properties)  -->
 	<osgi:reference id="cyOperatingContextServiceRef"
 		interface="cytoscape.CyOperatingContext" />

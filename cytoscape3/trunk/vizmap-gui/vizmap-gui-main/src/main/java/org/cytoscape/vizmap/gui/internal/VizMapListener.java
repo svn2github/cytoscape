@@ -53,7 +53,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-import org.cytoscape.io.read.URLUtil;
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.vizmap.CalculatorCatalogFactory;
 import org.cytoscape.vizmap.CalculatorIO;
 import org.cytoscape.vizmap.VisualMappingManager;
@@ -64,7 +64,6 @@ import cytoscape.Cytoscape;
 import cytoscape.util.FileUtil;
 import cytoscape.util.ZipUtil;
 
-
 /**
  *
  */
@@ -74,22 +73,28 @@ public class VizMapListener implements PropertyChangeListener {
 	 */
 	public static final String VIZMAP_PROPS_FILE_NAME = "vizmap.props";
 	private VisualMappingManager vmm;
-	
+
+	private StreamUtil streamUtil;
+
 	private CyNetworkManager cyNetworkManager;
 	private FileUtil fileUtil;
 	private CyOperatingContext context;
-	
-	public VizMapListener(VisualMappingManager vmm, CyNetworkManager cyNetworkManager, FileUtil fileUtil, CyOperatingContext context) {
+
+	public VizMapListener(VisualMappingManager vmm,
+			CyNetworkManager cyNetworkManager, FileUtil fileUtil,
+			CyOperatingContext context, StreamUtil streamUtil) {
 		this.cyNetworkManager = cyNetworkManager;
 		this.vmm = vmm;
 		this.fileUtil = fileUtil;
 		this.context = context;
+		this.streamUtil = streamUtil;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == VisualMappingManager.SAVE_VIZMAP_PROPS) {
@@ -104,19 +109,20 @@ public class VizMapListener implements PropertyChangeListener {
 				propertiesFile = new File((String) e.getNewValue());
 
 			if (propertiesFile != null) {
-				Set test = CalculatorCatalogFactory.getCalculatorCatalog().getVisualStyleNames();
+				Set test = CalculatorCatalogFactory.getCalculatorCatalog()
+						.getVisualStyleNames();
 				Iterator it = test.iterator();
 				System.out.println("Saving the following Visual Styles: ");
 
 				while (it.hasNext())
 					System.out.println("    - " + it.next().toString());
 
-				CalculatorIO.storeCatalog(CalculatorCatalogFactory.getCalculatorCatalog(),
-				                          propertiesFile);
+				CalculatorIO.storeCatalog(CalculatorCatalogFactory
+						.getCalculatorCatalog(), propertiesFile);
 				System.out.println("Vizmap saved to: " + propertiesFile);
 			}
 		} else if ((e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED)
-		           || (e.getPropertyName() == VisualMappingManager.VIZMAP_LOADED)) {
+				|| (e.getPropertyName() == VisualMappingManager.VIZMAP_LOADED)) {
 			// This section is for restoring VS from a file.
 
 			// only clear the existing vizmap.props if we're restoring
@@ -126,7 +132,8 @@ public class VizMapListener implements PropertyChangeListener {
 
 			// get the new vizmap.props and apply it the existing properties
 			Object vizmapSource = e.getNewValue();
-			System.out.println("vizmapSource: '" + vizmapSource.toString() + "'");
+			System.out.println("vizmapSource: '" + vizmapSource.toString()
+					+ "'");
 
 			Properties props = new Properties();
 
@@ -135,14 +142,16 @@ public class VizMapListener implements PropertyChangeListener {
 
 				if (vizmapSource.getClass() == URL.class)
 					// is = ((URL) vizmapSource).openStream();
-					// Use URLUtil to get the InputStream since we might be using a proxy server 
+					// Use URLUtil to get the InputStream since we might be
+					// using a proxy server
 					// and because pages may be cached:
-					is = URLUtil.getBasicInputStream((URL) vizmapSource);
+					is = streamUtil.getBasicInputStream((URL) vizmapSource);
 				else if (vizmapSource.getClass() == String.class) {
 					// if its a RESTORED event the vizmap
 					// file will be in a zip file.
 					if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED) {
-						is = ZipUtil.readFile((String) vizmapSource, ".*vizmap.props");
+						is = ZipUtil.readFile((String) vizmapSource,
+								".*vizmap.props");
 
 						// if its a LOADED event the vizmap file
 						// will be a normal file.
@@ -162,21 +171,24 @@ public class VizMapListener implements PropertyChangeListener {
 
 			CalculatorCatalogFactory.getCalculatorCatalog().appendProps(props);
 
-			System.out.println("Applying visual styles from: " + vizmapSource.toString());
+			System.out.println("Applying visual styles from: "
+					+ vizmapSource.toString());
 
 			// In the situation where the old visual style has been overwritten
 			// with a new visual style of the same name, then make sure it is
 			// reapplied.
 			vmm.setVisualStyle(vmm.getVisualStyle().getName());
-			vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(), vmm.getVisualStyle());
+			vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(),
+					vmm.getVisualStyle());
 			Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		}
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vmm DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param vmm
+	 *            DOCUMENT ME!
 	 */
 	public void setVmm(VisualMappingManager vmm) {
 		this.vmm = vmm;
