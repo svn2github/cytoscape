@@ -31,7 +31,6 @@ public class applicationCL
 		
 		
 		lpi.loadTunables(com);
-		lpi.createProperties(com);
 		System.out.println("InputProperties of "+com.getClass().getSimpleName()+ " = "+ p);
 		System.out.println();
 		// load the tunables from the object
@@ -52,7 +51,6 @@ public class applicationCL
 		com.execute();
 		System.out.println();
 
-		spi.loadTunables(com);spi.createProperties(com);
 	
 		System.out.println("result of storing properties interceptor:");
 		System.out.println(store.toString());

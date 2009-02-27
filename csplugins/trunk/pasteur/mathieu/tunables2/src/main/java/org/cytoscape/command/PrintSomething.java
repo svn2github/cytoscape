@@ -15,7 +15,7 @@ public class PrintSomething implements Command {
 	@Tunable(description="Test",dependsOn="monthNames=[April]")
 	public Double test = new Double(6.5);	
 	
-	@Tunable(description="your foot size", group={"stuff","advanced"},flag={Param.slider})
+	@Tunable(description="your foot size", group={"stuff2"})
 	public BoundedDouble footSize = new BoundedDouble(5.0, 8.5, 13.5, true, false);
 
 	@Tunable(description="the number of children you have",flag={Param.slider})

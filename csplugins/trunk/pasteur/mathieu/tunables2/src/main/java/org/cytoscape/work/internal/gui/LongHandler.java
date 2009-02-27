@@ -29,7 +29,7 @@ public class LongHandler extends AbstractGuiHandler {
 		panel.add(label,BorderLayout.WEST);
 		try {
 			jtf = new JTextField( f.get(o).toString(), 10);
-			jtf.addActionListener( this );
+			//jtf.addActionListener( this );
 			jtf.setHorizontalAlignment(JTextField.RIGHT);
 			panel.add(jtf,BorderLayout.EAST);
 		} catch (Exception e) { e.printStackTrace(); }
@@ -50,13 +50,6 @@ public class LongHandler extends AbstractGuiHandler {
 		try {
 			f.set(o,value.longValue());
 		} catch (Exception e) { e.printStackTrace();}
-	}
-
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Long.toString(value.longValue())));
 	}
 
 	

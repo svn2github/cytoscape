@@ -67,21 +67,4 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [OPTIONS]", options);
 	}
-
-	@Override
-	protected void getResultsPanels(List<CLHandler> handlers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void processProps(List<CLHandler> handlers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void createProperties(Object... obs) {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -21,6 +21,7 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
+	myBoundedSwing boundedField;
 	Double value=null;
 	String newline = System.getProperty("line.separator");
 	
@@ -39,19 +40,17 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
 			label.setFont(new Font(null, Font.PLAIN,12));
 			panel.add(label,BorderLayout.WEST);
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			slider.addChangeListener(this);
+			//slider.addChangeListener(this);
 			panel.add(slider,BorderLayout.EAST);
 		}
 		else{
 
 		try {
-			JLabel label = new JLabel( t.description() + " (max: " + myBounded.getLowerBound().toString() + "  min: " + myBounded.getUpperBound().toString() + ")" );
+			JLabel label = new JLabel( title + " (max: " + myBounded.getLowerBound().toString() + "  min: " + myBounded.getUpperBound().toString() + ")" );
 			label.setFont(new Font(null, Font.PLAIN,12));
 			panel.add(label,BorderLayout.WEST);
-			jtf = new JTextField( ((Long)myBounded.getValue()).toString(), 10);
-			jtf.addActionListener( this );
-			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			panel.add( jtf,BorderLayout.EAST);
+			boundedField = new myBoundedSwing(myBounded.getValue(),myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
+			panel.add(boundedField,BorderLayout.EAST);
 			} catch (Exception e) { e.printStackTrace();}
 		}
 	}
@@ -77,14 +76,6 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
 			} catch (Exception e) { e.printStackTrace();}
     	}
 	}
-    
-    
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Long.toString(myBounded.getValue())));
-	}
-
 	
     public String getState() {
         return myBounded.getValue().toString();

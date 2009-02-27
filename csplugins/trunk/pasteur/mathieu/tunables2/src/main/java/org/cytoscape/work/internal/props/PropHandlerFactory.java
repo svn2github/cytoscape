@@ -1,6 +1,7 @@
 package org.cytoscape.work.internal.props;
 
 import java.lang.reflect.Field;
+import java.net.URL;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.internal.gui.HandlerFactory;
@@ -44,8 +45,8 @@ public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 			return new ListMultiplePropHandler<T>(f,o,t);
 		else if (type == myFile.class)
 			return new FilePropHandler(f,o,t);
-//		else if(type == myURL.class)
-//			return new URLPropHandler(f,o,t);
+		else if(type == URL.class)
+			return new URLPropHandler(f,o,t);
 		return null;
 	}
 

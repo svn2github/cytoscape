@@ -24,7 +24,7 @@ public class StringHandler extends AbstractGuiHandler {
 			panel.add(label,BorderLayout.WEST );
 			jtf = new JTextField( (String)f.get(o), 15);
 			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			jtf.addActionListener(this);
+			//jtf.addActionListener(this);
 			panel.add(jtf,BorderLayout.EAST);
 		} catch (Exception e) {e.printStackTrace(); }
 			
@@ -37,14 +37,7 @@ public class StringHandler extends AbstractGuiHandler {
 			f.set(o,s);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
-	
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(jtf.getText()));
-	}
-	
+
 
 	public String getState() {
 		String s;

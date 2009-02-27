@@ -1,5 +1,7 @@
 package org.cytoscape.work.internal.props;
 
+//import java.io.File;
+import java.io.File;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -10,29 +12,31 @@ import org.cytoscape.work.util.myFile;
 
 public class FilePropHandler extends AbstractPropHandler {
 
-	myFile files;
+	myFile file;
 	List<String> list;
 	
 	public FilePropHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
-			files = (myFile) f.get(o);
+			file = (myFile) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 	}
 
 	public Properties getProps() {
 		Properties p = new Properties();
-		p.put( propKey, files.getPaths());
+		p.put( propKey, file.getPath());
 		return p;
 	}
 	
 	public void add(Properties p) {
-		list = new ArrayList<String>();
-		list.add(0,"");
-		files.setPaths(list);
+		//list = new ArrayList<String>();
+		//list.add(0,"");
+		file.setPath("");
+		//infile = new File("");
+		//System.out.println("path = " + file.getAbsolutePath());
 		try{
-			p.put(propKey,files.getPaths());
-		}catch(Exception e){e.printStackTrace();}
+			p.put(propKey,file.getPath());
+		}catch(Exception e){}
 	}
 
 		
@@ -42,8 +46,8 @@ public class FilePropHandler extends AbstractPropHandler {
 		if ( p.containsKey( propKey ) ) {
 			Object val = p.get( propKey );
 			if ( val != null )
-				files.setPaths((List<String>) val);
-				f.set(o, files);			
+				file.setPath((String) val);
+				f.set(o, file);
 			}
         } catch (IllegalAccessException iae) {
             iae.printStackTrace();

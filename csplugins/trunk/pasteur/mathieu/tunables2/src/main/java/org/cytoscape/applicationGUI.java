@@ -87,7 +87,9 @@ public class applicationGUI <T extends Handler>{
 			
 			
 			lpi.loadTunables(com);
-			lpi.createProperties(com);
+			lpi.createUI(com);
+//			spi.loadTunables(com);
+//			spi.createUI(com);
 			System.out.println("InputProperties of "+com.getClass().getSimpleName()+ " = "+ InitProps);
 			
 			// intercept the command ,modify any tunable fields, and return the button clicked
@@ -101,8 +103,8 @@ public class applicationGUI <T extends Handler>{
 			
 
 			switch(action){
-				case 0: ti.interceptandDisplayResults(com);spi.loadTunables(com);spi.createProperties(com);break;	//To reset the inputdefault Parameters	lpi.processProperties(com);ti.interceptAndReinitializeObjects(com);break;		
-				case 1: spi.loadTunables(com);spi.createProperties(com);lpi.processProperties(com);spi.processProperties(com);ti.loadTunables(com);break;//ti.interceptAndReinitializeObjects(com);break;
+				case 0: spi.loadTunables(com);spi.createUI(com);break;		
+				case 1: spi=lpi;break;//spi.createUI(com);break;
 			}
 			System.out.println("OutputProperties of "+com.getClass().getSimpleName()+ " = "+ store);
 

@@ -1,6 +1,7 @@
 package org.cytoscape.work.internal.gui;
 
 import java.lang.reflect.Field;
+import java.net.URL;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.BoundedDouble;
@@ -43,8 +44,8 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			return new ListMultipleHandler<String>(f,o,t);
 		else if(type == myFile.class)
 			return new FileHandler(f,o,t);
-//		else if(type == myURL.class)
-//			return new URLHandler(f,o,t);
+		else if(type == URL.class)
+			return new URLHandler(f,o,t);
 		return null;
 	}
 }

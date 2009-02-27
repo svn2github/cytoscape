@@ -8,27 +8,29 @@ public class myFile{
 	
 	File file;
 	File[] files;
-	//CyFileFilter[] filters;
 	boolean modal;
 	java.util.List<String> paths;
-	
+	String path;
 
-/*	public myFile(File file,boolean modal,CyFileFilter[] filters){
-		this.filters = filters;
+	
+	
+	public myFile(File file){
 		this.modal = modal;
 		this.file = file;
 	}
 	
-	public myFile(File[] files,boolean modal,CyFileFilter[] filters){
-		this.filters = filters;
+	public myFile(File[] files){
 		this.modal = modal;
 		this.files = files;
 	}
-*/	
+	
 	public List<String> getPaths() {
 		return paths;
 	}
 
+	public void setPath(String inpath){
+		path = inpath;
+	}
 	public void setPaths(List<String> path){
 		paths = path;
 	}
@@ -38,7 +40,7 @@ public class myFile{
 		files = infiles;
 	}
 	
-	public String getPath(File infile){
+	public String getPath(){
 		return file.getAbsolutePath();
 	}
 	
@@ -54,10 +56,6 @@ public class myFile{
 	public File getFile(){
 		return file;
 	}
-	
-//	public CyFileFilter[] getCyFileFilter(){
-//		return filters;
-//	}
 
 	public boolean getModal(){
 		return modal;

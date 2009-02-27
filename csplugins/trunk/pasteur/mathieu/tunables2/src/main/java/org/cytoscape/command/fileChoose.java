@@ -16,7 +16,7 @@ public class fileChoose implements Command {
 	public fileChoose(){
 		File[] files = new File[1];
 		File file = new File("");
-//		myfile = new myFile(file,false,new CyFileFilter[3]);
+		myfile = new myFile(file);
 	}
 	
 	

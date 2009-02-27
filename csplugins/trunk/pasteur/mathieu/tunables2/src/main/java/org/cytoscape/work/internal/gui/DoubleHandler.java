@@ -31,7 +31,7 @@ public class DoubleHandler extends AbstractGuiHandler {
 		panel.add(label,BorderLayout.WEST);
 		try {
 			jtf = new JTextField(f.get(o).toString(), 10);
-			jtf.addActionListener(this);
+			//jtf.addActionListener(this);
 			jtf.setHorizontalAlignment(JTextField.RIGHT);
 			panel.add(jtf,BorderLayout.EAST);
 		} catch (Exception e) { e.printStackTrace(); }
@@ -54,13 +54,6 @@ public class DoubleHandler extends AbstractGuiHandler {
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
-	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Double.toString(value.doubleValue())));
-	}
-	
 
     public String getState() {
 		String s;

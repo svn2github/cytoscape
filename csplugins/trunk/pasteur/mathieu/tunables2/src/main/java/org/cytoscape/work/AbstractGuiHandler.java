@@ -124,6 +124,5 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	public abstract void handle();
 
 	public abstract String getState();
-	
-	public abstract void returnPanel();
+
 }

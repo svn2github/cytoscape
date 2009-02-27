@@ -7,14 +7,7 @@ import org.cytoscape.work.Handler;
 
 public interface Guihandler extends Handler{
 	public void handle();
-//	public JPanel getInputPanel();
-//	public Tunable getTunable();
-//	public Field getField();
-//	public Object getObject();
-//	public JPanel getOutputPanel();
-	
-	
-	void returnPanel();
+
 	JPanel getJPanel();
 	String getState();
 	String getName();

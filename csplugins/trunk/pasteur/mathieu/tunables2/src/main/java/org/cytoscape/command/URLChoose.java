@@ -1,12 +1,19 @@
 package org.cytoscape.command;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.cytoscape.work.*;
-import org.cytoscape.work.util.*;
 
 public class URLChoose implements Command{
 
 	@Tunable(description = "URL choose",group = {"Import Network File"})
-	public myURL url = new myURL("");
+	public URL url;
+	
+	public URLChoose(){
+		try{
+			url = new URL("");
+		}catch(Exception e){e.printStackTrace();}
+	}
 
 	public void execute(){}
 	

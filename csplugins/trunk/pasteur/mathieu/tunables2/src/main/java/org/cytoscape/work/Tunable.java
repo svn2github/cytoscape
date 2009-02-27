@@ -8,8 +8,6 @@ import java.lang.annotation.*;
 public @interface Tunable{
 	public String description();
 	Param[] flag() default {};
-	//String[] flag() default {};
-//	public Param[] test() default {};
 	public String[] group() default {};
 	boolean xorChildren() default false;
 	String xorKey() default "";

@@ -30,9 +30,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 	}
 
 	public int createUI(Object... objs) {
-		
 		java.util.List<Guihandler> lh = new ArrayList<Guihandler>();
-
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
@@ -40,7 +38,6 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 
 		}
 		
-
 		if ( !panelMap.containsKey( lh ) ) {
 			final String MAIN = "";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
@@ -60,8 +57,6 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 						}
 					}
 				}
-
-
 				// find the proper group to put the handler panel in
 				String[] group = gh.getTunable().group();
 				String lastGroup = MAIN; 
@@ -93,21 +88,17 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		    null,
 		    buttons,
 		    buttons[0]);
-		
-		
 		// process the values set in the gui 
 		//USELESS BECAUSE OF LISTENERS
-		for ( Guihandler h : lh )
-			h.handle();
-		
+		if(n==0){
+			for ( Guihandler h : lh )h.handle();
+		}
 		return n;
 	}
 
 	private JPanel createJPanel(String title, Guihandler gh) {
-
 		if ( gh == null )
 			return getSimplePanel(title);
-
 		// See if we need to create an XOR panel
 		if ( gh.getTunable().xorChildren() ) {
 			JPanel p = new XorPanel(title,gh);
@@ -133,37 +124,8 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
 		titleborder.setTitleColor(Color.BLUE);
 		ret.setBorder(titleborder);
-//		ret.setBorder(BorderFactory.createTitledBorder(title));
+		//ret.setBorder(BorderFactory.createTitledBorder(title));
 		ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
 		return ret;
 	}
-			
-	
-	/*protected void getResultsPanels(java.util.List<Guihandler> lh) {
-		for ( Guihandler h : lh ) {
-			h.notifyDependents();
-			h.returnPanel();
-		}
-			
-		JOptionPane.showMessageDialog(parent,
-	    panelMap.get(lh),
-	    "Results",JOptionPane.PLAIN_MESSAGE);
-	}
-*/
-	
-	protected void getResultsPanels(List<Guihandler> handlerList) {
-
-		for ( Guihandler h : handlerList ) {
-			h.notifyDependents();
-			h.returnPanel();
-		}			
-		JOptionPane.showMessageDialog(parent,
-	    panelMap.get(handlerList),
-	    "Results",JOptionPane.PLAIN_MESSAGE);
-	}
-
-
-
-	protected void processProps(List<Guihandler> handlers) {}
-	public void createProperties(Object... obs) {}
 }

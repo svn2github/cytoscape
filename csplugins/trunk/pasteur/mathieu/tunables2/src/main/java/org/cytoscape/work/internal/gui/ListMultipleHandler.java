@@ -49,19 +49,6 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 	
 
 	public void handle(){
-
-//		map = checkListManager.getMap();
-//		for(int i=0;i<lms.getPossibleValues().size();i++){
-//			if(map.containsKey(i)){
-//			selected.add((T)map.get(i));}
-//		}
-		
-//		selected = checkListManager.getArray2();
-//		selected = new ArrayList<T>();
-//		System.out.println(selected);		
-//		selected.add(checkListManager.getValue());
-//		jlist.setSelectionModel(checkListManager.getSelectionModel());
-		//selected.set(i, (T)jlist.getSelectedValue());// = jlist.get
 		selected = convertToArray(jlist.getSelectedValues());
 		if (selected!=null) {
 			lms.setSelectedValues(selected);
@@ -93,11 +80,4 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 			return sel.toString();
 	}
 
-	@Override
-	public void returnPanel() {
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JScrollPane(new JList(lms.getSelectedValues().toArray())));
-		
-	}
 }

@@ -8,6 +8,7 @@ import org.cytoscape.work.AbstractGuiHandler;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.util.BoundedDouble;
+import org.cytoscape.work.util.myBoundedSwing;
 import org.cytoscape.work.util.mySlider;
 
 import java.awt.BorderLayout;
@@ -21,6 +22,7 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
+	myBoundedSwing boundedField;
 	Double value=null;
 	String newline = System.getProperty("line.separator");
 	
@@ -39,7 +41,7 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 			label.setFont(new Font(null, Font.PLAIN,12));
 			panel.add(label,BorderLayout.WEST);
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			slider.addChangeListener(this);
+			//slider.addChangeListener(this);
 			panel.add(slider,BorderLayout.EAST);
 		}
 		else{
@@ -47,10 +49,8 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 				JLabel label = new JLabel( title + " (max: " + myBounded.getLowerBound().toString() + "  min: " + myBounded.getUpperBound().toString() + ")" );
 				label.setFont(new Font(null, Font.PLAIN,12));
 				panel.add(label,BorderLayout.WEST);
-				jtf = new JTextField( ((Double)myBounded.getValue()).toString(), 10);
-				jtf.addActionListener( this );
-				jtf.setHorizontalAlignment(JTextField.RIGHT);
-				panel.add(jtf,BorderLayout.EAST);
+				boundedField = new myBoundedSwing(myBounded.getValue(),myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
+				panel.add(boundedField,BorderLayout.EAST);
 			} catch (Exception e) { e.printStackTrace(); }
 		}
 	}
@@ -60,30 +60,10 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
     	if(useslider==true){
     		myBounded.setValue(slider.getValue().doubleValue());
     	}
-    	else{
-    		try{
-    			jtf.setBackground(Color.white);
-    			value = Double.parseDouble(jtf.getText());
-    		}catch(NumberFormatException nfe){
-    			try{
-    				jtf.setBackground(Color.red);
-    				value = Double.parseDouble(myBounded.getValue().toString());
-    				JOptionPane.showMessageDialog(null,"An Integer was Expected"+newline+"Value will be set to default = "+value.doubleValue(), "Error",JOptionPane.ERROR_MESSAGE);
-    			}catch(Exception e){e.printStackTrace();}
-    		}
-			try {
-				myBounded.setValue(value.doubleValue());
-			} catch (Exception e) { e.printStackTrace();}
-    	}
+    	else myBounded.setValue(boundedField.getFieldValue().doubleValue());
 	}
 	
 	
-	public void returnPanel(){
-		panel.removeAll();
-		panel.add(new JLabel(t.description()));
-		panel.add(new JTextField(Double.toString(myBounded.getValue())));
-	}
-
 	public String getState() {
 		return myBounded.getValue().toString();
 	}
