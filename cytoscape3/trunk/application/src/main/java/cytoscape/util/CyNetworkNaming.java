@@ -36,13 +36,13 @@
 */
 package cytoscape.util;
 
-import cytoscape.CyNetworkManager;
+import java.awt.Component;
+
+import javax.swing.JOptionPane;
+
 import org.cytoscape.model.CyNetwork;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.Iterator;
-import java.util.Set;
+import cytoscape.CyNetworkManager;
 
 
 /**

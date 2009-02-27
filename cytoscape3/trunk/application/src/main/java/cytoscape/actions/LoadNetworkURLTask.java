@@ -40,59 +40,52 @@
 // $Author: pwang $
 package cytoscape.actions;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.view.CySwingApplication;
-import cytoscape.view.CySwingApplication;
-import cytoscape.util.CyNetworkNaming;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.io.read.CyNetworkReader;
-import org.cytoscape.view.GraphViewFactory;
-
-
-import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 import java.util.Properties;
 
+import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.GraphViewFactory;
+
+import cytoscape.CyNetworkManager;
 
 /**
- * Specific instance of AbstractLoadNetworkTask that loads a URL. 
+ * Specific instance of AbstractLoadNetworkTask that loads a URL.
  */
 public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
-//	@Tunable(description="The URL to load")
-	public URL url;
+	private URI uri;
 
-	public LoadNetworkURLTask(URL url,CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
-		super(null,mgr,gvf,cyl,netmgr,props);
-		this.url = url;
+	public LoadNetworkURLTask(URI uri, CyReaderManager mgr,
+			GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			Properties props) {
+		super(null, mgr, gvf, cyl, netmgr, props);
+		this.uri = uri;
 	}
 
 	/**
 	 * Executes Task.
 	 */
 	public void run() {
-		if (url == null)
-			throw new NullPointerException("network url is null");
+		if (uri == null)
+			throw new NullPointerException("Network URI is null.");
 
-		name = url.toString();
+		name = uri.toString();
 
 		myThread = Thread.currentThread();
 
 		try {
-			taskMonitor.setStatus("Opening URL " + url);
-			reader = mgr.getReader(url);
+			taskMonitor.setStatus("Opening URL " + uri);
+			reader = mgr.getReader(uri, DataCategory.NETWORK);
 
 			if (interrupted)
 				return;
 
-			uri = url.toURI();
 		} catch (Exception e) {
 			uri = null;
-			taskMonitor.setException(e, "Unable to connect to URL " + name + ": " + e.getMessage());
+			taskMonitor.setException(e, "Unable to connect to URL " + name
+					+ ": " + e.getMessage());
 
 			return;
 		}

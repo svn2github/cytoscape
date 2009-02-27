@@ -6,6 +6,8 @@
 	default-lazy-init="false">
 
 	<!-- Import OSGi services -->
+	
+	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil" />
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager"/>
 

@@ -33,120 +33,125 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape.util.internal;
 
-import cytoscape.CyOperatingContext;
-
-import cytoscape.task.TaskMonitor;
-
-import org.cytoscape.io.CyFileFilter;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
+import java.awt.Component;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Iterator;
 
-import org.cytoscape.io.read.URLUtil;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
+import org.cytoscape.io.util.StreamUtil;
+
+import cytoscape.CyOperatingContext;
+import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 
-
 class FileUtilImpl implements FileUtil {
+	
+	private StreamUtil streamUtil;
 
 	private CyOperatingContext context;
 
 	FileUtilImpl(CyOperatingContext context) {
 		this.context = context;
 	}
+	
+	public void setStreamUtil(StreamUtil streamUtil) {
+		this.streamUtil = streamUtil;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public File getFile(String title, int load_save_custom) {
-		return getFile(title, load_save_custom, new CyFileFilter[] { }, null, null);
+		return getFile(title, load_save_custom, null, null);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public File getFile(String title, int load_save_custom, CyFileFilter[] filters) {
-		return getFile(title, load_save_custom, filters, null, null);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public File getFile(String title, int load_save_custom, CyFileFilter[] filters,
-	                           String start_dir, String custom_approve_text) {
-		File[] result = getFiles(title, load_save_custom, filters, start_dir, custom_approve_text,
-		                         false);
+	public File getFile(String title, int load_save_custom, String start_dir,
+			String custom_approve_text) {
+		File[] result = getFiles(title, load_save_custom, start_dir,
+				custom_approve_text, false);
 
 		return ((result == null) || (result.length <= 0)) ? null : result[0];
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
-    public File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters) {
-        return getFiles(parent,title, load_save_custom, filters, null, null, true);
-    }
-  
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
-	                              String start_dir, String custom_approve_text) {
-		 return getFiles(null, title, load_save_custom, filters, start_dir, custom_approve_text, true);
-	}
-	 
-	/**
-	 * {@inheritDoc}
-	 */
-	public File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
-          String start_dir, String custom_approve_text, boolean multiselect) {
-		return getFiles(null, title, load_save_custom, filters, start_dir, custom_approve_text, multiselect);
+	public File[] getFiles(Component parent, String title, int load_save_custom) {
+		return getFiles(parent, title, load_save_custom, null, null, true);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters,
-	                              String start_dir, String custom_approve_text, boolean multiselect) {
+	public File[] getFiles(String title, int load_save_custom,
+			String start_dir, String custom_approve_text) {
+		return getFiles(null, title, load_save_custom, start_dir,
+				custom_approve_text, true);
+	}
 
-		if (parent == null) 
-		 	throw new NullPointerException("Parent component is null");	
+	/**
+	 * {@inheritDoc}
+	 */
+	public File[] getFiles(String title, int load_save_custom,
+			String start_dir, String custom_approve_text, boolean multiselect) {
+		return getFiles(null, title, load_save_custom, start_dir,
+				custom_approve_text, multiselect);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public File[] getFiles(Component parent, String title,
+			int load_save_custom, String start_dir, String custom_approve_text,
+			boolean multiselect) {
+
+		if (parent == null)
+			throw new NullPointerException("Parent component is null");
 
 		File start = null;
 
-		if (start_dir == null) {
+		if (start_dir == null)
 			start = context.getMRUD();
-		} else {
+		else
 			start = new File(start_dir);
-		}
 
 		String osName = System.getProperty("os.name");
 
-		//System.out.println( "Os name: "+osName );
+		// System.out.println( "Os name: "+osName );
 		if (osName.startsWith("Mac")) {
 			// this is a Macintosh, use the AWT style file dialog
-			FileDialog chooser = new FileDialog((Frame)parent, title, load_save_custom);
+			FileDialog chooser = new FileDialog((Frame) parent, title,
+					load_save_custom);
 
 			// we can only set the one filter; therefore, create a special
 			// version of CyFileFilter that contains all extensions
 			// TODO fix this so we actually use the filters we're given
-//			CyFileFilter fileFilter = new CyFileFilter(new String[]{},new String[]{},"All network files");
+			// CyFileFilter fileFilter = new CyFileFilter(new String[]{},new
+			// String[]{},"All network files");
 
-//			chooser.setFilenameFilter(fileFilter);
+			// chooser.setFilenameFilter(fileFilter);
 
 			chooser.setVisible(true);
 
 			if (chooser.getFile() != null) {
 				File[] result = new File[1];
-				result[0] = new File(chooser.getDirectory() + "/" + chooser.getFile());
+				result[0] = new File(chooser.getDirectory() + "/"
+						+ chooser.getFile());
 
 				if (chooser.getDirectory() != null) {
 					context.setMRUD(new File(chooser.getDirectory()));
@@ -158,7 +163,7 @@ class FileUtilImpl implements FileUtil {
 			return null;
 		} else {
 			// this is not a mac, use the Swing based file dialog
-			JFileChooser chooser = new JFileChooser(start);
+			final JFileChooser chooser = new JFileChooser(start);
 
 			// set multiple selection, if applicable
 			chooser.setMultiSelectionEnabled(multiselect);
@@ -167,9 +172,10 @@ class FileUtilImpl implements FileUtil {
 			chooser.setDialogTitle(title);
 
 			// add filters
-			for (int i = 0; i < filters.length; ++i) {
-				chooser.addChoosableFileFilter(filters[i]);
-			}
+			// TODO: fix Filter
+			// for (int i = 0; i < filters.length; ++i) {
+			// chooser.addChoosableFileFilter(filters[i]);
+			// }
 
 			File[] result = null;
 			File tmp = null;
@@ -192,14 +198,21 @@ class FileUtilImpl implements FileUtil {
 						result = new File[1];
 						result[0] = tmp;
 					}
-					// FileDialog checks for overwrte, but JFileChooser does not, so we need to do
+					// FileDialog checks for overwrte, but JFileChooser does
+					// not, so we need to do
 					// so ourselves
 					for (int i = 0; i < result.length; i++) {
 						if (result[i].exists()) {
-							int answer = JOptionPane.showConfirmDialog(chooser, 
-							   "The file '"+result[i].getName()+"' already exists, are you sure you want to overwrite it?",
-							   "File exists", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-							if (answer == 1) 
+							int answer = JOptionPane
+									.showConfirmDialog(
+											chooser,
+											"The file '"
+													+ result[i].getName()
+													+ "' already exists, are you sure you want to overwrite it?",
+											"File exists",
+											JOptionPane.YES_NO_OPTION,
+											JOptionPane.WARNING_MESSAGE);
+							if (answer == 1)
 								return null;
 						}
 					}
@@ -239,9 +252,10 @@ class FileUtilImpl implements FileUtil {
 			if (name.matches(urlPattern)) {
 				URL u = new URL(name);
 				// in = u.openStream();
-                // Use URLUtil to get the InputStream since we might be using a proxy server 
+				// Use URLUtil to get the InputStream since we might be using a
+				// proxy server
 				// and because pages may be cached:
-				in = URLUtil.getBasicInputStream(u);
+				in = streamUtil.getBasicInputStream(u);
 			} else
 				in = new FileInputStream(name);
 		} catch (IOException ioe) {
@@ -277,7 +291,8 @@ class FileUtilImpl implements FileUtil {
 		String lineSep = System.getProperty("line.separator");
 		StringBuffer sb = new StringBuffer();
 		String line = null;
-		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				inputStream));
 
 		while ((line = br.readLine()) != null)
 			sb.append(line + lineSep);

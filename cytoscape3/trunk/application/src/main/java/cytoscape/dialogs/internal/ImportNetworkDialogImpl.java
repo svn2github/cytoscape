@@ -54,11 +54,10 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ToolTipManager;
 
-import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.property.bookmark.Bookmarks;
+import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.Category;
 import org.cytoscape.property.bookmark.DataSource;
-import org.cytoscape.property.bookmark.BookmarksUtil;
 
 import cytoscape.dialogs.ImportNetworkDialog;
 import cytoscape.util.FileUtil;
@@ -84,7 +83,6 @@ public class ImportNetworkDialogImpl extends JDialog implements
 	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
 
-	private CyFileFilter[] tempCFF;
 
 	private FileUtil fileUtil;
 	private Component desk;
@@ -93,13 +91,11 @@ public class ImportNetworkDialogImpl extends JDialog implements
 	 * Creates new form NetworkImportDialog
 	 */
 	public ImportNetworkDialogImpl(Frame parent, boolean modal,
-			CyFileFilter[] filters, FileUtil fileUtil, Bookmarks bookmarks, BookmarksUtil bkUtil) {
+			FileUtil fileUtil, Bookmarks bookmarks, BookmarksUtil bkUtil) {
 		super(parent, modal);
 		desk = parent;
 		this.bookmarks = bookmarks;
 		this.bkUtil = bkUtil;
-		
-		tempCFF = filters;
 		this.fileUtil = fileUtil;
 
 		setTitle("Import Network");
@@ -457,7 +453,7 @@ public class ImportNetworkDialogImpl extends JDialog implements
 			java.awt.event.ActionEvent evt) {
 
 		networkFiles = fileUtil.getFiles(this, "Import Network Files",
-				FileUtil.LOAD, tempCFF);
+				FileUtil.LOAD);
 
 		if (networkFiles != null) {
 			/*

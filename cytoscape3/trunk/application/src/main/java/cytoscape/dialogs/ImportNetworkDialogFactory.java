@@ -36,6 +36,7 @@
 package cytoscape.dialogs;
 
 import java.awt.Frame;
+
 import org.cytoscape.io.CyFileFilter;
 
 
@@ -43,5 +44,5 @@ import org.cytoscape.io.CyFileFilter;
  */
 public interface ImportNetworkDialogFactory {
 
-	ImportNetworkDialog getImportNetworkDialog(Frame parent, boolean modal, CyFileFilter[] filters);
+	ImportNetworkDialog getImportNetworkDialog(Frame parent, boolean modal);
 }

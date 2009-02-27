@@ -33,7 +33,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package cytoscape;
 
 import com.jgoodies.looks.LookUtils;
@@ -44,6 +44,7 @@ import cytoscape.util.FileUtil;
 import org.apache.commons.cli.*;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,10 +54,9 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 /**
- * This is the main startup class for Cytoscape. 
- *
+ * This is the main startup class for Cytoscape.
+ * 
  * <p>
  * Look and Feel is modified for jgoodies 2.1.4 by Kei Ono
  * </p>
@@ -76,41 +76,68 @@ public class CyMain {
 	protected org.apache.commons.cli.Options options;
 	protected CytoscapeVersion ver;
 	protected FileUtil fileUtil;
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
-	 */
-	public static void main(String[] args) throws Exception {
-		CyMain app = new CyMain(args,null,null,null,null);
+	
+	protected static void setupLookAndFeel() {
+		try {
+			if (LookUtils.IS_OS_WINDOWS) {
+				/*
+				 * For Windows: just use platform default look & feel.
+				 */
+				UIManager
+						.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			} else if (LookUtils.IS_OS_MAC) {
+				/*
+				 * For Mac: move menue bar to OS X default bar (next to Apple
+				 * icon)
+				 */
+				System.setProperty("apple.laf.useScreenMenuBar", "true");
+			} else {
+				/*
+				 * For Unix platforms, use JGoodies Looks
+				 */
+				final Properties props = System.getProperties();
+				String JVMVersion = props.getProperty("java.version");
+				System.out.println("JVM Version = " + JVMVersion);
+				if (JVMVersion.startsWith("1.6")) {
+					System.out.println("SE6 found.  Use Nimbus...");
+					UIManager
+							.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Can't set look & feel:" + e);
+		}
 	}
+
 
 	/**
 	 * Creates a new CyMain object.
-	 *
-	 * @param args  DOCUMENT ME!
-	 *
-	 * @throws Exception  DOCUMENT ME!
+	 * 
+	 * @param args
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws Exception
+	 *             DOCUMENT ME!
 	 */
-	public CyMain(CySwingApplication desk,CyNetworkManager netmgr,CytoscapeVersion ver,FileUtil fileUtil) throws Exception {
-		this( new String[]{},desk,netmgr,ver,fileUtil );
+	public CyMain(CySwingApplication desk, CyNetworkManager netmgr,
+			CytoscapeVersion ver, FileUtil fileUtil) throws Exception {
+		this(new String[] {}, desk, netmgr, ver, fileUtil);
 	}
 
-	public CyMain(String[] args,CySwingApplication desk,CyNetworkManager netmgr,CytoscapeVersion ver,FileUtil fileUtil) throws Exception {
+	public CyMain(String[] args, CySwingApplication desk,
+			CyNetworkManager netmgr, CytoscapeVersion ver, FileUtil fileUtil)
+			throws Exception {
 		System.out.println("CyMain constructor");
 		this.ver = ver;
 		this.fileUtil = fileUtil;
 
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			/*
-			 * By kono 4/2/2007
-			 * Fix Application name for Mac.
+			 * By kono 4/2/2007 Fix Application name for Mac.
 			 */
 			final String version = ver.getVersion();
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name", version);
+			System.setProperty(
+					"com.apple.mrj.application.apple.menu.about.name", version);
 			System.setProperty("apple.awt.brushMetalRounded", "true");
 			System.setProperty("apple.awt.antialiasing", "on");
 			System.setProperty("apple.awt.rendering", "VALUE_RENDER_SPEED");
@@ -129,52 +156,63 @@ public class CyMain {
 
 		parseCommandLine(args);
 
-		Cytoscape.setDesktop( desk );
-		Cytoscape.setNetworkManager( netmgr );
+		Cytoscape.setDesktop(desk);
+		Cytoscape.setNetworkManager(netmgr);
 	}
 
 	protected void parseCommandLine(String[] args) {
 		// create the options
 		options.addOption("h", "help", false, "Print this message.");
 		options.addOption("v", "version", false, "Print the version number.");
-		// commented out until we actually support doing anything in headless mode
-		//		options.addOption("H", "headless", false, "Run in headless (no gui) mode.");
-		options.addOption(OptionBuilder.withLongOpt("session")
-		                               .withDescription("Load a cytoscape session (.cys) file.")
-		                               .withValueSeparator('\0').withArgName("file").hasArg() // only allow one session!!!
-		.create("s"));
+		// commented out until we actually support doing anything in headless
+		// mode
+		// options.addOption("H", "headless", false,
+		// "Run in headless (no gui) mode.");
+		options.addOption(OptionBuilder.withLongOpt("session").withDescription(
+				"Load a cytoscape session (.cys) file.").withValueSeparator(
+				'\0').withArgName("file").hasArg() // only allow one session!!!
+				.create("s"));
 
-		options.addOption(OptionBuilder.withLongOpt("network")
-		                               .withDescription("Load a network file (any format).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("N"));
+		options.addOption(OptionBuilder.withLongOpt("network").withDescription(
+				"Load a network file (any format).").withValueSeparator('\0')
+				.withArgName("file").hasArgs().create("N"));
 
-		options.addOption(OptionBuilder.withLongOpt("edge-attrs")
-		                               .withDescription("Load an edge attributes file (edge attribute format).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("e"));
+		options
+				.addOption(OptionBuilder
+						.withLongOpt("edge-attrs")
+						.withDescription(
+								"Load an edge attributes file (edge attribute format).")
+						.withValueSeparator('\0').withArgName("file").hasArgs()
+						.create("e"));
 		options.addOption(OptionBuilder.withLongOpt("node-attrs")
-		                               .withDescription("Load a node attributes file (node attribute format).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("n"));
-		options.addOption(OptionBuilder.withLongOpt("matrix")
-		                               .withDescription("Load a node attribute matrix file (table).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("m"));
+				.withDescription(
+						"Load a node attributes file (node attribute format).")
+				.withValueSeparator('\0').withArgName("file").hasArgs().create(
+						"n"));
+		options.addOption(OptionBuilder.withLongOpt("matrix").withDescription(
+				"Load a node attribute matrix file (table).")
+				.withValueSeparator('\0').withArgName("file").hasArgs().create(
+						"m"));
 
-		options.addOption(OptionBuilder.withLongOpt("plugin")
-		                               .withDescription("Load a plugin jar file, directory of jar files, plugin class name, or plugin jar URL.")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("p"));
+		options
+				.addOption(OptionBuilder
+						.withLongOpt("plugin")
+						.withDescription(
+								"Load a plugin jar file, directory of jar files, plugin class name, or plugin jar URL.")
+						.withValueSeparator('\0').withArgName("file").hasArgs()
+						.create("p"));
 
-		options.addOption(OptionBuilder.withLongOpt("props")
-		                               .withDescription("Load cytoscape properties file (Java properties format) or individual property: -P name=value.")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("P"));
-		options.addOption(OptionBuilder.withLongOpt("vizmap")
-		                               .withDescription("Load vizmap properties file (Java properties format).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("V"));
+		options
+				.addOption(OptionBuilder
+						.withLongOpt("props")
+						.withDescription(
+								"Load cytoscape properties file (Java properties format) or individual property: -P name=value.")
+						.withValueSeparator('\0').withArgName("file").hasArgs()
+						.create("P"));
+		options.addOption(OptionBuilder.withLongOpt("vizmap").withDescription(
+				"Load vizmap properties file (Java properties format).")
+				.withValueSeparator('\0').withArgName("file").hasArgs().create(
+						"V"));
 
 		// try to parse the cmd line
 		CommandLineParser parser = new PosixParser();
@@ -183,7 +221,8 @@ public class CyMain {
 		try {
 			line = parser.parse(options, args);
 		} catch (ParseException e) {
-			System.err.println("Parsing command line failed: " + e.getMessage());
+			System.err
+					.println("Parsing command line failed: " + e.getMessage());
 			printHelp();
 			System.exit(1);
 		}
@@ -196,7 +235,7 @@ public class CyMain {
 				sessionFile = freeArg;
 			}
 		}
-		
+
 		// use what is found on the command line to set values
 		if (line.hasOption("h")) {
 			printHelp();
@@ -207,8 +246,6 @@ public class CyMain {
 			System.out.println(ver.getVersion());
 			System.exit(0);
 		}
-
-		setupLookAndFeel();
 
 		if (line.hasOption("P"))
 			props = createProperties(line.getOptionValues("P"));
@@ -239,79 +276,47 @@ public class CyMain {
 			expressionFiles = line.getOptionValues("m");
 	}
 
-	protected void setupLookAndFeel() {
-		try {
-			if (LookUtils.IS_OS_WINDOWS) {
-				/*
-				 * For Windows: just use platform default look & feel.
-				 */
-				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-			} else if (LookUtils.IS_OS_MAC) {
-				/*
-				 * For Mac: move menue bar to OS X default bar (next to Apple icon)
-				 */
-				System.setProperty("apple.laf.useScreenMenuBar", "true");
-			} else {
-				/*
-				 * For Unix platforms, use JGoodies Looks
-				 */
-				UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
-				//				UIManager.setLookAndFeel(new NimbusLookAndFeel());
-				Plastic3DLookAndFeel.set3DEnabled(true);
-				Plastic3DLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
-				Plastic3DLookAndFeel.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
-				Plastic3DLookAndFeel.setHighContrastFocusColorsEnabled(true);
-
-				Options.setDefaultIconSize(new Dimension(18, 18));
-				Options.setHiResGrayFilterEnabled(true);
-				Options.setPopupDropShadowEnabled(true);
-				Options.setUseSystemFonts(true);
-
-				UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-				UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
-			}
-		} catch (Exception e) {
-			System.err.println("Can't set look & feel:" + e);
-		}
-	}
-
+	
 	protected void printHelp() {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [OPTIONS]", options);
+		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [OPTIONS]",
+				options);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Properties getProps() {
 		return props;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Properties getVizProps() {
 		return vizmapProps;
 	}
 
 	private Properties createProperties(String[] potentialProps) {
-		//for ( String asdf: potentialProps)
-		//	System.out.println("prop: '" + asdf + "'");
+		// for ( String asdf: potentialProps)
+		// System.out.println("prop: '" + asdf + "'");
 		Properties props = new Properties();
 		Properties argProps = new Properties();
 
-		Matcher propPattern = Pattern.compile("^((\\w+\\.*)+)\\=(.+)$").matcher("");
+		Matcher propPattern = Pattern.compile("^((\\w+\\.*)+)\\=(.+)$")
+				.matcher("");
 
 		for (int i = 0; i < potentialProps.length; i++) {
 			propPattern.reset(potentialProps[i]);
 
 			// check to see if the string is a key value pair
 			if (propPattern.matches()) {
-				argProps.setProperty(propPattern.group(1), propPattern.group(3));
+				argProps
+						.setProperty(propPattern.group(1), propPattern.group(3));
 
 				// otherwise assume it's a file/url
 			} else {
@@ -321,9 +326,11 @@ public class CyMain {
 					if (in != null)
 						props.load(in);
 					else
-						System.out.println("Couldn't load property: " + potentialProps[i]);
+						System.out.println("Couldn't load property: "
+								+ potentialProps[i]);
 				} catch (IOException e) {
-					System.out.println("Couldn't load property: " + potentialProps[i]);
+					System.out.println("Couldn't load property: "
+							+ potentialProps[i]);
 					e.printStackTrace();
 				}
 			}
@@ -338,63 +345,63 @@ public class CyMain {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<String> getGraphFiles() {
 		return createList(graphFiles);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<String> getEdgeAttributeFiles() {
 		return createList(edgeAttrFiles);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<String> getNodeAttributeFiles() {
 		return createList(nodeAttrFiles);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<String> getExpressionFiles() {
 		return createList(expressionFiles);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<String> getPlugins() {
 		return createList(plugins);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String getSessionFile() {
 		return sessionFile;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String[] getArgs() {
 		return args;

@@ -37,51 +37,47 @@
 
 package cytoscape.actions;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTask;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import cytoscape.view.CySwingApplication;
-import cytoscape.view.CySwingApplication;
-import cytoscape.util.CyNetworkNaming;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.io.read.CyNetworkReader;
-import org.cytoscape.view.GraphViewFactory;
-
-
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Properties;
 
+import org.cytoscape.io.read.CyReader;
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
+
+import cytoscape.CyNetworkManager;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTask;
+import cytoscape.util.CyNetworkNaming;
 
 /**
  * Task to load a new network.
  */
 abstract class AbstractLoadNetworkTask implements Task {
 
-	protected CyNetworkReader reader;
+	protected CyReader reader;
 	protected URI uri;
 	protected TaskMonitor taskMonitor;
 	protected String name;
 	protected Thread myThread = null;
 	protected boolean interrupted = false;
-	protected CyLayoutAlgorithm layoutAlgorithm; 
-	protected CyReaderManager mgr; 
-	protected GraphViewFactory gvf; 
-	protected CyLayouts cyl; 
-	protected CyNetworkManager netmgr; 
-	protected Properties props; 
+	protected CyLayoutAlgorithm layoutAlgorithm;
+	protected CyReaderManager mgr;
+	protected GraphViewFactory gvf;
+	protected CyLayouts cyl;
+	protected CyNetworkManager netmgr;
+	protected Properties props;
 
-	public AbstractLoadNetworkTask(CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
+	public AbstractLoadNetworkTask(CyLayoutAlgorithm layout,
+			CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl,
+			CyNetworkManager netmgr, Properties props) {
 		this.mgr = mgr;
 		this.gvf = gvf;
 		this.cyl = cyl;
@@ -90,9 +86,10 @@ abstract class AbstractLoadNetworkTask implements Task {
 		layoutAlgorithm = layout;
 	}
 
-	protected void loadNetwork(CyNetworkReader reader) {
-		if (reader == null) 
-			taskMonitor.setException(new IOException("Could not read file"), "Could not read file");
+	protected void loadNetwork(CyReader reader) {
+		if (reader == null)
+			taskMonitor.setException(new IOException("Could not read file"),
+					"Could not read file");
 
 		myThread = Thread.currentThread();
 
@@ -105,9 +102,10 @@ abstract class AbstractLoadNetworkTask implements Task {
 
 			reader.read();
 
-			CyNetwork cyNetwork = reader.getReadNetwork(); 
-			cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name,netmgr));
-			GraphView view = gvf.createGraphView( cyNetwork );
+			CyNetwork cyNetwork = reader.getReadData(CyNetwork.class);
+			cyNetwork.attrs().set("name",
+					CyNetworkNaming.getSuggestedNetworkTitle(name, netmgr));
+			GraphView view = gvf.createGraphView(cyNetwork);
 
 			if ((layoutAlgorithm != null) && (view != null)) {
 				// Yes, do it
@@ -122,8 +120,8 @@ abstract class AbstractLoadNetworkTask implements Task {
 			// TODO NEED RENDERER
 			view.fitContent();
 
-			netmgr.addNetwork( cyNetwork );
-			netmgr.addNetworkView( view );
+			netmgr.addNetwork(cyNetwork);
+			netmgr.addNetworkView(view);
 
 			if (cyNetwork != null) {
 				informUserOfGraphStats(cyNetwork);
@@ -132,7 +130,8 @@ abstract class AbstractLoadNetworkTask implements Task {
 				sb.append("Could not read network from: ");
 				sb.append(name);
 				sb.append("\nThis file may not be a valid file format.");
-				taskMonitor.setException(new IOException(sb.toString()), sb.toString());
+				taskMonitor.setException(new IOException(sb.toString()), sb
+						.toString());
 			}
 
 			taskMonitor.setPercentCompleted(100);
@@ -157,20 +156,21 @@ abstract class AbstractLoadNetworkTask implements Task {
 		// Give the user some confirmation
 		sb.append("Successfully loaded network from:  ");
 		sb.append(name);
-		sb.append("\n\nNetwork contains " + formatter.format(newNetwork.getNodeCount()));
+		sb.append("\n\nNetwork contains "
+				+ formatter.format(newNetwork.getNodeCount()));
 		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
 		sb.append(" edges.\n\n");
 
 		String thresh = props.getProperty("viewThreshold");
 
-		if (newNetwork.getNodeCount() < Integer.parseInt(thresh) ) {
-			sb.append("Network is under " + thresh 
-			          + " nodes.  A view will be automatically created.");
+		if (newNetwork.getNodeCount() < Integer.parseInt(thresh)) {
+			sb.append("Network is under " + thresh
+					+ " nodes.  A view will be automatically created.");
 		} else {
-			sb.append("Network is over " + thresh 
-			          + " nodes.  A view has not been created."
-			          + "  If you wish to view this network, use "
-			          + "\"Create View\" from the \"Edit\" menu.");
+			sb.append("Network is over " + thresh
+					+ " nodes.  A view has not been created."
+					+ "  If you wish to view this network, use "
+					+ "\"Create View\" from the \"Edit\" menu.");
 		}
 
 		taskMonitor.setStatus(sb.toString());
@@ -192,17 +192,18 @@ abstract class AbstractLoadNetworkTask implements Task {
 
 	/**
 	 * Sets the Task Monitor.
-	 *
+	 * 
 	 * @param taskMonitor
 	 *            TaskMonitor Object.
 	 */
-	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+	public void setTaskMonitor(TaskMonitor taskMonitor)
+			throws IllegalThreadStateException {
 		this.taskMonitor = taskMonitor;
 	}
 
 	/**
 	 * Gets the Task Title.
-	 *
+	 * 
 	 * @return Task Title.
 	 */
 	public String getTitle() {

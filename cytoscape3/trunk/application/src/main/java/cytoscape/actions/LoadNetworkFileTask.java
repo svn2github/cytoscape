@@ -37,40 +37,30 @@
 
 package cytoscape.actions;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTask;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import cytoscape.view.CySwingApplication;
-import cytoscape.view.CySwingApplication;
-import cytoscape.util.CyNetworkNaming;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.io.read.CyNetworkReader;
-import org.cytoscape.view.GraphViewFactory;
-
+import static org.cytoscape.io.DataCategory.NETWORK;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.GraphViewFactory;
+
+import cytoscape.CyNetworkManager;
 
 /**
- * Specific instance of AbstractLoadNetworkTask that loads a File. 
+ * Specific instance of AbstractLoadNetworkTask that loads a File.
  */
 public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 
-	//@Tunable(description="Network file to load");
-	//public File[] files;
+	// @Tunable(description="Network file to load");
+	// public File[] files;
 	private File file;
 
-	public LoadNetworkFileTask(File file,CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
-		super(null,mgr,gvf,cyl,netmgr,props);
+	public LoadNetworkFileTask(File file, CyReaderManager mgr,
+			GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			Properties props) {
+		super(null, mgr, gvf, cyl, netmgr, props);
 		this.file = file;
 	}
 
@@ -78,23 +68,18 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 	 * Executes Task.
 	 */
 	public void run() {
-		//for ( File file : files ) {
+		// for ( File file : files ) {
 
-			try { 
-			reader = mgr.getReader(file.getAbsolutePath());
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-				reader = null;
-			}
-	
-			uri = file.toURI();
-			name = file.getName();
-	
-			if (reader == null) {
-				uri = null;
-			}
+		reader = mgr.getReader(file.getAbsolutePath(), NETWORK);
 
-			loadNetwork(reader);
-		//}
+		uri = file.toURI();
+		name = file.getName();
+
+		if (reader == null) {
+			uri = null;
+		}
+
+		loadNetwork(reader);
+		// }
 	}
 }

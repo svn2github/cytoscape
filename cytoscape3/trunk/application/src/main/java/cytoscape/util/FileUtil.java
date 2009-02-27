@@ -36,14 +36,13 @@
 */
 package cytoscape.util;
 
-import cytoscape.task.TaskMonitor;
-import org.cytoscape.io.CyFileFilter;
-
-import java.awt.FileDialog;
 import java.awt.Component;
-import java.io.InputStream;
-import java.io.IOException;
+import java.awt.FileDialog;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import cytoscape.task.TaskMonitor;
 
 
 /**
@@ -82,19 +81,7 @@ public interface FileUtil {
 	 * @param title the title of the dialog box
 	 * @param load_save_custom a flag for the type of file dialog
 	 */
-	File getFile(String title, int load_save_custom) ;
-
-	/**
-	  * Returns a File object, this method should be used instead
-	  * of rolling your own JFileChooser.
-	  *
-	  * @return the location of the selcted file
-	  * @param title the title of the dialog box
-	  * @param load_save_custom a flag for the type of file dialog
-	  * @param filters an array of CyFileFilters that let you filter
-	  *                based on extension
-	  */
-	File getFile(String title, int load_save_custom, CyFileFilter[] filters) ;
+	File getFile(String title, int load_save_custom);
 
 	/**
 	 * Returns a File object, this method should be used instead
@@ -111,7 +98,7 @@ public interface FileUtil {
 	 *                            custom text should be on the approve
 	 *                            button.
 	 */
-	File getFile(String title, int load_save_custom, CyFileFilter[] filters,
+	File getFile(String title, int load_save_custom,
 	                           String start_dir, String custom_approve_text) ;
 
 
@@ -125,7 +112,7 @@ public interface FileUtil {
      * @param filters an array of CyFileFilters that let you filter
      *                based on extension
      */
-    File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters) ;
+    File[] getFiles(Component parent, String title, int load_save_custom) ;
   
 
 	/**
@@ -143,7 +130,7 @@ public interface FileUtil {
 	 *                            custom text should be on the approve
 	 *                            button.
 	 */
-	File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
+	File[] getFiles(String title, int load_save_custom,
 	                              String start_dir, String custom_approve_text) ;
 	 
 	/**
@@ -164,7 +151,7 @@ public interface FileUtil {
 	  *                    still limited to a single file because we use
 	  *                    FileDialog there -- is this fixed in Java 1.5?)
 	  */	
-	File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
+	File[] getFiles(String title, int load_save_custom,
           String start_dir, String custom_approve_text, boolean multiselect) ;
 
 	/**
@@ -186,7 +173,7 @@ public interface FileUtil {
 	  *                    still limited to a single file because we use
 	  *                    FileDialog there -- is this fixed in Java 1.5?)
 	  */
-	File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters,
+	File[] getFiles(Component parent, String title, int load_save_custom,
 	                              String start_dir, String custom_approve_text, boolean multiselect) ;
 
 	/**

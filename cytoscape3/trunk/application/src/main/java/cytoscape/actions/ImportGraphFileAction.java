@@ -57,6 +57,8 @@ import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +117,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		ImportNetworkDialog fd = null;
 
 		try {
-			fd = indf.getImportNetworkDialog(desktop.getJFrame(), true, rdmgr.getFileFilters());
+			fd = indf.getImportNetworkDialog(desktop.getJFrame(), true);
 		} catch (Exception e1) {
 			System.out.println("start dialog error");
 			e1.printStackTrace();
@@ -135,9 +137,9 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			String URLstr = fd.getURLStr();
 			System.out.println("URL: "+URLstr);
 			try {
-				LoadNetworkURLTask task = new LoadNetworkURLTask(new URL(URLstr), rdmgr, gvf, cyLayouts,netmgr,props);
+				LoadNetworkURLTask task = new LoadNetworkURLTask(new URI(URLstr), rdmgr, gvf, cyLayouts,netmgr,props);
 				executeTask(task,false,desktop.getJFrame());
-			} catch (MalformedURLException e3) {
+			} catch (URISyntaxException e3) {
 				JOptionPane.showMessageDialog((JDialog)fd, "URL error!", "Warning",
 			 	                             JOptionPane.INFORMATION_MESSAGE);
 			}

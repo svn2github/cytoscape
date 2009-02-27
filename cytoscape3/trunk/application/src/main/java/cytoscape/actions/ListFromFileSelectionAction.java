@@ -88,7 +88,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 		final String name;
 
 		try {
-			name = fileUtil.getFile("Load Gene Selection File", FileUtil.LOAD).toString();
+			name = fileUtil.getFile("Load node selection file", FileUtil.LOAD).toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled
 			return false;

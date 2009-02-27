@@ -42,6 +42,7 @@
 	</bean>
 	<bean name="fileUtil" class="cytoscape.util.internal.FileUtilImpl">
 		<constructor-arg ref="cyOperatingContext" />
+		<property name="streamUtil" ref="streamUtilServiceRef" />
 	</bean>
 
 	<bean name="cyHelpBroker" class="cytoscape.view.internal.CyHelpBrokerImpl">

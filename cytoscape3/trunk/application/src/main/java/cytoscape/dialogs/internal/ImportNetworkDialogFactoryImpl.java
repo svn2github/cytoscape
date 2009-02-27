@@ -62,9 +62,9 @@ public class ImportNetworkDialogFactoryImpl implements
 	}
 
 	public ImportNetworkDialog getImportNetworkDialog(Frame frame,
-			boolean modal, CyFileFilter[] filters) {
+			boolean modal) {
 		try {
-			return new ImportNetworkDialogImpl(frame, modal, filters, fileUtil,
+			return new ImportNetworkDialogImpl(frame, modal, fileUtil,
 					bookmarkProp.getProperties(), bkUtil);
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to create ImportNetworkDialog",
