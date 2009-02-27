@@ -192,9 +192,9 @@
           <provision>
             <param>--log=DEBUG</param>
             <param>--platform=felix</param>
-            <param>--version=1.0.4</param>
-            <param>--profiles=minimal</param>
-            <param>--vmOptions=-Xbootclasspath/a:bundles/com.jgoodies.looks_2.1.2.jar:bundles/cytoscape-sun.jhall_1.0.0.jar</param>
+            <param>--version=1.4.1</param>
+            <param>--profiles=log</param>
+            <param>--vmOptions=-Xbootclasspath/a:bundles/cytoscape-sun.jhall_1.0.0.jar</param>
           </provision>
         </configuration>
         <!--
@@ -314,7 +314,6 @@
     <module>wrappers</module>
     <module>vizmap</module>
     <module>commons.cli</module>
-    <module>io</module>
     <module>application</module>
     <module>webservice</module>
     <module>vizmap-gui</module>
