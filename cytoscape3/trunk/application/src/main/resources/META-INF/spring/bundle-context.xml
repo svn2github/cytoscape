@@ -277,6 +277,7 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="layoutMenuManager" />
 		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="tunableInterceptorServiceRef" />
 	</bean>
 	<bean id="helpContentsAction" class="cytoscape.actions.HelpContentsAction">
 		<constructor-arg ref="networkManager" />

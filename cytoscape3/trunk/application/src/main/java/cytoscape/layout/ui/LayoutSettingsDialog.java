@@ -43,6 +43,8 @@ import cytoscape.view.CySwingApplication;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 
+import org.cytoscape.work.TunableInterceptor;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -76,17 +78,19 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private CySwingApplication desktop;
 	private LayoutMenuManager menuMgr;
 	private CyNetworkManager netmgr;
+	private TunableInterceptor ti;
 
 	/**
 	 * Creates a new LayoutSettingsDialog object.
 	 */
-	public LayoutSettingsDialog(CyLayouts cyLayouts, CySwingApplication desktop, LayoutMenuManager menuMgr, CyNetworkManager netmgr) {
+	public LayoutSettingsDialog(CyLayouts cyLayouts, CySwingApplication desktop, LayoutMenuManager menuMgr, CyNetworkManager netmgr, TunableInterceptor ti) {
 		super(desktop.getJFrame(), "Layout Settings", false);
 		initializeOnce(); // Initialize the components we only do once
 		this.cyLayouts = cyLayouts;
 		this.desktop = desktop;
 		this.menuMgr = menuMgr;
 		this.netmgr = netmgr;
+		this.ti = ti;
 	}
 
 	/**
@@ -99,19 +103,10 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		String command = e.getActionCommand();
 
 		if (command.equals("done")) {
-			updateAllSettings();
 			setVisible(false);
-		} else if (command.equals("save")) {
-			updateAllSettings();
 		} else if (command.equals("execute")) {
-			// Layout using the current layout
-			updateAllSettings();
 			TaskManager.executeTask( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()),
 			                         LayoutTask.getDefaultTaskConfig(getParent()) );
-		} else if (command.equals("cancel")) {
-			// Call revertSettings for each layout
-			revertAllSettings();
-			setVisible(false);
 		} else {
 			// OK, initialize and display
 			initialize();
@@ -131,7 +126,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		// Create a panel for the list of algorithms
 		JPanel algorithmSelectorPanel = new JPanel();
 		algorithmSelector = new JComboBox();
-		algorithmSelector.addItemListener(new AlgorithmItemListener());
+		algorithmSelector.addActionListener(new AlgorithmActionListener());
 		algorithmSelectorPanel.add(algorithmSelector);
 
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -152,20 +147,11 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		doneButton.setActionCommand("done");
 		doneButton.addActionListener(this);
 
-		JButton saveButton = new JButton("Save Settings");
-		saveButton.setActionCommand("save");
-		saveButton.addActionListener(this);
-
 		JButton executeButton = new JButton("Execute Layout");
 		executeButton.setActionCommand("execute");
 		executeButton.addActionListener(this);
 
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setActionCommand("cancel");
-		cancelButton.addActionListener(this);
 		buttonBox.add(executeButton);
-		buttonBox.add(saveButton);
-		buttonBox.add(cancelButton);
 		buttonBox.add(doneButton);
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		mainPanel.add(buttonBox);
@@ -190,62 +176,28 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			}
 
 			for (CyLayoutAlgorithm algo : menuMgr.getLayoutsInMenu(menu)) {
-				if (algo.getSettingsPanel() != null) {
-					algorithmSelector.addItem(algo);
-				}
+				// TODO might want a check here to see if algorithm has any tunables
+				algorithmSelector.addItem(algo);
 			}
 		}
 	}
 
-	private void updateAllSettings() {
-		for ( CyLayoutAlgorithm algo : cyLayouts.getAllLayouts() ) { 
-			algo.updateSettings();
-		}
-	}
 
-	private void revertAllSettings() {
-		for ( CyLayoutAlgorithm algo : cyLayouts.getAllLayouts() ) { 
-			algo.revertSettings();
-		}
-	}
-
-	private class AlgorithmItemListener implements ItemListener {
-		public AlgorithmItemListener() {
-		}
-
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.SELECTED) {
-				algorithmPanel.removeAll();
-
-				if (e.getItem().getClass() == String.class) {
-					currentLayout = null;
-					algorithmPanel.setBorder(null);
-				} else {
-					CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm) e.getItem();
-
-					// Replace the previous settings panel with a new one
-					JPanel panel = newLayout.getSettingsPanel();
-					algorithmPanel.removeAll();
-					algorithmPanel.add(panel);
-
-					Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-					TitledBorder titleBorder = BorderFactory.createTitledBorder(selBorder,
-					                                                            newLayout.toString()
-					                                                            + " Settings");
-					titleBorder.setTitlePosition(TitledBorder.LEFT);
-					titleBorder.setTitlePosition(TitledBorder.TOP);
-					algorithmPanel.setBorder(titleBorder);
-					currentLayout = newLayout; // Remember which one is set
-				}
-
-				validate();
-				pack();
+	private class AlgorithmActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			Object o = algorithmSelector.getSelectedItem();
+			// if it's a string, that means it's the instructions
+			if (!(o instanceof String)) { 
+				CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm)o;
+				ti.loadTunables(newLayout);
+				ti.createUI(newLayout);
+				currentLayout = newLayout; 
 			}
 		}
 	}
 
 	private class MyItemRenderer extends JLabel implements ListCellRenderer {
-	private final static long serialVersionUID = 1202339874266209L;
+		private final static long serialVersionUID = 1202339874266209L;
 		public MyItemRenderer() {
 		}
 
