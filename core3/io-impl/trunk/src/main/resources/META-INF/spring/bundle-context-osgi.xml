@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+
+	<!-- Import services -->
+	<osgi:reference id="cyNetworkFactoryServiceRef"
+		interface="org.cytoscape.model.CyNetworkFactory" />
+
+
+	<!-- Export services -->
+	<osgi:service id="cyReaderManagerService" ref="cyReaderManager"
+		interface="org.cytoscape.io.read.CyReaderManager">
+		<osgi:service-properties>
+			<entry key="serviceType" value="manager" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="sifReaderFactoryService" ref="sifReaderFactory"
+		interface="org.cytoscape.io.read.CyReaderFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="readerFactory" />
+			<entry key="readerId" value="sifReader" />
+			<entry key="readerDescription" value="Simple Interaction Format (SIF) file reader" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:set id="cyReaderFactories" interface="org.cytoscape.io.read.CyReaderFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addReaderFactory"
+			unbind-method="removeReaderFactory" ref="cyReaderManager" />
+	</osgi:set>
+
+	<osgi:service id="streamUtilService" ref="streamUtil"
+		interface="org.cytoscape.io.util.StreamUtil">
+		<osgi:service-properties>
+			<entry key="serviceType" value="utility" />
+		</osgi:service-properties>
+	</osgi:service>
+
+</beans>
