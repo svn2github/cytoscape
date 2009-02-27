@@ -40,32 +40,28 @@
 // $Author: pwang $
 package org.cytoscape.task.loadnetwork.internal;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.io.read.CyNetworkReader;
-import org.cytoscape.view.GraphViewFactory;
-
-import org.cytoscape.work.TaskMonitor;
-
-import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 import java.util.Properties;
 
+import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.work.TaskMonitor;
+
+import cytoscape.CyNetworkManager;
 
 /**
- * Specific instance of AbstractLoadNetworkTask that loads a URL. 
+ * Specific instance of AbstractLoadNetworkTask that loads a URL.
  */
 public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
-//	@Tunable(description="The URL to load")
-	public URL url;
+	// @Tunable(description="The URL to load")
+	public URI uri;
 
-	public LoadNetworkURLTask(CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
-		super(mgr,gvf,cyl,netmgr,props);
+	public LoadNetworkURLTask(CyReaderManager mgr, GraphViewFactory gvf,
+			CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
+		super(mgr, gvf, cyl, netmgr, props);
 	}
 
 	/**
@@ -74,31 +70,31 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 	public void run(TaskMonitor taskMonitor) {
 		this.taskMonitor = taskMonitor;
 
-		if (url == null)
-			throw new NullPointerException("network url is null");
+		if (uri == null)
+			throw new NullPointerException("Network uri is null");
 
-		name = url.toString();
+		name = uri.toString();
 
 		myThread = Thread.currentThread();
 
 		try {
-			taskMonitor.setStatusMessage("Opening URL " + url);
-			reader = mgr.getReader(url);
+			taskMonitor.setStatusMessage("Opening URI " + uri);
+			reader = mgr.getReader(uri, DataCategory.NETWORK);
 
 			if (interrupted)
 				return;
 
-			uri = url.toURI();
 		} catch (Exception e) {
 			uri = null;
-			taskMonitor.setStatusMessage("Unable to connect to URL " + name + ": " + e.getMessage());
+			taskMonitor.setStatusMessage("Unable to connect to URL " + name
+					+ ": " + e.getMessage());
 
 			return;
 		}
 
 		if (reader == null) {
 			uri = null;
-			taskMonitor.setStatusMessage( "Unable to connect to URL " + name);
+			taskMonitor.setStatusMessage("Unable to connect to URL " + name);
 
 			return;
 		}

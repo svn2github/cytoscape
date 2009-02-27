@@ -37,25 +37,22 @@
 
 package org.cytoscape.task.loadnetwork.internal;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.io.read.CyNetworkReader;
-import org.cytoscape.view.GraphViewFactory;
-
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
-
-
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Properties;
+
+import org.cytoscape.io.read.CyReader;
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskMonitor;
+
+import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
 
 
 /**
@@ -63,7 +60,7 @@ import java.util.Properties;
  */
 abstract class AbstractLoadNetworkTask implements Task {
 
-	protected CyNetworkReader reader;
+	protected CyReader reader;
 	protected URI uri;
 	protected TaskMonitor taskMonitor;
 	protected String name;
@@ -83,7 +80,7 @@ abstract class AbstractLoadNetworkTask implements Task {
 		this.props = props;
 	}
 
-	protected void loadNetwork(CyNetworkReader reader) {
+	protected void loadNetwork(CyReader reader) {
 		if (reader == null) 
 			//taskMonitor.setException(new IOException("Could not read file"), "Could not read file");
 			taskMonitor.setStatusMessage("Could not read file");
@@ -99,7 +96,7 @@ abstract class AbstractLoadNetworkTask implements Task {
 
 			reader.read();
 
-			CyNetwork cyNetwork = reader.getReadNetwork(); 
+			CyNetwork cyNetwork = reader.getReadData(CyNetwork.class); 
 			cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name,netmgr));
 			GraphView view = gvf.createGraphView( cyNetwork );
 

@@ -37,60 +37,54 @@
 
 package org.cytoscape.task.loadnetwork.internal;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
+import static org.cytoscape.io.DataCategory.NETWORK;
 
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.GraphView;
+import java.io.File;
+import java.util.Properties;
+
 import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.view.GraphViewFactory;
-
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
-
+import cytoscape.CyNetworkManager;
 
 /**
- * Specific instance of AbstractLoadNetworkTask that loads a File. 
+ * Specific instance of AbstractLoadNetworkTask that loads a File.
  */
 public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 
-	//public File[] files;
-	@Tunable(description="Network file to load")
+	// public File[] files;
+	@Tunable(description = "Network file to load")
 	public File file;
 
-	public LoadNetworkFileTask(CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
-		super(mgr,gvf,cyl,netmgr,props);
+	public LoadNetworkFileTask(CyReaderManager mgr, GraphViewFactory gvf,
+			CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
+		super(mgr, gvf, cyl, netmgr, props);
 	}
 
 	/**
 	 * Executes Task.
 	 */
 	public void run(TaskMonitor taskMonitor) {
-			this.taskMonitor = taskMonitor;
-		//for ( File file : files ) {
+		this.taskMonitor = taskMonitor;
+		// for ( File file : files ) {
 
-			try { 
-			reader = mgr.getReader(file.getAbsolutePath());
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-				reader = null;
-			}
-	
-			uri = file.toURI();
-			name = file.getName();
-	
-			if (reader == null) {
-				uri = null;
-			}
+		try {
+			reader = mgr.getReader(file.getAbsolutePath(), NETWORK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			reader = null;
+		}
+		uri = file.toURI();
+		name = file.getName();
 
-			loadNetwork(reader);
-		//}
+		if (reader == null) {
+			uri = null;
+		}
+
+		loadNetwork(reader);
+		// }
 	}
 }
