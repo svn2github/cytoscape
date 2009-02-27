@@ -40,7 +40,7 @@ public class BoundedFloatHandler extends AbstractGuiHandler implements Guihandle
 			JLabel label = new JLabel(title);
 			label.setFont(new Font(null, Font.PLAIN,12));
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			slider.addChangeListener(this);
+			//slider.addChangeListener(this);
 			panel.add(label,BorderLayout.WEST);
 			panel.add(slider,BorderLayout.EAST);
 		}

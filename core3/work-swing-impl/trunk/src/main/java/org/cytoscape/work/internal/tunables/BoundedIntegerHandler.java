@@ -37,7 +37,7 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
 			label.setFont(new Font(null, Font.PLAIN,12));
 			panel.add(label,BorderLayout.WEST);
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			slider.addChangeListener(this);
+			//slider.addChangeListener(this);
 			panel.add(slider,BorderLayout.EAST);
 		}
 		else{
