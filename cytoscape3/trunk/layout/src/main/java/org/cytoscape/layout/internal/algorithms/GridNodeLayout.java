@@ -43,9 +43,10 @@ import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
 import org.cytoscape.work.UndoSupport;
-import org.cytoscape.tunable.TunableFactory;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.work.Tunable;
+//import org.cytoscape.tunable.TunableFactory;
+//import org.cytoscape.tunable.Tunable;
+//import org.cytoscape.tunable.ModuleProperties;
 
 import javax.swing.*;
 import java.awt.GridLayout;
@@ -58,14 +59,26 @@ import java.util.List;
  * the default layout for Cytoscape data readers.
  */
 public class GridNodeLayout extends AbstractLayout {
-	private ModuleProperties layoutProperties;
-	private double nodeVerticalSpacing = 80.0; 
-	private double nodeHorizontalSpacing = 80.0; 
+
+//	private ModuleProperties layoutProperties;
+
+	@Tunable(description="Vertical spacing between nodes")
+	public double nodeVerticalSpacing = 40.0; 
+
+	@Tunable(description="Horizontal spacing between nodes")
+	public double nodeHorizontalSpacing = 80.0; 
+
 	/**
 	 * Creates a new GridNodeLayout object.
 	 */
 	public GridNodeLayout(UndoSupport un) {
 		super(un);
+//		initProps();
+	}
+
+/*
+
+	private void initProps() {
 		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
         layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing", "Horizontal spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
         layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
@@ -93,6 +106,13 @@ public class GridNodeLayout extends AbstractLayout {
         layoutProperties.revertProperties();
     }
 
+    public JPanel getSettingsPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.add(layoutProperties.getTunablePanel());
+
+       return panel;
+	}
+*/
 
 	/**
 	 *  DOCUMENT ME!
@@ -120,13 +140,6 @@ public class GridNodeLayout extends AbstractLayout {
 	 */
 	public boolean supportsSelectedOnly() {
 		return true;
-	}
-
-    public JPanel getSettingsPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1));
-        panel.add(layoutProperties.getTunablePanel());
-
-       return panel;
 	}
 
 
