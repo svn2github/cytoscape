@@ -17,6 +17,7 @@
 		<!-- System Bundle Versions -->
 		<spring.version>2.5.5</spring.version>
 		<spring.osgi.version>1.1.2</spring.osgi.version>
+		<junit.version>3.8.1</junit.version>
 	</properties>
 
 	<distributionManagement>
