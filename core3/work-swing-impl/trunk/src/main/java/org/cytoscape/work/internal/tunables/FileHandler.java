@@ -20,7 +20,6 @@ public class FileHandler extends AbstractGuiHandler {
 	
 	public FileHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-		System.out.println("hello world");
 		filechoosen = false;
 		fileChooser = new JFileChooser();
 
@@ -34,7 +33,6 @@ public class FileHandler extends AbstractGuiHandler {
 		panel.add(path,BorderLayout.WEST);
 		button = new JButton("Select File...");
 		button.addActionListener(this);
-		System.out.println("wtf");
 		panel.add(button,BorderLayout.EAST);
 			
 	}
