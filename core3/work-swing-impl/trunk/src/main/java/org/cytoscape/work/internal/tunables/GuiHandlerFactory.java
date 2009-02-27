@@ -1,6 +1,7 @@
 package org.cytoscape.work.internal.tunables;
 
 import java.lang.reflect.Field;
+import java.net.URL;
 
 import java.io.File;
 
@@ -40,8 +41,8 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 			return new ListMultipleHandler<String>(f,o,t);
 		else if(type == File.class)
 			return new FileHandler(f,o,t);
-//		else if(type == myURL.class)
-//			return new URLHandler(f,o,t);
+		else if(type == URL.class)
+			return new URLHandler(f,o,t);
 		return null;
 	}
 }
