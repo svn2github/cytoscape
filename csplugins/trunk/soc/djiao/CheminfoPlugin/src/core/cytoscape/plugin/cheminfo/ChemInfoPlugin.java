@@ -621,6 +621,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
  	 * @param newNetwork if 'true' a new network is created and 
  	 */
 	private void createScoreTable(Collection<GraphObject>selection, ChemInfoSettingsDialog dialog, boolean newNetwork) {
+		System.out.println("Creating score table");
 		TanimotoScorerTask scorer = new TanimotoScorerTask(selection, dialog, newNetwork);
 		TaskManager.executeTask(scorer, scorer.getDefaultTaskConfig());
 	}

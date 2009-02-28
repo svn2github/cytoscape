@@ -530,7 +530,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 				int row = sorter.modelIndex(table.rowAtPoint(p));
 				int column = table.convertColumnIndexToModel(table.columnAtPoint(p));
 				final Compound c = compoundList.get(row);
-				if (column == 4) {
+				if (tableModel.getColumnClass(column) == Compound.class) {
 					final List<Compound> cList = new ArrayList();
 					cList.add(c);
 					Runnable t = new Runnable() {
