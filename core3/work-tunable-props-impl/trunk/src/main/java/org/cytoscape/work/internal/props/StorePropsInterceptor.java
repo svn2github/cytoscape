@@ -2,10 +2,10 @@ package org.cytoscape.work.internal.props;
 
 import java.util.*;
 
-import org.cytoscape.work.AbstractTunableInterceptor;
+import org.cytoscape.work.spring.SpringTunableInterceptor;
 
 
-public class StorePropsInterceptor extends AbstractTunableInterceptor<PropHandler> {
+public class StorePropsInterceptor extends SpringTunableInterceptor<PropHandler> {
 	private Properties inputProps;
 
 	public StorePropsInterceptor(Properties inputProps) {
@@ -13,13 +13,9 @@ public class StorePropsInterceptor extends AbstractTunableInterceptor<PropHandle
 		this.inputProps = inputProps;
 	}
 
-//		protected void processProps(List<PropHandler> lh) {
-//		for (PropHandler p : lh) {
-//			inputProps.putAll(p.getProps());
-//		}
-//	}
-	
-	public boolean createUI(Object... objs) {
+	public boolean createUI(Object... pobjs) {
+		Object[] objs = convertSpringProxyObjs(pobjs);
+		
 		java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
