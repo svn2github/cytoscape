@@ -75,7 +75,7 @@ public class CPathProtocol {
     /**
      * Currently Supported Version.
      */
-    public static final String CURRENT_VERSION = "2.0";
+    public static final String CURRENT_VERSION = "3.0";
 
     /**
      * Get Records By Keyword.
