@@ -102,6 +102,7 @@
     <!-- some example OSGi runtime properties -->
     <org.osgi.service.http.port>8080</org.osgi.service.http.port>
     <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
+	<felix.fragment.validation>warning</felix.fragment.validation>
   </properties>
 
   <packaging>pom</packaging>
@@ -192,8 +193,7 @@
           <provision>
             <param>--log=DEBUG</param>
             <param>--platform=felix</param>
-            <param>--version=1.4.1</param>
-            <param>--profiles=log</param>
+            <param>--profiles=minimal</param>
             <param>--vmOptions=-Xbootclasspath/a:bundles/cytoscape-sun.jhall_1.0.0.jar</param>
           </provision>
         </configuration>
