@@ -173,10 +173,10 @@ public class BelowAndAbovePanel extends JPanel {
 			if (e.getClickCount() == 2) {
 				Object newValue = null;
 
-				if (type.getDataType() == Color.class) {
+				if (type.getType() == Color.class) {
 					newValue = CyColorChooser.showDialog(caller, "Select new color", boxColor);
 					caller.setColor((Color) newValue);
-				} else if (type.getDataType() == Number.class) {
+				} else if (type.getType() == Number.class) {
 					newValue = Double.parseDouble(JOptionPane.showInputDialog(caller,
 					                                                          "Please enter new value."));
 					caller.setValue(newValue);
@@ -188,7 +188,7 @@ public class BelowAndAbovePanel extends JPanel {
 
 				final ContinuousMapping cMapping;
 
-				if (type.isNodeProp())
+				if (type.getObjectType().equals(VisualProperty.NODE))
 					cMapping = (ContinuousMapping) vmm.getVisualStyle().getNodeAppearanceCalculator()
 					                                  .getCalculator(type).getMapping(0);
 				else

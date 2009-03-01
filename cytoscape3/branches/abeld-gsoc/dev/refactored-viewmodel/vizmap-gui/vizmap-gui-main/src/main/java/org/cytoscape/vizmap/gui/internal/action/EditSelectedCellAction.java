@@ -108,7 +108,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 		
-		if (type.isNodeProp()) {
+		if (type.getObjectType().equals(VisualProperty.NODE)) {
 			mapping = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 			             .getMapping(0);
 			attr = targetNetwork.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);

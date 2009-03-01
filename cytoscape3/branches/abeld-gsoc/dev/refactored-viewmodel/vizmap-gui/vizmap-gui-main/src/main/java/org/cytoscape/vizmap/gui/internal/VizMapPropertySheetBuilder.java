@@ -263,7 +263,7 @@ public class VizMapPropertySheetBuilder {
 				type = (VisualProperty) calculatorTypeProp
 						.getHiddenObject();
 
-				if (type.isNodeProp()) {
+				if (type.getObjectType().equals(VisualProperty.NODE)) {
 					editorReg.registerEditor(calculatorTypeProp, editorFactory
 							.getDefaultComboBoxEditor("nodeAttrEditor"));
 				} else {
@@ -312,7 +312,7 @@ public class VizMapPropertySheetBuilder {
 			} else
 				mapping = calc.getMapping(0);
 
-			if ((mapping == null) && type.isAllowed())
+			if (mapping == null)
 				getUnusedVisualPropType().add(type);
 
 			mapping = null;
@@ -347,7 +347,7 @@ public class VizMapPropertySheetBuilder {
 				if (type instanceof VisualProperty) {
 					MappingCalculator mapping;
 
-					if (((VisualProperty) type).isNodeProp())
+					if (((VisualProperty) type).getObjectType().equals(VisualProperty.NODE))
 						mapping = vmm.getVisualStyle()
 								.getNodeAppearanceCalculator().getCalculator(
 										((VisualProperty) type))

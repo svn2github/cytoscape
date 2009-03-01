@@ -90,7 +90,7 @@ public class EditorFactoryImpl implements EditorFactory {
 
 	private EditorDisplayer findEditor(VisualProperty type,
 			EditorDisplayer.Type edType) {
-		final Class<?> dataType = type.getDataType();
+		final Class<?> dataType = type.getType();
 
 		for (EditorDisplayer disp : displayers)
 			if ((dataType == disp.getDataType())

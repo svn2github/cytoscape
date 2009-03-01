@@ -119,7 +119,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 		this.type = type;
 
-		if (type.isNodeProp())
+		if (type.getObjectType().equals(VisualProperty.NODE))
 			title = vmm.getVisualStyle()
 			                 .getNodeAppearanceCalculator().getCalculator(type).getMapping(0)
 			                 .getControllingAttributeName();

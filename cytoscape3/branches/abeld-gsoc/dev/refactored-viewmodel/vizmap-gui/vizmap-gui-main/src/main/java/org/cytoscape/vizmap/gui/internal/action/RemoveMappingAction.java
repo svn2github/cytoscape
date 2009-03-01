@@ -53,7 +53,7 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 						editorWindowManager.removeEditorWindow(type);
 
 					removeMapping(type);
-//					if (type.isNodeProp()) {
+//					if (type.getObjectType().equals(VisualProperty.NODE)) {
 //						vmm.getVisualStyle().getNodeAppearanceCalculator()
 //								.removeCalculator(type);
 //					} else {
@@ -88,7 +88,7 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 	}
 
 	private void removeMapping(final VisualProperty type) {
-		if (type.isNodeProp()) {
+		if (type.getObjectType().equals(VisualProperty.NODE)) {
 			vmm.getVisualStyle().getNodeAppearanceCalculator()
 					.removeCalculator(type);
 		} else {

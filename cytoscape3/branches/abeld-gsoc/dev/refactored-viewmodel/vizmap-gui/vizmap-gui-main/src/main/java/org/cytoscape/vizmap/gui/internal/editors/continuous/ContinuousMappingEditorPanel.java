@@ -379,7 +379,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		final Map<String, CyDataTable> attrs;
 		
 		final CyDataTable attr;
-		if (type.isNodeProp()) {
+		if (type.getObjectType().equals(VisualProperty.NODE)) {
 			attrs = cyNetworkManager.getCurrentNetwork().getNodeCyDataTables();
 			calculator = vmm.getVisualStyle()
 			                      .getNodeAppearanceCalculator().getCalculator(type);

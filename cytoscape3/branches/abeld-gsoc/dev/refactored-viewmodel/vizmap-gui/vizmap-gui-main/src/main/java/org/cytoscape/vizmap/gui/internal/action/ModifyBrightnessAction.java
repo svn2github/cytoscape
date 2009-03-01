@@ -104,7 +104,7 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 
 			final CyDataTable attr;
 
-			if (type.isNodeProp()) {
+			if (type.getObjectType().equals(VisualProperty.NODE)) {
 				attr = targetNetwork.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 				          .getMapping(0);
@@ -129,7 +129,7 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 			/*
 			 * Create random colors
 			 */
-			if (type.getDataType() == Color.class) {
+			if (type.getType() == Color.class) {
 				Object c;
 
 				if (functionType == BRIGHTER) {
@@ -159,7 +159,7 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 
 			final VizMapperProperty newRootProp = new VizMapperProperty();
 
-			if (type.isNodeProp())
+			if (type.getObjectType().equals(VisualProperty.NODE))
 				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
 				                                    .getCalculator(type), newRootProp,
 				                                 VizMapperMainPanel.NODE_VISUAL_MAPPING, propertySheetPanel);

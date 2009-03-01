@@ -513,7 +513,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VisualProperty type = ((VisualProperty) prop
 					.getHiddenObject());
 
-			Class dataType = type.getDataType();
+			Class dataType = type.getType();
 
 			// if (dataType == Color.class) {
 			// rainbow1.setEnabled(true);

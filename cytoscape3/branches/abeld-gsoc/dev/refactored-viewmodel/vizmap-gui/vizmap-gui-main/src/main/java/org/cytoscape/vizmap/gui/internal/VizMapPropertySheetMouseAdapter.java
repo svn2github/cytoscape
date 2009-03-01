@@ -80,7 +80,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 				newProp.setHiddenObject(type);
 				newProp.setValue("Please select a value!");
 
-				if (type.isNodeProp()) {
+				if (type.getObjectType().equals(VisualProperty.NODE)) {
 					newProp
 							.setCategory(AbstractVizMapperPanel.NODE_VISUAL_MAPPING);
 					editorReg
@@ -130,7 +130,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 				final MappingCalculator selectedMapping;
 				Calculator calc = null;
 
-				if (type.isNodeProp()) {
+				if (type.getObjectType().equals(VisualProperty.NODE)) {
 					calc = vmm.getVisualStyle().getNodeAppearanceCalculator()
 							.getCalculator(type);
 				} else {

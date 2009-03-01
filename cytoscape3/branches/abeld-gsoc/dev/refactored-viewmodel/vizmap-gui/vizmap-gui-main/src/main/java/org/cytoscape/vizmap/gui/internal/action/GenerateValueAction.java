@@ -67,7 +67,7 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 
 			final CyDataTable attr;
 
-			if (type.isNodeProp()) {
+			if (type.getObjectType().equals(VisualProperty.NODE)) {
 				attr = targetNetworkView.getNetwork().getNodeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator()
@@ -106,7 +106,7 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 //			float sat = 0;
 //			float br = 0;
 //
-//			if (type.getDataType() == Color.class) {
+//			if (type.getType() == Color.class) {
 //				int i = 0;
 //
 //				if (functionType == RAINBOW1) {
@@ -132,7 +132,7 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 //								((Number) (rand.nextFloat() * MAX_COLOR))
 //										.intValue()));
 //				}
-//			} else if ((type.getDataType() == Number.class)
+//			} else if ((type.getType() == Number.class)
 //					&& (functionType == RANDOM)) {
 //				final String range = JOptionPane.showInputDialog(
 //						visualPropertySheetPanel,
@@ -163,7 +163,7 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 
 //			final VizMapperProperty newRootProp = new VizMapperProperty();
 //
-//			if (type.isNodeProp())
+//			if (type.getObjectType().equals(VisualProperty.NODE))
 //				buildProperty(visualMappingManager.getVisualStyle()
 //						.getNodeAppearanceCalculator().getCalculator(type),
 //						newRootProp, NODE_VISUAL_MAPPING);

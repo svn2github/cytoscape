@@ -537,7 +537,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			this.setIconTextGap(55);
 
 			if (value instanceof VisualProperty
-			    && (((VisualProperty) value).getDataType() == String.class)) {
+			    && (((VisualProperty) value).getType() == String.class)) {
 				final Object defVal = ((VisualProperty) value).getDefault(vmm.getVisualStyle());
 
 				if (defVal != null) {

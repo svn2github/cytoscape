@@ -97,7 +97,7 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 			final MappingCalculator oMap;
 			final CyDataTable attr;
 
-			if (type.isNodeProp()) {
+			if (type.getObjectType().equals(VisualProperty.NODE)) {
 				attr = targetNetwork.getNodeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
 				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator()
@@ -144,7 +144,7 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 				return;
 			}
 
-			if (type.getDataType() == Number.class) {
+			if (type.getType() == Number.class) {
 				for (Object key : attrSet) {
 					valueMap.put(key, st);
 					st = st + inc;
@@ -160,7 +160,7 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 
 			final VizMapperProperty newRootProp = new VizMapperProperty();
 
-			if (type.isNodeProp())
+			if (type.getObjectType().equals(VisualProperty.NODE))
 				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle()
 						.getNodeAppearanceCalculator().getCalculator(type),
 						newRootProp, VizMapperMainPanel.NODE_VISUAL_MAPPING, propertySheetPanel);

@@ -121,7 +121,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		this.above = above;
 		this.type = type;
 
-		if (type.isNodeProp())
+		if (type.getObjectType().equals(VisualProperty.NODE))
 			cMapping = (ContinuousMapping) vmm.getVisualStyle()
 			                                        .getNodeAppearanceCalculator()
 			                                        .getCalculator(type).getMapping(0);

@@ -109,7 +109,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 				CyDataTable attr;
 
-				if (type.isNodeProp()) {
+				if (type.getObjectType().equals(VisualProperty.NODE)) {
 					attr = cyNetworkManager.getCurrentNetwork()
 							.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 				} else {
@@ -154,7 +154,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		MappingCalculator mapping;
 		final Calculator curCalc;
 
-		if (type.isNodeProp()) {
+		if (type.getObjectType().equals(VisualProperty.NODE)) {
 			curCalc = vmm.getVisualStyle().getNodeAppearanceCalculator()
 					.getCalculator(type);
 		} else {
@@ -177,7 +177,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			 */
 			final CyDataTable attrForTest;
 
-			if (type.isNodeProp()) {
+			if (type.getObjectType().equals(VisualProperty.NODE)) {
 				attrForTest = cyNetworkManager.getCurrentNetwork()
 						.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 			} else {
@@ -235,7 +235,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 			final VizMapperProperty newRootProp = new VizMapperProperty();
 
-			if (type.isNodeProp())
+			if (type.getObjectType().equals(VisualProperty.NODE))
 				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
 						vmm.getVisualStyle().getNodeAppearanceCalculator()
 								.getCalculator(type), newRootProp,
@@ -274,8 +274,8 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 		Object key = null;
 
-		if ((type.getDataType() == Number.class)
-				|| (type.getDataType() == String.class)) {
+		if ((type.getType() == Number.class)
+				|| (type.getType() == String.class)) {
 			key = e.getOldValue();
 
 			// TODO WTF?
@@ -295,7 +295,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		final CyDataTable attr;
 		ctrAttrName = mapping.getControllingAttributeName();
 
-		if (type.isNodeProp()) {
+		if (type.getObjectType().equals(VisualProperty.NODE)) {
 			attr = cyNetworkManager.getCurrentNetwork().getNodeCyDataTables()
 					.get(CyNetwork.DEFAULT_ATTRS);
 		} else {
@@ -315,7 +315,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 		Object newValue = e.getNewValue();
 
-		if (type.getDataType() == Number.class) {
+		if (type.getType() == Number.class) {
 			if ((((Number) newValue).doubleValue() == 0)
 					|| (newValue instanceof Number
 							&& type.toString().endsWith("OPACITY") && (((Number) newValue)
@@ -378,7 +378,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 		Calculator oldCalc = null;
 
-		if (type.isNodeProp())
+		if (type.getObjectType().equals(VisualProperty.NODE))
 			oldCalc = vmm.getVisualStyle().getNodeAppearanceCalculator()
 					.getCalculator(type);
 		else
@@ -396,7 +396,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 		newCalc.getMapping(0).setControllingAttributeName((String) attrName);
 
-		if (type.isNodeProp()) {
+		if (type.getObjectType().equals(VisualProperty.NODE)) {
 			vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(
 					newCalc);
 		} else
@@ -434,7 +434,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 		final VizMapperProperty newRootProp = new VizMapperProperty();
 
-		if (type.isNodeProp())
+		if (type.getObjectType().equals(VisualProperty.NODE))
 			vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
 					vmm.getVisualStyle().getNodeAppearanceCalculator()
 							.getCalculator(type), newRootProp,
