@@ -13,7 +13,7 @@ import org.cytoscape.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.CyColorCellRenderer;
 import org.cytoscape.vizmap.gui.internal.editors.discrete.CyColorPropertyEditor;
 
-import cytoscape.util.CyColorChooser;
+import org.cytoscape.vizmap.gui.internal.CyColorChooser;
 
 
 public class DiscreteColor implements EditorDisplayer {

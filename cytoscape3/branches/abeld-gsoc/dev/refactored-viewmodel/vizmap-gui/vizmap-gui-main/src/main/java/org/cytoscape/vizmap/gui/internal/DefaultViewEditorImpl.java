@@ -79,7 +79,7 @@ import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
-import cytoscape.util.CyColorChooser;
+import org.cytoscape.vizmap.gui.internal.CyColorChooser;
 
 
 /**

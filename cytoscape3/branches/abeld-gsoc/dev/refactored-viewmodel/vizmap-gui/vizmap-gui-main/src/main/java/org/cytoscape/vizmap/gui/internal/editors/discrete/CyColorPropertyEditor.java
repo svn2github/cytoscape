@@ -32,7 +32,7 @@ import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 import com.l2fprod.common.util.ResourceManager;
 
-import cytoscape.util.CyColorChooser;
+import org.cytoscape.vizmap.gui.internal.CyColorChooser;
 
 
 /**

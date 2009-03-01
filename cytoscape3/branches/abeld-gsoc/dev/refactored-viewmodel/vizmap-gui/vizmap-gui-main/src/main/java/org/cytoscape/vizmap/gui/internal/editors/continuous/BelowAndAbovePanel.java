@@ -54,7 +54,7 @@ import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 
 import cytoscape.Cytoscape;
-import cytoscape.util.CyColorChooser;
+import org.cytoscape.vizmap.gui.internal.CyColorChooser;
 
 
 /**

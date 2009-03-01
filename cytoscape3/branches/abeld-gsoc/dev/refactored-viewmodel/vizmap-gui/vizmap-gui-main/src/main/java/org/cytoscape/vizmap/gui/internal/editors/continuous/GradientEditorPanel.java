@@ -54,7 +54,7 @@ import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
 
 import cytoscape.Cytoscape;
-import cytoscape.util.CyColorChooser;
+import org.cytoscape.vizmap.gui.internal.CyColorChooser;
 
 
 /**
