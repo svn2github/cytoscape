@@ -45,11 +45,12 @@ import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.VisualPropertyCatalog;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 class EdgeBypass extends VizMapBypass {
-	EdgeBypass(EditorFactory ef) {
-		super(ef);
+	EdgeBypass(EditorFactory ef,  VisualPropertyCatalog vpCatalog) {
+		super(ef, vpCatalog);
 	}
     JMenuItem addMenu(CyEdge e) {
         graphObj = e;
@@ -59,8 +60,8 @@ class EdgeBypass extends VizMapBypass {
 		// horrible, horrible hack
 		BypassHack.setCurrentObject( e );
 
-		for ( VisualProperty type : VisualProperty.getEdgeVisualPropertyList() ) 
-			addMenuItem(menu, type);
+		for ( VisualProperty<?> vp: vpCatalog.collectionOfVisualProperties(VisualProperty.EDGE) ) // FIXME: pass in network instance so that it will be limited to that 
+			addMenuItem(menu, vp);
 
         addResetAllMenuItem(menu);
 
@@ -70,8 +71,8 @@ class EdgeBypass extends VizMapBypass {
     protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for ( VisualProperty type : VisualProperty.getEdgeVisualPropertyList() )
-			l.add( type.getBypassAttrName() );
+		for ( VisualProperty<?> vp: vpCatalog.collectionOfVisualProperties(VisualProperty.EDGE) )
+			l.add( vp.getName() );
 		
 		return l;
     }

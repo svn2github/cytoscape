@@ -50,6 +50,7 @@ import org.cytoscape.model.GraphObject;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.viewmodel.VisualPropertyCatalog;
 import org.cytoscape.vizmap.gui.editors.EditorFactory;
 
 import cytoscape.Cytoscape;
@@ -66,9 +67,12 @@ abstract class VizMapBypass {
 	abstract protected List<String> getBypassNames();
 
 	protected EditorFactory editorFactory;
+	
+	protected VisualPropertyCatalog vpCatalog;
 
-	VizMapBypass(EditorFactory editorFactory) {
+	VizMapBypass(EditorFactory editorFactory, VisualPropertyCatalog vpCatalog) {
 		this.editorFactory = editorFactory;
+		this.vpCatalog = vpCatalog;
 	}
 
 	protected void addResetAllMenuItem(JMenu menu) {
@@ -94,7 +98,7 @@ abstract class VizMapBypass {
 				public void actionPerformed(ActionEvent e) {
 					CyRow row = graphObj.attrs();
 
-					row.set(type.getBypassAttrName(),""); // TODO set to null instead?
+					row.set(type.getName(),""); // TODO set to null instead?
 
 					//Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
@@ -103,7 +107,7 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 	}
 
-	protected void addMenuItem(final JMenu menu, final VisualProperty type) {
+	protected void addMenuItem(final JMenu menu, final VisualProperty<?> type) {
 		
 		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
 				private final static long serialVersionUID = 1202339876717506L;
@@ -122,28 +126,17 @@ abstract class VizMapBypass {
 
 					String val = ObjectToString.getStringValue(obj);
 					CyDataTable table = graphObj.attrs().getDataTable();
-					if ( !table.getColumnTypeMap().containsKey( type.getBypassAttrName() ) )
-						table.createColumn( type.getBypassAttrName(), String.class, false );
-					graphObj.attrs().set(type.getBypassAttrName(), val);
+					if ( !table.getColumnTypeMap().containsKey( type.getName() ) )
+						table.createColumn( type.getName(), String.class, false );
+					graphObj.attrs().set(type.getName(), val);
 					//Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
 			});
 
 		menu.add(jmi);
-		
-		// Check node size lock state 
-		if(type.equals(VisualProperty.NODE_SIZE)) {
-			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
-				jmi.setEnabled(false);
-			}
-		} else if(type.equals(VisualProperty.NODE_WIDTH) || type.equals(VisualProperty.NODE_HEIGHT)) {
-			if(vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
-				jmi.setEnabled(false);
-			}
-		}
 
-		String attrString = graphObj.attrs().get(type.getBypassAttrName(),String.class);
+		String attrString = graphObj.attrs().get(type.getName(),String.class);
 
 		if ((attrString == null) || (attrString.length() == 0))
 			jmi.setSelected(false);
