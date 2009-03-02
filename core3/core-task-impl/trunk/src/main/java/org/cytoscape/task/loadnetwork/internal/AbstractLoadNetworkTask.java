@@ -41,6 +41,7 @@ import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Properties;
+import java.io.IOException;
 
 import org.cytoscape.io.read.CyReader;
 import org.cytoscape.io.read.CyReaderManager;
@@ -80,59 +81,53 @@ abstract class AbstractLoadNetworkTask implements Task {
 		this.props = props;
 	}
 
-	protected void loadNetwork(CyReader reader) {
+	protected void loadNetwork(CyReader reader) throws Exception {
 		if (reader == null) 
-			//taskMonitor.setException(new IOException("Could not read file"), "Could not read file");
-			taskMonitor.setStatusMessage("Could not read file");
+			throw new Exception("Could not read file: file reader was null");
 
+		try {
 		myThread = Thread.currentThread();
 
 		taskMonitor.setStatusMessage("Reading in Network Data...");
 
-		try {
-			taskMonitor.setProgress(-1.0);
+		taskMonitor.setProgress(-1.0);
 
-			taskMonitor.setStatusMessage("Creating Cytoscape Network...");
+		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
-			reader.read();
+		reader.read();
 
-			CyNetwork cyNetwork = reader.getReadData(CyNetwork.class); 
-			cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name,netmgr));
-			GraphView view = gvf.createGraphView( cyNetwork );
+		CyNetwork cyNetwork = reader.getReadData(CyNetwork.class); 
+		cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name,netmgr));
+		GraphView view = gvf.createGraphView( cyNetwork );
 
-			taskMonitor.setStatusMessage("Performing layout...");
-			cyl.getDefaultLayout().doLayout(view);
-			taskMonitor.setStatusMessage("Layout complete");
+		taskMonitor.setStatusMessage("Performing layout...");
+		cyl.getDefaultLayout().doLayout(view);
+		taskMonitor.setStatusMessage("Layout complete");
 
-			// TODO NEED RENDERER
-			view.fitContent();
+		// TODO NEED RENDERER
+		view.fitContent();
 
-			netmgr.addNetwork( cyNetwork );
-			netmgr.addNetworkView( view );
+		netmgr.addNetwork( cyNetwork );
+		netmgr.addNetworkView( view );
 
-			if (cyNetwork != null) {
-				informUserOfGraphStats(cyNetwork);
-			} else {
-				StringBuffer sb = new StringBuffer();
-				sb.append("Could not read network from: ");
-				sb.append(name);
-				sb.append("\nThis file may not be a valid file format.");
-				//taskMonitor.setException(new IOException(sb.toString()), sb.toString());
-				taskMonitor.setStatusMessage(sb.toString());
-			}
+		if (cyNetwork != null) {
+			informUserOfGraphStats(cyNetwork);
+		} else {
+			StringBuffer sb = new StringBuffer();
+			sb.append("Could not read network from: ");
+			sb.append(name);
+			sb.append("\nThis file may not be a valid file format.");
+			throw new IOException(sb.toString());
+		}
 
-			taskMonitor.setProgress(1.0);
-		} catch (Exception e) {
-			//taskMonitor.setException(e, "Unable to load network.");
-			taskMonitor.setStatusMessage("Unable to load network. " + e.getMessage());
+		taskMonitor.setProgress(1.0);
 
-			return;
 		} finally {
 			reader = null;
 		}
 	}
 
-	abstract public void run(TaskMonitor taskMonitor);
+	abstract public void run(TaskMonitor taskMonitor) throws Exception;
 
 	/**
 	 * Inform User of Network Stats.

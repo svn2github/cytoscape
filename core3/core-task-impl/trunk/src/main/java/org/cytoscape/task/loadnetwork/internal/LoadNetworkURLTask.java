@@ -67,7 +67,7 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 	/**
 	 * Executes Task.
 	 */
-	public void run(TaskMonitor taskMonitor) {
+	public void run(TaskMonitor taskMonitor) throws Exception {
 		this.taskMonitor = taskMonitor;
 
 		if (uri == null)
@@ -86,17 +86,7 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
 		} catch (Exception e) {
 			uri = null;
-			taskMonitor.setStatusMessage("Unable to connect to URL " + name
-					+ ": " + e.getMessage());
-
-			return;
-		}
-
-		if (reader == null) {
-			uri = null;
-			taskMonitor.setStatusMessage("Unable to connect to URL " + name);
-
-			return;
+			throw new Exception("Unable to connect to URL " + name, e); 
 		}
 
 		loadNetwork(reader);

@@ -67,16 +67,12 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 	/**
 	 * Executes Task.
 	 */
-	public void run(TaskMonitor taskMonitor) {
+	public void run(TaskMonitor taskMonitor) throws Exception {
 		this.taskMonitor = taskMonitor;
 		// for ( File file : files ) {
 
-		try {
-			reader = mgr.getReader(file.getAbsolutePath(), NETWORK);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			reader = null;
-		}
+		reader = mgr.getReader(file.getAbsolutePath(), NETWORK);
+
 		uri = file.toURI();
 		name = file.getName();
 
