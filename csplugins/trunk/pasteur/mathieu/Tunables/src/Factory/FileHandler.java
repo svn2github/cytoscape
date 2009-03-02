@@ -10,7 +10,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import javax.swing.*;
 
-import org.cytoscape.io.CyFileFilter;
 
 import Tunable.*;
 import Utils.ChooseFilePanel;
@@ -25,7 +24,6 @@ public class FileHandler extends AbstractGuiHandler {
 	File[] myNetworkFile;
 	myFile file;
 	java.util.List<String> paths;
-	CyFileFilter[] tempCFF;
 	private boolean modal;
 	ChooseFilePanel test;
 	
@@ -34,7 +32,6 @@ public class FileHandler extends AbstractGuiHandler {
 		try{
 			this.file= (myFile) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		tempCFF = file.getCyFileFilter();
 		modal = file.getModal();
 		panel = new JPanel(new BorderLayout());
 		test = new ChooseFilePanel(file);
@@ -106,8 +103,7 @@ public class FileHandler extends AbstractGuiHandler {
     	return s;
     }
 
-	public File[] FileUtilImpl(JPanel panel, String string, int load,
-			CyFileFilter[] tempCFF2) {
+	public File[] FileUtilImpl(JPanel panel, String string, int load) {
 		// TODO Auto-generated method stub
 		return null;
 	}

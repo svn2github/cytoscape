@@ -2,7 +2,6 @@ package Command;
 
 import java.io.File;
 
-import org.cytoscape.io.CyFileFilter;
 
 import Tunable.Tunable;
 import Utils.myFile;
