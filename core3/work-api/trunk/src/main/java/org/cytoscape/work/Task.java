@@ -22,24 +22,25 @@ package org.cytoscape.work;
  * should not catch it and set a status message or the progress,
  * even to provide explanatory messages for the user.
  * A <code>TaskManager</code> can disregard status message
- * and progress updates once an exception is thrown.</li>
+ * and progress updates once an exception is thrown.
+ * Any helpful user messages regarding the exception should
+ * be contained solely in the exception.
  *
- * <li>Any helpful user messages regarding the exception should
- * be contained solely in the exception. If a <code>Task</code> throws
+ * <li>If a <code>Task</code> throws
  * a low level exception, it should catch it and throw
  * an exception with a high level description. For example:
- * <p><code>
- * try<br>
- * {<br>
- *   ...<br>
- * }<br>
- * catch (IOException exception) // Low level exception<br>
- * {<br>
- *   // Throw a high level exception that gives a high level explanation<br>
- *   // that makes sense for a non-technical user.<br>
- *   throw new Exception("Oops! Looks like you specified an invalid file.", exception)<br>
- * }<br>
- * </code></p>
+ * <p><pre><code>
+ * try
+ * {
+ *   ...
+ * }
+ * catch (IOException exception) // Low level exception
+ * {
+ *   // Throw a high level exception that gives a high level explanation
+ *   // that makes sense for a non-technical user.
+ *   throw new Exception("Oops! Looks like you specified an invalid file.", exception)
+ * }
+ * </code></pre></p>
  * Any helpful messages for the user should be contained in
  * an exception.</li>
  *
@@ -50,43 +51,99 @@ package org.cytoscape.work;
  * set the status message giving an explanation of the
  * error and exit. Instead, it should throw an exception.
  * <p>The wrong way:</p>
- * <p><code>
- * public void run(TaskMonitor taskMonitor)<br>
- * {<br>
- *   if (myParameter == null)<br>
- *   {<br>
- *     taskMonitor.setStatusMessage("Whoa, looks like you didn't specified the parameter!");<br>
- *     return;<br>
- *   }<br>
- * }<br>
- * </code></p>
+ * <p><pre><code>
+ * public void run(TaskMonitor taskMonitor)
+ * {
+ *   if (myParameter == null)
+ *   {
+ *     taskMonitor.setStatusMessage("Whoa, looks like you didn't specified the parameter!");
+ *     return;
+ *   }
+ * }
+ * </code></pre></p>
  * <p>The right way:</p>
- * <p><code>
- * public void run(TaskMonitor taskMonitor) throws Exception<br>
- * {<br>
- *   if (myParameter == null)<br>
- *     throw new Exception("Whoa, looks like you didn't specified the parameter!");<br>
- * }<br>
- * </code></p>
+ * <p><pre><code>
+ * public void run(TaskMonitor taskMonitor) throws Exception
+ * {
+ *   if (myParameter == null)
+ *     throw new Exception("Whoa, looks like you didn't specified the parameter!");
+ * }
+ * </code></pre></p>
  * This is done because it is possible for the <code>TaskManager</code> to close
  * the <code>Task</code>'s user interface when the <code>Task</code> returns
- * before the user can read the message. Throwing an exception ensures that
+ * before the user can read the message. Throwing an exception ensures 
  * the user will see the message.</li>
+ *
+ * <li>
+ * The <code>Task</code>, when specifying its status message,
+ * should describe what it will <i>do</i>, not what it has <i>done</i>.
+ * Specifically, if the <code>Task</code> has several constituent parts,
+ * it should set its status message at the beginning of a part, not at the
+ * end. For example, assume a <code>Task</code> has two parts, A and B:
+ * <p><pre><code>
+ * public void run(TaskMonitor taskMonitor)
+ * {
+ *   taskMonitor.setStatusMessage("Starting part A...");
+ *   ... // do part A
+ *   taskMonitor.setStatusMessage("Part A is done!");
+ *
+ *   taskMonitor.setStatusMessage("Starting part B...");
+ *   ... // do part B
+ *   taskMonitor.setStatusMessage("Part B is done!");
+ * }
+ * </code></pre></p>
+ * Setting the status message after part A is unnecessary
+ * because the status message is immediately changed when
+ * part B starts. Setting the status message after part B
+ * is unnecessary because the <code>Task</code> ends immediately
+ * after part B finishes. Therefore, <code>Task</code>s should
+ * set the status message at the beginning of a part.
+ * </li>
+ *
+ * <li>
+ * Information regarding the result of the <code>Task</code>'s
+ * should not be specified in the status message. For example:
+ * <p><pre><code>
+ * public void run(TaskMonitor taskMonitor)
+ * {
+ *   int result = ... // some complicated computation
+ *   taskMonitor.setStatusMessage("The result of the computation is " + result);
+ *   // Give the user a chance to read the message:
+ *   try
+ *   {
+ *     Thread.wait(1000);
+ *   }
+ *   catch (InterruptedException exception) { }
+ * }
+ * </code></pre></p>
+ * This is because the purpose of the status message is to inform the
+ * user what the <code>Task</code> is currently <i>doing</i>, not what it
+ * has <i>done</i>. If the <code>Task</code> wishes to provide any information
+ * regarding what it has done, it must do so through alternate means.
+ * </li>
  *
  * <li>The <code>Task</code> should not set the status message or progress
  * immediately before the <code>Task</code> finishes. This is because the
  * <code>TaskManager</code> may close the <code>Task</code>'s user interface
  * before the user has a chance to read it. For example:
- * <p><code>
- * public void run(TaskMonitor taskMonitor) throws Exception<br>
- * {<br>
- *   ... // Some complicated calculation<br>
- *   <br>
- *   // This is unnecessary:<br>
- *   taskMonitor.setStatusMessage("We're all done!");<br>
- *   taskMonitor.setProgress(1.0);<br>
- * }<br>
- * </code></p>
+ * <p><pre><code>
+ * public void run(TaskMonitor taskMonitor) throws Exception
+ * {
+ *   ... // Some complicated calculation
+ *   
+ *   // This is unnecessary:
+ *   taskMonitor.setStatusMessage("We're all done!");
+ *   taskMonitor.setProgress(1.0);
+ * }
+ * </code></pre></p>
+ * </li>
+ *
+ * <li>
+ * To specify an indefinite state in the progress bar, the <code>Task</code>
+ * should set its progress by using the <code>setProgress</code>
+ * method of <code>TaskMonitor</code> to <code>0.0</code>. Because the
+ * initial progress is <code>0.0</code>, it is not necessary to do this
+ * at the beginning of the <code>Task</code>.
  * </li>
  * </ul></p>
  *
@@ -110,7 +167,10 @@ public interface Task
 	 * If a <code>Task</code> does not throw an exception,
 	 * the <code>Task</code> implementation does <i>not</i>
 	 * need to specify the <code>throws Exception</code> clause 
-	 * for the <code>run</code> method.
+	 * for the <code>run</code> method. Moreover, exceptions
+	 * should be <i>the</i> way the <code>Task</code> communicates
+	 * the occurance of a fatal error, like a low-level exception or an invalid parameter,
+	 * to the <code>TaskManager</code>.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception;
 

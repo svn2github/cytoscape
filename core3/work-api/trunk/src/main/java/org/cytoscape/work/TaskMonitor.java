@@ -19,7 +19,8 @@ public interface TaskMonitor
 	 * Tells the <code>TaskManager</code> how much progress has been
 	 * completed by the <code>Task</code>.
 	 *
-	 * @param progress Must be between 0.0 and 1.0.
+	 * @param progress Must be between <code>0.0</code> and <code>1.0</code>.
+	 * A value of <code>0.0</code> specifies an indefinite progress bar.
 	 */
 	public void setProgress(double progress);
 
