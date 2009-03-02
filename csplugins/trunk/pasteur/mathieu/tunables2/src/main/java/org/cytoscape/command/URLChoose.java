@@ -10,9 +10,9 @@ public class URLChoose implements Command{
 	public URL url;
 	
 	public URLChoose(){
-		try{
-			url = new URL("");
-		}catch(Exception e){e.printStackTrace();}
+//		try{
+//			url = new URL("");
+//		}catch(MalformedURLException e){e.printStackTrace();}
 	}
 
 	public void execute(){}
