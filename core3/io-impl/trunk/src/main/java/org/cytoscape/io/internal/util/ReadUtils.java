@@ -53,6 +53,8 @@ import cytoscape.task.TaskMonitor;
  */
 public class ReadUtils {
 	
+	private static final String LINE_SEP = System.getProperty("line.separator");
+	
 	private StreamUtil streamUtil;
 
 	public ReadUtils(StreamUtil streamUtil) {
@@ -134,14 +136,16 @@ public class ReadUtils {
 	 * @return  The contents of the given file as a string.
 	 */
 	public String getInputString(InputStream inputStream) throws IOException {
-		String lineSep = System.getProperty("line.separator");
-		StringBuffer sb = new StringBuffer();
-		String line = null;
-		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+		
+		final StringBuilder sb = new StringBuilder();
+		String line;
+		final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
 		while ((line = br.readLine()) != null)
-			sb.append(line + lineSep);
+			sb.append(line + LINE_SEP);
 
+		br.close();
+		
 		return sb.toString();
 	}
 }

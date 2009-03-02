@@ -66,9 +66,9 @@ public class Interaction {
 				source = strtok.nextToken().trim();
 			else if (counter == 1)
 				interactionType = strtok.nextToken().trim();
-			else {
+			else
 				targets.add(strtok.nextToken().trim());
-			}
+
 			counter++;
 		}
 	}

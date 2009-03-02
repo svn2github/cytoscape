@@ -58,93 +58,106 @@ import org.cytoscape.model.CyNode;
  */
 public class InteractionsReader implements CyReader {
 	
+	private static final String DEF_DELIMITER = " ";
+	private static final String LINE_SEP = System.getProperty("line.separator");
+	
+	private static final String NODE_NAME_ATTR_LABEL = "name";
+	
+	private static final String INTERACTION = "interaction";
+	
 	private ReadUtils readUtil;
 
 	private List<Interaction> interactions;
 	private InputStream inputStream;
 	private CyNetworkFactory networkFactory;
 
-	private Map<Class<?>, Object> readObjects = new HashMap<Class<?>, Object>();
+	private Map<Class<?>, Object> readObjects;
 
 	public InteractionsReader(CyNetworkFactory factory, ReadUtils readUtil) {
 		this.interactions = new ArrayList<Interaction>();
 		this.networkFactory = factory;
 		this.readUtil = readUtil;
+		this.readObjects = new HashMap<Class<?>, Object>();
 	}
 
 	public void read() throws IOException {
-
-		System.out.println("++++++++++ Start Reading SIF +++++++++++++");
+		refresh();
+		
+		String delimiter = DEF_DELIMITER;
+		
 		final String rawText = readUtil.getInputString(inputStream);
-		String delimiter = " ";
-
+		
 		if (rawText.indexOf("\t") >= 0)
 			delimiter = "\t";
 
-		final String[] lines = rawText.split(System
-				.getProperty("line.separator"));
+		final String[] lines = rawText.split(LINE_SEP);
 
 		final int size = lines.length;
 		for (int i=0; i < size; i++) {
-			System.out.println(lines[i]);
 			if (lines[i].length() <= 0)
 				continue;
 			interactions.add(new Interaction(lines[i], delimiter));
 		}
+		
+		if(inputStream != null) {
+			inputStream.close();
+			inputStream = null;
+		}
 
-		System.out.println("DONE!!!");
 		createNetwork();
 	}
 
+	private void refresh() {
+		readObjects.clear();
+		interactions.clear();
+		interactions = new ArrayList<Interaction>();
+		readObjects = new HashMap<Class<?>, Object>();
+	}
+	
 	private void createNetwork() {
 
 		final CyNetwork network = networkFactory.getInstance();
-		
-		// figure out how many nodes and edges we need before we create the
-		// graph;
-		// this improves performance for large graphs
-		final Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
-		int edgeCount = 0;
+
+		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
 
 		// put all node names in the Set
 		for (Interaction interaction : interactions) {
-
 			nodeMap.put(interaction.getSource(), null);
-
-			for (String target : interaction.getTargets()) {
+			for (String target : interaction.getTargets())
 				nodeMap.put(target, null);
-				edgeCount++;
-			}
 		}
 
+		CyNode node;
 		for (String nodeName : nodeMap.keySet()) {
-			
-			CyNode node = network.addNode();
-			node.attrs().set("name", nodeName);
+			node = network.addNode();
+			node.attrs().set(NODE_NAME_ATTR_LABEL, nodeName);
 			nodeMap.put(nodeName, node);
 		}
 
-		// Now loop over the interactions again, this time creating edges
-		// between
+		// Now loop over the interactions again, this time creating edges between
 		// all sources and each of their respective targets.
 		String srcName;
 		String interactionType;
-
+		CyEdge edge;
+		
 		for (Interaction interaction : interactions) {
 
 			srcName = interaction.getSource();
 			interactionType = interaction.getType();
 
 			for (String tgtName : interaction.getTargets()) {
-				CyEdge edge = network.addEdge(nodeMap.get(srcName), nodeMap
+				edge = network.addEdge(nodeMap.get(srcName), nodeMap
 						.get(tgtName), true);
-				edge.attrs().set("name",
+				edge.attrs().set(NODE_NAME_ATTR_LABEL,
 						srcName + " (" + interactionType + ") " + tgtName);
-				edge.attrs().set("interaction", interactionType);
+				edge.attrs().set(INTERACTION, interactionType);
 			}
 		}
-		System.out.println(network.getNodeCount() + ", " + network.getEdgeCount() + " = " + network.getClass());
+		
 		readObjects.put(CyNetwork.class, network);
+		
+		nodeMap.clear();
+		nodeMap = null;
 	}
 
 	public <T> T getReadData(Class<T> type) {
