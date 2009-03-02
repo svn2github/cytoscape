@@ -24,17 +24,40 @@
 <div class="article">
 <h3><a href="<?= $latest_download_link ?>">Download Cytoscape <?= $latest_version ?>!</a></h3>
 
-<a href="<?= $latest_release_notes_link ?>"><?= $latest_version ?>
-Release Notes &raquo; </a></div>
+<a href="<?= $latest_release_notes_link ?>"><?= $latest_version ?>   Release Notes &raquo; </a></div>
 </div>
 
 <? include "nav.php"; ?> <? include "detailed_nav.php"; ?>
 
 
 <div id="main">
+
 <div class="item">
 
-<h2><i>New!</i>Cytoscape 2.6.1</h2>
+<h2><b><i>NEW!</i></b> Cytoscape 2.6.2</h2>
+<div id="paragraph">
+This is a bug-fix release that should work with all 2.6.x plugins. There are no API changes.
+<p>
+Some issues that have been addressed in this release include: 
+<ul>
+<li>Fixed the webstart on Mac OS X problem.</li>
+<li>Fixed Linkout for Linux when no default browser is set.</li>
+<li>Fixed bugs: 1865, 1939, 1940, 1927, 1858, 1957, 1917, among others.</li>
+<li>Improved handling of metanodes.</li>
+<li>Improvements in the attribute browser that so that new line characters can now be specified.</li>
+<li>Improved all Cytoscape layouts to support graph partitioning, selected only, and so that
+configuration parameters are saved.</li>
+<li>Fixed various documentation issues.</li>
+<li>Fixed URL loading issues related to file type.</li>
+<li>Many other minor improvements.</li>
+</ul>
+
+</div>
+</div>
+
+<div class="item">
+
+<h2></i>Cytoscape 2.6.1</h2>
 <div id="paragraph">
 This is a minor bug-fix release that should work with all 2.6.0 plugins.
 <p>
