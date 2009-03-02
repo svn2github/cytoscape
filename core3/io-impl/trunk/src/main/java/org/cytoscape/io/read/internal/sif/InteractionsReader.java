@@ -38,15 +38,13 @@
 package org.cytoscape.io.read.internal.sif;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.cytoscape.io.internal.util.ReadUtils;
-import org.cytoscape.io.read.CyReader;
+import org.cytoscape.io.read.internal.AbstractNetworkReader;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -56,28 +54,20 @@ import org.cytoscape.model.CyNode;
  * Reader for graphs in the interactions file format. Given the filename,
  * provides the graph and attributes objects constructed from the file.
  */
-public class InteractionsReader implements CyReader {
+public class InteractionsReader extends AbstractNetworkReader {
 	
 	private static final String DEF_DELIMITER = " ";
 	private static final String LINE_SEP = System.getProperty("line.separator");
-	
-	private static final String NODE_NAME_ATTR_LABEL = "name";
 	
 	private static final String INTERACTION = "interaction";
 	
 	private ReadUtils readUtil;
 
 	private List<Interaction> interactions;
-	private InputStream inputStream;
-	private CyNetworkFactory networkFactory;
-
-	private Map<Class<?>, Object> readObjects;
-
 	public InteractionsReader(CyNetworkFactory factory, ReadUtils readUtil) {
+		super(factory);
 		this.interactions = new ArrayList<Interaction>();
-		this.networkFactory = factory;
 		this.readUtil = readUtil;
-		this.readObjects = new HashMap<Class<?>, Object>();
 	}
 
 	public void read() throws IOException {
@@ -158,19 +148,5 @@ public class InteractionsReader implements CyReader {
 		
 		nodeMap.clear();
 		nodeMap = null;
-	}
-
-	public <T> T getReadData(Class<T> type) {
-		return type.cast(readObjects.get(type));
-	}
-
-	public void setInputStream(InputStream is) {
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
-		inputStream = is;
-	}
-
-	public Set<Class<?>> getSupportedDataTypes() {
-		return readObjects.keySet();
 	}
 }
