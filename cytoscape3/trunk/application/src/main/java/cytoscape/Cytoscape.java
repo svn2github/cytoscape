@@ -55,7 +55,6 @@ import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VMMFactory;
 import org.cytoscape.vizmap.VisualMappingManager;
 
-import cytoscape.data.ExpressionData;
 import cytoscape.view.CySwingApplication;
 
 
@@ -92,11 +91,6 @@ public abstract class Cytoscape {
 	 *
 	 */
 	public static String DATASERVER_CHANGED = "DATASERVER_CHANGED";
-
-	/**
-	 *
-	 */
-	public static String EXPRESSION_DATA_LOADED = "EXPRESSION_DATA_LOADED";
 
 	/**
 	 *
@@ -255,7 +249,6 @@ public abstract class Cytoscape {
 
 	public static final String READER_CLIENT_KEY = "reader_client_key";
 
-	protected static ExpressionData expressionData;
 	protected static Object pcsO = new Object();
 	protected static SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(pcsO);
 
@@ -654,51 +647,6 @@ public abstract class Cytoscape {
 		if ( nm != null )
 			netmgr = nm;	
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static ExpressionData getExpressionData() {
-		return expressionData;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param expData DOCUMENT ME!
-	 */
-	public static void setExpressionData(ExpressionData expData) {
-		expressionData = expData;
-	}
-
-	/**
-	 * Load Expression Data
-	 */
-
-	public static boolean loadExpressionData(String filename, boolean copy_atts) {
-		try {
-			expressionData = new ExpressionData(filename);
-		} catch (Exception e) {
-			System.err.println("Unable to Load Expression Data");
-
-			String errString = "Unable to load expression data from " + filename;
-			String title = "Load Expression Data";
-		}
-
-		if (copy_atts) {
-			// TODO where to add the expression attrs
-			//expressionData.copyToAttribs(getNodeAttributes(), null);
-			firePropertyChange(ATTRIBUTES_CHANGED, null, null);
-		}
-
-		// Fire off an EXPRESSION_DATA_LOADED event.
-		Cytoscape.firePropertyChange(Cytoscape.EXPRESSION_DATA_LOADED, null, expressionData);
-
-		return true;
-	}
-
 
 	/**
 	 *  DOCUMENT ME!
