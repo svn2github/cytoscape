@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.awt.event.KeyListener;
@@ -12,15 +13,20 @@ import javax.swing.*;
 import javax.xml.*;
 
 //import org.cytoscape.io.FileDefinition.Category;
+//import org.cytoscape.property.CyProperty;
+//import org.cytoscape.property.internal.BookmarkCyProperty;
 import org.cytoscape.work.AbstractGuiHandler;
 import org.cytoscape.work.Tunable;
+
+//import cytoscape.Cytoscape;
+
 
 
 public class URLHandler extends AbstractGuiHandler {
 
 	URL url;
 	
-//	Bookmarks theBookmarks = null; // get it from session
+	//CyProperty theBookmarks = null; // get it from session
 	String bookmarkCategory = "network";
 	String urlstr;
 	BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
@@ -33,16 +39,16 @@ public class URLHandler extends AbstractGuiHandler {
 		try{
 			this.url= (URL) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		System.out.println("test");
 
 
-		//theBookmarks = Cytoscape.getBookmarks();
-		// if theBookmarks doesnot exist, create an empty one
-//		if (theBookmarks == null) {
-//			theBookmarks = new Bookmarks();
-//			Cytoscape.setBookmarks(theBookmarks);
-//		}
+		//theBookmarks = Cytoscape.;
+		 //if theBookmarks doesnot exist, create an empty one
+		//if (theBookmarks == null) {
+		//	theBookmarks = new Bookmarks();
+		//	Cytoscape.setBookmarks(theBookmarks);
+		//}
 
+		//System.out.println(theBookmarks);
 		// if bookmarkCategory "network" does not exist, create a "network" with
 		// empty DataSource
 //		Category category = new Category();
@@ -52,7 +58,7 @@ public class URLHandler extends AbstractGuiHandler {
 
 		
 		networkFileComboBox = new JComboBox();
-		//networkFileComboBox.setRenderer(new MyCellRenderer());
+		networkFileComboBox.setRenderer(new MyCellRenderer());
 		networkFileComboBox.setEditor(bookmarkEditor);
 		networkFileComboBox.setEditable(true);
 		networkFileComboBox.setName("networkFileComboBox");
@@ -65,21 +71,26 @@ public class URLHandler extends AbstractGuiHandler {
 
 	public void handle() {
 		urlstr = bookmarkEditor.getURLstr();
-			try{
-				url = new URL(urlstr);
-				if ( url != null ) {
-				f.set(o,url);
-//				path.setText("File: " + myfile.getPath());
+		System.out.println("ttt"+urlstr);
+//			try{
+				//if ( url != null ) {
+				try {
+					url = new URL(urlstr);
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			}catch (Exception e){}
+				System.out.println(urlstr);
+				//}
+//			}catch (Exception e){}
 	}
 
 
 	
     public String getState() {
-		String s;
+		String s = null;
 		try {
-			s = f.get(o).toString();
+			if(f.get(o)!=null) s = f.get(o).toString();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			s = "";
@@ -90,6 +101,7 @@ public class URLHandler extends AbstractGuiHandler {
 	class BookmarkComboBoxEditor implements ComboBoxEditor {
 		//DataSource theDataSource = new DataSource();
 		JTextField tfInput = new JTextField(pleaseMessage);
+		
 		public String getURLstr() {
 			return tfInput.getText();
 		}
@@ -148,4 +160,28 @@ public class URLHandler extends AbstractGuiHandler {
 		networkFileComboBox.setModel(theModel);
 	}
 
+	
+	class MyCellRenderer extends JLabel implements ListCellRenderer {
+		private final static long serialVersionUID = 1202339872997986L;
+
+		public MyCellRenderer() {
+			setOpaque(true);
+		}
+
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+//			DataSource dataSource = (DataSource) value;
+//			setText(dataSource.getName());
+
+			if (isSelected) {
+				if (0 < index) {
+	//				list.setToolTipText(dataSource.getHref());
+				}
+			}
+
+			return this;
+		}
+	} // MyCellRenderer
+	
+	
 }

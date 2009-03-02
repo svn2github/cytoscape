@@ -4,7 +4,5 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
-	<classpathentry kind="lib" path="/application/target/classes" sourcepath="/application/target/classes"/>
-	<classpathentry kind="lib" path="/core/io/target/classes"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
