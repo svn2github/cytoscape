@@ -27,6 +27,7 @@ public class FileHandler extends AbstractGuiHandler {
 			this.myFile=(File)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		
+		System.out.println("TEST FileHandler");
 		panel = new JPanel(new BorderLayout());
 		path = new JTextField("path :",12);
 		path.setFont(new Font(null, Font.PLAIN,12));

@@ -5,12 +5,17 @@ import java.net.URL;
 
 import java.io.File;
 
+import org.cytoscape.property.bookmark.Bookmarks;
+import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.util.*;
 
 public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 
+	Bookmarks bookmarks;
+	BookmarksUtil bkUtil;
+	
 	public Guihandler getHandler(Field f, Object o, Tunable t){
 		
 		Class<?> type = f.getType();
@@ -42,7 +47,7 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 		else if(type == File.class)
 			return new FileHandler(f,o,t);
 		else if(type == URL.class)
-			return new URLHandler(f,o,t);
+			return new URLHandler(f,o,t,bookmarks,bkUtil);
 		return null;
 	}
 }
