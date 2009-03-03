@@ -57,7 +57,7 @@ import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
 
-import org.cytoscape.vizmap.VisualMappingManager;
+//import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
 import java.awt.event.ActionEvent;
@@ -78,7 +78,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	private final CyRootNetworkFactory cyroot;
 	private final GraphViewFactory gvf;
 	
-	private VisualMappingManager vmm;
+	//private VisualMappingManager vmm;
 
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
@@ -143,15 +143,16 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			new_view.fitContent();
 
 			// Set visual style
+			/* FIXME
 			VisualStyle newVS = vmm.getVisualStyleForView(current_network_view);
 
 			if (newVS != null) {
 				vsName = newVS.getName();
 				vmm.setVisualStyleForView(new_view, newVS);
-			}
+			}*/
 		}
 
-		vmm.setVisualStyle(vsName);
+		//vmm.setVisualStyle(vsName); // FIXME
 	}
 
 	/**
@@ -181,7 +182,8 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	 *
 	 * @param vmm DOCUMENT ME!
 	 */
+	/*
 	public void setVmm(VisualMappingManager vmm) {
 		this.vmm = vmm;
-	}
+	}*/
 }

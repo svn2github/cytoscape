@@ -51,8 +51,8 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.VMMFactory;
-import org.cytoscape.vizmap.VisualMappingManager;
+//import org.cytoscape.vizmap.VMMFactory;
+//import org.cytoscape.vizmap.VisualMappingManager;
 
 import cytoscape.view.CySwingApplication;
 
@@ -419,12 +419,12 @@ public abstract class Cytoscape {
 		if(view == null)
 			return;
 		
-		VMMFactory.getVisualMappingManager().setNetworkView(view);
-		VMMFactory.getVisualMappingManager().applyAppearances();
+		//VMMFactory.getVisualMappingManager().setNetworkView(view);
+		//VMMFactory.getVisualMappingManager().applyAppearances();
 		view.updateView();
 	}
-
+	/*
 	public static VisualMappingManager getVisualMappingManager() {
 		return VMMFactory.getVisualMappingManager();
-	}
+	}*/
 }
