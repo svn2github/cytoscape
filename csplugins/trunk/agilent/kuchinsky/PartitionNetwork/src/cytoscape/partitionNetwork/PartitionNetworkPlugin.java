@@ -4,9 +4,11 @@ import giny.model.Node;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.SwingUtilities;
@@ -14,6 +16,7 @@ import javax.swing.SwingUtilities;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.ding.CyGraphAllLOD;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.groups.CyGroup;
@@ -45,13 +48,14 @@ import cytoscape.visual.VisualStyle;
  */
 public class PartitionNetworkPlugin extends CytoscapePlugin {
 
-		private ArrayList<Object> nodeAttributeValues = setupNodeAttributeValues();
+		private ArrayList<Object> nodeAttributeValues = new ArrayList ();
 		private static final String attributeName = "annotation.GO BIOLOGICAL_PROCESS";
 		private HashMap<Object, List<Node>> attributeValueNodeMap = new HashMap<Object, List<Node>>();
 		private List<CyNetworkView> views = new ArrayList<CyNetworkView>();
 		private VisualStyle visualStyle;
 		private List<CyGroup> groups = new ArrayList<CyGroup>();
-		private List<Node> unconnectedNodes = new ArrayList<Node>();		
+		private List<Node> unconnectedNodes = new ArrayList<Node>(); 
+		private int networkViewThreshhold = 5; // necessary size to show network view in the tiling
 
 		public PartitionNetworkPlugin () {
 			PartitionNetworkAction mainAction = new PartitionNetworkAction ();
@@ -63,10 +67,14 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 		 * read in attribute values from a user configurable file
 		 * Phase 1: hardcode a list of categories
 		 * @return
+		 * AJK: 02/12/2009 no longer called, just work from attribute values found for existing nodes in
+		 * network
 		 */
 		public ArrayList<Object> setupNodeAttributeValues()
 		{
+			/*
 			ArrayList<Object> list = new ArrayList ();
+			
 			list.add("cell adhesion"); 
 			list.add("cell-cell signaling"); 
 			list.add("cell cycle");
@@ -92,8 +100,34 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 			list.add("cell growth");
 			list.add("cell differentiation");
 			list.add("unassigned");
+			*/
+			
+			
+			CyAttributes attribs = Cytoscape.getNodeAttributes();
+			Map attrMap = CyAttributesUtils.getAttribute(attributeName, attribs);
+			Collection values = attrMap.values();
+			ArrayList<Object> uniqueValueList = new ArrayList<Object>();
+			
+			// key will be a List attribute value, so we need to pull out individual list items
+			if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
+				for (Object o : values)
+				{
+					List oList = (List) o;
+					for (int j = 0; j < oList.size(); j++)
+					{
+						Object jObj = oList.get(j);
+						if (jObj != null)
+						{
+							if (!uniqueValueList.contains(jObj))
+							{
+								uniqueValueList.add(jObj);
+							}
+						}
+					}
+				}
+			}
 	 
-			return list;
+			return uniqueValueList;
 		}
 		
 
@@ -111,6 +145,7 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 
 
 			public void actionPerformed(ActionEvent e) {
+				nodeAttributeValues = setupNodeAttributeValues();
 				populateNodes(attributeName);
 				visualStyle = buildVisualStyle();
 		      
@@ -299,33 +334,40 @@ public class PartitionNetworkPlugin extends CytoscapePlugin {
 				                                                current_network.getConnectingEdges(new ArrayList(nodes)),
 				                                     //           CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 				                                                attributeValue, // for network title
-				                                                current_network);
+				                                                current_network,
+				                                                (nodes.size() >= networkViewThreshhold)); // optional create network view
+				
+				
+				if (new_network.nodesList().size() >= networkViewThreshhold) {
 
-				CyNetworkView new_view = Cytoscape.getNetworkView(new_network.getIdentifier());
+				CyNetworkView new_view = Cytoscape.getNetworkView(new_network
+						.getIdentifier());
 
 				if (new_view == Cytoscape.getNullNetworkView()) {
 					return;
 				}
-				
-				views.add(new_view);		        
-		        
-		        
-		        // apply layout
+
+				views.add(new_view);
+
+				// apply layout
 				if (current_network_view != Cytoscape.getNullNetworkView()) {
 
-					
-//					CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
+					// CyLayoutAlgorithm layout =
+					// CyLayouts.getLayout("force-directed");
 					System.out.println("Layout: " + new_view.getTitle());
-					CyLayoutAlgorithm layout = CyLayouts.getLayout("cellular-layout");
+					CyLayoutAlgorithm layout = CyLayouts
+							.getLayout("cellular-layout");
 					layout.doLayout(new_view);
-					
 
 				}
 
 				// set graphics level of detail
-				((DingNetworkView)new_view).setGraphLOD(new CyGraphAllLOD());
-				
-		        Cytoscape.getVisualMappingManager().setVisualStyle(PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
+				((DingNetworkView) new_view).setGraphLOD(new CyGraphAllLOD());
+
+				Cytoscape.getVisualMappingManager().setVisualStyle(
+						PartitionNetworkVisualStyleFactory.PartitionNetwork_VS);
+
+			}
 			}
 
 			/**
