@@ -78,7 +78,7 @@ import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.util.swing.DropDownMenuButton;
+import org.cytoscape.vizmap.gui.internal.DropDownMenuButton;
 import cytoscape.view.CySwingApplication;
 
 /**
