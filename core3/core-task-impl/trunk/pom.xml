@@ -103,6 +103,16 @@
       <artifactId>model-api</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>session-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>io-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>cytoscape</groupId>
