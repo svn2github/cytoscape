@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop 
+			http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/util 
+			http://www.springframework.org/schema/util/spring-util-2.5.xsd
+		http://www.springframework.org/schema/lang 
+			http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+		http://www.springframework.org/schema/osgi 
+			http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+	<context:annotation-config />
+
+	<!-- Cytoscape Properties (cytoscape.props) -->
+	<util:properties id="cytoscapeProperties" location="classpath:cytoscape.props" />
+
+	<!-- Cytoscape Version -->
+	<bean name="cytoscapeVersion" class="cytoscape.CytoscapeVersion">
+		<constructor-arg ref="cytoscapeProperties" />
+	</bean>
+
+	<!-- Various Utilities -->
+	<bean name="proxyHandler" class="cytoscape.util.internal.ProxyHandlerImpl">
+		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
+	</bean>
+	<bean name="openBrowser" class="cytoscape.util.internal.OpenBrowserImpl">
+		<constructor-arg ref="cytoscapeProperties" />
+	</bean>
+	<bean name="cyOperatingContext" class="cytoscape.internal.CyOperatingContextImpl">
+		<constructor-arg ref="cytoscapeProperties" />
+	</bean>
+	<bean name="fileUtil" class="cytoscape.util.internal.FileUtilImpl">
+		<constructor-arg ref="cyOperatingContext" />
+		<property name="streamUtil" ref="streamUtilServiceRef" />
+	</bean>
+
+	<bean name="cyHelpBroker" class="cytoscape.view.internal.CyHelpBrokerImpl">
+	</bean>
+
+	<!-- Dialog Factories -->
+	<bean name="importNetworkDialogFactory"
+		class="cytoscape.dialogs.internal.ImportNetworkDialogFactoryImpl">
+		<constructor-arg ref="fileUtil" />
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtilServiceRef" />
+	</bean>
+	<bean name="aboutDialogFactory" class="cytoscape.dialogs.internal.AboutDialogFactoryImpl">
+		<constructor-arg ref="openBrowser" />
+	</bean>
+	<bean name="preferencesDialogFactory"
+		class="cytoscape.dialogs.internal.PreferencesDialogFactoryImpl">
+		<constructor-arg ref="cyOperatingContext" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
+	</bean>
+	<bean name="proxyServerDialogFactory"
+		class="cytoscape.dialogs.internal.ProxyServerDialogFactoryImpl">
+		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="proxyHandler" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
+	</bean>
+
+	<bean name="bookmarkDialogFactory" class="cytoscape.dialogs.internal.BookmarkDialogFactoryImpl">
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtilServiceRef" />
+	</bean>
+
+	<!-- Network Manager -->
+	<bean name="networkManager" class="cytoscape.internal.NetworkManager">
+		<constructor-arg ref="cyEventHelperServiceRef" />
+	</bean>
+
+	<!-- Menu bar -->
+	<bean name="cytoscapeMenus" class="cytoscape.view.internal.CytoscapeMenus">
+		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="tunableInterceptorServiceRef" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+
+	<bean name="networkViewManager" class="cytoscape.view.internal.NetworkViewManager">
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cyHelpBroker" />
+	</bean>
+
+	<bean name="birdsEyeViewHandler" class="cytoscape.view.internal.BirdsEyeViewHandler">
+		<constructor-arg ref="networkViewManager" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+
+	<bean name="networkPanel" class="cytoscape.view.internal.NetworkPanel">
+		<constructor-arg ref="networkViewManager" />
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="birdsEyeViewHandler" />
+		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="cytoscapeProperties" />
+	</bean>
+
+
+	<!-- Cytoscape Desktop -->
+	<bean name="cytoscapeDesktop" class="cytoscape.view.internal.CytoscapeDesktop">
+		<constructor-arg ref="cytoscapeMenus" />
+		<constructor-arg ref="networkViewManager" />
+		<constructor-arg ref="networkPanel" />
+		<constructor-arg ref="cytoscapeVersion" />
+	</bean>
+
+	<!-- cyMain.  Currently working as a builder for application. -->
+	<bean name="cyMain" class="cytoscape.CyMain">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="cytoscapeVersion" />
+		<constructor-arg ref="fileUtil" />
+	</bean>
+
+	<!-- CyAction service beans -->
+	<bean id="importGraphFileAction" class="cytoscape.actions.ImportGraphFileAction">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="cyReaderManagerServiceRef" />
+		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="cyLayoutsServiceRef" />
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="importNetworkDialogFactory" />
+	</bean>
+	<bean id="newNetworkAction" class="cytoscape.actions.NewNetworkAction">
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="newWindowSelectedNodesOnlyAction" class="cytoscape.actions.NewWindowSelectedNodesOnlyAction">
+		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
+		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="newWindowSelectedNodesEdgesAction" class="cytoscape.actions.NewWindowSelectedNodesEdgesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="cloneGraphInNewWindowAction" class="cytoscape.actions.CloneGraphInNewWindowAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="printAction" class="cytoscape.actions.PrintAction">
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="cytoscapeProperties" />
+	</bean>
+	<bean id="exitAction" class="cytoscape.actions.ExitAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="undoAction" class="cytoscape.util.undo.UndoAction">
+		<constructor-arg ref="undoSupportServiceRef" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="redoAction" class="cytoscape.util.undo.RedoAction">
+		<constructor-arg ref="undoSupportServiceRef" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="createNetworkViewAction" class="cytoscape.actions.CreateNetworkViewAction">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="cytoscapeProperties" />
+	</bean>
+	<bean id="destroyNetworkViewAction" class="cytoscape.actions.DestroyNetworkViewAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="destroyNetworkAction" class="cytoscape.actions.DestroyNetworkAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="deleteAction" class="cytoscape.actions.DeleteAction">
+		<constructor-arg ref="undoSupportServiceRef" />
+		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="preferenceAction" class="cytoscape.actions.PreferenceAction">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="preferencesDialogFactory" />
+	</bean>
+	<bean id="bookmarkAction" class="cytoscape.actions.BookmarkAction">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="bookmarkDialogFactory" />
+	</bean>
+	<bean id="proxyServerAction" class="cytoscape.actions.ProxyServerAction">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="proxyServerDialogFactory" />
+	</bean>
+	<bean id="invertSelectedNodesAction" class="cytoscape.actions.InvertSelectedNodesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="hideSelectedNodesAction" class="cytoscape.actions.HideSelectedNodesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="unHideSelectedNodesAction" class="cytoscape.actions.UnHideSelectedNodesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="selectAllNodesAction" class="cytoscape.actions.SelectAllNodesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="deSelectAllNodesAction" class="cytoscape.actions.DeSelectAllNodesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="selectFirstNeighborsAction" class="cytoscape.actions.SelectFirstNeighborsAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="selectConnectedNodesAction" class="cytoscape.actions.SelectConnectedNodesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="alphabeticalSelectionAction" class="cytoscape.actions.AlphabeticalSelectionAction">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="listFromFileSelectionAction" class="cytoscape.actions.ListFromFileSelectionAction">
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="fileUtil" />
+	</bean>
+	<bean id="invertSelectedEdgesAction" class="cytoscape.actions.InvertSelectedEdgesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="hideSelectedEdgesAction" class="cytoscape.actions.HideSelectedEdgesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="unHideSelectedEdgesAction" class="cytoscape.actions.UnHideSelectedEdgesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="selectAllEdgesAction" class="cytoscape.actions.SelectAllEdgesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="selectAdjacentEdgesAction" class="cytoscape.actions.SelectAdjacentEdgesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="deSelectAllEdgesAction" class="cytoscape.actions.DeSelectAllEdgesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="bendSelectedEdgesAction" class="cytoscape.actions.BendSelectedEdgesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="straightenSelectedEdgesAction" class="cytoscape.actions.StraightenSelectedEdgesAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="selectAllAction" class="cytoscape.actions.SelectAllAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="deselectAllAction" class="cytoscape.actions.DeselectAllAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="showGraphicsDetailsAction" class="cytoscape.actions.ShowGraphicsDetailsAction">
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="cytoscapeProperties" />
+	</bean>
+	<bean id="setVisualPropertiesAction" class="cytoscape.actions.SetVisualPropertiesAction">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<!-- not a CyAction, but adds menu -->
+	<bean id="layoutMenuManager" class="cytoscape.layout.ui.LayoutMenuManager">
+		<constructor-arg ref="cytoscapeMenus" />
+		<constructor-arg ref="cyLayoutsServiceRef" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="settingsAction" class="cytoscape.layout.ui.SettingsAction">
+		<constructor-arg ref="cyLayoutsServiceRef" />
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="layoutMenuManager" />
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="tunableInterceptorServiceRef" />
+	</bean>
+	<bean id="helpContentsAction" class="cytoscape.actions.HelpContentsAction">
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="cyHelpBroker" />
+	</bean>
+	<bean id="helpContactHelpDeskAction" class="cytoscape.actions.HelpContactHelpDeskAction">
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="openBrowser" />
+	</bean>
+	<bean id="helpAboutAction" class="cytoscape.actions.HelpAboutAction">
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="creditScreenServiceRef" />
+	</bean>
+
+	<!-- not a CyAction, but adds menu -->
+	<bean id="arrangeAction" class="cytoscape.actions.ArrangeAction">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="cytoscapeMenus" />
+	</bean>
+
+	<bean id="cytoPanelWestAction" class="cytoscape.actions.CytoPanelAction">
+		<constructor-arg type="cytoscape.view.CytoPanelName"
+			value="WEST" />
+		<constructor-arg value="true" />
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="cytoPanelSouthAction" class="cytoscape.actions.CytoPanelAction">
+		<constructor-arg type="cytoscape.view.CytoPanelName"
+			value="SOUTH" />
+		<constructor-arg value="true" />
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="cytoPanelEastAction" class="cytoscape.actions.CytoPanelAction">
+		<constructor-arg type="cytoscape.view.CytoPanelName"
+			value="EAST" />
+		<constructor-arg value="false" />
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="zoomInAction" class="cytoscape.actions.ZoomInAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="zoomOutAction" class="cytoscape.actions.ZoomOutAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="zoomSelectedAction" class="cytoscape.actions.ZoomSelectedAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+	<bean id="fitContentAction" class="cytoscape.actions.FitContentAction">
+		<constructor-arg ref="networkManager" />
+	</bean>
+
+	<!-- Other stuff to be started -->
+	<bean id="undoMonitor" class="cytoscape.util.undo.UndoMonitor">
+		<constructor-arg ref="undoSupportServiceRef" />
+		<constructor-arg ref="cytoscapeProperties" />
+	</bean>
+
+</beans>

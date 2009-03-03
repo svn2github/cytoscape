@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+	<!-- Import OSGi services -->
+	
+	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil" />
+
+	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager"/>
+
+	<osgi:reference id="tunableInterceptorServiceRef" interface="org.cytoscape.work.TunableInterceptor"/>
+
+	<osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
+		filter="(cyPropertyName=bookmarks)" />
+
+	<osgi:reference id="bookmarksUtilServiceRef"
+		interface="org.cytoscape.property.bookmark.BookmarksUtil" />
+
+	<osgi:reference id="cyNetworkFactoryServiceRef"
+		interface="org.cytoscape.model.CyNetworkFactory" />
+
+	<osgi:reference id="cyRootNetworkFactoryServiceRef"
+		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory" />
+
+	<osgi:reference id="vmmServiceRef"
+		interface="org.cytoscape.vizmap.VisualMappingManager" />
+
+	<osgi:reference id="graphViewFactoryServiceRef"
+		interface="org.cytoscape.view.GraphViewFactory">
+	</osgi:reference>
+
+	<osgi:reference id="cyReaderManagerServiceRef"
+		interface="org.cytoscape.io.read.CyReaderManager">
+	</osgi:reference>
+
+	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.layout.CyLayouts">
+	</osgi:reference>
+
+	<osgi:reference id="undoSupportServiceRef" interface="org.cytoscape.work.UndoSupport">
+	</osgi:reference>
+
+	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper">
+	</osgi:reference>
+
+	<osgi:reference id="creditScreenServiceRef" interface="org.cytoscape.splash.CreditScreen">
+	</osgi:reference>
+
+	<!-- define services that application provides -->
+
+	<!-- Props are manages in this service -->
+	<osgi:service id="cyOperatingContextService" ref="cyOperatingContext"
+		interface="cytoscape.CyOperatingContext" />
+
+	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
+		interface="cytoscape.view.CyMenus" />
+
+	<osgi:service id="proxyHandlerService" ref="proxyHandler">
+		<osgi:interfaces>
+			<value>cytoscape.util.ProxyHandler</value>
+			<value>cytoscape.events.PreferencesUpdatedListener
+			</value>
+		</osgi:interfaces>
+	</osgi:service>
+
+	<osgi:service id="openBrowserService" ref="openBrowser"
+		interface="cytoscape.util.OpenBrowser" />
+
+	<osgi:service id="importGraphFileActionService" ref="importGraphFileAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="newWindowSelectedNodesOnlyActionService"
+		ref="newWindowSelectedNodesOnlyAction" interface="cytoscape.util.CyAction" />
+
+	<osgi:service id="newWindowSelectedNodesEdgesActionService"
+		ref="newWindowSelectedNodesEdgesAction" interface="cytoscape.util.CyAction" />
+	<osgi:service id="cloneGraphInNewWindowActionService" ref="cloneGraphInNewWindowAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="newNetworkActionService" ref="newNetworkAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="printActionService" ref="printAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="exitActionService" ref="exitAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="undoActionService" ref="undoAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="redoActionService" ref="redoAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="createNetworkViewActionService" ref="createNetworkViewAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="destroyNetworkViewActionService" ref="destroyNetworkViewAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="destroyNetworkActionService" ref="destroyNetworkAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="deleteActionService" ref="deleteAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="preferenceActionService" ref="preferenceAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="bookmarkActionService" ref="bookmarkAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="proxyServerActionService" ref="proxyServerAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="invertSelectedNodesActionService" ref="invertSelectedNodesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="hideSelectedNodesActionService" ref="hideSelectedNodesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="unHideSelectedNodesActionService" ref="unHideSelectedNodesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="selectAllNodesActionService" ref="selectAllNodesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="deSelectAllNodesActionService" ref="deSelectAllNodesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="selectFirstNeighborsActionService" ref="selectFirstNeighborsAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="selectConnectedNodesActionService" ref="selectConnectedNodesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="alphabeticalSelectionActionService" ref="alphabeticalSelectionAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="listFromFileSelectionActionService" ref="listFromFileSelectionAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="invertSelectedEdgesActionService" ref="invertSelectedEdgesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="hideSelectedEdgesActionService" ref="hideSelectedEdgesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="unHideSelectedEdgesActionService" ref="unHideSelectedEdgesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="selectAllEdgesActionService" ref="selectAllEdgesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="selectAdjacentEdgesActionService" ref="selectAdjacentEdgesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="deSelectAllEdgesActionService" ref="deSelectAllEdgesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="bendSelectedEdgesActionService" ref="bendSelectedEdgesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="straightenSelectedEdgesActionService"
+		ref="straightenSelectedEdgesAction" interface="cytoscape.util.CyAction" />
+	<osgi:service id="selectAllActionService" ref="selectAllAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="deselectAllActionService" ref="deselectAllAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="showGraphicsDetailsActionService" ref="showGraphicsDetailsAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="setVisualPropertiesActionService" ref="setVisualPropertiesAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="settingsActionService" ref="settingsAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="helpContentsActionService" ref="helpContentsAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="helpContactHelpDeskActionService" ref="helpContactHelpDeskAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="helpAboutActionService" ref="helpAboutAction"
+		interface="cytoscape.util.CyAction" />
+
+	<osgi:service id="cytoPanelWestActionService" ref="cytoPanelWestAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="cytoPanelSouthActionService" ref="cytoPanelSouthAction"
+		interface="cytoscape.util.CyAction" />
+
+	<osgi:service id="cytoPanelEastActionService" ref="cytoPanelEastAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="zoomOutActionService" ref="zoomOutAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="zoomInActionService" ref="zoomInAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="zoomSelectedActionService" ref="zoomSelectedAction"
+		interface="cytoscape.util.CyAction" />
+	<osgi:service id="fitContentActionService" ref="fitContentAction"
+		interface="cytoscape.util.CyAction" />
+
+	<osgi:set id="cyActionSet" interface="cytoscape.util.CyAction"
+		cardinality="0..N">
+		<osgi:listener bind-method="addAction" unbind-method="removeAction"
+			ref="cytoscapeMenus" />
+	</osgi:set>
+
+	<osgi:set id="taskFactorySet" interface="org.cytoscape.work.TaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addTaskFactory" unbind-method="removeTaskFactory"
+			ref="cytoscapeMenus" />
+	</osgi:set>
+
+	<!--
+		Finally, Export Cytoscape Desktop itself as a service. Other desktop
+		components (like VizMapper GUI) can use it through DI
+	-->
+	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop"
+		interface="cytoscape.view.CySwingApplication" />
+
+	<osgi:service id="cyNetworkManagerService" ref="networkManager"
+		interface="cytoscape.CyNetworkManager" />
+
+	<osgi:service id="networkPanelService" ref="networkPanel">
+		<osgi:interfaces>
+			<value>org.cytoscape.model.events.SelectedNodesListener
+			</value>
+			<value>org.cytoscape.model.events.SelectedEdgesListener
+			</value>
+			<value>org.cytoscape.model.events.UnselectedNodesListener
+			</value>
+			<value>org.cytoscape.model.events.UnselectedEdgesListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkViewListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkListener
+			</value>
+			<value>cytoscape.events.NetworkAddedListener
+			</value>
+			<value>cytoscape.events.NetworkViewAddedListener
+			</value>
+			<value>cytoscape.events.NetworkAboutToBeDestroyedListener
+			</value>
+			<value>cytoscape.events.NetworkViewAboutToBeDestroyedListener
+			</value>
+		</osgi:interfaces>
+	</osgi:service>
+
+	<osgi:service id="networkViewManagerService" ref="networkViewManager">
+		<osgi:interfaces>
+			<value>cytoscape.events.NetworkViewAddedListener
+			</value>
+			<value>cytoscape.events.NetworkViewAboutToBeDestroyedListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkViewListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkListener
+			</value>
+		</osgi:interfaces>
+	</osgi:service>
+
+	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler">
+		<osgi:interfaces>
+			<value>cytoscape.events.SetCurrentNetworkViewListener
+			</value>
+			<value>cytoscape.events.SetCurrentNetworkListener
+			</value>
+			<value>cytoscape.events.NetworkViewDestroyedListener
+			</value>
+		</osgi:interfaces>
+	</osgi:service>
+
+	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService"
+		ref="undoMonitor" interface="cytoscape.events.SetCurrentNetworkViewListener" />
+
+	<osgi:service id="aboutDialogFactoryService" ref="aboutDialogFactory"
+		interface="cytoscape.dialogs.AboutDialogFactory" />
+
+	<osgi:service id="fileUtilService" ref="fileUtil"
+		interface="cytoscape.util.FileUtil" />
+
+</beans>

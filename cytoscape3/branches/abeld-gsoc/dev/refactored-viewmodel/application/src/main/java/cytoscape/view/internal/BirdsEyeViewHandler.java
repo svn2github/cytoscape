@@ -1,0 +1,163 @@
+/*
+ File: BirdsEyeViewHandler.java
+
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
+package cytoscape.view.internal;
+
+import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
+
+import cytoscape.events.SetCurrentNetworkListener;
+import cytoscape.events.SetCurrentNetworkEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.NetworkViewDestroyedListener;
+import cytoscape.events.NetworkViewDestroyedEvent;
+
+import org.cytoscape.view.BirdsEyeView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
+/**
+ * This class handles the creation of the BirdsEyeView navigation object 
+ * and handles the events which change view seen. 
+ */
+class BirdsEyeViewHandler implements 
+	SetCurrentNetworkListener,
+	SetCurrentNetworkViewListener,
+	NetworkViewDestroyedListener
+	{
+	final BirdsEyeView bev;
+	FrameListener frameListener = new FrameListener();
+	final NetworkViewManager viewmgr;
+	final CyNetworkManager netmgr;
+
+	/**
+	 * Creates a new BirdsEyeViewHandler object.
+	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
+	 */
+	BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr) {
+		this.viewmgr = viewmgr;
+		this.netmgr = netmgr;
+		JDesktopPane desktopPane = viewmgr.getDesktopPane();
+
+		bev = new BirdsEyeView(netmgr.getCurrentNetworkView(), desktopPane) {
+				private final static long serialVersionUID = 1213748836623570L;
+				public Dimension getMinimumSize() {
+					return new Dimension(180, 180);
+				}
+			};
+ 
+ 		desktopPane.addComponentListener(new DesktopListener());
+	}
+
+	/**
+	 * Listens for NETWORK_VIEW_FOCUSED, NETWORK_VIEW_FOCUS, NETWORK_VIEW_DESTROYED,
+	 * and CYTOSCAPE_INITIALIZED events and changes the network view accordingly.
+	 *
+	 * @param e The event triggering this method. 
+	 */
+	public void handleEvent(SetCurrentNetworkEvent e) {
+		bev.changeView(netmgr.getCurrentNetworkView());
+		setFocus();
+	}
+
+	public void handleEvent(SetCurrentNetworkViewEvent e) {
+		bev.changeView(netmgr.getCurrentNetworkView());
+		setFocus();
+	}
+
+	public void handleEvent(NetworkViewDestroyedEvent e) {
+		bev.changeView(netmgr.getCurrentNetworkView());
+	}
+
+	private void setFocus() {
+		JDesktopPane desktopPane = viewmgr.getDesktopPane();
+		if (desktopPane == null)
+			return;
+
+		JInternalFrame frame = desktopPane.getSelectedFrame();
+		if (frame == null)
+			return;
+
+		boolean hasListener = false;
+		ComponentListener[] listeners = frame.getComponentListeners();
+		for(int i = 0; i < listeners.length; i++)
+			if (listeners[i] == frameListener)
+				hasListener = true;
+
+		if (!hasListener)
+			frame.addComponentListener(frameListener);
+	}
+
+	/**
+	 * Returns a birds eye view component.
+	 * @return The component that contains the birds eye view.
+	 */
+	Component getBirdsEyeView() {
+		return bev;
+	}
+
+	/**
+	 * Repaint a JInternalFrame whenever it is moved.
+	 */
+	class FrameListener implements ComponentListener
+	{
+		public void componentHidden(ComponentEvent e) {}
+		public void componentMoved(ComponentEvent e)
+		{
+			bev.repaint();
+		}
+		public void componentResized(ComponentEvent e) {}
+		public void componentShown(java.awt.event.ComponentEvent e) {}
+	}
+
+	/**
+	 * Repaint the JDesktopPane whenever its size has changed.
+	 */
+	class DesktopListener implements ComponentListener
+	{
+		public void componentHidden(ComponentEvent e) {}
+		public void componentMoved(ComponentEvent e) {}
+		public void componentResized(ComponentEvent e)
+		{
+			bev.repaint();
+		}
+		public void componentShown(java.awt.event.ComponentEvent e) {}
+	}
+}

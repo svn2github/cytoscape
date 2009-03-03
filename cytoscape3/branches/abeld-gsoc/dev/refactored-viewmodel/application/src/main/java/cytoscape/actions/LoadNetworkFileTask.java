@@ -1,0 +1,85 @@
+/*
+ File: LoadNetworkFileTask.java
+
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
+
+package cytoscape.actions;
+
+import static org.cytoscape.io.DataCategory.NETWORK;
+
+import java.io.File;
+import java.util.Properties;
+
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.GraphViewFactory;
+
+import cytoscape.CyNetworkManager;
+
+/**
+ * Specific instance of AbstractLoadNetworkTask that loads a File.
+ */
+public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
+
+	// @Tunable(description="Network file to load");
+	// public File[] files;
+	private File file;
+
+	public LoadNetworkFileTask(File file, CyReaderManager mgr,
+			GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			Properties props) {
+		super(null, mgr, gvf, cyl, netmgr, props);
+		this.file = file;
+	}
+
+	/**
+	 * Executes Task.
+	 */
+	public void run() {
+		// for ( File file : files ) {
+
+		reader = mgr.getReader(file.getAbsolutePath(), NETWORK);
+
+		uri = file.toURI();
+		name = file.getName();
+
+		if (reader == null) {
+			uri = null;
+		}
+
+		loadNetwork(reader);
+		// }
+	}
+}
