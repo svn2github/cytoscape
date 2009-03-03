@@ -158,19 +158,19 @@ class UnCrossAction extends CytoscapeAction {
 
 		// warn if no nodeViewss are selected
 		if (nodeViews.size() <= 0) {
-			JOptionPane
-					.showMessageDialog(Cytoscape.getDesktop(),
-							"You must first select some nodes in order to minimize edge crossings.");
+//			JOptionPane
+//					.showMessageDialog(Cytoscape.getDesktop(),
+//							"You must first select some nodes in order to minimize edge crossings.");
 			return;
 
 		} else if (Cytoscape.getCurrentNetwork().getNodeCount() > UNCROSS_THRESHOLD) {
-			if (calledByEndUser) {
-				JOptionPane
-						.showMessageDialog(
-								Cytoscape.getDesktop(),
-								"Sorry, this network is too large to run incremental edge cross miminization."
-										+ "\nYou should one of the automated layout tools instead.");
-			}
+//			if (calledByEndUser) {
+//				JOptionPane
+//						.showMessageDialog(
+//								Cytoscape.getDesktop(),
+//								"Sorry, this network is too large to run incremental edge cross miminization."
+//										+ "\nYou should one of the automated layout tools instead.");
+//			}
 			return;
 		}
 

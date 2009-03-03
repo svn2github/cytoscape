@@ -647,13 +647,16 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						CyNode newNode = Cytoscape.getCyNode(newId, true);
 
 						// copy attributes
+						// TODO: copy only the attribute relevant to the
+						// specific node so that populateNodeViews will work
+						// properly
 						CyAttributes attributes = Cytoscape.getNodeAttributes();
 						String[] atts = attributes.getAttributeNames();
 						for (String att : atts) {
 							if (attributes.getUserVisible(att)
 									&& attributes.hasAttribute(oldId, att)) { // skip
-																				// hidden
-																				// attributes
+								// hidden
+								// attributes
 								byte type = attributes.getType(att);
 								if (type == CyAttributes.TYPE_BOOLEAN) {
 									attributes.setAttribute(newId, att,
@@ -709,9 +712,12 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						Cytoscape.getCurrentNetwork().addNode(newNode);
 						nv = Cytoscape.getCurrentNetworkView().getNodeView(
 								newNode);
+						r.addFilteredNodeView(nv); //adding new node to region nvList
+						
 					} else {
 						// no, then add to tracking list
 						nvSeen.put(nv, 1);
+						r.addFilteredNodeView(nv);
 					}
 
 					nv.setOffset(nextX, nextY);
@@ -741,13 +747,14 @@ public class CellularLayoutPlugin extends CytoscapePlugin implements
 						nextX += distanceBetweenNodes;
 					}
 				}
-				// TODO: Uncross edges doesn't work; it swaps across regions due
-				// to copies; must be using canonical name and not IDs??
-				// if (nodeViews.size() > 1 && (r.getCenterY() - startY) < 1){
-				// //if only 1 or 2 rows of nodes
-				// System.out.println("UNCROSSING: "+ r.getAttValue());
-				// UnCrossAction.unCross(nodeViews, false);
-				// }
+				
+				// Uncross edges
+				List<NodeView> filteredNodeViews = r.getFilteredNodeViews();
+				 if (filteredNodeViews.size() < 30 ){
+				 //if more than 1 node
+				 System.out.println("UNCROSSING: "+ r.getAttValue());
+				 UnCrossAction.unCross(filteredNodeViews, false);
+				 }
 				r.repaint();
 
 				// oil & water

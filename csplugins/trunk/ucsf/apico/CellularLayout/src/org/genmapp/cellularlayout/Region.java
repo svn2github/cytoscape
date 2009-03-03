@@ -45,6 +45,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 	private String attName;
 	private List<String> nestedAttValues; // values represented by attValue
 	private List<NodeView> nodeViews;
+	private List<NodeView> filteredNodeViews = new ArrayList<NodeView>();
 	private int nodeCount;
 	private int columns;
 	private int area;
@@ -83,7 +84,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.attValue = attValue;
 		RegionManager.addRegion(this.attValue, this);
 
-		// nested terms based on Nathan's GO tree analysis
+		// synonym terms based on Nathan's GO tree analysis
 		if (this.attValue.equals("extracellular region"))
 			nestedAttValues = Arrays.asList("extracellular region",
 					"extracellular space", "secreted");
@@ -433,6 +434,16 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 */
 	public void setNodeViews(List<NodeView> nodeViews) {
 		this.nodeViews = nodeViews;
+	}
+	
+	public void removeFilteredNodeView(NodeView nv){
+		this.filteredNodeViews.remove(nv);
+	}
+	public void addFilteredNodeView(NodeView nv){
+		this.filteredNodeViews.add(nv);
+	}
+	public List<NodeView> getFilteredNodeViews() {
+		return filteredNodeViews;
 	}
 
 	/**
