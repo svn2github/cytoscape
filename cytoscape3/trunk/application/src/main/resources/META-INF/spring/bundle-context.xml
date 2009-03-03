@@ -329,6 +329,12 @@
 		<constructor-arg ref="networkManager" />
 	</bean>
 
+	<!-- this bean is not a CyAction! --> 
+	<bean id="selectionModeAction" class="cytoscape.actions.SelectionModeAction">
+		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="cytoscapeMenus" />
+	</bean>
+
 	<!-- Other stuff to be started -->
 	<bean id="undoMonitor" class="cytoscape.util.undo.UndoMonitor">
 		<constructor-arg ref="undoSupportServiceRef" />

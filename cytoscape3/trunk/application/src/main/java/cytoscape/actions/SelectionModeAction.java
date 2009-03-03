@@ -37,7 +37,8 @@
 package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
+import cytoscape.view.CyMenus;
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
@@ -52,26 +53,32 @@ import java.awt.event.ActionEvent;
  */
 public class SelectionModeAction extends JMenu implements MenuListener {
 	private final static long serialVersionUID = 1202340442665222L;
+
+	private static final int SELECT_NODES_ONLY = 1;
+	private static final int SELECT_EDGES_ONLY = 2;
+	private static final int SELECT_NODES_AND_EDGES = 3;
+
+
 	/**
 	 * Creates a new SelectionModeAction object.
 	 */
-	JCheckBoxMenuItem nodes; 
-	JCheckBoxMenuItem edges; 
-	JCheckBoxMenuItem nodesAndEdges; 
-	CyNetworkManager netmgr;
+	private JCheckBoxMenuItem nodes; 
+	private JCheckBoxMenuItem edges; 
+	private JCheckBoxMenuItem nodesAndEdges; 
+	private CyNetworkManager netmgr;
 
-	public SelectionModeAction(CyNetworkManager netmgr) {
+	public SelectionModeAction(CyNetworkManager netmgr, CyMenus cyMenus) {
 		super("Mouse Drag Selects");
 		this.netmgr = netmgr;
 
 		ButtonGroup modeGroup = new ButtonGroup();
 		nodes = new JCheckBoxMenuItem(new AbstractAction("Nodes Only") {
-	private final static long serialVersionUID = 1202339870593036L;
+				private final static long serialVersionUID = 1202339870593036L;
 				public void actionPerformed(ActionEvent e) {
 					// Do this in the GUI Event Dispatch thread...
 					SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
-								Cytoscape.setSelectionMode(Cytoscape.SELECT_NODES_ONLY);
+								setSelectionMode(SELECT_NODES_ONLY);
 							}
 						});
 				}
@@ -86,7 +93,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 					// Do this in the GUI Event Dispatch thread...
 					SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
-								Cytoscape.setSelectionMode(Cytoscape.SELECT_EDGES_ONLY);
+								setSelectionMode(SELECT_EDGES_ONLY);
 							}
 						});
 				}
@@ -101,7 +108,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 					// Do this in the GUI Event Dispatch thread...
 					SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
-								Cytoscape.setSelectionMode(Cytoscape.SELECT_NODES_AND_EDGES);
+								setSelectionMode(SELECT_NODES_AND_EDGES);
 							}
 						});
 				}
@@ -127,7 +134,9 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 			view.enableNodeSelection();
 			view.enableEdgeSelection();
 		}
-		Cytoscape.setSelectionMode(Cytoscape.SELECT_NODES_AND_EDGES);
+		setSelectionMode(SELECT_NODES_AND_EDGES);
+
+		cyMenus.getSelectMenu().add(this);
 	}
 
     public void menuCanceled(MenuEvent e) {}
@@ -146,4 +155,38 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 			nodesAndEdges.setEnabled(true);	
 		}
     }
+
+
+	private void setSelectionMode(int selectionMode) {
+
+		for ( GraphView view : netmgr.getNetworkViewSet() ) {
+
+			// then, based on selection mode, enable node and/or edge selection
+			switch (selectionMode) {
+				case SELECT_NODES_ONLY:
+					// TODO NEED RENDERER
+					view.disableEdgeSelection();
+					// TODO NEED RENDERER
+					view.enableNodeSelection();
+	
+					break;
+
+				case SELECT_EDGES_ONLY:
+					// TODO NEED RENDERER
+					view.disableNodeSelection();
+					// TODO NEED RENDERER
+					view.enableEdgeSelection();
+
+					break;
+
+				case SELECT_NODES_AND_EDGES:
+					// TODO NEED RENDERER
+					view.enableNodeSelection();
+					// TODO NEED RENDERER
+					view.enableEdgeSelection();
+	
+					break;
+			}
+		}
+	}
 }
