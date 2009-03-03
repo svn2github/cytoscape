@@ -143,10 +143,6 @@
 		<constructor-arg ref="graphViewFactoryServiceRef" />
 		<constructor-arg ref="networkManager" />
 	</bean>
-	<bean id="newSessionAction" class="cytoscape.actions.NewSessionAction">
-		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="networkManager" />
-	</bean>
 	<bean id="newWindowSelectedNodesEdgesAction" class="cytoscape.actions.NewWindowSelectedNodesEdgesAction">
 		<constructor-arg ref="networkManager" />
 	</bean>

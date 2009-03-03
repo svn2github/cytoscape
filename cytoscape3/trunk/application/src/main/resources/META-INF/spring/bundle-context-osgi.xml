@@ -73,8 +73,6 @@
 	<osgi:service id="newWindowSelectedNodesOnlyActionService"
 		ref="newWindowSelectedNodesOnlyAction" interface="cytoscape.util.CyAction" />
 
-	<osgi:service id="newSessionActionService" ref="newSessionAction"
-		interface="cytoscape.util.CyAction" />
 	<osgi:service id="newWindowSelectedNodesEdgesActionService"
 		ref="newWindowSelectedNodesEdgesAction" interface="cytoscape.util.CyAction" />
 	<osgi:service id="cloneGraphInNewWindowActionService" ref="cloneGraphInNewWindowAction"

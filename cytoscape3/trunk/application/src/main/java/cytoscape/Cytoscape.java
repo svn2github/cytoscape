@@ -38,7 +38,6 @@
 //---------------------------------------------------------------------------
 package cytoscape;
 
-//import cytoscape.actions.SaveSessionAction;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -107,16 +106,6 @@ public abstract class Cytoscape {
 	 */
 	public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
 
-	// KONO: 03/10/2006 For vizmap saving and loading
-	/**
-	 *
-	 */
-	public static String SESSION_SAVED = "SESSION_SAVED";
-
-	/**
-	 *
-	 */
-	public static String SESSION_LOADED = "SESSION_LOADED";
 
 	/**
 	 *
@@ -223,29 +212,6 @@ public abstract class Cytoscape {
 	// global to represent which selection mode is active
 	private static int currentSelectionMode = SELECT_NODES_ONLY;
 
-	// Value to manage session state
-	/**
-	 *
-	 */
-	public static final Integer SESSION_NEW = 0;
-
-	/**
-	 *
-	 */
-	public static final Integer SESSION_OPENED = 1;
-
-	/**
-	 *
-	 */
-	public static final Integer SESSION_CHANGED = 2;
-
-	/**
-	 *
-	 */
-	public static final Integer SESSION_CLOSED = 3;
-
-	private static Integer sessionState = SESSION_NEW;
-
 
 	public static final String READER_CLIENT_KEY = "reader_client_key";
 
@@ -256,14 +222,6 @@ public abstract class Cytoscape {
 	protected static Object pcs2 = new Object();
 	protected static PropertyChangeSupport newPcs = new PropertyChangeSupport(pcs2);
 	protected static CySwingApplication defaultDesktop;
-
-	/**
-	 * Used by session writer. If this is null, session writer opens the file
-	 * chooser. Otherwise, overwrite the file.
-	 *
-	 * KONO: 02/23/2006
-	 */
-	private static String currentSessionFileName;
 
 	private static CyNetworkManager netmgr;
 
@@ -318,16 +276,6 @@ public abstract class Cytoscape {
 			// TODO 
 			System.out.println("NOT implemented");
 			return true;
-		/*
-			SaveSessionAction saveAction = new SaveSessionAction();
-			saveAction.actionPerformed(null);
-
-			if (Cytoscape.getCurrentSessionFileName() == null) {
-				return confirmQuit();
-			} else {
-				return true;
-			}
-			*/
 		} else {
 			return false; // default if dialog box is closed
 		}
@@ -357,278 +305,6 @@ public abstract class Cytoscape {
 	public static PropertyChangeSupport getPropertyChangeSupport() {
 		return newPcs;
 	}
-
-
-	/**
-	 * @return all CyNodes that are present in Cytoscape
-	 */
-	public static List<CyNode> getCyNodesList() {
-		List<CyNode> allNodes = new ArrayList<CyNode>();
-		for ( CyNetwork net : netmgr.getNetworkSet() )
-			allNodes.addAll( net.getNodeList() );
-
-		return allNodes;
-	}
-
-	/**
-	 * @return all CyEdges that are present in Cytoscape
-	 */
-	public static List<CyEdge> getCyEdgesList() {
-		List<CyEdge> allEdges = new ArrayList<CyEdge>();
-		for ( CyNetwork net : netmgr.getNetworkSet() )
-			allEdges.addAll( net.getEdgeList() );
-
-		return allEdges;
-	}
-
-	/**
-	 * This method is used to replace direct access to the rootgraph.
-	public static CyNode getNode(int index) {
-		return getRootGraph().getNode(index);
-	}
-	 */
-
-	/**
-	 * This method is used to replace direct access to the rootgraph.
-	public static CyEdge getEdge(int index) {
-		return getRootGraph().getEdge(index);
-	}
-	 */
-
-	/**
-	 * @param alias an alias of a node
-	 * @return will return a node, if one exists for the given alias
-	public static CyNode getCyNode(String alias) {
-		return getCyNode(alias, false);
-	}
-	 */
-
-	/**
-	 * @param id the edge identifier 
-	 * @return will return an edge, if one exists for the given identifier
-	public static CyEdge getCyEdge(String id) {
-		return getRootGraph().getEdge(id);
-	}
-	 */
-
-
-	/**
-	 * @param nodeID
-	 *            an alias of a node
-	 * @param create
-	 *            will create a node if one does not exist
-	 * @return will always return a node, if <code>create</code> is true
-	 *
-	public static CyNode getCyNode(String nodeID, boolean create) {
-		CyNode node = Cytoscape.getRootGraph().getNode(nodeID);
-
-		// If the node is already exists,return it.
-		if (node != null) {
-			return node;
-		}
-
-		// And if we do not have to create new one, just return null
-		if (!create) {
-			return null;
-		}
-
-		// Now, create a new node.
-		node = (CyNode) getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
-		node.setIdentifier(nodeID);
-
-		// create the CANONICAL_NAME attribute
-		if (getNodeAttributes().getStringAttribute(nodeID, Semantics.CANONICAL_NAME) == null) {
-			getNodeAttributes().setAttribute(nodeID, Semantics.CANONICAL_NAME, nodeID);
-		}
-
-		return node;
-	}
-	 */
-
-	/**
-	 * Gets the first CyEdge found between the two nodes (direction does not
-	 * matter, but tries directed edge first) that has the given value for the
-	 * given attribute. If the edge doesn't exist, then it creates a directed
-	 * edge.
-	 * 
-	 * Thus, if create is true, this method will allways return a directed edge.
-	 * 
-	 * @param node_1
-	 *            one end of the edge
-	 * @param node_2
-	 *            the other end of the edge
-	 * @param attribute
-	 *            the attribute of the edge to be searched, a common one is
-	 *            {@link Semantics#INTERACTION }
-	 * @param attribute_value
-	 *            a value for the attribute, like "pp"
-	 * @param create
-	 *            will create an edge if one does not exist and if attribute is
-	 *            {@link Semantics#INTERACTION}
-	 * @return returns an existing CyEdge if present, or creates one if
-	 *         <code>create</code> is true and attribute is
-	 *         Semantics.INTERACTION, otherwise returns null.
-	public static CyEdge getCyEdge(CyNode node_1, CyNode node_2, String attribute,
-	                               Object attribute_value, boolean create) {
-		if (!create){
-			CyEdge e = getCyEdge(node_1, node_2, attribute, attribute_value, create, true);
-			if (e == null){
-				return getCyEdge(node_1, node_2, attribute, attribute_value, create, false);
-			} else { return e;}
-		} else {
-			return getCyEdge(node_1, node_2, attribute, attribute_value, create, true);
-		}
-	}
-	 */
-
-	/**
-	 * Gets the first CyEdge found between the two nodes that has the given
-	 * value for the given attribute. If direction flag is set, then direction
-	 * is taken into account, A->B is NOT equivalent to B->A
-	 *
-	 * @param source
-	 *            one end of the edge
-	 * @param target
-	 *            the other end of the edge
-	 * @param attribute
-	 *            the attribute of the edge to be searched, a common one is
-	 *            {@link Semantics#INTERACTION }
-	 * @param attribute_value
-	 *            a value for the attribute, like "pp"
-	 * @param create
-	 *            will create an edge if one does not exist and if attribute is
-	 *            {@link Semantics#INTERACTION}
-	 * @param directed
-	 *            take direction into account, source->target is NOT
-	 *            target->source
-	 * @return returns an existing CyEdge if present, or creates one if
-	 *         <code>create</code> is true and attribute is
-	 *         Semantics.INTERACTION, otherwise returns null.
-	public static CyEdge getCyEdge(CyNode source, CyNode target, String attribute,
-	                               Object attribute_value, boolean create, boolean directed) {
-		if (Cytoscape.getRootGraph().getEdgeCount() != 0) {
-			int[] n1Edges = Cytoscape.getRootGraph()
-			                         .getAdjacentEdgeIndicesArray(source.getRootGraphIndex(), true,
-			                                                      true, true);
-
-			for (int i = 0; i < n1Edges.length; i++) {
-				CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(n1Edges[i]);
-				Object attValue = private_getEdgeAttributeValue(edge, attribute);
-
-				if ((attValue != null) && attValue.equals(attribute_value)) {
-					// Despite the fact that we know the source node
-					// matches, the case of self edges dictates that
-					// we must check the source as well.
-					CyNode edgeTarget = (CyNode) edge.getTarget();
-					CyNode edgeSource = (CyNode) edge.getSource();
-
-					if ((edgeTarget.getRootGraphIndex() == target.getRootGraphIndex())
-					    && (edgeSource.getRootGraphIndex() == source.getRootGraphIndex())
-					    && (edge.isDirected() == directed)) {
-						return edge;
-					}
-
-					if (!directed) {
-						// note that source and target are switched
-						if ((edgeTarget.getRootGraphIndex() == source.getRootGraphIndex())
-						    && (edgeSource.getRootGraphIndex() == target.getRootGraphIndex())
-						    && (edge.isDirected() == directed)) {
-							return edge;
-						}
-					}
-				}
-			} // for i
-		}
-
-		if (create && attribute instanceof String && attribute.equals(Semantics.INTERACTION)) {
-			// create the edge
-			CyEdge edge = (CyEdge) Cytoscape.getRootGraph()
-			                                .getEdge(Cytoscape.getRootGraph()
-			                                                  .createEdge(source, target, directed));
-
-			// create the edge id
-			String edge_name = Cytoscape.createEdgeIdentifier(source.getIdentifier(),
-			                                           (String) attribute_value,
-			                                           target.getIdentifier());
-			edge.setIdentifier(edge_name);
-
-			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION, (String) attribute_value);
-			edgeAttributes.setAttribute(edge_name, Semantics.IS_DIRECTED, new Boolean(directed));
-			edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME, edge_name);
-
-			return edge;
-		}
-
-		return null;
-	}
-	 */
-
-	/**
-	 * Returns a directed edge if it exists, otherwise creates a directed edge.
-	 *
-	 * @param source_alias
-	 *            an alias of a node
-	 * @param edge_name
-	 *            the name of the node
-	 * @param target_alias
-	 *            an alias of a node
-	 * @return will always return an edge
-	public static CyEdge getCyEdge(String source_alias, String edge_name, String target_alias,
-            String interaction_type) {
-			return getCyEdge(source_alias, edge_name, target_alias, interaction_type, true);
-	}
-	 */
-
-	/**
-	 * Returns an edge if it exists, otherwise creates an edge with given directionality.
-	 *
-	 * @param source_alias
-	 *            an alias of a node
-	 * @param edge_name
-	 *            the name of the node
-	 * @param target_alias
-	 *            an alias of a node
-	 * @param directed
-	 * 			directedness of edge
-	 * @return will always return an edge
-	public static CyEdge getCyEdge(String source_alias, String edge_name, String target_alias,
-	                               String interaction_type, boolean directed) {
-
-		CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
-
-		if (edge != null) {
-			return edge;
-		}
-
-		// edge does not exist, create one
-		CyNode source = getCyNode(source_alias);
-		CyNode target = getCyNode(target_alias);
-
-		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, directed);
-	}
-
-	private static Object private_getEdgeAttributeValue(CyEdge edge, String attribute) {
-		final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
-		final String canonName = edge.getIdentifier();
-		final byte cyType = edgeAttrs.getType(attribute);
-
-		if (cyType == CyAttributes.TYPE_BOOLEAN) {
-			return edgeAttrs.getBooleanAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_FLOATING) {
-			return edgeAttrs.getDoubleAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_INTEGER) {
-			return edgeAttrs.getIntegerAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_STRING) {
-			return edgeAttrs.getStringAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_SIMPLE_LIST) {
-			return edgeAttrs.getListAttribute(canonName, attribute);
-		} else if (cyType == CyAttributes.TYPE_SIMPLE_MAP) {
-			return edgeAttrs.getMapAttribute(canonName, attribute);
-		} else {
-			return null;
-		}
-	}
-	 */	
 
 
 	/**
@@ -727,58 +403,6 @@ public abstract class Cytoscape {
 		}
 	}
 
-	/**
-	 * Get name of the current session file.
-	 *
-	 * @return current session file name
-	 */
-	public static String getCurrentSessionFileName() {
-		return currentSessionFileName;
-	}
-
-	/**
-	 * Set the current session name.
-	 *
-	 * @param newName
-	 */
-	public static void setCurrentSessionFileName(String newName) {
-		currentSessionFileName = newName;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param state DOCUMENT ME!
-	 */
-	public static void setSessionState(int state) {
-		sessionState = state;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static int getSessionstate() {
-		return sessionState;
-	}
-
-	/**
-	 * Clear all networks and attributes and start a new session.
-	 */
-
-    public static void createNewSession() {
-        // Destroy all networks
-        Set<CyNetwork> netSet = netmgr.getNetworkSet();
-
-        for (CyNetwork net : netSet)
-            netmgr.destroyNetwork(net);
-
-        setCurrentSessionFileName(null);
-        firePropertyChange(ATTRIBUTES_CHANGED, null, null);
-        System.out.println("Cytoscape Session Initialized.");
-        System.gc();
-    }
 
 
     /**
