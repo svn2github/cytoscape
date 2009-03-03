@@ -9,6 +9,10 @@
 		ref="visualStyleCatalog" interface="org.cytoscape.vizmap.VisualStyleCatalog">
 	</osgi:service>
 
+	<osgi:service id="visualMappingManagerService"
+		ref="visualMappingManager" interface="org.cytoscape.vizmap.VisualMappingManager">
+	</osgi:service>
+
 	<osgi:reference id="cyEventHelperServiceRef"
 		interface="org.cytoscape.event.CyEventHelper">
 	</osgi:reference>
