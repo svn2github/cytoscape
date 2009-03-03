@@ -44,31 +44,29 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
 
-	<!-- this creates a NewSessionTaskFactory object --> 
+	<!-- Off until session stuff is implemented
 	<bean id="newSessionTaskFactory" 
 	      class="org.cytoscape.task.session.internal.newSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 	</bean>
 
-	<!-- this creates a OpenSessionTaskFactory object --> 
 	<bean id="openSessionTaskFactory" 
 	      class="org.cytoscape.task.session.internal.OpenSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 		<constructor-arg ref="cyReaderManagerServiceRef" />
 	</bean>
 
-	<!-- this creates a SaveSessionTaskFactory object --> 
 	<bean id="saveSessionTaskFactory" 
 	      class="org.cytoscape.task.session.internal.SaveSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 		<constructor-arg ref="cyWriterManagerServiceRef" />
 	</bean>
 
-	<!-- this creates a SaveSessionAsTaskFactory object --> 
 	<bean id="saveSessionAsTaskFactory" 
 	      class="org.cytoscape.task.session.internal.SaveSessionAsTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 		<constructor-arg ref="cyWriterManagerServiceRef" />
 	</bean>
+	--> 
 
 </beans>

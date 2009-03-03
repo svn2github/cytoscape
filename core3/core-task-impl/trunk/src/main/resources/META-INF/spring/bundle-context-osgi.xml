@@ -12,13 +12,13 @@
 
     <osgi:reference id="cyReaderManagerServiceRef"
         interface="org.cytoscape.io.read.CyReaderManager"/>
-
+<!--  
     <osgi:reference id="cyWriterManagerServiceRef"
         interface="org.cytoscape.io.read.CyWriterManager"/>
 
     <osgi:reference id="cySessionManagerServiceRef"
         interface="org.cytoscape.session.CySessionManager"/>
-
+-->
     <osgi:reference id="cyLayoutsServiceRef"
         interface="org.cytoscape.layout.CyLayouts"/>
 
@@ -44,7 +44,7 @@
 			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>
-
+<!--
 	<osgi:service id="newSessionTaskFactoryService" ref="newSessionTaskFactory"
 	              interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
@@ -76,5 +76,5 @@
 			<entry key="preferredMenu" value="File" />
 		</osgi:service-properties>
 	</osgi:service>
-
+-->
 </beans>
