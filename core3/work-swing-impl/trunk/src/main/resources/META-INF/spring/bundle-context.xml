@@ -19,4 +19,13 @@
 	<bean id="guiTunableInterceptor" class="org.cytoscape.work.internal.tunables.GuiTunableInterceptor"/>
 	<bean id="swingTaskManager" class="org.cytoscape.work.internal.task.SwingTaskManager"/>
 
+
+	<!-- 	added -->
+	<bean name="importNetworkDialogFactory"
+		class="cytoscape.dialogs.internal.ImportNetworkDialogFactoryImpl">
+		<constructor-arg ref="fileUtil" />
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtilServiceRef" />
+	</bean>
+
 </beans>
