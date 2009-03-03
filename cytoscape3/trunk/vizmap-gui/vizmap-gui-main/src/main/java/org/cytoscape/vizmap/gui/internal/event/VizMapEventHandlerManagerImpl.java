@@ -35,7 +35,8 @@ public class VizMapEventHandlerManagerImpl implements VizMapEventHandlerManager 
 
 		AbstractVizMapEventHandler loadHandler = new DataLoadedEventHandler();
 		eventHandlers.put(Cytoscape.VIZMAP_LOADED, loadHandler);
-		eventHandlers.put(Cytoscape.SESSION_LOADED, loadHandler);
+		// TODO refactor
+		//eventHandlers.put(Cytoscape.SESSION_LOADED, loadHandler);
 		
 		AbstractVizMapEventHandler attrHandler = new AttributeUpdateEventHandler(vizMapPropertySheetBuilder);
 		eventHandlers.put(Cytoscape.ATTRIBUTES_CHANGED, attrHandler);

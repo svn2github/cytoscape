@@ -427,11 +427,14 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 	public void propertyChange(PropertyChangeEvent e) {
 		// Set ignore flag.
+		// TODO refactor to use new events
+		/*
 		if (e.getPropertyName().equals(
 				Integer.toString(Cytoscape.SESSION_OPENED))) {
 			ignore = true;
 			enableListeners(false);
 		}
+		*/
 
 		if (ignore)
 			return;
