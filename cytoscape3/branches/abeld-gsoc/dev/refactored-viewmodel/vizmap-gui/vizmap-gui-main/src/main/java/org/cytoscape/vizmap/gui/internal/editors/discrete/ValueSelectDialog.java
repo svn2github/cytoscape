@@ -103,7 +103,7 @@ public class ValueSelectDialog extends JDialog {
 		super();
 		this.setModal(modal);
 		this.type = type;
-		shapeMap = this.type.getVisualProperty().getIconSet();
+		shapeMap = this.type.getIconSet();
 		initComponents();
 
 		setList();

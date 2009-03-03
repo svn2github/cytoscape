@@ -579,8 +579,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		if(type.equals(NODE_SHAPE)) {
 			
 
-				final VisualPropertyIcon icon = (VisualPropertyIcon) type.getVisualProperty()
-				                                                         .getIconSet().get(key);
+				final VisualPropertyIcon icon = (VisualPropertyIcon) type.getIconSet().get(key);
 				icon.setIconHeight(size);
 				icon.setIconWidth(size);
 				g.fill(icon.getShape());
@@ -588,8 +587,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		} else if(type.equals(EDGE_SRCARROW_SHAPE) ||
 				type.equals(EDGE_TGTARROW_SHAPE)) {
 
-				final VisualPropertyIcon arrowIcon = ((VisualPropertyIcon) type.getVisualProperty()
-				                                                         .getIconSet().get(key));
+				final VisualPropertyIcon arrowIcon = ((VisualPropertyIcon) type.getIconSet().get(key));
 				if(arrowIcon == null) {
 					return;
 				}

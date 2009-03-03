@@ -438,8 +438,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		nodeList.setModel(model);
 
 		for (VisualProperty type : NODE_PROPS) {
-			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getVisualProperty()
-			                                                              .getDefaultIcon());
+			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
 			nodeIcon.setLeftPadding(15);
 			model.addElement(type);
 			nodeIcons.add(nodeIcon);
@@ -449,8 +448,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		edgeList.setModel(eModel);
 
 		for (VisualProperty type : EDGE_PROPS) {
-			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getVisualProperty()
-			                                                              .getDefaultIcon());
+			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
 
 			if (edgeIcon != null) {
 				edgeIcon.setLeftPadding(15);

@@ -63,7 +63,7 @@ public class ShapeCellRenderer extends DefaultCellRenderer {
 	 */
 	public ShapeCellRenderer(VisualProperty type) {
 		this.type = type;
-		icons = type.getVisualProperty().getIconSet();
+		icons = type.getIconSet();
 	}
 
 	/**
