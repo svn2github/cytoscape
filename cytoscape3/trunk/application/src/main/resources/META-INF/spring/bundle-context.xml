@@ -49,12 +49,6 @@
 	</bean>
 
 	<!-- Dialog Factories -->
-	<bean name="importNetworkDialogFactory"
-		class="cytoscape.dialogs.internal.ImportNetworkDialogFactoryImpl">
-		<constructor-arg ref="fileUtil" />
-		<constructor-arg ref="bookmarkServiceRef" />
-		<constructor-arg ref="bookmarksUtilServiceRef" />
-	</bean>
 	<bean name="aboutDialogFactory" class="cytoscape.dialogs.internal.AboutDialogFactoryImpl">
 		<constructor-arg ref="openBrowser" />
 	</bean>
@@ -123,16 +117,6 @@
 		<constructor-arg ref="fileUtil" />
 	</bean>
 
-	<!-- CyAction service beans -->
-	<bean id="importGraphFileAction" class="cytoscape.actions.ImportGraphFileAction">
-		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="cyReaderManagerServiceRef" />
-		<constructor-arg ref="graphViewFactoryServiceRef" />
-		<constructor-arg ref="cyLayoutsServiceRef" />
-		<constructor-arg ref="networkManager" />
-		<constructor-arg ref="cytoscapeProperties" />
-		<constructor-arg ref="importNetworkDialogFactory" />
-	</bean>
 	<bean id="newNetworkAction" class="cytoscape.actions.NewNetworkAction">
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="graphViewFactoryServiceRef" />

@@ -32,10 +32,6 @@
 		interface="org.cytoscape.view.GraphViewFactory">
 	</osgi:reference>
 
-	<osgi:reference id="cyReaderManagerServiceRef"
-		interface="org.cytoscape.io.read.CyReaderManager">
-	</osgi:reference>
-
 	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.layout.CyLayouts">
 	</osgi:reference>
 
@@ -68,8 +64,6 @@
 	<osgi:service id="openBrowserService" ref="openBrowser"
 		interface="cytoscape.util.OpenBrowser" />
 
-	<osgi:service id="importGraphFileActionService" ref="importGraphFileAction"
-		interface="cytoscape.util.CyAction" />
 	<osgi:service id="newWindowSelectedNodesOnlyActionService"
 		ref="newWindowSelectedNodesOnlyAction" interface="cytoscape.util.CyAction" />
 
