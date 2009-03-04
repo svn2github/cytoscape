@@ -41,6 +41,7 @@
 package org.cytoscape.task.loadnetwork.internal;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Properties;
 
 import org.cytoscape.io.DataCategory;
@@ -48,6 +49,7 @@ import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
 
 import cytoscape.CyNetworkManager;
 
@@ -56,8 +58,8 @@ import cytoscape.CyNetworkManager;
  */
 public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
-	// @Tunable(description="The URL to load")
-	public URI uri;
+	@Tunable(description="The URL to load")
+	public URL url;
 
 	public LoadNetworkURLTask(CyReaderManager mgr, GraphViewFactory gvf,
 			CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
@@ -70,22 +72,22 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		this.taskMonitor = taskMonitor;
 
-		if (uri == null)
-			throw new NullPointerException("Network uri is null");
+		if (url == null)
+			throw new NullPointerException("Network url is null");
 
-		name = uri.toString();
+		name = url.toString();
 
 		myThread = Thread.currentThread();
 
 		try {
-			taskMonitor.setStatusMessage("Opening URI " + uri);
-			reader = mgr.getReader(uri, DataCategory.NETWORK);
+			taskMonitor.setStatusMessage("Opening url " + url);
+			reader = mgr.getReader(url.toURI(), DataCategory.NETWORK);
 
 			if (interrupted)
 				return;
 
 		} catch (Exception e) {
-			uri = null;
+			url = null;
 			throw new Exception("Unable to connect to URL " + name, e); 
 		}
 
