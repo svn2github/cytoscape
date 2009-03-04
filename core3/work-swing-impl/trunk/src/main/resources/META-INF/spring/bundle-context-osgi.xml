@@ -6,7 +6,7 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<!-- Individual Service -->
+	<!-- Services provided by this bundle -->
 	<osgi:service id="undoSupportService"
 		ref="undoSupport" interface="org.cytoscape.work.UndoSupport">
 	</osgi:service>
@@ -19,4 +19,12 @@
 		ref="swingTaskManager" interface="org.cytoscape.work.TaskManager">
 	</osgi:service>
 
+	
+	<!-- Services USED by this bundle -->
+    <osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
+        filter="(cyPropertyName=bookmarks)" />
+
+    <osgi:reference id="bookmarksUtilServiceRef"
+        interface="org.cytoscape.property.bookmark.BookmarksUtil" />
+	
 </beans>

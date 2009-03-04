@@ -68,6 +68,7 @@ public class URLHandler extends AbstractGuiHandler {
 			if ( urlstr != null ) {
 				try {
 					url = new URL(urlstr);
+					f.set(o,url);
 				}catch (MalformedURLException e){e.printStackTrace();}
 			}
 		}catch (Exception e){}

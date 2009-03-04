@@ -7,15 +7,21 @@ import java.io.File;
 
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.util.*;
 
 public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 
-	Bookmarks bookmarks;
-	BookmarksUtil bkUtil;
+	private Bookmarks bookmarks;
+	private BookmarksUtil bkUtil;
 	
+	public GuiHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
+		this.bookmarks = book.getProperties();
+		this.bkUtil = bkUtil;
+	}
+
 	public Guihandler getHandler(Field f, Object o, Tunable t){
 		
 		Class<?> type = f.getType();

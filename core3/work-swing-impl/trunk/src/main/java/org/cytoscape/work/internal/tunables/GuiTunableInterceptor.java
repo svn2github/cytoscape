@@ -24,8 +24,8 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	private Component parent;
 	private Map<java.util.List<Guihandler>,JPanel> panelMap;
 
-	public GuiTunableInterceptor() {
-		super( new GuiHandlerFactory());
+	public GuiTunableInterceptor(HandlerFactory<Guihandler> factory) {
+		super( factory );
 		panelMap = new HashMap<java.util.List<Guihandler>,JPanel>();
 	}
 
