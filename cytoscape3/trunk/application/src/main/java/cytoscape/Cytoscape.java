@@ -275,13 +275,6 @@ public abstract class Cytoscape {
 	}
 
 
-    /**
-     * A static method used to create edge identifiers.
-     */
-    public static String createEdgeIdentifier(String source, String attribute_value, String target) {
-        return source + " (" + attribute_value + ") " + target;
-    }
-
 	/**
 	 * This is a temporary utility method and will eventually be refactored away.
 	 */
@@ -292,9 +285,5 @@ public abstract class Cytoscape {
 		VMMFactory.getVisualMappingManager().setNetworkView(view);
 		VMMFactory.getVisualMappingManager().applyAppearances();
 		view.updateView();
-	}
-
-	public static VisualMappingManager getVisualMappingManager() {
-		return VMMFactory.getVisualMappingManager();
 	}
 }

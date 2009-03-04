@@ -46,8 +46,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
+//import org.cytoscape.vizmap.VisualMappingManager;
+//import org.cytoscape.vizmap.VisualStyle;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;

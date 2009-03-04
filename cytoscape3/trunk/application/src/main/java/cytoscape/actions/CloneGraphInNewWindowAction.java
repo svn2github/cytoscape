@@ -50,7 +50,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
-import org.cytoscape.vizmap.VisualStyle;
+//import org.cytoscape.vizmap.VisualStyle;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
