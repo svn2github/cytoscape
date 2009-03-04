@@ -43,15 +43,22 @@
 package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.data.CyNetworkUtilities;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
+import cytoscape.data.Semantics;
+
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.GraphView;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -87,7 +94,7 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 
 		if ((e.getSource() == searchField) || (e.getSource() == search)) {
 			String search_string = searchField.getText();
-			CyNetworkUtilities.selectNodesStartingWith(netmgr.getCurrentNetwork(),
+			selectNodesStartingWith(netmgr.getCurrentNetwork(),
 			                                           search_string,
 			                                           netmgr.getCurrentNetworkView());
 			netmgr.getCurrentNetworkView().updateView();
@@ -134,4 +141,73 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
     public void menuSelected(MenuEvent e) {
         enableForNetwork();
     }
+
+
+	/**
+	 * Selects every node in the current view whose canonical name, label, or
+	 * any known synonym starts with the string specified by the second
+	 * argument. Note that synonyms are only available if a naming server is
+	 * available.
+	 *
+	 * This method does not change the selection state of any node that doesn't
+	 * match the given key, allowing multiple selection queries to be
+	 * concatenated.
+	 */
+	private boolean selectNodesStartingWith(CyNetwork network, String key,
+	                                              GraphView networkView) {
+		if ((network == null) || (key == null) || (networkView == null)) {
+			return false;
+		}
+
+		key = key.toLowerCase();
+
+		boolean found = false;
+		String callerID = "CyNetworkUtilities.selectNodesStartingWith";
+
+		int nodeFound = 0;
+		Vector<CyNode> matchedNodes = new Vector<CyNode>();
+
+		for ( CyNode node : network.getNodeList() ) {
+			String nodeUID = node.attrs().get("name",String.class);
+
+			boolean matched = false;
+
+			if ((nodeUID != null) && nodeUID.toLowerCase().matches(key)) {
+				matched = true;
+				found = true;
+				matchedNodes.add(node);
+			} else {
+				// this list always includes the canonical name itself
+				java.util.List synonyms = Semantics.getAllSynonyms(node, network);
+
+				for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
+					String synonym = (String) synI.next();
+
+					if (synonym.toLowerCase().matches(key)) {
+						matched = true;
+						found = true;
+						matchedNodes.add(node);
+
+						break;
+					}
+				} 
+			} 
+
+			if (matched)
+				nodeFound++;
+		} 
+
+		if (nodeFound == 0) {
+			JOptionPane.showMessageDialog(null, "No match for the string \"" + key + "\"",
+			                              "Error: Node Not Found", JOptionPane.ERROR_MESSAGE);
+		}
+
+		if (nodeFound > 0) {
+			for ( CyNode n : matchedNodes )
+				n.attrs().set("selected",true);
+		}
+
+		//System.out.println("node found = " + nodeFound);
+		return found;
+	}
 }
