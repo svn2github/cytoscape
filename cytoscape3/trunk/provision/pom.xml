@@ -187,6 +187,31 @@
       <artifactId>com.springsource.net.sf.cglib</artifactId>
       <version>2.1.3</version>
     </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>model-impl</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>work-swing-impl</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>core-task-impl</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>io-impl</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>work-spring-hack</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
 </project>
