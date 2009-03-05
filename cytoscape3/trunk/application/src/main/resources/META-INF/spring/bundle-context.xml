@@ -157,12 +157,6 @@
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="networkManager" />
 	</bean>
-	<bean id="createNetworkViewAction" class="cytoscape.actions.CreateNetworkViewAction">
-		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="networkManager" />
-		<constructor-arg ref="graphViewFactoryServiceRef" />
-		<constructor-arg ref="cytoscapeProperties" />
-	</bean>
 	<bean id="destroyNetworkViewAction" class="cytoscape.actions.DestroyNetworkViewAction">
 		<constructor-arg ref="networkManager" />
 	</bean>

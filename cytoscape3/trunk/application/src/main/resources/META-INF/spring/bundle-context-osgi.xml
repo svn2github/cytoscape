@@ -85,8 +85,6 @@
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="redoActionService" ref="redoAction"
 		interface="cytoscape.util.CyAction" />
-	<osgi:service id="createNetworkViewActionService" ref="createNetworkViewAction"
-		interface="cytoscape.util.CyAction" />
 	<osgi:service id="destroyNetworkViewActionService" ref="destroyNetworkViewAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="destroyNetworkActionService" ref="destroyNetworkAction"
@@ -252,7 +250,7 @@
             <value>cytoscape.xtask.CreateNetworkViewTaskFactory</value>
         </osgi:interfaces>
         <osgi:service-properties>
-            <entry key="title" value="Create Super View" />
+            <entry key="title" value="Create View" />
             <entry key="preferredMenu" value="Edit" />
         </osgi:service-properties>
     </osgi:service>
