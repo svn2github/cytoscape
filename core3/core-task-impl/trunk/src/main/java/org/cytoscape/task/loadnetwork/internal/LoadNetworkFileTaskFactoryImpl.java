@@ -60,23 +60,24 @@ public class LoadNetworkFileTaskFactoryImpl implements TaskFactory {
 	private CyNetworkManager netmgr;
 	private Properties props;
 	
-	private CyNetworkNaming namingUtil;
+	private CyNetworkNaming cyNetworkNaming;
 
 	public LoadNetworkFileTaskFactoryImpl(CyReaderManager mgr,
 			GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
-			CyProperty<Properties> cyProp) {
+			CyProperty<Properties> cyProp, CyNetworkNaming cyNetworkNaming) {
 		this.mgr = mgr;
 		this.gvf = gvf;
 		this.cyl = cyl;
 		this.netmgr = netmgr;
 		this.props = cyProp.getProperties();
+		this.cyNetworkNaming = cyNetworkNaming;
 	}
 	
 	public void setNamingUtil(CyNetworkNaming namingUtil) {
-		this.namingUtil = namingUtil;
+		this.cyNetworkNaming = namingUtil;
 	}
 
 	public Task getTask() {
-		return new LoadNetworkFileTask(mgr, gvf, cyl, netmgr, props, namingUtil);
+		return new LoadNetworkFileTask(mgr, gvf, cyl, netmgr, props, cyNetworkNaming);
 	}
 }

@@ -32,7 +32,7 @@
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
-		<property name="namingUtil" ref="cyNetworkNamingServiceRef" />
+		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
 
 	<!-- this creates a LoadPropsInterceptor object --> 
@@ -43,7 +43,7 @@
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
-		<property name="namingUtil" ref="cyNetworkNamingServiceRef" />
+		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
 
 	<!-- Off until session stuff is implemented

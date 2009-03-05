@@ -61,23 +61,24 @@ public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 	private CyNetworkManager netmgr;
 	private Properties props;
 
-	private CyNetworkNaming namingUtil;
+	private CyNetworkNaming cyNetworkNaming;
 
 	public LoadNetworkURLTaskFactoryImpl(CyReaderManager mgr,
 			GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
-			CyProperty<Properties> cyProps) {
+			CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming) {
 		this.mgr = mgr;
 		this.gvf = gvf;
 		this.cyl = cyl;
 		this.netmgr = netmgr;
 		this.props = cyProps.getProperties();
+		this.cyNetworkNaming = cyNetworkNaming;
 	}
 
 	public void setNamingUtil(CyNetworkNaming namingUtil) {
-		this.namingUtil = namingUtil;
+		this.cyNetworkNaming = namingUtil;
 	}
 
 	public Task getTask() {
-		return new LoadNetworkURLTask(mgr, gvf, cyl, netmgr, props, namingUtil);
+		return new LoadNetworkURLTask(mgr, gvf, cyl, netmgr, props, cyNetworkNaming);
 	}
 }
