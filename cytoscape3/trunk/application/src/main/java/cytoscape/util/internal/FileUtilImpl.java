@@ -62,7 +62,7 @@ class FileUtilImpl implements FileUtil {
 
 	private CyOperatingContext context;
 
-	FileUtilImpl(CyOperatingContext context) {
+	FileUtilImpl(CyOperatingContext context, StreamUtil streamUtil) {
 		this.context = context;
 	}
 	

@@ -85,7 +85,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
 	 */
-	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r, final GraphViewFactory gvf, CyNetworkManager netmgr) {
+	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r, final GraphViewFactory gvf, CyNetworkManager netmgr, CyNetworkNaming namingUtil) {
 		super("From selected nodes, all edges",netmgr);
 		setPreferredMenu("File.New.Network");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);

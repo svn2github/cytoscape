@@ -42,7 +42,7 @@
 	</bean>
 	<bean name="fileUtil" class="cytoscape.util.internal.FileUtilImpl">
 		<constructor-arg ref="cyOperatingContext" />
-		<property name="streamUtil" ref="streamUtilServiceRef" />
+		<constructor-arg ref="streamUtilServiceRef" />
 	</bean>
 	<bean name="networkNamingUtil" class="cytoscape.util.internal.CyNetworkNamingImpl" />
 
@@ -134,7 +134,7 @@
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
 		<constructor-arg ref="graphViewFactoryServiceRef" />
 		<constructor-arg ref="networkManager" />
-		<property name="namingUtil" ref="networkNamingUtil" />
+		<constructor-arg ref="networkNamingUtil" />
 	</bean>
 	<bean id="newWindowSelectedNodesEdgesAction" class="cytoscape.actions.NewWindowSelectedNodesEdgesAction">
 		<constructor-arg ref="networkManager" />
