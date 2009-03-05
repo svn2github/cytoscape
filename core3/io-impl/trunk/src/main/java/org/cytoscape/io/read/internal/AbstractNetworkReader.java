@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.io.read.CyReader;
+import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.GraphViewFactory;
 
@@ -16,6 +17,8 @@ abstract public class AbstractNetworkReader implements CyReader {
 	protected InputStream inputStream;
 	protected CyNetworkFactory cyNetworkFactory;
 	protected GraphViewFactory graphViewFactory;
+	
+	protected CyLayouts layouts;
 	
 	protected Map<Class<?>, Object> readObjects;
 
@@ -29,6 +32,10 @@ abstract public class AbstractNetworkReader implements CyReader {
 	
 	public void setGraphViewFactory(GraphViewFactory graphViewFactory) {
 		this.graphViewFactory = graphViewFactory;
+	}
+	
+	public void setLayouts(CyLayouts layouts) {
+		this.layouts = layouts;
 	}
 
 	public <T> T getReadData(Class<T> type) {

@@ -7,10 +7,13 @@
 
 
 	<!-- Import services -->
+	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.layout.CyLayouts" />
+
 	<osgi:reference id="cyNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
-		
-	<osgi:reference id="graphViewFactoryServiceRef" interface="org.cytoscape.view.GraphViewFactory" />
+
+	<osgi:reference id="graphViewFactoryServiceRef"
+		interface="org.cytoscape.view.GraphViewFactory" />
 
 	<!-- Export services -->
 	<osgi:service id="cyReaderManagerService" ref="cyReaderManager"
@@ -30,13 +33,14 @@
 			<entry key="readerDescription" value="Simple Interaction Format (SIF) file reader" />
 		</osgi:service-properties>
 	</osgi:service>
-	
+
 	<osgi:service id="xgmmlReaderFactoryService" ref="xgmmlReaderFactory"
 		interface="org.cytoscape.io.read.CyReaderFactory">
 		<osgi:service-properties>
 			<entry key="serviceType" value="readerFactory" />
 			<entry key="readerId" value="xgmmlReader" />
-			<entry key="readerDescription" value="eXtensible Graph Markup and Modeling Language (XGMML) file reader" />
+			<entry key="readerDescription"
+				value="eXtensible Graph Markup and Modeling Language (XGMML) file reader" />
 		</osgi:service-properties>
 	</osgi:service>
 

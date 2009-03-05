@@ -68,6 +68,7 @@
 		<constructor-arg ref="readUtil" />
 		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
 		<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
+		<property name="layouts" ref="cyLayoutsServiceRef" />
 	</bean>
 
 
@@ -97,6 +98,7 @@
 		<property name="readDataManager" ref="readDataManager" />
 		<property name="attributeValueUtil" ref="attributeValueUtil" />
 		<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
+		<property name="layouts" ref="cyLayoutsServiceRef" />
 	</bean>
 
 	<!-- Attribute Readers -->

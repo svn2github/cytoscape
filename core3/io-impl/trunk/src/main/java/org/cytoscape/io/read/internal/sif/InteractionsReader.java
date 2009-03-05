@@ -145,8 +145,10 @@ public class InteractionsReader extends AbstractNetworkReader {
 		}
 		
 		readObjects.put(CyNetwork.class, network);
-		readObjects.put(GraphView.class, graphViewFactory.createGraphView( network ));
 		
+		final GraphView view = graphViewFactory.createGraphView( network );
+		layouts.getDefaultLayout().doLayout(view);
+		readObjects.put(GraphView.class, view);
 		
 		nodeMap.clear();
 		nodeMap = null;
