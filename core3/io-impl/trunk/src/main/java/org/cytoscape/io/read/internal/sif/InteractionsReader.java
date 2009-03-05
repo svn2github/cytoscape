@@ -47,8 +47,8 @@ import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.io.read.internal.AbstractNetworkReader;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.GraphView;
 
 /**
  * Reader for graphs in the interactions file format. Given the filename,
@@ -64,8 +64,8 @@ public class InteractionsReader extends AbstractNetworkReader {
 	private ReadUtils readUtil;
 
 	private List<Interaction> interactions;
-	public InteractionsReader(CyNetworkFactory factory, ReadUtils readUtil) {
-		super(factory);
+	public InteractionsReader(ReadUtils readUtil) {
+		super();
 		this.interactions = new ArrayList<Interaction>();
 		this.readUtil = readUtil;
 	}
@@ -106,7 +106,7 @@ public class InteractionsReader extends AbstractNetworkReader {
 	
 	private void createNetwork() {
 
-		final CyNetwork network = networkFactory.getInstance();
+		final CyNetwork network = cyNetworkFactory.getInstance();
 
 		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
 
@@ -145,6 +145,8 @@ public class InteractionsReader extends AbstractNetworkReader {
 		}
 		
 		readObjects.put(CyNetwork.class, network);
+		readObjects.put(GraphView.class, graphViewFactory.createGraphView( network ));
+		
 		
 		nodeMap.clear();
 		nodeMap = null;

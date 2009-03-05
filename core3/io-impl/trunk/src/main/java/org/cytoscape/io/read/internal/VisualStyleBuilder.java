@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,31 +31,38 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
-package org.cytoscape.io.read.internal; 
-
-import org.cytoscape.model.CyRow;
-import org.cytoscape.vizmap.*;
-import org.cytoscape.vizmap.calculators.BasicCalculator;
-import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
+package org.cytoscape.io.read.internal;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cytoscape.model.CyRow;
+import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.GlobalAppearanceCalculator;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.VMMFactory;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.calculators.BasicCalculator;
+import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
+
 /**
  * Based on the graph/node/edge view information, build new Visual Style.
- *
+ * 
  * This class accepts style properties and adds hidden Cytoscape attributes that
  * will be used to actually create the style.
  */
 public class VisualStyleBuilder {
 
-	Map<VisualPropertyType,Map<Object,Object>> valueMaps;
-	Map<VisualPropertyType,Map<Object,Integer>> counts;
+	Map<VisualPropertyType, Map<Object, Object>> valueMaps;
+	Map<VisualPropertyType, Map<Object, Integer>> counts;
 	String name;
 	private boolean nodeSizeLocked = true;
 
@@ -64,23 +70,30 @@ public class VisualStyleBuilder {
 	private int edgeMax;
 
 	/**
-	 * Build a new VisualStyleBuilder object whose output style will be called "name".
+	 * Build a new VisualStyleBuilder object whose output style will be called
+	 * "name".
 	 * 
-	 * @param name the name of the visual style that will be created.
+	 * @param name
+	 *            the name of the visual style that will be created.
 	 */
 	public VisualStyleBuilder(String name) {
 		// because visual style parsing breaks with '.' in the names
-		this.name = name.replaceAll("\\.","_");
+		this.name = name.replaceAll("\\.", "_");
 
-		valueMaps = new EnumMap<VisualPropertyType,Map<Object,Object>>(VisualPropertyType.class);
-		counts = new EnumMap<VisualPropertyType,Map<Object,Integer>>(VisualPropertyType.class);
+		valueMaps = new EnumMap<VisualPropertyType, Map<Object, Object>>(
+				VisualPropertyType.class);
+		counts = new EnumMap<VisualPropertyType, Map<Object, Integer>>(
+				VisualPropertyType.class);
 	}
 
 	/**
-	 * Build a new VisualStyleBuilder object whose output style will be called "name".
+	 * Build a new VisualStyleBuilder object whose output style will be called
+	 * "name".
 	 * 
-	 * @param name the name of the visual style that will be created.
-	 * @param addOvAttr not used.
+	 * @param name
+	 *            the name of the visual style that will be created.
+	 * @param addOvAttr
+	 *            not used.
 	 */
 	public VisualStyleBuilder(String name, boolean addOvAttr) {
 		this(name);
@@ -90,53 +103,60 @@ public class VisualStyleBuilder {
 	 * Actually build the style using the provided properties
 	 */
 	public void buildStyle() {
-		// First, get our current style information. 
+		// First, get our current style information.
 		VisualMappingManager vm = VMMFactory.getVisualMappingManager();
 		VisualStyle currentStyle = vm.getVisualStyle();
-		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(currentStyle.getNodeAppearanceCalculator());
-		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator(currentStyle.getEdgeAppearanceCalculator());
-		GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator(currentStyle.getGlobalAppearanceCalculator());
+		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(
+				currentStyle.getNodeAppearanceCalculator());
+		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator(
+				currentStyle.getEdgeAppearanceCalculator());
+		GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator(
+				currentStyle.getGlobalAppearanceCalculator());
 
 		nac.setNodeSizeLocked(nodeSizeLocked);
 
 		processCounts();
 
-		for ( VisualPropertyType type : valueMaps.keySet() ) {
+		for (VisualPropertyType type : valueMaps.keySet()) {
 
-			Map<Object,Object> valMap = valueMaps.get(type);
+			Map<Object, Object> valMap = valueMaps.get(type);
 			// If there is more than one value specified for a given
 			// visual property, or if only a subset of nodes/edges
 			// have a property then create a mapping and calculator.
-			if ( createMapping(type) ) {
- 
-				DiscreteMapping dm = new DiscreteMapping( type.getVisualProperty().getDefaultAppearanceObject(), 
-					                                  getAttrName(type), 
-					                                  type.isNodeProp() ?  
-					                                  ObjectMapping.NODE_MAPPING : ObjectMapping.EDGE_MAPPING );
+			if (createMapping(type)) {
 
-				System.out.println( "ValueMaps size: " + valueMaps.get(type).size() );
-				dm.putAll( valMap );
+				DiscreteMapping dm = new DiscreteMapping(type
+						.getVisualProperty().getDefaultAppearanceObject(),
+						getAttrName(type),
+						type.isNodeProp() ? ObjectMapping.NODE_MAPPING
+								: ObjectMapping.EDGE_MAPPING);
 
-				Calculator calc = new BasicCalculator("VisualStyleBuilder-" + getAttrName(type), dm, type);
+				System.out.println("ValueMaps size: "
+						+ valueMaps.get(type).size());
+				dm.putAll(valMap);
 
-				if ( type.isNodeProp() )
-					nac.setCalculator( calc );
+				Calculator calc = new BasicCalculator("VisualStyleBuilder-"
+						+ getAttrName(type), dm, type);
+
+				if (type.isNodeProp())
+					nac.setCalculator(calc);
 				else
-					eac.setCalculator( calc );
+					eac.setCalculator(calc);
 
-				// Otherwise, set the default appearance value for the visual style
+				// Otherwise, set the default appearance value for the visual
+				// style
 				// and then remove the attribute that was created.
 			} else {
-				if ( type.isNodeProp() ) {
-					for ( Object key : valMap.keySet() ) 
-						nac.getDefaultAppearance().set( type, valMap.get(key) );
+				if (type.isNodeProp()) {
+					for (Object key : valMap.keySet())
+						nac.getDefaultAppearance().set(type, valMap.get(key));
 					// TODO delete the attr we created
-					//Cytoscape.getNodeAttributes().deleteAttribute(getAttrName(type));
+					// Cytoscape.getNodeAttributes().deleteAttribute(getAttrName(type));
 				} else {
-					for ( Object key : valMap.keySet() ) 
-						eac.getDefaultAppearance().set( type, valMap.get(key) );
+					for (Object key : valMap.keySet())
+						eac.getDefaultAppearance().set(type, valMap.get(key));
 					// TODO delete the attr we created
-					//Cytoscape.getEdgeAttributes().deleteAttribute(getAttrName(type));
+					// Cytoscape.getEdgeAttributes().deleteAttribute(getAttrName(type));
 				}
 			}
 		}
@@ -157,16 +177,19 @@ public class VisualStyleBuilder {
 	}
 
 	private String getAttrName(VisualPropertyType type) {
-		return "vizmap:"+name + " " + type.toString();
+		return "vizmap:" + name + " " + type.toString();
 	}
 
 	/**
 	 * This method actually adds a property to be considered for inclusion into
 	 * the resulting style.
-	 *
-	 * @param id the id of the node or edge
-	 * @param type the type of the property
-	 * @param desc the property value
+	 * 
+	 * @param id
+	 *            the id of the node or edge
+	 * @param type
+	 *            the type of the property
+	 * @param desc
+	 *            the property value
 	 */
 	public void addProperty(CyRow attrs, VisualPropertyType type, String desc) {
 		Object value = type.getValueParser().parseStringValue(desc);
@@ -178,28 +201,29 @@ public class VisualStyleBuilder {
 		String vString = value.toString();
 
 		// store the value
-		if ( !valueMaps.containsKey(type) )
-			valueMaps.put( type, new HashMap<Object,Object>() );
-		valueMaps.get(type).put( vString, value );
-	
+		if (!valueMaps.containsKey(type))
+			valueMaps.put(type, new HashMap<Object, Object>());
+		valueMaps.get(type).put(vString, value);
+
 		// store the count
-		if ( !counts.containsKey(type) ) 
-			counts.put( type, new HashMap<Object,Integer>() );
+		if (!counts.containsKey(type))
+			counts.put(type, new HashMap<Object, Integer>());
 
-		if ( !counts.get(type).containsKey(vString) )
-			counts.get(type).put( vString, 0 );
+		if (!counts.get(type).containsKey(vString))
+			counts.get(type).put(vString, 0);
 
-		counts.get(type).put( vString, counts.get(type).get(vString) + 1 );
+		counts.get(type).put(vString, counts.get(type).get(vString) + 1);
 	}
- 
+
 	/**
-	 * This method lock/unlock the size object (Node Width, Node Height) in NodeAppearanceCalculator
-	 * If unlocked, we can modify both width and height of node
+	 * This method lock/unlock the size object (Node Width, Node Height) in
+	 * NodeAppearanceCalculator If unlocked, we can modify both width and height
+	 * of node
 	 * 
 	 * @param pLock
 	 */
 
-	public void setNodeSizeLocked(boolean pLock){
+	public void setNodeSizeLocked(boolean pLock) {
 		nodeSizeLocked = pLock;
 	}
 
@@ -208,56 +232,57 @@ public class VisualStyleBuilder {
 	 * how many nodes and edges there are.
 	 */
 	private void processCounts() {
-		Map<VisualPropertyType,Integer> cm = new EnumMap<VisualPropertyType,Integer>(VisualPropertyType.class);
-		for ( VisualPropertyType vpt : counts.keySet() ) {
+		Map<VisualPropertyType, Integer> cm = new EnumMap<VisualPropertyType, Integer>(
+				VisualPropertyType.class);
+		for (VisualPropertyType vpt : counts.keySet()) {
 			int total = 0;
-			for ( Object o : counts.get(vpt).keySet() ) {
+			for (Object o : counts.get(vpt).keySet()) {
 				total += counts.get(vpt).get(o);
 			}
-			cm.put(vpt,total);
+			cm.put(vpt, total);
 			System.out.println(vpt + "  " + total);
 		}
 
 		nodeMax = 0;
 		edgeMax = 0;
-		for ( VisualPropertyType vpt : counts.keySet() ) {
-			if ( counts.get(vpt).size() == 1 ) {
-				for ( Object o : counts.get(vpt).keySet() ) {
-					if ( vpt.isNodeProp() ) 
-						nodeMax = Math.max( counts.get(vpt).get(o), nodeMax );
-					else 
-						edgeMax = Math.max( counts.get(vpt).get(o), edgeMax );
+		for (VisualPropertyType vpt : counts.keySet()) {
+			if (counts.get(vpt).size() == 1) {
+				for (Object o : counts.get(vpt).keySet()) {
+					if (vpt.isNodeProp())
+						nodeMax = Math.max(counts.get(vpt).get(o), nodeMax);
+					else
+						edgeMax = Math.max(counts.get(vpt).get(o), edgeMax);
 				}
 			}
 		}
 	}
 
 	/**
-	 * This method determines whether or not to create a mapping for
-	 * this visual property type.  There are two times when you want
-	 * to create a mapping: 1) when there is more than one key mapped
-	 * to a value for type and 2) when only one key is mapped to a value,
-	 * but only a subset of nodes or edges have that mapping (which is
-	 * to say the property doesn't hold for all nodes or all edges).
+	 * This method determines whether or not to create a mapping for this visual
+	 * property type. There are two times when you want to create a mapping: 1)
+	 * when there is more than one key mapped to a value for type and 2) when
+	 * only one key is mapped to a value, but only a subset of nodes or edges
+	 * have that mapping (which is to say the property doesn't hold for all
+	 * nodes or all edges).
 	 */
 	private boolean createMapping(VisualPropertyType vpt) {
 		// if there is more than one mapping
-		if ( counts.get(vpt).size() > 1 )
+		if (counts.get(vpt).size() > 1)
 			return true;
 
 		// check the number of times the value is mapped
 		// relative to the number of nodes or edges
-		for ( Object o : counts.get(vpt).keySet() ) {
+		for (Object o : counts.get(vpt).keySet()) {
 			int ct = counts.get(vpt).get(o).intValue();
-			if ( vpt.isNodeProp() ) {
-				if ( ct < nodeMax )
+			if (vpt.isNodeProp()) {
+				if (ct < nodeMax)
 					return true;
-				else 
+				else
 					return false;
 			} else {
-				if ( ct < edgeMax )
+				if (ct < edgeMax)
 					return true;
-				else 
+				else
 					return false;
 			}
 		}

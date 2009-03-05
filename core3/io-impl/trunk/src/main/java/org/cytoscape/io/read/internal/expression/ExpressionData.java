@@ -42,7 +42,7 @@
 // $Date: 2008-02-21 22:25:56 -0800 (Thu, 21 Feb 2008) $
 // $Author: mes $
 //--------------------------------------------------------------------
-package cytoscape.data;
+package org.cytoscape.io.read.internal.expression;
 
 import cytoscape.task.TaskMonitor;
 import org.cytoscape.model.CyNode;

@@ -36,7 +36,7 @@
 */
 
 // mRNAMeasurement:  encapsulate the ratio/signficance pair
-package cytoscape.data;
+package org.cytoscape.io.read.internal.expression;
 
 
 /**
