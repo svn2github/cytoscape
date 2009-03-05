@@ -36,8 +36,7 @@
  */
 package cytoscape.util;
 
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTask;
+import org.cytoscape.work.TaskMonitor;
 
 import java.io.*;
 import java.util.*;
@@ -350,19 +349,18 @@ public class ZipUtil {
 				dest.write(data, 0, count);
 				//  Report on Progress
 				if (taskMonitor != null) {
-					percent = ((double) progressCount / maxCount) * 100.0;
-					if (maxCount == -1) { // file size unknown
-						percent = -1;
-					}
+					percent = ((double) progressCount / maxCount);
+					if (maxCount == -1) // file size unknown
+						percent = -1.0;
+					taskMonitor.setProgress(percent);
 
-					JTask jTask = (JTask) taskMonitor;
-					// TODO erm...how?
-					if (jTask.haltRequested()) { //abort
-						taskMonitor.setStatus("Canceling the unzip ...");
-						taskMonitor.setPercentCompleted(100);
-						break;
-					}
-					taskMonitor.setPercentCompleted((int) percent);
+//					// TODO erm...how?
+//					JTask jTask = (JTask) taskMonitor;
+//					if (jTask.haltRequested()) { //abort
+//						taskMonitor.setStatus("Canceling the unzip ...");
+//						taskMonitor.setPercentCompleted(100);
+//						break;
+//					}
 				}
 			}
 

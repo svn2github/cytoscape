@@ -42,7 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.work.TaskMonitor;
 
 
 /**

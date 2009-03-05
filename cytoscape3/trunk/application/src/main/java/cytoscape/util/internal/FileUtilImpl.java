@@ -53,7 +53,7 @@ import javax.swing.JOptionPane;
 import org.cytoscape.io.util.StreamUtil;
 
 import cytoscape.CyOperatingContext;
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.work.TaskMonitor;
 import cytoscape.util.FileUtil;
 
 class FileUtilImpl implements FileUtil {
@@ -246,6 +246,8 @@ class FileUtilImpl implements FileUtil {
 	/**
 	 * {@inheritDoc}
 	 */
+	// TODO This taskMonitor should be updated or this
+	// method should be removed.
 	public InputStream getInputStream(String name, TaskMonitor monitor) {
 		InputStream in = null;
 
@@ -260,10 +262,8 @@ class FileUtilImpl implements FileUtil {
 			} else
 				in = new FileInputStream(name);
 		} catch (IOException ioe) {
+			// TODO this exception should be propagated. 
 			ioe.printStackTrace();
-
-			if (monitor != null)
-				monitor.setException(ioe, ioe.getMessage());
 		}
 
 		return in;
