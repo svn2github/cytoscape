@@ -6,12 +6,13 @@
 	default-lazy-init="false">
 
 	<!-- Import OSGi services -->
-	
+
 	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil" />
 
-	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager"/>
+	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
 
-	<osgi:reference id="tunableInterceptorServiceRef" interface="org.cytoscape.work.TunableInterceptor"/>
+	<osgi:reference id="tunableInterceptorServiceRef"
+		interface="org.cytoscape.work.TunableInterceptor" />
 
 	<osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=bookmarks)" />
@@ -60,6 +61,9 @@
 			</value>
 		</osgi:interfaces>
 	</osgi:service>
+
+	<osgi:service id="cyNetworkNamingService" ref="networkNamingUtil"
+		interface="cytoscape.util.CyNetworkNaming" />
 
 	<osgi:service id="openBrowserService" ref="openBrowser"
 		interface="cytoscape.util.OpenBrowser" />
@@ -170,8 +174,8 @@
 
 	<osgi:set id="taskFactorySet" interface="org.cytoscape.work.TaskFactory"
 		cardinality="0..N">
-		<osgi:listener bind-method="addTaskFactory" unbind-method="removeTaskFactory"
-			ref="cytoscapeMenus" />
+		<osgi:listener bind-method="addTaskFactory"
+			unbind-method="removeTaskFactory" ref="cytoscapeMenus" />
 	</osgi:set>
 
 	<!--

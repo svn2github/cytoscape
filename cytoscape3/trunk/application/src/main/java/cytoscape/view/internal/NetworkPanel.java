@@ -36,47 +36,9 @@
  */
 package cytoscape.view.internal;
 
-import cytoscape.events.SetCurrentNetworkViewEvent;
-import cytoscape.events.SetCurrentNetworkViewListener;
-import cytoscape.events.SetCurrentNetworkEvent;
-import cytoscape.events.SetCurrentNetworkListener;
-import cytoscape.events.NetworkAddedEvent;
-import cytoscape.events.NetworkAddedListener;
-import cytoscape.events.NetworkViewAddedEvent;
-import cytoscape.events.NetworkViewAddedListener;
-import cytoscape.events.NetworkAboutToBeDestroyedEvent;
-import cytoscape.events.NetworkAboutToBeDestroyedListener;
-import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
-import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
-
-import cytoscape.Cytoscape;
-import cytoscape.CyNetworkManager;
-import cytoscape.actions.CreateNetworkViewAction;
-import cytoscape.util.CyNetworkNaming;
-import cytoscape.util.swing.AbstractTreeTableModel;
-import cytoscape.util.swing.JTreeTable;
-import cytoscape.util.swing.TreeTableModel;
-import org.cytoscape.view.GraphViewFactory;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyDataTableUtil;
-
-import org.cytoscape.model.events.SelectedNodesEvent;
-import org.cytoscape.model.events.SelectedNodesListener;
-import org.cytoscape.model.events.SelectedEdgesEvent;
-import org.cytoscape.model.events.SelectedEdgesListener;
-import org.cytoscape.model.events.UnselectedNodesEvent;
-import org.cytoscape.model.events.UnselectedNodesListener;
-import org.cytoscape.model.events.UnselectedEdgesEvent;
-import org.cytoscape.model.events.UnselectedEdgesListener;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -86,6 +48,54 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+
+import javax.swing.InputMap;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
+import javax.swing.KeyStroke;
+import javax.swing.ToolTipManager;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.events.SelectedEdgesEvent;
+import org.cytoscape.model.events.SelectedEdgesListener;
+import org.cytoscape.model.events.SelectedNodesEvent;
+import org.cytoscape.model.events.SelectedNodesListener;
+import org.cytoscape.model.events.UnselectedEdgesEvent;
+import org.cytoscape.model.events.UnselectedEdgesListener;
+import org.cytoscape.model.events.UnselectedNodesEvent;
+import org.cytoscape.model.events.UnselectedNodesListener;
+import org.cytoscape.view.GraphViewFactory;
+
+import cytoscape.CyNetworkManager;
+import cytoscape.actions.CreateNetworkViewAction;
+import cytoscape.events.NetworkAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkAboutToBeDestroyedListener;
+import cytoscape.events.NetworkAddedEvent;
+import cytoscape.events.NetworkAddedListener;
+import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
+import cytoscape.events.NetworkViewAddedEvent;
+import cytoscape.events.NetworkViewAddedListener;
+import cytoscape.events.SetCurrentNetworkEvent;
+import cytoscape.events.SetCurrentNetworkListener;
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.util.swing.AbstractTreeTableModel;
+import cytoscape.util.swing.JTreeTable;
+import cytoscape.util.swing.TreeTableModel;
 
 
 /**
@@ -121,6 +131,7 @@ public class NetworkPanel extends JPanel
 	private final GraphViewFactory gvf;
 	private Long currentNetId;
 	private Properties props;
+	
 
 	/**
 	 * Constructor for the Network Panel.
@@ -676,6 +687,8 @@ class PopupActionListener implements ActionListener {
 	private CyNetworkManager netmgr;
 	private GraphViewFactory gvf;
 	private Properties props;
+	
+	private CyNetworkNaming namingUtil;
 
 	public PopupActionListener(NetworkPanel panel,CyNetworkManager netmgr,GraphViewFactory gvf,Properties props) {
 		this.panel = panel;
@@ -703,7 +716,7 @@ class PopupActionListener implements ActionListener {
 			netmgr.destroyNetwork(cyNetwork);
 		}
 		else if (label == EDIT_TITLE) {
-			CyNetworkNaming.editNetworkTitle(cyNetwork, panel, netmgr);
+			namingUtil.editNetworkTitle(cyNetwork, panel, netmgr);
 			panel.updateTitle(cyNetwork);
 			// TODO we might consider firing an event here to let others know
 			// of the title change.

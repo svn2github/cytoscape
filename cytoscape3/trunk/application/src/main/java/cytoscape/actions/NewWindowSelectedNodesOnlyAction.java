@@ -44,8 +44,8 @@ package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
 
-import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.CyNetworkNaming;
 
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyEdge;
@@ -79,6 +79,8 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	private final GraphViewFactory gvf;
 	
 	private VisualMappingManager vmm;
+	
+	private CyNetworkNaming namingUtil;
 
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
@@ -89,6 +91,10 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);
 		cyroot = r;
 		this.gvf = gvf;
+	}
+	
+	public void setNamingUtil(CyNetworkNaming namingUtil) {
+		this.namingUtil = namingUtil;
 	}
 
 	/**
@@ -121,7 +127,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 		CySubNetwork new_network = cyroot.convert(current_network)
 		                                 .addSubNetwork(nodes, new ArrayList<CyEdge>(edges));
-		new_network.attrs().set("name", CyNetworkNaming.getSuggestedSubnetworkTitle(current_network,netmgr));
+		new_network.attrs().set("name", namingUtil.getSuggestedSubnetworkTitle(current_network,netmgr));
 
 		GraphView new_view = gvf.createGraphView(new_network);
 
