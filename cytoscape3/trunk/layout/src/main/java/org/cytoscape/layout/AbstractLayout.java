@@ -36,7 +36,7 @@
 */
 package org.cytoscape.layout;
 
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.tunable.ModuleProperties;
@@ -78,21 +78,9 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected TaskMonitor taskMonitor;
 
 	protected static TaskMonitor nullTaskMonitor = new TaskMonitor() {
-		public void setPercentCompleted(int percent) {
-		}
-
-		public void setEstimatedTimeRemaining(long time) throws IllegalThreadStateException{
-		}
-
-		public void setException(Throwable t, String userErrorMessage) {
-		}
-
-		public void setException(Throwable t, String userErrorMessage, String recoveryTip) {
-		}
-
-		public void setStatus(String message)
-			throws IllegalThreadStateException, NullPointerException {
-		}
+		public void setProgress(double percent) { }
+		public void setStatusMessage(String message) {} 
+		public void setTitle(String title) {} 
 
 	};
 

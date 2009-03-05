@@ -36,7 +36,7 @@
 */
 package org.cytoscape.layout;
 
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
