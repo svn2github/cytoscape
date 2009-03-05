@@ -75,6 +75,12 @@
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
+	<!-- Task Factories -->
+	<bean name="createNetworkViewTaskFactory" class="cytoscape.xtask.internal.CreateNetworkViewTaskFactoryImpl">
+		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="networkManager" />
+	</bean>
+
 	<!-- Menu bar -->
 	<bean name="cytoscapeMenus" class="cytoscape.view.internal.CytoscapeMenus">
 		<constructor-arg ref="taskManagerServiceRef" />
@@ -97,8 +103,9 @@
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="birdsEyeViewHandler" />
-		<constructor-arg ref="graphViewFactoryServiceRef" />
-		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="createNetworkViewTaskFactory" />
+		<constructor-arg ref="networkNamingUtil" />
 	</bean>
 
 

@@ -246,4 +246,15 @@
 	<osgi:service id="fileUtilService" ref="fileUtil"
 		interface="cytoscape.util.FileUtil" />
 
+    <osgi:service id="createNetworkViewTaskFactoryService" ref="createNetworkViewTaskFactory">
+        <osgi:interfaces>
+            <value>org.cytoscape.work.TaskFactory</value>
+            <value>cytoscape.xtask.CreateNetworkViewTaskFactory</value>
+        </osgi:interfaces>
+        <osgi:service-properties>
+            <entry key="title" value="Create Super View" />
+            <entry key="preferredMenu" value="Edit" />
+        </osgi:service-properties>
+    </osgi:service>
+
 </beans>

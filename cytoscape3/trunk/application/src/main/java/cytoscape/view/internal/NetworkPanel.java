@@ -36,9 +36,49 @@
  */
 package cytoscape.view.internal;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
+import cytoscape.events.SetCurrentNetworkEvent;
+import cytoscape.events.SetCurrentNetworkListener;
+import cytoscape.events.NetworkAddedEvent;
+import cytoscape.events.NetworkAddedListener;
+import cytoscape.events.NetworkViewAddedEvent;
+import cytoscape.events.NetworkViewAddedListener;
+import cytoscape.events.NetworkAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkAboutToBeDestroyedListener;
+import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
+
+import cytoscape.Cytoscape;
+import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.util.swing.AbstractTreeTableModel;
+import cytoscape.util.swing.JTreeTable;
+import cytoscape.util.swing.TreeTableModel;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTableUtil;
+
+import cytoscape.xtask.CreateNetworkViewTaskFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskManager;
+
+import org.cytoscape.model.events.SelectedNodesEvent;
+import org.cytoscape.model.events.SelectedNodesListener;
+import org.cytoscape.model.events.SelectedEdgesEvent;
+import org.cytoscape.model.events.SelectedEdgesListener;
+import org.cytoscape.model.events.UnselectedNodesEvent;
+import org.cytoscape.model.events.UnselectedNodesListener;
+import org.cytoscape.model.events.UnselectedEdgesEvent;
+import org.cytoscape.model.events.UnselectedEdgesListener;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -48,54 +88,6 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-
-import javax.swing.InputMap;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
-import javax.swing.KeyStroke;
-import javax.swing.ToolTipManager;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-
-import org.cytoscape.model.CyDataTableUtil;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.events.SelectedEdgesEvent;
-import org.cytoscape.model.events.SelectedEdgesListener;
-import org.cytoscape.model.events.SelectedNodesEvent;
-import org.cytoscape.model.events.SelectedNodesListener;
-import org.cytoscape.model.events.UnselectedEdgesEvent;
-import org.cytoscape.model.events.UnselectedEdgesListener;
-import org.cytoscape.model.events.UnselectedNodesEvent;
-import org.cytoscape.model.events.UnselectedNodesListener;
-import org.cytoscape.view.GraphViewFactory;
-
-import cytoscape.CyNetworkManager;
-import cytoscape.actions.CreateNetworkViewAction;
-import cytoscape.events.NetworkAboutToBeDestroyedEvent;
-import cytoscape.events.NetworkAboutToBeDestroyedListener;
-import cytoscape.events.NetworkAddedEvent;
-import cytoscape.events.NetworkAddedListener;
-import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
-import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
-import cytoscape.events.NetworkViewAddedEvent;
-import cytoscape.events.NetworkViewAddedListener;
-import cytoscape.events.SetCurrentNetworkEvent;
-import cytoscape.events.SetCurrentNetworkListener;
-import cytoscape.events.SetCurrentNetworkViewEvent;
-import cytoscape.events.SetCurrentNetworkViewListener;
-import cytoscape.util.CyNetworkNaming;
-import cytoscape.util.swing.AbstractTreeTableModel;
-import cytoscape.util.swing.JTreeTable;
-import cytoscape.util.swing.TreeTableModel;
 
 
 /**
@@ -128,22 +120,23 @@ public class NetworkPanel extends JPanel
 	private final NetworkTreeTableModel treeTableModel;
 	private final CyNetworkManager netmgr;
 	private final NetworkViewManager viewmgr;
-	private final GraphViewFactory gvf;
 	private Long currentNetId;
-	private Properties props;
-	
+	private final TaskManager taskManager;
+	private final CreateNetworkViewTaskFactory viewFactory;
+	private final CyNetworkNaming naming;
 
 	/**
 	 * Constructor for the Network Panel.
 	 *
 	 * @param desktop
 	 */
-	public NetworkPanel(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, final BirdsEyeViewHandler bird, final GraphViewFactory gvf, final Properties props) {
+	public NetworkPanel(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, final BirdsEyeViewHandler bird, final TaskManager taskManager, final CreateNetworkViewTaskFactory viewFactory, CyNetworkNaming naming ) {
 		super();
 		this.netmgr = netmgr;
 		this.viewmgr = viewmgr;
-		this.gvf = gvf;
-		this.props = props;
+		this.taskManager = taskManager;
+		this.viewFactory = viewFactory;
+		this.naming = naming;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
@@ -206,7 +199,7 @@ public class NetworkPanel extends JPanel
 
 		// action listener which performs the tasks associated with the popup
 		// listener
-		popupActionListener = new PopupActionListener(this,netmgr,gvf,props);
+		popupActionListener = new PopupActionListener(this,netmgr,taskManager,viewFactory,naming);
 		editNetworkTitle.addActionListener(popupActionListener);
 		createViewItem.addActionListener(popupActionListener);
 		destroyViewItem.addActionListener(popupActionListener);
@@ -650,88 +643,3 @@ public class NetworkPanel extends JPanel
 	}
 }
 
-
-/**
- * This class listens for actions from the popup menu, it is responsible for
- * performing actions related to destroying and creating views, and destroying
- * the network.
- */
-class PopupActionListener implements ActionListener {
-	/**
-	 * Constants for JMenuItem labels
-	 */
-	public static final String DESTROY_VIEW = "Destroy View";
-
-	/**
-	 *
-	 */
-	public static final String CREATE_VIEW = "Create View";
-
-	/**
-	 *
-	 */
-	public static final String DESTROY_NETWORK = "Destroy Network";
-
-	/**
-	 *
-	 */
-	public static final String EDIT_TITLE = "Edit Network Title";
-
-	/**
-	 * This is the network which originated the mouse-click event (more
-	 * appropriately, the network associated with the ID associated with the row
-	 * associated with the JTable that originated the popup event
-	 */
-	protected CyNetwork cyNetwork;
-	private NetworkPanel panel;
-	private CyNetworkManager netmgr;
-	private GraphViewFactory gvf;
-	private Properties props;
-	
-	private CyNetworkNaming namingUtil;
-
-	public PopupActionListener(NetworkPanel panel,CyNetworkManager netmgr,GraphViewFactory gvf,Properties props) {
-		this.panel = panel;
-		this.netmgr = netmgr;
-		this.gvf = gvf;
-		this.props = props;
-	}
-
-	/**
-	 * Based on the action event, destroy or create a view, or destroy a network
-	 */
-	public void actionPerformed(ActionEvent ae) {
-		final String label = ((JMenuItem) ae.getSource()).getText();
-
-		// Figure out the appropriate action
-		if (label == DESTROY_VIEW) {
-			long vid = cyNetwork.getSUID();
-			if ( netmgr.viewExists(vid) ) 
-				netmgr.destroyNetworkView(netmgr.getNetworkView(vid));
-		} 
-		else if (label == CREATE_VIEW) {
-			CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork,panel,gvf,netmgr,props);
-		}
-		else if (label == DESTROY_NETWORK) {
-			netmgr.destroyNetwork(cyNetwork);
-		}
-		else if (label == EDIT_TITLE) {
-			namingUtil.editNetworkTitle(cyNetwork, panel, netmgr);
-			panel.updateTitle(cyNetwork);
-			// TODO we might consider firing an event here to let others know
-			// of the title change.
-		}
-		else {
-			// throw an exception here?
-			System.err.println("Unexpected network panel popup option");
-		}
-	}
-
-	/**
-	 * Right before the popup menu is displayed, this function is called so we
-	 * know which network the user is clicking on to call for the popup menu
-	 */
-	public void setActiveNetwork(final CyNetwork cyNetwork) {
-		this.cyNetwork = cyNetwork;
-	}
-}
