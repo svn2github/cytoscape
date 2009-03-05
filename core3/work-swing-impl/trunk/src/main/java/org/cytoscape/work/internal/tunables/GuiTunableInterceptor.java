@@ -43,6 +43,10 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			lh.addAll( handlerMap.get(o).values() );
 
 		}
+
+		if ( lh.size() <= 0 )
+			return true;
+
 		if ( !panelMap.containsKey( lh ) ) {
 			final String MAIN = "";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
