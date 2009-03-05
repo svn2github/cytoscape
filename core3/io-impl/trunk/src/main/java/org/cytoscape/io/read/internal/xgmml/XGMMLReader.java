@@ -137,7 +137,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 			createView(readDataManager.getNetwork());
 			readObjects.put(GraphView.class, view);
 		} catch (SAXException e) {
-			throw new IOException("Could not parse XGMML file: ", e);
+			throw new IOException("Could not parse XGMML file: ");
 		}
 	}
 
