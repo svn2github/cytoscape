@@ -1,4 +1,3 @@
-
 /*
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
@@ -38,6 +37,7 @@
 package org.cytoscape.task.loadnetwork.internal;
 
 import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
 
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.io.read.CyReaderManager;
@@ -50,22 +50,22 @@ import org.cytoscape.property.CyProperty;
 
 import java.util.Properties;
 
-
-
 /**
  * Task to load a new network.
  */
 public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 
-	private CyReaderManager mgr; 
-	private GraphViewFactory gvf; 
-	private CyLayouts cyl; 
-	private CyNetworkManager netmgr; 
+	private CyReaderManager mgr;
+	private GraphViewFactory gvf;
+	private CyLayouts cyl;
+	private CyNetworkManager netmgr;
 	private Properties props;
 
-	public LoadNetworkURLTaskFactoryImpl(CyReaderManager mgr, 
-	                                      GraphViewFactory gvf, CyLayouts cyl, 
-										  CyNetworkManager netmgr, CyProperty<Properties> cyProps) {
+	private CyNetworkNaming namingUtil;
+
+	public LoadNetworkURLTaskFactoryImpl(CyReaderManager mgr,
+			GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			CyProperty<Properties> cyProps) {
 		this.mgr = mgr;
 		this.gvf = gvf;
 		this.cyl = cyl;
@@ -73,7 +73,11 @@ public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 		this.props = cyProps.getProperties();
 	}
 
+	public void setNamingUtil(CyNetworkNaming namingUtil) {
+		this.namingUtil = namingUtil;
+	}
+
 	public Task getTask() {
-		return new LoadNetworkURLTask(mgr,gvf,cyl,netmgr,props);
+		return new LoadNetworkURLTask(mgr, gvf, cyl, netmgr, props, namingUtil);
 	}
 }

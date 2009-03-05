@@ -1,4 +1,3 @@
-
 /*
  File: LoadNetworkTaskFactory.java
 
@@ -38,42 +37,46 @@
 
 package org.cytoscape.task.loadnetwork.internal;
 
-import cytoscape.CyNetworkManager;
-
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.view.GraphViewFactory;
-
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.Task;
-
-import org.cytoscape.property.CyProperty;
-
 import java.util.Properties;
 
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
+
+import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
 
 /**
  * Task to load a new network.
  */
 public class LoadNetworkFileTaskFactoryImpl implements TaskFactory {
 
-	private CyReaderManager mgr; 
-	private GraphViewFactory gvf; 
-	private CyLayouts cyl; 
-	private CyNetworkManager netmgr; 
+	private CyReaderManager mgr;
+	private GraphViewFactory gvf;
+	private CyLayouts cyl;
+	private CyNetworkManager netmgr;
 	private Properties props;
+	
+	private CyNetworkNaming namingUtil;
 
-	public LoadNetworkFileTaskFactoryImpl(CyReaderManager mgr, 
-	                                      GraphViewFactory gvf, CyLayouts cyl, 
-										  CyNetworkManager netmgr, CyProperty<Properties> cyProp) {
+	public LoadNetworkFileTaskFactoryImpl(CyReaderManager mgr,
+			GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			CyProperty<Properties> cyProp) {
 		this.mgr = mgr;
 		this.gvf = gvf;
 		this.cyl = cyl;
 		this.netmgr = netmgr;
 		this.props = cyProp.getProperties();
 	}
+	
+	public void setNamingUtil(CyNetworkNaming namingUtil) {
+		this.namingUtil = namingUtil;
+	}
 
 	public Task getTask() {
-		return new LoadNetworkFileTask(mgr,gvf,cyl,netmgr,props);
+		return new LoadNetworkFileTask(mgr, gvf, cyl, netmgr, props, namingUtil);
 	}
 }

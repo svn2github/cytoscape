@@ -52,6 +52,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 
 import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
 
 /**
  * Specific instance of AbstractLoadNetworkTask that loads a URL.
@@ -62,8 +63,8 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 	public URL url;
 
 	public LoadNetworkURLTask(CyReaderManager mgr, GraphViewFactory gvf,
-			CyLayouts cyl, CyNetworkManager netmgr, Properties props) {
-		super(mgr, gvf, cyl, netmgr, props);
+			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
+		super(mgr, gvf, cyl, netmgr, props, namingUtil);
 	}
 
 	/**
