@@ -37,9 +37,8 @@
 package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.GraphView;
 import java.awt.Container; 
@@ -47,7 +46,7 @@ import java.awt.Container;
 /**
  * A wrapper for applying a layout in a task. Use it something like
  * this:
- * <p>TaskManager.executeTask( new LayoutTask(layout, view), LayoutTask.getDefaultTaskConfig() );
+ * <p>taskManager.execute( new LayoutTask(layout, view) );
 
  */
 public class LayoutTask implements Task {
@@ -68,50 +67,16 @@ public class LayoutTask implements Task {
 	}
 
 	/**
-	 * Sets the task monitor to be used for the layout. 
-	 */
-	public void setTaskMonitor(TaskMonitor monitor) {
-		this.monitor = monitor;
-	}
-
-	/**
 	 * Run the algorithm.  
 	 */
-	public void run() {
+	public void run(TaskMonitor monitor) {
 		layout.doLayout(view,monitor);
 	}
 
 	/**
 	 * Halt the algorithm if the CyLayoutAlgorithm supports it.
 	 */
-	public void halt() {
+	public void cancel() {
 		layout.halt();
-	}
-
-	/**
-	 * Get the "nice" title of this algorithm
-	 *
-	 * @return algorithm title
-	 */
-	public String getTitle() {
-		return "Performing " + layout.toString();
-	}
-
-	/**
-	 * This method returns a default TaskConfig object.
-	 * @return a default JTaskConfig object.
-	 */
-	public static JTaskConfig getDefaultTaskConfig(Container owner) {
-		JTaskConfig result = new JTaskConfig();
-
-		result.displayCancelButton(true);
-		result.displayCloseButton(false);
-		result.displayStatus(true);
-		result.displayTimeElapsed(false);
-		result.setAutoDispose(true);
-		result.setModal(true);
-		result.setOwner(owner);
-
-		return result;
 	}
 }

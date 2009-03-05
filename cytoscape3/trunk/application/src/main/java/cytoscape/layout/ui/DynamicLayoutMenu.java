@@ -37,7 +37,7 @@
 package cytoscape.layout.ui;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.task.util.TaskManager;
+import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
@@ -71,17 +71,19 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	private static final String NOATTRIBUTE = "(none)";
 	private Set<CyNode> selectedNodes;
 	private CyNetworkManager netmgr;
+	private TaskManager tm;
 
 	/**
 	 * Creates a new DynamicLayoutMenu object.
 	 *
 	 * @param layout  DOCUMENT ME!
 	 */
-	public DynamicLayoutMenu(CyLayoutAlgorithm layout, boolean enabled, CyNetworkManager netmgr) {
+	public DynamicLayoutMenu(CyLayoutAlgorithm layout, boolean enabled, CyNetworkManager netmgr, TaskManager tm) {
 		super(layout.toString());
 		addMenuListener(this);
 		this.layout = layout;
 		this.netmgr = netmgr;
+		this.tm = tm;
 		selectedNodes = new HashSet<CyNode>();
 		setEnabled(enabled);
 	}
@@ -133,8 +135,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 			for ( GraphView view: views ) {
 				layout.setSelectedOnly(false);
 				layout.setLayoutAttribute(null);
-				TaskManager.executeTask( new LayoutTask(layout, view),
-				                         LayoutTask.getDefaultTaskConfig(this) );
+				tm.execute( new LayoutTask(layout, view) );
 			}
 		}
 	}
@@ -231,8 +232,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 					layout.setLayoutAttribute(e.getActionCommand());
 				}
 
-				TaskManager.executeTask( new LayoutTask(layout, netView), 
-				                         LayoutTask.getDefaultTaskConfig(this) );
+				tm.execute( new LayoutTask(layout, netView) ); 
 			}
 		}
 	}

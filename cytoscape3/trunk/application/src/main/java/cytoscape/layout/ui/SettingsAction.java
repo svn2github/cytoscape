@@ -41,6 +41,7 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.TaskManager;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -54,18 +55,20 @@ public class SettingsAction extends CytoscapeAction {
 	private CySwingApplication desk;
 	private LayoutMenuManager menuMgr;
 	private TunableInterceptor ti;
+	private TaskManager tm;
 
-	public SettingsAction(CyLayouts cyl, CySwingApplication desk, LayoutMenuManager menuMgr, CyNetworkManager netmgr, TunableInterceptor ti) {
+	public SettingsAction(CyLayouts cyl, CySwingApplication desk, LayoutMenuManager menuMgr, CyNetworkManager netmgr, TunableInterceptor ti, TaskManager tm) {
 		super("Settings...",netmgr);
 		setPreferredMenu("Layout");
 		this.cyl = cyl;
 		this.desk = desk;
 		this.menuMgr = menuMgr;
 		this.ti = ti;
+		this.tm = tm;
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl,desk,menuMgr,netmgr,ti);
+		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl,desk,menuMgr,netmgr,ti,tm);
 		settingsDialog.actionPerformed(e);
 	}
 

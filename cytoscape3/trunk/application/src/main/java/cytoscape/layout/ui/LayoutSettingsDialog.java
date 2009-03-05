@@ -38,12 +38,12 @@
 package cytoscape.layout.ui;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.task.util.TaskManager;
 import cytoscape.view.CySwingApplication;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 
 import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.TaskManager;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -79,11 +79,12 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private LayoutMenuManager menuMgr;
 	private CyNetworkManager netmgr;
 	private TunableInterceptor ti;
+	private TaskManager tm;
 
 	/**
 	 * Creates a new LayoutSettingsDialog object.
 	 */
-	public LayoutSettingsDialog(CyLayouts cyLayouts, CySwingApplication desktop, LayoutMenuManager menuMgr, CyNetworkManager netmgr, TunableInterceptor ti) {
+	public LayoutSettingsDialog(CyLayouts cyLayouts, CySwingApplication desktop, LayoutMenuManager menuMgr, CyNetworkManager netmgr, TunableInterceptor ti,TaskManager tm) {
 		super(desktop.getJFrame(), "Layout Settings", false);
 		initializeOnce(); // Initialize the components we only do once
 		this.cyLayouts = cyLayouts;
@@ -91,6 +92,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		this.menuMgr = menuMgr;
 		this.netmgr = netmgr;
 		this.ti = ti;
+		this.tm = tm;
 	}
 
 	/**
@@ -105,8 +107,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		if (command.equals("done")) {
 			setVisible(false);
 		} else if (command.equals("execute")) {
-			TaskManager.executeTask( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()),
-			                         LayoutTask.getDefaultTaskConfig(getParent()) );
+			tm.execute( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()) );
 		} else {
 			// OK, initialize and display
 			initialize();
