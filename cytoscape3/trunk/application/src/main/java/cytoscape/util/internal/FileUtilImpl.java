@@ -64,6 +64,7 @@ class FileUtilImpl implements FileUtil {
 
 	FileUtilImpl(CyOperatingContext context, StreamUtil streamUtil) {
 		this.context = context;
+		this.streamUtil = streamUtil;
 	}
 	
 	public void setStreamUtil(StreamUtil streamUtil) {

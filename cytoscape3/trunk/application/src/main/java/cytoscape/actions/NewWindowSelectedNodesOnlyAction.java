@@ -80,21 +80,22 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	
 	private VisualMappingManager vmm;
 	
-	private CyNetworkNaming namingUtil;
+	private CyNetworkNaming cyNetworkNaming;
 
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
 	 */
-	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r, final GraphViewFactory gvf, CyNetworkManager netmgr, CyNetworkNaming namingUtil) {
+	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r, final GraphViewFactory gvf, CyNetworkManager netmgr, CyNetworkNaming cyNetworkNaming) {
 		super("From selected nodes, all edges",netmgr);
 		setPreferredMenu("File.New.Network");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);
 		cyroot = r;
 		this.gvf = gvf;
+		this.cyNetworkNaming = cyNetworkNaming;
 	}
 	
 	public void setNamingUtil(CyNetworkNaming namingUtil) {
-		this.namingUtil = namingUtil;
+		this.cyNetworkNaming = namingUtil;
 	}
 
 	/**
@@ -127,7 +128,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 		CySubNetwork new_network = cyroot.convert(current_network)
 		                                 .addSubNetwork(nodes, new ArrayList<CyEdge>(edges));
-		new_network.attrs().set("name", namingUtil.getSuggestedSubnetworkTitle(current_network,netmgr));
+		new_network.attrs().set("name", cyNetworkNaming.getSuggestedSubnetworkTitle(current_network,netmgr));
 
 		GraphView new_view = gvf.createGraphView(new_network);
 
