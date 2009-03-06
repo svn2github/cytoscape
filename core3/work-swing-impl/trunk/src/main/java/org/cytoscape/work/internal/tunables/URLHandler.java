@@ -47,7 +47,7 @@ public class URLHandler extends AbstractGuiHandler {
 			theCategoryList.add(theCategory);
 		}
 		
-		System.out.println("TEST URLHandler");
+//		System.out.println("TEST URLHandler");
 		
 		networkFileComboBox = new JComboBox();
 		networkFileComboBox.setRenderer(new MyCellRenderer());
@@ -128,7 +128,7 @@ public class URLHandler extends AbstractGuiHandler {
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel();
 
 		DataSource firstDataSource = new DataSource();
-		firstDataSource.setName("");
+		firstDataSource.setName(pleaseMessage);
 		firstDataSource.setHref(null);
 		
 		theModel.addElement(firstDataSource);
