@@ -27,14 +27,13 @@ public class FileHandler extends AbstractGuiHandler {
 			this.myFile=(File)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		
-		System.out.println("TEST FileHandler");
-		panel = new JPanel(new BorderLayout());
-		path = new JTextField("path :",12);
-		path.setFont(new Font(null, Font.PLAIN,12));
-		panel.add(path,BorderLayout.WEST);
+		panel.add(new JLabel("Path :"));
+		path.setFont(new Font(null, Font.ITALIC,10));
+		path = new JTextField("select file",12);
+		panel.add(path);
 		button = new JButton("Select File...");
 		button.addActionListener(this);
-		panel.add(button,BorderLayout.EAST);
+		panel.add(button);
 			
 	}
 
@@ -48,6 +47,7 @@ public class FileHandler extends AbstractGuiHandler {
 					try{
 						f.set(o,file);
 					}catch (Exception e) { e.printStackTrace();}
+					path.setFont(new Font(null, Font.PLAIN,10));
 					path.setText(file.getAbsolutePath());
 				}
 			}
