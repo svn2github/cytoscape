@@ -47,7 +47,7 @@ public class URLHandler extends AbstractGuiHandler {
 			theCategoryList.add(theCategory);
 		}
 		
-//		System.out.println("TEST URLHandler");
+		//System.out.println("Test URLHandler");
 		
 		networkFileComboBox = new JComboBox();
 		networkFileComboBox.setRenderer(new MyCellRenderer());
@@ -56,8 +56,10 @@ public class URLHandler extends AbstractGuiHandler {
 		networkFileComboBox.setName("networkFileComboBox");
 		networkFileComboBox.setToolTipText("<html><body>You can specify URL by the following:<ul><li>Type URL</li><li>Select from pull down menu</li><li>Drag & Drop URL from Web Browser</li></ul></body><html>");
 		
-		panel = new JPanel(new BorderLayout());
-		panel.add(networkFileComboBox,BorderLayout.WEST);
+		//panel = new JPanel(new BorderLayout());
+		panel.add(new JLabel("URL Path = "));
+		panel.add(networkFileComboBox);
+		bookmarkEditor.setStr(pleaseMessage);
 		loadBookmarkCMBox();
 	}
 
@@ -94,6 +96,10 @@ public class URLHandler extends AbstractGuiHandler {
 		public String getURLstr() {
 			return tfInput.getText();
 		}
+		
+		public void setStr(String txt){
+			tfInput.setText(txt);
+		}
 		public void addActionListener(ActionListener l) {
 			tfInput.addActionListener(l);
 		}
@@ -128,9 +134,9 @@ public class URLHandler extends AbstractGuiHandler {
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel();
 
 		DataSource firstDataSource = new DataSource();
-		firstDataSource.setName(pleaseMessage);
+		firstDataSource.setName("");
 		firstDataSource.setHref(null);
-		
+
 		theModel.addElement(firstDataSource);
 
 		// Extract the URL entries
