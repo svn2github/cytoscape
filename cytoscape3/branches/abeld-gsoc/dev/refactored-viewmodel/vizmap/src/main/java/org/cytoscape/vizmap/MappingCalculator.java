@@ -36,8 +36,8 @@ package org.cytoscape.vizmap;
 
 import org.cytoscape.model.GraphObject;
 
-import org.cytoscape.viewmodel.View;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 
 
 /**

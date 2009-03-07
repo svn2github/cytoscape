@@ -44,8 +44,8 @@ package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.viewmodel.View;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.vizmap.MappingCalculator;
 
 import java.util.Map;

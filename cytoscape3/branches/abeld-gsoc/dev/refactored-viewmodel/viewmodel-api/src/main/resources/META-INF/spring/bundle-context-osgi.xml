@@ -8,14 +8,14 @@
 
 	<!-- Individual Service -->
 	<osgi:service id="cyNetworkViewFactoryService"
-		ref="cyNetworkViewFactory" interface="org.cytoscape.viewmodel.CyNetworkViewFactory">
+		ref="cyNetworkViewFactory" interface="org.cytoscape.view.model.CyNetworkViewFactory">
 		<osgi:service-properties>
 			<entry key="service.type" value="factory" />
 		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="visualPropertyCatalogService"
-		ref="visualPropertyCatalog" interface="org.cytoscape.viewmodel.VisualPropertyCatalog">
+		ref="visualPropertyCatalog" interface="org.cytoscape.view.model.VisualPropertyCatalog">
 	</osgi:service>
 
 	<osgi:reference id="cyEventHelperServiceRef"

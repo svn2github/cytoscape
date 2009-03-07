@@ -36,7 +36,7 @@ package org.cytoscape.vizmap.events;
 
 import org.cytoscape.event.CyEvent;
 
-import org.cytoscape.viewmodel.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import org.cytoscape.vizmap.VisualStyle;
 

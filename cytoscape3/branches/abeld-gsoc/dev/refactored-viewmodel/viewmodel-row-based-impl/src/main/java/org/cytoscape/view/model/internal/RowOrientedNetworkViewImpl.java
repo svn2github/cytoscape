@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.viewmodel.internal;
+package org.cytoscape.view.model.internal;
 
 import org.cytoscape.event.CyEventHelper;
 
@@ -49,14 +49,14 @@ import org.cytoscape.model.events.AddedEdgeListener;
 import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.AddedNodeListener;
 
-import org.cytoscape.viewmodel.CyNetworkView;
-import org.cytoscape.viewmodel.View;
-import org.cytoscape.viewmodel.events.SubsetChangedListener;
-import org.cytoscape.viewmodel.events.SubsetCreatedListener;
-import org.cytoscape.viewmodel.events.SubsetDestroyedListener;
-import org.cytoscape.viewmodel.events.internal.SubsetChangedEventImpl;
-import org.cytoscape.viewmodel.events.internal.SubsetCreatedEventImpl;
-import org.cytoscape.viewmodel.events.internal.SubsetDestroyedEventImpl;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.events.SubsetChangedListener;
+import org.cytoscape.view.model.events.SubsetCreatedListener;
+import org.cytoscape.view.model.events.SubsetDestroyedListener;
+import org.cytoscape.view.model.events.internal.SubsetChangedEventImpl;
+import org.cytoscape.view.model.events.internal.SubsetCreatedEventImpl;
+import org.cytoscape.view.model.events.internal.SubsetDestroyedEventImpl;
 
 import org.osgi.framework.BundleContext;
 

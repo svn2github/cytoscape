@@ -38,7 +38,7 @@ package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.model.*;
 
-import org.cytoscape.viewmodel.*;
+import org.cytoscape.view.model.*;
 
 import org.cytoscape.vizmap.*;
 

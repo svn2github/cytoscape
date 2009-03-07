@@ -3,7 +3,7 @@ package org.cytoscape.vizmap.internal;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.cytoscape.viewmodel.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 

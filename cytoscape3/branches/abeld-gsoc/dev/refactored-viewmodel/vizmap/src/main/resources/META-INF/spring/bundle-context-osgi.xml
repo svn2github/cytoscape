@@ -18,6 +18,6 @@
 	</osgi:reference>
 
 	<osgi:reference id="visualPropertyCatalogRef"
-		interface="org.cytoscape.viewmodel.VisualPropertyCatalog">
+		interface="org.cytoscape.view.model.VisualPropertyCatalog">
 	</osgi:reference>
 </beans>

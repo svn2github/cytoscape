@@ -110,7 +110,7 @@
 
     <dependency>
       <groupId>org.cytoscape</groupId>
-      <artifactId>viewmodel</artifactId>
+      <artifactId>viewmodel-api</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
 

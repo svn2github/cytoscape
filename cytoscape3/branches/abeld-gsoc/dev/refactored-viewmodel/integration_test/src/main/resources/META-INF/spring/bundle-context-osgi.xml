@@ -10,7 +10,7 @@
 	</osgi:reference>
 
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
-		interface="org.cytoscape.viewmodel.CyNetworkViewFactory">
+		interface="org.cytoscape.view.model.CyNetworkViewFactory">
 	</osgi:reference>
 
 	<osgi:reference id="networkPresentationFactoryServiceRef"
@@ -22,6 +22,6 @@
 	</osgi:reference>
 
 	<osgi:reference id="visualPropertyCatalogServiceRef"
-		interface="org.cytoscape.viewmodel.VisualPropertyCatalog">
+		interface="org.cytoscape.view.model.VisualPropertyCatalog">
 	</osgi:reference>
 </beans>

@@ -34,8 +34,8 @@
 */
 package org.cytoscape.vizmap;
 
-import org.cytoscape.viewmodel.CyNetworkView;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualProperty;
 
 
 /**
