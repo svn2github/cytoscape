@@ -28,8 +28,8 @@ public class FileHandler extends AbstractGuiHandler {
 		}catch(Exception e){e.printStackTrace();}
 		
 		panel.add(new JLabel("Path :"));
-		path.setFont(new Font(null, Font.ITALIC,10));
 		path = new JTextField("select file",12);
+		path.setFont(new Font(null, Font.ITALIC,10));
 		panel.add(path);
 		button = new JButton("Select File...");
 		button.addActionListener(this);
