@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
-  <artifactId>vizmap</artifactId>
+  <artifactId>vizmap-api</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>${bundle.symbolicName}</name>
