@@ -4,30 +4,30 @@ package org.cytoscape.work;
  * Provides a means for nested subtasks to be
  * grouped together under one <code>SuperTask</code>.
  *
- * <p><code>SuperTask</code> has the following behavior:</p>
+ * <p><code>SuperTask</code> behaves like this:</p>
  * <ul>
  *
- * <li><code>SuperTask</code> executes all of its subtasks
+ * <li><b>Threads </b><code>SuperTask</code> executes all of its subtasks
  * in the same thread provided by <code>TaskManager</code>.</li>
  *
- * <li><code>SuperTask</code> executes all of its subtasks
+ * <li><b>Execution Order </b><code>SuperTask</code> executes all of its subtasks
  * in the same order as given in its constructor.</li>
  *
- * <li><code>SuperTask</code>'s title is what is given in the
- * constructor.</li>
- *
- * <li>If <code>SuperTask</code> is canceled, it will call the
+ * <li><b>Cancelling </b>If <code>SuperTask</code> is canceled, it will call the
  * currently executing <code>Task</code>'s <code>cancel</code> method.
  * It will not execute any following <code>Task</code>s waiting to be executed.</li>
  *
- * <li>If the currently executing subtask sets a title that is not null and is
+ * <li><b>Title </b><code>SuperTask</code>'s title is what is given in the
+ * constructor.</li>
+ *
+ * <li><b>Status Message </b>If the currently executing subtask sets a title that is not null and is
  * not an empty string, <code>SuperTask</code> will set its status message to
  * "<i>subtask title</i><code>:</code><i>subtask status message</i>".
  * However, if the subtask's title is not set, is null, or is an empty string,
  * <code>SuperTask</code> will set its status message to the subtask's status
  * message.</li>
  *
- * <li><code>SuperTask</code> divides its progress bar equally between
+ * <li><b>Progress </b><code>SuperTask</code> divides its progress equally between
  * each of its subtasks. For example, if there are four subtasks: when
  * the first subtask is executing, it will set its progress to 0%; when
  * the second subtask is executing, it will set its progress to 25%;
@@ -44,9 +44,21 @@ public class SuperTask implements Task
 	int currentTaskIndex = -1;
 
 	/**
-	 * This is a convenience constructor that employs Java's variable
-	 * arguments syntactic sugar.
-	 * For example, this constructor can be used as follows:
+	 * Constructs a <code>SuperTask</code> with a given list of
+	 * subtasks and a title.
+	 *
+	 * <p>The constructor can take an array of <code>Task</code>s:</p>
+	 * <p><pre><code>
+	 * Task[] tasks = {
+	 *   new MyTask1(),
+	 *   new MyTask2(),
+	     new MyTask3()
+	 * };
+	 * SuperTask superTask = new SuperTask("Example", tasks);
+	 * </code></pre></p>
+	 *
+	 * <p>This constructor is also a convenience that employs Java's variable
+	 * arguments syntactic sugar:</p>
 	 *
 	 * <p><code>new SuperTask("Example", new MyTask1(), new MyTask2(),
 	 * new MyTask3());</code></p>
@@ -58,20 +70,6 @@ public class SuperTask implements Task
 	 * order of execution.
 	 */
 	public SuperTask(String title, Task ... subtasks)
-	{
-		//this(title, (Task[]) subtasks);
-		this.title = title;
-		this.subtasks = subtasks;
-	}
-
-	/**
-	 * @param title The title of the <code>SuperTask</code> that describes
-	 * succinctly what the <code>SuperTask</code> does.
-	 * @param subtasks The subtasks to be grouped together by
-	 * <code>SuperTask</code>. The order of <code>subtasks</code> is the
-	 * order of execution.
-	 */
-	public SuperTask(Task[] subtasks, String title)
 	{
 		this.title = title;
 		this.subtasks = subtasks;
