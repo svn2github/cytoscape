@@ -1,323 +1,325 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <name>Cytoscape Core</name>
+	<name>Cytoscape Core</name>
 
-  <url>http://cytoscape.org</url>
+	<url>http://cytoscape.org</url>
 
-  <description>A network visualization and analysis application.</description>
+	<description>A network visualization and analysis application.</description>
 
-  <organization>
-    <name>Cytoscape</name>
-    <url>http://cytoscape.org</url>
-  </organization>
+	<organization>
+		<name>Cytoscape</name>
+		<url>http://cytoscape.org</url>
+	</organization>
 
-  <licenses>
-    <license>
-      <name>GNU Lesser General Public License</name>
-      <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
-    </license>
-  </licenses>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
 
-  <issueManagement>
-    <system>Mantis</system>
-    <url>http://cbio.mskcc.org/cytoscape/bugs/main_page.php</url>
-  </issueManagement>
+	<issueManagement>
+		<system>Mantis</system>
+		<url>http://cbio.mskcc.org/cytoscape/bugs/main_page.php</url>
+	</issueManagement>
 
-  <ciManagement>
-    <system>cruisecontrol</system>
-    <url>http://chianti.ucsd.edu/cruisecontrol</url>
-  </ciManagement>
+	<ciManagement>
+		<system>cruisecontrol</system>
+		<url>http://chianti.ucsd.edu/cruisecontrol</url>
+	</ciManagement>
 
-  <mailingLists>
-    <mailingList>
-      <name>Cytoscape Discuss: A list for users to ask and discuss
+	<mailingLists>
+		<mailingList>
+			<name>Cytoscape Discuss: A list for users to ask and discuss
 				questions about Cytoscape.</name>
-      <subscribe>http://groups.google.com/group/cytoscape-discuss</subscribe>
-      <unsubscribe>http://groups.google.com/group/cytoscape-discuss</unsubscribe>
-      <post>cytoscape-discuss@googlegroups.com</post>
-      <archive>http://groups.google.com/group/cytoscape-discuss</archive>
-    </mailingList>
-    <mailingList>
-      <name>Cytoscape Helpdesk: A list for users to request help
+			<subscribe>http://groups.google.com/group/cytoscape-discuss</subscribe>
+			<unsubscribe>http://groups.google.com/group/cytoscape-discuss</unsubscribe>
+			<post>cytoscape-discuss@googlegroups.com</post>
+			<archive>http://groups.google.com/group/cytoscape-discuss</archive>
+		</mailingList>
+		<mailingList>
+			<name>Cytoscape Helpdesk: A list for users to request help
 				about Cytoscape.</name>
-      <subscribe>http://groups.google.com/group/cytoscape-helpdesk</subscribe>
-      <unsubscribe>http://groups.google.com/group/cytoscape-helpdesk</unsubscribe>
-      <post>cytoscape-helpdesk@googlegroups.com</post>
-      <archive>http://groups.google.com/group/cytoscape-helpdesk</archive>
-    </mailingList>
-    <mailingList>
-      <name>Cytoscape Announce: A low volume list for
+			<subscribe>http://groups.google.com/group/cytoscape-helpdesk</subscribe>
+			<unsubscribe>http://groups.google.com/group/cytoscape-helpdesk</unsubscribe>
+			<post>cytoscape-helpdesk@googlegroups.com</post>
+			<archive>http://groups.google.com/group/cytoscape-helpdesk</archive>
+		</mailingList>
+		<mailingList>
+			<name>Cytoscape Announce: A low volume list for
 				announcements relevant to Cytoscape users and developers.</name>
-      <subscribe>http://groups.google.com/group/cytoscape-announce</subscribe>
-      <unsubscribe>http://groups.google.com/group/cytoscape-announce</unsubscribe>
-      <post>cytoscape-announce@googlegroups.com</post>
-      <archive>http://groups.google.com/group/cytoscape-announce</archive>
-    </mailingList>
-  </mailingLists>
+			<subscribe>http://groups.google.com/group/cytoscape-announce</subscribe>
+			<unsubscribe>http://groups.google.com/group/cytoscape-announce</unsubscribe>
+			<post>cytoscape-announce@googlegroups.com</post>
+			<archive>http://groups.google.com/group/cytoscape-announce</archive>
+		</mailingList>
+	</mailingLists>
 
-  <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/cytoscape3/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape3/trunki</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/cytoscape3/trunk</url>
-  </scm>
+	<scm>
+		<connection>scm:svn:http://chianti.ucsd.edu/svn/cytoscape3/trunk</connection>
+		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape3/trunki</developerConnection>
+		<url>http://chianti.ucsd.edu/svn/cytoscape3/trunk</url>
+	</scm>
 
-  <developers>
-    <developer>
-      <id>mes</id>
-      <name>Mike Smoot</name>
-      <email>msmoot ~ ucsd / edu</email>
-      <url>http://chianti.ucsd.edu/~mes</url>
-      <organization>U.C. San Diego</organization>
-      <organizationUrl>http://ucsd.edu</organizationUrl>
-      <roles>
-        <role>Architect</role>
-        <role>Core Developer</role>
-      </roles>
-      <timezone>-8</timezone>
-    </developer>
-    <developer>
-      <id>kono</id>
-      <name>Keiichiro Ono</name>
-      <email>kono at ucsd dot edu</email>
-      <url>http://chianti.ucsd.edu/kono</url>
-      <organization>U.C. San Diego</organization>
-      <timezone>-8</timezone>
-      <roles>
-        <role>Core Developer</role>
-      </roles>
-    </developer>
-  </developers>
+	<developers>
+		<developer>
+			<id>mes</id>
+			<name>Mike Smoot</name>
+			<email>msmoot ~ ucsd / edu</email>
+			<url>http://chianti.ucsd.edu/~mes</url>
+			<organization>U.C. San Diego</organization>
+			<organizationUrl>http://ucsd.edu</organizationUrl>
+			<roles>
+				<role>Architect</role>
+				<role>Core Developer</role>
+			</roles>
+			<timezone>-8</timezone>
+		</developer>
+		<developer>
+			<id>kono</id>
+			<name>Keiichiro Ono</name>
+			<email>kono at ucsd dot edu</email>
+			<url>http://chianti.ucsd.edu/kono</url>
+			<organization>U.C. San Diego</organization>
+			<timezone>-8</timezone>
+			<roles>
+				<role>Core Developer</role>
+			</roles>
+		</developer>
+	</developers>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>cytoscape</groupId>
-  <artifactId>core</artifactId>
-  <version>1.0-SNAPSHOT</version>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cytoscape</groupId>
+	<artifactId>core</artifactId>
+	<version>1.0-SNAPSHOT</version>
 
-  <properties>
-    <!-- System Bundle Versions -->
-    <spring.version>2.5.5</spring.version>
-    <spring.osgi.version>1.1.2</spring.osgi.version>
-    <slf4j.version>1.5.0</slf4j.version>
-    <!-- some example OSGi runtime properties -->
-    <org.osgi.service.http.port>8080</org.osgi.service.http.port>
-    <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
-	<felix.fragment.validation>warning</felix.fragment.validation>
-  </properties>
+	<properties>
+		<!-- System Bundle Versions -->
+		<spring.version>2.5.5</spring.version>
+		<spring.osgi.version>1.1.2</spring.osgi.version>
+		<slf4j.version>1.5.0</slf4j.version>
+		<!-- some example OSGi runtime properties -->
+		<org.osgi.service.http.port>8080</org.osgi.service.http.port>
+		<org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
+		<felix.fragment.validation>warning</felix.fragment.validation>
+	</properties>
 
-  <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
-  <repositories>
-    <repository>
-      <id>cytoscape_snapshots</id>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <name>Cytoscape Snapshots</name>
-      <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
-    </repository>
-    <!--
+	<repositories>
+		<repository>
+			<id>cytoscape_snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape Snapshots</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<!--
 			bootstrap for cytoscape dependencies, namely the parent POM releases
 		-->
-    <repository>
-      <id>cytoscape_releases</id>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <name>Cytoscape Releases</name>
-      <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
-    </repository>
-    <!-- for biojava -->
-    <repository>
-      <id>wwmm</id>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <name>Murray-Rust Research Group</name>
-      <url>http://wwmm.ch.cam.ac.uk/maven2</url>
-    </repository>
-    <!-- for jars I can't find anywhere else -->
-    <repository>
-      <id>chianti</id>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <name>Cytoscape Internal Repository</name>
-      <url>http://chianti.ucsd.edu/maven2</url>
-    </repository>
-    <!-- for freehep jars -->
-    <repository>
-      <id>freehep-maven</id>
-      <name>Maven FreeHEP</name>
-      <url>http://java.freehep.org/maven2</url>
-    </repository>
-    <!-- SpringSource OSGi Bundle Repository -->
-    <repository>
-      <id>com.springsource.repository.bundles.release</id>
-      <name>SpringSource OSGi Bundle Repository</name>
-      <url>http://repository.springsource.com/maven/bundles/release</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>com.springsource.repository.bundles.external</id>
-      <name>SpringSource OSGi Bundle Repository</name>
-      <url>http://repository.springsource.com/maven/bundles/external</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+		<repository>
+			<id>cytoscape_releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Releases</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+		</repository>
+		<!-- for biojava -->
+		<repository>
+			<id>wwmm</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<name>Murray-Rust Research Group</name>
+			<url>http://wwmm.ch.cam.ac.uk/maven2</url>
+		</repository>
+		<!-- for jars I can't find anywhere else -->
+		<repository>
+			<id>chianti</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<name>Cytoscape Internal Repository</name>
+			<url>http://chianti.ucsd.edu/maven2</url>
+		</repository>
+		<!-- for freehep jars -->
+		<repository>
+			<id>freehep-maven</id>
+			<name>Maven FreeHEP</name>
+			<url>http://java.freehep.org/maven2</url>
+		</repository>
+		<!-- SpringSource OSGi Bundle Repository -->
+		<repository>
+			<id>com.springsource.repository.bundles.release</id>
+			<name>SpringSource OSGi Bundle Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>SpringSource OSGi Bundle Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.ops4j</groupId>
-        <artifactId>maven-pax-plugin</artifactId>
-        <configuration>
-          <!--  some example Pax-Runner settings -->
-          <provision>
-            <param>--log=DEBUG</param>
-            <param>--platform=felix</param>
-            <param>--profiles=minimal</param>
-            <param>--vmOptions=-Xbootclasspath/a:bundles/cytoscape-sun.jhall_1.0.0.jar</param>
-          </provision>
-        </configuration>
-        <!--
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.ops4j</groupId>
+				<artifactId>maven-pax-plugin</artifactId>
+				<configuration>
+					<!--  some example Pax-Runner settings -->
+					<provision>
+						<param>--log=DEBUG</param>
+						<param>--platform=felix</param>
+						<param>--profiles=minimal</param>
+						<param>--vmOptions=-Xbootclasspath/a:bundles/cytoscape-sun.jhall_1.0.0.jar -Dapple.laf.useScreenMenuBar=true -Dapple.awt.fileDialogForDirectories=true -Dapple.awt.graphics.UseQuartz=true -Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3</param>
+					</provision>
+				</configuration>
+				<!--
 					executions> <execution> <id>ide-support</id> <phase>package</phase>
 					<goals> <goal>eclipse</goal> </goals> </execution> </executions
 				-->
-      </plugin>
-      <!--
+			</plugin>
+			<!--
 				<plugin> <artifactId>maven-assembly-plugin</artifactId>
 				<configuration> <descriptors> <descriptor>assembly.xml</descriptor>
 				</descriptors> </configuration> </plugin>
 			-->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>true</showDeprecation>
-          <compilerArguments>
-            <!-- <Xlint:all></Xlint:all> 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+					<compilerArguments>
+						<!-- <Xlint:all></Xlint:all> 
 						<Xlint:-path></Xlint:-path> -->
-            <Xmaxwarns>10000</Xmaxwarns>
-            <Xmaxerrs>10000</Xmaxerrs>
-          </compilerArguments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+						<Xmaxwarns>10000</Xmaxwarns>
+						<Xmaxerrs>10000</Xmaxerrs>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-        <version>2.2</version>
-        <configuration>
-          <tags>
-            <tag>TODO</tag>
-            <tag>FIXME</tag>
-            <tag>@todo</tag>
-            <tag>@deprecated</tag>
-            <tag>DOCUMENT ME</tag>
-          </tags>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <configuration>
-          <linkXref>true</linkXref>
-          <sourceEncoding>utf-8</sourceEncoding>
-          <minimumTokens>100</minimumTokens>
-          <targetJdk>1.5</targetJdk>
-          <excludes>
-            <exclude>**/*Bean.java</exclude>
-            <exclude>**/generated/*.java</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <configuration>
-          <threshold>Normal</threshold>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jdepend-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <excludePackageNames>*.impl</excludePackageNames>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>javadoc</report>
-              <!-- <report>test-javadoc</report> -->
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jxr-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </reporting>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<tags>
+						<tag>TODO</tag>
+						<tag>FIXME</tag>
+						<tag>@todo</tag>
+						<tag>@deprecated</tag>
+						<tag>DOCUMENT ME</tag>
+					</tags>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.5</targetJdk>
+					<excludes>
+						<exclude>**/*Bean.java</exclude>
+						<exclude>**/generated/*.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<configuration>
+					<threshold>Normal</threshold>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jdepend-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>*.impl</excludePackageNames>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>javadoc</report>
+							<!-- <report>test-javadoc</report> -->
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
 
-  <modules>
-    <module>poms</module>
-    <module>provision</module>
-    <module>splash</module>
-    <module>util.intr</module>
-    <module>render.immed</module>
-    <module>geom.spacial</module>
-    <module>render.stateful</module>
-    <module>geom.rtree</module>
-    <module>render.export</module>
-    <module>tunable</module>
-    <module>task</module>
-    <module>view</module>
-    <module>phoebe.dnd</module>
-    <module>layout</module>
-    <module>wrappers</module>
-    <module>vizmap</module>
-    <module>commons.cli</module>
-    <module>application</module>
-    <module>webservice</module>
-    <module>vizmap-gui</module>
-    <!--
+	<modules>
+		<module>poms</module>
+		<module>provision</module>
+		<module>splash</module>
+		<module>util.intr</module>
+		<module>render.immed</module>
+		<module>geom.spacial</module>
+		<module>render.stateful</module>
+		<module>geom.rtree</module>
+		<module>render.export</module>
+		<module>tunable</module>
+		<module>task</module>
+		<module>view</module>
+		<module>phoebe.dnd</module>
+		<module>layout</module>
+		<module>wrappers</module>
+		<module>vizmap</module>
+		<module>commons.cli</module>
+		<module>application</module>
+		<module>webservice</module>
+		<module>vizmap-gui</module>
+		<!--
 			<module>automatic.layout</module> <module>cpath</module>
 			<module>merge</module> <module>math.xform</module>
 			<module>psi.mi</module> <module>biopax</module>
@@ -328,7 +330,7 @@
 			<module>quickfind</module> <module>table.import</module>
 			<module>ontology</module>
 		-->
-    <module>property</module>
-  </modules>
+		<module>property</module>
+	</modules>
 
 </project>
