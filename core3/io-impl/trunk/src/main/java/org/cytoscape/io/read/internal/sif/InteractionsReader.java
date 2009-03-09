@@ -38,10 +38,10 @@
 package org.cytoscape.io.read.internal.sif;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.io.read.internal.AbstractNetworkReader;
@@ -55,55 +55,58 @@ import org.cytoscape.view.GraphView;
  * provides the graph and attributes objects constructed from the file.
  */
 public class InteractionsReader extends AbstractNetworkReader {
-	
+
 	private static final String DEF_DELIMITER = " ";
 	private static final String LINE_SEP = System.getProperty("line.separator");
-	
+
 	private static final String INTERACTION = "interaction";
-	
+
 	private ReadUtils readUtil;
 
-	private List<Interaction> interactions;
+	private Set<Interaction> interactions;
+
 	public InteractionsReader(ReadUtils readUtil) {
 		super();
-		this.interactions = new ArrayList<Interaction>();
+		this.interactions = new HashSet<Interaction>();
 		this.readUtil = readUtil;
 	}
 
-	public void read() throws IOException {
+	public Map<Class<?>, Object> read() throws IOException {
 		refresh();
-		
+
 		String delimiter = DEF_DELIMITER;
-		
+
 		final String rawText = readUtil.getInputString(inputStream);
-		
+
 		if (rawText.indexOf("\t") >= 0)
 			delimiter = "\t";
 
 		final String[] lines = rawText.split(LINE_SEP);
 
 		final int size = lines.length;
-		for (int i=0; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 			if (lines[i].length() <= 0)
 				continue;
 			interactions.add(new Interaction(lines[i], delimiter));
 		}
-		
-		if(inputStream != null) {
+
+		if (inputStream != null) {
 			inputStream.close();
 			inputStream = null;
 		}
 
 		createNetwork();
+		
+		return readObjects;
 	}
 
 	private void refresh() {
 		readObjects.clear();
 		interactions.clear();
-		interactions = new ArrayList<Interaction>();
+		interactions = new HashSet<Interaction>();
 		readObjects = new HashMap<Class<?>, Object>();
 	}
-	
+
 	private void createNetwork() {
 
 		final CyNetwork network = cyNetworkFactory.getInstance();
@@ -124,12 +127,13 @@ public class InteractionsReader extends AbstractNetworkReader {
 			nodeMap.put(nodeName, node);
 		}
 
-		// Now loop over the interactions again, this time creating edges between
+		// Now loop over the interactions again, this time creating edges
+		// between
 		// all sources and each of their respective targets.
 		String srcName;
 		String interactionType;
 		CyEdge edge;
-		
+
 		for (Interaction interaction : interactions) {
 
 			srcName = interaction.getSource();
@@ -143,13 +147,13 @@ public class InteractionsReader extends AbstractNetworkReader {
 				edge.attrs().set(INTERACTION, interactionType);
 			}
 		}
-		
+
 		readObjects.put(CyNetwork.class, network);
-		
-		final GraphView view = graphViewFactory.createGraphView( network );
+
+		final GraphView view = graphViewFactory.createGraphView(network);
 		layouts.getDefaultLayout().doLayout(view);
 		readObjects.put(GraphView.class, view);
-		
+
 		nodeMap.clear();
 		nodeMap = null;
 	}

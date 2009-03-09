@@ -50,7 +50,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.cytoscape.io.read.CyReader;
+import org.cytoscape.io.read.internal.AbstractNetworkReader;
 import org.cytoscape.io.read.internal.VisualStyleBuilder;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.LayoutAdapter;
@@ -74,7 +74,7 @@ import org.cytoscape.work.TaskMonitor;
  * generated when you call this class. The new style saves all visual features
  * (like node shape) and will not be lost even after other style selected.
  */
-public class GMLReader implements CyReader {
+public class GMLReader extends AbstractNetworkReader {
 	/**
 	 * The following are all taken to be reserved keywords for gml (note that
 	 * not all of them are actually keywords according to the spec)
@@ -251,7 +251,7 @@ public class GMLReader implements CyReader {
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void read() throws IOException {
+	public Map<Class<?>, Object> read() throws IOException {
 		try {
 			keyVals = (new GMLParser(inputStream)).parseList();
 		} catch (Exception io) {
@@ -274,6 +274,8 @@ public class GMLReader implements CyReader {
 		extract(); 
 
 		releaseStructures();
+		
+		return readObjects;
 	}
 
 	/**

@@ -129,7 +129,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 	 * @throws IOException
 	 *             DOCUMENT ME!
 	 */
-	public void read() throws IOException {
+	public Map<Class<?>, Object> read() throws IOException {
 		try {
 
 			this.readXGMML();
@@ -139,6 +139,8 @@ public class XGMMLReader extends AbstractNetworkReader {
 		} catch (SAXException e) {
 			throw new IOException("Could not parse XGMML file: ");
 		}
+		
+		return readObjects;
 	}
 
 	/**

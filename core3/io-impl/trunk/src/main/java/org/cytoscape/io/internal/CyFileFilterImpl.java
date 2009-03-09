@@ -37,6 +37,7 @@
 package org.cytoscape.io.internal;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
@@ -126,6 +127,19 @@ public class CyFileFilterImpl implements CyFileFilter {
 			return true;
 
 		return false;
+	}
+
+	/**
+	 * Must be overridden by subclasses.
+	 */
+	public boolean accept(InputStream stream, DataCategory category) throws IOException {
+		
+		// Check data category
+		if(category != this.category)
+			return false;
+
+		return true;
+		
 	}
 
 	public Set<String> getExtensions() {

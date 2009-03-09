@@ -34,8 +34,8 @@
  */
 package org.cytoscape.io.read.internal;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
@@ -92,6 +92,16 @@ public class CyReaderManagerImpl implements CyReaderManager {
 	 */
 	public CyReader getReader(URI fileLocation, DataCategory category)
 			throws IllegalArgumentException {
+		return getReader(fileLocation, null, category);
+	}
+
+	public CyReader getReader(InputStream stream, DataCategory category)
+			throws IllegalArgumentException {
+		return getReader(null, stream, category);
+	}
+
+	private CyReader getReader(URI uri, InputStream stream,
+			DataCategory category) {
 
 		CyFileFilter cff;
 		CyReader reader = null;
@@ -100,8 +110,13 @@ public class CyReaderManagerImpl implements CyReaderManager {
 			cff = factory.getCyFileFilter();
 
 			try {
-				if (cff.accept(fileLocation, category))
-					reader = factory.getReader(fileLocation);
+				if (uri != null) {
+					if (cff.accept(uri, category))
+						reader = factory.getReader(uri);
+				} else {
+					if (cff.accept(stream, category))
+						reader = factory.getReader(stream);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				throw new IllegalArgumentException(
@@ -114,12 +129,7 @@ public class CyReaderManagerImpl implements CyReaderManager {
 		}
 
 		return reader;
-	}
 
-	public CyReader getReader(String fileLocation, DataCategory category)
-			throws IllegalArgumentException {
-		final File file = new File(fileLocation);
-		return getReader(file.toURI(), category);
 	}
 
 }
