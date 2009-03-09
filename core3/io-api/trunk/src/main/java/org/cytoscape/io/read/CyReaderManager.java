@@ -34,6 +34,7 @@
  */
 package org.cytoscape.io.read;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
 
@@ -60,8 +61,8 @@ public interface CyReaderManager {
 	 * @return
 	 * @throws IllegalArgumentException File type is not supported.
 	 */
-	public CyReader getReader(String fileName, DataCategory category) throws IllegalArgumentException;
-
 	public CyReader getReader(URI resourceLocation, DataCategory category) throws IllegalArgumentException;
+	
+	public CyReader getReader(InputStream stream, DataCategory category) throws IllegalArgumentException;
 
 }

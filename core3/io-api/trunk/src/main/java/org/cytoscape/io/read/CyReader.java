@@ -2,7 +2,7 @@ package org.cytoscape.io.read;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * The basic input interface that specifies what is to be read and when it is to
@@ -21,21 +21,8 @@ public interface CyReader {
 	 * <p>
 	 * This should probably throw an {@link java.io.IOException}
 	 */
-	public void read() throws IOException;
+	public Map<Class<?>, Object> read() throws IOException;
 
 	public void setInputStream(InputStream is);
 
-	/**
-	 * Client classes get the actual read data objects by this method. This is a
-	 * type-safe heterogeneous container pattern.
-	 * 
-	 * If client code use this method before read(), IllegalStateException will be thrown.
-	 * 
-	 * @param <T>
-	 * @param type
-	 * @return
-	 */
-	public <T> T getReadData(Class<T> type) throws IllegalStateException, IllegalArgumentException;
-
-	public Set<Class<?>> getSupportedDataTypes();
 }
