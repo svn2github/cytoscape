@@ -36,16 +36,14 @@
 */
 package org.cytoscape.io.write.internal.sif;
 
-import cytoscape.task.TaskMonitor;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
+
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Iterator;
-import java.util.List;
+import org.cytoscape.work.TaskMonitor;
 
 // TODO make this implement CyNetworkWriter!
 /**
@@ -105,7 +103,7 @@ public class InteractionWriter {
 			if (taskMonitor != null) {
 				//  Report on Progress
 				double percent = ((double) i++ / nodeList.size()) * 100.0;
-				taskMonitor.setPercentCompleted((int) percent);
+				taskMonitor.setProgress(percent);
 			}
 
 			String canonicalName = node.attrs().get("name",String.class);

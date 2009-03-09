@@ -44,16 +44,21 @@
 //--------------------------------------------------------------------
 package org.cytoscape.io.read.internal.expression;
 
-import cytoscape.task.TaskMonitor;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyDataTable;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.work.TaskMonitor;
 
 
 //--------------------------------------------------------------------
@@ -484,13 +489,13 @@ public class ExpressionData implements Serializable {
 
 		/* parse rest of file line by line */
 		if (taskMonitor != null) {
-			taskMonitor.setStatus("Reading in Data...");
+			taskMonitor.setStatusMessage("Reading in Data...");
 		}
 
 		for (int ii = lineCount; ii < lines.length; ii++) {
 			if (taskMonitor != null) {
 				double percentComplete = ((double) ii / lines.length) * 100.0;
-				taskMonitor.setPercentCompleted((int) percentComplete);
+				taskMonitor.setProgress(percentComplete);
 			}
 
 			parseOneLine(lines[ii], ii, expectPvals, mappingByKeyAttribute, attributeToId, hasCOMMON);
@@ -1082,7 +1087,7 @@ public class ExpressionData implements Serializable {
 					int currentCoordinate = (condNum * geneNames.size()) + i;
 					int matrixSize = condNames.length * geneNames.size();
 					double percent = ((double) currentCoordinate / matrixSize) * 100.0;
-					taskMonitor.setPercentCompleted((int) percent);
+					taskMonitor.setProgress(percent);
 				}
 			}
 		}

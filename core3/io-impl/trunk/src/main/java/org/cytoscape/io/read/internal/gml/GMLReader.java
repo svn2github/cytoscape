@@ -38,6 +38,7 @@ package org.cytoscape.io.read.internal.gml;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -63,9 +64,7 @@ import org.cytoscape.view.NodeView;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualPropertyType;
-
-import cytoscape.task.PercentUtil;
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.work.TaskMonitor;
 
 
 /**
@@ -159,7 +158,6 @@ public class GMLReader implements CyReader {
 	Vector<String> node_names;
 
 	private TaskMonitor taskMonitor;
-	private PercentUtil percentUtil;
 
 	// Name for the new visual style
 	String styleName;
@@ -228,7 +226,6 @@ public class GMLReader implements CyReader {
  	 */
 	public void setTaskMonitor(TaskMonitor monitor) {
 		this.taskMonitor = monitor;
-		percentUtil = new PercentUtil(3);
 	}
 
 	public CyNetwork getReadNetwork() {
@@ -254,15 +251,11 @@ public class GMLReader implements CyReader {
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void read() {
+	public void read() throws IOException {
 		try {
 			keyVals = (new GMLParser(inputStream)).parseList();
 		} catch (Exception io) {
 			io.printStackTrace();
-
-			if (taskMonitor != null)
-				taskMonitor.setException(io, io.getMessage());
-
 			throw new RuntimeException(io.getMessage());
 		}
 
@@ -331,7 +324,8 @@ public class GMLReader implements CyReader {
 		for (int idx = 0; idx < nodes.size(); idx++) {
 			// Report Status Value
 			if (taskMonitor != null) {
-				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(2, idx, nodes.size()));
+				// TODO: set proper number
+				//taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(2, idx, nodes.size()));
 			}
 
 			String label = node_labels.get(idx);
@@ -356,7 +350,8 @@ public class GMLReader implements CyReader {
 		for (int idx = 0; idx < sources.size(); idx++) {
 			// Report Status Value
 			if (taskMonitor != null) {
-				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(3, idx, sources.size()));
+				// TODO: set proper number
+				//taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(3, idx, sources.size()));
 			}
 
 			if (gml_id2order.containsKey(sources.get(idx)) && gml_id2order.containsKey(targets.get(idx))) {
@@ -401,7 +396,8 @@ public class GMLReader implements CyReader {
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			// Report Progress Value
 			if (taskMonitor != null) {
-				taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(1, counter, list.size()));
+				//TODO: set proper number
+				//taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent(1, counter, list.size()));
 				counter++;
 			}
 
