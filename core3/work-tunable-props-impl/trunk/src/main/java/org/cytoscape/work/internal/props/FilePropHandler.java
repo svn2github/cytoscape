@@ -1,7 +1,6 @@
 package org.cytoscape.work.internal.props;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -14,7 +13,6 @@ public class FilePropHandler extends AbstractPropHandler {
 
 	File file;
 	List<String> paths;
-	String path;
 	
 	public FilePropHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
@@ -25,33 +23,25 @@ public class FilePropHandler extends AbstractPropHandler {
 
 	public Properties getProps() {
 		Properties p = new Properties();
-		p.put( propKey, file.getAbsolutePath());
+		p.put( propKey, file.getPath());
 		return p;
 	}
 	
 	public void add(Properties p) {
-		//test = new ArrayList<String>();
-		//test.add(0,"");
-		// TODO
-		//files.setPaths(test);
 		try{
 			p.put(propKey,file.getAbsolutePath());
 		}catch(Exception e){e.printStackTrace();}
 	}
 
 		
-	@SuppressWarnings("unchecked")
 	public void setProps(Properties p) {
-//		try {
+		try {
 			if ( p.containsKey( propKey ) ) {
-				Object val = p.get( propKey );
-				// TODO
-				//if ( val != null ) 
-					//files.setPaths((List<String>) val);
-					//f.set(o, files);			
+				String val = p.getProperty( propKey );
+				if ( val != null )
+					f.set(o, val);if ( val != null )
+						f.set(o, val);	
 			}
-//        } catch (IllegalAccessException iae) {
- //           iae.printStackTrace();
-  //      }
+        } catch (IllegalAccessException iae) {iae.printStackTrace();}
 	}
 }

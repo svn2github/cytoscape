@@ -1,6 +1,7 @@
 package org.cytoscape.work.internal.props;
 
 import java.lang.reflect.*;
+import java.net.URL;
 import java.util.*;
 import java.io.File;
 
@@ -8,24 +9,24 @@ import org.cytoscape.work.Tunable;
 
 public class URLPropHandler extends AbstractPropHandler {
 
-	File file;
+	URL url;
 	
 	public URLPropHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
-			file = (File) f.get(o);
+			url = (URL) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 	}
 
 	public Properties getProps() {
 		Properties p = new Properties();
-		p.put( propKey, file.toString());
+		p.put( propKey, url.toString());
 		return p;
 	}
 	
 	public void add(Properties p) {
 		try{
-			p.put(propKey,file.toString());
+			p.put(propKey,url.toString());
 		}catch(Exception e){e.printStackTrace();}
 	}
 
