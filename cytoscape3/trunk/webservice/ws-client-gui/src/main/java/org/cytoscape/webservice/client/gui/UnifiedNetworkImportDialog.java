@@ -77,15 +77,14 @@ import org.cytoscape.webservice.client.WSResponseType;
 import org.cytoscape.webservice.client.WebServiceClient;
 import org.cytoscape.webservice.client.WebServiceClientManager;
 import org.cytoscape.webservice.client.gui.WebServiceClientGUI.IconSize;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskMonitor;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.dialogs.AboutDialog;
 import cytoscape.dialogs.AboutDialogFactory;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
 import cytoscape.view.CySwingApplication;
 
 
@@ -100,7 +99,8 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private String selectedClientID = null;
 
 	// Task to run in the separate thread.
-	private WSNetworkImportTask task;
+	//TODO: switch to new task
+	//private WSNetworkImportTask task;
 
 	// Key is display name, value is actual service name.
 	private Map<String, String> clientNames;
@@ -460,21 +460,21 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
-		final CyWebServiceEvent<String> event = buildEvent();
-		System.out.println("Start importing network: " + evt.getActionCommand());
-
-		task = new WSNetworkImportTask(datasourceComboBox.getSelectedItem().toString(), event);
-
-		// Configure JTask Dialog Pop-Up Box
-		final JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(this);
-		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayCancelButton(true);
-		jTaskConfig.displayStatus(true);
-		jTaskConfig.setAutoDispose(false);
-
-		// Execute Task in New Thread; pops open JTask Dialog Box.
-		TaskManager.executeTask(task, jTaskConfig);
+//		final CyWebServiceEvent<String> event = buildEvent();
+//		System.out.println("Start importing network: " + evt.getActionCommand());
+//
+//		task = new WSNetworkImportTask(datasourceComboBox.getSelectedItem().toString(), event);
+//
+//		// Configure JTask Dialog Pop-Up Box
+//		final JTaskConfig jTaskConfig = new JTaskConfig();
+//		jTaskConfig.setOwner(this);
+//		jTaskConfig.displayCloseButton(true);
+//		jTaskConfig.displayCancelButton(true);
+//		jTaskConfig.displayStatus(true);
+//		jTaskConfig.setAutoDispose(false);
+//
+//		// Execute Task in New Thread; pops open JTask Dialog Box.
+//		TaskManager.executeTask(task, jTaskConfig);
 
 		System.out.println("Network Import from WS Success!");
 		dispose();
@@ -610,65 +610,65 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private VisualMappingManager vmm;
 
 	// End of variables declaration
-	class WSNetworkImportTask implements Task {
-		private String serviceName;
-		private CyWebServiceEvent<String> evt;
-		private TaskMonitor taskMonitor;
-
-		public WSNetworkImportTask(final String serviceName, final CyWebServiceEvent<String> evt) {
-			this.evt = evt;
-			this.serviceName = serviceName;
-		}
-
-		public String getTitle() {
-			return "Loading network from web service...";
-		}
-
-		public void halt() {
-			cancelFlag = true;
-			Thread.currentThread().interrupt();
-			taskMonitor.setPercentCompleted(100);
-
-			// Kill the import task.
-			CyWebServiceEvent<String> cancelEvent = wseFactory.createEvent(serviceName,
-			                                                               WSEventType.CANCEL,
-			                                                               null, null);
-
-			try {
-				wscm.getCyWebServiceEventSupport().fireCyWebServiceEvent(cancelEvent);
-			} catch (CyWebServiceException e) {
-				// TODO Auto-generated catch block
-				taskMonitor.setException(e, "Cancel Failed.");
-			}
-		}
-
-		public void run() {
-			cancelFlag = false;
-			taskMonitor.setStatus("Loading interactions from " + serviceName);
-			taskMonitor.setPercentCompleted(-1);
-
-			// this even will load the file
-			try {
-				wscm.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
-			} catch (Exception e) {
-				taskMonitor.setException(e, "Failed to load network from web service.");
-
-				return;
-			}
-
-			taskMonitor.setPercentCompleted(100);
-			taskMonitor.setStatus("Network successfully loaded.");
-		}
-
-		public void setTaskMonitor(TaskMonitor arg0) throws IllegalThreadStateException {
-			this.taskMonitor = arg0;
-		}
-
-		protected TaskMonitor getTaskMonitor() {
-			return taskMonitor;
-		}
-	}
-
+//	class WSNetworkImportTask implements Task {
+//		private String serviceName;
+//		private CyWebServiceEvent<String> evt;
+//		private TaskMonitor taskMonitor;
+//
+//		public WSNetworkImportTask(final String serviceName, final CyWebServiceEvent<String> evt) {
+//			this.evt = evt;
+//			this.serviceName = serviceName;
+//		}
+//
+//		public String getTitle() {
+//			return "Loading network from web service...";
+//		}
+//
+//		public void halt() {
+//			cancelFlag = true;
+//			Thread.currentThread().interrupt();
+//			taskMonitor.setPercentCompleted(100);
+//
+//			// Kill the import task.
+//			CyWebServiceEvent<String> cancelEvent = wseFactory.createEvent(serviceName,
+//			                                                               WSEventType.CANCEL,
+//			                                                               null, null);
+//
+//			try {
+//				wscm.getCyWebServiceEventSupport().fireCyWebServiceEvent(cancelEvent);
+//			} catch (CyWebServiceException e) {
+//				// TODO Auto-generated catch block
+//				taskMonitor.setException(e, "Cancel Failed.");
+//			}
+//		}
+//
+//		public void run() {
+//			cancelFlag = false;
+//			taskMonitor.setStatus("Loading interactions from " + serviceName);
+//			taskMonitor.setPercentCompleted(-1);
+//
+//			// this even will load the file
+//			try {
+//				wscm.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
+//			} catch (Exception e) {
+//				taskMonitor.setException(e, "Failed to load network from web service.");
+//
+//				return;
+//			}
+//
+//			taskMonitor.setPercentCompleted(100);
+//			taskMonitor.setStatus("Network successfully loaded.");
+//		}
+//
+//		public void setTaskMonitor(TaskMonitor arg0) throws IllegalThreadStateException {
+//			this.taskMonitor = arg0;
+//		}
+//
+//		protected TaskMonitor getTaskMonitor() {
+//			return taskMonitor;
+//		}
+//	}
+//
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -708,9 +708,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 						wscm.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
 					} catch (CyWebServiceException e) {
 						// TODO Auto-generated catch block
-						if (task.getTaskMonitor() != null) {
-							task.getTaskMonitor().setException(e, "Database search failed.");
-						}
+//						if (task.getTaskMonitor() != null) {
+//							task.getTaskMonitor().setException(e, "Database search failed.");
+//						}
 					}
 				}
 			}
