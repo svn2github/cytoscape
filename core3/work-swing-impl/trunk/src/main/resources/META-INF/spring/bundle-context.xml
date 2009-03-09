@@ -21,6 +21,8 @@
 	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GuiHandlerFactory">
 		<constructor-arg ref="bookmarkServiceRef" />
 		<constructor-arg ref="bookmarksUtilServiceRef" />
+		
+		
 	</bean>
 
 	<bean id="guiTunableInterceptor" class="org.cytoscape.work.internal.tunables.GuiTunableInterceptor">

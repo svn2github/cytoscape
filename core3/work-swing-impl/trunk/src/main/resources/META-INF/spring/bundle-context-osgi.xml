@@ -26,5 +26,6 @@
 
     <osgi:reference id="bookmarksUtilServiceRef"
         interface="org.cytoscape.property.bookmark.BookmarksUtil" />
-	
+
+
 </beans>
