@@ -1,7 +1,12 @@
 package org.cytoscape.io.internal;
 
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
@@ -10,6 +15,7 @@ import org.cytoscape.io.read.CyReaderFactory;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.io.read.internal.AbstractNetworkReader;
 import org.cytoscape.io.read.internal.sif.InteractionsReader;
+import org.cytoscape.io.read.internal.xgmml.XGMMLReader;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.GraphViewFactory;
 import org.junit.Before;
@@ -17,9 +23,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
 
 
 /**
@@ -42,22 +45,34 @@ public class BeanIntegrationTest extends AbstractJUnit4SpringContextTests {
 	
 	private CyReaderFactory sifFactory;
 	
-	private URI sampleFileLocation1;
+	private URI sifFileLocation;
+	private URL xgmmlFile;
+	private URL xgmmlURL;
+	
+	private CyReaderFactory xgmmlFactory;
 	
 
-	@Before
-	public void initializeTest1() throws Exception {
-		sampleFileLocation1 = new URI("http://chianti.ucsd.edu/kono/data/galFiltered.sif");
+	@Before public void initializeTest1() throws Exception {
+		sifFileLocation = new URI("http://chianti.ucsd.edu/kono/data/galFiltered.sif");
+		final File xFile = new File("src/test/resources/testData/galFiltered.xgmml");
+		xgmmlURL = new URL("http://chianti.ucsd.edu/kono/data/galFiltered.xgmml");
+		
+		xgmmlFile = xFile.toURL();
 		
 		sifReader = (CyReader) applicationContext.getBean("sifReader");
 		xgmmlReader = (CyReader) applicationContext.getBean("xgmmlReader");
 		sifFilter = (CyFileFilter) applicationContext.getBean("sifFilter");
 		sifFactory = (CyReaderFactory) applicationContext.getBean("sifReaderFactory");
+		xgmmlFactory = (CyReaderFactory) applicationContext.getBean("xgmmlReaderFactory");
 		
 		factoryMock = createMock(CyNetworkFactory.class);
 		viewFactoryMock = createMock(GraphViewFactory.class);
 		
+		expect(factoryMock.getInstance()).andReturn(null).times(2);
+		
+		
 		((AbstractNetworkReader)sifReader).setCyNetworkFactory(factoryMock);
+		((AbstractNetworkReader)xgmmlReader).setCyNetworkFactory(factoryMock);
 		
 		System.out.println("--------------------------------------- SIF Description = " + sifFilter.getDescription());
 	}
@@ -65,14 +80,29 @@ public class BeanIntegrationTest extends AbstractJUnit4SpringContextTests {
 	
 	/**
 	 * Test using mock service objects.
+	 * @throws Exception 
+	 * @throws IllegalArgumentException 
 	 */
-	@Test public void readerManagerTest() {
+	@Test public void readerManagerTest() throws Exception {
 		System.out.println("--------------------------------------- Reader Manager Test Begins");
+		
+		// Register factories
 		manager.addReaderFactory(sifFactory, null);
-		CyReader reader = manager.getReader(sampleFileLocation1, DataCategory.NETWORK);
+		manager.addReaderFactory(xgmmlFactory, null);
 		
-		assertEquals(reader.getClass(), InteractionsReader.class);
+		CyReader reader1 = manager.getReader(sifFileLocation, DataCategory.NETWORK);
 		
-		System.out.println("--------------------------------------- Reader Obj = " + reader.toString());
+		assertEquals(reader1.getClass(), InteractionsReader.class);
+		
+		replay(factoryMock);
+		CyReader reader2 = manager.getReader(xgmmlFile.openStream(), DataCategory.NETWORK);
+		assertEquals(reader2.getClass(), XGMMLReader.class);
+		
+		CyReader reader3 = manager.getReader(xgmmlURL.openStream(), DataCategory.NETWORK);
+		assertEquals(reader3.getClass(), XGMMLReader.class);
+		verify(factoryMock);
+		
+		
+		System.out.println("--------------------------------------- End of reader manager test");
 	}
 }

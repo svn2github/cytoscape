@@ -36,8 +36,10 @@
  */
 package org.cytoscape.io.internal;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
@@ -52,16 +54,16 @@ import org.cytoscape.io.DataCategory;
 public class CyFileFilterImpl implements CyFileFilter {
 
 	/*
-	 * Basic information for compatible file type.
-	 * Everything will be injected through DI container.
+	 * Basic information for compatible file type. Everything will be injected
+	 * through DI container.
 	 */
 	private Set<String> extensions;
 	private Set<String> contentTypes;
 	private String description;
-	private DataCategory category;
-	
+	protected DataCategory category;
+
 	private Proxy proxy;
-	
+
 	/**
 	 * Creates a file filter from the given string array and description.
 	 * Example: new ExampleFileFilter(String {"gif", "jpg"},
@@ -71,7 +73,8 @@ public class CyFileFilterImpl implements CyFileFilter {
 	 * 
 	 */
 	public CyFileFilterImpl(final Set<String> extensions,
-			final Set<String> contentTypes, final String description, final DataCategory category) {
+			final Set<String> contentTypes, final String description,
+			final DataCategory category) {
 
 		this.extensions = extensions;
 		this.contentTypes = contentTypes;
@@ -86,11 +89,10 @@ public class CyFileFilterImpl implements CyFileFilter {
 
 		this.description = d;
 	}
-	
+
 	public void setProxy(Proxy proxy) {
 		this.proxy = proxy;
 	}
-	
 
 	/**
 	 * Returns true if this class is capable of processing the specified URL
@@ -99,24 +101,24 @@ public class CyFileFilterImpl implements CyFileFilter {
 	 *            the URL
 	 * @param contentType
 	 *            the content-type of the URL
-	 * @throws IOException 
-	 * @throws MalformedURLException 
+	 * @throws IOException
+	 * @throws MalformedURLException
 	 * 
 	 */
 	public boolean accept(URI uri, DataCategory category) throws IOException {
-		
+
 		// Check data category
-		if(category != this.category)
+		if (category != this.category)
 			return false;
-		
+
 		final URLConnection connection;
-		if(proxy != null)
+		if (proxy != null)
 			connection = uri.toURL().openConnection(proxy);
 		else
 			connection = uri.toURL().openConnection();
-		
+
 		final String contentType = connection.getContentType();
-		
+
 		// Check for matching content type
 		if ((contentType != null) && contentTypes.contains(contentType))
 			return true;
@@ -132,14 +134,11 @@ public class CyFileFilterImpl implements CyFileFilter {
 	/**
 	 * Must be overridden by subclasses.
 	 */
-	public boolean accept(InputStream stream, DataCategory category) throws IOException {
-		
-		// Check data category
-		if(category != this.category)
-			return false;
+	public boolean accept(InputStream stream, DataCategory category)
+			throws IOException {
 
-		return true;
-		
+		return false;
+
 	}
 
 	public Set<String> getExtensions() {
@@ -178,4 +177,43 @@ public class CyFileFilterImpl implements CyFileFilter {
 	public DataCategory getDataCategory() {
 		return category;
 	}
+
+	protected String getHeader(InputStream stream) throws IOException {
+		
+		String header = null;
+		BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+		
+		try {
+			header = parseHeader(br);
+		} finally {
+			if (br != null)
+				br.close();
+			br = null;
+		}
+		
+		return header;
+	}
+
+	private String parseHeader(BufferedReader bufferedReader)
+			throws IOException {
+		StringBuilder header = new StringBuilder();
+
+		try {
+			String line = bufferedReader.readLine();
+
+			int numLines = 0;
+
+			while ((line != null) && (numLines < 20)) {
+				header.append(line + "\n");
+				line = bufferedReader.readLine();
+				numLines++;
+			}
+		} finally {
+			if (bufferedReader != null)
+				bufferedReader.close();
+		}
+
+		return header.toString();
+	}
+
 }

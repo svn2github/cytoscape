@@ -172,7 +172,6 @@ public class ReadDataManager {
 	
 	public void setNetwork(CyNetwork network) {
 		this.network = network;
-		System.out.println("Network set======================================> " + this.network.getSUID());
 	}
 	
 	public CyNetwork getNetwork() {

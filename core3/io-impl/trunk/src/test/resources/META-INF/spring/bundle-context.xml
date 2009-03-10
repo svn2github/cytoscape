@@ -42,7 +42,7 @@
 			value="NETWORK" />
 	</bean>
 
-	<bean id="xgmmlFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+	<bean id="xgmmlFilter" class="org.cytoscape.io.read.internal.xgmml.XGMMLFileFilter">
 		<constructor-arg index="0">
 			<set>
 				<value>xgmml</value>
