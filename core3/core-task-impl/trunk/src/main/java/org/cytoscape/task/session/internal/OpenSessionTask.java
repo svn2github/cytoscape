@@ -88,7 +88,7 @@ public class OpenSessionTask implements Task {
 		CyReader sr;
 
 		try {
-			sr = factory.getReader(name, DataCategory.SESSION);
+			sr = factory.getReader(file.toURI(), DataCategory.SESSION);
 			sr.read();
 		} catch (Exception e) {
 			throw new Exception("Cannot open the session file: " + name, e);

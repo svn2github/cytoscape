@@ -72,7 +72,7 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 		this.taskMonitor = taskMonitor;
 		// for ( File file : files ) {
 
-		reader = mgr.getReader(file.getAbsolutePath(), NETWORK);
+		reader = mgr.getReader(file.toURI(), NETWORK);
 
 		uri = file.toURI();
 		name = file.getName();

@@ -40,6 +40,7 @@ package org.cytoscape.task.loadnetwork.internal;
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Map;
 import java.util.Properties;
 import java.io.IOException;
 
@@ -98,12 +99,12 @@ abstract class AbstractLoadNetworkTask implements Task {
 
 			taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
-			reader.read();
+			final Map<Class<?>, Object> readData = reader.read();
 
-			CyNetwork cyNetwork = reader.getReadData(CyNetwork.class);
+			CyNetwork cyNetwork = (CyNetwork) readData.get(CyNetwork.class);
 			cyNetwork.attrs().set("name",
 					namingUtil.getSuggestedNetworkTitle(name, netmgr));
-			GraphView view = reader.getReadData(GraphView.class);
+			GraphView view = (GraphView) readData.get(GraphView.class);
 
 			if (view == null)
 				view = gvf.createGraphView(cyNetwork);
