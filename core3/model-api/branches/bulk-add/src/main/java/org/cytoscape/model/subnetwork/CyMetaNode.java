@@ -37,6 +37,7 @@
 package org.cytoscape.model.subnetwork;
 
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTempNode;
 
 
 /**
@@ -44,7 +45,7 @@ import org.cytoscape.model.CyNode;
  * in its parent network.  See the description in {@link CyRootNetwork} for
  * a more complete description of Cytoscape's meta-network model.
  */
-public interface CyMetaNode extends CyNode {
+public interface CyMetaNode extends CyTempNode {
 
 	/**
 	 * Get the {@link CySubNetwork} that this CyMetaNode represents.

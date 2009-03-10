@@ -88,8 +88,8 @@ public interface CySubNetwork extends CyNetwork {
 	 *
 	 * @return A new CyNode that exists in both this subnetwork and the associated
 	 * {@link CyRootNetwork}.
-	 */
 	CyNode addNode();
+	 */
 
 	/**
 	 * Removes a node from this {@link CySubNetwork} but not from the {@link CyRootNetwork}.  
@@ -97,8 +97,8 @@ public interface CySubNetwork extends CyNetwork {
 	 * from the {@link CyRootNetwork}.
 	 *
 	 * @param node  Node to remove from this subnetwork
-	 */
 	boolean removeNode(CyNode node);
+	 */
 
 	/**
 	 * Removes a edge from this {@link CySubNetwork} but not from the {@link CyRootNetwork}.  
@@ -106,6 +106,6 @@ public interface CySubNetwork extends CyNetwork {
 	 * from the {@link CyRootNetwork}.
 	 *
 	 * @param edge  Edge to remove from this subnetwork
-	 */
 	boolean removeEdge(CyEdge edge);
+	 */
 }

@@ -39,7 +39,7 @@ package org.cytoscape.model;
 /**
  * DOCUMENT ME!
   */
-public interface CyEdge extends GraphObject {
+public interface CyEdge extends GraphObject, CyTempEdge {
 	/**
 	 * The Type enum is used by methods in {@link CyNetwork} to restrict
 	 * the edges that match a query as follows:

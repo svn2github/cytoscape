@@ -48,6 +48,7 @@ import org.cytoscape.event.CyListener;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTempNode;
 
 import java.lang.RuntimeException;
 
@@ -70,10 +71,15 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 	 */
 	public void testAddMetaNode() {
 		System.out.println("---> testAddMetaNode");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
-		CyNode n4 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		CyTempNode tn4 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
@@ -102,9 +108,13 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 	public void testRemoveMetaNode() {
 		System.out.println("---> testRemoveMetaNode");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
@@ -181,9 +191,13 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 	public void testGetAllNodes() {
 		System.out.println("---> testGetAllNodes");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
@@ -226,10 +240,15 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 	public void testGetAllEdges() {
 		System.out.println("---> testGetAllEdges");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
-		CyNode n4 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		CyTempNode tn4 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
@@ -256,9 +275,13 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 	public void testGetSubNetworkList() {
 		System.out.println("---> testGetSubNetworkList");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
@@ -297,16 +320,21 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 	public void testAddNode() {
 		System.out.println("---> testAddNode");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
-		CyNode n4 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		CyTempNode tn4 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
 		CyEdge e3 = root.addEdge(n2,n4,false);
 
-		assertEquals("node list size",4,root.getNodeList().size());
+		assertEquals("A node list size",4,root.getNodeList().size());
 
 		List<CyNode> nl = new ArrayList<CyNode>(2);
 		nl.add(n1);
@@ -319,49 +347,54 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 		//System.out.println("###### 4 nodes, 1 metanode");
 
-		assertEquals("base node list size",4,root.getBaseNetwork().getNodeList().size());
-		assertEquals("node list size",5,root.getNodeList().size());
+		assertEquals("B base node list size",4,root.getBaseNetwork().getNodeList().size());
+		assertEquals("B node list size",5,root.getNodeList().size());
 
-		CyNode n5 = root.addNode();
+		CyNode n5 = root.addNodes(root.createNode()).get(0);
 
 		//System.out.println("###### 5 nodes, 1 metanode");
 
-		assertEquals("node list size",6,root.getNodeList().size());
-		assertEquals("base node list size",5,root.getBaseNetwork().getNodeList().size());
+		assertEquals("C node list size",6,root.getNodeList().size());
+		assertEquals("C base node list size",5,root.getBaseNetwork().getNodeList().size());
 
-		CyNode n6 = root.addNode();
+		CyNode n6 = root.addNodes(root.createNode()).get(0);
 
 		//System.out.println("###### 6 nodes, 1 metanode");
 
-		assertEquals("node list size",7,root.getNodeList().size());
-		assertEquals("base node list size",6,root.getBaseNetwork().getNodeList().size());
-		assertTrue("root does contain node5",root.containsNode(n5));
+		assertEquals("D node list size",7,root.getNodeList().size());
+		assertEquals("D base node list size",6,root.getBaseNetwork().getNodeList().size());
+		assertTrue("D root does contain node5",root.containsNode(n5));
 
 		boolean ret = root.removeNode(n5);
 
 		//System.out.println("###### 5 nodes, 1 metanode");
-		assertTrue("removed node5", ret);
-		assertFalse("root doesn't contain node5",root.containsNode(n5));
+		assertTrue("E removed node5", ret);
+		assertFalse("E root doesn't contain node5",root.containsNode(n5));
 
 		//for ( CyNode nn : root.getNodeList() )
 			//System.out.println("~~~ " + nn.getIndex());
-		assertEquals("node list size",6,root.getNodeList().size());
-		assertEquals("base node list size",5,root.getBaseNetwork().getNodeList().size());
+		assertEquals("F node list size",6,root.getNodeList().size());
+		assertEquals("F base node list size",5,root.getBaseNetwork().getNodeList().size());
 
 		ret = root.removeNode(n6);
-		assertTrue("removed node6", ret);
+		assertTrue("G removed node6", ret);
 
 		//System.out.println("###### 4 nodes, 1 metanode");
-		assertEquals("node list size",5,root.getNodeList().size());
-		assertEquals("base node list size",4,root.getBaseNetwork().getNodeList().size());
+		assertEquals("H node list size",5,root.getNodeList().size());
+		assertEquals("H base node list size",4,root.getBaseNetwork().getNodeList().size());
 	}
 
 	public void testGetMetaNodeList() {
 		System.out.println("---> testGetMetaNodeList");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
-		CyNode n4 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		CyTempNode tn4 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
@@ -443,10 +476,15 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertTrue("sub1 equals base1",sub1.equals(base1));
 
 		// now modify root
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
-		CyNode n4 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		CyTempNode tn4 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
@@ -490,11 +528,17 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 	public void testAddSubNetworkNodes() {
 		System.out.println("---> testAddSubNetworkNodes");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
-		CyNode n4 = root.addNode();
-		CyNode n5 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		CyTempNode tn4 = root.createNode();
+		CyTempNode tn5 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
+		CyNode n5 = ln.get(4);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
@@ -552,11 +596,17 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 	public void testAddSubNetworkNodesEdges() {
 		System.out.println("---> testAddSubNetworkNodesEdges");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
-		CyNode n4 = root.addNode();
-		CyNode n5 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		CyTempNode tn4 = root.createNode();
+		CyTempNode tn5 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
+		CyNode n5 = ln.get(4);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);
@@ -646,11 +696,17 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 	public void testRemoveSubNetwork() {
 		System.out.println("---> testRemoveSubNetwork");
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
-		CyNode n4 = root.addNode();
-		CyNode n5 = root.addNode();
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		CyTempNode tn4 = root.createNode();
+		CyTempNode tn5 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
+		CyNode n5 = ln.get(4);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n2,n3,false);

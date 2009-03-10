@@ -48,6 +48,7 @@ import org.cytoscape.event.CyListener;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTempNode;
 
 import java.lang.RuntimeException;
 
@@ -67,9 +68,14 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
      *  DOCUMENT ME!
      */
     public void testCreateMetaNode() {
-        CyNode n1 = root.addNode();
-        CyNode n2 = root.addNode();
-        CyNode n3 = root.addNode();
+		System.out.println("testCreateMetaNode begin");
+        CyTempNode tn1 = root.createNode();
+        CyTempNode tn2 = root.createNode();
+        CyTempNode tn3 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3);
+        CyNode n1 = ln.get(0);
+        CyNode n2 = ln.get(1);
+        CyNode n3 = ln.get(2);
 
 		CyEdge e1 = root.addEdge(n1,n2,true);
 		CyEdge e2 = root.addEdge(n3,n2,true);
@@ -81,15 +87,19 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 
 		assertEquals(3,root.getEdgeCount());
 
+		System.out.println("testCreateMetaNode add subnetwork");
+
         CySubNetwork s1 = root.addSubNetwork(nl);
 
 		assertEquals(3,root.getEdgeCount());
 
+		System.out.println("testCreateMetaNode add metanode");
         CyMetaNode m1 = root.addMetaNode(s1);
 
         assertNotNull("metanode is not null",m1);
 	
 		CySubNetwork sub = m1.getSubNetwork();	
+		System.out.println("testCreateMetaNode get subnetwork: " + sub.toString());
 		assertNotNull("subnetwork is not null",sub);
 		assertTrue("sub == s1",sub.equals(s1));
 		assertEquals("num nodes",2,sub.getNodeCount());
@@ -106,22 +116,35 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 		// this accounts for the extra edge added from the 
 		// metanode to n3
 		assertEquals(4,root.getEdgeCount());
+		System.out.println("testCreateMetaNode end");
     }
 
     public void testMetaNodeEdgeAdding() {
+		System.out.println("testMetaNodeEdgeAdding begin");
+		CyTempNode tn1 = root.createNode();
+		CyTempNode tn2 = root.createNode();
+		CyTempNode tn3 = root.createNode();
+		CyTempNode tn4 = root.createNode();
+		CyTempNode tn5 = root.createNode();
+		CyTempNode tn6 = root.createNode();
+		CyTempNode tn7 = root.createNode();
+		CyTempNode tn8 = root.createNode();
+
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4,tn5,tn6,tn7,tn8);
+
 		// just in base
-		CyNode n1 = root.addNode();
-		CyNode n2 = root.addNode();
-		CyNode n3 = root.addNode();
+        CyNode n1 = ln.get(0);
+        CyNode n2 = ln.get(1);
+        CyNode n3 = ln.get(2);
 
 		// in metanode 2
-		CyNode n4 = root.addNode();
-		CyNode n5 = root.addNode();
-		CyNode n6 = root.addNode();
+        CyNode n4 = ln.get(3);
+        CyNode n5 = ln.get(4);
+        CyNode n6 = ln.get(5);
 
 		// in metanode 1
-		CyNode n7 = root.addNode();
-		CyNode n8 = root.addNode();
+        CyNode n7 = ln.get(6);
+        CyNode n8 = ln.get(7);
 
 		// between base and m1
 		CyEdge e1 = root.addEdge(n1,n7,true);
@@ -185,5 +208,6 @@ public abstract class AbstractCyMetaNodeTest extends TestCase {
 		// add edge between m1 m2 (just in root)
 
 		// what about metanodes within metanodes?
+		System.out.println("testMetaNodeEdgeAdding end");
 	}
 }

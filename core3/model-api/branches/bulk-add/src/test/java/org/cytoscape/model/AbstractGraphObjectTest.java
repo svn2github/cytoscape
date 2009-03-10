@@ -64,7 +64,7 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testGetNullNamespace() {
-		CyNode n1 = net.addNode();
+		CyNode n1 = net.addNodes(net.createNode()).get(0);
 
 		try {
 			n1.getCyRow(null);
@@ -80,7 +80,7 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBadNamespace() {
-		CyNode n1 = net.addNode();
+		CyNode n1 = net.addNodes(net.createNode()).get(0); 
 
 		try {
 			n1.getCyRow("homeradfasdf");
@@ -99,11 +99,11 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 		// As long as the object is not null and is an instance of CyRow, we
 		// should be satisfied.  Don't test any other properties of CyRow.
 		// Leave that to the CyRow unit tests.
-		CyNode n1 = net.addNode();
+		CyNode n1 = net.addNodes(net.createNode()).get(0);
 		assertNotNull("cyattrs exists", n1.getCyRow("USER"));
 		assertTrue("cyattrs is CyRow", n1.getCyRow("USER") instanceof CyRow);
 
-		CyNode n2 = net.addNode();
+		CyNode n2 = net.addNodes(net.createNode()).get(0); 
 		assertNotNull("cyattrs exists", n2.getCyRow("USER"));
 		assertTrue("cyattrs is CyRow", n2.getCyRow("USER") instanceof CyRow);
 
@@ -120,7 +120,7 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAttrs() {
-		CyNode n1 = net.addNode();
+		CyNode n1 = net.addNodes(net.createNode()).get(0); 
 		assertNotNull("cyattrs exists", n1.attrs());
 		assertTrue("cyattrs is CyRow", n1.attrs() instanceof CyRow);
 		assertTrue("attrs equals getCyRow", n1.attrs().equals(n1.getCyRow("USER")));

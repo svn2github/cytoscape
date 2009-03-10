@@ -49,6 +49,7 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTempNode;
 import org.cytoscape.model.CyRow;
 
 import java.lang.RuntimeException;
@@ -85,11 +86,18 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	private void defaultSetup() {
-        n1 = root.addNode();
-        n2 = root.addNode();
-        n3 = root.addNode();
-        n4 = root.addNode();
-        n5 = root.addNode();
+        CyTempNode tn1 = root.createNode();
+        CyTempNode tn2 = root.createNode();
+        CyTempNode tn3 = root.createNode();
+        CyTempNode tn4 = root.createNode();
+        CyTempNode tn5 = root.createNode();
+		List<CyNode> ln = root.addNodes(tn1,tn2,tn3,tn4,tn5);
+		n1 = ln.get(0);
+		n2 = ln.get(1);
+		n3 = ln.get(2);
+		n4 = ln.get(3);
+		n5 = ln.get(4);
+
 
 		e1 = root.addEdge(n1,n2,true);
 		e2 = root.addEdge(n3,n2,true);
@@ -273,9 +281,13 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 
 		// note switch to root2
 
-        CyNode nn1 = root2.addNode();
-        CyNode nn2 = root2.addNode();
-        CyNode nn3 = root2.addNode();
+        CyTempNode tnn1 = root2.createNode();
+        CyTempNode tnn2 = root2.createNode();
+        CyTempNode tnn3 = root2.createNode();
+		List<CyNode> ln = root2.addNodes(tnn1,tnn2,tnn3);
+		CyNode nn1 = ln.get(0);
+		CyNode nn2 = ln.get(1);
+		CyNode nn3 = ln.get(2);
 
         List<CyNode> nnl = new ArrayList<CyNode>(2);
         nnl.add(nn1);

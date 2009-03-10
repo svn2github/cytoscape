@@ -69,7 +69,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddNode() {
-		CyNode n = net.addNode();
+		CyNode n = net.addNodes(net.createNode()).get(0);
 		assertNotNull("node is not null", n);
 		assertTrue("node index >= 0", n.getIndex() >= 0);
 	
@@ -81,9 +81,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testRemoveNode() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		// remove 1
 		assertEquals("num nodes == 3", 3, net.getNodeCount());
@@ -99,7 +103,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("num nodes == 2", 2, net.getNodeCount());
 
 		// add another node
-		CyNode n5 = net.addNode();
+		CyNode n5 = net.addNodes(net.createNode()).get(0);
 		assertEquals("num nodes == 3", 3, net.getNodeCount());
 
 		// remove the rest of the nodes
@@ -125,11 +129,17 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testRemoveNodeWithEdges() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
-		CyNode n5 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		CyTempNode tn5 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
+		CyNode n4 = ln.get(3); 
+		CyNode n5 = ln.get(4); 
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, true);
@@ -155,9 +165,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddEdge() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		// add a directed edge
 		CyEdge e1 = net.addEdge(n1, n2, true);
@@ -239,9 +253,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testRemoveEdge() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -304,13 +322,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	public void testGetNodeCount() {
 		assertEquals("num nodes == 0", 0, net.getNodeCount());
 
-		CyNode n1 = net.addNode();
+		CyNode n1 = net.addNodes(net.createNode()).get(0);
 		assertEquals("num nodes == 1", 1, net.getNodeCount());
 
-		CyNode n2 = net.addNode();
+		CyNode n2 = net.addNodes(net.createNode()).get(0);
 		assertEquals("num nodes == 2", 2, net.getNodeCount());
 
-		CyNode n3 = net.addNode();
+		CyNode n3 = net.addNodes(net.createNode()).get(0);
 		assertEquals("num nodes == 3", 3, net.getNodeCount());
 
 		boolean rem3 = net.removeNode(n3);
@@ -321,7 +339,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertFalse("unsuccessfully removed node 3 again", rem3);
 		assertEquals("num nodes == 2", 2, net.getNodeCount());
 
-		CyNode n4 = net.addNode();
+		CyNode n4 = net.addNodes(net.createNode()).get(0);
 		assertEquals("num nodes == 3", 3, net.getNodeCount());
 	}
 
@@ -330,9 +348,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testGetEdgeCount() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -350,9 +372,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testGetNodeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		// check list
 		List<CyNode> l = net.getNodeList();
@@ -380,9 +406,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testGetEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -419,7 +449,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testIsNode() {
-		CyNode n1 = net.addNode();
+		CyNode n1 = net.addNodes(net.createNode()).get(0);
 		CyNode n2 = new DummyCyNode(20);
 		assertTrue("node 1 is good", net.containsNode(n1));
 		assertFalse("node 2 is not", net.containsNode(n2));
@@ -429,8 +459,11 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testIsEdgeFromEdge() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = new DummyCyEdge(n1, n2, true, 10);
@@ -443,9 +476,14 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testIsEdgeFromNodes() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
+
 		CyNode n4 = new DummyCyNode(699);
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
@@ -462,10 +500,15 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBasicGetNeighborList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
+		CyNode n4 = ln.get(3); 
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -501,8 +544,11 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBadNodeNeighborList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
 		CyNode n3 = new DummyCyNode(699);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
@@ -521,11 +567,17 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testUndirectedGetNeighborList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
-		CyNode n5 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		CyTempNode tn5 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
+		CyNode n4 = ln.get(3); 
+		CyNode n5 = ln.get(4); 
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -563,11 +615,17 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testDirectedGetNeighborList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
-		CyNode n5 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		CyTempNode tn5 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
+		CyNode n4 = ln.get(3); 
+		CyNode n5 = ln.get(4); 
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, true);
@@ -612,10 +670,15 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBasicGetAdjacentEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
+		CyNode n4 = ln.get(3); 
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -646,8 +709,11 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBadNodeAdjacentEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
 		CyNode n3 = new DummyCyNode(699);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
@@ -666,11 +732,17 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testUndirectedGetAdjacentEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
-		CyNode n5 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		CyTempNode tn5 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
+		CyNode n4 = ln.get(3); 
+		CyNode n5 = ln.get(4); 
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -708,11 +780,17 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testDirectedGetAdjacentEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
-		CyNode n5 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		CyTempNode tn5 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
+		CyNode n4 = ln.get(3); 
+		CyNode n5 = ln.get(4); 
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, true);
@@ -757,9 +835,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBasicGetConnectingEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -797,8 +879,12 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBadTargetNodeConnectingEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+
 		CyNode n3 = new DummyCyNode(699);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
@@ -817,8 +903,12 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBadSourceNodeConnectingEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+
 		CyNode n3 = new DummyCyNode(699);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
@@ -837,9 +927,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testUndirectedBasicGetConnectingEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -857,9 +951,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testDirectedBasicGetConnectingEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, true);
@@ -879,9 +977,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testGetNode() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		assertEquals("nodes are equivalent", n1, net.getNode(n1.getIndex()));
 		assertEquals("nodes are equivalent", n2, net.getNode(n2.getIndex()));
@@ -901,9 +1003,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testGetEdge() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0); 
+		CyNode n2 = ln.get(1); 
+		CyNode n3 = ln.get(2); 
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, true);

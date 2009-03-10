@@ -63,8 +63,11 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testGetIndex() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
 		assertTrue("index >= 0", n1.getIndex() >= 0);
 		assertTrue("index >= 0", n2.getIndex() >= 0);
 	}
@@ -73,10 +76,15 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBasicGetNeighborList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -112,11 +120,17 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testUndirectedGetNeighborList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
-		CyNode n5 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		CyTempNode tn5 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
+		CyNode n5 = ln.get(4);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -154,11 +168,17 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testDirectedGetNeighborList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
-		CyNode n5 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		CyTempNode tn5 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
+		CyNode n5 = ln.get(4);
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, true);
@@ -203,10 +223,15 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBasicGetAdjacentEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -237,11 +262,17 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testUndirectedGetAdjacentEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
-		CyNode n5 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		CyTempNode tn5 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
+		CyNode n5 = ln.get(4);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -279,11 +310,17 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testDirectedGetAdjacentEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNode n4 = net.addNode();
-		CyNode n5 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		CyTempNode tn4 = net.createNode();
+		CyTempNode tn5 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3,tn4,tn5);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
+		CyNode n4 = ln.get(3);
+		CyNode n5 = ln.get(4);
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, true);
@@ -328,9 +365,13 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBasicGetConnectingEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -368,9 +409,13 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testUndirectedBasicGetConnectingEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
 
 		CyEdge e1 = net.addEdge(n1, n2, false);
 		CyEdge e2 = net.addEdge(n2, n3, false);
@@ -388,9 +433,13 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testDirectedBasicGetConnectingEdgeList() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
+		CyNode n1 = ln.get(0);
+		CyNode n2 = ln.get(1);
+		CyNode n3 = ln.get(2);
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = net.addEdge(n2, n3, true);
@@ -415,7 +464,7 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		assertTrue(def.getColumnTypeMap().containsKey("selected"));
 		assertTrue(def.getColumnTypeMap().get("selected") == Boolean.class );
 
-		CyNode n1 = net.addNode();
+		CyNode n1 = net.addNodes(net.createNode()).get(0);
 		assertEquals( String.class, n1.attrs().contains("name"));
 		assertEquals( Boolean.class, n1.attrs().contains("selected"));
 	}

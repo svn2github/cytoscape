@@ -73,7 +73,8 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	 *
 	 * @return the created node
 	 */
-	CyNode addNode();
+	CyTempNode createNode();
+	List<CyNode> addNodes(CyTempNode... tempNodes);
 
 	/**
 	 * Remove a node from the network and delete the node (if it only exists in 

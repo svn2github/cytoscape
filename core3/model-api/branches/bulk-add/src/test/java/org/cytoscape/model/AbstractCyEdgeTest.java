@@ -70,10 +70,14 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	private void defaultSetUp() {
+		CyTempNode tn1 = net.createNode();
+		CyTempNode tn2 = net.createNode();
+		CyTempNode tn3 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn1,tn2,tn3);
 
-		n1 = net.addNode();
-		n2 = net.addNode();
-		n3 = net.addNode();
+		n1 = ln.get(0);
+		n2 = ln.get(1);
+		n3 = ln.get(2);
 
 		// TODO should we be instantiating these objects independent of CyNetwork?
 		eDir = net.addEdge(n1, n2, true);
@@ -158,13 +162,17 @@ public abstract class AbstractCyEdgeTest extends TestCase {
         assertTrue(def.getColumnTypeMap().containsKey("interaction"));
         assertTrue(def.getColumnTypeMap().get("interaction") == String.class );
 
-        CyNode n1 = net.addNode();
-        CyNode n2 = net.addNode();
-        CyEdge e1 = net.addEdge(n1,n2,true);
+		CyTempNode tn5 = net.createNode();
+		CyTempNode tn6 = net.createNode();
+		List<CyNode> ln = net.addNodes(tn5,tn6);
+        CyNode n5 = ln.get(0);
+        CyNode n6 = ln.get(1);
 
-        assertEquals( String.class, e1.attrs().contains("name"));
-        assertEquals( Boolean.class, e1.attrs().contains("selected"));
-        assertEquals( String.class, e1.attrs().contains("interaction"));
+        CyEdge e5 = net.addEdge(n5,n6,true);
+
+        assertEquals( String.class, e5.attrs().contains("name"));
+        assertEquals( Boolean.class, e5.attrs().contains("selected"));
+        assertEquals( String.class, e5.attrs().contains("interaction"));
     }
 
 }
