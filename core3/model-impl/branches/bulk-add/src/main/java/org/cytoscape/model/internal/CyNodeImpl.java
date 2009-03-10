@@ -40,6 +40,7 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTempNode;
 import org.cytoscape.model.subnetwork.CyMetaNode;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 
@@ -47,11 +48,12 @@ import java.util.List;
 import java.util.Map;
 
 
-class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
-	final private int index;
+class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode, CyTempNode {
+	private int index;
 	final private CyNetwork net;
 	final private CySubNetwork subNet;
 
+	// this constructor exists for MGraph
 	CyNodeImpl(CyNetwork n, int ind, Map<String, CyDataTable> attrMgr) {
 		this(n,ind,attrMgr,null);
 	}
@@ -61,6 +63,8 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 		net = n;
 		index = ind;
 		subNet = sub;
+		if ( sub != null )
+			System.out.println("CyNodeImpl constructed with: " + sub.toString());
 	}
 
 	/**
@@ -69,7 +73,16 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 	 * @return  DOCUMENT ME!
 	 */
 	public int getIndex() {
+		if ( index < 0 )
+			throw new IllegalStateException("index has not been set!");
 		return index;
+	}
+
+	public void setIndex(int i) {
+		if ( i < 0 )
+			throw new IllegalArgumentException("index is less than 0: " + i);
+		
+		index = i;
 	}
 
 	/**

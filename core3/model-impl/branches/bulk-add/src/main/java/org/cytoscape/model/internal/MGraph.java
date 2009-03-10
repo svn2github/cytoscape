@@ -39,6 +39,7 @@ package org.cytoscape.model.internal;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTempNode;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.event.CyEventHelper;
@@ -243,6 +244,15 @@ public class MGraph implements CyNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
+	public CyTempNode createNode() {
+		throw new UnsupportedOperationException("this is yet to be implemented");
+	}
+
+	public List<CyNode> addNodes(CyTempNode... nodes) {
+		throw new UnsupportedOperationException("this is yet to be implemented");
+	}
+
+
 	public CyNode addNode() {
 		final NodePointer n;
 

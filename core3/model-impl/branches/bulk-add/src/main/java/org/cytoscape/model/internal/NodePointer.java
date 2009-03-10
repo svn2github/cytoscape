@@ -35,7 +35,6 @@
 */
 package org.cytoscape.model.internal;
 
-
 import org.cytoscape.model.subnetwork.CyMetaNode;
 
 /**
@@ -128,5 +127,9 @@ class NodePointer {
         firstInEdge[inId] = null;
 
 		return ret;
+	}
+
+	public String toString() {
+		return "NodePointer index: " + index;
 	}
 }

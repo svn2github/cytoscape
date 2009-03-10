@@ -39,6 +39,7 @@ package org.cytoscape.model.internal;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTempNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
@@ -65,7 +66,7 @@ class ArraySubGraph implements CySubNetwork {
 	ArraySubGraph(final ArrayGraph par, final List<CyNode> nodes, final List<CyEdge> edges, final int inId) {
 		internalId = inId;
 		internalSUID = IdFactory.getNextSUID();
-		//System.out.println("new ArraySubGraph " + internalSUID + "  " + inId);
+		System.out.println("ArraySubGraph new " + internalSUID + "  " + inId);
 
 		if (par == null)
 			throw new NullPointerException("parent network is null");
@@ -78,7 +79,7 @@ class ArraySubGraph implements CySubNetwork {
 		nodeSet = new HashSet<CyNode>(nodes);
 
 		internalNodeCount = nodeSet.size();
-		//System.out.println("node size: " + internalNodeCount);
+		System.out.println("ArraySubGraph node size: " + internalNodeCount);
 
 		// add this network's internal id to each NodePointer 
 		inFirstNode = null;
@@ -183,16 +184,27 @@ class ArraySubGraph implements CySubNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyNode addNode() {
-		//System.out.println("base addNode null");
-		final CyNode ret; 
+	public CyTempNode createNode() {
+		// null is correct - it indicates which subnetwork the node is 
+		// part of and to this point that value is still null!
+		return parent.nodeCreate(null);
+	}
+
+	public List<CyNode> addNodes(CyTempNode... nodes) {
+		System.out.println("ArraySubGraph " + internalId + " addNodes nodes: " + nodes.length);
+		final List<CyNode> ret = parent.nodesAdd(nodes); 
+		System.out.println("ArraySubGraph " + internalId + " addNodes ret: " + ret.size());
+		System.out.println("ArraySubGraph " + internalId + " initial internalNodeCount : " + internalNodeCount);
+	
 		synchronized (this) {
-			ret = parent.addNode(null);
-			updateNode(ret);
-			internalNodeCount++;
-			nodeSet.add(ret);
+			for ( CyNode tn : ret ) {
+				updateNode(tn);
+				internalNodeCount++;
+				nodeSet.add(tn);
+			}
 		}
 
+		System.out.println("ArraySubGraph " + internalId + " internalNodeCount : " + internalNodeCount);
 		return ret;
 	}
 
@@ -438,5 +450,9 @@ class ArraySubGraph implements CySubNetwork {
 		}
 
 		return true;
+	}
+
+	public String toString() {
+		return "ArraySubGraph: parent suid: " + parent.getSUID() + "  internalId: " + internalId;
 	}
 }

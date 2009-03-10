@@ -39,6 +39,7 @@ package org.cytoscape.model.internal;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTempNode;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.events.AddedNodeEvent;
@@ -203,20 +204,21 @@ public class ArrayGraph implements CyRootNetwork {
 	}
 
 	List<CyNode> getNodeList(final NodePointer first, final int inId, final int numNodes) {
-		//System.out.println("private getNodeList " + inId);
+		System.out.println("ArrayGraph private getNodeList " + inId);
 		final List<CyNode> ret = new ArrayList<CyNode>(numNodes);
 		int numRemaining = numNodes;
 		NodePointer node = first;
+		System.out.println("ArrayGraph num remaining: " + numRemaining);
 
 		synchronized (this) {
-		while (numRemaining > 0) {
-			// possible NPE here if the linked list isn't constructed correctly
-			// this is the correct behavior
-			final CyNode toAdd = node.cyNode;
-			node = node.nextNode[inId];
-			ret.add(toAdd);
-			numRemaining--;
-		}
+			while (numRemaining > 0) {
+				// possible NPE here if the linked list isn't constructed correctly
+				// this is the correct behavior
+				final CyNode toAdd = node.cyNode;
+				node = node.nextNode[inId];
+				ret.add(toAdd);
+				numRemaining--;
+			}
 		}
 
 		return ret;
@@ -329,30 +331,42 @@ public class ArrayGraph implements CyRootNetwork {
 		return ret;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public CyNode addNode() {
-		return base.addNode();
+	public CyTempNode createNode() {
+		return base.createNode();
 	}
 
-	CyMetaNode addNode(final CySubNetwork sub) {
-		final NodePointer n;
+	CyMetaNode nodeCreate(final CySubNetwork sub) {
+		return new CyNodeImpl(this, -1, nodeAttrMgr, sub);
+	}
 
-		//System.out.println("addNode");
+	public List<CyNode> addNodes(final CyTempNode... nodes) {
+		return base.addNodes(nodes);
+	}
+
+	List<CyNode> nodesAdd(final CyTempNode... nodes) {
+		
+		final List<CyNode> ret = new ArrayList<CyNode>(nodes.length);
+
 		synchronized (this) {
-			final int index = nodePointers.size();
-			n = new NodePointer(index, new CyNodeImpl(this, index, nodeAttrMgr, sub));
-			nodePointers.add(n);
-			nodeCount++;
-			firstNode = n.insert(firstNode,ROOT);
+			for ( CyTempNode tn : nodes ) {
+				final NodePointer n;
+				final int index = nodePointers.size();
+				tn.setIndex(index);
+				n = new NodePointer(index, (CyMetaNode)tn);
+				nodePointers.add(n);
+				nodeCount++;
+				firstNode = n.insert(firstNode,ROOT);
+				ret.add(n.cyNode);
+			}
 		}
 
-		eventHelper.fireSynchronousEvent(new AddedNodeEventImpl(n.cyNode, this),
+		eventHelper.fireSynchronousEvent(new AddedNodeEventImpl(ret.get(0), this),
 		                                 AddedNodeListener.class);
 
-		return n.cyNode;
+		return ret;
 	}
+
+
 
 	/**
 	 * {@inheritDoc}
@@ -860,6 +874,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
 	public CySubNetwork addSubNetwork(final List<CyNode> nodes, final List<CyEdge> edges) {
 		final int newId = ++numSubNetworks;
+		System.out.println("ArrayGraph creating new subnetwork: " + newId + " nodes size: " + nodes.size());
 		final ArraySubGraph sub = new ArraySubGraph(this,nodes,edges,newId);
 		subNets.add(sub);
 		return sub;
@@ -890,8 +905,8 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
 	public CyMetaNode addMetaNode(final CySubNetwork sub) {
 		
-		//System.out.println("meta addNode sub");
-		final CyMetaNode newNode = addNode( sub );
+		System.out.println("ArrayGraph meta addNode sub: " + sub.toString() + " sub size: " + sub.getNodeCount());
+		final CyMetaNode newNode = (CyMetaNode)(nodesAdd( nodeCreate( sub ) ).get(0));
 
 		// TODO do we need to preserve directedness?
 		for ( CyNode exNode : sub.getExternalNeighborSet() )
