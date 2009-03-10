@@ -66,10 +66,10 @@
 	<!-- Network Readers -->
 	<bean id="sifReader" class="org.cytoscape.io.read.internal.sif.InteractionsReader">
 		<constructor-arg ref="readUtil" />
-		<!--<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
+		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
 		<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
 		<property name="layouts" ref="cyLayoutsServiceRef" />
-	--></bean>
+	</bean>
 
 
 	<!-- Utilities for XGMML Reader -->
@@ -96,10 +96,12 @@
 		<property name="parser" ref="xgmmlParser" />
 		<property name="readDataManager" ref="readDataManager" />
 		<property name="attributeValueUtil" ref="attributeValueUtil" />
-		<!--<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
+
+		<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
 		<property name="layouts" ref="cyLayoutsServiceRef" />
 		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
-	--></bean>
+
+	</bean>
 
 	<!-- Attribute Readers -->
 
