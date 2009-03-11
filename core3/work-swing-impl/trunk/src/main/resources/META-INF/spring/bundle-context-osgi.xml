@@ -10,22 +10,30 @@
 	<osgi:service id="undoSupportService"
 		ref="undoSupport" interface="org.cytoscape.work.UndoSupport">
 	</osgi:service>
-
+	
 	<osgi:service id="guiTunableInterceptorService"
 		ref="guiTunableInterceptor" interface="org.cytoscape.work.TunableInterceptor">
 	</osgi:service>
-
+	
 	<osgi:service id="swingTaskManagerService"
 		ref="swingTaskManager" interface="org.cytoscape.work.TaskManager">
 	</osgi:service>
-
+	
+	<osgi:service id="guiHandlerFactoryService"
+		ref="guiHandlerFactory" interface="org.cytoscape.work.HandlerFactory">
+	</osgi:service>
+	
+	<!--
+	<osgi:service id="fileUtilService"
+		ref="fileUtil" interface="cytoscape.util.FileUtil" >
+	</osgi:service>
+	 -->
 	
 	<!-- Services USED by this bundle -->
-    <osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
-        filter="(cyPropertyName=bookmarks)" />
+    <osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=bookmarks)" />
 
-    <osgi:reference id="bookmarksUtilServiceRef"
-        interface="org.cytoscape.property.bookmark.BookmarksUtil" />
-
-
+    <osgi:reference id="bookmarksUtilServiceRef" interface="org.cytoscape.property.bookmark.BookmarksUtil" />
+     
+	<osgi:reference id="fileUtil" interface="cytoscape.util.FileUtil" />
+     
 </beans>

@@ -16,13 +16,13 @@
 	<context:annotation-config/>
 	
 	<bean id="undoSupport" class="org.cytoscape.work.internal.UndoSupportImpl"/>
+	
 	<bean id="swingTaskManager" class="org.cytoscape.work.internal.task.SwingTaskManager"/>
 
 	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GuiHandlerFactory">
 		<constructor-arg ref="bookmarkServiceRef" />
 		<constructor-arg ref="bookmarksUtilServiceRef" />
-		
-		
+		<constructor-arg ref="fileUtil" />
 	</bean>
 
 	<bean id="guiTunableInterceptor" class="org.cytoscape.work.internal.tunables.GuiTunableInterceptor">
