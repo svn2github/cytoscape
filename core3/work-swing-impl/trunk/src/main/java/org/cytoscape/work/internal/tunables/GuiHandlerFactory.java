@@ -19,7 +19,7 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 	private BookmarksUtil bkUtil;
 	private FileUtil flUtil;
 	
-	public GuiHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
+	public GuiHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil,FileUtil flUtil) {
 		this.bookmarks = book.getProperties();
 		this.bkUtil = bkUtil;
 		this.flUtil = flUtil;

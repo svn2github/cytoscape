@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -12,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
 
 import org.cytoscape.work.internal.tunables.utils.*;
 import org.cytoscape.work.*;
@@ -24,6 +24,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	private Component parent;
 	private Map<java.util.List<Guihandler>,JPanel> panelMap;
 
+	
 	public GuiTunableInterceptor(HandlerFactory<Guihandler> factory) {
 		super( factory );
 		panelMap = new HashMap<java.util.List<Guihandler>,JPanel>();
@@ -99,8 +100,8 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		    buttons,
 		    buttons[0]);
 		
-		// process the values set in the gui : USELESS BECAUSE OF LISTENERS
 	
+		// process the values set in the gui : USELESS BECAUSE OF LISTENERS
 		if ( n == JOptionPane.OK_OPTION ){
 			for ( Guihandler h : lh ) h.handle();
 			return true;
@@ -108,6 +109,8 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		else
 			return false;
 	}
+	
+
 
 	private JPanel createJPanel(String title, Guihandler gh) {
 
