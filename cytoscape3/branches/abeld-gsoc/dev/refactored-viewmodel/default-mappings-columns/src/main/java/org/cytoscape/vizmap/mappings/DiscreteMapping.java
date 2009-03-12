@@ -45,9 +45,11 @@ package org.cytoscape.vizmap.mappings;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.vizmap.MappingCalculator;
 
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -105,20 +107,21 @@ public class DiscreteMapping implements MappingCalculator {
 		return vp;
 	}
 
-	public <V extends GraphObject> void apply(View<V> v, Object defaultValue){
-		CyRow row = v.getSource().attrs();
+	public <T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views){
+		if (views.size() < 1)
+			return; // empty list, nothing to do
+		CyRow row = views.get(0).getSource().attrs(); // to check types, have to peek at first view instance
 		// check types:
 		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attrName);
 		Class<?> vpType = vp.getType();
 		if (vpType.isAssignableFrom(rangeClass)){
-			// should check here?
+			// FIXME: should check here? or does that not matter?
 			// if (keyClass.isAssignableFrom(attrType)) 
-			doMap(v, row, defaultValue, attrType, vpType);
+			doMap(views, column, attrType);
 		} else {
 			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType());
 		}
 	}
-
 	/** 
 	 * Read attribute from row, map it and apply it.
 	 * 
@@ -126,22 +129,28 @@ public class DiscreteMapping implements MappingCalculator {
 	 * 
 	 * Putting this in a separate method makes it possible to make it type-parametric.
 	 * 
-	 * @param <T> the type-parameter of the VisualProperty vp
+	 * @param <T> the type-parameter of the ViewColumn column
 	 * @param <K> the type-parameter of the key stored in the mapping (the object read as an attribute value has to be is-a K)
 	 * @param <V> the type-parameter of the View
 	 */
-	private <T,K, V extends GraphObject> void doMap(final View<V> v, CyRow row, Object defaultValue, Class<K> attrType, Class<T>vpType){
-		if (row.contains(attrName, attrType) ){
-			final K key = (K) v.getSource().attrs().get(attrName, attrType);
-			if (treeMap.containsKey(key)){
-				final T value = (T) treeMap.get(key);
-				v.setVisualProperty((VisualProperty<T>)vp, value);
-			} else { // use per-mapping default
-				v.setVisualProperty((VisualProperty<T>)vp, (T)defaultObj);
+	private <T,K, V extends GraphObject> void doMap(final List<? extends View<V>> views, ViewColumn<T> column, Class<K> attrType){
+		for (View<V> v: views){
+			CyRow row = v.getSource().attrs();
+			if (row.contains(attrName, attrType) ){
+				// skip Views where source attribute is not defined;
+				// ViewColumn will automatically substitute the per-VS or global default, as appropriate
+				
+				final K key = (K) v.getSource().attrs().get(attrName, attrType);
+				if (treeMap.containsKey(key)){
+					final T value = (T) treeMap.get(key);
+					column.setValue(v, value);
+				} else { // remove value so that default value will be used:
+					column.clearValue(v);
+				}					
+			} else { // remove value so that default value will be used:
+				column.clearValue(v);
 			}
-		} else { // apply per-VS or global default where attribute is not found
-			v.setVisualProperty((VisualProperty<T>)vp, (T)defaultValue);
-		}
+		}	
 	}
 	
 	/**

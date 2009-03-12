@@ -42,6 +42,7 @@ import org.cytoscape.view.model.*;
 
 import org.cytoscape.vizmap.*;
 
+import java.util.List;
 
 /**
  */
@@ -54,7 +55,7 @@ public class PassthroughMappingCalculator implements MappingCalculator {
 	 * currently we force that to be the same as the VisualProperty;
 	 * FIXME: allow different once? but how to coerce?
 	 */
-	public PassthroughMappingCalculator(final String attributeName, final VisualProperty<?> vp) {
+	public <T> PassthroughMappingCalculator(final String attributeName, final VisualProperty<T> vp) {
 		this.attributeName = attributeName;
 		this.vp = vp;
 	}
@@ -100,43 +101,43 @@ public class PassthroughMappingCalculator implements MappingCalculator {
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public <V extends GraphObject> void apply(final View<V> v, Object defaultValue) {
-		CyRow row = v.getSource().attrs();
+	public <T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views){
+		if (views.size() < 1)
+			return; // empty list, nothing to do
+		CyRow row = views.get(0).getSource().attrs();
 		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attributeName);
 		// since attributes can only store certain types of Objects, it is enough to test for these:
 		Class<?> vpType = vp.getType();
+		// FIXME: also check that column's vp is internally-stored vp!
 		if (vpType.isAssignableFrom(attrType)){
 			// can simply copy object without any conversion
-			doCopy(v, row, defaultValue, attrType, vpType);
+			for (View<V> v: views){
+				row = v.getSource().attrs();
+				if (row.contains(attributeName, attrType) ){
+					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
+					final T value = (T) row.get(attributeName, attrType);
+					column.setValue(v, value);
+				} else { // remove value so that default value will be used:
+					column.clearValue(v);
+				}
+			}
 		} else if (String.class.isAssignableFrom(vpType)){
 			// can convert any object to string, so no need to check attribute type
-			// also, since we have to convert the Object here, can't use doCopy()
-			if (row.contains(attributeName, attrType) ){
-				final Object value = v.getSource().attrs().get(attributeName, attrType);
-				v.setVisualProperty((VisualProperty<String>)vp, value.toString());
-			} else { // apply per-VS or global default where attribute is not found:
-				v.setVisualProperty((VisualProperty<String>)vp, defaultValue.toString());
+			// also, since we have to convert the Object here, can't use checkAndDoCopy()
+			ViewColumn<String> c = (ViewColumn<String>) column; // have  to cast here, even though previous check ensures that T is java.util.String
+			for (View<V> v: views){
+				row = v.getSource().attrs();
+				if (row.contains(attributeName, attrType) ){
+					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
+					final Object value = (Object) row.get(attributeName, attrType);
+					c.setValue(v, value.toString());
+				} else { // remove value so that default value will be used:
+					c.clearValue(v);
+				}
 			}
 		} else {	
 			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType()); 
 		}
 		// FIXME: handle List & Map
-	}
-	/** 
-	 * Copy, without any conversion apart from possible upcast from attrType to vpType.
-	 * 
-	 * vpType is guaranteed to be a superclass (or the same as) attrType
-	 * 
-	 * Putting this in a separate method makes it possible to make it parametric.
-	 * 
-	 * @param <T> the type-parameter of the VisualProperty vp
-	 */
-	private <T, V extends GraphObject> void doCopy(final View<V> v, CyRow row, Object defaultValue, Class<?> attrType, Class<T>vpType){
-		if (row.contains(attributeName, attrType) ){
-			final T value = (T) v.getSource().attrs().get(attributeName, attrType);
-			v.setVisualProperty((VisualProperty<T>)vp, value);
-		} else { // apply per-VS or global default where attribute is not found
-			v.setVisualProperty((VisualProperty<T>)vp, (T)defaultValue);
-		}
 	}
 }
