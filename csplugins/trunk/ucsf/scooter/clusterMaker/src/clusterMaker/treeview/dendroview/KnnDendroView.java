@@ -48,8 +48,6 @@ import clusterMaker.treeview.ViewFrame;
  * @version $Revision: 1.2 $ $Date: 2006/09/21 17:18:55 $
  */
 public class KnnDendroView extends DendroView implements ConfigNodePersistent, MainPanel, Observer  {
-	private ColorPresets colorPresets;
-	private ColorPresetEditor  cpresetEditor;
 
 	/**
 	 *  Constructor for the KnnDendroView object
@@ -58,7 +56,7 @@ public class KnnDendroView extends DendroView implements ConfigNodePersistent, M
 	 * @param  vFrame  parent ViewFrame of KnnDendroView
 	 */
 	public KnnDendroView(DataModel tVModel, ViewFrame vFrame) {
-		super(tVModel, vFrame);
+		super(tVModel, null, vFrame, "KnnDendrogram");
 	}
 	public KnnDendroView(DataModel tVModel, ConfigNode root, ViewFrame vFrame) {
 		super(tVModel, root, vFrame, "KnnDendrogram");

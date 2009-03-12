@@ -95,6 +95,20 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
+		// We also want to update the number our "guestimate" for k
+		double nodeCount = (double)Cytoscape.getCurrentNetwork().getNodeCount();
+		Tunable kTunable = clusterProperties.get("knumber");
+		if (selectedOnly) {
+			int selNodes = Cytoscape.getCurrentNetwork().getSelectedNodes().size();
+			if (selNodes > 0) nodeCount = (double)selNodes;
+		}
+
+		double kinit = Math.sqrt(nodeCount/2);
+		if (kinit > 1)
+			kTunable.setValue((int)kinit);
+		else
+			kTunable.setValue(1);
+
 		return clusterProperties.getTunablePanel();
 	}
 
@@ -231,11 +245,16 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		KCluster.resetAttributes();
 
 		// Cluster the attributes, if requested
-		if (clusterAttributes && attributeArray.length > 1)
+		if (clusterAttributes && attributeArray.length > 1) {
+			if (monitor != null)
+				monitor.setStatus("Clustering attributes");
 			KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
 			                 true, createGroups, ignoreMissing, selectedOnly, logger, debug);
+		}
 
 		// Cluster the nodes
+		if (monitor != null)
+			monitor.setStatus("Clustering nodes");
 		KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
 			               false, createGroups, ignoreMissing, selectedOnly, logger, debug);
 

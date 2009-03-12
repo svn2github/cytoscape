@@ -968,8 +968,8 @@ public class DendroView extends JPanel
 	protected MessagePanel statuspanel;
 	protected ArrayDrawer arrayDrawer;
 	protected ConfigNode root;
-	private ColorPresets colorPresets;
-	private ColorPresetEditor  cpresetEditor;
+	protected ColorPresets colorPresets;
+	protected ColorPresetEditor  cpresetEditor;
 
 	/** Getter for root */
 	public ConfigNode getConfigNode() {

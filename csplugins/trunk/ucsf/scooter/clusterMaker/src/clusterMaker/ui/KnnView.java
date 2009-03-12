@@ -36,10 +36,14 @@ package clusterMaker.ui;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 import java.util.Observable;
+import java.util.Set;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -59,6 +63,7 @@ import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
 
 // Giny imports
 import giny.model.Node;
@@ -151,6 +156,12 @@ public class KnnView extends TreeView {
 		// Now set up to receive selection events
 		myView = Cytoscape.getCurrentNetworkView();
 		myNetwork = Cytoscape.getCurrentNetwork();
-		// myView.addGraphViewChangeListener(this);
+		myView.addGraphViewChangeListener(this);
+
+		// Set up to listen for changes in the network view
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().
+		                       addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUS, this);
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().
+		                       addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 	}
 }
