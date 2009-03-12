@@ -32,12 +32,12 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.viewmodel;
+package org.cytoscape.view.model;
 
 
 /**
  * FIXME
- * Think of it as a column in the viewmodel table.
+ * Think of it as a column in the view.model table.
  *
  * Uses String constants as ObjectTypes, ie. to seperate NodeVisualProperties from EdgeVisualProperties, etc.
  * Ideally, we could use Class<? extends View<?>> or something like that, but unfortunately that is impossible due to type erasure.

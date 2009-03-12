@@ -1,6 +1,6 @@
-package org.cytoscape.viewmodel;
+package org.cytoscape.view.model;
 
-import org.cytoscape.viewmodel.View;
+import org.cytoscape.view.model.View;
 
 /**
  * A column in the viewmodel table

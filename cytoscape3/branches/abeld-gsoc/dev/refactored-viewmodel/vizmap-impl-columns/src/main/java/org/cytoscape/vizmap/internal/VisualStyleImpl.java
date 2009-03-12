@@ -40,11 +40,11 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
 
-import org.cytoscape.viewmodel.CyNetworkView;
-import org.cytoscape.viewmodel.View;
-import org.cytoscape.viewmodel.ViewColumn;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.viewmodel.VisualPropertyCatalog;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewColumn;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.VisualPropertyCatalog;
 
 import org.cytoscape.vizmap.MappingCalculator;
 import org.cytoscape.vizmap.VisualStyle;

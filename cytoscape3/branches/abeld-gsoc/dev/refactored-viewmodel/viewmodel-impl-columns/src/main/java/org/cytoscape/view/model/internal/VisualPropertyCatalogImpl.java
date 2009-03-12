@@ -32,14 +32,14 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.viewmodel.internal;
+package org.cytoscape.view.model.internal;
 
-import org.cytoscape.viewmodel.CyNetworkView;
-import org.cytoscape.viewmodel.DependentVisualPropertyCallback;
-import org.cytoscape.viewmodel.Renderer;
-import org.cytoscape.viewmodel.View;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.viewmodel.VisualPropertyCatalog;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.DependentVisualPropertyCallback;
+import org.cytoscape.view.model.Renderer;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.VisualPropertyCatalog;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

@@ -32,13 +32,13 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.viewmodel;
+package org.cytoscape.view.model;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.viewmodel.internal.ColumnOrientedViewColumn;
+import org.cytoscape.view.model.internal.ColumnOrientedViewColumn;
 
 import java.util.List;
 import java.util.Set;

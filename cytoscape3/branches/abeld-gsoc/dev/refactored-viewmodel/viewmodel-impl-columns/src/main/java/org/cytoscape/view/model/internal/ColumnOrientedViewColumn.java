@@ -1,10 +1,10 @@
-package org.cytoscape.viewmodel.internal;
+package org.cytoscape.view.model.internal;
 
 import java.util.HashMap;
 
-import org.cytoscape.viewmodel.View;
-import org.cytoscape.viewmodel.ViewColumn;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewColumn;
+import org.cytoscape.view.model.VisualProperty;
 
 /**
  * A column in the viewmodel table

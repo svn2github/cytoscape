@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.viewmodel.VisualPropertyCatalog;
+import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.VisualStyleCatalog;
 import org.cytoscape.vizmap.events.VisualStyleCreatedListener;
