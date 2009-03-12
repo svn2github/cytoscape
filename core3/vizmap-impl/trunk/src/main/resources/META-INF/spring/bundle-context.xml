@@ -17,8 +17,8 @@
 	<context:annotation-config />
 
 	<bean id="visualStyleCatalog" class="org.cytoscape.vizmap.internal.VisualStyleCatalogImpl">
-	  <property name="eventHelper" ref="cyEventHelperServiceRef"></property>
-	  <property name="visualPropertyCatalog" ref="visualPropertyCatalogRef"></property>
+		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="visualPropertyCatalogRef" />
 	</bean>
 
 </beans>

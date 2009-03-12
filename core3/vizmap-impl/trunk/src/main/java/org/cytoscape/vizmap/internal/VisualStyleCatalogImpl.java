@@ -55,10 +55,10 @@ import org.cytoscape.vizmap.events.internal.VisualStyleDestroyedEventImpl;
  * It is also a VisualStyle factory
  */
 public class VisualStyleCatalogImpl implements VisualStyleCatalog {
-	private Set<VisualStyle> visualStyles;
-	private CyEventHelper eventHelper;
+	private final Set<VisualStyle> visualStyles;
+	private CyEventHelper cyEventHelper;
 	private VisualPropertyCatalog vpCatalog;
-
+	
 	/**
 	 * For setter injection (hmm. whats that?)
 	 */
@@ -72,7 +72,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	 * @param eventHelper DOCUMENT ME!
 	 */
 	public void setEventHelper(final CyEventHelper eventHelper) {
-		this.eventHelper = eventHelper;
+		this.cyEventHelper = eventHelper;
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	 * @return  DOCUMENT ME!
 	 */
 	public CyEventHelper getEventHelper() {
-		return this.eventHelper;
+		return this.cyEventHelper;
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param h  DOCUMENT ME!
 	 */
 	public VisualStyleCatalogImpl(final CyEventHelper eventHelper,
@@ -114,7 +114,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 		if (vpCatalog == null)
 			throw new NullPointerException("vpCatalog is null");
 
-		this.eventHelper = eventHelper;
+		this.cyEventHelper = eventHelper;
 		this.vpCatalog = vpCatalog;
 		visualStyles = new HashSet<VisualStyle>();
 	}
@@ -125,9 +125,9 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	 * @return  DOCUMENT ME!
 	 */
 	public VisualStyle createVisualStyle() {
-		final VisualStyle newVS = new VisualStyleImpl(eventHelper, vpCatalog);
+		final VisualStyle newVS = new VisualStyleImpl(cyEventHelper, vpCatalog);
 		visualStyles.add(newVS);
-		eventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
+		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
 		                                 VisualStyleCreatedListener.class);
 
 		return newVS;
@@ -149,7 +149,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	 */
 	public void removeVisualStyle(final VisualStyle vs) {
 		visualStyles.remove(vs);
-		eventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs),
+		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs),
 		                                 VisualStyleDestroyedListener.class);
 	}
 }
