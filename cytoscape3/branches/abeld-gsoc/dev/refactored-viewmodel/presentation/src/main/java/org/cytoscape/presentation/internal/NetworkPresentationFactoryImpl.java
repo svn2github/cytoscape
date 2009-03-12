@@ -39,7 +39,7 @@ package org.cytoscape.presentation.internal;
 import org.cytoscape.presentation.NetworkPresentationFactory;
 import org.cytoscape.presentation.SwingPresentation;
 import org.cytoscape.presentation.TextPresentation;
-import org.cytoscape.viewmodel.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkView;
 import org.osgi.framework.BundleContext;
 
 

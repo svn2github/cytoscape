@@ -42,10 +42,10 @@ import java.util.Set;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.presentation.TextNodeRenderer;
 import org.cytoscape.presentation.TextPresentation;
-import org.cytoscape.viewmodel.CyNetworkView;
-import org.cytoscape.viewmodel.Renderer;
-import org.cytoscape.viewmodel.View;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.Renderer;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 import org.osgi.framework.BundleContext;
 
 

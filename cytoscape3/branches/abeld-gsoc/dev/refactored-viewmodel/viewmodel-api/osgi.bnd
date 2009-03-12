@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 Spring-Context: META-INF/spring/*.xml
-Export-Package: ${bundle.symbolicName},${bundle.symbolicName}.events,
+Export-Package: ${bundle.namespace},${bundle.namespace}.events,
 

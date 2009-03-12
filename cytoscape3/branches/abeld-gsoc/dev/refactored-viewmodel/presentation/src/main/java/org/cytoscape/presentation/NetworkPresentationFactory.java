@@ -35,7 +35,7 @@
 
 package org.cytoscape.presentation;
 
-import org.cytoscape.viewmodel.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkView;
 
 
 /**

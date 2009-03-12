@@ -36,13 +36,13 @@
 
 package org.cytoscape.presentation.internal;
 
-import org.cytoscape.viewmodel.DependentVisualPropertyCallback;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.DependentVisualPropertyCallback;
+import org.cytoscape.view.model.VisualProperty;
 
 
 /**
  * FIXME
- * Think of it as a column in the viewmodel table.
+ * Think of it as a column in the view.model table.
  * @param <T> DOCUMENT ME!
  */
 public class VisualPropertyImpl<T> implements VisualProperty<T> {

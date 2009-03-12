@@ -2,11 +2,19 @@
 
 set -e
 
-cd viewmodel
+cd viewmodel-api
 mvn clean install
 cd ..
 
-cd vizmap
+cd viewmodel-row-based-impl
+mvn clean install
+cd ..
+
+cd vizmap-api
+mvn clean install
+cd ..
+
+cd vizmap-impl
 mvn clean install
 cd ..
 

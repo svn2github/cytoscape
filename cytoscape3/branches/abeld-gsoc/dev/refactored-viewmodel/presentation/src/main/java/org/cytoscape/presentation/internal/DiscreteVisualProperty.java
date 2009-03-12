@@ -35,8 +35,8 @@
 
 package org.cytoscape.presentation.internal;
 
-import org.cytoscape.viewmodel.DependentVisualPropertyCallback;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.DependentVisualPropertyCallback;
+import org.cytoscape.view.model.VisualProperty;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
