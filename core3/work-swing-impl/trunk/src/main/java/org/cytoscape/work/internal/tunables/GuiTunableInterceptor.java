@@ -1,7 +1,9 @@
 package org.cytoscape.work.internal.tunables;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +14,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-
 import org.cytoscape.work.internal.tunables.utils.*;
 import org.cytoscape.work.*;
 import org.cytoscape.work.Tunable.Param;
@@ -21,13 +22,16 @@ import org.cytoscape.work.spring.SpringTunableInterceptor;
 
 public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> {
 
-	private Component parent;
+	private Component parent=null;
 	private Map<java.util.List<Guihandler>,JPanel> panelMap;
-
+	private JPanel r = new JPanel(new BorderLayout());
+	private java.util.List<Guihandler> lh;
+	private boolean m;
 	
 	public GuiTunableInterceptor(HandlerFactory<Guihandler> factory) {
 		super( factory );
 		panelMap = new HashMap<java.util.List<Guihandler>,JPanel>();
+		//this.parent=parent;
 	}
 
 	public void setParent(Component c) {
@@ -35,14 +39,14 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	}
 
 	public boolean createUI(Object... proxyObjs) {
-		Object[] objs = convertSpringProxyObjs( proxyObjs ); 
+		Object[] objs = convertSpringProxyObjs( proxyObjs );
 
-		java.util.List<Guihandler> lh = new ArrayList<Guihandler>();
+		//java.util.List<Guihandler> lh = new ArrayList<Guihandler>();
+		lh = new ArrayList<Guihandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
 			lh.addAll( handlerMap.get(o).values() );
-
 		}
 
 		if ( lh.size() <= 0 )
@@ -89,6 +93,8 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		for ( Guihandler h : lh ) 
 			h.notifyDependents();
 			
+		
+		if(parent==null){
 		//Custom button text
 		Object[] buttons = {"OK","Cancel"};
 		int n = JOptionPane.showOptionDialog(parent,
@@ -99,17 +105,49 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		    null,
 		    buttons,
 		    buttons[0]);
-		
-	
 		// process the values set in the gui : USELESS BECAUSE OF LISTENERS
-		if ( n == JOptionPane.OK_OPTION ){
-			for ( Guihandler h : lh ) h.handle();
-			return true;
+			if ( n == JOptionPane.OK_OPTION ){
+				for ( Guihandler h : lh ) h.handle();
+				return true;
+			}
+			else
+				return false;
+		
 		}
-		else
-			return false;
+		else{
+//			JPanel buttonPanel = new JPanel();
+//			JButton okButton = new JButton("OK");
+//			okButton.setActionCommand("ok");
+//			okButton.addActionListener(new myActionListener());
+//			okButton.setToolTipText("Click to validate");
+//			JButton cancelButton = new JButton("Cancel");
+//			cancelButton.setActionCommand("cancel");
+//			cancelButton.addActionListener(new myActionListener());
+//			cancelButton.setToolTipText("Cancel all previous actions");
+//			buttonPanel.add(okButton);
+//			buttonPanel.add(cancelButton);
+
+			int nbPanel = ((Container) parent).getComponentCount()-1;
+			JPanel buttonBox = (JPanel) ((Container) parent).getComponent(nbPanel);
+			((JPanel)parent).remove(nbPanel);
+			((JPanel)parent).add(panelMap.get(lh));
+			((JPanel)parent).add(buttonBox);
+			return m;
+		}
 	}
 	
+	public void Handle(){
+		for(Guihandler h: lh)h.handle();
+	}
+	
+//	private class myActionListener implements ActionListener{
+//		public void actionPerformed(ActionEvent ae){
+//			if(ae.getActionCommand() == "ok"){ for(Guihandler h: lh)h.handle();m=true;}
+//			else m=false;
+//			((JPanel)parent).remove(r);
+//			((JPanel)parent).repaint();
+//		}
+//	}
 
 
 	private JPanel createJPanel(String title, Guihandler gh) {
@@ -146,4 +184,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
 		return ret;
 	}
+
+
 }
