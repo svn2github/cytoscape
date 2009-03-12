@@ -1,4 +1,4 @@
-package org.genmapp.cellularlayout;
+package org.genmapp.golayout;
 
 import giny.model.Node;
 import giny.view.NodeView;

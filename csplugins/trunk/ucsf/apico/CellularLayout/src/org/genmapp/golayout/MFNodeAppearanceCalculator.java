@@ -1,19 +1,10 @@
-package cytoscape.partitionNetwork;
+package org.genmapp.golayout;
 
 
 import giny.model.Node;
-
-import java.awt.Color;
-
-
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
 
 public class MFNodeAppearanceCalculator extends NodeAppearanceCalculator {
 	

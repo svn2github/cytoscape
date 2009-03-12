@@ -1,4 +1,4 @@
-package cytoscape.partitionNetwork;
+package org.genmapp.golayout;
 
 import java.awt.Color;
 import java.util.ArrayList;

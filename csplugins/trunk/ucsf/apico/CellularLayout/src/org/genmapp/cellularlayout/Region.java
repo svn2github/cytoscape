@@ -84,26 +84,25 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.attValue = attValue;
 		RegionManager.addRegion(this.attValue, this);
 
-		// synonym terms based on Nathan's GO tree analysis
+		// synonym terms based on Alex's GO-slim survey
 		if (this.attValue.equals("extracellular region"))
-			nestedAttValues = Arrays.asList("extracellular region",
-					"extracellular space", "secreted");
-		else if (this.attValue.equals("mitochondrion"))
-			nestedAttValues = Arrays.asList("mitochondrion",
-					"mitochondrion lumen");
-		else if (this.attValue.equals("endoplasmic reticulum"))
-			nestedAttValues = Arrays.asList("endoplasmic reticulum",
-					"Golgi apparatus");
+			nestedAttValues = Arrays.asList("extracellular region", "extracellular space", "proteinaceous extracellular matrix","cilium");
 		else if (this.attValue.equals("plasma membrane"))
-			nestedAttValues = Arrays.asList("plasma membrane", "cell wall");
+			nestedAttValues = Arrays.asList("plasma membrane", "cell wall", "cell envelope", "external encapsulating structure");
 		else if (this.attValue.equals("cytoplasm"))
-			nestedAttValues = Arrays.asList("cytoplasm", "intracellular",
-					"cytosol", "vacuole", "lysosome", "peroxisome");
+			nestedAttValues = Arrays.asList("cytoplasm", "intracellular", "cytosol", "cytoplasmic chromosome", "microtubule organizing center", "cytoskeleton");
+		else if (this.attValue.equals("organelle"))
+			nestedAttValues = Arrays.asList("organelle","cytoplasmic membrane-bounded vesicle","thylakoid","plastid","endosome","lysosome","vacuole","peroxisome","lipid particle","ribosome");
+		else if (this.attValue.equals("mitochondrion"))
+			nestedAttValues = Arrays.asList("mitochondrion");
+		else if (this.attValue.equals("endoplasmic reticulum"))
+			nestedAttValues = Arrays.asList("endoplasmic reticulum");
+		else if (this.attValue.equals("Golgi apparatus"))
+			nestedAttValues = Arrays.asList("Golgi apparatus");
 		else if (this.attValue.equals("nucleus"))
-			nestedAttValues = Arrays.asList("nucleus", "nucleolus",
-					"nuclear membrane", "nucleoplasm");
+			nestedAttValues = Arrays.asList("nucleus", "nucleolus", "nuclear membrane", "nucleoplasm", "nuclear envelope", "nuclear chromosome", "chromosome");
 		else if (this.attValue.equals("unassigned"))
-			nestedAttValues = Arrays.asList("unassigned", "cellular_component");
+			nestedAttValues = Arrays.asList("unassigned", "cellular_component", "cell");
 		else
 			nestedAttValues = Arrays.asList(this.attValue);
 

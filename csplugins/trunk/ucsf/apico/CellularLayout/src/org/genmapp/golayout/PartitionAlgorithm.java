@@ -1,3 +1,7 @@
+package org.genmapp.golayout;
+
+import giny.model.Node;
+
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +13,22 @@ import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.ding.CyGraphAllLOD;
+import cytoscape.ding.DingNetworkView;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.layout.AbstractLayout;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
+import cytoscape.view.CyDesktopManager;
+import cytoscape.view.CyNetworkView;
 
 /**
  * PartitionAlgorithm
@@ -31,15 +51,14 @@ public class PartitionAlgorithm extends AbstractLayout {
 	/**
 	 * Creates a new PartitionAlgorithm object.
 	 */
-	public PartitionAlgorithm(String layout) {
+	public PartitionAlgorithm() {
 		super();
-
-		this.layoutName = layout;
 
 		layoutProperties = new LayoutProperties(getName());
 		layoutProperties.add(new Tunable("nodeSpacing",
 				"Spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
-		layoutProperties.add();
+		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
+				Tunable.STRING, null));
 		// We've now set all of our tunables, so we can read the property
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties();
@@ -190,11 +209,11 @@ public class PartitionAlgorithm extends AbstractLayout {
 		for (CyGroup g : groups) {
 			g.setState(2);
 			CyGroupManager.setGroupViewer(g, "metaNode", group_view, true); // set
-																			// this
-																			// false
-																			// later
-																			// for
-																			// efficiency
+			// this
+			// false
+			// later
+			// for
+			// efficiency
 		}
 
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
@@ -331,9 +350,9 @@ public class PartitionAlgorithm extends AbstractLayout {
 		// CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 				attributeValue, // for network title
 				current_network, (nodes.size() >= networkViewThreshhold)); // optional
-																			// create
-																			// network
-																			// view
+		// create
+		// network
+		// view
 
 		if (new_network.nodesList().size() >= networkViewThreshhold) {
 
@@ -352,8 +371,7 @@ public class PartitionAlgorithm extends AbstractLayout {
 				// CyLayoutAlgorithm layout =
 				// CyLayouts.getLayout("force-directed");
 				System.out.println("Layout: " + new_view.getTitle());
-				CyLayoutAlgorithm layout = CyLayouts
-						.getLayout(this.layoutName);
+				CyLayoutAlgorithm layout = CyLayouts.getLayout(this.layoutName);
 				layout.doLayout(new_view);
 
 			}
@@ -404,4 +422,20 @@ public class PartitionAlgorithm extends AbstractLayout {
 		tileNetworkViews(); // tile and fit content in each view
 
 	}
+	
+	/**
+	 * @return the layoutName
+	 */
+	public String getLayoutName() {
+		return layoutName;
+	}
+
+	/**
+	 * @param layoutName the layoutName to set
+	 */
+	public void setLayoutName(String layoutName) {
+		this.layoutName = layoutName;
+	}
+
+
 }

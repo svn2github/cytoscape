@@ -108,7 +108,7 @@
  		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 
    		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape2.6/plugins/core/"/>
-  		<copy file="${build.dir}/${plugin.name}.jar" todir="/Applications/Cytoscape_v2.6.1/plugins"/>
+  		<copy file="${build.dir}/${plugin.name}.jar" todir="/Applications/Cytoscape_v2.6.2/plugins"/>
 	</target>
 
 </project>

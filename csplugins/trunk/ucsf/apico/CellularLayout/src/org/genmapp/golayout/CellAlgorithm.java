@@ -1,3 +1,9 @@
+package org.genmapp.golayout;
+
+import giny.model.Node;
+import giny.model.RootGraph;
+import giny.view.NodeView;
+
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -5,6 +11,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.layout.AbstractLayout;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.layout.Tunable;
+import ding.view.DGraphView;
+import ding.view.DingCanvas;
 
 
 	/**
