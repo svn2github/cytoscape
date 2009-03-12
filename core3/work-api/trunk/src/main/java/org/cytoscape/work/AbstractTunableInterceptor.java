@@ -36,6 +36,7 @@
 
 package org.cytoscape.work;
 
+import java.awt.Component;
 import java.lang.reflect.Field;
 
 import java.util.HashMap;
@@ -129,4 +130,6 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 	 * @return  DOCUMENT ME!
 	 */
 	public abstract boolean createUI(Object... objs);
+	public abstract void setParent(Component c);
+	public abstract void Handle();
 }
