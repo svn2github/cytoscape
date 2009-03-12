@@ -1359,6 +1359,11 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 			boolean drawSelected = inclusionPanel.drawSelected();
 			for (int i = minGene(); i < maxGene(); i++) {
 				//		if (drawSelected && (geneSelection.isIndexSelected(i) == false)) continue;
+
+				// getGeneAnno returns null in the breaks between k-means clusters
+				if (getGeneAnno(i) == null)
+					continue;
+
 				int length = fontMetrics.stringWidth(getGeneAnno(i));
 				if (length > max) {
 					max = length;
