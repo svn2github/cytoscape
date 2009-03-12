@@ -78,8 +78,8 @@ public class ColumnOrientedViewColumn<T> implements ViewColumn<T> {
 	/**
 	 * Bulk method for setting many values at once. This fires only a single event and is thus much more efficient.
 	 */
-	public void setValues(Map<View<?>, T> values, List<View<?>> toClear) {
-		for (Map.Entry<View<?>, T> entry : values.entrySet()){
+	public void setValues(Map<? extends View<?>, T> values, List<? extends View<?>> toClear) {
+		for (Map.Entry<? extends View<?>, T> entry : values.entrySet()){
 			internal_setValue(entry.getKey(), entry.getValue());
 		}
 		for (View<?>v: toClear){

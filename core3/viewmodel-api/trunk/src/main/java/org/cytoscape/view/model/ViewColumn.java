@@ -30,7 +30,7 @@ public interface ViewColumn<T> {
 	/**
 	 * Bulk method for setting many values at once. This fires only a single event and is thus much more efficient.
 	 */
-	public void setValues(Map<View<?>, T> values, List<View<?>> toClear);
+	public void setValues(Map<? extends View<?>, T> values, List<? extends View<?>> toClear);
 	
 	/**
 	 * Remove the value stored for the given view.
