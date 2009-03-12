@@ -71,7 +71,7 @@ import javax.swing.JPanel;
 		 * @return short-hand name
 		 */
 		public String getName() {
-			return "go-layout";
+			return "cell-layout";
 		}
 
 		/**
@@ -80,7 +80,7 @@ import javax.swing.JPanel;
 		 * @return user visible name
 		 */
 		public String toString() {
-			return "GO Layout";
+			return "Cell Layout";
 		}
 
 		/**
@@ -789,3 +789,4 @@ import javax.swing.JPanel;
 			}
 			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 		}
+	}
