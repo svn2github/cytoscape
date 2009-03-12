@@ -157,6 +157,13 @@
 			</url>
 			<layout>legacy</layout>
 		</repository>
+		
+		<!-- Repo. of PAX project -->
+		<repository>
+			<id>ops4j.releases</id>
+			<url>http://repository.ops4j.org/maven2/</url>
+		</repository>
+
 	</repositories>
 
 	<pluginRepositories>
