@@ -37,9 +37,16 @@
 package org.cytoscape.model;
 
 /**
- * This interface should be implemented as a singleton service. The service 
- * must return unique, positive SUID values. 
+ * This singleton class returns unique, positive SUID (session unique ID) values. 
  */
-public interface SUIDFactory {
-	long getNextSUID();
+public abstract class SUIDFactory {
+
+	private SUIDFactory() {
+	}
+
+	private static long count = 1;
+
+	public static synchronized long getNextSUID() {
+		return count++;
+	}
 }
