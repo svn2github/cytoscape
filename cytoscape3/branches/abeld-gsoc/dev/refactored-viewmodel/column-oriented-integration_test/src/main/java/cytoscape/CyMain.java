@@ -45,7 +45,7 @@ import org.cytoscape.model.GraphObject;
 import org.cytoscape.presentation.NetworkPresentationFactory;
 import org.cytoscape.presentation.TextPresentation;
 
-import org.cytoscape.viewmodel.*;
+import org.cytoscape.view.model.*;
 
 import org.cytoscape.vizmap.*;
 

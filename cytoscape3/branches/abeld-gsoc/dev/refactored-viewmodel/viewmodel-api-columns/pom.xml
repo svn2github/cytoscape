@@ -9,12 +9,12 @@
 
   <properties>
     <bundle.symbolicName>org.cytoscape.viewmodel</bundle.symbolicName>
-    <bundle.namespace>org.cytoscape.viewmodel</bundle.namespace>
+    <bundle.namespace>org.cytoscape.view.model</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
-  <artifactId>viewmodel</artifactId>
+  <artifactId>viewmodel-api</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>${bundle.symbolicName}</name>
@@ -104,7 +104,7 @@
   <dependencies>
     <dependency>
       <groupId>org.cytoscape</groupId>
-      <artifactId>model</artifactId>
+      <artifactId>model-api</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
 

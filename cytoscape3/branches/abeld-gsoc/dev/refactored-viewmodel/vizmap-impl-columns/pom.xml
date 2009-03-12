@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
-  <artifactId>vizmap</artifactId>
+  <artifactId>vizmap-impl</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>${bundle.symbolicName}</name>
@@ -104,12 +104,17 @@
   <dependencies>
     <dependency>
       <groupId>org.cytoscape</groupId>
-      <artifactId>model</artifactId>
+      <artifactId>model-api</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
-      <artifactId>viewmodel</artifactId>
+      <artifactId>viewmodel-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>vizmap-api</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>

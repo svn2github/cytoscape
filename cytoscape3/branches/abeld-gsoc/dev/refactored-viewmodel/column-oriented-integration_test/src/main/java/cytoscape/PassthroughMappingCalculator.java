@@ -41,7 +41,7 @@ import java.util.List;
 
 import org.cytoscape.model.*;
 
-import org.cytoscape.viewmodel.*;
+import org.cytoscape.view.model.*;
 
 import org.cytoscape.vizmap.*;
 

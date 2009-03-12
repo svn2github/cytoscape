@@ -15,12 +15,12 @@
 
 	<context:annotation-config/>
 	
-	<bean id="cyNetworkViewFactory" class="org.cytoscape.viewmodel.internal.ColumnOrientedNetworkViewFactoryImpl">
+	<bean id="cyNetworkViewFactory" class="org.cytoscape.view.model.internal.ColumnOrientedNetworkViewFactoryImpl">
 	  <property name="eventHelper" ref="cyEventHelperServiceRef"></property>
 	  <property name="bundleContext" ref="bundleContext"></property>
 	</bean>
 
-	<bean id="visualPropertyCatalog" class="org.cytoscape.viewmodel.internal.VisualPropertyCatalogImpl">
+	<bean id="visualPropertyCatalog" class="org.cytoscape.view.model.internal.VisualPropertyCatalogImpl">
 	  <property name="bundleContext" ref="bundleContext"></property>
 	</bean>
 

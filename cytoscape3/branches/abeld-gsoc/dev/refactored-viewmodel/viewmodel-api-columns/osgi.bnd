@@ -3,6 +3,5 @@
 #-----------------------------------------------------------------
 
 Spring-Context: META-INF/spring/*.xml
-Private-Package: ${bundle.symbolicName}.internal,${bundle.symbolicName}.events.internal
-Export-Package: ${bundle.symbolicName},${bundle.symbolicName}.events,
+Export-Package: ${bundle.namespace},${bundle.namespace}.events,
 
