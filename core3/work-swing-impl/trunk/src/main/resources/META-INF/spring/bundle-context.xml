@@ -19,10 +19,17 @@
 	
 	<bean id="swingTaskManager" class="org.cytoscape.work.internal.task.SwingTaskManager"/>
 
+ 
+<!-- 	<bean name="fileUtil" class="cytoscape.util.internal.FileUtilImpl">
+		<constructor-arg ref="cyOperatingContext" />
+		<constructor-arg ref="streamUtilServiceRef" />
+	</bean>
+-->
+
 	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GuiHandlerFactory">
 		<constructor-arg ref="bookmarkServiceRef" />
 		<constructor-arg ref="bookmarksUtilServiceRef" />
-		<constructor-arg ref="fileUtil" />
+<!-- 	<constructor-arg ref="fileUtil" /> -->
 	</bean>
 
 	<bean id="guiTunableInterceptor" class="org.cytoscape.work.internal.tunables.GuiTunableInterceptor">
