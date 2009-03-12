@@ -8,10 +8,10 @@ pluginName=PSICQUICUniversalClient
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=test1
+pluginDescription=Experimental version of PSICQUIC Web Service Client
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.01
+pluginVersion=0.03
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Ruby script engine for Cytoscape by Kei Ono -->
+<!-- PSICQUIC Client for Cytoscape by Kei Ono -->
 
 <project name="PSICQUICUniversalClient" default="all" basedir=".">
 
@@ -16,12 +16,15 @@
 	<property name="compile.debug" value="true" />
 	<property name="compile.deprecation" value="true" />
 	<property name="compile.optimize" value="true" />
-	<property name="cytoscape.dir" value="../c262" />
+	<property name="cytoscape.dir" value="../c26" />
 
 	<!-- ==================== Compilation Classpath ====================== -->
 	<path id="compile.classpath">
 		<fileset dir="${cytoscape.dir}">
 			<include name="cytoscape.jar" />
+		</fileset>
+		<fileset dir="${cytoscape.dir}/lib">
+			<include name="*.jar" />
 		</fileset>
 		<fileset dir="${basedir}/lib">
 			<include name="*.jar" />
@@ -51,8 +54,7 @@
 			</fileset>
 		</unjar>
 
-		<copy todir="${build.dir}/classes/org/cytoscape/webservice/psicquic" 
-									file="${basedir}/plugin.props"/>
+		<copy todir="${build.dir}/classes/org/cytoscape/webservice/psicquic" file="${basedir}/plugin.props" />
 
 		<jar destfile="${project.jar}" basedir="${build.dir}/classes">
 
