@@ -56,7 +56,9 @@ import org.cytoscape.vizmap.mappings.interpolators.LinearNumberToNumberInterpola
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implements an interpolation table mapping data to values of a particular
@@ -174,6 +176,10 @@ public class ContinuousMapping implements MappingCalculator {
 	 * @param <V> the type-parameter of the View
 	 */
 	private <T,K extends Number, V extends GraphObject> void doMap(final List<? extends View<V>> views, ViewColumn<T> column, Class<K> attrType){
+		// aggregate changes to be made in these:
+		Map<View<V>, T> valuesToSet = new HashMap<View<V>, T>();
+		List<View<V>> valuesToClear = new ArrayList<View<V>>();
+
 		for (View<V> v: views){
 			CyRow row = v.getSource().attrs();
 			if (row.contains(attrName, attrType) ){
@@ -182,11 +188,12 @@ public class ContinuousMapping implements MappingCalculator {
 
 				final K attrValue = (K) v.getSource().attrs().get(attrName, attrType);
 				final T value = (T) getRangeValue(attrValue); // FIXME: make getRangeValue type-parametric, so this shouldn't be needed (??) 
-				column.setValue(v, value);
+				valuesToSet.put(v, value);
 			} else { // remove value so that default value will be used:
-				column.clearValue(v);
+				valuesToClear.add(v);
 			}
-		}	
+		}
+		column.setValues(valuesToSet, valuesToClear);
 	}
 	private Object getRangeValue(Number domainValue) {
 		ContinuousMappingPoint firstPoint = points.get(0);

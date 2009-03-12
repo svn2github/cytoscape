@@ -1,5 +1,8 @@
 package org.cytoscape.view.model;
 
+import java.util.List;
+import java.util.Map;
+
 import org.cytoscape.view.model.View;
 
 /**
@@ -16,7 +19,18 @@ public interface ViewColumn<T> {
 	 */
 	T getValue(View<?> view);
 	
+	/**
+	 * 
+	 * Sets the computed value for the given view. Note that using this method
+	 * for setting many values will be horribly inefficient. Use setValues()
+	 * instead.
+	 */
 	void setValue(View<?> view, T value);
+	
+	/**
+	 * Bulk method for setting many values at once. This fires only a single event and is thus much more efficient.
+	 */
+	public void setValues(Map<View<?>, T> values, List<View<?>> toClear);
 	
 	/**
 	 * Remove the value stored for the given view.

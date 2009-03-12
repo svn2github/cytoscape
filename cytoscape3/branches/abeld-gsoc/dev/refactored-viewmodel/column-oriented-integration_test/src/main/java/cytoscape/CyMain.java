@@ -48,6 +48,7 @@ import org.cytoscape.presentation.TextPresentation;
 import org.cytoscape.view.model.*;
 
 import org.cytoscape.vizmap.*;
+import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
 
 
 /**

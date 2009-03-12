@@ -1,6 +1,8 @@
 package org.cytoscape.view.model.internal;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewColumn;
@@ -62,14 +64,46 @@ public class ColumnOrientedViewColumn<T> implements ViewColumn<T> {
 		}
 	}
 
+	/**
+	 * 
+	 * Sets the computed value for the given view. Note that using this method
+	 * for setting many values will be horribly inefficient. Use setValues()
+	 * instead.
+	 */
 	public void setValue(View<?> view, T value) {
+		internal_setValue(view, value);
+		// FIXME: fire event!
+	}
+
+	/**
+	 * Bulk method for setting many values at once. This fires only a single event and is thus much more efficient.
+	 */
+	public void setValues(Map<View<?>, T> values, List<View<?>> toClear) {
+		for (Map.Entry<View<?>, T> entry : values.entrySet()){
+			internal_setValue(entry.getKey(), entry.getValue());
+		}
+		for (View<?>v: toClear){
+			internal_clearValue(v);
+		}
+		// FIXME: fire event!
+	}
+	
+	/** An internal method, to avoid duplicating this code in setValue() and setValues(). This method does not fire events!
+	 * (I hope the compiler optimizes this away...)
+	 */
+	private void internal_setValue(View<?> view, T value){
 		if (view == null)
 			throw new NullPointerException(VIEW_IS_NULL);
 
 		values.put(view, value);
 	}
-
+	
 	public void clearValue(View<?> view) {
+		internal_clearValue(view);
+		// FIXME: fire event!
+	}
+	
+	private void internal_clearValue(View<?> view) {
 		if (view == null)
 			throw new NullPointerException(VIEW_IS_NULL);
 

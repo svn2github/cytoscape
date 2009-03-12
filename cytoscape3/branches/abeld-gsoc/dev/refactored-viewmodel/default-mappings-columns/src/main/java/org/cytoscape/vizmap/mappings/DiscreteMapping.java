@@ -49,6 +49,8 @@ import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.vizmap.MappingCalculator;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -134,6 +136,10 @@ public class DiscreteMapping implements MappingCalculator {
 	 * @param <V> the type-parameter of the View
 	 */
 	private <T,K, V extends GraphObject> void doMap(final List<? extends View<V>> views, ViewColumn<T> column, Class<K> attrType){
+		// aggregate changes to be made in these:
+		Map<View<V>, T> valuesToSet = new HashMap<View<V>, T>();
+		List<View<V>> valuesToClear = new ArrayList<View<V>>();
+
 		for (View<V> v: views){
 			CyRow row = v.getSource().attrs();
 			if (row.contains(attrName, attrType) ){
@@ -143,14 +149,15 @@ public class DiscreteMapping implements MappingCalculator {
 				final K key = (K) v.getSource().attrs().get(attrName, attrType);
 				if (treeMap.containsKey(key)){
 					final T value = (T) treeMap.get(key);
-					column.setValue(v, value);
+					valuesToSet.put(v, value);
 				} else { // remove value so that default value will be used:
-					column.clearValue(v);
+					valuesToClear.add(v);
 				}					
 			} else { // remove value so that default value will be used:
-				column.clearValue(v);
+				valuesToClear.add(v);
 			}
-		}	
+		}
+		column.setValues(valuesToSet, valuesToClear);
 	}
 	
 	/**

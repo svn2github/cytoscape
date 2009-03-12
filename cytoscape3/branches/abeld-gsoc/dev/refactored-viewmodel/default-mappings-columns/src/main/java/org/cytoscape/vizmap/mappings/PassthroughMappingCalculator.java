@@ -42,7 +42,10 @@ import org.cytoscape.view.model.*;
 
 import org.cytoscape.vizmap.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  */
@@ -109,32 +112,41 @@ public class PassthroughMappingCalculator implements MappingCalculator {
 		// since attributes can only store certain types of Objects, it is enough to test for these:
 		Class<?> vpType = vp.getType();
 		// FIXME: also check that column's vp is internally-stored vp!
-		if (vpType.isAssignableFrom(attrType)){
-			// can simply copy object without any conversion
+		if (vpType.isAssignableFrom(attrType)){ // can simply copy object without any conversion
+			// aggregate changes to be made in these:
+			Map<View<V>, T> valuesToSet = new HashMap<View<V>, T>();
+			List<View<V>> valuesToClear = new ArrayList<View<V>>();
 			for (View<V> v: views){
 				row = v.getSource().attrs();
 				if (row.contains(attributeName, attrType) ){
 					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
 					final T value = (T) row.get(attributeName, attrType);
-					column.setValue(v, value);
+					valuesToSet.put(v, value);
 				} else { // remove value so that default value will be used:
-					column.clearValue(v);
+					valuesToClear.add(v);
 				}
 			}
+			column.setValues(valuesToSet, valuesToClear);
 		} else if (String.class.isAssignableFrom(vpType)){
 			// can convert any object to string, so no need to check attribute type
 			// also, since we have to convert the Object here, can't use checkAndDoCopy()
 			ViewColumn<String> c = (ViewColumn<String>) column; // have  to cast here, even though previous check ensures that T is java.util.String
+
+			// aggregate changes to be made in these:
+			Map<View<V>, String> valuesToSet = new HashMap<View<V>, String>();
+			List<View<V>> valuesToClear = new ArrayList<View<V>>();
+
 			for (View<V> v: views){
 				row = v.getSource().attrs();
 				if (row.contains(attributeName, attrType) ){
 					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
 					final Object value = (Object) row.get(attributeName, attrType);
-					c.setValue(v, value.toString());
+					valuesToSet.put(v, value.toString());
 				} else { // remove value so that default value will be used:
-					c.clearValue(v);
+					valuesToClear.add(v);
 				}
 			}
+			c.setValues(valuesToSet, valuesToClear);
 		} else {	
 			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType()); 
 		}
