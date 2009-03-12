@@ -131,13 +131,13 @@
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-extender</artifactId>
-      <version>1.1.2</version>
+      <version>${spring.osgi.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-core</artifactId>
-      <version>1.1.2</version>
+      <version>${spring.osgi.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -161,37 +161,37 @@
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-io</artifactId>
-      <version>1.1.2</version>
+      <version>${spring.osgi.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>2.5.5</version>
+      <version>${spring.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-      <version>2.5.5</version>
+      <version>${spring.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>2.5.5</version>
+      <version>${spring.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>2.5.5</version>
+      <version>${spring.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <version>2.5.5</version>
+      <version>${spring.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -200,12 +200,7 @@
       <version>1.0.0</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>edu.emory.mathcs.backport</groupId>
-      <artifactId>com.springsource.edu.emory.mathcs.backport</artifactId>
-      <version>3.1.0</version>
-      <scope>provided</scope>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.log4j</groupId>
       <artifactId>com.springsource.org.apache.log4j</artifactId>
