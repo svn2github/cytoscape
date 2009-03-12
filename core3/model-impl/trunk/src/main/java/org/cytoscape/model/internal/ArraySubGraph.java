@@ -40,6 +40,7 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 
@@ -64,7 +65,7 @@ class ArraySubGraph implements CySubNetwork {
 
 	ArraySubGraph(final ArrayGraph par, final List<CyNode> nodes, final List<CyEdge> edges, final int inId) {
 		internalId = inId;
-		internalSUID = IdFactory.getNextSUID();
+		internalSUID = SUIDFactory.getNextSUID();
 		//System.out.println("new ArraySubGraph " + internalSUID + "  " + inId);
 
 		if (par == null)

@@ -38,6 +38,7 @@ package org.cytoscape.model.internal;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.event.CyEventHelper;
 
 import java.util.*;
@@ -101,7 +102,7 @@ public class CyDataTableImpl implements CyDataTable {
 	public CyDataTableImpl(Map<String, Class<?>> typeMap, String name, boolean pub, final CyEventHelper help) {
 		this.name = name;
 		this.pub = pub;
-		this.suid = IdFactory.getNextSUID();
+		this.suid = SUIDFactory.getNextSUID();
 		this.help = help;
 		attributes = new HashMap<String, Map<Long, Object>>();
 
@@ -227,7 +228,7 @@ public class CyDataTableImpl implements CyDataTable {
 	public CyRow addRow() {
 		// TODO This is wrong since no other object can have this SUID. 
 		// I'm still not sure how rows should exist independent of binding to an object.
-		return new InternalRow(IdFactory.getNextSUID(),this);
+		return new InternalRow(SUIDFactory.getNextSUID(),this);
 	}
 
 	// internal methods

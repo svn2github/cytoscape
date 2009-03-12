@@ -41,6 +41,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.event.CyEventHelper;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class MGraph implements CyNetwork {
 		nodePointers = new ArrayList<NodePointer>();
 		edgePointers = new ArrayList<EdgePointer>();
 
-        suid = IdFactory.getNextSUID();
+        suid = SUIDFactory.getNextSUID();
 
         netAttrMgr = new HashMap<String, CyDataTable>();
         netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " network", true, eh));

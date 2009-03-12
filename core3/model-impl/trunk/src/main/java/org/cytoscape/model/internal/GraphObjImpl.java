@@ -41,6 +41,7 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.Identifiable;
+import org.cytoscape.model.SUIDFactory;
 
 import java.util.Map;
 
@@ -50,7 +51,7 @@ class GraphObjImpl implements GraphObject, Identifiable {
 	private final Map<String, CyDataTable> attrMgr;
 
 	GraphObjImpl(final Map<String, CyDataTable> attrMgr) {
-		suid = IdFactory.getNextSUID();
+		suid = SUIDFactory.getNextSUID();
 		this.attrMgr = attrMgr;
 		attrs().set("name","");
 		attrs().set("selected",Boolean.FALSE);

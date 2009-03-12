@@ -41,6 +41,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.AddedNodeListener;
 import org.cytoscape.model.events.AboutToRemoveNodeEvent;
@@ -115,7 +116,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * @param eh The CyEventHelper used for firing events.
 	 */
 	public ArrayGraph(final CyEventHelper eh) {
-		suid = IdFactory.getNextSUID();
+		suid = SUIDFactory.getNextSUID();
 		numSubNetworks = 0;
 		nodeCount = 0;
 		edgeCount = 0;
