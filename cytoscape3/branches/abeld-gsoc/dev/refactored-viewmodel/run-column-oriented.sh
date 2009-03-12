@@ -2,17 +2,29 @@
 
 set -e
 
-cd column-oriented-viewmodel
+cd viewmodel-api-columns
 mvn clean install
 cd ..
 
-cd column-oriented-vizmap
+cd viewmodel-impl-columns
 mvn clean install
 cd ..
 
-cd presentation
+cd vizmap-api-columns
 mvn clean install
 cd ..
+
+cd vizmap-impl-columns
+mvn clean install
+cd ..
+
+cd column-oriented-presentation
+mvn clean install
+cd ..
+
+#cd default-mappings
+#mvn clean install
+#cd ..
 
 cd column-oriented-integration_test
 mvn clean install

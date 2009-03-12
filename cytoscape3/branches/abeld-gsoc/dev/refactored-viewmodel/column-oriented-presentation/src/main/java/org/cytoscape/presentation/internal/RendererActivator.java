@@ -39,7 +39,7 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import org.cytoscape.presentation.TextNodeRenderer;
-import org.cytoscape.viewmodel.Renderer;
+import org.cytoscape.view.model.Renderer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

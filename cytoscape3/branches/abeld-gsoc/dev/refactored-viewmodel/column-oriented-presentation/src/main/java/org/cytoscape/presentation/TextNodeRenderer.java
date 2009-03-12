@@ -35,9 +35,9 @@
 
 package org.cytoscape.presentation;
 
-import org.cytoscape.viewmodel.Renderer;
-import org.cytoscape.viewmodel.View;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.Renderer;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 
 import java.util.Set;
 
