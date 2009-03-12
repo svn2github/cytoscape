@@ -34,11 +34,9 @@
 */
 package org.cytoscape.view.model.internal;
 
-import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
-
-import java.util.HashMap;
 
 
 /**
@@ -59,7 +57,7 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 * @param source  DOCUMENT ME!
 	 */
 	public ColumnOrientedViewImpl(final S source, final ColumnOrientedNetworkViewImpl networkView) {
-		suid = IdFactory.getNextSUID();
+		suid = SUIDFactory.getNextSUID();
 		this.source = source;
 		this.networkView = networkView;
 	}
