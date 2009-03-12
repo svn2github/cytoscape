@@ -36,7 +36,7 @@ import clusterMaker.treeview.DummyConfigNode;
 
 public class ColorPresets implements ConfigNodePersistent {
 	private ConfigNode root;
-	private final static int dIndex            = 0;// which preset to use if not by confignode?
+	private final static int dIndex            = 1;// which preset to use if not by confignode?
 
 
 	/**

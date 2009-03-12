@@ -39,9 +39,9 @@ import clusterMaker.treeview.ConfigNodePersistent;
  * @version    @version $Revision: 1.1 $ $Date: 2006/08/16 19:13:45 $
  */
 public class ColorSet implements ConfigNodePersistent {
-	private String default_upColor       = "#FF0000";
+	private String default_upColor       = "#FEFF00";
 	private String default_zeroColor     = "#000000";
-	private String default_downColor     = "#00FF00";
+	private String default_downColor     = "#1BB7E5";
 	private String default_missingColor  = "#909090";
 	private String default_emptyColor    = "#FFFFFF";
 	private String default_name          = null;

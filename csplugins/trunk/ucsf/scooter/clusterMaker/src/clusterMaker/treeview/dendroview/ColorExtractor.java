@@ -49,9 +49,9 @@ public class ColorExtractor extends Observable implements ConfigNodePersistent, 
 
 		// set a default defaultColorSet... should be superceded by a user setting...
 		defaultColorSet = new ColorSet();
-		defaultColorSet.setUp(ColorSet.decodeColor("#FF0000"));
+		defaultColorSet.setUp(ColorSet.decodeColor("#FEFF00"));
 		defaultColorSet.setZero(ColorSet.decodeColor("#000000"));
-		defaultColorSet.setDown(ColorSet.decodeColor("#00FF00"));
+		defaultColorSet.setDown(ColorSet.decodeColor("#1BB7E5"));
 		defaultColorSet.setMissing(ColorSet.decodeColor("#909090"));
 		defaultColorSet.setEmpty(ColorSet.decodeColor("#FFFFFF"));
 		setDefaultColorSet(defaultColorSet);
