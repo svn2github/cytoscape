@@ -2,6 +2,5 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Spring-Context: META-INF/spring/*.xml
-Export-Package: ${bundle.namespace},${bundle.namespace}.events,
+Export-Package: ${bundle.namespace},${bundle.namespace}.events
 
