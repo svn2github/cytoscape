@@ -107,6 +107,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		if (command.equals("done")) {
 			setVisible(false);
 		} else if (command.equals("execute")) {
+			ti.Handle();
 			tm.execute( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()) );
 		} else {
 			// OK, initialize and display
@@ -191,7 +192,9 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			if (!(o instanceof String)) { 
 				CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm)o;
 				ti.loadTunables(newLayout);
+				ti.setParent(mainPanel);
 				ti.createUI(newLayout);
+				pack();
 				currentLayout = newLayout; 
 			}
 		}
