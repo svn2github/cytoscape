@@ -31,11 +31,15 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.model.internal;
 
-import org.cytoscape.event.CyEventHelper;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -48,7 +52,6 @@ import org.cytoscape.model.events.AddedEdgeEvent;
 import org.cytoscape.model.events.AddedEdgeListener;
 import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.AddedNodeListener;
-
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
@@ -59,46 +62,41 @@ import org.cytoscape.view.model.events.internal.SubsetChangedEventImpl;
 import org.cytoscape.view.model.events.internal.SubsetCreatedEventImpl;
 import org.cytoscape.view.model.events.internal.SubsetDestroyedEventImpl;
 
-import org.osgi.framework.BundleContext;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
-
 /**
  *
  */
-public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeListener,
-                                                   AddedNodeListener, AboutToRemoveEdgeListener,
-                                                   AboutToRemoveNodeListener {
-	private BundleContext bc;
+public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
+		AddedEdgeListener, AddedNodeListener, AboutToRemoveEdgeListener,
+		AboutToRemoveNodeListener {
+
 	private CyEventHelper eventHelper;
 	private CyNetwork network;
 	private HashMap<CyNode, ColumnOrientedViewImpl<CyNode>> nodeViews;
 	private HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>> edgeViews;
-	private HashMap<String, Set<View<?extends GraphObject>>> subsets;
+	private HashMap<String, Set<View<? extends GraphObject>>> subsets;
 	private ColumnOrientedViewImpl<CyNetwork> networkView;
 	private HashMap<VisualProperty<?>, ColumnOrientedViewColumn<?>> columns;
-	
+
 	/**
 	 * Creates a new ColumnOrientedNetworkViewImpl object.
-	 *
-	 * @param eventHelper  DOCUMENT ME!
-	 * @param network  DOCUMENT ME!
-	 * @param bc  DOCUMENT ME!
+	 * 
+	 * @param eventHelper
+	 *            DOCUMENT ME!
+	 * @param network
+	 *            DOCUMENT ME!
+	 * @param bc
+	 *            DOCUMENT ME!
 	 */
-	public ColumnOrientedNetworkViewImpl(final CyEventHelper eventHelper, final CyNetwork network,
-	                                  final BundleContext bc) {
+	public ColumnOrientedNetworkViewImpl(final CyEventHelper eventHelper,
+			final CyNetwork network) {
 		this.eventHelper = eventHelper;
-		this.bc = bc;
 		this.network = network;
+
 		nodeViews = new HashMap<CyNode, ColumnOrientedViewImpl<CyNode>>();
 		edgeViews = new HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>>();
-		subsets = new HashMap<String, Set<View<?extends GraphObject>>>();
+		subsets = new HashMap<String, Set<View<? extends GraphObject>>>();
 		columns = new HashMap<VisualProperty<?>, ColumnOrientedViewColumn<?>>();
-		
+
 		for (CyNode node : network.getNodeList()) {
 			nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node, this));
 		}
@@ -108,21 +106,13 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 		}
 
 		networkView = new ColumnOrientedViewImpl<CyNetwork>(network, this);
-
-		//  register event listeners:
-		bc.registerService(AddedEdgeListener.class.getName(), this, null);
-		bc.registerService(AddedNodeListener.class.getName(), this, null);
-		bc.registerService(AboutToRemoveEdgeListener.class.getName(), this, null);
-		bc.registerService(AboutToRemoveNodeListener.class.getName(), this, null);
-
-		// FIXME: how are we going to un-register?
 	}
 
 	/**
-	 * Returns the network this view was created for.  The network is immutable for this
-	 * view, so there is no way to set it.
-	 *
-	 * @return  DOCUMENT ME!
+	 * Returns the network this view was created for. The network is immutable
+	 * for this view, so there is no way to set it.
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public CyNetwork getNetwork() {
 		return network;
@@ -130,10 +120,11 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 
 	/**
 	 * Returns a View for a specified Node.
-	 *
-	 * @param n  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @param n
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public View<CyNode> getCyNodeView(final CyNode n) {
 		return nodeViews.get(n);
@@ -141,8 +132,8 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 
 	/**
 	 * Returns a list of Views for all CyNodes in the network.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<View<CyNode>> getCyNodeViews() {
 		return new ArrayList<View<CyNode>>(nodeViews.values());
@@ -150,10 +141,11 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 
 	/**
 	 * Returns a View for a specified Edge.
-	 *
-	 * @param e  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public View<CyEdge> getCyEdgeView(final CyEdge e) {
 		return edgeViews.get(e);
@@ -161,8 +153,8 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 
 	/**
 	 * Returns a list of Views for all CyEdges in the network.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<View<CyEdge>> getCyEdgeViews() {
 		return new ArrayList<View<CyEdge>>(edgeViews.values());
@@ -170,8 +162,8 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 
 	/**
 	 * Returns the view for this Network.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public View<CyNetwork> getNetworkView() {
 		return networkView;
@@ -179,12 +171,12 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 
 	/**
 	 * Returns a list of all View including those for Nodes, Edges, and Network.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public List<View<?extends GraphObject>> getAllViews() {
-		final List<View<?extends GraphObject>> result = new ArrayList<View<?extends GraphObject>>(nodeViews
-		                                                                                          .values());
+	public List<View<? extends GraphObject>> getAllViews() {
+		final List<View<? extends GraphObject>> result = new ArrayList<View<? extends GraphObject>>(
+				nodeViews.values());
 		result.addAll(edgeViews.values());
 		result.add(networkView);
 
@@ -193,24 +185,37 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 
 	/* Handle events in model and update accordingly: */
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void handleEvent(final AddedEdgeEvent e) {
 		if (network != e.getSource())
 			return;
 
 		final CyEdge edge = e.getEdge();
-		edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge, this)); // FIXME: View creation here and in initializer: should be in one place
+		edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge, this)); // FIXME:
+																				// View
+																				// creation
+																				// here
+																				// and
+																				// in
+																				// initializer:
+																				// should
+																				// be
+																				// in
+																				// one
+																				// place
 
 		// FIXME: fire events!
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void handleEvent(final AddedNodeEvent e) {
 		if (network != e.getSource())
@@ -221,9 +226,10 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void handleEvent(final AboutToRemoveEdgeEvent e) {
 		System.out.println("handling event: " + e);
@@ -235,9 +241,10 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void handleEvent(final AboutToRemoveNodeEvent e) {
 		if (network != e.getSource())
@@ -246,83 +253,98 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView, AddedEdgeLi
 		edgeViews.remove(e.getNode());
 	}
 
-	public <T> ColumnOrientedViewColumn<T> getColumn(final VisualProperty<T> vp){
+	public <T> ColumnOrientedViewColumn<T> getColumn(final VisualProperty<T> vp) {
 		if (vp == null)
 			throw new NullPointerException("VisualProperty must not be null");
-		if (columns.containsKey(vp)){
+		if (columns.containsKey(vp)) {
 			return (ColumnOrientedViewColumn<T>) columns.get(vp);
 		} else { // create column
-			ColumnOrientedViewColumn<T> column = new ColumnOrientedViewColumn<T>(vp);
+			ColumnOrientedViewColumn<T> column = new ColumnOrientedViewColumn<T>(
+					vp);
 			columns.put(vp, column);
 			return column;
 		}
 	}
-	
+
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param name DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param name
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public Set<View<?extends GraphObject>> getSubset(final String name) {
+	public Set<View<? extends GraphObject>> getSubset(final String name) {
 		return subsets.get(name);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param name DOCUMENT ME!
-	 * @param subset DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param name
+	 *            DOCUMENT ME!
+	 * @param subset
+	 *            DOCUMENT ME!
 	 */
-	public void createSubset(final String name, final Set<View<?extends GraphObject>> subset) {
+	public void createSubset(final String name,
+			final Set<View<? extends GraphObject>> subset) {
 		subsets.put(name, subset);
-		eventHelper.fireSynchronousEvent(new SubsetCreatedEventImpl(this, name),
-		                                 SubsetCreatedListener.class);
+		eventHelper.fireSynchronousEvent(
+				new SubsetCreatedEventImpl(this, name),
+				SubsetCreatedListener.class);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param name DOCUMENT ME!
-	 * @param toAdd DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param name
+	 *            DOCUMENT ME!
+	 * @param toAdd
+	 *            DOCUMENT ME!
 	 */
-	public void addToSubset(final String name, final Set<View<?extends GraphObject>> toAdd) {
-		final Set<View<?extends GraphObject>> subset = subsets.get(name);
+	public void addToSubset(final String name,
+			final Set<View<? extends GraphObject>> toAdd) {
+		final Set<View<? extends GraphObject>> subset = subsets.get(name);
 
 		if (subset == null)
 			throw new NullPointerException("non-existent subset");
 
 		subset.addAll(toAdd);
-		eventHelper.fireSynchronousEvent(new SubsetChangedEventImpl(this, name),
-		                                 SubsetChangedListener.class);
+		eventHelper.fireSynchronousEvent(
+				new SubsetChangedEventImpl(this, name),
+				SubsetChangedListener.class);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param name DOCUMENT ME!
-	 * @param toRemove DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param name
+	 *            DOCUMENT ME!
+	 * @param toRemove
+	 *            DOCUMENT ME!
 	 */
-	public void removeFromSubset(final String name, final Set<View<?extends GraphObject>> toRemove) {
-		final Set<View<?extends GraphObject>> subset = subsets.get(name);
+	public void removeFromSubset(final String name,
+			final Set<View<? extends GraphObject>> toRemove) {
+		final Set<View<? extends GraphObject>> subset = subsets.get(name);
 
 		if (subset == null)
 			throw new NullPointerException("non-existent subset");
 
 		subset.removeAll(toRemove);
-		eventHelper.fireSynchronousEvent(new SubsetChangedEventImpl(this, name),
-		                                 SubsetChangedListener.class);
+		eventHelper.fireSynchronousEvent(
+				new SubsetChangedEventImpl(this, name),
+				SubsetChangedListener.class);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param name DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param name
+	 *            DOCUMENT ME!
 	 */
 	public void deleteSubset(final String name) {
 		subsets.remove(name);
-		eventHelper.fireSynchronousEvent(new SubsetDestroyedEventImpl(this, name),
-		                                 SubsetDestroyedListener.class);
+		eventHelper.fireSynchronousEvent(new SubsetDestroyedEventImpl(this,
+				name), SubsetDestroyedListener.class);
 	}
 }

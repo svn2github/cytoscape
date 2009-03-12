@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<!-- Individual Service -->
-	<osgi:service id="cyNetworkViewFactoryService"
-		ref="cyNetworkViewFactory" interface="org.cytoscape.view.model.CyNetworkViewFactory">
+	<!-- Import Services -->
+	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
+
+	<!-- Export Beans as Services -->
+	<osgi:service id="cyNetworkViewFactoryService" ref="cyNetworkViewFactory"
+		interface="org.cytoscape.view.model.CyNetworkViewFactory">
 		<osgi:service-properties>
 			<entry key="service.type" value="factory" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="visualPropertyCatalogService"
-		ref="visualPropertyCatalog" interface="org.cytoscape.view.model.VisualPropertyCatalog">
+	<osgi:service id="visualPropertyCatalogService" ref="visualPropertyCatalog"
+		interface="org.cytoscape.view.model.VisualPropertyCatalog">
+		<osgi:service-properties>
+			<entry key="service.type" value="objectFacade" />
+		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:reference id="cyEventHelperServiceRef"
-		interface="org.cytoscape.event.CyEventHelper">
-	</osgi:reference>
+	<!-- Define OSGi Service Listener -->
+	<osgi:set id="renderers" interface="org.cytoscape.view.model.Renderer"
+		cardinality="0..N">
+		<osgi:listener bind-method="addRenderer" unbind-method="removeRenderer"
+			ref="visualPropertyCatalog" />
+	</osgi:set>
+
 </beans>

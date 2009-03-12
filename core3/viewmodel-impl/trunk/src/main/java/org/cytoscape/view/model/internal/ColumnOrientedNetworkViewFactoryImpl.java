@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.model.internal;
 
 import org.cytoscape.event.CyEventHelper;
@@ -41,15 +41,24 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 
-import org.osgi.framework.BundleContext;
-
 
 /**
  *
  */
-public class ColumnOrientedNetworkViewFactoryImpl implements CyNetworkViewFactory {
+public class ColumnOrientedNetworkViewFactoryImpl implements
+		CyNetworkViewFactory {
 	private CyEventHelper eventHelper;
-	private BundleContext bundleContext;
+
+	/**
+	 * For injection, use this constructor.
+	 * 
+	 * @param eventHelper
+	 */
+	public ColumnOrientedNetworkViewFactoryImpl(CyEventHelper eventHelper) {
+		if (eventHelper == null)
+			throw new NullPointerException("CyEventHelper is null");
+		this.eventHelper = eventHelper;
+	}
 
 	/**
 	 * For setter injection (hmm. whats that?)
@@ -58,66 +67,33 @@ public class ColumnOrientedNetworkViewFactoryImpl implements CyNetworkViewFactor
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param eventHelper DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param eventHelper
+	 *            DOCUMENT ME!
 	 */
 	public void setEventHelper(final CyEventHelper eventHelper) {
 		this.eventHelper = eventHelper;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public CyEventHelper getEventHelper() {
 		return this.eventHelper;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param bundleContext DOCUMENT ME!
-	 */
-	public void setBundleContext(final BundleContext bundleContext) {
-		this.bundleContext = bundleContext;
-	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public BundleContext getBundleContext() {
-		return bundleContext;
-	}
-
-	/**
-	 * Creates a new CyNetworkFactoryImpl object.
-	 *
-	 * @param eventHelper DOCUMENT ME!
-	 * @param bundleContext DOCUMENT ME!
-	 */
-	public ColumnOrientedNetworkViewFactoryImpl(final CyEventHelper eventHelper,
-	                                         final BundleContext bundleContext) {
-		if (eventHelper == null)
-			throw new NullPointerException("CyEventHelper is null");
-
-		if (bundleContext == null)
-			throw new NullPointerException("bundleContext is null");
-
-		this.eventHelper = eventHelper;
-		this.bundleContext = bundleContext;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param network for which the CyNetworkView is to be created
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param network
+	 *            for which the CyNetworkView is to be created
+	 * @return DOCUMENT ME!
 	 */
 	public CyNetworkView getNetworkViewFor(final CyNetwork network) {
-		return new ColumnOrientedNetworkViewImpl(eventHelper, network, bundleContext);
+		return new ColumnOrientedNetworkViewImpl(eventHelper, network);
 	}
 }
