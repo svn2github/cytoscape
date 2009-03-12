@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 
+import cytoscape.Cytoscape;
 import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
@@ -12,13 +13,16 @@ import cytoscape.layout.Tunable;
 import cytoscape.plugin.CytoscapePlugin;
 
 public class GOLayout extends CytoscapePlugin {
+	
+	PartitionAlgorithm pa = new PartitionAlgorithm();
+	
 	/**
 	 * The constructor registers our layout algorithm. The CyLayouts mechanism
 	 * will worry about how to get it in the right menu, etc.
 	 */
 	public GOLayout() {
 		CyLayouts.addLayout(new GOLayoutAlgorithm(), "GO Layout: Run All");
-		CyLayouts.addLayout(new PartitionAlgorithm(), "GO Layout: Partition");
+		CyLayouts.addLayout(pa, "GO Layout: Partition");
 		CyLayouts.addLayout(new CellAlgorithm(), "GO Layout: Cell Layout");
 	}
 
@@ -140,8 +144,9 @@ public class GOLayout extends CytoscapePlugin {
 		 * The layout protocol...
 		 */
 		public void construct() {
+		    pa.setLayoutName("cell-layout");
 			CyLayoutAlgorithm layout = CyLayouts.getLayout("partition");
-			layout.doLayout(new_view);
+			layout.doLayout(Cytoscape.getCurrentNetworkView());
 		}
 	}
 }

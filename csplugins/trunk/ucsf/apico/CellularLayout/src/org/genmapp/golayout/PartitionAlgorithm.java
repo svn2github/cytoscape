@@ -87,6 +87,9 @@ public class PartitionAlgorithm extends AbstractLayout {
 		Tunable t = layoutProperties.get("nodeSpacing");
 		if ((t != null) && (t.valueChanged() || force))
 			distanceBetweenNodes = ((Double) t.getValue()).doubleValue();
+		Tunable t2 = layoutProperties.get("layoutName");
+		if ((t2 != null) && (t2.valueChanged() || force))
+			this.layoutName = t2.getValue().toString();
 	}
 
 	/**
