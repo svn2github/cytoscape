@@ -23,17 +23,19 @@
 <!-- 	<bean name="fileUtil" class="cytoscape.util.internal.FileUtilImpl">
 		<constructor-arg ref="cyOperatingContext" />
 		<constructor-arg ref="streamUtilServiceRef" />
-	</bean>
+		</bean>
 -->
-
-	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GuiHandlerFactory">
-		<constructor-arg ref="bookmarkServiceRef" />
-		<constructor-arg ref="bookmarksUtilServiceRef" />
-<!-- 	<constructor-arg ref="fileUtil" /> -->
-	</bean>
 
 	<bean id="guiTunableInterceptor" class="org.cytoscape.work.internal.tunables.GuiTunableInterceptor">
 		<constructor-arg ref="guiHandlerFactory" />
 	</bean>
+
+	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GuiHandlerFactory">
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtilServiceRef" />
+<!--	<constructor-arg ref="fileUtilServiceRef"/>
+		<constructor-arg ref="streamUtilServiceRef"/> -->
+ 	</bean>
+
 
 </beans>
