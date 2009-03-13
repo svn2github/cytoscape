@@ -43,6 +43,15 @@
 			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>
+	
+	<osgi:service id="loadInputStreamTaskFactoryService" ref="loadInputStreamTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Load Network InputStream..." />
+			<entry key="preferredMenu" value="File.Import" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	<!--
 		<osgi:service id="newSessionTaskFactoryService"
 		ref="newSessionTaskFactory"

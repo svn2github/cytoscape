@@ -45,6 +45,17 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
+	
+	<bean id="loadInputStreamTaskFactory" 
+	      class="org.cytoscape.task.loadnetwork.internal.LoadInputStreamTaskFactoryImpl">
+		<constructor-arg ref="cyReaderManagerServiceRef" />
+		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="cyLayoutsServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyPropertyServiceRef" />
+		<constructor-arg ref="cyNetworkNamingServiceRef" />
+	</bean>
+	
 
 	<!-- Off until session stuff is implemented
 	<bean id="newSessionTaskFactory" 
