@@ -76,7 +76,7 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			theCategoryList.add(theCategory);
 		}
 		
-		System.out.println("Test INPUTSTREAM");
+		//System.out.println("Test INPUTSTREAM");
 
 		panel.add(new JLabel("Path :"));
 		path = new JTextField("select file",12);
