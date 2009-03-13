@@ -23,13 +23,10 @@
 		ref="guiHandlerFactory" interface="org.cytoscape.work.HandlerFactory">
 	</osgi:service>
 
-<!--
-	<osgi:service id="cyOperatingContextService" ref="cyOperatingContext" interface="cytoscape.CyOperatingContext" />
-	<osgi:service id="fileUtilService" ref="fileUtil" interface="cytoscape.util.FileUtil" />
--->
-	
-	<!-- Services USED by this bundle -->
+
     <osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=bookmarks)" />
     <osgi:reference id="bookmarksUtilServiceRef" interface="org.cytoscape.property.bookmark.BookmarksUtil" />
-<!--<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil" /> -->
+<!--<osgi:referenceS id="fileUtilServiceRef" interface="cytoscape.util.FileUtil"/> 
+	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil"/> -->
+   	
 </beans>
