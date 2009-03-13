@@ -24,7 +24,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 
 	private Component parent=null;
 	private Map<java.util.List<Guihandler>,JPanel> panelMap;
-	private JPanel r = new JPanel(new BorderLayout());
 	private java.util.List<Guihandler> lh;
 	private boolean m;
 	

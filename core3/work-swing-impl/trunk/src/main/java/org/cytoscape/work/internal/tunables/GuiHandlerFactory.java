@@ -4,25 +4,35 @@ import java.lang.reflect.Field;
 import java.net.URL;
 
 import java.io.File;
+import java.io.InputStream;
 
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.HandlerFactory;
-import org.cytoscape.work.util.*;
+import org.cytoscape.work.util.BoundedDouble;
+import org.cytoscape.work.util.BoundedFloat;
+import org.cytoscape.work.util.BoundedInteger;
+import org.cytoscape.work.util.BoundedLong;
+import org.cytoscape.work.util.ListMultipleSelection;
+import org.cytoscape.work.util.ListSingleSelection;
+
 import cytoscape.util.FileUtil;
+import org.cytoscape.io.util.StreamUtil;
 
 public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 
 	private Bookmarks bookmarks;
 	private BookmarksUtil bkUtil;
 	private FileUtil flUtil;
+	private StreamUtil stUtil;
 	
 	public GuiHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
 		this.bookmarks = book.getProperties();
 		this.bkUtil = bkUtil;
 		this.flUtil = flUtil;
+		this.stUtil = stUtil;
 	}
 
 	public Guihandler getHandler(Field f, Object o, Tunable t){
@@ -57,8 +67,8 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 			return new FileHandler(f,o,t,flUtil);
 		else if(type == URL.class)
 			return new URLHandler(f,o,t,bookmarks,bkUtil);
-//		else if(type == URL.class)
-//			return new InputStreamHandler(f,o,t,bookmarkrs,bkUtil,flUtil);
+		else if(type == InputStream.class)
+			return new InputStreamHandler(f,o,t,bookmarks,bkUtil,flUtil,stUtil);
 		return null;
 	}
 }
