@@ -14,7 +14,7 @@ package org.eclipse.equinox.internal.p2.ui2.sdk;
 import javax.swing.JDialog;
 import org.eclipse.equinox.internal.provisional.p2.ui2.QueryableMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.ui2.policy.Policy;
-
+import org.eclipse.equinox.internal.provisional.p2.ui2.dialogs.InstallNewSoftwarePanel;;
 /**
  * InstallNewSoftwareHandler invokes the install wizard
  * 
