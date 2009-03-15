@@ -181,9 +181,7 @@ public class VisualStyleImpl implements VisualStyle {
 			c.apply(column, views);
 		} else {
 			// reset all rows to allow usage of default value:
-			for (View<V>v: views){
-				column.clearValue(v);
-			}
+			column.setValues(new HashMap<View<V>, T>(), views);
 		}
 	}
 }
