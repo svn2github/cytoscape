@@ -116,7 +116,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public <T> T getDefault(final VisualProperty<T> vp) {
+	public <T> T getDefaultValue(final VisualProperty<T> vp) {
 		return (T) perVSDefaults.get(vp);
 	}
 
@@ -127,7 +127,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param vp DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
-	public <T> void setDefault(final VisualProperty<T> vp, final T value) {
+	public <T> void setDefaultValue(final VisualProperty<T> vp, final T value) {
 		perVSDefaults.put(vp, value);
 	}
 
@@ -173,7 +173,7 @@ public class VisualStyleImpl implements VisualStyle {
 	public <T, V extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<V>> views, final VisualProperty<T> vp) {
 		ViewColumn<T> column = view.getColumn(vp);
 		final MappingCalculator c = getMappingCalculator(vp);
-		final T perVSDefault = getDefault(vp);
+		final T perVSDefault = getDefaultValue(vp);
 		if (perVSDefault != null){
 			column.setDefaultValue(perVSDefault);
 		}

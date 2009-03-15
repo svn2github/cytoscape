@@ -76,7 +76,7 @@ public interface VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	<T> T getDefault(VisualProperty<T> prop);
+	<T> T getDefaultValue(VisualProperty<T> prop);
 
 	/**
 	 *  DOCUMENT ME!
@@ -85,7 +85,7 @@ public interface VisualStyle {
 	 * @param vp DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
-	<T> void setDefault(VisualProperty<T> vp, T value);
+	<T> void setDefaultValue(VisualProperty<T> vp, T value);
 
 	// ??
 	/**
