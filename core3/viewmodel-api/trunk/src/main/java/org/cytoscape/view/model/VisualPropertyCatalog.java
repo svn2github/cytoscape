@@ -42,12 +42,20 @@ import java.util.Collection;
   */
 public interface VisualPropertyCatalog {
 	/**
-	 *  DOCUMENT ME!
+	 * register the VisualProperties of the given Renderer
 	 *
 	 * @param renderer DOCUMENT ME!
 	 */
 	void addVisualPropertiesOfRenderer(Renderer renderer);
 
+	/**
+	 * unregister the VisualProperties of the given Renderer.
+	 * Note that these VisualProperties might still be available, if some other Renderer defines them
+	 *
+	 * @param renderer DOCUMENT ME!
+	 */
+	void removeVisualPropertiesOfRenderer(Renderer renderer);
+	
 	/**
 	 *  DOCUMENT ME!
 	 *

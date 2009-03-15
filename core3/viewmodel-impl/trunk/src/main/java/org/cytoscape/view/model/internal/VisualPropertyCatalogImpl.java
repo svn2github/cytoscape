@@ -195,12 +195,9 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 		return result;
 	}
 
-	// The following two methods are listeners.
-	// Handles dynamics of OSGi services.
-
-	@SuppressWarnings("unchecked")
-	public void addRenderer(Renderer renderer, Map props) {
-		System.out.println("====> Renderer bound: " + renderer.toString());
+	/** {@inheritDoc}
+	 */
+	public void addVisualPropertiesOfRenderer(Renderer renderer){
 		for (VisualProperty<?>vp: renderer.getVisualProperties()){
 			if (this.visualPropertySet.containsKey(vp)){
 				List<Renderer> renderers = this.visualPropertySet.get(vp);
@@ -213,8 +210,9 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public void removeRenderer(Renderer renderer, Map props) {
+	/** {@inheritDoc}
+	 */
+	public void removeVisualPropertiesOfRenderer(Renderer renderer){
 		for (VisualProperty<?>vp: renderer.getVisualProperties()){
 			List<Renderer> renderers = this.visualPropertySet.get(vp);
 			if (renderers.size() == 1){
@@ -225,5 +223,19 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 				renderers.remove(renderer);
 			}
 		}
+	}
+	
+	// The following two methods are listeners.
+	// Handles dynamics of OSGi services.
+
+	@SuppressWarnings("unchecked")
+	public void addRenderer(Renderer renderer, Map props) {
+		System.out.println("====> Renderer bound: " + renderer.toString());
+		addVisualPropertiesOfRenderer(renderer);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void removeRenderer(Renderer renderer, Map props) {
+		removeVisualPropertiesOfRenderer(renderer);
 	}
 }
