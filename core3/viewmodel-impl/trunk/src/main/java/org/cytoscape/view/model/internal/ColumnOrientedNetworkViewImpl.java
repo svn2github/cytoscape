@@ -109,16 +109,6 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	}
 
 	/**
-	 * Returns the network this view was created for. The network is immutable
-	 * for this view, so there is no way to set it.
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public CyNetwork getNetwork() {
-		return network;
-	}
-
-	/**
 	 * Returns a View for a specified Node.
 	 * 
 	 * @param n
