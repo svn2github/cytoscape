@@ -99,57 +99,18 @@ public class PassthroughMappingCalculator implements MappingCalculator {
 		return vp;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param v DOCUMENT ME!
-	 */
-	public <T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views){
-		if (views.size() < 1)
-			return; // empty list, nothing to do
-		CyRow row = views.get(0).getSource().attrs();
-		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attributeName);
-		// since attributes can only store certain types of Objects, it is enough to test for these:
-		Class<?> vpType = vp.getType();
-		// FIXME: also check that column's vp is internally-stored vp!
-		if (vpType.isAssignableFrom(attrType)){ // can simply copy object without any conversion
-			// aggregate changes to be made in these:
-			Map<View<V>, T> valuesToSet = new HashMap<View<V>, T>();
-			List<View<V>> valuesToClear = new ArrayList<View<V>>();
-			for (View<V> v: views){
-				row = v.getSource().attrs();
-				if (row.contains(attributeName, attrType) ){
-					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
-					final T value = (T) row.get(attributeName, attrType);
-					valuesToSet.put(v, value);
-				} else { // remove value so that default value will be used:
-					valuesToClear.add(v);
-				}
-			}
-			column.setValues(valuesToSet, valuesToClear);
+	public <T, V> V valueFor(T attributeValue, Class<V> vpType){
+		if (String.class.isAssignableFrom(vpType)){
+			return (V) attributeValue.toString();
+		} else 
+			return (V) attributeValue;
+
+		/* This might be a more elegant way to do this: (but needs a Class<T> type-token parameter)
+		if (vpType.isAssignableFrom(attrType){
+			return (V) attributeValue;
 		} else if (String.class.isAssignableFrom(vpType)){
-			// can convert any object to string, so no need to check attribute type
-			// also, since we have to convert the Object here, can't use checkAndDoCopy()
-			ViewColumn<String> c = (ViewColumn<String>) column; // have  to cast here, even though previous check ensures that T is java.util.String
-
-			// aggregate changes to be made in these:
-			Map<View<V>, String> valuesToSet = new HashMap<View<V>, String>();
-			List<View<V>> valuesToClear = new ArrayList<View<V>>();
-
-			for (View<V> v: views){
-				row = v.getSource().attrs();
-				if (row.contains(attributeName, attrType) ){
-					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
-					final Object value = (Object) row.get(attributeName, attrType);
-					valuesToSet.put(v, value.toString());
-				} else { // remove value so that default value will be used:
-					valuesToClear.add(v);
-				}
-			}
-			c.setValues(valuesToSet, valuesToClear);
-		} else {	
-			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType()); 
+			return (V) attributeValue.toString();
 		}
-		// FIXME: handle List & Map
+		*/
 	}
 }

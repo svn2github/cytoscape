@@ -39,6 +39,7 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 
 import org.cytoscape.view.model.CyNetworkView;
@@ -50,6 +51,7 @@ import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.vizmap.MappingCalculator;
 import org.cytoscape.vizmap.VisualStyle;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -131,11 +133,8 @@ public class VisualStyleImpl implements VisualStyle {
 		perVSDefaults.put(vp, value);
 	}
 
-	// ??
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param view DOCUMENT ME!
+	 *  {@inheritDoc}
 	 */
 	public void apply(final CyNetworkView view) {
 		final List<View<CyNode>> nodeviews = view.getCyNodeViews();
@@ -151,11 +150,7 @@ public class VisualStyleImpl implements VisualStyle {
 
 	// note: can't use applyImpl(List<View<?>>views ... ) because that does not compile
 	/**
-	 *  DOCUMENT ME!
 	 *
-	 * @param <T> DOCUMENT ME!
-	 * @param views DOCUMENT ME!
-	 * @param visualProperties DOCUMENT ME!
 	 */
 	public <T extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<T>> views,
 	                                              final Collection<? extends VisualProperty<?>> visualProperties) {
@@ -164,7 +159,7 @@ public class VisualStyleImpl implements VisualStyle {
 		}
 	}
 	/**
-	 *  DOCUMENT ME!
+	 *  I think this needs to be in a separate method to allow making it generic -- abeld
 	 *
 	 * @param <T> DOCUMENT ME!
 	 * @param views DOCUMENT ME!
@@ -178,12 +173,50 @@ public class VisualStyleImpl implements VisualStyle {
 			column.setDefaultValue(perVSDefault);
 		}
 		if (c != null) {
-			c.apply(column, views);
+			String attrName = c.getMappingAttributeName();
+			if (views.size() < 1)
+				return; // empty list, nothing to do
+			CyRow row = views.get(0).getSource().attrs(); // to check types, have to peek at first view instance
+			// check types:
+			Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attrName);
+			Class<T> vpType = vp.getType();
+
+			if (true) {
+				doMap(views, c, attrName, attrType, column, vpType);
+			} else {
+				throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType());
+			}
 		} else {
-			// reset all rows to allow usage of default value:
-			for (View<V>v: views){
-				column.clearValue(v);
+			column.setValues(new HashMap<View<V>, T>(), views);
+		}
+	}
+	/**
+	 * I think this needs to be in a separate method to allow making it generic -- abeld
+	 *
+	 * @param T the VisualProperty type being mapped to
+	 * @param A the attribute type being mapped from
+	 * @param V the view type for which the mapping is made
+	 */
+	private <T, A, V extends GraphObject> void doMap(final List<? extends View<V>> views,  MappingCalculator calc,
+			String attrName, Class<A> attrType, ViewColumn<T> column, Class<T> visualType){
+		// aggregate changes to be made in these:
+		Map<View<V>, T> valuesToSet = new HashMap<View<V>, T>();
+		List<View<V>> valuesToClear = new ArrayList<View<V>>();
+
+		for (View<V> v: views){
+			CyRow row = v.getSource().attrs();
+			if (row.contains(attrName, attrType) ){ // skip Views where source attribute is not defined;
+					 								// ViewColumn will automatically substitute the per-VS or global default, as appropriate
+				T value = calc.valueFor((A) v.getSource().attrs().get(attrName, attrType), visualType);
+				if (value != null){ // 'null' value mean 'revert to default'
+					valuesToSet.put(v, value);
+				} else { // remove value so that default value will be used:
+					valuesToClear.add(v);
+				}					
+			} else { // remove value so that default value will be used:
+				valuesToClear.add(v);
 			}
 		}
+		column.setValues(valuesToSet, valuesToClear);
 	}
 }

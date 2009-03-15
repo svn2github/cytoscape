@@ -82,14 +82,17 @@ public interface MappingCalculator {
 	VisualProperty<?> getVisualProperty();
 
 	/**
-	 *  Since current MappingCalculators map from Attributes to
-	 *  VisualProperties, have to restrict View<?> to those
-	 *  generic types that have CyAttributes; currently this is
-	 *  GraphObject.
-	 *
-	 * @param <V> DOCUMENT ME!
-	 * @param column DOCUMENT ME!
-	 * @param views DOCUMENT ME!
+	 * Calculate the VisualProperty value for a given attribute value.
+	 * Returns null if there is no calculated value, in this case the default value will be used.
+	 * 
+	 * Callers of this method are responsible for ensuring type-safety.
+	 * 
+	 * For efficiency, implementations of this methods should make no checks that T and V are
+	 * correct for the given implementation: that will be checked and thus correctness ensured by
+	 * callers of this method. 
+	 * 
+	 * @param <T> the type-parameter of the attribute being mapped from
+	 * @param V the type of the return value (a VisualProperty type-parameter)
 	 */
-	<T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views);
+	<T, V> V valueFor(T attributeValue, Class<V> type);
 }

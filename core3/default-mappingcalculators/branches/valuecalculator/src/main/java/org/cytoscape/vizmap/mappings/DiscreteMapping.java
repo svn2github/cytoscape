@@ -109,55 +109,12 @@ public class DiscreteMapping implements MappingCalculator {
 		return vp;
 	}
 
-	public <T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views){
-		if (views.size() < 1)
-			return; // empty list, nothing to do
-		CyRow row = views.get(0).getSource().attrs(); // to check types, have to peek at first view instance
-		// check types:
-		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attrName);
-		Class<?> vpType = vp.getType();
-		if (vpType.isAssignableFrom(rangeClass)){
-			// FIXME: should check here? or does that not matter?
-			// if (keyClass.isAssignableFrom(attrType)) 
-			doMap(views, column, attrType);
+	public <T, V> V valueFor(T attributeValue, Class<V> type){
+		if (treeMap.containsKey(attributeValue)){
+			return  (V) treeMap.get(attributeValue);
 		} else {
-			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType());
+			return null;
 		}
-	}
-	/** 
-	 * Read attribute from row, map it and apply it.
-	 * 
-	 * types are guaranteed to be correct (? FIXME: check this)
-	 * 
-	 * Putting this in a separate method makes it possible to make it type-parametric.
-	 * 
-	 * @param <T> the type-parameter of the ViewColumn column
-	 * @param <K> the type-parameter of the key stored in the mapping (the object read as an attribute value has to be is-a K)
-	 * @param <V> the type-parameter of the View
-	 */
-	private <T,K, V extends GraphObject> void doMap(final List<? extends View<V>> views, ViewColumn<T> column, Class<K> attrType){
-		// aggregate changes to be made in these:
-		Map<View<V>, T> valuesToSet = new HashMap<View<V>, T>();
-		List<View<V>> valuesToClear = new ArrayList<View<V>>();
-
-		for (View<V> v: views){
-			CyRow row = v.getSource().attrs();
-			if (row.contains(attrName, attrType) ){
-				// skip Views where source attribute is not defined;
-				// ViewColumn will automatically substitute the per-VS or global default, as appropriate
-				
-				final K key = (K) v.getSource().attrs().get(attrName, attrType);
-				if (treeMap.containsKey(key)){
-					final T value = (T) treeMap.get(key);
-					valuesToSet.put(v, value);
-				} else { // remove value so that default value will be used:
-					valuesToClear.add(v);
-				}					
-			} else { // remove value so that default value will be used:
-				valuesToClear.add(v);
-			}
-		}
-		column.setValues(valuesToSet, valuesToClear);
 	}
 	
 	/**
