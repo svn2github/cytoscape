@@ -54,14 +54,14 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 
 	// Map of visal properties. This object will be updated dynamically by
 	// listeners
-	private final Set<VisualProperty<?>> visalPropertySet;
+	private final Set<VisualProperty<?>> visualPropertySet;
 
 	/**
 	 * Constructor. Just initializes collections for currently available
 	 * renderers and VPs
 	 */
 	public VisualPropertyCatalogImpl() {
-		visalPropertySet = new HashSet<VisualProperty<?>>();
+		visualPropertySet = new HashSet<VisualProperty<?>>();
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	 * @return DOCUMENT ME!
 	 */
 	public VisualProperty<?> getVisualProperty(final String name) {
-		for (VisualProperty<?> vp : visalPropertySet) {
+		for (VisualProperty<?> vp : visualPropertySet) {
 			if (vp.getID().equals(name)) {
 				return vp;
 			}
@@ -171,24 +171,24 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 			final Collection<? extends View<?>> views, final String objectType) {
 
 		if (views == null)
-			return filterForObjectType(visalPropertySet, objectType);
+			return filterForObjectType(visualPropertySet, objectType);
 
 		// System.out.println("making list of VisualProperties in use:");
 		final Set<VisualProperty<?>> toRemove = new HashSet<VisualProperty<?>>();
 
 		/* apply DependentVisualPropertyCallbacks */
-		for (VisualProperty<?> vp : visalPropertySet) {
+		for (VisualProperty<?> vp : visualPropertySet) {
 			final DependentVisualPropertyCallback callback = vp
 					.dependentVisualPropertyCallback();
 
 			if (callback != null) {
-				toRemove.addAll(callback.changed(views, visalPropertySet));
+				toRemove.addAll(callback.changed(views, visualPropertySet));
 			}
 		}
 
 		// System.out.println("removing:"+toRemove.size());
 		final Set<VisualProperty<?>> result = new HashSet<VisualProperty<?>>(
-				visalPropertySet);
+				visualPropertySet);
 		result.removeAll(toRemove);
 
 		// System.out.println("len of result:"+result.size());
@@ -216,11 +216,11 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	@SuppressWarnings("unchecked")
 	public void addRenderer(Renderer renderer, Map props) {
 		System.out.println("====> Renderer bound: " + renderer.toString());
-		this.visalPropertySet.addAll(renderer.getVisualProperties());
+		this.visualPropertySet.addAll(renderer.getVisualProperties());
 	}
 
 	@SuppressWarnings("unchecked")
 	public void removeRenderer(Renderer renderer, Map props) {
-		this.visalPropertySet.removeAll(renderer.getVisualProperties());
+		this.visualPropertySet.removeAll(renderer.getVisualProperties());
 	}
 }
