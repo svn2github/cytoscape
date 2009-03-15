@@ -20,5 +20,8 @@
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="visualPropertyCatalogRef" />
 	</bean>
+	<bean id="visualMappingManager" class="org.cytoscape.vizmap.internal.VisualMappingManagerImpl">
+	</bean>
+
 
 </beans>
