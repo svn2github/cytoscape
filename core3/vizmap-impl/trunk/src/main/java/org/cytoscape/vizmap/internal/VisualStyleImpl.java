@@ -37,6 +37,7 @@ package org.cytoscape.vizmap.internal;
 import org.cytoscape.event.CyEventHelper;
 
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
 
@@ -144,7 +145,7 @@ public class VisualStyleImpl implements VisualStyle {
 		          vpCatalog.collectionOfVisualProperties(nodeviews, VisualProperty.NODE));
 		applyImpl(view, edgeviews,
 		          vpCatalog.collectionOfVisualProperties(edgeviews, VisualProperty.EDGE));
-		applyImpl(view, Arrays.asList(view.getNetworkView()),
+		applyImpl(view, Arrays.asList((View<CyNetwork>)view),
 		          vpCatalog.collectionOfVisualProperties(VisualProperty.NETWORK));
 	}
 

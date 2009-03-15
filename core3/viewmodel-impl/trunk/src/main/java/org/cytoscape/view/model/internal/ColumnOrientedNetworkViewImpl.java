@@ -74,7 +74,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	private HashMap<CyNode, ColumnOrientedViewImpl<CyNode>> nodeViews;
 	private HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>> edgeViews;
 	private HashMap<String, Set<View<? extends GraphObject>>> subsets;
-	private ColumnOrientedViewImpl<CyNetwork> networkView;
+	private ColumnOrientedViewImpl<CyNetwork> viewCyNetwork;
 	private HashMap<VisualProperty<?>, ColumnOrientedViewColumn<?>> columns;
 
 	/**
@@ -105,7 +105,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 			edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge, this));
 		}
 
-		networkView = new ColumnOrientedViewImpl<CyNetwork>(network, this);
+		viewCyNetwork = new ColumnOrientedViewImpl<CyNetwork>(network, this);
 	}
 
 	/**
@@ -161,15 +161,6 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	}
 
 	/**
-	 * Returns the view for this Network.
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public View<CyNetwork> getNetworkView() {
-		return networkView;
-	}
-
-	/**
 	 * Returns a list of all View including those for Nodes, Edges, and Network.
 	 * 
 	 * @return DOCUMENT ME!
@@ -178,7 +169,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 		final List<View<? extends GraphObject>> result = new ArrayList<View<? extends GraphObject>>(
 				nodeViews.values());
 		result.addAll(edgeViews.values());
-		result.add(networkView);
+		result.add(this);
 
 		return result;
 	}
@@ -346,5 +337,46 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 		subsets.remove(name);
 		eventHelper.fireSynchronousEvent(new SubsetDestroyedEventImpl(this,
 				name), SubsetDestroyedListener.class);
+	}
+	// The following are the View<CyNetwork> methods, implemented as proxies to viewCyNetwork.methods
+
+	/** {@inheritDoc}
+	 */
+	public <T> void setVisualProperty(VisualProperty<T> vp, T o){
+		viewCyNetwork.setVisualProperty(vp, o);
+	}
+	/** {@inheritDoc}
+	 */
+	public <T> T getVisualProperty(VisualProperty<T> vp){
+		return viewCyNetwork.getVisualProperty(vp);
+	}
+	/** {@inheritDoc}
+	 */
+	public <T> void setLockedValue(VisualProperty<T> vp, T value){
+		viewCyNetwork.setLockedValue(vp, value);
+	}
+
+	/** {@inheritDoc}
+	 */
+	public boolean isValueLocked(VisualProperty<?> vp){
+		return viewCyNetwork.isValueLocked(vp);
+	}
+
+	/** {@inheritDoc}
+	 */
+	public void clearValueLock(VisualProperty<?> vp){
+		viewCyNetwork.clearValueLock(vp);
+	}
+
+	/** {@inheritDoc}
+	 */
+	public CyNetwork getSource(){
+		return viewCyNetwork.getSource();
+	}
+
+	/** {@inheritDoc}
+	 */
+	public long getSUID() {
+		return viewCyNetwork.getSUID();
 	}
 }
