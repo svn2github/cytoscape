@@ -67,27 +67,6 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	/**
 	 * DOCUMENT ME!
 	 * 
-	 * @param renderer
-	 *            DOCUMENT ME!
-	 */
-	public void addVisualPropertiesOfRenderer(final Renderer renderer) {
-		throw new RuntimeException("not applicable");
-	}
-
-	/**
-	 * Add a top-level VisualProperty. Note: this is most likely _not_ what you
-	 * want to use.
-	 * 
-	 * @param vp
-	 *            the VisualProperty to add
-	 */
-	public void addVisualProperty(final VisualProperty<?> vp) {
-		throw new RuntimeException("not applicable");
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
 	 * @param name
 	 *            DOCUMENT ME!
 	 * 
