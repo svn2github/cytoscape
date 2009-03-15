@@ -47,13 +47,6 @@ import java.util.Set;
  * Contains the visual representation of a Network.
  */
 public interface CyNetworkView extends View<CyNetwork>{
-	/**
-	 * Returns the network this view was created for.  The network is immutable for this
-	 * view, so there is no way to set it.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	CyNetwork getNetwork();
 
 	/**
 	 * Returns a View for a specified Node.
