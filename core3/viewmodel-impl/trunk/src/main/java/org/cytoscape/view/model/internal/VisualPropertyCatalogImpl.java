@@ -36,7 +36,9 @@ package org.cytoscape.view.model.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,16 +54,20 @@ import org.cytoscape.view.model.VisualPropertyCatalog;
  */
 public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 
-	// Map of visal properties. This object will be updated dynamically by
-	// listeners
-	private final Set<VisualProperty<?>> visualPropertySet;
+	// Map of visual properties. This object will be updated dynamically by
+	// listeners.
+	//
+	// In order to be able to remove VisualProperties of a Renderer only if they
+	// are not used by some other renderer, we need to store, for each VP, which
+	// Renderers define the given VP. Thus need to use a VP->(list of Renderers) map.
+	private final Map<VisualProperty<?>, List<Renderer>> visualPropertySet;
 
 	/**
 	 * Constructor. Just initializes collections for currently available
 	 * renderers and VPs
 	 */
 	public VisualPropertyCatalogImpl() {
-		visualPropertySet = new HashSet<VisualProperty<?>>();
+		visualPropertySet = new HashMap<VisualProperty<?>, List<Renderer>>();
 	}
 
 	/**
@@ -73,7 +79,7 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	 * @return DOCUMENT ME!
 	 */
 	public VisualProperty<?> getVisualProperty(final String name) {
-		for (VisualProperty<?> vp : visualPropertySet) {
+		for (VisualProperty<?> vp : visualPropertySet.keySet()) {
 			if (vp.getID().equals(name)) {
 				return vp;
 			}
@@ -150,24 +156,24 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 			final Collection<? extends View<?>> views, final String objectType) {
 
 		if (views == null)
-			return filterForObjectType(visualPropertySet, objectType);
+			return filterForObjectType(visualPropertySet.keySet(), objectType);
 
 		// System.out.println("making list of VisualProperties in use:");
 		final Set<VisualProperty<?>> toRemove = new HashSet<VisualProperty<?>>();
 
 		/* apply DependentVisualPropertyCallbacks */
-		for (VisualProperty<?> vp : visualPropertySet) {
+		for (VisualProperty<?> vp : visualPropertySet.keySet()) {
 			final DependentVisualPropertyCallback callback = vp
 					.dependentVisualPropertyCallback();
 
 			if (callback != null) {
-				toRemove.addAll(callback.changed(views, visualPropertySet));
+				toRemove.addAll(callback.changed(views, visualPropertySet.keySet()));
 			}
 		}
 
 		// System.out.println("removing:"+toRemove.size());
 		final Set<VisualProperty<?>> result = new HashSet<VisualProperty<?>>(
-				visualPropertySet);
+				visualPropertySet.keySet());
 		result.removeAll(toRemove);
 
 		// System.out.println("len of result:"+result.size());
@@ -195,11 +201,29 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	@SuppressWarnings("unchecked")
 	public void addRenderer(Renderer renderer, Map props) {
 		System.out.println("====> Renderer bound: " + renderer.toString());
-		this.visualPropertySet.addAll(renderer.getVisualProperties());
+		for (VisualProperty<?>vp: renderer.getVisualProperties()){
+			if (this.visualPropertySet.containsKey(vp)){
+				List<Renderer> renderers = this.visualPropertySet.get(vp);
+				renderers.add(renderer);	
+			} else {
+				List<Renderer> renderers = new ArrayList<Renderer>();
+				renderers.add(renderer);
+				this.visualPropertySet.put(vp, renderers);
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void removeRenderer(Renderer renderer, Map props) {
-		this.visualPropertySet.removeAll(renderer.getVisualProperties());
+		for (VisualProperty<?>vp: renderer.getVisualProperties()){
+			List<Renderer> renderers = this.visualPropertySet.get(vp);
+			if (renderers.size() == 1){
+				// this is the last renderer that defined this VP, remove the VP
+				this.visualPropertySet.remove(vp);
+			} else {
+				// others also defined this VP, only remove renderer from the list:
+				renderers.remove(renderer);
+			}
+		}
 	}
 }
