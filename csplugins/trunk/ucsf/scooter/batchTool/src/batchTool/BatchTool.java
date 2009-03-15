@@ -70,6 +70,7 @@ public class BatchTool extends CytoscapePlugin {
 			addCommand(new LayoutCommand());
 			addCommand(new OpenCommand());
 			addCommand(new SaveCommand());
+			addCommand(new SetCommand());
 			initialized = true;
 		}
 

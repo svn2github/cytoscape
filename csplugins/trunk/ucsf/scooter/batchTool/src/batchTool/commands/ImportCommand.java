@@ -46,7 +46,7 @@ import cytoscape.data.readers.GraphReader;
 
 import batchTool.commands.ParseException;
 
-enum ImportType {NETWORK, EDGE_ATTRIBUTES, NODE_ATTRIBUTES};
+enum ImportType {NETWORK, EDGE_ATTRIBUTES, NODE_ATTRIBUTES, VIZMAP};
 
 /**
  * The open command opens a Cytoscape session file
@@ -87,6 +87,9 @@ public class ImportCommand extends AbstractCommand {
 		} else if (commpare("node", type, 1) && commpare("attributes", args.get(2), 1)) {
 			importType = ImportType.NODE_ATTRIBUTES;
 			fileName = args.get(3);
+		} else if (commpare("vizmap", type, 1)) {
+			importType = ImportType.VIZMAP;
+			fileName = args.get(2);
 		} else {
 			fileName = args.get(1);
 		}
@@ -123,8 +126,8 @@ public class ImportCommand extends AbstractCommand {
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 		} else if (importType == ImportType.EDGE_ATTRIBUTES) {
 			try {
-				Cytoscape.loadAttributes(new String[] { file.getAbsolutePath() },
-			 	                        new String[] { });
+				Cytoscape.loadAttributes(new String[] { },
+			 	                        new String[] { file.getAbsolutePath() });
 			} catch (Exception e) {
 				throw new ParseException("Failed to read edge attributes from: "+
 				                         fileName+": "+e.getMessage());
@@ -132,13 +135,16 @@ public class ImportCommand extends AbstractCommand {
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		} else if (importType == ImportType.NODE_ATTRIBUTES) {
 			try {
-				Cytoscape.loadAttributes(new String[] { },
-			 	                        new String[] { file.getAbsolutePath() });
+				Cytoscape.loadAttributes(new String[] { file.getAbsolutePath() },
+			 	                        new String[] { });
 			} catch (Exception e) {
 				throw new ParseException("Failed to read node attributes from: "+
 				                         fileName+": "+e.getMessage());
 			}
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		} else if (importType == ImportType.VIZMAP) {
+			// Firing this event apparently also loads the file
+			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, file.getAbsolutePath());
 		}
 
 		return -1;
