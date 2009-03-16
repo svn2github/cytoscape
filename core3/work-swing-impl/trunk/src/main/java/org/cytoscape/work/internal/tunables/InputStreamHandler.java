@@ -6,22 +6,18 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.List;
 import java.awt.event.KeyListener;
 import javax.swing.*;
 
-import cytoscape.util.*;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.Category;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.io.util.*;
 import org.jdesktop.layout.GroupLayout;
 
 
@@ -106,7 +102,6 @@ public class InputStreamHandler extends AbstractGuiHandler {
 					if ( file != null ){
 						try{
 							InStream = new FileInputStream(file.getAbsolutePath());
-							//OutputStream out = new FileOutputStream(file);
 							//InStream = flUtil.getInputStream(file.getAbsolutePath());
 							f.set(o,InStream);
 						}catch (Exception e) { e.printStackTrace();}
