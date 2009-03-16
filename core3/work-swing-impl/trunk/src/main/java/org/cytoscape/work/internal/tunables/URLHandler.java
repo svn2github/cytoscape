@@ -1,7 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
@@ -46,8 +45,6 @@ public class URLHandler extends AbstractGuiHandler {
 			List<Category> theCategoryList = bookmarks.getCategory();
 			theCategoryList.add(theCategory);
 		}
-		
-		//System.out.println("Test URLHandler");
 		
 		networkFileComboBox = new JComboBox();
 		networkFileComboBox.setRenderer(new MyCellRenderer());

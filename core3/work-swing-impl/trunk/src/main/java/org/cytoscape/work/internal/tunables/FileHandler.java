@@ -1,7 +1,5 @@
 package org.cytoscape.work.internal.tunables;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.lang.reflect.*;
 import javax.swing.*;
@@ -48,7 +46,6 @@ public class FileHandler extends AbstractGuiHandler {
 			    File file = fileChooser.getSelectedFile();
 				//File file = flUtil.getFile("TEST",FileUtil.LOAD);
 				if ( file != null ) {
-					//myFile = file;
 					try{
 						f.set(o,file);
 					}catch (Exception e) { e.printStackTrace();}
