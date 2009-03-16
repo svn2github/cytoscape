@@ -13,10 +13,10 @@ pluginName=batchTool
 pluginDescription=This plugin provides a simple proof-of-concept scripting capability for Cytoscape
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.5
+pluginVersion=1.1
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.6
+cytoscapeVersion=2.6.1,2.6.2
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Other
@@ -31,4 +31,4 @@ projectURL=http://www.rbvi.ucsf.edu/Research/cytoscape/
 pluginAuthorsIntsitutions=John "Scooter" Morris:UCSF
 
 # Date this plugin/plugin version was released
-releaseDate=March 18, 2008
+releaseDate=March 16, 2009

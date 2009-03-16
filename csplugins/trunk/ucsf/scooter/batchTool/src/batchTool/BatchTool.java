@@ -163,7 +163,7 @@ public class BatchTool extends CytoscapePlugin {
 					optMap.put(key, str);
 					inPair = false;
 				} else {
-					args.add(str.toLowerCase());
+					args.add(str);
 				}
 
 				tokenStart = i+1;
@@ -173,7 +173,7 @@ public class BatchTool extends CytoscapePlugin {
 				if (inQuote) continue;
 				if (i > tokenStart+1) {
 					str = input.substring(tokenStart, i);
-					args.add(str.toLowerCase());
+					args.add(str);
 					i = input.length();
 				}
 				break;
@@ -201,7 +201,7 @@ public class BatchTool extends CytoscapePlugin {
 */
 
 		if (args.size() > 0)
-			return args.get(0);
+			return args.get(0).toLowerCase();
 
 		return null;
 	}

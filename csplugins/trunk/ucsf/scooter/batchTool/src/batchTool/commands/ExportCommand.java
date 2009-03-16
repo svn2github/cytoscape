@@ -119,7 +119,7 @@ public class ExportCommand extends AbstractCommand {
 		CyLogger.getLogger(ExportCommand.class).debug("parsing");
 
 		// Get the rest of the information.
-		if (obj.equals("network")) {
+		if (obj.toLowerCase().equals("network")) {
 			object = ExportObject.NETWORK;
 
 			// Get our "as" clause
@@ -130,17 +130,17 @@ public class ExportCommand extends AbstractCommand {
 			if (fileName == null)
 				throw new ParseException("export network requires a file name");
 
-		} else if (obj.equals("node")) {
+		} else if (obj.toLowerCase().equals("node")) {
 			object = ExportObject.NODEATTR;
 			if (!("attributes".startsWith(args.get(2)))) {
 				throw new ParseException("Don't know how to export node "+args.get(2));
 			}
-		} else if (obj.equals("edge")) {
+		} else if (obj.toLowerCase().equals("edge")) {
 			object = ExportObject.EDGEATTR;
 			if (!("attributes".startsWith(args.get(2)))) {
 				throw new ParseException("Don't know how to export edge "+args.get(2));
 			}
-		} else if (obj.equals("vizmap")) {
+		} else if (obj.toLowerCase().equals("vizmap")) {
 			object = ExportObject.VIZMAP;
 		}
 

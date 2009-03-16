@@ -71,7 +71,7 @@ public class SetCommand extends AbstractCommand {
 	 * set exportTextAsShape=true
 	 */
 	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
-		if (args.size() < 2)
+		if (optMap.size() < 1)
 			throw new ParseException("Nothing to set");
 		// Get the properties
 		Properties props = CytoscapeInit.getProperties();

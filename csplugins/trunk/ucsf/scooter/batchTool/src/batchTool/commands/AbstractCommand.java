@@ -75,7 +75,7 @@ public abstract class AbstractCommand implements Command {
 	 */
 	public boolean commpare(String command, String userInput, int minInput) {
 		if (userInput.length() < minInput) return false;
-		return command.startsWith(userInput);
+		return command.toLowerCase().startsWith(userInput);
 	}
 
 }

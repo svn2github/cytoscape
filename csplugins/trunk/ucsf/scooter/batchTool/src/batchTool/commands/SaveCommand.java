@@ -71,7 +71,7 @@ public class SaveCommand extends AbstractCommand {
 	 */
 	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
 		// Second argument must be a registered layout
-		if (args.get(1).equals("as")) {
+		if (args.get(1).toLowerCase().equals("as")) {
 			fileName = args.get(2);
 		} else {
 			fileName = Cytoscape.getCurrentSessionFileName();

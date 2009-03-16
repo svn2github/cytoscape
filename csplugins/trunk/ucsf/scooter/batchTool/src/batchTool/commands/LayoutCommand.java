@@ -80,7 +80,7 @@ public class LayoutCommand extends AbstractCommand {
 		// Second argument must be a registered layout
 		layoutName = args.get(1);
 		CyLogger.getLogger(LayoutCommand.class).debug("Layout type: "+layoutName);
-		layoutAlgorithm = CyLayouts.getLayout(layoutName);
+		layoutAlgorithm = CyLayouts.getLayout(layoutName.toLowerCase());
 		if (layoutAlgorithm == null) {
 			throw new ParseException("The layout "+args.get(1)+" isn't available");
 		}
