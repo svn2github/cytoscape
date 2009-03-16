@@ -36,14 +36,11 @@
 
 package org.cytoscape.work;
 
-import java.awt.Component;
+
 import java.lang.reflect.Field;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 
@@ -130,6 +127,6 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 	 * @return  DOCUMENT ME!
 	 */
 	public abstract boolean createUI(Object... objs);
-	public abstract void setParent(Component c);
-	public abstract void Handle();
+	public abstract void setParent(Object o);
+	public abstract void handle();
 }
