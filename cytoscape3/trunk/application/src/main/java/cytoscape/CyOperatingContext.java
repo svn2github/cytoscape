@@ -56,16 +56,6 @@ public interface CyOperatingContext {
 	Properties getProperties(); 
 
 	/**
-	 * Get the most recently used directory.
-	 */
-	File getMRUD(); 
-
-	/**
-	 * Set the most recently used directory.
-	 */
-	void setMRUD(File mrud);
-
-	/**
 	 * Returns a {@link File} pointing to the config directory.
 	 */
 	File getConfigDirectory();

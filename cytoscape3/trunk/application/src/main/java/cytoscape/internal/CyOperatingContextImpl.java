@@ -51,15 +51,12 @@ import java.io.IOException;
 public class CyOperatingContextImpl implements CyOperatingContext {
 
 	private Properties props;
-	private File mrud;
 
 	public CyOperatingContextImpl(Properties props) {
 		if ( props == null )
 			throw new NullPointerException("Cytoscape Properties is null");
 
 		this.props = props;
-
-		mrud = new File(props.getProperty("mrud", System.getProperty("user.dir")));
 
 		loadLocalProps();
 	}
@@ -84,21 +81,6 @@ public class CyOperatingContextImpl implements CyOperatingContext {
 	// do we want just one properties object?
 	public Properties getProperties() {
 		return props;
-	}
-
-	/**
-	 * Get the most recently used directory.
-	 */
-	public synchronized File getMRUD() {
-		return mrud;
-	}
-
-	/**
-	 * Set the most recently used directory.
-	 */
-	public synchronized void setMRUD(File mrud_new) {
-		if ( mrud_new != null )
-			mrud = mrud_new;
 	}
 
 	/**

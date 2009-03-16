@@ -41,7 +41,6 @@
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
 	<bean name="fileUtil" class="cytoscape.util.internal.FileUtilImpl">
-		<constructor-arg ref="cyOperatingContext" />
 		<constructor-arg ref="streamUtilServiceRef" />
 	</bean>
 	<bean name="networkNamingUtil" class="cytoscape.util.internal.CyNetworkNamingImpl" />

@@ -52,25 +52,20 @@ import javax.swing.JOptionPane;
 
 import org.cytoscape.io.util.StreamUtil;
 
-import cytoscape.CyOperatingContext;
 import org.cytoscape.work.TaskMonitor;
 import cytoscape.util.FileUtil;
 
 class FileUtilImpl implements FileUtil {
 	
 	private StreamUtil streamUtil;
+	private File mrud;
 
-	private CyOperatingContext context;
-
-	FileUtilImpl(CyOperatingContext context, StreamUtil streamUtil) {
-		this.context = context;
+	FileUtilImpl(StreamUtil streamUtil) {
 		this.streamUtil = streamUtil;
+
+		mrud = new File(System.getProperty("user.dir"));
 	}
 	
-	public void setStreamUtil(StreamUtil streamUtil) {
-		this.streamUtil = streamUtil;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -127,7 +122,7 @@ class FileUtilImpl implements FileUtil {
 		File start = null;
 
 		if (start_dir == null)
-			start = context.getMRUD();
+			start = getMRUD();
 		else
 			start = new File(start_dir);
 
@@ -155,7 +150,7 @@ class FileUtilImpl implements FileUtil {
 						+ chooser.getFile());
 
 				if (chooser.getDirectory() != null) {
-					context.setMRUD(new File(chooser.getDirectory()));
+					setMRUD(new File(chooser.getDirectory()));
 				}
 
 				return result;
@@ -230,7 +225,7 @@ class FileUtilImpl implements FileUtil {
 			}
 
 			if ((result != null) && (start_dir == null))
-				context.setMRUD(chooser.getCurrentDirectory());
+				setMRUD(chooser.getCurrentDirectory());
 
 			return result;
 		}
@@ -299,5 +294,20 @@ class FileUtilImpl implements FileUtil {
 			sb.append(line + lineSep);
 
 		return sb.toString();
+	}
+
+	/**
+	 * Get the most recently used directory.
+	 */
+	public synchronized File getMRUD() {
+		return mrud;
+	}
+
+	/**
+	 * Set the most recently used directory.
+	 */
+	public synchronized void setMRUD(File mrud_new) {
+		if ( mrud_new != null )
+			mrud = mrud_new;
 	}
 }

@@ -204,10 +204,21 @@ public interface FileUtil {
 	String getInputString(String filename) ;
 
 	/**
-	 *
 	 * @param inputStream An InputStream
 	 *
 	 * @return  The contents of the given file as a string.
 	 */
 	String getInputString(InputStream inputStream) throws IOException ;
+
+	/**
+	 * Get the most recently used directory.
+	 */
+	File getMRUD();
+ 
+	/**
+	 * Set the most recently used directory.
+	 * @param mrud The most recently used directory. 
+	 */
+	void setMRUD(File mrud);
+
 }
