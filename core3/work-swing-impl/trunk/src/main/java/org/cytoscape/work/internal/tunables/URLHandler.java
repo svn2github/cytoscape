@@ -128,7 +128,7 @@ layout
 
 	public void handle() {
 		urlstr = bookmarkEditor.getURLstr();
-		System.out.println("ttt"+urlstr);
+		System.out.println("Loading : "+urlstr);
 		try{
 			if ( urlstr != null ) {
 				try {
