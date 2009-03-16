@@ -107,7 +107,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		if (command.equals("done")) {
 			setVisible(false);
 		} else if (command.equals("execute")) {
-			ti.Handle();
+			ti.handle();
 			tm.execute( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()) );
 		} else {
 			// OK, initialize and display
