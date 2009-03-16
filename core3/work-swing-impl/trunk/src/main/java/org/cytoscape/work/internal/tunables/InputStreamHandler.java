@@ -1,13 +1,14 @@
 package org.cytoscape.work.internal.tunables;
 
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.cytoscape.property.bookmark.Category;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.io.util.*;
+import org.jdesktop.layout.GroupLayout;
 
 
 public class InputStreamHandler extends AbstractGuiHandler {
@@ -30,9 +32,9 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	String urlstr;
 	BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
 	JComboBox networkFileComboBox;
-	FileUtil flUtil;
+	//FileUtil flUtil;
 	BookmarksUtil bkUtil;
-	StreamUtil stUtil;
+	//StreamUtil stUtil;
 	
 	InputStream InStream = null;
 	URL url;
@@ -41,24 +43,26 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	JFileChooser fileChooser;
 	boolean filechoosen;
 	JTextField path;
+	private javax.swing.JSeparator titleSeparator;
 	
 	private String pleaseMessage = "Please provide URL or select from list";
 	
+	//private JPanel valuePanel;
+	private JLabel titleLabel = new JLabel("Import Network File");
 	private JPanel radioButtonPanel;
-	private JPanel valuePanel;
-	private javax.swing.JButton selectButton;
-	private javax.swing.JRadioButton remoteRadioButton;
-	private javax.swing.JRadioButton localRadioButton;
-	private javax.swing.JTextField networkFileTextField;
+	private JButton selectButton;
+	private JRadioButton remoteRadioButton;
+	private JRadioButton localRadioButton;
+	private JTextField networkFileTextField;
 	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
 
 	
-	public InputStreamHandler(Field f, Object o, Tunable t,Bookmarks bookmarks,BookmarksUtil bkUtil,FileUtil flUtil,StreamUtil stUtil) {
+	public InputStreamHandler(Field f, Object o, Tunable t,Bookmarks bookmarks,BookmarksUtil bkUtil) {
 		super(f,o,t);
 		this.bkUtil=bkUtil;
-		this.flUtil=flUtil;
-		this.stUtil=stUtil;
+		//this.flUtil=flUtil;
+		//this.stUtil=stUtil;
 		this.theBookmarks=bookmarks;
 		filechoosen = false;
 		fileChooser = new JFileChooser();
@@ -76,20 +80,19 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			theCategoryList.add(theCategory);
 		}
 		
-		//System.out.println("Test INPUTSTREAM");
 
-		panel.add(new JLabel("Path :"));
-		path = new JTextField("select file",12);
-		path.setFont(new Font(null, Font.ITALIC,10));
-		panel.add(path);
+		//panel.add(new JLabel("Path :"));
+		//path = new JTextField("select file",12);
+		//path.setFont(new Font(null, Font.ITALIC,10));
+		//panel.add(path);
 
 		initComponents();
 		addListeners();
 		switchImportView("remote");
 		
-		panel = new JPanel(new BorderLayout());
-		panel.add(radioButtonPanel,BorderLayout.NORTH);
-		panel.add(valuePanel,BorderLayout.SOUTH);
+		//panel = new JPanel(new BorderLayout());
+		//panel.add(radioButtonPanel,BorderLayout.NORTH);
+		//panel.add(valuePanel,BorderLayout.SOUTH);
 	}
 	
 	
@@ -102,7 +105,8 @@ public class InputStreamHandler extends AbstractGuiHandler {
 				    File file = fileChooser.getSelectedFile();
 					if ( file != null ){
 						try{
-							InStream = new FileInputStream(file);
+							InStream = new FileInputStream(file.getAbsolutePath());
+							//OutputStream out = new FileOutputStream(file);
 							//InStream = flUtil.getInputStream(file.getAbsolutePath());
 							f.set(o,InStream);
 						}catch (Exception e) { e.printStackTrace();}
@@ -118,7 +122,7 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			try{
 				if ( urlstr != null ) {
 					url = new URL(urlstr);
-					InStream = stUtil.getInputStream(url);
+					//InStream = stUtil.getInputStream(url);
 					f.set(o,InStream);
 				}
 			}catch (Exception e){}
@@ -146,10 +150,11 @@ public class InputStreamHandler extends AbstractGuiHandler {
 		networkFileTextField = new javax.swing.JTextField();
 		networkFileComboBox = new javax.swing.JComboBox();
 		selectButton = new javax.swing.JButton();
+		titleSeparator = new JSeparator();
 		radioButtonPanel = new javax.swing.JPanel();
-		valuePanel = new javax.swing.JPanel();
+		//valuePanel = new javax.swing.JPanel();
 
-		radioButtonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Data Source Type"));
+		radioButtonPanel.setBorder(BorderFactory.createTitledBorder("Data Source Type"));
 		
 		localRadioButton.setSelected(true);
 		localRadioButton.setText("Local");
@@ -163,11 +168,11 @@ public class InputStreamHandler extends AbstractGuiHandler {
 		remoteRadioButton.setToolTipText(URL_TOOLTIP);
 
 	
-		radioButtonPanel.add(localRadioButton);
-		radioButtonPanel.add(remoteRadioButton);
-		valuePanel.add(networkFileTextField);
-		valuePanel.add(selectButton);
-		valuePanel.add(networkFileComboBox);
+		//radioButtonPanel.add(localRadioButton);
+		//radioButtonPanel.add(remoteRadioButton);
+		//valuePanel.add(networkFileTextField);
+		//valuePanel.add(selectButton);
+		//valuePanel.add(networkFileComboBox);
 		
 		networkFileTextField.setText("Please select a network file...");
 		networkFileTextField.setName("networkFileTextField");
@@ -183,6 +188,122 @@ public class InputStreamHandler extends AbstractGuiHandler {
 		final ToolTipManager tp = ToolTipManager.sharedInstance();
 		tp.setInitialDelay(1);
 		tp.setDismissDelay(7500);
+	
+		GroupLayout radioButtonPanelLayout = new GroupLayout(radioButtonPanel);
+		radioButtonPanel.setLayout(radioButtonPanelLayout);
+		radioButtonPanelLayout
+		.setHorizontalGroup(radioButtonPanelLayout
+				.createParallelGroup(
+						org.jdesktop.layout.GroupLayout.LEADING)
+				.add(
+						radioButtonPanelLayout
+								.createSequentialGroup()
+								.addContainerGap()
+								.add(localRadioButton)
+								.addPreferredGap(
+										org.jdesktop.layout.LayoutStyle.RELATED)
+								.add(remoteRadioButton)
+								.addContainerGap(250, Short.MAX_VALUE)));
+		radioButtonPanelLayout
+			.setVerticalGroup(radioButtonPanelLayout
+					.createParallelGroup(
+						org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								radioButtonPanelLayout
+									.createSequentialGroup()
+									.add(
+										radioButtonPanelLayout
+												.createParallelGroup(
+														org.jdesktop.layout.GroupLayout.BASELINE)
+												.add(localRadioButton)
+												.add(remoteRadioButton))));
+
+		GroupLayout layout = new org.jdesktop.layout.GroupLayout(panel);
+		panel.setLayout(layout);
+		layout
+		.setHorizontalGroup(layout
+				.createParallelGroup(
+						org.jdesktop.layout.GroupLayout.LEADING)
+				.add(
+						layout
+								.createSequentialGroup()
+								.addContainerGap()
+								.add(
+										layout
+												.createParallelGroup(
+														org.jdesktop.layout.GroupLayout.LEADING)
+												.add(
+														networkFileComboBox,
+														0, 350,
+														Short.MAX_VALUE)
+												.add(
+														titleLabel,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														350,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												.add(
+														titleSeparator,
+														org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+														350,
+														Short.MAX_VALUE)
+												.add(
+														radioButtonPanel,
+														org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+														org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+														Short.MAX_VALUE)
+												.add(
+														layout
+																.createSequentialGroup()
+																.add(
+																		networkFileTextField,
+																		org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																		350,
+																		Short.MAX_VALUE)
+																.addPreferredGap(
+																		org.jdesktop.layout.LayoutStyle.RELATED)
+																.add(
+																		selectButton))
+											)
+								.addContainerGap()));
+layout
+		.setVerticalGroup(layout
+				.createParallelGroup(
+						org.jdesktop.layout.GroupLayout.LEADING)
+				.add(
+						layout
+								.createSequentialGroup()
+								.addContainerGap()
+								.add(titleLabel)
+								.add(8, 8, 8)
+								.add(
+										titleSeparator,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+								.add(7, 7, 7)
+								.add(
+										radioButtonPanel,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(
+										org.jdesktop.layout.LayoutStyle.RELATED)
+								.add(
+										layout
+												.createParallelGroup(
+														org.jdesktop.layout.GroupLayout.BASELINE)
+												.add(selectButton)
+												.add(
+														networkFileTextField))
+								.add(
+										networkFileComboBox,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(
+										org.jdesktop.layout.LayoutStyle.RELATED,
+										3, Short.MAX_VALUE)
+								.addContainerGap()));
 	}
     
     

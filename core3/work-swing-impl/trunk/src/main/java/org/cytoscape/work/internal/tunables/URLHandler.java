@@ -15,6 +15,7 @@ import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.Category;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.work.Tunable;
+import org.jdesktop.layout.GroupLayout;
 
 
 public class URLHandler extends AbstractGuiHandler {
@@ -26,6 +27,8 @@ public class URLHandler extends AbstractGuiHandler {
 	String urlstr;
 	BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
 	JComboBox networkFileComboBox;
+	JLabel titleLabel = new JLabel("Import URL file");
+	private JSeparator titleSeparator;
 
 	private String pleaseMessage = "Please provide URL or select from list";
 	
@@ -33,6 +36,7 @@ public class URLHandler extends AbstractGuiHandler {
 		super(f,o,t);
 		this.bkUtil=bkUtil;
 		this.theBookmarks=bookmarks;
+		titleSeparator = new JSeparator();
 		try{
 			this.url= (URL) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
@@ -45,13 +49,75 @@ public class URLHandler extends AbstractGuiHandler {
 			List<Category> theCategoryList = bookmarks.getCategory();
 			theCategoryList.add(theCategory);
 		}
-		
 		networkFileComboBox = new JComboBox();
 		networkFileComboBox.setRenderer(new MyCellRenderer());
 		networkFileComboBox.setEditor(bookmarkEditor);
 		networkFileComboBox.setEditable(true);
 		networkFileComboBox.setName("networkFileComboBox");
 		networkFileComboBox.setToolTipText("<html><body>You can specify URL by the following:<ul><li>Type URL</li><li>Select from pull down menu</li><li>Drag & Drop URL from Web Browser</li></ul></body><html>");
+		
+		
+		final ToolTipManager tp = ToolTipManager.sharedInstance();
+		tp.setInitialDelay(1);
+		tp.setDismissDelay(7500);
+
+
+		GroupLayout layout = new GroupLayout(panel);
+		panel.setLayout(layout);
+		layout.setHorizontalGroup(layout
+				.createParallelGroup(
+						org.jdesktop.layout.GroupLayout.LEADING)
+				.add(
+						layout
+								.createSequentialGroup()
+								.addContainerGap()
+								.add(
+										layout
+												.createParallelGroup(
+														org.jdesktop.layout.GroupLayout.LEADING)
+												.add(
+														networkFileComboBox,
+														0, 350,
+														Short.MAX_VALUE)
+												.add(
+														titleLabel,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+														350,
+														org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+												.add(
+														titleSeparator,
+														org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+														350,
+														Short.MAX_VALUE)
+													)
+								.addContainerGap()));
+layout
+		.setVerticalGroup(layout
+				.createParallelGroup(
+						org.jdesktop.layout.GroupLayout.LEADING)
+				.add(
+						layout
+								.createSequentialGroup()
+								.addContainerGap()
+								.add(titleLabel)
+								.add(8, 8, 8)
+								.add(
+										titleSeparator,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+								.add(7, 7, 7)
+								.addPreferredGap(
+										org.jdesktop.layout.LayoutStyle.RELATED)
+								.add(
+										networkFileComboBox,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+										org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+										org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(
+										org.jdesktop.layout.LayoutStyle.RELATED,
+										3, Short.MAX_VALUE)
+								.addContainerGap()));		
 		
 		//panel = new JPanel(new BorderLayout());
 		panel.add(new JLabel("URL Path = "));

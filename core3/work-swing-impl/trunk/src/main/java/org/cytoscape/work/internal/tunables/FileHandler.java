@@ -8,7 +8,6 @@ import java.io.File;
 
 import org.cytoscape.work.Tunable;
 
-import cytoscape.util.*;
 
 public class FileHandler extends AbstractGuiHandler {
 
@@ -17,11 +16,11 @@ public class FileHandler extends AbstractGuiHandler {
 	JFileChooser fileChooser;
 	boolean filechoosen;
 	JTextField path;
-	FileUtil flUtil;
+	//FileUtil flUtil;
 	
-	public FileHandler(Field f, Object o, Tunable t,FileUtil flUtil) {
+	public FileHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-		this.flUtil = flUtil;
+		//this.flUtil = flUtil;
 		filechoosen = false;
 		fileChooser = new JFileChooser();
 
@@ -29,8 +28,7 @@ public class FileHandler extends AbstractGuiHandler {
 			this.myFile=(File)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		
-		panel.add(new JLabel("Path :"));
-		path = new JTextField("select file",12);
+		path = new JTextField("select file",14);
 		path.setFont(new Font(null, Font.ITALIC,10));
 		panel.add(path);
 		button = new JButton("Select File...");

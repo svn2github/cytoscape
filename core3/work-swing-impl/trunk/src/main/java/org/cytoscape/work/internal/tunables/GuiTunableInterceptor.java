@@ -1,6 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
-import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -33,8 +33,14 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		//this.parent=parent;
 	}
 
-	public void setParent(Component c) {
-		parent = c;
+	public void setParent(Object o) {
+		if(o instanceof JPanel)
+			this.parent = (Component)o;
+		else throw new IllegalArgumentException("Not a JPanel");
+	}
+	
+	public void handle(){
+		for(Guihandler h: lh)h.handle();
 	}
 
 	public boolean createUI(Object... proxyObjs) {
@@ -135,10 +141,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		}
 	}
 	
-	public void Handle(){
-		for(Guihandler h: lh)h.handle();
-	}
-	
 //	private class myActionListener implements ActionListener{
 //		public void actionPerformed(ActionEvent ae){
 //			if(ae.getActionCommand() == "ok"){ for(Guihandler h: lh)h.handle();m=true;}
@@ -183,6 +185,4 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
 		return ret;
 	}
-
-
 }
