@@ -117,8 +117,7 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			try{
 				if ( urlstr != null ) {
 					url = new URL(urlstr);
-					//InStream = stUtil.getInputStream(url);
-					f.set(o,InStream);
+					f.set(o,url.openStream());
 				}
 			}catch (Exception e){}
 		}
