@@ -28,4 +28,7 @@ public class LoadPropsInterceptor extends SpringTunableInterceptor<PropHandler> 
 		}
 		return true;
 	}
+	
+	public void handle(){}
+	public void setParent(Object o) {};
 }
