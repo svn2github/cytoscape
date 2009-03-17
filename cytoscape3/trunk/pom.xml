@@ -309,8 +309,6 @@
 		<module>render.stateful</module>
 		<module>geom.rtree</module>
 		<module>render.export</module>
-		<module>tunable</module>
-		<module>task</module>
 		<module>view</module>
 		<module>phoebe.dnd</module>
 		<module>layout</module>
