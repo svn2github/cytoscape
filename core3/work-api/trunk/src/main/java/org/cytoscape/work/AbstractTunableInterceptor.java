@@ -38,10 +38,12 @@ package org.cytoscape.work;
 
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 
 
 /**
@@ -98,6 +100,29 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 							System.out.println("No handler for type: " + field.getType().getName());
 					} catch (Throwable ex) {
 						System.out.println("tunable field intercept failed: " + field.toString());
+						ex.printStackTrace();
+					}
+				}
+			}
+			
+			// Find each public method in the class.
+			for (Method method : obj.getClass().getMethods()) {
+	
+				// See if the method is annotated as a Tunable.
+   				if (method.isAnnotationPresent(Tunable.class)) {
+					try {
+						Tunable tunable = method.getAnnotation(Tunable.class);
+						
+						// Get a handler for this particular field type and
+						// add it to the list.
+						T handler = factory.getHandler(method,obj,tunable);
+	
+						if ( handler != null ) {
+						 	handlerList.put( method.getName(), handler ); 
+						}
+	
+					} catch (Throwable ex) {
+						System.out.println("tunable method intercept failed: " + method.toString() );
 						ex.printStackTrace();
 					}
 				}
