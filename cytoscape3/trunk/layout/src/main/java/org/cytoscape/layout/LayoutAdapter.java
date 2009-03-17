@@ -37,7 +37,6 @@
 package org.cytoscape.layout;
 
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
@@ -131,45 +130,6 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @return List of Strings
 	 */
 	public List<String> getInitialAttributeList() {return new ArrayList<String>();}
-
-	/**
-	 * This method should return a JPanel that implements the UI to set
-	 * the tuneable parameters for the algorithm.
-	 *
-	 * @return JPanel that will be used in the LayoutSettingsDialog.  If
-	 *                this algorithm does not support a UI for settings,
-	 *                it should return null
-	 */
-	public JPanel getSettingsPanel() {return null;}
-
-	/**
-	 * This method is used to ask the algorithm to revert its settings
-	 * to some previous state.  It is called from the settings dialog
-	 * when the user presses the "Cancel" button.
-	 *
-	 * NOTE: AbstractLayout implements this on behalf of all its subclasses
-	 * by using Java Preferences.
-	 */
-	public void revertSettings() {}
-
-	/**
-	 * This method is used to ask the algorithm to get its settings
-	 * from the seetings dialog.  It is called from the settings dialog
-	 * when the user presses the "Done" or the "Execute" buttons.
-	 *
-	 * NOTE: AbstractLayout implements this on behalf of all its subclasses
-	 * by using Java Preferences.
-	 */
-	public void updateSettings() {}
-
-	/**
-	 * This method is used to ask the algorithm to get all of its tunables
-	 * and return them to the caller.
-	 *
-	 * @return the layout properties for this algorithm
-	 *
-	 */
-	public ModuleProperties getSettings() {return null;}
 
 	/**
 	 *  DOCUMENT ME!

@@ -39,7 +39,6 @@ package org.cytoscape.layout;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.NodeView;
@@ -184,37 +183,6 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 */
 	public List<String> getInitialAttributeList() {
 		return new ArrayList<String>();
-	}
-
-	/**
-	 * Returns a JPanel to be used as part of the Settings dialog for this layout
-	 * algorithm.
-	 *
-	 */
-	public JPanel getSettingsPanel() {
-		return null;
-	}
-
-	/**
-	 * Property handling -- these must be overridden by any algorithms
-	 * that want to use properties or have a settings UI.
-	 */
-	public void revertSettings() {
-	}
-
-	/**
-	 * Property handling -- these must be overridden by any algorithms
-	 * that want to use properties or have a settings UI.
-	 */
-	public void updateSettings() {
-	}
-
-	/**
-	 * Property handling -- these must be overridden by any algorithms
-	 * that want to use properties or have a settings UI.
-	 */
-	public ModuleProperties getSettings () {
-		return null;
 	}
 
 	/**
