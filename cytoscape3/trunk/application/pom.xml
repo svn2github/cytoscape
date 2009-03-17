@@ -260,11 +260,6 @@
 
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>tunable</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
 			<artifactId>layout</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
