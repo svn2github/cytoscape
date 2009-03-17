@@ -40,7 +40,6 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
 
-import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.webservice.client.ClientType;
@@ -64,12 +63,11 @@ public abstract class WebServiceClientImplWithGUI<S, U extends Container>
 	 * @param serviceName  DOCUMENT ME!
 	 * @param displayName  DOCUMENT ME!
 	 * @param types  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
 	 */
 	public WebServiceClientImplWithGUI(final String serviceName, final String displayName,
-	                                   final ClientType[] types, final ModuleProperties props,
+	                                   final ClientType[] types, 
 	                                   final S clientStub, final U gui) {
-		super(serviceName, displayName, types, props, clientStub);
+		super(serviceName, displayName, types, clientStub);
 		this.gui = gui;
 	}
 

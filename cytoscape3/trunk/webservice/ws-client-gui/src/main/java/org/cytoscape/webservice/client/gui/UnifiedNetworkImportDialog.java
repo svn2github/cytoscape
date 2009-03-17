@@ -63,8 +63,6 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.webservice.client.CyWebServiceEvent;
@@ -541,6 +539,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 			return;
 		}
 
+	/* TODO implement with new-style tunables
 		ModuleProperties props = client.getProps();
 		List<Tunable> tunables = props.getTunables();
 		propertyPanel = new JPanel(new GridLayout(0, 1));
@@ -556,6 +555,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		propertyScrollPane.setViewportView(propertyPanel);
 		pack();
 		repaint();
+		*/
 	}
 
 	private void setDatasource() {
@@ -581,7 +581,8 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		final String clientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
 		// Update props here.
-		wscm.getClient(clientID).getProps().updateValues();
+		// TODO get working with new-style props
+		//wscm.getClient(clientID).getProps().updateValues();
 
 		return wseFactory.<String>createEvent(clientID, WSEventType.SEARCH_DATABASE,
 		                                      searchTermTextPane.getText(),
