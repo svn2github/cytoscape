@@ -302,7 +302,6 @@
 	<modules>
 		<module>poms</module>
 		<module>provision</module>
-		<module>splash</module>
 		<module>util.intr</module>
 		<module>render.immed</module>
 		<module>geom.spacial</module>
