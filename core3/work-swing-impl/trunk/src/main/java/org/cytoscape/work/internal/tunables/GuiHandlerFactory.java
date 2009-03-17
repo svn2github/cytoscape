@@ -1,6 +1,7 @@
 package org.cytoscape.work.internal.tunables;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 
 import java.io.File;
@@ -33,6 +34,10 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 		this.bkUtil = bkUtil;
 		this.flUtil = flUtil;
 		this.stUtil = stUtil;
+	}
+	
+	public Guihandler getHandler(Method m, Object o, Tunable t) {
+		return null;
 	}
 
 	public Guihandler getHandler(Field f, Object o, Tunable t){
