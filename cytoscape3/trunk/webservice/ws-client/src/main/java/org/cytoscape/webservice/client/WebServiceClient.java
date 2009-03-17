@@ -37,9 +37,6 @@ package org.cytoscape.webservice.client;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import org.cytoscape.tunable.ModuleProperties;
-
-
 /**
  * Web service client wrapper for Cytoscape.
  * <p>
@@ -114,20 +111,6 @@ public interface WebServiceClient<S> {
 	 * @param stub client stub used in this client.
 	 */
 	public void setClientStub(S clientStub);
-
-	/**
-	 * Get properties used by the Tunable.
-	 *
-	 * @return
-	 */
-	public ModuleProperties getProps();
-
-	/**
-	 * Set props used by Tunable.
-	 *
-	 * @param props Property.
-	 */
-	public void setProps(ModuleProperties props);
 
 	/**
 	 * Returns all available methods accessible through client stub.

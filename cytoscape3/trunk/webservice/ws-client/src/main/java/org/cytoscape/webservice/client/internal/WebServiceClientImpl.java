@@ -39,7 +39,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.webservice.client.ClientType;
 import org.cytoscape.webservice.client.CyWebServiceEvent;
 import org.cytoscape.webservice.client.CyWebServiceEventListener;
@@ -76,9 +75,6 @@ public abstract class WebServiceClientImpl<S> implements Serializable, WebServic
 
 	// Compatible types.
 	protected ClientType[] type;
-
-	// Properties for this client.  Will be used by Tunable.
-	protected ModuleProperties props;
 
 	// Methods available through the client stub.
 	protected Collection<Method> availableMethods = null;
@@ -119,28 +115,12 @@ public abstract class WebServiceClientImpl<S> implements Serializable, WebServic
 	 * @param serviceName  DOCUMENT ME!
 	 * @param displayName  DOCUMENT ME!
 	 * @param types  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
 	 */
 	public WebServiceClientImpl(final String serviceName, final String displayName,
-	                            final ClientType[] types, final ModuleProperties props) {
-		this(serviceName, displayName, types, props, null);
-	}
-
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 * @param types  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 */
-	public WebServiceClientImpl(final String serviceName, final String displayName,
-	                            final ClientType[] types, final ModuleProperties props,
-	                            final S clientStub) {
+	                            final ClientType[] types, final S clientStub) {
 		this.clientID = serviceName;
 		this.displayName = displayName;
 		this.type = types;
-		this.props = props;
 		this.clientStub = clientStub;
 
 		//WebServiceClientManagerImpl.getCyWebServiceEventSupport().addCyWebServiceEventListener(this);
@@ -220,24 +200,6 @@ public abstract class WebServiceClientImpl<S> implements Serializable, WebServic
 	 */
 	public S getClientStub() {
 		return clientStub;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public ModuleProperties getProps() {
-		return props;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 */
-	public void setProps(ModuleProperties props) {
-		this.props = props;
 	}
 
 	/**
