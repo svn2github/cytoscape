@@ -1171,24 +1171,30 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 			};
 			
 			add(new JLabel("Include"));
-			selectionBox = new JCheckBox("Selection Only");
+			selectionBox = new JCheckBox("Selection Only     ");
 			selectionBox.addActionListener(syncher);
 			JPanel outputPanel = new JPanel();
 			outputPanel.add(selectionBox);
 			add(outputPanel);
 			
-			gtrBox = new JCheckBox("Gene Tree");
+			if (!model.isSymmetrical())
+				gtrBox = new JCheckBox("Node Tree     ");
+			else
+				gtrBox = new JCheckBox("Left Node Tree");
 			gtrBox.addActionListener(syncher);
 			outputPanel = new JPanel();
 			outputPanel.add(gtrBox);
 			add(outputPanel);
-			atrBox = new JCheckBox("Array Tree");
+			if (!model.isSymmetrical())
+				atrBox = new JCheckBox("Attribute Tree");
+			else
+				atrBox = new JCheckBox("Top Node Tree ");
 			atrBox.addActionListener(syncher);
 			outputPanel = new JPanel();
 			outputPanel.add(atrBox);
 			add(outputPanel);
 
-			dataBox = new JCheckBox("Data Matrix");
+			dataBox = new JCheckBox("Heat Map       ");
 			dataBox.addActionListener(syncher);
 			outputPanel = new JPanel();
 			outputPanel.add(dataBox);
