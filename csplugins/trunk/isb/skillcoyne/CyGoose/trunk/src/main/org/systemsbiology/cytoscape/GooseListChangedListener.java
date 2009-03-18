@@ -8,8 +8,7 @@ package org.systemsbiology.cytoscape;
 * General Public License, the text of which is available at:
 *   http://www.gnu.org/copyleft/lesser.html
 */
-public interface GooseListChangedListener {
-
-    public void gooseListChanged(String[] gooseList);
-
-}
+public interface GooseListChangedListener
+  {
+  public void gooseListChanged(String[] gooseList);
+  }

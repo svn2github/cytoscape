@@ -11,6 +11,7 @@ import java.util.Collection;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.data.Semantics;
 
 import cytoscape.task.Task;
@@ -31,7 +32,9 @@ import org.systemsbiology.gaggle.core.datatypes.Network;
  */
 public class HandleNetworkTask implements Task
 	{
-	private TaskMonitor taskMonitor;
+  private static CyLogger logger = CyLogger.getLogger(HandleNetworkTask.class);
+
+  private TaskMonitor taskMonitor;
 	private Network gaggleNetwork;
 	private CyNetwork cyNetwork;
 	private String bSource;
@@ -63,7 +66,7 @@ public class HandleNetworkTask implements Task
 	 */
 	public void halt()
 		{
-		System.out.println("Halt 'HandleNetworkTask' not yet implemented");
+		logger.info("Halt " + this.getClass().getName() + " not yet implemented");
 		}
 
 	/*
@@ -73,7 +76,7 @@ public class HandleNetworkTask implements Task
 	 */
 	public void run()
 		{
-		System.out.println("======> Creating network in " + this.getClass().getName());
+		logger.debug("======> Creating network in " + this.getClass().getName());
 		if (taskMonitor == null)  
 			throw new IllegalStateException("Task Monitor is not set.");
 		

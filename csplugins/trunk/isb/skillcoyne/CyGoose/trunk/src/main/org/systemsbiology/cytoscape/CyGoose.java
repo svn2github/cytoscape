@@ -17,9 +17,11 @@ import java.rmi.UnmarshalException;
 
 import java.util.*;
 
-import javax.swing.JComboBox;
+import javax.swing.*;
 
 import cytoscape.*;
+import cytoscape.logger.CyLogger;
+import static cytoscape.CytoscapeInit.getProperties;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
 
@@ -43,7 +45,9 @@ import giny.model.Edge;
  */
 public class CyGoose implements Goose
 	{
-	private static boolean debug = false;
+  private static CyLogger logger = CyLogger.getLogger(CyGoose.class);
+  
+  private static boolean debug = false;
 	private static String debugTargetGoose;
 	private List<GooseListChangedListener> gooseListChangedListeners = new ArrayList<GooseListChangedListener>();
 	public enum Debug
@@ -73,8 +77,9 @@ public class CyGoose implements Goose
 	private SeedMappings visualMap;
 	private String broadcastId;
 	private String targetGoose = "Boss";
+  private String species;
 
-	private static void print(String S)
+  private static void print(String S)
 		{
 		System.out.println(S);
 		}
@@ -84,7 +89,8 @@ public class CyGoose implements Goose
 		gDialog = GD;
 		// deals with everything but the broadcast actions
 		addButtonActions();
-		VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
+    species = (String) getProperties().get("defaultSpeciesName");
+    VisualStyle CurrentStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
 		nac = CurrentStyle.getNodeAppearanceCalculator();
 		visualMap = new SeedMappings(nac);
 		}
@@ -103,13 +109,13 @@ public class CyGoose implements Goose
 	// GagglePlugin
 	public void connectToGaggle() throws Exception
 		{
-		print("Use GagglePlugin methods for connection");
+		logger.info("Use GagglePlugin methods for connection");
 		}
 
 	// boss does not call this method
 	public void doBroadcastList() throws RemoteException
 		{
-		print("doBroadcastList() not implemented");
+		logger.info("doBroadcastList() not implemented");
 		}
 
 	/**
@@ -120,12 +126,12 @@ public class CyGoose implements Goose
 		{
 		if (Integer.valueOf(getNetworkId()).intValue() > 0)
 			{
-			print("Destroying network " + gooseName);
+			logger.info("Destroying network " + gooseName);
 			Cytoscape.destroyNetwork(Cytoscape.getNetwork(gooseNetId), false);
 			}
 		else
 			{
-			print("Exiting Cytoscape...");
+			logger.info("Exiting Cytoscape...");
 			Cytoscape.exit(0);
 			}
 		}
@@ -166,7 +172,21 @@ public class CyGoose implements Goose
 		return gooseNetId;
 		}
 
-	/**
+  /**
+   * @return Species name set for the goose
+   */
+  public String getSpeciesName()
+    {
+    return this.species;
+    }
+
+  public void setSpeciesName(String name)
+    {
+    this.species = name;
+    this.gDialog.setSpeciesText(name);
+    }
+
+  /**
 	 * @return Array of selected node ids
 	 */
 	public String[] getSelection() throws RemoteException
@@ -272,7 +292,7 @@ public class CyGoose implements Goose
 			CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); 
 			CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
 			/* does this need to be in this scope? */
-			System.out.println("Tuple value type: " + valueObject.getClass().getName() + " " + valueObject);
+			logger.info("Tuple value type: " + valueObject.getClass().getName() + " " + valueObject);
 			
 			if (valueObject instanceof Double)
 				{
@@ -341,7 +361,10 @@ public class CyGoose implements Goose
 				}
 			visualMap.seedMappings(attribute, upperValue, lowerValue);
 			}
-		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+    if (gaggleTuple.getSpecies() != null)
+      this.setSpeciesName(gaggleTuple.getSpecies());
+
+    Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.getNetworkView(net.getIdentifier()).redrawGraph(true, true);
 		}
 
@@ -354,7 +377,7 @@ public class CyGoose implements Goose
 	public void handleMatrix(String source, DataMatrix matrix)
 			throws RemoteException
 		{
-		print("***** handleMatrix(DataMatrix) ****** ");
+		logger.info("***** handleMatrix(DataMatrix) ****** ");
 		CyNetwork Net = Cytoscape.getNetwork(this.getNetworkId());
 		Cytoscape.getDesktop().setFocus(Net.getIdentifier());
 		String[] GeneNames = matrix.getRowTitles();
@@ -392,7 +415,7 @@ public class CyGoose implements Goose
 				if (SelectNode != null)
 					{
 					if ((NodeAtts.hasAttribute(SelectNode.getIdentifier(), attributeName))
-							&& (NodeAtts.getType(attributeName) != CyAttributes.TYPE_FLOATING)) print("handleMatrix() Warning: \""
+							&& (NodeAtts.getType(attributeName) != CyAttributes.TYPE_FLOATING)) logger.info("handleMatrix() Warning: \""
 							+ attributeName + "\" is not of TYPE_FLOATING");
 					else NodeAtts.setAttribute(SelectNode.getIdentifier(), attributeName,
 							condVal);
@@ -400,14 +423,18 @@ public class CyGoose implements Goose
 				if (SelectEdge != null)
 					{
 					if ((EdgeAtts.hasAttribute(SelectEdge.getIdentifier(), attributeName))
-							&& (EdgeAtts.getType(attributeName) != CyAttributes.TYPE_FLOATING)) print("handleMatrix() Warning: \""
+							&& (EdgeAtts.getType(attributeName) != CyAttributes.TYPE_FLOATING)) logger.info("handleMatrix() Warning: \""
 							+ attributeName + "\" is not of TYPE_FLOATING");
 					else EdgeAtts.setAttribute(SelectEdge.getIdentifier(), attributeName,
 							condVal);
 					}
 				}
 			}
-		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+
+    if (matrix.getSpecies() != null)
+      this.setSpeciesName(matrix.getSpecies());      
+
+    Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		// refresh network to flag selected nodes
 		Cytoscape.getDesktop().setFocus(Net.getIdentifier());
 		}
@@ -416,28 +443,27 @@ public class CyGoose implements Goose
 		{
 		if (cmd.equalsIgnoreCase(Command.HIDE.getCommand()))
 			{
-			print("    * running command 'hideSelection()'");
+			logger.info("    * running command 'hideSelection()'");
 			CommandHandler.hideSelection(this.getNetworkId());
 			}
 		else if (cmd.equalsIgnoreCase(Command.INVERT.getCommand()))
 			{
-			print("    * running command 'invertSelection()'");
+			logger.info("    * running command 'invertSelection()'");
 			CommandHandler.invertSelection(this.getNetworkId());
 			}
 		else if (cmd.equalsIgnoreCase(Command.CLEAR.getCommand()))
 			{
-			print("    * running command 'clearSelection()'");
+			logger.info("    * running command 'clearSelection()'");
 			CommandHandler.clearSelection(this.getNetworkId());
 			}
 		else
 			{
-			print("ERROR: Unknown command '" + cmd + "'");
+			logger.info("ERROR: Unknown command '" + cmd + "'");
 			}
 		// refresh network to flag selected nodes
 		Cytoscape.getDesktop().setFocus(this.getNetworkId());
 		}
 
-	// TODO don't assume it's only a node name list, handle edges too!
 	/**
 	 * @param source
 	 * @param namelist
@@ -447,26 +473,15 @@ public class CyGoose implements Goose
 	public void handleNameList(String source, Namelist namelist)
 			throws RemoteException
 		{
-		print("**** handleNameList(String, Namelist) *****");
-		String[] names = namelist.getNames();
+		logger.info("**** handleNameList(String, Namelist) *****");
+    String[] names = namelist.getNames();
+/*  Not going to deal with the hacky commands for now.  Paul Shannon requested but isn't using them.
 		if (names[0].equalsIgnoreCase("cmd"))
 			{
 			handleCommand(names[1], null);
 			}
-		// else if (species.equalsIgnoreCase(Debug.ECHO_INDIRECT))
-		// For debugging purposes we will check the first value
-		// if (names[0].equalsIgnoreCase(Debug.ECHO_INDIRECT.toString())
-		// || names[0].equalsIgnoreCase(Debug.ECHO_INSTANT.toString()))
-		// {
-		// CyGoose.debug = true;
-		// CyGoose.debugTargetGoose = names[1];
-		// }
-		// else if (names[0].equalsIgnoreCase(Debug.ECHO_OFF.toString()))
-		// {
-		// CyGoose.debug = false;
-		// CyGoose.debugTargetGoose = null;
-		// }
 		else
+*/
 			{
 			if (this.getNetworkId() == null || this.getNetworkId().equals("0"))
 				{
@@ -481,15 +496,11 @@ public class CyGoose implements Goose
 				CyNetwork NewNet = Cytoscape.createNetwork(title, true);
 				for (String CurrentName : names)
 					{
-					//Node NewNode = (Node) Cytoscape.getCyNode(CurrentName, true);
 					CyNode NewNode = Cytoscape.getCyNode(CurrentName, true);
 					NewNet.addNode(NewNode.getRootGraphIndex());
-					//NewNet.addNode(NewNode);
 					}
-				Cytoscape.getNetworkView(NewNet.getIdentifier()).applyLayout(
-						CyLayouts.getDefaultLayout());
-				Cytoscape.getNetworkView(NewNet.getIdentifier())
-						.redrawGraph(true, true);
+				Cytoscape.getNetworkView(NewNet.getIdentifier()).applyLayout(CyLayouts.getDefaultLayout());
+				Cytoscape.getNetworkView(NewNet.getIdentifier()).redrawGraph(true, true);
 					}
 				else // handle on all networks
 					{
@@ -497,12 +508,11 @@ public class CyGoose implements Goose
 						selectNodesEdges( (CyNetwork) cyNetwork, names );
 					}
 				}
-			
-			else
-				{
-				selectNodesEdges(Cytoscape.getNetwork(this.getNetworkId()), names);
-				}
-			}
+			else selectNodesEdges(Cytoscape.getNetwork(this.getNetworkId()), names);
+
+      if (namelist.getSpecies() != null)
+        this.setSpeciesName(namelist.getSpecies());      
+      }
 		}
 
 	private void selectNodesEdges(CyNetwork CyNet, String[] names)
@@ -528,16 +538,14 @@ public class CyGoose implements Goose
 					}
 				}
 			}
-		System.out.println("number of matching nodes: "
-				+ CyNet.getSelectedNodes().size());
-		System.out.println("number of matching edges: "
-				+ CyNet.getSelectedEdges().size());
-		if (CyNet.getSelectedNodes().size() <= 0
-				&& CyNet.getSelectedEdges().size() <= 0)
+		logger.debug("number of matching nodes: " + CyNet.getSelectedNodes().size());
+		logger.debug("number of matching edges: "+ CyNet.getSelectedEdges().size());
+		if (CyNet.getSelectedNodes().size() <= 0 && CyNet.getSelectedEdges().size() <= 0)
 			{
-			String Msg = "No matching nodes/edges were found, please check that you are using the same ID's between geese";
-			print(Msg);
-			}
+			String msg = "No matching nodes/edges were found, please check that you are using the same ID's between geese";
+			logger.warn(msg);
+      GagglePlugin.showDialogBox(msg, "Warning", JOptionPane.WARNING_MESSAGE);
+      }
 
 		// refresh network to flag selected nodes
 		Cytoscape.getDesktop().setFocus(CyNet.getIdentifier());
@@ -554,32 +562,30 @@ public class CyGoose implements Goose
 	public void handleNetwork(String source, Network gNetwork)
 			throws RemoteException
 		{
-		print("handleNetwork(String, Network, CyNetwork)");
-		print("network name: " + gNetwork.getName());
-		print("broadcast source: " + source);
-		// create a network if none exists
+		logger.debug("handleNetwork(String, Network, CyNetwork)");
+		logger.debug("network name: " + gNetwork.getName());
+		logger.debug("broadcast source: " + source);
+    logger.debug("species: " + gNetwork.getSpecies());
+    // create a network if none exists
 		// network with ID=0 is the nullNetwork
 		String NetworkId = null;
 		if (this.getNetworkId() == null || this.getNetworkId().equals("0"))
 			{
-			System.out.println("  --Null network");
+			logger.debug("  --Null network");
 			String title = source + " goose";
 			
 			if ( gNetwork.getSpecies() != null || !gNetwork.getSpecies().equalsIgnoreCase("unknown") ) 
 				title = gNetwork.getSpecies();
-			if (gNetwork.getName() != null)
-				title = title + " " + gNetwork.getName();
-			else title = source + " " + title;
+
+      title = (gNetwork.getName() != null)? title + " " + gNetwork.getName(): source + " " + title;
 			
 			CyNetwork NewNet = Cytoscape.createNetwork(title, false);
-			
 			HandleNetworkTask.createHandleNetworkTask(source, gNetwork, NewNet, true);
 
 			// basic layout
 			CyLayoutAlgorithm Layout = CyLayouts.getDefaultLayout();
 			String LayoutName = (String) gDialog.getLayoutChooser().getSelectedItem();
-			if (!LayoutName.equalsIgnoreCase("default")) Layout = CyLayouts
-					.getLayout(LayoutName);
+			if (!LayoutName.equalsIgnoreCase("default")) Layout = CyLayouts.getLayout(LayoutName);
 			Cytoscape.createNetworkView(NewNet, NewNet.getTitle(), Layout);
 			NetworkId = NewNet.getIdentifier();
 
@@ -588,11 +594,15 @@ public class CyGoose implements Goose
 			}
 		else
 			{
-			System.out.println("  --Network " + this.getNetworkId());
+			logger.debug("  --Network " + this.getNetworkId());
 			HandleNetworkTask.createHandleNetworkTask(source, gNetwork, Cytoscape.getNetwork(this.getNetworkId()), false);
 			NetworkId = getNetworkId();
 			}
-		// refresh network to flag selected nodes
+
+    if (gNetwork.getSpecies() != null)
+      this.setSpeciesName(gNetwork.getSpecies());      
+
+    // refresh network to flag selected nodes
 		Cytoscape.getDesktop().setFocus(NetworkId);
 		}
 
@@ -600,7 +610,7 @@ public class CyGoose implements Goose
 	public void setGeometry(int x, int y, int width, int height)
 			throws RemoteException
 		{
-		print("setGeometry() not implemented");
+		logger.info("setGeometry() not implemented");
 		}
 
 	// Used to set the goose network id to the cynetwork id
@@ -649,8 +659,8 @@ public class CyGoose implements Goose
 						}
 					catch (Exception ex)
 						{
-						ex.printStackTrace();
-						}
+            logger.error(ex.getMessage(), ex);
+            }
 					}
 			});
 		// hide selected goose
@@ -664,7 +674,7 @@ public class CyGoose implements Goose
 						}
 					catch (Exception ex)
 						{
-						ex.printStackTrace();
+            logger.error(ex.getMessage(), ex);
 						}
 					}
 			});
