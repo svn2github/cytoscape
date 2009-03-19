@@ -123,7 +123,8 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			((JPanel)parent).remove(nbPanel);
 			((JPanel)parent).add(panelMap.get(lh));
 			((JPanel)parent).add(buttonBox);
-			return m;
+			parent = null;
+			return true;
 		}
 	}
 	
