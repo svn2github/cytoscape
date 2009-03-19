@@ -1,105 +1,115 @@
 <project name="CyGoose" default="jar" basedir=".">
 
-	<property file="build.properties" />
-	<property name="src.dir" location="${basedir}/src" />
-	<property name="build.dir" location="${basedir}/build" />
-	<property name="classes.dir" location="${build.dir}/classes" />
-	<property name="lib.dir" location="${basedir}/lib" />
+  <property file="build.properties"/>
+  <property name="src.dir" location="${basedir}/src"/>
+  <property name="build.dir" location="${basedir}/build"/>
+  <property name="classes.dir" location="${build.dir}/classes"/>
+  <property name="lib.dir" location="${basedir}/lib"/>
 
-	<property name="jar.file" value="CyGoose.jar" />
+  <property name="jar.file" value="CyGoose.jar"/>
 
-	<target name="check" description="Checks for properties file">
-		<fail message="Missing build.properties file. Please copy build.properties.example and update to reflect your webstart URL.">
-			<condition>
-				<not>
-					<available file="build.properties" />
-				</not>
-			</condition>
-		</fail>
-		<fail message="Missing 'cytoscape.dir' key in properties file">
-			<condition>
-				<not>
-					<isset property="cytoscape.dir" />
-				</not>
-			</condition>
-		</fail>
-		<fail message="Missing 'gaggle.dir' key in properties file">
-			<condition>
-				<not>
-					<isset property="gaggle.dir" />
-				</not>
-			</condition>
-		</fail>
-	</target>
+  <target name="check" description="Checks for properties file">
+    <fail
+        message="Missing build.properties file. Please copy build.properties.example and update to reflect your webstart URL.">
+      <condition>
+        <not>
+          <available file="build.properties"/>
+        </not>
+      </condition>
+    </fail>
+    <fail message="Missing 'cytoscape.dir' key in properties file">
+      <condition>
+        <not>
+          <isset property="cytoscape.dir"/>
+        </not>
+      </condition>
+    </fail>
+    <fail message="Missing 'gaggle.dir' key in properties file">
+      <condition>
+        <not>
+          <isset property="gaggle.dir"/>
+        </not>
+      </condition>
+    </fail>
+  </target>
 
-	<!-- Project Libraries -->
-	<path id="project.classpath">
-		<fileset dir="${basedir}/lib">
-			<include name="*.jar" />
-		</fileset>
-		<pathelement location="${classes.dir}" />
-		<pathelement location="${cytoscape.dir}/cytoscape.jar" />
-		<fileset dir="${cytoscape.dir}/lib">
-			<include name="*.jar" />
-		</fileset>
-		<!-- It appears best to put the gaggle.jar file in the lib dir, otherwise compile fails -->
-		<!--		<pathelement location="${gaggle.dir}/gaggle.jar" /> -->
-	</path>
+  <!-- Project Libraries -->
+  <path id="project.classpath">
+    <fileset dir="${basedir}/lib">
+      <include name="*.jar"/>
+    </fileset>
+    <pathelement location="${classes.dir}"/>
+    <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
+    <fileset dir="${cytoscape.dir}/lib">
+      <include name="*.jar"/>
+    </fileset>
+    <!-- It appears best to put the gaggle.jar file in the lib dir, otherwise compile fails -->
+    <!--		<pathelement location="${gaggle.dir}/gaggle.jar" /> -->
+  </path>
 
   <target name="clean" description="Clean old build files">
-    <delete dir="${build.dir}" />
+    <delete dir="${build.dir}"/>
   </target>
 
   <target name="init" depends="check, clean" description="Clean out old build, setup for new">
-		<mkdir dir="${build.dir}" />
-		<mkdir dir="${classes.dir}" />
-		<!-- maybe need to do fileset if we use any other libraries in this plugin -->
-		<unjar src="${basedir}/lib/gaggle.jar" dest="${classes.dir}"/>
-		<delete dir="${classes.dir}/META-INF"/>
-	</target>
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${classes.dir}"/>
+    <!-- maybe need to do fileset if we use any other libraries in this plugin -->
+    <unjar src="${basedir}/lib/gaggle.jar" dest="${classes.dir}"/>
+    <delete dir="${classes.dir}/META-INF"/>
+  </target>
 
-	<target name="compile" description="Compile pipeline task" depends="init">
-		<javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" failonerror="true">
-			<classpath refid="project.classpath" />
-		</javac>
-	</target>
 
-	<target name="jar" description="Create CyGoose jar file" depends="compile"> 
-		<copy file="${basedir}/resources/plugin.props" todir="${classes.dir}/org/systemsbiology/cytoscape" />
-		<jar destfile="${build.dir}/${jar.file}">
-			<manifest>
-				<attribute name="Cytoscape-Plugin" value="org.systemsbiology.cytoscape.GagglePlugin" />
-			</manifest>
+  <target name="compile" description="Compile" depends="init">
+    <javac
+        srcdir="${src.dir}"
+        destdir="${classes.dir}"
+        nowarn="off"
+        debug="on"
+        source="1.5"
+        optimize="on"
+        failonerror="true">
+      <classpath refid="project.classpath"/>
+      <compilerarg line="-Xmaxwarns 10000"/>
+    </javac>
+  </target>
 
-			<fileset dir="${classes.dir}" />
-		</jar>
-	</target>
+  <target name="jar" description="Create CyGoose jar file" depends="compile">
+    <copy file="${basedir}/resources/plugin.props" todir="${classes.dir}/org/systemsbiology/cytoscape"/>
+    <jar destfile="${build.dir}/${jar.file}">
+      <manifest>
+        <attribute name="Cytoscape-Plugin" value="org.systemsbiology.cytoscape.GagglePlugin"/>
+      </manifest>
 
-	<target name="copyJar" depends="jar" description="Copy to Cytocape project">
-		<copy todir="${cytoscape.dir}/plugins/core" file="${build.dir}/${jar.file}"/>
-	</target>
-	
-	<target name="signJar" depends="jar" description="Sign jar file">
-		<!-- Important to use same keypass information as used for signing cytoscape -->
-		<signjar alias="cytoscape" storepass="secret" jar="${build.dir}/${jar.file}"/>
-	</target>
+      <fileset dir="${classes.dir}"/>
+    </jar>
+  </target>
 
-	<target name="checkWebstart">
-		<fail message="Missing property 'webstartDir', ant -DwebstartDir [ant target] ">
-			<condition>
-				<not>
-					<isset property="webstartDir" />
-				</not>
-			</condition>
-		</fail>
-	</target>
+  <target name="copyJar" depends="jar" description="Copy to Cytocape project">
+    <copy todir="${cytoscape.dir}/plugins/core" file="${build.dir}/${jar.file}"/>
+  </target>
 
-	<target name="addToWebstart" depends="checkWebstart, signJar" description="Copy plugin to cytoscape webstart">
-		<copy file="${build.dir}/${jar.file}" toDir="${webstartDir}/plugins"/>
-	</target>
-	
-	<target name="localCopy" depends="jar" description="Copy to local Cytoscape">
-		<copy file="${build.dir}/${jar.file}" toDir="${cytoscape.dir}/plugins/core"/>
-	</target>
-	
+  <target name="signJar" depends="jar" description="Sign jar file">
+    <!-- Important to use same keypass information as used for signing cytoscape -->
+    <signjar alias="cytoscape" storepass="secret" jar="${build.dir}/${jar.file}"/>
+  </target>
+
+  <target name="checkWebstart">
+    <fail message="Missing property 'webstartDir', ant -DwebstartDir [ant target] ">
+      <condition>
+        <not>
+          <isset property="webstartDir"/>
+        </not>
+      </condition>
+    </fail>
+  </target>
+
+  <target name="addToWebstart" depends="checkWebstart, signJar" description="Copy plugin to cytoscape webstart">
+    <copy file="${build.dir}/${jar.file}" toDir="${webstartDir}/plugins"/>
+  </target>
+
+  <target name="localCopy" depends="jar" description="Copy to local Cytoscape">
+    <copy file="${build.dir}/${jar.file}" toDir="${cytoscape.dir}/plugins/core"/>
+  </target>
+
 </project>
