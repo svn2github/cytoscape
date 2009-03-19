@@ -46,8 +46,11 @@
 		<!--		<pathelement location="${gaggle.dir}/gaggle.jar" /> -->
 	</path>
 
-	<target name="init" depends="check" description="Clean out old build, setup for new">
-		<delete dir="${build.dir}" />
+  <target name="clean" description="Clean old build files">
+    <delete dir="${build.dir}" />
+  </target>
+
+  <target name="init" depends="check, clean" description="Clean out old build, setup for new">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${classes.dir}" />
 		<!-- maybe need to do fileset if we use any other libraries in this plugin -->
