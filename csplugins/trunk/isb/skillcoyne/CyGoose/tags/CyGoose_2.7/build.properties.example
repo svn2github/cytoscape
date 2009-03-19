@@ -1,0 +1,7 @@
+# Location of cytoscape.jar
+cytoscape.dir=/Users/skillcoy/cytoscape_projects/Cytoscape/
+
+# Location of gaggle.jar
+gaggle.dir=/Users/skillcoy/cytoscape_projects/isb/Gaggle/dist
+
+webstartDir=/Users/skillcoy/tomcat/webapps/Cytoscape
