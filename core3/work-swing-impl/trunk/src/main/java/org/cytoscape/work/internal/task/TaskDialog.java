@@ -36,106 +36,124 @@
 
 package org.cytoscape.work.internal.task;
 
-import org.cytoscape.work.internal.task.StringUtils;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
 import java.util.Date;
 
-
-/**
- * Common UI element for visually monitoring task progress.
- */
-class TaskDialog extends JDialog implements ActionListener {
-	static final long serialVersionUID = 333614801L;
-	static final int TIME_INTERVAL = 500;
-
-	final SwingTaskMonitor parent;
-
-	JProgressBar	pBar;
-	JLabel		descriptionValue;
-	JTextArea	statusValue;
-	JLabel		statusLabel;
-	JLabel		timeLabel;
-	Timer		timer;
-	JButton		closeButton;
-	JPanel		progressPanel;
-
-	Date		startTime;
-	boolean		haltRequested = false;
-	boolean		errorOccurred = false;
+class TaskDialog extends JDialog
+{
+	/**
+	 * How much time between updating the "Estimated Time Remaining"
+	 * field, stored in <code>timeLabel</code>.
+	 */
+	static final int TIME_UPDATE_INTERVAL_IN_MILLISECONDS	= 1000;
 
 	/**
-	 * Constructor.
+	 * Description and status messages are stored in
+	 * <code>JTextArea</code>s; this specifies the number of
+	 * columns <code>JTextArea</code>s should have.
+	 * This value has a big impact on the size of the dialog.
 	 */
-	public TaskDialog(Frame frame, SwingTaskMonitor parent) {
-		super(frame, false);
-		this.parent = parent;
+	static final int TEXT_AREA_COLUMNS			= 30;
 
-		Container container = this.getContentPane();
-		container.setLayout(new BorderLayout());
-		progressPanel = new JPanel(new GridBagLayout());
-		progressPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+	/**
+	 * Constant used for <code>CardLayout.show()</code> and
+	 * <code>CardLayout.add()</code> to switch between normal
+	 * mode and exception mode.
+	 */
+	static final String NORMAL_MODE				= "normal";
 
-		int y = 0;
-		addLabel("Description:  ", progressPanel, 0, y, GridBagConstraints.NORTHEAST, true);
-		descriptionValue = addLabel("", progressPanel, 1, y++, GridBagConstraints.NORTHWEST, true);
+	/**
+	 * Constant used for <code>CardLayout.show()</code> and
+	 * <code>CardLayout.add()</code> to switch between normal
+	 * mode and exception mode.
+	 */
+	static final String EXCEPTION_MODE			= "exception";
 
-		addLabel("Status:  ", progressPanel, 0, y, GridBagConstraints.NORTHEAST, true);
-		statusValue = addTextArea("", progressPanel, 1, y++, GridBagConstraints.NORTHWEST, true);
+	/**
+	 * If the progress bar is indeterminate, the string format to use
+	 * for <code>timeLabel</code>.
+	 */
+	static final String ELAPSED_FORMAT			= "%s elapsed";
+	
+	/**
+	 * If the progress bar is determinate, the string format to use
+	 * for <code>timeLabel</code>.
+	 */
+	static final String ELAPSED_AND_REMAINING_FORMAT	= "%s elapsed, %s remaining";
 
-		addLabel("Progress:  ", progressPanel, 0, y, GridBagConstraints.NORTHEAST, true);
-		initProgressBar(progressPanel, y++);
+	static final String CANCEL_LABEL			= "   Cancel   ";
+	static final String CANCELLING_LABEL			= "   Cancelling...   ";
+	static final String CLOSE_LABEL				= "   Close   ";
 
-		timeLabel = addLabel("", progressPanel, 1, y++, GridBagConstraints.NORTHWEST, true);
+	// State variables
+	boolean		haltRequested			= false;
+	boolean		errorOccurred			= false;
+	SwingTaskMonitor parentTaskMonitor		= null;
 
-		closeButton = addButton("   Cancel   ", progressPanel, 1, y, GridBagConstraints.NORTHEAST, true);
-		closeButton.addActionListener(this);
+	// Swing components
+	JTextArea	descriptionLabel		= new JTextArea();
+	JTextArea	descriptionLabel2		= new JTextArea();
+	JTextArea	statusLabel			= new JTextArea();
+	JProgressBar	progressBar			= new JProgressBar();
+	JTextArea	timeLabel			= new JTextArea();
+	JButton		cancelButton			= new JButton(CANCEL_LABEL);
+	JButton		closeButton			= new JButton(CLOSE_LABEL);
+	JPanel		exceptionPanel			= new JPanel();
 
-		container.add(progressPanel, BorderLayout.PAGE_START);
-		//createFooter(container);
+	// Specific for the timer
+	Timer		timer				= null;
+	Date		startTime			= new Date();
 
-		initTimer();
-
-		//  Disable close operation until task is done.
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		this.setResizable(false);
-		this.pack();
-		this.setVisible(true);
-
-		//  Center component relative to parent component
-		//  or relative to user's screen.
-		if (frame != null)
-			setLocationRelativeTo(frame);
-	}
-
-	public void setTaskTitle(String taskTitle)
+	public TaskDialog(Frame parentFrame, SwingTaskMonitor parentTaskMonitor)
 	{
-		setTitle(taskTitle);
-		descriptionValue.setText(StringUtils.truncateOrPadString(taskTitle));
+		super(parentFrame);
+		this.parentTaskMonitor = parentTaskMonitor;
+		initComponents();
+		initTimer();
+		initLayout();
 	}
 
-	public void setPercentCompleted(final int percent) {
-		if (haltRequested || errorOccurred) return;
-
-		if (percent != pBar.getValue())
+	public void setTaskTitle(final String taskTitle)
+	{
+		SwingUtilities.invokeLater(new Runnable()
 		{
-			SwingUtilities.invokeLater(new Runnable()
-			{
-				public void run() {
-					if (pBar.isIndeterminate()) {
-						pBar.setIndeterminate(false);
+			public void run() {
+				setTitle(taskTitle);
+				//descriptionLabel.setText(StringUtils.truncateOrPadString(taskTitle));
+				//descriptionLabel2.setText(StringUtils.truncateOrPadString(taskTitle));
+				descriptionLabel.setText(taskTitle);
+				descriptionLabel2.setText(taskTitle);
+				pack();
+			}
+		});
+	}
+
+	public void setPercentCompleted(final int percent)
+	{
+		if (haltRequested) return;
+
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run() {
+				if (percent < 0)
+				{
+					if (!progressBar.isIndeterminate()) {
+						progressBar.setIndeterminate(true);
+					}
+				}
+				else
+				{
+					if (progressBar.isIndeterminate()) {
+						progressBar.setIndeterminate(false);
 					}
 
-					pBar.setValue(percent);
+					progressBar.setValue(percent);
 				}
-			});
-		}
+			}
+		});
 	}
 
 	public void setException(final Throwable t, final String userErrorMessage)
@@ -145,23 +163,21 @@ class TaskDialog extends JDialog implements ActionListener {
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run() {
-			    closeButton.setEnabled(true);
-			    closeButton.setText("   Close   ");
-			    statusValue.setEnabled(false);
-			    progressPanel.setEnabled(false);
+				//  Create Error Panel
+				ErrorPanel errorPanel = new ErrorPanel(TaskDialog.this, t, userErrorMessage, t.getMessage());
+				exceptionPanel.add(errorPanel);
+				CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
+				cardLayout.show(getContentPane(), EXCEPTION_MODE);
+				pack();
 
-			    //  Create Error Panel
-			    JPanel errorPanel = new ErrorPanel(TaskDialog.this, t, userErrorMessage, null);
-			    getContentPane().add(errorPanel, BorderLayout.CENTER);
-			    pack();
-
-			    //  Make sure JTask is actually visible
-			    if (!TaskDialog.this.isShowing()) {
-				TaskDialog.this.setVisible(true);
-			    }
-		}
-	    });
-    }
+				//  Make sure TaskDialog is actually visible
+				if (!TaskDialog.this.isShowing()) {
+					TaskDialog.this.setVisible(true);
+				}
+				setResizable(true);
+			}
+		});
+	}
 
 	/**
 	 * Sets the Status Message.
@@ -174,13 +190,23 @@ class TaskDialog extends JDialog implements ActionListener {
 		if (!haltRequested) {
 			//  Update the UI
 			SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						statusValue.setVisible(true);
-						statusValue.setText(StringUtils.truncateOrPadString(message));
-						pack();
-					}
-				});
+				public void run() {
+					//statusLabel.setText(StringUtils.truncateOrPadString(message));
+					statusLabel.setText(message);
+					pack();
+				}
+			});
 		}
+	}
+
+	public void setTimeMessage(final String message)
+	{
+		//  Update the UI
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				timeLabel.setText(message);
+			}
+		});
 	}
 
 	/**
@@ -201,168 +227,137 @@ class TaskDialog extends JDialog implements ActionListener {
 		return haltRequested;
 	}
 
-	/**
-	 * Creates Footer with Close, Cancel Buttons.
-	 *
-	 * @param container Container Object.
-	 */
-	private void createFooter(Container container) {
-	/*
-		JPanel footer = new JPanel();
-		footer.setBorder(new EmptyBorder(5, 5, 5, 5));
-		footer.setLayout(new BoxLayout(footer, BoxLayout.Y_AXIS));
-		closeButton = new JButton("    Cancel    ");
-		closeButton.addActionListener(this);
-		footer.add(closeButton);
-		footer.add(Box.createHorizontalGlue());
+	synchronized void cancel()
+	{
+		if (haltRequested)
+			return;
 
-		container.add(footer, BorderLayout.EAST);
-		*/
+		haltRequested = true;
+		cancelButton.setText(CANCELLING_LABEL);
+		cancelButton.setEnabled(false);
+		progressBar.setIndeterminate(true);
+		parentTaskMonitor.cancel();
 	}
 
-	/**
-	 * Initializes the JProgressBar.
-	 *
-	 * @param progressPanel JPanel Object.
-	 */
-	private void initProgressBar(JPanel progressPanel, int y) {
-		GridBagConstraints c = new GridBagConstraints();
-		pBar = new JProgressBar();
-		pBar.setIndeterminate(true);
-		pBar.setMaximum(100);
-		pBar.setValue(0);
-		pBar.setBorder(new EmptyBorder(5, 0, 5, 0));
-		pBar.setDoubleBuffered(true);
-		c.gridx = 1;
-		c.gridy = y;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		progressPanel.add(pBar, c);
+	synchronized void close()
+	{
+		stopTimer();
+		parentTaskMonitor.close();
 	}
 
-	/**
-	 * Add New Label to Specified JPanel.
-	 *
-	 * @param text  Label Text.
-	 * @param panel Container Panel.
-	 * @param gridx X Location.
-	 * @param gridy Y Location.
-	 * @return JLabel Object.
-	 */
-	private JLabel addLabel(String text, JPanel panel, int gridx, int gridy, int alignment,
-	                        boolean addToPanel) {
-		JLabel label = new JLabel(text);
+	void initComponents()
+	{
+		initTextArea(descriptionLabel);
+		initTextArea(descriptionLabel2);
+		initTextArea(statusLabel);
+		initTextArea(timeLabel);
+		closeButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				close();
+			}
+		});
+
+		cancelButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				cancel();
+			}
+		});
+
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent e)
+			{
+				cancel();
+			}
+		});
+	}
+
+	JLabel initLabel(JLabel label)
+	{
 		label.setHorizontalAlignment(JLabel.LEFT);
-		label.setBorder(new EmptyBorder(5, 5, 5, 5));
 		label.setFont(new Font(null, Font.PLAIN, 13));
-
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = gridx;
-		c.gridy = gridy;
-		c.anchor = alignment;
-
-		if (addToPanel) {
-			panel.add(label, c);
-		}
-
 		return label;
 	}
 
-	/**
-	 * Add New TextArea to Specified JPanel.
-	 *
-	 * @param text  Label Text.
-	 * @param panel Container Panel.
-	 * @param gridx X Location.
-	 * @param gridy Y Location.
-	 * @return JLabel Object.
-	 */
-	private JTextArea addTextArea(String text, JPanel panel, int gridx, int gridy, int alignment,
-	                              boolean addToPanel) {
-		JTextArea textArea = new JTextArea(text, 1, 25);
+	JTextArea initTextArea(JTextArea textArea)
+	{
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
-		textArea.setBorder(new EmptyBorder(5, 5, 5, 5));
+		textArea.setColumns(TEXT_AREA_COLUMNS);
+		//textArea.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		textArea.setBackground((Color) UIManager.get("Label.background"));
 		textArea.setForeground((Color) UIManager.get("Label.foreground"));
 		textArea.setFont(new Font(null, Font.PLAIN, 13));
-
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = gridx;
-		c.gridy = gridy;
-		c.anchor = alignment;
-
-		if (addToPanel) {
-			panel.add(textArea, c);
-		}
-
 		return textArea;
 	}
 
-	private JButton addButton(String text, JPanel parentPanel, int gridx, int gridy, int alignment,
-	                              boolean addToPanel) {
-		JButton button = new JButton(text);
-		JPanel panel = new JPanel();
-		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(button);
+	void initLayout()
+	{
+		getContentPane().setLayout(new CardLayout());
+		JPanel panel1 = new JPanel(new GridBagLayout());
+		JLabel element0 = initLabel(new JLabel("Description: "));
+		panel1.add(element0, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		panel1.add(descriptionLabel, new GridBagConstraints(1, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		JLabel element1 = initLabel(new JLabel("Status: "));
+		panel1.add(element1, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		panel1.add(statusLabel, new GridBagConstraints(1, 1, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		JLabel element2 = initLabel(new JLabel("Progress: "));
+		panel1.add(element2, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		panel1.add(progressBar, new GridBagConstraints(1, 2, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		panel1.add(timeLabel, new GridBagConstraints(1, 3, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		JSeparator element3 = new JSeparator();
+		panel1.add(element3, new GridBagConstraints(0, 4, 2, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		panel1.add(cancelButton, new GridBagConstraints(0, 5, 2, 1, 1, 1, GridBagConstraints.SOUTHEAST, GridBagConstraints.NONE, new Insets(0, 0, 10, 10), 0, 0));
+		getContentPane().add(panel1, NORMAL_MODE);
 
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = gridx;
-		c.gridy = gridy;
-		c.anchor = alignment;
+		JPanel panel2 = new JPanel(new GridBagLayout());
+		JLabel element4 = initLabel(new JLabel("Description: "));
+		panel2.add(element4, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		panel2.add(descriptionLabel2, new GridBagConstraints(1, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 0), 0, 0));
+		panel2.add(exceptionPanel, new GridBagConstraints(0, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(10, 10, 0, 10), 0, 0));
+		JSeparator element6 = new JSeparator();
+		panel2.add(element6, new GridBagConstraints(0, 2, 2, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 0, 10), 0, 0));
+		panel2.add(closeButton, new GridBagConstraints(0, 3, 2, 1, 1, 0, GridBagConstraints.SOUTHEAST, GridBagConstraints.NONE, new Insets(0, 0, 10, 10), 0, 0));
+		getContentPane().add(panel2, EXCEPTION_MODE);
 
-		if (addToPanel) {
-			parentPanel.add(panel, c);
-		}
+		exceptionPanel.setLayout(new GridLayout(1,1));
 
-		return button;
+		setResizable(false);
+		pack();
+		setVisible(true);
 	}
 
-	/**
-	 * Capture All Action Events.
-	 * This  method is called by the Timer and by User Buttons.
-	 * This method is called on the Swing Event Dispatch Thread.
-	 *
-	 * @param e Timer Event.
-	 */
-	public void actionPerformed(ActionEvent e) {
-		stopTimer();
-		if (!errorOccurred)
-		{
-			this.haltRequested = true;
-			closeButton.setEnabled(false);
-			closeButton.setText("  Cancelling...  ");
-		}
-		parent.cancel();
-	}
 
 	/**
 	 * Initialize the Timer Object.
 	 * Note that timer events are sent to the Swing Event-Dispatch Thread.
 	 */
-	private void initTimer() {
-		//  Record Start Timestamp
-		startTime = new Date();
-
+	void initTimer() {
 		//  Create Auto-Timer
-		timer = new Timer(TIME_INTERVAL,
+		timer = new Timer(TIME_UPDATE_INTERVAL_IN_MILLISECONDS,
 		                  new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					Date currentTime = new Date();
 					long timeElapsed = currentTime.getTime() - startTime.getTime();
 					String timeElapsedString = StringUtils.getTimeString(timeElapsed);
-					if (!pBar.isIndeterminate() && pBar.getValue() != 0)
+					if (!progressBar.isIndeterminate() && progressBar.getValue() != 0)
 					{
-						long timeRemaining = (long) ((100.0 / pBar.getValue() - 1.0) * timeElapsed);
+						long timeRemaining = (long) ((100.0 / progressBar.getValue() - 1.0) * timeElapsed);
 						String timeRemainingString = StringUtils.getTimeString(timeRemaining);
-						timeLabel.setText(String.format("%s elapsed, %s remaining", timeElapsedString, timeRemainingString));
+						timeLabel.setText(String.format(ELAPSED_AND_REMAINING_FORMAT, timeElapsedString, timeRemainingString));
 					}
 					else
 					{
-						timeLabel.setText(String.format("%s elapsed", timeElapsedString));
+						timeLabel.setText(String.format(ELAPSED_FORMAT, timeElapsedString));
 					}
+					pack();
 				}
 			});
 		timer.start();
@@ -371,7 +366,7 @@ class TaskDialog extends JDialog implements ActionListener {
 	/**
 	 * Stops the Internal Timer.
 	 */
-	private void stopTimer() {
+	void stopTimer() {
 		if ((timer != null) && timer.isRunning()) {
 			timer.stop();
 		}

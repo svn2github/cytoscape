@@ -1,21 +1,22 @@
 package org.cytoscape.work.internal.task;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
-
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+
+import java.awt.Frame;
 
 /**
  * Uses Swing components to create a user interface for the <code>Task</code>.
  *
- * @author Samad Lotia
+ * This will not work if the application is running in headless mode.
  */
 public class SwingTaskManager implements TaskManager
 {
@@ -28,21 +29,74 @@ public class SwingTaskManager implements TaskManager
 	 * period of time before showing the dialog. This way, short lived
 	 * <code>Task</code>s won't have a dialog box.
 	 */
-	static final int DELAY_IN_MILLISECONDS_BEFORE_SHOWING_DIALOG = 1000;
+	static final long DELAY_BEFORE_SHOWING_DIALOG = 1;
+
+	/**
+	 * The time unit of <code>DELAY_BEFORE_SHOWING_DIALOG</code>.
+	 */
+	static final TimeUnit DELAY_TIMEUNIT = TimeUnit.SECONDS;
+
+	/**
+	 * Used for calling <code>Task.run()</code>.
+	 */
+	ExecutorService taskExecutorService;
+
+	/**
+	 * Used for opening dialogs after a specific amount of delay.
+	 */
+	ScheduledExecutorService timedDialogExecutorService;
+
+	/**
+	 * Used for calling <code>Task.cancel()</code>.
+	 * <code>Task.cancel()</code> must be called in a different
+	 * thread from the thread running Swing. This is done to
+	 * prevent Swing from freezing if <code>Task.cancel()</code>
+	 * takes too long to finish.
+	 *
+	 * This can be the same as <code>taskExecutorService</code>.
+	 */
+	ExecutorService cancelExecutorService;
+
 	Frame owner;
 
+	/**
+	 * Construct with default behavior.
+	 * <ul>
+	 * <li><code>owner</code> is set to null.</li>
+	 * <li><code>taskExecutorService</code> is a cached thread pool.</li>
+	 * <li><code>timedExecutorService</code> is a single thread executor.</li>
+	 * <li><code>cancelExecutorService</code> is the same as <code>taskExecutorService</code>.</li>
+	 * </ul>
+	 */
 	public SwingTaskManager()
 	{
-		this(null);
+		owner = null;
+		taskExecutorService = Executors.newCachedThreadPool();
+		addShutdownHook(taskExecutorService);
+		timedDialogExecutorService = Executors.newSingleThreadScheduledExecutor();
+		addShutdownHook(timedDialogExecutorService);
+		cancelExecutorService = taskExecutorService;
 	}
 
 	/**
-	 * @param owner JDialogs created by this object
-	 * will have its owner set to this parameter.
+	 * Adds a shutdown hook to the JVM that shuts down an
+	 * <code>ExecutorService</code>. <code>ExecutorService</code>s
+	 * need to be told to shut down, otherwise the JVM won't 
+	 * cleanly terminate.
 	 */
-	public SwingTaskManager(Frame owner)
+	void addShutdownHook(final ExecutorService serviceToShutdown)
 	{
-		setOwner(owner);
+		// Used to create a thread that is executed by the shutdown hook
+		ThreadFactory threadFactory = Executors.defaultThreadFactory();
+
+		Runnable shutdownHook = new Runnable()
+		{
+			public void run()
+			{
+				serviceToShutdown.shutdownNow();
+			}
+		};
+		Runtime.getRuntime().addShutdownHook(threadFactory.newThread(shutdownHook));
 	}
 
 	/**
@@ -56,8 +110,8 @@ public class SwingTaskManager implements TaskManager
 
 	public void execute(final Task task)
 	{
-		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, owner);
-		final Thread executor = new Thread(new Runnable()
+		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, cancelExecutorService, owner);
+		final Runnable executor = new Runnable()
 		{
 			public void run()
 			{
@@ -72,52 +126,49 @@ public class SwingTaskManager implements TaskManager
 				if (taskMonitor.isOpened() && !taskMonitor.isShowingException())
 					taskMonitor.close();
 			}
-		});
+		};
+		final Future<?> executorFuture = taskExecutorService.submit(executor);
 
-		final ActionListener delayedDisplayer = new ActionListener()
+		final Runnable timedOpen = new Runnable()
 		{
-			public void actionPerformed(ActionEvent e)
+			public void run()
 			{
-				if (executor.getState() != Thread.State.TERMINATED)
+				if (!(executorFuture.isDone() || executorFuture.isCancelled()))
 					taskMonitor.open();
 			}
 		};
-		Timer timer = new Timer(DELAY_IN_MILLISECONDS_BEFORE_SHOWING_DIALOG, delayedDisplayer);
-		timer.setRepeats(false);
-
-		executor.start();
-		timer.start();
+		timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
 	}
 }
 
 class SwingTaskMonitor implements TaskMonitor
 {
-	static final String DEFAULT_TASK_TITLE = "Untitled Task";
-	static final String DEFAULT_STATUS_MESSAGE = "";
-
 	final Task		task;
+	final ExecutorService	cancelExecutorService;
 	final Frame		owner;
 
 	TaskDialog	dialog			= null;
-	String		title			= DEFAULT_TASK_TITLE;
-	String		statusMessage		= DEFAULT_STATUS_MESSAGE;
+	String		title			= null;
+	String		statusMessage		= null;
 	int		progress		= 0;
 
-	public SwingTaskMonitor(Task task, Frame owner)
+	public SwingTaskMonitor(Task task, ExecutorService cancelExecutorService, Frame owner)
 	{
 		this.task = task;
+		this.cancelExecutorService = cancelExecutorService;
 		this.owner = owner;
 	}
 
-	// Why is open() and setException() synchronized?
-	// It is possible that open() can be called concurrently
-	// if an exception is thrown immediately by a Task,
-	// creating an undefined state in SwingTaskMonitor.
 	public synchronized void open()
 	{
+		if (dialog != null)
+			return;
+
 		dialog = new TaskDialog(owner, this);
-		dialog.setTaskTitle(title);
-		dialog.setStatus(statusMessage);
+		if (title != null)
+			dialog.setTaskTitle(title);
+		if (statusMessage != null)
+			dialog.setStatus(statusMessage);
 		if (progress > 0)
 			dialog.setPercentCompleted(progress);
 	}
@@ -133,34 +184,17 @@ class SwingTaskMonitor implements TaskMonitor
 
 	public void cancel()
 	{
-		// The Close button has two possible states that we need
-		// to take into account:
-		// 1. Cancel: the user has requested to cancel the task
-		// 2. Close:  the Task threw an exception, and the
-		//            dialog should close
-		
-		if (isShowingException())
-			close();
-		else
+		// we issue the Task's cancel method in its own thread
+		// to prevent Swing from freezing if the Tasks's cancel
+		// method takes too long to finish
+		Runnable cancel = new Runnable()
 		{
-			// we need to inform the Task to cancel
-
-			// change the UI to show that we are cancelling the Task
-			//closeButton.setEnabled(false);
-			//closeButton.setText("Canceling...");
-
-			// we issue the Task's cancel method in its own thread
-			// to prevent Swing from freezing if the Tasks's cancel
-			// method takes too long to finish
-			Thread cancelThread = new Thread(new Runnable()
+			public void run()
 			{
-				public void run()
-				{
-					task.cancel();
-				}
-			});
-			cancelThread.start();
-		}
+				task.cancel();
+			}
+		};
+		cancelExecutorService.submit(cancel);
 	}
 
 	public void setTitle(String title)
@@ -179,15 +213,11 @@ class SwingTaskMonitor implements TaskMonitor
 
 	public void setProgress(double progress)
 	{
-		this.progress = (int) (progress * 100);
+		this.progress = (int) Math.floor(progress * 100);
 		if (dialog != null)
 			dialog.setPercentCompleted(this.progress);
 	}
 
-	// Why is open() and setException() synchronized?
-	// It is possible that open() can be called concurrently
-	// if an exception is thrown immediately by a Task,
-	// creating an undefined state in SwingTaskMonitor.
 	public synchronized void showException(Exception exception)
 	{
 		// force the dialog box to be created if
