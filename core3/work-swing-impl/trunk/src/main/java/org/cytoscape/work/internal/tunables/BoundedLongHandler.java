@@ -23,7 +23,7 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
 	mySlider slider;
 	myBoundedSwing boundedField;
 	
-	public BoundedLongHandler(Field f, Object o, Tunable t) {
+	protected BoundedLongHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
 			this.myBounded = (BoundedLong)f.get(o);
@@ -38,7 +38,6 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
 			label.setFont(new Font(null, Font.PLAIN,12));
 			panel.add(label,BorderLayout.WEST);
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			//slider.addChangeListener(this);
 			panel.add(slider,BorderLayout.EAST);
 		}
 		else{

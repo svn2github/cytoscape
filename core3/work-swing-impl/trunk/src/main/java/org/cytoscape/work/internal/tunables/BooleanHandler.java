@@ -18,7 +18,7 @@ public class BooleanHandler extends AbstractGuiHandler {
 	JCheckBox jcb;
 	Boolean myBoolean;
 	
-	public BooleanHandler(Field f, Object o, Tunable t) {
+	protected BooleanHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 	
 		try{

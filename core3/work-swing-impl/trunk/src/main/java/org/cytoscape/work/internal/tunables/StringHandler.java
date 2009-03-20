@@ -1,4 +1,3 @@
-
 package org.cytoscape.work.internal.tunables;
 
 import java.awt.BorderLayout;
@@ -11,22 +10,19 @@ import org.cytoscape.work.Tunable;
 
 public class StringHandler extends AbstractGuiHandler {
 
-	JTextField jtf;
+	private JTextField jtf;
 
-	public StringHandler(Field f, Object o, Tunable t) {
+	protected StringHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-
 		panel = new JPanel(new BorderLayout());
+		JLabel label = new JLabel(t.description());
+		label.setFont(new Font(null, Font.PLAIN,12));
+		panel.add(label,BorderLayout.WEST );
 		try {
-			JLabel label = new JLabel(t.description());
-			label.setFont(new Font(null, Font.PLAIN,12));
-			panel.add(label,BorderLayout.WEST );
 			jtf = new JTextField( (String)f.get(o), 15);
-			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			//jtf.addActionListener(this);
-			panel.add(jtf,BorderLayout.EAST);
 		} catch (Exception e) {e.printStackTrace(); }
-			
+		jtf.setHorizontalAlignment(JTextField.RIGHT);
+		panel.add(jtf,BorderLayout.EAST);			
 	}
 
 	public void handle() {

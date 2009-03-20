@@ -22,7 +22,7 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
 	mySlider slider;
 	myBoundedSwing boundedField;
 	
-	public BoundedIntegerHandler(Field f, Object o, Tunable t) {
+	protected BoundedIntegerHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
 			this.myBounded = (BoundedInteger)f.get(o);

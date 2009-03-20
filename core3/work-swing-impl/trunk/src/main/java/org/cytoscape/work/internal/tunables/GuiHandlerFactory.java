@@ -22,6 +22,7 @@ import org.cytoscape.work.util.ListSingleSelection;
 import cytoscape.util.FileUtil;
 import org.cytoscape.io.util.StreamUtil;
 
+
 public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 
 	private Bookmarks bookmarks;

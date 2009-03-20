@@ -3,6 +3,7 @@ package org.cytoscape.work.internal.tunables;
 
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,28 +24,22 @@ import org.jdesktop.layout.GroupLayout;
 
 public class InputStreamHandler extends AbstractGuiHandler {
 
-	Bookmarks theBookmarks;
-	String bookmarkCategory = "network";
-	String urlstr;
-	BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
-	JComboBox networkFileComboBox;
-	//FileUtil flUtil;
-	BookmarksUtil bkUtil;
-	//StreamUtil stUtil;
-	
-	InputStream InStream = null;
+	InputStream InStream;
 	URL url;
-	JButton button;
 	File myFile;
-	JFileChooser fileChooser;
-	boolean filechoosen;
-	JTextField path;
-	private javax.swing.JSeparator titleSeparator;
 	
+	private Bookmarks theBookmarks;
+	private BookmarkComboBoxEditor bookmarkEditor;
+	private BookmarksUtil bkUtil;
+	private String bookmarkCategory = "network";
+	private String urlstr;
+	private JComboBox networkFileComboBox;
+	private JFileChooser fileChooser;
+	private boolean filechoosen;
+	private JSeparator titleSeparator;
 	private String pleaseMessage = "Please provide URL or select from list";
-	
-	//private JPanel valuePanel;
-	private JLabel titleLabel = new JLabel("Import Network File");
+
+	private JLabel titleLabel;
 	private JPanel radioButtonPanel;
 	private JButton selectButton;
 	private JRadioButton remoteRadioButton;
@@ -53,16 +48,19 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
 
+	//FileUtil flUtil;
+	//StreamUtil stUtil;
 	
-	public InputStreamHandler(Field f, Object o, Tunable t,Bookmarks bookmarks,BookmarksUtil bkUtil) {
+	protected InputStreamHandler(Field f, Object o, Tunable t,Bookmarks bookmarks,BookmarksUtil bkUtil) {
 		super(f,o,t);
 		this.bkUtil=bkUtil;
 		//this.flUtil=flUtil;
 		//this.stUtil=stUtil;
+		titleLabel = new JLabel("Import Network File");
 		this.theBookmarks=bookmarks;
 		filechoosen = false;
 		fileChooser = new JFileChooser();
-		
+		bookmarkEditor = new BookmarkComboBoxEditor();
 		try{
 			this.InStream = (InputStream) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
@@ -71,24 +69,12 @@ public class InputStreamHandler extends AbstractGuiHandler {
 		if (theCategory == null) {
 			theCategory = new Category();
 			theCategory.setName(bookmarkCategory);
-
 			List<Category> theCategoryList = bookmarks.getCategory();
 			theCategoryList.add(theCategory);
 		}
-		
-
-		//panel.add(new JLabel("Path :"));
-		//path = new JTextField("select file",12);
-		//path.setFont(new Font(null, Font.ITALIC,10));
-		//panel.add(path);
-
 		initComponents();
 		addListeners();
-		switchImportView("remote");
-		
-		//panel = new JPanel(new BorderLayout());
-		//panel.add(radioButtonPanel,BorderLayout.NORTH);
-		//panel.add(valuePanel,BorderLayout.SOUTH);
+		switchImportView("local");		
 	}
 	
 	
@@ -139,38 +125,28 @@ public class InputStreamHandler extends AbstractGuiHandler {
     
     
     private void initComponents() {
-		localRadioButton = new javax.swing.JRadioButton();
-		remoteRadioButton = new javax.swing.JRadioButton();
-		networkFileTextField = new javax.swing.JTextField();
-		networkFileComboBox = new javax.swing.JComboBox();
-		selectButton = new javax.swing.JButton();
+		localRadioButton = new JRadioButton();
+		remoteRadioButton = new JRadioButton();
+		networkFileTextField = new JTextField();
+		networkFileComboBox = new JComboBox();
+		selectButton = new JButton();
 		titleSeparator = new JSeparator();
-		radioButtonPanel = new javax.swing.JPanel();
-		//valuePanel = new javax.swing.JPanel();
-
+		radioButtonPanel = new JPanel();
 		radioButtonPanel.setBorder(BorderFactory.createTitledBorder("Data Source Type"));
 		
 		localRadioButton.setSelected(true);
 		localRadioButton.setText("Local");
-		localRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		localRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		localRadioButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		localRadioButton.setMargin(new Insets(0, 0, 0, 0));
 		localRadioButton.setToolTipText(LOCAL_TOOLTIP);
 
 		remoteRadioButton.setText("Remote/URL");
-		remoteRadioButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		remoteRadioButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		remoteRadioButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		remoteRadioButton.setMargin(new Insets(0, 0, 0, 0));
 		remoteRadioButton.setToolTipText(URL_TOOLTIP);
-
-	
-		//radioButtonPanel.add(localRadioButton);
-		//radioButtonPanel.add(remoteRadioButton);
-		//valuePanel.add(networkFileTextField);
-		//valuePanel.add(selectButton);
-		//valuePanel.add(networkFileComboBox);
 		
 		networkFileTextField.setText("Please select a network file...");
 		networkFileTextField.setName("networkFileTextField");
-		//networkFileTextField.addFocusListener(this);
 
 		selectButton.setText("Select");
 
@@ -305,14 +281,9 @@ layout
 		LocalRemoteListener l = new LocalRemoteListener();
 		localRadioButton.addActionListener(l);
 		remoteRadioButton.addActionListener(l);
-
-		// ButtonActionListener btnActionListener = new ButtonActionListener();
 		selectButton.addActionListener(this);
-		//bookmarkEditor.addActionListener(this);
 	}
 
-    
-    
     
     
 	private void switchImportView(String pLocation) {
@@ -334,7 +305,7 @@ layout
     
 	
 	
-	class LocalRemoteListener implements java.awt.event.ActionListener {
+	private class LocalRemoteListener implements ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
 			Object _actionObject = e.getSource();
 
@@ -353,7 +324,7 @@ layout
 	}
     
     
-	class BookmarkComboBoxEditor implements ComboBoxEditor {
+	private class BookmarkComboBoxEditor implements ComboBoxEditor {
 		DataSource theDataSource = new DataSource();
 		JTextField tfInput = new JTextField(pleaseMessage);
 		
@@ -414,7 +385,7 @@ layout
 	}
 
 	
-	class MyCellRenderer extends JLabel implements ListCellRenderer {
+	private class MyCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339872997986L;
 		public MyCellRenderer() {
 			setOpaque(true);

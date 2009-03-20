@@ -26,7 +26,7 @@ public class BoundedFloatHandler extends AbstractGuiHandler implements Guihandle
 	String newline = System.getProperty("line.separator");
 	Double value=null;
 	
-	public BoundedFloatHandler(Field f, Object o, Tunable t) {
+	protected BoundedFloatHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
 			this.myBounded = (BoundedFloat)f.get(o);

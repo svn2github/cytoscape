@@ -17,7 +17,7 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
 	T selected;
 
 	@SuppressWarnings("unchecked")
-	public ListSingleHandler(Field f, Object o, Tunable t) {
+	protected ListSingleHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
             lss = (ListSingleSelection<T>) f.get(o);
@@ -32,7 +32,6 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
 		jta.setEditable(false);     
 		combobox = new JComboBox(lss.getPossibleValues().toArray());
 		combobox.setFont(new Font("sansserif",Font.PLAIN,11));
-//		combobox.setSelectedIndex(0);
 		combobox.addActionListener(this);
 		panel.add(combobox,BorderLayout.EAST);
 	}
@@ -47,7 +46,6 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
                 f.set(o,lss);
             }catch(Exception e){e.printStackTrace();}
         }
-        //System.out.println(lss.getSelectedValue());
 	}
 
 	public String getState() {

@@ -21,7 +21,7 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 	mySlider slider;
 	myBoundedSwing boundedField;
 	
-	public BoundedDoubleHandler(Field f, Object o, Tunable t) {
+	protected BoundedDoubleHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
 			this.myBounded = (BoundedDouble)f.get(o);

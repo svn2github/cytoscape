@@ -18,27 +18,24 @@ import org.cytoscape.work.Tunable;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
-import cytoscape.Cytoscape;
-
-
 public class URLHandler extends AbstractGuiHandler {
 
-	URL url;
-	BookmarksUtil bkUtil;
-	Bookmarks theBookmarks;
-	String bookmarkCategory = "network";
-	String urlstr;
-	BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
-	JComboBox networkFileComboBox;
-	JLabel titleLabel;
+	public URL url;
+	private BookmarksUtil bkUtil;
+	private Bookmarks theBookmarks;
+	private String bookmarkCategory = "network";
+	private String urlstr;
+	private BookmarkComboBoxEditor bookmarkEditor;
+	private JComboBox networkFileComboBox;
+	private JLabel titleLabel;
 	private JSeparator titleSeparator;
-
 	private String pleaseMessage = "Please provide URL or select from list";
 	
 	public URLHandler(Field f, Object o, Tunable t,Bookmarks bookmarks,BookmarksUtil bkUtil) {
 		super(f,o,t);
 		this.bkUtil=bkUtil;
 		this.theBookmarks=bookmarks;
+		this.bookmarkEditor = new BookmarkComboBoxEditor();
 		titleSeparator = new JSeparator();
 		titleLabel = new JLabel("Import URL file");
 		try{
@@ -92,7 +89,6 @@ public class URLHandler extends AbstractGuiHandler {
 						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
 						.addContainerGap()));
 		
-		//panel = new JPanel(new BorderLayout());
 		panel.add(new JLabel("URL Path = "));
 		panel.add(networkFileComboBox);
 		bookmarkEditor.setStr(pleaseMessage);
@@ -101,7 +97,6 @@ public class URLHandler extends AbstractGuiHandler {
 
 	public void handle() {
 		urlstr = bookmarkEditor.getURLstr();
-		System.out.println("Loading : "+urlstr);
 		try{
 			if ( urlstr != null ) {
 				try {
@@ -125,7 +120,8 @@ public class URLHandler extends AbstractGuiHandler {
 		return s;
     }
     
-	class BookmarkComboBoxEditor implements ComboBoxEditor {
+    
+	private class BookmarkComboBoxEditor implements ComboBoxEditor {
 		DataSource theDataSource = new DataSource();
 		JTextField tfInput = new JTextField(pleaseMessage);
 		
@@ -186,7 +182,7 @@ public class URLHandler extends AbstractGuiHandler {
 	}
 
 	
-	class MyCellRenderer extends JLabel implements ListCellRenderer {
+	private class MyCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339872997986L;
 		public MyCellRenderer() {
 			setOpaque(true);

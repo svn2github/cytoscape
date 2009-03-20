@@ -15,37 +15,34 @@ public class IntegerHandler extends AbstractGuiHandler {
 	Double value = null;
 	Integer myInteger;
 	String newline = System.getProperty("line.separator");
-
-
-	public IntegerHandler(Field f, Object o, Tunable t) {
+	
+	
+	protected IntegerHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
 			this.myInteger=(Integer)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		
 		panel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel(t.description());
 		label.setFont(new Font(null, Font.PLAIN,12));
 		panel.add(label,BorderLayout.WEST );
 		try {
 			jtf = new JTextField(f.get(o).toString(), 10);
-			//jtf.addActionListener( this );
-			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			panel.add(jtf,BorderLayout.EAST);
 		} catch (Exception e) { e.printStackTrace(); }
-			
+		jtf.setHorizontalAlignment(JTextField.RIGHT);
+		panel.add(jtf,BorderLayout.EAST);			
 	}
 
 	public void handle() {
+		jtf.setBackground(Color.white);
 		try{
-			jtf.setBackground(Color.white);
 			value = Double.parseDouble(jtf.getText());
 		}catch(NumberFormatException nfe){
+			jtf.setBackground(Color.red);
 			try{
-				jtf.setBackground(Color.red);
 				value = Double.parseDouble(f.get(o).toString());
-				JOptionPane.showMessageDialog(null,"An Integer was Expected"+newline+"Value will be set to default = "+value.intValue(), "Error",JOptionPane.ERROR_MESSAGE);
 			}catch(Exception e){e.printStackTrace();}
+		JOptionPane.showMessageDialog(null,"An Integer was Expected"+newline+"Value will be set to default = "+value.intValue(), "Error",JOptionPane.ERROR_MESSAGE);
 		}
 		try {
 			f.set(o,value.intValue());

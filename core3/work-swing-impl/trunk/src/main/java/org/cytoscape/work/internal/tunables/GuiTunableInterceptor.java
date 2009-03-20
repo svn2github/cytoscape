@@ -24,7 +24,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	private Component parent=null;
 	private Map<java.util.List<Guihandler>,JPanel> panelMap;
 	private java.util.List<Guihandler> lh;
-	private boolean m;
 	
 	public GuiTunableInterceptor(HandlerFactory<Guihandler> factory) {
 		super( factory );
@@ -43,8 +42,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 
 	public boolean createUI(Object... proxyObjs) {
 		Object[] objs = convertSpringProxyObjs( proxyObjs );
-
-		//java.util.List<Guihandler> lh = new ArrayList<Guihandler>();
 		lh = new ArrayList<Guihandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
@@ -98,16 +95,15 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 
 
 		if(parent==null){
-		//Custom button text
-		Object[] buttons = {"OK","Cancel"};
-		int n = JOptionPane.showOptionDialog(parent,
-		    panelMap.get(lh),
-		    "Set Parameters",
-		    JOptionPane.YES_NO_CANCEL_OPTION,
-		    JOptionPane.PLAIN_MESSAGE,
-		    null,
-		    buttons,
-		    buttons[0]);
+			Object[] buttons = {"OK","Cancel"};
+			int n = JOptionPane.showOptionDialog(parent,
+					panelMap.get(lh),
+					"Set Parameters",
+					JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					buttons,
+					buttons[0]);
 
 			if ( n == JOptionPane.OK_OPTION ){
 				for ( Guihandler h : lh ) h.handle();
@@ -115,7 +111,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			}
 			else
 				return false;
-		
 		}
 		else{
 			int nbPanel = ((Container) parent).getComponentCount()-1;

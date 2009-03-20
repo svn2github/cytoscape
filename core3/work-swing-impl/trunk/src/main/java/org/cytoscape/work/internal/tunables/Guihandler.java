@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 import org.cytoscape.work.Handler;
 
 public interface Guihandler extends Handler{
-	public void handle();
+	void handle();
 	JPanel getJPanel();
 	String getState();
 	String getName();

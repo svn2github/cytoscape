@@ -27,7 +27,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 
 	private java.util.List<Guihandler> deps;
 
-	public AbstractGuiHandler(Field f, Object o, Tunable t) {
+	protected AbstractGuiHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);	
         String s = t.dependsOn();
         if ( !s.equals("") ) {

@@ -23,12 +23,11 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 
 	
 	@SuppressWarnings("unchecked")
-	public ListMultipleHandler(Field f, Object o, Tunable t) {
+	protected ListMultipleHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
             lms = (ListMultipleSelection<T>) f.get(o);
         } catch(Exception e) {e.printStackTrace();}
-	
         panel = new JPanel(new BorderLayout());
         JTextArea jta = new JTextArea(t.description());
         jta.setLineWrap(true);
@@ -58,7 +57,7 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 	}
 	
 	
-	public List<T> convertToArray(Object[] in){
+	private List<T> convertToArray(Object[] in){
 		List<T> list = new ArrayList<T>();
 		if(in.length!=0){
 			for(int i=0;i<in.length;i++){

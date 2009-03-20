@@ -15,17 +15,17 @@ import cytoscape.Cytoscape;
 
 public class FileHandler extends AbstractGuiHandler {
 
-	JButton button;
 	File myFile;
-	JFileChooser fileChooser;
-	boolean filechoosen;
-	JTextField networkFileTextField;
+	private JFileChooser fileChooser;
+	private JButton button;
+	private boolean filechoosen;
+	private JTextField networkFileTextField;
+	private ImageIcon image;
+	private JLabel titleLabel;
+	private JSeparator titleSeparator;
 	//FileUtil flUtil;
-	ImageIcon image;
-	JLabel titleLabel;
-	JSeparator titleSeparator;
 	
-	public FileHandler(Field f, Object o, Tunable t) {
+	protected FileHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		//this.flUtil = flUtil;
 		filechoosen = false;
@@ -49,8 +49,7 @@ public class FileHandler extends AbstractGuiHandler {
 		GroupLayout layout = new GroupLayout(panel);
 		panel.setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-				.add(
-					layout.createSequentialGroup()
+				.add(layout.createSequentialGroup()
 						.addContainerGap()
 						.add(layout.createParallelGroup(GroupLayout.LEADING)
 							.add(titleLabel,GroupLayout.PREFERRED_SIZE,350,GroupLayout.PREFERRED_SIZE)
@@ -90,20 +89,19 @@ public class FileHandler extends AbstractGuiHandler {
 						)
 						.addContainerGap()));
 		
-layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
+		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
 				.add(layout.createSequentialGroup()
 						.addContainerGap()
 						.add(titleLabel)
 						.add(8, 8, 8)
 						.add(titleSeparator,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
-								.add(7, 7, 7)
-								.addPreferredGap(LayoutStyle.RELATED)
-								.add(layout.createParallelGroup(GroupLayout.BASELINE)
-										.add(button)
-										.add(networkFileTextField))
-								.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
-								.addContainerGap()));
-//		panel.add(button);			
+						.add(7, 7, 7)
+						.addPreferredGap(LayoutStyle.RELATED)
+						.add(layout.createParallelGroup(GroupLayout.BASELINE)
+								.add(button)
+								.add(networkFileTextField))
+						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
+						.addContainerGap()));
 	}
 
 	
