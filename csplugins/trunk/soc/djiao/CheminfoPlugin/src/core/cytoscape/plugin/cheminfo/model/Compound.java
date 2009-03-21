@@ -68,6 +68,7 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
+import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.inchi.InChIGenerator;
 import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.inchi.InChIToStructure;
@@ -118,8 +119,8 @@ public class Compound {
 		RBONDS ("Rotatable Bonds Count", Integer.class),
 		RULEOFFIVE ("Rule of Five Failures", Double.class),
 		TPSA ("Topological Polar Surface Area", Double.class),
-		WEINERPATH ("Weiner Path", Double.class),
-		WEINERPOL ("Weiner Polarity", Double.class),
+		WEINERPATH ("Wiener Path", Double.class),
+		WEINERPOL ("Wiener Polarity", Double.class),
 		MASS ("Exact Mass", Double.class);
 
 		private String name;
@@ -143,7 +144,8 @@ public class Compound {
 		DescriptorType.MASS,
 		DescriptorType.ALOGP,DescriptorType.ALOGP2,DescriptorType.AMR,
 		DescriptorType.HBONDACCEPTOR,DescriptorType.HBONDDONOR,
-		DescriptorType.LOBMAX,DescriptorType.LOBMIN,
+		// Exclude the LengthOverBreadth Descriptors until CDK gets better ring templates
+		// DescriptorType.LOBMAX,DescriptorType.LOBMIN,
 		DescriptorType.RBONDS,DescriptorType.RULEOFFIVE,
 		DescriptorType.TPSA,
 		DescriptorType.WEINERPATH,DescriptorType.WEINERPOL
@@ -358,6 +360,7 @@ public class Compound {
 	protected boolean laidOut;
 	private AttriType attrType;
 	private IMolecule iMolecule;
+	private IMolecule iMolecule3D;
 	private BitSet fingerPrint;
 	private int lastImageWidth = -1;
 	private int lastImageHeight = -1;
@@ -383,6 +386,7 @@ public class Compound {
 		this.renderedImage = null;
 		this.laidOut = false;
 		this.iMolecule = null;
+		this.iMolecule3D = null;
 		this.fingerPrint = null;
 		if (attrType == AttriType.inchi) {
 			// Convert to smiles 
@@ -571,12 +575,30 @@ public class Compound {
 			case LOBMIN:
 				{
 					if (iMolecule == null) return null;
+					// We need 3D coordinates for these descriptors
+					if (iMolecule3D == null) {
+						try {
+							ModelBuilder3D mb3d = ModelBuilder3D.getInstance(TemplateHandler3D.getInstance(), "mm2");
+							iMolecule3D = mb3d.generate3DCoordinates(iMolecule, true);
+						} catch (Exception e) {
+							logger.warning("Unable to calculate 3D coordinates: "+e.getMessage());
+							iMolecule3D = null;
+							return null;
+						}
+					}
+
 					IMolecularDescriptor descriptor = new LengthOverBreadthDescriptor();
-					DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(iMolecule).getValue());
-					if (type == DescriptorType.LOBMAX)
+					DescriptorValue val = descriptor.calculate(iMolecule3D);
+					if (val.getException() != null) {
+						logger.warning("Unable to calculate LengthOverBreadthDescriptor: "+val.getException().getMessage());
+						return null;
+					}
+					DoubleArrayResult retval = (DoubleArrayResult)(val.getValue());
+					if (type == DescriptorType.LOBMAX) {
 						return retval.get(0);
-					else
+					} else {
 						return retval.get(1);
+					}
 				}
 			case RBONDS:
 				{
@@ -731,13 +753,27 @@ public class Compound {
 			model.setKekuleStructure(false);
 			model.setBackColor(Color.WHITE);
 
+			int renderWidth = width;
+			// if (renderWidth < 150) renderWidth = 150;
+			int renderHeight = height;
+			// if (renderHeight < 150) renderHeight = 150;
+
 			ISimpleRenderer2D renderer = new Java2DRenderer(model);
-			bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			bufferedImage = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_RGB);
 			Graphics2D graphics = bufferedImage.createGraphics();
 			graphics.setColor(Color.WHITE);
-			graphics.fillRect(0,0,width,height);
-			Rectangle2D bbox = new Rectangle2D.Double(0,0,width,height);
+			graphics.fillRect(0,0,renderWidth,renderHeight);
+			Rectangle2D bbox = new Rectangle2D.Double(0,0,renderWidth,renderHeight);
 			renderer.paintMolecule(iMolecule, graphics, bbox);
+
+			/*
+			if (renderWidth != width || renderHeight != height) {
+				if (width < height)
+					return bufferedImage.getScaledInstance(width, width, java.awt.Image.SCALE_SMOOTH);
+				else
+					return bufferedImage.getScaledInstance(height, height, java.awt.Image.SCALE_SMOOTH);
+			}
+			*/
 		} catch (Exception e) {
 			logger.warning("Unable to depict molecule with CDK depiction: "+e.getMessage(), e);
 		}

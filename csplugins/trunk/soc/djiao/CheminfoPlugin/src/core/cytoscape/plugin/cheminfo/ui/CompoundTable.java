@@ -559,14 +559,20 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 					headerMenu.add(removeMenu);
 				}
 				JMenu addMenu = new JMenu("Add New Column");
+				JMenu attrMenu = new JMenu("Cytoscape attributes");
 				if (thisDialog.hasNodes) {
-					addAttributeMenus(addMenu, Cytoscape.getNodeAttributes(), "node.", column);
+					addAttributeMenus(attrMenu, Cytoscape.getNodeAttributes(), "node.", column);
 				}
 				if (thisDialog.hasEdges) {
-					addAttributeMenus(addMenu, Cytoscape.getEdgeAttributes(), "edge.", column);
+					addAttributeMenus(attrMenu, Cytoscape.getEdgeAttributes(), "edge.", column);
 				}
-				addMenu.add(new JSeparator());
-				addDescriptorMenus(addMenu, column);
+				if (attrMenu.getItemCount() > 0) 
+					addMenu.add(attrMenu);
+
+				JMenu descMenu = new JMenu("Molecular descriptors");
+				addDescriptorMenus(descMenu, column);
+				if (descMenu.getItemCount() > 0) 
+					addMenu.add(descMenu);
 
 				headerMenu.add(addMenu);
 				headerMenu.show(e.getComponent(), e.getX(), e.getY());
