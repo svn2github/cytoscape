@@ -117,10 +117,10 @@ public class FileHandler extends AbstractGuiHandler {
 					}catch (Exception e) { e.printStackTrace();}
 					networkFileTextField.setFont(new Font(null, Font.PLAIN,10));
 					networkFileTextField.setText(file.getAbsolutePath());
+					filechoosen=true;
 				}
 			}
 		}
-		filechoosen=true;
 	}
 
     public String getState() {
