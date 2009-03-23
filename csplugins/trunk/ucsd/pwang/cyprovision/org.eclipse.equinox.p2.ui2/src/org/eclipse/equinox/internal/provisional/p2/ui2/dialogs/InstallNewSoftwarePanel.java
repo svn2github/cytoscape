@@ -2,17 +2,31 @@ package org.eclipse.equinox.internal.provisional.p2.ui2.dialogs;
 
 import java.awt.event.*;
 import javax.swing.*;
-
+import javax.swing.tree.TreePath;
+import java.net.URISyntaxException;
 import org.eclipse.equinox.internal.p2.ui2.ProvUIMessages;
+import org.eclipse.equinox.internal.p2.ui2.model.MetadataRepositoryElement;
+import org.eclipse.equinox.internal.p2.ui2.model.CategoryElement;
 import org.eclipse.equinox.internal.provisional.p2.ui2.QueryableMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.ui2.dialogs.AddSiteDialog;
+import org.eclipse.equinox.internal.provisional.p2.ui2.model.MetadataRepositories;
 import org.eclipse.equinox.internal.provisional.p2.ui2.policy.IUViewQueryContext;
 import org.eclipse.equinox.internal.provisional.p2.ui2.policy.Policy;
+import org.eclipse.equinox.internal.p2.ui2.model.QueriedElement;
+import org.eclipse.equinox.internal.p2.ui2.model.AvailableIUElement;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.net.URI;
 import org.eclipse.equinox.internal.provisional.p2.ui2.dialogs.RepositoryManipulationDialog;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+
 
 public class InstallNewSoftwarePanel extends JPanel implements ActionListener, ItemListener,MouseListener {
 
@@ -22,14 +36,23 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 	QueryableMetadataRepositoryManager manager;
 	IUViewQueryContext queryContext;
 	URI[] comboRepos;
-	private static final String ALL = ProvUIMessages.AvailableIUsPage_AllSites;
-	private static final int INDEX_ALL = 0;
+	//private static final String ALL = ProvUIMessages.AvailableIUsPage_AllSites;
+	//private static final int INDEX_ALL = 0;
 	private String AllAvailableSites = "All Available Sites";
+	private URI repositoryFilter = null;
+	private RepositorySetting lastRepositorySetting = new RepositorySetting(); // use default setting
 	
 	/** Creates new form AvailableSoftwarePanel */
 	public InstallNewSoftwarePanel(JDialog dlg, Policy policy, String profileId, QueryableMetadataRepositoryManager manager) {
 		
 		initComponents();
+		
+		// filter is a place-holder (not implemented yet), we may need it in the future
+		tfFilter.setVisible(false);
+		
+		// we only implemented useCategoty, but we leave a place-holder for future
+		useCategoriesCheckbox.setVisible(false);
+		
 		this.dlg = dlg;
 		this.policy = policy;
 		this.profileId = profileId;
@@ -38,10 +61,65 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 		
 		fillRepoCombo(null);
 		
+		// now initialize the repository tree
+		initRepoTree();
+		
+		addEventListeners();
+	}
+
+	
+	private void initRepoTree(){
+		
+		jTree1.setRootVisible(false);
+		jTree1.setShowsRootHandles(true);
+		
+		CheckBoxTreeCellRenderer r = new CheckBoxTreeCellRenderer(jTree1, jTree1.getCellRenderer());
+		jTree1.setCellRenderer(r);
+		
+        jTree1.addMouseListener(new MouseAdapter() {
+            public void mouseReleased(MouseEvent e) {
+                // Invoke later to ensure all mouse handling is completed
+                SwingUtilities.invokeLater(new Runnable() { public void run() {
+                	CheckBoxTreeCellRenderer rr = (CheckBoxTreeCellRenderer)jTree1.getCellRenderer();
+                	String text1 = createText(rr.getCheckedPaths());
+
+                	System.out.println("\tgetCheckedPaths():\n"+ text1);
+                }});
+            }
+        });
+
+		DefaultTreeModel model= rebuildTreeModel();
+        jTree1.setModel(model);
+
+	}
+		
+	
+	private static String createText(TreePath[] paths) {
+        if (paths.length == 0) {
+            return "Nothing checked";
+        }
+        String checked = "Checked:\n";
+        for (int i=0;i < paths.length;i++) {
+            checked += paths[i] + "\n";
+        }
+        return checked;
+    }
+
+	
+	Object getNewInput() {
+		
+	    System.out.println("getNewInput(): repositoryFilter ="+repositoryFilter);
+	       
+		if (repositoryFilter != null) {
+			return new MetadataRepositoryElement(queryContext, policy, repositoryFilter, true);
+		}
+		return new MetadataRepositories(queryContext, policy, manager);
+	}
+
+	
+	private void addEventListeners(){
 		repoCombo.addItemListener(this);
-		
-		//taAvailableSoftware.setEditable(false);
-		
+
 		btnCancel.addActionListener(this);
 		btnInstall.addActionListener(this);
 		btnAddSite.addActionListener(this);
@@ -51,28 +129,58 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 		hideInstalledCheckbox.addItemListener(this);
 		
 		lbAvailableSoftwareSites.addMouseListener(this);
-		lbAlreadyInstalled.addMouseListener(this);
+		lbAlreadyInstalled.addMouseListener(this);	
+		
+		TreeSelectionListener treeSelectionListener = new TreeSelectionListener(){
+			public void valueChanged(TreeSelectionEvent tse){
+				JTree theTree =  (JTree) tse.getSource();
+				TreePath[] selectedPaths = theTree.getSelectionPaths();
+				
+				if (selectedPaths.length == 1){
+					TreePath thePath = selectedPaths[0];
+					DefaultMutableTreeNode theNode = (DefaultMutableTreeNode) thePath.getLastPathComponent();
+					Object node_userObj = theNode.getUserObject();
+					//System.out.println("node_userObj.getClass() = "+node_userObj.getClass());
+					if (node_userObj instanceof AvailableIUElement){
+						AvailableIUElement avail_iu_element = (AvailableIUElement) node_userObj;
+						
+						IInstallableUnit installUnit =avail_iu_element.getIU();
+						if (installUnit.getProperty(IInstallableUnit.PROP_DESCRIPTION) == null){
+							taDetails.setText("No description is available");
+						}
+						else {
+							taDetails.setText(installUnit.getProperty(IInstallableUnit.PROP_DESCRIPTION));
+						}
+					}
+				}
+				else if (selectedPaths.length > 1){
+					taDetails.setText("");
+				}
+
+			}
+		};
+		jTree1.addTreeSelectionListener(treeSelectionListener);
 		
 	}
-
 	
 	void fillRepoCombo(final String selection) {
-		
-		//System.out.println("fillRepoCombo");
-		
+				
 		if (repoCombo == null || policy.getRepositoryManipulator() == null)
 			return;
 		comboRepos = policy.getRepositoryManipulator().getKnownRepositories();
 		final String[] items = new String[comboRepos.length + 1];
-		items[0] = AllAvailableSites;
+		items[0] = AllAvailableSites; // i.e. "All Available Sites"
 		for (int i = 0; i < comboRepos.length; i++){
 			items[i + 1] = comboRepos[i].toString();
-			//System.out.println("\t"+ items[i + 1]);
 		}
 		
 		DefaultComboBoxModel model = new DefaultComboBoxModel(items);
 		
-		repoCombo.setModel(model);		
+		repoCombo.setModel(model);
+		
+		if (selection !=null && !selection.equals("")){
+			repoCombo.setSelectedItem(selection);
+		}
 	}
 
 	
@@ -106,9 +214,15 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 		if (defaultQueryContext.getHideAlreadyInstalled()) {
 			queryContext.hideAlreadyInstalled(profileId);
 		}
+		//queryContext.showAlreadyInstalled();//profileId);
+		//System.out.println();
+		
+		//queryContext.setShowLatestVersionsOnly(false);
 		queryContext.setShowLatestVersionsOnly(defaultQueryContext.getShowLatestVersionsOnly());
-		queryContext.setVisibleAvailableIUProperty(defaultQueryContext.getVisibleAvailableIUProperty());
-		queryContext.setVisibleInstalledIUProperty(defaultQueryContext.getVisibleInstalledIUProperty());
+
+		queryContext.setVisibleAvailableIUProperty(defaultQueryContext.getVisibleAvailableIUProperty()); // org.eclipse.equinox.p2.type.group
+		queryContext.setVisibleInstalledIUProperty(defaultQueryContext.getVisibleInstalledIUProperty()); // org.eclipse.equinox.p2.type.root
+				
 	}
 
 	
@@ -126,7 +240,6 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 				addSiteDlg.setSize(400, 150);
 				addSiteDlg.setVisible(true);
 			}
-
 		}
 	}
 
@@ -141,67 +254,219 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 			} else if (chk == hideInstalledCheckbox) {
 				//System.out.println("btnAddSite is clicked");
 			}
-			//updateJTree();
 		}
 		if (ie.getSource() instanceof JComboBox) {
 			JComboBox cmb = (JComboBox) ie.getSource();
 			if (cmb == repoCombo) {
-				//updateJTree();
+				//System.out.println("repoCombo state changed");
 			}
 		}
+				
 		updateJTree();
 	}
 
 	
 	private void updateJTree(){
-		// make sure do update only if there is any change in the setting
+		// make sure do updating only if there is any change in the setting
 		RepositorySetting currentRepSetting = new RepositorySetting((String)repoCombo.getSelectedItem(), 
 				useCategoriesCheckbox.isSelected(),showLatestVersionsCheckbox.isSelected(),hideInstalledCheckbox.isSelected());
+		
+		// If there is no change in setting, do not update the tree
 		if (currentRepSetting.equals(lastRepositorySetting)){
 			return;
 		}
 		else {
 			lastRepositorySetting = currentRepSetting;
 		}
+		
+		// The setting has been changed, do updating now
 		System.out.println("updateJTree()...");
-		
-		
-		//System.out.println("\tCurrent setting:");
-		//String selectedItem = (String) repoCombo.getSelectedItem();
-		//System.out.println("\tRespitory combobox: selectedItem = "+ selectedItem);
-		//System.out.println("\tuseCategoriesCheckbox.isSelected() ="+useCategoriesCheckbox.isSelected());
-		//System.out.println("\tshowLatestVersionsCheckbox.isSelected() ="+showLatestVersionsCheckbox.isSelected());
-		//System.out.println("\thideInstalledCheckbox.isSelected() ="+hideInstalledCheckbox.isSelected());
-		
-		System.out.println("\tQuery metadataRepository based on setting ...");
+				
+		try {
+			repositoryFilter =new URI(currentRepSetting.getSelectedRepository());
+		}
+		catch (URISyntaxException uri_e){
+			repositoryFilter = null;
+		}
+
+		if (currentRepSetting.getSelectedRepository().equalsIgnoreCase(this.AllAvailableSites)){
+			repositoryFilter = null;
+		}
 		updateQueryContext(currentRepSetting);
-		
+
+		DefaultTreeModel newModel= rebuildTreeModel();
+        jTree1.setModel(newModel);
 	}
 	
+    
+	private DefaultTreeModel rebuildTreeModel(){
+
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("JTree");                
+		DefaultMutableTreeNode parent;
+
+		Object obj = getNewInput(); 
+
+		System.out.println("obj.getClass()"+ obj.getClass());
+
+		if (obj instanceof MetadataRepositories){
+
+			System.out.println("Case for MetadataRepositories");
+
+			MetadataRepositories repos = (MetadataRepositories) obj;
+
+			if (!repos.hasChildren(null)){
+				return new DefaultTreeModel(null);
+			}
+
+			Object[] catElementObjs = repos.getChildren(null);
+			for (int i=0; i< catElementObjs.length; i++){
+				parent = new DefaultMutableTreeNode();
+				parent.setUserObject(catElementObjs[i]);
+
+				CategoryElement catElement = (CategoryElement) catElementObjs[i];
+				
+				if (catElement.hasChildren(null)){
+					Object[] cat_children = catElement.getChildren(null);
+					for (int j=0; j<cat_children.length; j++){
+						DefaultMutableTreeNode iu2 = new DefaultMutableTreeNode();
+						iu2.setUserObject(cat_children[j]);
+						parent.add(iu2);
+					}
+				}
+				root.add(parent);
+			}
+		}   
+		else if (obj instanceof MetadataRepositoryElement){
+			MetadataRepositoryElement repoElement = (MetadataRepositoryElement) obj;
+
+			if (!repoElement.hasChildren(null)){
+				return new DefaultTreeModel(null);
+			}
+
+			//parent = new DefaultMutableTreeNode();
+			//parent.setUserObject(repoElement);
+
+			
+			Object[] cat_children = repoElement.getChildren(null);	
+			
+			System.out.println("repoElement has " + cat_children.length+ " Children");
+
+			for (int j=0; j<cat_children.length; j++){
+				
+				System.out.println("\t child type : " +cat_children[j].getClass());
+				
+				parent = new DefaultMutableTreeNode();
+				parent.setUserObject(cat_children[j]);
+				
+				if (cat_children[j] instanceof CategoryElement){
+					CategoryElement cat_element = (CategoryElement) cat_children[j];
+					Object[] childrenObjs = cat_element.getChildren(null);
+
+					for (int k=0; k<childrenObjs.length; k++){
+					
+						DefaultMutableTreeNode iu3 = new DefaultMutableTreeNode();
+						iu3.setUserObject(childrenObjs[k]);
+						parent.add(iu3);
+					}
+					
+				}
+				
+				root.add(parent);
+			}
+
+
+			
+		}
+		else {
+			//this should not happen, otherwise there is something wrong
+		}
+
+		return new DefaultTreeModel(root);
+	}
+
+	
+	private DefaultTreeModel rebuildTreeModel_1(){
+		
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("JTree");                
+        DefaultMutableTreeNode parent;
+		
+		if (repositoryFilter != null){
+			MetadataRepositoryElement repoElement = (MetadataRepositoryElement)getNewInput();
+			
+			String name = ((AvailableIUElement)repoElement.getChildren(null)[0]).getIU().getProperty("org.eclipse.equinox.p2.name");
+			parent = new DefaultMutableTreeNode(name);
+			
+			Object[] availIUElementObjs = repoElement.getChildren(null);
+			
+    		for (int j=0; j<availIUElementObjs.length; j++){
+    			AvailableIUElement availIUElement = (AvailableIUElement) availIUElementObjs[j];
+    		
+    			String iu_name_version = availIUElement.getIU().getProperty("org.eclipse.equinox.p2.name") + " --- version " +availIUElement.getIU().getVersion();
+    			DefaultMutableTreeNode iu1 = new DefaultMutableTreeNode(iu_name_version);
+    			parent.add(iu1);
+    		}
+
+    		root.add(parent);
+		}
+		else { //repositoryFilter = null, i.e. Selected "All Available Sites"
+	        MetadataRepositories repos = (MetadataRepositories) getNewInput();
+	        
+	        Object [] objs = repos.getChildren(null);
+	        
+	        int repoCount = objs.length;
+	        
+	        for (int i=0; i< repoCount; i++){
+	        	CategoryElement catElement = (CategoryElement) objs[i];
+	    		
+	        	String cat_name = catElement.getIU().getProperty("org.eclipse.equinox.p2.name");
+	        	parent = new DefaultMutableTreeNode(cat_name);
+	        	        	
+	    		Object[] availIUElementObjs =  catElement.getChildren(null);
+	    		
+	    		for (int j=0; j<availIUElementObjs.length; j++){
+	    			AvailableIUElement availIUElement = (AvailableIUElement) availIUElementObjs[j];
+	    		
+	    			String iu_name_version = availIUElement.getIU().getProperty("org.eclipse.equinox.p2.name") + " --- version " +availIUElement.getIU().getVersion();
+	    			DefaultMutableTreeNode iu1 = new DefaultMutableTreeNode(iu_name_version);
+	    			parent.add(iu1);
+	    		}
+	        	
+	    		root.add(parent);
+	        }
+		}
+
+        return new DefaultTreeModel(root);
+	}
+
 	
 	private void updateQueryContext(RepositorySetting pRepQuerySetting){
 		//
 		IUViewQueryContext defaultQueryContext = policy.getQueryContext();
-		queryContext = new IUViewQueryContext(defaultQueryContext.getViewType());
+		queryContext = new IUViewQueryContext(defaultQueryContext.getViewType()); // defaultQueryContext.getViewType() =1
 		
-		//System.out.println("defaultQueryContext.getViewType()="+defaultQueryContext.getViewType()); // 1
-		
-		queryContext.setArtifactRepositoryFlags(defaultQueryContext.getArtifactRepositoryFlags());
-		
-		//System.out.println("defaultQueryContext.getArtifactRepositoryFlags()="+defaultQueryContext.getArtifactRepositoryFlags()); //2
-		
+		queryContext.setArtifactRepositoryFlags(defaultQueryContext.getArtifactRepositoryFlags()); //defaultQueryContext.getArtifactRepositoryFlags()=2		
 		queryContext.setMetadataRepositoryFlags(defaultQueryContext.getMetadataRepositoryFlags());
+		
 		if (pRepQuerySetting.getHideInstalled()) {
 			queryContext.hideAlreadyInstalled(profileId);
 		}
 		queryContext.setShowLatestVersionsOnly(pRepQuerySetting.getShowLatestVersions());
-		queryContext.setUseCategories(pRepQuerySetting.getUseCategories());
+		
+		//queryContext.setUseCategories(pRepQuerySetting.getUseCategories());
+		queryContext.setUseCategories(true);
 		
 		
 		if (pRepQuerySetting.getSelectedRepository().equalsIgnoreCase(AllAvailableSites)) {
 			//availableIUGroup.setRepositoryFilter(null);
+			repositoryFilter = null;
 		} else {
 			//availableIUGroup.setRepositoryFilter(pRepQuerySetting.getSelectedRepository());
+			try {
+				repositoryFilter = new URI(pRepQuerySetting.getSelectedRepository());				
+			}
+			catch (URISyntaxException uri_exp){
+				repositoryFilter = null;
+			}
 		}
 		
 		queryContext.setVisibleAvailableIUProperty(defaultQueryContext.getVisibleAvailableIUProperty());
@@ -209,11 +474,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 
 	}
 	
-	
-	
-	private RepositorySetting lastRepositorySetting = new RepositorySetting(); // use default setting
-	
-	
+		
 	// mouseListener
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() instanceof JLabel){
@@ -237,6 +498,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 	public void mousePressed(MouseEvent e) {}
 	public void mouseReleased(MouseEvent e) {}
 	
+    
 
 	
     /** This method is called from within the constructor to
@@ -262,7 +524,9 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
         pnlTree = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
+        jScrollPane2 = new javax.swing.JScrollPane();
         pnlDetails = new javax.swing.JPanel();
+        taDetails = new javax.swing.JTextArea();
         jPanel3 = new javax.swing.JPanel();
         showLatestVersionsCheckbox = new javax.swing.JCheckBox();
         useCategoriesCheckbox = new javax.swing.JCheckBox();
@@ -296,7 +560,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         jPanel5.add(jLabel3, gridBagConstraints);
 
-        repoCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { AllAvailableSites, "Item 4" }));
+        repoCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All Available Sites", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -383,31 +647,35 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.weighty = 0.8;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         add(pnlTree, gridBagConstraints);
 
-        pnlDetails.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
+        pnlDetails.setLayout(new java.awt.GridBagLayout());
+
         pnlDetails.setMinimumSize(new java.awt.Dimension(0, 50));
         pnlDetails.setPreferredSize(new java.awt.Dimension(0, 50));
-        javax.swing.GroupLayout pnlDetailsLayout = new javax.swing.GroupLayout(pnlDetails);
-        pnlDetails.setLayout(pnlDetailsLayout);
-        pnlDetailsLayout.setHorizontalGroup(
-            pnlDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 620, Short.MAX_VALUE)
-        );
-        pnlDetailsLayout.setVerticalGroup(
-            pnlDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 24, Short.MAX_VALUE)
-        );
+        taDetails.setBackground(new java.awt.Color(212, 208, 200));
+        taDetails.setColumns(20);
+        taDetails.setEditable(false);
+        taDetails.setRows(5);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        pnlDetails.add(taDetails, gridBagConstraints);
+
+        jScrollPane2.setViewportView(pnlDetails);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-        add(pnlDetails, gridBagConstraints);
+        add(jScrollPane2, gridBagConstraints);
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
@@ -419,6 +687,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel3.add(showLatestVersionsCheckbox, gridBagConstraints);
 
+        useCategoriesCheckbox.setSelected(true);
         useCategoriesCheckbox.setText("Group items by category");
         useCategoriesCheckbox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         useCategoriesCheckbox.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -428,6 +697,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel3.add(useCategoriesCheckbox, gridBagConstraints);
 
+        hideInstalledCheckbox.setSelected(true);
         hideInstalledCheckbox.setText("Hide items that are already installed");
         hideInstalledCheckbox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         hideInstalledCheckbox.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -441,6 +711,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 
         jLabel2.setText("What is ");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 40, 0, 0);
@@ -497,6 +768,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTree jTree1;
     private javax.swing.JLabel lbAlreadyInstalled;
     private javax.swing.JLabel lbAvailableSoftwareSites;
@@ -506,16 +778,20 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
     private javax.swing.JComboBox repoCombo;
     private javax.swing.JCheckBox showLatestVersionsCheckbox;
     private javax.swing.JTextArea taAvailableSoftware;
+    private javax.swing.JTextArea taDetails;
     private javax.swing.JTextField tfFilter;
     private javax.swing.JCheckBox useCategoriesCheckbox;
     // End of variables declaration                   
- 
+
+	
+	
+    
 	class RepositorySetting {
 		// default setting
 		private String selectedRepository = AllAvailableSites;
-		boolean useCategories = false;
-		boolean showLatestVersions = true;
-		boolean hideInstalled = false;
+		private boolean useCategories = true;
+		private boolean showLatestVersions = true;
+		private boolean hideInstalled = false;
 
 		// default constructor
 		public RepositorySetting(){}
@@ -527,30 +803,30 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 			this.hideInstalled = hideInstalled;		
 		}
 		
-		String getSelectedRepository(){
+		public String getSelectedRepository(){
 			return selectedRepository;
 		}
-		boolean getUseCategories(){
+		public boolean getUseCategories(){
 			return useCategories;
 		}
-		boolean getShowLatestVersions(){
+		public boolean getShowLatestVersions(){
 			return showLatestVersions;
 		}
-		boolean getHideInstalled(){
+		public boolean getHideInstalled(){
 			return hideInstalled;
 		}
 
-		void setSelectedRepository(String pRepositoryName){
+		public void setSelectedRepository(String pRepositoryName){
 			selectedRepository = pRepositoryName;
 		}
 		
-		void setUseCategories(boolean pUseCategories){
+		public void setUseCategories(boolean pUseCategories){
 			useCategories = pUseCategories;
 		}
-		void setShowLatestVersions(boolean pShowLatestVersions){
+		public void setShowLatestVersions(boolean pShowLatestVersions){
 			showLatestVersions = pShowLatestVersions;
 		}
-		void setHideInstalled(boolean pHideInstalled){
+		public void setHideInstalled(boolean pHideInstalled){
 			hideInstalled = pHideInstalled;
 		}
 		
@@ -569,7 +845,16 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 			}
 			return true;
 		}
-	}
 
-    
+		public String toString(){
+		
+			String retValue = "\tCurrent setting:";
+			retValue  += "\tRespitory combobox: selectedItem = "+ selectedRepository;
+			retValue  += "\tuseCategoriesCheckbox.isSelected() ="+useCategories;
+			retValue += "\tshowLatestVersionsCheckbox.isSelected() ="+showLatestVersions;
+			retValue += "\thideInstalledCheckbox.isSelected() ="+ hideInstalled;
+			
+			return retValue;
+		}
+	}
 }
