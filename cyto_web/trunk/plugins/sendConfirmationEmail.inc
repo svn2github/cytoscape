@@ -2,7 +2,7 @@
 // Send a confirmation e-mail to user
 // Also send e-mails to notify cytostaff that new plugin is uploaded
 	
-function sendConfirmartionEmail($yourName, $email, $pluginName) {
+function sendConfirmartionEmail($yourName, $email, $pluginName, $pluginDescription) {
 		
 	include 'cytostaff_emails.inc';
 
@@ -14,8 +14,9 @@ function sendConfirmartionEmail($yourName, $email, $pluginName) {
 	}
 	$subject = "Your plugin -- " . $pluginName;
 	$body = $yourName.",\n\nThank you for submitting " . $pluginName . " to Cytoscape. " .
+		"\n\nDescription:\n\n".$pluginDescription."\n\n".
         	"Cytoscape staff will review your plugin and publish it on the Cytoscape website." .
-        	"\n\nCytoscape team";
+        	"\n\n\nCytoscape team";
 
 	$headers = "From: " . $from . "\r\n"; 
 	if ($bcc != "") {
