@@ -58,6 +58,8 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.SubsetChangedListener;
 import org.cytoscape.view.model.events.SubsetCreatedListener;
 import org.cytoscape.view.model.events.SubsetDestroyedListener;
+import org.cytoscape.view.model.events.NetworkViewChangedEvent;
+import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.model.events.internal.SubsetChangedEventImpl;
 import org.cytoscape.view.model.events.internal.SubsetCreatedEventImpl;
 import org.cytoscape.view.model.events.internal.SubsetDestroyedEventImpl;
@@ -116,7 +118,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public View<CyNode> getCyNodeView(final CyNode n) {
+	public View<CyNode> getNodeView(final CyNode n) {
 		return nodeViews.get(n);
 	}
 
@@ -125,7 +127,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public List<View<CyNode>> getCyNodeViews() {
+	public List<View<CyNode>> getNodeViews() {
 		return new ArrayList<View<CyNode>>(nodeViews.values());
 	}
 
@@ -137,7 +139,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public View<CyEdge> getCyEdgeView(final CyEdge e) {
+	public View<CyEdge> getEdgeView(final CyEdge e) {
 		return edgeViews.get(e);
 	}
 
@@ -146,7 +148,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public List<View<CyEdge>> getCyEdgeViews() {
+	public List<View<CyEdge>> getEdgeViews() {
 		return new ArrayList<View<CyEdge>>(edgeViews.values());
 	}
 
@@ -368,5 +370,23 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	 */
 	public long getSUID() {
 		return viewCyNetwork.getSUID();
+	}
+
+	public void fitContent() {
+		System.out.println("running dummy fitContent");
+	}
+	public void fitSelected() {
+		System.out.println("running dummy fitSelected");
+	}
+	public void updateView() {
+		eventHelper.fireAsynchronousEvent(
+				new NetworkViewChangedEvent() {
+					public Object getSource() {
+						return ColumnOrientedNetworkViewImpl.this; 
+					} 
+					public CyNetworkView getNetworkView() { 
+						return ColumnOrientedNetworkViewImpl.this; 
+					} 
+				},  NetworkViewChangedListener.class);
 	}
 }

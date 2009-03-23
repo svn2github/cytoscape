@@ -73,14 +73,14 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 	/**
 	 * DOCUMENT ME!
 	 * 
-	 * @param name
+	 * @param serializableName
 	 *            DOCUMENT ME!
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public VisualProperty<?> getVisualProperty(final String name) {
+	public VisualProperty<?> getVisualProperty(final String serializableName) {
 		for (VisualProperty<?> vp : visualPropertySet.keySet()) {
-			if (vp.getID().equals(name)) {
+			if (vp.getSerializableName().equals(serializableName)) {
 				return vp;
 			}
 		}
@@ -127,9 +127,8 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 			final CyNetworkView networkview, final String objectType) {
 		if (networkview != null) {
 			// FIXME: could filter Views based on objectType, right here
-			final Collection<View<?>> views = new HashSet<View<?>>(networkview
-					.getCyNodeViews());
-			views.addAll(networkview.getCyEdgeViews());
+			final Collection<View<?>> views = new HashSet<View<?>>(networkview.getNodeViews());
+			views.addAll(networkview.getEdgeViews());
 
 			return collectionOfVisualProperties(views, objectType);
 		} else {
@@ -195,9 +194,9 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 		return result;
 	}
 
-	/** {@inheritDoc}
-	 */
-	public void addVisualPropertiesOfRenderer(Renderer renderer){
+
+	@SuppressWarnings("unchecked")
+	public void addRenderer(Renderer renderer, Map props) {
 		for (VisualProperty<?>vp: renderer.getVisualProperties()){
 			if (this.visualPropertySet.containsKey(vp)){
 				List<Renderer> renderers = this.visualPropertySet.get(vp);
@@ -210,9 +209,8 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 		}
 	}
 
-	/** {@inheritDoc}
-	 */
-	public void removeVisualPropertiesOfRenderer(Renderer renderer){
+	@SuppressWarnings("unchecked")
+	public void removeRenderer(Renderer renderer, Map props) {
 		for (VisualProperty<?>vp: renderer.getVisualProperties()){
 			List<Renderer> renderers = this.visualPropertySet.get(vp);
 			if (renderers.size() == 1){
@@ -223,19 +221,5 @@ public class VisualPropertyCatalogImpl implements VisualPropertyCatalog {
 				renderers.remove(renderer);
 			}
 		}
-	}
-	
-	// The following two methods are listeners.
-	// Handles dynamics of OSGi services.
-
-	@SuppressWarnings("unchecked")
-	public void addRenderer(Renderer renderer, Map props) {
-		System.out.println("====> Renderer bound: " + renderer.toString());
-		addVisualPropertiesOfRenderer(renderer);
-	}
-
-	@SuppressWarnings("unchecked")
-	public void removeRenderer(Renderer renderer, Map props) {
-		removeVisualPropertiesOfRenderer(renderer);
 	}
 }
