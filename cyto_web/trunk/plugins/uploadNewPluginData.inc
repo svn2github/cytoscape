@@ -134,5 +134,5 @@
 		// Send a confirmation e-mail to user
 		// Also cc to cytostaff,  new plugin is uploaded
 		include "sendConfirmationEmail.inc";
-		sendConfirmartionEmail(stripslashes($contactName), $contactEmail, $pluginProps['pluginName']);
+		sendConfirmartionEmail(stripslashes($contactName), $contactEmail, $pluginProps['pluginName'], $pluginProps['pluginDescription']);
 ?>
