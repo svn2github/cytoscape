@@ -49,22 +49,4 @@ public interface Renderer {
 	 * @return  DOCUMENT ME!
 	 */
 	Set<VisualProperty<?>> getVisualProperties();
-
-	/**
-	 * Given a String, returns a VisualProperty object.
-	 *
-	 * @param s  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	VisualProperty<?> parseVisualProperty(String s);
-
-	/**
-	 * Returns a string suitable for parsing by {Renderer#parseVisualProperty(String s)}.
-	 *
-	 * @param vp  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	String getVisualPropertyString(VisualProperty<?> vp);
 }

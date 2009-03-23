@@ -35,6 +35,7 @@
 package org.cytoscape.view.model;
 
 import java.util.Collection;
+import java.util.Map;
 
 
 /**
@@ -46,7 +47,8 @@ public interface VisualPropertyCatalog {
 	 *
 	 * @param renderer DOCUMENT ME!
 	 */
-	void addVisualPropertiesOfRenderer(Renderer renderer);
+	@SuppressWarnings("unchecked")
+	void addRenderer(Renderer renderer, Map props);
 
 	/**
 	 * unregister the VisualProperties of the given Renderer.
@@ -54,7 +56,8 @@ public interface VisualPropertyCatalog {
 	 *
 	 * @param renderer DOCUMENT ME!
 	 */
-	void removeVisualPropertiesOfRenderer(Renderer renderer);
+	@SuppressWarnings("unchecked")
+	void removeRenderer(Renderer renderer, Map props);
 	
 	/**
 	 *  DOCUMENT ME!

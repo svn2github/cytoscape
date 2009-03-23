@@ -81,23 +81,36 @@ public interface VisualProperty<T> {
 	T getDefault();
 
 	/**
-	 * Used for hashes identifying this property.
+	 * A short string used to identify this visual property and suitable for
+	 * serializing to XML and other text formats.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	String getID();
+	String getSerializableName();
 
 	/**
-	 * For presentation to humans.
+	 * A short string suitable for presentation to humans.  Should not be used
+	 * for serialization.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	String getName();
+	String getHumanName();
 
 	/**
-	 *
 	 *
 	 * @return callback, or null if there isn't one
 	 */
 	DependentVisualPropertyCallback dependentVisualPropertyCallback();
+
+	/**
+	 * Returns a string of the specified value suitable for serializing to XML
+	 * other text output.
+	 */
+	String getSerializableString(T value);
+
+	/**
+	 * Returns an object of type T given a string serialized from the getSerializableString(T value)
+	 * method.
+	 */
+	T parseSerializableString(String value);
 }

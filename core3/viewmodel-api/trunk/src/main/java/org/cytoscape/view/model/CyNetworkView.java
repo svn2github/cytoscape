@@ -55,14 +55,14 @@ public interface CyNetworkView extends View<CyNetwork>{
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	View<CyNode> getCyNodeView(CyNode n);
+	View<CyNode> getNodeView(CyNode n);
 
 	/**
 	 * Returns a list of Views for all CyNodes in the network.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	List<View<CyNode>> getCyNodeViews();
+	List<View<CyNode>> getNodeViews();
 
 	/**
 	 * Returns a View for a specified Edge.
@@ -71,14 +71,14 @@ public interface CyNetworkView extends View<CyNetwork>{
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	View<CyEdge> getCyEdgeView(CyEdge n);
+	View<CyEdge> getEdgeView(CyEdge n);
 
 	/**
 	 * Returns a list of Views for all CyEdges in the network.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	List<View<CyEdge>> getCyEdgeViews();
+	List<View<CyEdge>> getEdgeViews();
 
 	/**
 	 * Returns a list of all View including those for Nodes, Edges, and Network.
@@ -88,13 +88,20 @@ public interface CyNetworkView extends View<CyNetwork>{
 	List<View<?extends GraphObject>> getAllViews();
 
 	<T> ViewColumn<T> getColumn(final VisualProperty<T> vp);
+
+
+	// temp methods
+	void fitContent();
+	void fitSelected();
+	void updateView();
+
 	/**
 	 * Returns the given subset.
 	 *
 	 * @param name name of the subset to return
 	 * @return the subset
 	 */
-	Set<View<?extends GraphObject>> getSubset(String name);
+	Set<View<? extends GraphObject>> getSubset(String name);
 
 	/**
 	 * If subset already exists, replaces it with given Set.
