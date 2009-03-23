@@ -37,7 +37,6 @@ package org.cytoscape.task.loadnetwork.internal;
 
 import static org.cytoscape.io.DataCategory.NETWORK;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -56,7 +55,7 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 
 	@Tunable(description = "InputStream to load")
 	public InputStream is;
-	public File file;
+	//public File file;
 	
 
 	public LoadInputStreamTask(CyReaderManager mgr, GraphViewFactory gvf,
@@ -75,7 +74,7 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 
 //		uri = file.toURI();
 //		name = file.getName();
-		//reader.setInputStream(is);
+//		reader.setInputStream(is);
 		//uri = is.toURI();
 //		name = is.toString();
 
