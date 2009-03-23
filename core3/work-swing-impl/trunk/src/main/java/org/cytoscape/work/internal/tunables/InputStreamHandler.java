@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -47,9 +48,6 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	private JTextField networkFileTextField;
 	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
-
-	//FileUtil flUtil;
-	//StreamUtil stUtil;
 	
 	protected InputStreamHandler(Field f, Object o, Tunable t,Bookmarks bookmarks,BookmarksUtil bkUtil) {
 		super(f,o,t);
@@ -87,8 +85,8 @@ public class InputStreamHandler extends AbstractGuiHandler {
 				    File file = fileChooser.getSelectedFile();
 					if ( file != null ){
 						try{
-							InStream = new FileInputStream(file.getAbsolutePath());
-							//InStream = flUtil.getInputStream(file.getAbsolutePath());
+//							InStream = flUtil.getInputStream(file.getAbsolutePath());
+							InStream = new BufferedInputStream(new FileInputStream(file));
 							f.set(o,InStream);
 						}catch (Exception e) { e.printStackTrace();}
 						networkFileTextField.setFont(new Font(null, Font.PLAIN,10));
