@@ -100,6 +100,7 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			urlstr = bookmarkEditor.getURLstr();
 			try{
 				if ( urlstr != null ) {
+					System.out.println("URL = "+urlstr);
 					url = new URL(urlstr);
 					f.set(o,url.openStream());
 				}
