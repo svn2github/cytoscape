@@ -115,7 +115,7 @@ public class CyReaderManagerImpl implements CyReaderManager {
 						reader = factory.getReader(uri);
 				} else {
 					System.out.println("################# " + cff.getClass());
-					if (cff.accept(stream, category))
+					//if (cff.accept(stream, category))
 						reader = factory.getReader(stream);
 				}
 			} catch (IOException e) {
