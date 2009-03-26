@@ -24,10 +24,7 @@ foreach ($rss->items as $item ) {
 		$date = $item[pubdate];
 
 		list($usable_date, $extra) = split("T", $date);
-		list($year, $month, $day) = split ("-", $usable_date);
-		$time_stamp = strtotime("$month/$day/$year");
-
-		$time_stamp = strtotime("$date");
+		$time_stamp = strtotime("$usable_date");
 		$date_formatted = date("F j, Y", $time_stamp);
 
 		# Temporary Hack to Remove Non-Approved Items from the Home Page
