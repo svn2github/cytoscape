@@ -40,7 +40,6 @@
 // $Author: pwang $
 package org.cytoscape.task.loadnetwork.internal;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
 
@@ -82,7 +81,7 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
 		try {
 			taskMonitor.setStatusMessage("Opening url " + url);
-			reader = mgr.getReader(url.toURI(), DataCategory.NETWORK);
+			reader = mgr.getReader(url.toURI(),DataCategory.NETWORK);
 
 			if (interrupted)
 				return;

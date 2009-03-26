@@ -47,6 +47,7 @@ import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Tunable.Param;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CyNetworkNaming;
@@ -56,8 +57,7 @@ import cytoscape.util.CyNetworkNaming;
  */
 public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 
-	// public File[] files;
-	@Tunable(description = "Network file to load")
+	@Tunable(description = "Network file to load",flag = {Param.network})
 	public File file;
 
 	public LoadNetworkFileTask(CyReaderManager mgr, GraphViewFactory gvf,
@@ -70,7 +70,6 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		this.taskMonitor = taskMonitor;
-		// for ( File file : files ) {
 
 		reader = mgr.getReader(file.toURI(), NETWORK);
 
@@ -82,6 +81,5 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 		}
 
 		loadNetwork(reader);
-		// }
 	}
 }

@@ -55,7 +55,6 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 
 	@Tunable(description = "InputStream to load")
 	public InputStream is;
-	//public File file;
 	
 
 	public LoadInputStreamTask(CyReaderManager mgr, GraphViewFactory gvf,
@@ -68,21 +67,15 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		this.taskMonitor = taskMonitor;
-		// for ( File file : files ) {
 		
 		reader = mgr.getReader(is, NETWORK);
 
-//		uri = file.toURI();
-//		name = file.getName();
-//		reader.setInputStream(is);
-		//uri = is.toURI();
-//		name = is.toString();
-
+		name = is.toString();
+		
 		if (reader == null) {
 			uri = null;
 			System.out.println("The reader is null");
 		}
 		else loadNetwork(reader);
-		// }
 	}
 }
