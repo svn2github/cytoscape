@@ -44,6 +44,7 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
+import java.awt.Toolkit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,20 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 		super((String)(configProps.get("title")));
 		this.consoleName = (String)(configProps.get("title"));
 		setPreferredMenu((String)(configProps.get("preferredMenu")));
+		String keyComboString = (String) configProps.get("keyCombo");
+		if (keyComboString != null)
+		{
+			KeyStroke keyStroke = KeyStroke.getKeyStroke(keyComboString);
+			if (keyStroke != null)
+			{
+				int commandModifier = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+				this.keyCode = keyStroke.getKeyCode();
+				this.keyModifiers = commandModifier | keyStroke.getModifiers();
+				acceleratorSet = true;
+			}
+			else
+				System.out.println(String.format("Warning: The action \'%s\' has specified the following invalid key combination: %s", consoleName, keyComboString));
+		}
 		this.netmgr = netmgr;
 		consoleName = consoleName.replaceAll(":. \'", "");
 		initialize();
