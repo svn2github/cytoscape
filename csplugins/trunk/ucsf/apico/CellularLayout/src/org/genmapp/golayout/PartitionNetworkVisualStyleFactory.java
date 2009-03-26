@@ -37,14 +37,14 @@ public class PartitionNetworkVisualStyleFactory {
 		
 		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
-		VisualStyle sgvStyle = catalog.getVisualStyle(PartitionNetwork_VS);
-		if (sgvStyle == null) { // Create the MF visual style
+		VisualStyle mfStyle = catalog.getVisualStyle(PartitionNetwork_VS);
+		if (mfStyle == null) { // Create the MF visual style
 			try {
-				sgvStyle = (VisualStyle) vmm.getVisualStyle().clone();
+				mfStyle = (VisualStyle) vmm.getVisualStyle().clone();
 			} catch (CloneNotSupportedException e) {
-				sgvStyle = new VisualStyle(PartitionNetwork_VS);
+				mfStyle = new VisualStyle(PartitionNetwork_VS);
 			}
-			sgvStyle.setName(PartitionNetwork_VS);
+			mfStyle.setName(PartitionNetwork_VS);
 			NodeAppearanceCalculator nac = new MFNodeAppearanceCalculator();
 			nac.getDefaultAppearance().setNodeSizeLocked(false);
 			nac.getDefaultAppearance().set(VisualPropertyType.NODE_HEIGHT,
@@ -144,23 +144,23 @@ public class PartitionNetworkVisualStyleFactory {
 			
 			nac.setCalculator(colorCalculator);
 
-			sgvStyle.setNodeAppearanceCalculator(nac);
+			mfStyle.setNodeAppearanceCalculator(nac);
 			
-			GlobalAppearanceCalculator gac = sgvStyle.getGlobalAppearanceCalculator();
+			GlobalAppearanceCalculator gac = mfStyle.getGlobalAppearanceCalculator();
 			// set edge opacity
 			gac.setDefaultBackgroundColor(Color.white);
 //			VisualStyle visualStyle = new VisualStyle(PartitionNetwork_VS, nodeAppCalc, edgeAppCalc, gac);
 			VisualPropertyType type = VisualPropertyType.EDGE_OPACITY;
-			type.setDefault(sgvStyle, new Integer(200));
+			type.setDefault(mfStyle, new Integer(200));
 			type = VisualPropertyType.NODE_SHAPE;
-			type.setDefault(sgvStyle, NodeShape.ELLIPSE);
-			sgvStyle.setGlobalAppearanceCalculator(gac);
+			type.setDefault(mfStyle, NodeShape.ELLIPSE);
+			mfStyle.setGlobalAppearanceCalculator(gac);
 
-			catalog.addVisualStyle(sgvStyle);
+			catalog.addVisualStyle(mfStyle);
 		}
 		CyNetworkView myView = Cytoscape.getCurrentNetworkView();
 		vmm.setNetworkView(myView);
-		vmm.setVisualStyle(sgvStyle);
+		vmm.setVisualStyle(mfStyle);
 		myView.setVisualStyle(PartitionNetwork_VS);
 
 		Cytoscape.getVisualMappingManager().setNetworkView(myView);
@@ -169,7 +169,7 @@ public class PartitionNetworkVisualStyleFactory {
 		
 
 		
-		return sgvStyle;
+		return mfStyle;
 		
 		
 //		VisualStyle clone = null;

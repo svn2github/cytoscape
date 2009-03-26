@@ -44,6 +44,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 	private String attName;
 	private List<String> nestedAttValues; // values represented by attValue
 	private List<NodeView> nodeViews;
+	private List<NodeView> filteredNodeViews = new ArrayList<NodeView>();
 	private int nodeCount;
 	private int columns;
 	private int area;
@@ -82,21 +83,32 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.attValue = attValue;
 		RegionManager.addRegion(this.attValue, this);
 
-		// nested terms based on Nathan's GO tree analysis
+		// synonym terms based on Nathan's GO tree analysis
 		if (this.attValue.equals("extracellular region"))
-			nestedAttValues = Arrays.asList("extracellular region", "secreted");
+			nestedAttValues = Arrays.asList("extracellular region",
+					"extracellular space", "secreted");
+		else if (this.attValue.equals("mitochondrion"))
+			nestedAttValues = Arrays.asList("mitochondrion",
+					"mitochondrion lumen");
+		else if (this.attValue.equals("endoplasmic reticulum"))
+			nestedAttValues = Arrays.asList("endoplasmic reticulum",
+					"Golgi apparatus");
 		else if (this.attValue.equals("plasma membrane"))
 			nestedAttValues = Arrays.asList("plasma membrane", "cell wall");
 		else if (this.attValue.equals("cytoplasm"))
-			nestedAttValues = Arrays.asList("cytoplasm", "intracellular");
+			nestedAttValues = Arrays.asList("cytoplasm", "intracellular",
+					"cytosol", "vacuole", "lysosome", "peroxisome");
 		else if (this.attValue.equals("nucleus"))
 			nestedAttValues = Arrays.asList("nucleus", "nucleolus",
-					"nuclear membrane");
+					"nuclear membrane", "nucleoplasm");
+		else if (this.attValue.equals("unassigned"))
+			nestedAttValues = Arrays.asList("unassigned", "cellular_component");
 		else
 			nestedAttValues = Arrays.asList(this.attValue);
 
 		// additional parameters
-		this.attName = "BasicCellularComponents"; // hard-coded, for now
+		this.attName = "annotation.GO CELLULAR_COMPONENT"; // hard-coded, for
+															// now
 
 		this.nodeViews = populateNodeViews();
 		this.nodeCount = this.nodeViews.size();
@@ -272,6 +284,22 @@ public class Region extends JComponent implements ViewportChangeListener {
 		return outline;
 	}
 
+	public Rectangle2D.Double getFreeVRectangle() {
+		return new Rectangle2D.Double(getFreeLeft(), getFreeTop(),
+				(getFreeRight() - getFreeLeft()),
+				(getFreeBottom() - getFreeTop()));
+	}
+
+	// public java.awt.Shape getFreeVOutline() {
+	// Rectangle2D.Double r = getFreeVRectangle();
+	// r.width = r.width + 2;
+	// r.height = r.height + 2;
+	// AffineTransform f = new AffineTransform();
+	// f.rotate(this.rotation, getFreeCenterX(), getFreeCenterY());
+	// java.awt.Shape outline = f.createTransformedShape(r);
+	// return outline;
+	// }
+
 	public void doPaint(Graphics2D g2d) {
 
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle()))
@@ -290,7 +318,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 		int cx = x + w / 2;
 		int cy = y + h / 2;
 
-
 		// TODO
 		// s = new Rectangle(x, y, w, h);
 		if (this.shape == "Line") {
@@ -298,14 +325,14 @@ public class Region extends JComponent implements ViewportChangeListener {
 			Point2D trgt = new Point2D.Double(this.width, this.height);
 			Point2D srcT = new Point2D.Double();
 			Point2D trgtT = new Point2D.Double();
-			
+
 			AffineTransform t = new AffineTransform();
 			t.transform(src, srcT);
 			t.transform(trgt, trgtT);
-			
-			g2d.drawLine((int) srcT.getX(), (int) srcT.getY(),
-					(int) trgtT.getX(), (int)trgtT.getY());
-			
+
+			g2d.drawLine((int) srcT.getX(), (int) srcT.getY(), (int) trgtT
+					.getX(), (int) trgtT.getY());
+
 		} else { // Rectangle, Oval
 			java.awt.Shape s = null;
 
@@ -323,6 +350,37 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.setStroke(new BasicStroke());
 			g2d.draw(s);
 
+			// region label
+//			int xLabelOffset = 5;
+//			int yLabelOffset = 15;
+			// //TODO: debugging free region
+//			Rectangle fb = relativeToBounds(
+//					viewportTransform(getFreeVRectangle())).getBounds();
+//			int fsw = 1;
+//			int fx = fb.x;
+//			int fy = fb.y;
+//			int fw = fb.width - fsw - 1;
+//			int fh = fb.height - fsw - 1;
+//			int fcx = fx + fw / 2;
+//			int fcy = fy + fh / 2;
+//
+//			java.awt.Shape fs = null;
+//
+//			fs = ShapeRegistry.getShape(this.shape, fx, fy, fw, fh);
+//
+//			AffineTransform ft = new AffineTransform();
+//			ft.rotate(this.rotation, fcx, fcy);
+//			fs = ft.createTransformedShape(fs);
+//
+//			g2d.setColor(Color.gray);
+//			Font font = new Font("Arial", Font.PLAIN, 10);
+//			g2d.setFont(font);
+//
+//			g2d.draw(fs);
+
+//			g2d.setColor(Color.DARK_GRAY);
+//			g2d.setStroke(new BasicStroke());
+//			g2d.drawString(this.attValue, xLabelOffset, yLabelOffset);
 		}
 
 	}
@@ -368,6 +426,16 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 */
 	public void setNodeViews(List<NodeView> nodeViews) {
 		this.nodeViews = nodeViews;
+	}
+	
+	public void removeFilteredNodeView(NodeView nv){
+		this.filteredNodeViews.remove(nv);
+	}
+	public void addFilteredNodeView(NodeView nv){
+		this.filteredNodeViews.add(nv);
+	}
+	public List<NodeView> getFilteredNodeViews() {
+		return filteredNodeViews;
 	}
 
 	/**

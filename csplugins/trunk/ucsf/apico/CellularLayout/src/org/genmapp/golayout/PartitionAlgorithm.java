@@ -55,10 +55,8 @@ public class PartitionAlgorithm extends AbstractLayout {
 		super();
 
 		layoutProperties = new LayoutProperties(getName());
-		layoutProperties.add(new Tunable("nodeSpacing",
-				"Spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
 		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
-				Tunable.STRING, null));
+				Tunable.STRING, "grid"));
 		// We've now set all of our tunables, so we can read the property
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties();
@@ -412,6 +410,8 @@ public class PartitionAlgorithm extends AbstractLayout {
 		nodeAttributeValues = setupNodeAttributeValues();
 		populateNodes(attributeName);
 
+		GOLayout.createVisualStyle(Cytoscape.getCurrentNetworkView());
+		
 		Set<Object> attributeValues = attributeValueNodeMap.keySet();
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());

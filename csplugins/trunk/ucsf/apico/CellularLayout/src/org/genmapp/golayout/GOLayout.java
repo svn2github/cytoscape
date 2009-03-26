@@ -11,6 +11,8 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 public class GOLayout extends CytoscapePlugin {
 	
@@ -21,9 +23,35 @@ public class GOLayout extends CytoscapePlugin {
 	 * will worry about how to get it in the right menu, etc.
 	 */
 	public GOLayout() {
-		CyLayouts.addLayout(new GOLayoutAlgorithm(), "GO Layout: Run All");
-		CyLayouts.addLayout(pa, "GO Layout: Partition");
-		CyLayouts.addLayout(new CellAlgorithm(), "GO Layout: Cell Layout");
+		CyLayouts.addLayout(new CellAlgorithm(), "GO Layout");
+		CyLayouts.addLayout(new GOLayoutAlgorithm(), "GO Layout");
+		CyLayouts.addLayout(pa, "GO Layout");
+		
+
+
+//		JMenuItem top = new JMenuItem("GO Layout");
+//		JMenu layoutMenu = Cytoscape.getDesktop().getCyMenus().getLayoutMenu();
+//		layoutMenu.add(top);
+//		JMenuItem partition = new JMenuItem("Partition");
+//		partition.addActionListener(new PartitionAction());
+//		top.add(partition);
+	
+	}
+	
+//	public class PartitionAction extends CytoscapeAction {
+//		
+//		public PartitionAction(){
+//			super("partitions");
+//		}
+//		
+//		public void actionPerformed(ActionEvent e){
+//		    pa.setLayoutName("grid");
+//			pa.doLayout();
+//		}
+//	}
+	
+	public static void createVisualStyle(CyNetworkView view){
+		PartitionNetworkVisualStyleFactory.createVisualStyle(view);
 	}
 
 	public class GOLayoutAlgorithm extends AbstractLayout {
@@ -95,7 +123,7 @@ public class GOLayout extends CytoscapePlugin {
 		 * @return user visible name
 		 */
 		public String toString() {
-			return "GO Layout";
+			return "Run All";
 		}
 
 		/**
