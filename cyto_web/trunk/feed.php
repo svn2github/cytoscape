@@ -4,7 +4,8 @@
         <?
 require_once 'magpie/rss_fetch.inc';
 
-$url = 'http://groups.google.com/group/cytoscape-announce/feed/rss_v2_0_msgs.xml';
+#$url = 'http://groups.google.com/group/cytoscape-announce/feed/rss_v2_0_msgs.xml';
+$url = 'http://cytoweb.ncibi.org/rss_v2_0_msgs.xml';
 $rss = fetch_rss($url);
 
 echo "<h2><A HREF='http://groups.google.com/group/cytoscape-announce'>";
