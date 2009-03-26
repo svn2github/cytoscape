@@ -21,10 +21,10 @@ import org.eclipse.equinox.internal.provisional.p2.engine.*;
 import org.eclipse.equinox.internal.provisional.p2.ui2.*;
 import org.eclipse.equinox.internal.provisional.p2.ui2.operations.ProvisioningUtil;
 import org.eclipse.equinox.internal.provisional.p2.ui2.viewers.StructuredViewerProvisioningListener;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
+//import org.eclipse.jface.resource.ImageDescriptor;
+//import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.statushandlers.StatusManager;
+//import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.*;
 import org.osgi.service.packageadmin.PackageAdmin;
 
@@ -120,7 +120,7 @@ public class ProvUIActivator extends AbstractUIPlugin {
 
 							}
 						} catch (ProvisionException e) {
-							ProvUI.handleException(e, ProvUIMessages.ProvUIActivator_ExceptionDuringProfileChange, StatusManager.LOG);
+							//ProvUI.handleException(e, ProvUIMessages.ProvUIActivator_ExceptionDuringProfileChange, StatusManager.LOG);
 
 						}
 					}
@@ -163,6 +163,7 @@ public class ProvUIActivator extends AbstractUIPlugin {
 		getProvisioningEventBus().removeListener(listener);
 	}
 
+	/*
 	protected void initializeImageRegistry(ImageRegistry reg) {
 		createImageDescriptor(ProvUIImages.IMG_METADATA_REPOSITORY, reg);
 		createImageDescriptor(ProvUIImages.IMG_ARTIFACT_REPOSITORY, reg);
@@ -180,13 +181,13 @@ public class ProvUIActivator extends AbstractUIPlugin {
 		createImageDescriptor(ProvUIImages.WIZARD_BANNER_UNINSTALL, reg);
 		createImageDescriptor(ProvUIImages.WIZARD_BANNER_UPDATE, reg);
 	}
-
+*/
 	/**
 	 * Creates the specified image descriptor and registers it
 	 */
-	private void createImageDescriptor(String id, ImageRegistry reg) {
-		URL url = FileLocator.find(getBundle(), new Path(ProvUIImages.ICON_PATH + id), null);
-		ImageDescriptor desc = ImageDescriptor.createFromURL(url);
-		reg.put(id, desc);
-	}
+	//private void createImageDescriptor(String id, ImageRegistry reg) {
+	//	URL url = FileLocator.find(getBundle(), new Path(ProvUIImages.ICON_PATH + id), null);
+	//	ImageDescriptor desc = ImageDescriptor.createFromURL(url);
+	//	reg.put(id, desc);
+	//}
 }
