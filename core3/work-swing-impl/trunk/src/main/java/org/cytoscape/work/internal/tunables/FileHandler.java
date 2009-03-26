@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.io.File;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Tunable.Param;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
@@ -23,6 +24,7 @@ public class FileHandler extends AbstractGuiHandler {
 	private ImageIcon image;
 	private JLabel titleLabel;
 	private JSeparator titleSeparator;
+
 	//FileUtil flUtil;
 	
 	protected FileHandler(Field f, Object o, Tunable t) {
@@ -30,6 +32,30 @@ public class FileHandler extends AbstractGuiHandler {
 		//this.flUtil = flUtil;
 		filechoosen = false;
 		fileChooser = new JFileChooser();
+
+		for(Param s :t.flag())if(s.equals(Param.network)){
+			String[] biopax = {".xml",".rdf",".owl"};
+			fileChooser.addChoosableFileFilter(new MyFilter("BioPAX files",biopax));
+			String[] xgmml ={".xml",".xgmml"};
+			fileChooser.addChoosableFileFilter(new MyFilter("XGMML files",xgmml));
+			String[] psi ={".xml"};
+			fileChooser.addChoosableFileFilter(new MyFilter("PSI-MI",psi));
+			String[] sif={".sif"};
+			fileChooser.addChoosableFileFilter(new MyFilter("SIF files",sif));
+			String[] gml={".gml"};
+			fileChooser.addChoosableFileFilter(new MyFilter("GML files",gml));
+			String[] sbml={".xml",".sbml"};
+			fileChooser.addChoosableFileFilter(new MyFilter("SBML files",sbml));
+			String[] allnetworks = {".xml",".rdf",".owl",".xgmml",".sif",".sbml"};
+			fileChooser.addChoosableFileFilter(new MyFilter("All network files(*.xml, *.rdf, *.owl, *.xgmml, *.sif, *.sbml)",allnetworks));
+		}
+		for(Param s :t.flag())if(s.equals(Param.session)){
+			fileChooser.addChoosableFileFilter(new MyFilter("Session files",".cys"));
+		}
+		for(Param s :t.flag())if(s.equals(Param.attributes)){
+			fileChooser.addChoosableFileFilter(new MyFilter("Attributes files",""));
+		}
+	
 		titleSeparator = new JSeparator();
 		titleLabel = new JLabel("Import URL file");
 		image = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_open.png"));
@@ -137,4 +163,54 @@ public class FileHandler extends AbstractGuiHandler {
 		}
 		return s;
     }
+    
+    private class MyFilter extends javax.swing.filechooser.FileFilter {
+        	
+    	private final String description;
+    	private String extension;
+    	private String[] extensions;
+ 
+    	public MyFilter(String description, String extension){
+    		super();
+    		this.description = description;
+    		this.extension = extension;
+    	}
+    
+    	public MyFilter(String description, String[] extensions) {
+    		super();
+    		this.description = description;
+    		this.extensions = extensions;
+    	}
+ 
+    	public boolean accept(File file){
+    		if (file.isDirectory()) return true; 
+        
+    		String fileName = file.getName().toLowerCase(); 
+        
+    		if (extensions != null){
+    			boolean accept = false;
+    			for (int i=0; i<extensions.length; i++){
+    				if (fileName.endsWith(extensions[i])){
+    					accept = true;
+    				}
+    			}
+    			return accept;
+    		}
+    		else {
+    			return fileName.endsWith(extension);
+    		}        
+    	}
+    	
+	    public String getDescription(){
+	        return description;
+	    }
+	 
+	    public String getExtension(){
+	        return extension;
+	    }
+	 
+	    public String[] getExtensions() {
+	        return extensions;
+	    }
+    } 
 }

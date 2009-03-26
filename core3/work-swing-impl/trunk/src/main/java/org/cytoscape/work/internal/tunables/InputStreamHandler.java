@@ -26,8 +26,6 @@ import org.jdesktop.layout.GroupLayout;
 public class InputStreamHandler extends AbstractGuiHandler {
 
 	InputStream InStream;
-	URL url;
-	File myFile;
 	
 	private Bookmarks theBookmarks;
 	private BookmarkComboBoxEditor bookmarkEditor;
@@ -100,8 +98,7 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			urlstr = bookmarkEditor.getURLstr();
 			try{
 				if ( urlstr != null ) {
-					System.out.println("URL = "+urlstr);
-					url = new URL(urlstr);
+					URL url = new URL(urlstr);
 					f.set(o,url.openStream());
 				}
 			}catch (Exception e){}
@@ -319,7 +316,7 @@ layout
 					switchImportView("Remote");
 				}
 			}
-		} // actionPerformed()
+		}
 	}
     
     
