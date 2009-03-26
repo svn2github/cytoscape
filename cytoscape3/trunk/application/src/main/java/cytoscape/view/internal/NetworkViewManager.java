@@ -268,7 +268,7 @@ public class NetworkViewManager implements
 				System.err.println("Network View unable to be focused");
 			}
 		} else {
-			System.out.println("asdf");
+			//System.out.println("asdf");
 		}
 	}
 
