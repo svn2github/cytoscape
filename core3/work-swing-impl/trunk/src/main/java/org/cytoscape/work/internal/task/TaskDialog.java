@@ -272,7 +272,10 @@ class TaskDialog extends JDialog
 		{
 			public void windowClosing(WindowEvent e)
 			{
-				cancel();
+				if (errorOccurred)
+					close();
+				else
+					cancel();
 			}
 		});
 	}
