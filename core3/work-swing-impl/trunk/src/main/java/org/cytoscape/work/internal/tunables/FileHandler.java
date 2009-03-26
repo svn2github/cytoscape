@@ -57,12 +57,12 @@ public class FileHandler extends AbstractGuiHandler {
 		}
 	
 		titleSeparator = new JSeparator();
-		titleLabel = new JLabel("Import URL file");
+		titleLabel = new JLabel("Import Network file");
 		image = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_open.png"));
 		networkFileTextField = new JTextField();
 		networkFileTextField.setText("Please select a network file...");
 		networkFileTextField.setName("networkFileTextField");
-		networkFileTextField.setEditable(false);
+		networkFileTextField.setEditable(true);
 		networkFileTextField.setFont(new Font(null, Font.ITALIC,12));
 		button = new JButton("Open a File...",image);
 		button.addActionListener(this);
