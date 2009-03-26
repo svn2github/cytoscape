@@ -12,5 +12,5 @@ public @interface Tunable{
 	boolean xorChildren() default false;
 	String xorKey() default "";
 	String dependsOn() default "";
-	public enum Param {slider,nothing,horizontal,vertical,uncollapsed,collapsed}
+	public enum Param {slider,nothing,horizontal,vertical,uncollapsed,collapsed,network,session,attributes}
 }
