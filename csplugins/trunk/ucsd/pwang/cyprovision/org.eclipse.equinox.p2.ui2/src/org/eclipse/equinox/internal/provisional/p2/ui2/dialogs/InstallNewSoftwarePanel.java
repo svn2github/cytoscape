@@ -15,7 +15,6 @@ import org.eclipse.equinox.internal.provisional.p2.ui2.policy.Policy;
 import org.eclipse.equinox.internal.p2.ui2.model.QueriedElement;
 import org.eclipse.equinox.internal.p2.ui2.model.AvailableIUElement;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -73,7 +72,11 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 		jTree1.setRootVisible(false);
 		jTree1.setShowsRootHandles(true);
 		
-		CheckBoxTreeCellRenderer r = new CheckBoxTreeCellRenderer(jTree1, jTree1.getCellRenderer());
+		RepoCellRenderer r1 = new RepoCellRenderer();
+		jTree1.setCellRenderer(r1);
+		
+		CheckBoxTreeCellRenderer r = new CheckBoxTreeCellRenderer(jTree1, jTree1.getCellRenderer());		
+		
 		jTree1.setCellRenderer(r);
 		
         jTree1.addMouseListener(new MouseAdapter() {
@@ -156,7 +159,6 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 				else if (selectedPaths.length > 1){
 					taDetails.setText("");
 				}
-
 			}
 		};
 		jTree1.addTreeSelectionListener(treeSelectionListener);
