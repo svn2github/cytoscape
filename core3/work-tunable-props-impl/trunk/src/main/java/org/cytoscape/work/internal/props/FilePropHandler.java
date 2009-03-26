@@ -39,8 +39,7 @@ public class FilePropHandler extends AbstractPropHandler {
 			if ( p.containsKey( propKey ) ) {
 				String val = p.getProperty( propKey );
 				if ( val != null )
-					f.set(o, val);if ( val != null )
-						f.set(o, val);	
+					f.set(o, val);	
 			}
         } catch (IllegalAccessException iae) {iae.printStackTrace();}
 	}
