@@ -4,7 +4,11 @@ package org.cytoscape.work.internal.tunables;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +38,6 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	private String urlstr;
 	private JComboBox networkFileComboBox;
 	private JFileChooser fileChooser;
-	private boolean filechoosen;
 	private JSeparator titleSeparator;
 	private String pleaseMessage = "Please provide URL or select from list";
 
@@ -44,6 +47,7 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	private JRadioButton remoteRadioButton;
 	private JRadioButton localRadioButton;
 	private JTextField networkFileTextField;
+	private MouseClic mc;
 	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
 	
@@ -54,7 +58,6 @@ public class InputStreamHandler extends AbstractGuiHandler {
 		//this.stUtil=stUtil;
 		titleLabel = new JLabel("Import Network File");
 		this.theBookmarks=bookmarks;
-		filechoosen = false;
 		fileChooser = new JFileChooser();
 		bookmarkEditor = new BookmarkComboBoxEditor();
 		try{
@@ -76,23 +79,10 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	
 	public void handle() {
 		if(localRadioButton.isSelected()){
-			if(!filechoosen){
-				int ret = fileChooser.showOpenDialog(null);
-				if (ret == JFileChooser.APPROVE_OPTION){
-					//File file = flUtil.getFile("Import Network File",flUtil.LOAD);
-				    File file = fileChooser.getSelectedFile();
-					if ( file != null ){
-						try{
-//							InStream = flUtil.getInputStream(file.getAbsolutePath());
-							InStream = new BufferedInputStream(new FileInputStream(file));
-							f.set(o,InStream);
-						}catch (Exception e) { e.printStackTrace();}
-						networkFileTextField.setFont(new Font(null, Font.PLAIN,10));
-						networkFileTextField.setText(file.getPath());
-					}
-				}
-			}
-			filechoosen=true;
+			try{
+				InStream = new BufferedInputStream(new FileInputStream(networkFileTextField.getText()));
+				f.set(o,InStream);
+			}catch(Exception e){e.printStackTrace();}
 		}
 		else if(remoteRadioButton.isSelected()){
 			urlstr = bookmarkEditor.getURLstr();
@@ -143,8 +133,12 @@ public class InputStreamHandler extends AbstractGuiHandler {
 		
 		networkFileTextField.setText("Please select a network file...");
 		networkFileTextField.setName("networkFileTextField");
+		mc = new MouseClic(networkFileTextField);
+		networkFileTextField.addMouseListener(mc);
 
 		selectButton.setText("Select");
+		selectButton.addActionListener(new myFileActionListener());
+		selectButton.setActionCommand("open");
 
 		networkFileComboBox.setRenderer(new MyCellRenderer());
 		networkFileComboBox.setEditor(bookmarkEditor);
@@ -277,7 +271,6 @@ layout
 		LocalRemoteListener l = new LocalRemoteListener();
 		localRadioButton.addActionListener(l);
 		remoteRadioButton.addActionListener(l);
-		selectButton.addActionListener(this);
 	}
 
     
@@ -319,6 +312,34 @@ layout
 		}
 	}
     
+	private class myFileActionListener implements ActionListener{
+    	public void actionPerformed(ActionEvent ae){
+    		if(ae.getActionCommand().equals("open")){
+    			int ret = fileChooser.showOpenDialog(panel);
+    			if (ret == JFileChooser.APPROVE_OPTION) {
+    				File file = fileChooser.getSelectedFile();
+    				//File file = flUtil.getFile("TEST",FileUtil.LOAD);
+    				if ( file != null ) {
+    					networkFileTextField.setFont(new Font(null, Font.PLAIN,10));
+    					networkFileTextField.setText(file.getAbsolutePath());
+    					networkFileTextField.removeMouseListener(mc);
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    
+    private class MouseClic extends MouseAdapter implements MouseListener{
+    	JComponent component;
+    	public MouseClic(JComponent component) {
+    		this.component = component;
+    	}
+    	public void mouseClicked(MouseEvent e){
+    		((JTextField)component).setText("");
+    	}
+    }
+	
     
 	private class BookmarkComboBoxEditor implements ComboBoxEditor {
 		DataSource theDataSource = new DataSource();

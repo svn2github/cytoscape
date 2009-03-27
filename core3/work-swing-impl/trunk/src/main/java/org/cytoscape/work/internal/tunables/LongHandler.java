@@ -41,6 +41,10 @@ public class LongHandler extends AbstractGuiHandler {
 				value = Double.parseDouble(f.get(o).toString());
 			}catch(Exception e){e.printStackTrace();}
 		JOptionPane.showMessageDialog(null,"A long was Expected"+newline+"Value will be set to default = "+value.longValue(), "Error",JOptionPane.ERROR_MESSAGE);	
+		try{
+			jtf.setText(f.get(o).toString());
+			jtf.setBackground(Color.white);
+		}catch(Exception e){e.printStackTrace();}
 		}
 		try {
 			f.set(o,value.longValue());

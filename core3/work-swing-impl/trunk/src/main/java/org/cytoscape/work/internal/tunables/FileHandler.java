@@ -4,12 +4,18 @@ import java.awt.Font;
 import java.lang.reflect.*;
 import javax.swing.*;
 
+import java.awt.event.*;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
+
 
 import cytoscape.Cytoscape;
 
@@ -18,19 +24,19 @@ public class FileHandler extends AbstractGuiHandler {
 
 	File myFile;
 	private JFileChooser fileChooser;
-	private JButton button;
-	private boolean filechoosen;
+	private JButton chooseButton;
+	private JButton importButton;
 	private JTextField networkFileTextField;
 	private ImageIcon image;
 	private JLabel titleLabel;
 	private JSeparator titleSeparator;
-
+	private InputStream is = null;
+	private MouseClic mc;
 	//FileUtil flUtil;
 	
 	protected FileHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		//this.flUtil = flUtil;
-		filechoosen = false;
 		fileChooser = new JFileChooser();
 
 		for(Param s :t.flag())if(s.equals(Param.network)){
@@ -64,9 +70,16 @@ public class FileHandler extends AbstractGuiHandler {
 		networkFileTextField.setName("networkFileTextField");
 		networkFileTextField.setEditable(true);
 		networkFileTextField.setFont(new Font(null, Font.ITALIC,12));
-		button = new JButton("Open a File...",image);
-		button.addActionListener(this);
-
+		mc = new MouseClic(networkFileTextField);
+		networkFileTextField.addMouseListener(mc);
+		chooseButton = new JButton("Open a File...",image);
+		chooseButton.setActionCommand("open");
+		chooseButton.addActionListener(new myFileActionListener());
+		importButton = new JButton("import");
+		importButton.setActionCommand("import");
+		importButton.addActionListener(new myFileActionListener());
+		importButton.setEnabled(false);
+		
 		try{
 			this.myFile=(File)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
@@ -85,7 +98,7 @@ public class FileHandler extends AbstractGuiHandler {
 						.add(layout.createSequentialGroup()
 								.add(networkFileTextField,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
 								.addPreferredGap(LayoutStyle.RELATED)
-								.add(button))
+								.add(chooseButton))
 						.addContainerGap()));
 		
 		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
@@ -98,7 +111,7 @@ public class FileHandler extends AbstractGuiHandler {
 						.addPreferredGap(LayoutStyle.RELATED)
 						.add(networkFileTextField,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
-						.add(button)
+						.add(chooseButton)
 						.addContainerGap()));
 		
 		
@@ -111,7 +124,7 @@ public class FileHandler extends AbstractGuiHandler {
 								.add(layout.createSequentialGroup()
 										.add(networkFileTextField,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
 										.addPreferredGap(LayoutStyle.RELATED)
-										.add(button))
+										.add(chooseButton))
 						)
 						.addContainerGap()));
 		
@@ -124,7 +137,7 @@ public class FileHandler extends AbstractGuiHandler {
 						.add(7, 7, 7)
 						.addPreferredGap(LayoutStyle.RELATED)
 						.add(layout.createParallelGroup(GroupLayout.BASELINE)
-								.add(button)
+								.add(chooseButton)
 								.add(networkFileTextField))
 						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
 						.addContainerGap()));
@@ -132,23 +145,12 @@ public class FileHandler extends AbstractGuiHandler {
 
 	
 	public void handle() {
-		if(!filechoosen){
-			int ret = fileChooser.showOpenDialog(panel);
-			if (ret == JFileChooser.APPROVE_OPTION) {
-			    File file = fileChooser.getSelectedFile();
-				//File file = flUtil.getFile("TEST",FileUtil.LOAD);
-				if ( file != null ) {
-					try{
-						f.set(o,file);
-					}catch (Exception e) { e.printStackTrace();}
-					networkFileTextField.setFont(new Font(null, Font.PLAIN,10));
-					networkFileTextField.setText(file.getAbsolutePath());
-					filechoosen=true;
-				}
-			}
-		}
+		try{
+			f.set(o,new File(networkFileTextField.getText()));
+		}catch(Exception e){e.printStackTrace();}
 	}
 
+	
     public String getState() {
 		String s;
 		try {
@@ -162,6 +164,38 @@ public class FileHandler extends AbstractGuiHandler {
 			s = "";
 		}
 		return s;
+    }
+
+
+    private class myFileActionListener implements ActionListener{
+    	public void actionPerformed(ActionEvent ae){
+    		if(ae.getActionCommand().equals("open")){
+    			int ret = fileChooser.showOpenDialog(panel);
+    			if (ret == JFileChooser.APPROVE_OPTION) {
+    				File file = fileChooser.getSelectedFile();
+    				//File file = flUtil.getFile("TEST",FileUtil.LOAD);
+    				if ( file != null ) {
+    					networkFileTextField.setFont(new Font(null, Font.PLAIN,10));
+    					networkFileTextField.setText(file.getAbsolutePath());
+    					networkFileTextField.removeMouseListener(mc);
+    				}
+    			}
+    		}
+    		if(ae.getActionCommand().equals("import")){
+    			
+    		}
+    	}
+    }
+    
+    
+    private class MouseClic extends MouseAdapter implements MouseListener{
+    	JComponent component;
+    	public MouseClic(JComponent component) {
+    		this.component = component;
+    	}
+    	public void mouseClicked(MouseEvent e){
+    		((JTextField)component).setText("");
+    	}
     }
     
     private class MyFilter extends javax.swing.filechooser.FileFilter {
