@@ -101,7 +101,7 @@ public class MetanodeSettingsDialog extends JDialog
 	JPanel tunablePanel = null;
 
 	public MetanodeSettingsDialog(CyGroupViewer viewer) {
-		super(Cytoscape.getDesktop(), "Metanode Attribute Handling Dialog", false);
+		super(Cytoscape.getDesktop(), "Metanode Settings Dialog", false);
 		metanodeProperties = new MetanodeProperties("metanode");
 		this.groupViewer = viewer;
 

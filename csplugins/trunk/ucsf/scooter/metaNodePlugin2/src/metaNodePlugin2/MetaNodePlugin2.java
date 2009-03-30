@@ -461,7 +461,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				groupList = sortList(groupList);
 				addMenuItem(m, Command.EXPAND, groupList, contextNode, "Expand metanode");
 				addMenuItem(m, Command.COLLAPSE, groupList, contextNode, "Collapse metanode");
-				addMenuItem(m, Command.EXPANDNEW, groupList, contextNode, "Expand metanode");
+				addMenuItem(m, Command.EXPANDNEW, groupList, contextNode, "Expand metanode into new network");
 				addMenuItem(m, Command.REMOVE, groupList, contextNode, "Remove metanode");
 				addMenuItem(m, Command.ADD, groupList, contextNode, "Add node to metanode");
 				addMenuItem(m, Command.DELETE, groupList, contextNode, "Remove node from metanode");
@@ -500,7 +500,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				if (command == Command.EXPANDALL || command == Command.COLLAPSEALL) {
 					addSubMenu(menu, label, command, null, null);
 				} else if (command == Command.EXPANDNEW) {
-			  	JMenu item = new JMenu(label+"(s) into new network");
+			  	JMenu item = new JMenu("Expand metanode(s) into new network");
 					if (addGroupMenu(item, command, groupList, contextNode))
 						menu.add(item);
 				} else if (command != Command.ADD && command != Command.DELETE) {
@@ -529,7 +529,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				CyGroup group = CyGroupManager.findGroup(contextNode.getIdentifier());
 				MetaNode metaNode = MetaNode.getMetaNode(group.getGroupNode());
 				if (metaNode.isCollapsed(view)) {
-					addSubMenu(menu, label+" "+group.getGroupName()+" into new network", 
+					addSubMenu(menu, "Expand metanode "+group.getGroupName()+" into new network", 
 					           command, group, contextNode);
 				}
 			} else if (command == Command.COLLAPSE) {
