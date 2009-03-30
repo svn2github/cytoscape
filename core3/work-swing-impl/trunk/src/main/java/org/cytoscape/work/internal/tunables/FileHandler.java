@@ -7,8 +7,6 @@ import javax.swing.*;
 import java.awt.event.*;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.cytoscape.work.Tunable;
@@ -16,8 +14,8 @@ import org.cytoscape.work.Tunable.Param;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
-
 import cytoscape.Cytoscape;
+
 
 
 public class FileHandler extends AbstractGuiHandler {

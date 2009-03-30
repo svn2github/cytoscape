@@ -19,22 +19,20 @@ import org.cytoscape.work.util.BoundedLong;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
-import cytoscape.util.FileUtil;
-import org.cytoscape.io.util.StreamUtil;
 
 
 public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 
 	private Bookmarks bookmarks;
 	private BookmarksUtil bkUtil;
-	private FileUtil flUtil;
-	private StreamUtil stUtil;
+//	private FileUtil flUtil;
+//	private StreamUtil stUtil;
 	
 	public GuiHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
 		this.bookmarks = book.getProperties();
 		this.bkUtil = bkUtil;
-		this.flUtil = flUtil;
-		this.stUtil = stUtil;
+//		this.flUtil = flUtil;
+//		this.stUtil = stUtil;
 	}
 	
 	public Guihandler getHandler(Method m, Object o, Tunable t) {
@@ -44,7 +42,6 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 	public Guihandler getHandler(Field f, Object o, Tunable t){
 		
 		Class<?> type = f.getType();
-		
 		if(type == Integer.class || type == int.class)
 			return new IntegerHandler(f,o,t);
 		else if(type == Double.class || type == double.class)
