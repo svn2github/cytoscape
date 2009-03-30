@@ -139,6 +139,11 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 				JTree theTree =  (JTree) tse.getSource();
 				TreePath[] selectedPaths = theTree.getSelectionPaths();
 				
+				if (selectedPaths == null){
+					taDetails.setText("");
+					return;
+				}
+				
 				if (selectedPaths.length == 1){
 					TreePath thePath = selectedPaths[0];
 					DefaultMutableTreeNode theNode = (DefaultMutableTreeNode) thePath.getLastPathComponent();
