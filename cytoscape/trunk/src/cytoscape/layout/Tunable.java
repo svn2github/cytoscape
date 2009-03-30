@@ -523,7 +523,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 				else
 					this.value = value;
 				if ((slider != null) && checkFlag(USESLIDER))
-					slider.setValue(sliderScale(value));
+					slider.setValue(sliderScale(this.value));
 				else if (inputField != null) {
 					((JTextField)inputField).setText(this.value.toString());
 				}
