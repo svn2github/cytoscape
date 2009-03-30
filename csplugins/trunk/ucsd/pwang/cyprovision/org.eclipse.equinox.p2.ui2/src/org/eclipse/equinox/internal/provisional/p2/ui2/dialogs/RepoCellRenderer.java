@@ -11,9 +11,11 @@ import javax.swing.UIManager;
 import org.eclipse.equinox.internal.p2.ui2.model.AvailableIUElement;
 import org.eclipse.equinox.internal.p2.ui2.model.CategoryElement;
 import org.eclipse.equinox.internal.p2.ui2.model.ProvElement;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.ui2.IUPropertyUtils;
 
 public class RepoCellRenderer extends DefaultTreeCellRenderer {
-	DefaultMutableTreeNode theNode;
+	//DefaultMutableTreeNode theNode;
 
 	public RepoCellRenderer(){	
 	}
@@ -35,7 +37,6 @@ public class RepoCellRenderer extends DefaultTreeCellRenderer {
 			setBackground(UIManager.getColor("Tree.textBackground"));
 		}
 
-    	
     	if (treeNode.getUserObject() instanceof ProvElement){
     		ProvElement provElement = (ProvElement) treeNode.getUserObject();
     		
@@ -44,13 +45,15 @@ public class RepoCellRenderer extends DefaultTreeCellRenderer {
     		
     		if (provElement instanceof CategoryElement){
     			CategoryElement cat_element = (CategoryElement)provElement;
-    			
+    			// TODO -- we should have a name for each category
     			this.setText(cat_element.getLabel(null));
     		}
     		else if (provElement instanceof AvailableIUElement){
     			AvailableIUElement avail_element = (AvailableIUElement)provElement;
-    			String version = avail_element.getIU().getVersion().toString();
-    			this.setText(avail_element.getLabel(null) + " -- " + version);
+    			IInstallableUnit installUnit =avail_element.getIU();
+    			String version = installUnit.getVersion().toString();
+    			String name = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_NAME);
+    			this.setText(name + " -- " + version);
     		}
     		else {
         		this.setText("Unknown");    			
