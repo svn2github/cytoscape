@@ -72,12 +72,11 @@ public class KnnDendroView extends DendroView implements ConfigNodePersistent, M
 		hintpanel = new MessagePanel("Usage Hints");
 		statuspanel = new MessagePanel("View Status");
 
-
-		colorPresets = new ColorPresets();
+		colorPresets = new ColorPresets(root);
 		cpresetEditor = new ColorPresetEditor(colorPresets);
-		colorPresets.addDefaultPresets();
 		ColorExtractor colorExtractor = new ColorExtractor();
 		colorExtractor.setDefaultColorSet(colorPresets.getDefaultColorSet());
+		colorExtractor.bindConfig(root);
 		colorExtractor.setMissing(DataModel.NODATA, DataModel.EMPTY);
 
 		KnnArrayDrawer kArrayDrawer = new KnnArrayDrawer();
