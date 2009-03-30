@@ -23,7 +23,7 @@ foreach ($rss->items as $item ) {
 
 		$date = $item[pubdate];
 
-		list($usable_date, $extra) = split("T", $date);
+		list($usable_date, $extra) = split("UT", $date);
 		$time_stamp = strtotime("$usable_date");
 		$date_formatted = date("F j, Y", $time_stamp);
 
