@@ -46,7 +46,7 @@ import java.util.Properties;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 
@@ -61,7 +61,7 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 	@Tunable(description="The URL to load")
 	public URL url;
 
-	public LoadNetworkURLTask(CyReaderManager mgr, GraphViewFactory gvf,
+	public LoadNetworkURLTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
 			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
 		super(mgr, gvf, cyl, netmgr, props, namingUtil);
 	}

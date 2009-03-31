@@ -41,7 +41,7 @@ import cytoscape.util.CyNetworkNaming;
 
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
@@ -56,7 +56,7 @@ import java.util.Properties;
 public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 
 	private CyReaderManager mgr;
-	private GraphViewFactory gvf;
+	private CyNetworkViewFactory gvf;
 	private CyLayouts cyl;
 	private CyNetworkManager netmgr;
 	private Properties props;
@@ -64,7 +64,7 @@ public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 	private CyNetworkNaming cyNetworkNaming;
 
 	public LoadNetworkURLTaskFactoryImpl(CyReaderManager mgr,
-			GraphViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
 			CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming) {
 		this.mgr = mgr;
 		this.gvf = gvf;

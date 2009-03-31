@@ -9,8 +9,8 @@
 	<osgi:reference id="cyNetworkNamingServiceRef"
 		interface="cytoscape.util.CyNetworkNaming" />
 
-	<osgi:reference id="graphViewFactoryServiceRef"
-		interface="org.cytoscape.view.GraphViewFactory" />
+	<osgi:reference id="cyNetworkViewFactoryServiceRef"
+		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 
 	<osgi:reference id="cyReaderManagerServiceRef"
 		interface="org.cytoscape.io.read.CyReaderManager" />

@@ -48,8 +48,8 @@ import org.cytoscape.io.read.CyReader;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
@@ -68,14 +68,14 @@ abstract class AbstractLoadNetworkTask implements Task {
 	protected Thread myThread = null;
 	protected boolean interrupted = false;
 	protected CyReaderManager mgr;
-	protected GraphViewFactory gvf;
+	protected CyNetworkViewFactory gvf;
 	protected CyLayouts cyl;
 	protected CyNetworkManager netmgr;
 	protected Properties props;
 
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(CyReaderManager mgr, GraphViewFactory gvf,
+	public AbstractLoadNetworkTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
 			CyLayouts cyl, CyNetworkManager netmgr, Properties props,
 			CyNetworkNaming namingUtil) {
 		this.mgr = mgr;
@@ -104,12 +104,11 @@ abstract class AbstractLoadNetworkTask implements Task {
 			CyNetwork cyNetwork = (CyNetwork) readData.get(CyNetwork.class);
 			cyNetwork.attrs().set("name",
 					namingUtil.getSuggestedNetworkTitle(name, netmgr));
-			GraphView view = (GraphView) readData.get(GraphView.class);
+			CyNetworkView view = (CyNetworkView) readData.get(CyNetworkView.class);
 
 			if (view == null)
-				view = gvf.createGraphView(cyNetwork);
+				view = gvf.getNetworkViewFor(cyNetwork);
 
-			// TODO NEED RENDERER
 			view.fitContent();
 
 			netmgr.addNetwork(cyNetwork);
