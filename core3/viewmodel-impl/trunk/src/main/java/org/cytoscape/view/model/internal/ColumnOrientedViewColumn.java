@@ -82,8 +82,10 @@ public class ColumnOrientedViewColumn<T> implements ViewColumn<T> {
 		for (Map.Entry<? extends View<?>, T> entry : values.entrySet()){
 			internal_setValue(entry.getKey(), entry.getValue());
 		}
-		for (View<?>v: toClear){
-			internal_clearValue(v);
+		if ( toClear != null ) {
+			for (View<?>v: toClear){
+				internal_clearValue(v);
+			}
 		}
 		// FIXME: fire event!
 	}
