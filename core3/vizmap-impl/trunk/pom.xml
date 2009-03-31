@@ -10,7 +10,7 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.view.vizmap</bundle.symbolicName>
+		<bundle.symbolicName>org.cytoscape.view.vizmap-impl</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.view.vizmap</bundle.namespace>
 	</properties>
 
