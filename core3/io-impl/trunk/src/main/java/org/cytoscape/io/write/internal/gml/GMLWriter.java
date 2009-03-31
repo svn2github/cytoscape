@@ -41,9 +41,8 @@ import org.cytoscape.io.read.internal.gml.GMLReader;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.CyNetworkView;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -84,7 +83,7 @@ public class GMLWriter {
 	 * create all relevant key-value pairs as well then.
 	 */
 	@SuppressWarnings("unchecked")  // for the casts of KeyValue.value
-	public void writeGML(final CyNetwork network, final GraphView view, final List<KeyValue> oldList) {
+	public void writeGML(final CyNetwork network, final CyNetworkView view, final List<KeyValue> oldList) {
 		/*
 		 * Initially all the nodes and edges have not been seen
 		 */
@@ -181,7 +180,7 @@ public class GMLWriter {
 	 * Update the list associated with a graph key
 	 */
 	 @SuppressWarnings("unchecked") // for the casts of KeyValue.value
-	private void writeGraph(final CyNetwork network, final GraphView view, final List<KeyValue> oldList) {
+	private void writeGraph(final CyNetwork network, final CyNetworkView view, final List<KeyValue> oldList) {
 
 		 
 		 // To enhance compatibility with non-cytoscape GML-conformant
@@ -215,7 +214,7 @@ public class GMLWriter {
 	 * Update the list associated with a node key
 	 */
 	@SuppressWarnings("unchecked") // for the cast of KeyValue.value
-	private boolean writeGraphNode(final CyNetwork network, final GraphView view,
+	private boolean writeGraphNode(final CyNetwork network, final CyNetworkView view,
 	                               final List<KeyValue> oldList) {
 		/*
 		 * We expect a list associated with node key to potentially have a
@@ -300,7 +299,7 @@ public class GMLWriter {
 	 * Update the list associated with an edge key
 	 */
 	@SuppressWarnings("unchecked") // for the cast of KeyValue.value
-	private boolean writeGraphEdge(final CyNetwork network, final GraphView view,
+	private boolean writeGraphEdge(final CyNetwork network, final CyNetworkView view,
 	                               final List<KeyValue> oldList) {
 		/*
 		 * An edge key will definitely have a root_index, labelPair (we enforce
@@ -393,8 +392,10 @@ public class GMLWriter {
 	 * This writes all the graphical information for a particular node into an
 	 * object tree
 	 */
-	private void writeGraphNodeGraphics(final CyNetwork network, final NodeView nodeView,
+	private void writeGraphNodeGraphics(final CyNetwork network, final View<CyNode> nodeView,
 	                                    final List<KeyValue> oldList) {
+	// TODO fix for new style view											
+/*
 		KeyValue x = null;
 		KeyValue y = null;
 		KeyValue w = null;
@@ -512,10 +513,13 @@ public class GMLWriter {
 
 				break;
 		}
+		*/
 	}
 
-	private void writeGraphEdgeGraphics(final CyNetwork network, final EdgeView edgeView,
+	private void writeGraphEdgeGraphics(final CyNetwork network, final View<CyEdge> edgeView,
 	                                    final List<KeyValue> oldList) {
+		// TODO fix for new style view
+	/*
 		KeyValue width = null;
 		KeyValue fill = null;
 		KeyValue line = null;
@@ -545,7 +549,7 @@ public class GMLWriter {
 			width = new KeyValue(GMLReader.WIDTH, null);
 			oldList.add(width);
 		}
-		
+	
 		if (edgeView == null) return; // If no view data, simply don't save it (instead of crashing)
 		
 		width.value = new Double(edgeView.getStrokeWidth());
@@ -607,6 +611,7 @@ public class GMLWriter {
 		}
 
 		target_arrow.value = Integer.valueOf(edgeView.getTargetEdgeEnd());
+		*/
 	}
 
 	/**

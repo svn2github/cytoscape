@@ -1,6 +1,6 @@
 package org.cytoscape.io.write.internal.graphics;
 
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 import org.freehep.graphicsio.ps.PSGraphics2D;
 
 import java.io.FileOutputStream;
@@ -16,11 +16,13 @@ public class PSExporter implements Exporter
 	}
 
 
-	public void export(GraphView view, FileOutputStream stream) throws IOException
+	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
 	{
-		// TODO NEED RENDERER
-		view.setPrintingTextAsShape(!exportTextAsFont);
+		// TODO should be accomplished with presentation properties 
+		//view.setPrintingTextAsShape(!exportTextAsFont);
 		
+			// TODO update with new style vizmapper
+			/*
 		Properties p = new Properties();
 	    p.setProperty(PSGraphics2D.PAGE_SIZE,"Letter");
 		p.setProperty("org.freehep.graphicsio.AbstractVectorGraphicsIO.TEXT_AS_SHAPES",
@@ -35,6 +37,7 @@ public class PSExporter implements Exporter
 		// TODO NEED RENDERER
 	    view.print(g); 
 	    g.endExport();
+		*/
 
 	}
 

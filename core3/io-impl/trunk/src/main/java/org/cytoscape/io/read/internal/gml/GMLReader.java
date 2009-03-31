@@ -58,12 +58,11 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
-import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.CyNetworkView;
+//import org.cytoscape.vizmap.ArrowShape;
+//import org.cytoscape.vizmap.NodeShape;
+//import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.work.TaskMonitor;
 
 
@@ -172,7 +171,7 @@ public class GMLReader extends AbstractNetworkReader {
 	Map<String,Double> nodeH;
 
 	// Hashes for node & edge attributes
-	Map<String,NodeShape> nodeShape;
+//	Map<String,NodeShape> nodeShape;
 
 	// Hashes for node & edge attributes
 	Map<String,String> nodeCol;
@@ -232,7 +231,7 @@ public class GMLReader extends AbstractNetworkReader {
 		return network;
 	}
 
-	public List<GraphView> getReadNetworkViews() {
+	public List<CyNetworkView> getReadNetworkViews() {
 		return null;
 	}
 
@@ -552,7 +551,7 @@ public class GMLReader extends AbstractNetworkReader {
 	 */
 	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
-			public void doLayout(GraphView networkView, TaskMonitor monitor) {
+			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
 				layout(networkView);
 			}
 		};
@@ -563,8 +562,8 @@ public class GMLReader extends AbstractNetworkReader {
 	 *
 	 * @param myView the view of the network we want to layout
 	 */
-	public void layout(GraphView myView) {
-		if ((myView == null) || (myView.nodeCount() == 0)) {
+	public void layout(CyNetworkView myView) {
+		if ((myView == null) || (myView.getSource().getNodeCount() == 0)) {
 			return;
 		}
 
@@ -678,7 +677,7 @@ public class GMLReader extends AbstractNetworkReader {
 	 * Lays Out the Graph, based on GML.
 	 */
 	@SuppressWarnings("unchecked") // KeyValue.value cast
-	protected void layoutGraph(final GraphView myView, List list) {
+	protected void layoutGraph(final CyNetworkView myView, List list) {
 		CyEdge edge = null;
 
 		// Count the current edge
@@ -701,13 +700,13 @@ public class GMLReader extends AbstractNetworkReader {
 	 * Assign node properties based on the values in the list matched to the
 	 * "node" key. Mostly just a wrapper around layoutNodeGraphics
 	 */
-	protected void layoutNode(GraphView myView, List list) {
+	protected void layoutNode(CyNetworkView myView, List list) {
 		Integer root_index = null;
 		List graphics_list = null;
 		String label = null;
 		int tempid = 0;
 
-		NodeView view = null;
+		View<CyNode> view = null;
 
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
@@ -733,13 +732,14 @@ public class GMLReader extends AbstractNetworkReader {
 
 		// System.out.print( "In layout, Root index is: " + root_index );
 		// System.out.print( " Checking label: " + label );
-		view = myView.getNodeView(root_index.intValue());
+		view = myView.getNodeView(network.getNode(root_index.intValue()));
 
-		if (label != null) {
-			view.getLabel().setText(label);
-		} else {
-			view.getLabel().setText("node(" + tempid + ")");
-		}
+// TODO update for new view
+//		if (label != null) {
+//			view.getLabel().setText(label);
+//		} else {
+//			view.getLabel().setText("node(" + tempid + ")");
+//		}
 
 		if (graphics_list != null) {
 			layoutNodeGraphics(myView, graphics_list, view);
@@ -751,7 +751,8 @@ public class GMLReader extends AbstractNetworkReader {
 	 * This will assign node graphic properties based on the values in the list
 	 * matches to the "graphics" key word
 	 */
-	protected void layoutNodeGraphics(GraphView myView, List list, NodeView nodeView) {
+	protected void layoutNodeGraphics(CyNetworkView myView, List list, View<CyNode> nodeView) {
+	/*
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
 
@@ -789,6 +790,7 @@ public class GMLReader extends AbstractNetworkReader {
 				}
 			}
 		}
+		*/
 	}
 
 	//
@@ -798,6 +800,7 @@ public class GMLReader extends AbstractNetworkReader {
 		// Put all attributes into hashes.
 		// Key is the node name
 		// (Assume we do not have duplicate node name.)
+		/*
 		CyRow attrs = node.attrs();
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
@@ -819,6 +822,7 @@ public class GMLReader extends AbstractNetworkReader {
 				graphStyle.addProperty(attrs, VisualPropertyType.NODE_SHAPE,type);
 			}
 		}
+		*/
 	}
 
 
@@ -826,8 +830,8 @@ public class GMLReader extends AbstractNetworkReader {
 	// Extract edge attributes from GML input
 	//
 	protected void extractEdgeAttributes(List<KeyValue> list, CyEdge edge) {
+/*
 		String value = null;
-
 		boolean isArrow = false;
 		String edgeFill = DEF_COLOR.toString();
 		String arrowShape = ARROW_NONE;
@@ -895,6 +899,7 @@ public class GMLReader extends AbstractNetworkReader {
 				graphStyle.addProperty(attrs, VisualPropertyType.EDGE_TGTARROW_COLOR, edgeFill);
 			}
 		}
+		*/
 	}
 
 	/**
@@ -902,8 +907,8 @@ public class GMLReader extends AbstractNetworkReader {
 	 * "edge" key world
 	 */
 	@SuppressWarnings("unchecked") // KeyValue.value cast
-	protected void layoutEdge(GraphView myView, List<KeyValue> list, CyEdge edge) {
-		EdgeView edgeView = null;
+	protected void layoutEdge(CyNetworkView myView, List<KeyValue> list, CyEdge edge) {
+		View<CyEdge> edgeView = null;
 		List graphics_list = null;
 
 		for (Iterator it = list.iterator(); it.hasNext();) {
@@ -918,7 +923,7 @@ public class GMLReader extends AbstractNetworkReader {
 					return;
 				}
 
-				edgeView = myView.getEdgeView(((Integer) keyVal.value).intValue());
+				edgeView = myView.getEdgeView(network.getEdge(((Integer) keyVal.value).intValue()));
 			} else if (keyVal.key.equals(GRAPHICS)) {
 				graphics_list = (List) keyVal.value;
 			}
@@ -941,7 +946,8 @@ public class GMLReader extends AbstractNetworkReader {
 	// into graphics.
 	//
 	@SuppressWarnings("unchecked") // KeyValue.value cast
-	protected void layoutEdgeGraphics(GraphView myView, List<KeyValue> list, EdgeView edgeView) {
+	protected void layoutEdgeGraphics(CyNetworkView myView, List<KeyValue> list, View<CyEdge> edgeView) {
+	/*
 		// Local vars.
 		String value = null;
 		KeyValue keyVal = null;
@@ -990,6 +996,7 @@ public class GMLReader extends AbstractNetworkReader {
 				}
 			}
 		}
+		*/
 	}
 
 	/**
@@ -997,7 +1004,8 @@ public class GMLReader extends AbstractNetworkReader {
 	 * "Line" key We make sure that there is both an x,y present in the
 	 * underlying point list before trying to generate a bend point
 	 */
-	protected void layoutEdgeGraphicsLine(GraphView myView, List<KeyValue> list, EdgeView edgeView) {
+	protected void layoutEdgeGraphicsLine(CyNetworkView myView, List<KeyValue> list, View<CyEdge> edgeView) {
+	/*
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
 
@@ -1021,6 +1029,7 @@ public class GMLReader extends AbstractNetworkReader {
 				}
 			}
 		}
+		*/
 	}
 
 	/**

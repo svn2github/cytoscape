@@ -54,11 +54,8 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
-import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.CyNetworkView;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -86,7 +83,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 
 	private Properties prop;
 
-	private GraphView view;
+	private CyNetworkView view;
 
 	/**
 	 * Constructor.
@@ -135,7 +132,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 			this.readXGMML();
 			this.readObjects.put(CyNetwork.class, readDataManager.getNetwork());
 			createView(readDataManager.getNetwork());
-			readObjects.put(GraphView.class, view);
+			readObjects.put(CyNetworkView.class, view);
 		} catch (SAXException e) {
 			throw new IOException("Could not parse XGMML file: ");
 		}
@@ -190,7 +187,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 	 *            the view of the network we want to layout
 	 */
 	private void layout() {
-		if ((view == null) || (view.nodeCount() == 0))
+		if ((view == null) || (view.getSource().getNodeCount() == 0))
 			return;
 
 		// TODO: Inject correct property
@@ -207,8 +204,9 @@ public class XGMMLReader extends AbstractNetworkReader {
 		// .getNetworkName(), false);
 
 		// Set background clolor
-		if (readDataManager.getBackgroundColor() != null)
-			view.setBackgroundPaint(readDataManager.getBackgroundColor());
+		// TODO update with new view
+//		if (readDataManager.getBackgroundColor() != null)
+//			view.setBackgroundPaint(readDataManager.getBackgroundColor());
 
 		// Layout nodes
 		layoutNodes(null, buildStyle);
@@ -233,9 +231,10 @@ public class XGMMLReader extends AbstractNetworkReader {
 	 */
 	private void layoutNodes(final VisualStyleBuilder graphStyle,
 			boolean buildStyle) {
+			/*
 		String label = null;
 		int tempid = 0;
-		NodeView nv = null;
+		View<CyNode> nv = null;
 
 		final Map<CyNode, Attributes> nodeGraphicsMap = readDataManager
 				.getNodeGraphics();
@@ -256,6 +255,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 						buildStyle);
 			}
 		}
+		*/
 	}
 
 	/**
@@ -272,11 +272,12 @@ public class XGMMLReader extends AbstractNetworkReader {
 	 * 
 	 */
 	private void layoutNodeGraphics(final Attributes graphics,
-			final NodeView nodeView, final VisualStyleBuilder graphStyle,
+			final View<CyNode> nodeView, final VisualStyleBuilder graphStyle,
 			final boolean buildStyle) {
 
 		// The identifier of this node
-		CyRow nodeAttrs = nodeView.getNode().attrs();
+		CyRow nodeAttrs = nodeView.getSource().attrs();
+		/*
 
 		// Location and size of the node
 		double x;
@@ -391,6 +392,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 				graphStyle.addProperty(nodeAttrs,
 						VisualPropertyType.NODE_SHAPE, type);
 		}
+		*/
 	}
 
 	/**
@@ -407,7 +409,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 			final boolean buildStyle) {
 		String label = null;
 		int tempid = 0;
-		EdgeView ev = null;
+		View<CyEdge> ev = null;
 		Map<CyEdge, Attributes> edgeGraphicsMap = readDataManager
 				.getEdgeGraphics();
 
@@ -431,10 +433,11 @@ public class XGMMLReader extends AbstractNetworkReader {
 	 * 
 	 */
 	private void layoutEdgeGraphics(final Attributes graphics,
-			final EdgeView edgeView, final VisualStyleBuilder graphStyle,
+			final View<CyEdge> edgeView, final VisualStyleBuilder graphStyle,
 			final boolean buildStyle) {
-		CyRow edgeAttrs = edgeView.getEdge().attrs();
-
+		CyRow edgeAttrs = edgeView.getSource().attrs();
+		// TODO fix for new style view
+/*
 		if (buildStyle
 				&& attributeValueUtil.getAttribute(graphics, "width") != null) {
 			String lineWidth = attributeValueUtil.getAttribute(graphics,
@@ -529,6 +532,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 				edgeView.getBend().addHandle(point);
 			}
 		}
+		*/
 	}
 
 	/**
@@ -541,7 +545,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 
 		// Get the view. Note that for large networks this might be the null
 		// view
-		view = graphViewFactory.createGraphView(network);
+		view = cyNetworkViewFactory.getNetworkViewFor(network);
 
 		layout();
 

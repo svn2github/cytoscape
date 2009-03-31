@@ -1,6 +1,6 @@
 package org.cytoscape.io.write.internal.graphics;
 
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,5 +17,5 @@ public interface Exporter
 	 *               the stream is not closed when exporting
 	 *               is finished.
 	 */
-	public void export(GraphView view, FileOutputStream stream) throws IOException;
+	public void export(CyNetworkView view, FileOutputStream stream) throws IOException;
 }

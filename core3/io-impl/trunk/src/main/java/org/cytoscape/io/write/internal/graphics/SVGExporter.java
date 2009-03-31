@@ -1,6 +1,6 @@
 package org.cytoscape.io.write.internal.graphics;
 
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 import org.freehep.graphicsio.svg.SVGGraphics2D;
 
 import java.io.FileOutputStream;
@@ -18,12 +18,14 @@ public class SVGExporter implements Exporter
 	{
 	}
 
-	public void export(GraphView view, FileOutputStream stream) throws IOException
+	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
 	{
-		// TODO NEED RENDERER
-		view.setPrintingTextAsShape(!exportTextAsFont);
+		// TODO should be accomplished with presentation properties 
+		//view.setPrintingTextAsShape(!exportTextAsFont);
 		
 		// TODO NEED RENDERER
+			// TODO update with new style presentation
+/*
 		SVGGraphics2D g = new SVGGraphics2D(stream, view.getComponent());
 
 		// this sets text as shape
@@ -36,6 +38,7 @@ public class SVGExporter implements Exporter
 		// TODO NEED RENDERER
 		view.print(g);
 		g.endExport();
+		*/
 	}
 	public void setExportTextAsFont(boolean pExportTextAsFont) {
 		exportTextAsFont = pExportTextAsFont;

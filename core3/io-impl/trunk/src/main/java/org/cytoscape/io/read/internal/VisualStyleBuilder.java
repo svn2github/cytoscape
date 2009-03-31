@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cytoscape.model.CyRow;
+/*
 import org.cytoscape.vizmap.CalculatorCatalog;
 import org.cytoscape.vizmap.EdgeAppearanceCalculator;
 import org.cytoscape.vizmap.GlobalAppearanceCalculator;
@@ -52,6 +53,7 @@ import org.cytoscape.vizmap.calculators.BasicCalculator;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
+*/
 
 /**
  * Based on the graph/node/edge view information, build new Visual Style.
@@ -61,8 +63,8 @@ import org.cytoscape.vizmap.mappings.ObjectMapping;
  */
 public class VisualStyleBuilder {
 
-	Map<VisualPropertyType, Map<Object, Object>> valueMaps;
-	Map<VisualPropertyType, Map<Object, Integer>> counts;
+//	Map<VisualPropertyType, Map<Object, Object>> valueMaps;
+//	Map<VisualPropertyType, Map<Object, Integer>> counts;
 	String name;
 	private boolean nodeSizeLocked = true;
 
@@ -80,10 +82,10 @@ public class VisualStyleBuilder {
 		// because visual style parsing breaks with '.' in the names
 		this.name = name.replaceAll("\\.", "_");
 
-		valueMaps = new EnumMap<VisualPropertyType, Map<Object, Object>>(
-				VisualPropertyType.class);
-		counts = new EnumMap<VisualPropertyType, Map<Object, Integer>>(
-				VisualPropertyType.class);
+//		valueMaps = new EnumMap<VisualPropertyType, Map<Object, Object>>(
+//				VisualPropertyType.class);
+//		counts = new EnumMap<VisualPropertyType, Map<Object, Integer>>(
+//				VisualPropertyType.class);
 	}
 
 	/**
@@ -103,6 +105,8 @@ public class VisualStyleBuilder {
 	 * Actually build the style using the provided properties
 	 */
 	public void buildStyle() {
+		// TODO update to new style vizmap
+	/*
 		// First, get our current style information.
 		VisualMappingManager vm = VMMFactory.getVisualMappingManager();
 		VisualStyle currentStyle = vm.getVisualStyle();
@@ -174,11 +178,13 @@ public class VisualStyleBuilder {
 		// Now, attempt to add it
 		catalog.addVisualStyle(graphStyle);
 		vizmapper.setVisualStyle(graphStyle);
+		*/
 	}
 
-	private String getAttrName(VisualPropertyType type) {
-		return "vizmap:" + name + " " + type.toString();
-	}
+// TODO update to new style vizmap
+//	private String getAttrName(VisualPropertyType type) {
+//		return "vizmap:" + name + " " + type.toString();
+//	}
 
 	/**
 	 * This method actually adds a property to be considered for inclusion into
@@ -191,6 +197,7 @@ public class VisualStyleBuilder {
 	 * @param desc
 	 *            the property value
 	 */
+	/*
 	public void addProperty(CyRow attrs, VisualPropertyType type, String desc) {
 		Object value = type.getValueParser().parseStringValue(desc);
 		if (value == null)
@@ -214,6 +221,7 @@ public class VisualStyleBuilder {
 
 		counts.get(type).put(vString, counts.get(type).get(vString) + 1);
 	}
+		*/
 
 	/**
 	 * This method lock/unlock the size object (Node Width, Node Height) in
@@ -230,8 +238,8 @@ public class VisualStyleBuilder {
 	/**
 	 * Processes the counts for the various visual properties and establishes
 	 * how many nodes and edges there are.
-	 */
 	private void processCounts() {
+	
 		Map<VisualPropertyType, Integer> cm = new EnumMap<VisualPropertyType, Integer>(
 				VisualPropertyType.class);
 		for (VisualPropertyType vpt : counts.keySet()) {
@@ -256,6 +264,7 @@ public class VisualStyleBuilder {
 			}
 		}
 	}
+	 */
 
 	/**
 	 * This method determines whether or not to create a mapping for this visual
@@ -264,7 +273,6 @@ public class VisualStyleBuilder {
 	 * only one key is mapped to a value, but only a subset of nodes or edges
 	 * have that mapping (which is to say the property doesn't hold for all
 	 * nodes or all edges).
-	 */
 	private boolean createMapping(VisualPropertyType vpt) {
 		// if there is more than one mapping
 		if (counts.get(vpt).size() > 1)
@@ -289,4 +297,5 @@ public class VisualStyleBuilder {
 
 		return false;
 	}
+	 */
 }

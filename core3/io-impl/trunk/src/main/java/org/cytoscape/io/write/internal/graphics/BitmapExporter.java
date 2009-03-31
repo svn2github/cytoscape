@@ -1,6 +1,6 @@
 package org.cytoscape.io.write.internal.graphics;
 
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -36,8 +36,10 @@ public class BitmapExporter implements Exporter
 			throw new IllegalArgumentException("Format " + extension + " is not supported by the ImageIO class");
 	}
 
-	public void export(GraphView view, FileOutputStream stream) throws IOException
+	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
 	{
+		// TODO update with presentation code
+	/*
 		// TODO NEED RENDERER
 		int width  = (int) (view.getComponent().getWidth() * scale);
 		// TODO NEED RENDERER
@@ -51,5 +53,6 @@ public class BitmapExporter implements Exporter
 		g.dispose();
 		
 		ImageIO.write(image, extension, stream);
+		*/
 	}
 }

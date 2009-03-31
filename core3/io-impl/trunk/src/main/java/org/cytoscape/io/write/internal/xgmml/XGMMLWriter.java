@@ -43,11 +43,11 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTable;
 //import org.cytoscape.groups.CyGroup;
 //import cytoscape.groups.CyGroupManager;
-import org.cytoscape.view.Bend;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
-import org.cytoscape.vizmap.LineStyle;
+//TODO
+//import org.cytoscape.view.Bend;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.CyNetworkView;
+//import org.cytoscape.vizmap.LineStyle;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -185,7 +185,7 @@ public class XGMMLWriter {
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
 	private CyNetwork network;
-	private GraphView networkView;
+	private CyNetworkView networkView;
 	private boolean isMixed;
 //	private List<CyGroup> groupList;
 	private	HashMap<CyNode,CyNode> nodeMap;
@@ -203,11 +203,11 @@ public class XGMMLWriter {
 	 * @param network
 	 *            CyNetwork object to be saved.
 	 * @param view
-	 *            GraphView for the network.
+	 *            CyNetworkView for the network.
 	 * @throws URISyntaxException
 	 * @throws JAXBException
 	 */
-	public XGMMLWriter(final CyNetwork network, final GraphView view)
+	public XGMMLWriter(final CyNetwork network, final CyNetworkView view)
 	    throws IOException, URISyntaxException {
 		this.network = network;
 		this.networkView = view;
@@ -228,14 +228,14 @@ public class XGMMLWriter {
 	 * @param network
 	 *            CyNetwork object to be saved.
 	 * @param view
-	 *            GraphView for the network.
+	 *            CyNetworkView for the network.
 	 * @param noCytoscapeGraphics
 	 *            boolean to indicate whether cytoscape graphics
 	 *            attributes should be written
 	 * @throws URISyntaxException
 	 * @throws JAXBException
 	 */
-	public XGMMLWriter(final CyNetwork network, final GraphView view,
+	public XGMMLWriter(final CyNetwork network, final CyNetworkView view,
 	                   boolean noCytoscapeGraphics) throws IOException, URISyntaxException {
 		this(network, view);
 		this.noCytoscapeGraphics = noCytoscapeGraphics;
@@ -385,16 +385,17 @@ public class XGMMLWriter {
 	 */
 	private void writeNetworkAttributes() throws IOException {
 		if (networkView != null) {
+			// TODO port to new style
 			// Get our background color
-			writeAttributeXML(BACKGROUND, ObjectType.STRING, paint2string(networkView.getBackgroundPaint()), true);
+//			writeAttributeXML(BACKGROUND, ObjectType.STRING, paint2string(networkView.getBackgroundPaint()), true);
 
 			// lets also write the zoom
-			final Double dAttr = new Double(networkView.getZoom());
-			writeAttributeXML(GRAPH_VIEW_ZOOM, ObjectType.REAL, dAttr ,true);
+//			final Double dAttr = new Double(networkView.getZoom());
+//			writeAttributeXML(GRAPH_VIEW_ZOOM, ObjectType.REAL, dAttr ,true);
 
-			final Point2D center = networkView.getCenter();
-			writeAttributeXML(GRAPH_VIEW_CENTER_X, ObjectType.REAL, new Double(center.getX()) ,true);
-			writeAttributeXML(GRAPH_VIEW_CENTER_Y, ObjectType.REAL, new Double(center.getY()) ,true);
+//			final Point2D center = networkView.getCenter();
+//			writeAttributeXML(GRAPH_VIEW_CENTER_X, ObjectType.REAL, new Double(center.getX()) ,true);
+//			writeAttributeXML(GRAPH_VIEW_CENTER_Y, ObjectType.REAL, new Double(center.getY()) ,true);
 		}
 
 		// Now handle all of the other network attributes
@@ -466,7 +467,7 @@ public class XGMMLWriter {
 		*/
 
 		// Output the node graphics if we have a view
-		writeNodeGraphics(node, (NodeView)networkView.getNodeView(node));
+		writeNodeGraphics(node, networkView.getNodeView(node));
 
 		depth--;
 		writeElement("</node>\n");
@@ -487,19 +488,20 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeNodeGraphics(CyNode node, NodeView nodeView) throws IOException {
+	private void writeNodeGraphics(CyNode node, View<CyNode> nodeView) throws IOException {
 
-		/*
-		 * In case node is hidden, we cannot get the show and extract node
-		 * view.
-		 */
+	// TODO fix for new style view
+	/*
+
+		// In case node is hidden, we cannot get the show and extract node view.
 		boolean hiddenNodeFlag = false;
 		if (nodeView == null) return;
 
-		if (nodeView.getWidth() == -1) {
-			networkView.showGraphObject(nodeView);
-			hiddenNodeFlag = true;
-		}
+// 	TODO wtf?
+//		if (nodeView.getWidth() == -1) {
+//			networkView.showGraphObject(nodeView);
+//			hiddenNodeFlag = true;
+//		}
 
 		writeElement("<graphics");
 		// Node shape
@@ -553,6 +555,8 @@ public class XGMMLWriter {
 		}
 
 		writer.write("/>\n");
+
+		*/
 	}
 /*
 	// TODO fix!
@@ -656,7 +660,7 @@ public class XGMMLWriter {
 			writeAttribute(curEdge.attrs(), attName);
 
 		// Write the edge graphics
-		writeEdgeGraphics(curEdge, (EdgeView)networkView.getEdgeView(curEdge));
+		writeEdgeGraphics(curEdge, networkView.getEdgeView(curEdge));
 
 		depth--;
 		writeElement("</edge>\n");
@@ -670,10 +674,13 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeEdgeGraphics(CyEdge edge, EdgeView edgeView) throws IOException {
+	private void writeEdgeGraphics(CyEdge edge, View<CyEdge> edgeView) throws IOException {
+		
 		if (edgeView == null) 
 			return;
 
+		// TODO fix for new style view
+/*
 		writeElement("<graphics");
 		// Width
 		writeAttributePair("width", Integer.toString((int) edgeView.getStrokeWidth()));
@@ -721,6 +728,7 @@ public class XGMMLWriter {
 		writeElement("</att>\n");
 		depth--;
 		writeElement("</graphics>\n");
+		*/
 	}
 
 	/**
@@ -1007,6 +1015,7 @@ public class XGMMLWriter {
 	 */
 	private GraphicsType number2shape(final int type) {
 		switch (type) {
+		/*
 			case NodeView.ELLIPSE:
 				return GraphicsType.ELLIPSE;
 
@@ -1030,7 +1039,7 @@ public class XGMMLWriter {
 
 			case NodeView.TRIANGLE:
 				return GraphicsType.TRIANGLE;
-
+*/
 			default:
 				return null;
 		}

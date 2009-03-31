@@ -7,7 +7,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import java.awt.*;
 import java.io.FileOutputStream;
@@ -21,11 +21,13 @@ public class PDFExporter implements Exporter
 {
 	private boolean exportTextAsFont = true;
 
-	public void export(GraphView view, FileOutputStream stream) throws IOException
+	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
 	{
-		// TODO NEED RENDERER
-		view.setPrintingTextAsShape(!exportTextAsFont);
+		// TODO should be accomplished with renderer properties
+		//view.setPrintingTextAsShape(!exportTextAsFont);
 		
+			// TODO update with new style vizmapper
+			/*
 		Rectangle pageSize = PageSize.LETTER;
 		Document document = new Document(pageSize);
 		try
@@ -53,6 +55,7 @@ public class PDFExporter implements Exporter
 		}
 
 		document.close();
+		*/
 	}
 	public void setExportTextAsFont(boolean pExportTextAsFont) {
 		exportTextAsFont = pExportTextAsFont;
