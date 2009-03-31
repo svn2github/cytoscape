@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+    default-lazy-init="false">
+
+	<osgi:reference id="cyRootNetworkFactoryServiceRef" 
+	                interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
+    </osgi:reference>
+
+	<osgi:reference id="undoSupportServiceRef" 
+	                interface="org.cytoscape.work.UndoSupport">
+    </osgi:reference>
+
+    <osgi:reference id="cyDataTableFactoryServiceRef" 
+	                interface="org.cytoscape.model.CyDataTableFactory">
+    </osgi:reference>
+	<!-- Individual Service -->
+	<osgi:service id="presentationFactoryService"
+		ref="presentationFactory" interface="org.cytoscape.view.presentation.PresentationFactory">
+	</osgi:service>
+
+</beans>

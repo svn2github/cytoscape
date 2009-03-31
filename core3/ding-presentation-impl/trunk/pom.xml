@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+   | put company details here
+  <organization>
+    <name>...</name>
+    <url>http://...</url>
+  </organization>
+  -->
+
+  <!--
+   | put license details here
+  <licenses>
+    <license>
+      <name>...</name>
+      <url>http://...</url>
+      <comments>
+      </comments>
+    </license>
+  </licenses>
+  -->
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cytoscape</groupId>
+  <artifactId>ding-presentation-impl</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>org.cytoscape.ding-presentation-impl (OSGi project)</name>
+
+  <!--
+   | describe your project here
+  -->
+
+  <description>Generated using Pax-Construct</description>
+
+  <properties>
+    <!--
+     | some example OSGi runtime properties
+    -->
+    <org.osgi.service.http.port>8080</org.osgi.service.http.port>
+    <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
+  </properties>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>poms</module>
+    <module>provision</module>
+    <module>util.intr</module>
+    <module>render.immed</module>
+    <module>render.stateful</module>
+    <module>render.export</module>
+    <module>geom.spacial</module>
+    <module>geom.rtree</module>
+    <module>ding</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.ops4j</groupId>
+        <artifactId>maven-pax-plugin</artifactId>
+        <version>1.4</version>
+        <configuration>
+          <!--
+           | some example Pax-Runner settings
+          -->
+          <provision>
+            <param>--platform=felix</param>
+            <param>--profiles=minimal</param>
+          </provision>
+        </configuration>
+        <executions>
+          <!--
+           | uncomment to auto-generate IDE files
+          <execution>
+            <id>ide-support</id>
+            <goals>
+              <goal>eclipse</goal>
+            </goals>
+          </execution>
+          -->
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
