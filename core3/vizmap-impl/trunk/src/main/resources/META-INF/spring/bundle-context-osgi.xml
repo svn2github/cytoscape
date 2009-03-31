@@ -7,11 +7,11 @@
 
 	<!-- Export Visual Style Catalog as OSGi service -->
 	<osgi:service id="visualStyleCatalogService" ref="visualStyleCatalog"
-		interface="org.cytoscape.vizmap.VisualStyleCatalog">
+		interface="org.cytoscape.view.vizmap.VisualStyleCatalog">
 	</osgi:service>
 
 	<osgi:service id="visualMappingManagerService" ref="visualMappingManager"
-		interface="org.cytoscape.vizmap.VisualMappingManager">
+		interface="org.cytoscape.view.vizmap.VisualMappingManager">
 	</osgi:service>
 
 	<!-- Import Services -->
