@@ -32,18 +32,35 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.vizmap.events;
+package org.cytoscape.view.vizmap;
 
-import org.cytoscape.event.CyListener;
+import java.util.List;
 
 
 /**
- * Listener for VisualStyleCreatedEvent.
+ * We need a list of currently-used VisualStyles somewhere (?)
+ * This is it.
+ * It is also a VisualStyle factory
  */
-public interface VisualStyleCreatedListener extends CyListener {
+public interface VisualStyleCatalog {
 	/**
-	 * DOCUMENT ME!
-	 * @param e DOCUMENT ME!
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
 	 */
-	void handleEvent(VisualStyleCreatedEvent e);
+	VisualStyle createVisualStyle();
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	List<VisualStyle> listOfVisualStyles();
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vs DOCUMENT ME!
+	 */
+	void removeVisualStyle(VisualStyle vs);
 }

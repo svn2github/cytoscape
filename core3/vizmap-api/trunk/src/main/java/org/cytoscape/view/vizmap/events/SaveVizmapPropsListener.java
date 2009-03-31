@@ -1,5 +1,5 @@
 
-package org.cytoscape.vizmap.events;
+package org.cytoscape.view.vizmap.events;
 
 import org.cytoscape.event.CyListener;
 

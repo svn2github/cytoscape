@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap;
+package org.cytoscape.view.vizmap;
 
 import org.cytoscape.view.model.CyNetworkView;
 

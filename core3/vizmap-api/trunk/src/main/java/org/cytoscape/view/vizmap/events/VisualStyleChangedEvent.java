@@ -32,64 +32,15 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.vizmap;
+package org.cytoscape.view.vizmap.events;
 
-import java.util.List;
+import org.cytoscape.event.CyEvent;
 
-import org.cytoscape.model.GraphObject;
-
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewColumn;
-import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 
 /**
- * This class defines how an attribute gets mapped to a visual property.
- * It takes two values: an attribute and a visual property and provides
- * the mapping function from converting the attribute to the visual
- * property.
- *
- * Or should the mapping calculator map from Attr to Class<?>?
- * @param <T> DOCUMENT ME!
- */
-public interface MappingCalculator {
-	/**
-	 * The attribute to be mapped.
-	 *
-	 * @param name  DOCUMENT ME!
-	 */
-	void setMappingAttributeName(String name);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	String getMappingAttributeName();
-
-	/**
-	 * The visual property the attribute gets mapped to.
-	 *
-	 * @param vp  DOCUMENT ME!
-	 */
-	void setVisualProperty(VisualProperty<?> vp);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	VisualProperty<?> getVisualProperty();
-
-	/**
-	 *  Since current MappingCalculators map from Attributes to
-	 *  VisualProperties, have to restrict View<?> to those
-	 *  generic types that have CyAttributes; currently this is
-	 *  GraphObject.
-	 *
-	 * @param <V> DOCUMENT ME!
-	 * @param column DOCUMENT ME!
-	 * @param views DOCUMENT ME!
-	 */
-	<T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views);
+ * DOCUMENT ME!
+  */
+public interface VisualStyleChangedEvent extends CyEvent<VisualStyle> {
 }

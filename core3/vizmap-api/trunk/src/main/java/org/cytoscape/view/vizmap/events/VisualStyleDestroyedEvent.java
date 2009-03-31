@@ -32,18 +32,15 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.vizmap.events;
+package org.cytoscape.view.vizmap.events;
 
-import org.cytoscape.event.CyListener;
+import org.cytoscape.event.CyEvent;
+
+import org.cytoscape.view.vizmap.VisualStyle;
 
 
 /**
- * Listener for VisualStyleDestroyedEvent.
- */
-public interface VisualStyleDestroyedListener extends CyListener {
-	/**
-	 * DOCUMENT ME!
-	 * @param e DOCUMENT ME!
-	 */
-	void handleEvent(VisualStyleDestroyedEvent e);
+ * DOCUMENT ME!
+  */
+public interface VisualStyleDestroyedEvent extends CyEvent<VisualStyle> {
 }

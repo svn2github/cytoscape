@@ -32,15 +32,66 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.vizmap.events;
+package org.cytoscape.view.vizmap;
 
-import org.cytoscape.event.CyEvent;
-
-import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualProperty;
 
 
 /**
- * DOCUMENT ME!
-  */
-public interface VisualStyleCreatedEvent extends CyEvent<VisualStyle> {
+ * This is simply a collection of MappingCalculators that define
+ * how a set of attributes modify the visual properties of a
+ * View object.
+ */
+public interface VisualStyle {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param c DOCUMENT ME!
+	 */
+	void setMappingCalculator(MappingCalculator c);
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param t DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	MappingCalculator getMappingCalculator(VisualProperty<?> t);
+
+	/**
+	 *  Removes the mapping for the given VisualProperty
+	 *
+	 * @param t DOCUMENT ME!
+	 *
+	 * @return  the removed MappingCalculator (null if one was not defined for the VisualProperty)
+	 */
+	MappingCalculator removeMappingCalculator(VisualProperty<?> t);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param <T> DOCUMENT ME!
+	 * @param prop DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	<T> T getDefaultValue(VisualProperty<T> prop);
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param <T> DOCUMENT ME!
+	 * @param vp DOCUMENT ME!
+	 * @param value DOCUMENT ME!
+	 */
+	<T> void setDefaultValue(VisualProperty<T> vp, T value);
+
+	// ??
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param v DOCUMENT ME!
+	 */
+	void apply(CyNetworkView v);
 }
