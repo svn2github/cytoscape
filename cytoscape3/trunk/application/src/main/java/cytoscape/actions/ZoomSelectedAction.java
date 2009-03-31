@@ -45,6 +45,7 @@ package cytoscape.actions;
 import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
+import org.cytoscape.view.model.CyNetworkView; 
 
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
@@ -78,7 +79,8 @@ public class ZoomSelectedAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		netmgr.getCurrentNetworkView().fitSelected();
-		netmgr.getCurrentNetworkView().updateView();
+		final CyNetworkView view = netmgr.getCurrentNetworkView();
+		view.fitSelected();
+		view.updateView();
 	}
 }

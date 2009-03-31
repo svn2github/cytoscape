@@ -38,7 +38,7 @@ package cytoscape.util;
 
 import cytoscape.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -387,7 +387,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 			return;
 		}
 		
-		GraphView v = netmgr.getCurrentNetworkView();
+		CyNetworkView v = netmgr.getCurrentNetworkView();
 		if ( v == null )
 			setEnabled(false);
 		else

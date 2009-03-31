@@ -3,11 +3,11 @@ package cytoscape.events;
 
 import cytoscape.CyNetworkManager;
 import org.cytoscape.event.CyEvent;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 /**
  * 
  */
 public interface SetCurrentNetworkViewEvent extends CyEvent<CyNetworkManager> {
-	GraphView getNetworkView();	
+	CyNetworkView getNetworkView();	
 }

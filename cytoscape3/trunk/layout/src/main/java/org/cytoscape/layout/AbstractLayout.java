@@ -38,11 +38,13 @@ package org.cytoscape.layout;
 
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
-import org.cytoscape.view.NodeView;
-import org.cytoscape.view.ViewChangeEdit;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.View;
+// TODO find a replacement
+//import org.cytoscape.view.ViewChangeEdit;
 import org.cytoscape.work.UndoSupport;
 
 import javax.swing.*;
@@ -59,8 +61,8 @@ import java.util.Set;
  */
 abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	// Graph Objects and Views
-	protected Set<NodeView> staticNodes;
-	protected GraphView networkView;
+	protected Set<View<CyNode>> staticNodes;
+	protected CyNetworkView networkView;
 	protected CyNetwork network;
 
 	//
@@ -71,7 +73,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected Dimension currentSize = new Dimension(20, 20);
 	protected HashMap propertyMap = null;  // TODO figure out if this is used in a child somewhere
 	protected HashMap savedPropertyMap = null;  // TODO figure out if this is used in a child somewhere
-	private ViewChangeEdit undoableEdit;
+//	private ViewChangeEdit undoableEdit;
 
 	// Monitor
 	protected TaskMonitor taskMonitor;
@@ -91,7 +93,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * The Constructor is null
 	 */
 	public AbstractLayout(UndoSupport undo) {
-		this.staticNodes = new HashSet<NodeView>();
+		this.staticNodes = new HashSet<View<CyNode>>();
 		this.undo = undo;
 	}
 
@@ -188,14 +190,14 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	/**
 	 * doLayout on specified network view.
 	 */
-	public void doLayout(GraphView nview) {
+	public void doLayout(CyNetworkView nview) {
 		doLayout(nview, nullTaskMonitor);
 	}
 
 	/**
 	 * doLayout on specified network view with specified monitor.
 	 */
-	public void doLayout(GraphView nview, TaskMonitor monitor) {
+	public void doLayout(CyNetworkView nview, TaskMonitor monitor) {
 		canceled = false;
 
 		networkView = nview;
@@ -204,7 +206,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		if ( networkView == null )
 			return;
 
-		this.network = networkView.getGraphPerspective();
+		this.network = networkView.getSource();
 
 		if (network == null) 
 			return;
@@ -218,19 +220,19 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		taskMonitor = monitor;
 
 		// set up the edit
-		undoableEdit = new ViewChangeEdit(networkView, toString() + " Layout", undo);
+//		undoableEdit = new ViewChangeEdit(networkView, toString() + " Layout", undo);
 
 		// this is overridden by children and does the actual layout
 		construct();
 
 		// update the view 
-		if (!selectedOnly)
-			networkView.fitContent();
+//		if (!selectedOnly)
+//			networkView.fitContent();
 
-		networkView.updateView();
+//		networkView.updateView();
 
 		// post the edit 
-		undoableEdit.post();
+//		undoableEdit.post();
 
 		// update the __layoutAlgorithm attribute
 		CyRow networkAttributes = network.getCyRow(CyNetwork.HIDDEN_ATTRS);
@@ -268,9 +270,9 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	/**
 	 * Lock these nodes (i.e. prevent them from moving).
 	 *
-	 * @param nodes An array of NodeView's to lock
+	 * @param nodes An array of View<CyNode>'s to lock
 	 */
-	public void lockNodes(NodeView[] nodes) {
+	public void lockNodes(View<CyNode>[] nodes) {
 		for (int i = 0; i < nodes.length; ++i) {
 			staticNodes.add(nodes[i]);
 		}
@@ -279,22 +281,22 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	/**
 	 * Lock this node (i.e. prevent it from moving).
 	 *
-	 * @param v A NodeView to lock
+	 * @param v A View<CyNode> to lock
 	 */
-	public void lockNode(NodeView v) {
+	public void lockNode(View<CyNode> v) {
 		staticNodes.add(v);
 	}
 
 	/**
 	 * Unlock this node
 	 *
-	 * @param v A NodeView to unlock
+	 * @param v A View<CyNode> to unlock
 	 */
-	public void unlockNode(NodeView v) {
+	public void unlockNode(View<CyNode> v) {
 		staticNodes.remove(v);
 	}
 
-	protected boolean isLocked(NodeView v) {
+	protected boolean isLocked(View<CyNode> v) {
 		return (staticNodes.contains(v));
 	}
 

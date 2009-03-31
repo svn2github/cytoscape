@@ -41,6 +41,12 @@ import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
+
+
 import java.awt.event.ActionEvent;
 
 
@@ -62,6 +68,13 @@ public class ShowAllAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GinyUtils.unHideAll( netmgr.getCurrentNetworkView() );
+   		final CyNetwork curr = netmgr.getCurrentNetwork();
+		final CyNetworkView view = netmgr.getNetworkView( curr.getSUID() );
+
+		HideUtils.setVisibleNodes( curr.getNodeList(), true, view );
+		HideUtils.setVisibleEdges( curr.getEdgeList(), true, view );
+
+        if ( view != null )
+            view.updateView();
 	}
 }

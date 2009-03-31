@@ -44,6 +44,8 @@ package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 
@@ -72,12 +74,13 @@ public class DeselectAllAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent ea) {
-		for ( CyNode n : netmgr.getCurrentNetwork().getNodeList() )
-			n.attrs().set("selected",true);
-		for ( CyEdge e : netmgr.getCurrentNetwork().getEdgeList() )
-			e.attrs().set("selected",true);
+        final CyNetwork n = netmgr.getCurrentNetwork();
+        final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
+        SelectUtils.setSelectedEdges( n.getEdgeList(), false, v);
+        SelectUtils.setSelectedNodes( n.getNodeList(), false, v);
 
-		netmgr.getCurrentNetworkView().updateView();
+        if ( v != null )
+            v.updateView();
 	}
 
     public void menuSelected(MenuEvent e) {

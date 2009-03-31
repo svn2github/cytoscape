@@ -42,7 +42,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -161,7 +161,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		if ( network == null )
 			return false;
 
-		GraphView view = netmgr.getCurrentNetworkView();
+		CyNetworkView view = netmgr.getCurrentNetworkView();
 		if ( view == null )
 			return false;
 		else

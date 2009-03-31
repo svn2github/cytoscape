@@ -44,6 +44,7 @@ package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
@@ -55,6 +56,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 //-------------------------------------------------------------------------
 /**
@@ -79,16 +82,18 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork currentNetwork = netmgr.getCurrentNetwork();
+		final CyNetworkView view = netmgr.getNetworkView(currentNetwork.getSUID());
 		final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(currentNetwork,"selected",true);
+		final Set<CyNode> nodes = new HashSet<CyNode>();
 
-		for ( CyNode currentNode : selectedNodes ) {
-			for ( CyNode n : currentNetwork.getNeighborList(currentNode,CyEdge.Type.ANY) ) {
-				n.attrs().set("selected",true);
-			}
-		}
+		for ( CyNode currentNode : selectedNodes ) 
+			nodes.addAll( currentNetwork.getNeighborList(currentNode,CyEdge.Type.ANY) );
 
-		netmgr.getCurrentNetworkView().updateView();
-	} // actionPerformed
+		SelectUtils.setSelectedNodes( nodes, true, view);		
+	
+		if ( view != null )
+			view.updateView();
+	} 
 
     public void menuSelected(MenuEvent e) {
         enableForNetwork();

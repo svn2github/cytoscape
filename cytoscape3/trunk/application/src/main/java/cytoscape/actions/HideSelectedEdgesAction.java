@@ -45,8 +45,14 @@ package cytoscape.actions;
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.view.model.CyNetworkView;
+
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 //-------------------------------------------------------------------------
 /**
@@ -69,7 +75,14 @@ public class HideSelectedEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GinyUtils.hideSelectedEdges(netmgr.getCurrentNetworkView());
+        final CyNetwork curr = netmgr.getCurrentNetwork();
+        final CyNetworkView view = netmgr.getNetworkView( curr.getSUID() );
+        final List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(curr,"selected",true);
+
+        HideUtils.setVisibleEdges( selectedEdges, false, view );
+
+        if ( view != null )
+            view.updateView();
 	}
 
     public void menuSelected(MenuEvent e) {

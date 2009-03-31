@@ -4,8 +4,9 @@ package cytoscape.actions;
 import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
@@ -44,13 +45,13 @@ class DeleteEdit extends CyAbstractEdit {
 		// save the positions of the nodes
 		xPos = new double[nodes.size()]; 
 		yPos = new double[nodes.size()]; 
-		GraphView netView = netmgr.getNetworkView(net.getSUID());
+		CyNetworkView netView = netmgr.getNetworkView(net.getSUID());
 		if ( netView != null ) {
 			int i = 0;
 			for ( CyNode n : nodes ) {
-				NodeView nv = netView.getNodeView(n);
-				xPos[++i] = nv.getXPosition();
-				yPos[i] = nv.getYPosition();
+				View<CyNode> nv = netView.getNodeView(n);
+				xPos[++i] = nv.getVisualProperty(NODE_X_LOCATION);
+				yPos[i] = nv.getVisualProperty(NODE_Y_LOCATION);
 			}
 		}
 	}
@@ -63,8 +64,8 @@ class DeleteEdit extends CyAbstractEdit {
 		for ( CyEdge e : edges )
 			net.removeEdge(e);
 
-		GraphView netView = netmgr.getNetworkView(net.getSUID());	
-		Cytoscape.redrawGraph(netView);
+		CyNetworkView netView = netmgr.getNetworkView(net.getSUID());	
+		netView.updateView();
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
         deleteAction.setEnabled(false);
 	}
@@ -77,16 +78,17 @@ class DeleteEdit extends CyAbstractEdit {
 		for ( CyEdge e : edges )
 			net.addEdge(e);
 
-		GraphView netView = netmgr.getNetworkView(net.getSUID());
+		CyNetworkView netView = netmgr.getNetworkView(net.getSUID());
 		if ( netView != null ) {
 			int i = 0;
 			for ( CyNode n : nodes ) {
-				NodeView nv = netView.getNodeView(n);
-				nv.setOffset( xPos[++i], yPos[i] );
+				View<CyNode> nv = netView.getNodeView(n);
+				nv.setVisualProperty(NODE_X_LOCATION, xPos[++i]);
+				nv.setVisualProperty(NODE_Y_LOCATION, yPos[i] );
 			}
 		}
 
-		Cytoscape.redrawGraph(netView);
+		netView.updateView();
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
         deleteAction.setEnabled(true);
 	}

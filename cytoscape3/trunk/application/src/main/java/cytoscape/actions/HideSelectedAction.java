@@ -48,7 +48,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyNetwork;
-
+import org.cytoscape.view.model.CyNetworkView;
 
 import java.awt.event.ActionEvent;
 import java.util.Set;
@@ -75,18 +75,16 @@ public class HideSelectedAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// Get the selected nodes:
-		CyNetwork curr = netmgr.getCurrentNetwork();
-		List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(curr,"selected",true);
-		List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(curr,"selected",true); 
-		GinyUtils.hideSelectedNodes(netmgr.getCurrentNetworkView());
-		GinyUtils.hideSelectedEdges(netmgr.getCurrentNetworkView());
+	
+		final CyNetwork curr = netmgr.getCurrentNetwork();
+		final CyNetworkView view = netmgr.getNetworkView( curr.getSUID() );
+		final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(curr,"selected",true);
+		final List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(curr,"selected",true); 
 
-		// unselect the nodes and edges
-		for ( CyNode n : selectedNodes )
-			n.attrs().set("selected",false);
+		HideUtils.setVisibleNodes( selectedNodes, false, view );
+		HideUtils.setVisibleEdges( selectedEdges, false, view );
 
-		for ( CyEdge n : selectedEdges )
-			n.attrs().set("selected",false);
-	} //action performed
+        if ( view != null )
+            view.updateView();
+	} 
 }

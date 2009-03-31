@@ -37,8 +37,9 @@
 package org.cytoscape.layout;
 
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.model.CyNode;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -57,9 +58,9 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	/**
 	 * This method performs the layout on the current network.
 	 *
-	 * @param networkView the GraphView on which to perform the layout
+	 * @param networkView the CyNetworkView on which to perform the layout
 	 */
-	public void doLayout(GraphView networkView) {
+	public void doLayout(CyNetworkView networkView) {
 		doLayout(networkView, null);
 	}
 
@@ -67,10 +68,10 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * This method performs the layout on the current network, but assumes
 	 * that the layout is part of an existing monitored task
 	 *
-	 * @param networkView the GraphView on which to perform the layout
+	 * @param networkView the CyNetworkView on which to perform the layout
 	 * @param monitor the task monitor to use
 	 */
-	public abstract void doLayout(GraphView networkView, TaskMonitor monitor);
+	public abstract void doLayout(CyNetworkView networkView, TaskMonitor monitor);
 
 	/**
 	 * Get the name of this layout.
@@ -136,21 +137,21 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 *
 	 * @param nodes DOCUMENT ME!
 	 */
-	public void lockNodes(NodeView[] nodes) {}
+	public void lockNodes(View<CyNode>[] nodes) {}
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public void lockNode(NodeView v) {}
+	public void lockNode(View<CyNode> v) {}
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param v DOCUMENT ME!
 	 */
-	public void unlockNode(NodeView v) {}
+	public void unlockNode(View<CyNode> v) {}
 
 	/**
 	 *  DOCUMENT ME!

@@ -45,7 +45,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyDataTableUtil;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 //import org.cytoscape.vizmap.VisualMappingManager;
 //import org.cytoscape.vizmap.VisualStyle;
 
@@ -82,7 +82,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 		System.out.println("NOT implemented");
 		/*
         CyNetwork current_network = Cytoscape.getCurrentNetwork();
-        GraphView current_network_view = Cytoscape.getCurrentNetworkView();
+        CyNetworkView current_network_view = Cytoscape.getCurrentNetworkView();
 
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
 			return;
@@ -95,7 +95,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 		                                                current_network);
 
 		String title = " selection";
-		GraphView new_network_view = Cytoscape.createNetworkView(new_network, title);
+		CyNetworkView new_network_view = Cytoscape.createNetworkView(new_network, title);
         
         String vsName = "default";
         

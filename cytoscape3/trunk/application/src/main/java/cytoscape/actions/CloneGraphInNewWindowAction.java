@@ -47,9 +47,9 @@ import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 //import org.cytoscape.vizmap.VisualStyle;
 
 import javax.swing.event.MenuEvent;
@@ -80,7 +80,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	System.out.println("NOT implemented");
 	/*
 		CyNetwork origNet = Cytoscape.getCurrentNetwork();
-		GraphView origView = Cytoscape.getCurrentNetworkView();
+		CyNetworkView origView = Cytoscape.getCurrentNetworkView();
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
 
 		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeList(),
@@ -93,14 +93,14 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 		if ( origView == null || origView == Cytoscape.getNullNetworkView() )
 			return;
 
-		GraphView newView = Cytoscape.getNetworkView(new_network.getSUID());
+		CyNetworkView newView = Cytoscape.getNetworkView(new_network.getSUID());
 		if ( newView != null || newView != Cytoscape.getNullNetworkView() ) {
 
         	// Use nodes as keys because they are less volatile than views...
 			for ( CyNode n : origView.getGraphPerspective().getNodeList() ) {
 
-				NodeView onv = origView.getNodeView(n);
-				NodeView nnv = newView.getNodeView(n);
+				View<CyNode> onv = origView.getNodeView(n);
+				View<CyNode> nnv = newView.getNodeView(n);
 
 				nnv.setXPosition(onv.getXPosition());
 				nnv.setYPosition(onv.getYPosition());
@@ -112,8 +112,8 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 
 			// set edge anchors and bends
 			for ( CyEdge ee : origView.getGraphPerspective().getEdgeList() ) {
-				EdgeView oev = origView.getEdgeView(ee);
-				EdgeView nev = newView.getEdgeView(ee);
+				View<CyEdge> oev = origView.getEdgeView(ee);
+				View<CyEdge> nev = newView.getEdgeView(ee);
 
 				nev.getBend().setHandles(oev.getBend().getHandles());
 				nev.getBend().setHandles(oev.getBend().getHandles());

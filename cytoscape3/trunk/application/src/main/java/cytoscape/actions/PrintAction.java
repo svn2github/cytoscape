@@ -44,7 +44,9 @@ package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.presentation.Presentation;
+import org.cytoscape.view.presentation.PresentationManager;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -64,15 +66,17 @@ public class PrintAction extends CytoscapeAction {
 	public final static String MENU_LABEL = "Print...";
 
 	private Properties props;
+	private PresentationManager presMgr;
 
 	/**
 	 * Creates a new PrintAction object.
 	 */
-	public PrintAction(CyNetworkManager netmgr,Properties props) {
+	public PrintAction(CyNetworkManager netmgr,Properties props,PresentationManager presMgr) {
 		super(MENU_LABEL,netmgr);
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK);
 		this.props = props;
+		this.presMgr = presMgr;
 	}
 
 	/**
@@ -81,17 +85,14 @@ public class PrintAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GraphView curr = netmgr.getCurrentNetworkView();
+		CyNetworkView curr = netmgr.getCurrentNetworkView();
+		Presentation pres = presMgr.getPresentation(curr);
+
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 
-		// Export text as shape/font based on user's setting
-		boolean exportTextAsShape = new Boolean( props.getProperty("exportTextAsShape"))
-															 .booleanValue();
-		// TODO NEED RENDERER
-		curr.setPrintingTextAsShape(exportTextAsShape);
+		pres.setProperties(props);
 
-		// TODO NEED RENDERER
-		printJob.setPrintable(curr.getPrintable());
+		printJob.setPrintable(pres.getPrintable());
 
 		if (printJob.printDialog()) {
 			try {
@@ -100,7 +101,7 @@ public class PrintAction extends CytoscapeAction {
 				exc.printStackTrace();
 			}
 		}
-	} // actionPerformed
+	} 
 
 	public void menuSelected(MenuEvent e) {
 		enableForNetworkAndView();

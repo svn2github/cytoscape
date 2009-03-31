@@ -48,6 +48,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.view.model.CyNetworkView;
 
 
 import javax.swing.event.MenuEvent;
@@ -76,8 +77,9 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent ev) {
-		CyNetwork network = netmgr.getCurrentNetwork();
-		Set<CyEdge> edgeSet = new HashSet<CyEdge>();
+		final CyNetwork network = netmgr.getCurrentNetwork();
+		final CyNetworkView v = netmgr.getNetworkView( network.getSUID() );
+		final Set<CyEdge> edgeSet = new HashSet<CyEdge>();
 
 		// Get the list of selected nodes
 		for (CyNode node: CyDataTableUtil.getNodesInState(network,"selected",true)) {
@@ -85,13 +87,11 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 			edgeSet.addAll( network.getAdjacentEdgeList(node,CyEdge.Type.ANY) );
 		}
 
-		for ( CyEdge e : edgeSet )
-			e.attrs().set("selected",true);
-
-		if (netmgr.getCurrentNetworkView() != null) {
-			netmgr.getCurrentNetworkView().updateView();
-		}
-	} // action performed
+		SelectUtils.setSelectedEdges(edgeSet,true,v);
+	
+		if ( v != null )
+			v.updateView();
+	} 
 
     public void menuSelected(MenuEvent e) {
         enableForNetwork();

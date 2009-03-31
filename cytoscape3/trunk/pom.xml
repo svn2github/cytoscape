@@ -195,7 +195,7 @@
 					<provision>
 						<param>--log=DEBUG</param>
 						<param>--platform=felix</param>
-						<param>--profiles=minimal</param>
+						<param>--profiles=log</param>
 						<param>--noDownloadFeedback</param>
 						<param>--vmOptions=-Xmx512M -Xbootclasspath/a:bundles/cytoscape-sun.jhall_1.0.0.jar -Dapple.laf.useScreenMenuBar=true -Dapple.awt.fileDialogForDirectories=true -Dapple.awt.graphics.UseQuartz=true -Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3</param>
 					</provision>
@@ -302,22 +302,14 @@
 	<modules>
 		<module>poms</module>
 		<module>provision</module>
-		<module>util.intr</module>
-		<module>render.immed</module>
-		<module>geom.spacial</module>
-		<module>render.stateful</module>
-		<module>geom.rtree</module>
-		<module>render.export</module>
-		<module>view</module>
 		<module>phoebe.dnd</module>
 		<module>layout</module>
 		<module>wrappers</module>
-		<module>vizmap</module>
 		<module>commons.cli</module>
 		<module>application</module>
+		<!--
 		<module>webservice</module>
 		<module>vizmap-gui</module>
-		<!--
 			<module>automatic.layout</module> <module>cpath</module>
 			<module>merge</module> <module>math.xform</module>
 			<module>psi.mi</module> <module>biopax</module>

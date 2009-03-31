@@ -11,6 +11,12 @@
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
 
+	<osgi:reference id="presentationFactoryServiceRef" 
+	      interface="org.cytoscape.view.presentation.PresentationFactory" />
+<!--
+	<osgi:reference id="presentationManagerServiceRef" 
+	      interface="org.cytoscape.view.presentation.PresentationManager" />
+-->
 	<osgi:reference id="tunableInterceptorServiceRef"
 		interface="org.cytoscape.work.TunableInterceptor" />
 
@@ -23,14 +29,14 @@
 	<osgi:reference id="cyNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
 
+	<osgi:reference id="cyNetworkViewFactoryServiceRef"
+		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
+
 	<osgi:reference id="cyRootNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory" />
 
-	
-
-	<osgi:reference id="graphViewFactoryServiceRef"
-		interface="org.cytoscape.view.GraphViewFactory">
-	</osgi:reference>
+	<osgi:reference id="vmmServiceRef"
+		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
 
 	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.layout.CyLayouts">
 	</osgi:reference>
@@ -76,8 +82,10 @@
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="newNetworkActionService" ref="newNetworkAction"
 		interface="cytoscape.util.CyAction" />
+		<!--
 	<osgi:service id="printActionService" ref="printAction"
 		interface="cytoscape.util.CyAction" />
+		-->
 	<osgi:service id="exitActionService" ref="exitAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="undoActionService" ref="undoAction"
@@ -126,16 +134,20 @@
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="deSelectAllEdgesActionService" ref="deSelectAllEdgesAction"
 		interface="cytoscape.util.CyAction" />
+		<!--
 	<osgi:service id="bendSelectedEdgesActionService" ref="bendSelectedEdgesAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="straightenSelectedEdgesActionService"
 		ref="straightenSelectedEdgesAction" interface="cytoscape.util.CyAction" />
+		-->
 	<osgi:service id="selectAllActionService" ref="selectAllAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="deselectAllActionService" ref="deselectAllAction"
 		interface="cytoscape.util.CyAction" />
+		<!--
 	<osgi:service id="showGraphicsDetailsActionService" ref="showGraphicsDetailsAction"
 		interface="cytoscape.util.CyAction" />
+		-->
 	<osgi:service id="setVisualPropertiesActionService" ref="setVisualPropertiesAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="settingsActionService" ref="settingsAction"

@@ -44,8 +44,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -131,8 +131,8 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		} else {
 
 			// No special menus, so make sure we layout all selected
-			List<GraphView> views = netmgr.getSelectedNetworkViews();
-			for ( GraphView view: views ) {
+			List<CyNetworkView> views = netmgr.getSelectedNetworkViews();
+			for ( CyNetworkView view: views ) {
 				layout.setSelectedOnly(false);
 				layout.setLayoutAttribute(null);
 				tm.execute( new LayoutTask(layout, view) );
@@ -206,20 +206,17 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 
 		public void actionPerformed(ActionEvent e) {
 
-			List<GraphView> views = netmgr.getSelectedNetworkViews();
+			List<CyNetworkView> views = netmgr.getSelectedNetworkViews();
 
-			for ( GraphView netView : views ) {
+			for ( CyNetworkView netView : views ) {
 
 				if (layout.supportsSelectedOnly()) {
 					layout.setSelectedOnly(selectedOnly);
 
 					if (selectedOnly && (selectedNodes.size() > 0)) {
 						// Lock all unselected nodes
-						Iterator nodeViews = netView.getNodeViewsIterator();
-
-						while (nodeViews.hasNext()) {
-							NodeView nv = (NodeView) nodeViews.next();
-							CyNode node = nv.getNode();
+						for ( View<CyNode> nv : netView.getNodeViews() ) {
+							CyNode node = nv.getSource();
 	
 							if (!selectedNodes.contains(node))
 								layout.lockNode(nv);

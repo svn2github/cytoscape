@@ -40,17 +40,17 @@ import cytoscape.CyNetworkManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 
 import cytoscape.xtask.CreateNetworkViewTaskFactory;
 
 public class CreateNetworkViewTaskFactoryImpl implements TaskFactory, CreateNetworkViewTaskFactory {
 
 	private final CyNetworkManager netmgr;
-	private final GraphViewFactory gvf;
+	private final CyNetworkViewFactory gvf;
 
-	CreateNetworkViewTaskFactoryImpl(GraphViewFactory gvf, CyNetworkManager netmgr) {
+	CreateNetworkViewTaskFactoryImpl(CyNetworkViewFactory gvf, CyNetworkManager netmgr) {
 		this.gvf = gvf;
 		this.netmgr = netmgr;
 	}

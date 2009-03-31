@@ -33,104 +33,119 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.layout.internal.algorithms;
 
-import java.util.Iterator;
-import java.util.List;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.NodeView;
-import org.cytoscape.work.Tunable;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.ViewColumn;
+import org.cytoscape.view.presentation.twod.TwoDVisualProperties;
+
 import org.cytoscape.work.UndoSupport;
+import org.cytoscape.work.Tunable;
+
+//import javax.swing.*;
+//import java.awt.GridLayout;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
 
 /**
- * The GridNodeLayout provides a very simple layout, suitable as the default
- * layout for Cytoscape data readers.
+ * The GridNodeLayout provides a very simple layout, suitable as
+ * the default layout for Cytoscape data readers.
  */
 public class GridNodeLayout extends AbstractLayout {
 
-	// private ModuleProperties layoutProperties;
+//	private ModuleProperties layoutProperties;
 
-	@Tunable(description = "Vertical spacing between nodes")
-	public double nodeVerticalSpacing = 40.0;
+	@Tunable(description="Vertical spacing between nodes")
+	public double nodeVerticalSpacing = 40.0; 
 
-	@Tunable(description = "Horizontal spacing between nodes")
-	public double nodeHorizontalSpacing = 80.0;
+	@Tunable(description="Horizontal spacing between nodes")
+	public double nodeHorizontalSpacing = 80.0; 
 
 	/**
 	 * Creates a new GridNodeLayout object.
 	 */
 	public GridNodeLayout(UndoSupport un) {
 		super(un);
-		// initProps();
+//		initProps();
 	}
 
-	/*
-	 * 
-	 * private void initProps() { layoutProperties =
-	 * TunableFactory.getModuleProperties(getName(),"layout");
-	 * layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing",
-	 * "Horizontal spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
-	 * layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing",
-	 * "Vertical spacing between nodes", Tunable.DOUBLE, new Double(80.0))); }
-	 * 
-	 * public void updateSettings() { updateSettings(false); }
-	 * 
-	 * public void updateSettings(boolean force) {
-	 * layoutProperties.updateValues();
-	 * 
-	 * Tunable t = layoutProperties.get("nodeHorizontalSpacing");
-	 * 
-	 * if ((t != null) && (t.valueChanged() || force)) nodeHorizontalSpacing =
-	 * ((Double) t.getValue()).doubleValue();
-	 * 
-	 * t = layoutProperties.get("nodeVerticalSpacing");
-	 * 
-	 * if ((t != null) && (t.valueChanged() || force)) nodeVerticalSpacing =
-	 * ((Double) t.getValue()).doubleValue(); }
-	 * 
-	 * public void revertSettings() { layoutProperties.revertProperties(); }
-	 * 
-	 * public JPanel getSettingsPanel() { JPanel panel = new JPanel(new
-	 * GridLayout(0, 1)); panel.add(layoutProperties.getTunablePanel());
-	 * 
-	 * return panel; }
-	 */
+/*
+
+	private void initProps() {
+		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
+        layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing", "Horizontal spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
+        layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
+	}
+
+    public void updateSettings() {
+        updateSettings(false);
+    }
+
+    public void updateSettings(boolean force) {
+        layoutProperties.updateValues();
+
+        Tunable t = layoutProperties.get("nodeHorizontalSpacing");
+
+        if ((t != null) && (t.valueChanged() || force))
+            nodeHorizontalSpacing = ((Double) t.getValue()).doubleValue();
+
+        t = layoutProperties.get("nodeVerticalSpacing");
+
+        if ((t != null) && (t.valueChanged() || force))
+            nodeVerticalSpacing = ((Double) t.getValue()).doubleValue();
+	}
+
+    public void revertSettings() {
+        layoutProperties.revertProperties();
+    }
+
+    public JPanel getSettingsPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.add(layoutProperties.getTunablePanel());
+
+       return panel;
+	}
+*/
 
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
 	 */
 	public String getName() {
 		return CyLayouts.DEFAULT_LAYOUT_NAME;
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
 	 */
 	public String toString() {
 		return "Grid Layout";
 	}
 
-	// We do support selected only
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
+	 * We do support selected only
+	 *
+	 * @return true 
 	 */
 	public boolean supportsSelectedOnly() {
 		return true;
 	}
 
+
 	/**
-	 * DOCUMENT ME!
+	 *  DOCUMENT ME!
 	 */
 	public void construct() {
 		// This creates the default square layout.
@@ -140,23 +155,31 @@ public class GridNodeLayout extends AbstractLayout {
 		double initialY = 0.0d;
 		int columns;
 
-		NodeView nView = null;
+		// TODO figure out where these come from!
+		VisualProperty<Double> xLoc = TwoDVisualProperties.NODE_X_LOCATION;
+		VisualProperty<Double> yLoc = TwoDVisualProperties.NODE_Y_LOCATION;
+
+		// needed for approach 2 and 3
+		ViewColumn<Double> xColumn = networkView.getColumn(xLoc);
+		ViewColumn<Double> yColumn = networkView.getColumn(yLoc);
+
+		// needed for approach 3
+		Map<View<CyNode>,Double> xMap = new HashMap<View<CyNode>,Double>();
+		Map<View<CyNode>,Double> yMap = new HashMap<View<CyNode>,Double>();
 
 		// Selected only?
 		if (selectedOnly) {
 			// Yes, our size and starting points need to be different
-			int nodeCount = networkView.nodeCount() - staticNodes.size();
+			int nodeCount = networkView.getSource().getNodeCount() - staticNodes.size();
 			columns = (int) Math.sqrt(nodeCount);
 			// Calculate our starting point as the geographical center of the
 			// selected nodes.
-			Iterator<NodeView> nodeViews = networkView.getNodeViewsIterator();
-
-			while (nodeViews.hasNext()) {
-				nView = nodeViews.next();
-
+			for ( View<CyNode> nView : networkView.getNodeViews() ) {
 				if (!isLocked(nView)) {
-					initialX += (nView.getXPosition() / nodeCount);
-					initialY += (nView.getYPosition() / nodeCount);
+					//initialX += (nView.getVisualProperty(xLoc) / nodeCount);
+					initialX += (xColumn.getValue(nView) / nodeCount);
+					//initialY += (nView.getVisualProperty(yLoc) / nodeCount);
+					initialY += (yColumn.getValue(nView) / nodeCount);
 				}
 			}
 
@@ -166,37 +189,51 @@ public class GridNodeLayout extends AbstractLayout {
 			initialY = initialY - ((nodeVerticalSpacing * (columns - 1)) / 2);
 			currX = initialX;
 			currY = initialY;
-		} else
-			columns = (int) Math.sqrt(networkView.nodeCount());
+		} else {
+			columns = (int) Math.sqrt(networkView.getSource().getNodeCount());
+		}
 
-		Iterator<NodeView> nodeViews = networkView.getNodeViewsIterator();
 		int count = 0;
 
 		List<CyEdge> edgeList;
-		EdgeView ev;
-		while (nodeViews.hasNext()) {
-			nView = nodeViews.next();
+		for ( View<CyNode> nView : networkView.getNodeViews() ) {
+			edgeList = network.getAdjacentEdgeList(nView.getSource(),CyEdge.Type.ANY);
+// TODO
+//			for (CyEdge edge: edgeList) {
+//				networkView.getCyEdgeView(edge).clearBends(); 
+//			}
 
-			// TODO: is this necessary?
-			edgeList = network.getAdjacentEdgeList(nView.getNode(),
-					CyEdge.Type.ANY);
-			for (CyEdge edge : edgeList) {
-				ev = networkView.getEdgeView(edge);
-				ev.clearBends();
+			if (isLocked(nView)) {
+				continue;
 			}
 
-			if (isLocked(nView))
-				continue;
+			//nView.setOffset(currX, currY);
 
-			nView.setOffset(currX, currY);
+			// approach 1
+			//nView.setVisualProperty(xLoc,currX);
+			//nView.setVisualProperty(yLoc,currY);
+
+			// approach 2
+			//xColumn.setValue(nView,currX);
+			//yColumn.setValue(nView,currY);
+
+			// approach 3
+			xMap.put(nView,currX);
+			yMap.put(nView,currY);
+
 			count++;
 
 			if (count == columns) {
 				count = 0;
 				currX = initialX;
 				currY += nodeVerticalSpacing;
-			} else
+			} else {
 				currX += nodeHorizontalSpacing;
+			}
 		}
+
+		// approach 3 cont.
+		xColumn.setValues(xMap,null);
+		yColumn.setValues(yMap,null);
 	}
 }

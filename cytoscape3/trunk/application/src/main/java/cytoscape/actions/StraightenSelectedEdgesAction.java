@@ -44,8 +44,9 @@ package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.model.CyEdge;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -69,19 +70,14 @@ public class StraightenSelectedEdgesAction extends CytoscapeAction {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void actionPerformed(ActionEvent e) {
-		GraphView view = netmgr.getCurrentNetworkView();
-		final int[] selectedEdges = view.getSelectedEdgeIndices();
-
-		if (selectedEdges != null) {
-			// TODO NEED RENDERER
-			for (int i = 0; i < selectedEdges.length; i++) {
-				EdgeView ev = view.getEdgeView(selectedEdges[i]);
-				ev.setLineType(EdgeView.STRAIGHT_LINES);
-			}
-
-			view.updateView();
-		}
+	public void actionPerformed(ActionEvent ex) {
+//		CyNetworkView view = netmgr.getCurrentNetworkView();
+//		for ( CyEdge e : view.getSelectedEdges() ) {
+//			View<CyEdge> ev = view.getEdgeView(e);
+//			ev.setLineType(EdgeView.STRAIGHT_LINES);
+//		}
+//
+//		view.updateView();
 	}
 
     public void menuSelected(MenuEvent e) {

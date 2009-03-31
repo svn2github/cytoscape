@@ -1,5 +1,6 @@
+
 /*
-  File: ColorParser.java
+  File: SelectUtils.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,75 +36,35 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.vizmap.parsers;
-
-import org.cytoscape.vizmap.ValueParser;
-
-import java.awt.*;
-import java.util.StringTokenizer;
+package cytoscape.actions;
 
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.CyNetworkView;
 
-/**
- * Parses a String into a Color object.
- */
-public class ColorParser
-    implements ValueParser {
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Object parseStringValue(String value) {
-        return parseColor(value);
-    }
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Color parseColor(String value) {
-		// Start by seeing if this is a hex representation
-		if (value.startsWith("#")) {
-			try {
-				Color c = Color.decode(value);
-				return c;
-			} catch (NumberFormatException e) {
-				return Color.black;
-			}
+import java.util.Collection;
+
+
+abstract class SelectUtils {
+
+	static void setSelectedNodes(Collection<CyNode> nodes, boolean select, CyNetworkView view) {
+		for ( CyNode n : nodes ) {
+			n.attrs().set("selected",select);
+			if ( view != null )
+				view.getNodeView(n).setVisualProperty(NODE_SELECTED,select);
 		}
+	}
 
-		StringTokenizer strtok = new StringTokenizer(value, ",");
-
-		if (strtok.countTokens() != 3) {
-			return Color.black;
+	static void setSelectedEdges(Collection<CyEdge> edges, boolean select, CyNetworkView view) {
+		for ( CyEdge e : edges ) {
+			e.attrs().set("selected",select);
+			if ( view != null )
+				view.getEdgeView(e).setVisualProperty(EDGE_SELECTED,select);
 		}
-
-		String red = strtok.nextToken().trim();
-		String green = strtok.nextToken().trim();
-		String blue = strtok.nextToken().trim();
-
-		try {
-			int r = Integer.parseInt(red);
-			int g = Integer.parseInt(green);
-			int b = Integer.parseInt(blue);
-
-			return new Color(r, g, b);
-		} catch (NumberFormatException e) {
-			return Color.black;
-		}
-	} 
-
-	public static String getRGBText(Color color) {
-		Integer red = Integer.valueOf(color.getRed());
-		Integer green = Integer.valueOf(color.getGreen());
-		Integer blue = Integer.valueOf(color.getBlue());
-
-		return new String(red.toString() + "," + green.toString() + "," + blue.toString());
-	} 
+	}
 }

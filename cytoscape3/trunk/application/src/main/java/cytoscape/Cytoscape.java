@@ -44,8 +44,6 @@ import java.beans.PropertyChangeSupport;
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 
-import org.cytoscape.view.GraphView;
-
 import cytoscape.view.CySwingApplication;
 
 
@@ -270,12 +268,12 @@ public abstract class Cytoscape {
 	/**
 	 * This is a temporary utility method and will eventually be refactored away.
 	 */
-	public static void redrawGraph(GraphView view) {
-		if(view == null)
-			return;
-		
+//	public static void redrawGraph(GraphView view) {
+//		if(view == null)
+//			return;
+//		
 //		VMMFactory.getVisualMappingManager().setNetworkView(view);
 //		VMMFactory.getVisualMappingManager().applyAppearances();
-		view.updateView();
-	}
+//		view.updateView();
+//	}
 }

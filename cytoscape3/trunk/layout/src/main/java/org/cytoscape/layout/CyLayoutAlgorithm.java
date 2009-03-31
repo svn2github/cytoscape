@@ -37,8 +37,9 @@
 package org.cytoscape.layout;
 
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.model.CyNode;
 
 import javax.swing.*;
 import java.util.List;
@@ -52,18 +53,18 @@ public interface CyLayoutAlgorithm {
 	/**
 	 * This method performs the layout on the current network.
 	 *
-	 * @param networkView the GraphView on which to perform the layout
+	 * @param networkView the CyNetworkView on which to perform the layout
 	 */
-	public void doLayout(GraphView networkView);
+	public void doLayout(CyNetworkView networkView);
 
 	/**
 	 * This method performs the layout on the current network, but assumes
 	 * that the layout is part of an existing monitored task
 	 *
-	 * @param networkView the GraphView on which to perform the layout
+	 * @param networkView the CyNetworkView on which to perform the layout
 	 * @param monitor the task monitor to use
 	 */
-	public void doLayout(GraphView networkView, TaskMonitor monitor);
+	public void doLayout(CyNetworkView networkView, TaskMonitor monitor);
 
 	/**
 	 * Tests to see if this layout supports doing a layout on a subset of the
@@ -130,7 +131,7 @@ public interface CyLayoutAlgorithm {
 	 *
 	 * @param nodes the array of nodes to lock
 	 */
-	public void lockNodes(NodeView[] nodes);
+	public void lockNodes(View<CyNode>[] nodes);
 
 	/**
 	 * Lock this node.  Locking a node prevents the node
@@ -138,7 +139,7 @@ public interface CyLayoutAlgorithm {
 	 *
 	 * @param node the node to lock
 	 */
-	public void lockNode(NodeView v);
+	public void lockNode(View<CyNode> v);
 
 	/**
 	 * Unlock this node.  Unlocking a node allows the node
@@ -146,7 +147,7 @@ public interface CyLayoutAlgorithm {
 	 *
 	 * @param v the node to unlock
 	 */
-	public void unlockNode(NodeView v);
+	public void unlockNode(View<CyNode> v);
 
 	/**
 	 * Unlock all of the nodes.  Unlocking a node allows the node

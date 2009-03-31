@@ -46,6 +46,8 @@ import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -75,13 +77,20 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork cyNetwork = netmgr.getCurrentNetwork();
-		for ( CyNode n : cyNetwork.getNodeList() ) 
-			if ( n.attrs().get("selected",Boolean.class) == true )
+		CyNetworkView v = netmgr.getNetworkView( cyNetwork.getSUID() );
+		for ( CyNode n : cyNetwork.getNodeList() )  {
+			if ( n.attrs().get("selected",Boolean.class) ) {
 				 n.attrs().set("selected",false);
-			else
+				 if ( v != null )
+				 	v.getNodeView(n).setVisualProperty(NODE_SELECTED,false);
+			} else {
 				 n.attrs().set("selected",true);
-
-		netmgr.getCurrentNetworkView().updateView();
+				 if ( v != null )
+				 	v.getNodeView(n).setVisualProperty(NODE_SELECTED,true);
+			}
+		}
+		if ( v != null )
+			v.updateView();
 	}
 
     public void menuSelected(MenuEvent e) {

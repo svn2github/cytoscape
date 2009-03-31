@@ -45,8 +45,14 @@ package cytoscape.actions;
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.view.model.CyNetworkView;
+
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 
 //-------------------------------------------------------------------------
@@ -70,7 +76,14 @@ public class HideSelectedNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GinyUtils.hideSelectedNodes(netmgr.getCurrentNetworkView());
+        final CyNetwork curr = netmgr.getCurrentNetwork();
+        final CyNetworkView view = netmgr.getNetworkView( curr.getSUID() );
+        final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(curr,"selected",true);
+
+        HideUtils.setVisibleNodes( selectedNodes, false, view );
+
+		if ( view != null )
+			view.updateView();
 	}
 
     public void menuSelected(MenuEvent e) {

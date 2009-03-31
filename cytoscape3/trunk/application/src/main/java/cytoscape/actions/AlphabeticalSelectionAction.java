@@ -49,7 +49,7 @@ import cytoscape.data.Semantics;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -154,7 +154,7 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 	 * concatenated.
 	 */
 	private boolean selectNodesStartingWith(CyNetwork network, String key,
-	                                              GraphView networkView) {
+	                                              CyNetworkView networkView) {
 		if ((network == null) || (key == null) || (networkView == null)) {
 			return false;
 		}
@@ -203,11 +203,9 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 		}
 
 		if (nodeFound > 0) {
-			for ( CyNode n : matchedNodes )
-				n.attrs().set("selected",true);
+			SelectUtils.setSelectedNodes( matchedNodes, true, networkView );
 		}
 
-		//System.out.println("node found = " + nodeFound);
 		return found;
 	}
 }

@@ -39,7 +39,7 @@ package cytoscape.actions;
 import cytoscape.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -67,12 +67,12 @@ public class DestroyNetworkViewAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// Get the list first, then iterate. If you do this:
-		//     for ( GraphView cv : netmgr.getSelectedNetworkViews() )
+		//     for ( CyNetworkView cv : netmgr.getSelectedNetworkViews() )
 		// you will notice that the list of selected networks changes
 		// as you iterate through it.  This is due to events getting fired
 		// as a result of the deletion.
-		java.util.List<GraphView> l = netmgr.getSelectedNetworkViews();
-		for ( GraphView cv : l )
+		java.util.List<CyNetworkView> l = netmgr.getSelectedNetworkViews();
+		for ( CyNetworkView cv : l )
 			netmgr.destroyNetworkView(cv);
 	}
 

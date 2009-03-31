@@ -38,6 +38,9 @@ package cytoscape.dialogs.internal;
 
 import org.cytoscape.event.CyEventHelper;
 
+import org.cytoscape.view.vizmap.events.SaveVizmapPropsEvent;
+import org.cytoscape.view.vizmap.events.SaveVizmapPropsListener;
+
 import cytoscape.events.PreferencesUpdatedEvent;
 import cytoscape.events.PreferencesUpdatedListener;
 import cytoscape.dialogs.PreferencesDialog;

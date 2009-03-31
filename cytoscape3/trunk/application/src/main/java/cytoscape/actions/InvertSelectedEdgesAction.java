@@ -46,6 +46,8 @@ import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -74,12 +76,20 @@ public class InvertSelectedEdgesAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent ae) {
 		final CyNetwork cyNetwork = netmgr.getCurrentNetwork();
-		for ( CyEdge e : cyNetwork.getEdgeList() )
-			if ( e.attrs().get("selected",Boolean.class) == true )
+		final CyNetworkView v = netmgr.getNetworkView( cyNetwork.getSUID() );
+		for ( CyEdge e : cyNetwork.getEdgeList() ) {
+			if ( e.attrs().get("selected",Boolean.class) ) {
 				e.attrs().set("selected",false);
-			else 
+				if ( v != null )
+					v.getEdgeView(e).setVisualProperty(EDGE_SELECTED,false);
+			} else {
 				e.attrs().set("selected",true);
-		netmgr.getCurrentNetworkView().updateView();
+				if ( v != null )
+					v.getEdgeView(e).setVisualProperty(EDGE_SELECTED,true);
+			}
+		}
+		if ( v != null )
+			v.updateView();
 	}
 
 	public void menuSelected(MenuEvent e) {

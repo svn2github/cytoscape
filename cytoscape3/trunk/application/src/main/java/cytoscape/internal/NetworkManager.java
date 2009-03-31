@@ -42,7 +42,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import java.util.LinkedList;
 import java.util.ArrayList;
@@ -58,21 +58,21 @@ import cytoscape.events.*;
 
 public class NetworkManager implements CyNetworkManager {
 
-	private final Map<Long,GraphView> networkViewMap;
+	private final Map<Long,CyNetworkView> networkViewMap;
 	private final Map<Long,CyNetwork> networkMap;
 
-	private final List<GraphView> selectedNetworkViews; 
+	private final List<CyNetworkView> selectedNetworkViews; 
 	private final List<CyNetwork> selectedNetworks;
 
 	private final CyEventHelper eh;
 
 	private CyNetwork currentNetwork;
-	private GraphView currentNetworkView;
+	private CyNetworkView currentNetworkView;
 
 	NetworkManager(final CyEventHelper eh) {
 		networkMap = new HashMap<Long,CyNetwork>();
-		networkViewMap = new HashMap<Long,GraphView>();
-		selectedNetworkViews = new LinkedList<GraphView>();
+		networkViewMap = new HashMap<Long,CyNetworkView>();
+		selectedNetworkViews = new LinkedList<CyNetworkView>();
 		selectedNetworks = new LinkedList<CyNetwork>();
 		currentNetwork = null;
 		currentNetworkView = null;
@@ -106,15 +106,15 @@ public class NetworkManager implements CyNetworkManager {
 		return new HashSet<CyNetwork>(networkMap.values());
 	}
 
-	public synchronized Set<GraphView> getNetworkViewSet() {
-		return new HashSet<GraphView>(networkViewMap.values());
+	public synchronized Set<CyNetworkView> getNetworkViewSet() {
+		return new HashSet<CyNetworkView>(networkViewMap.values());
 	}
 
 	public synchronized CyNetwork getNetwork(long id) {
 		return networkMap.get(id);
 	}
 
-	public synchronized GraphView getNetworkView(long network_id) {
+	public synchronized CyNetworkView getNetworkView(long network_id) {
 		return networkViewMap.get(network_id);
 	}
 
@@ -126,7 +126,7 @@ public class NetworkManager implements CyNetworkManager {
 		return networkViewMap.containsKey(network_id);
 	}
 
-	public synchronized GraphView getCurrentNetworkView() {
+	public synchronized CyNetworkView getCurrentNetworkView() {
 		return currentNetworkView;
 	}
 
@@ -148,13 +148,13 @@ public class NetworkManager implements CyNetworkManager {
 		}
 
 		eh.fireSynchronousEvent( new SetCurrentNetworkViewEvent() {
-				public GraphView getNetworkView() { return currentNetworkView; }
+				public CyNetworkView getNetworkView() { return currentNetworkView; }
 				public CyNetworkManager getSource() { return NetworkManager.this; }
 			}, SetCurrentNetworkViewListener.class );
 	}
 
-    public synchronized List<GraphView> getSelectedNetworkViews() {
-        return new ArrayList<GraphView>(selectedNetworkViews);
+    public synchronized List<CyNetworkView> getSelectedNetworkViews() {
+        return new ArrayList<CyNetworkView>(selectedNetworkViews);
     }
 
     public void setSelectedNetworkViews(final List<Long> viewIDs) {
@@ -167,13 +167,13 @@ public class NetworkManager implements CyNetworkManager {
 			selectedNetworkViews.clear();
 
 			for (Long id : viewIDs) {
-				GraphView nview = networkViewMap.get(id);
+				CyNetworkView nview = networkViewMap.get(id);
 
 				if (nview != null) 
 					selectedNetworkViews.add(nview);
 			}
 
-			GraphView cv = getCurrentNetworkView();
+			CyNetworkView cv = getCurrentNetworkView();
 
 			if (!selectedNetworkViews.contains(cv)) {
 				selectedNetworkViews.add(cv);
@@ -181,7 +181,7 @@ public class NetworkManager implements CyNetworkManager {
 		}
 
 		eh.fireSynchronousEvent( new SetSelectedNetworkViewsEvent() {
-				public List<GraphView> getNetworkViews() { return new ArrayList<GraphView>(selectedNetworkViews); }
+				public List<CyNetworkView> getNetworkViews() { return new ArrayList<CyNetworkView>(selectedNetworkViews); }
 				public CyNetworkManager getSource() { return NetworkManager.this; }
 			} , SetSelectedNetworkViewsListener.class );
 	}
@@ -270,21 +270,21 @@ public class NetworkManager implements CyNetworkManager {
 			}, NetworkDestroyedListener.class );
     }
 
-	public void destroyNetworkView(GraphView view) {
+	public void destroyNetworkView(CyNetworkView view) {
 
 		if ( view == null )
 			throw new NullPointerException("view is null");
 
-		final Long viewID = view.getNetwork().getSUID(); 
+		final Long viewID = view.getSource().getSUID(); 
 
 		synchronized (this) {
 			if ( !networkViewMap.containsKey( viewID ) )
 				throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
 
 			// TODO firing an event from within a lock!!!!
-			final GraphView toDestroy = view;
+			final CyNetworkView toDestroy = view;
 			eh.fireSynchronousEvent( new NetworkViewAboutToBeDestroyedEvent() {
-					public GraphView getNetworkView() { return toDestroy; }
+					public CyNetworkView getNetworkView() { return toDestroy; }
 					public CyNetworkManager getSource() { return NetworkManager.this; } 
 				}, NetworkViewAboutToBeDestroyedListener.class );
 
@@ -296,7 +296,7 @@ public class NetworkManager implements CyNetworkManager {
 				else {
 					// depending on which randomly chosen currentNetwork we get, 
 					// we may or may not have a view for it.
-					GraphView newCurr = networkViewMap.get(currentNetwork.getSUID());
+					CyNetworkView newCurr = networkViewMap.get(currentNetwork.getSUID());
 
 					if (newCurr != null)
 						currentNetworkView = newCurr; 
@@ -330,11 +330,11 @@ public class NetworkManager implements CyNetworkManager {
 			}, NetworkAddedListener.class );
 	}
 
-	public void addNetworkView( final GraphView view ) {
+	public void addNetworkView( final CyNetworkView view ) {
 		if ( view == null )
 			throw new NullPointerException("view is null");
 
-		CyNetwork network = view.getNetwork();
+		CyNetwork network = view.getSource();
 		long networkId = network.getSUID();
 
 		synchronized (this) {
@@ -345,7 +345,7 @@ public class NetworkManager implements CyNetworkManager {
 		}
 
 		eh.fireSynchronousEvent( new NetworkViewAddedEvent() {
-				public GraphView getNetworkView() { return view; }
+				public CyNetworkView getNetworkView() { return view; }
 				public CyNetworkManager getSource() { return NetworkManager.this; } 
 			}, NetworkViewAddedListener.class );
 

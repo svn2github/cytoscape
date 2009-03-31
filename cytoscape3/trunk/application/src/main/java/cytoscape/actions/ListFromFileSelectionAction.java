@@ -131,7 +131,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 				}
 
 				if (select) {
-					//GraphView view = netmgr.getCurrentNetworkView();
+					//CyNetworkView view = netmgr.getCurrentNetworkView();
 					//NodeView nv = view.getNodeView(node.getRootGraphIndex());
 					//nv.setSelected(true);
 					node.attrs().set("selected",true);

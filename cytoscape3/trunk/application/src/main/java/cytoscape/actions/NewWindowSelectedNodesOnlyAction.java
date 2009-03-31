@@ -54,8 +54,12 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.View;
+
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 import java.awt.event.ActionEvent;
 
@@ -66,6 +70,8 @@ import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
+
 
 /**
  *
@@ -73,7 +79,7 @@ import javax.swing.event.MenuEvent;
 public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870134859L;
 	private final CyRootNetworkFactory cyroot;
-	private final GraphViewFactory gvf;
+	private final CyNetworkViewFactory gvf;
 	
 	// TODO: use new VMM
 //	private VisualMappingManager vmm;
@@ -83,7 +89,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
 	 */
-	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r, final GraphViewFactory gvf, CyNetworkManager netmgr, CyNetworkNaming cyNetworkNaming) {
+	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r, final CyNetworkViewFactory gvf, CyNetworkManager netmgr, CyNetworkNaming cyNetworkNaming) {
 		super("From selected nodes, all edges",netmgr);
 		setPreferredMenu("File.New.Network");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);
@@ -108,7 +114,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		if (current_network == null)
 			return;
 
-		GraphView current_network_view = null;
+		CyNetworkView current_network_view = null;
 
 		if (netmgr.viewExists(current_network.getSUID())) {
 			current_network_view = netmgr.getNetworkView(current_network.getSUID());
@@ -128,7 +134,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		                                 .addSubNetwork(nodes, new ArrayList<CyEdge>(edges));
 		new_network.attrs().set("name", cyNetworkNaming.getSuggestedSubnetworkTitle(current_network,netmgr));
 
-		GraphView new_view = gvf.createGraphView(new_network);
+		CyNetworkView new_view = gvf.getNetworkViewFor(new_network);
 
 		if (new_view == null) {
 			return;
@@ -139,24 +145,19 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		// keep the node positions
 		if (current_network_view != null) {
 			for (CyNode node : new_network.getNodeList()) {
-				new_view.getNodeView(node)
-				        .setOffset(current_network_view.getNodeView(node).getXPosition(),
-				                   current_network_view.getNodeView(node).getYPosition());
+				View<CyNode> nv = new_view.getNodeView(node);
+				nv.setVisualProperty(NODE_X_LOCATION, current_network_view.getNodeView(node).getVisualProperty(NODE_X_LOCATION));
+				nv.setVisualProperty(NODE_Y_LOCATION, current_network_view.getNodeView(node).getVisualProperty(NODE_Y_LOCATION));
 			}
 
 			// TODO NEED RENDERER
 			new_view.fitContent();
 
 			// Set visual style
-//			VisualStyle newVS = vmm.getVisualStyleForView(current_network_view);
-//
-//			if (newVS != null) {
-//				vsName = newVS.getName();
-//				vmm.setVisualStyleForView(new_view, newVS);
-//			}
+			VisualStyle newVS = vmm.getVisualStyle(current_network_view);
+			if (newVS != null) 
+				vmm.setVisualStyle(newVS,new_view);
 		}
-
-		//vmm.setVisualStyle(vsName);
 	}
 
 	/**

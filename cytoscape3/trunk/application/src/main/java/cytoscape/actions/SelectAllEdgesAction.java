@@ -45,6 +45,8 @@ package cytoscape.actions;
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -69,12 +71,13 @@ public class SelectAllEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent ev) {
-		for ( CyEdge e : netmgr.getCurrentNetwork().getEdgeList() )
-			e.attrs().set("selected",true);
+        final CyNetwork n = netmgr.getCurrentNetwork();
+        final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
+        SelectUtils.setSelectedEdges( n.getEdgeList(), true, v);
 
-		if (netmgr.getCurrentNetworkView() != null) {
-			netmgr.getCurrentNetworkView().updateView();
-		}
+        if ( v != null )
+            v.updateView();
+
 	} 
 
     public void menuSelected(MenuEvent e) {

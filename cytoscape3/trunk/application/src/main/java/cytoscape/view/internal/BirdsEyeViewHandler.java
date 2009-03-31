@@ -46,11 +46,13 @@ import cytoscape.events.SetCurrentNetworkViewEvent;
 import cytoscape.events.NetworkViewDestroyedListener;
 import cytoscape.events.NetworkViewDestroyedEvent;
 
-import org.cytoscape.view.BirdsEyeView;
+import org.cytoscape.view.presentation.NavigationPresentation;
+import org.cytoscape.view.presentation.PresentationFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentListener;
 
 /**
@@ -62,26 +64,27 @@ class BirdsEyeViewHandler implements
 	SetCurrentNetworkViewListener,
 	NetworkViewDestroyedListener
 	{
-	final BirdsEyeView bev;
+	final NavigationPresentation bev;
 	FrameListener frameListener = new FrameListener();
 	final NetworkViewManager viewmgr;
 	final CyNetworkManager netmgr;
+	final PresentationFactory prefact;
+	final Component bevHolder; 
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
 	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr) {
+	BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, final PresentationFactory prefact) {
 		this.viewmgr = viewmgr;
 		this.netmgr = netmgr;
+		this.prefact = prefact;
 		JDesktopPane desktopPane = viewmgr.getDesktopPane();
 
-		bev = new BirdsEyeView(netmgr.getCurrentNetworkView(), desktopPane) {
-				private final static long serialVersionUID = 1213748836623570L;
-				public Dimension getMinimumSize() {
-					return new Dimension(180, 180);
-				}
-			};
+		bevHolder = new JPanel();
+
+		bev = prefact.addNavigationPresentation(bevHolder, desktopPane);
+		bev.changeView(netmgr.getCurrentNetworkView());
  
  		desktopPane.addComponentListener(new DesktopListener());
 	}
@@ -130,34 +133,20 @@ class BirdsEyeViewHandler implements
 	 * @return The component that contains the birds eye view.
 	 */
 	Component getBirdsEyeView() {
-		return bev;
+		return bevHolder;
 	}
 
 	/**
 	 * Repaint a JInternalFrame whenever it is moved.
 	 */
-	class FrameListener implements ComponentListener
-	{
-		public void componentHidden(ComponentEvent e) {}
-		public void componentMoved(ComponentEvent e)
-		{
-			bev.repaint();
-		}
-		public void componentResized(ComponentEvent e) {}
-		public void componentShown(java.awt.event.ComponentEvent e) {}
+	class FrameListener extends ComponentAdapter {
+		public void componentMoved(ComponentEvent e) { bevHolder.repaint(); }
 	}
 
 	/**
 	 * Repaint the JDesktopPane whenever its size has changed.
 	 */
-	class DesktopListener implements ComponentListener
-	{
-		public void componentHidden(ComponentEvent e) {}
-		public void componentMoved(ComponentEvent e) {}
-		public void componentResized(ComponentEvent e)
-		{
-			bev.repaint();
-		}
-		public void componentShown(java.awt.event.ComponentEvent e) {}
+	class DesktopListener extends ComponentAdapter {
+		public void componentResized(ComponentEvent e) { bevHolder.repaint(); }
 	}
 }

@@ -49,7 +49,7 @@
 
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>vizmap</artifactId>
+			<artifactId>vizmap-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 

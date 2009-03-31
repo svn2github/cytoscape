@@ -44,7 +44,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.UndoSupport;
 
 import cytoscape.Cytoscape;
@@ -103,12 +103,12 @@ public class DeleteAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent ae) {
 
-		GraphView myView = netmgr.getCurrentNetworkView();
+		CyNetworkView myView = netmgr.getCurrentNetworkView();
 
 		// delete from the base CySubNetwork so that our changes can be undone 
-		CySubNetwork cyNet = cyRootNetworkFactory.convert( myView.getNetwork() ).getBaseNetwork();
-		List<CyEdge> edgeViews = myView.getSelectedEdges();
-		List<CyNode> nodeViews = myView.getSelectedNodes();
+		CySubNetwork cyNet = cyRootNetworkFactory.convert( myView.getSource() ).getBaseNetwork();
+		List<CyEdge> selEdges = CyDataTableUtil.getEdgesInState(cyNet,"selected",true); 
+		List<CyNode> selNodes = CyDataTableUtil.getNodesInState(cyNet,"selected",true); 
 		CyNode cyNode;
 		CyEdge cyEdge;
 
@@ -116,12 +116,12 @@ public class DeleteAction extends CytoscapeAction {
 		if (graphObj != null ) {
 			if ( graphObj instanceof CyNode) {
 				cyNode = (CyNode) graphObj;
-				if ( !nodeViews.contains(cyNode) )
-					nodeViews.add(cyNode);
+				if ( !selNodes.contains(cyNode) )
+					selNodes.add(cyNode);
 			} else if ( graphObj instanceof CyEdge) {
 				cyEdge = (CyEdge) graphObj;
-				if ( !edgeViews.contains(cyEdge) )
-					edgeViews.add(cyEdge);
+				if ( !selEdges.contains(cyEdge) )
+					selEdges.add(cyEdge);
 			}
 		}
 
@@ -129,14 +129,14 @@ public class DeleteAction extends CytoscapeAction {
 		Set<CyNode> nodes = new HashSet<CyNode>();
 
 		// add all node indices
-		for (int i = 0; i < nodeViews.size(); i++) {
-			cyNode = nodeViews.get(i);
+		for (int i = 0; i < selNodes.size(); i++) {
+			cyNode = selNodes.get(i);
 			nodes.add(cyNode);
 		}
 
 		// add all selected edge indices
-		for (int i = 0; i < edgeViews.size(); i++) {
-			cyEdge = edgeViews.get(i); 
+		for (int i = 0; i < selEdges.size(); i++) {
+			cyEdge = selEdges.get(i); 
 			edges.add( cyEdge );
 		}
 

@@ -40,16 +40,16 @@ import cytoscape.CyNetworkManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 
 public class CreateNetworkViewTask implements Task {
 
 	private final CyNetwork network;
 	private final CyNetworkManager netmgr;
-	private final GraphViewFactory gvf;
+	private final CyNetworkViewFactory gvf;
 
-	CreateNetworkViewTask(CyNetwork network, GraphViewFactory gvf, CyNetworkManager netmgr) {
+	CreateNetworkViewTask(CyNetwork network, CyNetworkViewFactory gvf, CyNetworkManager netmgr) {
 		this.network = network;
 		this.gvf = gvf;
 		this.netmgr = netmgr;
@@ -60,7 +60,7 @@ public class CreateNetworkViewTask implements Task {
 		taskMonitor.setProgress(-1.0);
 
 		try {
-			GraphView view = gvf.createGraphView( network );
+			CyNetworkView view = gvf.getNetworkViewFor( network );
 			netmgr.addNetworkView( view );
 		} catch (Exception e) {
 			throw new Exception("Could not create network view for network: " + 

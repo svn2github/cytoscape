@@ -44,7 +44,7 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import java.util.LinkedList;
 import java.util.ArrayList;
@@ -63,27 +63,27 @@ public interface CyNetworkManager {
 	public CyNetwork getCurrentNetwork();
 	public void setCurrentNetwork(final long network_id);
 
-	public GraphView getCurrentNetworkView();
+	public CyNetworkView getCurrentNetworkView();
 	public void setCurrentNetworkView(final long view_id);
 
 	public Set<CyNetwork> getNetworkSet();
-	public Set<GraphView> getNetworkViewSet();
+	public Set<CyNetworkView> getNetworkViewSet();
 
 	public CyNetwork getNetwork(long id);
-	public GraphView getNetworkView(long network_id);
+	public CyNetworkView getNetworkView(long network_id);
 
 	public boolean networkExists(long network_id);
 	public boolean viewExists(long network_id);
 
 	public List<CyNetwork> getSelectedNetworks();
-    public List<GraphView> getSelectedNetworkViews();
+    public List<CyNetworkView> getSelectedNetworkViews();
 
     public void setSelectedNetworkViews(final List<Long> viewIDs);
 	public void setSelectedNetworks(final List<Long> ids);
 
 	public void destroyNetwork(CyNetwork network);
-	public void destroyNetworkView(GraphView view);
+	public void destroyNetworkView(CyNetworkView view);
 
 	public void addNetwork(CyNetwork network);
-	public void addNetworkView(GraphView view);
+	public void addNetworkView(CyNetworkView view);
 }

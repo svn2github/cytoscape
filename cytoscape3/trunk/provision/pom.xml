@@ -212,6 +212,56 @@
         <artifactId>work-spring-hack</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>viewmodel-impl</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>vizmap-impl</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+	<!-- BEGIN presentation -->
+    <dependency>
+        <groupId>cytoscape</groupId>
+        <artifactId>render.stateful</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>cytoscape</groupId>
+        <artifactId>render.immed</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>cytoscape</groupId>
+        <artifactId>render.export</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>cytoscape</groupId>
+        <artifactId>util.intr</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>cytoscape</groupId>
+        <artifactId>geom.spacial</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>cytoscape</groupId>
+        <artifactId>geom.rtree</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>ding</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+	<!-- END presentation -->
+
+
   </dependencies>
 
 </project>

@@ -38,7 +38,8 @@
 package cytoscape.actions;
 
 import cytoscape.CyNetworkManager;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
 import cytoscape.util.CytoscapeAction;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionEvent;
@@ -76,9 +77,9 @@ abstract class AbstractZoomAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GraphView curr = netmgr.getCurrentNetworkView();
+		CyNetworkView curr = netmgr.getCurrentNetworkView();
 		if ( curr != null )
-			// TODO NEED RENDERER?
-			curr.setZoom(curr.getZoom() * factor);
+			curr.setVisualProperty(NETWORK_SCALE_FACTOR, 
+				curr.getVisualProperty(NETWORK_SCALE_FACTOR).doubleValue() * factor);
 	}
 }

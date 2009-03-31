@@ -41,7 +41,7 @@ import cytoscape.CyNetworkManager;
 import cytoscape.view.CyHelpBroker;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 
 import cytoscape.events.NetworkViewAddedEvent;
 import cytoscape.events.NetworkViewAddedListener;
@@ -60,6 +60,9 @@ import java.beans.PropertyVetoException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import org.cytoscape.view.presentation.PresentationFactory;
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
 
 
 /**
@@ -88,6 +91,7 @@ public class NetworkViewManager implements
 	private Properties props;
 
 	private CyHelpBroker help;
+	private PresentationFactory presentationFactory;
 
 	/**
 	 * Creates a new NetworkViewManager object.
@@ -95,9 +99,10 @@ public class NetworkViewManager implements
 	 * @param desktop
 	 *            DOCUMENT ME!
 	 */
-	public NetworkViewManager(CyNetworkManager netmgr, Properties props, CyHelpBroker help) {
+	public NetworkViewManager(CyNetworkManager netmgr, Properties props, CyHelpBroker help, PresentationFactory pf) {
 		this.netmgr = netmgr;
 		this.props = props;
+		this.presentationFactory = pf;
 		desktopPane = new JDesktopPane();
 
 		// add Help hooks
@@ -119,14 +124,14 @@ public class NetworkViewManager implements
 
 
 	/**
-	 * Given a GraphView, returns the internal frame.
+	 * Given a CyNetworkView, returns the internal frame.
 	 * 
 	 * @param view
-	 *            GraphView
+	 *            CyNetworkView
 	 * @return JInternalFrame
 	 * @throws IllegalArgumentException
 	 */
-	public JInternalFrame getInternalFrame(GraphView view)
+	public JInternalFrame getInternalFrame(CyNetworkView view)
 			throws IllegalArgumentException {
 		// check args
 		if (view == null) {
@@ -135,7 +140,7 @@ public class NetworkViewManager implements
 		}
 
 		// outta here
-		return networkViewMap.get(view.getNetwork().getSUID());
+		return networkViewMap.get(view.getSource().getSUID());
 	}
 
 	/**
@@ -220,7 +225,7 @@ public class NetworkViewManager implements
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		System.out.println("NetworkViewManager - attempting to set current network view ");
 
-		setFocus(Long.valueOf(e.getNetworkView().getNetwork().getSUID()));
+		setFocus(Long.valueOf(e.getNetworkView().getSource().getSUID()));
 
 	}
 
@@ -260,10 +265,11 @@ public class NetworkViewManager implements
 				// fires internalFrameActivated
 				curr.setSelected(true);
 		
-				GraphView view = netmgr.getNetworkView(network_id);
-				// TODO NEED RENDERER
-				if ( view != null )
-					view.addTransferComponent(desktopPane);
+				CyNetworkView view = netmgr.getNetworkView(network_id);
+				// TODO ensure that this gets done when the presentationFactory
+				// adds a presentation to the internal frame
+//				if ( view != null )
+//					view.addTransferComponent(desktopPane);
 			} catch (Exception ex) {
 				System.err.println("Network View unable to be focused");
 			}
@@ -278,32 +284,32 @@ public class NetworkViewManager implements
 	}
 
 	public void handleEvent(NetworkViewAddedEvent nvae) {
-		System.out.println("NetworkViewManager - network view added: " + nvae.getNetworkView().getNetwork().getSUID());
+		System.out.println("NetworkViewManager - network view added: " + nvae.getNetworkView().getSource().getSUID());
 		createContainer(nvae.getNetworkView());
 	}
 
-	protected void removeView(GraphView view) {
+	protected void removeView(CyNetworkView view) {
 		try {
-			networkViewMap.get(view.getGraphPerspective().getSUID()).dispose();
+			networkViewMap.get(view.getSource().getSUID()).dispose();
 		} catch (Exception e) {
 			System.err.println("Network View unable to be killed");
 		}
 
-		networkViewMap.remove(view.getGraphPerspective().getSUID());
+		networkViewMap.remove(view.getSource().getSUID());
 	}
 
 	/**
-	 * Contains a GraphView.
+	 * Contains a CyNetworkView.
 	 */
-	protected void createContainer(final GraphView view) {
-		if (networkViewMap.containsKey(view.getGraphPerspective().getSUID())) {
+	protected void createContainer(final CyNetworkView view) {
+		if (networkViewMap.containsKey(view.getSource().getSUID())) {
 			// already contains
 			return;
 		}
 
-		// create a new InternalFrame and put the GraphViews Component into
+		// create a new InternalFrame and put the CyNetworkView Component into
 		// it
-		JInternalFrame iframe = new JInternalFrame(view.getTitle(), true, true,
+		JInternalFrame iframe = new JInternalFrame(view.getVisualProperty(NETWORK_TITLE), true, true,
 				true, true);
 		iframe.addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
@@ -313,8 +319,8 @@ public class NetworkViewManager implements
 		desktopPane.add(iframe);
 
 
-		// TODO NEED RENDERER
-		iframe.setContentPane( view.getContainer(iframe.getLayeredPane()) );
+		//iframe.setContentPane( view.getContainer(iframe.getLayeredPane()) );
+		presentationFactory.addPresentation(iframe, view);
 
 		iframe.pack();
 
@@ -361,9 +367,9 @@ public class NetworkViewManager implements
 		iframe.setVisible(true);
 		iframe.addInternalFrameListener(this);
 
-		networkViewMap.put(view.getGraphPerspective().getSUID(), iframe);
-		componentMap.put(iframe, view.getGraphPerspective().getSUID());
+		networkViewMap.put(view.getSource().getSUID(), iframe);
+		componentMap.put(iframe, view.getSource().getSUID());
 
-		netmgr.setCurrentNetworkView( view.getNetwork().getSUID() );
+		netmgr.setCurrentNetworkView( view.getSource().getSUID() );
 	}
 }

@@ -76,7 +76,7 @@
 
 	<!-- Task Factories -->
 	<bean name="createNetworkViewTaskFactory" class="cytoscape.xtask.internal.CreateNetworkViewTaskFactoryImpl">
-		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="networkManager" />
 	</bean>
 
@@ -91,11 +91,13 @@
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeProperties" />
 		<constructor-arg ref="cyHelpBroker" />
+		<constructor-arg ref="presentationFactoryServiceRef" />
 	</bean>
 
 	<bean name="birdsEyeViewHandler" class="cytoscape.view.internal.BirdsEyeViewHandler">
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkManager" />
+		<constructor-arg ref="presentationFactoryServiceRef" />
 	</bean>
 
 	<bean name="networkPanel" class="cytoscape.view.internal.NetworkPanel">
@@ -126,12 +128,12 @@
 
 	<bean id="newNetworkAction" class="cytoscape.actions.NewNetworkAction">
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
-		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="networkManager" />
 	</bean>
 	<bean id="newWindowSelectedNodesOnlyAction" class="cytoscape.actions.NewWindowSelectedNodesOnlyAction">
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
-		<constructor-arg ref="graphViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="networkNamingUtil" />
 	</bean>
@@ -141,10 +143,13 @@
 	<bean id="cloneGraphInNewWindowAction" class="cytoscape.actions.CloneGraphInNewWindowAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
+	<!--
 	<bean id="printAction" class="cytoscape.actions.PrintAction">
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="presentationManagerServiceRef" />
 	</bean>
+	-->
 	<bean id="exitAction" class="cytoscape.actions.ExitAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
@@ -229,22 +234,26 @@
 	<bean id="deSelectAllEdgesAction" class="cytoscape.actions.DeSelectAllEdgesAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
+	<!--
 	<bean id="bendSelectedEdgesAction" class="cytoscape.actions.BendSelectedEdgesAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
 	<bean id="straightenSelectedEdgesAction" class="cytoscape.actions.StraightenSelectedEdgesAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
+	-->
 	<bean id="selectAllAction" class="cytoscape.actions.SelectAllAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
 	<bean id="deselectAllAction" class="cytoscape.actions.DeselectAllAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
+	<!--
 	<bean id="showGraphicsDetailsAction" class="cytoscape.actions.ShowGraphicsDetailsAction">
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
+	-->
 	<bean id="setVisualPropertiesAction" class="cytoscape.actions.SetVisualPropertiesAction">
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />
@@ -317,11 +326,12 @@
 		<constructor-arg ref="networkManager" />
 	</bean>
 
-	<!-- this bean is not a CyAction! -->
+	<!-- this bean is not a CyAction! 
 	<bean id="selectionModeAction" class="cytoscape.actions.SelectionModeAction">
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeMenus" />
 	</bean>
+	-->
 
 	<!-- Other stuff to be started -->
 	<bean id="undoMonitor" class="cytoscape.util.undo.UndoMonitor">

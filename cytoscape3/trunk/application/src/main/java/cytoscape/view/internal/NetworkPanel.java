@@ -292,8 +292,8 @@ public class NetworkPanel extends JPanel
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		System.out.println("NetworkPanel: set current network view " + e.getNetworkView().getNetwork().getSUID()); 
-		long curr = e.getNetworkView().getNetwork().getSUID();
+		System.out.println("NetworkPanel: set current network view " + e.getNetworkView().getSource().getSUID()); 
+		long curr = e.getNetworkView().getSource().getSUID();
 		//System.out.println("NetworkPanel setting current network view: " + curr);
 		if ( currentNetId == null || curr != currentNetId.longValue() )  
 			focusNetworkNode(curr);
@@ -308,12 +308,12 @@ public class NetworkPanel extends JPanel
 	}
 
 	public void handleEvent(NetworkViewAboutToBeDestroyedEvent nde) {
-		System.out.println("NetworkPanel: network view about to be destroyed " + nde.getNetworkView().getNetwork().getSUID()); 
+		System.out.println("NetworkPanel: network view about to be destroyed " + nde.getNetworkView().getSource().getSUID()); 
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(NetworkViewAddedEvent nde) {
-		System.out.println("NetworkPanel: network view added " + nde.getNetworkView().getNetwork().getSUID()); 
+		System.out.println("NetworkPanel: network view added " + nde.getNetworkView().getSource().getSUID()); 
 		treeTable.getTree().updateUI();
 	}
 
