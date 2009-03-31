@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.vizmap.internal;
+package org.cytoscape.view.vizmap.internal;
 
 import org.cytoscape.event.CyEventHelper;
 
@@ -47,8 +47,8 @@ import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.VisualPropertyCatalog;
 
-import org.cytoscape.vizmap.MappingCalculator;
-import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -138,8 +138,8 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param view DOCUMENT ME!
 	 */
 	public void apply(final CyNetworkView view) {
-		final List<View<CyNode>> nodeviews = view.getCyNodeViews();
-		final List<View<CyEdge>> edgeviews = view.getCyEdgeViews();
+		final List<View<CyNode>> nodeviews = view.getNodeViews();
+		final List<View<CyEdge>> edgeviews = view.getEdgeViews();
 
 		applyImpl(view, nodeviews,
 		          vpCatalog.collectionOfVisualProperties(nodeviews, VisualProperty.NODE));

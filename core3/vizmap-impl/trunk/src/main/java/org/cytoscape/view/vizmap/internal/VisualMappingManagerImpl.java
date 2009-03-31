@@ -1,11 +1,11 @@
-package org.cytoscape.vizmap.internal;
+package org.cytoscape.view.vizmap.internal;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 public class VisualMappingManagerImpl implements VisualMappingManager {
 	private HashMap<CyNetworkView, VisualStyle> vsForNetwork;

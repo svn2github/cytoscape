@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.vizmap.internal;
+package org.cytoscape.view.vizmap.internal;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,12 +41,12 @@ import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.VisualPropertyCatalog;
-import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.VisualStyleCatalog;
-import org.cytoscape.vizmap.events.VisualStyleCreatedListener;
-import org.cytoscape.vizmap.events.VisualStyleDestroyedListener;
-import org.cytoscape.vizmap.events.internal.VisualStyleCreatedEventImpl;
-import org.cytoscape.vizmap.events.internal.VisualStyleDestroyedEventImpl;
+import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualStyleCatalog;
+import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
+import org.cytoscape.view.vizmap.events.VisualStyleDestroyedListener;
+import org.cytoscape.view.vizmap.events.internal.VisualStyleCreatedEventImpl;
+import org.cytoscape.view.vizmap.events.internal.VisualStyleDestroyedEventImpl;
 
 
 /**
