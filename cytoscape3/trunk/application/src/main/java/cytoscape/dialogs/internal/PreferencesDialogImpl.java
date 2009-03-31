@@ -38,9 +38,6 @@ package cytoscape.dialogs.internal;
 
 import org.cytoscape.event.CyEventHelper;
 
-import org.cytoscape.vizmap.event.SaveVizmapPropsEvent;
-import org.cytoscape.vizmap.event.SaveVizmapPropsListener;
-
 import cytoscape.events.PreferencesUpdatedEvent;
 import cytoscape.events.PreferencesUpdatedListener;
 import cytoscape.dialogs.PreferencesDialog;
@@ -389,11 +386,12 @@ public class PreferencesDialogImpl extends JDialog implements PreferencesDialog 
 			callerRef.setVisible(false);
 
 			if (saveVizmapAsDefault) {
-				eh.fireSynchronousEvent( new SaveVizmapPropsEvent() {
-					public Object getSource() { return PreferencesDialogImpl.this; }
-					}, SaveVizmapPropsListener.class );
-				saveVizmapAsDefault = false;
-				saveVizmapBtn.setSelected(false);
+				// TODO: Use new VizMap
+//				eh.fireSynchronousEvent( new SaveVizmapPropsEvent() {
+//					public Object getSource() { return PreferencesDialogImpl.this; }
+//					}, SaveVizmapPropsListener.class );
+//				saveVizmapAsDefault = false;
+//				saveVizmapBtn.setSelected(false);
 			}
 
 			if (saveCyPropsAsDefault) {

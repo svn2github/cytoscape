@@ -36,9 +36,6 @@
  */
 package cytoscape;
 
-import com.jgoodies.looks.LookUtils;
-import com.jgoodies.looks.Options;
-import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import cytoscape.view.CySwingApplication;
 import cytoscape.util.FileUtil;
 import org.apache.commons.cli.*;
@@ -78,35 +75,35 @@ public class CyMain {
 	protected FileUtil fileUtil;
 	
 	protected static void setupLookAndFeel() {
-		try {
-			if (LookUtils.IS_OS_WINDOWS) {
-				/*
-				 * For Windows: just use platform default look & feel.
-				 */
-				UIManager
-						.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-			} else if (LookUtils.IS_OS_MAC) {
-				/*
-				 * For Mac: move menue bar to OS X default bar (next to Apple
-				 * icon)
-				 */
-				System.setProperty("apple.laf.useScreenMenuBar", "true");
-			} else {
-				/*
-				 * For Unix platforms, use JGoodies Looks
-				 */
-				final Properties props = System.getProperties();
-				String JVMVersion = props.getProperty("java.version");
-				System.out.println("JVM Version = " + JVMVersion);
-				if (JVMVersion.startsWith("1.6")) {
-					System.out.println("SE6 found.  Use Nimbus...");
-					UIManager
-							.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-				}
-			}
-		} catch (Exception e) {
-			System.err.println("Can't set look & feel:" + e);
-		}
+//		try {
+//			if (LookUtils.IS_OS_WINDOWS) {
+//				/*
+//				 * For Windows: just use platform default look & feel.
+//				 */
+//				UIManager
+//						.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+//			} else if (LookUtils.IS_OS_MAC) {
+//				/*
+//				 * For Mac: move menue bar to OS X default bar (next to Apple
+//				 * icon)
+//				 */
+//				System.setProperty("apple.laf.useScreenMenuBar", "true");
+//			} else {
+//				/*
+//				 * For Unix platforms, use JGoodies Looks
+//				 */
+//				final Properties props = System.getProperties();
+//				String JVMVersion = props.getProperty("java.version");
+//				System.out.println("JVM Version = " + JVMVersion);
+//				if (JVMVersion.startsWith("1.6")) {
+//					System.out.println("SE6 found.  Use Nimbus...");
+//					UIManager
+//							.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+//				}
+//			}
+//		} catch (Exception e) {
+//			System.err.println("Can't set look & feel:" + e);
+//		}
 	}
 
 
