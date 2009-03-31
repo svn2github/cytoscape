@@ -61,6 +61,7 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 	boolean createNewNetwork = false;
 	boolean selectedOnly = false;
 	double maxResidual = 0.001;
+	String[] attributeArray = new String[1];
 
 	String dataAttribute = null;
 	TaskMonitor monitor = null;
@@ -77,6 +78,11 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 	public String getName() {return "MCL cluster";};
 
 	public JPanel getSettingsPanel() {
+		// Everytime we ask for the panel, we want to update our attributes
+		Tunable attributeTunable = clusterProperties.get("attributeList");
+		attributeArray = getAllAttributes();
+		attributeTunable.setLowerBound((Object)attributeArray);
+
 		return clusterProperties.getTunablePanel();
 	}
 
@@ -130,12 +136,12 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		                                  "Source for array data",
 		                                  Tunable.GROUP, new Integer(1)));
 
-
 		// The attribute to use to get the weights
+		attributeArray = getAllAttributes();
 		clusterProperties.add(new Tunable("attributeList",
 		                                  "Array sources",
-		                                  Tunable.EDGEATTRIBUTE, "",
-		                                  (Object)null, (Object)null, Tunable.NUMERICATTRIBUTE));
+		                                  Tunable.LIST, 0,
+		                                  (Object)attributeArray, (Object)null, 0));
 
 
 
@@ -181,8 +187,29 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
-			dataAttribute = (String) t.getValue();
+			dataAttribute = attributeArray[((Integer) t.getValue()).intValue()];
 		}
+	}
+
+	private void getAttributesList(List<String>attributeList, CyAttributes attributes) {
+		String[] names = attributes.getAttributeNames();
+		for (int i = 0; i < names.length; i++) {
+			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING ||
+			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
+				attributeList.add(names[i]);
+			}
+		}
+	}
+
+	private String[] getAllAttributes() {
+		attributeArray = new String[1];
+		// Create the list by combining node and edge attributes into a single list
+		List<String> attributeList = new ArrayList<String>();
+		getAttributesList(attributeList, Cytoscape.getEdgeAttributes());
+		String[] attrArray = attributeList.toArray(attributeArray);
+		if (attrArray.length > 1) 
+			Arrays.sort(attrArray);
+		return attrArray;
 	}
 
 	public void doCluster(TaskMonitor monitor) {
