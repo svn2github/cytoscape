@@ -1,5 +1,5 @@
 /*
-  File: LinearNumberToColorInterpolator.java
+  File: LinearNumberInterpolator.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,25 +35,42 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//LinearNumberToColorInterpolator.java
-package org.cytoscape.vizmap.mappings.interpolators;
+//LinearNumberInterpolator.java
 
-import java.awt.*;
+//----------------------------------------------------------------------------
+// $Revision: 10005 $
+// $Date: 2007-04-17 19:50:13 -0700 (Tue, 17 Apr 2007) $
+// $Author: kono $
+//----------------------------------------------------------------------------
+package org.cytoscape.view.vizmap.mappings.interpolators;
 
 
+//----------------------------------------------------------------------------
 /**
- * The class provides a linear interpolation between color values. The
- * (red,green,blue,alpha) values of the returned color are linearly
- * interpolated from the associated values of the lower and upper colors,
- * according the the fractional distance frac from the lower value.
- *
- * If either object argument is not a Color, null is returned.
+ * This subclass of NumberInterpolator further assumes a linear interpolation,
+ * and calculates the fractional distance of the target domain value from
+ * the lower boundary value for the convenience of subclasses.
  */
-public class LinearNumberToColorInterpolator extends LinearNumberInterpolator {
+abstract public class LinearNumberInterpolator extends NumberInterpolator {
     /**
-     * Creates a new LinearNumberToColorInterpolator object.
+     *  DOCUMENT ME!
+     *
+     * @param lowerDomain DOCUMENT ME!
+     * @param lowerRange DOCUMENT ME!
+     * @param upperDomain DOCUMENT ME!
+     * @param upperRange DOCUMENT ME!
+     * @param domainValue DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
      */
-    public LinearNumberToColorInterpolator() {
+    public Object getRangeValue(double lowerDomain, Object lowerRange,
+        double upperDomain, Object upperRange, double domainValue) {
+        if (lowerDomain == upperDomain)
+            return lowerRange;
+
+        double frac = (domainValue - lowerDomain) / (upperDomain - lowerDomain);
+
+        return getRangeValue(frac, lowerRange, upperRange);
     }
 
     /**
@@ -65,27 +82,6 @@ public class LinearNumberToColorInterpolator extends LinearNumberInterpolator {
      *
      * @return  DOCUMENT ME!
      */
-    public Object getRangeValue(double frac, Object lowerRange,
-        Object upperRange) {
-        if (!(lowerRange instanceof Color))
-            return null;
-
-        if (!(upperRange instanceof Color))
-            return null;
-
-        Color lowerColor = (Color) lowerRange;
-        Color upperColor = (Color) upperRange;
-
-        double red = lowerColor.getRed() +
-            (frac * (upperColor.getRed() - lowerColor.getRed()));
-        double green = lowerColor.getGreen() +
-            (frac * (upperColor.getGreen() - lowerColor.getGreen()));
-        double blue = lowerColor.getBlue() +
-            (frac * (upperColor.getBlue() - lowerColor.getBlue()));
-        double alpha = lowerColor.getAlpha() +
-            (frac * (upperColor.getAlpha() - lowerColor.getAlpha()));
-
-        return new Color((int) Math.round(red), (int) Math.round(green),
-            (int) Math.round(blue), (int) Math.round(alpha));
-    }
+    abstract public Object getRangeValue(double frac, Object lowerRange,
+        Object upperRange);
 }

@@ -34,13 +34,13 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.vizmap.mappings;
+package org.cytoscape.view.vizmap.mappings;
 
 import org.cytoscape.model.*;
 
 import org.cytoscape.view.model.*;
 
-import org.cytoscape.vizmap.*;
+import org.cytoscape.view.vizmap.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

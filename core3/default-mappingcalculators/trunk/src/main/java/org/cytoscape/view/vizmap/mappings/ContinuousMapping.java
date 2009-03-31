@@ -40,19 +40,19 @@
 // $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.vizmap.mappings;
+package org.cytoscape.view.vizmap.mappings;
 
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.MappingCalculator;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
-import org.cytoscape.vizmap.mappings.interpolators.Interpolator;
-import org.cytoscape.vizmap.mappings.interpolators.FlatInterpolator;
-import org.cytoscape.vizmap.mappings.interpolators.LinearNumberToColorInterpolator;
-import org.cytoscape.vizmap.mappings.interpolators.LinearNumberToNumberInterpolator;
+import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
+import org.cytoscape.view.vizmap.mappings.interpolators.Interpolator;
+import org.cytoscape.view.vizmap.mappings.interpolators.FlatInterpolator;
+import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToColorInterpolator;
+import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToNumberInterpolator;
 
 import java.awt.Color;
 import java.util.ArrayList;

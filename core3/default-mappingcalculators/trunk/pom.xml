@@ -8,8 +8,8 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.cytoscape.vizmap.mappings</bundle.symbolicName>
-    <bundle.namespace>org.cytoscape.vizmap.mappings</bundle.namespace>
+    <bundle.symbolicName>org.cytoscape.view.vizmap.mappings</bundle.symbolicName>
+    <bundle.namespace>org.cytoscape.view.vizmap.mappings</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

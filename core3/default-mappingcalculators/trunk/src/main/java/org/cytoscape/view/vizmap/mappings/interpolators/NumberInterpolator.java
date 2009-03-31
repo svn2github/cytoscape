@@ -42,7 +42,7 @@
 // $Date: 2007-03-19 17:25:45 -0700 (Mon, 19 Mar 2007) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.vizmap.mappings.interpolators;
+package org.cytoscape.view.vizmap.mappings.interpolators;
 
 
 //----------------------------------------------------------------------------

@@ -40,14 +40,14 @@
 // $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
 // $Author: mes $
 //----------------------------------------------------------------------------
-package org.cytoscape.vizmap.mappings;
+package org.cytoscape.view.vizmap.mappings;
 
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.MappingCalculator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
