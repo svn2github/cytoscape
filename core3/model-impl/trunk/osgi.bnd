@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 Spring-Context: META-INF/spring/*.xml
-Private-Package: ${bundle.namespace}.internal,org.cytoscape.event.internal,${bundle.namespace}.events.internal
+Private-Package: ${bundle.namespace}.internal,org.cytoscape.event.internal
 

@@ -34,25 +34,61 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.events.internal;
+package org.cytoscape.model.internal.events;
 
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.events.AboutToRemoveNodeEvent;
+import org.cytoscape.model.CyDataTable;
 
 
 /**
- * 
- */
-public class AboutToRemoveNodeEventImpl extends AbstractNodeEvent implements AboutToRemoveNodeEvent { 
-                                                 
+ * DOCUMENT ME!
+  */
+abstract class AbstractAttrEvent { 
+
+	final Object oldValue;
+	final Object newValue;
+	final CyDataTable source;
+	final String columnName;
+
+	public AbstractAttrEvent(CyDataTable source, String columnName, Object oldValue, Object newValue) {
+		this.source = source;
+		this.columnName = columnName;
+		this.oldValue = oldValue;
+		this.newValue = newValue;
+	}
+
 	/**
-	 * Creates a new NodeEvent object.
+	 *  DOCUMENT ME!
 	 *
-	 * @param e  DOCUMENT ME!
-	 * @param n  DOCUMENT ME!
+	 * @return  DOCUMENT ME!
 	 */
-	public AboutToRemoveNodeEventImpl(CyNode e, CyNetwork n) {
-		super(e, n);
+	public CyDataTable getSource() {
+		return source;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String getColumnName() {
+		return columnName;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getOldValue() {
+		return oldValue;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Object getNewValue() {
+		return newValue;
 	}
 }

@@ -34,26 +34,38 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.events.internal;
+package org.cytoscape.model.internal.events;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyNetwork;
 
 
 /**
- * DOCUMENT ME!
-  */
-abstract class AbstractAttrEvent { 
+ * A basic network event that can extended to support nodes and edges.
+ *
+ * @param <T>  DOCUMENT ME!
+ */
+public class NetEvent<T> {
+	private final T t;
+	private final CyNetwork n;
 
-	final Object oldValue;
-	final Object newValue;
-	final CyDataTable source;
-	final String columnName;
+	/**
+	 * Creates a new NetEvent object.
+	 *
+	 * @param t  DOCUMENT ME!
+	 * @param n  DOCUMENT ME!
+	 */
+	public NetEvent(T t, CyNetwork n) {
+		this.t = t;
+		this.n = n;
+	}
 
-	public AbstractAttrEvent(CyDataTable source, String columnName, Object oldValue, Object newValue) {
-		this.source = source;
-		this.columnName = columnName;
-		this.oldValue = oldValue;
-		this.newValue = newValue;
+	/**
+	 * Creates a new NetEvent object.
+	 *
+	 * @param n  DOCUMENT ME!
+	 */
+	public NetEvent(CyNetwork n) {
+		this(null, n);
 	}
 
 	/**
@@ -61,8 +73,8 @@ abstract class AbstractAttrEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyDataTable getSource() {
-		return source;
+	protected T get() {
+		return t;
 	}
 
 	/**
@@ -70,25 +82,7 @@ abstract class AbstractAttrEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getColumnName() {
-		return columnName;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object getOldValue() {
-		return oldValue;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object getNewValue() {
-		return newValue;
+	public CyNetwork getSource() {
+		return n;
 	}
 }

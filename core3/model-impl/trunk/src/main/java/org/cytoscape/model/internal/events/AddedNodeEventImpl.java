@@ -34,25 +34,25 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.events.internal;
+package org.cytoscape.model.internal.events;
 
-import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
+import org.cytoscape.model.events.AddedNodeEvent;
 
 
 /**
  * 
  */
-public class AboutToRemoveEdgeEventImpl extends AbstractEdgeEvent implements AboutToRemoveEdgeEvent { 
+public class AddedNodeEventImpl extends AbstractNodeEvent implements AddedNodeEvent { 
                                                  
 	/**
-	 * Creates a new EdgeEvent object.
+	 * Creates a new NodeEvent object.
 	 *
 	 * @param e  DOCUMENT ME!
 	 * @param n  DOCUMENT ME!
 	 */
-	public AboutToRemoveEdgeEventImpl(CyEdge e, CyNetwork n) {
+	public AddedNodeEventImpl(CyNode e, CyNetwork n) {
 		super(e, n);
 	}
 }

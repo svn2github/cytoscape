@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.events.internal;
+package org.cytoscape.model.internal.events;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.events.ColumnDeletedEvent;

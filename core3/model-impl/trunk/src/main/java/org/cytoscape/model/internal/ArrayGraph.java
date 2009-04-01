@@ -55,12 +55,12 @@ import org.cytoscape.model.events.AboutToRemoveEdgeListener;
 import org.cytoscape.model.events.RemovedEdgeEvent;
 import org.cytoscape.model.events.RemovedEdgeListener;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.events.internal.AddedNodeEventImpl;
-import org.cytoscape.model.events.internal.AboutToRemoveNodeEventImpl;
-import org.cytoscape.model.events.internal.RemovedNodeEventImpl;
-import org.cytoscape.model.events.internal.AddedEdgeEventImpl;
-import org.cytoscape.model.events.internal.AboutToRemoveEdgeEventImpl;
-import org.cytoscape.model.events.internal.RemovedEdgeEventImpl;
+import org.cytoscape.model.internal.events.AddedNodeEventImpl;
+import org.cytoscape.model.internal.events.AboutToRemoveNodeEventImpl;
+import org.cytoscape.model.internal.events.RemovedNodeEventImpl;
+import org.cytoscape.model.internal.events.AddedEdgeEventImpl;
+import org.cytoscape.model.internal.events.AboutToRemoveEdgeEventImpl;
+import org.cytoscape.model.internal.events.RemovedEdgeEventImpl;
 
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetwork;

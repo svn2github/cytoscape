@@ -34,21 +34,25 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.events.internal;
+package org.cytoscape.model.internal.events;
 
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.events.ColumnCreatedEvent;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.events.RemovedEdgeEvent;
 
 
 /**
  * 
  */
-public class ColumnCreatedEventImpl extends AbstractAttrEvent implements ColumnCreatedEvent { 
+public class RemovedEdgeEventImpl extends AbstractEdgeEvent implements RemovedEdgeEvent { 
                                                  
 	/**
+	 * Creates a new EdgeEvent object.
 	 *
+	 * @param e  DOCUMENT ME!
+	 * @param n  DOCUMENT ME!
 	 */
-	public ColumnCreatedEventImpl(CyDataTable source, String columnName, Object oldValue, Object newValue) {
-		super(source,columnName,oldValue,newValue);
+	public RemovedEdgeEventImpl(CyEdge e, CyNetwork n) {
+		super(e, n);
 	}
 }

@@ -34,33 +34,21 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.events.internal;
+package org.cytoscape.model.internal.events;
 
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.events.ColumnCreatedEvent;
 
 
 /**
  * 
  */
-abstract class AbstractNodeEvent extends NetEvent<CyNode> {
+public class ColumnCreatedEventImpl extends AbstractAttrEvent implements ColumnCreatedEvent { 
                                                  
 	/**
-	 * Creates a new NodeEvent object.
 	 *
-	 * @param e  DOCUMENT ME!
-	 * @param n  DOCUMENT ME!
 	 */
-	public AbstractNodeEvent(CyNode e, CyNetwork n) {
-		super(e, n);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyNode getNode() {
-		return get();
+	public ColumnCreatedEventImpl(CyDataTable source, String columnName, Object oldValue, Object newValue) {
+		super(source,columnName,oldValue,newValue);
 	}
 }

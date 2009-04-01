@@ -34,55 +34,25 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.events.internal;
+package org.cytoscape.model.internal.events;
 
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.events.RemovedNodeEvent;
 
 
 /**
- * A basic network event that can extended to support nodes and edges.
- *
- * @param <T>  DOCUMENT ME!
+ * 
  */
-public class NetEvent<T> {
-	private final T t;
-	private final CyNetwork n;
-
+public class RemovedNodeEventImpl extends AbstractNodeEvent implements RemovedNodeEvent { 
+                                                 
 	/**
-	 * Creates a new NetEvent object.
+	 * Creates a new NodeEvent object.
 	 *
-	 * @param t  DOCUMENT ME!
+	 * @param e  DOCUMENT ME!
 	 * @param n  DOCUMENT ME!
 	 */
-	public NetEvent(T t, CyNetwork n) {
-		this.t = t;
-		this.n = n;
-	}
-
-	/**
-	 * Creates a new NetEvent object.
-	 *
-	 * @param n  DOCUMENT ME!
-	 */
-	public NetEvent(CyNetwork n) {
-		this(null, n);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	protected T get() {
-		return t;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyNetwork getSource() {
-		return n;
+	public RemovedNodeEventImpl(CyNode e, CyNetwork n) {
+		super(e, n);
 	}
 }
