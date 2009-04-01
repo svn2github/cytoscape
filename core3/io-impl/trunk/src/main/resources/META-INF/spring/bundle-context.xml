@@ -118,4 +118,10 @@
 
 	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
 
+	<!-- Proxy stuff  -->
+	<bean id="defaultJVMCyProxySelectorService"
+		class="org.cytoscape.io.internal.util.DefaultJVMCyProxySelectorImpl">
+	</bean>
+
+
 </beans>

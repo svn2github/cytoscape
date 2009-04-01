@@ -14,6 +14,9 @@
 
 	<osgi:reference id="graphViewFactoryServiceRef"
 		interface="org.cytoscape.view.GraphViewFactory" />
+	
+	<osgi:reference id="cyProxySelector"
+		interface="org.cytoscape.io.util.CyProxySelector" />
 
 	<!-- Export services -->
 	<osgi:service id="cyReaderManagerService" ref="cyReaderManager"
@@ -55,6 +58,11 @@
 		<osgi:service-properties>
 			<entry key="serviceType" value="utility" />
 		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="defaultJVMCyProxySelectorService"
+		ref="cyProxySelector"
+		interface="org.cytoscape.io.util.CyProxySelector">
 	</osgi:service>
 
 </beans>
