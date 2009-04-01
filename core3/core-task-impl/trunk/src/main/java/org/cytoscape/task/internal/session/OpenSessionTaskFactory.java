@@ -1,4 +1,6 @@
 /*
+ File: OpenSessionTaskFactory.java
+
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -32,53 +34,28 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+package org.cytoscape.task.internal.session; 
 
-package org.cytoscape.task.loadnetwork.internal;
+import org.cytoscape.session.CySessionManager; 
+import org.cytoscape.io.read.CyReaderManager; 
 
-import static org.cytoscape.io.DataCategory.NETWORK;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
 
-import java.io.InputStream;
-import java.util.Properties;
+/**
+ *
+ */
+public class OpenSessionTaskFactory implements TaskFactory {
 
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
+	private CySessionManager mgr;
+	private CyReaderManager rmgr;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
-
-
-
-public class LoadInputStreamTask extends AbstractLoadNetworkTask {
-
-	@Tunable(description = "InputStream to load")
-	public InputStream is;
-
-	public LoadInputStreamTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
-			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
-		super(mgr, gvf, cyl, netmgr, props, namingUtil);
+	public OpenSessionTaskFactory(CySessionManager mgr, CyReaderManager rmgr) {
+		this.mgr = mgr;
+		this.rmgr = rmgr;
 	}
 
-	/**
-	 * Executes Task.
-	 */
-	public void run(TaskMonitor taskMonitor) throws Exception {
-		if ( is == null ) {
-			System.out.println("InputStream is null");
-			return;
-		}
-		this.taskMonitor = taskMonitor;
-		
-		reader = mgr.getReader(is, NETWORK);
-
-		name = is.toString();
-		
-		if (reader == null) {
-			uri = null;
-			System.out.println("The reader is null");
-		}
-		else loadNetwork(reader);
+	public Task getTask() {
+		return new OpenSessionTask(mgr,rmgr);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- File: OpenSessionTask.java
+ File: SaveSessionTask.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,76 +34,31 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.session.internal; 
+package org.cytoscape.task.internal.session;
 
+
+import org.cytoscape.io.write.CyWriterManager;
+import org.cytoscape.io.write.CyWriter;
 
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
+
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.io.read.CyReader;
-import org.cytoscape.io.DataCategory;
 
 import java.io.File;
 
 
-/**
- * Call the session reader and read everything in the zip archive.<br>
- * setAcceleratorCombo(java.awt.event.KeyEvent.VK_O, ActionEvent.CTRL_MASK);
- */
-public class OpenSessionTask implements Task {
-
-
-	private CySessionManager mgr;
-	private CyReaderManager factory;
-
-	@Tunable(description="Session file to load")
-	public File file;
+public class SaveSessionTask extends AbstractSaveSessionTask {
 
 	/**
-	 * Constructor.<br>
-	 * Add a menu item under "File" and set shortcut.
+	 * setAcceleratorCombo(KeyEvent.VK_S, ActionEvent.CTRL_MASK);
 	 */
-	public OpenSessionTask(CySessionManager mgr, CyReaderManager factory) {
-		this.mgr = mgr;
-		this.factory = factory;
+	public SaveSessionTask(CySessionManager mgr, CyWriterManager factory) {
+		super(mgr,factory);
+		file = new File(mgr.getCurrentSessionFileName());
 	}
 
-	/**
-	 * Clear current session and open the cys file.
-	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		String name = file.toString();
-
-		// Close all networks in the workspace.
-		//mgr.setSessionState(Cytoscape.SESSION_OPENED);
-		mgr.createNewSession();
-		//mgr.setSessionState(Cytoscape.SESSION_NEW);
-
-
-		taskMonitor.setStatusMessage("Opening Session File.\n\nIt may take a while.\nPlease wait...");
-		taskMonitor.setProgress(0.0);
-
-		CyReader sr;
-
-		try {
-			sr = factory.getReader(file.toURI(), DataCategory.SESSION);
-			sr.read();
-		} catch (Exception e) {
-			throw new Exception("Cannot open the session file: " + name, e);
-		} finally {
-			sr = null;
-		}
-
-		mgr.setCurrentSessionFileName(name);
-
-		taskMonitor.setProgress(1.0);
-		taskMonitor.setStatusMessage("Session file " + name + " successfully loaded.");
+		saveSession(taskMonitor);
 	}
-
-	public void cancel() {
-		
-		System.out.println("Not actually cancelling anything!!!");
-	}
-}
+} 

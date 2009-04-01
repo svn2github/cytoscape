@@ -1,5 +1,5 @@
 /*
- File: LoadNetworkTaskFactory.java
+ File: LoadNetworkFileTask.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,49 +35,51 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.task.loadnetwork.internal;
+package org.cytoscape.task.internal.loadnetwork;
 
+import static org.cytoscape.io.DataCategory.NETWORK;
+
+import java.io.File;
 import java.util.Properties;
 
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Tunable.Param;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CyNetworkNaming;
 
 /**
- * Task to load a new network.
+ * Specific instance of AbstractLoadNetworkTask that loads a File.
  */
-public class LoadInputStreamTaskFactoryImpl implements TaskFactory {
+public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 
-	private CyReaderManager mgr;
-	private CyNetworkViewFactory gvf;
-	private CyLayouts cyl;
-	private CyNetworkManager netmgr;
-	private Properties props;
-	
-	private CyNetworkNaming cyNetworkNaming;
+	@Tunable(description = "Network file to load",flag = {Param.network})
+	public File file;
 
-	public LoadInputStreamTaskFactoryImpl(CyReaderManager mgr,
-			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
-			CyProperty<Properties> cyProp, CyNetworkNaming cyNetworkNaming) {
-		this.mgr = mgr;
-		this.gvf = gvf;
-		this.cyl = cyl;
-		this.netmgr = netmgr;
-		this.props = cyProp.getProperties();
-		this.cyNetworkNaming = cyNetworkNaming;
-	}
-	
-	public void setNamingUtil(CyNetworkNaming namingUtil) {
-		this.cyNetworkNaming = namingUtil;
+	public LoadNetworkFileTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
+			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
+		super(mgr, gvf, cyl, netmgr, props, namingUtil);
 	}
 
-	public Task getTask() {
-		return new LoadInputStreamTask(mgr, gvf, cyl, netmgr, props, cyNetworkNaming);
+	/**
+	 * Executes Task.
+	 */
+	public void run(TaskMonitor taskMonitor) throws Exception {
+		this.taskMonitor = taskMonitor;
+
+		reader = mgr.getReader(file.toURI(), NETWORK);
+
+		uri = file.toURI();
+		name = file.getName();
+
+		if (reader == null) {
+			uri = null;
+		}
+
+		loadNetwork(reader);
 	}
 }

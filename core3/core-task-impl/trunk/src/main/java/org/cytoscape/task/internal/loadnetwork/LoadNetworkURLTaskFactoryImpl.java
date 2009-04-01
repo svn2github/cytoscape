@@ -1,5 +1,4 @@
 /*
- File: SaveSessionAsTaskFactory.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,28 +33,52 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.session.internal; 
 
-import org.cytoscape.session.CySessionManager; 
-import org.cytoscape.io.write.CyWriterManager; 
+package org.cytoscape.task.internal.loadnetwork;
 
-import org.cytoscape.work.Task;
+import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
+
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.Task;
+
+import org.cytoscape.property.CyProperty;
+
+import java.util.Properties;
 
 /**
- *
+ * Task to load a new network.
  */
-public class SaveSessionAsTaskFactory implements TaskFactory {
+public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 
-	private CySessionManager mgr;
-	private CyWriterManager rmgr;
+	private CyReaderManager mgr;
+	private CyNetworkViewFactory gvf;
+	private CyLayouts cyl;
+	private CyNetworkManager netmgr;
+	private Properties props;
 
-	public SaveSessionAsTaskFactory(CySessionManager mgr, CyWriterManager rmgr) {
+	private CyNetworkNaming cyNetworkNaming;
+
+	public LoadNetworkURLTaskFactoryImpl(CyReaderManager mgr,
+			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming) {
 		this.mgr = mgr;
-		this.rmgr = rmgr;
+		this.gvf = gvf;
+		this.cyl = cyl;
+		this.netmgr = netmgr;
+		this.props = cyProps.getProperties();
+		this.cyNetworkNaming = cyNetworkNaming;
+	}
+
+	public void setNamingUtil(CyNetworkNaming namingUtil) {
+		this.cyNetworkNaming = namingUtil;
 	}
 
 	public Task getTask() {
-		return new SaveSessionAsTask(mgr,rmgr);
+		return new LoadNetworkURLTask(mgr, gvf, cyl, netmgr, props, cyNetworkNaming);
 	}
 }

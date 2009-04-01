@@ -1,6 +1,4 @@
 /*
- File: SaveSessionTask.java
-
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -34,31 +32,53 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.session.internal;
 
+package org.cytoscape.task.internal.loadnetwork;
 
-import org.cytoscape.io.write.CyWriterManager;
-import org.cytoscape.io.write.CyWriter;
+import static org.cytoscape.io.DataCategory.NETWORK;
 
-import org.cytoscape.work.Task;
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
 
-import org.cytoscape.session.CySessionManager;
+import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
 
-import java.io.File;
 
 
-public class SaveSessionTask extends AbstractSaveSessionTask {
+public class LoadInputStreamTask extends AbstractLoadNetworkTask {
+
+	@Tunable(description = "InputStream to load")
+	public InputStream is;
+
+	public LoadInputStreamTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
+			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
+		super(mgr, gvf, cyl, netmgr, props, namingUtil);
+	}
 
 	/**
-	 * setAcceleratorCombo(KeyEvent.VK_S, ActionEvent.CTRL_MASK);
+	 * Executes Task.
 	 */
-	public SaveSessionTask(CySessionManager mgr, CyWriterManager factory) {
-		super(mgr,factory);
-		file = new File(mgr.getCurrentSessionFileName());
-	}
-
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		saveSession(taskMonitor);
+		if ( is == null ) {
+			System.out.println("InputStream is null");
+			return;
+		}
+		this.taskMonitor = taskMonitor;
+		
+		reader = mgr.getReader(is, NETWORK);
+
+		name = is.toString();
+		
+		if (reader == null) {
+			uri = null;
+			System.out.println("The reader is null");
+		}
+		else loadNetwork(reader);
 	}
-} 
+}

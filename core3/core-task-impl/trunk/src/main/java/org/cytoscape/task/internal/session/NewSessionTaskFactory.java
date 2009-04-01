@@ -1,5 +1,5 @@
 /*
- File: SaveSessionAsTask.java
+ File: NewSessionTaskFactory.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,39 +34,25 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.session.internal; 
+package org.cytoscape.task.internal.session; 
 
-
-import org.cytoscape.io.write.CyWriterManager;
-import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.session.CySessionManager; 
 
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TaskFactory;
 
-import org.cytoscape.session.CySessionManager;
+/**
+ *
+ */
+public class NewSessionTaskFactory implements TaskFactory {
 
-import java.io.File;
+	private CySessionManager mgr;
 
-
-public class SaveSessionAsTask extends AbstractSaveSessionTask {
-
-	/**
-	 * setAcceleratorCombo(KeyEvent.VK_S, ActionEvent.CTRL_MASK);
-	 */
-	public SaveSessionAsTask(CySessionManager mgr, CyWriterManager factory) {
-		super(mgr,factory);
-
-		// How we set file initially determines how whether this is "save"
-		// or "save as".
-		file = null;
+	public NewSessionTaskFactory(CySessionManager mgr) {
+		this.mgr = mgr;
 	}
 
-
-	/**
-	 * If no current session file exists, open dialog box to ask user a new
-	 * session file name, otherwise, overwrite the file.
-	 */
-	public void run(TaskMonitor taskMonitor) throws Exception {
-		saveSession(taskMonitor);
+	public Task getTask() {
+		return new NewSessionTask(mgr);
 	}
-} 
+}

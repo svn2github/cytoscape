@@ -1,5 +1,5 @@
 /*
- File: LoadNetworkURLTask.java
+ File: LoadNetworkTaskFactory.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,62 +35,49 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-// $Revision: 8703 $
-// $Date: 2006-11-06 23:17:02 -0800 (Mon, 06 Nov 2006) $
-// $Author: pwang $
-package org.cytoscape.task.loadnetwork.internal;
+package org.cytoscape.task.internal.loadnetwork;
 
-import java.net.URL;
 import java.util.Properties;
 
-import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CyNetworkNaming;
 
 /**
- * Specific instance of AbstractLoadNetworkTask that loads a URL.
+ * Task to load a new network.
  */
-public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
+public class LoadInputStreamTaskFactoryImpl implements TaskFactory {
 
-	@Tunable(description="The URL to load")
-	public URL url;
+	private CyReaderManager mgr;
+	private CyNetworkViewFactory gvf;
+	private CyLayouts cyl;
+	private CyNetworkManager netmgr;
+	private Properties props;
+	
+	private CyNetworkNaming cyNetworkNaming;
 
-	public LoadNetworkURLTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
-			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
-		super(mgr, gvf, cyl, netmgr, props, namingUtil);
+	public LoadInputStreamTaskFactoryImpl(CyReaderManager mgr,
+			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			CyProperty<Properties> cyProp, CyNetworkNaming cyNetworkNaming) {
+		this.mgr = mgr;
+		this.gvf = gvf;
+		this.cyl = cyl;
+		this.netmgr = netmgr;
+		this.props = cyProp.getProperties();
+		this.cyNetworkNaming = cyNetworkNaming;
+	}
+	
+	public void setNamingUtil(CyNetworkNaming namingUtil) {
+		this.cyNetworkNaming = namingUtil;
 	}
 
-	/**
-	 * Executes Task.
-	 */
-	public void run(TaskMonitor taskMonitor) throws Exception {
-		this.taskMonitor = taskMonitor;
-
-		if (url == null)
-			throw new NullPointerException("Network url is null");
-
-		name = url.toString();
-
-		myThread = Thread.currentThread();
-
-		try {
-			taskMonitor.setStatusMessage("Opening url " + url);
-			reader = mgr.getReader(url.toURI(),DataCategory.NETWORK);
-
-			if (interrupted)
-				return;
-
-		} catch (Exception e) {
-			url = null;
-			throw new Exception("Unable to connect to URL " + name, e); 
-		}
-
-		loadNetwork(reader);
+	public Task getTask() {
+		return new LoadInputStreamTask(mgr, gvf, cyl, netmgr, props, cyNetworkNaming);
 	}
 }

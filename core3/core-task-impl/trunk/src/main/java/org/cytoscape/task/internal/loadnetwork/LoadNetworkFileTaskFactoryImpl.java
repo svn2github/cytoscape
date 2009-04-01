@@ -1,5 +1,5 @@
 /*
- File: NewSessionTaskFactory.java
+ File: LoadNetworkTaskFactory.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,25 +34,50 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.session.internal; 
 
-import org.cytoscape.session.CySessionManager; 
+package org.cytoscape.task.internal.loadnetwork;
 
+import java.util.Properties;
+
+import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 
+import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
+
 /**
- *
+ * Task to load a new network.
  */
-public class NewSessionTaskFactory implements TaskFactory {
+public class LoadNetworkFileTaskFactoryImpl implements TaskFactory {
 
-	private CySessionManager mgr;
+	private CyReaderManager mgr;
+	private CyNetworkViewFactory gvf;
+	private CyLayouts cyl;
+	private CyNetworkManager netmgr;
+	private Properties props;
+	
+	private CyNetworkNaming cyNetworkNaming;
 
-	public NewSessionTaskFactory(CySessionManager mgr) {
+	public LoadNetworkFileTaskFactoryImpl(CyReaderManager mgr,
+			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			CyProperty<Properties> cyProp, CyNetworkNaming cyNetworkNaming) {
 		this.mgr = mgr;
+		this.gvf = gvf;
+		this.cyl = cyl;
+		this.netmgr = netmgr;
+		this.props = cyProp.getProperties();
+		this.cyNetworkNaming = cyNetworkNaming;
+	}
+	
+	public void setNamingUtil(CyNetworkNaming namingUtil) {
+		this.cyNetworkNaming = namingUtil;
 	}
 
 	public Task getTask() {
-		return new NewSessionTask(mgr);
+		return new LoadNetworkFileTask(mgr, gvf, cyl, netmgr, props, cyNetworkNaming);
 	}
 }

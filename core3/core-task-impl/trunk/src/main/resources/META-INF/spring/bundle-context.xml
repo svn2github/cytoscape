@@ -26,7 +26,7 @@
 
 	<!-- this creates a LoadPropsInterceptor object --> 
 	<bean id="loadNetworkFileTaskFactory" 
-	      class="org.cytoscape.task.loadnetwork.internal.LoadNetworkFileTaskFactoryImpl">
+	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTaskFactoryImpl">
 		<constructor-arg ref="cyReaderManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
@@ -37,7 +37,7 @@
 
 	<!-- this creates a LoadPropsInterceptor object --> 
 	<bean id="loadNetworkURLTaskFactory" 
-	      class="org.cytoscape.task.loadnetwork.internal.LoadNetworkURLTaskFactoryImpl">
+	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkURLTaskFactoryImpl">
 		<constructor-arg ref="cyReaderManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
@@ -47,7 +47,7 @@
 	</bean>
 	
 	<bean id="loadInputStreamTaskFactory" 
-	      class="org.cytoscape.task.loadnetwork.internal.LoadInputStreamTaskFactoryImpl">
+	      class="org.cytoscape.task.internal.loadnetwork.LoadInputStreamTaskFactoryImpl">
 		<constructor-arg ref="cyReaderManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
@@ -59,24 +59,24 @@
 
 	<!-- Off until session stuff is implemented
 	<bean id="newSessionTaskFactory" 
-	      class="org.cytoscape.task.session.internal.newSessionTaskFactory">
+	      class="org.cytoscape.task.internal.session.newSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 	</bean>
 
 	<bean id="openSessionTaskFactory" 
-	      class="org.cytoscape.task.session.internal.OpenSessionTaskFactory">
+	      class="org.cytoscape.task.internal.session.OpenSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 		<constructor-arg ref="cyReaderManagerServiceRef" />
 	</bean>
 
 	<bean id="saveSessionTaskFactory" 
-	      class="org.cytoscape.task.session.internal.SaveSessionTaskFactory">
+	      class="org.cytoscape.task.internal.session.SaveSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 		<constructor-arg ref="cyWriterManagerServiceRef" />
 	</bean>
 
 	<bean id="saveSessionAsTaskFactory" 
-	      class="org.cytoscape.task.session.internal.SaveSessionAsTaskFactory">
+	      class="org.cytoscape.task.internal.session.SaveSessionAsTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 		<constructor-arg ref="cyWriterManagerServiceRef" />
 	</bean>

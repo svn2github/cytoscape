@@ -1,5 +1,5 @@
 /*
- File: LoadNetworkFileTask.java
+ File: LoadNetworkURLTask.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,32 +35,33 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.task.loadnetwork.internal;
+// $Revision: 8703 $
+// $Date: 2006-11-06 23:17:02 -0800 (Mon, 06 Nov 2006) $
+// $Author: pwang $
+package org.cytoscape.task.internal.loadnetwork;
 
-import static org.cytoscape.io.DataCategory.NETWORK;
-
-import java.io.File;
+import java.net.URL;
 import java.util.Properties;
 
+import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.Tunable.Param;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CyNetworkNaming;
 
 /**
- * Specific instance of AbstractLoadNetworkTask that loads a File.
+ * Specific instance of AbstractLoadNetworkTask that loads a URL.
  */
-public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
+public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
-	@Tunable(description = "Network file to load",flag = {Param.network})
-	public File file;
+	@Tunable(description="The URL to load")
+	public URL url;
 
-	public LoadNetworkFileTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
+	public LoadNetworkURLTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
 			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
 		super(mgr, gvf, cyl, netmgr, props, namingUtil);
 	}
@@ -71,13 +72,23 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		this.taskMonitor = taskMonitor;
 
-		reader = mgr.getReader(file.toURI(), NETWORK);
+		if (url == null)
+			throw new NullPointerException("Network url is null");
 
-		uri = file.toURI();
-		name = file.getName();
+		name = url.toString();
 
-		if (reader == null) {
-			uri = null;
+		myThread = Thread.currentThread();
+
+		try {
+			taskMonitor.setStatusMessage("Opening url " + url);
+			reader = mgr.getReader(url.toURI(),DataCategory.NETWORK);
+
+			if (interrupted)
+				return;
+
+		} catch (Exception e) {
+			url = null;
+			throw new Exception("Unable to connect to URL " + name, e); 
 		}
 
 		loadNetwork(reader);

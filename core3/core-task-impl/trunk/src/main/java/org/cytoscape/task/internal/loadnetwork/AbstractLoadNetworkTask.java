@@ -35,7 +35,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.task.loadnetwork.internal;
+package org.cytoscape.task.internal.loadnetwork;
 
 import java.net.URI;
 import java.text.DecimalFormat;

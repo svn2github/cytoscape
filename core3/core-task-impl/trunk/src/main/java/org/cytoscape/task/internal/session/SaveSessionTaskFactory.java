@@ -34,7 +34,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.session.internal; 
+package org.cytoscape.task.internal.session; 
 
 import org.cytoscape.session.CySessionManager; 
 import org.cytoscape.io.write.CyWriterManager; 

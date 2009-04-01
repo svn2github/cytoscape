@@ -1,4 +1,5 @@
 /*
+ File: NewSessionTask.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,52 +34,34 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+package org.cytoscape.task.internal.session; 
 
-package org.cytoscape.task.loadnetwork.internal;
+import org.cytoscape.session.CySessionManager; 
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
-
-import org.cytoscape.layout.CyLayouts;
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
-
-import org.cytoscape.property.CyProperty;
-
-import java.util.Properties;
+import org.cytoscape.work.TaskMonitor;
 
 /**
- * Task to load a new network.
+ *
  */
-public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
+public class NewSessionTask implements Task {
 
-	private CyReaderManager mgr;
-	private CyNetworkViewFactory gvf;
-	private CyLayouts cyl;
-	private CyNetworkManager netmgr;
-	private Properties props;
-
-	private CyNetworkNaming cyNetworkNaming;
-
-	public LoadNetworkURLTaskFactoryImpl(CyReaderManager mgr,
-			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
-			CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming) {
+	private CySessionManager mgr;
+	public NewSessionTask(CySessionManager mgr) {
 		this.mgr = mgr;
-		this.gvf = gvf;
-		this.cyl = cyl;
-		this.netmgr = netmgr;
-		this.props = cyProps.getProperties();
-		this.cyNetworkNaming = cyNetworkNaming;
 	}
 
-	public void setNamingUtil(CyNetworkNaming namingUtil) {
-		this.cyNetworkNaming = namingUtil;
+	public void run(TaskMonitor taskMonitor) {
+		// All commented code should be handled by CySessionManager
+
+		//mgr.setSessionState(Cytoscape.SESSION_OPENED);
+
+		mgr.createNewSession();
+
+		//mgr.setSessionState(Cytoscape.SESSION_NEW);
+		//Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 	}
 
-	public Task getTask() {
-		return new LoadNetworkURLTask(mgr, gvf, cyl, netmgr, props, cyNetworkNaming);
+	public void cancel() {
 	}
 }

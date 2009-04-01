@@ -1,5 +1,5 @@
 /*
- File: AbstractSaveSessionTask.java
+ File: SaveSessionAsTask.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,70 +34,39 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.session.internal;
+package org.cytoscape.task.internal.session; 
 
 
 import org.cytoscape.io.write.CyWriterManager;
 import org.cytoscape.io.write.CyWriter;
-import org.cytoscape.io.DataCategory;
 
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
 
 import org.cytoscape.session.CySessionManager;
 
 import java.io.File;
 
 
-abstract class AbstractSaveSessionTask implements Task {
-
-	private String SESSION_EXT = ".cys";
-	
-	private CySessionManager mgr;
-	private CyWriterManager factory;
-
-	@Tunable(description="Save session as")
-	public File file;
+public class SaveSessionAsTask extends AbstractSaveSessionTask {
 
 	/**
 	 * setAcceleratorCombo(KeyEvent.VK_S, ActionEvent.CTRL_MASK);
 	 */
-	public AbstractSaveSessionTask(CySessionManager mgr, CyWriterManager factory) {
-		this.mgr = mgr;
-		this.factory = factory;
+	public SaveSessionAsTask(CySessionManager mgr, CyWriterManager factory) {
+		super(mgr,factory);
+
+		// How we set file initially determines how whether this is "save"
+		// or "save as".
+		file = null;
 	}
 
-	public abstract void run(TaskMonitor taskMonitor) throws Exception;
 
 	/**
 	 * If no current session file exists, open dialog box to ask user a new
 	 * session file name, otherwise, overwrite the file.
 	 */
-	protected void saveSession(TaskMonitor taskMonitor) throws Exception {
-
-		String name = file.getAbsolutePath();
-
-		CyWriter sw = factory.getWriter(DataCategory.SESSION);
-
-		taskMonitor.setStatusMessage("Saving Cytoscape Session.\n\nIt may take a while.  Please wait...");
-		taskMonitor.setProgress(-1.0);
-
-		try {
-			sw.write(file);
-		} catch (Exception e) {
-			throw new Exception("Could not write session to the file: " + name, e);
-		}
-
-		taskMonitor.setProgress(1.0);
-		taskMonitor.setStatusMessage("Session successfully saved to:  " + name);
-
-		// TODO  This should fire an event that updates appropriate windows and such-like.
-		mgr.setCurrentSessionFileName(file.getName());
+	public void run(TaskMonitor taskMonitor) throws Exception {
+		saveSession(taskMonitor);
 	}
-
-	public void cancel() {
-		System.out.println(" Task can not currently be halted.");
-	}
-
 } 
