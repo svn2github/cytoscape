@@ -67,7 +67,7 @@
 	<bean id="sifReader" class="org.cytoscape.io.internal.read.sif.InteractionsReader">
 		<constructor-arg ref="readUtil" />
 		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
-		<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
+		<property name="cyNetworkViewFactory" ref="cyNetworkViewFactoryServiceRef" />
 		<property name="layouts" ref="cyLayoutsServiceRef" />
 	</bean>
 
@@ -97,7 +97,7 @@
 		<property name="readDataManager" ref="readDataManager" />
 		<property name="attributeValueUtil" ref="attributeValueUtil" />
 
-		<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
+		<property name="cyNetworkViewFactory" ref="cyNetworkViewFactoryServiceRef" />
 		<property name="layouts" ref="cyLayoutsServiceRef" />
 		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
 

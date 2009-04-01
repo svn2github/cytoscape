@@ -12,8 +12,8 @@
 	<osgi:reference id="cyNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
 
-	<osgi:reference id="graphViewFactoryServiceRef"
-		interface="org.cytoscape.view.GraphViewFactory" />
+	<osgi:reference id="cyNetworkViewFactoryServiceRef"
+		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 	
 	<osgi:reference id="cyProxySelector"
 		interface="org.cytoscape.io.util.CyProxySelector" />
