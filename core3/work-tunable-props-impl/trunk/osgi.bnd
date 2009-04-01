@@ -4,5 +4,5 @@
 
 
 Spring-Context: META-INF/spring/*.xml
-Private-Package: ${bundle.namespace}.internal
+Private-Package: ${bundle.namespace}.internal.*
 
