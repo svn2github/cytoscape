@@ -16,12 +16,12 @@
 
 	<context:annotation-config />
 
-	<bean id="sifReaderFactory" class="org.cytoscape.io.read.internal.CyReaderFactoryImpl">
+	<bean id="sifReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
 		<constructor-arg ref="sifFilter" />
 		<constructor-arg ref="sifReader" />
 	</bean>
 
-	<bean id="xgmmlReaderFactory" class="org.cytoscape.io.read.internal.CyReaderFactoryImpl">
+	<bean id="xgmmlReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
 		<constructor-arg ref="xgmmlFilter" />
 		<constructor-arg ref="xgmmlReader" />
 	</bean>
@@ -42,7 +42,7 @@
 			value="NETWORK" />
 	</bean>
 
-	<bean id="xgmmlFilter" class="org.cytoscape.io.read.internal.xgmml.XGMMLFileFilter">
+	<bean id="xgmmlFilter" class="org.cytoscape.io.internal.read.xgmml.XGMMLFileFilter">
 		<constructor-arg index="0">
 			<set>
 				<value>xgmml</value>
@@ -64,7 +64,7 @@
 
 
 	<!-- Network Readers -->
-	<bean id="sifReader" class="org.cytoscape.io.read.internal.sif.InteractionsReader">
+	<bean id="sifReader" class="org.cytoscape.io.internal.read.sif.InteractionsReader">
 		<constructor-arg ref="readUtil" />
 		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
 		<property name="graphViewFactory" ref="graphViewFactoryServiceRef" />
@@ -73,26 +73,26 @@
 
 
 	<!-- Utilities for XGMML Reader -->
-	<bean id="objectTypeMap" class="org.cytoscape.io.read.internal.xgmml.ObjectTypeMap" />
+	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
 	<bean id="attributeValueUtil"
-		class="org.cytoscape.io.read.internal.xgmml.handler.AttributeValueUtil">
+		class="org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil">
 		<property name="typeMap" ref="objectTypeMap" />
 		<property name="manager" ref="readDataManager" />
 	</bean>
-	<bean id="handlerFactory" class="org.cytoscape.io.read.internal.xgmml.HandlerFactory">
+	<bean id="handlerFactory" class="org.cytoscape.io.internal.read.xgmml.HandlerFactory">
 		<constructor-arg ref="readDataManager" />
 		<constructor-arg ref="attributeValueUtil" />
 	</bean>
 
 	<bean id="readDataManager"
-		class="org.cytoscape.io.read.internal.xgmml.handler.ReadDataManager" />
+		class="org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager" />
 
-	<bean id="xgmmlParser" class="org.cytoscape.io.read.internal.xgmml.XGMMLParser">
+	<bean id="xgmmlParser" class="org.cytoscape.io.internal.read.xgmml.XGMMLParser">
 		<property name="handlerFactory" ref="handlerFactory" />
 		<property name="readDataManager" ref="readDataManager" />
 	</bean>
 
-	<bean id="xgmmlReader" class="org.cytoscape.io.read.internal.xgmml.XGMMLReader">
+	<bean id="xgmmlReader" class="org.cytoscape.io.internal.read.xgmml.XGMMLReader">
 		<property name="parser" ref="xgmmlParser" />
 		<property name="readDataManager" ref="readDataManager" />
 		<property name="attributeValueUtil" ref="attributeValueUtil" />
@@ -109,7 +109,7 @@
 
 
 	<!-- Manager for all readers -->
-	<bean id="cyReaderManager" class="org.cytoscape.io.read.internal.CyReaderManagerImpl" />
+	<bean id="cyReaderManager" class="org.cytoscape.io.internal.read.CyReaderManagerImpl" />
 
 	<!-- Utility for Stream/Proxy management -->
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">

@@ -1,6 +1,6 @@
 package org.cytoscape.io.internal.util;
 
-import org.cytoscape.io.CyProxySelector;
+import org.cytoscape.io.util.CyProxySelector;
 
 import java.net.Proxy;
 import java.net.ProxySelector;

@@ -3,4 +3,4 @@
 #-----------------------------------------------------------------
 
 Import-Package: *
-Private-Package: org.cytoscape.io.read.internal.*,org.cytoscape.io.write.internal.*, org.cytoscape.io.internal.*
+Private-Package: org.cytoscape.io.internal, org.cytoscape.io.internal.*
