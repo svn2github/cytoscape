@@ -35,62 +35,30 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//     
-// $Id: CytoPanelState.java 9736 2007-03-20 00:25:45Z mes $
-//------------------------------------------------------------------------------
-
-// our package
 package cytoscape.view;
 
 
 /**
- *  CytoPanelState Class.  The following States are supported:
+ *  CytoPanelState enum.  The following States are supported:
  * <UL>
  * <LI>CytoPanelState.HIDE:  Hide the CytoPanel.
  * <LI>CytoPanelState.FLOAT: Float the CytoPanel.
  * <LI>CytoPanelState.DOCK:  Dock the CytoPanel.
  * </UL>
- *
- * @author Ben Gross
  */
-public class CytoPanelState {
-	/*
-	 * The state name.
-	 */
+public enum CytoPanelState {
+	HIDE("hide"),
+	FLOAT("float"),
+	DOCK("dock"),
+	;
+
 	private final String name;
 
-	/*
-	 * Private constructor.
-	 */
 	private CytoPanelState(String name) {
 		this.name = name;
 	}
 
-	/*
-	 * In case a someone wants to translated a state into printable strings
-	 */
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
+	public String getName() {
 		return name;
 	}
-
-	/**
-	 * Hide state of a CytoPanel.
-	 */
-	public static final CytoPanelState HIDE = new CytoPanelState("hide");
-
-	/**
-	 * Float state of a CytoPanel.
-	 */
-	public static final CytoPanelState FLOAT = new CytoPanelState("float");
-
-	/**
-	 * Dock state of a CytoPanel.
-	 */
-	public static final CytoPanelState DOCK = new CytoPanelState("dock");
 }
