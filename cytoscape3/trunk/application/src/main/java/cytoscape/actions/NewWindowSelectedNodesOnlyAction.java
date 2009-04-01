@@ -81,8 +81,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	private final CyRootNetworkFactory cyroot;
 	private final CyNetworkViewFactory gvf;
 	
-	// TODO: use new VMM
-//	private VisualMappingManager vmm;
+	private VisualMappingManager vmm;
 	
 	private CyNetworkNaming cyNetworkNaming;
 
