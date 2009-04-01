@@ -1,5 +1,5 @@
 /*
-  File: StaticLayoutMenu.java
+  File: SettingsAction.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,49 +34,45 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.layout.ui;
+package cytoscape.internal.layout.ui;
 
 import cytoscape.CyNetworkManager;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CySwingApplication;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.layout.CyLayoutAlgorithm;
 
-import javax.swing.*;
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 
 /**
- * StaticLayoutMenu provides a simple menu item to be added to a layout
- * menu.
  */
-public class StaticLayoutMenu extends JMenuItem implements ActionListener {
-	private final static long serialVersionUID = 1202339874301391L;
-	private CyLayoutAlgorithm layout;
-	private CyNetworkManager netmgr;
+public class SettingsAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339874289357L;
+
+	private CyLayouts cyl;
+	private CySwingApplication desk;
+	private LayoutMenuManager menuMgr;
+	private TunableInterceptor ti;
 	private TaskManager tm;
 
-	/**
-	 * Creates a new StaticLayoutMenu object.
-	 *
-	 * @param layout  DOCUMENT ME!
-	 */
-	public StaticLayoutMenu(CyLayoutAlgorithm layout,boolean enabled,CyNetworkManager netmgr,TaskManager tm) {
-		super(layout.toString());
-		addActionListener(this);
-		this.layout = layout;
-		this.netmgr = netmgr;
+	public SettingsAction(CyLayouts cyl, CySwingApplication desk, LayoutMenuManager menuMgr, CyNetworkManager netmgr, TunableInterceptor ti, TaskManager tm) {
+		super("Settings...",netmgr);
+		setPreferredMenu("Layout");
+		this.cyl = cyl;
+		this.desk = desk;
+		this.menuMgr = menuMgr;
+		this.ti = ti;
 		this.tm = tm;
-		setEnabled(enabled);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
 	public void actionPerformed(ActionEvent e) {
-		layout.setSelectedOnly(false);
+		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl,desk,menuMgr,netmgr,ti,tm);
+		settingsDialog.actionPerformed(e);
+	}
 
-		tm.execute( new LayoutTask(layout,netmgr.getCurrentNetworkView()));
+	public void menuSelected(MenuEvent e) {
+		enableForNetworkAndView();
 	}
 }

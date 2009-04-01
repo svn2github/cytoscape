@@ -259,13 +259,13 @@
 		<constructor-arg ref="networkManager" />
 	</bean>
 	<!-- not a CyAction, but adds menu -->
-	<bean id="layoutMenuManager" class="cytoscape.layout.ui.LayoutMenuManager">
+	<bean id="layoutMenuManager" class="cytoscape.internal.layout.ui.LayoutMenuManager">
 		<constructor-arg ref="cytoscapeMenus" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
-	<bean id="settingsAction" class="cytoscape.layout.ui.SettingsAction">
+	<bean id="settingsAction" class="cytoscape.internal.layout.ui.SettingsAction">
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="layoutMenuManager" />
