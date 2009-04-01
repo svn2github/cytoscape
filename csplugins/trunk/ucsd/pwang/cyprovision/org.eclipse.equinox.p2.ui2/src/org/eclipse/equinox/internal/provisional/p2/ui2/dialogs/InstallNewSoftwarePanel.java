@@ -15,6 +15,7 @@ import org.eclipse.equinox.internal.provisional.p2.ui2.policy.Policy;
 import org.eclipse.equinox.internal.p2.ui2.model.QueriedElement;
 import org.eclipse.equinox.internal.p2.ui2.model.AvailableIUElement;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.ui2.IUPropertyUtils;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -22,10 +23,15 @@ import java.net.URI;
 import org.eclipse.equinox.internal.provisional.p2.ui2.dialogs.RepositoryManipulationDialog;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-
+import java.util. Enumeration;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
-
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class InstallNewSoftwarePanel extends JPanel implements ActionListener, ItemListener,MouseListener {
 
@@ -40,7 +46,8 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 	private String AllAvailableSites = "All Available Sites";
 	private URI repositoryFilter = null;
 	private RepositorySetting lastRepositorySetting = new RepositorySetting(); // use default setting
-	
+	private HashSet checkedIUElements = null;
+
 	/** Creates new form AvailableSoftwarePanel */
 	public InstallNewSoftwarePanel(JDialog dlg, Policy policy, String profileId, QueryableMetadataRepositoryManager manager) {
 		
@@ -79,35 +86,72 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 		
 		jTree1.setCellRenderer(r);
 		
-        jTree1.addMouseListener(new MouseAdapter() {
-            public void mouseReleased(MouseEvent e) {
-                // Invoke later to ensure all mouse handling is completed
-                SwingUtilities.invokeLater(new Runnable() { public void run() {
-                	CheckBoxTreeCellRenderer rr = (CheckBoxTreeCellRenderer)jTree1.getCellRenderer();
-                	String text1 = createText(rr.getCheckedPaths());
-
-                	System.out.println("\tgetCheckedPaths():\n"+ text1);
-                }});
-            }
-        });
+        jTree1.addMouseListener(new MyMouseListener() );
 
 		DefaultTreeModel model= rebuildTreeModel();
         jTree1.setModel(model);
-
 	}
 		
 	
-	private static String createText(TreePath[] paths) {
-        if (paths.length == 0) {
-            return "Nothing checked";
+	private class MyMouseListener extends MouseAdapter {
+        public void mouseReleased(MouseEvent e) {
+            // Invoke later to ensure all mouse handling is completed
+            SwingUtilities.invokeLater(new Runnable() { public void run() {
+            	updateCheckedIUs();
+            	// Disable btnInstall if nothing is checked or the whole tree is checked
+            	if (checkedIUElements.size() == 0){
+            		btnInstall.setEnabled(false);
+            	}
+            	else {
+            		btnInstall.setEnabled(true);
+            	}
+            }});
+        }		
+	}
+	
+	
+	private void updateCheckedIUs() {
+		
+		CheckBoxTreeCellRenderer rr = (CheckBoxTreeCellRenderer) jTree1.getCellRenderer();
+		TreePath[] checkedPaths = rr.getCheckedPaths();
+		
+		checkedIUElements = new HashSet();
+		
+		if (checkedPaths.length == 0) {
+			return;
         }
-        String checked = "Checked:\n";
-        for (int i=0;i < paths.length;i++) {
-            checked += paths[i] + "\n";
-        }
-        return checked;
-    }
 
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) checkedPaths[0].getLastPathComponent();
+		if (checkedPaths.length == 1 && node.getUserObject().toString().equalsIgnoreCase("JTree") && repositoryFilter == null) {
+			// selected all IUs in "All Available sites", this is not allowed  
+			return;
+        }
+				
+		for (int i=0;i < checkedPaths.length;i++) {
+			node = (DefaultMutableTreeNode) checkedPaths[i].getLastPathComponent();
+
+			for (Enumeration nodes = node.depthFirstEnumeration(); nodes.hasMoreElements();){
+				DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) nodes.nextElement();
+				if (treeNode.getUserObject() instanceof AvailableIUElement){
+					checkedIUElements.add((AvailableIUElement)treeNode.getUserObject());
+				}
+			}
+        }
+	}
+	
+		//System.out.println("\nXXXXXXXXXX "+ getDateTime() +"\n");
+		//Iterator it = checkedIUElements.iterator();
+		//while (it.hasNext()){
+		//	AvailableIUElement element = (AvailableIUElement) it.next(); 
+		//	System.out.println(element.getIU().getId()+ "--" + element.getIU().getVersion());
+		//}
+		//System.out.println("\n");
+	//private String getDateTime() {
+    //    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    //    Date date = new Date();
+    //    return dateFormat.format(date);
+    //} 
+	
 	
 	Object getNewInput() {
 		
@@ -136,7 +180,9 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 		
 		TreeSelectionListener treeSelectionListener = new TreeSelectionListener(){
 			public void valueChanged(TreeSelectionEvent tse){
+				// Handle the detail area
 				JTree theTree =  (JTree) tse.getSource();
+				
 				TreePath[] selectedPaths = theTree.getSelectionPaths();
 				
 				if (selectedPaths == null){
@@ -148,17 +194,27 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 					TreePath thePath = selectedPaths[0];
 					DefaultMutableTreeNode theNode = (DefaultMutableTreeNode) thePath.getLastPathComponent();
 					Object node_userObj = theNode.getUserObject();
-					//System.out.println("node_userObj.getClass() = "+node_userObj.getClass());
+					
 					if (node_userObj instanceof AvailableIUElement){
 						AvailableIUElement avail_iu_element = (AvailableIUElement) node_userObj;
-						
 						IInstallableUnit installUnit =avail_iu_element.getIU();
-						if (installUnit.getProperty(IInstallableUnit.PROP_DESCRIPTION) == null){
-							taDetails.setText("No description is available");
+						
+						StringBuffer result = new StringBuffer();
+						String description = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_DESCRIPTION);
+
+						if (description != null) {
+							result.append(description);
+						} else {
+							String name = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_NAME);
+							if (name != null)
+								result.append(name);
+							else
+								result.append(installUnit.getId());
+							result.append(" "); //$NON-NLS-1$
+							result.append(installUnit.getVersion().toString());
 						}
-						else {
-							taDetails.setText(installUnit.getProperty(IInstallableUnit.PROP_DESCRIPTION));
-						}
+
+						taDetails.setText(result.toString());
 					}
 				}
 				else if (selectedPaths.length > 1){
@@ -170,7 +226,9 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 		
 	}
 	
+	
 	void fillRepoCombo(final String selection) {
+	
 				
 		if (repoCombo == null || policy.getRepositoryManipulator() == null)
 			return;
@@ -188,21 +246,6 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 		if (selection !=null && !selection.equals("")){
 			repoCombo.setSelectedItem(selection);
 		}
-	}
-
-	
-	void repoComboSelectionChanged() {
-		/*
-		int selection = repoCombo.getSelectionIndex();
-		if (comboRepos == null || selection > comboRepos.length)
-			selection = INDEX_ALL;
-
-		if (selection == INDEX_ALL) {
-			availableIUGroup.setRepositoryFilter(null);
-		} else if (selection > 0) {
-			availableIUGroup.setRepositoryFilter(comboRepos[selection - 1]);
-		}
-		*/
 	}
 
 	
@@ -252,6 +295,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 
 	public void itemStateChanged(ItemEvent ie) {
 
+		/*
 		if (ie.getSource() instanceof JCheckBox) {
 			JCheckBox chk = (JCheckBox) ie.getSource();
 			if (chk == useCategoriesCheckbox) {
@@ -268,7 +312,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 				//System.out.println("repoCombo state changed");
 			}
 		}
-				
+		*/		
 		updateJTree();
 	}
 
@@ -287,8 +331,6 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 		}
 		
 		// The setting has been changed, do updating now
-		System.out.println("updateJTree()...");
-				
 		try {
 			repositoryFilter =new URI(currentRepSetting.getSelectedRepository());
 		}
@@ -300,8 +342,10 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 			repositoryFilter = null;
 		}
 		updateQueryContext(currentRepSetting);
-
+	
 		DefaultTreeModel newModel= rebuildTreeModel();
+		CheckBoxTreeCellRenderer rr = (CheckBoxTreeCellRenderer) jTree1.getCellRenderer();
+		rr.clearCheckedPaths();
         jTree1.setModel(newModel);
 	}
 	
@@ -313,12 +357,7 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 
 		Object obj = getNewInput(); 
 
-		System.out.println("obj.getClass()"+ obj.getClass());
-
 		if (obj instanceof MetadataRepositories){
-
-			System.out.println("Case for MetadataRepositories");
-
 			MetadataRepositories repos = (MetadataRepositories) obj;
 
 			if (!repos.hasChildren(null)){
@@ -350,18 +389,8 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 				return new DefaultTreeModel(null);
 			}
 
-			//parent = new DefaultMutableTreeNode();
-			//parent.setUserObject(repoElement);
-
-			
 			Object[] cat_children = repoElement.getChildren(null);	
-			
-			System.out.println("repoElement has " + cat_children.length+ " Children");
-
 			for (int j=0; j<cat_children.length; j++){
-				
-				System.out.println("\t child type : " +cat_children[j].getClass());
-				
 				parent = new DefaultMutableTreeNode();
 				parent.setUserObject(cat_children[j]);
 				
@@ -375,74 +404,15 @@ public class InstallNewSoftwarePanel extends JPanel implements ActionListener, I
 						iu3.setUserObject(childrenObjs[k]);
 						parent.add(iu3);
 					}
-					
 				}
-				
 				root.add(parent);
 			}
-
-
-			
 		}
 		else {
 			//this should not happen, otherwise there is something wrong
 		}
 
 		return new DefaultTreeModel(root);
-	}
-
-	
-	private DefaultTreeModel rebuildTreeModel_1(){
-		
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("JTree");                
-        DefaultMutableTreeNode parent;
-		
-		if (repositoryFilter != null){
-			MetadataRepositoryElement repoElement = (MetadataRepositoryElement)getNewInput();
-			
-			String name = ((AvailableIUElement)repoElement.getChildren(null)[0]).getIU().getProperty("org.eclipse.equinox.p2.name");
-			parent = new DefaultMutableTreeNode(name);
-			
-			Object[] availIUElementObjs = repoElement.getChildren(null);
-			
-    		for (int j=0; j<availIUElementObjs.length; j++){
-    			AvailableIUElement availIUElement = (AvailableIUElement) availIUElementObjs[j];
-    		
-    			String iu_name_version = availIUElement.getIU().getProperty("org.eclipse.equinox.p2.name") + " --- version " +availIUElement.getIU().getVersion();
-    			DefaultMutableTreeNode iu1 = new DefaultMutableTreeNode(iu_name_version);
-    			parent.add(iu1);
-    		}
-
-    		root.add(parent);
-		}
-		else { //repositoryFilter = null, i.e. Selected "All Available Sites"
-	        MetadataRepositories repos = (MetadataRepositories) getNewInput();
-	        
-	        Object [] objs = repos.getChildren(null);
-	        
-	        int repoCount = objs.length;
-	        
-	        for (int i=0; i< repoCount; i++){
-	        	CategoryElement catElement = (CategoryElement) objs[i];
-	    		
-	        	String cat_name = catElement.getIU().getProperty("org.eclipse.equinox.p2.name");
-	        	parent = new DefaultMutableTreeNode(cat_name);
-	        	        	
-	    		Object[] availIUElementObjs =  catElement.getChildren(null);
-	    		
-	    		for (int j=0; j<availIUElementObjs.length; j++){
-	    			AvailableIUElement availIUElement = (AvailableIUElement) availIUElementObjs[j];
-	    		
-	    			String iu_name_version = availIUElement.getIU().getProperty("org.eclipse.equinox.p2.name") + " --- version " +availIUElement.getIU().getVersion();
-	    			DefaultMutableTreeNode iu1 = new DefaultMutableTreeNode(iu_name_version);
-	    			parent.add(iu1);
-	    		}
-	        	
-	    		root.add(parent);
-	        }
-		}
-
-        return new DefaultTreeModel(root);
 	}
 
 	
