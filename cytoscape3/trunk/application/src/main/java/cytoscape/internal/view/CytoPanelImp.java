@@ -40,7 +40,7 @@
 //------------------------------------------------------------------------------
 
 // our package
-package cytoscape.view.internal;
+package cytoscape.internal.view;
 
 import cytoscape.Cytoscape;
 

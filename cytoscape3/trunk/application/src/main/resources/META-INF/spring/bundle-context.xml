@@ -30,41 +30,41 @@
 	</bean>
 
 	<!-- Various Utilities -->
-	<bean name="proxyHandler" class="cytoscape.util.internal.ProxyHandlerImpl">
+	<bean name="proxyHandler" class="cytoscape.internal.util.ProxyHandlerImpl">
 		<constructor-arg ref="cytoscapeProperties" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
-	<bean name="openBrowser" class="cytoscape.util.internal.OpenBrowserImpl">
+	<bean name="openBrowser" class="cytoscape.internal.util.OpenBrowserImpl">
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
 	<bean name="cyOperatingContext" class="cytoscape.internal.CyOperatingContextImpl">
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
-	<bean name="fileUtil" class="cytoscape.util.internal.FileUtilImpl">
+	<bean name="fileUtil" class="cytoscape.internal.util.FileUtilImpl">
 		<constructor-arg ref="streamUtilServiceRef" />
 	</bean>
-	<bean name="networkNamingUtil" class="cytoscape.util.internal.CyNetworkNamingImpl" />
+	<bean name="networkNamingUtil" class="cytoscape.internal.util.CyNetworkNamingImpl" />
 
-	<bean name="cyHelpBroker" class="cytoscape.view.internal.CyHelpBrokerImpl">
+	<bean name="cyHelpBroker" class="cytoscape.internal.view.CyHelpBrokerImpl">
 	</bean>
 
 	<!-- Dialog Factories -->
-	<bean name="aboutDialogFactory" class="cytoscape.dialogs.internal.AboutDialogFactoryImpl">
+	<bean name="aboutDialogFactory" class="cytoscape.internal.dialogs.AboutDialogFactoryImpl">
 		<constructor-arg ref="openBrowser" />
 	</bean>
 	<bean name="preferencesDialogFactory"
-		class="cytoscape.dialogs.internal.PreferencesDialogFactoryImpl">
+		class="cytoscape.internal.dialogs.PreferencesDialogFactoryImpl">
 		<constructor-arg ref="cyOperatingContext" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 	<bean name="proxyServerDialogFactory"
-		class="cytoscape.dialogs.internal.ProxyServerDialogFactoryImpl">
+		class="cytoscape.internal.dialogs.ProxyServerDialogFactoryImpl">
 		<constructor-arg ref="cytoscapeProperties" />
 		<constructor-arg ref="proxyHandler" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
-	<bean name="bookmarkDialogFactory" class="cytoscape.dialogs.internal.BookmarkDialogFactoryImpl">
+	<bean name="bookmarkDialogFactory" class="cytoscape.internal.dialogs.BookmarkDialogFactoryImpl">
 		<constructor-arg ref="bookmarkServiceRef" />
 		<constructor-arg ref="bookmarksUtilServiceRef" />
 	</bean>
@@ -75,32 +75,32 @@
 	</bean>
 
 	<!-- Task Factories -->
-	<bean name="createNetworkViewTaskFactory" class="cytoscape.xtask.internal.CreateNetworkViewTaskFactoryImpl">
+	<bean name="createNetworkViewTaskFactory" class="cytoscape.internal.xtask.CreateNetworkViewTaskFactoryImpl">
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="networkManager" />
 	</bean>
 
 	<!-- Menu bar -->
-	<bean name="cytoscapeMenus" class="cytoscape.view.internal.CytoscapeMenus">
+	<bean name="cytoscapeMenus" class="cytoscape.internal.view.CytoscapeMenus">
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="tunableInterceptorServiceRef" />
 		<constructor-arg ref="networkManager" />
 	</bean>
 
-	<bean name="networkViewManager" class="cytoscape.view.internal.NetworkViewManager">
+	<bean name="networkViewManager" class="cytoscape.internal.view.NetworkViewManager">
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeProperties" />
 		<constructor-arg ref="cyHelpBroker" />
 		<constructor-arg ref="presentationFactoryServiceRef" />
 	</bean>
 
-	<bean name="birdsEyeViewHandler" class="cytoscape.view.internal.BirdsEyeViewHandler">
+	<bean name="birdsEyeViewHandler" class="cytoscape.internal.view.BirdsEyeViewHandler">
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="presentationFactoryServiceRef" />
 	</bean>
 
-	<bean name="networkPanel" class="cytoscape.view.internal.NetworkPanel">
+	<bean name="networkPanel" class="cytoscape.internal.view.NetworkPanel">
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="birdsEyeViewHandler" />
@@ -111,7 +111,7 @@
 
 
 	<!-- Cytoscape Desktop -->
-	<bean name="cytoscapeDesktop" class="cytoscape.view.internal.CytoscapeDesktop">
+	<bean name="cytoscapeDesktop" class="cytoscape.internal.view.CytoscapeDesktop">
 		<constructor-arg ref="cytoscapeMenus" />
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkPanel" />

@@ -1,4 +1,4 @@
-package cytoscape.dialogs.internal;
+package cytoscape.internal.dialogs;
 
 import java.awt.Frame;
 

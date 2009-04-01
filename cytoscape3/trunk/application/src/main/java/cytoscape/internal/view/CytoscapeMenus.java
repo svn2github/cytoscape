@@ -35,7 +35,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.view.internal;
+package cytoscape.internal.view;
 
 import cytoscape.util.CyAction;
 import cytoscape.util.CyMenuBar;
@@ -47,8 +47,8 @@ import cytoscape.internal.task.TaskTunableAction;
 
 import cytoscape.view.CyMenus;
 
-import cytoscape.util.internal.CytoscapeMenuBar;
-import cytoscape.util.internal.CytoscapeToolBar;
+import cytoscape.internal.util.CytoscapeMenuBar;
+import cytoscape.internal.util.CytoscapeToolBar;
 
 import javax.swing.JMenu;
 

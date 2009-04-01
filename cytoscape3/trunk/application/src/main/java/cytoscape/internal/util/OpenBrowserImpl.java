@@ -40,7 +40,7 @@
 // $Date: 2008-02-26 16:37:29 -0800 (Tue, 26 Feb 2008) $
 // $Author: kono $
 //-------------------------------------------------------------------------
-package cytoscape.util.internal;
+package cytoscape.internal.util;
 
 
 import java.io.IOException;

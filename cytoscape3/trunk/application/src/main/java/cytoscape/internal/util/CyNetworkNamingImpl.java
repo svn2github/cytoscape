@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.util.internal;
+package cytoscape.internal.util;
 
 import java.awt.Component;
 
@@ -51,7 +51,7 @@ import cytoscape.util.CyNetworkNaming;
  */
 public class CyNetworkNamingImpl implements CyNetworkNaming {
 	/* (non-Javadoc)
-	 * @see cytoscape.util.internal.CyNetworkNaming#getSuggestedSubnetworkTitle(org.cytoscape.model.CyNetwork, cytoscape.CyNetworkManager)
+	 * @see cytoscape.internal.util.CyNetworkNaming#getSuggestedSubnetworkTitle(org.cytoscape.model.CyNetwork, cytoscape.CyNetworkManager)
 	 */
 	public String getSuggestedSubnetworkTitle(CyNetwork parentNetwork, CyNetworkManager netmgr) {
 		for (int i = 0; true; i++) {
@@ -64,7 +64,7 @@ public class CyNetworkNamingImpl implements CyNetworkNaming {
 	}
 
 	/* (non-Javadoc)
-	 * @see cytoscape.util.internal.CyNetworkNaming#getSuggestedNetworkTitle(java.lang.String, cytoscape.CyNetworkManager)
+	 * @see cytoscape.internal.util.CyNetworkNaming#getSuggestedNetworkTitle(java.lang.String, cytoscape.CyNetworkManager)
 	 */
 	public String getSuggestedNetworkTitle(String desiredTitle, CyNetworkManager netmgr) {
 		for (int i = 0; true; i++) {
@@ -84,7 +84,7 @@ public class CyNetworkNamingImpl implements CyNetworkNaming {
 	}
 
 	/* (non-Javadoc)
-	 * @see cytoscape.util.internal.CyNetworkNaming#editNetworkTitle(org.cytoscape.model.CyNetwork, java.awt.Component, cytoscape.CyNetworkManager)
+	 * @see cytoscape.internal.util.CyNetworkNaming#editNetworkTitle(org.cytoscape.model.CyNetwork, java.awt.Component, cytoscape.CyNetworkManager)
 	 */
 	public void editNetworkTitle(CyNetwork network, Component parent, CyNetworkManager netmgr) {
 		String pname = network.attrs().get("name",String.class);
