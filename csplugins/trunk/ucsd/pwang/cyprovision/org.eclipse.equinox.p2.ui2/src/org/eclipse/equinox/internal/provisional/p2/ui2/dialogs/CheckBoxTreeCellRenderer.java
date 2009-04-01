@@ -15,6 +15,7 @@ package org.eclipse.equinox.internal.provisional.p2.ui2.dialogs;
 */
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -38,7 +39,7 @@ import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
+//import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -47,14 +48,26 @@ import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.tree.DefaultTreeCellRenderer;
+//import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.ImageIcon;
+import java.awt.Image;
+
+import org.eclipse.equinox.internal.p2.ui2.model.AvailableIUElement;
+import org.eclipse.equinox.internal.p2.ui2.model.ProvElement;
+
+
 
 /** Provides checkbox-based selection of tree nodes.  Override the protected
  * methods to adapt this renderer's behavior to your local tree table flavor.
  * No change listener notifications are provided.
  */
+//public class CheckBoxTreeCellRenderer extends DefaultTreeCellRenderer {
+
 public class CheckBoxTreeCellRenderer implements TreeCellRenderer {
     
     public static final int UNCHECKABLE = 0;
@@ -72,7 +85,7 @@ public class CheckBoxTreeCellRenderer implements TreeCellRenderer {
     private Set checkedPaths;
     private JTree tree;
     private MouseHandler handler;
-
+    
     /** Create a per-tree instance of the checkbox renderer. */
     public CheckBoxTreeCellRenderer(JTree tree, TreeCellRenderer original) {
         this.tree = tree;
@@ -135,11 +148,11 @@ public class CheckBoxTreeCellRenderer implements TreeCellRenderer {
         return tree.getRowForPath(path);
     }
     
-    protected void repaint(Rectangle r) {
+    public void repaint(Rectangle r) {
         tree.repaint(r);
     }
     
-    protected void repaint() {
+    public void repaint() {
         tree.repaint();
     }
     
@@ -150,7 +163,8 @@ public class CheckBoxTreeCellRenderer implements TreeCellRenderer {
     }
     
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        installMouseHandler();
+        
+    	installMouseHandler();
         TreePath path = getPathForRow(row);
         state = UNCHECKABLE; 
         if (path != null) {
@@ -170,12 +184,16 @@ public class CheckBoxTreeCellRenderer implements TreeCellRenderer {
         checkBox.getModel().setRollover(mouseRow == row && mouseInCheck);
 
         Component c = renderer.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+        
         checkBox.setForeground(c.getForeground());
+        checkBox.setBackground(c.getBackground());
+        
         if (c instanceof JLabel) {
             JLabel label = (JLabel)c;
             // Augment the icon to include the checkbox
             label.setIcon(new CompoundIcon(label.getIcon()));
         }
+
         return c;
     }
     
@@ -313,6 +331,10 @@ public class CheckBoxTreeCellRenderer implements TreeCellRenderer {
         return (TreePath[]) checkedPaths.toArray(new TreePath[checkedPaths.size()]);
     }
     
+    public void clearCheckedPaths(){
+    	checkedPaths = new HashSet();
+    }
+    
     protected class MouseHandler extends MouseAdapter implements MouseMotionListener {
         public void mouseEntered(MouseEvent e) {
             updateMouseLocation(e.getPoint());
@@ -428,7 +450,7 @@ public class CheckBoxTreeCellRenderer implements TreeCellRenderer {
             checked += paths[i] + "\n";
         }
         return checked;
-    }
+    } 
     
     public static void main(String[] args) {
         try {
