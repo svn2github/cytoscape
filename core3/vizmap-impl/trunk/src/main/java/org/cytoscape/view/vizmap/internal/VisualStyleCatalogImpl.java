@@ -45,8 +45,8 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleCatalog;
 import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
 import org.cytoscape.view.vizmap.events.VisualStyleDestroyedListener;
-import org.cytoscape.view.vizmap.events.internal.VisualStyleCreatedEventImpl;
-import org.cytoscape.view.vizmap.events.internal.VisualStyleDestroyedEventImpl;
+import org.cytoscape.view.vizmap.internal.events.VisualStyleCreatedEventImpl;
+import org.cytoscape.view.vizmap.internal.events.VisualStyleDestroyedEventImpl;
 
 
 /**

@@ -2,5 +2,5 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Private-Package: ${bundle.namespace}.internal,${bundle.namespace}.events.internal
+Private-Package: ${bundle.namespace}.internal,${bundle.namespace}.internal.*
 
