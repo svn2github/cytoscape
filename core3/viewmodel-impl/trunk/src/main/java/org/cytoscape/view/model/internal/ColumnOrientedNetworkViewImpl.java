@@ -60,9 +60,9 @@ import org.cytoscape.view.model.events.SubsetCreatedListener;
 import org.cytoscape.view.model.events.SubsetDestroyedListener;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedListener;
-import org.cytoscape.view.model.events.internal.SubsetChangedEventImpl;
-import org.cytoscape.view.model.events.internal.SubsetCreatedEventImpl;
-import org.cytoscape.view.model.events.internal.SubsetDestroyedEventImpl;
+import org.cytoscape.view.model.internal.events.SubsetChangedEventImpl;
+import org.cytoscape.view.model.internal.events.SubsetCreatedEventImpl;
+import org.cytoscape.view.model.internal.events.SubsetDestroyedEventImpl;
 
 /**
  *

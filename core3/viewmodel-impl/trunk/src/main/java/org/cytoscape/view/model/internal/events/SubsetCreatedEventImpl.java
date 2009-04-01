@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.view.model.events.internal;
+package org.cytoscape.view.model.internal.events;
 
 import org.cytoscape.view.model.CyNetworkView;
 
@@ -40,14 +40,14 @@ import org.cytoscape.view.model.CyNetworkView;
 /**
  * DOCUMENT ME!
   */
-public class SubsetChangedEventImpl extends AbstractSubsetEvent {
+public class SubsetCreatedEventImpl extends AbstractSubsetEvent {
 	/**
-	 * Creates a new SubsetChangedEventImpl object.
+	 * Creates a new SubsetCreatedEventImpl object.
 	 *
 	 * @param networkView  DOCUMENT ME!
 	 * @param subsetName  DOCUMENT ME!
 	 */
-	public SubsetChangedEventImpl(final CyNetworkView networkView, final String subsetName) {
+	public SubsetCreatedEventImpl(final CyNetworkView networkView, final String subsetName) {
 		super(networkView, subsetName);
 	}
 }
