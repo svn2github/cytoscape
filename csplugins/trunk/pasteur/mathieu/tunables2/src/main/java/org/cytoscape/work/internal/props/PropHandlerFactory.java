@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.props;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URL;
 
@@ -11,7 +12,6 @@ import org.cytoscape.work.util.BoundedInteger;
 import org.cytoscape.work.util.BoundedLong;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
-import org.cytoscape.work.util.myFile;
 
 public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 
@@ -43,7 +43,7 @@ public class PropHandlerFactory<T> implements HandlerFactory<PropHandler> {
 			return new ListSinglePropHandler<T>(f,o,t);
 		else if (type == ListMultipleSelection.class)
 			return new ListMultiplePropHandler<T>(f,o,t);
-		else if (type == myFile.class)
+		else if (type == File.class)
 			return new FilePropHandler(f,o,t);
 //		else if(type == URL.class)
 //			return new URLPropHandler(f,o,t);

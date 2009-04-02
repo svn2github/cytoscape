@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.props;
 
+import java.awt.Component;
 import java.util.*;
 
 import org.cytoscape.work.AbstractTunableInterceptor;
@@ -13,7 +14,7 @@ public class StorePropsInterceptor extends AbstractTunableInterceptor<PropHandle
 		this.inputProps = inputProps;
 	}
 
-	public int createUI(Object... objs) {
+	public boolean createUI(Object... objs) {
 		java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
@@ -23,7 +24,7 @@ public class StorePropsInterceptor extends AbstractTunableInterceptor<PropHandle
 		for (PropHandler p : lh) {
 			inputProps.putAll(p.getProps());
 		}
-		return 0;
+		return false;
 	}
 
 }

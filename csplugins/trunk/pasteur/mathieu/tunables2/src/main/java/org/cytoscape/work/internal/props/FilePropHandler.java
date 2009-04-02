@@ -7,18 +7,17 @@ import java.util.*;
 
 import org.cytoscape.work.AbstractPropHandler;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.util.myFile;
 
 
 public class FilePropHandler extends AbstractPropHandler {
 
-	myFile file;
+	File file;
 	List<String> list;
 	
 	public FilePropHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
-			file = (myFile) f.get(o);
+			file = (File) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 	}
 
@@ -31,7 +30,6 @@ public class FilePropHandler extends AbstractPropHandler {
 	public void add(Properties p) {
 		//list = new ArrayList<String>();
 		//list.add(0,"");
-		file.setPath("");
 		//infile = new File("");
 		//System.out.println("path = " + file.getAbsolutePath());
 		try{
@@ -46,7 +44,7 @@ public class FilePropHandler extends AbstractPropHandler {
 		if ( p.containsKey( propKey ) ) {
 			Object val = p.get( propKey );
 			if ( val != null )
-				file.setPath((String) val);
+				//file.setPath((String) val);
 				f.set(o, file);
 			}
         } catch (IllegalAccessException iae) {
