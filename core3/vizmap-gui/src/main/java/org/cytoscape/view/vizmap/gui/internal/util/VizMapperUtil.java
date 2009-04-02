@@ -1,18 +1,26 @@
 package org.cytoscape.view.vizmap.gui.internal.util;
 
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualStyleCatalog;
 
+/**
+ * Utilities for setting up VizMap GUI.
+ * 
+ * @author kono
+ *
+ */
 public class VizMapperUtil {
 
-	private VisualMappingManager vmm;
+	private VisualStyleCatalog vsCatalog;
 
-	public VizMapperUtil(VisualMappingManager vmm) {
-		this.vmm = vmm;
+	public VizMapperUtil(VisualStyleCatalog vsCatalog) {
+		this.vsCatalog = vsCatalog;
 	}
 
 	/**
@@ -23,12 +31,12 @@ public class VizMapperUtil {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public String getStyleName(Component parentComponent, VisualStyle s) {
+	public String getStyleName(Component parentComponent, VisualStyle vs) {
 		String suggestedName = null;
+		List<String> vsNames = getVisualStyleNames();
 
-		if (s != null)
-			suggestedName = vmm.getCalculatorCatalog().checkVisualStyleName(
-					s.getName());
+		if (vs != null)
+			suggestedName = vs.getTitle() + " new";
 
 		// keep prompting for input until user cancels or we get a valid
 		// name
@@ -38,25 +46,25 @@ public class VizMapperUtil {
 					"Enter Visual Style Name", JOptionPane.QUESTION_MESSAGE,
 					null, null, suggestedName);
 
-			if (ret == null)
-				return null;
-
-			String newName = vmm.getCalculatorCatalog().checkVisualStyleName(
-					ret);
-
-			if (newName.equals(ret))
+			if (vsNames.contains(ret) == false)
 				return ret;
 
-			int alt = JOptionPane.showConfirmDialog(parentComponent,
+			JOptionPane.showMessageDialog(parentComponent,
 					"Visual style with name " + ret
-							+ " already exists,\nrename to " + newName
-							+ " okay?", "Duplicate visual style name",
-					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+							+ " already exists!", "Duplicate visual style name",
+					JOptionPane.WARNING_MESSAGE,
 					null);
-
-			if (alt == JOptionPane.YES_OPTION)
-				return newName;
 		}
+	}
+	
+	
+	private List<String> getVisualStyleNames() {
+		final List<String> vsNames = new ArrayList<String>();
+		
+		for(VisualStyle vs: vsCatalog.listOfVisualStyles())
+			vsNames.add(vs.getTitle());
+		
+		return vsNames;
 	}
 
 }
