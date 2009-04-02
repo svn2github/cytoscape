@@ -2,6 +2,9 @@
 package org.cytoscape.work.internal.gui;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
 
 import org.cytoscape.work.AbstractGuiHandler;
@@ -30,10 +33,9 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
 		jta.setWrapStyleWord(true);
 		panel.add(jta,BorderLayout.WEST);
 		jta.setBackground(null);
-		jta.setEditable(false);     
+		jta.setEditable(false);
 		combobox = new JComboBox(lss.getPossibleValues().toArray());
 		combobox.setFont(new Font("sansserif",Font.PLAIN,11));
-//		combobox.setSelectedIndex(0);
 		combobox.addActionListener(this);
 		panel.add(combobox,BorderLayout.EAST);
 	}
@@ -48,9 +50,9 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
                 f.set(o,lss);
             }catch(Exception e){e.printStackTrace();}
         }
-        //System.out.println(lss.getSelectedValue());
 	}
-
+	
+	
 	@SuppressWarnings("unchecked")
 	public String getState() {
 		selected = (T) combobox.getSelectedItem();	
