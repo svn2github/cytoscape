@@ -7,6 +7,7 @@ import java.lang.reflect.*;
 import javax.swing.*;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Tunable.Param;
 
 public class FloatHandler extends AbstractGuiHandler {
 
@@ -20,16 +21,21 @@ public class FloatHandler extends AbstractGuiHandler {
 		super(f,o,t);
 		try{
 			this.myFloat=(Float)f.get(o);
+			jtf = new JTextField(f.get(o).toString(), 10);
 		}catch(Exception e){e.printStackTrace();}
 		panel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel(t.description());
 		label.setFont(new Font(null, Font.PLAIN,12));
-		panel.add(label,BorderLayout.WEST);
-		try {
-			jtf = new JTextField(f.get(o).toString(), 10);
-		} catch (Exception e) { e.printStackTrace(); }
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
-		panel.add(jtf,BorderLayout.EAST);
+
+		for(Param par : t.alignment())if(par==Param.horizontal){
+			panel.add(label,BorderLayout.NORTH);
+			panel.add(jtf,BorderLayout.SOUTH);
+		}
+		else{
+			panel.add(label,BorderLayout.WEST);
+			panel.add(jtf,BorderLayout.EAST);
+		}
 	}
 
 	public void handle() {

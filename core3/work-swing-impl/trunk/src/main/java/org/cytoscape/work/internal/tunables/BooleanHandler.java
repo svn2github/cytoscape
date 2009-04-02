@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Tunable.Param;
 
 
 
@@ -26,21 +27,26 @@ public class BooleanHandler extends AbstractGuiHandler {
 		}catch(Exception e){e.printStackTrace();}
 		
 		panel = new JPanel(new BorderLayout());
-		try {
-			jcb = new JCheckBox();
-			jcb.setSelected(myBoolean.booleanValue());
-			JLabel label = new JLabel(t.description());
-			label.setFont(new Font(null, Font.PLAIN,12));
-			//jcb.addActionListener(this);
+		jcb = new JCheckBox();
+		jcb.setSelected(myBoolean.booleanValue());
+		JLabel label = new JLabel(t.description());
+		label.setFont(new Font(null,Font.PLAIN,12));
+		jcb.addActionListener(this);
+
+		for(Param param : t.alignment())if(param==Param.horizontal){
+			panel.add(label,BorderLayout.NORTH);
+			panel.add(jcb,BorderLayout.SOUTH);
+		}
+		else{
 			panel.add(label,BorderLayout.WEST);
-			panel.add( jcb ,BorderLayout.EAST);
-		} catch (Exception e) { e.printStackTrace(); }
+			panel.add(jcb,BorderLayout.EAST);
+		}
 	}
 
 	public void handle() {
 		try {
 		f.set(o,jcb.isSelected());
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) {e.printStackTrace();}
 	}
 	
 
@@ -48,7 +54,6 @@ public class BooleanHandler extends AbstractGuiHandler {
 		String s;
 		try {
 			s = f.get(o).toString();
-		//s = Boolean.toString(f.getBoolean(o));
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			s = "";

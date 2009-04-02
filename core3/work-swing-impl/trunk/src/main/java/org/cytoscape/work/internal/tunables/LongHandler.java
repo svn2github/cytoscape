@@ -7,28 +7,34 @@ import java.lang.reflect.*;
 import javax.swing.*;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Tunable.Param;
 
 public class LongHandler extends AbstractGuiHandler {
 
-	JTextField jtf;
-	Double value = null;
+	private JTextField jtf;
+	private Double value = null;
 	Long myLong;
-	String newline = System.getProperty("line.separator");
+	private String newline = System.getProperty("line.separator");
 
 	protected LongHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
 			this.myLong=(Long)f.get(o);
+			jtf = new JTextField( f.get(o).toString(), 10);
 		}catch(Exception e){e.printStackTrace();}
 		panel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel(t.description());
 		label.setFont(new Font(null, Font.PLAIN,12));
-		panel.add(label,BorderLayout.WEST);
-		try {
-			jtf = new JTextField( f.get(o).toString(), 10);
-		} catch (Exception e) { e.printStackTrace(); }
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
-		panel.add(jtf,BorderLayout.EAST);			
+
+		for(Param par : t.alignment())if(par==Param.horizontal){
+			panel.add(label,BorderLayout.NORTH);
+			panel.add(jtf,BorderLayout.SOUTH);	
+		}
+		else{
+			panel.add(label,BorderLayout.WEST );
+			panel.add(jtf,BorderLayout.EAST);
+		}
 	}
 
 	public void handle() {
