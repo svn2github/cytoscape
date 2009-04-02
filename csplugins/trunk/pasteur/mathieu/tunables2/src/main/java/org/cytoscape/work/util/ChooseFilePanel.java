@@ -19,12 +19,12 @@ public class ChooseFilePanel extends JPanel implements ActionListener{
 
 	JTextField jtf;
 	File[] myNetworkFile;
-	myFile file;
+	File file;
 	java.util.List<String> paths;
 	//CyFileFilter[] tempCFF;
 	int LOAD = FileDialog.LOAD;
 	
-	public ChooseFilePanel(myFile infile){
+	public ChooseFilePanel(File infile){
 		
 		this.file = infile;
 		setLayout(new BorderLayout());
@@ -38,7 +38,7 @@ public class ChooseFilePanel extends JPanel implements ActionListener{
 		paths = new ArrayList<String>();
 	}
 	
-	public myFile getFile(){
+	public File getFile(){
 		return file;
 	}
 	
@@ -63,8 +63,8 @@ public class ChooseFilePanel extends JPanel implements ActionListener{
 				tooltip.append("</body></html>");
 				jtf.setText(fileNameSB.toString());
 				jtf.setToolTipText(tooltip.toString());
-				file.setFiles(myNetworkFile);
-				file.setPaths(paths);
+				//file.setFiles(myNetworkFile);
+				//file.setPaths(paths);
 			}
 		}
 	}
