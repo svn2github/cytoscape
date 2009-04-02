@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.cl;
 
+import java.awt.Component;
 import java.lang.reflect.*;
 import java.lang.annotation.*;
 import java.util.*;
@@ -19,7 +20,7 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		this.args = args;
 	}
 
-	public int createUI(Object ... objs) {
+	public boolean createUI(Object ... objs) {
 
 		List<CLHandler> lh = new ArrayList<CLHandler>();
 
@@ -58,7 +59,7 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 
 		for ( CLHandler h : lh )
 			h.handleLine( line );
-		return 0;
+		return false;
 	}
 	
 	
