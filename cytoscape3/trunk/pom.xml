@@ -305,7 +305,6 @@
 		<module>phoebe.dnd</module>
 		<module>layout</module>
 		<module>wrappers</module>
-		<module>commons.cli</module>
 		<module>application</module>
 		<!--
 		<module>webservice</module>

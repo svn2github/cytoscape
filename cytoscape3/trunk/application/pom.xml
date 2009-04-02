@@ -246,8 +246,8 @@
 
 		<!-- our custom version of CLI -->
 		<dependency>
-			<groupId>org.apache</groupId>
-			<artifactId>commons.cli</artifactId>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>cy-commons-cli</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
