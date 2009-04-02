@@ -27,16 +27,16 @@ public class input implements Command {
 	public BoundedInteger bounded = new BoundedInteger(0,45,130,false,true);
 
 	
-	@Tunable(description = "Linkage",group={"Hierarchical cluster Settings"})
+	@Tunable(description = "Linkage",group={"Hierarchical cluster Settings",""},alignment={Param.vertical,Param.horizontal})
 	public ListSingleSelection<String> linkages = new ListSingleSelection<String>("pairwise average-linkage","pairwise single-linkage","pairwise maximum-linkage","pairwise centroid-linkage");
 
-	@Tunable(description = "Distance Metric",group={"Hierarchical cluster Settings"})
+	@Tunable(description = "Distance Metric",group={"Hierarchical cluster Settings",""})
 	public ListSingleSelection<String> distances = new ListSingleSelection<String>("Euclidean Distance","City block distance","Pearson correlation","Pearson correlation, absolute value");
 
 	@Tunable(description="Array sources",group={"Hierarchical cluster Settings","Source for array data"})
 	public ListMultipleSelection<String> sources = new ListMultipleSelection<String>("node.degree","node.gal1RGexp","node.gal1RGsig","node.gal4RGexp","node.gal4RGsig","node.gal80RGexp");
 	
-	@Tunable(description="Cluster attributes as well as nodes",group={"Hierarchical cluster Settings"})
+	@Tunable(description="Cluster attributes as well as nodes",group={"Hierarchical cluster Settings"},alignment={Param.vertical})
 	public Boolean bool = new Boolean(false);
 	
 	
