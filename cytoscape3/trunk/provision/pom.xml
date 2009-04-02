@@ -237,38 +237,23 @@
 
 	<!-- BEGIN presentation -->
     <dependency>
-        <groupId>cytoscape</groupId>
-        <artifactId>render.stateful</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>cytoscape</groupId>
-        <artifactId>render.immed</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>cytoscape</groupId>
-        <artifactId>render.export</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>cytoscape</groupId>
-        <artifactId>util.intr</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>cytoscape</groupId>
-        <artifactId>geom.spacial</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>cytoscape</groupId>
-        <artifactId>geom.rtree</artifactId>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>graph-render</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
         <groupId>org.cytoscape</groupId>
-        <artifactId>ding</artifactId>
+        <artifactId>util-intr</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>spacial</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>ding-presentation-impl</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
 	<!-- END presentation -->
