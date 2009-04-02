@@ -54,6 +54,13 @@ public interface VisualStyle {
 	public String getTitle();
 	
 	/**
+	 * Set new title of this VS.
+	 * 
+	 * @param title New title.
+	 */
+	public void setTitle(String title);
+	
+	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param c DOCUMENT ME!
