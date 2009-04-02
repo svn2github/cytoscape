@@ -44,6 +44,15 @@ import org.cytoscape.view.model.VisualProperty;
  * View object.
  */
 public interface VisualStyle {
+	
+	/**
+	 * Returns name of this visual style.  This should NOT be used as ID of 
+	 * this Visual Style.  Just for GUI components.
+	 * 
+	 * @return title of this visual style
+	 */
+	public String getTitle();
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
