@@ -13,4 +13,5 @@ public @interface Tunable{
 	String xorKey() default "";
 	String dependsOn() default "";
 	public enum Param {slider,nothing,horizontal,vertical,uncollapsed,collapsed}
+	Param[] alignment() default {};
 }
