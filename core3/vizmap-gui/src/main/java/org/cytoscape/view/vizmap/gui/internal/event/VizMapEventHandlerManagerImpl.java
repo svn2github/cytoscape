@@ -3,7 +3,7 @@ package org.cytoscape.view.vizmap.gui.internal.event;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;
@@ -25,9 +25,9 @@ public class VizMapEventHandlerManagerImpl implements VizMapEventHandlerManager 
 
 	private void createHandlers() {
 		AbstractVizMapEventHandler windowEventHandler = new EditorWindowEventHandler();
-		eventHandlers.put(EditorFactory.EDITOR_WINDOW_CLOSED,
+		eventHandlers.put(EditorManager.EDITOR_WINDOW_CLOSED,
 				windowEventHandler);
-		eventHandlers.put(EditorFactory.EDITOR_WINDOW_OPENED,
+		eventHandlers.put(EditorManager.EDITOR_WINDOW_OPENED,
 				windowEventHandler);
 
 		eventHandlers.put(Cytoscape.CYTOSCAPE_INITIALIZED,

@@ -44,12 +44,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.VisualPropertyCatalog;
 
 class EdgeBypass extends VizMapBypass {
-	EdgeBypass(EditorFactory ef,  VisualPropertyCatalog vpCatalog) {
+	EdgeBypass(EditorManager ef,  VisualPropertyCatalog vpCatalog) {
 		super(ef, vpCatalog);
 	}
     JMenuItem addMenu(CyEdge e) {

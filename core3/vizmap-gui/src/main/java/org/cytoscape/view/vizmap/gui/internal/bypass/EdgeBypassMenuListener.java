@@ -38,7 +38,7 @@ package org.cytoscape.view.vizmap.gui.internal.bypass;
 
 import org.cytoscape.view.EdgeContextMenuListener;
 import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 
 import javax.swing.*;
 
@@ -50,8 +50,8 @@ import javax.swing.*;
 class EdgeBypassMenuListener
     implements EdgeContextMenuListener {
 
-	private EditorFactory ef;
-    EdgeBypassMenuListener(EditorFactory ef) {
+	private EditorManager ef;
+    EdgeBypassMenuListener(EditorManager ef) {
 		this.ef = ef;
     }
 

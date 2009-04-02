@@ -8,8 +8,8 @@ import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.model.VisualProperty;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
@@ -20,11 +20,11 @@ public class EditorWindowManager {
 	private Map<VisualProperty, JDialog> editorWindowMap;
 
 	private PropertyRendererRegistry rendReg;
-	private EditorFactory editorFactory;
+	private EditorManager editorFactory;
 	private PropertySheetPanel propertySheetPanel;
 
 	public EditorWindowManager(PropertyRendererRegistry rendReg,
-			EditorFactory editorFactory, PropertySheetPanel propertySheetPanel) {
+			EditorManager editorFactory, PropertySheetPanel propertySheetPanel) {
 		this.editorFactory = editorFactory;
 		this.rendReg = rendReg;
 		this.propertySheetPanel = propertySheetPanel;
@@ -34,9 +34,9 @@ public class EditorWindowManager {
 
 	public void manageWindow(final String status, VisualProperty vpt,
 			Object source) {
-		if (status.equals(EditorFactory.EDITOR_WINDOW_OPENED)) {
+		if (status.equals(EditorManager.EDITOR_WINDOW_OPENED)) {
 			this.editorWindowMap.put(vpt, (JDialog) source);
-		} else if (status.equals(EditorFactory.EDITOR_WINDOW_CLOSED)) {
+		} else if (status.equals(EditorManager.EDITOR_WINDOW_CLOSED)) {
 			final VisualProperty type = vpt;
 
 			/*
@@ -87,7 +87,7 @@ public class EditorWindowManager {
 
 		for (VisualProperty vpt : typeSet) {
 			JDialog window = editorWindowMap.get(vpt);
-			manageWindow(EditorFactory.EDITOR_WINDOW_CLOSED, vpt, null);
+			manageWindow(EditorManager.EDITOR_WINDOW_CLOSED, vpt, null);
 			window.dispose();
 			keySet.add(vpt);
 		}

@@ -57,18 +57,14 @@ import javax.swing.JSplitPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
-import org.cytoscape.view.vizmap.gui.internal.DropDownMenuButton;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 import org.cytoscape.view.vizmap.gui.theme.ColorManager;
 import org.cytoscape.view.vizmap.gui.theme.IconManager;
-import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualMappingManager;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
@@ -100,26 +96,17 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	protected AttributeEventsListener edgeAttrListener;
 	protected AttributeEventsListener networkAttrListener;
 	
-	@Resource
 	protected CySwingApplication cytoscapeDesktop;
-	@Resource
 	protected DefaultViewEditor defViewEditor;
-	@Resource
 	protected VisualMappingManager vmm;
 
-	@Resource
 	protected ColorManager colorMgr;
-	@Resource
 	protected IconManager iconMgr;
-	@Resource
 	protected VizMapperMenuManager menuMgr;
-	@Resource
-	protected EditorFactory editorFactory;
-	@Resource
+	protected EditorManager editorFactory;
 	protected VizMapperUtil vizMapperUtil;
 
 	// Action (context menu) manager
-	@Resource
 	protected Set<VizMapUIAction> actionList;
 
 	/*
@@ -131,16 +118,13 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	protected PropertyEditor edgeNumericalAttrEditor;
 	protected PropertyEditor mappingTypeEditor;
 
-	@Resource
 	protected PropertySheetPanel propertySheetPanel;
 
 	VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 
 	protected Map<String, Image> defaultImageManager;
 
-	@Resource
 	protected DefaultTableCellRenderer emptyBoxRenderer;
-	@Resource
 	protected DefaultTableCellRenderer filledBoxRenderer;
 
 	protected static final Map<Object, Icon> nodeShapeIcons = NodeShape
@@ -150,9 +134,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	protected static final Map<Object, Icon> lineTypeIcons = LineStyle
 			.getIconSet();
 
-	@Resource
 	protected PropertyRendererRegistry rendReg;
-	@Resource
 	protected PropertyEditorRegistry editorReg;
 
 	protected VizMapEventHandlerManager vizMapEventHandlerManager;
@@ -167,7 +149,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	public AbstractVizMapperPanel(CySwingApplication desktop,
 			DefaultViewEditor defViewEditor, IconManager iconMgr,
 			ColorManager colorMgr, VisualMappingManager vmm,
-			VizMapperMenuManager menuMgr, EditorFactory editorFactory,
+			VizMapperMenuManager menuMgr, EditorManager editorFactory,
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,

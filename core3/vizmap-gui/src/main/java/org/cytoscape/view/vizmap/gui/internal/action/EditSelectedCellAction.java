@@ -43,7 +43,7 @@ import javax.annotation.Resource;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
@@ -68,7 +68,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 
 	private static final long serialVersionUID = -6102797200439573667L;
 	@Resource
-	private EditorFactory editorFactory;
+	private EditorManager editorFactory;
 
 	/**
 	 * Edit all selected cells at once.

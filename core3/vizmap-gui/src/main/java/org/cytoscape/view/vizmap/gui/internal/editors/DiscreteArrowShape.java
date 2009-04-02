@@ -33,8 +33,8 @@ public class DiscreteArrowShape implements EditorDisplayer {
 		return ArrowShape.class;
 	}
 
-	public EditorDisplayer.Type getEditorType() {
-		return EditorDisplayer.Type.DISCRETE;
+	public EditorDisplayer.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
 	public Object showEditor(Component parentComponent, VisualProperty type) {

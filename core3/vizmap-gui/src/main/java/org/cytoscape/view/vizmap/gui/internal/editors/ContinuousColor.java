@@ -38,7 +38,7 @@ package org.cytoscape.view.vizmap.gui.internal.editors;
 
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.view.vizmap.gui.internal.editors.continuous.GradientEditorPanel;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.VisualProperty;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -76,8 +76,8 @@ public class ContinuousColor implements EditorDisplayer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public EditorDisplayer.Type getEditorType() {
-		return EditorDisplayer.Type.CONTINUOUS;
+	public EditorDisplayer.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.CONTINUOUS;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class ContinuousColor implements EditorDisplayer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object showEditor(Component parentComponent, VisualProperty type) {
+	public Object showEditor(Component parentComponent, VisualProperty<?> type) {
 		return GradientEditorPanel.showDialog(450, 180, "Gradient Editor", type, parentComponent);
 	}
 

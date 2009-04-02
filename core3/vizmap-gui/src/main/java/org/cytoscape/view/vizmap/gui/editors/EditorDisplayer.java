@@ -31,34 +31,33 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.gui.editors;
 
-import org.cytoscape.view.model.VisualProperty;
-
 import java.awt.Component;
-
 import java.beans.PropertyEditor;
 
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.view.model.VisualProperty;
 
 /**
  *
   */
 public interface EditorDisplayer {
-	public enum Type {
-		CONTINUOUS,
-		DISCRETE,
-		PASSTHROUGH;
+	
+	enum MappingType {
+		CONTINUOUS, DISCRETE, PASSTHROUGH;
 	}
+
 	public Class<?> getDataType();
 
-	public Type getEditorType();
+	public MappingType getEditorType();
 
-	public Object showEditor(Component parentComponent, VisualProperty type);
+	public Object showEditor(Component parentComponent, VisualProperty<?> type);
 
 	public PropertyEditor getCellEditor();
 
-	public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height);
+	public TableCellRenderer getCellRenderer(VisualProperty<?> type, int width,
+			int height);
 }

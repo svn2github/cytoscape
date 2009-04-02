@@ -62,8 +62,10 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
@@ -94,8 +96,9 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	
 	private final static long serialVersionUID = 1202339876675416L;
 	
-	private static final Set<VisualProperty> EDGE_PROPS;
-	private static final Set<VisualProperty> NODE_PROPS;
+	private static final Set<VisualProperty<?>> EDGE_PROPS;
+	private static final Set<VisualProperty<?>> NODE_PROPS;
+	
 	private VisualMappingManager vmm;
 	private final NodeAppearanceCalculator nac;
 	
@@ -106,7 +109,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		NODE_PROPS = new TreeSet<VisualProperty>(VisualProperty.getNodeVisualPropertyList());
 	}
 
-	private EditorFactory editorFactory;
+	private EditorManager editorFactory;
 	
 
 	/**
@@ -118,7 +121,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	 *            DOCUMENT ME!
 	 */
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
-	                                final EditorFactory editorFactory, VisualMappingManager vmm, CyNetworkManager cyNetworkManager) {
+	                                final EditorManager editorFactory, VisualMappingManager vmm, CyNetworkManager cyNetworkManager) {
 		super();
 		this.vmm = vmm;
 		this.cyNetworkManager = cyNetworkManager;

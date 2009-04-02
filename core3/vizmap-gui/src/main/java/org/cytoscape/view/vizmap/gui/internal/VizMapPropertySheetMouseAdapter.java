@@ -10,7 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
@@ -30,7 +30,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 	@Resource
 	private VisualMappingManager vmm;
 	@Resource
-	private EditorFactory editorFactory;
+	private EditorManager editorFactory;
 	
 	@Resource
 	private PropertyEditorRegistry editorReg;

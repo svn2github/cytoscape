@@ -38,7 +38,7 @@ package org.cytoscape.view.vizmap.gui.internal.bypass;
 
 import org.cytoscape.view.NodeContextMenuListener;
 import org.cytoscape.view.NodeView;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 
 
 import javax.swing.*;
@@ -51,8 +51,8 @@ import java.awt.*;
  * When a node is selected it calls bypass andd add
  */
 class NodeBypassMenuListener implements NodeContextMenuListener {
-	private EditorFactory ef;
-	NodeBypassMenuListener(EditorFactory ef) {
+	private EditorManager ef;
+	NodeBypassMenuListener(EditorManager ef) {
 		this.ef = ef;
 	}
 

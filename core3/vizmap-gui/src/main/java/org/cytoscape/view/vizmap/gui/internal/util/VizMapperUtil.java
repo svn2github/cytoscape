@@ -4,8 +4,8 @@ import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 public class VizMapperUtil {
 

@@ -36,14 +36,15 @@
 
 package org.cytoscape.view.vizmap.gui.internal.editors.discrete;
 
-import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
 import java.util.Map;
+
+import javax.swing.Icon;
+import javax.swing.JTable;
+
+import org.cytoscape.view.model.VisualProperty;
+
+import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
 
 /**
@@ -53,16 +54,18 @@ import java.util.Map;
  */
 public class ShapeCellRenderer extends DefaultCellRenderer {
 	private final static long serialVersionUID = 1202339868999601L;
+	
 	private final Map<Object, Icon> icons;
-	private VisualProperty type;
+	private VisualProperty<?> type;
 
 	/**
 	 * Creates a new ShapeCellRenderer object.
 	 *
 	 * @param type DOCUMENT ME!
 	 */
-	public ShapeCellRenderer(VisualProperty type) {
+	public ShapeCellRenderer(VisualProperty<?> type) {
 		this.type = type;
+		this.type.
 		icons = type.getIconSet();
 	}
 

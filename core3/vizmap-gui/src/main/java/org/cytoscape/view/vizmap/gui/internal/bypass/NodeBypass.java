@@ -37,7 +37,7 @@
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.VisualPropertyCatalog;
 
@@ -49,7 +49,7 @@ import java.util.List;
 
 class NodeBypass extends VizMapBypass {
 
-	NodeBypass(EditorFactory ef, VisualPropertyCatalog vpCatalog) {
+	NodeBypass(EditorManager ef, VisualPropertyCatalog vpCatalog) {
 		super(ef, vpCatalog);
 	}
 

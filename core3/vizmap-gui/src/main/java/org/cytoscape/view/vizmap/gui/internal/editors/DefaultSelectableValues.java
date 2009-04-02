@@ -30,8 +30,8 @@ public class DefaultSelectableValues implements EditorDisplayer {
 		return Object.class;
 	}
 
-	public Type getEditorType() {
-		return EditorDisplayer.Type.DISCRETE;
+	public MappingType getEditorType() {
+		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
 	public Object showEditor(Component parentComponent, VisualProperty type) {

@@ -49,10 +49,10 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 
 import cytoscape.Cytoscape;
 

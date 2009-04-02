@@ -46,14 +46,14 @@ import java.util.Set;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyComboBoxPropertyEditor;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.VisualProperty;
 
 /**
  *
  */
-public class EditorFactoryImpl implements EditorFactory {
+public class EditorManagerImpl implements EditorManager {
 	private Set<EditorDisplayer> displayers;
 
 	private final Map<String, PropertyEditor> comboBoxEditors;
@@ -61,7 +61,7 @@ public class EditorFactoryImpl implements EditorFactory {
 	/**
 	 * Creates a new EditorFactory object.
 	 */
-	public EditorFactoryImpl() {
+	public EditorManagerImpl() {
 		displayers = new HashSet<EditorDisplayer>();
 		comboBoxEditors = new HashMap<String, PropertyEditor>();
 	}
@@ -89,7 +89,7 @@ public class EditorFactoryImpl implements EditorFactory {
 	}
 
 	private EditorDisplayer findEditor(VisualProperty type,
-			EditorDisplayer.Type edType) {
+			EditorDisplayer.MappingType edType) {
 		final Class<?> dataType = type.getType();
 
 		for (EditorDisplayer disp : displayers)
@@ -110,7 +110,7 @@ public class EditorFactoryImpl implements EditorFactory {
 	 */
 	public Object showDiscreteEditor(Component parentComponent,
 			VisualProperty type) throws Exception {
-		return findEditor(type, EditorDisplayer.Type.DISCRETE).showEditor(
+		return findEditor(type, EditorDisplayer.MappingType.DISCRETE).showEditor(
 				parentComponent, type);
 	}
 
@@ -123,7 +123,7 @@ public class EditorFactoryImpl implements EditorFactory {
 	 */
 	public Object showContinuousEditor(Component parentComponent,
 			VisualProperty type) throws Exception {
-		return findEditor(type, EditorDisplayer.Type.CONTINUOUS).showEditor(
+		return findEditor(type, EditorDisplayer.MappingType.CONTINUOUS).showEditor(
 				parentComponent, type);
 	}
 
@@ -149,7 +149,7 @@ public class EditorFactoryImpl implements EditorFactory {
 	 * org.cytoscape.viewmodel.VisualProperty)
 	 */
 	public PropertyEditor getDiscreteCellEditor(VisualProperty type) {
-		return findEditor(type, EditorDisplayer.Type.DISCRETE).getCellEditor();
+		return findEditor(type, EditorDisplayer.MappingType.DISCRETE).getCellEditor();
 	}
 
 	/*
@@ -160,7 +160,7 @@ public class EditorFactoryImpl implements EditorFactory {
 	 * (org.cytoscape.viewmodel.VisualProperty)
 	 */
 	public TableCellRenderer getDiscreteCellRenderer(VisualProperty type) {
-		return findEditor(type, EditorDisplayer.Type.DISCRETE).getCellRenderer(
+		return findEditor(type, EditorDisplayer.MappingType.DISCRETE).getCellRenderer(
 				type, 0, 0);
 	}
 
@@ -172,7 +172,7 @@ public class EditorFactoryImpl implements EditorFactory {
 	 * (org.cytoscape.viewmodel.VisualProperty)
 	 */
 	public PropertyEditor getContinuousCellEditor(VisualProperty type) {
-		return findEditor(type, EditorDisplayer.Type.CONTINUOUS)
+		return findEditor(type, EditorDisplayer.MappingType.CONTINUOUS)
 				.getCellEditor();
 	}
 
@@ -185,7 +185,7 @@ public class EditorFactoryImpl implements EditorFactory {
 	 */
 	public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
 			int w, int h) {
-		return findEditor(type, EditorDisplayer.Type.CONTINUOUS)
+		return findEditor(type, EditorDisplayer.MappingType.CONTINUOUS)
 				.getCellRenderer(type, w, h);
 	}
 

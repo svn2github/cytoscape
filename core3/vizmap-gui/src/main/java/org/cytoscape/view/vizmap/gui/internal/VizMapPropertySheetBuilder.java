@@ -27,7 +27,7 @@ import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.view.vizmap.gui.theme.ColorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.VisualStyle;
@@ -81,7 +81,7 @@ public class VizMapPropertySheetBuilder {
 	private VizMapPropertyBuilder vizMapPropertyBuilder;
 
 	@Resource
-	private EditorFactory editorFactory;
+	private EditorManager editorFactory;
 
 	@Resource
 	private ColorManager colorMgr;

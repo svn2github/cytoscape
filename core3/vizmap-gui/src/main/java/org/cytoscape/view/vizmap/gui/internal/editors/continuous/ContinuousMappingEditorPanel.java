@@ -39,13 +39,13 @@ import cytoscape.Cytoscape;
 
 import org.cytoscape.model.CyDataTable;
 
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
+import org.cytoscape.view.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
@@ -88,8 +88,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	 */
 	protected static final String BELOW_VALUE_CHANGED = "BELOW_VALUE_CHANGED";
 	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
-	protected VisualProperty type;
-	protected Calculator calculator;
+	protected VisualProperty<?> type;
+	protected MappingCalculator calculator;
 	protected ContinuousMapping mapping;
 	protected List<ContinuousMappingPoint> allPoints;
 	private SpinnerNumberModel spinnerModel;
@@ -113,11 +113,11 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		this.addWindowListener(new WindowAdapter() {
 				public void windowOpened(WindowEvent e) {
 					System.out.println("windowOpened");
-					firePropertyChange(EditorFactory.EDITOR_WINDOW_OPENED, null, type);
+					firePropertyChange(EditorManager.EDITOR_WINDOW_OPENED, null, type);
 				}
 
 				public void windowClosing(WindowEvent e) {
-					firePropertyChange(EditorFactory.EDITOR_WINDOW_CLOSED, this, type);
+					firePropertyChange(EditorManager.EDITOR_WINDOW_CLOSED, this, type);
 				}
 			});
 	}

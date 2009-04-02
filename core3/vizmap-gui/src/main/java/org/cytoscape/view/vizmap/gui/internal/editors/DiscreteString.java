@@ -10,7 +10,7 @@ import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyStringPropertyEditor;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.VisualProperty;
 
 
 public class DiscreteString implements EditorDisplayer {
@@ -27,8 +27,8 @@ public class DiscreteString implements EditorDisplayer {
 		return String.class;
 	}
 
-	public EditorDisplayer.Type getEditorType() {
-		return EditorDisplayer.Type.DISCRETE;
+	public EditorDisplayer.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
 	public Object showEditor(Component parentComponent, VisualProperty type) {

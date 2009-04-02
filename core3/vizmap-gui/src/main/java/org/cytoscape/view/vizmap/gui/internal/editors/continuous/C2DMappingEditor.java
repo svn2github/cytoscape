@@ -44,7 +44,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
@@ -69,9 +69,9 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 * @param type DOCUMENT ME!
 	 */
 
-	private EditorFactory editorFactory;
+	private EditorManager editorFactory;
 
-	public C2DMappingEditor(VisualProperty type, EditorFactory editorFactory) {
+	public C2DMappingEditor(VisualProperty type, EditorManager editorFactory) {
 		super(type);
 		this.iconPanel.setVisible(false);
 		this.belowPanel.setVisible(false);
@@ -91,7 +91,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualProperty type, Component parentComponent, EditorFactory ef) {
+	                                VisualProperty type, Component parentComponent, EditorManager ef) {
 		editor = new C2DMappingEditor(type,ef);
 		editor.setSize(new Dimension(width, height));
 		editor.setTitle(title);

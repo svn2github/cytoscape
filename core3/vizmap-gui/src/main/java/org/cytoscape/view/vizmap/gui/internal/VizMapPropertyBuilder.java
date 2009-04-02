@@ -15,7 +15,7 @@ import javax.swing.table.TableCellRenderer;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
@@ -43,7 +43,7 @@ public class VizMapPropertyBuilder {
 	private DefaultTableCellRenderer filledBoxRenderer;
 
 	@Resource
-	private EditorFactory editorFactory;
+	private EditorManager editorFactory;
 	
 	@Resource
 	private CyNetworkManager cyNetworkManager;

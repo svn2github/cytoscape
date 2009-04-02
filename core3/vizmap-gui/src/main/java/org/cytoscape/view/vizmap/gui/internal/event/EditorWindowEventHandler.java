@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 
 import javax.annotation.Resource;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.EditorWindowManager;
 import org.cytoscape.viewmodel.VisualProperty;
 
@@ -18,7 +18,7 @@ public class EditorWindowEventHandler extends AbstractVizMapEventHandler {
 		editorWindowManager.manageWindow(e.getPropertyName(), (VisualProperty) e.getNewValue(),
 				e.getSource());
 
-		if (e.getPropertyName().equals(EditorFactory.EDITOR_WINDOW_CLOSED))
+		if (e.getPropertyName().equals(EditorManager.EDITOR_WINDOW_CLOSED))
 			editorWindowManager.removeEditorWindow((VisualProperty) e.getNewValue());
 	}
 

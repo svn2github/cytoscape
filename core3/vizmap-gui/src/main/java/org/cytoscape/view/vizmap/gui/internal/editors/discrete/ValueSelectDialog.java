@@ -34,10 +34,6 @@
 */
 package org.cytoscape.view.vizmap.gui.internal.editors.discrete;
 
-import static org.cytoscape.viewmodel.VisualProperty.EDGE_SRCARROW_SHAPE;
-import static org.cytoscape.viewmodel.VisualProperty.EDGE_TGTARROW_SHAPE;
-import static org.cytoscape.viewmodel.VisualProperty.NODE_SHAPE;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;

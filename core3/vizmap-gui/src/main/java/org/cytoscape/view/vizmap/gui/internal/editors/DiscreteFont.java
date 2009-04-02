@@ -30,8 +30,8 @@ public class DiscreteFont implements EditorDisplayer {
 		return Font.class;
 	}
 
-	public EditorDisplayer.Type getEditorType() {
-		return EditorDisplayer.Type.DISCRETE;
+	public EditorDisplayer.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
 	public Object showEditor(Component parentComponent, VisualProperty type) {

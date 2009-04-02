@@ -26,7 +26,7 @@
 
 	<!-- Visual property editors -->
 	<bean name="editorFactory"
-		class="org.cytoscape.view.vizmap.gui.internal.editors.EditorFactoryImpl" />
+		class="org.cytoscape.view.vizmap.gui.internal.editors.EditorManagerImpl" />
 
 	<bean id="vizMapBypassNetworkListener"
 		class="org.cytoscape.view.vizmap.gui.internal.bypass.VizMapBypassNetworkListener">

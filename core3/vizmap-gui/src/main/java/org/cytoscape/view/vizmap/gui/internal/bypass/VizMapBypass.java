@@ -49,7 +49,7 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.VisualPropertyCatalog;
 
@@ -66,11 +66,11 @@ abstract class VizMapBypass {
 
 	abstract protected List<String> getBypassNames();
 
-	protected EditorFactory editorFactory;
+	protected EditorManager editorFactory;
 	
 	protected VisualPropertyCatalog vpCatalog;
 
-	VizMapBypass(EditorFactory editorFactory, VisualPropertyCatalog vpCatalog) {
+	VizMapBypass(EditorManager editorFactory, VisualPropertyCatalog vpCatalog) {
 		this.editorFactory = editorFactory;
 		this.vpCatalog = vpCatalog;
 	}

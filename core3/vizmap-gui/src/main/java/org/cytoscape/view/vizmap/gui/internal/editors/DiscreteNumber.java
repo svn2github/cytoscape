@@ -78,8 +78,8 @@ public class DiscreteNumber implements EditorDisplayer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public EditorDisplayer.Type getEditorType() {
-		return EditorDisplayer.Type.DISCRETE;
+	public EditorDisplayer.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
 	/**

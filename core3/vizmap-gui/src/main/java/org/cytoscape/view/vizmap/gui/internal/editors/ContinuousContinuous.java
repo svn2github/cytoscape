@@ -23,8 +23,8 @@ public class ContinuousContinuous implements EditorDisplayer {
 		return Number.class;
 	}
 
-	public EditorDisplayer.Type getEditorType() {
-		return EditorDisplayer.Type.CONTINUOUS;
+	public EditorDisplayer.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.CONTINUOUS;
 	}
 
 	public Object showEditor(Component parentComponent, VisualProperty type) {

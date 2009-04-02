@@ -65,7 +65,7 @@ import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
-import org.cytoscape.view.vizmap.gui.editors.EditorFactory;
+import org.cytoscape.view.vizmap.gui.editors.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.theme.ColorManager;
@@ -122,7 +122,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	public VizMapperMainPanel(CySwingApplication desktop,
 			DefaultViewEditor defViewEditor, IconManager iconMgr,
 			ColorManager colorMgr, VisualMappingManager vmm,
-			VizMapperMenuManager menuMgr, EditorFactory editorFactory,
+			VizMapperMenuManager menuMgr, EditorManager editorFactory,
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
