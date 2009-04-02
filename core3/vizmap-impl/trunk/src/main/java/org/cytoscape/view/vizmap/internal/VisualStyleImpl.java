@@ -64,14 +64,20 @@ public class VisualStyleImpl implements VisualStyle {
 	private Map<VisualProperty<?>, Object> perVSDefaults;
 	private CyEventHelper eventHelper;
 	private VisualPropertyCatalog vpCatalog;
+	
+	private String title;
 
+	public VisualStyleImpl(final CyEventHelper eventHelper, final VisualPropertyCatalog vpCatalog) {
+		this(eventHelper, vpCatalog, "");
+	}
+	
 	/**
 	 * Creates a new VisualStyleImpl object.
 	 *
 	 * @param eventHelper  DOCUMENT ME!
 	 * @param vpCatalog  DOCUMENT ME!
 	 */
-	public VisualStyleImpl(final CyEventHelper eventHelper, final VisualPropertyCatalog vpCatalog) {
+	public VisualStyleImpl(final CyEventHelper eventHelper, final VisualPropertyCatalog vpCatalog, final String title) {
 		if (eventHelper == null)
 			throw new NullPointerException("CyEventHelper is null");
 
@@ -82,6 +88,7 @@ public class VisualStyleImpl implements VisualStyle {
 		this.vpCatalog = vpCatalog;
 		calculators = new HashMap<VisualProperty<?>, MappingCalculator>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
+		this.title = title;
 	}
 
 	/**
@@ -183,5 +190,13 @@ public class VisualStyleImpl implements VisualStyle {
 			// reset all rows to allow usage of default value:
 			column.setValues(new HashMap<View<V>, T>(), views);
 		}
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;	
 	}
 }
