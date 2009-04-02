@@ -1,5 +1,7 @@
 package org.cytoscape.work.internal.gui;
 
+import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 
@@ -10,10 +12,9 @@ import org.cytoscape.work.util.BoundedInteger;
 import org.cytoscape.work.util.BoundedLong;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
-import org.cytoscape.work.util.myFile;
 
 public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
-
+	
 	public Guihandler getHandler(Field f, Object o, Tunable t){
 		
 		Class<?> type = f.getType();
@@ -42,10 +43,12 @@ public class GuiHandlerFactory<T> implements HandlerFactory<Guihandler> {
 			return new ListSingleHandler<String>(f,o,t);
 		else if(type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(f,o,t);
-		else if(type == myFile.class)
+		else if(type == File.class)
 			return new FileHandler(f,o,t);
 		else if(type == URL.class)
 			return new URLHandler(f,o,t);
+		else if(type == InputStream.class)
+			return new InputStreamHandler(f,o,t);
 		return null;
 	}
 }

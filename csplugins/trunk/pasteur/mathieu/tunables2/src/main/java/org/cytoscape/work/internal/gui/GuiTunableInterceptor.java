@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -21,16 +22,18 @@ import org.cytoscape.work.Tunable.Param;
 public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler> {
 
 	private Component parent;
-	private Map<java.util.List<Guihandler>,JPanel> panelMap;
+	private Map<List<Guihandler>,JPanel> panelMap;
+	int n;
+	JPanel r = new JPanel(new BorderLayout());
+	List<Guihandler> lh;
 
-	public GuiTunableInterceptor(Component parent) {
+	public GuiTunableInterceptor() {
 		super( new GuiHandlerFactory<Guihandler>());
-		this.parent = parent;
-		panelMap = new HashMap<java.util.List<Guihandler>,JPanel>();
+		panelMap = new HashMap<List<Guihandler>,JPanel>();
 	}
 
-	public int createUI(Object... objs) {
-		java.util.List<Guihandler> lh = new ArrayList<Guihandler>();
+	public boolean createUI(Object... objs) {
+		lh = new ArrayList<Guihandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
@@ -39,9 +42,9 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		}
 		
 		if ( !panelMap.containsKey( lh ) ) {
-			final String MAIN = "";
+			final String MAIN = " ";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
-			panels.put(MAIN,createJPanel(MAIN,null));
+			panels.put(MAIN,createJPanel(MAIN,null,null));
 
 			// construct the gui
 			for (Guihandler gh : lh) {
@@ -57,18 +60,32 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 						}
 					}
 				}
-				// find the proper group to put the handler panel in
+				
+				Map<String,Param> groupalignement = new HashMap<String,Param>();
 				String[] group = gh.getTunable().group();
-				String lastGroup = MAIN; 
+				Param[] alignments = gh.getTunable().alignment();
+				
+				if(group.length==alignments.length){
+					for(int i = 0; i < group.length; i++)groupalignement.put(group[i], alignments[i]);
+				}
+				if(group.length>alignments.length){
+					for(int i = 0; i < alignments.length; i++)groupalignement.put(group[i], alignments[i]);
+					for(int i=alignments.length;i<group.length;i++)groupalignement.put(group[i], Param.vertical);
+				}
+				if(alignments.length>group.length){
+					for(int i = 0; i < group.length; i++)groupalignement.put(group[i], alignments[i]);
+				}
+				
+				// find the proper group to put the handler panel in
+				String lastGroup = MAIN;
 				for ( String g : group ) {
 					if ( !panels.containsKey(g) ) {
-						panels.put(g,createJPanel(g,gh));			
+						panels.put(g,createJPanel(g,gh,groupalignement.get(g)));
 						panels.get(lastGroup).add( panels.get(g), gh.getTunable().xorKey() );
 					}
-
 					lastGroup = g;
 				}
-
+				
 				panels.get(lastGroup).add(gh.getJPanel());
 			}
 			panelMap.put(lh,panels.get(MAIN));
@@ -88,17 +105,18 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		    null,
 		    buttons,
 		    buttons[0]);
-		// process the values set in the gui 
-		//USELESS BECAUSE OF LISTENERS
-		if(n==0){
-			for ( Guihandler h : lh )h.handle();
+
+		if ( n == JOptionPane.OK_OPTION ){
+			for ( Guihandler h : lh ) h.notifyDependents();//h.handle();
+			return true;
 		}
-		return n;
+		else
+			return false;
 	}
 
-	private JPanel createJPanel(String title, Guihandler gh) {
+	private JPanel createJPanel(String title, Guihandler gh,Param alignment) {
 		if ( gh == null )
-			return getSimplePanel(title);
+			return getSimplePanel(title,alignment);
 		// See if we need to create an XOR panel
 		if ( gh.getTunable().xorChildren() ) {
 			JPanel p = new XorPanel(title,gh);
@@ -116,16 +134,34 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 			}
 			
 			// We're not collapsable, so return a normal jpanel
-			return getSimplePanel(title);
+			return getSimplePanel(title,alignment);
 		}
 	}
-	private JPanel getSimplePanel(String title) {
+	private JPanel getSimplePanel(String title,Param alignment) {
 		JPanel ret = new JPanel();
 		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
-		titleborder.setTitleColor(Color.BLUE);
-		ret.setBorder(titleborder);
-		//ret.setBorder(BorderFactory.createTitledBorder(title));
-		ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+		titleborder.setTitleColor(Color.RED);
+		
+		if(title!="" && title!=" "){
+			if(alignment==Param.vertical || alignment==null){
+				ret.setBorder(titleborder);
+				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+			}
+			else if(alignment==Param.horizontal){
+				ret.setBorder(titleborder);
+				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
+			}
+		}
+		else {
+			if(alignment==Param.vertical || alignment==null){
+				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+			}
+			else if(alignment==Param.horizontal){
+				
+				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
+			}
+		}
+		
 		return ret;
 	}
 }
