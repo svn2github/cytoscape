@@ -1,6 +1,7 @@
 package org.cytoscape.io.internal.read;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ abstract public class AbstractNetworkReader implements CyReader {
 
 	protected static final String NODE_NAME_ATTR_LABEL = "name";
 
+	protected boolean cancel = false;
 	protected InputStream inputStream;
 	protected CyNetworkFactory cyNetworkFactory;
 	protected CyNetworkViewFactory cyNetworkViewFactory;
@@ -41,5 +43,15 @@ abstract public class AbstractNetworkReader implements CyReader {
 		if (is == null)
 			throw new NullPointerException("Input stream is null");
 		inputStream = is;
+	}
+
+	public void cancel()
+	{
+		cancel = true;
+		try
+		{
+			inputStream.close();
+		}
+		catch (IOException e) {}
 	}
 }
