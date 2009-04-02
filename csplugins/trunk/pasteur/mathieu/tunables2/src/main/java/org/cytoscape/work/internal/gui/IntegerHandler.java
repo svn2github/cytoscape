@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import org.cytoscape.work.AbstractGuiHandler;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Tunable.Param;
 
 
 public class IntegerHandler extends AbstractGuiHandler {
@@ -16,7 +17,7 @@ public class IntegerHandler extends AbstractGuiHandler {
 	Double value = null;
 	Integer myInteger;
 	String newline = System.getProperty("line.separator");
-
+	boolean horizontal=false;
 
 	public IntegerHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
@@ -25,15 +26,23 @@ public class IntegerHandler extends AbstractGuiHandler {
 		}catch(Exception e){e.printStackTrace();}
 		
 		panel = new JPanel(new BorderLayout());
+		for(Param par : t.alignment())if(par==Param.horizontal)horizontal=true;	
 		JLabel label = new JLabel(t.description());
 		label.setFont(new Font(null, Font.PLAIN,12));
-		panel.add(label,BorderLayout.WEST );
+
 		try {
 			jtf = new JTextField(f.get(o).toString(), 10);
 			//jtf.addActionListener( this );
-			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			panel.add(jtf,BorderLayout.EAST);
 		} catch (Exception e) { e.printStackTrace(); }
+		jtf.setHorizontalAlignment(JTextField.RIGHT);
+		if(horizontal==false){
+			panel.add(label,BorderLayout.WEST);
+			panel.add(jtf,BorderLayout.EAST);
+		}
+		else{
+			panel.add(label,BorderLayout.NORTH);
+			panel.add(jtf,BorderLayout.SOUTH);
+		}
 			
 	}
 

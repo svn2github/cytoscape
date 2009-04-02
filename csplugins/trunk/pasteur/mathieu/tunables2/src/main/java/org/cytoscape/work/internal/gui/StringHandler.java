@@ -8,26 +8,35 @@ import javax.swing.*;
 
 import org.cytoscape.work.AbstractGuiHandler;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.Tunable.Param;
 
 
 public class StringHandler extends AbstractGuiHandler {
 
 	JTextField jtf;
-
+	boolean horizontal = false;
+	
 	public StringHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 
+		for(Param par : t.alignment())if(par==Param.horizontal) horizontal = true;
+
 		panel = new JPanel(new BorderLayout());
+		JLabel label = new JLabel(t.description());
+		label.setFont(new Font(null, Font.PLAIN,12));
 		try {
-			JLabel label = new JLabel(t.description());
-			label.setFont(new Font(null, Font.PLAIN,12));
-			panel.add(label,BorderLayout.WEST );
 			jtf = new JTextField( (String)f.get(o), 15);
-			jtf.setHorizontalAlignment(JTextField.RIGHT);
-			//jtf.addActionListener(this);
+		}catch (Exception e) {e.printStackTrace(); }
+		jtf.setHorizontalAlignment(JTextField.RIGHT);
+
+		if(horizontal==false){
+			panel.add(label,BorderLayout.WEST);
 			panel.add(jtf,BorderLayout.EAST);
-		} catch (Exception e) {e.printStackTrace(); }
-			
+		}
+		else {
+			panel.add(label,BorderLayout.NORTH);
+			panel.add(jtf,BorderLayout.SOUTH);
+		}
 	}
 
 	public void handle() {
