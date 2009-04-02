@@ -1,15 +1,10 @@
 package org.cytoscape.work;
 
+import java.awt.Component;
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-
-
-import org.cytoscape.work.internal.gui.Guihandler;
 import org.cytoscape.work.internal.gui.HandlerFactory;
 
 
@@ -24,7 +19,7 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 	}
 
 	public final void loadTunables(Object obj){
-		//if ( !handlerMap.containsKey(obj) ) {					//Deleted to get new Panels if we do it many times
+		//if ( !handlerMap.containsKey(obj) ) {
 			LinkedHashMap<String,T> handlerList = new LinkedHashMap<String,T>();
 			// Find each public field in the class.
 			for (Field field : obj.getClass().getFields()) {
@@ -53,5 +48,5 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 		return handlerMap.get(o);
 	}
 	
-	public abstract int createUI(Object ... objs);
+	public abstract boolean createUI(Object ... objs);
 }
