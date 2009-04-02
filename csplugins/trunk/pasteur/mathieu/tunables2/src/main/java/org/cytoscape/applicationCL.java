@@ -18,7 +18,8 @@ public class applicationCL
 	public static void main(String[] args) {
 
 		// command comes from someplace
-		Command com = new PrintSomething();
+		Command com;
+		com = new PrintSomething();
 
 		// create the interceptor for this context
 		// in this case it's a command line, so it takes the

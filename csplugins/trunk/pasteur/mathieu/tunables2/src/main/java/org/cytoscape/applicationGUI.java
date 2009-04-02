@@ -1,5 +1,6 @@
 package org.cytoscape;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.Properties;
 
@@ -8,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.cytoscape.command.Command;
 import org.cytoscape.command.*;
 import org.cytoscape.work.Handler;
 import org.cytoscape.work.HandlerController;
@@ -26,7 +26,10 @@ public class applicationGUI <T extends Handler>{
 	static Properties InitProps = new Properties();
 	static Properties store = new Properties();
 
-    static int action;
+    static boolean action;
+    
+    static JFrame frame;
+    static JPanel p;
 	
     @SuppressWarnings("unchecked")
 	static TunableInterceptor ti;
@@ -40,22 +43,27 @@ public class applicationGUI <T extends Handler>{
         }; 
 
     private static void createAndShowGUI() {
-		JFrame frame = new JFrame("Tunable Demo");
+		frame = new JFrame("Tunable Demo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(true);
-		ti = new GuiTunableInterceptor(frame);
 		
 
-		JPanel p = new JPanel();
-		p.add( new JButton(new MyAction("Print Something", new PrintSomething(), ti, lpi,spi)));
-		p.add( new JButton(new MyAction("Abstract Active", new AbstractActive(), ti, lpi,spi)));
-		p.add( new JButton(new MyAction("Input Test", new input(), ti,lpi,spi)));
-		p.add( new JButton(new MyAction("Tunable Sampler", new TunableSampler(), ti,lpi,spi)));
-		p.add( new JButton(new MyAction("File Choose", new fileChoose(), ti,lpi,spi)));
-		p.add( new JButton(new MyAction("URL Choose", new URLChoose(), ti,lpi,spi)));
+		p = new JPanel(new BorderLayout());
+		ti = new GuiTunableInterceptor();
+		JPanel q = new JPanel();
+		q.add( new JButton(new MyAction("Print Something", new PrintSomething(), ti, lpi,spi)));
+		q.add( new JButton(new MyAction("Abstract Active", new AbstractActive(), ti, lpi,spi)));
+		q.add( new JButton(new MyAction("Input Test", new input(), ti,lpi,spi)));
+		q.add( new JButton(new MyAction("Tunable Sampler", new TunableSampler(), ti,lpi,spi)));
+		q.add( new JButton(new MyAction("File Choose", new fileChoose(), ti,lpi,spi)));
+		q.add( new JButton(new MyAction("URL Choose", new URLChoose(), ti,lpi,spi)));
+		q.add( new JButton(new MyAction("InputStream Choose", new InputStreamChoose(), ti,lpi,spi)));
+		q.add( new JButton(new MyAction("Proxy Test", new proxy(), ti,lpi,spi)));
+		p.add(q,BorderLayout.NORTH);
         frame.setContentPane(p);
         frame.pack();
         frame.setVisible(true);
+
     }
 
 	@SuppressWarnings("serial")
@@ -85,30 +93,29 @@ public class applicationGUI <T extends Handler>{
 			lpi = new LoadPropsInterceptor(InitProps);
 			spi = new StorePropsInterceptor(store);
 			
-			
 			lpi.loadTunables(com);
 			lpi.createUI(com);
-//			spi.loadTunables(com);
-//			spi.createUI(com);
+			spi.loadTunables(com);
+			spi.createUI(com);
 			System.out.println("InputProperties of "+com.getClass().getSimpleName()+ " = "+ InitProps);
 			
 			// intercept the command ,modify any tunable fields, and return the button clicked
 			ti.loadTunables(com);
+			
 			if ( com instanceof HandlerController )
 				((HandlerController)com).controlHandlers(ti.getHandlers(com));
-		
 
 			// create the UI based on the object
 			action = ti.createUI(com);
+			frame.pack();
 			
-
-			switch(action){
-				case 0: spi.loadTunables(com);spi.createUI(com);break;		
-				case 1: spi=lpi;break;//spi.createUI(com);break;
+			
+			if(action==true){
+				spi.loadTunables(com);spi.createUI(com);System.out.println("OutputProperties of "+com.getClass().getSimpleName()+ " = "+ store);
 			}
-			System.out.println("OutputProperties of "+com.getClass().getSimpleName()+ " = "+ store);
-
-			
+			else {spi=lpi;System.out.println("OutputProperties of "+com.getClass().getSimpleName()+ " = "+ store);}//spi.createUI(com);break;
+				
+			frame.pack();
 			// execute the command
 			com.execute();
 		}
