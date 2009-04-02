@@ -9,12 +9,11 @@ import java.io.File;
 
 import org.cytoscape.work.AbstractGuiHandler;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.util.myFile;
 
 public class FileHandler extends AbstractGuiHandler {
 
 	JButton button;
-	myFile myfile;
+	File myfile;
 	JFileChooser fileChooser;
 	JTextField path;
 	boolean filechoosen;
@@ -25,16 +24,16 @@ public class FileHandler extends AbstractGuiHandler {
 		fileChooser = new JFileChooser();
 
 		try{
-			this.myfile=(myFile)f.get(o);
+			this.myfile=(File)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		
-		panel = new JPanel(new BorderLayout());
-		path = new JTextField("File: ",10);
-		path.setFont(new Font(null, Font.PLAIN,12));
-		panel.add(path,BorderLayout.WEST);
+		panel.add(new JLabel("Path :"));
+		path = new JTextField("select file",12);
+		path.setFont(new Font(null, Font.ITALIC,10));
+		panel.add(path);
 		button = new JButton("Select File...");
 		button.addActionListener(this);
-		panel.add(button,BorderLayout.EAST);		
+		panel.add(button);
 	}
 
 	public void handle() {
@@ -42,15 +41,17 @@ public class FileHandler extends AbstractGuiHandler {
 			int ret = fileChooser.showOpenDialog(null);
 			if (ret == JFileChooser.APPROVE_OPTION) {
 				File file = fileChooser.getSelectedFile();
-				try{
-					if ( file != null ) {
+				if ( file != null ) {
 					//myfile = new File(file.getAbsolutePath());
 //					System.out.println("path3 = "+myfile.getAbsolutePath());
-					myfile.setFile(file);
-					f.set(o,myfile);
-					path.setText("File: " + myfile.getPath());
-					}
-				}catch (Exception e){}
+					//myfile.setFile(file);
+					try{
+						f.set(o,file);
+						System.out.println("File = "+file);
+					}catch (Exception e){e.printStackTrace();}
+				}
+				path.setFont(new Font(null, Font.PLAIN,10));
+				path.setText(file.getAbsolutePath());
 			}
 		}
 		filechoosen=true;

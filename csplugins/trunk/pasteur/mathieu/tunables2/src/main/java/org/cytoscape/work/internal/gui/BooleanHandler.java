@@ -31,7 +31,7 @@ public class BooleanHandler extends AbstractGuiHandler {
 			jcb.setSelected(myBoolean.booleanValue());
 			JLabel label = new JLabel(t.description());
 			label.setFont(new Font(null, Font.PLAIN,12));
-			//jcb.addActionListener(this);
+			jcb.addActionListener(this);
 			panel.add(label,BorderLayout.WEST);
 			panel.add( jcb ,BorderLayout.EAST);
 		} catch (Exception e) { e.printStackTrace(); }
@@ -39,7 +39,6 @@ public class BooleanHandler extends AbstractGuiHandler {
 
 	public void handle() {
 		try {
-			System.out.println("dddddddddddddddddd");
 		f.set(o,jcb.isSelected());
 		} catch (Exception e) { e.printStackTrace(); }
 	}

@@ -17,15 +17,14 @@ import javax.xml.*;
 //import org.cytoscape.property.internal.BookmarkCyProperty;
 import org.cytoscape.work.AbstractGuiHandler;
 import org.cytoscape.work.Tunable;
-
-//import cytoscape.Cytoscape;
-
+//import org.cytoscape.property.internal.*;
 
 
 public class URLHandler extends AbstractGuiHandler {
 
 	URL url;
 	
+	//Bookmarks theBookmarks=null;
 	//CyProperty theBookmarks = null; // get it from session
 	String bookmarkCategory = "network";
 	String urlstr;
@@ -39,7 +38,6 @@ public class URLHandler extends AbstractGuiHandler {
 		try{
 			this.url= (URL) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-
 
 		//theBookmarks = Cytoscape.;
 		 //if theBookmarks doesnot exist, create an empty one
