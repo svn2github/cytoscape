@@ -20,4 +20,12 @@ public interface CyWriter extends FileIOFactory {
 	 * @param f The {@link File} that will be written to by this writer.
 	 */
 	public void write(File f);
+
+	/**
+	 * Cancels writing if one thread is waiting for the completion of
+	 * <code>CyWriter.write()</code>.
+	 * <code>CyWriter.write()</code> will prematurely terminate by
+	 * throwing an <code>IOException</code>.
+	 */
+	public void cancel();
 }

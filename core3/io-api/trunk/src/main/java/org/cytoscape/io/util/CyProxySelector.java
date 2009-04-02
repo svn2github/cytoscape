@@ -20,7 +20,7 @@ import java.net.Proxy;
  * <li><code>ProxySelector</code> returns a <code>List</code> of <code>Proxy</code>s.
  * One must determine which <code>Proxy</code> in the <code>List</code>
  * is the best. However, <code>CyProxySelector</code> returns only one <code>Proxy</code>,
- * so one does not need to decide the best <code>Proxy</code>.</li>
+ * so one does not need to decide which one is the best <code>Proxy</code>.</li>
  *
  * <li><code>ProxySelector</code> allows public access to the method
  * <code>connectFailed</code>, while classes that implement <code>CyProxySelector</code>

@@ -25,4 +25,11 @@ public interface CyReader {
 
 	public void setInputStream(InputStream is);
 
+	/**
+	 * Cancels reading if a thread is waiting for the completion of
+	 * <code>CyReader.read()</code>.
+	 * <code>CyReader.read()</code> will prematurely terminate by
+	 * throwing an <code>IOException</code>.
+	 */
+	public void cancel();
 }
