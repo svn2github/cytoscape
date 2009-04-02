@@ -43,6 +43,7 @@ abstract public class AbstractNetworkReader implements CyReader {
 		if (is == null)
 			throw new NullPointerException("Input stream is null");
 		inputStream = is;
+		cancel = false;
 	}
 
 	public void cancel()
