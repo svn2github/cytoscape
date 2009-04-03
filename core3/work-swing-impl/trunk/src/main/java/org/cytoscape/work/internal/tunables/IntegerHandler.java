@@ -28,9 +28,15 @@ public class IntegerHandler extends AbstractGuiHandler {
 		JLabel label = new JLabel(t.description());
 		label.setFont(new Font(null, Font.PLAIN,12));
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
-		panel.add(label,BorderLayout.WEST );
-		panel.add(jtf,BorderLayout.EAST);
-
+		
+		for(Param par : t.alignment())if(par==Param.horizontal){
+			panel.add(label,BorderLayout.NORTH);
+			panel.add(jtf,BorderLayout.SOUTH);
+		}
+		else {
+			panel.add(label,BorderLayout.WEST);
+			panel.add(jtf,BorderLayout.EAST);
+		}
 	}
 
 	public void handle() {
