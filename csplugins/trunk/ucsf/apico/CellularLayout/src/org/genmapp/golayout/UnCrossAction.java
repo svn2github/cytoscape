@@ -115,7 +115,7 @@ class UnCrossAction extends CytoscapeAction {
 	 * for performance reasons, set threshold so that this doesn't execute with
 	 * large networks
 	 */
-	public static final int UNCROSS_THRESHOLD = 100;
+	public static final int UNCROSS_THRESHOLD = 200;
 
 	/**
 	 * iterations counter
@@ -157,10 +157,11 @@ class UnCrossAction extends CytoscapeAction {
 	public static void unCross(List<NodeView> nodeViews, boolean calledByEndUser) {
 
 		// warn if no nodeViewss are selected
-		if (nodeViews.size() <= 0) {
+		if (nodeViews.size() <= 1) {
 //			JOptionPane
 //					.showMessageDialog(Cytoscape.getDesktop(),
 //							"You must first select some nodes in order to minimize edge crossings.");
+			System.out.println("Uncross skipped! Too few nodes (one or fewer)");
 			return;
 
 		} else if (Cytoscape.getCurrentNetwork().getNodeCount() > UNCROSS_THRESHOLD) {
@@ -171,14 +172,17 @@ class UnCrossAction extends CytoscapeAction {
 //								"Sorry, this network is too large to run incremental edge cross miminization."
 //										+ "\nYou should one of the automated layout tools instead.");
 //			}
+			System.out.println("Uncross skipped! Too many nodes in network (over " + UNCROSS_THRESHOLD + ")");
 			return;
 		}
 
 		else {
+
 			UnCrossAction uncross = new UnCrossAction();
 
 			Task unCrossTask = uncross.new UnCrossTask(nodeViews,
 					calledByEndUser);
+
 
 			JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
@@ -189,7 +193,7 @@ class UnCrossAction extends CytoscapeAction {
 			jTaskConfig.setAutoDispose(true);
 
 			// Execute Task in New Thread; pops open JTask Dialog Box.
-			TaskManager.executeTask(unCrossTask, jTaskConfig);
+			//TaskManager.executeTask(unCrossTask, jTaskConfig);
 		}
 
 	}

@@ -108,15 +108,19 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 		// additional parameters
 		this.attName = "annotation.GO CELLULAR_COMPONENT"; // hard-coded, for
-															// now
+		// now
 
 		this.nodeViews = populateNodeViews();
 		this.nodeCount = this.nodeViews.size();
 		this.columns = (int) Math.sqrt(this.nodeCount);
 		this.freeCenterX = centerX;
 		this.freeCenterY = centerY;
-		this.freeWidth = width;
-		this.freeHeight = height;
+		// subtract proportional width and height
+		// for buffer around borders and region label
+		this.freeWidth = width - 10
+				* MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
+		this.freeHeight = height - 20
+				* MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
 
 		// define free area inside of ovals
 		if (this.shape == "Oval") {
@@ -351,36 +355,36 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.draw(s);
 
 			// region label
-//			int xLabelOffset = 5;
-//			int yLabelOffset = 15;
+			// int xLabelOffset = 5;
+			// int yLabelOffset = 15;
 			// //TODO: debugging free region
-//			Rectangle fb = relativeToBounds(
-//					viewportTransform(getFreeVRectangle())).getBounds();
-//			int fsw = 1;
-//			int fx = fb.x;
-//			int fy = fb.y;
-//			int fw = fb.width - fsw - 1;
-//			int fh = fb.height - fsw - 1;
-//			int fcx = fx + fw / 2;
-//			int fcy = fy + fh / 2;
-//
-//			java.awt.Shape fs = null;
-//
-//			fs = ShapeRegistry.getShape(this.shape, fx, fy, fw, fh);
-//
-//			AffineTransform ft = new AffineTransform();
-//			ft.rotate(this.rotation, fcx, fcy);
-//			fs = ft.createTransformedShape(fs);
-//
-//			g2d.setColor(Color.gray);
-//			Font font = new Font("Arial", Font.PLAIN, 10);
-//			g2d.setFont(font);
-//
-//			g2d.draw(fs);
+			// Rectangle fb = relativeToBounds(
+			// viewportTransform(getFreeVRectangle())).getBounds();
+			// int fsw = 1;
+			// int fx = fb.x;
+			// int fy = fb.y;
+			// int fw = fb.width - fsw - 1;
+			// int fh = fb.height - fsw - 1;
+			// int fcx = fx + fw / 2;
+			// int fcy = fy + fh / 2;
+			//
+			// java.awt.Shape fs = null;
+			//
+			// fs = ShapeRegistry.getShape(this.shape, fx, fy, fw, fh);
+			//
+			// AffineTransform ft = new AffineTransform();
+			// ft.rotate(this.rotation, fcx, fcy);
+			// fs = ft.createTransformedShape(fs);
+			//
+			// g2d.setColor(Color.gray);
+			// Font font = new Font("Arial", Font.PLAIN, 10);
+			// g2d.setFont(font);
+			//
+			// g2d.draw(fs);
 
-//			g2d.setColor(Color.DARK_GRAY);
-//			g2d.setStroke(new BasicStroke());
-//			g2d.drawString(this.attValue, xLabelOffset, yLabelOffset);
+			// g2d.setColor(Color.DARK_GRAY);
+			// g2d.setStroke(new BasicStroke());
+			// g2d.drawString(this.attValue, xLabelOffset, yLabelOffset);
 		}
 
 	}
@@ -396,6 +400,13 @@ public class Region extends JComponent implements ViewportChangeListener {
 		List<NodeView> boundedNodeViews = new ArrayList<NodeView>();
 		double currentX;
 		double currentY;
+		double bufferX = MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
+		double bufferY = MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
+//		if (r.shape == "Oval") { // account for arcs beyond defining rectangle
+//			bufferX +=  r.width;
+//			bufferY +=  r.height;
+//		}
+
 		// first calculate the min/max x and y for the list of *relevant*
 		// nodeviews
 		Iterator<NodeView> it = nodeViews.iterator();
@@ -403,9 +414,10 @@ public class Region extends JComponent implements ViewportChangeListener {
 			NodeView nv = it.next();
 			currentX = nv.getXPosition();
 			currentY = nv.getYPosition();
-			if (currentX > r.getRegionLeft() && currentX < r.getRegionRight()
-					&& currentY > r.getRegionTop()
-					&& currentY < r.getRegionBottom()) {
+			if (currentX > (r.getRegionLeft() - bufferX)
+					&& currentX < (r.getRegionRight() + bufferX)
+					&& currentY > (r.getRegionTop() - bufferY)
+					&& currentY < (r.getRegionBottom() + bufferY)) {
 				boundedNodeViews.add(nv);
 			}
 		}
@@ -424,16 +436,18 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 * @param nodeViews
 	 *            the nodeViews to set
 	 */
-	public void setNodeViews(List<NodeView> nodeViews) {
-		this.nodeViews = nodeViews;
-	}
-	
-	public void removeFilteredNodeView(NodeView nv){
+//	public void setNodeViews(List<NodeView> nodeViews) {
+//		this.nodeViews = nodeViews;
+//	}
+
+	public void removeFilteredNodeView(NodeView nv) {
 		this.filteredNodeViews.remove(nv);
 	}
-	public void addFilteredNodeView(NodeView nv){
+
+	public void addFilteredNodeView(NodeView nv) {
 		this.filteredNodeViews.add(nv);
 	}
+
 	public List<NodeView> getFilteredNodeViews() {
 		return filteredNodeViews;
 	}
