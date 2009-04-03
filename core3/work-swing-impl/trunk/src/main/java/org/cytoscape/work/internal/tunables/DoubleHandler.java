@@ -12,10 +12,10 @@ import org.cytoscape.work.Tunable.Param;
 
 public class DoubleHandler extends AbstractGuiHandler {
 
-	private JTextField jtf;
-	private Double value = null;
+	JTextField jtf;
+	Double value = null;
 	Double myDouble;
-	private String newline = System.getProperty("line.separator");
+	String newline = System.getProperty("line.separator");
 
 
 	protected DoubleHandler(Field f, Object o, Tunable t) {
@@ -29,8 +29,14 @@ public class DoubleHandler extends AbstractGuiHandler {
 		label.setFont(new Font(null, Font.PLAIN,12));
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		
-		panel.add(label,BorderLayout.WEST);
-		panel.add(jtf,BorderLayout.EAST);
+		for(Param par : t.alignment())if(par==Param.horizontal){
+			panel.add(label,BorderLayout.NORTH);
+			panel.add(jtf,BorderLayout.SOUTH);
+		}
+		else {
+			panel.add(label,BorderLayout.WEST);
+			panel.add(jtf,BorderLayout.EAST);
+		}
 	}
 
 	public void handle() {
