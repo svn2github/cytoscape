@@ -40,12 +40,6 @@ public class input implements Command {
 	public Boolean bool = new Boolean(false);
 	
 	
-	
-//	@Tunable(description="Do you like Tunables",group={"Tunable Test"})
-//	public boolean boolean1 = false;
-//	@Tunable(description ="Identification Code",group={"Other"})
-//	public Long long1 = new Long((long)223248997);
-	
 	public input()
 	{					
 			java.util.List<Integer> testlist = new ArrayList<Integer>();
