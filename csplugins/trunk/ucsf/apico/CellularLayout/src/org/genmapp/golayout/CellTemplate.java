@@ -243,6 +243,9 @@ public class CellTemplate {
 					|| ((freeB - freeT) < (distanceBetweenNodes * 2))) {
 				continue; // skip using inner of too thin or short
 			}
+			
+			//commented out to ignore finding unoverlapped area
+			//using layout and oil&water instead.
 //			r.setFreeCenterX((freeL + freeR) / 2);
 //			r.setFreeCenterY((freeT + freeB) / 2);
 //			r.setFreeWidth(freeR - freeL);
