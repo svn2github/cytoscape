@@ -37,7 +37,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	}
 	
 	public void handle(){
-		for(Guihandler h: lh)h.handle();
+		for(Guihandler h: lh)h.notifyDependents();//h.handle();
 	}
 
 	public boolean createUI(Object... proxyObjs) {
@@ -53,9 +53,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			return true;
 
 		if ( !panelMap.containsKey( lh ) ) {
-			final String MAIN = "";
+			final String MAIN = " ";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
-			panels.put(MAIN,createJPanel(MAIN,null));
+			panels.put(MAIN,createJPanel(MAIN,null,null));
 
 			// construct the gui
 			for (Guihandler gh : lh) {
@@ -72,15 +72,30 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 					}
 				}
 
-				// find the proper group to put the handler panel in
+				Map<String,Param> groupalignement = new HashMap<String,Param>();
 				String[] group = gh.getTunable().group();
+				Param[] alignments = gh.getTunable().alignment();
+				
+				if(group.length==alignments.length){
+					for(int i = 0; i < group.length; i++)groupalignement.put(group[i], alignments[i]);
+				}
+				if(group.length>alignments.length){
+					for(int i = 0; i < alignments.length; i++)groupalignement.put(group[i], alignments[i]);
+					for(int i=alignments.length;i<group.length;i++)groupalignement.put(group[i], Param.vertical);
+				}
+				if(alignments.length>group.length){
+					for(int i = 0; i < group.length; i++)groupalignement.put(group[i], alignments[i]);
+				}
+
+				
+				
+				// find the proper group to put the handler panel in
 				String lastGroup = MAIN; 
 				for ( String g : group ) {
 					if ( !panels.containsKey(g) ) {
-						panels.put(g,createJPanel(g,gh));			
+						panels.put(g,createJPanel(g,gh,groupalignement.get(g)));			
 						panels.get(lastGroup).add( panels.get(g), gh.getTunable().xorKey() );
 					}
-
 					lastGroup = g;
 				}
 
@@ -106,7 +121,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 					buttons[0]);
 
 			if ( n == JOptionPane.OK_OPTION ){
-				for ( Guihandler h : lh ) h.handle();
+				for ( Guihandler h : lh )h.notifyDependents();// h.handle();
 				return true;
 			}
 			else
@@ -124,9 +139,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	}
 	
 
-	private JPanel createJPanel(String title, Guihandler gh) {
+	private JPanel createJPanel(String title, Guihandler gh,Param alignment) {
 		if ( gh == null )
-			return getSimplePanel(title);
+			return getSimplePanel(title,alignment);
 
 		// See if we need to create an XOR panel
 		if ( gh.getTunable().xorChildren() ) {
@@ -145,16 +160,32 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			}
 			
 			// We're not collapsable, so return a normal jpanel
-			return getSimplePanel(title);
+			return getSimplePanel(title,alignment);
 		}
 	}
-	private JPanel getSimplePanel(String title) {
+	private JPanel getSimplePanel(String title,Param alignment) {
 		JPanel ret = new JPanel();
 		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
 		titleborder.setTitleColor(Color.BLUE);
-		ret.setBorder(titleborder);
-//		ret.setBorder(BorderFactory.createTitledBorder(title));
-		ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+		if(title!="" && title!=" "){
+			if(alignment==Param.vertical || alignment==null){
+				ret.setBorder(titleborder);
+				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+			}
+			else if(alignment==Param.horizontal){
+				ret.setBorder(titleborder);
+				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
+			}
+		}
+		else {
+			if(alignment==Param.vertical || alignment==null){
+				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+			}
+			else if(alignment==Param.horizontal){
+				
+				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
+			}
+		}
 		return ret;
 	}
 }
