@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -25,34 +26,44 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
     private String depName;
     private String depState;
 
-	private java.util.List<Guihandler> deps;
+    private String depUnState;
+    
+	private List<Guihandler> deps;
 
 	protected AbstractGuiHandler(Field f, Object o, Tunable t) {
-		super(f,o,t);	
+		super(f,o,t);
         String s = t.dependsOn();
-        if ( !s.equals("") ) {
-            depName = s.substring(0,s.indexOf("="));
-            depState = s.substring(s.indexOf("=") + 1);
-        }
+		 if ( !s.equals("") ) {
+	        	if(!s.contains("!=")){
+	        		depName = s.substring(0,s.indexOf("="));
+	        		depState = s.substring(s.indexOf("=") + 1);
+	        		depUnState = "";
+	        	}
+	        	else {
+	        		depName = s.substring(0,s.indexOf("!"));
+	        		depUnState = s.substring(s.indexOf("=")+1);
+	        		depState = "";
+	        	}
+	        }
 	
 		deps = new LinkedList<Guihandler>();
 		panel = new JPanel();
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-		handle();
 		notifyDependents();
+		handle();
 	}
 
 	public void stateChanged(ChangeEvent e){
-		handle();
+//		handle();
 		notifyDependents();
 	}
 	
     public void valueChanged(ListSelectionEvent le) {
     	boolean ok = le.getValueIsAdjusting();
     	if(!ok){
-    		handle();
+//   		handle();
     		notifyDependents();
     	}
     }
@@ -88,11 +99,25 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 		// if the dependency name matches ...
         if ( depName.equals(name) ) {
 			// ... and the state matches, then enable 
-			if ( depState.equals(state) )
-				setEnabledContainer(true,panel); 
+        	if(depState!=""){
+        		if ( depState.equals(state) ){
+        			setEnabledContainer(true,panel);
+        			handle();}
 			// ... and the state doesn't match, then disable 
-			else	
-				setEnabledContainer(false,panel); 
+        		else{
+        			setEnabledContainer(false,panel);
+        		}
+        	}
+        	else {
+        		if ( !depUnState.equals(state) ){
+        			setEnabledContainer(true,panel);
+        			handle();
+        		}
+			// ... and the state doesn't match, then disable 
+        		else{
+        			setEnabledContainer(false,panel);
+        		}
+        	}
 		}
 
         return;
