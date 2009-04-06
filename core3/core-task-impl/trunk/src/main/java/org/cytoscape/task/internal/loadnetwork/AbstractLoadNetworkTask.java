@@ -164,16 +164,9 @@ abstract class AbstractLoadNetworkTask implements Task {
 	}
 
 	public void cancel() {
-		// Task can not currently be halted.
-		System.out.println("Halt called");
-
-		if (myThread != null) {
-			myThread.interrupt();
-			this.interrupted = true;
-			if (taskMonitor != null) {
-				taskMonitor.setProgress(1.0);
-				taskMonitor.setStatusMessage("Task cancelled");
-			}
+		if (reader != null)
+		{
+			reader.cancel();
 		}
 	}
 }
