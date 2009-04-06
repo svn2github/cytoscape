@@ -121,7 +121,10 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 					buttons[0]);
 
 			if ( n == JOptionPane.OK_OPTION ){
-				for ( Guihandler h : lh )h.notifyDependents();// h.handle();
+				for ( Guihandler h : lh ){
+					if(h.getDependency()==null)h.handle();
+					else h.notifyDependents();//h.handle();
+				}
 				return true;
 			}
 			else
