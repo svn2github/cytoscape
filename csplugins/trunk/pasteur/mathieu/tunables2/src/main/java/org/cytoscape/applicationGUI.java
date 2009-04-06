@@ -101,7 +101,7 @@ public class applicationGUI <T extends Handler>{
 			
 			// intercept the command ,modify any tunable fields, and return the button clicked
 			ti.loadTunables(com);
-			
+						
 			if ( com instanceof HandlerController )
 				((HandlerController)com).controlHandlers(ti.getHandlers(com));
 
