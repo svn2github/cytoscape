@@ -59,7 +59,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 
 			// construct the gui
 			for (Guihandler gh : lh) {
-				System.out.println("handler's name: " + gh.getName());
+			//	System.out.println("handler's name: " + gh.getName());
 		
 				// hook up dependency listeners
 				String dep = gh.getDependency();
