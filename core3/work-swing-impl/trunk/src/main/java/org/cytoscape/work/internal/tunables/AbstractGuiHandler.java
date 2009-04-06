@@ -73,11 +73,12 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	public void notifyDependents() {
 		String state = getState();
 		String name = getName();
-		if(deps.size() == 0)handle();
-		else{
+//		if(deps.size()==0)handle();
+//		else{
 			for ( Guihandler gh : deps )
 			gh.checkDependency( name, state );
-		}	}
+//		}	
+	}
 
 	// add a dependency on this object 
 	public void addDependent(Guihandler gh) {
