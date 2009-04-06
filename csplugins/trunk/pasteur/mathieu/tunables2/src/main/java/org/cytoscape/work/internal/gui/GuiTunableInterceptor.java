@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import org.cytoscape.work.AbstractTunableInterceptor;
+import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.util.CollapsablePanel;
 import org.cytoscape.work.util.XorPanel;
 import org.cytoscape.work.Tunable.Param;
@@ -61,6 +62,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 					}
 				}
 				
+				
 				Map<String,Param> groupalignement = new HashMap<String,Param>();
 				String[] group = gh.getTunable().group();
 				Param[] alignments = gh.getTunable().alignment();
@@ -81,6 +83,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 				for ( String g : group ) {
 					if ( !panels.containsKey(g) ) {
 						panels.put(g,createJPanel(g,gh,groupalignement.get(g)));
+						
 						panels.get(lastGroup).add( panels.get(g), gh.getTunable().xorKey() );
 					}
 					lastGroup = g;
@@ -91,6 +94,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 			panelMap.put(lh,panels.get(MAIN));
 		}
 
+		
 		// get the gui into the proper state
 		for ( Guihandler h : lh ) 
 			h.notifyDependents();
@@ -106,8 +110,19 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		    buttons,
 		    buttons[0]);
 
+		
 		if ( n == JOptionPane.OK_OPTION ){
-			for ( Guihandler h : lh ) h.notifyDependents();//h.handle();
+			for ( Guihandler h : lh ){
+				
+//					 for(Object o : objs){
+//						 Object[] interfaces = o.getClass().getInterfaces();
+//						 for(int i=0;i<interfaces.length;i++){
+//							if(interfaces[i].equals(TunableValidator.class))((TunableValidator)o).validate(h.getName());
+//						 }
+//					 }
+				if(h.getDependency()==null)h.handle();
+				else h.notifyDependents();//h.handle();
+			}
 			return true;
 		}
 		else
