@@ -73,9 +73,11 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	public void notifyDependents() {
 		String state = getState();
 		String name = getName();
-		for ( Guihandler gh : deps )
-			gh.checkDependency( name, state ); 
-	}
+		if(deps.size() == 0)handle();
+		else{
+			for ( Guihandler gh : deps )
+			gh.checkDependency( name, state );
+		}	}
 
 	// add a dependency on this object 
 	public void addDependent(Guihandler gh) {
@@ -92,7 +94,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 
 		// if we don't depend on anything, then we should be enabled
 		if ( depName == null || depState == null ) {
-			setEnabledContainer(true,panel); 
+			setEnabledContainer(true,panel);
+			handle();
 			return;
 		}
 
