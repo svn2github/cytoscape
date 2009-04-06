@@ -1,31 +1,30 @@
 package org.cytoscape.work.internal.gui;
 
-import java.lang.reflect.*;
+
 import javax.swing.*;
 
 import org.cytoscape.work.AbstractGuiHandler;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
+import org.cytoscape.work.util.BoundedInteger;
+import org.cytoscape.work.util.myBoundedSwing;
+import org.cytoscape.work.util.mySlider;
+
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import org.cytoscape.work.util.*;
-
+import java.lang.reflect.*;
 
 public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihandler ,ActionListener{
 
-	JTextField jtf;
 	BoundedInteger myBounded;
 	String title;
 	Boolean useslider=false;
 	mySlider slider;
 	myBoundedSwing boundedField;
-	Double value=null;
-	String newline = System.getProperty("line.separator");
 	
-	public BoundedIntegerHandler(Field f, Object o, Tunable t) {
+	protected BoundedIntegerHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
 			this.myBounded = (BoundedInteger)f.get(o);
@@ -44,13 +43,11 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
 			panel.add(slider,BorderLayout.EAST);
 		}
 		else{
-			try {
-				JLabel label = new JLabel( title + " (max: " + myBounded.getLowerBound().toString() + "  min: " + myBounded.getUpperBound().toString() + ")" );
-				label.setFont(new Font(null, Font.PLAIN,12));
-				panel.add(label,BorderLayout.WEST);
-				boundedField = new myBoundedSwing(myBounded.getValue(),myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-				panel.add(boundedField,BorderLayout.EAST);
-			} catch (Exception e) { e.printStackTrace(); }			
+			JLabel label = new JLabel( title + " (max: " + myBounded.getLowerBound().toString() + "  min: " + myBounded.getUpperBound().toString() + ")" );
+			label.setFont(new Font(null, Font.PLAIN,12));
+			boundedField = new myBoundedSwing(myBounded.getValue(),myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
+			panel.add(label,BorderLayout.WEST);
+			panel.add(boundedField,BorderLayout.EAST);
 		}
 	}
 	
@@ -59,22 +56,10 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
     		myBounded.setValue(slider.getValue().intValue());
     	}
     	else{
-    		try{
-    			jtf.setBackground(Color.white);
-    			value = Double.parseDouble(jtf.getText());
-    		}catch(NumberFormatException nfe){
-    			try{
-    				jtf.setBackground(Color.red);
-    				value = Double.parseDouble(myBounded.getValue().toString());
-    				JOptionPane.showMessageDialog(null,"An Integer was Expected"+newline+"Value will be set to default = "+value.intValue(), "Error",JOptionPane.ERROR_MESSAGE);
-    			}catch(Exception e){e.printStackTrace();}
-    		}
-			try {
-				myBounded.setValue(value.intValue());
-			} catch (Exception e) { e.printStackTrace();}
+    		myBounded.setValue(boundedField.getFieldValue().intValue());
     	}
 	}
-
+    
 
     public String getState() {
         return myBounded.getValue().toString();
