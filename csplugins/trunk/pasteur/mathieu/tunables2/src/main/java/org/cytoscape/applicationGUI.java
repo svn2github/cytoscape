@@ -113,10 +113,9 @@ public class applicationGUI <T extends Handler>{
 			if(action==true){
 				spi.loadTunables(com);spi.createUI(com);System.out.println("OutputProperties of "+com.getClass().getSimpleName()+ " = "+ store);
 			}
-			else {spi=lpi;System.out.println("OutputProperties of "+com.getClass().getSimpleName()+ " = "+ store);}//spi.createUI(com);break;
-				
+			else if(action==false) {spi=lpi;System.out.println("OutputProperties of "+com.getClass().getSimpleName()+ " = "+ store);}//spi.createUI(com);break;
 			frame.pack();
-			// execute the command
+			
 			com.execute();
 		}
 	}
