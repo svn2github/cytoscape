@@ -91,4 +91,6 @@ public interface CyRow {
 	 * Returns the {@link CyDataTable} that this row belongs to.
 	 */
 	CyDataTable getDataTable();
+
+	void addRowListener(CyRowListener rl);
 }
