@@ -20,24 +20,13 @@ public class proxy implements Command,TunableValidator{
 	public void execute(){
 	}
 	
-	public void validate(String param){
-		if(param.equals("type")){
-			System.out.println("test for " + param);
-		}
-		if(param.equals("hostname")){
-			System.out.println("test for " + param);
-			if(hostname.contains("cache")) System.out.println("and the test is successful");
-		}
-		if(param.equals("port")){
-			System.out.println("test for " + param);
-		}
-//		if(param.contains("cache.pasteur")){
-//			System.out.println("Test Succeeded for hostname");
-//			return true;
+	//full test on each tunable defined in the class!!!!
+	public String validate(){
+		String ret = null;
+//		if(param.equals("hostname")){
+//			System.out.println("test for " + param);
+			if(!hostname.contains("cache"))ret=new String("There is a Problem");
 //		}
-//		else{
-//			System.out.println("Test Failed");
-//			return false;
-//		}
+		return ret;
 	}	
 }
