@@ -42,32 +42,22 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.gui.internal;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.util.FileUtil;
-import cytoscape.util.ZipUtil;
-
-import org.cytoscape.io.read.URLUtil;
-
-import org.cytoscape.vizmap.CalculatorCatalogFactory;
-import org.cytoscape.vizmap.CalculatorIO;
-import org.cytoscape.vizmap.VisualMappingManager;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
-
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+
+import org.cytoscape.view.vizmap.VisualMappingManager;
+
+import cytoscape.CyNetworkManager;
+import cytoscape.util.FileUtil;
+import cytoscape.util.ZipUtil;
 
 
 /**

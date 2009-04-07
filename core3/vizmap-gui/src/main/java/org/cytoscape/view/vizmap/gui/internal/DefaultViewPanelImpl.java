@@ -45,10 +45,11 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
-import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 
 /**
@@ -61,30 +62,54 @@ import org.cytoscape.vizmap.VisualMappingManager;
 public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	private final static long serialVersionUID = 1202339876691085L;
 	
+	// Padding around canvas
 	private static final int PADDING = 20;
-	private GraphView view;
+	
+	// Dummy network view
+	private CyNetworkView view;
+	
+	// Dummy network displayed in the canvas
 	private static CyNetwork dummyNet;
-	private Color background;
+	
+	// Background color of canvas
+	private Color background = Color.white;
 
 	/*
-	 * Dummy graph component
+	 * Dummy graph components
 	 */
-	private final CyNode source;
-	private final CyNode target;
-	private final CyEdge edge;
+	private CyNode source;
+	private CyNode target;
+	private CyEdge edge;
+	
+	// Rendering engine's canvas.
 	private Component canvas = null;
 
-	private VisualMappingManager vmm;
+	// Target visual style to be edited
+	private VisualStyle vs;
+
+	// Used to create dummy network
+	private CyNetworkFactory cyNetworkFactory;
+	private CyNetworkViewFactory cyNetworkViewFactory;
 
 	/**
 	 * Creates a new DefaultViewPanel object.
 	 *
 	 * @param cyNetworkFactory  DOCUMENT ME!
-	 * @param graphViewFactory  DOCUMENT ME!
+	 * @param cyNetworkViewFactory  DOCUMENT ME!
 	 */
-	public DefaultViewPanelImpl(CyNetworkFactory cyNetworkFactory, GraphViewFactory graphViewFactory, VisualMappingManager vmm) {
-		this.vmm = vmm;
+	public DefaultViewPanelImpl(CyNetworkFactory cyNetworkFactory, CyNetworkViewFactory cyNetworkViewFactory, VisualStyle vs) {
+		this.cyNetworkViewFactory = cyNetworkViewFactory;
+		this.cyNetworkFactory = cyNetworkFactory;
+		this.vs = vs;
+		createDummyNet();
 
+		//TODO: get current BG color from VS
+		//background = this.vmm.getVisualStyle().getGlobalAppearanceCalculator().getDefaultBackgroundColor();
+		
+		this.setBackground(background);
+	}
+	
+	private void createDummyNet() {
 		dummyNet = cyNetworkFactory.getInstance();
 
 		source = dummyNet.addNode();
@@ -97,14 +122,10 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 		edge.attrs().set("name", "Source (interaction) Target");
 
 		dummyNet.attrs().set("name", "Default Appearance");
-
-		view = graphViewFactory.createGraphView(dummyNet);
-		view.getNodeView(source).setOffset(0, 0);
+		view = cyNetworkViewFactory.getNetworkViewFor(dummyNet);
+		
+		view.getNodeView(source).getVisualProperty().setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
-		//this.vmm.setNetworkView(view);
-
-		background = this.vmm.getVisualStyle().getGlobalAppearanceCalculator().getDefaultBackgroundColor();
-		this.setBackground(background);
 	}
 
 	protected void updateBackgroungColor(final Color newColor) {
@@ -146,7 +167,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	/* (non-Javadoc)
 	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewPanel#getView()
 	 */
-	public GraphView getView() {
+	public CyNetworkView getView() {
 		return view;
 	}
 	

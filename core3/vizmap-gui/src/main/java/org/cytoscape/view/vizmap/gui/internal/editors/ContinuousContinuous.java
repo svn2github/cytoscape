@@ -9,7 +9,7 @@ import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.view.vizmap.gui.internal.editors.continuous.C2CMappingEditor;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.VisualProperty;
 
 
 public class ContinuousContinuous implements EditorDisplayer {
@@ -27,7 +27,7 @@ public class ContinuousContinuous implements EditorDisplayer {
 		return EditorDisplayer.MappingType.CONTINUOUS;
 	}
 
-	public Object showEditor(Component parentComponent, VisualProperty type) {
+	public Object showEditor(Component parentComponent, VisualProperty<?> type) {
 		return C2CMappingEditor.showDialog(450, 350,"Continuous Editor for " + type.getName(),type, parentComponent);
 	}
 

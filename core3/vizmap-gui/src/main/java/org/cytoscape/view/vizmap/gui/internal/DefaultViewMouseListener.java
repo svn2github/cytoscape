@@ -6,10 +6,10 @@ import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
-import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 
 import cytoscape.CyNetworkManager;
 

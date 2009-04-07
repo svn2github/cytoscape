@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JButton;

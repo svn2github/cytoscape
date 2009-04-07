@@ -2,7 +2,7 @@ package org.cytoscape.view.vizmap.gui.internal.event;
 
 import java.beans.PropertyChangeEvent;
 
-import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.NetworkPanel;
