@@ -25,6 +25,7 @@ public class proxy implements Command,TunableValidator{
 		String ret = null;
 //		if(param.equals("hostname")){
 //			System.out.println("test for " + param);
+		if(!type.getSelectedValue().equals("direct"))
 			if(!hostname.contains("cache"))ret=new String("There is a Problem");
 //		}
 		return ret;
