@@ -38,6 +38,8 @@
 *
 * Revisions:
 *
+* Tue Apr 07 17:46:17 2008 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.62.
 * Tue Sep 23 11:35:26 2008 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.61.
 * Wed Apr 02 19:34:54 2008 (Michael L. Creech) creech@w235krbza760
@@ -186,10 +188,10 @@ public final class HyperEdgeManagerImpl implements HyperEdgeManager {
     // used for fine-grained synchronization:
     private static final Boolean          INTERSECTION_LOCK   = new Boolean(true);
     private static final HyperEdgeManager INSTANCE            = new HyperEdgeManagerImpl();
-    private static final Double           VERSION_NUMBER      = 2.61;
+    private static final Double           VERSION_NUMBER      = 2.62;
     private static final String           VERSION             = "HyperEdge Version " +
                                                                 VERSION_NUMBER +
-                                                                ", 07-Oct-08";
+                                                                ", 07-Apr-09";
     private static transient ListenerStore<NewObjectListener> newListenerStore = new ListenerStoreImpl<NewObjectListener>();
 
     // Used for setting and reading _internalRemoval:
