@@ -18,7 +18,7 @@ pluginDescription=Allows the creation of HyperEdges--mutable edges that allow mo
 pluginVersion=2.62
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.6
+cytoscapeVersion=2.6.2
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Functional Enrichment
@@ -37,4 +37,4 @@ pluginCategory=Functional Enrichment
 pluginAuthorsIntsitutions=Aditya Vailaya and Allan Kuchinsky:Agilent Labs;Michael Creech:Blue Oak Software
 
 # Date this plugin/plugin version was released
-releaseDate=September 23, 2008
+releaseDate=April 08, 2009
