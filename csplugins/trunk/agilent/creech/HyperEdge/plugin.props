@@ -15,7 +15,7 @@ pluginDescription=Allows the creation of HyperEdges--mutable edges that allow mo
 # Plugin version number, this must be two numbers separated by a
 # decimlal.  Ex. 0.2, 14.03
 
-pluginVersion=2.61
+pluginVersion=2.62
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6
