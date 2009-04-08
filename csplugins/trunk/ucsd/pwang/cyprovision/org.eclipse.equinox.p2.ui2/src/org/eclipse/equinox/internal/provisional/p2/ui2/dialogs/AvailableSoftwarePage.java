@@ -46,7 +46,6 @@ import java.util.Map;
 
 public class AvailableSoftwarePage extends WizardPage implements ActionListener, ItemListener, MouseListener {
 
-	//JDialog dlg;
 	Policy policy;
 	String profileId;
 	QueryableMetadataRepositoryManager manager;
@@ -88,7 +87,6 @@ public class AvailableSoftwarePage extends WizardPage implements ActionListener,
 		initRepoTree();
 		
 		addEventListeners();
-		
 	}
 
     public static final String getDescription() {
@@ -96,16 +94,23 @@ public class AvailableSoftwarePage extends WizardPage implements ActionListener,
     }
     
 
-    
     protected String validateContents (Component component, Object o) {
- 		
-
+ 		if (checkedIUElements == null){
+ 			return "Please select plugins to continue!";
+ 		}
+ 		if (checkedIUElements.size() ==0){
+ 			CheckBoxTreeCellRenderer rr = (CheckBoxTreeCellRenderer) jTree1.getCellRenderer();
+ 			TreePath[] checkedPaths = rr.getCheckedPaths();
+ 			if (checkedPaths.length == 1 && checkedPaths[0].getLastPathComponent().toString().equalsIgnoreCase("JTree")){
+ 				// The whole tree is selected
+ 				return "Can not select all available plugins!";
+ 			}
+ 			return "Please select plugins to continue!";
+ 		}
     	return null;
     }
  
 
-    
-    
 	private void initRepoTree(){
 		
 		jTree1.setRootVisible(false);
