@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -38,6 +37,10 @@
 *
 * Revisions:
 *
+* Tue Apr 07 17:39:08 2009 (Michael L. Creech) creech@w235krbza760
+*  Fixed bug where custom ConnectorNode labels were erased when
+*  restoring saved HyperEdges. See reconstructFromNodesEdgesAndAttributes.
+*  Added isStandardLabel().
 * Wed Apr 02 19:41:20 2008 (Michael L. Creech) creech@w235krbza760
 *  Fixed bad bug where reading session or saved networks was not
 *  reconstructing all information needed to correctly represent
@@ -1561,8 +1564,16 @@ public class HyperEdgeImpl implements HyperEdge {
 	// MLC 06/21/07 BEGIN:
         // _node_attrs.deleteAttribute(connectorNode.getIdentifier(),
         //                             HyperEdgeImpl.LABEL_ATTRIBUTE_NAME);
-        HEUtils.deleteAttribute(nodeAttrs, connectorNode.getIdentifier(),
-                                HyperEdgeImpl.LABEL_ATTRIBUTE_NAME);
+	// MLC 04/07/09 BEGIN:
+	if (isStandardLabel (connectorNode)) {
+	    // Only delete the label if it is the standard generated label (canonicalName)
+	    // otherwise, if it has a custom value, *don't* delete the value:
+	    HEUtils.deleteAttribute(nodeAttrs, connectorNode.getIdentifier(),
+				    HyperEdgeImpl.LABEL_ATTRIBUTE_NAME);
+	}
+        // HEUtils.deleteAttribute(nodeAttrs, connectorNode.getIdentifier(),
+        //                        HyperEdgeImpl.LABEL_ATTRIBUTE_NAME);
+	// MLC 04/07/09 END.
 	// MLC 06/21/07 END.
         // compute edges:
         final int[]  adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(connectorNode),
@@ -1585,6 +1596,17 @@ public class HyperEdgeImpl implements HyperEdge {
             }
         }
     }
+
+    // MLC 04/07/09 BEGIN:
+    // Cytoscape generates a canonicalName label for each Node, which is the Node's ID.
+    // Return true iff the label is this standard label.
+    private boolean isStandardLabel (final CyNode connectorNode) {
+	String existingLabel = nodeAttrs.getStringAttribute (connectorNode.getIdentifier(),
+							     HyperEdgeImpl.LABEL_ATTRIBUTE_NAME);
+	return ((existingLabel != null) &&
+		existingLabel.equals (connectorNode.getIdentifier()));
+    }
+    // MLC 04/07/09 END.
 
     // This HyperEdge's connector node may not belong to net, but if it does
     // add all the appropriate info about the edges and nodes for this net:
