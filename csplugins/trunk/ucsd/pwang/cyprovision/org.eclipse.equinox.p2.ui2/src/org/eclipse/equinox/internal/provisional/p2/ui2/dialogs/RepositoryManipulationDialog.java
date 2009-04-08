@@ -21,7 +21,7 @@ import org.eclipse.equinox.internal.p2.ui2.DefaultMetadataURLValidator;
 import org.eclipse.equinox.internal.p2.ui2.ProvUIMessages;
 import org.eclipse.equinox.internal.p2.ui2.model.ElementUtils;
 import org.eclipse.equinox.internal.p2.ui2.model.MetadataRepositoryElement;
-import org.eclipse.equinox.internal.p2.ui2.viewers.RepositoryDetailsLabelProvider;
+//import org.eclipse.equinox.internal.p2.ui2.viewers.RepositoryDetailsLabelProvider;
 import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
 import org.eclipse.equinox.internal.provisional.p2.ui2.UpdateManagerCompatibility;
 import org.eclipse.equinox.internal.provisional.p2.ui2.dialogs.CachedMetadataRepositories;
@@ -54,8 +54,9 @@ public class RepositoryManipulationDialog extends JDialog implements ActionListe
 	boolean changed = false;
 
     /** Creates new form RepositoryManipulationPage */
-    public RepositoryManipulationDialog(JDialog parent, boolean modal, Policy policy) {
-        super(parent, modal);
+    public RepositoryManipulationDialog(boolean modal, Policy policy) {
+        //super(parent, modal);
+    	this.setModal(modal);
         this.policy = policy;
         this.parent = parent;
         this.setTitle("Repository Manipulation");
