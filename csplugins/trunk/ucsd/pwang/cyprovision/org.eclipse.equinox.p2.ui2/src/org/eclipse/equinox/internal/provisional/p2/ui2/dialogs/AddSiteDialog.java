@@ -31,12 +31,20 @@ public class AddSiteDialog extends JDialog implements ActionListener {
 	//private Hashtable elements = null;
 	
 	/** Creates new form AddSiteDialog */
+	public AddSiteDialog(boolean modal, Policy policy) {
+		//super(modal);
+		this.setModal(modal);
+		this.policy = policy;
+		init();
+	}
+
+
 	public AddSiteDialog(JDialog parent, boolean modal, Policy policy) {
 		super(parent, modal);
 		this.policy = policy;
 		init();
 	}
-
+	
 	public AddSiteDialog(JDialog parent, boolean modal, Policy policy, CachedMetadataRepositories cachedMetadataRepository) {
 		super(parent, modal);
 		this.policy = policy;
