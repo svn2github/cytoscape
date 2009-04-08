@@ -215,6 +215,28 @@ class ErrorPanel extends JPanel {
         return tipArea;
     }
 
+    private void convertThrowable(Throwable exception, DefaultMutableTreeNode root)
+    {
+    	if (exception == null || exception.getStackTrace() == null)
+		return;
+
+    	final String message;
+	if (exception.getMessage() != null && exception.getMessage().length() != 0)
+		message = String.format("%s: %s", exception.getClass().getName(), exception.getMessage());
+	else
+		message = exception.getClass().getName();
+    	
+	DefaultMutableTreeNode node = new DefaultMutableTreeNode(message);
+	root.add(node);
+	
+	StackTraceElement[] st = exception.getStackTrace();
+	if (st != null)
+		for (int i = 0; i < st.length; i++)
+			node.add(new DefaultMutableTreeNode(st[i]));
+    	
+	convertThrowable(exception.getCause(), root);
+    }
+
     /**
 	 * Creates Center Panel with Error Details.
 	 *
@@ -223,46 +245,18 @@ class ErrorPanel extends JPanel {
 	private JScrollPane createCenterPanel() {
 		detailsPane = new JScrollPane();
 
-		if ((t != null) && (t.getStackTrace() != null)) {
-			//  Get Stack Trace
-			StackTraceElement[] ste = t.getStackTrace();
-			Throwable cause = t.getCause();
-			StringBuffer rootBuffer = null;
 
-			if (cause != null) {
-				rootBuffer = new StringBuffer("Root Cause:  " + cause.getClass().getName());
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+		convertThrowable(t, root);
+		//  Create a JTree Object
+		JTree tree = new JTree(root);
+		tree.setRootVisible(false);
 
-				if (cause.getMessage() != null) {
-					rootBuffer.append(":  " + cause.getMessage());
-				}
-			} else {
-				rootBuffer = new StringBuffer(t.getClass().getName());
-
-				if (t.getMessage() != null) {
-					rootBuffer.append(":  " + t.getMessage());
-				}
-			}
-
-			DefaultMutableTreeNode top = new DefaultMutableTreeNode(rootBuffer.toString());
-
-			//  Create Individual Nodes in JTree
-			DefaultMutableTreeNode current = top;
-
-			for (int i = 0; i < ste.length; i++) {
-				DefaultMutableTreeNode node = new DefaultMutableTreeNode(ste[i]);
-				current.add(node);
-				current = node;
-			}
-
-			//  Create a JTree Object
-			JTree tree = new JTree(top);
-
-			//  Open all Nodes
-			tree.scrollPathToVisible(new TreePath(current.getPath()));
-			tree.setBorder(new EmptyBorder(4, 10, 10, 10));
-			detailsPane.setViewportView(tree);
-			detailsPane.setPreferredSize(new Dimension(10, 150));
-		}
+		//  Open all Nodes
+		//tree.scrollPathToVisible(new TreePath(current.getPath()));
+		tree.setBorder(new EmptyBorder(4, 10, 10, 10));
+		detailsPane.setViewportView(tree);
+		detailsPane.setPreferredSize(new Dimension(10, 150));
 
 		//  By default, do not show
 		detailsPane.setVisible(false);
