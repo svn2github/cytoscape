@@ -39,9 +39,12 @@ import org.eclipse.equinox.internal.provisional.p2.ui2.model.MetadataRepositorie
 import org.eclipse.equinox.internal.provisional.p2.ui2.policy.IUViewQueryContext;
 import org.eclipse.equinox.internal.provisional.p2.ui2.policy.Policy;
 import org.netbeans.spi.wizard.WizardPage;
+import org.netbeans.spi.wizard.WizardPanelNavResult;
+import org.netbeans.spi.wizard.Wizard;
+import java.util.Map;
 
 
-public class AvailableSoftwarePage extends WizardPage implements ActionListener, ItemListener, MouseListener{
+public class AvailableSoftwarePage extends WizardPage implements ActionListener, ItemListener, MouseListener {
 
 	//JDialog dlg;
 	Policy policy;
@@ -70,10 +73,10 @@ public class AvailableSoftwarePage extends WizardPage implements ActionListener,
 		//This may confuse user, so hide it for now
 		hideInstalledCheckbox.setVisible(false);
 		
+		// We are now use wizard, the following two are not needed any more
 		taAvailableSoftware.setVisible(false);
 		pnlButton.setVisible(false);
 		
-		//this.dlg = dlg;
 		this.policy = policy;
 		this.profileId = profileId;
 		this.manager = manager;
@@ -85,19 +88,24 @@ public class AvailableSoftwarePage extends WizardPage implements ActionListener,
 		initRepoTree();
 		
 		addEventListeners();
+		
 	}
 
     public static final String getDescription() {
         return "Available Software";
     }
     
+
+    
     protected String validateContents (Component component, Object o) {
+ 		
 
     	return null;
     }
-    
+ 
 
-	
+    
+    
 	private void initRepoTree(){
 		
 		jTree1.setRootVisible(false);
@@ -117,25 +125,32 @@ public class AvailableSoftwarePage extends WizardPage implements ActionListener,
 	}
 		
 	
+
 	private class MyMouseListener extends MouseAdapter {
         public void mouseReleased(MouseEvent e) {
+        	
+        	
             // Invoke later to ensure all mouse handling is completed
             SwingUtilities.invokeLater(new Runnable() { public void run() {
             	updateCheckedIUs();
+            	AvailableSoftwarePage.this.putWizardData("checkedIUElements", checkedIUElements);
             	// Disable btnInstall if nothing is checked or the whole tree is checked
-            	if (checkedIUElements.size() == 0){
-            		btnInstall.setEnabled(false);
-            	}
-            	else {
-            		btnInstall.setEnabled(true);
-            	}
+            	//if (checkedIUElements.size() == 0){
+            	//	btnInstall.setEnabled(false);
+            	//}
+            	//else {
+            	//	btnInstall.setEnabled(true);
+            	//}
             }});
+            
         }		
 	}
-	
-	
+
+
 	private void updateCheckedIUs() {
 		
+		//System.out.println("AvailableSoftwarePage.updateCheckedIUs()...");
+			
 		CheckBoxTreeCellRenderer rr = (CheckBoxTreeCellRenderer) jTree1.getCellRenderer();
 		TreePath[] checkedPaths = rr.getCheckedPaths();
 		
@@ -162,12 +177,10 @@ public class AvailableSoftwarePage extends WizardPage implements ActionListener,
 			}
         }
 	}
-		
+			
 	
 	Object getNewInput() {
-		
-	    System.out.println("getNewInput(): repositoryFilter ="+repositoryFilter);
-	       
+	    //System.out.println("getNewInput(): repositoryFilter ="+repositoryFilter);
 		if (repositoryFilter != null) {
 			return new MetadataRepositoryElement(queryContext, policy, repositoryFilter, true);
 		}
@@ -192,55 +205,57 @@ public class AvailableSoftwarePage extends WizardPage implements ActionListener,
 		TreeSelectionListener treeSelectionListener = new TreeSelectionListener(){
 			public void valueChanged(TreeSelectionEvent tse){
 				// Handle the detail area
-				JTree theTree =  (JTree) tse.getSource();
-				
-				TreePath[] selectedPaths = theTree.getSelectionPaths();
-				
-				if (selectedPaths == null){
-					taDetails.setText("");
-					return;
-				}
-				
-				if (selectedPaths.length == 1){
-					TreePath thePath = selectedPaths[0];
-					DefaultMutableTreeNode theNode = (DefaultMutableTreeNode) thePath.getLastPathComponent();
-					Object node_userObj = theNode.getUserObject();
-					
-					if (node_userObj instanceof AvailableIUElement){
-						AvailableIUElement avail_iu_element = (AvailableIUElement) node_userObj;
-						IInstallableUnit installUnit =avail_iu_element.getIU();
-						
-						StringBuffer result = new StringBuffer();
-						String description = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_DESCRIPTION);
-
-						if (description != null) {
-							result.append(description);
-						} else {
-							String name = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_NAME);
-							if (name != null)
-								result.append(name);
-							else
-								result.append(installUnit.getId());
-							result.append(" "); //$NON-NLS-1$
-							result.append(installUnit.getVersion().toString());
-						}
-
-						taDetails.setText(result.toString());
-					}
-				}
-				else if (selectedPaths.length > 1){
-					taDetails.setText("");
-				}
+				updateDetails();
 			}
 		};
 		jTree1.addTreeSelectionListener(treeSelectionListener);
-		
 	}
 	
 	
-	void fillRepoCombo(final String selection) {
-	
+	void updateDetails(){
+		//JTree theTree =  (JTree) tse.getSource();
+		
+		TreePath[] selectedPaths = jTree1.getSelectionPaths();
+		
+		if (selectedPaths == null){
+			taDetails.setText("");
+			return;
+		}
+		
+		if (selectedPaths.length == 1){
+			TreePath thePath = selectedPaths[0];
+			DefaultMutableTreeNode theNode = (DefaultMutableTreeNode) thePath.getLastPathComponent();
+			Object node_userObj = theNode.getUserObject();
+			
+			if (node_userObj instanceof AvailableIUElement){
+				AvailableIUElement avail_iu_element = (AvailableIUElement) node_userObj;
+				IInstallableUnit installUnit =avail_iu_element.getIU();
 				
+				StringBuffer result = new StringBuffer();
+				String description = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_DESCRIPTION);
+
+				if (description != null) {
+					result.append(description);
+				} else {
+					String name = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_NAME);
+					if (name != null)
+						result.append(name);
+					else
+						result.append(installUnit.getId());
+					result.append(" "); //$NON-NLS-1$
+					result.append(installUnit.getVersion().toString());
+				}
+
+				taDetails.setText(result.toString());
+			}
+		}
+		else if (selectedPaths.length > 1){
+			taDetails.setText("");
+		}
+	}
+	
+	
+	void fillRepoCombo(final String selection) {	
 		if (repoCombo == null || policy.getRepositoryManipulator() == null)
 			return;
 		comboRepos = policy.getRepositoryManipulator().getKnownRepositories();
@@ -304,12 +319,11 @@ public class AvailableSoftwarePage extends WizardPage implements ActionListener,
 				System.out.println("\n");
 
 
-			} else if (btn == btnAddSite) {
-				//System.out.println("btnAddSite is clicked");
-				//AddSiteDialog addSiteDlg = new AddSiteDialog(dlg, true, policy);
-				//addSiteDlg.setLocationRelativeTo(dlg);
-				//addSiteDlg.setSize(400, 150);
-				//addSiteDlg.setVisible(true);
+			} else if (btn == btnAddSite) {				
+				AddSiteDialog addSiteDlg = new AddSiteDialog(true, policy);
+				addSiteDlg.setLocationRelativeTo(AvailableSoftwarePage.this);
+				addSiteDlg.setSize(400, 150);
+				addSiteDlg.setVisible(true);
 			}
 		}
 	}
@@ -491,10 +505,10 @@ public class AvailableSoftwarePage extends WizardPage implements ActionListener,
 			if (lb == lbAvailableSoftwareSites){
 				//System.out.println("lbAvailableSoftwareSites is clicked");
 				//policy.getRepositoryManipulator().manipulateRepositories(getShell());
-				//RepositoryManipulationDialog repoManDlg = new RepositoryManipulationDialog(dlg, true, policy);
-				//repoManDlg.setSize(600, 500);
-				//repoManDlg.setLocationRelativeTo(dlg);
-				//repoManDlg.setVisible(true);
+				RepositoryManipulationDialog repoManDlg = new RepositoryManipulationDialog(true, policy);
+				repoManDlg.setSize(600, 500);
+				repoManDlg.setLocationRelativeTo(AvailableSoftwarePage.this);
+				repoManDlg.setVisible(true);
 			}
 			else if (lb == lbAlreadyInstalled){
 				System.out.println("lbAlreadyInstalled is clicked, not implemented yet!");				
