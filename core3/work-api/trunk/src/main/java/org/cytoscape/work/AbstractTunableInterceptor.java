@@ -80,7 +80,6 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 	public void loadTunables(Object obj) {
 		//System.out.println("looking at obj: " + obj.getClass().toString());
 		//if (!handlerMap.containsKey(obj)) { //Deleted to get new Panels if we do it many times
-
 			LinkedHashMap<String, T> handlerList = new LinkedHashMap<String, T>();
 
 			// Find each public field in the class.
@@ -94,7 +93,6 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 						T handler = factory.getHandler(field, obj, tunable);
 
 						if (handler != null) {
-							//System.out.println("adding tunable handler for: " + field.toString());
 							handlerList.put(field.getName(), handler);
 						} else
 							System.out.println("No handler for type: " + field.getType().getName());
