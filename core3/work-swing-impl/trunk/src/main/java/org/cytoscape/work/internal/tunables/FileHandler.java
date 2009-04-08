@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.event.*;
 
 import java.io.File;
-import java.io.InputStream;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
@@ -28,7 +27,7 @@ public class FileHandler extends AbstractGuiHandler {
 	private ImageIcon image;
 	private JLabel titleLabel;
 	private JSeparator titleSeparator;
-	private InputStream is = null;
+//	private InputStream is = null;
 	private MouseClic mc;
 	//FileUtil flUtil;
 	
@@ -51,13 +50,13 @@ public class FileHandler extends AbstractGuiHandler {
 			String[] sbml={".xml",".sbml"};
 			fileChooser.addChoosableFileFilter(new MyFilter("SBML files",sbml));
 			String[] allnetworks = {".xml",".rdf",".owl",".xgmml",".sif",".sbml"};
-			fileChooser.addChoosableFileFilter(new MyFilter("All network files(*.xml, *.rdf, *.owl, *.xgmml, *.sif, *.sbml)",allnetworks));
+			fileChooser.addChoosableFileFilter(new MyFilter("All network files (*.xml, *.rdf, *.owl, *.xgmml, *.sif, *.sbml)",allnetworks));
 		}
 		for(Param s :t.flag())if(s.equals(Param.session)){
-			fileChooser.addChoosableFileFilter(new MyFilter("Session files",".cys"));
+			fileChooser.addChoosableFileFilter(new MyFilter("Session files (*.cys)",".cys"));
 		}
 		for(Param s :t.flag())if(s.equals(Param.attributes)){
-			fileChooser.addChoosableFileFilter(new MyFilter("Attributes files",""));
+			fileChooser.addChoosableFileFilter(new MyFilter("Attributes files","attr"));
 		}
 	
 		titleSeparator = new JSeparator();
@@ -213,12 +212,12 @@ public class FileHandler extends AbstractGuiHandler {
     		this.description = description;
     		this.extensions = extensions;
     	}
- 
+    	
     	public boolean accept(File file){
     		if (file.isDirectory()) return true; 
         
-    		String fileName = file.getName().toLowerCase(); 
-        
+    		String fileName = file.getName().toLowerCase();
+    		
     		if (extensions != null){
     			boolean accept = false;
     			for (int i=0; i<extensions.length; i++){
@@ -228,10 +227,14 @@ public class FileHandler extends AbstractGuiHandler {
     			}
     			return accept;
     		}
-    		else {
+    		else if (extension.contains("attr")){
+//    		System.out.println("eee");
+    		return fileName.contains("attr");
+    		}
+    		else
     			return fileName.endsWith(extension);
-    		}        
     	}
+    	
     	
 	    public String getDescription(){
 	        return description;

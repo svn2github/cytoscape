@@ -51,8 +51,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	}
 
 	public void actionPerformed(ActionEvent ae) {
+//		handle();
 		notifyDependents();
-		handle();
 	}
 
 	public void stateChanged(ChangeEvent e){
@@ -73,11 +73,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	public void notifyDependents() {
 		String state = getState();
 		String name = getName();
-//		if(deps.size()==0)handle();
-//		else{
-			for ( Guihandler gh : deps )
-			gh.checkDependency( name, state );
-//		}	
+		for ( Guihandler gh : deps )
+		gh.checkDependency( name, state );
 	}
 
 	// add a dependency on this object 
@@ -91,12 +88,15 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 		return depName;
 	}
 
+	public void handleDependents(){
+		if(panel.isEnabled())handle();
+	}
+	
 	public void checkDependency(String name, String state) {
-
 		// if we don't depend on anything, then we should be enabled
 		if ( depName == null || depState == null ) {
 			setEnabledContainer(true,panel);
-			handle();
+//			handle();
 			return;
 		}
 
@@ -106,7 +106,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
         	if(depState!=""){
         		if ( depState.equals(state) ){
         			setEnabledContainer(true,panel);
-        			handle();}
+//        			handle();
+        		}
 			// ... and the state doesn't match, then disable 
         		else{
         			setEnabledContainer(false,panel);
@@ -115,7 +116,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
         	else {
         		if ( !depUnState.equals(state) ){
         			setEnabledContainer(true,panel);
-        			handle();
+//        			handle();
         		}
 			// ... and the state doesn't match, then disable 
         		else{

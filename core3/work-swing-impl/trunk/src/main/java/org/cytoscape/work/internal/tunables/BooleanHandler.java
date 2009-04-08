@@ -16,8 +16,9 @@ import org.cytoscape.work.Tunable.Param;
 
 public class BooleanHandler extends AbstractGuiHandler {
 
-	JCheckBox jcb;
+	private JCheckBox jcb;
 	Boolean myBoolean;
+	private boolean horizontal=false;
 	
 	protected BooleanHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
@@ -33,7 +34,9 @@ public class BooleanHandler extends AbstractGuiHandler {
 		label.setFont(new Font(null,Font.PLAIN,12));
 		jcb.addActionListener(this);
 
-		for(Param param : t.alignment())if(param==Param.horizontal){
+		for(Param par : t.alignment())if(par==Param.horizontal) horizontal=true;
+		
+		if(horizontal){
 			panel.add(label,BorderLayout.NORTH);
 			panel.add(jcb,BorderLayout.SOUTH);
 		}

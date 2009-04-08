@@ -11,11 +11,11 @@ import org.cytoscape.work.Tunable.Param;
 
 public class FloatHandler extends AbstractGuiHandler {
 
-	JTextField jtf;
-	Double value = null;
+	private JTextField jtf;
+	private Double value = null;
 	Float myFloat;
-	String newline = System.getProperty("line.separator");
-
+	private String newline = System.getProperty("line.separator");
+	private boolean horizontal = false;
 
 	protected FloatHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
@@ -28,7 +28,9 @@ public class FloatHandler extends AbstractGuiHandler {
 		label.setFont(new Font(null, Font.PLAIN,12));
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
 
-		for(Param par : t.alignment())if(par==Param.horizontal){
+		for(Param par : t.alignment())if(par==Param.horizontal) horizontal=true;
+		
+		if(horizontal){
 			panel.add(label,BorderLayout.NORTH);
 			panel.add(jtf,BorderLayout.SOUTH);
 		}

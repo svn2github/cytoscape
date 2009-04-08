@@ -16,4 +16,5 @@ public interface Guihandler extends Handler{
 
 	void checkDependency(String name, String state);
 	String getDependency();
+	void handleDependents();
 }
