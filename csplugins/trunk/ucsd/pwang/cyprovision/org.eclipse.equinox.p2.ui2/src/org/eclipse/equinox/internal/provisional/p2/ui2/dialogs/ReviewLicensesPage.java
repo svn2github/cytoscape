@@ -75,7 +75,12 @@ public class ReviewLicensesPage extends WizardPage{
        	while (it.hasNext()){
        		name = (String) it.next();
        		ILicense license = (ILicense) licenseMap.get(name);
-       		retValue += name + "\n" + license.getBody();
+       		
+       		retValue += name + "\n";
+       		if (license.getLocation() != null){
+           		retValue += "The full text of the license can be found at " + license.getLocation().toString()+ "\n";       			
+       		}
+       		retValue += license.getBody();
        		retValue += "\n\n";
        	}
 	
