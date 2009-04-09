@@ -106,22 +106,43 @@ public class CyReaderManagerImpl implements CyReaderManager {
 		CyFileFilter cff;
 		CyReader reader = null;
 
+
 		for (CyReaderFactory factory : factories) {
 			cff = factory.getCyFileFilter();
 
-			try {
-				if (uri != null) {
-					if (cff.accept(uri, category))
-						reader = factory.getReader(uri);
-				} else {
-					System.out.println("################# " + cff.getClass());
-					//if (cff.accept(stream, category))
-						reader = factory.getReader(stream);
+			if (uri != null) {
+				
+				boolean accept = false;
+				try
+				{
+					accept = cff.accept(uri, category);
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new IllegalArgumentException(
-						"Could not get proper reader for the file.", e);
+				catch (IOException e)
+				{
+					throw new IllegalArgumentException("Failed to check file's contents: " + uri.toString(), e);
+				}
+				if (accept)
+				{
+					try
+					{
+						reader = factory.getReader(uri);
+					}
+					catch (IOException e)
+					{
+						throw new IllegalArgumentException("Could not get proper reader for the file.", e);
+					}
+				}
+			} else {
+				System.out.println("################# " + cff.getClass());
+				//if (cff.accept(stream, category))
+				try
+				{
+					reader = factory.getReader(stream);
+				}
+				catch (IOException e)
+				{
+					throw new IllegalArgumentException("Could not get proper reader for the file.", e);
+				}
 			}
 		}
 

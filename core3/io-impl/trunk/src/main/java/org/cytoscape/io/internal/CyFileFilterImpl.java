@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.Set;
@@ -50,6 +49,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.util.StreamUtil;                                                                              
 
 public class CyFileFilterImpl implements CyFileFilter {
 
@@ -61,8 +61,7 @@ public class CyFileFilterImpl implements CyFileFilter {
 	private Set<String> contentTypes;
 	private String description;
 	protected DataCategory category;
-
-	private Proxy proxy;
+	private StreamUtil streamUtil;
 
 	/**
 	 * Creates a file filter from the given string array and description.
@@ -74,7 +73,7 @@ public class CyFileFilterImpl implements CyFileFilter {
 	 */
 	public CyFileFilterImpl(final Set<String> extensions,
 			final Set<String> contentTypes, final String description,
-			final DataCategory category) {
+			final DataCategory category, StreamUtil streamUtil) {
 
 		this.extensions = extensions;
 		this.contentTypes = contentTypes;
@@ -88,10 +87,7 @@ public class CyFileFilterImpl implements CyFileFilter {
 		d += ")";
 
 		this.description = d;
-	}
-
-	public void setProxy(Proxy proxy) {
-		this.proxy = proxy;
+		this.streamUtil = streamUtil;
 	}
 
 	/**
@@ -111,12 +107,7 @@ public class CyFileFilterImpl implements CyFileFilter {
 		if (category != this.category)
 			return false;
 
-		final URLConnection connection;
-		if (proxy != null)
-			connection = uri.toURL().openConnection(proxy);
-		else
-			connection = uri.toURL().openConnection();
-
+		final URLConnection connection = streamUtil.getURLConnection(uri.toURL());
 		final String contentType = connection.getContentType();
 
 		// Check for matching content type

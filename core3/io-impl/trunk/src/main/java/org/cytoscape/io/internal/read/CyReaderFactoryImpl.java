@@ -9,16 +9,18 @@ import java.net.URLConnection;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.read.CyReader;
 import org.cytoscape.io.read.CyReaderFactory;
+import org.cytoscape.io.util.StreamUtil;
 
 public class CyReaderFactoryImpl implements CyReaderFactory {
 
 	private CyFileFilter filter;
 	private CyReader reader;
+	private StreamUtil streamUtil;
 
 	// This should be an OSGi service.
 	private Proxy proxy;
 
-	public CyReaderFactoryImpl(CyFileFilter filter, CyReader reader)
+	public CyReaderFactoryImpl(CyFileFilter filter, CyReader reader, StreamUtil streamUtil)
 			throws IllegalArgumentException {
 		this.filter = filter;
 		this.reader = reader;
@@ -28,6 +30,7 @@ public class CyReaderFactoryImpl implements CyReaderFactory {
 		} else if (this.reader == null) {
 			throw new IllegalArgumentException("CyFileFilter cannot be null.");
 		}
+		this.streamUtil = streamUtil;
 	}
 
 	public void setProxy(Proxy proxy) {
@@ -43,16 +46,8 @@ public class CyReaderFactoryImpl implements CyReaderFactory {
 	 * @throws IOException
 	 */
 	public CyReader getReader(URI uri) throws IOException {
-		final URLConnection urlConn;
-
-		// Proxy available
-		if (proxy != null) {
-			urlConn = uri.toURL().openConnection(proxy);
-		} else {
-			urlConn = uri.toURL().openConnection();
-		}
-
-		return getReader(urlConn.getInputStream());
+		InputStream is = streamUtil.getInputStream(uri.toURL());
+		return getReader(is);
 	}
 
 	public CyReader getReader(InputStream stream) throws IOException {

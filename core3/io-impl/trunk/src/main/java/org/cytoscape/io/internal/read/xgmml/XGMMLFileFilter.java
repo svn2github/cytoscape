@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Set;
 
 import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.io.internal.CyFileFilterImpl;
 
 public class XGMMLFileFilter extends CyFileFilterImpl {
@@ -13,8 +14,8 @@ public class XGMMLFileFilter extends CyFileFilterImpl {
 	
 
 	public XGMMLFileFilter(Set<String> extensions, Set<String> contentTypes,
-			String description, DataCategory category) {
-		super(extensions, contentTypes, description, category);
+			String description, DataCategory category, StreamUtil streamUtil) {
+		super(extensions, contentTypes, description, category, streamUtil);
 	}
 
 	public boolean accept(InputStream stream, DataCategory category)

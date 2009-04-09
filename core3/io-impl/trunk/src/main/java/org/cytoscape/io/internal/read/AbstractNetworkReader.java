@@ -54,5 +54,6 @@ abstract public class AbstractNetworkReader implements CyReader {
 			inputStream.close();
 		}
 		catch (IOException e) {}
+		inputStream = null;
 	}
 }

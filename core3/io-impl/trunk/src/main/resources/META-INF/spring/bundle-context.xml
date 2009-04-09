@@ -19,11 +19,17 @@
 	<bean id="sifReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
 		<constructor-arg ref="sifFilter" />
 		<constructor-arg ref="sifReader" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
 	</bean>
 
 	<bean id="xgmmlReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
 		<constructor-arg ref="xgmmlFilter" />
 		<constructor-arg ref="xgmmlReader" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
 	</bean>
 
 	<bean id="sifFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
@@ -40,6 +46,9 @@
 		<constructor-arg value="SIF files" />
 		<constructor-arg type="org.cytoscape.io.DataCategory"
 			value="NETWORK" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
 	</bean>
 
 	<bean id="xgmmlFilter" class="org.cytoscape.io.internal.read.xgmml.XGMMLFileFilter">
@@ -59,7 +68,9 @@
 		<constructor-arg value="XGMML files" />
 		<constructor-arg type="org.cytoscape.io.DataCategory"
 			value="NETWORK" />
-
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
 	</bean>
 
 
@@ -123,5 +134,8 @@
 		class="org.cytoscape.io.internal.util.DefaultJVMCyProxySelectorImpl">
 	</bean>
 
+	<bean id="cyProxyRegistryImpl"
+		class="org.cytoscape.io.internal.util.CyProxyRegistryImpl">
+	</bean>
 
 </beans>
