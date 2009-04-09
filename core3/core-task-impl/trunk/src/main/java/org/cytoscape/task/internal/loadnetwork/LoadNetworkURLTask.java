@@ -41,10 +41,12 @@
 package org.cytoscape.task.internal.loadnetwork;
 
 import java.net.URL;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
@@ -60,37 +62,46 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
 	@Tunable(description="The URL to load")
 	public URL url;
+	
+
+	StreamUtil streamUtil;
+
+	static String BAD_INTERNET_SETTINGS_MSG = "<html><p>Cytoscape has failed to connect to the URL. Please ensure that:</p><p><ol><li>the URL is correct,</li><li>your computer is able to connect to the Internet, and</li><li>your proxy settings are correct.</li></ol></p><p>The reason for the failure is: %s</html>";
 
 	public LoadNetworkURLTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
-			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
+			CyLayouts cyl, CyNetworkManager netmgr, Properties props,
+			CyNetworkNaming namingUtil, StreamUtil streamUtil) {
 		super(mgr, gvf, cyl, netmgr, props, namingUtil);
+		this.streamUtil = streamUtil;
 	}
 
 	/**
 	 * Executes Task.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		this.taskMonitor = taskMonitor;
-
 		if (url == null)
-			throw new NullPointerException("Network url is null");
-
-		name = url.toString();
+			throw new NullPointerException("url is null");
 
 		myThread = Thread.currentThread();
+		this.taskMonitor = taskMonitor;
+		name = url.toString();
 
-		try {
-			taskMonitor.setStatusMessage("Opening url " + url);
-			reader = mgr.getReader(url.toURI(),DataCategory.NETWORK);
+		taskMonitor.setTitle(String.format("Loading Network from \'%s\'", name));
 
-			if (interrupted)
-				return;
-
-		} catch (Exception e) {
-			url = null;
-			throw new Exception("Unable to connect to URL " + name, e); 
+		taskMonitor.setStatusMessage("Checking URL...");
+		try
+		{
+			streamUtil.getURLConnection(url).connect();
+		}
+		catch (IOException e)
+		{
+			throw new Exception(String.format(BAD_INTERNET_SETTINGS_MSG, e.getMessage()), e);
 		}
 
+		taskMonitor.setStatusMessage("Reading network...");
+		reader = mgr.getReader(url.toURI(),DataCategory.NETWORK);
+
+		taskMonitor.setStatusMessage("Loading network...");
 		loadNetwork(reader);
 	}
 }
