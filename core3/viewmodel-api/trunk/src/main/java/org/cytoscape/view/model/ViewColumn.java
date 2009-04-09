@@ -25,7 +25,7 @@ public interface ViewColumn<T> {
 	 * for setting many values will be horribly inefficient. Use setValues()
 	 * instead.
 	 */
-	void setValue(View<?> view, T value);
+	<V extends T> void setValue(View<?> view, V value);
 	
 	/**
 	 * Bulk method for setting many values at once. This fires only a single event and is thus much more efficient.
@@ -49,7 +49,7 @@ public interface ViewColumn<T> {
 	void setLockedValue(final View<?> view, final T value);
 	
 	/**
-	 * @param vp the VisualProperty
+	 * @param view target view
 	 * @return true if current VisualProperty value is locked
 	 */
 	boolean isValueLocked(final View<?> view);
@@ -57,7 +57,7 @@ public interface ViewColumn<T> {
 	/**
 	 * Clear value lock for given VisualProperty.
 	 * 
-	 * @param vp the VisualProperty 
+	 * @param view target view 
 	 */
 	void clearValueLock(final View<?> view);
 }

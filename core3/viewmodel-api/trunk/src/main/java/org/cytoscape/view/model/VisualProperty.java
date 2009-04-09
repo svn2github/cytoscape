@@ -94,7 +94,7 @@ public interface VisualProperty<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	String getHumanName();
+	String getDisplayName();
 
 	/**
 	 *

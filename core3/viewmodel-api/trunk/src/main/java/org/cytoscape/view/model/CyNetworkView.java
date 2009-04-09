@@ -85,9 +85,9 @@ public interface CyNetworkView extends View<CyNetwork>{
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	List<View<?extends GraphObject>> getAllViews();
+	List<View<? extends GraphObject>> getAllViews();
 
-	<T> ViewColumn<T> getColumn(final VisualProperty<T> vp);
+	<T> ViewColumn<T> getColumn(final VisualProperty<? extends T> vp);
 
 
 	// temp methods
