@@ -37,6 +37,7 @@
 package org.cytoscape.work.internal.task;
 
 import javax.swing.*;
+import javax.swing.text.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -172,8 +173,8 @@ class ErrorPanel extends JPanel {
         JTextArea errorArea = createErrorTextArea(userErrorMessage);
         textPanel.add(errorArea);
         if (tip != null) {
-            JTextArea tipArea = createTipTextArea(tip);
-            textPanel.add(tipArea);
+            JTextPane tipPane = createTipTextPane(tip);
+            textPanel.add(tipPane);
         }
         panel.add(textPanel, BorderLayout.CENTER);
 
@@ -203,16 +204,19 @@ class ErrorPanel extends JPanel {
         return errorArea;
     }
 
-    private JTextArea createTipTextArea(String tip) {
-        tip = StringWrap.wrap(tip, 50, "\n", false);
-        JTextArea tipArea = new JTextArea(tip);
-        tipArea.setEditable(false);
-        tipArea.setOpaque(false);
+    private JTextPane createTipTextPane(String tip) {
+        //tip = StringWrap.wrap(tip, 50, "\n", false);
+        JTextPane tipPane = new JTextPane();
+	tipPane.setEditorKit(new StyledEditorKit());
+	tipPane.setContentType("text/html");
+	tipPane.setText(tip);
+        tipPane.setEditable(false);
+        tipPane.setOpaque(false);
 
-        Font font = tipArea.getFont();
-        tipArea.setFont(new Font(font.getFamily(), Font.PLAIN, font.getSize()));
-        tipArea.setBorder(new EmptyBorder(10, 10, 10, 10));
-        return tipArea;
+        Font font = tipPane.getFont();
+        //tipPane.setFont(new Font(font.getFamily(), Font.PLAIN, font.getSize()));
+        tipPane.setBorder(new EmptyBorder(10, 10, 10, 10));
+        return tipPane;
     }
 
     private void convertThrowable(Throwable exception, DefaultMutableTreeNode root)
