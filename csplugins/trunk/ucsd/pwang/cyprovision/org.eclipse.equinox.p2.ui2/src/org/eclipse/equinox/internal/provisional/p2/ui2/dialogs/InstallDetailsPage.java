@@ -3,27 +3,98 @@ package org.eclipse.equinox.internal.provisional.p2.ui2.dialogs;
 import java.awt.Component;
 
 import org.netbeans.spi.wizard.WizardPage;
+import org.netbeans.spi.wizard.WizardController;
 import java.awt.event.ComponentListener;
 import java.awt.event.ComponentEvent;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.HashMap;
 
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import org.eclipse.equinox.internal.p2.ui2.model.AvailableIUElement;
 import org.eclipse.equinox.internal.p2.ui2.model.CategoryElement;
+import org.eclipse.equinox.internal.p2.ui2.model.ElementUtils;
 import org.eclipse.equinox.internal.p2.ui2.model.MetadataRepositoryElement;
 
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.ILicense;
+import org.eclipse.equinox.internal.provisional.p2.ui2.IUPropertyUtils;
 import org.eclipse.equinox.internal.provisional.p2.ui2.model.MetadataRepositories;
+import java.awt.event.ComponentAdapter;
 
+public class InstallDetailsPage extends WizardPage {
 
-public class InstallDetailsPage extends WizardPage implements ComponentListener {
+    private HashSet checkedIUElements = null;
 
 	public InstallDetailsPage(){
 		 initComponents();		
-		 this.addComponentListener(this);
+		 
 		 initRepoTree();
+			
+		 TreeSelectionListener treeSelectionListener = new TreeSelectionListener(){
+				public void valueChanged(TreeSelectionEvent tse){
+					// Handle the detail area
+					updateDetails();
+				}
+			};
+			
+		jTree1.addTreeSelectionListener(treeSelectionListener);
+		
+		//Populate the JTree when the panel show up the first time
+		ComponentAdapter componentAdapter = new ComponentAdapter(){
+		    public void componentMoved(ComponentEvent e)  {
+		    	//System.out.println("component has been  moved");
+		    	recycle();
+		    }
+		};
+		this.addComponentListener(componentAdapter);
+		
+	}
+	
+	void updateDetails(){
+		
+		TreePath[] selectedPaths = jTree1.getSelectionPaths();
+		
+		if (selectedPaths == null){
+			taDetails.setText("");
+			return;
+		}
+		
+		if (selectedPaths.length == 1){
+			TreePath thePath = selectedPaths[0];
+			DefaultMutableTreeNode theNode = (DefaultMutableTreeNode) thePath.getLastPathComponent();
+			Object node_userObj = theNode.getUserObject();
+			
+			if (node_userObj instanceof AvailableIUElement){
+				AvailableIUElement avail_iu_element = (AvailableIUElement) node_userObj;
+				IInstallableUnit installUnit =avail_iu_element.getIU();
+				
+				StringBuffer result = new StringBuffer();
+				String description = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_DESCRIPTION);
+
+				if (description != null) {
+					result.append(description);
+				} else {
+					String name = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_NAME);
+					if (name != null)
+						result.append(name);
+					else
+						result.append(installUnit.getId());
+					result.append(" "); //$NON-NLS-1$
+					result.append(installUnit.getVersion().toString());
+				}
+
+				taDetails.setText(result.toString());
+			}
+		}
+		else if (selectedPaths.length > 1){
+			taDetails.setText("");
+		}
 	}
 	
 	
@@ -45,8 +116,6 @@ public class InstallDetailsPage extends WizardPage implements ComponentListener 
     	return null;
     }
     
-
-    private HashSet checkedIUElements = null;
     
     protected  void recycle()  {
     	checkedIUElements = (HashSet) this.getWizardDataMap().get("checkedIUElements");
@@ -55,6 +124,26 @@ public class InstallDetailsPage extends WizardPage implements ComponentListener 
     		return;
     	}
     	    	
+    	//Check Licenses
+    	Iterator it = checkedIUElements.iterator();
+    	HashMap licenseMap = new HashMap();
+    	while (it.hasNext()){
+    		IInstallableUnit iu = ElementUtils.getIU(it.next());
+    		
+    		String name = IUPropertyUtils.getIUProperty(iu, IInstallableUnit.PROP_NAME);
+    		ILicense license = IUPropertyUtils.getLicense(iu);
+    		if (license != null) {
+    			licenseMap.put(name, license);
+    		}
+    	}
+    	
+    	this.putWizardData("LicenseMap", licenseMap);
+    	
+    	if (licenseMap.size() == 0){
+    		// There is no license, enable finish button
+    		this.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
+    	}
+    	
 		DefaultTreeModel model= rebuildTreeModel();
         jTree1.setModel(model);
     }
@@ -82,23 +171,6 @@ public class InstallDetailsPage extends WizardPage implements ComponentListener 
 	}
 
     
-    
-    // Component Listener
-    public void componentHidden(ComponentEvent e)  {
-    	//System.out.println("component has been  hidden");
-    }
-    public void componentMoved(ComponentEvent e)  {
-    	//System.out.println("component has been  moved");
-    	recycle();
-    }
-    public void componentResized(ComponentEvent e)  {
-    	//System.out.println("component has been  resized");
-    }
-    public void componentShown(ComponentEvent e)  {
-    	//System.out.println("component has been made visible");
-    }
-    
-
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
