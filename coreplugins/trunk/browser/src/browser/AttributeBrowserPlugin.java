@@ -38,25 +38,19 @@ import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
 
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.logger.CyLogger;
-
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeSupport;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Map.Entry;
 
-import javax.swing.event.SwingPropertyChangeSupport;
+import cytoscape.logger.CyLogger;
+import cytoscape.plugin.CytoscapePlugin;
 
 
 /**
@@ -122,12 +116,11 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 	}
 
 	public static AttributeBrowser getAttributeBrowser(browser.DataObjectType pObjectType){
-		if (pObjectType == NODES) {
+		if (pObjectType == NODES)
 			return nodeAttributeBrowser;
-		}
-		else if (pObjectType == NODES) {
+		else if (pObjectType == EDGES)
 			return edgeAttributeBrowser;
-		}
+			
 		return networkAttributeBrowser;
 	}
 	/**

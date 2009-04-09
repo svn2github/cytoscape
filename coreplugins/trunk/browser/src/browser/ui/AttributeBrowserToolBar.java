@@ -64,7 +64,6 @@ import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
 import browser.AttributeBrowser;
-import browser.AttributeBrowserPlugin;
 import browser.AttributeModel;
 import browser.DataObjectType;
 import browser.DataTableModel;
@@ -116,7 +115,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JButton deleteAttributeButton = null;
 	private JButton matrixButton = null;
 	private JButton importButton = null;
-
+	
 	// Panel to be added to JDialog for attribute modification
 	private ModDialog modDialog;
 
