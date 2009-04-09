@@ -1,34 +1,87 @@
 package org.eclipse.equinox.internal.provisional.p2.ui2.dialogs;
 
 import java.awt.Component;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Iterator;
 
+import org.eclipse.equinox.internal.provisional.p2.metadata.ILicense;
 import org.netbeans.spi.wizard.WizardPage;
 
 public class ReviewLicensesPage extends WizardPage{
 
-	
-    public static final String getDescription() {
-        return "Review Licenses";
-    }
-    
-    protected String validateContents (Component component, Object o) {
+    private HashSet checkedIUElements = null;
 
-    	if (!rbtAccept.isSelected()){
-    		return "You must accept the license to install the software!";
-    	}
-    	return null;
-    }
-    
-    protected  void recycle()  {
-    	rbtNotAccept.setSelected(true);
-    }
-    
+      
     /** Creates new form ReviewLicensesPage */
     public ReviewLicensesPage() {
         initComponents();
         buttonGroup1.add(rbtAccept);
         buttonGroup1.add(rbtNotAccept);
+        
+		//Populate the textarea when the panel show up the first time
+		ComponentAdapter componentAdapter = new ComponentAdapter(){
+		    public void componentMoved(ComponentEvent e)  {
+		    	//System.out.println("component has been  moved");
+		    	recycle();
+		    }
+		};
+		this.addComponentListener(componentAdapter);
     }
+
+    
+    public static final String getDescription() {
+        return "Review Licenses";
+    }
+    
+    
+    protected String validateContents (Component component, Object o) {
+    	if (!rbtAccept.isSelected()){
+    		return "You must accept the license to install the software!";
+    	}
+    	return null;
+    }
+
+    
+    protected  void recycle()  {
+    	rbtNotAccept.setSelected(true);
+    	checkedIUElements = (HashSet) this.getWizardDataMap().get("checkedIUElements");
+    	
+    	if (checkedIUElements == null){
+    		return;
+    	}
+    	
+    	// Get license text
+     	String licenseText = getLicenseText();
+    	taLicenseText.setText(licenseText);
+    }
+    
+    
+    private String getLicenseText(){
+    	
+    	String retValue = "";
+    	String name = "";
+       	HashMap licenseMap = (HashMap) this.getWizardDataMap().get("LicenseMap");
+    	
+       	if (licenseMap == null || licenseMap.size() ==0){
+       		return "None or Not available";
+       	}
+       	
+       	Set keys = licenseMap.keySet();
+       	Iterator it = keys.iterator();
+       	while (it.hasNext()){
+       		name = (String) it.next();
+       		ILicense license = (ILicense) licenseMap.get(name);
+       		retValue += name + "\n" + license.getBody();
+       		retValue += "\n\n";
+       	}
+	
+    	return retValue;
+    }
+    
     
     /** This method is called from within the constructor to
      * initialize the form.
