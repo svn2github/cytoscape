@@ -236,14 +236,13 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 		edgeViews.remove(e.getNode());
 	}
 
-	public <T> ColumnOrientedViewColumn<T> getColumn(final VisualProperty<T> vp) {
+	public <T> ColumnOrientedViewColumn<T> getColumn(final VisualProperty<? extends T> vp) {
 		if (vp == null)
 			throw new NullPointerException("VisualProperty must not be null");
 		if (columns.containsKey(vp)) {
 			return (ColumnOrientedViewColumn<T>) columns.get(vp);
 		} else { // create column
-			ColumnOrientedViewColumn<T> column = new ColumnOrientedViewColumn<T>(
-					vp);
+			ColumnOrientedViewColumn<T> column = new ColumnOrientedViewColumn<T>((VisualProperty<T>) vp);
 			columns.put(vp, column);
 			return column;
 		}
@@ -334,7 +333,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 
 	/** {@inheritDoc}
 	 */
-	public <T> void setVisualProperty(VisualProperty<T> vp, T o){
+	public <P, V extends P> void setVisualProperty(VisualProperty<? extends P> vp, V o){
 		viewCyNetwork.setVisualProperty(vp, o);
 	}
 	/** {@inheritDoc}
@@ -344,7 +343,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	}
 	/** {@inheritDoc}
 	 */
-	public <T> void setLockedValue(VisualProperty<T> vp, T value){
+	public <P, V extends P> void setLockedValue(VisualProperty<? extends P> vp, V value){
 		viewCyNetwork.setLockedValue(vp, value);
 	}
 

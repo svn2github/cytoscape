@@ -71,8 +71,8 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 * @param vp  DOCUMENT ME!
 	 * @param o  DOCUMENT ME!
 	 */
-	public <T> void setVisualProperty(final VisualProperty<T> vp, final T o) {
-		networkView.getColumn(vp).setValue(this, o);
+	public <P, V extends P> void setVisualProperty(final VisualProperty<? extends P> vp, final V value) {
+		networkView.getColumn(vp).setValue(this, value);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 * @param vp  The visualProperty for which to set the value
 	 * @param value the value to set
 	 */
-	public <T> void setLockedValue(final VisualProperty<T> vp, final T value){
+	public <P, V extends P> void setLockedValue(final VisualProperty<? extends P> vp, final V value){
 		networkView.getColumn(vp).setLockedValue(this, value);
 	}
 

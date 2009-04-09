@@ -70,7 +70,7 @@ public class ColumnOrientedViewColumn<T> implements ViewColumn<T> {
 	 * for setting many values will be horribly inefficient. Use setValues()
 	 * instead.
 	 */
-	public void setValue(View<?> view, T value) {
+	public <V extends T> void setValue(View<?> view, V value) {
 		internal_setValue(view, value);
 		// FIXME: fire event!
 	}
