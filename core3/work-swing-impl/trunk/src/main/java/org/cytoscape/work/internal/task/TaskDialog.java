@@ -174,7 +174,6 @@ class TaskDialog extends JDialog
 				if (!TaskDialog.this.isShowing()) {
 					TaskDialog.this.setVisible(true);
 				}
-				setResizable(true);
 			}
 		});
 	}
