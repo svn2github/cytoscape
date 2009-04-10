@@ -5,6 +5,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.ding.impl.DGraphView;
@@ -24,14 +25,20 @@ public class PresentationFactoryImpl implements PresentationFactory {
 	private CyRootNetworkFactory rootNetworkFactory;
 	private SpacialIndex2DFactory spacialFactory;
 	private UndoSupport undo;
+	private NetworkViewChangedListenerImpl nvcli;
+	private VisualPropertyCatalog vpc;
 
 	public PresentationFactoryImpl(CyDataTableFactory dataTableFactory, 
 	                            CyRootNetworkFactory rootNetworkFactory,
-								UndoSupport undo, SpacialIndex2DFactory spacialFactory) {
+								UndoSupport undo, SpacialIndex2DFactory spacialFactory,
+								NetworkViewChangedListenerImpl nvcli,
+								VisualPropertyCatalog vpc) {
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
 		this.undo = undo;
+		this.nvcli = nvcli;
+		this.vpc = vpc;
 	}
 
 	public void addPresentation(Object frame, CyNetworkView view) {
@@ -41,7 +48,8 @@ public class PresentationFactoryImpl implements PresentationFactory {
 			JInternalFrame inFrame = (JInternalFrame)frame;
 			JDesktopPane desktopPane = inFrame.getDesktopPane();
 
-			DGraphView dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory);
+			DGraphView dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,vpc);
+			nvcli.addGraphView( view, dgv );
 
 			// TODO - not sure this layered pane bit is optimal
 			inFrame.setContentPane( dgv.getContainer(inFrame.getLayeredPane()) );

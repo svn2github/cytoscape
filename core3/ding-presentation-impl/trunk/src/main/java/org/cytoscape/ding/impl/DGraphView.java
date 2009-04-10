@@ -56,6 +56,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.view.presentation.twod.TwoDVisualProperties;
 import org.cytoscape.ding.EdgeContextMenuListener;
 import org.cytoscape.ding.EdgeView;
@@ -83,6 +84,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collection;
 /**
  * DING implementation of the GINY view.
  *
@@ -315,14 +317,17 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 	Paint m_lastTexturePaint = null;
 
 	CyNetworkView cyNetworkView;
+	VisualPropertyCatalog vizPropCatalog;
 	/**
 	 * Creates a new DGraphView object.
 	 *
 	 * @param perspective The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory) {
+	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory, VisualPropertyCatalog vpc) {
 		m_perspective = view.getSource();
 		cyNetworkView = view;
+		vizPropCatalog = vpc;
+		
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view",false);
 		nodeCAM.createColumn("hidden",Boolean.class,false);
@@ -368,6 +373,11 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 
 		for ( CyEdge ee : m_perspective.getEdgeList() ) 
 			addEdgeView( ee );
+
+		// read in visual properties from view obj
+		Collection<VisualProperty<?>> netVPs = vizPropCatalog.collectionOfVisualProperties(VisualProperty.NETWORK);
+		for ( VisualProperty<?> vp : netVPs ) 
+			visualPropertySet(vp, cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this);
 		new AddDeleteHandler(this);
@@ -661,6 +671,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 		final int nodeInx = node.getIndex();
 		final NodeView oldView = m_nodeViewMap.get(nodeInx);
 
+
 		if (oldView != null) {
 			return null;
 		}
@@ -675,6 +686,13 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 		m_nodeViewMap.put(nodeInx, newView);
 		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin, m_defaultNodeXMax,
 		                 m_defaultNodeYMax);
+
+		// read in visual properties from view obj
+		Collection<VisualProperty<?>> nodeVPs = vizPropCatalog.collectionOfVisualProperties(VisualProperty.NODE);
+		View<CyNode> nv = cyNetworkView.getNodeView(node);
+		for ( VisualProperty<?> vp : nodeVPs ) 
+			newView.visualPropertySet(vp, nv.getVisualProperty(vp));
+		
 
 		return newView;
 	}
@@ -712,6 +730,13 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 
 			m_edgeViewMap.put(Integer.valueOf(edgeInx), edgeView);
 			m_contentChanged = true;
+
+			// read in visual properties from view obj
+			Collection<VisualProperty<?>> edgeVPs = vizPropCatalog.collectionOfVisualProperties(VisualProperty.EDGE);
+			View<CyEdge> ev = cyNetworkView.getEdgeView(edge);
+			for ( VisualProperty<?> vp : edgeVPs ) 
+				edgeView.visualPropertySet(vp, ev.getVisualProperty(vp));
+		
 		}
 
 		// Under no circumstances should we be holding m_lock when the listener
