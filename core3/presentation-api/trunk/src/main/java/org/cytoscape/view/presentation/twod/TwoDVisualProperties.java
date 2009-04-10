@@ -84,6 +84,11 @@ public class TwoDVisualProperties implements Renderer {
 		= new DoubleTwoDVisualProperty(VisualProperty.NETWORK,0.0,"NETWORK_CENTER_X_LOCATION","Network Center X Location");
 	public static final VisualProperty<Double> NETWORK_CENTER_Y_LOCATION 
 		= new DoubleTwoDVisualProperty(VisualProperty.NETWORK,0.0,"NETWORK_CENTER_Y_LOCATION","Network Center Y Location");
+	public static final VisualProperty<Double> NETWORK_WIDTH 
+		= new DoubleTwoDVisualProperty(VisualProperty.NETWORK,100.0,"NETWORK_WIDTH","Network Width");
+	public static final VisualProperty<Double> NETWORK_HEIGHT 
+		= new DoubleTwoDVisualProperty(VisualProperty.NETWORK,100.0,"NETWORK_HEIGHT","Network Height");
+
 	public static final VisualProperty<? extends Paint> NETWORK_BACKGROUND_COLOR
 		= new ColorTwoDVisualProperty(VisualProperty.NETWORK,Color.WHITE,"NETWORK_BACKGROUND_COLOR","Network Background Color");
 	public static final VisualProperty<String> NETWORK_TITLE 
@@ -108,6 +113,8 @@ public class TwoDVisualProperties implements Renderer {
 		visualPropertySet.add(NETWORK_SCALE_FACTOR);
 		visualPropertySet.add(NETWORK_CENTER_X_LOCATION);
 		visualPropertySet.add(NETWORK_CENTER_Y_LOCATION);
+		visualPropertySet.add(NETWORK_WIDTH);
+		visualPropertySet.add(NETWORK_HEIGHT);
 		visualPropertySet.add(NETWORK_BACKGROUND_COLOR);
 		visualPropertySet.add(NETWORK_TITLE);
 	}
