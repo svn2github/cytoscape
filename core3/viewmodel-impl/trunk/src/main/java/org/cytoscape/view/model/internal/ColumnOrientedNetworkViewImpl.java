@@ -54,6 +54,7 @@ import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.AddedNodeListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.SubsetChangedListener;
 import org.cytoscape.view.model.events.SubsetCreatedListener;
@@ -369,6 +370,14 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	 */
 	public long getSUID() {
 		return viewCyNetwork.getSUID();
+	}
+
+	public void addViewChangeListener(ViewChangeListener vcl) {
+		viewCyNetwork.addViewChangeListener(vcl);
+	}
+
+	public void removeViewChangeListener(ViewChangeListener vcl) {
+		viewCyNetwork.removeViewChangeListener(vcl);
 	}
 
 	public void fitContent() {

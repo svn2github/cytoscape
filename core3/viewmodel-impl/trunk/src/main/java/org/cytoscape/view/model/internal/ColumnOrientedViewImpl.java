@@ -37,6 +37,10 @@ package org.cytoscape.view.model.internal;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.ViewChangeListener;
+
+import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -51,6 +55,8 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	private final S source;
 	private final long suid;
 	private final ColumnOrientedNetworkViewImpl networkView;
+	private final List<ViewChangeListener> listeners;
+
 	/**
 	 * Creates a new ColumnOrientedViewImpl object.
 	 *
@@ -60,6 +66,7 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 		suid = SUIDFactory.getNextSUID();
 		this.source = source;
 		this.networkView = networkView;
+		listeners = new ArrayList<ViewChangeListener>();
 	}
 
 	/**
@@ -73,6 +80,8 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 */
 	public <P, V extends P> void setVisualProperty(final VisualProperty<? extends P> vp, final V value) {
 		networkView.getColumn(vp).setValue(this, value);
+		for ( ViewChangeListener vcl : listeners ) 
+			vcl.visualPropertySet(vp,value);
 	}
 
 	/**
@@ -138,5 +147,13 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 */
 	public void clearValueLock(final VisualProperty<?> vp){
 		networkView.getColumn(vp).clearValueLock(this);
+	}
+
+	public void addViewChangeListener(ViewChangeListener vcl) {
+		listeners.add(vcl);
+	}
+
+	public void removeViewChangeListener(ViewChangeListener vcl) {
+		listeners.remove(vcl);
 	}
 }
