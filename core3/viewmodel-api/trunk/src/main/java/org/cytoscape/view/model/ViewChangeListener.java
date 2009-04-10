@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,68 +35,17 @@
 */
 package org.cytoscape.view.model;
 
-import org.cytoscape.model.Identifiable;
-
 
 /**
- * The base interface that defines the methods used to set visual properties
- * for nodes, edges, and networks.
- *
- * Think of it as a row in the viewmodel table.
- *
- * @param <S> the base (model-level) object for which this is a View. For example, CyNode or CyEdge
+ * An interface to indicate that a View has changed.  The intent is for
+ * a Presentation to implement this interface so that the presentation
+ * can be updated based on what has changed in the View.
  */
-public interface View<S> extends Identifiable {
-	
-	/**
-	 * @param <T> Data type of the visual property.  This can be subclasses of type T.
-	 * @param <V> Value of the visual property.  This can be subclasses of T. 
-	 * @param vp the VisualProperty
-	 * @param value actual value stored in this visual property.
-	 */
-	<T, V extends T> void setVisualProperty(VisualProperty<? extends T> vp, V value);
+public interface ViewChangeListener {
 
 	/**
-	 * @param <T> DOCUMENT ME!
-	 * @param vp the VisualProperty
-	 * @return DOCUMENT ME!
+	 * The method called when the specified VisualProperty is set to the
+	 * specified value in the View being listened to. 
 	 */
-	<T> T getVisualProperty(VisualProperty<T> vp);
-
-	/**
-	 * @param <T> DOCUMENT ME!
-	 * @param vp the VisualProperty
-	 * @param value DOCUMENT ME!
-	 */
-	<T, V extends T> void setLockedValue(VisualProperty<? extends T> vp, V value);
-
-	/**
-	 * @param vp the VisualProperty
-	 * @return true if current VisualProperty value is locked
-	 */
-	boolean isValueLocked(VisualProperty<?> vp);
-
-	/**
-	 * Clear value lock for given VisualProperty.
-	 *
-	 * @param vp the VisualProperty
-	 */
-	void clearValueLock(VisualProperty<?> vp);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	S getSource();
-
-	/**
-	 * Adds the specified listener to this View.
-	 */
-	void addViewChangeListener(ViewChangeListener vcl);
-
-	/**
-	 * Removes the specified listener from this View.
-	 */
-	void removeViewChangeListener(ViewChangeListener vcl);
+	void visualPropertySet(VisualProperty<?> vp, Object value);
 }
