@@ -38,6 +38,7 @@ package org.cytoscape.model.internal;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowListener;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.event.CyEventHelper;
 
@@ -48,13 +49,20 @@ import java.util.*;
  * DOCUMENT ME!
   */
 public class CyDataTableImpl implements CyDataTable {
+
 	private Map<String, Map<Long, Object>> attributes;
+	private Map<Long, CyRow> rows;
+	private Map<Long, List<CyRowListener>> rowListeners;
+
+
 	private Map<String, Class<?>> types;
 	private Map<String, Boolean> unique;
 	private String name;
 	private boolean pub;
 	private final long suid;
 	private CyEventHelper help;
+
+	private long rowSUID = -1;
 
 	/**
 	 *  DOCUMENT ME!
@@ -105,6 +113,8 @@ public class CyDataTableImpl implements CyDataTable {
 		this.suid = SUIDFactory.getNextSUID();
 		this.help = help;
 		attributes = new HashMap<String, Map<Long, Object>>();
+		rows = new HashMap<Long,CyRow>();
+		rowListeners = new HashMap<Long,List<CyRowListener>>();
 
 		if (typeMap == null) {
 			types = new HashMap<String, Class<?>>();
@@ -217,7 +227,13 @@ public class CyDataTableImpl implements CyDataTable {
 	 * @return  DOCUMENT ME!
 	 */
 	public CyRow getRow(final long suid) {
-		return new InternalRow(suid,this);
+		CyRow row = rows.get(suid);
+		if ( row != null ) 
+			return row;
+
+		row = new InternalRow(suid,this);
+		rows.put(suid,row);
+		return row;
 	}
 
 	/**
@@ -226,9 +242,15 @@ public class CyDataTableImpl implements CyDataTable {
 	 * @return  DOCUMENT ME!
 	 */
 	public CyRow addRow() {
-		// TODO This is wrong since no other object can have this SUID. 
-		// I'm still not sure how rows should exist independent of binding to an object.
-		return new InternalRow(SUIDFactory.getNextSUID(),this);
+		long r; 
+		synchronized(this) {
+			r = rowSUID--;
+		}
+		
+		CyRow row = new InternalRow(r,this);
+		rows.put(r,row);
+
+		return row;
 	}
 
 	// internal methods
@@ -252,10 +274,14 @@ public class CyDataTableImpl implements CyDataTable {
 
 		Map<Long, Object> vls = attributes.get(attrName);
 
-		if (types.get(attrName).isAssignableFrom(value.getClass()))
+		if (types.get(attrName).isAssignableFrom(value.getClass())) {
 			// TODO this is an implicit addRow - not sure if we want to refactor this or not
 			vls.put(suid, value);
-		else
+			final List<CyRowListener> lrl = rowListeners.get(suid);
+			if ( lrl != null )
+				for ( CyRowListener rl : lrl )
+					rl.rowSet(attrName,value);
+		} else
 			throw new IllegalArgumentException("value is not of type: " + types.get(attrName));
 	}
 
@@ -419,7 +445,22 @@ public class CyDataTableImpl implements CyDataTable {
 		}
 
 		public CyDataTable getDataTable() {
-			return table;
+			return table; 
+		}
+
+		public void addRowListener(CyRowListener rl) {
+			List<CyRowListener> list = rowListeners.get(suid);
+			if ( list == null ) {
+				list = new ArrayList<CyRowListener>();
+				rowListeners.put(suid,list);
+			}
+			list.add(rl);
+		}
+
+		public void removeRowListener(CyRowListener rl) {
+			List<CyRowListener> list = rowListeners.get(suid);
+			if ( list != null ) 
+				list.remove(rl);
 		}
 	}
 }
