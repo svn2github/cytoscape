@@ -266,4 +266,6 @@
         </osgi:service-properties>
     </osgi:service>
 
+	<osgi:service id="selectRegisterListenerService" ref="selectRegisterListener"
+		interface="cytoscape.events.NetworkViewAddedListener" />
 </beans>

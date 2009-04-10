@@ -339,4 +339,7 @@
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
 
+	<bean id="selectRegisterListener" class="cytoscape.internal.select.SelectRegisterListener"/>
+
+
 </beans>
