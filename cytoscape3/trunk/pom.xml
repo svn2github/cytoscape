@@ -195,7 +195,7 @@
 					<provision>
 						<param>--log=DEBUG</param>
 						<param>--platform=felix</param>
-						<param>--profiles=log</param>
+						<param>--profiles=minimal</param>
 						<param>--noDownloadFeedback</param>
 						<param>--vmOptions=-Xmx512M -Xbootclasspath/a:bundles/cytoscape-sun.jhall_1.0.0.jar -Dapple.laf.useScreenMenuBar=true -Dapple.awt.fileDialogForDirectories=true -Dapple.awt.graphics.UseQuartz=true -Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3</param>
 					</provision>
