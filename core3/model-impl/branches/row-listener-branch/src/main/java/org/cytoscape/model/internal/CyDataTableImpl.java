@@ -280,7 +280,7 @@ public class CyDataTableImpl implements CyDataTable {
 			final List<CyRowListener> lrl = rowListeners.get(suid);
 			if ( lrl != null )
 				for ( CyRowListener rl : lrl )
-					rl.rowChanged(attrName,value);
+					rl.rowSet(attrName,value);
 		} else
 			throw new IllegalArgumentException("value is not of type: " + types.get(attrName));
 	}
@@ -455,6 +455,12 @@ public class CyDataTableImpl implements CyDataTable {
 				rowListeners.put(suid,list);
 			}
 			list.add(rl);
+		}
+
+		public void removeRowListener(CyRowListener rl) {
+			List<CyRowListener> list = rowListeners.get(suid);
+			if ( list != null ) 
+				list.remove(rl);
 		}
 	}
 }
