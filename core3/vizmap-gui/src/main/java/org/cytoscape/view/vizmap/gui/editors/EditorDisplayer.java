@@ -37,27 +37,79 @@ package org.cytoscape.view.vizmap.gui.editors;
 import java.awt.Component;
 import java.beans.PropertyEditor;
 
-import javax.swing.table.TableCellRenderer;
+import javax.swing.Icon;
 
 import org.cytoscape.view.model.VisualProperty;
 
+
 /**
+ * Utility to manage editor and other GUI components.
  *
-  */
-public interface EditorDisplayer {
-	
-	enum MappingType {
-		CONTINUOUS, DISCRETE, PASSTHROUGH;
-	}
+ * There are two types of editors:
+ * <ul>
+ *  <li>Cell editor - User directly edit the cell in table.
+ *  <li>Dialog editor - popup dialog and user select/enter values.
+ * </ul>
+ * @param <T> This is the data type stored in this visual property.
+ *
+ *  @author Keiichiro Ono
+ */
+public interface EditorDisplayer<T> {
+	/**
+	 * Returns compatible data type of this editor.
+	 * The value will be Color, String, LabelPosition, etc.
+	 *
+	 * @return Class of the compatible data.
+	 */
+	public Class<T> getDataType();
 
-	public Class<?> getDataType();
+	/**
+	 * Returns continuous mapping editor for the Visual Property.
+	 * Return value is null is Continuous Editor does not exist.
+	 *
+	 * @param parent
+	 * @param type
+	 */
+	public Component getContinuousMappingEditor(Component parent, VisualProperty<?extends T> type)
+	    throws IllegalArgumentException;
 
-	public MappingType getEditorType();
+	/**
+	 * Returns Property Editor object for this data type.
+	 *
+	 * @return
+	 */
+	public PropertyEditor getVisualPropertyEditor();
 
-	public Object showEditor(Component parentComponent, VisualProperty<?> type);
+	/**
+	 * Display editor and get user input.
+	 * Note: editor is associated with data type (String, Number, Color...), so we do not need
+	 * to provide VisualProperty as parameter.
+	 *
+	 * @param parent parent component of this window
+	 * @return
+	 */
+	public T showVisualPropertyEditor(Component parant);
 
-	public PropertyEditor getCellEditor();
+	/**
+	 * Provide Cell renderer for JTable or JList.
+	 * Developers can implement custom cell renderers my using returned component.
+	 *
+	 * @param type
+	 * @param width component width
+	 * @param height component height
+	 *
+	 * @return
+	 */
+	public Component getCellRendererComponent(VisualProperty<?extends T> type, int width, int height);
 
-	public TableCellRenderer getCellRenderer(VisualProperty<?> type, int width,
-			int height);
+	/**
+	 *  This is for default view editor.
+	 *
+	 * @param vp DOCUMENT ME!
+	 * @param width DOCUMENT ME!
+	 * @param height DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getCurrentStateIcon(VisualProperty<?extends T> vp, int width, int height);
 }
