@@ -25,4 +25,8 @@
 		ref="presentationFactory" interface="org.cytoscape.view.presentation.PresentationFactory">
 	</osgi:service>
 
+	<osgi:service id="dVisualLexiconService"
+		ref="dVisualLexicon" interface="org.cytoscape.view.model.Renderer">
+	</osgi:service>
+
 </beans>

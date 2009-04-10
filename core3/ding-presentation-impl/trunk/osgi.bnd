@@ -2,4 +2,4 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Export-Package: org.cytoscape.ding, org.cytoscape.ding.impl
+Export-Package: org.cytoscape.ding, org.cytoscape.ding.impl, org.cytoscape.ding.icon

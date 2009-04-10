@@ -45,13 +45,17 @@ import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
 
+import org.cytoscape.view.presentation.twod.TwoDVisualProperties;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.ViewChangeListener;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 
-class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
+class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListener {
 	static final float DEFAULT_ARROW_SIZE = 5.0f;
 	static final Paint DEFAULT_ARROW_PAINT = Color.black;
 	static final float DEFAULT_EDGE_THICKNESS = 1.0f;
@@ -1421,5 +1425,74 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		System.out.println("getEdgeLabelAnchor");
 
 		return 0;
+	}
+
+	public void visualPropertySet(VisualProperty<?> vp, Object o) {
+		if ( o == null )
+			return;
+
+		if (vp == DVisualLexicon.EDGE_SELECTED_PAINT) {
+			setSelectedPaint((Paint)o);
+		}
+		else if (vp == TwoDVisualProperties.EDGE_COLOR) { 
+			setUnselectedPaint((Paint)o);
+		}
+		else if (vp == DVisualLexicon.EDGE_WIDTH) {
+			setStrokeWidth(((Double)o).floatValue());
+		}
+		else if (vp == DVisualLexicon.EDGE_STROKE) {
+			setStroke((Stroke)o);
+		}
+		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SELECTED_PAINT) {
+			setSourceEdgeEndSelectedPaint((Paint)o); 
+		}
+		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SELECTED_PAINT) {
+			setTargetEdgeEndSelectedPaint((Paint)o); 
+		}
+		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_UNSELECTED_PAINT) {
+			setSourceEdgeEndPaint((Paint)o); 
+		}
+		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_UNSELECTED_PAINT) {
+			setTargetEdgeEndPaint((Paint)o); 
+		}
+		else if (vp == TwoDVisualProperties.EDGE_SELECTED) {
+			setSelected((Boolean)o);
+		}
+		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SHAPE) {
+			System.out.println("not yet implemented");
+		}
+		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
+			System.out.println("not yet implemented");
+		}
+		else if (vp == TwoDVisualProperties.EDGE_LABEL) {
+			setText((String)o);
+		}
+		else if (vp == DVisualLexicon.EDGE_TOOLTIP) {
+			setToolTip((String)o);
+		}
+		else if (vp == DVisualLexicon.EDGE_LABEL_EDGE_ANCHOR) {
+			System.out.println("not yet implemented");
+		}
+		else if (vp == DVisualLexicon.EDGE_LABEL_TEXT_ANCHOR) {
+			System.out.println("not yet implemented");
+		}
+		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_X_OFFSET) {
+			System.out.println("not yet implemented");
+		}
+		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_Y_OFFSET) {
+			System.out.println("not yet implemented");
+		}
+		else if (vp == DVisualLexicon.EDGE_LABEL_JUSTIFY) {
+			System.out.println("not yet implemented");
+		}
+		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_FACE) {
+			setFont((Font)o);
+		}
+		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_SIZE) {
+			System.out.println("not yet implemented");
+		}
+		else if (vp == TwoDVisualProperties.EDGE_LABEL_COLOR) {
+			setTextPaint((Paint)o);
+		}
 	}
 }

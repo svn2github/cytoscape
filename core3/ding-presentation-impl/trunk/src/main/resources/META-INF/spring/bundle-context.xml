@@ -24,4 +24,6 @@
 		<constructor-arg ref="spacialIndex2DFactoryServiceRef"/>
 	</bean>
 
+	<bean id="dVisualLexicon" class="org.cytoscape.ding.impl.DVisualLexicon"/>
+
 </beans>

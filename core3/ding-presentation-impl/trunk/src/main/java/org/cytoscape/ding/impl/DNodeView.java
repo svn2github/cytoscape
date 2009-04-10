@@ -46,6 +46,10 @@ import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
 import org.cytoscape.ding.NodeView;
 
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.ViewChangeListener;
+import org.cytoscape.view.presentation.twod.*;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -62,7 +66,7 @@ import java.util.List;
  *
  * @author $author$
  */
-public class DNodeView implements NodeView, Label {
+public class DNodeView implements NodeView, Label, ViewChangeListener {
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
 	static final byte DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
@@ -1372,6 +1376,75 @@ public class DNodeView implements NodeView, Label {
 	public int getNodeLabelAnchor() {
 		synchronized (m_view.m_lock) {
 			return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelNodeAnchor(m_inx, 0));
+		}
+	}
+
+	public void visualPropertySet(VisualProperty<?> vp, Object o) {
+		if ( o == null )
+			return;
+
+		if ( vp == DVisualLexicon.NODE_SHAPE ) {
+			System.out.println("not implemented yet");	
+		}
+		else if ( vp == DVisualLexicon.NODE_SELECTED_PAINT ) {
+			setSelectedPaint((Paint)o); 
+		}
+		else if ( vp == TwoDVisualProperties.NODE_COLOR ) { // unselected paint
+			setUnselectedPaint((Paint)o); 
+		}
+		else if ( vp == DVisualLexicon.NODE_BORDER_PAINT ) {
+			setBorderPaint((Paint)o);
+		}
+		else if ( vp == DVisualLexicon.NODE_BORDER_WIDTH ) {
+			setBorderWidth(((Double)o).floatValue());
+		}
+		else if ( vp == DVisualLexicon.NODE_BORDER_STROKE ) {
+			setBorder((Stroke)o);
+		}
+		else if ( vp == DVisualLexicon.NODE_TRANSPARENCY ) {
+			System.out.println("not implemented yet");	
+		}
+		else if ( vp == DVisualLexicon.NODE_WIDTH ) {
+			setWidth(((Double)o).doubleValue());
+		}
+		else if ( vp == DVisualLexicon.NODE_HEIGHT ) {
+			setHeight(((Double)o).doubleValue());
+		}
+		else if ( vp == TwoDVisualProperties.NODE_LABEL ) {
+			setText((String)o);
+		}
+		else if ( vp == TwoDVisualProperties.NODE_X_LOCATION ) {
+			setXPosition(((Double)o).doubleValue());
+		}
+		else if ( vp == TwoDVisualProperties.NODE_Y_LOCATION ) {
+			setYPosition(((Double)o).doubleValue());
+		}
+		else if ( vp == DVisualLexicon.NODE_TOOLTIP ) {
+			setToolTip((String)o);
+		}
+		else if ( vp == TwoDVisualProperties.NODE_LABEL_COLOR ) {
+			setTextPaint((Paint)o);
+		}
+		else if ( vp == DVisualLexicon.NODE_LABEL_FONT_FACE ) {
+			setFont((Font)o);
+		}
+		else if ( vp == DVisualLexicon.NODE_LABEL_FONT_SIZE ) {
+			System.out.println("not implemented yet");	
+		}
+		else if ( vp == DVisualLexicon.NODE_LABEL_TEXT_ANCHOR ) {
+			System.out.println("not implemented yet");	
+		}
+		else if ( vp == DVisualLexicon.NODE_LABEL_NODE_ANCHOR ) {
+			System.out.println("not implemented yet");	
+		}
+		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_X_OFFSET ) {
+			System.out.println("not implemented yet");	
+		}
+		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_Y_OFFSET ) {
+			System.out.println("not implemented yet");	
+		}
+		else if ( vp == DVisualLexicon.NODE_LABEL_JUSTIFY ) {
+			System.out.println("not implemented yet");	
 		}
 	}
 }

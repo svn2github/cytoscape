@@ -47,6 +47,8 @@ public class PresentationFactoryImpl implements PresentationFactory {
 			inFrame.setContentPane( dgv.getContainer(inFrame.getLayeredPane()) );
 			dgv.addTransferComponent(desktopPane);
 
+			view.addViewChangeListener(dgv);
+
 		} else {
 			throw new IllegalArgumentException("frame object is not of type JInternalFrame, which is invalid for this implementation of PresentationFactory");
 		}

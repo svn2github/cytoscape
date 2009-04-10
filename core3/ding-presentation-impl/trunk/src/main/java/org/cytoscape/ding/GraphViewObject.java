@@ -1,9 +1,10 @@
 
 package org.cytoscape.ding;
 
-public interface GraphViewObject {
+import org.cytoscape.view.model.ViewChangeListener;
 
-	public GraphView getGraphView(); 
+public interface GraphViewObject extends ViewChangeListener {
 
+	GraphView getGraphView(); 
 }
 

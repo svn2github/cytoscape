@@ -53,6 +53,10 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.ViewChangeListener;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.twod.TwoDVisualProperties;
 import org.cytoscape.ding.EdgeContextMenuListener;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
@@ -92,7 +96,7 @@ import java.util.List;
  *
  * @author Nerius Landys
  */
-public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
+public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, ViewChangeListener {
 
     private static enum ZOrder {
         BACKGROUND_PANE,
@@ -309,6 +313,8 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 * Used for caching texture paint.
 	 */
 	Paint m_lastTexturePaint = null;
+
+	CyNetworkView cyNetworkView;
 	/**
 	 * Creates a new DGraphView object.
 	 *
@@ -316,6 +322,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 */
 	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory) {
 		m_perspective = view.getSource();
+		cyNetworkView = view;
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view",false);
 		nodeCAM.createColumn("hidden",Boolean.class,false);
@@ -663,6 +670,8 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 		//m_structPersp.restoreNode(nodeInx);
 
 		final NodeView newView = new DNodeView(this, nodeInx);
+		cyNetworkView.getNodeView(node).addViewChangeListener(newView);
+
 		m_nodeViewMap.put(nodeInx, newView);
 		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin, m_defaultNodeXMax,
 		                 m_defaultNodeYMax);
@@ -699,6 +708,8 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
 			//m_structPersp.restoreEdge(edgeInx);
 			edgeView = new DEdgeView(this, edgeInx);
+			cyNetworkView.getEdgeView(edge).addViewChangeListener(edgeView);
+
 			m_edgeViewMap.put(Integer.valueOf(edgeInx), edgeView);
 			m_contentChanged = true;
 		}
@@ -2538,5 +2549,32 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 			l.add( view.getEdgeView(nid).getEdge() );
 
 		return l;
+	}
+
+	public void visualPropertySet(VisualProperty<?> vp, Object o) {
+		if ( o == null )
+			return;
+
+		if ( vp == DVisualLexicon.NETWORK_NODE_SELECTION ) {
+			boolean b = ((Boolean)o).booleanValue();
+			if ( b )
+				enableNodeSelection();
+			else
+				disableNodeSelection();
+		} else if ( vp == DVisualLexicon.NETWORK_EDGE_SELECTION ) {
+			boolean b = ((Boolean)o).booleanValue();
+			if ( b )
+				enableEdgeSelection();
+			else
+				disableEdgeSelection();
+		} else if ( vp == TwoDVisualProperties.NETWORK_BACKGROUND_COLOR ) {
+			setBackgroundPaint((Paint)o);
+		} else if ( vp == TwoDVisualProperties.NETWORK_CENTER_X_LOCATION ) {
+			setCenter(((Double)o).doubleValue(),m_networkCanvas.m_yCenter);
+		} else if ( vp == TwoDVisualProperties.NETWORK_CENTER_Y_LOCATION ) {
+			setCenter(m_networkCanvas.m_xCenter,((Double)o).doubleValue());
+		} else if ( vp == TwoDVisualProperties.NETWORK_SCALE_FACTOR ) {
+			setZoom(((Double)o).doubleValue());
+		}
 	}
 }
