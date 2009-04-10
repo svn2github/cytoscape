@@ -60,7 +60,7 @@ public abstract class AbstractTwoDVisualProperty<T> implements VisualProperty<T>
 
 	public String getSerializableName() { return id; }
 
-	public String getHumanName() { return name; }
+	public String getDisplayName() { return name; }
 
 	public DependentVisualPropertyCallback dependentVisualPropertyCallback() { return null; }
 }
