@@ -37,8 +37,16 @@
 package org.cytoscape.model;
 
 
+/**
+ * A listener interface that specifies a method that will be executed
+ * when the value of a row is set. 
+ */
 public interface CyRowListener {
 
-	void rowChanged(String columnName, Object value);
+	/**
+	 * Indicates that the specified column has been set to the
+	 * specified value in the bound row.
+	 */
+	void rowSet(String columnName, Object value);
 
 }

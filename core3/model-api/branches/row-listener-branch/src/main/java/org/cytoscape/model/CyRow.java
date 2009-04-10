@@ -92,5 +92,14 @@ public interface CyRow {
 	 */
 	CyDataTable getDataTable();
 
+	/**
+	 * Adds a listener to this row.  The listener will be called when this
+	 * row gets set.
+	 */
 	void addRowListener(CyRowListener rl);
+
+	/**
+	 * Removes an existing listener from this row.  
+	 */
+	void removeRowListener(CyRowListener rl);
 }
