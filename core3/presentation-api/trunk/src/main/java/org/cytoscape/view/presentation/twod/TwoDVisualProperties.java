@@ -52,7 +52,7 @@ import java.awt.Color;
  */
 public class TwoDVisualProperties implements Renderer {
 
-	private Set<VisualProperty<?>> vpSet;
+	protected Set<VisualProperty<?>> visualPropertySet;
 
 	public static final VisualProperty<? extends Paint> NODE_COLOR
 		= new ColorTwoDVisualProperty(VisualProperty.NODE,Color.RED,"NODE_COLOR","Node Color");
@@ -91,28 +91,28 @@ public class TwoDVisualProperties implements Renderer {
 
 	public TwoDVisualProperties() {
 
-		vpSet = new HashSet<VisualProperty<?>>();
+		visualPropertySet = new HashSet<VisualProperty<?>>();
 
-		vpSet.add(NODE_COLOR);
-		vpSet.add(NODE_LABEL);
-		vpSet.add(NODE_LABEL_COLOR);
-		vpSet.add(NODE_X_LOCATION);
-		vpSet.add(NODE_Y_LOCATION);
-		vpSet.add(NODE_VISIBLE);
-		vpSet.add(NODE_SELECTED);
-		vpSet.add(EDGE_COLOR);
-		vpSet.add(EDGE_LABEL);
-		vpSet.add(EDGE_LABEL_COLOR);
-		vpSet.add(EDGE_VISIBLE);
-		vpSet.add(EDGE_SELECTED);
-		vpSet.add(NETWORK_SCALE_FACTOR);
-		vpSet.add(NETWORK_CENTER_X_LOCATION);
-		vpSet.add(NETWORK_CENTER_Y_LOCATION);
-		vpSet.add(NETWORK_BACKGROUND_COLOR);
-		vpSet.add(NETWORK_TITLE);
+		visualPropertySet.add(NODE_COLOR);
+		visualPropertySet.add(NODE_LABEL);
+		visualPropertySet.add(NODE_LABEL_COLOR);
+		visualPropertySet.add(NODE_X_LOCATION);
+		visualPropertySet.add(NODE_Y_LOCATION);
+		visualPropertySet.add(NODE_VISIBLE);
+		visualPropertySet.add(NODE_SELECTED);
+		visualPropertySet.add(EDGE_COLOR);
+		visualPropertySet.add(EDGE_LABEL);
+		visualPropertySet.add(EDGE_LABEL_COLOR);
+		visualPropertySet.add(EDGE_VISIBLE);
+		visualPropertySet.add(EDGE_SELECTED);
+		visualPropertySet.add(NETWORK_SCALE_FACTOR);
+		visualPropertySet.add(NETWORK_CENTER_X_LOCATION);
+		visualPropertySet.add(NETWORK_CENTER_Y_LOCATION);
+		visualPropertySet.add(NETWORK_BACKGROUND_COLOR);
+		visualPropertySet.add(NETWORK_TITLE);
 	}
 
 	public Set<VisualProperty<?>> getVisualProperties() {
-		return Collections.unmodifiableSet( vpSet );
+		return Collections.unmodifiableSet( visualPropertySet );
 	}
 }
