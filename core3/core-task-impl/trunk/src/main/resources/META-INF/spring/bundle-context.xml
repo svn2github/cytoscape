@@ -56,7 +56,61 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
+
+	<bean id="selectAllTaskFactory" 
+	      class="org.cytoscape.task.internal.select.SelectAllTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="selectAllEdgesTaskFactory" 
+	      class="org.cytoscape.task.internal.select.SelectAllEdgesTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="selectAllNodesTaskFactory" 
+	      class="org.cytoscape.task.internal.select.SelectAllNodesTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="selectAdjacentEdgesTaskFactory" 
+	      class="org.cytoscape.task.internal.select.SelectAdjacentEdgesTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="selectConnectedNodesTaskFactory" 
+	      class="org.cytoscape.task.internal.select.SelectConnectedNodesTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="selectFirstNeighborsTaskFactory" 
+	      class="org.cytoscape.task.internal.select.SelectFirstNeighborsTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="deselectAllTaskFactory" 
+	      class="org.cytoscape.task.internal.select.DeselectAllTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="deselectAllEdgesTaskFactory" 
+	      class="org.cytoscape.task.internal.select.DeselectAllEdgesTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="deselectAllNodesTaskFactory" 
+	      class="org.cytoscape.task.internal.select.DeselectAllNodesTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
 	
+	<bean id="invertSelectedEdgesTaskFactory" 
+	      class="org.cytoscape.task.internal.select.InvertSelectedEdgesTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+	
+	<bean id="invertSelectedNodesTaskFactory" 
+	      class="org.cytoscape.task.internal.select.InvertSelectedNodesTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
 
 	<!-- Off until session stuff is implemented
 	<bean id="newSessionTaskFactory" 

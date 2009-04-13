@@ -54,6 +54,152 @@
 			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>
+
+	<!-- selection -->
+	<osgi:service id="selectAllTaskFactoryService" ref="selectAllTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Select all nodes and edges" />
+			<entry key="preferredMenu" value="Select" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="selectAllEdgesTaskFactoryService" ref="selectAllEdgesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Select all edges" />
+			<entry key="preferredMenu" value="Select.Edges" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_A, ActionEvent.ALT_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="selectAllNodesTaskFactoryService" ref="selectAllNodesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Select all nodes" />
+			<entry key="preferredMenu" value="Select.Nodes" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+
+	<osgi:service id="selectAdjacentEdgesTaskFactoryService" ref="selectAdjacentEdgesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Select adjacent edges" />
+			<entry key="preferredMenu" value="Select.Edges" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_E, ActionEvent.ALT_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="selectConnectedNodesTaskFactoryService" ref="selectConnectedNodesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Nodes connected by selected edges" />
+			<entry key="preferredMenu" value="Select.Nodes" />
+			<!--
+			<entry key="acceleratorCombo" 
+			KeyEvent.VK_7, ActionEvent.CTRL_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="selectFirstNeighborsTaskFactoryService" ref="selectFirstNeighborsTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="First neighbors of selected nodes" />
+			<entry key="preferredMenu" value="Select.Nodes" />
+			<!--
+			<entry key="acceleratorCombo" 
+			KeyEvent.VK_6, ActionEvent.CTRL_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+
+	<osgi:service id="deselectAllTaskFactoryService" ref="deselectAllTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Deselect all nodes and edges" />
+			<entry key="preferredMenu" value="Select" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK | ActionEvent.ALT_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="deselectAllEdgesTaskFactoryService" ref="deselectAllEdgesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Deselect all edges" />
+			<entry key="preferredMenu" value="Select.Edges" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_A, ActionEvent.ALT_MASK | ActionEvent.SHIFT_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="deselectAllNodesTaskFactoryService" ref="deselectAllNodesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Deselect all nodes" />
+			<entry key="preferredMenu" value="Select.Nodes" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="invertSelectedEdgesTaskFactoryService" ref="invertSelectedEdgesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Invert edge selection" />
+			<entry key="preferredMenu" value="Select.Edges" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_I, ActionEvent.ALT_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="invertSelectedNodesTaskFactoryService" ref="invertSelectedNodesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Invert node selection" />
+			<entry key="preferredMenu" value="Select.Nodes" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_I, ActionEvent.CTRL_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
 	
 	<!--
 		<osgi:service id="newSessionTaskFactoryService"
