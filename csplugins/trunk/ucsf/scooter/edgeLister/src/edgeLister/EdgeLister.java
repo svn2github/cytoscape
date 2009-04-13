@@ -206,12 +206,22 @@ public class EdgeLister extends CytoscapePlugin
 				edgeSet.restore();
 				break;
 			case REMOVE:
+				edgeSet.restore();
 				edgeMap.remove(name);
-				JMenuItem item = new JMenuItem(name);
-				hideMenu.remove(item);
-				restoreMenu.remove(item);
-				selectMenu.remove(item);
-				removeMenu.remove(item);
+
+				removeItem(hideMenu, name);
+				removeItem(restoreMenu, name);
+				removeItem(selectMenu, name);
+				removeItem(removeMenu, name);
+			}
+		}
+
+		private void removeItem(JMenu menu, String name) {
+			for (int i = 0; i < menu.getItemCount(); i++) {
+				if (menu.getItem(i).getText().equals(name)) {
+					menu.remove(i);
+					return;
+				}
 			}
 		}
 	}
