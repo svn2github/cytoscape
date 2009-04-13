@@ -55,16 +55,12 @@ abstract class SelectUtils {
 	static void setSelectedNodes(Collection<CyNode> nodes, boolean select, CyNetworkView view) {
 		for ( CyNode n : nodes ) {
 			n.attrs().set("selected",select);
-//			if ( view != null )
-//				view.getNodeView(n).setVisualProperty(NODE_SELECTED,select);
 		}
 	}
 
 	static void setSelectedEdges(Collection<CyEdge> edges, boolean select, CyNetworkView view) {
 		for ( CyEdge e : edges ) {
 			e.attrs().set("selected",select);
-//			if ( view != null )
-//				view.getEdgeView(e).setVisualProperty(EDGE_SELECTED,select);
 		}
 	}
 }

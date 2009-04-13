@@ -76,18 +76,15 @@ public class InvertSelectedEdgesAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent ae) {
 		final CyNetwork cyNetwork = netmgr.getCurrentNetwork();
-		final CyNetworkView v = netmgr.getNetworkView( cyNetwork.getSUID() );
 		for ( CyEdge e : cyNetwork.getEdgeList() ) {
 			if ( e.attrs().get("selected",Boolean.class) ) {
 				e.attrs().set("selected",false);
-				if ( v != null )
-					v.getEdgeView(e).setVisualProperty(EDGE_SELECTED,false);
 			} else {
 				e.attrs().set("selected",true);
-				if ( v != null )
-					v.getEdgeView(e).setVisualProperty(EDGE_SELECTED,true);
 			}
 		}
+
+		final CyNetworkView v = netmgr.getNetworkView( cyNetwork.getSUID() );
 		if ( v != null )
 			v.updateView();
 	}

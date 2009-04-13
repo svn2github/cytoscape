@@ -77,18 +77,15 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork cyNetwork = netmgr.getCurrentNetwork();
-		CyNetworkView v = netmgr.getNetworkView( cyNetwork.getSUID() );
 		for ( CyNode n : cyNetwork.getNodeList() )  {
 			if ( n.attrs().get("selected",Boolean.class) ) {
 				 n.attrs().set("selected",false);
-				 if ( v != null )
-				 	v.getNodeView(n).setVisualProperty(NODE_SELECTED,false);
 			} else {
 				 n.attrs().set("selected",true);
-				 if ( v != null )
-				 	v.getNodeView(n).setVisualProperty(NODE_SELECTED,true);
 			}
 		}
+
+		final CyNetworkView v = netmgr.getNetworkView( cyNetwork.getSUID() );
 		if ( v != null )
 			v.updateView();
 	}
