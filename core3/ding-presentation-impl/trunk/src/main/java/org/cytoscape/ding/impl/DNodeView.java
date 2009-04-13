@@ -1389,6 +1389,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		else if ( vp == DVisualLexicon.NODE_SELECTED_PAINT ) {
 			setSelectedPaint((Paint)o); 
 		}
+		else if ( vp == TwoDVisualProperties.NODE_SELECTED ) {
+			setSelected(((Boolean)o).booleanValue()); 
+		}
 		else if ( vp == TwoDVisualProperties.NODE_COLOR ) { // unselected paint
 			setUnselectedPaint((Paint)o); 
 		}

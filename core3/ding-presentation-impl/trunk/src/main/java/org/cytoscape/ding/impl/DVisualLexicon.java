@@ -58,7 +58,7 @@ public class DVisualLexicon extends TwoDVisualProperties {
         = new NodeShapeTwoDVisualProperty(VisualProperty.NODE,NodeShape.ELLIPSE,"NODE_SHAPE","Node Shape");
 
 	public static final VisualProperty<? extends Paint> NODE_SELECTED_PAINT 
-        = new ColorTwoDVisualProperty(VisualProperty.NODE,Color.RED,"NODE_SELECTED_PAINT","Node Selected Paint");
+        = new ColorTwoDVisualProperty(VisualProperty.NODE,Color.YELLOW,"NODE_SELECTED_PAINT","Node Selected Paint");
 
 	public static final VisualProperty<? extends Paint> NODE_BORDER_PAINT 
         = new ColorTwoDVisualProperty(VisualProperty.NODE,Color.BLACK,"NODE_BORDER_PAINT","Node Border Paint");
@@ -97,7 +97,7 @@ public class DVisualLexicon extends TwoDVisualProperties {
 
 		
 	public static final VisualProperty<? extends Paint> EDGE_SELECTED_PAINT 
-        = new ColorTwoDVisualProperty(VisualProperty.EDGE,Color.YELLOW,"EDGE_SELECTED_PAINT","Edge Selected Paint");
+        = new ColorTwoDVisualProperty(VisualProperty.EDGE,Color.RED,"EDGE_SELECTED_PAINT","Edge Selected Paint");
 	public static final VisualProperty<? extends Stroke> EDGE_STROKE 
         = new StrokeTwoDVisualProperty(VisualProperty.EDGE,new BasicStroke(),"EDGE_STROKE","Edge Stroke");
 
