@@ -16,14 +16,12 @@
 
     <context:annotation-config />
 
-	<bean id="networkViewChangedListenerImpl" class="org.cytoscape.ding.impl.NetworkViewChangedListenerImpl"/>
 
 	<bean id="presentationFactory" class="org.cytoscape.ding.impl.PresentationFactoryImpl">
 		<constructor-arg ref="cyDataTableFactoryServiceRef"/>
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef"/>
 		<constructor-arg ref="undoSupportServiceRef"/>
 		<constructor-arg ref="spacialIndex2DFactoryServiceRef"/>
-		<constructor-arg ref="networkViewChangedListenerImpl"/>
 		<constructor-arg ref="visualPropertyCatalogServiceRef"/>
 	</bean>
 

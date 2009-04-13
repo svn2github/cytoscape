@@ -27,16 +27,15 @@
 
 
 	<!-- Individual Service -->
-	<osgi:service id="presentationFactoryService"
-		ref="presentationFactory" interface="org.cytoscape.view.presentation.PresentationFactory">
+	<osgi:service id="presentationFactoryService" ref="presentationFactory">
+        <osgi:interfaces>
+			<value>org.cytoscape.view.presentation.PresentationFactory</value>
+			<value>org.cytoscape.view.model.events.NetworkViewChangedListener</value>
+        </osgi:interfaces>
 	</osgi:service>
 
 	<osgi:service id="dVisualLexiconService"
 		ref="dVisualLexicon" interface="org.cytoscape.view.model.Renderer">
-	</osgi:service>
-
-	<osgi:service id="networkViewChangedListenerImplService"
-		ref="networkViewChangedListenerImpl" interface="org.cytoscape.view.model.events.NetworkViewChangedListener">
 	</osgi:service>
 
 </beans>

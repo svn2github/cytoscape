@@ -1384,7 +1384,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			return;
 
 		if ( vp == DVisualLexicon.NODE_SHAPE ) {
-			System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
 		}
 		else if ( vp == DVisualLexicon.NODE_SELECTED_PAINT ) {
 			setSelectedPaint((Paint)o); 
@@ -1402,7 +1402,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			setBorder((Stroke)o);
 		}
 		else if ( vp == DVisualLexicon.NODE_TRANSPARENCY ) {
-			System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
 		}
 		else if ( vp == DVisualLexicon.NODE_WIDTH ) {
 			setWidth(((Double)o).doubleValue());
@@ -1429,22 +1429,22 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			setFont((Font)o);
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_FONT_SIZE ) {
-			System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_TEXT_ANCHOR ) {
-			System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_NODE_ANCHOR ) {
-			System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_X_OFFSET ) {
-			System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_Y_OFFSET ) {
-			System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_JUSTIFY ) {
-			System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
 		}
 	}
 }

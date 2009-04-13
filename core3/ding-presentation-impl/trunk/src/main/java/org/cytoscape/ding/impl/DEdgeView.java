@@ -1459,10 +1459,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			setSelected((Boolean)o);
 		}
 		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SHAPE) {
-			System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
 		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
-			System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
 		else if (vp == TwoDVisualProperties.EDGE_LABEL) {
 			setText((String)o);
@@ -1471,25 +1471,25 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			setToolTip((String)o);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_EDGE_ANCHOR) {
-			System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_TEXT_ANCHOR) {
-			System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_X_OFFSET) {
-			System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_Y_OFFSET) {
-			System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_JUSTIFY) {
-			System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_FACE) {
 			setFont((Font)o);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_SIZE) {
-			System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
 		else if (vp == TwoDVisualProperties.EDGE_LABEL_COLOR) {
 			setTextPaint((Paint)o);

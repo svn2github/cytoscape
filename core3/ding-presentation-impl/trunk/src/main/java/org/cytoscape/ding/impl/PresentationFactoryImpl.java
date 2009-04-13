@@ -6,6 +6,8 @@ import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualPropertyCatalog;
+import org.cytoscape.view.model.events.NetworkViewChangedListener;
+import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.ding.impl.DGraphView;
@@ -18,27 +20,29 @@ import javax.swing.JInternalFrame;
 import javax.swing.JDesktopPane;
 import javax.swing.JPanel;
 import java.awt.Component;
+import java.util.Map;
+import java.util.HashMap;
 
-public class PresentationFactoryImpl implements PresentationFactory {
+public class PresentationFactoryImpl implements PresentationFactory, NetworkViewChangedListener {
 
 	private CyDataTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
 	private SpacialIndex2DFactory spacialFactory;
 	private UndoSupport undo;
-	private NetworkViewChangedListenerImpl nvcli;
 	private VisualPropertyCatalog vpc;
+	private Map<CyNetworkView, GraphView> viewMap;
 
 	public PresentationFactoryImpl(CyDataTableFactory dataTableFactory, 
 	                            CyRootNetworkFactory rootNetworkFactory,
 								UndoSupport undo, SpacialIndex2DFactory spacialFactory,
-								NetworkViewChangedListenerImpl nvcli,
 								VisualPropertyCatalog vpc) {
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
 		this.undo = undo;
-		this.nvcli = nvcli;
 		this.vpc = vpc;
+
+		viewMap = new HashMap<CyNetworkView, GraphView>();
 	}
 
 	public void addPresentation(Object frame, CyNetworkView view) {
@@ -49,7 +53,7 @@ public class PresentationFactoryImpl implements PresentationFactory {
 			JDesktopPane desktopPane = inFrame.getDesktopPane();
 
 			DGraphView dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,vpc);
-			nvcli.addGraphView( view, dgv );
+			viewMap.put(view, dgv);
 
 			// TODO - not sure this layered pane bit is optimal
 			inFrame.setContentPane( dgv.getContainer(inFrame.getLayeredPane()) );
@@ -71,9 +75,20 @@ public class PresentationFactoryImpl implements PresentationFactory {
 		
 		JPanel target = (JPanel)targetComponent;
 
-		BirdsEyeView bev = new BirdsEyeView((Component)navBounds);	
+		BirdsEyeView bev = new BirdsEyeView((Component)navBounds,this);	
 		target.add( bev );
 
 		return bev;
+	}
+
+	
+	public void handleEvent(NetworkViewChangedEvent nvce) {
+		GraphView gv = viewMap.get(nvce.getNetworkView());
+		if ( gv != null )
+			gv.updateView();
+	}
+
+	public GraphView getGraphView(CyNetworkView cnv) {
+		return viewMap.get(cnv);
 	}
 }

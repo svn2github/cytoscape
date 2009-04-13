@@ -39,6 +39,7 @@ package org.cytoscape.ding;
 import org.cytoscape.ding.impl.ContentChangeListener;
 import org.cytoscape.ding.impl.DGraphView;
 import org.cytoscape.ding.impl.ViewportChangeListener;
+import org.cytoscape.ding.impl.PresentationFactoryImpl;
 
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.view.model.CyNetworkView;
@@ -73,6 +74,7 @@ public class BirdsEyeView extends Component implements NavigationPresentation {
 	private double m_viewYCenter;
 	private double m_viewScaleFactor;
 	private Component m_desktopView;
+	private PresentationFactoryImpl presFactory;
 
 	/**
 	 * Creates a new BirdsEyeView object.
@@ -80,13 +82,16 @@ public class BirdsEyeView extends Component implements NavigationPresentation {
 	 * @param view The view to monitor
 	 * @param desktopView The desktop area holding the view. This should be NetworkViewManager.getDesktopPane().
 	 */
-	public BirdsEyeView(Component desktopView) {
+	public BirdsEyeView(Component desktopView, PresentationFactoryImpl presFactory) {
 		super();
+		this.presFactory = presFactory;
 		m_cLis = new InnerContentChangeListener();
 		m_vLis = new InnerViewportChangeListener();
 		m_desktopView = desktopView;
 		addMouseListener(new InnerMouseListener());
 		addMouseMotionListener(new InnerMouseMotionListener());
+		setPreferredSize(new Dimension(180, 180));
+		setMinimumSize(new Dimension(180, 180));
 	}
 
 	/**
@@ -94,26 +99,23 @@ public class BirdsEyeView extends Component implements NavigationPresentation {
 	 *
 	 * @param view DOCUMENT ME!
 	 */
-	public void changeView(CyNetworkView view) {
-		System.out.println("BirdsEyeView changing to view: " + view);
-	//public void changeView(GraphView view) {
-	/*
+	public void changeView(CyNetworkView cnv) {
+		GraphView view = presFactory.getGraphView(cnv);
+		if ( view == null )
+			return;
 		destroy();
 		m_view = (DGraphView)view;
 
-		if (m_view != null) {
-			m_view.addContentChangeListener(m_cLis);
-			m_view.addViewportChangeListener(m_vLis);
-			updateBounds();
-			final Point2D pt = m_view.getCenter();
-			m_viewXCenter = pt.getX();
-			m_viewYCenter = pt.getY();
-			m_viewScaleFactor = m_view.getZoom();
-			m_contentChanged = true;
-		}
+		m_view.addContentChangeListener(m_cLis);
+		m_view.addViewportChangeListener(m_vLis);
+		updateBounds();
+		final Point2D pt = m_view.getCenter();
+		m_viewXCenter = pt.getX();
+		m_viewYCenter = pt.getY();
+		m_viewScaleFactor = m_view.getZoom();
+		m_contentChanged = true;
 
 		repaint();
-		*/
 	}
 
 	private void updateBounds()
@@ -148,7 +150,7 @@ public class BirdsEyeView extends Component implements NavigationPresentation {
 
 	private Rectangle2D getViewableRect()
 	{
-		if (m_view == null)
+		if (m_view == null) 
 			return new Rectangle2D.Double(0.0, 0.0, 0.0, 0.0);
 
 		if (m_desktopView == null)
