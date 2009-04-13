@@ -104,47 +104,25 @@
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="proxyServerActionService" ref="proxyServerAction"
 		interface="cytoscape.util.CyAction" />
-	<osgi:service id="invertSelectedNodesActionService" ref="invertSelectedNodesAction"
-		interface="cytoscape.util.CyAction" />
 	<osgi:service id="hideSelectedNodesActionService" ref="hideSelectedNodesAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="unHideSelectedNodesActionService" ref="unHideSelectedNodesAction"
 		interface="cytoscape.util.CyAction" />
-	<osgi:service id="selectAllNodesActionService" ref="selectAllNodesAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="deSelectAllNodesActionService" ref="deSelectAllNodesAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="selectFirstNeighborsActionService" ref="selectFirstNeighborsAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="selectConnectedNodesActionService" ref="selectConnectedNodesAction"
-		interface="cytoscape.util.CyAction" />
+		<!--
 	<osgi:service id="alphabeticalSelectionActionService" ref="alphabeticalSelectionAction"
 		interface="cytoscape.util.CyAction" />
+		-->
 	<osgi:service id="listFromFileSelectionActionService" ref="listFromFileSelectionAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="invertSelectedEdgesActionService" ref="invertSelectedEdgesAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="hideSelectedEdgesActionService" ref="hideSelectedEdgesAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="unHideSelectedEdgesActionService" ref="unHideSelectedEdgesAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="selectAllEdgesActionService" ref="selectAllEdgesAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="selectAdjacentEdgesActionService" ref="selectAdjacentEdgesAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="deSelectAllEdgesActionService" ref="deSelectAllEdgesAction"
 		interface="cytoscape.util.CyAction" />
 		<!--
 	<osgi:service id="bendSelectedEdgesActionService" ref="bendSelectedEdgesAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="straightenSelectedEdgesActionService"
 		ref="straightenSelectedEdgesAction" interface="cytoscape.util.CyAction" />
-		-->
-	<osgi:service id="selectAllActionService" ref="selectAllAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="deselectAllActionService" ref="deselectAllAction"
-		interface="cytoscape.util.CyAction" />
-		<!--
 	<osgi:service id="showGraphicsDetailsActionService" ref="showGraphicsDetailsAction"
 		interface="cytoscape.util.CyAction" />
 		-->

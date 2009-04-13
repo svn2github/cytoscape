@@ -187,51 +187,26 @@
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="proxyServerDialogFactory" />
 	</bean>
-	<bean id="invertSelectedNodesAction" class="cytoscape.actions.InvertSelectedNodesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
 	<bean id="hideSelectedNodesAction" class="cytoscape.actions.HideSelectedNodesAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
 	<bean id="unHideSelectedNodesAction" class="cytoscape.actions.UnHideSelectedNodesAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
-	<bean id="selectAllNodesAction" class="cytoscape.actions.SelectAllNodesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="deSelectAllNodesAction" class="cytoscape.actions.DeSelectAllNodesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="selectFirstNeighborsAction" class="cytoscape.actions.SelectFirstNeighborsAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="selectConnectedNodesAction" class="cytoscape.actions.SelectConnectedNodesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
+	<!--
 	<bean id="alphabeticalSelectionAction" class="cytoscape.actions.AlphabeticalSelectionAction">
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />
 	</bean>
+	-->
 	<bean id="listFromFileSelectionAction" class="cytoscape.actions.ListFromFileSelectionAction">
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="fileUtil" />
-	</bean>
-	<bean id="invertSelectedEdgesAction" class="cytoscape.actions.InvertSelectedEdgesAction">
-		<constructor-arg ref="networkManager" />
 	</bean>
 	<bean id="hideSelectedEdgesAction" class="cytoscape.actions.HideSelectedEdgesAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
 	<bean id="unHideSelectedEdgesAction" class="cytoscape.actions.UnHideSelectedEdgesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="selectAllEdgesAction" class="cytoscape.actions.SelectAllEdgesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="selectAdjacentEdgesAction" class="cytoscape.actions.SelectAdjacentEdgesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="deSelectAllEdgesAction" class="cytoscape.actions.DeSelectAllEdgesAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
 	<!--
@@ -241,14 +216,6 @@
 	<bean id="straightenSelectedEdgesAction" class="cytoscape.actions.StraightenSelectedEdgesAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
-	-->
-	<bean id="selectAllAction" class="cytoscape.actions.SelectAllAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="deselectAllAction" class="cytoscape.actions.DeselectAllAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<!--
 	<bean id="showGraphicsDetailsAction" class="cytoscape.actions.ShowGraphicsDetailsAction">
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeProperties" />
