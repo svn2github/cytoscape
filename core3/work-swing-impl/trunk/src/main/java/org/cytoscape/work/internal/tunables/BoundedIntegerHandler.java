@@ -21,7 +21,7 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
 	private boolean useslider=false;
 	private mySlider slider;
 	private myBoundedSwing boundedField;
-	private integer initValue;
+	private int initValue;
 	
 	protected BoundedIntegerHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);

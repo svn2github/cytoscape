@@ -223,15 +223,19 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		if ( n == JOptionPane.OK_OPTION ){
 			String valid = null;
 			for ( Guihandler h : lh )h.handleDependents();
-					for(Object o : objs){
-						 Object[] interfaces = o.getClass().getInterfaces();
-						 for(int i=0;i<interfaces.length;i++){
-							if(interfaces[i].equals(TunableValidator.class))valid=((TunableValidator)o).validate();
-						 }
-					 }
-					if(valid==null){out = false;}
-					else{JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayOptionPanel();}
-			out = true;
+			for(Object o : objs){
+				 Object[] interfaces = o.getClass().getInterfaces();
+				 for(int i=0;i<interfaces.length;i++){
+					if(interfaces[i].equals(TunableValidator.class))valid=((TunableValidator)o).validate();
+				 }
+			}
+			if(valid==null){
+				out = true;
+			}
+			else{
+				JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayOptionPanel();
+				for(Guihandler h : lh)h.resetValue();
+			}
 		}
 		else out = false;
 	}
