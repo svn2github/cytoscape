@@ -1,5 +1,5 @@
 /*
-  File: HelpAboutAction.java
+  File: HelpContentsAction.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,40 +34,51 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.actions;
-
-import org.cytoscape.splash.CreditScreen;
+package cytoscape.internal.view.help;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyHelpBroker;
+import cytoscape.Cytoscape;
 
-import javax.swing.*;
+import javax.help.CSH;
+import javax.swing.ImageIcon;
 import java.awt.event.ActionEvent;
-
+import java.awt.event.KeyEvent;
 
 /**
- *
+ * Really just a wrapper for the CSH.DisplayHelpFromSource action.
  */
-public class HelpAboutAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869681795L;
+public class HelpContentsAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869703278L;
 
-	private CreditScreen credits;
+	private CSH.DisplayHelpFromSource csh; 
 
 	/**
-	 * Creates a new HelpAboutAction object.
+	 * Creates a new HelpContentsAction object.
 	 */
-	public HelpAboutAction(CyNetworkManager netmgr, CreditScreen credits) {
-		super("About...",netmgr);
-		this.credits = credits;
+	public HelpContentsAction(CyNetworkManager netmgr, CyHelpBroker help) {
+		super("Contents...",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_help.png")),netmgr);
 		setPreferredMenu("Help");
+		setAcceleratorCombo(KeyEvent.VK_F1, 0);
+		putValue(SHORT_DESCRIPTION,"Help");
+		csh = new CSH.DisplayHelpFromSource(help.getHelpBroker());
+	}
+
+	public boolean isInToolBar() {
+		return true;
+	}
+
+	public String getPreferredButtonGroup() {
+		return "z-help";
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Merely calls actionPerformed on the CSH.DisplayHelpFromSource object. 
 	 *
-	 * @param e DOCUMENT ME!
+	 * @param e The triggering event - passed to CSH.DisplayHelpFromSource.actionPerformed(e)  
 	 */
 	public void actionPerformed(ActionEvent e) {
-		credits.showCredits();
+		csh.actionPerformed(e);
 	}
 }

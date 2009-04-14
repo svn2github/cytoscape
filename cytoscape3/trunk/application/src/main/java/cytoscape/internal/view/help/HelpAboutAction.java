@@ -1,5 +1,5 @@
 /*
-  File: HelpContentsAction.java
+  File: HelpAboutAction.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,51 +34,40 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.actions;
+package cytoscape.internal.view.help;
+
+import org.cytoscape.splash.CreditScreen;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CyHelpBroker;
-import cytoscape.Cytoscape;
 
-import javax.help.CSH;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+
 
 /**
- * Really just a wrapper for the CSH.DisplayHelpFromSource action.
+ *
  */
-public class HelpContentsAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869703278L;
+public class HelpAboutAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339869681795L;
 
-	private CSH.DisplayHelpFromSource csh; 
+	private CreditScreen credits;
 
 	/**
-	 * Creates a new HelpContentsAction object.
+	 * Creates a new HelpAboutAction object.
 	 */
-	public HelpContentsAction(CyNetworkManager netmgr, CyHelpBroker help) {
-		super("Contents...",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_help.png")),netmgr);
+	public HelpAboutAction(CyNetworkManager netmgr, CreditScreen credits) {
+		super("About...",netmgr);
+		this.credits = credits;
 		setPreferredMenu("Help");
-		setAcceleratorCombo(KeyEvent.VK_F1, 0);
-		putValue(SHORT_DESCRIPTION,"Help");
-		csh = new CSH.DisplayHelpFromSource(help.getHelpBroker());
-	}
-
-	public boolean isInToolBar() {
-		return true;
-	}
-
-	public String getPreferredButtonGroup() {
-		return "z-help";
 	}
 
 	/**
-	 * Merely calls actionPerformed on the CSH.DisplayHelpFromSource object. 
+	 *  DOCUMENT ME!
 	 *
-	 * @param e The triggering event - passed to CSH.DisplayHelpFromSource.actionPerformed(e)  
+	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		csh.actionPerformed(e);
+		credits.showCredits();
 	}
 }
