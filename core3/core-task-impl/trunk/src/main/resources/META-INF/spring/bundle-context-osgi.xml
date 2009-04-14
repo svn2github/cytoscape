@@ -201,6 +201,22 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="selectFromFileListTaskFactoryService" ref="selectFromFileListTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="From file..." />
+			<entry key="preferredMenu" value="Select.Nodes" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_I, ActionEvent.CTRL_MASK
+			-->
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
+
+
+
+	<!-- show/hide -->
 	<osgi:service id="hideSelectedTaskFactoryService" ref="hideSelectedTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>

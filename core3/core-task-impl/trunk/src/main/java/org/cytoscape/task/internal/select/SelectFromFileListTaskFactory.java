@@ -1,5 +1,5 @@
 /*
- File: AbstractSelectTask.java
+ File: SelectFromFileListTaskFactory.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -39,17 +39,17 @@ package org.cytoscape.task.internal.select;
 
 import cytoscape.CyNetworkManager;
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TaskFactory;
 
-public abstract class AbstractSelectTask implements Task {
+public class SelectFromFileListTaskFactory implements TaskFactory {
 
-	protected CyNetworkManager netmgr;
+	private CyNetworkManager netmgr;
 
-	public AbstractSelectTask(CyNetworkManager netmgr) {
+	public SelectFromFileListTaskFactory(CyNetworkManager netmgr) {
 		this.netmgr = netmgr;
 	}
 
-	public abstract void run(TaskMonitor monitor) throws Exception;
-
-	public void cancel() { }
+	public Task getTask() {
+		return new SelectFromFileListTask(netmgr);
+	} 
 }

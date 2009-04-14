@@ -112,6 +112,13 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
+	<bean id="selectFromFileListTaskFactory" 
+	      class="org.cytoscape.task.internal.select.SelectFromFileListTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+	
+
+	<!-- show/hide -->
 	<bean id="hideSelectedTaskFactory" 
 	      class="org.cytoscape.task.internal.hide.HideSelectedTaskFactory">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
