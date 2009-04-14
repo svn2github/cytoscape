@@ -12,8 +12,17 @@
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 
+	<osgi:reference id="cyNetworkFactoryServiceRef"
+		interface="org.cytoscape.model.CyNetworkFactory" />
+
+	<osgi:reference id="cyRootNetworkFactoryServiceRef"
+		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory" />
+
 	<osgi:reference id="cyReaderManagerServiceRef"
 		interface="org.cytoscape.io.read.CyReaderManager" />
+
+	<osgi:reference id="visualMappingManagerServiceRef"
+		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
 
 	<osgi:reference id="streamUtil"
 		interface="org.cytoscape.io.util.StreamUtil" />
@@ -271,7 +280,7 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="newNetworkTaskFactoryService" ref="newNetworkTaskFactory"
+	<osgi:service id="newEmptyNetworkTaskFactoryService" ref="newEmptyNetworkTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Empty Network" />
@@ -279,15 +288,33 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="cloneNetworkTaskFactoryService" ref="cloneNetworkTaskFactory"
+	<osgi:service id="newNetworkSelectedNodesEdgesTaskFactoryService" 
+	    ref="newNetworkSelectedNodesEdgesTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Clone Current Network" />
+			<entry key="title" value="From selected nodes, selected edges" />
 			<entry key="preferredMenu" value="File.New.Network" />
-			<entry key="enable" value="forNetwork" />
+			<entry key="enable" value="forNetworkAndSelectedObjs" />
+			<!--
+			<entry key="acceleratorCombo" 
+		  	java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK
+			-->
 		</osgi:service-properties>
 	</osgi:service>
 	
+	<osgi:service id="newNetworkSelectedNodesOnlyTaskFactoryService" 
+	    ref="newNetworkSelectedNodesOnlyTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="From selected nodes, all edges" />
+			<entry key="preferredMenu" value="File.New.Network" />
+			<entry key="enable" value="forNetworkAndSelectedObjs" />
+			<!--
+			<entry key="acceleratorCombo" 
+		  	java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK 
+			-->
+		</osgi:service-properties>
+	</osgi:service>
 	<!--
 		<osgi:service id="newSessionTaskFactoryService"
 		ref="newSessionTaskFactory"
