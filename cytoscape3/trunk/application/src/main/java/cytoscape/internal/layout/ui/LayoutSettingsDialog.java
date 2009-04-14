@@ -189,7 +189,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			Object o = algorithmSelector.getSelectedItem();
 			// if it's a string, that means it's the instructions
-			if (!(o instanceof String)) { 
+			if (!(o instanceof String)) {
 				CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm)o;
 				ti.loadTunables(newLayout);
 				ti.setParent(mainPanel);
