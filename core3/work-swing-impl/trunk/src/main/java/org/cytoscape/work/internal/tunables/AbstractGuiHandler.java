@@ -153,5 +153,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 
 	public abstract void handle();
 
+	public abstract void resetValue();
+	
 	public abstract String getState();
 }

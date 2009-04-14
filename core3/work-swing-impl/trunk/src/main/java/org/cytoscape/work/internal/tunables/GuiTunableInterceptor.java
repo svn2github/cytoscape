@@ -240,17 +240,17 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	private class myAction implements ActionListener{
 		public void actionPerformed(ActionEvent ae){
 			if(ae.getActionCommand().equals("ok")){
-				String test = null;
+				String valid = null;
 				for ( Guihandler h : lh )h.handleDependents();
 				
 				for(Object o : objs){
 					 Object[] interfaces = o.getClass().getInterfaces();
 					 for(int i=0;i<interfaces.length;i++){
-						if(interfaces[i].equals(TunableValidator.class)) test=((TunableValidator)o).validate();
+						if(interfaces[i].equals(TunableValidator.class)) valid=((TunableValidator)o).validate();
 					 }
 				}
-				if(test==null){out = true;frame.dispose();}
-				else{JOptionPane.showMessageDialog(new JFrame(),test,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayPanel();}
+				if(valid==null){out = true;frame.dispose();}
+				else{JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayPanel();}
 			}
 			else if(ae.getActionCommand().equals("cancel")){
 				out = false;

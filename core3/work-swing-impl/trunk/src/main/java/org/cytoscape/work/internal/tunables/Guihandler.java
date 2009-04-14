@@ -17,4 +17,7 @@ public interface Guihandler extends Handler{
 	void checkDependency(String name, String state);
 	String getDependency();
 	void handleDependents();
+	
+	//added method to reset the value after handling to check the TunableValidator method
+	void resetValue();
 }

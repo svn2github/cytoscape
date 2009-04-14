@@ -70,7 +70,6 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 //			return new FileHandler(f,o,t,flUtil);
 			return new FileHandler(f,o,t);
 		else if(type == URL.class)
-//			return new URLHandler(f,o,t,bookmarks,bkUtil);
 			return new URLHandler(f,o,t,bookmarks,bkUtil);
 		else if(type == InputStream.class)
 //			return new InputStreamHandler(f,o,t,bookmarks,bkUtil,flUtil,stUtil);

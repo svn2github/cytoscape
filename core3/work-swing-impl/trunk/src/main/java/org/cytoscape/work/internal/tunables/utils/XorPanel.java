@@ -91,6 +91,7 @@ public class XorPanel extends JPanel {
 		public void addDependent(Guihandler gh) { } 
 		public String getDependency() { return null; }
 		public void handleDependents(){}
+		public void resetValue(){}
 
 		public void checkDependency(String name, String state) {
 			CardLayout cl = (CardLayout) contentPanel.getLayout();
