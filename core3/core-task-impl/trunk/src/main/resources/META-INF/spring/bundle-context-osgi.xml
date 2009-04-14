@@ -200,6 +200,61 @@
 			<entry key="enable" value="forNetwork" />
 		</osgi:service-properties>
 	</osgi:service>
+
+	<osgi:service id="hideSelectedTaskFactoryService" ref="hideSelectedTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Hide selected nodes and edges" />
+			<entry key="preferredMenu" value="Select" />
+			<entry key="enable" value="forNetworkAndView" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="hideSelectedNodesTaskFactoryService" ref="hideSelectedNodesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Hide selected nodes" />
+			<entry key="preferredMenu" value="Select.Nodes" />
+			<entry key="enable" value="forNetworkAndView" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="hideSelectedEdgesTaskFactoryService" ref="hideSelectedEdgesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Hide selected edges" />
+			<entry key="preferredMenu" value="Select.Edges" />
+			<entry key="enable" value="forNetworkAndView" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="unHideAllTaskFactoryService" ref="unHideAllTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Show all nodes and edges" />
+			<entry key="preferredMenu" value="Select" />
+			<entry key="enable" value="forNetworkAndView" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="unHideAllNodesTaskFactoryService" ref="unHideAllNodesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Show all nodes" />
+			<entry key="preferredMenu" value="Select.Nodes" />
+			<entry key="enable" value="forNetworkAndView" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="unHideAllEdgesTaskFactoryService" ref="unHideAllEdgesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Show all edges" />
+			<entry key="preferredMenu" value="Select.Edges" />
+			<entry key="enable" value="forNetworkAndView" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	
 	<!--
 		<osgi:service id="newSessionTaskFactoryService"
