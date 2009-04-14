@@ -233,8 +233,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 				out = true;
 			}
 			else{
-				JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayOptionPanel();
+				JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);
 				for(Guihandler h : lh)h.resetValue();
+				displayOptionPanel();
 			}
 		}
 		else out = false;

@@ -150,8 +150,8 @@ public class FileHandler extends AbstractGuiHandler {
 
 	public void resetValue() {
 		try{
-			f.set(o, null);
-			System.out.println("#########Value will be reset to initial value = "+ ((File) f.get(o)).getCanonicalPath()+ "#########");
+			f.set(o, new File(""));
+			System.out.println("#########Value will be reset to initial value = "+ ((File) f.get(o)).getAbsolutePath()+ "#########");
 		}catch(Exception e){e.printStackTrace();}
 	} 
 	
