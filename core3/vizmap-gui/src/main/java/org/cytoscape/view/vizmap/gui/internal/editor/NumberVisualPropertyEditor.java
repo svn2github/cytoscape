@@ -1,7 +1,5 @@
 /*
- File: VizMapBypassNetworkListener.java
-
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -34,44 +32,41 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.view.vizmap.gui.internal.bypass;
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyDoublePropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editors.continuous.C2CMappingEditor;
 
-import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-
-import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
-import cytoscape.view.CySwingApplication;
+import javax.swing.Icon;
+import javax.swing.table.DefaultTableCellRenderer;
 
 
 /**
- * Adds NodeView and EdgeView vizmap bypass listeners to network views as
- * the views are created.
+ *
  */
-public class VizMapBypassNetworkListener implements PropertyChangeListener {
-
-	private EditorManager ef;
-	private CyNetworkManager cyNetworkManager;
-	
-	public VizMapBypassNetworkListener(EditorManager ef, CyNetworkManager cyNetworkManager) {
-		this.ef = ef;
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+public class NumberVisualPropertyEditor extends AbstractVisualPropertyEditor<Number> {
+	/**
+	 * Creates a new DiscreteNumber object.
+	 */
+	public NumberVisualPropertyEditor(VisualProperty<Number> vp) {
+		super(vp);
+		propertyEditor = new CyDoublePropertyEditor(null);
+		tableCellRenderer = new DefaultTableCellRenderer();
+		continuousEditor = new C2CMappingEditor(this.vp);
 	}
 
 	/**
-	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
-	 * node and edge context menu listeners to the view.
-	 * @param evnt The event we're hearing.
+	 *  DOCUMENT ME!
+	 *
+	 * @param vp DOCUMENT ME!
+	 * @param width DOCUMENT ME!
+	 * @param height DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
 	 */
-	public void propertyChange(PropertyChangeEvent evnt) {
-		if (evnt.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
-			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
-			cyNetworkManager.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
-
-			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener(ef);
-			cyNetworkManager.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
-		}
+	@Override public Icon getDefaultIcon(int width, int height) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

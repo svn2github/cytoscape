@@ -65,7 +65,7 @@ import javax.swing.SwingConstants;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
@@ -104,10 +104,10 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	
 	private CyNetworkManager cyNetworkManager;
 
-	static {
-		EDGE_PROPS = new TreeSet<VisualProperty>(VisualProperty.getEdgeVisualPropertyList());
-		NODE_PROPS = new TreeSet<VisualProperty>(VisualProperty.getNodeVisualPropertyList());
-	}
+//	static {
+//		EDGE_PROPS = new TreeSet<VisualProperty>(VisualProperty.getEdgeVisualPropertyList());
+//		NODE_PROPS = new TreeSet<VisualProperty>(VisualProperty.getNodeVisualPropertyList());
+//	}
 
 	private EditorManager editorFactory;
 	

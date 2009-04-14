@@ -9,22 +9,17 @@ import javax.swing.JOptionPane;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.MappingCalculator;
 import org.cytoscape.view.vizmap.gui.internal.AbstractVizMapperPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.calculators.BasicCalculator;
-import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.MappingCalculator;
-import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.view.vizmap.mappings.PassthroughMappingCalculator;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import cytoscape.Cytoscape;
 
 public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 

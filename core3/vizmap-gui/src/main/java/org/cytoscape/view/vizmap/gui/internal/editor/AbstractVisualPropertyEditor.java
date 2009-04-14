@@ -34,34 +34,39 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.view.vizmap.gui.internal.editors;
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
-import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyDoublePropertyEditor;
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 
 import java.awt.Component;
 
 import java.beans.PropertyEditor;
 
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
 
 /**
  *
+ *
+ * @param <T>  DOCUMENT ME!
  */
-public class DiscreteNumber implements EditorDisplayer {
-	private final CyDoublePropertyEditor numberCellEditor;
-	private final DefaultTableCellRenderer numberCellRenderer;
+public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyEditor<T> {
+	// Target Visual Property.
+	protected final VisualProperty<T> vp;
+	protected PropertyEditor propertyEditor;
+	protected Component continuousEditor;
+	protected Component vpValueEditor;
+	protected TableCellRenderer tableCellRenderer;
 
 	/**
-	 * Creates a new DiscreteNumber object.
+	 * Creates a new AbstractVisualPropertyEditor object.
+	 *
+	 * @param vp  DOCUMENT ME!
 	 */
-	public DiscreteNumber() {
-		numberCellEditor = new CyDoublePropertyEditor(null);
-		numberCellRenderer = new DefaultTableCellRenderer();
+	public AbstractVisualPropertyEditor(VisualProperty<T> vp) {
+		this.vp = vp;
 	}
 
 	/**
@@ -69,29 +74,8 @@ public class DiscreteNumber implements EditorDisplayer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Class<?> getDataType() {
-		return Number.class;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public EditorDisplayer.MappingType getEditorType() {
-		return EditorDisplayer.MappingType.DISCRETE;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param parentComponent DOCUMENT ME!
-	 * @param type DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {
-		return JOptionPane.showInputDialog(parentComponent, "Please enter a new numeric value:");
+	public VisualProperty<T> getVisualProperty() {
+		return vp;
 	}
 
 	/**
@@ -100,19 +84,51 @@ public class DiscreteNumber implements EditorDisplayer {
 	 * @return  DOCUMENT ME!
 	 */
 	public PropertyEditor getVisualPropertyEditor() {
-		return numberCellEditor;
+		return propertyEditor;
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param type DOCUMENT ME!
+	 * @return  DOCUMENT ME!
+	 */
+	public Component getVisualPropertyValueEditor() {
+		return vpValueEditor;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
 	 * @param width DOCUMENT ME!
 	 * @param height DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height) {
-		return numberCellRenderer;
+	public TableCellRenderer getTableCellRenderer(int width, int height) {
+		return tableCellRenderer;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 *
+	 * @throws IllegalArgumentException DOCUMENT ME!
+	 */
+	public Component getContinuousMappingEditor() throws IllegalArgumentException {
+		return continuousEditor;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param width DOCUMENT ME!
+	 * @param height DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Icon getDefaultIcon(int width, int height) {
+		// TODO: need to return default Image Icon object.
+		return null;
 	}
 }

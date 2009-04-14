@@ -3,7 +3,7 @@ package org.cytoscape.view.vizmap.gui.internal.event;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;

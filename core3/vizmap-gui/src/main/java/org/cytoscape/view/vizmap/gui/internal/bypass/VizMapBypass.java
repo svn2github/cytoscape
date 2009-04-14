@@ -49,7 +49,7 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.VisualPropertyCatalog;
 

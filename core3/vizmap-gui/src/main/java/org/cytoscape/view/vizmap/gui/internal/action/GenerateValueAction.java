@@ -13,7 +13,7 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
-import org.cytoscape.view.vizmap.gui.util.DiscreteValueMapGenerator;
+import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.MappingCalculator;
@@ -32,7 +32,7 @@ public class GenerateValueAction extends AbstractVizMapperAction {
 	private final static long serialVersionUID = 1213748836986412L;
 	
 	
-	private DiscreteValueMapGenerator<?> generator;
+	private DiscreteMappingGenerator<?> generator;
 	
 	private DiscreteMapping dm;
 

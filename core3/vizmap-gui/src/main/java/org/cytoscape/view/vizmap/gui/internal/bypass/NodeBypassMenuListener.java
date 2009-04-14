@@ -38,7 +38,7 @@ package org.cytoscape.view.vizmap.gui.internal.bypass;
 
 import org.cytoscape.view.NodeContextMenuListener;
 import org.cytoscape.view.NodeView;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 
 import javax.swing.*;

@@ -8,7 +8,7 @@ import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.model.VisualProperty;
 
 import com.l2fprod.common.propertysheet.Property;

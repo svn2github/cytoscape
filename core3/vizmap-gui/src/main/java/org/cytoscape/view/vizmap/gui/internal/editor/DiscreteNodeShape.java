@@ -1,5 +1,5 @@
 
-package org.cytoscape.view.vizmap.gui.internal.editors;
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import java.awt.Component;
 import java.beans.PropertyEditor;
@@ -11,7 +11,7 @@ import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
+import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ShapeCellRenderer;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.DiscreteValueChooser;
@@ -19,7 +19,7 @@ import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.icon.NodeIcon;
 
 
-public class DiscreteNodeShape implements EditorDisplayer {
+public class DiscreteNodeShape implements VisualPropertyEditor {
 
 	private final ShapeCellRenderer shapeCellRenderer; 
 	private final CyComboBoxPropertyEditor shapeCellEditor; 
@@ -33,8 +33,8 @@ public class DiscreteNodeShape implements EditorDisplayer {
 		return NodeShape.class;
 	}
 
-	public EditorDisplayer.MappingType getEditorType() {
-		return EditorDisplayer.MappingType.DISCRETE;
+	public VisualPropertyEditor.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.VisualPropertyEditor;
 	}
 
 	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {

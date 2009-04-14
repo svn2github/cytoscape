@@ -1,5 +1,5 @@
 
-package org.cytoscape.view.vizmap.gui.internal.editors;
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import java.awt.Component;
 import java.beans.PropertyEditor;
@@ -7,12 +7,12 @@ import java.beans.PropertyEditor;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
+import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editors.continuous.C2CMappingEditor;
 import org.cytoscape.view.model.VisualProperty;
 
 
-public class ContinuousContinuous implements EditorDisplayer {
+public class ContinuousContinuous implements VisualPropertyEditor {
 
 	private final DefaultTableCellRenderer continuousRenderer;
 	public ContinuousContinuous() { 
@@ -23,8 +23,8 @@ public class ContinuousContinuous implements EditorDisplayer {
 		return Number.class;
 	}
 
-	public EditorDisplayer.MappingType getEditorType() {
-		return EditorDisplayer.MappingType.CONTINUOUS;
+	public VisualPropertyEditor.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.VisualPropertyEditor;
 	}
 
 	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty<?> type) {

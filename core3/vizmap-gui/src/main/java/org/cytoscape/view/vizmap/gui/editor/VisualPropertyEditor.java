@@ -34,45 +34,43 @@
  */
 package org.cytoscape.view.vizmap.gui.editor;
 
+import org.cytoscape.view.model.VisualProperty;
+
 import java.awt.Component;
+
 import java.beans.PropertyEditor;
 
 import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.model.VisualProperty;
-
 
 /**
- * Utility to manage editor and other GUI components.
+ * Facade of all editor-related objects for a Visual Property.
  *
- * There are two types of editors:
- * <ul>
- *  <li>Cell editor - User directly edit the cell in table.
- *  <li>Dialog editor - popup dialog and user select/enter values.
- * </ul>
- * @param <T> This is the data type stored in this visual property.
+ * If plugin developer adds a custom visual property, they should implement this
+ * in the presentation layer.
  *
- *  @author Keiichiro Ono
+ * @param <T>
+ *            Type of object managed in the Visual Prop.
+ *
+ * @author kono
  */
-public interface EditorDisplayer<T> {
+public interface VisualPropertyEditor<T> {
 	/**
-	 * Returns compatible data type of this editor.
-	 * The value will be Color, String, LabelPosition, etc.
+	 * Returns visual property managed by this object.
 	 *
-	 * @return Class of the compatible data.
+	 * @return
 	 */
-	public Class<T> getDataType();
+	public VisualProperty<T> getVisualProperty();
 
 	/**
-	 * Returns continuous mapping editor for the Visual Property.
-	 * Return value is null is Continuous Editor does not exist.
+	 * Returns continuous mapping editor for the Visual Property. Return value
+	 * is null is Continuous Editor does not exist.
 	 *
 	 * @param parent
 	 * @param type
 	 */
-	public Component getContinuousMappingEditor(Component parent, VisualProperty<T> type)
-	    throws IllegalArgumentException;
+	public Component getContinuousMappingEditor() throws IllegalArgumentException;
 
 	/**
 	 * Returns Property Editor object for this data type.
@@ -82,35 +80,41 @@ public interface EditorDisplayer<T> {
 	public PropertyEditor getVisualPropertyEditor();
 
 	/**
-	 * Display editor and get user input.
-	 * Note: editor is associated with data type (String, Number, Color...), so we do not need
-	 * to provide VisualProperty as parameter.
+	 * Display editor and get user input. Note: editor is associated with data
+	 * type (String, Number, Color...), so we do not need to provide
+	 * VisualProperty as parameter.
 	 *
-	 * @param parent parent component of this window
+	 * @param parent
+	 *            parent component of this window
 	 * @return
 	 */
-	public T showVisualPropertyEditor(Component parant);
+	public Component getVisualPropertyValueEditor();
 
 	/**
-	 * Provide Cell renderer for JTable or JList.
-	 * Developers can implement custom cell renderers my using returned component.
+	 * Provide Cell renderer for JTable or JList. Developers can implement
+	 * custom cell renderers my using returned component.
 	 *
 	 * @param type
-	 * @param width component width
-	 * @param height component height
+	 * @param width
+	 *            component width
+	 * @param height
+	 *            component height
 	 *
 	 * @return
 	 */
-	public TableCellRenderer getTableCellRenderer(VisualProperty<T> type, int width, int height);
+	public TableCellRenderer getTableCellRenderer(int width, int height);
 
 	/**
-	 *  This is for default view editor.
+	 * This is for default view editor.
 	 *
-	 * @param vp DOCUMENT ME!
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
+	 * @param vp
+	 *            DOCUMENT ME!
+	 * @param width
+	 *            DOCUMENT ME!
+	 * @param height
+	 *            DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon(VisualProperty<T> vp, int width, int height);
+	public Icon getDefaultIcon(int width, int height);
 }

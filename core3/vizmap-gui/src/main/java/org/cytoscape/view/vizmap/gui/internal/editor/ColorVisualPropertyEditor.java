@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,87 +31,69 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
-package org.cytoscape.view.vizmap.gui.internal.editors;
-
-import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
-import org.cytoscape.view.vizmap.gui.internal.editors.continuous.GradientEditorPanel;
-import org.cytoscape.view.model.VisualProperty;
+ */
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import java.awt.Color;
-import java.awt.Component;
 
-import java.beans.PropertyEditor;
-
+import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editors.continuous.GradientEditorPanel;
+
 
 /**
+ * Manages editors for Color Visual Properties. This object can be used with any
+ * VisualProperty using Color as its type.
  *
  */
-public class ContinuousColor implements EditorDisplayer {
-	private final DefaultTableCellRenderer gradientRenderer;
-
+public class ColorVisualPropertyEditor extends AbstractVisualPropertyEditor<Color> {
 	/**
-	 * Creates a new ContinuousColor object.
+	 * Constructor. Should instantiate one editor per VisualProperty.
 	 */
-	public ContinuousColor() {
-		gradientRenderer = new DefaultTableCellRenderer();
+	public ColorVisualPropertyEditor(VisualProperty<Color> vp) {
+		super(vp);
+		tableCellRenderer = new DefaultTableCellRenderer();
+		continuousEditor = new GradientEditorPanel(this.vp);
+		propertyEditor = new CyColorPropertyEditor();
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @param type
+	 *            DOCUMENT ME!
+	 * @param width
+	 *            DOCUMENT ME!
+	 * @param height
+	 *            DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
 	 */
-	public Class<?> getDataType() {
-		return Color.class;
+	@Override public TableCellRenderer getTableCellRenderer(int width, int height) {
+		((JLabel) tableCellRenderer).setIcon(GradientEditorPanel.getIcon(width, height, vp));
+
+		return tableCellRenderer;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @param vp
+	 *            DOCUMENT ME!
+	 * @param width
+	 *            DOCUMENT ME!
+	 * @param height
+	 *            DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
 	 */
-	public EditorDisplayer.MappingType getEditorType() {
-		return EditorDisplayer.MappingType.CONTINUOUS;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param parentComponent DOCUMENT ME!
-	 * @param type DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty<?> type) {
-		return GradientEditorPanel.showDialog(450, 180, "Gradient Editor", type, parentComponent);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public PropertyEditor getVisualPropertyEditor() {
+	@Override public Icon getDefaultIcon(int width, int height) {
+		// TODO: need to implement new icon generator for Color
 		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public TableCellRenderer getCellRenderer(VisualProperty type, int width, int height) {
-		gradientRenderer.setIcon(GradientEditorPanel.getIcon(width, height, type));
-
-		return gradientRenderer;
 	}
 }

@@ -37,7 +37,7 @@
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.VisualPropertyCatalog;
 

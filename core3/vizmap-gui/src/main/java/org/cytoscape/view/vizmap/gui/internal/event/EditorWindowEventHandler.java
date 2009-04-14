@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 
 import javax.annotation.Resource;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.EditorWindowManager;
 import org.cytoscape.viewmodel.VisualProperty;
 

@@ -34,21 +34,17 @@
 */
 package org.cytoscape.view.vizmap.gui.internal.editors.continuous;
 
-import cytoscape.Cytoscape;
-
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
-import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
-
-import org.jdesktop.swingx.multislider.TrackRenderer;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-
 import java.beans.PropertyChangeEvent;
 
 import javax.swing.ImageIcon;
+
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
+import org.jdesktop.swingx.multislider.TrackRenderer;
 
 
 /**
@@ -74,7 +70,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	 *
 	 * @param type DOCUMENT ME!
 	 */
-	public C2CMappingEditor(VisualProperty type) {
+	public C2CMappingEditor(VisualProperty<?> type) {
 		super(type);
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);

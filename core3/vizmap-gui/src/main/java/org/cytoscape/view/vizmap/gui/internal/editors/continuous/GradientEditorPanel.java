@@ -48,13 +48,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
-import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
-
-import cytoscape.Cytoscape;
 
 
 /**
@@ -77,7 +75,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public GradientEditorPanel(VisualProperty type) {
+	public GradientEditorPanel(VisualProperty<Color> type) {
 		super(type);
 		iconPanel.setVisible(false);
 		initSlider();

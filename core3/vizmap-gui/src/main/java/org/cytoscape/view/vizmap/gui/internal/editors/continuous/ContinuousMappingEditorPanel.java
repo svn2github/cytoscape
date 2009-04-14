@@ -34,22 +34,6 @@
 */
 package org.cytoscape.view.vizmap.gui.internal.editors.continuous;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
-
-import org.cytoscape.model.CyDataTable;
-
-import org.cytoscape.view.vizmap.MappingCalculator;
-import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
-import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -58,9 +42,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeListener;
-
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +53,19 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
+import cytoscape.CyNetworkManager;
 
 
 /**
@@ -103,7 +98,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected VisualMappingManager vmm;
 
 	/** Creates new form ContinuousMapperEditorPanel */
-	public ContinuousMappingEditorPanel(final VisualProperty type) {
+	public ContinuousMappingEditorPanel(final VisualProperty<?> type) {
 		this.type = type;
 		initComponents();
 		setVisualPropLabel();

@@ -1,5 +1,5 @@
 
-package org.cytoscape.view.vizmap.gui.internal.editors;
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
 
 import java.awt.Component;
@@ -11,11 +11,11 @@ import org.cytoscape.ding.vizmap.CyLabelPositionPropertyEditor;
 import org.cytoscape.ding.vizmap.LabelPositionCellRenderer;
 import org.cytoscape.ding.vizmap.LabelPositionChooser;
 import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
+import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.viewmodel.VisualProperty;
 
 
-public class DiscreteLabelPosition implements EditorDisplayer {
+public class DiscreteLabelPosition implements VisualPropertyEditor {
 
 	private final LabelPositionCellRenderer labelPositionRenderer; 
 	private final CyLabelPositionPropertyEditor labelPositionEditor;
@@ -29,8 +29,8 @@ public class DiscreteLabelPosition implements EditorDisplayer {
 		return LabelPosition.class;
 	}
 
-	public EditorDisplayer.MappingType getEditorType() {
-		return EditorDisplayer.MappingType.DISCRETE;
+	public VisualPropertyEditor.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.VisualPropertyEditor;
 	}
 
 	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {

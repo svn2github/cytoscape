@@ -1,15 +1,15 @@
-package org.cytoscape.view.vizmap.gui.internal.editors;
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import java.awt.Component;
 import java.beans.PropertyEditor;
 
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
+import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 import org.cytoscape.viewmodel.VisualProperty;
 
-public class DefaultSelectableValues implements EditorDisplayer {
+public class DefaultSelectableValues implements VisualPropertyEditor {
 	
 	private final CyComboBoxPropertyEditor editor;
 	
@@ -31,7 +31,7 @@ public class DefaultSelectableValues implements EditorDisplayer {
 	}
 
 	public MappingType getEditorType() {
-		return EditorDisplayer.MappingType.DISCRETE;
+		return EditorDisplayer.MappingType.VisualPropertyEditor;
 	}
 
 	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {

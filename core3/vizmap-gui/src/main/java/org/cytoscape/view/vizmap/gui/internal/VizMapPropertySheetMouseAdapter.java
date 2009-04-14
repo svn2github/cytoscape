@@ -10,7 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;

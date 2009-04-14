@@ -27,7 +27,7 @@ import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.theme.ColorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.VisualStyle;

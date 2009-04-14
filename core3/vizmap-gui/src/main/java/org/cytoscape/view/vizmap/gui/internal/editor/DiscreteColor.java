@@ -1,5 +1,5 @@
 
-package org.cytoscape.view.vizmap.gui.internal.editors;
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
 
 import java.awt.Color;
@@ -8,7 +8,7 @@ import java.beans.PropertyEditor;
 
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
+import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.CyColorCellRenderer;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
@@ -16,7 +16,7 @@ import org.cytoscape.viewmodel.VisualProperty;
 
 
 
-public class DiscreteColor implements EditorDisplayer {
+public class DiscreteColor implements VisualPropertyEditor {
 
 	private final CyColorCellRenderer colorCellRenderer;
 	private final CyColorPropertyEditor colorCellEditor;
@@ -30,8 +30,8 @@ public class DiscreteColor implements EditorDisplayer {
 		return Color.class;
 	}
 
-	public EditorDisplayer.MappingType getEditorType() {
-		return EditorDisplayer.MappingType.DISCRETE;
+	public VisualPropertyEditor.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.VisualPropertyEditor;
 	}
 
 	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {

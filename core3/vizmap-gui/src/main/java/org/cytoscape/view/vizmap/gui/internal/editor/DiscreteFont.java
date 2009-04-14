@@ -1,5 +1,5 @@
 
-package org.cytoscape.view.vizmap.gui.internal.editors;
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
 
 import java.awt.Component;
@@ -8,14 +8,14 @@ import java.beans.PropertyEditor;
 
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
+import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.FontCellRenderer;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyFontPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor;
 import org.cytoscape.viewmodel.VisualProperty;
 
 
-public class DiscreteFont implements EditorDisplayer {
+public class DiscreteFont implements VisualPropertyEditor {
 
 	private final CyFontPropertyEditor fontCellEditor;
 	private final FontCellRenderer fontCellRenderer;
@@ -30,8 +30,8 @@ public class DiscreteFont implements EditorDisplayer {
 		return Font.class;
 	}
 
-	public EditorDisplayer.MappingType getEditorType() {
-		return EditorDisplayer.MappingType.DISCRETE;
+	public VisualPropertyEditor.MappingType getEditorType() {
+		return EditorDisplayer.MappingType.VisualPropertyEditor;
 	}
 
 	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {

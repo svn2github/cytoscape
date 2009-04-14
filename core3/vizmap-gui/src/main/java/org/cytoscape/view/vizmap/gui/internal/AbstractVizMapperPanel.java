@@ -59,7 +59,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 import org.cytoscape.view.vizmap.gui.theme.ColorManager;
@@ -126,12 +126,12 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 	protected DefaultTableCellRenderer emptyBoxRenderer;
 	protected DefaultTableCellRenderer filledBoxRenderer;
 
-	protected static final Map<Object, Icon> nodeShapeIcons = NodeShape
-			.getIconSet();
-	protected static final Map<Object, Icon> arrowShapeIcons = ArrowShape
-			.getIconSet();
-	protected static final Map<Object, Icon> lineTypeIcons = LineStyle
-			.getIconSet();
+//	protected static final Map<Object, Icon> nodeShapeIcons = NodeShape
+//			.getIconSet();
+//	protected static final Map<Object, Icon> arrowShapeIcons = ArrowShape
+//			.getIconSet();
+//	protected static final Map<Object, Icon> lineTypeIcons = LineStyle
+//			.getIconSet();
 
 	protected PropertyRendererRegistry rendReg;
 	protected PropertyEditorRegistry editorReg;

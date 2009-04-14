@@ -44,7 +44,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;

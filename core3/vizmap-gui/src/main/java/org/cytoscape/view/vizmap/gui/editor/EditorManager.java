@@ -75,7 +75,7 @@ public interface EditorManager {
 	 * @param props
 	 *            DOCUMENT ME!
 	 */
-	public void addEditorDisplayer(EditorDisplayer<?> editor, Map properties);
+	public void addEditorDisplayer(VisualPropertyEditor<?> editor, Map properties);
 
 	/**
 	 * Listener for OSGi service.
@@ -85,7 +85,7 @@ public interface EditorManager {
 	 * @param props
 	 *            DOCUMENT ME!
 	 */
-	public void removeEditorDisplayer(EditorDisplayer<?> editor, Map properties);
+	public void removeEditorDisplayer(VisualPropertyEditor<?> editor, Map properties);
 	
 	/**
 	 * Display discrete value editor for this visual property.

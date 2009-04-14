@@ -15,7 +15,7 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.vizmap.MappingCalculator;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.model.VisualProperty;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;

@@ -44,7 +44,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.view.vizmap.gui.editors.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.viewmodel.VisualPropertyCatalog;
 
