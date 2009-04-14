@@ -4,8 +4,10 @@ import java.awt.Component;
 
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardController;
-import java.awt.event.ComponentListener;
+//import java.awt.event.ComponentListener;
 import java.awt.event.ComponentEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.HashMap;
@@ -16,45 +18,114 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.p2.ui2.ProvUIActivator;
+import org.eclipse.equinox.internal.p2.ui2.PlanAnalyzer;
+import org.eclipse.equinox.internal.p2.ui2.model.QueriedElement;
+import org.eclipse.equinox.internal.p2.ui2.ProvUIMessages;
+import org.eclipse.equinox.internal.p2.ui2.model.IIUElement;
 import org.eclipse.equinox.internal.p2.ui2.model.AvailableIUElement;
 import org.eclipse.equinox.internal.p2.ui2.model.CategoryElement;
 import org.eclipse.equinox.internal.p2.ui2.model.ElementUtils;
 import org.eclipse.equinox.internal.p2.ui2.model.MetadataRepositoryElement;
 
+import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
+import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
+import org.eclipse.equinox.internal.provisional.p2.director.ProvisioningPlan;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ILicense;
+import org.eclipse.equinox.internal.provisional.p2.query.IQueryable;
+import org.eclipse.equinox.internal.provisional.p2.ui2.IStatusCodes;
+import org.eclipse.equinox.internal.provisional.p2.ui2.ProvisioningOperationRunner;
+import org.eclipse.equinox.internal.provisional.p2.ui2.ProvUI;
+import org.eclipse.equinox.internal.provisional.p2.ui2.ResolutionResult;
+import org.eclipse.equinox.internal.provisional.p2.ui2.operations.PlannerResolutionOperation;
+import org.eclipse.equinox.internal.provisional.p2.ui2.operations.ProvisioningUtil;
 import org.eclipse.equinox.internal.provisional.p2.ui2.IUPropertyUtils;
+import org.eclipse.equinox.internal.provisional.p2.ui2.QueryableMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.ui2.model.MetadataRepositories;
+import org.eclipse.equinox.internal.provisional.p2.ui2.policy.Policy;
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.statushandlers.StatusManager;
+
 import java.awt.event.ComponentAdapter;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.equinox.internal.provisional.p2.ui2.actions.InstallAction;
+
+
 public class InstallDetailsPage extends WizardPage {
+	Policy policy;
+	String profileId;
+	QueryableMetadataRepositoryManager manager;
+    private HashSet<AvailableIUElement> checkedIUElements = null;
 
-    private HashSet checkedIUElements = null;
-
-	public InstallDetailsPage(){
-		 initComponents();		
+    String problemStr = null;
+    
+	public InstallDetailsPage(Policy policy, String profileId, QueryableMetadataRepositoryManager manager){
+		this.policy = policy;
+		this.profileId = profileId;
+		this.manager = manager;
+		
+		initComponents();		
 		 
-		 initRepoTree();
+		initRepoTree();
 			
-		 TreeSelectionListener treeSelectionListener = new TreeSelectionListener(){
-				public void valueChanged(TreeSelectionEvent tse){
+		//TreeSelectionListener treeSelectionListener = new TreeSelectionListener(){
+		//		public void valueChanged(TreeSelectionEvent tse){
 					// Handle the detail area
-					updateDetails();
-				}
-			};
+		//			updateDetails();
+		//		}
+		//	};
 			
-		jTree1.addTreeSelectionListener(treeSelectionListener);
+		//jTree1.addTreeSelectionListener(treeSelectionListener);
 		
 		//Populate the JTree when the panel show up the first time
 		ComponentAdapter componentAdapter = new ComponentAdapter(){
 		    public void componentMoved(ComponentEvent e)  {
-		    	//System.out.println("component has been  moved");
+		    	//System.out.println("component has been moved");
 		    	recycle();
 		    }
 		};
 		this.addComponentListener(componentAdapter);
 		
 	}
+	
+	private void updateSizeInfo(){
+		
+		Runnable sizeJob = new Runnable(){
+			public void run(){
+				try {
+					if (resolvedOperation != null){
+						long size = ProvisioningUtil.getSize(resolvedOperation.getProvisioningPlan(), profileId, null);
+						lbSize.setText(getFormattedSize(size));											
+					}
+				} catch (ProvisionException e) {
+					e.getStatus();
+				}
+			}
+		};
+
+		Thread newThread = new Thread(sizeJob);
+		newThread.start();
+	}
+	
+	protected String getFormattedSize(long size) {
+		if (size == IIUElement.SIZE_UNKNOWN || size == IIUElement.SIZE_UNAVAILABLE)
+			return "Size unknown";//ProvUIMessages.IUDetailsLabelProvider_Unknown;
+		if (size > 1000L) {			
+			long kb = size / 1000L;
+			return "Size: "+ new Long(kb).toString() + " kb";//NLS.bind(ProvUIMessages.IUDetailsLabelProvider_KB, NumberFormat.getInstance().format(new Long(kb)));
+		}
+
+		return "Size: "+new Long(size).toString() + " bytes";//NLS.bind(ProvUIMessages.IUDetailsLabelProvider_Bytes, NumberFormat.getInstance().format(new Long(size)));
+	}
+
 	
 	void updateDetails(){
 		
@@ -95,6 +166,7 @@ public class InstallDetailsPage extends WizardPage {
 		else if (selectedPaths.length > 1){
 			taDetails.setText("");
 		}
+		
 	}
 	
 	
@@ -112,18 +184,22 @@ public class InstallDetailsPage extends WizardPage {
     }
     
     protected String validateContents (Component component, Object o) {
-
+    	if (problemStr !=null){
+    		return problemStr;
+    	}
     	return null;
     }
     
     
     protected  void recycle()  {
+   	
+    	problemStr = null;
+    	
     	checkedIUElements = (HashSet) this.getWizardDataMap().get("checkedIUElements");
     	
     	if (checkedIUElements == null){
     		return;
     	}
-    	    	
     	//Check Licenses
     	Iterator it = checkedIUElements.iterator();
     	HashMap licenseMap = new HashMap();
@@ -136,18 +212,222 @@ public class InstallDetailsPage extends WizardPage {
     			licenseMap.put(name, license);
     		}
     	}
-    	
-    	this.putWizardData("LicenseMap", licenseMap);
-    	
-    	if (licenseMap.size() == 0){
-    		// There is no license, enable finish button
-    		this.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
-    	}
+		this.putWizardData("LicenseMap",licenseMap);
+ 
+        // validate bundle dependency, if fail, setProblem() to disable "Next" button
+        recomputePlan();
     	
 		DefaultTreeModel model= rebuildTreeModel();
         jTree1.setModel(model);
+        
     }
     
+    
+    private void recomputePlan(){
+    	String errorMsg = "";
+
+    	final Object[] elements = checkedIUElements.toArray();
+    	final IInstallableUnit[] ius = ElementUtils.elementsToIUs(elements);
+    	couldNotResolve = false;
+
+    	if (elements.length == 0) {
+    		couldNotResolve();
+    	} else
+    	{
+    		Runnable theJob = new Runnable(){
+    			public void run(){
+    				resolvedOperation = null;
+    				resolutionResult = null;
+    				IProgressMonitor monitor = new NullProgressMonitor();
+
+    				MultiStatus status = PlanAnalyzer.getProfileChangeAlteredStatus();
+    				ProfileChangeRequest request = computeProfileChangeRequest(elements, status, monitor);
+
+    				if (request != null) {
+    					resolvedOperation = new PlannerResolutionOperation(ProvUIMessages.ProfileModificationWizardPage_ResolutionOperationLabel, ius, profileId, request, status, false);
+    					try {
+    						resolvedOperation.execute(monitor);
+    					} catch (ProvisionException e) {
+    						ProvUI.handleException(e, null, StatusManager.SHOW | StatusManager.LOG);
+    						couldNotResolve();
+    					}
+    					if (resolvedOperation.getProvisioningPlan() != null) {
+    						resolutionResult = resolvedOperation.getResolutionResult();
+    						// set up the iu parents to be the plan so that drilldown query can work
+    						if (resolvedOperation.getProvisioningPlan() != null)
+    							for (int i = 0; i < elements.length; i++) {
+    								if (elements[i] instanceof QueriedElement) {
+    									((QueriedElement) elements[i]).setQueryable(getQueryable(resolvedOperation.getProvisioningPlan()));
+    								}
+    							}
+    					}
+    				}
+    				updateStatus();
+    				updateSizeInfo();
+    			}
+    		};
+
+    		Thread newThread = new Thread(theJob);
+    		newThread.start();
+    	}
+    }
+
+    
+	void updateStatus() {
+		
+ 		IStatus currentStatus;
+		if (taDetails == null || !taDetails.isVisible())
+			return;
+		int messageType = IMessageProvider.NONE;
+		boolean pageComplete = true;
+		if (couldNotResolve) {
+			currentStatus = new Status(IStatus.ERROR, ProvUIActivator.PLUGIN_ID, 0, ProvUIMessages.ProfileModificationWizardPage_UnexpectedError, null);
+			//this.setProblem("Cannot complete the install because some dependencies are not satisfiable");
+			problemStr = "Cannot complete the install because some dependencies are not satisfiable";
+		} else {
+			currentStatus = resolvedOperation.getResolutionResult().getSummaryStatus();
+		}
+				
+		if (currentStatus != null && !currentStatus.isOK()) {
+			messageType = IMessageProvider.INFORMATION;
+			int severity = currentStatus.getSeverity();
+			if (severity == IStatus.ERROR) {
+				messageType = IMessageProvider.ERROR;
+				pageComplete = false;
+				
+				this.setProblem("Error");
+				// Log errors for later support, but not if these are 
+				// simple UI validation errors.
+				if (currentStatus.getCode() != IStatusCodes.EXPECTED_NOTHING_TO_DO)
+					ProvUI.reportStatus(currentStatus, StatusManager.LOG);
+			} else if (severity == IStatus.WARNING) {
+				messageType = IMessageProvider.WARNING;
+				// Log warnings for later support
+				ProvUI.reportStatus(currentStatus, StatusManager.LOG);
+			}
+		} else {
+			// Check to see if another operation is in progress
+			if (ProvisioningOperationRunner.hasScheduledOperationsFor(profileId)) {
+				messageType = IMessageProvider.ERROR;
+				currentStatus = PlanAnalyzer.getStatus(IStatusCodes.OPERATION_ALREADY_IN_PROGRESS, null);
+				pageComplete = false;
+				//this.setProblem("Another operation is in progress");
+				problemStr = "Another operation is in progress";
+			}
+		}
+		
+		//setPageComplete(pageComplete);
+		//setMessage(getMessageText(currentStatus), messageType);
+				
+		if ((messageType == IMessageProvider.NONE || messageType == IMessageProvider.INFORMATION) && pageComplete){
+			// everything is fine, so check license to determine if license page should be showed
+			HashMap licenseMap = (HashMap) this.getWizardData("LicenseMap");
+	    	if (licenseMap.size() == 0){
+	    		// There is no license, enable finish button
+	    		this.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
+	    	}
+		}
+		
+		if (resolutionResult.getSummaryStatus().getSeverity() == IStatus.ERROR)
+		{
+			//System.out.println("setProblem --> error");
+			//this.setProblem("Error!");
+			problemStr = "Error";
+		}
+
+		String detail = getDetailText(); 
+		if (detail != null){
+			taDetails.setText(detail);			
+		}
+		else {
+			taDetails.setText("");
+		}
+	}
+
+
+	String getDetailText() {
+		String detail = null;
+		IInstallableUnit iu = getSelectedIU();
+		
+		// We tried to resolve and it failed.  The specific error was already reported, so description
+		// text can be used for the selected IU.
+		if (couldNotResolve) {
+			if (iu != null)
+				detail = getIUDescription(iu);
+			return detail;
+		}
+
+		// An IU is selected and we have resolved.  Look for information about the specific IU.
+		if (iu != null) {
+			detail = resolutionResult.getDetailedReport(new IInstallableUnit[] {iu});
+			if (detail != null){
+				return detail;
+			}
+			// No specific error about this IU.  Show the overall error if it is in error.
+			if (resolutionResult.getSummaryStatus().getSeverity() == IStatus.ERROR)
+			{
+				return resolutionResult.getSummaryReport();
+			}
+			// The overall status is not an error, so we may as well just return info about this iu rather than everything.
+			return getIUDescription(iu);
+		}
+
+		//No IU is selected, give the overall report
+		detail = resolutionResult.getSummaryReport();
+		if (detail == null)
+			detail = ""; //$NON-NLS-1$
+		return detail;
+	}
+
+
+	String getMessageText(IStatus currentStatus) {
+		if (currentStatus == null || currentStatus.isOK())
+			return getDescription();
+		if (currentStatus.getSeverity() == IStatus.CANCEL)
+			return ProvUIMessages.ResolutionWizardPage_Canceled;
+		if (currentStatus.getSeverity() == IStatus.ERROR)
+			return ProvUIMessages.ResolutionWizardPage_ErrorStatus;
+		return ProvUIMessages.ResolutionWizardPage_WarningInfoStatus;
+	}
+    
+
+	protected String getIUDescription(IInstallableUnit iu) {
+		// Get the iu description in the default locale
+		String description = IUPropertyUtils.getIUProperty(iu, IInstallableUnit.PROP_DESCRIPTION);
+		if (description == null)
+			description = ""; //$NON-NLS-1$
+		return description;
+	}
+
+	
+	protected IInstallableUnit getSelectedIU() {
+		IInstallableUnit[] units = ElementUtils.elementsToIUs(checkedIUElements.toArray());
+		if (units.length == 0)
+			return null;
+		return units[0];
+	}
+
+    
+	protected ProfileChangeRequest computeProfileChangeRequest(Object[] selectedElements, MultiStatus additionalStatus, IProgressMonitor monitor) {
+		IInstallableUnit[] selected = ElementUtils.elementsToIUs(selectedElements);
+		return InstallAction.computeProfileChangeRequest(selected, profileId, additionalStatus, monitor);
+	}
+
+    protected IQueryable getQueryable(ProvisioningPlan plan){
+    	return plan.getAdditions();
+    }
+    
+    
+	private void couldNotResolve() {
+		resolvedOperation = null;
+		resolutionResult = null;
+		couldNotResolve = true;
+	}
+
+	PlannerResolutionOperation resolvedOperation;
+	ResolutionResult resolutionResult;
+	boolean couldNotResolve;
+
     
 	private DefaultTreeModel rebuildTreeModel(){
 
