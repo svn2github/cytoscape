@@ -38,6 +38,7 @@ import java.awt.Component;
 import java.beans.PropertyEditor;
 
 import javax.swing.Icon;
+import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.model.VisualProperty;
 
@@ -70,7 +71,7 @@ public interface EditorDisplayer<T> {
 	 * @param parent
 	 * @param type
 	 */
-	public Component getContinuousMappingEditor(Component parent, VisualProperty<?extends T> type)
+	public Component getContinuousMappingEditor(Component parent, VisualProperty<T> type)
 	    throws IllegalArgumentException;
 
 	/**
@@ -100,7 +101,7 @@ public interface EditorDisplayer<T> {
 	 *
 	 * @return
 	 */
-	public Component getCellRendererComponent(VisualProperty<?extends T> type, int width, int height);
+	public TableCellRenderer getTableCellRenderer(VisualProperty<T> type, int width, int height);
 
 	/**
 	 *  This is for default view editor.
@@ -111,5 +112,5 @@ public interface EditorDisplayer<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getCurrentStateIcon(VisualProperty<?extends T> vp, int width, int height);
+	public Icon getDefaultIcon(VisualProperty<T> vp, int width, int height);
 }
