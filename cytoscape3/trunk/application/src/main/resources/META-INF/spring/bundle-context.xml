@@ -126,23 +126,6 @@
 		<constructor-arg ref="fileUtil" />
 	</bean>
 
-	<bean id="newNetworkAction" class="cytoscape.actions.NewNetworkAction">
-		<constructor-arg ref="cyNetworkFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="newWindowSelectedNodesOnlyAction" class="cytoscape.actions.NewWindowSelectedNodesOnlyAction">
-		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
-		<constructor-arg ref="networkManager" />
-		<constructor-arg ref="networkNamingUtil" />
-	</bean>
-	<bean id="newWindowSelectedNodesEdgesAction" class="cytoscape.actions.NewWindowSelectedNodesEdgesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="cloneGraphInNewWindowAction" class="cytoscape.actions.CloneGraphInNewWindowAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
 	<!--
 	<bean id="printAction" class="cytoscape.actions.PrintAction">
 		<constructor-arg ref="networkManager" />

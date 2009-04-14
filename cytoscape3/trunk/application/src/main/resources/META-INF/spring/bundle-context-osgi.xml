@@ -35,9 +35,6 @@
 	<osgi:reference id="cyRootNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory" />
 
-	<osgi:reference id="vmmServiceRef"
-		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
-
 	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.layout.CyLayouts">
 	</osgi:reference>
 
@@ -73,15 +70,6 @@
 	<osgi:service id="openBrowserService" ref="openBrowser"
 		interface="cytoscape.util.OpenBrowser" />
 
-	<osgi:service id="newWindowSelectedNodesOnlyActionService"
-		ref="newWindowSelectedNodesOnlyAction" interface="cytoscape.util.CyAction" />
-
-	<osgi:service id="newWindowSelectedNodesEdgesActionService"
-		ref="newWindowSelectedNodesEdgesAction" interface="cytoscape.util.CyAction" />
-	<osgi:service id="cloneGraphInNewWindowActionService" ref="cloneGraphInNewWindowAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="newNetworkActionService" ref="newNetworkAction"
-		interface="cytoscape.util.CyAction" />
 		<!--
 	<osgi:service id="printActionService" ref="printAction"
 		interface="cytoscape.util.CyAction" />
