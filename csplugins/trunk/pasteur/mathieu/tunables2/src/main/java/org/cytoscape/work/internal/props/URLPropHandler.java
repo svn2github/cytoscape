@@ -27,7 +27,7 @@ public class URLPropHandler extends AbstractPropHandler {
 	public void add(Properties p) {
 		
 		try{
-			//p.put(propKey,url.getFile());
+			p.put(propKey,url.getFile());
 		}catch(Exception e){e.printStackTrace();}
 	}
 
