@@ -150,7 +150,28 @@
 	</bean>
 
 
+	<!-- creation -->
+	<bean id="newNetworkTaskFactory" 
+	      class="org.cytoscape.task.internal.creation.NewNetworkTaskFactory">
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
 
+	<bean id="cloneNetworkTaskFactory" 
+	      class="org.cytoscape.task.internal.creation.CloneNetworkTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="newNetworkSelecteNodesEdgesTaskFactory" 
+	      class="org.cytoscape.task.internal.creation.NewNetworkSelecteNodesEdgesTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="newNetworkSelecteNodesOnlyTaskFactory" 
+	      class="org.cytoscape.task.internal.creation.NewNetworkSelecteNodesOnlyTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
 
 	<!-- Off until session stuff is implemented
 	<bean id="newSessionTaskFactory" 

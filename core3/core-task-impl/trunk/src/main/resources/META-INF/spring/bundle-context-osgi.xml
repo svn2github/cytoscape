@@ -271,6 +271,22 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="newNetworkTaskFactoryService" ref="newNetworkTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Empty Network" />
+			<entry key="preferredMenu" value="File.New.Network" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="cloneNetworkTaskFactoryService" ref="cloneNetworkTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Clone Current Network" />
+			<entry key="preferredMenu" value="File.New.Network" />
+			<entry key="enable" value="forNetwork" />
+		</osgi:service-properties>
+	</osgi:service>
 	
 	<!--
 		<osgi:service id="newSessionTaskFactoryService"
