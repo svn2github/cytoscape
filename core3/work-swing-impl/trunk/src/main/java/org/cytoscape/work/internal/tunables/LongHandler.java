@@ -13,7 +13,7 @@ public class LongHandler extends AbstractGuiHandler {
 
 	private JTextField jtf;
 	private Double value = null;
-	Long myLong;
+	private Long myLong;
 	private String newline = System.getProperty("line.separator");
 	private boolean horizontal=false;
 	
@@ -21,15 +21,15 @@ public class LongHandler extends AbstractGuiHandler {
 		super(f,o,t);
 		try{
 			this.myLong=(Long)f.get(o);
-			jtf = new JTextField( f.get(o).toString(), 10);
 		}catch(Exception e){e.printStackTrace();}
+
+		jtf = new JTextField(myLong.toString(), 10);
 		panel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel(t.description());
 		label.setFont(new Font(null, Font.PLAIN,12));
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
 
 		for(Param par : t.alignment())if(par==Param.horizontal) horizontal=true;
-		
 		if(horizontal){
 			panel.add(label,BorderLayout.NORTH);
 			panel.add(jtf,BorderLayout.SOUTH);	
@@ -58,6 +58,14 @@ public class LongHandler extends AbstractGuiHandler {
 		try {
 			f.set(o,value.longValue());
 		} catch (Exception e) { e.printStackTrace();}
+	}
+
+	
+	public void resetValue(){
+		System.out.println("#########Value will be reset to initial value = " + myLong.longValue() + "#########");
+		try{
+			f.set(o,myLong);
+		}catch(Exception e){e.printStackTrace();}
 	}
 
 	

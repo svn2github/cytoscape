@@ -13,7 +13,7 @@ public class FloatHandler extends AbstractGuiHandler {
 
 	private JTextField jtf;
 	private Double value = null;
-	Float myFloat;
+	private Float myFloat;
 	private String newline = System.getProperty("line.separator");
 	private boolean horizontal = false;
 
@@ -21,8 +21,9 @@ public class FloatHandler extends AbstractGuiHandler {
 		super(f,o,t);
 		try{
 			this.myFloat=(Float)f.get(o);
-			jtf = new JTextField(f.get(o).toString(), 10);
 		}catch(Exception e){e.printStackTrace();}
+
+		jtf = new JTextField(myFloat.toString(), 10);
 		panel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel(t.description());
 		label.setFont(new Font(null, Font.PLAIN,12));
@@ -61,6 +62,15 @@ public class FloatHandler extends AbstractGuiHandler {
 	}
 
 
+	public void resetValue(){
+		System.out.println("#########Value will be reset to initial value = " + myFloat.floatValue() + "#########");
+		try{
+			f.set(o,myFloat);
+		}catch(Exception e){e.printStackTrace();}
+	}
+
+	
+	
     public String getState() {
 		String s;
 		try {

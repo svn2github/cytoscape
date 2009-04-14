@@ -18,7 +18,7 @@ public class IntegerHandler extends AbstractGuiHandler {
 
 	private JTextField jtf;
 	private Double value = null;
-	Integer myInteger;
+	private Integer myInteger;
 	private String newline = System.getProperty("line.separator");
 	private boolean horizontal=false;
 
@@ -65,6 +65,15 @@ public class IntegerHandler extends AbstractGuiHandler {
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
+		
+	public void resetValue(){
+		System.out.println("#########Value will be reset to initial value = "+ myInteger.intValue() + "#########");
+		try{
+			f.set(o,myInteger);
+		}catch(Exception e){e.printStackTrace();}
+	}
+
+	
     public String getState() {
 		String s;
 		try {
