@@ -144,12 +144,6 @@
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="networkManager" />
 	</bean>
-	<bean id="destroyNetworkViewAction" class="cytoscape.actions.DestroyNetworkViewAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="destroyNetworkAction" class="cytoscape.actions.DestroyNetworkAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
 	<bean id="deleteAction" class="cytoscape.actions.DeleteAction">
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
@@ -243,18 +237,6 @@
 			value="EAST" />
 		<constructor-arg value="false" />
 		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="zoomInAction" class="cytoscape.actions.ZoomInAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="zoomOutAction" class="cytoscape.actions.ZoomOutAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="zoomSelectedAction" class="cytoscape.actions.ZoomSelectedAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="fitContentAction" class="cytoscape.actions.FitContentAction">
 		<constructor-arg ref="networkManager" />
 	</bean>
 

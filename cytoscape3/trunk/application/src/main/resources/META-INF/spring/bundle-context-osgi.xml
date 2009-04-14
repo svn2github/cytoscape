@@ -80,10 +80,6 @@
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="redoActionService" ref="redoAction"
 		interface="cytoscape.util.CyAction" />
-	<osgi:service id="destroyNetworkViewActionService" ref="destroyNetworkViewAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="destroyNetworkActionService" ref="destroyNetworkAction"
-		interface="cytoscape.util.CyAction" />
 	<osgi:service id="deleteActionService" ref="deleteAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="preferenceActionService" ref="preferenceAction"
@@ -119,14 +115,6 @@
 		interface="cytoscape.util.CyAction" />
 
 	<osgi:service id="cytoPanelEastActionService" ref="cytoPanelEastAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="zoomOutActionService" ref="zoomOutAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="zoomInActionService" ref="zoomInAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="zoomSelectedActionService" ref="zoomSelectedAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="fitContentActionService" ref="fitContentAction"
 		interface="cytoscape.util.CyAction" />
 
 	<osgi:set id="cyActionSet" interface="cytoscape.util.CyAction"
