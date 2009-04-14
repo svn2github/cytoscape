@@ -187,12 +187,6 @@
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="proxyServerDialogFactory" />
 	</bean>
-	<bean id="hideSelectedNodesAction" class="cytoscape.actions.HideSelectedNodesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="unHideSelectedNodesAction" class="cytoscape.actions.UnHideSelectedNodesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
 	<!--
 	<bean id="alphabeticalSelectionAction" class="cytoscape.actions.AlphabeticalSelectionAction">
 		<constructor-arg ref="cytoscapeDesktop" />
@@ -202,12 +196,6 @@
 	<bean id="listFromFileSelectionAction" class="cytoscape.actions.ListFromFileSelectionAction">
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="fileUtil" />
-	</bean>
-	<bean id="hideSelectedEdgesAction" class="cytoscape.actions.HideSelectedEdgesAction">
-		<constructor-arg ref="networkManager" />
-	</bean>
-	<bean id="unHideSelectedEdgesAction" class="cytoscape.actions.UnHideSelectedEdgesAction">
-		<constructor-arg ref="networkManager" />
 	</bean>
 	<!--
 	<bean id="bendSelectedEdgesAction" class="cytoscape.actions.BendSelectedEdgesAction">

@@ -104,19 +104,11 @@
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="proxyServerActionService" ref="proxyServerAction"
 		interface="cytoscape.util.CyAction" />
-	<osgi:service id="hideSelectedNodesActionService" ref="hideSelectedNodesAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="unHideSelectedNodesActionService" ref="unHideSelectedNodesAction"
-		interface="cytoscape.util.CyAction" />
 		<!--
 	<osgi:service id="alphabeticalSelectionActionService" ref="alphabeticalSelectionAction"
 		interface="cytoscape.util.CyAction" />
 		-->
 	<osgi:service id="listFromFileSelectionActionService" ref="listFromFileSelectionAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="hideSelectedEdgesActionService" ref="hideSelectedEdgesAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="unHideSelectedEdgesActionService" ref="unHideSelectedEdgesAction"
 		interface="cytoscape.util.CyAction" />
 		<!--
 	<osgi:service id="bendSelectedEdgesActionService" ref="bendSelectedEdgesAction"
