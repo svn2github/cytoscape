@@ -15,30 +15,23 @@ import java.util.List;
 import java.awt.event.KeyListener;
 import javax.swing.*;
 
-import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.property.bookmark.Bookmarks;
+//import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
-import org.cytoscape.property.bookmark.Category;
-import org.cytoscape.property.bookmark.DataSource;
+//import org.cytoscape.property.bookmark.Category;
+//import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.work.AbstractGuiHandler;
 import org.cytoscape.work.Tunable;
 
-import cytoscape.util.FileUtil;
-
-
 public class InputStreamHandler extends AbstractGuiHandler {
 
+	URL url;
+	BookmarksUtil bkUtil;
 //	Bookmarks theBookmarks;
 	String bookmarkCategory = "network";
 	String urlstr;
 	BookmarkComboBoxEditor bookmarkEditor = new BookmarkComboBoxEditor();
 	JComboBox networkFileComboBox;
-	FileUtil flUtil;
-//	BookmarksUtil bkUtil;
-	StreamUtil stUtil;
 	
-	InputStream InStream = null;
-	URL url;
 	JButton button;
 	File myFile;
 	JFileChooser fileChooser;
@@ -47,10 +40,12 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	
 	private String pleaseMessage = "Please provide URL or select from list";
 	
+	InputStream InStream = null;
+	
 	private JPanel radioButtonPanel;
 	private JPanel valuePanel;
 	private javax.swing.JButton selectButton;
-	//private javax.swing.ButtonGroup buttonGroup1;
+	private javax.swing.ButtonGroup buttonGroup1;
 	private javax.swing.JRadioButton remoteRadioButton;
 	private javax.swing.JRadioButton localRadioButton;
 	private javax.swing.JTextField networkFileTextField;
@@ -58,10 +53,10 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
 
 	
-	public InputStreamHandler(Field f, Object o, Tunable t) {
+	public InputStreamHandler(Field f, Object o, Tunable t){//,Bookmarks bookmarks,BookmarksUtil bkUtil) {
 		super(f,o,t);
-
-		//this.theBookmarks=bookmarks;
+		this.bkUtil=bkUtil;
+//		this.theBookmarks=bookmarks;
 		filechoosen = false;
 		fileChooser = new JFileChooser();
 		
@@ -69,25 +64,25 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			this.InStream = (InputStream) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 
-//		Category theCategory = bkUtil.getCategory(bookmarkCategory,theBookmarks.getCategory());	
+//		Category theCategory = bkUtil.getCategory(bookmarkCategory,bookmarks.getCategory());	
 //		if (theCategory == null) {
 //			theCategory = new Category();
 //			theCategory.setName(bookmarkCategory);
 //
-//			List<Category> theCategoryList = theBookmarks.getCategory();
+//			List<Category> theCategoryList = bookmarks.getCategory();
 //			theCategoryList.add(theCategory);
 //		}
 		
-		System.out.println("Test INPUTSTREAM");
+		//System.out.println("Test INPUTSTREAM");
 
-		panel.add(new JLabel("Path :"));
-		path = new JTextField("select file",12);
-		path.setFont(new Font(null, Font.ITALIC,10));
-		panel.add(path);
+		//panel.add(new JLabel("Path :"));
+		//path = new JTextField("select file",12);
+		//path.setFont(new Font(null, Font.ITALIC,10));
+		//panel.add(path);
 
 		initComponents();
 		addListeners();
-		switchImportView("remote");
+		switchImportView("Local");
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(radioButtonPanel,BorderLayout.NORTH);
@@ -100,13 +95,10 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			if(!filechoosen){
 				int ret = fileChooser.showOpenDialog(null);
 				if (ret == JFileChooser.APPROVE_OPTION){
-					//File file = flUtil.getFile("Import Network File",flUtil.LOAD);
 				    File file = fileChooser.getSelectedFile();
 					if ( file != null ){
 						try{
 							InStream = new FileInputStream(file);
-							//InStream = flUtil.getInputStream(file.getAbsolutePath());
-							System.out.println("INSTREAM = "+ InStream.toString());
 							f.set(o,InStream);
 						}catch (Exception e) { e.printStackTrace();}
 						networkFileTextField.setFont(new Font(null, Font.PLAIN,10));
@@ -120,10 +112,13 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			urlstr = bookmarkEditor.getURLstr();
 			try{
 				if ( urlstr != null ) {
-					url = new URL(urlstr);
-					InStream = stUtil.getInputStream(url);
-					System.out.println("URL = "+urlstr);
-					f.set(o,InStream);
+					try {
+						url = new URL(urlstr);
+						InStream = new FileInputStream(url.getPath());
+						System.out.println(url.getPath());
+						//InStream = URLUtil.getBasicInputStream(url);
+						f.set(o,InStream);
+					}catch (MalformedURLException e){e.printStackTrace();}
 				}
 			}catch (Exception e){}
 		}
@@ -145,7 +140,7 @@ public class InputStreamHandler extends AbstractGuiHandler {
     
     
     private void initComponents() {
-		//buttonGroup1 = new javax.swing.ButtonGroup();
+		buttonGroup1 = new javax.swing.ButtonGroup();
 		localRadioButton = new javax.swing.JRadioButton();
 		remoteRadioButton = new javax.swing.JRadioButton();
 		networkFileTextField = new javax.swing.JTextField();
@@ -246,7 +241,7 @@ public class InputStreamHandler extends AbstractGuiHandler {
     
     
 	class BookmarkComboBoxEditor implements ComboBoxEditor {
-		DataSource theDataSource = new DataSource();
+//		DataSource theDataSource = new DataSource();
 		JTextField tfInput = new JTextField(pleaseMessage);
 		
 		public String getURLstr() {
@@ -265,9 +260,9 @@ public class InputStreamHandler extends AbstractGuiHandler {
 		public Component getEditorComponent() {
 			return tfInput;
 		}
-		public Object getItem() {
-			return theDataSource;
-		}
+//		public Object getItem() {
+//			return theDataSource;
+//		}
 		public void removeActionListener(ActionListener l) {
 		}
 		public void selectAll() {
@@ -277,10 +272,15 @@ public class InputStreamHandler extends AbstractGuiHandler {
 				return;
 			}
 
-			if (anObject instanceof DataSource) {
-				theDataSource = (DataSource) anObject;
-				tfInput.setText(theDataSource.getHref());
-			}
+//			if (anObject instanceof DataSource) {
+//				theDataSource = (DataSource) anObject;
+//				tfInput.setText(theDataSource.getHref());
+//			}
+		}
+
+		public Object getItem() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 	
@@ -289,11 +289,11 @@ public class InputStreamHandler extends AbstractGuiHandler {
 
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel();
 
-		DataSource firstDataSource = new DataSource();
-		firstDataSource.setName("");
-		firstDataSource.setHref(null);
+//		DataSource firstDataSource = new DataSource();
+//		firstDataSource.setName("");
+//		firstDataSource.setHref(null);
 
-		theModel.addElement(firstDataSource);
+//		theModel.addElement(firstDataSource);
 
 		// Extract the URL entries
 //		List<DataSource> theDataSourceList = bkUtil.getDataSourceList(bookmarkCategory,theBookmarks.getCategory());
@@ -302,7 +302,7 @@ public class InputStreamHandler extends AbstractGuiHandler {
 //				theModel.addElement(theDataSourceList.get(i));
 //			}
 //		}
-//		networkFileComboBox.setModel(theModel);
+		networkFileComboBox.setModel(theModel);
 	}
 
 	
@@ -314,13 +314,13 @@ public class InputStreamHandler extends AbstractGuiHandler {
 
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
-			DataSource dataSource = (DataSource) value;
-			setText(dataSource.getName());
-			if (isSelected) {
-				if (0 < index) {
-					list.setToolTipText(dataSource.getHref());
-				}
-			}
+//			DataSource dataSource = (DataSource) value;
+//			setText(dataSource.getName());
+//			if (isSelected) {
+//				if (0 < index) {
+//					list.setToolTipText(dataSource.getHref());
+//				}
+//			}
 			return this;
 		}
 	}
