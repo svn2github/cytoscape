@@ -7,11 +7,11 @@ import java.beans.PropertyEditor;
 
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.ding.vizmap.CyLabelPositionPropertyEditor;
+import org.cytoscape.ding.vizmap.LabelPositionCellRenderer;
+import org.cytoscape.ding.vizmap.LabelPositionChooser;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyLabelPositionPropertyEditor;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.LabelPositionCellRenderer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.PopupLabelPositionChooser;
 import org.cytoscape.viewmodel.VisualProperty;
 
 
@@ -33,12 +33,12 @@ public class DiscreteLabelPosition implements EditorDisplayer {
 		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualProperty type) {
+	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {
 		labelPositionEditor.setParentComponent(parentComponent);
-		return PopupLabelPositionChooser.showDialog(parentComponent, null);
+		return LabelPositionChooser.showDialog(parentComponent, null);
 	}
 
-    public PropertyEditor getCellEditor() {
+    public PropertyEditor getVisualPropertyEditor() {
 		return labelPositionEditor;
     }
 

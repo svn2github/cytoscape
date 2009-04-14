@@ -10,8 +10,8 @@ import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyColorCellRenderer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyColorPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.CyColorCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
 import org.cytoscape.viewmodel.VisualProperty;
 
 
@@ -34,11 +34,11 @@ public class DiscreteColor implements EditorDisplayer {
 		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualProperty type) {
+	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {
 		return CyColorChooser.showDialog(parentComponent, "Select Color...",null);
 	}
 
-    public PropertyEditor getCellEditor() {
+    public PropertyEditor getVisualPropertyEditor() {
 		return colorCellEditor;	
     }
 

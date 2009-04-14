@@ -12,9 +12,9 @@ import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyComboBoxPropertyEditor;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.ShapeCellRenderer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.ValueSelectDialog;
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ShapeCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.DiscreteValueChooser;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.icon.NodeIcon;
 
@@ -37,11 +37,11 @@ public class DiscreteNodeShape implements EditorDisplayer {
 		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualProperty type) {
-		return ValueSelectDialog.showDialog(parentComponent, VisualProperty.NODE_SHAPE);
+	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {
+		return DiscreteValueChooser.showDialog(parentComponent, VisualProperty.NODE_SHAPE);
 	}
 
-    public PropertyEditor getCellEditor() {
+    public PropertyEditor getVisualPropertyEditor() {
 
 		// TODO  this is the best we can do?
 

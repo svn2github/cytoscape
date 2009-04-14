@@ -5,5 +5,5 @@ import java.util.Set;
 
 public interface DiscreteValueMapGenerator<V> {
 	
-	public Map<Object, V> generateMap(Set<Object> attributeSet);
+	public Map<?, V> generateMap(Set<V> attributeSet);
 }

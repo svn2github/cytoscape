@@ -31,11 +31,11 @@ public class ContinuousDiscrete implements EditorDisplayer {
 		return EditorDisplayer.MappingType.CONTINUOUS;
 	}
 
-	public Object showEditor(Component parentComponent, VisualProperty type) {
+	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {
 		return C2DMappingEditor.showDialog(450, 300,"Continuous Editor for " + type.getName(),null,parentComponent,ef);
 	}
 
-    public PropertyEditor getCellEditor() {
+    public PropertyEditor getVisualPropertyEditor() {
 		return null;
     }
 

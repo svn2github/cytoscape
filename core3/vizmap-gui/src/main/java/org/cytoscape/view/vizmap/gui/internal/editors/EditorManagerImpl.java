@@ -47,7 +47,7 @@ import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
 import org.cytoscape.view.vizmap.gui.editors.EditorManager;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyComboBoxPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 import org.cytoscape.view.model.VisualProperty;
 
 /**
@@ -110,7 +110,7 @@ public class EditorManagerImpl implements EditorManager {
 	 */
 	public Object showDiscreteEditor(Component parentComponent,
 			VisualProperty type) throws Exception {
-		return findEditor(type, EditorDisplayer.MappingType.DISCRETE).showEditor(
+		return findEditor(type, EditorDisplayer.MappingType.DISCRETE).showContinuousMappingEditor(
 				parentComponent, type);
 	}
 
@@ -123,7 +123,7 @@ public class EditorManagerImpl implements EditorManager {
 	 */
 	public Object showContinuousEditor(Component parentComponent,
 			VisualProperty type) throws Exception {
-		return findEditor(type, EditorDisplayer.MappingType.CONTINUOUS).showEditor(
+		return findEditor(type, EditorDisplayer.MappingType.CONTINUOUS).showContinuousMappingEditor(
 				parentComponent, type);
 	}
 
@@ -136,7 +136,7 @@ public class EditorManagerImpl implements EditorManager {
 		List<PropertyEditor> ret = new ArrayList<PropertyEditor>();
 
 		for (EditorDisplayer disp : displayers)
-			ret.add(disp.getCellEditor());
+			ret.add(disp.getVisualPropertyEditor());
 
 		return ret;
 	}
@@ -149,7 +149,7 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.viewmodel.VisualProperty)
 	 */
 	public PropertyEditor getDiscreteCellEditor(VisualProperty type) {
-		return findEditor(type, EditorDisplayer.MappingType.DISCRETE).getCellEditor();
+		return findEditor(type, EditorDisplayer.MappingType.DISCRETE).getVisualPropertyEditor();
 	}
 
 	/*
@@ -173,7 +173,7 @@ public class EditorManagerImpl implements EditorManager {
 	 */
 	public PropertyEditor getContinuousCellEditor(VisualProperty type) {
 		return findEditor(type, EditorDisplayer.MappingType.CONTINUOUS)
-				.getCellEditor();
+				.getVisualPropertyEditor();
 	}
 
 	/*

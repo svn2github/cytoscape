@@ -9,9 +9,9 @@ import java.beans.PropertyEditor;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyFontPropertyEditor;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.FontCellRenderer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.PopupFontChooser;
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.FontCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyFontPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor;
 import org.cytoscape.viewmodel.VisualProperty;
 
 
@@ -34,11 +34,11 @@ public class DiscreteFont implements EditorDisplayer {
 		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualProperty type) {
-		return PopupFontChooser.showDialog(parentComponent, null);
+	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {
+		return FontEditor.showDialog(parentComponent, null);
 	}
 
-    public PropertyEditor getCellEditor() {
+    public PropertyEditor getVisualPropertyEditor() {
 		return fontCellEditor;
     }
 

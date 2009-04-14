@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyStringPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyStringPropertyEditor;
 import org.cytoscape.view.model.VisualProperty;
 
 
@@ -31,11 +31,11 @@ public class DiscreteString implements EditorDisplayer {
 		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualProperty type) {
+	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {
 		return JOptionPane.showInputDialog(parentComponent,"Please enter a new value:");
 	}
 
-    public PropertyEditor getCellEditor() {
+    public PropertyEditor getVisualPropertyEditor() {
 		return stringCellEditor;
     }
 

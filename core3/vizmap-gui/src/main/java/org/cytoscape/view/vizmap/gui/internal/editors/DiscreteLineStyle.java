@@ -9,9 +9,9 @@ import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.view.vizmap.gui.editors.EditorDisplayer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyComboBoxPropertyEditor;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.ShapeCellRenderer;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.ValueSelectDialog;
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ShapeCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.DiscreteValueChooser;
 import org.cytoscape.viewmodel.VisualProperty;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
@@ -34,11 +34,11 @@ public class DiscreteLineStyle implements EditorDisplayer {
 		return EditorDisplayer.MappingType.DISCRETE;
 	}
 
-	public Object showEditor(Component parentComponent, VisualProperty type) {
-		return ValueSelectDialog.showDialog(parentComponent, VisualProperty.EDGE_LINE_STYLE);
+	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty type) {
+		return DiscreteValueChooser.showDialog(parentComponent, VisualProperty.EDGE_LINE_STYLE);
 	}
 
-    public PropertyEditor getCellEditor() {
+    public PropertyEditor getVisualPropertyEditor() {
 		// probably better to do this dynamically
         Icon[] iconArray = new Icon[LineStyle.getIconSet().values().size()];
 		int i = 0;

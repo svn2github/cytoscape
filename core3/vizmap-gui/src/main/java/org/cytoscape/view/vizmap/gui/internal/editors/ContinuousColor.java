@@ -88,7 +88,7 @@ public class ContinuousColor implements EditorDisplayer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object showEditor(Component parentComponent, VisualProperty<?> type) {
+	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty<?> type) {
 		return GradientEditorPanel.showDialog(450, 180, "Gradient Editor", type, parentComponent);
 	}
 
@@ -97,7 +97,7 @@ public class ContinuousColor implements EditorDisplayer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public PropertyEditor getCellEditor() {
+	public PropertyEditor getVisualPropertyEditor() {
 		return null;
 	}
 

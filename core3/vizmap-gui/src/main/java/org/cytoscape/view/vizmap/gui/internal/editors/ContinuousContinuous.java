@@ -27,11 +27,11 @@ public class ContinuousContinuous implements EditorDisplayer {
 		return EditorDisplayer.MappingType.CONTINUOUS;
 	}
 
-	public Object showEditor(Component parentComponent, VisualProperty<?> type) {
+	public Object showContinuousMappingEditor(Component parentComponent, VisualProperty<?> type) {
 		return C2CMappingEditor.showDialog(450, 350,"Continuous Editor for " + type.getName(),type, parentComponent);
 	}
 
-    public PropertyEditor getCellEditor() {
+    public PropertyEditor getVisualPropertyEditor() {
 		return null;
     }
 
