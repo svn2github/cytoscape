@@ -34,9 +34,14 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.NETWORK_BACKGROUND_COLOR;
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.NODE_X_LOCATION;
+import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.NODE_Y_LOCATION;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Paint;
 import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
@@ -47,10 +52,9 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
-import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
-
+import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 
 /**
  * Panel to show the default properties visually (as graphics).
@@ -61,18 +65,18 @@ import org.cytoscape.view.vizmap.VisualStyle;
  */
 public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	private final static long serialVersionUID = 1202339876691085L;
-	
+
 	// Padding around canvas
 	private static final int PADDING = 20;
-	
+
 	// Dummy network view
 	private CyNetworkView view;
-	
+
 	// Dummy network displayed in the canvas
 	private static CyNetwork dummyNet;
-	
+
 	// Background color of canvas
-	private Color background = Color.white;
+	private Paint background = Color.white;
 
 	/*
 	 * Dummy graph components
@@ -80,9 +84,6 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	private CyNode source;
 	private CyNode target;
 	private CyEdge edge;
-	
-	// Rendering engine's canvas.
-	private Component canvas = null;
 
 	// Target visual style to be edited
 	private VisualStyle vs;
@@ -91,24 +92,31 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	private CyNetworkFactory cyNetworkFactory;
 	private CyNetworkViewFactory cyNetworkViewFactory;
 
+	// For setting presentation (rendered canvas) to this panel
+	private PresentationFactory presentationFactory;
+
 	/**
 	 * Creates a new DefaultViewPanel object.
 	 *
-	 * @param cyNetworkFactory  DOCUMENT ME!
-	 * @param cyNetworkViewFactory  DOCUMENT ME!
+	 * @param cyNetworkFactory
+	 *            DOCUMENT ME!
+	 * @param cyNetworkViewFactory
+	 *            DOCUMENT ME!
 	 */
-	public DefaultViewPanelImpl(CyNetworkFactory cyNetworkFactory, CyNetworkViewFactory cyNetworkViewFactory, VisualStyle vs) {
+	public DefaultViewPanelImpl(CyNetworkFactory cyNetworkFactory,
+	                            CyNetworkViewFactory cyNetworkViewFactory, VisualStyle vs) {
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
 		this.cyNetworkFactory = cyNetworkFactory;
 		this.vs = vs;
+
+		// Create dummy network view
 		createDummyNet();
 
-		//TODO: get current BG color from VS
-		//background = this.vmm.getVisualStyle().getGlobalAppearanceCalculator().getDefaultBackgroundColor();
-		
-		this.setBackground(background);
+		// Apply the given visual style to the dummy net
+		this.vs.apply(view);
+		this.setBackground((Color) background);
 	}
-	
+
 	private void createDummyNet() {
 		dummyNet = cyNetworkFactory.getInstance();
 
@@ -123,31 +131,39 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 
 		dummyNet.attrs().set("name", "Default Appearance");
 		view = cyNetworkViewFactory.getNetworkViewFor(dummyNet);
+
+		view.getNodeView(source).setVisualProperty(NODE_X_LOCATION, 0d);
+		view.getNodeView(source).setVisualProperty(NODE_Y_LOCATION, 0d);
+		view.getNodeView(target).setVisualProperty(NODE_X_LOCATION, 150d);
+		view.getNodeView(target).setVisualProperty(NODE_Y_LOCATION, 10d);
+
+		// Set background color
+		background = vs.getDefaultValue(NETWORK_BACKGROUND_COLOR);
+		view.setVisualProperty(NETWORK_BACKGROUND_COLOR, background);
 		
-		view.getNodeView(source).getVisualProperty().setOffset(0, 0);
-		view.getNodeView(target).setOffset(150, 10);
+		// put it in this panel
+		presentationFactory.addPresentation(this, view);
 	}
 
-	protected void updateBackgroungColor(final Color newColor) {
-		background = newColor;
-		this.setBackground(background);
-		repaint();
-	}
-
+	// protected void updateBackgroungColor(final Color newColor) {
+	// background = newColor;
+	// this.setBackground(background);
+	// repaint();
+	// }
 
 	/**
 	 * DOCUMENT ME!
 	 */
 	protected void updateView() {
 		if (view != null) {
-			//vmm.setNetworkView(view);
-			vmm.setVisualStyleForView(view, vmm.getVisualStyle());
-
+			// vmm.setNetworkView(view);
+			// vmm.setVisualStyleForView(view, vmm.getVisualStyle());
 			final Dimension panelSize = this.getSize();
-			view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
-			                           (int) panelSize.getHeight() - PADDING));
+			// view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
+			// (int) panelSize.getHeight() - PADDING));
 			view.fitContent();
-			canvas = view.getComponent();
+			// canvas = view.getComponent();
+			
 
 			for (MouseListener listener : canvas.getMouseListeners())
 				canvas.removeMouseListener(listener);
@@ -156,26 +172,39 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 			this.add(canvas);
 
 			canvas.setLocation(PADDING / 2, PADDING / 2);
-			vmm.applyAppearances();
+			vs.apply(view);
 
-			if ((background != null) && (canvas != null)) {
+			if ((background != null) && (canvas != null))
 				canvas.setBackground(background);
-			}
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewPanel#getView()
+	 */
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
 	 */
 	public CyNetworkView getView() {
 		return view;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewPanel#getRendererComponent()
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.cytoscape.vizmap.gui.internal.DefaultViewPanel#getRendererComponent()
+	 */
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
 	 */
 	public Component getRendererComponent() {
 		return canvas;
 	}
-	
 }

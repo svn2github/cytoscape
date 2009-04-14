@@ -37,7 +37,7 @@ public class EditorWindowManager {
 		if (status.equals(EditorManager.EDITOR_WINDOW_OPENED)) {
 			this.editorWindowMap.put(vpt, (JDialog) source);
 		} else if (status.equals(EditorManager.EDITOR_WINDOW_CLOSED)) {
-			final VisualProperty type = vpt;
+			final VisualProperty<?> type = vpt;
 
 			/*
 			 * Update icon
@@ -64,7 +64,7 @@ public class EditorWindowManager {
 			for (Property prop : subProps) {
 				name = prop.getName();
 
-				if ((name != null) && name.equals(type.getName())) {
+				if ((name != null) && name.equals(type.getHumanName())) {
 					vprop = (VizMapperProperty) prop;
 
 					break;

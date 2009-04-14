@@ -16,7 +16,7 @@ import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.ColumnDeletedListener;
 import org.cytoscape.model.events.RowSetEvent;
 import org.cytoscape.model.events.RowSetListener;
-import org.cytoscape.view.vizmap.gui.internal.editors.discrete.CyComboBoxPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
 import cytoscape.CyNetworkManager;
 

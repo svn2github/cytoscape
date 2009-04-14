@@ -8,20 +8,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.annotation.Resource;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphObject;
+import org.cytoscape.view.vizmap.MappingCalculator;
 import org.cytoscape.view.vizmap.gui.editors.EditorManager;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.MappingCalculator;
-import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
+import org.cytoscape.view.model.VisualProperty;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -32,30 +27,24 @@ import cytoscape.CyNetworkManager;
 
 public class VizMapPropertyBuilder {
 
-	@Resource
 	private PropertyRendererRegistry rendReg;
-	@Resource
 	private PropertyEditorRegistry editorReg;
 
-	@Resource
 	private DefaultTableCellRenderer emptyBoxRenderer;
-	@Resource
 	private DefaultTableCellRenderer filledBoxRenderer;
 
-	@Resource
 	private EditorManager editorFactory;
 	
-	@Resource
 	private CyNetworkManager cyNetworkManager;
 
 	/*
 	 * Build one property for one visual property.
 	 */
-	public void buildProperty(final Calculator calc,
+	public void buildProperty(final MappingCalculator calc,
 			final VizMapperProperty calculatorTypeProp, final String rootCategory,
 			final PropertySheetPanel propertySheetPanel) {
 		
-		final VisualProperty type = calc.getVisualProperty();
+		final VisualProperty<?> type = calc.getVisualProperty();
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 		/*
 		 * Set one calculator
