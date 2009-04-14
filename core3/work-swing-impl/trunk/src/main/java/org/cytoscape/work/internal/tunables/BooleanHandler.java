@@ -17,12 +17,11 @@ import org.cytoscape.work.Tunable.Param;
 public class BooleanHandler extends AbstractGuiHandler {
 
 	private JCheckBox jcb;
-	Boolean myBoolean;
+	private Boolean myBoolean;
 	private boolean horizontal=false;
 	
 	protected BooleanHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-	
 		try{
 			this.myBoolean = (Boolean) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
@@ -48,11 +47,19 @@ public class BooleanHandler extends AbstractGuiHandler {
 
 	public void handle() {
 		try {
-		f.set(o,jcb.isSelected());
+			f.set(o,jcb.isSelected());
 		} catch (Exception e) {e.printStackTrace();}
 	}
 	
+	public void resetValue(){
+		System.out.println("#########Value will be reset to initial value = "+myBoolean + "#########");
+		try{
+			f.set(o,myBoolean);
+		}catch(Exception e){e.printStackTrace();}
+	}
 
+	
+	
 	public String getState() {
 		String s;
 		try {

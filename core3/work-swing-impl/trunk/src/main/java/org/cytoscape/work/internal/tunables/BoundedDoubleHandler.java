@@ -15,28 +15,30 @@ import java.lang.reflect.Field;
 
 public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandler {
 	
-	BoundedDouble myBounded;
-	String title;
-	boolean useslider=false;
-	mySlider slider;
-	myBoundedSwing boundedField;
+	private BoundedDouble myBounded;
+	private Double initValue;
+	private String title;
+	private	boolean useslider=false;
+	private mySlider slider;
+	private myBoundedSwing boundedField;
 	
 	protected BoundedDoubleHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
 			this.myBounded = (BoundedDouble)f.get(o);
-			} catch (IllegalAccessException iae) {
-				iae.printStackTrace();}
+		} catch (IllegalAccessException iae){iae.printStackTrace();}
+
+		this.initValue = myBounded.getValue();
 		this.title = t.description();
-		for ( Param s : t.flag())if(s.equals(Param.slider))useslider=true;
-		
+		for ( Param s : t.flag())if(s.equals(Param.slider))useslider=true;		
 		panel = new JPanel(new BorderLayout());
 		if(useslider){
 			JLabel label = new JLabel(title);
 			label.setFont(new Font(null, Font.PLAIN,12));
 			panel.add(label,BorderLayout.WEST);
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			//slider.addChangeListener(this);
+			// Add ChangeListener????????
+			slider.addChangeListener(this);
 			panel.add(slider,BorderLayout.EAST);
 		}
 		else{
@@ -50,13 +52,20 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 	
 	
 	public void handle() {
-    	if(useslider==true){
-    		myBounded.setValue(slider.getValue().doubleValue());
-    	}
-    	else{
-    		myBounded.setValue(boundedField.getFieldValue().doubleValue());
-    	}
+		if(useslider==true){
+			myBounded.setValue(slider.getValue().doubleValue());
+		}
+		else{
+			myBounded.setValue(boundedField.getFieldValue().doubleValue());
+		}
 	}
+	
+	
+	public void resetValue(){
+		System.out.println("#########Value will be reset to initial value = " + initValue + "#########");
+		myBounded.setValue(initValue);
+	}
+
 	
 	public String getState() {
 		return myBounded.getValue().toString();

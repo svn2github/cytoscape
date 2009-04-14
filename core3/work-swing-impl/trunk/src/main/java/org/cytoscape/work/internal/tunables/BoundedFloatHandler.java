@@ -17,30 +17,29 @@ import java.lang.reflect.*;
 
 public class BoundedFloatHandler extends AbstractGuiHandler implements Guihandler ,ActionListener{
 
-	JTextField jtf;
-	BoundedFloat myBounded;
-	String title;
-	Boolean useslider=false;
-	mySlider slider;
-	myBoundedSwing boundedField;
-	String newline = System.getProperty("line.separator");
-	Double value=null;
+	private BoundedFloat myBounded;
+	private String title;
+	private boolean useslider=false;
+	private mySlider slider;
+	private myBoundedSwing boundedField;
+	private float initValue;
 	
 	protected BoundedFloatHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
 			this.myBounded = (BoundedFloat)f.get(o);
-			} catch (IllegalAccessException iae) {
-				iae.printStackTrace();}
+		} catch (IllegalAccessException iae) {iae.printStackTrace();}
+		
+		this.initValue = myBounded.getValue().floatValue();
 		this.title = t.description();
 		for ( Param s : t.flag())if(s.equals(Param.slider))useslider=true;
-		
 		panel = new JPanel(new BorderLayout());
 		if(useslider){
 			JLabel label = new JLabel(title);
 			label.setFont(new Font(null, Font.PLAIN,12));
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			//slider.addChangeListener(this);
+			// Add Change Listener????
+			slider.addChangeListener(this);
 			panel.add(label,BorderLayout.WEST);
 			panel.add(slider,BorderLayout.EAST);
 		}
@@ -62,7 +61,13 @@ public class BoundedFloatHandler extends AbstractGuiHandler implements Guihandle
     	}
 	}
 
+	
+	public void resetValue(){
+		System.out.println("#########Value will be reset to initial value = "+ initValue + "#########");
+		myBounded.setValue(initValue);
+	}
 
+	
     public String getState() {
         return myBounded.getValue().toString();
     }

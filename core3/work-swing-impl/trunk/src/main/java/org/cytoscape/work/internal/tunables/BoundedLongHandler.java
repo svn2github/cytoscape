@@ -17,18 +17,20 @@ import java.lang.reflect.*;
 
 public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler ,ActionListener{
 
-	BoundedLong myBounded;
-	String title;
-	Boolean useslider=false;
-	mySlider slider;
-	myBoundedSwing boundedField;
+	private BoundedLong myBounded;
+	private String title;
+	private boolean useslider=false;
+	private mySlider slider;
+	private myBoundedSwing boundedField;
+	private long initValue;
 	
 	protected BoundedLongHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
 			this.myBounded = (BoundedLong)f.get(o);
-			} catch (IllegalAccessException iae) {
-				iae.printStackTrace();}
+		} catch (IllegalAccessException iae) {iae.printStackTrace();}
+
+		this.initValue = myBounded.getValue().longValue();
 		this.title = t.description();
 		for ( Param s : t.flag())if(s.equals(Param.slider))useslider=true;
 		
@@ -38,6 +40,8 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
 			label.setFont(new Font(null, Font.PLAIN,12));
 			panel.add(label,BorderLayout.WEST);
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
+			//Add ChangeListener???
+			slider.addChangeListener(this);
 			panel.add(slider,BorderLayout.EAST);
 		}
 		else{
@@ -58,6 +62,12 @@ public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler
     		myBounded.setValue(boundedField.getFieldValue().longValue());
     	}
 	}
+	
+	public void resetValue(){
+		System.out.println("#########Value will be reset to initial value = "+initValue + "#########");
+		myBounded.setValue(initValue);
+	}
+	
 	
     public String getState() {
         return myBounded.getValue().toString();

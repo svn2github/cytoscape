@@ -16,18 +16,20 @@ import java.lang.reflect.*;
 
 public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihandler ,ActionListener{
 
-	BoundedInteger myBounded;
-	String title;
-	Boolean useslider=false;
-	mySlider slider;
-	myBoundedSwing boundedField;
+	private BoundedInteger myBounded;
+	private String title;
+	private boolean useslider=false;
+	private mySlider slider;
+	private myBoundedSwing boundedField;
+	private integer initValue;
 	
 	protected BoundedIntegerHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {
 			this.myBounded = (BoundedInteger)f.get(o);
-			} catch (IllegalAccessException iae) {
-				iae.printStackTrace();}
+		} catch (IllegalAccessException iae) {iae.printStackTrace();}
+		
+		this.initValue = myBounded.getValue().intValue();
 		this.title = t.description();
 		for ( Param s : t.flag())if(s.equals(Param.slider))useslider=true;
 		
@@ -37,7 +39,8 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
 			label.setFont(new Font(null, Font.PLAIN,12));
 			panel.add(label,BorderLayout.WEST);
 			slider = new mySlider(title,myBounded.getLowerBound(),myBounded.getUpperBound(),myBounded.getValue(),myBounded.isLowerBoundStrict(),myBounded.isUpperBoundStrict());
-			//slider.addChangeListener(this);
+			//Add ChangeListener??
+			slider.addChangeListener(this);
 			panel.add(slider,BorderLayout.EAST);
 		}
 		else{
@@ -58,7 +61,12 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
     	}
 	}
     
+	public void resetValue(){
+		System.out.println("#########Value will be reset to initial value = "+initValue + "#########");
+		myBounded.setValue(initValue);
+	}
 
+	
     public String getState() {
         return myBounded.getValue().toString();
     }

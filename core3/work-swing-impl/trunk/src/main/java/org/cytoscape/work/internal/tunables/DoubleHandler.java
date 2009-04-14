@@ -12,18 +12,19 @@ import org.cytoscape.work.Tunable.Param;
 public class DoubleHandler extends AbstractGuiHandler {
 
 	private JTextField jtf;
-	Double value = null;
-	private Double myDouble;
+	private Double value;
 	private String newline = System.getProperty("line.separator");
 	private boolean horizontal=false;
-	
+	private double initValue;
 
 	protected DoubleHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
-			this.myDouble=(Double)f.get(o);
-			jtf = new JTextField(f.get(o).toString(), 10);
+			this.value = (Double) f.get(o);
 		}catch(Exception e){e.printStackTrace();}
+
+		initValue = value.doubleValue();
+		jtf = new JTextField(value.toString(), 10);
 		panel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel(t.description());
 		label.setFont(new Font(null, Font.PLAIN,12));
@@ -58,6 +59,13 @@ public class DoubleHandler extends AbstractGuiHandler {
 		}
 		try {
 			f.set(o,value.doubleValue());
+		} catch (Exception e) { e.printStackTrace();}
+	}
+
+	public void resetValue(){
+		System.out.println("#########Value will be reset to initial value = "+initValue + "#########");
+		try {
+			f.set(o,initValue);
 		} catch (Exception e) { e.printStackTrace();}
 	}
 
