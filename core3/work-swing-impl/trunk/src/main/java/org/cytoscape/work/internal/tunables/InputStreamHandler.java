@@ -96,6 +96,18 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	}
 
 
+	public void resetValue(){
+		try{
+			f.set(o, null);
+			if(localRadioButton.isSelected()){
+				System.out.println("#########Value will be reset to initial value = "+ ((FileInputStream) f.get(o)).toString()+ "#########");
+			}
+			else if(remoteRadioButton.isSelected()){
+				System.out.println("#########Value will be reset to initial value = "+ ((URL) f.get(o)).getPath()+ "#########");				
+			}
+		}catch(Exception e){e.printStackTrace();}
+	}
+	
 	
 	
     public String getState() {

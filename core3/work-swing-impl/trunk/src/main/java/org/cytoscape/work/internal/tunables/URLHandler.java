@@ -3,6 +3,7 @@ package org.cytoscape.work.internal.tunables;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -107,7 +108,13 @@ public class URLHandler extends AbstractGuiHandler {
 		}catch (Exception e){}
 	}
 
-
+	
+	public void resetValue(){
+		try{
+			f.set(o, null);
+			System.out.println("#########Value will be reset to initial value = "+ ((URL) f.get(o)).getPath()+ "#########");				
+		}catch(Exception e){e.printStackTrace();}
+	}
 	
     public String getState() {
 		String s = null;

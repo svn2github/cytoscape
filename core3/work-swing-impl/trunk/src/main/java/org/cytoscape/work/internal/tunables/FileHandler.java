@@ -147,6 +147,13 @@ public class FileHandler extends AbstractGuiHandler {
 		}catch(Exception e){e.printStackTrace();}
 	}
 
+
+	public void resetValue() {
+		try{
+			f.set(o, null);
+			System.out.println("#########Value will be reset to initial value = "+ ((File) f.get(o)).getCanonicalPath()+ "#########");
+		}catch(Exception e){e.printStackTrace();}
+	} 
 	
     public String getState() {
 		String s;
@@ -247,5 +254,6 @@ public class FileHandler extends AbstractGuiHandler {
 	    public String[] getExtensions() {
 	        return extensions;
 	    }
-    } 
+    }
+
 }

@@ -48,6 +48,15 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
         }
 	}
 
+	
+	public void resetValue() {
+		lss.setSelectedValue(null);
+		try{
+			f.set(o,lss);
+		}catch(Exception e){e.printStackTrace();}
+		System.out.println("#########Value will be reset to initial value = " + lss.getSelectedValue() + "#########");
+	}
+	
 	public String getState() {
 		selected = (T) combobox.getSelectedItem();	
         if(selected!=null)

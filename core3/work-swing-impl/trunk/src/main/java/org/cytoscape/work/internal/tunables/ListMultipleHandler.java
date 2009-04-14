@@ -57,6 +57,15 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 	}
 	
 	
+	public void resetValue() {
+		lms.setSelectedValues(null);
+		try{
+			f.set(o,lms);
+		}catch(Exception e){e.printStackTrace();}
+		System.out.println("#########Value will be reset to initial value = " + lms.getSelectedValues() + "#########");
+	}
+	
+	
 	private List<T> convertToArray(Object[] in){
 		List<T> list = new ArrayList<T>();
 		if(in.length!=0){

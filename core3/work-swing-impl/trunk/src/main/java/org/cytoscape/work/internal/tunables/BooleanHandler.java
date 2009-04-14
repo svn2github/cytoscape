@@ -52,7 +52,7 @@ public class BooleanHandler extends AbstractGuiHandler {
 	}
 	
 	public void resetValue(){
-		System.out.println("#########Value will be reset to initial value = "+myBoolean + "#########");
+		System.out.println("#########Value will be reset to initial value = "+ myBoolean + "#########");
 		try{
 			f.set(o,myBoolean);
 		}catch(Exception e){e.printStackTrace();}
