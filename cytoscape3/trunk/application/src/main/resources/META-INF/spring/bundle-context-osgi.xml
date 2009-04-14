@@ -107,10 +107,6 @@
 		<!--
 	<osgi:service id="alphabeticalSelectionActionService" ref="alphabeticalSelectionAction"
 		interface="cytoscape.util.CyAction" />
-		-->
-	<osgi:service id="listFromFileSelectionActionService" ref="listFromFileSelectionAction"
-		interface="cytoscape.util.CyAction" />
-		<!--
 	<osgi:service id="bendSelectedEdgesActionService" ref="bendSelectedEdgesAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="straightenSelectedEdgesActionService"
