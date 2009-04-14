@@ -1,4 +1,4 @@
-package browser;
+package org.genmapp.genefinder;
 
 import java.awt.event.KeyEvent;
 

@@ -1,4 +1,6 @@
-package browser;
+package org.genmapp.genefinder;
+
+import giny.filter.Filter;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -20,17 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.data.FlagEvent;
-import cytoscape.data.FlagEventListener;
-import cytoscape.view.CyNetworkView;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
 import cytoscape.view.CytoscapeDesktop;
-import filter.model.Filter;
-import filter.model.FilterManager;
 
 public class FinderPanel extends JPanel implements PropertyChangeListener,
-		ActionListener, FlagEventListener {
+		ActionListener, SelectEventListener {
 	public static int NODES = 0;
 	public static int EDGES = 1;
 	int graphObjectType;
@@ -78,17 +76,17 @@ public class FinderPanel extends JPanel implements PropertyChangeListener,
 
 	}
 
-	public void onFlagEvent(FlagEvent event) {
+	public void onFlagEvent(SelectEvent event) {
 		if (mirrorSelection.isSelected()) {
 			if (graphObjectType == NODES
-					&& (event.getTargetType() == FlagEvent.SINGLE_NODE || event
-							.getTargetType() == FlagEvent.NODE_SET)) {
+					&& (event.getTargetType() == SelectEvent.SINGLE_NODE || event
+							.getTargetType() == SelectEvent.NODE_SET)) {
 				// node selection
 				tableModel.setTableDataObjects(new ArrayList(Cytoscape
 						.getCurrentNetwork().getFlaggedNodes()));
 			} else if (graphObjectType == EDGES
-					&& (event.getTargetType() == FlagEvent.SINGLE_EDGE || event
-							.getTargetType() == FlagEvent.EDGE_SET)) {
+					&& (event.getTargetType() == SelectEvent.SINGLE_EDGE || event
+							.getTargetType() == SelectEvent.EDGE_SET)) {
 				// edge selection
 				tableModel.setTableDataObjects(new ArrayList(Cytoscape
 						.getCurrentNetwork().getFlaggedEdges()));

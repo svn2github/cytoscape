@@ -1,47 +1,35 @@
-package browser;
+package org.genmapp.genefinder;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.data.FlagEvent;
-import cytoscape.data.FlagEventListener;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-import filter.model.Filter;
-import filter.model.FilterManager;
+import cytoscape.data.SelectEvent;
+import cytoscape.data.SelectEventListener;
 
 public class FinderPanel2 extends JPanel implements PropertyChangeListener,
-		ActionListener, FlagEventListener {
+		ActionListener, SelectEventListener {
 	public static int NODES = 0;
 	public static int EDGES = 1;
 	int graphObjectType;
 	JComboBox mycomboBox;
 	JButton mybutton;
-	DataTableModel2 tableModel;
+	DataTableModel tableModel;
 	Map titleIdMap;
 
 	CyNetwork current_network;
 
-	public FinderPanel2(DataTableModel2 tableModel, int graphObjectType) {
+	public FinderPanel2(DataTableModel tableModel, int graphObjectType) {
 
 		this.tableModel = tableModel;
 		this.graphObjectType = graphObjectType;
@@ -52,12 +40,12 @@ public class FinderPanel2 extends JPanel implements PropertyChangeListener,
 		mycomboBox.setEditable(true);
 		
 		mybutton = new JButton("Search");
-	    button.addActionListener(new ActionListener(  )) {
+	    mybutton.addActionListener(new ActionListener() {
 	      public void actionPerformed(ActionEvent ae) {
 	    	  System.out.println("Searching for Gene in Database");
 	      }
 	        
-	      }
+	      });
 
 		setBorder(new TitledBorder("Gene Finder"));
 		add(new JLabel("Gene ID System: "));
@@ -68,7 +56,7 @@ public class FinderPanel2 extends JPanel implements PropertyChangeListener,
 
 	}
 	
-	public void onFlagEvent(FlagEvent event) {
+	public void onSelectEvent(SelectEvent event) {
 		System.out.println("Searching for Gene in Database");
 	}
 
@@ -82,6 +70,7 @@ public class FinderPanel2 extends JPanel implements PropertyChangeListener,
 	public void propertyChange(PropertyChangeEvent e) {
 		System.out.println("Searching for Gene in Database");
 		}
+
 
 
 

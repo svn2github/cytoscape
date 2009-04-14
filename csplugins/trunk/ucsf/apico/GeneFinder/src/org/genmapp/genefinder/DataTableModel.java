@@ -1,4 +1,4 @@
-package browser;
+package org.genmapp.genefinder;
 
 import giny.model.GraphObject;
 

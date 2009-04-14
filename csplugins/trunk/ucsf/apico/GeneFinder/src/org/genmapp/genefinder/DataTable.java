@@ -1,4 +1,4 @@
-package browser;
+package org.genmapp.genefinder;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -214,10 +214,10 @@ public class DataTable {
 	private List getFlaggedGraphObjects() {
 		if (graphObjectType == NODES)
 			return new ArrayList(Cytoscape.getCurrentNetwork()
-					.getFlaggedNodes());
+					.getSelectedNodes());
 		else
 			return new ArrayList(Cytoscape.getCurrentNetwork()
-					.getFlaggedEdges());
+					.getSelectedEdges());
 	}
 
 	public static void main(String[] args) {

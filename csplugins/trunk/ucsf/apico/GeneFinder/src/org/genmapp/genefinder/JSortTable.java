@@ -1,27 +1,4 @@
-/*
- * $Archive: SourceJammer$
- * $FileName: JSortTable.java$
- * $FileID: 3984$
- *
- * Last change:
- * $AuthorName: Timo Haberkern$
- * $Date: 2005/12/13 00:42:44 $
- * $Comment: $
- *
- * $KeyWordsOff: $
- */
-/*
- =====================================================================
-
- JSortTable.java
-
- Created by Claude Duguay
- Copyright (c) 2002
-
- =====================================================================
- */
-
-package browser;
+package org.genmapp.genefinder;
 
 import giny.model.GraphObject;
 
