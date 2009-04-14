@@ -177,6 +177,40 @@
 		<constructor-arg ref="visualMappingManagerServiceRef" />
 	</bean>
 
+	<!-- destruction -->
+	<bean id="destroyNetworkTaskFactory" 
+	      class="org.cytoscape.task.internal.destruction.DestroyNetworkTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="destroyNetworkViewTaskFactory" 
+	      class="org.cytoscape.task.internal.destruction.DestroyNetworkViewTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<!-- zoom -->
+	<bean id="zoomInTaskFactory" 
+	      class="org.cytoscape.task.internal.zoom.ZoomInTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="zoomOutTaskFactory" 
+	      class="org.cytoscape.task.internal.zoom.ZoomOutTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="fitSelectedTaskFactory" 
+	      class="org.cytoscape.task.internal.zoom.FitSelectedTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<bean id="fitContentTaskFactory" 
+	      class="org.cytoscape.task.internal.zoom.FitContentTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+
+
 	<!-- Off until session stuff is implemented
 	<bean id="newSessionTaskFactory" 
 	      class="org.cytoscape.task.internal.session.newSessionTaskFactory">

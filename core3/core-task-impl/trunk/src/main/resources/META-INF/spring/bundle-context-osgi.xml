@@ -315,6 +315,97 @@
 			-->
 		</osgi:service-properties>
 	</osgi:service>
+
+	<!-- destruction --> 
+	<osgi:service id="destroyNetworkTaskFactoryService" 
+	    ref="destroyNetworkTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Destroy Network" />
+			<entry key="preferredMenu" value="Edit" />
+			<entry key="enable" value="forNetwork" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_W, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK
+			-->
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="destroyNetworkViewTaskFactoryService" 
+	    ref="destroyNetworkViewTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Destroy View" />
+			<entry key="preferredMenu" value="Edit" />
+			<entry key="enable" value="forNetworkAndView" />
+			<!--
+			<entry key="acceleratorCombo" 
+			java.awt.event.KeyEvent.VK_W, ActionEvent.CTRL_MASK
+			-->
+		</osgi:service-properties>
+	</osgi:service>
+
+	<!-- zoom --> 
+	<osgi:service id="zoomInTaskFactoryService" 
+	    ref="zoomInTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="preferredButtonGroup" value="c-zoom" />
+			<entry key="tooltip" value="Zoom In" />
+			<entry key="enable" value="forNetworkAndView" />
+			<entry key="inToolBar" value="true" />
+			<!--
+			<entry key="icon" 
+			/images/ximian/stock_zoom-in.png
+			-->
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="zoomOutTaskFactoryService" 
+	    ref="zoomOutTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="preferredButtonGroup" value="c-zoom" />
+			<entry key="tooltip" value="Zoom Out" />
+			<entry key="enable" value="forNetworkAndView" />
+			<entry key="inToolBar" value="true" />
+			<!--
+			<entry key="icon" 
+			/images/ximian/stock_zoom-out.png
+			-->
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="fitSelectedTaskFactoryService" 
+	    ref="fitSelectedTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="preferredButtonGroup" value="c-zoom" />
+			<entry key="tooltip" value="Zoom selected region" />
+			<entry key="enable" value="forNetworkAndView" />
+			<entry key="inToolBar" value="true" />
+			<!--
+			<entry key="icon" 
+			/images/ximian/stock_zoom-object.png
+			-->
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="fitContentTaskFactoryService" 
+	    ref="fitContentTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="preferredButtonGroup" value="c-zoom" />
+			<entry key="tooltip" value="Zoom out to display all of current Network" />
+			<entry key="enable" value="forNetworkAndView" />
+			<entry key="inToolBar" value="true" />
+			<!--
+			<entry key="icon" 
+			/images/ximian/stock_zoom-1.png	
+			-->
+		</osgi:service-properties>
+	</osgi:service>
+
 	<!--
 		<osgi:service id="newSessionTaskFactoryService"
 		ref="newSessionTaskFactory"
