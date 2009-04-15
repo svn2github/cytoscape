@@ -98,8 +98,6 @@
 	<osgi:service id="showGraphicsDetailsActionService" ref="showGraphicsDetailsAction"
 		interface="cytoscape.util.CyAction" />
 		-->
-	<osgi:service id="setVisualPropertiesActionService" ref="setVisualPropertiesAction"
-		interface="cytoscape.util.CyAction" />
 	<osgi:service id="settingsActionService" ref="settingsAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="helpContentsActionService" ref="helpContentsAction"

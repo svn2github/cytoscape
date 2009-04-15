@@ -242,14 +242,19 @@ public class CytoscapeMenus implements CyMenus {
 	}
 
 	public void addTaskFactory(TaskFactory factory, Map props) {
-		System.out.println("addTaskFactory called");
-		CyAction action = new TaskTunableAction(taskManager, interceptor, factory, props, netManager);
-		taskMap.put(factory,action);
-		addAction( action );
+		//System.out.println("addTaskFactory called");
+		try {
+			CyAction action = new TaskTunableAction(taskManager, interceptor, factory, props, netManager);
+			taskMap.put(factory,action);
+			addAction( action );
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Exception constructing TaskTunableAction");
+		}
 	}
 
 	public void removeTaskFactory(TaskFactory factory, Map props) {
-		System.out.println("removeTaskFactory called");
+		//System.out.println("removeTaskFactory called");
 		CyAction action = taskMap.remove(factory);
 		if ( action != null ) {
 			if (action.isInMenuBar()) {

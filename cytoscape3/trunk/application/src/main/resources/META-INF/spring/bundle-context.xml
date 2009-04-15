@@ -180,10 +180,6 @@
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
 	-->
-	<bean id="setVisualPropertiesAction" class="cytoscape.actions.SetVisualPropertiesAction">
-		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="networkManager" />
-	</bean>
 	<!-- not a CyAction, but adds menu -->
 	<bean id="layoutMenuManager" class="cytoscape.internal.layout.ui.LayoutMenuManager">
 		<constructor-arg ref="cytoscapeMenus" />

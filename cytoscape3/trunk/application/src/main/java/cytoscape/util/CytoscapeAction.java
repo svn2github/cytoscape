@@ -38,6 +38,8 @@ package cytoscape.util;
 
 import cytoscape.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.CyNetworkView;
 
 import javax.swing.*;
@@ -62,15 +64,8 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	protected String consoleName;
 	protected boolean useCheckBoxMenuItem = false;
 	protected CyNetworkManager netmgr;
-
-	/**
-	 * @beaninfo (rwb)
-	 */
-	public CytoscapeAction(CyNetworkManager netmgr) {
-		super();
-		this.netmgr = netmgr;
-		initialize();
-	}
+	protected boolean inToolBar = false;
+	protected String enableFor = null;
 
 	/**
 	 * Creates a new CytoscapeAction object.
@@ -82,44 +77,44 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 		this.consoleName = name;
 		this.netmgr = netmgr;
 		consoleName = consoleName.replaceAll(":. \'", "");
-		initialize();
 	}
 
 	public CytoscapeAction(Map configProps, CyNetworkManager netmgr) {
-		super((String)(configProps.get("title")));
-		this.consoleName = (String)(configProps.get("title"));
-		setPreferredMenu((String)(configProps.get("preferredMenu")));
+
+		this((String)(configProps.get("title")), netmgr);
+
+		String prefMenu = (String)(configProps.get("preferredMenu"));
+		if ( prefMenu != null )
+			setPreferredMenu(prefMenu);
+
+		String prefButtonGroup = (String)(configProps.get("preferredButtonGroup"));
+		if ( prefButtonGroup != null ) 
+			setPreferredButtonGroup(prefButtonGroup);
+
+		String iconName = (String)(configProps.get("iconName"));
+		if ( iconName != null ) 
+			putValue(SMALL_ICON,new ImageIcon(getClass().getResource(iconName)));
+		
+		String tooltip = (String)(configProps.get("tooltip"));
+		if ( tooltip != null )
+			putValue(SHORT_DESCRIPTION,tooltip);
+		
+		String foundInToolBar = (String)(configProps.get("inToolBar"));
+		if ( foundInToolBar != null )
+		 	inToolBar = true;
+
+		enableFor = (String)(configProps.get("enableFor"));
+
 		String keyComboString = (String) configProps.get("keyCombo");
-		if (keyComboString != null)
-		{
+		if (keyComboString != null) {
 			KeyStroke keyStroke = KeyStroke.getKeyStroke(keyComboString);
-			if (keyStroke != null)
-			{
+			if (keyStroke != null) {
 				int commandModifier = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 				this.keyCode = keyStroke.getKeyCode();
 				this.keyModifiers = commandModifier | keyStroke.getModifiers();
 				acceleratorSet = true;
-			}
-			else
-				System.out.println(String.format("Warning: The action \'%s\' has specified the following invalid key combination: %s", consoleName, keyComboString));
+			} 
 		}
-		this.netmgr = netmgr;
-		consoleName = consoleName.replaceAll(":. \'", "");
-		initialize();
-	}
-
-	/**
-	 * Creates a new CytoscapeAction object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 * @param icon  DOCUMENT ME!
-	 */
-	public CytoscapeAction(String name, javax.swing.Icon icon, CyNetworkManager netmgr) {
-		super(name, icon);
-		this.consoleName = name;
-		this.netmgr = netmgr;
-		consoleName = consoleName.replaceAll(" ", "");
-		initialize();
 	}
 
 	/**
@@ -175,13 +170,6 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	public abstract void actionPerformed(ActionEvent e);
 
 	/**
-	 * Initialization method called by all constructors. Envelop if you wish.
-	 */
-	protected void initialize() {
-		// Do nothing.
-	}
-
-	/**
 	 * The default clone() implementation delegates to the create() method of
 	 * DataTypeUtilities.getDataTypeFactory( this.getClass() ). Override if your
 	 * CytoscapeAction maintains state that must be transmitted to the clone.
@@ -213,7 +201,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * @beaninfo (ri)
 	 */
 	public boolean isInToolBar() {
-		return false;
+		return inToolBar;
 	}
 
 	/**
@@ -291,15 +279,8 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * @beaninfo (rwb)
 	 */
 	public void setPreferredMenu(String new_preferred) {
-		if ((preferredMenu == new_preferred)
-		    || ((preferredMenu != null) && preferredMenu.equals(new_preferred))) {
-			return;
-		}
-
-		String old_preferred = preferredMenu;
 		preferredMenu = new_preferred;
-		firePropertyChange("preferredMenu", old_preferred, new_preferred);
-	} // setPreferredMenu( String )
+	} 
 
 	/**
 	 * This method returns a ButtonGroup specification string. Subgroups are
@@ -319,14 +300,8 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * @beaninfo (rwb)
 	 */
 	public void setPreferredButtonGroup(String new_preferred) {
-		if (preferredButtonGroup.equals(new_preferred)) {
-			return;
-		}
-
-		String old_preferred = preferredButtonGroup;
 		preferredButtonGroup = new_preferred;
-		firePropertyChange("preferredButtonGroup", old_preferred, new_preferred);
-	} // setPreferredButtonGroup( String )
+	} 
 
 	/**
 	 * Indicates whether a check box menu item should be used instead of a normal one.
@@ -355,7 +330,16 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * this method does nothing.
 	 * @param e The triggering event.
 	 */
-    public void menuSelected(MenuEvent e) {}
+    public void menuSelected(MenuEvent e) {
+		if ( enableFor == null || enableFor.equals("") )
+			setEnabled(true);
+		else if ( enableFor.equals("network") ) 
+			enableForNetwork();
+		else if ( enableFor.equals("networkAndView") ) 
+			enableForNetworkAndView();
+		else if ( enableFor.equals("selectedNetworkObjs") ) 
+			enableForSelectedNetworkObjs();
+	}
 
 	//
 	// The following methods are utility methods that that enable or disable 
@@ -392,5 +376,28 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 			setEnabled(false);
 		else
 			setEnabled(true);
+	}
+
+	protected void enableForSelectedNetworkObjs() {
+		CyNetwork n = netmgr.getCurrentNetwork();
+
+		if ( n == null ) {
+			setEnabled(false);
+			return;
+		}
+
+		for ( CyNode node : n.getNodeList() ) {
+			if ( node.attrs().get("selected",Boolean.class) ) {
+				setEnabled(true);
+				return;
+			}
+		}
+		for ( CyEdge edge : n.getEdgeList() ) {
+			if ( edge.attrs().get("selected",Boolean.class) ) {
+				setEnabled(true);
+				return;
+			}
+		}
+		setEnabled(false);
 	}
 } 

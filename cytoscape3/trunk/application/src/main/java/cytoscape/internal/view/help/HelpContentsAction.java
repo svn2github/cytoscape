@@ -58,7 +58,7 @@ public class HelpContentsAction extends CytoscapeAction {
 	 * Creates a new HelpContentsAction object.
 	 */
 	public HelpContentsAction(CyNetworkManager netmgr, CyHelpBroker help) {
-		super("Contents...",new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_help.png")),netmgr);
+		super("Contents...",/*new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_help.png")),*/netmgr);
 		setPreferredMenu("Help");
 		setAcceleratorCombo(KeyEvent.VK_F1, 0);
 		putValue(SHORT_DESCRIPTION,"Help");
