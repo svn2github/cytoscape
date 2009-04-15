@@ -72,6 +72,8 @@ public class InstallDetailsPage extends WizardPage {
 		this.profileId = profileId;
 		this.manager = manager;
 		
+		this.putWizardData("profileId",this.profileId);
+		
 		initComponents();		
 		 
 		initRepoTree();
@@ -264,6 +266,8 @@ public class InstallDetailsPage extends WizardPage {
     				}
     				updateStatus();
     				updateSizeInfo();
+    				InstallDetailsPage.this.putWizardData("resolutionResult",resolutionResult);
+    				InstallDetailsPage.this.putWizardData("resolvedOperation",resolvedOperation);
     			}
     		};
 
