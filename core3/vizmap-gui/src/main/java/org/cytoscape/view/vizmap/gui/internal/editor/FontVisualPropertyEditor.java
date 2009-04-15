@@ -11,7 +11,7 @@ import javax.swing.table.TableCellRenderer;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.FontCellRenderer;
-import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2DMappingEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.mapping.C2DMappingEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyFontPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor;
 
