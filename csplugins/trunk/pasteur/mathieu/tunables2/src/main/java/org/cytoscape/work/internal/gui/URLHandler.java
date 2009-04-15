@@ -180,6 +180,12 @@ public class URLHandler extends AbstractGuiHandler {
 			return this;
 		}
 	} // MyCellRenderer
+
+	@Override
+	public void resetValue() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }

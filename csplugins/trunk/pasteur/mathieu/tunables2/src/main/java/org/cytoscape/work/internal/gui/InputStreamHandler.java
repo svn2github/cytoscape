@@ -324,6 +324,12 @@ public class InputStreamHandler extends AbstractGuiHandler {
 			return this;
 		}
 	}
+
+	@Override
+	public void resetValue() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }

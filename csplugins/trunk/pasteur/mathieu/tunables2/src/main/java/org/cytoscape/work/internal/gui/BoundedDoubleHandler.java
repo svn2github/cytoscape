@@ -68,4 +68,11 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 		return myBounded.getValue().toString();
 	}
 
+
+	@Override
+	public void resetValue() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -67,4 +67,10 @@ public class BoundedFloatHandler extends AbstractGuiHandler implements Guihandle
     public String getState() {
         return myBounded.getValue().toString();
     }
+
+	@Override
+	public void resetValue() {
+		// TODO Auto-generated method stub
+		
+	}
 }

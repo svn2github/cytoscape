@@ -1,4 +1,3 @@
-
 package org.cytoscape.work;
 
 import java.awt.Component;
@@ -15,7 +14,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.cytoscape.work.internal.gui.*;
+import org.cytoscape.work.AbstractHandler; 
+import org.cytoscape.work.Tunable; 
+import org.cytoscape.work.internal.gui.Guihandler;
+
 
 
 public abstract class AbstractGuiHandler extends AbstractHandler implements Guihandler, ActionListener,ChangeListener,ListSelectionListener {
@@ -24,46 +26,45 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 
     private String depName;
     private String depState;
-    
-    private String depUnState;
 
+    private String depUnState;
+    
 	private List<Guihandler> deps;
 
-	public AbstractGuiHandler(Field f, Object o, Tunable t) {
+	protected AbstractGuiHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
         String s = t.dependsOn();
-        if ( !s.equals("") ) {
-        	if(!s.contains("!=")){
-        		depName = s.substring(0,s.indexOf("="));
-        		depState = s.substring(s.indexOf("=") + 1);
-        		depUnState = "";
-        	}
-        	else {
-        		depName = s.substring(0,s.indexOf("!"));
-        		depUnState = s.substring(s.indexOf("=")+1);
-        		depState = "";
-        	}
-        }
+		 if ( !s.equals("") ) {
+	        	if(!s.contains("!=")){
+	        		depName = s.substring(0,s.indexOf("="));
+	        		depState = s.substring(s.indexOf("=") + 1);
+	        		depUnState = "";
+	        	}
+	        	else {
+	        		depName = s.substring(0,s.indexOf("!"));
+	        		depUnState = s.substring(s.indexOf("=")+1);
+	        		depState = "";
+	        	}
+	        }
 	
 		deps = new LinkedList<Guihandler>();
 		panel = new JPanel();
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-		//System.out.println(this.getName() + " actionPerformed");
+//		handle();
 		notifyDependents();
-		handle();
 	}
 
 	public void stateChanged(ChangeEvent e){
-		//handle();
+//		handle();
 		notifyDependents();
 	}
 	
     public void valueChanged(ListSelectionEvent le) {
     	boolean ok = le.getValueIsAdjusting();
     	if(!ok){
-    		//handle();
+//   		handle();
     		notifyDependents();
     	}
     }
@@ -74,7 +75,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 		String state = getState();
 		String name = getName();
 		for ( Guihandler gh : deps )
-			gh.checkDependency( name, state );
+		gh.checkDependency( name, state );
 	}
 
 	// add a dependency on this object 
@@ -88,11 +89,15 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 		return depName;
 	}
 
+	public void handleDependents(){
+		if(panel.isEnabled())handle();
+	}
+	
 	public void checkDependency(String name, String state) {
-
 		// if we don't depend on anything, then we should be enabled
 		if ( depName == null || depState == null ) {
-			setEnabledContainer(true,panel); 
+			setEnabledContainer(true,panel);
+//			handle();
 			return;
 		}
 
@@ -102,7 +107,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
         	if(depState!=""){
         		if ( depState.equals(state) ){
         			setEnabledContainer(true,panel);
-        			handle();}
+//        			handle();
+        		}
 			// ... and the state doesn't match, then disable 
         		else{
         			setEnabledContainer(false,panel);
@@ -111,7 +117,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
         	else {
         		if ( !depUnState.equals(state) ){
         			setEnabledContainer(true,panel);
-        			handle();
+//        			handle();
         		}
 			// ... and the state doesn't match, then disable 
         		else{
@@ -148,6 +154,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 
 	public abstract void handle();
 
+	public abstract void resetValue();
+	
 	public abstract String getState();
-
 }

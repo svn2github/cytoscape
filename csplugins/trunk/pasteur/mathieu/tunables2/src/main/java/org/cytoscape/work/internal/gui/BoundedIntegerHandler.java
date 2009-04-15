@@ -64,4 +64,10 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
     public String getState() {
         return myBounded.getValue().toString();
     }
+
+	@Override
+	public void resetValue() {
+		// TODO Auto-generated method stub
+		
+	}
 }

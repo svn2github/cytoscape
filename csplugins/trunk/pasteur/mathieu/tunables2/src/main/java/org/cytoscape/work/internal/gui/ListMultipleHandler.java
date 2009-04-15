@@ -80,4 +80,12 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 			return sel.toString();
 	}
 
+
+
+	@Override
+	public void resetValue() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

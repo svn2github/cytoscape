@@ -72,4 +72,10 @@ public class FileHandler extends AbstractGuiHandler {
 		}
 		return s;
     }
+
+	@Override
+	public void resetValue() {
+		// TODO Auto-generated method stub
+		
+	}
 }

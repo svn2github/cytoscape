@@ -100,6 +100,7 @@ public class XorPanel extends JPanel {
 		public void handle() {}
 		public String getState() {return null;}
 		public void returnPanel() {}
+		public void resetValue() {};
 		public void addHandlerListener(HandlerListener listener) {
 			// TODO Auto-generated method stub
 			

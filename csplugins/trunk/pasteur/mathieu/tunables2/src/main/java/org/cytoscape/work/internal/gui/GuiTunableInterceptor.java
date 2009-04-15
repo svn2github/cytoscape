@@ -3,6 +3,9 @@ package org.cytoscape.work.internal.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +13,8 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -26,7 +31,11 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 	private Map<List<Guihandler>,JPanel> panelMap;
 	int n;
 	JPanel r = new JPanel(new BorderLayout());
+	private JFrame frame = new JFrame("Set Parameters");
+	private JPanel panel = new JPanel();
 	List<Guihandler> lh;
+	private boolean out;
+	Object[] objs;
 
 	public GuiTunableInterceptor() {
 		super( new GuiHandlerFactory<Guihandler>());
@@ -34,6 +43,7 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 	}
 
 	public boolean createUI(Object... objs) {
+		this.objs=objs;
 		lh = new ArrayList<Guihandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
@@ -95,38 +105,24 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		}
 
 		
-		// get the gui into the proper state
 		for ( Guihandler h : lh ) 
 			h.notifyDependents();
-			
-		//Custom button text
-		Object[] buttons = {"OK","Cancel"};
-		int n = JOptionPane.showOptionDialog(parent,
-		    panelMap.get(lh),
-		    "Set Parameters",
-		    JOptionPane.YES_NO_CANCEL_OPTION,
-		    JOptionPane.PLAIN_MESSAGE,
-		    null,
-		    buttons,
-		    buttons[0]);
 
 		
-		if ( n == JOptionPane.OK_OPTION ){
-			for ( Guihandler h : lh ){
-				
-//					 for(Object o : objs){
-//						 Object[] interfaces = o.getClass().getInterfaces();
-//						 for(int i=0;i<interfaces.length;i++){
-//							if(interfaces[i].equals(TunableValidator.class))((TunableValidator)o).validate(h.getName());
-//						 }
-//					 }
-				if(h.getDependency()==null)h.handle();
-				else h.notifyDependents();//h.handle();
-			}
+		if(parent==null){
+			displayOptionPanel();
+//			preparePanel();displayPanel();
+			return out;
+		}
+		else{
+			int nbPanel = ((Container) parent).getComponentCount()-1;
+			JPanel buttonBox = (JPanel) ((Container) parent).getComponent(nbPanel);
+			((JPanel)parent).remove(nbPanel);
+			((JPanel)parent).add(panelMap.get(lh));
+			((JPanel)parent).add(buttonBox);
+			parent = null;
 			return true;
 		}
-		else
-			return false;
 	}
 
 	private JPanel createJPanel(String title, Guihandler gh,Param alignment) {
@@ -178,5 +174,83 @@ public class GuiTunableInterceptor extends AbstractTunableInterceptor<Guihandler
 		}
 		
 		return ret;
+	}
+	
+	
+	private void preparePanel(){
+		JPanel tunapanel = panelMap.get(lh);
+		JPanel buttonpanel = new JPanel();
+		JButton okbutton= new JButton("OK");
+		okbutton.setActionCommand("ok");
+		JButton cancelbutton = new JButton("Cancel");
+		cancelbutton.setActionCommand("cancel");
+		okbutton.addActionListener(new myAction());
+		cancelbutton.addActionListener(new myAction());
+		buttonpanel.add(okbutton);
+		buttonpanel.add(cancelbutton);
+		panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
+		panel.add(tunapanel);
+		panel.add(buttonpanel);
+		frame.setContentPane(panel);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocation(600, 500);
+	}
+	private void displayPanel(){
+		frame.setVisible(true);
+		frame.pack();
+	}
+	
+	private void displayOptionPanel(){
+		Object[] buttons = {"OK","Cancel"};
+		int n = JOptionPane.showOptionDialog(parent,
+		    panelMap.get(lh),
+		    "Set Parameters",
+		    JOptionPane.YES_NO_CANCEL_OPTION,
+		    JOptionPane.PLAIN_MESSAGE,
+		    null,
+		    buttons,
+		    buttons[0]);
+		if ( n == JOptionPane.OK_OPTION ){
+			String valid = null;
+			for ( Guihandler h : lh )h.handleDependents();
+			for(Object o : objs){
+				 Object[] interfaces = o.getClass().getInterfaces();
+				 for(int i=0;i<interfaces.length;i++){
+					if(interfaces[i].equals(TunableValidator.class))valid=((TunableValidator)o).validate();
+				 }
+			}
+			if(valid==null){
+				out = true;
+			}
+			else{
+				JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);
+				for(Guihandler h : lh)h.resetValue();
+				displayOptionPanel();
+			}
+		}
+		else out = false;
+	}
+	
+	
+	private class myAction implements ActionListener{
+		public void actionPerformed(ActionEvent ae){
+			if(ae.getActionCommand().equals("ok")){
+				String valid = null;
+				for ( Guihandler h : lh )h.handleDependents();
+				
+				for(Object o : objs){
+					 Object[] interfaces = o.getClass().getInterfaces();
+					 for(int i=0;i<interfaces.length;i++){
+						if(interfaces[i].equals(TunableValidator.class)) valid=((TunableValidator)o).validate();
+					 }
+				}
+				if(valid==null){out = true;frame.dispose();}
+				else{JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayPanel();}
+			}
+			else if(ae.getActionCommand().equals("cancel")){
+				out = false;
+				frame.dispose();
+			}
+		}
 	}
 }

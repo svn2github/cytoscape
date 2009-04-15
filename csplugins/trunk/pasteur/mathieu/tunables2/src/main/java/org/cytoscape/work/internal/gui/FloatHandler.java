@@ -63,4 +63,10 @@ public class FloatHandler extends AbstractGuiHandler {
 		}
 		return s;
     }
+
+	@Override
+	public void resetValue() {
+		// TODO Auto-generated method stub
+		
+	}
 }
