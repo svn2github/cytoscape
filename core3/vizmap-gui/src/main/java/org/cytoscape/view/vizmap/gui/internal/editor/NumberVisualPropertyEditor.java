@@ -35,7 +35,7 @@
 package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.gui.internal.editor.mapping.C2CMappingEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2CMappingEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyDoublePropertyEditor;
 
 import javax.swing.Icon;

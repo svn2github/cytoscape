@@ -42,7 +42,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.gui.internal.editor.mapping.GradientEditorPanel;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.GradientEditorPanel;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
 
 
