@@ -87,9 +87,6 @@ public interface CyNetworkView extends View<CyNetwork>{
 	 */
 	List<View<? extends GraphObject>> getAllViews();
 
-	<T> ViewColumn<T> getColumn(final VisualProperty<? extends T> vp);
-
-
 	// temp methods
 	void fitContent();
 	void fitSelected();
