@@ -9,11 +9,11 @@ import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.view.vizmap.gui.internal.editors.continuous.C2DMappingEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2DMappingEditor;
 import org.cytoscape.viewmodel.VisualProperty;
 
 
-public class ContinuousDiscrete implements VisualPropertyEditor {
+public class ContinuousDiscrete implements VisualPropertyEditor<> {
 
 	private final EditorManager ef;
 	private final DefaultTableCellRenderer cellRenderer; 

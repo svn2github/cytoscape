@@ -8,22 +8,21 @@ import java.beans.PropertyEditor;
 
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.FontCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2DMappingEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyFontPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor;
-import org.cytoscape.viewmodel.VisualProperty;
 
 
-public class DiscreteFont implements VisualPropertyEditor {
+public class FontVisualPropertyEditor extends AbstractVisualPropertyEditor<Font> {
 
-	private final CyFontPropertyEditor fontCellEditor;
-	private final FontCellRenderer fontCellRenderer;
-
-
-	public DiscreteFont() {
-		fontCellEditor = new CyFontPropertyEditor();
-		fontCellRenderer = new FontCellRenderer();
+	public FontVisualPropertyEditor(VisualProperty<Font> vp) {
+		super(vp);
+		this.propertyEditor= new CyFontPropertyEditor();
+		this.tableCellRenderer = new FontCellRenderer();
+		this.continuousEditor = new C2DMappingEditor(this.vp);
 	}
 
 	public Class<?> getDataType() {
