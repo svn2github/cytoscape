@@ -41,6 +41,7 @@ import org.cytoscape.view.model.ViewChangeListener;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -52,9 +53,14 @@ import java.util.ArrayList;
  * @param <S> the base (model-level) object for which this is a View. For example, CyNode or CyEdge
  */
 public class ColumnOrientedViewImpl<S> implements View<S> {
+	private static final String VP_IS_NULL = "VisualProperty is null";
+
 	private final S source;
+	private final HashMap<VisualProperty<?>, Object> vpValues;
+
+	// note: this surely could be done more efficiently...:
+	private final HashMap<VisualProperty<?>, Boolean> bypassLocks;
 	private final long suid;
-	private final ColumnOrientedNetworkViewImpl networkView;
 	private final List<ViewChangeListener> listeners;
 
 	/**
@@ -62,11 +68,12 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 *
 	 * @param source  DOCUMENT ME!
 	 */
-	public ColumnOrientedViewImpl(final S source, final ColumnOrientedNetworkViewImpl networkView) {
+	public ColumnOrientedViewImpl(final S source) {
 		suid = SUIDFactory.getNextSUID();
 		this.source = source;
-		this.networkView = networkView;
 		listeners = new ArrayList<ViewChangeListener>();
+		vpValues = new HashMap<VisualProperty<?>, Object>();
+		bypassLocks = new HashMap<VisualProperty<?>, Boolean>();
 	}
 
 	/**
@@ -79,7 +86,13 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 * @param o  DOCUMENT ME!
 	 */
 	public <P, V extends P> void setVisualProperty(final VisualProperty<? extends P> vp, final V value) {
-		networkView.getColumn(vp).setValue(this, value);
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		final Boolean b = bypassLocks.get(vp);
+
+		if ((b == null) || !b.booleanValue())
+			vpValues.put(vp, value);
 		for ( ViewChangeListener vcl : listeners ) 
 			vcl.visualPropertySet(vp,value);
 	}
@@ -94,7 +107,14 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 * @return  DOCUMENT ME!
 	 */
 	public <T> T getVisualProperty(final VisualProperty<T> vp) {
-		return networkView.getColumn(vp).getValue(this);
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		if (vpValues.containsKey(vp))
+			return (T) vpValues.get(vp);
+		else
+
+			return vp.getDefault();
 	}
 
 	/**
@@ -129,7 +149,11 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 * @param value the value to set
 	 */
 	public <P, V extends P> void setLockedValue(final VisualProperty<? extends P> vp, final V value){
-		networkView.getColumn(vp).setLockedValue(this, value);
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		setVisualProperty(vp, value);
+		bypassLocks.put(vp, Boolean.TRUE);
 	}
 
 	/**
@@ -137,7 +161,16 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 * @return true if current VisualProperty value is locked
 	 */
 	public boolean isValueLocked(final VisualProperty<?> vp){
-		return networkView.getColumn(vp).isValueLocked(this);
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		final Boolean value = bypassLocks.get(vp);
+
+		if (value == null) {
+			return false;
+		} else {
+			return value.booleanValue();
+		}
 	}
 
 	/**
@@ -146,7 +179,10 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 * @param vp the VisualProperty 
 	 */
 	public void clearValueLock(final VisualProperty<?> vp){
-		networkView.getColumn(vp).clearValueLock(this);
+		if (vp == null)
+			throw new NullPointerException(VP_IS_NULL);
+
+		bypassLocks.put(vp, Boolean.FALSE);
 	}
 
 	public void addViewChangeListener(ViewChangeListener vcl) {

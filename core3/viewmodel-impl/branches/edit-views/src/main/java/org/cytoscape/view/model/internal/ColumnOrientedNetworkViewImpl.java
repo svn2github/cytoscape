@@ -78,7 +78,6 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 	private HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>> edgeViews;
 	private HashMap<String, Set<View<? extends GraphObject>>> subsets;
 	private ColumnOrientedViewImpl<CyNetwork> viewCyNetwork;
-	private HashMap<VisualProperty<?>, ColumnOrientedViewColumn<?>> columns;
 
 	/**
 	 * Creates a new ColumnOrientedNetworkViewImpl object.
@@ -98,17 +97,16 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 		nodeViews = new HashMap<CyNode, ColumnOrientedViewImpl<CyNode>>();
 		edgeViews = new HashMap<CyEdge, ColumnOrientedViewImpl<CyEdge>>();
 		subsets = new HashMap<String, Set<View<? extends GraphObject>>>();
-		columns = new HashMap<VisualProperty<?>, ColumnOrientedViewColumn<?>>();
 
 		for (CyNode node : network.getNodeList()) {
-			nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node, this));
+			nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node));
 		}
 
 		for (CyEdge edge : network.getEdgeList()) {
-			edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge, this));
+			edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge));
 		}
 
-		viewCyNetwork = new ColumnOrientedViewImpl<CyNetwork>(network, this);
+		viewCyNetwork = new ColumnOrientedViewImpl<CyNetwork>(network);
 	}
 
 	/**
@@ -179,7 +177,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 			return;
 
 		final CyEdge edge = e.getEdge();
-		edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge, this)); // FIXME:
+		edgeViews.put(edge, new ColumnOrientedViewImpl<CyEdge>(edge)); // FIXME:
 																				// View
 																				// creation
 																				// here
@@ -206,7 +204,7 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 			return;
 
 		final CyNode node = e.getNode();
-		nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node, this));
+		nodeViews.put(node, new ColumnOrientedViewImpl<CyNode>(node));
 	}
 
 	/**
@@ -235,18 +233,6 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 			return;
 
 		edgeViews.remove(e.getNode());
-	}
-
-	public <T> ColumnOrientedViewColumn<T> getColumn(final VisualProperty<? extends T> vp) {
-		if (vp == null)
-			throw new NullPointerException("VisualProperty must not be null");
-		if (columns.containsKey(vp)) {
-			return (ColumnOrientedViewColumn<T>) columns.get(vp);
-		} else { // create column
-			ColumnOrientedViewColumn<T> column = new ColumnOrientedViewColumn<T>((VisualProperty<T>) vp);
-			columns.put(vp, column);
-			return column;
-		}
 	}
 
 	/**
