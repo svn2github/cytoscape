@@ -152,6 +152,39 @@
         </osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="arrangeGridTaskFactoryService" ref="arrangeGridTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+        <osgi:service-properties>
+            <entry key="preferredMenu" value="View.Arrange Network Windows" />
+            <entry key="title" value="Grid" />
+            <entry key="enableFor" value="networkAndView" />
+        </osgi:service-properties>
+	</osgi:service>
+	<osgi:service id="arrangeCascadeTaskFactoryService" ref="arrangeCascadeTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+        <osgi:service-properties>
+            <entry key="preferredMenu" value="View.Arrange Network Windows" />
+            <entry key="title" value="Cascade" />
+            <entry key="enableFor" value="networkAndView" />
+        </osgi:service-properties>
+	</osgi:service>
+	<osgi:service id="arrangeHorizontalTaskFactoryService" ref="arrangeHorizontalTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+        <osgi:service-properties>
+            <entry key="preferredMenu" value="View.Arrange Network Windows" />
+            <entry key="title" value="Horizontal" />
+            <entry key="enableFor" value="networkAndView" />
+        </osgi:service-properties>
+	</osgi:service>
+	<osgi:service id="arrangeVerticalTaskFactoryService" ref="arrangeVerticalTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+        <osgi:service-properties>
+            <entry key="preferredMenu" value="View.Arrange Network Windows" />
+            <entry key="title" value="Vertical" />
+            <entry key="enableFor" value="networkAndView" />
+        </osgi:service-properties>
+	</osgi:service>
+
 	<!--
 		Finally, Export Cytoscape Desktop itself as a service. Other desktop
 		components (like VizMapper GUI) can use it through DI
