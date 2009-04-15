@@ -48,6 +48,18 @@ import org.cytoscape.model.Identifiable;
 public interface View<S> extends Identifiable {
 	
 	/**
+	 * Returns an EditProxy bound to this instance
+	 *
+	 * This method can't be called getEditProxy(), since a
+	 * CyNetworkView is a View as well, and the two getEditProxy()
+	 * methods would clash. Thus have to put return type in method
+	 * name.
+	 *
+	 * @return EditProxy bound to this instance
+	 */
+	ViewEditProxy<S> getViewEditProxy();
+
+	/**
 	 * @param <T> Data type of the visual property.  This can be subclasses of type T.
 	 * @param <V> Value of the visual property.  This can be subclasses of T. 
 	 * @param vp the VisualProperty

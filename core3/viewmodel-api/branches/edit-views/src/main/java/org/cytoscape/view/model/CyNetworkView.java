@@ -87,6 +87,18 @@ public interface CyNetworkView extends View<CyNetwork>{
 	 */
 	List<View<? extends GraphObject>> getAllViews();
 
+	/**
+	 * Returns an EditProxy bound to this instance
+	 *
+	 * This method can't be called getEditProxy(), since a
+	 * CyNetworkView is a View as well, and the two getEditProxy()
+	 * methods would clash. Thus have to put return type in method
+	 * name.
+ 	 *
+	 * @return EditProxy bound to this instance
+	 */
+	CyNetworkViewEditProxy getCyNetworkViewEditProxy();
+
 	// temp methods
 	void fitContent();
 	void fitSelected();
