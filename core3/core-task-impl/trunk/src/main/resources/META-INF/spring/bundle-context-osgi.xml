@@ -74,7 +74,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -87,7 +87,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_A, ActionEvent.ALT_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -100,7 +100,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -114,7 +114,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_E, ActionEvent.ALT_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -127,7 +127,7 @@
 			<entry key="acceleratorCombo" 
 			KeyEvent.VK_7, ActionEvent.CTRL_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -140,7 +140,7 @@
 			<entry key="acceleratorCombo" 
 			KeyEvent.VK_6, ActionEvent.CTRL_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -154,7 +154,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK | ActionEvent.ALT_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -167,7 +167,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_A, ActionEvent.ALT_MASK | ActionEvent.SHIFT_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -180,7 +180,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -193,7 +193,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_I, ActionEvent.ALT_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -206,7 +206,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_I, ActionEvent.CTRL_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -219,7 +219,7 @@
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_I, ActionEvent.CTRL_MASK
 			-->
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -231,7 +231,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Hide selected nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="enableFor" value="networkAndView" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -240,7 +240,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Hide selected nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="enableFor" value="networkAndView" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -249,7 +249,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Hide selected edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="enableFor" value="networkAndView" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -258,7 +258,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Show all nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="enableFor" value="networkAndView" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -267,7 +267,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Show all nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="enableFor" value="networkAndView" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -276,7 +276,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Show all edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="enableFor" value="networkAndView" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -294,7 +294,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="From selected nodes, selected edges" />
 			<entry key="preferredMenu" value="File.New.Network" />
-			<entry key="enable" value="forNetworkAndSelectedObjs" />
+			<entry key="enableFor" value="selectedNetworkObjs" />
 			<!--
 			<entry key="acceleratorCombo" 
 		  	java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK
@@ -308,7 +308,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="From selected nodes, all edges" />
 			<entry key="preferredMenu" value="File.New.Network" />
-			<entry key="enable" value="forNetworkAndSelectedObjs" />
+			<entry key="enableFor" value="selectedNetworkObjs" />
 			<!--
 			<entry key="acceleratorCombo" 
 		  	java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK 
@@ -323,7 +323,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Destroy Network" />
 			<entry key="preferredMenu" value="Edit" />
-			<entry key="enable" value="forNetwork" />
+			<entry key="enableFor" value="network" />
 			<!--
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_W, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK
@@ -337,7 +337,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Destroy View" />
 			<entry key="preferredMenu" value="Edit" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="enableFor" value="networkAndView" />
 			<!--
 			<entry key="acceleratorCombo" 
 			java.awt.event.KeyEvent.VK_W, ActionEvent.CTRL_MASK
@@ -352,12 +352,10 @@
 		<osgi:service-properties>
 			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom In" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="title" value="Zoom In" />
+			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
-			<!--
-			<entry key="icon" 
-			/images/ximian/stock_zoom-in.png
-			-->
+			<entry key="iconName" value="/images/ximian/stock_zoom-in.png"/>
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -367,12 +365,10 @@
 		<osgi:service-properties>
 			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom Out" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="title" value="Zoom Out" />
+			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
-			<!--
-			<entry key="icon" 
-			/images/ximian/stock_zoom-out.png
-			-->
+			<entry key="iconName" value="/images/ximian/stock_zoom-out.png"/>
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -382,12 +378,10 @@
 		<osgi:service-properties>
 			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom selected region" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="title" value="Fit Selected" />
+			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
-			<!--
-			<entry key="icon" 
-			/images/ximian/stock_zoom-object.png
-			-->
+			<entry key="iconName" value="/images/ximian/stock_zoom-object.png"/>
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -397,12 +391,10 @@
 		<osgi:service-properties>
 			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom out to display all of current Network" />
-			<entry key="enable" value="forNetworkAndView" />
+			<entry key="title" value="Fit Content" />
+			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
-			<!--
-			<entry key="icon" 
-			/images/ximian/stock_zoom-1.png	
-			-->
+			<entry key="iconName" value="/images/ximian/stock_zoom-1.png" />
 		</osgi:service-properties>
 	</osgi:service>
 
