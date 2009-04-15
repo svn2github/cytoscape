@@ -100,12 +100,6 @@
 		-->
 	<osgi:service id="settingsActionService" ref="settingsAction"
 		interface="cytoscape.util.CyAction" />
-	<osgi:service id="helpContentsActionService" ref="helpContentsAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="helpContactHelpDeskActionService" ref="helpContactHelpDeskAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="helpAboutActionService" ref="helpAboutAction"
-		interface="cytoscape.util.CyAction" />
 
 	<osgi:service id="cytoPanelWestActionService" ref="cytoPanelWestAction"
 		interface="cytoscape.util.CyAction" />
@@ -126,6 +120,37 @@
 		<osgi:listener bind-method="addTaskFactory"
 			unbind-method="removeTaskFactory" ref="cytoscapeMenus" />
 	</osgi:set>
+
+	<!-- export task factories -->
+
+	<osgi:service id="helpContentsTaskFactoryService" ref="helpContentsTaskFactory"
+		interface="org.cytoscape.work.TaskFactory"> 
+        <osgi:service-properties>
+            <entry key="preferredButtonGroup" value="z-help" />
+            <entry key="preferredMenu" value="Help" />
+            <entry key="tooltip" value="Show Help Contents..." />
+            <entry key="title" value="Contents..." />
+            <entry key="inToolBar" value="true" />
+            <entry key="iconName" value="/images/ximian/stock_help.png"/>
+			<!-- acceleratorCombo   KeyEvent.VK_F1, 0 -->
+        </osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="helpContactHelpDeskTaskFactoryService" ref="helpContactHelpDeskTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+        <osgi:service-properties>
+            <entry key="preferredMenu" value="Help" />
+            <entry key="title" value="Contact Help Desk..." />
+        </osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="helpAboutTaskFactoryService" ref="helpAboutTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+        <osgi:service-properties>
+            <entry key="preferredMenu" value="Help" />
+            <entry key="title" value="About..." />
+        </osgi:service-properties>
+	</osgi:service>
 
 	<!--
 		Finally, Export Cytoscape Desktop itself as a service. Other desktop

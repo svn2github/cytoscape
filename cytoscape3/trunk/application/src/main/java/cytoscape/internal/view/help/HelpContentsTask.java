@@ -1,5 +1,5 @@
 /*
-  File: HelpAboutAction.java
+  File: HelpContentsTask.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,38 +36,32 @@
 */
 package cytoscape.internal.view.help;
 
-import org.cytoscape.splash.CreditScreen;
-
 import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyHelpBroker;
+import cytoscape.view.CySwingApplication;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskMonitor;
 
-import javax.swing.*;
+import javax.help.CSH;
 import java.awt.event.ActionEvent;
 
 
 /**
- *
+ * Really just a wrapper for the CSH.DisplayHelpFromSource action.
  */
-public class HelpAboutAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869681795L;
+public class HelpContentsTask implements Task {
 
-	private CreditScreen credits;
+	private CSH.DisplayHelpFromSource csh; 
+	private CySwingApplication app;
 
-	/**
-	 * Creates a new HelpAboutAction object.
-	 */
-	public HelpAboutAction(CyNetworkManager netmgr, CreditScreen credits) {
-		super("About...",netmgr);
-		this.credits = credits;
-		setPreferredMenu("Help");
+	public HelpContentsTask(CyHelpBroker help, CySwingApplication app) {
+		csh = new CSH.DisplayHelpFromSource(help.getHelpBroker());
+		this.app = app;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		credits.showCredits();
+	public void run(TaskMonitor tm) {
+		csh.actionPerformed(new ActionEvent(app.getJFrame(),0,"help"));
 	}
+
+	public void cancel() {}
 }

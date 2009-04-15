@@ -1,5 +1,5 @@
 /*
-  File: HelpContentsAction.java
+  File: HelpAboutTask.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,49 +36,24 @@
 */
 package cytoscape.internal.view.help;
 
+import org.cytoscape.splash.CreditScreen;
+
 import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CyHelpBroker;
-import cytoscape.Cytoscape;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskMonitor;
 
-import javax.help.CSH;
-import javax.swing.ImageIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
-/**
- * Really just a wrapper for the CSH.DisplayHelpFromSource action.
- */
-public class HelpContentsAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869703278L;
+public class HelpAboutTask implements Task {
 
-	private CSH.DisplayHelpFromSource csh; 
+	private CreditScreen credits;
 
-	/**
-	 * Creates a new HelpContentsAction object.
-	 */
-	public HelpContentsAction(CyNetworkManager netmgr, CyHelpBroker help) {
-		super("Contents...",/*new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_help.png")),*/netmgr);
-		setPreferredMenu("Help");
-		setAcceleratorCombo(KeyEvent.VK_F1, 0);
-		putValue(SHORT_DESCRIPTION,"Help");
-		csh = new CSH.DisplayHelpFromSource(help.getHelpBroker());
+	public HelpAboutTask(CreditScreen credits) {
+		this.credits = credits;
 	}
 
-	public boolean isInToolBar() {
-		return true;
+	public void run(TaskMonitor tm) {
+		credits.showCredits();
 	}
 
-	public String getPreferredButtonGroup() {
-		return "z-help";
-	}
-
-	/**
-	 * Merely calls actionPerformed on the CSH.DisplayHelpFromSource object. 
-	 *
-	 * @param e The triggering event - passed to CSH.DisplayHelpFromSource.actionPerformed(e)  
-	 */
-	public void actionPerformed(ActionEvent e) {
-		csh.actionPerformed(e);
-	}
+	public void cancel() {}
 }

@@ -1,5 +1,5 @@
 /*
- File: HelpContactHelpDeskAction.java
+ File: HelpContactHelpDeskTaskFactory.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,38 +34,22 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+
 package cytoscape.internal.view.help;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
 import cytoscape.util.OpenBrowser;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
 
-import java.awt.event.ActionEvent;
+public class HelpContactHelpDeskTaskFactory implements TaskFactory {
 
-
-/**
- *
- */
-public class HelpContactHelpDeskAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339869692169L;
-	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
 	private OpenBrowser openBrowser;
 
-	/**
-	 * Creates a new HelpContactHelpDeskAction object.
-	 */
-	public HelpContactHelpDeskAction(CyNetworkManager netmgr, OpenBrowser openBrowser) {
-		super("Contact Help Desk",netmgr);
-		setPreferredMenu("Help");
+	public HelpContactHelpDeskTaskFactory(OpenBrowser openBrowser) {
 		this.openBrowser = openBrowser;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		openBrowser.openURL(helpDeskURL);
-	}
+	public Task getTask() {
+		return new HelpContactHelpDeskTask(openBrowser);
+	} 
 }
