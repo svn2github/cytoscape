@@ -70,10 +70,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Select all nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK
-			-->
+			<entry key="accelerator" value="cmd alt a"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -83,10 +80,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Select all edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_A, ActionEvent.ALT_MASK
-			-->
+			<entry key="accelerator" value="cmd alt a" />
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -96,10 +90,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Select all nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK
-			-->
+			<entry key="accelerator" value="cmd a" />
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -110,10 +101,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Select adjacent edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_E, ActionEvent.ALT_MASK
-			-->
+			<entry key="accelerator" value="alt e"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -123,10 +111,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Nodes connected by selected edges" />
 			<entry key="preferredMenu" value="Select.Nodes" />
-			<!--
-			<entry key="acceleratorCombo" 
-			KeyEvent.VK_7, ActionEvent.CTRL_MASK
-			-->
+			<entry key="accelerator" value="cmd 7"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -136,10 +121,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="First neighbors of selected nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
-			<!--
-			<entry key="acceleratorCombo" 
-			KeyEvent.VK_6, ActionEvent.CTRL_MASK
-			-->
+			<entry key="accelerator" value="cmd 6"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -150,10 +132,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Deselect all nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK | ActionEvent.ALT_MASK
-			-->
+			<entry key="accelerator" value="cmd shift alt a"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -163,10 +142,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Deselect all edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_A, ActionEvent.ALT_MASK | ActionEvent.SHIFT_MASK
-			-->
+			<entry key="accelerator" value="alt shift a"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -176,10 +152,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Deselect all nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK
-			-->
+			<entry key="accelerator" value="cmd shift a"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -189,10 +162,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Invert edge selection" />
 			<entry key="preferredMenu" value="Select.Edges" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_I, ActionEvent.ALT_MASK
-			-->
+			<entry key="accelerator" value="alt i"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -202,10 +172,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Invert node selection" />
 			<entry key="preferredMenu" value="Select.Nodes" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_I, ActionEvent.CTRL_MASK
-			-->
+			<entry key="accelerator" value="cmd i"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -215,10 +182,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="From file..." />
 			<entry key="preferredMenu" value="Select.Nodes" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_I, ActionEvent.CTRL_MASK
-			-->
+			<entry key="accelerator" value="cmd i"/>
 			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -295,10 +259,7 @@
 			<entry key="title" value="From selected nodes, selected edges" />
 			<entry key="preferredMenu" value="File.New.Network" />
 			<entry key="enableFor" value="selectedNetworkObjs" />
-			<!--
-			<entry key="acceleratorCombo" 
-		  	java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK
-			-->
+			<entry key="accelerator" value="cmd shift n"/>
 		</osgi:service-properties>
 	</osgi:service>
 	
@@ -309,10 +270,7 @@
 			<entry key="title" value="From selected nodes, all edges" />
 			<entry key="preferredMenu" value="File.New.Network" />
 			<entry key="enableFor" value="selectedNetworkObjs" />
-			<!--
-			<entry key="acceleratorCombo" 
-		  	java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK 
-			-->
+			<entry key="accelerator" value="cmd n"/>
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -324,10 +282,7 @@
 			<entry key="title" value="Destroy Network" />
 			<entry key="preferredMenu" value="Edit" />
 			<entry key="enableFor" value="network" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_W, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK
-			-->
+			<entry key="accelerator" value="cmd shift w"/>
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -338,10 +293,7 @@
 			<entry key="title" value="Destroy View" />
 			<entry key="preferredMenu" value="Edit" />
 			<entry key="enableFor" value="networkAndView" />
-			<!--
-			<entry key="acceleratorCombo" 
-			java.awt.event.KeyEvent.VK_W, ActionEvent.CTRL_MASK
-			-->
+			<entry key="accelerator" value="cmd w"/>
 		</osgi:service-properties>
 	</osgi:service>
 
