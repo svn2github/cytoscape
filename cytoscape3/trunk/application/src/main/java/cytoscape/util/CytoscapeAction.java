@@ -107,13 +107,16 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 
 		String keyComboString = (String) configProps.get("keyCombo");
 		if (keyComboString != null) {
-			KeyStroke keyStroke = KeyStroke.getKeyStroke(keyComboString);
-			if (keyStroke != null) {
-				int commandModifier = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-				this.keyCode = keyStroke.getKeyCode();
-				this.keyModifiers = commandModifier | keyStroke.getModifiers();
-				acceleratorSet = true;
-			} 
+			try
+			{
+				KeyStroke keyStroke = AcceleratorParser.parse(keyComboString);
+				super.putValue(Action.ACCELERATOR_KEY, keyStroke);
+			}
+			catch (IllegalArgumentException ex)
+			{
+				System.out.println(String.format("WARNING: The action \'%s\' has specified the following invalid key combination: %s", consoleName, keyComboString));
+				System.out.println(" => " + ex.getMessage());
+			}
 		}
 	}
 
