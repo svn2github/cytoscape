@@ -105,7 +105,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 
 		enableFor = (String)(configProps.get("enableFor"));
 
-		String keyComboString = (String) configProps.get("keyCombo");
+		String keyComboString = (String) configProps.get("accelerator");
 		if (keyComboString != null) {
 			try
 			{
