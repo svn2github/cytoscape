@@ -169,9 +169,9 @@ public class CytoscapeMenuBar extends JMenuBar implements CyMenuBar {
 
 		index_object = action.getPrefferedIndex();
 
-		if (action.isAccelerated()) {
-			menu_item.setAccelerator(javax.swing.KeyStroke.getKeyStroke(action.getKeyCode(),
-				                                                        action.getKeyModifiers()));
+		if (action.isAccelerated() && (action.getValue(Action.ACCELERATOR_KEY) == null)) {
+			KeyStroke keyStroke = KeyStroke.getKeyStroke(action.getKeyCode(), action.getKeyModifiers());
+			menu_item.setAccelerator(keyStroke);
 		}
 			
 		menu.addMenuListener(action);
