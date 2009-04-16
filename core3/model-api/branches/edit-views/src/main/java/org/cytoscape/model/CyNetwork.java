@@ -69,6 +69,29 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	String HIDDEN_ATTRS = "HIDDEN";
 
 	/**
+	 * Returns an EditProxy object, which can be used to collect a
+	 * large number of edits. These edits can be merged back into
+	 * the original object (i.e. this object) by calling
+	 * .mergeEdits() on the EditProxy object.
+	 *
+	 * Note to implementors: if you don't care about batching
+	 * events in this way, simply implement this method with
+	 * "return this;" and the mergeEdits() method with "return;".
+	 *
+	 * @return an edit proxy that may or may not batch edits
+	 */
+	CyNetwork getEditProxy();
+
+	/**
+	 * If this instance is an EditProxy of another CyNetwork and
+	 * there are pending edits, batch those edits and commit them
+	 * to the parent CyNetwork. Otherwise, do nothing.
+	 *
+	 */
+	void mergeEdits();
+
+
+	/**
 	 * This method is used to create and add a node to this network.
 	 *
 	 * @return the created node
