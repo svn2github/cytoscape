@@ -29,7 +29,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	private Component parent=null;
 	private Map<java.util.List<Guihandler>,JPanel> panelMap;
 	private java.util.List<Guihandler> lh;
-	private boolean out;
+	private boolean newValuesSet;
 	private JFrame frame = new JFrame("Set Parameters");
 	private JPanel panel = new JPanel();
 	private Object[] objs;
@@ -122,7 +122,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		if(parent==null){
 			displayOptionPanel();
 //			preparePanel();displayPanel();
-			return out;
+			return newValuesSet;
 		}
 		else{
 			int nbPanel = ((Container) parent).getComponentCount()-1;
@@ -230,7 +230,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 				 }
 			}
 			if(valid==null){
-				out = true;
+				newValuesSet = true;
 			}
 			else{
 				JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);
@@ -238,7 +238,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 				displayOptionPanel();
 			}
 		}
-		else out = false;
+		else newValuesSet = false;
 	}
 	
 	
@@ -254,11 +254,11 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 						if(interfaces[i].equals(TunableValidator.class)) valid=((TunableValidator)o).validate();
 					 }
 				}
-				if(valid==null){out = true;frame.dispose();}
+				if(valid==null){newValuesSet = true;frame.dispose();}
 				else{JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayPanel();}
 			}
 			else if(ae.getActionCommand().equals("cancel")){
-				out = false;
+				newValuesSet = false;
 				frame.dispose();
 			}
 		}
