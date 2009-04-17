@@ -26,7 +26,7 @@ import org.cytoscape.io.util.CyProxyRegistry;
  * Dialog for assigning proxy settings.
  * @author Pasteur
  */
-class ProxySettingsTask implements Task, TunableValidator
+public class ProxySettingsTask implements Task, TunableValidator
 {
 	static final Map<String, Proxy.Type> types = new HashMap<String, Proxy.Type>(4, 1.0f);
 	static
@@ -38,6 +38,7 @@ class ProxySettingsTask implements Task, TunableValidator
 
 	@Tunable(description="Type")
 	public ListSingleSelection<String> type = new ListSingleSelection<String>(new ArrayList<String>(types.keySet()));
+	//public ListSingleSelection<String> type = new ListSingleSelection<String>("direct", "http", "socks");
 
 	@Tunable(description="Proxy Server",group={""},dependsOn="type!=direct",alignment={Param.horizontal})
 	public String hostname="";
