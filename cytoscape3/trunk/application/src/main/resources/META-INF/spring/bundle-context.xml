@@ -40,9 +40,14 @@
 	<bean name="cyOperatingContext" class="cytoscape.internal.CyOperatingContextImpl">
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
-	<bean name="fileUtil" class="cytoscape.internal.util.FileUtilImpl">
-		<constructor-arg ref="streamUtilServiceRef" />
-	</bean>
+	
+	
+<!--	<bean id="fileUtil" class="cytoscape.internal.util.FileUtilImpl">-->
+<!--		<constructor-arg ref="streamUtilServiceRef" />-->
+<!--	</bean>-->
+
+
+
 	<bean name="networkNamingUtil" class="cytoscape.internal.util.CyNetworkNamingImpl" />
 
 	<bean name="cyHelpBroker" class="cytoscape.internal.view.CyHelpBrokerImpl">
@@ -123,7 +128,7 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeVersion" />
-		<constructor-arg ref="fileUtil" />
+		<constructor-arg ref="fileUtilServiceRef" />
 	</bean>
 
 	<!--
