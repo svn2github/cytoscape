@@ -13,6 +13,7 @@ import org.eclipse.equinox.internal.p2.ui2.model.CategoryElement;
 import org.eclipse.equinox.internal.p2.ui2.model.ProvElement;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.ui2.IUPropertyUtils;
+import org.eclipse.equinox.internal.provisional.p2.ui2.model.InstalledIUElement;
 
 public class RepoCellRenderer extends DefaultTreeCellRenderer {
 	//DefaultMutableTreeNode theNode;
@@ -51,6 +52,13 @@ public class RepoCellRenderer extends DefaultTreeCellRenderer {
     		else if (provElement instanceof AvailableIUElement){
     			AvailableIUElement avail_element = (AvailableIUElement)provElement;
     			IInstallableUnit installUnit =avail_element.getIU();
+    			String version = installUnit.getVersion().toString();
+    			String name = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_NAME);
+    			this.setText(name + " -- " + version);
+    		}
+    		else if (provElement instanceof InstalledIUElement){
+    			InstalledIUElement installed_element = (InstalledIUElement)provElement;
+    			IInstallableUnit installUnit =installed_element.getIU();
     			String version = installUnit.getVersion().toString();
     			String name = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_NAME);
     			this.setText(name + " -- " + version);
