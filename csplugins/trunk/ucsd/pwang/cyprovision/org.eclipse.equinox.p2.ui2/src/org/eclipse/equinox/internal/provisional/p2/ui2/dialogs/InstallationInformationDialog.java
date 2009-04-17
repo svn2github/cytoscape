@@ -3,23 +3,35 @@ package org.eclipse.equinox.internal.provisional.p2.ui2.dialogs;
 import javax.swing.JDialog;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import javax.swing.JTabbedPane;
-import javax.swing.JPanel;
 import javax.swing.JButton;
+import org.eclipse.equinox.internal.p2.ui2.model.AvailableIUElement;
+import org.eclipse.equinox.internal.provisional.p2.ui2.IUPropertyUtils;
+import org.eclipse.equinox.internal.provisional.p2.ui2.model.InstalledIUElement;
+import org.eclipse.equinox.internal.provisional.p2.ui2.model.ProfileElement;
+import org.eclipse.equinox.internal.provisional.p2.ui2.policy.Policy;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import java.util.Vector;
 
 public class InstallationInformationDialog extends JDialog implements ChangeListener, ActionListener {
 
-	
+	String profileId = null;
 	
     /** Creates new form InstallationInformationDialog */
-    public InstallationInformationDialog(boolean modal) {
+    public InstallationInformationDialog(boolean modal, String profileId) {
         //super(modal);
     	this.setModal(modal);
         initComponents();
         this.setTitle("Installation Information");
-        
+
+        this.profileId = profileId;
         pnlRevertButtons.setVisible(false);
         
         // register a change listener
@@ -31,9 +43,134 @@ public class InstallationInformationDialog extends JDialog implements ChangeList
         btnUninstall.addActionListener(this);
         btnProperties.addActionListener(this);
         btnRevert.addActionListener(this);
+        
+        initRepoTree();
+        
+		btnUpdate.setEnabled(false);        
+		btnUninstall.setEnabled(false);
+		btnProperties.setEnabled(false);
+
+		TreeSelectionListener treeSelectionListener = new TreeSelectionListener(){
+				public void valueChanged(TreeSelectionEvent tse){
+					// Handle the detail area
+					updateDetails();
+					updateButtonStatus();
+				}
+			};
+			
+		jTree1.addTreeSelectionListener(treeSelectionListener);
     }
     
     
+	private void initRepoTree(){
+		jTree1.setRootVisible(false);
+		jTree1.setShowsRootHandles(true);
+		
+		RepoCellRenderer r1 = new RepoCellRenderer();
+		jTree1.setCellRenderer(r1);
+		
+		DefaultTreeModel model= rebuildTreeModel();
+        jTree1.setModel(model);
+
+	}
+
+    
+	  
+	private DefaultTreeModel rebuildTreeModel(){
+
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("JTree");                
+		DefaultMutableTreeNode node;
+		
+        //Populate the tree
+        ProfileElement profileElement = (ProfileElement)getInput();
+        Object[] children = profileElement.getChildren(null);
+
+        if (children == null || children.length == 0){
+        	return new DefaultTreeModel(null);
+        }
+        
+        for (int i=0; i< children.length; i++){
+       		if (children[i] instanceof InstalledIUElement){
+       			
+       			node = new DefaultMutableTreeNode();
+    			node.setUserObject(children[i]);
+    			root.add(node);
+    			
+       			//IInstallableUnit installableUnit = ((InstalledIUElement)children[i]).getIU();
+				//String name = IUPropertyUtils.getIUProperty(installableUnit, IInstallableUnit.PROP_NAME);
+	       		//System.out.println("name = "+ name);
+
+       		}
+       	}
+
+		return new DefaultTreeModel(root);
+	}
+
+
+	
+	Object getInput() {
+		ProfileElement element = new ProfileElement(null, profileId);
+		return element;
+	}
+
+	void updateButtonStatus() {
+		TreePath[] selectedPaths = jTree1.getSelectionPaths();
+		
+		if (selectedPaths == null){
+			btnUpdate.setEnabled(false); 
+			btnUninstall.setEnabled(false);
+			btnProperties.setEnabled(false);
+		}
+		else {
+			btnUpdate.setEnabled(true); 
+			btnUninstall.setEnabled(true);
+			btnProperties.setEnabled(true);
+		}
+	}
+	
+	void updateDetails(){
+		
+		TreePath[] selectedPaths = jTree1.getSelectionPaths();
+		
+		if (selectedPaths == null){
+			taDetails.setText("");
+			return;
+		}
+		
+		if (selectedPaths.length == 1){
+			TreePath thePath = selectedPaths[0];
+			DefaultMutableTreeNode theNode = (DefaultMutableTreeNode) thePath.getLastPathComponent();
+			Object node_userObj = theNode.getUserObject();
+			
+			if (node_userObj instanceof InstalledIUElement){
+				InstalledIUElement installed_iu_element = (InstalledIUElement) node_userObj;
+				IInstallableUnit installUnit =installed_iu_element.getIU();
+				
+				StringBuffer result = new StringBuffer();
+				String description = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_DESCRIPTION);
+
+				if (description != null) {
+					result.append(description);
+				} else {
+					String name = IUPropertyUtils.getIUProperty(installUnit, IInstallableUnit.PROP_NAME);
+					if (name != null)
+						result.append(name);
+					else
+						result.append(installUnit.getId());
+					result.append(" "); //$NON-NLS-1$
+					result.append(installUnit.getVersion().toString());
+				}
+
+				taDetails.setText(result.toString());
+			}
+		}
+		else if (selectedPaths.length > 1){
+			taDetails.setText("");
+		}
+		
+	}
+
+	
     // change listener
     public  void stateChanged(ChangeEvent e)  {
     	JTabbedPane pane = (JTabbedPane) e.getSource();
@@ -64,11 +201,10 @@ public class InstallationInformationDialog extends JDialog implements ChangeList
     		this.dispose();
     	}
     	else if (btn == btnUpdate){
-    		System.out.println("btnUpdate is clicked");
+    		UpdateSoftwareWizard wizard = new UpdateSoftwareWizard(this, profileId, getSelectedIUs());
     	}
     	else if (btn == btnUninstall){
-    		System.out.println("btnUninstall is clicked");
-    		
+    		UninstallSoftwareWizard wizard = new UninstallSoftwareWizard(this, profileId, getSelectedIUs());
     	}
     	else if (btn == btnProperties){
     		System.out.println("btnProperties is clicked");
@@ -82,6 +218,27 @@ public class InstallationInformationDialog extends JDialog implements ChangeList
 
     }
     
+    
+	private Vector<InstalledIUElement> getSelectedIUs(){
+		TreePath[] selectedPaths = jTree1.getSelectionPaths();
+		
+		if (selectedPaths == null){
+			return null;
+		}
+		
+		Vector<InstalledIUElement> selectedIUs = new Vector<InstalledIUElement>();
+		for (int i=0; i<selectedPaths.length; i++ ){
+			TreePath thePath = selectedPaths[i];
+			DefaultMutableTreeNode theNode = (DefaultMutableTreeNode) thePath.getLastPathComponent();
+			Object node_userObj = theNode.getUserObject();
+			
+			if (node_userObj instanceof InstalledIUElement){
+				selectedIUs.add((InstalledIUElement)node_userObj);
+			}
+		}
+		return selectedIUs;
+	}
+
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -97,6 +254,7 @@ public class InstallationInformationDialog extends JDialog implements ChangeList
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
         jScrollPane2 = new javax.swing.JScrollPane();
+        taDetails = new javax.swing.JTextArea();
         pnlInstallationHistory = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         pnlUpdateButtons = new javax.swing.JPanel();
@@ -122,6 +280,10 @@ public class InstallationInformationDialog extends JDialog implements ChangeList
         pnlInstalledSoftware.add(jScrollPane1, gridBagConstraints);
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
+        taDetails.setColumns(20);
+        taDetails.setRows(5);
+        jScrollPane2.setViewportView(taDetails);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -199,6 +361,7 @@ public class InstallationInformationDialog extends JDialog implements ChangeList
     private javax.swing.JPanel pnlInstalledSoftware;
     private javax.swing.JPanel pnlRevertButtons;
     private javax.swing.JPanel pnlUpdateButtons;
+    private javax.swing.JTextArea taDetails;
     // End of variables declaration                   
 
 	
