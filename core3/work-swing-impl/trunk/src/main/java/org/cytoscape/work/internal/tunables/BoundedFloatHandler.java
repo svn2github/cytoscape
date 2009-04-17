@@ -63,7 +63,7 @@ public class BoundedFloatHandler extends AbstractGuiHandler implements Guihandle
 
 	
 	public void resetValue(){
-		System.out.println("#########Value will be reset to initial value = "+ initValue + "#########");
+//		System.out.println("#########Value will be reset to initial value = "+ initValue + "#########");
 		myBounded.setValue(initValue);
 	}
 

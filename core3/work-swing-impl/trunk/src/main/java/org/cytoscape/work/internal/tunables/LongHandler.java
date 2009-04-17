@@ -62,7 +62,7 @@ public class LongHandler extends AbstractGuiHandler {
 
 	
 	public void resetValue(){
-		System.out.println("#########Value will be reset to initial value = " + myLong.longValue() + "#########");
+//		System.out.println("#########Value will be reset to initial value = " + myLong.longValue() + "#########");
 		try{
 			f.set(o,myLong);
 		}catch(Exception e){e.printStackTrace();}

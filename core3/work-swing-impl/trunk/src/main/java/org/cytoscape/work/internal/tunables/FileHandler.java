@@ -84,32 +84,32 @@ public class FileHandler extends AbstractGuiHandler {
 				
 		GroupLayout layout = new GroupLayout(panel);
 		panel.setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-				.add(layout.createSequentialGroup()
-						.addContainerGap()
-						.add(layout.createParallelGroup(GroupLayout.LEADING)
-							.add(titleLabel,GroupLayout.PREFERRED_SIZE,350,GroupLayout.PREFERRED_SIZE)
-							.add(titleSeparator,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
-							)
-						.addContainerGap()
-						.add(layout.createSequentialGroup()
-								.add(networkFileTextField,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
-								.addPreferredGap(LayoutStyle.RELATED)
-								.add(chooseButton))
-						.addContainerGap()));
-		
-		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-				.add(layout.createSequentialGroup()
-						.addContainerGap()
-						.add(titleLabel)
-						.add(8, 8, 8)
-						.add(titleSeparator,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
-						.add(7, 7, 7)
-						.addPreferredGap(LayoutStyle.RELATED)
-						.add(networkFileTextField,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
-						.add(chooseButton)
-						.addContainerGap()));
+//		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
+//				.add(layout.createSequentialGroup()
+//						.addContainerGap()
+//						.add(layout.createParallelGroup(GroupLayout.LEADING)
+//							.add(titleLabel,GroupLayout.PREFERRED_SIZE,350,GroupLayout.PREFERRED_SIZE)
+//							.add(titleSeparator,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
+//							)
+//						.addContainerGap()
+//						.add(layout.createSequentialGroup()
+//								.add(networkFileTextField,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
+//								.addPreferredGap(LayoutStyle.RELATED)
+//								.add(chooseButton))
+//						.addContainerGap()));
+//		
+//		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
+//				.add(layout.createSequentialGroup()
+//						.addContainerGap()
+//						.add(titleLabel)
+//						.add(8, 8, 8)
+//						.add(titleSeparator,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
+//						.add(7, 7, 7)
+//						.addPreferredGap(LayoutStyle.RELATED)
+//						.add(networkFileTextField,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
+//						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
+//						.add(chooseButton)
+//						.addContainerGap()));
 		
 		
 		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
@@ -151,7 +151,7 @@ public class FileHandler extends AbstractGuiHandler {
 	public void resetValue() {
 		try{
 			f.set(o, new File(""));
-			System.out.println("#########Value will be reset to initial value = "+ ((File) f.get(o)).getAbsolutePath()+ "#########");
+			//System.out.println("#########Value will be reset to initial value = "+ ((File) f.get(o)).getAbsolutePath()+ "#########");
 		}catch(Exception e){e.printStackTrace();}
 	} 
 	

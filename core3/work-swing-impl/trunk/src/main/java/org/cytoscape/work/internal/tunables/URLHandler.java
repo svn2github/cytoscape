@@ -112,7 +112,7 @@ public class URLHandler extends AbstractGuiHandler {
 	public void resetValue(){
 		try{
 			f.set(o, new URL(""));
-			System.out.println("#########Value will be reset to initial value = "+ ((URL) f.get(o)).getPath()+ "#########");				
+//			System.out.println("#########Value will be reset to initial value = "+ ((URL) f.get(o)).getPath()+ "#########");				
 		}catch(Exception e){e.printStackTrace();}
 	}
 	

@@ -13,6 +13,7 @@ import java.awt.*;
 public class ListSingleHandler<T> extends AbstractGuiHandler {
 
 	ListSingleSelection<T> lss;
+	ListSingleSelection<T> initialLss;
 	JComboBox combobox;
 	T selected;
 
@@ -21,6 +22,7 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
 		super(f,o,t);
 		try {
             lss = (ListSingleSelection<T>) f.get(o);
+            initialLss = (ListSingleSelection<T>) f.get(o);
         } catch(Exception e) {e.printStackTrace();}
 	
 		panel = new JPanel(new BorderLayout());
@@ -50,11 +52,10 @@ public class ListSingleHandler<T> extends AbstractGuiHandler {
 
 	
 	public void resetValue() {
-		lss.setSelectedValue(null);
 		try{
-			f.set(o,lss);
+			f.set(o,initialLss);
 		}catch(Exception e){e.printStackTrace();}
-		System.out.println("#########Value will be reset to initial value = " + lss.getSelectedValue() + "#########");
+		//System.out.println("#########Value will be reset to initial value = " + initialLss.getSelectedValue() + "#########");
 	}
 	
 	public String getState() {

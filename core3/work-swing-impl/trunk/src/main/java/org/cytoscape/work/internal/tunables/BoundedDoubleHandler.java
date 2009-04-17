@@ -62,7 +62,7 @@ public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandl
 	
 	
 	public void resetValue(){
-		System.out.println("#########Value will be reset to initial value = " + initValue + "#########");
+//		System.out.println("#########Value will be reset to initial value = " + initValue + "#########");
 		myBounded.setValue(initValue);
 	}
 

@@ -62,7 +62,7 @@ public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihand
 	}
     
 	public void resetValue(){
-		System.out.println("#########Value will be reset to initial value = "+initValue + "#########");
+//		System.out.println("#########Value will be reset to initial value = "+initValue + "#########");
 		myBounded.setValue(initValue);
 	}
 

@@ -48,7 +48,7 @@ public class StringHandler extends AbstractGuiHandler {
 
 	
 	public void resetValue(){
-		System.out.println("#########Value will be reset to initial value = " + myString + "#########");
+//		System.out.println("#########Value will be reset to initial value = " + myString + "#########");
 		try{
 			f.set(o,myString);
 		}catch(Exception e){e.printStackTrace();}

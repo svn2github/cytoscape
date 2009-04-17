@@ -67,7 +67,6 @@ public class IntegerHandler extends AbstractGuiHandler {
 
 		
 	public void resetValue(){
-		System.out.println("#########Value will be reset to initial value = "+ myInteger.intValue() + "#########");
 		try{
 			f.set(o,myInteger);
 		}catch(Exception e){e.printStackTrace();}

@@ -63,7 +63,7 @@ public class DoubleHandler extends AbstractGuiHandler {
 	}
 
 	public void resetValue(){
-		System.out.println("#########Value will be reset to initial value = "+initValue + "#########");
+//		System.out.println("#########Value will be reset to initial value = "+initValue + "#########");
 		try {
 			f.set(o,initValue);
 		} catch (Exception e) { e.printStackTrace();}

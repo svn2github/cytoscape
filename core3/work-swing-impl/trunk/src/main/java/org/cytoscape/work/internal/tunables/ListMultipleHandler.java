@@ -16,6 +16,7 @@ import java.awt.*;
 public class ListMultipleHandler<T> extends AbstractGuiHandler{
 
 	ListMultipleSelection<T> lms;
+	ListMultipleSelection<T> initialLms;
 	JList jlist;
 	private List<T> selected;
 	CheckListManager<T> checkListManager;
@@ -27,6 +28,7 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 		super(f,o,t);
 		try {
             lms = (ListMultipleSelection<T>) f.get(o);
+            initialLms = (ListMultipleSelection<T>) f.get(o);
         } catch(Exception e) {e.printStackTrace();}
         panel = new JPanel(new BorderLayout());
         JTextArea jta = new JTextArea(t.description());
@@ -58,11 +60,10 @@ public class ListMultipleHandler<T> extends AbstractGuiHandler{
 	
 	
 	public void resetValue() {
-		lms.setSelectedValues(null);
 		try{
-			f.set(o,lms);
+			f.set(o,initialLms);
 		}catch(Exception e){e.printStackTrace();}
-		System.out.println("#########Value will be reset to initial value = " + lms.getSelectedValues() + "#########");
+//		System.out.println("#########Value will be reset to initial value = " + initialLms.getSelectedValues() + "#########");
 	}
 	
 	

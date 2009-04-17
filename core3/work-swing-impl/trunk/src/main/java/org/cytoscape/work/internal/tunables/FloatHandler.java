@@ -63,7 +63,7 @@ public class FloatHandler extends AbstractGuiHandler {
 
 
 	public void resetValue(){
-		System.out.println("#########Value will be reset to initial value = " + myFloat.floatValue() + "#########");
+//		System.out.println("#########Value will be reset to initial value = " + myFloat.floatValue() + "#########");
 		try{
 			f.set(o,myFloat);
 		}catch(Exception e){e.printStackTrace();}
