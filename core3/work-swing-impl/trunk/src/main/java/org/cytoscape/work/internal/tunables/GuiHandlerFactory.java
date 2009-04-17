@@ -7,6 +7,8 @@ import java.net.URL;
 import java.io.File;
 import java.io.InputStream;
 
+import org.cytoscape.io.util.FileUtil;
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.CyProperty;
@@ -25,13 +27,13 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 
 	private Bookmarks bookmarks;
 	private BookmarksUtil bkUtil;
-//	private FileUtil flUtil;
-//	private StreamUtil stUtil;
+//	public FileUtil flUtil;
+//	public StreamUtil stUtil;
 	
 	public GuiHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
 		this.bookmarks = book.getProperties();
 		this.bkUtil = bkUtil;
-//		this.flUtil = flUtil;
+//this.flUtil = flUtil;
 //		this.stUtil = stUtil;
 	}
 	

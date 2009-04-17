@@ -27,7 +27,6 @@ public class IntegerHandler extends AbstractGuiHandler {
 		try{
 			this.myInteger=(Integer)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
-		
 		panel = new JPanel(new BorderLayout());
 		for(Param par : t.alignment())if(par==Param.horizontal)horizontal=true;	
 		JLabel label = new JLabel(t.description());
@@ -35,8 +34,8 @@ public class IntegerHandler extends AbstractGuiHandler {
 
 		try {
 			jtf = new JTextField(f.get(o).toString(), 10);
-			//jtf.addActionListener( this );
 		} catch (Exception e) { e.printStackTrace(); }
+//		jtf.addActionListener(this);
 		jtf.setHorizontalAlignment(JTextField.RIGHT);
 		if(horizontal==false){
 			panel.add(label,BorderLayout.WEST);

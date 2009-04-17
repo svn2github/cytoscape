@@ -26,7 +26,7 @@
 
     <osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=bookmarks)" />
     <osgi:reference id="bookmarksUtilServiceRef" interface="org.cytoscape.property.bookmark.BookmarksUtil" />
-<!--	<osgi:reference id="fileUtilServiceRef" interface="cytoscape.util.FileUtil"/> 
-<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil"/> -->
+<!-- 	<osgi:reference id="fileUtilServiceRef" interface="org.cytoscape.io.util.FileUtil"/>-->
+<!--	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil"/> -->
    	
 </beans>

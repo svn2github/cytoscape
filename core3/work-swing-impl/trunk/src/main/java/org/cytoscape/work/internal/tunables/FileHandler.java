@@ -14,6 +14,7 @@ import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
 import cytoscape.Cytoscape;
+import org.cytoscape.io.util.FileUtil;
 
 
 
@@ -29,11 +30,11 @@ public class FileHandler extends AbstractGuiHandler {
 	private JSeparator titleSeparator;
 //	private InputStream is = null;
 	private MouseClic mc;
-	//FileUtil flUtil;
+//	FileUtil flUtil;
 	
 	protected FileHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-		//this.flUtil = flUtil;
+//		this.flUtil = flUtil;
 		fileChooser = new JFileChooser();
 
 		for(Param s :t.flag())if(s.equals(Param.network)){
@@ -84,32 +85,6 @@ public class FileHandler extends AbstractGuiHandler {
 				
 		GroupLayout layout = new GroupLayout(panel);
 		panel.setLayout(layout);
-//		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-//				.add(layout.createSequentialGroup()
-//						.addContainerGap()
-//						.add(layout.createParallelGroup(GroupLayout.LEADING)
-//							.add(titleLabel,GroupLayout.PREFERRED_SIZE,350,GroupLayout.PREFERRED_SIZE)
-//							.add(titleSeparator,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
-//							)
-//						.addContainerGap()
-//						.add(layout.createSequentialGroup()
-//								.add(networkFileTextField,GroupLayout.DEFAULT_SIZE,350,Short.MAX_VALUE)
-//								.addPreferredGap(LayoutStyle.RELATED)
-//								.add(chooseButton))
-//						.addContainerGap()));
-//		
-//		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-//				.add(layout.createSequentialGroup()
-//						.addContainerGap()
-//						.add(titleLabel)
-//						.add(8, 8, 8)
-//						.add(titleSeparator,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
-//						.add(7, 7, 7)
-//						.addPreferredGap(LayoutStyle.RELATED)
-//						.add(networkFileTextField,GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE,GroupLayout.PREFERRED_SIZE)
-//						.addPreferredGap(LayoutStyle.RELATED,3, Short.MAX_VALUE)
-//						.add(chooseButton)
-//						.addContainerGap()));
 		
 		
 		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
