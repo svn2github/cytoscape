@@ -17,8 +17,8 @@ public interface TunableInterceptor<T extends Handler> {
 	/**
 	 * Catch the Tunables of the object o
 	 * 
-	 * This method detects the fields of the object o, then search for <code>@Tunable</code> annotations, and finally create a <code>Handler</code> for each type of Object by using the <code>HandlerFactory</code> . 
-	 * The handlers are stocked in a HashMap and can then be retrieved by their Key(i.e name of the field)
+	 * This method detects the fields or the methods of the object o, then search for <code>@Tunable</code> annotations, and finally create a <code>Handler</code> for each type of Object by using the <code>HandlerFactory</code> . 
+	 * The handlers are stocked in a HashMap and can then be retrieved by their Key(i.e name of the field or method)
 	 * 
 	 * @param o This has to be a class that contains some <code>@Tunable</code> annotations.
 	 */
