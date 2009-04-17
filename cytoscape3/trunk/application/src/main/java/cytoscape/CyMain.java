@@ -37,8 +37,8 @@
 package cytoscape;
 
 import cytoscape.view.CySwingApplication;
-import cytoscape.util.FileUtil;
 import org.apache.commons.cli.*;
+import org.cytoscape.io.util.FileUtil;
 
 import javax.swing.*;
 
