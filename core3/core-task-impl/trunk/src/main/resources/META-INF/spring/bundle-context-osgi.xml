@@ -24,8 +24,14 @@
 	<osgi:reference id="visualMappingManagerServiceRef"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
 
-	<osgi:reference id="streamUtil"
+	<osgi:reference id="streamUtilRef"
 		interface="org.cytoscape.io.util.StreamUtil" />
+
+	<osgi:reference id="taskManagerRef"
+		interface="org.cytoscape.work.TaskManager" />
+
+	<osgi:reference id="cyProxyRegistryRef"
+		interface="org.cytoscape.io.util.CyProxyRegistry" />
 	<!--
 		<osgi:reference id="cyWriterManagerServiceRef"
 		interface="org.cytoscape.io.read.CyWriterManager"/> <osgi:reference
@@ -347,6 +353,14 @@
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-1.png" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="proxySettingsTaskFactoryService" ref="proxySettingsTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Proxy Settings..." />
+			<entry key="preferredMenu" value="Edit.Preferences" />
 		</osgi:service-properties>
 	</osgi:service>
 
