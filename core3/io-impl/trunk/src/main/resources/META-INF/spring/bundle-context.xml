@@ -122,6 +122,7 @@
 	<!-- Manager for all readers -->
 	<bean id="cyReaderManager" class="org.cytoscape.io.internal.read.CyReaderManagerImpl" />
 
+
 	<!-- Utility for Stream/Proxy management -->
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">
 		<constructor-arg ref="streamUtil" />
@@ -129,13 +130,16 @@
 
 	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
 
-	<!-- Proxy stuff  -->
-	<bean id="defaultJVMCyProxySelector"
-		class="org.cytoscape.io.internal.util.DefaultJVMCyProxySelectorImpl">
+
+	<bean id="fileUtil" class="org.cytoscape.io.internal.util.FileUtilImpl">
+		<constructor-arg ref="streamUtil" />
 	</bean>
 
-	<bean id="cyProxyRegistryImpl"
-		class="org.cytoscape.io.internal.util.CyProxyRegistryImpl">
-	</bean>
+
+
+	<!-- Proxy stuff  -->
+	<bean id="defaultJVMCyProxySelector" class="org.cytoscape.io.internal.util.DefaultJVMCyProxySelectorImpl"/>
+	<bean id="cyProxyRegistryImpl" class="org.cytoscape.io.internal.util.CyProxyRegistryImpl"/>
+	
 
 </beans>
