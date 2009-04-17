@@ -26,7 +26,7 @@ import org.cytoscape.io.util.CyProxyRegistry;
  * Dialog for assigning proxy settings.
  * @author Pasteur
  */
-public class ProxySettingsTask implements Task, TunableValidator
+public class ProxySettingsTask implements Task,TunableValidator
 {
 	static final Map<String, Proxy.Type> types = new HashMap<String, Proxy.Type>(4, 1.0f);
 	static
@@ -44,7 +44,7 @@ public class ProxySettingsTask implements Task, TunableValidator
 	public String hostname="";
 
 	@Tunable(description="Port",group={""},dependsOn="type!=direct",alignment={Param.horizontal})
-	public int port = 0;
+	public int port=0;
 
 	@Tunable(description="Check connectivity now")
 	public boolean checkSettings = false;
