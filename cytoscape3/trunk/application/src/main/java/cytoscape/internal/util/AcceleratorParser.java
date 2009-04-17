@@ -1,4 +1,4 @@
-package cytoscape.util;
+package cytoscape.internal.util;
 
 import java.util.StringTokenizer;
 import java.awt.event.InputEvent;
