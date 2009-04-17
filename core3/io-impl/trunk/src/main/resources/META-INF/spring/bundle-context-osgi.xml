@@ -61,4 +61,7 @@
 		interface="org.cytoscape.io.util.CyProxySelector">
 	</osgi:service>
 
+	<osgi:service id="cyProxyRegistryService" ref="cyProxyRegistryImpl" 
+		interface="org.cytoscape.io.util.CyProxyRegistry">
+	</osgi:service>
 </beans>
