@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap;
 
 import org.cytoscape.view.model.CyNetworkView;
@@ -39,75 +39,82 @@ import org.cytoscape.view.model.VisualProperty;
 
 
 /**
- * This is simply a collection of MappingCalculators that define
- * how a set of attributes modify the visual properties of a
- * View object.
+ * This is simply a collection of MappingCalculators that define how a set of
+ * attributes modify the visual properties of a View object.
+ * 
  */
 public interface VisualStyle {
-	
 	/**
-	 * Returns name of this visual style.  This should NOT be used as ID of 
-	 * this Visual Style.  Just for GUI components.
-	 * 
+	 * Returns name of this visual style. This should NOT be used as ID of this
+	 * Visual Style. Just for GUI components.
+	 *
 	 * @return title of this visual style
 	 */
 	public String getTitle();
-	
+
 	/**
 	 * Set new title of this VS.
+	 * Will be used by rename function.
 	 * 
-	 * @param title New title.
+	 * @param title
+	 *            New title.
 	 */
 	public void setTitle(String title);
-	
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param c DOCUMENT ME!
-	 */
-	void setMappingCalculator(MappingCalculator c);
 
 	/**
-	 *  DOCUMENT ME!
+	 * Add a new mapping for this Visual Style.
+	 * 
+	 * Note: renamed from "set" to "add" for consistency.
 	 *
-	 * @param t DOCUMENT ME!
+	 * @param mapping
+	 *            DOCUMENT ME!
+	 */
+	public void addMappingCalculator(MappingCalculator<?, ?> mapping);
+
+	/**
+	 *  get current mapping for the Visual Property vp.
+	 *
+	 * @param <V> DOCUMENT ME!
+	 * @param vp DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	MappingCalculator getMappingCalculator(VisualProperty<?> t);
+	public <V> MappingCalculator<?, V> getMappingCalculator(VisualProperty<V> vp);
 
 	/**
-	 *  Removes the mapping for the given VisualProperty
+	 *  Remove a mapping for Visual Property.
 	 *
-	 * @param t DOCUMENT ME!
-	 *
-	 * @return  the removed MappingCalculator (null if one was not defined for the VisualProperty)
-	 */
-	MappingCalculator removeMappingCalculator(VisualProperty<?> t);
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param <T> DOCUMENT ME!
-	 * @param prop DOCUMENT ME!
+	 * @param <V> DOCUMENT ME!
+	 * @param vp DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	<T> T getDefaultValue(VisualProperty<T> prop);
+	public <V> MappingCalculator<?, V> removeMappingCalculator(VisualProperty<V> vp);
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns default value for the Visual Property vp.
 	 *
-	 * @param <T> DOCUMENT ME!
+	 * @param <V> DOCUMENT ME!
+	 * @param vp DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public <V> V getDefaultValue(VisualProperty<V> vp);
+
+	/**
+	 *  Setter for the default value of vp.
+	 *
+	 * @param <V> DOCUMENT ME!
 	 * @param vp DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
-	<T> void setDefaultValue(VisualProperty<T> vp, T value);
+	public <V> void setDefaultValue(VisualProperty<V> vp, V value);
 
-	// ??
 	/**
-	 *  DOCUMENT ME!
+	 * Apply this visual style to the view.
 	 *
-	 * @param v DOCUMENT ME!
+	 * @param v
+	 *            DOCUMENT ME!
 	 */
 	void apply(CyNetworkView v);
 }

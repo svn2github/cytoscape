@@ -37,49 +37,69 @@ package org.cytoscape.view.vizmap;
 import java.util.List;
 
 import org.cytoscape.model.GraphObject;
-
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
 
 
 /**
- * This class defines how an attribute gets mapped to a visual property.
- * It takes two values: an attribute and a visual property and provides
- * the mapping function from converting the attribute to the visual
- * property.
+ * This class defines how an attribute gets mapped to a visual property.<br />
+ * 
+ * It takes two values:
+ * <ul>
+ *  <li>Attribute value: node name(Strings), expression values(Numbers), ...</li>
+ *  <li>Visual Property: node size(Numbers), edge color(Color), node shape(NodeShape), ...</li>
+ * </ul>
+ * 
+ * This provides the mapping function from converting the attribute to the visual
+ * property.  Essentially, this is a map using <K> as the key and <V> as the value.
  *
- * Or should the mapping calculator map from Attr to Class<?>?
- * @param <T> DOCUMENT ME!
+ * The direction of mapping is ALWAYS:<br />
+ * 
+ * K(Attribute) ---> V(Visual Property)
+ * 
+ * K will be used in implementations.
+ * 
+ * @param <K> Attribute value object type.  This is the key of this mapping (Can be any objects)
+ * @param <V> Visual property value type. (can be any type)
+ * 
  */
-public interface MappingCalculator {
+public interface MappingCalculator<K, V> {
 	/**
 	 * The attribute to be mapped.
-	 *
-	 * @param name  DOCUMENT ME!
+	 *  (Was called <i>controlling attribute name</i> in 2.x)
+	 *  
+	 * @param name Name of the attribute used in this mapping.
+	 * 
 	 */
-	void setMappingAttributeName(String name);
+	public void setMappingAttributeName(String name);
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns attribute name used in this mapping.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	String getMappingAttributeName();
+	public String getMappingAttributeName();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Class<K> getMappingAttributeType();
 
 	/**
 	 * The visual property the attribute gets mapped to.
 	 *
-	 * @param vp  DOCUMENT ME!
+	 * @param vp  Visual Property for this mapping.
 	 */
-	void setVisualProperty(VisualProperty<?> vp);
+	public void setVisualProperty(VisualProperty<V> vp);
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	VisualProperty<?> getVisualProperty();
+	public VisualProperty<V> getVisualProperty();
 
 	/**
 	 *  Since current MappingCalculators map from Attributes to
@@ -87,9 +107,10 @@ public interface MappingCalculator {
 	 *  generic types that have CyAttributes; currently this is
 	 *  GraphObject.
 	 *
-	 * @param <V> DOCUMENT ME!
+	 * @param <G> Graph object type.
+	 * 
 	 * @param column DOCUMENT ME!
 	 * @param views DOCUMENT ME!
 	 */
-	<T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views);
+	<G extends GraphObject> void apply(ViewColumn<V> column, List<? extends View<G>> views);
 }
