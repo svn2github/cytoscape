@@ -60,8 +60,9 @@ import java.util.Map;
 /**
  */
 public class VisualStyleImpl implements VisualStyle {
-	private Map<VisualProperty<?>, MappingCalculator> calculators;
+	private Map<VisualProperty<?>, MappingCalculator<?, ?>> calculators;
 	private Map<VisualProperty<?>, Object> perVSDefaults;
+	
 	private CyEventHelper eventHelper;
 	private VisualPropertyCatalog vpCatalog;
 	
@@ -86,7 +87,7 @@ public class VisualStyleImpl implements VisualStyle {
 
 		this.eventHelper = eventHelper;
 		this.vpCatalog = vpCatalog;
-		calculators = new HashMap<VisualProperty<?>, MappingCalculator>();
+		calculators = new HashMap<VisualProperty<?>, MappingCalculator<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
 		this.title = title;
 	}
@@ -96,23 +97,21 @@ public class VisualStyleImpl implements VisualStyle {
 	 *
 	 * @param c DOCUMENT ME!
 	 */
-	public void setMappingCalculator(final MappingCalculator c) {
-		calculators.put(c.getVisualProperty(), c);
+	public void addMappingCalculator(final MappingCalculator<?, ?> mapping) {
+		calculators.put(mapping.getVisualProperty(), mapping);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param t DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public MappingCalculator getMappingCalculator(final VisualProperty<?> t) {
-		return calculators.get(t);
+
+	
+	@SuppressWarnings("unchecked")
+	public <V> MappingCalculator<?, V> getMappingCalculator(VisualProperty<V> t) {
+		return (MappingCalculator<?, V>) calculators.get(t);
 	}
 
-	public MappingCalculator removeMappingCalculator(final VisualProperty<?> t) {
-		return calculators.remove(t);
+	@SuppressWarnings("unchecked")
+	public <V> MappingCalculator<?, V> removeMappingCalculator(VisualProperty<V> t) {
+		// TODO Auto-generated method stub
+		return (MappingCalculator<?, V>) calculators.remove(t);
 	}
 
 	/**
@@ -123,8 +122,10 @@ public class VisualStyleImpl implements VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public <T> T getDefaultValue(final VisualProperty<T> vp) {
-		return (T) perVSDefaults.get(vp);
+	@SuppressWarnings("unchecked")
+	public <V> V getDefaultValue(final VisualProperty<V> vp) {
+		// Since setter checks type, this cast is always legal.
+		return (V) perVSDefaults.get(vp);
 	}
 
 	/**
@@ -164,11 +165,10 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param views DOCUMENT ME!
 	 * @param visualProperties DOCUMENT ME!
 	 */
-	public <T extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<T>> views,
+	public <G extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<G>> views,
 	                                              final Collection<? extends VisualProperty<?>> visualProperties) {
-		for (VisualProperty<?> vp: visualProperties){
+		for (VisualProperty<?> vp: visualProperties)
 			applyImpl(view, views, vp);
-		}
 	}
 	/**
 	 *  DOCUMENT ME!
@@ -177,10 +177,10 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param views DOCUMENT ME!
 	 * @param visualProperties DOCUMENT ME!
 	 */
-	public <T, V extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<V>> views, final VisualProperty<T> vp) {
-		ViewColumn<T> column = view.getColumn(vp);
-		final MappingCalculator c = getMappingCalculator(vp);
-		final T perVSDefault = getDefaultValue(vp);
+	public <V, G extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<G>> views, final VisualProperty<V> vp) {
+		ViewColumn<V> column = view.getColumn(vp);
+		final MappingCalculator<?, V> c = getMappingCalculator(vp);
+		final V perVSDefault = getDefaultValue(vp);
 		if (perVSDefault != null){
 			column.setDefaultValue(perVSDefault);
 		}
@@ -188,7 +188,7 @@ public class VisualStyleImpl implements VisualStyle {
 			c.apply(column, views);
 		} else {
 			// reset all rows to allow usage of default value:
-			column.setValues(new HashMap<View<V>, T>(), views);
+			column.setValues(new HashMap<View<G>, V>(), views);
 		}
 	}
 
@@ -199,4 +199,6 @@ public class VisualStyleImpl implements VisualStyle {
 	public void setTitle(String title) {
 		this.title = title;	
 	}
+
+	
 }
