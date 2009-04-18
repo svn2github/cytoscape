@@ -33,10 +33,9 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 //LinearNumberToNumberInterpolator.java
-
 //----------------------------------------------------------------------------
 // $Revision: 10005 $
 // $Date: 2007-04-17 19:50:13 -0700 (Tue, 17 Apr 2007) $
@@ -44,43 +43,34 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.mappings.interpolators;
 
-
 //----------------------------------------------------------------------------
 /**
  * The class assumes that the supplied range objects are Numbers, and returns a
  * linearly interplated value according to the value of frac.
- *
+ * 
  * If either object argument is not a Number, null is returned.
  */
-public class LinearNumberToNumberInterpolator extends LinearNumberInterpolator {
-    /**
-     * Creates a new LinearNumberToNumberInterpolator object.
-     */
-    public LinearNumberToNumberInterpolator() {
-    }
+public class LinearNumberToNumberInterpolator extends
+		LinearNumberInterpolator<Number> {
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param frac DOCUMENT ME!
-     * @param lowerRange DOCUMENT ME!
-     * @param upperRange DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Object getRangeValue(double frac, Object lowerRange,
-        Object upperRange) {
-        if (!(lowerRange instanceof Number))
-            return null;
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param frac
+	 *            DOCUMENT ME!
+	 * @param lowerRange
+	 *            DOCUMENT ME!
+	 * @param upperRange
+	 *            DOCUMENT ME!
+	 * 
+	 * @return Value for the given fraction point.
+	 */
+	public Number getRangeValue(double frac, Number lowerRange,
+			Number upperRange) {
 
-        if (!(upperRange instanceof Number))
-            return null;
+		double lowerVal = lowerRange.doubleValue();
+		double upperVal = upperRange.doubleValue();
 
-        double lowerVal = ((Number) lowerRange).doubleValue();
-        double upperVal = ((Number) upperRange).doubleValue();
-
-        double returnVal = (frac * upperVal) + ((1.0 - frac) * lowerVal);
-
-        return new Double(returnVal);
-    }
+		return (frac * upperVal) + ((1.0 - frac) * lowerVal);
+	}
 }

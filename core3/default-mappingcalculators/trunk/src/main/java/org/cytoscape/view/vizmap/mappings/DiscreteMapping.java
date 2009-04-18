@@ -33,7 +33,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 //----------------------------------------------------------------------------
 // $Revision: 13022 $
@@ -42,13 +42,6 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.mappings;
 
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.GraphObject;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewColumn;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.MappingCalculator;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,164 +49,162 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewColumn;
+import org.cytoscape.view.model.VisualProperty;
 
 /**
- * Implements a lookup table mapping data to values of a particular class.
- * The data value is extracted from a bundle of attributes by using a
- * specified data attribute name.
+ * Implements a lookup table mapping data to values of a particular class. The
+ * data value is extracted from a bundle of attributes by using a specified data
+ * attribute name.
  */
-public class DiscreteMapping implements MappingCalculator {
-	Object defaultObj; // the default value held by this mapping
-	Class<?> rangeClass; // the valid range class for this mapping
-	String attrName; // the name of the controlling data attribute
-	private VisualProperty<?> vp;
-	private SortedMap<Object,Object> treeMap; //  contains the actual map elements (sorted)
-	private Object lastKey;
+public class DiscreteMapping<K, V> extends AbstractMappingCalculator<K, V> {
+	
+	// contains the actual map elements (sorted)
+	private SortedMap<K, V> treeMap; 
+	
+	private K lastKey;
 
 	/**
 	 * Constructor.
-	 * @param defObj Default Object.
+	 * 
+	 * @param defObj
+	 *            Default Object.
 	 */
-	public DiscreteMapping(Object defObj) {
-		this(defObj, null);
-	}
-
-	/**
-	 * Constructor.
-	 * @param defObj Default Object.
-	 * @param attrName Controlling Attribute Name.
-	*/
-	public DiscreteMapping(Object defObj, String attrName) {
-		treeMap = new TreeMap<Object,Object>();
-
-		this.defaultObj = defObj;
-		this.rangeClass = defObj.getClass();
-
-		if (attrName != null)
-			setControllingAttributeName(attrName);
+	public DiscreteMapping(String attrName, Class<K> attrType, VisualProperty<V> vp) {
+		super(attrName, attrType, vp);
+		treeMap = new TreeMap<K, V>();
 	}
 	
-	public void setMappingAttributeName(String name){
-		attrName = name;
+	@Override public String toString() {
+		return "Discrete Mapping";
 	}
 
-	public String getMappingAttributeName(){
-		return attrName;
-	}
-
-	public void setVisualProperty(VisualProperty<?> vp){
-		this.vp = vp;
-	}
-
-	public VisualProperty<?> getVisualProperty(){
-		return vp;
-	}
-
-	public <T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views){
-		if (views.size() < 1)
+	public <G extends GraphObject> void apply(ViewColumn<V> column,
+			List<? extends View<G>> views) {
+		if (views == null || views.size() < 1)
 			return; // empty list, nothing to do
-		CyRow row = views.get(0).getSource().attrs(); // to check types, have to peek at first view instance
+
+		//final CyRow row;// = views.get(0).getSource().attrs(); // to check types,
+		// have to peek at
+		// first view
+		// instance
 		// check types:
-		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attrName);
-		Class<?> vpType = vp.getType();
-		if (vpType.isAssignableFrom(rangeClass)){
-			// FIXME: should check here? or does that not matter?
-			// if (keyClass.isAssignableFrom(attrType)) 
-			doMap(views, column, attrType);
-		} else {
-			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType());
-		}
+		
+//		try {
+//			attrType = (Class<K>) row.getDataTable().getColumnTypeMap().get(
+//					attrName);
+//		} catch (ClassCastException ce) {
+//			throw new IllegalArgumentException("Mapping " + toString()
+//					+ " can't map from attribute type " + attrType
+//					+ " to VisualProperty " + vp + " of type " + vp.getType());
+//		}
+		// Class<V> vpType = vp.getType();
+		// if (vpType.isAssignableFrom(rangeClass)){
+		// // FIXME: should check here? or does that not matter?
+		// // if (keyClass.isAssignableFrom(attrType))
+		doMap(views, column);
+		// } else {
+		// throw new
+		// IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType());
+		// }
 	}
-	/** 
+
+	/**
 	 * Read attribute from row, map it and apply it.
 	 * 
 	 * types are guaranteed to be correct (? FIXME: check this)
 	 * 
-	 * Putting this in a separate method makes it possible to make it type-parametric.
+	 * Putting this in a separate method makes it possible to make it
+	 * type-parametric.
 	 * 
-	 * @param <T> the type-parameter of the ViewColumn column
-	 * @param <K> the type-parameter of the key stored in the mapping (the object read as an attribute value has to be is-a K)
-	 * @param <V> the type-parameter of the View
+	 * @param <V>
+	 *            the type-parameter of the ViewColumn column
+	 * @param <K>
+	 *            the type-parameter of the key stored in the mapping (the
+	 *            object read as an attribute value has to be is-a K)
+	 * @param <V>
+	 *            the type-parameter of the View
 	 */
-	private <T,K, V extends GraphObject> void doMap(final List<? extends View<V>> views, ViewColumn<T> column, Class<K> attrType){
+	private <G extends GraphObject> void doMap(
+			final List<? extends View<G>> views, ViewColumn<V> column) {
 		// aggregate changes to be made in these:
-		Map<View<V>, T> valuesToSet = new HashMap<View<V>, T>();
-		List<View<V>> valuesToClear = new ArrayList<View<V>>();
+		final Map<View<G>, V> valuesToSet = new HashMap<View<G>, V>();
+		final List<View<G>> valuesToClear = new ArrayList<View<G>>();
 
-		for (View<V> v: views){
-			CyRow row = v.getSource().attrs();
-			if (row.contains(attrName, attrType) ){
+		CyRow row;
+		for (View<G> v : views) {
+			row = v.getSource().attrs();
+			if (row.contains(attrName, attrType)) {
 				// skip Views where source attribute is not defined;
-				// ViewColumn will automatically substitute the per-VS or global default, as appropriate
-				
-				final K key = (K) v.getSource().attrs().get(attrName, attrType);
-				if (treeMap.containsKey(key)){
-					final T value = (T) treeMap.get(key);
+				// ViewColumn will automatically substitute the per-VS or global
+				// default, as appropriate
+
+				final K key = v.getSource().attrs().get(attrName, attrType);
+				if (treeMap.containsKey(key)) {
+					final V value = treeMap.get(key);
 					valuesToSet.put(v, value);
 				} else { // remove value so that default value will be used:
 					valuesToClear.add(v);
-				}					
+				}
 			} else { // remove value so that default value will be used:
 				valuesToClear.add(v);
 			}
 		}
 		column.setValues(valuesToSet, valuesToClear);
 	}
-	
+
 	/**
 	 * Gets Value for Specified Key.
-	 * @param key String Key.
+	 * 
+	 * @param key
+	 *            String Key.
 	 * @return Object.
 	 */
-	public Object getMapValue(Object key) {
+	public V getMapValue(K key) {
 		return treeMap.get(key);
 	}
 
 	/**
 	 * Puts New Key/Value in Map.
-	 * @param key Key Object.
-	 * @param value Value Object.
+	 * 
+	 * @param key
+	 *            Key Object.
+	 * @param value
+	 *            Value Object.
 	 */
-	public void putMapValue(Object key, Object value) {
+	public void putMapValue(K key, V value) {
 		lastKey = key;
 		treeMap.put(key, value);
-		//fireStateChanged();
+		// fireStateChanged();
 	}
 
 	/**
 	 * Gets the Last Modified Key.
+	 * 
 	 * @return Key Object.
 	 */
-	public Object getLastKeyModified() {
+	public K getLastKeyModified() {
 		return lastKey;
 	}
 
 	/**
 	 * Adds All Members of Specified Map.
-	 * @param map Map.
+	 * 
+	 * @param map
+	 *            Map.
 	 */
-	public void putAll(Map<Object, Object> map) {
+	public void putAll(Map<K, V> map) {
 		treeMap.putAll(map);
 	}
 
-	// AJK: 05/05/06 BEGIN
 	/**
 	 * gets all map values
-	 *
+	 * 
 	 */
-	public Map<Object,Object> getAll() {
+	public Map<K, V> getAll() {
 		return treeMap;
-	}
-
-	/**
-	 * Gets the Name of the Controlling Attribute.
-	 * @return Attribute Name.
-	 */
-	public String getControllingAttributeName() {
-		return attrName;
-	}
-
-	public void setControllingAttributeName(String attrName) {
-		this.attrName = attrName;
 	}
 }

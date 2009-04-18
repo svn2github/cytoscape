@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,123 +31,77 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.view.vizmap.mappings;
-
-import org.cytoscape.model.*;
-
-import org.cytoscape.view.model.*;
-
-import org.cytoscape.view.vizmap.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewColumn;
+import org.cytoscape.view.model.VisualProperty;
+
 /**
  */
-public class PassthroughMappingCalculator implements MappingCalculator {
-	private String attributeName;
-	private VisualProperty<?> vp;
+public class PassthroughMappingCalculator<K, V> extends
+		AbstractMappingCalculator<K, V> {
 
 	/**
-	 * dataType is the type of the _attribute_ !!
-	 * currently we force that to be the same as the VisualProperty;
-	 * FIXME: allow different once? but how to coerce?
+	 * dataType is the type of the _attribute_ !! currently we force that to be
+	 * the same as the VisualProperty; FIXME: allow different once? but how to
+	 * coerce?
 	 */
-	public <T> PassthroughMappingCalculator(final String attributeName, final VisualProperty<T> vp) {
-		this.attributeName = attributeName;
-		this.vp = vp;
+	public PassthroughMappingCalculator(final String attrName,final Class<K> attrType,
+			final VisualProperty<V> vp) {
+		super(attrName, attrType, vp);
+	}
+	
+	@Override public String toString() {
+		return "Passthrough Mapping";
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param attributeName DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param v
+	 *            DOCUMENT ME!
 	 */
-	public void setMappingAttributeName(final String attributeName) {
-		this.attributeName = attributeName;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getMappingAttributeName() {
-		return attributeName;
-	}
-
-	/**
-	 * The visual property the attribute gets mapped to.
-	 *
-	 * @param vp  DOCUMENT ME!
-	 */
-	public void setVisualProperty(final VisualProperty<?> vp) {
-		this.vp = vp;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public VisualProperty<?> getVisualProperty() {
-		return vp;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param v DOCUMENT ME!
-	 */
-	public <T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views){
-		if (views.size() < 1)
+	public <G extends GraphObject> void apply(ViewColumn<V> column,
+			List<? extends View<G>> views) {
+		if(views == null || views.size() < 1)
 			return; // empty list, nothing to do
-		CyRow row = views.get(0).getSource().attrs();
-		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attributeName);
-		// since attributes can only store certain types of Objects, it is enough to test for these:
-		Class<?> vpType = vp.getType();
+
+		CyRow row;
+		
 		// FIXME: also check that column's vp is internally-stored vp!
-		if (vpType.isAssignableFrom(attrType)){ // can simply copy object without any conversion
+		if (vp.getType().isAssignableFrom(attrType)) { // can simply copy object
+													// without any conversion
 			// aggregate changes to be made in these:
-			Map<View<V>, T> valuesToSet = new HashMap<View<V>, T>();
-			List<View<V>> valuesToClear = new ArrayList<View<V>>();
-			for (View<V> v: views){
+			final Map<View<G>, K> valuesToSet = new HashMap<View<G>, K>();
+			final List<View<G>> valuesToClear = new ArrayList<View<G>>();
+			
+			for (View<G> v : views) {
 				row = v.getSource().attrs();
-				if (row.contains(attributeName, attrType) ){
-					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
-					final T value = (T) row.get(attributeName, attrType);
+				if (row.contains(attrName, attrType)) {
+					// skip Views where source attribute is not defined;
+					// ViewColumn will automatically substitute the per-VS or
+					// global default, as appropriate
+					final K value = row.get(attrName, attrType);
 					valuesToSet.put(v, value);
 				} else { // remove value so that default value will be used:
 					valuesToClear.add(v);
 				}
 			}
-			column.setValues(valuesToSet, valuesToClear);
-		} else if (String.class.isAssignableFrom(vpType)){
-			// can convert any object to string, so no need to check attribute type
-			// also, since we have to convert the Object here, can't use checkAndDoCopy()
-			ViewColumn<String> c = (ViewColumn<String>) column; // have  to cast here, even though previous check ensures that T is java.util.String
-
-			// aggregate changes to be made in these:
-			Map<View<V>, String> valuesToSet = new HashMap<View<V>, String>();
-			List<View<V>> valuesToClear = new ArrayList<View<V>>();
-
-			for (View<V> v: views){
-				row = v.getSource().attrs();
-				if (row.contains(attributeName, attrType) ){
-					// skip Views where source attribute is not defined; ViewColumn will automatically substitute the per-VS or global default, as appropriate 
-					final Object value = (Object) row.get(attributeName, attrType);
-					valuesToSet.put(v, value.toString());
-				} else { // remove value so that default value will be used:
-					valuesToClear.add(v);
-				}
-			}
-			c.setValues(valuesToSet, valuesToClear);
-		} else {	
-			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType()); 
+			column.setValues((Map<? extends View<?>, V>) valuesToSet, valuesToClear);
+		} else {
+			throw new IllegalArgumentException("Mapping " + toString()
+					+ " can't map from attribute type " + attrType
+					+ " to VisualProperty " + vp + " of type " + vp.getType());
 		}
 		// FIXME: handle List & Map
 	}

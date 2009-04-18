@@ -33,10 +33,9 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 // BoundaryRangeValues.java
-
 //----------------------------------------------------------------------------
 // $Revision: 10059 $
 // $Date: 2007-04-20 16:29:49 -0700 (Fri, 20 Apr 2007) $
@@ -48,74 +47,77 @@ package org.cytoscape.view.vizmap.mappings;
 //----------------------------------------------------------------------------
 /**
  * This class defines a data object representing the range values associated
- * with a particular domain value, called a boundary value. The domain value
- * is not stored here, since objects of this class are intended to be used as
- * the values in a map where the domain value is the key.
+ * with a particular domain value, called a boundary value. The domain value is
+ * not stored here, since objects of this class are intended to be used as the
+ * values in a map where the domain value is the key.
  *
- * Three values must be specified for each boundary value. The lesserValue
- * field is used for interpolation upon smaller domain values; the
- * greaterValue field is used for interpolation upon larger domain values;
- * and the equalValue field is used when the domain value is exactly equal
- * to the associated boundary domain value. This distinction is needed to
- * support different ranges of interpolation above and below the same
- * domain value, plus allow a distinctly different value for exact matches.
+ * Three values must be specified for each boundary value. The lesserValue field
+ * is used for interpolation upon smaller domain values; the greaterValue field
+ * is used for interpolation upon larger domain values; and the equalValue field
+ * is used when the domain value is exactly equal to the associated boundary
+ * domain value. This distinction is needed to support different ranges of
+ * interpolation above and below the same domain value, plus allow a distinctly
+ * different value for exact matches.
  */
-public class BoundaryRangeValues {
-    /**
-     *
-     */
-    public Object lesserValue = null;
+public class BoundaryRangeValues<T> {
+	/**
+	 *
+	 */
+	public T lesserValue = null;
 
-    /**
-     *
-     */
-    public Object equalValue = null;
+	/**
+	 *
+	 */
+	public T equalValue = null;
 
-    /**
-     *
-     */
-    public Object greaterValue = null;
+	/**
+	 *
+	 */
+	public T greaterValue = null;
 
-    /**
-     * Creates a new BoundaryRangeValues object.
-     */
-    public BoundaryRangeValues() {
-    }
+	/**
+	 * Creates a new BoundaryRangeValues object.
+	 */
+	public BoundaryRangeValues() {
+	}
 
-    /**
-     * Creates a new BoundaryRangeValues object.
-     *
-     * @param lesser Object used for values less than this point.
-     * @param equal Object used for value equal to this point.
-     * @param greater Object used for values greater than this point.
-     */
-    public BoundaryRangeValues(Object lesser, Object equal, Object greater) {
-        lesserValue = lesser;
-        equalValue = equal;
-        greaterValue = greater;
-    }
+	/**
+	 * Creates a new BoundaryRangeValues object.
+	 *
+	 * @param lesser
+	 *            Object used for values less than this point.
+	 * @param equal
+	 *            Object used for value equal to this point.
+	 * @param greater
+	 *            Object used for values greater than this point.
+	 */
+	public BoundaryRangeValues(T lesser, T equal, T greater) {
+		lesserValue = lesser;
+		equalValue = equal;
+		greaterValue = greater;
+	}
 
-    /**
-     * Creates a new BoundaryRangeValues object.
-     * This is a copy constructor.
-     *
-     * @param original DOCUMENT ME!
-     */
-    public BoundaryRangeValues(final BoundaryRangeValues original) {
-    	this.equalValue = original.equalValue;
-    	this.lesserValue = original.lesserValue;
-    	this.greaterValue = original.greaterValue;
-    }
+	/**
+	 * Creates a new BoundaryRangeValues object. This is a copy constructor.
+	 *
+	 * @param original
+	 *            DOCUMENT ME!
+	 */
+	public BoundaryRangeValues(final BoundaryRangeValues<T> original) {
+		this.equalValue = original.equalValue;
+		this.lesserValue = original.lesserValue;
+		this.greaterValue = original.greaterValue;
+	}
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public String toString() {
-        String returnVal = "{" + lesserValue.toString() + "," +
-            equalValue.toString() + "," + greaterValue.toString() + "}";
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public String toString() {
+		String returnVal = "{" + lesserValue.toString() + "," + equalValue.toString() + ","
+		                   + greaterValue.toString() + "}";
 
-        return returnVal;
-    }
+		return returnVal;
+	}
 }

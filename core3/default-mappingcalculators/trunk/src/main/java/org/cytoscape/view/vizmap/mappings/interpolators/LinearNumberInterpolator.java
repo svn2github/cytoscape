@@ -33,10 +33,9 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 //LinearNumberInterpolator.java
-
 //----------------------------------------------------------------------------
 // $Revision: 10005 $
 // $Date: 2007-04-17 19:50:13 -0700 (Tue, 17 Apr 2007) $
@@ -44,44 +43,37 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.mappings.interpolators;
 
-
 //----------------------------------------------------------------------------
 /**
  * This subclass of NumberInterpolator further assumes a linear interpolation,
- * and calculates the fractional distance of the target domain value from
- * the lower boundary value for the convenience of subclasses.
+ * and calculates the fractional distance of the target domain value from the
+ * lower boundary value for the convenience of subclasses.
  */
-abstract public class LinearNumberInterpolator extends NumberInterpolator {
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param lowerDomain DOCUMENT ME!
-     * @param lowerRange DOCUMENT ME!
-     * @param upperDomain DOCUMENT ME!
-     * @param upperRange DOCUMENT ME!
-     * @param domainValue DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Object getRangeValue(double lowerDomain, Object lowerRange,
-        double upperDomain, Object upperRange, double domainValue) {
-        if (lowerDomain == upperDomain)
-            return lowerRange;
+abstract public class LinearNumberInterpolator<R> extends NumberInterpolator<R> {
+	
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param frac
+	 *            DOCUMENT ME!
+	 * @param lowerRange
+	 *            DOCUMENT ME!
+	 * @param upperRange
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	abstract public R getRangeValue(double frac, R lowerRange, R upperRange);
 
-        double frac = (domainValue - lowerDomain) / (upperDomain - lowerDomain);
+	@Override
+	public R getRangeValue(double lowerDomain, R lowerRange,
+			double upperDomain, R upperRange, double domainValue) {
 
-        return getRangeValue(frac, lowerRange, upperRange);
-    }
+		if (lowerDomain == upperDomain)
+			return lowerRange;
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param frac DOCUMENT ME!
-     * @param lowerRange DOCUMENT ME!
-     * @param upperRange DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    abstract public Object getRangeValue(double frac, Object lowerRange,
-        Object upperRange);
+		double frac = (domainValue - lowerDomain) / (upperDomain - lowerDomain);
+
+		return getRangeValue(frac, lowerRange, upperRange);
+	}
 }

@@ -53,8 +53,14 @@ package org.cytoscape.view.vizmap.mappings.interpolators;
  *
  * The behavior of this function is undefined if the target domain value
  * is not equal to one of the boundaries or between them.
+ * 
+ * @param V domain values.
+ * @param R range values.  These are Color, Number, etc.
+ * 
+ * @author mes
+ * @author kono
  */
-public interface Interpolator {
+public interface Interpolator<V, R> {
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -66,6 +72,6 @@ public interface Interpolator {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object getRangeValue(Object lowerDomain, Object lowerRange, Object upperDomain,
-	                            Object upperRange, Object domainValue);
+	 public <T extends V> R getRangeValue( T lowerDomain, R lowerRange, T upperDomain,
+	                            R  upperRange, T domainValue);
 }

@@ -33,7 +33,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 //----------------------------------------------------------------------------
 // $Revision: 13022 $
@@ -42,74 +42,79 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.mappings;
 
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.GraphObject;
-import org.cytoscape.view.vizmap.MappingCalculator;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewColumn;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
-import org.cytoscape.view.vizmap.mappings.interpolators.Interpolator;
-import org.cytoscape.view.vizmap.mappings.interpolators.FlatInterpolator;
-import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToColorInterpolator;
-import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToNumberInterpolator;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewColumn;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.mappings.interpolators.FlatInterpolator;
+import org.cytoscape.view.vizmap.mappings.interpolators.Interpolator;
+import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToColorInterpolator;
+import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToNumberInterpolator;
+
 /**
  * Implements an interpolation table mapping data to values of a particular
- * class.  The data value is extracted from a bundle of attributes by using a
+ * class. The data value is extracted from a bundle of attributes by using a
  * specified data attribute name.
- *
- * For refactoring changes in this class, please refer to:
- * cytoscape.visual.mappings.continuous.README.txt.
- *
+ * 
+ * @param <V>
+ *            Type of object Visual Property holds
+ * 
+ *            For refactoring changes in this class, please refer to:
+ *            cytoscape.visual.mappings.continuous.README.txt.
+ * 
  */
-public class ContinuousMapping implements MappingCalculator {
-	Object defaultObj; //  the default value held by this mapping
-	Class rangeClass; //  the class of values held by this mapping
-	String attrName; //  the name of the controlling data attribute
-	private VisualProperty<?> vp;
-	Interpolator interpolator; //  used to interpolate between boundaries
-	//  Contains List of Data Points
-	private List<ContinuousMappingPoint> points = new ArrayList<ContinuousMappingPoint>();
+public class ContinuousMapping<V> extends AbstractMappingCalculator<Number, V> {
+
+	private Interpolator<Number, V> interpolator; // used to interpolate between
+													// boundaries
+
+	// Contains List of Data Points
+	private List<ContinuousMappingPoint<V>> points;
 
 	/**
-	 *  Constructor.
-	 *    @param    defaultObj default object to map to
+	 * Constructor.
+	 * 
+	 * @param defaultObj
+	 *            default object to map to
 	 */
-	public ContinuousMapping(Object defaultObj) throws IllegalArgumentException {
+	public ContinuousMapping(String attrName, VisualProperty<V> vp) {
+		super(attrName, Number.class, vp);
+		this.points = new ArrayList<ContinuousMappingPoint<V>>();
 
-		this.rangeClass = defaultObj.getClass();
-		this.defaultObj = defaultObj;
-
-		//  Create Interpolator
-		if (Color.class.isAssignableFrom(this.rangeClass))
-			interpolator = new LinearNumberToColorInterpolator();
-		else if (Number.class.isAssignableFrom(this.rangeClass))
-			interpolator = new LinearNumberToNumberInterpolator();
+		// Create Interpolator
+		if (Color.class.isAssignableFrom(vp.getType()))
+			interpolator = (Interpolator<Number, V>) new LinearNumberToColorInterpolator();
+		else if (Number.class.isAssignableFrom(vp.getType()))
+			interpolator = (Interpolator<Number, V>) new LinearNumberToNumberInterpolator();
 		else
-			interpolator = new FlatInterpolator();
+			interpolator = (Interpolator<Number, V>) new FlatInterpolator();
+	}
+	
+	@Override public String toString() {
+		return "Continuous Mapping";
 	}
 
 	/**
 	 * Gets all Data Points.
+	 * 
 	 * @return List of ContinuousMappingPoint objects.
 	 */
-	public List<ContinuousMappingPoint> getAllPoints() {
+	public List<ContinuousMappingPoint<V>> getAllPoints() {
 		return points;
 	}
 
 	/**
-	 *  Adds a New Data Point.
+	 * Adds a New Data Point.
 	 */
-	public void addPoint(double value, BoundaryRangeValues brv) {
-		ContinuousMappingPoint cmp = new ContinuousMappingPoint(value, brv);
-		points.add(cmp);
+	public void addPoint(double value, BoundaryRangeValues<V> brv) {
+		points.add(new ContinuousMappingPoint<V>(value, brv));
 	}
 
 	/**
@@ -128,75 +133,87 @@ public class ContinuousMapping implements MappingCalculator {
 
 	/**
 	 * Gets Specified Point.
-	 * @param index Index Value.
+	 * 
+	 * @param index
+	 *            Index Value.
 	 * @return ContinuousMappingPoint.
 	 */
-	public ContinuousMappingPoint getPoint(int index) {
+	public ContinuousMappingPoint<V> getPoint(int index) {
 		return points.get(index);
 	}
 
 	/**
-	 * Gets the Name of the Controlling Attribute.
-	 * @return Attribute Name.
+	 * DOCUMENT ME!
+	 * 
+	 * @param <V>
+	 *            DOCUMENT ME!
+	 * @param <V>
+	 *            DOCUMENT ME!
+	 * @param column
+	 *            DOCUMENT ME!
+	 * @param views
+	 *            DOCUMENT ME!
 	 */
-	public String getControllingAttributeName() {
-		return attrName;
+	public <G extends GraphObject> void apply(ViewColumn<V> column,
+			List<? extends View<G>> views) {
+		if (views == null || views.size() < 1)
+			return; // empty list, nothing to do
+				
+			doMap(views, column); // due to check in
+															// previous line,
+															// this is a safe
+															// cast
 	}
 
 	/**
-	 * Sets the Name of the Controlling Attribute.
-	 * @param attrName Attribute Name.
-	 */
-	public void setControllingAttributeName(String attrName) {
-		this.attrName = attrName;
-	}
-
-	public <T, V extends GraphObject> void apply(ViewColumn<T> column, List<? extends View<V>> views){
-		if (views.size() < 1)
-			return; // empty list, nothing to do
-		CyRow row = views.get(0).getSource().attrs(); // to check types, have to peek at first view instance
-		// check types:
-		Class<?> attrType = row.getDataTable().getColumnTypeMap().get(attrName);
-		Class<?> vpType = vp.getType();
-		if (vpType.isAssignableFrom(rangeClass) && Number.class.isAssignableFrom(attrType)){
-			doMap(views, column, (Class<Number>)attrType); // due to check in previous line, this is a safe cast
-		} else {
-			throw new IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType());
-		}
-	}
-	/** 
 	 * Read attribute from row, map it and apply it.
 	 * 
 	 * types are guaranteed to be correct (? FIXME: check this)
 	 * 
-	 * Putting this in a separate method makes it possible to make it type-parametric.
+	 * Putting this in a separate method makes it possible to make it
+	 * type-parametric.
 	 * 
-	 * @param <T> the type-parameter of the ViewColumn column
-	 * @param <K> the type-parameter of the domain of the mapping (the object read as an attribute value has to be is-a K)
-	 * @param <V> the type-parameter of the View
+	 * @param <V>
+	 *            the type-parameter of the ViewColumn column
+	 * @param <K>
+	 *            the type-parameter of the domain of the mapping (the object
+	 *            read as an attribute value has to be is-a K)
+	 * @param <V>
+	 *            the type-parameter of the View
 	 */
-	private <T,K extends Number, V extends GraphObject> void doMap(final List<? extends View<V>> views, ViewColumn<T> column, Class<K> attrType){
+	private <G extends GraphObject> void doMap(
+			final List<? extends View<G>> views, ViewColumn<V> column) {
 		// aggregate changes to be made in these:
-		Map<View<V>, T> valuesToSet = new HashMap<View<V>, T>();
-		List<View<V>> valuesToClear = new ArrayList<View<V>>();
+		Map<View<G>, V> valuesToSet = new HashMap<View<G>, V>();
+		List<View<G>> valuesToClear = new ArrayList<View<G>>();
 
-		for (View<V> v: views){
-			CyRow row = v.getSource().attrs();
-			if (row.contains(attrName, attrType) ){
+		CyRow row;
+		for (View<G> v : views) {
+			row = v.getSource().attrs();
+
+			if (row.contains(attrName, attrType)) {
 				// skip Views where source attribute is not defined;
-				// ViewColumn will automatically substitute the per-VS or global default, as appropriate
-
-				final K attrValue = (K) v.getSource().attrs().get(attrName, attrType);
-				final T value = (T) getRangeValue(attrValue); // FIXME: make getRangeValue type-parametric, so this shouldn't be needed (??) 
+				// ViewColumn will automatically substitute the per-VS or global
+				// default, as appropriate
+				
+				// In all cases, attribute value should be a number for continuous mapping.
+				final Number attrValue = v.getSource().attrs().get(attrName,attrType);
+				final V value = getRangeValue(attrValue); // FIXME: make
+															// getRangeValue
+															// type-parametric,
+															// so this shouldn't
+															// be needed (??)
 				valuesToSet.put(v, value);
 			} else { // remove value so that default value will be used:
 				valuesToClear.add(v);
 			}
 		}
+
 		column.setValues(valuesToSet, valuesToClear);
 	}
-	private Object getRangeValue(Number domainValue) {
-		ContinuousMappingPoint firstPoint = points.get(0);
+
+	private V getRangeValue(Number domainValue) {
+		ContinuousMappingPoint<V> firstPoint = points.get(0);
 		Number minDomain = new Double(firstPoint.getValue());
 
 		// if given domain value is smaller than any in our list,
@@ -204,25 +221,26 @@ public class ContinuousMapping implements MappingCalculator {
 		int firstCmp = compareValues(domainValue, minDomain);
 
 		if (firstCmp <= 0) {
-			BoundaryRangeValues bv = firstPoint.getRange();
+			BoundaryRangeValues<V> bv = firstPoint.getRange();
 
 			if (firstCmp < 0)
 				return bv.lesserValue;
 			else
+
 				return bv.equalValue;
 		}
 
 		// if given domain value is larger than any in our Vector,
 		// return the range value for the largest domain value we have.
-		ContinuousMappingPoint lastPoint = (ContinuousMappingPoint) points
-				.get(points.size() - 1);
+		ContinuousMappingPoint<V> lastPoint = points.get(points.size() - 1);
 		Number maxDomain = new Double(lastPoint.getValue());
 
 		if (compareValues(domainValue, maxDomain) > 0) {
-			BoundaryRangeValues bv = lastPoint.getRange();
+			BoundaryRangeValues<V> bv = lastPoint.getRange();
 
 			return bv.greaterValue;
 		}
+
 		// OK, it's somewhere in the middle, so find the boundaries and
 		// pass to our interpolator function. First check for a null
 		// interpolator function
@@ -232,26 +250,24 @@ public class ContinuousMapping implements MappingCalculator {
 		// Note that the list of Points is sorted.
 		// Also, the case of the inValue equalling the smallest key was
 		// checked above.
-		ContinuousMappingPoint currentPoint;
+		ContinuousMappingPoint<V> currentPoint;
 		int index = 0;
 
 		for (index = 0; index < points.size(); index++) {
-			currentPoint = (ContinuousMappingPoint) points.get(index);
+			currentPoint = points.get(index);
 
 			Double currentValue = new Double(currentPoint.getValue());
 			int cmpValue = compareValues(domainValue, currentValue);
 
 			if (cmpValue == 0) {
-				BoundaryRangeValues bv = currentPoint.getRange();
+				BoundaryRangeValues<V> bv = currentPoint.getRange();
 
 				return bv.equalValue;
 			} else if (cmpValue < 0)
 				break;
 		}
 
-		Object object = getRangeValue(index, domainValue);
-
-		return object;
+		return getRangeValue(index, domainValue);
 	}
 
 	/**
@@ -260,20 +276,18 @@ public class ContinuousMapping implements MappingCalculator {
 	 * lower boundary value (because the desired domain value is greater) and
 	 * the "lesser" field of the upper boundary value (semantic difficulties).
 	 */
-	private Object getRangeValue(int index, Number domainValue) {
+	private V getRangeValue(int index, Number domainValue) {
 		// Get Lower Domain and Range
-		ContinuousMappingPoint lowerBound = (ContinuousMappingPoint) points
-				.get(index - 1);
+		ContinuousMappingPoint<V> lowerBound = points.get(index - 1);
 		Number lowerDomain = new Double(lowerBound.getValue());
-		BoundaryRangeValues lv = lowerBound.getRange();
-		Object lowerRange = lv.greaterValue;
+		BoundaryRangeValues<V> lv = lowerBound.getRange();
+		V lowerRange = lv.greaterValue;
 
 		// Get Upper Domain and Range
-		ContinuousMappingPoint upperBound = (ContinuousMappingPoint) points
-				.get(index);
+		ContinuousMappingPoint<V> upperBound = points.get(index);
 		Number upperDomain = new Double(upperBound.getValue());
-		BoundaryRangeValues gv = upperBound.getRange();
-		Object upperRange = gv.lesserValue;
+		BoundaryRangeValues<V> gv = upperBound.getRange();
+		V upperRange = gv.lesserValue;
 
 		return interpolator.getRangeValue(lowerDomain, lowerRange, upperDomain,
 				upperRange, domainValue);
@@ -293,21 +307,5 @@ public class ContinuousMapping implements MappingCalculator {
 			return 1;
 		else
 			return 0;
-	}
-	
-	public String getMappingAttributeName() {
-		return attrName;
-	}
-
-	public VisualProperty<?> getVisualProperty() {
-		return vp;
-	}
-
-	public void setMappingAttributeName(String name) {
-		attrName = name;
-	}
-
-	public void setVisualProperty(VisualProperty<?> vp) {
-		this.vp = vp;
 	}
 }

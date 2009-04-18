@@ -50,16 +50,16 @@ import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
  * and associated BoundaryRangeValues.
  *
  */
-public class ContinuousMappingPoint implements Cloneable {
+public class ContinuousMappingPoint<T> implements Cloneable {
 	private double value;
-	private BoundaryRangeValues range;
+	private BoundaryRangeValues<T> range;
 
 	/**
 	 * Constructor.
 	 * @param value double.
 	 * @param range BoundaryRangeValues object.
 	 */
-	public ContinuousMappingPoint(double value, BoundaryRangeValues range) {
+	public ContinuousMappingPoint(double value, BoundaryRangeValues<T> range) {
 		this.value = value;
 		this.range = range;
 	}
@@ -84,7 +84,7 @@ public class ContinuousMappingPoint implements Cloneable {
 	 * Gets BoundaryRangeValues.
 	 * @return BoundaryRangeValues Object.
 	 */
-	public BoundaryRangeValues getRange() {
+	public BoundaryRangeValues<T> getRange() {
 		return range;
 	}
 
@@ -92,7 +92,7 @@ public class ContinuousMappingPoint implements Cloneable {
 	 * Sets BoundaryRangeValues.
 	 * @param range BoundaryRangeValues Object.
 	 */
-	public void setRange(BoundaryRangeValues range) {
+	public void setRange(BoundaryRangeValues<T> range) {
 		this.range = range;
 	}
 
@@ -101,11 +101,11 @@ public class ContinuousMappingPoint implements Cloneable {
 	 * @return Cloned Object.
 	 */
 	public Object clone() {
-		final BoundaryRangeValues newRange = new BoundaryRangeValues();
+		final BoundaryRangeValues<T> newRange = new BoundaryRangeValues<T>();
 		newRange.lesserValue = range.lesserValue;
 		newRange.equalValue = range.equalValue;
 		newRange.greaterValue = range.greaterValue;
 
-		return new ContinuousMappingPoint(value, newRange);
+		return new ContinuousMappingPoint<T>(value, newRange);
 	}
 }

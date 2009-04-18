@@ -49,12 +49,7 @@ import java.awt.*;
  *
  * If either object argument is not a Color, null is returned.
  */
-public class LinearNumberToColorInterpolator extends LinearNumberInterpolator {
-    /**
-     * Creates a new LinearNumberToColorInterpolator object.
-     */
-    public LinearNumberToColorInterpolator() {
-    }
+public class LinearNumberToColorInterpolator extends LinearNumberInterpolator<Color> {
 
     /**
      *  DOCUMENT ME!
@@ -65,25 +60,17 @@ public class LinearNumberToColorInterpolator extends LinearNumberInterpolator {
      *
      * @return  DOCUMENT ME!
      */
-    public Object getRangeValue(double frac, Object lowerRange,
-        Object upperRange) {
-        if (!(lowerRange instanceof Color))
-            return null;
+    public Color getRangeValue(double frac, Color lowerRange,
+        Color upperRange) {
 
-        if (!(upperRange instanceof Color))
-            return null;
-
-        Color lowerColor = (Color) lowerRange;
-        Color upperColor = (Color) upperRange;
-
-        double red = lowerColor.getRed() +
-            (frac * (upperColor.getRed() - lowerColor.getRed()));
-        double green = lowerColor.getGreen() +
-            (frac * (upperColor.getGreen() - lowerColor.getGreen()));
-        double blue = lowerColor.getBlue() +
-            (frac * (upperColor.getBlue() - lowerColor.getBlue()));
-        double alpha = lowerColor.getAlpha() +
-            (frac * (upperColor.getAlpha() - lowerColor.getAlpha()));
+        double red = lowerRange.getRed() +
+            (frac * (upperRange.getRed() - lowerRange.getRed()));
+        double green = lowerRange.getGreen() +
+            (frac * (upperRange.getGreen() - lowerRange.getGreen()));
+        double blue = lowerRange.getBlue() +
+            (frac * (upperRange.getBlue() - lowerRange.getBlue()));
+        double alpha = lowerRange.getAlpha() +
+            (frac * (upperRange.getAlpha() - lowerRange.getAlpha()));
 
         return new Color((int) Math.round(red), (int) Math.round(green),
             (int) Math.round(blue), (int) Math.round(alpha));
