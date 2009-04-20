@@ -15,6 +15,7 @@
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 	
+
 	<!-- Export services -->
 	<osgi:service id="cyReaderManagerService" ref="cyReaderManager"
 		interface="org.cytoscape.io.read.CyReaderManager">
@@ -56,12 +57,7 @@
 			<entry key="serviceType" value="utility" />
 		</osgi:service-properties>
 	</osgi:service>
-	
-
-	<osgi:service id="fileUtilService" ref="fileUtil"
-		interface="org.cytoscape.io.util.FileUtil">
-	</osgi:service>
-	
+		
 
 	<osgi:service id="cyProxySelectorService" ref="defaultJVMCyProxySelector" 
 		interface="org.cytoscape.io.util.CyProxySelector">

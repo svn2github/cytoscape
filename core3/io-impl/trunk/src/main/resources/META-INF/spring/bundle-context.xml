@@ -131,11 +131,6 @@
 	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
 
 
-	<bean id="fileUtil" class="org.cytoscape.io.internal.util.FileUtilImpl">
-		<constructor-arg ref="streamUtil" />
-	</bean>
-
-
 
 	<!-- Proxy stuff  -->
 	<bean id="defaultJVMCyProxySelector" class="org.cytoscape.io.internal.util.DefaultJVMCyProxySelectorImpl"/>
