@@ -207,15 +207,12 @@ public class InstallationInformationDialog extends JDialog implements ChangeList
     		UninstallSoftwareWizard wizard = new UninstallSoftwareWizard(this, profileId, getSelectedIUs());
     	}
     	else if (btn == btnProperties){
-    		System.out.println("btnProperties is clicked");
-
+    		PropertiesDialog propDialog = new PropertiesDialog(this, getSelectedIUs().elementAt(0));
     	}
     	else if (btn == btnRevert){
     		System.out.println("btnRevert is clicked");
 
     	}
-    	
-
     }
     
     
