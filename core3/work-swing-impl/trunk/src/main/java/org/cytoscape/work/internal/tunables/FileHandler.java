@@ -14,7 +14,6 @@ import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.io.util.FileUtil;
 
 
 

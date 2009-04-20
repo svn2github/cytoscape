@@ -31,4 +31,8 @@
  	</bean>
 
 
+<!--	<bean id="fileUtil" class="org.cytoscape.work.internal.tunables.utils.FileUtilImpl">-->
+<!--		<constructor-arg ref="streamUtilServiceRef" />-->
+<!--	</bean>-->
+
 </beans>

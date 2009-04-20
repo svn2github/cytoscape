@@ -19,6 +19,7 @@ import java.util.List;
 import java.awt.event.KeyListener;
 import javax.swing.*;
 
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.Category;
@@ -48,6 +49,8 @@ public class InputStreamHandler extends AbstractGuiHandler {
 	private JRadioButton localRadioButton;
 	private JTextField networkFileTextField;
 	private MouseClic mc;
+
+	private StreamUtil stUtil;
 	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
 	
@@ -55,7 +58,9 @@ public class InputStreamHandler extends AbstractGuiHandler {
 		super(f,o,t);
 		this.bkUtil=bkUtil;
 		//this.flUtil=flUtil;
-		//this.stUtil=stUtil;
+		
+//		this.stUtil=stUtil; System.out.println("StUtil = " + stUtil);
+		
 		titleLabel = new JLabel("Import Network File");
 		this.theBookmarks=bookmarks;
 		fileChooser = new JFileChooser();

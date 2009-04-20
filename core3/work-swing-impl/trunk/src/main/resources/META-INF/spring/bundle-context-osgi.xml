@@ -19,9 +19,14 @@
 		ref="swingTaskManager" interface="org.cytoscape.work.TaskManager">
 	</osgi:service>
 	
-	<osgi:service id="guiHandlerFactoryService"
-		ref="guiHandlerFactory" interface="org.cytoscape.work.HandlerFactory">
-	</osgi:service>
+<!--	<osgi:service id="guiHandlerFactoryService"-->
+<!--		ref="guiHandlerFactory" interface="org.cytoscape.work.HandlerFactory">-->
+<!--	</osgi:service>-->
+
+<!--	<osgi:service id="fileUtilServiceRef"-->
+<!--		ref="fileUtil" interface="org.cytoscape.work.util.FileUtil">-->
+<!--	</osgi:service>-->
+
 
 
     <osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=bookmarks)" />
