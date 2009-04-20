@@ -1,10 +1,10 @@
 package org.cytoscape.view.vizmap.mappings;
 
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
 
 public abstract class AbstractMappingCalculator<K, V> implements
-		MappingCalculator<K, V> {
+		VisualMappingFunction<K, V> {
 
 	// Mapping attribute name.
 	protected String attrName;
