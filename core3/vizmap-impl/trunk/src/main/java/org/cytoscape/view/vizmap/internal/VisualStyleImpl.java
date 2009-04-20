@@ -34,8 +34,6 @@
 */
 package org.cytoscape.view.vizmap.internal;
 
-import org.cytoscape.event.CyEventHelper;
-
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -46,8 +44,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.VisualPropertyCatalog;
-
-import org.cytoscape.view.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 
 import java.util.Arrays;
@@ -60,41 +57,39 @@ import java.util.Map;
 /**
  */
 public class VisualStyleImpl implements VisualStyle {
-	private Map<VisualProperty<?>, MappingCalculator<?, ?>> calculators;
+	private Map<VisualProperty<?>, VisualMappingFunction<?, ?>> calculators;
 	private Map<VisualProperty<?>, Object> perVSDefaults;
-	
-	private CyEventHelper eventHelper;
 	private VisualPropertyCatalog vpCatalog;
-	
+	private static final String DEFAULT_TITLE = "?";
 	private String title;
 
-	public VisualStyleImpl(final CyEventHelper eventHelper, final VisualPropertyCatalog vpCatalog) {
-		this(eventHelper, vpCatalog, null);
+	/**
+	 * Creates a new VisualStyleImpl object.
+	 *
+	 * @param vpCatalog  DOCUMENT ME!
+	 */
+	public VisualStyleImpl(final VisualPropertyCatalog vpCatalog) {
+		this(vpCatalog, null);
 	}
-	
+
 	/**
 	 * Creates a new VisualStyleImpl object.
 	 *
 	 * @param eventHelper  DOCUMENT ME!
 	 * @param vpCatalog  DOCUMENT ME!
 	 */
-	public VisualStyleImpl(final CyEventHelper eventHelper, final VisualPropertyCatalog vpCatalog, final String title) {
-		if (eventHelper == null)
-			throw new NullPointerException("CyEventHelper is null");
-
+	public VisualStyleImpl(final VisualPropertyCatalog vpCatalog, final String title) {
 		if (vpCatalog == null)
 			throw new NullPointerException("vpCatalog is null");
-		
-		if(title == null)
-			this.title = "?";
+
+		if (title == null)
+			this.title = DEFAULT_TITLE;
 		else
 			this.title = title;
-		
-		this.eventHelper = eventHelper;
+
 		this.vpCatalog = vpCatalog;
-		calculators = new HashMap<VisualProperty<?>, MappingCalculator<?, ?>>();
+		calculators = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
-		
 	}
 
 	/**
@@ -102,21 +97,34 @@ public class VisualStyleImpl implements VisualStyle {
 	 *
 	 * @param c DOCUMENT ME!
 	 */
-	public void addMappingCalculator(final MappingCalculator<?, ?> mapping) {
+	public void addVisualMappingFunction(final VisualMappingFunction<?, ?> mapping) {
 		calculators.put(mapping.getVisualProperty(), mapping);
 	}
 
-
-	
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param <V> DOCUMENT ME!
+	 * @param t DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	@SuppressWarnings("unchecked")
-	public <V> MappingCalculator<?, V> getMappingCalculator(VisualProperty<V> t) {
-		return (MappingCalculator<?, V>) calculators.get(t);
+	public <V> VisualMappingFunction<?, V> getVisualMappingFunction(VisualProperty<V> t) {
+		return (VisualMappingFunction<?, V>) calculators.get(t);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param <V> DOCUMENT ME!
+	 * @param t DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	@SuppressWarnings("unchecked")
-	public <V> MappingCalculator<?, V> removeMappingCalculator(VisualProperty<V> t) {
-		// TODO Auto-generated method stub
-		return (MappingCalculator<?, V>) calculators.remove(t);
+	public <V> VisualMappingFunction<?, V> removeVisualMappingFunction(VisualProperty<V> t) {
+		return (VisualMappingFunction<?, V>) calculators.remove(t);
 	}
 
 	/**
@@ -158,7 +166,7 @@ public class VisualStyleImpl implements VisualStyle {
 		          vpCatalog.collectionOfVisualProperties(nodeviews, VisualProperty.NODE));
 		applyImpl(view, edgeviews,
 		          vpCatalog.collectionOfVisualProperties(edgeviews, VisualProperty.EDGE));
-		applyImpl(view, Arrays.asList((View<CyNetwork>)view),
+		applyImpl(view, Arrays.asList((View<CyNetwork>) view),
 		          vpCatalog.collectionOfVisualProperties(VisualProperty.NETWORK));
 	}
 
@@ -170,11 +178,13 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param views DOCUMENT ME!
 	 * @param visualProperties DOCUMENT ME!
 	 */
-	public <G extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<G>> views,
-	                                              final Collection<? extends VisualProperty<?>> visualProperties) {
-		for (VisualProperty<?> vp: visualProperties)
+	public <G extends GraphObject> void applyImpl(final CyNetworkView view,
+	                                              final List<View<G>> views,
+	                                              final Collection<?extends VisualProperty<?>> visualProperties) {
+		for (VisualProperty<?> vp : visualProperties)
 			applyImpl(view, views, vp);
 	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -182,13 +192,17 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param views DOCUMENT ME!
 	 * @param visualProperties DOCUMENT ME!
 	 */
-	public <V, G extends GraphObject> void applyImpl(final CyNetworkView view, final List<View<G>> views, final VisualProperty<V> vp) {
+	public <V, G extends GraphObject> void applyImpl(final CyNetworkView view,
+	                                                 final List<View<G>> views,
+	                                                 final VisualProperty<V> vp) {
 		ViewColumn<V> column = view.getColumn(vp);
-		final MappingCalculator<?, V> c = getMappingCalculator(vp);
+		final VisualMappingFunction<?, V> c = getVisualMappingFunction(vp);
 		final V perVSDefault = getDefaultValue(vp);
-		if (perVSDefault != null){
+
+		if (perVSDefault != null) {
 			column.setDefaultValue(perVSDefault);
 		}
+
 		if (c != null) {
 			c.apply(column, views);
 		} else {
@@ -197,17 +211,31 @@ public class VisualStyleImpl implements VisualStyle {
 		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param title DOCUMENT ME!
+	 */
 	public void setTitle(String title) {
-		this.title = title;	
-	}
-	
-	@Override public String toString() {
-		return this.title;
+		this.title = title;
 	}
 
-	
+	/**
+	 *  toString method returns title of this Visual Style.
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	@Override
+	public String toString() {
+		return this.title;
+	}
 }

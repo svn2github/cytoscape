@@ -120,7 +120,7 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 	}
 	
 	public VisualStyle createVisualStyle(String title) {
-		final VisualStyle newVS = new VisualStyleImpl(cyEventHelper, vpCatalog, title);
+		final VisualStyle newVS = new VisualStyleImpl(vpCatalog, title);
 		visualStyles.add(newVS);
 		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
 		                                 VisualStyleCreatedListener.class);
