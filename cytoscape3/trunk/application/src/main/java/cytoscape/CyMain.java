@@ -36,9 +36,12 @@
  */
 package cytoscape;
 
+
+import cytoscape.util.FileUtil;
 import cytoscape.view.CySwingApplication;
 import org.apache.commons.cli.*;
-import org.cytoscape.io.util.FileUtil;
+//import org.cytoscape.work.util.FileUtil;
+
 
 import javax.swing.*;
 

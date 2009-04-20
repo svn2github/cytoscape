@@ -42,9 +42,9 @@
 	</bean>
 	
 	
-<!--	<bean id="fileUtil" class="cytoscape.internal.util.FileUtilImpl">-->
-<!--		<constructor-arg ref="streamUtilServiceRef" />-->
-<!--	</bean>-->
+	<bean name="fileUtil" class="cytoscape.internal.util.FileUtilImpl">
+		<constructor-arg ref="streamUtilServiceRef" />
+	</bean>
 
 
 
@@ -128,7 +128,7 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeVersion" />
-		<constructor-arg ref="fileUtilServiceRef" />
+		<constructor-arg ref="fileUtil" />
 	</bean>
 
 	<!--

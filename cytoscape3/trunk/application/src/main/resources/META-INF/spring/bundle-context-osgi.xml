@@ -47,8 +47,8 @@
 	<osgi:reference id="creditScreenServiceRef" interface="org.cytoscape.splash.CreditScreen">
 	</osgi:reference>
 	
-	<osgi:reference id="fileUtilServiceRef" interface="org.cytoscape.io.util.FileUtil">
-	</osgi:reference>
+<!--	<osgi:reference id="fileUtil" interface="org.cytoscape.work.util.FileUtil">-->
+<!--	</osgi:reference>-->
 	
 
 	<!-- define services that application provides -->
@@ -254,8 +254,8 @@
 	<osgi:service id="aboutDialogFactoryService" ref="aboutDialogFactory"
 		interface="cytoscape.dialogs.AboutDialogFactory" />
 
-<!--	<osgi:service id="fileUtilService" ref="fileUtil"-->
-<!--		interface="cytoscape.util.FileUtil" />-->
+	<osgi:service id="fileUtilService" ref="fileUtil"
+		interface="cytoscape.util.FileUtil" />
 
 
 
