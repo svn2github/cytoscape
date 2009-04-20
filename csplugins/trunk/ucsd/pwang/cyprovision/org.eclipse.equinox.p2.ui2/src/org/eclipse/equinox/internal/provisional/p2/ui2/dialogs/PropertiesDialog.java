@@ -2,7 +2,9 @@ package org.eclipse.equinox.internal.provisional.p2.ui2.dialogs;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-
+import org.eclipse.equinox.internal.provisional.p2.ui2.model.InstalledIUElement;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.ui2.IUPropertyUtils;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -10,7 +12,7 @@ import java.awt.event.MouseListener;
 
 public class PropertiesDialog extends JDialog implements ActionListener, MouseListener {
 
-	public PropertiesDialog(){
+	public PropertiesDialog(InstallationInformationDialog parent, InstalledIUElement installedIU){
 		initComponents();
 		
 		btnOK.addActionListener(this);
@@ -24,6 +26,23 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
 		pnlGeneralInformation.setVisible(false);
 		pnlLicenseAgreement.setVisible(false);
 		
+		IInstallableUnit iu =  installedIU.getIU();
+		lbName.setText(IUPropertyUtils.getIUProperty(iu, IInstallableUnit.PROP_NAME));
+		lbIdentifier.setText(iu.getId());
+		lbVersion.setText(iu.getVersion().toString());
+		
+		if (iu.getCopyright() != null){
+			taCopyright.setText(iu.getCopyright().toString());
+		}
+		if (iu.getLicense() != null){
+			taLicenseAgreement.setText(iu.getLicense().toString());			
+		}
+		
+		this.setLocationRelativeTo(parent);
+		this.setTitle("Properties for "+ iu.getId());
+		this.setModal(true);
+		this.setSize(500, 400);
+		this.setVisible(true);
 	}
 	
 	// action listener
@@ -36,25 +55,19 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
 		if (e.getSource() instanceof JLabel){
 			JLabel lb = (JLabel)e.getSource();
 			if (lb == lbCopyright){
-				System.out.println("lbCopyright is clicked");
 				pnlCopyright.setVisible(true);
 				pnlGeneralInformation.setVisible(false);
 				pnlLicenseAgreement.setVisible(false);
-
 			}
 			else if (lb == lbGeneralInformation){
-				System.out.println("lbGeneralInformation is clicked");
 				pnlCopyright.setVisible(false);
 				pnlGeneralInformation.setVisible(true);
 				pnlLicenseAgreement.setVisible(false);
-
 			}
 			else if (lb == lbLicenseAgreement){
-				System.out.println("lbLicenseAgreement is clicked");
 				pnlCopyright.setVisible(false);
 				pnlGeneralInformation.setVisible(false);
-				pnlLicenseAgreement.setVisible(true);
-				
+				pnlLicenseAgreement.setVisible(true);			
 			}
 		}
 	}
@@ -65,6 +78,7 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
 	public void mouseReleased(MouseEvent e) {}
 
 	
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -80,6 +94,7 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
         lbLicenseAgreement = new javax.swing.JLabel();
         lbPlaceHolder = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
+        jPanel2 = new javax.swing.JPanel();
         pnlCopyright = new javax.swing.JPanel();
         lbTitleCopyright = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -140,6 +155,8 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
         gridBagConstraints.insets = new java.awt.Insets(10, 5, 0, 5);
         getContentPane().add(jPanel1, gridBagConstraints);
 
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
         pnlCopyright.setLayout(new java.awt.GridBagLayout());
 
         lbTitleCopyright.setFont(new java.awt.Font("Tahoma", 1, 12));
@@ -162,7 +179,11 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
         pnlCopyright.add(jScrollPane2, gridBagConstraints);
 
-        jScrollPane1.setViewportView(pnlCopyright);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel2.add(pnlCopyright, gridBagConstraints);
 
         pnlGeneralInformation.setLayout(new java.awt.GridBagLayout());
 
@@ -224,7 +245,12 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
         gridBagConstraints.weighty = 1.0;
         pnlGeneralInformation.add(jLabel9, gridBagConstraints);
 
-        jScrollPane1.setViewportView(pnlGeneralInformation);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel2.add(pnlGeneralInformation, gridBagConstraints);
 
         pnlLicenseAgreement.setLayout(new java.awt.GridBagLayout());
 
@@ -246,7 +272,14 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
         pnlLicenseAgreement.add(taLicenseAgreement, gridBagConstraints);
 
-        jScrollPane1.setViewportView(pnlLicenseAgreement);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel2.add(pnlLicenseAgreement, gridBagConstraints);
+
+        jScrollPane1.setViewportView(jPanel2);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -282,16 +315,7 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
         pack();
     }// </editor-fold>                        
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PropertiesDialog().setVisible(true);
-            }
-        });
-    }
+
     
     // Variables declaration - do not modify                     
     private javax.swing.JButton btnCancel;
@@ -303,6 +327,7 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lbCopyright;
@@ -322,5 +347,6 @@ public class PropertiesDialog extends JDialog implements ActionListener, MouseLi
     private javax.swing.JTextArea taLicenseAgreement;
     // End of variables declaration                   
 	
- 
+	
+	
 }
