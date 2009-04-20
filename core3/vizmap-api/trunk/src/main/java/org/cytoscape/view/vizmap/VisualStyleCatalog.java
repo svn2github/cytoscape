@@ -48,7 +48,7 @@ public interface VisualStyleCatalog {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	VisualStyle createVisualStyle();
+	VisualStyle createVisualStyle(String title);
 
 	/**
 	 *  DOCUMENT ME!
