@@ -69,7 +69,7 @@ public class VisualStyleImpl implements VisualStyle {
 	private String title;
 
 	public VisualStyleImpl(final CyEventHelper eventHelper, final VisualPropertyCatalog vpCatalog) {
-		this(eventHelper, vpCatalog, "");
+		this(eventHelper, vpCatalog, null);
 	}
 	
 	/**
@@ -84,12 +84,17 @@ public class VisualStyleImpl implements VisualStyle {
 
 		if (vpCatalog == null)
 			throw new NullPointerException("vpCatalog is null");
-
+		
+		if(title == null)
+			this.title = "?";
+		else
+			this.title = title;
+		
 		this.eventHelper = eventHelper;
 		this.vpCatalog = vpCatalog;
 		calculators = new HashMap<VisualProperty<?>, MappingCalculator<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
-		this.title = title;
+		
 	}
 
 	/**

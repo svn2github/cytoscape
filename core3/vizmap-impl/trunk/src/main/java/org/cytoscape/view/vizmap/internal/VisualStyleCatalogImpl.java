@@ -118,14 +118,9 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 		this.vpCatalog = vpCatalog;
 		visualStyles = new HashSet<VisualStyle>();
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public VisualStyle createVisualStyle() {
-		final VisualStyle newVS = new VisualStyleImpl(cyEventHelper, vpCatalog);
+	
+	public VisualStyle createVisualStyle(String title) {
+		final VisualStyle newVS = new VisualStyleImpl(cyEventHelper, vpCatalog, title);
 		visualStyles.add(newVS);
 		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
 		                                 VisualStyleCreatedListener.class);
