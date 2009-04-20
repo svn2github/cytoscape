@@ -64,16 +64,7 @@ import org.cytoscape.view.model.VisualProperty;
  * @param <V> Visual property value type. (can be any type)
  * 
  */
-public interface MappingCalculator<K, V> {
-	/**
-	 * The attribute to be mapped.
-	 *  (Was called <i>controlling attribute name</i> in 2.x)
-	 *  
-	 * @param name Name of the attribute used in this mapping.
-	 * 
-	 */
-	public void setMappingAttributeName(String name);
-
+public interface VisualMappingFunction<K, V> {
 	/**
 	 *  Returns attribute name used in this mapping.
 	 *
@@ -86,13 +77,6 @@ public interface MappingCalculator<K, V> {
 	 * @return
 	 */
 	public Class<K> getMappingAttributeType();
-
-	/**
-	 * The visual property the attribute gets mapped to.
-	 *
-	 * @param vp  Visual Property for this mapping.
-	 */
-	public void setVisualProperty(VisualProperty<V> vp);
 
 	/**
 	 *  DOCUMENT ME!

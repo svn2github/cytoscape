@@ -69,7 +69,7 @@ public interface VisualStyle {
 	 * @param mapping
 	 *            DOCUMENT ME!
 	 */
-	public void addMappingCalculator(MappingCalculator<?, ?> mapping);
+	public void addVisualMappingFunction(VisualMappingFunction<?, ?> mapping);
 
 	/**
 	 *  get current mapping for the Visual Property vp.
@@ -79,7 +79,7 @@ public interface VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public <V> MappingCalculator<?, V> getMappingCalculator(VisualProperty<V> vp);
+	public <V> VisualMappingFunction<?, V> getVisualMappingFunction(VisualProperty<V> vp);
 
 	/**
 	 *  Remove a mapping for Visual Property.
@@ -89,7 +89,7 @@ public interface VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public <V> MappingCalculator<?, V> removeMappingCalculator(VisualProperty<V> vp);
+	public <V> VisualMappingFunction<?, V> removeVisualMappingFunction(VisualProperty<V> vp);
 
 	/**
 	 *  Returns default value for the Visual Property vp.
