@@ -27,7 +27,7 @@
 	<osgi:reference id="streamUtilRef"
 		interface="org.cytoscape.io.util.StreamUtil" />
 
-	<osgi:reference id="taskManagerRef"
+	<osgi:reference id="taskManagerServiceRef"
 		interface="org.cytoscape.work.TaskManager" />
 
 	<osgi:reference id="cyProxyRegistryRef"
@@ -46,6 +46,11 @@
 
 	<osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />
+
+	<osgi:reference id="tunableInterceptorServiceRef"
+		interface="org.cytoscape.work.TunableInterceptor" />
+
+
 
 	<osgi:service id="loadNetworkFileTaskFactoryService" ref="loadNetworkFileTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">

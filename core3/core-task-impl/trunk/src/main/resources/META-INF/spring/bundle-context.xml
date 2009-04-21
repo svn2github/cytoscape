@@ -238,7 +238,7 @@
 
 	<bean id="proxySettingsTaskFactory" 
 	      class="org.cytoscape.task.internal.proxysettings.ProxySettingsTaskFactory">
-		<constructor-arg ref="taskManagerRef" />
+		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cyProxyRegistryRef" />
 	</bean>
 </beans>
