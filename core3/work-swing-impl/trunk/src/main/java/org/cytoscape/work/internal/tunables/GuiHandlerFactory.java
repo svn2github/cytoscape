@@ -27,13 +27,13 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 	private Bookmarks bookmarks;
 	private BookmarksUtil bkUtil;
 //	public FileUtil flUtil;
-	public StreamUtil stUtil;
+//	public StreamUtil stUtil;
 	
 	public GuiHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
 		this.bookmarks = book.getProperties();
 		this.bkUtil = bkUtil;
-		//this.flUtil = flUtil;
-		this.stUtil = stUtil;
+//		this.flUtil = flUtil;
+//		this.stUtil = stUtil;
 	}
 	
 	public Guihandler getHandler(Method m, Object o, Tunable t) {
