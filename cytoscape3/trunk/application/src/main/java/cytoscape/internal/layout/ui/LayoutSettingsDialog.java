@@ -42,6 +42,7 @@ import cytoscape.view.CySwingApplication;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 
+import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
 
@@ -54,6 +55,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.lang.reflect.Field;
 import java.util.Set;
 
 
