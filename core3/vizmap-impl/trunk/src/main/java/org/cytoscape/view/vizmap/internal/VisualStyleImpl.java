@@ -34,11 +34,16 @@
 */
 package org.cytoscape.view.vizmap.internal;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
-
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewColumn;
@@ -47,17 +52,11 @@ import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  */
 public class VisualStyleImpl implements VisualStyle {
-	private Map<VisualProperty<?>, VisualMappingFunction<?, ?>> calculators;
+	private Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
 	private Map<VisualProperty<?>, Object> perVSDefaults;
 	private VisualPropertyCatalog vpCatalog;
 	private static final String DEFAULT_TITLE = "?";
@@ -88,7 +87,7 @@ public class VisualStyleImpl implements VisualStyle {
 			this.title = title;
 
 		this.vpCatalog = vpCatalog;
-		calculators = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
+		mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
 	}
 
@@ -98,7 +97,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param c DOCUMENT ME!
 	 */
 	public void addVisualMappingFunction(final VisualMappingFunction<?, ?> mapping) {
-		calculators.put(mapping.getVisualProperty(), mapping);
+		mappings.put(mapping.getVisualProperty(), mapping);
 	}
 
 	/**
@@ -111,7 +110,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 */
 	@SuppressWarnings("unchecked")
 	public <V> VisualMappingFunction<?, V> getVisualMappingFunction(VisualProperty<V> t) {
-		return (VisualMappingFunction<?, V>) calculators.get(t);
+		return (VisualMappingFunction<?, V>) mappings.get(t);
 	}
 
 	/**
@@ -124,7 +123,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 */
 	@SuppressWarnings("unchecked")
 	public <V> VisualMappingFunction<?, V> removeVisualMappingFunction(VisualProperty<V> t) {
-		return (VisualMappingFunction<?, V>) calculators.remove(t);
+		return (VisualMappingFunction<?, V>) mappings.remove(t);
 	}
 
 	/**
@@ -237,5 +236,9 @@ public class VisualStyleImpl implements VisualStyle {
 	@Override
 	public String toString() {
 		return this.title;
+	}
+
+	public Collection<VisualMappingFunction<?,?>> getAllVisualMappingFunctions() {
+		return mappings.values();
 	}
 }
