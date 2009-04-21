@@ -3,8 +3,6 @@ package org.cytoscape.task.internal.proxysettings;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.CancellationException;
 
 import java.net.Proxy;
 import java.net.SocketAddress;
@@ -41,10 +39,10 @@ public class ProxySettingsTask implements Task,TunableValidator
 	//public ListSingleSelection<String> type = new ListSingleSelection<String>("direct", "http", "socks");
 
 	@Tunable(description="Proxy Server",group={""},dependsOn="type!=direct",alignment={Param.horizontal})
-	public String hostname;
+	public String hostname="";
 
 	@Tunable(description="Port",group={""},dependsOn="type!=direct",alignment={Param.horizontal})
-	public int port;
+	public int port=0;
 
 	@Tunable(description="Check connectivity now")
 	public boolean checkSettings = false;
