@@ -80,7 +80,7 @@ public class TaskTunableAction extends CytoscapeAction {
 		// create the UI based on the object
 		if ( !interceptor.createUI(task) )
 			return;	
-
+		
 		// execute the task in a separate thread
 		manager.execute(task);
 	}
