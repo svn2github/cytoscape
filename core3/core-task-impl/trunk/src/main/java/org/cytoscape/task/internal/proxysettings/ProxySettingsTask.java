@@ -97,6 +97,7 @@ public class ProxySettingsTask implements Task,TunableValidator
 
 	public void run(TaskMonitor taskMonitor)
 	{
+		System.out.println("proxySettings Run method executed");
 		taskMonitor.setTitle("Proxy Settings");
 		taskMonitor.setStatusMessage("Registering proxy settings...");
 		proxyRegistry.register("http", proxy);

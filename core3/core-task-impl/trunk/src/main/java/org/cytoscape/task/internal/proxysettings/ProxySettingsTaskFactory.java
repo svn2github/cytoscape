@@ -22,6 +22,7 @@ public class ProxySettingsTaskFactory implements TaskFactory
 
 	public Task getTask()
 	{
+//		return new ProxySettingsTask(taskManager,proxyRegistry);
 		return pst;
 	}
 }
