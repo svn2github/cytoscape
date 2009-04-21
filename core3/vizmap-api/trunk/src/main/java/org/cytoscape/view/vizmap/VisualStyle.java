@@ -34,6 +34,8 @@
  */
 package org.cytoscape.view.vizmap;
 
+import java.util.Collection;
+
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 
@@ -41,7 +43,7 @@ import org.cytoscape.view.model.VisualProperty;
 /**
  * This is simply a collection of MappingCalculators that define how a set of
  * attributes modify the visual properties of a View object.
- * 
+ *
  */
 public interface VisualStyle {
 	/**
@@ -55,7 +57,7 @@ public interface VisualStyle {
 	/**
 	 * Set new title of this VS.
 	 * Will be used by rename function.
-	 * 
+	 *
 	 * @param title
 	 *            New title.
 	 */
@@ -63,7 +65,7 @@ public interface VisualStyle {
 
 	/**
 	 * Add a new mapping for this Visual Style.
-	 * 
+	 *
 	 * Note: renamed from "set" to "add" for consistency.
 	 *
 	 * @param mapping
@@ -80,6 +82,13 @@ public interface VisualStyle {
 	 * @return  DOCUMENT ME!
 	 */
 	public <V> VisualMappingFunction<?, V> getVisualMappingFunction(VisualProperty<V> vp);
+
+	/**
+	 *  Returns all available mappings.
+	 *
+	 * @return  All visual mappings for this style.
+	 */
+	public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions();
 
 	/**
 	 *  Remove a mapping for Visual Property.
