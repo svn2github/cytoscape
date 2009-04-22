@@ -55,7 +55,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
 
 /**
  */
-public class VisualStyleImpl implements VisualStyle {
+public class VisualStyleImpl implements VisualStyle, Cloneable {
 	private Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
 	private Map<VisualProperty<?>, Object> perVSDefaults;
 	private VisualPropertyCatalog vpCatalog;
@@ -240,5 +240,15 @@ public class VisualStyleImpl implements VisualStyle {
 
 	public Collection<VisualMappingFunction<?,?>> getAllVisualMappingFunctions() {
 		return mappings.values();
+	}
+	
+	/**
+	 * Override the clone method.
+	 * Create a deep copy of this object.
+	 * 
+	 */
+	//TODO: is this actually copy everything?
+	@Override public VisualStyle clone() {
+		return new VisualStyleImpl(this.vpCatalog, new String(this.title));
 	}
 }
