@@ -98,8 +98,8 @@
 
 	<properties>
 		<!-- System Bundle Versions -->
-		<spring.version>2.5.5</spring.version>
-		<spring.osgi.version>1.1.2</spring.osgi.version>
+		<spring.version>2.5.6</spring.version>
+		<spring.osgi.version>1.2.0</spring.osgi.version>
 		<slf4j.version>1.5.0</slf4j.version>
 		<!-- some example OSGi runtime properties -->
 		<org.osgi.service.http.port>8080</org.osgi.service.http.port>
@@ -176,6 +176,14 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<!-- For Pax Logging -->
+		<repository>
+			<id>ops4j.releasees</id>
+			<url>http://repository.ops4j.org/maven2/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<build>
@@ -193,11 +201,10 @@
 				<configuration>
 					<!--  some example Pax-Runner settings -->
 					<provision>
-						<param>--log=DEBUG</param>
 						<param>--platform=felix</param>
-						<param>--profiles=minimal</param>
 						<param>--noDownloadFeedback</param>
 						<param>--vmOptions=-Xmx512M -Xbootclasspath/a:bundles/cytoscape-sun.jhall_1.0.0.jar -Dapple.laf.useScreenMenuBar=true -Dapple.awt.fileDialogForDirectories=true -Dapple.awt.graphics.UseQuartz=true -Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3</param>
+						<param>--repositories=+http://scm.ops4j.org/repos/ops4j/projects/pax/runner-repository/</param>
 					</provision>
 				</configuration>
 				<!--
@@ -303,7 +310,6 @@
 		<module>poms</module>
 		<module>provision</module>
 		<module>phoebe.dnd</module>
-		<module>layout</module>
 		<module>wrappers</module>
 		<module>application</module>
 		<!--
