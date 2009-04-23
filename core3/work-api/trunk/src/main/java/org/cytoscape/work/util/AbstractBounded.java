@@ -37,9 +37,10 @@
 package org.cytoscape.work.util;
 
 /**
- * A bounded number object.
- *
- * @param <N>  DOCUMENT ME!
+ * A bounded number object whose bounds values cannot be modified
+ * @param <N>  Any type of Number
+ * @author Pasteur
+
  */
 public abstract class AbstractBounded<N extends Comparable<N>> {
 
@@ -53,10 +54,10 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	/**
 	 * Creates a new Bounded object.
 	 *
-	 * @param lower  DOCUMENT ME!
-	 * @param upper  DOCUMENT ME!
-	 * @param lowerStrict  DOCUMENT ME!
-	 * @param upperStrict  DOCUMENT ME!
+	 * @param lower  The lower bound of the object
+	 * @param upper  The upper bound of the object
+	 * @param lowerStrict	True means that the value cannot be equal to the lower bound
+	 * @param upperStrict	True means that the value cannot be equal to the upper bound
 	 */
 	AbstractBounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
 		if (lower == null)
@@ -76,54 +77,54 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns the upper limit of the object
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  upper
 	 */
 	public synchronized N getUpperBound() {
 		return upper;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns the lower limit of the object
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  lower
 	 */
 	public synchronized N getLowerBound() {
 		return lower;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Does the value have to be strictly lower than the upper bound?
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  upperStrict
 	 */
 	public synchronized boolean isUpperBoundStrict() {
 		return upperStrict;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Does the value have to be strictly greater than the lower bound?
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  lowerStrict
 	 */
 	public synchronized boolean isLowerBoundStrict() {
 		return lowerStrict;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns the value
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return	value
 	 */
 	public synchronized N getValue() {
 		return value;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *	Set the value <code>v</code> as the value of the Bounded Object.
 	 *
-	 * @param v DOCUMENT ME!
+	 * @param v the Value
 	 */
 	public void setValue(final N v) {
 		if (v == null)

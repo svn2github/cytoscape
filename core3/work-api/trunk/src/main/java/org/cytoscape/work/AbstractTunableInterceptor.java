@@ -47,40 +47,40 @@ import java.util.Map;
 
 
 /**
- * DOCUMENT ME!
-  *
- * @param <T>  DOCUMENT ME!
+ * Interceptor for Tunables : detect them, create an appropriate <code>Handler</code> from the <code>HandlerFactory</code> for each of them, and store them in a HashMap for further use.
+ *
+ * @param <H>  <code>Handlers</code> created in the factory
  */
-public abstract class AbstractTunableInterceptor<T extends Handler> implements TunableInterceptor<T> {
+public abstract class AbstractTunableInterceptor<H extends Handler> implements TunableInterceptor<H> {
 	/**
-	 * DOCUMENT ME!
+	 * Factory for Handlers
 	 */
-	protected HandlerFactory<T> factory;
+	protected HandlerFactory<H> factory;
 
 	/**
-	 * DOCUMENT ME!
+	 * Store the Handlers
 	 */
-	protected Map<Object, LinkedHashMap<String, T>> handlerMap;
+	protected Map<Object, LinkedHashMap<String, H>> handlerMap;
 
 	/**
 	 * Creates a new AbstractTunableInterceptor object.
 	 *
-	 * @param tunablehandlerfactory  DOCUMENT ME!
+	 * @param tunablehandlerfactory  Factory of Handler = can be <code>GuiHandlerFactory</code> to make the GUI with the <code>Handlers</code>
+	 *  or <code>PropHandlerFactory</code> to get the <code>Handlers</code> for Properties.
 	 */
-	public AbstractTunableInterceptor(HandlerFactory<T> tunablehandlerfactory) {
+	public AbstractTunableInterceptor(HandlerFactory<H> tunablehandlerfactory) {
 		this.factory = tunablehandlerfactory;
-		handlerMap = new HashMap<Object, LinkedHashMap<String, T>>();
+		handlerMap = new HashMap<Object, LinkedHashMap<String, H>>();
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param obj DOCUMENT ME!
+	 *	To detect the Field and Method annotated as <code>Tunable</code>, create a <code>Handler</code> for each from the factory, and store it.
+	 * @param obj A class that contains <code>Tunable</code> that need to be caught to interact with the users
 	 */
 	public void loadTunables(Object obj) {
 		//System.out.println("looking at obj: " + obj.getClass().toString());
 		if (!handlerMap.containsKey(obj)) { //Deleted to get new Panels if we do it many times
-			LinkedHashMap<String, T> handlerList = new LinkedHashMap<String, T>();
+			LinkedHashMap<String, H> handlerList = new LinkedHashMap<String, H>();
 
 			// Find each public field in the class.
 			for (Field field : obj.getClass().getFields()) {
@@ -90,7 +90,7 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 					try {
 						Tunable tunable = field.getAnnotation(Tunable.class);
 
-						T handler = factory.getHandler(field, obj, tunable);
+						H handler = factory.getHandler(field, obj, tunable);
 
 						if (handler != null) {
 							handlerList.put(field.getName(), handler);
@@ -113,7 +113,7 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 						
 						// Get a handler for this particular field type and
 						// add it to the list.
-						T handler = factory.getHandler(method,obj,tunable);
+						H handler = factory.getHandler(method,obj,tunable);
 	
 						if ( handler != null ) {
 						 	handlerList.put( method.getName(), handler ); 
@@ -131,13 +131,13 @@ public abstract class AbstractTunableInterceptor<T extends Handler> implements T
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  To get the Map of the <code>Handlers</code> that are contained in this <code>TunableInterceptor</code> Object applied to an external Object(class).
 	 *
-	 * @param o DOCUMENT ME!
+	 * @param o The Object the TunableInterceptor has been applied to.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  The map that contains all the <code>Handlers</code> that have been created for the Object o
 	 */
-	public Map<String, T> getHandlers(Object o) {
+	public Map<String, H> getHandlers(Object o) {
 		if (o == null)
 			return null;
 

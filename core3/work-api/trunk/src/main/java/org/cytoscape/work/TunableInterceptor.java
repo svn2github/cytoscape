@@ -6,9 +6,8 @@ import java.util.Map;
 
 /**
  * Provides methods to intercept the Objects annotated as <code>@Tunable</code>, use, and display them.
- * @author Mathieu
- *
  * @param <T> <code>Handlers</code> that will be detected. They will contain the informations provided by the <code>@Tunable</code> annotations and the Object itself.
+ * @author Pasteur
  */
 public interface TunableInterceptor<T extends Handler> {
 
