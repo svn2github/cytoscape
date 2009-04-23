@@ -215,6 +215,8 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	List<CyEdge> getConnectingEdgeList(CyNode source, CyNode target, CyEdge.Type edgeType);
 
 	/**
+	 * TODO: We should remove this!
+	 * 
 	 * Return the map of {@link CyDataTable}s for this network.  The map is indexed by the
 	 * name of the data table (e.g. "USER")
 	 *
@@ -223,6 +225,8 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	Map<String,CyDataTable> getNetworkCyDataTables();
 
 	/**
+	 * TODO: We should remove this!
+	 * 
 	 * Return the map of {@link CyDataTable}s for nodes in this network.  The map is indexed by the
 	 * name of the data table (e.g. "USER")
 	 *
@@ -231,10 +235,19 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	Map<String,CyDataTable> getNodeCyDataTables();
 
 	/**
+	 * TODO: We should remove this!
+	 * 
 	 * Return the map of {@link CyDataTable}s for edges in this network.  The map is indexed by the
 	 * name of the data table (e.g. "USER")
 	 *
 	 * @return the map of {@link CyDataTable}s for edges in this network
 	 */
 	Map<String,CyDataTable> getEdgeCyDataTables();
+	
+	/**
+	 * 
+	 * @param graphObjectType NODE, EDGE, or NETWORK
+	 * @return the map of {@link CyDataTable}s for the given network object.
+	 */
+	Map<String,CyDataTable> getCyDataTables(String graphObjectType);
 }

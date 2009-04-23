@@ -36,41 +36,36 @@
 
 package org.cytoscape.model.internal;
 
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.SUIDFactory;
-import org.cytoscape.model.events.AddedNodeEvent;
-import org.cytoscape.model.events.AddedNodeListener;
-import org.cytoscape.model.events.AboutToRemoveNodeEvent;
-import org.cytoscape.model.events.AboutToRemoveNodeListener;
-import org.cytoscape.model.events.RemovedNodeEvent;
-import org.cytoscape.model.events.RemovedNodeListener;
-import org.cytoscape.model.events.AddedEdgeEvent;
-import org.cytoscape.model.events.AddedEdgeListener;
-import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
-import org.cytoscape.model.events.AboutToRemoveEdgeListener;
-import org.cytoscape.model.events.RemovedEdgeEvent;
-import org.cytoscape.model.events.RemovedEdgeListener;
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.internal.events.AddedNodeEventImpl;
-import org.cytoscape.model.internal.events.AboutToRemoveNodeEventImpl;
-import org.cytoscape.model.internal.events.RemovedNodeEventImpl;
-import org.cytoscape.model.internal.events.AddedEdgeEventImpl;
-import org.cytoscape.model.internal.events.AboutToRemoveEdgeEventImpl;
-import org.cytoscape.model.internal.events.RemovedEdgeEventImpl;
-
-import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.model.subnetwork.CyRootNetwork;
-import org.cytoscape.model.subnetwork.CyMetaNode;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.SUIDFactory;
+import org.cytoscape.model.events.AboutToRemoveEdgeListener;
+import org.cytoscape.model.events.AboutToRemoveNodeListener;
+import org.cytoscape.model.events.AddedEdgeListener;
+import org.cytoscape.model.events.AddedNodeListener;
+import org.cytoscape.model.events.RemovedEdgeListener;
+import org.cytoscape.model.events.RemovedNodeListener;
+import org.cytoscape.model.internal.events.AboutToRemoveEdgeEventImpl;
+import org.cytoscape.model.internal.events.AboutToRemoveNodeEventImpl;
+import org.cytoscape.model.internal.events.AddedEdgeEventImpl;
+import org.cytoscape.model.internal.events.AddedNodeEventImpl;
+import org.cytoscape.model.internal.events.RemovedEdgeEventImpl;
+import org.cytoscape.model.internal.events.RemovedNodeEventImpl;
+import org.cytoscape.model.subnetwork.CyMetaNode;
+import org.cytoscape.model.subnetwork.CyRootNetwork;
+import org.cytoscape.model.subnetwork.CySubNetwork;
+
+import static org.cytoscape.model.GraphObject.*;
 
 
 /**
@@ -109,7 +104,9 @@ public class ArrayGraph implements CyRootNetwork {
     private final CyEventHelper eventHelper;
 	private final List<CySubNetwork> subNets;
 	private final List<CyMetaNode> metaNodes;
-	private CySubNetwork base; 
+	private CySubNetwork base;
+	
+	private final Map<String, Map<String, CyDataTable>> dataTableMap;
 
 	/**
 	 * Creates a new ArrayGraph object.
@@ -145,7 +142,12 @@ public class ArrayGraph implements CyRootNetwork {
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("interaction",String.class,false);
-
+		
+		dataTableMap = new HashMap<String, Map<String, CyDataTable>>();
+		dataTableMap.put(NODE, nodeAttrMgr);
+		dataTableMap.put(EDGE, edgeAttrMgr);
+		dataTableMap.put(NETWORK, netAttrMgr);
+		
         eventHelper = eh;
 
 		subNets = new ArrayList<CySubNetwork>();
@@ -595,7 +597,10 @@ public class ArrayGraph implements CyRootNetwork {
 	public Map<String, CyDataTable> getEdgeCyDataTables() {
 		return edgeAttrMgr;
 	}
-
+	
+	public Map<String, CyDataTable> getCyDataTables(String graphObjectType) {
+		return dataTableMap.get(graphObjectType);
+	}
 
 	private Iterator<EdgePointer> edgesAdjacent(final NodePointer n, final CyEdge.Type edgeType, final int inId) {
 		assert(n!=null);
@@ -944,4 +949,5 @@ public class ArrayGraph implements CyRootNetwork {
 	public CySubNetwork getBaseNetwork() {
 		return base;
 	}
+
 }

@@ -319,6 +319,10 @@ class ArraySubGraph implements CySubNetwork {
 	public Map<String,CyDataTable> getEdgeCyDataTables() {
 		return parent.getEdgeCyDataTables();
 	}
+	
+	public Map<String, CyDataTable> getCyDataTables(String graphObjectType) {
+		return parent.getCyDataTables(graphObjectType);
+	}
 
 	/**
 	 * {@inheritDoc}

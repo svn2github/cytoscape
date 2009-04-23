@@ -40,6 +40,24 @@ package org.cytoscape.model;
  * DOCUMENT ME!
   */
 public interface GraphObject extends Identifiable {
+	
+	/*
+	 * The following strings have been moved from Visual Property.
+	 * We use String instead of enum in case we need to extend it later.
+	 */
+	/**
+	 * Canonical ObjectType string for CyNode.
+	 */
+	String NODE = "NODE";
+	/**
+	 * Canonical ObjectType string for CyEdge.
+	 */
+	String EDGE = "EDGE";
+	/**
+	 * Canonical ObjectType string for CyNetwork.
+	 */
+	String NETWORK = "NETWORK";
+	
 	CyRow getCyRow(String namespace);
 
 	CyRow attrs();

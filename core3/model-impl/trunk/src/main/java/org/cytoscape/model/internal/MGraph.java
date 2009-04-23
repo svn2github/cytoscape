@@ -65,6 +65,8 @@ public class MGraph implements CyNetwork {
     private final Map<String, CyDataTable> nodeAttrMgr;
     private final Map<String, CyDataTable> edgeAttrMgr;
     private final CyEventHelper eventHelper;
+    
+	private final Map<String, Map<String, CyDataTable>> dataTableMap;
 
 	/**
 	 * Creates a new MGraph object.
@@ -87,6 +89,11 @@ public class MGraph implements CyNetwork {
 
         edgeAttrMgr = new HashMap<String, CyDataTable>();
         edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " edge", true, eh));
+        
+       dataTableMap = new HashMap<String, Map<String, CyDataTable>>();
+		dataTableMap.put(NODE, nodeAttrMgr);
+		dataTableMap.put(EDGE, edgeAttrMgr);
+		dataTableMap.put(NETWORK, netAttrMgr);
 
         eventHelper = eh;
 	}
@@ -495,6 +502,10 @@ public class MGraph implements CyNetwork {
 	 */
 	public Map<String, CyDataTable> getEdgeCyDataTables() {
 		return edgeAttrMgr;
+	}
+	
+	public Map<String, CyDataTable> getCyDataTables(String graphObjectType) {
+		return dataTableMap.get(graphObjectType);
 	}
 
 
