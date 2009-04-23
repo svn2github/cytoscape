@@ -57,7 +57,7 @@ public class BeanIntegrationTest extends AbstractJUnit4SpringContextTests {
 		final File xFile = new File("src/test/resources/testData/galFiltered.xgmml");
 		xgmmlURL = new URL("http://chianti.ucsd.edu/kono/data/galFiltered.xgmml");
 		
-		xgmmlFile = xFile.toURL();
+		xgmmlFile = xFile.toURI().toURL();
 		
 		sifReader = (CyReader) applicationContext.getBean("sifReader");
 		xgmmlReader = (CyReader) applicationContext.getBean("xgmmlReader");

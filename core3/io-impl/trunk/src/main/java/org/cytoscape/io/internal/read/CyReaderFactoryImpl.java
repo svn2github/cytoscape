@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
 import java.net.URI;
-import java.net.URLConnection;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.read.CyReader;
