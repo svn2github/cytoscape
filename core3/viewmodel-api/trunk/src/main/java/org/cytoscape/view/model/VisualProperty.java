@@ -45,18 +45,6 @@ package org.cytoscape.view.model;
  * @param <T> the dataType of the VisualProperty, ie. what kind of objects are the values
  */
 public interface VisualProperty<T> {
-	/**
-	 * Canonical ObjectType string for CyNode.
-	 */
-	String NODE = "NODE";
-	/**
-	 * Canonical ObjectType string for CyEdge.
-	 */
-	String EDGE = "EDGE";
-	/**
-	 * Canonical ObjectType string for CyNetwork.
-	 */
-	String NETWORK = "NETWORK";
 
 	/**
 	 * Returns what type of objects this VisualProperty stores values for.
