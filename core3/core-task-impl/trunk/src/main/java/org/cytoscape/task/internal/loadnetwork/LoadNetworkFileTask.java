@@ -47,7 +47,6 @@ import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.Tunable.Param;
 
 import cytoscape.CyNetworkManager;
@@ -56,7 +55,7 @@ import cytoscape.util.CyNetworkNaming;
 /**
  * Specific instance of AbstractLoadNetworkTask that loads a File.
  */
-public class LoadNetworkFileTask extends AbstractLoadNetworkTask implements TunableValidator {
+public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 
 	@Tunable(description = "Network file to load",flag = {Param.network})
 	public File file;
@@ -82,9 +81,5 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask implements Tuna
 		}
 
 		loadNetwork(reader);
-	}
-	public String validate(){
-		if(file.getAbsolutePath().contains("galFiltered"))return null;
-		else return new String("TunableValidator example :" + System.getProperty("line.separator") + "Please Provide galFiltered!!");
 	}
 }
