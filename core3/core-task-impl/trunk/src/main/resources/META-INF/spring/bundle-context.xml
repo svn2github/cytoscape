@@ -241,4 +241,5 @@
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cyProxyRegistryRef" />
 	</bean>
+
 </beans>
