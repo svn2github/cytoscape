@@ -26,13 +26,8 @@
 	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GuiHandlerFactory">
 		<constructor-arg ref="bookmarkServiceRef" />
 		<constructor-arg ref="bookmarksUtilServiceRef" />
-<!--		<constructor-arg ref="fileUtilServiceRef"/>-->
+<!--		<constructor-arg ref="fileUtil"/>-->
 <!--		<constructor-arg ref="streamUtilServiceRef"/>-->
  	</bean>
-
-
-<!--	<bean id="fileUtil" class="org.cytoscape.work.internal.tunables.utils.FileUtilImpl">-->
-<!--		<constructor-arg ref="streamUtilServiceRef" />-->
-<!--	</bean>-->
 
 </beans>
