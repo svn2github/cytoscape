@@ -315,15 +315,23 @@
 		<!--
 		<module>webservice</module>
 		<module>vizmap-gui</module>
-			<module>automatic.layout</module> <module>cpath</module>
-			<module>merge</module> <module>math.xform</module>
-			<module>psi.mi</module> <module>biopax</module>
-			<module>editor</module> <module>linkout</module>
-			<module>attribute.browser</module> <module>cpath2</module>
-			<module>filters.old</module> <module>filters</module>
-			<module>sbml.reader</module> <module>manual.layout</module>
-			<module>quickfind</module> <module>table.import</module>
-			<module>ontology</module>
+		<module>automatic.layout</module> 
+		<module>cpath</module>
+		<module>merge</module> 
+		<module>math.xform</module>
+		<module>psi.mi</module> 
+		<module>biopax</module>
+		<module>editor</module> 
+		<module>linkout</module>
+		<module>attribute.browser</module> 
+		<module>cpath2</module>
+		<module>filters.old</module> 
+		<module>filters</module>
+		<module>sbml.reader</module> 
+		<module>manual.layout</module>
+		<module>quickfind</module> 
+		<module>table.import</module>
+		<module>ontology</module>
 		-->
 	</modules>
 
