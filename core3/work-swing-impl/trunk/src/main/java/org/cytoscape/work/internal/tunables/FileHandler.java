@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+import java.awt.FileDialog;
 import java.awt.Font;
 import java.lang.reflect.*;
 import javax.swing.*;
@@ -151,7 +152,7 @@ public class FileHandler extends AbstractGuiHandler {
     			int ret = fileChooser.showOpenDialog(panel);
     			if (ret == JFileChooser.APPROVE_OPTION) {
     				File file = fileChooser.getSelectedFile();
-    				//File file = flUtil.getFile("TEST",FileUtil.LOAD);
+//					File file = flUtil.getFile("TEST",flUtil.LOAD);
     				if ( file != null ) {
     					networkFileTextField.setFont(new Font(null, Font.PLAIN,10));
     					networkFileTextField.setText(file.getAbsolutePath());

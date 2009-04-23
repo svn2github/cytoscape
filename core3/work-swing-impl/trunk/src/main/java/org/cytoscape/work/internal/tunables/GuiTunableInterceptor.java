@@ -49,6 +49,10 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	public void handle(){
 		for(Guihandler h: lh)h.handleDependents();
 	}
+	
+	public void reset(){
+		for(Guihandler h: lh)h.resetValue();
+	}
 
 	public boolean createUI(Object... proxyObjs) {
 		this.objs = convertSpringProxyObjs( proxyObjs );
@@ -238,7 +242,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 				displayOptionPanel();
 			}
 		}
-		else newValuesSet = false;
+		else if( n == JOptionPane.CANCEL_OPTION){
+			newValuesSet = false;
+		}
 	}
 	
 	

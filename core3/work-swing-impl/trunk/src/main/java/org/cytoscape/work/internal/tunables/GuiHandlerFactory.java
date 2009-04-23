@@ -68,7 +68,6 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 		else if(type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(f,o,t);
 		else if(type == File.class)
-//			return new FileHandler(f,o,t,flUtil);
 			return new FileHandler(f,o,t);
 		else if(type == URL.class)
 			return new URLHandler(f,o,t,bookmarks,bkUtil);
