@@ -45,6 +45,8 @@ import java.util.Collections;
 import java.awt.Paint;
 import java.awt.Color;
 
+import static org.cytoscape.model.GraphObject.*;
+
 /**
  * Should be implemented as a service.
  * 'Renderer' is simply anything that provides VisualProperties.
@@ -55,44 +57,44 @@ public class TwoDVisualProperties implements Renderer {
 	protected Set<VisualProperty<?>> visualPropertySet;
 
 	public static final VisualProperty<? extends Paint> NODE_COLOR
-		= new ColorTwoDVisualProperty(VisualProperty.NODE,Color.RED,"NODE_COLOR","Node Color");
+		= new ColorTwoDVisualProperty(NODE,Color.RED,"NODE_COLOR","Node Color");
 	public static final VisualProperty<String> NODE_LABEL
-		= new StringTwoDVisualProperty(VisualProperty.NODE,"","NODE_LABEL","Node Label");
+		= new StringTwoDVisualProperty(NODE,"","NODE_LABEL","Node Label");
 	public static final VisualProperty<? extends Paint> NODE_LABEL_COLOR
-		= new ColorTwoDVisualProperty(VisualProperty.NODE,Color.BLACK,"NODE_LABEL_COLOR","Node Label Color");
+		= new ColorTwoDVisualProperty(NODE,Color.BLACK,"NODE_LABEL_COLOR","Node Label Color");
 	public static final VisualProperty<Double> NODE_X_LOCATION
-		= new DoubleTwoDVisualProperty(VisualProperty.NODE,0.0,"NODE_X_LOCATION","Node X Location");
+		= new DoubleTwoDVisualProperty(NODE,0.0,"NODE_X_LOCATION","Node X Location");
 	public static final VisualProperty<Double> NODE_Y_LOCATION
-		= new DoubleTwoDVisualProperty(VisualProperty.NODE,0.0,"NODE_Y_LOCATION","Node Y Location");
+		= new DoubleTwoDVisualProperty(NODE,0.0,"NODE_Y_LOCATION","Node Y Location");
 	public static final VisualProperty<Boolean> NODE_VISIBLE
-		= new BooleanTwoDVisualProperty(VisualProperty.NODE,true,"NODE_VISIBLE","Node Visible");
+		= new BooleanTwoDVisualProperty(NODE,true,"NODE_VISIBLE","Node Visible");
 	public static final VisualProperty<Boolean> NODE_SELECTED
-		= new BooleanTwoDVisualProperty(VisualProperty.NODE,false,"NODE_SELECTED","Node Selected");
+		= new BooleanTwoDVisualProperty(NODE,false,"NODE_SELECTED","Node Selected");
 	public static final VisualProperty<? extends Paint> EDGE_COLOR
-		= new ColorTwoDVisualProperty(VisualProperty.EDGE,Color.BLUE,"EDGE_COLOR","Edge Color");
+		= new ColorTwoDVisualProperty(EDGE,Color.BLUE,"EDGE_COLOR","Edge Color");
 	public static final VisualProperty<String> EDGE_LABEL
-		= new StringTwoDVisualProperty(VisualProperty.EDGE,"","EDGE_LABEL","Edge Label");
+		= new StringTwoDVisualProperty(EDGE,"","EDGE_LABEL","Edge Label");
 	public static final VisualProperty<? extends Paint> EDGE_LABEL_COLOR
-		= new ColorTwoDVisualProperty(VisualProperty.EDGE,Color.BLACK,"EDGE_LABEL_COLOR","Edge Label Color");
+		= new ColorTwoDVisualProperty(EDGE,Color.BLACK,"EDGE_LABEL_COLOR","Edge Label Color");
 	public static final VisualProperty<Boolean> EDGE_VISIBLE
-		= new BooleanTwoDVisualProperty(VisualProperty.EDGE,true,"EDGE_VISIBLE","Edge Visible");
+		= new BooleanTwoDVisualProperty(EDGE,true,"EDGE_VISIBLE","Edge Visible");
 	public static final VisualProperty<Boolean> EDGE_SELECTED
-		= new BooleanTwoDVisualProperty(VisualProperty.EDGE,false,"EDGE_SELECTED","Edge Selected");
+		= new BooleanTwoDVisualProperty(EDGE,false,"EDGE_SELECTED","Edge Selected");
 	public static final VisualProperty<Double> NETWORK_SCALE_FACTOR 
-		= new DoubleTwoDVisualProperty(VisualProperty.NETWORK,1.0,"NETWORK_SCALE_FACTOR","Network Scale Factor");
+		= new DoubleTwoDVisualProperty(NETWORK,1.0,"NETWORK_SCALE_FACTOR","Network Scale Factor");
 	public static final VisualProperty<Double> NETWORK_CENTER_X_LOCATION
-		= new DoubleTwoDVisualProperty(VisualProperty.NETWORK,0.0,"NETWORK_CENTER_X_LOCATION","Network Center X Location");
+		= new DoubleTwoDVisualProperty(NETWORK,0.0,"NETWORK_CENTER_X_LOCATION","Network Center X Location");
 	public static final VisualProperty<Double> NETWORK_CENTER_Y_LOCATION 
-		= new DoubleTwoDVisualProperty(VisualProperty.NETWORK,0.0,"NETWORK_CENTER_Y_LOCATION","Network Center Y Location");
+		= new DoubleTwoDVisualProperty(NETWORK,0.0,"NETWORK_CENTER_Y_LOCATION","Network Center Y Location");
 	public static final VisualProperty<Double> NETWORK_WIDTH 
-		= new DoubleTwoDVisualProperty(VisualProperty.NETWORK,100.0,"NETWORK_WIDTH","Network Width");
+		= new DoubleTwoDVisualProperty(NETWORK,100.0,"NETWORK_WIDTH","Network Width");
 	public static final VisualProperty<Double> NETWORK_HEIGHT 
-		= new DoubleTwoDVisualProperty(VisualProperty.NETWORK,100.0,"NETWORK_HEIGHT","Network Height");
+		= new DoubleTwoDVisualProperty(NETWORK,100.0,"NETWORK_HEIGHT","Network Height");
 
 	public static final VisualProperty<? extends Paint> NETWORK_BACKGROUND_COLOR
-		= new ColorTwoDVisualProperty(VisualProperty.NETWORK,Color.WHITE,"NETWORK_BACKGROUND_COLOR","Network Background Color");
+		= new ColorTwoDVisualProperty(NETWORK,Color.WHITE,"NETWORK_BACKGROUND_COLOR","Network Background Color");
 	public static final VisualProperty<String> NETWORK_TITLE 
-		= new StringTwoDVisualProperty(VisualProperty.NETWORK,"","NETWORK_TITLE","Network Title");
+		= new StringTwoDVisualProperty(NETWORK,"","NETWORK_TITLE","Network Title");
 
 	public TwoDVisualProperties() {
 
