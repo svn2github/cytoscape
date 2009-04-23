@@ -325,7 +325,6 @@
 			<module>quickfind</module> <module>table.import</module>
 			<module>ontology</module>
 		-->
-		<module>property</module>
 	</modules>
 
 </project>
