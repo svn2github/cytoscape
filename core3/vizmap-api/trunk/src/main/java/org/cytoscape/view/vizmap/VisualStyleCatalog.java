@@ -53,6 +53,15 @@ public interface VisualStyleCatalog {
 	/**
 	 *  DOCUMENT ME!
 	 *
+	 * @param originalVS DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualStyle copyVisualStyle(VisualStyle originalVS);
+
+	/**
+	 *  DOCUMENT ME!
+	 *
 	 * @return  DOCUMENT ME!
 	 */
 	List<VisualStyle> listOfVisualStyles();
