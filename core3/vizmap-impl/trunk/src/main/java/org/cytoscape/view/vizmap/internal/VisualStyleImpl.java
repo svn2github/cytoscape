@@ -52,10 +52,12 @@ import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 
+import static org.cytoscape.model.GraphObject.*;
+
 
 /**
  */
-public class VisualStyleImpl implements VisualStyle, Cloneable {
+public class VisualStyleImpl implements VisualStyle {
 	private Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
 	private Map<VisualProperty<?>, Object> perVSDefaults;
 	private VisualPropertyCatalog vpCatalog;
@@ -162,11 +164,11 @@ public class VisualStyleImpl implements VisualStyle, Cloneable {
 		final List<View<CyEdge>> edgeviews = view.getEdgeViews();
 
 		applyImpl(view, nodeviews,
-		          vpCatalog.collectionOfVisualProperties(nodeviews, VisualProperty.NODE));
+		          vpCatalog.collectionOfVisualProperties(nodeviews, NODE));
 		applyImpl(view, edgeviews,
-		          vpCatalog.collectionOfVisualProperties(edgeviews, VisualProperty.EDGE));
+		          vpCatalog.collectionOfVisualProperties(edgeviews, EDGE));
 		applyImpl(view, Arrays.asList((View<CyNetwork>) view),
-		          vpCatalog.collectionOfVisualProperties(VisualProperty.NETWORK));
+		          vpCatalog.collectionOfVisualProperties(NETWORK));
 	}
 
 	// note: can't use applyImpl(List<View<?>>views ... ) because that does not compile
@@ -241,14 +243,5 @@ public class VisualStyleImpl implements VisualStyle, Cloneable {
 	public Collection<VisualMappingFunction<?,?>> getAllVisualMappingFunctions() {
 		return mappings.values();
 	}
-	
-	/**
-	 * Override the clone method.
-	 * Create a deep copy of this object.
-	 * 
-	 */
-	//TODO: is this actually copy everything?
-	@Override public VisualStyle clone() {
-		return new VisualStyleImpl(this.vpCatalog, new String(this.title));
-	}
+
 }

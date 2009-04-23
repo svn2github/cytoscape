@@ -35,12 +35,15 @@
 package org.cytoscape.view.vizmap.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.VisualPropertyCatalog;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleCatalog;
 import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
@@ -146,5 +149,25 @@ public class VisualStyleCatalogImpl implements VisualStyleCatalog {
 		visualStyles.remove(vs);
 		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs),
 		                                 VisualStyleDestroyedListener.class);
+	}
+
+	public VisualStyle copyVisualStyle(VisualStyle originalVS) {
+		
+		final VisualStyle copyVS = new VisualStyleImpl(vpCatalog, new String(originalVS.getTitle()));
+		//TODO: copy everything!
+		Collection<VisualMappingFunction<?, ?>> allMapping = originalVS.getAllVisualMappingFunctions();
+		
+		String attrName;
+		VisualProperty<?> vp;
+		for(VisualMappingFunction<?,?> mapping:allMapping) {
+			attrName = mapping.getMappingAttributeName();
+			vp = mapping.getVisualProperty();
+			
+		}
+		
+		visualStyles.add(copyVS);
+		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(copyVS),
+		                                 VisualStyleCreatedListener.class);
+		return copyVS;
 	}
 }
