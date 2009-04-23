@@ -85,6 +85,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Collection;
+
+import static org.cytoscape.model.GraphObject.*;
+
 /**
  * DING implementation of the GINY view.
  *
@@ -375,7 +378,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 			addEdgeView( ee );
 
 		// read in visual properties from view obj
-		Collection<VisualProperty<?>> netVPs = vizPropCatalog.collectionOfVisualProperties(VisualProperty.NETWORK);
+		Collection<VisualProperty<?>> netVPs = vizPropCatalog.collectionOfVisualProperties(NETWORK);
 		for ( VisualProperty<?> vp : netVPs ) 
 			visualPropertySet(vp, cyNetworkView.getVisualProperty(vp));
 
@@ -688,7 +691,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 		                 m_defaultNodeYMax);
 
 		// read in visual properties from view obj
-		Collection<VisualProperty<?>> nodeVPs = vizPropCatalog.collectionOfVisualProperties(VisualProperty.NODE);
+		Collection<VisualProperty<?>> nodeVPs = vizPropCatalog.collectionOfVisualProperties(NODE);
 		View<CyNode> nv = cyNetworkView.getNodeView(node);
 		for ( VisualProperty<?> vp : nodeVPs ) 
 			newView.visualPropertySet(vp, nv.getVisualProperty(vp));
@@ -732,7 +735,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 			m_contentChanged = true;
 
 			// read in visual properties from view obj
-			Collection<VisualProperty<?>> edgeVPs = vizPropCatalog.collectionOfVisualProperties(VisualProperty.EDGE);
+			Collection<VisualProperty<?>> edgeVPs = vizPropCatalog.collectionOfVisualProperties(EDGE);
 			View<CyEdge> ev = cyNetworkView.getEdgeView(edge);
 			for ( VisualProperty<?> vp : edgeVPs ) 
 				edgeView.visualPropertySet(vp, ev.getVisualProperty(vp));

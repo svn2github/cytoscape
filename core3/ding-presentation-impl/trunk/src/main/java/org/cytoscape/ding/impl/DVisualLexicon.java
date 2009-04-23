@@ -38,7 +38,6 @@ package org.cytoscape.ding.impl;
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.ding.ArrowShape;
 
-import org.cytoscape.view.model.Renderer;
 import org.cytoscape.view.model.VisualProperty;
 import java.awt.Paint;
 import java.awt.Color;
@@ -47,96 +46,98 @@ import java.awt.Font;
 import java.awt.BasicStroke;
 import org.cytoscape.view.presentation.twod.*;
 
+import static org.cytoscape.model.GraphObject.*;
+
 public class DVisualLexicon extends TwoDVisualProperties {
 
 	public static final VisualProperty<Boolean> NETWORK_NODE_SELECTION
-        = new BooleanTwoDVisualProperty(VisualProperty.NETWORK,Boolean.TRUE,"NETWORK_NODE_SELECTION","Network Node Selection");
+        = new BooleanTwoDVisualProperty(NETWORK,Boolean.TRUE,"NETWORK_NODE_SELECTION","Network Node Selection");
 	public static final VisualProperty<Boolean> NETWORK_EDGE_SELECTION
-        = new BooleanTwoDVisualProperty(VisualProperty.NETWORK,Boolean.TRUE,"NETWORK_EDGE_SELECTION","Network Edge Selection");
+        = new BooleanTwoDVisualProperty(NETWORK,Boolean.TRUE,"NETWORK_EDGE_SELECTION","Network Edge Selection");
 
 	public static final VisualProperty<NodeShape> NODE_SHAPE 
-        = new NodeShapeTwoDVisualProperty(VisualProperty.NODE,NodeShape.ELLIPSE,"NODE_SHAPE","Node Shape");
+        = new NodeShapeTwoDVisualProperty(NODE,NodeShape.ELLIPSE,"NODE_SHAPE","Node Shape");
 
 	public static final VisualProperty<? extends Paint> NODE_SELECTED_PAINT 
-        = new ColorTwoDVisualProperty(VisualProperty.NODE,Color.YELLOW,"NODE_SELECTED_PAINT","Node Selected Paint");
+        = new ColorTwoDVisualProperty(NODE,Color.YELLOW,"NODE_SELECTED_PAINT","Node Selected Paint");
 
 	public static final VisualProperty<? extends Paint> NODE_BORDER_PAINT 
-        = new ColorTwoDVisualProperty(VisualProperty.NODE,Color.BLACK,"NODE_BORDER_PAINT","Node Border Paint");
+        = new ColorTwoDVisualProperty(NODE,Color.BLACK,"NODE_BORDER_PAINT","Node Border Paint");
 
 	public static final VisualProperty<Double> NODE_BORDER_WIDTH 
-        = new DoubleTwoDVisualProperty(VisualProperty.NODE,2.0,"NODE_BORDER_WIDTH","Node Border Width");
+        = new DoubleTwoDVisualProperty(NODE,2.0,"NODE_BORDER_WIDTH","Node Border Width");
 
 	public static final VisualProperty<? extends Stroke> NODE_BORDER_STROKE 
-        = new StrokeTwoDVisualProperty(VisualProperty.NODE,new BasicStroke(),"NODE_BORDER_STROKE","Node Border Stroke");
+        = new StrokeTwoDVisualProperty(NODE,new BasicStroke(),"NODE_BORDER_STROKE","Node Border Stroke");
 
 	public static final VisualProperty<Double> NODE_WIDTH 
-        = new DoubleTwoDVisualProperty(VisualProperty.NODE,40.0,"NODE_WIDTH","Node Width");
+        = new DoubleTwoDVisualProperty(NODE,40.0,"NODE_WIDTH","Node Width");
 	public static final VisualProperty<Double> NODE_HEIGHT 
-        = new DoubleTwoDVisualProperty(VisualProperty.NODE,40.0,"NODE_HEIGHT","Node Height");
+        = new DoubleTwoDVisualProperty(NODE,40.0,"NODE_HEIGHT","Node Height");
 	public static final VisualProperty<String> NODE_TOOLTIP 
-        = new StringTwoDVisualProperty(VisualProperty.NODE,"","NODE_TOOLTIP","Node Tooltip");
+        = new StringTwoDVisualProperty(NODE,"","NODE_TOOLTIP","Node Tooltip");
 	public static final VisualProperty<Font> NODE_LABEL_FONT_FACE 
-        = new FontTwoDVisualProperty(VisualProperty.NODE,new Font("SansSerif",Font.PLAIN,10),"NODE_LABEL_FONT_FACE","Node Label Font Face");
+        = new FontTwoDVisualProperty(NODE,new Font("SansSerif",Font.PLAIN,10),"NODE_LABEL_FONT_FACE","Node Label Font Face");
 	public static final VisualProperty<Integer> NODE_LABEL_FONT_SIZE 
-        = new IntegerTwoDVisualProperty(VisualProperty.NODE,10,"NODE_LABEL_FONT_SIZE","Node Label Font Size");
+        = new IntegerTwoDVisualProperty(NODE,10,"NODE_LABEL_FONT_SIZE","Node Label Font Size");
 
 	public static final VisualProperty<Anchor> NODE_LABEL_TEXT_ANCHOR
-        = new AnchorTwoDVisualProperty(VisualProperty.NODE,Anchor.CENTER,"NODE_LABEL_TEXT_ANCHOR","Node Label Text Anchor");
+        = new AnchorTwoDVisualProperty(NODE,Anchor.CENTER,"NODE_LABEL_TEXT_ANCHOR","Node Label Text Anchor");
 	public static final VisualProperty<Anchor> NODE_LABEL_NODE_ANCHOR
-        = new AnchorTwoDVisualProperty(VisualProperty.NODE,Anchor.CENTER,"NODE_LABEL_NODE_ANCHOR","Node Label Node Anchor");
+        = new AnchorTwoDVisualProperty(NODE,Anchor.CENTER,"NODE_LABEL_NODE_ANCHOR","Node Label Node Anchor");
 	
 	public static final VisualProperty<Double> NODE_LABEL_ANCHOR_X_OFFSET 
-        = new DoubleTwoDVisualProperty(VisualProperty.NODE,0.0,"NODE_LABEL_ANCHOR_X_OFFSET","Node Label Anchor X Offset");
+        = new DoubleTwoDVisualProperty(NODE,0.0,"NODE_LABEL_ANCHOR_X_OFFSET","Node Label Anchor X Offset");
 	public static final VisualProperty<Double> NODE_LABEL_ANCHOR_Y_OFFSET 
-        = new DoubleTwoDVisualProperty(VisualProperty.NODE,0.0,"NODE_LABEL_ANCHOR_Y_OFFSET","Node Label Anchor Y Offset");
+        = new DoubleTwoDVisualProperty(NODE,0.0,"NODE_LABEL_ANCHOR_Y_OFFSET","Node Label Anchor Y Offset");
 
 	public static final VisualProperty<Justify> NODE_LABEL_JUSTIFY 
-        = new JustifyTwoDVisualProperty(VisualProperty.NODE,Justify.LEFT,"NODE_LABEL_JUSTIFY","Node Label Justify");
+        = new JustifyTwoDVisualProperty(NODE,Justify.LEFT,"NODE_LABEL_JUSTIFY","Node Label Justify");
 	public static final VisualProperty<Integer> NODE_TRANSPARENCY 
-        = new IntegerTwoDVisualProperty(VisualProperty.NODE,255,"NODE_TRANSPARENCY","Node Transparency");
+        = new IntegerTwoDVisualProperty(NODE,255,"NODE_TRANSPARENCY","Node Transparency");
 
 		
 	public static final VisualProperty<? extends Paint> EDGE_SELECTED_PAINT 
-        = new ColorTwoDVisualProperty(VisualProperty.EDGE,Color.RED,"EDGE_SELECTED_PAINT","Edge Selected Paint");
+        = new ColorTwoDVisualProperty(EDGE,Color.RED,"EDGE_SELECTED_PAINT","Edge Selected Paint");
 	public static final VisualProperty<? extends Stroke> EDGE_STROKE 
-        = new StrokeTwoDVisualProperty(VisualProperty.EDGE,new BasicStroke(),"EDGE_STROKE","Edge Stroke");
+        = new StrokeTwoDVisualProperty(EDGE,new BasicStroke(),"EDGE_STROKE","Edge Stroke");
 
 	public static final VisualProperty<Double> EDGE_WIDTH 
-        = new DoubleTwoDVisualProperty(VisualProperty.EDGE,2.0,"EDGE_WIDTH","Edge Width");
+        = new DoubleTwoDVisualProperty(EDGE,2.0,"EDGE_WIDTH","Edge Width");
 
 	public static final VisualProperty<? extends Paint> EDGE_SOURCE_ARROW_SELECTED_PAINT 
-        = new ColorTwoDVisualProperty(VisualProperty.EDGE,Color.YELLOW,"EDGE_SOURCE_ARROW_SELECTED_PAINT","Edge Source Arrow Selected Paint");
+        = new ColorTwoDVisualProperty(EDGE,Color.YELLOW,"EDGE_SOURCE_ARROW_SELECTED_PAINT","Edge Source Arrow Selected Paint");
 	public static final VisualProperty<? extends Paint> EDGE_TARGET_ARROW_SELECTED_PAINT 
-        = new ColorTwoDVisualProperty(VisualProperty.EDGE,Color.YELLOW,"EDGE_TARGET_ARROW_SELECTED_PAINT","Edge Target Arrow Selected Paint");
+        = new ColorTwoDVisualProperty(EDGE,Color.YELLOW,"EDGE_TARGET_ARROW_SELECTED_PAINT","Edge Target Arrow Selected Paint");
 	public static final VisualProperty<? extends Paint> EDGE_SOURCE_ARROW_UNSELECTED_PAINT 
-        = new ColorTwoDVisualProperty(VisualProperty.EDGE,Color.BLACK,"EDGE_SOURCE_ARROW_UNSELECTED_PAINT","Edge Source Arrow Unselected Paint");
+        = new ColorTwoDVisualProperty(EDGE,Color.BLACK,"EDGE_SOURCE_ARROW_UNSELECTED_PAINT","Edge Source Arrow Unselected Paint");
 	public static final VisualProperty<? extends Paint> EDGE_TARGET_ARROW_UNSELECTED_PAINT 
-        = new ColorTwoDVisualProperty(VisualProperty.EDGE,Color.BLACK,"EDGE_TARGET_ARROW_UNSELECTED_PAINT","Edge Target Arrow Unselected Paint");
+        = new ColorTwoDVisualProperty(EDGE,Color.BLACK,"EDGE_TARGET_ARROW_UNSELECTED_PAINT","Edge Target Arrow Unselected Paint");
 
 	public static final VisualProperty<ArrowShape> EDGE_SOURCE_ARROW_SHAPE 
-        = new ArrowShapeTwoDVisualProperty(VisualProperty.EDGE,ArrowShape.NONE,"EDGE_SOURCE_ARROW_SHAPE","Edge Source Arrow Shape");
+        = new ArrowShapeTwoDVisualProperty(EDGE,ArrowShape.NONE,"EDGE_SOURCE_ARROW_SHAPE","Edge Source Arrow Shape");
 	public static final VisualProperty<ArrowShape> EDGE_TARGET_ARROW_SHAPE 
-        = new ArrowShapeTwoDVisualProperty(VisualProperty.EDGE,ArrowShape.NONE,"EDGE_TARGET_ARROW_SHAPE","Edge Target Arrow Shape");
+        = new ArrowShapeTwoDVisualProperty(EDGE,ArrowShape.NONE,"EDGE_TARGET_ARROW_SHAPE","Edge Target Arrow Shape");
 
 	public static final VisualProperty<String> EDGE_TOOLTIP 
-        = new StringTwoDVisualProperty(VisualProperty.EDGE,"","EDGE_TOOLTIP","Edge Tooltip");
+        = new StringTwoDVisualProperty(EDGE,"","EDGE_TOOLTIP","Edge Tooltip");
 
 	public static final VisualProperty<Anchor> EDGE_LABEL_TEXT_ANCHOR
-        = new AnchorTwoDVisualProperty(VisualProperty.EDGE,Anchor.CENTER,"EDGE_LABEL_TEXT_ANCHOR","Edge Label Text Anchor");
+        = new AnchorTwoDVisualProperty(EDGE,Anchor.CENTER,"EDGE_LABEL_TEXT_ANCHOR","Edge Label Text Anchor");
 	public static final VisualProperty<Anchor> EDGE_LABEL_EDGE_ANCHOR
-        = new AnchorTwoDVisualProperty(VisualProperty.EDGE,Anchor.CENTER,"EDGE_LABEL_EDGE_ANCHOR","Edge Label Edge Anchor");
+        = new AnchorTwoDVisualProperty(EDGE,Anchor.CENTER,"EDGE_LABEL_EDGE_ANCHOR","Edge Label Edge Anchor");
 	
 	public static final VisualProperty<Double> EDGE_LABEL_ANCHOR_X_OFFSET 
-        = new DoubleTwoDVisualProperty(VisualProperty.EDGE,0.0,"EDGE_LABEL_ANCHOR_X_OFFSET","Edge Label Anchor X Offset");
+        = new DoubleTwoDVisualProperty(EDGE,0.0,"EDGE_LABEL_ANCHOR_X_OFFSET","Edge Label Anchor X Offset");
 	public static final VisualProperty<Double> EDGE_LABEL_ANCHOR_Y_OFFSET 
-        = new DoubleTwoDVisualProperty(VisualProperty.EDGE,0.0,"EDGE_LABEL_ANCHOR_Y_OFFSET","Edge Label Anchor Y Offset");
+        = new DoubleTwoDVisualProperty(EDGE,0.0,"EDGE_LABEL_ANCHOR_Y_OFFSET","Edge Label Anchor Y Offset");
 
 	public static final VisualProperty<Font> EDGE_LABEL_FONT_FACE 
-        = new FontTwoDVisualProperty(VisualProperty.EDGE,new Font("SansSerif",Font.PLAIN,10),"EDGE_LABEL_FONT_FACE","Edge Label Font Face");
+        = new FontTwoDVisualProperty(EDGE,new Font("SansSerif",Font.PLAIN,10),"EDGE_LABEL_FONT_FACE","Edge Label Font Face");
 	public static final VisualProperty<Integer> EDGE_LABEL_FONT_SIZE 
-        = new IntegerTwoDVisualProperty(VisualProperty.EDGE,10,"EDGE_LABEL_FONT_SIZE","Edge Label Font Size");
+        = new IntegerTwoDVisualProperty(EDGE,10,"EDGE_LABEL_FONT_SIZE","Edge Label Font Size");
 	public static final VisualProperty<Justify> EDGE_LABEL_JUSTIFY 
-        = new JustifyTwoDVisualProperty(VisualProperty.EDGE,Justify.LEFT,"EDGE_LABEL_JUSTIFY","Edge Label Justify");
+        = new JustifyTwoDVisualProperty(EDGE,Justify.LEFT,"EDGE_LABEL_JUSTIFY","Edge Label Justify");
 
 
 
