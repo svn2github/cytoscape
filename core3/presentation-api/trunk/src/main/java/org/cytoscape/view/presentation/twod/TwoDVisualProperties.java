@@ -52,7 +52,7 @@ import static org.cytoscape.model.GraphObject.*;
  * 'Renderer' is simply anything that provides VisualProperties.
  * With a 'VisualProperties as annotations' this won't be needed.
  */
-public class TwoDVisualProperties implements Renderer {
+public abstract class TwoDVisualProperties implements Renderer {
 
 	protected Set<VisualProperty<?>> visualPropertySet;
 
@@ -124,4 +124,5 @@ public class TwoDVisualProperties implements Renderer {
 	public Set<VisualProperty<?>> getVisualProperties() {
 		return Collections.unmodifiableSet( visualPropertySet );
 	}
+
 }

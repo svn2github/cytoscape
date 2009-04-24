@@ -1,8 +1,9 @@
 package org.cytoscape.ding;
 
-import org.cytoscape.model.CyEdge;
+import java.awt.Paint;
+import java.awt.Stroke;
 
-import java.awt.*;
+import org.cytoscape.model.CyEdge;
 
 
 public interface EdgeView  extends GraphViewObject {

@@ -34,44 +34,18 @@
  */
 package org.cytoscape.ding.impl;
 
-import org.cytoscape.spacial.SpacialIndex2D;
-import org.cytoscape.spacial.SpacialIndex2DFactory;
-import org.cytoscape.spacial.SpacialEntry2DEnumerator;
-import org.cytoscape.graph.render.immed.GraphGraphics;
-import org.cytoscape.graph.render.stateful.GraphLOD;
-import org.cytoscape.graph.render.stateful.GraphRenderer;
-import org.cytoscape.util.intr.IntBTree;
-import org.cytoscape.util.intr.IntEnumerator;
-import org.cytoscape.util.intr.IntHash;
-import org.cytoscape.util.intr.IntStack;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyDataTableFactory;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.ViewChangeListener;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualPropertyCatalog;
-import org.cytoscape.view.presentation.twod.TwoDVisualProperties;
-import org.cytoscape.ding.EdgeContextMenuListener;
-import org.cytoscape.ding.EdgeView;
-import org.cytoscape.ding.GraphView;
-import org.cytoscape.ding.GraphViewChangeListener;
-import org.cytoscape.ding.GraphViewObject;
-import org.cytoscape.ding.NodeContextMenuListener;
-import org.cytoscape.ding.NodeView;
-import org.cytoscape.ding.PrintLOD;
-import org.cytoscape.work.UndoSupport;
-import phoebe.PhoebeCanvasDropListener;
-import phoebe.PhoebeCanvasDroppable;
+import static org.cytoscape.model.GraphObject.EDGE;
+import static org.cytoscape.model.GraphObject.NETWORK;
+import static org.cytoscape.model.GraphObject.NODE;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Paint;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -81,12 +55,51 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Collection;
+import java.util.Properties;
 
-import static org.cytoscape.model.GraphObject.*;
+import javax.swing.JComponent;
+import javax.swing.JLayeredPane;
+
+import org.cytoscape.ding.EdgeContextMenuListener;
+import org.cytoscape.ding.EdgeView;
+import org.cytoscape.ding.GraphView;
+import org.cytoscape.ding.GraphViewChangeListener;
+import org.cytoscape.ding.GraphViewObject;
+import org.cytoscape.ding.NodeContextMenuListener;
+import org.cytoscape.ding.NodeView;
+import org.cytoscape.ding.PrintLOD;
+import org.cytoscape.graph.render.immed.GraphGraphics;
+import org.cytoscape.graph.render.stateful.GraphLOD;
+import org.cytoscape.graph.render.stateful.GraphRenderer;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.spacial.SpacialEntry2DEnumerator;
+import org.cytoscape.spacial.SpacialIndex2D;
+import org.cytoscape.spacial.SpacialIndex2DFactory;
+import org.cytoscape.util.intr.IntBTree;
+import org.cytoscape.util.intr.IntEnumerator;
+import org.cytoscape.util.intr.IntHash;
+import org.cytoscape.util.intr.IntStack;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewChangeListener;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.VisualPropertyCatalog;
+import org.cytoscape.view.presentation.Presentation;
+import org.cytoscape.view.presentation.twod.TwoDVisualProperties;
+import org.cytoscape.work.UndoSupport;
+
+import phoebe.PhoebeCanvasDropListener;
+import phoebe.PhoebeCanvasDroppable;
 
 /**
  * DING implementation of the GINY view.
@@ -101,7 +114,7 @@ import static org.cytoscape.model.GraphObject.*;
  *
  * @author Nerius Landys
  */
-public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, ViewChangeListener {
+public class DGraphView implements Presentation, GraphView, Printable, PhoebeCanvasDroppable, ViewChangeListener {
 
     private static enum ZOrder {
         BACKGROUND_PANE,
@@ -2521,10 +2534,6 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 		m_networkCanvas.setSize(d);
 	}
 
-	public Printable getPrintable() {
-		return this;
-	}
-
 	public Container getContainer(JLayeredPane jlp) {
 		return new InternalFrameComponent(jlp,this);
 	}
@@ -2604,5 +2613,25 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable, 
 		} else if ( vp == TwoDVisualProperties.NETWORK_SCALE_FACTOR ) {
 			setZoom(((Double)o).doubleValue());
 		}
+	}
+
+	//////// The following implements Presentation API ////////////
+	
+	public Printable getPrintable() {
+		return this;
+	}
+	
+	public Image getImage() {
+		return null;
+	}
+
+	public Properties getProperties() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setProperties(Properties props) {
+		// TODO Auto-generated method stub
+		
 	}
 }
