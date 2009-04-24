@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,49 +31,145 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
+ */
 package org.cytoscape.view.vizmap.internal;
 
+import org.cytoscape.event.CyEventHelper;
+
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.VisualPropertyCatalog;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
+import org.cytoscape.view.vizmap.events.VisualStyleDestroyedListener;
+import org.cytoscape.view.vizmap.internal.events.VisualStyleCreatedEventImpl;
+import org.cytoscape.view.vizmap.internal.events.VisualStyleDestroyedEventImpl;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
  *
  */
 public class VisualMappingManagerImpl implements VisualMappingManager {
-	private HashMap<CyNetworkView, VisualStyle> vsForNetwork;
+	private final Map<CyNetworkView, VisualStyle> vsForNetwork;
+	private final Set<VisualStyle> visualStyles;
+	private CyEventHelper cyEventHelper;
+	private VisualPropertyCatalog vpCatalog;
 
 	/**
-	 * Creates a new VisualMappingManagerImpl object.
+	 *
+	 * @param h
+	 *            DOCUMENT ME!
 	 */
-	public VisualMappingManagerImpl() {
+	public VisualMappingManagerImpl(final CyEventHelper eventHelper,
+	                                final VisualPropertyCatalog vpCatalog) {
+		if (eventHelper == null)
+			throw new IllegalArgumentException("CyEventHelper cannot be null");
+
+		if (vpCatalog == null)
+			throw new IllegalArgumentException("vpCatalog cannot be null");
+
+		this.cyEventHelper = eventHelper;
+		this.vpCatalog = vpCatalog;
+
+		visualStyles = new HashSet<VisualStyle>();
 		vsForNetwork = new HashMap<CyNetworkView, VisualStyle>();
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @param nv DOCUMENT ME!
+	 * @param nv
+	 *            DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public VisualStyle getVisualStyle(CyNetworkView nv) {
 		return vsForNetwork.get(nv);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @param vs DOCUMENT ME!
-	 * @param nv DOCUMENT ME!
+	 * @param vs
+	 *            DOCUMENT ME!
+	 * @param nv
+	 *            DOCUMENT ME!
 	 */
 	public void setVisualStyle(VisualStyle vs, CyNetworkView nv) {
-		// TODO Auto-generated method stub
 		vsForNetwork.put(nv, vs);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param originalVS DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualStyle copyVisualStyle(VisualStyle originalVS) {
+		final VisualStyle copyVS = new VisualStyleImpl(vpCatalog, new String(originalVS.getTitle()));
+
+		// TODO: copy everything! This is incomplete
+		Collection<VisualMappingFunction<?, ?>> allMapping = originalVS.getAllVisualMappingFunctions();
+
+		String attrName;
+		VisualProperty<?> vp;
+
+		for (VisualMappingFunction<?, ?> mapping : allMapping) {
+			attrName = mapping.getMappingAttributeName();
+			vp = mapping.getVisualProperty();
+		}
+
+		visualStyles.add(copyVS);
+		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(copyVS),
+		                                   VisualStyleCreatedListener.class);
+
+		return copyVS;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param title DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public VisualStyle createVisualStyle(String title) {
+		final VisualStyle newVS = new VisualStyleImpl(vpCatalog, title);
+		visualStyles.add(newVS);
+		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
+		                                   VisualStyleCreatedListener.class);
+
+		return newVS;
+	}
+
+	/**
+	 * Remove the style from this manager and delete it.
+	 *
+	 * @param vs
+	 *            DOCUMENT ME!
+	 */
+	public void removeVisualStyle(VisualStyle vs) {
+		visualStyles.remove(vs);
+		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs),
+		                                   VisualStyleDestroyedListener.class);
+		vs = null;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Collection<VisualStyle> getAllVisualStyles() {
+		return visualStyles;
 	}
 }
