@@ -358,8 +358,9 @@ public class CellAlgorithm extends AbstractLayout {
 				}
 			}
 			
-			// Uncross edges
 			List<NodeView> filteredNodeViews = r.getFilteredNodeViews();
+
+			// Uncross edges
 			 if (filteredNodeViews.size() < 30 ){
 			 UnCrossAction.unCross(filteredNodeViews, false);
 				System.out.println("Uncrossed edges!");

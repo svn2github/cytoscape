@@ -33,7 +33,7 @@ public class CellTemplate {
 		int zG;
 		Double rG;
 
-		Color = "999999";
+		Color = "FFFFFF";
 		CenterX = "6254.75";
 		CenterY = "1837.25";
 		Width = "8670.5";
@@ -117,7 +117,7 @@ public class CellTemplate {
 		rG = Double.parseDouble(Rotation);
 		Region d = new Region("Oval", cG, xG, yG, wG, hG, zG, rG, "nucleus");
 
-		Color = "999999";
+		Color = "FFFFFF";
 		CenterX = "6269.75";
 		CenterY = "4747.25";
 		Width = "8640.5";
