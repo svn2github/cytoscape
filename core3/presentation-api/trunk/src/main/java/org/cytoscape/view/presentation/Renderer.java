@@ -14,7 +14,7 @@ public interface Renderer {
 	/**
 	 * Return a list of visual attributes this renderer can use
 	 */
-	public Collection<VisualProperty<?>> supportedVisualProperties();
+	public Collection<VisualProperty<?>> getSupportedVisualProperties();
 	
 	public String getName();
 }
