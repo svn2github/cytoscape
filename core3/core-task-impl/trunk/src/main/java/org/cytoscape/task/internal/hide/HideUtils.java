@@ -47,7 +47,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
+import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
 
 import java.util.Collection;
 

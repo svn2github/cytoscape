@@ -61,7 +61,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
+import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
 
 public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 

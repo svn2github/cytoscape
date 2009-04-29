@@ -42,7 +42,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.NETWORK_SCALE_FACTOR;
+import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.NETWORK_SCALE_FACTOR;
 
 
 abstract class AbstractZoomTask implements Task {
