@@ -39,6 +39,7 @@ package org.cytoscape.view.vizmap;
 import java.util.Collection;
 
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.RootVisualLexicon;
 
 
 /**
@@ -107,4 +108,7 @@ public interface VisualMappingManager {
 	 * 
 	 */
 	public void removeVisualStyle(VisualStyle vs);
+
+	public RootVisualLexicon getRendererCatalog();
+	
 }

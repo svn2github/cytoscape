@@ -37,6 +37,7 @@ package org.cytoscape.view.vizmap;
 import java.util.Collection;
 
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 
 
@@ -126,4 +127,6 @@ public interface VisualStyle {
 	 *            DOCUMENT ME!
 	 */
 	void apply(CyNetworkView v);
+	
+	public VisualLexicon getRenderer();
 }
