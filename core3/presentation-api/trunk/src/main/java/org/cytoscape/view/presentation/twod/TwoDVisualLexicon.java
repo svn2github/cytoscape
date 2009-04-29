@@ -35,26 +35,27 @@
 */
 package org.cytoscape.view.presentation.twod;
 
-import org.cytoscape.view.model.Renderer;
-import org.cytoscape.view.model.VisualProperty;
+import static org.cytoscape.model.GraphObject.EDGE;
+import static org.cytoscape.model.GraphObject.NETWORK;
+import static org.cytoscape.model.GraphObject.NODE;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collections;
-
-import java.awt.Paint;
 import java.awt.Color;
+import java.awt.Paint;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.cytoscape.model.GraphObject.*;
+import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
 
 /**
  * Should be implemented as a service.
  * 'Renderer' is simply anything that provides VisualProperties.
  * With a 'VisualProperties as annotations' this won't be needed.
  */
-public abstract class TwoDVisualProperties implements Renderer {
+public abstract class TwoDVisualLexicon implements VisualLexicon {
 
-	protected Set<VisualProperty<?>> visualPropertySet;
+	protected final Set<VisualProperty<?>> visualPropertySet;
 
 	public static final VisualProperty<? extends Paint> NODE_COLOR
 		= new ColorTwoDVisualProperty(NODE,Color.RED,"NODE_COLOR","Node Color");
@@ -96,7 +97,7 @@ public abstract class TwoDVisualProperties implements Renderer {
 	public static final VisualProperty<String> NETWORK_TITLE 
 		= new StringTwoDVisualProperty(NETWORK,"","NETWORK_TITLE","Network Title");
 
-	public TwoDVisualProperties() {
+	public TwoDVisualLexicon() {
 
 		visualPropertySet = new HashSet<VisualProperty<?>>();
 
@@ -121,7 +122,7 @@ public abstract class TwoDVisualProperties implements Renderer {
 		visualPropertySet.add(NETWORK_TITLE);
 	}
 
-	public Set<VisualProperty<?>> getVisualProperties() {
+	public Set<VisualProperty<?>> getAllVisualProperties() {
 		return Collections.unmodifiableSet( visualPropertySet );
 	}
 

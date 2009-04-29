@@ -54,11 +54,12 @@ public abstract class AbstractTwoDVisualProperty<T> implements VisualProperty<T>
 
 	public String getObjectType() { return  ot; }
 
-	public Class<T> getType() { return (Class<T>)(def.getClass()); }
+	@SuppressWarnings("unchecked")
+	public Class<T> getType() { return (Class<T>) def.getClass(); }
 
 	public T getDefault() { return def; }
 
-	public String getSerializableName() { return id; }
+	public String getIdString() { return id; }
 
 	public String getDisplayName() { return name; }
 

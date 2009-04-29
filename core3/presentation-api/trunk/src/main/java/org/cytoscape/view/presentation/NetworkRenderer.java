@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,15 +31,16 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
+ */
 package org.cytoscape.view.presentation;
 
 import java.awt.Image;
 import java.awt.print.Printable;
-
 import java.util.Properties;
 
+import javax.swing.Icon;
+
+import org.cytoscape.view.model.VisualProperty;
 
 /**
  * Represents an presentation, i.e., actual 2D/3D visualization.
@@ -52,33 +52,46 @@ import java.util.Properties;
  * 
  * @since Cytoscape 3.0
  * 
-  */
-public interface Presentation {
+ */
+public interface NetworkRenderer extends Renderer {
 	/**
-	 *  
-	 *
-	 * @param props DOCUMENT ME!
+	 * 
+	 * 
+	 * @param props
+	 *            DOCUMENT ME!
 	 */
 	public void setProperties(Properties props);
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Properties getProperties();
 
 	/**
-	 *  For export image function.
-	 *
-	 * @return  DOCUMENT ME!
+	 * For export image function.
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Printable getPrintable();
 
 	/**
-	 * Generate image from the current presentation. 
-	 *
-	 * @return  Image object created from current window.
+	 * Generate image from the current presentation.
+	 * 
+	 * @return Image object created from current window.
 	 */
-	public Image getImage();
+	public Image getImage(int width, int height);
+	
+	/**
+	 *  For a given Visual Property, render an Icon based on the default value
+	 *  of the Visual Property.
+	 *
+	 * @param vp Visual Property.
+	 *
+	 * @return  DOCUMENT ME!
+	 *
+	 * @exception IllegalArgumentException if vp is not in the lexicon.
+	 */
+	public Icon getDefaultIcon(VisualProperty<?> vp);
 }
