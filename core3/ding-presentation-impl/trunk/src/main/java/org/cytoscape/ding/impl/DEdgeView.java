@@ -45,7 +45,7 @@ import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
 
-import org.cytoscape.view.presentation.twod.TwoDVisualProperties;
+import org.cytoscape.view.presentation.twod.TwoDVisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.ViewChangeListener;
 
@@ -1434,7 +1434,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 		if (vp == DVisualLexicon.EDGE_SELECTED_PAINT) {
 			setSelectedPaint((Paint)o);
 		}
-		else if (vp == TwoDVisualProperties.EDGE_COLOR) { 
+		else if (vp == TwoDVisualLexicon.EDGE_COLOR) { 
 			setUnselectedPaint((Paint)o);
 		}
 		else if (vp == DVisualLexicon.EDGE_WIDTH) {
@@ -1455,7 +1455,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_UNSELECTED_PAINT) {
 			setTargetEdgeEndPaint((Paint)o); 
 		}
-		else if (vp == TwoDVisualProperties.EDGE_SELECTED) {
+		else if (vp == TwoDVisualLexicon.EDGE_SELECTED) {
 			setSelected((Boolean)o);
 		}
 		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SHAPE) {
@@ -1464,7 +1464,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
 			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
-		else if (vp == TwoDVisualProperties.EDGE_LABEL) {
+		else if (vp == TwoDVisualLexicon.EDGE_LABEL) {
 			setText((String)o);
 		}
 		else if (vp == DVisualLexicon.EDGE_TOOLTIP) {
@@ -1491,7 +1491,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_SIZE) {
 			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
 		}
-		else if (vp == TwoDVisualProperties.EDGE_LABEL_COLOR) {
+		else if (vp == TwoDVisualLexicon.EDGE_LABEL_COLOR) {
 			setTextPaint((Paint)o);
 		}
 	}

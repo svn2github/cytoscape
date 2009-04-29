@@ -1389,10 +1389,10 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		else if ( vp == DVisualLexicon.NODE_SELECTED_PAINT ) {
 			setSelectedPaint((Paint)o); 
 		}
-		else if ( vp == TwoDVisualProperties.NODE_SELECTED ) {
+		else if ( vp == TwoDVisualLexicon.NODE_SELECTED ) {
 			setSelected(((Boolean)o).booleanValue()); 
 		}
-		else if ( vp == TwoDVisualProperties.NODE_COLOR ) { // unselected paint
+		else if ( vp == TwoDVisualLexicon.NODE_COLOR ) { // unselected paint
 			setUnselectedPaint((Paint)o); 
 		}
 		else if ( vp == DVisualLexicon.NODE_BORDER_PAINT ) {
@@ -1413,19 +1413,19 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		else if ( vp == DVisualLexicon.NODE_HEIGHT ) {
 			setHeight(((Double)o).doubleValue());
 		}
-		else if ( vp == TwoDVisualProperties.NODE_LABEL ) {
+		else if ( vp == TwoDVisualLexicon.NODE_LABEL ) {
 			setText((String)o);
 		}
-		else if ( vp == TwoDVisualProperties.NODE_X_LOCATION ) {
+		else if ( vp == TwoDVisualLexicon.NODE_X_LOCATION ) {
 			setXPosition(((Double)o).doubleValue());
 		}
-		else if ( vp == TwoDVisualProperties.NODE_Y_LOCATION ) {
+		else if ( vp == TwoDVisualLexicon.NODE_Y_LOCATION ) {
 			setYPosition(((Double)o).doubleValue());
 		}
 		else if ( vp == DVisualLexicon.NODE_TOOLTIP ) {
 			setToolTip((String)o);
 		}
-		else if ( vp == TwoDVisualProperties.NODE_LABEL_COLOR ) {
+		else if ( vp == TwoDVisualLexicon.NODE_LABEL_COLOR ) {
 			setTextPaint((Paint)o);
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_FONT_FACE ) {

@@ -61,6 +61,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
@@ -90,12 +91,13 @@ import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
 import org.cytoscape.util.intr.IntStack;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewChangeListener;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.VisualPropertyCatalog;
-import org.cytoscape.view.presentation.Presentation;
-import org.cytoscape.view.presentation.twod.TwoDVisualProperties;
+import org.cytoscape.view.presentation.NetworkRenderer;
+import org.cytoscape.view.presentation.twod.TwoDVisualLexicon;
 import org.cytoscape.work.UndoSupport;
 
 import phoebe.PhoebeCanvasDropListener;
@@ -114,7 +116,7 @@ import phoebe.PhoebeCanvasDroppable;
  *
  * @author Nerius Landys
  */
-public class DGraphView implements Presentation, GraphView, Printable, PhoebeCanvasDroppable, ViewChangeListener {
+public class DGraphView implements NetworkRenderer, GraphView, Printable, PhoebeCanvasDroppable, ViewChangeListener {
 
     private static enum ZOrder {
         BACKGROUND_PANE,
@@ -333,16 +335,21 @@ public class DGraphView implements Presentation, GraphView, Printable, PhoebeCan
 	Paint m_lastTexturePaint = null;
 
 	CyNetworkView cyNetworkView;
-	VisualPropertyCatalog vizPropCatalog;
+	
+	RootVisualLexicon rootLexicon;
+	
+	// Will be injected.
+	private VisualLexicon dingLexicon;
 	/**
 	 * Creates a new DGraphView object.
 	 *
 	 * @param perspective The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory, VisualPropertyCatalog vpc) {
+	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc, VisualLexicon dingLexicon) {
 		m_perspective = view.getSource();
 		cyNetworkView = view;
-		vizPropCatalog = vpc;
+		rootLexicon = vpc;
+		this.dingLexicon = dingLexicon;
 		
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view",false);
@@ -391,7 +398,7 @@ public class DGraphView implements Presentation, GraphView, Printable, PhoebeCan
 			addEdgeView( ee );
 
 		// read in visual properties from view obj
-		Collection<VisualProperty<?>> netVPs = vizPropCatalog.collectionOfVisualProperties(NETWORK);
+		Collection<VisualProperty<?>> netVPs = rootLexicon.getVisualProperties(NETWORK);
 		for ( VisualProperty<?> vp : netVPs ) 
 			visualPropertySet(vp, cyNetworkView.getVisualProperty(vp));
 
@@ -704,7 +711,7 @@ public class DGraphView implements Presentation, GraphView, Printable, PhoebeCan
 		                 m_defaultNodeYMax);
 
 		// read in visual properties from view obj
-		Collection<VisualProperty<?>> nodeVPs = vizPropCatalog.collectionOfVisualProperties(NODE);
+		Collection<VisualProperty<?>> nodeVPs = rootLexicon.getVisualProperties(NODE);
 		View<CyNode> nv = cyNetworkView.getNodeView(node);
 		for ( VisualProperty<?> vp : nodeVPs ) 
 			newView.visualPropertySet(vp, nv.getVisualProperty(vp));
@@ -748,7 +755,7 @@ public class DGraphView implements Presentation, GraphView, Printable, PhoebeCan
 			m_contentChanged = true;
 
 			// read in visual properties from view obj
-			Collection<VisualProperty<?>> edgeVPs = vizPropCatalog.collectionOfVisualProperties(EDGE);
+			Collection<VisualProperty<?>> edgeVPs = rootLexicon.getVisualProperties(EDGE);
 			View<CyEdge> ev = cyNetworkView.getEdgeView(edge);
 			for ( VisualProperty<?> vp : edgeVPs ) 
 				edgeView.visualPropertySet(vp, ev.getVisualProperty(vp));
@@ -2604,13 +2611,13 @@ public class DGraphView implements Presentation, GraphView, Printable, PhoebeCan
 				enableEdgeSelection();
 			else
 				disableEdgeSelection();
-		} else if ( vp == TwoDVisualProperties.NETWORK_BACKGROUND_COLOR ) {
+		} else if ( vp == TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR ) {
 			setBackgroundPaint((Paint)o);
-		} else if ( vp == TwoDVisualProperties.NETWORK_CENTER_X_LOCATION ) {
+		} else if ( vp == TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION ) {
 			setCenter(((Double)o).doubleValue(),m_networkCanvas.m_yCenter);
-		} else if ( vp == TwoDVisualProperties.NETWORK_CENTER_Y_LOCATION ) {
+		} else if ( vp == TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION ) {
 			setCenter(m_networkCanvas.m_xCenter,((Double)o).doubleValue());
-		} else if ( vp == TwoDVisualProperties.NETWORK_SCALE_FACTOR ) {
+		} else if ( vp == TwoDVisualLexicon.NETWORK_SCALE_FACTOR ) {
 			setZoom(((Double)o).doubleValue());
 		}
 	}
@@ -2633,5 +2640,24 @@ public class DGraphView implements Presentation, GraphView, Printable, PhoebeCan
 	public void setProperties(Properties props) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Icon getDefaultIcon(VisualProperty<?> vp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Image getImage(int width, int height) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getName() {
+		// TODO What kind of string should I return?
+		return "ding";
+	}
+
+	public VisualLexicon getVisualLexicon() {
+		return this.dingLexicon;
 	}
 }
