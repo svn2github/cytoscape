@@ -5,11 +5,6 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<!-- Export Visual Style Catalog as OSGi service -->
-	<osgi:service id="visualStyleCatalogService" ref="visualStyleCatalog"
-		interface="org.cytoscape.view.vizmap.VisualStyleCatalog">
-	</osgi:service>
-
 	<osgi:service id="visualMappingManagerService" ref="visualMappingManager"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager">
 	</osgi:service>
@@ -17,6 +12,6 @@
 	<!-- Import Services -->
 	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
 
-	<osgi:reference id="visualPropertyCatalogRef"
-		interface="org.cytoscape.view.model.VisualPropertyCatalog" />
+	<osgi:reference id="rootVisualLexiconRef"
+		interface="org.cytoscape.view.model.RootVisualLexicon" />
 </beans>

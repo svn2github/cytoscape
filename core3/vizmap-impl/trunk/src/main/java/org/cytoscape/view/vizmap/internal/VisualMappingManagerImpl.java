@@ -34,11 +34,16 @@
  */
 package org.cytoscape.view.vizmap.internal;
 
-import org.cytoscape.event.CyEventHelper;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -46,12 +51,6 @@ import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
 import org.cytoscape.view.vizmap.events.VisualStyleDestroyedListener;
 import org.cytoscape.view.vizmap.internal.events.VisualStyleCreatedEventImpl;
 import org.cytoscape.view.vizmap.internal.events.VisualStyleDestroyedEventImpl;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -61,23 +60,23 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	private final Map<CyNetworkView, VisualStyle> vsForNetwork;
 	private final Set<VisualStyle> visualStyles;
 	private CyEventHelper cyEventHelper;
-	private VisualPropertyCatalog vpCatalog;
-
+	private RootVisualLexicon rootLexicon;
+	
 	/**
 	 *
 	 * @param h
 	 *            DOCUMENT ME!
 	 */
 	public VisualMappingManagerImpl(final CyEventHelper eventHelper,
-	                                final VisualPropertyCatalog vpCatalog) {
+	                                final RootVisualLexicon rootLexicon) {
 		if (eventHelper == null)
 			throw new IllegalArgumentException("CyEventHelper cannot be null");
 
-		if (vpCatalog == null)
+		if (rootLexicon == null)
 			throw new IllegalArgumentException("vpCatalog cannot be null");
 
 		this.cyEventHelper = eventHelper;
-		this.vpCatalog = vpCatalog;
+		this.rootLexicon = rootLexicon;
 
 		visualStyles = new HashSet<VisualStyle>();
 		vsForNetwork = new HashMap<CyNetworkView, VisualStyle>();
@@ -115,7 +114,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 * @return  DOCUMENT ME!
 	 */
 	public VisualStyle copyVisualStyle(VisualStyle originalVS) {
-		final VisualStyle copyVS = new VisualStyleImpl(vpCatalog, new String(originalVS.getTitle()));
+		final VisualStyle copyVS = new VisualStyleImpl(rootLexicon, new String(originalVS.getTitle()));
 
 		// TODO: copy everything! This is incomplete
 		Collection<VisualMappingFunction<?, ?>> allMapping = originalVS.getAllVisualMappingFunctions();
@@ -143,7 +142,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 * @return  DOCUMENT ME!
 	 */
 	public VisualStyle createVisualStyle(String title) {
-		final VisualStyle newVS = new VisualStyleImpl(vpCatalog, title);
+		final VisualStyle newVS = new VisualStyleImpl(rootLexicon, title);
 		visualStyles.add(newVS);
 		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
 		                                   VisualStyleCreatedListener.class);
@@ -171,5 +170,10 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 */
 	public Collection<VisualStyle> getAllVisualStyles() {
 		return visualStyles;
+	}
+
+	public RootVisualLexicon getRendererCatalog() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

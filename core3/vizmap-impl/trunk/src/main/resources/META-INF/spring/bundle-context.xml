@@ -16,11 +16,10 @@
 
 	<context:annotation-config />
 
-	<bean id="visualStyleCatalog" class="org.cytoscape.view.vizmap.internal.VisualStyleCatalogImpl">
+	<bean id="visualMappingManager"
+		class="org.cytoscape.view.vizmap.internal.VisualMappingManagerImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />
-		<constructor-arg ref="visualPropertyCatalogRef" />
-	</bean>
-	<bean id="visualMappingManager" class="org.cytoscape.view.vizmap.internal.VisualMappingManagerImpl">
+		<constructor-arg ref="rootVisualLexiconRef" />
 	</bean>
 
 

@@ -34,6 +34,10 @@
 */
 package org.cytoscape.view.vizmap.internal;
 
+import static org.cytoscape.model.GraphObject.EDGE;
+import static org.cytoscape.model.GraphObject.NETWORK;
+import static org.cytoscape.model.GraphObject.NODE;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,14 +49,13 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewColumn;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
-
-import static org.cytoscape.model.GraphObject.*;
 
 
 /**
@@ -60,35 +63,35 @@ import static org.cytoscape.model.GraphObject.*;
 public class VisualStyleImpl implements VisualStyle {
 	private Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
 	private Map<VisualProperty<?>, Object> perVSDefaults;
-	private VisualPropertyCatalog vpCatalog;
+	private RootVisualLexicon rootLexicon;
 	private static final String DEFAULT_TITLE = "?";
 	private String title;
 
 	/**
 	 * Creates a new VisualStyleImpl object.
 	 *
-	 * @param vpCatalog  DOCUMENT ME!
+	 * @param rootLexicon  DOCUMENT ME!
 	 */
-	public VisualStyleImpl(final VisualPropertyCatalog vpCatalog) {
-		this(vpCatalog, null);
+	public VisualStyleImpl(final RootVisualLexicon rootLexicon) {
+		this(rootLexicon, null);
 	}
 
 	/**
 	 * Creates a new VisualStyleImpl object.
 	 *
 	 * @param eventHelper  DOCUMENT ME!
-	 * @param vpCatalog  DOCUMENT ME!
+	 * @param rootLexicon  DOCUMENT ME!
 	 */
-	public VisualStyleImpl(final VisualPropertyCatalog vpCatalog, final String title) {
-		if (vpCatalog == null)
-			throw new NullPointerException("vpCatalog is null");
+	public VisualStyleImpl(final RootVisualLexicon rootLexicon, final String title) {
+		if (rootLexicon == null)
+			throw new NullPointerException("rootLexicon is null");
 
 		if (title == null)
 			this.title = DEFAULT_TITLE;
 		else
 			this.title = title;
 
-		this.vpCatalog = vpCatalog;
+		this.rootLexicon = rootLexicon;
 		mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
 	}
@@ -164,11 +167,11 @@ public class VisualStyleImpl implements VisualStyle {
 		final List<View<CyEdge>> edgeviews = view.getEdgeViews();
 
 		applyImpl(view, nodeviews,
-		          vpCatalog.collectionOfVisualProperties(nodeviews, NODE));
+		          rootLexicon.getVisualProperties(nodeviews, NODE));
 		applyImpl(view, edgeviews,
-		          vpCatalog.collectionOfVisualProperties(edgeviews, EDGE));
+		          rootLexicon.getVisualProperties(edgeviews, EDGE));
 		applyImpl(view, Arrays.asList((View<CyNetwork>) view),
-		          vpCatalog.collectionOfVisualProperties(NETWORK));
+		          rootLexicon.getVisualProperties(NETWORK));
 	}
 
 	// note: can't use applyImpl(List<View<?>>views ... ) because that does not compile
@@ -242,6 +245,11 @@ public class VisualStyleImpl implements VisualStyle {
 
 	public Collection<VisualMappingFunction<?,?>> getAllVisualMappingFunctions() {
 		return mappings.values();
+	}
+
+	public VisualLexicon getRenderer() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
