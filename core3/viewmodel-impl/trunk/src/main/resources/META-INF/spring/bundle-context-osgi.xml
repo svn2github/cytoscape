@@ -16,18 +16,18 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="visualPropertyCatalogService" ref="visualPropertyCatalog"
-		interface="org.cytoscape.view.model.VisualPropertyCatalog">
+	<osgi:service id="rootVisualLexiconService" ref="rootVisualLexicon"
+		interface="org.cytoscape.view.model.RootVisualLexicon">
 		<osgi:service-properties>
 			<entry key="service.type" value="objectFacade" />
 		</osgi:service-properties>
 	</osgi:service>
 
 	<!-- Define OSGi Service Listener -->
-	<osgi:set id="renderers" interface="org.cytoscape.view.model.Renderer"
+	<osgi:set id="renderers" interface="org.cytoscape.view.model.VisualLexicon"
 		cardinality="0..N">
-		<osgi:listener bind-method="addRenderer" unbind-method="removeRenderer"
-			ref="visualPropertyCatalog" />
+		<osgi:listener bind-method="addVisualLexicon" unbind-method="removeVisualLexicon"
+			ref="rootVisualLexicon" />
 	</osgi:set>
 
 </beans>

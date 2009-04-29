@@ -16,7 +16,7 @@
 	</bean>
 
 	<!-- Catalog object of available VP.  This will be exported as service. -->
-	<bean id="visualPropertyCatalog"
-		class="org.cytoscape.view.model.internal.VisualPropertyCatalogImpl" />
+	<bean id="rootVisualLexicon"
+		class="org.cytoscape.view.model.internal.RootVisualLexiconImpl" />
 
 </beans>
