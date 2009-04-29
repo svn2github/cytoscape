@@ -39,7 +39,7 @@ package cytoscape.internal.select;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyEdge;
-import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
+import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
 import cytoscape.view.ViewUpdater;
 
 public class SelectEdgeViewUpdater extends ViewUpdater<CyEdge,Boolean> {

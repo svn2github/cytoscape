@@ -6,7 +6,7 @@ import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
+import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;

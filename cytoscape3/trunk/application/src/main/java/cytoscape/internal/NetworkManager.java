@@ -37,23 +37,42 @@
 
 package cytoscape.internal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
-
-import java.util.LinkedList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
+import org.cytoscape.view.presentation.NetworkRenderer;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.events.*;
+import cytoscape.events.NetworkAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkAboutToBeDestroyedListener;
+import cytoscape.events.NetworkAddedEvent;
+import cytoscape.events.NetworkAddedListener;
+import cytoscape.events.NetworkDestroyedEvent;
+import cytoscape.events.NetworkDestroyedListener;
+import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
+import cytoscape.events.NetworkViewAddedEvent;
+import cytoscape.events.NetworkViewAddedListener;
+import cytoscape.events.NetworkViewDestroyedEvent;
+import cytoscape.events.NetworkViewDestroyedListener;
+import cytoscape.events.SetCurrentNetworkEvent;
+import cytoscape.events.SetCurrentNetworkListener;
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
+import cytoscape.events.SetSelectedNetworkViewsEvent;
+import cytoscape.events.SetSelectedNetworkViewsListener;
+import cytoscape.events.SetSelectedNetworksEvent;
+import cytoscape.events.SetSelectedNetworksListener;
 
 
 public class NetworkManager implements CyNetworkManager {
@@ -349,5 +368,10 @@ public class NetworkManager implements CyNetworkManager {
 				public CyNetworkManager getSource() { return NetworkManager.this; } 
 			}, NetworkViewAddedListener.class );
 
+	}
+
+	public NetworkRenderer getPresentation(CyNetworkView view) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

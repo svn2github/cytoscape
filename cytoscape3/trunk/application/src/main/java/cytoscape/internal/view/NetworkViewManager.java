@@ -62,7 +62,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.cytoscape.view.presentation.PresentationFactory;
-import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.*;
+import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
 
 
 /**

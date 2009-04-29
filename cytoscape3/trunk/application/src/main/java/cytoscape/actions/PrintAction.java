@@ -33,7 +33,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 //-------------------------------------------------------------------------
 // $Revision: 12984 $
@@ -42,17 +42,17 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.Presentation;
-import org.cytoscape.view.presentation.PresentationManager;
-
-import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.awt.print.PrinterJob;
-
 import java.util.Properties;
+
+import javax.swing.event.MenuEvent;
+
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.presentation.NetworkRenderer;
+
+import cytoscape.CyNetworkManager;
+import cytoscape.util.CytoscapeAction;
 
 
 /**
@@ -60,33 +60,34 @@ import java.util.Properties;
  */
 public class PrintAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870257629L;
+
 	/**
 	 *
 	 */
 	public final static String MENU_LABEL = "Print...";
-
 	private Properties props;
-	private PresentationManager presMgr;
+	private CyNetworkManager cyNetworkMgr;
 
 	/**
 	 * Creates a new PrintAction object.
 	 */
-	public PrintAction(CyNetworkManager netmgr,Properties props,PresentationManager presMgr) {
-		super(MENU_LABEL,netmgr);
+	public PrintAction(CyNetworkManager netmgr, Properties props, CyNetworkManager cyNetworkMgr) {
+		super(MENU_LABEL, netmgr);
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK);
 		this.props = props;
-		this.presMgr = presMgr;
+		this.cyNetworkMgr = cyNetworkMgr;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @param e DOCUMENT ME!
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
 		CyNetworkView curr = netmgr.getCurrentNetworkView();
-		Presentation pres = presMgr.getPresentation(curr);
+		NetworkRenderer pres = cyNetworkMgr.getPresentation(curr);
 
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 
@@ -101,8 +102,13 @@ public class PrintAction extends CytoscapeAction {
 				exc.printStackTrace();
 			}
 		}
-	} 
+	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void menuSelected(MenuEvent e) {
 		enableForNetworkAndView();
 	}
