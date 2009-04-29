@@ -76,10 +76,8 @@ public class RootVisualLexiconImpl implements RootVisualLexicon {
 
 	@SuppressWarnings("unchecked")
 	public void removeVisualLexicon(VisualLexicon lexicon, Map props) {
-		final String presentationName = props.get(KEY_PRESENTATION_NAME)
-				.toString();
-		if (presentationName == null)
-			throw new IllegalArgumentException("Lexicon name is missing.");
+		final String presentationName = lexicon.toString();
+		
 
 		this.lexiconMap.remove(presentationName);
 	}
