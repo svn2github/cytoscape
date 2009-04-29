@@ -74,7 +74,7 @@ public interface VisualProperty<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	String getSerializableName();
+	String getIdString();
 
 	/**
 	 * A short string suitable for presentation to humans.  Should not be used

@@ -31,22 +31,21 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.model;
 
 import java.util.Set;
 
-
 /**
- * Should be implemented as a service.
- * 'Renderer' is simply anything that provides VisualProperties.
- * With a 'VisualProperties as annotations' this won't be needed.
+ * Should be implemented as a service. 'Renderer' is simply anything that
+ * provides VisualProperties. With a 'VisualProperties as annotations' this
+ * won't be needed.
  */
-public interface Renderer {
+public interface VisualLexicon {
 	/**
 	 * Returns the Set of VisualPropertys supported by this Renderer.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	Set<VisualProperty<?>> getVisualProperties();
+	public Set<VisualProperty<?>> getAllVisualProperties();
 }
