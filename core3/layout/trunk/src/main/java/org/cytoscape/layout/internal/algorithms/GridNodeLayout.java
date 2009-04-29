@@ -36,24 +36,17 @@
 */
 package org.cytoscape.layout.internal.algorithms;
 
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
+import java.util.List;
+
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.ViewColumn;
-import org.cytoscape.view.presentation.twod.TwoDVisualProperties;
-
-import org.cytoscape.work.UndoSupport;
+import org.cytoscape.view.presentation.twod.TwoDVisualLexicon;
 import org.cytoscape.work.Tunable;
-
-//import javax.swing.*;
-//import java.awt.GridLayout;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import org.cytoscape.work.UndoSupport;
 
 
 /**
@@ -156,8 +149,8 @@ public class GridNodeLayout extends AbstractLayout {
 		int columns;
 
 		// TODO figure out where these come from!
-		VisualProperty<Double> xLoc = TwoDVisualProperties.NODE_X_LOCATION;
-		VisualProperty<Double> yLoc = TwoDVisualProperties.NODE_Y_LOCATION;
+		VisualProperty<Double> xLoc = TwoDVisualLexicon.NODE_X_LOCATION;
+		VisualProperty<Double> yLoc = TwoDVisualLexicon.NODE_Y_LOCATION;
 
 		// needed for approach 2 and 3
 		//ViewColumn<Double> xColumn = networkView.getColumn(xLoc);
