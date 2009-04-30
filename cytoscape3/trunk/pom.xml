@@ -189,7 +189,6 @@
 			<plugin>
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
-				<version>1.5-SNAPSHOT</version>
 				<configuration>
 					<!--  some example Pax-Runner settings -->
 					<provision>
