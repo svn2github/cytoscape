@@ -51,7 +51,6 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -64,21 +63,19 @@ import javax.swing.SwingConstants;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import cytoscape.CyNetworkManager;
-import cytoscape.Cytoscape;
-
 
 /**
  * Dialog for editing default visual property values.<br>
  * This is a modal dialog.
- *
+ * 
  * <p>
  * Basic idea is the following:
  * <ul>
@@ -87,67 +84,76 @@ import cytoscape.Cytoscape;
  * <li>Create a image from the dummy.</li>
  * </ul>
  * </p>
- *
+ * 
  * @version 0.5
  * @since Cytoscape 2.5
  * @author kono
  */
 public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor {
-	
+
 	private final static long serialVersionUID = 1202339876675416L;
-	
-	private static final Set<VisualProperty<?>> EDGE_PROPS;
-	private static final Set<VisualProperty<?>> NODE_PROPS;
-	
+
+	// List of Available Visual Properties.
+	private Set<VisualProperty<?>> edgeVP;
+	private Set<VisualProperty<?>> nodeVP;
+	private Set<VisualProperty<?>> networkVpSet;
+
 	private VisualMappingManager vmm;
-	private final NodeAppearanceCalculator nac;
-	
+
 	private CyNetworkManager cyNetworkManager;
 
-//	static {
-//		EDGE_PROPS = new TreeSet<VisualProperty>(VisualProperty.getEdgeVisualPropertyList());
-//		NODE_PROPS = new TreeSet<VisualProperty>(VisualProperty.getNodeVisualPropertyList());
-//	}
+	// static {
+	// EDGE_PROPS = new
+	// TreeSet<VisualProperty>(VisualProperty.getEdgeVisualPropertyList());
+	// NODE_PROPS = new
+	// TreeSet<VisualProperty>(VisualProperty.getNodeVisualPropertyList());
+	// }
 
 	private EditorManager editorFactory;
-	
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
-	 *
+	 * 
 	 * @param parent
 	 *            DOCUMENT ME!
 	 * @param modal
 	 *            DOCUMENT ME!
 	 */
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
-	                                final EditorManager editorFactory, VisualMappingManager vmm, CyNetworkManager cyNetworkManager) {
+			final EditorManager editorFactory, final VisualMappingManager vmm,
+			final CyNetworkManager cyNetworkManager) {
 		super();
+
 		this.vmm = vmm;
 		this.cyNetworkManager = cyNetworkManager;
-		nac = this.vmm.getVisualStyle().getNodeAppearanceCalculator();
 		this.setModal(true);
 		this.mainView = mainView;
 		this.editorFactory = editorFactory;
 		initComponents();
 		buildList();
-		
-		
 
+		// Listening to resize event.
 		this.addComponentListener(new ComponentAdapter() {
-				public void componentResized(ComponentEvent e) {
-					mainView.updateView();
-				}
-			});
+			public void componentResized(ComponentEvent e) {
+				mainView.updateView();
+			}
+		});
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewEditor#showDialog(java.awt.Component)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#showDialog(java.awt
+	 * .Component)
 	 */
 	public JPanel showEditor(Component parent) {
 		setSize(900, 400);
-		lockSize();
-		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
+		
+		//TODO: fix the width/height lock 
+//		lockSize();
+//		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
+		
 		mainView.updateView();
 		setLocationRelativeTo(parent);
 		setVisible(true);
@@ -155,13 +161,18 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		return getPanel();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewEditor#getDefaultView(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#getDefaultView(java
+	 * .lang.String)
 	 */
 	public JPanel getDefaultView(String vsName) {
-		vmm.setVisualStyle(vsName);
-		mainView.updateBackgroungColor(vmm.getVisualStyle().getGlobalAppearanceCalculator()
-		                                  .getDefaultBackgroundColor());
+		//TODO: update background color
+//		mainView.updateBackgroungColor(vmm.getVisualStyle()
+//				.getGlobalAppearanceCalculator().getDefaultBackgroundColor());
+		
 		mainView.updateView();
 
 		return getPanel();
@@ -194,41 +205,43 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		lockNodeSizeCheckBox.setOpaque(false);
 
 		nodeList.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					listActionPerformed(e);
-				}
-			});
+			public void mouseClicked(MouseEvent e) {
+				listActionPerformed(e);
+			}
+		});
 
 		edgeList.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					listActionPerformed(e);
-				}
-			});
+			public void mouseClicked(MouseEvent e) {
+				listActionPerformed(e);
+			}
+		});
 
 		globalList.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					globalListActionPerformed(e);
-				}
-			});
+			public void mouseClicked(MouseEvent e) {
+				globalListActionPerformed(e);
+			}
+		});
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Default Appearance for " + vmm.getVisualStyle().getName());
-		mainView.setBorder(new javax.swing.border.LineBorder(java.awt.Color.darkGray, 1, true));
+		setTitle("Default Appearance for " + vmm.getVisualStyle(cyNetworkManager.getCurrentNetworkView()).getTitle());
+		mainView.setBorder(new javax.swing.border.LineBorder(
+				java.awt.Color.darkGray, 1, true));
 
-		org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(mainView);
+		org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(
+				mainView);
 		mainView.setLayout(jXPanel2Layout);
-		jXPanel2Layout.setHorizontalGroup(jXPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                .add(0, 300, Short.MAX_VALUE));
-		jXPanel2Layout.setVerticalGroup(jXPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                              .add(0, 237, Short.MAX_VALUE));
+		jXPanel2Layout.setHorizontalGroup(jXPanel2Layout.createParallelGroup(
+				org.jdesktop.layout.GroupLayout.LEADING).add(0, 300,
+				Short.MAX_VALUE));
+		jXPanel2Layout.setVerticalGroup(jXPanel2Layout.createParallelGroup(
+				org.jdesktop.layout.GroupLayout.LEADING).add(0, 237,
+				Short.MAX_VALUE));
 
 		jXTitledPanel1.setTitle("Default Visual Properties");
-		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
-		                                                        new Color(Color.gray.getRed(),
-		                                                                  Color.gray.getGreen(),
-		                                                                  Color.gray.getBlue(), 100),
-		                                                        new Point2D.Double(.8d, 0),
-		                                                        Color.WHITE));
+		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(
+				new Point2D.Double(.2d, 0), new Color(Color.gray.getRed(),
+						Color.gray.getGreen(), Color.gray.getBlue(), 100),
+				new Point2D.Double(.8d, 0), Color.WHITE));
 		jXTitledPanel1.setTitleFont(new java.awt.Font("SansSerif", 1, 12));
 		jXTitledPanel1.setMinimumSize(new java.awt.Dimension(300, 27));
 		jXTitledPanel1.setPreferredSize(new java.awt.Dimension(300, 27));
@@ -242,103 +255,145 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		defaultObjectTabbedPane.addTab("Edge", edgeScrollPane);
 		defaultObjectTabbedPane.addTab("Global", globalScrollPane);
 
-		org.jdesktop.layout.GroupLayout jXTitledPanel1Layout = new org.jdesktop.layout.GroupLayout(jXTitledPanel1
-		                                                                                           .getContentContainer());
+		org.jdesktop.layout.GroupLayout jXTitledPanel1Layout = new org.jdesktop.layout.GroupLayout(
+				jXTitledPanel1.getContentContainer());
 		jXTitledPanel1.getContentContainer().setLayout(jXTitledPanel1Layout);
-		jXTitledPanel1Layout.setHorizontalGroup(jXTitledPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                            .add(defaultObjectTabbedPane,
-		                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                 250, Short.MAX_VALUE));
-		jXTitledPanel1Layout.setVerticalGroup(jXTitledPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                          .add(defaultObjectTabbedPane,
-		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                               243, Short.MAX_VALUE));
+		jXTitledPanel1Layout.setHorizontalGroup(jXTitledPanel1Layout
+				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+				.add(defaultObjectTabbedPane,
+						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 250,
+						Short.MAX_VALUE));
+		jXTitledPanel1Layout.setVerticalGroup(jXTitledPanel1Layout
+				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+				.add(defaultObjectTabbedPane,
+						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 243,
+						Short.MAX_VALUE));
 
 		lockNodeSizeCheckBox.setFont(new java.awt.Font("SansSerif", 1, 12));
 		lockNodeSizeCheckBox.setText("Lock Node Width/Height");
-		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory
+				.createEmptyBorder(0, 0, 0, 0));
 		lockNodeSizeCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
+		//TODO: fix lock
+//		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
 		lockNodeSizeCheckBox.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					lockSize();
-				}
-			});
+			public void actionPerformed(ActionEvent arg0) {
+				lockSize();
+			}
+		});
 
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-					//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-					dispose();
-				}
-			});
+			public void actionPerformed(ActionEvent arg0) {
+				// vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+				// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+				dispose();
+			}
+		});
 
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					// TODO Auto-generated method stub
-					dispose();
-				}
-			});
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				dispose();
+			}
+		});
 
-		org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(jXPanel1);
+		org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(
+				jXPanel1);
 		jXPanel1.setLayout(jXPanel1Layout);
-		jXPanel1Layout.setHorizontalGroup(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                .add(jXPanel1Layout.createSequentialGroup()
-		                                                                   .addContainerGap()
-		                                                                   .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                                                      .add(jXPanel1Layout.createSequentialGroup()
-		                                                                                                         .add(lockNodeSizeCheckBox,
-		                                                                                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                              138,
-		                                                                                                              Short.MAX_VALUE)
-		                                                                                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                                         .add(cancelButton)
-		                                                                                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                                         .add(applyButton))
-		                                                                                      .add(mainView,
-		                                                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                           Short.MAX_VALUE))
-		                                                                   .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                   .add(jXTitledPanel1,
-		                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                        198, Short.MAX_VALUE)
-		                                                                   .add(12, 12, 12)));
-		jXPanel1Layout.setVerticalGroup(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                              .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                   jXPanel1Layout.createSequentialGroup()
-		                                                                 .addContainerGap()
-		                                                                 .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-		                                                                                    .add(org.jdesktop.layout.GroupLayout.LEADING,
-		                                                                                         jXTitledPanel1,
-		                                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                         270,
-		                                                                                         Short.MAX_VALUE)
-		                                                                                    .add(jXPanel1Layout.createSequentialGroup()
-		                                                                                                       .add(mainView,
-		                                                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                            Short.MAX_VALUE)
-		                                                                                                       .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                                       .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                                                          .add(lockNodeSizeCheckBox)
-		                                                                                                                          .add(cancelButton)
-		                                                                                                                          .add(applyButton))))
-		                                                                 .addContainerGap()));
+		jXPanel1Layout
+				.setHorizontalGroup(jXPanel1Layout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								jXPanel1Layout
+										.createSequentialGroup()
+										.addContainerGap()
+										.add(
+												jXPanel1Layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.LEADING)
+														.add(
+																jXPanel1Layout
+																		.createSequentialGroup()
+																		.add(
+																				lockNodeSizeCheckBox,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				138,
+																				Short.MAX_VALUE)
+																		.addPreferredGap(
+																				org.jdesktop.layout.LayoutStyle.RELATED)
+																		.add(
+																				cancelButton)
+																		.addPreferredGap(
+																				org.jdesktop.layout.LayoutStyle.RELATED)
+																		.add(
+																				applyButton))
+														.add(
+																mainView,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																Short.MAX_VALUE))
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												jXTitledPanel1,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												198, Short.MAX_VALUE).add(12,
+												12, 12)));
+		jXPanel1Layout
+				.setVerticalGroup(jXPanel1Layout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								jXPanel1Layout
+										.createSequentialGroup()
+										.addContainerGap()
+										.add(
+												jXPanel1Layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.TRAILING)
+														.add(
+																org.jdesktop.layout.GroupLayout.LEADING,
+																jXTitledPanel1,
+																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																270,
+																Short.MAX_VALUE)
+														.add(
+																jXPanel1Layout
+																		.createSequentialGroup()
+																		.add(
+																				mainView,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				Short.MAX_VALUE)
+																		.addPreferredGap(
+																				org.jdesktop.layout.LayoutStyle.RELATED)
+																		.add(
+																				jXPanel1Layout
+																						.createParallelGroup(
+																								org.jdesktop.layout.GroupLayout.BASELINE)
+																						.add(
+																								lockNodeSizeCheckBox)
+																						.add(
+																								cancelButton)
+																						.add(
+																								applyButton))))
+										.addContainerGap()));
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
+				getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                .add(jXPanel1,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     Short.MAX_VALUE));
-		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                              .add(jXPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   Short.MAX_VALUE));
+		layout.setHorizontalGroup(layout.createParallelGroup(
+				org.jdesktop.layout.GroupLayout.LEADING).add(jXPanel1,
+				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+		layout.setVerticalGroup(layout.createParallelGroup(
+				org.jdesktop.layout.GroupLayout.LEADING).add(jXPanel1,
+				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 		pack();
 	} // </editor-fold>
 
@@ -365,7 +420,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			}
 
 			buildList();
-			//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 			mainView.updateView();
 			mainView.repaint();
 		}
@@ -374,17 +429,18 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	private void globalListActionPerformed(MouseEvent e) {
 		if (e.getClickCount() == 1) {
 			final String selected = (String) globalList.getSelectedValue();
-			Color newColor = CyColorChooser.showDialog(this, "Choose new color.", Color.white);
+			Color newColor = CyColorChooser.showDialog(this,
+					"Choose new color.", Color.white);
 
 			try {
 				vmm.getVisualStyle().getGlobalAppearanceCalculator()
-				   .setDefaultColor(selected, newColor);
+						.setDefaultColor(selected, newColor);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 
 			buildList();
-			//Cytoscape.redrawGraph(vmm.getNetworkView());
+			// Cytoscape.redrawGraph(vmm.getNetworkView());
 
 			if (selected.equals("Background Color")) {
 				vmm.applyGlobalAppearances();
@@ -431,8 +487,9 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		DefaultListModel model = new DefaultListModel();
 		nodeList.setModel(model);
 
-		for (VisualProperty type : NODE_PROPS) {
-			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
+		for (VisualProperty type : nodeVP) {
+			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type
+					.getDefaultIcon());
 			nodeIcon.setLeftPadding(15);
 			model.addElement(type);
 			nodeIcons.add(nodeIcon);
@@ -441,8 +498,9 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		DefaultListModel eModel = new DefaultListModel();
 		edgeList.setModel(eModel);
 
-		for (VisualProperty type : EDGE_PROPS) {
-			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
+		for (VisualProperty type : edgeVP) {
+			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type
+					.getDefaultIcon());
 
 			if (edgeIcon != null) {
 				edgeIcon.setLeftPadding(15);
@@ -451,13 +509,15 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			}
 		}
 
-		GlobalAppearanceCalculator gac = vmm.getVisualStyle().getGlobalAppearanceCalculator();
+		GlobalAppearanceCalculator gac = vmm.getVisualStyle()
+				.getGlobalAppearanceCalculator();
 		DefaultListModel gModel = new DefaultListModel();
 		globalList.setModel(gModel);
 
 		for (String name : gac.getGlobalAppearanceNames()) {
 			try {
-				globalIcons.add(new GlobalIcon(name, gac.getDefaultColor(name)));
+				globalIcons
+						.add(new GlobalIcon(name, gac.getDefaultColor(name)));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -475,14 +535,14 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 
 	private void lockSize() {
 		if (lockNodeSizeCheckBox.isSelected()) {
-			NODE_PROPS.remove(NODE_WIDTH);
-			NODE_PROPS.remove(NODE_HEIGHT);
-			NODE_PROPS.add(NODE_SIZE);
+			nodeVP.remove(NODE_WIDTH);
+			nodeVP.remove(NODE_HEIGHT);
+			nodeVP.add(NODE_SIZE);
 			nac.setNodeSizeLocked(true);
 		} else {
-			NODE_PROPS.add(NODE_WIDTH);
-			NODE_PROPS.add(NODE_HEIGHT);
-			NODE_PROPS.remove(NODE_SIZE);
+			nodeVP.add(NODE_WIDTH);
+			nodeVP.add(NODE_HEIGHT);
+			nodeVP.remove(NODE_SIZE);
 			nac.setNodeSizeLocked(false);
 		}
 
@@ -491,8 +551,12 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		repaint();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewEditor#setVmm(org.cytoscape.vizmap.VisualMappingManager)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#setVmm(org.cytoscape
+	 * .vizmap.VisualMappingManager)
 	 */
 	public void setVmm(VisualMappingManager vmm) {
 		this.vmm = vmm;
@@ -500,7 +564,8 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339876646385L;
-		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 14);
+		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC,
+				14);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
 		private final Color SELECTED_COLOR = new Color(10, 50, 180, 20);
 		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 150);
@@ -511,8 +576,8 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			setOpaque(true);
 		}
 
-		public Component getListCellRendererComponent(JList list, Object value, int index,
-		                                              boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
 			final VisualPropertyIcon icon;
 
 			if (icons.size() > index) {
@@ -529,8 +594,9 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			this.setIconTextGap(55);
 
 			if (value instanceof VisualProperty
-			    && (((VisualProperty) value).getType() == String.class)) {
-				final Object defVal = ((VisualProperty) value).getDefault(vmm.getVisualStyle());
+					&& (((VisualProperty) value).getType() == String.class)) {
+				final Object defVal = ((VisualProperty) value).getDefault(vmm
+						.getVisualStyle());
 
 				if (defVal != null) {
 					this.setToolTipText((String) defVal);
@@ -538,7 +604,8 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			}
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
-			setForeground(isSelected ? SELECTED_FONT_COLOR : list.getForeground());
+			setForeground(isSelected ? SELECTED_FONT_COLOR : list
+					.getForeground());
 
 			if (icon != null) {
 				setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
@@ -570,5 +637,10 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 			g2d.setColor(Color.DARK_GRAY);
 			g2d.drawRect(5, 3, 50, 32);
 		}
+	}
+
+	public Component getDefaultView(VisualStyle vs) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

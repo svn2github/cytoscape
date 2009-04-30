@@ -1,19 +1,18 @@
 package org.cytoscape.view.vizmap.gui.internal.action;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JPanel;
 
-import org.cytoscape.view.GraphView;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
-import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.calculators.Calculator;
-
-import cytoscape.Cytoscape;
 
 public class CreateNewStyleAction extends AbstractVizMapperAction {
 
@@ -27,36 +26,24 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		final String name = vizMapperUtil
-				.getStyleName(vizMapperMainPanel, null);
+		final String title = vizMapperUtil.getStyleName(vizMapperMainPanel,
+				null);
 
 		/*
 		 * If name is null, do not create style.
 		 */
-		if (name == null)
+		if (title == null)
 			return;
 
 		// Create the new style
-		final VisualStyle newStyle = new VisualStyle(name);
-		final List<Calculator> calcs = new ArrayList<Calculator>(vmm
-				.getCalculatorCatalog().getCalculators());
-		final Calculator dummy = calcs.get(0);
-		newStyle.getNodeAppearanceCalculator().setCalculator(dummy);
+		final VisualStyle newStyle = vmm.createVisualStyle(title);
+		final CyNetworkView currentView = cyNetworkManager
+				.getCurrentNetworkView();
+		// Set selected style
+		this.vizMapperMainPanel.setSelectedVisualStyle(newStyle);
+		vmm.setVisualStyle(newStyle, currentView);
 
-		final GraphView currentView = cyNetworkManager.getCurrentNetworkView();
-
-		// add it to the catalog
-		vmm.getCalculatorCatalog().addVisualStyle(newStyle);
-		// Apply the new style
-		vmm.setVisualStyle(newStyle);
-
-		vmm.setVisualStyleForView(currentView, newStyle);
-
-		vizMapperMainPanel.getPropertyChangeSupport().firePropertyChange(
-				"REMOVE_MAPPING", null, dummy.getVisualProperty());
-		// vizMapperMainPanel.removeMapping(dummy.getVisualProperty());
-
-		final JPanel defPanel = defViewEditor.getDefaultView(name);
+		final Component defPanel = defViewEditor.getDefaultView(newStyle);
 		final CyNetworkView view = (CyNetworkView) ((DefaultViewPanel) defPanel)
 				.getView();
 		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()
@@ -64,13 +51,13 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 
 		if (view != null) {
 			System.out.println("Creating Default Image for new visual style "
-					+ name);
-			vizMapperMainPanel.updateDefaultImage(name, view, panelSize);
+					+ title);
+			vizMapperMainPanel.updateDefaultImage(newStyle, view, panelSize);
 			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
-					.getDefaultImageManager().get(name));
+					.getDefaultImageManager().get(newStyle));
 		}
 
-		//vmm.setNetworkView(currentView);
-		vizMapperMainPanel.switchVS(name);
+		// vmm.setNetworkView(currentView);
+		vizMapperMainPanel.switchVS(newStyle);
 	}
 }

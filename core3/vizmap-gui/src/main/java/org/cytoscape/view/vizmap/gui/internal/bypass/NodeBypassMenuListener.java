@@ -36,14 +36,14 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
-import org.cytoscape.view.NodeContextMenuListener;
-import org.cytoscape.view.NodeView;
-import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import java.awt.Color;
+import java.awt.Font;
 
-
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 
 /**

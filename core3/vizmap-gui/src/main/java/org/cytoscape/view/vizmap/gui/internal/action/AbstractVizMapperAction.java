@@ -40,10 +40,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Properties;
 
-import javax.annotation.Resource;
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.internal.EditorWindowManager;
@@ -51,7 +51,6 @@ import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 import org.cytoscape.view.vizmap.gui.theme.IconManager;
-import org.cytoscape.vizmap.VisualMappingManager;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
@@ -65,29 +64,29 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
                                                                                 PropertyChangeListener {
 	private static final long serialVersionUID = 1499424630636172107L;
 	
-	@Resource
+	
 	protected VizMapperUtil vizMapperUtil;
-	@Resource
+	
 	protected DefaultViewEditor defViewEditor;
-	@Resource
+	
 	protected VisualMappingManager vmm;
-	@Resource
+	
 	protected CyNetworkManager cyNetworkManager;
-	@Resource
+	
 	protected VizMapperMainPanel vizMapperMainPanel;
-	@Resource
+	
 	protected IconManager iconManager;
 	
-	@Resource
+	
 	protected VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	
-	@Resource
+	
 	protected PropertySheetPanel propertySheetPanel;
 	
-	@Resource
+	
 	protected EditorWindowManager editorWindowManager;
 	
-	@Resource
+	
 	protected Properties vizmapUIResource;
 	
 	protected String menuLabel;
@@ -192,4 +191,5 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	public void propertyChange(PropertyChangeEvent e) {
 		System.out.println(e.getSource());
 	}
+
 }

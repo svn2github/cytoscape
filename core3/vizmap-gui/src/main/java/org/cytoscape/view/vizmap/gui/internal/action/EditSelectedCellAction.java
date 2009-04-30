@@ -38,23 +38,19 @@ package org.cytoscape.view.vizmap.gui.internal.action;
 
 import java.awt.event.ActionEvent;
 
-import javax.annotation.Resource;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.MappingCalculator;
-import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import cytoscape.Cytoscape;
 
 
 /**
@@ -63,11 +59,10 @@ import cytoscape.Cytoscape;
 public class EditSelectedCellAction extends AbstractVizMapperAction {
 	public EditSelectedCellAction() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	private static final long serialVersionUID = -6102797200439573667L;
-	@Resource
+
 	private EditorManager editorFactory;
 
 	/**
@@ -103,7 +98,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 		/*
 		 * Extract calculator
 		 */
-		final MappingCalculator mapping;
+		final VisualMappingFunction mapping;
 		final CyDataTable attr;
 
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
@@ -118,7 +113,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 			attr = targetNetwork.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 		}
 
-		if (mapping instanceof ContinuousMapping || mapping instanceof PassthroughMappingCalculator)
+		if (mapping instanceof ContinuousMapping || mapping instanceof PassthroughMapping)
 			return;
 
 		Object newValue = null;

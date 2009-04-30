@@ -35,6 +35,7 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -49,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -61,8 +61,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import org.cytoscape.model.GraphObject;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -70,10 +72,6 @@ import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.theme.ColorManager;
 import org.cytoscape.view.vizmap.gui.theme.IconManager;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.MappingCalculator;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
@@ -106,6 +104,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 	private boolean ignore = false;
 	private String lastVSName = null;
+	
 
 	/**
 	 * Create new instance of VizMapperMainPanel object. GUI layout is handled
@@ -132,6 +131,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				vizMapEventHandlerManager, editorWindowManager, cyNetworkManager);
 
 		initPanel();
+		
 	}
 
 	private void initPanel() {
@@ -186,16 +186,16 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		this.lastVSName = newName;
 	}
 
-	public void switchVS(String vsName) {
-		switchVS(vsName, true);
+	public void switchVS(VisualStyle style) {
+		switchVS(style, true);
 	}
 
-	public void switchVS(String vsName, boolean redraw) {
+	public void switchVS(VisualStyle style, boolean redraw) {
 		if (ignore)
 			return;
 
 		// If new VS name is the same, ignore.
-		if (lastVSName == vsName)
+		if (lastVSName.equals(style.getTitle()))
 			return;
 
 		editorWindowManager.closeAllEditorWindows();
@@ -325,16 +325,17 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * @param view
 	 * @param size
 	 */
-	public void updateDefaultImage(String vsName, GraphView view, Dimension size) {
-		Image image = defaultImageManager.remove(vsName);
+	public void updateDefaultImage(VisualStyle vs, CyNetworkView view, Dimension size) {
+		Image image = defaultImageManager.remove(vs);
 
 		if (image != null) {
 			image.flush();
 			image = null;
 		}
 
-		defaultImageManager.put(vsName, view.createImage((int) size.getWidth(),
-				(int) size.getHeight(), 0.9));
+		//TODO: Add image nenerator method in presentation
+//		defaultImageManager.put(vs, view.createImage((int) size.getWidth(),
+//				(int) size.getHeight(), 0.9));
 	}
 
 	public void updateAttributeList() {
@@ -436,16 +437,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				.getHandler(e.getPropertyName());
 		if (handler != null)
 			handler.processEvent(e);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param vsName
-	 *            DOCUMENT ME!
-	 */
-	public void setCurrentVS(String vsName) {
-		getVsNameComboBox().setSelectedItem(vsName);
 	}
 
 	/**
@@ -665,5 +656,30 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		final JTable table = propertySheetPanel.getTable();
 
 		return table.getModel().getValueAt(table.getSelectedRow(), 0);
+	}
+
+	public DefaultViewEditor getDefaultViewEditor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Component getVisualMappingBrowser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setDefaultViewEditor(DefaultViewEditor defViewEditor) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setDefaultViewPanel(JPanel defViewPanel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setVisualMappingBrowser(Component visualMappingBrowser) {
+		// TODO Auto-generated method stub
+		
 	}
 }

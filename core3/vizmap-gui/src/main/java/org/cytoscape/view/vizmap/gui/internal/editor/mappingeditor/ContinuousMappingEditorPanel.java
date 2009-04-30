@@ -34,29 +34,13 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
-import cytoscape.CyNetworkManager;
-
-import org.cytoscape.model.CyDataTable;
-
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.MappingCalculator;
-import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
-import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeListener;
-
 import java.util.List;
 import java.util.Map;
 
@@ -67,47 +51,77 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
+import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
+import cytoscape.CyNetworkManager;
+
+import static org.cytoscape.model.GraphObject.*;
 
 /**
- * Abstract class for all Continuous Mapping Editors.
- *
+ * Abstract class for all Continuous Mapping Editors. This is the mapping from
+ * Number to visual property value.
+ * 
  * @param T
  *            type of the value associated with the thumb.
- *
+ * 
+ * 
  * @version 0.5
  * @since Cytoscape 2.5
  * @author kono
  */
-public abstract class ContinuousMappingEditorPanel<T> extends JPanel
-    implements PropertyChangeListener {
+public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
+		PropertyChangeListener {
 	private static final long serialVersionUID = 2077889066171872186L;
 
 	/*
-	 * Used by trackrenderers.
+	 * Used by track renderers.
 	 */
 	protected static final String BELOW_VALUE_CHANGED = "BELOW_VALUE_CHANGED";
 	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
 
 	// Continuous mapping only accepts numerical attributes.
-	protected VisualProperty<?> type;
-	protected MappingCalculator calculator;
-	protected ContinuousMapping mapping;
-	protected List<ContinuousMappingPoint> allPoints;
-	private SpinnerNumberModel spinnerModel;
-	protected Object below;
-	protected Object above;
+	protected VisualProperty<T> type;
 
-	// protected static ContinuousMappingEditorPanel editor;
+	// Only accepts Continuous Mapping
+	protected ContinuousMapping<T> mapping;
+	protected List<ContinuousMappingPoint<T>> allPoints;
+	private SpinnerNumberModel spinnerModel;
+
+	protected T below;
+	protected T above;
+
 	protected double lastSpinnerNumber = 0;
+
 	protected CyNetworkManager cyNetworkManager;
 	protected VisualMappingManager vmm;
 
 	// This should be injected.
 	protected EditorValueRangeTracer tracer;
 
-	/** Creates new form ContinuousMapperEditorPanel */
-	public ContinuousMappingEditorPanel(final VisualProperty<T> type) {
+	protected VizMapGUI vizMapGUI;
+
+	/**
+	 * 
+	 * Creates new form ContinuousMapperEditorPanel Accepts only one visual
+	 * property type T.
+	 * 
+	 * */
+	public ContinuousMappingEditorPanel(final VisualProperty<T> type,
+			VizMapGUI vizMapGUI) {
 		this.type = type;
+		this.vizMapGUI = vizMapGUI;
+
 		initComponents();
 		setVisualPropLabel();
 
@@ -131,13 +145,14 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 
 	protected void setSpinner() {
 		spinnerModel = new SpinnerNumberModel(0.0d, Float.NEGATIVE_INFINITY,
-		                                      Float.POSITIVE_INFINITY, 0.01d);
+				Float.POSITIVE_INFINITY, 0.01d);
 		spinnerModel.addChangeListener(new SpinnerChangeListener());
 		valueSpinner.setModel(spinnerModel);
 	}
 
 	protected void setVisualPropLabel() {
-		this.visualPropertyLabel.setText("Visual Property: " + type.getDisplayName());
+		this.visualPropertyLabel.setText("Visual Property: "
+				+ type.getDisplayName());
 	}
 
 	/**
@@ -150,9 +165,10 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 	private void initComponents() {
 		JPanel mainPanel = new JPanel();
 
-		abovePanel = new BelowAndAbovePanel(type, Color.yellow, false);
+		abovePanel = new BelowAndAbovePanel(type, Color.yellow, false,
+				vizMapGUI);
 		abovePanel.setName("abovePanel");
-		belowPanel = new BelowAndAbovePanel(type, Color.white, true);
+		belowPanel = new BelowAndAbovePanel(type, Color.white, true, vizMapGUI);
 		belowPanel.setName("belowPanel");
 
 		abovePanel.setPreferredSize(new Dimension(16, 1));
@@ -182,25 +198,18 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 		iconPanel.setPreferredSize(new Dimension(25, 1));
 
 		mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-		                                                                 "Continuous Mapping for "
-		                                                                 + type.getDisplayName(),
-		                                                                 javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		                                                                 javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                                 new java.awt.Font("SansSerif",
-		                                                                                   Font.BOLD,
-		                                                                                   12),
-		                                                                 new java.awt.Color(0, 0, 0)));
+				"Continuous Mapping for " + type.getDisplayName(),
+				javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+				javax.swing.border.TitledBorder.DEFAULT_POSITION,
+				new java.awt.Font("SansSerif", Font.BOLD, 12),
+				new java.awt.Color(0, 0, 0)));
 
-		rangeSettingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-		                                                                         "Range Setting",
-		                                                                         javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		                                                                         javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                                         new java.awt.Font("SansSerif",
-		                                                                                           1,
-		                                                                                           10),
-		                                                                         new java.awt.Color(0,
-		                                                                                            0,
-		                                                                                            0)));
+		rangeSettingPanel.setBorder(javax.swing.BorderFactory
+				.createTitledBorder(null, "Range Setting",
+						javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+						javax.swing.border.TitledBorder.DEFAULT_POSITION,
+						new java.awt.Font("SansSerif", 1, 10),
+						new java.awt.Color(0, 0, 0)));
 		pivotLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 		pivotLabel.setForeground(java.awt.Color.darkGray);
 		pivotLabel.setText("Pivot:");
@@ -208,162 +217,192 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 		addButton.setText("Add");
 		addButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		addButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					addButtonActionPerformed(evt);
-				}
-			});
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				addButtonActionPerformed(evt);
+			}
+		});
 
 		deleteButton.setText("Delete");
 		deleteButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		deleteButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					deleteButtonActionPerformed(evt);
-				}
-			});
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				deleteButtonActionPerformed(evt);
+			}
+		});
 
 		// New in 2.6
 		minMaxButton.setText("Min/Max");
 		minMaxButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		minMaxButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					minMaxButtonActionPerformed(evt);
-				}
-			});
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				minMaxButtonActionPerformed(evt);
+			}
+		});
 
-		rangeEditorPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-		                                                                        "Range Editor",
-		                                                                        javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		                                                                        javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                                        new java.awt.Font("SansSerif",
-		                                                                                          1,
-		                                                                                          10),
-		                                                                        new java.awt.Color(0,
-		                                                                                           0,
-		                                                                                           0)));
+		rangeEditorPanel.setBorder(javax.swing.BorderFactory
+				.createTitledBorder(null, "Range Editor",
+						javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+						javax.swing.border.TitledBorder.DEFAULT_POSITION,
+						new java.awt.Font("SansSerif", 1, 10),
+						new java.awt.Color(0, 0, 0)));
 		slider.setMaximumValue(100.0F);
 		rotaryEncoder.setMaximumValue(100.0F);
 
-		org.jdesktop.layout.GroupLayout sliderLayout = new org.jdesktop.layout.GroupLayout(slider);
+		org.jdesktop.layout.GroupLayout sliderLayout = new org.jdesktop.layout.GroupLayout(
+				slider);
 		slider.setLayout(sliderLayout);
-		sliderLayout.setHorizontalGroup(sliderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                            .add(0, 486, Short.MAX_VALUE));
-		sliderLayout.setVerticalGroup(sliderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                          .add(0, 116, Short.MAX_VALUE));
+		sliderLayout.setHorizontalGroup(sliderLayout.createParallelGroup(
+				org.jdesktop.layout.GroupLayout.LEADING).add(0, 486,
+				Short.MAX_VALUE));
+		sliderLayout.setVerticalGroup(sliderLayout.createParallelGroup(
+				org.jdesktop.layout.GroupLayout.LEADING).add(0, 116,
+				Short.MAX_VALUE));
 
 		attrNameLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
 		attrNameLabel.setForeground(java.awt.Color.darkGray);
 		attrNameLabel.setText("Attribute Name");
 
-		org.jdesktop.layout.GroupLayout jXMultiThumbSlider1Layout = new org.jdesktop.layout.GroupLayout(rotaryEncoder);
+		org.jdesktop.layout.GroupLayout jXMultiThumbSlider1Layout = new org.jdesktop.layout.GroupLayout(
+				rotaryEncoder);
 		rotaryEncoder.setLayout(jXMultiThumbSlider1Layout);
-		jXMultiThumbSlider1Layout.setHorizontalGroup(jXMultiThumbSlider1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                                      .add(0, 84,
-		                                                                           Short.MAX_VALUE));
-		jXMultiThumbSlider1Layout.setVerticalGroup(jXMultiThumbSlider1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                                    .add(0, 65,
-		                                                                         Short.MAX_VALUE));
+		jXMultiThumbSlider1Layout.setHorizontalGroup(jXMultiThumbSlider1Layout
+				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+				.add(0, 84, Short.MAX_VALUE));
+		jXMultiThumbSlider1Layout.setVerticalGroup(jXMultiThumbSlider1Layout
+				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+				.add(0, 65, Short.MAX_VALUE));
 
 		visualPropertyLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
 		visualPropertyLabel.setForeground(java.awt.Color.darkGray);
 
-		org.jdesktop.layout.GroupLayout rangeSettingPanelLayout = new org.jdesktop.layout.GroupLayout(rangeSettingPanel);
+		org.jdesktop.layout.GroupLayout rangeSettingPanelLayout = new org.jdesktop.layout.GroupLayout(
+				rangeSettingPanel);
 		rangeSettingPanel.setLayout(rangeSettingPanelLayout);
-		rangeSettingPanelLayout.setHorizontalGroup(rangeSettingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                                  .add(rangeSettingPanelLayout.createSequentialGroup()
-		                                                                                              .addContainerGap()
-		                                                                                              .add(valueSpinner,
-		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                   67,
-		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-		                                                                                                               118,
-		                                                                                                               Short.MAX_VALUE)
-		                                                                                              .add(minMaxButton,
-		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                   62,
-		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                              .add(addButton,
-		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                   55,
-		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                              .add(deleteButton)
-		                                                                                              .add(10,
-		                                                                                                   10,
-		                                                                                                   10)));
-		rangeSettingPanelLayout.setVerticalGroup(rangeSettingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                                .add(rangeSettingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                            .add(valueSpinner,
-		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                                            .add(minMaxButton)
-		                                                                                            .add(deleteButton)
-		                                                                                            .add(addButton,
-		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		rangeSettingPanelLayout
+				.setHorizontalGroup(rangeSettingPanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								rangeSettingPanelLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.add(
+												valueSpinner,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												67,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED,
+												118, Short.MAX_VALUE)
+										.add(
+												minMaxButton,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												62,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(
+												addButton,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												55,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED)
+										.add(deleteButton).add(10, 10, 10)));
+		rangeSettingPanelLayout
+				.setVerticalGroup(rangeSettingPanelLayout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(
+								rangeSettingPanelLayout
+										.createParallelGroup(
+												org.jdesktop.layout.GroupLayout.BASELINE)
+										.add(
+												valueSpinner,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.add(minMaxButton)
+										.add(deleteButton)
+										.add(
+												addButton,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(mainPanel);
+		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
+				mainPanel);
 		mainPanel.setLayout(layout);
 
-		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                .add(rangeSettingPanel,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     Short.MAX_VALUE)
-		                                .add(layout.createSequentialGroup()
-		                                           .add(iconPanel,
-		                                                org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                           .add(belowPanel,
-		                                                org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                           .add(slider,
-		                                                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                243, Short.MAX_VALUE)
-		                                           .add(abovePanel,
-		                                                org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
-		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                              .add(layout.createSequentialGroup()
-		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                    .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                         slider,
-		                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                         145, Short.MAX_VALUE)
-		                                                    .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                         iconPanel,
-		                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                         Short.MAX_VALUE)
-		                                                    .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                         belowPanel,
-		                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                         Short.MAX_VALUE)
-		                                                    .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                         abovePanel,
-		                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                         Short.MAX_VALUE))
-		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                         .add(rangeSettingPanel,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		layout
+				.setHorizontalGroup(layout
+						.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING)
+						.add(rangeSettingPanel,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)
+						.add(
+								layout
+										.createSequentialGroup()
+										.add(
+												iconPanel,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.add(
+												belowPanel,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+										.add(
+												slider,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												243, Short.MAX_VALUE)
+										.add(
+												abovePanel,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		layout.setVerticalGroup(layout.createParallelGroup(
+				org.jdesktop.layout.GroupLayout.LEADING).add(
+				layout.createSequentialGroup().add(
+						layout.createParallelGroup(
+								org.jdesktop.layout.GroupLayout.LEADING).add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								slider,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								145, Short.MAX_VALUE).add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								iconPanel,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE).add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								belowPanel,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE).add(
+								org.jdesktop.layout.GroupLayout.TRAILING,
+								abovePanel,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)).addPreferredGap(
+						org.jdesktop.layout.LayoutStyle.RELATED).add(
+						rangeSettingPanel,
+						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
 		// add the main panel to the dialog.
 		this.add(mainPanel);
 	} // </editor-fold>
 
+	// ///////////////// Action Listeners //////////////////////
+
 	protected void minMaxButtonActionPerformed(ActionEvent evt) {
-		final Double[] newVal = MinMaxDialog.getMinMax(tracer.getMin(type), tracer.getMax(type),
-		                                               this);
+		final Double[] newVal = MinMaxDialog.getMinMax(tracer.getMin(type),
+				tracer.getMax(type), this);
 
 		if (newVal == null)
 			return;
@@ -371,66 +410,57 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 		tracer.setMin(type, newVal[0]);
 		tracer.setMax(type, newVal[1]);
 		updateMap();
-		// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		this.repaint();
 	}
 
-	abstract protected void deleteButtonActionPerformed(java.awt.event.ActionEvent evt);
+	abstract protected void deleteButtonActionPerformed(
+			java.awt.event.ActionEvent evt);
 
-	abstract protected void addButtonActionPerformed(java.awt.event.ActionEvent evt);
+	abstract protected void addButtonActionPerformed(
+			java.awt.event.ActionEvent evt);
 
 	private void initRangeValues() {
-		final Map<String, CyDataTable> attrs;
 
-		final CyDataTable attr;
+		// Attribute to be mapped.
+		final CyDataTable attrs;
 
-		if (type.getObjectType().equals(VisualProperty.NODE)) {
-			attrs = cyNetworkManager.getCurrentNetwork().getNodeCyDataTables();
+		attrs = cyNetworkManager.getCurrentNetwork().getCyDataTables(
+				type.getObjectType()).get(CyNetwork.DEFAULT_ATTRS);
 
-			// TODO: what's the target visual style?
-			// calculator =
-			// vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type);
-		} else {
-			attrs = cyNetworkManager.getCurrentNetwork().getEdgeCyDataTables();
+		VisualMappingFunction<?, T> map = vizMapGUI.getSelectedVisualStyle()
+				.getVisualMappingFunction(type);
 
-			// calculator =
-			// vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type);
-		}
-
-		if (calculator == null)
+		if (map == null || map instanceof ContinuousMapping == false)
 			return;
 
 		// TODO: fix the following section
-		// // Assume this calc only returns cont. mapping.
-		// if (calculator.getMapping(0).getClass() == ContinuousMapping.class) {
-		// mapping = (ContinuousMapping) calculator.getMapping(0);
-		//
-		// final String controllingAttrName =
-		// mapping.getControllingAttributeName();
-		//
-		// if (attr.getColumnTypeMap().get(controllingAttrName) != Double.class)
-		// return;
-		//
-		// // Set range values
-		// if (tracer.getRange(type) == 0) {
-		// Double maxValue = Double.NEGATIVE_INFINITY;
-		// Double minValue = Double.POSITIVE_INFINITY;
-		//
-		// for (Double val : attr.getColumnValues(controllingAttrName,
-		// Double.class)) {
-		// if (val > maxValue)
-		// maxValue = val;
-		//
-		// if (val < minValue)
-		// minValue = val;
-		// }
-		//
-		// tracer.setMax(type, maxValue);
-		// tracer.setMin(type, minValue);
-		// }
-		//
-		// allPoints = mapping.getAllPoints();
-		// }
+		// Assume this calc only returns cont. mapping.
+		mapping = (ContinuousMapping<T>) map;
+
+		final String controllingAttrName = mapping.getMappingAttributeName();
+
+		if (attrs.getColumnTypeMap().get(controllingAttrName) != Double.class)
+			return;
+
+		// Set range values
+		if (tracer.getRange(type) == 0) {
+			Double maxValue = Double.NEGATIVE_INFINITY;
+			Double minValue = Double.POSITIVE_INFINITY;
+
+			for (Double val : attrs.getColumnValues(controllingAttrName,
+					Double.class)) {
+				if (val > maxValue)
+					maxValue = val;
+
+				if (val < minValue)
+					minValue = val;
+			}
+
+			tracer.setMax(type, maxValue);
+			tracer.setMin(type, minValue);
+		}
+
+		allPoints = mapping.getAllPoints();
 	}
 
 	protected void setSidePanelIconColor(Color below, Color above) {
@@ -487,7 +517,8 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 
 		if (thumbs.size() == 1) {
 			// Special case: only one handle.
-			mapping.getPoint(0).getRange().equalValue = thumbs.get(0).getObject();
+			mapping.getPoint(0).getRange().equalValue = thumbs.get(0)
+					.getObject();
 			mapping.getPoint(0).getRange().lesserValue = below;
 			mapping.getPoint(0).getRange().greaterValue = above;
 
@@ -529,9 +560,9 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 			if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() > 0)) {
 				valueSpinner.setEnabled(true);
 
-				Double newVal = ((slider.getModel().getThumbAt(selectedIndex).getPosition() / 100) * tracer
-				                                                                                     .getRange(type))
-				                + tracer.getMin(type);
+				Double newVal = ((slider.getModel().getThumbAt(selectedIndex)
+						.getPosition() / 100) * tracer.getRange(type))
+						+ tracer.getMin(type);
 				valueSpinner.setValue(newVal);
 
 				updateMap();
@@ -549,9 +580,9 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 
 	/**
 	 * Watching spinner
-	 *
+	 * 
 	 * @author kono
-	 *
+	 * 
 	 */
 	class SpinnerChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent e) {
@@ -560,9 +591,9 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 
 			if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() > 1)) {
 				if ((newVal.doubleValue() < tracer.getMin(type))
-				    || (newVal.doubleValue() > tracer.getMax(type))) {
+						|| (newVal.doubleValue() > tracer.getMax(type))) {
 					if ((lastSpinnerNumber > tracer.getMin(type))
-					    && (lastSpinnerNumber < tracer.getMax(type))) {
+							&& (lastSpinnerNumber < tracer.getMax(type))) {
 						spinnerModel.setValue(lastSpinnerNumber);
 					} else {
 						spinnerModel.setValue(0);
@@ -571,12 +602,13 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 					return;
 				}
 
-				Double newPosition = ((newVal.floatValue() - tracer.getMin(type)) / tracer.getRange(type));
+				Double newPosition = ((newVal.floatValue() - tracer
+						.getMin(type)) / tracer.getRange(type));
 
-				slider.getModel().getThumbAt(selectedIndex)
-				      .setPosition(newPosition.floatValue() * 100);
-				slider.getSelectedThumb()
-				      .setLocation((int) ((slider.getSize().width - 12) * newPosition), 0);
+				slider.getModel().getThumbAt(selectedIndex).setPosition(
+						newPosition.floatValue() * 100);
+				slider.getSelectedThumb().setLocation(
+						(int) ((slider.getSize().width - 12) * newPosition), 0);
 
 				updateMap();
 				// Cytoscape.redrawGraph(vmm.getNetworkView());
@@ -591,7 +623,7 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param vmm
 	 *            DOCUMENT ME!
 	 */

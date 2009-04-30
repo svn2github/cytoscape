@@ -13,7 +13,7 @@ import java.awt.*;
 public interface VizMapperTrackRenderer extends TrackRenderer {
 	
 	/*
-	 * Static variables used by the implemeted classes.
+	 * Static variables used by the implemented classes.
 	 */
 	static final Font ICON_FONT = new Font("SansSerif", Font.BOLD, 8);
 	static final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 10);

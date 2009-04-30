@@ -8,8 +8,8 @@ import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
@@ -64,7 +64,7 @@ public class EditorWindowManager {
 			for (Property prop : subProps) {
 				name = prop.getName();
 
-				if ((name != null) && name.equals(type.getHumanName())) {
+				if ((name != null) && name.equals(type.getDisplayName())) {
 					vprop = (VizMapperProperty) prop;
 
 					break;

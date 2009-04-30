@@ -34,18 +34,14 @@
 */
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -57,9 +53,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
+import cytoscape.CyNetworkManager;
+
 
 /**
- *
+ * Track renderer for Continuous mapping (Number-to-Number mapping)
  *
  * @author kono
   */
@@ -93,12 +104,12 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	private boolean clickFlag = false;
 	private boolean dragFlag = false;
 	private Point curPoint;
-	private JXMultiThumbSlider slider;
+	private JXMultiThumbSlider<? extends Number> slider;
 	private CMouseListener listener = null;
 	private Map<Integer, Point> verticesList;
 	private int selectedIdx;
 	private Point dragOrigin;
-	private VisualProperty type;
+	private VisualProperty<? extends Number> type;
 	private ContinuousMapping cMapping;
 	private String title;
 	private Number below;
@@ -108,6 +119,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	private Point belowSquare;
 	private Point aboveSquare;
 	private VisualMappingManager vmm;
+	
+	// TODO: Should be injected
+	private CyNetworkManager manager;
 
 	/**
 	 * Creates a new ContinuousTrackRenderer object.
@@ -116,16 +130,15 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	 * @param below  DOCUMENT ME!
 	 * @param above  DOCUMENT ME!
 	 */
-	public ContinuousTrackRenderer(VisualProperty type, Number below, Number above) {
+	public ContinuousTrackRenderer(VisualProperty<? extends Number> type, Number below, Number above) {
 		this.below = below;
 		this.above = above;
 		this.type = type;
 
+		final CyNetworkView view = manager.getCurrentNetworkView();
 		if (type.getObjectType().equals(VisualProperty.NODE))
-			cMapping = (ContinuousMapping) vmm.getVisualStyle()
-			                                        .getNodeAppearanceCalculator()
-			                                        .getCalculator(type).getMapping(0);
-		else
+			cMapping = (ContinuousMapping) vmm.getVisualStyle(view).getVisualMappingFunction(type);
+
 			cMapping = (ContinuousMapping) vmm.getVisualStyle()
 			                                        .getEdgeAppearanceCalculator()
 			                                        .getCalculator(type).getMapping(0);

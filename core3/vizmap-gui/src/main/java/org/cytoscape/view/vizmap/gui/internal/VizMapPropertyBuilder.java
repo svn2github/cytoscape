@@ -1,3 +1,38 @@
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
+
 package org.cytoscape.view.vizmap.gui.internal;
 
 import java.beans.PropertyEditor;
@@ -6,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.table.DefaultTableCellRenderer;
@@ -14,9 +50,12 @@ import javax.swing.table.TableCellRenderer;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.view.vizmap.MappingCalculator;
-import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -25,6 +64,11 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
 import cytoscape.CyNetworkManager;
 
+import static org.cytoscape.model.GraphObject.*;
+
+/**
+ * Create property for the Property Sheet object.
+ */
 public class VizMapPropertyBuilder {
 
 	private PropertyRendererRegistry rendReg;
@@ -34,146 +78,146 @@ public class VizMapPropertyBuilder {
 	private DefaultTableCellRenderer filledBoxRenderer;
 
 	private EditorManager editorFactory;
-	
 	private CyNetworkManager cyNetworkManager;
 
-	/*
+	/**
 	 * Build one property for one visual property.
+	 * 
+	 * @param <K>
+	 *            data type of attribute to be mapped.
+	 * @param <V>
+	 *            data type of Visual Property.
+	 * 
 	 */
-	public void buildProperty(final MappingCalculator calc,
-			final VizMapperProperty calculatorTypeProp, final String rootCategory,
+	public <K, V> void buildProperty(
+			final VisualMappingFunction<K, V> visualMapping,
+			final VizMapperProperty<VisualProperty<V>> calculatorTypeProp,
+			final String rootObjectCategory,
 			final PropertySheetPanel propertySheetPanel) {
-		
-		final VisualProperty<?> type = calc.getVisualProperty();
+		// Mapping is empty
+		if (visualMapping == null)
+			return;
+
+		final VisualProperty<V> vp = visualMapping.getVisualProperty();
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
+
 		/*
 		 * Set one calculator
 		 */
-		calculatorTypeProp.setCategory(rootCategory);
-		calculatorTypeProp.setDisplayName(type.getName());
-		calculatorTypeProp.setHiddenObject(type);
+		calculatorTypeProp.setCategory(rootObjectCategory);
+		calculatorTypeProp.setDisplayName(vp.getDisplayName());
+		calculatorTypeProp.setHiddenObject(vp);
+
+		final String attrName = visualMapping.getMappingAttributeName();
+		final VizMapperProperty<VisualMappingFunction<K, V>> mappingHeader = new VizMapperProperty<VisualMappingFunction<K, V>>();
+
+		if (attrName == null) {
+			calculatorTypeProp.setValue("Select Value");
+			rendReg.registerRenderer(calculatorTypeProp, emptyBoxRenderer);
+		} else {
+			calculatorTypeProp.setValue(attrName);
+			rendReg.registerRenderer(calculatorTypeProp, filledBoxRenderer);
+		}
+
+		// TODO: is this correct?
+		mappingHeader.setDisplayName("Mapping Type");
+		// mappingHeader.setHiddenObject(visualMapping.getClass());
+		// Set mapping type as string.
+		mappingHeader.setValue(visualMapping.toString());
+		mappingHeader.setHiddenObject(visualMapping);
+
+		// Set parent-child relationship
+		mappingHeader.setParentProperty(calculatorTypeProp);
+		calculatorTypeProp.addSubProperty(mappingHeader);
+		// TODO: Should refactor factory.
+		editorReg.registerEditor(mappingHeader, editorFactory
+				.getDefaultComboBoxEditor("mappingTypeEditor"));
+
+		CyDataTable attr = null;
+		Iterator<? extends GraphObject> it = null;
+
+		if (targetNetwork == null)
+			return;
+
+		attr = targetNetwork.getCyDataTables(vp.getObjectType()).get(
+				CyNetwork.DEFAULT_ATTRS);
+		if (vp.getObjectType().equals(NODE)) {
+			it = targetNetwork.getNodeList().iterator();
+			editorReg.registerEditor(calculatorTypeProp, editorFactory
+					.getDefaultComboBoxEditor("nodeAttrEditor"));
+		} else if (vp.getObjectType().equals(EDGE)) {
+			it = targetNetwork.getNodeList().iterator();
+			editorReg.registerEditor(calculatorTypeProp, editorFactory
+					.getDefaultComboBoxEditor("edgeAttrEditor"));
+		}
 
 		/*
-		 * Mapping 0 is always currently used mapping.
+		 * Discrete Mapping
 		 */
-		final MappingCalculator firstMap = calc.getMapping(0);
-		String attrName;
+		if (visualMapping instanceof DiscreteMapping && (attrName != null)) {
+			final Map<K, V> discMapping = ((DiscreteMapping<K, V>) visualMapping)
+					.getAll();
 
-		if (firstMap != null) {
-			final VizMapperProperty mappingHeader = new VizMapperProperty();
+			// Extract key attribute values.
+			Class<K> attrDataType = null;
 
-			attrName = firstMap.getControllingAttributeName();
-
-			if (attrName == null) {
-				calculatorTypeProp.setValue("Select Value");
-				rendReg.registerRenderer(calculatorTypeProp, emptyBoxRenderer);
-			} else {
-				calculatorTypeProp.setValue(attrName);
-				rendReg.registerRenderer(calculatorTypeProp, filledBoxRenderer);
+			try {
+				attrDataType = (Class<K>) attr.getColumnTypeMap().get(attrName);
+			} catch (Exception e) {
+				throw new IllegalArgumentException(
+						"Attribute is not compatible data type.");
 			}
 
-			mappingHeader.setDisplayName("Mapping Type");
-			mappingHeader.setHiddenObject(firstMap.getClass());
+			final SortedSet<K> attrSet = new TreeSet<K>(attr.getColumnValues(
+					attrName, attrDataType));
 
-			if (firstMap.getClass() == DiscreteMapping.class)
-				mappingHeader.setValue("Discrete Mapping");
-			else if (firstMap.getClass() == ContinuousMapping.class)
-				mappingHeader.setValue("Continuous Mapping");
-			else
-				mappingHeader.setValue("Passthrough Mapping");
+			setDiscreteProps(vp, discMapping, attrSet, editorFactory
+					.getDiscreteCellEditor(vp), editorFactory
+					.getDiscreteCellRenderer(vp), calculatorTypeProp);
+		} else if (visualMapping instanceof ContinuousMapping
+				&& (attrName != null)) {
+			int wi = propertySheetPanel.getTable().getCellRect(0, 1, true).width;
 
-			mappingHeader.setHiddenObject(firstMap);
+			VizMapperProperty<?> graphicalView = new VizMapperProperty();
 
-			mappingHeader.setParentProperty(calculatorTypeProp);
-			calculatorTypeProp.addSubProperty(mappingHeader);
-			editorReg.registerEditor(mappingHeader, editorFactory
-					.getDefaultComboBoxEditor("mappingTypeEditor"));
+			graphicalView
+					.setDisplayName(AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW);
+			graphicalView.setName(vp.getDisplayName());
+			graphicalView.setParentProperty(calculatorTypeProp);
+			calculatorTypeProp.addSubProperty(graphicalView);
 
-			final CyDataTable attr;
-			final Iterator it;
+			TableCellRenderer crenderer = editorFactory
+					.getContinuousCellRenderer(vp, wi, 70);
+			rendReg.registerRenderer(graphicalView, crenderer);
+		} else if (visualMapping instanceof PassthroughMapping
+				&& (attrName != null)) {
+			// Passthrough
+			String id;
+			String value;
+			VizMapperProperty<K> oneProperty;
 
-			if (targetNetwork == null)
-				return;
+			// Accept String only.
+			if (attr.getColumnTypeMap().get(attrName) == String.class) {
+				while (it.hasNext()) {
+					GraphObject go = it.next();
+					id = go.attrs().get("name", String.class);
 
-			if (calc.getVisualProperty().isNodeProp()) {
-				attr = targetNetwork.getNodeCyDataTables().get(
-						CyNetwork.DEFAULT_ATTRS);
-				it = targetNetwork.getNodeList().iterator();
-				editorReg.registerEditor(calculatorTypeProp, editorFactory
-						.getDefaultComboBoxEditor("nodeAttrEditor"));
-			} else {
-				attr = targetNetwork.getEdgeCyDataTables().get(
-						CyNetwork.DEFAULT_ATTRS);
-				it = targetNetwork.getNodeList().iterator();
-				editorReg.registerEditor(calculatorTypeProp, editorFactory
-						.getDefaultComboBoxEditor("edgeAttrEditor"));
-			}
+					value = go.attrs().get(attrName, String.class);
+					oneProperty = new VizMapperProperty();
 
-			/*
-			 * Discrete Mapping
-			 */
-			if ((firstMap.getClass() == DiscreteMapping.class)
-					&& (attrName != null)) {
-				final Map discMapping = ((DiscreteMapping) firstMap).getAll();
+					if (attrName.equals("ID"))
+						oneProperty.setValue(id);
+					else
+						oneProperty.setValue(value);
 
-				final Set<Object> attrSet = new TreeSet<Object>(
-						attr
-								.getColumnValues(
-										firstMap.getControllingAttributeName(),
-										attr
-												.getColumnTypeMap()
-												.get(
-														firstMap
-																.getControllingAttributeName())));
+					// This prop. should not be editable!
+					oneProperty.setEditable(false);
 
-				setDiscreteProps(type, discMapping, attrSet, editorFactory
-						.getDiscreteCellEditor(type), editorFactory
-						.getDiscreteCellRenderer(type), calculatorTypeProp);
-			} else if ((firstMap.getClass() == ContinuousMapping.class)
-					&& (attrName != null)) {
-				int wi = propertySheetPanel.getTable().getCellRect(0, 1,
-						true).width;
+					oneProperty.setParentProperty(calculatorTypeProp);
+					oneProperty.setDisplayName(id);
+					oneProperty.setType(String.class);
 
-				VizMapperProperty graphicalView = new VizMapperProperty();
-				graphicalView
-						.setDisplayName(AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW);
-				graphicalView.setName(type.getName());
-				graphicalView.setParentProperty(calculatorTypeProp);
-				calculatorTypeProp.addSubProperty(graphicalView);
-
-				TableCellRenderer crenderer = editorFactory
-						.getContinuousCellRenderer(type, wi, 70);
-				rendReg.registerRenderer(graphicalView, crenderer);
-			} else if ((firstMap.getClass() == PassthroughMappingCalculator.class)
-					&& (attrName != null)) {
-				// Passthrough
-				String id;
-				String value;
-				VizMapperProperty oneProperty;
-
-				// Accept String only.
-				if (attr.getColumnTypeMap().get(attrName) == String.class) {
-					while (it.hasNext()) {
-						GraphObject go = ((GraphObject) it.next());
-						id = go.attrs().get("name", String.class);
-
-						value = go.attrs().get(attrName, String.class);
-						oneProperty = new VizMapperProperty();
-
-						if (attrName.equals("ID"))
-							oneProperty.setValue(id);
-						else
-							oneProperty.setValue(value);
-
-						// This prop. should not be editable!
-						oneProperty.setEditable(false);
-
-						oneProperty.setParentProperty(calculatorTypeProp);
-						oneProperty.setDisplayName(id);
-						oneProperty.setType(String.class);
-
-						calculatorTypeProp.addSubProperty(oneProperty);
-					}
+					calculatorTypeProp.addSubProperty(oneProperty);
 				}
 			}
 		}
@@ -184,36 +228,30 @@ public class VizMapPropertyBuilder {
 	}
 
 	/*
-	 * Set value, title, and renderer for each property in the category.
+	 * Set value, title, and renderer for each property in the category. This
+	 * list should be created against all available attribute values.
 	 */
-	private void setDiscreteProps(VisualProperty type, Map discMapping,
-			Set<Object> attrKeys, PropertyEditor editor,
+	private <K, V> void setDiscreteProps(VisualProperty<V> vp,
+			Map<K, V> discMapping, Set<K> attrKeys, PropertyEditor editor,
 			TableCellRenderer rend, DefaultProperty parent) {
 		if (attrKeys == null)
 			return;
 
-		Object val = null;
-		VizMapperProperty valProp;
+		V val = null;
+		VizMapperProperty<V> valProp;
 		String strVal;
 
-		final List<VizMapperProperty> children = new ArrayList<VizMapperProperty>();
+		final List<VizMapperProperty<V>> children = new ArrayList<VizMapperProperty<V>>();
 
-		for (Object key : attrKeys) {
-			valProp = new VizMapperProperty();
+		for (K key : attrKeys) {
+			valProp = new VizMapperProperty<V>();
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
-			valProp.setName(strVal + "-" + type.toString());
+			valProp.setName(strVal + "-" + vp.toString());
 			valProp.setParentProperty(parent);
 
-			try {
-				val = discMapping.get(key);
-			} catch (Exception e) {
-				System.out.println("------- Map = " + discMapping.getClass()
-						+ ", class = " + key.getClass() + ", err = "
-						+ e.getMessage());
-				System.out.println("------- Key = " + key + ", val = " + val
-						+ ", disp = " + strVal);
-			}
+			// Get the mapped value
+			val = discMapping.get(key);
 
 			if (val != null)
 				valProp.setType(val.getClass());
@@ -228,5 +266,4 @@ public class VizMapPropertyBuilder {
 		// Add all children.
 		parent.addSubProperties(children);
 	}
-
 }

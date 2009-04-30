@@ -34,22 +34,35 @@
 */
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
-import org.cytoscape.viewmodel.VisualProperty;
+import org.cytoscape.view.model.VisualProperty;
+
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+
 import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 
 
 /**
- * DOCUMENT ME!
+ * Track Renderer for color gradient
  *
  * @author $author$
  */
@@ -68,7 +81,10 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	private Color below;
 	private Color above;
 	private String attrName;
-	private VisualProperty type;
+	private VisualProperty<Color> type;
+
+	// Should be injected.
+	private EditorValueRangeTracer tracer;
 
 	/**
 	 * Creates a new GradientTrackRenderer object.
@@ -76,7 +92,8 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 * @param gradientPicker
 	 *            DOCUMENT ME!
 	 */
-	public CyGradientTrackRenderer(VisualProperty type, Color below, Color above, String title) {
+	public CyGradientTrackRenderer(VisualProperty<Color> type, Color below, Color above,
+	                               String title) {
 		//checker_paint = ColorUtil.getCheckerPaint();
 		this.below = below;
 		this.above = above;
@@ -105,9 +122,9 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 		// Turn AA on
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
-		double range = EditorValueRangeTracer.getTracer().getRange(type);
+		double minValue = tracer.getMin(type);
+		double maxValue = tracer.getMax(type);
+		double range = tracer.getRange(type);
 
 		//		 calculate the track area
 		int thumb_width = 12;
@@ -153,7 +170,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 				g.setStroke(new BasicStroke(0.6f));
 				g.setColor(Color.BLACK);
 
-				final float[] hsb = colors[i].RGBtoHSB(colors[i].getRed(), colors[i].getGreen(),
+				final float[] hsb = Color.RGBtoHSB(colors[i].getRed(), colors[i].getGreen(),
 				                                       colors[i].getBlue(), null);
 
 				int x;
@@ -350,9 +367,9 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 		// Turn AA on.
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
-		final double range = EditorValueRangeTracer.getTracer().getRange(type);
+		final double minValue = tracer.getMin(type);
+		final double maxValue = tracer.getMax(type);
+		final double range = tracer.getRange(type);
 		/*
 		 * Fill background
 		 */
@@ -455,9 +472,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 */
 	public Double getSelectedThumbValue() {
 		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
-		final double thumbVal = (((position / 100) * EditorValueRangeTracer.getTracer()
-		                                                                   .getRange(type))
-		                        + EditorValueRangeTracer.getTracer().getMin(type));
+		final double thumbVal = (((position / 100) * tracer.getRange(type)) + tracer.getMin(type));
 
 		return thumbVal;
 	}

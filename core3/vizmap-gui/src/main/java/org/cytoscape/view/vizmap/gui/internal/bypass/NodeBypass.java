@@ -36,16 +36,19 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.viewmodel.VisualPropertyCatalog;
-
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.VisualPropertyCatalog;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+
+import static org.cytoscape.model.GraphObject.*;
 
 class NodeBypass extends VizMapBypass {
 
@@ -61,7 +64,7 @@ class NodeBypass extends VizMapBypass {
 		// horrible, horrible hack
 		BypassHack.setCurrentObject(n);
 
-		for (VisualProperty<?> type : vpCatalog.collectionOfVisualProperties(VisualProperty.NODE))
+		for (VisualProperty<?> type : vpCatalog.collectionOfVisualProperties(NODE))
 			addMenuItem(menu, type);
 
 		menu.addSeparator();
@@ -74,8 +77,8 @@ class NodeBypass extends VizMapBypass {
 	protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for (VisualProperty<?> vp: vpCatalog.collectionOfVisualProperties(VisualProperty.NODE))
-			l.add(vp.getName());
+		for (VisualProperty<?> vp: vpCatalog.collectionOfVisualProperties(NODE))
+			l.add(vp.getDisplayName());
 
 		return l;
 	}

@@ -34,23 +34,7 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.action;
 
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import cytoscape.Cytoscape;
-
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyNetwork;
-
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
-import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
-
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.MappingCalculator;
-
 import java.awt.event.ActionEvent;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -58,17 +42,29 @@ import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
+import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+
+import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+
+import static org.cytoscape.model.GraphObject.*;
+
 /**
  *
  */
+// TODO: this function is broken. Need to refactor.
 public class GenerateSeriesAction extends AbstractVizMapperAction {
-	public GenerateSeriesAction() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	private final static long serialVersionUID = 121374883715581L;
-	private DiscreteMapping dm;
+
+	public GenerateSeriesAction() {
+		super();
+	}
 
 	/**
 	 * User wants to Seed the Discrete Mapper with Random Color Values.
@@ -76,54 +72,33 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 
-		/*
-		 * Check Selected poperty
-		 */
-		final int selectedRow = propertySheetPanel
-				.getTable().getSelectedRow();
+		VisualProperty<?> vp = vizMapperUtil
+				.getSelectedVisualProperty(propertySheetPanel);
+		DiscreteMapping<?, ?> oMap = vizMapperUtil.getSelectedProperty(
+				this.vizMapperMainPanel.getDefaultVisualStyle(),
+				propertySheetPanel);
 
-		if (selectedRow < 0)
-			return;
+		if (vp != null && oMap != null) {
 
-		final Item item = (Item) propertySheetPanel
-				.getTable().getValueAt(selectedRow, 0);
-		final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
-		final Object hidden = prop.getHiddenObject();
-
-		if (hidden instanceof VisualProperty) {
-			final VisualProperty type = (VisualProperty) hidden;
-
-			final Map valueMap = new HashMap();
-			final MappingCalculator oMap;
 			final CyDataTable attr;
 
-			if (type.getObjectType().equals(VisualProperty.NODE)) {
+			if (vp.getObjectType().equals(NODE))
 				attr = targetNetwork.getNodeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
-				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator()
-						.getCalculator(type).getMapping(0);
-			} else {
+			else
 				attr = targetNetwork.getEdgeCyDataTables().get(
 						CyNetwork.DEFAULT_ATTRS);
-				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator()
-						.getCalculator(type).getMapping(0);
-			}
-
-			if ((oMap instanceof DiscreteMapping) == false)
-				return;
-
-			dm = (DiscreteMapping) oMap;
 
 			final Set<Object> attrSet = new TreeSet<Object>(attr
-					.getColumnValues(oMap.getControllingAttributeName(), attr
+					.getColumnValues(oMap.getMappingAttributeName(), attr
 							.getColumnTypeMap().get(
-									oMap.getControllingAttributeName())));
+									oMap.getMappingAttributeName())));
 
-			final String start = JOptionPane.showInputDialog(propertySheetPanel,
+			final String start = JOptionPane.showInputDialog(
+					propertySheetPanel,
 					"Please enter start value (1st number in the series)", "0");
 			final String increment = JOptionPane.showInputDialog(
-					propertySheetPanel,
-					"Please enter increment", "1");
+					propertySheetPanel, "Please enter increment", "1");
 
 			if ((increment == null) || (start == null))
 				return;
@@ -144,34 +119,34 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 				return;
 			}
 
-			if (type.getType() == Number.class) {
+			Map<Object, Object> valueMap = new HashMap<Object, Object>();
+			if (vp.getType() == Number.class) {
 				for (Object key : attrSet) {
 					valueMap.put(key, st);
 					st = st + inc;
 				}
 			}
 
-			dm.putAll(valueMap);
-
-			//vmm.setNetworkView(targetView);
-			//Cytoscape.redrawGraph(targetView);
+			oMap.putAll((Map<?, ?>) valueMap);
 
 			propertySheetPanel.removeProperty(prop);
 
-			final VizMapperProperty newRootProp = new VizMapperProperty();
+			final VizMapperProperty<?> newRootProp = new VizMapperProperty();
 
-			if (type.getObjectType().equals(VisualProperty.NODE))
-				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle()
-						.getNodeAppearanceCalculator().getCalculator(type),
-						newRootProp, VizMapperMainPanel.NODE_VISUAL_MAPPING, propertySheetPanel);
+			if (vp.getObjectType().equals(NODE))
+				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+						oMap, newRootProp,
+						VizMapperMainPanel.NODE_VISUAL_MAPPING,
+						propertySheetPanel);
 			else
-				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle()
-						.getEdgeAppearanceCalculator().getCalculator(type),
-						newRootProp, VizMapperMainPanel.EDGE_VISUAL_MAPPING, propertySheetPanel);
+				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+						oMap, newRootProp,
+						VizMapperMainPanel.EDGE_VISUAL_MAPPING,
+						propertySheetPanel);
 
 			vizMapPropertySheetBuilder.removeProperty(prop);
-			vizMapPropertySheetBuilder.getPropertyMap().get(vmm.getVisualStyle().getName())
-					.add(newRootProp);
+			vizMapPropertySheetBuilder.getPropertyMap().get(
+					vmm.getVisualStyle().getName()).add(newRootProp);
 
 			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
 		} else {

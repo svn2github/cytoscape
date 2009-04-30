@@ -2,6 +2,8 @@ package org.cytoscape.view.vizmap.gui;
 
 import java.awt.Component;
 
+import org.cytoscape.view.vizmap.VisualStyle;
+
 /**
  * Default View Editor is the component to display available visual properties
  * and its default view for given Visual Style.
@@ -20,5 +22,5 @@ public interface DefaultViewEditor {
 	 * @param vsName
 	 * @return
 	 */
-	public Component getDefaultView(String vsName);
+	public Component getDefaultView(VisualStyle vs);
 }

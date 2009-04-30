@@ -47,7 +47,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -57,7 +56,9 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
@@ -77,14 +78,23 @@ import cytoscape.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
 
 /**
- * Skeleton of the VizMapper Main panel GUI. This class includes methods setting
- * up GUI components. Actual logics are in the VizMapperMainPanel
+ * Skeleton of the VizMapper Main panel GUI.
+ * 
+ * This class includes methods which sets up GUI components of VizMapper.
+ * Actual functions are in the VizMapperMainPanel.
+ * 
  */
-public abstract class AbstractVizMapperPanel extends JPanel {
+public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI {
+	protected static String DEFAULT_VS_TITLE = "Default";
+	
 	public static final String CATEGORY_UNUSED = "Unused Properties";
 	public static final String GRAPHICAL_MAP_VIEW = "Graphical View";
-	public static final String NODE_VISUAL_MAPPING = "Node Visual Mapping";
-	public static final String EDGE_VISUAL_MAPPING = "Edge Visual Mapping";
+	
+	private final VisualStyle defaultVS;
+	
+	public VisualStyle getDefaultVisualStyle() {
+		return defaultVS;
+	}
 
 	/*
 	 * Resources which will be injected through DI Container
@@ -121,7 +131,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 
 	VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 
-	protected Map<String, Image> defaultImageManager;
+	protected Map<VisualStyle, Image> defaultImageManager;
 
 	protected DefaultTableCellRenderer emptyBoxRenderer;
 	protected DefaultTableCellRenderer filledBoxRenderer;
@@ -144,6 +154,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 
 	protected SwingPropertyChangeSupport spcs;
 	protected static final long serialVersionUID = -6839011300709287662L;
+	
 
 	public AbstractVizMapperPanel(CySwingApplication desktop,
 			DefaultViewEditor defViewEditor, IconManager iconMgr,
@@ -167,11 +178,14 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 		this.editorWindowManager = editorWindowManager;
 		this.cyNetworkManager = cyNetworkManager;
 		spcs = new SwingPropertyChangeSupport(this);
+		
 
-		defaultImageManager = new HashMap<String, Image>();
+		defaultImageManager = new HashMap<VisualStyle, Image>();
 
 		initComponents();
 		initDefaultEditors();
+		
+		defaultVS = this.vmm.createVisualStyle(DEFAULT_VS_TITLE);
 	}
 
 	private void initDefaultEditors() {
@@ -200,7 +214,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 
 		buttonPanel = new javax.swing.JPanel();
 
-		setVsNameComboBox(new javax.swing.JComboBox());
+		vsNameComboBox = new JComboBox();
 
 		optionButton = new DropDownMenuButton(new AbstractAction() {
 			private final static long serialVersionUID = 1213748836776579L;
@@ -309,7 +323,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 		vsSelectPanelLayout.setHorizontalGroup(vsSelectPanelLayout
 				.createParallelGroup(GroupLayout.LEADING).add(
 						vsSelectPanelLayout.createSequentialGroup()
-								.addContainerGap().add(getVsNameComboBox(), 0,
+								.addContainerGap().add(vsNameComboBox, 0,
 										146, Short.MAX_VALUE).addPreferredGap(
 										LayoutStyle.RELATED).add(optionButton,
 										GroupLayout.PREFERRED_SIZE, 64,
@@ -320,7 +334,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 						vsSelectPanelLayout.createSequentialGroup().add(
 								vsSelectPanelLayout.createParallelGroup(
 										GroupLayout.BASELINE).add(
-										getVsNameComboBox(),
+										vsNameComboBox,
 										GroupLayout.PREFERRED_SIZE,
 										GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE).add(
@@ -372,7 +386,7 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 		return this.spcs;
 	}
 
-	public Map<String, Image> getDefaultImageManager() {
+	public Map<VisualStyle, Image> getDefaultImageManager() {
 		return this.defaultImageManager;
 	}
 
@@ -450,13 +464,25 @@ public abstract class AbstractVizMapperPanel extends JPanel {
 		// delete.setEnabled(false);
 		// menuMgr.getContextMenu().addPopupMenuListener(this);
 	}
-
-	public void setVsNameComboBox(JComboBox vsNameComboBox) {
-		this.vsNameComboBox = vsNameComboBox;
+	
+	
+	/////////////////// Managing Visual Style Combobox //////////////////
+	
+	/**
+	 * Returns currently selected Visual Style.
+	 * This is the replacement for "current visual style" in 2.x series.
+	 * 
+	 * Note: "selected visual style" is different from visual style for current network view.
+	 * 
+	 * @return
+	 */
+	public VisualStyle getSelectedVisualStyle() {
+		//TODO: Type safety.  Make sure this cast is always valid.
+		return (VisualStyle) vsNameComboBox.getSelectedItem();
 	}
-
-	public JComboBox getVsNameComboBox() {
-		return vsNameComboBox;
+	
+	public void setSelectedVisualStyle(final VisualStyle vs) {
+		vsNameComboBox.setSelectedItem(vs);
 	}
 
 	public JPanel getDefaultViewPanel() {

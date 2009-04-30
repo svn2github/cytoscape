@@ -48,36 +48,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.ContinuousMappingPoint;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
-import static org.cytoscape.viewmodel.VisualProperty.*;
-//import cytoscape.visual.ui.LabelPlacerGraphic;
-
 
 /**
- * DOCUMENT ME!
+ * 
+ * @param T type of discrete values mapped here.
+ *     This is a discrete values such as node shape, arrow head, etc. 
  *
  * @author $author$
   */
-public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackRenderer {
+public class DiscreteTrackRenderer<T> extends JComponent implements VizMapperTrackRenderer {
 	private final static long serialVersionUID = 1213748837182053L;
 	/*
 	 * Constants for diagram.
 	 */
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
-	private static final int ICON_SIZE = VisualPropertyIcon.DEFAULT_ICON_SIZE;
+	//TODO: store default icon size somewhere
+	private static final int ICON_SIZE = 32;
+//	private static final int ICON_SIZE = VisualPropertyIcon.DEFAULT_ICON_SIZE;
 	private int SMALL_ICON_SIZE = 20;
 	private static final Color ICON_COLOR = new Color(10, 100, 255, 200);
 	private static int TRACK_HEIGHT = 70;
@@ -90,7 +90,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 //	private double maxValue;
 	private Object below;
 	private Object above;
-	private VisualProperty type;
+	private VisualProperty<T> type;
 	private String title;
 
 	// Mainly for Icons
@@ -99,8 +99,11 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 	// HTML document fot tooltip text.
 	private List<String> rangeTooltips;
-	private JXMultiThumbSlider slider;
+	private JXMultiThumbSlider<T> slider;
 	private VisualMappingManager vmm;
+	
+	// TODO: Should be injected
+	private EditorValueRangeTracer tracer;
 
 	/**
 	 * Creates a new DiscreteTrackRenderer object.
@@ -111,22 +114,24 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * @param below  DOCUMENT ME!
 	 * @param above  DOCUMENT ME!
 	 */
-	public DiscreteTrackRenderer(VisualProperty type,
+	public DiscreteTrackRenderer(VisualProperty<T> type, VisualMappingFunction mapping,
 	                             Object below, Object above) {
 
 		this.below = below;
 		this.above = above;
 
 		this.type = type;
+		
+		this.title = mapping.getMappingAttributeName();
 
-		if (type.getObjectType().equals(VisualProperty.NODE))
-			title = vmm.getVisualStyle()
-			                 .getNodeAppearanceCalculator().getCalculator(type).getMapping(0)
-			                 .getControllingAttributeName();
-		else
-			title = vmm.getVisualStyle()
-			                 .getEdgeAppearanceCalculator().getCalculator(type).getMapping(0)
-			                 .getControllingAttributeName();
+//		if (type.getObjectType().equals(VisualProperty.NODE))
+//			title = vmm.getVisualStyle()
+//			                 .getNodeAppearanceCalculator().getCalculator(type).getMapping(0)
+//			                 .getControllingAttributeName();
+//		else
+//			title = vmm.getVisualStyle()
+//			                 .getEdgeAppearanceCalculator().getCalculator(type).getMapping(0)
+//			                 .getControllingAttributeName();
 
 		this.setBackground(Color.white);
 		this.setForeground(Color.white);
@@ -161,6 +166,9 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		paintComponent(g);
 	}
 
+	/**
+	 * Java2D code to draw track component.
+	 */
 	protected void paintComponent(Graphics gfx) {
 		TRACK_HEIGHT = slider.getHeight() - 100;
 		ARROW_BAR_Y_POSITION = TRACK_HEIGHT + 50;
@@ -173,12 +181,12 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 		g.translate(THUMB_WIDTH / 2, 12);
 
-		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
-		double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
+		double minValue = tracer.getMin(type);
+		double maxValue = tracer.getMax(type);
+		double valueRange = tracer.getRange(type);
 		
 		//		 get the list of tumbs
-		List<Thumb> stops = slider.getModel().getSortedThumbs();
+		List<Thumb<T>> stops = slider.getModel().getSortedThumbs();
 
 		int numPoints = stops.size();
 
@@ -191,7 +199,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		 */
 		int i = 0;
 
-		for (Thumb thumb : stops) {
+		for (Thumb<T> thumb : stops) {
 			objectValues[i] = thumb.getObject();
 			fractions[i] = thumb.getPosition();
 			i++;
@@ -538,7 +546,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		return new ImageIcon(bi);
 	}
 
-	private static List buildIconArray(int size) {
+	private static List<Icon> buildIconArray(int size) {
 		List<ImageIcon> icons = new ArrayList<ImageIcon>();
 
 		Map iconMap = NodeShape.getIconSet();
@@ -677,9 +685,9 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		g.setColor(Color.white);
 		g.fillRect(0, 0, iconWidth, iconHeight);
 		
-		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
-		double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
+		double minValue = tracer.getMin(type);
+		double maxValue = tracer.getMax(type);
+		double valueRange = tracer.getRange(type);
 
 		int track_width = iconWidth;
 		int trackHeight = iconHeight - 8;
@@ -822,8 +830,8 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * @return DOCUMENT ME!
 	 */
 	public Double getSelectedThumbValue() {
-		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		final double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
+		final double minValue = tracer.getMin(type);
+		final double valueRange = tracer.getRange(type);
 		
 		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
 

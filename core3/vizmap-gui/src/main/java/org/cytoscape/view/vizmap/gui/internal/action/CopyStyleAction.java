@@ -1,34 +1,74 @@
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
+
 package org.cytoscape.view.vizmap.gui.internal.action;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
-import javax.swing.JPanel;
-
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
-import org.cytoscape.vizmap.VisualStyle;
 
-import cytoscape.Cytoscape;
-
+/**
+ *
+ */
 public class CopyStyleAction extends AbstractVizMapperAction {
-
+	/**
+	 * Creates a new CopyStyleAction object.
+	 */
 	public CopyStyleAction() {
 		super();
 	}
 
 	private static final long serialVersionUID = 1244735696944563618L;
 
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
+	 */
 	public void actionPerformed(ActionEvent e) {
-		final VisualStyle currentStyle = vmm.getVisualStyle();
-		VisualStyle clone = null;
-		final GraphView targetView = cyNetworkManager.getCurrentNetworkView();
+		// Pick currently selected visual style in the combobox.
+		final VisualStyle currentStyle = this.vizMapperMainPanel
+				.getSelectedVisualStyle();
 
-		try {
-			clone = (VisualStyle) currentStyle.clone();
-		} catch (CloneNotSupportedException exc) {
-			System.err.println("Clone not supported exception!");
-		}
+		// Copy-to
+		final VisualStyle clone = vmm.copyVisualStyle(currentStyle);
 
 		final String newName = vizMapperUtil.getStyleName(vizMapperMainPanel,
 				clone);
@@ -37,28 +77,21 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 			return;
 		}
 
-		clone.setName(newName);
+		clone.setTitle(newName);
 
-		// add new style to the catalog
-		vmm.getCalculatorCatalog().addVisualStyle(clone);
-		vmm.setVisualStyle(clone);
-
-		final JPanel defPanel = defViewEditor.getDefaultView(newName);
-		final GraphView view = (GraphView) ((DefaultViewPanel) defPanel)
-				.getView();
+		final Component defPanel = defViewEditor.getDefaultView(clone);
+		final CyNetworkView view = ((DefaultViewPanel) defPanel).getView();
 		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()
 				.getSize();
 
 		if (view != null) {
 			System.out.println("Creating Default Image for new visual style "
 					+ newName);
-			vizMapperMainPanel.updateDefaultImage(newName, view, panelSize);
+			vizMapperMainPanel.updateDefaultImage(clone, view, panelSize);
 			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
-					.getDefaultImageManager().get(newName));
+					.getDefaultImageManager().get(clone));
 		}
 
-		//vmm.setNetworkView(targetView);
-		vizMapperMainPanel.switchVS(newName);
+		vizMapperMainPanel.switchVS(clone);
 	}
-
 }

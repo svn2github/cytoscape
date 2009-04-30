@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,45 +31,43 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
+ */
 package org.cytoscape.view.vizmap.gui.internal.action;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
-import cytoscape.Cytoscape;
-
+import static org.cytoscape.model.GraphObject.*;
 
 /**
  *
  */
 public class ModifyBrightnessAction extends AbstractVizMapperAction {
 	private final static long serialVersionUID = 121374883775182L;
-	private DiscreteMapping dm;
 	protected static final int DARKER = 1;
 	protected static final int BRIGHTER = 2;
 	private final int functionType;
 
 	/**
 	 * Creates a new BrightnessListener object.
-	 *
-	 * @param type  DOCUMENT ME!
+	 * 
+	 * @param type
+	 *            DOCUMENT ME!
 	 */
 	public ModifyBrightnessAction(final int type) {
 		this.functionType = type;
@@ -85,97 +82,91 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 		/*
 		 * Check Selected poperty
 		 */
-		final int selectedRow = propertySheetPanel.getTable()
-		                                          .getSelectedRow();
+		final int selectedRow = propertySheetPanel.getTable().getSelectedRow();
 
 		if (selectedRow < 0)
 			return;
 
-		final Item item = (Item) propertySheetPanel.getTable()
-		                                           .getValueAt(selectedRow, 0);
-		final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
+		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
+				selectedRow, 0);
+		final VizMapperProperty<?> prop = (VizMapperProperty<?>) item
+				.getProperty();
 		final Object hidden = prop.getHiddenObject();
 
 		if (hidden instanceof VisualProperty) {
-			final VisualProperty type = (VisualProperty) hidden;
+			// OK, this is a Visual Property. Check data type next.
+			Class<?> t = ((VisualProperty<?>) hidden).getType();
 
-			final Map valueMap = new HashMap();
-			final MappingCalculator oMap;
+			if (t.equals(Color.class) == false)
+				return;
+
+			// This cast is always OK because of the type check above.
+			final VisualProperty<Color> type = (VisualProperty<Color>) hidden;
+
+			final Map<Object, Color> valueMap = new HashMap<Object, Color>();
 
 			final CyDataTable attr;
+			final VisualStyle vs = this.vizMapperMainPanel
+					.getSelectedVisualStyle();
 
-			if (type.getObjectType().equals(VisualProperty.NODE)) {
-				attr = targetNetwork.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-				oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-				          .getMapping(0);
-			} else {
-				attr = targetNetwork.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-				oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-				          .getMapping(0);
-			}
+			if (type.getObjectType().equals(NODE))
+				attr = targetNetwork.getNodeCyDataTables().get(
+						CyNetwork.DEFAULT_ATTRS);
+			else
+				attr = targetNetwork.getEdgeCyDataTables().get(
+						CyNetwork.DEFAULT_ATTRS);
 
-			if ((oMap instanceof DiscreteMapping) == false) {
+			// If not discrete, return.
+			if ((vs.getVisualMappingFunction(type) instanceof DiscreteMapping) == false)
 				return;
-			}
 
-			dm = (DiscreteMapping) oMap;
+			DiscreteMapping<Object, Color> dm = (DiscreteMapping<Object, Color>) vs
+					.getVisualMappingFunction(type);
 
-			final Set<Object> attrSet = new TreeSet<Object>(attr.getColumnValues(oMap
-			                                                                                                                        .getControllingAttributeName(),
-			                                                                     attr.getColumnTypeMap()
-			                                                                         .get(oMap
-			                                                                                                                           .getControllingAttributeName())));
+			final String attrName = dm.getMappingAttributeName();
+			List<Object> attrVals = attr.getColumnValues(attrName, dm
+					.getMappingAttributeType());
 
-			/*
-			 * Create random colors
-			 */
+			final Set<Object> attrSet = new TreeSet<Object>(attrVals);
+
 			if (type.getType() == Color.class) {
-				Object c;
+				Color c;
 
 				if (functionType == BRIGHTER) {
 					for (Object key : attrSet) {
 						c = dm.getMapValue(key);
 
-						if ((c != null) && c instanceof Color) {
-							valueMap.put(key, ((Color) c).brighter());
-						}
+						if (c != null)
+							valueMap.put(key, c.brighter());
 					}
 				} else if (functionType == DARKER) {
 					for (Object key : attrSet) {
 						c = dm.getMapValue(key);
 
-						if ((c != null) && c instanceof Color) {
-							valueMap.put(key, ((Color) c).darker());
-						}
+						if (c != null)
+							valueMap.put(key, c.darker());
 					}
 				}
 			}
 
 			dm.putAll(valueMap);
-			//vmm.setNetworkView(targetView);
-			//Cytoscape.redrawGraph(targetView);
 
 			propertySheetPanel.removeProperty(prop);
 
-			final VizMapperProperty newRootProp = new VizMapperProperty();
+			final VizMapperProperty<VisualProperty<Color>> newRootProp = new VizMapperProperty<VisualProperty<Color>>();
 
-			if (type.getObjectType().equals(VisualProperty.NODE))
-				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
-				                                    .getCalculator(type), newRootProp,
-				                                 VizMapperMainPanel.NODE_VISUAL_MAPPING, propertySheetPanel);
-			else
-				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
-				                                    .getCalculator(type), newRootProp,
-				                                 VizMapperMainPanel.EDGE_VISUAL_MAPPING, propertySheetPanel);
+			vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(dm,
+					newRootProp, type.getObjectType(), propertySheetPanel);
 
 			vizMapPropertySheetBuilder.removeProperty(prop);
-			vizMapPropertySheetBuilder.getPropertyMap().get(vmm.getVisualStyle().getName()).add(newRootProp);
+			vizMapPropertySheetBuilder.getPropertyMap().get(vs)
+					.add(newRootProp);
 
-			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
+			vizMapPropertySheetBuilder.expandLastSelectedItem(type
+					.getDisplayName());
 		} else {
-			System.out.println("Invalid.");
+			throw new IllegalStateException(
+					"Hidden object is not Visual Property.");
 		}
-
-		return;
 	}
 }

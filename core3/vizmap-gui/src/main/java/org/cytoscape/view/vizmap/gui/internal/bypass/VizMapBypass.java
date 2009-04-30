@@ -47,18 +47,15 @@ import javax.swing.JMenuItem;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.vizmap.ObjectToString;
-import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.VisualPropertyCatalog;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.viewmodel.VisualPropertyCatalog;
-
-import cytoscape.Cytoscape;
 
 
 /**
- * An abstract class providing common methods and data structures to the
- * Node and Edge bypass classes.
+ * An abstract class providing common methods and data structures to the Node
+ * and Edge bypass classes.
  */
 abstract class VizMapBypass {
 	protected VisualMappingManager vmm;
@@ -67,7 +64,6 @@ abstract class VizMapBypass {
 	abstract protected List<String> getBypassNames();
 
 	protected EditorManager editorFactory;
-	
 	protected VisualPropertyCatalog vpCatalog;
 
 	VizMapBypass(EditorManager editorFactory, VisualPropertyCatalog vpCatalog) {
@@ -78,29 +74,31 @@ abstract class VizMapBypass {
 	protected void addResetAllMenuItem(JMenu menu) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("Reset All") {
 				private final static long serialVersionUID = 1202339876700753L;
+
 				public void actionPerformed(ActionEvent e) {
 					List<String> names = getBypassNames();
 					CyRow row = graphObj.attrs();
 
 					for (String attrName : names)
-						row.set("name",""); // TODO should be null instead?
+						row.set("name", ""); // TODO should be null instead?
 
-					//Cytoscape.redrawGraph(vmm.getNetworkView());
+					// Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
 			});
 		menu.add(jmi);
 	}
 
-	protected void addResetMenuItem(JMenu menu, final VisualProperty type) {
-		JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + type.getName() + " ]") {
+	protected void addResetMenuItem(JMenu menu, final VisualProperty<?> type) {
+		JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + type.getDisplayName() + " ]") {
 				private final static long serialVersionUID = 1202339876709140L;
+
 				public void actionPerformed(ActionEvent e) {
 					CyRow row = graphObj.attrs();
 
-					row.set(type.getName(),""); // TODO set to null instead?
+					row.set(type.getDisplayName(), ""); // TODO set to null instead?
 
-					//Cytoscape.redrawGraph(vmm.getNetworkView());
+					// Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
 			});
@@ -108,9 +106,9 @@ abstract class VizMapBypass {
 	}
 
 	protected void addMenuItem(final JMenu menu, final VisualProperty<?> type) {
-		
-		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
+		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getDisplayName()) {
 				private final static long serialVersionUID = 1202339876717506L;
+
 				public void actionPerformed(ActionEvent e) {
 					Object obj = null;
 
@@ -126,17 +124,19 @@ abstract class VizMapBypass {
 
 					String val = ObjectToString.getStringValue(obj);
 					CyDataTable table = graphObj.attrs().getDataTable();
-					if ( !table.getColumnTypeMap().containsKey( type.getName() ) )
-						table.createColumn( type.getName(), String.class, false );
-					graphObj.attrs().set(type.getName(), val);
-					//Cytoscape.redrawGraph(vmm.getNetworkView());
+
+					if (!table.getColumnTypeMap().containsKey(type.getDisplayName()))
+						table.createColumn(type.getDisplayName(), String.class, false);
+
+					graphObj.attrs().set(type.getDisplayName(), val);
+					// Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
 			});
 
 		menu.add(jmi);
 
-		String attrString = graphObj.attrs().get(type.getName(),String.class);
+		String attrString = graphObj.attrs().get(type.getDisplayName(), String.class);
 
 		if ((attrString == null) || (attrString.length() == 0))
 			jmi.setSelected(false);
@@ -145,7 +145,12 @@ abstract class VizMapBypass {
 			addResetMenuItem(menu, type);
 		}
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param vmm DOCUMENT ME!
+	 */
 	public void setVmm(VisualMappingManager vmm) {
 		this.vmm = vmm;
 	}

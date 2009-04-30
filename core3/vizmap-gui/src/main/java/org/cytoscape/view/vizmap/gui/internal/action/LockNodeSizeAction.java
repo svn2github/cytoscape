@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.view.vizmap.gui.internal.action;
 
@@ -42,15 +41,13 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
-import org.cytoscape.viewmodel.VisualProperty;
 
 import com.l2fprod.common.propertysheet.Property;
-
-import cytoscape.Cytoscape;
-
 
 /**
  *
@@ -60,31 +57,33 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 	private VizMapperProperty nodeWidth;
 	private VizMapperProperty nodeHeight;
 	private VizMapperProperty nodeSize;
-	
+
 	public LockNodeSizeAction() {
 		super();
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param arg0 DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param arg0
+	 *            DOCUMENT ME!
 	 */
+	// TODO: fix this!
 	public void actionPerformed(ActionEvent arg0) {
-		if (menuItem.isSelected()) {
-			vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(true);
-			switchNodeSizeLock(true);
-		} else {
-			vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
-			switchNodeSizeLock(false);
-		}
+		// if (menuItem.isSelected()) {
+		// this.vizMapperMainPanel.getSelectedVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(true);
+		// switchNodeSizeLock(true);
+		// } else {
+		// vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
+		// switchNodeSizeLock(false);
+		// }
 
-		//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 	}
 
 	/**
 	 * Will be used to show/hide node size props.
-	 *
+	 * 
 	 * @param isLock
 	 */
 	private void switchNodeSizeLock(boolean isLock) {
@@ -94,18 +93,24 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 			// Case 1: Locked. Need to remove width/height props.
 			boolean isNodeSizeExist = false;
 
-			for (Property prop : props) {
-				if (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName()))
-					isNodeSizeExist = true;
-
-				if (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName())) {
-					nodeHeight = (VizMapperProperty) prop;
-					propertySheetPanel.removeProperty(prop);
-				} else if (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName())) {
-					nodeWidth = (VizMapperProperty) prop;
-					propertySheetPanel.removeProperty(prop);
-				}
-			}
+			// TODO: fix this
+			// for (Property prop : props) {
+			// if
+			// (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName()))
+			// isNodeSizeExist = true;
+			//
+			// if
+			// (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName()))
+			// {
+			// nodeHeight = (VizMapperProperty) prop;
+			// propertySheetPanel.removeProperty(prop);
+			// } else if
+			// (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName()))
+			// {
+			// nodeWidth = (VizMapperProperty) prop;
+			// propertySheetPanel.removeProperty(prop);
+			// }
+			// }
 
 			if (isNodeSizeExist == false)
 				propertySheetPanel.addProperty(nodeSize);
@@ -114,18 +119,22 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 			boolean isNodeWExist = false;
 			boolean isNodeHExist = false;
 
-			for (Property prop : props) {
-				if (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName())) {
-					nodeSize = (VizMapperProperty) prop;
-					propertySheetPanel.removeProperty(prop);
-				}
-
-				if (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName()))
-					isNodeWExist = true;
-
-				if (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName()))
-					isNodeHExist = true;
-			}
+			// for (Property prop : props) {
+			// if
+			// (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName()))
+			// {
+			// nodeSize = (VizMapperProperty) prop;
+			// propertySheetPanel.removeProperty(prop);
+			// }
+			//
+			// if
+			// (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName()))
+			// isNodeWExist = true;
+			//
+			// if
+			// (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName()))
+			// isNodeHExist = true;
+			// }
 
 			if (isNodeHExist == false) {
 				if (nodeHeight != null)
@@ -140,21 +149,21 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 
 		propertySheetPanel.repaint();
 
-		final String targetName = vmm.getVisualStyle().getName();
+		final VisualStyle targetStyle = this.vizMapperMainPanel
+				.getSelectedVisualStyle();
 
-		vizMapperMainPanel.updateDefaultImage(targetName,
-		                                      (GraphView) ((DefaultViewPanel) defViewEditor
-		                                                                                                                                     .getDefaultView(targetName))
-		                                      .getView(),
-		                                      vizMapperMainPanel.getDefaultPanel().getSize());
-		vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel.getDefaultImageManager()
-		                                                              .get(targetName));
+		vizMapperMainPanel.updateDefaultImage(targetStyle,
+				(CyNetworkView) ((DefaultViewPanel) defViewEditor
+						.getDefaultView(targetStyle)).getView(),
+				vizMapperMainPanel.getDefaultPanel().getSize());
+		vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
+				.getDefaultImageManager().get(targetStyle));
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public JMenuItem getMenu() {
 		if (menuItem == null) {
@@ -166,9 +175,9 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 
 		return menuItem;
 	}
-	
+
 	public void propertyChange(PropertyChangeEvent e) {
-		if(e.getPropertyName().equals("UPDATE_LOCK")) {
+		if (e.getPropertyName().equals("UPDATE_LOCK")) {
 			Boolean lockState = (Boolean) e.getNewValue();
 			menuItem.setSelected(lockState);
 			switchNodeSizeLock(lockState);

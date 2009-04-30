@@ -1,3 +1,37 @@
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 package org.cytoscape.view.vizmap.gui.internal.event;
 
 import java.beans.PropertyChangeEvent;
@@ -10,30 +44,41 @@ import javax.swing.JOptionPane;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.internal.AbstractVizMapperPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.view.vizmap.mappings.PassthroughMappingCalculator;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
+// TODO: Should be refactored for readability!!
+/**
+ *
+ */
 public class CellEditorEventHandler extends AbstractVizMapEventHandler {
-
 	// Keeps current discrete mappings. NOT PERMANENT
 	private final Map<String, Map<Object, Object>> discMapBuffer;
 
-
+	/**
+	 * Creates a new CellEditorEventHandler object.
+	 */
 	public CellEditorEventHandler() {
 		discMapBuffer = new HashMap<String, Map<Object, Object>>();
 	}
 
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
+	 */
 	@Override
 	public void processEvent(PropertyChangeEvent e) {
-
+		// Ignore invalid events
 		if (e.getPropertyName().equalsIgnoreCase("value") == false)
 			return;
 
@@ -43,29 +88,30 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		final PropertySheetTable table = propertySheetPanel.getTable();
 		final int selected = table.getSelectedRow();
 
-		/*
-		 * Do nothing if not selected.
-		 */
+		// If not selected, ignore.
 		if (selected < 0)
 			return;
 
+		/*******************************************
+		 * Process valid events.
+		 *******************************************/
 		Item selectedItem = (Item) propertySheetPanel.getTable().getValueAt(
 				selected, 0);
-		VizMapperProperty prop = (VizMapperProperty) selectedItem.getProperty();
+		VizMapperProperty<?> prop = (VizMapperProperty<?>) selectedItem
+				.getProperty();
 
-		VisualProperty type = null;
+		VisualProperty<?> type = null;
 		String ctrAttrName = null;
 
-		VizMapperProperty typeRootProp = null;
+		VizMapperProperty<?> typeRootProp = null;
 
 		if ((prop.getParentProperty() == null)
 				&& e.getNewValue() instanceof String) {
 			/*
 			 * This is a controlling attr name change signal.
 			 */
-			typeRootProp = (VizMapperProperty) prop;
-			type = (VisualProperty) ((VizMapperProperty) prop)
-					.getHiddenObject();
+			typeRootProp = prop;
+			type = (VisualProperty<?>) prop.getHiddenObject();
 			ctrAttrName = (String) e.getNewValue();
 		} else if ((prop.getParentProperty() == null)
 				&& (e.getNewValue() == null)) {
@@ -74,19 +120,19 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			 */
 			return;
 		} else {
-			typeRootProp = (VizMapperProperty) prop.getParentProperty();
+			typeRootProp = (VizMapperProperty<?>) prop.getParentProperty();
 
 			if (prop.getParentProperty() == null)
 				return;
 
-			type = (VisualProperty) ((VizMapperProperty) prop
+			type = (VisualProperty<?>) ((VizMapperProperty<?>) prop
 					.getParentProperty()).getHiddenObject();
 		}
 
 		/*
 		 * Mapping type changed
 		 */
-		if (prop.getHiddenObject() instanceof MappingCalculator
+		if (prop.getHiddenObject() instanceof VisualMappingFunction
 				|| prop.getDisplayName().equals("Mapping Type")) {
 			System.out.println("Mapping type changed: "
 					+ prop.getHiddenObject());
@@ -102,15 +148,9 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			if (parentValue != null) {
 				ctrAttrName = parentValue.toString();
 
-				CyDataTable attr;
-
-				if (type.getObjectType().equals(VisualProperty.NODE)) {
-					attr = cyNetworkManager.getCurrentNetwork()
-							.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-				} else {
-					attr = cyNetworkManager.getCurrentNetwork()
-							.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-				}
+				CyDataTable attr = cyNetworkManager.getCurrentNetwork()
+						.getCyDataTables(type.getObjectType()).get(
+								CyNetwork.DEFAULT_ATTRS);
 
 				final Class<?> dataClass = attr.getColumnTypeMap().get(
 						ctrAttrName);
@@ -137,7 +177,8 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			/*
 			 * restore expanded props.
 			 */
-			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
+			vizMapPropertySheetBuilder.expandLastSelectedItem(type
+					.getDisplayName());
 			vizMapPropertySheetBuilder.updateTableView();
 
 			return;
@@ -146,22 +187,9 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		/*
 		 * Extract calculator
 		 */
-		MappingCalculator mapping;
-		final Calculator curCalc;
-
-		if (type.getObjectType().equals(VisualProperty.NODE)) {
-			curCalc = vmm.getVisualStyle().getNodeAppearanceCalculator()
-					.getCalculator(type);
-		} else {
-			curCalc = vmm.getVisualStyle().getEdgeAppearanceCalculator()
-					.getCalculator(type);
-		}
-
-		if (curCalc == null) {
-			return;
-		}
-
-		mapping = curCalc.getMapping(0);
+		VisualMappingFunction<?, ?> mapping = vmm.getVisualStyle(
+				cyNetworkManager.getCurrentNetworkView())
+				.getVisualMappingFunction(type);
 
 		/*
 		 * Controlling Attribute has been changed.
@@ -170,15 +198,8 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			/*
 			 * Ignore if not compatible.
 			 */
-			final CyDataTable attrForTest;
-
-			if (type.getObjectType().equals(VisualProperty.NODE)) {
-				attrForTest = cyNetworkManager.getCurrentNetwork()
-						.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-			} else {
-				attrForTest = cyNetworkManager.getCurrentNetwork()
-						.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-			}
+			final CyDataTable attrForTest = cyNetworkManager.getCurrentNetwork()
+			.getCyDataTables(type.getObjectType()).get(CyNetwork.DEFAULT_ATTRS);
 
 			final Class<?> dataType = attrForTest.getColumnTypeMap().get(
 					ctrAttrName);
@@ -200,21 +221,21 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			}
 
 			// If same, do nothing.
-			if (ctrAttrName.equals(mapping.getControllingAttributeName()))
+			if (ctrAttrName.equals(mapping.getMappingAttributeName()))
 				return;
 
 			// Buffer current discrete mapping
 			if (mapping instanceof DiscreteMapping) {
-				final String curMappingName = curCalc.toString() + "-"
-						+ mapping.getControllingAttributeName();
-				final String newMappingName = curCalc.toString() + "-"
+				final String curMappingName = mapping.toString() + "-"
+						+ mapping.getMappingAttributeName();
+				final String newMappingName = mapping.toString() + "-"
 						+ ctrAttrName;
 				final Map saved = discMapBuffer.get(newMappingName);
 
 				if (saved == null) {
 					discMapBuffer.put(curMappingName,
 							((DiscreteMapping) mapping).getAll());
-					mapping.setControllingAttributeName(ctrAttrName);
+					mapping.(ctrAttrName);
 				} else if (saved != null) {
 					// Mapping exists
 					discMapBuffer.put(curMappingName,
@@ -228,37 +249,30 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 			propertySheetPanel.removeProperty(typeRootProp);
 
-			final VizMapperProperty newRootProp = new VizMapperProperty();
-
-			if (type.getObjectType().equals(VisualProperty.NODE))
-				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
-						vmm.getVisualStyle().getNodeAppearanceCalculator()
-								.getCalculator(type), newRootProp,
-						AbstractVizMapperPanel.NODE_VISUAL_MAPPING,
-						propertySheetPanel);
-			else
-				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
-						vmm.getVisualStyle().getEdgeAppearanceCalculator()
-								.getCalculator(type), newRootProp,
-						AbstractVizMapperPanel.EDGE_VISUAL_MAPPING,
-						propertySheetPanel);
+			final VizMapperProperty<?> newRootProp = new VizMapperProperty<>();
+			final VisualStyle targetVS = vmm.getVisualStyle(cyNetworkManager.getCurrentNetworkView());
+			
+			vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+					targetVS.getVisualMappingFunction(type), newRootProp,
+					type.getObjectType(),
+					propertySheetPanel);
+			
 
 			vizMapPropertySheetBuilder.removeProperty(typeRootProp);
 
 			if (vizMapPropertySheetBuilder.getPropertyMap().get(
-					vmm.getVisualStyle().getName()) != null)
+					targetVS) != null)
 				vizMapPropertySheetBuilder.getPropertyMap().get(
-						vmm.getVisualStyle().getName()).add(newRootProp);
+						targetVS).add(newRootProp);
 
 			typeRootProp = null;
 
-			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
+			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getIdString());
 			vizMapPropertySheetBuilder.updateTableView();
 
 			// Finally, update graph view and focus.
-			//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-			//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-
+			// vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 			return;
 		}
 
@@ -287,16 +301,9 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		/*
 		 * Need to convert this string to proper data types.
 		 */
-		final CyDataTable attr;
-		ctrAttrName = mapping.getControllingAttributeName();
-
-		if (type.getObjectType().equals(VisualProperty.NODE)) {
-			attr = cyNetworkManager.getCurrentNetwork().getNodeCyDataTables()
-					.get(CyNetwork.DEFAULT_ATTRS);
-		} else {
-			attr = cyNetworkManager.getCurrentNetwork().getEdgeCyDataTables()
-					.get(CyNetwork.DEFAULT_ATTRS);
-		}
+		final CyDataTable attr = cyNetworkManager.getCurrentNetwork().getCyDataTables(type.getObjectType())
+			.get(CyNetwork.DEFAULT_ATTRS);
+		ctrAttrName = mapping.getMappingAttributeName();
 
 		// Byte attrType = attr.getType(ctrAttrName);
 		Class<?> attrType = attr.getColumnTypeMap().get(ctrAttrName);
@@ -346,9 +353,9 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		vizMapPropertySheetBuilder.updateTableView();
 
 		propertySheetPanel.repaint();
-		//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-		//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
+		// vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
+		// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 	}
 
 	/**
@@ -356,14 +363,16 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 	 * (getMapping(0)) is the current mapping used by calculator.
 	 * 
 	 */
-	private void switchMapping(VizMapperProperty prop, String newMapName,
+	private void switchMapping(VizMapperProperty<?> prop, String newMapName,
 			Object attrName) {
-		if (attrName == null) {
+		if (attrName == null)
 			return;
-		}
 
-		final VisualProperty type = (VisualProperty) ((VizMapperProperty) prop
+		final VisualProperty<?> type = (VisualProperty) ((VizMapperProperty<?>) prop
 				.getParentProperty()).getHiddenObject();
+		
+		final VisualStyle style = vmm.getVisualStyle(cyNetworkManager.getCurrentNetworkView());
+		
 		final String newCalcName = vmm.getVisualStyle().getName() + "-"
 				+ type.getName() + "-" + newMapName;
 
@@ -385,7 +394,8 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		 */
 		if (newCalc == null) {
 			newCalc = getNewCalculator(type, newMapName, newCalcName);
-			newCalc.getMapping(0).setControllingAttributeName((String) attrName);
+			newCalc.getMapping(0)
+					.setControllingAttributeName((String) attrName);
 			vmm.getCalculatorCatalog().addCalculator(newCalc);
 		}
 
@@ -419,7 +429,8 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 			if (vmm.getCalculatorCatalog().getCalculator(type, oldCalcName) == null) {
 				final Calculator newC = getNewCalculator(type,
 						oldMappingTypeName, oldCalcName);
-				newC.getMapping(0).setControllingAttributeName((String) attrName);
+				newC.getMapping(0).setControllingAttributeName(
+						(String) attrName);
 				vmm.getCalculatorCatalog().addCalculator(newC);
 			}
 		}
@@ -453,15 +464,14 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		}
 
 		// vmm.getNetworkView().redrawGraph(false, true);
-		//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 		parent = null;
 	}
 
-	private Calculator getNewCalculator(final VisualProperty type,
+	private <K, V> VisualMappingFunction<K, V> getNewMappingFunction(final VisualProperty<V> type,
 			final String newMappingName, final String newCalcName) {
+		
 		System.out.println("Mapper = " + newMappingName);
-
-		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 
 		Class mapperClass = catalog.getMapping(newMappingName);
 
@@ -487,11 +497,11 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 		System.out.println("defobj = " + defaultObj.getClass() + ", Type = "
 				+ type.getName());
 
-		final Object[] invokeArgs = { defaultObj};
-		MappingCalculator mapper = null;
+		final Object[] invokeArgs = { defaultObj };
+		VisualMappingFunction mapper = null;
 
 		try {
-			mapper = (MappingCalculator) mapperCon.newInstance(invokeArgs);
+			mapper = (VisualMappingFunction) mapperCon.newInstance(invokeArgs);
 		} catch (Exception exc) {
 			System.err.println("Error creating mapping");
 
@@ -500,5 +510,4 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 
 		return new BasicCalculator(newCalcName, mapper, type);
 	}
-
 }

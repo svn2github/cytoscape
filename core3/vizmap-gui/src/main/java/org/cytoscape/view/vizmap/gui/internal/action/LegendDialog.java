@@ -3,30 +3,39 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.action;
 
-import org.cytoscape.vizmap.EdgeAppearanceCalculator;
-import org.cytoscape.vizmap.NodeAppearanceCalculator;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.MappingCalculator;
-import org.cytoscape.vizmap.mappings.PassthroughMappingCalculator;
-import org.freehep.util.export.ExportDialog;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
+
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 
 
 /**
- *
+ * Dialog for legend
  */
+
+//TODO: not working! Should create utility class to generate legend from given mapping.
+
 public class LegendDialog extends JDialog {
 	private final static long serialVersionUID = 1202339876783665L;
+	
 	private VisualStyle visualStyle;
 	private JPanel jPanel1;
 	private JButton jButton1;
@@ -56,15 +65,10 @@ public class LegendDialog extends JDialog {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static JPanel generateLegendPanel(VisualStyle visualStyle) {
+	public static JPanel generateLegendPanel(final VisualStyle visualStyle) {
 		final JPanel legend = new JPanel();
 
-		final NodeAppearanceCalculator nac = visualStyle.getNodeAppearanceCalculator();
-		final List<Calculator> nodeCalcs = nac.getCalculators();
-		final EdgeAppearanceCalculator eac = visualStyle.getEdgeAppearanceCalculator();
-		final List<Calculator> edgeCalcs = eac.getCalculators();
-
-		MappingCalculator om;
+		Collection<VisualMappingFunction<?, ?>> mappings = visualStyle.getAllVisualMappingFunctions();
 
 		/*
 		 * Set layout
@@ -73,60 +77,48 @@ public class LegendDialog extends JDialog {
 		legend.setBackground(Color.white);
 
 		legend.setBorder(new TitledBorder(new LineBorder(Color.DARK_GRAY, 2),
-		                                  "Visual Legend for " + visualStyle.getName(),
+		                                  "Visual Legend for " + visualStyle.getTitle(),
 		                                  TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER,
 		                                  new Font("SansSerif", Font.BOLD, 16), Color.DARK_GRAY));
 
-		for (Calculator calc : nodeCalcs) {
-			// AAARGH
-			if (nac.getNodeSizeLocked()) {
-				if (calc.getVisualProperty() == VisualProperty.NODE_WIDTH)
-					continue;
-				else if (calc.getVisualProperty() == VisualProperty.NODE_HEIGHT)
-					continue;
-			} else {
-				if (calc.getVisualProperty() == VisualProperty.NODE_SIZE)
-					continue;
-			}
-
-			om = calc.getMapping(0);
-
-			JPanel mleg = om.getLegend(calc.getVisualProperty());
-
-			// Add passthrough mappings to the top since they don't
-			// display anything besides the title.
-			if (om instanceof PassthroughMappingCalculator)
-				legend.add(mleg, 0);
-			else
-				legend.add(mleg);
-
-			// Set padding
-			mleg.setBorder(new EmptyBorder(15, 30, 15, 30));
-		}
-
-		int top = legend.getComponentCount();
-
-		for (Calculator calc : edgeCalcs) {
-			om = calc.getMapping(0);
-
-			JPanel mleg = om.getLegend(calc.getVisualProperty());
-
-			// Add passthrough mappings to the top since they don't
-			// display anything besides the title.
-			if (om instanceof PassthroughMappingCalculator)
-				legend.add(mleg, 0);
-			else
-				legend.add(mleg);
-
-			//			 Set padding
-			mleg.setBorder(new EmptyBorder(15, 30, 15, 30));
-		}
+//		for (VisualMappingFunction<?, ?> map: mappings) {
+//
+//			
+//			JPanel mleg = map.getLegend();
+//
+//			// Add passthrough mappings to the top since they don't
+//			// display anything besides the title.
+//			if (om instanceof PassthroughMappingCalculator)
+//				legend.add(mleg, 0);
+//			else
+//				legend.add(mleg);
+//
+//			// Set padding
+//			mleg.setBorder(new EmptyBorder(15, 30, 15, 30));
+//		}
+//
+//
+//		for (Calculator calc : edgeCalcs) {
+//			om = calc.getMapping(0);
+//
+//			JPanel mleg = om.getLegend(calc.getVisualProperty());
+//
+//			// Add passthrough mappings to the top since they don't
+//			// display anything besides the title.
+//			if (om instanceof PassthroughMappingCalculator)
+//				legend.add(mleg, 0);
+//			else
+//				legend.add(mleg);
+//
+//			//			 Set padding
+//			mleg.setBorder(new EmptyBorder(15, 30, 15, 30));
+//		}
 
 		return legend;
 	}
 
 	private void initComponents() {
-		this.setTitle("Visual Legend for " + visualStyle.getName());
+		this.setTitle("Visual Legend for " + visualStyle.getTitle());
 
 		jPanel1 = generateLegendPanel(visualStyle);
 
@@ -165,8 +157,8 @@ public class LegendDialog extends JDialog {
 	}
 
 	private void export() {
-		ExportDialog export = new ExportDialog();
-		export.showExportDialog(parent, "Export legend as ...", jPanel1, "export");
-		dispose();
+//		ExportDialog export = new ExportDialog();
+//		export.showExportDialog(parent, "Export legend as ...", jPanel1, "export");
+//		dispose();
 	}
 }

@@ -1,63 +1,98 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package org.cytoscape.view.vizmap.gui.internal.action;
+
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
-import org.cytoscape.vizmap.CalculatorCatalog;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
 
-import cytoscape.Cytoscape;
-
+/**
+ *
+ */
 public class RemoveStyleAction extends AbstractVizMapperAction {
-
+	/**
+	 * Creates a new RemoveStyleAction object.
+	 */
 	public RemoveStyleAction() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	private static final long serialVersionUID = -916650015995966595L;
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
 	public void actionPerformed(ActionEvent e) {
-		if (vmm.getVisualStyle().getName().equals(
-				VisualMappingManager.DEFAULT_VS_NAME)) {
-			JOptionPane.showMessageDialog(vizMapperMainPanel,
-					"You cannot delete default style.", "Cannot remove style!",
-					JOptionPane.ERROR_MESSAGE);
 
+		VisualStyle currentStyle = this.vizMapperMainPanel.getSelectedVisualStyle();
+
+		if (currentStyle.equals(vizMapperMainPanel.getDefaultVisualStyle())) {
+			JOptionPane.showMessageDialog(vizMapperMainPanel, "You cannot delete default style.",
+			                              "Cannot remove defalut style!", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
 		// make sure the user really wants to do this
-		final String styleName = vmm.getVisualStyle().getName();
+		final String styleName = currentStyle.getTitle();
 		final String checkString = "Are you sure you want to permanently delete"
-				+ " the visual style '" + styleName + "'?";
+		                           + " the visual style '" + styleName + "'?";
 		int ich = JOptionPane.showConfirmDialog(vizMapperMainPanel, checkString,
-				"Confirm Delete Style", JOptionPane.YES_NO_OPTION);
+		                                        "Confirm Delete Style", JOptionPane.YES_NO_OPTION);
 
 		if (ich == JOptionPane.YES_OPTION) {
-			final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
-			catalog.removeVisualStyle(styleName);
-
+			
+			vmm.removeVisualStyle(currentStyle);
 			// try to switch to the default style
-			VisualStyle currentStyle = catalog
-					.getVisualStyle(VisualMappingManager.DEFAULT_VS_NAME);
+			currentStyle = vizMapperMainPanel.getDefaultVisualStyle();
 
-			/*
-			 * Update Visual Mapping Browser.
-			 */
-			vizMapperMainPanel.getVsNameComboBox().removeItem(styleName);
-			vizMapperMainPanel.getVsNameComboBox().setSelectedItem(
-					currentStyle.getName());
-			vizMapperMainPanel.switchVS(currentStyle.getName());
-			vizMapperMainPanel.getDefaultImageManager().remove(styleName);
-			vizMapPropertySheetBuilder.getPropertyMap().remove(styleName);
+			vizMapperMainPanel.switchVS(currentStyle);
+			vizMapperMainPanel.getDefaultImageManager().remove(currentStyle);
+			vizMapPropertySheetBuilder.getPropertyMap().remove(currentStyle);
 
-			vmm.setVisualStyle(currentStyle);
-			vmm.setVisualStyleForView(vmm.getNetworkView(), currentStyle);
-			//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+			// Apply to the current view
+			final CyNetworkView view = cyNetworkManager.getCurrentNetworkView();
+			if(view != null)
+				vmm.setVisualStyle(currentStyle, view);
 		}
 	}
-
 }

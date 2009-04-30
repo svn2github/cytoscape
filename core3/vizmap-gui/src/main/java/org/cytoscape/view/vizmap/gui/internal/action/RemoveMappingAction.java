@@ -2,18 +2,17 @@ package org.cytoscape.view.vizmap.gui.internal.action;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
+import java.util.List;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.internal.AbstractVizMapperPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
-import org.cytoscape.viewmodel.VisualProperty;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import cytoscape.Cytoscape;
 
 public class RemoveMappingAction extends AbstractVizMapperAction {
 
@@ -34,14 +33,14 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 			Property curProp = item.getProperty();
 
 			if (curProp instanceof VizMapperProperty) {
-				final VisualProperty type = (VisualProperty) ((VizMapperProperty) curProp)
+				final VisualProperty<?> type = ((VizMapperProperty<VisualProperty<?>>) curProp)
 						.getHiddenObject();
 
 				if (type == null)
 					return;
 
 				String[] message = {
-						"The Mapping for " + type.getName()
+						"The Mapping for " + type.getDisplayName()
 								+ " will be removed.", "Proceed?" };
 
 				int value = JOptionPane.showConfirmDialog(vizMapperMainPanel,
@@ -53,59 +52,25 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 						editorWindowManager.removeEditorWindow(type);
 
 					removeMapping(type);
-//					if (type.getObjectType().equals(VisualProperty.NODE)) {
-//						vmm.getVisualStyle().getNodeAppearanceCalculator()
-//								.removeCalculator(type);
-//					} else {
-//						vmm.getVisualStyle().getEdgeAppearanceCalculator()
-//								.removeCalculator(type);
-//					}
-//
-//					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
-//
-//					/*
-//					 * Finally, move the visual property to "unused list"
-//					 */
-//					vizMapperMainPanel.unusedVisualPropType.add(type);
-//
-//					VizMapperProperty prop = new VizMapperProperty();
-//					prop.setCategory(VizMapperMainPanel.CATEGORY_UNUSED);
-//					prop.setDisplayName(type.getName());
-//					prop.setHiddenObject(type);
-//					prop.setValue("Double-Click to create...");
-//					vizMapperMainPanel.propertySheetPanel.addProperty(prop);
-//					vizMapperMainPanel.propertySheetPanel
-//							.removeProperty(curProp);
-//
-//					vizMapperMainPanel.removeProperty(curProp);
-//
-//					vizMapperMainPanel.propertyMap.get(
-//							vmm.getVisualStyle().getName()).add(prop);
-//					vizMapperMainPanel.propertySheetPanel.repaint();
 				}
 			}
 		}
 	}
 
-	private void removeMapping(final VisualProperty type) {
-		if (type.getObjectType().equals(VisualProperty.NODE)) {
-			vmm.getVisualStyle().getNodeAppearanceCalculator()
-					.removeCalculator(type);
-		} else {
-			vmm.getVisualStyle().getEdgeAppearanceCalculator()
-					.removeCalculator(type);
-		}
+	private <T> void removeMapping(final VisualProperty<T> type) {
+		final VisualStyle vs = this.vizMapperMainPanel.getSelectedVisualStyle();
+		
+		// Remove mapping from the style.
+		vs.removeVisualMappingFunction(type);
 
-		//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-
+		// Update GUI
 		final Property[] props = propertySheetPanel
 				.getProperties();
 		Property toBeRemoved = null;
 
 		for (Property p : props) {
-			if (p.getDisplayName().equals(type.getName())) {
+			if (p.getDisplayName().equals(type.getDisplayName())) {
 				toBeRemoved = p;
-
 				break;
 			}
 		}
@@ -119,16 +84,16 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 		 */
 		vizMapPropertySheetBuilder.getUnusedVisualPropType().add(type);
 
-		VizMapperProperty prop = new VizMapperProperty();
+		VizMapperProperty<VisualProperty<T>> prop = new VizMapperProperty<VisualProperty<T>>();
 		prop.setCategory(AbstractVizMapperPanel.CATEGORY_UNUSED);
-		prop.setDisplayName(type.getName());
+		prop.setDisplayName(type.getDisplayName());
 		prop.setHiddenObject(type);
 		prop.setValue("Double-Click to create...");
 		propertySheetPanel.addProperty(prop);
 
-		if (vizMapPropertySheetBuilder.getPropertyMap().get(vmm.getVisualStyle().getName()) != null)
-			vizMapPropertySheetBuilder.getPropertyMap().get(vmm.getVisualStyle().getName())
-					.add(prop);
+		List<Property> target = vizMapPropertySheetBuilder.getPropertyMap().get(vs.getTitle());
+		if (target != null)
+			target.add(prop);
 
 		propertySheetPanel.repaint();
 	}

@@ -40,8 +40,14 @@ import java.awt.Component;
 
 import javax.swing.JPanel;
 
+import org.cytoscape.view.vizmap.VisualStyle;
+
 
 /**
+ * The top-level component of Viz Map GUI.
+ * 
+ * This component tracks the selected Visual Style.
+ * Because of this, Visual Style is editable even if current Network View does not exist.
  * 
   */
 public interface VizMapGUI {
@@ -50,12 +56,13 @@ public interface VizMapGUI {
 	public DefaultViewEditor getDefaultViewEditor();
 	public void setDefaultViewEditor(final DefaultViewEditor defViewEditor);
 
-
 	public JPanel getDefaultViewPanel();
 	public void setDefaultViewPanel(JPanel defViewPanel);
-
 	
 	public Component getVisualMappingBrowser();
 	public void setVisualMappingBrowser(Component visualMappingBrowser);
+	
+	// GUI state is always associated with a Visual Style.
+	public VisualStyle getSelectedVisualStyle();
 	
 }

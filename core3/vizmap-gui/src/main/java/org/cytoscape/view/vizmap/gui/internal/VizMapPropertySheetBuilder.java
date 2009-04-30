@@ -1,6 +1,4 @@
-package org.cytoscape.view.vizmap.gui.internal;
-
-import static org.cytoscape.viewmodel.VisualProperty.NODE_LABEL_POSITION;
+ package org.cytoscape.view.vizmap.gui.internal;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,31 +10,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
 import javax.swing.Icon;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.EdgeAppearanceCalculator;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeAppearanceCalculator;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.theme.ColorManager;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.icon.ArrowIcon;
-import org.cytoscape.vizmap.icon.NodeIcon;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.MappingCalculator;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -55,57 +43,43 @@ import cytoscape.CyNetworkManager;
  */
 public class VizMapPropertySheetBuilder {
 
-	protected static final Map<Object, Icon> nodeShapeIcons = NodeShape
-			.getIconSet();
-	protected static final Map<Object, Icon> arrowShapeIcons = ArrowShape
-			.getIconSet();
-	protected static final Map<Object, Icon> lineTypeIcons = LineStyle
-			.getIconSet();
-
-	@Resource
+	private VizMapGUI vizMapGUI;
+	
 	private PropertySheetPanel propertySheetPanel;
 
 	private VisualMappingManager vmm;
 
-	@Resource
 	private PropertyRendererRegistry rendReg;
-	@Resource
 	private PropertyEditorRegistry editorReg;
 
-	@Resource
 	private DefaultTableCellRenderer emptyBoxRenderer;
-	@Resource
 	private DefaultTableCellRenderer filledBoxRenderer;
 
-	@Resource
 	private VizMapPropertyBuilder vizMapPropertyBuilder;
 
-	@Resource
 	private EditorManager editorFactory;
 
-	@Resource
 	private ColorManager colorMgr;
 
-	@Resource
 	private VizMapperMenuManager menuMgr;
 	
-	@Resource
 	private CyNetworkManager cyNetworkManager;
 
 	/*
 	 * Keeps Properties in the browser.
 	 */
-	private Map<String, List<Property>> propertyMap;
+	private Map<VisualStyle, List<Property>> propertyMap;
 
-	private List<VisualProperty> unusedVisualPropType;
+	private List<VisualProperty<?>> unusedVisualPropType;
 
-	public VizMapPropertySheetBuilder(VisualMappingManager vmm) {
+	public VizMapPropertySheetBuilder(VizMapGUI vizMapGUI, VisualMappingManager vmm) {
 		this.vmm = vmm;
-		propertyMap = new HashMap<String, List<Property>>();
-
+		this.vizMapGUI = vizMapGUI;
+		
+		propertyMap = new HashMap<VisualStyle, List<Property>>();
 	}
 
-	public Map<String, List<Property>> getPropertyMap() {
+	public Map<VisualStyle, List<Property>> getPropertyMap() {
 		return this.propertyMap;
 	}
 
@@ -115,28 +89,20 @@ public class VizMapPropertySheetBuilder {
 		for (Property item : propertySheetPanel.getProperties())
 			propertySheetPanel.removeProperty(item);
 
-		final NodeAppearanceCalculator nac = vmm.getVisualStyle()
-				.getNodeAppearanceCalculator();
-		final EdgeAppearanceCalculator eac = vmm.getVisualStyle()
-				.getEdgeAppearanceCalculator();
-
-		final List<Calculator> nacList = nac.getCalculators();
-		final List<Calculator> eacList = eac.getCalculators();
-
 		editorReg.registerDefaults();
 
 		/*
-		 * Add properties to the browser.
+		 * Add properties to the property sheet.
 		 */
 		List<Property> propRecord = new ArrayList<Property>();
 
-		setPropertyFromCalculator(nacList,
-				AbstractVizMapperPanel.NODE_VISUAL_MAPPING, propRecord);
-		setPropertyFromCalculator(eacList,
-				AbstractVizMapperPanel.EDGE_VISUAL_MAPPING, propRecord);
+		setPropertyFromCalculator(
+				GraphObject.NODE, propRecord);
+		setPropertyFromCalculator(
+				GraphObject.EDGE, propRecord);
 
 		// Save it for later use.
-		propertyMap.put(vmm.getVisualStyle().getName(), propRecord);
+		propertyMap.put(vizMapGUI.getSelectedVisualStyle(), propRecord);
 
 		/*
 		 * Finally, build unused list
@@ -246,9 +212,10 @@ public class VizMapPropertySheetBuilder {
 		// lineCellEditor.setAvailableIcons(iconArray);
 	}
 
-	private void setPropertyFromCalculator(List<Calculator> calcList,
+	private void setPropertyFromCalculator(
 			String rootCategory, List<Property> propRecord) {
-		VisualProperty type = null;
+		
+		VisualProperty<?> type = null;
 
 		for (Calculator calc : calcList) {
 			final VizMapperProperty calculatorTypeProp = new VizMapperProperty();
@@ -299,7 +266,7 @@ public class VizMapPropertySheetBuilder {
 		final NodeAppearanceCalculator nac = vs.getNodeAppearanceCalculator();
 		final EdgeAppearanceCalculator eac = vs.getEdgeAppearanceCalculator();
 
-		MappingCalculator mapping = null;
+		VisualMappingFunction mapping = null;
 
 		for (VisualProperty type : VisualProperty.values()) {
 			Calculator calc = nac.getCalculator(type);
@@ -490,7 +457,7 @@ public class VizMapPropertySheetBuilder {
 		return this.vizMapPropertyBuilder;
 	}
 
-	public List<VisualProperty> getUnusedVisualPropType() {
+	public List<VisualProperty<?>> getUnusedVisualPropType() {
 		return unusedVisualPropType;
 	}
 }

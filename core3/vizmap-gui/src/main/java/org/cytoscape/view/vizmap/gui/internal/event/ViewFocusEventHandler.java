@@ -4,8 +4,7 @@ import java.beans.PropertyChangeEvent;
 
 import org.cytoscape.view.vizmap.VisualStyle;
 
-import cytoscape.Cytoscape;
-import cytoscape.view.NetworkPanel;
+import cytoscape.internal.view.NetworkPanel;
 
 public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 
@@ -15,28 +14,20 @@ public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 		if (e.getSource().getClass() != NetworkPanel.class)
 			return;
 
-		final VisualStyle vs = vmm.getVisualStyleForView(vmm.getNetworkView());
+		// Get visual style for the selected netwrok view.
+		final VisualStyle vs = vmm.getVisualStyle(cyNetworkManager
+				.getCurrentNetworkView());
 
 		if (vs != null) {
-			//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
 
-			if (vs.getName().equals(
-					vizMapperMainPanel.getVsNameComboBox().getSelectedItem())) {
-				//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-			} else {
-				vizMapperMainPanel.switchVS(vs.getName(), false);
-				vizMapperMainPanel.getVsNameComboBox().setSelectedItem(
-						vs.getName());
+			if (vs.equals(vizMapperMainPanel.getSelectedVisualStyle()) == false) {
+
+				vizMapperMainPanel.switchVS(vs, false);
+
 				vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
-						.getDefaultImageManager().get(vs.getName()));
+						.getDefaultImageManager().get(vs));
 			}
 		}
-
-//		vizMapperMainPanel.setTargetNetwork(cyNetworkManager.getNetwork((Long) (e
-//				.getNewValue())));
-//		vizMapperMainPanel.setTargetView(cyNetworkManager.getNetworkView((Long) (e
-//				.getNewValue())));
-
 	}
 
 }

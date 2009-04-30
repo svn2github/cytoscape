@@ -36,11 +36,9 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
-import org.cytoscape.view.EdgeContextMenuListener;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import javax.swing.JPopupMenu;
 
-import javax.swing.*;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 
 /**

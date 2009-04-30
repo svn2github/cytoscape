@@ -1,7 +1,5 @@
 package org.cytoscape.view.vizmap.gui;
 
-import java.awt.Component;
-
 import org.cytoscape.view.model.CyNetworkView;
 
 public interface DefaultViewPanel {
@@ -14,14 +12,5 @@ public interface DefaultViewPanel {
 	 * @return DOCUMENT ME!
 	 */
 	public CyNetworkView getView();
-	
-	/**
-	 * Returns rendrer's canvas.
-	 * For example, Cytoscape default rendering engine returns InnerCanvas, 
-	 * and Processing returns PApplet.
-	 * 
-	 * @return
-	 */
-	public Component getRendererComponent();
 
 }

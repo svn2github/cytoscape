@@ -50,6 +50,8 @@ import javax.swing.JPanel;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
@@ -67,6 +69,8 @@ public class BelowAndAbovePanel extends JPanel {
 	private boolean below;
 	private Object value;
 	private VisualMappingManager vmm;
+	
+	private VizMapGUI vizMapGUI;
 
 	/**
 	 * DOCUMENT ME!
@@ -82,10 +86,11 @@ public class BelowAndAbovePanel extends JPanel {
 	 * @param below
 	 *            DOCUMENT ME!
 	 */
-	public BelowAndAbovePanel(VisualProperty<?> type, Color color, boolean below) {
+	public BelowAndAbovePanel(VisualProperty<?> type, Color color, boolean below, VizMapGUI vizMapGUI) {
 		this.boxColor = color;
 		this.below = below;
 		this.type = type;
+		this.vizMapGUI = vizMapGUI;
 
 		if (below)
 			this.setToolTipText("Double-click triangle to set below color...");
@@ -101,8 +106,8 @@ public class BelowAndAbovePanel extends JPanel {
 	 * @param type DOCUMENT ME!
 	 * @param below DOCUMENT ME!
 	 */
-	public BelowAndAbovePanel(VisualProperty<Number> type, boolean below) {
-		this(type, Color.DARK_GRAY, below);
+	public BelowAndAbovePanel(VisualProperty<Number> type, boolean below, VizMapGUI vizMapGUI) {
+		this(type, Color.DARK_GRAY, below, vizMapGUI);
 	}
 
 	/**
@@ -184,14 +189,8 @@ public class BelowAndAbovePanel extends JPanel {
 					return;
 				}
 
-				final ContinuousMapping cMapping;
-
-				if (type.getObjectType().equals(VisualProperty.NODE))
-					cMapping = (ContinuousMapping) vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                                  .getCalculator(type).getMapping(0);
-				else
-					cMapping = (ContinuousMapping) vmm.getVisualStyle().getEdgeAppearanceCalculator()
-					                                  .getCalculator(type).getMapping(0);
+				VisualStyle vs = vizMapGUI.getSelectedVisualStyle();
+				final ContinuousMapping<?> cMapping = (ContinuousMapping<?>) vs.getVisualMappingFunction(type);
 
 				BoundaryRangeValues brv;
 				BoundaryRangeValues original;

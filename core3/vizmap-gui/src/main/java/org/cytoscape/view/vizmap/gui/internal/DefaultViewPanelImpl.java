@@ -34,15 +34,13 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.NETWORK_BACKGROUND_COLOR;
-import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.NODE_X_LOCATION;
-import static org.cytoscape.view.presentation.twod.TwoDVisualProperties.NODE_Y_LOCATION;
+import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR;
+import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.NODE_X_LOCATION;
+import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.NODE_Y_LOCATION;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Paint;
-import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
@@ -53,12 +51,13 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.presentation.PresentationFactory;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 
 /**
  * Panel to show the default properties visually (as graphics).
- *
+ * 
  * @version 0.6
  * @since Cytoscape 2.5
  * @author kono
@@ -91,20 +90,21 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	// Used to create dummy network
 	private CyNetworkFactory cyNetworkFactory;
 	private CyNetworkViewFactory cyNetworkViewFactory;
+	private VisualMappingManager vmm;
 
 	// For setting presentation (rendered canvas) to this panel
 	private PresentationFactory presentationFactory;
 
 	/**
 	 * Creates a new DefaultViewPanel object.
-	 *
+	 * 
 	 * @param cyNetworkFactory
 	 *            DOCUMENT ME!
 	 * @param cyNetworkViewFactory
 	 *            DOCUMENT ME!
 	 */
 	public DefaultViewPanelImpl(CyNetworkFactory cyNetworkFactory,
-	                            CyNetworkViewFactory cyNetworkViewFactory, VisualStyle vs) {
+			CyNetworkViewFactory cyNetworkViewFactory, VisualStyle vs) {
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
 		this.cyNetworkFactory = cyNetworkFactory;
 		this.vs = vs;
@@ -140,7 +140,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 		// Set background color
 		background = vs.getDefaultValue(NETWORK_BACKGROUND_COLOR);
 		view.setVisualProperty(NETWORK_BACKGROUND_COLOR, background);
-		
+
 		// put it in this panel
 		presentationFactory.addPresentation(this, view);
 	}
@@ -155,56 +155,36 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	 * DOCUMENT ME!
 	 */
 	protected void updateView() {
-		if (view != null) {
-			// vmm.setNetworkView(view);
-			// vmm.setVisualStyleForView(view, vmm.getVisualStyle());
-			final Dimension panelSize = this.getSize();
-			// view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
-			// (int) panelSize.getHeight() - PADDING));
-			view.fitContent();
-			// canvas = view.getComponent();
-			
 
-			for (MouseListener listener : canvas.getMouseListeners())
-				canvas.removeMouseListener(listener);
+		if (view == null)
+			return;
+		
+		final Dimension panelSize = this.getSize();
+		// view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
+		// (int) panelSize.getHeight() - PADDING));
+		view.fitContent();
 
-			this.removeAll();
-			this.add(canvas);
+		// TODO: is this correct???
+		this.removeAll();
 
-			canvas.setLocation(PADDING / 2, PADDING / 2);
-			vs.apply(view);
-
-			if ((background != null) && (canvas != null))
-				canvas.setBackground(background);
-		}
+		presentationFactory.addPresentation(this, view);
+		
+		//canvas.setLocation(PADDING / 2, PADDING / 2);
+		vs.apply(view);
+		
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewPanel#getView()
 	 */
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public CyNetworkView getView() {
 		return view;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.cytoscape.vizmap.gui.internal.DefaultViewPanel#getRendererComponent()
-	 */
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Component getRendererComponent() {
-		return canvas;
 	}
 }
