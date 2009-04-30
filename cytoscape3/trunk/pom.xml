@@ -144,15 +144,6 @@
 			<name>Murray-Rust Research Group</name>
 			<url>http://wwmm.ch.cam.ac.uk/maven2</url>
 		</repository>
-		<!-- for jars I can't find anywhere else -->
-		<repository>
-			<id>chianti</id>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<name>Cytoscape Internal Repository</name>
-			<url>http://chianti.ucsd.edu/maven2</url>
-		</repository>
 		<!-- for freehep jars -->
 		<repository>
 			<id>freehep-maven</id>
@@ -198,6 +189,7 @@
 			<plugin>
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
+				<version>1.5-SNAPSHOT</version>
 				<configuration>
 					<!--  some example Pax-Runner settings -->
 					<provision>
@@ -212,11 +204,9 @@
 					<goals> <goal>eclipse</goal> </goals> </execution> </executions
 				-->
 			</plugin>
-			<!--
 				<plugin> <artifactId>maven-assembly-plugin</artifactId>
 				<configuration> <descriptors> <descriptor>assembly.xml</descriptor>
 				</descriptors> </configuration> </plugin>
-			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

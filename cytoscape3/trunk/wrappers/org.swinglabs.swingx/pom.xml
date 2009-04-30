@@ -9,16 +9,16 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>cytoscape-sun.jhall</bundle.symbolicName>
-    <wrapped.groupId>cytoscape-sun</wrapped.groupId>
-    <wrapped.artifactId>jhall</wrapped.artifactId>
-    <wrapped.version>1.0</wrapped.version>
+    <bundle.symbolicName>org.swinglabs.swingx</bundle.symbolicName>
+    <wrapped.groupId>org.swinglabs</wrapped.groupId>
+    <wrapped.artifactId>swingx</wrapped.artifactId>
+    <wrapped.version>0.9.5-2</wrapped.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>cytoscape.core.wrappers</groupId>
-  <artifactId>cytoscape-sun.jhall</artifactId>
-  <version>1.0-001-SNAPSHOT</version>
+  <artifactId>org.swinglabs.swingx</artifactId>
+  <version>0.9.5-2-001-SNAPSHOT</version>
 
   <name>${bundle.symbolicName} ${wrapped.version} [osgi]</name>
 
