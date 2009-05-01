@@ -35,8 +35,9 @@
 */
 package org.cytoscape.view.presentation.twod; 
 
+import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class BooleanTwoDVisualProperty extends AbstractTwoDVisualProperty<Boolean> { 
+public class BooleanTwoDVisualProperty extends AbstractVisualProperty<Boolean> { 
 
 	public BooleanTwoDVisualProperty(final String ot, final Boolean def, final String id, final String name) {
 		super(ot,def,id,name);

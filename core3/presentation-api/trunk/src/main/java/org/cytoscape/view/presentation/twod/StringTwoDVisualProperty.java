@@ -35,8 +35,9 @@
 */
 package org.cytoscape.view.presentation.twod; 
 
+import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class StringTwoDVisualProperty extends AbstractTwoDVisualProperty<String> { 
+public class StringTwoDVisualProperty extends AbstractVisualProperty<String> { 
 
 	public StringTwoDVisualProperty(final String ot, final String def, final String id, final String name) {
 		super(ot,def,id,name);

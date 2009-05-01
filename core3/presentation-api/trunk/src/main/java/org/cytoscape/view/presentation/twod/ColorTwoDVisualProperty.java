@@ -37,8 +37,9 @@ package org.cytoscape.view.presentation.twod;
 
 import java.awt.Color;
 import java.util.StringTokenizer;
+import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class ColorTwoDVisualProperty extends AbstractTwoDVisualProperty<Color> { 
+public class ColorTwoDVisualProperty extends AbstractVisualProperty<Color> { 
 
 	public ColorTwoDVisualProperty(final String ot, final Color def, final String id, final String name) {
 		super(ot,def,id,name);
