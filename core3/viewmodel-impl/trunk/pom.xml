@@ -73,7 +73,7 @@
 
 	<repositories>
 		<!--
-			bootstrap for cytoscape dependencies, namely the parent POM snapshots
+			bootstrap for cytoscape , namely the parent POM snapshots
 		-->
 		<repository>
 			<id>cytoscape_snapshots</id>
@@ -87,7 +87,7 @@
 			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 		<!--
-			bootstrap for cytoscape dependencies, namely the parent POM releases
+			bootstrap for cytoscape d, namely the parent POM releases
 		-->
 		<repository>
 			<id>cytoscape_releases</id>
@@ -101,6 +101,7 @@
 			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
 		</repository>
 	</repositories>
+
 	<dependencies>
 
 		<!-- Cytoscape modules -->
@@ -114,6 +115,34 @@
 			<artifactId>viewmodel-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+
+		<!-- unit test modules -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>viewmodel-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>com.springsource.org.easymock</artifactId>
+			<version>2.3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>model-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
 
 	</dependencies>
 </project>
