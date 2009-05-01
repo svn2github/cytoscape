@@ -35,9 +35,9 @@
 */
 package org.cytoscape.ding.impl; 
 
-import org.cytoscape.view.presentation.twod.AbstractTwoDVisualProperty;
+import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class AnchorTwoDVisualProperty extends AbstractTwoDVisualProperty<Anchor> { 
+public class AnchorTwoDVisualProperty extends AbstractVisualProperty<Anchor> { 
 
 	public AnchorTwoDVisualProperty(final String ot, final Anchor def, final String id, final String name) {
 		super(ot,def,id,name);

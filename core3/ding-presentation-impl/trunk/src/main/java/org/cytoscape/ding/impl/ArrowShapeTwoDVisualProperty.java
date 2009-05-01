@@ -36,9 +36,9 @@
 package org.cytoscape.ding.impl; 
 
 import org.cytoscape.ding.ArrowShape;
-import org.cytoscape.view.presentation.twod.AbstractTwoDVisualProperty;
+import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class ArrowShapeTwoDVisualProperty extends AbstractTwoDVisualProperty<ArrowShape> { 
+public class ArrowShapeTwoDVisualProperty extends AbstractVisualProperty<ArrowShape> { 
 
 	public ArrowShapeTwoDVisualProperty(final String ot, final ArrowShape def, final String id, final String name) {
 		super(ot,def,id,name);

@@ -35,9 +35,9 @@
 */
 package org.cytoscape.ding.impl;
 
-import org.cytoscape.view.presentation.twod.AbstractTwoDVisualProperty;
+import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class IntegerTwoDVisualProperty extends AbstractTwoDVisualProperty<Integer> { 
+public class IntegerTwoDVisualProperty extends AbstractVisualProperty<Integer> { 
 
 	public IntegerTwoDVisualProperty(final String ot, final Integer def, final String id, final String name) {
 		super(ot,def,id,name);

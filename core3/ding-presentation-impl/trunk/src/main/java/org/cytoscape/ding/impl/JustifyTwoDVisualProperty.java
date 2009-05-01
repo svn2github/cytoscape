@@ -36,10 +36,10 @@
 package org.cytoscape.ding.impl; 
 
 
-import org.cytoscape.view.presentation.twod.AbstractTwoDVisualProperty;
+import org.cytoscape.view.model.AbstractVisualProperty;
 
 
-public class JustifyTwoDVisualProperty extends AbstractTwoDVisualProperty<Justify> { 
+public class JustifyTwoDVisualProperty extends AbstractVisualProperty<Justify> { 
 
 	public JustifyTwoDVisualProperty(final String ot, final Justify def, final String id, final String name) {
 		super(ot,def,id,name);

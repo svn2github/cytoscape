@@ -36,9 +36,9 @@
 package org.cytoscape.ding.impl;
 
 import org.cytoscape.ding.NodeShape;
-import org.cytoscape.view.presentation.twod.AbstractTwoDVisualProperty;
+import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class NodeShapeTwoDVisualProperty extends AbstractTwoDVisualProperty<NodeShape> { 
+public class NodeShapeTwoDVisualProperty extends AbstractVisualProperty<NodeShape> { 
 
 	public NodeShapeTwoDVisualProperty(final String ot, final NodeShape def, final String id, final String name) {
 		super(ot,def,id,name);
