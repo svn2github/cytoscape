@@ -135,6 +135,19 @@
 			<name>Cytoscape Releases</name>
 			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
 		</repository>
+
+		<repository>
+			<id>cytoscape_thirdparty</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Wrapped Third Party Libraries</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/thirdparty/</url>
+		</repository>
+
 		<!-- for biojava -->
 		<repository>
 			<id>wwmm</id>
@@ -194,7 +207,12 @@
 					<provision>
 						<param>--platform=felix</param>
 						<param>--noDownloadFeedback</param>
-						<param>--vmOptions=-Xmx512M -Xbootclasspath/a:bundles/cytoscape-sun.jhall_1.0.0.jar -Dapple.laf.useScreenMenuBar=true -Dapple.awt.fileDialogForDirectories=true -Dapple.awt.graphics.UseQuartz=true -Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3</param>
+						<param>--vmOptions=-Xmx512M
+							-Xbootclasspath/a:bundles/cytoscape-sun.jhall_1.0.0.jar
+							-Dapple.laf.useScreenMenuBar=true
+							-Dapple.awt.fileDialogForDirectories=true
+							-Dapple.awt.graphics.UseQuartz=true
+							-Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3</param>
 						<param>--repositories=+http://scm.ops4j.org/repos/ops4j/projects/pax/runner-repository/</param>
 					</provision>
 				</configuration>
@@ -203,9 +221,14 @@
 					<goals> <goal>eclipse</goal> </goals> </execution> </executions
 				-->
 			</plugin>
-				<plugin> <artifactId>maven-assembly-plugin</artifactId>
-				<configuration> <descriptors> <descriptor>assembly.xml</descriptor>
-				</descriptors> </configuration> </plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -302,25 +325,16 @@
 		<module>wrappers</module>
 		<module>application</module>
 		<!--
-		<module>webservice</module>
-		<module>vizmap-gui</module>
-		<module>automatic.layout</module> 
-		<module>cpath</module>
-		<module>merge</module> 
-		<module>math.xform</module>
-		<module>psi.mi</module> 
-		<module>biopax</module>
-		<module>editor</module> 
-		<module>linkout</module>
-		<module>attribute.browser</module> 
-		<module>cpath2</module>
-		<module>filters.old</module> 
-		<module>filters</module>
-		<module>sbml.reader</module> 
-		<module>manual.layout</module>
-		<module>quickfind</module> 
-		<module>table.import</module>
-		<module>ontology</module>
+			<module>webservice</module> <module>vizmap-gui</module>
+			<module>automatic.layout</module> <module>cpath</module>
+			<module>merge</module> <module>math.xform</module>
+			<module>psi.mi</module> <module>biopax</module>
+			<module>editor</module> <module>linkout</module>
+			<module>attribute.browser</module> <module>cpath2</module>
+			<module>filters.old</module> <module>filters</module>
+			<module>sbml.reader</module> <module>manual.layout</module>
+			<module>quickfind</module> <module>table.import</module>
+			<module>ontology</module>
 		-->
 	</modules>
 
