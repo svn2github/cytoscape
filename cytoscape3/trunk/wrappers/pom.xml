@@ -32,7 +32,6 @@
     <module>biojava</module>
     <module>net.java.dev.swing-layout</module>
     <module>colt</module>
-    <module>org.swinglabs.swingx</module>
   </modules>
 
 </project>
