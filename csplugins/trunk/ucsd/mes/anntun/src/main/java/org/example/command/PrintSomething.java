@@ -1,5 +1,3 @@
-
-
 package org.example.command;
 
 import org.example.tunable.Tunable;
@@ -20,7 +18,7 @@ public class PrintSomething implements Command, HandlerController {
 	public String lastName = "simpson";
 
 	@Tunable(description="your foot size", group={"stuff","advanced"})
-	public BoundedDouble footSize = new BoundedDouble(5.0, 8.5, 13.5, true, false);
+	public BoundedDouble rootSize = new BoundedDouble(5.0, 8.5, 13.5, true, false);
 
 	@Tunable(description="the number of children you have")
 	public BoundedInteger kids = new BoundedInteger(0, 1, 10, true, false);
@@ -28,9 +26,11 @@ public class PrintSomething implements Command, HandlerController {
 	@Tunable(description="your yearly income" )
 	public FlexiblyBoundedInteger income = new FlexiblyBoundedInteger(0, 20000, 100000, false, false);
 
-
+	@Tunable(description="boolean test")
+	public boolean bool = false;
+	
 	public void execute() {
-		System.out.println("Your name is: " + firstName + " " + lastName + " your age is: " + age + " your foot size is: " + footSize.getValue() + " you have " + kids.getValue() + " kids and you make: $ " + income.getValue() + " per year");
+		System.out.println("Your name is: " + firstName + " " + lastName + " your age is: " + age + " your foot size is: " + rootSize.getValue() + " you have " + kids.getValue() + " kids and you make: $ " + income.getValue() + " per year" + " and result for bool = " + bool);
 	}
 
 	public int age;

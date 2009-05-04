@@ -2,7 +2,6 @@
 package org.example.tunable.internal.cl;
 
 import java.lang.reflect.*;
-import java.util.*;
 import org.apache.commons.cli.*;
 import org.example.tunable.*;
 
@@ -19,19 +18,12 @@ public abstract class AbstractCLHandler extends AbstractHandler implements CLHan
 	protected String getName() {
 		if ( f != null ) {
 			String ns = f.getDeclaringClass().toString();
-			return ns.substring( ns.lastIndexOf(".")+1) + ":" + f.getName();
+			return ns.substring( ns.lastIndexOf(".")+1) + "." + f.getName();
 		} else if ( m != null ) {
 			String ns = m.getDeclaringClass().toString();
-			return ns.substring( ns.lastIndexOf(".")+1) + ":" + m.getName();
+			return ns.substring( ns.lastIndexOf(".")+1) + "." + m.getName();
 		} else 
 			return "";
-	}
-
-	public Option getOption() {
-		String n = getName();
-		System.out.println("creating option for: " + n);
-		int ind = n.lastIndexOf(":")+1;
-		return new Option(n.substring(ind,ind+1), n, true, t.description());
 	}
 
 	public abstract void handleLine( CommandLine line );

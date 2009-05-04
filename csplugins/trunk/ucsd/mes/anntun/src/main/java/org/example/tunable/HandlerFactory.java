@@ -20,7 +20,7 @@ public interface HandlerFactory<T extends Handler> {
 
 	/**
 	 * Should return null if no handler exists for the
-	 * given field type.
+	 * given method type.
 	 */
 	public T getHandler(Method m, Object o, Tunable t);
 

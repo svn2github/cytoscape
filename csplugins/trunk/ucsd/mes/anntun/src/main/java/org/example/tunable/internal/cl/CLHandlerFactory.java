@@ -2,8 +2,8 @@
 package org.example.tunable.internal.cl;
 
 import java.lang.reflect.*;
-import java.util.*;
 import org.example.tunable.*;
+import org.example.tunable.util.BoundedDouble;
 
 public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 
@@ -35,6 +35,8 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return new StringCLHandler(f,o,t);
 		else if ( type == boolean.class || type == Boolean.class )
 			return new BooleanCLHandler(f,o,t);
+		else if ( type == BoundedDouble.class ) 
+			return new BoundedCLHandler<BoundedDouble>(f,o,t);
 		else 
 			return null;
 	}
