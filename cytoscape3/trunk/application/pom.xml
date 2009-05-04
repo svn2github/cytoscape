@@ -25,16 +25,6 @@
 	<dependencies>
 		<!-- gui stuff -->
 		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>l2fprod-common-all</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.swinglabs</groupId>
-			<artifactId>swingx</artifactId>
-			<version>0.9.5-2</version>
-		</dependency>
-		<dependency>
 			<groupId>net.java.dev.swing-layout</groupId>
 			<artifactId>swing-layout</artifactId>
 			<version>1.0.2</version>
