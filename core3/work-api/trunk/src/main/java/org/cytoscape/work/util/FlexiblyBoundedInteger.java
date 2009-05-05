@@ -42,26 +42,41 @@ package org.cytoscape.work.util;
 public class FlexiblyBoundedInteger extends AbstractFlexiblyBounded<Integer> {
 
 	/**
-	 * Creates a new Bounded object.
+	 * Creates a new Flexibly Bounded Integer object.
 	 *
-	 * @param lower  DOCUMENT ME!
-	 * @param initValue  DOCUMENT ME!
-	 * @param upper  DOCUMENT ME!
-	 * @param lowerStrict  DOCUMENT ME!
-	 * @param upperStrict  DOCUMENT ME!
+	 * @param lower  The lower bound value. 
+	 * @param initValue  The initial or default value.
+	 * @param upper  The upper bound value. 
+	 * @param lowerStrict  Whether the lower bound is reachable
+	 * @param upperStrict  Whether the upper bound is reachable
 	 */
 	public FlexiblyBoundedInteger(final Integer lower, final Integer initValue, final Integer upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
 
+	
+	/**
+	 * Set a new value to the Flexibly BoundedInteger object
+	 * @param s String converted into Integer
+	 */
 	public void setValue(String s) {
 		setValue(Integer.valueOf(s));
 	}
 
+	
+	/**
+	 * Set a new value to the upperbound value of the BoundedObject
+	 * @param s String converted into Integer
+	 */
 	public void setUpperBound(String s) {
 		setUpperBound(Integer.valueOf(s));
 	}
 
+	
+	/**
+	 * Set a new value to the lowerbound value of the BoundedObject
+	 * @param s String converted into Integer
+	 */
 	public void setLowerBound(String s) {
 		setLowerBound(Integer.valueOf(s));
 	}

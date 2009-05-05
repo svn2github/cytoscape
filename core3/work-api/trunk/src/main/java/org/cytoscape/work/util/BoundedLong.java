@@ -42,18 +42,22 @@ package org.cytoscape.work.util;
 public class BoundedLong extends AbstractBounded<Long> {
 
 	/**
-	 * Creates a new Bounded object.
+	 * Creates a new Bounded Long object.
 	 *
-	 * @param lower  DOCUMENT ME!
-	 * @param initValue  DOCUMENT ME!
-	 * @param upper  DOCUMENT ME!
-	 * @param lowerStrict  DOCUMENT ME!
-	 * @param upperStrict  DOCUMENT ME!
+	 * @param lower  The lower bound value
+	 * @param initValue  Initial of default value for the Long
+	 * @param upper  The upper bound value
+	 * @param lowerStrict	True means that the value cannot be equal to the lower bound
+	 * @param upperStrict	True means that the value cannot be equal to the upper bound
 	 */
 	public BoundedLong(final Long lower, final Long initValue, final Long upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
-
+	
+	/**
+	 * Set a new value to the BoundedLong object
+	 * @param s String converted into Long
+	 */
 	public void setValue(String s) {
 		setValue( Long.valueOf(s) );
 	}

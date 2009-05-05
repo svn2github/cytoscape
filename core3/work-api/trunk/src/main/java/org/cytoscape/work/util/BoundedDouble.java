@@ -42,18 +42,23 @@ package org.cytoscape.work.util;
 public class BoundedDouble extends AbstractBounded<Double> {
 
 	/**
-	 * Creates a new Bounded object.
+	 * Creates a new Bounded Double object.
 	 *
-	 * @param lower  DOCUMENT ME!
-	 * @param initValue  DOCUMENT ME!
-	 * @param upper  DOCUMENT ME!
-	 * @param lowerStrict  DOCUMENT ME!
-	 * @param upperStrict  DOCUMENT ME!
+	 * @param lower  The lower bound value
+	 * @param initValue  Initial of default value for the Double
+	 * @param upper  The upper bound value
+	 * @param lowerStrict	True means that the value cannot be equal to the lower bound
+	 * @param upperStrict	True means that the value cannot be equal to the upper bound
 	 */
 	public BoundedDouble(final Double lower, final Double initValue, final Double upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
 
+	
+	/**
+	 * Set a new value to the BoundedDouble object
+	 * @param s String converted into Double
+	 */
 	public void setValue(String s) {
 		setValue( Double.valueOf(s) );
 	}

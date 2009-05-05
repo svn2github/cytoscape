@@ -41,20 +41,23 @@ import java.util.List;
 
 
 /**
- * A bounded number object.
+ * A ListSelection object.
  *
- * @param <T>  DOCUMENT ME!
+ * @param <T>  type of item that will be listed
  */
 class ListSelection<T> {
+
+	
 	/**
-	 * DOCUMENT ME!
+	 * declares a List of items <code>T</code>
 	 */
 	protected final List<T> values;
 
+	
 	/**
 	 * Creates a new ListSelection object.
 	 *
-	 * @param values  DOCUMENT ME!
+	 * @param values list of items that contains the one(s) that is(are) going to be selected
 	 */
 	public ListSelection(final List<T> values) {
 		if (values == null)
@@ -66,10 +69,11 @@ class ListSelection<T> {
 		this.values = values;
 	}
 
+	
 	/**
-	 *  DOCUMENT ME!
+	 * To get all the items of the <code>List<T> values</code>
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  an enumeration of all the items
 	 */
 	public List<T> getPossibleValues() {
 		return new ArrayList<T>(values);

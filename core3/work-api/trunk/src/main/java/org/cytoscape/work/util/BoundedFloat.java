@@ -42,18 +42,22 @@ package org.cytoscape.work.util;
 public class BoundedFloat extends AbstractBounded<Float> {
 
 	/**
-	 * Creates a new Bounded object.
+	 * Creates a new Bounded Float object.
 	 *
-	 * @param lower  DOCUMENT ME!
-	 * @param initValue  DOCUMENT ME!
-	 * @param upper  DOCUMENT ME!
-	 * @param lowerStrict  DOCUMENT ME!
-	 * @param upperStrict  DOCUMENT ME!
+	 * @param lower  The lower bound value
+	 * @param initValue  Initial of default value for the Float
+	 * @param upper  The upper bound value
+	 * @param lowerStrict	True means that the value cannot be equal to the lower bound
+	 * @param upperStrict	True means that the value cannot be equal to the upper bound
 	 */
 	public BoundedFloat(final Float lower, final Float initValue, final Float upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
 
+	/**
+	 * Set a new value to the BoundedFloat object
+	 * @param s String converted into Float
+	 */
 	public void setValue(String s) {
 		setValue( Float.valueOf(s) );
 	}

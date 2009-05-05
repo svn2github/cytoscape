@@ -37,9 +37,9 @@
 package org.cytoscape.work.util;
 
 /**
- * A bounded number object.
- *
- * @param <N>  DOCUMENT ME!
+ * A bounded number object whose bounds values are modifiable
+ * @param <N>  Any type of Number
+ * @author Pasteur
  */
 public abstract class AbstractFlexiblyBounded<N extends Comparable<N>> extends AbstractBounded<N> {
 
@@ -50,13 +50,19 @@ public abstract class AbstractFlexiblyBounded<N extends Comparable<N>> extends A
 	 * @param lower  The lower bound value. 
 	 * @param initValue  The initial or default value.
 	 * @param upper  The upper bound value. 
-	 * @param lowerStrict  Whether the lower bound is strict (&lt; or &lte;); 
-	 * @param upperStrict  Whether the upper bound is strict (&gt; or &gte;); 
+	 * @param lowerStrict  Whether the lower bound is reachable
+	 * @param upperStrict  Whether the upper bound is reachable
 	 */
 	AbstractFlexiblyBounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
 
+	
+	/**
+	 *	Set the upperbound value <code>up</code>.
+	 *
+	 * @param up the Value
+	 */
 	public void setUpperBound(N up) {
 		if (up == null)
 			throw new NullPointerException("new upper bound is null!");
@@ -76,6 +82,11 @@ public abstract class AbstractFlexiblyBounded<N extends Comparable<N>> extends A
 		}
 	}
 
+	/**
+	 *	Set the lowerbound value <code>low</code>.
+	 *
+	 * @param low the Value
+	 */
 	public void setLowerBound(N low) {
 		if (low == null)
 			throw new NullPointerException("new lower bound is null!");
@@ -95,10 +106,20 @@ public abstract class AbstractFlexiblyBounded<N extends Comparable<N>> extends A
 		}
 	}
 
+	
+	/**
+	 * Set upperbound accessible or not : true means that the upperbound value cannot be reached.
+	 * @param strict upperbound unreachable
+	 */
 	public synchronized void setUpperBoundStrict(boolean strict) {
 		upperStrict = strict;		
 	}
-
+	
+	
+	/**
+	 * Set lowerbound accessible or not : true means that the lowerbound value cannot be reached.
+	 * @param strict lowerbound unreachable
+	 */
 	public synchronized void setLowerBoundStrict(boolean strict) {
 		lowerStrict = strict;		
 	}

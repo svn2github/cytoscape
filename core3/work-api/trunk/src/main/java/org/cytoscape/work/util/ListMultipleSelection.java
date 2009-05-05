@@ -41,10 +41,11 @@ import java.util.List;
 import java.util.Arrays;
 
 
+
 /**
- * Allows a single value from a list to be selected.
+ * Allows several items from a list to be selected.
  *
- * @param <T>  DOCUMENT ME!
+ * @param <T>  type of item that will be listed
  */
 public class ListMultipleSelection<T> extends ListSelection<T> {
 	private List<T> selected;
@@ -52,7 +53,7 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 	/**
 	 * Creates a new ListMultipleSelection object.
 	 *
-	 * @param values  DOCUMENT ME!
+	 * @param values array of <code>T</code> items that can be selected
 	 */
 	public ListMultipleSelection(final T ... values) {
 		super(Arrays.asList(values));
@@ -62,7 +63,7 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 	/**
 	 * Creates a new ListMultipleSelection object.
 	 *
-	 * @param values  DOCUMENT ME!
+	 * @param values  list of <code>T</code> items that can be selected
 	 */
 	public ListMultipleSelection(final List<T> values) {
 		super(values);
@@ -70,18 +71,18 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Get the items that are currently selected
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return a list of selected items
 	 */
 	public List<T> getSelectedValues() {
 		return new ArrayList<T>(selected);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Set the <code>T</code> items as selected in the ListMultipleSelection object
 	 *
-	 * @param vals DOCUMENT ME!
+	 * @param vals the selected items
 	 */
 	public void setSelectedValues(final List<T> vals) {
 		if (vals == null)
@@ -89,7 +90,7 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 
 		for (T v : vals)
 			if (!values.contains(v))
-				throw new IllegalArgumentException("value not contained is list of possible values");
+				throw new IllegalArgumentException("value not contained in list of possible values\n possible items = "+this.getPossibleValues());
 
 		selected = new ArrayList<T>(vals);
 	}

@@ -41,9 +41,9 @@ import java.util.Arrays;
 
 
 /**
- * Allows a single value from a list to be selected.
+ * Allows an item of a list to be selected.
  *
- * @param <T>  DOCUMENT ME!
+ * @param <T>  type of item that will be listed
  */
 public class ListSingleSelection<T> extends ListSelection<T> {
 	private T selected;
@@ -51,7 +51,7 @@ public class ListSingleSelection<T> extends ListSelection<T> {
 	/**
 	 * Creates a new ListSingleSelection object.
 	 *
-	 * @param values  DOCUMENT ME!
+	 * @param values array of <code>T</code> items that can be selected
 	 */
 	public ListSingleSelection(final T ... values) {
 		super(Arrays.asList(values));
@@ -60,29 +60,29 @@ public class ListSingleSelection<T> extends ListSelection<T> {
 	/**
 	 * Creates a new ListSingleSelection object.
 	 *
-	 * @param values  DOCUMENT ME!
+	 * @param values  a list of <code>T</code> items that can be selected
 	 */
 	public ListSingleSelection(final List<T> values) {
 		super(values);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Get the item that is currently selected
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  the selected item
 	 */
 	public T getSelectedValue() {
 		return selected;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Set the <code>T</code> item as selected in the ListSingleSelection object
 	 *
-	 * @param val DOCUMENT ME!
+	 * @param val the selected item
 	 */
 	public void setSelectedValue(T val) {
 		if (!values.contains(val))
-			throw new IllegalArgumentException("value not contained is list of possible values");
+			throw new IllegalArgumentException("value not contained in list of possible values\n possible items = "+this.getPossibleValues());
 
 		selected = val;
 	}

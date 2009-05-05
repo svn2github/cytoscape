@@ -40,7 +40,6 @@ package org.cytoscape.work.util;
  * A bounded number object whose bounds values cannot be modified
  * @param <N>  Any type of Number
  * @author Pasteur
-
  */
 public abstract class AbstractBounded<N extends Comparable<N>> {
 
@@ -54,8 +53,8 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	/**
 	 * Creates a new Bounded object.
 	 *
-	 * @param lower  The lower bound of the object
-	 * @param upper  The upper bound of the object
+	 * @param lower  The lower bound value
+	 * @param upper  The upper bound value
 	 * @param lowerStrict	True means that the value cannot be equal to the lower bound
 	 * @param upperStrict	True means that the value cannot be equal to the upper bound
 	 */

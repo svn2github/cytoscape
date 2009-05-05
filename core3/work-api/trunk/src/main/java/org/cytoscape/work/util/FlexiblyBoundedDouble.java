@@ -42,26 +42,41 @@ package org.cytoscape.work.util;
 public class FlexiblyBoundedDouble extends AbstractFlexiblyBounded<Double> {
 
 	/**
-	 * Creates a new Bounded object.
+	 * Creates a new Flexibly Bounded Double object.
 	 *
-	 * @param lower  DOCUMENT ME!
-	 * @param initValue  DOCUMENT ME!
-	 * @param upper  DOCUMENT ME!
-	 * @param lowerStrict  DOCUMENT ME!
-	 * @param upperStrict  DOCUMENT ME!
+	 * @param lower  The lower bound value. 
+	 * @param initValue  The initial or default value.
+	 * @param upper  The upper bound value. 
+	 * @param lowerStrict  Whether the lower bound is reachable
+	 * @param upperStrict  Whether the upper bound is reachable
 	 */
 	public FlexiblyBoundedDouble(final Double lower, final Double initValue, final Double upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
 
+	
+	/**
+	 * Set a new value to the Flexibly BoundedDouble object
+	 * @param s String converted into Double
+	 */
 	public void setValue(String s) {
 		setValue(Double.valueOf(s));
 	}
 
+	
+	/**
+	 * Set a new value to the upperbound value of the BoundedObject
+	 * @param s String converted into Double
+	 */
 	public void setUpperBound(String s) {
 		setUpperBound(Double.valueOf(s));
 	}
 
+	
+	/**
+	 * Set a new value to the lowerbound value of the BoundedObject
+	 * @param s String converted into Double
+	 */
 	public void setLowerBound(String s) {
 		setLowerBound(Double.valueOf(s));
 	}
