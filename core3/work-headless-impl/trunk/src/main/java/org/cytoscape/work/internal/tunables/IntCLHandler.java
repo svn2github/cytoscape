@@ -1,7 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
 import java.lang.reflect.*;
-import java.util.*;
 import org.apache.commons.cli.*;
 import org.cytoscape.work.Tunable;
 
@@ -18,8 +17,11 @@ public class IntCLHandler extends AbstractCLHandler {
 
 	public void handleLine( CommandLine line ) {
 		String n = getName();
-		int ind = n.lastIndexOf(":")+1;		
-		String fc = n.substring(ind,ind+1);
+		int ind = n.lastIndexOf(":")+1;
+		String fc;
+		if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		else fc = n.substring(ind,ind+3);
+
 		try {
 			if ( line.hasOption( fc ) ) {
 				if ( f != null )
@@ -36,6 +38,10 @@ public class IntCLHandler extends AbstractCLHandler {
 	public Option getOption() {
 		String n = getName();
 		int ind = n.lastIndexOf(":")+1;
-		return new Option(n.substring(ind,ind+1), n, true, t.description());
+		String fc;
+		if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		else fc = n.substring(ind,ind+3);
+
+		return new Option(fc, n, true, t.description());
 	}
 }
