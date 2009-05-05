@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 
 
-public class BoundedLongHandler extends AbstractGuiHandler implements Guihandler ,ActionListener{
+public class BoundedLongHandler extends AbstractGuiHandler{
 
 	private BoundedLong myBounded;
 	private String title;

@@ -13,7 +13,7 @@ import java.awt.Font;
 import java.lang.reflect.Field;
 
 
-public class BoundedDoubleHandler extends AbstractGuiHandler implements Guihandler {
+public class BoundedDoubleHandler extends AbstractGuiHandler {
 	
 	private BoundedDouble myBounded;
 	private Double initValue;

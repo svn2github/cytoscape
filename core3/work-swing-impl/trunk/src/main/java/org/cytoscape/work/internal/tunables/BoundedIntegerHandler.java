@@ -14,7 +14,7 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 
-public class BoundedIntegerHandler extends AbstractGuiHandler implements Guihandler ,ActionListener{
+public class BoundedIntegerHandler extends AbstractGuiHandler{
 
 	private BoundedInteger myBounded;
 	private String title;

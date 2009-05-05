@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.*;
 
 
-public class BoundedFloatHandler extends AbstractGuiHandler implements Guihandler ,ActionListener{
+public class BoundedFloatHandler extends AbstractGuiHandler {
 
 	private BoundedFloat myBounded;
 	private String title;
