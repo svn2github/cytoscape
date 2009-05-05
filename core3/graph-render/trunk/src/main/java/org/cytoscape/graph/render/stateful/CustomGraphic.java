@@ -55,7 +55,7 @@ import java.awt.*;
  *   public int graphicCount(int node)
  *   public Shape graphicShape(int node, int graphicInx)
  *   public Paint graphicPaint(int node, int graphicInx)
- *   public byte graphicNodeAnchor(int node, int graphicInx)
+ *   public int graphicNodeAnchor(int node, int graphicInx)
  * </PRE>
  * <B>To keep things completetly backwards compatible
  * and to avoid introducing bugs, the new API methods are
@@ -87,8 +87,8 @@ import java.awt.*;
 public class CustomGraphic {
     private Shape _shape;
     private Paint _paint;
-    private byte  _anchor;
-    public CustomGraphic (Shape shape, Paint paint, byte anchor) {
+    private int  _anchor;
+    public CustomGraphic (Shape shape, Paint paint, int anchor) {
     	if ((shape == null) || (paint == null))
     	    throw new IllegalArgumentException("The shape or paint given was null.");
 	if ((anchor < 0) || (anchor > NodeDetails.MAX_ANCHOR_VAL)) {
@@ -117,7 +117,7 @@ public class CustomGraphic {
      * The shape is rendered at a location which is equal to this
      * anchor point plus the offset vector.
      */
-    public byte getAnchor () {
+    public int getAnchor () {
 	return _anchor;
     }
 }

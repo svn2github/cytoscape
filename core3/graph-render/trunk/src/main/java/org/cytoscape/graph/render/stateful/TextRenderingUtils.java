@@ -102,7 +102,7 @@ final class TextRenderingUtils {
 	public final static void renderHorizontalText(final GraphGraphics grafx, final String text,
 	                                              final Font font, final double fontScaleFactor,
 	                                              final float textXCenter, final float textYCenter,
-	                                              final byte textJustify, final Paint paint,
+	                                              final int textJustify, final Paint paint,
 	                                              final boolean textAsShape) {
 		final float[] dims = new float[2];
 		computeTextDimensions(grafx, text, font, fontScaleFactor, textAsShape, dims);

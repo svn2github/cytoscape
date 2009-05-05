@@ -55,79 +55,79 @@ public class NodeDetails {
 	/**
 	 * Specifies that an anchor point lies at the center of a bounding box.
 	 */
-	public static final byte ANCHOR_CENTER = 0;
+	public static final int ANCHOR_CENTER = 0;
 
 	/**
 	 * Specifies that an anchor point lies on the north edge of a
 	 * bounding box, halfway between the east and west edges.
 	 */
-	public static final byte ANCHOR_NORTH = 1;
+	public static final int ANCHOR_NORTH = 1;
 
 	/**
 	 * Specifies that an anchor point lies on the northeast corner of
 	 * a bounding box.
 	 */
-	public static final byte ANCHOR_NORTHEAST = 2;
+	public static final int ANCHOR_NORTHEAST = 2;
 
 	/**
 	 * Specifies that an anchor point lies on the east edge of a
 	 * bounding box, halfway between the north and south edges.
 	 */
-	public static final byte ANCHOR_EAST = 3;
+	public static final int ANCHOR_EAST = 3;
 
 	/**
 	 * Specifies that an anchor point lies on the southeast corner of
 	 * a bounding box.
 	 */
-	public static final byte ANCHOR_SOUTHEAST = 4;
+	public static final int ANCHOR_SOUTHEAST = 4;
 
 	/**
 	 * Specifies that an anchor point lies on the south edge of a
 	 * bounding box, halfway between the east and west edges.
 	 */
-	public static final byte ANCHOR_SOUTH = 5;
+	public static final int ANCHOR_SOUTH = 5;
 
 	/**
 	 * Specifies that an anchor point lies on the southwest corner of a
 	 * bounding box.
 	 */
-	public static final byte ANCHOR_SOUTHWEST = 6;
+	public static final int ANCHOR_SOUTHWEST = 6;
 
 	/**
 	 * Specifies that an anchor point lies on the west edge of a
 	 * bounding box, halfway between the north and south edges.
 	 */
-	public static final byte ANCHOR_WEST = 7;
+	public static final int ANCHOR_WEST = 7;
 
 	/**
 	 * Specifies that an anchor point lies on the northwest corner of a
 	 * bounding box.
 	 */
-	public static final byte ANCHOR_NORTHWEST = 8;
+	public static final int ANCHOR_NORTHWEST = 8;
 
         /**
          * Used for range checking the anchor values. 
          */
         // Seems like these values should really be an enum...:
-        public static final byte MAX_ANCHOR_VAL = 8;
+        public static final int MAX_ANCHOR_VAL = 8;
 
 	/**
 	 * Specifies that the lines in a multi-line node label should each have
 	 * a center point with similar X coordinate.
 	 */
-	public static final byte LABEL_WRAP_JUSTIFY_CENTER = 64;
+	public static final int LABEL_WRAP_JUSTIFY_CENTER = 64;
 
 	/**
 	 * Specifies that the lines of a multi-line node label should each have
 	 * a leftmost point with similar X coordinate.
 	 */
-	public static final byte LABEL_WRAP_JUSTIFY_LEFT = 65;
+	public static final int LABEL_WRAP_JUSTIFY_LEFT = 65;
 
 	/**
 	 * Specifies that the lines of a multi-line node label should each have
 	 * a rightmost point with similar X coordinate.
 	 */
-	public static final byte LABEL_WRAP_JUSTIFY_RIGHT = 66;
+	public static final int LABEL_WRAP_JUSTIFY_RIGHT = 66;
 
 	/**
 	 * Hashmap which records selected state of nodes - information used
@@ -165,7 +165,7 @@ public class NodeDetails {
 	 * Take note of certain constraints specified in
 	 * GraphGraphics.drawNodeFull() that pertain to rounded rectangles.
 	 */
-	public byte shape(final int node) {
+	public int shape(final int node) {
 		return GraphGraphics.SHAPE_RECTANGLE;
 	}
 
@@ -250,7 +250,7 @@ public class NodeDetails {
 	 * @see #labelOffsetVectorX(int, int)
 	 * @see #labelOffsetVectorY(int, int)
 	 */
-	public byte labelTextAnchor(final int node, final int labelInx) {
+	public int labelTextAnchor(final int node, final int labelInx) {
 		return ANCHOR_CENTER;
 	}
 	
@@ -301,7 +301,7 @@ public class NodeDetails {
 	 * @see #labelOffsetVectorX(int, int)
 	 * @see #labelOffsetVectorY(int, int)
 	 */
-	public byte labelNodeAnchor(final int node, final int labelInx) {
+	public int labelNodeAnchor(final int node, final int labelInx) {
 		return ANCHOR_CENTER;
 	}
 
@@ -358,7 +358,7 @@ public class NodeDetails {
 	 * string that does not span multiple lines.
 	 * @see #LABEL_WRAP_JUSTIFY_CENTER
 	 */
-	public byte labelJustify(final int node, final int labelInx) {
+	public int labelJustify(final int node, final int labelInx) {
 		return LABEL_WRAP_JUSTIFY_CENTER;
 	}
 
@@ -410,7 +410,7 @@ public class NodeDetails {
 	 * @see #graphicOffsetVectorX(int, int)
 	 * @see #graphicOffsetVectorY(int, int)
 	 */
-	public byte graphicNodeAnchor(final int node, final int graphicInx) {
+	public int graphicNodeAnchor(final int node, final int graphicInx) {
 		return ANCHOR_CENTER;
 	}
 

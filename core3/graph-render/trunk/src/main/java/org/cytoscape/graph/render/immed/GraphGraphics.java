@@ -87,48 +87,48 @@ public final class GraphGraphics {
 	/**
 	 * 
 	 */
-	public static final byte SHAPE_RECTANGLE = 0;
+	public static final int SHAPE_RECTANGLE = 0;
 
 	/**
 	 * 
 	 */
-	public static final byte SHAPE_DIAMOND = 1;
+	public static final int SHAPE_DIAMOND = 1;
 
 	/**
 	 * 
 	 */
-	public static final byte SHAPE_ELLIPSE = 2;
+	public static final int SHAPE_ELLIPSE = 2;
 
 	/**
 	 * 
 	 */
-	public static final byte SHAPE_HEXAGON = 3;
+	public static final int SHAPE_HEXAGON = 3;
 
 	/**
 	 * 
 	 */
-	public static final byte SHAPE_OCTAGON = 4;
+	public static final int SHAPE_OCTAGON = 4;
 
 	/**
 	 * 
 	 */
-	public static final byte SHAPE_PARALLELOGRAM = 5;
+	public static final int SHAPE_PARALLELOGRAM = 5;
 
 	/**
 	 * 
 	 */
-	public static final byte SHAPE_ROUNDED_RECTANGLE = 6;
+	public static final int SHAPE_ROUNDED_RECTANGLE = 6;
 
 	/**
 	 * 
 	 */
-	public static final byte SHAPE_TRIANGLE = 7;
+	public static final int SHAPE_TRIANGLE = 7;
 
 	/**
 	 * 
 	 */
-	public static final byte SHAPE_VEE = 8;
-	private static final byte s_last_shape = SHAPE_VEE;
+	public static final int SHAPE_VEE = 8;
+	private static final int s_last_shape = SHAPE_VEE;
 
 	/**
 	 * This value is currently 100.
@@ -138,38 +138,38 @@ public final class GraphGraphics {
 	/**
 	 * 
 	 */
-	public static final byte ARROW_NONE = -1;
+	public static final int ARROW_NONE = -1;
 
 	/**
 	 * 
 	 */
-	public static final byte ARROW_DELTA = -2;
+	public static final int ARROW_DELTA = -2;
 
 	/**
 	 * 
 	 */
-	public static final byte ARROW_DIAMOND = -3;
+	public static final int ARROW_DIAMOND = -3;
 
 	/**
 	 * 
 	 */
-	public static final byte ARROW_DISC = -4;
+	public static final int ARROW_DISC = -4;
 
 	/**
 	 * 
 	 */
-	public static final byte ARROW_TEE = -5;
-	private static final byte last_arrow_shape = ARROW_TEE;
+	public static final int ARROW_TEE = -5;
+	private static final int last_arrow_shape = ARROW_TEE;
 
 	/**
 	 * 
 	 */
-	public static final byte ARROW_BIDIRECTIONAL = -6;
+	public static final int ARROW_BIDIRECTIONAL = -6;
 
 	/**
 	 * 
 	 */
-	public static final byte ARROW_MONO = -7;
+	public static final int ARROW_MONO = -7;
 
 	/**
 	 * This value is currently 64.
@@ -208,7 +208,7 @@ public final class GraphGraphics {
 	private final Line2D.Double m_line2d = new Line2D.Double();
 	private final double[] m_polyCoords = // I need this for extra precision.
 	new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
-	private final HashMap<Byte, double[]> m_customShapes = new HashMap<Byte, double[]>();
+	private final HashMap<Integer, double[]> m_customShapes = new HashMap<Integer, double[]>();
 	private final double[] m_ptsBuff = new double[4];
 	private final EdgeAnchors m_noAnchors = new EdgeAnchors() {
 		public final int numAnchors() {
@@ -234,7 +234,7 @@ public final class GraphGraphics {
 	private int m_currCapType;
 
 	// This member variable only to be used from within defineCustomNodeShape().
-	private byte m_lastCustomShapeType = s_last_shape;
+	private int m_lastCustomShapeType = s_last_shape;
 
 	// This is only used by computeCubicPolyEdgePath().
 	private final float[] m_floatBuff = new float[2];
@@ -593,7 +593,7 @@ public final class GraphGraphics {
 	 *                nodeShape is neither one of the SHAPE_* constants nor a
 	 *                previously defined custom node shape.
 	 */
-	public final void drawNodeFull(final byte nodeShape, final float xMin,
+	public final void drawNodeFull(final int nodeShape, final float xMin,
 			final float yMin, final float xMax, final float yMax,
 			final Paint fillPaint, final float borderWidth,
 			final Paint borderPaint) {
@@ -755,7 +755,7 @@ public final class GraphGraphics {
 	 *            path's coordinate system is the node coordinate system; the
 	 *            computed path is closed.
 	 */
-	public final void getNodeShape(final byte nodeShape, final float xMin,
+	public final void getNodeShape(final int nodeShape, final float xMin,
 			final float yMin, final float xMax, final float yMax,
 			final GeneralPath path) {
 		if (m_debug) {
@@ -839,7 +839,7 @@ public final class GraphGraphics {
 	 *                little over one hundered custom node shapes can be
 	 *                defined.
 	 */
-	public final byte defineCustomNodeShape(final float[] coords,
+	public final int defineCustomNodeShape(final float[] coords,
 			final int offset, final int vertexCount) {
 		if (vertexCount > CUSTOM_SHAPE_MAX_VERTICES) {
 			throw new IllegalArgumentException(
@@ -953,7 +953,7 @@ public final class GraphGraphics {
 
 		// polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
 		// that passes all of the criteria.
-		final byte nextCustomShapeType = (byte) (m_lastCustomShapeType + 1);
+		final int nextCustomShapeType = (int) (m_lastCustomShapeType + 1);
 
 		if (nextCustomShapeType < 0) {
 			throw new IllegalStateException(
@@ -961,7 +961,7 @@ public final class GraphGraphics {
 		}
 
 		m_lastCustomShapeType++;
-		m_customShapes.put(new Byte(nextCustomShapeType), polyCoords);
+		m_customShapes.put(new Integer(nextCustomShapeType), polyCoords);
 
 		return nextCustomShapeType;
 	}
@@ -969,7 +969,7 @@ public final class GraphGraphics {
 	/**
 	 * Determines whether the specified shape is a custom defined node shape.
 	 */
-	public final boolean customNodeShapeExists(final byte shape) {
+	public final boolean customNodeShapeExists(final Integer shape) {
 		if (m_debug) {
 			if (!EventQueue.isDispatchThread()) {
 				throw new IllegalStateException(
@@ -985,7 +985,7 @@ public final class GraphGraphics {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public final byte[] getCustomNodeShapes() {
+	public final int[] getCustomNodeShapes() {
 		if (m_debug) {
 			if (!EventQueue.isDispatchThread()) {
 				throw new IllegalStateException(
@@ -993,10 +993,10 @@ public final class GraphGraphics {
 			}
 		}
 
-		final byte[] returnThis = new byte[m_lastCustomShapeType - s_last_shape];
+		final int[] returnThis = new int[m_lastCustomShapeType - s_last_shape];
 
 		for (int i = 0; i < returnThis.length; i++) {
-			returnThis[i] = (byte) (s_last_shape + 1 + i);
+			returnThis[i] = (int) (s_last_shape + 1 + i);
 		}
 
 		return returnThis;
@@ -1008,7 +1008,7 @@ public final class GraphGraphics {
 	 * square. Returns null if specified shape is not a previously defined
 	 * custom shape.
 	 */
-	public final float[] getCustomNodeShape(final byte customShape) {
+	public final float[] getCustomNodeShape(final int customShape) {
 		if (m_debug) {
 			if (!EventQueue.isDispatchThread()) {
 				throw new IllegalStateException(
@@ -1016,7 +1016,7 @@ public final class GraphGraphics {
 			}
 		}
 
-		final double[] dCoords = m_customShapes.get(new Byte(customShape));
+		final double[] dCoords = m_customShapes.get(new Integer(customShape));
 
 		if (dCoords == null) {
 			return null;
@@ -1056,7 +1056,7 @@ public final class GraphGraphics {
 					"a custom node shape is already defined in this GraphGraphics");
 		}
 
-		for (Map.Entry<Byte, double[]> entry : grafx.m_customShapes.entrySet()) {
+		for (Map.Entry<Integer, double[]> entry : grafx.m_customShapes.entrySet()) {
 			m_customShapes.put(entry.getKey(), entry.getValue());
 			m_lastCustomShapeType++;
 		}
@@ -1067,7 +1067,7 @@ public final class GraphGraphics {
 	 * m_path2d is set (every case but the ellipse and rounded rectangle), then
 	 * m_polyCoords and m_polyNumPoints are also set.
 	 */
-	private final Shape getShape(final byte nodeShape, final double xMin,
+	private final Shape getShape(final int nodeShape, final double xMin,
 			final double yMin, final double xMax, final double yMax) {
 		switch (nodeShape) {
 		case SHAPE_ELLIPSE:
@@ -1186,9 +1186,8 @@ public final class GraphGraphics {
 
 		default: // Try a custom node shape or throw an exception.
 
-			final double[] storedPolyCoords = // To optimize don't construct
-			// Byte.
-			(double[]) m_customShapes.get(new Byte(nodeShape));
+			final double[] storedPolyCoords = // To optimize don't construct Integer.
+			(double[]) m_customShapes.get(new Integer(nodeShape));
 
 			if (storedPolyCoords == null) {
 				throw new IllegalArgumentException(
@@ -1227,7 +1226,7 @@ public final class GraphGraphics {
 	 * 
 	 * @return
 	 */
-	public static Map<Byte, Shape> getNodeShapes() {
+	public static Map<Integer, Shape> getNodeShapes() {
 		return getShapes(ShapeTypes.NODE_SHAPE);
 	}
 
@@ -1236,7 +1235,7 @@ public final class GraphGraphics {
 	 * 
 	 * @return
 	 */
-	public static Map<Byte, Shape> getArrowShapes() {
+	public static Map<Integer, Shape> getArrowShapes() {
 		return getShapes(ShapeTypes.ARROW_SHAPE);
 	}
 
@@ -1246,8 +1245,8 @@ public final class GraphGraphics {
 	 * @param type
 	 * @return
 	 */
-	private static Map<Byte, Shape> getShapes(final ShapeTypes type) {
-		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
+	private static Map<Integer, Shape> getShapes(final ShapeTypes type) {
+		final Map<Integer, Shape> shapeMap = new HashMap<Integer, Shape>();
 
 		final int minIndex;
 		final int maxIndex;
@@ -1267,17 +1266,17 @@ public final class GraphGraphics {
 
 		for (int i = minIndex; i <= maxIndex; i++) {
 			if (type == ShapeTypes.NODE_SHAPE) {
-				shape = dummyGraphics.getShape((byte) i, 0, 0, DEF_SHAPE_SIZE,
+				shape = dummyGraphics.getShape((int) i, 0, 0, DEF_SHAPE_SIZE,
 						DEF_SHAPE_SIZE);
 			} else {
-				shape = dummyGraphics.computeUntransformedArrow((byte) i);
+				shape = dummyGraphics.computeUntransformedArrow((int) i);
 			}
 
 			if ((shape != null) && (shape.getClass() == GeneralPath.class)) {
 				final Shape copiedShape = (Shape) ((GeneralPath) shape).clone();
-				shapeMap.put((byte) i, copiedShape);
+				shapeMap.put((int) i, copiedShape);
 			} else if (shape != null) {
-				shapeMap.put((byte) i, shape);
+				shapeMap.put((int) i, shape);
 			}
 		}
 
@@ -1552,9 +1551,9 @@ public final class GraphGraphics {
 	 *                meet specified criteria, or if more than MAX_EDGE_ANCHORS
 	 *                anchors are specified.
 	 */
-	public final void drawEdgeFull(final byte arrow0Type,
+	public final void drawEdgeFull(final int arrow0Type,
 			final float arrow0Size, final Paint arrow0Paint,
-			final byte arrow1Type, final float arrow1Size,
+			final int arrow1Type, final float arrow1Size,
 			final Paint arrow1Paint, final float x0, final float y0,
 			EdgeAnchors anchors, final float x1, final float y1,
 			final float edgeThickness, final Paint edgePaint,
@@ -1709,8 +1708,8 @@ public final class GraphGraphics {
 	}
 
 	@SuppressWarnings("fallthrough")
-	private final void edgeFullDebug(final byte arrow0Type,
-			final float arrow0Size, final byte arrow1Type, float arrow1Size,
+	private final void edgeFullDebug(final int arrow0Type,
+			final float arrow0Size, final int arrow1Type, float arrow1Size,
 			final float edgeThickness, final float dashLength,
 			final EdgeAnchors anchors) {
 		if (!EventQueue.isDispatchThread()) {
@@ -1805,9 +1804,9 @@ public final class GraphGraphics {
 		}
 	}
 
-	private final void drawSimpleEdgeFull(final byte arrow0Type,
+	private final void drawSimpleEdgeFull(final int arrow0Type,
 			final float arrow0Size, final Paint arrow0Paint,
-			final byte arrow1Type, final float arrow1Size,
+			final int arrow1Type, final float arrow1Size,
 			final Paint arrow1Paint, final float x0, final float y0,
 			final float x1, final float y1, final float edgeThickness,
 			final Paint edgePaint, final float dashLength) {
@@ -1940,7 +1939,7 @@ public final class GraphGraphics {
 		final double y0Adj;
 		final double x1Adj;
 		final double y1Adj;
-		final byte simpleSegment;
+		final int simpleSegment;
 
 		{ // Render the line segment if necessary.
 
@@ -2093,8 +2092,8 @@ public final class GraphGraphics {
 	 *                if any one of the edge arrow criteria specified in
 	 *                drawEdgeFull() is not satisfied.
 	 */
-	public final boolean getEdgePath(final byte arrow0Type,
-			final float arrow0Size, final byte arrow1Type,
+	public final boolean getEdgePath(final int arrow0Type,
+			final float arrow0Size, final int arrow1Type,
 			final float arrow1Size, final float x0, final float y0,
 			EdgeAnchors anchors, final float x1, final float y1,
 			final GeneralPath path) {
@@ -2169,8 +2168,8 @@ public final class GraphGraphics {
 			}
 		}
 
-		byte arrow0 = arrow0Type;
-		byte arrow1 = arrow1Type;
+		int arrow0 = arrow0Type;
+		int arrow1 = arrow1Type;
 
 		if (arrow0 == ARROW_BIDIRECTIONAL) { // Assume arrow1 is also.
 			// If we wanted to start our path where the bidirectional edge
@@ -2231,7 +2230,7 @@ public final class GraphGraphics {
 	 * arrowType must be one of the primitive arrow types or ARROW_NONE (no
 	 * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
 	 */
-	private final Shape computeUntransformedArrow(final byte arrowType) {
+	private final Shape computeUntransformedArrow(final int arrowType) {
 		switch (arrowType) {
 		case ARROW_NONE:
 			return null;
@@ -2280,7 +2279,7 @@ public final class GraphGraphics {
 	 * arrowType must be one of the primitive arrow types or ARROW_NONE (no
 	 * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
 	 */
-	private final Shape computeUntransformedArrowCap(final byte arrowType,
+	private final Shape computeUntransformedArrowCap(final int arrowType,
 			final double ratio) {
 		switch (arrowType) {
 		case ARROW_NONE:
@@ -2344,7 +2343,7 @@ public final class GraphGraphics {
 	 * arrowType must be one of the primitive arrow types or ARROW_NONE (no
 	 * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
 	 */
-	private final static double getT(final byte arrowType) { // I could
+	private final static double getT(final int arrowType) { // I could
 		// implement
 		// this as an
 		// array instead
@@ -2374,8 +2373,8 @@ public final class GraphGraphics {
 	 * If arrow0Type is ARROW_NONE, arrow0Size should be zero. If arrow1Type is
 	 * ARROW_NONE, arrow1Size should be zero.
 	 */
-	private final boolean computeCubicPolyEdgePath(final byte arrow0Type,
-			final float arrow0Size, final byte arrow1Type,
+	private final boolean computeCubicPolyEdgePath(final int arrow0Type,
+			final float arrow0Size, final int arrow1Type,
 			final float arrow1Size, final float x0, final float y0,
 			final EdgeAnchors anchors, final float x1, final float y1,
 			final double curveFactor) {
@@ -2604,7 +2603,7 @@ public final class GraphGraphics {
 	 *                nodeShape is neither one of the SHAPE_* constants nor a
 	 *                previously defined custom node shape.
 	 */
-	public final boolean computeEdgeIntersection(final byte nodeShape,
+	public final boolean computeEdgeIntersection(final int nodeShape,
 			final float xMin, final float yMin, final float xMax,
 			final float yMax, final float offset, final float ptX,
 			final float ptY, final float[] returnVal) {

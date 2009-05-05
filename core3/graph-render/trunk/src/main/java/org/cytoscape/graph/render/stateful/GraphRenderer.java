@@ -196,7 +196,7 @@ public final class GraphRenderer {
 		// Determine the number of nodes and edges that we are about to render.
 		final int renderNodeCount;
 		final int renderEdgeCount;
-		final byte renderEdges;
+		final int renderEdges;
 
 		{
 			final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap(xMin, yMin, xMax,
@@ -354,7 +354,7 @@ public final class GraphRenderer {
 
 				while (nodeHits.numRemaining() > 0) {
 					final int node = nodeHits.nextExtents(floatBuff1, 0);
-					final byte nodeShape = nodeDetails.shape(node);
+					final int nodeShape = nodeDetails.shape(node);
 					//final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
 					java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
 					for ( CyEdge e : touchingEdges ) {
@@ -368,13 +368,13 @@ public final class GraphRenderer {
 							if (!nodePositions.exists(otherNode, floatBuff2, 0))
 								throw new IllegalStateException("nodePositions not recognizing node that exists in graph");
 
-							final byte otherNodeShape = nodeDetails.shape(otherNode);
+							final int otherNodeShape = nodeDetails.shape(otherNode);
 
 							// Compute node shapes, center positions, and extents.
-							final byte srcShape;
+							final int srcShape;
 
 							// Compute node shapes, center positions, and extents.
-							final byte trgShape;
+							final int trgShape;
 							final float[] srcExtents;
 							final float[] trgExtents;
 
@@ -395,10 +395,10 @@ public final class GraphRenderer {
 							final Paint segPaint = edgeDetails.segmentPaint(edge);
 
 							// Compute arrows.
-							final byte srcArrow;
+							final int srcArrow;
 
 							// Compute arrows.
-							final byte trgArrow;
+							final int trgArrow;
 							final float srcArrowSize;
 							final float trgArrowSize;
 							final Paint srcArrowPaint;
@@ -484,15 +484,15 @@ public final class GraphRenderer {
 									final double fontScaleFactor = edgeDetails.labelScaleFactor(edge,
 									                                                            labelInx);
 									final Paint paint = edgeDetails.labelPaint(edge, labelInx);
-									final byte textAnchor = edgeDetails.labelTextAnchor(edge,
+									final int textAnchor = edgeDetails.labelTextAnchor(edge,
 									                                                    labelInx);
-									final byte edgeAnchor = edgeDetails.labelEdgeAnchor(edge,
+									final int edgeAnchor = edgeDetails.labelEdgeAnchor(edge,
 									                                                    labelInx);
 									final float offsetVectorX = edgeDetails.labelOffsetVectorX(edge,
 									                                                           labelInx);
 									final float offsetVectorY = edgeDetails.labelOffsetVectorY(edge,
 									                                                           labelInx);
-									final byte justify;
+									final int justify;
 
 									if (text.indexOf('\n') >= 0)
 										justify = edgeDetails.labelJustify(edge, labelInx);
@@ -666,7 +666,7 @@ public final class GraphRenderer {
 
 					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
 						// Compute visual attributes that do not depend on LOD.
-						final byte shape = nodeDetails.shape(node);
+						final int shape = nodeDetails.shape(node);
 						final Paint fillPaint = nodeDetails.fillPaint(node);
 
 						// Compute node border information.
@@ -700,7 +700,7 @@ public final class GraphRenderer {
 						for (int graphicInx = 0; graphicInx < graphicCount; graphicInx++) {
 							final Shape gShape = nodeDetails.graphicShape(node, graphicInx);
 							final Paint paint = nodeDetails.graphicPaint(node, graphicInx);
-							final byte anchor = nodeDetails.graphicNodeAnchor(node, graphicInx);
+							final int anchor = nodeDetails.graphicNodeAnchor(node, graphicInx);
 				// Shouldn't these be graphicOffsetVectorX and Y versus labelOffsetVectorX and Y:
 										final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
 							                                                           graphicInx);
@@ -758,13 +758,13 @@ public final class GraphRenderer {
 							final double fontScaleFactor = nodeDetails.labelScaleFactor(node,
 							                                                            labelInx);
 							final Paint paint = nodeDetails.labelPaint(node, labelInx);
-							final byte textAnchor = nodeDetails.labelTextAnchor(node, labelInx);
-							final byte nodeAnchor = nodeDetails.labelNodeAnchor(node, labelInx);
+							final int textAnchor = nodeDetails.labelTextAnchor(node, labelInx);
+							final int nodeAnchor = nodeDetails.labelNodeAnchor(node, labelInx);
 							final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
 							                                                           labelInx);
 							final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
 							                                                           labelInx);
-							final byte justify;
+							final int justify;
 
 							if (text.indexOf('\n') >= 0)
 								justify = nodeDetails.labelJustify(node, labelInx);
@@ -808,7 +808,7 @@ public final class GraphRenderer {
 		return lodBits;
 	}
 
-	private final static void lemma_computeAnchor(final byte anchor, final double[] input4x,
+	private final static void lemma_computeAnchor(final int anchor, final double[] input4x,
 	                                              final double[] rtrn2x) {
 		switch (anchor) {
 			case NodeDetails.ANCHOR_CENTER:
@@ -893,10 +893,10 @@ public final class GraphRenderer {
 	 */
 	public final static boolean computeEdgeEndpoints(final GraphGraphics grafx,
 	                                                 final float[] srcNodeExtents,
-	                                                 final byte srcNodeShape, final byte srcArrow,
+	                                                 final int srcNodeShape, final int srcArrow,
 	                                                 final float srcArrowSize, EdgeAnchors anchors,
 	                                                 final float[] trgNodeExtents,
-	                                                 final byte trgNodeShape, final byte trgArrow,
+	                                                 final int trgNodeShape, final int trgArrow,
 	                                                 final float trgArrowSize,
 	                                                 final float[] rtnValSrc,
 	                                                 final float[] rtnValTrg) {

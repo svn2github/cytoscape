@@ -54,19 +54,19 @@ public class EdgeDetails {
 	/**
 	 * Specifies that an anchor point lies at the midpoint of an edge.
 	 */
-	public static final byte EDGE_ANCHOR_MIDPOINT = 16;
+	public static final int EDGE_ANCHOR_MIDPOINT = 16;
 
 	/**
 	 * Specifies that an anchor point lies at an edge's endpoint at source
 	 * node.
 	 */
-	public static final byte EDGE_ANCHOR_SOURCE = 17;
+	public static final int EDGE_ANCHOR_SOURCE = 17;
 
 	/**
 	 * Specifies that an anchor point lies at an edge's endpoint at target
 	 * node.
 	 */
-	public static final byte EDGE_ANCHOR_TARGET = 18;
+	public static final int EDGE_ANCHOR_TARGET = 18;
 
 	/**
 	 * Instantiates edge details with defaults.  Documentation on each method
@@ -96,7 +96,7 @@ public class EdgeDetails {
 	 * Take note of certain constraints specified in
 	 * GraphGraphics.drawEdgeFull().
 	 */
-	public byte sourceArrow(final int edge) {
+	public int sourceArrow(final int edge) {
 		return GraphGraphics.ARROW_NONE;
 	}
 
@@ -129,7 +129,7 @@ public class EdgeDetails {
 	 * Take note of certain constraints specified in
 	 * GraphGraphics.drawEdgeFull().
 	 */
-	public byte targetArrow(final int edge) {
+	public int targetArrow(final int edge) {
 		return GraphGraphics.ARROW_NONE;
 	}
 
@@ -296,7 +296,7 @@ public class EdgeDetails {
 	 * @see #labelOffsetVectorX(int, int)
 	 * @see #labelOffsetVectorY(int, int)
 	 */
-	public byte labelTextAnchor(final int edge, final int labelInx) {
+	public int labelTextAnchor(final int edge, final int labelInx) {
 		return NodeDetails.ANCHOR_CENTER;
 	}
 
@@ -317,7 +317,7 @@ public class EdgeDetails {
 	 * @see #labelOffsetVectorX(int, int)
 	 * @see #labelOffsetVectorY(int, int)
 	 */
-	public byte labelEdgeAnchor(final int edge, final int labelInx) {
+	public int labelEdgeAnchor(final int edge, final int labelInx) {
 		return EDGE_ANCHOR_MIDPOINT;
 	}
 
@@ -373,7 +373,7 @@ public class EdgeDetails {
 	 * multiple lines.
 	 * @see NodeDetails#LABEL_WRAP_JUSTIFY_CENTER
 	 */
-	public byte labelJustify(final int edge, final int labelInx) {
+	public int labelJustify(final int edge, final int labelInx) {
 		return NodeDetails.LABEL_WRAP_JUSTIFY_CENTER;
 	}
 

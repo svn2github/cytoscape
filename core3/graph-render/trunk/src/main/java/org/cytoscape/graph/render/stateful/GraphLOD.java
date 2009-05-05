@@ -70,7 +70,7 @@ public class GraphLOD {
 	 *   positive if all edges are to be rendered, or negative if no edges
 	 *   are to be rendered.
 	 */
-	public byte renderEdges(final int visibleNodeCount, final int totalNodeCount,
+	public int renderEdges(final int visibleNodeCount, final int totalNodeCount,
 	                        final int totalEdgeCount) {
 		return 0;
 	}
