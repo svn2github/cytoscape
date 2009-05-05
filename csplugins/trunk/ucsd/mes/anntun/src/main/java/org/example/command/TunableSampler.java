@@ -1,5 +1,3 @@
-
-
 package org.example.command;
 
 import org.example.tunable.Tunable;
@@ -36,13 +34,14 @@ public class TunableSampler implements Command {
 	public ListMultipleSelection<String> nums = new ListMultipleSelection<String>("one","two","3","four","V");
 
 	@Tunable(description="Text input", group={"Numeric Tunables","String Tunables"})
-	public String s1 = "";
+	public String s1 = " ";
 
 	@Tunable(description="Immutable \"tunables\" don't make sense", group={"Numeric Tunables","String Tunables"})
 	public String s2 = "existing text";
 
-
+	
 	public void execute() {
-		System.out.println("executing tunable sampler");
+		System.out.println("Results : \n \t testBool = "+testBool+"\n \t boundedInt = "+ boundedInt.getValue()+"\n \t boundedInt2 = "+boundedInt2.getValue()+"\n \t boundedDub = "+boundedDub.getValue()
+				+"\n \t edgeAttr = "+edgeAttr.getSelectedValue()+"\n \t nodeAttr = "+nodeAttr.getSelectedValues()+"\n \t list1 = "+list1.getSelectedValue());
 	}
 }

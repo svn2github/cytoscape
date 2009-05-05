@@ -13,6 +13,7 @@ public class AppCL
 
 		// command comes from someplace
 		Command com = new PrintSomething();
+//		Command com = new TunableSampler();
 
 		// create the interceptor for this context
 		// in this case it's a command line, so it takes the

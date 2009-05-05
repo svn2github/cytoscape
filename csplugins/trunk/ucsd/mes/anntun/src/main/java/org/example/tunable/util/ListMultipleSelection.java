@@ -89,7 +89,7 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 
 		for (T v : vals)
 			if (!values.contains(v))
-				throw new IllegalArgumentException("value not contained is list of possible values");
+				throw new IllegalArgumentException("value not contained in list of possible values\n possible items = "+this.getPossibleValues());
 
 		selected = new ArrayList<T>(vals);
 	}

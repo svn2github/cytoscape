@@ -18,7 +18,9 @@ public class IntCLHandler extends AbstractCLHandler {
 	public void handleLine( CommandLine line ) {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;		
-		String fc = n.substring(ind,ind+1);
+		String fc;
+		if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		else fc = n.substring(ind,ind+3);
 
 		try {
 		if ( line.hasOption( fc ) ) {
@@ -37,8 +39,11 @@ public class IntCLHandler extends AbstractCLHandler {
 		String n = getName();
 		System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
+		String fc;
+		if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		else fc = n.substring(ind,ind+3);
 		//If arguments
-		return new Option(n.substring(ind,ind+1), n, true, t.description());
+		return new Option(fc, n, true, t.description());
 		//If not
 //		return new Option(n.substring(ind,ind+1), n, false, t.description());		
 		
