@@ -28,7 +28,6 @@
     <module>org.freehep.swing</module>
     <module>org.freehep.util</module>
     <module>org.freehep.xml</module>
-    <module>swing-layout</module>
     <module>colt</module>
   </modules>
 
