@@ -157,11 +157,18 @@
 			</url>
 			<layout>legacy</layout>
 		</repository>
-		
+
 		<!-- Repo. of PAX project -->
 		<repository>
 			<id>ops4j.releases</id>
 			<url>http://repository.ops4j.org/maven2/</url>
+		</repository>
+
+		<!-- L2fProd Maven Repository -->
+		<repository>
+			<id>l2fprod-maven-repo</id>
+			<name>L2FProd.com Maven Repository</name>
+			<url>http://www.l2fprod.com/maven2/</url>
 		</repository>
 
 	</repositories>
