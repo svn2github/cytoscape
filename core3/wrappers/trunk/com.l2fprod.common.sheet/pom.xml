@@ -19,7 +19,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape.wrappers</groupId>
 	<artifactId>com.l2fprod.common.sheet</artifactId>
-	<version>7.3-001-SNAPSHOT</version>
+	<version>7.3</version>
 
 	<name>${bundle.symbolicName} ${wrapped.version} [osgi]</name>
 
