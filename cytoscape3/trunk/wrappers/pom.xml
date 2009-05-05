@@ -28,9 +28,7 @@
     <module>org.freehep.swing</module>
     <module>org.freehep.util</module>
     <module>org.freehep.xml</module>
-    <module>com.jgoodies.looks</module>
-    <module>biojava</module>
-    <module>net.java.dev.swing-layout</module>
+    <module>swing-layout</module>
     <module>colt</module>
   </modules>
 
