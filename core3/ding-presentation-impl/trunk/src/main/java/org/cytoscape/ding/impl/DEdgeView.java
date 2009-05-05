@@ -44,6 +44,7 @@ import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
+import org.cytoscape.ding.ArrowShape;
 
 import org.cytoscape.view.presentation.twod.TwoDVisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
@@ -91,8 +92,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 		m_sourceSelectedPaint = Color.red;
 		m_targetUnselectedPaint = m_view.m_edgeDetails.targetArrowPaint(m_inx);
 		m_targetSelectedPaint = Color.red;
-		m_sourceEdgeEnd = EdgeView.NO_END;
-		m_targetEdgeEnd = EdgeView.NO_END;
+		m_sourceEdgeEnd = GraphGraphics.ARROW_NONE;
+		m_targetEdgeEnd = GraphGraphics.ARROW_NONE;
 		m_anchors = null;
 		m_lineType = EdgeView.STRAIGHT_LINES;
 	}
@@ -662,7 +663,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 					break;
 
 				default:
-					throw new IllegalArgumentException("unrecognized edge end type");
+					// assume type is OK 
+					m_view.m_edgeDetails.overrideSourceArrow(m_inx, type);
+					//throw new IllegalArgumentException("unrecognized edge end type");
 			}
 
 			m_sourceEdgeEnd = type;
@@ -760,7 +763,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 					break;
 
 				default:
-					throw new IllegalArgumentException("unrecognized edge end type");
+					// assume type is OK
+					m_view.m_edgeDetails.overrideTargetArrow(m_inx, type);
+					//throw new IllegalArgumentException("unrecognized edge end type");
 			}
 
 			m_targetEdgeEnd = type;
@@ -1459,10 +1464,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			setSelected((Boolean)o);
 		}
 		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SHAPE) {
-			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			setTargetEdgeEnd(((ArrowShape)o).getGinyArrow());
 		}
 		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
-			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			setSourceEdgeEnd(((ArrowShape)o).getGinyArrow());
 		}
 		else if (vp == TwoDVisualLexicon.EDGE_LABEL) {
 			setText((String)o);
@@ -1471,25 +1476,25 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			setToolTip((String)o);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_EDGE_ANCHOR) {
-			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			setEdgeLabelAnchor( ((Anchor)o).getGinyAnchor());	
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_TEXT_ANCHOR) {
-			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			setTextAnchor( ((Anchor)o).getGinyAnchor());	
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_X_OFFSET) {
-			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			setLabelOffsetX( ((Double)o).doubleValue() );	
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_Y_OFFSET) {
-			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			setLabelOffsetY( ((Double)o).doubleValue() );	
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_JUSTIFY) {
-			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			setJustify( ((Justify)o).getGinyJustify());
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_FACE) {
 			setFont((Font)o);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_SIZE) {
-			//System.out.println(vp.getDisplayName() + " not yet implemented " + o);
+			setFont( getFont().deriveFont(((Integer)o).floatValue()) );
 		}
 		else if (vp == TwoDVisualLexicon.EDGE_LABEL_COLOR) {
 			setTextPaint((Paint)o);

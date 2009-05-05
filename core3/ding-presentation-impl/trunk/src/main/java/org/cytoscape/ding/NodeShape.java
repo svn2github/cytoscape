@@ -34,10 +34,10 @@
 */
 package org.cytoscape.ding;
 
-import org.cytoscape.ding.NodeView;
-import org.cytoscape.ding.ShapeFactory;
 import org.cytoscape.ding.icon.NodeIcon;
 import org.cytoscape.ding.icon.VisualPropertyIcon;
+
+import org.cytoscape.graph.render.immed.GraphGraphics;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,22 +53,22 @@ import java.util.Map;
  *
  */
 public enum NodeShape {
-	RECT(NodeView.RECTANGLE, "Rectangle", true),
-	ROUND_RECT(NodeView.ROUNDED_RECTANGLE, "Round Rectangle", true),
-	RECT_3D(NodeView.RECTANGLE, "3D Rectabgle", false),
-	TRAPEZOID(NodeView.RECTANGLE, "Trapezoid", false),
-	TRAPEZOID_2(NodeView.RECTANGLE, "Trapezoid 2", false),
-	TRIANGLE(NodeView.TRIANGLE, "Triangle", true),
-	PARALLELOGRAM(NodeView.PARALELLOGRAM, "Parallelogram", true),
-	DIAMOND(NodeView.DIAMOND, "Diamond", true),
-	ELLIPSE(NodeView.ELLIPSE, "Ellipse", true),
-	HEXAGON(NodeView.HEXAGON, "Hexagon", true),
-	OCTAGON(NodeView.OCTAGON, "Octagon", true);
+	RECT(GraphGraphics.SHAPE_RECTANGLE, "Rectangle", true),
+	ROUND_RECT(GraphGraphics.SHAPE_ROUNDED_RECTANGLE, "Round Rectangle", true),
+	RECT_3D(GraphGraphics.SHAPE_RECTANGLE, "3D Rectabgle", false),
+	TRAPEZOID(GraphGraphics.SHAPE_RECTANGLE, "Trapezoid", false),
+	TRAPEZOID_2(GraphGraphics.SHAPE_RECTANGLE, "Trapezoid 2", false),
+	TRIANGLE(GraphGraphics.SHAPE_TRIANGLE, "Triangle", true),
+	PARALLELOGRAM(GraphGraphics.SHAPE_PARALLELOGRAM, "Parallelogram", true),
+	DIAMOND(GraphGraphics.SHAPE_DIAMOND, "Diamond", true),
+	ELLIPSE(GraphGraphics.SHAPE_ELLIPSE, "Ellipse", true),
+	HEXAGON(GraphGraphics.SHAPE_HEXAGON, "Hexagon", true),
+	OCTAGON(GraphGraphics.SHAPE_OCTAGON, "Octagon", true);
 
 	private int ginyShape;
 	private String name;
 	private boolean isSupported;
-	private static Map<Integer, Shape> nodeShapes = ShapeFactory.getNodeShapes();
+	private static Map<Integer, Shape> nodeShapes = GraphGraphics.getNodeShapes();
 
 	private NodeShape(int ginyShape, String name, boolean isSupported) {
 		this.ginyShape = ginyShape;
@@ -165,6 +165,7 @@ public enum NodeShape {
 	 *
 	 * @return Giny shape as integer.
 	 */
+	 // TODO rename this method so that it doesn't reference GINY
 	public int getGinyShape() {
 		return ginyShape;
 	}

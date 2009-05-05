@@ -125,24 +125,24 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public byte sourceArrow(int edge) {
+	public int sourceArrow(int edge) {
 		final Object o = m_sourceArrows.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.sourceArrow(edge);
 
-		return ((Byte) o).byteValue();
+		return ((Integer) o).intValue();
 	}
 
 	/*
 	 * A non-negative arrowType has the special meaning to remove overridden
 	 * arrow.
 	 */
-	void overrideSourceArrow(int edge, byte arrowType) {
+	void overrideSourceArrow(int edge, int arrowType) {
 		if ((arrowType >= 0) || (arrowType == super.sourceArrow(edge)))
 			m_sourceArrows.remove(Integer.valueOf(edge));
 		else
-			m_sourceArrows.put(Integer.valueOf(edge), new Byte(arrowType));
+			m_sourceArrows.put(Integer.valueOf(edge), new Integer(arrowType));
 	}
 
 	/**
@@ -178,24 +178,24 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public byte targetArrow(int edge) {
+	public int targetArrow(int edge) {
 		final Object o = m_targetArrows.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.targetArrow(edge);
 
-		return ((Byte) o).byteValue();
+		return ((Integer) o).intValue();
 	}
 
 	/*
 	 * A non-negative arrowType has the special meaning to remove overridden
 	 * arrow.
 	 */
-	void overrideTargetArrow(int edge, byte arrowType) {
+	void overrideTargetArrow(int edge, int arrowType) {
 		if ((arrowType >= 0) || (arrowType == super.targetArrow(edge)))
 			m_targetArrows.remove(Integer.valueOf(edge));
 		else
-			m_targetArrows.put(Integer.valueOf(edge), new Byte(arrowType));
+			m_targetArrows.put(Integer.valueOf(edge), new Integer(arrowType));
 	}
 
 	/**

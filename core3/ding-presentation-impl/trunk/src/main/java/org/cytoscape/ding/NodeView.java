@@ -12,15 +12,6 @@ import java.awt.geom.Point2D;
  */
 public interface NodeView  extends GraphViewObject {
   
-  public static final int TRIANGLE = 0;
-  public static final int DIAMOND = 1;
-  public static final int ELLIPSE = 2;
-  public static final int HEXAGON = 3;
-  public static final int OCTAGON = 4;
-  public static final int PARALELLOGRAM = 5;
-  public static final int RECTANGLE = 6;
-  public static final int ROUNDED_RECTANGLE = 7;
-
   /**
    * @return The Node we are a view on
    */
@@ -247,9 +238,4 @@ public interface NodeView  extends GraphViewObject {
   public double getLabelOffsetY();
   public int getNodeLabelAnchor();
 
-	public int getCustomGraphicCount();
-	public Shape getCustomGraphicShape(int index);
-	public Paint getCustomGraphicPaint(int index);
-	public void removeCustomGraphic(int index);
-	public void addCustomGraphic(Shape s, Paint p, int index);
 }

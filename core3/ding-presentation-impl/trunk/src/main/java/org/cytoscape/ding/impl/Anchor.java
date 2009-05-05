@@ -35,15 +35,32 @@
  */
 package org.cytoscape.ding.impl;
 
+import org.cytoscape.graph.render.stateful.NodeDetails;
+import org.cytoscape.graph.render.stateful.EdgeDetails;
+
 public enum Anchor {
-	NORTH,
-	NORTHEAST,
-	EAST,
-	SOUTHEAST,
-	SOUTH,
-	SOUTHWEST,
-	WEST,
-	NORTHWEST,
-	CENTER,
+	NORTH(NodeDetails.ANCHOR_NORTH),
+	NORTHEAST(NodeDetails.ANCHOR_NORTHEAST),
+	EAST(NodeDetails.ANCHOR_EAST),
+	SOUTHEAST(NodeDetails.ANCHOR_SOUTHEAST),
+	SOUTH(NodeDetails.ANCHOR_SOUTH),
+	SOUTHWEST(NodeDetails.ANCHOR_SOUTHWEST),
+	WEST(NodeDetails.ANCHOR_WEST),
+	NORTHWEST(NodeDetails.ANCHOR_NORTHWEST),
+	CENTER(NodeDetails.ANCHOR_CENTER),
+
+	SOURCE(EdgeDetails.EDGE_ANCHOR_SOURCE),
+	TARGET(EdgeDetails.EDGE_ANCHOR_TARGET),
+	MIDPOINT(EdgeDetails.EDGE_ANCHOR_MIDPOINT),
 	;
+
+	private int ginyAnchor;
+
+	private Anchor(int ginyAnchor) {
+		this.ginyAnchor = ginyAnchor;
+	}
+
+	public int getGinyAnchor() {
+		return ginyAnchor;
+	}
 }

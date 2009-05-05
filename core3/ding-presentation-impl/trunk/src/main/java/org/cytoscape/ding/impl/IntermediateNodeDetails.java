@@ -49,7 +49,7 @@ class IntermediateNodeDetails extends NodeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public byte shape(int node) {
+	public int shape(int node) {
 		return DNodeView.DEFAULT_SHAPE;
 	}
 

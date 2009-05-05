@@ -385,8 +385,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			int chosenNode = 0;
 			int chosenEdge = 0;
 			int chosenAnchor = -1;
-			byte chosenNodeSelected = 0;
-			byte chosenEdgeSelected = 0;
+			int chosenNodeSelected = 0;
+			int chosenEdgeSelected = 0;
 
 			synchronized (m_lock) {
 				if (m_view.m_nodeSelection) {
@@ -460,10 +460,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 					if (wasSelected && e.isShiftDown()) {
 						((DNodeView) m_view.getNodeView(chosenNode)).unselectInternal();
-						chosenNodeSelected = (byte) -1;
+						chosenNodeSelected = -1;
 					} else if (!wasSelected) {
 						((DNodeView) m_view.getNodeView(chosenNode)).selectInternal();
-						chosenNodeSelected = (byte) 1;
+						chosenNodeSelected = 1;
 					}
 
 					m_button1NodeDrag = true;
@@ -515,10 +515,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 					if (wasSelected && e.isShiftDown()) {
 						((DEdgeView) m_view.getEdgeView(chosenEdge)).unselectInternal();
-						chosenEdgeSelected = (byte) -1;
+						chosenEdgeSelected = -1;
 					} else if (!wasSelected) {
 						((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal(false);
-						chosenEdgeSelected = (byte) 1;
+						chosenEdgeSelected = 1;
 
 						if ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
 							m_ptBuff[0] = m_lastXMousePos;
@@ -1065,7 +1065,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				if (!m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0))
 					continue; /* Will happen if e.g. node was removed. */
 
-				final byte nodeShape = m_view.m_nodeDetails.shape(node);
+				final int nodeShape = m_view.m_nodeDetails.shape(node);
 				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, CyEdge.Type.ANY);
 
 				for ( CyEdge e : touchingEdges ) {	
@@ -1076,9 +1076,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 					if (m_hash.get(otherNode) < 0) {
 						m_view.m_spacial.exists(otherNode, m_extentsBuff2, 0);
 
-						final byte otherNodeShape = m_view.m_nodeDetails.shape(otherNode);
-						final byte srcShape;
-						final byte trgShape;
+						final int otherNodeShape = m_view.m_nodeDetails.shape(otherNode);
+						final int srcShape;
+						final int trgShape;
 						final float[] srcExtents;
 						final float[] trgExtents;
 
@@ -1094,8 +1094,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 							trgExtents = m_view.m_extentsBuff;
 						}
 
-						final byte srcArrow;
-						final byte trgArrow;
+						final int srcArrow;
+						final int trgArrow;
 						final float srcArrowSize;
 						final float trgArrowSize;
 

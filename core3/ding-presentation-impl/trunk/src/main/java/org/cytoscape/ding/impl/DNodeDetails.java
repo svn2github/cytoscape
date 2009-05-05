@@ -55,7 +55,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	final IntObjHash m_colorsLowDetail = new IntObjHash();
 	final Object m_deletedEntry = new Object();
 
-	// The values are Byte objects; the bytes are shapes defined in
+	// The values are Integer objects; the ints are shapes defined in
 	// org.cytoscape.graph.render.immed.GraphGraphics.
 	final HashMap<Integer,Object> m_shapes = new HashMap<Integer,Object>();
 	final HashMap<Integer,Object> m_fillPaints = new HashMap<Integer,Object>();
@@ -139,24 +139,24 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public byte shape(int node) {
+	public int shape(int node) {
 		final Object o = m_shapes.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.shape(node);
 
-		return ((Byte) o).byteValue();
+		return ((Integer) o).intValue();
 	}
 
 	/*
 	 * The shape argument must be pre-checked for correctness.
 	 * A negative shape value has the special meaning to remove overridden shape.
 	 */
-	void overrideShape(int node, byte shape) {
+	void overrideShape(int node, int shape) {
 		if ((shape < 0) || (shape == super.shape(node)))
 			m_shapes.remove(Integer.valueOf(node));
 		else
-			m_shapes.put(Integer.valueOf(node), new Byte(shape));
+			m_shapes.put(Integer.valueOf(node), new Integer(shape));
 	}
 
 	/**
@@ -353,46 +353,6 @@ class DNodeDetails extends IntermediateNodeDetails {
 			m_labelPaints.put(Long.valueOf(key), paint);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	@Deprecated public int graphicCount(int node) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(node);
-
-		return nv.getCustomGraphicCount();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param inx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	@Deprecated public Shape graphicShape(int node, int inx) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(node);
-
-		return nv.getCustomGraphicShape(inx);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param inx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	@Deprecated public Paint graphicPaint(int node, int inx) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(node);
-
-		return nv.getCustomGraphicPaint(inx);
-	}
     // overrides NodeDetails.customGraphicCount():
     public int customGraphicCount(final int node) {
 	final DNodeView dnv = (DNodeView) m_view.getNodeView(node);	
@@ -419,7 +379,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public byte labelTextAnchor(final int node, final int labelInx) {
+	public int labelTextAnchor(final int node, final int labelInx) {
 		final Object o = m_labelTextAnchors.get(Integer.valueOf(node));
 
 		if (o == null)
@@ -443,7 +403,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public byte labelNodeAnchor(final int node, final int labelInx) {
+	public int labelNodeAnchor(final int node, final int labelInx) {
 		final Object o = m_labelNodeAnchors.get(Integer.valueOf(node));
 
 		if (o == null)
@@ -515,7 +475,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public byte labelJustify(final int node, final int labelInx) {
+	public int labelJustify(final int node, final int labelInx) {
 		final Object o = m_labelJustifys.get(Integer.valueOf(node));
 
 		if (o == null)
@@ -531,7 +491,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 			m_labelJustifys.put(Integer.valueOf(node), Integer.valueOf(justify));
 	}
 
-	static byte convertG2ND(int giny) {
+	static int convertG2ND(int giny) {
 		switch (giny) {
 			case (Label.NORTH):
 				return NodeDetails.ANCHOR_NORTH;
@@ -574,7 +534,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 		}
 	}
 
-	static int convertND2G(byte nd) {
+	static int convertND2G(int nd) {
 		switch (nd) {
 			case (NodeDetails.ANCHOR_NORTH):
 				return Label.NORTH;

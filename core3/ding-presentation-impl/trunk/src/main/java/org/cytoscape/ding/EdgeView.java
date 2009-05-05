@@ -20,28 +20,25 @@ public interface EdgeView  extends GraphViewObject {
 
 
 
-  public static int NO_END = 0;
-  public static int WHITE_DELTA = 1;
-  public static int BLACK_DELTA = 2;
-  public static int EDGE_COLOR_DELTA = 3;
-  public static int WHITE_ARROW = 4;
-  public static int BLACK_ARROW = 5;
-  public static int EDGE_COLOR_ARROW = 6;
-  public static int WHITE_DIAMOND = 7;
-  public static int BLACK_DIAMOND = 8;
-  public static int EDGE_COLOR_DIAMOND = 9;
-  public static int WHITE_CIRCLE = 10;
-  public static int BLACK_CIRCLE = 11;
-  public static int EDGE_COLOR_CIRCLE = 12;
-  public static int WHITE_T = 13;
-  public static int BLACK_T = 14;
-  public static int EDGE_COLOR_T = 15;
+  // these are now only used to support parsing of legacy files
+  static int NO_END = 0;
+  static int WHITE_DELTA = 1;
+  static int BLACK_DELTA = 2;
+  static int EDGE_COLOR_DELTA = 3;
+  static int WHITE_ARROW = 4;
+  static int BLACK_ARROW = 5;
+  static int EDGE_COLOR_ARROW = 6;
+  static int WHITE_DIAMOND = 7;
+  static int BLACK_DIAMOND = 8;
+  static int EDGE_COLOR_DIAMOND = 9;
+  static int WHITE_CIRCLE = 10;
+  static int BLACK_CIRCLE = 11;
+  static int EDGE_COLOR_CIRCLE = 12;
+  static int WHITE_T = 13;
+  static int BLACK_T = 14;
+  static int EDGE_COLOR_T = 15;
 
 
-  //------------------------------------------------------//
-  // Get and Set Methods for all Common Viewable Elements
-  //------------------------------------------------------//
-  
   /**
    * @return the index of this edge in the GraphPerspective
    */

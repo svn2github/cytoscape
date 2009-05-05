@@ -45,6 +45,7 @@ import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
 import org.cytoscape.ding.NodeView;
+import org.cytoscape.ding.NodeShape;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.ViewChangeListener;
@@ -69,7 +70,7 @@ import java.util.List;
 public class DNodeView implements NodeView, Label, ViewChangeListener {
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
-	static final byte DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
+	static final int DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
 	static final Paint DEFAULT_BORDER_PAINT = Color.black;
 	static final String DEFAULT_LABEL_TEXT = "";
 	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
@@ -181,9 +182,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	 */
 	public int getShape() {
 		synchronized (m_view.m_lock) {
-			final byte nativeShape = m_view.m_nodeDetails.shape(m_inx);
+			final int nativeShape = m_view.m_nodeDetails.shape(m_inx);
 
-			return GinyUtil.getGinyNodeType(nativeShape);
+			return nativeShape;
 		}
 	}
 
@@ -414,8 +415,8 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			final double h = ((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1];
 
 			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
-			    && (getShape() == NodeView.ROUNDED_RECTANGLE))
-				setShape(NodeView.RECTANGLE);
+			    && (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
+				setShape(GraphGraphics.SHAPE_RECTANGLE);
 
 			m_view.m_contentChanged = true;
 
@@ -467,8 +468,8 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			final double h = ((double) yMax) - yMin;
 
 			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
-			    && (getShape() == NodeView.ROUNDED_RECTANGLE))
-				setShape(NodeView.RECTANGLE);
+			    && (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
+				setShape(GraphGraphics.SHAPE_RECTANGLE);
 
 			m_view.m_contentChanged = true;
 
@@ -768,22 +769,23 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	 *
 	 * @param shape DOCUMENT ME!
 	 */
-	public void setShape(final int shape) {
+	public void setShape(final int inshape) {
 		synchronized (m_view.m_lock) {
-			byte nativeShape = GinyUtil.getNativeNodeType(shape);
+
+			int shape = inshape;
 
 			// special case
-			if ( shape == NodeView.ROUNDED_RECTANGLE ) {
+			if ( shape == GraphGraphics.SHAPE_ROUNDED_RECTANGLE ) {
 					final double width = getWidth();
 					final double height = getHeight();
 
 					if (!(Math.max(width, height) < (1.99d * Math.min(width, height))))
-						nativeShape = GraphGraphics.SHAPE_RECTANGLE;
+						shape = GraphGraphics.SHAPE_RECTANGLE;
 					else
-						nativeShape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
+						shape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
 			}
 
-			m_view.m_nodeDetails.overrideShape(m_inx, nativeShape);
+			m_view.m_nodeDetails.overrideShape(m_inx, shape);
 			m_view.m_contentChanged = true;
 		}
 	}
@@ -908,78 +910,6 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		}
 	}
 
-	// Custom graphic stuff.
-
-	/**
-	 * Returns the number of custom graphic objects currently set on this
-	 * node view.
-	 * @deprecated use {@link #getNumCustomGraphics() getNumCustomGraphics()}.
-	 * Note that the new API methods work independent of the old API methods.
-	 * See {@link #addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}
-	 * for details.
-	 */
-	@Deprecated public int getCustomGraphicCount() {
-		synchronized (m_view.m_lock) {
-			if (m_graphicShapes == null)
-				return 0;
-
-			return m_graphicShapes.size();
-		}
-	}
-
-	/**
-	 * Returns the shape of the custom graphic object at specified index on
-	 * this node view.  The index parameter must be in the range
-	 * [0, getCustomGraphicCount()-1].
-	 * @deprecated use {@link org.cytoscape.graph.render.stateful.CustomGraphic#getShape() org.cytoscape.graph.render.stateful.CustomGraphic.getShape()}.
-	 * Note that the new API methods work independent of the old API methods.
-	 * See {@link #addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}
-	 * for details.
-	 */
-	@Deprecated public Shape getCustomGraphicShape(int index) {
-		synchronized (m_view.m_lock) {
-			return (Shape) m_graphicShapes.get(index);
-		}
-	}
-
-	/**
-	 * Returns the paint on the custom graphic object at specified index on
-	 * this node view.  The index parameter must be in the range
-	 * [0, getCustomGraphicCount()-1].
-	 * @deprecated use {@link org.cytoscape.graph.render.stateful.CustomGraphic#getPaint() org.cytoscape.graph.render.stateful.CustomGraphic.getPaint()}.
-	 * Note that the new API methods work independent of the old API methods.
-	 * See {@link #addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}
-	 * for details.
-	 */
-	@Deprecated public Paint getCustomGraphicPaint(int index) {
-		synchronized (m_view.m_lock) {
-			return (Paint) m_graphicPaints.get(index);
-		}
-	}
-
-	/**
-	 * Removes the custom graphic object at specified index.  The index parameter
-	 * must be in the range [0, getCustomGraphicCount()-1].  Once the object
-	 * at specified index is removed, all object remaining and at a higher index
-	 * will be shifted such that their index is decreased by one.
-	 * @deprecated use {@link #removeCustomGraphic(CustomGraphic) removeCustomGraphic(CustomGraphic)}.
-	 * Note that the new API methods work independent of the old API methods.
-	 * See {@link #addCustomGraphic(Shape,Paint,int) addCustomGraphic(Shape,Paint,int)}
-	 * for details.
-	 */
-	@Deprecated public void removeCustomGraphic(int index) {
-		synchronized (m_view.m_lock) {
-			m_graphicShapes.remove(index);
-			m_graphicPaints.remove(index);
-			if (m_graphicShapes.size() == 0) {
-				m_graphicShapes = null;
-				m_graphicPaints = null;
-			}
-
-			m_view.m_contentChanged = true;
-		}
-	}
-
 
 
     /**
@@ -992,14 +922,14 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
      * except the the new CustomGraphic created is returned.
      * @param shape
      * @param paint
-     * @param anchor The byte value from NodeDetails, that defines where the graphic anchor point lies on this DNodeView's extents rectangle. A common anchor is NodeDetails.ANCHOR_CENTER.
+     * @param anchor The int value from NodeDetails, that defines where the graphic anchor point lies on this DNodeView's extents rectangle. A common anchor is NodeDetails.ANCHOR_CENTER.
      * @since Cytoscape 2.6
      * @throws IllegalArgumentException if shape or paint are null or anchor is not in the range 0 <= anchor <= NodeDetails.MAX_ANCHOR_VAL.
      * @return The CustomGraphic added to this DNodeView.
      * @see #addCustomGraphic(CustomGraphic)
      * @see org.cytoscape.graph.render.stateful.CustomGraphic
      */
-      public CustomGraphic addCustomGraphic(Shape shape, Paint paint, byte anchor) {
+      public CustomGraphic addCustomGraphic(Shape shape, Paint paint, int anchor) {
 	  CustomGraphic cg = new CustomGraphic (shape, paint, anchor);
 	  addCustomGraphic (cg);
 	  return cg;
@@ -1201,70 +1131,6 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 
 	/**
-	 * Adds a custom graphic object at specified index.  The index of an object
-	 * is only important in that objects with lower index are rendered before
-	 * objects with higher index; if objects overlap, this order may be important
-	 * to consider.  A custom graphic object consists of the specified shape
-	 * that is filled with the specified paint; the shape is placed relative to
-	 * this node's location.
-	 * @deprecated use {@link #addCustomGraphic(Shape,Paint,byte) addCustomGraphic(Shape,Paint,byte)}.
-	 * <P>The entire index-based custom graphic API has been deprecated.
-	 * This includes all the methods that refer to custom graphics using indices:
-	 * <PRE>
-	 *   public int addCustomGraphic(Shape s, Paint p, int index);
-	 *   public void removeCustomGraphic(int index);
-	 *   public Paint getCustomGraphicPaint(int index);
-	 *   public Shape getCustomGraphicShape(int index);
-	 *   public int getCustomGraphicCount();
-	 * </PRE>
-	 * <B>To keep things completetly backwards compatible
-	 * and to avoid introducing bugs, the new API methods are
-	 * completely independent from the the old API methods.  Thus,
-	 * a custom graphic added using the new API will not be
-	 * accessible from the old API and visa versa.</B>
-	 * <P>The reason for the deprecation is:
-	 * <OL>
-	 * <LI>Complexity in managing the indices.
-	 * <P>In order for multiple plugins to use the old API, each
-	 * must monitor deletions to custom graphics and update their
-	 * saved indices, since the indices will shift down as graphics
-	 * are deleted. This management isn't even possible with the old
-	 * API because there's no event mechanism to inform plugins when
-	 * the indices change. Also, each plugin must keep a list of all
-	 * indices for all graphics added, since the indices may not be
-	 * contiguous.
-	 * <LI>There is no way to ensure that an index you want to use
-	 * will not be used by another plugin by the time you attempt
-	 * to assign it (thread safety).
-	 * <P>Using indices forces the need for a locking mechanism to
-	 * ensure you are guaranteed a unique and correct index
-	 * independent of any other plugins.
-	 * </OL>
-	 * For more information, see <A HREF="http://cbio.mskcc.org/cytoscape/bugs/view.php?id=1500">Mantis Bug 1500</A>.
-	 */
-
-    @Deprecated public void addCustomGraphic(Shape s, Paint p, int index) {
-		if ((s == null) || (p == null))
-			throw new NullPointerException("shape and paint must be non-null");
-
-		synchronized (m_view.m_lock) {
-			if (index < 0)
-				index = 0;
-			else if (index > getCustomGraphicCount())
-				index = getCustomGraphicCount();
-
-			if (m_graphicShapes == null) {
-				m_graphicShapes = new ArrayList<Shape>();
-				m_graphicPaints = new ArrayList<Paint>();
-			}
-
-			m_graphicShapes.add(index, s);
-			m_graphicPaints.add(index, p);
-			m_view.m_contentChanged = true;
-		}
-	}
-
-	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param position DOCUMENT ME!
@@ -1384,7 +1250,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			return;
 
 		if ( vp == DVisualLexicon.NODE_SHAPE ) {
-			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			setShape(((NodeShape)o).getGinyShape());
 		}
 		else if ( vp == DVisualLexicon.NODE_SELECTED_PAINT ) {
 			setSelectedPaint((Paint)o); 
@@ -1405,7 +1271,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			setBorder((Stroke)o);
 		}
 		else if ( vp == DVisualLexicon.NODE_TRANSPARENCY ) {
-			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			setTransparency(((Integer)o).floatValue());
 		}
 		else if ( vp == DVisualLexicon.NODE_WIDTH ) {
 			setWidth(((Double)o).doubleValue());
@@ -1432,22 +1298,22 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			setFont((Font)o);
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_FONT_SIZE ) {
-			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			setFont( getFont().deriveFont(((Integer)o).floatValue()) );
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_TEXT_ANCHOR ) {
-			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			setTextAnchor(((Anchor)o).getGinyAnchor());	
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_NODE_ANCHOR ) {
-			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			setNodeLabelAnchor(((Anchor)o).getGinyAnchor());	
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_X_OFFSET ) {
-			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			setLabelOffsetX(((Double)o).doubleValue());
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_Y_OFFSET ) {
-			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			setLabelOffsetY(((Double)o).doubleValue());
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_JUSTIFY ) {
-			//System.out.println(vp.getDisplayName() + " not implemented yet " + o);	
+			setJustify(((Justify)o).getGinyJustify());	
 		}
 	}
 }

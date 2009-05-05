@@ -35,9 +35,9 @@
 package org.cytoscape.ding;
 
 import org.cytoscape.ding.EdgeView;
-import org.cytoscape.ding.ShapeFactory;
 import org.cytoscape.ding.icon.ArrowIcon;
 import org.cytoscape.ding.icon.VisualPropertyIcon;
+import org.cytoscape.graph.render.immed.GraphGraphics;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,22 +53,27 @@ import java.util.Map;
  *
  */
 public enum ArrowShape {
-	NONE("No Arrow", "NONE", EdgeView.NO_END, 
+	NONE("No Arrow", "NONE", GraphGraphics.ARROW_NONE, 
 	     new int[]{EdgeView.NO_END},
 		 new String[]{"NO_END"}),
-	DIAMOND("Diamond", "COLOR_DIAMOND", EdgeView.EDGE_COLOR_DIAMOND,
+
+	DIAMOND("Diamond", "COLOR_DIAMOND", GraphGraphics.ARROW_DIAMOND,
 	     new int[]{EdgeView.EDGE_COLOR_DIAMOND, EdgeView.WHITE_DIAMOND,EdgeView.BLACK_DIAMOND},
 	     new String[]{"EDGE_COLOR_DIAMOND", "WHITE_DIAMOND","BLACK_DIAMOND"}),
-	DELTA("Delta", "COLOR_DELTA", EdgeView.EDGE_COLOR_DELTA,
+
+	DELTA("Delta", "COLOR_DELTA", GraphGraphics.ARROW_DELTA,
 	     new int[]{EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA,EdgeView.BLACK_DELTA},
 	     new String[]{"EDGE_COLOR_DELTA", "WHITE_DELTA","BLACK_DELTA"}),
-	ARROW("Arrow", "COLOR_ARROW", EdgeView.EDGE_COLOR_DELTA,
+
+	ARROW("Arrow", "COLOR_ARROW", GraphGraphics.ARROW_DELTA,
 	     new int[]{EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW,EdgeView.BLACK_ARROW},
 	     new String[]{"EDGE_COLOR_ARROW", "WHITE_ARROW","BLACK_ARROW"}),
-	T("T", "COLOR_T", EdgeView.EDGE_COLOR_T,
+
+	T("T", "COLOR_T", GraphGraphics.ARROW_TEE,
 	     new int[]{EdgeView.EDGE_COLOR_T, EdgeView.WHITE_T,EdgeView.BLACK_T},
 	     new String[]{"EDGE_COLOR_T", "WHITE_T","BLACK_T"}),
-	CIRCLE("Circle", "COLOR_CIRCLE", EdgeView.EDGE_COLOR_CIRCLE,
+
+	CIRCLE("Circle", "COLOR_CIRCLE", GraphGraphics.ARROW_DISC,
 	     new int[]{EdgeView.EDGE_COLOR_CIRCLE, EdgeView.WHITE_CIRCLE,EdgeView.BLACK_CIRCLE},
 	     new String[]{"EDGE_COLOR_CIRCLE", "WHITE_CIRCLE","BLACK_CIRCLE"}),
 
@@ -79,7 +84,7 @@ public enum ArrowShape {
 	;
 
 
-	private static Map<Integer,Shape> arrowShapes = ShapeFactory.getArrowShapes();
+	private static Map<Integer,Shape> arrowShapes = GraphGraphics.getArrowShapes();
 
 	private String shapeName;
 	private String ginyShapeName;

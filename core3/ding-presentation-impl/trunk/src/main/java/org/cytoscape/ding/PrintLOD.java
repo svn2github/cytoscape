@@ -52,7 +52,7 @@ public class PrintLOD extends GraphLOD {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public byte renderEdges(int visibleNodeCount, int totalNodeCount, int totalEdgeCount) {
+	public int renderEdges(int visibleNodeCount, int totalNodeCount, int totalEdgeCount) {
 		return 0;
 	}
 

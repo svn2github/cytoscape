@@ -35,9 +35,21 @@
  */
 package org.cytoscape.ding.impl;
 
+import org.cytoscape.graph.render.stateful.NodeDetails;
+
 public enum Justify {
-	RIGHT,
-	LEFT,
-	CENTER,
+	RIGHT(NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT),
+	LEFT(NodeDetails.LABEL_WRAP_JUSTIFY_LEFT),
+	CENTER(NodeDetails.LABEL_WRAP_JUSTIFY_CENTER),
 	;
+
+	private int justify;
+
+	private Justify(int justify) {
+		this.justify = justify;
+	}
+
+	public int getGinyJustify() {
+		return justify;
+	}
 }
