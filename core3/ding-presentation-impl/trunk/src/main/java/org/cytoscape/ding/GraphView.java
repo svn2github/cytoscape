@@ -310,29 +310,6 @@ public static int NODE_X_POSITION = 0;
   public boolean showGraphObjects(List<? extends GraphViewObject> objects);
   
 
-  /**
-   * Context Menu Support
-   */  
-  public Object[] getContextMethods(
-                                    String class_name,
-                                    boolean plus_superclass);
-  
-  /**
-   * Context Menu Support
-   */  
-  public Object[] getContextMethods(
-                                    String class_name,
-                                    Object[] methods);
-  
-  /**
-   * Context Menu Support
-   */  
-  public boolean addContextMethod(
-                                  String class_name,
-                                  String method_class_name,
-                                  String method_name,
-                                  Object[] args,
-                                  ClassLoader loader );
 
    /**
    * Set All Data For a NOde
@@ -537,33 +514,6 @@ public static int NODE_X_POSITION = 0;
 	 */
 //	public VisualStyle getVisualStyle();
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void addNodeContextMenuListener(NodeContextMenuListener l);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void removeNodeContextMenuListener(NodeContextMenuListener l);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void addEdgeContextMenuListener(EdgeContextMenuListener l);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void removeEdgeContextMenuListener(EdgeContextMenuListener l);
 
 	public void setPrintingTextAsShape(boolean textAsShape);
 

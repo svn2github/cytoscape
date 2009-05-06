@@ -19,9 +19,13 @@ import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedListener;
+import org.cytoscape.view.model.NodeViewTaskFactory;
+import org.cytoscape.view.model.EdgeViewTaskFactory;
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.work.UndoSupport;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TunableInterceptor;
 
 public class PresentationFactoryImpl implements PresentationFactory, NetworkViewChangedListener {
 
@@ -33,18 +37,29 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	private VisualLexicon dingLexicon;
 	private Map<CyNetworkView, GraphView> viewMap;
 
+	private Map<NodeViewTaskFactory,Map> nodeViewTFs;
+	private Map<EdgeViewTaskFactory,Map> edgeViewTFs;
+
+	private TunableInterceptor ti;
+	private TaskManager tm;
+
 	public PresentationFactoryImpl(CyDataTableFactory dataTableFactory, 
 	                            CyRootNetworkFactory rootNetworkFactory,
 								UndoSupport undo, SpacialIndex2DFactory spacialFactory,
-								RootVisualLexicon vpc, VisualLexicon dingLexicon) {
+								RootVisualLexicon vpc, VisualLexicon dingLexicon, 
+								TunableInterceptor ti, TaskManager tm) {
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
 		this.undo = undo;
 		this.rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
+		this.ti = ti;
+		this.tm = tm;
 
 		viewMap = new HashMap<CyNetworkView, GraphView>();
+		nodeViewTFs = new HashMap<NodeViewTaskFactory,Map>();
+		edgeViewTFs = new HashMap<EdgeViewTaskFactory,Map>();
 	}
 
 	public void addPresentation(Object frame, CyNetworkView view) {
@@ -57,7 +72,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 			JInternalFrame inFrame = (JInternalFrame)frame;
 			JDesktopPane desktopPane = inFrame.getDesktopPane();
 
-			DGraphView dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,rootLexicon, dingLexicon);
+			DGraphView dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,ti,tm);
 			viewMap.put(view, dgv);
 
 			// TODO - not sure this layered pane bit is optimal
@@ -96,4 +111,37 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	public GraphView getGraphView(CyNetworkView cnv) {
 		return viewMap.get(cnv);
 	}
+
+	public void addNodeViewTaskFactory(NodeViewTaskFactory nvtf, Map props) {
+		System.out.println("addNodeViewTaskFactory");
+		if ( nvtf == null )
+			return;
+
+		nodeViewTFs.put(nvtf,props);
+	}
+
+	public void removeNodeViewTaskFactory(NodeViewTaskFactory nvtf, Map props) {
+		System.out.println("removeNodeViewTaskFactory");
+		if ( nvtf == null )
+			return;
+
+		nodeViewTFs.remove(nvtf);
+	}
+
+	public void addEdgeViewTaskFactory(EdgeViewTaskFactory evtf, Map props) {
+		System.out.println("addEdgeViewTaskFactory");
+		if ( evtf == null )
+			return;
+
+		edgeViewTFs.put(evtf,props);
+	}
+
+	public void removeEdgeViewTaskFactory(EdgeViewTaskFactory evtf, Map props) {
+		System.out.println("removeEdgeViewTaskFactory");
+		if ( evtf == null )
+			return;
+
+		edgeViewTFs.remove(evtf);
+	}
+
 }

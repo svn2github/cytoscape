@@ -47,13 +47,19 @@ import org.cytoscape.util.intr.IntStack;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.ding.EdgeContextMenuListener;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphViewChangeListener;
-import org.cytoscape.ding.NodeContextMenuListener;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.ViewChangeEdit;
 import org.cytoscape.work.UndoSupport;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.NodeViewTaskFactory;
+import org.cytoscape.view.model.EdgeViewTaskFactory;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TunableInterceptor;
 import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
@@ -63,6 +69,7 @@ import java.awt.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -148,20 +155,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	private Vector<JComponent> transferComponents = new Vector<JComponent>();
 
-	//       AJK: 04/02/06 END
-	// AJK: 04/27/06 for context menus
-
-	/**
-	 * DOCUMENT ME!
-	 */
-	public Vector<NodeContextMenuListener> nodeContextMenuListeners = new Vector<NodeContextMenuListener>();
 
 	private UndoSupport m_undo;
-
-	/**
-	 * DOCUMENT ME!
-	 */
-	public Vector<EdgeContextMenuListener> edgeContextMenuListeners = new Vector<EdgeContextMenuListener>();
 
 	InnerCanvas(Object lock, DGraphView view, UndoSupport undo) {
 		super();
@@ -596,7 +591,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
 
-			// AJK 04/27/08: for node context menus
 			processNodeContextMenuEvent(e);
 			processEdgeContextMenuEvent(e);
 		}
@@ -1289,85 +1283,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 
-	// AJK: 04/27/06 BEGIN
-	// for node context menus
-
-	/**
-	 * adds a listener to the store of NodeContextMenuListeners
-	 * @param l the NodeContextMenuListener
-	 *
-	 */
-	public void addNodeContextMenuListener(NodeContextMenuListener l) {
-		nodeContextMenuListeners.addElement(l);
-	}
-
-	/**
-	 * removes a listener from the store of NodeContextMenuListeners
-	 * @param l the NodeContextMenuListener
-	 *
-	 */
-	public void removeNodeContextMenuListener(NodeContextMenuListener l) {
-		nodeContextMenuListeners.removeElement(l);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void addEdgeContextMenuListener(EdgeContextMenuListener l) {
-		edgeContextMenuListeners.addElement(l);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void removeEdgeContextMenuListener(EdgeContextMenuListener l) {
-		edgeContextMenuListeners.removeElement(l);
-	}
-
-	/**
-	 * handles a NodeContextMenuEvent.  For each listerner, calls its itemDropped() method
-	 * @param event the NodeContextMenuEvent
-	 *
-	 */
-	protected synchronized void processNodeContextMenuEvent(MouseEvent event) {
-		NodeView nv = m_view.getPickedNodeView(event.getPoint());
-
-		if (nv != null) {
-			String nodeLabel = nv.getNode().attrs().get("name",String.class);
-			JPopupMenu menu = new JPopupMenu(nodeLabel);
-			menu.setLabel(nodeLabel);
-
-			for ( NodeContextMenuListener l : nodeContextMenuListeners ) {
-				l.addNodeContextMenuItems(nv, menu);
-			}
-
-			// Display PopupMenu
-			menu.show(this, event.getX(), event.getY());
-		}
-	}
-
-	protected synchronized void processEdgeContextMenuEvent(MouseEvent event) {
-		EdgeView ev = m_view.getPickedEdgeView(event.getPoint());
-
-		if (ev != null) {
-			String edgeLabel = ev.getEdge().attrs().get("name",String.class);
-			JPopupMenu menu = new JPopupMenu(edgeLabel);
-			menu.setLabel(edgeLabel);
-
-			for ( EdgeContextMenuListener l : edgeContextMenuListeners ) {	
-				l.addEdgeContextMenuItems(ev, menu);
-			}
-
-			// Display PopupMenu
-			menu.show(this, event.getX(), event.getY());
-		}
-	}
-
-	// AJK: 04/27/06 END
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -1377,7 +1292,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return m_lastRenderDetail;
 	}
 
-	// AJK: 01/14/2007 BEGIN
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -1442,5 +1356,64 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	
 	public boolean isNodeMovementDisabled(){
 		return !(this.NodeMovement);
+	}
+
+	private synchronized void processNodeContextMenuEvent(MouseEvent event) {
+		NodeView nview = m_view.getPickedNodeView(event.getPoint());
+
+		if (nview != null && m_view.nodeViewTFs.size() > 0) {
+			View<CyNode> nv = nview.getNodeView();
+			String nodeLabel = nv.getSource().attrs().get("name",String.class);
+			JPopupMenu menu = new JPopupMenu(nodeLabel);
+			menu.setLabel(nodeLabel);
+
+			for ( NodeViewTaskFactory nvtf : m_view.nodeViewTFs.keySet() ) {
+				String pref = (String)(m_view.nodeViewTFs.get( nvtf ).get("preferredMenu"));
+				nvtf.setNodeView(nv,m_view.cyNetworkView);
+				menu.add( createMenuItem( nvtf, pref ) );
+			}
+
+			menu.show(this, event.getX(), event.getY());
+		}
+	}
+
+	private synchronized void processEdgeContextMenuEvent(MouseEvent event) {
+		EdgeView edgeView = m_view.getPickedEdgeView(event.getPoint());
+
+		if (edgeView != null && m_view.edgeViewTFs.size() > 0) {
+			View<CyEdge> ev = edgeView.getEdgeView();	
+			String edgeLabel = ev.getSource().attrs().get("interaction",String.class);
+			JPopupMenu menu = new JPopupMenu(edgeLabel);
+			menu.setLabel(edgeLabel);
+
+			for ( EdgeViewTaskFactory evtf : m_view.edgeViewTFs.keySet() ) {
+				String pref = (String)(m_view.edgeViewTFs.get( evtf ).get("preferredMenu"));
+				evtf.setEdgeView(ev,m_view.cyNetworkView);
+				menu.add( createMenuItem( evtf, pref ) );
+			}
+
+			menu.show(this, event.getX(), event.getY());
+		}
+	}
+
+	private JMenuItem createMenuItem( TaskFactory tf , String pref ) { 
+		// in the future parse the menu into submenus, etc.
+		return new JMenuItem(new PopupAction( tf, pref ));
+	}
+
+	private class PopupAction extends AbstractAction {
+		TaskFactory tf;
+		PopupAction(TaskFactory tf, String preferredMenu) {
+			super( preferredMenu );
+			this.tf = tf;
+		}
+
+		public void actionPerformed(ActionEvent ae) {
+			Task task = tf.getTask();
+			m_view.interceptor.loadTunables(task);	
+			if ( !m_view.interceptor.createUI(task) )
+            	return;
+			m_view.manager.execute(task);
+		}
 	}
 }

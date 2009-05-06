@@ -47,6 +47,7 @@ import org.cytoscape.ding.Label;
 import org.cytoscape.ding.ArrowShape;
 
 import org.cytoscape.view.presentation.twod.TwoDVisualLexicon;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.ViewChangeListener;
 
@@ -79,12 +80,15 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	int m_lineType;
 	String m_toolTipText = null;
 
+	private final View<CyEdge> m_edgeView;
+
 	/*
 	 * @param inx the RootGraph index of edge (a negative number).
 	 */
-	DEdgeView(DGraphView view, int inx) {
+	DEdgeView(DGraphView view, int inx, View<CyEdge> ev) {
 		m_view = view;
 		m_inx = inx;
+		m_edgeView = ev;
 		m_selected = false;
 		m_unselectedPaint = m_view.m_edgeDetails.segmentPaint(m_inx);
 		m_selectedPaint = Color.red;
@@ -124,6 +128,11 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	public CyEdge getEdge() {
 		return m_view.getGraphPerspective().getEdge(m_inx);
 	}
+
+	public View<CyEdge> getEdgeView() {
+		return m_edgeView; 
+	}
+
 
 	/**
 	 * DOCUMENT ME!

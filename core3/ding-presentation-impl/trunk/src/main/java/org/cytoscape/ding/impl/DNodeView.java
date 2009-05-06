@@ -47,6 +47,7 @@ import org.cytoscape.ding.Label;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.NodeShape;
 
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.presentation.twod.*;
@@ -109,13 +110,16 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
     private final Object[] CG_LOCK = new Object[0];
     private final static HashSet<CustomGraphic> EMPTY_CUSTOM_GRAPHICS = new LinkedHashSet<CustomGraphic>(0);
 
+	private final View<CyNode> m_nodeView; 
+
 
 	/*
 	 * @param inx the RootGraph index of node (a negative number).
 	 */
-	DNodeView(DGraphView view, int inx) {
+	DNodeView(DGraphView view, int inx, View<CyNode> nv) {
 		m_view = view;
 		m_inx = inx;
+		m_nodeView = nv;
 		m_selected = false;
 		m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
 		m_selectedPaint = Color.yellow;
@@ -142,6 +146,10 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		synchronized (m_view.m_lock) {
 			return m_view.m_perspective.getNode(m_inx);
 		}
+	}
+
+	public View<CyNode> getNodeView() {
+		return m_nodeView;	
 	}
 
 	/**

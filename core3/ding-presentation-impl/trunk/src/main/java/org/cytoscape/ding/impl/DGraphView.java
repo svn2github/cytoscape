@@ -60,17 +60,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
-import org.cytoscape.ding.EdgeContextMenuListener;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.GraphViewObject;
-import org.cytoscape.ding.NodeContextMenuListener;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.PrintLOD;
 import org.cytoscape.graph.render.immed.GraphGraphics;
@@ -96,9 +95,13 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.EdgeViewTaskFactory;
+import org.cytoscape.view.model.NodeViewTaskFactory;
 import org.cytoscape.view.presentation.NetworkRenderer;
 import org.cytoscape.view.presentation.twod.TwoDVisualLexicon;
 import org.cytoscape.work.UndoSupport;
+import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.TaskManager;
 
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
@@ -337,6 +340,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	CyNetworkView cyNetworkView;
 	
 	RootVisualLexicon rootLexicon;
+
+	Map<NodeViewTaskFactory,Map> nodeViewTFs; 
+	Map<EdgeViewTaskFactory,Map> edgeViewTFs;
+
+	TunableInterceptor interceptor;
+	TaskManager manager;
 	
 	// Will be injected.
 	private VisualLexicon dingLexicon;
@@ -345,12 +354,17 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	 *
 	 * @param perspective The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc, VisualLexicon dingLexicon) {
+	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc, VisualLexicon dingLexicon, Map<NodeViewTaskFactory,Map> nodeViewTFs, Map<EdgeViewTaskFactory,Map> edgeViewTFs, TunableInterceptor interceptor, TaskManager manager ) {
 		m_perspective = view.getSource();
 		cyNetworkView = view;
 		rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
-		
+
+		this.nodeViewTFs = nodeViewTFs;
+		this.edgeViewTFs = edgeViewTFs;
+
+		this.interceptor = interceptor;
+		this.manager = manager;
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view",false);
 		nodeCAM.createColumn("hidden",Boolean.class,false);
@@ -703,7 +717,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 		//m_structPersp.restoreNode(nodeInx);
 
-		final NodeView newView = new DNodeView(this, nodeInx);
+		final View<CyNode> nv = cyNetworkView.getNodeView(node);
+		final NodeView newView = new DNodeView(this, nodeInx, nv);
 		cyNetworkView.getNodeView(node).addViewChangeListener(newView);
 
 		m_nodeViewMap.put(nodeInx, newView);
@@ -712,7 +727,6 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 		// read in visual properties from view obj
 		Collection<VisualProperty<?>> nodeVPs = rootLexicon.getVisualProperties(NODE);
-		View<CyNode> nv = cyNetworkView.getNodeView(node);
 		for ( VisualProperty<?> vp : nodeVPs ) 
 			newView.visualPropertySet(vp, nv.getVisualProperty(vp));
 		
@@ -748,7 +762,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 			m_drawPersp.addEdge(edge);
 
 			//m_structPersp.restoreEdge(edgeInx);
-			edgeView = new DEdgeView(this, edgeInx);
+			View<CyEdge> ev = cyNetworkView.getEdgeView(edge);
+			edgeView = new DEdgeView(this, edgeInx,ev);
 			cyNetworkView.getEdgeView(edge).addViewChangeListener(edgeView);
 
 			m_edgeViewMap.put(Integer.valueOf(edgeInx), edgeView);
@@ -756,7 +771,6 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 			// read in visual properties from view obj
 			Collection<VisualProperty<?>> edgeVPs = rootLexicon.getVisualProperties(EDGE);
-			View<CyEdge> ev = cyNetworkView.getEdgeView(edge);
 			for ( VisualProperty<?> vp : edgeVPs ) 
 				edgeView.visualPropertySet(vp, ev.getVisualProperty(vp));
 		
@@ -1420,52 +1434,6 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		return true;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param className DOCUMENT ME!
-	 * @param plusSuperclass DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object[] getContextMethods(String className, boolean plusSuperclass) {
-		return null;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param className
-	 *            DOCUMENT ME!
-	 * @param methods
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Object[] getContextMethods(String className, Object[] methods) {
-		return null;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param className
-	 *            DOCUMENT ME!
-	 * @param methodClassName
-	 *            DOCUMENT ME!
-	 * @param methodName
-	 *            DOCUMENT ME!
-	 * @param args
-	 *            DOCUMENT ME!
-	 * @param loader
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public boolean addContextMethod(String className, String methodClassName, String methodName,
-	                                Object[] args, ClassLoader loader) {
-		return false;
-	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -2314,44 +2282,6 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		}
 
 		return ev;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void addNodeContextMenuListener(NodeContextMenuListener l) {
-		// System.out.println("Adding NodeContextListener: " + l);
-		getCanvas().addNodeContextMenuListener(l);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void removeNodeContextMenuListener(NodeContextMenuListener l) {
-		getCanvas().removeNodeContextMenuListener(l);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void addEdgeContextMenuListener(EdgeContextMenuListener l) {
-		// System.out.println("Adding EdgeContextListener: " + l);
-		getCanvas().addEdgeContextMenuListener(l);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
-	 */
-	public void removeEdgeContextMenuListener(EdgeContextMenuListener l) {
-		getCanvas().removeEdgeContextMenuListener(l);
 	}
 
 	/**

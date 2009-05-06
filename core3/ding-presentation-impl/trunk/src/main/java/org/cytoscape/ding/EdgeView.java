@@ -4,6 +4,7 @@ import java.awt.Paint;
 import java.awt.Stroke;
 
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.view.model.View;
 
 
 public interface EdgeView  extends GraphViewObject {
@@ -53,6 +54,7 @@ public interface EdgeView  extends GraphViewObject {
    * @return the Edge to which we are a view on
    */
   public CyEdge getEdge();
+  public View<CyEdge> getEdgeView();
 
 
   /**

@@ -1,6 +1,7 @@
 package org.cytoscape.ding;
 
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.View;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -16,6 +17,7 @@ public interface NodeView  extends GraphViewObject {
    * @return The Node we are a view on
    */
   public CyNode getNode () ;
+  public View<CyNode> getNodeView () ;
 
   /**
    * @return the index of this node in the perspective to which we are in a view on.

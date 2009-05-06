@@ -25,6 +25,14 @@
 	                interface="org.cytoscape.view.model.RootVisualLexicon">
     </osgi:reference>
 
+    <osgi:reference id="tunableInterceptorServiceRef" 
+	                interface="org.cytoscape.work.TunableInterceptor">
+    </osgi:reference>
+
+    <osgi:reference id="taskManagerServiceRef" 
+	                interface="org.cytoscape.work.TaskManager">
+    </osgi:reference>
+
 
 	<!-- Individual Service -->
 	<osgi:service id="presentationFactoryService" ref="presentationFactory">
@@ -37,5 +45,17 @@
 	<osgi:service id="dVisualLexiconService"
 		ref="dVisualLexicon" interface="org.cytoscape.view.model.VisualLexicon">
 	</osgi:service>
+
+    <osgi:set id="nodeViewTaskFactorySet" interface="org.cytoscape.view.model.NodeViewTaskFactory"
+	        cardinality="0..N">
+        <osgi:listener bind-method="addNodeViewTaskFactory"
+            unbind-method="removeNodeViewTaskFactory" ref="presentationFactory" />
+    </osgi:set>
+
+    <osgi:set id="edgeViewTaskFactorySet" interface="org.cytoscape.view.model.EdgeViewTaskFactory"
+	        cardinality="0..N">
+        <osgi:listener bind-method="addEdgeViewTaskFactory"
+            unbind-method="removeEdgeViewTaskFactory" ref="presentationFactory" />
+    </osgi:set>
 
 </beans>

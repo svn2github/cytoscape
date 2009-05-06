@@ -25,6 +25,8 @@
 		<constructor-arg ref="spacialIndex2DFactoryServiceRef" />
 		<constructor-arg ref="rootVisualLexiconServiceRef" />
 		<constructor-arg ref="dVisualLexicon" />
+		<constructor-arg ref="tunableInterceptorServiceRef" />
+		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
 
 </beans>
