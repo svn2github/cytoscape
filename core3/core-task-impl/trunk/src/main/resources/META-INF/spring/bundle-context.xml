@@ -117,6 +117,10 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 	
+	<bean id="selectFirstNeighborsNodeViewTaskFactory" 
+	      class="org.cytoscape.task.internal.select.SelectFirstNeighborsNodeViewTaskFactory">
+	</bean>
+
 
 	<!-- show/hide -->
 	<bean id="hideSelectedTaskFactory" 

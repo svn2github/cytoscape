@@ -200,6 +200,13 @@
 	</osgi:service>
 
 
+	<osgi:service id="selectFirstNeighborsNodeViewTaskFactoryService" ref="selectFirstNeighborsNodeViewTaskFactory"
+		interface="org.cytoscape.view.model.NodeViewTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Select First Neighbors" />
+			<entry key="preferredMenu" value="Select First Neighbors" />
+		</osgi:service-properties>
+	</osgi:service>
 
 	<!-- show/hide -->
 	<osgi:service id="hideSelectedTaskFactoryService" ref="hideSelectedTaskFactory"
