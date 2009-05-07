@@ -1,5 +1,6 @@
 package org.example;
 
+
 import org.example.tunable.*;
 import org.example.tunable.internal.props.*;
 import org.example.tunable.internal.cl.*;
@@ -13,9 +14,9 @@ public class AppCL
 
 		// command comes from someplace
 		Command com = new PrintSomething();
-//		Command com = new TunableSampler();
-
-		// create the interceptor for this context
+		
+		
+  		// create the interceptor for this context
 		// in this case it's a command line, so it takes the
 		// args from main()
 		TunableInterceptor cl = new CLTunableInterceptor(args);
@@ -50,8 +51,7 @@ public class AppCL
 
 		// load the tunables from the object
 		lp.loadTunables(com);
-		
-		
+	
 		
 //		// if the object implements the interface,
 //		// give the object access to the handlers
@@ -92,7 +92,6 @@ public class AppCL
 
 		System.out.println("result of storing properties interceptor:");
 		System.out.println(store.toString());
-		System.out.println();
-
-    }
+		System.out.println();		
+    }	
 }

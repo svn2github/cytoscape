@@ -42,10 +42,20 @@ public class IntCLHandler extends AbstractCLHandler {
 		String fc;
 		if(n.substring(ind).length()<3)fc = n.substring(ind); 
 		else fc = n.substring(ind,ind+3);
-		//If arguments
-		return new Option(fc, n, true, t.description());
-		//If not
-//		return new Option(n.substring(ind,ind+1), n, false, t.description());		
+		Integer val = null;		
+		if( f!=null){
+			try{
+				val = (Integer)f.get(o);
+			}catch(Exception e){e.printStackTrace();}
+			return new Option(fc, n, true,"-- "+ t.description()+" --\n  current value : "+val);
+		}
 		
+		else if(m!=null){
+			Type[] types = m.getParameterTypes();
+			java.util.List list = new java.util.ArrayList();
+			for(int i=0;i<types.length;i++) list.add(i,types[i]);
+			return new Option(fc, n, true,"-- "+ t.description()+" --\n Method's parameter : "+list);
+		}
+		else return null;
 	}
 }

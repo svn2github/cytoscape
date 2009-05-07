@@ -2,6 +2,7 @@
 package org.example.tunable.internal.cl;
 
 import java.lang.reflect.*;
+
 import org.apache.commons.cli.*;
 import org.example.tunable.*;
 
@@ -44,6 +45,20 @@ public class StringCLHandler extends AbstractCLHandler {
 		String fc;
 		if(n.substring(ind).length()<3)fc = n.substring(ind); 
 		else fc = n.substring(ind,ind+3);
-		return new Option(fc, n, true, t.description());
+		String str = null;
+		
+		if( f!=null){
+			try{
+				str = (String)f.get(o);
+			}catch(Exception e){e.printStackTrace();}
+			return new Option(fc, n, true,"-- " + t.description()+" --\n current value : "+ str);
+		}
+		else if(m!=null){
+			Type[] types = m.getParameterTypes();
+			java.util.List list = new java.util.ArrayList();
+			for(int i=0;i<types.length;i++) list.add(i,types[i]);
+			return new Option(fc, n, true,"-- "+ t.description()+" --\n  Method's parameters : "+list);
+		}
+		else return null;
 	}
 }

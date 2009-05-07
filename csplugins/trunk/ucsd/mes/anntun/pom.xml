@@ -48,7 +48,8 @@
 					<archive>
 						<manifest>
 <!--							
-							<mainClass>org.example.AppGUI</mainClass> 
+							<mainClass>org.example.AppGUI</mainClass>
+							<mainClass>org.example.AppCL2</mainClass> 
 -->
 							<mainClass>org.example.AppCL</mainClass>
 						</manifest>

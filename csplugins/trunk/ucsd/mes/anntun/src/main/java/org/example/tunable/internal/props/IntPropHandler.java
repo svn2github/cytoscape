@@ -16,7 +16,7 @@ public class IntPropHandler extends AbstractPropHandler {
 	public Properties getProps() {
 		Properties p = new Properties();
 		try {
-		p.put( propKey, Integer.toString(f.getInt(o)) );
+			p.put( propKey,f.get(o).toString() );
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();
 		}

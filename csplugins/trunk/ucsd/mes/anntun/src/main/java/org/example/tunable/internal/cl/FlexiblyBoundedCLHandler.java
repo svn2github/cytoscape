@@ -12,6 +12,7 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 
 	T fbo;
 	Map<String,String> argsMap;
+
 	public FlexiblyBoundedCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
@@ -22,9 +23,7 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 	
 	public FlexiblyBoundedCLHandler(Method m, Object o, Tunable t) {
 		super(m,o,t);
-		try{
-			fbo = (T) f.get(o);
-		}catch (Exception e){e.printStackTrace();}	
+
 	}
 
 	
@@ -38,6 +37,7 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 		argsMap = new HashMap<String,String>();
 		try {
 			if ( line.hasOption( fc ) ) {
+				if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
 				String lineArgs = line.getOptionValue(fc);
 				String[] argsTab = lineArgs.split(":");
 				for(int i = 0;i<argsTab.length;i++){
@@ -53,16 +53,28 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 	public Option getOption() {
 		String n = getName();
 		String lbound="\u2264";
-		if(fbo.isLowerBoundStrict())lbound="<";
 		String ubound="\u2264";
-		if(fbo.isUpperBoundStrict())ubound="<";
+		
 
 		System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
 		if(n.substring(ind).length()<3)fc = n.substring(ind); 
 		else fc = n.substring(ind,ind+3);
-		return new Option(fc, n, true, t.description() + " (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + " )");		
+		
+
+		if( f!=null){
+			if(fbo.isLowerBoundStrict())lbound="<";
+			if(fbo.isUpperBoundStrict())ubound="<";
+			return new Option(fc, n, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + " )"+"\n                                      --cmd : display available commands");		
+		}
+		else if(m!=null){
+			Type[] types = m.getParameterTypes();
+			java.util.List list = new java.util.ArrayList();
+			for(int i=0;i<types.length;i++) list.add(i,types[i]);
+			return new Option(fc, n, true,"-- "+ t.description()+" --\n  Method's parameters : "+list);
+		}
+		else return null;
 	}
 	
 	
@@ -79,5 +91,9 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 			else if( m!= null) m.invoke(o, fbo);
 			else throw new Exception("no Field or Method to set!");
 		}catch(Exception e){e.printStackTrace();}
+	}
+	
+	private void displayCmds(String fc){
+		System.out.println("\nCommands Options for -"+ fc +"\n (multiple commands can be coupled by inserting \" : \" ) example : -"+fc+" val.x:up.y:upstrict.true\n\t-"+fc+" val.x : setValue\n\t-"+fc+" up.x : setUpperBound\n\t-"+fc+" low.x : setLowerBound\n\t-"+fc+" lowstrict.Boolean : setLowerBoundStrict\n\t-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
 	}
 }

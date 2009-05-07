@@ -1,6 +1,7 @@
 package org.example.tunable.internal.cl;
 
 import java.lang.reflect.*;
+
 import org.apache.commons.cli.*;
 import org.example.tunable.*;
 
@@ -39,8 +40,23 @@ public class BooleanCLHandler extends AbstractCLHandler {
         System.out.println("creating option for:    " + n);
         int ind = n.lastIndexOf(".")+1;
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		if(n.substring(ind).length()<3)fc = n.substring(ind);
 		else fc = n.substring(ind,ind+3);
-        return new Option(fc, n, true, t.description());
+		Boolean bool=null;
+		
+		if( f!=null){
+			try{
+				bool = (Boolean)f.get(o);
+			}catch(Exception e){e.printStackTrace();}
+			return new Option(fc, n, true,"-- "+ t.description()+" --\n  current value : "+bool);
+		}
+		
+		else if(m!=null){
+			Type[] types = m.getParameterTypes();
+			java.util.List list = new java.util.ArrayList();
+			for(int i=0;i<types.length;i++) list.add(i,types[i]);
+			return new Option(fc, n, true,"-- "+ t.description()+" --\n Method's parameter : "+list);
+		}
+		else return null;
     }
 }

@@ -26,6 +26,8 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return new StringCLHandler(m,o,t);
 		else if ( type == boolean.class || type == Boolean.class )
 			return new BooleanCLHandler(m,o,t);
+		else if ( type == BoundedInteger.class )
+			return new BoundedCLHandler<BoundedInteger>(m,o,t);
 		else 
 			return null;
 

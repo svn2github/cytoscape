@@ -28,25 +28,32 @@ public class PrintSomething implements Command, HandlerController {
 	@Tunable(description="your yearly income" )
 	public FlexiblyBoundedInteger income = new FlexiblyBoundedInteger(0, 20000, 100000, false, false);
 
-	@Tunable(description="boolean test")
+	@Tunable(description="your boolean")
 	public boolean bool = false;
 	
-	@Tunable(description="listSingleSelecion")
+	@Tunable(description="listSingleSelection")
 	public ListSingleSelection<String> lss = new ListSingleSelection<String>("1","2","3","4");
 	
-	@Tunable(description="listMultipeeSelecion")
-	public ListMultipleSelection<String> lms = new ListMultipleSelection<String>("1","2","3","4");
+	@Tunable(description="listMultipleSelection")
+	public ListMultipleSelection<String> lms = new ListMultipleSelection<String>("one","two","three","four");
 	
 	
 	public int age;
+	public BoundedInteger height = new BoundedInteger(0,150,200,false,false);
+	
+	@Tunable(description="to set the Height")
+	public void sHeight(int h) {
+		height.setValue(h);
+	}
 
+	
 	@Tunable(description="your age")
-	public void setAge(int a) {
-		age = a;	
+	public void sAge(int a) {
+		age = a;
 	}
 	
 	public void execute() {
-		System.out.println("\t name : " + firstName + " " + lastName + "\n \t age : " + age + "\n \t foot size : " + footSize.getValue() + "\n \t kids = " + kids.getValue() + "\n \t income : $" + income.getValue() + "\n \t result for boolean = " + bool + "\n \t listsingleselection = "+lss.getSelectedValue() + "\n \t listmultipleselection = "+lms.getSelectedValues());
+		System.out.println("\t name : " + firstName + " " + lastName + "\n \t age : " + age + "\n \t foot size : " + footSize.getValue() + "\n \t kids = " + kids.getValue() + "\n \t income : $" + income.getValue() + "\n \t result for boolean = " + bool + "\n \t listsingleselection = "+lss.getSelectedValue() + "\n \t listmultipleselection = "+lms.getSelectedValues() + "\n \t height = "+height.getValue());
 	}
 	
 

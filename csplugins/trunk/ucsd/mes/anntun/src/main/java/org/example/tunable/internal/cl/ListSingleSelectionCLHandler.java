@@ -56,6 +56,6 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 		String fc;
 		if(n.substring(ind).length()<3)fc = n.substring(ind); 
 		else fc = n.substring(ind,ind+3);
-		return new Option(fc, n, true, t.description());		
+		return new Option(fc, n, true,"-- "+ t.description()+" --\n  current selected value : "+lss.getSelectedValue()+"\n  available values : "+lss.getPossibleValues());
 	}	
 }
