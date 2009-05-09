@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -31,42 +32,30 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-package org.cytoscape.view.vizmap.gui.internal.editor;
+*/
 
-import javax.swing.Icon;
-import javax.swing.table.DefaultTableCellRenderer;
+package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2CMappingEditor;
-import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyDoublePropertyEditor;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+
+import org.jdesktop.swingx.multislider.TrackRenderer;
 
 
 /**
- *
+ *  Track Renderer for
+ *  
+ * @param <V>  Visual Property type.
  */
-public class NumberVisualPropertyEditor extends AbstractVisualPropertyEditor<Number> {
-	/**
-	 * Creates a new DiscreteNumber object.
+public interface VizMapTrackRenderer extends TrackRenderer {
+	/*
+	 * Static variables used by the implemented classes.
 	 */
-	public NumberVisualPropertyEditor(VisualProperty<Number> vp) {
-		super(vp);
-		propertyEditor = new CyDoublePropertyEditor(null);
-		tableCellRenderer = new DefaultTableCellRenderer();
-		continuousEditor = new C2CMappingEditor(this.vp);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vp DOCUMENT ME!
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	@Override public Icon getDefaultIcon(int width, int height) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	static final Font ICON_FONT = new Font("SansSerif", Font.BOLD, 8);
+	static final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 10);
+	static final Font LARGE_FONT = new Font("SansSerif", Font.BOLD, 18);
+	static final Color BORDER_COLOR = Color.DARK_GRAY;
+	static final BasicStroke STROKE1 = new BasicStroke(1.0f);
+	static final BasicStroke STROKE2 = new BasicStroke(2.0f);
 }

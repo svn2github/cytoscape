@@ -7,9 +7,9 @@ import java.beans.PropertyEditor;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2CMappingEditor;
-import org.cytoscape.view.model.VisualProperty;
 
 
 public class ContinuousContinuous implements VisualPropertyEditor {

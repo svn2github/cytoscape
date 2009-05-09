@@ -34,6 +34,8 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.action;
 
+import static org.cytoscape.model.GraphObject.NODE;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
@@ -46,13 +48,10 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import static org.cytoscape.model.GraphObject.*;
 
 /**
  *

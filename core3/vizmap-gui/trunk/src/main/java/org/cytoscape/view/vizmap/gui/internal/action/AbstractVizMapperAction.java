@@ -92,12 +92,6 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	protected String menuLabel;
 	protected String iconId;
 	protected JMenuItem menuItem;
-
-	/**
-	 * Creates a new AbstractVizMapperAction object.
-	 */
-	public AbstractVizMapperAction() {
-	}
 	
 	/*
 	 * Setters for DI

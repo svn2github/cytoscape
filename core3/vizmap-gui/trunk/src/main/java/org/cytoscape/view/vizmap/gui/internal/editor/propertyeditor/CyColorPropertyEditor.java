@@ -34,22 +34,22 @@
 */
 package org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor;
 
-import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
-import com.l2fprod.common.beans.editor.ColorPropertyEditor;
-import com.l2fprod.common.beans.editor.FilePropertyEditor;
-import com.l2fprod.common.swing.ComponentFactory;
-import com.l2fprod.common.swing.PercentLayout;
-import com.l2fprod.common.util.ResourceManager;
-
-import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
-import org.cytoscape.view.vizmap.gui.internal.cellrenderer.CyColorCellRenderer;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.CyColorCellRenderer;
+
+import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
+import com.l2fprod.common.beans.editor.ColorPropertyEditor;
+import com.l2fprod.common.beans.editor.FilePropertyEditor;
+import com.l2fprod.common.swing.ComponentFactory;
+import com.l2fprod.common.swing.PercentLayout;
+import com.l2fprod.common.util.ResourceManager;
 
 
 /**

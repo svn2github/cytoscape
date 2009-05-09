@@ -1,21 +1,6 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
-import java.awt.Component;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.swing.ListModel;
-
 import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.events.ColumnCreatedEvent;
-import org.cytoscape.model.events.ColumnCreatedListener;
-import org.cytoscape.model.events.ColumnDeletedEvent;
-import org.cytoscape.model.events.ColumnDeletedListener;
-import org.cytoscape.model.events.RowSetEvent;
-import org.cytoscape.model.events.RowSetListener;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
 import cytoscape.CyNetworkManager;

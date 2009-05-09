@@ -42,7 +42,6 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;

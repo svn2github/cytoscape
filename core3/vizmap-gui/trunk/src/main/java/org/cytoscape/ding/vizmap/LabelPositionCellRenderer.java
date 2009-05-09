@@ -40,8 +40,6 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
-import org.cytoscape.ding.LabelPosition;
-
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
 

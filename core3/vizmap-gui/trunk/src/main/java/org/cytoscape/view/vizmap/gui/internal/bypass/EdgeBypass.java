@@ -36,6 +36,8 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
+import static org.cytoscape.model.GraphObject.EDGE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,14 +46,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
-import static org.cytoscape.model.GraphObject.*;
-
 class EdgeBypass extends VizMapBypass {
-	EdgeBypass(EditorManager ef, VisualPropertyCatalog vpCatalog) {
+	EdgeBypass(EditorManager ef, RootVisualLexicon vpCatalog) {
 		super(ef, vpCatalog);
 	}
 
@@ -64,8 +64,7 @@ class EdgeBypass extends VizMapBypass {
 		// horrible, horrible hack
 		BypassHack.setCurrentObject(e);
 
-		for (VisualProperty<?> vp : vpCatalog
-				.collectionOfVisualProperties(EDGE))
+		for (VisualProperty<?> vp : rootVisualLexicon.getVisualProperties(EDGE))
 			// FIXME: pass in network instance so that it will be limited to
 			// that
 			addMenuItem(menu, vp);
@@ -78,8 +77,7 @@ class EdgeBypass extends VizMapBypass {
 	protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for (VisualProperty<?> vp : vpCatalog
-				.collectionOfVisualProperties(EDGE))
+		for (VisualProperty<?> vp : rootVisualLexicon.getVisualProperties(EDGE))
 			l.add(vp.getDisplayName());
 
 		return l;

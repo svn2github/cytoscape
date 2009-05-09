@@ -34,14 +34,14 @@
 */
 package org.cytoscape.view.vizmap.gui.internal.util.mapgenerator;
 
-import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
+
+import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
 
 
 /**

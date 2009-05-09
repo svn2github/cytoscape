@@ -3,16 +3,11 @@ package org.cytoscape.view.vizmap.gui.internal.action;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.swing.JPanel;
 
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 
 public class CreateNewStyleAction extends AbstractVizMapperAction {
 
@@ -21,7 +16,7 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 	 */
 	private static final long serialVersionUID = 3359340478989439229L;
 
-	public CreateNewStyleAction() {
+	public CreateNewStyleAction(VizMapGUI vizMapGUI) {
 		super();
 	}
 

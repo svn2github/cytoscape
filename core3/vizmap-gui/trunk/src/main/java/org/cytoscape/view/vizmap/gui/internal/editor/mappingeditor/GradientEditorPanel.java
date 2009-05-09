@@ -47,6 +47,7 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
@@ -74,8 +75,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public GradientEditorPanel(VisualProperty<Color> type) {
-		super(type);
+	public GradientEditorPanel(VisualProperty<Color> type, VizMapGUI vizMapGUI) {
+		super(type, vizMapGUI);
 		iconPanel.setVisible(false);
 		initSlider();
 
@@ -99,7 +100,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 	 * @return DOCUMENT ME!
 	 */
 	public ImageIcon getLegend(final int width, final int height) {
-		final CyGradientTrackRenderer rend = (CyGradientTrackRenderer) slider.getTrackRenderer();
+		final CyGradientTrackRenderer rend = (CyGradientTrackRenderer) slider
+		                                                                                                 .getTrackRenderer();
 		rend.getRendererComponent(slider);
 
 		return rend.getLegend(width, height);
@@ -282,7 +284,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 
 		CyGradientTrackRenderer gRend = new CyGradientTrackRenderer((VisualProperty<Color>) type,
 		                                                            (Color) below, (Color) above,
-		                                                            mapping.getControllingAttributeName());
+		                                                            mapping.getMappingAttributeName());
 		// updateBelowAndAbove();
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(gRend);
@@ -306,14 +308,14 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 			String sourceName = ((BelowAndAbovePanel) e.getSource()).getName();
 
 			if (sourceName.equals("abovePanel"))
-				this.above = e.getNewValue();
+				this.above = (Color) e.getNewValue();
 			else
-				this.below = e.getNewValue();
+				this.below = (Color) e.getNewValue();
 
 			final CyGradientTrackRenderer gRend = new CyGradientTrackRenderer((VisualProperty<Color>) type,
-			                                                                  (Color) below,
-			                                                                  (Color) above,
-			                                                                  mapping.getControllingAttributeName());
+			                                                                  below, above,
+			                                                                  mapping
+			                                                                                                                                                                                                                                                                                                                   .getMappingAttributeName());
 			slider.setTrackRenderer(gRend);
 
 			repaint();

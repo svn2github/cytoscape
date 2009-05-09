@@ -44,11 +44,10 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
+import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.VisualPropertyCatalog;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
@@ -64,11 +63,11 @@ abstract class VizMapBypass {
 	abstract protected List<String> getBypassNames();
 
 	protected EditorManager editorFactory;
-	protected VisualPropertyCatalog vpCatalog;
+	protected RootVisualLexicon rootVisualLexicon;
 
-	VizMapBypass(EditorManager editorFactory, VisualPropertyCatalog vpCatalog) {
+	VizMapBypass(EditorManager editorFactory, RootVisualLexicon vpCatalog) {
 		this.editorFactory = editorFactory;
-		this.vpCatalog = vpCatalog;
+		this.rootVisualLexicon = vpCatalog;
 	}
 
 	protected void addResetAllMenuItem(JMenu menu) {
@@ -122,15 +121,16 @@ abstract class VizMapBypass {
 					if (obj == null)
 						return;
 
-					String val = ObjectToString.getStringValue(obj);
-					CyDataTable table = graphObj.attrs().getDataTable();
-
-					if (!table.getColumnTypeMap().containsKey(type.getDisplayName()))
-						table.createColumn(type.getDisplayName(), String.class, false);
-
-					graphObj.attrs().set(type.getDisplayName(), val);
-					// Cytoscape.redrawGraph(vmm.getNetworkView());
-					BypassHack.finished();
+					//TODO: what's the replacement?
+//					String val = ObjectToString.getStringValue(obj);
+//					CyDataTable table = graphObj.attrs().getDataTable();
+//
+//					if (!table.getColumnTypeMap().containsKey(type.getDisplayName()))
+//						table.createColumn(type.getDisplayName(), String.class, false);
+//
+//					graphObj.attrs().set(type.getDisplayName(), val);
+//					// Cytoscape.redrawGraph(vmm.getNetworkView());
+//					BypassHack.finished();
 				}
 			});
 

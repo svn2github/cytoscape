@@ -34,11 +34,6 @@
 */
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
-import org.cytoscape.view.model.VisualProperty;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -53,12 +48,15 @@ import java.awt.font.TextLayout;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+
+import org.cytoscape.view.model.VisualProperty;
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
 
 
 /**
@@ -66,7 +64,7 @@ import javax.swing.SwingUtilities;
  *
  * @author $author$
  */
-public class CyGradientTrackRenderer extends JComponent implements VizMapperTrackRenderer {
+public class CyGradientTrackRenderer extends JComponent implements VizMapTrackRenderer {
 	private final static long serialVersionUID = 1202339877115160L;
 	private int trackHeight = 40;
 	private final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 16);
@@ -294,6 +292,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 *
 	 * @return DOCUMENT ME!
 	 */
+	@SuppressWarnings("unchecked")
 	public JComponent getRendererComponent(JXMultiThumbSlider slider) {
 		this.slider = slider;
 		trackHeight = slider.getHeight() - 50;

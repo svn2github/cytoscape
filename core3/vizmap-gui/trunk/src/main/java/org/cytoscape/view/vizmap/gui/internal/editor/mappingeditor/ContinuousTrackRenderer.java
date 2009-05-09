@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
 import java.awt.BasicStroke;
@@ -68,18 +68,18 @@ import org.jdesktop.swingx.multislider.Thumb;
 
 import cytoscape.CyNetworkManager;
 
-
 /**
  * Track renderer for Continuous mapping (Number-to-Number mapping)
- *
+ * 
  * @author kono
-  */
-public class ContinuousTrackRenderer extends JComponent implements VizMapperTrackRenderer {
+ */
+public class ContinuousTrackRenderer<V extends Number>
+		extends JComponent implements VizMapTrackRenderer {
 	/*
 	 * Constants for diagram.
 	 */
 	private final static long serialVersionUID = 1202339877100033L;
-	private static float UPPER_LIMIT;
+	private static Float UPPER_LIMIT = 2000f;
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final Font ICON_FONT = new Font("SansSerif", Font.BOLD, 8);
 	private static final int THUMB_WIDTH = 12;
@@ -104,67 +104,75 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	private boolean clickFlag = false;
 	private boolean dragFlag = false;
 	private Point curPoint;
-	private JXMultiThumbSlider<? extends Number> slider;
+	private JXMultiThumbSlider<V> slider;
 	private CMouseListener listener = null;
 	private Map<Integer, Point> verticesList;
 	private int selectedIdx;
-	private Point dragOrigin;
-	private VisualProperty<? extends Number> type;
-	private ContinuousMapping cMapping;
+	// private Point dragOrigin;
+	private VisualProperty<V> vp;
+	private ContinuousMapping<V> cMapping;
 	private String title;
-	private Number below;
-	private Number above;
-	private List<Float> values = new ArrayList<Float>();
+	private V below;
+	private V above;
+	private List<V> values = new ArrayList<V>();
 	private Polygon valueArea = new Polygon();
 	private Point belowSquare;
 	private Point aboveSquare;
 	private VisualMappingManager vmm;
-	
+
 	// TODO: Should be injected
 	private CyNetworkManager manager;
+	private EditorValueRangeTracer tracer;
 
 	/**
 	 * Creates a new ContinuousTrackRenderer object.
-	 *
-	 * @param type  DOCUMENT ME!
-	 * @param below  DOCUMENT ME!
-	 * @param above  DOCUMENT ME!
+	 * 
+	 * @param type
+	 *            DOCUMENT ME!
+	 * @param below
+	 *            DOCUMENT ME!
+	 * @param above
+	 *            DOCUMENT ME!
 	 */
-	public ContinuousTrackRenderer(VisualProperty<? extends Number> type, Number below, Number above) {
+	@SuppressWarnings("unchecked")
+	public ContinuousTrackRenderer(VisualProperty<V> vp, V below, V above,
+			EditorValueRangeTracer tracer) {
 		this.below = below;
 		this.above = above;
-		this.type = type;
+		this.vp = vp;
+		this.tracer = tracer;
 
 		final CyNetworkView view = manager.getCurrentNetworkView();
-		if (type.getObjectType().equals(VisualProperty.NODE))
-			cMapping = (ContinuousMapping) vmm.getVisualStyle(view).getVisualMappingFunction(type);
 
-			cMapping = (ContinuousMapping) vmm.getVisualStyle()
-			                                        .getEdgeAppearanceCalculator()
-			                                        .getCalculator(type).getMapping(0);
+		cMapping = (ContinuousMapping<V>) vmm.getVisualStyle(view)
+				.getVisualMappingFunction(this.vp);
 
-		title = cMapping.getControllingAttributeName();
+		title = cMapping.getMappingAttributeName();
 
-		Float val;
-		Object propStr = CytoscapeInit.getProperties().getProperty("vizmapper.cntMapperUpperLimit");
+		// Float val;
+		// TODO: where should I put this property value?
+		// Object propStr =
+		// CytoscapeInit.getProperties().getProperty("vizmapper.cntMapperUpperLimit");
+		//
+		// if (propStr != null) {
+		// try {
+		// val = Float.parseFloat(propStr.toString());
+		// } catch (NumberFormatException e) {
+		// val = 2000f;
+		// }
+		//
+		// UPPER_LIMIT = val;
+		// } else {
+		// UPPER_LIMIT = 2000f;
+		// }
 
-		if (propStr != null) {
-			try {
-				val = Float.parseFloat(propStr.toString());
-			} catch (NumberFormatException e) {
-				val = 2000f;
-			}
-
-			UPPER_LIMIT = val;
-		} else {
-			UPPER_LIMIT = 2000f;
-		}
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param g DOCUMENT ME!
+	 * 
+	 * @param g
+	 *            DOCUMENT ME!
 	 */
 	@Override
 	public void paint(Graphics g) {
@@ -174,7 +182,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 	/**
 	 * Remove square
-	 *
+	 * 
 	 * @param index
 	 */
 	protected void removeSquare(Integer index) {
@@ -187,7 +195,8 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		verticesList.remove(index);
 
 		for (Object key : verticesList.keySet()) {
-			System.out.println("Key After = " + key + ", " + verticesList.get(key));
+			System.out.println("Key After = " + key + ", "
+					+ verticesList.get(key));
 		}
 	}
 
@@ -198,42 +207,43 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 		// AA on
 		Graphics2D g = (Graphics2D) gfx;
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 
-		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+		double minValue = tracer.getMin(vp);
+		double maxValue = tracer.getMax(vp);
 
 		int thumb_width = 12;
 		int track_width = slider.getWidth() - thumb_width;
 		g.translate(thumb_width / 2, 12);
 
 		// get the list of tumbs
-		List<Thumb> stops = slider.getModel().getSortedThumbs();
+		List<Thumb<V>> stops = slider.getModel().getSortedThumbs();
 
 		int numPoints = stops.size();
 
 		// set up the data for the gradient
 		float[] fractions = new float[numPoints];
-		Float[] floatProperty = new Float[numPoints];
+		Number[] floatProperty = new Float[numPoints];
 		int i = 0;
 
 		values.clear();
-		values.add(below.floatValue());
-		values.add(above.floatValue());
+		values.add(below);
+		values.add(above);
 
-		for (Thumb thumb : stops) {
-			floatProperty[i] = (Float) thumb.getObject();
+		for (Thumb<V> thumb : stops) {
+			floatProperty[i] = thumb.getObject();
 			fractions[i] = thumb.getPosition();
-			values.add((Float) thumb.getObject());
+			values.add(thumb.getObject());
 			i++;
 		}
 
-		for (Float val : values) {
-			if (min >= val)
-				min = val;
+		for (V val : values) {
+			if (min >= val.floatValue())
+				min = val.floatValue();
 
-			if (max <= val)
-				max = val;
+			if (max <= val.floatValue())
+				max = val.floatValue();
 		}
 
 		// Draw arrow bar
@@ -254,17 +264,23 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		g.setFont(smallFont);
 		g.drawString("Min=" + minValue, 28, arrowBarPosition - 25);
 
-		g.drawLine(track_width, arrowBarPosition, track_width - 15, arrowBarPosition + 30);
-		g.drawLine(track_width - 15, arrowBarPosition + 30, track_width - 25, arrowBarPosition + 30);
+		g.drawLine(track_width, arrowBarPosition, track_width - 15,
+				arrowBarPosition + 30);
+		g.drawLine(track_width - 15, arrowBarPosition + 30, track_width - 25,
+				arrowBarPosition + 30);
 
 		final String maxStr = "Max=" + maxValue;
-		int strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
-		g.drawString(maxStr, track_width - strWidth - 26, arrowBarPosition + 35);
+		int strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(),
+				maxStr);
+		g
+				.drawString(maxStr, track_width - strWidth - 26,
+						arrowBarPosition + 35);
 
 		g.setFont(defFont);
 		g.setColor(Color.black);
 		strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), title);
-		g.drawString(title, (track_width / 2) - (strWidth / 2), arrowBarPosition + 35);
+		g.drawString(title, (track_width / 2) - (strWidth / 2),
+				arrowBarPosition + 35);
 
 		/*
 		 * If no points, just draw empty box.
@@ -296,15 +312,18 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 			p2.setLocation(newX, 5);
 
-			int newY = (5 + trackHeight) - (int) ((floatProperty[i] / max) * trackHeight);
+			int newY = (5 + trackHeight)
+					- (int) ((floatProperty[i].floatValue() / max) * trackHeight);
 
 			valueArea.reset();
 
 			g.setColor(VALUE_AREA_COLOR);
 
 			if (i == 0) {
-				int h = (5 + trackHeight) - (int) ((below.floatValue() / max) * trackHeight);
-				g.fillRect(0, h, newX, (int) ((below.floatValue() / max) * trackHeight));
+				int h = (5 + trackHeight)
+						- (int) ((below.floatValue() / max) * trackHeight);
+				g.fillRect(0, h, newX,
+						(int) ((below.floatValue() / max) * trackHeight));
 				g.setColor(Color.red);
 				g.fillRect(-5, h - 5, 10, 10);
 				belowSquare = new Point(0, h);
@@ -333,48 +352,57 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			g.setStroke(new BasicStroke(1.5f));
 			g.setFont(smallFont);
 
-			int numberWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(),
-			                                                    floatProperty[i].toString());
+			int numberWidth = SwingUtilities.computeStringWidth(g
+					.getFontMetrics(), floatProperty[i].toString());
 
 			g.setColor(Color.DARK_GRAY);
 
 			if (fractions[i] < 10) {
 				g.drawLine(newX, newY, newX + 15, newY - 35);
-				g.drawString(floatProperty[i].toString(), newX + numberWidth, newY - 48);
+				g.drawString(floatProperty[i].toString(), newX + numberWidth,
+						newY - 48);
 			} else {
 				g.drawLine(newX, newY, newX - 15, newY + 35);
-				g.drawString(floatProperty[i].toString(), newX - (numberWidth + 5), newY + 48);
+				g.drawString(floatProperty[i].toString(), newX
+						- (numberWidth + 5), newY + 48);
 			}
 
 			g.setColor(Color.DARK_GRAY);
 			g.setFont(new Font("SansSerif", Font.BOLD, 10));
 
-			Float curPositionValue = ((Double) (((fractions[i] / 100) * EditorValueRangeTracer.getTracer()
-			                                                                                  .getRange(type))
-			                         + minValue)).floatValue();
+			Float curPositionValue = ((Double) (((fractions[i] / 100) * tracer
+					.getRange(vp)) + minValue)).floatValue();
 			String valueString = String.format("%.4f", curPositionValue);
 
 			int flipLimit = 90;
 			int borderVal = track_width - newX;
 
 			if (((i % 2) == 0) && (flipLimit < borderVal)) {
-				g.drawLine(newX, arrowBarPosition, newX + 20, arrowBarPosition - 15);
-				g.drawLine(newX + 20, arrowBarPosition - 15, newX + 30, arrowBarPosition - 15);
+				g.drawLine(newX, arrowBarPosition, newX + 20,
+						arrowBarPosition - 15);
+				g.drawLine(newX + 20, arrowBarPosition - 15, newX + 30,
+						arrowBarPosition - 15);
 				g.setColor(Color.black);
 				g.drawString(valueString, newX + 33, arrowBarPosition - 11);
 			} else if (((i % 2) == 1) && (flipLimit < borderVal)) {
-				g.drawLine(newX, arrowBarPosition, newX + 20, arrowBarPosition + 15);
-				g.drawLine(newX + 20, arrowBarPosition + 15, newX + 30, arrowBarPosition + 15);
+				g.drawLine(newX, arrowBarPosition, newX + 20,
+						arrowBarPosition + 15);
+				g.drawLine(newX + 20, arrowBarPosition + 15, newX + 30,
+						arrowBarPosition + 15);
 				g.setColor(Color.black);
 				g.drawString(valueString, newX + 33, arrowBarPosition + 19);
 			} else if (((i % 2) == 0) && (flipLimit >= borderVal)) {
-				g.drawLine(newX, arrowBarPosition, newX - 20, arrowBarPosition - 15);
-				g.drawLine(newX - 20, arrowBarPosition - 15, newX - 30, arrowBarPosition - 15);
+				g.drawLine(newX, arrowBarPosition, newX - 20,
+						arrowBarPosition - 15);
+				g.drawLine(newX - 20, arrowBarPosition - 15, newX - 30,
+						arrowBarPosition - 15);
 				g.setColor(Color.black);
 				g.drawString(valueString, newX - 90, arrowBarPosition - 11);
 			} else {
-				g.drawLine(newX, arrowBarPosition, newX - 20, arrowBarPosition + 15);
-				g.drawLine(newX - 20, arrowBarPosition + 15, newX - 30, arrowBarPosition + 15);
+				g.drawLine(newX, arrowBarPosition, newX - 20,
+						arrowBarPosition + 15);
+				g.drawLine(newX - 20, arrowBarPosition + 15, newX - 30,
+						arrowBarPosition + 15);
 				g.setColor(Color.black);
 				g.drawString(valueString, newX - 90, arrowBarPosition + 19);
 			}
@@ -389,9 +417,10 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 		g.setColor(VALUE_AREA_COLOR);
 
-		int h = (5 + trackHeight) - (int) ((above.floatValue() / max) * trackHeight);
+		int h = (5 + trackHeight)
+				- (int) ((above.floatValue() / max) * trackHeight);
 		g.fillRect((int) p1.getX(), h, track_width - (int) p1.getX(),
-		           (int) ((above.floatValue() / max) * trackHeight));
+				(int) ((above.floatValue() / max) * trackHeight));
 		g.setColor(Color.red);
 		g.fillRect(track_width - 5, h - 5, 10, 10);
 		aboveSquare = new Point(track_width, h);
@@ -433,24 +462,27 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Double getSelectedThumbValue() {
-		final Double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
-		final Double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
+		final Double valueRange = tracer.getRange(vp);
+		final Double minValue = tracer.getMin(vp);
+		final float position = slider.getModel().getThumbAt(
+				slider.getSelectedIndex()).getPosition();
 
 		return (((position / 100) * valueRange) + minValue);
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param slider DOCUMENT ME!
-	 *
+	 * 
+	 * @param slider
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
+	@SuppressWarnings("unchecked")
 	public JComponent getRendererComponent(JXMultiThumbSlider slider) {
 		this.slider = slider;
 
@@ -486,32 +518,34 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			 * If beyond the bottom lin
 			 */
 			if (clickFlag == true) {
-				Thumb selectedThumb = slider.getModel().getThumbAt(selectedIdx);
+				Thumb<V> selectedThumb = slider.getModel().getThumbAt(
+						selectedIdx);
 
+				V zero = (V) new Float(0);
 				if (curPoint.getY() >= (trackHeight + 5)) {
-					selectedThumb.setObject(0f);
+					selectedThumb.setObject(zero);
 
 					return;
 				}
 
 				double curY = curPoint.getY();
 
-				float newY = (float) ((((trackHeight + 5) - curY) * max) / (trackHeight + 5));
+				V newY = (V) Double
+						.valueOf(((((trackHeight + 5) - curY) * max) / (trackHeight + 5)));
 
-				if (newY > UPPER_LIMIT)
-					newY = UPPER_LIMIT;
+				if (newY.doubleValue() > UPPER_LIMIT)
+					newY = (V) UPPER_LIMIT;
 
 				selectedThumb.setObject(newY);
 
-				//updateMax();
-				Object newVal = newY;
+				// updateMax();
+				V newVal = newY;
 				cMapping.getPoint(selectedIdx).getRange().equalValue = newVal;
 
-				final BoundaryRangeValues brv = new BoundaryRangeValues(cMapping.getPoint(selectedIdx)
-				                                                                .getRange().lesserValue,
-				                                                        newVal,
-				                                                        cMapping.getPoint(selectedIdx)
-				                                                                .getRange().greaterValue);
+				final BoundaryRangeValues<V> brv = new BoundaryRangeValues<V>(
+						cMapping.getPoint(selectedIdx).getRange().lesserValue,
+						newVal,
+						cMapping.getPoint(selectedIdx).getRange().greaterValue);
 
 				cMapping.getPoint(selectedIdx).setRange(brv);
 
@@ -531,7 +565,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 				}
 			}
 
-			dragOrigin = e.getPoint();
+			// dragOrigin = e.getPoint();
 			slider.repaint();
 		}
 
@@ -548,15 +582,15 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			 */
 			if (isPointerInSquare(e) && (e.getClickCount() == 2)) {
 				final String val = JOptionPane.showInputDialog(slider,
-				                                               "Please type new value for this pivot.");
+						"Please type new value for this pivot.");
 
 				if (val == null)
 					return;
 
-				Float newVal = 0f;
+				V newVal;
 
 				try {
-					newVal = Float.valueOf(val);
+					newVal = (V) Float.valueOf(val);
 				} catch (Exception ne) {
 					// Number format error.
 					return;
@@ -568,11 +602,10 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 				cMapping.getPoint(selectedIdx).getRange().equalValue = newVal;
 
-				final BoundaryRangeValues brv = new BoundaryRangeValues(cMapping.getPoint(selectedIdx)
-				                                                                .getRange().lesserValue,
-				                                                        newVal,
-				                                                        cMapping.getPoint(selectedIdx)
-				                                                                .getRange().greaterValue);
+				final BoundaryRangeValues<V> brv = new BoundaryRangeValues<V>(
+						cMapping.getPoint(selectedIdx).getRange().lesserValue,
+						newVal,
+						cMapping.getPoint(selectedIdx).getRange().greaterValue);
 
 				cMapping.getPoint(selectedIdx).setRange(brv);
 
@@ -590,9 +623,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 						brv.greaterValue = newVal;
 					}
 
-					//cMapping.fireStateChanged();
+					// cMapping.fireStateChanged();
 
-					//Cytoscape.redrawGraph(vmm.getNetworkView());
+					// Cytoscape.redrawGraph(vmm.getNetworkView());
 					slider.repaint();
 				}
 
@@ -601,68 +634,75 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 				repaint();
 			} else if ((e.getClickCount() == 2) && (isBelow(e.getPoint()))) {
 				final String val = JOptionPane.showInputDialog(slider,
-				                                               "Please type new value for BELOW:");
+						"Please type new value for BELOW:");
 
 				if (val == null) {
 					return;
 				}
 
 				try {
-					below = Float.valueOf(val);
+					below = (V) Float.valueOf(val);
 				} catch (Exception ne) {
 					// Number format error.
 					return;
 				}
 
-				Object newValue = below;
+				V newValue = below;
 
-				BoundaryRangeValues brv;
-				BoundaryRangeValues original;
+				BoundaryRangeValues<V> brv;
+				BoundaryRangeValues<V> original;
 
 				original = cMapping.getPoint(0).getRange();
-				brv = new BoundaryRangeValues(newValue, original.equalValue, original.greaterValue);
+				brv = new BoundaryRangeValues<V>(newValue, original.equalValue,
+						original.greaterValue);
 				cMapping.getPoint(0).setRange(brv);
 
-				//cMapping.fireStateChanged();
+				// cMapping.fireStateChanged();
 
 				// Update view.
-				//Cytoscape.redrawGraph(vmm.getNetworkView());
+				// Cytoscape.redrawGraph(vmm.getNetworkView());
 
 				slider.repaint();
 				repaint();
 
-				firePropertyChange(ContinuousMappingEditorPanel.BELOW_VALUE_CHANGED, null, below);
+				firePropertyChange(
+						ContinuousMappingEditorPanel.BELOW_VALUE_CHANGED, null,
+						below);
 			} else if ((e.getClickCount() == 2) && (isAbove(e.getPoint()))) {
 				final String val = JOptionPane.showInputDialog(slider,
-				                                               "Please type new value for ABOVE:");
+						"Please type new value for ABOVE:");
 
 				if (val == null) {
 					return;
 				}
 
 				try {
-					above = Float.valueOf(val);
+					above = (V) Float.valueOf(val);
 				} catch (Exception ne) {
 					// Number format error.
 					return;
 				}
 
-				BoundaryRangeValues brv;
-				BoundaryRangeValues original;
+				BoundaryRangeValues<V> brv;
+				BoundaryRangeValues<V> original;
 
-				original = cMapping.getPoint(cMapping.getPointCount() - 1).getRange();
-				brv = new BoundaryRangeValues(original.lesserValue, original.equalValue, above);
+				original = cMapping.getPoint(cMapping.getPointCount() - 1)
+						.getRange();
+				brv = new BoundaryRangeValues<V>(original.lesserValue,
+						original.equalValue, above);
 				cMapping.getPoint(cMapping.getPointCount() - 1).setRange(brv);
 
-				//cMapping.fireStateChanged();
+				// cMapping.fireStateChanged();
 
 				// Update view.
-				//Cytoscape.redrawGraph(vmm.getNetworkView());
+				// Cytoscape.redrawGraph(vmm.getNetworkView());
 
 				slider.repaint();
 				repaint();
 
-				firePropertyChange(ContinuousMappingEditorPanel.ABOVE_VALUE_CHANGED, null, above);
+				firePropertyChange(
+						ContinuousMappingEditorPanel.ABOVE_VALUE_CHANGED, null,
+						above);
 			}
 		}
 
@@ -699,7 +739,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		@Override
 		public void mousePressed(MouseEvent e) {
 			curPoint = e.getPoint();
-			dragOrigin = e.getPoint();
+			// dragOrigin = e.getPoint();
 
 			for (Integer key : verticesList.keySet()) {
 				Point p = verticesList.get(key);
@@ -725,14 +765,14 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 			if (dragFlag == true) {
 				dragFlag = false;
-				//cMapping.fireStateChanged();
-				//Cytoscape.redrawGraph(vmm.getNetworkView());
+				// cMapping.fireStateChanged();
+				// Cytoscape.redrawGraph(vmm.getNetworkView());
 			}
 		}
 
 		private boolean isPointerInSquare(MouseEvent e) {
 			curPoint = e.getPoint();
-			dragOrigin = e.getPoint();
+			// dragOrigin = e.getPoint();
 
 			for (Integer key : verticesList.keySet()) {
 				Point p = verticesList.get(key);
@@ -765,24 +805,28 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param iconWidth DOCUMENT ME!
-	 * @param iconHeight DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param iconWidth
+	 *            DOCUMENT ME!
+	 * @param iconHeight
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight) {
 		return drawIcon(iconWidth, iconHeight, false);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param iconWidth DOCUMENT ME!
-	 * @param iconHeight DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param iconWidth
+	 *            DOCUMENT ME!
+	 * @param iconHeight
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public ImageIcon getLegend(int iconWidth, int iconHeight) {
 		return drawIcon(iconWidth, iconHeight, true);
@@ -793,15 +837,17 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			return null;
 		}
 
-		final BufferedImage bi = new BufferedImage(iconWidth, iconHeight, BufferedImage.TYPE_INT_RGB);
+		final BufferedImage bi = new BufferedImage(iconWidth, iconHeight,
+				BufferedImage.TYPE_INT_RGB);
 		final Graphics2D g = bi.createGraphics();
 
 		// Turn Anti-alias on
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 
-		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
-		double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
+		double minValue = tracer.getMin(vp);
+		double maxValue = tracer.getMax(vp);
+		double valueRange = tracer.getRange(vp);
 		/*
 		 * Fill background
 		 */
@@ -815,7 +861,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		/*
 		 * Compute fractions from mapping
 		 */
-		List<Thumb> stops = slider.getModel().getSortedThumbs();
+		List<Thumb<V>> stops = slider.getModel().getSortedThumbs();
 
 		int numPoints = stops.size();
 
@@ -824,22 +870,22 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		int i = 0;
 
 		values.clear();
-		values.add(below.floatValue());
-		values.add(above.floatValue());
+		values.add(below);
+		values.add(above);
 
-		for (Thumb thumb : stops) {
+		for (Thumb<V> thumb : stops) {
 			floatProperty[i] = (Float) thumb.getObject();
 			fractions[i] = thumb.getPosition();
-			values.add((Float) thumb.getObject());
+			values.add((V) thumb.getObject());
 			i++;
 		}
 
-		for (Float val : values) {
-			if (min >= val)
-				min = val;
+		for (V val : values) {
+			if (min >= val.floatValue())
+				min = val.floatValue();
 
-			if (max <= val)
-				max = val;
+			if (max <= val.floatValue())
+				max = val.floatValue();
 		}
 
 		// Draw min/max
@@ -847,9 +893,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		g.setFont(ICON_FONT);
 
 		int minWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(),
-		                                                 String.format("%.1f", min));
+				String.format("%.1f", min));
 		int maxWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(),
-		                                                 String.format("%.1f", max));
+				String.format("%.1f", max));
 
 		if (detail) {
 			leftSpace = LEFT_SPACE;
@@ -892,15 +938,18 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 			p2.setLocation(newX, 0);
 
-			int newY = trackHeight - (int) ((floatProperty[i] / max) * trackHeight);
+			int newY = trackHeight
+					- (int) ((floatProperty[i] / max) * trackHeight);
 
 			valueArea.reset();
 
 			g.setColor(VALUE_AREA_COLOR);
 
 			if (i == 0) {
-				int h = trackHeight - (int) ((below.floatValue() / max) * trackHeight);
-				g.fillRect(0, h, newX, (int) ((below.floatValue() / max) * trackHeight));
+				int h = trackHeight
+						- (int) ((below.floatValue() / max) * trackHeight);
+				g.fillRect(0, h, newX,
+						(int) ((below.floatValue() / max) * trackHeight));
 			} else {
 				valueArea.addPoint((int) p1.getX(), lastY);
 				valueArea.addPoint(newX, newY);
@@ -930,7 +979,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 		int h = trackHeight - (int) ((above.floatValue() / max) * trackHeight);
 		g.fillRect((int) p1.getX(), h, trackWidth - (int) p1.getX() - 3,
-		           (int) ((above.floatValue() / max) * trackHeight));
+				(int) ((above.floatValue() / max) * trackHeight));
 
 		g.translate(-leftSpace, 0);
 
@@ -955,32 +1004,36 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			String fNum = null;
 
 			for (int j = 0; j < fractions.length; j++) {
-				fNum = String.format("%.2f", ((fractions[j] / 100) * valueRange) + minValue);
-				strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fNum);
-				g.drawString(fNum,
-				             ((fractions[j] / 100) * trackWidth) - (strWidth / 2) + leftSpace,
-				             iconHeight - 20);
+				fNum = String.format("%.2f",
+						((fractions[j] / 100) * valueRange) + minValue);
+				strWidth = SwingUtilities.computeStringWidth(
+						g.getFontMetrics(), fNum);
+				g.drawString(fNum, ((fractions[j] / 100) * trackWidth)
+						- (strWidth / 2) + leftSpace, iconHeight - 20);
 			}
 
 			g.drawString(minStr, leftSpace, iconHeight);
-			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
+			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(),
+					maxStr);
 			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
 
 			g.setFont(TITLE_FONT);
 
-			final int titleWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), title);
+			final int titleWidth = SwingUtilities.computeStringWidth(g
+					.getFontMetrics(), title);
 			g.setColor(Color.black);
-			g.drawString(title, (iconWidth / 2) - (titleWidth / 2), iconHeight - 5);
+			g.drawString(title, (iconWidth / 2) - (titleWidth / 2),
+					iconHeight - 5);
 
 			Polygon p = new Polygon();
 			p.addPoint(iconWidth, iconHeight - 9);
 			p.addPoint(iconWidth - 15, iconHeight - 15);
 			p.addPoint(iconWidth - 15, iconHeight - 9);
 			g.fillPolygon(p);
-			g.drawLine(leftSpace, iconHeight - 9,
-			           ((iconWidth - leftSpace) / 2) - (titleWidth / 2) - 3, iconHeight - 9);
-			g.drawLine((iconWidth / 2) + (titleWidth / 2) + 3, iconHeight - 9, iconWidth,
-			           iconHeight - 9);
+			g.drawLine(leftSpace, iconHeight - 9, ((iconWidth - leftSpace) / 2)
+					- (titleWidth / 2) - 3, iconHeight - 9);
+			g.drawLine((iconWidth / 2) + (titleWidth / 2) + 3, iconHeight - 9,
+					iconWidth, iconHeight - 9);
 
 			/*
 			 * Draw vertical arrow
@@ -1003,23 +1056,26 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			g.setColor(Color.DARK_GRAY);
 			g.setFont(new Font("SansSerif", Font.BOLD, 10));
 
-			final String label = type.getName();
-			final int width = SwingUtilities.computeStringWidth(g.getFontMetrics(), label);
+			final String label = vp.getDisplayName();
+			final int width = SwingUtilities.computeStringWidth(g
+					.getFontMetrics(), label);
 			AffineTransform af = new AffineTransform();
 			af.rotate(Math.PI + (Math.PI / 2));
 			g.setTransform(af);
 
 			g.setColor(Color.black);
-			g.drawString(type.getName(), (-panelHeight / 2) - (width / 2), (leftSpace / 2) + 5);
+			g.drawString(vp.getDisplayName(), (-panelHeight / 2) - (width / 2),
+					(leftSpace / 2) + 5);
 		} else {
 			g.drawString(minStr, 0, iconHeight);
-			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
+			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(),
+					maxStr);
 			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
 		}
 
 		return new ImageIcon(bi);
 	}
-	
+
 	public void setVmm(VisualMappingManager vmm) {
 		this.vmm = vmm;
 	}

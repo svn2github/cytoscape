@@ -36,12 +36,12 @@
 
 package org.cytoscape.view.vizmap.gui.internal.action;
 
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.VisualStyle;
-
 import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
+
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 
 /**

@@ -36,8 +36,6 @@
 
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
-import org.cytoscape.view.model.VisualProperty;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -50,6 +48,8 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import org.cytoscape.view.model.VisualProperty;
 
 
 /**

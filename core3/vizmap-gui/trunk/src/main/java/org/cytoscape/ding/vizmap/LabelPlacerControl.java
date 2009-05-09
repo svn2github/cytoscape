@@ -48,9 +48,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.cytoscape.ding.Label;
-import org.cytoscape.ding.LabelPosition;
-
 
 /**
  * A group of widgets that specifies the placement of

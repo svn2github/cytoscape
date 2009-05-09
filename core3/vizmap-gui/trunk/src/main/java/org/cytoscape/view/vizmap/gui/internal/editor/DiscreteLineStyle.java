@@ -7,13 +7,10 @@ import java.beans.PropertyEditor;
 import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
-import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ShapeCellRenderer;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.DiscreteValueChooser;
-import org.cytoscape.viewmodel.VisualProperty;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 
 public class DiscreteLineStyle implements VisualPropertyEditor {

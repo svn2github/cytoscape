@@ -8,11 +8,11 @@ import java.beans.PropertyEditor;
 
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.CyColorCellRenderer;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
-import org.cytoscape.viewmodel.VisualProperty;
 
 
 

@@ -1,10 +1,16 @@
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.RenderingHints;
+
+import javax.swing.JComponent;
+
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.ThumbRenderer;
-
-import javax.swing.*;
-import java.awt.*;
 
 
 /**

@@ -55,9 +55,6 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 
-import org.cytoscape.ding.Label;
-import org.cytoscape.ding.LabelPosition;
-
 
 /**
 * A drag and drop graphic that allows users to set the placement

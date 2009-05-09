@@ -41,9 +41,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.cytoscape.ding.LabelPosition;
-
-
 import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 

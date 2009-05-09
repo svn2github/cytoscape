@@ -36,16 +36,14 @@
 
 package org.cytoscape.view.vizmap.gui.editor;
 
-import org.cytoscape.view.model.VisualProperty;
-
 import java.awt.Component;
-
 import java.beans.PropertyEditor;
-
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.table.TableCellRenderer;
+
+import org.cytoscape.view.model.VisualProperty;
 
 
 /**
@@ -95,7 +93,7 @@ public interface EditorManager {
 	 * @throws Exception
 	 *             DOCUMENT ME!
 	 */
-	public Object showDiscreteEditor(Component parentComponent, VisualProperty<?> type)
+	public <V> V showDiscreteEditor(Component parentComponent, VisualProperty<V> type)
 	    throws Exception;
 
 	/**
@@ -109,7 +107,7 @@ public interface EditorManager {
 	 * @throws Exception
 	 *             DOCUMENT ME!
 	 */
-	public Object showContinuousEditor(Component parentComponent, VisualProperty<?> type)
+	public <V> V showContinuousEditor(Component parentComponent, VisualProperty<V> type)
 	    throws Exception;
 
 	/**

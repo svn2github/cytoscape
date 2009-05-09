@@ -8,9 +8,9 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyStringPropertyEditor;
-import org.cytoscape.view.model.VisualProperty;
 
 
 public class DiscreteString implements VisualPropertyEditor {

@@ -31,10 +31,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -45,32 +44,34 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.multislider.Thumb;
 
-
 /**
- * Continuous Mapping editor for discrete values,
- * such as Font, Shape, Label Position, etc.
- *
+ * Continuous Mapping editor for discrete values, such as Font, Shape, Label
+ * Position, etc.
+ * 
  * @version 0.5
  * @since Cytoscape 2.5
  * @author Keiichiro Ono
-  */
-public class C2DMappingEditor extends ContinuousMappingEditorPanel {
+ */
+public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<V> {
 	private final static long serialVersionUID = 1213748837197780L;
 	/**
 	 * Creates a C2DMappingEditor object.
-	 *
-	 * @param type DOCUMENT ME!
+	 * 
+	 * @param type
+	 *            DOCUMENT ME!
 	 */
 
 	private EditorManager editorFactory;
 
-	public C2DMappingEditor(VisualProperty<?> type, EditorManager editorFactory) {
-		super(type);
+	public C2DMappingEditor(VisualProperty<V> type,
+			EditorManager editorFactory, VizMapGUI vizMapGUI) {
+		super(type, vizMapGUI);
 		this.iconPanel.setVisible(false);
 		this.belowPanel.setVisible(false);
 		this.abovePanel.setVisible(false);
@@ -78,84 +79,86 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		setSlider();
 	}
 
-//	/**
-//	 *  DOCUMENT ME!
-//	 *
-//	 * @param width DOCUMENT ME!
-//	 * @param height DOCUMENT ME!
-//	 * @param title DOCUMENT ME!
-//	 * @param type DOCUMENT ME!
-//	 *
-//	 * @return  DOCUMENT ME!
-//	 */
-//	public static Object showDialog(final int width, final int height, final String title,
-//	                                VisualProperty<?> type, Component parentComponent, EditorManager ef) {
-//		editor = new C2DMappingEditor(type,ef);
-//		editor.setSize(new Dimension(width, height));
-//		editor.setTitle(title);
-//		editor.setAlwaysOnTop(true);
-//		editor.setLocationRelativeTo(parentComponent);
-//		editor.setVisible(true);
-//
-//		return editor;
-//	}
+	// /**
+	// * DOCUMENT ME!
+	// *
+	// * @param width DOCUMENT ME!
+	// * @param height DOCUMENT ME!
+	// * @param title DOCUMENT ME!
+	// * @param type DOCUMENT ME!
+	// *
+	// * @return DOCUMENT ME!
+	// */
+	// public static Object showDialog(final int width, final int height, final
+	// String title,
+	// VisualProperty<?> type, Component parentComponent, EditorManager ef) {
+	// editor = new C2DMappingEditor(type,ef);
+	// editor.setSize(new Dimension(width, height));
+	// editor.setTitle(title);
+	// editor.setAlwaysOnTop(true);
+	// editor.setLocationRelativeTo(parentComponent);
+	// editor.setVisible(true);
+	//
+	// return editor;
+	// }
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
-	                                VisualProperty<?> type) {
-		editor = new C2DMappingEditor(type,null);
+	public ImageIcon getIcon(final int iconWidth, final int iconHeight,
+			VisualProperty<V> type) {
 
-		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
+		if (slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;
 		}
 
-		DiscreteTrackRenderer rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
-		rend.getRendererComponent(editor.slider);
+		DiscreteTrackRenderer<V> rend = (DiscreteTrackRenderer<V>) slider
+				.getTrackRenderer();
+		rend.getRendererComponent(slider);
 
 		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 * @param type DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param width
+	 *            DOCUMENT ME!
+	 * @param height
+	 *            DOCUMENT ME!
+	 * @param type
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public static ImageIcon getLegend(final int width, final int height,
-	                                  final VisualProperty<?> type) {
-		editor = new C2DMappingEditor(type,null);
+	public ImageIcon getLegend(final int width, final int height,
+			final VisualProperty<?> type) {
 
-		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
+		if (slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;
 		}
 
-		DiscreteTrackRenderer rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
-		rend.getRendererComponent(editor.slider);
+		DiscreteTrackRenderer<V> rend = (DiscreteTrackRenderer<V>) slider
+				.getTrackRenderer();
+		rend.getRendererComponent(slider);
 
 		return rend.getLegend(width, height);
 	}
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
-		BoundaryRangeValues newRange;
-		Object defValue = vmm.getVisualStyle()
-		                           .getNodeAppearanceCalculator().getDefaultAppearance().get(type);
-		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+		BoundaryRangeValues<V> newRange;
+		V defValue = type.getDefault();
+
+		final double maxValue = tracer.getMax(type);
 
 		if (mapping.getPointCount() == 0) {
 			slider.getModel().addThumb(50f, defValue);
 
-			newRange = new BoundaryRangeValues(below, defValue, above);
+			newRange = new BoundaryRangeValues<V>(below, defValue, above);
 			mapping.addPoint(maxValue / 2, newRange);
-			//Cytoscape.redrawGraph(vmm.getNetworkView());
-
 			slider.repaint();
 			repaint();
 
@@ -166,33 +169,34 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		slider.getModel().addThumb(100f, defValue);
 
 		// Pick Up first point.
-		final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() - 1);
+		final ContinuousMappingPoint<V> previousPoint = mapping
+				.getPoint(mapping.getPointCount() - 1);
 
-		final BoundaryRangeValues previousRange = previousPoint.getRange();
-		newRange = new BoundaryRangeValues(previousRange);
+		final BoundaryRangeValues<V> previousRange = previousPoint.getRange();
+		newRange = new BoundaryRangeValues<V>(previousRange);
 
-		newRange.lesserValue = slider.getModel().getSortedThumbs()
-		                             .get(slider.getModel().getThumbCount() - 1);
+		newRange.lesserValue = slider.getModel().getSortedThumbs().get(
+				slider.getModel().getThumbCount() - 1).getObject();
 		newRange.equalValue = defValue;
 		newRange.greaterValue = previousRange.greaterValue;
 		mapping.addPoint(maxValue, newRange);
 
 		updateMap();
 
-		//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 		slider.repaint();
 		repaint();
 	}
 
 	protected void updateMap() {
-		List<Thumb<?>> thumbs = slider.getModel().getSortedThumbs();
+		List<Thumb<V>> thumbs = slider.getModel().getSortedThumbs();
 
-		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		final double valRange = EditorValueRangeTracer.getTracer().getRange(type);
+		final double minValue = tracer.getMin(type);
+		final double valRange = tracer.getRange(type);
 
-		//List<ContinuousMappingPoint> points = mapping.getAllPoints();
-		Thumb t;
+		// List<ContinuousMappingPoint> points = mapping.getAllPoints();
+		Thumb<V> t;
 		Double newVal;
 
 		if (thumbs.size() == 1) {
@@ -201,7 +205,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			mapping.getPoint(0).getRange().lesserValue = below;
 			mapping.getPoint(0).getRange().greaterValue = above;
 
-			newVal = ((thumbs.get(0).getPosition() / 100) * valRange) + minValue;
+			newVal = ((thumbs.get(0).getPosition() / 100) * valRange)
+					+ minValue;
 			mapping.getPoint(0).setValue(newVal);
 
 			return;
@@ -214,7 +219,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 				// First thumb
 				mapping.getPoint(i).getRange().lesserValue = below;
 				mapping.getPoint(i).getRange().equalValue = below;
-				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1).getObject();
+				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1)
+						.getObject();
 			} else if (i == (thumbs.size() - 1)) {
 				// Last thumb
 				mapping.getPoint(i).getRange().greaterValue = above;
@@ -224,7 +230,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 				// Others
 				mapping.getPoint(i).getRange().lesserValue = t.getObject();
 				mapping.getPoint(i).getRange().equalValue = t.getObject();
-				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1).getObject();
+				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1)
+						.getObject();
 			}
 
 			newVal = ((t.getPosition() / 100) * valRange) + minValue;
@@ -240,9 +247,9 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			slider.getModel().removeThumb(selectedIndex);
 			mapping.removePoint(selectedIndex);
 			updateMap();
-			//mapping.fireStateChanged();
+			// mapping.fireStateChanged();
 
-			//Cytoscape.redrawGraph(vmm.getNetworkView());
+			// Cytoscape.redrawGraph(vmm.getNetworkView());
 			repaint();
 		}
 	}
@@ -254,51 +261,54 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		setMinimumSize(new Dimension(300, 80));
 		slider.updateUI();
 
-		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
-		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+		final double minValue = tracer.getMin(type);
+		final double maxValue = tracer.getMax(type);
 
-		final C2DMappingEditor parentComponent = this;
+		final C2DMappingEditor<V> parentComponent = this;
 		slider.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e.getX(),
-					                                                                           e.getY());
+			public void mouseClicked(MouseEvent e) {
+				int range = ((DiscreteTrackRenderer<V>) slider
+						.getTrackRenderer()).getRangeID(e.getX(), e.getY());
 
-					Object newValue = null;
+				V newValue = null;
 
-					if (e.getClickCount() == 2) {
-						try {
-							setAlwaysOnTop(false);
-							newValue = editorFactory.showDiscreteEditor(parentComponent, type);
-						} catch (Exception e1) {
-							e1.printStackTrace();
-						} finally {
-							setAlwaysOnTop(true);
-						}
-
-						if (newValue == null)
-							return;
-
-						if (range == 0) {
-							below = newValue;
-						} else if (range == slider.getModel().getThumbCount()) {
-							above = newValue;
-						} else {
-							((Thumb) slider.getModel().getSortedThumbs().get(range)).setObject(newValue);
-						}
-
-						updateMap();
-
-						slider.setTrackRenderer(new DiscreteTrackRenderer(type, below, above));
-						slider.repaint();
-
-						//Cytoscape.redrawGraph(vmm.getNetworkView());
+				if (e.getClickCount() == 2) {
+					try {
+						// setAlwaysOnTop(false);
+						newValue = editorFactory.showDiscreteEditor(
+								parentComponent, type);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					} finally {
+						// setAlwaysOnTop(true);
 					}
+
+					if (newValue == null)
+						return;
+
+					if (range == 0) {
+						below = newValue;
+					} else if (range == slider.getModel().getThumbCount()) {
+						above = newValue;
+					} else {
+						slider.getModel().getSortedThumbs().get(range)
+								.setObject(newValue);
+					}
+
+					updateMap();
+
+					slider.setTrackRenderer(new DiscreteTrackRenderer<V>(type,
+							mapping, below, above));
+					slider.repaint();
+
+					// Cytoscape.redrawGraph(vmm.getNetworkView());
 				}
-			});
+			}
+		});
 
-		double actualRange = EditorValueRangeTracer.getTracer().getRange(type);
+		double actualRange = tracer.getRange(type);
 
-		BoundaryRangeValues bound;
+		BoundaryRangeValues<V> bound;
 		Float fraction;
 
 		/*
@@ -308,10 +318,11 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			return;
 		}
 
-		for (ContinuousMappingPoint point : allPoints) {
+		for (ContinuousMappingPoint<V> point : allPoints) {
 			bound = point.getRange();
 
-			fraction = ((Number) ((point.getValue() - minValue) / actualRange)).floatValue() * 100;
+			fraction = ((Number) ((point.getValue() - minValue) / actualRange))
+					.floatValue() * 100;
 			slider.getModel().addThumb(fraction, bound.equalValue);
 		}
 
@@ -319,9 +330,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			below = allPoints.get(0).getRange().lesserValue;
 			above = allPoints.get(allPoints.size() - 1).getRange().greaterValue;
 		} else {
-			Object defaultVal = vmm.getVisualStyle()
-			                             .getNodeAppearanceCalculator().getDefaultAppearance()
-			                             .get(type);
+			V defaultVal = type.getDefault();
 			below = defaultVal;
 			above = defaultVal;
 		}
@@ -330,7 +339,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		 * get min and max for the value object
 		 */
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
-		DiscreteTrackRenderer dRend = new DiscreteTrackRenderer(type, below, above);
+		DiscreteTrackRenderer<V> dRend = new DiscreteTrackRenderer<V>(type, mapping, below,
+				above);
 
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(dRend);
@@ -338,9 +348,10 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param evt DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param evt
+	 *            DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub

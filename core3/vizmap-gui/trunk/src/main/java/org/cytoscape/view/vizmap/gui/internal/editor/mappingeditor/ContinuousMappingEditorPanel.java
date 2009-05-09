@@ -42,7 +42,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -53,7 +52,6 @@ import javax.swing.event.ChangeListener;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -65,8 +63,6 @@ import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
 import cytoscape.CyNetworkManager;
-
-import static org.cytoscape.model.GraphObject.*;
 
 /**
  * Abstract class for all Continuous Mapping Editors. This is the mapping from
@@ -80,7 +76,7 @@ import static org.cytoscape.model.GraphObject.*;
  * @since Cytoscape 2.5
  * @author kono
  */
-public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
+public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 		PropertyChangeListener {
 	private static final long serialVersionUID = 2077889066171872186L;
 
@@ -91,15 +87,15 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
 	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
 
 	// Continuous mapping only accepts numerical attributes.
-	protected VisualProperty<T> type;
+	protected VisualProperty<V> type;
 
 	// Only accepts Continuous Mapping
-	protected ContinuousMapping<T> mapping;
-	protected List<ContinuousMappingPoint<T>> allPoints;
+	protected ContinuousMapping<V> mapping;
+	protected List<ContinuousMappingPoint<V>> allPoints;
 	private SpinnerNumberModel spinnerModel;
 
-	protected T below;
-	protected T above;
+	protected V below;
+	protected V above;
 
 	protected double lastSpinnerNumber = 0;
 
@@ -117,7 +113,7 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
 	 * property type T.
 	 * 
 	 * */
-	public ContinuousMappingEditorPanel(final VisualProperty<T> type,
+	public ContinuousMappingEditorPanel(final VisualProperty<V> type,
 			VizMapGUI vizMapGUI) {
 		this.type = type;
 		this.vizMapGUI = vizMapGUI;
@@ -184,7 +180,7 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
 
 		colorButton = new javax.swing.JButton();
 		rangeEditorPanel = new javax.swing.JPanel();
-		slider = new JXMultiThumbSlider<T>();
+		slider = new JXMultiThumbSlider<V>();
 		attrNameLabel = new javax.swing.JLabel();
 		iconPanel = new YValueLegendPanel(type);
 		visualPropertyLabel = new javax.swing.JLabel();
@@ -193,7 +189,7 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
 
 		valueSpinner.setEnabled(false);
 
-		rotaryEncoder = new JXMultiThumbSlider<T>();
+		rotaryEncoder = new JXMultiThumbSlider<V>();
 
 		iconPanel.setPreferredSize(new Dimension(25, 1));
 
@@ -427,7 +423,7 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
 		attrs = cyNetworkManager.getCurrentNetwork().getCyDataTables(
 				type.getObjectType()).get(CyNetwork.DEFAULT_ATTRS);
 
-		VisualMappingFunction<?, T> map = vizMapGUI.getSelectedVisualStyle()
+		VisualMappingFunction<?, V> map = vizMapGUI.getSelectedVisualStyle()
 				.getVisualMappingFunction(type);
 
 		if (map == null || map instanceof ContinuousMapping == false)
@@ -435,7 +431,7 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
 
 		// TODO: fix the following section
 		// Assume this calc only returns cont. mapping.
-		mapping = (ContinuousMapping<T>) map;
+		mapping = (ContinuousMapping<V>) map;
 
 		final String controllingAttrName = mapping.getMappingAttributeName();
 
@@ -480,10 +476,10 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
 	private javax.swing.JLabel pivotLabel;
 	private javax.swing.JPanel rangeEditorPanel;
 	private javax.swing.JPanel rangeSettingPanel;
-	protected JXMultiThumbSlider<T> slider;
+	protected JXMultiThumbSlider<V> slider;
 	protected javax.swing.JSpinner valueSpinner;
 	private javax.swing.JLabel visualPropertyLabel;
-	protected JXMultiThumbSlider<T> rotaryEncoder;
+	protected JXMultiThumbSlider<V> rotaryEncoder;
 	protected JButton minMaxButton;
 
 	/*
@@ -493,7 +489,7 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
 	protected BelowAndAbovePanel belowPanel;
 
 	protected int getSelectedPoint(int selectedIndex) {
-		final List<Thumb<T>> thumbs = slider.getModel().getSortedThumbs();
+		final List<Thumb<V>> thumbs = slider.getModel().getSortedThumbs();
 		Thumb<?> selected = slider.getModel().getThumbAt(selectedIndex);
 		int i;
 
@@ -507,7 +503,7 @@ public abstract class ContinuousMappingEditorPanel<T> extends JPanel implements
 	}
 
 	protected void updateMap() {
-		List<Thumb<T>> thumbs = slider.getModel().getSortedThumbs();
+		List<Thumb<V>> thumbs = slider.getModel().getSortedThumbs();
 
 		final double min = tracer.getMin(type);
 		final double range = tracer.getRange(type);

@@ -1,9 +1,15 @@
 package org.cytoscape.view.vizmap.gui.internal.cellrenderer;
 
-import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Icon;
+import javax.swing.UIManager;
+
+import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
 
 /**

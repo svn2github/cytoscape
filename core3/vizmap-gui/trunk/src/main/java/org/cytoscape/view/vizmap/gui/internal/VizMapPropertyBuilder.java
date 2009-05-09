@@ -35,6 +35,9 @@
 
 package org.cytoscape.view.vizmap.gui.internal;
 
+import static org.cytoscape.model.GraphObject.EDGE;
+import static org.cytoscape.model.GraphObject.NODE;
+
 import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,8 +66,6 @@ import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
 import cytoscape.CyNetworkManager;
-
-import static org.cytoscape.model.GraphObject.*;
 
 /**
  * Create property for the Property Sheet object.

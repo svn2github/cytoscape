@@ -38,11 +38,11 @@ package org.cytoscape.view.vizmap.gui.internal.action;
 
 import java.awt.event.ActionEvent;
 
-
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
@@ -57,8 +57,12 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
  *
  */
 public class EditSelectedCellAction extends AbstractVizMapperAction {
-	public EditSelectedCellAction() {
+
+	private VizMapGUI vizMapGUI;
+	
+	public EditSelectedCellAction(VizMapGUI vizMapGUI) {
 		super();
+		this.vizMapGUI = vizMapGUI;
 	}
 
 	private static final long serialVersionUID = -6102797200439573667L;
@@ -91,27 +95,20 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 			return;
 		}
 
-		final VisualProperty type = (VisualProperty) ((VizMapperProperty) prop
+		final VisualProperty<?> vp = (VisualProperty<?>) ((VizMapperProperty) prop
 		                                                                                      .getParentProperty())
 		                                .getHiddenObject();
 
 		/*
 		 * Extract calculator
 		 */
-		final VisualMappingFunction mapping;
+		final VisualMappingFunction<?, ?> mapping;
 		final CyDataTable attr;
 
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
+		mapping = vizMapGUI.getSelectedVisualStyle().getVisualMappingFunction(vp);
+		attr = targetNetwork.getCyDataTables(vp.getObjectType()).get(CyNetwork.DEFAULT_ATTRS);
 		
-		if (type.getObjectType().equals(VisualProperty.NODE)) {
-			mapping = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-			             .getMapping(0);
-			attr = targetNetwork.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-		} else {
-			mapping = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-			             .getMapping(0);
-			attr = targetNetwork.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-		}
 
 		if (mapping instanceof ContinuousMapping || mapping instanceof PassthroughMapping)
 			return;
@@ -119,7 +116,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 		Object newValue = null;
 
 		try {
-			newValue = editorFactory.showDiscreteEditor(vizMapperMainPanel, type);
+			newValue = editorFactory.showDiscreteEditor(vizMapperMainPanel, vp);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -128,7 +125,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 			return;
 
 		Object key = null;
-		final Class<?> keyClass = attr.getColumnTypeMap().get(mapping.getControllingAttributeName());
+		final Class<?> keyClass = attr.getColumnTypeMap().get(mapping.getMappingAttributeName());
 
 		for (int i = 0; i < selected.length; i++) {
 			/*

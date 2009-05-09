@@ -10,9 +10,8 @@ import javax.swing.table.TableCellRenderer;
 import org.cytoscape.ding.vizmap.CyLabelPositionPropertyEditor;
 import org.cytoscape.ding.vizmap.LabelPositionCellRenderer;
 import org.cytoscape.ding.vizmap.LabelPositionChooser;
-import org.cytoscape.vizmap.LabelPosition;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
-import org.cytoscape.viewmodel.VisualProperty;
 
 
 public class DiscreteLabelPosition implements VisualPropertyEditor {

@@ -34,14 +34,13 @@
  */
 package org.cytoscape.view.vizmap.gui.editor;
 
-import org.cytoscape.view.model.VisualProperty;
-
 import java.awt.Component;
-
 import java.beans.PropertyEditor;
 
 import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
+
+import org.cytoscape.view.model.VisualProperty;
 
 
 /**

@@ -39,7 +39,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,6 @@ import javax.swing.SwingConstants;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 
 /**
@@ -126,11 +124,13 @@ public class DiscreteValueChooser<T> extends JDialog {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Select New Value");
-		mainPanel.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
-		                                                   new Color(Color.gray.getRed(),
-		                                                             Color.gray.getGreen(),
-		                                                             Color.gray.getBlue(), 100),
-		                                                   new Point2D.Double(.8d, 0), Color.WHITE));
+		
+		// TODO: should change the design
+//		mainPanel.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
+//		                                                   new Color(Color.gray.getRed(),
+//		                                                             Color.gray.getGreen(),
+//		                                                             Color.gray.getBlue(), 100),
+//		                                                   new Point2D.Double(.8d, 0), Color.WHITE));
 		
 		mainPanel.setTitleFont(new java.awt.Font("SansSerif", 1, 14));
 

@@ -47,11 +47,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import org.cytoscape.ding.Label;
-import org.cytoscape.ding.LabelPosition;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.internal.bypass.BypassHack;
 /**
  *

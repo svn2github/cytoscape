@@ -35,6 +35,9 @@
 
 package org.cytoscape.view.vizmap.gui.internal;
 
+import static org.cytoscape.model.GraphObject.EDGE;
+import static org.cytoscape.model.GraphObject.NODE;
+
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -54,8 +57,6 @@ import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import static org.cytoscape.model.GraphObject.*;
 
 /**
  * Creates a new Mapping from GUI

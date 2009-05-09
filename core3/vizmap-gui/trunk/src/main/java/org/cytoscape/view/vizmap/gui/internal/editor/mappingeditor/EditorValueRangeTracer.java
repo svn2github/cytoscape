@@ -34,12 +34,11 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.VisualPropertyCatalog;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cytoscape.view.model.RootVisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
 
 /**
  *
@@ -49,13 +48,14 @@ public class EditorValueRangeTracer {
 
 	/**
 	 * Creates a new EditorValueRangeTracer object.
-	 *
-	 * @param vpCatalog  DOCUMENT ME!
+	 * 
+	 * @param vpCatalog
+	 *            DOCUMENT ME!
 	 */
-	public EditorValueRangeTracer(VisualPropertyCatalog vpCatalog) {
+	public EditorValueRangeTracer(RootVisualLexicon vpCatalog) {
 		rangeMap = new HashMap<VisualProperty<?>, Range>();
 
-		for (VisualProperty<?> v : vpCatalog.collectionOfVisualProperties()) {
+		for (VisualProperty<?> v : vpCatalog.getAllVisualProperties()) {
 			Range r = new Range(0d, 0d);
 			rangeMap.put(v, r);
 		}
@@ -63,10 +63,10 @@ public class EditorValueRangeTracer {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param t
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Double getRange(VisualProperty<?> t) {
@@ -75,10 +75,10 @@ public class EditorValueRangeTracer {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param t
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Double getMin(VisualProperty<?> t) {
@@ -87,10 +87,10 @@ public class EditorValueRangeTracer {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param t
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Double getMax(VisualProperty<?> t) {
@@ -99,7 +99,7 @@ public class EditorValueRangeTracer {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param t
 	 *            DOCUMENT ME!
 	 * @param min
@@ -111,7 +111,7 @@ public class EditorValueRangeTracer {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param t
 	 *            DOCUMENT ME!
 	 * @param max

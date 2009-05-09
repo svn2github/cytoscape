@@ -42,9 +42,6 @@
 //--------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.gui.internal.editor.valueeditor;
 
-import org.cytoscape.view.vizmap.gui.internal.cellrenderer.FontCellRenderer;
-
-//--------------------------------------------------------------------------
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ItemEvent;
@@ -53,6 +50,8 @@ import java.awt.event.ItemListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.FontCellRenderer;
 
 
 //--------------------------------------------------------------------------

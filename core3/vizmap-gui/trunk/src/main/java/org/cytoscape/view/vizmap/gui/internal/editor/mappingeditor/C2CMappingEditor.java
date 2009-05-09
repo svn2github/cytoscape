@@ -34,7 +34,6 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
@@ -42,6 +41,7 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.ImageIcon;
 
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.multislider.TrackRenderer;
@@ -58,11 +58,16 @@ import org.jdesktop.swingx.multislider.TrackRenderer;
  * @author Keiichiro Ono
  * 
  */
-public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
+public class C2CMappingEditor<V extends Number> extends
+		ContinuousMappingEditorPanel<V> {
 	private final static long serialVersionUID = 1213748836613718L;
 
 	// Default value for below and above.
-	private static final Float DEF_BELOW_AND_ABOVE = 1f;
+	private final V DEF_BELOW_AND_ABOVE = (V) new Float(1f);
+	private final V FIVE = (V) new Float(5f);
+	
+	private final V FIRST_LOCATION = (V) new Float(10f);
+	private final V SECOND_LOCATION = (V) new Float(30f);
 
 	/**
 	 * Creates a new C2CMappingEditor object.
@@ -70,8 +75,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public C2CMappingEditor(VisualProperty<? extends Number> type) {
-		super(type);
+	public C2CMappingEditor(VisualProperty<V> type, VizMapGUI vizMapGUI) {
+		super(type, vizMapGUI);
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);
 
@@ -79,8 +84,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 
 		// Add two sliders by default.
 		if ((mapping != null) && (mapping.getPointCount() == 0)) {
-			addSlider(0f, 10f);
-			addSlider(100f, 30f);
+			addSlider(0f, FIRST_LOCATION);
+			addSlider(100f, FIRST_LOCATION);
 		}
 	}
 
@@ -118,7 +123,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 		if (rend instanceof ContinuousTrackRenderer) {
 			rend.getRendererComponent(slider);
 
-			return ((ContinuousTrackRenderer) rend).getTrackGraphicIcon(
+			return ((ContinuousTrackRenderer<V>) rend).getTrackGraphicIcon(
 					iconWidth, iconHeight);
 		} else {
 			return null;
@@ -139,7 +144,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 	 */
 	public ImageIcon getLegend(final int width, final int height) {
 
-		final ContinuousTrackRenderer rend = (ContinuousTrackRenderer) slider
+		final ContinuousTrackRenderer<V> rend = (ContinuousTrackRenderer<V>) slider
 				.getTrackRenderer();
 		rend.getRendererComponent(slider);
 
@@ -147,18 +152,18 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 	}
 
 	// Add slider to the editor.
-	private void addSlider(float position, Number value) {
+	private void addSlider(float position, V value) {
 
 		final double maxValue = tracer.getMax(type);
 
-		BoundaryRangeValues newRange;
+		BoundaryRangeValues<V> newRange;
 
 		if (mapping.getPointCount() == 0) {
 			slider.getModel().addThumb(position, value);
 
-			newRange = new BoundaryRangeValues(below, 5f, above);
+			V five = (V) new Float(5);
+			newRange = new BoundaryRangeValues<V>(below, five, above);
 			mapping.addPoint(maxValue / 2, newRange);
-			// Cytoscape.redrawGraph(vmm.getNetworkView());
 
 			slider.repaint();
 			repaint();
@@ -173,16 +178,16 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 		final Double newVal = maxValue;
 
 		// Pick Up first point.
-		final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping
-				.getPointCount() - 1);
+		final ContinuousMappingPoint<V> previousPoint = mapping
+				.getPoint(mapping.getPointCount() - 1);
 
-		final BoundaryRangeValues previousRange = previousPoint.getRange();
-		newRange = new BoundaryRangeValues(previousRange);
+		final BoundaryRangeValues<V> previousRange = previousPoint.getRange();
+		newRange = new BoundaryRangeValues<V>(previousRange);
 
 		newRange.lesserValue = slider.getModel().getSortedThumbs().get(
-				slider.getModel().getThumbCount() - 1);
+				slider.getModel().getThumbCount() - 1).getObject();
 		System.out.println("EQ color = " + newRange.lesserValue);
-		newRange.equalValue = 5f;
+		newRange.equalValue = FIVE;
 		newRange.greaterValue = previousRange.greaterValue;
 		mapping.addPoint(maxValue, newRange);
 
@@ -196,7 +201,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
-		addSlider(100f, 5f);
+		addSlider(100f, FIVE);
 	}
 
 	@Override
@@ -228,25 +233,24 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 		final double minValue = tracer.getMin(type);
 		double actualRange = tracer.getRange(type);
 
-		BoundaryRangeValues bound;
+		BoundaryRangeValues<V> bound;
 		Float fraction;
 
 		if (allPoints == null) {
 			return;
 		}
 
-		for (ContinuousMappingPoint point : allPoints) {
+		for (ContinuousMappingPoint<V> point : allPoints) {
 			bound = point.getRange();
 
 			fraction = ((Number) ((point.getValue() - minValue) / actualRange))
 					.floatValue() * 100;
-			slider.getModel().addThumb(fraction,
-					((Number) bound.equalValue).floatValue());
+			slider.getModel().addThumb(fraction, bound.equalValue);
 		}
 
 		if (allPoints.size() != 0) {
-			below = (Number) allPoints.get(0).getRange().lesserValue;
-			above = (Number) allPoints.get(allPoints.size() - 1).getRange().greaterValue;
+			below = allPoints.get(0).getRange().lesserValue;
+			above = allPoints.get(allPoints.size() - 1).getRange().greaterValue;
 		} else {
 			below = DEF_BELOW_AND_ABOVE;
 			above = DEF_BELOW_AND_ABOVE;
@@ -257,8 +261,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 		 */
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
 
-		ContinuousTrackRenderer cRend = new ContinuousTrackRenderer(type,
-				below, above);
+		ContinuousTrackRenderer<V> cRend = new ContinuousTrackRenderer<V>(type,
+				below, above, tracer);
 		cRend.addPropertyChangeListener(this);
 
 		slider.setThumbRenderer(thumbRend);
@@ -272,13 +276,14 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel<Number> {
 	 * @param evt
 	 *            DOCUMENT ME!
 	 */
+	//TODO: refactor event
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(
 				ContinuousMappingEditorPanel.BELOW_VALUE_CHANGED)) {
-			below = evt.getNewValue();
+			below = (V) evt.getNewValue();
 		} else if (evt.getPropertyName().equals(
 				ContinuousMappingEditorPanel.ABOVE_VALUE_CHANGED)) {
-			above = evt.getNewValue();
+			above = (V) evt.getNewValue();
 		}
 	}
 }

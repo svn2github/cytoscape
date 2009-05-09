@@ -35,35 +35,101 @@
 package org.cytoscape.view.vizmap.gui.internal.action;
 
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
-import javax.swing.JOptionPane;
-
-import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.VisualMappingFunction;
-import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
-import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
-import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
-
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import static org.cytoscape.model.GraphObject.*;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 
 /**
  *
  */
-// TODO: this function is broken. Need to refactor.
+// TODO: this function is broken.
 public class GenerateSeriesAction extends AbstractVizMapperAction {
 
 	private final static long serialVersionUID = 121374883715581L;
 
-	public GenerateSeriesAction() {
+	private VizMapGUI vizMapGUI;
+
+	public GenerateSeriesAction(VizMapGUI vizMapGUI) {
 		super();
+		this.vizMapGUI = vizMapGUI;
+	}
+
+	private <K, V extends Number> void generate(CyNetwork targetNetwork) {
+
+//		VisualProperty<V> vp = (VisualProperty<V>) vizMapperUtil
+//				.getSelectedVisualProperty(propertySheetPanel);
+//		DiscreteMapping<K, V> oMap = (DiscreteMapping<K, V>) vizMapperUtil.getSelectedProperty(
+//				this.vizMapperMainPanel.getDefaultVisualStyle(),
+//				propertySheetPanel);
+//
+//		if (vp != null && oMap != null) {
+//
+//			final CyDataTable attr = targetNetwork.getCyDataTables(vp.getObjectType()).get(
+//						CyNetwork.DEFAULT_ATTRS);
+//
+//			final Set<K> attrSet = new TreeSet<K>(
+//					attr.getColumnValues(oMap.getMappingAttributeName(), attr
+//							.getColumnTypeMap().get(
+//									oMap.getMappingAttributeName())));
+//
+//			final String start = JOptionPane.showInputDialog(
+//					propertySheetPanel,
+//					"Please enter start value (1st number in the series)", "0");
+//			final String increment = JOptionPane.showInputDialog(
+//					propertySheetPanel, "Please enter increment", "1");
+//
+//			if ((increment == null) || (start == null))
+//				return;
+//
+//			V inc;
+//			Float st;
+//
+//			try {
+//				inc = (V) Float.valueOf(increment);
+//				st = Float.valueOf(start);
+//			} catch (Exception ex) {
+//				ex.printStackTrace();
+//				inc = null;
+//				st = null;
+//			}
+//
+//			if ((inc == null) || (inc.floatValue() < 0) || (st == null) || (st == null)) {
+//				return;
+//			}
+//
+//			Map<K, V> valueMap = new HashMap<K, V>();
+//			if (vp.getType() == Number.class) {
+//				for (K key : attrSet) {
+//					valueMap.put(key, (V) st);
+//					st = st.floatValue() + inc.floatValue();
+//				}
+//			}
+//
+//			oMap.putAll(valueMap);
+//
+//			propertySheetPanel.removeProperty(prop);
+//
+//			final VizMapperProperty<?> newRootProp = new VizMapperProperty();
+//
+//			if (vp.getObjectType().equals(NODE))
+//				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+//						oMap, newRootProp, vp.getObjectType(),
+//						propertySheetPanel);
+//			else
+//				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+//						oMap, newRootProp,
+//						VizMapperMainPanel.EDGE_VISUAL_MAPPING,
+//						propertySheetPanel);
+//
+//			vizMapPropertySheetBuilder.removeProperty(prop);
+//			vizMapPropertySheetBuilder.getPropertyMap().get(
+//					vmm.getVisualStyle().getName()).add(newRootProp);
+//
+//			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
+//		} else {
+//			System.out.println("Invalid.");
+//		}
+
 	}
 
 	/**
@@ -72,87 +138,6 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 
-		VisualProperty<?> vp = vizMapperUtil
-				.getSelectedVisualProperty(propertySheetPanel);
-		DiscreteMapping<?, ?> oMap = vizMapperUtil.getSelectedProperty(
-				this.vizMapperMainPanel.getDefaultVisualStyle(),
-				propertySheetPanel);
-
-		if (vp != null && oMap != null) {
-
-			final CyDataTable attr;
-
-			if (vp.getObjectType().equals(NODE))
-				attr = targetNetwork.getNodeCyDataTables().get(
-						CyNetwork.DEFAULT_ATTRS);
-			else
-				attr = targetNetwork.getEdgeCyDataTables().get(
-						CyNetwork.DEFAULT_ATTRS);
-
-			final Set<Object> attrSet = new TreeSet<Object>(attr
-					.getColumnValues(oMap.getMappingAttributeName(), attr
-							.getColumnTypeMap().get(
-									oMap.getMappingAttributeName())));
-
-			final String start = JOptionPane.showInputDialog(
-					propertySheetPanel,
-					"Please enter start value (1st number in the series)", "0");
-			final String increment = JOptionPane.showInputDialog(
-					propertySheetPanel, "Please enter increment", "1");
-
-			if ((increment == null) || (start == null))
-				return;
-
-			Float inc;
-			Float st;
-
-			try {
-				inc = Float.valueOf(increment);
-				st = Float.valueOf(start);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				inc = null;
-				st = null;
-			}
-
-			if ((inc == null) || (inc < 0) || (st == null) || (st == null)) {
-				return;
-			}
-
-			Map<Object, Object> valueMap = new HashMap<Object, Object>();
-			if (vp.getType() == Number.class) {
-				for (Object key : attrSet) {
-					valueMap.put(key, st);
-					st = st + inc;
-				}
-			}
-
-			oMap.putAll((Map<?, ?>) valueMap);
-
-			propertySheetPanel.removeProperty(prop);
-
-			final VizMapperProperty<?> newRootProp = new VizMapperProperty();
-
-			if (vp.getObjectType().equals(NODE))
-				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
-						oMap, newRootProp,
-						VizMapperMainPanel.NODE_VISUAL_MAPPING,
-						propertySheetPanel);
-			else
-				vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
-						oMap, newRootProp,
-						VizMapperMainPanel.EDGE_VISUAL_MAPPING,
-						propertySheetPanel);
-
-			vizMapPropertySheetBuilder.removeProperty(prop);
-			vizMapPropertySheetBuilder.getPropertyMap().get(
-					vmm.getVisualStyle().getName()).add(newRootProp);
-
-			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
-		} else {
-			System.out.println("Invalid.");
-		}
-
-		return;
+		generate(targetNetwork);
 	}
 }

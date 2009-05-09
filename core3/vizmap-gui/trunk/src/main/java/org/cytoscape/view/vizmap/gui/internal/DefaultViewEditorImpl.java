@@ -68,7 +68,6 @@ import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import cytoscape.CyNetworkManager;
 
