@@ -66,12 +66,12 @@ public class VizMapBypassNetworkListener implements PropertyChangeListener {
 	 * @param evnt The event we're hearing.
 	 */
 	public void propertyChange(PropertyChangeEvent evnt) {
-		if (evnt.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
-			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
-			cyNetworkManager.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
-
-			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener(ef);
-			cyNetworkManager.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
-		}
+//		if (evnt.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
+//			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
+//			cyNetworkManager.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
+//
+//			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener(ef);
+//			cyNetworkManager.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
+//		}
 	}
 }

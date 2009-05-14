@@ -45,24 +45,26 @@ import org.cytoscape.view.vizmap.gui.editor.EditorManager;
  * EdgeBypassMenuListener implements EdgeContextMenuListener
  * When a node is selected it calls bypass andd add
  */
-class EdgeBypassMenuListener
-    implements EdgeContextMenuListener {
+//class EdgeBypassMenuListener
+//    implements EdgeContextMenuListener {
 
+class EdgeBypassMenuListener {
 	private EditorManager ef;
     EdgeBypassMenuListener(EditorManager ef) {
 		this.ef = ef;
     }
 
-    /**
-     * @param nodeView The clicked EdgeView
-     * @param menu popup menu to add the Bypass menu
-     */
-    public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
-        EdgeBypass eb = new EdgeBypass(ef);
-
-        if (menu == null)
-            menu = new JPopupMenu();
-
-        menu.add(eb.addMenu(edgeView.getEdge()));
-    }
+    //FIXME!!
+//    /**
+//     * @param nodeView The clicked EdgeView
+//     * @param menu popup menu to add the Bypass menu
+//     */
+//    public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
+//        EdgeBypass eb = new EdgeBypass(ef);
+//
+//        if (menu == null)
+//            menu = new JPopupMenu();
+//
+//        menu.add(eb.addMenu(edgeView.getEdge()));
+//    }
 }

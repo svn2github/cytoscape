@@ -41,7 +41,7 @@ import java.awt.event.ActionEvent;
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
+import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 
 /**
  *
@@ -80,18 +80,19 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 		clone.setTitle(newName);
 
 		final Component defPanel = defViewEditor.getDefaultView(clone);
-		final CyNetworkView view = ((DefaultViewPanel) defPanel).getView();
-		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()
-				.getSize();
-
-		if (view != null) {
-			System.out.println("Creating Default Image for new visual style "
-					+ newName);
-			vizMapperMainPanel.updateDefaultImage(clone, view, panelSize);
-			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
-					.getDefaultImageManager().get(clone));
-		}
-
-		vizMapperMainPanel.switchVS(clone);
+//FIXME
+		//		final CyNetworkView view = ((DefaultViewEditor) defPanel).getView();
+//		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()
+//				.getSize();
+//
+//		if (view != null) {
+//			System.out.println("Creating Default Image for new visual style "
+//					+ newName);
+//			vizMapperMainPanel.updateDefaultImage(clone, view, panelSize);
+//			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
+//					.getDefaultImageManager().get(clone));
+//		}
+//
+//		vizMapperMainPanel.switchVS(clone);
 	}
 }

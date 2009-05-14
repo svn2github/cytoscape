@@ -66,7 +66,6 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
-import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
@@ -325,6 +324,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * @param view
 	 * @param size
 	 */
+	//TODO: this should be called by listeners. 
 	public void updateDefaultImage(VisualStyle vs, CyNetworkView view, Dimension size) {
 		Image image = defaultImageManager.remove(vs);
 

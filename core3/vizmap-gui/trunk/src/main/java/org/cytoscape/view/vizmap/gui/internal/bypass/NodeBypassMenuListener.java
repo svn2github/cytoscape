@@ -45,41 +45,50 @@ import javax.swing.border.EmptyBorder;
 
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
-
 /**
- * NodeBypassMenuListener implements NodeContextMenuListener
- * When a node is selected it calls bypass andd add
+ * NodeBypassMenuListener implements NodeContextMenuListener When a node is
+ * selected it calls bypass andd add
  */
-class NodeBypassMenuListener implements NodeContextMenuListener {
+
+
+
+//TODO: fix by using new task framework
+// class NodeBypassMenuListener implements NodeContextMenuListener {
+class NodeBypassMenuListener {
+
 	private EditorManager ef;
+
 	NodeBypassMenuListener(EditorManager ef) {
 		this.ef = ef;
 	}
 
 	/**
-	 * @param nodeView The clicked NodeView
-	 * @param menu popup menu to add the Bypass menu
+	 * @param nodeView
+	 *            The clicked NodeView
+	 * @param menu
+	 *            popup menu to add the Bypass menu
 	 */
-	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-		NodeBypass nb = new NodeBypass(ef);
-
-		if (menu == null)
-			menu = new JPopupMenu();
-
-		/*
-		 * Add Node ID as label.
-		 */
-		final String nodeID = nodeView.getNode().attrs().get("name",String.class);
-		final JLabel nodeLabel = new JLabel(nodeID);
-
-		if (menu == null)
-			menu = new JPopupMenu();
-
-		nodeLabel.setForeground(new Color(10, 50, 250, 150));
-		nodeLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
-		nodeLabel.setBorder(new EmptyBorder(5, 10, 5, 5));
-		menu.add(nodeLabel);
-
-		menu.add(nb.addMenu(nodeView.getNode()));
-	}
+//	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
+//		NodeBypass nb = new NodeBypass(ef);
+//
+//		if (menu == null)
+//			menu = new JPopupMenu();
+//
+//		/*
+//		 * Add Node ID as label.
+//		 */
+//		final String nodeID = nodeView.getNode().attrs().get("name",
+//				String.class);
+//		final JLabel nodeLabel = new JLabel(nodeID);
+//
+//		if (menu == null)
+//			menu = new JPopupMenu();
+//
+//		nodeLabel.setForeground(new Color(10, 50, 250, 150));
+//		nodeLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+//		nodeLabel.setBorder(new EmptyBorder(5, 10, 5, 5));
+//		menu.add(nodeLabel);
+//
+//		menu.add(nb.addMenu(nodeView.getNode()));
+//	}
 }

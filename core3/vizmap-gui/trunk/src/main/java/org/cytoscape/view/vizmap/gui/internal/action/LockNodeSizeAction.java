@@ -43,7 +43,6 @@ import javax.swing.JMenuItem;
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 
 import com.l2fprod.common.propertysheet.Property;
@@ -87,76 +86,76 @@ public class LockNodeSizeAction extends AbstractVizMapperAction {
 	 */
 	private void switchNodeSizeLock(boolean isLock) {
 		final Property[] props = propertySheetPanel.getProperties();
-
-		if (isLock && (menuItem != null)) {
-			// Case 1: Locked. Need to remove width/height props.
-			boolean isNodeSizeExist = false;
-
-			// TODO: fix this
-			// for (Property prop : props) {
-			// if
-			// (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName()))
-			// isNodeSizeExist = true;
-			//
-			// if
-			// (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName()))
-			// {
-			// nodeHeight = (VizMapperProperty) prop;
-			// propertySheetPanel.removeProperty(prop);
-			// } else if
-			// (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName()))
-			// {
-			// nodeWidth = (VizMapperProperty) prop;
-			// propertySheetPanel.removeProperty(prop);
-			// }
-			// }
-
-			if (isNodeSizeExist == false)
-				propertySheetPanel.addProperty(nodeSize);
-		} else {
-			// Case 2: Unlocked. Need to add W/H.
-			boolean isNodeWExist = false;
-			boolean isNodeHExist = false;
-
-			// for (Property prop : props) {
-			// if
-			// (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName()))
-			// {
-			// nodeSize = (VizMapperProperty) prop;
-			// propertySheetPanel.removeProperty(prop);
-			// }
-			//
-			// if
-			// (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName()))
-			// isNodeWExist = true;
-			//
-			// if
-			// (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName()))
-			// isNodeHExist = true;
-			// }
-
-			if (isNodeHExist == false) {
-				if (nodeHeight != null)
-					propertySheetPanel.addProperty(nodeHeight);
-			}
-
-			if (isNodeWExist == false) {
-				if (nodeHeight != null)
-					propertySheetPanel.addProperty(nodeWidth);
-			}
-		}
-
-		propertySheetPanel.repaint();
-
-		final VisualStyle targetStyle = this.vizMapperMainPanel
-				.getSelectedVisualStyle();
-
-		vizMapperMainPanel.updateDefaultImage(targetStyle,
-				(CyNetworkView) ((DefaultViewPanel) defViewEditor
-						.getDefaultView(targetStyle)).getView(),
-				vizMapperMainPanel.getDefaultPanel().getSize());
-		vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
-				.getDefaultImageManager().get(targetStyle));
+//FIXME
+//		if (isLock && (menuItem != null)) {
+//			// Case 1: Locked. Need to remove width/height props.
+//			boolean isNodeSizeExist = false;
+//
+//			// TODO: fix this
+//			// for (Property prop : props) {
+//			// if
+//			// (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName()))
+//			// isNodeSizeExist = true;
+//			//
+//			// if
+//			// (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName()))
+//			// {
+//			// nodeHeight = (VizMapperProperty) prop;
+//			// propertySheetPanel.removeProperty(prop);
+//			// } else if
+//			// (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName()))
+//			// {
+//			// nodeWidth = (VizMapperProperty) prop;
+//			// propertySheetPanel.removeProperty(prop);
+//			// }
+//			// }
+//
+//			if (isNodeSizeExist == false)
+//				propertySheetPanel.addProperty(nodeSize);
+//		} else {
+//			// Case 2: Unlocked. Need to add W/H.
+//			boolean isNodeWExist = false;
+//			boolean isNodeHExist = false;
+//
+//			// for (Property prop : props) {
+//			// if
+//			// (prop.getDisplayName().equals(VisualProperty.NODE_SIZE.getName()))
+//			// {
+//			// nodeSize = (VizMapperProperty) prop;
+//			// propertySheetPanel.removeProperty(prop);
+//			// }
+//			//
+//			// if
+//			// (prop.getDisplayName().equals(VisualProperty.NODE_WIDTH.getName()))
+//			// isNodeWExist = true;
+//			//
+//			// if
+//			// (prop.getDisplayName().equals(VisualProperty.NODE_HEIGHT.getName()))
+//			// isNodeHExist = true;
+//			// }
+//
+//			if (isNodeHExist == false) {
+//				if (nodeHeight != null)
+//					propertySheetPanel.addProperty(nodeHeight);
+//			}
+//
+//			if (isNodeWExist == false) {
+//				if (nodeHeight != null)
+//					propertySheetPanel.addProperty(nodeWidth);
+//			}
+//		}
+//
+//		propertySheetPanel.repaint();
+//
+//		final VisualStyle targetStyle = this.vizMapperMainPanel
+//				.getSelectedVisualStyle();
+//
+//		vizMapperMainPanel.updateDefaultImage(targetStyle,
+//				(CyNetworkView) ((DefaultViewPanel) defViewEditor
+//						.getDefaultView(targetStyle)).getView(),
+//				vizMapperMainPanel.getDefaultPanel().getSize());
+//		vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
+//				.getDefaultImageManager().get(targetStyle));
 	}
 
 	/**
