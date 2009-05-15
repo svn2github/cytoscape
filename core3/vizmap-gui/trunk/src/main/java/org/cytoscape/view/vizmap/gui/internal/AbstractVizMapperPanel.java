@@ -55,8 +55,10 @@ import javax.swing.JSplitPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.events.VisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
@@ -120,6 +122,8 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	protected AttributeEventsListener edgeAttrListener;
 	protected AttributeEventsListener networkAttrListener;
 	
+	protected CyEventHelper eventHelper;
+	
 	// Cytoscape Desktop Application Frame.
 	protected CySwingApplication cytoscapeDesktop;
 	
@@ -170,7 +174,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
-			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager) {
+			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager, CyEventHelper eventHelper) {
 
 		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
@@ -184,6 +188,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 		this.vizMapEventHandlerManager = vizMapEventHandlerManager;
 		this.editorWindowManager = editorWindowManager;
 		this.cyNetworkManager = cyNetworkManager;
+		this.eventHelper = eventHelper;
 		spcs = new SwingPropertyChangeSupport(this);
 		
 
@@ -490,6 +495,8 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	
 	public void setSelectedVisualStyle(final VisualStyle vs) {
 		vsComboBox.setSelectedItem(vs);
+		cl = VisualStyleSwitchedEvent.class;
+		eventHelper.fireAsynchronousEvent(new VisualStyleSwitchedEvent(), arg1);
 	}
 
 	public JPanel getDefaultViewPanel() {
