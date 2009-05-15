@@ -22,7 +22,7 @@ public class ViewFocusEventHandler extends AbstractVizMapEventHandler {
 
 			if (vs.equals(vizMapperMainPanel.getSelectedVisualStyle()) == false) {
 
-				vizMapperMainPanel.switchVS(vs, false);
+				vizMapperMainPanel.switchVS(vs);
 
 				vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
 						.getDefaultImageManager().get(vs));

@@ -89,7 +89,7 @@ import cytoscape.view.CySwingApplication;
 public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI {
 	
 	// Visual Properties which are not used in mapping now.
-	protected static final String CATEGORY_UNUSED = "Unused Properties";
+	public static final String CATEGORY_UNUSED = "Unused Properties";
 	
 	// TODO remove this
 	public static final String GRAPHICAL_MAP_VIEW = "Graphical View";
