@@ -46,12 +46,19 @@ import org.cytoscape.view.vizmap.VisualStyle;
 /**
  * The top-level component of Viz Map GUI.
  * 
+ * VizMapGUI consists of three parts:
+ *  1. Visual Style switch (combo box)
+ *  2. Default View Panel
+ *  3. Property Sheet
+ *  
+ *   Since there is no "current Visual Style" in the viamap api, the replacement for 
+ *   "current VS" is "selected visual style" managed here.
+ * 
  * This component tracks the selected Visual Style.
  * Because of this, Visual Style is editable even if current Network View does not exist.
  * 
   */
 public interface VizMapGUI {
-	
 	
 	public DefaultViewEditor getDefaultViewEditor();
 	public void setDefaultViewEditor(final DefaultViewEditor defViewEditor);
@@ -64,5 +71,8 @@ public interface VizMapGUI {
 	
 	// GUI state is always associated with a Visual Style.
 	public VisualStyle getSelectedVisualStyle();
+	
+	// Returns default visual style.
+	public VisualStyle getDefaultVisualStyle();
 	
 }

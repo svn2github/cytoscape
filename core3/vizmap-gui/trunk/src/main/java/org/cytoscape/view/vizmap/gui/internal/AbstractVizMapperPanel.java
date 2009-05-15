@@ -85,16 +85,31 @@ import cytoscape.view.CySwingApplication;
  * 
  */
 public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI {
-	protected static String DEFAULT_VS_TITLE = "Default";
 	
-	public static final String CATEGORY_UNUSED = "Unused Properties";
+	// Visual Properties which are not used in mapping now.
+	protected static final String CATEGORY_UNUSED = "Unused Properties";
+	
+	// TODO remove this
 	public static final String GRAPHICAL_MAP_VIEW = "Graphical View";
 	
+	// Default Visual Style
+	protected static final String DEFAULT_VS_TITLE = "Default";
 	private final VisualStyle defaultVS;
 	
 	public VisualStyle getDefaultVisualStyle() {
 		return defaultVS;
 	}
+
+	/////////// Main GUI Components /////////////////
+	
+	// Current Visual Style is managed by this object.
+	protected JComboBox vsComboBox;
+
+	// Default View Editor.  This is a singleton.
+	protected DefaultViewEditor defViewEditor;
+	
+	// Property Sheet for Mapping
+	protected PropertySheetPanel propertySheetPanel;
 
 	/*
 	 * Resources which will be injected through DI Container
@@ -105,8 +120,9 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	protected AttributeEventsListener edgeAttrListener;
 	protected AttributeEventsListener networkAttrListener;
 	
+	// Cytoscape Desktop Application Frame.
 	protected CySwingApplication cytoscapeDesktop;
-	protected DefaultViewEditor defViewEditor;
+	
 	protected VisualMappingManager vmm;
 
 	protected ColorManager colorMgr;
@@ -127,21 +143,12 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	protected PropertyEditor edgeNumericalAttrEditor;
 	protected PropertyEditor mappingTypeEditor;
 
-	protected PropertySheetPanel propertySheetPanel;
-
-	VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
+	protected VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 
 	protected Map<VisualStyle, Image> defaultImageManager;
 
 	protected DefaultTableCellRenderer emptyBoxRenderer;
 	protected DefaultTableCellRenderer filledBoxRenderer;
-
-//	protected static final Map<Object, Icon> nodeShapeIcons = NodeShape
-//			.getIconSet();
-//	protected static final Map<Object, Icon> arrowShapeIcons = ArrowShape
-//			.getIconSet();
-//	protected static final Map<Object, Icon> lineTypeIcons = LineStyle
-//			.getIconSet();
 
 	protected PropertyRendererRegistry rendReg;
 	protected PropertyEditorRegistry editorReg;
@@ -215,7 +222,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 
 		buttonPanel = new javax.swing.JPanel();
 
-		vsNameComboBox = new JComboBox();
+		vsComboBox = new JComboBox();
 
 		optionButton = new DropDownMenuButton(new AbstractAction() {
 			private final static long serialVersionUID = 1213748836776579L;
@@ -324,7 +331,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 		vsSelectPanelLayout.setHorizontalGroup(vsSelectPanelLayout
 				.createParallelGroup(GroupLayout.LEADING).add(
 						vsSelectPanelLayout.createSequentialGroup()
-								.addContainerGap().add(vsNameComboBox, 0,
+								.addContainerGap().add(vsComboBox, 0,
 										146, Short.MAX_VALUE).addPreferredGap(
 										LayoutStyle.RELATED).add(optionButton,
 										GroupLayout.PREFERRED_SIZE, 64,
@@ -335,7 +342,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 						vsSelectPanelLayout.createSequentialGroup().add(
 								vsSelectPanelLayout.createParallelGroup(
 										GroupLayout.BASELINE).add(
-										vsNameComboBox,
+										vsComboBox,
 										GroupLayout.PREFERRED_SIZE,
 										GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE).add(
@@ -371,7 +378,6 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	protected JSplitPane mainSplitPane;
 	protected JSplitPane listSplitPane;
 	protected DropDownMenuButton optionButton;
-	private JComboBox vsNameComboBox;
 	protected JPanel vsSelectPanel;
 	protected JScrollPane noMapListScrollPane;
 	protected JPanel buttonPanel;
@@ -479,11 +485,11 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	 */
 	public VisualStyle getSelectedVisualStyle() {
 		//TODO: Type safety.  Make sure this cast is always valid.
-		return (VisualStyle) vsNameComboBox.getSelectedItem();
+		return (VisualStyle) vsComboBox.getSelectedItem();
 	}
 	
 	public void setSelectedVisualStyle(final VisualStyle vs) {
-		vsNameComboBox.setSelectedItem(vs);
+		vsComboBox.setSelectedItem(vs);
 	}
 
 	public JPanel getDefaultViewPanel() {

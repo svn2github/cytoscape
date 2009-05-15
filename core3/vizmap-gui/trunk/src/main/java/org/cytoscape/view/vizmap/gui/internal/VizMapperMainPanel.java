@@ -134,7 +134,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	}
 
 	private void initPanel() {
-		vmm.addChangeListener(this);
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
@@ -185,11 +184,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		this.lastVSName = newName;
 	}
 
-	public void switchVS(VisualStyle style) {
-		switchVS(style, true);
-	}
 
-	public void switchVS(VisualStyle style, boolean redraw) {
+	public void switchVS(VisualStyle style) {
 		if (ignore)
 			return;
 
