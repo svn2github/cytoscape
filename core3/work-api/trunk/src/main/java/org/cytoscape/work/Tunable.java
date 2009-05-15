@@ -83,10 +83,14 @@ public @interface Tunable{
 	 */
 	Param[] alignment() default {};
 
+	/**
+	 * Parameters to choose if the name of a Tunable's group has to be displayed or not in the <code>titleBorder</code>  of the Panel representing this group.
+	 */
+	Param[] groupTitles() default {};
 	
 	
 	/**
 	 * Enumeration that contains the parameters used for <code>flag{}</code> and <code>alignment{}</code>
 	 */
-	public enum Param {slider,horizontal,vertical,uncollapsed,collapsed,network,session,attributes}
+	public enum Param {slider,horizontal,vertical,uncollapsed,collapsed,network,session,attributes,hidden,displayed}
 }
