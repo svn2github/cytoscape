@@ -68,8 +68,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		if ( !panelMap.containsKey( lh ) ) {
 			final String MAIN = " ";
 			Map<String, JPanel> panels = new HashMap<String,JPanel>();
-			panels.put(MAIN,createJPanel(MAIN,null,null));
+			panels.put(MAIN,createJPanel(MAIN,null,null,Param.hidden));
 
+			
 			// construct the gui
 			for (Guihandler gh : lh) {
 				//System.out.println("handler: " + gh.getName());
@@ -85,33 +86,43 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 					}
 				}
 
-				Map<String,Param> groupalignement = new HashMap<String,Param>();
+				Map<String,Param> groupAlignement = new HashMap<String,Param>();
+				Map<String,Param> groupTitles = new HashMap<String,Param>();
+				
 				String[] group = gh.getTunable().group();
 				Param[] alignments = gh.getTunable().alignment();
+				Param[] titles = gh.getTunable().groupTitles();
 				
-				if(group.length==alignments.length){
-					for(int i = 0; i < group.length; i++)groupalignement.put(group[i], alignments[i]);
-				}
+				if(group.length==alignments.length)for(int i = 0; i < group.length; i++)groupAlignement.put(group[i], alignments[i]);
 				if(group.length>alignments.length){
-					for(int i = 0; i < alignments.length; i++)groupalignement.put(group[i], alignments[i]);
-					for(int i=alignments.length;i<group.length;i++)groupalignement.put(group[i], Param.vertical);
+					for(int i = 0; i < alignments.length; i++)groupAlignement.put(group[i], alignments[i]);
+					for(int i=alignments.length;i<group.length;i++)groupAlignement.put(group[i], Param.vertical);
 				}
-				if(alignments.length>group.length){
-					for(int i = 0; i < group.length; i++)groupalignement.put(group[i], alignments[i]);
+				if(alignments.length>group.length)for(int i = 0; i < group.length; i++)groupAlignement.put(group[i], alignments[i]);
+				
+				if(group.length==titles.length)for(int i = 0; i < group.length; i++)groupTitles.put(group[i], titles[i]);
+				if(group.length>titles.length){
+					for(int i = 0; i < titles.length; i++)groupTitles.put(group[i], titles[i]);
+					for(int i=titles.length;i<group.length;i++)groupTitles.put(group[i], Param.displayed);
 				}
-
+				if(titles.length>group.length)for(int i = 0; i < group.length; i++)groupTitles.put(group[i], titles[i]);
+				
 				
 				
 				// find the proper group to put the handler panel in
-				String lastGroup = MAIN; 
+				String lastGroup = MAIN;
+				String groupNames = null;
 				for ( String g : group ) {
-					if ( !panels.containsKey(g) ) {
-						panels.put(g,createJPanel(g,gh,groupalignement.get(g)));			
-						panels.get(lastGroup).add( panels.get(g), gh.getTunable().xorKey() );
+					if(g.equals(""))throw new IllegalArgumentException("The group's name cannot be set to \"\"");
+					groupNames = groupNames + g;
+					if ( !panels.containsKey(groupNames) ) {
+//						panels.put(g,createJPanel(g,gh,groupalignement.get(g)));			
+//						panels.get(lastGroup).add( panels.get(g), gh.getTunable().xorKey() );
+						panels.put(groupNames,createJPanel(g,gh,groupAlignement.get(g),groupTitles.get(g)));						
+						panels.get(lastGroup).add( panels.get(groupNames), gh.getTunable().xorKey() );
 					}
-					lastGroup = g;
+					lastGroup = groupNames;
 				}
-
 				panels.get(lastGroup).add(gh.getJPanel());
 			}
 			panelMap.put(lh,panels.get(MAIN));
@@ -139,9 +150,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	}
 	
 
-	private JPanel createJPanel(String title, Guihandler gh,Param alignment) {
+	private JPanel createJPanel(String title, Guihandler gh,Param alignment,Param groupTitle) {
 		if ( gh == null )
-			return getSimplePanel(title,alignment);
+			return getSimplePanel(title,alignment,groupTitle);
 
 		// See if we need to create an XOR panel
 		if ( gh.getTunable().xorChildren() ) {
@@ -160,32 +171,37 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			}
 			
 			// We're not collapsable, so return a normal jpanel
-			return getSimplePanel(title,alignment);
+			return getSimplePanel(title,alignment,groupTitle);
 		}
 	}
-	private JPanel getSimplePanel(String title,Param alignment) {
+	private JPanel getSimplePanel(String title,Param alignment,Param groupTitle) {
 		JPanel ret = new JPanel();
 		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
 		titleborder.setTitleColor(Color.BLUE);
-		if(title!="" && title!=" "){
-			if(alignment==Param.vertical || alignment==null){
-				ret.setBorder(titleborder);
-				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
-			}
-			else if(alignment==Param.horizontal){
-				ret.setBorder(titleborder);
-				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
-			}
-		}
-		else {
-			if(alignment==Param.vertical || alignment==null){
-				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
-			}
-			else if(alignment==Param.horizontal){
-				
-				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
-			}
-		}
+		
+		if(groupTitle==Param.displayed || groupTitle==null) ret.setBorder(titleborder);
+		if(alignment==Param.vertical || alignment==null)ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+		else if(alignment==Param.horizontal)ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
+		
+//		if(title!="" && title!=" "){
+//			if(alignment==Param.vertical || alignment==null){
+//				ret.setBorder(titleborder);
+//				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+//			}
+//			else if(alignment==Param.horizontal){
+//				ret.setBorder(titleborder);
+//				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
+//			}
+//		}
+//		else {
+//			if(alignment==Param.vertical || alignment==null){
+//				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
+//			}
+//			else if(alignment==Param.horizontal){
+//				
+//				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
+//			}
+//		}
 		return ret;
 	}
 

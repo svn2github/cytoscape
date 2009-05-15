@@ -62,12 +62,13 @@ public class BooleanHandler extends AbstractGuiHandler {
 	
 	public String getState() {
 		String s;
-		try {
-			s = f.get(o).toString();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			s = "";
-		}
+//		try {
+//			s = f.get(o).toString();
+//		} catch (IllegalAccessException e) {
+//			e.printStackTrace();
+//			s = "";
+//		}
+		s = String.valueOf(jcb.isSelected());
 		return s;
 	}
 }
