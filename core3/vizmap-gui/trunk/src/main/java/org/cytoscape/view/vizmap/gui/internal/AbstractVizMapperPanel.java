@@ -112,7 +112,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	protected ColorManager colorMgr;
 	protected IconManager iconMgr;
 	protected VizMapperMenuManager menuMgr;
-	protected EditorManager editorFactory;
+	protected EditorManager editorManager;
 	protected VizMapperUtil vizMapperUtil;
 
 	// Action (context menu) manager
@@ -171,7 +171,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 		this.colorMgr = colorMgr;
 		this.vmm = vmm;
 		this.menuMgr = menuMgr;
-		this.editorFactory = editorFactory;
+		this.editorManager = editorFactory;
 		this.propertySheetPanel = propertySheetPanel;
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 		this.vizMapEventHandlerManager = vizMapEventHandlerManager;
@@ -189,16 +189,17 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	}
 
 	private void initDefaultEditors() {
-		nodeAttrEditor = editorFactory
-				.getDefaultComboBoxEditor("nodeAttrEditor");
-		edgeAttrEditor = editorFactory
-				.getDefaultComboBoxEditor("edgeAttrEditor");
-		nodeNumericalAttrEditor = editorFactory
-				.getDefaultComboBoxEditor("nodeNumericalAttrEditor");
-		edgeNumericalAttrEditor = editorFactory
-				.getDefaultComboBoxEditor("edgeNumericalAttrEditor");
-		mappingTypeEditor = editorFactory
-				.getDefaultComboBoxEditor("mappingTypeEditor");
+		//FIXME
+//		nodeAttrEditor = editorManager
+//				.getDefaultComboBoxEditor("nodeAttrEditor");
+//		edgeAttrEditor = editorManager
+//				.getDefaultComboBoxEditor("edgeAttrEditor");
+//		nodeNumericalAttrEditor = editorManager
+//				.getDefaultComboBoxEditor("nodeNumericalAttrEditor");
+//		edgeNumericalAttrEditor = editorManager
+//				.getDefaultComboBoxEditor("edgeNumericalAttrEditor");
+//		mappingTypeEditor = editorManager
+//				.getDefaultComboBoxEditor("mappingTypeEditor");
 	}
 
 	private void initComponents() {

@@ -37,6 +37,7 @@
 package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import java.awt.Component;
+import java.awt.Window;
 import java.beans.PropertyEditor;
 
 import javax.swing.Icon;
@@ -54,9 +55,10 @@ import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyEditor<T> {
 	// Target Visual Property.
 	protected final VisualProperty<T> vp;
+	
 	protected PropertyEditor propertyEditor;
 	protected Component continuousEditor;
-	protected Component vpValueEditor;
+	protected Window vpValueEditor;
 	protected TableCellRenderer tableCellRenderer;
 
 	/**
@@ -91,8 +93,11 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Component getVisualPropertyValueEditor() {
-		return vpValueEditor;
+	public T showVisualPropertyValueEditor() {
+		vpValueEditor.setVisible(true);
+		
+		//TODO: need new interface for value editor
+		return null;
 	}
 
 	/**

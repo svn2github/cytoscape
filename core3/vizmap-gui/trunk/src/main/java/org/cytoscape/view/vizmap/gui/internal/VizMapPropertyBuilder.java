@@ -172,9 +172,9 @@ public class VizMapPropertyBuilder {
 			final SortedSet<K> attrSet = new TreeSet<K>(attr.getColumnValues(
 					attrName, attrDataType));
 
-			setDiscreteProps(vp, discMapping, attrSet, editorFactory
-					.getDiscreteCellEditor(vp), editorFactory
-					.getDiscreteCellRenderer(vp), calculatorTypeProp);
+			//FIXME
+//			setDiscreteProps(vp, discMapping, attrSet, editorFactory.getVisualPropertyEditor(vp)
+//					, editorFactory.getVisualPropertyEditor(vp).getTableCellRenderer(10, 10), calculatorTypeProp);
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
 			int wi = propertySheetPanel.getTable().getCellRect(0, 1, true).width;
@@ -187,9 +187,9 @@ public class VizMapPropertyBuilder {
 			graphicalView.setParentProperty(calculatorTypeProp);
 			calculatorTypeProp.addSubProperty(graphicalView);
 
-			TableCellRenderer crenderer = editorFactory
-					.getContinuousCellRenderer(vp, wi, 70);
-			rendReg.registerRenderer(graphicalView, crenderer);
+			//FIXME
+//			TableCellRenderer crenderer = editorFactory.getVisualPropertyEditor(vp).getContinuousMappingEditor();
+//			rendReg.registerRenderer(graphicalView, crenderer);
 		} else if (visualMapping instanceof PassthroughMapping
 				&& (attrName != null)) {
 			// Passthrough

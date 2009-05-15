@@ -87,7 +87,7 @@ public interface VisualPropertyEditor<T> {
 	 *            parent component of this window
 	 * @return
 	 */
-	public Component getVisualPropertyValueEditor();
+	public T showVisualPropertyValueEditor();
 
 	/**
 	 * Provide Cell renderer for JTable or JList. Developers can implement

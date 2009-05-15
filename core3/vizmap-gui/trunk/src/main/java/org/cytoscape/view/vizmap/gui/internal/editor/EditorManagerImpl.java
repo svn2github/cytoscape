@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JDialog;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.model.VisualProperty;
@@ -54,15 +55,21 @@ import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPr
  *
  */
 public class EditorManagerImpl implements EditorManager {
-	private Set<VisualPropertyEditor> displayers;
+
+	private final Map<VisualProperty<?>, VisualPropertyEditor<?>> editors;
 
 	private final Map<String, PropertyEditor> comboBoxEditors;
+	
+	private final Map<VisualProperty<?>, Component> continuousEditors;
 
 	/**
 	 * Creates a new EditorFactory object.
 	 */
 	public EditorManagerImpl() {
-		displayers = new HashSet<VisualPropertyEditor>();
+		continuousEditors = new HashMap<VisualProperty<?>, Component>();
+		
+		editors = new HashMap<VisualProperty<?>, VisualPropertyEditor<?>>();
+
 		comboBoxEditors = new HashMap<String, PropertyEditor>();
 	}
 
@@ -73,8 +80,9 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#addEditorDisplayer(org
 	 * .cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
-	public void addEditorDisplayer(VisualPropertyEditor ed, Map properties) {
-		displayers.add(ed);
+	@SuppressWarnings("unchecked")
+	public void addVisualPropertyEditor(VisualPropertyEditor<?> ed, Map properties) {
+		this.editors.put(ed.getVisualProperty(), ed);
 	}
 
 	/*
@@ -84,22 +92,21 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#removeEditorDisplayer(
 	 * org.cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
-	public void removeEditorDisplayer(VisualPropertyEditor ed, Map properties) {
-		displayers.remove(ed);
+	@SuppressWarnings("unchecked")
+	public void removeVisualPropertyEditor(VisualPropertyEditor<?> ed, Map properties) {
+		editors.remove(ed);
 	}
 
-	private VisualPropertyEditor findEditor(VisualProperty type,
-			VisualPropertyEditor.MappingType edType) {
-		final Class<?> dataType = type.getType();
-
-		for (VisualPropertyEditor disp : displayers)
-			if ((dataType == disp.getDataType())
-					&& (edType == disp.getEditorType()))
-				return disp;
-
-		throw new NullPointerException("no editor displayer found for: "
-				+ type.toString());
-	}
+	// private <T> VisualPropertyEditor<T> findEditor(VisualProperty<T> type) {
+	// final Class<T> dataType = type.getType();
+	//
+	// for (VisualPropertyEditor<?> disp : displayers)
+	// if ((dataType == disp.getVisualProperty().getType()))
+	// return disp;
+	//
+	// throw new NullPointerException("no editor displayer found for: "
+	// + type.toString());
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -108,10 +115,14 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#showDiscreteEditor(java
 	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
 	 */
-	public Object showDiscreteEditor(Component parentComponent,
-			VisualProperty type) throws Exception {
-		return findEditor(type, EditorDisplayer.MappingType.VisualPropertyEditor).showContinuousMappingEditor(
-				parentComponent, type);
+	@SuppressWarnings("unchecked")
+	public <V> V showVisualPropertyValueEditor(Component parentComponent,
+			VisualProperty<V> type) throws Exception {
+
+		final VisualPropertyEditor<?> editor = editors.get(type);
+		assert editor.getVisualProperty() == type;
+
+		return (V) editor.showVisualPropertyValueEditor();
 	}
 
 	/*
@@ -121,74 +132,93 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#showContinuousEditor(java
 	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
 	 */
-	public Object showContinuousEditor(Component parentComponent,
-			VisualProperty type) throws Exception {
-		return findEditor(type, EditorDisplayer.MappingType.VisualPropertyEditor).showContinuousMappingEditor(
-				parentComponent, type);
+	public <V> void showContinuousEditor(Component parentComponent,
+			VisualProperty<V> type) throws Exception {
+		final VisualPropertyEditor<?> editor = editors.get(type);
+		assert editor.getVisualProperty() == type;
+		
+		//TODO: design dialog state mamagement
+//		
+//		
+//		Component mappingEditor = editor.getContinuousMappingEditor();
+//		
+//		JDialog editorDialog = new JDialog();
+//		editorDialog.setModal(true);
+//		editorDialog.setLocationRelativeTo(parentComponent);
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.cytoscape.vizmap.gui.editors.EditorFactory#getCellEditors()
-	 */
-	public List<PropertyEditor> getCellEditors() {
-		List<PropertyEditor> ret = new ArrayList<PropertyEditor>();
-
-		for (VisualPropertyEditor disp : displayers)
-			ret.add(disp.getVisualPropertyEditor());
-
-		return ret;
+	@SuppressWarnings("unchecked")
+	public <V> VisualPropertyEditor<V> getVisualPropertyEditor(
+			VisualProperty<V> vp) {
+		return (VisualPropertyEditor<V>) editors.get(vp);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellEditor(
-	 * org.cytoscape.viewmodel.VisualProperty)
-	 */
-	public PropertyEditor getDiscreteCellEditor(VisualProperty type) {
-		return findEditor(type, EditorDisplayer.MappingType.VisualPropertyEditor).getVisualPropertyEditor();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellRenderer
-	 * (org.cytoscape.viewmodel.VisualProperty)
-	 */
-	public TableCellRenderer getDiscreteCellRenderer(VisualProperty type) {
-		return findEditor(type, EditorDisplayer.MappingType.VisualPropertyEditor).getCellRenderer(
-				type, 0, 0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellEditor
-	 * (org.cytoscape.viewmodel.VisualProperty)
-	 */
-	public PropertyEditor getContinuousCellEditor(VisualProperty type) {
-		return findEditor(type, EditorDisplayer.MappingType.VisualPropertyEditor)
-				.getVisualPropertyEditor();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellRenderer
-	 * (org.cytoscape.viewmodel.VisualProperty, int, int)
-	 */
-	public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
-			int w, int h) {
-		return findEditor(type, EditorDisplayer.MappingType.VisualPropertyEditor)
-				.getCellRenderer(type, w, h);
-	}
-
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.cytoscape.vizmap.gui.editors.EditorFactory#getCellEditors()
+//	 */
+//	public List<PropertyEditor> getCellEditors() {
+//		List<PropertyEditor> ret = new ArrayList<PropertyEditor>();
+//
+//		for (VisualProperty<?> vp : editors.keySet())
+//			ret.add(editors.get(vp).getVisualPropertyEditor());
+//
+//		return ret;
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellEditor(
+//	 * org.cytoscape.viewmodel.VisualProperty)
+//	 */
+//	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type) {
+//		return 
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellRenderer
+//	 * (org.cytoscape.viewmodel.VisualProperty)
+//	 */
+//	public TableCellRenderer getDiscreteCellRenderer(VisualProperty type) {
+//		return findEditor(type,
+//				EditorDisplayer.MappingType.VisualPropertyEditor)
+//				.getCellRenderer(type, 0, 0);
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellEditor
+//	 * (org.cytoscape.viewmodel.VisualProperty)
+//	 */
+//	public PropertyEditor getContinuousCellEditor(VisualProperty type) {
+//		return findEditor(type,
+//				EditorDisplayer.MappingType.VisualPropertyEditor)
+//				.getVisualPropertyEditor();
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellRenderer
+//	 * (org.cytoscape.viewmodel.VisualProperty, int, int)
+//	 */
+//	public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
+//			int w, int h) {
+//		return findEditor(type,
+//				EditorDisplayer.MappingType.VisualPropertyEditor)
+//				.getCellRenderer(type, w, h);
+//	}
+//
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -204,4 +234,6 @@ public class EditorManagerImpl implements EditorManager {
 		}
 		return editor;
 	}
+	
+	
 }

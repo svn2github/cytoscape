@@ -74,9 +74,10 @@ public class EditorWindowManager {
 			final int width = propertySheetPanel.getTable().getCellRect(0, 1,
 					true).width;
 
-			final TableCellRenderer cRenderer = editorFactory
-					.getContinuousCellRenderer(type, width, 70);
-			rendReg.registerRenderer(vprop, cRenderer);
+			//FIXME
+//			final TableCellRenderer cRenderer = editorFactory
+//					.getContinuousCellRenderer(type, width, 70);
+//			rendReg.registerRenderer(vprop, cRenderer);
 			propertySheetPanel.getTable().repaint();
 		}
 	}

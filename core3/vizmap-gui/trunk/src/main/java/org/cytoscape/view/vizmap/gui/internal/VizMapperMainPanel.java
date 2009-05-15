@@ -158,7 +158,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * Register listeners for editors.
 	 */
 	private void registerCellEditorListeners() {
-		for (PropertyEditor p : editorFactory.getCellEditors()) {
+		for (PropertyEditor p : editorManager.getCellEditors()) {
 			p.addPropertyChangeListener(this);
 
 			if (p instanceof PropertyChangeListener)

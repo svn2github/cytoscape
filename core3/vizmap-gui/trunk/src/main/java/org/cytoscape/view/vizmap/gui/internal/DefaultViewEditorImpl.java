@@ -64,7 +64,10 @@ import javax.swing.SwingConstants;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.events.VisualStyleSwitchedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
@@ -88,27 +91,20 @@ import cytoscape.CyNetworkManager;
  * @since Cytoscape 2.5
  * @author kono
  */
-public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor {
+public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor, VisualStyleSwitchedListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
 
-	// List of Available Visual Properties.
-	private Set<VisualProperty<?>> edgeVP;
-	private Set<VisualProperty<?>> nodeVP;
-	private Set<VisualProperty<?>> networkVpSet;
-
-	private VisualMappingManager vmm;
+	// List of Available Visual Properties for current presentation.
+	private Set<VisualProperty<?>> edgeVp;
+	private Set<VisualProperty<?>> nodeVp;
+	private Set<VisualProperty<?>> networkVp;
 
 	private CyNetworkManager cyNetworkManager;
 
-	// static {
-	// EDGE_PROPS = new
-	// TreeSet<VisualProperty>(VisualProperty.getEdgeVisualPropertyList());
-	// NODE_PROPS = new
-	// TreeSet<VisualProperty>(VisualProperty.getNodeVisualPropertyList());
-	// }
-
 	private EditorManager editorFactory;
+		
+	private VisualStyle selectedStyle;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -119,15 +115,18 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	 *            DOCUMENT ME!
 	 */
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
-			final EditorManager editorFactory, final VisualMappingManager vmm,
-			final CyNetworkManager cyNetworkManager) {
+			final EditorManager editorFactory,
+			final CyNetworkManager cyNetworkManager, final VisualStyle selectedStyle) {
 		super();
 
-		this.vmm = vmm;
 		this.cyNetworkManager = cyNetworkManager;
 		this.setModal(true);
 		this.mainView = mainView;
 		this.editorFactory = editorFactory;
+		
+		// set current style
+		this.selectedStyle = selectedStyle;
+		
 		initComponents();
 		buildList();
 
@@ -217,12 +216,12 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 
 		globalList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				globalListActionPerformed(e);
+				listActionPerformed(e);
 			}
 		});
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Default Appearance for " + vmm.getVisualStyle(cyNetworkManager.getCurrentNetworkView()).getTitle());
+		setTitle("Default Appearance for " + selectedStyle.getTitle());
 		mainView.setBorder(new javax.swing.border.LineBorder(
 				java.awt.Color.darkGray, 1, true));
 
@@ -237,10 +236,11 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 				Short.MAX_VALUE));
 
 		jXTitledPanel1.setTitle("Default Visual Properties");
-		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(
-				new Point2D.Double(.2d, 0), new Color(Color.gray.getRed(),
-						Color.gray.getGreen(), Color.gray.getBlue(), 100),
-				new Point2D.Double(.8d, 0), Color.WHITE));
+		//TODO: fix gradient
+//		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(
+//				new Point2D.Double(.2d, 0), new Color(Color.gray.getRed(),
+//						Color.gray.getGreen(), Color.gray.getBlue(), 100),
+//				new Point2D.Double(.8d, 0), Color.WHITE));
 		jXTitledPanel1.setTitleFont(new java.awt.Font("SansSerif", 1, 12));
 		jXTitledPanel1.setMinimumSize(new java.awt.Dimension(300, 27));
 		jXTitledPanel1.setPreferredSize(new java.awt.Dimension(300, 27));
@@ -396,9 +396,9 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		pack();
 	} // </editor-fold>
 
-	private void listActionPerformed(MouseEvent e) {
+	private <V> void listActionPerformed(MouseEvent e) {
 		if (e.getClickCount() == 1) {
-			Object newValue = null;
+			V newValue = null;
 
 			final JList list;
 
@@ -409,43 +409,17 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 					list = edgeList;
 				}
 
-				VisualProperty type = (VisualProperty) list.getSelectedValue();
-				newValue = editorFactory.showDiscreteEditor(this, type);
+				VisualProperty<V> type = (VisualProperty<V>) list.getSelectedValue();
+				newValue = editorFactory.showVisualPropertyValueEditor(this, type);
 
 				if (newValue != null)
-					type.setDefault(vmm.getVisualStyle(), newValue);
+					selectedStyle.setDefaultValue(type, newValue);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 
 			buildList();
 			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-			mainView.updateView();
-			mainView.repaint();
-		}
-	}
-
-	private void globalListActionPerformed(MouseEvent e) {
-		if (e.getClickCount() == 1) {
-			final String selected = (String) globalList.getSelectedValue();
-			Color newColor = CyColorChooser.showDialog(this,
-					"Choose new color.", Color.white);
-
-			try {
-				vmm.getVisualStyle().getGlobalAppearanceCalculator()
-						.setDefaultColor(selected, newColor);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-
-			buildList();
-			// Cytoscape.redrawGraph(vmm.getNetworkView());
-
-			if (selected.equals("Background Color")) {
-				vmm.applyGlobalAppearances();
-				mainView.updateBackgroungColor(newColor);
-			}
-
 			mainView.updateView();
 			mainView.repaint();
 		}
@@ -486,7 +460,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		DefaultListModel model = new DefaultListModel();
 		nodeList.setModel(model);
 
-		for (VisualProperty type : nodeVP) {
+		for (VisualProperty type : nodeVp) {
 			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type
 					.getDefaultIcon());
 			nodeIcon.setLeftPadding(15);
@@ -497,7 +471,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		DefaultListModel eModel = new DefaultListModel();
 		edgeList.setModel(eModel);
 
-		for (VisualProperty type : edgeVP) {
+		for (VisualProperty type : edgeVp) {
 			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type
 					.getDefaultIcon());
 
@@ -534,14 +508,14 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 
 	private void lockSize() {
 		if (lockNodeSizeCheckBox.isSelected()) {
-			nodeVP.remove(NODE_WIDTH);
-			nodeVP.remove(NODE_HEIGHT);
-			nodeVP.add(NODE_SIZE);
+			nodeVp.remove(NODE_WIDTH);
+			nodeVp.remove(NODE_HEIGHT);
+			nodeVp.add(NODE_SIZE);
 			nac.setNodeSizeLocked(true);
 		} else {
-			nodeVP.add(NODE_WIDTH);
-			nodeVP.add(NODE_HEIGHT);
-			nodeVP.remove(NODE_SIZE);
+			nodeVp.add(NODE_WIDTH);
+			nodeVp.add(NODE_HEIGHT);
+			nodeVp.remove(NODE_SIZE);
 			nac.setNodeSizeLocked(false);
 		}
 
@@ -550,16 +524,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 		repaint();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#setVmm(org.cytoscape
-	 * .vizmap.VisualMappingManager)
-	 */
-	public void setVmm(VisualMappingManager vmm) {
-		this.vmm = vmm;
-	}
+
 
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339876646385L;
@@ -641,5 +606,14 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor 
 	public Component getDefaultView(VisualStyle vs) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void handleEvent(VisualStyleSwitchedEvent e) {
+		this.selectedStyle = e.getNewVisualStyle();
+	}
+
+	public void showEditor() {
+		// TODO Auto-generated method stub
+		
 	}
 }

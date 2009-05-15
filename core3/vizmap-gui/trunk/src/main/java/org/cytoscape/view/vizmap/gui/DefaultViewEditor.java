@@ -23,4 +23,6 @@ public interface DefaultViewEditor {
 	 * @return
 	 */
 	public Component getDefaultView(VisualStyle vs);
+	
+	public void showEditor();
 }

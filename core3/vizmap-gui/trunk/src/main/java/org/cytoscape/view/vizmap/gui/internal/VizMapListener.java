@@ -83,85 +83,87 @@ public class VizMapListener implements PropertyChangeListener {
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == VisualMappingManager.SAVE_VIZMAP_PROPS) {
-			// This section is for saving VS in a vizmap.props file.
-			// If signal contains no new value, Cytoscape consider it as a
-			// default file. Otherwise, save it as a user file.
-			File propertiesFile = null;
-
-			if (e.getNewValue() == null)
-				propertiesFile = CytoscapeInit.getConfigFile(VIZMAP_PROPS_FILE_NAME);
-			else
-				propertiesFile = new File((String) e.getNewValue());
-
-			if (propertiesFile != null) {
-				Set test = CalculatorCatalogFactory.getCalculatorCatalog().getVisualStyleNames();
-				Iterator it = test.iterator();
-				System.out.println("Saving the following Visual Styles: ");
-
-				while (it.hasNext())
-					System.out.println("    - " + it.next().toString());
-
-				CalculatorIO.storeCatalog(CalculatorCatalogFactory.getCalculatorCatalog(),
-				                          propertiesFile);
-				System.out.println("Vizmap saved to: " + propertiesFile);
-			}
-		} else if ((e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED)
-		           || (e.getPropertyName() == VisualMappingManager.VIZMAP_LOADED)) {
-			// This section is for restoring VS from a file.
-
-			// only clear the existing vizmap.props if we're restoring
-			// from a session file
-			if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED)
-				CalculatorCatalogFactory.getCalculatorCatalog().clearProps();
-
-			// get the new vizmap.props and apply it the existing properties
-			Object vizmapSource = e.getNewValue();
-			System.out.println("vizmapSource: '" + vizmapSource.toString() + "'");
-
-			Properties props = new Properties();
-
-			try {
-				InputStream is = null;
-
-				if (vizmapSource.getClass() == URL.class)
-					// is = ((URL) vizmapSource).openStream();
-					// Use URLUtil to get the InputStream since we might be using a proxy server 
-					// and because pages may be cached:
-					is = URLUtil.getBasicInputStream((URL) vizmapSource);
-				else if (vizmapSource.getClass() == String.class) {
-					// if its a RESTORED event the vizmap
-					// file will be in a zip file.
-					if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED) {
-						is = ZipUtil.readFile((String) vizmapSource, ".*vizmap.props");
-
-						// if its a LOADED event the vizmap file
-						// will be a normal file.
-					} else
-						is = FileUtil.getInputStream((String) vizmapSource);
-				}
-
-				if (is != null) {
-					props.load(is);
-					is.close();
-				}
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-
-			CalculatorCatalogFactory.getCalculatorCatalog().appendProps(props);
-
-			System.out.println("Applying visual styles from: " + vizmapSource.toString());
-
-			// In the situation where the old visual style has been overwritten
-			// with a new visual style of the same name, then make sure it is
-			// reapplied.
-			vmm.setVisualStyle(vmm.getVisualStyle().getName());
-			vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(), vmm.getVisualStyle());
-			//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-		}
+		
+		//FIXME  Need to be replaced by the new event framework.
+//		if (e.getPropertyName() == VisualMappingManager.SAVE_VIZMAP_PROPS) {
+//			// This section is for saving VS in a vizmap.props file.
+//			// If signal contains no new value, Cytoscape consider it as a
+//			// default file. Otherwise, save it as a user file.
+//			File propertiesFile = null;
+//
+//			if (e.getNewValue() == null)
+//				propertiesFile = CytoscapeInit.getConfigFile(VIZMAP_PROPS_FILE_NAME);
+//			else
+//				propertiesFile = new File((String) e.getNewValue());
+//
+//			if (propertiesFile != null) {
+//				Set test = CalculatorCatalogFactory.getCalculatorCatalog().getVisualStyleNames();
+//				Iterator it = test.iterator();
+//				System.out.println("Saving the following Visual Styles: ");
+//
+//				while (it.hasNext())
+//					System.out.println("    - " + it.next().toString());
+//
+//				CalculatorIO.storeCatalog(CalculatorCatalogFactory.getCalculatorCatalog(),
+//				                          propertiesFile);
+//				System.out.println("Vizmap saved to: " + propertiesFile);
+//			}
+//		} else if ((e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED)
+//		           || (e.getPropertyName() == VisualMappingManager.VIZMAP_LOADED)) {
+//			// This section is for restoring VS from a file.
+//
+//			// only clear the existing vizmap.props if we're restoring
+//			// from a session file
+//			if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED)
+//				CalculatorCatalogFactory.getCalculatorCatalog().clearProps();
+//
+//			// get the new vizmap.props and apply it the existing properties
+//			Object vizmapSource = e.getNewValue();
+//			System.out.println("vizmapSource: '" + vizmapSource.toString() + "'");
+//
+//			Properties props = new Properties();
+//
+//			try {
+//				InputStream is = null;
+//
+//				if (vizmapSource.getClass() == URL.class)
+//					// is = ((URL) vizmapSource).openStream();
+//					// Use URLUtil to get the InputStream since we might be using a proxy server 
+//					// and because pages may be cached:
+//					is = URLUtil.getBasicInputStream((URL) vizmapSource);
+//				else if (vizmapSource.getClass() == String.class) {
+//					// if its a RESTORED event the vizmap
+//					// file will be in a zip file.
+//					if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED) {
+//						is = ZipUtil.readFile((String) vizmapSource, ".*vizmap.props");
+//
+//						// if its a LOADED event the vizmap file
+//						// will be a normal file.
+//					} else
+//						is = FileUtil.getInputStream((String) vizmapSource);
+//				}
+//
+//				if (is != null) {
+//					props.load(is);
+//					is.close();
+//				}
+//			} catch (FileNotFoundException e1) {
+//				e1.printStackTrace();
+//			} catch (IOException e1) {
+//				e1.printStackTrace();
+//			}
+//
+//			CalculatorCatalogFactory.getCalculatorCatalog().appendProps(props);
+//
+//			System.out.println("Applying visual styles from: " + vizmapSource.toString());
+//
+//			// In the situation where the old visual style has been overwritten
+//			// with a new visual style of the same name, then make sure it is
+//			// reapplied.
+//			vmm.setVisualStyle(vmm.getVisualStyle().getName());
+//			vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(), vmm.getVisualStyle());
+//			//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+//		}
 	}
 
 	/**

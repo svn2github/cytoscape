@@ -47,7 +47,7 @@ import org.cytoscape.view.model.VisualProperty;
 
 
 /**
- * Manages states of editor windows
+ * Manages currently available editors
  *
  * @author kono
  *
@@ -56,7 +56,7 @@ public interface EditorManager {
 	
 	
 	/**
-	 * DOCUMENT ME!
+	 * Editor window state
 	 */
 	public static final String EDITOR_WINDOW_OPENED = "EDITOR_WINDOW_OPENED";
 
@@ -73,7 +73,8 @@ public interface EditorManager {
 	 * @param props
 	 *            DOCUMENT ME!
 	 */
-	public void addEditorDisplayer(VisualPropertyEditor<?> editor, Map properties);
+	@SuppressWarnings("unchecked")
+	public void addVisualPropertyEditor(VisualPropertyEditor<?> editor, Map properties);
 
 	/**
 	 * Listener for OSGi service.
@@ -83,7 +84,8 @@ public interface EditorManager {
 	 * @param props
 	 *            DOCUMENT ME!
 	 */
-	public void removeEditorDisplayer(VisualPropertyEditor<?> editor, Map properties);
+	@SuppressWarnings("unchecked")
+	public void removeVisualPropertyEditor(VisualPropertyEditor<?> editor, Map properties);
 	
 	/**
 	 * Display discrete value editor for this visual property.
@@ -93,7 +95,7 @@ public interface EditorManager {
 	 * @throws Exception
 	 *             DOCUMENT ME!
 	 */
-	public <V> V showDiscreteEditor(Component parentComponent, VisualProperty<V> type)
+	public <V> V showVisualPropertyValueEditor(Component parentComponent, VisualProperty<V> type)
 	    throws Exception;
 
 	/**
@@ -107,60 +109,62 @@ public interface EditorManager {
 	 * @throws Exception
 	 *             DOCUMENT ME!
 	 */
-	public <V> V showContinuousEditor(Component parentComponent, VisualProperty<V> type)
+	public <V> void showContinuousEditor(Component parentComponent, VisualProperty<V> type)
 	    throws Exception;
+	
+	public <V> VisualPropertyEditor<V> getVisualPropertyEditor(VisualProperty<V> vp);
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public List<PropertyEditor> getCellEditors();
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type);
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public TableCellRenderer getDiscreteCellRenderer(VisualProperty<?> type);
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public PropertyEditor getContinuousCellEditor(VisualProperty<?> type);
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type
-	 *            DOCUMENT ME!
-	 * @param w
-	 *            DOCUMENT ME!
-	 * @param h
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public TableCellRenderer getContinuousCellRenderer(VisualProperty<?> type, int w, int h);
-
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public List<PropertyEditor> getCellEditors();
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @param type
+//	 *            DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type);
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @param type
+//	 *            DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public TableCellRenderer getDiscreteCellRenderer(VisualProperty<?> type);
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @param type
+//	 *            DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public PropertyEditor getContinuousCellEditor(VisualProperty<?> type);
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @param type
+//	 *            DOCUMENT ME!
+//	 * @param w
+//	 *            DOCUMENT ME!
+//	 * @param h
+//	 *            DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public TableCellRenderer getContinuousCellRenderer(VisualProperty<?> type, int w, int h);
+//
 	/**
 	 *  DOCUMENT ME!
 	 *

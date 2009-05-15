@@ -49,6 +49,8 @@ import javax.swing.SwingUtilities;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.events.VisualStyleSwitchedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
@@ -61,14 +63,12 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 /**
  * Creates a new Mapping from GUI
  */
-public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
+public final class VizMapPropertySheetMouseAdapter extends MouseAdapter implements VisualStyleSwitchedListener {
 	private VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	private PropertySheetPanel propertySheetPanel;
 	private Map<VisualProperty<?>, JDialog> editorWindowManager;
-	private VisualMappingManager vmm;
-	private EditorManager editorFactory;
+	private EditorManager editorManager;
 	private PropertyEditorRegistry editorReg;
-	private VizMapGUI vizMapGUI;
 
 	/**
 	 * Creates a new VizMapPropertySheetMouseAdapter object.
@@ -83,12 +83,11 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 	public VizMapPropertySheetMouseAdapter(
 			VizMapPropertySheetBuilder sheetBuilder,
 			PropertySheetPanel propertySheetPanel,
-			Map<VisualProperty<?>, JDialog> editorWindowManager,
-			VizMapGUI vizMapGUI) {
+			Map<VisualProperty<?>, JDialog> editorWindowManager) {
+		
 		this.vizMapPropertySheetBuilder = sheetBuilder;
 		this.propertySheetPanel = propertySheetPanel;
 		this.editorWindowManager = editorWindowManager;
-		this.vizMapGUI = vizMapGUI;
 	}
 
 	/**
@@ -134,17 +133,17 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 
 				if (vp.getObjectType().equals(NODE)) {
 					newProp.setCategory(vp.getObjectType());
-					editorReg.registerEditor(newProp, editorFactory
+					editorReg.registerEditor(newProp, editorManager
 							.getDefaultComboBoxEditor("nodeAttrEditor"));
 				} else {
 					newProp.setCategory(EDGE);
-					editorReg.registerEditor(newProp, editorFactory
+					editorReg.registerEditor(newProp, editorManager
 							.getDefaultComboBoxEditor("edgeAttrEditor"));
 				}
 
 				mapProp.setDisplayName("Mapping Type");
 				mapProp.setValue("Please select a mapping type!");
-				editorReg.registerEditor(mapProp, editorFactory
+				editorReg.registerEditor(mapProp, editorManager
 						.getDefaultComboBoxEditor("mappingTypeEditor"));
 
 				newProp.addSubProperty(mapProp);
@@ -179,26 +178,32 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter {
 						.getSelectedVisualStyle()
 						.getVisualMappingFunction(type);
 
-				if (selectedMapping instanceof ContinuousMapping) {
-					/*
-					 * Need to check other windows.
-					 */
-					if (editorWindowManager.containsKey(type)) {
-						// This means editor is already on display.
-						editorWindowManager.get(type).requestFocus();
-
-						return;
-					} else {
-						try {
-							((JDialog) editorFactory.showContinuousEditor(
-									propertySheetPanel, type))
-									.addPropertyChangeListener(propertySheetPanel);
-						} catch (Exception e1) {
-							e1.printStackTrace();
-						}
-					}
-				}
+				//TODO: move this function editor manager.
+//				if (selectedMapping instanceof ContinuousMapping) {
+//					/*
+//					 * Need to check other windows.
+//					 */
+//					if (editorWindowManager.containsKey(type)) {
+//						// This means editor is already on display.
+//						editorWindowManager.get(type).requestFocus();
+//
+//						return;
+//					} else {
+//						try {
+//							((JDialog) editorFactory.showContinuousEditor(
+//									propertySheetPanel, type))
+//									.addPropertyChangeListener(propertySheetPanel);
+//						} catch (Exception e1) {
+//							e1.printStackTrace();
+//						}
+//					}
+//				}
 			}
 		}
+	}
+
+	public void handleEvent(VisualStyleSwitchedEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
