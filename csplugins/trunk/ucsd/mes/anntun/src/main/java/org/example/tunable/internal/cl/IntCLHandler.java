@@ -24,6 +24,7 @@ public class IntCLHandler extends AbstractCLHandler {
 
 		try {
 		if ( line.hasOption( fc ) ) {
+			if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
 			if ( f != null )
 				f.set(o,Integer.parseInt(line.getOptionValue(fc)) );
 			else if ( m != null )
@@ -37,7 +38,7 @@ public class IntCLHandler extends AbstractCLHandler {
 	
 	public Option getOption() {
 		String n = getName();
-		System.out.println("creating option for:    " + n);
+		//System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
 		if(n.substring(ind).length()<3)fc = n.substring(ind); 
@@ -57,5 +58,14 @@ public class IntCLHandler extends AbstractCLHandler {
 			return new Option(fc, n, true,"-- "+ t.description()+" --\n Method's parameter : "+list);
 		}
 		else return null;
+	}
+	
+	private void displayCmds(String fc){
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+		options.addOption(this.getOption());
+		formatter.setWidth(100);
+		System.out.println("\n");
+		formatter.printHelp("Detailed informations/commands for " + fc + " :", options);
 	}
 }

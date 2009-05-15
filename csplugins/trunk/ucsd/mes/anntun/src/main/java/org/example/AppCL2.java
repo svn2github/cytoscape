@@ -14,58 +14,114 @@ import org.example.command.*;
 
 import java.util.*;
 
+
 public class AppCL2
 {
     public static void main(String[] args) {
 
-		// command comes from someplace
-//		Command com = null;// = new PrintSomething();
-
-		java.util.List<taskFactory> list = new java.util.ArrayList<taskFactory>();
-		list.add(0,new taskFactory(new TunableSampler(), "This is a TaskFactory example for TunableSampler" ));
-		list.add(1,new taskFactory(new PrintSomething(), "This is a TaskFactory example for PrintSomething" ));
-		list.add(2,new taskFactory(new JActiveModules(), "This is a TaskFactory example for JActiveModules" ));
+		List<taskFactory> list = new ArrayList<taskFactory>();
+		list.add(new taskFactory(new TunableSampler(), "This is a TaskFactory example for TunableSampler\n youpitralala" ));
+		list.add(new taskFactory(new PrintSomething(), "This is a TaskFactory example for PrintSomething\n same thing here"));
+		list.add(new taskFactory(new JActiveModules(), "This is a TaskFactory example for JActiveModules\n different informations about the task" ));
 		
 		Options options = new Options();
 		for ( taskFactory tf : list ){
 			options.addOption( tf.getOption() );
 		}
-		options.addOption("h", "listTask", false, "Display all the available taskFactories.");
+		options.addOption("lT", "listTask", false, "Display all the available taskFactories.");
+		
+		
+		Map<String,List<String>> mapShortArgs = new HashMap<String,List<String>>();
+		for(Option opt :options.getOptions())mapShortArgs.put("-"+opt.getOpt().toString(),new ArrayList<String>());
 		
 
+		List<String> listValidedTasks = new ArrayList<String>();
+		
+		int lastIdx = 0;
+		String lastArg = null;
+		
+		for(String argsString : args){
+			if(mapShortArgs.containsKey(argsString)){
+				lastArg = argsString;
+				lastIdx=0;
+				listValidedTasks.add(lastArg);
+			}
+			else {
+				if(!argsString.startsWith("-")){
+					mapShortArgs.get(lastArg).get(lastIdx).concat(" "+argsString);
+					mapShortArgs.get(lastArg).set(lastIdx, mapShortArgs.get(lastArg).get(lastIdx).concat(" "+argsString));
+					lastIdx++;
+//					listValidedTasks.add(lastArg);
+				}
+				else if(lastArg==null){
+					System.out.println("The Task \"" + argsString + "\" doesn't exist : Check the options");
+					printHelp(options);
+					System.exit(0);
+				}
+				else mapShortArgs.get(lastArg).add(argsString);
+			}
+		}
+
+		
+		for(String argsString : args){
+			if(argsString.equals("-lT")){
+				mapShortArgs.get(argsString).add("-lT");
+				listValidedTasks.add("-lT");
+			}
+		}
+		
+		
+		
+//		System.out.println("Map Short Args :");
+//		for(String st : mapShortArgs.keySet())
+//			System.out.println(st+" = " + mapShortArgs.get(st));
+//		System.out.println("\n\n");
+//		
+//		System.out.println("List Valided Tasks :");
+//		for(String st : listValidedTasks)
+//			System.out.println(st);
+//		System.out.println("\n\n\n");
+		
+		
+		
+		
+		
+        String[] keys = new String[listValidedTasks.size()];
+        int g=0;
+        
+        for(String key : listValidedTasks){
+       			keys[g] = key;
+       			g++;
+        }
+                
 		
         CommandLineParser parser = new PosixParser();
         CommandLine line = null;
-        String[] args3 = null;
-        String[] args2 = new String[1];
-		java.util.List test = new java.util.ArrayList();
         
-        try {
-        	if(args.length>1){
-            	args3 = new String[args.length-1];
-
-        		for(int i=0;i<args.length;i++)test.add(args[i]);
-        		args2[0]= (String) test.get(0);           
-
-        		for(int i=0;i<test.size()-1;i++)args3[i]=(String) test.get(i+1);
-        		line = parser.parse(options, args2);
-        	}
-        	else line = parser.parse(options, args);
-
-        } catch (ParseException e) {
-            System.err.println("Parsing command line failed: " + e.getMessage());
+        
+        try{
+			line = parser.parse(options,keys);
+   		}catch(ParseException pe){
+			System.err.println("Parsing command line failed: " + pe.getMessage());
 			printHelp(options);
-            System.exit(1);
-        }
+			System.exit(1);
+		}
 
-        // use what is found on the command line to set values
-        if (line.hasOption("h")) {
+   		if (line.hasOption("lT")) {
+        	System.out.println("The General Help has been called");
 			printHelp(options);
 			System.exit(0);
+			
         }
-
-        for(taskFactory tf : list) tf.checkFactory(line,args3);
-
+   		
+   		for(String st : listValidedTasks){
+   			for(taskFactory tf : list){
+   				if(st.equals(tf.getName())){
+   					tf.checkFactory(line, mapShortArgs,listValidedTasks);
+   				}
+   			}
+   		}
+        
         if(args.length==0){
         	printHelp(options);
 			System.exit(0);
@@ -84,6 +140,7 @@ public class AppCL2
     	Command com;
     	String desc;
     	String name;
+    	
     	private taskFactory(Command com,String desc){
     		this.com=com;
     		this.desc=desc;
@@ -94,89 +151,64 @@ public class AppCL2
             return new Option(name.substring(0, 3),name,false,desc);
     	}
     	
-    	void checkFactory(CommandLine line,String[] args){
-    		if(line.hasOption(name.substring(0, 3))) getFactory(com,args);
+    	String getName(){
+    		return "-"+name.substring(0, 3);
     	}
     	
+    	void checkFactory(CommandLine line,Map<String,List<String>> map, List<String> list){
+//    		if(line.hasOption(name.substring(0, 3))){
+        		System.out.println("########### factory loaded = "+name+" ###########");
+        		String tFactoryName = new String("-"+name.substring(0, 3));
+        		List<String> lst = new ArrayList<String>();
+        		
+        		
+        		for(int i=0;i<map.get(tFactoryName).size();i++){
+        			if(map.get(tFactoryName).get(i).contains(" ")){
+            			int val = map.get(tFactoryName).get(i).indexOf(" ");        				
+            			lst.add(map.get(tFactoryName).get(i).substring(0, val));
+            			lst.add(map.get(tFactoryName).get(i).substring(val+1));
+        			}
+        			else{
+        				lst.add(map.get(tFactoryName).get(i).toString());
+        			}        			
+        		}
+        		String[] Args = new String[lst.size()]; 
+        		for(int i=0;i<lst.size();i++)Args[i] = lst.get(i);        		
+        		getFactory(com,Args);
+//    		}
+    	}
+    	
+    	
     	void getFactory(Command com,String[] args){
-    		// create the interceptor for this context
-    		// in this case it's a command line, so it takes the
-    		// args from main()
     		TunableInterceptor cl = new CLTunableInterceptor(args);
-
-    		// load the tunables from the object
     		cl.loadTunables(com);
-
-    		
-    		
-//    		// if the object implements the interface,
-//    		// give the object access to the handlers
-//    		// created for the tunables
 //    		if ( com instanceof HandlerController )
 //    			((HandlerController)com).controlHandlers(cl.getHandlers(com));
-
-    		
-    		
-    		// create the UI based on the object
     		cl.createUI(com);
-
-    		// execute the command
     		System.out.println("\n"+"result of command execution:");
     		com.execute();
     		System.out.println();
 
-    		// a properties object generated from someplace
+    		
     		Properties p = new Properties();
     		p.setProperty("printSomething.firstName","marge");
-
-    		// create the interceptor 
     		TunableInterceptor lp = new LoadPropsInterceptor(p);
-
-    		// load the tunables from the object
     		lp.loadTunables(com);
-    		
-    		
-    		
-//    		// if the object implements the interface,
-//    		// give the object access to the handlers
-//    		// created for the tunables
 //    		if ( com instanceof HandlerController )
 //    			((HandlerController)com).controlHandlers(lp.getHandlers(com));
-    		
-    		
-    		
-    		// create the UI based on the object
     		lp.createUI(com);
-
-    		// just to see what has been set
     		System.out.println("result of command execution after properties have been loaded:");
     		com.execute();
     		System.out.println();
     		
-    		// a properties object generated from someplace..
-    		Properties store = new Properties();
-
-    		// now load the properties into the appropriate tunables
-    		TunableInterceptor sp = new StorePropsInterceptor(store);
-    		// load the tunables from the object
-    		sp.loadTunables(com);
-
-
     		
-//    		// if the object implements the interface,
-//    		// give the object access to the handlers
-//    		// created for the tunables
+    		Properties store = new Properties();
+    		TunableInterceptor sp = new StorePropsInterceptor(store);
+    		sp.loadTunables(com);
 //    		if ( com instanceof HandlerController )
 //    			((HandlerController)com).controlHandlers(sp.getHandlers(com));
-    		
-
-    		
-    		// create the UI based on the object
     		sp.createUI(com);
-
-    		System.out.println("result of storing properties interceptor:");
-    		System.out.println(store.toString());
-    		System.out.println();
+    		System.out.println("result of storing properties interceptor:\n"+store.toString()+"\n");
     	}
     }
 }

@@ -34,12 +34,14 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		for ( CLHandler h : lh )
 			options.addOption( h.getOption() );
 
-		options.addOption("h", "help", false, "Print this message.");
+		options.addOption("H", "fullHelp", false, "Display all the available Commands");
 
-        // try to parse the cmd line
+
+		// try to parse the cmd line
         CommandLineParser parser = new PosixParser();
         CommandLine line = null;
 
+        
         try {
             line = parser.parse(options, args);
         } catch (ParseException e) {
@@ -48,8 +50,10 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
             System.exit(1);
         }
 
+
         // use what is found on the command line to set values
-        if (line.hasOption("h")) {
+        if (line.hasOption("H")) {
+        	System.out.println("The Help for "+ objs[0].getClass().getSimpleName()+" has been called");
 			printHelp(options);
 			System.exit(0);
         }
@@ -61,7 +65,7 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 
 	private static void printHelp(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
-		System.out.println("\n");
-		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [Options]","\nOptions", options,"");
+		formatter.setWidth(100);
+		formatter.printHelp("\njava -Xmx512M -jar cytoscape.jar [Options]","\nOptions", options,"\nRun : \"java -jar anntun.jar <command> --cmd\" to get detailed help on each command");
 	}
 }

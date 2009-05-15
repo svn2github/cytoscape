@@ -55,18 +55,16 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 		String lbound="\u2264";
 		String ubound="\u2264";
 		
-
-		System.out.println("creating option for:    " + n);
+		//System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
 		if(n.substring(ind).length()<3)fc = n.substring(ind); 
 		else fc = n.substring(ind,ind+3);
 		
-
 		if( f!=null){
 			if(fbo.isLowerBoundStrict())lbound="<";
 			if(fbo.isUpperBoundStrict())ubound="<";
-			return new Option(fc, n, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + " )"+"\n                                      --cmd : display available commands");		
+			return new Option(fc, n, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + ")");//+"\n                                      --cmd : display informations and available commands");		
 		}
 		else if(m!=null){
 			Type[] types = m.getParameterTypes();
@@ -93,7 +91,38 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
+	
+	public Option getDetailedOption() {
+		String n = getName();
+		String lbound="\u2264";
+		String ubound="\u2264";
+		
+		int ind = n.lastIndexOf(".")+1;
+		String fc;
+		if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		else fc = n.substring(ind,ind+3);
+		if( f!=null){
+			if(fbo.isLowerBoundStrict())lbound="<";
+			if(fbo.isUpperBoundStrict())ubound="<";
+			return new Option(fc, n, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + ")\nCommands Options for -"+ fc +" :\n (multiple commands can be coupled by inserting \":\")\n  example : -"+fc+" val.x:up.y:upstrict.true \n-"+fc+" val.x : setValue \n-"+fc+" up.x : setUpperBound \n-"+fc+" low.x : setLowerBound \n-"+fc+" lowstrict.Boolean : setLowerBoundStrict \n-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
+		}
+		else if(m!=null){
+			Type[] types = m.getParameterTypes();
+			java.util.List list = new java.util.ArrayList();
+			for(int i=0;i<types.length;i++) list.add(i,types[i]);
+			return new Option(fc, n, true,"-- "+ t.description()+" --\n  Method's parameters : "+list);
+		}
+		else return null;
+	}
+	
+	
 	private void displayCmds(String fc){
-		System.out.println("\nCommands Options for -"+ fc +"\n (multiple commands can be coupled by inserting \" : \" ) example : -"+fc+" val.x:up.y:upstrict.true\n\t-"+fc+" val.x : setValue\n\t-"+fc+" up.x : setUpperBound\n\t-"+fc+" low.x : setLowerBound\n\t-"+fc+" lowstrict.Boolean : setLowerBoundStrict\n\t-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+		options.addOption(this.getDetailedOption());
+		formatter.setWidth(100);
+		System.out.println("\n");
+		formatter.printHelp("Detailed informations/commands for " + fc + " :", options);
+		//System.out.println("\nCommands Options for -"+ fc +"\n (multiple commands can be coupled by inserting \" : \" ) example : -"+fc+" val.x:up.y:upstrict.true\n\t-"+fc+" val.x : setValue\n\t-"+fc+" up.x : setUpperBound\n\t-"+fc+" low.x : setLowerBound\n\t-"+fc+" lowstrict.Boolean : setLowerBoundStrict\n\t-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
 	}
 }

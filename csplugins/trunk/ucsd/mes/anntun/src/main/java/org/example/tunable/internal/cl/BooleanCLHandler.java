@@ -25,6 +25,7 @@ public class BooleanCLHandler extends AbstractCLHandler {
 
 		try {
 			if ( line.hasOption( fc ) ) {
+				if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
 				if ( f != null )
 					f.set(o,Boolean.parseBoolean(line.getOptionValue(fc)));
 				else if ( m != null )
@@ -37,7 +38,7 @@ public class BooleanCLHandler extends AbstractCLHandler {
 
     public Option getOption() {
         String n = getName();
-        System.out.println("creating option for:    " + n);
+        //System.out.println("creating option for:    " + n);
         int ind = n.lastIndexOf(".")+1;
 		String fc;
 		if(n.substring(ind).length()<3)fc = n.substring(ind);
@@ -59,4 +60,15 @@ public class BooleanCLHandler extends AbstractCLHandler {
 		}
 		else return null;
     }
+    
+    
+	private void displayCmds(String fc){
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+		options.addOption(this.getOption());
+		formatter.setWidth(100);
+		System.out.println("\n");
+		formatter.printHelp("Detailed informations/commands for " + fc + " :", options);
+		//System.out.println("\nCommands Options for -"+ fc +"\n (multiple commands can be coupled by inserting \" : \" ) example : -"+fc+" val.x:up.y:upstrict.true\n\t-"+fc+" val.x : setValue\n\t-"+fc+" up.x : setUpperBound\n\t-"+fc+" low.x : setLowerBound\n\t-"+fc+" lowstrict.Boolean : setLowerBoundStrict\n\t-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
+	}
 }

@@ -35,6 +35,7 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 		
 		try {
 			if ( line.hasOption( fc ) ) {
+				if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
 				if( f!= null){
 					lss.setSelectedValue((T)line.getOptionValue(fc));
 					f.set(o, lss);
@@ -51,11 +52,20 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 	
 	public Option getOption() {
 		String n = getName();
-		System.out.println("creating option for:    " + n);
+		//System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
 		if(n.substring(ind).length()<3)fc = n.substring(ind); 
 		else fc = n.substring(ind,ind+3);
 		return new Option(fc, n, true,"-- "+ t.description()+" --\n  current selected value : "+lss.getSelectedValue()+"\n  available values : "+lss.getPossibleValues());
-	}	
+	}
+	
+	private void displayCmds(String fc){
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+		options.addOption(this.getOption());
+		formatter.setWidth(100);
+		System.out.println("\n");
+		formatter.printHelp("Detailed informations/commands for " + fc + " :", options);
+	}
 }
