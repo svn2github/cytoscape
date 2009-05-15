@@ -49,6 +49,7 @@ import javax.swing.SwingUtilities;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.events.VisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.events.VisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
@@ -69,6 +70,8 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter implemen
 	private Map<VisualProperty<?>, JDialog> editorWindowManager;
 	private EditorManager editorManager;
 	private PropertyEditorRegistry editorReg;
+	
+	private VisualStyle selectedStyle;
 
 	/**
 	 * Creates a new VizMapPropertySheetMouseAdapter object.
@@ -83,11 +86,12 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter implemen
 	public VizMapPropertySheetMouseAdapter(
 			VizMapPropertySheetBuilder sheetBuilder,
 			PropertySheetPanel propertySheetPanel,
-			Map<VisualProperty<?>, JDialog> editorWindowManager) {
+			Map<VisualProperty<?>, JDialog> editorWindowManager, VisualStyle selectedStyle) {
 		
 		this.vizMapPropertySheetBuilder = sheetBuilder;
 		this.propertySheetPanel = propertySheetPanel;
 		this.editorWindowManager = editorWindowManager;
+		this.selectedStyle = selectedStyle;
 	}
 
 	/**
@@ -174,8 +178,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter implemen
 				else
 					return;
 
-				final VisualMappingFunction<?, ?> selectedMapping = vizMapGUI
-						.getSelectedVisualStyle()
+				final VisualMappingFunction<?, ?> selectedMapping = selectedStyle
 						.getVisualMappingFunction(type);
 
 				//TODO: move this function editor manager.
@@ -203,7 +206,6 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter implemen
 	}
 
 	public void handleEvent(VisualStyleSwitchedEvent e) {
-		// TODO Auto-generated method stub
-		
+		this.selectedStyle = e.getNewVisualStyle();
 	}
 }

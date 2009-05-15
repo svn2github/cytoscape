@@ -49,7 +49,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.DefaultListModel;
@@ -61,7 +64,9 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.NetworkRenderer;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.events.VisualStyleSwitchedEvent;
@@ -73,6 +78,8 @@ import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import cytoscape.CyNetworkManager;
+
+import static org.cytoscape.model.GraphObject.*;
 
 /**
  * Dialog for editing default visual property values.<br>
@@ -91,7 +98,8 @@ import cytoscape.CyNetworkManager;
  * @since Cytoscape 2.5
  * @author kono
  */
-public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor, VisualStyleSwitchedListener {
+public class DefaultViewEditorImpl extends JDialog implements
+		DefaultViewEditor, VisualStyleSwitchedListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
 
@@ -99,12 +107,17 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 	private Set<VisualProperty<?>> edgeVp;
 	private Set<VisualProperty<?>> nodeVp;
 	private Set<VisualProperty<?>> networkVp;
+	
+	private Map<String, Set<VisualProperty<?>>> vpSets;
+	private Map<String, JList> listMap;
 
 	private CyNetworkManager cyNetworkManager;
 
 	private EditorManager editorFactory;
-		
+
 	private VisualStyle selectedStyle;
+
+	private NetworkRenderer presentation;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -116,17 +129,22 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 	 */
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
 			final EditorManager editorFactory,
-			final CyNetworkManager cyNetworkManager, final VisualStyle selectedStyle) {
+			final CyNetworkManager cyNetworkManager,
+			final VisualStyle selectedStyle) {
 		super();
+		vpSets = new HashMap<String, Set<VisualProperty<?>>>();
+		listMap = new HashMap<String, JList>();
 
 		this.cyNetworkManager = cyNetworkManager;
 		this.setModal(true);
 		this.mainView = mainView;
 		this.editorFactory = editorFactory;
-		
+
 		// set current style
 		this.selectedStyle = selectedStyle;
-		
+
+		updateVisualPropertyLists();
+
 		initComponents();
 		buildList();
 
@@ -138,6 +156,21 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 		});
 	}
 
+	private void updateVisualPropertyLists() {
+		vpSets.clear();
+		presentation = cyNetworkManager.getPresentation(mainView.getView());
+		VisualLexicon lexicon = presentation.getVisualLexicon();
+		nodeVp = new HashSet<VisualProperty<?>>(lexicon
+				.getVisualProperties(NODE));
+		edgeVp = new HashSet<VisualProperty<?>>(lexicon
+				.getVisualProperties(EDGE));
+		networkVp = new HashSet<VisualProperty<?>>(lexicon
+				.getVisualProperties(NETWORK));
+		vpSets.put(NODE, nodeVp);
+		vpSets.put(EDGE, edgeVp);
+		vpSets.put(NETWORK, networkVp);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -147,11 +180,11 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 	 */
 	public JPanel showEditor(Component parent) {
 		setSize(900, 400);
-		
-		//TODO: fix the width/height lock 
-//		lockSize();
-//		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
-		
+
+		// TODO: fix the width/height lock
+		// lockSize();
+		// lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
+
 		mainView.updateView();
 		setLocationRelativeTo(parent);
 		setVisible(true);
@@ -167,10 +200,10 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 	 * .lang.String)
 	 */
 	public JPanel getDefaultView(String vsName) {
-		//TODO: update background color
-//		mainView.updateBackgroungColor(vmm.getVisualStyle()
-//				.getGlobalAppearanceCalculator().getDefaultBackgroundColor());
-		
+		// TODO: update background color
+		// mainView.updateBackgroungColor(vmm.getVisualStyle()
+		// .getGlobalAppearanceCalculator().getDefaultBackgroundColor());
+
 		mainView.updateView();
 
 		return getPanel();
@@ -195,7 +228,11 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 		lockNodeSizeCheckBox = new javax.swing.JCheckBox();
 		applyButton = new javax.swing.JButton();
 
-		globalList = new JXList();
+		networkList = new JXList();
+		
+		listMap.put(NODE, nodeList);
+		listMap.put(EDGE, edgeList);
+		listMap.put(NETWORK, networkList);
 
 		cancelButton = new javax.swing.JButton();
 		cancelButton.setVisible(false);
@@ -214,7 +251,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 			}
 		});
 
-		globalList.addMouseListener(new MouseAdapter() {
+		networkList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				listActionPerformed(e);
 			}
@@ -236,11 +273,11 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 				Short.MAX_VALUE));
 
 		jXTitledPanel1.setTitle("Default Visual Properties");
-		//TODO: fix gradient
-//		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(
-//				new Point2D.Double(.2d, 0), new Color(Color.gray.getRed(),
-//						Color.gray.getGreen(), Color.gray.getBlue(), 100),
-//				new Point2D.Double(.8d, 0), Color.WHITE));
+		// TODO: fix gradient
+		// jXTitledPanel1.setTitlePainter(new BasicGradientPainter(
+		// new Point2D.Double(.2d, 0), new Color(Color.gray.getRed(),
+		// Color.gray.getGreen(), Color.gray.getBlue(), 100),
+		// new Point2D.Double(.8d, 0), Color.WHITE));
 		jXTitledPanel1.setTitleFont(new java.awt.Font("SansSerif", 1, 12));
 		jXTitledPanel1.setMinimumSize(new java.awt.Dimension(300, 27));
 		jXTitledPanel1.setPreferredSize(new java.awt.Dimension(300, 27));
@@ -248,7 +285,7 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 
 		nodeScrollPane.setViewportView(nodeList);
 		edgeScrollPane.setViewportView(edgeList);
-		globalScrollPane.setViewportView(globalList);
+		globalScrollPane.setViewportView(networkList);
 
 		defaultObjectTabbedPane.addTab("Node", nodeScrollPane);
 		defaultObjectTabbedPane.addTab("Edge", edgeScrollPane);
@@ -273,8 +310,8 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory
 				.createEmptyBorder(0, 0, 0, 0));
 		lockNodeSizeCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		//TODO: fix lock
-//		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
+		// TODO: fix lock
+		// lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
 		lockNodeSizeCheckBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				lockSize();
@@ -399,24 +436,19 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 	private <V> void listActionPerformed(MouseEvent e) {
 		if (e.getClickCount() == 1) {
 			V newValue = null;
+			final JList list = (JList) e.getSource();
 
-			final JList list;
 
+			VisualProperty<V> vp = (VisualProperty<V>) list.getSelectedValue();
 			try {
-				if (e.getSource() == nodeList) {
-					list = nodeList;
-				} else {
-					list = edgeList;
-				}
-
-				VisualProperty<V> type = (VisualProperty<V>) list.getSelectedValue();
-				newValue = editorFactory.showVisualPropertyValueEditor(this, type);
-
-				if (newValue != null)
-					selectedStyle.setDefaultValue(type, newValue);
+				newValue = editorFactory.showVisualPropertyValueEditor(this, vp);
 			} catch (Exception e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+
+			if (newValue != null)
+				selectedStyle.setDefaultValue(vp, newValue);
 
 			buildList();
 			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
@@ -435,10 +467,9 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 	private javax.swing.JTabbedPane defaultObjectTabbedPane;
 	private JXList nodeList;
 	private JXList edgeList;
-	private JXList globalList;
+	private JXList networkList;
 	private org.jdesktop.swingx.JXPanel jXPanel1;
 
-	// private org.jdesktop.swingx.JXPanel jXPanel2;
 	private org.jdesktop.swingx.JXTitledPanel jXTitledPanel1;
 
 	// End of variables declaration
@@ -453,102 +484,68 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 	 * DOCUMENT ME!
 	 */
 	private void buildList() {
-		List<Icon> nodeIcons = new ArrayList<Icon>();
-		List<Icon> edgeIcons = new ArrayList<Icon>();
-		List<Icon> globalIcons = new ArrayList<Icon>();
 
-		DefaultListModel model = new DefaultListModel();
-		nodeList.setModel(model);
-
-		for (VisualProperty type : nodeVp) {
-			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type
-					.getDefaultIcon());
-			nodeIcon.setLeftPadding(15);
-			model.addElement(type);
-			nodeIcons.add(nodeIcon);
+		VisualPropCellRenderer renderer = new VisualPropCellRenderer();
+		
+		for(String key:vpSets.keySet()) {
+			DefaultListModel model = new DefaultListModel();
+			JList list = listMap.get(key);
+			list.setModel(model);
+			Set<VisualProperty<?>> vps = vpSets.get(key);
+			for(VisualProperty<?> vp: vps)
+				model.addElement(vp);
+			list.setCellRenderer(renderer);
 		}
-
-		DefaultListModel eModel = new DefaultListModel();
-		edgeList.setModel(eModel);
-
-		for (VisualProperty type : edgeVp) {
-			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type
-					.getDefaultIcon());
-
-			if (edgeIcon != null) {
-				edgeIcon.setLeftPadding(15);
-				eModel.addElement(type);
-				edgeIcons.add(edgeIcon);
-			}
-		}
-
-		GlobalAppearanceCalculator gac = vmm.getVisualStyle()
-				.getGlobalAppearanceCalculator();
-		DefaultListModel gModel = new DefaultListModel();
-		globalList.setModel(gModel);
-
-		for (String name : gac.getGlobalAppearanceNames()) {
-			try {
-				globalIcons
-						.add(new GlobalIcon(name, gac.getDefaultColor(name)));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			gModel.addElement(name);
-		}
-
-		nodeList.setCellRenderer(new VisualPropCellRenderer(nodeIcons));
-		edgeList.setCellRenderer(new VisualPropCellRenderer(edgeIcons));
-		globalList.setCellRenderer(new VisualPropCellRenderer(globalIcons));
 
 		mainView.updateView();
 		mainView.repaint();
 	}
 
 	private void lockSize() {
-		if (lockNodeSizeCheckBox.isSelected()) {
-			nodeVp.remove(NODE_WIDTH);
-			nodeVp.remove(NODE_HEIGHT);
-			nodeVp.add(NODE_SIZE);
-			nac.setNodeSizeLocked(true);
-		} else {
-			nodeVp.add(NODE_WIDTH);
-			nodeVp.add(NODE_HEIGHT);
-			nodeVp.remove(NODE_SIZE);
-			nac.setNodeSizeLocked(false);
-		}
-
-		buildList();
-		mainView.updateView();
-		repaint();
+		// TODO fix lock function
+		// if (lockNodeSizeCheckBox.isSelected()) {
+		// nodeVp.remove(NODE_WIDTH);
+		// nodeVp.remove(NODE_HEIGHT);
+		// nodeVp.add(NODE_SIZE);
+		// nac.setNodeSizeLocked(true);
+		// } else {
+		// nodeVp.add(NODE_WIDTH);
+		// nodeVp.add(NODE_HEIGHT);
+		// nodeVp.remove(NODE_SIZE);
+		// nac.setNodeSizeLocked(false);
+		// }
+		//
+		// buildList();
+		// mainView.updateView();
+		// repaint();
 	}
-
-
 
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339876646385L;
+
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC,
 				14);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
 		private final Color SELECTED_COLOR = new Color(10, 50, 180, 20);
 		private final Color SELECTED_FONT_COLOR = new Color(0, 150, 255, 150);
-		private final List<Icon> icons;
 
-		public VisualPropCellRenderer(List<Icon> icons) {
-			this.icons = icons;
+		public VisualPropCellRenderer() {
 			setOpaque(true);
 		}
 
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
-			final VisualPropertyIcon icon;
 
-			if (icons.size() > index) {
-				icon = (VisualPropertyIcon) icons.get(index);
-			} else
-				icon = null;
+			Icon icon = null;
+			VisualProperty<?> vp = null;
 
+			if (value instanceof VisualProperty<?>) {
+				vp = (VisualProperty<?>) value;
+
+				NetworkRenderer presentation = cyNetworkManager
+						.getPresentation(mainView.getView());
+				icon = presentation.getDefaultIcon(vp);
+			}
 			setText(value.toString());
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
@@ -557,15 +554,8 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 			this.setVerticalAlignment(SwingConstants.CENTER);
 			this.setIconTextGap(55);
 
-			if (value instanceof VisualProperty
-					&& (((VisualProperty) value).getType() == String.class)) {
-				final Object defVal = ((VisualProperty) value).getDefault(vmm
-						.getVisualStyle());
-
-				if (defVal != null) {
-					this.setToolTipText((String) defVal);
-				}
-			}
+			if (vp != null && vp.getType().equals(String.class))
+				this.setToolTipText(vp.getDefault().toString());
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list
@@ -581,27 +571,27 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 		}
 	}
 
-	/*
-	 * Draw global color icon
-	 */
-	class GlobalIcon extends VisualPropertyIcon {
-		private final static long serialVersionUID = 1202339876659938L;
-
-		public GlobalIcon(String name, Color color) {
-			super(name, color);
-		}
-
-		public void paintIcon(Component c, Graphics g, int x, int y) {
-			Graphics2D g2d = (Graphics2D) g;
-
-			g2d.setColor(color);
-			g2d.fillRect(5, 3, 50, 32);
-
-			g2d.setStroke(new BasicStroke(1f));
-			g2d.setColor(Color.DARK_GRAY);
-			g2d.drawRect(5, 3, 50, 32);
-		}
-	}
+	// /*
+	// * Draw global color icon
+	// */
+	// class GlobalIcon extends VisualPropertyIcon {
+	// private final static long serialVersionUID = 1202339876659938L;
+	//
+	// public GlobalIcon(String name, Color color) {
+	// super(name, color);
+	// }
+	//
+	// public void paintIcon(Component c, Graphics g, int x, int y) {
+	// Graphics2D g2d = (Graphics2D) g;
+	//
+	// g2d.setColor(color);
+	// g2d.fillRect(5, 3, 50, 32);
+	//
+	// g2d.setStroke(new BasicStroke(1f));
+	// g2d.setColor(Color.DARK_GRAY);
+	// g2d.drawRect(5, 3, 50, 32);
+	// }
+	// }
 
 	public Component getDefaultView(VisualStyle vs) {
 		// TODO Auto-generated method stub
@@ -614,6 +604,6 @@ public class DefaultViewEditorImpl extends JDialog implements DefaultViewEditor,
 
 	public void showEditor() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
