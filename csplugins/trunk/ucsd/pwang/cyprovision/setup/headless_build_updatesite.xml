@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Headless build of Cytosape update site" default="p2">
+<!-- ===================================================================== -->
+<!--  Headless build for Eclipse update site in Linux -->
+<!--                                          -->
+<!--  pre-cond: Eclipse PDE 3.4 or above is installed-->
+<!--  input:  directory to the features to build update site for-->
+<!--  output: an update site at the given directory-->
+<!-- ===================================================================== -->
+
+<property name="Eclipse.root" value="/cellar/users/pwang/eclipse342" /> 
+<!-- <property name="ganymede.root" value="/cellar/users/pwang/eclipse35m7" /> -->
+<property name="source.dir" value="/cellar/users/pwang/eclipse342_ws/tmp_exported_features" />
+<property name="repo.dir" value="/cellar/users/pwang/eclipse342_ws/headless_build/repo" />
+<property name="PRODUCTTITLE" value="Cytoscape 3.X" />
+
+<target name="p2" >
+ 
+ <pathconvert property="launcher">
+ <path>
+ <fileset dir="${Eclipse.root}/plugins" includes="**/*.jar" />
+ </path>
+ <regexpmapper from="(org\.eclipse\.equinox\.launcher)(_)(.*)\.jar" to="\0" />
+ </pathconvert>
+
+
+ <java fork="true" failonerror="true"
+ classname="org.eclipse.equinox.launcher.Main" 
+ classpath="${Eclipse.root}/plugins/${launcher}" >
+<arg line="-consolelog
+ -verbose
+ -debug
+ -nosplash 
+ -application org.eclipse.equinox.p2.metadata.generator.EclipseGenerator                   
+ -source ${source.dir}    
+ -metadataRepository file:${repo.dir}   
+ -metadataRepositoryName '${PRODUCTTITLE} Update Site'   
+ -artifactRepository file:${repo.dir}
+ -artifactRepositoryName '${PRODUCTTITLE} Artifacts'  
+ -publishArtifactRepository 
+ -publishArtifacts
+ -noDefaultIUs 
+ -reusePack200Files" /> 
+ </java>
+ </target>
+
+</project>
