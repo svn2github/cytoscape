@@ -1,28 +1,21 @@
 package org.cytoscape.task.internal.proxysettings;
 
-
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.io.util.CyProxyRegistry;
+import org.cytoscape.io.util.StreamUtil;
 
 public class ProxySettingsTaskFactory implements TaskFactory
 {
-	TaskManager taskManager;
-	CyProxyRegistry proxyRegistry;
 	ProxySettingsTask pst;
 	
-	public ProxySettingsTaskFactory(TaskManager taskManager, CyProxyRegistry proxyRegistry)
+	public ProxySettingsTaskFactory(TaskManager taskManager, StreamUtil streamUtil)
 	{
-		System.out.println("ProxySettingsTaskFactory has been instantiated");
-		this.taskManager = taskManager;
-		this.proxyRegistry = proxyRegistry;
-		this.pst = new ProxySettingsTask(taskManager, proxyRegistry);
+		this.pst = new ProxySettingsTask(taskManager, streamUtil);
 	}
 
 	public Task getTask()
 	{
-//		return new ProxySettingsTask(taskManager,proxyRegistry);
 		return pst;
 	}
 }

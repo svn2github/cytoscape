@@ -30,9 +30,6 @@
 	<osgi:reference id="taskManagerServiceRef"
 		interface="org.cytoscape.work.TaskManager" />
 
-	<osgi:reference id="cyProxyRegistryRef"
-		interface="org.cytoscape.io.util.CyProxyRegistry" />
-
 	<!--
 		<osgi:reference id="cyWriterManagerServiceRef"
 		interface="org.cytoscape.io.read.CyWriterManager"/> <osgi:reference
