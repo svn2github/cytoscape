@@ -28,7 +28,7 @@ public class AppCL2
 		for ( taskFactory tf : list ){
 			options.addOption( tf.getOption() );
 		}
-		options.addOption("lT", "listTask", false, "Display all the available taskFactories.");
+		options.addOption("lT", false, "Help = Display all the available taskFactories.");
 		
 		
 		Map<String,List<String>> mapShortArgs = new HashMap<String,List<String>>();
