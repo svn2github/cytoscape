@@ -8,7 +8,7 @@ import org.apache.commons.cli.*;
 import org.example.tunable.*;
 import org.example.tunable.util.AbstractFlexiblyBounded;
 
-public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends AbstractCLHandler {
+public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded<?>> extends AbstractCLHandler {
 
 	T fbo;
 	Map<String,String> argsMap;
@@ -31,8 +31,9 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		else fc = n.substring(ind,ind+3);
+		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		//else fc = n.substring(ind,ind+3);
+		fc = n.substring(ind);
 		
 		argsMap = new HashMap<String,String>();
 		try {
@@ -55,22 +56,22 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 		String lbound="\u2264";
 		String ubound="\u2264";
 		
-		//System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		else fc = n.substring(ind,ind+3);
+		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		//else fc = n.substring(ind,ind+3);
+		fc = n.substring(ind);
 		
 		if( f!=null){
 			if(fbo.isLowerBoundStrict())lbound="<";
 			if(fbo.isUpperBoundStrict())ubound="<";
-			return new Option(fc, n, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + ")");//+"\n                                      --cmd : display informations and available commands");		
+			return new Option(fc, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + ")");//+"\n                                      --cmd : display informations and available commands");		
 		}
 		else if(m!=null){
 			Type[] types = m.getParameterTypes();
 			java.util.List list = new java.util.ArrayList();
 			for(int i=0;i<types.length;i++) list.add(i,types[i]);
-			return new Option(fc, n, true,"-- "+ t.description()+" --\n  Method's parameters : "+list);
+			return new Option(fc, true,"-- "+ t.description()+" --\n  Method's parameters : "+list);
 		}
 		else return null;
 	}
@@ -99,18 +100,20 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded> extends
 		
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		else fc = n.substring(ind,ind+3);
+		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		//else fc = n.substring(ind,ind+3);
+		fc = n.substring(ind);
+		
 		if( f!=null){
 			if(fbo.isLowerBoundStrict())lbound="<";
 			if(fbo.isUpperBoundStrict())ubound="<";
-			return new Option(fc, n, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + ")\nCommands Options for -"+ fc +" :\n (multiple commands can be coupled by inserting \":\")\n  example : -"+fc+" val.x:up.y:upstrict.true \n-"+fc+" val.x : setValue \n-"+fc+" up.x : setUpperBound \n-"+fc+" low.x : setLowerBound \n-"+fc+" lowstrict.Boolean : setLowerBoundStrict \n-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
+			return new Option(fc, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + ")\nCommands Options for -"+ fc +" :\n (multiple commands can be coupled by inserting \":\")\n  example : -"+fc+" val.x:up.y:upstrict.true \n-"+fc+" val.x : setValue \n-"+fc+" up.x : setUpperBound \n-"+fc+" low.x : setLowerBound \n-"+fc+" lowstrict.Boolean : setLowerBoundStrict \n-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
 		}
 		else if(m!=null){
 			Type[] types = m.getParameterTypes();
 			java.util.List list = new java.util.ArrayList();
 			for(int i=0;i<types.length;i++) list.add(i,types[i]);
-			return new Option(fc, n, true,"-- "+ t.description()+" --\n  Method's parameters : "+list);
+			return new Option(fc, true,"-- "+ t.description()+" --\n  Method's parameters : "+list);
 		}
 		else return null;
 	}

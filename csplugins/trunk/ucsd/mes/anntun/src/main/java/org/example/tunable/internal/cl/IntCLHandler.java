@@ -19,9 +19,10 @@ public class IntCLHandler extends AbstractCLHandler {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;		
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		else fc = n.substring(ind,ind+3);
-
+		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		//else fc = n.substring(ind,ind+3);
+		fc = n.substring(ind);
+		
 		try {
 		if ( line.hasOption( fc ) ) {
 			if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
@@ -38,24 +39,24 @@ public class IntCLHandler extends AbstractCLHandler {
 	
 	public Option getOption() {
 		String n = getName();
-		//System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		else fc = n.substring(ind,ind+3);
-		Integer val = null;		
+		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		//else fc = n.substring(ind,ind+3);
+		fc = n.substring(ind);
+		Integer currentValue = null;		
 		if( f!=null){
 			try{
-				val = (Integer)f.get(o);
+				currentValue = (Integer)f.get(o);
 			}catch(Exception e){e.printStackTrace();}
-			return new Option(fc, n, true,"-- "+ t.description()+" --\n  current value : "+val);
+			return new Option(fc, true,"-- "+ t.description()+" --\n  current value : "+ currentValue);
 		}
 		
 		else if(m!=null){
 			Type[] types = m.getParameterTypes();
 			java.util.List list = new java.util.ArrayList();
 			for(int i=0;i<types.length;i++) list.add(i,types[i]);
-			return new Option(fc, n, true,"-- "+ t.description()+" --\n Method's parameter : "+list);
+			return new Option(fc,true,"-- "+ t.description()+" --\n Method's parameter : "+list);
 		}
 		else return null;
 	}

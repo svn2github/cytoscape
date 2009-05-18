@@ -9,13 +9,13 @@ public class TunableSampler implements Command {
 	public boolean testBool = false; 
 
 	@Tunable(description="Test bounded integer", group={"Numeric Tunables"})
-	public BoundedInteger boundedInt = new BoundedInteger(-100,10,100,false,false);
+	public BoundedInteger boundedInt1 = new BoundedInteger(-100,10,100,false,false);
 
 	@Tunable(description="Test bounded integer (pretend slider)", group={"Numeric Tunables","pretend int slider"}, flags={"collapsable"})
 	public BoundedInteger boundedInt2 = new BoundedInteger(-100,10,100,false,false);
 
 	@Tunable(description="Test bounded double (pretend slider)", group={"Numeric Tunables","pretend double slider"})
-	public BoundedDouble boundedDub = new BoundedDouble(-10.0,1.1,10.0,false,false);
+	public BoundedDouble boundedDoub = new BoundedDouble(-10.0,1.1,10.0,false,false);
 
 	@Tunable(description="Single value edge attr", group={"Numeric Tunables","Attribute Tunables"}, flags={"collapsable"})
 	public ListSingleSelection<String> edgeAttr = new ListSingleSelection<String>("interaction","canonicalName");
@@ -34,14 +34,14 @@ public class TunableSampler implements Command {
 	public ListMultipleSelection<String> nums = new ListMultipleSelection<String>("one","two","3","four","V");
 
 	@Tunable(description="Text input", group={"Numeric Tunables","String Tunables"})
-	public String s1 = " ";
+	public String string1 = "";
 
 	@Tunable(description="Immutable \"tunables\" don't make sense", group={"Numeric Tunables","String Tunables"})
-	public String s2 = "existing text";
+	public String string2 = "existing text";
 
 	
 	public void execute() {
-		System.out.println("Results : \n \t testBool = "+testBool+"\n \t boundedInt = "+ boundedInt.getValue()+"\n \t boundedInt2 = "+boundedInt2.getValue()+"\n \t boundedDub = "+boundedDub.getValue()
+		System.out.println("Results : \n \t testBool = "+testBool+"\n \t boundedInt = "+ boundedInt1.getValue()+"\n \t boundedInt2 = "+boundedInt2.getValue()+"\n \t boundedDub = "+boundedDoub.getValue()
 				+"\n \t edgeAttr = "+edgeAttr.getSelectedValue()+"\n \t nodeAttr = "+nodeAttr.getSelectedValues()+"\n \t list1 = "+list1.getSelectedValue());
 	}
 }

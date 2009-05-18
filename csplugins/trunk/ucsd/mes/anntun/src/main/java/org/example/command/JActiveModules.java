@@ -101,6 +101,10 @@ public class JActiveModules implements Command {
 
 	public void execute() {
 		System.out.println("Running JActiveModules...");
+		System.out.println("\t expression attribute : " + attrs.getSelectedValues()  + "\n \t number of modules : " + numMod.getValue() + "\n \t overlap Threshold : " + overlap.getValue() +
+				"\n \t adjust For Size ? = " + adjustForSize + "\n \t Regional Scroing ? " + regionalScoring + "\n \t select Strategy = " + strategy.getSelectedValue() + "\n \t Search Depth = "+ depth +
+				"\n \t search From Selected nodes? = "+searchFromSelected + "\n \t Consider Max Depth from start nodes = " + maxDepth + "\n \t Max depth from start nodes = " + maxDepthFromStart +
+				"\n \t Iterations : "+ iterations.getValue() + "\n \t Start Temp : " + startTemp.getValue() + "\n \t end Temp : " + endTemp.getValue() + "\n \t Seed Graph Options : " + seedOption.getSelectedValue());
 	}
 
 }

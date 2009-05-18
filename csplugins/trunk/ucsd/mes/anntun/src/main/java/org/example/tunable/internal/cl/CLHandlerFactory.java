@@ -28,6 +28,8 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return new BooleanCLHandler(m,o,t);
 		else if ( type == BoundedInteger.class )
 			return new BoundedCLHandler<BoundedInteger>(m,o,t);
+		else if ( type == BoundedDouble.class )
+			return new BoundedCLHandler<BoundedDouble>(m,o,t);
 		else 
 			return null;
 

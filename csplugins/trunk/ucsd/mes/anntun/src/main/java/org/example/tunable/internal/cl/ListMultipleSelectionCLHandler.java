@@ -30,8 +30,9 @@ public class ListMultipleSelectionCLHandler<T> extends AbstractCLHandler {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		else fc = n.substring(ind,ind+3);
+		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		//else fc = n.substring(ind,ind+3);
+		fc = n.substring(ind);
 		
 		try {
 			if ( line.hasOption( fc ) ) {
@@ -48,12 +49,12 @@ public class ListMultipleSelectionCLHandler<T> extends AbstractCLHandler {
 	
 	public Option getOption() {
 		String n = getName();
-		//System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		else fc = n.substring(ind,ind+3);
-		return new Option(fc, n, true,"-- "+t.description() +" --\n  current selected values : "+lms.getSelectedValues()+"\n  available values : "+ lms.getPossibleValues());		
+		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		//else fc = n.substring(ind,ind+3);
+		fc = n.substring(ind);
+		return new Option(fc, true,"-- "+t.description() +" --\n  current selected values : "+lms.getSelectedValues()+"\n  available values : "+ lms.getPossibleValues());		
 	}
 	
 	private void setSelectedItems(String[] items){

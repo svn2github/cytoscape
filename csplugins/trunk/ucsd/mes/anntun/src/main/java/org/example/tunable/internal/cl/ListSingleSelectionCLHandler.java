@@ -30,9 +30,9 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		else fc = n.substring(ind,ind+3);
-		
+		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		//else fc = n.substring(ind,ind+3);
+		fc = n.substring(ind);
 		try {
 			if ( line.hasOption( fc ) ) {
 				if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
@@ -52,12 +52,12 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 	
 	public Option getOption() {
 		String n = getName();
-		//System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
-		if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		else fc = n.substring(ind,ind+3);
-		return new Option(fc, n, true,"-- "+ t.description()+" --\n  current selected value : "+lss.getSelectedValue()+"\n  available values : "+lss.getPossibleValues());
+		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
+		//else fc = n.substring(ind,ind+3);
+		fc = n.substring(ind);
+		return new Option(fc, true,"-- "+ t.description()+" --\n  current selected value : "+lss.getSelectedValue()+"\n  available values : "+lss.getPossibleValues());
 	}
 	
 	private void displayCmds(String fc){

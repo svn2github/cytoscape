@@ -148,7 +148,7 @@ public class AppCL2
     	}
     	
     	Option getOption(){
-            return new Option(name.substring(0, 3),name,false,desc);
+            return new Option(name.substring(0, 3),false,desc);
     	}
     	
     	String getName(){
@@ -157,7 +157,7 @@ public class AppCL2
     	
     	void checkFactory(CommandLine line,Map<String,List<String>> map, List<String> list){
 //    		if(line.hasOption(name.substring(0, 3))){
-        		System.out.println("########### factory loaded = "+name+" ###########");
+        		System.out.println("\n \n ########### factory loaded = "+name+" ###########");
         		String tFactoryName = new String("-"+name.substring(0, 3));
         		List<String> lst = new ArrayList<String>();
         		
@@ -185,30 +185,30 @@ public class AppCL2
 //    		if ( com instanceof HandlerController )
 //    			((HandlerController)com).controlHandlers(cl.getHandlers(com));
     		cl.createUI(com);
-    		System.out.println("\n"+"result of command execution:");
+    		System.out.println("result of command execution:");
     		com.execute();
     		System.out.println();
 
     		
-    		Properties p = new Properties();
-    		p.setProperty("printSomething.firstName","marge");
-    		TunableInterceptor lp = new LoadPropsInterceptor(p);
-    		lp.loadTunables(com);
+//    		Properties p = new Properties();
+//    		p.setProperty("printSomething.firstName","marge");
+//    		TunableInterceptor lp = new LoadPropsInterceptor(p);
+//    		lp.loadTunables(com);
 //    		if ( com instanceof HandlerController )
 //    			((HandlerController)com).controlHandlers(lp.getHandlers(com));
-    		lp.createUI(com);
-    		System.out.println("result of command execution after properties have been loaded:");
-    		com.execute();
-    		System.out.println();
-    		
-    		
-    		Properties store = new Properties();
-    		TunableInterceptor sp = new StorePropsInterceptor(store);
-    		sp.loadTunables(com);
+//    		lp.createUI(com);
+//    		System.out.println("result of command execution after properties have been loaded:");
+//    		com.execute();
+//    		System.out.println();
+//    		
+//    		
+//    		Properties store = new Properties();
+//    		TunableInterceptor sp = new StorePropsInterceptor(store);
+//    		sp.loadTunables(com);
 //    		if ( com instanceof HandlerController )
 //    			((HandlerController)com).controlHandlers(sp.getHandlers(com));
-    		sp.createUI(com);
-    		System.out.println("result of storing properties interceptor:\n"+store.toString()+"\n");
+//    		sp.createUI(com);
+//    		System.out.println("result of storing properties interceptor:\n"+store.toString()+"\n");
     	}
     }
 }
