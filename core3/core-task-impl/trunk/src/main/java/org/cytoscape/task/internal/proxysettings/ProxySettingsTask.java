@@ -38,10 +38,10 @@ public class ProxySettingsTask implements Task,TunableValidator
 	public ListSingleSelection<String> type = new ListSingleSelection<String>(new ArrayList<String>(types.keySet()));
 	//public ListSingleSelection<String> type = new ListSingleSelection<String>("direct", "http", "socks");
 
-	@Tunable(description="Proxy Server",group={""},dependsOn="type!=direct",alignment={Param.horizontal})
+	@Tunable(description="Proxy Server",group={"proxy"},dependsOn="type!=direct",alignment={Param.horizontal},groupTitles={Param.hidden})
 	public String hostname="";
 
-	@Tunable(description="Port",group={""},dependsOn="type!=direct",alignment={Param.horizontal})
+	@Tunable(description="Port",group={"proxy"},dependsOn="type!=direct",alignment={Param.horizontal},groupTitles={Param.hidden})
 	public int port=0;
 
 	@Tunable(description="Check connectivity now")
