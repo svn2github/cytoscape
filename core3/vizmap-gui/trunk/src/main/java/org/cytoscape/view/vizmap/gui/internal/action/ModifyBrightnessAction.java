@@ -152,10 +152,9 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 
 			propertySheetPanel.removeProperty(prop);
 
-			final VizMapperProperty<VisualProperty<Color>> newRootProp = new VizMapperProperty<VisualProperty<Color>>();
-
-			vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(dm,
-					newRootProp, type.getObjectType(), propertySheetPanel);
+			final VizMapperProperty<VisualProperty<Color>> newRootProp = vizMapPropertySheetBuilder
+					.getPropertyBuilder().buildProperty(dm,
+							type.getObjectType(), propertySheetPanel);
 
 			vizMapPropertySheetBuilder.removeProperty(prop);
 			vizMapPropertySheetBuilder.getPropertyMap().get(vs)

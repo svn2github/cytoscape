@@ -61,11 +61,13 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
@@ -97,13 +99,12 @@ import cytoscape.view.CySwingApplication;
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends AbstractVizMapperPanel implements
-		PropertyChangeListener, PopupMenuListener, ChangeListener {
+		PropertyChangeListener, PopupMenuListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
 
 	private boolean ignore = false;
 	private String lastVSName = null;
-	
 
 	/**
 	 * Create new instance of VizMapperMainPanel object. GUI layout is handled
@@ -124,13 +125,15 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
-			EditorWindowManager editorWindowManager, CyNetworkManager cyNetworkManager) {
+			EditorWindowManager editorWindowManager,
+			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper) {
 		super(desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
-				vizMapEventHandlerManager, editorWindowManager, cyNetworkManager);
+				vizMapEventHandlerManager, editorWindowManager,
+				cyNetworkManager, eventHelper);
 
 		initPanel();
-		
+
 	}
 
 	private void initPanel() {
@@ -144,38 +147,32 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		// By default, force to sort property by prop name.
 		propertySheetPanel.setSorting(true);
-		
+
 		refreshUI();
 
 		cytoscapeDesktop.getCytoPanel(SwingConstants.WEST).add(
 				"VizMapper\u2122", this);
-		cytoscapeDesktop.getSwingPropertyChangeSupport()
-				.addPropertyChangeListener(this);
+//		cytoscapeDesktop.getSwingPropertyChangeSupport()
+//				.addPropertyChangeListener(this);
 	}
 
 	/*
 	 * Register listeners for editors.
 	 */
 	private void registerCellEditorListeners() {
-		for (PropertyEditor p : editorManager.getCellEditors()) {
-			p.addPropertyChangeListener(this);
-
-			if (p instanceof PropertyChangeListener)
-				spcs.addPropertyChangeListener((PropertyChangeListener) p);
-		}
+//FIXME
+//		for (PropertyEditor p : editorManager.get()) {
+//			p.addPropertyChangeListener(this);
+//
+//			if (p instanceof PropertyChangeListener)
+//				spcs.addPropertyChangeListener((PropertyChangeListener) p);
+//		}
 	}
 
 	private void addVisualStyleChangeAction() {
-		getVsNameComboBox().addActionListener(new ActionListener() {
+		vsComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				final String vsName = (String) getVsNameComboBox()
-						.getSelectedItem();
-				if (vsName != null) {
-					if (cyNetworkManager.getCurrentNetworkView() == null)
-						switchVS(vsName, false);
-					else
-						switchVS(vsName, true);
-				}
+				switchVS(vsComboBox.getSelectedItem());
 			}
 		});
 	}
@@ -183,7 +180,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	public void setLastVSName(final String newName) {
 		this.lastVSName = newName;
 	}
-
 
 	public void switchVS(VisualStyle style) {
 		if (ignore)
@@ -195,12 +191,10 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		editorWindowManager.closeAllEditorWindows();
 
-		//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-		//vmm.setVisualStyle(vsName);
-
-		if (vizMapPropertySheetBuilder.getPropertyMap().containsKey(vsName)) {
+		if (vizMapPropertySheetBuilder.getPropertyMap().containsKey(style)) {
 			final List<Property> props = vizMapPropertySheetBuilder
-					.getPropertyMap().get(vsName);
+					.getPropertyMap().get(style);
+
 			final Map<String, Property> unused = new TreeMap<String, Property>();
 
 			/*
@@ -214,11 +208,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			 */
 			for (Property prop : props) {
 				if (prop.getCategory().startsWith(CATEGORY_UNUSED) == false) {
-					if (prop.getCategory().equals(NODE_VISUAL_MAPPING)) {
-						propertySheetPanel.addProperty(0, prop);
-					} else {
-						propertySheetPanel.addProperty(prop);
-					}
+					propertySheetPanel.addProperty(prop);
 				} else {
 					unused.put(prop.getDisplayName(), prop);
 				}
@@ -235,73 +225,68 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			updateAttributeList();
 		}
 
-		vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(), vmm.getVisualStyle(vsName));
-
-		//if (redraw)
-		//	Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		// Apply style to the current network view.
+		vmm.setVisualStyle(vsComboBox.getSelectedItem(), cyNetworkManager.getCurrentNetworkView());
 
 		/*
 		 * Draw default view
 		 */
-		Image defImg = defaultImageManager.get(vsName);
+		Image defImg = defaultImageManager.get(style);
 
 		if (defImg == null) {
 			// Default image is not available in the buffer. Create a new one.
-			updateDefaultImage(vsName,
-					(GraphView) ((DefaultViewPanel) defViewEditor
-							.getDefaultView(vsName)).getView(),
-					defaultViewImagePanel.getSize());
-			defImg = defaultImageManager.get(vsName);
+//			updateDefaultImage(style,
+//					defViewEditor.
+//							.getDefaultView(style).getView(),
+//					defaultViewImagePanel.getSize());
+			defImg = defaultImageManager.get(style);
 		}
 
 		// Set the default view to the panel.
 		setDefaultViewImagePanel(defImg);
 
-		// Sync. lock state
-		final boolean lockState = vmm.getVisualStyle()
-				.getNodeAppearanceCalculator().getNodeSizeLocked();
-		spcs.firePropertyChange("UPDATE_LOCK", null, lockState);
+//		TODO: Fix lock state
+//		// Sync. lock state
+//		final boolean lockState = vmm.getVisualStyle()
+//				.getNodeAppearanceCalculator().getNodeSizeLocked();
+//		spcs.firePropertyChange("UPDATE_LOCK", null, lockState);
+		
+		
 		propertySheetPanel.setSorting(true);
-
-		// Cleanup desktop.
-		// cytoscapeDesktop.repaint();
-		getVsNameComboBox().setSelectedItem(vsName);
 	}
 
 	public void refreshUI() {
-		List<String> vsNames = new ArrayList<String>(vmm.getCalculatorCatalog()
-				.getVisualStyleNames());
-
-		final VisualStyle style = vmm.getVisualStyle();
+		
+		final List<VisualStyle> visualStyles = new ArrayList<VisualStyle>(vmm.getAllVisualStyles());
+		final VisualStyle SelectedStyle = vsComboBox.getSelectedItem();
 
 		// Disable action listeners
-		final ActionListener[] li = getVsNameComboBox().getActionListeners();
+		final ActionListener[] li = vsComboBox.getActionListeners();
 
 		for (int i = 0; i < li.length; i++)
-			getVsNameComboBox().removeActionListener(li[i]);
+			vsComboBox.removeActionListener(li[i]);
 
-		getVsNameComboBox().removeAllItems();
+		vsComboBox.removeAllItems();
 
-		JPanel defPanel;
+		Component defPanel;
 
 		final Dimension panelSize = defaultViewImagePanel.getSize();
-		GraphView view;
+		CyNetworkView view;
 
-		Collections.sort(vsNames);
+		
+		//TODO: make sortable!
+//		Collections.sort(visualStyles);
 
-		for (String name : vsNames) {
-			getVsNameComboBox().addItem(name);
-			defPanel = defViewEditor.getDefaultView(name);
-			view = (GraphView) ((DefaultViewPanel) defPanel).getView();
-
-			if (view != null)
-				updateDefaultImage(name, view, panelSize);
+		for (VisualStyle vs : visualStyles) {
+			vsComboBox.addItem(vs);
+			defPanel = defViewEditor.getDefaultView(vs);
+			view = ((DefaultViewPanel) defPanel).getView();
+			
+			updateDefaultImage(vs, view, panelSize);
 		}
-
-		//vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-
+		
 		// Switch back to the original style.
-		switchVS(style.getName());
+		switchVS(getDefaultVisualStyle());
 
 		// Sync check box and actual lock state
 		spcs.firePropertyChange("UPDATE_LOCK", null, true);
@@ -310,7 +295,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		// Restore listeners
 		for (int i = 0; i < li.length; i++)
-			getVsNameComboBox().addActionListener(li[i]);
+			vsComboBox.addActionListener(li[i]);
 	}
 
 	/**
@@ -320,8 +305,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * @param view
 	 * @param size
 	 */
-	//TODO: this should be called by listeners. 
-	public void updateDefaultImage(VisualStyle vs, CyNetworkView view, Dimension size) {
+	// TODO: this should be called by listeners.
+	public void updateDefaultImage(VisualStyle vs, CyNetworkView view,
+			Dimension size) {
 		Image image = defaultImageManager.remove(vs);
 
 		if (image != null) {
@@ -329,18 +315,19 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			image = null;
 		}
 
-		//TODO: Add image nenerator method in presentation
-//		defaultImageManager.put(vs, view.createImage((int) size.getWidth(),
-//				(int) size.getHeight(), 0.9));
+		// TODO: Add image nenerator method in presentation
+		// defaultImageManager.put(vs, view.createImage((int) size.getWidth(),
+		// (int) size.getHeight(), 0.9));
 	}
 
 	public void updateAttributeList() {
-		vizMapPropertySheetBuilder.setAttrComboBox();
-		final Set mappingTypes = vmm.getCalculatorCatalog().getMappingNames();
-
-		// mappingTypeEditor.setAvailableValues(mappingTypes.toArray());
-		spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "mappingTypeEditor",
-				mappingTypes.toArray());
+		// TODO: use new event listener to do this.
+//		vizMapPropertySheetBuilder.setAttrComboBox();
+//		final Set mappingTypes = vmm.getCalculatorCatalog().getMappingNames();
+//
+//		// mappingTypeEditor.setAvailableValues(mappingTypes.toArray());
+//		spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "mappingTypeEditor",
+//				mappingTypes.toArray());
 	}
 
 	/*
@@ -394,8 +381,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		defaultImageButton.setIcon(new ImageIcon(defImage));
 		defaultViewImagePanel.add(defaultImageButton, BorderLayout.CENTER);
-		defaultImageButton.addMouseListener(new DefaultViewMouseListener(vmm,
-				this, defViewEditor, cyNetworkManager));
+		defaultImageButton.addMouseListener(new DefaultViewMouseListener());
 	}
 
 	public JPanel getDefaultPanel() {
@@ -409,25 +395,25 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 *            DOCUMENT ME!
 	 */
 	private void enableListeners(boolean on) {
-		if (on) {
-			vmm.addChangeListener(this);
-			syncStyleBox();
-			ignore = false;
-		} else {
-			vmm.removeChangeListener(this);
-		}
+//		if (on) {
+//			vmm.addChangeListener(this);
+//			syncStyleBox();
+//			ignore = false;
+//		} else {
+//			vmm.removeChangeListener(this);
+//		}
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
 		// Set ignore flag.
-		if (e.getPropertyName().equals(
-				Integer.toString(Cytoscape.SESSION_OPENED))) {
-			ignore = true;
-			enableListeners(false);
-		}
-
-		if (ignore)
-			return;
+//		if (e.getPropertyName().equals(
+//				Integer.toString(Cytoscape.SESSION_OPENED))) {
+//			ignore = true;
+//			enableListeners(false);
+//		}
+//
+//		if (ignore)
+//			return;
 
 		final VizMapEventHandler handler = vizMapEventHandlerManager
 				.getHandler(e.getPropertyName());
@@ -497,8 +483,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				}
 			}
 
-			VisualProperty type = ((VisualProperty) prop
-					.getHiddenObject());
+			VisualProperty type = ((VisualProperty) prop.getHiddenObject());
 
 			Class dataType = type.getType();
 
@@ -530,24 +515,23 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * 
 	 * @return
 	 */
-	/* not used any more, but since code that did use it is present in this file (commented out) I'll leave it here -- abeld
-	private Set<Object> loadID(final int nOre) {
-		Set<Object> ids = new TreeSet<Object>();
-
-		List<? extends GraphObject> obj;
-
-		if (nOre == MappingCalculator.NODE_MAPPING) {
-			obj = cyNetworkManager.getCurrentNetworkView().getGraphPerspective().getNodeList();
-		} else {
-			obj = cyNetworkManager.getCurrentNetworkView().getGraphPerspective().getEdgeList();
-		}
-
-		for (GraphObject o : obj) {
-			ids.add(o.attrs().get("name", String.class));
-		}
-
-		return ids;
-	}
+	/*
+	 * not used any more, but since code that did use it is present in this file
+	 * (commented out) I'll leave it here -- abeld private Set<Object>
+	 * loadID(final int nOre) { Set<Object> ids = new TreeSet<Object>();
+	 * 
+	 * List<? extends GraphObject> obj;
+	 * 
+	 * if (nOre == MappingCalculator.NODE_MAPPING) { obj =
+	 * cyNetworkManager.getCurrentNetworkView
+	 * ().getGraphPerspective().getNodeList(); } else { obj =
+	 * cyNetworkManager.getCurrentNetworkView
+	 * ().getGraphPerspective().getEdgeList(); }
+	 * 
+	 * for (GraphObject o : obj) { ids.add(o.attrs().get("name", String.class));
+	 * }
+	 * 
+	 * return ids; }
 	 */
 	/**
 	 * DOCUMENT ME!
@@ -555,87 +539,87 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * @param e
 	 *            DOCUMENT ME!
 	 */
-	public void stateChanged(ChangeEvent e) {
-		final String selectedName = (String) getVsNameComboBox()
-				.getSelectedItem();
-		final String currentName = vmm.getVisualStyle().getName();
+//	public void stateChanged(ChangeEvent e) {
+//		final VisualStyle selected = vsComboBox
+//				.getSelectedItem();
+//		
+//
+//		final GraphView curView = cyNetworkManager.getCurrentNetworkView();
+//
+//		if (ignore)
+//			return;
+//
+//		System.out.println("Got VMM Change event.  Cur VS in VMM: "
+//				+ vmm.getVisualStyle().getName());
+//
+//		if ((selectedName == null) || (currentName == null)
+//				|| (curView == null))
+//			return;
+//
+//		// Update GUI based on CalcCatalog's state.
+//		if (!findVSName(currentName)) {
+//			syncStyleBox();
+//		} else {
+//			// Bug fix: 0001802: if VS already existed in combobox, select it
+//			for (int i = 0; i < vsComboBox.getItemCount(); i++) {
+//				if (vsComboBox.getItemAt(i).equals(currentName)) {
+//					vsComboBox.setSelectedIndex(i);
+//
+//					break;
+//				}
+//			}
+//		}
+//
+//		// kono: should be placed here.
+//		// MLC 03/31/08 BEGIN:
+//		// Make fure we update the lastVSName based on anything that changes the
+//		// visual style:
+//		lastVSName = currentName;
+//
+//		// MLC 03/31/08 END.
+//	}
 
-		final GraphView curView = cyNetworkManager.getCurrentNetworkView();
-
-		if (ignore)
-			return;
-
-		System.out.println("Got VMM Change event.  Cur VS in VMM: "
-				+ vmm.getVisualStyle().getName());
-
-		if ((selectedName == null) || (currentName == null)
-				|| (curView == null) )
-			return;
-
-		// Update GUI based on CalcCatalog's state.
-		if (!findVSName(currentName)) {
-			syncStyleBox();
-		} else {
-			// Bug fix: 0001802: if VS already existed in combobox, select it
-			for (int i = 0; i < getVsNameComboBox().getItemCount(); i++) {
-				if (getVsNameComboBox().getItemAt(i).equals(currentName)) {
-					getVsNameComboBox().setSelectedIndex(i);
-
-					break;
-				}
-			}
-		}
-
-		// kono: should be placed here.
-		// MLC 03/31/08 BEGIN:
-		// Make fure we update the lastVSName based on anything that changes the
-		// visual style:
-		lastVSName = currentName;
-
-		// MLC 03/31/08 END.
-	}
-
-	private void syncStyleBox() {
-		String curStyleName = vmm.getVisualStyle().getName();
-
-		String styleName;
-		List<String> namesInBox = new ArrayList<String>();
-		namesInBox.addAll(vmm.getCalculatorCatalog().getVisualStyleNames());
-
-		for (int i = 0; i < getVsNameComboBox().getItemCount(); i++) {
-			styleName = getVsNameComboBox().getItemAt(i).toString();
-
-			if (vmm.getCalculatorCatalog().getVisualStyle(styleName) == null) {
-				// No longer exists in the VMM. Remove.
-				getVsNameComboBox().removeItem(styleName);
-				defaultImageManager.remove(styleName);
-				vizMapPropertySheetBuilder.getPropertyMap().remove(styleName);
-			}
-		}
-
-		Collections.sort(namesInBox);
-
-		// Reset combobox items.
-		getVsNameComboBox().removeAllItems();
-
-		for (String name : namesInBox)
-			getVsNameComboBox().addItem(name);
-
-		// Bug fix: 0001721:
-		// Note: Because vsNameComboBox.removeAllItems() will fire unwanted
-		// event,
-		// vmm.getVisualStyle().getName() will not be the same as curStyleName
-		if ((curStyleName == null) || curStyleName.trim().equals(""))
-			switchVS(vmm.getVisualStyle().getName());
-		else
-			switchVS(curStyleName);
-	}
+//	private void syncStyleBox() {
+//		String curStyleName = vmm.getVisualStyle().getName();
+//
+//		String styleName;
+//		List<String> namesInBox = new ArrayList<String>();
+//		namesInBox.addAll(vmm.getCalculatorCatalog().getVisualStyleNames());
+//
+//		for (int i = 0; i < vsComboBox.getItemCount(); i++) {
+//			styleName = vsComboBox.getItemAt(i).toString();
+//
+//			if (vmm.getCalculatorCatalog().getVisualStyle(styleName) == null) {
+//				// No longer exists in the VMM. Remove.
+//				vsComboBox.removeItem(styleName);
+//				defaultImageManager.remove(styleName);
+//				vizMapPropertySheetBuilder.getPropertyMap().remove(styleName);
+//			}
+//		}
+//
+//		Collections.sort(namesInBox);
+//
+//		// Reset combobox items.
+//		vsComboBox.removeAllItems();
+//
+//		for (String name : namesInBox)
+//			vsComboBox.addItem(name);
+//
+//		// Bug fix: 0001721:
+//		// Note: Because vsNameComboBox.removeAllItems() will fire unwanted
+//		// event,
+//		// vmm.getVisualStyle().getName() will not be the same as curStyleName
+//		if ((curStyleName == null) || curStyleName.trim().equals(""))
+//			switchVS(vmm.getVisualStyle().getName());
+//		else
+//			switchVS(curStyleName);
+//	}
 
 	// return true iff 'match' is found as a name within the
 	// vsNameComboBox.
 	private boolean findVSName(String match) {
-		for (int i = 0; i < getVsNameComboBox().getItemCount(); i++) {
-			if (getVsNameComboBox().getItemAt(i).equals(match)) {
+		for (int i = 0; i < vsComboBox.getItemCount(); i++) {
+			if (vsComboBox.getItemAt(i).equals(match)) {
 				return true;
 			}
 		}
@@ -666,16 +650,16 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 	public void setDefaultViewEditor(DefaultViewEditor defViewEditor) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setDefaultViewPanel(JPanel defViewPanel) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setVisualMappingBrowser(Component visualMappingBrowser) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

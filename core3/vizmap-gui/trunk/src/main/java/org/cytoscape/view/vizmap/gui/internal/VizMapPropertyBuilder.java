@@ -90,17 +90,17 @@ public class VizMapPropertyBuilder {
 	 *            data type of Visual Property.
 	 * 
 	 */
-	public <K, V> void buildProperty(
+	public <K, V> VizMapperProperty<VisualProperty<V>> buildProperty(
 			final VisualMappingFunction<K, V> visualMapping,
-			final VizMapperProperty<VisualProperty<V>> calculatorTypeProp,
 			final String rootObjectCategory,
 			final PropertySheetPanel propertySheetPanel) {
 		// Mapping is empty
 		if (visualMapping == null)
-			return;
+			return null;
 
 		final VisualProperty<V> vp = visualMapping.getVisualProperty();
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
+		final VizMapperProperty<VisualProperty<V>> calculatorTypeProp = new VizMapperProperty<VisualProperty<V>>();
 
 		/*
 		 * Set one calculator
@@ -138,7 +138,7 @@ public class VizMapPropertyBuilder {
 		Iterator<? extends GraphObject> it = null;
 
 		if (targetNetwork == null)
-			return;
+			return null;
 
 		attr = targetNetwork.getCyDataTables(vp.getObjectType()).get(
 				CyNetwork.DEFAULT_ATTRS);
@@ -226,6 +226,8 @@ public class VizMapPropertyBuilder {
 		propertySheetPanel.addProperty(0, calculatorTypeProp);
 		propertySheetPanel.setRendererFactory(rendReg);
 		propertySheetPanel.setEditorFactory(editorReg);
+		
+		return calculatorTypeProp;
 	}
 
 	/*

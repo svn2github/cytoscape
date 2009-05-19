@@ -41,20 +41,15 @@ import static org.cytoscape.model.GraphObject.NODE;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 
-import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.events.VisualStyleSwitchedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleSwitchedListener;
-import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -64,13 +59,13 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 /**
  * Creates a new Mapping from GUI
  */
-public final class VizMapPropertySheetMouseAdapter extends MouseAdapter implements VisualStyleSwitchedListener {
+public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
+		implements SelectedVisualStyleSwitchedEventListener {
 	private VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	private PropertySheetPanel propertySheetPanel;
-	private Map<VisualProperty<?>, JDialog> editorWindowManager;
 	private EditorManager editorManager;
 	private PropertyEditorRegistry editorReg;
-	
+
 	private VisualStyle selectedStyle;
 
 	/**
@@ -85,12 +80,10 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter implemen
 	 */
 	public VizMapPropertySheetMouseAdapter(
 			VizMapPropertySheetBuilder sheetBuilder,
-			PropertySheetPanel propertySheetPanel,
-			Map<VisualProperty<?>, JDialog> editorWindowManager, VisualStyle selectedStyle) {
-		
+			PropertySheetPanel propertySheetPanel, VisualStyle selectedStyle) {
+
 		this.vizMapPropertySheetBuilder = sheetBuilder;
 		this.propertySheetPanel = propertySheetPanel;
-		this.editorWindowManager = editorWindowManager;
 		this.selectedStyle = selectedStyle;
 	}
 
@@ -181,31 +174,31 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter implemen
 				final VisualMappingFunction<?, ?> selectedMapping = selectedStyle
 						.getVisualMappingFunction(type);
 
-				//TODO: move this function editor manager.
-//				if (selectedMapping instanceof ContinuousMapping) {
-//					/*
-//					 * Need to check other windows.
-//					 */
-//					if (editorWindowManager.containsKey(type)) {
-//						// This means editor is already on display.
-//						editorWindowManager.get(type).requestFocus();
-//
-//						return;
-//					} else {
-//						try {
-//							((JDialog) editorFactory.showContinuousEditor(
-//									propertySheetPanel, type))
-//									.addPropertyChangeListener(propertySheetPanel);
-//						} catch (Exception e1) {
-//							e1.printStackTrace();
-//						}
-//					}
-//				}
+				// TODO: move this function editor manager.
+				// if (selectedMapping instanceof ContinuousMapping) {
+				// /*
+				// * Need to check other windows.
+				// */
+				// if (editorWindowManager.containsKey(type)) {
+				// // This means editor is already on display.
+				// editorWindowManager.get(type).requestFocus();
+				//
+				// return;
+				// } else {
+				// try {
+				// ((JDialog) editorFactory.showContinuousEditor(
+				// propertySheetPanel, type))
+				// .addPropertyChangeListener(propertySheetPanel);
+				// } catch (Exception e1) {
+				// e1.printStackTrace();
+				// }
+				// }
+				// }
 			}
 		}
 	}
 
-	public void handleEvent(VisualStyleSwitchedEvent e) {
+	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {
 		this.selectedStyle = e.getNewVisualStyle();
 	}
 }
