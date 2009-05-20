@@ -84,10 +84,7 @@ public class ProxySettingsTask implements Task, TunableValidator
 	public void run(TaskMonitor taskMonitor)
 	{
 		storeProxySettings();
-
-		for (String key : KEYS)
-			if (oldSettings.containsKey(key))
-				oldSettings.remove(key);
+		oldSettings.clear();
 	}
 
 	public void cancel()
@@ -98,28 +95,28 @@ public class ProxySettingsTask implements Task, TunableValidator
 	{
 		oldSettings.clear();
 		for (String key : KEYS)
-			if (properties.containsKey(key))
+			if (properties.getProperty(key) != null)
 				oldSettings.put(key, properties.getProperty(key));
 
 		if (type.getSelectedValue().equals("direct"))
 		{
 			for (String key : KEYS)
-				if (properties.containsKey(key))
+				if (properties.getProperty(key) != null)
 					properties.remove(key);
 		}
 		else if (type.getSelectedValue().equals("http"))
 		{
 			properties.remove("socks.proxyHost");
 			properties.remove("socks.proxyPort");
-			properties.put("http.proxyHost", hostname);
-			properties.put("http.proxyPort", Integer.toString(port));
+			properties.setProperty("http.proxyHost", hostname);
+			properties.setProperty("http.proxyPort", Integer.toString(port));
 		}
 		else if (type.getSelectedValue().equals("socks"))
 		{
 			properties.remove("http.proxyHost");
 			properties.remove("http.proxyPort");
-			properties.put("socks.proxyHost", hostname);
-			properties.put("socks.proxyPort", Integer.toString(port));
+			properties.setProperty("socks.proxyHost", hostname);
+			properties.setProperty("socks.proxyPort", Integer.toString(port));
 		}
 	}
 
@@ -127,15 +124,20 @@ public class ProxySettingsTask implements Task, TunableValidator
 	{
 		for (String key : KEYS)
 		{
-			if (properties.containsKey(key))
+			if (properties.getProperty(key) != null)
 				properties.remove(key);
 			
 			if (oldSettings.containsKey(key))
-			{
-				properties.put(key, oldSettings.get(key));
-				oldSettings.remove(key);
-			}
+				properties.setProperty(key, oldSettings.get(key));
 		}
+		oldSettings.clear();
+	}
+
+	void dumpSettings(String title)
+	{
+		System.out.println(title);
+		for (String key : KEYS)
+			System.out.println(String.format("%s: %s", key, properties.getProperty(key)));
 	}
 }
 
