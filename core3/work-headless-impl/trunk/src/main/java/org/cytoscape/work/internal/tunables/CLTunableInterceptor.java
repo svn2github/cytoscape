@@ -64,7 +64,8 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 
 	private static void printHelp(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [OPTIONS]", options);
+		System.out.println("\n");
+		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [Options]","\nOptions", options,"");
 	}
 
 
