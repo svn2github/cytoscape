@@ -82,6 +82,8 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		Tunable attributeTunable = clusterProperties.get("attributeList");
 		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
+		if (attributeArray.length == 1)
+			dataAttribute = attributeArray[0];
 
 		return clusterProperties.getTunablePanel();
 	}
@@ -142,8 +144,8 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		                                  "Array sources",
 		                                  Tunable.LIST, 0,
 		                                  (Object)attributeArray, (Object)null, 0));
-
-
+		if (attributeArray.length == 1)
+			dataAttribute = attributeArray[0];
 
 		clusterProperties.initializeProperties();
 		updateSettings(true);
