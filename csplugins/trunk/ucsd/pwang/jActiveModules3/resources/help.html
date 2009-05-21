@@ -1,0 +1,248 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+
+<style>
+BODY, P, DIV, H1, H2, H3, H4, H5, H6, ADDRESS, OL, UL, TITLE, TD, OPTION, SELECT {
+ font-family: Times New Roman;
+ 
+}
+
+BODY, P, DIV, ADDRESS, OL, UL, LI, TITLE, TD, OPTION, SELECT {  
+  font-size: 12.0pt;
+  margin-top:0pt;  
+  margin-bottom:0pt;  
+} 
+
+BODY, P {
+  margin-left:0pt; 
+  margin-right:0pt;
+}
+
+BODY {
+  line-height: 2;
+
+  margin: 6px;
+  padding: 0px;
+}
+
+h6 { font-size: 10pt }
+h5 { font-size: 11pt }
+h4 { font-size: 12pt }
+h3 { font-size: 13pt }
+h2 { font-size: 14pt }
+h1 { font-size: 16pt }
+
+blockquote {padding: 10px; border: 1px #DDDDDD dashed }
+
+a img {border: 0}
+
+</style>
+
+
+
+
+</head>
+
+
+<body revision="dg87f3n8_7gst3mx:64">
+
+<p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+  <b>Analyze Network Features</b>
+</p>
+<ol>
+  <li>
+    <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+      Functional modules can be suggested by highly-connected network regions
+      with similar responses to experimental conditions. These patterns can be
+      detected visually, but in practice the high level of connectivity in
+      interaction networks makes visual detection difficult. Putative modules
+      can be identified with the jActiveModules plugin as follows. Further
+      details are available in the original publication.
+    </p>
+    <ol>
+      <li>
+        <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+          Critical Step: U<em class=western><span style=FONT-STYLE:normal>nder
+          the <b>Plugins</b> menu select <b>jActiveModules</b>. This will bring
+          up a jActiveModules section on the Control Panel, listing the
+          available expression experiments.</span></em>
+        </p>
+      </li>
+      <li>
+        <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+          <em class=western><span style=FONT-STYLE:normal>Critical Step: Select
+          all of your expression experiments by clicking on them with the left
+          mouse button (One can run <b>jActiveModules</b> on only one expression
+          experiment, or on a subset of the experiments). </span></em>
+        </p>
+      </li>
+      <li>
+        <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+          <em class=western><span style=FONT-STYLE:normal>In the <b>General
+          Parameters</b> panel, keep the default values, as these are effective
+          for most initial analyses.</span></em>
+        </p>
+        <ol type=i>
+          <li>
+            <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+              <em class=western><span style=FONT-STYLE:normal><b>Number of
+              Paths</b>
+              </span></em><font size=1 style=FONT-SIZE:8pt></font><em class=western><span style=FONT-STYLE:normal>indicates
+              the number of putative modules that will be reported.</span></em>
+            </p>
+          </li>
+          <li>
+            <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+              <em class=western><span style=FONT-STYLE:normal><b>Adjust score
+              for size </b>corrects for the fact that a larger putative module
+              is more likely to contain nodes with significant p-values by
+              random chance.</span></em>
+            </p>
+          </li>
+          <li>
+            <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+              <em class=western><span style=FONT-STYLE:normal><span style="BACKGROUND:#ffff00 none repeat scroll 0% 50%; -moz-background-clip:-moz-initial; -moz-background-origin:-moz-initial; -moz-background-inline-policy:-moz-initial"></span><span style="BACKGROUND:#ffffff none repeat scroll 0% 50%; -moz-background-clip:-moz-initial; -moz-background-origin:-moz-initial; -moz-background-inline-policy:-moz-initial"><span style=FONT-WEIGHT:bold>Regional
+              scoring</span> affects how the score of a given module is
+              calculated. Instead of scoring only those nodes within the module,
+              the neighboring nodes of the module are also included. This aids
+              in the identification of active modules in networks that contain
+              nodes with many neighbors
+              (<span style=FONT-STYLE:italic>i.e</span>., hubs). Consider a
+              transcription factor with many targets: even if the transcription
+              factor is not active, it is likely that some of it targets will be
+              expressed simply due to random chance.&nbsp; Without regional
+              scoring, this subset of targets can be selected as an active
+              module, even though this arrangement is not unexpected. In this
+              situation, regional scoring prevents this problem by forcing all
+              targets to be scored simultaneously.&nbsp;</span></span></em>
+            </p>
+          </li>
+        </ol>
+        <span style=FONT-STYLE:normal><span style="BACKGROUND:#ffff00 none repeat scroll 0% 50%; -moz-background-clip:-moz-initial; -moz-background-origin:-moz-initial; -moz-background-inline-policy:-moz-initial"><br>
+        </span></span>
+      </li>
+      <li>
+        In the <b>Strategy</b> panel, the user can select the search strategy
+        used to identify high-scoring modules.
+      </li>
+      <ol>
+        <li>
+          <b>Search</b> - In this strategy, local, greedy searches are initiated
+          from single nodes in the network.
+        </li>
+        <ol>
+          <li>
+            <span style=FONT-WEIGHT:bold>Search Depth</span> - At each step in
+            the greedy search, this parameter determines how close (as
+            determined by shortest path) a node must be to the current active
+            module to be considered for inclusion in the active module.<br>
+          </li>
+          <li>
+            <span style=FONT-WEIGHT:bold>Max Depth</span> - This parameter
+            determines how close a node must be to the initial seed node to be
+            considered for inclusion in the active module.<br>
+          </li>
+          <li>
+            <span style=FONT-WEIGHT:bold>Search from Selected Nodes</span> - By
+            default, a separate search is initiated for each node in the
+            network. Using this option, searches are only initiated from those
+            nodes selected by the user.
+          </li>
+        </ol>
+        <li>
+          <b>Anneal</b> - In this strategy, all active modules in the network
+          are discovered simultaneously. Nodes in the network can be turned "on"
+          or "off." A connected set of "on" nodes form an active module. To
+          avoid local optima, a simulated annealing approach is used to guide
+          the global search. As opposed to the local greedy search, this
+          algorithm is stochastic.<br>
+        </li>
+        <ol>
+          <li>
+            <b>Annealing Parameters</b> - These parameters define the simulated
+            annealing schedule. Over the specified number of
+            <span style=FONT-WEIGHT:bold>iterations</span>, the temperature will
+            be decreased from the <span style=FONT-WEIGHT:bold>starting
+            temperature</span> to the <span style=FONT-WEIGHT:bold>ending
+            temperature</span>.&nbsp; In a simulated annealing schedule, the
+            temperature determines the likelihood of accepting low scoring
+            modifications to the current solution.
+          </li>
+          <li>
+            <b>Annealing Extensions</b> - These are slight modifications to the
+            simulated annealing search procedure.
+          </li>
+          <ol>
+            <li>
+              <b>Quenching</b> - After the simulated annealing run is complete,
+              a greedy search will be initiated from the final solution to
+              ensure that a local optima has been reached.
+            </li>
+            <li>
+              <b>Hubfinding</b> - In the simulated annealing algorithm, the
+              presence of hubs often confuses the search process. Specifically,
+              it is often difficult to turn hubs "on," as this tends to result
+              in the creation of large, poor scoring modules. With "hubfinding,"
+              the nodes surrounding a hub can be turned "off" when that hub is
+              turned "on," preventing the formation of these very large
+              clusters. This improves the detection of high scoring active
+              modules.
+            </li>
+          </ol>
+          <li>
+            <b>Seed Graph Options</b> - This determines the initial state of the
+            simulated annealing search. By fixing the value of the random seed,
+            the results of the algorithm become deterministic.<br>
+          </li>
+        </ol>
+      </ol>
+      <li>
+        <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+          <em class=western><span style=FONT-STYLE:normal>Critical Step: Click
+          the <b>Find Modules </b>button.</span></em>
+        </p>
+      </li>
+      <li>
+        <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+          <em class=western><span style=FONT-STYLE:normal>Shortly, the
+          <b>Results</b> panel<b> </b>will appear, as illustrated in Figure 5.
+          This window contains a table in which each row represents one putative
+          module, listed according to the number of nodes, and an associated
+          z-score. Z-scores greater than 3.0 are generally considered
+          significant. The table contains one column per expression experiment;
+          for these columns, any row in which the cell is filled indicates a
+          pathway that showed a significant response under the conditions of the
+          experiment. Clicking on any row causes the corresponding nodes to be
+          selected in the Cytoscape canvas. To view these nodes as a separate
+          network, click on the <b>Create Network</b> button. Layout this new
+          network using
+          <b>Layout<font face=Wingdings></font>yFiles<font face=Wingdings></font>Organic</b>
+          from within the new view. </span></em>
+        </p>
+      </li>
+      <li>
+        <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+          <em class=western><span style=FONT-STYLE:normal>Repeat the Find
+          Modules step a few times. Depending on the settings of the parameters,
+          jActiveModules is based on a Monte Carlo algorithm which relies on
+          random sampling and is not guaranteed to return the same result with
+          each execution. Consequently, it is worthwhile to run jActiveModules
+          repeatedly to ensure that the approach is converging, i.e., the
+          identified modules are reproducible across runs.</span></em>
+        </p>
+      </li>
+      <li>
+        <p align=justify class=western style="MARGIN-TOP:0.08in; MARGIN-BOTTOM:0pt; LINE-HEIGHT:200%">
+          <em class=western><span style=FONT-STYLE:normal>One method for
+          validating module predictions is to determine if the nodes in the
+          putative module are enriched for any GO biological processes. See Step
+          26.</span></em>
+        </p>
+      </li>
+    </ol>
+  </li>
+</ol>
+<p class=western style=MARGIN-BOTTOM:0pt>
+  <br>
+</p></body>
+</html>
