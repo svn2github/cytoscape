@@ -1,14 +1,20 @@
 package csplugins.mcode;
 
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.ShapeNodeRealizer;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.BasicCalculator;
-import cytoscape.visual.mappings.*;
+import java.awt.Color;
 
-import java.awt.*;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.Interpolator;
+import cytoscape.visual.mappings.LinearNumberToColorInterpolator;
+import cytoscape.visual.mappings.ObjectMapping;
+
+import static cytoscape.visual.NodeShape.*;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -77,14 +83,14 @@ public class MCODEVisualStyle extends VisualStyle {
     }
 
     private void createNodeShape(NodeAppearanceCalculator nac) {
-        DiscreteMapping discreteMapping = new DiscreteMapping(new Byte(ShapeNodeRealizer.RECT), "MCODE_Node_Status", ObjectMapping.NODE_MAPPING);
+        DiscreteMapping discreteMapping = new DiscreteMapping(RECT, "MCODE_Node_Status", ObjectMapping.NODE_MAPPING);
         //Node shapes are determined by three discrete classifications
         discreteMapping.putMapValue("Clustered",
-                new Byte(ShapeNodeRealizer.ELLIPSE));
+                ELLIPSE);
         discreteMapping.putMapValue("Seed",
-                new Byte(ShapeNodeRealizer.RECT));
+                RECT);
         discreteMapping.putMapValue("Unclustered",
-                new Byte(ShapeNodeRealizer.DIAMOND));
+                DIAMOND);
 
         Calculator nodeShapeCalculator = new BasicCalculator("Seed and Cluster Status Calculator", discreteMapping, VisualPropertyType.NODE_SHAPE);
         nac.setCalculator(nodeShapeCalculator);
