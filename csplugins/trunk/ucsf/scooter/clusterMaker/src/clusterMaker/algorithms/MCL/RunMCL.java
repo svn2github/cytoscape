@@ -229,16 +229,24 @@ public class RunMCL {
 
 		logger.info("Creating groups");
 
-		// Finally, if we're supposed to, create the new network
-		if (createNewNetwork)
-		 	createClusteredNetwork(clusters);
-		
-		// Now, create the groups
-		List<String> groupList = createGroups(clusters);
+		List<String> groupList;
 
-		// Now notify the metanode viewer
-		CyGroup group = CyGroupManager.findGroup(groupList.get(0));
-		CyGroupManager.setGroupViewer(group, "metaNode", Cytoscape.getCurrentNetworkView(), true);
+		// Finally, if we're supposed to, create the new network
+		if (createNewNetwork) {
+		 	createClusteredNetwork(clusters);
+			groupList = new ArrayList(); // keep track of the groups we create
+			for (Cluster cluster: clusters) {
+				String groupName = nodeClusterAttributeName+"_"+cluster.getClusterNumber();
+				groupList.add(groupName);
+			}
+		} else {
+			// Now, create the groups
+			groupList = createGroups(clusters);
+
+			// Now notify the metanode viewer
+			CyGroup group = CyGroupManager.findGroup(groupList.get(0));
+			CyGroupManager.setGroupViewer(group, "metaNode", Cytoscape.getCurrentNetworkView(), true);
+		}
 
 		// Save the network attribute so we remember which groups are ours
 		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);
