@@ -5,112 +5,109 @@
 	<!-- Name of Plug In -->
 	<!-- Change this to the name of your Plug In -->
 	<!-- The name is used to create the plugin JAR file -->
-	<property name="plugin.name" value="MCODE"/>
-	<property name="version" value="1_2"/>
+	<property name="plugin.name" value="MCODE" />
+	<property name="version" value="1_31" />
 
-  	<!-- The directory containing source code -->
-  	<property name="src.dir" value="src"/>
-  	<property name="resources.dir" value="resources"/>
-	<property name="cytoscape.dir" value="../../../../cytoscape"/>
+	<!-- The directory containing source code -->
+	<property name="src.dir" value="src" />
+	<property name="resources.dir" value="resources" />
+	<property name="cytoscape.dir" value="../../../../cytoscape" />
 
-    <!--  The directory containing library jar files -->
-	<property name="lib.dir" value="${cytoscape.dir}/lib"/>
+	<!--  The directory containing library jar files -->
+	<property name="lib.dir" value="${cytoscape.dir}/lib" />
 
-  	<!-- Temporary build directories -->
- 	<property name="build.dir" value="build"/>
-  	<property name="build.classes" value="${build.dir}/classes"/>
-    <property name="release.dir" value="${build.dir}/release"/>
-	<property name="src_release.dir" value="${build.dir}/src_release/csplugins/mcode"/>
-	<property name="zip_release.dir" value="${build.dir}/zip_release"/>
+	<!-- Temporary build directories -->
+	<property name="build.dir" value="build" />
+	<property name="build.classes" value="${build.dir}/classes" />
+	<property name="release.dir" value="${build.dir}/release" />
+	<property name="src_release.dir" value="${build.dir}/src_release/csplugins/mcode" />
+	<property name="zip_release.dir" value="${build.dir}/zip_release" />
 
 	<!-- Global "magic" property for <javac> -->
-	<property name="build.compiler" value="modern"/>
+	<property name="build.compiler" value="modern" />
 
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
-		<pathelement path="${build.classes}"/>
-        <pathelement path="${cytoscape.dir}/cytoscape.jar"/>
+		<pathelement path="${build.classes}" />
+		<pathelement path="${cytoscape.dir}/cytoscape.jar" />
 		<fileset dir="${lib.dir}">
-			<include name="**/*.jar"/>
+			<include name="**/*.jar" />
 		</fileset>
 	</path>
 
-  	<!-- Target to create the build directories prior to compilation -->
-  	<target name="prepare">
-    		<mkdir dir="${build.dir}"/>
-    		<mkdir dir="${build.classes}"/>
-    </target>
+	<!-- Target to create the build directories prior to compilation -->
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes}" />
+	</target>
 
 	<!--  Target to clean out all directories -->
-  	<target name="clean" description="Removes all generated files.">
-    		<delete dir="${build.dir}"/>
-  	</target>
+	<target name="clean" description="Removes all generated files.">
+		<delete dir="${build.dir}" />
+	</target>
 
 	<!--  Target to compile all Plug In Code -->
-  	<target name="compile" depends="prepare"
-		description="Compiles all PlugIn source code (Note: Expects to run from csplugins/mcode directory).">
-    		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" source="1.4">
-			<include name="csplugins/**"/>
-            <classpath refid="classpath"/>
+	<target name="compile" depends="prepare" description="Compiles all PlugIn source code (Note: Expects to run from csplugins/mcode directory).">
+		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" source="1.5" optimize="on">
+			<include name="csplugins/**" />
+			<classpath refid="classpath" />
 		</javac>
 	</target>
 
 	<!--  Create PlugIn Jar File -->
-   	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
-		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/csplugins/mcode"/>
-	    <jar destfile="${build.dir}/${plugin.name}.jar">
-			<fileset dir="${build.classes}"/>
+	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/csplugins/mcode" />
+		<jar destfile="${build.dir}/${plugin.name}.jar">
+			<fileset dir="${build.classes}" />
 			<manifest>
-			  <attribute name="Cytoscape-Plugin"
-			             value="csplugins.mcode.MCODEPlugin"/>
+				<attribute name="Cytoscape-Plugin" value="csplugins.mcode.MCODEPlugin" />
 			</manifest>
-        </jar>
-	    <echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+		</jar>
+		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory" />
 	</target>
 
 	<!-- Target to Run JavaDoc -->
 	<target name="doc" description="Runs JavaDoc.">
-		<javadoc destdir="javadoc" source="1.4" classpathref="classpath"
-		link="http://java.sun.com/j2se/1.4.2/docs/api/">
+		<javadoc destdir="javadoc" source="1.5" classpathref="classpath" link="http://java.sun.com/j2se/1.5.0/docs/api/">
 
-		<packageset dir="${src.dir}">
-			<include name="csplugins/**"/>
-		</packageset>
+			<packageset dir="${src.dir}">
+				<include name="csplugins/**" />
+			</packageset>
 		</javadoc>
 	</target>
 
-	<!-- Target to build release -->	
-    	<target name="release" depends="jar" description="Creates MCODE Release">
+	<!-- Target to build release -->
+	<target name="release" depends="jar" description="Creates MCODE Release">
 		<!-- Create Release Directory -->
-		<mkdir dir="${release.dir}"/>
-		<mkdir dir="${zip_release.dir}"/>
-		<copy file="${build.dir}/MCODE.jar" tofile="${release.dir}/MCODE.jar"/>
+		<mkdir dir="${release.dir}" />
+		<mkdir dir="${zip_release.dir}" />
+		<copy file="${build.dir}/MCODE.jar" tofile="${release.dir}/MCODE.jar" />
 		<!-- Copy over docs -->
-		<copy file="doc/LICENSE.txt" todir="${release.dir}"/>
-		<copy file="doc/readme.txt" todir="${release.dir}"/>
-		<copy file="doc/TODO.txt" todir="${release.dir}"/>
-		<zip destfile="${zip_release.dir}/mcode_v${version}.zip" basedir="${release.dir}"/>
+		<copy file="doc/LICENSE.txt" todir="${release.dir}" />
+		<copy file="doc/readme.txt" todir="${release.dir}" />
+		<!--copy file="doc/TODO.txt" todir="${release.dir}" /-->
+		<zip destfile="${zip_release.dir}/mcode_v${version}.zip" basedir="${release.dir}" />
 	</target>
 
-	<!-- Target to build release -->	
-    	<target name="src_release" depends="jar, doc" description="Creates MCODE Source Code Release">
+	<!-- Target to build release -->
+	<target name="src_release" depends="jar, doc" description="Creates MCODE Source Code Release">
 		<!-- Create Release Directory -->
-		<mkdir dir="${src_release.dir}"/>
-		<mkdir dir="${zip_release.dir}"/>
-		<copy file="build.xml" todir="${src_release.dir}"/>
+		<mkdir dir="${src_release.dir}" />
+		<mkdir dir="${zip_release.dir}" />
+		<copy file="build.xml" todir="${src_release.dir}" />
 		<!-- Copy over docs -->
-		<copy file="doc/LICENSE.txt" todir="${src_release.dir}/doc"/>
-		<copy file="doc/readme.txt" todir="${src_release.dir}/doc"/>
-		<copy file="doc/TODO.txt" todir="${src_release.dir}/doc"/>
+		<copy file="doc/LICENSE.txt" todir="${src_release.dir}/doc" />
+		<copy file="doc/readme.txt" todir="${src_release.dir}/doc" />
+		<copy file="doc/TODO.txt" todir="${src_release.dir}/doc" />
 		<copy todir="${src_release.dir}/javadoc">
-			<fileset dir="javadoc"/>
+			<fileset dir="javadoc" />
 		</copy>
 		<copy todir="${src_release.dir}/src">
-			<fileset dir="src"/>
+			<fileset dir="src" />
 		</copy>
 		<copy todir="${src_release.dir}/testData">
-			<fileset dir="testData"/>
+			<fileset dir="testData" />
 		</copy>
-		<zip destfile="${zip_release.dir}/mcode_source_v${version}.zip" basedir="${build.dir}/src_release"/>
+		<zip destfile="${zip_release.dir}/mcode_source_v${version}.zip" basedir="${build.dir}/src_release" />
 	</target>
 </project>
