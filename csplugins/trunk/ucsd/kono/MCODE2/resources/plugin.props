@@ -1,0 +1,25 @@
+# This props file would be filled out and included in the plugin jar file.  This props file will be used 
+# to put information into the Plugin Manager about the plugin 
+
+# -- The following properties are REQUIRED -- #
+
+# The plugin name that will be displayed to users
+pluginName=MCODE
+
+# Description used to give users information about the plugin such as what it does.  
+# Html tags are encouraged for formatting purposes.
+pluginDescription=MCODE finds clusters (highly interconnected regions) in a network. Clusters mean different things in different types of networks. For instance, clusters in a protein-protein interaction network are often protein complexes and parts of pathways, while clusters in a protein similarity network represent protein families.
+
+# Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
+pluginVersion=1.31
+
+# Compatible Cytoscape version
+cytoscapeVersion=2.6
+
+# Category, use one of the categories listed on the website or create your own
+pluginCategory=Analysis
+
+
+# List of authors.  Note each author and institution pair are separated by a : (colon)
+# each additional author institution pair must be separated from other pairs bye a ; (semicolon)
+pluginAuthorsIntsitutions=Gary Bader, Vuk Pavlovic:University of Toronto
