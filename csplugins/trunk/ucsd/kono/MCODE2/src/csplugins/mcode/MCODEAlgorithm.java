@@ -215,6 +215,7 @@ public class MCODEAlgorithm {
 	 *            Title of the result, used as an identifier in various hash
 	 *            maps
 	 */
+	@SuppressWarnings("unchecked")
 	public void scoreGraph(CyNetwork inputNetwork, String resultTitle) {
 
 		final String callerID = "MCODEAlgorithm.MCODEAlgorithm";
@@ -225,8 +226,9 @@ public class MCODEAlgorithm {
 		params = getParams();
 
 		// initialize
-		long msTimeBefore = System.currentTimeMillis();
-		Map nodeInfoHashMap = new HashMap(inputNetwork.getNodeCount());
+		final long msTimeBefore = System.currentTimeMillis();
+		
+		Map<Integer, NodeInfo> nodeInfoHashMap = new HashMap<Integer, NodeInfo>(inputNetwork.getNodeCount());
 
 		/*
 		 * will store Doubles (score) as the key, Lists as values sort Doubles
@@ -249,27 +251,28 @@ public class MCODEAlgorithm {
 		// iterate over all nodes and calculate MCODE score
 		NodeInfo nodeInfo = null;
 		double nodeScore;
-		ArrayList al;
+		List<Integer> al;
 		int i = 0;
-		Iterator nodes = inputNetwork.nodesIterator();
+		Iterator<Node> nodes = inputNetwork.nodesIterator();
+		Node n;
 		while (nodes.hasNext() && (!cancelled)) {
-			Node n = (Node) nodes.next();
+			n = nodes.next();
 			nodeInfo = calcNodeInfo(inputNetwork, n.getRootGraphIndex());
-			nodeInfoHashMap.put(new Integer(n.getRootGraphIndex()), nodeInfo);
+			nodeInfoHashMap.put(n.getRootGraphIndex(), nodeInfo);
 			// score node TODO: add support for other scoring functions (low
 			// priority)
 			nodeScore = scoreNode(nodeInfo);
 			// save score for later use in TreeMap
 			// add a list of nodes to each score in case nodes have the same
 			// score
-			if (nodeScoreSortedMap.containsKey(new Double(nodeScore))) {
+			if (nodeScoreSortedMap.containsKey(nodeScore)) {
 				// already have a node with this score, add it to the list
-				al = (ArrayList) nodeScoreSortedMap.get(new Double(nodeScore));
-				al.add(new Integer(n.getRootGraphIndex()));
+				al = nodeScoreSortedMap.get(nodeScore);
+				al.add(n.getRootGraphIndex());
 			} else {
-				al = new ArrayList();
-				al.add(new Integer(n.getRootGraphIndex()));
-				nodeScoreSortedMap.put(new Double(nodeScore), al);
+				al = new ArrayList<Integer>();
+				al.add(n.getRootGraphIndex());
+				nodeScoreSortedMap.put(nodeScore, al);
 			}
 			if (taskMonitor != null) {
 				i++;
@@ -283,8 +286,7 @@ public class MCODEAlgorithm {
 		currentNodeScoreSortedMap = nodeScoreSortedMap;
 		currentNodeInfoHashMap = nodeInfoHashMap;
 
-		long msTimeAfter = System.currentTimeMillis();
-		lastScoreTime = msTimeAfter - msTimeBefore;
+		lastScoreTime = System.currentTimeMillis() - msTimeBefore;
 	}
 
 	/**
