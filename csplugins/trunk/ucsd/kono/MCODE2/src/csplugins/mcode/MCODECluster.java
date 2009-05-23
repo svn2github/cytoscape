@@ -1,11 +1,3 @@
-package csplugins.mcode;
-
-import giny.model.GraphPerspective;
-import ding.view.DGraphView;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
@@ -41,93 +33,196 @@ import java.util.HashMap;
  * Time: 5:34:46 PM
  * Description: Stores various cluster information for simple get/set purposes
  */
+package csplugins.mcode;
+
+import giny.model.GraphPerspective;
+
+import java.util.List;
+import java.util.Map;
+
+import ding.view.DGraphView;
+
 
 /**
  * Stores various cluster information for simple get/set purposes.
  */
 public class MCODECluster {
-    private ArrayList alCluster = null;
-    private GraphPerspective gpCluster = null;
-    private DGraphView dgView = null; //keeps track of layout so that layout process doesn't have to be repeated unecessarily
-    private Integer seedNode;
-    private HashMap nodeSeenHashMap; //stores the nodes that have already been included in higher ranking clusters
-    private double clusterScore;
-    private String clusterName; //Pretty much unsed so far, but could store name by user's input
-    private int rank;
-    private String resultTitle;
+	private List<Integer> alCluster = null;
+	private GraphPerspective gpCluster = null;
+	private DGraphView dgView = null; //keeps track of layout so that layout process doesn't have to be repeated unecessarily
+	private Integer seedNode;
+	private Map<Integer, Boolean> nodeSeenHashMap; //stores the nodes that have already been included in higher ranking clusters
+	private double clusterScore;
+	private String clusterName; //Pretty much unsed so far, but could store name by user's input
+	private int rank;
+	private String resultTitle;
 
-    public MCODECluster() {}
+	/**
+	 * Creates a new MCODECluster object.
+	 */
+	public MCODECluster() {
+	}
 
-    public String getResultTitle() {
-        return resultTitle;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String getResultTitle() {
+		return resultTitle;
+	}
 
-    public void setResultTitle(String resultTitle) {
-        this.resultTitle = resultTitle;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param resultTitle DOCUMENT ME!
+	 */
+	public void setResultTitle(String resultTitle) {
+		this.resultTitle = resultTitle;
+	}
 
-    public String getClusterName() {
-        return clusterName;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String getClusterName() {
+		return clusterName;
+	}
 
-    public void setClusterName(String clusterName) {
-        this.clusterName = clusterName;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param clusterName DOCUMENT ME!
+	 */
+	public void setClusterName(final String clusterName) {
+		this.clusterName = clusterName;
+	}
 
-    public DGraphView getDGView() {
-        return dgView;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public DGraphView getDGView() {
+		return dgView;
+	}
 
-    public void setDGView(DGraphView dgView) {
-        this.dgView = dgView;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param dgView DOCUMENT ME!
+	 */
+	public void setDGView(DGraphView dgView) {
+		this.dgView = dgView;
+	}
 
-    public double getClusterScore() {
-        return clusterScore;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public double getClusterScore() {
+		return clusterScore;
+	}
 
-    public void setClusterScore(double clusterScore) {
-        this.clusterScore = clusterScore;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param clusterScore DOCUMENT ME!
+	 */
+	public void setClusterScore(double clusterScore) {
+		this.clusterScore = clusterScore;
+	}
 
-    public GraphPerspective getGPCluster() {
-        return gpCluster;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public GraphPerspective getGPCluster() {
+		return gpCluster;
+	}
 
-    public void setGPCluster(GraphPerspective gpCluster) {
-        this.gpCluster = gpCluster;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param gpCluster DOCUMENT ME!
+	 */
+	public void setGPCluster(GraphPerspective gpCluster) {
+		this.gpCluster = gpCluster;
+	}
 
-    public ArrayList getALCluster() {
-        return alCluster;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public List<Integer> getALCluster() {
+		return alCluster;
+	}
 
-    public void setALCluster(ArrayList alCluster) {
-        this.alCluster = alCluster;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param alCluster DOCUMENT ME!
+	 */
+	public void setALCluster(List<Integer> alCluster) {
+		this.alCluster = alCluster;
+	}
 
-    public Integer getSeedNode() {
-        return seedNode;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Integer getSeedNode() {
+		return seedNode;
+	}
 
-    public void setSeedNode(Integer seedNode) {
-        this.seedNode = seedNode;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param seedNode DOCUMENT ME!
+	 */
+	public void setSeedNode(Integer seedNode) {
+		this.seedNode = seedNode;
+	}
 
-    public HashMap getNodeSeenHashMap() {
-        return nodeSeenHashMap;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Map<Integer, Boolean> getNodeSeenHashMap() {
+		return nodeSeenHashMap;
+	}
 
-    public void setNodeSeenHashMap(HashMap nodeSeenHashMap) {
-        this.nodeSeenHashMap = nodeSeenHashMap;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nodeSeenHashMap DOCUMENT ME!
+	 */
+	public void setNodeSeenHashMap(Map<Integer, Boolean> nodeSeenHashMap) {
+		this.nodeSeenHashMap = nodeSeenHashMap;
+	}
 
-    public int getRank() {
-        return rank;
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public int getRank() {
+		return rank;
+	}
 
-    public void setRank(int rank) {
-        this.rank = rank;
-        this.clusterName = "Cluster " + (rank + 1);
-    }
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param rank DOCUMENT ME!
+	 */
+	public void setRank(int rank) {
+		this.rank = rank;
+		this.clusterName = "Cluster " + (rank + 1);
+	}
 }

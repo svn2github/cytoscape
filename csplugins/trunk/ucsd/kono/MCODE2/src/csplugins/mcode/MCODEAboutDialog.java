@@ -1,13 +1,15 @@
 package csplugins.mcode;
 
-import cytoscape.Cytoscape;
+import java.awt.Insets;
+import java.net.URL;
 
-import javax.swing.*;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
-import java.awt.*;
-import java.net.URL;
+
+import cytoscape.Cytoscape;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -50,7 +52,9 @@ import java.net.URL;
  */
 public class MCODEAboutDialog extends JDialog {
 
-    public MCODEAboutDialog() {
+	private static final long serialVersionUID = 4502024800504746842L;
+
+	public MCODEAboutDialog() {
         super(Cytoscape.getDesktop(), "About MCODE", false);
         setResizable(false);
 

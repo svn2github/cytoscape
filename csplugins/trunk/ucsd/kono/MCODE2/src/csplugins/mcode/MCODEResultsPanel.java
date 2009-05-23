@@ -1115,7 +1115,7 @@ public class MCODEResultsPanel extends JPanel {
 			double nodeScoreCutoff = (((double) source.getValue()) / 1000);
 
 			// Store current cluster content for comparison
-			ArrayList oldCluster = clusters[selectedRow].getALCluster();
+			final List<Integer> oldCluster = clusters[selectedRow].getALCluster();
 
 			// Find the new cluster given the node score cutoff
 			MCODECluster cluster = alg.exploreCluster(clusters[selectedRow],
@@ -1124,7 +1124,7 @@ public class MCODEResultsPanel extends JPanel {
 			// We only want to do the following work if the newly found cluster
 			// is actually different
 			// So we get the new cluster content
-			ArrayList newCluster = cluster.getALCluster();
+			final List<Integer> newCluster = cluster.getALCluster();
 
 			// If the new cluster is too large to draw within a reasonable time
 			// and won't look understandable in the

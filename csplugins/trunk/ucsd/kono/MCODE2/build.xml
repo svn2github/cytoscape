@@ -6,12 +6,12 @@
 	<!-- Change this to the name of your Plug In -->
 	<!-- The name is used to create the plugin JAR file -->
 	<property name="plugin.name" value="MCODE" />
-	<property name="version" value="1_31" />
+	<property name="version" value="1_40" />
 
 	<!-- The directory containing source code -->
 	<property name="src.dir" value="src" />
 	<property name="resources.dir" value="resources" />
-	<property name="cytoscape.dir" value="../../../../cytoscape" />
+	<property name="cytoscape.dir" value="../cytoscape" />
 
 	<!--  The directory containing library jar files -->
 	<property name="lib.dir" value="${cytoscape.dir}/lib" />

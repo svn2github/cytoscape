@@ -1,8 +1,3 @@
-package csplugins.mcode;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
@@ -39,17 +34,22 @@ import java.awt.event.ActionListener;
  * * Description: The action to show the About dialog box
  */
 
+package csplugins.mcode;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  * The action to show the About dialog box
  */
 public class MCODEAboutAction implements ActionListener {
-    /**
-     * Invoked when the about action occurs.
-     */
-    public void actionPerformed(ActionEvent e) {
-        //display about box
-        MCODEAboutDialog aboutDialog = new MCODEAboutDialog();
-        aboutDialog.pack();
-        aboutDialog.setVisible(true);
-    }
+	/**
+	 * Invoked when the about action occurs.
+	 */
+	public void actionPerformed(ActionEvent e) {
+		//display about box
+		MCODEAboutDialog aboutDialog = new MCODEAboutDialog();
+		aboutDialog.pack();
+		aboutDialog.setVisible(true);
+	}
 }
