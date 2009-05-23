@@ -113,37 +113,23 @@ public class MCODEScoreAndFindTask implements Task {
 			taskMonitor.setStatus("Drawing Results (Step 3 of 3)");
 			// also create all the images here for the clusters, since it can be
 			// a time consuming operation
-			System.out.println("######### Sort start");
 			clusters = MCODEUtil.sortClusters(clusters);
-			
-			System.out.println("######### Sort done!!");
-			
+						
 			int clusterCount = clusters.length;
 			imageList = new Image[clusterCount];
 			
-			System.out.println("######### Step1");
 			int imageSize = MCODECurrentParameters.getInstance()
 					.getResultParams(resultSet).getDefaultRowHeight();
 			
-			
-			System.out.println("######### Step2: " + clusterCount);
-			
+						
 			for (int i = 0; i < clusterCount; i++) {
 				if (interrupted)
-					return;
-				
-				System.out.println("######### Step2.1");
-				
+					return;				
 				imageList[i] = MCODEUtil.convertNetworkToImage(null,
 						clusters[i], imageSize, imageSize, null, true);
-				
-				System.out.println("######### Step2.11");
-				
 				taskMonitor.setPercentCompleted((i * 100) / clusters.length);
-				System.out.println("######### Step2.2");
 			}
 			
-			System.out.println("######### Step3!!");
 			completedSuccessfully = true;
 		} catch (Exception e) {
 			// TODO: ask Ethan if interrupt exception should be thrown from
