@@ -1,0 +1,54 @@
+##########################################################################
+#  chemViz.props
+#  This file contains messages to be used in ChemInfoPlugin
+##########################################################################
+
+##
+# Common Messages
+##
+
+# general system error
+chemViz.system.error=An error occurred with the ChemInfoPlugin.
+
+##
+# Labels
+##
+chemViz.menu=Cheminformatics Tools
+chemViz.menu.2ddepiction=Depict 2D Structure
+chemViz.menu.similarity=Calculate Similarity
+chemViz.menu.similarity.tanimoto=Tanimoto Coefficients
+chemViz.menu.similarity.tanimoto.selectedNodes=Selected Nodes Only
+chemViz.menu.similarity.tanimoto.allNodes=All Nodes
+chemViz.menu.2ddepiction.selectedEdges=Show table of compounds from selected edges
+chemViz.menu.2ddepiction.thisEdge=Show 2D structure(s) from this edge
+chemViz.menu.2ddepiction.allEdges=Show table of compounds from all edges
+chemViz.menu.2ddepiction.selectedNodes=Show table of compounds from selected nodes
+chemViz.menu.2ddepiction.thisNode=Show 2D structure(s) from this node
+chemViz.menu.2ddepiction.allNodes=Show table of compounds from all nodes
+chemViz.menu.createattributes=Create attributes from molecular descriptors
+chemViz.menu.createattributes.thisEdge=for this edge
+chemViz.menu.createattributes.allEdges=for all edges
+chemViz.menu.createattributes.selectedEdges=for selected edges
+chemViz.menu.createattributes.thisNode=for this node
+chemViz.menu.createattributes.allNodes=for all nodes
+chemViz.menu.createattributes.selectedNodes=for selected nodes
+chemViz.menu.settings=Settings...
+
+##
+# 2D Structure Depictor Messages
+##
+chemViz.depictor.noSmilesError=No smiles/InChI found in the current node. 
+
+##
+# Similarity Calculation Messages
+##
+chemViz.similarity.complete=Similarity calculation is completed. Please use the "Data Panel" for similarity score.
+
+# Options for the set of nodes to calculate similarity score with
+chemViz.similarity.nodeset=Scope of Similarity Calculation. Please choose the set of nodes that you want to calculate similarity:
+chemViz.similarity.nodeset.0=All nodes. This will add an "similarity" attribute to all edges.
+#chemViz.similarity.nodeset.1=All nodes. This will insert edge automatically between any two nodes that are not connected.
+#chemViz.similarity.nodeset.2=All selected nodes. This will insert edge automatically between any two selected nodes that are not connected.
+#chemViz.similarity.nodeset.3=Only selected nodes that are connected. 
+chemViz.similarity.nodeset.1=Create new network with all nodes and add an edge between each pair of nodes. 
+

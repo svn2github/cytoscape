@@ -82,9 +82,9 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	private double tcCutoff = 0.25;
 
 	public ChemInfoSettingsDialog() {
-		super(Cytoscape.getDesktop(), "Chemical Informatics Plugin Settings Dialog", false);
+		super(Cytoscape.getDesktop(), "ChemViz Plugin Settings Dialog", false);
 
-		properties = new ChemInfoProperties("cheminfo");
+		properties = new ChemInfoProperties("chemViz");
 
 		initializeProperties();
 
@@ -277,8 +277,11 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	}
 
 	private void initializeProperties() {
-		Tunable t = new Tunable("maxCompunds",
-		                "Maximum number of compounds to show in opup",
+		Tunable t = new Tunable("group1","", Tunable.GROUP, new Integer(2));
+		properties.add(t);
+
+		t = new Tunable("maxCompunds",
+		                "Maximum number of compounds to show in 2D structure popup",
 		                Tunable.INTEGER, new Integer(0));
 		properties.add(t);
 
@@ -293,6 +296,11 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 
 		t = new Tunable("attributeGroup",
 		                "Attribute Settings",
+		                Tunable.GROUP, new Integer(4));
+		properties.add(t);
+
+		t = new Tunable("attributeGroup1",
+		                "SMILES Attributes",
 		                Tunable.GROUP, new Integer(2));
 		properties.add(t);
 		String smilesDefaults = getDefaults(possibleAttributes, defaultSmilesAttributes);
@@ -302,6 +310,10 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		                (Object)possibleAttributes.toArray(), null, Tunable.MULTISELECT);
 		properties.add(t);
 
+		t = new Tunable("attributeGroup2",
+		                "InCHI Attributes",
+		                Tunable.GROUP, new Integer(2));
+		properties.add(t);
 		String inCHIDefaults = getDefaults(possibleAttributes, defaultInCHIAttributes);
 		t = new Tunable("inChiAttributes",
 		                "Attributes that contain InCHI fingerprints",

@@ -111,7 +111,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
                                                       ActionListener {
 	
 	private List<Compound> compoundList;
-	private Map<GraphObject,Integer> rowMap;
+	private Map<GraphObject,List<Integer>> rowMap;
 	private ChemInfoTableModel tableModel;
 	private	TableColumnModel columnModel;
 	private	ListSelectionModel selectionModel;
@@ -251,6 +251,12 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 		networkView.updateView();
 	}
 
+	/**
+	 * onSelectEvent is called when a user changes the selection
+	 * in the network.
+	 *
+	 * @param event the network selection event
+	 */
 	public void onSelectEvent(SelectEvent event) {
 		if (modifyingSelection) return;
 		modifyingSelection = true;
@@ -263,8 +269,10 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 	private void selectObjects(Set<GraphObject>selectedObjects) {
 		for (GraphObject obj: selectedObjects) {
 			if (rowMap.containsKey(obj)) {
-				int row = sorter.viewIndex(rowMap.get(obj).intValue());
-				selectionModel.addSelectionInterval(row,row);
+				for (Integer r: rowMap.get(obj)) {
+					int row = sorter.viewIndex(r.intValue());
+					selectionModel.addSelectionInterval(row,row);
+				}
 			}
 		}
 	}
@@ -494,7 +502,11 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 			Image resizedImage = c.getImage(width,width);
 			if (resizedImage == null) return null;
 			JLabel l = new JLabel(new ImageIcon(resizedImage));
-			rowMap.put(c.getSource(), Integer.valueOf(row));
+			if (!rowMap.containsKey(c.getSource())) {
+				rowMap.put(c.getSource(), new ArrayList());
+			}
+
+			rowMap.get(c.getSource()).add(Integer.valueOf(row));
 			l.setBackground(adaptee.getBackground());
 			l.setForeground(adaptee.getForeground());
 			return l;

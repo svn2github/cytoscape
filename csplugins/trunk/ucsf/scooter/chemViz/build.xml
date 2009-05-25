@@ -107,12 +107,12 @@
         <include name="*.jar"/>
       </fileset>
     </unzip>
-    <copy todir="build/chemViz">
+    <copy todir="${build.dir}/classes/chemViz">
       <fileset file="${src.dir}/chemViz/*.props" />
     </copy>
     <jar jarfile="${build.dir}/chemViz.jar">
       <manifest>
-        <attribute name="Cytoscape-Plugin" value="chemViz.ChemViz" />
+        <attribute name="Cytoscape-Plugin" value="chemViz.ChemVizPlugin" />
       </manifest>
       <fileset dir="${build.dir}/classes" />
       <fileset dir="${build.dir}/classes/lib"/>
