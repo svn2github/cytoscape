@@ -9,7 +9,7 @@
   Version      : $Revision: $ $Date: $
 =====================================================================
 -->
-<project name="chemViz" default="run" basedir=".">
+<project name="chemViz" default="jar" basedir=".">
   <property name="src.dir" location="${basedir}/src" />
   <property name="build.dir" location="build" />
   <property name="doc.dir" location="doc" />
@@ -130,7 +130,7 @@
     <copy todir="${cytoscape.dir}/plugins/core">
       <fileset file="${basedir}/build/cheminfo.jar" />
     </copy>
-    <java classname="cytoscape.CyMain" classpathref="compile.classpath" fork="true" maxmemory="1g" jvm="/usr/lib/jvm/java-6-sun/jre/bin/java">
+    <java classname="cytoscape.CyMain" classpathref="compile.classpath" fork="true" maxmemory="1g">
       <arg value="-s" />
       <arg value="${test.dir}/cheminfoTest.cys" />
       <arg value="-p" />
