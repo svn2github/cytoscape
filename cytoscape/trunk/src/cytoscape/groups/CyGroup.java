@@ -37,17 +37,11 @@
 */
 package cytoscape.groups;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.CyNode;
-import cytoscape.CyEdge;
-
-import giny.model.RootGraph;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
 
 
 /**
