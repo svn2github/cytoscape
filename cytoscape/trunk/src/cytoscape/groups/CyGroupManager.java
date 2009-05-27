@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -64,22 +65,22 @@ public class CyGroupManager {
 	 * The list of groups, indexed by the CyNode that represents the group.  The values
 	 * are the CyGroup itself.
 	 */
-	private static HashMap<CyNode, CyGroup> groupMap = new HashMap();
+	private static Map<CyNode, CyGroup> groupMap = new HashMap<CyNode, CyGroup>();
 
 	/**
 	 * The list of group viewers currently registered.
 	 */
-	private static HashMap<String, CyGroupViewer> viewerMap = new HashMap();
+	private static Map<String, CyGroupViewer> viewerMap = new HashMap<String, CyGroupViewer>();
 
 	/**
 	 * The list of groups, indexed by the managing viewer
 	 */
-	private static HashMap<CyGroupViewer, List<CyGroup>> groupViewerMap = new HashMap();
+	private static Map<CyGroupViewer, List<CyGroup>> groupViewerMap = new HashMap<CyGroupViewer, List<CyGroup>>();
 
 	/**
 	 * The list of group change listeners
 	 */
-	private static List<CyGroupChangeListener> changeListeners = new ArrayList();
+	private static List<CyGroupChangeListener> changeListeners = new ArrayList<CyGroupChangeListener>();
 
 	// Static methods
 	/**
@@ -93,7 +94,7 @@ public class CyGroupManager {
 		if ((groupMap == null) || !groupMap.containsKey(groupNode))
 			return null;
 
-		return (CyGroup) groupMap.get(groupNode);
+		return groupMap.get(groupNode);
 	}
 
 	/**
@@ -105,10 +106,10 @@ public class CyGroupManager {
 	 */
 	public static List<CyGroup> getGroup(CyNode memberNode) {
 		List<CyGroup> groupList = new ArrayList<CyGroup>();
-		Iterator groupIter = groupMap.values().iterator();
+		final Iterator<CyGroup> groupIter = groupMap.values().iterator();
 
 		while (groupIter.hasNext()) {
-			CyGroup group = (CyGroup) groupIter.next();
+			CyGroup group = groupIter.next();
 
 			if (group.contains(memberNode))
 				groupList.add(group);
@@ -197,7 +198,7 @@ public class CyGroupManager {
 	 * @param nodeList the initial set of nodes for this group
 	 * @param viewer the name of the viewer to manage this group
 	 */
-	public static CyGroup createGroup(String groupName, List nodeList, String viewer) {
+	public static CyGroup createGroup(String groupName, List<CyNode> nodeList, String viewer) {
 		// Do we already have a group by this name?
 		if (findGroup(groupName) != null) return null;
 		// Create the group
@@ -219,7 +220,7 @@ public class CyGroupManager {
 	 * @param nodeList the initial set of nodes for this group
 	 * @param viewer the name of the viewer to manage this group
 	 */
-	public static CyGroup createGroup(CyNode groupNode, List nodeList, String viewer) {
+	public static CyGroup createGroup(CyNode groupNode, List<CyNode> nodeList, String viewer) {
 		// Do we already have a group by this name?
 		if (findGroup(groupNode.getIdentifier()) != null) return null;
 		// Create the group
@@ -251,8 +252,7 @@ public class CyGroupManager {
 	 * @param group the group to remove
 	 */
 	public static void removeGroup(CyGroup group) {
-		CyNode groupNode = group.getGroupNode();
-		removeGroup(groupNode);
+		removeGroup(group.getGroupNode());
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class CyGroupManager {
 	 */
 	public static void removeGroup(CyNode groupNode) {
 		if (groupMap.containsKey(groupNode)) {
-			notifyRemoveGroup((CyGroup) groupMap.get(groupNode));
+			notifyRemoveGroup(groupMap.get(groupNode));
 
 			// Remove this from the viewer's list
 			CyGroup group = groupMap.get(groupNode);
@@ -348,7 +348,7 @@ public class CyGroupManager {
 
 		if ((viewer != null) && viewerMap.containsKey(viewer)) {
 			// get the viewer
-			CyGroupViewer v = (CyGroupViewer) viewerMap.get(viewer);
+			CyGroupViewer v = viewerMap.get(viewer);
 
 			// create the list if necessary
 			if (!groupViewerMap.containsKey(v))

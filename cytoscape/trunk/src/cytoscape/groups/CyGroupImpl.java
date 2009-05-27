@@ -169,14 +169,11 @@ public class CyGroupImpl implements CyGroup {
 	 * @param groupName the identifier to use for this group -- should be unique!
 	 * @param nodeList the initial set of nodes for this group
 	 */
-	protected CyGroupImpl(String groupName, List nodeList) {
+	protected CyGroupImpl(String groupName, List<CyNode> nodeList) {
 		this(groupName); // Create all of the necessary structures
 
-		Iterator iter = nodeList.iterator();
-
-		while (iter.hasNext()) {
-			this.addNodeToGroup ( (CyNode)iter.next() );
-		}
+		for(CyNode node: nodeList)
+			this.addNodeToGroup (node);
 	}
 
 	/**
