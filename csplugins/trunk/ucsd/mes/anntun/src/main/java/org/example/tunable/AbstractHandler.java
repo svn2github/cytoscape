@@ -10,9 +10,14 @@ import java.util.ArrayList;
 public abstract class AbstractHandler implements Handler {
 
 	protected Field f;
+	protected Method gmethod;
+	protected Method smethod;
 	protected Method m;
 	protected Object o;
 	protected Tunable t;
+	protected Tunable tg;
+	protected Tunable ts;
+	
 	protected List<HandlerListener> listeners;
 
 	public AbstractHandler(Field f, Object o, Tunable t) {
@@ -27,6 +32,14 @@ public abstract class AbstractHandler implements Handler {
 		this.o = o;
 		this.t = t;
 	}
+	
+	public AbstractHandler(Method getm, Method setm, Object o, Tunable tg, Tunable ts){
+		this.gmethod = getm;
+		this.smethod = setm;
+		this.o = o;
+		this.tg = tg;
+		this.ts = ts;
+	}
 
 	public Field getField() {
 		return f;
@@ -36,6 +49,14 @@ public abstract class AbstractHandler implements Handler {
 		return m;
 	}
 
+	public Method getGetMethod() {
+		return gmethod;
+	}
+	public Method getSetMethod() {
+		return smethod;
+	}
+	
+	
 	public Object getObject() {
 		return o;
 	}

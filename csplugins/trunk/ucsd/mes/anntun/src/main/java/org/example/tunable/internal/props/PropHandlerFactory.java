@@ -2,6 +2,7 @@
 package org.example.tunable.internal.props;
 
 import java.lang.reflect.*;
+
 import org.example.tunable.*;
 
 public class PropHandlerFactory implements HandlerFactory<PropHandler> {
@@ -18,5 +19,17 @@ public class PropHandlerFactory implements HandlerFactory<PropHandler> {
 			return new StringPropHandler(f,o,t);
 		else
 			return null;
+	}
+
+	public PropHandler getHandler(Method gmethod, Method smethod, Object o,
+			Tunable t) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public PropHandler getHandler(Method gmethod, Method smethod, Object o,
+			Tunable tg, Tunable ts) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

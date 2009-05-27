@@ -23,5 +23,10 @@ public interface HandlerFactory<T extends Handler> {
 	 * given method type.
 	 */
 	public T getHandler(Method m, Object o, Tunable t);
+	
+	/**
+	 * Test with getMethod and setMethod as arguments
+	 */
+	public T getHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts);
 
 }

@@ -13,12 +13,12 @@ import org.example.tunable.util.ListSingleSelection;
 public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 
 	public CLHandler getHandler(Method m, Object o, Tunable t) {
-		Class<?>[] types = m.getParameterTypes();
-		if ( types.length != 1 ) {
+		Class<?>[] paramsTypes = m.getParameterTypes();
+		if ( paramsTypes.length != 1 ) {
 			System.err.println("found bad method");
 			return null;
 		}
-		Class<?> type = types[0];
+		Class<?> type = paramsTypes[0];
 
 		if ( type == int.class || type == Integer.class )
 			return new IntCLHandler(m,o,t);
@@ -35,8 +35,30 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 
 	}
 
+	public CLHandler getHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
+		Class<?>[] paramsTypes = smethod.getParameterTypes();
+		Class<?> returnType = gmethod.getReturnType();
+		if ( paramsTypes.length != 1 ) {
+			System.err.println("found bad method");
+			return null;
+		}
+		Class<?> type = paramsTypes[0];
+		if(!type.equals(returnType)) {
+			System.err.println("return type and parameter type are differents for the methods " + gmethod.getName() + " and " + smethod.getName());
+			return null;
+		}
+		
+		if( type == int.class || type == Integer.class)
+			return new IntCLHandler(gmethod,smethod,o,tg,ts);
+		else 
+			return null;	
+	}
+	
+	
+	
+	
 	public CLHandler getHandler(Field f, Object o, Tunable t) {
-		Class type = f.getType();
+		Class<?> type = f.getType();
 
 		if ( type == int.class || type == Integer.class )
 			return new IntCLHandler(f,o,t);

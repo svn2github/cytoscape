@@ -11,17 +11,19 @@ import java.awt.*;
 import org.example.tunable.*;
 import org.example.tunable.util.*;
 
+
 public class FlexiblyBoundedHandler<T extends AbstractFlexiblyBounded> extends AbstractGuiHandler {
 
 	JTextField tf;
 	final T b;
 	final JLabel label;
-
+	
+	
 	public FlexiblyBoundedHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		T bb; 
 		try {
-		bb = (T)f.get(o);
+			bb = (T)f.get(o);
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();	
 			bb = null;
@@ -30,27 +32,31 @@ public class FlexiblyBoundedHandler<T extends AbstractFlexiblyBounded> extends A
 		b = bb;
 
 		panel = new JPanel();
+		
+		JButton up = new JButton( new SetAction("Set Upper Bound",panel,false));
+		JButton low = new JButton( new SetAction("Set Lower Bound",panel,true));
+		
 		label = new JLabel();
 		setLabelText();
 		try {
-		panel.add( label );
-		tf = new JTextField( b.getValue().toString(), 10);
-		tf.addActionListener( this );
-		panel.add( tf );
-		panel.add( new JButton( new SetAction("Set Lower Bound",panel,true) ) );
-		panel.add( new JButton( new SetAction("Set Upper Bound",panel,false) ) );
+			panel.add( label );
+			tf = new JTextField( b.getValue().toString(), 6);
+			tf.addActionListener( this );
+			panel.add( tf );
+			panel.add(low);
+			panel.add(up);
 		} catch (Exception e) { e.printStackTrace(); }
 			
 	}
 
 	private void setLabelText() {
-		label.setText( t.description() + " (max: " + b.getLowerBound().toString() + "  min: " + b.getUpperBound().toString() + ")" );
+		label.setText( t.description() + " (min: " + b.getLowerBound().toString() + "  max: " + b.getUpperBound().toString() + ")" );
 	}
 
 	public void handle() {
 		String s = tf.getText();
 		try {
-		b.setValue(s);
+			b.setValue(s);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 

@@ -1,5 +1,5 @@
-package org.example.command;
 
+package org.example.command;
 import org.example.tunable.Tunable;
 import org.example.tunable.HandlerController;
 import org.example.tunable.Handler;
@@ -38,22 +38,35 @@ public class PrintSomething implements Command, HandlerController {
 	public ListMultipleSelection<String> lms = new ListMultipleSelection<String>("one","two","three","four");
 	
 	
-	public int age;
-	public BoundedInteger height = new BoundedInteger(0,150,200,false,false);
+	public Integer age;
 	
-	@Tunable(description="to set the Height")
-	public void sHeight(int h) {
-		height.setValue(h);
-	}
-
-	
-	@Tunable(description="your age")
-	public void sAge(int a) {
+	@Tunable(description="to set your age")
+	public void setAge(Integer a) {
 		age = a;
 	}
+	@Tunable(description="to get your age")
+	public Integer getAge(){
+		return age;
+	}
+	
+	
+	
+//	test
+	public BoundedInteger height = new BoundedInteger(0,150,200,false,false);;
+//	public BoundedInteger test
+//	
+//	@Tunable(description="to set the Height")
+//	public void setHeight(int a) {
+//		height.setValue();
+//		height = test;
+//	}
+
+	
+
 	
 	public void execute() {
-		System.out.println("\t name : " + firstName + " " + lastName + "\n \t age : " + age + "\n \t foot size : " + footSize.getValue() + "\n \t kids = " + kids.getValue() + "\n \t income : $" + income.getValue() + "\n \t result for boolean = " + bool + "\n \t listsingleselection = "+lss.getSelectedValue() + "\n \t listmultipleselection = "+lms.getSelectedValues() + "\n \t height = "+height.getValue());
+		System.out.println("\t name : " + firstName + " " + lastName + "\n \t age : " + getAge() + "\n \t foot size : " + footSize.getValue() + "\n \t kids = " + kids.getValue() + "\n \t income : $" + income.getValue() + "\n \t result for boolean = " + bool + "\n \t listsingleselection = "+lss.getSelectedValue() + "\n \t listmultipleselection = "+lms.getSelectedValues() + "\n \t height = "+height.getValue());
+//		System.out.println("test = " + height.getValue());
 	}
 	
 

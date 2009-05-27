@@ -2,6 +2,7 @@
 package org.example.tunable.internal.gui;
 
 import java.lang.reflect.*;
+
 import org.example.tunable.*;
 import org.example.tunable.util.*;
 
@@ -40,6 +41,18 @@ public class GuiHandlerFactory implements HandlerFactory<GuiHandler> {
 		else if ( type == ListMultipleSelection.class ) 
 			return new ListMultipleSelectionHandler(f,o,t);
 
+		return null;
+	}
+
+	public GuiHandler getHandler(Method gmethod, Method smethod, Object o,
+			Tunable t) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public GuiHandler getHandler(Method gmethod, Method smethod, Object o,
+			Tunable tg, Tunable ts) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }
