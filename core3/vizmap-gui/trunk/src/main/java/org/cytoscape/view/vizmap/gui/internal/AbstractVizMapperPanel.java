@@ -47,6 +47,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -58,12 +60,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.events.VisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.internal.event.SelectedVisualStyleSwitchedEventImpl;
@@ -100,6 +100,9 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 	// Default Visual Style
 	protected static final String DEFAULT_VS_TITLE = "Default";
+	// Test
+	protected static final String DEFAULT_VS_TITLE2 = "Default 2";
+
 	private final VisualStyle defaultVS;
 
 	public VisualStyle getDefaultVisualStyle() {
@@ -109,7 +112,8 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	// ///////// Main GUI Components /////////////////
 
 	// Current Visual Style is managed by this object.
-	protected CyComboBox<VisualStyle> vsComboBox;
+	protected JComboBox vsComboBox;
+	protected DefaultComboBoxModel vsComboBoxModel;
 
 	// Default View Editor. This is a singleton.
 	protected DefaultViewEditor defViewEditor;
@@ -201,6 +205,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		initDefaultEditors();
 
 		defaultVS = this.vmm.createVisualStyle(DEFAULT_VS_TITLE);
+		vmm.createVisualStyle(DEFAULT_VS_TITLE2);
 	}
 
 	private void initDefaultEditors() {
@@ -230,7 +235,8 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 		buttonPanel = new javax.swing.JPanel();
 
-		vsComboBox = new CyComboBox<VisualStyle>();
+		vsComboBoxModel = new DefaultComboBoxModel();
+		vsComboBox = new JComboBox(vsComboBoxModel);
 
 		optionButton = new DropDownMenuButton(new AbstractAction() {
 			private final static long serialVersionUID = 1213748836776579L;
@@ -496,19 +502,23 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	}
 
 	public void setSelectedVisualStyle(final VisualStyle vs) {
+		final int itemCount = vsComboBoxModel.getSize();
 
-		if (vsComboBox.getModel().contains(vs)) {
+		for (int i = 0; i < itemCount; i++) {
+			if (vsComboBox.getItemAt(i).equals(vs)) {
 
-			eventHelper.fireAsynchronousEvent(
-					new SelectedVisualStyleSwitchedEventImpl(vsComboBox
-							.getSelectedItem(), vs, vsComboBox),
-					SelectedVisualStyleSwitchedEventListener.class);
-			vsComboBox.setSelectedItem(vs);
-		} else {
-			throw new IllegalArgumentException(
-					"No such Visual Style in the combo box: " + vs);
+				eventHelper.fireAsynchronousEvent(
+						new SelectedVisualStyleSwitchedEventImpl(
+								(VisualStyle) vsComboBox.getItemAt(i), vs,
+								vsComboBox),
+						SelectedVisualStyleSwitchedEventListener.class);
+				vsComboBox.setSelectedItem(vs);
+				return;
+			}
 		}
 
+		throw new IllegalArgumentException(
+				"No such Visual Style in the combo box: " + vs);
 	}
 
 	public JPanel getDefaultViewPanel() {

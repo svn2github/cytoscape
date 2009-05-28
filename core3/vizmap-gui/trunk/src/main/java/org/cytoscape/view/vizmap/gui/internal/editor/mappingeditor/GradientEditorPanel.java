@@ -48,7 +48,8 @@ import javax.swing.SwingUtilities;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
-import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
@@ -68,6 +69,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 	// For presets
 	private static final Color DEF_LOWER_COLOR = Color.BLACK;
 	private static final Color DEF_UPPER_COLOR = Color.WHITE;
+	
+	private EditorManager manager;
 
 	/**
 	 * Creates a new GradientEditorPanel object.
@@ -243,9 +246,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 							// final Point location = selectedThumb.getLocation();
 							// double diff = Math.abs(location.getX() - e.getX());
 							if (e.getClickCount() == 2) {
-								final Color newColor = CyColorChooser.showDialog(slider,
-								                                                 "Choose new color...",
-								                                                 Color.white);
+								final Color newColor = manager.getValueEditor(Color.class).showEditor(slider);
 
 								if (newColor != null) {
 									// Set new color

@@ -65,10 +65,7 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	private static final long serialVersionUID = 1499424630636172107L;
 	
 	
-	protected VizMapperUtil vizMapperUtil;
-	
 	protected DefaultViewEditor defViewEditor;
-	
 	protected VisualMappingManager vmm;
 	
 	protected CyNetworkManager cyNetworkManager;
@@ -93,17 +90,10 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	protected String iconId;
 	protected JMenuItem menuItem;
 	
-	/*
-	 * Setters for DI
-	 */
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vizMapperUtil DOCUMENT ME!
-	 */
-	public void setVizMapUtil(VizMapperUtil vizMapperUtil) {
-		this.vizMapperUtil = vizMapperUtil;
+	public AbstractVizMapperAction() {
+		
 	}
+	
 
 	/**
 	 *  DOCUMENT ME!
@@ -166,9 +156,10 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	 */
 	public JMenuItem getMenu() {
 		if (menuItem == null) {
-			vizMapperMainPanel.getPropertyChangeSupport().addPropertyChangeListener(this);
+			//TODO: where should I set listener?
+			//vizMapperMainPanel.getPropertyChangeSupport().addPropertyChangeListener(this);
 			menuItem = new JMenuItem(menuLabel);
-			menuItem.setIcon(iconManager.getIcon(iconId));
+			//menuItem.setIcon(iconManager.getIcon(iconId));
 			menuItem.addActionListener(this);
 		}
 

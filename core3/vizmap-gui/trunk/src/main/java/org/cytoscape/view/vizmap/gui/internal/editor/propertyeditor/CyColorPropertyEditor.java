@@ -41,8 +41,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.CyColorCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser;
 
 import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
 import com.l2fprod.common.beans.editor.ColorPropertyEditor;
@@ -60,11 +60,14 @@ public class CyColorPropertyEditor extends AbstractPropertyEditor {
 	private CyColorCellRenderer label;
 	private JButton button;
 	private Color color;
+	
+	private CyColorChooser chooser;
 
 	/**
 	 * Creates a new CyColorPropertyEditor object.
 	 */
 	public CyColorPropertyEditor() {
+		chooser = new CyColorChooser();
 		editor = new JPanel(new PercentLayout(PercentLayout.HORIZONTAL, 0));
 		((JPanel) editor).add("*", label = new CyColorCellRenderer());
 		label.setOpaque(false);
@@ -106,7 +109,7 @@ public class CyColorPropertyEditor extends AbstractPropertyEditor {
 	protected void selectColor() {
 		ResourceManager rm = ResourceManager.all(FilePropertyEditor.class);
 		String title = rm.getString("ColorPropertyEditor.title");
-		Color selectedColor = CyColorChooser.showDialog(editor, title, color);
+		Color selectedColor = chooser.showEditor(editor);
 
 		if (selectedColor != null) {
 			Color oldColor = color;

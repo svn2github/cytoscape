@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JDialog;
-import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;

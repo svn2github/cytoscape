@@ -5,6 +5,11 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
+	<!-- Export Service Listeners -->
+	<osgi:service id="vizMapperGUIService" ref="vizMapperMainPanel" auto-export="interfaces" />
+	<osgi:service id="defaultViewEditorService" ref="defViewEditor" auto-export="interfaces" />
+
+
 
 	<!-- Import Desktop Service -->
 	<osgi:reference id="cytoscapeDesktopServiceRef"
@@ -12,11 +17,15 @@
 
 	<!-- Visual Mapping Manager Service -->
 	<osgi:reference id="vmmServiceRef"
-		interface="org.cytoscape.vizmap.VisualMappingManager" />
+		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
 
 	<!-- Network Manager -->
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="cytoscape.CyNetworkManager" />
+
+	<!-- Presentation Factory -->
+	<osgi:reference id="presentationFactoryServiceRef"
+		interface="org.cytoscape.view.presentation.PresentationFactory" />
 
 	<!-- Reference to the network factory service -->
 	<osgi:reference id="cyNetworkFactoryServiceRef"
@@ -24,85 +33,89 @@
 	</osgi:reference>
 
 	<osgi:reference id="graphViewFactoryServiceRef"
-		interface="org.cytoscape.view.GraphViewFactory">
+		interface="org.cytoscape.view.model.CyNetworkViewFactory">
 	</osgi:reference>
+
+	<!-- Event helper -->
+	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
 
 	<!-- Pull-down menu items -->
 	<osgi:service id="createNewStyleActionService" ref="createNewStyleAction"
-		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
+		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="removeStyleActionService" ref="removeStyleAction"
-		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
+		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="renameStyleActionService" ref="renameStyleAction"
-		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
+		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="copyStyleActionService" ref="copyStyleAction"
-		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
+		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="createLegendActionService" ref="createLegendAction"
-		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction" />
+		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 
 	<!-- Mapping generator services -->
 	<osgi:service id="rainbowGeneratorService" ref="rainbowGenerator"
-		interface="org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator">
+		interface="org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator">
 		<osgi:service-properties>
 			<entry key="service.type" value="vizmapUI.contextMenu" />
 		</osgi:service-properties>
 	</osgi:service>
 	<osgi:service id="rainbowOscGeneratorService" ref="rainbowOscGenerator"
-		interface="org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator">
+		interface="org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator">
 		<osgi:service-properties>
 			<entry key="service.type" value="vizmapUI.contextMenu" />
 		</osgi:service-properties>
 	</osgi:service>
 	<osgi:service id="randomColorGeneratorService" ref="randomColorGenerator"
-		interface="org.cytoscape.vizmap.gui.util.DiscreteValueMapGenerator">
+		interface="org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator">
 		<osgi:service-properties>
 			<entry key="service.type" value="vizmapUI.contextMenu" />
 		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="removeMappingActionService" ref="removeMappingAction"
-		interface="org.cytoscape.vizmap.gui.action.VizMapUIAction">
+		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction">
 		<osgi:service-properties>
 			<entry key="service.type" value="vizmapUI.contextMenu" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:set id="vizMapperActionServiceRef" interface="org.cytoscape.vizmap.gui.action.VizMapUIAction"
+	<osgi:set id="vizMapperActionServiceRef"
+		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction"
 		cardinality="0..N">
 		<osgi:listener bind-method="onBind" unbind-method="onUnbind"
 			ref="menuManager" />
 	</osgi:set>
 
 
-	<!-- visual property editor services -->
+	<!-- visual property editor services
 
 	<osgi:service id="continuousColorService" ref="continuousColor"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="continuousContinuousService" ref="continuousContinuous"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="continuousDiscreteService" ref="continuousDiscrete"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="discreteArrowShapeService" ref="discreteArrowShape"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="discreteColorService" ref="discreteColor"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="discreteFontService" ref="discreteFont"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="discreteLabelPositionService" ref="discreteLabelPosition"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="discreteLineStyleService" ref="discreteLineStyle"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="discreteNodeShapeService" ref="discreteNodeShape"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="discreteNumberService" ref="discreteNumber"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
 	<osgi:service id="discreteStringService" ref="discreteString"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer" />
-
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+ -->
 	<osgi:set id="editorSet"
-		interface="org.cytoscape.vizmap.gui.editors.EditorDisplayer"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager"
 		cardinality="0..N">
-		<osgi:listener bind-method="addEditorDisplayer"
-			unbind-method="removeEditorDisplayer" ref="editorFactory" />
+		<osgi:listener bind-method="addVisualPropertyEditor"
+			unbind-method="removeVisualPropertyEditor" ref="editorManager" />
 	</osgi:set>
 
 </beans>

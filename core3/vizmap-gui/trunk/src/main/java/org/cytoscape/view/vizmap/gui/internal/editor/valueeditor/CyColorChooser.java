@@ -33,8 +33,8 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.view.vizmap.gui.internal;
+ */
+package org.cytoscape.view.vizmap.gui.internal.editor.valueeditor;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -44,36 +44,43 @@ import java.awt.event.ActionListener;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 
+import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 
 /**
- * This is an annoying re-implementation of JColorChooser.showDialog() that remembers
- * recently used colors between invocations of the chooser dialog.
+ * This is an annoying re-implementation of JColorChooser.showDialog() that
+ * remembers recently used colors between invocations of the chooser dialog.
  */
-public class CyColorChooser {
-	protected static JColorChooser chooser = new JColorChooser();
-	protected static ColorListener listener = new ColorListener();
-	protected static Color color;
+public class CyColorChooser implements ValueEditor<Color> {
+	protected JColorChooser chooser = new JColorChooser();
+	protected ColorListener listener = new ColorListener();
+	protected Color color = Color.white;
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param component DOCUMENT ME!
-	 * @param title DOCUMENT ME!
-	 * @param initialColor DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param component
+	 *            DOCUMENT ME!
+	 * @param title
+	 *            DOCUMENT ME!
+	 * @param initialColor
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public static Color showDialog(Component component, String title, Color initialColor) {
-		if (initialColor != null)
-			chooser.setColor(initialColor);
+	public CyColorChooser() {
 
-		JDialog dialog = JColorChooser.createDialog(component, title, true, chooser, listener, null);
+	}
+
+	public Color showEditor(Component parent) {
+
+		JDialog dialog = JColorChooser.createDialog(parent,
+				"Please pick a color", true, chooser, listener, null);
 		dialog.setVisible(true);
 
 		return color;
 	}
 
-	static class ColorListener implements ActionListener {
+	class ColorListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			color = chooser.getColor();
 		}

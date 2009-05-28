@@ -52,7 +52,8 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
-import org.cytoscape.view.vizmap.gui.internal.CyColorChooser;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 
@@ -71,6 +72,8 @@ public class BelowAndAbovePanel extends JPanel {
 	private VisualMappingManager vmm;
 	
 	private VizMapGUI vizMapGUI;
+	
+	private EditorManager editorManager;
 
 	/**
 	 * DOCUMENT ME!
@@ -177,7 +180,8 @@ public class BelowAndAbovePanel extends JPanel {
 				Object newValue = null;
 
 				if (type.getType() == Color.class) {
-					newValue = CyColorChooser.showDialog(caller, "Select new color", boxColor);
+					//FIXME
+//					newValue = editorManager).showDialog(caller, "Select new color", boxColor);
 					caller.setColor((Color) newValue);
 				} else if (type.getType() == Number.class) {
 					newValue = Double.parseDouble(JOptionPane.showInputDialog(caller,

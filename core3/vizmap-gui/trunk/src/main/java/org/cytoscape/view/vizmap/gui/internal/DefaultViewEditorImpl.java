@@ -34,24 +34,22 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-import java.awt.BasicStroke;
+import static org.cytoscape.model.GraphObject.EDGE;
+import static org.cytoscape.model.GraphObject.NETWORK;
+import static org.cytoscape.model.GraphObject.NODE;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,19 +65,15 @@ import javax.swing.SwingConstants;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.NetworkRenderer;
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.events.VisualStyleSwitchedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
-import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import cytoscape.CyNetworkManager;
-
-import static org.cytoscape.model.GraphObject.*;
 
 /**
  * Dialog for editing default visual property values.<br>
@@ -99,14 +93,9 @@ import static org.cytoscape.model.GraphObject.*;
  * @author kono
  */
 public class DefaultViewEditorImpl extends JDialog implements
-		DefaultViewEditor, VisualStyleSwitchedListener {
+		DefaultViewEditor, SelectedVisualStyleSwitchedEventListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
-
-	// List of Available Visual Properties for current presentation.
-	private Set<VisualProperty<?>> edgeVp;
-	private Set<VisualProperty<?>> nodeVp;
-	private Set<VisualProperty<?>> networkVp;
 	
 	private Map<String, Set<VisualProperty<?>>> vpSets;
 	private Map<String, JList> listMap;
@@ -117,8 +106,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private VisualStyle selectedStyle;
 
-	private NetworkRenderer presentation;
-
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
 	 * 
@@ -127,10 +114,11 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * @param modal
 	 *            DOCUMENT ME!
 	 */
-	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
+	public DefaultViewEditorImpl(
+			final DefaultViewPanelImpl mainView,
 			final EditorManager editorFactory,
-			final CyNetworkManager cyNetworkManager,
-			final VisualStyle selectedStyle) {
+			final CyNetworkManager cyNetworkManager) {
+		
 		super();
 		vpSets = new HashMap<String, Set<VisualProperty<?>>>();
 		listMap = new HashMap<String, JList>();
@@ -139,9 +127,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 		this.setModal(true);
 		this.mainView = mainView;
 		this.editorFactory = editorFactory;
-
-		// set current style
-		this.selectedStyle = selectedStyle;
 
 		updateVisualPropertyLists();
 
@@ -158,17 +143,15 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private void updateVisualPropertyLists() {
 		vpSets.clear();
-		presentation = cyNetworkManager.getPresentation(mainView.getView());
+		NetworkRenderer presentation = cyNetworkManager.getPresentation(mainView.getView());
 		VisualLexicon lexicon = presentation.getVisualLexicon();
-		nodeVp = new HashSet<VisualProperty<?>>(lexicon
-				.getVisualProperties(NODE));
-		edgeVp = new HashSet<VisualProperty<?>>(lexicon
-				.getVisualProperties(EDGE));
-		networkVp = new HashSet<VisualProperty<?>>(lexicon
-				.getVisualProperties(NETWORK));
-		vpSets.put(NODE, nodeVp);
-		vpSets.put(EDGE, edgeVp);
-		vpSets.put(NETWORK, networkVp);
+		
+		vpSets.put(NODE, new HashSet<VisualProperty<?>>(lexicon
+				.getVisualProperties(NODE)));
+		vpSets.put(EDGE, new HashSet<VisualProperty<?>>(lexicon
+				.getVisualProperties(EDGE)));
+		vpSets.put(NETWORK, new HashSet<VisualProperty<?>>(lexicon
+				.getVisualProperties(NETWORK)));
 	}
 
 	/*
@@ -178,7 +161,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#showDialog(java.awt
 	 * .Component)
 	 */
-	public JPanel showEditor(Component parent) {
+	public void showEditor(Component parent) {
 		setSize(900, 400);
 
 		// TODO: fix the width/height lock
@@ -188,8 +171,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 		mainView.updateView();
 		setLocationRelativeTo(parent);
 		setVisible(true);
-
-		return getPanel();
 	}
 
 	/*
@@ -206,7 +187,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		mainView.updateView();
 
-		return getPanel();
+		return mainView;
 	}
 
 	/**
@@ -258,7 +239,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		});
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Default Appearance for " + selectedStyle.getTitle());
+		
 		mainView.setBorder(new javax.swing.border.LineBorder(
 				java.awt.Color.darkGray, 1, true));
 
@@ -289,7 +270,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		defaultObjectTabbedPane.addTab("Node", nodeScrollPane);
 		defaultObjectTabbedPane.addTab("Edge", edgeScrollPane);
-		defaultObjectTabbedPane.addTab("Global", globalScrollPane);
+		defaultObjectTabbedPane.addTab("Network", globalScrollPane);
 
 		org.jdesktop.layout.GroupLayout jXTitledPanel1Layout = new org.jdesktop.layout.GroupLayout(
 				jXTitledPanel1.getContentContainer());
@@ -475,11 +456,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 	// End of variables declaration
 	protected DefaultViewPanelImpl mainView;
 
-	// End of variables declaration
-	private JPanel getPanel() {
-		return mainView;
-	}
-
 	/**
 	 * DOCUMENT ME!
 	 */
@@ -520,6 +496,13 @@ public class DefaultViewEditorImpl extends JDialog implements
 		// repaint();
 	}
 
+	
+	/**
+	 * Create cells for each Visual Properties.
+	 * 
+	 * @author kono
+	 *
+	 */
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339876646385L;
 
@@ -546,7 +529,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 						.getPresentation(mainView.getView());
 				icon = presentation.getDefaultIcon(vp);
 			}
-			setText(value.toString());
+			setText(vp.getDisplayName());
+			setToolTipText(vp.getDisplayName());
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
@@ -563,6 +547,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 			if (icon != null) {
 				setPreferredSize(new Dimension(250, icon.getIconHeight() + 12));
+			} else {
+				setPreferredSize(new Dimension(250, 55));
 			}
 
 			this.setBorder(new DropShadowBorder());
@@ -594,16 +580,15 @@ public class DefaultViewEditorImpl extends JDialog implements
 	// }
 
 	public Component getDefaultView(VisualStyle vs) {
-		// TODO Auto-generated method stub
-		return null;
+		mainView.updateView();
+
+		return mainView;
 	}
 
-	public void handleEvent(VisualStyleSwitchedEvent e) {
-		this.selectedStyle = e.getNewVisualStyle();
-	}
 
-	public void showEditor() {
-		// TODO Auto-generated method stub
-
+	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {
+		this.selectedStyle = e.getNewVisualStyle();		
+		setTitle("Default Appearance for " + selectedStyle.getTitle());
+		
 	}
 }

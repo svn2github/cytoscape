@@ -54,7 +54,6 @@ public class DataLoadedEventHandler extends AbstractVizMapEventHandler {
 	public void processEvent(PropertyChangeEvent e) {
 		final VisualStyle vs = vmm.getVisualStyle(cyNetworkManager.getCurrentNetworkView());
 
-		vizMapperMainPanel.setLastVSName(null);
 		vizMapperMainPanel.refreshUI();
 		vizMapperMainPanel.switchVS(vs);
 		vizMapperMainPanel.setSelectedVisualStyle(vs);

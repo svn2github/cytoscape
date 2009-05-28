@@ -77,11 +77,21 @@ public class VizMapPropertySheetBuilder implements
 
 	private List<VisualProperty<?>> unusedVisualPropType;
 
-	public VizMapPropertySheetBuilder(VisualStyle selectedStyle) {
-
-		this.selectedStyle = selectedStyle;
-
+	public VizMapPropertySheetBuilder(CyNetworkManager cyNetworkManager,
+			PropertySheetPanel propertySheetPanel,
+			PropertyRendererRegistry rendReg, 
+			PropertyEditorRegistry editorReg, 
+			EditorManager editorManager,
+			DefaultViewPanel defViewPanel) {
+		
+		this.cyNetworkManager = cyNetworkManager;
+		this.propertySheetPanel = propertySheetPanel;
+		this.rendReg = rendReg;
+		this.editorReg = editorReg;
+		
 		propertyMap = new HashMap<VisualStyle, List<Property>>();
+
+		vizMapPropertyBuilder = new VizMapPropertyBuilder();
 	}
 
 	public Map<VisualStyle, List<Property>> getPropertyMap() {
@@ -89,6 +99,9 @@ public class VizMapPropertySheetBuilder implements
 	}
 
 	public void setPropertyTable() {
+		if(selectedStyle == null)
+			return;
+		
 		setPropertySheetAppearence();
 
 		for (Property item : propertySheetPanel.getProperties())
@@ -122,8 +135,10 @@ public class VizMapPropertySheetBuilder implements
 		 * By default, show category.
 		 */
 		propertySheetPanel.setMode(PropertySheetPanel.VIEW_AS_CATEGORIES);
-		propertySheetPanel.getTable().setComponentPopupMenu(
-				menuMgr.getContextMenu());
+
+		// TODO: fix context menu
+		// propertySheetPanel.getTable().setComponentPopupMenu(
+		// menuMgr.getContextMenu());
 		propertySheetPanel.getTable().addMouseListener(
 				new VizMapPropertySheetMouseAdapter(this, propertySheetPanel,
 						null));
@@ -139,15 +154,15 @@ public class VizMapPropertySheetBuilder implements
 		/*
 		 * Set editors
 		 */
-		emptyBoxRenderer.setHorizontalTextPosition(SwingConstants.CENTER);
-		emptyBoxRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		emptyBoxRenderer.setBackground(new Color(0, 200, 255, 20));
-		emptyBoxRenderer.setForeground(Color.red);
-		emptyBoxRenderer.setFont(new Font("SansSerif", Font.BOLD, 12));
-
-		filledBoxRenderer.setBackground(Color.white);
-		filledBoxRenderer.setForeground(Color.blue);
-
+		// FIXME
+		// emptyBoxRenderer.setHorizontalTextPosition(SwingConstants.CENTER);
+		// emptyBoxRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		// emptyBoxRenderer.setBackground(new Color(0, 200, 255, 20));
+		// emptyBoxRenderer.setForeground(Color.red);
+		// emptyBoxRenderer.setFont(new Font("SansSerif", Font.BOLD, 12));
+		//
+		// filledBoxRenderer.setBackground(Color.white);
+		// filledBoxRenderer.setForeground(Color.blue);
 		// TODO: fix icon list
 		// VisualPropertyIcon newIcon;
 		//
@@ -208,7 +223,6 @@ public class VizMapPropertySheetBuilder implements
 		// iconArray[i] = newIcon;
 		// shapeNames[i] = newIcon.getName();
 		// }
-
 		// lineCellEditor.setAvailableValues(lineTypes.toArray());
 		// lineCellEditor.setAvailableIcons(iconArray);
 	}
@@ -341,7 +355,9 @@ public class VizMapPropertySheetBuilder implements
 					&& (shownProp.getCategory() != null)
 					&& shownProp.getCategory().equals(
 							AbstractVizMapperPanel.CATEGORY_UNUSED)) {
-				empRenderer.setForeground(colorMgr.getColor("UNUSED_COLOR"));
+				
+				//FIXME
+				//empRenderer.setForeground(colorMgr.getColor("UNUSED_COLOR"));
 				rendReg.registerRenderer(shownProp, empRenderer);
 			}
 		}

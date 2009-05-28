@@ -3,13 +3,17 @@ package org.cytoscape.view.vizmap.gui.internal.action;
 import java.awt.event.ActionEvent;
 
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 
 public class RenameStyleAction extends AbstractVizMapperAction {
 
 	private static final long serialVersionUID = -3823557783901332855L;
 
-	public RenameStyleAction() {
+	private VizMapperUtil vizMapperUtil;
+	
+	public RenameStyleAction(VizMapperUtil vizMapperUtil) {
 		super();
+		this.vizMapperUtil = vizMapperUtil;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -22,8 +26,6 @@ public class RenameStyleAction extends AbstractVizMapperAction {
 		// Ignore if user does not enter new name.
 		if (name == null)
 			return;
-
-		vizMapperMainPanel.setLastVSName(name);
 
 		// Rename the selected style
 		selectedStyle.setTitle(name);

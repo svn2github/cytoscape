@@ -36,18 +36,12 @@ package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import java.awt.Component;
 import java.beans.PropertyEditor;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.swing.JDialog;
-import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
@@ -61,6 +55,8 @@ public class EditorManagerImpl implements EditorManager {
 	private final Map<String, PropertyEditor> comboBoxEditors;
 	
 	private final Map<VisualProperty<?>, Component> continuousEditors;
+	
+	private final Map<Class<?>, ValueEditor<?>> valueEditors;
 
 	/**
 	 * Creates a new EditorFactory object.
@@ -71,6 +67,8 @@ public class EditorManagerImpl implements EditorManager {
 		editors = new HashMap<VisualProperty<?>, VisualPropertyEditor<?>>();
 
 		comboBoxEditors = new HashMap<String, PropertyEditor>();
+		
+		valueEditors = new HashMap<Class<?>, ValueEditor<?>>();
 	}
 
 	/*
@@ -120,7 +118,6 @@ public class EditorManagerImpl implements EditorManager {
 			VisualProperty<V> type) throws Exception {
 
 		final VisualPropertyEditor<?> editor = editors.get(type);
-		assert editor.getVisualProperty() == type;
 
 		return (V) editor.showVisualPropertyValueEditor();
 	}
@@ -234,6 +231,9 @@ public class EditorManagerImpl implements EditorManager {
 		}
 		return editor;
 	}
-	
-	
+
+	public <V> ValueEditor<V> getValueEditor(Class<V> dataType) {
+		// TODO Auto-generated method stub
+		return (ValueEditor<V>) valueEditors.get(dataType);
+	}
 }

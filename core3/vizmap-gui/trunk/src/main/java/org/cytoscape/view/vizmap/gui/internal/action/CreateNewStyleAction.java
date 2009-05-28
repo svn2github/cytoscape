@@ -5,8 +5,12 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
+import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
+
+import cytoscape.CyNetworkManager;
 
 public class CreateNewStyleAction extends AbstractVizMapperAction {
 
@@ -15,28 +19,36 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 	 */
 	private static final long serialVersionUID = 3359340478989439229L;
 
-	public CreateNewStyleAction(VizMapGUI vizMapGUI) {
+	private VizMapperUtil vizMapperUtil;
+
+	
+	public CreateNewStyleAction(VisualMappingManager vmm, VizMapperUtil vizMapperUtil, CyNetworkManager cyNetworkManager) {
 		super();
+		this.vizMapperUtil = vizMapperUtil;
+		this.vmm = vmm;
+		this.cyNetworkManager = cyNetworkManager;
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		final String title = vizMapperUtil.getStyleName(vizMapperMainPanel,
+		final String title = vizMapperUtil.getStyleName(null,
 				null);
 //FIXME
-//		/*
-//		 * If name is null, do not create style.
-//		 */
-//		if (title == null)
-//			return;
-//
-//		// Create the new style
-//		final VisualStyle newStyle = vmm.createVisualStyle(title);
-//		final CyNetworkView currentView = cyNetworkManager
-//				.getCurrentNetworkView();
-//		// Set selected style
+		/*
+		 * If name is null, do not create style.
+		 */
+		if (title == null)
+			return;
+
+		// Create the new style
+		final VisualStyle newStyle = vmm.createVisualStyle(title);
+		final CyNetworkView currentView = cyNetworkManager
+				.getCurrentNetworkView();
+		
+		// Set selected style
 //		this.vizMapperMainPanel.setSelectedVisualStyle(newStyle);
-//		vmm.setVisualStyle(newStyle, currentView);
-//
+		if(currentView != null)
+			vmm.setVisualStyle(newStyle, currentView);
+
 //		final Component defPanel = defViewEditor.getDefaultView(newStyle);
 //		final CyNetworkView view = (CyNetworkView) ((DefaultViewPanel) defPanel)
 //				.getView();
@@ -51,7 +63,6 @@ public class CreateNewStyleAction extends AbstractVizMapperAction {
 //					.getDefaultImageManager().get(newStyle));
 //		}
 //
-//		// vmm.setNetworkView(currentView);
 //		vizMapperMainPanel.switchVS(newStyle);
 	}
 }

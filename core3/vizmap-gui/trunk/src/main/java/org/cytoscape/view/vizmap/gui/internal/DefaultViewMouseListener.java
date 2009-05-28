@@ -49,6 +49,10 @@ public class DefaultViewMouseListener extends MouseAdapter {
 
 	// Singleton managed by DI container.
 	private DefaultViewEditor defViewEditor;
+	
+	public DefaultViewMouseListener(DefaultViewEditor defViewEditor) {
+		this.defViewEditor = defViewEditor;
+	}
 
 	/**
 	 * Creates a new DefaultViewMouseListener object. / public
@@ -62,9 +66,10 @@ public class DefaultViewMouseListener extends MouseAdapter {
 	 */
 	public void mouseClicked(MouseEvent e) {
 		if (SwingUtilities.isLeftMouseButton(e)) {
-
-			defViewEditor.showEditor();
-
+			
+			defViewEditor.showEditor(null);
+			System.out.println("######### Display Default Editor.");
+			
 			// TODO Should be handled by listener.
 			// vizMapperMainPanel.updateDefaultImage(targetStyle,
 			// panel.getView(),

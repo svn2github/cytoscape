@@ -32,68 +32,70 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+package org.cytoscape.view.vizmap.gui.internal.editor;
 
-package org.cytoscape.view.vizmap.gui.internal.action;
+import java.awt.Color;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.GradientEditorPanel;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
+
 
 /**
+ * Manages editors for Color Visual Properties. This object can be used with any
+ * VisualProperty using Color as its type.
  *
  */
-public class CopyStyleAction extends AbstractVizMapperAction {
-	private VizMapperUtil vizMapperUtil;
-	
+public class ColorVisualPropertyEditor extends AbstractVisualPropertyEditor<Color> {
 	/**
-	 * Creates a new CopyStyleAction object.
+	 * Constructor. Should instantiate one editor per VisualProperty.
 	 */
-	public CopyStyleAction(VizMapperUtil vizMapperUtil) {
-		super();
-		this.vizMapperUtil = vizMapperUtil;
+	public ColorVisualPropertyEditor(VisualProperty<Color> vp) {
+		super(vp);
+		tableCellRenderer = new DefaultTableCellRenderer();
+		//FIXME
+		continuousEditor = new GradientEditorPanel(this.vp, null);
+		propertyEditor = new CyColorPropertyEditor();
 	}
-
-	private static final long serialVersionUID = 1244735696944563618L;
 
 	/**
 	 * DOCUMENT ME!
-	 * 
-	 * @param e
+	 *
+	 * @param type
 	 *            DOCUMENT ME!
+	 * @param width
+	 *            DOCUMENT ME!
+	 * @param height
+	 *            DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
 	 */
-	public void actionPerformed(ActionEvent e) {
-		// Pick currently selected visual style in the combobox.
-		final VisualStyle currentStyle = this.vizMapperMainPanel
-				.getSelectedVisualStyle();
+	@Override public TableCellRenderer getTableCellRenderer(int width, int height) {
+		//FIXME
+		//((JLabel) tableCellRenderer).setIcon(GradientEditorPanel.getIcon(width, height, vp));
 
-		// Copy-to
-		final VisualStyle clone = vmm.copyVisualStyle(currentStyle);
+		return tableCellRenderer;
+	}
 
-		final String newName = vizMapperUtil.getStyleName(vizMapperMainPanel,
-				clone);
-
-		if ((newName == null) || (newName.trim().length() == 0)) {
-			return;
-		}
-
-		clone.setTitle(newName);
-
-		final Component defPanel = defViewEditor.getDefaultView(clone);
-//FIXME
-		//		final CyNetworkView view = ((DefaultViewEditor) defPanel).getView();
-//		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()
-//				.getSize();
-//
-//		if (view != null) {
-//			System.out.println("Creating Default Image for new visual style "
-//					+ newName);
-//			vizMapperMainPanel.updateDefaultImage(clone, view, panelSize);
-//			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
-//					.getDefaultImageManager().get(clone));
-//		}
-//
-//		vizMapperMainPanel.switchVS(clone);
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param vp
+	 *            DOCUMENT ME!
+	 * @param width
+	 *            DOCUMENT ME!
+	 * @param height
+	 *            DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	@Override public Icon getDefaultIcon(int width, int height) {
+		// TODO: need to implement new icon generator for Color
+		return null;
 	}
 }

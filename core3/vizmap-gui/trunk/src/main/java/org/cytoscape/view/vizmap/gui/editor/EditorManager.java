@@ -173,4 +173,6 @@ public interface EditorManager {
 	 * @return  DOCUMENT ME!
 	 */
 	public PropertyEditor getDefaultComboBoxEditor(String editorName);
+	
+	public <V> ValueEditor<V> getValueEditor(Class<V> dataType);
 }

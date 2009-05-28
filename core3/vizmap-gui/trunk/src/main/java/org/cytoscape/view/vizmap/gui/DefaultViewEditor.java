@@ -24,5 +24,5 @@ public interface DefaultViewEditor {
 	 */
 	public Component getDefaultView(VisualStyle vs);
 	
-	public void showEditor();
+	public void showEditor(Component parent);
 }

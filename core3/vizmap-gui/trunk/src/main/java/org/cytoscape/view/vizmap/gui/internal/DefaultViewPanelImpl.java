@@ -34,9 +34,8 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR;
-import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.NODE_X_LOCATION;
-import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.NODE_Y_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -51,9 +50,10 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.presentation.PresentationFactory;
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
 
 /**
  * Panel to show the default properties visually (as graphics).
@@ -62,14 +62,14 @@ import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
  * @since Cytoscape 2.5
  * @author kono
  */
-public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
+public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, SelectedVisualStyleSwitchedEventListener {
 	private final static long serialVersionUID = 1202339876691085L;
 
 	// Padding around canvas
 	private static final int PADDING = 20;
 
 	// Dummy network view
-	private CyNetworkView view;
+	private CyNetworkView dummyview;
 
 	// Dummy network displayed in the canvas
 	private static CyNetwork dummyNet;
@@ -90,7 +90,6 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	// Used to create dummy network
 	private CyNetworkFactory cyNetworkFactory;
 	private CyNetworkViewFactory cyNetworkViewFactory;
-	private VisualMappingManager vmm;
 
 	// For setting presentation (rendered canvas) to this panel
 	private PresentationFactory presentationFactory;
@@ -104,16 +103,14 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	 *            DOCUMENT ME!
 	 */
 	public DefaultViewPanelImpl(CyNetworkFactory cyNetworkFactory,
-			CyNetworkViewFactory cyNetworkViewFactory, VisualStyle vs) {
+			CyNetworkViewFactory cyNetworkViewFactory, PresentationFactory presentationFactory) {
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
 		this.cyNetworkFactory = cyNetworkFactory;
-		this.vs = vs;
+		this.presentationFactory = presentationFactory;
 
 		// Create dummy network view
 		createDummyNet();
-
-		// Apply the given visual style to the dummy net
-		this.vs.apply(view);
+		
 		this.setBackground((Color) background);
 	}
 
@@ -130,47 +127,45 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 		edge.attrs().set("name", "Source (interaction) Target");
 
 		dummyNet.attrs().set("name", "Default Appearance");
-		view = cyNetworkViewFactory.getNetworkViewFor(dummyNet);
+		dummyview = cyNetworkViewFactory.getNetworkViewFor(dummyNet);
 
-		view.getNodeView(source).setVisualProperty(NODE_X_LOCATION, 0d);
-		view.getNodeView(source).setVisualProperty(NODE_Y_LOCATION, 0d);
-		view.getNodeView(target).setVisualProperty(NODE_X_LOCATION, 150d);
-		view.getNodeView(target).setVisualProperty(NODE_Y_LOCATION, 10d);
+		dummyview.getNodeView(source).setVisualProperty(NODE_X_LOCATION, 0d);
+		dummyview.getNodeView(source).setVisualProperty(NODE_Y_LOCATION, 0d);
+		dummyview.getNodeView(target).setVisualProperty(NODE_X_LOCATION, 150d);
+		dummyview.getNodeView(target).setVisualProperty(NODE_Y_LOCATION, 10d);
 
 		// Set background color
-		background = vs.getDefaultValue(NETWORK_BACKGROUND_COLOR);
-		view.setVisualProperty(NETWORK_BACKGROUND_COLOR, background);
+//		background = vs.getDefaultValue(NETWORK_BACKGROUND_COLOR);
+//		view.setVisualProperty(NETWORK_BACKGROUND_COLOR, background);
 
 		// put it in this panel
-		presentationFactory.addPresentation(this, view);
+		presentationFactory.addPresentation(this, dummyview);
+		
+		System.out.println("######## Dummy Network Had Been Created! ##########");
+		
+		
 	}
-
-	// protected void updateBackgroungColor(final Color newColor) {
-	// background = newColor;
-	// this.setBackground(background);
-	// repaint();
-	// }
 
 	/**
 	 * DOCUMENT ME!
 	 */
 	protected void updateView() {
 
-		if (view == null)
+		if (dummyview == null || presentationFactory == null)
 			return;
 		
 		final Dimension panelSize = this.getSize();
 		// view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
 		// (int) panelSize.getHeight() - PADDING));
-		view.fitContent();
+		dummyview.fitContent();
 
 		// TODO: is this correct???
 		this.removeAll();
 
-		presentationFactory.addPresentation(this, view);
+		presentationFactory.addPresentation(this, dummyview);
 		
 		//canvas.setLocation(PADDING / 2, PADDING / 2);
-		vs.apply(view);
+		//vs.apply(dummyview);
 		
 	}
 
@@ -185,6 +180,13 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	 * @return DOCUMENT ME!
 	 */
 	public CyNetworkView getView() {
-		return view;
+		return dummyview;
+	}
+
+	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {
+		this.vs = e.getNewVisualStyle();
+		// Apply the given visual style to the dummy net
+		this.vs.apply(dummyview);
+		
 	}
 }

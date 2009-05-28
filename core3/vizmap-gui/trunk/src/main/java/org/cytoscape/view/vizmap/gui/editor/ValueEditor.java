@@ -1,5 +1,7 @@
 package org.cytoscape.view.vizmap.gui.editor;
 
+import java.awt.Component;
+
 public interface ValueEditor<V> {
 	
 	
@@ -8,6 +10,6 @@ public interface ValueEditor<V> {
 	 * 
 	 * @return
 	 */
-	public V showEditor();
+	public V showEditor(Component parent);
 
 }
