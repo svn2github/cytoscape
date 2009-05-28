@@ -32,6 +32,11 @@
 			<version>${wrapped.version}</version>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape.wrappers</groupId>
+			<artifactId>com.l2fprod.common.shared</artifactId>
+			<version>7.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -82,5 +87,5 @@
 			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/thirdparty</url>
 		</repository>
 	</distributionManagement>
-	
+
 </project>
