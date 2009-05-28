@@ -208,7 +208,7 @@
 						<param>--platform=equinox</param>
 						<param>--profiles=log</param>
 						<param>--noDownloadFeedback</param>
-						<param>--vmOptions=-Xmx512M -Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel -Dapple.laf.useScreenMenuBar=true -Dapple.awt.fileDialogForDirectories=true -Dapple.awt.graphics.UseQuartz=true -Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3</param>
+						<param>--vmOptions=-Xmx512M -Dawt.useSystemAAFontSettings=lcd -Dapple.laf.useScreenMenuBar=true -Dapple.awt.fileDialogForDirectories=true -Dapple.awt.graphics.UseQuartz=true -Dcom.apple.mrj.application.apple.menu.about.name=Cytoscape3</param>
 						<param>--repositories=+http://scm.ops4j.org/repos/ops4j/projects/pax/runner-repository/</param>
 					</provision>
 				</configuration>
