@@ -61,15 +61,6 @@ public interface RootVisualLexicon extends VisualLexicon {
 	Set<VisualProperty<?>> getVisualProperties(CyNetworkView networkview,
 			String objectType);
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param objectType
-	 *            GraphObject type. i.e., NODE/EDGE/NETWORK.
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	Collection<VisualProperty<?>> getVisualProperties(String objectType);
 
 	/**
 	 * DOCUMENT ME!

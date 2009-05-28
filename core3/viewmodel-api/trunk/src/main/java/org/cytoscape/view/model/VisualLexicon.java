@@ -34,6 +34,7 @@
  */
 package org.cytoscape.view.model;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -48,4 +49,14 @@ public interface VisualLexicon {
 	 * @return DOCUMENT ME!
 	 */
 	public Set<VisualProperty<?>> getAllVisualProperties();
+	
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param objectType
+	 *            GraphObject type. i.e., NODE/EDGE/NETWORK.
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public Collection<VisualProperty<?>> getVisualProperties(String objectType);
 }
