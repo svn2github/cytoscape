@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simpleCUDPP", "simpleCUDPP_vc7.vcproj", "{95561772-BB95-4A97-976B-DD24A00B2E66}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		EmuDebug = EmuDebug
+		EmuRelease = EmuRelease
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{95561772-BB95-4A97-976B-DD24A00B2E66}.Debug.ActiveCfg = Debug|Win32
+		{95561772-BB95-4A97-976B-DD24A00B2E66}.Debug.Build.0 = Debug|Win32
+		{95561772-BB95-4A97-976B-DD24A00B2E66}.EmuDebug.ActiveCfg = EmuDebug|Win32
+		{95561772-BB95-4A97-976B-DD24A00B2E66}.EmuDebug.Build.0 = EmuDebug|Win32
+		{95561772-BB95-4A97-976B-DD24A00B2E66}.EmuRelease.ActiveCfg = EmuRelease|Win32
+		{95561772-BB95-4A97-976B-DD24A00B2E66}.EmuRelease.Build.0 = EmuRelease|Win32
+		{95561772-BB95-4A97-976B-DD24A00B2E66}.Release.ActiveCfg = Release|Win32
+		{95561772-BB95-4A97-976B-DD24A00B2E66}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
