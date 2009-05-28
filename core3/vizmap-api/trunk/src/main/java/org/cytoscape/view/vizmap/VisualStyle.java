@@ -128,5 +128,5 @@ public interface VisualStyle {
 	 */
 	void apply(CyNetworkView v);
 	
-	public VisualLexicon getRenderer();
+	public VisualLexicon getVisualLexicon();
 }

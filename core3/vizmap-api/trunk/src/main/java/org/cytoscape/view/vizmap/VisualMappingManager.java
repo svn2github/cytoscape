@@ -109,6 +109,5 @@ public interface VisualMappingManager {
 	 */
 	public void removeVisualStyle(VisualStyle vs);
 
-	public RootVisualLexicon getRendererCatalog();
-	
+	public RootVisualLexicon getRoorVisualLexicon();	
 }

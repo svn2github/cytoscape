@@ -65,6 +65,7 @@ import org.cytoscape.view.model.VisualProperty;
  * 
  */
 public interface VisualMappingFunction<K, V> {
+	
 	/**
 	 *  Returns attribute name used in this mapping.
 	 *

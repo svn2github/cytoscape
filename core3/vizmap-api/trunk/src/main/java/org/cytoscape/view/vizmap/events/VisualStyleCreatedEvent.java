@@ -31,16 +31,20 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.events;
 
 import org.cytoscape.event.CyEvent;
-
 import org.cytoscape.view.vizmap.VisualStyle;
-
 
 /**
  * DOCUMENT ME!
-  */
-public interface VisualStyleCreatedEvent extends CyEvent<VisualStyle> {
+ */
+public interface VisualStyleCreatedEvent extends CyEvent<Object> {
+	
+	/**
+	 * Get the newly created Visual Style by the Visual Mapping Manager.
+	 * @return
+	 */
+	public VisualStyle getCreatedVisualStyle();
 }
