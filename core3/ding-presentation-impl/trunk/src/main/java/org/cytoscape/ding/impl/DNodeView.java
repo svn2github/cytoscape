@@ -36,23 +36,15 @@
 
 package org.cytoscape.ding.impl;
 
-import org.cytoscape.graph.render.immed.GraphGraphics;
-import org.cytoscape.graph.render.stateful.CustomGraphic;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.ding.EdgeView;
-import org.cytoscape.ding.GraphView;
-import org.cytoscape.ding.GraphViewChangeListener;
-import org.cytoscape.ding.Label;
-import org.cytoscape.ding.NodeView;
-import org.cytoscape.ding.NodeShape;
-
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.ViewChangeListener;
-import org.cytoscape.view.presentation.twod.*;
-
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.TexturePaint;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -61,6 +53,21 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import org.cytoscape.ding.EdgeView;
+import org.cytoscape.ding.GraphView;
+import org.cytoscape.ding.GraphViewChangeListener;
+import org.cytoscape.ding.Label;
+import org.cytoscape.ding.NodeShape;
+import org.cytoscape.ding.NodeView;
+import org.cytoscape.graph.render.immed.GraphGraphics;
+import org.cytoscape.graph.render.stateful.CustomGraphic;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewChangeListener;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 
 /**

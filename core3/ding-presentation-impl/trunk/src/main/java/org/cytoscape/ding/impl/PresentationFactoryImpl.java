@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -22,6 +23,7 @@ import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.model.NodeViewTaskFactory;
 import org.cytoscape.view.model.EdgeViewTaskFactory;
 import org.cytoscape.view.presentation.NavigationPresentation;
+import org.cytoscape.view.presentation.NetworkRenderer;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.work.UndoSupport;
 import org.cytoscape.work.TaskManager;
@@ -35,7 +37,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	private UndoSupport undo;
 	private RootVisualLexicon rootLexicon;
 	private VisualLexicon dingLexicon;
-	private Map<CyNetworkView, GraphView> viewMap;
+	private Map<CyNetworkView, DGraphView> viewMap;
 
 	private Map<NodeViewTaskFactory,Map> nodeViewTFs;
 	private Map<EdgeViewTaskFactory,Map> edgeViewTFs;
@@ -57,30 +59,36 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 		this.ti = ti;
 		this.tm = tm;
 
-		viewMap = new HashMap<CyNetworkView, GraphView>();
+		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory,Map>();
 		edgeViewTFs = new HashMap<EdgeViewTaskFactory,Map>();
 	}
 
+	/**
+	 * 
+	 */
 	public void addPresentation(Object frame, CyNetworkView view) {
-		
-		System.out.println("########################### add Presentation: " + view.getSUID());
-		
+				
 		if ( view == null )
 			throw new NullPointerException("CyNetworkView is null");
-		if ( frame instanceof JInternalFrame ) {
-			JInternalFrame inFrame = (JInternalFrame)frame;
-			JDesktopPane desktopPane = inFrame.getDesktopPane();
-
-			DGraphView dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,ti,tm);
+		if ( frame instanceof JComponent ) {
+			
+			DGraphView dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,
+					rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,ti,tm);
 			viewMap.put(view, dgv);
-
-			// TODO - not sure this layered pane bit is optimal
-			inFrame.setContentPane( dgv.getContainer(inFrame.getLayeredPane()) );
-			dgv.addTransferComponent(desktopPane);
-
 			view.addViewChangeListener(dgv);
-
+			
+			if(frame instanceof JInternalFrame) {	
+				JInternalFrame inFrame = (JInternalFrame)frame;
+				JDesktopPane desktopPane = inFrame.getDesktopPane();
+	
+				// TODO - not sure this layered pane bit is optimal
+				inFrame.setContentPane( dgv.getContainer(inFrame.getLayeredPane()) );
+				dgv.addTransferComponent(desktopPane);
+			} else {
+				JComponent component = (JComponent) frame;
+				component.add(dgv.getComponent());
+			}
 		} else {
 			throw new IllegalArgumentException("frame object is not of type JInternalFrame, which is invalid for this implementation of PresentationFactory");
 		}
@@ -103,12 +111,12 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 
 	
 	public void handleEvent(NetworkViewChangedEvent nvce) {
-		GraphView gv = viewMap.get(nvce.getNetworkView());
+		DGraphView gv = viewMap.get(nvce.getNetworkView());
 		if ( gv != null )
 			gv.updateView();
 	}
 
-	public GraphView getGraphView(CyNetworkView cnv) {
+	public DGraphView getGraphView(CyNetworkView cnv) {
 		return viewMap.get(cnv);
 	}
 
@@ -142,6 +150,10 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 			return;
 
 		edgeViewTFs.remove(evtf);
+	}
+
+	public NetworkRenderer getPresentation(CyNetworkView view) {
+		return this.viewMap.get(view);
 	}
 
 }

@@ -42,6 +42,8 @@ import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.Icon;
+
 
 /**
  *
@@ -530,6 +532,11 @@ public class LabelPosition {
 
 				return "x";
 		}
+	}
+	
+	//TODO: where should this go?
+	public Icon toIcon() {
+		return null;
 	}
 
 	/**

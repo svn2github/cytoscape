@@ -98,7 +98,7 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.EdgeViewTaskFactory;
 import org.cytoscape.view.model.NodeViewTaskFactory;
 import org.cytoscape.view.presentation.NetworkRenderer;
-import org.cytoscape.view.presentation.twod.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.UndoSupport;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;

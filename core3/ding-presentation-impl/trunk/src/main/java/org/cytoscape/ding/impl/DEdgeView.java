@@ -46,7 +46,7 @@ import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
 import org.cytoscape.ding.ArrowShape;
 
-import org.cytoscape.view.presentation.twod.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.ViewChangeListener;
