@@ -37,8 +37,13 @@
 
 package org.cytoscape.task.internal.creation;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyEdge;
@@ -46,22 +51,15 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
-
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.View;
-
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
+import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
 
 public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 

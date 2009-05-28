@@ -39,17 +39,14 @@
 package org.cytoscape.task.internal.hide;
 
 
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
-
-import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_VISIBLE;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_VISIBLE;
 
 import java.util.Collection;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
 
 
 abstract class HideUtils {

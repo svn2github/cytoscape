@@ -37,12 +37,13 @@
 
 package org.cytoscape.task.internal.zoom;
 
-import cytoscape.CyNetworkManager;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_SCALE_FACTOR;
+
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.NETWORK_SCALE_FACTOR;
+import cytoscape.CyNetworkManager;
 
 
 abstract class AbstractZoomTask implements Task {
