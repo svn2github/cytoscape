@@ -36,10 +36,11 @@
  */
 package cytoscape.internal.select;
 
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.View;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_SELECTED;
+
 import org.cytoscape.model.CyEdge;
-import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
+import org.cytoscape.view.model.View;
+
 import cytoscape.view.ViewUpdater;
 
 public class SelectEdgeViewUpdater extends ViewUpdater<CyEdge,Boolean> {

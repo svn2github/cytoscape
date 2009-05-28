@@ -36,33 +36,33 @@
  */
 package cytoscape.internal.view;
 
-import cytoscape.CyNetworkManager;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_TITLE;
 
-import cytoscape.view.CyHelpBroker;
-
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.CyNetworkView;
-
-import cytoscape.events.NetworkViewAddedEvent;
-import cytoscape.events.NetworkViewAddedListener;
-import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
-import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
-import cytoscape.events.SetCurrentNetworkViewEvent;
-import cytoscape.events.SetCurrentNetworkViewListener;
-import cytoscape.events.SetCurrentNetworkEvent;
-import cytoscape.events.SetCurrentNetworkListener;
-
-import javax.swing.*;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.PresentationFactory;
-import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
+
+import cytoscape.CyNetworkManager;
+import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
+import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
+import cytoscape.events.NetworkViewAddedEvent;
+import cytoscape.events.NetworkViewAddedListener;
+import cytoscape.events.SetCurrentNetworkEvent;
+import cytoscape.events.SetCurrentNetworkListener;
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
+import cytoscape.view.CyHelpBroker;
 
 
 /**

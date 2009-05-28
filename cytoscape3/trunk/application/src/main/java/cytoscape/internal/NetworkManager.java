@@ -51,6 +51,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.NetworkRenderer;
+import org.cytoscape.view.presentation.PresentationFactory;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.events.NetworkAboutToBeDestroyedEvent;
@@ -87,14 +88,17 @@ public class NetworkManager implements CyNetworkManager {
 
 	private CyNetwork currentNetwork;
 	private CyNetworkView currentNetworkView;
+	
+	private PresentationFactory presentationFactory;
 
-	NetworkManager(final CyEventHelper eh) {
+	public NetworkManager(final CyEventHelper eh, final PresentationFactory presentationFactory) {
 		networkMap = new HashMap<Long,CyNetwork>();
 		networkViewMap = new HashMap<Long,CyNetworkView>();
 		selectedNetworkViews = new LinkedList<CyNetworkView>();
 		selectedNetworks = new LinkedList<CyNetwork>();
 		currentNetwork = null;
 		currentNetworkView = null;
+		this.presentationFactory = presentationFactory;
 		this.eh = eh;
 	}
 
@@ -371,7 +375,6 @@ public class NetworkManager implements CyNetworkManager {
 	}
 
 	public NetworkRenderer getPresentation(CyNetworkView view) {
-		// TODO Auto-generated method stub
-		return null;
+		return presentationFactory.getPresentation(view);
 	}
 }

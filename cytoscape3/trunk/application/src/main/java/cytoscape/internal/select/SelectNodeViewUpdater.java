@@ -36,10 +36,11 @@
  */
 package cytoscape.internal.select;
 
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.View;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_SELECTED;
+
 import org.cytoscape.model.CyNode;
-import static org.cytoscape.view.presentation.twod.TwoDVisualLexicon.*;
+import org.cytoscape.view.model.View;
+
 import cytoscape.view.ViewUpdater;
 
 public class SelectNodeViewUpdater extends ViewUpdater<CyNode,Boolean> {
