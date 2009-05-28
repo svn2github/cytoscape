@@ -48,7 +48,15 @@ public class VisualStyleDestroyedEventImpl extends AbstractVisualStyleEvent
 	 *
 	 * @param vs  DOCUMENT ME!
 	 */
-	public VisualStyleDestroyedEventImpl(final VisualStyle vs) {
-		super(vs);
+	public VisualStyleDestroyedEventImpl(final VisualStyle vs, final Object source) {
+		super(vs, source);
+	}
+
+	public Object getSource() {
+		return source;
+	}
+
+	public VisualStyle getDestroyedVisualStyle() {
+		return vs;
 	}
 }

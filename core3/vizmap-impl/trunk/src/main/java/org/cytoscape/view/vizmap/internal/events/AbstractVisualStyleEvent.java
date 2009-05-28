@@ -40,24 +40,18 @@ import org.cytoscape.view.vizmap.VisualStyle;
 /**
  * DOCUMENT ME!
   */
-public class AbstractVisualStyleEvent {
-	private VisualStyle vs;
-
+public abstract class AbstractVisualStyleEvent {
+	
+	protected VisualStyle vs;
+	protected Object source;
+	
 	/**
 	 * Creates a new AbstractVisualStyleEvent object.
 	 *
 	 * @param vs  DOCUMENT ME!
 	 */
-	public AbstractVisualStyleEvent(final VisualStyle vs) {
+	public AbstractVisualStyleEvent(final VisualStyle vs, final Object source) {
 		this.vs = vs;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public VisualStyle getSource() {
-		return vs;
+		this.source = source;
 	}
 }

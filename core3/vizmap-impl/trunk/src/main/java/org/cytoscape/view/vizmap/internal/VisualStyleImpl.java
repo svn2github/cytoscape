@@ -247,7 +247,7 @@ public class VisualStyleImpl implements VisualStyle {
 		return mappings.values();
 	}
 
-	public VisualLexicon getRenderer() {
+	public VisualLexicon getVisualLexicon() {
 		// TODO Auto-generated method stub
 		return null;
 	}

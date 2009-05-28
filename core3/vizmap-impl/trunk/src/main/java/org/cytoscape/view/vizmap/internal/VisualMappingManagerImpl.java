@@ -128,7 +128,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 		}
 
 		visualStyles.add(copyVS);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(copyVS),
+		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(copyVS, this),
 		                                   VisualStyleCreatedListener.class);
 
 		return copyVS;
@@ -144,7 +144,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	public VisualStyle createVisualStyle(String title) {
 		final VisualStyle newVS = new VisualStyleImpl(rootLexicon, title);
 		visualStyles.add(newVS);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS),
+		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEventImpl(newVS, this),
 		                                   VisualStyleCreatedListener.class);
 
 		return newVS;
@@ -158,7 +158,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 */
 	public void removeVisualStyle(VisualStyle vs) {
 		visualStyles.remove(vs);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs),
+		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEventImpl(vs, this),
 		                                   VisualStyleDestroyedListener.class);
 		vs = null;
 	}
@@ -172,7 +172,16 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 		return visualStyles;
 	}
 
-	public RootVisualLexicon getRendererCatalog() {
+	public RootVisualLexicon getRoorVisualLexicon() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public <K, V> VisualMappingFunction<K, V> createMapping(String mappingType,
+			String attrName, Class<K> attrType, VisualProperty<V> vp) {
+		
+		
+		
 		// TODO Auto-generated method stub
 		return null;
 	}

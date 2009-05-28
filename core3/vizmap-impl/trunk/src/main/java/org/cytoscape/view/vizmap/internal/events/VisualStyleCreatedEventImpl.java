@@ -41,14 +41,24 @@ import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
 /**
  * DOCUMENT ME!
   */
-public class VisualStyleCreatedEventImpl extends AbstractVisualStyleEvent
+public class VisualStyleCreatedEventImpl extends AbstractVisualStyleEvent 
     implements VisualStyleCreatedEvent {
+	
+
 	/**
 	 * Creates a new VisualStyleCreatedEventImpl object.
 	 *
 	 * @param vs  DOCUMENT ME!
 	 */
-	public VisualStyleCreatedEventImpl(final VisualStyle vs) {
-		super(vs);
+	public VisualStyleCreatedEventImpl(final VisualStyle vs, final Object source) {
+		super(vs, source);
+	}
+
+	public VisualStyle getCreatedVisualStyle() {
+		return vs;
+	}
+
+	public Object getSource() {
+		return source;
 	}
 }
