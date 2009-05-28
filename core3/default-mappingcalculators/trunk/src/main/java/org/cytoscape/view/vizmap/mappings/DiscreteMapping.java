@@ -60,7 +60,7 @@ import org.cytoscape.view.model.VisualProperty;
  * data value is extracted from a bundle of attributes by using a specified data
  * attribute name.
  */
-public class DiscreteMapping<K, V> extends AbstractMappingCalculator<K, V> {
+public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	
 	// contains the actual map elements (sorted)
 	private SortedMap<K, V> treeMap; 
@@ -79,7 +79,7 @@ public class DiscreteMapping<K, V> extends AbstractMappingCalculator<K, V> {
 	}
 	
 	@Override public String toString() {
-		return "Discrete Mapping";
+		return DISCRETE;
 	}
 
 	public <G extends GraphObject> void apply(ViewColumn<V> column,

@@ -48,21 +48,21 @@ import org.cytoscape.view.model.VisualProperty;
 
 /**
  */
-public class PassthroughMappingCalculator<K, V> extends
-		AbstractMappingCalculator<K, V> {
+public class PassthroughMapping<K, V> extends
+		AbstractMappingFunction<K, V> {
 
 	/**
 	 * dataType is the type of the _attribute_ !! currently we force that to be
 	 * the same as the VisualProperty; FIXME: allow different once? but how to
 	 * coerce?
 	 */
-	public PassthroughMappingCalculator(final String attrName,final Class<K> attrType,
+	public PassthroughMapping(final String attrName,final Class<K> attrType,
 			final VisualProperty<V> vp) {
 		super(attrName, attrType, vp);
 	}
 	
 	@Override public String toString() {
-		return "Passthrough Mapping";
+		return PASSTHROUGH;
 	}
 
 	/**

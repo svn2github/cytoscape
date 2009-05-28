@@ -3,8 +3,12 @@ package org.cytoscape.view.vizmap.mappings;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 
-public abstract class AbstractMappingCalculator<K, V> implements
+public abstract class AbstractMappingFunction<K, V> implements
 		VisualMappingFunction<K, V> {
+	
+	public static final String DISCRETE = "Discrete Mapping";
+	public static final String CONTINUOUS = "Continuous Mapping";
+	public static final String PASSTHROUGH = "Passthrough Mapping";
 
 	// Mapping attribute name.
 	protected String attrName;
@@ -15,7 +19,7 @@ public abstract class AbstractMappingCalculator<K, V> implements
 	// Visual Property used in this mapping.
 	protected VisualProperty<V> vp;
 
-	public AbstractMappingCalculator(final String attrName, final Class<K> attrType,
+	public AbstractMappingFunction(final String attrName, final Class<K> attrType,
 			final VisualProperty<V> vp) {
 		this.attrType = attrType;
 		this.attrName = attrName;

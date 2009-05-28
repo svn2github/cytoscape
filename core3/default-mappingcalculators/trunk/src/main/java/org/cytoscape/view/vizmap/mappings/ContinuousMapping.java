@@ -70,7 +70,7 @@ import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToNumberInte
  *            cytoscape.visual.mappings.continuous.README.txt.
  * 
  */
-public class ContinuousMapping<V> extends AbstractMappingCalculator<Number, V> {
+public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 
 	private Interpolator<Number, V> interpolator; // used to interpolate between
 													// boundaries
@@ -78,16 +78,9 @@ public class ContinuousMapping<V> extends AbstractMappingCalculator<Number, V> {
 	// Contains List of Data Points
 	private List<ContinuousMappingPoint<V>> points;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param defaultObj
-	 *            default object to map to
-	 */
 	public ContinuousMapping(String attrName, VisualProperty<V> vp) {
 		super(attrName, Number.class, vp);
 		this.points = new ArrayList<ContinuousMappingPoint<V>>();
-
 		// Create Interpolator
 		if (Color.class.isAssignableFrom(vp.getType()))
 			interpolator = (Interpolator<Number, V>) new LinearNumberToColorInterpolator();
@@ -97,8 +90,20 @@ public class ContinuousMapping<V> extends AbstractMappingCalculator<Number, V> {
 			interpolator = (Interpolator<Number, V>) new FlatInterpolator();
 	}
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param defaultObj
+	 *            default object to map to
+	 */
+	public ContinuousMapping(String attrName, VisualProperty<V> vp, Interpolator<Number, V> it) {
+		super(attrName, Number.class, vp);
+		this.points = new ArrayList<ContinuousMappingPoint<V>>();
+		this.interpolator = it;
+	}
+	
 	@Override public String toString() {
-		return "Continuous Mapping";
+		return CONTINUOUS;
 	}
 
 	/**
