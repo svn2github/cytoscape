@@ -33,21 +33,21 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.view.presentation.twod; 
+package org.cytoscape.view.presentation.property; 
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class DoubleTwoDVisualProperty extends AbstractVisualProperty<Double> { 
+public class BooleanVisualProperty extends AbstractVisualProperty<Boolean> { 
 
-	public DoubleTwoDVisualProperty(final String ot, final Double def, final String id, final String name) {
+	public BooleanVisualProperty(final String ot, final Boolean def, final String id, final String name) {
 		super(ot,def,id,name);
 	}
 	
-	public String getSerializableString(final Double value) {
+	public String getSerializableString(final Boolean value) {
 		return value.toString();
 	}
 
-	public Double parseSerializableString(final String text) {
-		return Double.valueOf(text);
+	public Boolean parseSerializableString(final String text) {
+		return Boolean.valueOf(text);
 	}
 }

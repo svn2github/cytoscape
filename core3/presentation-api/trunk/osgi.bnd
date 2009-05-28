@@ -3,4 +3,4 @@
 #-----------------------------------------------------------------
 
 Import-Package: *
-Export-Package: org.cytoscape.view.presentation, org.cytoscape.view.presentation.twod
+Export-Package: org.cytoscape.view.presentation, org.cytoscape.view.presentation.property
