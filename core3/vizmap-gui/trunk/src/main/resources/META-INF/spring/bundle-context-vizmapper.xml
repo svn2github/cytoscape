@@ -66,8 +66,12 @@
 		class="org.cytoscape.view.vizmap.gui.internal.editor.DiscreteString"
 		/>
 	-->
-	
-	<bean id="colorEditor" class="" />
+
+	<!-- Value Chooser/Editors -->
+	<bean id="colorEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser" />
+
+
 
 	<!-- Main Panel Configurations -->
 	<bean id="colorMgr" class="org.cytoscape.view.vizmap.gui.theme.ColorManager"
@@ -116,7 +120,7 @@
 		<constructor-arg ref="vizMapperUtil" />
 		<constructor-arg ref="vmmServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		
+
 		<property name="menuLabel"
 			value="${vizMapperMainPanel.menu.createNewStyleAction}" />
 		<property name="iconId"
@@ -212,7 +216,8 @@
 	<bean name="vizMapperMainPanel"
 		class="org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel"
 		depends-on="colorMgr,
-		iconManager, defViewEditor, vizMapperUtil, menuManager, propertySheetPanel, editorWindowManager" scope="singleton">
+		iconManager, defViewEditor, vizMapperUtil, menuManager, propertySheetPanel, editorWindowManager"
+		scope="singleton">
 		<constructor-arg ref="cytoscapeDesktopServiceRef" />
 		<constructor-arg ref="defViewEditor" />
 		<constructor-arg ref="iconManager" />
