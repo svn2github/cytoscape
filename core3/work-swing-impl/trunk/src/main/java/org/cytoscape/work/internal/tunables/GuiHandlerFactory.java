@@ -17,8 +17,15 @@ import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.BoundedFloat;
 import org.cytoscape.work.util.BoundedInteger;
 import org.cytoscape.work.util.BoundedLong;
+import org.cytoscape.work.util.FlexiblyBoundedDouble;
+import org.cytoscape.work.util.FlexiblyBoundedFloat;
+import org.cytoscape.work.util.FlexiblyBoundedInteger;
+import org.cytoscape.work.util.FlexiblyBoundedLong;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
+
+
+
 
 
 
@@ -73,6 +80,12 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 	 */
 	public Guihandler getHandler(Field f, Object o, Tunable t){
 		Class<?> type = f.getType();
+
+		if(type == Boolean.class || type == boolean.class)
+			return new BooleanHandler(f,o,t);
+		else if(type == String.class)
+			return new StringHandler(f,o,t);
+
 		if(type == Integer.class || type == int.class)
 			return new IntegerHandler(f,o,t);
 		else if(type == Double.class || type == double.class)
@@ -80,23 +93,32 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 		else if(type == Float.class || type == float.class)
 			return new FloatHandler(f,o,t);
 		else if(type == Long.class || type == long.class)
-			return new LongHandler(f,o,t);	
-		else if(type == BoundedDouble.class)
-			return new BoundedDoubleHandler(f,o,t);
-		else if(type == BoundedInteger.class)
-			return new BoundedIntegerHandler(f,o,t);
-		else if(type == BoundedFloat.class)
-			return new BoundedFloatHandler(f,o,t);
-		else if(type == BoundedLong.class)
-			return new BoundedLongHandler(f,o,t);
-		else if(type == Boolean.class || type == boolean.class)
-			return new BooleanHandler(f,o,t);
-		else if(type == String.class)
-			return new StringHandler(f,o,t);
+			return new LongHandler(f,o,t);
+
+		//Flexibly and Bounded Handlers rewritten
+		else if ( type == BoundedInteger.class ) 
+			return new BoundedHandler<BoundedInteger>(f,o,t);
+		else if ( type == BoundedLong.class ) 
+			return new BoundedHandler<BoundedLong>(f,o,t);
+		else if ( type == BoundedFloat.class ) 
+			return new BoundedHandler<BoundedFloat>(f,o,t);
+		else if ( type == BoundedDouble.class ) 
+			return new BoundedHandler<BoundedDouble>(f,o,t);
+
+		else if ( type == FlexiblyBoundedInteger.class ) 
+			return new FlexiblyBoundedHandler<FlexiblyBoundedInteger>(f,o,t);
+		else if ( type == FlexiblyBoundedLong.class ) 
+			return new FlexiblyBoundedHandler<FlexiblyBoundedLong>(f,o,t);
+		else if ( type == FlexiblyBoundedFloat.class ) 
+			return new FlexiblyBoundedHandler<FlexiblyBoundedFloat>(f,o,t);
+		else if ( type == FlexiblyBoundedDouble.class ) 
+			return new FlexiblyBoundedHandler<FlexiblyBoundedDouble>(f,o,t);
+		
 		else if(type == ListSingleSelection.class)
 			return new ListSingleHandler<String>(f,o,t);
 		else if(type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(f,o,t);
+
 		else if(type == File.class)
 //			return new FileHandler(f,o,t,flUtil);
 			return new FileHandler(f,o,t);
