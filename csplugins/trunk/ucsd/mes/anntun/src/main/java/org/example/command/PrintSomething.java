@@ -70,7 +70,7 @@ public class PrintSomething implements Command, HandlerController {
 
 	
 	public void execute() {
-		System.out.println("\t name : " + firstName + " " + lastName + "\n \t age : " + getAge() + "\n \t foot size : " + footSize.getValue() + "\n \t kids = " + kids.getValue() + "\n \t income : $" + income.getValue() + "\n \t result for boolean = " + bool + "\n \t listsingleselection = "+lss.getSelectedValue() + "\n \t listmultipleselection = "+lms.getSelectedValues() + "\n \t height = "+height.getValue());
+		System.out.println("\t name : " + firstName + " " + lastName + "\n \t age : " + age + "\n \t foot size : " + footSize.getValue() + "\n \t kids = " + kids.getValue() + "\n \t income : $" + income.getValue() + "\n \t result for boolean = " + bool + "\n \t listsingleselection = "+lss.getSelectedValue() + "\n \t listmultipleselection = "+lms.getSelectedValues() + "\n \t height = "+height.getValue());
 //		System.out.println("test = " + height.getValue());
 	}
 	
