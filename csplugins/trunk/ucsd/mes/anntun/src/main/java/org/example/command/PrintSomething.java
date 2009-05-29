@@ -41,10 +41,12 @@ public class PrintSomething implements Command, HandlerController {
 	public ListMultipleSelection<String> lms = new ListMultipleSelection<String>("one","two","three","four");
 	
 	
-	public Integer age;
+	private Integer age = Integer.valueOf(25);
 	
 	@Tunable(description="to set your age")
 	public void setAge(Integer a) {
+		if ( a == null )
+			throw new NullPointerException("age is null");
 		age = a;
 	}
 	@Tunable(description="to get your age")

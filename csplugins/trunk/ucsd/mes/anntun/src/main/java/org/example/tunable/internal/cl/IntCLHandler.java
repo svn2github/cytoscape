@@ -81,11 +81,16 @@ public class IntCLHandler extends AbstractCLHandler {
 			}catch(Exception e){e.printStackTrace();}
 			return new Option(fc, true,"-- " + t.description() + " --\n  current value : "+ currentValue);
 		}
-		if ( smethod!=null){
-			Type[] type = smethod.getParameterTypes();
-			java.util.List list = new java.util.ArrayList();
-			for(int i=0;i<type.length;i++) list.add(i,type[i]);
-			return new Option(fc,true,"-- "+ tg.description() + " / " + ts.description() + " --\n Method's set parameter : "+list);
+		else if ( gmethod!=null){
+			try{
+				currentValue = (Integer)gmethod.invoke(o);
+			}catch(Exception e){e.printStackTrace();}
+			return new Option(fc, true,"-- " + tg.description() + " --\n  current value : "+ currentValue);
+
+			//Type[] type = smethod.getParameterTypes();
+			//java.util.List list = new java.util.ArrayList();
+			//for(int i=0;i<type.length;i++) list.add(i,type[i]);
+			//return new Option(fc,true,"-- "+ tg.description() + " / " + ts.description() + " --\n Method's set parameter : "+list);
 			
 		}
 		else return null;
