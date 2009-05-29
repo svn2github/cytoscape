@@ -16,7 +16,7 @@ public class IntPropHandler extends AbstractPropHandler {
 	public Properties getProps() {
 		Properties p = new Properties();
 		try {
-			p.put( propKey,f.get(o).toString() );
+			p.setProperty( propKey,f.get(o).toString() );
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();
 		}
@@ -28,7 +28,7 @@ public class IntPropHandler extends AbstractPropHandler {
 		if ( p.containsKey( propKey ) ) {
 			String val = p.getProperty( propKey );
 			if ( val != null )
-				f.setInt(o, Integer.valueOf(val));
+				f.setInt(o, Integer.valueOf(Integer.parseInt(val)));
 		}
 		} catch (IllegalAccessException iae) {
 			iae.printStackTrace();

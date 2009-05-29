@@ -19,6 +19,9 @@ public class PrintSomething implements Command, HandlerController {
 	@Tunable(description="your last name", group={"stuff","advanced"}, flags={"collapsable"} )
 	public String lastName = "simpson";
 
+	@Tunable(description="an integer test", group={"stuff","advanced"}, flags={"collapsable"} )
+	public int test = 3;
+	
 	@Tunable(description="your foot size", group={"stuff","advanced"})
 	public BoundedDouble footSize = new BoundedDouble(5.0, 8.5, 13.5, true, false);
 

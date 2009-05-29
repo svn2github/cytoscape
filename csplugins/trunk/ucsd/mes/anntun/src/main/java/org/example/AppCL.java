@@ -4,6 +4,9 @@ package org.example;
 import org.example.tunable.*;
 import org.example.tunable.internal.props.*;
 import org.example.tunable.internal.cl.*;
+import org.example.tunable.util.BoundedDouble;
+import org.example.tunable.util.FlexiblyBoundedInteger;
+import org.example.tunable.util.ListSingleSelection;
 import org.example.command.*;
 
 import java.util.*;
@@ -43,11 +46,16 @@ public class AppCL
 		System.out.println();
 
 		// a properties object generated from someplace
-		Properties p = new Properties();
-		p.setProperty("printSomething.firstName","marge");
-
+		Properties load = new Properties();
+		load.setProperty("PrintSomething.firstName","marge");
+		load.setProperty("PrintSomething.footSize","5.34");
+		load.setProperty("PrintSomething.bool", "true");
+		load.setProperty("PrintSomething.lss","1");
+		load.setProperty("PrintSomething.income","0,3444,10000,true,true");
+		load.setProperty("PrintSomething.lms", "one,three");
+		
 		// create the interceptor 
-		TunableInterceptor lp = new LoadPropsInterceptor(p);
+		TunableInterceptor lp = new LoadPropsInterceptor(load);
 
 		// load the tunables from the object
 		lp.loadTunables(com);

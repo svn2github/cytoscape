@@ -1,5 +1,3 @@
-
-
 package org.example.tunable.internal.props;
 
 import java.lang.reflect.*;
@@ -17,7 +15,7 @@ public class StringPropHandler extends AbstractPropHandler {
 	public Properties getProps() {
 		Properties p = new Properties();
 		try {
-		p.put( propKey, (String)f.get(o) );
+			p.setProperty( propKey, f.get(o).toString());
         } catch (IllegalAccessException iae) {
             iae.printStackTrace();
         }
@@ -27,7 +25,7 @@ public class StringPropHandler extends AbstractPropHandler {
 	public void setProps(Properties p) {
 		try {
 		if ( p.containsKey( propKey ) ) {
-			String val = p.getProperty( propKey );
+			String val = p.getProperty( propKey ).toString();
 			if ( val != null )
 				f.set(o, val);
 		}

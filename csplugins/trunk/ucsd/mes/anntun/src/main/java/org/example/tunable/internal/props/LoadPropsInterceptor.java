@@ -1,11 +1,8 @@
 package org.example.tunable.internal.props;
 
-import java.lang.reflect.*;
-import java.lang.annotation.*;
-import java.util.*;
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*;
+import java.util.Collection;
+import java.util.Properties;
+
 import org.example.tunable.*;
 
 /**
@@ -27,7 +24,7 @@ public class LoadPropsInterceptor extends AbstractTunableInterceptor<PropHandler
 				throw new IllegalArgumentException("Interceptor does not yet know about this object");
 
 			Collection<PropHandler> lh = handlerMap.get(o).values();
-
+			
 			for ( PropHandler p : lh ) {
 				p.setProps( inputProps );
 			}
