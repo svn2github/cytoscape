@@ -16,7 +16,6 @@ public abstract class AbstractPropHandler extends AbstractHandler implements Pro
 		propKey = n.substring( n.lastIndexOf(".") + 1) + "." + f.getName();	
 	}
 	
-	public abstract void add(Properties p);
 	public abstract Properties getProps();
 	public abstract void setProps(Properties p);
 }

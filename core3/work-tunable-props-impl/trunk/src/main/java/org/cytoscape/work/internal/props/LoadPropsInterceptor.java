@@ -15,17 +15,21 @@ public class LoadPropsInterceptor extends SpringTunableInterceptor<PropHandler> 
 
 	public boolean createUI(Object... pobjs) {
 		Object[] objs = convertSpringProxyObjs(pobjs);
-
-		java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
+		//java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
 			
-			lh.addAll( handlerMap.get(o).values() );
+			Collection<PropHandler> lh = handlerMap.get(o).values();
+			
+			for ( PropHandler p : lh ) {
+				p.setProps( inputProps );
+			}
+//			lh.addAll( handlerMap.get(o).values() );
 		}
-		for (PropHandler p : lh) {
-			p.add(inputProps);
-		}
+//		for (PropHandler p : lh) {
+//			p.add(inputProps);
+//		} 
 		return true;
 	}
 	

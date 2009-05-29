@@ -7,49 +7,33 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListMultipleSelection;
 
 
-public class ListMultiplePropHandler extends AbstractPropHandler {
-	
-	ListMultipleSelection LMS;
-	List array;
-	
-	
-	@SuppressWarnings("unchecked")
+public class ListMultiplePropHandler<T> extends AbstractPropHandler {
+
 	public ListMultiplePropHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-		try{
-			LMS = (ListMultipleSelection) f.get(o);
-		}catch(Exception e){e.printStackTrace();}
 	}
 
 	
 	public Properties getProps() {
 		Properties p = new Properties();
-		p.put(propKey,(Object)((ListMultipleSelection) LMS).getSelectedValues());
+		try{
+			p.setProperty(propKey,((ListMultipleSelection<T>)f.get(o)).getSelectedValues().toString());
+		}catch (Exception e){e.printStackTrace();}		
 		return p;
 	}
+	
 
-	
-	@SuppressWarnings("unchecked")
-	public void add(Properties p) {
-		array = new ArrayList();
-		array.add(0, "");
-		((ListMultipleSelection) LMS).setSelectedValues(array);
-		p.put(propKey,((ListMultipleSelection) LMS).getSelectedValues());
-	}
-	
-	
-	@SuppressWarnings("unchecked")
 	public void setProps(Properties p) {
-		try {
-			if (p.containsKey(propKey)) {
-				Object val = p.get(propKey);
-				if (val != null){
-					((ListMultipleSelection) LMS).setSelectedValues((List) val);
-					f.set(o, LMS);
+		try{
+			if(p.containsKey(propKey)){
+				ListMultipleSelection<T> lms = (ListMultipleSelection<T>) f.get(o);
+				T[] tab = (T[])p.getProperty(propKey).split(",");
+				if(tab != null){
+					lms.setSelectedValues(Arrays.asList(tab));
+					f.set(o, lms);
 				}
 			}
-		} catch (IllegalAccessException iae) {
-			iae.printStackTrace();}
+		}catch(Exception e){e.printStackTrace();}
 	}
 }
 	

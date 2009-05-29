@@ -5,6 +5,7 @@ import java.util.*;
 import org.cytoscape.work.spring.SpringTunableInterceptor;
 
 
+
 public class StorePropsInterceptor extends SpringTunableInterceptor<PropHandler> {
 	private Properties inputProps;
 
@@ -15,16 +16,20 @@ public class StorePropsInterceptor extends SpringTunableInterceptor<PropHandler>
 
 	public boolean createUI(Object... pobjs) {
 		Object[] objs = convertSpringProxyObjs(pobjs);
-		
-		java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
-			lh.addAll( handlerMap.get(o).values() );
+
+			Collection<PropHandler> lh = handlerMap.get(o).values();
+			
+			for ( PropHandler p : lh ) {
+				inputProps.putAll( p.getProps() );
+			}
+//			lh.addAll( handlerMap.get(o).values() );
 		}
-		for (PropHandler p : lh) {
-			inputProps.putAll(p.getProps());
-		}
+//		for (PropHandler p : lh) {
+//			inputProps.putAll(p.getProps());
+//		}
 		return true;
 	}
 	
