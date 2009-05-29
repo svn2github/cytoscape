@@ -16,6 +16,6 @@
 
 	<context:annotation-config />
 
-	<bean id="testTaskFactory" class="org.cytoscape.log.internal.TestTaskFactory">
+	<bean id="consoleTaskFactory" class="org.cytoscape.log.internal.ConsoleTaskFactory">
 	</bean>
 </beans>

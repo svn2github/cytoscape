@@ -4,11 +4,11 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
-	<osgi:service id="testTaskFactoryService" ref="testTaskFactory"
+	<osgi:service id="consoleTaskFactoryService" ref="consoleTaskFactory"
  		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Test Blah"/>
-			<entry key="preferredMenu" value="File"/>
+			<entry key="title" value="Console"/>
+			<entry key="preferredMenu" value="Help"/>
 		</osgi:service-properties>
 	</osgi:service>
 </beans>
