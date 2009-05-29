@@ -1,10 +1,7 @@
-
 package org.example.tunable.internal.gui;
 
 import java.lang.reflect.*;
-import java.util.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.event.*;
 import java.awt.*;
 import org.example.tunable.*;
@@ -12,7 +9,6 @@ import org.example.tunable.*;
 public abstract class AbstractGuiHandler extends AbstractHandler implements GuiHandler, ActionListener {
 
 	protected JPanel panel;
-
     private String depName;
     private String depState;
 
@@ -23,10 +19,10 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements GuiH
             depName = s.substring(0,s.indexOf("="));
             depState = s.substring(s.indexOf("=") + 1);
         }
-	
 		panel = new JPanel();
 	}
-
+	
+	
 	public void actionPerformed(ActionEvent ae) {
 		//System.out.println(this.getName() + " actionPerformed");
 		handle();

@@ -1,11 +1,8 @@
 package org.example.tunable.internal.gui;
 
-import java.lang.reflect.*;
-import java.lang.annotation.*;
 import java.util.*;
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
 import org.example.tunable.*;
 
 /**

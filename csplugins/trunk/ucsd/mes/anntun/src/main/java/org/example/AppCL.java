@@ -27,8 +27,6 @@ public class AppCL
 		// load the tunables from the object
 		cl.loadTunables(com);
 
-		
-		
 //		// if the object implements the interface,
 //		// give the object access to the handlers
 //		// created for the tunables
@@ -53,6 +51,7 @@ public class AppCL
 		load.setProperty("PrintSomething.lss","1");
 		load.setProperty("PrintSomething.income","0,3444,10000,true,true");
 		load.setProperty("PrintSomething.lms", "one,three");
+		
 		
 		// create the interceptor 
 		TunableInterceptor lp = new LoadPropsInterceptor(load);

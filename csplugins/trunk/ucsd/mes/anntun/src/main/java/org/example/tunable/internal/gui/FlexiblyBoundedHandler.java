@@ -17,7 +17,7 @@ public class FlexiblyBoundedHandler<T extends AbstractFlexiblyBounded> extends A
 	JTextField tf;
 	final T b;
 	final JLabel label;
-	
+	JTextField test;
 	
 	public FlexiblyBoundedHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
@@ -38,8 +38,9 @@ public class FlexiblyBoundedHandler<T extends AbstractFlexiblyBounded> extends A
 		
 		label = new JLabel();
 		setLabelText();
+				
 		try {
-			panel.add( label );
+			panel.add(label);
 			tf = new JTextField( b.getValue().toString(), 6);
 			tf.addActionListener( this );
 			panel.add( tf );
@@ -50,7 +51,7 @@ public class FlexiblyBoundedHandler<T extends AbstractFlexiblyBounded> extends A
 	}
 
 	private void setLabelText() {
-		label.setText( t.description() + " (min: " + b.getLowerBound().toString() + "  max: " + b.getUpperBound().toString() + ")" );
+		label.setText( t.description() +"\n(min: " + b.getLowerBound().toString() + "  max: " + b.getUpperBound().toString() + ")" );
 	}
 
 	public void handle() {

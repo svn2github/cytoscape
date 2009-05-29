@@ -1,16 +1,13 @@
-
 package org.example.tunable;
 
 import java.lang.reflect.*;
-import java.lang.annotation.*;
 import java.util.*;
 
 /**
  * An abstract implementation of {@link TunableInterceptor} that should serve as
  * the super class for almost all implementations of {@link TunableInterceptor}.
  */
-public abstract class AbstractTunableInterceptor<T extends Handler> 
-	implements TunableInterceptor {
+public abstract class AbstractTunableInterceptor<T extends Handler> implements TunableInterceptor {
 
 	protected HandlerFactory<T> factory;
 
