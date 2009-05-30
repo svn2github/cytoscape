@@ -34,7 +34,7 @@
  ** Description: Singleton class to store the current parameters
  **/
 
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import java.util.HashMap;
 import java.util.Map;

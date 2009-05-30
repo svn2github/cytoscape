@@ -1,4 +1,4 @@
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 //Copied from http://www.codeguru.com/java/articles/122.shtml
 

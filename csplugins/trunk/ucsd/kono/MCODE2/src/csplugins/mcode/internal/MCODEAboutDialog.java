@@ -1,4 +1,4 @@
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import java.awt.Insets;
 import java.net.URL;
@@ -8,6 +8,8 @@ import javax.swing.JEditorPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
+
+import csplugins.mcode.MCODEPlugin;
 
 import cytoscape.Cytoscape;
 

@@ -33,7 +33,7 @@
  * Time: 5:34:46 PM
  * Description: Stores various cluster information for simple get/set purposes
  */
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import giny.model.GraphPerspective;
 

@@ -1,4 +1,4 @@
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;

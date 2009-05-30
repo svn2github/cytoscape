@@ -1,4 +1,4 @@
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import giny.model.GraphPerspective;
 import giny.model.Node;

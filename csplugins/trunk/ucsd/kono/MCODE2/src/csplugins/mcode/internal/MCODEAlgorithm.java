@@ -1,4 +1,4 @@
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import cytoscape.CyNetwork;
 import cytoscape.task.TaskMonitor;
@@ -70,10 +70,15 @@ public class MCODEAlgorithm {
 
 	// data structures useful to have around for more than one cluster finding
 	// iteration
-	private Map currentNodeInfoHashMap = null; // key is the node index,
+	private Map<Integer, NodeInfo> currentNodeInfoHashMap = null; // key is the
+	// node
+	// index,
 	// value is a NodeInfo
 	// instance
-	private SortedMap currentNodeScoreSortedMap = null; // key is node score,
+	private SortedMap<Double, List<Integer>> currentNodeScoreSortedMap = null; // key
+	// is
+	// node
+	// score,
 	// value is nodeIndex
 	// because every network can be scored and clustered several times with
 	// different parameters
@@ -99,6 +104,10 @@ public class MCODEAlgorithm {
 	// stats
 	private long lastScoreTime;
 	private long lastFindTime;
+
+	public MCODEAlgorithm() {
+		this(null, null);
+	}
 
 	/**
 	 * The constructor. Use this to get an instance of MCODE to run.
@@ -227,8 +236,9 @@ public class MCODEAlgorithm {
 
 		// initialize
 		final long msTimeBefore = System.currentTimeMillis();
-		
-		Map<Integer, NodeInfo> nodeInfoHashMap = new HashMap<Integer, NodeInfo>(inputNetwork.getNodeCount());
+
+		Map<Integer, NodeInfo> nodeInfoHashMap = new HashMap<Integer, NodeInfo>(
+				inputNetwork.getNodeCount());
 
 		/*
 		 * will store Doubles (score) as the key, Lists as values sort Doubles
@@ -300,10 +310,11 @@ public class MCODEAlgorithm {
 	 *            Title of the result
 	 * @return An array containing an MCODECluster object for each cluster.
 	 */
+	@SuppressWarnings("unchecked")
 	public MCODECluster[] findClusters(CyNetwork inputNetwork,
 			String resultTitle) {
-		SortedMap nodeScoreSortedMap;
-		Map nodeInfoHashMap;
+		SortedMap<Double, List<Integer>> nodeScoreSortedMap;
+		Map<Integer, NodeInfo> nodeInfoHashMap;
 		// First we check if the network has been scored under this result title
 		// (i.e. scoring
 		// was required due to a scoring parameter change). If it hasn't then we
@@ -318,8 +329,8 @@ public class MCODEAlgorithm {
 			nodeScoreResultsMap.put(resultTitle, nodeScoreSortedMap);
 			nodeInfoResultsMap.put(resultTitle, nodeInfoHashMap);
 		} else {
-			nodeScoreSortedMap = (TreeMap) nodeScoreResultsMap.get(resultTitle);
-			nodeInfoHashMap = (HashMap) nodeInfoResultsMap.get(resultTitle);
+			nodeScoreSortedMap = nodeScoreResultsMap.get(resultTitle);
+			nodeInfoHashMap = nodeInfoResultsMap.get(resultTitle);
 		}
 		params = getParams();
 		MCODECluster currentCluster;
@@ -336,57 +347,52 @@ public class MCODEAlgorithm {
 
 		// initialization
 		long msTimeBefore = System.currentTimeMillis();
-		HashMap nodeSeenHashMap = new HashMap(); // key is nodeIndex, value is
+		HashMap<Integer, Boolean> nodeSeenHashMap = new HashMap<Integer, Boolean>(); // key is nodeIndex, value is
 		// true/false
 		Integer currentNode;
 		int findingProgress = 0;
 		int findingTotal = 0;
-		Collection values = nodeScoreSortedMap.values(); // returns a Collection
-		// sorted by key
-		// order
-		// (descending)
-		// In order to track the progress without significant lags (for times
-		// when many nodes have the same score
-		// and no progress is reported) we count all the scored nodes and track
-		// those instead
-		for (Iterator iterator1 = values.iterator(); iterator1.hasNext();) {
-			ArrayList value = (ArrayList) iterator1.next();
-			for (Iterator iterator2 = value.iterator(); iterator2.hasNext();) {
+		Collection<List<Integer>> values = nodeScoreSortedMap.values();
+		/*
+		 * returns a Collection sorted by key order (descending) In order to track the progress
+		 * without significant lags (for times when many nodes have the same
+		 * score and no progress is reported) we count all the scored nodes and
+		 * track those instead
+		 */
+		for (List<Integer> value : values) {
+			for (Iterator<Integer> iterator2 = value.iterator(); iterator2
+					.hasNext();) {
 				iterator2.next();
 				findingTotal++;
 			}
 		}
 		// stores the list of clusters as ArrayLists of node indices in the
 		// input Network
-		ArrayList alClusters = new ArrayList();
+		List<MCODECluster> alClusters = new ArrayList<MCODECluster>();
 		// iterate over node indices sorted descending by their score
-		ArrayList alNodesWithSameScore;
-		for (Iterator iterator = values.iterator(); iterator.hasNext();) {
+		List<Integer> alNodesWithSameScore;
+		for (Iterator<List<Integer>> iterator = values.iterator(); iterator.hasNext();) {
 			// each score may be associated with multiple nodes, iterate over
 			// these lists
-			alNodesWithSameScore = (ArrayList) iterator.next();
+			alNodesWithSameScore = iterator.next();
 			for (int j = 0; j < alNodesWithSameScore.size(); j++) {
-				currentNode = (Integer) alNodesWithSameScore.get(j);
+				currentNode = alNodesWithSameScore.get(j);
 				if (!nodeSeenHashMap.containsKey(currentNode)) {
 					currentCluster = new MCODECluster();
 					currentCluster.setSeedNode(currentNode);// store the current
-					// node as the seed
-					// node
-					// we store the current node seen hash map for later
-					// exploration purposes
-					HashMap nodeSeenHashMapSnapShot = new HashMap(
+					/*
+					 * node as the seed node we store the current node seen hash
+					 * map for later exploration purposes
+					 */
+					Map<Integer, Boolean> nodeSeenHashMapSnapShot = new HashMap<Integer, Boolean>(
 							(HashMap) nodeSeenHashMap.clone());
 
-					List alCluster = getClusterCore(currentNode,
+					List<Integer> alCluster = getClusterCore(currentNode,
 							nodeSeenHashMap, params.getNodeScoreCutoff(),
 							params.getMaxDepthFromStart(), nodeInfoHashMap);// here
-					// we
-					// use
-					// the
-					// original
-					// node
-					// score
-					// cutoff
+					/*
+					 * we use the original node score cutoff
+					 */
 					if (alCluster.size() > 0) {
 						// make sure seed node is part of cluster, if not
 						// already in there
@@ -414,22 +420,10 @@ public class MCODEAlgorithm {
 									.setClusterScore(scoreCluster(currentCluster));
 							currentCluster
 									.setNodeSeenHashMap(nodeSeenHashMapSnapShot);// store
-							// the
-							// list
-							// of
-							// all
-							// the
-							// nodes
-							// that
-							// have
-							// already
-							// been
-							// seen
-							// and
-							// incorporated
-							// in
-							// other
-							// clusters
+							/*
+							 * the list of all the nodes that have already been
+							 * seen and incorporated in other clusters
+							 */
 							currentCluster.setResultTitle(resultTitle);
 							// store detected cluster for later
 							alClusters.add(currentCluster);
@@ -438,10 +432,11 @@ public class MCODEAlgorithm {
 				}
 				if (taskMonitor != null) {
 					findingProgress++;
-					// We want to be sure that only progress changes are
-					// reported and not
-					// miniscule decimal increments so that the taskMonitor
-					// isn't overwhelmed
+					/*
+					 * We want to be sure that only progress changes are
+					 * reported and not miniscule decimal increments so that the
+					 * taskMonitor isn't overwhelmed
+					 */
 					int newProgress = (findingProgress * 100) / findingTotal;
 					int oldProgress = ((findingProgress - 1) * 100)
 							/ findingTotal;
@@ -457,32 +452,24 @@ public class MCODEAlgorithm {
 		// Once the clusters have been found we either return them or in the
 		// case of selection scope, we select only
 		// the ones that contain the selected node(s) and return those
-		ArrayList selectedALClusters = new ArrayList();
+		List<MCODECluster> selectedALClusters = new ArrayList<MCODECluster>();
 		if (!params.getScope().equals(MCODEParameterSet.NETWORK)) {
-			for (Iterator ic = alClusters.iterator(); ic.hasNext();) {
-				MCODECluster cluster = (MCODECluster) ic.next();
-				List alCluster = cluster.getALCluster();
-				ArrayList alSelectedNodes = new ArrayList();
-				for (int c = 0; c < params.getSelectedNodes().length; c++) {
+			for (MCODECluster cluster : alClusters) {
+				List<Integer> alCluster = cluster.getALCluster();
+				List<Integer> alSelectedNodes = new ArrayList<Integer>();
+				int selectedCount = params.getSelectedNodes().length;
+				for (int c = 0; c < selectedCount; c++)
 					alSelectedNodes.add(params.getSelectedNodes()[c]);
-				}
-				// method for returning only clusters that contain all of the
-				// selected noes
-				/*
-				 * if (alCluster.containsAll(alSelectedNodes)) {
-				 * selectedAlClusters.add(cluster); }
-				 */
+
 				// method for returning all clusters that contain any of the
 				// selected nodes
 				boolean hit = false;
-				for (Iterator in = alSelectedNodes.iterator(); in.hasNext();) {
-					if (alCluster.contains((Integer) in.next())) {
+				for (Integer node : alSelectedNodes) {
+					if (alCluster.contains(node))
 						hit = true;
-					}
 				}
-				if (hit) {
+				if (hit)
 					selectedALClusters.add(cluster);
-				}
 			}
 			alClusters = selectedALClusters;
 		}

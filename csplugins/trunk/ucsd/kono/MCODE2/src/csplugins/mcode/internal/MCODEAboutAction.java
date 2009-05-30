@@ -34,7 +34,7 @@
  * * Description: The action to show the About dialog box
  */
 
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

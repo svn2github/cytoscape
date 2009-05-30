@@ -1,4 +1,4 @@
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import giny.view.GraphView;
 import giny.view.NodeView;
@@ -103,7 +103,6 @@ public class SpringEmbeddedLayouter {
 	 */
 	public boolean doLayout(int weightLayout, int goalTotal, double progress,
 			MCODELoader loader) {
-		System.out.println("######### Layout1");
 
 		// initialize the layouting.
 		nodeCount = graphView.getNodeViewCount();
@@ -123,9 +122,6 @@ public class SpringEmbeddedLayouter {
 			count++;
 		}
 		
-		
-		System.out.println("######### Layout2");
-
 		// Stop if all nodes are closer together than this euclidean distance.
 		// TODO: Why is this an appropriate threshold?
 		double euclidean_distance_threshold = (0.5 * (nodeCount + edgeCount));
@@ -145,9 +141,7 @@ public class SpringEmbeddedLayouter {
 		for (layoutPass = 0; layoutPass < numLayoutPasses; layoutPass++) {
 
 			setupForLayoutPass();
-
-			System.out.println( " DO Layout Pass " );
-
+			
 			// initialize this layout pass
 			potential_energy.reset();
 			partials_list.clear();

@@ -1,8 +1,11 @@
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+
+import csplugins.mcode.MCODEPlugin;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,7 +52,7 @@ import java.net.URL;
 /**
  * The user-triggered collapsable panel containing the component (trigger) in the titled border
  */
-public class MCODECollapsiblePanel extends JPanel {
+public class MCODECollapsablePanel extends JPanel {
     //Border
     CollapsableTitledBorder border; // includes upper left component and line type
     Border collapsedBorderLine = BorderFactory.createEmptyBorder(2, 2, 2, 2); // no border
@@ -78,8 +81,8 @@ public class MCODECollapsiblePanel extends JPanel {
      *
      * @param component Radio button that expands and collapses the panel based on if it is selected or not
      */
-    public MCODECollapsiblePanel(JRadioButton component) {
-        component.addItemListener(new MCODECollapsiblePanel.ExpandAndCollapseAction());
+    public MCODECollapsablePanel (JRadioButton component) {
+        component.addItemListener(new MCODECollapsablePanel.ExpandAndCollapseAction());
         titleComponent = component;
         collapsed = !component.isSelected();
         commonConstructor();
@@ -92,7 +95,7 @@ public class MCODECollapsiblePanel extends JPanel {
      * 
      * @param text Title of the collapsable panel in string format, used to create a button with text and an arrow icon
      */
-    public MCODECollapsiblePanel(String text) {
+    public MCODECollapsablePanel (String text) {
         arrow.setText(text);
         titleComponent = arrow;
         collapsed = true;
@@ -215,7 +218,7 @@ public class MCODECollapsiblePanel extends JPanel {
         button.setFocusable(false);
         button.setContentAreaFilled(false);
 
-        button.addActionListener(new MCODECollapsiblePanel.ExpandAndCollapseAction());
+        button.addActionListener(new MCODECollapsablePanel.ExpandAndCollapseAction());
 
         return button;
     }

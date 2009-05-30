@@ -1,8 +1,8 @@
 package csplugins.mcode.test;
 
-import csplugins.mcode.MCODEAlgorithm;
-import csplugins.mcode.MCODECluster;
-import csplugins.mcode.MCODEParameterSet;
+import csplugins.mcode.internal.MCODEAlgorithm;
+import csplugins.mcode.internal.MCODECluster;
+import csplugins.mcode.internal.MCODEParameterSet;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import junit.framework.TestCase;

@@ -43,6 +43,10 @@ import cytoscape.plugin.CytoscapePlugin;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import csplugins.mcode.internal.MCODEAboutAction;
+import csplugins.mcode.internal.MCODEHelpAction;
+import csplugins.mcode.internal.MCODEMainPanelAction;
+
 /**
  * MCODE Network Clustering Plug In.
  * Clusters a graph.

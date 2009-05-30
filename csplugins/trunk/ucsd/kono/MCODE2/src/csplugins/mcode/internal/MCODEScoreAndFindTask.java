@@ -1,4 +1,4 @@
-package csplugins.mcode;
+package csplugins.mcode.internal;
 
 import cytoscape.CyNetwork;
 import cytoscape.task.Task;
