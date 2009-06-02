@@ -1,10 +1,16 @@
-package csplugins.mcode.internal;
+package csplugins.mcode.internal.action;
 
+import java.awt.Image;
+
+import csplugins.mcode.internal.MCODEAlgorithm;
+import csplugins.mcode.internal.MCODECluster;
+import csplugins.mcode.internal.MCODECurrentParameters;
+import csplugins.mcode.internal.MCODEUtil;
+import csplugins.mcode.internal.MClusterToCyGroup;
 import cytoscape.CyNetwork;
+import cytoscape.groups.CyGroup;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
-import java.awt.*;
 
 /**
  * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -104,34 +110,41 @@ public class MCODEScoreAndFindTask implements Task {
 			taskMonitor.setStatus("Finding Clusters (Step 2 of 3)");
 
 			clusters = alg.findClusters(network, resultSet);
-
-			if (interrupted) {
+			
+			if (interrupted)
 				return;
-			}
 
 			taskMonitor.setPercentCompleted(0);
 			taskMonitor.setStatus("Drawing Results (Step 3 of 3)");
 			// also create all the images here for the clusters, since it can be
 			// a time consuming operation
 			clusters = MCODEUtil.sortClusters(clusters);
-						
+			/*
+			 * New in MCODE2: Create CyGroups from clusters
+			 */
+			System.out.println("Found clusters: " + clusters.length);
+					
 			int clusterCount = clusters.length;
 			imageList = new Image[clusterCount];
 			
-			int imageSize = MCODECurrentParameters.getInstance()
+			int imageSize = MCODECurrentParameters
 					.getResultParams(resultSet).getDefaultRowHeight();
 			
 						
 			for (int i = 0; i < clusterCount; i++) {
 				if (interrupted)
-					return;				
+					return;
+				clusters[i].setRank(i+1);
 				imageList[i] = MCODEUtil.convertNetworkToImage(null,
 						clusters[i], imageSize, imageSize, null, true);
+				
+				MClusterToCyGroup.convertToGroup(clusters[i]);				
 				taskMonitor.setPercentCompleted((i * 100) / clusters.length);
 			}
 			
 			completedSuccessfully = true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			// TODO: ask Ethan if interrupt exception should be thrown from
 			// within code or should 'return' just be used?
 			taskMonitor.setException(e, "MCODE cancelled");

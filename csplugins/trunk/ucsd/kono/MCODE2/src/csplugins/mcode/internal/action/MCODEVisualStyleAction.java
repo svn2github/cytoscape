@@ -1,4 +1,4 @@
-package csplugins.mcode.internal;
+package csplugins.mcode.internal.action;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.cytopanels.CytoPanel;
@@ -7,6 +7,9 @@ import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
 
 import java.awt.*;
+
+import csplugins.mcode.internal.MCODEVisualStyle;
+import csplugins.mcode.internal.ui.MCODEResultsPanel;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center

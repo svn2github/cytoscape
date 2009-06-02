@@ -6,6 +6,9 @@ import giny.model.Node;
 
 import java.util.*;
 
+import csplugins.mcode.internal.action.MonitorableTask;
+import csplugins.mcode.internal.action.SwingWorker;
+
 import cytoscape.Cytoscape;
 
 /**

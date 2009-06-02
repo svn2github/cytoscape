@@ -76,7 +76,7 @@ public class MCODELoader extends ImageIcon implements Runnable {
      * @param width cell width
      * @param height cell height
      */
-    MCODELoader (JTable table, int width, int height) {
+    public MCODELoader (JTable table, int width, int height) {
         this.table = table;
         //First we get the tables colors and set the font
         bgColor = table.getSelectionBackground();

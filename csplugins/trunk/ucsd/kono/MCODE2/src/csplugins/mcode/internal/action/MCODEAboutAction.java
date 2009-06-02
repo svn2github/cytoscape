@@ -34,10 +34,12 @@
  * * Description: The action to show the About dialog box
  */
 
-package csplugins.mcode.internal;
+package csplugins.mcode.internal.action;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import csplugins.mcode.internal.ui.MCODEAboutDialog;
 
 /**
  * The action to show the About dialog box

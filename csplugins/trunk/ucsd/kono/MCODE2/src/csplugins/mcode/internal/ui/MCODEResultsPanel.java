@@ -1,4 +1,4 @@
-package csplugins.mcode.internal;
+package csplugins.mcode.internal.ui;
 
 import giny.model.GraphPerspective;
 import giny.model.Node;
@@ -45,6 +45,15 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+
+import csplugins.mcode.internal.MCODEAlgorithm;
+import csplugins.mcode.internal.MCODECluster;
+import csplugins.mcode.internal.MCODECurrentParameters;
+import csplugins.mcode.internal.MCODELoader;
+import csplugins.mcode.internal.MCODEParameterSet;
+import csplugins.mcode.internal.MCODEUtil;
+import csplugins.mcode.internal.SpringEmbeddedLayouter;
+import csplugins.mcode.internal.action.SwingWorker;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -150,7 +159,7 @@ public class MCODEResultsPanel extends JPanel {
 		// TableRowSelectionHandler below)
 		networkView = Cytoscape.getNetworkView(network.getIdentifier());
 
-		currentParamsCopy = MCODECurrentParameters.getInstance()
+		currentParamsCopy = MCODECurrentParameters
 				.getResultParams(resultTitle);
 
 		JPanel clusterBrowserPanel = createClusterBrowserPanel(imageList);
@@ -507,7 +516,7 @@ public class MCODEResultsPanel extends JPanel {
 
 			data = new Object[clusters.length][columnNames.length];
 			for (int i = 0; i < clusters.length; i++) {
-				clusters[i].setRank(i);
+				
 				StringBuffer details = new StringBuffer(
 						getClusterDetails(clusters[i]));
 				data[i][1] = new StringBuffer(details);

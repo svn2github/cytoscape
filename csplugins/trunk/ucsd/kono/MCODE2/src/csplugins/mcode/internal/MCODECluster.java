@@ -40,6 +40,8 @@ import giny.model.GraphPerspective;
 import java.util.List;
 import java.util.Map;
 
+import cytoscape.CyNetwork;
+
 import ding.view.DGraphView;
 
 
@@ -56,11 +58,19 @@ public class MCODECluster {
 	private String clusterName; //Pretty much unsed so far, but could store name by user's input
 	private int rank;
 	private String resultTitle;
+	
+	// Added by kono: parent network of this cluster
+	private CyNetwork parent;
 
 	/**
 	 * Creates a new MCODECluster object.
 	 */
-	public MCODECluster() {
+	public MCODECluster(CyNetwork parent) {
+		this.parent = parent;
+	}
+	
+	public CyNetwork getParentNetwork() {
+		return this.parent;
 	}
 
 	/**

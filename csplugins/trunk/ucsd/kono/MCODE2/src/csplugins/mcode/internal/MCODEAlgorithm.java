@@ -68,32 +68,26 @@ public class MCODEAlgorithm {
 		}
 	}
 
-	// data structures useful to have around for more than one cluster finding
-	// iteration
-	private Map<Integer, NodeInfo> currentNodeInfoHashMap = null; // key is the
-	// node
-	// index,
-	// value is a NodeInfo
-	// instance
-	private SortedMap<Double, List<Integer>> currentNodeScoreSortedMap = null; // key
-	// is
-	// node
-	// score,
-	// value is nodeIndex
-	// because every network can be scored and clustered several times with
-	// different parameters
-	// these results have to be stored so that the same scores are used during
-	// exploration when
-	// the user is switching between the various results
-	// Since the network is not always rescored whenever a new result is
-	// generated (if the scoring parameters
-	// haven't changed for example) the clustering method must save the current
-	// node scores under the new result
-	// title for later reference
+	/*
+	 * data structures useful to have around for more than one cluster finding
+	 * iteration
+	 */
+
+	// key is the node index, value is a NodeInfo instance
+	private Map<Integer, NodeInfo> currentNodeInfoHashMap = null;
 
 	/*
-	 * key is result, value is nodeScoreSortedMap
+	 * key is node score, value is nodeIndex because every network can be scored
+	 * and clustered several times with different parameters these results have
+	 * to be stored so that the same scores are used during exploration when the
+	 * user is switching between the various results Since the network is not
+	 * always rescored whenever a new result is generated (if the scoring
+	 * parameters haven't changed for example) the clustering method must save
+	 * the current node scores under the new result title for later reference
 	 */
+	private SortedMap<Double, List<Integer>> currentNodeScoreSortedMap = null;
+
+	// key is result, value is nodeScoreSortedMap
 	private Map<String, SortedMap<Double, List<Integer>>> nodeScoreResultsMap = new HashMap<String, SortedMap<Double, List<Integer>>>();
 
 	// Key is result, value is nodeInfroHashMap
@@ -122,12 +116,12 @@ public class MCODEAlgorithm {
 
 	public MCODEAlgorithm(TaskMonitor taskMonitor, String networkID) {
 		// get current parameters
-		params = MCODECurrentParameters.getInstance().getParamsCopy(networkID);
+		params = MCODECurrentParameters.getParamsCopy(networkID);
 		this.taskMonitor = taskMonitor;
 	}
 
 	public void setTaskMonitor(TaskMonitor taskMonitor, String networkID) {
-		params = MCODECurrentParameters.getInstance().getParamsCopy(networkID);
+		params = MCODECurrentParameters.getParamsCopy(networkID);
 		this.taskMonitor = taskMonitor;
 	}
 
@@ -347,17 +341,21 @@ public class MCODEAlgorithm {
 
 		// initialization
 		long msTimeBefore = System.currentTimeMillis();
-		HashMap<Integer, Boolean> nodeSeenHashMap = new HashMap<Integer, Boolean>(); // key is nodeIndex, value is
+		HashMap<Integer, Boolean> nodeSeenHashMap = new HashMap<Integer, Boolean>(); // key
+		// is
+		// nodeIndex,
+		// value
+		// is
 		// true/false
 		Integer currentNode;
 		int findingProgress = 0;
 		int findingTotal = 0;
 		Collection<List<Integer>> values = nodeScoreSortedMap.values();
 		/*
-		 * returns a Collection sorted by key order (descending) In order to track the progress
-		 * without significant lags (for times when many nodes have the same
-		 * score and no progress is reported) we count all the scored nodes and
-		 * track those instead
+		 * returns a Collection sorted by key order (descending) In order to
+		 * track the progress without significant lags (for times when many
+		 * nodes have the same score and no progress is reported) we count all
+		 * the scored nodes and track those instead
 		 */
 		for (List<Integer> value : values) {
 			for (Iterator<Integer> iterator2 = value.iterator(); iterator2
@@ -371,14 +369,15 @@ public class MCODEAlgorithm {
 		List<MCODECluster> alClusters = new ArrayList<MCODECluster>();
 		// iterate over node indices sorted descending by their score
 		List<Integer> alNodesWithSameScore;
-		for (Iterator<List<Integer>> iterator = values.iterator(); iterator.hasNext();) {
+		for (Iterator<List<Integer>> iterator = values.iterator(); iterator
+				.hasNext();) {
 			// each score may be associated with multiple nodes, iterate over
 			// these lists
 			alNodesWithSameScore = iterator.next();
 			for (int j = 0; j < alNodesWithSameScore.size(); j++) {
 				currentNode = alNodesWithSameScore.get(j);
 				if (!nodeSeenHashMap.containsKey(currentNode)) {
-					currentCluster = new MCODECluster();
+					currentCluster = new MCODECluster(inputNetwork);
 					currentCluster.setSeedNode(currentNode);// store the current
 					/*
 					 * node as the seed node we store the current node seen hash

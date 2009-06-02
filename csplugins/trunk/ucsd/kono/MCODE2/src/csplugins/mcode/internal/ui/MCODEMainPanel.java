@@ -1,4 +1,4 @@
-package csplugins.mcode.internal;
+package csplugins.mcode.internal.ui;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
@@ -6,6 +6,14 @@ import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 
 import javax.swing.*;
+
+import csplugins.mcode.internal.MCODECurrentParameters;
+import csplugins.mcode.internal.MCODEParameterSet;
+import csplugins.mcode.internal.MCODEVisualStyle;
+import csplugins.mcode.internal.action.MCODEMainPanelAction;
+import csplugins.mcode.internal.action.MCODEScoreAndFindAction;
+import csplugins.mcode.internal.action.MCODEVisualStyleAction;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -97,7 +105,7 @@ public class MCODEMainPanel extends JPanel {
         setLayout(new BorderLayout());
 
         //get the current parameters
-        currentParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy(null);
+        currentParamsCopy = MCODECurrentParameters.getParamsCopy(null);
         currentParamsCopy.setDefaultParams();
 
         decFormat = new DecimalFormat();

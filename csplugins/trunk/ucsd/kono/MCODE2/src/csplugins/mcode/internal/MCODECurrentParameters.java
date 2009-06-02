@@ -39,27 +39,17 @@ package csplugins.mcode.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Stores the current parameters for MCODE. Parameters are entered in the
  * MCODEMainPanel and stored in a hash map for the particular network being
  * analyzed by the MCODEScoreAndFindAction if the analysis produced a result.
  */
 public class MCODECurrentParameters {
-	
-	private static final MCODECurrentParameters ourInstance = new MCODECurrentParameters();
-	
-	private static Map<String, MCODEParameterSet> currentParams = new HashMap<String, MCODEParameterSet>();
-	private static Map<String, MCODEParameterSet> resultParams = new HashMap<String, MCODEParameterSet>();
 
-	/**
-	 * Get the one instance of this singleton class that stores the current
-	 * parameters internally.
-	 *
-	 * @return ourInstance
-	 */
-	public static MCODECurrentParameters getInstance() {
-		return ourInstance;
+	private static final Map<String, MCODEParameterSet> currentParams = new HashMap<String, MCODEParameterSet>();
+	private static final Map<String, MCODEParameterSet> resultParams = new HashMap<String, MCODEParameterSet>();
+	
+	private MCODECurrentParameters() {
 	}
 
 	/**
@@ -71,12 +61,12 @@ public class MCODECurrentParameters {
 	 * Note: parameters can be changed by the user after you have your own copy,
 	 * so if you always need the latest, you should get the updated parameters
 	 * again.
-	 *
+	 * 
 	 * @param networkID
 	 *            Id of the network
 	 * @return A copy of the parameters
 	 */
-	public MCODEParameterSet getParamsCopy(final String networkID) {
+	public static MCODEParameterSet getParamsCopy(final String networkID) {
 		if (networkID != null)
 			return currentParams.get(networkID).copy();
 		else {
@@ -90,7 +80,7 @@ public class MCODECurrentParameters {
 	 * called by MCODEScoreAndFindAction after comparisons have been conducted
 	 * between the last saved version of the parameters and the current user's
 	 * version.
-	 *
+	 * 
 	 * @param newParams
 	 *            The new current parameters to set
 	 * @param resultSet
@@ -98,47 +88,41 @@ public class MCODECurrentParameters {
 	 * @param networkID
 	 *            Id of the network
 	 */
-	public void setParams(MCODEParameterSet newParams, String resultSet, String networkID) {
-		// cannot simply equate the params and newParams classes since that
-		// creates a permanent reference
-		// and prevents us from keeping 2 sets of the class such that the saved
-		// version is not altered
-		// until this method is called
-		final MCODEParameterSet currentParamSet = new MCODEParameterSet(newParams.getScope(),
-		                                                          newParams.getSelectedNodes(),
-		                                                          newParams.isIncludeLoops(),
-		                                                          newParams.getDegreeCutoff(),
-		                                                          newParams.getKCore(),
-		                                                          newParams.isOptimize(),
-		                                                          newParams.getMaxDepthFromStart(),
-		                                                          newParams.getNodeScoreCutoff(),
-		                                                          newParams.isFluff(),
-		                                                          newParams.isHaircut(),
-		                                                          newParams.getFluffNodeDensityCutoff());
+	public static void setParams(MCODEParameterSet newParams, String resultSet,
+			String networkID) {
+		/*
+		 * cannot simply equate the params and newParams classes since that
+		 * creates a permanent reference and prevents us from keeping 2 sets of
+		 * the class such that the saved version is not altered until this
+		 * method is called
+		 */
+		final MCODEParameterSet currentParamSet = new MCODEParameterSet(
+				newParams.getScope(), newParams.getSelectedNodes(), newParams
+						.isIncludeLoops(), newParams.getDegreeCutoff(),
+				newParams.getKCore(), newParams.isOptimize(), newParams
+						.getMaxDepthFromStart(),
+				newParams.getNodeScoreCutoff(), newParams.isFluff(), newParams
+						.isHaircut(), newParams.getFluffNodeDensityCutoff());
 
 		currentParams.put(networkID, currentParamSet);
 
-		final MCODEParameterSet resultParamSet = new MCODEParameterSet(newParams.getScope(),
-		                                                         newParams.getSelectedNodes(),
-		                                                         newParams.isIncludeLoops(),
-		                                                         newParams.getDegreeCutoff(),
-		                                                         newParams.getKCore(),
-		                                                         newParams.isOptimize(),
-		                                                         newParams.getMaxDepthFromStart(),
-		                                                         newParams.getNodeScoreCutoff(),
-		                                                         newParams.isFluff(),
-		                                                         newParams.isHaircut(),
-		                                                         newParams.getFluffNodeDensityCutoff());
+		final MCODEParameterSet resultParamSet = new MCODEParameterSet(
+				newParams.getScope(), newParams.getSelectedNodes(), newParams
+						.isIncludeLoops(), newParams.getDegreeCutoff(),
+				newParams.getKCore(), newParams.isOptimize(), newParams
+						.getMaxDepthFromStart(),
+				newParams.getNodeScoreCutoff(), newParams.isFluff(), newParams
+						.isHaircut(), newParams.getFluffNodeDensityCutoff());
 
 		resultParams.put(resultSet, resultParamSet);
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param resultSet
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public static MCODEParameterSet getResultParams(final String resultSet) {
@@ -147,7 +131,7 @@ public class MCODECurrentParameters {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param resultSet
 	 *            DOCUMENT ME!
 	 */

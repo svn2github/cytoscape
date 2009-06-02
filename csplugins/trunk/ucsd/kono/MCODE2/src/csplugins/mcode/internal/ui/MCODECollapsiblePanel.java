@@ -1,4 +1,4 @@
-package csplugins.mcode.internal;
+package csplugins.mcode.internal.ui;
 
 import javax.swing.*;
 import javax.swing.border.Border;

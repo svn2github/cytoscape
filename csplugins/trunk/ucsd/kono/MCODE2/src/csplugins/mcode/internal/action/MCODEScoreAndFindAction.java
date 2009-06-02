@@ -1,12 +1,9 @@
-package csplugins.mcode.internal;
-
-import giny.model.Node;
+package csplugins.mcode.internal.action;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,7 +13,13 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import csplugins.mcode.MCODEPlugin;
+import csplugins.mcode.internal.MCODEAlgorithm;
+import csplugins.mcode.internal.MCODECurrentParameters;
+import csplugins.mcode.internal.MCODEParameterSet;
+import csplugins.mcode.internal.MCODEVisualStyle;
+import csplugins.mcode.internal.ui.MCODEResultsPanel;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
@@ -116,11 +119,11 @@ public class MCODEScoreAndFindAction implements ActionListener {
 					"Analysis Interrupted", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		Set selectedNodes = network.getSelectedNodes();
+		
+		Set<CyNode> selectedNodes = network.getSelectedNodes();
 		Integer[] selectedNodesRGI = new Integer[selectedNodes.size()];
 		int c = 0;
-		for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
-			Node node = (Node) i.next();
+		for (CyNode node: selectedNodes) {
 			selectedNodesRGI[c] = new Integer(node.getRootGraphIndex());
 			c++;
 		}
@@ -139,12 +142,10 @@ public class MCODEScoreAndFindAction implements ActionListener {
 			alg = networkManager.get(network.getIdentifier());
 			// get a copy of the last saved parameters for comparison with the
 			// current ones
-			savedParamsCopy = MCODECurrentParameters.getInstance()
-					.getParamsCopy(network.getIdentifier());
+			savedParamsCopy = MCODECurrentParameters.getParamsCopy(network.getIdentifier());
 		} else {
 			alg = new MCODEAlgorithm();
-			savedParamsCopy = MCODECurrentParameters.getInstance()
-					.getParamsCopy(null);
+			savedParamsCopy = MCODECurrentParameters.getParamsCopy(null);
 			networkManager.put(network.getIdentifier(), alg);
 			analyze = FIRST_TIME;
 		}
@@ -164,7 +165,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
 						.getDegreeCutoff() || analyze == FIRST_TIME) {
 			analyze = RESCORE;
 			System.err.println("Analysis: score network, find clusters");
-			MCODECurrentParameters.getInstance().setParams(currentParamsCopy,
+			MCODECurrentParameters.setParams(currentParamsCopy,
 					resultTitlePartA + (resultCounter + 1),
 					network.getIdentifier());
 		} else if (!currentParamsCopy.getScope().equals(
@@ -189,13 +190,13 @@ public class MCODEScoreAndFindAction implements ActionListener {
 						.getFluffNodeDensityCutoff())))) {
 			analyze = REFIND;
 			System.err.println("Analysis: find clusters");
-			MCODECurrentParameters.getInstance().setParams(currentParamsCopy,
+			MCODECurrentParameters.setParams(currentParamsCopy,
 					resultTitlePartA + (resultCounter + 1),
 					network.getIdentifier());
 		} else {
 			analyze = INTERRUPTION;
 			interruptedMessage = "The parameters you specified\nhave not changed.";
-			MCODECurrentParameters.getInstance().setParams(currentParamsCopy,
+			MCODECurrentParameters.setParams(currentParamsCopy,
 					resultTitlePartA + resultCounter, network.getIdentifier());
 		}
 		// finally we save the current parameters
@@ -217,7 +218,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
 					JOptionPane.WARNING_MESSAGE);
 		} else {
 			// run MCODE
-			MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(
+			MCODEScoreAndFindTask scoreAndFindTask = new MCODEScoreAndFindTask(
 					network, analyze, resultTitlePartA + (resultCounter + 1),
 					alg);
 
@@ -230,16 +231,16 @@ public class MCODEScoreAndFindAction implements ActionListener {
 
 			// Execute Task via TaskManager
 			// This automatically pops-open a JTask Dialog Box
-			TaskManager.executeTask(MCODEScoreAndFindTask, config);
+			TaskManager.executeTask(scoreAndFindTask, config);
 			// display clusters in a new modal dialog box
-			if (MCODEScoreAndFindTask.isCompletedSuccessfully()) {
-				if (MCODEScoreAndFindTask.getClusters().length > 0) {
+			if (scoreAndFindTask.isCompletedSuccessfully()) {
+				if (scoreAndFindTask.getClusters().length > 0) {
 					resultFound = true;
 					resultCounter++;
 
-					resultPanel = new MCODEResultsPanel(MCODEScoreAndFindTask
-							.getClusters(), MCODEScoreAndFindTask.getAlg(),
-							network, MCODEScoreAndFindTask.getImageList(),
+					resultPanel = new MCODEResultsPanel(scoreAndFindTask
+							.getClusters(), scoreAndFindTask.getAlg(),
+							network, scoreAndFindTask.getImageList(),
 							resultTitlePartA + resultCounter);
 				} else {
 					resultFound = false;
@@ -253,7 +254,10 @@ public class MCODEScoreAndFindAction implements ActionListener {
 									"No Results", JOptionPane.WARNING_MESSAGE);
 				}
 			}
+			scoreAndFindTask = null;
 		}
+		
+		
 		// display MCODEResultsPanel in right cytopanel
 		CytoscapeDesktop desktop = Cytoscape.getDesktop();
 		CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);

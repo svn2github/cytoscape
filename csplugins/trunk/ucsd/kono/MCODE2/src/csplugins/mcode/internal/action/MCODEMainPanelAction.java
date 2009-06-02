@@ -1,4 +1,4 @@
-package csplugins.mcode.internal;
+package csplugins.mcode.internal.action;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
@@ -9,6 +9,8 @@ import cytoscape.visual.VisualMappingManager;
 import javax.swing.*;
 
 import csplugins.mcode.MCODEPlugin;
+import csplugins.mcode.internal.MCODEVisualStyle;
+import csplugins.mcode.internal.ui.MCODEMainPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

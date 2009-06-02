@@ -1,4 +1,4 @@
-package csplugins.mcode.internal;
+package csplugins.mcode.internal.ui;
 
 import java.awt.Insets;
 import java.net.URL;

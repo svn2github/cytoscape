@@ -43,9 +43,9 @@ import cytoscape.plugin.CytoscapePlugin;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import csplugins.mcode.internal.MCODEAboutAction;
-import csplugins.mcode.internal.MCODEHelpAction;
-import csplugins.mcode.internal.MCODEMainPanelAction;
+import csplugins.mcode.internal.action.MCODEAboutAction;
+import csplugins.mcode.internal.action.MCODEHelpAction;
+import csplugins.mcode.internal.action.MCODEMainPanelAction;
 
 /**
  * MCODE Network Clustering Plug In.
