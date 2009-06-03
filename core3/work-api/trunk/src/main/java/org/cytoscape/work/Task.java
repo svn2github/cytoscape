@@ -172,7 +172,7 @@ public interface Task
 	 * the occurance of a fatal error, like a low-level exception or an invalid parameter,
 	 * to the <code>TaskManager</code>.
 	 */
-	public void run(TaskMonitor taskMonitor) throws Exception;
+	void run(TaskMonitor taskMonitor) throws Exception;
 
 	/**
 	 * This method is called when the user chooses to cancel the
@@ -190,5 +190,5 @@ public interface Task
 	 * The programmer <i>must</i> be aware of
 	 * concurrency issues.
 	 */
-	public void cancel();
+	void cancel();
 }

@@ -22,7 +22,7 @@ public interface TunableInterceptor<T extends Handler> {
 	 * 
 	 * @param o This has to be a class that contains some <code>@Tunable</code> annotations.
 	 */
-	public void loadTunables(Object o);
+	void loadTunables(Object o);
 	
 	
 	
@@ -32,7 +32,7 @@ public interface TunableInterceptor<T extends Handler> {
 	 * @param o The Object on which the loadTunable() method has been executed.
 	 * @return The Map with all the <code>Handlers</code> that have been previously detected.
 	 */
-	public Map<String,T> getHandlers(Object o);
+	Map<String,T> getHandlers(Object o);
 	
 	
 	
@@ -50,7 +50,7 @@ public interface TunableInterceptor<T extends Handler> {
 	 * @param obs Object[] which contains classes with <code>Tunables</code> that need to be caught.
 	 * @return newValuesSet True if the values has been modified, false if not.
 	 */
-	public boolean createUI(Object ... obs );
+	boolean createUI(Object ... obs );
 	
 	
 	
@@ -59,7 +59,7 @@ public interface TunableInterceptor<T extends Handler> {
 	 * @param o An Object that has to be an instance of a <code>JPanel</code>.
 	 * @throws IllegalArgumentException If the Object o is not a JPanel, it can not be set as the parent for the others : they will be displayed to the user in a <code>JOptionPanel</code>.
 	 */
-	public void setParent(Object o);
+	void setParent(Object o);
 	
 	
 	
@@ -68,5 +68,5 @@ public interface TunableInterceptor<T extends Handler> {
 	 * This method will set the value for the Object of each <code>Guihandler</code> taken from the <code>Map</code> that is containing the <code>Handlers</code>.<br>
 	 * Important : the value of the <code>Guihandler</code> will be set only if its JPanel is valid.
 	 */
-	public void handle();
+	void handle();
 }

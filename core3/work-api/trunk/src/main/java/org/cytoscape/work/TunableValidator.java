@@ -14,5 +14,5 @@ public interface TunableValidator{
 	 * 
 	 * @return The message that will be displayed if the test failed, or <i>null</i> if the test succeeded.
 	 */
-	public String validate();
+	String validate();
 }

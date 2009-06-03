@@ -30,5 +30,5 @@ public interface TaskManager
 	 * This method returns once the <code>Task</code> has
 	 * started execution.
 	 */
-	public void execute(Task task);
+	void execute(Task task);
 }

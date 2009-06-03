@@ -33,7 +33,7 @@ public interface ValuedTask<V>
 	 * caught by <code>TaskManager</code> and the information contained
 	 * by the exception is displayed in the interface.
 	 */
-	public V run(TaskMonitor taskMonitor) throws Exception;
+	V run(TaskMonitor taskMonitor) throws Exception;
 
 	/**
 	 * This method is called when the user chooses to cancel the
@@ -51,5 +51,5 @@ public interface ValuedTask<V>
 	 * The programmer <i>must</i> be aware of
 	 * concurrency issues.
 	 */
-	public void cancel();
+	void cancel();
 }

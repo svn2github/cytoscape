@@ -26,7 +26,7 @@ public @interface Tunable{
 	/**
 	 * Description of the Tunable that will be displayed in the panel to identify it
 	 */
-	public String description();
+	String description();
 	
 	
 	
@@ -44,7 +44,7 @@ public @interface Tunable{
 	/**
 	 * Used to define all the groups in which the Tunable takes part (by default, its doesn't belong to any group)<br>
 	 */
-	public String[] group() default {};
+	String[] group() default {};
 
 	
 	
@@ -92,5 +92,5 @@ public @interface Tunable{
 	/**
 	 * Enumeration that contains the parameters used for <code>flag{}</code> and <code>alignment{}</code>
 	 */
-	public enum Param {slider,horizontal,vertical,uncollapsed,collapsed,network,session,attributes,hidden,displayed}
+	enum Param {slider,horizontal,vertical,uncollapsed,collapsed,network,session,attributes,hidden,displayed}
 }
