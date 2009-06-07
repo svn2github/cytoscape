@@ -1,0 +1,63 @@
+
+
+<project name="IDMapping" default="jar" basedir=".">
+  <description>Builds, tests, and runs the project IDMapping.</description>
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init">
+    <tstamp/>
+    <property name="src" location="src"/>
+    <property name="images" value="images"/>
+    <property name="lib" location="lib"/>
+    <property name="build" location="build"/>
+    <property name="build.classes" location="${build}/classes"/>
+    <property name="build.images" location="${build.classes}/images"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the project                                                -->
+  <!-- =================================================================== -->
+  <target name="compile" depends="init">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build.classes}"/>
+    <javac srcdir="${src}" destdir="${build.classes}">
+      <classpath>
+        <pathelement location="lib/giny.jar"/>
+        <pathelement location="lib/cytoscape.jar"/>
+        <pathelement location="lib/cytoscape-task.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init">
+    <echo message="delete ${build}"/>
+    <delete dir="${build}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the project jar file                                        -->
+  <!-- =================================================================== -->
+  <target name="jar" depends="compile">
+    <copy file="plugin.props" todir="${build.classes}/csplugins/id/mapping" />
+    <copy todir="${build.images}">
+      <fileset dir="${images}"/>
+    </copy>
+    <jar destfile="CyThesaurus.jar">
+      <manifest>
+        <attribute name="Cytoscape-Plugin"
+          value="csplugins.id.mapping.CyThesaurus" />
+      </manifest>
+
+      <fileset dir= "${build.classes}" />
+    </jar>
+  </target>
+  
+</project>
+
+
+
