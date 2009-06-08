@@ -3,6 +3,11 @@
 #include "cudpp.h"
 #include "complexDevice.h"
 #include "common.h"
+
+//added by me!
+#include <stdio.h>
+//
+
 complexDevice * centerD;
 
 void kdNodeInitD(kdNodeInt * n,kdNodeFloat * nf,int i,unsigned int a,float d,float u,float l,float r){
