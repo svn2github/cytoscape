@@ -42,13 +42,15 @@ int		coarseGraphSize;
 int		interpolationIterations;
 int		levelConvergence;
 float3 *	a;
-CUDPPScanConfig config;
+//CUDPPScanConfig config;                          Deprecated
 unsigned int *	data_out;
 unsigned int *	d_temp_addr_uint; 
 float3 *	d_out;
 unsigned int *	nD;
 complexDevice * OuterD;
-     	
+     
+
+// This function calculates one step of the force-driven layout process, updating the nodes position
 void advancePositions(graph * g)
 {
   cudaMemcpyToSymbol(gd, g, sizeof(graph));
@@ -64,24 +66,27 @@ void advancePositions(graph * g)
   
   cudaMemcpy(a, NodeTemp, g->numVertices*sizeof(float3), cudaMemcpyHostToDevice);
   
-  config.maxNumElements = g->numVertices;
-  cudppInitializeScan(&config);
+  //config.maxNumElements = g->numVertices;        Deprecated
+  //cudppInitializeScan(&config);                  Deprecated
   
   
   int sizeInt = g->numVertices*sizeof(kdNodeInt);
   int sizeFloat = g->numVertices*sizeof(kdNodeFloat);
   
+  // Check if the KDTREE has to be rebuilded
   if((g->currentIteration < 4) ||(g->currentIteration%20==0) ){
-    if (g->numVertices < 50000){
+
+    // Decide whether the KDTREE is goint to be builded in the CPU or in the GPU
+    if (g->numVertices < 50000){ //CPU
       kdNodeInit(rootInt,rootFloat,1,0,0,SCREEN_W,0,SCREEN_H);
       construct(NodeTemp, NodeTemp+g->numVertices-1, rootInt,rootFloat, 1,0,0,SCREEN_W,0,SCREEN_H,3);
     }
-    else{
+    else{ //GPU
       kdNodeInitD(rootInt,rootFloat,1,0,0,SCREEN_W,0,SCREEN_H);
       constructD(a, a+g->numVertices-1, rootInt,rootFloat, 1,0,0,SCREEN_W,0,SCREEN_H,3,data_out,d_temp_addr_uint, d_out,&config,nD,OuterD );
     }
   }
-		
+  	
   cudaMemcpy(NodePosD, g->NodePos, g->numVertices*sizeof(float2), cudaMemcpyHostToDevice);
   cudaMemcpy(treeIntD, rootInt, sizeInt, cudaMemcpyHostToDevice);
   cudaMemcpy(treeFloatD, rootFloat, sizeFloat, cudaMemcpyHostToDevice);
@@ -92,27 +97,34 @@ void advancePositions(graph * g)
   cudaMemcpy(AdjMatIndexD, g->AdjMatIndex, (g->numVertices+1)*sizeof(int), cudaMemcpyHostToDevice);
   cudaMemcpy(AdjMatValsD,  g->AdjMatVals,  (g->numEdges)*sizeof(int), cudaMemcpyHostToDevice);
   cudaMemcpy(edgeLenD,     g->edgeLen,     (g->numEdges)*sizeof(int), cudaMemcpyHostToDevice);
+
+  // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
   
   cudaBindTexture(0,texAdjMatValsD, AdjMatValsD,(g->numEdges)*sizeof(int));
   cudaBindTexture(0,texEdgeLenD,edgeLenD,  (g->numEdges)*sizeof(int));
-  //check if kernel execution generated and error
+
+  // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
     
-  // execute the kernel
+  // Execute the kernel, calculate forces
   calculateForces<<< blocks, threads >>>(g->numVertices, DispD,AdjMatIndexD);
   
-  // check if kernel execution generated and error
+  // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
+
   cudaMemcpy(Disp, DispD, g->numVertices*sizeof(float2), cudaMemcpyDeviceToHost);
 	
+  // Calculate new positions of nodes, based on the force calculations
   for(int i = 0; i < g->numVertices; i++)
     calcPositions(i,g->NodePos, Disp,g); 
+
+  // Decrease the temperature of graph g
   cool(g); 
 }
 
 
-// This function coarses a graph, by obtaining a maximal filtration subset of it
+// This function coarses a graph, by obtaining a maximal independant subset of it
 graph* coarsen(graph * g)
 {
   graph *	rg = (graph*) malloc(sizeof(graph));
@@ -137,6 +149,8 @@ graph* coarsen(graph * g)
       rg->parent[j] = numParents;
     }
     numParents++;
+
+    // If there is any node left, search for an unused one
     if(left>0)
       while((used[current]))
 	current++;
@@ -181,24 +195,28 @@ graph* coarsen(graph * g)
       
     rg->AdjMatIndex[i+1] = numEdges;
     free(usedChild);
-  }
-  
+  }  
   
   rg->numEdges = numEdges;
   return rg;
 }
 
+
+// This function just applies a one step advance to a graph position
 void exactLayoutOnce(graph * g){
   advancePositions(g);
 }
 
+// This funcion initializes a graph position, using the position of nodes in the coarsed graph (if it exists) as a guide
 void nextLevelInitialization(graph g, graph * coarseGraph){
   
+  // Nodes that exists in coarseGraph remain in the same position
   for(int i = 0; i < g.numVertices; i++){
     g.NodePos[i].x = coarseGraph->NodePos[coarseGraph->parent[i]].x ;
     g.NodePos[i].y = coarseGraph->NodePos[coarseGraph->parent[i]].y ;
   }
   
+  //
   for(int j = 0; j <interpolationIterations; j++){
     for(int i = 0; i < g.numVertices; i++){
       int degree = g.AdjMatIndex[i+1] - g.AdjMatIndex[i];
@@ -224,6 +242,7 @@ void nextLevelInitialization(graph g, graph * coarseGraph){
   free(coarseGraph);
 }
 
+// This function creates the MIS (Maximal Independent Set) Filtration of a graph
 void createCoarseGraphs(graph * g,int level)
 {
   gArray[level] = g;
@@ -239,7 +258,7 @@ void createCoarseGraphs(graph * g,int level)
     createCoarseGraphs(coarseGraph,level+1);
 }
 
-
+// Show results in screen 
 void display(void)
 {	
   glLoadIdentity();
@@ -268,6 +287,7 @@ void display(void)
   glutSwapBuffers();
 }
 
+// Reshape screen
 void reshape(int w,int h)
 {
   glViewport(0,0,w,h);
@@ -279,28 +299,26 @@ void reshape(int w,int h)
 int
 main(int argc, char** argv)
 {
-  //Initialize device, function defined in "cutil.h"
-  CUT_DEVICE_INIT(argc, argv); // Parameters added by Gerardo
+  // Initialize device, using macro defined in "cutil.h"
+  CUT_DEVICE_INIT();
   
   FILE* from;
   graph g;
 
-  //Check number of arguments
+  // Check number of arguments
   if (argc < 2) error("Wrong no of args");
 
-  //Ask for parameters
+  // Ask for parameters
   printf("Enter the size of the coarsest graph (Default 50):"); scanf("%d",&coarseGraphSize);
   printf("Enter the number of interpolation iterations (Default 50):"); scanf("%d", &interpolationIterations);
   printf("Enter the level of convergence (Default 2):"); scanf("%d",&levelConvergence);
   printf("Enter the ideal edge length (Default 5):"); scanf("%d",&EDGE_LEN);
   printf("Enter the initial no of force iterations(Default 300):"); scanf("%d",&initialNoIterations);
-
-  //Open file 
+ 
+  // Open file 
   from=fopen(argv[1],"r");
   if(!from) error("cannot open 1st file");
   
-  int numNodes;
-
   //Read graph grom file (argv[1])
   int len = strlen(argv[1]);
   if((argv[1][len-1]=='l') && (argv[1][len-2]=='m') && (argv[1][len-3]=='g') )
@@ -308,9 +326,15 @@ main(int argc, char** argv)
   else
     readChaco(&g, from);
   
-  /* Initializations */
-  numNodes = g.numVertices;
+  /*    Initializations    */
+
+  // Number of Nodes
+  int  numNodes = g.numVertices;
+
+  // Amount of memory to be used by integers
   int sizeInt = numNodes*sizeof(kdNodeInt);
+
+  // Amount of memory to be used by integers
   int sizeFloat = numNodes*sizeof(kdNodeFloat);
   
   rootInt   = (kdNodeInt *) calloc(numNodes,sizeof(kdNodeInt));
@@ -319,7 +343,7 @@ main(int argc, char** argv)
   cudaMalloc((void**)&treeFloatD,sizeFloat);
   cudaMalloc((void**)&NodePosD, numNodes*sizeof(float2));
   
-  // check if kernel execution generated and error
+  // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
   
   // check if kernel execution generated and error
@@ -333,12 +357,12 @@ main(int argc, char** argv)
   cudaMalloc((void**)&AdjMatValsD, (g.numEdges)*sizeof(int));
   cudaMalloc((void**)&edgeLenD, (g.numEdges)*sizeof(int));
   
-  config.direction      = CUDPP_SCAN_FORWARD;
-  config.exclusivity    = CUDPP_SCAN_EXCLUSIVE;
-  config.op	        = CUDPP_ADD;
-  config.datatype       = CUDPP_INT;
-  config.maxNumRows	= 1;
-  config.rowPitch       = 0;
+  //config.direction      = CUDPP_SCAN_FORWARD;                  Deprecated
+  //config.exclusivity    = CUDPP_SCAN_EXCLUSIVE;                Deprecated
+  //config.op	        = CUDPP_ADD;                             Deprecated
+  //config.datatype       = CUDPP_INT;                           Deprecated
+  //config.maxNumRows	= 1;                                     Deprecated
+  //config.rowPitch       = 0;                                   Deprecated
   
   cudaMalloc((void**)&data_out,sizeof(unsigned int)* g.numVertices);
   cudaMalloc((void**)&d_temp_addr_uint,sizeof(unsigned int)* g.numVertices);
