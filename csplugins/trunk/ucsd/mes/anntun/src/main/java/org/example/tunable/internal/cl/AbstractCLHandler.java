@@ -11,9 +11,9 @@ public abstract class AbstractCLHandler extends AbstractHandler implements CLHan
 		super(f,o,t);
 	}
 
-	public AbstractCLHandler(Method m, Object o, Tunable t) {
-		super(m,o,t);
-	}
+//	public AbstractCLHandler(Method m, Object o, Tunable t) {
+//		super(m,o,t);
+//	}
 	
 	public AbstractCLHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
 		super(gmethod,smethod,o,tg,ts);

@@ -1,7 +1,10 @@
 package org.example.tunable.internal.cl;
 
-import java.lang.reflect.*;
-import org.example.tunable.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+import org.example.tunable.HandlerFactory;
+import org.example.tunable.Tunable;
 import org.example.tunable.util.BoundedDouble;
 import org.example.tunable.util.BoundedInteger;
 import org.example.tunable.util.FlexiblyBoundedDouble;
@@ -13,26 +16,7 @@ import org.example.tunable.util.ListSingleSelection;
 public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 
 	public CLHandler getHandler(Method m, Object o, Tunable t) {
-		Class<?>[] paramsTypes = m.getParameterTypes();
-		if ( paramsTypes.length != 1 ) {
-			System.err.println("found bad method");
-			return null;
-		}
-		Class<?> type = paramsTypes[0];
-
-		if ( type == int.class || type == Integer.class )
-			return new IntCLHandler(m,o,t);
-		else if ( type == String.class )
-			return new StringCLHandler(m,o,t);
-		else if ( type == boolean.class || type == Boolean.class )
-			return new BooleanCLHandler(m,o,t);
-		else if ( type == BoundedInteger.class )
-			return new BoundedCLHandler<BoundedInteger>(m,o,t);
-		else if ( type == BoundedDouble.class )
-			return new BoundedCLHandler<BoundedDouble>(m,o,t);
-		else 
-			return null;
-
+		return null;
 	}
 
 	public CLHandler getHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
@@ -50,10 +34,27 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 		
 		if( type == int.class || type == Integer.class)
 			return new IntCLHandler(gmethod,smethod,o,tg,ts);
-		else 
-			return null;	
+		else if( type == Boolean.class || type == boolean.class)
+			return new BooleanCLHandler(gmethod,smethod,o,tg,ts);
+		else if( type == String.class)
+			return new StringCLHandler(gmethod,smethod,o,tg,ts);
+		
+		else if( type == BoundedInteger.class)
+			return new BoundedCLHandler<BoundedInteger>(gmethod,smethod,o,tg,ts);
+		else if( type == BoundedDouble.class)
+			return new BoundedCLHandler<BoundedDouble>(gmethod,smethod,o,tg,ts);
+		
+		else if(type == FlexiblyBoundedInteger.class)
+			return new FlexiblyBoundedCLHandler<FlexiblyBoundedInteger>(gmethod,smethod,o,tg,ts);
+		else if(type == FlexiblyBoundedDouble.class)
+			return new FlexiblyBoundedCLHandler<FlexiblyBoundedDouble>(gmethod,smethod,o,tg,ts);
+		else if(type == ListSingleSelection.class)
+			return new ListSingleSelectionCLHandler<Object>(gmethod,smethod,o,tg,ts);
+		else if(type == ListMultipleSelection.class)
+			return new ListMultipleSelectionCLHandler<Object>(gmethod,smethod,o,tg,ts);
+		else
+			return null;
 	}
-	
 	
 	
 	
@@ -65,8 +66,8 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 		else if ( type == String.class )
 			return new StringCLHandler(f,o,t);
 		else if ( type == boolean.class || type == Boolean.class )
-			
 			return new BooleanCLHandler(f,o,t);
+		
 		else if ( type == BoundedDouble.class )
 			return new BoundedCLHandler<BoundedDouble>(f,o,t);
 		else if ( type == BoundedInteger.class )

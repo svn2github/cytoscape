@@ -10,6 +10,7 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 
 	ListSingleSelection<T> lss;
 	
+	
 	public ListSingleSelectionCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
@@ -17,32 +18,29 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 		}catch (Exception e){e.printStackTrace();}
 	}
 
-	
-	public ListSingleSelectionCLHandler(Method m, Object o, Tunable t) {
-		super(m,o,t);
-		try{
-			lss = (ListSingleSelection<T>)f.get(o);
-		}catch (Exception e){e.printStackTrace();}
+	public ListSingleSelectionCLHandler(Method gmethod,Method smethod,Object o, Tunable tg, Tunable ts){
+		super(gmethod,smethod,o,tg,ts);
 	}
 
 	
+
 	public void handleLine( CommandLine line ) {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
-		String fc;
-		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		//else fc = n.substring(ind,ind+3);
-		fc = n.substring(ind);
+		String fc = n.substring(ind);
+
+		
 		try {
 			if ( line.hasOption( fc ) ) {
 				if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
 				if( f!= null){
 					lss.setSelectedValue((T)line.getOptionValue(fc));
-					f.set(o, lss);
+					f.set(o,lss);
 				}
-				else if( m!= null){
+				else if(smethod!= null && gmethod!=null){
+					lss = (ListSingleSelection<T>)gmethod.invoke(o);
 					lss.setSelectedValue((T)line.getOptionValue(fc));
-					m.invoke(o, lss);
+					smethod.invoke(o,lss);
 				}
 				else throw new Exception("no Field or Method to set!");
 			}
@@ -53,11 +51,19 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 	public Option getOption() {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
-		String fc;
-		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		//else fc = n.substring(ind,ind+3);
-		fc = n.substring(ind);
-		return new Option(fc, true,"-- "+ t.description()+" --\n  current selected value : "+lss.getSelectedValue()+"\n  available values : "+lss.getPossibleValues());
+		String fc = n.substring(ind);
+		ListSingleSelection<T> currentValue = null;
+		
+		if(f!=null){
+			return new Option(fc, true,"-- "+ t.description()+" --\n  current selected value : "+lss.getSelectedValue()+"\n  available values : "+lss.getPossibleValues());
+		}
+		else if (gmethod!=null){
+			try{
+				currentValue = (ListSingleSelection<T>) gmethod.invoke(o);
+			}catch(Exception e){e.printStackTrace();}
+			return new Option(fc, true,"-- "+ tg.description()+" --\n  current selected value : "+currentValue.getSelectedValue()+"\n  available values : "+currentValue.getPossibleValues());
+		}
+		else return null;
 	}
 	
 	private void displayCmds(String fc){

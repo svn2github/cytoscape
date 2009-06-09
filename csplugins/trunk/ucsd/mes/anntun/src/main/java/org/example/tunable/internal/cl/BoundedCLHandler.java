@@ -1,25 +1,28 @@
 package org.example.tunable.internal.cl;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import org.apache.commons.cli.*;
-import org.example.tunable.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.example.tunable.Tunable;
 import org.example.tunable.util.AbstractBounded;
 
 public class BoundedCLHandler<T extends AbstractBounded<?>> extends AbstractCLHandler {
 
-	T bo;
+	private T bo;
+	private String lbound="\u2264";
+	private String ubound="\u2264";
+
 
 	public BoundedCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-		try{
-			bo = (T) f.get(o);
-		}catch (Exception e){e.printStackTrace();}
 	}
 
-	
-	public BoundedCLHandler(Method m, Object o, Tunable t) {
-		super(m,o,t);
+	public BoundedCLHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts) {
+		super(gmethod,smethod,o,tg,ts);
 	}
 
 	
@@ -27,9 +30,8 @@ public class BoundedCLHandler<T extends AbstractBounded<?>> extends AbstractCLHa
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
 		String fc;
-		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		//else fc = n.substring(ind,ind+3);
 		fc = n.substring(ind);
+		
 		
 		try {
 			if ( line.hasOption( fc ) ) {
@@ -37,9 +39,10 @@ public class BoundedCLHandler<T extends AbstractBounded<?>> extends AbstractCLHa
 				if ( f != null ){
 					bo.setValue(line.getOptionValue(fc));
 					f.set(o,bo);}
-				else if ( m != null ){
-					bo.setValue(line.getOptionValue(fc));
-					m.invoke(o,bo);
+				else if (smethod != null && gmethod!=null){
+					bo = (T)gmethod.invoke(o);
+					bo.setValue(line.getOptionValue(fc).toString());
+					smethod.invoke(o,bo);
 				}
 				else 
 					throw new Exception("no Field or Method to set!");
@@ -48,29 +51,26 @@ public class BoundedCLHandler<T extends AbstractBounded<?>> extends AbstractCLHa
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public Option getOption() {
 		String n = getName();
-		String lbound="\u2264";
-		String ubound="\u2264";
-
-		
-		//System.out.println("creating option for:    " + n);
 		int ind = n.lastIndexOf(".")+1;
-		String fc;
-		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		//else fc = n.substring(ind,ind+3);
-		fc = n.substring(ind);
-		
+		String fc = n.substring(ind);
+	
+		T currentValue = null;
 		if( f!=null){
+			try{
+				bo = (T) f.get(o);
+			}catch (Exception e){e.printStackTrace();}
 			if(bo.isLowerBoundStrict())lbound="<";
 			if(bo.isUpperBoundStrict())ubound="<";
 			return new Option(fc, true,"-- " +t.description() +" --\n  current value : "+bo.getValue()+ "\n  possible value : (" + bo.getLowerBound()+ " " + lbound + " x " + ubound + " " + bo.getUpperBound() + ")");		
-		}	
-		else if(m!=null){
-			Type[] types = m.getParameterTypes();
-			java.util.List list = new java.util.ArrayList();
-			for(int i=0;i<types.length;i++) list.add(i,types[i]);
-			return new Option(fc, true,"-- "+ t.description()+" --\n  Method's parameter : "+list);
+		}
+		else if(gmethod!=null){
+			try{
+				currentValue = (T)gmethod.invoke(o);
+			}catch(Exception e){e.printStackTrace();}
+			return new Option(fc, true,"-- " +tg.description() +" --\n  current value : "+currentValue.getValue());
 		}
 		else return null;
 	}
@@ -82,6 +82,5 @@ public class BoundedCLHandler<T extends AbstractBounded<?>> extends AbstractCLHa
 		formatter.setWidth(100);
 		System.out.println("\n");
 		formatter.printHelp("Detailed informations/commands for " + fc + " :", options);
-		//System.out.println("\nCommands Options for -"+ fc +"\n (multiple commands can be coupled by inserting \" : \" ) example : -"+fc+" val.x:up.y:upstrict.true\n\t-"+fc+" val.x : setValue\n\t-"+fc+" up.x : setUpperBound\n\t-"+fc+" low.x : setLowerBound\n\t-"+fc+" lowstrict.Boolean : setLowerBoundStrict\n\t-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
 	}
 }

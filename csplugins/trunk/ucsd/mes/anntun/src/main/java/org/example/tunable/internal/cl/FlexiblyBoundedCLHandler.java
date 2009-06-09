@@ -19,21 +19,16 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded<?>> exte
 			fbo = (T) f.get(o);
 		}catch (Exception e){e.printStackTrace();}
 	}
-
 	
-	public FlexiblyBoundedCLHandler(Method m, Object o, Tunable t) {
-		super(m,o,t);
-
+	public FlexiblyBoundedCLHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
+		super(gmethod,smethod,o,tg,ts);
 	}
 
 	
 	public void handleLine( CommandLine line ) {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
-		String fc;
-		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		//else fc = n.substring(ind,ind+3);
-		fc = n.substring(ind);
+		String fc = n.substring(ind);
 		
 		argsMap = new HashMap<String,String>();
 		try {
@@ -57,21 +52,20 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded<?>> exte
 		String ubound="\u2264";
 		
 		int ind = n.lastIndexOf(".")+1;
-		String fc;
-		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		//else fc = n.substring(ind,ind+3);
-		fc = n.substring(ind);
+		String fc = n.substring(ind);
+
+		T currentValue = null;
 		
 		if( f!=null){
 			if(fbo.isLowerBoundStrict())lbound="<";
 			if(fbo.isUpperBoundStrict())ubound="<";
 			return new Option(fc, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + ")");//+"\n                                      --cmd : display informations and available commands");		
 		}
-		else if(m!=null){
-			Type[] types = m.getParameterTypes();
-			java.util.List list = new java.util.ArrayList();
-			for(int i=0;i<types.length;i++) list.add(i,types[i]);
-			return new Option(fc, true,"-- "+ t.description()+" --\n  Method's parameters : "+list);
+		else if(gmethod!=null){
+			try{
+				currentValue = (T)gmethod.invoke(o);
+			}catch(Exception e){e.printStackTrace();}
+			return new Option(fc, true,"-- " +tg.description() +" --\n  current value : "+currentValue.getValue());
 		}
 		else return null;
 	}
@@ -80,40 +74,49 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded<?>> exte
 	
 	private void applyArgsValues(Map<String,String> map){
 		try{
-			if(map.containsKey("val"))fbo.setValue(map.get("val"));
-			if(map.containsKey("up"))fbo.setUpperBound(map.get("up"));
-			if(map.containsKey("low"))fbo.setLowerBound(map.get("low"));
-			if(map.containsKey("lowstrict"))fbo.setLowerBoundStrict(Boolean.parseBoolean(map.get("lowstrict")));
-			if(map.containsKey("upstrict"))fbo.setUpperBoundStrict(Boolean.parseBoolean(map.get("upstrict")));
-
-			if( f!= null ) f.set(o, fbo);
-			else if( m!= null) m.invoke(o, fbo);
+			if( f!= null ){
+				if(map.containsKey("val"))fbo.setValue(map.get("val"));
+				if(map.containsKey("up"))fbo.setUpperBound(map.get("up"));
+				if(map.containsKey("low"))fbo.setLowerBound(map.get("low"));
+				if(map.containsKey("lowstrict"))fbo.setLowerBoundStrict(Boolean.parseBoolean(map.get("lowstrict")));
+				if(map.containsKey("upstrict"))fbo.setUpperBoundStrict(Boolean.parseBoolean(map.get("upstrict")));
+				f.set(o, fbo);
+			}
+			else if(smethod!= null && gmethod!=null) {
+				fbo = (T)gmethod.invoke(o);
+				if(map.containsKey("val"))fbo.setValue(map.get("val"));
+				if(map.containsKey("up"))fbo.setUpperBound(map.get("up"));
+				if(map.containsKey("low"))fbo.setLowerBound(map.get("low"));
+				if(map.containsKey("lowstrict"))fbo.setLowerBoundStrict(Boolean.parseBoolean(map.get("lowstrict")));
+				if(map.containsKey("upstrict"))fbo.setUpperBoundStrict(Boolean.parseBoolean(map.get("upstrict")));
+				smethod.invoke(o, fbo);
+			}
 			else throw new Exception("no Field or Method to set!");
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public Option getDetailedOption() {
 		String n = getName();
 		String lbound="\u2264";
 		String ubound="\u2264";
 		
 		int ind = n.lastIndexOf(".")+1;
-		String fc;
-		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		//else fc = n.substring(ind,ind+3);
-		fc = n.substring(ind);
+		String fc = n.substring(ind);
+		
+		T currentValue = null;
 		
 		if( f!=null){
 			if(fbo.isLowerBoundStrict())lbound="<";
 			if(fbo.isUpperBoundStrict())ubound="<";
 			return new Option(fc, true,"-- "+ t.description() +" --\n  current value : "+fbo.getValue()+ "\n  possible value : (" + fbo.getLowerBound()+ " " + lbound + " x " + ubound + " " + fbo.getUpperBound() + ")\nCommands Options for -"+ fc +" :\n (multiple commands can be coupled by inserting \":\")\n  example : -"+fc+" val.x:up.y:upstrict.true \n-"+fc+" val.x : setValue \n-"+fc+" up.x : setUpperBound \n-"+fc+" low.x : setLowerBound \n-"+fc+" lowstrict.Boolean : setLowerBoundStrict \n-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
 		}
-		else if(m!=null){
-			Type[] types = m.getParameterTypes();
-			java.util.List list = new java.util.ArrayList();
-			for(int i=0;i<types.length;i++) list.add(i,types[i]);
-			return new Option(fc, true,"-- "+ t.description()+" --\n  Method's parameters : "+list);
+		else if(gmethod!=null){
+			try{
+				currentValue = (T)gmethod.invoke(o);
+			}catch(Exception e){e.printStackTrace();}
+			return new Option(fc, true,"-- " +tg.description() +" --\n  current value : "+currentValue.getValue()+ "\n  possible value : (" + currentValue.getLowerBound()+ " " + lbound + " x " + ubound + " " + currentValue.getUpperBound() + ")\nCommands Options for -"+ fc +" :\n (multiple commands can be coupled by inserting \":\")\n  example : -"+fc+" val.x:up.y:upstrict.true \n-"+fc+" val.x : setValue \n-"+fc+" up.x : setUpperBound \n-"+fc+" low.x : setLowerBound \n-"+fc+" lowstrict.Boolean : setLowerBoundStrict \n-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
 		}
 		else return null;
 	}
@@ -126,6 +129,5 @@ public class FlexiblyBoundedCLHandler<T extends AbstractFlexiblyBounded<?>> exte
 		formatter.setWidth(100);
 		System.out.println("\n");
 		formatter.printHelp("Detailed informations/commands for " + fc + " :", options);
-		//System.out.println("\nCommands Options for -"+ fc +"\n (multiple commands can be coupled by inserting \" : \" ) example : -"+fc+" val.x:up.y:upstrict.true\n\t-"+fc+" val.x : setValue\n\t-"+fc+" up.x : setUpperBound\n\t-"+fc+" low.x : setLowerBound\n\t-"+fc+" lowstrict.Boolean : setLowerBoundStrict\n\t-"+fc+" upstrict.Boolean : setUpperBoundStrict\n");
 	}
 }

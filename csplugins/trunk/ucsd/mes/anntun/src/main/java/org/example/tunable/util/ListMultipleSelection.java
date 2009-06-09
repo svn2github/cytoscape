@@ -87,10 +87,10 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 		if (vals == null)
 			throw new NullPointerException("value list is null");
 
-		for (T v : vals)
+		for (T v : vals){
 			if (!values.contains(v))
 				throw new IllegalArgumentException("value not contained in list of possible values\n possible items = "+this.getPossibleValues());
-
+		}
 		selected = new ArrayList<T>(vals);
 	}
 }
