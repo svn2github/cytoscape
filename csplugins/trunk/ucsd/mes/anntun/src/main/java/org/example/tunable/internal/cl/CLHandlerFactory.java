@@ -1,5 +1,6 @@
 package org.example.tunable.internal.cl;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -52,6 +53,9 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return new ListSingleSelectionCLHandler<Object>(gmethod,smethod,o,tg,ts);
 		else if(type == ListMultipleSelection.class)
 			return new ListMultipleSelectionCLHandler<Object>(gmethod,smethod,o,tg,ts);
+		
+		else if(type == File.class)
+			return new FileCLHandler(gmethod,smethod,o,tg,ts);
 		else
 			return null;
 	}
@@ -82,6 +86,9 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return new ListSingleSelectionCLHandler<Object>(f,o,t);
 		else if ( type == ListMultipleSelection.class)
 			return new ListMultipleSelectionCLHandler<Object>(f,o,t);
+		
+		else if (type == File.class)
+			return new FileCLHandler(f,o,t);
 		else 
 			return null;
 	}

@@ -1,5 +1,6 @@
 package org.example.command;
 
+import java.io.File;
 import java.util.Map;
 
 import org.example.tunable.Handler;
@@ -118,6 +119,17 @@ public class PrintSomething implements Command, HandlerController {
 	public ListMultipleSelection<Integer> getNumbers(){return numbers;}
 	
 	
+	//Tests with FileHandler
+	@Tunable(description="a file")
+	public File file1 = new File("");
+	
+	private File file2 = new File("");
+	@Tunable(description="to set the file2")
+	public void setFile2(File fil){
+		file2 = fil;
+	}
+	@Tunable(description="to get the file2")
+	public File getFile2(){return file2;}
 	
 	
 	
@@ -135,6 +147,10 @@ public class PrintSomething implements Command, HandlerController {
 		System.out.println("testListSingleSelection = "+colors.getSelectedValue());
 		System.out.println("testListMultipleSelection = "+numbers.getPossibleValues());
 		System.out.println("testListMultipleSelection = "+numbers.getSelectedValues());
+		
+		System.out.println("testFile1 = "+file1.getAbsolutePath());
+		System.out.println("testFile2 = "+file2.getAbsolutePath());
+
 	}
 	
 
