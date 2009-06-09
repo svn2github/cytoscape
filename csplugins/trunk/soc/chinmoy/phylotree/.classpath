@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/cytoscape.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/activation.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/biojava-1.4.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/colt.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/coltginy.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/commons-cli-1.x-cytoscape-custom.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/com-nerius-math-xform.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/concurrent.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-cruft-obo.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-geom-rtree.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-geom-spacial.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-graph-dynamic.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-graph-fixed.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-render-export.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-render-immed.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-render-stateful.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-task.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/cytoscape-util-intr.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/ding.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/FastInfoset.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/fing.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-export-2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-graphics2d-2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-graphicsio-2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-graphicsio-java-2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-graphicsio-ps-2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-graphicsio-svg-2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-io-2.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-jas-plotter-2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-swing-2.0.3.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-util-2.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/freehep-xml-2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/giny.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/glf.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/http.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/i4jruntime.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/itext-2.0.4.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jaxws-api.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jaxws-rt.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jaxws-tools.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jdom-1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jhall.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jnlp.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jsr181-api.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/jsr250-api.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/junit.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/l2fprod-common-all.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/looks-2.1.4.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/phoebe.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/piccolo.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/resolver.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/saaj-api.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/saaj-impl.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/sjsxp.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/stax-ex.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/streambuffer.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/swing-layout-1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/swingx-2006_10_27.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/tclib.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/undo.support.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/violinstrings-1.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Cytoscape_v2.6.2/lib/wizard.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
