@@ -1,0 +1,29 @@
+<assembly>
+  <id>app</id>
+  <formats>
+    <format>dir</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <moduleSets>
+    <moduleSet>
+      <includes>
+        <include>org.cytoscape:cmdline-launcher</include>
+      </includes>
+      <binaries>
+        <outputDirectory>${artifactId}</outputDirectory>
+        <unpack>false</unpack>
+		<attachmentClassifier>jar-with-dependencies</attachmentClassifier>
+		<includeDependencies>false</includeDependencies>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <includes>
+        <include>org.cytoscape:cmdline-provision</include>
+      </includes>
+      <binaries>
+        <outputDirectory>${artifactId}/load</outputDirectory>
+        <unpack>false</unpack>
+      </binaries>
+    </moduleSet>
+  </moduleSets>
+</assembly>
