@@ -1,5 +1,5 @@
 <assembly>
-  <id>launcher-jar-with-dependencies</id>
+  <id>jar-with-dependencies</id>
   <formats>
     <format>jar</format>
   </formats>

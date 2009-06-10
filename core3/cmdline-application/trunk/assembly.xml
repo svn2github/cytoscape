@@ -21,8 +21,20 @@
         <include>org.cytoscape:cmdline-provision</include>
       </includes>
       <binaries>
+	  <!--
         <outputDirectory>${artifactId}/load</outputDirectory>
         <unpack>false</unpack>
+		-->
+	  <!--
+		-->
+        <dependencySets>
+          <dependencySet>
+            <outputDirectory>${artifactId}/load</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+          </dependencySet>
+        </dependencySets>
       </binaries>
     </moduleSet>
   </moduleSets>

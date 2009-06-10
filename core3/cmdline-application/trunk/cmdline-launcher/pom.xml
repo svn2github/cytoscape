@@ -11,7 +11,7 @@
   <properties>
     <bundle.symbolicName>org.cytoscape.cmdline-launcher</bundle.symbolicName>
     <bundle.namespace>org.cytoscape.cmdline.launcher</bundle.namespace>
-    <felix.version>1.6.1</felix.version>
+    <felix.version>1.8.0</felix.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

@@ -9,6 +9,7 @@
       <outputDirectory>/load</outputDirectory>
       <unpack>false</unpack>
       <scope>runtime</scope>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
     </dependencySet>
   </dependencySets>
 </assembly>
