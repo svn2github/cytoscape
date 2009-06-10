@@ -1,16 +1,21 @@
-gpuGraphDrawing : simpleCUDPP.cu
-	nvcc -o gpuGraphDrawing $(INC) $(LIB) simpleCUDPP.cu  
+gpuGraphDrawing : simpleCUDPP.o
+	g++ -o gpuGraphDrawing $(INC) $(LIB) simpleCUDPP.o -lglut -lcudart -lcudpp64
+
+simpleCUDPP.o : simpleCUDPP.cu
+	nvcc -c $(INC) -o simpleCUDPP.o simpleCUDPP.cu
 
 clean :
-	rm simpleGraphDrawing simpleGraphDrawing.o
+	rm gpuGraphDrawing simpleCUDPP.o
 
-CUDA_SDK := /home/gerardo/NVIDIA_CUDA_SDK
+CUDA := /usr/local/cuda
 
-INC := 	-I$(CUDA_SDK)/common/inc \
-        -I$(CUDA_SDK)/common/inc/cudpp 
+CUDPP := /home/gerardo/cudpp_1.0a
 
-LIB := -L$(CUDA_SDK)/lib 
+INC := 	-I$(CUDPP)/common/inc \
+        -I$(CUDPP)/cudpp/include
 
+LIB := -L$(CUDA)/lib \
+       -L$(CUDPP)/lib
 
 
 

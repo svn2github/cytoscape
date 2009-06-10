@@ -1,3 +1,6 @@
+#include "licence.h"
+#include "copyright.h"
+
 // includes, system
 #include <stdlib.h>
 #include <stdio.h>
@@ -43,6 +46,7 @@ int		interpolationIterations;
 int		levelConvergence;
 float3 *	a;
 //CUDPPScanConfig config;                          Deprecated
+CUDPPConfiguration config; // This struct replaces the old CUDPPScanConfig in the release 1.0a of CUDPP
 unsigned int *	data_out;
 unsigned int *	d_temp_addr_uint; 
 float3 *	d_out;
@@ -68,7 +72,10 @@ void advancePositions(graph * g)
   
   //config.maxNumElements = g->numVertices;        Deprecated
   //cudppInitializeScan(&config);                  Deprecated
-  
+      
+  // Configure CUDPP Scan Plan
+  CUDPPHandle planHandle;
+  cudppPlan (&planHandle, config, g->numVertices, 1, 0); // rows = 1, rowPitch = 0
   
   int sizeInt = g->numVertices*sizeof(kdNodeInt);
   int sizeFloat = g->numVertices*sizeof(kdNodeFloat);
@@ -81,9 +88,9 @@ void advancePositions(graph * g)
       kdNodeInit(rootInt,rootFloat,1,0,0,SCREEN_W,0,SCREEN_H);
       construct(NodeTemp, NodeTemp+g->numVertices-1, rootInt,rootFloat, 1,0,0,SCREEN_W,0,SCREEN_H,3);
     }
-    else{ //GPU
+    else{ //GPU   
       kdNodeInitD(rootInt,rootFloat,1,0,0,SCREEN_W,0,SCREEN_H);
-      constructD(a, a+g->numVertices-1, rootInt,rootFloat, 1,0,0,SCREEN_W,0,SCREEN_H,3,data_out,d_temp_addr_uint, d_out,&config,nD,OuterD );
+      constructD(a, a+g->numVertices-1, rootInt,rootFloat, 1,0,0,SCREEN_W,0,SCREEN_H,3,data_out,d_temp_addr_uint, d_out,planHandle,nD,OuterD );
     }
   }
   	
@@ -121,6 +128,9 @@ void advancePositions(graph * g)
 
   // Decrease the temperature of graph g
   cool(g); 
+
+  // Destroy CUDPP Scan Plan
+  cudppDestroyPlan(planHandle);
 }
 
 
@@ -357,12 +367,21 @@ main(int argc, char** argv)
   cudaMalloc((void**)&AdjMatValsD, (g.numEdges)*sizeof(int));
   cudaMalloc((void**)&edgeLenD, (g.numEdges)*sizeof(int));
   
+  // Initialize parameters for config (see CUDPP in cudpp.h)
+
+  config.algorithm = CUDPP_SCAN;
+  config.op        = CUDPP_ADD;
+  config.datatype  = CUDPP_INT;
+  config.options   = CUDPP_OPTION_FORWARD | CUDPP_OPTION_EXCLUSIVE; 
+
   //config.direction      = CUDPP_SCAN_FORWARD;                  Deprecated
   //config.exclusivity    = CUDPP_SCAN_EXCLUSIVE;                Deprecated
-  //config.op	        = CUDPP_ADD;                             Deprecated
+  //config.op	          = CUDPP_ADD;                           Deprecated
   //config.datatype       = CUDPP_INT;                           Deprecated
-  //config.maxNumRows	= 1;                                     Deprecated
+  //config.maxNumRows	  = 1;                                   Deprecated
   //config.rowPitch       = 0;                                   Deprecated
+
+
   
   cudaMalloc((void**)&data_out,sizeof(unsigned int)* g.numVertices);
   cudaMalloc((void**)&d_temp_addr_uint,sizeof(unsigned int)* g.numVertices);
