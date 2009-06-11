@@ -50,9 +50,9 @@ public class PropHandlerFactory implements HandlerFactory<PropHandler> {
 		
 		
 		else if (type == ListSingleSelection.class)
-			return new ListSinglePropHandler(f,o,t);
+			return new ListSinglePropHandler<Object>(f,o,t);
 		else if (type == ListMultipleSelection.class)
-			return new ListMultiplePropHandler(f,o,t);
+			return new ListMultiplePropHandler<Object>(f,o,t);
 		
 		else if (type == File.class)
 			return new FilePropHandler(f,o,t);
@@ -62,6 +62,10 @@ public class PropHandlerFactory implements HandlerFactory<PropHandler> {
 	}
 
 	public PropHandler getHandler(Method m, Object o, Tunable t) {
+		return null;
+	}
+	
+	public PropHandler getHandler(Method gmethod,Method smethod,Object o,Tunable tg, Tunable ts){
 		return null;
 	}
 
