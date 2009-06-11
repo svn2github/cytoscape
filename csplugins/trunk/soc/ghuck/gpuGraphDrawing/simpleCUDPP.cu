@@ -331,7 +331,9 @@ main(int argc, char** argv)
 {
   // Initialize device, using macro defined in "cutil.h"
   CUT_DEVICE_INIT();
-  
+
+  printf ("device initialized!\n");
+
   FILE* from;
   graph g;
 
@@ -355,6 +357,8 @@ main(int argc, char** argv)
     readGml(&g, from);
   else
     readChaco(&g, from);
+
+  printf ("Finished reading graph!\n");
   
   /*    Initializations    */
 
