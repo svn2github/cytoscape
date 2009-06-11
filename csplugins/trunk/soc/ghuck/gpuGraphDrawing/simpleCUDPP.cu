@@ -18,7 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 See licence.h for more information.
 **************************************************************************************/
-#include "licence.h"
+// GPLv3 License
+#include "license.h"
 
 // includes, system
 #include <stdlib.h>
