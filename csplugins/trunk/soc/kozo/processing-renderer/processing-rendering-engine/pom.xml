@@ -1,47 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<url>http://cg06.naist.jp/gsoc/wiki</url>
 
-  <parent>
-    <relativePath>../poms/compiled/</relativePath>
-    <groupId>org.cytoscape.processing-renderer.build</groupId>
-    <artifactId>compiled-bundle-settings</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<relativePath>../poms/compiled/</relativePath>
+		<groupId>org.cytoscape.processing-renderer.build
+		</groupId>
+		<artifactId>compiled-bundle-settings
+		</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
 
-  <properties>
-    <bundle.symbolicName>org.cytoscape.processing-renderer.processing-rendering-engine</bundle.symbolicName>
-    <bundle.namespace>org.cytoscape.view.presentation.processing</bundle.namespace>
-  </properties>
+	<properties>
+		<bundle.symbolicName>
+			org.cytoscape.processing-renderer.processing-rendering-engine
+		</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.view.presentation.processing
+		</bundle.namespace>
+	</properties>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.cytoscape.processing-renderer</groupId>
-  <artifactId>processing-rendering-engine</artifactId>
-  <version>1.0-SNAPSHOT</version>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.cytoscape.processing-renderer
+	</groupId>
+	<artifactId>processing-rendering-engine
+	</artifactId>
+	<version>1.0-SNAPSHOT</version>
 
-  <name>${bundle.symbolicName} [${bundle.namespace}]</name>
+	<name>${bundle.symbolicName}
+		[${bundle.namespace}]</name>
 
-  <packaging>bundle</packaging>
+	<packaging>bundle</packaging>
 
-  <dependencies>
-    <!--
-     | uncomment to add all imported (non-local) bundles to your compilation classpath
-    <dependency>
-      <type>pom</type>
-      <groupId>${parent.groupId}</groupId>
-      <artifactId>provision</artifactId>
-      <optional>true</optional>
-    </dependency>
-    -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_compendium</artifactId>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
+	<dependencies>
+		<!--
+			| uncomment to add all imported (non-local) bundles to your
+			compilation classpath <dependency> <type>pom</type>
+			<groupId>${parent.groupId}</groupId>
+			<artifactId>provision</artifactId> <optional>true</optional>
+			</dependency>
+		-->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_compendium</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Cytoscape Dependency -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>presentation-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>viewmodel-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 
 </project>
