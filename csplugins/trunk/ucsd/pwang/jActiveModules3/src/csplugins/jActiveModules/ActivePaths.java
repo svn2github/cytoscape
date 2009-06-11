@@ -29,15 +29,22 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-import csplugins.jActiveModules.dialogs.ConditionsVsPathwaysTable;
+import csplugins.jActiveModules.dialogs.ConditionsVsPathwaysTable2;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupViewer;
+import cytoscape.groups.CyGroupViewer.ChangeType;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.SelectFilter;
 import cytoscape.data.mRNAMeasurement;
+import cytoscape.view.CyNetworkView;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
+import csplugins.jActiveModules.Component;
 //import cytoscape.data.CyNetworkFactory;
 
 //-----------------------------------------------------------------------------------
@@ -50,7 +57,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	//protected ExpressionData expressionData = null;
 	protected JMenuBar menubar;
 	protected JMenu expressionConditionsMenu;
-	protected ConditionsVsPathwaysTable tableDialog;
+	protected ConditionsVsPathwaysTable2 tableDialog;
 	protected String currentCondition = "none";
 	protected csplugins.jActiveModules.Component[] activePaths;
 	protected String[] attrNames;
@@ -65,7 +72,10 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 	protected static int resultsCount = 1;
 	protected ActiveModulesUI parentUI;
-
+	
+	public MyGroupViewer myGroupViewer = null;
+	private static int groupViewerCount = 0;
+	private static int groupCount = 0;
 	// ----------------------------------------------------------------
 	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI) {
 		this.apfParams = apfParams;
@@ -84,6 +94,12 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		mainFrame = Cytoscape.getDesktop();
 		this.cyNetwork = cyNetwork;
 		this.parentUI = parentUI;
+		
+		// Generate a unique id for each groupViewer
+		myGroupViewer = new MyGroupViewer("MyGroupViewer" + groupViewerCount++);
+		
+		CyGroupManager.registerGroupViewer(myGroupViewer);
+
 	} // ctor
 
 	// --------------------------------------------------------------
@@ -108,10 +124,19 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 						cyNetwork, apfParams, mainFrame, parentUI);
 		}
 		activePaths = apf.findActivePaths();
+
+		Vector tableData = createTableData(attrNames);
+		
+		//
+		
 		
 		tableDialog = null;
+
 		if (showTable) {
-		    showConditionsVsPathwaysTable();
+			tableDialog = new ConditionsVsPathwaysTable2(cyNetwork,
+					attrNames, tableData, ActivePaths.this, parentUI);
+
+			showConditionsVsPathwaysTable();
 		}
 		if(apfParams.getSave() && !apfParams.getRandomizeExpression()){
 		    tableDialog.saveState(apfParams.getOutputFile());
@@ -121,7 +146,101 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		}
 		
 	}
-    
+
+	//
+	private Vector<Object> createTableData(String [] attrNames) {
+		Vector<CyGroup> groupVect = new Vector<CyGroup>(); 
+		Double[] scores = new Double[activePaths.length]; 
+		Boolean[][] data = new Boolean[activePaths.length][activePaths[0].getConditions().length];
+
+		for (int i=0; i<activePaths.length; i++){
+			Component thePath = activePaths[i];
+
+			// Create group for this pathway
+			// 1. Define the group name
+			String groupName = "Group_" + groupCount++;
+			System.out.println("ActivePaths: groupName = "+ groupName);
+			
+			// 2. create an empty group
+			
+			CyGroup theGroup = CyGroupManager.createGroup(groupName, ActivePaths.this.myGroupViewer.getViewerName());
+			
+			System.out.println("ActivePaths: theGroup = " + theGroup);
+			
+			Vector nodeVect =  thePath.getNodes();
+
+			// 3. add nodes to the group
+			for (int j=0; j< nodeVect.size(); j++){
+				CyNode oneNode = (CyNode) nodeVect.elementAt(j);
+				if (oneNode != null){
+					theGroup.addNode(oneNode);					
+				}
+				else {
+					System.out.println("ActivePaths: createTableData(): oneNode = null");
+				}
+			}
+			
+			//
+			groupVect.add(theGroup);
+			
+			// get score for this pathway
+			scores[i] = new Double(thePath.getScore());
+			
+			//populate data items
+			String[] conditions = thePath.getConditions();
+			for (int j=0; j<thePath.getConditions().length; j++ ){
+				boolean matchedCondition = false;
+				
+				for (int cond = 0; cond < conditions.length; cond++) {
+					//String condition = conditionsForThisPath[cond];
+					if (attrNames[cond].equalsIgnoreCase(conditions[cond])) {
+						matchedCondition = true;
+						break;
+					}
+				}
+
+				if (matchedCondition)
+					data[i][j] = new Boolean(true);
+				else
+					data[i][j] = new Boolean(false);
+			}
+		}
+		
+		Vector<Object> retVect = new Vector<Object>();
+		retVect.add(groupVect);
+		retVect.add(scores);
+		retVect.add(data);
+		
+		return retVect;
+	}
+
+	
+	public class MyGroupViewer implements CyGroupViewer {
+	    private String viewerName = "MyGroupViewer";
+	    
+	    public MyGroupViewer(String viewerName){
+	    	this.viewerName = viewerName;
+	    }
+	    
+		public String getViewerName(){
+			return viewerName;
+		}
+		
+		public void groupCreated(CyGroup group) {
+			
+		}
+		public void groupCreated(CyGroup group, CyNetworkView myView){
+			
+		}
+		public void groupWillBeRemoved(CyGroup group){
+			
+		}
+		public void groupChanged(CyGroup group, CyNode changedNode, ChangeType change){
+			
+		}
+		
+	}
+	
 	/**
 	 * Returns the best scoring path from the last run. This is mostly used by
 	 * the score distribution when calculating the distribution
@@ -202,10 +321,11 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		return tempHash;
 	}
 
+
 	protected void showConditionsVsPathwaysTable() {
 		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
-		tableDialog = new ConditionsVsPathwaysTable(mainFrame, cyNetwork,
-				attrNames, activePaths, this, parentUI);
+		//tableDialog = new ConditionsVsPathwaysTable2(mainFrame, cyNetwork,
+		//		attrNames, activePaths, this, parentUI);
 
 		cytoPanel.add("jActiveModules Results " + (resultsCount++), tableDialog);
 		cytoPanel.setSelectedIndex(cytoPanel.indexOfComponent(tableDialog));
@@ -214,7 +334,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		addActivePathToolbarButton();
 	}
 
-	protected ConditionsVsPathwaysTable getConditionsVsPathwaysTable() {
+	protected ConditionsVsPathwaysTable2 getConditionsVsPathwaysTable() {
 		return tableDialog;
 	}
 
@@ -242,14 +362,16 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		JOptionPane.showMessageDialog(mainFrame, "Score: " + score);
 	} // scoreActivePath
 
+	/*
 	protected class ActivePathControllerLauncherAction extends AbstractAction {
 		ActivePathControllerLauncherAction() {
 			super("Active Modules");
 		} // ctor
 		public void actionPerformed(ActionEvent e) {
-			showConditionsVsPathwaysTable();
+			//showConditionsVsPathwaysTable();
 		}
 	}
+	*/
 
 	/**
 	 * find all of the unique node names in the full set of active paths. there
