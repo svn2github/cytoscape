@@ -10,5 +10,11 @@ package org.cytoscape.view.presentation.processing;
  *
  */
 public interface PShape {
+	
+	public void draw();
+	
+	public String getDisplayName();
+	
+	
 
 }
