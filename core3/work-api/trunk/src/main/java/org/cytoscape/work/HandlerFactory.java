@@ -34,4 +34,16 @@ public interface HandlerFactory<H extends Handler>{
 	 */
 	 H getHandler(Method m, Object o, Tunable t);
 	 
+	 
+	/**
+	 * This method returns a <code>Handler</code> for the Methods GetMethod and SetMethod annotated as <code>Tunable</code>
+	 * 
+	 * @param gmethod Method that need to have a <code>Handler</code>, coupled with the <code>smethod</code>
+	 * @param smethod Method that need to have a <code>Handler</code>, coupled with the <code>gmethod</code>
+	 * @param o Object that is being used inside the Methods
+	 * @param tg Tunable that contains all the information concerning the getMethod
+	 * @param ts Tunable that contains all the information concerning the setMethod
+	 * @return H The created <code>Handler</code>
+	 */
+	H getHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts);	 
 }

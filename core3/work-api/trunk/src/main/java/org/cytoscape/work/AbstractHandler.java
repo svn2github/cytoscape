@@ -2,6 +2,7 @@ package org.cytoscape.work;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,9 +19,13 @@ import java.util.List;
 public abstract class AbstractHandler implements Handler {
 
 	protected Field f;
+	protected Method gmethod;
+	protected Method smethod;
 	protected Method m;
 	protected Object o;
 	protected Tunable t;
+	protected Tunable tg;
+	protected Tunable ts;
 	protected List<HandlerListener> listeners;
 	
 
@@ -34,6 +39,7 @@ public abstract class AbstractHandler implements Handler {
 		this.f = f;
 		this.o = o;
 		this.t = t;
+		listeners = new ArrayList<HandlerListener>();
 	}
 
 	
@@ -49,6 +55,24 @@ public abstract class AbstractHandler implements Handler {
 		this.t = t;
 	}
 
+	
+	/**
+	 * Handler for 2 Methods values
+	 * @param getmethod method that has been annotated as a <i>getter</i>
+	 * @param setmethod method that has been annotated as a <i>setter</i>
+	 * @param o object contained in methods
+	 * @param tg tunable associated to <code>gmethod</code> 
+	 * @param ts tunable associated to <code>smethod</code> 
+	 */
+	public AbstractHandler(Method getmethod, Method setmethod, Object o, Tunable tg, Tunable ts){
+		this.gmethod = getmethod;
+		this.smethod = setmethod;
+		this.o = o;
+		this.tg = tg;
+		this.ts = ts;
+	}
+
+	
 	/**
 	 * To get <code>Field f</code>
 	 * @return field component from the handler
@@ -67,6 +91,24 @@ public abstract class AbstractHandler implements Handler {
 	}
 
 	/**
+	 * To get <code>Method gmethod</code>
+	 * @return method component from the handler
+	 */
+	public Method getGetMethod() {
+		return gmethod;
+	}
+	
+	/**
+	 * To get <code>Method smethod</code>
+	 * @return method component from the handler
+	 */
+	public Method getSetMethod() {
+		return smethod;
+	}
+
+	
+	
+	/**
 	 * To get <code>Object o</code> 
 	 * @return object component from the handler
 	 */
@@ -75,6 +117,21 @@ public abstract class AbstractHandler implements Handler {
 	}
 
 	
+	/**
+	 * To get <code>Tunable tg</code>
+	 * @return tunable component from the handler
+	 */
+	public Tunable getGetTunable() {
+		return tg;
+	}
+	
+	/**
+	 * To get <code>Tunable ts</code>
+	 * @return tunable component from the handler
+	 */
+	public Tunable getSetTunable() {
+		return ts;
+	}
 	/**
 	 * To get <code>Tunable t</code>
 	 * @return tunable component from the handler

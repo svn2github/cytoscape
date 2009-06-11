@@ -45,9 +45,35 @@ public interface Handler{
 	
 	/**
 	 * To get the Handler's Tunable
-	 * @return Tuanble
+	 * @return Tunable
 	 */
 	Tunable getTunable();
+	
+	
+	/**
+	 * To get the handler's GetMethod
+	 * @return Method
+	 */
+	Method getGetMethod();
+	/**
+	 * To get the handler's SetMethod
+	 * @return Method
+	 */
+	Method getSetMethod();
+	
+	/**
+	 * To get the Handler's GetTunable
+	 * @return Tunable
+	 */
+	Tunable getGetTunable();
+
+	/**
+	 * To get the Handler's SetTunable
+	 * @return Tunable
+	 */
+	Tunable getSetTunable();
+
+	
 	
 	/**
 	 * To add a <code>HandlerListener</code> to the <code>Handler</code>
