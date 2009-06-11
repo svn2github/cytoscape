@@ -1,3 +1,17 @@
+/**************************************************************************************
+This code is released under GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007. 
+Copyright (C) Apeksha Godiyal, 2008
+Copyright (C) Gerardo Huck, 2009
+
+See licence.h and copyright.h for more information.
+**************************************************************************************/
+
+#include "licence.h"
+#include "copyright.h"
+
+
+
+
 #ifndef _HELLOWORLD_H_
 #define _HELLOWORLD_H_
 

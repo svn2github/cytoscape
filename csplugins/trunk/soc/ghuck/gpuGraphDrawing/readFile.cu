@@ -1,3 +1,17 @@
+/**************************************************************************************
+This code is released under GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007. 
+Copyright (C) Apeksha Godiyal, 2008
+Copyright (C) Gerardo Huck, 2009
+
+See licence.h and copyright.h for more information.
+**************************************************************************************/
+
+#include "licence.h"
+#include "copyright.h"
+
+
+
+
 void error(const char * p, const char * p2="")
 {
 	printf("%s %s\n",p,p2);
