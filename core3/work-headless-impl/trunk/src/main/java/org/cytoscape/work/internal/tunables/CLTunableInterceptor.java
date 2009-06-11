@@ -1,7 +1,14 @@
 package org.cytoscape.work.internal.tunables;
 
-import java.util.*;
-import org.apache.commons.cli.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 import org.cytoscape.work.AbstractTunableInterceptor;
 
 
@@ -32,7 +39,8 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 
 		for ( CLHandler h : lh )
 			options.addOption( h.getOption() );
-		options.addOption("h", "help", false, "Print this message.");
+//		options.addOption("h", "help", false, "Print this message.");
+		options.addOption("H", "fullHelp", false, "Display all the available Commands");
 
 		
         //Try to parse the command line
@@ -48,24 +56,23 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 
         
         //Print the Help if -h is requested
-        if (line.hasOption("h")) {
+        if (line.hasOption("H")) {
+        	System.out.println("The Help for "+ objs[0].getClass().getSimpleName()+" has been called");
 			printHelp(options);
 			System.exit(0);
         }
         
-        
         //Set the new tunables with the arguments parsed for options
 		for ( CLHandler h : lh )
 			h.handleLine( line );
-		
-		
+				
 		return false;
 	}
 
 	private static void printHelp(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
-		System.out.println("\n");
-		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [Options]","\nOptions", options,"");
+		formatter.setWidth(100);
+		formatter.printHelp("\njava -Xmx512M -jar cytoscape.jar [Options]","\nOptions", options,"\nRun : \"java -jar anntun.jar <command> --cmd\" to get detailed help on each command");
 	}
 
 

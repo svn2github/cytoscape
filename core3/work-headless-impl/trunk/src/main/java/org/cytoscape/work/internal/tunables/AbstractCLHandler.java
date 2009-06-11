@@ -1,11 +1,12 @@
 package org.cytoscape.work.internal.tunables;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.cytoscape.work.AbstractHandler;
 import org.cytoscape.work.Tunable;
-import org.apache.commons.cli.*;
 
 
 public abstract class AbstractCLHandler extends AbstractHandler implements CLHandler {
@@ -14,21 +15,27 @@ public abstract class AbstractCLHandler extends AbstractHandler implements CLHan
 		super(f,o,t);
 	}
 
-	public AbstractCLHandler(Method m, Object o, Tunable t) {
-		super(m,o,t);
+	public AbstractCLHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
+		super(gmethod,smethod,o,tg,ts);
 	}
 
+	
+//	public AbstractCLHandler(Method m, Object o, Tunable t) {
+//		super(m,o,t);
+//	}
+
 	protected String getName() {
-		if ( f != null ) {
+		if ( f!=null ) {
 			String ns = f.getDeclaringClass().toString();
 			return ns.substring( ns.lastIndexOf(".")+1) + "." + f.getName();
-		} else if ( m != null ) {
-			String ns = m.getDeclaringClass().toString();
-			return ns.substring( ns.lastIndexOf(".")+1) + "." + m.getName();
-		} else 
+		} else if ( gmethod != null && smethod != null) {
+			String ns = smethod.getDeclaringClass().toString();
+			return ns.substring( ns.lastIndexOf(".")+1) + "." + "getset" + smethod.getName().substring(3);
+		} else
 			return "";
 	}
 	
+
 	public abstract Option getOption();
 	public abstract void handleLine( CommandLine line );
 }

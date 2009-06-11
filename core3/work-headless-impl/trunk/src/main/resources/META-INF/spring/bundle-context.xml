@@ -16,5 +16,11 @@
 	<context:annotation-config/>
 	
 	<bean name="headlessTaskManager" class="org.cytoscape.work.internal.task.HeadlessTaskManager"/>
-
+	
+	<bean name="cltaskFactoryInterceptor" class="org.cytoscape.work.internal.tunables.CLTaskFactoryInterceptor">
+		<constructor-arg ref="commandLineProviderServiceRef"/>
+		<constructor-arg ref="taskManagerServiceRef"/>
+		<constructor-arg ref="cyNetworkManagerServiceRef"/>
+	</bean>
+	
 </beans>
