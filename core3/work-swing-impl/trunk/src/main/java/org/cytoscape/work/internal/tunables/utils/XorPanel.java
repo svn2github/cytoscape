@@ -15,10 +15,10 @@ import javax.swing.border.TitledBorder;
 import org.cytoscape.work.Handler;
 import org.cytoscape.work.HandlerListener;
 import org.cytoscape.work.Tunable;
-
 import org.cytoscape.work.internal.tunables.Guihandler;
 
 
+@SuppressWarnings("serial")
 public class XorPanel extends JPanel {
 	
 	
@@ -114,6 +114,22 @@ public class XorPanel extends JPanel {
 		public boolean removeHandlerListener(HandlerListener listener) {
 			// TODO Auto-generated method stub
 			return false;
+		}
+		public Method getGetMethod() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		public Tunable getGetTunable() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		public Method getSetMethod() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		public Tunable getSetTunable() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

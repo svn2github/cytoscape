@@ -12,8 +12,6 @@ import javax.swing.JPanel;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
 
-
-
 public class BooleanHandler extends AbstractGuiHandler {
 
 	private JCheckBox jcb;

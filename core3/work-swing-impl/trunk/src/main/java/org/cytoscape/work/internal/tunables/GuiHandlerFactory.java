@@ -25,11 +25,6 @@ import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
 
-
-
-
-
-
 /**
  * Provides a factory to create <code>Guihandler</code> depending on their type
  * A <code>Guihandler</code> is simply a <code>Handler</code> with the GUI aspect to display the handled object to the user in a proper way.
@@ -54,6 +49,21 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 		this.bkUtil = bkUtil;
 //		this.flUtil = flUtil;
 //		this.stUtil = stUtil;
+	}
+	
+	
+	/**
+	 * To get a <code>Handler</code> for a get and set Methods annotated as <code>Tunable</code>
+	 * 
+	 * @param	gmethod	the annotated get method
+	 * @param	smethod	the annotated set method
+	 * @param	o	object of the <code>Handler</code>
+	 * @param	tg	tunable of the get method of the <code>Handler</code>
+	 * @param	ts	tunable of the set method of the<code>Handler</code>
+	 * @return a <code>Guihandler</code> object depending on the Method's type
+	 */	
+	public Guihandler getHandler(Method gmethod,Method smethod, Object o, Tunable tg, Tunable ts) {
+		return null;
 	}
 	
 	
