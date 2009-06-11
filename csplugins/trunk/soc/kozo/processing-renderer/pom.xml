@@ -26,13 +26,11 @@
   <artifactId>processing-renderer</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>org.cytoscape.processing-renderer (OSGi project)</name>
+  <name>Processing Rendering Engine Project</name>
 
   <!--
    | describe your project here
   -->
-
-  <description>Generated using Pax-Construct</description>
 
   <properties>
     <!--
@@ -49,6 +47,8 @@
     <module>provision</module>
     <module>processing-rendering-engine</module>
   </modules>
+  <description>Processing-based rendering engine for Cytoscape 3.</description>
+  <url>http://cg06.naist.jp/gsoc/wiki</url>
 
   <build>
     <plugins>
