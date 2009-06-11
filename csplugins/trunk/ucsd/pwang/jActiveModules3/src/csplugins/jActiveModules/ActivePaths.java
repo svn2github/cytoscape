@@ -76,6 +76,9 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	public MyGroupViewer myGroupViewer = null;
 	private static int groupViewerCount = 0;
 	private static int groupCount = 0;
+	
+	public static String groupViewerName = "moduleFinderViewer";
+	
 	// ----------------------------------------------------------------
 	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI) {
 		this.apfParams = apfParams;
@@ -95,9 +98,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		this.cyNetwork = cyNetwork;
 		this.parentUI = parentUI;
 		
-		// Generate a unique id for each groupViewer
-		myGroupViewer = new MyGroupViewer("MyGroupViewer" + groupViewerCount++);
-		
+		// Create a groupViewer and register it
+		myGroupViewer = new MyGroupViewer(groupViewerName);
 		CyGroupManager.registerGroupViewer(myGroupViewer);
 
 	} // ctor
@@ -125,11 +127,13 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		}
 		activePaths = apf.findActivePaths();
 
-		Vector tableData = createTableData(attrNames);
+		Vector groupData = createGroupData();
 		
 		//
+		printGroupData(groupData);
 		
 		
+		/*
 		tableDialog = null;
 
 		if (showTable) {
@@ -143,40 +147,38 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		}
 		if(apfParams.getExit() && !apfParams.getRandomizeExpression()){
 		    System.exit(0);
-		}
+		}	
+		*/
 		
 	}
 
+	
 	//
-	private Vector<Object> createTableData(String [] attrNames) {
+	private Vector<Object> createGroupData() {
 		Vector<CyGroup> groupVect = new Vector<CyGroup>(); 
 		Double[] scores = new Double[activePaths.length]; 
 		Boolean[][] data = new Boolean[activePaths.length][activePaths[0].getConditions().length];
-
+		
 		for (int i=0; i<activePaths.length; i++){
 			Component thePath = activePaths[i];
 
 			// Create group for this pathway
 			// 1. Define the group name
 			String groupName = "Group_" + groupCount++;
-			System.out.println("ActivePaths: groupName = "+ groupName);
 			
 			// 2. create an empty group
-			
-			CyGroup theGroup = CyGroupManager.createGroup(groupName, ActivePaths.this.myGroupViewer.getViewerName());
-			
-			System.out.println("ActivePaths: theGroup = " + theGroup);
-			
-			Vector nodeVect =  thePath.getNodes();
+			//CyGroup theGroup = CyGroupManager.createGroup(groupName, ActivePaths.this.groupViewerName);
+			CyGroup theGroup = CyGroupManager.createGroup(groupName, ActivePaths.this.groupViewerName);
 
 			// 3. add nodes to the group
+			Vector nodeVect = (Vector) thePath.getDisplayNodes();
 			for (int j=0; j< nodeVect.size(); j++){
 				CyNode oneNode = (CyNode) nodeVect.elementAt(j);
 				if (oneNode != null){
 					theGroup.addNode(oneNode);					
 				}
 				else {
-					System.out.println("ActivePaths: createTableData(): oneNode = null");
+					//System.out.println("ActivePaths: createTableData(): oneNode = null");
 				}
 			}
 			
@@ -215,8 +217,22 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	}
 
 	
+	private void printGroupData(Vector groupData){
+		Vector<CyGroup> groupVect = (Vector<CyGroup>) groupData.elementAt(0); 
+		Double[] scores = (Double[]) groupData.elementAt(1); 
+		Boolean[][] data = (Boolean[][]) groupData.elementAt(2);
+
+		System.out.println("\n================\nNumber of Groups = " + groupVect.size());
+		for (int i=0; i<groupVect.size(); i++ ){
+			CyGroup theGroup = groupVect.elementAt(i);
+			System.out.println( theGroup.getGroupName()+ ": size = "+ theGroup.getNodes().size()+ ": score =" + scores[i]);
+		}
+		System.out.println("");	
+	}
+	
+
 	public class MyGroupViewer implements CyGroupViewer {
-	    private String viewerName = "MyGroupViewer";
+	    private String viewerName = ActivePaths.groupViewerName;
 	    
 	    public MyGroupViewer(String viewerName){
 	    	this.viewerName = viewerName;
@@ -227,10 +243,11 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		}
 		
 		public void groupCreated(CyGroup group) {
-			
+			System.out.println("MyGroupViewer: groupCreated(): "+ group.getGroupName());			
 		}
+		
 		public void groupCreated(CyGroup group, CyNetworkView myView){
-			
+			System.out.println("MyGroupViewer: groupCreated(): "+ group.getGroupName() + " for " + myView.getTitle());	
 		}
 		public void groupWillBeRemoved(CyGroup group){
 			
