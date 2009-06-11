@@ -257,6 +257,8 @@
 	<osgi:service id="fileUtilService" ref="fileUtil"
 		interface="cytoscape.util.FileUtil" />
 
+	<osgi:service id="networkManagerService" ref="networkManager"
+		interface="cytoscape.CyNetworkManager" />
 
 
 
