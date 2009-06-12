@@ -2,13 +2,23 @@
 package cytoscape.linkout;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
+
 import cytoscape.util.OpenBrowser;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.NodeView;
+//import org.cytoscape.view.EdgeView;
+//import org.cytoscape.view.NodeView;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.service.util.CyServiceRegistrar;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.view.model.NodeViewTaskFactory;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,6 +51,25 @@ import java.util.regex.Pattern;
 *    url.Pubmed=http\://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd\=Search&db\=PubMed&term\=%ID%
 *
 */
+
+
+/**
+ * AJK: 06/09/2009: porting to Cytoscape 3.0.  Under 3.0, should take the form:
+ * 
+ * 
+ * 
+ * public class Linkout {
+  public Linkout(Properties p, CyServiceRegistrar registrar) {
+    // loop over all linkout properties
+    String link = p.getProperty(whatever);
+    String preferredMenu = extractMenuTitleFromLink(link);
+    Map<String,String> dict = new HashMap<String,String>();
+    dict.put("preferredMenu",preferredMenu);
+    NodeViewTaskFactory nvtf = new LinkoutTaskFactory(link);
+    registrar.registerService( nvtf, dict );
+  }
+
+ */
 public class LinkOut {
 	//keyword that marks properties that should be added to LinkOut
 	private static final String nodeMarker = "nodelinkouturl.";
@@ -49,6 +78,7 @@ public class LinkOut {
 	private static String externalLinksAttribute = "Linkout.ExternalLinks";
 	private Properties props;
 	private static final Font TITLE_FONT = new Font("sans-serif", Font.BOLD, 14);
+	CyServiceRegistrar registrar;
 
 	//null constractor
 	/**
@@ -56,15 +86,206 @@ public class LinkOut {
 	 */
 	public LinkOut() {
 	}
+	
+	public LinkOut(CyProperty<Properties> properties, CyServiceRegistrar registrar)
+	{
+	    props = properties.getProperties();
+	    this.registrar = registrar;
+		System.out.println("Got linkout");
+		readProperties(properties);
+		// now link through properties
+		addLinksFromProperties();
+		
+		// TODO: how to deal with external properties that the user may have set on a particular node/edge?		
+		
+	}
+
+	/**
+	 * Read properties values from linkout.props file included in the
+	 * linkout.jar file and apply those properties to the base Cytoscape
+	 * properties.  Only apply the properties from the jar file if
+	 * NO linkout properties already exist.
+	 * This allows linkout properties to be specified  on the command line,
+	 * editted in the preferences dialog, and to be saved with other
+	 * properties.
+	 */
+	
+	private void readProperties(CyProperty<Properties> properties) {
+		// Set the properties to be Cytoscape's properties.
+		// This allows the linkout properties to be edited in
+		// the preferences editor.
+		//System.out.println(CytoscapeInit.getPropertiesLocation());
+//		props = CytoscapeInit.getProperties();
+
+		props = properties.getProperties();
+		
+		// Loop over the default props and see if any
+		// linkout urls have been specified.  We don't want to
+		// override or even supplement what was set from the
+		// command line. Only use the defaults if nothing
+		// else can be found.
+		boolean linkoutFound = false;
+		boolean externalLinkNameFound = false;
+		
+		Enumeration names = props.propertyNames();
+
+		while (names.hasMoreElements()) {
+			String name = (String) names.nextElement();
+			if (name.compareToIgnoreCase(linkMarker) == 0) {
+				externalLinkNameFound = true;
+				externalLinksAttribute = props.getProperty(linkMarker);
+				continue;
+			}
+			int p = name.lastIndexOf(nodeMarker);
+			int q = name.lastIndexOf(edgeMarker);
+
+			if (p != -1 || q != -1) {
+				linkoutFound = true;
+
+				break;
+			}
+		}
+
+		// If we don't have any linkout properties, load the defaults.
+		if (!linkoutFound) {
+			try {
+				System.out.println("loading defaults");
+
+				ClassLoader cl = LinkOut.class.getClassLoader();
+				props.load(cl.getResource("linkout.props").openStream());
+				if (!externalLinkNameFound) {
+					externalLinksAttribute = props.getProperty(linkMarker);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Couldn't load default linkout props");
+			}
+		}
+	}
+
+	
+	public void addLinksFromProperties ()
+	{
+		// AJK: 06/11/09 just a test, get rid of this later
+		   Dictionary<String,String> dict1 = new Hashtable<String,String>();
+		    dict1.put("preferredMenu","Linkout menus here");
+		    NodeViewTaskFactory nvtf1 = new LinkoutTaskFactory("testURL");
+		    registrar.registerService( nvtf1, LinkoutTaskFactory.class, dict1 );
+		    
+		//iterate through properties list
+		try {
+
+		    
+			for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
+				String propKey = (String) e.nextElement();
+				int p = propKey.lastIndexOf(nodeMarker);
+
+				if (p == -1)
+					continue;
+
+				p = p + nodeMarker.length();
+
+				//the URL
+				String url = props.getProperty(propKey);
+
+				if (url == null) {
+					url = "<html><small><i>empty- no links<br> See documentation</i></small></html>"
+					      + "http://www.cytoscape.org/";
+				}
+
+				// TODO: do a proper substitution of node/edge name into the link values
+				/*
+				String fUrl = subsAttrs(url, na, nodeId, "ID", "");
+
+				//the link name
+				String[] temp = ((String) propKey.substring(p)).split("\\.");
+				ArrayList keys = new ArrayList(Arrays.asList(temp));
+
+				//Generate the menu path
+				generateLinks(keys, top_menu, fUrl);
+				*/
+				
+				// AJK: 06/11/09 code to set preferred menu
+				   Dictionary<String,String> dict = new Hashtable<String,String>();
+				    dict.put("preferredMenu",propKey);
+				    NodeViewTaskFactory nvtf = new LinkoutTaskFactory(url);
+				    registrar.registerService( nvtf, LinkoutTaskFactory.class, dict );
+			}
+
+			// Now, see if the user has specified their own URL to add to linkout
+			// TODO: generate external links later
+//			generateExternalLinks(na, nodeId, top_menu);
+
+			//if no links specified insert a default message
+			// TODO: deal with no links specified
+			/*
+			if (top_menu.getMenuComponentCount() == 0) {
+				String url = "<html><small><i>empty- no links<br> See documentation</i></small></html>"
+				             + "http://www.cytoscape.org/";
+				top_menu.add(new JMenuItem(url));
+			}
+			*/
+
+			// For debugging
+			// printMenu(top_menu);
+		} catch (NullPointerException e) {
+			String url = "<html><small><i>empty- no links<br> See documentation</i></small></html>"
+			             + "http://www.cytoscape.org/";
+			// TOTO: deal with error condition and set topt level menu item
+//			top_menu.add(new JMenuItem(url));
+			System.err.println("NullPointerException: " + e.getMessage());
+		}
+
+//		return top_menu;
+	}
+	
+	/**
+	 * private classes
+	 */
+	
+	// AJK: 06/11/09 task factory classes
+  
+    private class LinkoutTaskFactory implements NodeViewTaskFactory {
+        private String link;
+        private View<CyNode> nodeView;
+        public LinkoutTaskFactory (String link) {
+            this.link = link;
+        }
+        public void setNodeView(View<CyNode> v, CyNetworkView nv) {
+            this.nodeView = v;
+        }
+        public Task getTask() { return new LinkoutTask(link, nodeView); }
+    }
+
+  
+    private class LinkoutTask implements Task {
+        private String link;
+        private View<CyNode> nodeView;
+        public LinkoutTask (String link, View<CyNode> v) {
+            this.link = link;
+            this.nodeView = v;
+        }
+        public void run(TaskMonitor tm) {
+            System.out.println("LinkoutTask " + link);
+            // TODO: get OpenBrowser working
+//            OpenBrowser.openURL(link);
+        }
+        public void cancel() {}
+    }
+
+	/**
+	 * everything from here on in is commented out
+	 */
 
 	/**
 	 * Generates URL links with node name and places them in hierarchical JMenu list
-	 * @param node the NodeView.
+	 * @param node the View<Node>.
 	 * @return JMenuItem
 	 */
-	public JMenuItem addLinks(NodeView node) {
+	/*
+	public JMenuItem addLinks(View<Node> node) {
 		// System.out.println("linkout.addLinks called with node "
-		//                    + ((NodeView) node).getLabel().getText());
+		//                    + ((View<Node>) node).getLabel().getText());
 		readProperties();
 
 		final JMenu top_menu = new JMenu("LinkOut");
@@ -76,8 +297,10 @@ public class LinkOut {
 
 		//iterate through properties list
 		try {
-			CyAttributes na = Cytoscape.getNodeAttributes();
-			final NodeView mynode = (NodeView) node;
+//			CyAttributes na = Cytoscape.getNodeAttributes();
+			na = node.attrs();
+			
+			final View<Node> mynode = node;
 
 			// Get the set of attribute names for this node
 			CyNode n = mynode.getNode();
@@ -131,6 +354,7 @@ public class LinkOut {
 
 		return top_menu;
 	}
+	*/
 
 	/**
 	 * Perform variable substitution on a url using attribute values.
@@ -153,6 +377,8 @@ public class LinkOut {
 	 * @param prefix a prefix to prepend to attribute names.
 	 * @return modified url after variable substitution
 	 */
+	// TODO: work substition of node attributes into the URL
+	/*
 	private String subsAttrs(String url, CyAttributes attrs, String graphObjId, String idKeyword,
 	                         String prefix) {
 		Set<String> validAttrs = new HashSet<String>();
@@ -185,6 +411,7 @@ public class LinkOut {
 
 		return url;
 	}
+	*/
 
 	/**
 	 *  DOCUMENT ME!
@@ -195,6 +422,8 @@ public class LinkOut {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
+	// TODO: convert attribute to String
+	/*
 	private String attrToString(CyAttributes attributes, String id, String attributeName) {
 		Object value = null;
 		byte attrType = attributes.getType(attributeName);
@@ -215,20 +444,23 @@ public class LinkOut {
 
 			return "N/A";
 	}
+	*/
 
 	/**
 	 * Generate URL links with edge property and places them in hierarchical JMenu list
-	 * @param edge edgeView object
+	 * @param edge View<Edge> object
 	 * @return JMenuItem
 	 */
-	public JMenuItem addLinks(EdgeView edge) {
+	// TODO: add Edge links later
+	/*
+	public JMenuItem addLinks(View<Edge> edge) {
 		readProperties();
 
 		JMenu top_menu = new JMenu("LinkOut");
 
 		//iterate through properties list
 		try {
-			final EdgeView myedge = (EdgeView) edge;
+			final View<Edge> myedge = edge;
 
 			// Replace edge attributes with values
 			CyEdge ed = myedge.getEdge();
@@ -293,6 +525,7 @@ public class LinkOut {
 
 		return top_menu;
 	}
+	*/
 
 	/**
 	 * Recursive method that expands the current menu list
@@ -301,6 +534,9 @@ public class LinkOut {
 	 * @param j JMenu the curren JMenu object
 	 * @param url String the url to link the node
 	 */
+	/* TODO: generateLinks with cascading menus.  For initial port, just use the full property name as name
+	 *    
+	 
 	private void generateLinks(ArrayList keys, JMenu j, final String url) {
 		//Get the sub-menu
 		JMenuItem jmi = getMenuItem((String) keys.get(0), j);
@@ -350,13 +586,17 @@ public class LinkOut {
 
 		return;
 	}
+	*/
 
 	/**
 	 * Search for an existing JmenuItem that is nested within a higher level JMenu
 	 * @param name String the name of the jmenu item
 	 * @param menu JMenu the parent JMenu to search in
 	 * @return JMenuItem if found, null otherwise
+	 *
 	 */
+	// TODO: get rid of getMenuItem()?
+	/*
 	private JMenuItem getMenuItem(String name, JMenu menu) {
 		int count = menu.getMenuComponentCount();
 
@@ -380,10 +620,12 @@ public class LinkOut {
 
 		return null;
 	}
+	*/
 
 	/**
 	 * Print menu items - for debugging
 	 */
+	/*
 	private void printMenu(JMenu jm) {
 		int count = jm.getMenuComponentCount();
 
@@ -398,65 +640,9 @@ public class LinkOut {
 			}
 		}
 	}
+	*/
 
-	/**
-	 * Read properties values from linkout.props file included in the
-	 * linkout.jar file and apply those properties to the base Cytoscape
-	 * properties.  Only apply the properties from the jar file if
-	 * NO linkout properties already exist.
-	 * This allows linkout properties to be specified  on the command line,
-	 * editted in the preferences dialog, and to be saved with other
-	 * properties.
-	 */
-	private void readProperties() {
-		// Set the properties to be Cytoscape's properties.
-		// This allows the linkout properties to be edited in
-		// the preferences editor.
-		//System.out.println(CytoscapeInit.getPropertiesLocation());
-		props = CytoscapeInit.getProperties();
-
-		// Loop over the default props and see if any
-		// linkout urls have been specified.  We don't want to
-		// override or even supplement what was set from the
-		// command line. Only use the defaults if nothing
-		// else can be found.
-		boolean linkoutFound = false;
-		boolean externalLinkNameFound = false;
-		Enumeration names = props.propertyNames();
-
-		while (names.hasMoreElements()) {
-			String name = (String) names.nextElement();
-			if (name.compareToIgnoreCase(linkMarker) == 0) {
-				externalLinkNameFound = true;
-				externalLinksAttribute = props.getProperty(linkMarker);
-				continue;
-			}
-			int p = name.lastIndexOf(nodeMarker);
-			int q = name.lastIndexOf(edgeMarker);
-
-			if (p != -1 || q != -1) {
-				linkoutFound = true;
-
-				break;
-			}
-		}
-
-		// If we don't have any linkout properties, load the defaults.
-		if (!linkoutFound) {
-			try {
-				System.out.println("loading defaults");
-
-				ClassLoader cl = LinkOut.class.getClassLoader();
-				props.load(cl.getResource("linkout.props").openStream());
-				if (!externalLinkNameFound) {
-					externalLinksAttribute = props.getProperty(linkMarker);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("Couldn't load default linkout props");
-			}
-		}
-	}
+	
 
 	/**
  	 * If we have an ExternalLinks attribute, see if it's formatted as a LinkOut,
@@ -470,6 +656,8 @@ public class LinkOut {
  	 * @param id the ID of the object we are currently linking out from
  	 * @param menu the menu to add links to
  	 */
+	// TODO: add external links later
+	/*
 	private void generateExternalLinks(CyAttributes attributes, String id, JMenu menu) {
 		if (attributes.hasAttribute(id, externalLinksAttribute)) {
 			// Maybe.....
@@ -502,4 +690,7 @@ public class LinkOut {
 		key.add(pair[0]);
 		generateLinks(key, menu, pair[1]);
 	}
+	*/
+	
+
 }
