@@ -9,5 +9,7 @@
         interface="org.cytoscape.property.CyProperty" />
 <osgi:reference id="cyServiceRegistrarRef"
         interface="org.cytoscape.service.util.CyServiceRegistrar" />
+<osgi:reference id="openBrowserRef"
+        interface="cytoscape.util.OpenBrowser" />
 
 </beans>

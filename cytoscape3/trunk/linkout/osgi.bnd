@@ -2,5 +2,4 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Bundle-Activator: cytoscape.linkout.LinkOutPlugin
 Private-Package: cytoscape.linkout.*

@@ -11,6 +11,7 @@ import org.cytoscape.model.CyRow;
 //import org.cytoscape.view.NodeView;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import cytoscape.util.OpenBrowser;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -79,6 +80,7 @@ public class LinkOut {
 	private Properties props;
 	private static final Font TITLE_FONT = new Font("sans-serif", Font.BOLD, 14);
 	CyServiceRegistrar registrar;
+	OpenBrowser browser;
 
 	//null constractor
 	/**
@@ -87,10 +89,11 @@ public class LinkOut {
 	public LinkOut() {
 	}
 	
-	public LinkOut(CyProperty<Properties> properties, CyServiceRegistrar registrar)
+	public LinkOut(CyProperty<Properties> properties, CyServiceRegistrar registrar, OpenBrowser browser)
 	{
 	    props = properties.getProperties();
 	    this.registrar = registrar;
+	    this.browser = browser;
 		System.out.println("Got linkout");
 		readProperties(properties);
 		// now link through properties
@@ -170,7 +173,7 @@ public class LinkOut {
 		   Dictionary<String,String> dict1 = new Hashtable<String,String>();
 		    dict1.put("preferredMenu","Linkout menus here");
 		    NodeViewTaskFactory nvtf1 = new LinkoutTaskFactory("testURL");
-		    registrar.registerService( nvtf1, LinkoutTaskFactory.class, dict1 );
+		    registrar.registerService( nvtf1, NodeViewTaskFactory.class, dict1 );
 		    
 		//iterate through properties list
 		try {
@@ -209,7 +212,7 @@ public class LinkOut {
 				   Dictionary<String,String> dict = new Hashtable<String,String>();
 				    dict.put("preferredMenu",propKey);
 				    NodeViewTaskFactory nvtf = new LinkoutTaskFactory(url);
-				    registrar.registerService( nvtf, LinkoutTaskFactory.class, dict );
+				    registrar.registerService( nvtf, NodeViewTaskFactory.class, dict );
 			}
 
 			// Now, see if the user has specified their own URL to add to linkout
@@ -238,13 +241,74 @@ public class LinkOut {
 
 //		return top_menu;
 	}
+
+	
+	/**
+	 * Perform variable substitution on a url using attribute values.
+	 *
+	 * Given a url, look for attribute names within that url specified by %AttributeName%
+	 * If our current node or edge (as specified by graphObjId) has an attribute name that
+	 * matches the string in the URL, replace the string with the value of the attribute.
+	 *
+	 * Special cases:
+	 * 1. For backwards compatibility, if the attribute name given by idKeyword is found
+	 *    substitute the value of the attribute id as given by graphObjId.
+	 * 2. When looking for attribute names, we can specify that they must have a prefix added
+	 *    to the beginning.  This allows us to specify a "from" or "to" prefix in edge attributes
+	 *    so that from.AttributeName and to.AttributeName can select different properties.
+	 *
+	 * @param url the url to perform replacements on.
+	 * @param attrs  a set of node or edge attributes.
+	 * @param graphObjId the id of the node or edge that is selected.
+	 * @param idKeyword a special attribute keyword, that if found, should be replaced by graphObjId
+	 * @param prefix a prefix to prepend to attribute names.
+	 * @return modified url after variable substitution
+	 */
+
+	/*
+	private String substituteAttributes(String url, String graphObjId, String idKeyword,
+	                         String prefix) {
+		
+		// TODO: to start, just substitute ID string into the URL
+		//       then we can think about substituting in other attribute values
+		Set<String> validAttrs = new HashSet<String>();
+
+		for (String attrName : attrs.getAttributeNames()) {
+			if (attrs.hasAttribute(graphObjId, attrName)) {
+				validAttrs.add(prefix + attrName);
+			}
+		}
+
+		// Replace %ATTRIBUTE.NAME% mark with the value of the attribute
+		final String REGEX = "%.*%";
+		Pattern pat = Pattern.compile(REGEX);
+		Matcher mat = pat.matcher(url);
+
+		while (mat.find()) {
+			String attrName = url.substring(mat.start() + 1, mat.end() - 1);
+
+			// backwards compatibility, old keywords were %ID%, %ID1%, %ID2%.
+			if (attrName.equals(idKeyword)) {
+				String attrValue = graphObjId;
+				url = url.replace("%" + idKeyword + "%", attrValue);
+				mat = pat.matcher(url);
+			} else if (validAttrs.contains(attrName)) {
+				String attrValue = attrToString(attrs, graphObjId, attrName);
+				url = url.replace("%" + attrName + "%", attrValue);
+				mat = pat.matcher(url);
+			}
+		}
+
+		return url;
+	}
+	*/
 	
 	/**
 	 * private classes
 	 */
 	
 	// AJK: 06/11/09 task factory classes
-  
+
     private class LinkoutTaskFactory implements NodeViewTaskFactory {
         private String link;
         private View<CyNode> nodeView;
@@ -267,8 +331,16 @@ public class LinkOut {
         }
         public void run(TaskMonitor tm) {
             System.out.println("LinkoutTask " + link);
+            
+            // String fUrl = substituteAttributes(link, nodeView, "ID", "");
             // TODO: get OpenBrowser working
-//            OpenBrowser.openURL(link);
+            
+            // TODO: for now, just substitute node ID into %ID% parameter
+            CyNode node = nodeView.getSource();
+            String identifier = node.toString();
+            
+            link = link.replace("%" + "ID" + "%", identifier);
+            browser.openURL(link);
         }
         public void cancel() {}
     }
@@ -356,62 +428,7 @@ public class LinkOut {
 	}
 	*/
 
-	/**
-	 * Perform variable substitution on a url using attribute values.
-	 *
-	 * Given a url, look for attribute names within that url specified by %AttributeName%
-	 * If our current node or edge (as specified by graphObjId) has an attribute name that
-	 * matches the string in the URL, replace the string with the value of the attribute.
-	 *
-	 * Special cases:
-	 * 1. For backwards compatibility, if the attribute name given by idKeyword is found
-	 *    substitute the value of the attribute id as given by graphObjId.
-	 * 2. When looking for attribute names, we can specify that they must have a prefix added
-	 *    to the beginning.  This allows us to specify a "from" or "to" prefix in edge attributes
-	 *    so that from.AttributeName and to.AttributeName can select different properties.
-	 *
-	 * @param url the url to perform replacements on.
-	 * @param attrs  a set of node or edge attributes.
-	 * @param graphObjId the id of the node or edge that is selected.
-	 * @param idKeyword a special attribute keyword, that if found, should be replaced by graphObjId
-	 * @param prefix a prefix to prepend to attribute names.
-	 * @return modified url after variable substitution
-	 */
-	// TODO: work substition of node attributes into the URL
-	/*
-	private String subsAttrs(String url, CyAttributes attrs, String graphObjId, String idKeyword,
-	                         String prefix) {
-		Set<String> validAttrs = new HashSet<String>();
 
-		for (String attrName : attrs.getAttributeNames()) {
-			if (attrs.hasAttribute(graphObjId, attrName)) {
-				validAttrs.add(prefix + attrName);
-			}
-		}
-
-		// Replace %ATTRIBUTE.NAME% mark with the value of the attribute
-		final String REGEX = "%.*%";
-		Pattern pat = Pattern.compile(REGEX);
-		Matcher mat = pat.matcher(url);
-
-		while (mat.find()) {
-			String attrName = url.substring(mat.start() + 1, mat.end() - 1);
-
-			// backwards compatibility, old keywords were %ID%, %ID1%, %ID2%.
-			if (attrName.equals(idKeyword)) {
-				String attrValue = graphObjId;
-				url = url.replace("%" + idKeyword + "%", attrValue);
-				mat = pat.matcher(url);
-			} else if (validAttrs.contains(attrName)) {
-				String attrValue = attrToString(attrs, graphObjId, attrName);
-				url = url.replace("%" + attrName + "%", attrValue);
-				mat = pat.matcher(url);
-			}
-		}
-
-		return url;
-	}
-	*/
 
 	/**
 	 *  DOCUMENT ME!

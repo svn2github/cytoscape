@@ -24,9 +24,10 @@
 
 	<context:annotation-config/>
 
-	<bean id="linkout" class="cytoscape.linkout.cytoscape.LinkOut">
+	<bean id="linkout" class="cytoscape.linkout.LinkOut">
 	    <constructor-arg ref="propertyRef" />
 		<constructor-arg ref="cyServiceRegistrarRef" />
+		<constructor-arg ref="openBrowserRef" />
 	</bean>
 
 </beans>
