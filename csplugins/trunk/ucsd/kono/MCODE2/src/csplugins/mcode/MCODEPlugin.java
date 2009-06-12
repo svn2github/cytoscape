@@ -50,11 +50,17 @@ import csplugins.mcode.internal.action.MCODEMainPanelAction;
 /**
  * MCODE Network Clustering Plug In.
  * Clusters a graph.
+ * 
+ * Refactored by Kei Ono for Group compatibility.
  *
  * @author Gary Bader
  * @author Vuk Pavlovic
  */
 public class MCODEPlugin extends CytoscapePlugin {
+	
+	// Name of the viewer
+	public static final String DEFAULT_VIEWER_NAME = "moduleFinderViewer";
+	
 	/**
 	 * Constructor for the MCODE plugin.
 	 */

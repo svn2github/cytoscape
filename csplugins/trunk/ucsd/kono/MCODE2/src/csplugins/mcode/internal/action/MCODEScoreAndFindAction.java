@@ -72,7 +72,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
 
 	// Keeps track of netowrks (id is key) and their respective algorithms
 	private final Map<String, MCODEAlgorithm> networkManager;
-	
+
 	private boolean resultFound = false;
 	private MCODEResultsPanel resultPanel;
 
@@ -119,11 +119,11 @@ public class MCODEScoreAndFindAction implements ActionListener {
 					"Analysis Interrupted", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		
+
 		Set<CyNode> selectedNodes = network.getSelectedNodes();
 		Integer[] selectedNodesRGI = new Integer[selectedNodes.size()];
 		int c = 0;
-		for (CyNode node: selectedNodes) {
+		for (CyNode node : selectedNodes) {
 			selectedNodesRGI[c] = new Integer(node.getRootGraphIndex());
 			c++;
 		}
@@ -142,7 +142,8 @@ public class MCODEScoreAndFindAction implements ActionListener {
 			alg = networkManager.get(network.getIdentifier());
 			// get a copy of the last saved parameters for comparison with the
 			// current ones
-			savedParamsCopy = MCODECurrentParameters.getParamsCopy(network.getIdentifier());
+			savedParamsCopy = MCODECurrentParameters.getParamsCopy(network
+					.getIdentifier());
 		} else {
 			alg = new MCODEAlgorithm();
 			savedParamsCopy = MCODECurrentParameters.getParamsCopy(null);
@@ -166,8 +167,8 @@ public class MCODEScoreAndFindAction implements ActionListener {
 			analyze = RESCORE;
 			System.err.println("Analysis: score network, find clusters");
 			MCODECurrentParameters.setParams(currentParamsCopy,
-					resultTitlePartA + (resultCounter + 1),
-					network.getIdentifier());
+					resultTitlePartA + (resultCounter + 1), network
+							.getIdentifier());
 		} else if (!currentParamsCopy.getScope().equals(
 				savedParamsCopy.getScope())
 				|| (!currentParamsCopy.getScope().equals(
@@ -191,8 +192,8 @@ public class MCODEScoreAndFindAction implements ActionListener {
 			analyze = REFIND;
 			System.err.println("Analysis: find clusters");
 			MCODECurrentParameters.setParams(currentParamsCopy,
-					resultTitlePartA + (resultCounter + 1),
-					network.getIdentifier());
+					resultTitlePartA + (resultCounter + 1), network
+							.getIdentifier());
 		} else {
 			analyze = INTERRUPTION;
 			interruptedMessage = "The parameters you specified\nhave not changed.";
@@ -238,10 +239,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
 					resultFound = true;
 					resultCounter++;
 
-					resultPanel = new MCODEResultsPanel(scoreAndFindTask
-							.getClusters(), scoreAndFindTask.getAlg(),
-							network, scoreAndFindTask.getImageList(),
-							resultTitlePartA + resultCounter);
+					System.out.println("Successfully finished module search.");
 				} else {
 					resultFound = false;
 					JOptionPane
@@ -256,47 +254,16 @@ public class MCODEScoreAndFindAction implements ActionListener {
 			}
 			scoreAndFindTask = null;
 		}
-		
-		
-		// display MCODEResultsPanel in right cytopanel
-		CytoscapeDesktop desktop = Cytoscape.getDesktop();
-		CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
-		// if there is no change, then we simply focus the last produced results
-		// (below), otherwise we
-		// load the new results panel
-		if (resultFound) {
-			String resultTitle = resultTitlePartA + resultCounter;
-			resultPanel.setResultTitle(resultTitle);
 
-			URL iconURL = MCODEPlugin.class.getResource("resources/logo2.png");
-			if (iconURL != null) {
-				Icon icon = new ImageIcon(iconURL);
-				String tip = "MCODE Cluster Finder";
-				try {
-					cytoPanel.add(resultTitle, icon, resultPanel, tip);
-				} catch (java.lang.ArrayIndexOutOfBoundsException e) {
-				} // exception thrown by java functions when more than one tab
-					// is added, all tabs are deleted and then a new tab is
-					// added...
-			} else {
-				cytoPanel.add(resultTitle, resultPanel);
-			}
-		}
 		// this if statemet ensures that the east cytopanel is not loaded if
 		// there are no results in it
-		if (resultFound
-				|| (analyze == INTERRUPTION && cytoPanel
-						.indexOfComponent(resultPanel) >= 0)) {
-			// focus the result panel
-			int index = cytoPanel.indexOfComponent(resultPanel);
-			cytoPanel.setSelectedIndex(index);
-			cytoPanel.setState(CytoPanelState.DOCK);
+		if (resultFound) {
 
 			// We also make sure that the MCODE visual style is applied whenever
 			// new results are produced
-			VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-			vmm.setVisualStyle(MCODEVS);
-			vmm.applyAppearances();
+//			VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+//			vmm.setVisualStyle(MCODEVS);
+//			vmm.applyAppearances();
 		}
 	}
 }
