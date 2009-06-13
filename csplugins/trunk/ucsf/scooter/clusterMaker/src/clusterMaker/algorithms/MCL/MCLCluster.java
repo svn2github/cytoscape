@@ -59,6 +59,7 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 	double clusteringThresh = 1e-15;
 	boolean takeNegLOG = false;
 	boolean createNewNetwork = false;
+	boolean createMetaNodes = false;
 	boolean selectedOnly = false;
 	double maxResidual = 0.001;
 	String[] attributeArray = new String[1];
@@ -131,6 +132,10 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
 		// Whether or not to create a new network from the results
+		clusterProperties.add(new Tunable("createMetaNodes","Create meta nodes for clusters",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
+
+		// Whether or not to create a new network from the results
 		clusterProperties.add(new Tunable("selectedOnly","Cluster only selected nodes",
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
@@ -179,6 +184,10 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		if ((t != null) && (t.valueChanged() || force))
 			takeNegLOG = ((Boolean) t.getValue()).booleanValue();
 
+		t = clusterProperties.get("createMetaNodes");
+		if ((t != null) && (t.valueChanged() || force))
+			createMetaNodes = ((Boolean) t.getValue()).booleanValue();
+
 		t = clusterProperties.get("createNewNetwork");
 		if ((t != null) && (t.valueChanged() || force))
 			createNewNetwork = ((Boolean) t.getValue()).booleanValue();
@@ -220,11 +229,19 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		if (debug)
 			logger.debug("Performing MCL clustering with attributes: "+dataAttribute);
 
+		String clusterAttrName = Cytoscape.getCurrentNetwork().getIdentifier()+"_cluster";
 		//Cluster the nodes
-		runMCL = new RunMCL("cluster", dataAttribute, inflation_parameter, 
-		                           rNumber, clusteringThresh, maxResidual, 
-		                           takeNegLOG, createNewNetwork, selectedOnly,
-		                           logger);
+		runMCL = new RunMCL(clusterAttrName, dataAttribute, inflation_parameter, 
+		                           rNumber, clusteringThresh, maxResidual, logger);
+		if (createNewNetwork)
+			runMCL.createNewNetwork();
+
+		if (selectedOnly)
+			runMCL.selectedOnly();
+
+		if (createMetaNodes)
+			runMCL.createMetaNodes();
+
 		runMCL.run(monitor);
 
 		// Tell any listeners that we're done

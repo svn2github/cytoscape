@@ -43,14 +43,14 @@ public class RunMCL {
 	private CyLogger logger;
 	final static String GROUP_ATTRIBUTE = "__MCLGroups";
 	protected int clusterCount = 0;
-	private boolean debug = false;
+	private boolean debug = true;
 	private boolean createNewNetwork = false;
+	private boolean createMetaNodes = false;
 	
 	public RunMCL(String nodeClusterAttributeName, String edgeAttributeName, 
 	              double inflationParameter, int num_iterations, 
 	              double clusteringThresh, double maxResidual,
-	              boolean takeNegLOG, boolean createNewNetwork, 
-	              boolean selectedOnly, CyLogger logger )
+	              CyLogger logger )
 	{
 		
 		this.nodeClusterAttributeName = nodeClusterAttributeName;
@@ -61,14 +61,19 @@ public class RunMCL {
 		this.maxResidual = maxResidual;
 		this.takeNegLOG = takeNegLOG;
 		this.logger = logger;
-		this.createNewNetwork = createNewNetwork;
-		this.selectedOnly = selectedOnly;
+		this.createNewNetwork = false;
+		this.selectedOnly = false;
+		this.createMetaNodes = false;
 		// logger.info("InflationParameter = "+inflationParameter);
 		// logger.info("Iterations = "+num_iterations);
 		// logger.info("Clustering Threshold = "+clusteringThresh);
 	}
 
 	public void halt () { canceled = true; }
+
+	public void createNewNetwork() { createNewNetwork = true; }
+	public void selectedOnly() { selectedOnly = true; }
+	public void createMetaNodes() { createMetaNodes = true; }
 	
 	public void run(TaskMonitor monitor)
 	{
@@ -81,6 +86,7 @@ public class RunMCL {
 			nodes.addAll(network.getSelectedNodes());
 			edges = network.getConnectingEdges(nodes);
 		}
+
 		// double[][] graph = new double[this.nodes.size()][this.nodes.size()];
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -89,7 +95,8 @@ public class RunMCL {
 		// Matrix matrix;
 		double numClusters;
 		double edgeWeight;
-		double minEdgeWeight = 0;
+		double minEdgeWeight = Double.MAX_VALUE;
+		double maxEdgeWeight = Double.MIN_VALUE;
 		int sourceIndex;
 		int targetIndex;
 
@@ -121,6 +128,9 @@ public class RunMCL {
 
 			if(edgeWeight < minEdgeWeight)
 				minEdgeWeight = edgeWeight;
+
+			if(edgeWeight > maxEdgeWeight)
+				maxEdgeWeight = edgeWeight;
 		      
 			/*Add edge to matrix*/
 			sourceIndex = nodes.indexOf(edge.getSource());
@@ -128,7 +138,7 @@ public class RunMCL {
 			//graph[targetIndex][sourceIndex] = edgeWeight;
 			matrix.set(targetIndex,sourceIndex,edgeWeight);
 
-			if(!edge.isDirected())
+			// if(!edge.isDirected())
 				matrix.set(sourceIndex,targetIndex,edgeWeight);
 				// graph[sourceIndex][targetIndex] = edgeWeight;
 			if (canceled) {
@@ -137,18 +147,10 @@ public class RunMCL {
 			}
 		}
 
-		if(minEdgeWeight < 0) {
-			for (CyEdge edge: edges) {
-				sourceIndex = nodes.indexOf(edge.getSource());
-				targetIndex = nodes.indexOf(edge.getTarget());
-				matrix.set(sourceIndex, targetIndex, matrix.get(sourceIndex,targetIndex) - minEdgeWeight);
-				if(!edge.isDirected())
-					matrix.set(targetIndex, sourceIndex, matrix.get(targetIndex,sourceIndex) - minEdgeWeight);
-			}
-		}
+		normalizeWeights(matrix, minEdgeWeight, maxEdgeWeight);
 
-		// debugln("Initial matrix:");
-		// printMatrix(matrix);
+		debugln("Initial matrix:");
+		printMatrix(matrix);
 
 		// Normalize
 		normalize(matrix, clusteringThresh);
@@ -184,6 +186,7 @@ public class RunMCL {
 			matrix.trimToSize();
 			residual = calculateResiduals(matrix);
 			debugln("Iteration: "+(i+1)+" residual: "+residual);
+			printMatrix(matrix);
 
 			if (canceled) {
 				monitor.setStatus("canceled");
@@ -193,7 +196,7 @@ public class RunMCL {
 
 		// If we're in debug mode, output the matrix
 		printMatrixInfo(matrix);
-		// printMatrix(matrix);
+		printMatrix(matrix);
 
 		monitor.setStatus("Assigning nodes to clusters");
 
@@ -229,23 +232,26 @@ public class RunMCL {
 
 		logger.info("Creating groups");
 
-		List<String> groupList;
+		List<String> groupList = null;;
 
 		// Finally, if we're supposed to, create the new network
 		if (createNewNetwork) {
-		 	createClusteredNetwork(clusters);
-			groupList = new ArrayList(); // keep track of the groups we create
-			for (Cluster cluster: clusters) {
-				String groupName = nodeClusterAttributeName+"_"+cluster.getClusterNumber();
-				groupList.add(groupName);
-			}
-		} else {
+		 	networkID = createClusteredNetwork(clusters);
+		}
+
+		if (createMetaNodes) {
 			// Now, create the groups
 			groupList = createGroups(clusters);
 
 			// Now notify the metanode viewer
 			CyGroup group = CyGroupManager.findGroup(groupList.get(0));
 			CyGroupManager.setGroupViewer(group, "metaNode", Cytoscape.getCurrentNetworkView(), true);
+		} else {
+			groupList = new ArrayList(); // keep track of the groups we create
+			for (Cluster cluster: clusters) {
+				String groupName = nodeClusterAttributeName+"_"+cluster.getClusterNumber();
+				groupList.add(groupName);
+			}
 		}
 
 		// Save the network attribute so we remember which groups are ours
@@ -277,6 +283,17 @@ public class RunMCL {
 				matrix.set(row,row,1.0);
 			}
 		}
+	}
+
+	/**
+	 * This method normalizes the weights to between 0 and 1.
+	 *
+	 * @param matrix the (sparse) data matrix we're operating on
+	 * @param min the minimum weight
+	 * @param max the maximum weight
+	 */
+	private void normalizeWeights(DoubleMatrix2D matrix, double min, double max) {
+		matrix.forEachNonZero(new MatrixNormalizeWeights(min, max));
 	}
 
 	/**
@@ -320,6 +337,7 @@ public class RunMCL {
 	 */
 	private void printMatrix(DoubleMatrix2D matrix) {
 		for (int row = 0; row < matrix.rows(); row++) {
+			debug(nodes.get(row).getIdentifier()+":\t");
 			for (int col = 0; col < matrix.columns(); col++) {
 				debug(""+matrix.get(row,col)+"\t");
 			}
@@ -379,7 +397,7 @@ public class RunMCL {
 		return groupList;
 	}
 
-	private void createClusteredNetwork(Set<Cluster> cMap) {
+	private String createClusteredNetwork(Set<Cluster> cMap) {
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
 
 		// Create the new network
@@ -419,6 +437,7 @@ public class RunMCL {
 
 		Cytoscape.setCurrentNetwork(net.getIdentifier());
 		Cytoscape.setCurrentNetworkView(view.getIdentifier());
+		return net.getIdentifier();
 	}
 
 	private void debugln(String message) {
@@ -516,6 +535,20 @@ public class RunMCL {
 		public double apply(int row, int column, double value) {
 			if (canceled) { return 0.0; }
 			return value/rowSums[row];
+		}
+	}
+
+	private class MatrixNormalizeWeights implements IntIntDoubleFunction {
+		double min;
+		double max;
+
+		public MatrixNormalizeWeights(double min, double max) {
+			this.min = min;
+			this.max = max;
+		}
+
+		public double apply(int row, int column, double value) {
+			return (value - min) / (max - min);
 		}
 	}
 
