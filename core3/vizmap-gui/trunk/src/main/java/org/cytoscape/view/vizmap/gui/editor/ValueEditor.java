@@ -10,6 +10,8 @@ public interface ValueEditor<V> {
 	 * 
 	 * @return
 	 */
-	public V showEditor(Component parent);
+	public V showEditor(Component parent, V initialValue);
+	
+	public Class<V> getType();
 
 }

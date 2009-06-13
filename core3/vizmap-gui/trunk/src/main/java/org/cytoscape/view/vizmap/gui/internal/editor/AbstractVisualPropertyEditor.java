@@ -94,6 +94,9 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 * @return  DOCUMENT ME!
 	 */
 	public T showVisualPropertyValueEditor() {
+		if(vpValueEditor == null) {
+			// Search value editor repository 
+		}
 		vpValueEditor.setVisible(true);
 		
 		//TODO: need new interface for value editor

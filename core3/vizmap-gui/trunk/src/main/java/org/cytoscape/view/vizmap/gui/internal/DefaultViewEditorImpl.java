@@ -422,7 +422,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 			VisualProperty<V> vp = (VisualProperty<V>) list.getSelectedValue();
 			try {
-				newValue = editorFactory.showVisualPropertyValueEditor(this, vp);
+				newValue = editorFactory.showVisualPropertyValueEditor(this, vp, null);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

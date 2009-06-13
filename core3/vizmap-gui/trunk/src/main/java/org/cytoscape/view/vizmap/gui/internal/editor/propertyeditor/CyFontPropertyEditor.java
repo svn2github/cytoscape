@@ -59,19 +59,19 @@ public class CyFontPropertyEditor extends FontPropertyEditor {
 	}
 
 	protected void selectFont() {
-		ResourceManager rm = ResourceManager.all(FontPropertyEditor.class);
-		String title = rm.getString("FontPropertyEditor.title");
-
-		Font font = (Font) super.getValue();
-
-		Font selectedFont = FontEditor.showDialog(parent, font);
-
-		if (selectedFont != null) {
-			Font oldFont = font;
-			Font newFont = selectedFont;
-
-			super.setValue(newFont);
-			firePropertyChange(oldFont, newFont);
-		}
+//		ResourceManager rm = ResourceManager.all(FontPropertyEditor.class);
+//		String title = rm.getString("FontPropertyEditor.title");
+//
+//		Font font = (Font) super.getValue();
+//
+//		Font selectedFont = FontEditor.showDialog(parent, font);
+//
+//		if (selectedFont != null) {
+//			Font oldFont = font;
+//			Font newFont = selectedFont;
+//
+//			super.setValue(newFont);
+//			firePropertyChange(oldFont, newFont);
+//		}
 	}
 }

@@ -109,7 +109,7 @@ public class CyColorPropertyEditor extends AbstractPropertyEditor {
 	protected void selectColor() {
 		ResourceManager rm = ResourceManager.all(FilePropertyEditor.class);
 		String title = rm.getString("ColorPropertyEditor.title");
-		Color selectedColor = chooser.showEditor(editor);
+		Color selectedColor = chooser.showEditor(editor, color);
 
 		if (selectedColor != null) {
 			Color oldColor = color;

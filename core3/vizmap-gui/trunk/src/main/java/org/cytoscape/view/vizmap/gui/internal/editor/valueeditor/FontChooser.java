@@ -59,7 +59,7 @@ import org.cytoscape.view.vizmap.gui.internal.cellrenderer.FontCellRenderer;
  * Defines a generalized font chooser class. FontChooser contains three
  * components to display font face selection.
  */
-class FontChooser extends JPanel {
+public class FontChooser extends JPanel {
 	private final static long serialVersionUID = 1202339876728781L;
 	private Font selectedFont;
 	protected DefaultComboBoxModel fontFaceModel;

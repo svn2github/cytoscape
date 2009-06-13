@@ -47,16 +47,24 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
+
 
 
 /**
  *
  */
-public class FontEditor extends JDialog {
+public class FontEditor extends JDialog implements ValueEditor<Font>{
 	private final static long serialVersionUID = 1202339876814272L;
 	
 	private Font font;
-	private static FontChooser chooser = new FontChooser();
+	private FontChooser chooser = new FontChooser();
+	
+	public FontEditor() {
+		super();
+		this.setModal(true);
+		init();
+	}
 
 	/**
 	 * DOCUMENT ME!
@@ -68,28 +76,22 @@ public class FontEditor extends JDialog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static Font showDialog(Component parentComponent, Font begin) {
-		final FontEditor fpc = new FontEditor(parentComponent, begin);
-		fpc.setModal(true);
-		fpc.setAlwaysOnTop(true);
-
-		return fpc.getThisFont();
+	public Font showEditor(Component parent, Font initialValue) {
+		this.setLocationRelativeTo(parent);
+		setModal(true);
+		setAlwaysOnTop(true);
+		font = initialValue;
+		chooser.setSelectedFont(font.deriveFont(1F));
+		setVisible(true);
+		return getThisFont();
 	}
 
-	
 
-	private FontEditor(Component parent, Font begin) {
-		super();
-		this.setModal(true);
-		init(parent, begin);
-	}
-
-	private void init(Component parent, Font begin) {
+	private void init() {
 		this.setTitle("Please select a font...");
-		font = begin;
 
 		if (font != null)
-			chooser.setSelectedFont(begin.deriveFont(1F));
+			chooser.setSelectedFont(font.deriveFont(1F));
 
 		// JComboBox face = chooser.getFaceComboBox();
 		JPanel butPanel = new JPanel(false);
@@ -123,11 +125,19 @@ public class FontEditor extends JDialog {
 		content.add(chooser, BorderLayout.CENTER);
 		content.add(butPanel, BorderLayout.SOUTH);
 		pack();
-		setLocationRelativeTo(parent);
-		setVisible(true);
+
 	}
 
 	private Font getThisFont() {
 		return font;
 	}
+
+
+
+	public Class<Font> getType() {
+		// TODO Auto-generated method stub
+		return Font.class;
+	}
+
+
 }

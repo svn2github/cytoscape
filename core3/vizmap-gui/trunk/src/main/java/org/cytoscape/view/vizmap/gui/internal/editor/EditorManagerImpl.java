@@ -38,7 +38,9 @@ import java.awt.Component;
 import java.beans.PropertyEditor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
@@ -79,8 +81,10 @@ public class EditorManagerImpl implements EditorManager {
 	 * .cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
-	public void addVisualPropertyEditor(VisualPropertyEditor<?> ed, Map properties) {
-		this.editors.put(ed.getVisualProperty(), ed);
+	public void addValueEditor(ValueEditor<?> ve, Map properties) {
+		System.out.println("************* Got V Editor **************** " + ve.toString());
+		
+		this.valueEditors.put(ve.getType(), ve);
 	}
 
 	/*
@@ -91,8 +95,9 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
-	public void removeVisualPropertyEditor(VisualPropertyEditor<?> ed, Map properties) {
-		editors.remove(ed);
+	public void removeValueEditor(ValueEditor<?> lexicon, Map properties) {
+		System.out.println("************* Remove Lexicon ****************");
+		valueEditors.remove(lexicon.getType());
 	}
 
 	// private <T> VisualPropertyEditor<T> findEditor(VisualProperty<T> type) {
@@ -115,11 +120,14 @@ public class EditorManagerImpl implements EditorManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public <V> V showVisualPropertyValueEditor(Component parentComponent,
-			VisualProperty<V> type) throws Exception {
+			VisualProperty<V> type, V initial) throws Exception {
 
-		final VisualPropertyEditor<?> editor = editors.get(type);
+		ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type.getType());
+		
+		if(editor == null)
+			throw new IllegalStateException("No value editor for " + type.getDisplayName() + "is available.");
 
-		return (V) editor.showVisualPropertyValueEditor();
+		return editor.showEditor(null, initial);
 	}
 
 	/*
@@ -234,6 +242,7 @@ public class EditorManagerImpl implements EditorManager {
 
 	public <V> ValueEditor<V> getValueEditor(Class<V> dataType) {
 		// TODO Auto-generated method stub
-		return (ValueEditor<V>) valueEditors.get(dataType);
+		return (ValueEditor<V>) this.valueEditors.get(dataType);
 	}
+
 }

@@ -71,8 +71,9 @@ public class CyColorChooser implements ValueEditor<Color> {
 
 	}
 
-	public Color showEditor(Component parent) {
+	public Color showEditor(Component parent, Color initialValue) {
 
+		color = initialValue;
 		JDialog dialog = JColorChooser.createDialog(parent,
 				"Please pick a color", true, chooser, listener, null);
 		dialog.setVisible(true);
@@ -84,5 +85,10 @@ public class CyColorChooser implements ValueEditor<Color> {
 		public void actionPerformed(ActionEvent e) {
 			color = chooser.getColor();
 		}
+	}
+
+	public Class<Color> getType() {
+		// TODO Auto-generated method stub
+		return Color.class;
 	}
 }

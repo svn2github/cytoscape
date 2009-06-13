@@ -246,7 +246,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 							// final Point location = selectedThumb.getLocation();
 							// double diff = Math.abs(location.getX() - e.getX());
 							if (e.getClickCount() == 2) {
-								final Color newColor = manager.getValueEditor(Color.class).showEditor(slider);
+								final Color newColor = manager.getValueEditor(Color.class).showEditor(slider, null);
 
 								if (newColor != null) {
 									// Set new color

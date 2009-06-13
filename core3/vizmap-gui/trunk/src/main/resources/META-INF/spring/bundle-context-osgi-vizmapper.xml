@@ -6,8 +6,13 @@
 	default-lazy-init="false">
 
 	<!-- Export Service Listeners -->
-	<osgi:service id="vizMapperGUIService" ref="vizMapperMainPanel" auto-export="interfaces" />
-	<osgi:service id="defaultViewEditorService" ref="defViewEditor" auto-export="interfaces" />
+	<osgi:service id="vizMapperGUIService" ref="vizMapperMainPanel"
+		auto-export="interfaces" />
+	<osgi:service id="defaultViewEditorService" ref="defViewEditor"
+		auto-export="interfaces" />
+		
+	<osgi:service id="colorEditorService" ref="colorEditor" auto-export="interfaces"/>
+	<osgi:service id="fontEditorService" ref="fontEditor" auto-export="interfaces"/>
 
 
 
@@ -86,36 +91,41 @@
 	</osgi:set>
 
 
-	<!-- visual property editor services
+	<!--
+		visual property editor services <osgi:service
+		id="continuousColorService" ref="continuousColor"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="continuousContinuousService"
+		ref="continuousContinuous"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="continuousDiscreteService" ref="continuousDiscrete"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="discreteArrowShapeService" ref="discreteArrowShape"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="discreteColorService" ref="discreteColor"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="discreteFontService" ref="discreteFont"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="discreteLabelPositionService"
+		ref="discreteLabelPosition"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="discreteLineStyleService" ref="discreteLineStyle"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="discreteNodeShapeService" ref="discreteNodeShape"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="discreteNumberService" ref="discreteNumber"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+		<osgi:service id="discreteStringService" ref="discreteString"
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
+	-->
 
-	<osgi:service id="continuousColorService" ref="continuousColor"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="continuousContinuousService" ref="continuousContinuous"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="continuousDiscreteService" ref="continuousDiscrete"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="discreteArrowShapeService" ref="discreteArrowShape"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="discreteColorService" ref="discreteColor"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="discreteFontService" ref="discreteFont"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="discreteLabelPositionService" ref="discreteLabelPosition"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="discreteLineStyleService" ref="discreteLineStyle"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="discreteNodeShapeService" ref="discreteNodeShape"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="discreteNumberService" ref="discreteNumber"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	<osgi:service id="discreteStringService" ref="discreteString"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
- -->
-	<osgi:set id="editorSet"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager"
+
+
+	<osgi:set id="valueEditorSet" interface="org.cytoscape.view.vizmap.gui.editor.ValueEditor"
 		cardinality="0..N">
-		<osgi:listener bind-method="addVisualPropertyEditor"
-			unbind-method="removeVisualPropertyEditor" ref="editorManager" />
+		<osgi:listener bind-method="addValueEditor"
+			unbind-method="removeValueEditor" ref="editorManager" />
+
 	</osgi:set>
 
 </beans>

@@ -112,7 +112,7 @@ abstract class VizMapBypass {
 					Object obj = null;
 
 					try {
-						obj = editorFactory.showVisualPropertyValueEditor(menu, type);
+						obj = editorFactory.showVisualPropertyValueEditor(menu, type, null);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						obj = null;

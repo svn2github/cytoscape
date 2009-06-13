@@ -39,6 +39,9 @@
 	</bean>
 
 	<!-- Editors -->
+	
+
+	
 	<!--
 		bean id="continuousColor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.ContinuousColor"
@@ -70,6 +73,9 @@
 	<!-- Value Chooser/Editors -->
 	<bean id="colorEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser" />
+		
+	<bean id="fontEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor" />
 
 
 

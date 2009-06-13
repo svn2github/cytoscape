@@ -43,6 +43,7 @@ import java.util.Map;
 
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 
 
@@ -74,7 +75,7 @@ public interface EditorManager {
 	 *            DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	public void addVisualPropertyEditor(VisualPropertyEditor<?> editor, Map properties);
+	public void addValueEditor(ValueEditor<?> va, Map properties);
 
 	/**
 	 * Listener for OSGi service.
@@ -85,7 +86,7 @@ public interface EditorManager {
 	 *            DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	public void removeVisualPropertyEditor(VisualPropertyEditor<?> editor, Map properties);
+	public void removeValueEditor(ValueEditor<?> va, Map properties);
 	
 	/**
 	 * Display discrete value editor for this visual property.
@@ -95,7 +96,7 @@ public interface EditorManager {
 	 * @throws Exception
 	 *             DOCUMENT ME!
 	 */
-	public <V> V showVisualPropertyValueEditor(Component parentComponent, VisualProperty<V> type)
+	public <V> V showVisualPropertyValueEditor(Component parentComponent, VisualProperty<V> type, V initialVal)
 	    throws Exception;
 
 	/**

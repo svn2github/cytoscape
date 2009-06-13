@@ -276,7 +276,7 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<V> {
 					try {
 						// setAlwaysOnTop(false);
 						newValue = editorFactory.showVisualPropertyValueEditor(
-								parentComponent, type);
+								parentComponent, type, null);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					} finally {

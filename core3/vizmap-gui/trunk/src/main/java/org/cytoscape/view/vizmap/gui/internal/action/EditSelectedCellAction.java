@@ -116,7 +116,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 		Object newValue = null;
 
 		try {
-			newValue = editorFactory.showVisualPropertyValueEditor(vizMapperMainPanel, vp);
+			newValue = editorFactory.showVisualPropertyValueEditor(vizMapperMainPanel, vp, null);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
