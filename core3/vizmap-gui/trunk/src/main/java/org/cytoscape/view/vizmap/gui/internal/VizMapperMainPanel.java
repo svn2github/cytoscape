@@ -158,6 +158,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				"VizMapper\u2122", this);
 		// cytoscapeDesktop.getSwingPropertyChangeSupport()
 		// .addPropertyChangeListener(this);
+		
+		// Switch to the default style.
+		switchVS((VisualStyle) vsComboBox.getSelectedItem());
 	}
 
 	/*

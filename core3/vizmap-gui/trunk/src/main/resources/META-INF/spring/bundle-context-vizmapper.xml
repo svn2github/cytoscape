@@ -76,6 +76,26 @@
 		
 	<bean id="fontEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor" />
+		
+	<bean id="doubleClass" class="java.lang.Class" factory-method="forName" >
+		<constructor-arg value="java.lang.Double" />
+	</bean>
+	<bean id="integerClass" class="java.lang.Class" factory-method="forName" >
+		<constructor-arg value="java.lang.Integer" />
+	</bean>
+	<bean id="floatClass" class="java.lang.Class" factory-method="forName" >
+		<constructor-arg value="java.lang.Float" />
+	</bean>
+	
+	<bean id="doubleValueEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
+		<constructor-arg ref="doubleClass" />
+	</bean>
+	<bean id="integerValueEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
+		<constructor-arg ref="integerClass" />
+	</bean>
+	<bean id="floatValueEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
+		<constructor-arg ref="floatClass" />
+	</bean>
 
 
 

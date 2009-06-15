@@ -11,8 +11,13 @@
 	<osgi:service id="defaultViewEditorService" ref="defViewEditor"
 		auto-export="interfaces" />
 		
+		
+	<!-- Value Editors -->
 	<osgi:service id="colorEditorService" ref="colorEditor" auto-export="interfaces"/>
 	<osgi:service id="fontEditorService" ref="fontEditor" auto-export="interfaces"/>
+	<osgi:service id="doubleValueEditorService" ref="doubleValueEditor" auto-export="interfaces"/>
+	<osgi:service id="integerValueEditorService" ref="integerValueEditor" auto-export="interfaces"/>
+	<osgi:service id="floatValueEditorService" ref="floatValueEditor" auto-export="interfaces"/>
 
 
 
