@@ -28,90 +28,169 @@ void error(const char * p, const char * p2="")
 }
 			    
 
-// This function reads a graph from a file (from) stored in GML format
-// TODO: FIX IT! It's giving segmentation fault!!
+// This function reads a graph from a file (from) stored in a quite strange GML format
+//TODO: FIX free() call in readGml() function. It produces a segmentation fault
+// TODO: Write a function which reads from standard GML format
 			  
 void readGml(graph * g, FILE * from)
 {
-  printf("Reading nodes!!\n");
   int numNodes;
-  char string[MAX_REC_LEN];
+  char string[MAX_REC_LEN]; // used to store data readed from the file temporaly
+
+  printf("Reading nodes!");
+
+  // Skip first 2 lines
   fgets(string, MAX_REC_LEN,from ); // graph [
-  fgets(string, MAX_REC_LEN,from ); //  Creator "makegml" directed 0 label ""
+  fgets(string, MAX_REC_LEN,from ); // Creator "makegml" directed 0 label ""
+
+
+  /*     READ NODES    */
+
+  // Get the offset (starting position)
   fgets(string, MAX_REC_LEN,from ); 
+
   int i=0;
   while(string[i]!='[')
     i++;
   int startPos = i; 
-  numNodes = atoi(string+startPos+4);
-  while(fgets(string, MAX_REC_LEN,from )){
-    int n = atoi(string+startPos+4);
-    if(n!=numNodes+1)
+
+  // Get number of nodes
+  numNodes = atoi(string+startPos+4);       // get initial node number
+  while( fgets(string, MAX_REC_LEN,from) ){ // get a new line
+    int n = atoi(string+startPos+4);        // read node number
+    if(n!=numNodes+1)                       // check whether the new node number is numNodes+1 (if not, we're done here)
       break;
     else  
       numNodes = n;
     //printf("!Node:%ld!\n",ftell (from));		
   }
-  long int secFrom  = ftell (from);
+  printf ("\tnumNodes = %d\n", numNodes);
+
+  /*     FINISH READING NODES      */
+
+
+  // Get the position in the file in which the edge information starts (secFrom)
+  long int secFrom  = ftell (from);         
   secFrom -= (long int)(strlen(string)+1);
-  
-  g->NodePos = (float2 *) malloc((numNodes)*sizeof(float2));
-  g->AdjMatIndex =  (int * )  calloc((numNodes+1),sizeof(int));
-  g->AdjMatIndex[0]=0;
-  int numEdges = 0;
-  printf("Reading edges!!\n"); 
+
+  // Allocate memory for NodePos
+  g->NodePos = (float2*) malloc((numNodes)*sizeof(float2));
+
+  // Allocate memory for AdjMatIndex 
+  g->AdjMatIndex =  (int*) calloc((numNodes+1),sizeof(int));
+
+
+  /*     READ EDGES      */
+
+  g->AdjMatIndex[0]=0;                       // Adjacency list of first node starts in position 0
+  int numEdges = 0;                          // Initialize numEdges
+
+  printf("Reading edges!"); 
+
+  // Get the offset (starting position) for edge numbers
   i = 0;
   while(string[i]!='[')
     i++;
   startPos = i;
+
+  // Get the edge source node (e1)
   int e1 = atoi(string+startPos+9 );
+
+  // Go to the position of edge target node
   i=startPos+9;
   while(string[i]!= 't')
     i++;
+
+  // Get the edge target node (e2)
   int e2 = atoi(string+i+ 6);
-  g->AdjMatIndex[e1]++;
-  g->AdjMatIndex[e2]++;
+
+  // Increase number of edges, Adj Matrix indexes of e1 and e2
+  (g->AdjMatIndex[e1])++;
+  (g->AdjMatIndex[e2])++;
   numEdges++;
   
+  // Process the rest of the edges
   while(fgets(string, MAX_REC_LEN,from )){
+    
+    // Check if the file is finishing
     if((string[0]==']') || (string[1]==']'))
       break;
+
+    // Increase number of edges
     numEdges++;
+
+    // Get the edge source node (e1)
     e1 = atoi(string+startPos+9 );
+
+    // Go to the position of edge target node
     i=0;
     while(string[i]!= 't')
       i++;
+
+    // Get the edge target node (e2)
     int e2 = atoi(string+i+ 6);
-    g->AdjMatIndex[e1]++;
-    g->AdjMatIndex[e2]++;
+    (g->AdjMatIndex[e1])++;
+    (g->AdjMatIndex[e2])++;
   }
+  
+  // Update AdjMatIndex so that each position points to the appropiate element in AdjMatVals
   for(int i = 0; i < numNodes; i++)
     g->AdjMatIndex[i+1] += g->AdjMatIndex[i];
   
-  printf("No of Edges: %d\n",numEdges);
-  g->AdjMatVals  =  (int * )  malloc(2*numEdges*sizeof(int));
-  g->edgeLen     =  (int * )  malloc(2*numEdges*sizeof(int));
-  int * temp =  (int * )  calloc((numNodes),sizeof(int));
-  initGraph(g,numNodes); g->numEdges = 2*numEdges;
-  
+  printf("\tNumber of Edges = %d\n",numEdges);
+
+  // Allocate memory for AdjMatVals, edgeLen
+  g->AdjMatVals  = (int*) malloc(2*numEdges*sizeof(int));
+  g->edgeLen     = (int*) malloc(2*numEdges*sizeof(int));
+
+  // Allocate memory for temp, an auxiliary array, initialize it whith zeros
+  int *temp      = (int*) calloc(numNodes,sizeof(int));
+
+  // Initialize Graph
+  initGraph(g,numNodes); 
+
+  // Save numEdges
+  g->numEdges = 2*numEdges;
+
+  // Go to secFrom position in file "from" (where the edge information starts)
   fseek ( from, secFrom, SEEK_SET );
-  while(fgets(string, MAX_REC_LEN,from )){
+  while( fgets(string, MAX_REC_LEN,from )){
     
-    if((string[0]==']') || (string[1]==']'))
+    // Check if the file is finishing
+    if( (string[0]==']') || (string[1]==']') )
       break;
+
+    // Get the edge source node (e1)
     e1 = atoi(string+startPos+9 );
+
+    // Go to the position of edge target node
     i=0;
     while(string[i]!= 't')
       i++;
+
+    // Get the edge target node (e2)
     int e2 = atoi(string+i+ 6);
+
+    // Add e1 to adjacency list of e2 and vice versa.
     g->AdjMatVals[g->AdjMatIndex[e1-1]+temp[e1-1]] = e2-1;
     g->AdjMatVals[g->AdjMatIndex[e2-1]+temp[e2-1]] = e1-1;
+
+    // Save edge lenght for this edge
     g->edgeLen[g->AdjMatIndex[e1-1]+temp[e1-1]] = EDGE_LEN;
     g->edgeLen[g->AdjMatIndex[e2-1]+temp[e2-1]] = EDGE_LEN;
-    temp[e1-1]++;
-    temp[e2-1]++;
+
+    // Increase the number of neighbors already processed of e1 and e2 
+    (temp[e1 - 1])++;
+    (temp[e2 - 1])++;
+
+    // printf ("temp[e1-1] = %d\n", temp[e1 - 1]);
+    //printf ("temp[e2-1] = %d\n", temp[e2 - 1]);
+    //printf ("\tprocessed edge: %d - %d \n", e1, e2);
+
   }
-  free(temp);
+ 
+  // FIX IT! The following free() call gives segmentation fault
+  //  free ((void*) temp);
 }
 
 
