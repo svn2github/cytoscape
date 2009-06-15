@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -36,17 +36,18 @@
 
 package org.cytoscape.cmdline.launcher.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.felix.fileinstall.FileInstall;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.framework.util.StringMap;
 import org.apache.felix.main.AutoActivator;
 import org.apache.felix.main.Main;
-import org.apache.felix.fileinstall.FileInstall;
-
-import org.osgi.framework.Constants;
 import org.osgi.framework.BundleActivator;
-
-import java.util.*;
 
 
 /**
@@ -90,6 +91,7 @@ public class Launcher {
 			Felix m_felix = new Felix(configMap);
 			m_felix.start();
 
+			//System.out.println("success!!!!");
             // Wait for framework to stop to exit the VM.
             m_felix.waitForStop(0);
             System.exit(0);
