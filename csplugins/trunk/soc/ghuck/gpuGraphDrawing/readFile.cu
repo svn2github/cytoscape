@@ -32,6 +32,28 @@ void error(const char * p, const char * p2="")
 //TODO: FIX free() call in readGml() function. It produces a segmentation fault
 // TODO: Write a function which reads from standard GML format
 			  
+
+
+/******************************* FORMAT SAMPLE ***********************
+graph [
+ Creator "makegml" directed 0 label ""
+  node [ id 1 ]
+  node [ id 2 ]
+  node [ id 3 ]
+  node [ id 4 ]
+  node [ id 5 ]
+  node [ id 6 ]
+edge [ source 1 target 3 ]
+edge [ source 1 target 4 ]
+edge [ source 2 target 2 ]
+edge [ source 2 target 3 ]
+edge [ source 3 target 1 ]
+edge [ source 3 target 2 ]
+edge [ source 4 target 5 ]
+]
+**************************************************************************/
+
+
 void readGml(graph * g, FILE * from)
 {
   int numNodes;
