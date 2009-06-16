@@ -1,7 +1,9 @@
 package clusterMaker.algorithms.MCL;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,9 +45,11 @@ public class RunMCL {
 	private CyLogger logger;
 	final static String GROUP_ATTRIBUTE = "__MCLGroups";
 	protected int clusterCount = 0;
-	private boolean debug = true;
+	private boolean debug = false;
 	private boolean createNewNetwork = false;
 	private boolean createMetaNodes = false;
+	private boolean adjustLoops = false;
+	private boolean directedEdges = false;
 	
 	public RunMCL(String nodeClusterAttributeName, String edgeAttributeName, 
 	              double inflationParameter, int num_iterations, 
@@ -64,6 +68,7 @@ public class RunMCL {
 		this.createNewNetwork = false;
 		this.selectedOnly = false;
 		this.createMetaNodes = false;
+		this.adjustLoops = false;
 		// logger.info("InflationParameter = "+inflationParameter);
 		// logger.info("Iterations = "+num_iterations);
 		// logger.info("Clustering Threshold = "+clusteringThresh);
@@ -74,6 +79,8 @@ public class RunMCL {
 	public void createNewNetwork() { createNewNetwork = true; }
 	public void selectedOnly() { selectedOnly = true; }
 	public void createMetaNodes() { createMetaNodes = true; }
+	public void setDirectedEdges() { directedEdges = true; }
+	public void setAdjustLoops() { adjustLoops = true; }
 	
 	public void run(TaskMonitor monitor)
 	{
@@ -92,6 +99,7 @@ public class RunMCL {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
 		String networkID = network.getIdentifier();
+
 		// Matrix matrix;
 		double numClusters;
 		double edgeWeight;
@@ -138,55 +146,73 @@ public class RunMCL {
 			//graph[targetIndex][sourceIndex] = edgeWeight;
 			matrix.set(targetIndex,sourceIndex,edgeWeight);
 
-			// if(!edge.isDirected())
+			if(!directedEdges)
 				matrix.set(sourceIndex,targetIndex,edgeWeight);
 				// graph[sourceIndex][targetIndex] = edgeWeight;
+
 			if (canceled) {
 				monitor.setStatus("canceled");
 				return;
 			}
 		}
 
-		normalizeWeights(matrix, minEdgeWeight, maxEdgeWeight);
+		// normalizeWeights(matrix, minEdgeWeight, maxEdgeWeight);
 
-		debugln("Initial matrix:");
-		printMatrix(matrix);
+		// debugln("Initial matrix:");
+		// printMatrix(matrix);
 
 		// Normalize
-		normalize(matrix, clusteringThresh);
+		normalize(matrix, clusteringThresh, false);
+
+		// debugln("Normalized matrix:");
+		// printMatrix(matrix);
+
+		if (adjustLoops) {
+			// Adjust loops
+			adjustLoops(matrix);
+
+			// debugln("Adjusted matrix:");
+			// printMatrix(matrix);
+		}
 
 		// logger.info("Calculating clusters");
 
 		double residual = 1.0;
 		IntIntDoubleFunction myPow = new MatrixPow(inflationParameter);
-		debugln("residual = "+residual+" maxResidual = "+maxResidual);
+		// debugln("residual = "+residual+" maxResidual = "+maxResidual);
 		for (int i=0; (i<number_iterations)&&(residual>maxResidual); i++)
 		{
 			// Expand
 			{
 				monitor.setStatus("Iteration: "+(i+1)+" expanding ");
-				debugln("Iteration: "+(i+1)+" expanding ");
-				printMatrixInfo(matrix);
+				// debugln("Iteration: "+(i+1)+" expanding ");
+				// printMatrixInfo(matrix);
 				// We really, really want to make sure this is sparse!
 				DoubleMatrix2D newMatrix = DoubleFactory2D.sparse.make(nodes.size(),nodes.size());
 				matrix = matrix.zMult(matrix, newMatrix, 1.0, 0.0, false, false);
+				// Normalize
+				normalize(matrix, clusteringThresh, false);
 			}
+
+			// printMatrix(matrix);
+			// debugln("^ "+(i+1)+" after expansion");
 
 			// Inflate
 			{
 				monitor.setStatus("Iteration: "+(i+1)+" inflating");
-				debugln("Iteration: "+(i+1)+" inflating");
-				printMatrixInfo(matrix);
+				// debugln("Iteration: "+(i+1)+" inflating");
+				// printMatrixInfo(matrix);
 				matrix.forEachNonZero(myPow);
+				// Normalize
+				normalize(matrix, clusteringThresh, true);
 			}
 
-			// Normalize
-			normalize(matrix, clusteringThresh);
+			// printMatrix(matrix);
+			// debugln("^ "+(i+1)+" after inflation");
 
 			matrix.trimToSize();
 			residual = calculateResiduals(matrix);
-			debugln("Iteration: "+(i+1)+" residual: "+residual);
-			printMatrix(matrix);
+			// debugln("Iteration: "+(i+1)+" residual: "+residual);
 
 			if (canceled) {
 				monitor.setStatus("canceled");
@@ -195,8 +221,8 @@ public class RunMCL {
 		}
 
 		// If we're in debug mode, output the matrix
-		printMatrixInfo(matrix);
-		printMatrix(matrix);
+		// printMatrixInfo(matrix);
+		// printMatrix(matrix);
 
 		monitor.setStatus("Assigning nodes to clusters");
 
@@ -205,19 +231,24 @@ public class RunMCL {
 
 		//Update node attributes in network to include clusters. Create cygroups from clustered nodes
 		logger.info("Created "+clusterCount+" clusters");
-		debugln("Created "+clusterCount+" clusters:");
+		// debugln("Created "+clusterCount+" clusters:");
 
+		int clusterNumber = 1;
 		HashMap<Cluster,Cluster> cMap = new HashMap();
-		for (Cluster cluster: clusterMap.values()) {
+		for (Cluster cluster: sortMap(clusterMap)) {
+
 			if (cMap.containsKey(cluster))
 				continue;
 
-			for (Integer i: cluster) {
-				CyNode node = nodes.get(i.intValue());
-				debug(node.getIdentifier()+"\t");
-			}
-			debugln();
+			// for (Integer i: cluster) {
+			// 	CyNode node = nodes.get(i.intValue());
+			// 	debug(node.getIdentifier()+"\t");
+			// }
+			// debugln();
 			cMap.put(cluster,cluster);
+
+			cluster.setClusterNumber(clusterNumber);
+			clusterNumber++;
 		}
 
 		Set<Cluster>clusters = cMap.keySet();
@@ -259,28 +290,54 @@ public class RunMCL {
 	}	
 
 	/**
+   * This method handles the loop adjustment, if desired by the user.
+   * The basic approach is to go through the diagonal and set the value of the
+   * diagonal to the maximum value of the column.  In the von Dongen code, this
+   * is handled in separate steps (zero the diagonal, (maybe) preinflate, set diagonal
+   * to max).
+   *
+   * @param matrix the (sparse) data matrix we're going to adjust
+   */
+	private void adjustLoops(DoubleMatrix2D matrix)
+	{
+		double [] max = new double[matrix.columns()];
+		// Calculate the max value for each column
+		matrix.forEachNonZero(new MatrixFindMax(max));
+
+		// Set it in the diagonal
+		for (int col = 0; col < matrix.columns(); col++) {
+			if (max[col] != 0.0)
+				matrix.set(col,col,max[col]);
+			else
+				matrix.set(col,col,1.0);
+		}
+		
+	}
+
+	/**
 	 * This method does threshold and normalization.  First, we get rid of
 	 * any cells that have a value beneath our threshold and in the same pass
-	 * calculate all of the row sums.  Then we use the row sums to normalize
-	 * each row such that all of the cells in the row sum to 1.
+	 * calculate all of the column sums.  Then we use the column sums to normalize
+	 * each column such that all of the cells in the column sum to 1.
 	 *
 	 * @param matrix the (sparse) data matrix we're operating on
 	 * @param clusteringThresh the maximum value that we will take as a "zero" value
+	 * @param prune if 'false', don't prune this pass
 	 */
-	private void normalize(DoubleMatrix2D matrix, double clusteringThresh)
+	private void normalize(DoubleMatrix2D matrix, double clusteringThresh, boolean prune)
 	{
 		// Remove any really low values and create the sums array
-		double [] sums = new double[matrix.rows()];
-		matrix.forEachNonZero(new MatrixZeroAndSum(clusteringThresh, sums));
+		double [] sums = new double[matrix.columns()];
+		matrix.forEachNonZero(new MatrixZeroAndSum(prune, clusteringThresh, sums));
 
 		// Finally, adjust the values
 		matrix.forEachNonZero(new MatrixNormalize(sums));
 
-		// Last step -- find any rows that summed to zero and set the diagonal to 1
-		for (int row = 0; row < sums.length; row++) {
-			if (sums[row] == 0.0) {
-				debugln("Row "+row+" sums to 0");
-				matrix.set(row,row,1.0);
+		// Last step -- find any columns that summed to zero and set the diagonal to 1
+		for (int col = 0; col < sums.length; col++) {
+			if (sums[col] == 0.0) {
+				// debugln("Column "+col+" sums to 0");
+				matrix.set(col,col,1.0);
 			}
 		}
 	}
@@ -305,8 +362,8 @@ public class RunMCL {
 	 */
 	private double calculateResiduals(DoubleMatrix2D matrix) {
 		// Calculate and return the residuals
-		double[] sums = new double[matrix.rows()];
-		double [] sumSquares = new double[matrix.rows()];
+		double[] sums = new double[matrix.columns()];
+		double [] sumSquares = new double[matrix.columns()];
 		matrix.forEachNonZero(new MatrixSumAndSumSq(sums, sumSquares));
 		double residual = 0.0;
 		for (int i = 0; i < sums.length; i++) {
@@ -461,6 +518,12 @@ public class RunMCL {
 		return nodeList;
 	}
 
+	private List<Cluster> sortMap(HashMap<Integer, Cluster> map) {
+		Cluster[] clusterArray = map.values().toArray(new Cluster[1]);
+		Arrays.sort(clusterArray, new LengthComparator());
+		return Arrays.asList(clusterArray);
+	}
+
 
 	/**
 	 * The MatrixPow class raises the value of each non-zero cell of the matrix
@@ -482,59 +545,81 @@ public class RunMCL {
 	/**
 	 * The MatrixZeroAndSum looks through all non-zero cells in a matrix
 	 * and if the value of the cell is beneath "threshold" it is set to
-	 * zero.  All non-zero cells in a row are added together to return
-	 * the sum of each row.
+	 * zero.  All non-zero cells in a column are added together to return
+	 * the sum of each column.
 	 */
 	private class MatrixZeroAndSum implements IntIntDoubleFunction {
 		double threshold;
-		double [] rowSums;
+		double [] colSums;
+		boolean prune;
 
-		public MatrixZeroAndSum (double threshold, double[] rowSums) {
+		public MatrixZeroAndSum (boolean prune, double threshold, double[] colSums) {
 			this.threshold = threshold;
-			this.rowSums = rowSums;
+			this.colSums = colSums;
+			this.prune = prune;
 		}
 
 		public double apply(int row, int column, double value) {
-			if (value < threshold)
+			if (prune && (value < threshold))
 				return 0.0;
-			rowSums[row] += value;
+			colSums[column] += value;
 			return value;
 		}
 	}
 
 	/**
 	 * The MatrixSumAndSumSq looks through all non-zero cells in a matrix
-	 * and calculates the sums and sum of squares for each row.
+	 * and calculates the sums and sum of squares for each column.
 	 */
 	private class MatrixSumAndSumSq implements IntIntDoubleFunction {
 		double [] sumSquares;
-		double [] rowSums;
+		double [] colSums;
 
-		public MatrixSumAndSumSq (double[] rowSums, double[] sumSquares) {
+		public MatrixSumAndSumSq (double[] colSums, double[] sumSquares) {
 			this.sumSquares = sumSquares;
-			this.rowSums = rowSums;
+			this.colSums = colSums;
 		}
 		public double apply(int row, int column, double value) {
-			rowSums[row] += value;
-			sumSquares[row] += value*value;
+			colSums[column] += value;
+			sumSquares[column] += value*value;
+			return value;
+		}
+	}
+
+	/**
+ 	 * MatrixFindMax simply records the maximum value in a column
+ 	 */
+	private class MatrixFindMax implements IntIntDoubleFunction {
+		double [] colMax;
+
+		public MatrixFindMax(double[] colMax) {
+			this.colMax = colMax;
+		}
+
+		public double apply(int row, int column, double value) {
+			if (canceled) { return 0.0; }
+
+			if (value > colMax[column])
+				colMax[column] = value;
 			return value;
 		}
 	}
 
 	/**
 	 * The MatrixNormalize class takes as input an array of sums for
-	 * each row in the matrix and uses that to normalize the sum of the
-	 * row to 1.  If the sum of the row is 0, the diagonal is set to 1.
+	 * each column in the matrix and uses that to normalize the sum of the
+	 * column to 1.  If the sum of the column is 0, the diagonal is set to 1.
 	 */
 	private class MatrixNormalize implements IntIntDoubleFunction {
-		double [] rowSums;
+		double [] colSums;
 
-		public MatrixNormalize(double[] rowSums) {
-			this.rowSums = rowSums;
+		public MatrixNormalize(double[] colSums) {
+			this.colSums = colSums;
 		}
+
 		public double apply(int row, int column, double value) {
 			if (canceled) { return 0.0; }
-			return value/rowSums[row];
+			return value/colSums[column];
 		}
 	}
 
@@ -565,37 +650,37 @@ public class RunMCL {
 			if (row == column) 
 				return value;
 
-			if (clusterMap.containsKey(row)) {
-				// Already seen "row" -- get the cluster and add column
-				Cluster rowCluster = clusterMap.get(row);
-				if (clusterMap.containsKey(column)) {
-					// We've already seen column also -- join them
-					Cluster columnCluster = clusterMap.get(column);
+			if (clusterMap.containsKey(column)) {
+				// Already seen "column" -- get the cluster and add column
+				Cluster columnCluster = clusterMap.get(column);
+				if (clusterMap.containsKey(row)) {
+					// We've already seen row also -- join them
+					Cluster rowCluster = clusterMap.get(row);
 					if (rowCluster == columnCluster) 
 						return value;
-					// debugln("Joining cluster "+rowCluster.getClusterNumber()+" and "+columnCluster.getClusterNumber());
-					rowCluster.addAll(columnCluster);
+					// debugln("Joining cluster "+columnCluster.getClusterNumber()+" and "+rowCluster.getClusterNumber());
+					columnCluster.addAll(rowCluster);
 					clusterCount--;
 				} else {
+					// debugln("Adding "+row+" to "+columnCluster.getClusterNumber());
+					columnCluster.add(row);
+				}
+				updateClusters(columnCluster);
+			} else {
+				Cluster rowCluster;
+				// First time we've seen "column" -- have we already seen "row"
+				if (clusterMap.containsKey(row)) {
+					// Yes, just add column to row's cluster
+					rowCluster = clusterMap.get(row);
 					// debugln("Adding "+column+" to "+rowCluster.getClusterNumber());
 					rowCluster.add(column);
+				} else {
+					rowCluster = new Cluster();
+					// debugln("Created new cluster "+rowCluster.getClusterNumber()+" with "+row+" and "+column);
+					rowCluster.add(column);
+					rowCluster.add(row);
 				}
 				updateClusters(rowCluster);
-			} else {
-				Cluster colCluster;
-				// First time we've seen "row" -- have we already seen "column"
-				if (clusterMap.containsKey(column)) {
-					// Yes, just add row to column's cluster
-					colCluster = clusterMap.get(column);
-					// debugln("Adding "+row+" to "+colCluster.getClusterNumber());
-					colCluster.add(row);
-				} else {
-					colCluster = new Cluster();
-					// debugln("Created new cluster "+colCluster.getClusterNumber()+" with "+column+" and "+row);
-					colCluster.add(column);
-					colCluster.add(row);
-				}
-				updateClusters(colCluster);
 			}
 			return value;
 		}
@@ -618,6 +703,10 @@ public class RunMCL {
 
 		public int getClusterNumber() { return clusterNumber; }
 
+		public void setClusterNumber(int clusterNumber) { 
+			this.clusterNumber = clusterNumber; 
+		}
+
 		public void print() {
 			debug(clusterNumber+": ");
 			for (Integer i: this) {
@@ -625,6 +714,19 @@ public class RunMCL {
 			}
 			debugln();
 		}
+	}
+
+	private class LengthComparator implements Comparator {
+
+		public int compare (Object o1, Object o2) {
+			Cluster c1 = (Cluster)o1;
+			Cluster c2 = (Cluster)o2;
+			if (c1.size() > c2.size()) return -1;
+			if (c1.size() < c2.size()) return 1;
+			return 0;
+		}
+
+		public boolean equals(Object obj) { return false; }
 	}
 }
 

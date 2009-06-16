@@ -61,6 +61,8 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 	boolean createNewNetwork = false;
 	boolean createMetaNodes = false;
 	boolean selectedOnly = false;
+	boolean adjustLoops = true;
+	boolean undirectedEdges = true;
 	double maxResidual = 0.001;
 	String[] attributeArray = new String[1];
 
@@ -99,6 +101,9 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		/**
 		 * Tuning values
 		 */
+		clusterProperties.add(new Tunable("tunables_panel",
+		                                  "MCL Tuning",
+		                                  Tunable.GROUP, new Integer(4)));
 
 		// Inflation Parameter
 		clusterProperties.add(new Tunable("inflation_parameter",
@@ -123,20 +128,32 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.DOUBLE, new Double(.001),
 		                                  (Object)null, (Object)null, 0));
 
+		clusterProperties.add(new Tunable("options_panel",
+		                                  "Options",
+		                                  Tunable.GROUP, new Integer(5)));
+
+		// Whether or not to create a new network from the results
+		clusterProperties.add(new Tunable("selectedOnly","Cluster only selected nodes",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
+
 		//Whether or not take -LOG of Edge-Weights
 		clusterProperties.add(new Tunable("takeNegLOG","Take the -LOG of Edge Weights in Network",
 		                                  Tunable.BOOLEAN, new Boolean(false)));
+
+		//Whether or not to assume the edges are undirected
+		clusterProperties.add(new Tunable("undirectedEdges","Assume edges are undirected",
+		                                  Tunable.BOOLEAN, new Boolean(true)));
 
 		// Whether or not to create a new network from the results
 		clusterProperties.add(new Tunable("createNewNetwork","Create a new network with independent clusters",
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
-		// Whether or not to create a new network from the results
-		clusterProperties.add(new Tunable("createMetaNodes","Create meta nodes for clusters",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		// Whether or not to adjust loops before clustering
+		clusterProperties.add(new Tunable("adjustLoops","Adjust loops before clustering",
+		                                  Tunable.BOOLEAN, new Boolean(true)));
 
 		// Whether or not to create a new network from the results
-		clusterProperties.add(new Tunable("selectedOnly","Cluster only selected nodes",
+		clusterProperties.add(new Tunable("createMetaNodes","Create meta nodes for clusters",
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
 		clusterProperties.add(new Tunable("attributeListGroup",
@@ -195,6 +212,14 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 		t = clusterProperties.get("selectedOnly");
 		if ((t != null) && (t.valueChanged() || force))
 			selectedOnly = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("undirectedEdges");
+		if ((t != null) && (t.valueChanged() || force))
+			undirectedEdges = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("adjustLoops");
+		if ((t != null) && (t.valueChanged() || force))
+			adjustLoops = ((Boolean) t.getValue()).booleanValue();
 		
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -241,6 +266,12 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 
 		if (createMetaNodes)
 			runMCL.createMetaNodes();
+
+		if (!undirectedEdges)
+			runMCL.setDirectedEdges();
+
+		if (adjustLoops)
+			runMCL.setAdjustLoops();
 
 		runMCL.run(monitor);
 
