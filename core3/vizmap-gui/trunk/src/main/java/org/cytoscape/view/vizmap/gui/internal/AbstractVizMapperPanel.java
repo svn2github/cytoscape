@@ -98,12 +98,11 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	// TODO remove this
 	public static final String GRAPHICAL_MAP_VIEW = "Graphical View";
 
-	// Default Visual Style
-	protected static final String DEFAULT_VS_TITLE = "Default";
+
 	// Test
 	protected static final String DEFAULT_VS_TITLE2 = "Default 2";
 
-	private final VisualStyle defaultVS;
+	protected final VisualStyle defaultVS;
 
 	public VisualStyle getDefaultVisualStyle() {
 		return defaultVS;
@@ -182,7 +181,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager,
-			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper) {
+			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper, VisualStyle defStyle) {
 
 		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
@@ -204,7 +203,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		initComponents();
 		initDefaultEditors();
 
-		defaultVS = this.vmm.createVisualStyle(DEFAULT_VS_TITLE);
+		this.defaultVS = defStyle;
 		vmm.createVisualStyle(DEFAULT_VS_TITLE2);
 	}
 

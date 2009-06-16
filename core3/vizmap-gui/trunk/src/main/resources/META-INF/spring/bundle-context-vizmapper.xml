@@ -39,9 +39,9 @@
 	</bean>
 
 	<!-- Editors -->
-	
 
-	
+
+
 	<!--
 		bean id="continuousColor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.ContinuousColor"
@@ -73,27 +73,30 @@
 	<!-- Value Chooser/Editors -->
 	<bean id="colorEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser" />
-		
+
 	<bean id="fontEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor" />
-		
-	<bean id="doubleClass" class="java.lang.Class" factory-method="forName" >
+
+	<bean id="doubleClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.lang.Double" />
 	</bean>
-	<bean id="integerClass" class="java.lang.Class" factory-method="forName" >
+	<bean id="integerClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.lang.Integer" />
 	</bean>
-	<bean id="floatClass" class="java.lang.Class" factory-method="forName" >
+	<bean id="floatClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.lang.Float" />
 	</bean>
-	
-	<bean id="doubleValueEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
+
+	<bean id="doubleValueEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
 		<constructor-arg ref="doubleClass" />
 	</bean>
-	<bean id="integerValueEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
+	<bean id="integerValueEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
 		<constructor-arg ref="integerClass" />
 	</bean>
-	<bean id="floatValueEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
+	<bean id="floatValueEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
 		<constructor-arg ref="floatClass" />
 	</bean>
 
@@ -128,6 +131,8 @@
 		<constructor-arg ref="defaultViewPanel" />
 		<constructor-arg ref="editorManager" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="defaultVS" />
+		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
 
@@ -239,6 +244,11 @@
 		<constructor-arg ref="propertySheetPanel" />
 	</bean>
 
+	<!-- Create Default Visual Style using VMM -->
+	<bean id="defaultVS" factory-bean="vmmServiceRef" factory-method="createVisualStyle">
+		<constructor-arg value="default" />
+	</bean>
+
 	<bean name="vizMapperMainPanel"
 		class="org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel"
 		depends-on="colorMgr,
@@ -257,6 +267,7 @@
 		<constructor-arg ref="editorWindowManager" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="defaultVS" />
 
 	</bean>
 </beans>

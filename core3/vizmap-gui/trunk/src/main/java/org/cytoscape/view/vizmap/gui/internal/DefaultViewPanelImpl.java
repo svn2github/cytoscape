@@ -55,6 +55,8 @@ import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
 
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_TITLE;
+
 /**
  * Panel to show the default properties visually (as graphics).
  * 
@@ -133,6 +135,10 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, Se
 		dummyview.getNodeView(source).setVisualProperty(NODE_Y_LOCATION, 0d);
 		dummyview.getNodeView(target).setVisualProperty(NODE_X_LOCATION, 150d);
 		dummyview.getNodeView(target).setVisualProperty(NODE_Y_LOCATION, 10d);
+		
+		dummyview.setVisualProperty(NETWORK_TITLE, "Dummy Network View");
+		
+		System.out.println("#### " + dummyview.getVisualProperty(NETWORK_TITLE));
 
 		// Set background color
 //		background = vs.getDefaultValue(NETWORK_BACKGROUND_COLOR);

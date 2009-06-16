@@ -127,12 +127,12 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager,
-			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper) {
+			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper, VisualStyle defStyle) {
 
 		super(desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
 				vizMapEventHandlerManager, editorWindowManager,
-				cyNetworkManager, eventHelper);
+				cyNetworkManager, eventHelper, defStyle);
 
 		initPanel();
 
@@ -160,7 +160,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		// .addPropertyChangeListener(this);
 		
 		// Switch to the default style.
-		switchVS((VisualStyle) vsComboBox.getSelectedItem());
+		switchVS(defaultVS);
 	}
 
 	/*

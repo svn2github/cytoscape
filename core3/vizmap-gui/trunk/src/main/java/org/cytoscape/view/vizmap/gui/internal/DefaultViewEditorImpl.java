@@ -37,6 +37,7 @@ package org.cytoscape.view.vizmap.gui.internal;
 import static org.cytoscape.model.GraphObject.EDGE;
 import static org.cytoscape.model.GraphObject.NETWORK;
 import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_TITLE;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -62,9 +63,11 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.NetworkRenderer;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -96,7 +99,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		DefaultViewEditor, SelectedVisualStyleSwitchedEventListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
-	
+
 	private Map<String, Set<VisualProperty<?>>> vpSets;
 	private Map<String, JList> listMap;
 
@@ -105,6 +108,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private EditorManager editorFactory;
 
 	private VisualStyle selectedStyle;
+	
+	private VisualMappingManager vmm;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -114,12 +119,13 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * @param modal
 	 *            DOCUMENT ME!
 	 */
-	public DefaultViewEditorImpl(
-			final DefaultViewPanelImpl mainView,
+	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
 			final EditorManager editorFactory,
-			final CyNetworkManager cyNetworkManager) {
-		
+			final CyNetworkManager cyNetworkManager, VisualStyle defaultStyle, VisualMappingManager vmm) {
+
 		super();
+		this.vmm = vmm;
+		this.selectedStyle = defaultStyle;
 		vpSets = new HashMap<String, Set<VisualProperty<?>>>();
 		listMap = new HashMap<String, JList>();
 
@@ -143,9 +149,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private void updateVisualPropertyLists() {
 		vpSets.clear();
-		NetworkRenderer presentation = cyNetworkManager.getPresentation(mainView.getView());
-		VisualLexicon lexicon = presentation.getVisualLexicon();
-		
+
+		VisualLexicon lexicon = selectedStyle.getVisualLexicon();
+
 		vpSets.put(NODE, new HashSet<VisualProperty<?>>(lexicon
 				.getVisualProperties(NODE)));
 		vpSets.put(EDGE, new HashSet<VisualProperty<?>>(lexicon
@@ -210,7 +216,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		applyButton = new javax.swing.JButton();
 
 		networkList = new JXList();
-		
+
 		listMap.put(NODE, nodeList);
 		listMap.put(EDGE, edgeList);
 		listMap.put(NETWORK, networkList);
@@ -239,7 +245,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		});
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		
+
 		mainView.setBorder(new javax.swing.border.LineBorder(
 				java.awt.Color.darkGray, 1, true));
 
@@ -304,6 +310,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 			public void actionPerformed(ActionEvent arg0) {
 				// vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
 				// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+				applyNewStyle(cyNetworkManager.getCurrentNetworkView());
 				dispose();
 			}
 		});
@@ -419,23 +426,49 @@ public class DefaultViewEditorImpl extends JDialog implements
 			V newValue = null;
 			final JList list = (JList) e.getSource();
 
-
 			VisualProperty<V> vp = (VisualProperty<V>) list.getSelectedValue();
 			try {
-				newValue = editorFactory.showVisualPropertyValueEditor(this, vp, null);
+				newValue = editorFactory.showVisualPropertyValueEditor(this,
+						vp, null);
+
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
-			if (newValue != null)
-				selectedStyle.setDefaultValue(vp, newValue);
+			if (newValue != null) {
+				System.out.println("New value =======> "
+						+ newValue
+						+ ", cur view = "
+						+ cyNetworkManager.getCurrentNetworkView()
+								.getNodeViews().size());
+				System.out.println("Nodes = "
+						+ cyNetworkManager.getCurrentNetwork().getNodeCount());
 
+				selectedStyle.setDefaultValue(vp, newValue);
+				selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
+				cyNetworkManager.getCurrentNetworkView().updateView();
+			}
+			updateVisualPropertyLists();
 			buildList();
+			cyNetworkManager.getCurrentNetworkView().updateView();
 			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 			mainView.updateView();
 			mainView.repaint();
 		}
+	}
+
+	private void applyNewStyle(CyNetworkView view) {
+		VisualStyle curVS = vmm.getVisualStyle(view);
+		
+		if(curVS == null) {
+			// Set new style
+			vmm.setVisualStyle(selectedStyle, view);
+		}
+		
+		System.out.println("Cur VS = " + curVS);
+		selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
+		view.updateView();
 	}
 
 	// Variables declaration - do not modify
@@ -462,14 +495,17 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private void buildList() {
 
 		VisualPropCellRenderer renderer = new VisualPropCellRenderer();
-		
-		for(String key:vpSets.keySet()) {
+
+		for (String key : vpSets.keySet()) {
 			DefaultListModel model = new DefaultListModel();
 			JList list = listMap.get(key);
 			list.setModel(model);
 			Set<VisualProperty<?>> vps = vpSets.get(key);
-			for(VisualProperty<?> vp: vps)
+			for (VisualProperty<?> vp : vps) {
 				model.addElement(vp);
+				System.out.println("##### New VP Def ---> "
+						+ vp.getDisplayName() + " = " + vp.getDefault());
+			}
 			list.setCellRenderer(renderer);
 		}
 
@@ -496,12 +532,11 @@ public class DefaultViewEditorImpl extends JDialog implements
 		// repaint();
 	}
 
-	
 	/**
 	 * Create cells for each Visual Properties.
 	 * 
 	 * @author kono
-	 *
+	 * 
 	 */
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339876646385L;
@@ -529,7 +564,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 						.getPresentation(mainView.getView());
 				icon = presentation.getDefaultIcon(vp);
 			}
-			setText(vp.getDisplayName());
+			setText(vp.getDisplayName() + "  =  " + selectedStyle.getDefaultValue(vp));
 			setToolTipText(vp.getDisplayName());
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
@@ -585,10 +620,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 		return mainView;
 	}
 
-
 	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {
-		this.selectedStyle = e.getNewVisualStyle();		
+		this.selectedStyle = e.getNewVisualStyle();
 		setTitle("Default Appearance for " + selectedStyle.getTitle());
-		
+
 	}
 }
