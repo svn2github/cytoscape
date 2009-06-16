@@ -94,6 +94,12 @@ public class VisualStyleImpl implements VisualStyle {
 		this.rootLexicon = rootLexicon;
 		mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
+		// Copy immutable defaults from each VP
+		for(VisualProperty<?> vp: this.rootLexicon.getAllVisualProperties())
+			perVSDefaults.put(vp, vp.getDefault());
+		
+		System.out.println("@@@@@@ VS Constructed: " + this.title);
+		
 	}
 
 	/**
@@ -146,14 +152,16 @@ public class VisualStyleImpl implements VisualStyle {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Set the default value for a Visual Property
 	 *
-	 * @param <T> DOCUMENT ME!
+	 * @param <T> Default value data type.
 	 * @param vp DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
 	public <T> void setDefaultValue(final VisualProperty<T> vp, final T value) {
 		perVSDefaults.put(vp, value);
+		System.out.print("!!!!! Setting Default: " + vp.getDisplayName() + " = " + value);
+		System.out.println("-----> Setting New Default: " + perVSDefaults.get(vp));
 	}
 
 	// ??
@@ -185,6 +193,7 @@ public class VisualStyleImpl implements VisualStyle {
 	public <G extends GraphObject> void applyImpl(final CyNetworkView view,
 	                                              final List<View<G>> views,
 	                                              final Collection<?extends VisualProperty<?>> visualProperties) {
+		
 		for (VisualProperty<?> vp : visualProperties)
 			applyImpl(view, views, vp);
 	}
@@ -211,6 +220,10 @@ public class VisualStyleImpl implements VisualStyle {
 			c.apply(column, views);
 		} else {
 			// reset all rows to allow usage of default value:
+			for(View<G> v: views) {
+				// Set default
+				v.setVisualProperty(vp, this.getDefaultValue(vp));
+			}
 			column.setValues(new HashMap<View<G>, V>(), views);
 		}
 	}
@@ -247,9 +260,9 @@ public class VisualStyleImpl implements VisualStyle {
 		return mappings.values();
 	}
 
+	//TODO Is this the right set of lexicon?
 	public VisualLexicon getVisualLexicon() {
-		// TODO Auto-generated method stub
-		return null;
+		return rootLexicon;
 	}
 
 }
