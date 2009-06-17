@@ -110,9 +110,11 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ID Mapping Source Configuration");
+        setMinimumSize(new java.awt.Dimension(600, 600));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         sourceConfPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select sources of ID mappings"));
+        sourceConfPanel.setPreferredSize(new java.awt.Dimension(626, 400));
         sourceConfPanel.setLayout(new java.awt.GridBagLayout());
 
         sourceDescSplitPane.setPreferredSize(new java.awt.Dimension(600, 150));

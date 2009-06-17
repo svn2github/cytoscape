@@ -137,7 +137,7 @@ public class SourceAttributeSelectionTable extends JTable{
             }
         });
 
-        setPreferredColumnWidths(new double[]{0.3,0.5,0.2});
+        setPreferredColumnWidths(new double[]{0.4,0.5,0.1});
 
         setColumnEditorAndCellRenderer();
     }

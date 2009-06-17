@@ -223,12 +223,21 @@ class IDMappingSourceSelectionTree extends JTree {
         final JTree thisTree = this;
         this.addMouseListener( new MouseAdapter () {
             @Override
-            public void mouseReleased( MouseEvent e ) {
-                int row = thisTree.getRowForLocation(e.getX(), e.getY());
-                if(row == -1)
-                    return;
-                thisTree.setSelectionRow(row);
+            public void mousePressed(MouseEvent e) {
+                popup(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                popup(e);
+            }
+
+            private void popup(MouseEvent e) {                
                 if ( e.isPopupTrigger()) {
+                    int row = thisTree.getRowForLocation(e.getX(), e.getY());
+                    if(row == -1)
+                        return;
+                    thisTree.setSelectionRow(row);
                     TreePath path = thisTree.getPathForLocation(e.getX(), e.getY());
 
                     switch (path.getPathCount()) {
@@ -281,8 +290,9 @@ class IDMappingSourceSelectionTree extends JTree {
                 this.expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode}));
 
                 //set selected
-                checkTreeManager.getSelectionModel().addSelectionPaths(
-                        new TreePath[] {new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,clientNode})});
+                TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,clientNode});
+                checkTreeManager.getSelectionModel().addSelectionPath(path);
+                setSelectionPath(path);
 
                 this.repaint();
             }
