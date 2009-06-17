@@ -177,33 +177,54 @@ public class TargetAttributeSelectionTable extends JTable{
         return attr;
     }
 
-    public Map<DataSource, Map<String,Byte>> getDestinationAttrType() {
-        Map<DataSource, Map<String,Byte>> ret = new HashMap();
-        if (supportedIDType.isEmpty()) {
-            return ret;
-        }
-
+    public List<DataSource> getTgtIDTypes() {
+        List<DataSource> ret = new Vector();
         for (int i=0; i<rowCount; i++) {
             DataSource ds = (DataSource)idTypeComboBoxes.get(i).getSelectedItem();
-            Map<String,Byte> mapAttrNameType = ret.get(ds);
-            if (mapAttrNameType==null) {
-                mapAttrNameType = new HashMap();
-                ret.put(ds, mapAttrNameType);
-            }
+            ret.add(ds);
+        }
+        return ret;
+    }
 
+    public List<String> getTgtAttrNames() {
+        List<String> ret = new Vector();
+        for (int i=0; i<rowCount; i++) {
+            String name = getAttrName(i);
+            ret.add(name);
+        }
+        return ret;
+    }
+
+    public List<Byte> getTgtAttrTypes() {
+        List<Byte> ret = new Vector();
+        for (int i=0; i<rowCount; i++) {
+            String type = (String) attrTypeComboBoxes.get(i).getSelectedItem();
+            byte attrType = type.compareTo(listAttrType)==0 ? CyAttributes.TYPE_SIMPLE_LIST : CyAttributes.TYPE_STRING;
+
+            ret.add(attrType);
+        }
+        return ret;
+    }
+
+    public Map<DataSource, String> getMapIDTypeAttrName() {
+        Map<DataSource, String> ret = new HashMap();
+        for (int i=0; i<rowCount; i++) {
+            DataSource ds = (DataSource)idTypeComboBoxes.get(i).getSelectedItem();
+            String name = getAttrName(i);
+            ret.put(ds, name);
+        }
+        return ret;
+    }
+
+    public Map<String,Byte> getMapAttrNameAttrType() {
+        Map<String,Byte> ret = new HashMap();
+        for (int i=0; i<rowCount; i++) {
             String name = getAttrName(i);
             String type = (String) attrTypeComboBoxes.get(i).getSelectedItem();
+            byte attrType = type.compareTo(listAttrType)==0 ? CyAttributes.TYPE_SIMPLE_LIST : CyAttributes.TYPE_STRING;
 
-            byte attrType;
-            if (type.compareTo(listAttrType)==0) {
-                attrType = CyAttributes.TYPE_SIMPLE_LIST;
-            } else {
-                attrType = CyAttributes.TYPE_STRING;
-            }
-
-            mapAttrNameType.put(name, attrType);
+            ret.put(name, attrType);
         }
-
         return ret;
     }
 

@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @author gjj
  */
-public interface AttibuteBasedIDMappingService {
+public interface AttributeBasedIDMappingService {
 
     /**
      * For each node in each network, given its attribute and the corresponding

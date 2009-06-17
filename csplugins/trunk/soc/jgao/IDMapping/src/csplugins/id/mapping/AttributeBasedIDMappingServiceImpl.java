@@ -8,7 +8,7 @@ package csplugins.id.mapping;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.task.TaskMonitor;
 
 import giny.model.Node;
 
@@ -29,8 +29,19 @@ import java.util.Iterator;
  *
  * @author gjj
  */
-public class AttibuteBasedIDMappingServiceImpl
-        implements AttibuteBasedIDMappingService{
+public class AttributeBasedIDMappingServiceImpl
+        implements AttributeBasedIDMappingService{
+    protected TaskMonitor taskMonitor;
+    protected boolean interrupted;
+
+    public void setTaskMonitor(TaskMonitor taskMonitor) {
+        this.taskMonitor = taskMonitor;
+        interrupted = false;
+    }
+
+    public void interrupt() {
+            interrupted = true;
+     }
 
     /**
      * For each node in each network, given its attribute and the corresponding
@@ -48,6 +59,8 @@ public class AttibuteBasedIDMappingServiceImpl
                     final Map<String,Set<DataSource>> mapSrcAttrIDTypes,
                     final Map<DataSource, String> MapTgtIDTypeAttrName
                     ) throws IDMapperException {
+        
+
         // prepare source xrefs
         Set<Node> nodes = nodesUnion(networks);
         Map<Node,Set<Xref>> mapNodeSrcXrefs = prepareNodeSrcXrefs(nodes, mapSrcAttrIDTypes);
@@ -57,6 +70,7 @@ public class AttibuteBasedIDMappingServiceImpl
         Set<DataSource> tgtTypes = MapTgtIDTypeAttrName.keySet();
 
         // id mapping
+        updateTaskMonitor("Mapping IDs...");
         Set<IDMapper> idMappers = IDMappingClientManager.getSelectedIDMappers();
         Map<Xref, Set<Xref>>[] idMapping = new Map[idMappers.size()];
         int imap=0;
@@ -77,13 +91,25 @@ public class AttibuteBasedIDMappingServiceImpl
         Map<Node,Set<Xref>> mapNodeTgtXrefs = getNodeTgtXrefs(mapNodeSrcXrefs, idMapping);
         setTgtAttribute(mapNodeTgtXrefs, MapTgtIDTypeAttrName);
 
+        updateTaskMonitor("IDMapping successful!",100);
     }
 
     private Set<Node> nodesUnion(Set<CyNetwork> networks) {
+        int nNode = 0;
+        for (CyNetwork network : networks) {
+            nNode += network.getNodeCount();
+        }
+
         Set nodes = new HashSet();
+
+        int i = 0;
         for (CyNetwork network : networks) {
 			for (Iterator<Node> nodeIt = network.nodesIterator(); nodeIt.hasNext();) {
-				nodes.add(new Integer((nodeIt.next()).getRootGraphIndex()));
+                if (interrupted) return null;
+                updateTaskMonitor("Retrieving nodes...\n"+i+"/"+nNode,(i+1)*100/nNode);
+                i++;
+
+				nodes.add(nodeIt.next());
 			}
 		}
         return nodes;
@@ -93,8 +119,13 @@ public class AttibuteBasedIDMappingServiceImpl
         Map<Node,Set<Xref>> ret = new HashMap();
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
-
+        int nNode = nodes.size();
+        int i=0;
         for (Node node : nodes) {
+            if (interrupted) return null;
+            updateTaskMonitor("Preparing cross reference for nodes...\n"+i+"/"+nNode,(i+1)*100/nNode);
+            i++;
+
             Set<Xref> xrefs = new HashSet();
             ret.put(node, xrefs);
 
@@ -137,37 +168,6 @@ public class AttibuteBasedIDMappingServiceImpl
         return ret;
     }
 
-//    private void defineTgtAttributes(Map<String,Byte> attrNameType) {
-//        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-//        MultiHashMapDefinition mmapDef = nodeAttributes.getMultiHashMapDefinition();
-//
-//        for (Map.Entry<String,Byte> entry : attrNameType.entrySet()) {
-//            String attrname = entry.getKey();
-//            if (java.util.Arrays.asList(nodeAttributes.getAttributeNames()).contains(attrname)) {
-//                //throw new java.lang.UnsupportedOperationException("Cannot redefine existing attributes");
-//                byte attrType = nodeAttributes.getType(attrname);
-//                if (attrType!=CyAttributes.TYPE_STRING && attrType!=CyAttributes.TYPE_SIMPLE_LIST) {
-//                    throw new java.lang.UnsupportedOperationException("Only String and List target attributes are supported.");
-//                }
-//            }
-//
-//            byte attrtype = entry.getValue();
-//
-//            byte[] keyTypes;
-//            if (attrtype==CyAttributes.TYPE_STRING) {
-//                    keyTypes = null;
-//            } else if (attrtype==CyAttributes.TYPE_SIMPLE_LIST ) {
-//                    keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
-//            } else {
-//                    keyTypes = null;
-//            }
-//
-//            mmapDef.defineAttribute(attrname,
-//                                    MultiHashMapDefinition.TYPE_STRING,
-//                                    keyTypes);
-//        }
-//    }
-
     private Map<Node,Set<Xref>> getNodeTgtXrefs (Map<Node,Set<Xref>> mapNodeSrcXrefs,
                                                  Map<Xref, Set<Xref>>[] idMappings) {
         Map<Node,Set<Xref>> mapNodeTgtXrefs = new HashMap();
@@ -199,7 +199,13 @@ public class AttibuteBasedIDMappingServiceImpl
             mapAttrNameType.put(attrName, nodeAttributes.getType(attrName));
         }
 
+        int i = 0;
+        int nNode = mapNodeTgtXrefs.size();
         for (Map.Entry<Node,Set<Xref>> entryNodeXrefs : mapNodeTgtXrefs.entrySet()) {
+            if (interrupted) return;
+            updateTaskMonitor("Preparing cross reference for nodes...\n"+i+"/"+nNode,(i+1)*100/nNode);
+            i++;
+
             // type wise
             Map<DataSource, Set<String>> mapDsIds = new HashMap();
             Set<Xref> tgtXrefs = entryNodeXrefs.getValue();
@@ -232,5 +238,18 @@ public class AttibuteBasedIDMappingServiceImpl
 
         }
 
+    }
+
+    private void updateTaskMonitor(String status, int percentage) {
+        if (this.taskMonitor!=null) {
+            taskMonitor.setStatus(status);
+            taskMonitor.setPercentCompleted(percentage);
+        }
+    }
+
+    private void updateTaskMonitor(String status) {
+        if (this.taskMonitor!=null) {
+            taskMonitor.setStatus(status);
+        }
     }
 }

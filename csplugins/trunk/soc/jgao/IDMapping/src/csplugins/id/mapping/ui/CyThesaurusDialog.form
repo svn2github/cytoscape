@@ -119,7 +119,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="destinationAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();&#xa;destinationAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());&#xa;destinationAttributeSelectionTable.addRow();&#xa;destinationScrollPane.setViewportView(destinationAttributeSelectionTable);"/>
+            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="targetAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();&#xa;targetAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());&#xa;targetAttributeSelectionTable.addRow();&#xa;destinationScrollPane.setViewportView(targetAttributeSelectionTable);"/>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>

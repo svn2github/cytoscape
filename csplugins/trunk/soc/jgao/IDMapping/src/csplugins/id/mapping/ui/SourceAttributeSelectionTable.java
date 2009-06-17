@@ -63,8 +63,6 @@ import javax.swing.JScrollPane;
 
 import org.bridgedb.DataSource;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
 
 
 // support different editors for each row in a column
@@ -78,7 +76,7 @@ public class SourceAttributeSelectionTable extends JTable{
 
     private Set<DataSource> supportedIDType;
 
-    private List<JComboBox> networkComboBoxes;
+    //private List<JComboBox> networkComboBoxes;
     private List<JComboBox> attributeComboBoxes;
     private List<CheckComboBox> typeComboBoxes;
     private List<JButton> rmvBtns;
@@ -88,7 +86,6 @@ public class SourceAttributeSelectionTable extends JTable{
 
     private int rowCount;
 
-    private final String colHeaderNet = "Network";
     private final String colHeaderAtt = "Attribute";
     private final String colHeaderSrc = "Source ID Type(s)";
     private final String colHeaderBtn = " ";
@@ -97,7 +94,7 @@ public class SourceAttributeSelectionTable extends JTable{
         super();
 
         supportedIDType = new HashSet();
-        networkComboBoxes = new Vector();
+        //networkComboBoxes = new Vector();
         attributeComboBoxes = new Vector();
         typeComboBoxes = new Vector();
         rmvBtns = new Vector();
@@ -140,7 +137,7 @@ public class SourceAttributeSelectionTable extends JTable{
             }
         });
 
-        setPreferredColumnWidths(new double[]{0.25,0.25,0.4,0.1});
+        setPreferredColumnWidths(new double[]{0.3,0.5,0.2});
 
         setColumnEditorAndCellRenderer();
     }
@@ -160,24 +157,21 @@ public class SourceAttributeSelectionTable extends JTable{
         //fireTableDataChanged();
     }
 
-    public Map<CyNetwork,Map<String,Set<DataSource>>> getSourceNetAttrType() {
-        Map<CyNetwork,Map<String,Set<DataSource>>> ret = new HashMap();
+    public Map<String,Set<DataSource>> getSourceNetAttrType() {
+        Map<String,Set<DataSource>> ret = new HashMap();
         if (supportedIDType.isEmpty()) {
             return ret;
         }
         
         for (int i=0; i<rowCount; i++) {
-            CyNetwork net = ((CyNetworkWrapper)networkComboBoxes.get(i).getSelectedItem()).network();
             String attr = (String)attributeComboBoxes.get(i).getSelectedItem();
-            Set<DataSource> types = typeComboBoxes.get(i).getSelectedItem();
-
-            Map<String,Set<DataSource>> map = ret.get(net);
-            if (map==null) {
-                map = new HashMap();
-                ret.put(net, map);
+            //TODO REMOVE IN CY3
+            if (attr.compareTo("ID")==0) {
+                attr = cytoscape.data.Semantics.CANONICAL_NAME;
             }
 
-            map.put(attr, types);
+            Set<DataSource> types = typeComboBoxes.get(i).getSelectedItem();
+            ret.put(attr, types);
         }
 
         return ret;
@@ -186,21 +180,10 @@ public class SourceAttributeSelectionTable extends JTable{
     protected void setColumnEditorAndCellRenderer() {
         TableColumnModel colModel = getColumnModel();
 
-        // network column
-        int iCol = colModel.getColumnIndex(colHeaderNet);
+        // attribute column
+        int iCol = colModel.getColumnIndex(colHeaderAtt);
         TableColumn column = getColumnModel().getColumn(iCol);
         RowTableCellEditor rowEditor = new RowTableCellEditor(this);
-
-        for (int ir=0; ir<rowCount; ir++) {
-            rowEditor.setEditorAt(ir, new  DefaultCellEditor(networkComboBoxes.get(ir)));
-        }
-        column.setCellEditor(rowEditor);
-        column.setCellRenderer(new ComboBoxTableCellRenderer());
-
-        // attribute column
-        iCol = colModel.getColumnIndex(colHeaderAtt);
-        column = getColumnModel().getColumn(iCol);
-        rowEditor = new RowTableCellEditor(this);
 
         for (int ir=0; ir<rowCount; ir++) {
             rowEditor.setEditorAt(ir, new  DefaultCellEditor(attributeComboBoxes.get(ir)));
@@ -258,18 +241,11 @@ public class SourceAttributeSelectionTable extends JTable{
 
     public void addRow() {
 
-        Vector<CyNetworkWrapper> networks = new Vector();
-        for (CyNetwork net : Cytoscape.getNetworkSet()) {
-            networks.add(new CyNetworkWrapper(net));
-        }
-
-        networkComboBoxes.add(new JComboBox(networks));
-
         Vector<String> attrs = new Vector<String>();
         //TODO remove in Cytoscape3
         attrs.add("ID");
         //TODO: modify if local attribute implemented
-        attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+        attrs.addAll(Arrays.asList(cytoscape.Cytoscape.getNodeAttributes().getAttributeNames()));
 
         attributeComboBoxes.add(new JComboBox(attrs));
 
@@ -299,7 +275,6 @@ public class SourceAttributeSelectionTable extends JTable{
                 throw new java.lang.IndexOutOfBoundsException();
             }
 
-            networkComboBoxes.remove(row);
             attributeComboBoxes.remove(row);
             typeComboBoxes.remove(row);
             rmvBtns.remove(row);
@@ -312,12 +287,10 @@ public class SourceAttributeSelectionTable extends JTable{
     }
 
     public void removeRow(final int row) {
-        int n = networkComboBoxes.size();
-        if (row<0 || row>n) {
+        if (row<0 || row>rowCount) {
             throw new java.lang.IndexOutOfBoundsException();
         }
 
-        networkComboBoxes.remove(row);
         attributeComboBoxes.remove(row);
         typeComboBoxes.remove(row);
         rmvBtns.remove(row);
@@ -347,11 +320,11 @@ public class SourceAttributeSelectionTable extends JTable{
    }
 
     private class IDTypeSelectionTableModel extends AbstractTableModel {
-        private final String[] columnNames = {colHeaderNet, colHeaderAtt, colHeaderSrc, colHeaderBtn};
+        private final String[] columnNames = {colHeaderAtt, colHeaderSrc, colHeaderBtn};
 
         //@Override
         public int getColumnCount() {
-            return 4; // select; network; attribute; id types
+            return 3; // select; network; attribute; id types
         }
 
         //@Override
@@ -368,9 +341,6 @@ public class SourceAttributeSelectionTable extends JTable{
         public Object getValueAt(int row, int col) {
             String colName = getColumnName(col);
             if (row<rowCount) {
-                if (colName.compareTo(colHeaderNet)==0) {
-                    return networkComboBoxes.get(row);
-                }
                 if (colName.compareTo(colHeaderAtt)==0) {
                     return attributeComboBoxes.get(row);
                 }
@@ -402,9 +372,6 @@ public class SourceAttributeSelectionTable extends JTable{
         public boolean isCellEditable(int row, int col) {
             String colName = getColumnName(col);
             if (row<rowCount) {
-                if (colName.compareTo(colHeaderNet)==0) {
-                    return true;
-                }
                 if (colName.compareTo(colHeaderAtt)==0) {
                     return true;
                 }
@@ -473,34 +440,3 @@ public class SourceAttributeSelectionTable extends JTable{
 }
 
 
-class CyNetworkWrapper {
-    private CyNetwork network;
-
-    public CyNetworkWrapper(CyNetwork network) {
-        this.network = network;
-    }
-
-    @Override
-    public String toString() {
-        return network.getTitle();
-    }
-
-    public CyNetwork network() {
-        return network;
-    }
-
-    @Override
-    public int hashCode() {
-        return network.getIdentifier().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof CyNetworkWrapper)) {
-            return false;
-        }
-
-        CyNetwork other = ((CyNetworkWrapper)o).network();
-        return network.getIdentifier().equals(other.getIdentifier());
-    }
-}

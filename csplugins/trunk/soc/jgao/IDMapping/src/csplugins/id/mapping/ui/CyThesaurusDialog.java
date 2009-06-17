@@ -36,11 +36,15 @@
 package csplugins.id.mapping.ui;
 
 import csplugins.id.mapping.IDMappingClientManager;
-import csplugins.id.mapping.AttibuteBasedIDMappingService;
-import csplugins.id.mapping.AttibuteBasedIDMappingServiceImpl;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.data.CyAttributes;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.data.attr.MultiHashMapDefinition;
+
+import org.bridgedb.DataSource;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ListCellRenderer;
@@ -48,12 +52,17 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
+import javax.swing.JOptionPane;
 
 import java.awt.Component;
 
 import java.util.List;
 import java.util.Vector;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.TreeMap;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -150,10 +159,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         destinationScrollPane.setMinimumSize(new java.awt.Dimension(300, 100));
         destinationScrollPane.setPreferredSize(new java.awt.Dimension(300, 100));
 
-        destinationAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();
-        destinationAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
-        destinationAttributeSelectionTable.addRow();
-        destinationScrollPane.setViewportView(destinationAttributeSelectionTable);
+        targetAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();
+        targetAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
+        targetAttributeSelectionTable.addRow();
+        destinationScrollPane.setViewportView(targetAttributeSelectionTable);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -405,15 +414,42 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             sourceAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
             sourceAttributeSelectionTable.invalidate();
 
-            destinationAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedTgtDataSources());
-            destinationAttributeSelectionTable.invalidate();
+            targetAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedTgtDataSources());
+            targetAttributeSelectionTable.invalidate();
         }
     }//GEN-LAST:event_srcConfBtnActionPerformed
 
     private void OKBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKBtnActionPerformed
-        
-        AttibuteBasedIDMappingService service = new AttibuteBasedIDMappingServiceImpl();
-        //service.map(networks, mapSrcAttrIDTypes, MapTgtIDTypeAttrNameAttrType);
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        List<String> existAttrNames = Arrays.asList(nodeAttributes.getAttributeNames());
+
+        List<String> attrNames = targetAttributeSelectionTable.getTgtAttrNames();
+        attrNames.retainAll(existAttrNames);
+        if (!attrNames.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Target attributes must have new names.");
+        }
+
+        Set<CyNetwork> networks = new HashSet(selectedNetworkData.getNetworkList());
+        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceNetAttrType();
+        Map<DataSource, String> mapTgtIDTypeAttrName = targetAttributeSelectionTable.getMapIDTypeAttrName();
+        Map<String,Byte> mapTgtAttrNameAttrType = targetAttributeSelectionTable.getMapAttrNameAttrType();
+
+        // define target attributes
+        defineTgtAttributes(mapTgtAttrNameAttrType);
+
+        // execute task
+        AttributeBasedIDMappingTask task
+                = new AttributeBasedIDMappingTask(networks, mapSrcAttrIDTypes, mapTgtIDTypeAttrName);
+        // Configure JTask Dialog Pop-Up Box
+        final JTaskConfig jTaskConfig = new JTaskConfig();
+        jTaskConfig.setOwner(Cytoscape.getDesktop());
+        jTaskConfig.displayCloseButton(true);
+        jTaskConfig.displayCancelButton(false);
+        jTaskConfig.displayStatus(true);
+        jTaskConfig.setAutoDispose(false);
+
+        // Execute Task in New Thread; pop open JTask Dialog Box.
+        boolean succ = TaskManager.executeTask(task, jTaskConfig);
     }//GEN-LAST:event_OKBtnActionPerformed
 
     private void updateOKButtonEnable() {
@@ -424,11 +460,35 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         OKBtn.setEnabled(true);
         OKBtn.setToolTipText(null);
+
+        OKBtn.invalidate();
     }
 
+    private void defineTgtAttributes(Map<String,Byte> attrNameType) {
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        MultiHashMapDefinition mmapDef = nodeAttributes.getMultiHashMapDefinition();
+
+        for (Map.Entry<String,Byte> entry : attrNameType.entrySet()) {
+            String attrname = entry.getKey();
+            byte attrtype = entry.getValue();
+
+            byte[] keyTypes;
+            if (attrtype==CyAttributes.TYPE_STRING) {
+                    keyTypes = null;
+            } else if (attrtype==CyAttributes.TYPE_SIMPLE_LIST ) {
+                    keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
+            } else {
+                    keyTypes = null;
+            }
+
+            mmapDef.defineAttribute(attrname,
+                                    MultiHashMapDefinition.TYPE_STRING,
+                                    keyTypes);
+        }
+    }
 
     private SourceAttributeSelectionTable sourceAttributeSelectionTable;
-    private TargetAttributeSelectionTable destinationAttributeSelectionTable;
+    private TargetAttributeSelectionTable targetAttributeSelectionTable;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton OKBtn;
