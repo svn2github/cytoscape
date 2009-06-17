@@ -11,12 +11,12 @@
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
 
-	<osgi:reference id="presentationFactoryServiceRef" 
-	      interface="org.cytoscape.view.presentation.PresentationFactory" />
-<!--
-	<osgi:reference id="presentationManagerServiceRef" 
-	      interface="org.cytoscape.view.presentation.PresentationManager" />
--->
+	<osgi:reference id="presentationFactoryServiceRef"
+		interface="org.cytoscape.view.presentation.PresentationFactory" />
+	<!--
+		<osgi:reference id="presentationManagerServiceRef"
+		interface="org.cytoscape.view.presentation.PresentationManager" />
+	-->
 	<osgi:reference id="tunableInterceptorServiceRef"
 		interface="org.cytoscape.work.TunableInterceptor" />
 
@@ -46,14 +46,25 @@
 
 	<osgi:reference id="creditScreenServiceRef" interface="org.cytoscape.splash.CreditScreen">
 	</osgi:reference>
-	
-<!--	<osgi:reference id="fileUtil" interface="org.cytoscape.work.util.FileUtil">-->
-<!--	</osgi:reference>-->
-	
+
+	<!--
+		<osgi:reference id="fileUtil"
+		interface="org.cytoscape.work.util.FileUtil">
+	-->
+	<!--	</osgi:reference>-->
+
 
 	<!-- define services that application provides -->
 
 	<!-- Props are manages in this service -->
+	<osgi:service id="cyMainPropsService" ref="cyMainProps"
+		interface="org.cytoscape.property.CyProperty">
+		<osgi:service-properties>
+			<entry key="serviceType" value="property" />
+			<entry key="cyPropertyName" value="application" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	<osgi:service id="cyOperatingContextService" ref="cyOperatingContext"
 		interface="cytoscape.CyOperatingContext" />
 
@@ -74,10 +85,10 @@
 	<osgi:service id="openBrowserService" ref="openBrowser"
 		interface="cytoscape.util.OpenBrowser" />
 
-		<!--
-	<osgi:service id="printActionService" ref="printAction"
+	<!--
+		<osgi:service id="printActionService" ref="printAction"
 		interface="cytoscape.util.CyAction" />
-		-->
+	-->
 	<osgi:service id="exitActionService" ref="exitAction"
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="undoActionService" ref="undoAction"
@@ -92,16 +103,17 @@
 		interface="cytoscape.util.CyAction" />
 	<osgi:service id="proxyServerActionService" ref="proxyServerAction"
 		interface="cytoscape.util.CyAction" />
-		<!--
-	<osgi:service id="alphabeticalSelectionActionService" ref="alphabeticalSelectionAction"
+	<!--
+		<osgi:service id="alphabeticalSelectionActionService"
+		ref="alphabeticalSelectionAction" interface="cytoscape.util.CyAction"
+		/> <osgi:service id="bendSelectedEdgesActionService"
+		ref="bendSelectedEdgesAction" interface="cytoscape.util.CyAction" />
+		<osgi:service id="straightenSelectedEdgesActionService"
+		ref="straightenSelectedEdgesAction"
+		interface="cytoscape.util.CyAction" /> <osgi:service
+		id="showGraphicsDetailsActionService" ref="showGraphicsDetailsAction"
 		interface="cytoscape.util.CyAction" />
-	<osgi:service id="bendSelectedEdgesActionService" ref="bendSelectedEdgesAction"
-		interface="cytoscape.util.CyAction" />
-	<osgi:service id="straightenSelectedEdgesActionService"
-		ref="straightenSelectedEdgesAction" interface="cytoscape.util.CyAction" />
-	<osgi:service id="showGraphicsDetailsActionService" ref="showGraphicsDetailsAction"
-		interface="cytoscape.util.CyAction" />
-		-->
+	-->
 	<osgi:service id="settingsActionService" ref="settingsAction"
 		interface="cytoscape.util.CyAction" />
 
@@ -128,65 +140,65 @@
 	<!-- export task factories -->
 
 	<osgi:service id="helpContentsTaskFactoryService" ref="helpContentsTaskFactory"
-		interface="org.cytoscape.work.TaskFactory"> 
-        <osgi:service-properties>
-            <entry key="preferredButtonGroup" value="z-help" />
-            <entry key="preferredMenu" value="Help" />
-            <entry key="tooltip" value="Show Help Contents..." />
-            <entry key="title" value="Contents..." />
-            <entry key="inToolBar" value="true" />
-            <entry key="iconName" value="/images/ximian/stock_help.png"/>
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="preferredButtonGroup" value="z-help" />
+			<entry key="preferredMenu" value="Help" />
+			<entry key="tooltip" value="Show Help Contents..." />
+			<entry key="title" value="Contents..." />
+			<entry key="inToolBar" value="true" />
+			<entry key="iconName" value="/images/ximian/stock_help.png" />
 			<!-- acceleratorCombo   KeyEvent.VK_F1, 0 -->
-        </osgi:service-properties>
+		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="helpContactHelpDeskTaskFactoryService" ref="helpContactHelpDeskTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
-        <osgi:service-properties>
-            <entry key="preferredMenu" value="Help" />
-            <entry key="title" value="Contact Help Desk..." />
-        </osgi:service-properties>
+	<osgi:service id="helpContactHelpDeskTaskFactoryService"
+		ref="helpContactHelpDeskTaskFactory" interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="preferredMenu" value="Help" />
+			<entry key="title" value="Contact Help Desk..." />
+		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="helpAboutTaskFactoryService" ref="helpAboutTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
-        <osgi:service-properties>
-            <entry key="preferredMenu" value="Help" />
-            <entry key="title" value="About..." />
-        </osgi:service-properties>
+		<osgi:service-properties>
+			<entry key="preferredMenu" value="Help" />
+			<entry key="title" value="About..." />
+		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="arrangeGridTaskFactoryService" ref="arrangeGridTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
-        <osgi:service-properties>
-            <entry key="preferredMenu" value="View.Arrange Network Windows" />
-            <entry key="title" value="Grid" />
-            <entry key="enableFor" value="networkAndView" />
-        </osgi:service-properties>
+		<osgi:service-properties>
+			<entry key="preferredMenu" value="View.Arrange Network Windows" />
+			<entry key="title" value="Grid" />
+			<entry key="enableFor" value="networkAndView" />
+		</osgi:service-properties>
 	</osgi:service>
 	<osgi:service id="arrangeCascadeTaskFactoryService" ref="arrangeCascadeTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
-        <osgi:service-properties>
-            <entry key="preferredMenu" value="View.Arrange Network Windows" />
-            <entry key="title" value="Cascade" />
-            <entry key="enableFor" value="networkAndView" />
-        </osgi:service-properties>
+		<osgi:service-properties>
+			<entry key="preferredMenu" value="View.Arrange Network Windows" />
+			<entry key="title" value="Cascade" />
+			<entry key="enableFor" value="networkAndView" />
+		</osgi:service-properties>
 	</osgi:service>
-	<osgi:service id="arrangeHorizontalTaskFactoryService" ref="arrangeHorizontalTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
-        <osgi:service-properties>
-            <entry key="preferredMenu" value="View.Arrange Network Windows" />
-            <entry key="title" value="Horizontal" />
-            <entry key="enableFor" value="networkAndView" />
-        </osgi:service-properties>
+	<osgi:service id="arrangeHorizontalTaskFactoryService"
+		ref="arrangeHorizontalTaskFactory" interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="preferredMenu" value="View.Arrange Network Windows" />
+			<entry key="title" value="Horizontal" />
+			<entry key="enableFor" value="networkAndView" />
+		</osgi:service-properties>
 	</osgi:service>
 	<osgi:service id="arrangeVerticalTaskFactoryService" ref="arrangeVerticalTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
-        <osgi:service-properties>
-            <entry key="preferredMenu" value="View.Arrange Network Windows" />
-            <entry key="title" value="Vertical" />
-            <entry key="enableFor" value="networkAndView" />
-        </osgi:service-properties>
+		<osgi:service-properties>
+			<entry key="preferredMenu" value="View.Arrange Network Windows" />
+			<entry key="title" value="Vertical" />
+			<entry key="enableFor" value="networkAndView" />
+		</osgi:service-properties>
 	</osgi:service>
 
 	<!--
@@ -262,16 +274,17 @@
 
 
 
-    <osgi:service id="createNetworkViewTaskFactoryService" ref="createNetworkViewTaskFactory">
-        <osgi:interfaces>
-            <value>org.cytoscape.work.TaskFactory</value>
-            <value>cytoscape.xtask.CreateNetworkViewTaskFactory</value>
-        </osgi:interfaces>
-        <osgi:service-properties>
-            <entry key="title" value="Create View" />
-            <entry key="preferredMenu" value="Edit" />
-        </osgi:service-properties>
-    </osgi:service>
+	<osgi:service id="createNetworkViewTaskFactoryService"
+		ref="createNetworkViewTaskFactory">
+		<osgi:interfaces>
+			<value>org.cytoscape.work.TaskFactory</value>
+			<value>cytoscape.xtask.CreateNetworkViewTaskFactory</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="title" value="Create View" />
+			<entry key="preferredMenu" value="Edit" />
+		</osgi:service-properties>
+	</osgi:service>
 
 	<osgi:service id="selectRegisterListenerService" ref="selectRegisterListener"
 		interface="cytoscape.events.NetworkViewAddedListener" />

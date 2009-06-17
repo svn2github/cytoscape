@@ -23,6 +23,10 @@
 
 	<!-- Cytoscape Properties (cytoscape.props) -->
 	<util:properties id="cytoscapeProperties" location="classpath:cytoscape.props" />
+	
+	<bean id="cyMainProps" class="org.cytoscape.property.DefaultCyProperty">
+		<constructor-arg ref="cytoscapeProperties" />
+	</bean>
 
 	<!-- Cytoscape Version -->
 	<bean name="cytoscapeVersion" class="cytoscape.CytoscapeVersion">
@@ -38,7 +42,7 @@
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
 	<bean name="cyOperatingContext" class="cytoscape.internal.CyOperatingContextImpl">
-		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cyMainProps" />
 	</bean>
 	
 	<bean name="fileUtil" class="cytoscape.internal.util.FileUtilImpl">

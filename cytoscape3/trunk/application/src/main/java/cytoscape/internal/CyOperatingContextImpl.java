@@ -45,6 +45,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import org.cytoscape.property.CyProperty;
+
 /**
  * Basic access to Cytoscape's operating context. 
  */
@@ -52,11 +54,11 @@ public class CyOperatingContextImpl implements CyOperatingContext {
 
 	private Properties props;
 
-	public CyOperatingContextImpl(Properties props) {
+	public CyOperatingContextImpl(CyProperty<Properties> props) {
 		if ( props == null )
 			throw new NullPointerException("Cytoscape Properties is null");
 
-		this.props = props;
+		this.props = props.getProperties();
 
 		loadLocalProps();
 	}
