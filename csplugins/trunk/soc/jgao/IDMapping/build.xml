@@ -27,6 +27,8 @@
         <pathelement location="lib/giny.jar"/>
         <pathelement location="lib/cytoscape.jar"/>
         <pathelement location="lib/cytoscape-task.jar"/>
+      	<pathelement location="lib/BridgeDbCore.jar"/>
+        <pathelement location="lib/CheckTree.jar"/>
       </classpath>
     </javac>
   </target>
@@ -47,13 +49,15 @@
     <copy todir="${build.images}">
       <fileset dir="${images}"/>
     </copy>
-    <jar destfile="CyThesaurus.jar">
+    <jar destfile="IDMappingPlugin.jar">
       <manifest>
         <attribute name="Cytoscape-Plugin"
-          value="csplugins.id.mapping.CyThesaurus" />
+          value="csplugins.id.mapping.CyThesaurusPlugin" />
       </manifest>
 
       <fileset dir= "${build.classes}" />
+      <zipfileset src="lib/BridgeDbCore.jar" />
+      <zipfileset src="lib/CheckTree.jar" />
     </jar>
   </target>
   

@@ -84,7 +84,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
                     descTextArea.append(client.getDescription());
                 }
 
-                descTextArea.invalidate();//.repaint();
+                descTextArea.repaint();//.repaint();
             }
         });
     }

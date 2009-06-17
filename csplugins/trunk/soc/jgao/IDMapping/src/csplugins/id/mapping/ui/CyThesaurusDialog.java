@@ -64,6 +64,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Collections;
 
 /**
  *
@@ -412,22 +413,15 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         srcConfDialog.setVisible(true);
         if (!srcConfDialog.isCancelled()) {
             sourceAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
-            sourceAttributeSelectionTable.invalidate();
+            sourceAttributeSelectionTable.repaint();
 
             targetAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedTgtDataSources());
-            targetAttributeSelectionTable.invalidate();
+            targetAttributeSelectionTable.repaint();
         }
     }//GEN-LAST:event_srcConfBtnActionPerformed
 
     private void OKBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKBtnActionPerformed
-        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-        List<String> existAttrNames = Arrays.asList(nodeAttributes.getAttributeNames());
-
-        List<String> attrNames = targetAttributeSelectionTable.getTgtAttrNames();
-        attrNames.retainAll(existAttrNames);
-        if (!attrNames.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Target attributes must have new names.");
-        }
+        if (!verifyUserInput()) return;
 
         Set<CyNetwork> networks = new HashSet(selectedNetworkData.getNetworkList());
         Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceNetAttrType();
@@ -450,8 +444,48 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         // Execute Task in New Thread; pop open JTask Dialog Box.
         boolean succ = TaskManager.executeTask(task, jTaskConfig);
+
+        if (succ) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            //Delete the new attributes
+            CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+            for (String attrName : mapTgtAttrNameAttrType.keySet()) {
+                nodeAttributes.deleteAttribute(attrName);
+            }
+        }
     }//GEN-LAST:event_OKBtnActionPerformed
 
+    private boolean verifyUserInput() {
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        List<String> existAttrNames = Arrays.asList(nodeAttributes.getAttributeNames());
+        List<String> attrNames = targetAttributeSelectionTable.getTgtAttrNames();
+        if (!Collections.disjoint(attrNames, existAttrNames)) { // overlap between new and existing attribute
+            JOptionPane.showMessageDialog(this, "Target attributes must have new names.");
+            return false;
+        }
+        if (attrNames.contains("ID")) {
+            JOptionPane.showMessageDialog(this, "\"ID\" is researved and cannot be used for the new attribute name.");
+            return false;
+        }
+
+        Set<String> attrNamesNR = new HashSet(attrNames);
+        if (attrNamesNR.size()!=attrNames.size()) { //same name
+            JOptionPane.showMessageDialog(this, "Target attributes must have different names.");
+            return false;
+        }
+
+        List<DataSource> idTypes = targetAttributeSelectionTable.getTgtIDTypes();
+        Set<DataSource> idTypesNR = new HashSet(idTypes);
+        if (idTypesNR.size()!=idTypes.size()) {
+            JOptionPane.showMessageDialog(this, "At most one target attribute is allowed for each ID type.");
+            return false;
+        }
+
+        return true;
+    }
+    
     private void updateOKButtonEnable() {
         if (selectedNetworkData.getSize()==0) {
             OKBtn.setEnabled(false);
@@ -461,7 +495,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         OKBtn.setEnabled(true);
         OKBtn.setToolTipText(null);
 
-        OKBtn.invalidate();
+        OKBtn.repaint();
     }
 
     private void defineTgtAttributes(Map<String,Byte> attrNameType) {
