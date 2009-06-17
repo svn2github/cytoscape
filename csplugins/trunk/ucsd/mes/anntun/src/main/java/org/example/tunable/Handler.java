@@ -15,6 +15,11 @@ public interface Handler extends HandlerListener {
 	Method getMethod();
 	Object getObject();
 	Tunable getTunable();
+	
+	Method getGetMethod();
+	Method getSetMethod();
+	Tunable getGetTunable();
+	Tunable getSetTunable();
 
 	void addHandlerListener(HandlerListener listener);
 	boolean removeHandlerListener(HandlerListener listener); 

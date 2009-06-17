@@ -1,13 +1,12 @@
 
 package org.example.tunable.internal.gui;
 
-import java.lang.reflect.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.event.*;
-import java.awt.*;
-import org.example.tunable.*;
+import java.lang.reflect.Field;
+
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+
+import org.example.tunable.Tunable;
 
 public class BooleanHandler extends AbstractGuiHandler {
 

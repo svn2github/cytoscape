@@ -64,6 +64,15 @@ public abstract class AbstractHandler implements Handler {
 	public Tunable getTunable() {
 		return t;
 	}
+	
+	public Tunable getGetTunable(){
+		return tg;
+	}
+	
+	public Tunable getSetTunable(){
+		return ts;
+	}
+	
 
 	public void handlerChanged(Handler h) {
 		//System.out.println("currently a no-op");

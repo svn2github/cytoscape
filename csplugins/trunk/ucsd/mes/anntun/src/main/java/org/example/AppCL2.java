@@ -1,5 +1,10 @@
 package org.example;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -7,12 +12,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.example.tunable.*;
-import org.example.tunable.internal.props.*;
-import org.example.tunable.internal.cl.*;
-import org.example.command.*;
-
-import java.util.*;
+import org.example.command.Command;
+import org.example.command.JActiveModules;
+import org.example.command.PrintSomething;
+import org.example.command.TunableSampler;
+import org.example.tunable.TunableInterceptor;
+import org.example.tunable.internal.cl.CLTunableInterceptor;
 
 
 public class AppCL2
@@ -24,22 +29,21 @@ public class AppCL2
 		list.add(new taskFactory(new PrintSomething(), "This is a TaskFactory example for PrintSomething\n same thing here"));
 		list.add(new taskFactory(new JActiveModules(), "This is a TaskFactory example for JActiveModules\n different informations about the task" ));
 		
+		
+		//create Options
 		Options options = new Options();
 		for ( taskFactory tf : list ){
 			options.addOption( tf.getOption() );
 		}
 		options.addOption("lT", false, "Help = Display all the available taskFactories.");
-		
-		
 		Map<String,List<String>> mapShortArgs = new HashMap<String,List<String>>();
 		for(Option opt :options.getOptions())mapShortArgs.put("-"+opt.getOpt().toString(),new ArrayList<String>());
 		
 
+		//find the good Tasks
 		List<String> listValidedTasks = new ArrayList<String>();
-		
 		int lastIdx = 0;
 		String lastArg = null;
-		
 		for(String argsString : args){
 			if(mapShortArgs.containsKey(argsString)){
 				lastArg = argsString;
@@ -61,7 +65,6 @@ public class AppCL2
 				else mapShortArgs.get(lastArg).add(argsString);
 			}
 		}
-
 		
 		for(String argsString : args){
 			if(argsString.equals("-lT")){
@@ -85,7 +88,7 @@ public class AppCL2
 		
 		
 		
-		
+		//Parse the CommandLine arguments
         String[] keys = new String[listValidedTasks.size()];
         int g=0;
         
@@ -93,12 +96,8 @@ public class AppCL2
        			keys[g] = key;
        			g++;
         }
-                
-		
         CommandLineParser parser = new PosixParser();
         CommandLine line = null;
-        
-        
         try{
 			line = parser.parse(options,keys);
    		}catch(ParseException pe){
@@ -107,13 +106,14 @@ public class AppCL2
 			System.exit(1);
 		}
 
+   		
+   		
+   		//Executed the selected Tasks
    		if (line.hasOption("lT")) {
         	System.out.println("The General Help has been called");
 			printHelp(options);
-			System.exit(0);
-			
+			System.exit(0);	
         }
-   		
    		for(String st : listValidedTasks){
    			for(taskFactory tf : list){
    				if(st.equals(tf.getName())){
@@ -121,11 +121,11 @@ public class AppCL2
    				}
    			}
    		}
-        
         if(args.length==0){
         	printHelp(options);
 			System.exit(0);
         }
+        //End of class
     }
     
 	private static void printHelp(Options options) {
@@ -179,7 +179,8 @@ public class AppCL2
     	}
     	
     	
-    	void getFactory(Command com,String[] args){
+    	@SuppressWarnings("unchecked")
+		void getFactory(Command com,String[] args){
     		TunableInterceptor cl = new CLTunableInterceptor(args);
     		cl.loadTunables(com);
 //    		if ( com instanceof HandlerController )

@@ -1,21 +1,21 @@
 
 package org.example.tunable.internal.gui;
 
-import java.lang.reflect.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.event.*;
-import java.awt.*;
+import java.lang.reflect.Field;
 
-import org.example.tunable.*;
-import org.example.tunable.util.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandler {
+import org.example.tunable.Tunable;
+import org.example.tunable.util.AbstractBounded;
+
+public class BoundedHandler<T extends AbstractBounded<?>> extends AbstractGuiHandler {
 
 	JTextField tf;
 	T b;
 
+	@SuppressWarnings("unchecked")
 	public BoundedHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try {

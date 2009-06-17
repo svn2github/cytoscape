@@ -31,8 +31,6 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements GuiH
 
 	// notify dependencies that this object is changing
 	public void notifyDependents() {
-		String state = getState();
-		String name = getName();
 		for ( HandlerListener hl : listeners )
 			hl.handlerChanged(this);	
 	}

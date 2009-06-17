@@ -1,12 +1,17 @@
 package org.example.tunable.internal.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.lang.reflect.*;
-import org.example.tunable.*; 
+import java.awt.CardLayout;
+import java.awt.Component;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+
+import org.example.tunable.Handler;
+import org.example.tunable.HandlerListener;
 
 
+@SuppressWarnings("serial")
 public class XorPanel extends JPanel {
 	
 	

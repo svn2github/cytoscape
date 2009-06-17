@@ -15,25 +15,22 @@ public class BooleanCLHandler extends AbstractCLHandler {
 	public BooleanCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 	}
-
-//	public BooleanCLHandler(Method m, Object o, Tunable t) {
-//		super(m,o,t);
-//	}
 	
 	public BooleanCLHandler(Method gmethod,Method smethod,Object o, Tunable tg, Tunable ts){
 		super(gmethod,smethod,o,tg,ts);
 	}
-	
-	
 
+	
+//	public BooleanCLHandler(Method m, Object o, Tunable t) {
+//		super(m,o,t);
+//	}
+	
+	
 
 	public void handleLine( CommandLine line ) {
 		String n = getName(); 
 		int ind = n.lastIndexOf(".")+1;
-		String fc;
-		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		//else fc = n.substring(ind,ind+3);
-		fc = n.substring(ind);
+		String fc = n.substring(ind);
 		
 		try {
 			if ( line.hasOption( fc ) ) {
@@ -53,10 +50,7 @@ public class BooleanCLHandler extends AbstractCLHandler {
 	public Option getOption(){
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
-		String fc;
-		//if(n.substring(ind).length()<3)fc = n.substring(ind); 
-		//else fc = n.substring(ind,ind+3);
-		fc = n.substring(ind);
+		String fc = n.substring(ind);
 		Boolean currentValue = null;		
 		if (f!=null){
 			try{
@@ -74,8 +68,7 @@ public class BooleanCLHandler extends AbstractCLHandler {
 		
 	}
 
-    
-    
+        
 	private void displayCmds(String fc){
 		HelpFormatter formatter = new HelpFormatter();
 		Options options = new Options();

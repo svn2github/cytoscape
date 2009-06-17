@@ -32,9 +32,9 @@ public class GuiHandlerFactory implements HandlerFactory<GuiHandler> {
 			return new FlexiblyBoundedHandler<FlexiblyBoundedDouble>(f,o,t);
 		
 		else if ( type == ListSingleSelection.class ) 
-			return new ListSingleSelectionHandler(f,o,t);
+			return new ListSingleSelectionHandler<Object>(f,o,t);
 		else if ( type == ListMultipleSelection.class ) 
-			return new ListMultipleSelectionHandler(f,o,t);
+			return new ListMultipleSelectionHandler<Object>(f,o,t);
 		return null;
 	}
 

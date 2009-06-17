@@ -11,6 +11,7 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 	ListSingleSelection<T> lss;
 	
 	
+	@SuppressWarnings("unchecked")
 	public ListSingleSelectionCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
@@ -24,6 +25,7 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 
 	
 
+	@SuppressWarnings("unchecked")
 	public void handleLine( CommandLine line ) {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
@@ -48,6 +50,7 @@ public class ListSingleSelectionCLHandler<T> extends AbstractCLHandler {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public Option getOption() {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;

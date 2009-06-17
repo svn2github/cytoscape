@@ -17,8 +17,12 @@ public class BoundedCLHandler<T extends AbstractBounded<?>> extends AbstractCLHa
 	private String ubound="\u2264";
 
 
+	@SuppressWarnings("unchecked")
 	public BoundedCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
+		try{
+			bo = (T) f.get(o);
+		}catch (Exception e){e.printStackTrace();}
 	}
 
 	public BoundedCLHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts) {
@@ -26,12 +30,11 @@ public class BoundedCLHandler<T extends AbstractBounded<?>> extends AbstractCLHa
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public void handleLine( CommandLine line ) {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
-		String fc;
-		fc = n.substring(ind);
-		
+		String fc = n.substring(ind);
 		
 		try {
 			if ( line.hasOption( fc ) ) {
@@ -59,9 +62,6 @@ public class BoundedCLHandler<T extends AbstractBounded<?>> extends AbstractCLHa
 	
 		T currentValue = null;
 		if( f!=null){
-			try{
-				bo = (T) f.get(o);
-			}catch (Exception e){e.printStackTrace();}
 			if(bo.isLowerBoundStrict())lbound="<";
 			if(bo.isUpperBoundStrict())ubound="<";
 			return new Option(fc, true,"-- " +t.description() +" --\n  current value : "+bo.getValue()+ "\n  possible value : (" + bo.getLowerBound()+ " " + lbound + " x " + ubound + " " + bo.getUpperBound() + ")");		

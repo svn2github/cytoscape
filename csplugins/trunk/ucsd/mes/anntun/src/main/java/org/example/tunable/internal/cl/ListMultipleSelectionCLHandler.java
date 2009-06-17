@@ -10,6 +10,7 @@ public class ListMultipleSelectionCLHandler<T> extends AbstractCLHandler {
 
 	ListMultipleSelection<T> lms;
 	
+	@SuppressWarnings("unchecked")
 	public ListMultipleSelectionCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		try{
@@ -40,6 +41,7 @@ public class ListMultipleSelectionCLHandler<T> extends AbstractCLHandler {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public Option getOption() {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
@@ -60,6 +62,7 @@ public class ListMultipleSelectionCLHandler<T> extends AbstractCLHandler {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	private void setSelectedItems(String[] items){
 		java.util.List<T> list = new java.util.ArrayList<T>();
 		for(String str : items) list.add((T)str);
@@ -78,6 +81,7 @@ public class ListMultipleSelectionCLHandler<T> extends AbstractCLHandler {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public Option getDetailedOption() {
 		String n = getName();
 		int ind = n.lastIndexOf(".")+1;
