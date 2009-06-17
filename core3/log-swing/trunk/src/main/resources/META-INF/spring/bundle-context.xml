@@ -18,4 +18,22 @@
 
 	<bean id="consoleTaskFactory" class="org.cytoscape.log.internal.ConsoleTaskFactory">
 	</bean>
+
+	<bean id="testTaskFactory" class="org.cytoscape.log.internal.TestTaskFactory">
+	</bean>
+
+	<!--
+	<bean id="log4jInitialization" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	  <property name="targetClass" value="org.springframework.util.Log4jConfigurer"/>
+	  <property name="targetMethod" value="initLogging"/>
+	  <property name="arguments">
+	    <list>
+	      <value>log4j-configuration.xml</value>
+	    </list>
+	  </property>
+	</bean>
+	-->
+
+	<bean id="log4jInitialization" class="org.cytoscape.log.internal.Log4jInit">
+	</bean>
 </beans>

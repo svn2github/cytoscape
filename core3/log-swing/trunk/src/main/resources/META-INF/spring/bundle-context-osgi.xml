@@ -11,4 +11,11 @@
 			<entry key="preferredMenu" value="Help"/>
 		</osgi:service-properties>
 	</osgi:service>
+	<osgi:service id="testTaskFactoryService" ref="testTaskFactory"
+ 		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Test"/>
+			<entry key="preferredMenu" value="Help"/>
+		</osgi:service-properties>
+	</osgi:service>
 </beans>
