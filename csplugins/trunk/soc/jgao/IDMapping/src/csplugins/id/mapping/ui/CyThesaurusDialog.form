@@ -18,7 +18,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,67,0,0,2,21"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,22,0,0,2,21"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
@@ -43,7 +43,7 @@
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="10" weightX="1.0" weightY="0.5"/>
+          <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="10" weightX="1.0" weightY="0.25"/>
         </Constraint>
       </Constraints>
 
@@ -56,7 +56,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="sourceAttributeSelectionTable = new SourceAttributeSelectionTable(getTestSupportedIDSources());&#xa;sourceScrollPane.setViewportView(sourceAttributeSelectionTable);&#xa;sourceAttributeSelectionTable.addRow();"/>
+            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="sourceAttributeSelectionTable = new SourceAttributeSelectionTable();&#xa;sourceAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());&#xa;sourceScrollPane.setViewportView(sourceAttributeSelectionTable);&#xa;sourceAttributeSelectionTable.addRow();"/>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
@@ -103,7 +103,7 @@
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="10" weightX="1.0" weightY="0.5"/>
+          <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="10" weightX="1.0" weightY="0.25"/>
         </Constraint>
       </Constraints>
 
@@ -119,7 +119,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="destinationAttributeSelectionTable = new DestinationAttributeSelectionTable(getTestSupportedIDSources());&#xa;destinationAttributeSelectionTable.addRow();&#xa;destinationScrollPane.setViewportView(destinationAttributeSelectionTable);"/>
+            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="destinationAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();&#xa;destinationAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());&#xa;destinationAttributeSelectionTable.addRow();&#xa;destinationScrollPane.setViewportView(destinationAttributeSelectionTable);"/>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
@@ -153,7 +153,7 @@
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="21" weightX="0.0" weightY="0.0"/>
+          <GridBagConstraints gridX="0" gridY="3" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="21" weightX="0.0" weightY="0.0"/>
         </Constraint>
       </Constraints>
 
@@ -163,6 +163,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Configure sources of ID mapping"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="srcConfBtnActionPerformed"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
@@ -177,7 +180,7 @@
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="22" weightX="0.0" weightY="0.0"/>
+          <GridBagConstraints gridX="0" gridY="3" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="22" weightX="0.0" weightY="0.0"/>
         </Constraint>
       </Constraints>
 
@@ -198,12 +201,150 @@
         <Component class="javax.swing.JButton" name="OKBtn">
           <Properties>
             <Property name="text" type="java.lang.String" value="   OK   "/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="OKBtnActionPerformed"/>
+          </Events>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="selectNetworkPanel">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Please select networks to merge"/>
+          </Border>
+        </Property>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[490, 150]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[490, 150]"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="10" weightX="1.0" weightY="0.5"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
+      <SubComponents>
+        <Container class="javax.swing.JScrollPane" name="unselectedNetworkScrollPane">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[200, 100]"/>
+            </Property>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
-        </Component>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+              <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="3" insetsLeft="3" insetsBottom="3" insetsRight="3" anchor="10" weightX="0.5" weightY="1.0"/>
+            </Constraint>
+          </Constraints>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JList" name="unselectedNetworkList">
+              <Properties>
+                <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
+                  <StringArray count="0"/>
+                </Property>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JList(unselectedNetworkData)"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="unselectedNetworkData = new SortedNetworkListModel();"/>
+                <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private SortedNetworkListModel unselectedNetworkData;"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="for (Iterator&lt;CyNetwork&gt; it = Cytoscape.getNetworkSet().iterator(); it.hasNext(); ) {&#xa;    CyNetwork network = it.next();&#xa;    unselectedNetworkData.add(network);&#xa;}&#xa;&#xa;unselectedNetworkList.setCellRenderer(new ListCellRenderer() {&#xa;    private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();&#xa;    public Component getListCellRendererComponent(&#xa;                                       JList list,&#xa;                                       Object value,&#xa;                                       int index,&#xa;                                       boolean isSelected,&#xa;                                       boolean cellHasFocus) {&#xa;        JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xa;        renderer.setText(((CyNetwork)value).getTitle());&#xa;        return renderer;&#xa;    }&#xa;});&#xa;        &#xa;unselectedNetworkList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {&#xa;    public void valueChanged(javax.swing.event.ListSelectionEvent evt) {&#xa;        int index = unselectedNetworkList.getMinSelectionIndex();&#xa;        if (index&gt;-1) {&#xa;            selectedNetworkList.getSelectionModel().clearSelection();&#xa;            rightButton.setEnabled(true);&#xa;        } else {&#xa;            rightButton.setEnabled(false);&#xa;        }&#xa;    }&#xa;});"/>
+              </AuxValues>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="lrButtonPanel">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+              <GridBagConstraints gridX="1" gridY="0" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="3" insetsLeft="3" insetsBottom="3" insetsRight="3" anchor="10" weightX="0.0" weightY="0.0"/>
+            </Constraint>
+          </Constraints>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+            <Property name="columns" type="int" value="1"/>
+            <Property name="rows" type="int" value="0"/>
+            <Property name="verticalGap" type="int" value="2"/>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JButton" name="rightButton">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/images/right16.gif"/>
+                </Property>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="rightButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = unselectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }        &#xa;                    &#xa;        for (int i= indices.length-1; i&gt;=0; i--) {&#xa;            CyNetwork removed = unselectedNetworkData.removeElement(indices[i]);&#xa;            selectedNetworkData.add(removed);&#xa;        }&#xa;    &#xa;        if (unselectedNetworkData.getSize()==0) {&#xa;            unselectedNetworkList.clearSelection();&#xa;            rightButton.setEnabled(false);&#xa;        } else {&#xa;            int minindex = unselectedNetworkList.getMinSelectionIndex();&#xa;            if (minindex&gt;= unselectedNetworkData.getSize()) {&#xa;                minindex = 0;&#xa;            }&#xa;            unselectedNetworkList.setSelectedIndex(minindex);&#xa;        }&#xa;&#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        &#xa;        updateOKButtonEnable();&#xa;        &#xa;    }&#xa;});"/>
+              </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="leftButton">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/images/left16.gif"/>
+                </Property>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="leftButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = selectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }&#xa;    &#xa;        for (int i= indices.length-1; i&gt;=0; i--) {&#xa;            CyNetwork removed = selectedNetworkData.removeElement(indices[i]);&#xa;            unselectedNetworkData.add(removed);&#xa;        }&#xa;    &#xa;        if (selectedNetworkData.getSize()==0) {&#xa;            selectedNetworkList.clearSelection();&#xa;            leftButton.setEnabled(false);&#xa;        } else {&#xa;            int minindex = selectedNetworkList.getMinSelectionIndex();&#xa;            if (minindex&gt;= selectedNetworkData.getSize()) {&#xa;                minindex = 0;&#xa;            }&#xa;            selectedNetworkList.setSelectedIndex(minindex);&#xa;        }&#xa;      &#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        updateOKButtonEnable();&#xa;    }&#xa;});"/>
+              </AuxValues>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JScrollPane" name="selectedNetworkScrollPane">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[200, 100]"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+              <GridBagConstraints gridX="2" gridY="0" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="3" insetsLeft="3" insetsBottom="3" insetsRight="3" anchor="10" weightX="0.5" weightY="1.0"/>
+            </Constraint>
+          </Constraints>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JList" name="selectedNetworkList">
+              <Properties>
+                <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
+                  <StringArray count="0"/>
+                </Property>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JList(selectedNetworkData)"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="selectedNetworkData = new SortedNetworkListModel();"/>
+                <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private SortedNetworkListModel selectedNetworkData;"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="selectedNetworkList.setCellRenderer(new ListCellRenderer() {&#xa;    private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();&#xa;    public Component getListCellRendererComponent(&#xa;                                       JList list,&#xa;                                       Object value,&#xa;                                       int index,&#xa;                                       boolean isSelected,&#xa;                                       boolean cellHasFocus) {&#xa;        JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xa;        renderer.setText(((CyNetwork)value).getTitle());&#xa;        return renderer;&#xa;    }&#xa;});&#xa;selectedNetworkList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {&#xa;    public void valueChanged(javax.swing.event.ListSelectionEvent evt) {&#xa;        int index = selectedNetworkList.getMinSelectionIndex();&#xa;        if (index&gt;-1) {&#xa;            unselectedNetworkList.getSelectionModel().clearSelection();&#xa;            leftButton.setEnabled(true);&#xa;        } else {&#xa;            leftButton.setEnabled(false);&#xa;        }&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="selectedNetworkList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);"/>
+              </AuxValues>
+            </Component>
+          </SubComponents>
+        </Container>
       </SubComponents>
     </Container>
   </SubComponents>

@@ -1,5 +1,4 @@
-/* File: CyThesaurusDialog.java
-
+/*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -36,9 +35,26 @@
 
 package csplugins.id.mapping.ui;
 
-import java.util.Set;
+import csplugins.id.mapping.IDMappingClientManager;
+import csplugins.id.mapping.AttibuteBasedIDMappingService;
+import csplugins.id.mapping.AttibuteBasedIDMappingServiceImpl;
 
-import org.bridgedb.DataSource;
+import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
+
+import javax.swing.AbstractListModel;
+import javax.swing.ListCellRenderer;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.JLabel;
+import javax.swing.ListSelectionModel;
+
+import java.awt.Component;
+
+import java.util.List;
+import java.util.Vector;
+import java.util.TreeMap;
+import java.util.Iterator;
 
 /**
  *
@@ -72,7 +88,17 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         javax.swing.JButton srcConfBtn = new javax.swing.JButton();
         javax.swing.JPanel OKPanel = new javax.swing.JPanel();
         javax.swing.JButton cancelBtn = new javax.swing.JButton();
-        javax.swing.JButton OKBtn = new javax.swing.JButton();
+        OKBtn = new javax.swing.JButton();
+        javax.swing.JPanel selectNetworkPanel = new javax.swing.JPanel();
+        javax.swing.JScrollPane unselectedNetworkScrollPane = new javax.swing.JScrollPane();
+        unselectedNetworkData = new SortedNetworkListModel();
+        unselectedNetworkList = new javax.swing.JList(unselectedNetworkData);
+        javax.swing.JPanel lrButtonPanel = new javax.swing.JPanel();
+        rightButton = new javax.swing.JButton();
+        leftButton = new javax.swing.JButton();
+        javax.swing.JScrollPane selectedNetworkScrollPane = new javax.swing.JScrollPane();
+        selectedNetworkData = new SortedNetworkListModel();
+        selectedNetworkList = new javax.swing.JList(selectedNetworkData);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("CyThesaurus plugin");
@@ -85,7 +111,8 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         sourceScrollPane.setMinimumSize(new java.awt.Dimension(300, 100));
 
-        sourceAttributeSelectionTable = new SourceAttributeSelectionTable(getTestSupportedIDSources());
+        sourceAttributeSelectionTable = new SourceAttributeSelectionTable();
+        sourceAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
         sourceScrollPane.setViewportView(sourceAttributeSelectionTable);
         sourceAttributeSelectionTable.addRow();
 
@@ -108,10 +135,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.weighty = 0.25;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(sourcePanel, gridBagConstraints);
 
@@ -123,7 +150,8 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         destinationScrollPane.setMinimumSize(new java.awt.Dimension(300, 100));
         destinationScrollPane.setPreferredSize(new java.awt.Dimension(300, 100));
 
-        destinationAttributeSelectionTable = new DestinationAttributeSelectionTable(getTestSupportedIDSources());
+        destinationAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();
+        destinationAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
         destinationAttributeSelectionTable.addRow();
         destinationScrollPane.setViewportView(destinationAttributeSelectionTable);
 
@@ -146,20 +174,24 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.weighty = 0.25;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(destinationPanel, gridBagConstraints);
-        destinationPanel.getAccessibleContext().setAccessibleName("Select destination attribute/IDType(s)");
 
         srcConfBtn.setText("Configure sources of ID mapping");
+        srcConfBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                srcConfBtnActionPerformed(evt);
+            }
+        });
         typeSourceConfPanel.add(srcConfBtn);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(typeSourceConfPanel, gridBagConstraints);
@@ -173,14 +205,189 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         OKPanel.add(cancelBtn);
 
         OKBtn.setText("   OK   ");
+        OKBtn.setEnabled(false);
+        OKBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OKBtnActionPerformed(evt);
+            }
+        });
         OKPanel.add(OKBtn);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(OKPanel, gridBagConstraints);
+
+        selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select networks to merge"));
+        selectNetworkPanel.setMinimumSize(new java.awt.Dimension(490, 150));
+        selectNetworkPanel.setPreferredSize(new java.awt.Dimension(490, 150));
+        selectNetworkPanel.setLayout(new java.awt.GridBagLayout());
+
+        unselectedNetworkScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
+
+        for (Iterator<CyNetwork> it = Cytoscape.getNetworkSet().iterator(); it.hasNext(); ) {
+            CyNetwork network = it.next();
+            unselectedNetworkData.add(network);
+        }
+
+        unselectedNetworkList.setCellRenderer(new ListCellRenderer() {
+            private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+            public Component getListCellRendererComponent(
+                JList list,
+                Object value,
+                int index,
+                boolean isSelected,
+                boolean cellHasFocus) {
+                JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                renderer.setText(((CyNetwork)value).getTitle());
+                return renderer;
+            }
+        });
+
+        unselectedNetworkList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                int index = unselectedNetworkList.getMinSelectionIndex();
+                if (index>-1) {
+                    selectedNetworkList.getSelectionModel().clearSelection();
+                    rightButton.setEnabled(true);
+                } else {
+                    rightButton.setEnabled(false);
+                }
+            }
+        });
+        unselectedNetworkScrollPane.setViewportView(unselectedNetworkList);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        selectNetworkPanel.add(unselectedNetworkScrollPane, gridBagConstraints);
+
+        lrButtonPanel.setLayout(new java.awt.GridLayout(0, 1, 0, 2));
+
+        rightButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/right16.gif"))); // NOI18N
+        rightButton.setEnabled(false);
+        rightButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int [] indices = unselectedNetworkList.getSelectedIndices();
+                if (indices == null || indices.length == 0) {
+                    return;
+                }
+
+                for (int i= indices.length-1; i>=0; i--) {
+                    CyNetwork removed = unselectedNetworkData.removeElement(indices[i]);
+                    selectedNetworkData.add(removed);
+                }
+
+                if (unselectedNetworkData.getSize()==0) {
+                    unselectedNetworkList.clearSelection();
+                    rightButton.setEnabled(false);
+                } else {
+                    int minindex = unselectedNetworkList.getMinSelectionIndex();
+                    if (minindex>= unselectedNetworkData.getSize()) {
+                        minindex = 0;
+                    }
+                    unselectedNetworkList.setSelectedIndex(minindex);
+                }
+
+                selectedNetworkList.repaint();
+                unselectedNetworkList.repaint();
+
+                updateOKButtonEnable();
+
+            }
+        });
+        lrButtonPanel.add(rightButton);
+
+        leftButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/left16.gif"))); // NOI18N
+        leftButton.setEnabled(false);
+        leftButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int [] indices = selectedNetworkList.getSelectedIndices();
+                if (indices == null || indices.length == 0) {
+                    return;
+                }
+
+                for (int i= indices.length-1; i>=0; i--) {
+                    CyNetwork removed = selectedNetworkData.removeElement(indices[i]);
+                    unselectedNetworkData.add(removed);
+                }
+
+                if (selectedNetworkData.getSize()==0) {
+                    selectedNetworkList.clearSelection();
+                    leftButton.setEnabled(false);
+                } else {
+                    int minindex = selectedNetworkList.getMinSelectionIndex();
+                    if (minindex>= selectedNetworkData.getSize()) {
+                        minindex = 0;
+                    }
+                    selectedNetworkList.setSelectedIndex(minindex);
+                }
+
+                selectedNetworkList.repaint();
+                unselectedNetworkList.repaint();
+                updateOKButtonEnable();
+            }
+        });
+        lrButtonPanel.add(leftButton);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        selectNetworkPanel.add(lrButtonPanel, gridBagConstraints);
+
+        selectedNetworkScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
+
+        selectedNetworkList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        selectedNetworkList.setCellRenderer(new ListCellRenderer() {
+            private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+            public Component getListCellRendererComponent(
+                JList list,
+                Object value,
+                int index,
+                boolean isSelected,
+                boolean cellHasFocus) {
+                JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                renderer.setText(((CyNetwork)value).getTitle());
+                return renderer;
+            }
+        });
+        selectedNetworkList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                int index = selectedNetworkList.getMinSelectionIndex();
+                if (index>-1) {
+                    unselectedNetworkList.getSelectionModel().clearSelection();
+                    leftButton.setEnabled(true);
+                } else {
+                    leftButton.setEnabled(false);
+                }
+            }
+        });
+        selectedNetworkScrollPane.setViewportView(selectedNetworkList);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        selectNetworkPanel.add(selectedNetworkScrollPane, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        getContentPane().add(selectNetworkPanel, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -190,18 +397,84 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_cancelBtnActionPerformed
 
-    private Set<DataSource> getTestSupportedIDSources() {
-        Set<DataSource> ret = new java.util.HashSet();
-        for (int i=0; i<3; i++) {
-            ret.add(DataSource.register("s"+i, "source"+i, null, null, null, false, false, null));
+    private void srcConfBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_srcConfBtnActionPerformed
+        IDMappingSourceConfigDialog srcConfDialog = new IDMappingSourceConfigDialog(this, true);
+        srcConfDialog.setLocationRelativeTo(this);
+        srcConfDialog.setVisible(true);
+        if (!srcConfDialog.isCancelled()) {
+            sourceAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
+            sourceAttributeSelectionTable.invalidate();
+
+            destinationAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedTgtDataSources());
+            destinationAttributeSelectionTable.invalidate();
         }
-        return ret;
+    }//GEN-LAST:event_srcConfBtnActionPerformed
+
+    private void OKBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKBtnActionPerformed
+        
+        AttibuteBasedIDMappingService service = new AttibuteBasedIDMappingServiceImpl();
+        //service.map(networks, mapSrcAttrIDTypes, MapTgtIDTypeAttrNameAttrType);
+    }//GEN-LAST:event_OKBtnActionPerformed
+
+    private void updateOKButtonEnable() {
+        if (selectedNetworkData.getSize()==0) {
+            OKBtn.setEnabled(false);
+            OKBtn.setToolTipText("None of the networks was selected!");
+        }
+
+        OKBtn.setEnabled(true);
+        OKBtn.setToolTipText(null);
     }
 
+
     private SourceAttributeSelectionTable sourceAttributeSelectionTable;
-    private DestinationAttributeSelectionTable destinationAttributeSelectionTable;
+    private TargetAttributeSelectionTable destinationAttributeSelectionTable;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton OKBtn;
+    private javax.swing.JButton leftButton;
+    private javax.swing.JButton rightButton;
+    private javax.swing.JList selectedNetworkList;
+    private SortedNetworkListModel selectedNetworkData;
+    private javax.swing.JList unselectedNetworkList;
+    private SortedNetworkListModel unselectedNetworkData;
     // End of variables declaration//GEN-END:variables
 
+}
+
+class SortedNetworkListModel extends AbstractListModel {
+        // Using a SortedMap from String to network
+        TreeMap<String,CyNetwork> model;
+
+        public SortedNetworkListModel() {
+            model= new TreeMap<String,CyNetwork>();
+        }
+
+        //@Override
+        public int getSize() {
+            return model.size();
+        }
+
+        //@Override
+        public CyNetwork getElementAt(int index) {
+            return (CyNetwork) model.values().toArray()[index];
+        }
+
+        public void add(CyNetwork network) {
+            String title = network.getTitle();
+            model.put(title.toUpperCase(),network);
+            fireContentsChanged(this, 0, getSize());
+        }
+
+        public CyNetwork removeElement(int index) {
+            CyNetwork removed = model.remove(getElementAt(index).getTitle().toUpperCase());
+            if (removed!=null) {
+                fireContentsChanged(this, 0, getSize());
+            }
+            return removed;
+        }
+
+        public List<CyNetwork> getNetworkList() {
+            return new Vector<CyNetwork>(model.values());
+        }
 }

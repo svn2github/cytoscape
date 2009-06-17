@@ -1,5 +1,4 @@
-/* File: SourceAttributeSelectionTable.java
-
+/*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -43,6 +42,7 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -59,6 +59,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 
 import org.bridgedb.DataSource;
 
@@ -83,19 +84,27 @@ public class SourceAttributeSelectionTable extends JTable{
     private List<JButton> rmvBtns;
     private JButton addBtn;
 
+    private java.awt.Color defBgColor = (new JScrollPane()).getBackground();
+
     private int rowCount;
 
-    public SourceAttributeSelectionTable(Set<DataSource> idtypes) {
+    private final String colHeaderNet = "Network";
+    private final String colHeaderAtt = "Attribute";
+    private final String colHeaderSrc = "Source ID Type(s)";
+    private final String colHeaderBtn = " ";
+
+    public SourceAttributeSelectionTable() {
         super();
 
-        supportedIDType = idtypes;
-
+        supportedIDType = new HashSet();
         networkComboBoxes = new Vector();
         attributeComboBoxes = new Vector();
         typeComboBoxes = new Vector();
         rmvBtns = new Vector();
         addBtn = new JButton("Insert");
-        addBtn.setBackground(java.awt.Color.GRAY);
+        addBtn.setBackground(defBgColor);
+        
+        this.setGridColor(defBgColor);
 
         rowCount = 0;
 
@@ -120,7 +129,8 @@ public class SourceAttributeSelectionTable extends JTable{
                    column >= this_table.getColumnCount() || column < 0)
                   return;
 
-                if (column==3) {
+                String colName = this_table.getColumnName(column);
+                if (colName.compareTo(colHeaderBtn)==0) {
                     if (row<rowCount) {
                         this_table.removeRow(row);
                     } else if (row==rowCount) {
@@ -136,12 +146,26 @@ public class SourceAttributeSelectionTable extends JTable{
     }
 
     public void setSupportedIDType(final Set<DataSource> types) {
-            supportedIDType = types;
-            setColumnEditorAndCellRenderer();
+        if (types==null) {
+            throw new NullPointerException();
+        }
+        
+        supportedIDType = types;
+
+        typeComboBoxes.clear();
+        for (int i=0; i<rowCount; i++) {
+            typeComboBoxes.add(new CheckComboBox(supportedIDType));
+        }
+        setColumnEditorAndCellRenderer();
+        //fireTableDataChanged();
     }
 
     public Map<CyNetwork,Map<String,Set<DataSource>>> getSourceNetAttrType() {
         Map<CyNetwork,Map<String,Set<DataSource>>> ret = new HashMap();
+        if (supportedIDType.isEmpty()) {
+            return ret;
+        }
+        
         for (int i=0; i<rowCount; i++) {
             CyNetwork net = ((CyNetworkWrapper)networkComboBoxes.get(i).getSelectedItem()).network();
             String attr = (String)attributeComboBoxes.get(i).getSelectedItem();
@@ -160,8 +184,11 @@ public class SourceAttributeSelectionTable extends JTable{
     }
 
     protected void setColumnEditorAndCellRenderer() {
+        TableColumnModel colModel = getColumnModel();
+
         // network column
-        TableColumn column = getColumnModel().getColumn(0);
+        int iCol = colModel.getColumnIndex(colHeaderNet);
+        TableColumn column = getColumnModel().getColumn(iCol);
         RowTableCellEditor rowEditor = new RowTableCellEditor(this);
 
         for (int ir=0; ir<rowCount; ir++) {
@@ -171,7 +198,8 @@ public class SourceAttributeSelectionTable extends JTable{
         column.setCellRenderer(new ComboBoxTableCellRenderer());
 
         // attribute column
-        column = getColumnModel().getColumn(1);
+        iCol = colModel.getColumnIndex(colHeaderAtt);
+        column = getColumnModel().getColumn(iCol);
         rowEditor = new RowTableCellEditor(this);
 
         for (int ir=0; ir<rowCount; ir++) {
@@ -181,7 +209,8 @@ public class SourceAttributeSelectionTable extends JTable{
         column.setCellRenderer(new ComboBoxTableCellRenderer());
 
         // type column
-        column = getColumnModel().getColumn(2);
+        iCol = colModel.getColumnIndex(colHeaderSrc);
+        column = getColumnModel().getColumn(iCol);
         rowEditor = new RowTableCellEditor(this);
 
         for (int ir=0; ir<rowCount; ir++) {
@@ -195,8 +224,9 @@ public class SourceAttributeSelectionTable extends JTable{
 
                 //@Override
                 public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                       JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                        boolean isSelected, boolean hasFocus, int row, int column) {
+                    JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    if (row<rowCount) {
                        if (isSelected) {
                                label.setBackground(table.getSelectionBackground());
                                label.setForeground(table.getSelectionForeground());
@@ -204,15 +234,25 @@ public class SourceAttributeSelectionTable extends JTable{
                                label.setBackground(table.getBackground());
                                label.setForeground(table.getForeground());
                        }
-                       label.setToolTipText("Please select a non-empty ID mapping file first.");
+                       label.setText("No supported ID type");
+                       label.setToolTipText("Please select a non-empty ID mapping source first.");
                        return label;
+                    } else if (row==rowCount) {
+                        label.setBackground(defBgColor);
+                        label.setForeground(defBgColor);
+                        label.setText("");
+                        return label;
+                    } else {
+                        return defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    }
                 }
             });
         } else {
             column.setCellRenderer(new ComboBoxTableCellRenderer());
         }
 
-        column = getColumnModel().getColumn(3);
+        iCol = colModel.getColumnIndex(colHeaderBtn);
+        column = getColumnModel().getColumn(iCol);
         column.setCellRenderer(new ButtonRenderer());
     }
 
@@ -233,7 +273,7 @@ public class SourceAttributeSelectionTable extends JTable{
 
         attributeComboBoxes.add(new JComboBox(attrs));
 
-        CheckComboBox cc = new  CheckComboBox(supportedIDType);
+        CheckComboBox cc = new CheckComboBox(supportedIDType);
         typeComboBoxes.add(cc);
 
         JButton button = new JButton("Remove");
@@ -307,7 +347,7 @@ public class SourceAttributeSelectionTable extends JTable{
    }
 
     private class IDTypeSelectionTableModel extends AbstractTableModel {
-        private final String[] columnNames = {"Network","Attribute","Source ID Type(s)",""};
+        private final String[] columnNames = {colHeaderNet, colHeaderAtt, colHeaderSrc, colHeaderBtn};
 
         //@Override
         public int getColumnCount() {
@@ -326,30 +366,28 @@ public class SourceAttributeSelectionTable extends JTable{
 
         //@Override
         public Object getValueAt(int row, int col) {
+            String colName = getColumnName(col);
             if (row<rowCount) {
-                switch (col) {
-                    case 0:
-                        return networkComboBoxes.get(row);
-                    case 1:
-                        return attributeComboBoxes.get(row);
-                    case 2:
-                        return typeComboBoxes.get(row);
-                    case 3:
-                        return rmvBtns.get(row);
-                    default:
-                        throw new java.lang.IndexOutOfBoundsException();
+                if (colName.compareTo(colHeaderNet)==0) {
+                    return networkComboBoxes.get(row);
                 }
+                if (colName.compareTo(colHeaderAtt)==0) {
+                    return attributeComboBoxes.get(row);
+                }
+                if (colName.compareTo(colHeaderSrc)==0) {
+                    return typeComboBoxes.get(row);
+                }
+                if (colName.compareTo(colHeaderBtn)==0) {
+                    return rmvBtns.get(row);
+                }
+
+                throw new java.lang.IndexOutOfBoundsException();
             } else if (row==rowCount) {
-                switch (col) {
-                    case 0:
-                    case 1:
-                    case 2:
-                        return null;
-                    case 3:
-                        return addBtn;
-                    default:
-                        throw new java.lang.IndexOutOfBoundsException();
+                if (colName.compareTo(colHeaderBtn)==0) {
+                    return addBtn;
                 }
+
+                return null;
             } else {
                 throw new java.lang.IndexOutOfBoundsException();
             }
@@ -362,18 +400,22 @@ public class SourceAttributeSelectionTable extends JTable{
 
         @Override
         public boolean isCellEditable(int row, int col) {
+            String colName = getColumnName(col);
             if (row<rowCount) {
-                switch (col) {
-                    case 0:
-                    case 1:
-                        return true;
-                    case 2:
-                        return !supportedIDType.isEmpty();
-                    case 3:
-                        return false;
-                    default:
-                        throw new IndexOutOfBoundsException();
+                if (colName.compareTo(colHeaderNet)==0) {
+                    return true;
                 }
+                if (colName.compareTo(colHeaderAtt)==0) {
+                    return true;
+                }
+                if (colName.compareTo(colHeaderSrc)==0) {
+                    return !supportedIDType.isEmpty();
+                }
+                if (colName.compareTo(colHeaderBtn)==0) {
+                    return false;
+                }
+
+                throw new java.lang.IndexOutOfBoundsException();
             } else if (row==rowCount) {
                 return false;
             } else {
@@ -396,8 +438,8 @@ public class SourceAttributeSelectionTable extends JTable{
                         boolean isSelected, boolean hasFocus, int row, int column) {
             if (row==rowCount) {
                 JLabel label = (JLabel) (new DefaultTableCellRenderer()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                label.setBackground(java.awt.Color.GRAY);
-                label.setForeground(java.awt.Color.GRAY);
+                label.setBackground(defBgColor);
+                label.setForeground(defBgColor);
                 return label;
             } else if (row<rowCount) {
                 if (!(value instanceof JComboBox)) {

@@ -1,5 +1,4 @@
-/* File: DestinationAttributeSelectionTable.java
-
+/*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -36,12 +35,15 @@
 
 package csplugins.id.mapping.ui;
 
+import cytoscape.data.CyAttributes;
+
 import java.util.List;
 import java.util.Vector;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.TreeSet;
+import java.util.HashSet;
 
 import java.awt.Component;
 import java.awt.event.MouseEvent;
@@ -57,6 +59,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 
 import org.bridgedb.DataSource;
 
@@ -68,29 +71,43 @@ import org.bridgedb.DataSource;
  *
  *
  */
-public class DestinationAttributeSelectionTable extends JTable{
+public class TargetAttributeSelectionTable extends JTable{
     private IDTypeSelectionTableModel model;
 
     private Set<DataSource> supportedIDType;
 
     private int rowCount;
-    private List<JComboBox> typeComboBoxes;
+    private List<JComboBox> idTypeComboBoxes;
     private List<String> destinationAttributes;
+    private List<JComboBox> attrTypeComboBoxes;
     private List<JButton> rmvBtns;
     private JButton addBtn;
 
-    public DestinationAttributeSelectionTable(Set<DataSource> idtypes) {
+    private final String headerIDType = "Target ID Type";
+    private final String headerAttrName = "New attribute name";
+    private final String headerAttrType = "Attribute type";
+    private final String headerBtn = " ";
+
+    private final String stringAttrType = "String";
+    private final String listAttrType = "List";
+
+    private java.awt.Color defBgColor = (new JScrollPane()).getBackground();
+
+    public TargetAttributeSelectionTable() {
         super();
 
-        supportedIDType = idtypes;
+        supportedIDType = new HashSet();
 
         rowCount = 0;
 
         destinationAttributes = new Vector();
-        typeComboBoxes = new Vector();
+        idTypeComboBoxes = new Vector();
+        attrTypeComboBoxes = new Vector();
         rmvBtns = new Vector();
         addBtn = new JButton("Insert");
-        addBtn.setBackground(java.awt.Color.GRAY);
+        addBtn.setBackground(defBgColor);
+
+        this.setGridColor(defBgColor);
 
         model = new IDTypeSelectionTableModel();
         setModel(model);
@@ -101,7 +118,7 @@ public class DestinationAttributeSelectionTable extends JTable{
         JLabel label = (JLabel)renderer;
         label.setHorizontalAlignment(JLabel.CENTER);
 
-        final DestinationAttributeSelectionTable this_table = this;
+        final TargetAttributeSelectionTable this_table = this;
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -113,7 +130,8 @@ public class DestinationAttributeSelectionTable extends JTable{
                    column >= this_table.getColumnCount() || column < 0)
                   return;
 
-                if (column==2) {
+                String colName = this_table.getColumnName(column);
+                if (colName.compareTo(headerBtn)==0) {
                     if (row < rowCount) {
                         this_table.removeRow(row);
                     } else if (row ==  rowCount) {
@@ -125,33 +143,65 @@ public class DestinationAttributeSelectionTable extends JTable{
             }
         });
 
-        setPreferredColumnWidths(new double[]{0.45,0.45,0.1});
+        setPreferredColumnWidths(new double[]{0.3,0.3,0.15,0.15});
 
         setColumnEditorAndCellRenderer();
     }
 
     public void setSupportedIDType(final Set<DataSource> types) {
-            supportedIDType = types;
-            setColumnEditorAndCellRenderer();
+        if (types==null) {
+            throw new NullPointerException();
+        }
+        supportedIDType = types;
+
+        idTypeComboBoxes.clear();
+        for (int i=0; i<rowCount; i++) {
+            idTypeComboBoxes.add(new JComboBox(new Vector(supportedIDType)));
+        }
+
+        setColumnEditorAndCellRenderer();
+        //fireTableDataChanged();
     }
 
-    private String getType(int row) {
+    private String getAttrName(int row) {
+        if (supportedIDType.isEmpty()) {
+            return null;
+        }
+
         String attr = (String)destinationAttributes.get(row);
         if (attr.length()==0) {
-            DataSource type = (DataSource)typeComboBoxes.get(row).getSelectedItem();
+            DataSource type = (DataSource)idTypeComboBoxes.get(row).getSelectedItem();
             attr = type.getFullName();
         }
 
         return attr;
     }
 
-    public Map<DataSource, String> getDestinationAttrType() {
-        Map<DataSource, String> ret = new HashMap();
-        for (int i=0; i<rowCount; i++) {
-            String attr = getType(i);
-            DataSource type = (DataSource)typeComboBoxes.get(i).getSelectedItem();
+    public Map<DataSource, Map<String,Byte>> getDestinationAttrType() {
+        Map<DataSource, Map<String,Byte>> ret = new HashMap();
+        if (supportedIDType.isEmpty()) {
+            return ret;
+        }
 
-            ret.put(type, attr);
+        for (int i=0; i<rowCount; i++) {
+            DataSource ds = (DataSource)idTypeComboBoxes.get(i).getSelectedItem();
+            Map<String,Byte> mapAttrNameType = ret.get(ds);
+            if (mapAttrNameType==null) {
+                mapAttrNameType = new HashMap();
+                ret.put(ds, mapAttrNameType);
+            }
+
+            String name = getAttrName(i);
+            String type = (String) attrTypeComboBoxes.get(i).getSelectedItem();
+
+            byte attrType;
+            if (type.compareTo(listAttrType)==0) {
+                attrType = CyAttributes.TYPE_SIMPLE_LIST;
+            } else {
+                attrType = CyAttributes.TYPE_STRING;
+            }
+
+            mapAttrNameType.put(name, attrType);
         }
 
         return ret;
@@ -159,21 +209,26 @@ public class DestinationAttributeSelectionTable extends JTable{
 
     protected void setColumnEditorAndCellRenderer() {
         // type column
-        TableColumn column = getColumnModel().getColumn(0);
+        TableColumnModel colModel = getColumnModel();
+
+        // ID type
+        int iCol = colModel.getColumnIndex(headerIDType);
+        TableColumn column = colModel.getColumn(iCol);
         RowTableCellEditor rowEditor = new RowTableCellEditor(this);
         for (int ir=0; ir<rowCount; ir++) {
-            rowEditor.setEditorAt(ir, new  DefaultCellEditor(typeComboBoxes.get(ir)));
+            rowEditor.setEditorAt(ir, new  DefaultCellEditor(idTypeComboBoxes.get(ir)));
         }
         column.setCellEditor(rowEditor);
 
         if (supportedIDType.isEmpty()) {
             column.setCellRenderer(new TableCellRenderer() {
                 private DefaultTableCellRenderer  defaultRenderer = new DefaultTableCellRenderer();
-
+                
                 //@Override
                 public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                       JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                        boolean isSelected, boolean hasFocus, int row, int column) {
+                    JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    if (row<rowCount) {
                        if (isSelected) {
                                label.setBackground(table.getSelectionBackground());
                                label.setForeground(table.getSelectionForeground());
@@ -181,15 +236,26 @@ public class DestinationAttributeSelectionTable extends JTable{
                                label.setBackground(table.getBackground());
                                label.setForeground(table.getForeground());
                        }
-                       label.setToolTipText("Please select a non-empty ID mapping file first.");
+                       label.setText("No supported ID type");
+                       label.setToolTipText("Please select a non-empty ID mapping source first.");
                        return label;
+                    } else if (row==rowCount) {
+                        label.setBackground(defBgColor);
+                        label.setForeground(defBgColor);
+                        label.setText("");
+                        return label;
+                    } else {
+                        return defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    }
                 }
             });
         } else {
             column.setCellRenderer(new ComboBoxTableCellRenderer());
         }
-        
-        column = getColumnModel().getColumn(1);
+
+        // headerAttrName
+        iCol = colModel.getColumnIndex(headerAttrName);
+        column = colModel.getColumn(iCol);
         column.setCellRenderer(new TableCellRenderer() {
             private DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
             //@Override
@@ -197,8 +263,8 @@ public class DestinationAttributeSelectionTable extends JTable{
                             boolean isSelected, boolean hasFocus, int row, int column) {
                 if (row==rowCount) {
                     JLabel label = (JLabel) (new DefaultTableCellRenderer()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                    label.setBackground(java.awt.Color.GRAY);
-                    label.setForeground(java.awt.Color.GRAY);
+                    label.setBackground(defBgColor);
+                    label.setForeground(defBgColor);
                     return label;
                 } else {
                     return defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -206,7 +272,20 @@ public class DestinationAttributeSelectionTable extends JTable{
             }
         });
 
-        column = getColumnModel().getColumn(2);
+        // ID type
+        iCol = colModel.getColumnIndex(headerAttrType);
+        column = colModel.getColumn(iCol);
+        rowEditor = new RowTableCellEditor(this);
+        for (int ir=0; ir<rowCount; ir++) {
+            rowEditor.setEditorAt(ir, new  DefaultCellEditor(attrTypeComboBoxes.get(ir)));
+        }
+        column.setCellEditor(rowEditor);
+
+        column.setCellRenderer(new ComboBoxTableCellRenderer());
+
+        // button
+        iCol = colModel.getColumnIndex(headerBtn);
+        column = getColumnModel().getColumn(iCol);
         column.setCellRenderer(new ButtonRenderer());
     };
 
@@ -217,7 +296,10 @@ public class DestinationAttributeSelectionTable extends JTable{
         rmvBtns.add(button);
 
         JComboBox cc = new  JComboBox(new Vector(supportedIDType));
-        typeComboBoxes.add(cc);
+        idTypeComboBoxes.add(cc);
+
+        cc = new JComboBox(new String[]{listAttrType,stringAttrType});
+        attrTypeComboBoxes.add(cc);
 
         rowCount++;
 
@@ -239,9 +321,9 @@ public class DestinationAttributeSelectionTable extends JTable{
                 throw new java.lang.IndexOutOfBoundsException();
             }
 
-//            selected.remove(row);
             destinationAttributes.remove(row);
-            typeComboBoxes.remove(row);
+            idTypeComboBoxes.remove(row);
+            attrTypeComboBoxes.remove(row);
             rmvBtns.remove(row);
         }
 
@@ -257,7 +339,8 @@ public class DestinationAttributeSelectionTable extends JTable{
         }
 
         destinationAttributes.remove(row);
-        typeComboBoxes.remove(row);
+        idTypeComboBoxes.remove(row);
+        attrTypeComboBoxes.remove(row);
         rmvBtns.remove(row);
 
         rowCount--;
@@ -285,11 +368,11 @@ public class DestinationAttributeSelectionTable extends JTable{
    }
 
     private class IDTypeSelectionTableModel extends AbstractTableModel {
-        private final String[] columnNames = {"Target ID Type","New attribute name",""};
+        private final String[] columnNames = {headerIDType,headerAttrName,headerAttrType,headerBtn};
 
         //@Override
         public int getColumnCount() {
-            return 3; // select; network; attribute; id types
+            return 4; // select; network; attribute; id types
         }
 
         //@Override
@@ -304,27 +387,32 @@ public class DestinationAttributeSelectionTable extends JTable{
 
         //@Override
         public Object getValueAt(int row, int col) {
+            String colName = getColumnName(col);            
+
             if (row<rowCount) {
-                switch (col) {
-                    case 0:
-                        return typeComboBoxes.get(row);
-                    case 1:
-                        return getType(row);
-                    case 2:
-                        return rmvBtns.get(row);
-                    default:
-                        throw new IndexOutOfBoundsException();
+                if (colName.compareTo(headerIDType)==0) {
+                    return idTypeComboBoxes.get(row);
                 }
+
+                if (colName.compareTo(headerAttrName)==0) {
+                    return getAttrName(row);
+                }
+
+                if (colName.compareTo(headerAttrType)==0) {
+                    return attrTypeComboBoxes.get(row);
+                }
+
+                if (colName.compareTo(headerBtn)==0) {
+                    return rmvBtns.get(row);
+                }
+
+                throw new IndexOutOfBoundsException();
             } else if (row==rowCount) {
-                switch (col) {
-                    case 0:
-                    case 1:
-                        return null;
-                    case 2:
-                        return addBtn;
-                    default:
-                        throw new IndexOutOfBoundsException();
+                if (colName.compareTo(headerBtn)==0) {
+                    return addBtn;
                 }
+
+                return null;
             } else {
                 throw new IndexOutOfBoundsException();
             }
@@ -342,22 +430,31 @@ public class DestinationAttributeSelectionTable extends JTable{
             } else if (row==rowCount) {
                 return false;
             } else {
-                switch (col) {
-                    case 0:
-                        return !supportedIDType.isEmpty();
-                    case 1:
-                        return true;
-                    case 2:
-                        return false;
-                    default:
-                        throw new IndexOutOfBoundsException();
+                String colName = getColumnName(col);
+                if (colName.compareTo(headerIDType)==0) {
+                    return !supportedIDType.isEmpty();
                 }
+
+                if (colName.compareTo(headerAttrName)==0) {
+                    return true;
+                }
+
+                if (colName.compareTo(headerAttrType)==0) {
+                   return true;
+                }
+
+                if (colName.compareTo(headerBtn)==0) {
+                    return false;
+                }
+
+                throw new IndexOutOfBoundsException();
             }
         }
 
         @Override
         public void setValueAt(Object value, int row, int col) {
-            if (col==1 && row<rowCount) {
+            String colName = getColumnName(col);
+            if (colName.compareTo(headerAttrName)==0 && row<rowCount) {
                 destinationAttributes.set(row, (String)value);
                 fireTableCellUpdated(row, col);
             }
@@ -377,8 +474,8 @@ public class DestinationAttributeSelectionTable extends JTable{
                         boolean isSelected, boolean hasFocus, int row, int column) {
             if (row==rowCount) {
                 JLabel label = (JLabel) (new DefaultTableCellRenderer()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                label.setBackground(java.awt.Color.GRAY);
-                label.setForeground(java.awt.Color.GRAY);
+                label.setBackground(table.getParent().getBackground());
+                label.setForeground(table.getParent().getBackground());
                 return label;
             } else if (row<rowCount) {
                 if (!(value instanceof java.awt.Component)) {

@@ -1,5 +1,4 @@
-/* File: CyThesaurusPlugin.java
-
+/* 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -66,7 +65,7 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
         public void actionPerformed(final ActionEvent ae) {
 //            prepare(); //TODO: remove in Cytoscape3
             
-            final CyThesaurusDialog dialog = new CyThesaurusDialog(new java.awt.Frame(), false);
+            final CyThesaurusDialog dialog = new CyThesaurusDialog(Cytoscape.getDesktop(), true);
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setVisible(true);
         }
