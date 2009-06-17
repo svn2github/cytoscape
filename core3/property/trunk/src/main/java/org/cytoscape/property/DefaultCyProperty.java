@@ -1,10 +1,9 @@
-package org.cytoscape.property.internal;
+package org.cytoscape.property;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Properties;
 
-import org.cytoscape.property.CyProperty;
 
 public class DefaultCyProperty implements CyProperty<Properties> {
 
