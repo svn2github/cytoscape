@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.Date;
 import java.text.DateFormat;
 
@@ -35,6 +38,9 @@ class ConsoleTask implements Task
 		if (dialog == null)
 		{
 			dialog = new ConsoleDialog();
+			ConsoleDialogUpdater updater = new ConsoleDialogUpdater(dialog);
+			ExecutorService service = Executors.newSingleThreadExecutor(new LowPriorityDaemonThreadFactory());
+			service.submit(updater);
 		}
 		dialog.setVisible(true);
 	}
@@ -44,18 +50,20 @@ class ConsoleTask implements Task
 	}
 }
 
+class LowPriorityDaemonThreadFactory implements ThreadFactory
+{
+	public Thread newThread(Runnable r)
+	{
+		Thread thread = new Thread(r);
+		thread.setPriority(Thread.MIN_PRIORITY);
+		thread.setDaemon(true);
+		return thread;
+	}
+}
+
 class ConsoleDialogUpdater implements Runnable
 {
-	static final Map<Integer,String> LEVEL_TO_ICON_MAP = new TreeMap<Integer,String>();
-	static
-	{
-		LEVEL_TO_ICON_MAP.put(Level.DEBUG.toInt(),	"info");
-		LEVEL_TO_ICON_MAP.put(Level.ERROR.toInt(),	"error");
-		LEVEL_TO_ICON_MAP.put(Level.FATAL.toInt(),	"error");
-		LEVEL_TO_ICON_MAP.put(Level.INFO.toInt(),	"info");
-		LEVEL_TO_ICON_MAP.put(Level.TRACE.toInt(),	"info");
-		LEVEL_TO_ICON_MAP.put(Level.WARN.toInt(),	"warning");
-	}
+	static DateFormat DATE_FORMATTER = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 	ConsoleDialog dialog;
 
 	public ConsoleDialogUpdater(ConsoleDialog dialog)
@@ -65,11 +73,7 @@ class ConsoleDialogUpdater implements Runnable
 
 	public void run()
 	{
-		BlockingQueue<LoggingEvent> queue = new LinkedBlockingQueue<LoggingEvent>();
-		Appender appender = new QueueAppender(queue);
-		Logger logger = Logger.getLogger("org.cytoscape.userlog");
-		logger.setAdditivity(false);
-		logger.addAppender(appender);
+		final BlockingQueue<LoggingEvent> queue = Queues.getUserLogQueue();
 
 		while (true)
 		{
@@ -83,11 +87,8 @@ class ConsoleDialogUpdater implements Runnable
 				break;
 			}
 			String message = event.getMessage().toString();
-			String icon = LEVEL_TO_ICON_MAP.get(event.getLevel().toInt());
-			if (icon == null)
-				icon = "info";
-			String timeStamp = DateFormat.getInstance().format(new Date(event.getTimeStamp()));
-			dialog.append(icon, message, timeStamp);
+			String timeStamp = DATE_FORMATTER.format(new Date(event.getTimeStamp()));
+			dialog.append(event.getLevel(), message, timeStamp);
 		}
 	}
 }

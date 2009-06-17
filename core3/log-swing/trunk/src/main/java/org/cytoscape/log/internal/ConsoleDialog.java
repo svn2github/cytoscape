@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
+import org.apache.log4j.Level;
+
 class ConsoleDialog extends JDialog
 {
 	final static String COLOR_PARITY_TRUE  = "ffffff";
@@ -19,12 +21,15 @@ class ConsoleDialog extends JDialog
 		+ "<td><h3>%s</h3></td></tr>"
 		+ "<tr><td></td><td><font size=\"-2\" color=\"#555555\">"
 		+ "%s</font></td></tr></table></body></html>";
-	final static Map<String,String> ICON_NAMES = new TreeMap<String,String>();
+	static final Map<Integer,String> LEVEL_TO_ICON_MAP = new TreeMap<Integer,String>();
 	static
 	{
-		ICON_NAMES.put("error",		"console-error.png");
-		ICON_NAMES.put("info",		"console-info.png");
-		ICON_NAMES.put("warning",	"console-warning.png");
+		LEVEL_TO_ICON_MAP.put(Level.DEBUG.toInt(),	"console-info.png");
+		LEVEL_TO_ICON_MAP.put(Level.ERROR.toInt(),	"console-error.png");
+		LEVEL_TO_ICON_MAP.put(Level.FATAL.toInt(),	"console-error.png");
+		LEVEL_TO_ICON_MAP.put(Level.INFO.toInt(),	"console-info.png");
+		LEVEL_TO_ICON_MAP.put(Level.TRACE.toInt(),	"console-info.png");
+		LEVEL_TO_ICON_MAP.put(Level.WARN.toInt(),	"console-warning.png");
 	}
 	final static String BASE_HTML_PATH = "/consoledialogbase.html";
 
@@ -63,14 +68,17 @@ class ConsoleDialog extends JDialog
 	}
 
 
-	void append(String iconName, String message, String timeStamp)
+	void append(Level level, String message, String timeStamp)
 	{
-		final String bgColor = (colorParity ? COLOR_PARITY_TRUE : COLOR_PARITY_FALSE);
+		String icon = LEVEL_TO_ICON_MAP.get(level.toInt());
+		if (icon == null)
+			icon = "console-info.png";
+		String bgColor = (colorParity ? COLOR_PARITY_TRUE : COLOR_PARITY_FALSE);
 		try
 		{
 			document.insertBeforeEnd(root,
 				String.format(ENTRY_TEMPLATE,
-						bgColor, ICON_NAMES.get(iconName),
+						bgColor, icon,
 						message, timeStamp));
 			scrollToBottom();
 		}
