@@ -166,7 +166,7 @@ class IDMappingSourceSelectionTree extends JTree {
     private void setupPopupMenu() {
         // popup menus
         final JPopupMenu dbPopup = new JPopupMenu();
-        JMenuItem mi = new JMenuItem("Add a ID mapping database...");
+        JMenuItem mi = new JMenuItem("Add an ID mapping database...");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addDatabase();
@@ -175,7 +175,7 @@ class IDMappingSourceSelectionTree extends JTree {
         dbPopup.add(mi);
 
         final JPopupMenu wsPopup = new JPopupMenu();
-        mi = new JMenuItem("Add a ID mapping web service...");
+        mi = new JMenuItem("Add an ID mapping web service...");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addWebService();
@@ -184,7 +184,7 @@ class IDMappingSourceSelectionTree extends JTree {
         wsPopup.add(mi);
 
         final JPopupMenu filePopup = new JPopupMenu();
-        mi = new JMenuItem("Add a ID mapping file...");
+        mi = new JMenuItem("Add an ID mapping file...");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addFile();
@@ -192,32 +192,32 @@ class IDMappingSourceSelectionTree extends JTree {
         });
         filePopup.add(mi);
 
-        final JPopupMenu dbRmvPopup = new JPopupMenu();
+        final JPopupMenu dbClientPopup = new JPopupMenu();
         mi = new JMenuItem("Remove this ID mapping database...");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeDatabase(evt);
+                removeClient(evt);
             }
         });
-        dbRmvPopup.add(mi);
+        dbClientPopup.add(mi);
 
-        final JPopupMenu wsRmvPopup = new JPopupMenu();
+        final JPopupMenu wsClientPopup = new JPopupMenu();
         mi = new JMenuItem("Remove this ID mapping web service...");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeWebService(evt);
+                removeClient(evt);
             }
         });
-        wsRmvPopup.add(mi);
+        wsClientPopup.add(mi);
 
-        final JPopupMenu fileRmvPopup = new JPopupMenu();
+        final JPopupMenu fileClientPopup = new JPopupMenu();
         mi = new JMenuItem("Remove this ID mapping file...");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeFile(evt);
+                removeClient(evt);
             }
         });
-        fileRmvPopup.add(mi);
+        fileClientPopup.add(mi);
 
         // hook the menus on the tree
         final JTree thisTree = this;
@@ -252,11 +252,11 @@ class IDMappingSourceSelectionTree extends JTree {
                             return;
                         case 3:
                             if (path.getParentPath().getLastPathComponent()==dbTreeNode) {
-                                dbRmvPopup.show((JComponent)e.getSource(), e.getX(), e.getY() );
+                                dbClientPopup.show((JComponent)e.getSource(), e.getX(), e.getY() );
                             } else if(path.getParentPath().getLastPathComponent()==wsTreeNode) {
-                                wsRmvPopup.show((JComponent)e.getSource(), e.getX(), e.getY() );
+                                wsClientPopup.show((JComponent)e.getSource(), e.getX(), e.getY() );
                             } else if(path.getParentPath().getLastPathComponent()==fileTreeNode) {
-                                fileRmvPopup.show((JComponent)e.getSource(), e.getX(), e.getY() );
+                                fileClientPopup.show((JComponent)e.getSource(), e.getX(), e.getY() );
                             }
                             return;
                         default:
@@ -299,16 +299,10 @@ class IDMappingSourceSelectionTree extends JTree {
         }
     }
 
-    private void removeDatabase(java.awt.event.ActionEvent evt) {
-
-    }
-
-    private void removeWebService(java.awt.event.ActionEvent evt) {
-
-    }
-
-    private void removeFile(java.awt.event.ActionEvent evt) {
-
+    private void removeClient(java.awt.event.ActionEvent e) {
+        Object source = e.getSource();
+        //TODO
+        return;
     }
     
 }

@@ -115,8 +115,8 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         sourcePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select source network/attribute/IDType(s)"));
-        sourcePanel.setMinimumSize(new java.awt.Dimension(500, 150));
-        sourcePanel.setPreferredSize(new java.awt.Dimension(500, 150));
+        sourcePanel.setMinimumSize(new java.awt.Dimension(500, 120));
+        sourcePanel.setPreferredSize(new java.awt.Dimension(500, 130));
         sourcePanel.setLayout(new java.awt.GridBagLayout());
 
         sourceScrollPane.setMinimumSize(new java.awt.Dimension(300, 100));
@@ -153,7 +153,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         getContentPane().add(sourcePanel, gridBagConstraints);
 
         destinationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select destination attribute/IDType(s)"));
-        destinationPanel.setMinimumSize(new java.awt.Dimension(500, 150));
+        destinationPanel.setMinimumSize(new java.awt.Dimension(500, 130));
         destinationPanel.setPreferredSize(new java.awt.Dimension(500, 150));
         destinationPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -230,13 +230,14 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(OKPanel, gridBagConstraints);
 
-        selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select networks to merge"));
-        selectNetworkPanel.setMinimumSize(new java.awt.Dimension(490, 150));
-        selectNetworkPanel.setPreferredSize(new java.awt.Dimension(490, 150));
+        selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select networks"));
+        selectNetworkPanel.setMinimumSize(new java.awt.Dimension(490, 100));
+        selectNetworkPanel.setPreferredSize(new java.awt.Dimension(490, 100));
         selectNetworkPanel.setLayout(new java.awt.GridBagLayout());
 
         unselectedNetworkScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
 
+        unselectedNetworkList.setBorder(javax.swing.BorderFactory.createTitledBorder("Availabe networks"));
         for (Iterator<CyNetwork> it = Cytoscape.getNetworkSet().iterator(); it.hasNext(); ) {
             CyNetwork network = it.next();
             unselectedNetworkData.add(network);
@@ -355,6 +356,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         selectedNetworkScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
 
         selectedNetworkList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        selectedNetworkList.setBorder(javax.swing.BorderFactory.createTitledBorder("Selected Networks"));
         selectedNetworkList.setCellRenderer(new ListCellRenderer() {
             private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
             public Component getListCellRendererComponent(
