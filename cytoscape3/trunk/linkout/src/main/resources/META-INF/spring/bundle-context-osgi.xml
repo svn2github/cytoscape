@@ -5,11 +5,18 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-<osgi:reference id="propertyRef"
-        interface="org.cytoscape.property.CyProperty" />
-<osgi:reference id="cyServiceRegistrarRef"
-        interface="org.cytoscape.service.util.CyServiceRegistrar" />
-<osgi:reference id="openBrowserRef"
-        interface="cytoscape.util.OpenBrowser" />
+
+	<!-- Export linkout property as CyProperty Service -->
+	<osgi:service id="linkoutPropertiesSeervice" ref="linkoutProperties"
+		interface="org.cytoscape.property.CyProperty">
+		<osgi:service-properties>
+			<entry key="serviceType" value="property" />
+			<entry key="cyPropertyName" value="linkout" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:reference id="cyServiceRegistrarRef"
+		interface="org.cytoscape.service.util.CyServiceRegistrar" />
+	<osgi:reference id="openBrowserRef" interface="cytoscape.util.OpenBrowser" />
 
 </beans>
