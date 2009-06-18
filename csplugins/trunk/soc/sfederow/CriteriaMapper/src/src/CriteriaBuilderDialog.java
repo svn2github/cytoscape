@@ -168,6 +168,7 @@ public class CriteriaBuilderDialog extends JDialog implements ActionListener, Li
     		label = labelField.getText();
     		criteria = criteriaField.getText();
     		mapTo = (String)mapToBox.getSelectedItem();
+    		mainDialog.setVisible(false);
     		
     	}
         
@@ -251,17 +252,24 @@ public class CriteriaBuilderDialog extends JDialog implements ActionListener, Li
 		
     	//opListPanel.add(opList, BorderLayout.LINE_START);
 		JPanel buttonBox = new JPanel();//new BorderLayout(0,2));
-		JButton addButton = new JButton("Save");
-		addButton.setActionCommand("CBsave");
-		addButton.addActionListener(this);
+		
+		JButton addButton = new JButton("Add");
+		addButton.setActionCommand("CBadd");
+		//addButton.addActionListener(this);
 		addButton.addActionListener(panelPointer);
+		
 		JButton clearButton = new JButton("Clear");
 		clearButton.setActionCommand("clear");
 		clearButton.addActionListener(this);
 		
+		JButton doneButton = new JButton("Done");
+		doneButton.setActionCommand("CBsave");
+		addButton.addActionListener(this);
+		addButton.addActionListener(panelPointer);
+		
 		buttonBox.add(addButton);//, labelLocation);
 		buttonBox.add(clearButton);//, fieldLocation);
-		
+		buttonBox.add(doneButton);
 		
 		//attListPanel.setPreferredSize(new Dimension(60,50));
 		listPanel.add(attListPanel);
@@ -313,6 +321,8 @@ public class CriteriaBuilderDialog extends JDialog implements ActionListener, Li
 		criteriaField = new JTextField();
 		
 		criteriaField.setPreferredSize(new Dimension(215, 20));
+		criteriaField.setAutoscrolls(true);
+		//criteriaField.setMaximumSize(new Dimension(1000, 20));
 		criteriaPanel.add(criteriaLabel, labelLocation);
 		criteriaPanel.add(criteriaField, fieldLocation);
 		criteriaField.setHorizontalAlignment(JTextField.LEFT);
@@ -423,7 +433,11 @@ public class CriteriaBuilderDialog extends JDialog implements ActionListener, Li
 			for (int i = minIndex; i <= maxIndex; i++) {
 				//if (lsm.isSelectedIndex(i) && last != i) {
 				criteriaBuild = criteriaField.getText();
-				criteriaBuild = criteriaBuild +" "+ attributesArray[i]+" ";
+				if(attributesArray[i].contains(" ")){
+					criteriaBuild = criteriaBuild +" \""+ attributesArray[i]+"\" ";
+				}else{
+					criteriaBuild = criteriaBuild +" "+ attributesArray[i]+" ";
+				}
 				criteriaField.setText(criteriaBuild);
 				//System.out.println("Selected Index: "+i);
 				//}

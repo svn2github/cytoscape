@@ -144,7 +144,7 @@ public class AttributeManager {
 				if(nodeAttributes.getBooleanAttribute(nodeID, labels[j])){
 					
 					if(nodeAttributes.hasAttribute(nodeID, compositeName)){ 
-						//System.out.println("set attribute "+compositeName+" at node: "+nodeID +" to "+j);
+						System.out.println("set attribute "+compositeName+" at node: "+nodeID +" to "+j);
 						int b = nodeAttributes.getIntegerAttribute(nodeID, compositeName);
 						if( b == -1){
 							//System.out.println("set attribute "+compositeName+" at node: "+nodeID +" to "+j);

@@ -10,6 +10,7 @@ package src;
  * 
  */
 import giny.model.*;
+import giny.view.NodeView;
 
 
 import cytoscape.visual.mappings.*;
@@ -33,6 +34,7 @@ import cytoscape.CyNode;
 import cytoscape.visual.mappings.ObjectMapping; 
 
 import java.awt.Color;
+import java.awt.Paint;
 import java.util.List;
 import java.util.Set;
 
@@ -142,7 +144,20 @@ public class ColorMapper {
 	}
 	
 	
-	
+	public void clearNetwork(){
+		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
+		List<Node> nodeList = currentNetwork.nodesList();
+		for(Node node: nodeList)
+        {
+			
+			NodeView nodeView = networkView.getNodeView(node);
+			Paint p = Color.WHITE;
+			nodeView.setUnselectedPaint(p);
+	    	   
+        }
+		networkView.updateView();
+	}
 	
 	
 	

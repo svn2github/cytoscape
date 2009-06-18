@@ -83,6 +83,8 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     private String CBvalue;
     private String CBmapTo;
     
+    String setName = "";
+    
     private CriteriaCalculator calculate = new CriteriaCalculator();
     
     
@@ -111,7 +113,7 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     	
     	tablePanel = new JPanel();
     	tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.PAGE_AXIS));
-    	//table = new JTable(dataModel);
+    	table = new JTable(dataModel);
     	
     	
     	
@@ -120,43 +122,40 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     	 * This is the code that causes to color editor to only pop up on a double
     	 * click of the color cell in the table.
     	 */
-    	int row = 4;
+    	
     	cbDialog = new CriteriaBuilderDialog(this);
+    	
     	table.addMouseListener(new MouseAdapter() {
     		   public void mouseClicked(MouseEvent e) {
     			  JTable target = (JTable)e.getSource();
   		          int row = target.getSelectedRow();
   		          int column = target.getSelectedColumn();
-    			   if(e.getClickCount() == 1 && column == 3){
-    				  
-    				   if(row < editableRowCount){ 
-    				      /*
-    				      cbDialog.initialize(row);
-    				      cbDialog.labelField.setText((String)getCell(editableRowCount-1,1));
-    				      cbDialog.criteriaField.setText((String)getCell(editableRowCount-1,2));
-    				      */
-    				   }
-    			  }
-    			  if(e.getClickCount() == 1 && column == 0){
+    			
+    			  if(e.getClickCount() == 1 && column == 0 && row < editableRowCount){
     				  Object show = dataModel.getValueAt(row, column);
     				  show = show+"";
-    				  if(show.equals("true")){ 
-    					  applyCriteria();
-    				  }
+    				  //if(show.equals("true")){ 
+    				  applyCriteria();
+    				  
     				  
     			  }
     			      			   
     		      if (e.getClickCount() == 2) {
     		         
     		    	 //checks for a new or current set and if the row being clicked on has been made editable yet 
-    		    	 if(setFlag && row >= editableRowCount){ addEditableRow(); }
+    		    	 if(setFlag && row >= editableRowCount){ 
+    		    		 String labelstr = "Label "+row;
+    		    		 System.out.println("HEY");
+    		    		 populateList(labelstr, "", Color.WHITE);
+    		    	 }	 
+    		    		 //addEditableRow(); }
     		         System.out.println(column);
     		         if(column == 0 || column == 1){ }
     		         if(column == 3){
     		        	 
     		        	
     		         }
-    		         if(column == 5){
+    		         if(column == 4){
     		        	 
     		        	 JColorChooser colorChooser = new JColorChooser();
     					 JButton button = new JButton();
@@ -171,9 +170,10 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     		                    null); //no CANCEL button handler
     					dialog.add(button);
     					dialog.setLocation(2,Cytoscape.getDesktop().getHeight()-385);
-    					//dialog.setVisible(true);
+    					dialog.setVisible(true);
     					Color currentColor = colorChooser.getColor();
-    					//colorEditor.currentColor = currentColor;
+    					setCell(row, column, currentColor+"");
+    					colorEditor.currentColor = currentColor;
     					//initializeTable();
     		         }
     		         }
@@ -187,12 +187,12 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
         
         
         TableColumn showCol = table.getColumnModel().getColumn(0);
-        TableColumn buildCol = table.getColumnModel().getColumn(3);
-        TableColumn mapToCol = table.getColumnModel().getColumn(4);
+        TableColumn buildCol = table.getColumnModel().getColumn(2);
+        TableColumn mapToCol = table.getColumnModel().getColumn(3);
         
         
         showCol.setMaxWidth(40);
-        buildCol.setMaxWidth(25);
+        //buildCol.setMaxWidth(25);
         
         JCheckBox showBox = new JCheckBox();
         showCol.setCellEditor(new DefaultCellEditor(showBox));
@@ -208,11 +208,9 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
         
         //Create the scroll pane and add the table to it.
         
-        ListSelectionModel listSelectionModel = table.getSelectionModel();
-        
-        
-        listSelectionModel.addListSelectionListener(this);
-    	table.setSelectionModel(listSelectionModel);
+        //ListSelectionModel listSelectionModel = table.getSelectionModel();
+        //listSelectionModel.addListSelectionListener(this);
+    	//table.setSelectionModel(listSelectionModel);
 
         //Set up renderer and editor for the Favorite Color column.
       
@@ -307,16 +305,7 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 		
     }
     
-    public void addEditableRow(){
-    	editableRowCount++;
-    	dataModel.editableRowCount = editableRowCount;
-    	String labelstr = "Label "+editableRowCount;
-    	String critstr = "Criteria "+editableRowCount;
-    	//setCell(editableRowCount-1, 1, labelstr);
-    	//setCell(editableRowCount-1, 2, critstr);
-        //if(editableRowCount > 4){ 
-    	populateList(critstr, labelstr, Color.white); //}
-    } 
+    
     /*
      * Handles all of the action events in this case the move up, move down, and delete buttons for altering the table.
      */
@@ -331,23 +320,34 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     	}
 
     	if(command.equals("editCriteria")){
+    		
     		int rowc = table.getSelectedRow();
+    		System.out.println("CROWWW"+rowc);
+    		if(dataModel.isCellEditable(rowc, 1)){
+    		
     		cbDialog.initialize(rowc);
 	        cbDialog.labelField.setText((String)getCell(rowc, 1));
             cbDialog.criteriaField.setText((String)getCell(rowc, 2));
-		   
+    		}else{
+    			addEditableRow();
+    		}
     	}
     	
     	if(command.equals("CBsave")){
     		int row = cbDialog.currentRow;
     		dataModel.setValueAt(cbDialog.labelField.getText(), row, 1);
     		dataModel.setValueAt(cbDialog.criteriaField.getText(), row, 2);
-    		dataModel.setValueAt(cbDialog.mapToBox.getSelectedItem(), row, 4);
-    		dataModel.setValueAt(cbDialog.currentColor, row, 5);
-            applyCriteria();
+    		dataModel.setValueAt(cbDialog.mapToBox.getSelectedItem(), row, 3);
+    		dataModel.setValueAt(cbDialog.currentColor, row, 4);
+            //applyCriteria();
     	}
     	
-    	if(command.equals("delete")){
+    	if(command.equals("CBadd")){
+    		System.out.println("HEY");
+    		populateList(cbDialog.criteriaField.getText(), cbDialog.labelField.getText(), cbDialog.currentColor);
+    	}
+    	
+    	if(command.equals("deleteCriteria")){
 			
 			int[] row = table.getSelectedRows();
 			//data[row][0] = "";
@@ -358,9 +358,10 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 			}catch (Exception failedDelete){
 				System.out.println(failedDelete.getMessage());
 			}
-			dataModel.setValueAt("", row[0], 0);
 			dataModel.setValueAt("", row[0], 1);
-			dataModel.setValueAt(Color.white, row[0], 2);
+			dataModel.setValueAt("", row[0], 2);
+			dataModel.setValueAt("", row[0], 3);
+			dataModel.setValueAt(Color.white, row[0], 4);
 			if(dataModel.rowCount > 5){
 				dataModel.rowCount--;
 				//dataModel.createNewDataObject(dataModel.rowCount, 3);
@@ -375,9 +376,9 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 			
 			}else{
 				for(int i=0; i<row.length; i++){
-					setCell(row[i], 0, "");
 					setCell(row[i], 1, "");
-					setCell(row[i], 2, Color.white+"");
+					setCell(row[i], 2, "");
+					setCell(row[i], 4, Color.white+"");
 				}
 			}
 			
@@ -446,16 +447,16 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     /*
      * This method handles all of the list and table selection events.  If you select one
      * row of the table it calls createDiscreteMapping from ColorMapper.java. If you select more than one
-     * row it calls setComposite attribute from AttributeManager.java to set a composite attribute.
+     * row it calls setCompositeAttribute from AttributeManager.java to set a composite attribute.
      * It then calls createCompositeMapping from ColorMapper.java and uses the composite attribute created
      * to map all of the highlighted rows to colors.  The composite attribute is stored as a boolean attribute
      * for cytoscape and accessed by a colon separated string of the labels in the order of their selection.
      */
     public void valueChanged(ListSelectionEvent e){
+    	
     	ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 
-
-
+    	
     	int firstIndex = e.getFirstIndex();
     	int lastIndex = e.getLastIndex();
     	boolean isAdjusting = e.getValueIsAdjusting(); 
@@ -464,17 +465,21 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     	if (lsm.isSelectionEmpty() || true) {
     		//System.out.println(" <none>");
     	} else {
+    		
     		// Find out which indexes are selected.
     		int minIndex = lsm.getMinSelectionIndex();
     		int maxIndex = lsm.getMaxSelectionIndex();
     		int last = -1;
+    		
     		for (int i = minIndex; i <= maxIndex; i++) {
     			if (lsm.isSelectedIndex(i)) {
-
+    				
     				int[] temp = table.getSelectedRows();
+    				
+    				System.out.println("LENGTHHH: "+temp.length);
     				if(temp.length == 1){
     					System.out.println("Selected Index: " + i);
-    					String colorString = getCell(i,5)+"";
+    					String colorString = getCell(i,4)+"";
     					
     					if(getCell(i,0).equals("")){ return; }
     					Color c = stringToColor(colorString);
@@ -484,7 +489,7 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     					Color[] colors = getColorArray(temp);
     					
     					String compositeLabel = getCompositeLabel(labels);
-    					//System.out.println("COMPOSITE LABEL: "+compositeLabel);
+    					System.out.println("COMPOSITE LABEL: "+compositeLabel);
     					if(labels.length == 1){
     						mapper.createDiscreteMapping(labels[0]+"_discrete", labels[0], colors[0], mapTo);
     						break;
@@ -502,9 +507,13 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     					}
     					mapper.createCompositeMapping(compositeLabel+"_discrete", compositeLabel, colors, mapTo);
     				}
+    				
     			}
+    		
     		}
+    		
     	}
+    	
     }
     
     
@@ -514,45 +523,43 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 		ArrayList<Color> colors = new ArrayList<Color>();
 		String compositeLabel = "";
 		String[] nameLabels = new String[getDataLength()];
+		if(setName.equals("")){ 
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Must have a set name.");
+		    return;
+		}
 		for(int i=0; i<getDataLength(); i++){
+			String label = setName+"_"+getCell(i, 1);
 			String current = (String)getCell(i,2); 
 			String showBoolean = ""+getCell(i,0);
-			if(current != null && !current.equals("") && showBoolean.equals("true")){
+			if(current != null && !current.equals("") && !label.equals("") && showBoolean.equals("true")){
 
 				try{
 
 					calculate.parse(current);
 				}catch (Exception p) {
 					System.out.println(p.getMessage());
+					break;
 				}
 
-				ArrayList<String>[] attsAndOps = calculator.parse2(current);
-				//calculator.clearList();
-				if(attsAndOps != null){
-					String label = (String)getCell(i, 1);
-					if(i == 0){ compositeLabel = label; 
-					}else{
-						if(!label.equals("") && label != null){
-							compositeLabel = compositeLabel + ":" + label;
-						}
+				calculate.printTokens();
+
+		
+				if(i == 0){ 
+					compositeLabel = label; 
+				}else{
+					if(!label.equals("") && label != null){
+						compositeLabel = compositeLabel + ":" + label;
 					}
-					calculator.evaluate(label, attsAndOps[0], attsAndOps[1]);
-					//calculate.evaluateLeftToRight(label);
-					labels.add(label);
+					System.out.println("YYYY"+compositeLabel);
 				}
+		
+				calculate.evaluateLeftToRight(label);
+				labels.add(label);
 
-
-				Color c = stringToColor(getCell(i,5)+"");
+				Color c = stringToColor(getCell(i,4)+"");
 				colors.add(c);
 
 			}
-				
-				//try{
-					//scan.parse2(current);
-				//}catch (Exception e) {
-					//System.out.println(e.getMessage());
-				//}
-				
 		}
 
 		String[] labelsA = new String[labels.size()];
@@ -563,7 +570,7 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 		try{
 			attManager.setCompositeAttribute(labelsA);
 		}catch (Exception e){
-			System.out.println(e.getMessage());
+			System.out.println("COMPOSITE FAILED!! "+e.getMessage());
 		}
 		
 		Color[] colorsA = new Color[labels.size()];
@@ -572,17 +579,14 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 		}
 		
 		//System.out.println("compositeLabel: "+compositeLabel);
+		if(labels.size() == 0){ mapper.clearNetwork(); return; }
 		if(labels.size() == 1){
 			mapper.createDiscreteMapping(labelsA[0]+"_discrete", labelsA[0], colorsA[0], mapTo);
 		}else{
 			mapper.createCompositeMapping(compositeLabel+"_discrete", compositeLabel, colorsA, mapTo);
 		}
 		
-		//System.out.println("current: "+ current);
-		
-		//parsedCriteria = calculator.parseCriteria(criteria);
-	
-		//calculator.evaluateCriteria(parsedCriteria);
+
 	
 	}
 	
@@ -618,12 +622,14 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     }
     
     public void clearTable(){
+    	editableRowCount = 0;
+    	dataModel.editableRowCount = 0;
     	for(int i=0; i<dataModel.rowCount; i++){
     		for(int j=0; j<dataModel.colCount; j++){
     			if(j==0){
     				dataModel.setValueAt(false, i, j);
     			}else{
-    				if(j==5){
+    				if(j==4){
     					dataModel.setValueAt(Color.WHITE, i, j);
     				}else{
     					dataModel.setValueAt("", i, j);
@@ -637,17 +643,32 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     	return dataModel.getRowCount();
     }
     
+    public void deleteRow(int rowNumber){
+    	setCell(rowNumber, 1, "");
+    	setCell(rowNumber, 2, "");
+    	setCell(rowNumber, 3, "");
+    	
+    }
+    
+    public void addEditableRow(){
+    	editableRowCount++;
+    	dataModel.editableRowCount = editableRowCount;
+    	String labelstr = "Label "+editableRowCount;
+    	String critstr = ""; //"Criteria "+editableRowCount;
+    	
+    	//setCell(editableRowCount-1, 1, labelstr);
+    	//setCell(editableRowCount-1, 2, critstr);
+        //if(editableRowCount > 4){ 
+    	populateList(critstr, labelstr, Color.white); //}
+    } 
    
     
 	public void populateList(String criteria, String label, Color currentColor){
 		
 		
-		//data = new Object[listCount+1][3];
-		//table.
-		
 		for(int i=0; i<dataModel.getRowCount(); i++){
 			//System.out.println("i: "+i);
-			if(getCell(i,0) == null || getCell(i,0).equals((""))){
+			if(getCell(i,1) == null || getCell(i,1).equals((""))){
 				
 				//System.out.println(i);
 				listCount = i;
@@ -655,33 +676,43 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 			}
 			
 		}	
-			
 		
+		System.out.println("List Count: "+listCount+" Global Row Count: "+globalRowCount+" Criteria: "+criteria+" Label: "+label);
+		
+
 		if(listCount < globalRowCount){
 		
-		    System.out.println("populate List: " + criteria+" " +listCount);
-			dataModel.setValueAt(criteria, listCount, 2);
-			dataModel.setValueAt(label, listCount, 1);
-			dataModel.setValueAt(currentColor, listCount, 5);
+		    //System.out.println("populate List: " + criteria+" " +listCount);
+		    dataModel.setValueAt(label, listCount, 1);
+		    dataModel.setValueAt(criteria, listCount, 2);
+			if(label.equals("") && criteria.equals("")){ dataModel.setValueAt("", listCount, 3); }
+			else { dataModel.setValueAt("Node Color", listCount, 3); }
+			dataModel.setValueAt(currentColor, listCount, 4);
 			//initializeTable();
-		
+			editableRowCount++;
+	    	dataModel.editableRowCount = editableRowCount;
 			listCount++;
+			
 		}else{
 			//dataModel.
 			//listCount++;
 			globalRowCount++;
-			System.out.println("LIST COUNT: "+listCount);
+			//System.out.println("LIST COUNT: "+listCount);
 			dataModel.setRowCount(listCount+1);
 			dataModel.createNewDataObject();
 			
-			
-			dataModel.setValueAt(criteria, listCount, 2);
 			dataModel.setValueAt(label, listCount, 1);
-			dataModel.setValueAt(currentColor, listCount, 5);
-			
-			listCount++;
+			dataModel.setValueAt(criteria, listCount, 2);
+			dataModel.setValueAt("Node Color", listCount, 3);
+			dataModel.setValueAt(currentColor, listCount, 4);
+			editableRowCount++;
+	    	dataModel.editableRowCount = editableRowCount;
+			//listCount++;
 			initializeTable();
 		}
+		
+		
+		
 	}
 	
 	
@@ -689,42 +720,47 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 	public void moveRowUp(int rowNumber){
 		if(rowNumber != 0){
 			
-			
+			Object showTemp = dataModel.data[rowNumber][0];
 			Object labelTemp = dataModel.data[rowNumber][1];
 			Object criteriaTemp = dataModel.data[rowNumber][2];
-			Object mapToTemp = dataModel.data[rowNumber][4];
-			Object colorTemp = dataModel.data[rowNumber][5];
+			Object mapToTemp = dataModel.data[rowNumber][3];
+			Object colorTemp = dataModel.data[rowNumber][4];
 			
+			dataModel.setValueAt(dataModel.data[rowNumber-1][0], rowNumber, 0);
 			dataModel.setValueAt(dataModel.data[rowNumber-1][1], rowNumber, 1);
 			dataModel.setValueAt(dataModel.data[rowNumber-1][2], rowNumber, 2);
+			dataModel.setValueAt(dataModel.data[rowNumber-1][3], rowNumber, 3);
 			dataModel.setValueAt(dataModel.data[rowNumber-1][4], rowNumber, 4);
-			dataModel.setValueAt(dataModel.data[rowNumber-1][5], rowNumber, 5);
 			
+			dataModel.setValueAt(showTemp, rowNumber-1, 0);
 			dataModel.setValueAt(labelTemp, rowNumber-1, 1);
 			dataModel.setValueAt(criteriaTemp, rowNumber-1, 2);
-			dataModel.setValueAt(mapToTemp, rowNumber-1, 4);
-			dataModel.setValueAt(colorTemp, rowNumber-1, 5);
+			dataModel.setValueAt(mapToTemp, rowNumber-1, 3);
+			dataModel.setValueAt(colorTemp, rowNumber-1, 4);
 			
 		}
 	}
 	
 	public void moveRowDown(int rowNumber){
 		if(rowNumber != globalRowCount){
-						
+					
+			Object showTemp = dataModel.data[rowNumber][0];
 			Object labelTemp = dataModel.data[rowNumber][1];
 			Object criteriaTemp = dataModel.data[rowNumber][2];
-			Object mapToTemp = dataModel.data[rowNumber][4];
-			Object colorTemp = dataModel.data[rowNumber][5];
+			Object mapToTemp = dataModel.data[rowNumber][3];
+			Object colorTemp = dataModel.data[rowNumber][4];
 			
+			dataModel.setValueAt(dataModel.data[rowNumber-1][0], rowNumber, 0);
 			dataModel.setValueAt(dataModel.data[rowNumber+1][1], rowNumber, 1);
 			dataModel.setValueAt(dataModel.data[rowNumber+1][2], rowNumber, 2);
+			dataModel.setValueAt(dataModel.data[rowNumber+1][3], rowNumber, 3);
 			dataModel.setValueAt(dataModel.data[rowNumber+1][4], rowNumber, 4);
-			dataModel.setValueAt(dataModel.data[rowNumber+1][5], rowNumber, 5);
 			
+			dataModel.setValueAt(showTemp, rowNumber+1, 0);
 			dataModel.setValueAt(labelTemp, rowNumber+1, 1);
 			dataModel.setValueAt(criteriaTemp, rowNumber+1, 2);
-			dataModel.setValueAt(mapToTemp, rowNumber+1, 4);
-			dataModel.setValueAt(colorTemp, rowNumber+1, 5);
+			dataModel.setValueAt(mapToTemp, rowNumber+1, 3);
+			dataModel.setValueAt(colorTemp, rowNumber+1, 4);
 			
 			//initializeTable();
 		}
@@ -734,10 +770,10 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 
 		//TableModel dataModel = new AbstractTableModel() {
     	int rowCount = globalRowCount;
-    	int colCount = 6;
+    	int colCount = 5;
 		int editableRowCount = 0;
     	
-		String[] columnNames = { "Show", "Label", "Criteria", "", "Map To", "Value" };
+		String[] columnNames = { "Show", "Label", "Criteria", "Map To", "Value" };
 		Object[][] data = new Object[rowCount][colCount];
 		
 		
@@ -757,7 +793,7 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 			}
 		}
 		public boolean isCellEditable(int row, int col) {
-			if(row < editableRowCount){
+			if(row < editableRowCount && row >= 0){
 	           return true;
 			}else{
 				return false;

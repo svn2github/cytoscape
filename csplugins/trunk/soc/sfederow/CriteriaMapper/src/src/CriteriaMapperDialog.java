@@ -25,6 +25,7 @@ import cytoscape.data.CyAttributes;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -58,11 +59,9 @@ java.beans.PropertyChangeListener{
 	
 	public CriteriaMapperDialog()
 	{
-	   Cytoscape.getSwingPropertyChangeSupport().
-	   addPropertyChangeListener(this);
+	   Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	   //add as listener to CytoscapeDesktop
-	   Cytoscape.getDesktop().getSwingPropertyChangeSupport().
-	   addPropertyChangeListener(this);
+	   Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	
 	   //currentAlgorithm = algorithm;
 	   colorMapper = new ColorMapper();
@@ -90,35 +89,49 @@ java.beans.PropertyChangeListener{
 	   mainPanel.add(tableMapperPanel);
 
 	   setContentPane(mainPanel);
-	   setLocation(0,Cytoscape.getDesktop().getHeight()-250);
+	   setLocation(900,Cytoscape.getDesktop().getHeight()-250);
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		
 
 		String command = e.getActionCommand();
-		
+		 
 	
-		if(command.equals("listChanged")){
+		if(command.equals("nameBoxChanged")){
 			String setName = (String)nameBox.getSelectedItem();
-			criteriaTable.clearTable();	
-			loadSettings(setName); 
+			System.out.println("nameBoxChanged: "+setName);
+			criteriaTable.setName = setName;
+			if(nameBox.isEditable()){ return; }
+			if(!setName.equals("")){
+				//saveSettings(setName);
+				criteriaTable.clearTable();	
+				
+				loadSettings(setName); 
+				criteriaTable.setFlag = true;
+				nameBox.setEditable(false);
+			}else{
+				criteriaTable.clearTable();
+			}
 			
 		}
 		
 		if(command.equals("newSet")){
 			nameBox.setSelectedIndex(0);
 			nameBox.setEditable(true);
-			criteriaTable.clearTable();
-			criteriaTable.setFlag = true;
-			criteriaTable.addEditableRow();
 			
+			criteriaTable.clearTable();
+			
+			criteriaTable.addEditableRow();
+			criteriaTable.setFlag = true;
 		}
 		if(command.equals("saveSet")){
 			String setName = (String)nameBox.getSelectedItem();
 			saveSettings(setName);
+			criteriaTable.setName = setName;
 			nameBox.setEditable(false);
 			initialize();
+		    nameBox.setSelectedItem(setName);
 		}
 		if(command.equals("deleteSet")){
 			String setName = (String)nameBox.getSelectedItem();
@@ -146,15 +159,16 @@ java.beans.PropertyChangeListener{
 		String mapTo = (String)mapToBox.getSelectedItem();
 		
 		attributeManager.addNamesAttribute(Cytoscape.getCurrentNetwork(), newName);
-
-		String[] criteriaLabels = new String[criteriaTable.getDataLength()];	
+       
+		String[] criteriaLabels = new String[criteriaTable.getDataLength()];
+		
 		for(int k=0; k<criteriaLabels.length; k++){
-			String temp = criteriaTable.getCell(k, 0)+":"+criteriaTable.getCell(k, 1)+":"+criteriaTable.getCell(k, 2);
-
+			String temp = criteriaTable.getCell(k, 2)+":"+criteriaTable.getCell(k, 1)+":"+criteriaTable.getCell(k, 4);
+			System.out.println("SAVE SETTINGS: "+nameValue+"  "+temp);
 			if(!temp.equals(null)){
 				criteriaLabels[k] = temp;
 			}
-			//attributeManager.setColorAttribute(label, color, nodeID)
+			//attributeManager.setColorAttribute(label, color, nodeID);
 			//System.out.println(criteriaLabels.length+"AAA"+temp);
 		}
 		attributeManager.setValuesAttribute(newName, mapTo, criteriaLabels);
@@ -166,13 +180,16 @@ java.beans.PropertyChangeListener{
 		
 		criteriaTable.clearTable();
 		if(criteria.length > 0){ mapTo = criteria[0]; }
+		System.out.println("MAP TO: "+mapTo);
 		criteriaTable.mapTo = mapTo;
 		
 		for(int i=1; i<criteria.length;i++){
+			
 			String[] temp = criteria[i].split(":");
 			if(temp.length != 3){ break; }
+			System.out.println("LOAD SETTINGS: "+setName+" "+temp[0]+" :"+temp[1]+" :"+temp[2]);
 			criteriaTable.populateList(temp[0], temp[1], criteriaTable.stringToColor(temp[2]));
-
+			
 		}
 	}
 	
@@ -219,7 +236,7 @@ java.beans.PropertyChangeListener{
 		nameBox = new JComboBox(nameBoxArray);
 		nameBox.setEditable(false);
 		nameBox.setPreferredSize(new Dimension(240,20));
-		nameBox.setActionCommand("listChanged");
+		nameBox.setActionCommand("nameBoxChanged");
 		nameBox.addActionListener(this);
 		
 		namePanel.add(setLabel,labelLocation);
@@ -334,6 +351,5 @@ java.beans.PropertyChangeListener{
 			//attributeList.add(internalAttributes.get(i));
 		}
 	}
-	
 }
 
