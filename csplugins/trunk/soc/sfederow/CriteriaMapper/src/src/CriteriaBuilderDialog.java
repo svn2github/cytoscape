@@ -255,7 +255,7 @@ public class CriteriaBuilderDialog extends JDialog implements ActionListener, Li
 		
 		JButton addButton = new JButton("Add");
 		addButton.setActionCommand("CBadd");
-		//addButton.addActionListener(this);
+		addButton.addActionListener(this);
 		addButton.addActionListener(panelPointer);
 		
 		JButton clearButton = new JButton("Clear");
@@ -264,8 +264,8 @@ public class CriteriaBuilderDialog extends JDialog implements ActionListener, Li
 		
 		JButton doneButton = new JButton("Done");
 		doneButton.setActionCommand("CBsave");
-		addButton.addActionListener(this);
-		addButton.addActionListener(panelPointer);
+		doneButton.addActionListener(this);
+		doneButton.addActionListener(panelPointer);
 		
 		buttonBox.add(addButton);//, labelLocation);
 		buttonBox.add(clearButton);//, fieldLocation);
