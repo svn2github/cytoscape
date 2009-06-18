@@ -55,6 +55,7 @@ import org.cytoscape.work.UndoSupport;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.NodeViewTaskFactory;
 import org.cytoscape.view.model.EdgeViewTaskFactory;
+import org.cytoscape.view.model.EmptySpaceTaskFactory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.Tunable;
@@ -593,9 +594,62 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 			processNodeContextMenuEvent(e);
 			processEdgeContextMenuEvent(e);
+		} 
+
+		if ( e.getClickCount() == 2 ) {
+			System.out.println("double click ------------------");
+			NodeView nview = m_view.getPickedNodeView(e.getPoint());
+			if ( nview != null )
+				createNodeViewMenu(nview,e.getX(),e.getY());
+			else 
+				createEmptySpaceMenu(e.getX(), e.getY()); 
 		}
 
 		requestFocusInWindow();
+	}
+
+	private void createEdgeViewMenu(EdgeView edgeView, int x, int y) {
+		if (edgeView != null && m_view.edgeViewTFs.size() > 0) {
+			View<CyEdge> ev = edgeView.getEdgeView();	
+			String edgeLabel = ev.getSource().attrs().get("interaction",String.class);
+			JPopupMenu menu = new JPopupMenu(edgeLabel);
+
+			for ( EdgeViewTaskFactory evtf : m_view.edgeViewTFs.keySet() ) {
+				String pref = (String)(m_view.edgeViewTFs.get( evtf ).get("preferredMenu"));
+				evtf.setEdgeView(ev,m_view.cyNetworkView);
+				menu.add( createMenuItem( evtf, pref ) );
+			}
+
+			menu.show(this, x, y);
+		}
+	}
+
+	private void createNodeViewMenu(NodeView nview, int x, int y /*, String target*/) {
+		if (nview != null && m_view.nodeViewTFs.size() > 0) {
+			View<CyNode> nv = nview.getNodeView();
+			String nodeLabel = nv.getSource().attrs().get("name",String.class);
+			JPopupMenu menu = new JPopupMenu(nodeLabel);
+
+			for ( NodeViewTaskFactory nvtf : m_view.nodeViewTFs.keySet() ) {
+				String pref = (String)(m_view.nodeViewTFs.get( nvtf ).get("preferredMenu"));
+				nvtf.setNodeView(nv,m_view.cyNetworkView);
+				menu.add( createMenuItem( nvtf, pref ) );
+			}
+			menu.show(this, x, y);
+		}
+	}
+
+	private void createEmptySpaceMenu(int x, int y) {
+
+		if ( m_view.emptySpaceTFs.size() > 0 ) {
+			JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
+			for ( EmptySpaceTaskFactory nvtf : m_view.emptySpaceTFs.keySet() ) {
+				String pref = (String)(m_view.emptySpaceTFs.get( nvtf ).get("preferredMenu"));
+				nvtf.setNetworkView(m_view.cyNetworkView);
+				menu.add( createMenuItem( nvtf, pref ) );
+			}
+			menu.show(this, x, y);
+		}
 	}
 
 	/**
@@ -652,8 +706,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 									selectedNodes[i] = nodes.nextInt();
 
 								for (int i = 0; i < selectedNodes.length; i++)
-									((DNodeView) m_view.getNodeView(selectedNodes[i]))
-									                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   .selectInternal();
+									((DNodeView) m_view.getNodeView(selectedNodes[i])) .selectInternal();
 
 								if (selectedNodes.length > 0)
 									m_view.m_contentChanged = true;
@@ -715,8 +768,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 									selectedEdges[i] = edges.nextInt();
 
 								for (int i = 0; i < selectedEdges.length; i++)
-									((DEdgeView) m_view.getEdgeView(selectedEdges[i]))
-									                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .selectInternal(true);
+									((DEdgeView) m_view.getEdgeView(selectedEdges[i])).selectInternal(true);
 
 								if (selectedEdges.length > 0)
 									m_view.m_contentChanged = true;
@@ -750,12 +802,14 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (m_currMouseButton == 2)
 				m_currMouseButton = 0;
 
-			m_undoable_edit.post();
+			if (m_undoable_edit != null)
+				m_undoable_edit.post();
 		} else if (e.getButton() == MouseEvent.BUTTON3) {
 			if (m_currMouseButton == 3)
 				m_currMouseButton = 0;
 
-			m_undoable_edit.post();
+			if (m_undoable_edit != null)
+				m_undoable_edit.post();
 		}
 	}
 
@@ -1360,40 +1414,15 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 	private synchronized void processNodeContextMenuEvent(MouseEvent event) {
 		NodeView nview = m_view.getPickedNodeView(event.getPoint());
-
-		if (nview != null && m_view.nodeViewTFs.size() > 0) {
-			View<CyNode> nv = nview.getNodeView();
-			String nodeLabel = nv.getSource().attrs().get("name",String.class);
-			JPopupMenu menu = new JPopupMenu(nodeLabel);
-			menu.setLabel(nodeLabel);
-
-			for ( NodeViewTaskFactory nvtf : m_view.nodeViewTFs.keySet() ) {
-				String pref = (String)(m_view.nodeViewTFs.get( nvtf ).get("preferredMenu"));
-				nvtf.setNodeView(nv,m_view.cyNetworkView);
-				menu.add( createMenuItem( nvtf, pref ) );
-			}
-
-			menu.show(this, event.getX(), event.getY());
-		}
+		if ( nview != null )
+			createNodeViewMenu(nview,event.getX(),event.getY());
 	}
 
 	private synchronized void processEdgeContextMenuEvent(MouseEvent event) {
 		EdgeView edgeView = m_view.getPickedEdgeView(event.getPoint());
 
-		if (edgeView != null && m_view.edgeViewTFs.size() > 0) {
-			View<CyEdge> ev = edgeView.getEdgeView();	
-			String edgeLabel = ev.getSource().attrs().get("interaction",String.class);
-			JPopupMenu menu = new JPopupMenu(edgeLabel);
-			menu.setLabel(edgeLabel);
-
-			for ( EdgeViewTaskFactory evtf : m_view.edgeViewTFs.keySet() ) {
-				String pref = (String)(m_view.edgeViewTFs.get( evtf ).get("preferredMenu"));
-				evtf.setEdgeView(ev,m_view.cyNetworkView);
-				menu.add( createMenuItem( evtf, pref ) );
-			}
-
-			menu.show(this, event.getX(), event.getY());
-		}
+		if (edgeView != null)
+			createEdgeViewMenu(edgeView,event.getX(),event.getY());
 	}
 
 	private JMenuItem createMenuItem( TaskFactory tf , String pref ) { 

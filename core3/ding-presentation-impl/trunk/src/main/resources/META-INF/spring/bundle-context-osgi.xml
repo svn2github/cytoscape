@@ -58,4 +58,10 @@
             unbind-method="removeEdgeViewTaskFactory" ref="presentationFactory" />
     </osgi:set>
 
+    <osgi:set id="emptySpaceTaskFactorySet" interface="org.cytoscape.view.model.EmptySpaceTaskFactory"
+	        cardinality="0..N">
+        <osgi:listener bind-method="addEmptySpaceTaskFactory"
+            unbind-method="removeEmptySpaceTaskFactory" ref="presentationFactory" />
+    </osgi:set>
+
 </beans>

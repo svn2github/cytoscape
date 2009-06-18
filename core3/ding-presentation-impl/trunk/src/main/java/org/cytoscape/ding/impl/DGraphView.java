@@ -97,6 +97,7 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.EdgeViewTaskFactory;
 import org.cytoscape.view.model.NodeViewTaskFactory;
+import org.cytoscape.view.model.EmptySpaceTaskFactory;
 import org.cytoscape.view.presentation.NetworkRenderer;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.UndoSupport;
@@ -343,6 +344,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	Map<NodeViewTaskFactory,Map> nodeViewTFs; 
 	Map<EdgeViewTaskFactory,Map> edgeViewTFs;
+	Map<EmptySpaceTaskFactory,Map> emptySpaceTFs;
 
 	TunableInterceptor interceptor;
 	TaskManager manager;
@@ -354,7 +356,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	 *
 	 * @param perspective The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc, VisualLexicon dingLexicon, Map<NodeViewTaskFactory,Map> nodeViewTFs, Map<EdgeViewTaskFactory,Map> edgeViewTFs, TunableInterceptor interceptor, TaskManager manager ) {
+	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc, VisualLexicon dingLexicon, Map<NodeViewTaskFactory,Map> nodeViewTFs, Map<EdgeViewTaskFactory,Map> edgeViewTFs, Map<EmptySpaceTaskFactory,Map> emptySpaceTFs, TunableInterceptor interceptor, TaskManager manager ) {
 		m_perspective = view.getSource();
 		cyNetworkView = view;
 		rootLexicon = vpc;
@@ -362,6 +364,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 		this.nodeViewTFs = nodeViewTFs;
 		this.edgeViewTFs = edgeViewTFs;
+		this.emptySpaceTFs = emptySpaceTFs;
 
 		this.interceptor = interceptor;
 		this.manager = manager;

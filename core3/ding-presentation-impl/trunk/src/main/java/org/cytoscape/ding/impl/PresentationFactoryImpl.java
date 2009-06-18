@@ -22,6 +22,7 @@ import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.model.NodeViewTaskFactory;
 import org.cytoscape.view.model.EdgeViewTaskFactory;
+import org.cytoscape.view.model.EmptySpaceTaskFactory;
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.view.presentation.NetworkRenderer;
 import org.cytoscape.view.presentation.PresentationFactory;
@@ -41,6 +42,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 
 	private Map<NodeViewTaskFactory,Map> nodeViewTFs;
 	private Map<EdgeViewTaskFactory,Map> edgeViewTFs;
+	private Map<EmptySpaceTaskFactory,Map> emptySpaceTFs;
 
 	private TunableInterceptor ti;
 	private TaskManager tm;
@@ -62,6 +64,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory,Map>();
 		edgeViewTFs = new HashMap<EdgeViewTaskFactory,Map>();
+		emptySpaceTFs = new HashMap<EmptySpaceTaskFactory,Map>();
 	}
 
 	/**
@@ -74,7 +77,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 		if ( frame instanceof JComponent ) {
 			
 			DGraphView dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,
-					rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,ti,tm);
+					rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,emptySpaceTFs,ti,tm);
 			viewMap.put(view, dgv);
 			view.addViewChangeListener(dgv);
 			
@@ -150,6 +153,22 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 			return;
 
 		edgeViewTFs.remove(evtf);
+	}
+
+	public void addEmptySpaceTaskFactory(EmptySpaceTaskFactory evtf, Map props) {
+		System.out.println("addEmptySpaceTaskFactory");
+		if ( evtf == null )
+			return;
+
+		emptySpaceTFs.put(evtf,props);
+	}
+
+	public void removeEmptySpaceTaskFactory(EmptySpaceTaskFactory evtf, Map props) {
+		System.out.println("removeEmptySpaceTaskFactory");
+		if ( evtf == null )
+			return;
+
+		emptySpaceTFs.remove(evtf);
 	}
 
 	public NetworkRenderer getPresentation(CyNetworkView view) {
