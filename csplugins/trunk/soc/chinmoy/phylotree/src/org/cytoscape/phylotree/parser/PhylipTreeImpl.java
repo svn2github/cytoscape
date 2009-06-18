@@ -4,19 +4,19 @@ import java.util.List;
 import java.io.File;
 import java.util.Vector;
 
-public class PhylipTree implements Phylotree {
+public class PhylipTreeImpl implements Phylotree {
 	
 	private String treeStr;
 	private List<PhylotreeNode> nodeList = null;
 
 	
 	// Constructors
-	public PhylipTree(String pTreeStr){
+	public PhylipTreeImpl(String pTreeStr){
 		this.treeStr = pTreeStr;
 		parse();
 	}
 	
-	public PhylipTree(File pTreeFile){
+	public PhylipTreeImpl(File pTreeFile){
 	
 		treeStr = getTreeTextFromFile(pTreeFile);
 		parse();
