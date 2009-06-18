@@ -29,10 +29,7 @@ void error(const char * p, const char * p2="")
 			    
 
 // This function reads a graph from a file (from) stored in a quite strange GML format
-//TODO: FIX free() call in readGml() function. It produces a segmentation fault
-// TODO: Write a function which reads from standard GML format
-			  
-
+// TODO: FIX free() call in readGml() function. It produces a segmentation fault, because array edgeLengh overflows
 
 /******************************* FORMAT SAMPLE ***********************
 graph [
@@ -142,9 +139,12 @@ void readGml(graph * g, FILE * from)
     numEdges++;
 
     // Get the edge source node (e1)
-    e1 = atoi(string+startPos+9 );
+    e1 =
+    i=0;
+    i=0; atoi(string+startPos+9 );
 
     // Go to the position of edge target node
+    i=0;
     i=0;
     while(string[i]!= 't')
       i++;
@@ -176,6 +176,7 @@ void readGml(graph * g, FILE * from)
 
   // Go to secFrom position in file "from" (where the edge information starts)
   fseek ( from, secFrom, SEEK_SET );
+
   while( fgets(string, MAX_REC_LEN,from )){
     
     // Check if the file is finishing
@@ -228,7 +229,7 @@ void readGml(graph * g, FILE * from)
 //In more detail, there are 7 nodes and 10 edges in the graph; node 1 is adjacent to 2,3; node 2 is adjacent to 1,3,7; etc
 
 
-void readChaco(graph * g, FILE * from)
+void readChaco(graph* g, FILE* from)
 {
   int numNodes,numEdges;
   char string[MAX_REC_LEN];        // Temporary string in which each line of the file will be temporary stored
@@ -259,11 +260,14 @@ void readChaco(graph * g, FILE * from)
 	
   // First node's adjacency list starts at position 0
   g->AdjMatIndex[0]=0;
+
+  // Read rest of file
   while(fgets(string, MAX_REC_LEN,from )){
     
     if((string[0]==10) || (string[0]==8) ) 
       continue;
     
+    // Initialize node position
     g->NodePos[index].x= (int)rand()%g->screen_width;
     g->NodePos[index].y= (int)rand()%g->screen_hieght;
     
