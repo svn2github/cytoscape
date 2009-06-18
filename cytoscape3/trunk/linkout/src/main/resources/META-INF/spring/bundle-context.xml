@@ -26,7 +26,7 @@
 	<context:annotation-config />
 
 	<!-- Linkout Properties (linkout.props) -->
-	<util:properties id="linkoutProperties" location="classpath:cytoscape.props" />
+	<util:properties id="linkoutProperties" location="classpath:linkout.props" />
 
 	<!-- Build CyProperty Object by using default implementation -->
 	<bean id="linkoutProps" class="org.cytoscape.property.DefaultCyProperty">
