@@ -355,13 +355,205 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public void mouseExited(MouseEvent e) {
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private int getChosenNode()
+	{
+		m_ptBuff[0] = m_lastXMousePos;
+		m_ptBuff[1] = m_lastYMousePos;
+		m_view.xformComponentToNodeCoords(m_ptBuff);
+		m_stack.empty();
+		m_view.getNodesIntersectingRectangle((float) m_ptBuff[0], (float) m_ptBuff[1],
+		                                     (float) m_ptBuff[0], (float) m_ptBuff[1],
+		                                     (m_lastRenderDetail
+		                                     & GraphRenderer.LOD_HIGH_DETAIL) == 0,
+		                                     m_stack);
+		int chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0;
+		return chosenNode;
+	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	private int getChosenAnchor ()
+	{
+		m_ptBuff[0] = m_lastXMousePos;
+		m_ptBuff[1] = m_lastYMousePos;
+		m_view.xformComponentToNodeCoords(m_ptBuff);
+
+		final IntEnumerator hits = m_view.m_spacialA.queryOverlap((float) m_ptBuff[0],
+		                                                          (float) m_ptBuff[1],
+		                                                          (float) m_ptBuff[0],
+		                                                          (float) m_ptBuff[1],
+		                                                          null, 0, false);
+		int chosenAnchor = (hits.numRemaining() > 0) ? hits.nextInt() : (-1);
+		return chosenAnchor;
+	}
+	
+	/**
+	 * 
+	 */
+	private int getChosenEdge()
+	{
+		
+		computeEdgesIntersecting(m_lastXMousePos - 1, m_lastYMousePos - 1,
+                m_lastXMousePos + 1, m_lastYMousePos + 1, m_stack2);
+        int chosenEdge = (m_stack2.size() > 0) ? m_stack2.peek() : 0;
+        return chosenEdge;
+	}
+	
+	/**
+	 * 
+	 * @return an array of indices of unselected nodes
+	 */
+	private int[] getUnselectedNodes()
+	{
+		int [] unselectedNodes;
+		if (m_view.m_nodeSelection) { // Unselect all selected nodes.
+			unselectedNodes = m_view.getSelectedNodeIndices();
+
+			// Adding this line to speed things up from O(n*log(n)) to O(n).
+			m_view.m_selectedNodes.empty();
+
+			for (int i = 0; i < unselectedNodes.length; i++)
+				((DNodeView) m_view.getNodeView(unselectedNodes[i])).unselectInternal();
+		} else
+			unselectedNodes = new int[0];
+		return unselectedNodes;
+
+	}
+	
+	
+	private int[] getUnselectedEdges()
+	{
+		int[] unselectedEdges;
+		if (m_view.m_edgeSelection) { // Unselect all selected edges.
+			unselectedEdges = m_view.getSelectedEdgeIndices();
+
+			// Adding this line to speed things up from O(n*log(n)) to O(n).
+			m_view.m_selectedEdges.empty();
+
+			for (int i = 0; i < unselectedEdges.length; i++)
+				((DEdgeView) m_view.getEdgeView(unselectedEdges[i])).unselectInternal();
+		} else
+			unselectedEdges = new int[0];
+		return unselectedEdges;
+	}
+	
+	private int toggleSelectedNode(int chosenNode, MouseEvent e)
+	{
+		int chosenNodeSelected = 0;
+		final boolean wasSelected = m_view.getNodeView(chosenNode).isSelected();
+
+		if (wasSelected && e.isShiftDown()) {
+			((DNodeView) m_view.getNodeView(chosenNode)).unselectInternal();
+			chosenNodeSelected = -1;
+		} else if (!wasSelected) {
+			((DNodeView) m_view.getNodeView(chosenNode)).selectInternal();
+			chosenNodeSelected = 1;
+		}
+
+		m_button1NodeDrag = true;
+		m_view.m_contentChanged = true;	
+		return chosenNodeSelected;
+	}
+	
+	
+	/**
+	 * 
+	 */
+	private void toggleChosenAnchor (int chosenAnchor, MouseEvent e)
+	{
+		if (isAnchorKeyDown(e)) {
+			final int edge = chosenAnchor >>> 6;
+			final int anchorInx = chosenAnchor & 0x0000003f;
+			//****** Save remove handle
+			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Remove Edge Handle",m_undo);
+			((DEdgeView) m_view.getEdgeView(edge)).removeHandle(anchorInx);
+			m_button1NodeDrag = false;
+		} else {
+			final boolean wasSelected = m_view.m_selectedAnchors.count(chosenAnchor) > 0;
+
+			if (wasSelected && e.isShiftDown())
+				m_view.m_selectedAnchors.delete(chosenAnchor);
+			else if (!wasSelected) {
+				if (!e.isShiftDown())
+					m_view.m_selectedAnchors.empty();
+
+				m_view.m_selectedAnchors.insert(chosenAnchor);
+			}
+
+			m_button1NodeDrag = true;
+		}
+
+		m_view.m_contentChanged = true;	
+	}
+	
+	
+	
+	
+	private int toggleSelectedEdge (int chosenEdge, MouseEvent e)
+	{
+		int chosenEdgeSelected = 0;
+		if (isAnchorKeyDown(e)
+			    && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
+				m_view.m_selectedAnchors.empty();
+				m_ptBuff[0] = m_lastXMousePos;
+				m_ptBuff[1] = m_lastYMousePos;
+				m_view.xformComponentToNodeCoords(m_ptBuff);
+				//******* Store current handle list *********
+				m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Add Edge Handle",m_undo);
+				final int chosenInx = ((DEdgeView) m_view.getEdgeView(chosenEdge))
+																												.addHandleFoo(new Point2D.Float((float) m_ptBuff[0],
+																												(float) m_ptBuff[1]));
+				m_view.m_selectedAnchors.insert(((chosenEdge) << 6) | chosenInx);
+			}
+
+			final boolean wasSelected = m_view.getEdgeView(chosenEdge).isSelected();
+
+			if (wasSelected && e.isShiftDown()) {
+				((DEdgeView) m_view.getEdgeView(chosenEdge)).unselectInternal();
+				chosenEdgeSelected = -1;
+			} else if (!wasSelected) {
+				((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal(false);
+				chosenEdgeSelected = 1;
+
+				if ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
+					m_ptBuff[0] = m_lastXMousePos;
+					m_ptBuff[1] = m_lastYMousePos;
+					m_view.xformComponentToNodeCoords(m_ptBuff);
+
+					final IntEnumerator hits = m_view.m_spacialA.queryOverlap((float) m_ptBuff[0],
+					                                                          (float) m_ptBuff[1],
+					                                                          (float) m_ptBuff[0],
+					                                                          (float) m_ptBuff[1],
+					                                                          null, 0, false);
+
+					if (hits.numRemaining() > 0) {
+						final int hit = hits.nextInt();
+
+						if (m_view.m_selectedAnchors.count(hit) == 0)
+							m_view.m_selectedAnchors.insert(hit);
+					}
+				}
+			}
+
+			m_button1NodeDrag = true;
+			m_view.m_contentChanged = true;
+			return chosenEdgeSelected;
+	}
+	
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param e DOCUMENT ME!
 	 */
 	public void mousePressed(MouseEvent e) {
+		// if we have a single-click
 		if ((e.getButton() == MouseEvent.BUTTON1) && !(isMacPlatform() && e.isControlDown())) { // on mac, mouse button1 click and control is simulate button 3 press
 			                                                                                    // It's too complicated to correctly handle both control and shift
 			                                                                                    // simultaneously.
@@ -386,36 +578,17 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 			synchronized (m_lock) {
 				if (m_view.m_nodeSelection) {
-					m_ptBuff[0] = m_lastXMousePos;
-					m_ptBuff[1] = m_lastYMousePos;
-					m_view.xformComponentToNodeCoords(m_ptBuff);
-					m_stack.empty();
-					m_view.getNodesIntersectingRectangle((float) m_ptBuff[0], (float) m_ptBuff[1],
-					                                     (float) m_ptBuff[0], (float) m_ptBuff[1],
-					                                     (m_lastRenderDetail
-					                                     & GraphRenderer.LOD_HIGH_DETAIL) == 0,
-					                                     m_stack);
-					chosenNode = (m_stack.size() > 0) ? m_stack.peek() : 0;
+					chosenNode = getChosenNode();
 				}
 
 				if (m_view.m_edgeSelection && (chosenNode == 0)
 				    && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
-					m_ptBuff[0] = m_lastXMousePos;
-					m_ptBuff[1] = m_lastYMousePos;
-					m_view.xformComponentToNodeCoords(m_ptBuff);
-
-					final IntEnumerator hits = m_view.m_spacialA.queryOverlap((float) m_ptBuff[0],
-					                                                          (float) m_ptBuff[1],
-					                                                          (float) m_ptBuff[0],
-					                                                          (float) m_ptBuff[1],
-					                                                          null, 0, false);
-					chosenAnchor = (hits.numRemaining() > 0) ? hits.nextInt() : (-1);
+			
+					chosenAnchor = getChosenAnchor();
 				}
 
 				if (m_view.m_edgeSelection && (chosenNode == 0) && (chosenAnchor < 0)) {
-					computeEdgesIntersecting(m_lastXMousePos - 1, m_lastYMousePos - 1,
-					                         m_lastXMousePos + 1, m_lastYMousePos + 1, m_stack2);
-					chosenEdge = (m_stack2.size() > 0) ? m_stack2.peek() : 0;
+					chosenEdge = getChosenEdge();
 				}
 
 				if ((!e.isShiftDown()) // If shift is down never unselect.
@@ -425,119 +598,28 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				!(((chosenNode != 0) && m_view.getNodeView(chosenNode).isSelected())
 				       || (chosenAnchor >= 0)
 				       || ((chosenEdge != 0) && m_view.getEdgeView(chosenEdge).isSelected())))) {
-					if (m_view.m_nodeSelection) { // Unselect all selected nodes.
-						unselectedNodes = m_view.getSelectedNodeIndices();
-
-						// Adding this line to speed things up from O(n*log(n)) to O(n).
-						m_view.m_selectedNodes.empty();
-
-						for (int i = 0; i < unselectedNodes.length; i++)
-							((DNodeView) m_view.getNodeView(unselectedNodes[i])).unselectInternal();
-					} else
-						unselectedNodes = new int[0];
-
-					if (m_view.m_edgeSelection) { // Unselect all selected edges.
-						unselectedEdges = m_view.getSelectedEdgeIndices();
-
-						// Adding this line to speed things up from O(n*log(n)) to O(n).
-						m_view.m_selectedEdges.empty();
-
-						for (int i = 0; i < unselectedEdges.length; i++)
-							((DEdgeView) m_view.getEdgeView(unselectedEdges[i])).unselectInternal();
-					} else
-						unselectedEdges = new int[0];
+				
+						unselectedNodes = getUnselectedNodes();
+						unselectedEdges = getUnselectedEdges();
 
 					if ((unselectedNodes.length > 0) || (unselectedEdges.length > 0))
 						m_view.m_contentChanged = true;
 				}
-
+				
+	
 				if (chosenNode != 0) {
-					final boolean wasSelected = m_view.getNodeView(chosenNode).isSelected();
+				    chosenNodeSelected = toggleSelectedNode(chosenNode, e);
 
-					if (wasSelected && e.isShiftDown()) {
-						((DNodeView) m_view.getNodeView(chosenNode)).unselectInternal();
-						chosenNodeSelected = -1;
-					} else if (!wasSelected) {
-						((DNodeView) m_view.getNodeView(chosenNode)).selectInternal();
-						chosenNodeSelected = 1;
-					}
-
-					m_button1NodeDrag = true;
-					m_view.m_contentChanged = true;
 				}
 
 				if (chosenAnchor >= 0) {
-					if (isAnchorKeyDown(e)) {
-						final int edge = chosenAnchor >>> 6;
-						final int anchorInx = chosenAnchor & 0x0000003f;
-						//****** Save remove handle
-						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Remove Edge Handle",m_undo);
-						((DEdgeView) m_view.getEdgeView(edge)).removeHandle(anchorInx);
-						m_button1NodeDrag = false;
-					} else {
-						final boolean wasSelected = m_view.m_selectedAnchors.count(chosenAnchor) > 0;
-
-						if (wasSelected && e.isShiftDown())
-							m_view.m_selectedAnchors.delete(chosenAnchor);
-						else if (!wasSelected) {
-							if (!e.isShiftDown())
-								m_view.m_selectedAnchors.empty();
-
-							m_view.m_selectedAnchors.insert(chosenAnchor);
-						}
-
-						m_button1NodeDrag = true;
-					}
-
-					m_view.m_contentChanged = true;
+					toggleChosenAnchor (chosenAnchor, e);
 				}
 
 				if (chosenEdge != 0) {
-					if (isAnchorKeyDown(e)
-					    && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
-						m_view.m_selectedAnchors.empty();
-						m_ptBuff[0] = m_lastXMousePos;
-						m_ptBuff[1] = m_lastYMousePos;
-						m_view.xformComponentToNodeCoords(m_ptBuff);
-						//******* Store current handle list *********
-						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Add Edge Handle",m_undo);
-						final int chosenInx = ((DEdgeView) m_view.getEdgeView(chosenEdge))
-																														.addHandleFoo(new Point2D.Float((float) m_ptBuff[0],
-																														(float) m_ptBuff[1]));
-						m_view.m_selectedAnchors.insert(((chosenEdge) << 6) | chosenInx);
-					}
+					chosenEdgeSelected = toggleSelectedEdge (chosenEdge, e);
+					
 
-					final boolean wasSelected = m_view.getEdgeView(chosenEdge).isSelected();
-
-					if (wasSelected && e.isShiftDown()) {
-						((DEdgeView) m_view.getEdgeView(chosenEdge)).unselectInternal();
-						chosenEdgeSelected = -1;
-					} else if (!wasSelected) {
-						((DEdgeView) m_view.getEdgeView(chosenEdge)).selectInternal(false);
-						chosenEdgeSelected = 1;
-
-						if ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
-							m_ptBuff[0] = m_lastXMousePos;
-							m_ptBuff[1] = m_lastYMousePos;
-							m_view.xformComponentToNodeCoords(m_ptBuff);
-
-							final IntEnumerator hits = m_view.m_spacialA.queryOverlap((float) m_ptBuff[0],
-							                                                          (float) m_ptBuff[1],
-							                                                          (float) m_ptBuff[0],
-							                                                          (float) m_ptBuff[1],
-							                                                          null, 0, false);
-
-							if (hits.numRemaining() > 0) {
-								final int hit = hits.nextInt();
-
-								if (m_view.m_selectedAnchors.count(hit) == 0)
-									m_view.m_selectedAnchors.insert(hit);
-							}
-						}
-					}
-
-					m_button1NodeDrag = true;
-					m_view.m_contentChanged = true;
 				}
 
 				if ((chosenNode == 0) && (chosenEdge == 0) && (chosenAnchor < 0)) {
@@ -548,6 +630,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
+			// delegating to listeners
 			if (listener != null) {
 				if ((unselectedNodes != null) && (unselectedNodes.length > 0))
 					listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
@@ -651,6 +734,120 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			menu.show(this, x, y);
 		}
 	}
+	
+	
+	private int[] setSelectedNodes ()
+	{
+		int [] selectedNodes = null;
+		m_ptBuff[0] = m_selectionRect.x;
+		m_ptBuff[1] = m_selectionRect.y;
+		m_view.xformComponentToNodeCoords(m_ptBuff);
+
+		final double xMin = m_ptBuff[0];
+		final double yMin = m_ptBuff[1];
+		m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
+		m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
+		m_view.xformComponentToNodeCoords(m_ptBuff);
+
+		final double xMax = m_ptBuff[0];
+		final double yMax = m_ptBuff[1];
+		m_stack.empty();
+		m_view.getNodesIntersectingRectangle((float) xMin, (float) yMin,
+		                                     (float) xMax, (float) yMax,
+		                                     (m_lastRenderDetail
+		                                     & GraphRenderer.LOD_HIGH_DETAIL) == 0,
+		                                     m_stack);
+		m_stack2.empty();
+
+		final IntEnumerator nodesXSect = m_stack.elements();
+
+		while (nodesXSect.numRemaining() > 0) {
+			final int nodeXSect = nodesXSect.nextInt();
+
+			if (m_view.m_selectedNodes.count(nodeXSect) == 0)
+				m_stack2.push(nodeXSect);
+		}
+
+		selectedNodes = new int[m_stack2.size()];
+
+		final IntEnumerator nodes = m_stack2.elements();
+
+		for (int i = 0; i < selectedNodes.length; i++)
+			selectedNodes[i] = nodes.nextInt();
+
+		for (int i = 0; i < selectedNodes.length; i++)
+			((DNodeView) m_view.getNodeView(selectedNodes[i])) .selectInternal();
+
+		if (selectedNodes.length > 0)
+			m_view.m_contentChanged = true;	
+		return selectedNodes;
+	}
+	
+	
+	private int [] setSelectedEdges ()
+	{
+		int [] selectedEdges = null;
+		if ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
+			m_ptBuff[0] = m_selectionRect.x;
+			m_ptBuff[1] = m_selectionRect.y;
+			m_view.xformComponentToNodeCoords(m_ptBuff);
+
+			final double xMin = m_ptBuff[0];
+			final double yMin = m_ptBuff[1];
+			m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
+			m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
+			m_view.xformComponentToNodeCoords(m_ptBuff);
+
+			final double xMax = m_ptBuff[0];
+			final double yMax = m_ptBuff[1];
+			final IntEnumerator hits = m_view.m_spacialA.queryOverlap((float) xMin,
+			                                                          (float) yMin,
+			                                                          (float) xMax,
+			                                                          (float) yMax,
+			                                                          null,
+			                                                          0,
+			                                                          false);
+
+			if (hits.numRemaining() > 0)
+				m_view.m_contentChanged = true;
+
+			while (hits.numRemaining() > 0) {
+				final int hit = hits.nextInt();
+
+				if (m_view.m_selectedAnchors.count(hit) == 0)
+					m_view.m_selectedAnchors.insert(hit);
+			}
+		}
+
+		computeEdgesIntersecting(m_selectionRect.x, m_selectionRect.y,
+		                         m_selectionRect.x + m_selectionRect.width,
+		                         m_selectionRect.y + m_selectionRect.height,
+		                         m_stack2);
+		m_stack.empty();
+
+		final IntEnumerator edgesXSect = m_stack2.elements();
+
+		while (edgesXSect.numRemaining() > 0) {
+			final int edgeXSect = edgesXSect.nextInt();
+
+			if (m_view.m_selectedEdges.count(edgeXSect) == 0)
+				m_stack.push(edgeXSect);
+		}
+
+		selectedEdges = new int[m_stack.size()];
+
+		final IntEnumerator edges = m_stack.elements();
+
+		for (int i = 0; i < selectedEdges.length; i++)
+			selectedEdges[i] = edges.nextInt();
+
+		for (int i = 0; i < selectedEdges.length; i++)
+			((DEdgeView) m_view.getEdgeView(selectedEdges[i])).selectInternal(true);
+
+		if (selectedEdges.length > 0)
+			m_view.m_contentChanged = true;
+		return selectedEdges;
+	}
 
 	/**
 	 * DOCUMENT ME!
@@ -668,111 +865,16 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 					synchronized (m_lock) {
 						if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
-							if (m_view.m_nodeSelection) {
-								m_ptBuff[0] = m_selectionRect.x;
-								m_ptBuff[1] = m_selectionRect.y;
-								m_view.xformComponentToNodeCoords(m_ptBuff);
-
-								final double xMin = m_ptBuff[0];
-								final double yMin = m_ptBuff[1];
-								m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
-								m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
-								m_view.xformComponentToNodeCoords(m_ptBuff);
-
-								final double xMax = m_ptBuff[0];
-								final double yMax = m_ptBuff[1];
-								m_stack.empty();
-								m_view.getNodesIntersectingRectangle((float) xMin, (float) yMin,
-								                                     (float) xMax, (float) yMax,
-								                                     (m_lastRenderDetail
-								                                     & GraphRenderer.LOD_HIGH_DETAIL) == 0,
-								                                     m_stack);
-								m_stack2.empty();
-
-								final IntEnumerator nodesXSect = m_stack.elements();
-
-								while (nodesXSect.numRemaining() > 0) {
-									final int nodeXSect = nodesXSect.nextInt();
-
-									if (m_view.m_selectedNodes.count(nodeXSect) == 0)
-										m_stack2.push(nodeXSect);
+							if (m_view.m_nodeSelection) 
+								{
+									selectedNodes = setSelectedNodes();
 								}
-
-								selectedNodes = new int[m_stack2.size()];
-
-								final IntEnumerator nodes = m_stack2.elements();
-
-								for (int i = 0; i < selectedNodes.length; i++)
-									selectedNodes[i] = nodes.nextInt();
-
-								for (int i = 0; i < selectedNodes.length; i++)
-									((DNodeView) m_view.getNodeView(selectedNodes[i])) .selectInternal();
-
-								if (selectedNodes.length > 0)
-									m_view.m_contentChanged = true;
-							}
+	
 
 							if (m_view.m_edgeSelection) {
-								if ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
-									m_ptBuff[0] = m_selectionRect.x;
-									m_ptBuff[1] = m_selectionRect.y;
-									m_view.xformComponentToNodeCoords(m_ptBuff);
+								selectedEdges = setSelectedEdges ();
+							}								
 
-									final double xMin = m_ptBuff[0];
-									final double yMin = m_ptBuff[1];
-									m_ptBuff[0] = m_selectionRect.x + m_selectionRect.width;
-									m_ptBuff[1] = m_selectionRect.y + m_selectionRect.height;
-									m_view.xformComponentToNodeCoords(m_ptBuff);
-
-									final double xMax = m_ptBuff[0];
-									final double yMax = m_ptBuff[1];
-									final IntEnumerator hits = m_view.m_spacialA.queryOverlap((float) xMin,
-									                                                          (float) yMin,
-									                                                          (float) xMax,
-									                                                          (float) yMax,
-									                                                          null,
-									                                                          0,
-									                                                          false);
-
-									if (hits.numRemaining() > 0)
-										m_view.m_contentChanged = true;
-
-									while (hits.numRemaining() > 0) {
-										final int hit = hits.nextInt();
-
-										if (m_view.m_selectedAnchors.count(hit) == 0)
-											m_view.m_selectedAnchors.insert(hit);
-									}
-								}
-
-								computeEdgesIntersecting(m_selectionRect.x, m_selectionRect.y,
-								                         m_selectionRect.x + m_selectionRect.width,
-								                         m_selectionRect.y + m_selectionRect.height,
-								                         m_stack2);
-								m_stack.empty();
-
-								final IntEnumerator edgesXSect = m_stack2.elements();
-
-								while (edgesXSect.numRemaining() > 0) {
-									final int edgeXSect = edgesXSect.nextInt();
-
-									if (m_view.m_selectedEdges.count(edgeXSect) == 0)
-										m_stack.push(edgeXSect);
-								}
-
-								selectedEdges = new int[m_stack.size()];
-
-								final IntEnumerator edges = m_stack.elements();
-
-								for (int i = 0; i < selectedEdges.length; i++)
-									selectedEdges[i] = edges.nextInt();
-
-								for (int i = 0; i < selectedEdges.length; i++)
-									((DEdgeView) m_view.getEdgeView(selectedEdges[i])).selectInternal(true);
-
-								if (selectedEdges.length > 0)
-									m_view.m_contentChanged = true;
-							}
 						}
 					}
 
