@@ -665,9 +665,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			// Repaint after listener events are fired because listeners may change
 			// something in the graph view.
 			repaint();
-		} else if ((e.getButton() == MouseEvent.BUTTON1) && !(isMacPlatform()) && (e.isControlDown())
-//		} else if ((e.getButton() == MouseEvent.BUTTON1) &&  (e.isControlDown()))
-		{
+		} else if ((e.getButton() == MouseEvent.BUTTON1) && !isMacPlatform() && e.isControlDown()) {
 			System.out.println("control click");
 			if ((getChosenNode() == 0) && (getChosenEdge() == 0) && (getChosenAnchor() < 0)) // clicking on empty space
 			{
