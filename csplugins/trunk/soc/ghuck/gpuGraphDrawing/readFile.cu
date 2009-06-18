@@ -205,10 +205,6 @@ void readGml(graph * g, FILE * from)
     (temp[e1 - 1])++;
     (temp[e2 - 1])++;
 
-    // printf ("temp[e1-1] = %d\n", temp[e1 - 1]);
-    //printf ("temp[e2-1] = %d\n", temp[e2 - 1]);
-    //printf ("\tprocessed edge: %d - %d \n", e1, e2);
-
   }
  
   // FIX IT! The following free() call gives segmentation fault
@@ -216,66 +212,103 @@ void readGml(graph * g, FILE * from)
 }
 
 
-void readChaco(graph * g, FILE * from){
-	int numNodes,numEdges;
-	printf("Reading nodes!!\n");
-	if(!fscanf(from,"%d",&numNodes))
-		error("Cannot read 1st file");
-	if(!fscanf(from,"%d",&numEdges))
-		error("Cannot read 1st file");
-		
-	printf("Reading edges!!\n");
-	char string[MAX_REC_LEN];
-	int index = 0;
-	initGraph(g,numNodes); g->numEdges = 2*numEdges;
-	g->NodePos = (float2 *) malloc((numNodes)*sizeof(float2));
-	g->AdjMatIndex =  (int * )  malloc((numNodes+1)*sizeof(int));
-	g->AdjMatVals  =  (int * )  malloc(2*numEdges*sizeof(int));
-	g->edgeLen     =  (int * )  malloc(2*numEdges*sizeof(int));
+
+
+
+/******************************* FORMAT SAMPLE ***********************
+7 10
+2 3
+1 3 7
+1 2 6 7
+6
+6 7
+3 4 5 7
+2 3 5 6
+**********************************************************************/
+//In more detail, there are 7 nodes and 10 edges in the graph; node 1 is adjacent to 2,3; node 2 is adjacent to 1,3,7; etc
+
+
+void readChaco(graph * g, FILE * from)
+{
+  int numNodes,numEdges;
+  char string[MAX_REC_LEN];        // Temporary string in which each line of the file will be temporary stored
+  int index = 0;
+  int nEdges = 0;
+  
+  if(!fscanf(from,"%d",&numNodes))
+    error("Cannot read 1st file");
+  if(!fscanf(from,"%d",&numEdges))
+    error("Cannot read 1st file");
+
+  printf ("Number of nodes: %d\n", numNodes);
+  printf ("Number of edges: %d\n", numEdges);
+  printf ("Reading nodes!!\n");		
+  printf ("Reading edges!!\n");
+
+  // Initialize Graph
+  initGraph(g,numNodes); 
+
+  // Save numEdges
+  g->numEdges = 2*numEdges;
+
+  // Allocate memory for NodePos, AdjMatIndex, AdjMatVals, edgeLen
+  g->NodePos     = (float2*) malloc((numNodes)*sizeof(float2));
+  g->AdjMatIndex =    (int*) malloc((numNodes+1)*sizeof(int));
+  g->AdjMatVals  =    (int*) malloc(2*numEdges*sizeof(int));
+  g->edgeLen     =    (int*) malloc(2*numEdges*sizeof(int));
 	
-	int nEdges = 0;
-	g->AdjMatIndex[0]=0;
-	while(fgets(string, MAX_REC_LEN,from ))
-	{
-		if((string[0]==10) || (string[0]==8) ) continue;
-		g->NodePos[index].x= (int)rand()%g->screen_width;
-		g->NodePos[index].y= (int)rand()%g->screen_hieght;
-		if(g->NodePos[index].x < 0)
-		{
-		exit(0);
-		}
-		char * first = string;
-		int sl=strlen(string);
-		for(int i=0;i<sl;i++)
-		{
-			if(string[i]==10)
-			{
-				string[i]='\0';
-				int n = atoi(first);
-				first = &string[i]; 
-				g->AdjMatVals[nEdges] = n - 1;
-				g->edgeLen[nEdges] = EDGE_LEN;
-				nEdges++;
-				break;
-			}
-			if(i==0 && string[0]==' '){
-				first=string+1;
-				continue;
-			}
-			if(string[i]!=' ') continue;
-			while(string[i]==' ') 
-					i++;
-					string[i-1]='\0';
-			if(strlen(first)){
-			int n = atoi(first);
-			first = &string[i]; 
-			g->AdjMatVals[nEdges] = n - 1;
-			g->edgeLen[nEdges] = EDGE_LEN;
-			nEdges++;
-			}
-		}
-		g->AdjMatIndex[index+1] = nEdges;
-		index++;
-	}	
+  // First node's adjacency list starts at position 0
+  g->AdjMatIndex[0]=0;
+  while(fgets(string, MAX_REC_LEN,from )){
+    
+    if((string[0]==10) || (string[0]==8) ) 
+      continue;
+    
+    g->NodePos[index].x= (int)rand()%g->screen_width;
+    g->NodePos[index].y= (int)rand()%g->screen_hieght;
+    
+    if(g->NodePos[index].x < 0){
+      exit(0);
+    }
+    
+    char * first = string;
+    int sl=strlen(string);
+    
+    for(int i=0;i<sl;i++){
+    
+      if(string[i]==10){
+	string[i]='\0';
+	int n = atoi(first);
+	first = &string[i]; 
+	g->AdjMatVals[nEdges] = n - 1;
+	g->edgeLen[nEdges] = EDGE_LEN;
+	nEdges++;
+	break;
+      }
+      
+      if(i==0 && string[0]==' '){
+	first=string+1;
+	continue;
+      }
+      if(string[i]!=' ') continue;
+      
+      while(string[i]==' ') 
+	i++;
+      
+      string[i-1]='\0';
+      
+      if(strlen(first)){
+	int n = atoi(first);
+	first = &string[i]; 
+	g->AdjMatVals[nEdges] = n - 1;
+	g->edgeLen[nEdges] = EDGE_LEN;
+	nEdges++;
+      }
+    }
+    
+    g->AdjMatIndex[index+1] = nEdges;
+    index++;
+    
+  }	
 }
 
