@@ -5,5 +5,15 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
+	<osgi:reference id="cyNetworkManagerServiceRef"
+		interface="cytoscape.CyNetworkManager" />
+
+	<osgi:service id="createPresentationTaskFactoryService" ref="createPresentationTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Create Processing Presentation for Current Network" />
+			<entry key="preferredMenu" value="View.Create Presentation.by Processing" />
+		</osgi:service-properties>
+	</osgi:service>
 
 </beans>

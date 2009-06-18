@@ -20,5 +20,9 @@
 	default-lazy-init="false">
 
 	<context:annotation-config />
+	
+	<bean id="createPresentationTaskFactory" class="org.cytoscape.view.presentation.processing.internal.CreatePresentationTaskFactory">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
 
 </beans>

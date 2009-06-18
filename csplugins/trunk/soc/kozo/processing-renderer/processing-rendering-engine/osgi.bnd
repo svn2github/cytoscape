@@ -3,7 +3,7 @@
 #-----------------------------------------------------------------
 
 Export-Package: org.cytoscape.view.presentation.processing
-Import-Package: *
+Import-Package: *;resolution:=optional
 
 DynamicImport-Package: *
 
