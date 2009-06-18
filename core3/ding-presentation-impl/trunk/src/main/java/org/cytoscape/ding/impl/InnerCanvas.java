@@ -554,12 +554,15 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public void mousePressed(MouseEvent e) {
 		// if we have a single-click
-		if ((e.getButton() == MouseEvent.BUTTON1) && !(isMacPlatform() && e.isControlDown())) { // on mac, mouse button1 click and control is simulate button 3 press
+		System.out.println ("isControlDown = " + e.isControlDown());
+		if ((e.getButton() == MouseEvent.BUTTON1) && !(isMacPlatform()) && !(e.isControlDown())) { // on mac, mouse button1 click and control is simulate button 3 press
 			                                                                                    // It's too complicated to correctly handle both control and shift
-			                                                                                    // simultaneously.
+			System.out.println ("inside single select ");                                                                                    // simultaneously.
 
 			if (e.isShiftDown() && isAnchorKeyDown(e))
 				return;
+			
+			System.out.println ("made it past anchor testt ");  
 
 			// m_undoable_edit = new ViewChangeEdit(m_view, "Move");
 			m_undoable_edit = null;
@@ -662,7 +665,18 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			// Repaint after listener events are fired because listeners may change
 			// something in the graph view.
 			repaint();
-		} else if (e.getButton() == MouseEvent.BUTTON2) {
+		} else if ((e.getButton() == MouseEvent.BUTTON1) && !(isMacPlatform()) && (e.isControlDown())
+//		} else if ((e.getButton() == MouseEvent.BUTTON1) &&  (e.isControlDown()))
+		{
+			System.out.println("control click");
+			if ((getChosenNode() == 0) && (getChosenEdge() == 0) && (getChosenAnchor() < 0)) // clicking on empty space
+			{
+				System.out.println("control click on empty space ------------------");
+				createEmptySpaceMenu(e.getX(), e.getY()); 
+			}
+		}
+		
+		else if (e.getButton() == MouseEvent.BUTTON2) {
 			//******** Save all node positions
 			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
 			m_currMouseButton = 2;
