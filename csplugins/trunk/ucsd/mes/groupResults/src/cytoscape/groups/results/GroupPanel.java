@@ -1,8 +1,11 @@
 package cytoscape.groups.results;
 
 // System imports
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Set;
 import java.awt.Dimension;
 
 // Swing imports
@@ -19,12 +22,16 @@ import javax.swing.event.ListSelectionListener;
 
 // Cytoscape imports
 import cytoscape.CyNode;
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 // Cytoscape group system imports
+//import cytoscape.actions.Node;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import java.awt.event.ActionEvent;
@@ -68,36 +75,84 @@ public class GroupPanel extends JPanel implements ListSelectionListener, ActionL
 		Object obj = e.getSource();
 		if (obj instanceof JButton){
 			JButton btn = (JButton) obj;
-			if (btn == btnCreateMetaNode){
-				
+			if (btn == btnCreateMetaNode){				
 				Object[] selectedItems = navList.getSelectedValues();
 				
 				if (selectedItems.length >0){
 					for (int i=0; i< selectedItems.length; i++){
 						CyGroup theGroup = (CyGroup) selectedItems[i];
-						System.out.println("Create metaNode for group: "+ theGroup.getGroupName());						
+						createMetaNode(theGroup);
 					}
 				}
-				
 			}
 			else if (btn == btnCreateNetworkView) {
-				System.out.println("btnCreateNetworkView is clicked");	
-				
 				Object[] selectedItems = navList.getSelectedValues();
 				
 				if (selectedItems.length >0){
 					for (int i=0; i< selectedItems.length; i++){
 						CyGroup theGroup = (CyGroup) selectedItems[i];
-						System.out.println("Create networkView for group:"+ theGroup.getGroupName());						
+						createNetworkView(theGroup);
 					}
-				}
-
-				
+				}				
 			}
-			
 		}
 	}
-	   
+
+	
+	private void  createMetaNode(CyGroup pGroup){
+		System.out.println("Create metaNode for group: "+ pGroup.getGroupName());	
+		
+		
+	}
+	
+	
+	private void  createNetworkView(CyGroup pGroup){
+
+		List<CyNode> nodes = pGroup.getNodes();
+		List edges = pGroup.getInnerEdges();
+		
+		String newNetworkTitle = CyNetworkNaming.getSuggestedNetworkTitle(pGroup.getGroupName());
+		CyNetwork new_network = Cytoscape.createNetwork(nodes,edges,newNetworkTitle);
+
+		
+		// Should we keep VS and node positions, if yes, we need a reference to the parent network
+		//CyNetworkView new_view = Cytoscape.getNetworkView(new_network.getIdentifier());
+
+		/*
+		 
+		if (new_view == Cytoscape.getNullNetworkView()) {
+			return;
+		}
+
+        String vsName = "default";
+        
+        // keep the node positions
+        Iterator i = new_network.nodesIterator();
+
+        while (i.hasNext()) {
+        	CyNode node = (CyNode) i.next();
+        	new_view.getNodeView(node)
+        	.setOffset(new_view.getNodeView(node).getXPosition(),
+        			new_view.getNodeView(node).getYPosition());
+        }
+
+        new_view.fitContent();
+
+        // Set visual style
+        VisualStyle newVS = new_view.getVisualStyle();
+
+        if (newVS != null) {
+        	vsName = newVS.getName();
+        }
+
+        Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+
+		*/
+		
+	}
+	
+	
+	
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
