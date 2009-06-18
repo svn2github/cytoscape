@@ -114,9 +114,6 @@ public class CyMain implements CyInitParams {
 			final String version = ver.getVersion();
 			System.setProperty(
 					"com.apple.mrj.application.apple.menu.about.name", version);
-			System.setProperty("apple.awt.brushMetalRounded", "true");
-			System.setProperty("apple.awt.antialiasing", "on");
-			System.setProperty("apple.awt.rendering", "VALUE_RENDER_SPEED");
 		}
 
 		CyMain app = new CyMain(args);
@@ -308,7 +305,8 @@ public class CyMain implements CyInitParams {
 				 * For Mac: move menue bar to OS X default bar (next to Apple
 				 * icon)
 				 */
-				System.setProperty("apple.laf.useScreenMenuBar", "true");
+				System.setProperty("apple.awt.fileDialogForDirectories", "true");				
+				
 			} else {
 				/*
 				 * For Unix platforms, use JGoodies Looks
