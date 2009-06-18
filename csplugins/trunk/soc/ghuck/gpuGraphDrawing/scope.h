@@ -12,62 +12,43 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 See license.h for more information.
 **************************************************************************************/
+// GPLv3 License
 #include "license.h"
 
 
+#ifndef __SCOPE__
+#define __SCOPE__
 
-#ifndef COMPLEX_DEVICE_H
-#define COMPLEX_DEVICE_H
+typedef struct _globalScope {
+  graph		     g;
+  kdNodeInt         *rootInt;
+  kdNodeFloat       *rootFloat;
+  kdNodeInt         *treeIntD;  
+  kdNodeFloat       *treeFloatD; 
+  float2            *NodePosD; 
+  float3            *NodeTemp;
+  dim3	             threads,blocks; 
+  int               *AdjMatIndexD;  
+  int               *AdjMatValsD;  
+  int               *edgeLenD;  
+  float2            *DispD, *Disp; 
+  graph             *gArray[150] = {0};
+  int	             numLevels;
+  int	             coarseGraphSize;
+  int	             interpolationIterations;
+  int	             levelConvergence;
+  float3            *a;
+  CUDPPConfiguration config;
+  unsigned int       *data_out;
+  unsigned int       *d_temp_addr_uint; 
+  float3             *d_out;
+  unsigned int       *nD;
+  complexDevice      *OuterD;
+} globalScope;
 
-#include <math.h>
-
-typedef float2 complexDevice;
-
-__device__ void Cadd(complexDevice a, complexDevice b, complexDevice * c)
-{
-	(*c).x=a.x+b.x;
-	(*c).y=a.y+b.y;
-}
-
-__device__ void Csub(complexDevice a, complexDevice b, complexDevice * c)
-{
-	(*c).x=a.x-b.x;
-	(*c).y=a.y-b.y;
-}
-
-__device__ void Cmul(complexDevice a, complexDevice b, complexDevice * c)
-{
-	(*c).x=a.x*b.x-a.y*b.y;
-	(*c).y=a.y*b.x+a.x*b.y;
-}
-
-__device__ void Complex(float re, float im, complexDevice * c)
-{
-	(*c).x=re;
-	(*c).y=im;
-}
-
-
-__device__ void Cdiv(complexDevice a, complexDevice b, complexDevice * c)
-{
-	float r,den;
-	if (fabs(b.x) >= fabs(b.y)) {
-		r=b.y/b.x;
-		den=b.x+r*b.y;
-		(*c).x=(a.x+r*a.y)/den;
-		(*c).y=(a.y-r*a.x)/den;
-	} else {
-		r=b.x/b.y;
-		den=b.y+r*b.x;
-		(*c).x=(a.x*r+a.y)/den;
-		(*c).y=(a.y*r-a.x)/den;
-	}
-}
-
-#endif
+#ENDIF

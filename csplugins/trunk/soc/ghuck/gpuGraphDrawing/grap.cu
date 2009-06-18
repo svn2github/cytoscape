@@ -55,13 +55,15 @@ bool Converging(graph * g, float * Disp)
 
 }
 
-bool incrementsAreDone(graph * g) {
-		if(g->currentIteration>=g->mMaxIterations) return true;
+bool incrementsAreDone(graph * g) 
+{
+	if(g->currentIteration>=g->mMaxIterations) return true;
         return false;
 }
 
-void cool(graph * g) {
-		g->currentIteration++;
+void cool(graph * g) 
+{
+	g->currentIteration++;
         g->temperature *= ((float) 1.0 - g->currentIteration / (float) (g->mMaxIterations));
         
         //Todo: Remove this
@@ -76,11 +78,12 @@ void cool(graph * g) {
 		}
 }	
 
-void calcPositions(int i,float2 * NodePos, float2 * Disp, graph * g) {
+void calcPositions(int i,float2 * NodePos, float2 * Disp, graph * g) 
+{
 
-		float xdisp=Disp[i].x;
-		float ydisp=Disp[i].y;
-		float deltaLength = max(g->EPSILON, sqrt((xdisp*xdisp)+(ydisp*ydisp)));
+	float xdisp=Disp[i].x;
+	float ydisp=Disp[i].y;
+	float deltaLength = max(g->EPSILON, sqrt((xdisp*xdisp)+(ydisp*ydisp)));
 
         float newXDisp = xdisp/ deltaLength ;//* min(deltaLength, g->temperature);
 		

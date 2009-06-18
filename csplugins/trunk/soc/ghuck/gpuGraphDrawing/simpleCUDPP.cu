@@ -44,33 +44,8 @@ See license.h for more information.
 #include "common.h"
 #include "readFile.cu"
 #include "writeOutput.cu"
+#include "scope.h"
 
-
-graph		g;
-kdNodeInt *	rootInt;
-kdNodeFloat *	rootFloat;
-kdNodeInt *	treeIntD;  
-kdNodeFloat *	treeFloatD; 
-float2 *	NodePosD; 
-float3 *	NodeTemp;
-dim3		threads,blocks; 
-int *		AdjMatIndexD;  
-int *		AdjMatValsD;  
-int *		edgeLenD;  
-float2 *	DispD, * Disp; 
-graph *		gArray[150] = {0};
-int		numLevels;
-int		coarseGraphSize;
-int		interpolationIterations;
-int		levelConvergence;
-float3 *	a;
-CUDPPConfiguration config; // This struct replaces the old CUDPPScanConfig in the release 1.0a of CUDPP
-unsigned int *	data_out;
-unsigned int *	d_temp_addr_uint; 
-float3 *	d_out;
-unsigned int *	nD;
-complexDevice * OuterD;
-     
 
 // This function calculates one step of the force-driven layout process, updating the nodes position
 void advancePositions(graph * g)
@@ -151,7 +126,7 @@ void advancePositions(graph * g)
 
 
 // This function coarses a graph, by obtaining a maximal independant subset of it
-graph* coarsen(graph * g)
+graph* coarsen(graph *g)
 {
   graph *	rg = (graph*) malloc(sizeof(graph));
   bool *	used   = (bool*) calloc(g->numVertices,sizeof(bool));
@@ -319,6 +294,7 @@ void reshape(int w,int h)
   glViewport(0,0,w,h);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
@@ -359,7 +335,7 @@ main(int argc, char** argv)
 
   printf ("Finished reading graph!\n");
   
-  /*    Initializations    */
+  //    Initializations    
 
   // Number of Nodes
   int  numNodes = g.numVertices;
@@ -410,7 +386,8 @@ main(int argc, char** argv)
   cudaMalloc((void**)&d_temp_addr_uint,sizeof(unsigned int)* g.numVertices);
   cudaMalloc((void**)&d_out,sizeof(float3)* g.numVertices);
   cudaMalloc((void**)&nD,sizeof(unsigned int));
-  /* End Initializations */
+
+  // End Initializations 
   
   
   printf("Coarsening graph...\n");
@@ -489,32 +466,29 @@ main(int argc, char** argv)
   writeOutput(&g);
   
   
-  glutInit(&argc, argv);		/* setup GLUT */
+  glutInit(&argc, argv);		// setup GLUT
   glutInitDisplayMode(GLUT_RGB); 
   glutInitWindowSize(SCREEN_W,SCREEN_H);
   glutInitWindowPosition(100,100);
-  glutCreateWindow(argv[0]);	        /* open a window */
+  glutCreateWindow(argv[0]);	        // open a window 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluOrtho2D(0,SCREEN_W,0,SCREEN_H);
   glMatrixMode(GL_MODELVIEW);
   glutReshapeFunc(reshape);
-  glutDisplayFunc(display);		/* tell GLUT how to fill window */
-  glutMainLoop();			/* let glut manage i/o processing */
+  glutDisplayFunc(display);		// tell GLUT how to fill window
+glutMainLoop();			        // let glut manage i/o processing
   
   return EXIT_SUCCESS;
 }
 */
 
 
-///////////
-int calculateLayout (graph* g,
-		     int coarseGraphSize, 
-		     int interpolationIterations, 
-		     int levelConvergence, 
-		     int EDGE_LEN, 
-		     int initialNoIterations)
+
+
+int calculateLayout (globalScope* scope)
 {
+  
   // Initialize device, using macro defined in "cutil.h"
   CUT_DEVICE_INIT();
 
@@ -558,9 +532,9 @@ int calculateLayout (graph* g,
   config.datatype  = CUDPP_INT;
   config.options   = CUDPP_OPTION_FORWARD | CUDPP_OPTION_EXCLUSIVE; 
   
-  cudaMalloc((void**)&data_out,sizeof(unsigned int)* g.numVertices);
-  cudaMalloc((void**)&d_temp_addr_uint,sizeof(unsigned int)* g.numVertices);
-  cudaMalloc((void**)&d_out,sizeof(float3)* g.numVertices);
+  cudaMalloc((void**)&data_out,sizeof(unsigned int)* g->numVertices);
+  cudaMalloc((void**)&d_temp_addr_uint,sizeof(unsigned int)* g->numVertices);
+  cudaMalloc((void**)&d_out,sizeof(float3)* g->numVertices);
   cudaMalloc((void**)&nD,sizeof(unsigned int));
   /* End Initializations */
   
@@ -571,8 +545,8 @@ int calculateLayout (graph* g,
 
   start = clock();
   
-  gArray[0] = &g;
-  createCoarseGraphs(&g,0);
+  gArray[0] = g;
+  createCoarseGraphs(g,0);
   numLevels=0;
   while(gArray[numLevels]!=NULL)
     numLevels++;
@@ -621,23 +595,23 @@ int calculateLayout (graph* g,
   printf("Time for coarsening graph: %f\n",elapsed_coarsen);
   printf("Time for calculating layout: %f\n",elapsed_layout);
   
-  cudaFree(AdjMatIndexD);
-  cudaFree(edgeLenD);
-  cudaFree(AdjMatValsD);
-  cudaFree(NodePosD);
-  cudaFree(DispD);
-  cudaFree(treeIntD);
-  cudaFree(treeFloatD);
-  cudaFree(data_out);
+  cudaFree(scope->AdjMatIndexD);
+  cudaFree(scope->edgeLenD);
+  cudaFree(scope->AdjMatValsD);
+  cudaFree(scope->NodePosD);
+  cudaFree(scope->DispD);
+  cudaFree(scope->treeIntD);
+  cudaFree(scope->treeFloatD);
+  cudaFree(scope->data_out);
   cudaFree(d_temp_addr_uint);
-  cudaFree(d_out);
-  cudaFree(nD);
-  free(NodeTemp);
-  free(rootInt);
-  free(rootFloat);
-  free(Disp);
+  cudaFree(scope->d_out);
+  cudaFree(scope->nD);
+  free(scope->NodeTemp);
+  free(scope->rootInt);
+  free(scope->rootFloat);
+  free(scope->Disp);
 
-  writeOutput(&g);
+  writeOutput(scope->g);
   
 }
 
@@ -651,17 +625,20 @@ int
 main(int argc, char** argv)
 {
   FILE* from;
-  graph g;
+  globalScope *scope;
 
   // Check number of arguments
   if (argc < 2) error("Wrong no of args");
 
+  // Create scope
+  scope = (globalScope*) malloc (sizeof(globalScope));
+
   // Ask for parameters
-  printf("Enter the size of the coarsest graph (Default 50):");          scanf("%d",&coarseGraphSize);
-  printf("Enter the number of interpolation iterations (Default 50):");  scanf("%d", &interpolationIterations);
-  printf("Enter the level of convergence (Default 2):");                 scanf("%d",&levelConvergence);
-  printf("Enter the ideal edge length (Default 5):");                    scanf("%d",&EDGE_LEN);
-  printf("Enter the initial no of force iterations(Default 300):");      scanf("%d",&initialNoIterations);
+  printf("Enter the size of the coarsest graph (Default 50):");          scanf("%d", &(scope->coarseGraphSize));
+  printf("Enter the number of interpolation iterations (Default 50):");  scanf("%d", &(scope->interpolationIterations));
+  printf("Enter the level of convergence (Default 2):");                 scanf("%d", &(scope->levelConvergence));
+  printf("Enter the ideal edge length (Default 5):");                    scanf("%d", &(scope->EDGE_LEN));
+  printf("Enter the initial no of force iterations(Default 300):");      scanf("%d", &(scope->initialNoIterations));
  
   // Open file 
   from=fopen(argv[1],"r");
@@ -676,7 +653,7 @@ main(int argc, char** argv)
 
   printf ("Finished reading graph!\n");
 
-  calculateLayout (&g, coarseGraphSize, interpolationInteractions, levelConvergence, EDGE_LEN, initialNoIterations);
+  calculateLayout (&g, coarseGraphSize, interpolationIterations, levelConvergence, EDGE_LEN, initialNoIterations);
 
  
   glutInit(&argc, argv);		/* setup GLUT */
