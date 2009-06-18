@@ -7,7 +7,7 @@
 
 
 	<!-- Export linkout property as CyProperty Service -->
-	<osgi:service id="linkoutPropertiesSeervice" ref="linkoutProperties"
+	<osgi:service id="linkoutPropertiesService" ref="linkoutProps"
 		interface="org.cytoscape.property.CyProperty">
 		<osgi:service-properties>
 			<entry key="serviceType" value="property" />
