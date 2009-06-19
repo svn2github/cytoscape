@@ -511,6 +511,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         sitePanel.setLayout(new java.awt.GridBagLayout());
 
         changeSiteButton.setText("Change Download Site");
+        changeSiteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeSiteButtonActionPerformed(evt);
+            }
+        });
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
