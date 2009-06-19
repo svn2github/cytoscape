@@ -41,7 +41,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
 
-import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 

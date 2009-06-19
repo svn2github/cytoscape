@@ -114,6 +114,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 	/** Creates new form ContinuousMapperEditorPanel */
 	public ContinuousMappingEditorPanel(final VisualPropertyType type) {
+		super(Cytoscape.getDesktop());
 		this.type = type;
 		initComponents();
 		setVisualPropLabel();
