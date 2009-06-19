@@ -553,190 +553,231 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * @param e DOCUMENT ME!
 	 */
 	public void mousePressed(MouseEvent e) {
-		// if we have a single-click
-		System.out.println ("isControlDown = " + e.isControlDown());
-		if ((e.getButton() == MouseEvent.BUTTON1) && !(isMacPlatform()) && !(e.isControlDown())) { // on mac, mouse button1 click and control is simulate button 3 press
-			                                                                                    // It's too complicated to correctly handle both control and shift
-			System.out.println ("inside single select ");                                                                                    // simultaneously.
 
-			if (e.isShiftDown() && isAnchorKeyDown(e))
-				return;
+		// single-click
+		if ( e.getClickCount() == 1 ) {
 			
-			System.out.println ("made it past anchor testt ");  
+			System.out.println ("SINGLE click -------");                                                                                    
 
-			// m_undoable_edit = new ViewChangeEdit(m_view, "Move");
-			m_undoable_edit = null;
-
-			m_currMouseButton = 1;
-			m_lastXMousePos = e.getX();
-			m_lastYMousePos = e.getY();
-
-			int[] unselectedNodes = null;
-			int[] unselectedEdges = null;
-			int chosenNode = 0;
-			int chosenEdge = 0;
-			int chosenAnchor = -1;
-			int chosenNodeSelected = 0;
-			int chosenEdgeSelected = 0;
-
-			synchronized (m_lock) {
-				if (m_view.m_nodeSelection) {
-					chosenNode = getChosenNode();
-				}
-
-				if (m_view.m_edgeSelection && (chosenNode == 0)
-				    && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
-			
-					chosenAnchor = getChosenAnchor();
-				}
-
-				if (m_view.m_edgeSelection && (chosenNode == 0) && (chosenAnchor < 0)) {
-					chosenEdge = getChosenEdge();
-				}
-
-				if ((!e.isShiftDown()) // If shift is down never unselect.
-				    && (((chosenNode == 0) && (chosenEdge == 0) && (chosenAnchor < 0)) // Mouse missed all.
-				       || 
-				// Not [we hit something but it was already selected].
-				!(((chosenNode != 0) && m_view.getNodeView(chosenNode).isSelected())
-				       || (chosenAnchor >= 0)
-				       || ((chosenEdge != 0) && m_view.getEdgeView(chosenEdge).isSelected())))) {
-				
-						unselectedNodes = getUnselectedNodes();
-						unselectedEdges = getUnselectedEdges();
-
-					if ((unselectedNodes.length > 0) || (unselectedEdges.length > 0))
-						m_view.m_contentChanged = true;
-				}
-				
+			// normal single click (i.e. left click without control and not on a mac) 
+			if ((e.getButton() == MouseEvent.BUTTON1) && !e.isControlDown()) { 
+				System.out.println ("left click -------");                                                                                    
 	
-				if (chosenNode != 0) {
-				    chosenNodeSelected = toggleSelectedNode(chosenNode, e);
-
-				}
-
-				if (chosenAnchor >= 0) {
-					toggleChosenAnchor (chosenAnchor, e);
-				}
-
-				if (chosenEdge != 0) {
-					chosenEdgeSelected = toggleSelectedEdge (chosenEdge, e);
+				if (e.isShiftDown() && isAnchorKeyDown(e))
+					return;
+				
+				// m_undoable_edit = new ViewChangeEdit(m_view, "Move");
+				m_undoable_edit = null;
+	
+				m_currMouseButton = 1;
+				m_lastXMousePos = e.getX();
+				m_lastYMousePos = e.getY();
+	
+				int[] unselectedNodes = null;
+				int[] unselectedEdges = null;
+				int chosenNode = 0;
+				int chosenEdge = 0;
+				int chosenAnchor = -1;
+				int chosenNodeSelected = 0;
+				int chosenEdgeSelected = 0;
+	
+				synchronized (m_lock) {
+					if (m_view.m_nodeSelection) {
+						chosenNode = getChosenNode();
+					}
+	
+					if (m_view.m_edgeSelection && (chosenNode == 0)
+					    && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
+						chosenAnchor = getChosenAnchor();
+					}
+	
+					if (m_view.m_edgeSelection && (chosenNode == 0) && (chosenAnchor < 0)) {
+						chosenEdge = getChosenEdge();
+					}
+	
+					if ((!e.isShiftDown()) // If shift is down never unselect.
+					    && (((chosenNode == 0) && (chosenEdge == 0) && (chosenAnchor < 0)) // Mouse missed all.
+					       // Not [we hit something but it was already selected].
+					       || !( ((chosenNode != 0) && m_view.getNodeView(chosenNode).isSelected())
+					             || (chosenAnchor >= 0) 
+					             || ((chosenEdge != 0) && m_view.getEdgeView(chosenEdge).isSelected()) ))) {
 					
-
-				}
-
-				if ((chosenNode == 0) && (chosenEdge == 0) && (chosenAnchor < 0)) {
-					m_selectionRect = new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
-					m_button1NodeDrag = false;
-				}
-			}
-
-			final GraphViewChangeListener listener = m_view.m_lis[0];
-
-			// delegating to listeners
-			if (listener != null) {
-				if ((unselectedNodes != null) && (unselectedNodes.length > 0))
-					listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-				                                                            DGraphView.makeNodeList(unselectedNodes,m_view)));
-
-				if ((unselectedEdges != null) && (unselectedEdges.length > 0))
-					listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
-				                                                            DGraphView.makeEdgeList(unselectedEdges,m_view)));
-
-				if (chosenNode != 0) {
-					if (chosenNodeSelected > 0)
-						listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-							DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
-					else if (chosenNodeSelected < 0)
-						listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-							DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
-				}
-
-				if (chosenEdge != 0) {
-					if (chosenEdgeSelected > 0)
-						listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
-							DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
-					else if (chosenEdgeSelected < 0)
-						listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
-							DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
-				}
-			}
-
-			// Repaint after listener events are fired because listeners may change
-			// something in the graph view.
-			repaint();
-		} else if ((e.getButton() == MouseEvent.BUTTON1) && !isMacPlatform() && e.isControlDown()) {
-			System.out.println("control click");
-			if ((getChosenNode() == 0) && (getChosenEdge() == 0) && (getChosenAnchor() < 0)) // clicking on empty space
-			{
-				System.out.println("control click on empty space ------------------");
-				createEmptySpaceMenu(e.getX(), e.getY()); 
-			}
-		}
+							unselectedNodes = getUnselectedNodes();
+							unselectedEdges = getUnselectedEdges();
+	
+						if ((unselectedNodes.length > 0) || (unselectedEdges.length > 0))
+							m_view.m_contentChanged = true;
+					}
+					
 		
-		else if (e.getButton() == MouseEvent.BUTTON2) {
-			//******** Save all node positions
-			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
-			m_currMouseButton = 2;
-			m_lastXMousePos = e.getX();
-			m_lastYMousePos = e.getY();
-		} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
-			//******** Save all node positions
-			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
-			m_currMouseButton = 3;
-			m_lastXMousePos = e.getX();
-			m_lastYMousePos = e.getY();
+					if (chosenNode != 0) {
+					    chosenNodeSelected = toggleSelectedNode(chosenNode, e);
+					}
+	
+					if (chosenAnchor >= 0) {
+						toggleChosenAnchor (chosenAnchor, e);
+					}
+	
+					if (chosenEdge != 0) {
+						chosenEdgeSelected = toggleSelectedEdge (chosenEdge, e);
+					}
+	
+					if ((chosenNode == 0) && (chosenEdge == 0) && (chosenAnchor < 0)) {
+						m_selectionRect = new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
+						m_button1NodeDrag = false;
+					}
+				}
+	
+				final GraphViewChangeListener listener = m_view.m_lis[0];
+	
+				// delegating to listeners
+				if (listener != null) {
+					if ((unselectedNodes != null) && (unselectedNodes.length > 0))
+						listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
+					                                                            DGraphView.makeNodeList(unselectedNodes,m_view)));
+	
+					if ((unselectedEdges != null) && (unselectedEdges.length > 0))
+						listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
+					                                                            DGraphView.makeEdgeList(unselectedEdges,m_view)));
+	
+					if (chosenNode != 0) {
+						if (chosenNodeSelected > 0)
+							listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
+								DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
+						else if (chosenNodeSelected < 0)
+							listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
+								DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
+					}
+	
+					if (chosenEdge != 0) {
+						if (chosenEdgeSelected > 0)
+							listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
+								DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
+						else if (chosenEdgeSelected < 0)
+							listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
+								DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
+					}
+				}
+	
+				// Repaint after listener events are fired because listeners may change
+				// something in the graph view.
+				repaint();
+	
+			// we have control + single-click
+			} else if ((e.getButton() == MouseEvent.BUTTON1) && !isMacPlatform() && e.isControlDown()) {
 
-			processNodeContextMenuEvent(e);
-			processEdgeContextMenuEvent(e);
-		} 
-
-		if ( e.getClickCount() == 2 ) {
-			System.out.println("double click ------------------");
-			NodeView nview = m_view.getPickedNodeView(e.getPoint());
-			if ( nview != null )
+				// on mac, mouse button1 click and control is simulate button 3 press
+				// It's too complicated to correctly handle both control and shift
+				// simultaneously.
+				
+				System.out.println("left control click ----------");
+				// clicking on empty space
+				if ((getChosenNode() == 0) && (getChosenEdge() == 0) && (getChosenAnchor() < 0)) {
+					createEmptySpaceMenu(e.getX(), e.getY()); 
+				}
+			}
+	
+			// middle click
+			else if (e.getButton() == MouseEvent.BUTTON2) {
+				System.out.println("middle click -----------");
+				//******** Save all node positions
+				m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
+				m_currMouseButton = 2;
+				m_lastXMousePos = e.getX();
+				m_lastYMousePos = e.getY();
+	
+			// right click
+			} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
+				System.out.println("right click -----------");
+				//******** Save all node positions
+				// TODO figure out if we should actually be saving anything for the edit
+				//m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
+				m_currMouseButton = 3;
+				m_lastXMousePos = e.getX();
+				m_lastYMousePos = e.getY();
+	
+				NodeView nview = m_view.getPickedNodeView(e.getPoint());
 				createNodeViewMenu(nview,e.getX(),e.getY());
-			else 
-				createEmptySpaceMenu(e.getX(), e.getY()); 
+	
+				EdgeView edgeView = m_view.getPickedEdgeView(e.getPoint());
+				createEdgeViewMenu(edgeView,e.getX(),e.getY());
+			} 
+
+		// double click
+		} else if ( e.getClickCount() == 2 ) {
+			System.out.println("DOUBLE click -----------");
+
+			// normal (left) double click 
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				System.out.println("left click -----------");
+
+				NodeView nview = m_view.getPickedNodeView(e.getPoint());
+				if ( nview != null )
+					createNodeViewMenu(nview,e.getX(),e.getY());
+				else 
+					createEmptySpaceMenu(e.getX(), e.getY()); 
+			}
 		}
 
 		requestFocusInWindow();
 	}
 
 	private void createEdgeViewMenu(EdgeView edgeView, int x, int y) {
-		if (edgeView != null && m_view.edgeViewTFs.size() > 0) {
+		if (edgeView != null ) {
 			View<CyEdge> ev = edgeView.getEdgeView();	
-			String edgeLabel = ev.getSource().attrs().get("interaction",String.class);
-			JPopupMenu menu = new JPopupMenu(edgeLabel);
 
-			for ( EdgeViewTaskFactory evtf : m_view.edgeViewTFs.keySet() ) {
-				String pref = (String)(m_view.edgeViewTFs.get( evtf ).get("preferredMenu"));
-				evtf.setEdgeView(ev,m_view.cyNetworkView);
-				menu.add( createMenuItem( evtf, pref ) );
+			// build a menu of actions if more than factory exists
+			if ( m_view.edgeViewTFs.size() > 1) {
+				String edgeLabel = ev.getSource().attrs().get("interaction",String.class);
+				JPopupMenu menu = new JPopupMenu(edgeLabel);
+
+				for ( EdgeViewTaskFactory evtf : m_view.edgeViewTFs.keySet() ) {
+					String pref = (String)(m_view.edgeViewTFs.get( evtf ).get("preferredMenu"));
+					evtf.setEdgeView(ev,m_view.cyNetworkView);
+					menu.add( createMenuItem( evtf, pref ) );
+				}
+
+				menu.show(this, x, y);
+
+			// execute the task directly if only one factory exists 
+			} else if ( m_view.edgeViewTFs.size() == 1) {
+				EdgeViewTaskFactory tf  = m_view.edgeViewTFs.keySet().iterator().next();
+				tf.setEdgeView(ev,m_view.cyNetworkView);
+				executeTask(tf);
 			}
-
-			menu.show(this, x, y);
 		}
 	}
 
 	private void createNodeViewMenu(NodeView nview, int x, int y /*, String target*/) {
-		if (nview != null && m_view.nodeViewTFs.size() > 0) {
+		if (nview != null ) {
 			View<CyNode> nv = nview.getNodeView();
-			String nodeLabel = nv.getSource().attrs().get("name",String.class);
-			JPopupMenu menu = new JPopupMenu(nodeLabel);
 
-			for ( NodeViewTaskFactory nvtf : m_view.nodeViewTFs.keySet() ) {
-				String pref = (String)(m_view.nodeViewTFs.get( nvtf ).get("preferredMenu"));
-				nvtf.setNodeView(nv,m_view.cyNetworkView);
-				menu.add( createMenuItem( nvtf, pref ) );
+			// build a menu of actions if more than factory exists
+			if ( m_view.nodeViewTFs.size() > 1) {
+				String nodeLabel = nv.getSource().attrs().get("name",String.class);
+				JPopupMenu menu = new JPopupMenu(nodeLabel);
+
+				for ( NodeViewTaskFactory nvtf : m_view.nodeViewTFs.keySet() ) {
+					String pref = (String)(m_view.nodeViewTFs.get( nvtf ).get("preferredMenu"));
+					nvtf.setNodeView(nv,m_view.cyNetworkView);
+					menu.add( createMenuItem( nvtf, pref ) );
+				}
+
+				menu.show(this, x, y);
+
+			// execute the task directly if only one factory exists 
+			} else if ( m_view.nodeViewTFs.size() == 1) {
+				NodeViewTaskFactory tf  = m_view.nodeViewTFs.keySet().iterator().next();
+				tf.setNodeView(nv,m_view.cyNetworkView);
+				executeTask(tf);
 			}
-			menu.show(this, x, y);
 		}
+
 	}
 
 	private void createEmptySpaceMenu(int x, int y) {
-
-		if ( m_view.emptySpaceTFs.size() > 0 ) {
+		// build a menu of actions if more than factory exists
+		if ( m_view.emptySpaceTFs.size() > 1 ) {
 			JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
 			for ( EmptySpaceTaskFactory nvtf : m_view.emptySpaceTFs.keySet() ) {
 				String pref = (String)(m_view.emptySpaceTFs.get( nvtf ).get("preferredMenu"));
@@ -744,7 +785,17 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				menu.add( createMenuItem( nvtf, pref ) );
 			}
 			menu.show(this, x, y);
+		// execute the task directly if only one factory exists 
+		} else if ( m_view.emptySpaceTFs.size() == 1) {
+			EmptySpaceTaskFactory tf = m_view.emptySpaceTFs.keySet().iterator().next();
+			tf.setNetworkView(m_view.cyNetworkView);
+			executeTask(tf);
 		}
+	}
+
+	private JMenuItem createMenuItem( TaskFactory tf , String pref ) { 
+		// in the future parse the menu into submenus, etc.
+		return new JMenuItem(new PopupAction( tf, pref ));
 	}
 	
 	
@@ -1526,23 +1577,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return !(this.NodeMovement);
 	}
 
-	private synchronized void processNodeContextMenuEvent(MouseEvent event) {
-		NodeView nview = m_view.getPickedNodeView(event.getPoint());
-		if ( nview != null )
-			createNodeViewMenu(nview,event.getX(),event.getY());
-	}
-
-	private synchronized void processEdgeContextMenuEvent(MouseEvent event) {
-		EdgeView edgeView = m_view.getPickedEdgeView(event.getPoint());
-
-		if (edgeView != null)
-			createEdgeViewMenu(edgeView,event.getX(),event.getY());
-	}
-
-	private JMenuItem createMenuItem( TaskFactory tf , String pref ) { 
-		// in the future parse the menu into submenus, etc.
-		return new JMenuItem(new PopupAction( tf, pref ));
-	}
 
 	private class PopupAction extends AbstractAction {
 		TaskFactory tf;
@@ -1552,11 +1586,15 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		}
 
 		public void actionPerformed(ActionEvent ae) {
-			Task task = tf.getTask();
-			m_view.interceptor.loadTunables(task);	
-			if ( !m_view.interceptor.createUI(task) )
-            	return;
-			m_view.manager.execute(task);
+			executeTask(tf);
 		}
+	}
+
+	private void executeTask(TaskFactory tf) {
+		Task task = tf.getTask();
+		m_view.interceptor.loadTunables(task);	
+		if ( !m_view.interceptor.createUI(task) )
+           	return;
+		m_view.manager.execute(task);
 	}
 }
