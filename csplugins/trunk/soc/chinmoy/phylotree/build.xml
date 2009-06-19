@@ -2,12 +2,12 @@
 <!-- Plugin build file     -->
 <!-- =================================================================== -->
 
-<project name="tutorial17" default="jar" basedir=".">
+<project name="Phylotree" default="jar" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
-  <target name="init">
+  
     <property name="plugin_name" value="phylotree"/>
     <property name="plugin_class" value="org.cytoscape.phylotree.PhylotreePlugin"/>  	  	
     <property name="project.jar" value="${plugin_name}.jar"/>  	
@@ -19,6 +19,7 @@
     <!-- Define the plugin directories -->
   	<property name="root.dir" value="."/>
     <property name="src.dir" value="${root.dir}/src"/>
+    <property name="test.src.dir" value="${root.dir}/tests"/>
   	<property name="build.dir" value="${root.dir}/build"/>
     <property name="images.dir" value="${root.dir}/images"/>
     <property name="manifest.dir" value="${root.dir}/manifest"/>
@@ -41,18 +42,39 @@
   	<available file="${root.dir}/plugin.props" property="plugin.prop.present"/>
   	<available file="${images.dir}" property="images.dir.present"/>
 
+	<!-- The unit test reports directory -->
+    <property name="junit.report.dir"    value="${build.dir}/junit-reports"/>
+	
     <!-- Define the java class path -->
     <path id="project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement path="${java.class.path}/"/>
     </path>
 
-  </target>
+	
+    <path id="compile.classpath">
+		<pathelement path="${build.dir}"/>
+    	<fileset dir="${build.dir}">
+       		 	<include name="**/*.class"/>
+		</fileset>
+
+    	<fileset dir="${cytoscape.dir}">
+             <include name="cytoscape.jar"/>
+        </fileset>
+    	<fileset dir="${cytoscape.lib.dir}">
+       		<include name="giny.jar"/>
+   		 	<include name="cytoscape-task.jar"/>
+   		 	<include name="violinstrings-1.0.2.jar"/>
+    		<include name="junit.jar"/>
+    	</fileset>
+
+  	</path>
+
 
   <!-- =================================================================== -->
   <!-- Compiles the project                                           -->
   <!-- =================================================================== -->
-  <target name="compile" depends="init"  >
+  <target name="compile">
 
    <echo message="COMPILE ${plugin_name} ..."/>
     
@@ -92,10 +114,60 @@
 		</copy>
   </target>
 
+	
+	
+  <!-- ==================== Compile-tests Target ==============================-->
+  <target name="compile-tests" depends="jar"
+        description="Compiles all Java test source files">
+        <javac srcdir="${test.src.dir}"
+		    source="1.5"
+            destdir="${build.dir}"
+            debug="${compile.debug}"
+            deprecation="${compile.deprecation}"
+            optimize="${compile.optimize}">
+        <classpath refid="compile.classpath"/>
+        </javac>
+  </target>
+
+  <!-- ==================== JUnit Test Target =========================== -->
+  <target name="test" description="Runs all JUnit tests" depends="compile-tests">
+    	<echo>
+            **********************************
+            Running all unit tests individally
+            ***********************************
+    	</echo>
+    	<mkdir dir="${junit.report.dir}" />
+    	
+        <junit printsummary="yes" fork="yes" haltonfailure="no">
+        	<classpath refid="compile.classpath"/>
+        	<formatter type="plain" usefile="true"/>
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" 
+			           todir="${junit.report.dir}" 
+				   failureProperty="junit.test.failure">
+				<fileset dir="${build.dir}" 
+				         includes="**/*Test.class" 
+					 excludes="**/AllTests.class" />
+			</batchtest>	        	
+        </junit>
+    	
+		<junitreport todir="${junit.report.dir}">
+			<fileset dir="${junit.report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}" />
+		</junitreport>
+
+		<fail message="JUnit Tests failed! Check ${junit.report.dir}/index.html for details." 
+		      if="junit.test.failure" />	    	
+		      
+  </target>
+	
+	
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
   <!-- =================================================================== -->
-  <target name="clean" depends="init">
+  <target name="clean">
   	<delete dir="${build.dir}"/>
   </target>
 
