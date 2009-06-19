@@ -25,14 +25,14 @@ See license.h for more information.
 #define __SCOPE__
 
 typedef struct _globalScope {
-  graph		     g;
+  graph	             g;
   kdNodeInt         *rootInt;
   kdNodeFloat       *rootFloat;
   kdNodeInt         *treeIntD;  
   kdNodeFloat       *treeFloatD; 
   float2            *NodePosD; 
   float3            *NodeTemp;
-  dim3	             threads,blocks; 
+  dim3               threads,blocks; 
   int               *AdjMatIndexD;  
   int               *AdjMatValsD;  
   int               *edgeLenD;  

@@ -33,7 +33,6 @@ See license.h for more information.
 #include "GL/glut.h"
 #include "cudpp.h"
 
-
 // includes, kernels
 #include <kernel.cu>
 
@@ -48,65 +47,65 @@ See license.h for more information.
 
 
 // This function calculates one step of the force-driven layout process, updating the nodes position
-void advancePositions(graph * g)
+void advancePositions(globalScope *scope)
 {
-  cudaMemcpyToSymbol(gd, g, sizeof(graph));
+  cudaMemcpyToSymbol(gd, scope->g, sizeof(graph));
 
-  // check if kernel execution generated and error
+  // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");	
   
-  for(int i = 0; i < g->numVertices; i++){
-    NodeTemp[i].x=g->NodePos[i].x;
-    NodeTemp[i].y=g->NodePos[i].y;
-    NodeTemp[i].z = i;
+  for (int i = 0; i < scope->g->numVertices; i++){
+    scope->NodeTemp[i].x = g->NodePos[i].x;
+    scope->NodeTemp[i].y = g->NodePos[i].y;
+    scope->NodeTemp[i].z = i;
   }
   
-  cudaMemcpy(a, NodeTemp, g->numVertices*sizeof(float3), cudaMemcpyHostToDevice);
+  cudaMemcpy(scope->a, scope->NodeTemp, scope->g->numVertices * sizeof(float3), cudaMemcpyHostToDevice);
   
   // Configure CUDPP Scan Plan
   CUDPPHandle planHandle;
-  cudppPlan (&planHandle, config, g->numVertices, 1, 0); // rows = 1, rowPitch = 0
+  cudppPlan (&planHandle, scope->config, scope->g->numVertices, 1, 0); // rows = 1, rowPitch = 0
   
-  int sizeInt = g->numVertices*sizeof(kdNodeInt);
-  int sizeFloat = g->numVertices*sizeof(kdNodeFloat);
+  int sizeInt   = scope->g->numVertices * sizeof(kdNodeInt);
+  int sizeFloat = scope->g->numVertices * sizeof(kdNodeFloat);
   
   // Check if the KDTREE has to be rebuilded
-  if((g->currentIteration < 4) ||(g->currentIteration%20==0) ){
+  if((scope->g->currentIteration < 4) ||(scope->g->currentIteration%20==0) ){
 
     // Decide whether the KDTREE is goint to be builded in the CPU or in the GPU
-    if (g->numVertices < 50000){ //CPU
-      kdNodeInit(rootInt,rootFloat,1,0,0,SCREEN_W,0,SCREEN_H);
-      construct(NodeTemp, NodeTemp+g->numVertices-1, rootInt,rootFloat, 1,0,0,SCREEN_W,0,SCREEN_H,3);
+    if (scope->g->numVertices < 50000){ //CPU
+      kdNodeInit(scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W,0, SCREEN_H);
+      construct(scope->NodeTemp, scope->NodeTemp + scope->g->numVertices - 1, scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W, 0, SCREEN_H, 3);
     }
-    else{                       //GPU   
-      kdNodeInitD(rootInt,rootFloat,1,0,0,SCREEN_W,0,SCREEN_H);
-      constructD(a, a+g->numVertices-1, rootInt,rootFloat, 1,0,0,SCREEN_W,0,SCREEN_H,3,data_out,d_temp_addr_uint, d_out,planHandle,nD,OuterD );
+    else{                               //GPU   
+      kdNodeInitD(scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W, 0, SCREEN_H);
+      constructD(scope->a, scope->a + scope->g->numVertices - 1, scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W, 0, SCREEN_H, 3, scope->data_out, scope->d_temp_addr_uint, scope->d_out, planHandle, scope->nD, scope->OuterD );
     }
   }
   	
   // Copy data to device
-  cudaMemcpy(NodePosD, g->NodePos, (g->numVertices * sizeof(float2)), cudaMemcpyHostToDevice);
-  cudaMemcpy(treeIntD, rootInt, sizeInt, cudaMemcpyHostToDevice);
-  cudaMemcpy(treeFloatD, rootFloat, sizeFloat, cudaMemcpyHostToDevice);
-  cudaBindTexture(0,texNodePosD, NodePosD, (sizeof(float2) * g->numVertices));
-  cudaBindTexture(0,texInt, treeIntD,sizeInt);
-  cudaBindTexture(0,texFloat, treeFloatD,sizeFloat);
+  cudaMemcpy (scope->NodePosD, scope->g->NodePos, (scope->g->numVertices * sizeof(float2)), cudaMemcpyHostToDevice);
+  cudaMemcpy (scope->treeIntD, scope->rootInt, sizeInt, cudaMemcpyHostToDevice);
+  cudaMemcpy (scope->treeFloatD, scope->rootFloat, sizeFloat, cudaMemcpyHostToDevice);
+  cudaBindTexture (0, texNodePosD, scope->NodePosD, (sizeof(float2) * scope->g->numVertices));
+  cudaBindTexture (0, texInt, scope->treeIntD, sizeInt);
+  cudaBindTexture (0, texFloat, scope->treeFloatD, sizeFloat);
   
-  cudaMemcpy(AdjMatIndexD, g->AdjMatIndex, (g->numVertices+1) * sizeof(int), cudaMemcpyHostToDevice);
-  cudaMemcpy(AdjMatValsD,  g->AdjMatVals,  (g->numEdges) * sizeof(int), cudaMemcpyHostToDevice);
-  cudaMemcpy(edgeLenD,     g->edgeLen,     (g->numEdges) * sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(AdjMatIndexD, scope->g->AdjMatIndex, (scope->g->numVertices + 1) * sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(AdjMatValsD,  scope->g->AdjMatVals,  (scope->g->numEdges)        * sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(edgeLenD,     scope->g->edgeLen,     (scope->g->numEdges)        * sizeof(int), cudaMemcpyHostToDevice);
 
   // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
   
-  cudaBindTexture(0,texAdjMatValsD, AdjMatValsD,(g->numEdges)*sizeof(int));
-  cudaBindTexture(0,texEdgeLenD,edgeLenD,  (g->numEdges)*sizeof(int));
+  cudaBindTexture (0, texAdjMatValsD, AdjMatValsD, (scope->g->numEdges) * sizeof(int));
+  cudaBindTexture (0, texEdgeLenD, edgeLenD,       (scope->g->numEdges) * sizeof(int));
 
   // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
     
   // Execute the kernel, calculate forces
-  calculateForces<<< blocks, threads >>>(g->numVertices, DispD,AdjMatIndexD);
+  calculateForces<<< blocks, threads >>>(scope->g->numVertices, scope->DispD, AdjMatIndexD);
   
   // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
@@ -114,11 +113,11 @@ void advancePositions(graph * g)
   cudaMemcpy(Disp, DispD, g->numVertices*sizeof(float2), cudaMemcpyDeviceToHost);
 	
   // Calculate new positions of nodes, based on the force calculations
-  for(int i = 0; i < g->numVertices; i++)
-    calcPositions(i,g->NodePos, Disp,g); 
+  for (int i = 0; i < scope->g->numVertices; i++)
+    calcPositions (i, scope->g->NodePos, scope->Disp, scope->g); 
 
   // Decrease the temperature of graph g
-  cool(g); 
+  cool(scope->g); 
 
   // Destroy CUDPP Scan Plan
   cudppDestroyPlan(planHandle);
@@ -128,23 +127,23 @@ void advancePositions(graph * g)
 // This function coarses a graph, by obtaining a maximal independant subset of it
 graph* coarsen(graph *g)
 {
-  graph *	rg = (graph*) malloc(sizeof(graph));
+  graph *	rg = (graph*) malloc(sizeof(graph));     // New graph which will hold the result of the coarsening
   bool *	used   = (bool*) calloc(g->numVertices,sizeof(bool));
   int *		newNodesNos = (int*) calloc(g->numVertices+1,sizeof(int));
   int		current = 0;
   int		left = g->numVertices;
   int		numParents = 0;
-  rg->parent = (int *)  calloc(g->numVertices,sizeof(int));
+  rg->parent = (int*) calloc (g->numVertices, sizeof(int));
   
-  while(left>0){
+  while (left>0){
     left--;
     newNodesNos[numParents] = current;
     rg->parent[current] = numParents;
     used[current] = 1;
     
-    for(int x = g->AdjMatIndex[current]; x < g->AdjMatIndex[current+1]; x++){
+    for (int x = g->AdjMatIndex[current]; x < g->AdjMatIndex[current+1]; x++){
       int j = g->AdjMatVals[x];
-      if(!used[j])
+      if (!used[j])
 	left --;
       used[j] = 1;
       rg->parent[j] = numParents;
@@ -152,23 +151,24 @@ graph* coarsen(graph *g)
     numParents++;
 
     // If there is any node left, search for an unused one
-    if(left>0)
-      while((used[current]))
+    if (left>0)
+      while ((used[current]))
 	current++;
   }
   
   free(used);
   
   initGraph(rg,numParents);
+
   int numEdges = 0;
-  rg->NodePos = (float2 *) malloc((numParents)*sizeof(float2));
+  rg->NodePos     = (float2 *) malloc((numParents)*sizeof(float2));
   rg->AdjMatIndex =  (int * )  calloc(numParents+1,sizeof(int));
   rg->AdjMatVals  =  (int * )  calloc(g->numEdges,sizeof(int));
   rg->edgeLen     =  (int * )  calloc(g->numEdges,sizeof(int));
   
   for(int i = 0; i < numParents; i++){
-    rg->NodePos[i].x = rand()%SCREEN_W;
-    rg->NodePos[i].y = rand()%SCREEN_H;
+    rg->NodePos[i].x = rand() % SCREEN_W;
+    rg->NodePos[i].y = rand() % SCREEN_H;
   }
   
   for ( int i = 0; i < numParents; i++){
@@ -204,20 +204,21 @@ graph* coarsen(graph *g)
 
 
 // This function just applies a one step advance to a graph position
-void exactLayoutOnce(graph * g){
-  advancePositions(g);
+void exactLayoutOnce(globalScope* scope){
+  advancePositions(scope);
 }
 
 // This funcion initializes a graph position, using the position of nodes in the coarsed graph (if it exists) as a guide
-void nextLevelInitialization(graph g, graph * coarseGraph){
+// It also deallocates the memory used by the coarsed graph
+void nextLevelInitialization (graph g, graph* coarseGraph){
   
   // Nodes that exists in coarseGraph remain in the same position
-  for(int i = 0; i < g.numVertices; i++){
+  for (int i = 0; i < g.numVertices; i++){
     g.NodePos[i].x = coarseGraph->NodePos[coarseGraph->parent[i]].x ;
     g.NodePos[i].y = coarseGraph->NodePos[coarseGraph->parent[i]].y ;
   }
   
-  //
+  
   for(int j = 0; j <interpolationIterations; j++){
     for(int i = 0; i < g.numVertices; i++){
       int degree = g.AdjMatIndex[i+1] - g.AdjMatIndex[i];
@@ -234,7 +235,6 @@ void nextLevelInitialization(graph g, graph * coarseGraph){
     }
   }
   
-  
   free(coarseGraph->NodePos);
   free(coarseGraph->parent);
   free(coarseGraph->AdjMatIndex);
@@ -244,15 +244,15 @@ void nextLevelInitialization(graph g, graph * coarseGraph){
 }
 
 // This function creates the MIS (Maximal Independent Set) Filtration of a graph
-void createCoarseGraphs(graph * g,int level)
+void createCoarseGraphs(graph* g, int level, int coarseGraphSize, graph** qArray)
 {
   gArray[level] = g;
   if(g->numVertices <= coarseGraphSize)
     return;
   
-  graph * coarseGraph = coarsen(g);
+  graph *coarseGraph = coarsen(g);
   
-  if(g->numVertices < 1.07 * coarseGraph->numVertices )
+  if (g->numVertices < 1.07 * coarseGraph->numVertices )
     return;
   
   if(g->numVertices - coarseGraph->numVertices > 0 )
@@ -497,119 +497,133 @@ int calculateLayout (globalScope* scope)
   /*    Initializations    */
 
   // Number of Nodes
-  int  numNodes = g.numVertices;
+  int  numNodes = (scope->g).numVertices;
 
   // Amount of memory to be used by integers
-  int sizeInt = numNodes*sizeof(kdNodeInt);
+  int sizeInt = numNodes * sizeof(kdNodeInt);
 
   // Amount of memory to be used by floats
-  int sizeFloat = numNodes*sizeof(kdNodeFloat);
+  int sizeFloat = numNodes * sizeof(kdNodeFloat);
   
-  rootInt   = (kdNodeInt *) calloc(numNodes,sizeof(kdNodeInt));
-  rootFloat = (kdNodeFloat *) calloc(numNodes,sizeof(kdNodeFloat));
-  cudaMalloc((void**)&treeIntD,sizeInt);
-  cudaMalloc((void**)&treeFloatD,sizeFloat);
-  cudaMalloc((void**)&NodePosD, numNodes*sizeof(float2));
+  rootInt   = (kdNodeInt*) calloc(scope->numNodes, sizeof(kdNodeInt));
+  rootFloat = (kdNodeFloat*) calloc(scope->numNodes, sizeof(kdNodeFloat));
+  cudaMalloc ((void**) &(scope->treeIntD),   sizeInt);
+  cudaMalloc ((void**) &(scope->treeFloatD), sizeFloat);
+  cudaMalloc ((void**) &(scope->NodePosD),   (scope->numNodes) * sizeof(float2));
   
   // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
   
   // Check if kernel execution generated and error
-  NodeTemp = (float3 *)malloc(numNodes*sizeof(float3));
-  cudaMalloc((void**)&a, numNodes*sizeof(float3));
+  scope->NodeTemp = (float3*) malloc( (scope->numNodes) * sizeof(float3) );
+  cudaMalloc((void**) &(scope->a), (scope->numNodes) * sizeof(float3));
   
-  Disp = (float2 *) malloc((numNodes)*sizeof(float2));
-  cudaMalloc((void**)&DispD, numNodes*sizeof(float2));
-  
-  cudaMalloc((void**)&AdjMatIndexD, (g.numVertices+1)*sizeof(int));
-  cudaMalloc((void**)&AdjMatValsD, (g.numEdges)*sizeof(int));
-  cudaMalloc((void**)&edgeLenD, (g.numEdges)*sizeof(int));
+  Disp = (float2 *) malloc((scope->gnumNodes) * sizeof(float2));
+  cudaMalloc ((void**) &(scope->DispD),        (scope->numNodes)         * sizeof(float2));
+  cudaMalloc ((void**) &(scope->AdjMatIndexD), (scope->g).numVertices+1) * sizeof(int));
+  cudaMalloc ((void**) &(scope->AdjMatValsD),  (scope->g).numEdges       * sizeof(int));
+  cudaMalloc ((void**) &(scope->edgeLenD),     (scope->g).numEdges       * sizeof(int));
   
   // Initialize parameters for config (see CUDPP in cudpp.h)
 
-  config.algorithm = CUDPP_SCAN;
-  config.op        = CUDPP_ADD;
-  config.datatype  = CUDPP_INT;
-  config.options   = CUDPP_OPTION_FORWARD | CUDPP_OPTION_EXCLUSIVE; 
+  (scope->config).algorithm = CUDPP_SCAN;
+  (scope->config).op        = CUDPP_ADD;
+  (scope->config).datatype  = CUDPP_INT;
+  (scope->config).options   = CUDPP_OPTION_FORWARD | CUDPP_OPTION_EXCLUSIVE; 
   
-  cudaMalloc((void**)&data_out,sizeof(unsigned int)* g->numVertices);
-  cudaMalloc((void**)&d_temp_addr_uint,sizeof(unsigned int)* g->numVertices);
-  cudaMalloc((void**)&d_out,sizeof(float3)* g->numVertices);
-  cudaMalloc((void**)&nD,sizeof(unsigned int));
-  /* End Initializations */
+  // Allocate memory in the Device for data used in CUDPP Scan
+  cudaMalloc((void**) &(scope->data_out),         sizeof(unsigned int) * scope->g->numVertices);
+  cudaMalloc((void**) &(scope->d_temp_addr_uint), sizeof(unsigned int) * scope->g->numVertices);
+  cudaMalloc((void**) &(scope->d_out),            sizeof(float3)       * scope->g->numVertices);
+  cudaMalloc((void**) &(scope->nD),               sizeof(unsigned int));
+
+  /*      END INITIALIZATIONS   */
   
-    printf("Coarsening graph...\n");
+
+  /*      GRAPH COARSENING      */
+  printf("Coarsening graph...\n");
   
   clock_t start, end_coarsen,end_layout;
   double elapsed_layout,elapsed_coarsen;
 
   start = clock();
   
-  gArray[0] = g;
-  createCoarseGraphs(g,0);
-  numLevels=0;
-  while(gArray[numLevels]!=NULL)
-    numLevels++;
-  gArray[numLevels-1]->level = 0;
+  (scope->gArray)[0] = scope->g;
+  createCoarseGraphs(scope->g, 0, scope->coarseGraphSize, scope->qArray);
+  scope->numLevels = 0;
+  while((scope->gArray)[scope->numLevels] != NULL)
+    (scope->numLevels)++;
+  (scope->gArray)[scope->numLevels - 1]->level = 0;
   
   end_coarsen = clock();
+
   elapsed_coarsen = ((double) (end_coarsen - start)) / CLOCKS_PER_SEC;
+
+  /*      END OF COARSENING      */
+
+
+  /*      CALCULATE LAYOUTS      */
+
   start = clock();
   printf("Computing layout...\n");
   
-  for(int i = 0; i < numLevels; i++){
+  for(int i = 0; i < (scope->numLevels); i++){
     
     // setup execution parameters
     
-    unsigned m_chunks = gArray[numLevels-i-1]->numVertices / maxThreadsThisBlock;
-    unsigned m_leftovers = gArray[numLevels-i-1] ->numVertices % maxThreadsThisBlock;
+    unsigned m_chunks    = (scope->gArray)[(scope->numLevels)-i-1]->numVertices / maxThreadsThisBlock;
+    unsigned m_leftovers = (scope->gArray)[(scope->numLevels)-i-1]->numVertices % maxThreadsThisBlock;
     
     if ((m_chunks == 0) && (m_leftovers > 0)){
       // can't even fill a block
-      blocks = dim3(1, 1, 1); 
-      threads = dim3((m_leftovers), 1, 1);
+      scope->blocks  = dim3(1, 1, 1); 
+      scope->threads = dim3(m_leftovers, 1, 1);
     } 
     else {
       // normal case
       if (m_leftovers > 0){
 	// not aligned, add an additional block for leftovers
-	blocks = dim3(m_chunks + 1, 1, 1);
+	scope->blocks = dim3(m_chunks + 1, 1, 1);
       }
       else{
 	// aligned on block boundary
-	blocks = dim3(m_chunks, 1, 1);
+	scope->blocks = dim3(m_chunks, 1, 1);
       }
-      threads = dim3(maxThreadsThisBlock , 1, 1);
+      scope->threads = dim3(maxThreadsThisBlock , 1, 1);
     }
     
-    if(i < numLevels-levelConvergence)
-      while(!incrementsAreDone(gArray[numLevels-i-1]))
-	exactLayoutOnce(gArray[numLevels-i-1]);
-    if(numLevels-i-2 >= 0)
-      nextLevelInitialization(*gArray[numLevels-i-2], gArray[numLevels-i-1]);
-  }
+    if(i < (scope->numLevels) - (scope->levelConvergence))
+      while(!incrementsAreDone ((scope->gArray)[(scope->numLevels) - i - 1]))
+	exactLayoutOnce((scope->gArray)[(scope->numLevels) - i - 1]);
   
+    if((scope->numLevels) - i - 2 >= 0)                  
+      nextLevelInitialization(*gArray[(scope->numLevels) - i - 2], gArray[(scope->numLevels) - i - 1]);
+  }
+
   end_layout = clock();
   elapsed_layout = ((double) (end_layout - start)) / CLOCKS_PER_SEC;
+
+  /*       END OF LAYOUT CALCULATION      */
   
-  printf("Time for coarsening graph: %f\n",elapsed_coarsen);
-  printf("Time for calculating layout: %f\n",elapsed_layout);
+  printf ("Time for coarsening graph: %f\n", elapsed_coarsen);
+  printf ("Time for calculating layout: %f\n", elapsed_layout);
   
-  cudaFree(scope->AdjMatIndexD);
-  cudaFree(scope->edgeLenD);
-  cudaFree(scope->AdjMatValsD);
-  cudaFree(scope->NodePosD);
-  cudaFree(scope->DispD);
-  cudaFree(scope->treeIntD);
-  cudaFree(scope->treeFloatD);
-  cudaFree(scope->data_out);
-  cudaFree(d_temp_addr_uint);
-  cudaFree(scope->d_out);
-  cudaFree(scope->nD);
-  free(scope->NodeTemp);
-  free(scope->rootInt);
-  free(scope->rootFloat);
-  free(scope->Disp);
+  // Release resorces
+  cudaFree (scope->AdjMatIndexD);
+  cudaFree (scope->edgeLenD);
+  cudaFree (scope->AdjMatValsD);
+  cudaFree (scope->NodePosD);
+  cudaFree (scope->DispD);
+  cudaFree (scope->treeIntD);
+  cudaFree (scope->treeFloatD);
+  cudaFree (scope->data_out);
+  cudaFree (d_temp_addr_uint);
+  cudaFree (scope->d_out);
+  cudaFree (scope->nD);
+  free (scope->NodeTemp);
+  free (scope->rootInt);
+  free (scope->rootFloat);
+  free (scope->Disp);
 
   writeOutput(scope->g);
   
@@ -644,16 +658,16 @@ main(int argc, char** argv)
   from=fopen(argv[1],"r");
   if(!from) error("cannot open 1st file");
   
-  //Read graph grom file (argv[1])
+  // Read graph grom file (argv[1])
   int len = strlen(argv[1]);
   if((argv[1][len-1]=='l') && (argv[1][len-2]=='m') && (argv[1][len-3]=='g') )
-    readGml(&g, from);
+    readGml(&(scope->g), from);
   else
-    readChaco(&g, from);
+    readChaco(&(scope->g), from);
 
   printf ("Finished reading graph!\n");
 
-  calculateLayout (&g, coarseGraphSize, interpolationIterations, levelConvergence, EDGE_LEN, initialNoIterations);
+  calculateLayout (scope);
 
  
   glutInit(&argc, argv);		/* setup GLUT */
@@ -668,8 +682,6 @@ main(int argc, char** argv)
   glutReshapeFunc(reshape);
   glutDisplayFunc(display);		/* tell GLUT how to fill window */
   glutMainLoop();			/* let glut manage i/o processing */
- 
-
 
   return 0;
 }
