@@ -40,7 +40,7 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler {
 
     public static LoggerDialog getLoggerDialog() {
         if (dialog == null) {
-            dialog = new LoggerDialog();
+            dialog = new LoggerDialog(Cytoscape.getDesktop());
             dialog.setTitle("Cytoscape Error Console");
         }
 
