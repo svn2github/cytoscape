@@ -98,10 +98,10 @@ class MergeDialog extends JDialog {
 	 * Creates a new MergeDialog object.
 	 */
 	public MergeDialog() {
+		super(Cytoscape.getDesktop(),true);
 		/*
 		 * Set up all of the GUI bits
 		 */
-		setModal(true);
 		setTitle("Merge Networks");
 		setSize(new Dimension((2 * LIST_WIDTH) + DIALOG_SPACE, 180));
 		setResizable(true);
