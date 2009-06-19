@@ -78,7 +78,7 @@
 	<!-- Network Manager -->
 	<bean name="networkManager" class="cytoscape.internal.NetworkManager">
 		<constructor-arg ref="cyEventHelperServiceRef" />
-		<constructor-arg ref="presentationFactoryServiceRef" />
+		<property name="networkViewManager" ref="networkViewManager" />
 	</bean>
 
 	<!-- Task Factories -->
@@ -98,13 +98,12 @@
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="cytoscapeProperties" />
 		<constructor-arg ref="cyHelpBroker" />
-		<constructor-arg ref="presentationFactoryServiceRef" />
 	</bean>
 
 	<bean name="birdsEyeViewHandler" class="cytoscape.internal.view.BirdsEyeViewHandler">
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkManager" />
-		<constructor-arg ref="presentationFactoryServiceRef" />
+		<constructor-arg ref="dingPresentationFactoryServiceRef" />
 	</bean>
 
 	<bean name="networkPanel" class="cytoscape.internal.view.NetworkPanel">

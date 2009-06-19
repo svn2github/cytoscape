@@ -11,12 +11,14 @@
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
 
-	<osgi:reference id="presentationFactoryServiceRef"
-		interface="org.cytoscape.view.presentation.PresentationFactory" />
 	<!--
 		<osgi:reference id="presentationManagerServiceRef"
 		interface="org.cytoscape.view.presentation.PresentationManager" />
 	-->
+	<osgi:reference id="dingPresentationFactoryServiceRef"
+		interface="org.cytoscape.view.presentation.PresentationFactory"
+		filter="(id=ding)" />
+		
 	<osgi:reference id="tunableInterceptorServiceRef"
 		interface="org.cytoscape.work.TunableInterceptor" />
 
@@ -64,7 +66,7 @@
 			<entry key="cyPropertyName" value="application" />
 		</osgi:service-properties>
 	</osgi:service>
-	
+
 	<osgi:service id="cyOperatingContextService" ref="cyOperatingContext"
 		interface="cytoscape.CyOperatingContext" />
 
@@ -135,6 +137,13 @@
 		cardinality="0..N">
 		<osgi:listener bind-method="addTaskFactory"
 			unbind-method="removeTaskFactory" ref="cytoscapeMenus" />
+	</osgi:set>
+
+	<osgi:set id="presentationFactorySet"
+		interface="org.cytoscape.view.presentation.PresentationFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addPresentationFactory"
+			unbind-method="removePresentationFactory" ref="networkViewManager" />
 	</osgi:set>
 
 	<!-- export task factories -->

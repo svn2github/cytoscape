@@ -36,24 +36,25 @@
  */
 package cytoscape.internal.view;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetworkManager;
+import java.awt.Component;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
-import cytoscape.events.SetCurrentNetworkListener;
-import cytoscape.events.SetCurrentNetworkEvent;
-import cytoscape.events.SetCurrentNetworkViewListener;
-import cytoscape.events.SetCurrentNetworkViewEvent;
-import cytoscape.events.NetworkViewDestroyedListener;
-import cytoscape.events.NetworkViewDestroyedEvent;
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
 
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.view.presentation.PresentationFactory;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentListener;
+import cytoscape.CyNetworkManager;
+import cytoscape.events.NetworkViewDestroyedEvent;
+import cytoscape.events.NetworkViewDestroyedListener;
+import cytoscape.events.SetCurrentNetworkEvent;
+import cytoscape.events.SetCurrentNetworkListener;
+import cytoscape.events.SetCurrentNetworkViewEvent;
+import cytoscape.events.SetCurrentNetworkViewListener;
 
 /**
  * This class handles the creation of the BirdsEyeView navigation object 
@@ -75,10 +76,12 @@ class BirdsEyeViewHandler implements
 	 * Creates a new BirdsEyeViewHandler object.
 	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, final PresentationFactory prefact) {
+	BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, PresentationFactory defaultFactory) {
 		this.viewmgr = viewmgr;
 		this.netmgr = netmgr;
-		this.prefact = prefact;
+		
+		//TODO: remove this.  Sync. timing and get this from view manager.
+		this.prefact = defaultFactory;
 		JDesktopPane desktopPane = viewmgr.getDesktopPane();
 
 		bevHolder = new JPanel();
