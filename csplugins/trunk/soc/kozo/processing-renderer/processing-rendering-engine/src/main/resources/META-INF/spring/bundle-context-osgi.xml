@@ -12,7 +12,7 @@
 		ref="createPresentationTaskFactory" interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Create Processing Presentation for Current Network" />
-			<entry key="preferredMenu" value="View.Create Presentation.by Processing" />
+			<entry key="preferredMenu" value="Plugins.Create Presentation.by Processing" />
 		</osgi:service-properties>
 	</osgi:service>
 
