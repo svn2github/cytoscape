@@ -26,12 +26,6 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler {
     private javax.swing.JButton closeButton;
     private javax.swing.JTabbedPane logTabs;
 
-    protected LoggerDialog() {
-        super();
-        setModal(false);
-        init();
-    }
-
     // aware no one can currently create the console with an owner, gotta see how headless mode works
     protected LoggerDialog(JFrame owner) {
         super(owner, false);
