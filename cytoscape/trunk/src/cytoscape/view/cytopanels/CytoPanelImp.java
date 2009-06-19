@@ -70,7 +70,7 @@ import java.util.ArrayList;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -140,7 +140,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * External window used to hold the floating CytoPanel.
 	 */
-	private JFrame externalFrame;
+	private JDialog externalFrame;
 
 	/**
 	 * The float icon.
@@ -699,7 +699,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 		if (!isFloating()) {
 			// new frame to place this CytoPanel
-			externalFrame = new JFrame();
+			externalFrame = new JDialog(Cytoscape.getDesktop());
 			
 			// When floating, Cytopanel is always on top.
 			externalFrame.setAlwaysOnTop(true);
@@ -829,7 +829,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 *
 	 * @param externalWindow ExternalFrame Object.
 	 */
-	private void setLocationOfExternalFrame(JFrame externalWindow) {
+	private void setLocationOfExternalFrame(JDialog externalWindow) {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Dimension screenDimension = tk.getScreenSize();
 
