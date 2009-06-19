@@ -18,7 +18,7 @@
 
 	<bean id="dVisualLexicon" class="org.cytoscape.ding.impl.DVisualLexicon" />
 
-	<bean id="presentationFactory" class="org.cytoscape.ding.impl.PresentationFactoryImpl">
+	<bean id="dingPresentationFactory" class="org.cytoscape.ding.impl.PresentationFactoryImpl">
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
 		<constructor-arg ref="undoSupportServiceRef" />

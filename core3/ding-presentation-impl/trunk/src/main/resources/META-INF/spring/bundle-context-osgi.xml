@@ -1,67 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
-    default-lazy-init="false">
+	default-lazy-init="false">
 
-	<osgi:reference id="cyRootNetworkFactoryServiceRef" 
-	                interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
-    </osgi:reference>
+	<osgi:reference id="cyRootNetworkFactoryServiceRef"
+		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
+	</osgi:reference>
 
-	<osgi:reference id="undoSupportServiceRef" 
-	                interface="org.cytoscape.work.UndoSupport">
-    </osgi:reference>
+	<osgi:reference id="undoSupportServiceRef" interface="org.cytoscape.work.UndoSupport">
+	</osgi:reference>
 
-    <osgi:reference id="cyDataTableFactoryServiceRef" 
-	                interface="org.cytoscape.model.CyDataTableFactory">
-    </osgi:reference>
+	<osgi:reference id="cyDataTableFactoryServiceRef"
+		interface="org.cytoscape.model.CyDataTableFactory">
+	</osgi:reference>
 
-    <osgi:reference id="spacialIndex2DFactoryServiceRef" 
-	                interface="org.cytoscape.spacial.SpacialIndex2DFactory">
-    </osgi:reference>
+	<osgi:reference id="spacialIndex2DFactoryServiceRef"
+		interface="org.cytoscape.spacial.SpacialIndex2DFactory">
+	</osgi:reference>
 
-    <osgi:reference id="rootVisualLexiconServiceRef" 
-	                interface="org.cytoscape.view.model.RootVisualLexicon">
-    </osgi:reference>
+	<osgi:reference id="rootVisualLexiconServiceRef"
+		interface="org.cytoscape.view.model.RootVisualLexicon">
+	</osgi:reference>
 
-    <osgi:reference id="tunableInterceptorServiceRef" 
-	                interface="org.cytoscape.work.TunableInterceptor">
-    </osgi:reference>
+	<osgi:reference id="tunableInterceptorServiceRef"
+		interface="org.cytoscape.work.TunableInterceptor">
+	</osgi:reference>
 
-    <osgi:reference id="taskManagerServiceRef" 
-	                interface="org.cytoscape.work.TaskManager">
-    </osgi:reference>
+	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager">
+	</osgi:reference>
 
 
 	<!-- Individual Service -->
-	<osgi:service id="presentationFactoryService" ref="presentationFactory">
-        <osgi:interfaces>
+	<osgi:service id="dingPresentationFactoryService" ref="dingPresentationFactory">
+		<osgi:interfaces>
 			<value>org.cytoscape.view.presentation.PresentationFactory</value>
 			<value>org.cytoscape.view.model.events.NetworkViewChangedListener</value>
-        </osgi:interfaces>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="serviceType" value="presentationFactory" />
+			<entry key="id" value="ding" />
+		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="dVisualLexiconService"
-		ref="dVisualLexicon" interface="org.cytoscape.view.model.VisualLexicon">
+	<osgi:service id="dVisualLexiconService" ref="dVisualLexicon"
+		interface="org.cytoscape.view.model.VisualLexicon">
 	</osgi:service>
 
-    <osgi:set id="nodeViewTaskFactorySet" interface="org.cytoscape.view.model.NodeViewTaskFactory"
-	        cardinality="0..N">
-        <osgi:listener bind-method="addNodeViewTaskFactory"
-            unbind-method="removeNodeViewTaskFactory" ref="presentationFactory" />
-    </osgi:set>
+	<osgi:set id="nodeViewTaskFactorySet" interface="org.cytoscape.view.model.NodeViewTaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addNodeViewTaskFactory"
+			unbind-method="removeNodeViewTaskFactory" ref="dingPresentationFactory" />
+	</osgi:set>
 
-    <osgi:set id="edgeViewTaskFactorySet" interface="org.cytoscape.view.model.EdgeViewTaskFactory"
-	        cardinality="0..N">
-        <osgi:listener bind-method="addEdgeViewTaskFactory"
-            unbind-method="removeEdgeViewTaskFactory" ref="presentationFactory" />
-    </osgi:set>
+	<osgi:set id="edgeViewTaskFactorySet" interface="org.cytoscape.view.model.EdgeViewTaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addEdgeViewTaskFactory"
+			unbind-method="removeEdgeViewTaskFactory" ref="dingPresentationFactory" />
+	</osgi:set>
 
     <osgi:set id="emptySpaceTaskFactorySet" interface="org.cytoscape.view.model.EmptySpaceTaskFactory"
 	        cardinality="0..N">
         <osgi:listener bind-method="addEmptySpaceTaskFactory"
-            unbind-method="removeEmptySpaceTaskFactory" ref="presentationFactory" />
+            unbind-method="removeEmptySpaceTaskFactory" ref="dingPresentationFactory" />
     </osgi:set>
 
 </beans>
