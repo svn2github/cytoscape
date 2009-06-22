@@ -76,6 +76,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
     public CyThesaurusDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        updateOKButtonEnable();
     }
 
     /** This method is called from within the constructor to
@@ -240,6 +241,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         unselectedNetworkList.setBorder(javax.swing.BorderFactory.createTitledBorder("Availabe networks"));
         for (Iterator<CyNetwork> it = Cytoscape.getNetworkSet().iterator(); it.hasNext(); ) {
             CyNetwork network = it.next();
+            if (network != Cytoscape.getCurrentNetwork())
             unselectedNetworkData.add(network);
         }
 
@@ -357,6 +359,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         selectedNetworkList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         selectedNetworkList.setBorder(javax.swing.BorderFactory.createTitledBorder("Selected Networks"));
+        selectedNetworkData.add(Cytoscape.getCurrentNetwork());
         selectedNetworkList.setCellRenderer(new ListCellRenderer() {
             private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
             public Component getListCellRendererComponent(
