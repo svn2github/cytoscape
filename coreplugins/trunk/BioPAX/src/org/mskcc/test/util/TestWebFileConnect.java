@@ -61,6 +61,8 @@ public class TestWebFileConnect extends TestCase {
 	 */
 	public void testWebConnect() throws Exception {
 		String str = WebFileConnect.retrieveDocument("http://www.google.com");
-		assertTrue(str.startsWith("<html><head>"));
+		// This page may not actually start with <html>, so just look for the string.
+		// It should, however be present.
+		assertTrue(str.indexOf("<html><head>") >= 0 );
 	}
 }
