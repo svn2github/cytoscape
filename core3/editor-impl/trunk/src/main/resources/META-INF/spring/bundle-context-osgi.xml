@@ -11,7 +11,7 @@
         <osgi:service-properties>
            <entry key="title" value="SIF Interpreter" />
            <entry key="preferredMenu" value="SIF Interpreter" />
-           <entry key="preferredTarget" value="OPEN" />
+           <entry key="preferredAction" value="OPEN" />
         </osgi:service-properties>
 	</osgi:service>
 
