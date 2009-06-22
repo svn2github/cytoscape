@@ -44,80 +44,81 @@ See license.h for more information.
 #include "readFile.cu"
 #include "writeOutput.cu"
 #include "scope.h"
-
+#include "display.h"
 
 // This function calculates one step of the force-driven layout process, updating the nodes position
-void advancePositions(globalScope *scope)
+void advancePositions(graph* currentGraph, globalScope *scope)
 {
-  cudaMemcpyToSymbol(gd, scope->g, sizeof(graph));
+  cudaMemcpyToSymbol(gd, currentGraph, sizeof(graph));
 
   // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");	
   
-  for (int i = 0; i < scope->g->numVertices; i++){
-    scope->NodeTemp[i].x = g->NodePos[i].x;
-    scope->NodeTemp[i].y = g->NodePos[i].y;
+  for (int i = 0; i < currentGraph->numVertices; i++){
+    scope->NodeTemp[i].x = currentGraph->NodePos[i].x;
+    scope->NodeTemp[i].y = currentGraph->NodePos[i].y;
     scope->NodeTemp[i].z = i;
   }
   
-  cudaMemcpy(scope->a, scope->NodeTemp, scope->g->numVertices * sizeof(float3), cudaMemcpyHostToDevice);
+  cudaMemcpy(scope->a, scope->NodeTemp, currentGraph->numVertices * sizeof(float3), cudaMemcpyHostToDevice);
   
   // Configure CUDPP Scan Plan
   CUDPPHandle planHandle;
-  cudppPlan (&planHandle, scope->config, scope->g->numVertices, 1, 0); // rows = 1, rowPitch = 0
+  cudppPlan (&planHandle, scope->config, currentGraph->numVertices, 1, 0); // rows = 1, rowPitch = 0
   
-  int sizeInt   = scope->g->numVertices * sizeof(kdNodeInt);
-  int sizeFloat = scope->g->numVertices * sizeof(kdNodeFloat);
+  int sizeInt   = currentGraph->numVertices * sizeof(kdNodeInt);
+  int sizeFloat = currentGraph->numVertices * sizeof(kdNodeFloat);
   
   // Check if the KDTREE has to be rebuilded
-  if((scope->g->currentIteration < 4) ||(scope->g->currentIteration%20==0) ){
+  if((currentGraph->currentIteration < 4) ||(currentGraph->currentIteration%20==0) ){
 
     // Decide whether the KDTREE is goint to be builded in the CPU or in the GPU
-    if (scope->g->numVertices < 50000){ //CPU
+    if (currentGraph->numVertices < 50000){ //CPU
       kdNodeInit(scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W,0, SCREEN_H);
-      construct(scope->NodeTemp, scope->NodeTemp + scope->g->numVertices - 1, scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W, 0, SCREEN_H, 3);
+      construct(scope->NodeTemp, scope->NodeTemp + currentGraph->numVertices - 1, scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W, 0, SCREEN_H, 3);
     }
     else{                               //GPU   
       kdNodeInitD(scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W, 0, SCREEN_H);
-      constructD(scope->a, scope->a + scope->g->numVertices - 1, scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W, 0, SCREEN_H, 3, scope->data_out, scope->d_temp_addr_uint, scope->d_out, planHandle, scope->nD, scope->OuterD );
+      constructD(scope->a, scope->a + currentGraph->numVertices - 1, scope->rootInt, scope->rootFloat, 1, 0, 0, SCREEN_W, 0, SCREEN_H, 3, scope->data_out, scope->d_temp_addr_uint, scope->d_out, planHandle, scope->nD, scope->OuterD );
     }
   }
   	
   // Copy data to device
-  cudaMemcpy (scope->NodePosD, scope->g->NodePos, (scope->g->numVertices * sizeof(float2)), cudaMemcpyHostToDevice);
-  cudaMemcpy (scope->treeIntD, scope->rootInt, sizeInt, cudaMemcpyHostToDevice);
-  cudaMemcpy (scope->treeFloatD, scope->rootFloat, sizeFloat, cudaMemcpyHostToDevice);
-  cudaBindTexture (0, texNodePosD, scope->NodePosD, (sizeof(float2) * scope->g->numVertices));
-  cudaBindTexture (0, texInt, scope->treeIntD, sizeInt);
-  cudaBindTexture (0, texFloat, scope->treeFloatD, sizeFloat);
+  cudaMemcpy (scope->NodePosD,   currentGraph->NodePos, (currentGraph->numVertices * sizeof(float2)), cudaMemcpyHostToDevice);
+  cudaMemcpy (scope->treeIntD,   scope->rootInt,        sizeInt,                                      cudaMemcpyHostToDevice);
+  cudaMemcpy (scope->treeFloatD, scope->rootFloat,      sizeFloat,                                    cudaMemcpyHostToDevice);
+
+  cudaBindTexture (0, texNodePosD, scope->NodePosD,   (sizeof(float2) * currentGraph->numVertices));
+  cudaBindTexture (0, texInt,      scope->treeIntD,   sizeInt                                     );
+  cudaBindTexture (0, texFloat,    scope->treeFloatD, sizeFloat                                   );
   
-  cudaMemcpy(AdjMatIndexD, scope->g->AdjMatIndex, (scope->g->numVertices + 1) * sizeof(int), cudaMemcpyHostToDevice);
-  cudaMemcpy(AdjMatValsD,  scope->g->AdjMatVals,  (scope->g->numEdges)        * sizeof(int), cudaMemcpyHostToDevice);
-  cudaMemcpy(edgeLenD,     scope->g->edgeLen,     (scope->g->numEdges)        * sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(scope->AdjMatIndexD, currentGraph->AdjMatIndex, (currentGraph->numVertices + 1) * sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(scope->AdjMatValsD,  currentGraph->AdjMatVals,  (currentGraph->numEdges)        * sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(scope->edgeLenD,     currentGraph->edgeLen,     (currentGraph->numEdges)        * sizeof(int), cudaMemcpyHostToDevice);
 
   // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
   
-  cudaBindTexture (0, texAdjMatValsD, AdjMatValsD, (scope->g->numEdges) * sizeof(int));
-  cudaBindTexture (0, texEdgeLenD, edgeLenD,       (scope->g->numEdges) * sizeof(int));
+  cudaBindTexture (0, texAdjMatValsD, scope->AdjMatValsD, (currentGraph->numEdges) * sizeof(int));
+  cudaBindTexture (0, texEdgeLenD,    scope->edgeLenD,    (currentGraph->numEdges) * sizeof(int));
 
   // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
     
   // Execute the kernel, calculate forces
-  calculateForces<<< blocks, threads >>>(scope->g->numVertices, scope->DispD, AdjMatIndexD);
+  calculateForces<<< scope->blocks, scope->threads >>>(currentGraph->numVertices, scope->DispD, scope->AdjMatIndexD);
   
   // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
 
-  cudaMemcpy(Disp, DispD, g->numVertices*sizeof(float2), cudaMemcpyDeviceToHost);
+  cudaMemcpy(scope->Disp, scope->DispD, currentGraph->numVertices * sizeof(float2), cudaMemcpyDeviceToHost);
 	
   // Calculate new positions of nodes, based on the force calculations
-  for (int i = 0; i < scope->g->numVertices; i++)
-    calcPositions (i, scope->g->NodePos, scope->Disp, scope->g); 
+  for (int i = 0; i < currentGraph->numVertices; i++)
+    calcPositions (i, currentGraph->NodePos, scope->Disp, currentGraph); 
 
   // Decrease the temperature of graph g
-  cool(scope->g); 
+  cool(currentGraph, scope->initialNoIterations); 
 
   // Destroy CUDPP Scan Plan
   cudppDestroyPlan(planHandle);
@@ -125,7 +126,7 @@ void advancePositions(globalScope *scope)
 
 
 // This function coarses a graph, by obtaining a maximal independant subset of it
-graph* coarsen(graph *g)
+graph* coarsen(graph *g, globalScope* scope)
 {
   graph *	rg = (graph*) malloc(sizeof(graph));     // New graph which will hold the result of the coarsening
   bool *	used   = (bool*) calloc(g->numVertices,sizeof(bool));
@@ -135,7 +136,7 @@ graph* coarsen(graph *g)
   int		numParents = 0;
   rg->parent = (int*) calloc (g->numVertices, sizeof(int));
   
-  while (left>0){
+  while (left > 0){
     left--;
     newNodesNos[numParents] = current;
     rg->parent[current] = numParents;
@@ -189,7 +190,7 @@ graph* coarsen(graph *g)
     for ( int k = 0; k < numParents; k++){
       if (usedChild[k]){
 	rg->AdjMatVals[numEdges] = k;
-	rg->edgeLen[numEdges] = EDGE_LEN;
+	rg->edgeLen[numEdges] = scope->EDGE_LEN;
 	numEdges++;
       }
     }
@@ -204,13 +205,13 @@ graph* coarsen(graph *g)
 
 
 // This function just applies a one step advance to a graph position
-void exactLayoutOnce(globalScope* scope){
-  advancePositions(scope);
+void exactLayoutOnce(globalScope* scope, graph* currentGraph){
+  advancePositions(currentGraph, scope);
 }
 
 // This funcion initializes a graph position, using the position of nodes in the coarsed graph (if it exists) as a guide
 // It also deallocates the memory used by the coarsed graph
-void nextLevelInitialization (graph g, graph* coarseGraph){
+void nextLevelInitialization (graph g, graph* coarseGraph, globalScope* scope){
   
   // Nodes that exists in coarseGraph remain in the same position
   for (int i = 0; i < g.numVertices; i++){
@@ -219,7 +220,7 @@ void nextLevelInitialization (graph g, graph* coarseGraph){
   }
   
   
-  for(int j = 0; j <interpolationIterations; j++){
+  for(int j = 0; j < scope->interpolationIterations; j++){
     for(int i = 0; i < g.numVertices; i++){
       int degree = g.AdjMatIndex[i+1] - g.AdjMatIndex[i];
       float2 pi; pi.x=0;pi.y=0;
@@ -244,245 +245,20 @@ void nextLevelInitialization (graph g, graph* coarseGraph){
 }
 
 // This function creates the MIS (Maximal Independent Set) Filtration of a graph
-void createCoarseGraphs(graph* g, int level, int coarseGraphSize, graph** qArray)
+void createCoarseGraphs(graph* g, int level, globalScope* scope)
 {
-  gArray[level] = g;
-  if(g->numVertices <= coarseGraphSize)
+  scope->gArray[level] = g;
+  if(g->numVertices <= scope->coarseGraphSize)
     return;
   
-  graph *coarseGraph = coarsen(g);
+  graph *coarseGraph = coarsen(g, scope);
   
   if (g->numVertices < 1.07 * coarseGraph->numVertices )
     return;
   
   if(g->numVertices - coarseGraph->numVertices > 0 )
-    createCoarseGraphs(coarseGraph,level+1);
+    createCoarseGraphs(coarseGraph, level + 1, scope);
 }
-
-// Show results in screen 
-void display(void)
-{	
-  glLoadIdentity();
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);	
-  int l = 0;
-  
-  glClear(GL_COLOR_BUFFER_BIT);
-  glLoadIdentity();
-  glBegin(GL_LINES);
-  glColor3f(0.2,0.2,0.2);
-  for(int i = 0; i < gArray[l]->numVertices; i++)
-    for(int j = gArray[l]->AdjMatIndex[i]; j < gArray[l]->AdjMatIndex[i+1]; j++){
-      int k = gArray[l]->AdjMatVals[j];
-      glVertex3f(gArray[l]->NodePos[i].x,gArray[l]->NodePos[i].y,00);
-      glVertex3f(gArray[l]->NodePos[k].x,gArray[l]->NodePos[k].y,00);
-    }
-  glEnd();
-  glColor3f(1,0,0);
-  glPointSize(1.1);
-  glBegin(GL_POINTS);
-  for(int i = 0; i < gArray[l]->numVertices; i++)
-    glVertex3f(gArray[l]->NodePos[i].x,gArray[l]->NodePos[i].y,00);
-  glEnd();
-  
-  glFlush();  /* OpenGL is pipelined, and sometimes waits for a full buffer to execute */
-  glutSwapBuffers();
-}
-
-// Reshape screen
-void reshape(int w,int h)
-{
-  glViewport(0,0,w,h);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Program main
-////////////////////////////////////////////////////////////////////////////////
-
-
-/*
-int
-main(int argc, char** argv)
-{
-  // Initialize device, using macro defined in "cutil.h"
-  CUT_DEVICE_INIT();
-
-  printf ("device initialized!\n");
-
-  FILE* from;
-  graph g;
-
-  // Check number of arguments
-  if (argc < 2) error("Wrong no of args");
-
-  // Ask for parameters
-  printf("Enter the size of the coarsest graph (Default 50):"); scanf("%d",&coarseGraphSize);
-  printf("Enter the number of interpolation iterations (Default 50):"); scanf("%d", &interpolationIterations);
-  printf("Enter the level of convergence (Default 2):"); scanf("%d",&levelConvergence);
-  printf("Enter the ideal edge length (Default 5):"); scanf("%d",&EDGE_LEN);
-  printf("Enter the initial no of force iterations(Default 300):"); scanf("%d",&initialNoIterations);
- 
-  // Open file 
-  from=fopen(argv[1],"r");
-  if(!from) error("cannot open 1st file");
-  
-  //Read graph grom file (argv[1])
-  int len = strlen(argv[1]);
-  if((argv[1][len-1]=='l') && (argv[1][len-2]=='m') && (argv[1][len-3]=='g') )
-    readGml(&g, from);
-  else
-    readChaco(&g, from);
-
-  printf ("Finished reading graph!\n");
-  
-  //    Initializations    
-
-  // Number of Nodes
-  int  numNodes = g.numVertices;
-
-  // Amount of memory to be used by integers
-  int sizeInt = numNodes*sizeof(kdNodeInt);
-
-  // Amount of memory to be used by integers
-  int sizeFloat = numNodes*sizeof(kdNodeFloat);
-  
-  rootInt   = (kdNodeInt *) calloc(numNodes,sizeof(kdNodeInt));
-  rootFloat = (kdNodeFloat *) calloc(numNodes,sizeof(kdNodeFloat));
-  cudaMalloc((void**)&treeIntD,sizeInt);
-  cudaMalloc((void**)&treeFloatD,sizeFloat);
-  cudaMalloc((void**)&NodePosD, numNodes*sizeof(float2));
-  
-  // Check if kernel execution generated and error
-  CUT_CHECK_ERROR("Kernel execution failed");
-  
-  // check if kernel execution generated and error
-  NodeTemp = (float3 *)malloc(numNodes*sizeof(float3));
-  cudaMalloc((void**)&a, numNodes*sizeof(float3));
-  
-  Disp = (float2 *) malloc((numNodes)*sizeof(float2));
-  cudaMalloc((void**)&DispD, numNodes*sizeof(float2));
-  
-  cudaMalloc((void**)&AdjMatIndexD, (g.numVertices+1)*sizeof(int));
-  cudaMalloc((void**)&AdjMatValsD, (g.numEdges)*sizeof(int));
-  cudaMalloc((void**)&edgeLenD, (g.numEdges)*sizeof(int));
-  
-  // Initialize parameters for config (see CUDPP in cudpp.h)
-
-  config.algorithm = CUDPP_SCAN;
-  config.op        = CUDPP_ADD;
-  config.datatype  = CUDPP_INT;
-  config.options   = CUDPP_OPTION_FORWARD | CUDPP_OPTION_EXCLUSIVE; 
-
-  //config.direction      = CUDPP_SCAN_FORWARD;                  Deprecated
-  //config.exclusivity    = CUDPP_SCAN_EXCLUSIVE;                Deprecated
-  //config.op	          = CUDPP_ADD;                           Deprecated
-  //config.datatype       = CUDPP_INT;                           Deprecated
-  //config.maxNumRows	  = 1;                                   Deprecated
-  //config.rowPitch       = 0;                                   Deprecated
-
-
-  
-  cudaMalloc((void**)&data_out,sizeof(unsigned int)* g.numVertices);
-  cudaMalloc((void**)&d_temp_addr_uint,sizeof(unsigned int)* g.numVertices);
-  cudaMalloc((void**)&d_out,sizeof(float3)* g.numVertices);
-  cudaMalloc((void**)&nD,sizeof(unsigned int));
-
-  // End Initializations 
-  
-  
-  printf("Coarsening graph...\n");
-  
-  clock_t start, end_coarsen,end_layout;
-  double elapsed_layout,elapsed_coarsen;
-  start = clock();
-  
-  
-  gArray[0] = &g;
-  createCoarseGraphs(&g,0);
-  numLevels=0;
-  while(gArray[numLevels]!=NULL)
-    numLevels++;
-  gArray[numLevels-1]->level = 0;
-  
-  end_coarsen = clock();
-  elapsed_coarsen = ((double) (end_coarsen - start)) / CLOCKS_PER_SEC;
-  start = clock();
-  printf("Computing layout...\n");
-  
-  for(int i = 0; i < numLevels; i++){
-    
-    // setup execution parameters
-    
-    unsigned m_chunks = gArray[numLevels-i-1]->numVertices / maxThreadsThisBlock;
-    unsigned m_leftovers = gArray[numLevels-i-1] ->numVertices % maxThreadsThisBlock;
-    
-    if ((m_chunks == 0) && (m_leftovers > 0)){
-      // can't even fill a block
-      blocks = dim3(1, 1, 1); 
-      threads = dim3((m_leftovers), 1, 1);
-    } 
-    else {
-      // normal case
-      if (m_leftovers > 0){
-	// not aligned, add an additional block for leftovers
-	blocks = dim3(m_chunks + 1, 1, 1);
-      }
-      else{
-	// aligned on block boundary
-	blocks = dim3(m_chunks, 1, 1);
-      }
-      threads = dim3(maxThreadsThisBlock , 1, 1);
-    }
-    
-    if(i < numLevels-levelConvergence)
-      while(!incrementsAreDone(gArray[numLevels-i-1]))
-	exactLayoutOnce(gArray[numLevels-i-1]);
-    if(numLevels-i-2 >= 0)
-      nextLevelInitialization(*gArray[numLevels-i-2], gArray[numLevels-i-1]);
-  }
-  
-  end_layout = clock();
-  elapsed_layout = ((double) (end_layout - start)) / CLOCKS_PER_SEC;
-  
-  printf("Time for coarsening graph: %f\n",elapsed_coarsen);
-  printf("Time for calculating layout: %f\n",elapsed_layout);
-  
-  cudaFree(AdjMatIndexD);
-  cudaFree(edgeLenD);
-  cudaFree(AdjMatValsD);
-  cudaFree(NodePosD);
-  cudaFree(DispD);
-  cudaFree(treeIntD);
-  cudaFree(treeFloatD);
-  cudaFree(data_out);
-  cudaFree(d_temp_addr_uint);
-  cudaFree(d_out);
-  cudaFree(nD);
-  free(NodeTemp);
-  free(rootInt);
-  free(rootFloat);
-  free(Disp);
-  
-  writeOutput(&g);
-  
-  
-  glutInit(&argc, argv);		// setup GLUT
-  glutInitDisplayMode(GLUT_RGB); 
-  glutInitWindowSize(SCREEN_W,SCREEN_H);
-  glutInitWindowPosition(100,100);
-  glutCreateWindow(argv[0]);	        // open a window 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluOrtho2D(0,SCREEN_W,0,SCREEN_H);
-  glMatrixMode(GL_MODELVIEW);
-  glutReshapeFunc(reshape);
-  glutDisplayFunc(display);		// tell GLUT how to fill window
-glutMainLoop();			        // let glut manage i/o processing
-  
-  return EXIT_SUCCESS;
-}
-*/
-
 
 
 
@@ -505,37 +281,38 @@ int calculateLayout (globalScope* scope)
   // Amount of memory to be used by floats
   int sizeFloat = numNodes * sizeof(kdNodeFloat);
   
-  rootInt   = (kdNodeInt*) calloc(scope->numNodes, sizeof(kdNodeInt));
-  rootFloat = (kdNodeFloat*) calloc(scope->numNodes, sizeof(kdNodeFloat));
-  cudaMalloc ((void**) &(scope->treeIntD),   sizeInt);
-  cudaMalloc ((void**) &(scope->treeFloatD), sizeFloat);
-  cudaMalloc ((void**) &(scope->NodePosD),   (scope->numNodes) * sizeof(float2));
+  scope->rootInt   = (kdNodeInt*)   calloc(numNodes, sizeof(kdNodeInt)   );
+  scope->rootFloat = (kdNodeFloat*) calloc(numNodes, sizeof(kdNodeFloat) );
+
+  cudaMalloc ((void**) &(scope->treeIntD),   sizeInt                   );
+  cudaMalloc ((void**) &(scope->treeFloatD), sizeFloat                 );
+  cudaMalloc ((void**) &(scope->NodePosD),   numNodes * sizeof(float2) );
   
   // Check if kernel execution generated and error
   CUT_CHECK_ERROR("Kernel execution failed");
   
-  // Check if kernel execution generated and error
-  scope->NodeTemp = (float3*) malloc( (scope->numNodes) * sizeof(float3) );
-  cudaMalloc((void**) &(scope->a), (scope->numNodes) * sizeof(float3));
+  // 
+  scope->NodeTemp = (float3*) malloc(numNodes * sizeof(float3));
+  cudaMalloc((void**) &(scope->a), numNodes * sizeof(float3));
   
-  Disp = (float2 *) malloc((scope->gnumNodes) * sizeof(float2));
-  cudaMalloc ((void**) &(scope->DispD),        (scope->numNodes)         * sizeof(float2));
-  cudaMalloc ((void**) &(scope->AdjMatIndexD), (scope->g).numVertices+1) * sizeof(int));
-  cudaMalloc ((void**) &(scope->AdjMatValsD),  (scope->g).numEdges       * sizeof(int));
-  cudaMalloc ((void**) &(scope->edgeLenD),     (scope->g).numEdges       * sizeof(int));
+  scope->Disp = (float2 *) malloc(numNodes * sizeof(float2));
+
+  cudaMalloc ((void**) &(scope->DispD),        numNodes                     * sizeof(float2) );
+  cudaMalloc ((void**) &(scope->AdjMatIndexD), ((scope->g).numVertices + 1) * sizeof(int)    );
+  cudaMalloc ((void**) &(scope->AdjMatValsD),  (scope->g).numEdges          * sizeof(int)    );
+  cudaMalloc ((void**) &(scope->edgeLenD),     (scope->g).numEdges          * sizeof(int)    );
   
   // Initialize parameters for config (see CUDPP in cudpp.h)
-
   (scope->config).algorithm = CUDPP_SCAN;
   (scope->config).op        = CUDPP_ADD;
   (scope->config).datatype  = CUDPP_INT;
   (scope->config).options   = CUDPP_OPTION_FORWARD | CUDPP_OPTION_EXCLUSIVE; 
   
   // Allocate memory in the Device for data used in CUDPP Scan
-  cudaMalloc((void**) &(scope->data_out),         sizeof(unsigned int) * scope->g->numVertices);
-  cudaMalloc((void**) &(scope->d_temp_addr_uint), sizeof(unsigned int) * scope->g->numVertices);
-  cudaMalloc((void**) &(scope->d_out),            sizeof(float3)       * scope->g->numVertices);
-  cudaMalloc((void**) &(scope->nD),               sizeof(unsigned int));
+  cudaMalloc((void**) &(scope->data_out),         sizeof(unsigned int) * scope->g.numVertices);
+  cudaMalloc((void**) &(scope->d_temp_addr_uint), sizeof(unsigned int) * scope->g.numVertices);
+  cudaMalloc((void**) &(scope->d_out),            sizeof(float3)       * scope->g.numVertices);
+  cudaMalloc((void**) &(scope->nD),               sizeof(unsigned int)                       );
 
   /*      END INITIALIZATIONS   */
   
@@ -548,8 +325,8 @@ int calculateLayout (globalScope* scope)
 
   start = clock();
   
-  (scope->gArray)[0] = scope->g;
-  createCoarseGraphs(scope->g, 0, scope->coarseGraphSize, scope->qArray);
+  (scope->gArray)[0] = &(scope->g);
+  createCoarseGraphs(&(scope->g), 0, scope);
   scope->numLevels = 0;
   while((scope->gArray)[scope->numLevels] != NULL)
     (scope->numLevels)++;
@@ -594,10 +371,10 @@ int calculateLayout (globalScope* scope)
     
     if(i < (scope->numLevels) - (scope->levelConvergence))
       while(!incrementsAreDone ((scope->gArray)[(scope->numLevels) - i - 1]))
-	exactLayoutOnce((scope->gArray)[(scope->numLevels) - i - 1]);
+	exactLayoutOnce(scope, (scope->gArray)[(scope->numLevels) - i - 1]);
   
     if((scope->numLevels) - i - 2 >= 0)                  
-      nextLevelInitialization(*gArray[(scope->numLevels) - i - 2], gArray[(scope->numLevels) - i - 1]);
+      nextLevelInitialization(*(scope->gArray)[(scope->numLevels) - i - 2], scope->gArray[(scope->numLevels) - i - 1], scope);
   }
 
   end_layout = clock();
@@ -617,7 +394,7 @@ int calculateLayout (globalScope* scope)
   cudaFree (scope->treeIntD);
   cudaFree (scope->treeFloatD);
   cudaFree (scope->data_out);
-  cudaFree (d_temp_addr_uint);
+  cudaFree (scope->d_temp_addr_uint);
   cudaFree (scope->d_out);
   cudaFree (scope->nD);
   free (scope->NodeTemp);
@@ -625,8 +402,9 @@ int calculateLayout (globalScope* scope)
   free (scope->rootFloat);
   free (scope->Disp);
 
-  writeOutput(scope->g);
-  
+  writeOutput(&(scope->g));
+
+  return 0;
 }
 
 
@@ -635,8 +413,7 @@ int calculateLayout (globalScope* scope)
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
   FILE* from;
   globalScope *scope;
@@ -645,7 +422,7 @@ main(int argc, char** argv)
   if (argc < 2) error("Wrong no of args");
 
   // Create scope
-  scope = (globalScope*) malloc (sizeof(globalScope));
+  scope = globalScopeCreate();
 
   // Ask for parameters
   printf("Enter the size of the coarsest graph (Default 50):");          scanf("%d", &(scope->coarseGraphSize));
@@ -661,27 +438,18 @@ main(int argc, char** argv)
   // Read graph grom file (argv[1])
   int len = strlen(argv[1]);
   if((argv[1][len-1]=='l') && (argv[1][len-2]=='m') && (argv[1][len-3]=='g') )
-    readGml(&(scope->g), from);
+    readGml(scope, from);
   else
-    readChaco(&(scope->g), from);
+    readChaco(scope, from);
 
   printf ("Finished reading graph!\n");
 
   calculateLayout (scope);
 
- 
-  glutInit(&argc, argv);		/* setup GLUT */
-  glutInitDisplayMode(GLUT_RGB); 
-  glutInitWindowSize(SCREEN_W,SCREEN_H);
-  glutInitWindowPosition(100,100);
-  glutCreateWindow(argv[0]);	        /* open a window */
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluOrtho2D(0,SCREEN_W,0,SCREEN_H);
-  glMatrixMode(GL_MODELVIEW);
-  glutReshapeFunc(reshape);
-  glutDisplayFunc(display);		/* tell GLUT how to fill window */
-  glutMainLoop();			/* let glut manage i/o processing */
+  printf ("Finished calculationg layout, showing results...\n");
 
+  // Show results in display
+  showGraph (scope, argc, argv);
+    
   return 0;
 }

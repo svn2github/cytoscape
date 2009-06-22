@@ -31,8 +31,5 @@ See licence.h for more information.
 #define max(a,b) (((a)>(b))? a:b)
 #define min(a,b) (((a)<(b))? a:b)
 
-int	EDGE_LEN;
-int	initialNoIterations;
-
 #endif
 

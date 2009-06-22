@@ -37,7 +37,7 @@ typedef struct _globalScope {
   int               *AdjMatValsD;  
   int               *edgeLenD;  
   float2            *DispD, *Disp; 
-  graph             *gArray[150] = {0};
+  graph             *gArray[150];
   int	             numLevels;
   int	             coarseGraphSize;
   int	             interpolationIterations;
@@ -49,6 +49,21 @@ typedef struct _globalScope {
   float3             *d_out;
   unsigned int       *nD;
   complexDevice      *OuterD;
+
+  int	EDGE_LEN;
+  int	initialNoIterations;
+
+
 } globalScope;
 
-#ENDIF
+globalScope* globalScopeCreate (void)
+{
+  globalScope* retScope;
+  retScope = (globalScope*) malloc (sizeof(globalScope));
+  //memset (retScope->gArray, 0, 150 * sizeof(graph*));
+  for (int i = 0; i < 150; i++)
+    retScope->gArray[i] = NULL;
+  return retScope; 	
+}
+
+#endif
