@@ -1,6 +1,9 @@
-package cytoscape.groups.results;
+package org.cytoscape.groups.results;
 
 import javax.swing.SwingConstants;
+
+import org.cytoscape.groups.results.internal.GroupPanel;
+
 import cytoscape.Cytoscape;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;

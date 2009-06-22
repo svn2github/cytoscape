@@ -1,4 +1,4 @@
-package cytoscape.groups.results;
+package org.cytoscape.groups.results.internal;
 
 // System imports
 import java.util.ArrayList;
