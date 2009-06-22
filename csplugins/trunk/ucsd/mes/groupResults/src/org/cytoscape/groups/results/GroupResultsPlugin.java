@@ -2,7 +2,7 @@ package org.cytoscape.groups.results;
 
 import javax.swing.SwingConstants;
 
-import org.cytoscape.groups.results.internal.GroupPanel;
+import org.cytoscape.groups.results.internal.ui.GroupPanel;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.cytopanels.CytoPanel;
