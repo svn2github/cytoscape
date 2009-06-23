@@ -1,4 +1,4 @@
-package src;
+package src;   
 
 import giny.model.Node;
 import giny.view.NodeView;
@@ -37,17 +37,17 @@ public class CyFrame {
 	public void populate(CyNetworkView networkView){
 		
 		
-		for(int i=0;i<nodeList.size();i++)
-		{
+		for(Node node: nodeList)
+        {
 		   
-		   NodeView nodeView = networkView.getNodeView(nodeList.get(i));
+		   NodeView nodeView = networkView.getNodeView(node);
 		   
 		   double[] xy = new double[2];
 		   xy[0] = nodeView.getXPosition();
 		   xy[1] = nodeView.getYPosition();
 		   
-		   nodePosMap.put(nodeList.get(i).getIdentifier(), xy);
-		   nodeColMap.put(nodeList.get(i).getIdentifier(), nodeView.getUnselectedPaint());
+		   nodePosMap.put(node.getIdentifier(), xy);
+		   nodeColMap.put(node.getIdentifier(), nodeView.getUnselectedPaint());
 		   System.out.println(nodeView.getUnselectedPaint()+"    X: "+nodeView.getXPosition()+"    Y: "+nodeView.getYPosition());
 		   
 		}
@@ -55,16 +55,16 @@ public class CyFrame {
 	
 	 
 	public void display(){
-		System.out.println("WOOOO");
+		
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
 		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
 		List<Node> nodeList = currentNetwork.nodesList();
-		for(int i=0;i<nodeList.size();i++)
+		for(Node node: nodeList)
         {
 			
-			NodeView nodeView = networkView.getNodeView(nodeList.get(i));
-			double[] xy = nodePosMap.get(nodeList.get(i).getIdentifier());
-			Paint p = nodeColMap.get(nodeList.get(i).getIdentifier());
+			NodeView nodeView = networkView.getNodeView(node);
+			double[] xy = nodePosMap.get(node.getIdentifier());
+			Paint p = nodeColMap.get(node.getIdentifier());
 			
 			//System.out.println("DISPLAY: "+xy[0]+"  "+xy[1]);
 			
@@ -72,13 +72,7 @@ public class CyFrame {
 			nodeView.setYPosition(xy[1]);
 				
 			nodeView.setUnselectedPaint(p);
-			//nodeView.setXPosition(currentFrame[i].getXPosition());
-			//nodeView.setYPosition(currentFrame[i].getYPosition());
-				
-				
-			//nodeView.setXPosition(cframe.get(nodeList.get(i).getIdentifier()));
-			//nodeView.setYPosition(cframe.get(nodeList.get(i).getIdentifier()));
-	    	   
+			
         }
 		networkView.updateView();
 	}

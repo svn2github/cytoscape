@@ -113,13 +113,11 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		if(command.equals("captureOne"))
 		{
 			frameOne = captureSettings();
-			
 		}
 		
 		if(command.equals("captureTwo"))
 		{
 			frameTwo = captureSettings();
-			
 		}
 		
 		if(command.equals("animateOneTwo")){
@@ -131,9 +129,16 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			
 			 int delay = 1000; //milliseconds
 			  ActionListener taskPerformer = new ActionListener() {
-				  LinearInterpolator lint = new LinearInterpolator();
-					CyFrame[] frames = lint.generateInterpolatedFrames(frameOne, frameTwo, 10);
-				    int i = 0;
+				  
+				  Interpolator lint = new Interpolator();
+				  int i = 0;
+				  
+				  //try{
+				  CyFrame[] frames = lint.makeColorFrames(frameOne, frameTwo, 10);
+				  //}catch (Exception e){
+					//  System.out.println(e.getMessage());
+				  //}
+			      
 				  
 				  public void actionPerformed(ActionEvent evt) {
 			          if(i == frames.length){ return;}
@@ -147,10 +152,6 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			
 			  
 			  
-	       //for(int i=0; i<frames.length; i++){
-	        	
-	        	
-	        //}
 		}
 		
 		if(command.equals("returnOne"))
@@ -177,57 +178,9 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		return frame;
 		
-		/*
-		currentFrame = new NodeView[nodeList.size()];
-		posFrame = new HashMap<String, double[]>();
-		colFrame = new HashMap<String, Paint>();
-		for(int i=0;i<nodeList.size();i++)
-		{
-		   
-		   NodeView nodeView = networkView.getNodeView(nodeList.get(i));
-		   currentFrame[i] = nodeView;
-		   double[] xy = new double[2];
-		   xy[0] = nodeView.getXPosition();
-		   xy[1] = nodeView.getYPosition();
-		   posFrame.put(nodeList.get(i).getIdentifier(), xy);
-		   colFrame.put(nodeList.get(i).getIdentifier(), nodeView.getUnselectedPaint());
-		   System.out.println(nodeView.getUnselectedPaint()+"    X: "+nodeView.getXPosition()+"    Y: "+nodeView.getYPosition());
-		   
-		}
-		*/
 	}
 	
-	public void displayCurrentFrame()
-	{
-		//currentFrame.display();
-		
-		/*
-		System.out.println("WOOOO");
-		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-		List<Node> nodeList = currentNetwork.nodesList();
-		for(int i=0;i<nodeList.size();i++)
-        {
-			
-			NodeView nodeView = networkView.getNodeView(nodeList.get(i));
-			double[] xy = posFrame.get(nodeList.get(i).getIdentifier());
-			Paint p = colFrame.get(nodeList.get(i).getIdentifier());
-			
-			nodeView.setXPosition(xy[0]);
-			nodeView.setYPosition(xy[1]);
-			
-			nodeView.setUnselectedPaint(p);
-			//nodeView.setXPosition(currentFrame[i].getXPosition());
-			//nodeView.setYPosition(currentFrame[i].getYPosition());
-			
-			
-			//nodeView.setXPosition(cframe.get(nodeList.get(i).getIdentifier()));
-			//nodeView.setYPosition(cframe.get(nodeList.get(i).getIdentifier()));
-    	   
-        }
-		networkView.updateView();
-		*/
-	}
+
 	
 	public void propertyChange ( PropertyChangeEvent e ) {
 		if(e.getPropertyName().equals("ATTRIBUTES_CHANGED")){
