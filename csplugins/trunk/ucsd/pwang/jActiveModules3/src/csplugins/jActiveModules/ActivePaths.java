@@ -166,21 +166,22 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			// 1. Define the group name
 			String groupName = "Group_" + groupCount++;
 			
-			// 2. create an empty group
-			//CyGroup theGroup = CyGroupManager.createGroup(groupName, ActivePaths.this.groupViewerName);
-			CyGroup theGroup = CyGroupManager.createGroup(groupName, ActivePaths.this.groupViewerName);
-
-			// 3. add nodes to the group
+			// 2. add nodes to the group
 			Vector nodeVect = (Vector) thePath.getDisplayNodes();
+			
+			List<CyNode> nodeList = new ArrayList<CyNode>();
 			for (int j=0; j< nodeVect.size(); j++){
 				CyNode oneNode = (CyNode) nodeVect.elementAt(j);
-				if (oneNode != null){
-					theGroup.addNode(oneNode);					
-				}
+				if (oneNode != null)
+					nodeList.add(oneNode);
 				else {
 					//System.out.println("ActivePaths: createTableData(): oneNode = null");
 				}
 			}
+			
+			// 3. Create Group
+			final CyGroup theGroup = CyGroupManager.createGroup(groupName, nodeList, ActivePaths.this.groupViewerName);
+
 			
 			//
 			groupVect.add(theGroup);
