@@ -71,7 +71,7 @@ public class MCODEUtil {
 	 * 
 	 * @param loader
 	 *            Graphic loader displaying progress and process
-	 * @param cluster
+	 * @param group
 	 *            Input network to convert to an image
 	 * @param height
 	 *            Height that the resulting image should be
@@ -84,7 +84,7 @@ public class MCODEUtil {
 	 *            requires layout
 	 * @return The resulting image
 	 */
-	public static Image convertNetworkToImage(GraphPerspective cluster,
+	public static Image convertNetworkToImage(GraphPerspective group,
 			int height, int width, SpringEmbeddedLayouter layouter,
 			boolean layoutNecessary) {
 
@@ -105,8 +105,8 @@ public class MCODEUtil {
 		}
 		double progress = 0; // keeps track of progress as a percent of the
 		// totalGoal
-
-		view = generateGraphView(cluster);
+		
+		view = generateGraphView(group);
 
 		for (Iterator<NodeView> in = view.getNodeViewsIterator(); in.hasNext();) {
 			if (INTERRUPTED) {
@@ -177,10 +177,14 @@ public class MCODEUtil {
 				// Otherwise, if layout is not completed, set the interruption
 				// to false, and return null, not an image
 				resetLoading();
+				
+				System.out.println("Layout Failed!!!!!!!!!!!");
 				return null;
 			}
 		}
 
+		
+		
 		view.getCanvas().setSize(width, height);
 		view.fitContent();
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -196,7 +200,7 @@ public class MCODEUtil {
 
 		layouter.resetDoLayout();
 		resetLoading();
-		return (image);
+		return image;
 	}
 
 	private static DGraphView generateGraphView(GraphPerspective gp) {
