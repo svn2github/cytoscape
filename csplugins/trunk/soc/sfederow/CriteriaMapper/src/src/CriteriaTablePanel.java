@@ -322,15 +322,16 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     	if(command.equals("editCriteria")){
     		
     		int rowc = table.getSelectedRow();
-    		System.out.println("CROWWW"+rowc);
-    		if(dataModel.isCellEditable(rowc, 1)){
     		
-    		cbDialog.initialize(rowc);
-	        cbDialog.labelField.setText((String)getCell(rowc, 1));
-            cbDialog.criteriaField.setText((String)getCell(rowc, 2));
-    		}else{
-    			addEditableRow();
-    		}
+    		
+    		System.out.println("CROWWW"+rowc);
+    		//if(dataModel.isCellEditable(rowc, 1)){
+    			cbDialog.initialize(rowc);
+    			cbDialog.labelField.setText((String)getCell(rowc, 1));
+    			cbDialog.criteriaField.setText((String)getCell(rowc, 2));
+    		//}else{
+    			//addEditableRow();
+    		//}
     	}
     	
     	if(command.equals("CBsave")){
@@ -345,6 +346,8 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     	if(command.equals("CBadd")){
     		System.out.println("HEY");
     		populateList(cbDialog.criteriaField.getText(), cbDialog.labelField.getText(), cbDialog.currentColor);
+    		//populateList("Criteria", "label", Color.WHITE);
+    		
     	}
     	
     	if(command.equals("deleteCriteria")){
@@ -738,6 +741,7 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 			dataModel.setValueAt(mapToTemp, rowNumber-1, 3);
 			dataModel.setValueAt(colorTemp, rowNumber-1, 4);
 			
+			applyCriteria();
 		}
 	}
 	
@@ -750,7 +754,7 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 			Object mapToTemp = dataModel.data[rowNumber][3];
 			Object colorTemp = dataModel.data[rowNumber][4];
 			
-			dataModel.setValueAt(dataModel.data[rowNumber-1][0], rowNumber, 0);
+			dataModel.setValueAt(dataModel.data[rowNumber+1][0], rowNumber, 0);
 			dataModel.setValueAt(dataModel.data[rowNumber+1][1], rowNumber, 1);
 			dataModel.setValueAt(dataModel.data[rowNumber+1][2], rowNumber, 2);
 			dataModel.setValueAt(dataModel.data[rowNumber+1][3], rowNumber, 3);
@@ -762,6 +766,7 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
 			dataModel.setValueAt(mapToTemp, rowNumber+1, 3);
 			dataModel.setValueAt(colorTemp, rowNumber+1, 4);
 			
+			applyCriteria();
 			//initializeTable();
 		}
 	}

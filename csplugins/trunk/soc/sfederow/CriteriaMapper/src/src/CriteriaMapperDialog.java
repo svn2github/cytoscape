@@ -99,17 +99,22 @@ java.beans.PropertyChangeListener{
 		 
 	
 		if(command.equals("nameBoxChanged")){
+			if(nameBox.isEditable()){ 
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Must save set name before continuing.");
+				return;
+			}
+			
 			String setName = (String)nameBox.getSelectedItem();
 			System.out.println("nameBoxChanged: "+setName);
 			criteriaTable.setName = setName;
-			if(nameBox.isEditable()){ return; }
+			
 			if(!setName.equals("")){
 				//saveSettings(setName);
 				criteriaTable.clearTable();	
 				
 				loadSettings(setName); 
 				criteriaTable.setFlag = true;
-				nameBox.setEditable(false);
+				//nameBox.setEditable(false);
 			}else{
 				criteriaTable.clearTable();
 			}
@@ -122,15 +127,20 @@ java.beans.PropertyChangeListener{
 			
 			criteriaTable.clearTable();
 			
-			criteriaTable.addEditableRow();
+			//criteriaTable.addEditableRow();
 			criteriaTable.setFlag = true;
 		}
 		if(command.equals("saveSet")){
 			String setName = (String)nameBox.getSelectedItem();
+			if(setName.equals("")){ 
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Must have a set name.");
+			    return;
+			}
+			
 			saveSettings(setName);
 			criteriaTable.setName = setName;
 			nameBox.setEditable(false);
-			initialize();
+			//initialize();
 		    nameBox.setSelectedItem(setName);
 		}
 		if(command.equals("deleteSet")){
@@ -142,9 +152,14 @@ java.beans.PropertyChangeListener{
             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
             null, options,  options[1]);
 			if(n == 0){ attributeManager.removeNamesAttribute(Cytoscape.getCurrentNetwork(), setName); }  
-			initialize();
+			nameBox.removeItem(setName);
+			
+			criteriaTable.clearTable();
+			
 		}
-		
+		if(command.equals("renameSet")){
+			nameBox.setEditable(true);
+		}
 
 		pack();
 		setVisible(true);

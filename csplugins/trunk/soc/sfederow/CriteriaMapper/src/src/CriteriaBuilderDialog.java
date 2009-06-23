@@ -98,6 +98,7 @@ public class CriteriaBuilderDialog extends JDialog implements ActionListener, Li
 		currentRow = row;
 		mainDialog = new JDialog();
 		mainPanel = new JPanel();
+		currentColor = Color.WHITE;
 		
 		/*JPanel labelPanel = new JPanel(new BorderLayout(0, 2));
 		JLabel label = new JLabel("Label"); 
