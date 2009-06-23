@@ -24,6 +24,7 @@
 	<bean id="createPresentationTaskFactory"
 		class="org.cytoscape.view.presentation.processing.internal.CreatePresentationTaskFactory">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="processingPresentationFactory" />
 	</bean>
 
 	<bean id="processingPresentationFactory"

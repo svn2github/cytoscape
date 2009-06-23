@@ -1,5 +1,9 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import javax.swing.JDialog;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
@@ -12,9 +16,11 @@ public class CreatePresentationTask implements Task {
 	
 	private TaskMonitor taskMonitor;
 	
-	public CreatePresentationTask(CyNetworkManager manager) {
+	private PresentationFactory pFactory;
+	
+	public CreatePresentationTask(CyNetworkManager manager, PresentationFactory pFactory) {
 		this.manager = manager;
-		
+		this.pFactory = pFactory;
 	}
 	
 	public void cancel() {
@@ -29,7 +35,13 @@ public class CreatePresentationTask implements Task {
 		taskMonitor.setProgress(-1.0);
 		taskMonitor.setStatusMessage("Creating Processing Presentation...");
 		
-		System.out.println("* Creating Processing presentation for: " + manager.getCurrentNetwork());
+		CyNetwork targetNetwork = manager.getCurrentNetwork();
+		System.out.println("* Creating Processing presentation for: " + targetNetwork);
+		JDialog dialog = new JDialog();
+		dialog.setTitle("Test: " + targetNetwork);
+		pFactory.addPresentation(new JDialog(), manager.getCurrentNetworkView());
+		
+		System.out.println("=======> Presentation OK");
 		
 		taskMonitor.setProgress(1.0);
 		

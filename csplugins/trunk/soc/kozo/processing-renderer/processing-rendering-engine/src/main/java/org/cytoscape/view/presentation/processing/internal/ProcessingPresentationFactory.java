@@ -1,7 +1,10 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import java.awt.Window;
+
+import javax.swing.JDialog;
+
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedListener;
@@ -23,13 +26,20 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 	}
 
 	public void addPresentation(Object frame, CyNetworkView view) {
-		// TODO Auto-generated method stub
-
+		ProcessingNetworkRenderer presentation = new ProcessingNetworkRenderer(400);
+		System.out.println("* Creating Processing Dialog");
+		if(frame instanceof JDialog){
+			JDialog window = (JDialog)frame;
+			window.add(presentation);
+			window.pack();
+			window.setVisible(true);
+			
+			System.out.println("* Creating Processing Dialog OK!!!!!");
+		}
 	}
 
 	public NetworkRenderer getPresentation(CyNetworkView view) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ProcessingNetworkRenderer(400);
 	}
 
 	public void visualPropertySet(VisualProperty vp, Object value) {
