@@ -229,6 +229,7 @@ public class MCODEScoreAndFindAction implements ActionListener {
 			// Show Cancel/Close Buttons
 			config.displayCancelButton(true);
 			config.displayStatus(true);
+			config.setOwner(Cytoscape.getDesktop());
 
 			// Execute Task via TaskManager
 			// This automatically pops-open a JTask Dialog Box
