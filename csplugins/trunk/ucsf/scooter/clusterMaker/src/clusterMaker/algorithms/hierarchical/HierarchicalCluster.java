@@ -142,7 +142,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 
 		clusterProperties.add(new Tunable("parametersGroup",
 		                                  "Clustering Parameters",
-		                                  Tunable.GROUP, new Integer(5)));
+		                                  Tunable.GROUP, new Integer(6)));
 
 		// Whether or not to only cluster selected nodes/edges
 		clusterProperties.add(new Tunable("selectedOnly",
@@ -158,6 +158,12 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		clusterProperties.add(new Tunable("ignoreMissing",
 		                                  "Ignore nodes/edges with no data",
 		                                  Tunable.BOOLEAN, new Boolean(false)));
+
+		clusterProperties.add(new Tunable("advancedParametersGroup",
+		                                  "Advanced Parameters",
+		                                  Tunable.GROUP, new Integer(2), 
+		                                  new Boolean(true), null,
+		                                  Tunable.COLLAPSABLE));
 
 		// How to handle missing data
 		clusterProperties.add(new Tunable("zeroMissing",
