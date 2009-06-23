@@ -65,6 +65,9 @@ public class TreeViewModel extends TVModel {
 	CyNetwork network;
 	CyNetworkView networkView;
 	boolean isSymmetrical = false;
+	boolean zeroMissing = false;
+	Double diagonalValue = null;
+	List<String> clusterParams = null;
 	CyLogger myLogger = null;
 	private String [] clusterHeaders = {"NODEID", "LEFT", "RIGHT", "CORRELATION"};
 
@@ -83,6 +86,19 @@ public class TreeViewModel extends TVModel {
 		String clusterType = null;
 		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_TYPE_ATTRIBUTE))
 			clusterType = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_TYPE_ATTRIBUTE);
+
+		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_PARAMS_ATTRIBUTE))
+			clusterParams = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_PARAMS_ATTRIBUTE);
+
+		if (clusterParams != null) {
+			for (String param: clusterParams) {
+				if (param.equals("zeroMissing"))
+					zeroMissing = true;
+				else if (param.startsWith("diagonals=")) {
+					diagonalValue = Double.valueOf(param.substring(10));
+				}
+			}
+		}
 		
 		// Gene annotations are just the list of node names
 		List<String>geneList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.NODE_ORDER_ATTRIBUTE);
@@ -125,8 +141,17 @@ public class TreeViewModel extends TVModel {
 			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
 			// Initialize the data
-			for (int cell = 0; cell < nGene*nExpr; cell++)
-				exprData[cell] = DataModel.NODATA;
+			for (int row = 0; row < nGene; row++) {
+				for (int col = 0; col < nExpr; col++) {
+					int cell = row * nExpr + col;
+					if (diagonalValue != null && row == col)
+						exprData[cell] = diagonalValue;
+					else if (zeroMissing)
+						exprData[cell] = 0.0f;
+					else
+						exprData[cell] = DataModel.NODATA;
+				}
+			}
 
 			byte attributeType = edgeAttributes.getType(attribute);
 			Iterator edgeIterator = network.edgesIterator();

@@ -104,6 +104,7 @@ public class TreeView extends TreeViewApp implements Observer,
 	private	List<CyNode>selectedNodes;
 	private	List<CyNode>selectedArrays;
 	private CyLogger myLogger;
+	private CyNetwork dataNetwork = null;
 
 	private static String appName = "ClusterMaker TreeView";
 
@@ -146,7 +147,9 @@ public class TreeView extends TreeViewApp implements Observer,
 	public ClusterProperties getSettings() { return null; }
 
 	public void startViz() {
-		startup();
+		TreeView tv = new TreeView();  // Clone ourselves
+		tv.startup();
+		// startup();
 	}
 
 	public boolean isAvailable() {
@@ -168,6 +171,9 @@ public class TreeView extends TreeViewApp implements Observer,
 	public void startup() {
 		// Get our data model
 		dataModel = new TreeViewModel(myLogger);
+
+		// Remember the network we were launched by
+		dataNetwork = Cytoscape.getCurrentNetwork();
 
 		// Set up the global config
 		setConfigDefaults(new PropertyConfig(globalConfigName(),"ProgramConfig"));
@@ -301,17 +307,22 @@ public class TreeView extends TreeViewApp implements Observer,
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		if ( evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ||
+		if ( /* evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS || */
 		     evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED ) {
 
 			// The user has changed the network view -- we want to switch our
 			// view to go along with it
 
+			// See if we actually have a view
+			CyNetworkView focusedView = Cytoscape.getNetworkView((String)evt.getNewValue());
+			if (focusedView == Cytoscape.getNullNetworkView())
+				return;
+
 			// Remove our listener from this network
 			myView.removeGraphViewChangeListener(this);
 
 			// Switch to the new network view
-			myView = Cytoscape.getNetworkView((String)evt.getNewValue());
+			myView = focusedView;
 
 			// Get the network for this view
 			myNetwork = myView.getNetwork();

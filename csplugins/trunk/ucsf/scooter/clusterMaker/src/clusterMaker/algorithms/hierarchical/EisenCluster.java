@@ -53,7 +53,6 @@ import cytoscape.groups.CyGroupManager;
 public class EisenCluster {
 	final static int IS = 0;
 	final static int JS = 1;
-	static boolean debug = false;
 
 	public final static String GROUP_ATTRIBUTE = "__clusterGroups";
 	public final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
@@ -63,15 +62,39 @@ public class EisenCluster {
 	public final static String NODE_ORDER_ATTRIBUTE = "__nodeOrder";
 	public final static String ARRAY_ORDER_ATTRIBUTE = "__arrayOrder";
 	public final static String CLUSTER_TYPE_ATTRIBUTE = "__clusterType";
-	static CyLogger logger;
+	public final static String CLUSTER_PARAMS_ATTRIBUTE = "__clusterParams";
 
-	public static String cluster(String weightAttributes[], DistanceMetric metric, 
-	                      ClusterMethod clusterMethod, boolean transpose, 
-	                      boolean createGroups, boolean ignoreMissing, boolean selectedOnly,
-	                      CyLogger log, boolean dbg, TaskMonitor monitor) {
+	// Instance variables
+	CyLogger logger;
+	boolean debug = false;
+	TaskMonitor monitor;
+	String weightAttributes[] = null;
+	DistanceMetric metric;
+	ClusterMethod clusterMethod;
+	boolean createGroups = false;
+	boolean ignoreMissing = false;
+	boolean selectedOnly = false;
+	boolean adjustDiagonals = false;
+	boolean zeroMissing = false;
 
-		logger = log;
-		debug = dbg;
+	public EisenCluster(String weightAttributes[], DistanceMetric metric, 
+	                    ClusterMethod clusterMethod, CyLogger log, TaskMonitor monitor) {
+		this.logger = log;
+		this.weightAttributes = weightAttributes;
+		this.metric = metric;
+		this.clusterMethod = clusterMethod;
+		this.monitor = monitor;
+		resetAttributes();
+	}
+
+	public void setCreateGroups() { createGroups = true; }
+	public void setIgnoreMissing() { ignoreMissing = true; }
+	public void setSelectedOnly() { selectedOnly = true; }
+	public void setAdjustDiagonals() { adjustDiagonals = true; }
+	public void setZeroMissing() { zeroMissing = true; }
+	public void setDebug() { debug = true; }
+
+	public String cluster(boolean transpose) { 
 		String keyword = "GENE";
 		if (transpose) keyword = "ARRY";
 
@@ -87,6 +110,14 @@ public class EisenCluster {
 
 		// Create a weight vector of all ones (we don't use individual weighting, yet)
 		matrix.setUniformWeights();
+
+		// Handle special cases
+		if (zeroMissing)
+			matrix.setMissingToZero();
+
+		// This only makes sense for symmetrical matrices
+		if (adjustDiagonals && matrix.isSymmetrical())
+			matrix.adjustDiagonals();
 
 		if (monitor != null) 
 			monitor.setStatus("Clustering...");
@@ -189,12 +220,16 @@ public class EisenCluster {
 		return "Complete";
 	}
 
-	public static void updateAttributes(Matrix matrix, List<String>attrList, 
-	                                    String[] weightAttributes, Integer[] order,
-	                                    String cluster_type) {
+	public void updateAttributes(Matrix matrix, List<String>attrList, 
+	                             String[] weightAttributes, Integer[] order,
+	                             String cluster_type) {
 		// Update the network attribute "HierarchicalCluster" and make it hidden
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+		List<String>params = new ArrayList();
+
+		if (zeroMissing)
+			params.add("zeroMissing");
 
 		netAttr.setAttribute(netID, CLUSTER_TYPE_ATTRIBUTE, cluster_type);
 
@@ -205,8 +240,12 @@ public class EisenCluster {
 			if (matrix.isSymmetrical()) {
 				netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
 				netAttr.setAttribute(netID, CLUSTER_EDGE_ATTRIBUTE, weightAttributes[0]);
+				if (adjustDiagonals) {
+					params.add("diagonals="+matrix.getValue(0,0));
+				}
 			}
 		}
+		netAttr.setListAttribute(netID, CLUSTER_PARAMS_ATTRIBUTE, params);
 
 		String[] rowArray = matrix.getRowLabels();
 		ArrayList<String> orderList = new ArrayList();
@@ -243,7 +282,7 @@ public class EisenCluster {
 
 	}
 
-	public static void resetAttributes() {
+	public void resetAttributes() {
 		// Update the network attribute "HierarchicalCluster" and make it hidden
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
@@ -261,6 +300,8 @@ public class EisenCluster {
 			netAttr.deleteAttribute(netID, CLUSTER_EDGE_ATTRIBUTE);
 		if (netAttr.hasAttribute(netID, CLUSTER_TYPE_ATTRIBUTE))
 			netAttr.deleteAttribute(netID, CLUSTER_TYPE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, CLUSTER_PARAMS_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, CLUSTER_PARAMS_ATTRIBUTE);
 
 		// See if we have any old groups in this network
 		if (netAttr.hasAttribute(netID, GROUP_ATTRIBUTE)) {
@@ -275,7 +316,7 @@ public class EisenCluster {
 		}
 	}
 
-	private static TreeNode[] treeCluster(Matrix matrix, DistanceMetric metric, ClusterMethod clusterMethod) { 
+	private TreeNode[] treeCluster(Matrix matrix, DistanceMetric metric, ClusterMethod clusterMethod) { 
 
 		if (debug)
 			matrix.printMatrix();
@@ -336,7 +377,7 @@ public class EisenCluster {
  	 * it it files for some reason.
  	 **/
 
-	private static TreeNode[] pslCluster(Matrix matrix, double[][] distanceMatrix, DistanceMetric metric) {
+	private TreeNode[] pslCluster(Matrix matrix, double[][] distanceMatrix, DistanceMetric metric) {
 		int nRows = matrix.nRows();
 		int nNodes = nRows-1;
 
@@ -400,7 +441,7 @@ public class EisenCluster {
  	 * @return the array of TreeNode's that describe the hierarchical clustering solution, or null if
  	 * it it files for some reason.
  	 **/
-	private static TreeNode[] pclcluster(Matrix matrix, double[][] distanceMatrix, DistanceMetric metric) {
+	private TreeNode[] pclcluster(Matrix matrix, double[][] distanceMatrix, DistanceMetric metric) {
 		int nRows = matrix.nRows();
 		int nColumns = matrix.nColumns();
 		int nNodes = nRows-1;
@@ -494,7 +535,7 @@ public class EisenCluster {
 	 * @return the array of TreeNode's that describe the hierarchical clustering solution, or null if
 	 * it fails for some reason.
 	 */
-	private static TreeNode[] pmlcluster(int nRows, double[][] distanceMatrix) {
+	private TreeNode[] pmlcluster(int nRows, double[][] distanceMatrix) {
 		int[] clusterID = new int[nRows];
 		TreeNode[] nodeList = new TreeNode[nRows-1]; 
 
@@ -543,7 +584,7 @@ public class EisenCluster {
 	 * @return the array of TreeNode's that describe the hierarchical clustering solution, or null if
 	 * it fails for some reason.
 	 */
-	private static TreeNode[] palcluster(int nRows, double[][] distanceMatrix) {
+	private TreeNode[] palcluster(int nRows, double[][] distanceMatrix) {
 		int[] clusterID = new int[nRows];
 		int[] number = new int[nRows];
 		TreeNode[] nodeList = new TreeNode[nRows-1]; 
@@ -603,7 +644,7 @@ public class EisenCluster {
 		return nodeList;
 	}
 
-	private static void getAttributesList(List<String>attributeList, CyAttributes attributes, 
+	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 
 	                              String prefix) {
 		String[] names = attributes.getAttributeNames();
 		for (int i = 0; i < names.length; i++) {
@@ -614,7 +655,7 @@ public class EisenCluster {
 		}
 	}
 
-	private static String[] getAllAttributes() {
+	private String[] getAllAttributes() {
 		// Create the list by combining node and edge attributes into a single list
 		List<String> attributeList = new ArrayList<String>();
 		attributeList.add("-- select attribute --");
@@ -639,7 +680,7 @@ public class EisenCluster {
  	 * An array with two values representing the first and second indices of the pair
  	 * with the shortest distance.
  	 */
-	private static double findClosestPair(int n, double[][] distanceMatrix, int[] pair) {
+	private double findClosestPair(int n, double[][] distanceMatrix, int[] pair) {
 		int ip = 1;
 		int jp = 0;
 		double temp;
@@ -659,7 +700,7 @@ public class EisenCluster {
 		return distance;
 	}
 
-	private static Integer[] TreeSort(Matrix matrix, int nNodes, double nodeOrder[], int nodeCounts[], TreeNode nodeList[]) {
+	private Integer[] TreeSort(Matrix matrix, int nNodes, double nodeOrder[], int nodeCounts[], TreeNode nodeList[]) {
 		int nElements = nNodes+1;
 		double newOrder[] = new double[nElements];
 		int clusterIDs[] = new int[nElements];
@@ -726,7 +767,7 @@ public class EisenCluster {
 		return rowOrder;
 	}
 
-	private static CyGroup createGroups(Matrix matrix, TreeNode nodeList[], TreeNode node, List<String>groupNames) {
+	private CyGroup createGroups(Matrix matrix, TreeNode nodeList[], TreeNode node, List<String>groupNames) {
 		ArrayList<CyNode>memberList = new ArrayList(2);
 		logger.debug("Creating groups");
 

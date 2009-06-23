@@ -78,6 +78,8 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	boolean createGroups = true;
 	boolean ignoreMissing = false;
 	boolean selectedOnly = false;
+	boolean adjustDiagonals = false;
+	boolean zeroMissing = false;
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
@@ -138,6 +140,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.LIST, "",
 		                                  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
 
+		clusterProperties.add(new Tunable("parametersGroup",
+		                                  "Clustering Parameters",
+		                                  Tunable.GROUP, new Integer(5)));
+
 		// Whether or not to only cluster selected nodes/edges
 		clusterProperties.add(new Tunable("selectedOnly",
 		                                  "Only use selected nodes/edges for cluster",
@@ -150,7 +156,17 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 
 		// For expression data, we might want to exclude missing data
 		clusterProperties.add(new Tunable("ignoreMissing",
-		                                  "Ignore nodes with no data",
+		                                  "Ignore nodes/edges with no data",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
+
+		// How to handle missing data
+		clusterProperties.add(new Tunable("zeroMissing",
+		                                  "Set missing data to zero (not common)",
+		                                  Tunable.BOOLEAN, new Boolean(false)));
+
+		// Adjust loops
+		clusterProperties.add(new Tunable("adjustDiagonals",
+		                                  "Adjust loops (not common)",
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
 		// Whether or not to create groups
@@ -198,6 +214,14 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		if ((t != null) && (t.valueChanged() || force)) {
 			dataAttributes = (String) t.getValue();
 		}
+
+		t = clusterProperties.get("zeroMissing");
+		if ((t != null) && (t.valueChanged() || force))
+			zeroMissing = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("adjustDiagonals");
+		if ((t != null) && (t.valueChanged() || force)) 
+			adjustDiagonals = ((Boolean) t.getValue()).booleanValue();
 	}
 
 	public void doCluster(TaskMonitor monitor) {
@@ -232,27 +256,41 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		if (monitor != null)
 			monitor.setStatus("Initializaing");
 
-		// Start by cleaning up and resetting
-		EisenCluster.resetAttributes();
+		// Create a new clusterer
+		EisenCluster algorithm = new EisenCluster(attributeArray, distanceMetric, clusterMethod,
+			                                        logger, monitor);
+		// Set our parameters
+		setParameters(algorithm);
 
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1) {
 			if (monitor != null)
 				monitor.setStatus("Clustering attributes");
-			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, 
-			                     true, createGroups, ignoreMissing, 
-			                     selectedOnly, logger, debug, monitor);
+
+			algorithm.cluster(true);
 		}
 
 		if (monitor != null)
 			monitor.setStatus("Clustering nodes");
+
 		// Cluster the nodes
-		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, 
-			                   false, createGroups, ignoreMissing, 
-			                   selectedOnly, logger, debug, monitor);
+		algorithm.cluster(false);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
+	}
+
+	private void setParameters(EisenCluster algorithm) {
+		if (createGroups)
+			algorithm.setCreateGroups();
+		if (ignoreMissing)
+			algorithm.setIgnoreMissing();
+		if (selectedOnly)
+			algorithm.setSelectedOnly();
+		if (adjustDiagonals)
+			algorithm.setAdjustDiagonals();
+		if (zeroMissing)
+			algorithm.setZeroMissing();
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 

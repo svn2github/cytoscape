@@ -54,6 +54,7 @@ public class Matrix {
 	private Double matrix[][];
 	private double colWeights[];
 	private double rowWeights[];
+	private double maxAttribute;
 	private String rowLabels[];
 	private String columnLabels[];
 	private CyNode rowNodes[];
@@ -354,6 +355,21 @@ public class Matrix {
 
 	public boolean isSymmetrical() { return this.symmetrical; }
 
+	public void setMissingToZero() {
+		for (int row = 0; row < this.nRows; row++) {
+			for (int col = 0; col < this.nColumns; col++ ) {
+				if (matrix[row][col] == null)
+					matrix[row][col] = new Double(0.0);
+			}
+		}
+	}
+
+	public void adjustDiagonals() {
+		for (int col = 0; col < nColumns; col++ ) {
+			matrix[col][col] = new Double(maxAttribute);
+		}
+	}
+
 	private void buildSymmetricalMatrix(CyNetwork network, String weight, 
 	                                    boolean ignoreMissing, boolean selectedOnly) {
 
@@ -371,17 +387,20 @@ public class Matrix {
 		this.columnLabels = new String[nColumns];
 		this.rowNodes = new CyNode[nRows];
 		this.columnNodes = null;
+		this.maxAttribute = Double.MIN_VALUE;
 
 		// For each edge, get the attribute and update the matrix and mask values
 		int index = 0;
 		int column;
 		byte attributeType = edgeAttributes.getType(weight);
+
 		for (CyNode node: nodeList) {
 			boolean found = false;
 			boolean hasSelectedEdge = false;
 			this.rowLabels[index] = node.getIdentifier();
 			this.rowNodes[index] = node;
 			this.columnLabels[index] = node.getIdentifier();
+
 			// Get the list of adjacent edges
 			List<CyEdge> edgeList = network.getAdjacentEdgesList(node, true, true, true);
 			for (CyEdge edge: edgeList) {
@@ -397,7 +416,12 @@ public class Matrix {
 					if (v != null)
 						val = Double.valueOf(v.toString());
 				}
-				if (val != null) found = true;
+
+				if (val != null) {
+					found = true;
+					maxAttribute = Math.max(maxAttribute, val);
+				}
+
 				if (edge.getSource() == node) {
 					column = nodeList.indexOf(edge.getTarget());
 					matrix[index][column] = val;
