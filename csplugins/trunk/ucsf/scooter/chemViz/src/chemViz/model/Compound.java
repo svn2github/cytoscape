@@ -49,6 +49,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,6 +65,7 @@ import cytoscape.util.URLUtil;
 
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
+import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
@@ -72,6 +74,8 @@ import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.inchi.InChIGenerator;
 import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.inchi.InChIToStructure;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
@@ -87,6 +91,9 @@ import org.openscience.cdk.qsar.result.*;
 import org.openscience.cdk.qsar.DescriptorEngine;
 import org.openscience.cdk.qsar.descriptors.molecular.*;
 // import org.openscience.cdk.tools.MFAnalyser;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
 import net.sf.jniinchi.INCHI_RET;
@@ -378,10 +385,10 @@ public class Compound {
  	 * @param noStructures if 'true' get the structures on a separate thread
  	 */
 	public Compound(GraphObject source, String attribute, String mstring, 
-	                   AttriType attrType, boolean noStructures) {
+	                AttriType attrType, boolean noStructures) {
 		this.source = source;
 		this.attribute = attribute;
-		this.moleculeString = mstring;
+		this.moleculeString = mstring.trim();
 		this.attrType = attrType;
 		this.renderedImage = null;
 		this.laidOut = false;
@@ -390,7 +397,7 @@ public class Compound {
 		this.fingerPrint = null;
 		if (attrType == AttriType.inchi) {
 			// Convert to smiles 
-			this.smilesStr = convertInchiToSmiles(mstring);
+			this.smilesStr = convertInchiToSmiles(moleculeString);
 		} else {
 			this.smilesStr = mstring;
 			// Create the CDK Molecule object
@@ -407,8 +414,14 @@ public class Compound {
 		// At this point, we should have an IMolecule
 		try { 
 			if (iMolecule != null) {
+
+				CDKHueckelAromaticityDetector.detectAromaticity(iMolecule);
+
+				// Get our fingerprint
 				Fingerprinter fp = new Fingerprinter();
-				fingerPrint = fp.getFingerprint(iMolecule);
+
+				// Do we need to do the addh here?
+				fingerPrint = fp.getFingerprint(addh(iMolecule));
 			}
 		} catch (CDKException e1) {
 			fingerPrint = null;
@@ -525,7 +538,7 @@ public class Compound {
 					if (iMolecule == null) return null;
 
 					IMolecularDescriptor descriptor = new WienerNumbersDescriptor();
-					DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(iMolecule).getValue());
+					DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(addh(iMolecule)).getValue());
 					if (type == DescriptorType.WEINERPATH)
 						return retval.get(0);
 					else
@@ -535,7 +548,7 @@ public class Compound {
 				{
 					if (iMolecule == null) return null;
 					IMolecularDescriptor descriptor = new RuleOfFiveDescriptor();
-					IntegerResult retval = (IntegerResult)(descriptor.calculate(iMolecule).getValue());
+					IntegerResult retval = (IntegerResult)(descriptor.calculate(addh(iMolecule)).getValue());
 					return retval.intValue();
 				}
 			case ALOGP:
@@ -545,7 +558,7 @@ public class Compound {
 					if (iMolecule == null) return null;
 					try {
 						IMolecularDescriptor descriptor = new ALOGPDescriptor();
-						DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(iMolecule).getValue());
+						DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(addh(iMolecule)).getValue());
 						if (type == DescriptorType.ALOGP)
 							return retval.get(0);
 						else if (type == DescriptorType.ALOGP2)
@@ -579,7 +592,7 @@ public class Compound {
 					if (iMolecule3D == null) {
 						try {
 							ModelBuilder3D mb3d = ModelBuilder3D.getInstance(TemplateHandler3D.getInstance(), "mm2");
-							iMolecule3D = mb3d.generate3DCoordinates(iMolecule, true);
+							iMolecule3D = mb3d.generate3DCoordinates(addh(iMolecule), true);
 						} catch (Exception e) {
 							logger.warning("Unable to calculate 3D coordinates: "+e.getMessage());
 							iMolecule3D = null;
@@ -645,7 +658,8 @@ public class Compound {
 	public double getMolecularWeight() {
 		if (iMolecule == null) return 0.0f;
 
-		IMolecularFormula mfa = MolecularFormulaManipulator.getMolecularFormula(iMolecule);
+
+		IMolecularFormula mfa = MolecularFormulaManipulator.getMolecularFormula(addh(iMolecule));
 		return MolecularFormulaManipulator.getTotalMassNumber(mfa);
 	}
 
@@ -657,21 +671,8 @@ public class Compound {
 	public double getExactMass() {
 		if (iMolecule == null) return 0.0f;
 
-		IMolecularFormula mfa = MolecularFormulaManipulator.getMolecularFormula(iMolecule);
+		IMolecularFormula mfa = MolecularFormulaManipulator.getMolecularFormula(addh(iMolecule));
 		return MolecularFormulaManipulator.getTotalExactMass(mfa);
-	}
-
-	/**
- 	 * Calculate all of our molecular descriptors
- 	 */
-	public void calculateDescriptors() {
-		if (iMolecule == null) return;
-
-		IMolecularDescriptor descriptor = new WienerNumbersDescriptor();
-		DoubleArrayResult retval = (DoubleArrayResult)(descriptor.calculate(iMolecule).getValue());
-		double wpath = retval.get(0);
-		double wpol = retval.get(1);
-		System.out.println("Wiener numbers: wpath = "+wpath+", polarity = "+wpol);
 	}
 
 	/**
@@ -734,7 +735,6 @@ public class Compound {
 
 		try {
 			if (!laidOut) {
-				CDKHueckelAromaticityDetector.detectAromaticity(iMolecule);
 				StructureDiagramGenerator sdg = new StructureDiagramGenerator();
 				sdg.setMolecule(iMolecule);
 				sdg.generateCoordinates();
@@ -764,6 +764,7 @@ public class Compound {
 			graphics.setColor(Color.WHITE);
 			graphics.fillRect(0,0,renderWidth,renderHeight);
 			Rectangle2D bbox = new Rectangle2D.Double(0,0,renderWidth,renderHeight);
+
 			renderer.paintMolecule(iMolecule, graphics, bbox);
 
 			/*
@@ -779,6 +780,21 @@ public class Compound {
 		}
 
 		return bufferedImage;
+	}
+
+	private IMolecule addh(IMolecule mol) {
+		IMolecule molH;
+		try {
+			molH = (IMolecule)mol.clone();
+		} catch (Exception e) {
+			return mol;
+		}
+
+		if (molH == null) return mol;
+
+		// Make sure we handle hydrogens
+		AtomContainerManipulator.convertImplicitToExplicitHydrogens(molH);
+		return molH;
 	}
 
 	/**
