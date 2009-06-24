@@ -75,11 +75,13 @@ public class PhylipTreeImpl implements Phylotree {
    Stack <String> stack = new Stack<String>(); 
    LinkedList<String> list = new LinkedList<String>();
    LinkedList<PhylipNode> childNodeList = new LinkedList<PhylipNode>();
+   LinkedList<Double> branchLengthList = new LinkedList<Double>();
+   
    LinkedList<PhylipEdge> allEdges = new LinkedList<PhylipEdge>();
    
    Iterator<String> iterator;
    Iterator<PhylipNode> childNodeListIterator;
-
+   Iterator<Double> branchLengthListIterator;
    Double branchLength = 0.0;
    // Split the input string into a list
    String [] substrings = treeStr.split(":|,|;");
@@ -151,10 +153,6 @@ public class PhylipTreeImpl implements Phylotree {
       try
       {
        branchLength = Double.parseDouble(stackTop);
-       // @DEVELOP_ME
-       // Find a way to store the branch length with the node
-       // so that the layout is actually representative of the 
-       // edge distances
       }
       catch(NumberFormatException f)
       {
@@ -165,6 +163,7 @@ public class PhylipTreeImpl implements Phylotree {
        // Store each node label into a list
 
        childNodeList.add(nodeA);
+       branchLengthList.add(branchLength);
       }
 
       stackTop = stack.pop();
@@ -178,12 +177,14 @@ public class PhylipTreeImpl implements Phylotree {
       if(stack.isEmpty())
       {
         nodeList.add(tempNode);
+        
       }
       
       tempNodeIndex++;
 
       // Add edges between the temporary parent and the children
       childNodeListIterator = childNodeList.iterator();
+      branchLengthListIterator = branchLengthList.iterator();
       int tempEdgeIndex = 0;
       while(childNodeListIterator.hasNext())
       {
@@ -191,6 +192,10 @@ public class PhylipTreeImpl implements Phylotree {
        String tempEdgeLabel = "edge"+tempEdgeIndex;
        
        PhylipEdge edge = new PhylipEdge(tempNode, childNode);
+       Double edgeLength = branchLengthListIterator.next();
+       branchLengthListIterator.remove();
+       edge.setEdgeLength(edgeLength);
+        System.out.println(edge.getSourceNode().getName()+"<-->"+edge.getTargetNode().getName()+":"+edgeLength);
        tempEdgeIndex++;
        allEdges.add(edge);  // temporarily
        
@@ -251,7 +256,7 @@ public class PhylipTreeImpl implements Phylotree {
  class PhylipEdge implements PhylotreeEdge {
   private PhylipNode sourceNode = null;
   private PhylipNode targetNode = null;
-  private double edgeLength = 0;
+  private double edgeLength = 0.0;
   
   public PhylipEdge(PhylipNode pSourceNode, PhylipNode pTargetNode){
    this.sourceNode = pSourceNode;

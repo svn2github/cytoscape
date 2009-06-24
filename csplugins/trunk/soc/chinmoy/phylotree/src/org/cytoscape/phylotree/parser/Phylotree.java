@@ -12,7 +12,7 @@ public interface Phylotree {
 	/**
 	 *  Return the List of Edges for the given node
 	 */
-	public List getEdges(PhylotreeNode pNode);
+	public List<PhylotreeEdge> getEdges(PhylotreeNode pNode);
 
 	
 	/**
