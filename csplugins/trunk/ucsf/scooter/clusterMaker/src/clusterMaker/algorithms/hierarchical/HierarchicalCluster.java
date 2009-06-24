@@ -147,7 +147,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		// Whether or not to only cluster selected nodes/edges
 		clusterProperties.add(new Tunable("selectedOnly",
 		                                  "Only use selected nodes/edges for cluster",
-		                                  Tunable.BOOLEAN, new Boolean(true)));
+		                                  Tunable.BOOLEAN, new Boolean(false)));
 
 		// Whether or not to cluster attributes as well as nodes
 		clusterProperties.add(new Tunable("clusterAttributes",

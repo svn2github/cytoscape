@@ -66,6 +66,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -98,7 +100,8 @@ import javax.swing.event.ListSelectionListener;
  * the HeatMap to the network.
  */
 public class NetworkColorDialog extends JDialog 
-                                implements ActionListener, ListSelectionListener, ChangeListener {
+                                implements ActionListener, ListSelectionListener, ChangeListener,
+	                                         WindowListener {
 
 	private ColorExtractor colorExtractor = null;
 	private String attribute = null;
@@ -150,6 +153,8 @@ public class NetworkColorDialog extends JDialog
 			pack();
 			setVisible(true);
 		}
+
+		addWindowListener(this);
 	}
 
 	/**
@@ -206,7 +211,19 @@ public class NetworkColorDialog extends JDialog
 			a.start();
 		}
 	}
-			
+
+	// WindowListener methods
+	public void	windowActivated(WindowEvent e) {}
+ 	public void	windowClosed(WindowEvent e) {}
+ 	public void	windowClosing(WindowEvent e) {
+		animating = false;
+	}
+ 	public void	windowDeactivated(WindowEvent e) {}
+ 	public void	windowDeiconified(WindowEvent e) {}
+ 	public void	windowIconified(WindowEvent e) {}
+ 	public void	windowOpened(WindowEvent e) {}
+
+
 	private VisualStyle createNewStyle(String attribute, String suffix, boolean update, boolean edge) { 
 		boolean newStyle = false;
 
