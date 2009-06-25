@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.InputMap;
 import javax.swing.JMenuItem;
@@ -73,6 +74,7 @@ import org.cytoscape.model.events.UnselectedEdgesEvent;
 import org.cytoscape.model.events.UnselectedEdgesListener;
 import org.cytoscape.model.events.UnselectedNodesEvent;
 import org.cytoscape.model.events.UnselectedNodesListener;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 
 import cytoscape.CyNetworkManager;
@@ -215,11 +217,11 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		popup.add(destroyNetworkItem);
 	}
 	
-	public void addContextMenu() {
-		
+	public void addContextMenu(TaskFactory factory, Map props) {
+		System.out.println("\n\n\n-----> Adding context menu for network panel\n\n\n");
 	}
 	
-	public void removeContextMenu() {
+	public void removeContextMenu(TaskFactory factory, Map props) {
 		
 	}
 

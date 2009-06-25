@@ -146,6 +146,13 @@
 			unbind-method="removePresentationFactory" ref="networkViewManager" />
 	</osgi:set>
 
+	<osgi:set id="networkPanelContextMenuTaskFactorySet"
+		interface="org.cytoscape.work.TaskFactory"
+		cardinality="0..N" filter="(targetComponent=networkPanel)">
+		<osgi:listener bind-method="addContextMenu"
+			unbind-method="removeContextMenu" ref="networkPanel" />
+	</osgi:set>
+
 	<!-- export task factories -->
 
 	<osgi:service id="helpContentsTaskFactoryService" ref="helpContentsTaskFactory"
@@ -292,6 +299,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Create View" />
 			<entry key="preferredMenu" value="Edit" />
+			<entry key="targetComponent" value="networkPanel" />
 		</osgi:service-properties>
 	</osgi:service>
 
