@@ -2593,4 +2593,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	public VisualLexicon getVisualLexicon() {
 		return this.dingLexicon;
 	}
+
+	public CyNetwork getSourceNetwork() {
+		// TODO Auto-generated method stub
+		return m_perspective;
+	}
+
+	public CyNetworkView getSourceView() {
+		// TODO Auto-generated method stub
+		return cyNetworkView;
+	}
 }

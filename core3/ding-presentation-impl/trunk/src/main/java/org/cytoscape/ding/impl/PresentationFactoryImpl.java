@@ -70,13 +70,15 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	/**
 	 * 
 	 */
-	public void addPresentation(Object frame, CyNetworkView view) {
+	public NetworkRenderer addPresentation(Object frame, CyNetworkView view) {
 				
 		if ( view == null )
-			throw new NullPointerException("CyNetworkView is null");
+			throw new IllegalArgumentException("Cannot create presentation for null CyNetworkView.");
+		
+		DGraphView dgv = null;
 		if ( frame instanceof JComponent ) {
 			
-			DGraphView dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,
+			dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,
 					rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,emptySpaceTFs,ti,tm);
 			viewMap.put(view, dgv);
 			view.addViewChangeListener(dgv);
@@ -92,9 +94,12 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 				JComponent component = (JComponent) frame;
 				component.add(dgv.getComponent());
 			}
+			
 		} else {
 			throw new IllegalArgumentException("frame object is not of type JInternalFrame, which is invalid for this implementation of PresentationFactory");
 		}
+		
+		return dgv;
 	}
 
 	public NavigationPresentation addNavigationPresentation(Object targetComponent, Object navBounds) {
@@ -171,7 +176,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 		emptySpaceTFs.remove(evtf);
 	}
 
-	public NetworkRenderer getPresentation(CyNetworkView view) {
+	public NetworkRenderer createPresentation(CyNetworkView view) {
 		return this.viewMap.get(view);
 	}
 
