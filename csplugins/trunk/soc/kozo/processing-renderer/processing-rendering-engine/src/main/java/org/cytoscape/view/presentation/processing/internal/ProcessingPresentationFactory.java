@@ -1,8 +1,9 @@
 package org.cytoscape.view.presentation.processing.internal;
 
-import java.awt.Window;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
@@ -25,20 +26,29 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 		return null;
 	}
 
-	public void addPresentation(Object frame, CyNetworkView view) {
+	public NetworkRenderer addPresentation(Object frame, CyNetworkView view) {
 		ProcessingNetworkRenderer presentation = new ProcessingNetworkRenderer(400);
-		System.out.println("* Creating Processing Dialog");
-		if(frame instanceof JDialog){
-			JDialog window = (JDialog)frame;
-			window.add(presentation);
+		System.out.println("====== Creating Processing Dialog =========");
+		if(frame instanceof JFrame){
+			JFrame window = (JFrame)frame;
+			window.setTitle("P Test 1");
+			window.setLayout(new BorderLayout());
+			window.add(presentation, BorderLayout.CENTER);
+			presentation.init();
+			
+			window.setPreferredSize(new Dimension(400, 400));
+			//window.add(presentation);
 			window.pack();
+			window.setLocationByPlatform(true);
 			window.setVisible(true);
 			
 			System.out.println("* Creating Processing Dialog OK!!!!!");
 		}
+		
+		return presentation;
 	}
 
-	public NetworkRenderer getPresentation(CyNetworkView view) {
+	public NetworkRenderer createPresentation(CyNetworkView view) {
 		return new ProcessingNetworkRenderer(400);
 	}
 

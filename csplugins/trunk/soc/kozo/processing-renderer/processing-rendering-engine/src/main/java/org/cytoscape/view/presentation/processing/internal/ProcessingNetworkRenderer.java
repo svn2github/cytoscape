@@ -6,6 +6,8 @@ import java.util.Properties;
 
 import javax.swing.Icon;
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.NetworkRenderer;
@@ -62,16 +64,26 @@ public class ProcessingNetworkRenderer extends PApplet implements NetworkRendere
 	}
 
 	public void setup() {
-		size(windowSize, windowSize);
+		size(400, 400);
 //		hint(ENABLE_OPENGL_4X_SMOOTH);
 		noStroke();
+		noLoop();
 	}
 
 	public void draw() {
-		background(15);
-		fill(250, 250, 250, 100);
+		background(250, 0, 0);
+		fill(0, 200, 0, 90);
+		rect(10, 10, 100, 100);
+	}
 
-		this.rect(10, 10, 100, 100);
+	public CyNetwork getSourceNetwork() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public CyNetworkView getSourceView() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1,6 +1,7 @@
 package org.cytoscape.view.presentation.processing.internal;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.presentation.PresentationFactory;
@@ -37,9 +38,8 @@ public class CreatePresentationTask implements Task {
 		
 		CyNetwork targetNetwork = manager.getCurrentNetwork();
 		System.out.println("* Creating Processing presentation for: " + targetNetwork);
-		JDialog dialog = new JDialog();
-		dialog.setTitle("Test: " + targetNetwork);
-		pFactory.addPresentation(new JDialog(), manager.getCurrentNetworkView());
+
+		pFactory.addPresentation(new JFrame("Processing Presentation 1"), manager.getCurrentNetworkView());
 		
 		System.out.println("=======> Presentation OK");
 		
