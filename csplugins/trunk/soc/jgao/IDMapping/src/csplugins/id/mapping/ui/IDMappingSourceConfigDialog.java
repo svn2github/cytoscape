@@ -58,31 +58,49 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         initComponents();
         
         srcTree.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent e) {               
-
-                Vector<IDMappingClient> clients = new Vector();
-                for (TreePath path : e.getPaths()) {
+            public void valueChanged(TreeSelectionEvent e) {
+                TreePath path = e.getPath();
+                if (path==null) {
+                    descTextArea.setText(msg);
+                } else {
                     Object nodeObj = path.getLastPathComponent();
                     if (nodeObj instanceof DefaultMutableTreeNode) {
                         DefaultMutableTreeNode node = (DefaultMutableTreeNode)nodeObj;
-                        Object clientObj = node.getUserObject();                        
+                        Object clientObj = node.getUserObject();
                         if (clientObj instanceof IDMappingClient) {
                             IDMappingClient client = (IDMappingClient)clientObj;
-                            clients.add(client);                            
+                            descTextArea.setText(client.getDescription());
+                        } else {
+                            descTextArea.setText(msg);
                         }
+                    } else {
+                        descTextArea.setText(msg);
                     }
                 }
 
-                if (clients.isEmpty()) {
-                    descTextArea.setText("Click a source of ID mapping for information.");
-                } else {
-                    descTextArea.setText("");
-                }
-                
-                for (IDMappingClient client : clients) {
-                    descTextArea.append("\n==================\n");
-                    descTextArea.append(client.getDescription());
-                }
+//                Vector<IDMappingClient> clients = new Vector();
+//                for (TreePath path : e.getPaths()) {
+//                    Object nodeObj = path.getLastPathComponent();
+//                    if (nodeObj instanceof DefaultMutableTreeNode) {
+//                        DefaultMutableTreeNode node = (DefaultMutableTreeNode)nodeObj;
+//                        Object clientObj = node.getUserObject();
+//                        if (clientObj instanceof IDMappingClient) {
+//                            IDMappingClient client = (IDMappingClient)clientObj;
+//                            clients.add(client);
+//                        }
+//                    }
+//                }
+//
+//                if (clients.isEmpty()) {
+//                    descTextArea.setText(msg);
+//                } else {
+//                    descTextArea.setText("");
+//                }
+//
+//                for (IDMappingClient client : clients) {
+//                    descTextArea.append("\n==================\n");
+//                    descTextArea.append(client.getDescription());
+//                }
 
                 descTextArea.repaint();//.repaint();
             }
@@ -133,7 +151,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         descTextArea.setColumns(20);
         descTextArea.setLineWrap(true);
         descTextArea.setRows(5);
-        descTextArea.setText("Click a source of ID mapping for information.");
+        descTextArea.setText(msg);
         descTextArea.setWrapStyleWord(true);
         descTextArea.setMinimumSize(new java.awt.Dimension(300, 500));
         descTextArea.setPreferredSize(new java.awt.Dimension(300, 500));
@@ -202,7 +220,11 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
     public boolean isCancelled() {
         return cancelled;
     }
-    
+
+    private static final String msg = "Right click on the tree node to " +
+            "add/delete/edit ID mapping sources.\n\nClick the checkboxes to " +
+            "select/unselect ID mapping sources to use.\n\nClick on a tree " +
+            "node of a ID mapping source for information about it.";
     private boolean cancelled = true;
     private IDMappingSourceSelectionTree srcTree;
     // Variables declaration - do not modify//GEN-BEGIN:variables
