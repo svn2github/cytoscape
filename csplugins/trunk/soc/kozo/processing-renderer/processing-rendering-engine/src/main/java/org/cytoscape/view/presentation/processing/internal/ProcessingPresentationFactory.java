@@ -1,6 +1,9 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_TITLE;
+
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
@@ -15,6 +18,8 @@ import org.cytoscape.view.presentation.PresentationFactory;
 
 public class ProcessingPresentationFactory implements PresentationFactory,
 		NetworkViewChangedListener {
+	
+	private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(400, 400);
 
 	public ProcessingPresentationFactory() {
 
@@ -27,16 +32,27 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 	}
 
 	public NetworkRenderer addPresentation(Object frame, CyNetworkView view) {
-		ProcessingNetworkRenderer presentation = new ProcessingNetworkRenderer(400);
+		// Check parameter
+		if ( view == null )
+			throw new IllegalArgumentException("Cannot create presentation for null CyNetworkView.");
+		
 		System.out.println("====== Creating Processing Dialog =========");
-		if(frame instanceof JFrame){
+		ProcessingNetworkRenderer presentation = null;
+		
+		if(frame instanceof Component){
+			Component c = (Component) frame;
+			final Dimension size = c.getSize();
+			presentation = new ProcessingNetworkRenderer(DEFAULT_WINDOW_SIZE, view);
+			
+			String title = view.getVisualProperty(NETWORK_TITLE);
+			
 			JFrame window = (JFrame)frame;
-			window.setTitle("P Test 1");
+			window.setTitle(title);
 			window.setLayout(new BorderLayout());
 			window.add(presentation, BorderLayout.CENTER);
 			presentation.init();
 			
-			window.setPreferredSize(new Dimension(400, 400));
+			window.setPreferredSize(DEFAULT_WINDOW_SIZE);
 			//window.add(presentation);
 			window.pack();
 			window.setLocationByPlatform(true);
@@ -49,7 +65,7 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 	}
 
 	public NetworkRenderer createPresentation(CyNetworkView view) {
-		return new ProcessingNetworkRenderer(400);
+		return new ProcessingNetworkRenderer(DEFAULT_WINDOW_SIZE, view);
 	}
 
 	public void visualPropertySet(VisualProperty vp, Object value) {
