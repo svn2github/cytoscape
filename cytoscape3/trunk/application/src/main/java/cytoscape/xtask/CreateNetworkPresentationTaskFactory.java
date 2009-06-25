@@ -5,7 +5,7 @@ import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.model.CyNetwork;
 
-public interface CreateNetworkViewTaskFactory extends TaskFactory {
+public interface CreateNetworkPresentationTaskFactory extends TaskFactory {
 
-	Task getCreateNetworkViewTask(CyNetwork net); 
+	Task getCreateNetworkPresentationTask(CyNetwork net); 
 }

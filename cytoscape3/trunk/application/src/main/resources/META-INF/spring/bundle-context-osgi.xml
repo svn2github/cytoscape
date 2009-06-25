@@ -283,11 +283,11 @@
 
 
 
-	<osgi:service id="createNetworkViewTaskFactoryService"
-		ref="createNetworkViewTaskFactory">
+	<osgi:service id="createNetworkPresentationTaskFactoryService"
+		ref="createNetworkPresentationTaskFactory">
 		<osgi:interfaces>
 			<value>org.cytoscape.work.TaskFactory</value>
-			<value>cytoscape.xtask.CreateNetworkViewTaskFactory</value>
+			<value>cytoscape.xtask.CreateNetworkPresentationTaskFactory</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="title" value="Create View" />

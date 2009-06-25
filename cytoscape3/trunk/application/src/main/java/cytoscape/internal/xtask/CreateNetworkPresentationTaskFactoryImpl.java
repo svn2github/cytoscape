@@ -34,32 +34,34 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.internal.xtask; 
+package cytoscape.internal.xtask;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
 
-import cytoscape.xtask.CreateNetworkViewTaskFactory;
+import cytoscape.CyNetworkManager;
+import cytoscape.xtask.CreateNetworkPresentationTaskFactory;
 
-public class CreateNetworkViewTaskFactoryImpl implements TaskFactory, CreateNetworkViewTaskFactory {
+public class CreateNetworkPresentationTaskFactoryImpl implements TaskFactory,
+		CreateNetworkPresentationTaskFactory {
 
 	private final CyNetworkManager netmgr;
 	private final CyNetworkViewFactory gvf;
 
-	CreateNetworkViewTaskFactoryImpl(CyNetworkViewFactory gvf, CyNetworkManager netmgr) {
+	CreateNetworkPresentationTaskFactoryImpl(CyNetworkViewFactory gvf,
+			CyNetworkManager netmgr) {
 		this.gvf = gvf;
 		this.netmgr = netmgr;
 	}
 
 	public Task getTask() {
-		return new CreateNetworkViewTask(netmgr.getCurrentNetwork(),gvf,netmgr);
+		return new CreateNetworkPresentationTask(netmgr.getCurrentNetwork(),
+				gvf, netmgr);
 	}
 
-	public Task getCreateNetworkViewTask(CyNetwork net) {
-		return new CreateNetworkViewTask(net,gvf,netmgr);
+	public Task getCreateNetworkPresentationTask(CyNetwork net) {
+		return new CreateNetworkPresentationTask(net, gvf, netmgr);
 	}
-} 
+}

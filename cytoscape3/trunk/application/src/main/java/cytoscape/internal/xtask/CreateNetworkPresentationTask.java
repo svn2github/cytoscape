@@ -34,22 +34,24 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.internal.xtask; 
+package cytoscape.internal.xtask;
 
-import cytoscape.CyNetworkManager;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskMonitor;
 
-public class CreateNetworkViewTask implements Task {
+import cytoscape.CyNetworkManager;
+
+public class CreateNetworkPresentationTask implements Task {
 
 	private final CyNetwork network;
 	private final CyNetworkManager netmgr;
 	private final CyNetworkViewFactory gvf;
 
-	CreateNetworkViewTask(CyNetwork network, CyNetworkViewFactory gvf, CyNetworkManager netmgr) {
+	public CreateNetworkPresentationTask(CyNetwork network,
+			CyNetworkViewFactory gvf, CyNetworkManager netmgr) {
 		this.network = network;
 		this.gvf = gvf;
 		this.netmgr = netmgr;
@@ -60,16 +62,18 @@ public class CreateNetworkViewTask implements Task {
 		taskMonitor.setProgress(-1.0);
 
 		try {
-			CyNetworkView view = gvf.getNetworkViewFor( network );
-			netmgr.addNetworkView( view );
+			CyNetworkView view = gvf.getNetworkViewFor(network);
+			netmgr.addNetworkView(view);
 		} catch (Exception e) {
-			throw new Exception("Could not create network view for network: " + 
-			                     network.attrs().get("name",String.class), e);
+			throw new Exception("Could not create network view for network: "
+					+ network.attrs().get("name", String.class), e);
 		}
 
 		taskMonitor.setProgress(1.0);
-		taskMonitor.setStatusMessage("Network view successfully create for:  " + network.attrs().get("name",String.class));
+		taskMonitor.setStatusMessage("Network view successfully create for:  "
+				+ network.attrs().get("name", String.class));
 	}
 
-	public void cancel() { }
-} 
+	public void cancel() {
+	}
+}

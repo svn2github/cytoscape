@@ -81,7 +81,7 @@
 	</bean>
 
 	<!-- Task Factories -->
-	<bean name="createNetworkViewTaskFactory" class="cytoscape.internal.xtask.CreateNetworkViewTaskFactoryImpl">
+	<bean name="createNetworkPresentationTaskFactory" class="cytoscape.internal.xtask.CreateNetworkPresentationTaskFactoryImpl">
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="networkManager" />
 	</bean>
@@ -110,7 +110,7 @@
 		<constructor-arg ref="networkManager" />
 		<constructor-arg ref="birdsEyeViewHandler" />
 		<constructor-arg ref="taskManagerServiceRef" />
-		<constructor-arg ref="createNetworkViewTaskFactory" />
+		<constructor-arg ref="createNetworkPresentationTaskFactory" />
 		<constructor-arg ref="networkNamingUtil" />
 	</bean>
 

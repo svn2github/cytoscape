@@ -49,7 +49,7 @@ import org.cytoscape.work.TaskManager;
 
 import cytoscape.CyNetworkManager;
 import cytoscape.util.CyNetworkNaming;
-import cytoscape.xtask.CreateNetworkViewTaskFactory;
+import cytoscape.xtask.CreateNetworkPresentationTaskFactory;
 
 /**
  * This class listens for actions from the popup menu, it is responsible for
@@ -88,13 +88,13 @@ class PopupActionListener implements ActionListener {
 	private NetworkPanel panel;
 	private CyNetworkManager netmgr;
 	private TaskManager taskManager;
-	private CreateNetworkViewTaskFactory viewFactory;
+	private CreateNetworkPresentationTaskFactory viewFactory;
 	private CyNetworkNaming naming;
 
 	private Map<String, Task> actionMap;
 	
 	public PopupActionListener(NetworkPanel panel, CyNetworkManager netmgr,
-			TaskManager taskManager, CreateNetworkViewTaskFactory viewFactory,
+			TaskManager taskManager, CreateNetworkPresentationTaskFactory viewFactory,
 			CyNetworkNaming naming) {
 		this.panel = panel;
 		this.netmgr = netmgr;
@@ -121,7 +121,7 @@ class PopupActionListener implements ActionListener {
 			if (netmgr.viewExists(vid))
 				netmgr.destroyNetworkView(netmgr.getNetworkView(vid));
 		} else if (label == CREATE_VIEW) {
-			Task t = viewFactory.getCreateNetworkViewTask(cyNetwork);
+			Task t = viewFactory.getCreateNetworkPresentationTask(cyNetwork);
 			taskManager.execute(t);
 		} else if (label == DESTROY_NETWORK) {
 			netmgr.destroyNetwork(cyNetwork);
