@@ -50,6 +50,7 @@ public class RunMCL {
 	private boolean createMetaNodes = false;
 	private boolean adjustLoops = false;
 	private boolean directedEdges = false;
+	private Double edgeCutoff = null;
 	
 	public RunMCL(String nodeClusterAttributeName, String edgeAttributeName, 
 	              double inflationParameter, int num_iterations, 
@@ -69,6 +70,7 @@ public class RunMCL {
 		this.selectedOnly = false;
 		this.createMetaNodes = false;
 		this.adjustLoops = false;
+		this.edgeCutoff = null;
 		// logger.info("InflationParameter = "+inflationParameter);
 		// logger.info("Iterations = "+num_iterations);
 		// logger.info("Clustering Threshold = "+clusteringThresh);
@@ -81,6 +83,7 @@ public class RunMCL {
 	public void createMetaNodes() { createMetaNodes = true; }
 	public void setDirectedEdges() { directedEdges = true; }
 	public void setAdjustLoops() { adjustLoops = true; }
+	public void setEdgeCutOff(Double e) { edgeCutoff = e; }
 	
 	public void run(TaskMonitor monitor)
 	{
@@ -133,6 +136,9 @@ public class RunMCL {
 			if(takeNegLOG)
 				if(edgeWeight != 0.0)
 					edgeWeight = -1*Math.log(edgeWeight);
+
+			if (edgeCutoff != null && edgeWeight < edgeCutoff.doubleValue())
+				continue;
 
 			if(edgeWeight < minEdgeWeight)
 				minEdgeWeight = edgeWeight;
