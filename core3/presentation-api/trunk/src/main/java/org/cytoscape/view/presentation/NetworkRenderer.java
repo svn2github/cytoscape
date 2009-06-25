@@ -40,6 +40,9 @@ import java.util.Properties;
 
 import javax.swing.Icon;
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 
 /**
@@ -54,6 +57,10 @@ import org.cytoscape.view.model.VisualProperty;
  * 
  */
 public interface NetworkRenderer extends Renderer {
+	
+	public CyNetwork getSourceNetwork();
+	public CyNetworkView getSourceView();
+	
 	/**
 	 * 
 	 * 

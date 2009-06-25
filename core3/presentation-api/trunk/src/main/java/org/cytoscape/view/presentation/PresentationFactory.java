@@ -8,12 +8,12 @@ public interface PresentationFactory {
      * display.  It should also be sure to register said content as a transfer
      * (Drag 'n Drop) listener, if so desired.
      */
-    public void addPresentation(Object frame, CyNetworkView view);
+    public NetworkRenderer addPresentation(Object frame, CyNetworkView view);
 
 	/**
  	 * 
 	 */
     public NavigationPresentation addNavigationPresentation(Object targetComponent, Object navBounds);
     
-    public NetworkRenderer getPresentation(CyNetworkView view);
+    public NetworkRenderer createPresentation(CyNetworkView view);
 }
