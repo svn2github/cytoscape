@@ -36,18 +36,20 @@
  */
 package cytoscape.internal.view;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
-import org.cytoscape.model.CyNetwork;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
-import cytoscape.xtask.CreateNetworkViewTaskFactory;
+import javax.swing.JMenuItem;
+
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskManager;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JMenuItem;
-
+import cytoscape.CyNetworkManager;
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.xtask.CreateNetworkViewTaskFactory;
 
 /**
  * This class listens for actions from the popup menu, it is responsible for
@@ -64,6 +66,8 @@ class PopupActionListener implements ActionListener {
 	 *
 	 */
 	public static final String CREATE_VIEW = "Create View";
+
+	public static final String CREATE_VIEW_BY = "Create View by...";
 
 	/**
 	 *
@@ -82,17 +86,27 @@ class PopupActionListener implements ActionListener {
 	 */
 	protected CyNetwork cyNetwork;
 	private NetworkPanel panel;
-	private CyNetworkManager netmgr; 
-	private TaskManager taskManager; 
-	private CreateNetworkViewTaskFactory viewFactory; 
-	private CyNetworkNaming naming; 
+	private CyNetworkManager netmgr;
+	private TaskManager taskManager;
+	private CreateNetworkViewTaskFactory viewFactory;
+	private CyNetworkNaming naming;
 
-	public PopupActionListener(NetworkPanel panel,CyNetworkManager netmgr,TaskManager taskManager,CreateNetworkViewTaskFactory viewFactory, CyNetworkNaming naming) {
+	private Map<String, Task> actionMap;
+	
+	public PopupActionListener(NetworkPanel panel, CyNetworkManager netmgr,
+			TaskManager taskManager, CreateNetworkViewTaskFactory viewFactory,
+			CyNetworkNaming naming) {
 		this.panel = panel;
 		this.netmgr = netmgr;
 		this.taskManager = taskManager;
 		this.viewFactory = viewFactory;
 		this.naming = naming;
+		
+		actionMap = new HashMap<String, Task>();
+	}
+	
+	private void createActionMap() {
+		//TODO: replace the following if statement.
 	}
 
 	/**
@@ -104,23 +118,19 @@ class PopupActionListener implements ActionListener {
 		// Figure out the appropriate action
 		if (label == DESTROY_VIEW) {
 			long vid = cyNetwork.getSUID();
-			if ( netmgr.viewExists(vid) ) 
+			if (netmgr.viewExists(vid))
 				netmgr.destroyNetworkView(netmgr.getNetworkView(vid));
-		} 
-		else if (label == CREATE_VIEW) {
+		} else if (label == CREATE_VIEW) {
 			Task t = viewFactory.getCreateNetworkViewTask(cyNetwork);
 			taskManager.execute(t);
-		}
-		else if (label == DESTROY_NETWORK) {
+		} else if (label == DESTROY_NETWORK) {
 			netmgr.destroyNetwork(cyNetwork);
-		}
-		else if (label == EDIT_TITLE) {
+		} else if (label == EDIT_TITLE) {
 			naming.editNetworkTitle(cyNetwork, panel, netmgr);
 			panel.updateTitle(cyNetwork);
 			// TODO we might consider firing an event here to let others know
 			// of the title change.
-		}
-		else {
+		} else {
 			// throw an exception here?
 			System.err.println("Unexpected network panel popup option");
 		}
@@ -133,4 +143,6 @@ class PopupActionListener implements ActionListener {
 	public void setActiveNetwork(final CyNetwork cyNetwork) {
 		this.cyNetwork = cyNetwork;
 	}
+	
+	
 }

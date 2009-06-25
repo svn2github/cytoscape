@@ -73,7 +73,6 @@ import cytoscape.events.SetSelectedNetworkViewsEvent;
 import cytoscape.events.SetSelectedNetworkViewsListener;
 import cytoscape.events.SetSelectedNetworksEvent;
 import cytoscape.events.SetSelectedNetworksListener;
-import cytoscape.internal.view.NetworkViewManager;
 
 public class NetworkManager implements CyNetworkManager {
 
@@ -87,8 +86,7 @@ public class NetworkManager implements CyNetworkManager {
 
 	private CyNetwork currentNetwork;
 	private CyNetworkView currentNetworkView;
-
-	private NetworkViewManager networkViewManager;
+	private NetworkRenderer currentPresentation;
 
 	public NetworkManager(final CyEventHelper eh) {
 		networkMap = new HashMap<Long, CyNetwork>();
@@ -97,6 +95,7 @@ public class NetworkManager implements CyNetworkManager {
 		selectedNetworks = new LinkedList<CyNetwork>();
 		currentNetwork = null;
 		currentNetworkView = null;
+		this.currentPresentation = null;
 		this.eh = eh;
 	}
 
@@ -420,16 +419,11 @@ public class NetworkManager implements CyNetworkManager {
 
 	}
 
-	public NetworkRenderer getPresentation(CyNetworkView view) {
-		if (networkViewManager == null) {
-			throw new IllegalStateException(
-					"Network View Manager is not available.");
-		} else
-			return networkViewManager.getCurrentPresentationFactory().getPresentation(
-					view);
+	public NetworkRenderer getCurrentPresentation() {
+		return currentPresentation;
 	}
-	
-	public void setNetworkViewManager(NetworkViewManager networkViewManager) {
-		this.networkViewManager = networkViewManager;
+
+	public void setCurrentPresentation(NetworkRenderer renderer) {
+		this.currentPresentation = renderer;		
 	}
 }

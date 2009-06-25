@@ -86,8 +86,7 @@ public class PrintAction extends CytoscapeAction {
 	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CyNetworkView curr = netmgr.getCurrentNetworkView();
-		NetworkRenderer pres = cyNetworkMgr.getPresentation(curr);
+		NetworkRenderer pres = cyNetworkMgr.getCurrentPresentation();
 
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 

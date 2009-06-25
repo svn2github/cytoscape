@@ -194,13 +194,7 @@ public interface CyNetworkManager {
 	 *            DOCUMENT ME!
 	 */
 	public void addNetworkView(CyNetworkView view);
-
-	/**
-	 *  Get presentation for the view.
-	 *
-	 * @param view DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public NetworkRenderer getPresentation(CyNetworkView view);
+	
+	public NetworkRenderer getCurrentPresentation();
+	public void setCurrentPresentation(NetworkRenderer renderer);
 }
