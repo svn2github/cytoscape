@@ -52,6 +52,11 @@ public abstract class EnhancedSearchQuery {
 	
 	protected CyNetwork network; // added by Srinivas.
 
+	/**
+	 *  Creates an EnhancedSearchQuery object 
+	 * @param index
+	 * @param net
+	 */
 	protected EnhancedSearchQuery(RAMDirectory index, CyNetwork net) {
 		idx = index;
 		this.network = net;
