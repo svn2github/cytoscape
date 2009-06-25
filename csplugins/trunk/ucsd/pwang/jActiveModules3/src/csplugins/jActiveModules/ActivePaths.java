@@ -54,7 +54,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	protected boolean hideOthers = true;
 	protected boolean randomize = false;
 
-	//protected ExpressionData expressionData = null;
 	protected JMenuBar menubar;
 	protected JMenu expressionConditionsMenu;
 	protected ConditionsVsPathwaysTable2 tableDialog;
@@ -73,8 +72,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	protected static int resultsCount = 1;
 	protected ActiveModulesUI parentUI;
 	
-	public MyGroupViewer myGroupViewer = null;
-	private static int groupViewerCount = 0;
 	private static int groupCount = 0;
 	
 	public static String groupViewerName = "moduleFinderViewer";
@@ -85,9 +82,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		if (cyNetwork == null || cyNetwork.getNodeCount() == 0) {
 			throw new IllegalArgumentException("Please select a network");
 		}
-		//expressionData = Cytoscape.getExpressionData();
 
-		//attrNames = expressionData.getConditionNames();
 		attrNames = (String[])apfParams.getExpressionAttributes().toArray(new String[0]);
 		Arrays.sort(attrNames);
 		if (attrNames.length == 0) {
@@ -98,10 +93,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		this.cyNetwork = cyNetwork;
 		this.parentUI = parentUI;
 		
-		// Create a groupViewer and register it
-		myGroupViewer = new MyGroupViewer(groupViewerName);
-		CyGroupManager.registerGroupViewer(myGroupViewer);
-
 	} // ctor
 
 	// --------------------------------------------------------------
@@ -128,27 +119,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		activePaths = apf.findActivePaths();
 
 		Vector groupData = createGroupData();
-		
-		//
-		printGroupData(groupData);
-		
-		
-		/*
-		tableDialog = null;
-
-		if (showTable) {
-			tableDialog = new ConditionsVsPathwaysTable2(cyNetwork,
-					attrNames, tableData, ActivePaths.this, parentUI);
-
-			showConditionsVsPathwaysTable();
-		}
-		if(apfParams.getSave() && !apfParams.getRandomizeExpression()){
-		    tableDialog.saveState(apfParams.getOutputFile());
-		}
-		if(apfParams.getExit() && !apfParams.getRandomizeExpression()){
-		    System.exit(0);
-		}	
-		*/
 		
 	}
 
@@ -217,47 +187,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		return retVect;
 	}
 
-	
-	private void printGroupData(Vector groupData){
-		Vector<CyGroup> groupVect = (Vector<CyGroup>) groupData.elementAt(0); 
-		Double[] scores = (Double[]) groupData.elementAt(1); 
-		Boolean[][] data = (Boolean[][]) groupData.elementAt(2);
-
-		System.out.println("\n================\nNumber of Groups = " + groupVect.size());
-		for (int i=0; i<groupVect.size(); i++ ){
-			CyGroup theGroup = groupVect.elementAt(i);
-			System.out.println( theGroup.getGroupName()+ ": size = "+ theGroup.getNodes().size()+ ": score =" + scores[i]);
-		}
-		System.out.println("");	
-	}
-	
-
-	public class MyGroupViewer implements CyGroupViewer {
-	    private String viewerName = ActivePaths.groupViewerName;
-	    
-	    public MyGroupViewer(String viewerName){
-	    	this.viewerName = viewerName;
-	    }
-	    
-		public String getViewerName(){
-			return viewerName;
-		}
-		
-		public void groupCreated(CyGroup group) {
-			System.out.println("MyGroupViewer: groupCreated(): "+ group.getGroupName());			
-		}
-		
-		public void groupCreated(CyGroup group, CyNetworkView myView){
-			System.out.println("MyGroupViewer: groupCreated(): "+ group.getGroupName() + " for " + myView.getTitle());	
-		}
-		public void groupWillBeRemoved(CyGroup group){
-			
-		}
-		public void groupChanged(CyGroup group, CyNode changedNode, ChangeType change){
-			
-		}
-		
-	}
 	
 	/**
 	 * Returns the best scoring path from the last run. This is mostly used by
