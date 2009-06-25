@@ -1,0 +1,236 @@
+<!-- =================================================================== -->
+<!-- Browser plugin (browser.jar) build file (Eclipse 3.1)     -->
+<!-- =================================================================== -->
+
+	<project name="browser" default="browser" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-browser">
+    <tstamp/>
+    <property name="browser.Name" value="browser"/>
+    <property name="browser.name" value="browser"/>
+    <property name="browser.version" value="0.7"/>
+    <property name="browser.year" value="200"/>
+  	
+    <echo message="Building ${browser.name} version ${browser.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="browser.root.dir" value="."/>
+    <property name="browser.lib.dir" value="${browser.root.dir}/lib"/>
+  	
+    <property name="cytoscape.dir" value="../../cytoscape"/>
+  	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+    <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
+
+  	<path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="browser.root.dir" value="./"/>
+    <property name="browser.src.dir" value="${browser.root.dir}/src"/>
+    <property name="browser.classes.dir" value="${browser.root.dir}/classes"/>
+    <property name="browser.javadoc.dir" value="${javadoc.dir}/browser"/>
+    <property name="browser.resources.dir" value="${browser.root.dir}/resources"/>
+    <property name="browser.manifest.dir" value="${browser.root.dir}/manifest"/>
+    <property name="browser.packages" value="browser.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="browser.tests.reports.dir" value="${browser.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="${cytoscape.dir}/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${cytoscape.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${cytoscape.lib.dir}/colt.jar"/>
+    
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for browser compile and javadoc -->
+    <property name="browser.excludes" value="**/notyet/*"/>
+    <property name="browser.tests.excludes" value="**/notyet/*"/>
+    <property name="browser.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="browser.project.class.path">
+      <pathelement location="${browser.classes.dir}"/>
+      <pathelement location="${cytoscape.plugin.dir}/core/filter.jar"/>
+      <pathelement location="${cytoscape.plugin.dir}/core/filters.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/tclib.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/glf.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/> 
+      <pathelement location="${cytoscape.lib.dir}/concurrent.jar"/>
+      <pathelement location="${browser.lib.dir}/exesto.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-dynamic.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-legacy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-task.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/violinstrings-1.0.2.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/fing.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
+    	<pathelement location="${cytoscape.lib.dir}/swing-layout-1.0.1.jar"/> 
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the browser project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-browser" depends="init-browser"  >
+
+   <echo message=" COMPILE browser "/>
+
+    <mkdir dir="${browser.classes.dir}"/>
+    <javac srcdir="${browser.src.dir}"
+           excludes="${browser.excludes}"
+           classpathref="browser.project.class.path"
+           destdir="${browser.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the browser.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="browser" depends="compile-browser"  >
+  	<!-- copy over images -->
+		<copy todir="${browser.classes.dir}/browser/images">
+  	            <fileset dir="${browser.root.dir}/images"/>
+  	</copy>
+	<copy todir="${browser.classes.dir}/browser" file="${browser.resources.dir}/plugin.props"/>
+    <jar destfile="browser.jar" manifest="${browser.manifest.dir}/browser.manifest">
+      <fileset
+        dir="${browser.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${browser.root.dir}/lib"
+        includes="resources/**"/>
+      <manifest>
+       <attribute name="Cytoscape-Plugin" value="browser.AttributeBrowserPlugin"/>
+      </manifest>
+    </jar>
+    <copy todir="${browser.lib.dir}" file="browser.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the browser tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="browser"  >
+    <mkdir dir="${browser.classes.dir}"/>
+    <javac srcdir="${browser.src.dir}"
+           includes="**/test/*"
+           excludes="${browser.tests.excludes}"
+           classpathref="browser.project.class.path"
+           destdir="${browser.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the browser-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="browser-tests.jar"
+         basedir="${browser.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="browser"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="browser" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="browser.project.class.path"
+           fork="true"/>
+           <arg line = "-p ${browser.lib.dir}/browser.jar"/>
+           
+
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in browser-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${browser.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${browser.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="browser.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${browser.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${browser.classes.dir}"
+           includes="**/test/*"
+           excludes="${browser.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-browser" >
+    <mkdir dir="${browser.javadoc.dir}"/>
+    <javadoc packagenames="${browser.packages}"
+             excludepackagenames="${browser.packages.excludes}"
+             sourcepath="${browser.src.dir}"
+             destdir="${browser.javadoc.dir}"
+             classpathref="browser.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${browser.Name} API"
+             doctitle="${browser.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-browser">
+    <delete dir="${browser.classes.dir}"/>
+    <delete file="browser.jar"/>
+    <delete file="${browser.lib.dir}/browser.jar"/>
+    <delete file="browser-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
