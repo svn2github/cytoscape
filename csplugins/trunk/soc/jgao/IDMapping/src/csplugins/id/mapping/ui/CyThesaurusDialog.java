@@ -359,7 +359,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         selectedNetworkList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         selectedNetworkList.setBorder(javax.swing.BorderFactory.createTitledBorder("Selected Networks"));
-        selectedNetworkData.add(Cytoscape.getCurrentNetwork());
+        CyNetwork currNet = Cytoscape.getCurrentNetwork();
+        if (currNet!=Cytoscape.getNullNetwork()) {
+            selectedNetworkData.add(currNet);
+        }
         selectedNetworkList.setCellRenderer(new ListCellRenderer() {
             private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
             public Component getListCellRendererComponent(

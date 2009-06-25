@@ -201,13 +201,22 @@ public class IDMappingClientManager {
 			return;
 		}
 
-		IDMappingClient cl = clientIDMap.get(clientID);
+		removeClient(clientIDMap.get(clientID));
+	}
 
-		if (cl != null) {
-			clientIDMap.remove(clientID);
-			clientNameMap.remove(cl.getDisplayName());
-			cl = null;
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param clientID DOCUMENT ME!
+	 */
+	public static void removeClient(IDMappingClient client) {
+		if (client == null) {
+			return;
 		}
+
+        clientIDMap.remove(client.getClientID());
+        clientNameMap.remove(client.getDisplayName());
 	}
 
     /**

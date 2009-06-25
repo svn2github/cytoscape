@@ -16,10 +16,7 @@ import csplugins.id.mapping.DelimitedTextIDMappingClient;
 import cytoscape.util.FileUtil;
 import cytoscape.util.CyFileFilter;
 
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-
-import org.bridgedb.file.IDMapperFile;
+import org.bridgedb.file.IDMapperText;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -28,17 +25,47 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author gjj
  */
-public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
+public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialog {
     //private DelimitedTextIDMappingClient idMappingClient = null;
 
-    /** Creates new form AddFileIDMappingSourceDialog */
-    public AddFileIDMappingSourceDialog(java.awt.Dialog parent, boolean modal) {
+    // add a new client
+    public DelimitedTextIDMappingClientConfigDialog(java.awt.Dialog parent, boolean modal) {
+        this(parent, modal, null);
+    }
+
+    // configure an existing client
+    public DelimitedTextIDMappingClientConfigDialog(java.awt.Dialog parent,
+            boolean modal, DelimitedTextIDMappingClient client) {
         super(parent, modal);
         initComponents();
+
+        this.client = client;
+        if (client!=null) {
+            IDMapperText idMapper = (IDMapperText)client.getIDMapper();
+            textFileTextField.setText(idMapper.getURL().toString());
+            textFileTextField.setEnabled(false);
+            sourcePanel.setVisible(false);
+            textFileButton.setVisible(false);
+            textFileTextField.setToolTipText("URL of existing IDMapping client cannot " +
+                    "be changed. Remove this client and add a new one if you want " +
+                    "to connect to a different URL.");
+
+            this.setTypeDelimiters(idMapper.getDataSourceDelimiters());
+            this.setIDDelimiters(idMapper.getIDDelimiters());
+            transitivityCheckBox.setSelected(idMapper.getTransitivity());
+
+            // show the advance option
+            optionCheckBox.setSelected(true);
+            advancedPanel.setVisible(optionCheckBox.isSelected());
+            this.pack();
+        }
+
     }
 
     /** This method is called from within the constructor to
@@ -56,8 +83,8 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
         buttonGroup3 = new javax.swing.ButtonGroup();
         buttonGroup4 = new javax.swing.ButtonGroup();
         buttonGroup5 = new javax.swing.ButtonGroup();
-        javax.swing.JPanel textFilePanel = new javax.swing.JPanel();
-        javax.swing.JPanel sourcePanel = new javax.swing.JPanel();
+        textFilePanel = new javax.swing.JPanel();
+        sourcePanel = new javax.swing.JPanel();
         javax.swing.JLabel typeLabel = new javax.swing.JLabel();
         localRadioButton = new javax.swing.JRadioButton();
         remoteRadioButton = new javax.swing.JRadioButton();
@@ -128,11 +155,6 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
         selectPanel.setLayout(new javax.swing.BoxLayout(selectPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         textFileTextField.setPreferredSize(new java.awt.Dimension(250, 20));
-        textFileTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                textFileTextFieldKeyTyped(evt);
-            }
-        });
         selectPanel.add(textFileTextField);
 
         textFileButton.setText("Select file");
@@ -172,8 +194,7 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
         okPanel.add(cancelButton);
 
         okButton.setText("   OK   ");
-        okButton.setToolTipText("\"Select at least two networks to merge\"");
-        okButton.setEnabled(false);
+        okButton.setToolTipText("");
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
@@ -230,57 +251,26 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
         buttonGroup2.add(tabTypeCheckBox);
         tabTypeCheckBox.setSelected(true);
         tabTypeCheckBox.setText("Tab");
-        tabTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterTypePanel.add(tabTypeCheckBox);
 
         buttonGroup3.add(commaTypeCheckBox);
         commaTypeCheckBox.setText("Comma");
-        commaTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterTypePanel.add(commaTypeCheckBox);
 
         buttonGroup4.add(semiTypeCheckBox);
         semiTypeCheckBox.setText("Semicolon");
-        semiTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterTypePanel.add(semiTypeCheckBox);
 
         buttonGroup5.add(spaceTypeCheckBox);
         spaceTypeCheckBox.setText("Space");
-        spaceTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterTypePanel.add(spaceTypeCheckBox);
 
         otherTypeCheckBox.setText("Other");
-        otherTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-                otherTypeTextField.setEditable(otherTypeCheckBox.isSelected());
-            }
-        });
         delemiterTypePanel.add(otherTypeCheckBox);
 
         otherTypeTextField.setEnabled(otherTypeCheckBox.isSelected());
         otherTypeTextField.setMinimumSize(new java.awt.Dimension(60, 20));
         otherTypeTextField.setPreferredSize(new java.awt.Dimension(60, 20));
-        otherTypeTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterTypePanel.add(otherTypeTextField);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -297,40 +287,20 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
 
         buttonGroup2.add(tabIDCheckBox);
         tabIDCheckBox.setText("Tab");
-        tabIDCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterIDPanel.add(tabIDCheckBox);
 
         buttonGroup3.add(commaIDCheckBox);
         commaIDCheckBox.setSelected(true);
         commaIDCheckBox.setText("Comma");
-        commaIDCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterIDPanel.add(commaIDCheckBox);
 
         buttonGroup4.add(semiIDCheckBox);
         semiIDCheckBox.setSelected(true);
         semiIDCheckBox.setText("Semicolon");
-        semiIDCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterIDPanel.add(semiIDCheckBox);
 
         buttonGroup5.add(spaceIDCheckBox);
         spaceIDCheckBox.setText("Space");
-        spaceIDCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterIDPanel.add(spaceIDCheckBox);
 
         otherIDCheckBox.setText("Other");
@@ -339,11 +309,6 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
         otherIDTextField.setEnabled(otherIDCheckBox.isSelected());
         otherIDTextField.setMinimumSize(new java.awt.Dimension(60, 20));
         otherIDTextField.setPreferredSize(new java.awt.Dimension(60, 20));
-        otherIDTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateOKButtonEnable();
-            }
-        });
         delemiterIDPanel.add(otherIDTextField);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -388,10 +353,6 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
         isLocal = false;
 }//GEN-LAST:event_remoteRadioButtonActionPerformed
 
-    private void textFileTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFileTextFieldKeyTyped
-        //updateGoButtonEnable();
-}//GEN-LAST:event_textFileTextFieldKeyTyped
-
     private void textFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFileButtonActionPerformed
         URL url;
         String strURL;
@@ -417,7 +378,6 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
             e.printStackTrace();
             return;
         }
-        updateOKButtonEnable();
 }//GEN-LAST:event_textFileButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -425,8 +385,16 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
 }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        cancelled = false;
-        setVisible(false);
+        if (verifyInput()) {
+            if (client!=null) { // config
+                IDMapperText idMapper = (IDMapperText)client.getIDMapper();
+                idMapper.setDataSourceDelimiters(getTypeDelimiters());
+                idMapper.setIDDelimiters(getIDDelimiters());
+                idMapper.setTransitivity(transitivityCheckBox.isSelected());
+            }
+            cancelled = false;
+            setVisible(false);
+        }
 }//GEN-LAST:event_okButtonActionPerformed
 
     private void optionCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionCheckBoxActionPerformed
@@ -438,23 +406,20 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
 }//GEN-LAST:event_transitivityCheckBoxActionPerformed
 
-    private void updateOKButtonEnable() {
+    private boolean verifyInput() {
         String url = textFileTextField.getText();
         if (url.length()==0) {
-            okButton.setToolTipText("Please specify the URL of the input file");
-            okButton.setEnabled(false);
-            return;
+            JOptionPane.showMessageDialog(this, "Error: Please specify the URL of the input file");
+            return false;
         }
 
         char[] typeDelimiters = getTypeDelimiters();
         if(typeDelimiters==null) {
-            okButton.setToolTipText("Please specify at least one type delimiter");
-            okButton.setEnabled(false);
-            return;
+            JOptionPane.showMessageDialog(this, "Error: Please specify at least one type delimiter");
+            return false;
         }
 
-        okButton.setToolTipText(null);
-        okButton.setEnabled(true);
+        return true;
     }
 
     private char[] getTypeDelimiters() {
@@ -478,8 +443,10 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
 
         if (otherTypeCheckBox.isSelected()) {
             String strOther = otherTypeTextField.getText();
-            if (strOther.length()>0) {
-                typeDelimiters.add(strOther.charAt(0));
+            if (strOther!=null) {
+                for (char c : strOther.toCharArray()) {
+                    typeDelimiters.add(c);
+                }
             }
         }
 
@@ -495,6 +462,35 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
         }
 
         return ret;
+    }
+
+    private void setTypeDelimiters(char[] delimiters) {    
+        if (delimiters==null) {
+            return;
+        }
+
+        Set<Character> typeDelimiters = new HashSet();
+        for (char c : delimiters) {
+            typeDelimiters.add(c);
+        }
+
+        tabTypeCheckBox.setSelected(typeDelimiters.remove('\t'));
+        commaTypeCheckBox.setSelected(typeDelimiters.remove(','));
+        semiTypeCheckBox.setSelected(typeDelimiters.remove(';'));
+        spaceTypeCheckBox.setSelected(typeDelimiters.remove(' '));
+
+        if (typeDelimiters.isEmpty()) {
+            otherTypeCheckBox.setSelected(false);
+            otherTypeTextField.setText(null);
+        } else {
+            otherTypeCheckBox.setSelected(true);
+            StringBuilder sb = new StringBuilder();
+            for (char c : typeDelimiters) {
+                sb.append(c);
+            }
+            otherTypeTextField.setText(sb.toString());
+            otherTypeTextField.setEnabled(true);
+        }
     }
 
     private char[] getIDDelimiters() {
@@ -518,8 +514,10 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
 
         if (otherIDCheckBox.isSelected()) {
             String strOther = otherIDTextField.getText();
-            if (strOther.length()>0) {
-                idDelimiters.add(strOther.charAt(0));
+            if (strOther!=null) {
+                for (char c : strOther.toCharArray()) {
+                    idDelimiters.add(c);
+                }
             }
         }
 
@@ -537,19 +535,45 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
         return ret;
     }
 
+    private void setIDDelimiters(char[] delimiters) {
+        if (delimiters==null) {
+            return;
+        }
+
+        Set<Character> idDelimiters = new HashSet();
+        for (char c : delimiters) {
+            idDelimiters.add(c);
+        }
+
+        tabIDCheckBox.setSelected(idDelimiters.remove('\t'));
+        commaIDCheckBox.setSelected(idDelimiters.remove(','));
+        semiIDCheckBox.setSelected(idDelimiters.remove(';'));
+        spaceIDCheckBox.setSelected(idDelimiters.remove(' '));
+
+        if (idDelimiters.isEmpty()) {
+            otherIDCheckBox.setSelected(false);
+            otherIDTextField.setText(null);
+        } else {
+            otherIDCheckBox.setSelected(true);
+            StringBuilder sb = new StringBuilder();
+            for (char c : idDelimiters) {
+                sb.append(c);
+            }
+            otherIDTextField.setText(sb.toString());
+            otherIDTextField.setEnabled(true);
+        }
+    }
+
     public DelimitedTextIDMappingClient getIDMappingClient() {
+        if (client!=null) {
+            return client; // configure
+        }
+        
         char[] typeDelimiters = getTypeDelimiters();
         char[] idDelimiters = getIDDelimiters();
 
         //TODO: delimiters cannot be the same or contain each other for type and id
         
-        int nTypeDelimiter = typeDelimiters.length;
-        int nIDDelimiter = idDelimiters.length;
-
-        if (nTypeDelimiter==0 || nIDDelimiter==0) {
-            return null;
-        }
-
         URL url;
         try {
             url = new URL(textFileTextField.getText());
@@ -579,6 +603,7 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
 
     private boolean isLocal = true;
     private boolean cancelled = true;
+    private final DelimitedTextIDMappingClient client;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel advancedPanel;
@@ -602,11 +627,13 @@ public class AddFileIDMappingSourceDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton remoteRadioButton;
     private javax.swing.JCheckBox semiIDCheckBox;
     private javax.swing.JCheckBox semiTypeCheckBox;
+    private javax.swing.JPanel sourcePanel;
     private javax.swing.JCheckBox spaceIDCheckBox;
     private javax.swing.JCheckBox spaceTypeCheckBox;
     private javax.swing.JCheckBox tabIDCheckBox;
     private javax.swing.JCheckBox tabTypeCheckBox;
     private javax.swing.JButton textFileButton;
+    private javax.swing.JPanel textFilePanel;
     private javax.swing.JTextField textFileTextField;
     private javax.swing.JCheckBox transitivityCheckBox;
     // End of variables declaration//GEN-END:variables

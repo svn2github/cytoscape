@@ -30,7 +30,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,64,0,0,1,-39"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,112,0,0,1,-27"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
@@ -43,10 +43,6 @@
           </Border>
         </Property>
       </Properties>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="21" weightX="1.0" weightY="0.0"/>
@@ -56,10 +52,6 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="sourcePanel">
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
               <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="3" insetsLeft="3" insetsBottom="3" insetsRight="3" anchor="10" weightX="1.0" weightY="0.0"/>
@@ -121,9 +113,6 @@
                   <Dimension value="[250, 20]"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="textFileTextFieldKeyTyped"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="textFileButton">
               <Properties>
@@ -161,8 +150,7 @@
         <Component class="javax.swing.JButton" name="okButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="   OK   "/>
-            <Property name="toolTipText" type="java.lang.String" value="&quot;Select at least two networks to merge&quot;"/>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>
@@ -247,9 +235,6 @@
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Tab"/>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="tabTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();&#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="commaTypeCheckBox">
                   <Properties>
@@ -258,9 +243,6 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Comma"/>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="commaTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();&#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="semiTypeCheckBox">
                   <Properties>
@@ -269,9 +251,6 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Semicolon"/>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="semiTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();&#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="spaceTypeCheckBox">
                   <Properties>
@@ -280,17 +259,11 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Space"/>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="spaceTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();&#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="otherTypeCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Other"/>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="otherTypeCheckBox.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();&#xa;                otherTypeTextField.setEditable(otherTypeCheckBox.isSelected());&#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JTextField" name="otherTypeTextField">
                   <Properties>
@@ -302,9 +275,6 @@
                       <Dimension value="[60, 20]"/>
                     </Property>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="otherTypeTextField.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();                &#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>
@@ -333,9 +303,6 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Tab"/>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="tabIDCheckBox.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();&#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="commaIDCheckBox">
                   <Properties>
@@ -345,9 +312,6 @@
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Comma"/>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="commaIDCheckBox.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();&#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="semiIDCheckBox">
                   <Properties>
@@ -357,9 +321,6 @@
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Semicolon"/>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="semiIDCheckBox.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();&#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="spaceIDCheckBox">
                   <Properties>
@@ -368,9 +329,6 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Space"/>
                   </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="spaceIDCheckBox.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();&#xa;            }&#xa;        });"/>
-                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="otherIDCheckBox">
                   <Properties>
@@ -387,7 +345,6 @@
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="otherIDTextField.addActionListener(new java.awt.event.ActionListener() {&#xa;            public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;                updateOKButtonEnable();                &#xa;            }&#xa;        });"/>
                     <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="otherIDTextField.setEnabled(otherIDCheckBox.isSelected());"/>
                   </AuxValues>
                 </Component>
