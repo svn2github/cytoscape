@@ -26,11 +26,25 @@
 
   <packaging>bundle</packaging>
   <build>
+  	<resources>
+  		<resource>
+  			<directory>src/main/resources</directory>
+  		</resource>
+  		<resource>
+  			<directory>.</directory>
+  			<includes>
+  				<include>plugin.xml</include>
+  				<include>plugin.properties</include>
+  				<include>icons/**</include>
+  			</includes>
+  		</resource>
+  	</resources>
   	<plugins>
   		<plugin>
   			<groupId>org.ops4j</groupId>
   			<artifactId>maven-pax-plugin</artifactId>
   			<version>1.4</version>
+  			<extensions>true</extensions>
   			<inherited>false</inherited>
   		</plugin>
   		<plugin>
@@ -38,6 +52,22 @@
   			<artifactId>maven-bundle-plugin</artifactId>
   			<version>1.4.3</version>
   			<inherited>false</inherited>
+  			<configuration>
+          <instructions>
+            <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+            <Bundle-Version>${pom.version}</Bundle-Version>
+            <!--
+             | assume public classes are in the top package, and private classes are under ".internal"
+            -->
+            <Export-Package>!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}"</Export-Package>
+            <Private-Package>${bundle.namespace}.internal.*</Private-Package>
+            <!--
+             | each module can override these defaults in their osgi.bnd file
+            -->
+            <_include>-osgi.bnd</_include>
+          </instructions>
+        </configuration>
+  			
   		</plugin>
   	</plugins>
   </build>
@@ -109,38 +139,13 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-    	<groupId>org.cytoscape</groupId>
-    	<artifactId>model-api</artifactId>
-    	<version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-    	<groupId>cytoscape</groupId>
-    	<artifactId>application</artifactId>
-    	<version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
     	<groupId>org.apache.lucene</groupId>
     	<artifactId>lucene</artifactId>
     	<version>2.4</version>
     </dependency>
     <dependency>
     	<groupId>org.cytoscape</groupId>
-    	<artifactId>core-task-impl</artifactId>
-    	<version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.cytoscape</groupId>
-    	<artifactId>io-impl</artifactId>
-    	<version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.cytoscape</groupId>
-    	<artifactId>viewmodel-impl</artifactId>
-    	<version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.cytoscape</groupId>
-    	<artifactId>model-impl</artifactId>
+    	<artifactId>model-api</artifactId>
     	<version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
