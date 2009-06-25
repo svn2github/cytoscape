@@ -178,6 +178,10 @@ public class TargetAttributeSelectionTable extends JTable{
     }
 
     public List<DataSource> getTgtIDTypes() {
+        if (supportedIDType.isEmpty()) {
+            return null;
+        }
+
         List<DataSource> ret = new Vector();
         for (int i=0; i<rowCount; i++) {
             DataSource ds = (DataSource)idTypeComboBoxes.get(i).getSelectedItem();
@@ -207,6 +211,10 @@ public class TargetAttributeSelectionTable extends JTable{
     }
 
     public Map<DataSource, String> getMapIDTypeAttrName() {
+        if (supportedIDType.isEmpty()) {
+            return null;
+        }
+        
         Map<DataSource, String> ret = new HashMap();
         for (int i=0; i<rowCount; i++) {
             DataSource ds = (DataSource)idTypeComboBoxes.get(i).getSelectedItem();

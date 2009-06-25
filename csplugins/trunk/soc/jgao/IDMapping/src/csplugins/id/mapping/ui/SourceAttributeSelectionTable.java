@@ -159,9 +159,9 @@ public class SourceAttributeSelectionTable extends JTable{
 
     public Map<String,Set<DataSource>> getSourceNetAttrType() {
         Map<String,Set<DataSource>> ret = new HashMap();
-        if (supportedIDType.isEmpty()) {
-            return ret;
-        }
+//        if (supportedIDType.isEmpty()) {
+//            return ret;
+//        }
         
         for (int i=0; i<rowCount; i++) {
             String attr = (String)attributeComboBoxes.get(i).getSelectedItem();
@@ -170,7 +170,10 @@ public class SourceAttributeSelectionTable extends JTable{
                 attr = cytoscape.data.Semantics.CANONICAL_NAME;
             }
 
-            Set<DataSource> types = typeComboBoxes.get(i).getSelectedItem();
+            Set<DataSource> types = null;
+            if (!supportedIDType.isEmpty()) {
+                types = typeComboBoxes.get(i).getSelectedItem();
+            }
             ret.put(attr, types);
         }
 

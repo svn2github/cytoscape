@@ -62,16 +62,26 @@ public class DelimitedTextIDMappingClient extends FileIDMappingClient {
             final char[] dataSourceDelimiters,
             final char[] idDelimiters,
             final boolean transitivity) {
-        super(url.toString(),
-              url.toString(),
-              new IDMapperText(url,
+        this (new IDMapperText(url,
                                dataSourceDelimiters,
                                idDelimiters,
                                transitivity));
+//        super(url.toString(),
+//              url.toString(),
+//              new IDMapperText(url,
+//                               dataSourceDelimiters,
+//                               idDelimiters,
+//                               transitivity));
         //TODO: set ModuleProperties
 
     }
 
+    public DelimitedTextIDMappingClient(final IDMapperText idMapper) {
+        super(idMapper.getURL().toString(),
+                idMapper.getURL().toString(),
+                idMapper);
+        //TODO: set ModuleProperties
+    }
 
     /**
      *

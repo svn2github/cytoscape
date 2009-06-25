@@ -117,7 +117,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         sourcePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select source network/attribute/IDType(s)"));
         sourcePanel.setMinimumSize(new java.awt.Dimension(500, 120));
-        sourcePanel.setPreferredSize(new java.awt.Dimension(500, 130));
+        sourcePanel.setPreferredSize(new java.awt.Dimension(500, 140));
         sourcePanel.setLayout(new java.awt.GridBagLayout());
 
         sourceScrollPane.setMinimumSize(new java.awt.Dimension(300, 100));
@@ -149,13 +149,13 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.25;
+        gridBagConstraints.weighty = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(sourcePanel, gridBagConstraints);
 
         destinationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select destination attribute/IDType(s)"));
         destinationPanel.setMinimumSize(new java.awt.Dimension(500, 130));
-        destinationPanel.setPreferredSize(new java.awt.Dimension(500, 150));
+        destinationPanel.setPreferredSize(new java.awt.Dimension(500, 140));
         destinationPanel.setLayout(new java.awt.GridBagLayout());
 
         destinationScrollPane.setMinimumSize(new java.awt.Dimension(300, 100));
@@ -188,7 +188,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.25;
+        gridBagConstraints.weighty = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(destinationPanel, gridBagConstraints);
 
@@ -233,7 +233,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select networks"));
         selectNetworkPanel.setMinimumSize(new java.awt.Dimension(490, 100));
-        selectNetworkPanel.setPreferredSize(new java.awt.Dimension(490, 100));
+        selectNetworkPanel.setPreferredSize(new java.awt.Dimension(700, 120));
         selectNetworkPanel.setLayout(new java.awt.GridBagLayout());
 
         unselectedNetworkScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
@@ -403,7 +403,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(selectNetworkPanel, gridBagConstraints);
 
@@ -466,6 +466,29 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_OKBtnActionPerformed
 
     private boolean verifyUserInput() {
+        if (selectedNetworkData.getNetworkList().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select at least one network.");
+            return false;
+        }
+
+        if (IDMappingClientManager.getSupportedSrcDataSources().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No source ID type available. Please configure the sources of ID mapping first.");
+            return false;
+        }
+
+        if (IDMappingClientManager.getSupportedTgtDataSources().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No target ID type available. Please configure the sources of ID mapping first.");
+            return false;
+        }
+
+        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceNetAttrType();
+        for (Set<DataSource> dss : mapSrcAttrIDTypes.values()) {
+            if (dss.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please select at least one ID type for each source attribute.");
+                return false;
+            }
+        }
+
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         List<String> existAttrNames = Arrays.asList(nodeAttributes.getAttributeNames());
         List<String> attrNames = targetAttributeSelectionTable.getTgtAttrNames();
@@ -475,6 +498,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         }
         if (attrNames.contains("ID")) {
             JOptionPane.showMessageDialog(this, "\"ID\" is researved and cannot be used for the new attribute name.");
+            return false;
+        }
+        if (attrNames.contains("")) {
+            JOptionPane.showMessageDialog(this, "The new attribute name cannot be empty.");
             return false;
         }
 
