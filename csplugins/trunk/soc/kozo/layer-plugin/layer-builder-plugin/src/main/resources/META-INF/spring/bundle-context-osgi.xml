@@ -12,11 +12,11 @@
 		interface="org.cytoscape.session.CySessionManager"/>
 	-->
 
-	<osgi:service id="ExampleServiceService" ref="ExampleService"
+	<osgi:service id="ExampleServiceService" ref="ExampleService">
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Build Multi Layer Network ..." />
-			<entry key="preferredMenu" value="Plugins" />
+			<entry key="preferredMenu" value="Plugins.Create Multylayer" />
 		</osgi:service-properties>
 	</osgi:service>
 
