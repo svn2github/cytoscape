@@ -2,26 +2,77 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <parent>
-    <relativePath>../poms/compiled/</relativePath>
-    <groupId>org.cytoscape.search-impl.build</groupId>
-    <artifactId>compiled-bundle-settings</artifactId>
+    <groupId>org.cytoscape</groupId>
+    <artifactId>parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.cytoscape.search</bundle.symbolicName>
+    <bundle.symbolicName>org.cytoscape.search-impl</bundle.symbolicName>
     <bundle.namespace>org.cytoscape.search</bundle.namespace>
     <spring.maven.artifact.version>2.5.4</spring.maven.artifact.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.cytoscape.search-impl</groupId>
-  <artifactId>org.cytoscape.search</artifactId>
-  <version>1.0-SNAPSHOT</version>
-
+  <groupId>org.cytoscape</groupId>
   <name>${bundle.symbolicName}</name>
+  <version>1.0-SNAPSHOT</version>
+  <artifactId>search-impl</artifactId>
 
   <packaging>bundle</packaging>
+  <build>
+  	<resources>
+  		<resource>
+  			<directory>src/main/resources</directory>
+  		</resource>
+  		<resource>
+  			<directory>.</directory>
+  			<includes>
+  				<include>plugin.xml</include>
+  				<include>plugin.properties</include>
+  				<include>icons/**</include>
+  			</includes>
+  		</resource>
+  	</resources>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.ops4j</groupId>
+  			<artifactId>maven-pax-plugin</artifactId>
+  			<version>1.4</version>
+  			<extensions>true</extensions>
+  			<inherited>false</inherited>
+  		</plugin>
+  		<plugin>
+  			<groupId>org.apache.felix</groupId>
+  			<artifactId>maven-bundle-plugin</artifactId>
+  			<version>1.4.3</version>
+  			<inherited>false</inherited>
+  			      <!--
+         | the following instructions build a simple set of public/private classes into an OSGi bundle
+        -->
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+            <Bundle-Version>${pom.version}</Bundle-Version>
+            <_include>-osgi.bnd</_include>
+          </instructions>
+        </configuration>
+  			
+  		</plugin>
+  	</plugins>
+  </build>
+  <repositories>
+  	<repository>
+  		<id>cytoscape_snapshots</id>
+  		<name>Cytoscape Snapshots</name>
+  		<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+  	</repository>
+  	<repository>
+  		<id>cytoscape_releases</id>
+  		<name>Cytoscape Releases</name>
+  		<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+  	</repository>
+  </repositories>
 
   <dependencies>
     <!--
@@ -33,7 +84,7 @@
       <optional>true</optional>
     </dependency>
     -->
-    <dependency>
+    <!-- <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>osgi_R4_core</artifactId>
       <optional>true</optional>
@@ -43,6 +94,7 @@
       <artifactId>osgi_R4_compendium</artifactId>
       <optional>true</optional>
     </dependency>
+    -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -75,6 +127,16 @@
       <version>${spring.maven.artifact.version}</version>
       <scope>provided</scope>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+    	<groupId>org.cytoscape</groupId>
+    	<artifactId>search-api</artifactId>
+    	<version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.cytoscape</groupId>
+    	<artifactId>model-impl</artifactId>
+    	<version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
