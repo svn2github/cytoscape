@@ -560,8 +560,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 			if (value instanceof VisualProperty<?>) {
 				vp = (VisualProperty<?>) value;
 
-				NetworkRenderer presentation = cyNetworkManager
-						.getPresentation(mainView.getView());
+				NetworkRenderer presentation = cyNetworkManager.getCurrentPresentation();
 				icon = presentation.getDefaultIcon(vp);
 			}
 			setText(vp.getDisplayName() + "  =  " + selectedStyle.getDefaultValue(vp));

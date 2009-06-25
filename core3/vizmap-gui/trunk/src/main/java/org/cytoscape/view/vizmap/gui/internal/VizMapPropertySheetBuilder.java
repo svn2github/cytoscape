@@ -294,8 +294,7 @@ public class VizMapPropertySheetBuilder implements
 
 		VisualMappingFunction<?, ?> mapping = null;
 
-		VisualLexicon lex = this.cyNetworkManager.getPresentation(
-				defViewPanel.getView()).getVisualLexicon();
+		VisualLexicon lex = this.cyNetworkManager.getCurrentPresentation().getVisualLexicon();
 
 		for (VisualProperty<?> type : lex.getAllVisualProperties()) {
 			mapping = selectedStyle.getVisualMappingFunction(type);
