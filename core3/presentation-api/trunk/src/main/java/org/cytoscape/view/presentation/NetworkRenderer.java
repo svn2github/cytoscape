@@ -42,13 +42,16 @@ import javax.swing.Icon;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 
 /**
- * Represents an presentation, i.e., actual 2D/3D visualization.
+ * Represents a presentation, i.e., actual 2D/3D visualization.
  * 
  * Rendering engines should implement this interface.
+ * 
+ * In Cytoscape 3, presentation is a leaf of tree: 
+ *  Network model <--- view <--- presentation
+ * 
  * 
  * @author mes
  * @author kono
@@ -57,10 +60,21 @@ import org.cytoscape.view.model.VisualProperty;
  * 
  */
 public interface NetworkRenderer extends Renderer {
-	
+
+	/**
+	 * Returns model used to create this presentaiton.
+	 * 
+	 * @return model (CyNetwork).
+	 */
 	public CyNetwork getSourceNetwork();
+
+	/**
+	 * Returns backend view model of this presentation.
+	 * 
+	 * @return view model of this presentation.
+	 */
 	public CyNetworkView getSourceView();
-	
+
 	/**
 	 * 
 	 * 
@@ -89,16 +103,18 @@ public interface NetworkRenderer extends Renderer {
 	 * @return Image object created from current window.
 	 */
 	public Image getImage(int width, int height);
-	
+
 	/**
-	 *  For a given Visual Property, render an Icon based on the default value
-	 *  of the Visual Property.
-	 *
-	 * @param vp Visual Property.
-	 *
-	 * @return  DOCUMENT ME!
-	 *
-	 * @exception IllegalArgumentException if vp is not in the lexicon.
+	 * For a given Visual Property, render an Icon based on the default value of
+	 * the Visual Property.
+	 * 
+	 * @param vp
+	 *            Visual Property.
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @exception IllegalArgumentException
+	 *                if vp is not in the lexicon.
 	 */
 	public Icon getDefaultIcon(VisualProperty<?> vp);
 }
