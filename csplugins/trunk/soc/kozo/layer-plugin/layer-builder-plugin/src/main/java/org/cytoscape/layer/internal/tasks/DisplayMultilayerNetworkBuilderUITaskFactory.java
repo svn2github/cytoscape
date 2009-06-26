@@ -5,15 +5,15 @@ import org.cytoscape.work.TaskFactory;
 
 import cytoscape.CyNetworkManager;
 
-public class LoadMultilayerNetworksTaskFactoryImpl implements TaskFactory {
+public class DisplayMultilayerNetworkBuilderUITaskFactory implements TaskFactory {
 	
 	private CyNetworkManager netmgr;
 
-	public LoadMultilayerNetworksTaskFactoryImpl(CyNetworkManager netmgr) {
+	public DisplayMultilayerNetworkBuilderUITaskFactory(CyNetworkManager netmgr) {
 		this.netmgr = netmgr;
 	}
 
 	public Task getTask() {
-		return new LoadMultilayerNetworksTask(netmgr);
+		return new DisplayMultilayerNetworkBuilderUITask(netmgr);
 	}
 }
