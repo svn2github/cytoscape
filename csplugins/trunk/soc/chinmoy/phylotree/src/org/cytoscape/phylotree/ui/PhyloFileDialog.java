@@ -1,6 +1,7 @@
 package org.cytoscape.phylotree.ui;
 
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import cytoscape.Cytoscape;
 import java.io.File;
 import org.cytoscape.phylotree.actions.PhyloTreeImportAction;
@@ -9,12 +10,16 @@ public class PhyloFileDialog extends JDialog{
 
 	PhyloTreeImportAction parent;
 	File selectedFile = null;
-	String format = "Phylip";
+	String format = "Phylip"; // this is the only supported format for now
 	   /** Creates new form PhyloFileDialog */
     public PhyloFileDialog(PhyloTreeImportAction pParent) {
         super(Cytoscape.getDesktop(), true);
         this.parent = pParent;
         initComponents();
+        
+        buttonGroup1.add(rbtPhylip);
+        buttonGroup1.add(rbtOther);
+        
         this.setTitle("Select Phylogenetic Tree File");
         this.setSize(400,200);
         this.setLocationRelativeTo(Cytoscape.getDesktop());
@@ -131,7 +136,15 @@ public class PhyloFileDialog extends JDialog{
     }// </editor-fold>                        
 
     private void btnFileActionPerformed(java.awt.event.ActionEvent evt) {                                        
-    	System.out.println("btnFile is clicked");
+    	JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
+		chooser.setAcceptAllFileFilterUsed(false);
+		//chooser.addChoosableFileFilter(new TxtFileFilter());
+	    int returnVal = chooser.showOpenDialog(this);
+	    if(returnVal == JFileChooser.APPROVE_OPTION) {
+	    	selectedFile = chooser.getSelectedFile();
+	    }
+	 
+	    tfFileName.setText(selectedFile.getName());	    
     }                                       
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {                                          
@@ -139,8 +152,6 @@ public class PhyloFileDialog extends JDialog{
     }                                         
 
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {                                      
-    	//
-    	System.out.println("btnOk is clicked");
     	this.dispose();
        	parent.ImportTreeFromFile(this.selectedFile, this.format);	
     }                                     
