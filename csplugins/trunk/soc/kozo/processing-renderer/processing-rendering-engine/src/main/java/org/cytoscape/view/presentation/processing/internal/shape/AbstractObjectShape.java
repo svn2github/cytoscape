@@ -3,8 +3,19 @@ package org.cytoscape.view.presentation.processing.internal.shape;
 import java.awt.Color;
 
 import org.cytoscape.view.presentation.processing.ObjectShape;
+import org.cytoscape.view.presentation.processing.PickableObject;
 
-public abstract class AbstractObjectShape implements ObjectShape {
+public abstract class AbstractObjectShape implements ObjectShape, PickableObject {
+	
+	protected float width;
+	protected float height;
+	protected float depth;
+	
+	protected float x, y, z;
+	
+	protected boolean picked;
+	
+	protected Color basicColor;
 
 	// This should be implemented in each shape implementation classes.
 	public abstract void draw();
@@ -62,6 +73,10 @@ public abstract class AbstractObjectShape implements ObjectShape {
 	public void setY(float y) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void pick(float x, float y){
+		
 	}
 
 }
