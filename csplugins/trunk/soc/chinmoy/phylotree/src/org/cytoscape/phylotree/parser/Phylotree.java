@@ -20,6 +20,6 @@ public interface Phylotree {
 	 *  @param layout DOCUMENT ME!
 	 *  @return  List of Edges (Node pairs)
 	 */	
-	public List getEdgeAttribute(PhylotreeEdge pEdge);
+	public List<Object> getEdgeAttribute(PhylotreeEdge pEdge);
 	
 }
