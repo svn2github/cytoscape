@@ -5,11 +5,11 @@ import org.cytoscape.work.TaskMonitor;
 
 import cytoscape.CyNetworkManager;
 
-public abstract class AbstractCreationLayer implements Task{
+public abstract class AbstractCreateMultilayerNetwork implements Task{
 	
 	protected CyNetworkManager netmgr;
 	
-	public AbstractCreationLayer(CyNetworkManager netmgr){
+	public AbstractCreateMultilayerNetwork(CyNetworkManager netmgr){
 		this.netmgr=netmgr;
 	}
 	public abstract void run(TaskMonitor monitor) throws Exception;
