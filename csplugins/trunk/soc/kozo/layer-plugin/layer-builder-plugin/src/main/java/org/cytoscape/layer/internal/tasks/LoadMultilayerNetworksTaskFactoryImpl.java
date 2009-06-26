@@ -1,4 +1,4 @@
-package org.cytoscape.layer.loadnetworks;
+package org.cytoscape.layer.internal.tasks;
 
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;

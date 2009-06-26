@@ -26,8 +26,6 @@
 
 	<!-- this creates a LoadPropsInterceptor object -->
 	
-	<bean id="ExampleService" 
-	      class="org.cytoscape.layer.internal.ExampleServiceImpl">
-	</bean>
+
 
 </beans>
