@@ -64,16 +64,69 @@ public class PhylipTreeImpl implements Phylotree {
 		}
 
 	}
-
-	/*
-	 * parse()
-	 * Traverses the tree string 'treeStr'and creates appropriate nodes and edges
-	 */
-	private void parse()
+	
+	private List<String> convertTreeStringToList(String treeString)
 	{
+		List<String> returnList = new LinkedList<String>();
+		// Split the tree string into a list
+				String [] substrings = treeString.split(":|,|;");
+
+
+				// Parse the input into a list ignoring ',' but adding names, lengths and parentheses
+
+				for(int i = 0; i<substrings.length; i++)
+				{
+					substrings[i] = substrings[i].trim();
+
+					// For every parenthesis encountered, add it to the list
+					if (substrings[i].charAt(0) == '(')
+					{
+						returnList.add("(");
+						for (int k = 1; k<substrings[i].length(); k++)
+						{
+							if(substrings[i].charAt(k) == '(')
+							{
+								returnList.add("("); 
+							}
+							else
+							{
+								// Split the remainder of the string around the '(' if a name is encountered
+								// Add the name to the list 
+								String[] tempSub = substrings[i].split("\\(+");
+
+								returnList.add(tempSub[1]);
+								break;
+
+
+							}
+						}         
+					}
+
+					// For every name/length encountered, splice off the ')' and add it to the list
+					else if(substrings[i].charAt(0) != '(' && substrings[i].charAt(0) != ')')
+					{
+						String[] tempSub2 = substrings[i].split("\\)");
+						returnList.add(tempSub2[0]);
+					}
+
+					// For every ')' encountered add it to the list
+					if(substrings[i].charAt(substrings[i].length()-1)== ')')
+					{
+						returnList.add(")");
+					}
+				}
+
+
+	
+		return returnList;
+	}
+
+	private void readListIntoStack(List<String> list)
+	{
+		
 		Stack <String> stack = new Stack<String>();  
 		Stack<PhylipNode> parentNodeStack = new Stack<PhylipNode>();
-		List<String> list = new LinkedList<String>();
+		
 		List<PhylipNode> childNodeList = new LinkedList<PhylipNode>();
 		// ChildNodeList records the children of a node for the purpose of creating edges.
 		// It is cleared after the edges for each node are created. 
@@ -88,57 +141,6 @@ public class PhylipTreeImpl implements Phylotree {
 		Iterator<Double> branchLengthListIterator;
 
 		Double branchLength = 0.0;
-
-		// Split the tree string into a list
-		String [] substrings = treeStr.split(":|,|;");
-
-
-		// Parse the input into a list ignoring ',' but adding names, lengths and parentheses
-
-		for(int i = 0; i<substrings.length; i++)
-		{
-			substrings[i] = substrings[i].trim();
-
-			// For every parenthesis encountered, add it to the list
-			if (substrings[i].charAt(0) == '(')
-			{
-				list.add("(");
-				for (int k = 1; k<substrings[i].length(); k++)
-				{
-					if(substrings[i].charAt(k) == '(')
-					{
-						list.add("("); 
-					}
-					else
-					{
-						// Split the remainder of the string around the '(' if a name is encountered
-						// Add the name to the list 
-						String[] tempSub = substrings[i].split("\\(+");
-
-						list.add(tempSub[1]);
-						break;
-
-
-					}
-				}         
-			}
-
-			// For every name/length encountered, splice off the ')' and add it to the list
-			else if(substrings[i].charAt(0) != '(' && substrings[i].charAt(0) != ')')
-			{
-				String[] tempSub2 = substrings[i].split("\\)");
-				list.add(tempSub2[0]);
-			}
-
-			// For every ')' encountered add it to the list
-			if(substrings[i].charAt(substrings[i].length()-1)== ')')
-			{
-				list.add(")");
-			}
-		}
-
-
-		// Traverse the list into node and edge lists using a stack
 
 		iterator = list.iterator();
 		int parentNodeIndex = 0;
@@ -248,8 +250,22 @@ public class PhylipTreeImpl implements Phylotree {
 				}
 			}
 
-		} 
+		}
+	}
+	/*
+	 * parse()
+	 * Traverses the tree string 'treeStr'and reads it into a list
+	 * Then reads the list into a stack creating nodes and edges when required.
+	 */
+	private void parse()
+	{
+		
+		// Parse the treeStr into a list of subelements
+		List<String> list = convertTreeStringToList(treeStr);
 
+		// Traverse the list into node and edge lists using a stack
+		readListIntoStack(list);
+		 
 
 	}
 
