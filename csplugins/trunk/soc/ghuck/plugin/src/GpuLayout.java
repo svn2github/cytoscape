@@ -1,4 +1,23 @@
+/**************************************************************************************
+Copyright (C) Apeksha Godiyal, 2008
+Copyright (C) Gerardo Huck, 2009
 
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+See licence.h for more information.
+**************************************************************************************/
 
 
 import java.util.*;
@@ -17,110 +36,100 @@ import cytoscape.CyEdge;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.Semantics;
 
+import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import javax.swing.SwingConstants;
+import javax.swing.JPanel;
+
+
+
 /**
 
 
  */
 
 
-public class GpuLayout extends CytoscapePlugin {
-    
+public class GpuLayout extends    CytoscapePlugin 
+				  //implements CyGroupViewer,
+				  //NodeContextMenuListener,
+				  //PropertyChangeListener 
+{
     /**
      * This constructor creates an action and adds it to the Plugins menu.
      */
     public GpuLayout() {
-	// Show message on screen
-	String message = "Hello World!";
-        //System.out.println(message);
-	// use the CytoscapeDesktop as parent for a Swing dialog
+	
+	/*  Show message on screen    */
+	
+	String message = "GPU Graph Layout Loaded!";
+
+	// Use the CytoscapeDesktop as parent for a Swing dialog
 	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+
+	
+	/*    Add Button to Menu     */
 
         //create a new action to respond to menu activation
         GpuLayoutAction action = new GpuLayoutAction();
+
         //set the preferred menu
-        action.setPreferredMenu("Layouts");
+	action.setPreferredMenu("Layout");
+
         //and add it to the menus
-        Cytoscape.getDesktop().getCyMenus().addAction(action);
+	Cytoscape.getDesktop().getCyMenus().addAction(action);
+
     }
+
+    class MyPanel extends JPanel {
+	public MyPanel() {
+	}
+    }
+
+
+
+
     
     /**
      * Gives a description of this plugin.
      */
-    public String describe() {
+    /*        public String describe() {
         StringBuffer sb = new StringBuffer();
         sb.append("Bla Bla... ");
         sb.append(" more Bla.. ");
         return sb.toString();
     }
+    */
+    
         
     /**
      * This class gets attached to the menu item.
      */
-    public class GpuLayoutAction extends CytoscapeAction {
-        
-        /**
-         * The constructor sets the text that should appear on the menu item.
-         */
-        public GpuLayoutAction() {super("GPU Layout");}
-        
-        /**
-         * This method is called when the user selects the menu item.
-         */
-        public void actionPerformed(ActionEvent ae) {
-            //get the network object; this contains the graph
-            CyNetwork network = Cytoscape.getCurrentNetwork();
-            //get the network view object
-            CyNetworkView view = Cytoscape.getCurrentNetworkView();
-            //can't continue if either of these is null
-            if (network == null || view == null) {return;}
-            //put up a dialog if there are no selected nodes
-            if (view.getSelectedNodes().size() == 0) {
-                JOptionPane.showMessageDialog(view.getComponent(),
-                        "Please select one or more nodes.");
-            }
-            
-            //a container to hold the objects we're going to select
-            Set nodeViewsToSelect = new HashSet();
-            //iterate over every node view
-            for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext(); ) {
-                NodeView nView = (NodeView)i.next();
-                //first get the corresponding node in the network
-                CyNode node = (CyNode)nView.getNode();
-                // get the neighbors of that node
-                List neighbors = network.neighborsList(node);
-                // and iterate over the neighbors
-                for (Iterator ni = neighbors.iterator(); ni.hasNext(); ) {
-                    CyNode neighbor = (CyNode)ni.next();
-		    // get the view on this neighbor
-		    NodeView neighborView = view.getNodeView(neighbor);
-		    //and add that view to our container of objects to select
-		    nodeViewsToSelect.add(neighborView);
-                }
-            }
-            //now go through our container and select each view
-            for (Iterator i = nodeViewsToSelect.iterator(); i.hasNext(); ) {
-                NodeView nView = (NodeView)i.next();
-                nView.setSelected(true);
-            }
-            //tell the view to redraw since we've changed the selection
-            view.redrawGraph(false, true);
-        }
-        
-        /**
-         * Gets the canonical name of the given node from the network object
-         * and returns a String holding just the last letter of that name.
-         *
-         * Returns null if a valid name cannot be obtained.
-         */
-        private String getLastLetter(CyNetwork network, CyNode node) {
-            String canonicalName = (String)network.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
-            //return nothing if we can't get a valid name
-            if (canonicalName == null || canonicalName.length() == 0) {return null;}
-            //extract the last letter
-            int length = canonicalName.length();
-            String lastLetter = canonicalName.substring(length-1);
-            return lastLetter;
-        }
+    public class GpuLayoutAction extends CytoscapeAction 
+    {
+	
+	/**
+	 * The constructor sets the text that should appear on the menu item.
+	 */
+    public GpuLayoutAction() {
+	super("GPU Layout Plugin");
+    }
+	
+	/**
+	 * This method is called when the user selects the menu item.
+	 */
+	public void actionPerformed(ActionEvent ae) {
+
+	/*  Show message on screen    */
+	
+	String message = "Execute GPU Layout!";
+	// use the CytoscapeDesktop as parent for a Swing dialog
+	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+
+	
+
+
+	}
+	
     }
 }
 

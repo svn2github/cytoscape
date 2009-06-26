@@ -82,7 +82,7 @@
 
   <!-- If plugin.prop exist, copy it to build directory  -->	
   <target name="copy_plugin_prop" if="plugin.prop.present">
-    <copy todir="${build.dir}/cytoscape/tutorial01" file="${root.dir}/plugin.props"/>	
+    <copy todir="${build.dir}/" file="${root.dir}/plugin.props"/>	
   </target>
 
   <!-- If there are any image files, copy them to build directory  -->	
