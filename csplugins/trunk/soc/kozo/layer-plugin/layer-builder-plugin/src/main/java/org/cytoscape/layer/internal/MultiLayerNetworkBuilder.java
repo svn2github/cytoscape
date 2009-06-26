@@ -1,4 +1,4 @@
-package org.cytoscape.layer.internal.ui;
+package org.cytoscape.layer.internal;
 
 /**
  * Build actual network here
