@@ -4,56 +4,250 @@ package org.cytoscape.groups.results.internal.ui;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import metaNodePlugin2.model.MetaNode;
+
+//import metaNodePlugin2.model.MetaNode;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.groups.CyGroup;
 import cytoscape.util.CyNetworkNaming;
+import cytoscape.view.CyNetworkView;
 
+//Cytoscape group system imports
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupViewer;
+import cytoscape.groups.CyGroupViewer.ChangeType;
+
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupChangeListener;
+
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
 /**
  * The GroupPanel is the implementation for the Cytopanel that presents the
  * group list mechanism to the user.
  */
 public class GroupPanel extends JPanel implements ListSelectionListener,
-		ActionListener {
+		ActionListener, CyGroupChangeListener, CyGroupViewer {
 
+	private CytoPanel cytoPanel; 
+	public String viewerName = "moduleFinderViewer";
+	private static boolean registeredWithGroupPanel = false;
+
+	// Controlling variables
+	public static boolean multipleEdges = false;
+	public static boolean recursive = true;
+	
+	private Method updateMethod = null;
+	private CyGroupViewer namedSelectionViewer = null;
+	
+	// State values
+	public static final int EXPANDED = 1;
+	public static final int COLLAPSED = 2;
+
+	
 	public GroupPanel() {
 		super();
 
 		initComponents();
+		btnCollapseAsMetaNode.setEnabled(false);
+		btnCreateNetworkView.setEnabled(false);
 
-		btnCreateMetaNode.addActionListener(this);
+		btnCollapseAsMetaNode.addActionListener(this);
 		btnCreateNetworkView.addActionListener(this);
 		resultPanel.getTable().getSelectionModel().addListSelectionListener(
 				this);
+		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
+		CyGroupManager.addGroupChangeListener(this);
+		
+		//register groupViewer
+		CyGroupManager.registerGroupViewer(this);
+		
+		// register it to namedSelection
+		registerWithGroupPanel();
 	}
 
+	// copy of metaNodePlugin2.MetaNodePlugin2.registerWithGroupPanel()
+	private void registerWithGroupPanel() {
+		if (registeredWithGroupPanel) {
+			try {
+				updateMethod.invoke(namedSelectionViewer);
+			} catch (Exception e) {
+				System.err.println(e);
+			}
+			return;
+		}
+
+		namedSelectionViewer = CyGroupManager.getGroupViewer("namedSelection");
+		if (namedSelectionViewer == null)
+			return;
+
+		if (namedSelectionViewer.getClass().getName().equals("namedSelection.NamedSelection")) {
+			// Get the addViewerToGroupPanel method
+
+			try {
+				updateMethod = namedSelectionViewer.getClass().getMethod("updateGroupPanel");
+				Method regMethod = namedSelectionViewer.getClass().getMethod("addViewerToGroupPanel", CyGroupViewer.class);
+				regMethod.invoke(namedSelectionViewer, (CyGroupViewer)this);
+				registeredWithGroupPanel = true;
+			} catch (Exception e) {
+				System.err.println(e);
+				return;
+			}
+			// Invoke it
+		}
+	}
+
+	
+	//required by CyGroupChangeListener
+	public void groupChanged(CyGroup group, CyGroupChangeListener.ChangeType change) { 
+		if ( change == CyGroupChangeListener.ChangeType.GROUP_CREATED ) {
+			resultPanel.addGroup(group);
+			// set visible
+			if ( cytoPanel.getState() == CytoPanelState.HIDE ){
+				cytoPanel.setState( CytoPanelState.DOCK );
+			}
+		} else if ( change == CyGroupChangeListener.ChangeType.GROUP_DELETED ) {
+			resultPanel.removeGroup(group);
+		} else if ( change == CyGroupChangeListener.ChangeType.GROUP_MODIFIED ) {
+			//System.out.println("groupChanged event received, should update resltPanel " + group.toString());
+		} else {
+			//System.err.println("unsupported change type: " + change);
+		}
+	}
+	
+	//
+	// These are required by the CyGroupViewer interface
+	/**
+	 * Return the name of our viewer
+	 *
+	 * @return viewer name
+	 */
+	public String getViewerName() { return viewerName; }
+	
+
+	/**
+	 * This is called when a new group has been created that
+	 * we care about.  If we weren't building our menu each
+	 * time, this would be used to update the list of groups
+	 * we present to the user.
+	 *
+	 * @param group the CyGroup that was just created
+	 */
+	public void groupCreated(CyGroup group) { 
+
+		//System.out.println("groupCreated()");
+	}
+
+	/**
+	 * This is called when a new group has been created that
+	 * we care about.  This version of the groupCreated
+	 * method is called by XGMML and provides the CyNetworkView
+	 * that is in the process of being created.
+	 *
+	 * @param group the CyGroup that was just created
+	 * @param view the CyNetworkView that is being created
+	 */
+	public void groupCreated(CyGroup group, CyNetworkView myview) { 
+		//System.out.println("groupCreated() Apple");
+
+	}
+
+	/**
+	 * This is called when a group we care about is about to 
+	 * be deleted.  If we weren't building our menu each
+	 * time, this would be used to update the list of groups
+	 * we present to the user.
+	 *
+	 * @param group the CyGroup that will be deleted
+	 */
+	public void groupWillBeRemoved(CyGroup group) {
+		//System.out.println("groupWillBeRemoved()");
+	}
+
+
+	
+	/**
+	 * This is called when a group we care about has been
+	 * changed (usually node added or deleted).
+	 *
+	 * @param group the CyGroup that has changed
+	 * @param node the CyNode that caused the change
+	 * @param change the change that occured
+	 */
+	public void groupChanged(CyGroup group, CyNode node, CyGroupViewer.ChangeType change) { 
+		//System.out.println("groupChanged()");
+	}
+
+
+	
+	// handle button-click event
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if (obj instanceof JButton) {
 			JButton btn = (JButton) obj;
 			int selected = resultPanel.getTable().getSelectedRow();
+			
+			if (selected == -1){
+				// No network is selected
+				return;
+			}
+			
 			CyGroup group = (CyGroup) resultPanel.getTable().getModel()
 					.getValueAt(selected, 1);
-			if (btn == btnCreateMetaNode)
-				createMetaNode(group);
+			if (btn == btnCollapseAsMetaNode)
+				collapseAsMetaNode(group);
 			else if (btn == btnCreateNetworkView)
 				createNetworkView(group);
 		}
 	}
 
-	private void createMetaNode(CyGroup pGroup) {
-		System.out.println("Create metaNode for group: "
-				+ pGroup.getGroupName());
+	private void collapseAsMetaNode(CyGroup pGroup) {
+		
+		// check if the metaNode already existed, if it is, do nothing
+		MetaNode theMetaNode = MetaNode.getMetaNode(pGroup);
+		if (theMetaNode != null){
+			System.out.println("collapseAsMetaNode: already existed");
+			return;
+		}
+		else {
+			System.out.println("collapseAsMetaNode: create new metaNode");
+		}
+		
+		// from metaNodePlugin2.MetaNodePlugin2		
+		// Careful!  If one of the nodes is an expanded (but not hidden) metanode,
+		// we need to collapse it first
+		for (CyNode node: (List<CyNode>)new ArrayList(pGroup.getNodes())) {
+			MetaNode mn = MetaNode.getMetaNode(node);
+			if (mn == null) continue;
+			// Is this an expanded metanode?
+			if (mn.getCyGroup().getState() == EXPANDED) {
+				// Yes, collapse it
+				mn.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
+			}
+		}
+
+		MetaNode newNode = new MetaNode(pGroup);
+		//groupCreated(pGgroup);
+		newNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
+
+		registerWithGroupPanel();
+		
 	}
 
+	
 	private void createNetworkView(CyGroup pGroup) {
 
 		List<CyNode> nodes = pGroup.getNodes();
@@ -103,7 +297,7 @@ public class GroupPanel extends JPanel implements ListSelectionListener,
 		GridBagConstraints gridBagConstraints;
 
 		pnlButtons = new javax.swing.JPanel();
-		btnCreateMetaNode = new javax.swing.JButton();
+		btnCollapseAsMetaNode = new javax.swing.JButton();
 		btnCreateNetworkView = new javax.swing.JButton();
 
 		resultPanel = new GroupViewerPanel();
@@ -119,10 +313,10 @@ public class GroupPanel extends JPanel implements ListSelectionListener,
 
 		pnlButtons.setLayout(new java.awt.GridBagLayout());
 
-		btnCreateMetaNode.setText("Create MetaNode");
+		btnCollapseAsMetaNode.setText("collapse as metanode");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 20);
-		pnlButtons.add(btnCreateMetaNode, gridBagConstraints);
+		pnlButtons.add(btnCollapseAsMetaNode, gridBagConstraints);
 
 		btnCreateNetworkView.setText("Create Subnetwork");
 		pnlButtons.add(btnCreateNetworkView, new java.awt.GridBagConstraints());
@@ -135,7 +329,7 @@ public class GroupPanel extends JPanel implements ListSelectionListener,
 	}// </editor-fold>
 
 	// Variables declaration - do not modify
-	private javax.swing.JButton btnCreateMetaNode;
+	private javax.swing.JButton btnCollapseAsMetaNode;
 	private javax.swing.JButton btnCreateNetworkView;
 	private javax.swing.JPanel pnlButtons;
 
@@ -155,22 +349,20 @@ public class GroupPanel extends JPanel implements ListSelectionListener,
 			// Reset selection state
 			network.unselectAllNodes();
 			int selected = resultPanel.getTable().getSelectedRow();
+			if (selected == -1){
+				btnCollapseAsMetaNode.setEnabled(false);
+				btnCreateNetworkView.setEnabled(false);
+				return;
+			}
+			else {
+				btnCollapseAsMetaNode.setEnabled(true);
+				btnCreateNetworkView.setEnabled(true);
+			}
+			
 			CyGroup group = (CyGroup) resultPanel.getTable().getModel()
 					.getValueAt(selected, 1);
 			network.setSelectedNodeState(group.getNodes(), true);
 			Cytoscape.getCurrentNetworkView().updateView();
 		}
-	}
-
-	public void groupCreated(CyGroup group) {
-		resultPanel.addGroup(group);
-	}
-
-	public void groupRemoved(CyGroup group) {
-		resultPanel.removeGroup(group);
-	}
-
-	public void groupChanged(CyGroup group) {
-		System.out.println("groupChanged event for group " + group.toString());
 	}
 }
