@@ -1,6 +1,6 @@
 package org.cytoscape.view.presentation.processing.internal.shape;
 
-import java.awt.Color;
+import java.awt.Paint;
 
 import org.cytoscape.view.presentation.processing.ObjectShape;
 import org.cytoscape.view.presentation.processing.PickableObject;
@@ -9,37 +9,51 @@ import processing.core.PApplet;
 
 public abstract class AbstractObjectShape implements ObjectShape, PickableObject {
 	
-	protected PApplet p;
+	// Parent component, which is the Processing canvas.
+	protected final PApplet p;
 	
-	protected float width;
-	protected float height;
-	protected float depth;
+	// Human readable name of this shape.  This is mandatory and immutable.
+	protected String displayName;
 	
+	// Dimension of this object
+	protected float width, height, depth;
+	
+	// Location
 	protected float x, y, z;
 	
+	// Selection status
 	protected boolean picked;
 	
-	protected Color basicColor;
+	// Basic Paint of this object.  Will be used if texture is not available.
+	protected Paint basicPaint;
+	
+	// Opacity of this shape.
+	protected float opacity;
 	
 	public AbstractObjectShape(PApplet parent) {
+		this(0, 0, 0, parent);
+	}
+	
+	public AbstractObjectShape(float x, float y, float z, PApplet parent) {
 		this.p = parent;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
 	public abstract void draw();
 
-	public Color getColor() {
+	public Paint getPaint() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public float getDepth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return depth;
 	}
 
 	public String getDisplayName() {
-		// TODO Auto-generated method stub
-		return null;
+		return displayName;
 	}
 
 	public float getHeight() {
@@ -58,18 +72,15 @@ public abstract class AbstractObjectShape implements ObjectShape, PickableObject
 	}
 
 	public float getX() {
-		// TODO Auto-generated method stub
-		return 0;
+		return x;
 	}
 
 	public float getY() {
-		// TODO Auto-generated method stub
-		return 0;
+		return y;
 	}
 
 	public float getZ() {
-		// TODO Auto-generated method stub
-		return 0;
+		return z;
 	}
 
 	public void rotate(float angle) {
@@ -82,9 +93,7 @@ public abstract class AbstractObjectShape implements ObjectShape, PickableObject
 		
 	}
 
-	public void setColor(Color color) {
-		// TODO Auto-generated method stub
-		
+	public void setPaint(Paint paint) {		
 	}
 
 	public void setDepth(float depth) {
@@ -118,26 +127,19 @@ public abstract class AbstractObjectShape implements ObjectShape, PickableObject
 	}
 
 	public void setX(float x) {
-		// TODO Auto-generated method stub
-		
+		this.x = x;
 	}
 
 	public void setY(float y) {
-		// TODO Auto-generated method stub
-		
+		this.y = y;
 	}
 
 	public void setZ(float z) {
-		// TODO Auto-generated method stub
-		
+		this.z = z;
 	}
 
 	public void pick(float x, float y) {
 		// TODO Auto-generated method stub
 		
 	}
-
-
-
-	
 }

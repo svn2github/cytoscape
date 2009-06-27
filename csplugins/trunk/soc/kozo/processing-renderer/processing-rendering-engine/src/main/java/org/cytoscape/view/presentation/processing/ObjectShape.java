@@ -1,6 +1,6 @@
 package org.cytoscape.view.presentation.processing;
 
-import java.awt.Color;
+import java.awt.Paint;
 
 /**
  * 
@@ -33,8 +33,8 @@ public interface ObjectShape {
 	public void setZ(final float z);
 	public void setLocation(float x, float y, float z);
 	
-	public Color getColor();
-	public void setColor(Color color);
+	public Paint getPaint();
+	public void setPaint(Paint paint);
 	
 	public void setOpacity(float alpha);
 	public float getOpacity();

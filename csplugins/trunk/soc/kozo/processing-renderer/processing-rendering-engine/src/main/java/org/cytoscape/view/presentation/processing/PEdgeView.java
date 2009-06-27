@@ -1,5 +1,8 @@
 package org.cytoscape.view.presentation.processing;
 
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.view.model.View;
+
 
 /**
  * Node View rendered by Processing engine
@@ -7,6 +10,8 @@ package org.cytoscape.view.presentation.processing;
  * @author kono
  *
  */
-public interface PEdgeView {
+public interface PEdgeView extends PViewObject {
+	
+	public View<CyEdge> getViewModel();
 
 }

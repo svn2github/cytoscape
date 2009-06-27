@@ -16,7 +16,7 @@ public class Cube extends AbstractObjectShape {
 	public void draw() {
 
 		p.beginShape(PApplet.QUADS);
-		p.texture(texture);
+		//p.texture(texture);
 
 		// +Z "front" face
 		p.vertex(-1, -1, 1, 0, 0);
