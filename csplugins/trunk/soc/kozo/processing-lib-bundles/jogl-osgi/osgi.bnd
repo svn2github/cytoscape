@@ -1,0 +1,46 @@
+#-----------------------------------------------------------------
+# Ue this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+DynamicImport-Package: *
+
+Import-Package: *;resolution:=optional
+
+Export-Package: com.sun.gluegen.runtime, com.sun.opengl.*, javax.media.opengl.*
+
+Bundle-NativeCode: native/macosx/libgluegen-rt.jnilib;\
+ native/macosx/libjogl_cg.jnilib;\
+ native/macosx/libjogl_awt.jnilib;\
+ native/macosx/libjogl.jnilib;\
+ osname=mac os x;\
+ processor=x86;\
+ processor=ppc,\
+ native/linux/x86/libgluegen-rt.so;\
+ native/linux/x86/libjogl_cg.so;\
+ native/linux/x86/libjogl_awt.so;\
+ native/linux/x86/libjogl.so;\
+ osname=linux;\
+ processor=x86,\
+ native/linux/x86-64/libgluegen-rt.so;\
+ native/linux/x86-64/libjogl_cg.so;\
+ native/linux/x86-64/libjogl_awt.so;\
+ native/linux/x86-64/libjogl.so;\
+ osname=linux;\
+ processor=x86-64,\
+ native/windows/x86/gluegen-rt.dll;\
+ native/windows/x86/jogl_cg.dll;\
+ native/windows/x86/jogl_awt.dll;\
+ native/windows/x86/jogl.dll;\
+ osname=win32;\
+ processor=x86,\
+ native/windows/x86-64/gluegen-rt.dll;\
+ native/windows/x86-64/jogl_cg.dll;\
+ native/windows/x86-64/jogl_awt.dll;\
+ native/windows/x86-64/jogl.dll;\
+ osname=win32;\
+ processor=x86-64 
+ 
+Embed-Dependency:\
+ jogl;groupId=net.java.jogl;inline=true,\
+ gluegen-rt;groupId=net.java.jogl;inline=true
+
