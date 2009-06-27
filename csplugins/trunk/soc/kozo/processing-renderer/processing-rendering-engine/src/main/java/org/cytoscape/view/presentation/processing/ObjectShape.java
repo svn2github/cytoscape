@@ -17,6 +17,7 @@ public interface ObjectShape {
 	
 	/**
 	 * Name of this shape, such as ellipse, rectangle, triangle, etc.
+	 * This is immutable.
 	 * 
 	 * @return Name of shape as string
 	 * 
@@ -25,17 +26,31 @@ public interface ObjectShape {
 	
 	public float getX();
 	public float getY();
+	public float getZ();
 	
 	public void setX(final float x);
 	public void setY(final float y);
+	public void setZ(final float z);
+	public void setLocation(float x, float y, float z);
 	
 	public Color getColor();
 	public void setColor(Color color);
 	
+	public void setOpacity(float alpha);
+	public float getOpacity();
+	
 	public float getWidth();
 	public float getHeight();
+	public float getDepth();
 	
 	public void setWidth(final float width);
 	public void setHeight(final float height);
+	public void setDepth(final float depth);
+	public void setSize(float w, float h, float d);
+	
+	public void scale(float s);
+	public void rotate(float angle);
+	
+	
 	
 }
