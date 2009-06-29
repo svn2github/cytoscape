@@ -22,7 +22,7 @@ public class DisplayMultilayerNetworkBuilderUITask implements Task {
 	 * Executes Task.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		LayerBuilderDialog dialog = new LayerBuilderDialog(desktop.getJFrame(), true);
+		LayerBuilderDialog dialog = new LayerBuilderDialog(desktop.getJFrame(), true, manager);
 		dialog.setTitle("Multilayer Network Builder");
 		dialog.setVisible(true);
 	}
