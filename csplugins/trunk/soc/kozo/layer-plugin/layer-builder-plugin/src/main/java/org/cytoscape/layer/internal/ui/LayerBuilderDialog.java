@@ -12,8 +12,12 @@
 package org.cytoscape.layer.internal.ui;
 
 import java.awt.Frame;
+import java.util.Set;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
+
+import org.cytoscape.model.CyNetwork;
 
 import cytoscape.CyNetworkManager;
 
@@ -22,12 +26,12 @@ import cytoscape.CyNetworkManager;
  * @author kozo
  */
 public class LayerBuilderDialog extends JDialog {
-	
+
 	/*
 	 * Mandatory parameters
 	 */
 	private CyNetworkManager manager;
-	
+	private DefaultListModel availableNetworkListModel;
 
 	/** Creates new form NewJDialog */
 
@@ -35,7 +39,17 @@ public class LayerBuilderDialog extends JDialog {
 			CyNetworkManager manager) {
 		super(parent, modal);
 		this.manager = manager;
+
 		initComponents();
+	}
+
+	private void buildListModels() {
+		this.availableNetworkListModel = new DefaultListModel();
+		final Set<CyNetwork> availableNetworks = manager.getNetworkSet();
+
+		for (CyNetwork net : availableNetworks) {
+			availableNetworkListModel.addElement(net.toString());
+		}
 	}
 
 	/**
@@ -153,18 +167,8 @@ public class LayerBuilderDialog extends JDialog {
 		AvailableNetworkPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Available Networks"));
 
-		AvailableNetworkList.setModel(new javax.swing.AbstractListModel() {
-			String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4",
-					"Item 5" };
+		AvailableNetworkList.setModel(availableNetworkListModel);
 
-			public int getSize() {
-				return strings.length;
-			}
-
-			public Object getElementAt(int i) {
-				return strings[i];
-			}
-		});
 		AvailableNetworkScrollPane.setViewportView(AvailableNetworkList);
 
 		org.jdesktop.layout.GroupLayout AvailableNetworkPanelLayout = new org.jdesktop.layout.GroupLayout(
@@ -505,7 +509,6 @@ public class LayerBuilderDialog extends JDialog {
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllIntegratedNetworkButtonActionPerformed
 		// TODO add your handling code here:
 	}// GEN-LAST:event_MoveAllIntegratedNetworkButtonActionPerformed
-
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JList AvailableNetworkList;
