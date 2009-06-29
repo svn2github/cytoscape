@@ -16,7 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-See licence.h for more information.
 **************************************************************************************/
 
 
@@ -64,183 +63,180 @@ public class GpuLayout extends CytoscapePlugin {
     private LayoutProperties layoutProperties;
 
 	
+    /**
+     * 
+     */
+    public GpuLayout() {
+	//  Show message on screen    
+	String message = "GPU Graph Layout Loaded!\n" 
+	    +  coarseGraphSize + "\n" 
+	    + interpolationIterations + "\n"  
+	    + levelConvergence + "\n"         
+	    + edgeLen + "\n"                  
+	    + initialNoIterations; 
+	// Use the CytoscapeDesktop as parent for a Swing dialog
+	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+	
+	// Add Layout to menu
+	CyLayouts.addLayout(new ForceDirected(), "GPU Assisted Layout");
+    }
+    
+
+
+    class ForceDirected extends AbstractLayout{
+
+	/**
+	 * Creates a new layout object.
+	 */
+	public ForceDirected() {
+	    super();
+	    layoutProperties = new LayoutProperties(getName());
+	    initialize_properties();
+	}
+
+	/**
+	 * Adds tunable objects for adjusting plugin parameters
+	 * Initializes default values for those parameters
+	 */
+	protected void initialize_properties() {
+	    
+	    // Add new properties to layout 
+	    layoutProperties.add(new Tunable("coarseGraphSize", "Coarse Graph Size "               , Tunable.INTEGER, new Integer(50) ));
+	    layoutProperties.add(new Tunable("interpolationIterations", "Interpolation Iterations ", Tunable.INTEGER, new Integer(50) ));
+	    layoutProperties.add(new Tunable("levelConvergence", "Level Convergence "              , Tunable.INTEGER, new Integer(2)  ));
+	    layoutProperties.add(new Tunable("edgeLen", "Ideal Edge Length "                       , Tunable.INTEGER, new Integer(5)  ));
+	    layoutProperties.add(new Tunable("initialNoIterations", "Initial Number of Iterations ", Tunable.INTEGER, new Integer(300)));
+	    
+	    // Initialize layout properties
+	    layoutProperties.initializeProperties();
+	    
+	    // Force the settings update
+	    updateSettings(true);
+	}
+
+	/**
+	 * getName is used to construct property strings
+	 * for this layout.
+	 */
+	public  String getName() {
+	    return "Force Directed GPU Layout";
+	}
+	
+	/**
+	 * toString is used to get the user-visible name
+	 * of the layout
+	 */
+	public  String toString(){
+	    return "Force Directed Layout";
+	}
+
+	/**
+	 *  
+	 */
+	public void updateSettings() {
+	    updateSettings(false);
+	}
+	
 	/**
 	 * 
 	 */
-	public GpuLayout() {
+	public void updateSettings(boolean force) {
+	    layoutProperties.updateValues();
+	    	    
+	    // Get coarseGraphSize
+	    Tunable t1 = layoutProperties.get("coarseGraphSize");
+	    if ((t1 != null) && (t1.valueChanged() || force))
+		coarseGraphSize = ((Integer) t1.getValue()).intValue();
+	    
+	    // Get interpolationIterations
+	    Tunable t2 = layoutProperties.get("interpolationIterations");
+	    if ((t2 != null) && (t2.valueChanged() || force))
+		interpolationIterations = ((Integer) t2.getValue()).intValue();
+	    
+	    // Get levelConvergence
+	    Tunable t3 = layoutProperties.get("levelConvergence");
+	    if ((t3 != null) && (t3.valueChanged() || force))
+		levelConvergence = ((Integer) t3.getValue()).intValue();
+	    
+	    // Get edgeLen
+	    Tunable t4 = layoutProperties.get("edgeLen");
+	    if ((t4 != null) && (t4.valueChanged() || force))
+		edgeLen = ((Integer) t4.getValue()).intValue();
+	    
+	    // Get initialNoIterations
+	    Tunable t5 = layoutProperties.get("initialNoIterations");
+	    if ((t5 != null) && (t5.valueChanged() || force))
+		initialNoIterations = ((Integer) t5.getValue()).intValue();
+	    
 	    //  Show message on screen    
-	    String message = "GPU Graph Layout Loaded!\n" 
-		           +  coarseGraphSize + "\n" 
-		           + interpolationIterations + "\n"  
-		           + levelConvergence + "\n"         
-		           + edgeLen + "\n"                  
-                           + initialNoIterations; 
+	    String message = "Preferences updated\n" 
+		+  coarseGraphSize + "\n" 
+		+ interpolationIterations + "\n"  
+		+ levelConvergence + "\n"         
+		+ edgeLen + "\n"                  
+		+ initialNoIterations; 
+
 	    // Use the CytoscapeDesktop as parent for a Swing dialog
 	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
-
-	    // Add Layout to menu
-	    CyLayouts.addLayout(new ForceDirected(), "GPU Assisted Layout");
+	    
 	}
 	
-	class ForceDirected extends AbstractLayout{
-		/**
-		 * Creates a new layout object.
-		 */
-		public ForceDirected() {
-			super();
-			layoutProperties = new LayoutProperties(getName());
-			initialize_properties();
-		}
-		
-		protected void initialize_properties() {
-			layoutProperties.add(new Tunable("", "Coarse Graph Size"           , Tunable.INTEGER, new Integer(45) ));
-			layoutProperties.add(new Tunable("", "Interpolation Iterations"    , Tunable.INTEGER, new Integer(50) ));
-			layoutProperties.add(new Tunable("", "Level Convergence"           , Tunable.INTEGER, new Integer(2)  ));
-			layoutProperties.add(new Tunable("", "Ideal Edge Length"           , Tunable.INTEGER, new Integer(5)  ));
-			layoutProperties.add(new Tunable("", "Initial Number of Iterations", Tunable.INTEGER, new Integer(300)));
-
-
-			layoutProperties.initializeProperties();
-
-			updateSettings(true);
-		}
-
-		/**
-		 *  DOCUMENT ME!
-		 */
-		public void updateSettings() {
-			updateSettings(false);
-		}
-
-		/**
-		 *  DOCUMENT ME!
-		 *
-		 * @param force DOCUMENT ME!
-		 */
-		public void updateSettings(boolean force) {
-			layoutProperties.updateValues();
-			Tunable t;
-
-			// Get coarseGraphSize
-			t = layoutProperties.get("Coarse Graph Size");
-			if ((t != null) && (t.valueChanged() || force))
-			    coarseGraphSize = ((Integer) t.getValue()).intValue();
-
-			// Get interpolationIterations
-			t = layoutProperties.get("Interpolation Iterations");
-			if ((t != null) && (t.valueChanged() || force))
-			    interpolationIterations = ((Integer) t.getValue()).intValue();
-
-			// Get levelConvergence
-			t = layoutProperties.get("Level Convergence");
-			if ((t != null) && (t.valueChanged() || force))
-			    levelConvergence = ((Integer) t.getValue()).intValue();
-
-			// Get edgeLen
-			t = layoutProperties.get("Ideal Edge Length");
-			if ((t != null) && (t.valueChanged() || force))
-			    edgeLen = ((Integer) t.getValue()).intValue();
-
-			// Get initialNoIterations
-			t = layoutProperties.get("Initial Number of Iterations");
-			if ((t != null) && (t.valueChanged() || force))
-			    initialNoIterations = ((Integer) t.getValue()).intValue();
-	
-			//  Show message on screen    
-			String message = "Preferences updated\n" 
-			    +  coarseGraphSize + "\n" 
-			    + interpolationIterations + "\n"  
-			    + levelConvergence + "\n"         
-			    + edgeLen + "\n"                  
-			    + initialNoIterations; 
-			// Use the CytoscapeDesktop as parent for a Swing dialog
-			JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
-			
-		}
-
-		/**
-		 * Get the settings panel for this layout
-		 */
-		public JPanel getSettingsPanel() {
-			JPanel panel = new JPanel(new GridLayout(0, 5));
-			panel.add(layoutProperties.getTunablePanel());
-
-			return panel;
-		}
-
-		
-		/**
-		 *  DOCUMENT ME!
-		 */
-		public void revertSettings() {
-			layoutProperties.revertProperties();
-		}
-
-		public LayoutProperties getSettings() {
-			return layoutProperties;
-		}
-
-		/**
-		 *  DOCUMENT ME!
-		 */
-		public void construct() {
-			taskMonitor.setStatus("Initializing");
-			initialize(); // Calls initialize_local
-
-	
-			System.out.println("do layout here: groupcount = " + groupcount);
-
-			if (groupcount<2) {
-				return;
-			}
-
-			// Get the group center X
-			double[] group_center_x = new double[groupcount];
-			
-			for (int i=0; i<groupcount; i++) {
-				group_center_x[i] = i* maxwidth/(groupcount*2); 
-			}
-			
-			double group_width = (maxwidth/groupcount)*0.6/2;
-						
-			Iterator<Node> it = network.nodesIterator();
-			
-			int group_id = 0;
-			
-			while (it.hasNext()) {
-				if (canceled)
-					return;
-
-				group_id = (int) Math.round((groupcount-1)*Math.random());	
-				
-				double x = group_center_x[group_id] + (Math.random()-0.5)*group_width;
-				
-				Node node = (Node) it.next();
-			
-				//System.out.println(group_id);
-				
-				networkView.getNodeView(node).setXPosition(x);
-			}
-		}
-
-		private double maxwidth = 5000.0;
-
-		/**
-		 * getName is used to construct property strings
-		 * for this layout.
-		 */
-		public  String getName() {
-			return "Force Directed GPU Layout";
-		}
-
-		/**
-		 * toString is used to get the user-visible name
-		 * of the layout
-		 */
-		public  String toString(){
-			return "Force Directed Layout";
-		}
+	/**
+	 * Get the settings panel for this layout
+	 */
+	public JPanel getSettingsPanel() {
+	    JPanel panel = new JPanel(new GridLayout(0, 5));
+	    panel.add(layoutProperties.getTunablePanel());
+	    
+	    return panel;
 	}
+	
+	
+	/**
+	 *  
+	 */
+	public void revertSettings() {
+	    layoutProperties.revertProperties();
+	}
+	
+	public LayoutProperties getSettings() {
+	    return layoutProperties;
+	}
+	
+
+	/**
+	 *  
+	 */
+	public void construct() {
+
+	    taskMonitor.setStatus("Initializing");
+	    initialize(); // Calls initialize_local	      
+	    
+	    //  Show message on screen    
+	    String message = "Calculating Layout..."; 
+
+	    // Use the CytoscapeDesktop as parent for a Swing dialog
+	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+	    
+	    Iterator<Node> it = network.nodesIterator();
+	    
+	    while (it.hasNext()) {
+		if (canceled)
+		    return;
+		
+		double x = group_center_x[group_id] + (Math.random()-0.5)*group_width;
+				
+		Node node = (Node) it.next();
+		
+		//System.out.println(group_id);
+		
+		networkView.getNodeView(node).setXPosition(x);
+			}
+	}
+	
+	private double maxwidth = 5000.0;
+	
+    }
 }
 
 
