@@ -1,5 +1,3 @@
-package org.cytoscape.layer.internal.ui;
-
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -17,10 +15,10 @@ package org.cytoscape.layer.internal.ui;
  *
  * @author kozo
  */
-public class LoadMultiLayerNetworkTaskPanel extends javax.swing.JFrame {
+public class LoadMultilayerNetworkTaskPanel extends javax.swing.JFrame {
 
     /** Creates new form BuildMultilayerPanel */
-    public LoadMultiLayerNetworkTaskPanel() {
+    public LoadMultilayerNetworkTaskPanel() {
         initComponents();
     }
 
@@ -242,7 +240,7 @@ public class LoadMultiLayerNetworkTaskPanel extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoadMultiLayerNetworkTaskPanel().setVisible(true);
+                new LoadMultilayerNetworkTaskPanel().setVisible(true);
             }
         });
     }

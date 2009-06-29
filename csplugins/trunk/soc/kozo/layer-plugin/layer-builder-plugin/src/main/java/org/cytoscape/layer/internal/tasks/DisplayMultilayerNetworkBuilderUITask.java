@@ -2,7 +2,6 @@ package org.cytoscape.layer.internal.tasks;
 
 import javax.swing.JDialog;
 
-import org.cytoscape.layer.internal.ui.LoadMultilayerNetworkTaskPanel;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
@@ -21,7 +20,7 @@ public class DisplayMultilayerNetworkBuilderUITask implements Task {
 	 * Executes Task.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		LoadMultilayerNetworkTaskPanel panel = new LoadMultilayerNetworkTaskPanel();
+//		LoadMultilayerNetworkTaskPanel panel = new LoadMultilayerNetworkTaskPanel();
 		
 		JDialog dialog = new JDialog();
 		dialog.setTitle("Multilayer Network Builder");
