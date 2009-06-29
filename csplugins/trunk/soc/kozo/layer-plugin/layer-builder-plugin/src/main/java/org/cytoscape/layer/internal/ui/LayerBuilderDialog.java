@@ -31,6 +31,7 @@ public class LayerBuilderDialog extends JDialog {
 	 * Mandatory parameters
 	 */
 	private CyNetworkManager manager;
+	
 	private DefaultListModel availableNetworkListModel;
 
 	/** Creates new form NewJDialog */
@@ -39,7 +40,7 @@ public class LayerBuilderDialog extends JDialog {
 			CyNetworkManager manager) {
 		super(parent, modal);
 		this.manager = manager;
-
+		buildListModels();
 		initComponents();
 	}
 
