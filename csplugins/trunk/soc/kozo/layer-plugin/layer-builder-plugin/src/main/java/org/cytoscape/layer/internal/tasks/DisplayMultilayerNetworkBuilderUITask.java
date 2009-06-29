@@ -1,27 +1,30 @@
 package org.cytoscape.layer.internal.tasks;
 
-import org.cytoscape.layer.internal.ui.LoadMultilayerNetworkTaskPanel;
+import org.cytoscape.layer.internal.ui.LayerBuilderDialog;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
 import cytoscape.CyNetworkManager;
+import cytoscape.view.CySwingApplication;
 
 public class DisplayMultilayerNetworkBuilderUITask implements Task {
 	
 	// This should be injected.
 	private CyNetworkManager manager;
+	private CySwingApplication desktop;
 	
-	public DisplayMultilayerNetworkBuilderUITask(CyNetworkManager manager) {
+	public DisplayMultilayerNetworkBuilderUITask(CySwingApplication desktop, CyNetworkManager manager) {
 		this.manager = manager;
+		this.desktop = desktop;
 	}
 
 	/**
 	 * Executes Task.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		LoadMultilayerNetworkTaskPanel panel = new LoadMultilayerNetworkTaskPanel();
-		panel.setTitle("Multilayer Network Builder");
-		panel.setVisible(true);
+		LayerBuilderDialog dialog = new LayerBuilderDialog(desktop.getJFrame(), true);
+		dialog.setTitle("Multilayer Network Builder");
+		dialog.setVisible(true);
 	}
 
 	public void cancel() {

@@ -11,14 +11,16 @@
 
 package org.cytoscape.layer.internal.ui;
 
+import javax.swing.JDialog;
+
 /**
  *
  * @author kozo
  */
-public class NetworkIntegrationUI extends javax.swing.JDialog {
+public class LayerBuilderDialog extends JDialog {
 
     /** Creates new form NewJDialog */
-    public NetworkIntegrationUI(java.awt.Frame parent, boolean modal) {
+    public LayerBuilderDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
@@ -325,7 +327,7 @@ public class NetworkIntegrationUI extends javax.swing.JDialog {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                NetworkIntegrationUI dialog = new NetworkIntegrationUI(new javax.swing.JFrame(), true);
+                LayerBuilderDialog dialog = new LayerBuilderDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
