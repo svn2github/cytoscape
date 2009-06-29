@@ -4,16 +4,18 @@ import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 
 import cytoscape.CyNetworkManager;
+import cytoscape.view.CySwingApplication;
 
 public class DisplayMultilayerNetworkBuilderUITaskFactory implements TaskFactory {
 	
 	private CyNetworkManager netmgr;
+	private CySwingApplication desktop;
 
-	public DisplayMultilayerNetworkBuilderUITaskFactory(CyNetworkManager netmgr) {
+	public DisplayMultilayerNetworkBuilderUITaskFactory(CySwingApplication desktop, CyNetworkManager netmgr) {
 		this.netmgr = netmgr;
 	}
 
 	public Task getTask() {
-		return new DisplayMultilayerNetworkBuilderUITask(netmgr);
+		return new DisplayMultilayerNetworkBuilderUITask(desktop, netmgr);
 	}
 }
