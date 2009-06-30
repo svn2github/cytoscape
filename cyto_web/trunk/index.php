@@ -34,7 +34,29 @@
 
 <div class="item">
 
-<h2><b><i>NEW!</i></b> Cytoscape 2.6.2</h2>
+<h2><b><i>NEW!</i></b> Cytoscape 2.6.3</h2>
+<div id="paragraph">
+<b>This is an emergency release of Cytoscape specifically for Apple OS X.  This release
+fixes bugs introduced with Apple's latest 
+<a href="http://support.apple.com/kb/HT1222">security update</a> for Java.  </b>
+<p>
+The problems that we have fixed are:
+<ul>
+<li>Misshapen windows and misshapen panels within windows.</li>
+<li>Disappearing menu options.</li>
+</ul>
+It is important to understand that we have only fixed the core Cytoscape application and
+that some plugins may still exhibit these problems.  We're working with plugin developers
+to solve any remaining problems.
+
+
+</div>
+</div>
+
+
+<div class="item">
+
+<h2>Cytoscape 2.6.2</h2>
 <div id="paragraph">
 This is a bug-fix release that should work with all 2.6.x plugins. There are no API changes.
 <p>
