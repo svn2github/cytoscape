@@ -1,0 +1,11 @@
+#-----------------------------------------------------------------
+# Ue this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+DynamicImport-Package: *
+
+Import-Package: *;resolution:=optional
+
+Export-Package: gestalt.*
+
+
