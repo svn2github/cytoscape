@@ -35,6 +35,7 @@ public class PhylipTreeImpl implements Phylotree {
 	public PhylipTreeImpl(File pTreeFile){
 
 		treeStr = getTreeTextFromFile(pTreeFile);
+		nodeList = new LinkedList<PhylotreeNode>();
 		parse();
 	}
 
