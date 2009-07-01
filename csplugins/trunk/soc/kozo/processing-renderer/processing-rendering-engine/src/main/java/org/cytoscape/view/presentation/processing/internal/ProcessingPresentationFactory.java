@@ -19,7 +19,7 @@ import org.cytoscape.view.presentation.PresentationFactory;
 public class ProcessingPresentationFactory implements PresentationFactory,
 		NetworkViewChangedListener {
 	
-	private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(400, 400);
+	private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(1920, 1080);
 
 	public ProcessingPresentationFactory() {
 

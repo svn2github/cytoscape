@@ -61,9 +61,10 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>gestalt</groupId>
-			<artifactId>gestalt-osgi</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>org.cytoscape.wrappers</groupId>
+			<artifactId>gestalt.gestalt-osgi</artifactId>
+			<version>0.0.1</version>
+			
 		</dependency>
 
 		<!-- Cytoscape Dependency -->

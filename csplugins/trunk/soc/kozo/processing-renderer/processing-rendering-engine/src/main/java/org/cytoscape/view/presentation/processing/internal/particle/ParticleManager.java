@@ -15,7 +15,7 @@ import toxi.physics.VerletSpring;
 
 public class ParticleManager {
 
-	private FloatBuffer pointBuffer;
+	private final FloatBuffer pointBuffer;
 	private IntBuffer indexBuffer;
 	private Particle particles[];
 
@@ -23,13 +23,10 @@ public class ParticleManager {
 	private static final int REST_LENGTH = 100;
 
 	private VerletPhysics physics;
-	private GL gl;
 
-	public ParticleManager(int _numP, PApplet parent, VerletPhysics physics,
-			GL gl) {
+	public ParticleManager(int _numP, PApplet parent, VerletPhysics physics) {
 		this.numP = _numP;
 		this.physics = physics;
-		this.gl = gl;
 
 		final int numberIndices = numP * 2;
 		indexBuffer = ByteBuffer.allocateDirect(4 * numberIndices).order(
@@ -63,14 +60,14 @@ public class ParticleManager {
 
 		}
 
-		for (int i = 0; i < numP; i++) {
-			VerletParticle p = physics.particles.get(i);
-			for (int j = i + 1; j < numP; j++) {
-				VerletParticle prevP = physics.particles.get(j);
-				// physics.addSpring(new VerletMinDistanceSpring(prevP, p,
-				// REST_LENGTH+100, 0.5));
-			}
-		}
+//		for (int i = 0; i < numP; i++) {
+//			VerletParticle p = physics.particles.get(i);
+//			for (int j = i + 1; j < numP; j++) {
+//				VerletParticle prevP = physics.particles.get(j);
+//				// physics.addSpring(new VerletMinDistanceSpring(prevP, p,
+//				// REST_LENGTH+100, 0.5));
+//			}
+//		}
 
 		int numberElements = numP * 3;
 		pointBuffer = ByteBuffer.allocateDirect(4 * numberElements).order(
@@ -80,9 +77,10 @@ public class ParticleManager {
 
 	}
 
-	public void manage() {
+	public void manage(GL gl) {
+		VerletParticle p;
 		for (int i = 0; i < numP; i++) {
-			VerletParticle p = physics.particles.get(i);
+			p = physics.particles.get(i);
 			particles[i].x = p.x;
 			particles[i].y = p.y;
 			particles[i].z = p.z;
@@ -91,12 +89,12 @@ public class ParticleManager {
 		}
 
 		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
-		gl.glPointSize(3.0f);
+		gl.glPointSize(6.0f);
 		gl.glVertexPointer(3, GL.GL_FLOAT, 0, pointBuffer);
-		gl.glColor3f(0, 0, 100);
+		gl.glColor3f(100, 100, 100);
 		gl.glDrawElements(GL.GL_LINES, numP * 2, GL.GL_UNSIGNED_INT,
 				indexBuffer);
-		gl.glColor3f(100, 10, 0);
+		gl.glColor3f(100, 50, 0);
 		gl.glDrawArrays(GL.GL_POINTS, 0, numP);
 		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
 	}

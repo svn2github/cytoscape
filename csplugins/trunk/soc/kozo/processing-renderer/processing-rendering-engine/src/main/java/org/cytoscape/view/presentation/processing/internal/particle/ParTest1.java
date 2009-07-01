@@ -18,14 +18,14 @@ public class ParTest1 extends PApplet {
 	AABB boundingBox;
 
 	public void setup() {
-		size(1024, 600, OPENGL);
+		size(1920, 1080, OPENGL);
 		frameRate(30);
 		physics = new VerletPhysics();
 		physics.friction = 1000;
 		AABB boundingBox = new AABB(new Vec3D(0, 0, 0), new Vec3D(width,
 				height, height));
 		physics.worldBounds = boundingBox;
-		particleManager = new ParticleManager(10000, this, physics, gl);
+		particleManager = new ParticleManager(10000, this, physics);
 	}
 
 	public void draw() {
@@ -39,7 +39,7 @@ public class ParTest1 extends PApplet {
 		rotateY(rotX);
 		translate(-width / 2, -height / 2, -height / 2);
 		beginGL();
-		particleManager.manage();
+		particleManager.manage(gl);
 		endGL();
 		// println(frameRate);
 	}

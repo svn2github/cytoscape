@@ -39,7 +39,7 @@ public class CreatePresentationTask implements Task {
 		CyNetwork targetNetwork = manager.getCurrentNetwork();
 		System.out.println("* Creating Processing presentation for: " + targetNetwork);
 
-		pFactory.addPresentation(new JFrame("Processing Presentation 1"), manager.getCurrentNetworkView());
+		pFactory.addPresentation(new JFrame("Processing Presentation OSGi"), manager.getCurrentNetworkView());
 		
 		System.out.println("=======> Presentation OK");
 		
