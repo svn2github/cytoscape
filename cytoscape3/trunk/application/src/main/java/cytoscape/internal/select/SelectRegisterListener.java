@@ -2,8 +2,8 @@
 package cytoscape.internal.select;
 
 
-import cytoscape.events.NetworkViewAddedListener;
-import cytoscape.events.NetworkViewAddedEvent;
+import org.cytoscape.session.events.NetworkViewAddedListener;
+import org.cytoscape.session.events.NetworkViewAddedEvent;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.View;

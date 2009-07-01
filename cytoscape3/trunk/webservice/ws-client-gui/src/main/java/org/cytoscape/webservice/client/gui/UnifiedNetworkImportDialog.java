@@ -79,7 +79,7 @@ import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.dialogs.AboutDialog;
 import cytoscape.dialogs.AboutDialogFactory;

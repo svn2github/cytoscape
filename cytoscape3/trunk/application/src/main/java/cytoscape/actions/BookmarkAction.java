@@ -44,7 +44,7 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.dialogs.BookmarkDialog;
 import cytoscape.dialogs.BookmarkDialogFactory;
 import cytoscape.util.CytoscapeAction;

@@ -40,7 +40,7 @@
 // $Author: mes $
 package cytoscape.actions;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 

@@ -36,7 +36,7 @@
 */
 package cytoscape.internal.layout.ui;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;

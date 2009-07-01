@@ -57,7 +57,7 @@ import javax.swing.border.EmptyBorder;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 import cytoscape.view.CytoPanel;
 import cytoscape.view.CytoPanelState;

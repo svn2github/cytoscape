@@ -38,8 +38,8 @@ package cytoscape.util.undo;
 
 import org.cytoscape.work.UndoSupport;
 
-import cytoscape.events.SetCurrentNetworkViewEvent;
-import cytoscape.events.SetCurrentNetworkViewListener;
+import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 
 import java.util.Properties;
 

@@ -1,7 +1,7 @@
 
 package cytoscape.actions;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
 import org.cytoscape.view.model.CyNetworkView;

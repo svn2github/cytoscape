@@ -36,7 +36,7 @@
  */
 package cytoscape.internal.view.help;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.util.OpenBrowser;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;

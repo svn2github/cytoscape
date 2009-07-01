@@ -36,7 +36,7 @@
 */
 package cytoscape.merge;
 
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkNaming;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

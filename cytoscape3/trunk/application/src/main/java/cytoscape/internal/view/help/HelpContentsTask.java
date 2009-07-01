@@ -36,7 +36,7 @@
 */
 package cytoscape.internal.view.help;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CyHelpBroker;
 import cytoscape.view.CySwingApplication;
 import org.cytoscape.work.Task;

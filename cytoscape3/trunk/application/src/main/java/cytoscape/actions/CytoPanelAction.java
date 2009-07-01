@@ -44,7 +44,7 @@ import cytoscape.view.CySwingApplication;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 /**
  *

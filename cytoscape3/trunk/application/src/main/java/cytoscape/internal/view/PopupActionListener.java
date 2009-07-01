@@ -42,13 +42,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskManager;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
 import cytoscape.xtask.CreateNetworkPresentationTaskFactory;
 
 /**
@@ -126,8 +127,9 @@ class PopupActionListener implements ActionListener {
 		} else if (label == DESTROY_NETWORK) {
 			netmgr.destroyNetwork(cyNetwork);
 		} else if (label == EDIT_TITLE) {
-			naming.editNetworkTitle(cyNetwork, panel, netmgr);
-			panel.updateTitle(cyNetwork);
+			JOptionPane.showMessageDialog(panel, "Changing names is not yet supported - we need to make these actions TaskFactories!", "ERROR", JOptionPane.ERROR_MESSAGE);	
+			//naming.editNetworkTitle(cyNetwork, panel, netmgr);
+			//panel.updateTitle(cyNetwork);
 			// TODO we might consider firing an event here to let others know
 			// of the title change.
 		} else {

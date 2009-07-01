@@ -48,7 +48,7 @@ import org.cytoscape.work.TaskManager;
 //import org.cytoscape.work.HandlerController;
 
 import cytoscape.util.CytoscapeAction;
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 public class TaskTunableAction extends CytoscapeAction {
 

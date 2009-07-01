@@ -33,7 +33,7 @@ package org.mskcc.biopax_plugin.plugin;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.readers.GraphReader;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.layout.CyLayoutAlgorithm;

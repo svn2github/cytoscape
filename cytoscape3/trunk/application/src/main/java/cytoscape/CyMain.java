@@ -40,7 +40,7 @@ package cytoscape;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CySwingApplication;
 import org.apache.commons.cli.*;
-//import org.cytoscape.work.util.FileUtil;
+import org.cytoscape.session.CyNetworkManager;
 
 
 import javax.swing.*;

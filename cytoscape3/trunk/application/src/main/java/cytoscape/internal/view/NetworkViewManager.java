@@ -54,15 +54,15 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.NetworkRenderer;
 import org.cytoscape.view.presentation.PresentationFactory;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.events.NetworkViewAboutToBeDestroyedEvent;
-import cytoscape.events.NetworkViewAboutToBeDestroyedListener;
-import cytoscape.events.NetworkViewAddedEvent;
-import cytoscape.events.NetworkViewAddedListener;
-import cytoscape.events.SetCurrentNetworkEvent;
-import cytoscape.events.SetCurrentNetworkListener;
-import cytoscape.events.SetCurrentNetworkViewEvent;
-import cytoscape.events.SetCurrentNetworkViewListener;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.events.NetworkViewAboutToBeDestroyedEvent;
+import org.cytoscape.session.events.NetworkViewAboutToBeDestroyedListener;
+import org.cytoscape.session.events.NetworkViewAddedEvent;
+import org.cytoscape.session.events.NetworkViewAddedListener;
+import org.cytoscape.session.events.SetCurrentNetworkEvent;
+import org.cytoscape.session.events.SetCurrentNetworkListener;
+import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import cytoscape.view.CyHelpBroker;
 
 /**

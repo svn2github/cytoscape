@@ -37,7 +37,7 @@
 */
 package cytoscape.internal.layout.ui;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;

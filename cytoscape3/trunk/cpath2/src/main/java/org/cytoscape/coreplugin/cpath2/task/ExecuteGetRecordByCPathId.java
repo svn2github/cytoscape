@@ -6,7 +6,7 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;

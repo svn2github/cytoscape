@@ -41,7 +41,7 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.xtask.CreateNetworkPresentationTaskFactory;
 
 public class CreateNetworkPresentationTaskFactoryImpl implements TaskFactory,

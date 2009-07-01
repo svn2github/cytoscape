@@ -41,7 +41,7 @@ import cytoscape.util.CyAction;
 import cytoscape.util.CyMenuBar;
 import cytoscape.util.CyToolBar;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 import cytoscape.internal.task.TaskTunableAction;
 

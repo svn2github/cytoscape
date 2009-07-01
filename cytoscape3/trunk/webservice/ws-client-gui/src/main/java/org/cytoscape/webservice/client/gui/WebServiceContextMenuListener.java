@@ -39,7 +39,7 @@ package org.cytoscape.webservice.client.gui;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.view.CySwingApplication;
 

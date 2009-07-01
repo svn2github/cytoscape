@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 import cytoscape.dialogs.ProxyServerDialog;

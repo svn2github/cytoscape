@@ -48,13 +48,13 @@ import javax.swing.JPanel;
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.view.presentation.PresentationFactory;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.events.NetworkViewDestroyedEvent;
-import cytoscape.events.NetworkViewDestroyedListener;
-import cytoscape.events.SetCurrentNetworkEvent;
-import cytoscape.events.SetCurrentNetworkListener;
-import cytoscape.events.SetCurrentNetworkViewEvent;
-import cytoscape.events.SetCurrentNetworkViewListener;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.events.NetworkViewDestroyedEvent;
+import org.cytoscape.session.events.NetworkViewDestroyedListener;
+import org.cytoscape.session.events.SetCurrentNetworkEvent;
+import org.cytoscape.session.events.SetCurrentNetworkListener;
+import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 
 /**
  * This class handles the creation of the BirdsEyeView navigation object 

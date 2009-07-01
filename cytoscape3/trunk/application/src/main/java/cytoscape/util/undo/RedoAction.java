@@ -39,7 +39,7 @@ package cytoscape.util.undo;
 import cytoscape.util.CytoscapeAction;
 
 import org.cytoscape.work.UndoSupport;
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;

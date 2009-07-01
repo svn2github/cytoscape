@@ -40,7 +40,7 @@ import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.work.TaskManager;
 import cytoscape.view.CyMenus;
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;

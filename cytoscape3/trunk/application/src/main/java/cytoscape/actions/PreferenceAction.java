@@ -42,7 +42,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.dialogs.PreferencesDialog;
 import cytoscape.dialogs.PreferencesDialogFactory;
 import cytoscape.util.CytoscapeAction;

@@ -221,21 +221,14 @@
 			<artifactId>work-swing-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		<!--
-			session-api is here because of core-task-impl - not sure why pax:run
-			isn't pulling this in automatically. This should go away when we
-			figure this out.
-		-->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>session-api</artifactId>
+			<artifactId>session-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 

@@ -2,7 +2,7 @@ package org.cytoscape.webservice.client.gui;
 
 import java.awt.event.ActionEvent;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 
 public class WebServiceNetworkImportAction extends CytoscapeAction {

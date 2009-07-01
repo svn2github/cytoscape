@@ -51,7 +51,7 @@ import javax.swing.event.MenuEvent;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.NetworkRenderer;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
 
 
