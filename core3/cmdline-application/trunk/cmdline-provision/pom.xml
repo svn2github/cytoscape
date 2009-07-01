@@ -103,7 +103,7 @@
 			<version>1.2.15</version>
 		</dependency>
 
-		<!-- only if you want a shell! -->
+		<!-- only if you want a shell! 
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.shell</artifactId>
@@ -114,6 +114,7 @@
 			<artifactId>org.apache.felix.shell.tui</artifactId>
 			<version>1.2.0</version>
 		</dependency>
+		-->
 
 		<!-- cytoscape data model -->
 		<dependency>
@@ -133,13 +134,24 @@
 			<artifactId>work-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		<!--
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-headless-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		-->
+
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>cy-commons-cli</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+	<dependency>
+	<groupId>org.apache.commons</groupId>
+		<artifactId>com.springsource.org.apache.commons.lang
+		</artifactId>
+		<version>2.4.0</version>
+	</dependency>
+
 
   </dependencies>
 </project>
