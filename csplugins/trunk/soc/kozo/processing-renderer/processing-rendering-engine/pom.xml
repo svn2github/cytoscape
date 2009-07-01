@@ -39,12 +39,31 @@
 		<dependency>
 			<groupId>org.processing</groupId>
 			<artifactId>processing-gl-osgi</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
+			<version>1.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.java.jogl</groupId>
 			<artifactId>jogl-osgi</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
+		</dependency>
+
+		<!-- Processing Library Bundles -->
+		<dependency>
+			<groupId>toxi</groupId>
+			<artifactId>core</artifactId>
+			<version>0014-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>toxi</groupId>
+			<artifactId>physics</artifactId>
+			<version>0004-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>gestalt</groupId>
+			<artifactId>gestalt-osgi</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Cytoscape Dependency -->

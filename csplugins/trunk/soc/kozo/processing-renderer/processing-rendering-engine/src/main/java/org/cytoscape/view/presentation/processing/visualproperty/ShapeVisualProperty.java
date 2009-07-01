@@ -8,7 +8,6 @@ public class ShapeVisualProperty extends AbstractVisualProperty<ObjectShape> {
 	public ShapeVisualProperty(String ot, ObjectShape shape, String id,
 			String name) {
 		super(ot, shape, id, name);
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getSerializableString(ObjectShape value) {
