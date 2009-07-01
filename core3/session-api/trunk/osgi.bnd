@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 
-Export-Package: org.cytoscape.session
+Export-Package: org.cytoscape.session, org.cytoscape.session.events
 
