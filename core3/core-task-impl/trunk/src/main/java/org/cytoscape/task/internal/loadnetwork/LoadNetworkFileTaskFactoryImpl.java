@@ -46,8 +46,8 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
 
 /**
  * Task to load a new network.

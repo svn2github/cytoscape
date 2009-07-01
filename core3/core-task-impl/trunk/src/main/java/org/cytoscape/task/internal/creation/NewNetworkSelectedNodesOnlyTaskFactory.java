@@ -40,8 +40,8 @@ package org.cytoscape.task.internal.creation;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
 
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;

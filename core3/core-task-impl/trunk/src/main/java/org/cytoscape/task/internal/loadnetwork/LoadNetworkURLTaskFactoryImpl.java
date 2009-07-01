@@ -36,8 +36,8 @@
 
 package org.cytoscape.task.internal.loadnetwork;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
 
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.io.read.CyReaderManager;

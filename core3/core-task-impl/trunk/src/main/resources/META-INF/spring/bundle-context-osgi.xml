@@ -7,7 +7,7 @@
 
 
 	<osgi:reference id="cyNetworkNamingServiceRef"
-		interface="cytoscape.util.CyNetworkNaming" />
+		interface="org.cytoscape.session.CyNetworkNaming" />
 
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
@@ -39,7 +39,7 @@
 	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.layout.CyLayouts" />
 
 	<osgi:reference id="cyNetworkManagerServiceRef"
-		interface="cytoscape.CyNetworkManager" />
+		interface="org.cytoscape.session.CyNetworkManager" />
 
 	<osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />

@@ -37,7 +37,7 @@
 
 package org.cytoscape.task.internal.hide;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 

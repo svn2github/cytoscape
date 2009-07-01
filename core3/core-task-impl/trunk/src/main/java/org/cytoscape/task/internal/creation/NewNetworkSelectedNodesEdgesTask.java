@@ -37,8 +37,8 @@
 
 package org.cytoscape.task.internal.creation;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;

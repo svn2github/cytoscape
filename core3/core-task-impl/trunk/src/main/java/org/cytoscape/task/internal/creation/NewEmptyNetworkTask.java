@@ -38,7 +38,7 @@
 
 package org.cytoscape.task.internal.creation;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;

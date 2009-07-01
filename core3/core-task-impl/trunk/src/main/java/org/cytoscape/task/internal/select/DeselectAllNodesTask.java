@@ -36,7 +36,7 @@
  */
 package org.cytoscape.task.internal.select;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;

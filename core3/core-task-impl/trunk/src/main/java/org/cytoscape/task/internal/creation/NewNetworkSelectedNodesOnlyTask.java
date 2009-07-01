@@ -58,8 +58,8 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.TaskMonitor;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
 
 public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 
@@ -101,7 +101,7 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 
 		CySubNetwork new_network = cyroot.convert(current_network)
 		                                 .addSubNetwork(nodes, new ArrayList<CyEdge>(edges));
-		new_network.attrs().set("name", cyNetworkNaming.getSuggestedSubnetworkTitle(current_network,netmgr));
+		new_network.attrs().set("name", cyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
 
 		CyNetworkView new_view = cnvf.getNetworkViewFor(new_network);
 

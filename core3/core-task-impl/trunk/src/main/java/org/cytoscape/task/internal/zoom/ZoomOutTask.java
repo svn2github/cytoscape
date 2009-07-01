@@ -37,7 +37,7 @@
 
 package org.cytoscape.task.internal.zoom;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 public class ZoomOutTask extends AbstractZoomTask {
 

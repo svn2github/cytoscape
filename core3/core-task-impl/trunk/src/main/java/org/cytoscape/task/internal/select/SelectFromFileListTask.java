@@ -37,8 +37,8 @@
 
 package org.cytoscape.task.internal.select;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.data.Semantics;
+import org.cytoscape.session.CyNetworkManager;
+//import cytoscape.data.Semantics;
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyNetwork;
@@ -92,14 +92,15 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 			List<CyNode> nodeList = network.getNodeList();
 
 			for ( CyNode node : nodeList ) {
-				List<String> synonyms = Semantics.getAllSynonyms(node, network);
+				//List<String> synonyms = Semantics.getAllSynonyms(node, network);
 
-				for ( String syn : synonyms ) {
-					if ( fileNodes.contains(syn) ) {
+				//for ( String syn : synonyms ) {
+					//if ( fileNodes.contains(syn) ) {
+					if ( fileNodes.contains(node.attrs().get("name",String.class) ) ) {
 						node.attrs().set("selected",true);
-						break;
+				//		break;
 					}
-				}
+				//}
 			}
 
 		} catch (Exception e) {

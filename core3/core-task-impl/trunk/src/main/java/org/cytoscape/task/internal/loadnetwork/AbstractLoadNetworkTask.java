@@ -53,8 +53,8 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
 
 /**
  * Task to load a new network.
@@ -103,7 +103,7 @@ abstract class AbstractLoadNetworkTask implements Task {
 
 			CyNetwork cyNetwork = (CyNetwork) readData.get(CyNetwork.class);
 			cyNetwork.attrs().set("name",
-					namingUtil.getSuggestedNetworkTitle(name, netmgr));
+					namingUtil.getSuggestedNetworkTitle(name));
 			CyNetworkView view = (CyNetworkView) readData.get(CyNetworkView.class);
 
 			if (view == null)
