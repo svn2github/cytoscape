@@ -11,22 +11,21 @@
 	<!-- Import Osgi references -->
 	<osgi:reference id="commandLineProviderServiceRef"
 		interface="org.cytoscape.cmdline.launcher.CommandLineProvider" />
-	<osgi:reference id="taskManagerServiceRef"
-		interface="org.cytoscape.work.TaskManager" />
-	
 	
 	<!-- Export Osgi services -->
-	<osgi:service id="cltaskFactoryInterceptorService" ref="cltaskFactoryInterceptor"
-		interface="org.cytoscape.work.internal.tunables.CLTaskFactory" />	
+	<osgi:service id="clTaskFactoryInterceptorService" ref="clTaskFactoryInterceptor"
+		interface="org.cytoscape.work.TunableInterceptor" />	
 	<osgi:service id="headlessTaskManagerService" ref="headlessTaskManager"
-		interface="org.cytoscape.work.taskManager" />	
+		interface="org.cytoscape.work.TaskManager" />	
 		
 		
 	<!-- Set -->
-	<osgi:set id="taskFactoryCLSet" interface="org.cytoscape.work.TaskFactory"
-		cardinality="0..N">
+	<osgi:set id="taskFactoryCLSet" 
+	          interface="org.cytoscape.work.TaskFactory" 
+	          cardinality="0..N">
 		<osgi:listener bind-method="addTaskFactory"
-			unbind-method="removeTaskFactory" ref="clTaskFactoryInterceptor" />
+			           unbind-method="removeTaskFactory" 
+			           ref="clTaskFactoryInterceptor" />
 	</osgi:set>
 	
 		
