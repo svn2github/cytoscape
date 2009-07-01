@@ -18,20 +18,14 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 
-import cytoscape.CyNetworkManager;
-import cytoscape.internal.task.TaskTunableAction;
-import cytoscape.util.CyAction;
-
-
 public class CLTaskFactoryInterceptor implements CLTaskFactory{
 	
 	private CommandLineProvider clp;
 	private String[] args;
 
-	Map<myFactory,CyAction> taskMap;
+	Map<TaskFactory,myFactory> taskMap;
 	TaskManager taskManager;
 	TunableInterceptor interceptor;
-	CyNetworkManager netManager;
 	
 	private Map<String,List<String>> mapShortArgs;
 	private List<String> listValidedTasks;
@@ -39,14 +33,13 @@ public class CLTaskFactoryInterceptor implements CLTaskFactory{
     private CommandLineParser parser = new PosixParser();
     private CommandLine line = null;
 	
-	CLTaskFactoryInterceptor(CommandLineProvider colipr,TaskManager taskManager,CyNetworkManager netManager){
+	CLTaskFactoryInterceptor(CommandLineProvider colipr,TaskManager taskManager){
 		this.clp = colipr;
 		this.taskManager = taskManager;
 		//this.interceptor = interceptor;
-		this.netManager = netManager;
 		
 		args = clp.getCommandLineArgs();
-		taskMap = new HashMap<myFactory,CyAction>();
+		taskMap = new HashMap<TaskFactory,myFactory>();
 		createOptions(taskMap);
 		findValidatedTasks(args);
 		parseCommandLineArguments(listValidedTasks);
@@ -55,9 +48,9 @@ public class CLTaskFactoryInterceptor implements CLTaskFactory{
 
 
 	
-	public void createOptions(Map<myFactory,CyAction> map){
+	public void createOptions(Map<TaskFactory,myFactory> map){
 		taskOptions = new Options();
-		for ( myFactory tf : map.keySet() ){
+		for ( myFactory tf : map.values() ){
 			taskOptions.addOption( tf.getOption() );
 		}
 		taskOptions.addOption("lT", false, "Help = Display all the available taskFactories.");
@@ -120,7 +113,7 @@ public class CLTaskFactoryInterceptor implements CLTaskFactory{
 		}
 	}
 	
-	private void executeCommandLineArguments(CommandLine line, String[] argus, List<String>listValTasks, Map<myFactory,CyAction> map, Map<String,List<String>> mapArgs){
+	private void executeCommandLineArguments(CommandLine line, String[] argus, List<String>listValTasks, Map<TaskFactory,myFactory> map, Map<String,List<String>> mapArgs){
   		if (line.hasOption("lT")) {
         	System.out.println("The General Help has been called");
 			printHelp(taskOptions);
@@ -128,7 +121,7 @@ public class CLTaskFactoryInterceptor implements CLTaskFactory{
         }
 
    		for(String st : listValTasks){
-   			for(myFactory tf : map.keySet()){
+   			for(myFactory tf : map.values()){
    				if(st.equals(tf.getName())){
    					tf.checkFactory(line, mapArgs,listValTasks);
    				}
@@ -150,28 +143,13 @@ public class CLTaskFactoryInterceptor implements CLTaskFactory{
 
 	
 	
-	//TO add the Tasks
-	public void addAction(CyAction action) {
-		addAction( action );
-	}
-	public void removeAction(CyAction action) {
-			removeAction(action);
-	}
 	public void addTaskFactory(TaskFactory factory, Map props) {
 		System.out.println("addTaskFactory called");
-		try {
-			CyAction action = new TaskTunableAction(taskManager, null, factory, props, netManager);
-			taskMap.put(new myFactory(factory),action);
-			addAction( action );
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Exception constructing TaskTunableAction");
-		}
+		taskMap.put(factory, new myFactory(factory));
 	}
 	public void removeTaskFactory(TaskFactory factory, Map props) {
 		System.out.println("removeTaskFactory called");
-		CyAction action = taskMap.remove(factory);
-		if ( action != null ) removeAction(action);
+		taskMap.remove(factory);
 	}	
 	
 	

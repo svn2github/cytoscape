@@ -13,8 +13,6 @@
 		interface="org.cytoscape.cmdline.launcher.CommandLineProvider" />
 	<osgi:reference id="taskManagerServiceRef"
 		interface="org.cytoscape.work.TaskManager" />
-	<osgi:reference id="cyNetworkManagerServiceRef"
-		interface="cytoscape.CyNetworkManager" />
 	
 	
 	<!-- Export Osgi services -->

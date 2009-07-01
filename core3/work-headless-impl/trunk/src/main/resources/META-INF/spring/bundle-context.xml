@@ -20,7 +20,6 @@
 	<bean name="cltaskFactoryInterceptor" class="org.cytoscape.work.internal.tunables.CLTaskFactoryInterceptor">
 		<constructor-arg ref="commandLineProviderServiceRef"/>
 		<constructor-arg ref="taskManagerServiceRef"/>
-		<constructor-arg ref="cyNetworkManagerServiceRef"/>
 	</bean>
 	
 </beans>
