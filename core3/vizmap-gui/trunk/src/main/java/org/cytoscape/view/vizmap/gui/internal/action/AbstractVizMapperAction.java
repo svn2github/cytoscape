@@ -54,7 +54,7 @@ import org.cytoscape.view.vizmap.gui.theme.IconManager;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 
 /**

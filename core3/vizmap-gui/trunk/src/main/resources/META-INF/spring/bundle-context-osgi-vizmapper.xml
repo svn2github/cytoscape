@@ -31,7 +31,7 @@
 
 	<!-- Network Manager -->
 	<osgi:reference id="cyNetworkManagerServiceRef"
-		interface="cytoscape.CyNetworkManager" />
+		interface="org.cytoscape.session.CyNetworkManager" />
 
 	<!-- Presentation Factory -->
 	<osgi:reference id="presentationFactoryServiceRef"

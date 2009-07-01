@@ -76,7 +76,7 @@ import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListe
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 /**
  * Dialog for editing default visual property values.<br>

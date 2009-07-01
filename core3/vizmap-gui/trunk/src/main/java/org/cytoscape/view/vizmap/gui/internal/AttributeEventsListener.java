@@ -3,7 +3,7 @@ package org.cytoscape.view.vizmap.gui.internal;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 public class AttributeEventsListener {
 

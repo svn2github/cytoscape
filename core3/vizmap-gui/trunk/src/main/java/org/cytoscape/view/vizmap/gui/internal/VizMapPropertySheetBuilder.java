@@ -34,7 +34,7 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 /**
  * Maintain property sheet table states.

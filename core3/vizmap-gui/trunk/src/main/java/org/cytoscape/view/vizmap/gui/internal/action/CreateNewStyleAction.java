@@ -10,7 +10,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 public class CreateNewStyleAction extends AbstractVizMapperAction {
 

@@ -45,7 +45,7 @@ import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 
 /**

@@ -62,7 +62,7 @@ import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 /**
  * Abstract class for all Continuous Mapping Editors. This is the mapping from

@@ -55,7 +55,7 @@ import java.util.Set;
 
 import org.cytoscape.view.vizmap.VisualMappingManager;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.util.FileUtil;
 import cytoscape.util.ZipUtil;
 

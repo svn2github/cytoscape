@@ -41,7 +41,7 @@ import java.beans.PropertyChangeListener;
 
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.Cytoscape;
 import cytoscape.view.CySwingApplication;
 

@@ -79,7 +79,7 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
 
 /**
