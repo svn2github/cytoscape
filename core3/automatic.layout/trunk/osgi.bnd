@@ -2,5 +2,6 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Bundle-Activator: csplugins.layout.LayoutActivator
-Private-Package: csplugins.layout.*,org.jgraph.*,prefuse.util.force
+Export-Package: csplugins.layout.*
+Private-Package: org.jgraph.*,prefuse.util.force
+
