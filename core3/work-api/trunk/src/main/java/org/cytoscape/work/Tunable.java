@@ -2,26 +2,28 @@ package org.cytoscape.work;
 
 import java.lang.annotation.*;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD,ElementType.TYPE})
+
+
+
+
+//@Retention(RetentionPolicy.RUNTIME)
+//@Target({ElementType.FIELD,ElementType.TYPE})
 
 /**
- * This interface describes the different parameters that can be used in the <code> @Tunable(...) </code> to display the GUI, add some dependencies...
+ * This interface describes the different parameters that can be used in the <code>@Tunable(...)</code> to display the GUI, add some dependencies...
  * 
- * Here is an example of how to use it these <code>Tunable's annotation</code> :
- * 
- * <br>
+ * Here is an example of how to use it these <code>Tunable's</code> annotations :
+ * <p><pre>
  * <code>
- * 	@Tunable(description="your last name", group={"Human","pupil"}, flag={Param.collapsed})<br>
- * 	public String lastName = "Smith";<br>
+ * 	<code>@Tunable(description="your last name", group={"Human","pupil"}, flag={Param.collapsed})<code>
+ * 	public String lastName = "Smith";
  * </code>
- * <br>
+ * </pre></p>
  * 
  * This tunable will take part of a group("<code>pupil</code>"), which is also a part of a metagroup("<code>Human</code>").<br>
- * The initial state of the panel that will display the JTextField with the <code>lastName</code> will be collapsed<code>Param.collapsed</code> : need to expand it to see its components<br>
+ * The initial state of the panel that will display the JTextField with the <code>lastName</code> will be <code>Param.collapsed</code> : need to expand it to see its components<br>
  * 
- *  */
-
+ */
 public @interface Tunable{
 	/**
 	 * Description of the Tunable that will be displayed in the panel to identify it
@@ -31,47 +33,99 @@ public @interface Tunable{
 	
 	
 	/**
-	 * Parameters to interact directly with the way the <code>Tunable</code> will be represented in its JPanel :<br>
-	 * 	- <code>slider</code> to display a JSlider for the Tunable with bounds<br>
-	 * 	- <code>horizontal / vertical</code> to display the tunables that belong to the same group horizontally, or vertically( default representation is <code> Param.vertical</code> <br>
-	 * 	- <code>uncollapsed / collapsed</code> to allow the tunable's JPanel to be collapsable, and to define its initial state<br>
-	 * 	- <code>network / session / attributes</code> to add some filters to the <code>File</code> Tunable.<br>
+	 * Parameters to interact directly with the way the <code>Tunable</code> will be represented in its JPanel.
+	 * 
+	 * Here are the informations for each parameter :
+	 * <p><pre>
+	 * <ul>
+	 * 	<li><b>slider</b> : if this paremeter is specified in <code>flag{}</code> of the <code>Bounded</code> objects, the value will be choosen on the <code>JSlider</code>(set with the proper bounds of the <i>BoundedObject</i>)</li>
+	 * 	<li><b>horizontal / vertical</b> : this parameter is used in <code>alignment{}</code> to display horizontally or vertically, the graphic representations of <code>Tunables</code> of a same group (if nothing is specified for the group, <i>Param.vertical</i> will be set by default)</li>
+	 * 	<li><b>uncollapsed / collapsed</b> : if one of these parameters is specified, it allows the <code>JPanel</code> that countains the <code>Tunable</code> Object to be <i>collapsable</i>, and the parameter defines the initial state of the <code>JPanel</code></li>
+	 * 	<li><b>network / session / attributes</b> : used to add some filters to the <code>Tunable</code> <i>File</i> in order to be able to select the right type of file(<code>*.sif,*.attr,*.cys</code>) in the <code>JFileChooser</code></li>
+	 * 	<li><b>hidden / displayed</b> : to display or not the name of the subgroups a <code>Tunable</code> is belonging to, in the border of the <code>JPanel</code> representing it in the GUI</li>
+	 * </ul>
+	 * </pre></p>
+	 * 
 	 */
 	Param[] flag() default {};
 	
 	
 	
 	/**
-	 * Used to define all the groups in which the Tunable takes part (by default, its doesn't belong to any group)<br>
+	 * Used to define all the groups in which the Tunable takes part (by default, its doesn't belong to any group).
+	 * 
+	 * <p><pre><code>
+	 * <b>example</b> :
+	 * 	<code>@Tunable(description="write your last name", group={"Company","Department","office","identity"})</code>
+	 * 	public String lastName = "Smith";
+	 * </code></pre></p>
+	 * 
+	 * This String <code>Tunable</code> will take part of these 4 groups.
+	 * <b>warning</b> : Note that they are set in an order of subgroups of a main one.
+	 * 
+	 * <p><pre>
+	 * <b>example</b> :
+	 * 
+	 * <code>
+	 * 	<code>@Tunable(description="write your first name", group={"Company","Department","office","identity"})</code>
+	 * 	public String firstName = "John";
+	 * 
+	 * 	<code>@Tunable(description="write the name of your office", group={"Company","Department","office"})</code>
+	 * 	public String officeName = "CytoscapeDevelopment's Office";
+	 * 	</code>
+	 * 
+	 * Here we have a second item for the identity of a person(the <i>firstName</i>).So, the 2 <code>Tunable</code> <i>lastName</i> and <i>firstName</i> are in the subgroup <i>identity</i>
+	 * But, the <code>Tunable</code> String officeName will only take part of the upperGroup <i>office</i>, and so won't be set with these other 2 fields.
+	 * </pre></p>
 	 */
 	String[] group() default {};
 
 	
 	
 	/**
-	 * Boolean value to choose if the Tunable will control the display of other JPanels as children
+	 * Boolean value to choose if the <code>Tunable</code> will control the display of other <code>JPanels</code> as children
 	 */
 	boolean xorChildren() default false;
 	
 	
 	/**
-	 * Key that will refer to the value of the Tunable which has <code>xorChildren=true</code>
+	 * Key that will refer to the "value" of the <code>Tunable</code> which has <code>xorChildren=true</code>
+	 * 
+	 * <p><pre><code>
+	 * <b>example</b> : 
+	 * 	<code>@Tunable(description="Single list", group={"TestGroup"}, <b>xorChildren=true</b>)</code>
+	 * 	public ListSingleSelection<String> chooser = new ListSingleSelection<String>("<b>Names</b>","<b>FirstNames</b>");
+	 * 	
+	 * 	<code>@Tunable(description="Multi list", group={"TestGroup","Names"}, <b>xorKey="Names"</b>)</code>
+	 * 	public ListMultipleSelection<String> names = new ListMultipleSelection<String>("Johnson","Turner","Smith");
+	 * 
+	 * 	<code>@Tunable(description="Multi list", group={"TestGroup","First Names"}, <b>xorKey="FirstNames"</b>)</code>
+	 * 	public ListMultipleSelection<String> firstnames = new ListMultipleSelection<String>("George","Jane","Sarah");
+	 * </code>
+	 * </pre></p>
+	 *
+	 *	Here, the 2 <code>ListMultipleSelection</code> won't be displayed in the GUI at the same time : each of them depends on the xorKey(<i>FirstNames</i> or <i>Names</i>)
+	 * 	that will match the "value" (i.e item that has been selected) in the <code>ListSingleSelection</code>
 	 */
 	String xorKey() default "";
 	
 	
 	/**
-	 * To add a dependency between Tunables<br>
+	 * To add a dependency between Tunables
+	 * 
 	 * The JPanel of the Tunable that depends on the other one will be activated only if the value which is required is set.<br>
-	 * Here is an example of how to add dependencies between Tunables :<br>
-	 * <code>
-	 * 	@Tunable(description="Type")<br>
-	 *  public boolean type = false;<br>
 	 * <br>
-	 * 	@Tunable(description="Host name",dependsOn="type=true")<br>
-	 *  public String hostname="";<br>
+	 * <p><pre>
+	 * Here is an example of how to add dependencies between Tunables :
+	 * 
+	 * <code>
+	 * 	<code>@Tunable(description="Type")</code>
+	 *  public boolean type = false;
+	 *
+	 * 	<code>@Tunable(description="Host name",dependsOn="type=true")</code>
+	 *  public String hostname="";
 	 *  </code>
-	 *  <br>
+	 *  </pre></p>
 	 *  So <code>hostname</code> will be activated if <code>type</code> is set to "true"
 	 */
 	String dependsOn() default "";
@@ -79,18 +133,127 @@ public @interface Tunable{
 	
 	
 	/**
-	 * Parameters to display the Tunables of a same group horizontally or vertically inside.
+	 * Parameters to display the <code>Tunable</code> objects of a same group horizontally or vertically inside.
+	 * 
+	 * <p><pre>
+	 * <b>example</b> :
+	 * 
+	 * 	<code>@Tunable(description="Use SOCKS Proxy",group="SOCKS Proxy",groupTitles=Param.hidden)</code>
+	 * 	public boolean socksProxy = false;
+	 * 	<code>@Tunable(description="Server",group={"SOCKS Proxy","params"},dependsOn="socksProxy=true",alignment={Param.vertical,Param.horizontal},groupTitles={Param.hidden,Param.hidden})</code>
+	 * 	public String socksServer="";
+	 * 	<code>@Tunable(description="Port",group={"SOCKS Proxy","params"},dependsOn="socksProxy=true",alignment={Param.vertical,Param.horizontal},groupTitles={Param.hidden,Param.hidden})</code>
+	 * 	public int socksPort;
+	 * </pre></p>
+	 * 
+	 * Here, the first group <i>SOCKS Proxy</i> will have its components set vertically, and the components of the subgroup <i>params</i> will be set horizontally.<br>
+	 * 
+	 * The alignment has to be set in the same order as the one for the group' names.
 	 */
 	Param[] alignment() default {};
 
 	/**
-	 * Parameters to choose if the name of a Tunable's group has to be displayed or not in the <code>titleBorder</code>  of the Panel representing this group.
+	 * Parameters to choose if the name of a <code>Tunable</code>'s group has to be displayed or not in the <code>titleBorder</code>  of the <code>JPanel</code> representing this group.
+	 * 
+	 * <p><pre>
+	 * <b>examples</b> :
+	 * <ul>
+	 * 
+	 * <li>
+	 * <code>
+	 * 	<code>@Tunable(description="write your last name", group={"Department","office","identity"},groupTitles={Param.displayed,Param.displayed,<b>Param.hidden</b>})</code>
+	 * 	public String lastName = "Smith";
+	 * 	<code>@Tunable(description="write your first name", group={"Department","office","identity"},groupTitles={Param.displayed,Param.displayed,<b>Param.hidden</b>})</code>
+	 * 	public String firstName = "John";
+	 * <code>
+	 * </li>
+	 * Here, the name of the subgroup <i>identity</i> won't appear in the <code>titleBorder</code>.
+	 * 
+	 * <li>
+	 * <code>
+	 * 	<code>@Tunable(description="write your last name", group={"Department","office","identity"},groupTitles={Param.displayed,Param.displayed})</code>
+	 * 	public String lastName = "Smith";
+	 * 	<code>@Tunable(description="write your first name", group={"Department","office","identity"},groupTitles={Param.displayed,Param.displayed,<b>Param.hidden</b>})</code>
+	 * 	public String firstName = "John";
+	 * <code>
+	 * 
+	 * Here, the enumeration for the state of the 3 subgroups of <i>lastName</i> is missing 1 element: the state will be set by default to <code>Param.displayed</code>, and then we get :<br><br>
+	 * <code>
+	 * 	<code>@Tunable(description="write your last name", group={"Department","office","identity"},groupTitles={Param.displayed,Param.displayed,<b>Param.displayed</b>})</code>
+	 * 	public String lastName = "Smith";
+	 * 	<code>@Tunable(description="write your first name", group={"Department","office","identity"},groupTitles={Param.displayed,Param.displayed,<b>Param.hidden</b>})</code>
+	 * 	public String firstName = "John";
+	 * <code>
+	 * </li>
+	 * 
+	 * <b>Note</b> :
+	 * Here there will be the 3 subgroups' names displayed, because for the 3rd subgroup, the first state to be set is <code>Param.displayed</code> : the first declaration for the state of a subgroup has the precendence to the next ones.
+	 * 
+	 * 
+	 * </ul>
+	 * </pre></p>
 	 */
 	Param[] groupTitles() default {};
 	
 	
 	/**
-	 * Enumeration that contains the parameters used for <code>flag{}</code> and <code>alignment{}</code>
+	 * Enumeration that contains the parameters used for <code>flag{}</code>, groupTitles{}, and <code>alignment{}</code>
+	 * 
+	 *	<p><pre>
+	 * The parameters will be used to construct the GUI the way the plugin writers want.
+	 * See in the different types of <code>@Tunable </code> annotations, for detailed information on how to use it
+	 * </pre></p>
 	 */
-	enum Param {slider,horizontal,vertical,uncollapsed,collapsed,network,session,attributes,hidden,displayed}
+	enum Param {
+		/**
+		 * The <code>AbstractBounded</code> or <code>AbstractFlexiblyBounded</code> Object is represented using a Slider
+		 */
+		slider,
+		
+		/**
+		 * The <code>Tunables</code> of the group whose this parameter is referring to, will be set horizontally
+		 */
+		horizontal,
+		
+		/**
+		 * The <code>Tunables</code> of the group whose this parameter is referring to, will be set vertically<br>
+		 * This is the default state
+		 */
+		vertical,
+		
+		/**
+		 * The panel that countains a <code>Tunable</code> annotated with <i>uncollapsed</i> will be collaspable, and in an expanded state at the creation of the GUI
+		 */
+		uncollapsed,
+		
+		/**
+		 * The panel that countains a <code>Tunable</code> annotated with <i>collapsed</i> will be collaspable, and in an collapsed state at the creation of the GUI
+		 */
+		collapsed,
+		
+		/**
+		 * Filter for network files in a <code>Tunable File</code> : only network files will be choosable in the JFileChooser dialog
+		 */
+		network,
+		
+		/**
+		 * Filter for session files in a <code>Tunable File</code> : only session files will be choosable in the JFileChooser dialog
+		 */
+		session,
+		
+		/**
+		 * Filter for attributes files in a <code>Tunable File</code> : only attributes files will be choosable in the JFileChooser dialog
+		 */
+		attributes,
+		
+		/**
+		 * The name of the group whose this <code>Tunable</code> is taking part shouldn't be displayed in the Borders in the GUI
+		 */
+		hidden,
+		
+		/**
+		 * The name of the group whose this <code>Tunable</code> is taking part should be displayed in the Borders in the GUI<br>
+		 * This is the default state
+		 */
+		displayed}
 }

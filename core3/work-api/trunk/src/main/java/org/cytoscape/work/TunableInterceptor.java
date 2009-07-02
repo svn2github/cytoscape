@@ -38,15 +38,15 @@ public interface TunableInterceptor<T extends Handler> {
 	
 	/**
 	 * Display the Objects caught to the user in order to modify their values.
+	 * <p><pre>
+	 * Create the UI with JPanels for each <code>Guihandler</code>, and display it to the user :
+	 * 	1) In a <i>parent</i> JPanel if <code>setParent()</code> method has been called before
+	 * 		The new values will be applied to the original Objects depending on the action that has been associated to the Buttons provided by this panel.
 	 * 
-	 * Create the UI with JPanels for each <code>Guihandler</code>, and display it to the user :<br>
-	 * 	1) In a <i>parent</i> JPanel if <code>setParent()</code> method has been called before<br>
-	 * 		The new values will be applied to the original Objects depending on the action that has been associated to the Buttons provided by this panel.<br>
-	 * 
-	 * 	2) By default in a JOptionPanel<br>
+	 * 	2) By default in a JOptionPanel<
 	 * 		This method will detect if the Object that contains the <code>@Tunable</code> annotations is implementing the <code>TunableValidator</code> interface, and if yes, execute the validation test.
 	 *  	The new values will be applied to the original Objects if "OK" is clicked, and if the validation test has succeeded. Either, no modification will happen.
-	 * 
+	 * </pre></p>
 	 * @param obs Object[] which contains classes with <code>Tunables</code> that need to be caught.
 	 * @return newValuesSet True if the values has been modified, false if not.
 	 */

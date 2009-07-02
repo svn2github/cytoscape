@@ -44,9 +44,37 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 
-
 /**
  * Interceptor for Tunables : detect them, create an appropriate <code>Handler</code> from the <code>HandlerFactory</code> for each of them, and store them in a HashMap for further use.
+ * 
+ * <p><pre>
+ * <b>example :</b>
+ * <code>
+ * public class Test{
+ * 	<code>@Tunable(description="Number of Modules", group={"General Parameters"})</code>
+ * 	public BoundedInteger numMod = new BoundedInteger(0,5,1000,false,false);
+ * 	<code>@Tunable(description="Overlap Threshold", group={"General Parameters"})</code>
+ * 	public BoundedDouble overlap = new BoundedDouble(0.0,0.8,1.0,false,false);
+ * 	<code>@Tunable(description="Adjust for size?", group={"General Parameters"})</code>
+ * 	public boolean adjustForSize = true;
+ * }
+ * </code></pre></p>
+ * 
+ * <p><pre>
+ * Here are the steps to get a list of handlers for each object annotated as a<code> @Tunable </code>, in order to provide :
+ * <ul>
+ * 	<li>a Graphic User Interface for <code>Tunables</code> in the Cytoscape Desktop(use of a <code>GuiTunableInterceptor</code>)</li>
+ * 	<li>a CommandLine Interface in a terminal to execute the Tasks by just typing the name of the class implementing the <code>TaskFactory</code> interface (use of <code>CLTunableInterceptor</code>)</li>
+ * 	<li>access to the properties of the <code>Tunables</code>(use of <code>LoadPropsInterceptor</code> or <code>StorePropsInterceptor</code> NEED TO BE DEVELOPPED !!!!!!!</li>
+ * </ul>
+ * 
+ * <ol>
+ * 	<li> First, detection of the Field annonated as <code> @Tunable </code> in the class the <code>TunableInterceptor</code> is applied to</li>
+ * 	<li>	Then, the <code>Handlers</code> are created for each kind of <code>Tunable</code> Object (In this example : creation of a <code>AbstractBounded<Integer></code>, <code>AbstractBounded<Double></code> and <code>Boolean</code>  <code>Handlers<code>)</li>
+ * 	<li>	The <code>Handlers</code> are stored in a <i>handlerList</i>, and are used by different <code>TunableInterceptor</code> types</li>
+ * 	<li> Create a GUI, provide CommandLine Options, Store or Load properties for those <code>Tunables</code> by using those <code>Handlers</code></li>
+ * </ol>
+ * </pre></p>
  *
  * @param <H>  <code>Handlers</code> created in the factory
  */
@@ -64,7 +92,8 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 	/**
 	 * Creates a new AbstractTunableInterceptor object.
 	 *
-	 * @param tunablehandlerfactory  Factory of Handler = can be <code>GuiHandlerFactory</code> to make the GUI with the <code>Handlers</code>
+	 * @param tunablehandlerfactory  Factory of <code>Handlers</code> = can be <code>GuiHandlerFactory</code> to make the GUI with the <code>Handlers</code>,
+	 * 	<code>CLHandlerFactory</code> to get the <code>Handlers</code> that will create the <i>Options</i> for the <code>Tasks</code> runnable through the CommandLine Interface,
 	 *  or <code>PropHandlerFactory</code> to get the <code>Handlers</code> for Properties.
 	 */
 	public AbstractTunableInterceptor(HandlerFactory<H> tunablehandlerfactory) {
@@ -83,7 +112,6 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 
 			// Find each public field in the class.
 			for (Field field : obj.getClass().getFields()) {
-				//System.out.println("evaluating: " + field.toString());
 				// See if the field is annotated as a Tunable.
 				if (field.isAnnotationPresent(Tunable.class)) {
 					try {
@@ -147,24 +175,6 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 					}
 				}
 			}
-
-//				if (method.isAnnotationPresent(Tunable.class)) {
-//					try {
-//						Tunable tunable = method.getAnnotation(Tunable.class);
-//						
-//						// Get a handler for this particular field type and
-//						// add it to the list.
-//						H handler = factory.getHandler(method,obj,tunable);
-//	
-//						if ( handler != null ) {
-//						 	handlerList.put( method.getName(), handler ); 
-//						}
-//	
-//					} catch (Throwable ex) {
-//						System.out.println("tunable method intercept failed: " + method.toString() );
-//						ex.printStackTrace();
-//					}
-//				}
 
 			handlerMap.put(obj, handlerList);
 		}

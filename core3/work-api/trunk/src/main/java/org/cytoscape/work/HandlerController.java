@@ -3,7 +3,7 @@ package org.cytoscape.work;
 import java.util.Map;
 
 /**
- * provide access for the object implementing this interface to the <code>Handlers</code> that will be created for its fields or methods
+ * Provide access for the class implementing this interface to the <code>Handlers</code> that will be created for its fields or methods
  * 
  * @author pasteur
  *

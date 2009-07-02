@@ -5,17 +5,17 @@ import java.lang.reflect.Method;
 
 
 	/**
-	 * This interface specify all the methods that will be applied to the <code>Handler</code> Object
+	 * This interface specify all the methods that will be applied to the <code>Handler</code>.
 	 * 
-	 * The Handler can be used for the construction of the GUI (by using the GuiHandlers), 
-	 * or can also be used to get the informations from the CommandLine.
+	 * <p><pre>
+	 * The <code>Handler</code> can be used for the construction of the GUI (by using the <code>Guihandler</code>), 
+	 *  or can also be used to get the informations from the CommandLine. (by using the <code>CLHandler</code>), 
+	 *  or even to get the properties for each <code>Tunable</code> object through its <code>Handlers</code>.
 	 * 
-	 * <code>Handler</code> will also be used to set the values that are in the Handler
-	 *  to the Properties object with <code>PropHandler</code>
+	 * <code>Handler</code> will also be used to set the values that are in the <code>Handler</code> to the Properties object with <code>PropHandler</code>
 	 * 
-	 * The access to the different parts of the<code>Handler</code> is allowed
-	 * by using the <code>getField()</code>, <code>getMethod()</code>, <code>getObject()</code>, and <code>getTunable</code> methods.
-	 * 
+	 * The access to the different parts of the<code>Handler</code> is allowed by using the <code>getField()</code>, <code>getMethod()</code>, <code>getObject()</code>, and <code>getTunable</code> methods.
+	 * </pre></p>
 	 * @author pasteur
 	 *
 	 */
