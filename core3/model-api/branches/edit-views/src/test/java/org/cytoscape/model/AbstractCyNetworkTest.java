@@ -234,36 +234,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertNotNull("edge is not null", e4two);
 		assertEquals("edge count", 8, net.getEdgeCount());
 	}
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void testAddEdgeEditProxy() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		CyNetwork editProxy = net.getEditProxy();
 
-		// add a directed edge
-		CyEdge e1 = editProxy.addEdge(n1, n2, true);
-		assertNotNull("edge is not null", e1);
-		assertTrue("edge index >= 0", e1.getIndex() >= 0);
-		assertTrue("edge index < num edge", e1.getIndex() < editProxy.getEdgeCount());
-		assertEquals("edge count", 1, editProxy.getEdgeCount());
-		assertEquals("orig network: edge count", 0, net.getEdgeCount());
-
-		// add an undirected edge
-		CyEdge e2 = editProxy.addEdge(n2, n3, false);
-		assertNotNull("edge is not null", e2);
-		assertTrue("edge index >= 0", e2.getIndex() >= 0);
-		assertTrue("edge index < num edge", e2.getIndex() < editProxy.getEdgeCount());
-		assertEquals("edge count", 2, editProxy.getEdgeCount());
-		assertEquals("orig network: edge count", 0, net.getEdgeCount());
-
-		// FIXME: with clever code re-use, should refactore other test cases so that they run in this case, too
-		editProxy.mergeEdits();
-		assertEquals("orig network: edge count", 2, net.getEdgeCount());
-		System.out.println("testAddEdgeEditProxy done.");
-	}
 	/**
 	 *  DOCUMENT ME!
 	 */
@@ -325,29 +296,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertFalse("remove edge 1 again fails", rem1);
 		assertEquals("num edges == 0", 0, net.getEdgeCount());
 	}
-	
-	public void testRemoveEdgeEditProxy() {
-		CyNode n1 = net.addNode();
-		CyNode n2 = net.addNode();
-		CyNode n3 = net.addNode();
-		
-		CyEdge e1 = net.addEdge(n1, n2, true);
-		CyEdge e2 = net.addEdge(n2, n3, false);
-		CyEdge e3 = net.addEdge(n1, n3, false);
-		assertEquals("num edges == 3", 3, net.getEdgeCount());
-		
-		CyNetwork editProxy = net.getEditProxy();
 
-		// basic remove
-		boolean rem3 = editProxy.removeEdge(e3);
-		assertTrue("remove edge 3 success", rem3);
-		assertEquals("num edges == 2", 2, editProxy.getEdgeCount());
-		assertEquals("num edges == 3", 3, net.getEdgeCount());
-
-		editProxy.mergeEdits();
-		assertEquals("num edges == 2", 2, net.getEdgeCount());
-		System.out.println("testRemoveEdgeEditProxy done.");
-	}
 	// this is functionality is tested elsewhere too
 	/**
 	 *  DOCUMENT ME!

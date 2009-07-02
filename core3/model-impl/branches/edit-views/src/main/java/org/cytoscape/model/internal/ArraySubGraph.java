@@ -38,7 +38,6 @@ package org.cytoscape.model.internal;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.SUIDFactory;
@@ -124,19 +123,6 @@ class ArraySubGraph implements CySubNetwork {
 		for (CyEdge edge : edgeSet)
 			updateEdge(edge);
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-    public CyNetwork getEditProxy(){
-    	return this;
-    }
-
-	/**
-	 * {@inheritDoc}
-	 */
-    public void mergeEdits(){ // FIXME: implement properly
-    }
 
 	/**
 	 * {@inheritDoc} 
