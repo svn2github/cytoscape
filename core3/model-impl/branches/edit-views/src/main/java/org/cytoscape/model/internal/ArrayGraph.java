@@ -67,10 +67,12 @@ import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CyMetaNode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 
 /**
@@ -110,6 +112,12 @@ public class ArrayGraph implements CyRootNetwork {
 	private final List<CySubNetwork> subNets;
 	private final List<CyMetaNode> metaNodes;
 	private CySubNetwork base; 
+
+    // used when this is an EditProxy
+    private CyNetwork parentObject = null;
+    private Set<CyEdge> pendingEditsRemovedEdges;
+    private Set<CyEdge> pendingEditsAddedEdges;
+    // above are used when this is an EditProxy
 
 	/**
 	 * Creates a new ArrayGraph object.
@@ -154,31 +162,64 @@ public class ArrayGraph implements CyRootNetwork {
 		base = addSubNetwork(new ArrayList<CyNode>());
 	}
 
+    /**
+     * A constructor to create an EditProxy for the given parent CyNetwork.
+     */
+	public ArrayGraph(final CyNetwork parent, final CyEventHelper eh) {
+	    this(eh);
+		parentObject = parent;
+	    pendingEditsRemovedEdges = new HashSet<CyEdge>();
+	    pendingEditsAddedEdges = new HashSet<CyEdge>();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+    public CyNetwork getEditProxy(){
+    	return new ArrayGraph(this, eventHelper);
+    }
+
+	/**
+	 * {@inheritDoc}
+	 */
+    public void mergeEdits(){
+	if (parentObject == null) {return;} // not an EditProxy, nothing to do
+
+	// no bulk method yet, remove one-by-one FIXME: use bulk method
+	for (CyEdge edge: pendingEditsRemovedEdges){
+	    parentObject.removeEdge(edge);
+	}
+	pendingEditsRemovedEdges.clear();
+    }
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public long getSUID() {
+	    if (parentObject != null) {return parentObject.getSUID();}
 		return suid;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getNodeCount() {
+    public int getNodeCount() {
 		return nodeCount; 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getEdgeCount() {
+    public int getEdgeCount() { // FIXME EDGE
 		return edgeCount; 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyEdge getEdge(final int e) {
+	public CyEdge getEdge(final int e) { // FIXME EDGE
 		if ((e >= 0) && (e < edgePointers.size()))
 			return edgePointers.get(e).cyEdge;
 		else
@@ -226,10 +267,10 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyEdge> getEdgeList() {
+	public List<CyEdge> getEdgeList() { // FIXME EDGE
 		return getEdgeList(firstNode,ROOT,edgeCount);
 	}
-
+ // FIXME EDGE
 	List<CyEdge> getEdgeList(final NodePointer first, final int inId, final int numEdges) {
 		final List<CyEdge> ret = new ArrayList<CyEdge>(numEdges);
 		int numRemaining = numEdges;
@@ -262,10 +303,10 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyNode> getNeighborList(final CyNode n, final CyEdge.Type e) {
+	public List<CyNode> getNeighborList(final CyNode n, final CyEdge.Type e) { // FIXME EDGE
 		return getNeighborList(n,e,ROOT);	
 	}
-
+ // FIXME EDGE
 	synchronized List<CyNode> getNeighborList(final CyNode n, final CyEdge.Type e, final int inId) {
 		if (!containsNode(n))
 			throw new IllegalArgumentException("this node is not contained in the network");
@@ -285,10 +326,10 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyEdge> getAdjacentEdgeList(final CyNode n, final CyEdge.Type e) {
+	public List<CyEdge> getAdjacentEdgeList(final CyNode n, final CyEdge.Type e) { // FIXME EDGE
 		return getAdjacentEdgeList(n,e,ROOT);
 	}
-
+ // FIXME EDGE
 	synchronized List<CyEdge> getAdjacentEdgeList(final CyNode n, final CyEdge.Type e, final int inId) {
 		if (!containsNode(n))
 			throw new IllegalArgumentException("this node is not contained in the network");
@@ -306,11 +347,11 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final CyEdge.Type e) {
+	public List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final CyEdge.Type e) { // FIXME EDGE
 		return getConnectingEdgeList(src,trg,e,ROOT);
 	}
 
-	synchronized List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final CyEdge.Type e, final int inId) {
+	synchronized List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final CyEdge.Type e, final int inId) { // FIXME EDGE
 		if (!containsNode(src))
 			throw new IllegalArgumentException("source node is not contained in the network");
 
@@ -397,14 +438,14 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyEdge addEdge(final CyNode s, final CyNode t, final boolean directed) {
+	public CyEdge addEdge(final CyNode s, final CyNode t, final boolean directed) { // FIXME EDGE
 		// by calling base.addEdge() we'll update both the base network AND
 		// the root network.  base.addEdge() calls edgeAdd().
 		return base.addEdge(s,t,directed);
 	}
 
 	// will be called from base.addEdge()!
-	CyEdge edgeAdd(final CyNode s, final CyNode t, final boolean directed) {
+	CyEdge edgeAdd(final CyNode s, final CyNode t, final boolean directed) { // FIXME EDGE
 
 		final EdgePointer e;
 
@@ -428,9 +469,12 @@ public class ArrayGraph implements CyRootNetwork {
 
 			edgeCount++;
 		}
-
-        eventHelper.fireSynchronousEvent(new AddedEdgeEventImpl(e.cyEdge, this),
-                                         AddedEdgeListener.class);
+	    if (parentObject != null){
+	    	pendingEditsAddedEdges.add(e.cyEdge);
+	    } else {
+	    	eventHelper.fireSynchronousEvent(new AddedEdgeEventImpl(e.cyEdge, this),
+	    			AddedEdgeListener.class);
+	    }
 
 		return e.cyEdge;
 	}
@@ -438,7 +482,12 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeEdge(final CyEdge edge) {
+	public boolean removeEdge(final CyEdge edge) { // FIXME EDGE
+	    if (parentObject != null){
+	    	if (!containsEdge(edge)) return false;
+			pendingEditsRemovedEdges.add(edge);
+			return true;		
+	    }
         eventHelper.fireSynchronousEvent(new AboutToRemoveEdgeEventImpl(edge, this),
                                          AboutToRemoveEdgeListener.class);
 
@@ -501,6 +550,18 @@ public class ArrayGraph implements CyRootNetwork {
 		if (edge == null)
 			return false;
 
+	    if (parentObject != null) {
+		if (parentObject.containsEdge(edge) && !pendingEditsRemovedEdges.contains(edge)){
+		    // was in parent, not yet removed, thus still in network:
+		    return true;
+		} else if (pendingEditsAddedEdges.contains(edge)){
+		    // irrespective of parent, if it is added now, it is in network:
+		    return true;
+		} else {
+		    return false;
+		}
+	    }
+
 		final int ind = edge.getIndex();
 
 		if (ind < 0)
@@ -523,11 +584,11 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean containsEdge(final CyNode n1, final CyNode n2) {
+	public boolean containsEdge(final CyNode n1, final CyNode n2) { // FIXME EDGE
 		return containsEdge(n1,n2,ROOT);
 	}
 
-	synchronized boolean containsEdge(final CyNode n1, final CyNode n2, final int inId) {
+	synchronized boolean containsEdge(final CyNode n1, final CyNode n2, final int inId) { // FIXME EDGE
 		//System.out.println("private containsEdge");
 		if (!containsNode(n1)) {
 			//System.out.println("private containsEdge doesn't contain node1 " + inId);
@@ -597,7 +658,7 @@ public class ArrayGraph implements CyRootNetwork {
 	}
 
 
-	private Iterator<EdgePointer> edgesAdjacent(final NodePointer n, final CyEdge.Type edgeType, final int inId) {
+	private Iterator<EdgePointer> edgesAdjacent(final NodePointer n, final CyEdge.Type edgeType, final int inId) { // FIXME EDGE
 		assert(n!=null);
 
 		final EdgePointer[] edgeLists;
@@ -700,7 +761,7 @@ public class ArrayGraph implements CyRootNetwork {
 	}
 
 	private Iterator<EdgePointer> edgesConnecting(final NodePointer node0, final NodePointer node1,
-	                                              final CyEdge.Type et, final int inId) {
+	                                              final CyEdge.Type et, final int inId) { // FIXME EDGE
 		assert(node0!=null);
 		assert(node1!=null);
 
@@ -763,6 +824,7 @@ public class ArrayGraph implements CyRootNetwork {
 			};
 	}
 
+    // These are 'global', they don't depend on which instance they are called on
 	private boolean assessUndirected(final CyEdge.Type e) {
 		return ((e == CyEdge.Type.UNDIRECTED) || (e == CyEdge.Type.ANY));
 	}
@@ -775,7 +837,7 @@ public class ArrayGraph implements CyRootNetwork {
 		return ((e == CyEdge.Type.DIRECTED) || (e == CyEdge.Type.ANY) || (e == CyEdge.Type.OUTGOING));
 	}
 
-	private int countEdges(final NodePointer n, final CyEdge.Type edgeType, final int inId) {
+	private int countEdges(final NodePointer n, final CyEdge.Type edgeType, final int inId) { // FIXME EDGE
 		assert(n!=null);
 		final boolean undirected = assessUndirected(edgeType);
 		final boolean incoming = assessIncoming(edgeType);
@@ -809,7 +871,7 @@ public class ArrayGraph implements CyRootNetwork {
 		return tentativeEdgeCount;
 	}
 
-	EdgePointer getEdgePointer(final CyEdge edge) {
+	EdgePointer getEdgePointer(final CyEdge edge) { // FIXME EDGE
 		assert(edge != null);
 		assert(edge.getIndex()>=0);
 		assert(edge.getIndex()<edgePointers.size());
@@ -817,7 +879,7 @@ public class ArrayGraph implements CyRootNetwork {
 		return edgePointers.get(edge.getIndex());
 	}
 
-	NodePointer getNodePointer(final CyNode node) {
+	NodePointer getNodePointer(final CyNode node) { // FIXME NODE
 		assert(node != null);
 		assert(node.getIndex()>=0);
 		assert(node.getIndex()<nodePointers.size());
@@ -831,7 +893,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * @return True if the object is an ArrayGraph and the SUID matches, false otherwise.
 	 */
 	@Override 
-   	public boolean equals(final Object o) {
+   	public boolean equals(final Object o) { // FIXME EDGE
    		if (!(o instanceof ArrayGraph))
 			return false;
 
@@ -846,6 +908,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
    	@Override
    	public int hashCode() {
+	    if (parentObject != null) {return parentObject.hashCode();}
 		return (int) (suid ^ (suid >>> 32));
 	}
 

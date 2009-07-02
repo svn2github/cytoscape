@@ -36,6 +36,7 @@ package org.cytoscape.view.model.internal;
 
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.ViewEditProxy;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.ViewChangeListener;
 
@@ -76,6 +77,11 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 		bypassLocks = new HashMap<VisualProperty<?>, Boolean>();
 	}
 
+	public ViewEditProxy<S> getViewEditProxy(){
+		return new ViewEditProxyImpl<S>(this); 
+	}
+
+	
 	/**
 	 * The VisualProperty object identifies which visual property to set and the Object
 	 * determines the value.   We should probably consider doing something more type safe like

@@ -45,10 +45,12 @@ import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.event.CyEventHelper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 
 /**
@@ -66,6 +68,12 @@ public class MGraph implements CyNetwork {
     private final Map<String, CyDataTable> edgeAttrMgr;
     private final CyEventHelper eventHelper;
 
+    // used when this is an EditProxy
+    private CyNetwork parentObject = null;
+    private Set<CyEdge> pendingEditsRemovedEdges;
+    private Set<CyEdge> pendingEditsAddedEdges;
+    // above are used when this is an EditProxy
+    
 	/**
 	 * Creates a new MGraph object.
 	 * @param eh The CyEventHelper used for firing events.
@@ -81,20 +89,62 @@ public class MGraph implements CyNetwork {
 
         netAttrMgr = new HashMap<String, CyDataTable>();
         netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " network", true, eh));
+        netAttrMgr.put(CyNetwork.HIDDEN_ATTRS, new CyDataTableImpl(null, suid + " network", false,eh));
+
+		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
+		attrs().set("name","");
 
         nodeAttrMgr = new HashMap<String, CyDataTable>();
         nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " node", true, eh));
+        nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, new CyDataTableImpl(null, suid + " node", false,eh));
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
 
         edgeAttrMgr = new HashMap<String, CyDataTable>();
         edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " edge", true, eh));
+        edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, new CyDataTableImpl(null, suid + " edge", false,eh));
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("interaction",String.class,false);
 
         eventHelper = eh;
 	}
+    /**
+     * A constructor to create an EditProxy for the given parent CyNetwork.
+     */
+	public MGraph(final CyNetwork parent, final CyEventHelper eh) {
+	    this(eh);
+		parentObject = parent;
+	    pendingEditsRemovedEdges = new HashSet<CyEdge>();
+	    pendingEditsAddedEdges = new HashSet<CyEdge>();
+	}
+
 
 	/**
 	 * {@inheritDoc}
 	 */
+    public CyNetwork getEditProxy(){
+    	return new MGraph(this, eventHelper);
+    }
+
+	/**
+	 * {@inheritDoc}
+	 */
+    public void mergeEdits(){
+    	if (parentObject == null) {return;} // not an EditProxy, nothing to do
+    	// no bulk method yet, remove one-by-one FIXME: use bulk method
+    	for (CyEdge edge: pendingEditsRemovedEdges){
+    		parentObject.removeEdge(edge);
+    	}
+    	pendingEditsRemovedEdges.clear();
+    }
+
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public long getSUID() {
+	    if (parentObject != null) {return parentObject.getSUID();}
 		return suid;
 	}
 
@@ -109,13 +159,17 @@ public class MGraph implements CyNetwork {
 	 * {@inheritDoc}
 	 */
 	public int getEdgeCount() {
-		return edgeCount;
+		if (parentObject != null) {
+			return this.getEdgeList().size();
+		} else {
+			return edgeCount;
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyEdge getEdge(final int e) {
+	public CyEdge getEdge(final int e) { //FIXME
 		if ((e >= 0) && (e < edgePointers.size()))
 			return edgePointers.get(e).cyEdge;
 		else
@@ -156,6 +210,12 @@ public class MGraph implements CyNetwork {
 	 * {@inheritDoc}
 	 */
 	public List<CyEdge> getEdgeList() {
+		if (parentObject != null) {
+			final List<CyEdge> ret = parentObject.getEdgeList();
+			ret.addAll(pendingEditsAddedEdges);
+			ret.removeAll(pendingEditsRemovedEdges);
+			return ret;
+		} 
 		final List<CyEdge> ret = new ArrayList<CyEdge>(edgeCount);
 		int numRemaining = edgeCount;
 		NodePointer node = firstNode;
@@ -185,7 +245,7 @@ public class MGraph implements CyNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyNode> getNeighborList(final CyNode n, final CyEdge.Type e) {
+	public List<CyNode> getNeighborList(final CyNode n, final CyEdge.Type e) { // FIXME
 		if (!containsNode(n))
 			throw new IllegalArgumentException("this node is not contained in the network");
 
@@ -205,7 +265,7 @@ public class MGraph implements CyNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyEdge> getAdjacentEdgeList(final CyNode n, final CyEdge.Type e) {
+	public List<CyEdge> getAdjacentEdgeList(final CyNode n, final CyEdge.Type e) { // FIXME
 		if (!containsNode(n))
 			throw new IllegalArgumentException("this node is not contained in the network");
 
@@ -222,7 +282,7 @@ public class MGraph implements CyNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final CyEdge.Type e) {
+	public List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final CyEdge.Type e) { // FIXME
 		if (!containsNode(src))
 			throw new IllegalArgumentException("source node is not contained in the network");
 
@@ -298,7 +358,7 @@ public class MGraph implements CyNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyEdge addEdge(final CyNode s, final CyNode t, final boolean directed) {
+	public CyEdge addEdge(final CyNode s, final CyNode t, final boolean directed) { // FIXME
 		final EdgePointer e;
 
 		synchronized (this) {
@@ -338,7 +398,7 @@ public class MGraph implements CyNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeEdge(final CyEdge edge) {
+	public boolean removeEdge(final CyEdge edge) { // FIXME
 		if (!containsEdge(edge))
 			return false;
 
@@ -421,7 +481,18 @@ public class MGraph implements CyNetwork {
 	public boolean containsEdge(final CyEdge edge) {
 		if (edge == null)
 			return false;
-
+		
+	    if (parentObject != null) {
+	    	if (parentObject.containsEdge(edge) && !pendingEditsRemovedEdges.contains(edge)){
+	    		// was in parent, not yet removed, thus still in network:
+			    return true;
+			} else if (pendingEditsAddedEdges.contains(edge)){
+			    // irrespective of parent, if it is added now, it is in network:
+			    return true;
+			} else {
+			    return false;
+			}
+	    } else {
 		//throw new NullPointerException("edge is null");
 		final int ind = edge.getIndex();
 
@@ -435,12 +506,13 @@ public class MGraph implements CyNetwork {
 		final EdgePointer thisEdge = edgePointers.get(ind);
 
 		return ((thisEdge != null) && thisEdge.cyEdge.equals(edge));
+	    }
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean containsEdge(final CyNode n1, final CyNode n2) {
+	public boolean containsEdge(final CyNode n1, final CyNode n2) { // FIXME
 		if (!containsNode(n1))
 			return false;
 
@@ -498,7 +570,7 @@ public class MGraph implements CyNetwork {
 	}
 
 
-	private Iterator<EdgePointer> edgesAdjacent(final NodePointer n, final CyEdge.Type edgeType) {
+	private Iterator<EdgePointer> edgesAdjacent(final NodePointer n, final CyEdge.Type edgeType) { // FIXME
 
 		assert(n!=null);
 
@@ -597,7 +669,7 @@ public class MGraph implements CyNetwork {
 	}
 
 	private Iterator<EdgePointer> edgesConnecting(final NodePointer node0, final NodePointer node1,
-	                                              final CyEdge.Type et) {
+	                                              final CyEdge.Type et) { // FIXME
 		assert(node0!=null);
 		assert(node1!=null);
 
@@ -658,7 +730,7 @@ public class MGraph implements CyNetwork {
 			};
 	}
 
-	private int countEdges(final NodePointer n, final CyEdge.Type edgeType) {
+	private int countEdges(final NodePointer n, final CyEdge.Type edgeType) { // FIXME
 		assert(n!=null);
 		boolean undirected = false;
 		boolean incoming = false;

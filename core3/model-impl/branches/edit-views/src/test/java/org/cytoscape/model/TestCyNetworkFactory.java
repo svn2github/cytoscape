@@ -50,8 +50,8 @@ public class TestCyNetworkFactory {
 
 	public static CyNetwork getInstance() {
 		//return new CyNetworkImpl(new DummyCyEventHelper());
-		//return new MGraph(new DummyCyEventHelper());
-		return new ArrayGraph(new DummyCyEventHelper());
+		return new MGraph(new DummyCyEventHelper());
+		//return new ArrayGraph(new DummyCyEventHelper());
 	}
 
 	public static CyRootNetwork getRootInstance() {

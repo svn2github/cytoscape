@@ -53,8 +53,10 @@ import org.cytoscape.model.events.AddedEdgeListener;
 import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.AddedNodeListener;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewEditProxy;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewChangeListener;
+import org.cytoscape.view.model.ViewEditProxy;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.SubsetChangedListener;
 import org.cytoscape.view.model.events.SubsetCreatedListener;
@@ -109,6 +111,26 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 		viewCyNetwork = new ColumnOrientedViewImpl<CyNetwork>(network);
 	}
 
+
+	/**
+	 * Returns an EditProxy bound to this instance
+	 *
+	 * This method can't be called getEditProxy(), since a
+	 * CyNetworkView is a View as well, and the two getEditProxy()
+	 * methods would clash. Thus have to put return type in method
+	 * name.
+ 	 *
+	 * @return EditProxy bound to this instance
+	 */
+	public CyNetworkViewEditProxy getCyNetworkViewEditProxy(){
+		return new CyNetworkViewEditProxyImpl(this); 
+	}
+
+	public ViewEditProxy<CyNetwork> getViewEditProxy(){
+		return new ViewEditProxyImpl<CyNetwork>(this); 
+	}
+
+	
 	/**
 	 * Returns a View for a specified Node.
 	 * 
