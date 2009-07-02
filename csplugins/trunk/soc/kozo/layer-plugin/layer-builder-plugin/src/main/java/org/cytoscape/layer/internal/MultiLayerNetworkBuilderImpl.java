@@ -3,6 +3,7 @@ package org.cytoscape.layer.internal;
 import java.util.List;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
@@ -46,11 +47,19 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 	private void connect(CyNetwork topLayer, CyNetwork connector, CyNetwork bottomLayer) {
 		// Connect them
+		
+		// 1st Phase: add all nodes in the top layer
 		for(CyNode cyNode : topLayer.getNodeList()){
-			if (layeredNetwork.containsNode(cyNode) != true){
-				// layeredNetwork.addNode();
-			}
+			CyNode newNode = layeredNetwork.addNode();
+			String name = cyNode.attrs().get("name",String.class);
+			newNode.attrs().set("name", name);
 		}
+		for(CyEdge edge: topLayer.getEdgeList()) {
+			CyEdge newEdge = layeredNetwork.addEdge(edge.getSource(), edge.getTarget(), true);
+			String name = edge.attrs().get("name",String.class);
+			newEdge.attrs().set("name", name);
+		}
+	
 		
 	}
 
