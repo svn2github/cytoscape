@@ -6,7 +6,6 @@ import csplugins.layout.LayoutPartition;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.work.UndoSupport;
 
 import java.util.ArrayList;

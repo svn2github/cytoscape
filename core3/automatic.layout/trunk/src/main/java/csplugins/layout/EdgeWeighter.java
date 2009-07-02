@@ -86,7 +86,7 @@ public class EdgeWeighter {
 	                                      WeightTypes.DISTANCE,
 	                                      WeightTypes.WEIGHT};
 
-	public void reset() { // FIXME: set up some tunable listener to have this called whenever tunable values change
+	public void reset() {
 		maxWeight = -1000000;
 		minWeight = 1000000;
 		maxLogWeight = -1000000;

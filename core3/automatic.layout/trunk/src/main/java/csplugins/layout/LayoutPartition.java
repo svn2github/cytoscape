@@ -697,13 +697,8 @@ public class LayoutPartition {
 		// Add this node to the partition
 		partition.addNode(nv, false);
 
-		// Get the list of edges connected to this node
-		int[] incidentEdges = network.getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
-
 		// Iterate through each connected edge
-		for (int i = 0; i < incidentEdges.length; i++) {
-			// Get the actual edge
-			CyEdge incidentEdge = (CyEdge) network.getEdge(incidentEdges[i]);
+		for (CyEdge incidentEdge: network.getAdjacentEdgeList(node, CyEdge.Type.ANY)){
 
 			int edgeIndex = incidentEdge.getIndex();
 

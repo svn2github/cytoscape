@@ -45,6 +45,7 @@ import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.UndoSupport;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 

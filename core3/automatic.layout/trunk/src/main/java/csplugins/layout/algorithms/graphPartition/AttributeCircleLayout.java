@@ -34,8 +34,6 @@ package csplugins.layout.algorithms.graphPartition;
 
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-import cytoscape.Cytoscape;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.UndoSupport;
@@ -53,7 +51,6 @@ import java.util.HashSet;
  *
  */
 public class AttributeCircleLayout extends AbstractGraphPartition {
-	CyAttributes data;
 	@Tunable(description="The attribute to use for the layout")
 	public String attribute = null;
 	@Tunable(description="The attribute namespace to use for the layout")
