@@ -12,12 +12,13 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
+
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.UndoSupport;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,16 +43,12 @@ public class ISOMLayout extends AbstractGraphPartition {
 	public double minAdaptation = 0;
 	@Tunable(description="Size factor")
 	public double sizeFactor = 100;
-	private double factor;
 	@Tunable(description="Cooling factor")
 	public double coolingFactor = 2;
-	private boolean trace;
-	private boolean done;
 	private LayoutPartition partition;
 
 	//Queue, First In First Out, use add() and get(0)/remove(0)
 	private IntArrayList q;
-	private String status = null;
 	OpenIntObjectHashMap nodeIndexToDataMap;
 	OpenIntIntHashMap nodeIndexToLayoutIndex;
 	double globalX;
@@ -65,7 +62,6 @@ public class ISOMLayout extends AbstractGraphPartition {
 		super(undoSupport);
 
 		q = new IntArrayList();
-		trace = false;
 	}
 
 	/**
@@ -125,7 +121,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 
 		while (nodeIter.hasNext()) {
 			LayoutNode node = (LayoutNode) nodeIter.next();
-			int rootGraphIndex = node.getNode().getRootGraphIndex();
+			int rootGraphIndex = node.getNode().getIndex();
 
 			nodeIndexToLayoutIndex.put(rootGraphIndex, node.getIndex());
 
@@ -159,7 +155,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 		Iterator nodeIter = partition.nodeIterator();
 
 		while (nodeIter.hasNext()) {
-			int nodeIndex = ((LayoutNode) nodeIter.next()).getNode().getRootGraphIndex();
+			int nodeIndex = ((LayoutNode) nodeIter.next()).getNode().getIndex();
 			ISOMVertexData ivd = getISOMVertexData(nodeIndex);
 			ivd.distance = 0;
 			ivd.visited = false;
@@ -221,7 +217,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 			partition.moveNodeToLocation(currentNode);
 
 			if (currData.distance < radius) {
-				int[] neighbors = neighborsArray(network, current);
+				int[] neighbors = neighborsArray(network, currentNode.getNode());
 
 				for (int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index) {
 					ISOMVertexData childData = getISOMVertexData(neighbors[neighbor_index]);
@@ -305,23 +301,14 @@ public class ISOMLayout extends AbstractGraphPartition {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int[] neighborsArray(CyNetwork network, int nodeIndex) {
+	public int[] neighborsArray(CyNetwork network, CyNode node) {
 		// Get a list of edges
-		int[] edges = network.getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
-		int[] neighbors = new int[edges.length];
+		List<CyNode> neighborList = network.getNeighborList(node, CyEdge.Type.ANY);
+		int [] neighbors = new int[neighborList.size()];
 		int offset = 0;
-
-		for (int edge = 0; edge < edges.length; edge++) {
-			int source = network.getEdgeSourceIndex(edges[edge]);
-			int target = network.getEdgeTargetIndex(edges[edge]);
-
-			if (source != nodeIndex) {
-				neighbors[offset++] = source;
-			} else {
-				neighbors[offset++] = target;
-			}
+		for (CyNode n: neighborList){
+			neighbors[offset++]=n.getIndex();
 		}
-
 		return neighbors;
 	}
 }
