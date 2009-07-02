@@ -34,12 +34,7 @@ package csplugins.layout;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyRowFactory;
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
-
-import java.util.List;
+import org.cytoscape.work.Tunable;
 
 enum WeightTypes {
 	GUESS("Heuristic"),
@@ -57,9 +52,12 @@ enum WeightTypes {
  * about how to interpret weights in an weighted layout.
  */
 public class EdgeWeighter {
-	WeightTypes type = WeightTypes.GUESS;
-	double minWeightCutoff = 0;
-	double maxWeightCutoff = Double.MAX_VALUE;
+	@Tunable(description="How to interpret weight values", group={"Edge Weight Settings"})
+	public WeightTypes type = WeightTypes.GUESS;
+	@Tunable(description="The minimum edge weight to consider", group={"Edge Weight Settings"})
+	public double minWeightCutoff = 0;
+	@Tunable(description="The maximum edge weight to consider", group={"Edge Weight Settings"})
+	public double maxWeightCutoff = Double.MAX_VALUE;
 	final static double EPSILON = .001;
 
 	// Default normalization bounds
@@ -80,64 +78,15 @@ public class EdgeWeighter {
 	// These are just here for efficiency reasons
 	double normalFactor = Double.MAX_VALUE;
 
-	String weightAttribute = null;
+	@Tunable(description="The edge attribute that contains the weights", group={"Edge Weight Settings"})
+	public String weightAttribute = null;
 
 	static WeightTypes[] weightChoices = {WeightTypes.GUESS,
 	                                      WeightTypes.LOG,
 	                                      WeightTypes.DISTANCE,
 	                                      WeightTypes.WEIGHT};
 
-	Tunable[] weightList = null;
-	
-	public void getWeightTunables(ModuleProperties props, List initialAttributes) {
-		props.add(TunableFactory.getTunable("edge_weight_group","Edge Weight Settings",
-		                                    Tunable.GROUP, Integer.valueOf(4)));
-		props.add(TunableFactory.getTunable("edge_attribute",
-			            	                    "The edge attribute that contains the weights",
-			            	                    Tunable.EDGEATTRIBUTE, "weight",
-                  	                    (Object) initialAttributes, (Object) null,
-                  	                    Tunable.NUMERICATTRIBUTE));
-		props.add(TunableFactory.getTunable("weight_type", "How to interpret weight values",
-                  	                    Tunable.LIST, Integer.valueOf(0),
-                  	                    (Object) weightChoices, (Object) null, 0));
-		props.add(TunableFactory.getTunable("min_weight", "The minimum edge weight to consider",
-                  	                    Tunable.DOUBLE, new Double(0)));
-		props.add(TunableFactory.getTunable("max_weight", "The maximum edge weight to consider",
-                  	                    Tunable.DOUBLE, new Double(Double.MAX_VALUE)));
-	}
-
-	public void updateSettings(ModuleProperties layoutProperties, boolean force) {
-		boolean resetRequired = false;
-  	Tunable t = layoutProperties.get("min_weight");
-    if ((t != null) && (t.valueChanged() || force)) {
-    	minWeightCutoff = ((Double) t.getValue()).doubleValue();
-			resetRequired = true;
-		}
-
-    t = layoutProperties.get("max_weight"); 
-    if ((t != null) && (t.valueChanged() || force)) {
-    	maxWeightCutoff = ((Double) t.getValue()).doubleValue();
-			resetRequired = true;
-		}
-
-    t = layoutProperties.get("edge_attribute");
-    if ((t != null) && (t.valueChanged() || force)) {
-    	weightAttribute = (t.getValue().toString());
-			resetRequired = true;
-		}
-
-		t = layoutProperties.get("weight_type");
-		if ((t != null) && (t.valueChanged() || force)) {
-			type = weightChoices[((Integer) t.getValue()).intValue()];
-			resetRequired = true;
-		}
-
-		if (resetRequired) 
-			reset();
-
-	}
-
-	public void reset() {
+	public void reset() { // FIXME: set up some tunable listener to have this called whenever tunable values change
 		maxWeight = -1000000;
 		minWeight = 1000000;
 		maxLogWeight = -1000000;

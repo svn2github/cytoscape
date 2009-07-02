@@ -36,9 +36,8 @@ import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.UndoSupport;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,11 +74,6 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
 
 	/**
- 	 * Our list of Tunables
- 	 */
-	protected ModuleProperties layoutProperties;
-
-	/**
 	 * Enables/disables debugging messages
 	 */
 	private final static boolean DEBUG = false;
@@ -88,7 +82,8 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	/**
 	 * Whether or not to initialize by randomizing all points
 	 */
-	protected boolean randomize = true;
+	@Tunable(description="Randomize graph before layout", group="Standard settings")
+	public boolean randomize = true;
 
 	/**
 	 * Whether or not to use edge weights for layout
@@ -98,13 +93,11 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	/**
 	 * This is the constructor for the bioLayout algorithm.
 	 */
-	public BioLayoutAlgorithm() {
-		super();
+	public BioLayoutAlgorithm(UndoSupport undoSupport) {
+		super(undoSupport);
 
 		if (edgeWeighter == null)
 			edgeWeighter = new EdgeWeighter();
-
-		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
 	}
 
 	/**
@@ -202,85 +195,6 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	public void setRandomize(String value) {
 		Boolean val = new Boolean(value);
 		randomize = val.booleanValue();
-	}
-
-	/**
-	 * Reads all of our properties from the cytoscape properties map and sets
-	 * the values as appropriates.
-	 */
-	protected void initializeProperties() {
-
-		layoutProperties.add(TunableFactory.getTunable("standard", "Standard settings", Tunable.GROUP,
-		                                               Integer.valueOf(3)));
-/*
-		layoutProperties.add(TunableFactory.getTunable("debug", "Enable debugging", Tunable.BOOLEAN,
-		                                 new Boolean(false), Tunable.NOINPUT));
-*/
-		layoutProperties.add(TunableFactory.getTunable("partition", "Partition graph before layout",
-		                                 Tunable.BOOLEAN, new Boolean(true)));
-		layoutProperties.add(TunableFactory.getTunable("randomize", "Randomize graph before layout",
-		                                 Tunable.BOOLEAN, new Boolean(true)));
-		layoutProperties.add(TunableFactory.getTunable("selected_only", "Only layout selected nodes",
-		                                 Tunable.BOOLEAN, new Boolean(false)));
-		if (supportWeights) {
-			edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
-		}
-	}
-
-	/**
-	 * Get the settings panel for this layout
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
-	}
-
-	public ModuleProperties getSettings() {
-		return layoutProperties;
-	}
-
-	/**
-	 *  Update the settings the user has requested
-	 */
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
-	/**
-	 * Update the settings the user has requested
-	 *
-	 * @param force if true, always read the settings
-	 */
-	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-
-		Tunable t = layoutProperties.get("debug");
-		if ((t != null) && (t.valueChanged() || force))
-			setDebug(t.getValue().toString());
-
-		t = layoutProperties.get("partition");
-		if ((t != null) && (t.valueChanged() || force))
-			setPartition(t.getValue().toString());
-
-		t = layoutProperties.get("randomize");
-		if ((t != null) && (t.valueChanged() || force))
-			setRandomize(t.getValue().toString());
-
-		t = layoutProperties.get("selected_only");
-		if ((t != null) && (t.valueChanged() || force))
-			setSelectedOnly(t.getValue().toString());
-
-		if (supportWeights)
-			edgeWeighter.updateSettings(layoutProperties, force);
-	}
-
-	/**
-	 * Revert to the default settings
-	 */
-	public void revertSettings() {
-		layoutProperties.revertProperties();
 	}
 
 	/**

@@ -39,14 +39,13 @@
  **/
 package csplugins.layout.algorithms.hierarchicalLayout;
 
-import cytoscape.CytoscapeInit;
 import cytoscape.task.TaskMonitor;
 import org.cytoscape.layout.AbstractLayout;
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.UndoSupport;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
@@ -225,24 +224,29 @@ class HierarchyFlowLayoutOrderNode implements Comparable {
  * {@link csplugins.hierarchicallayout.Graph}
 */
 public class HierarchicalLayoutAlgorithm extends AbstractLayout {
+	@Tunable(description="Horizontal spacing between nodes")
 	private int nodeHorizontalSpacing = 64;
+	@Tunable(description="Vertical spacing between nodes")
 	private int nodeVerticalSpacing = 32;
+	@Tunable(description="Component spacing")
 	private int componentSpacing = 64;
+	@Tunable(description="Band gap")
 	private int bandGap = 64;
+	@Tunable(description="Left edge margin")
 	private int leftEdge = 32;
+	@Tunable(description="Top edge margin")
 	private int topEdge = 32;
+	@Tunable(description="Right edge margin")
 	private int rightMargin = 7000;
+	@Tunable(description="layout selected nodes only")
 	private boolean selected_only = false;
-	private ModuleProperties layoutProperties;
 	private HashMap<Integer, HierarchyFlowLayoutOrderNode> nodes2HFLON = new HashMap<Integer, HierarchyFlowLayoutOrderNode>();
 
 	/**
 	 * Creates a new HierarchicalLayoutAlgorithm object.
 	 */
-	public HierarchicalLayoutAlgorithm() {
-		super();
-		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
-		initialize_properties();
+	public HierarchicalLayoutAlgorithm(UndoSupport undoSupport) {
+		super(undoSupport);
 	}
 
 	// We do support selected only
@@ -1154,106 +1158,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	public String toString() {
 		return "Hierarchical Layout";
 	}
-
-	/**
-	 * Get the settings panel for this layout
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
-	}
-
-	protected void initialize_properties() {
-		layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing",
-		                                 "Horizontal spacing between nodes", Tunable.INTEGER,
-		                                 Integer.valueOf(64)));
-		layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes",
-		                                 Tunable.INTEGER, Integer.valueOf(32)));
-		layoutProperties.add(TunableFactory.getTunable("componentSpacing", "Component spacing", Tunable.INTEGER,
-		                                 Integer.valueOf(64)));
-		layoutProperties.add(TunableFactory.getTunable("bandGap", "Band gap", Tunable.INTEGER, Integer.valueOf(64)));
-		layoutProperties.add(TunableFactory.getTunable("leftEdge", "Left edge margin", Tunable.INTEGER,
-		                                 Integer.valueOf(32)));
-		layoutProperties.add(TunableFactory.getTunable("topEdge", "Top edge margin", Tunable.INTEGER,
-		                                 Integer.valueOf(32)));
-		layoutProperties.add(TunableFactory.getTunable("rightMargin", "Right edge margin", Tunable.INTEGER,
-		                                 Integer.valueOf(7000)));
-		layoutProperties.add(TunableFactory.getTunable("selected_only", "Only layout selected nodes",
-		                                 Tunable.BOOLEAN, new Boolean(false)));
-		// We've now set all of our tunables, so we can read the property 
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
-
-		// Finally, update everything.  We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param force DOCUMENT ME!
-	 */
-	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-
-		Tunable t = layoutProperties.get("nodeHorizontalSpacing");
-
-		if ((t != null) && (t.valueChanged() || force))
-			nodeVerticalSpacing = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("nodeVerticalSpacing");
-
-		if ((t != null) && (t.valueChanged() || force))
-			nodeVerticalSpacing = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("componentSpacing");
-
-		if ((t != null) && (t.valueChanged() || force))
-			componentSpacing = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("bandGap");
-
-		if ((t != null) && (t.valueChanged() || force))
-			bandGap = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("leftEdge");
-
-		if ((t != null) && (t.valueChanged() || force))
-			leftEdge = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("topEdge");
-
-		if ((t != null) && (t.valueChanged() || force))
-			topEdge = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("rightMargin");
-
-		if ((t != null) && (t.valueChanged() || force))
-			rightMargin = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("selected_only");
-
-		if ((t != null) && (t.valueChanged() || force))
-			selected_only = ((Boolean) t.getValue()).booleanValue();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void revertSettings() {
-		layoutProperties.revertProperties();
-	}
-
+	
 	/**
 	* Sets the Task Monitor.
 	*

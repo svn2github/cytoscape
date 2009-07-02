@@ -40,9 +40,9 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.layout.AbstractLayout;
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.UndoSupport;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,25 +79,26 @@ public class GroupAttributesLayout extends AbstractLayout {
 	    - radmult:  The scale of the radius of the partition. Increasing this value
 	                will increase the size of the partition proportionally.
 	 */
-	private double spacingx = 400.0;
-	private double spacingy = 400.0;
-	private double maxwidth = 5000.0;
-	private double minrad = 100.0;
-	private double radmult = 50.0;
+	@Tunable(description="Horizontal spacing between two partitions in a row")
+	public double spacingx = 400.0;
+	@Tunable(description="Vertical spacing between the largest partitions of two rows")
+	public double spacingy = 400.0;
+	@Tunable(description="Maximum width of a row")
+	public double maxwidth = 5000.0;
+	@Tunable(description="Minimum width of a partition")
+	public double minrad = 100.0;
+	@Tunable(description="Scale of the radius of the partition")
+	public double radmult = 50.0;
 	@Tunable(description="The attribute to use for the layout")
-	private String attributeName;
+	public String attributeName;
 	@Tunable(description="The namespace of the attribute to use for the layout")
 	public String attributeNamespace;
-	
-	private byte attributeType;
 
 	/**
 	 * Creates a new GroupAttributesLayout object.
 	 */
-	public GroupAttributesLayout() {
-		super();
-		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
-		initialize_properties();
+	public GroupAttributesLayout(UndoSupport undoSupport) {
+		super(undoSupport);
 	}
 
 	/**
@@ -152,97 +153,6 @@ public class GroupAttributesLayout extends AbstractLayout {
 	 */
 	public List<String> getInitialAttributeList() {
 		return null;
-	}
-
-	/**
-	 * Get the settings panel for this layout
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
-	}
-
-	protected void initialize_properties() {
-		layoutProperties.add(TunableFactory.getTunable("spacingx",
-		                                 "Horizontal spacing between two partitions in a row",
-		                                 Tunable.DOUBLE, new Double(400.0)));
-		layoutProperties.add(TunableFactory.getTunable("spacingy",
-		                                 "Vertical spacing between the largest partitions of two rows",
-		                                 Tunable.DOUBLE, new Double(400.0)));
-		layoutProperties.add(TunableFactory.getTunable("maxwidth", "Maximum width of a row", Tunable.DOUBLE,
-		                                 new Double(5000.0)));
-		layoutProperties.add(TunableFactory.getTunable("minrad", "Minimum width of a partition", Tunable.DOUBLE,
-		                                 new Double(100.0)));
-		layoutProperties.add(TunableFactory.getTunable("radmult", "Scale of the radius of the partition",
-		                                 Tunable.DOUBLE, new Double(50.0)));
-		layoutProperties.add(TunableFactory.getTunable("attributeName", "The attribute to use for the layout",
-		                                 Tunable.NODEATTRIBUTE, ""));
-		// We've now set all of our tunables, so we can read the property 
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
-
-		// Finally, update everything.  We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param force DOCUMENT ME!
-	 */
-	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-
-		Tunable t = layoutProperties.get("spacingx");
-
-		if ((t != null) && (t.valueChanged() || force))
-			spacingx = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("spacingy");
-
-		if ((t != null) && (t.valueChanged() || force))
-			spacingy = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("maxwidth");
-
-		if ((t != null) && (t.valueChanged() || force))
-			maxwidth = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("minrad");
-
-		if ((t != null) && (t.valueChanged() || force))
-			minrad = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("radmult");
-
-		if ((t != null) && (t.valueChanged() || force))
-			radmult = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("attributeName");
-
-		if ((t != null) && (t.valueChanged() || force))
-			attributeName = (String) t.getValue();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void revertSettings() {
-		layoutProperties.revertProperties();
-	}
-
-	public ModuleProperties getSettings() {
-		return layoutProperties;
 	}
 
 	/*

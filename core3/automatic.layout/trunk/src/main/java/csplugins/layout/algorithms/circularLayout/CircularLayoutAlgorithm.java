@@ -44,10 +44,8 @@ import csplugins.layout.algorithms.hierarchicalLayout.Edge;
 import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 import cytoscape.CytoscapeInit;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.UndoSupport;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
@@ -67,15 +65,17 @@ import java.util.LinkedList;
  * are layed out in tree-like pattern.
  */
 public class CircularLayoutAlgorithm extends AbstractGraphPartition {
-	private int nodeHorizontalSpacing = 64;
-	private int nodeVerticalSpacing = 32;
-	private int leftEdge = 32;
-	private int topEdge = 32;
-	private int rightMargin = 1000;
-	private int componentSpacing = 64;
+	@Tunable(description="Horizontal spacing between nodes")
+	public int nodeHorizontalSpacing = 64;
+	@Tunable(description="Vertical spacing between nodes")
+	public int nodeVerticalSpacing = 32;
+	@Tunable(description="Left edge margin")
+	public int leftEdge = 32;
+	@Tunable(description="Top edge margin")
+	public int topEdge = 32;
+	@Tunable(description="Right edge margin")
+	public int rightMargin = 1000;
 
-	//private boolean selected_only = false;
-	private ModuleProperties layoutProperties;
 	private int[][] bc;
 	private boolean[] posSet;
 	private boolean[] depthPosSet;
@@ -89,10 +89,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	/**
 	 * Creates a new CircularLayoutAlgorithm object.
 	 */
-	public CircularLayoutAlgorithm() {
-		super();
-		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
-		initialize_properties();
+	public CircularLayoutAlgorithm(UndoSupport undoSupport) {
+		super(undoSupport);
 	}
 
 	/**
@@ -1117,35 +1115,6 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		canceled = true;
 	}
 
-	protected void initialize_properties() {
-		layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing",
-		                                 "Horizontal spacing between nodes", Tunable.INTEGER,
-		                                 Integer.valueOf(64)));
-		layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes",
-		                                 Tunable.INTEGER, Integer.valueOf(32)));
-
-		layoutProperties.add(TunableFactory.getTunable("leftEdge", "Left edge margin", Tunable.INTEGER,
-		                                 Integer.valueOf(32)));
-		layoutProperties.add(TunableFactory.getTunable("topEdge", "Top edge margin", Tunable.INTEGER,
-		                                 Integer.valueOf(32)));
-		layoutProperties.add(TunableFactory.getTunable("rightMargin", "Right edge margin", Tunable.INTEGER,
-		                                 Integer.valueOf(1000)));
-		// We've now set all of our tunables, so we can read the property 
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
-
-		// Finally, update everything.  We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -1153,52 +1122,6 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	 */
 	public void setTaskMonitor(TaskMonitor tm) {
 		taskMonitor = tm;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param force DOCUMENT ME!
-	 */
-	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-
-		Tunable t = layoutProperties.get("nodeHorizontalSpacing");
-
-		if ((t != null) && (t.valueChanged() || force))
-			nodeHorizontalSpacing = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("nodeVerticalSpacing");
-
-		if ((t != null) && (t.valueChanged() || force))
-			nodeVerticalSpacing = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("leftEdge");
-
-		if ((t != null) && (t.valueChanged() || force))
-			leftEdge = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("topEdge");
-
-		if ((t != null) && (t.valueChanged() || force))
-			topEdge = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("rightMargin");
-
-		if ((t != null) && (t.valueChanged() || force))
-			rightMargin = ((Integer) t.getValue()).intValue();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
 	}
 
 	/**

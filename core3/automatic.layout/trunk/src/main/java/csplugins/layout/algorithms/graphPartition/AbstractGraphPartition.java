@@ -5,6 +5,7 @@ import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.work.Tunable;
 import org.cytoscape.layout.AbstractLayout;
 
 import java.util.ArrayList;
@@ -19,7 +20,8 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	double incr = 100;
 	protected List <LayoutPartition> partitionList = null;
 	protected EdgeWeighter edgeWeighter = null;
-	protected boolean singlePartition = false;
+	@Tunable(description="Don't partition graph before layout", group="Standard settings")
+	public boolean singlePartition = false;
 
 	// Information for taskMonitor
 	double current_start = 0;	// Starting node number

@@ -39,6 +39,8 @@ package csplugins.layout.algorithms;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.work.UndoSupport;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -67,8 +69,8 @@ public class StackedNodeLayout extends AbstractLayout {
 	 * @param y_start_position  DOCUMENT ME!
 	 * @param nodes  DOCUMENT ME!
 	 */
-	public StackedNodeLayout(double x_position, double y_start_position, Collection nodes) {
-		super();
+	public StackedNodeLayout(UndoSupport undoSupport, double x_position, double y_start_position, Collection nodes) {
+		super(undoSupport);
 		this.x_position = x_position;
 		this.y_start_position = y_start_position;
 		this.nodes = nodes;
@@ -85,7 +87,7 @@ public class StackedNodeLayout extends AbstractLayout {
 			CyNode node = (CyNode) it.next();
 			View<CyNode> nodeView = networkView.getNodeView(node);
 			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x_position);
-			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y_position);
+			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, yPosition);
 			yPosition += (nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) * 2);
 		}
 	}

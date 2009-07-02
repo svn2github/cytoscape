@@ -12,11 +12,9 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-import cytoscape.CytoscapeInit;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.UndoSupport;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,20 +26,27 @@ import java.util.List;
  *
  */
 public class ISOMLayout extends AbstractGraphPartition {
-	private int maxEpoch = 5000;
+	@Tunable(description="Number of iterations")
+	public int maxEpoch = 5000;
 	private int epoch;
-	private int radiusConstantTime = 100;
-	private int radius = 5;
-	private int minRadius = 1;
+	@Tunable(description="Radius constant")
+	public int radiusConstantTime = 100;
+	@Tunable(description="Radius")
+	public int radius = 20;
+	@Tunable(description="Minimum radius")
+	public int minRadius = 1;
 	private double adaption;
-	private double initialAdaptation = 90.0D / 100.0D;
-	private double minAdaptation = 0;
-	private double sizeFactor = 100;
+	@Tunable(description="Initial adaptation")
+	public double initialAdaptation = 90.0D / 100.0D;
+	@Tunable(description="Minimum adaptation value")
+	public double minAdaptation = 0;
+	@Tunable(description="Size factor")
+	public double sizeFactor = 100;
 	private double factor;
-	private double coolingFactor = 2;
+	@Tunable(description="Cooling factor")
+	public double coolingFactor = 2;
 	private boolean trace;
 	private boolean done;
-	private ModuleProperties layoutProperties;
 	private LayoutPartition partition;
 
 	//Queue, First In First Out, use add() and get(0)/remove(0)
@@ -56,13 +61,11 @@ public class ISOMLayout extends AbstractGraphPartition {
 	/**
 	 * Creates a new ISOMLayout object.
 	 */
-	public ISOMLayout() {
-		super();
+	public ISOMLayout(UndoSupport undoSupport) {
+		super(undoSupport);
 
 		q = new IntArrayList();
 		trace = false;
-		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
-		initialize_properties();
 	}
 
 	/**
@@ -81,109 +84,6 @@ public class ISOMLayout extends AbstractGraphPartition {
 	 */
 	public String getName() {
 		return "isom";
-	}
-
-	/**
-	 * Get the settings panel for this layout
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
-	}
-
-	protected void initialize_properties() {
-		layoutProperties.add(TunableFactory.getTunable("maxEpoch", "Number of iterations", Tunable.INTEGER,
-		                                 Integer.valueOf(5000)));
-		layoutProperties.add(TunableFactory.getTunable("sizeFactor", "Size factor", Tunable.INTEGER,
-		                                 Integer.valueOf(10)));
-		layoutProperties.add(TunableFactory.getTunable("radiusConstantTime", "Radius constant", Tunable.INTEGER,
-		                                 Integer.valueOf(20)));
-		layoutProperties.add(TunableFactory.getTunable("radius", "Radius", Tunable.INTEGER, Integer.valueOf(5)));
-		layoutProperties.add(TunableFactory.getTunable("minRadius", "Minimum radius", Tunable.INTEGER,
-		                                 Integer.valueOf(1)));
-		layoutProperties.add(TunableFactory.getTunable("initialAdaptation", "Initial adaptation", Tunable.DOUBLE,
-		                                 new Double(0.9)));
-		layoutProperties.add(TunableFactory.getTunable("minAdaptation", "Minimum adaptation value",
-		                                 Tunable.DOUBLE, new Double(0)));
-		layoutProperties.add(TunableFactory.getTunable("coolingFactor", "Cooling factor", Tunable.DOUBLE,
-		                                 new Double(2)));
-
-		// We've now set all of our tunables, so we can read the property 
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
-
-		// Finally, update everything.  We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
-	public ModuleProperties getSettings() {
-		return layoutProperties;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param force DOCUMENT ME!
-	 */
-	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-
-		Tunable t = layoutProperties.get("maxEpoch");
-
-		if ((t != null) && (t.valueChanged() || force))
-			maxEpoch = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("sizeFactor");
-
-		if ((t != null) && (t.valueChanged() || force))
-			sizeFactor = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("radiusConstantTime");
-
-		if ((t != null) && (t.valueChanged() || force))
-			radiusConstantTime = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("radius");
-
-		if ((t != null) && (t.valueChanged() || force))
-			radius = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("minRadius");
-
-		if ((t != null) && (t.valueChanged() || force))
-			minRadius = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("initialAdaptation");
-
-		if ((t != null) && (t.valueChanged() || force))
-			initialAdaptation = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("minAdaptation");
-
-		if ((t != null) && (t.valueChanged() || force))
-			minAdaptation = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("coolingFactor");
-
-		if ((t != null) && (t.valueChanged() || force))
-			coolingFactor = ((Double) t.getValue()).doubleValue();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void revertSettings() {
-		layoutProperties.revertProperties();
 	}
 
 	/**

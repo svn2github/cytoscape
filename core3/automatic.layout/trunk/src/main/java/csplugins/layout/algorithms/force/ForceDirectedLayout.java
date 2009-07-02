@@ -41,11 +41,8 @@ import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
-import cytoscape.CytoscapeInit;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
+import org.cytoscape.work.Tunable;
 import prefuse.util.force.DragForce;
 import prefuse.util.force.EulerIntegrator;
 import prefuse.util.force.ForceItem;
@@ -64,6 +61,29 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
+enum Integrators{
+	RUNGEKUTTA("RUNGEKUTTA"),
+	EULER("EULER");
+	
+	private String name;
+	private Integrators(String str) { name=str; }
+	public String toString() { return name; }
+	public Integrator getNewIntegrator() {
+		// FIXME: could we use a switch on 'this' instead? (can't use one on
+		// name, because that is string, but) 'this' would be an enum, right?
+		// but eclipse complains if I have Integrators.EULER as a switch
+		// label...
+	
+		if (name.equals("EULER")){
+			return new EulerIntegrator();
+		}
+		else if (name.equals("RUNGEKUTTA")){
+			return new RungeKuttaIntegrator();
+		} else {// use Euler as default
+			return new EulerIntegrator();
+		}
+	}
+}
 /**
  * This class wraps the Prefuse force-directed layout algorithm.
  * See {@link http://prefuse.org} for more detail.
@@ -72,26 +92,26 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 {
 	private ForceSimulator m_fsim;
 
-	private int numIterations = 100;
-	double defaultSpringCoefficient = 1e-4f;
-	double defaultSpringLength = 50.0;
-	double defaultNodeMass = 3.0;
+	@Tunable(description="Number of Iterations", group="Algorithm settings")
+	public int numIterations = 100;
+	@Tunable(description="Default Spring Coefficient", group="Algorithm settings")
+	public double defaultSpringCoefficient = 1e-4f;
+	@Tunable(description="Default Spring Length", group="Algorithm settings")
+	public double defaultSpringLength = 50.0;
+	@Tunable(description="Default Node Mass", group="Algorithm settings")
+	public double defaultNodeMass = 3.0;
+
+	@Tunable(description="Integration algorithm to use", group="Algorithm settings")
+	public Integrators integrator = Integrators.RUNGEKUTTA;
 
 	/**
 	 * Value to set for doing unweighted layouts
 	 */
 	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
 
-	/**
-	 * Integrators
-	 */
-	String[] integratorArray = {"Runge-Kutta", "Euler"};
-
 	private boolean supportWeights = true;
-	private ModuleProperties layoutProperties;
 	Map<LayoutNode,ForceItem> forceItems;
 
-	private Integrator integrator = null;
 	
 	public ForceDirectedLayout() {
 		super();
@@ -104,8 +124,6 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		m_fsim.addForce(new SpringForce());
 		m_fsim.addForce(new DragForce());
 
-		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
-		initialize_properties();
 		forceItems = new HashMap<LayoutNode,ForceItem>();
 	}
 	
@@ -128,6 +146,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		part.calculateEdgeWeights();
 		// System.out.println("layoutPartion: "+part.getEdgeList().size()+" edges after calculateEdgeWeights");
 
+		m_fsim.setIntegrator(integrator.getNewIntegrator());
 		m_fsim.clear();
 
 		// initialize nodes
@@ -258,99 +277,4 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		return list;
 	}
 
-	
-	protected void initialize_properties() {
-
-		layoutProperties.add(TunableFactory.getTunable("standard", "Standard settings",
-		                                                Tunable.GROUP, Integer.valueOf(2)));
-
-		layoutProperties.add(TunableFactory.getTunable("partition", "Partition graph before layout",
-		                                               Tunable.BOOLEAN, new Boolean(true)));
-
-		layoutProperties.add(TunableFactory.getTunable("selected_only", "Only layout selected nodes",
-		                                               Tunable.BOOLEAN, new Boolean(false)));
-
-		edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
-
-		layoutProperties.add(TunableFactory.getTunable("force_alg_settings", "Algorithm settings",
-		                                               Tunable.GROUP, Integer.valueOf(5)));
-
-		layoutProperties.add(TunableFactory.getTunable("defaultSpringCoefficient", "Default Spring Coefficient",
-		                                               Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
-
-		layoutProperties.add(TunableFactory.getTunable("defaultSpringLength", "Default Spring Length",
-		                                               Tunable.DOUBLE, new Double(defaultSpringLength)));
-
-		layoutProperties.add(TunableFactory.getTunable("defaultNodeMass", "Default Node Mass",
-		                                               Tunable.DOUBLE, new Double(defaultNodeMass)));
-
-		layoutProperties.add(TunableFactory.getTunable("numIterations", "Number of Iterations",
-		                                               Tunable.INTEGER, Integer.valueOf(numIterations)));
-
-		layoutProperties.add(TunableFactory.getTunable("integrator", "Integration algorithm to use",
-		                                               Tunable.LIST, Integer.valueOf(0), 
-		                                               (Object) integratorArray, (Object) null, 0));
-
-		// We've now set all of our tunables, so we can read the property 
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
-
-		// Finally, update everything.  We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-	}
-
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
-	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-
-		Tunable t = layoutProperties.get("selected_only");
-		if ((t != null) && (t.valueChanged() || force))
-			selectedOnly = ((Boolean) t.getValue()).booleanValue();
-
-		t = layoutProperties.get("partition");
-		if ((t != null) && (t.valueChanged() || force))
-			setPartition(t.getValue().toString());
-
-		t = layoutProperties.get("defaultSpringCoefficient");
-		if ((t != null) && (t.valueChanged() || force))
-			defaultSpringLength = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("defaultSpringLength");
-		if ((t != null) && (t.valueChanged() || force))
-			defaultSpringLength = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("defaultNodeMass");
-		if ((t != null) && (t.valueChanged() || force))
-			defaultNodeMass = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("numIterations");
-		if ((t != null) && (t.valueChanged() || force))
-			numIterations = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("integrator");
-		if ((t != null) && (t.valueChanged() || force)) {
-			if (((Integer) t.getValue()).intValue() == 0)
-				integrator = new RungeKuttaIntegrator();
-			else if (((Integer) t.getValue()).intValue() == 1)
-				integrator = new EulerIntegrator();
-			else
-				return;
-
-			m_fsim.setIntegrator(integrator);
-		}
-
-		edgeWeighter.updateSettings(layoutProperties, force);
-	}
-
-	public ModuleProperties getSettings() {
-		return layoutProperties;
-	}
-
-	public JPanel getSettingsPanel() {
-		return layoutProperties.getTunablePanel();
-	}
 }

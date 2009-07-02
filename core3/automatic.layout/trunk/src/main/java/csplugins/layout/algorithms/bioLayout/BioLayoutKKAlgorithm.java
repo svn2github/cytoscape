@@ -36,9 +36,8 @@ import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.Profile;
-import cytoscape.CytoscapeInit;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.UndoSupport;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -89,13 +88,19 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * The average number of iterations per Node
 	 */
-	private double m_averageIterationsPerNode;
-	private double m_nodeDistanceStrengthConstant;
-	private double m_nodeDistanceRestLengthConstant;
+	@Tunable(description="Average number of iteratations for each node", group="Algorithm settings")
+	public double m_averageIterationsPerNode = 40;
+	@Tunable(description="Spring strength", group="Algorithm settings")
+	public double m_nodeDistanceStrengthConstant;
+	@Tunable(description="Spring rest length", group="Algorithm settings")
+	public double m_nodeDistanceRestLengthConstant;
 	private double[] m_nodeDistanceSpringScalars;
-	private double m_disconnectedNodeDistanceSpringStrength;
-	private double m_disconnectedNodeDistanceSpringRestLength;
-	private double m_anticollisionSpringStrength;
+	@Tunable(description="Strength of a 'disconnected' spring", group="Algorithm settings")
+	public double m_disconnectedNodeDistanceSpringStrength;
+	@Tunable(description="Rest length of a 'disconnected' spring", group="Algorithm settings")
+	public double m_disconnectedNodeDistanceSpringRestLength;
+	@Tunable(description="Strength to apply to avoid collisions", group="Algorithm settings")
+	public double m_anticollisionSpringStrength;
 	private double[] m_anticollisionSpringScalars;
 
 	/**
@@ -107,7 +112,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Current layout pass
 	 */
-	private int m_layoutPass;
+	@Tunable(description="Number of layout passes", group="Algorithm settings")
+	public int m_layoutPass = 2;
 
 	/**
 	 * The number of nodes
@@ -136,13 +142,10 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 * @param supportEdgeWeights a boolean to indicate whether we should
 	 *                                                  behave as if we support weights
 	 */
-	public BioLayoutKKAlgorithm(boolean supportEdgeWeights) {
-		super();
+	public BioLayoutKKAlgorithm(UndoSupport undoSupport, boolean supportEdgeWeights) {
+		super(undoSupport);
 
 		supportWeights = supportEdgeWeights;
-
-		// Set and (Possibly) override defaults
-		this.initializeProperties();
 	}
 
 	/**
@@ -300,102 +303,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	public void setAnticollisionSpringStrength(String value) {
 		Double val = new Double(value);
 		m_anticollisionSpringStrength = val.doubleValue();
-	}
-
-	/**
-	 * Reads all of our properties from the cytoscape properties map and sets
-	 * the values as appropriate.
-	 */
-	public void initializeProperties() {
-		super.initializeProperties();
-
-		/**
-		 * Tuning values
-		 */
-		layoutProperties.add(TunableFactory.getTunable("algorithm_settings", "Algorithm settings",
-		                                               Tunable.GROUP, Integer.valueOf(7)));
-		if (supportWeights)
-			layoutProperties.add(TunableFactory.getTunable("iterations_pernode",
-			                                 "Number of iteratations for each node",
-			                                 Tunable.INTEGER, Integer.valueOf(40)));
-		else
-			layoutProperties.add(TunableFactory.getTunable("iterations_pernode",
-			                                 "Number of iteratations for each node",
-			                                 Tunable.INTEGER, Integer.valueOf(20)));
-
-		layoutProperties.add(TunableFactory.getTunable("layout_passes", "Number of layout passes",
-		                                 Tunable.INTEGER, Integer.valueOf(2)));
-		layoutProperties.add(TunableFactory.getTunable("distance_strength", "Spring strength", Tunable.DOUBLE,
-		                                 new Double(15.0)));
-		layoutProperties.add(TunableFactory.getTunable("rest_length", "Spring rest length", Tunable.DOUBLE,
-		                                 new Double(45.0)));
-		layoutProperties.add(TunableFactory.getTunable("disconnected_strength",
-		                                 "Strength of a 'disconnected' spring", Tunable.DOUBLE,
-		                                 new Double(0.05)));
-		layoutProperties.add(TunableFactory.getTunable("disconnected_rest_length",
-		                                 "Rest length of a 'disconnected' spring", Tunable.DOUBLE,
-		                                 new Double(2000.0)));
-		layoutProperties.add(TunableFactory.getTunable("anticollisionStrength",
-		                                 "Strength to apply to avoid collisions", Tunable.DOUBLE,
-		                                 new Double(100.0)));
-		// We've now set all of our tunables, so we can read the property 
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
-
-		// Finally, update everything.  We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param force DOCUMENT ME!
-	 */
-	public void updateSettings(boolean force) {
-		super.updateSettings(force);
-
-		Tunable t = layoutProperties.get("iterations_pernode");
-
-		if ((t != null) && (t.valueChanged() || force))
-			setNumberOfIterationsPerNode(t.getValue().toString());
-
-		t = layoutProperties.get("layout_passes");
-
-		if ((t != null) && (t.valueChanged() || force))
-			setNumberOfLayoutPasses(t.getValue().toString());
-
-		t = layoutProperties.get("distance_strength");
-
-		if ((t != null) && (t.valueChanged() || force))
-			setDistanceSpringStrength(t.getValue().toString());
-
-		t = layoutProperties.get("rest_length");
-
-		if ((t != null) && (t.valueChanged() || force))
-			setDistanceRestLength(t.getValue().toString());
-
-		t = layoutProperties.get("disconnected_strength");
-
-		if ((t != null) && (t.valueChanged() || force))
-			setDisconnectedSpringStrength(t.getValue().toString());
-
-		t = layoutProperties.get("disconnected_rest_length");
-
-		if ((t != null) && (t.valueChanged() || force))
-			setDisconnectedRestLength(t.getValue().toString());
-
-		t = layoutProperties.get("anticollisionStrength");
-
-		if ((t != null) && (t.valueChanged() || force))
-			setAnticollisionSpringStrength(t.getValue().toString());
 	}
 
 	/**

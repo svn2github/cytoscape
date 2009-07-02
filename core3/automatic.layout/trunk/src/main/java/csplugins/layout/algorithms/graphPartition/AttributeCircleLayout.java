@@ -35,12 +35,10 @@ package csplugins.layout.algorithms.graphPartition;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.tunable.ModuleProperties;
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.TunableFactory;
 import org.cytoscape.model.CyDataTable;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.UndoSupport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,28 +54,29 @@ import java.util.HashSet;
  */
 public class AttributeCircleLayout extends AbstractGraphPartition {
 	CyAttributes data;
-	String attribute = null;
-	private double spacing = 50.0;
+	@Tunable(description="The attribute to use for the layout")
+	public String attribute = null;
 	@Tunable(description="The attribute namespace to use for the layout")
 	public String namespace = null;
+	@Tunable(description="Circle size")
+	public double spacing = 100.0;
 	boolean supportNodeAttributes = true;
-	ModuleProperties layoutProperties = null;
 
 	/**
 	 * Creates a new AttributeCircleLayout object.
 	 *
 	 * @param supportAttributes  DOCUMENT ME!
 	 */
-	public AttributeCircleLayout(boolean supportAttributes) {
-		super();
+	public AttributeCircleLayout(UndoSupport undoSupport, boolean supportAttributes) {
+		super(undoSupport);
 		initialize(supportAttributes);
 	}
 
 	/**
 	 * Creates a new AttributeCircleLayout object.
 	 */
-	public AttributeCircleLayout() {
-		super();
+	public AttributeCircleLayout(UndoSupport undoSupport) {
+		super(undoSupport);
 		initialize(true);
 	}
 
@@ -88,8 +87,6 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	 */
 	public void initialize(boolean supportAttributes) {
 		supportNodeAttributes = supportAttributes;
-		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
-		initialize_properties();
 	}
 
 	// Required methods for AbstactLayout
@@ -123,75 +120,6 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 			this.attribute = null;
 		else
 			this.attribute = value;
-	}
-
-	/**
-	 * Get the settings panel for this layout
-	 */
-	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
-	}
-
-	protected void initialize_properties() {
-		layoutProperties.add(TunableFactory.getTunable("spacing", "Circle size", Tunable.DOUBLE, new Double(100.0)));
-		layoutProperties.add(TunableFactory.getTunable("attribute", "The attribute to use for the layout",
-		                                 Tunable.NODEATTRIBUTE, "(none)",
-		                                 (Object) getInitialAttributeList(), (Object) null, 0));
-		// We've now set all of our tunables, so we can read the property 
-		// file now and adjust as appropriate
-		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
-
-		// Finally, update everything.  We need to do this to update
-		// any of our values based on what we read from the property file
-		updateSettings(true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void updateSettings() {
-		updateSettings(false);
-	}
-
-	public ModuleProperties getSettings() {
-		return layoutProperties;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param force DOCUMENT ME!
-	 */
-	public void updateSettings(boolean force) {
-		layoutProperties.updateValues();
-
-		Tunable t = layoutProperties.get("spacing");
-
-		if ((t != null) && (t.valueChanged() || force))
-			spacing = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("attribute");
-
-		if ((t != null) && (t.valueChanged() || force)) {
-			String newValue = (String) t.getValue();
-
-			if (newValue.equals("(none)")) {
-				attribute = null;
-			} else {
-				attribute = newValue;
-				;
-			}
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void revertSettings() {
-		layoutProperties.revertProperties();
 	}
 
 	/**

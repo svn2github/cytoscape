@@ -22,8 +22,8 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 	/**
 	 * Creates a new DegreeSortedCircleLayout object.
 	 */
-	public DegreeSortedCircleLayout() {
-		super();
+	public DegreeSortedCircleLayout(UndoSupport undoSupport) {
+		super(undoSupport);
 	}
 
 	/**
