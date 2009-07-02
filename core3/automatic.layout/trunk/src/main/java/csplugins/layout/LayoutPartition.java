@@ -32,8 +32,8 @@
  */
 package csplugins.layout;
 
-import cytoscape.utVil.intr.IntIntHash;
-import cytoscape.util.intr.IntObjHash;
+import org.cytoscape.util.intr.IntIntHash;
+import org.cytoscape.util.intr.IntObjHash;
 
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyEdge;
