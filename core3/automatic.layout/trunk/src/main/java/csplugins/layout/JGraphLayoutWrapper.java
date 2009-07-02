@@ -40,7 +40,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.layout.AbstractLayout;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.model.View;
 import org.jgraph.JGraph;
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.ConnectionSet;
@@ -287,13 +287,10 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 
 		double currentProgress = 0;
 		double percentProgressPerIter = 0;
-		CyNetwork perspective = networkView.getGraphPerspective();
-		Map j_giny_node_map = new HashMap(); //PrimeFinder.nextPrime(perspective.getNodeCount()));
-		Map giny_j_node_map = new HashMap(); //PrimeFinder.nextPrime(perspective.getNodeCount()));
-		Map j_giny_edge_map = new HashMap(); //PrimeFinder.nextPrime(perspective.getEdgeCount()));
-
-		Iterator node_iterator = perspective.nodesIterator();
-		Iterator edge_iterator = perspective.edgesIterator();
+		CyNetwork network = networkView.getSource();
+		Map j_giny_node_map = new HashMap(); //PrimeFinder.nextPrime(network.getNodeCount()));
+		Map giny_j_node_map = new HashMap(); //PrimeFinder.nextPrime(network.getNodeCount()));
+		Map j_giny_edge_map = new HashMap(); //PrimeFinder.nextPrime(network.getEdgeCount()));
 
 		taskMonitor.setStatus("Executing Layout");
 		taskMonitor.setPercentCompleted((int) currentProgress);
@@ -312,25 +309,27 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		// update progress bar
 		currentProgress = 20;
 		taskMonitor.setPercentCompleted((int) currentProgress);
-		percentProgressPerIter = 20 / (double) (networkView.getNodeViewCount());
+		percentProgressPerIter = 20 / (double) (networkView.getNodeViews().size());
 
 		// create Vertices
-		while (node_iterator.hasNext() && !canceled) {
-			// get the GINY node and node view
-			CyNode giny = (CyNode) node_iterator.next();
-			NodeView node_view = networkView.getNodeView(giny);
+		for (CyNode n: network.getNodeList()){
+		    if (canceled) return;
+			View<CyNode> node_view = networkView.getNodeView(n);
 
-			DefaultGraphCell jcell = new DefaultGraphCell(giny.getIdentifier());
+			DefaultGraphCell jcell = new DefaultGraphCell(n.getIndex());
 
 			// Set bounds
-			Rectangle2D bounds = new Rectangle2D.Double(node_view.getXPosition(),
-			                                            node_view.getYPosition(),
-			                                            node_view.getWidth(), node_view.getHeight());
+			Rectangle2D bounds = new Rectangle2D.Double(
+                                       node_view.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION),
+				       node_view.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION),
+				       node_view.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE),
+				       node_view.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE)
+								    );
 
 			GraphConstants.setBounds(jcell.getAttributes(), bounds);
 
-			j_giny_node_map.put(jcell, giny);
-			giny_j_node_map.put(giny, jcell);
+			j_giny_node_map.put(jcell, n);
+			giny_j_node_map.put(n, jcell);
 
 			cells.add(jcell);
 
@@ -340,13 +339,12 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		}
 
 		// update progress bar
-		percentProgressPerIter = 20 / (double) (networkView.getEdgeViewCount());
+		percentProgressPerIter = 20 / (double) (networkView.getEdgeViews().size());
 
-		while (edge_iterator.hasNext() && !canceled) {
-			CyEdge giny = (CyEdge) edge_iterator.next();
-
-			DefaultGraphCell j_source = (DefaultGraphCell) giny_j_node_map.get(giny.getSource());
-			DefaultGraphCell j_target = (DefaultGraphCell) giny_j_node_map.get(giny.getTarget());
+		for (CyEdge edge: network.getEdgeList()){
+			if (canceled) return;
+			DefaultGraphCell j_source = (DefaultGraphCell) giny_j_node_map.get(edge.getSource());
+			DefaultGraphCell j_target = (DefaultGraphCell) giny_j_node_map.get(edge.getTarget());
 
 			DefaultPort source_port = new DefaultPort();
 			DefaultPort target_port = new DefaultPort();
@@ -359,7 +357,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 
 			// create the edge
 			DefaultEdge jedge = new DefaultEdge();
-			j_giny_edge_map.put(jedge, giny);
+			j_giny_edge_map.put(jedge, edge);
 
 			// Connect Edge
 			//
@@ -398,10 +396,9 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 				// ok, we found a node
 				Rectangle2D rect = graph.getCellBounds(cell_view.getCell());
 				CyNode giny = (CyNode) j_giny_node_map.get(cell_view.getCell());
-				NodeView node_view = networkView.getNodeView(giny);
-				node_view.setXPosition(rect.getX(), false);
-				node_view.setYPosition(rect.getY(), false);
-				node_view.setNodePosition(true);
+				View<CyNode> node_view = networkView.getNodeView(giny);
+				node_view.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, rect.getX());
+				node_view.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, rect.getY());
 
 				// update progress bar
 				currentProgress += percentProgressPerIter;

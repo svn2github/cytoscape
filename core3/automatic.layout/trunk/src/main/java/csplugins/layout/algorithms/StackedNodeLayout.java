@@ -38,7 +38,7 @@ package csplugins.layout.algorithms;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.layout.AbstractLayout;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.model.View;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -83,10 +83,10 @@ public class StackedNodeLayout extends AbstractLayout {
 
 		while (it.hasNext()) {
 			CyNode node = (CyNode) it.next();
-			NodeView nodeView = networkView.getNodeView(node);
-			nodeView.setXPosition(x_position);
-			nodeView.setYPosition(yPosition);
-			yPosition += (nodeView.getHeight() * 2);
+			View<CyNode> nodeView = networkView.getNodeView(node);
+			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x_position);
+			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y_position);
+			yPosition += (nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) * 2);
 		}
 	}
 

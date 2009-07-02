@@ -40,13 +40,13 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
+import org.cytoscape.model.CyDataTable;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -58,6 +58,8 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	CyAttributes data;
 	String attribute = null;
 	private double spacing = 50.0;
+	@Tunable(description="The attribute namespace to use for the layout")
+	public String namespace = null;
 	boolean supportNodeAttributes = true;
 	ModuleProperties layoutProperties = null;
 
@@ -237,8 +239,6 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	 * @param partition DOCUMENT ME!
 	 */
 	public void layoutPartion(LayoutPartition partition) {
-		data = Cytoscape.getNodeAttributes();
-
 		// just add the unlocked nodes
 		List<LayoutNode> nodes = new ArrayList<LayoutNode>();
 		for ( LayoutNode ln : partition.getNodeList() ) {
@@ -251,8 +251,18 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 		int r = (int) Math.sqrt(count);
 		r *= spacing;
 
-		if (this.attribute != null)
-			Collections.sort(nodes, new AttributeComparator());
+		if (this.attribute != null){
+			CyDataTable dataTable = network.getCyDataTables("NODE").get(namespace);
+			Class<?> klass = dataTable.getColumnTypeMap().get(attribute);
+			if (Comparable.class.isAssignableFrom(klass)){
+				// FIXME: I assume this would be better, but get type errors if I try:
+				//Class<Comparable<?>> kasted = (Class<Comparable<?>>) klass;
+				//Collections.sort(nodes, new AttributeComparator<Comparable<?>>(kasted));
+				Collections.sort(nodes, new AttributeComparator(klass));
+			} else {
+				/* FIXME Error! */
+			}
+		}
 
 		// Compute angle step
 		double phi = (2 * Math.PI) / count; 
@@ -269,72 +279,43 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 			partition.moveNodeToLocation(node);
 		}
 	}
-
-	private class AttributeComparator implements Comparator<LayoutNode> {
-		private AttributeComparator() {
+	private class AttributeComparator<T extends Comparable<T>> implements Comparator<LayoutNode> {
+		Class<T> klass;
+		private AttributeComparator(Class<T> klass) {
+			this.klass = klass;
 		}
-
+		
 		public int compare(LayoutNode o1, LayoutNode o2) {
-
-			byte type = data.getType(attribute);
-
-			if (type == CyAttributes.TYPE_STRING) {
-				String v1 = data.getStringAttribute(o1.getIdentifier(), attribute);
-				String v2 = data.getStringAttribute(o2.getIdentifier(), attribute);
-
-				if ((v1 != null) && (v2 != null))
-					return v1.compareToIgnoreCase(v2);
-				else if ((v1 == null) && (v2 != null))
+			T v1 = o1.getNode().getCyRow(namespace).get(attribute, klass);
+			T v2 = o2.getNode().getCyRow(namespace).get(attribute, klass);
+			if (String.class.isAssignableFrom(klass)){ // i.e. if klass _is_ String.class
+				String s1 = String.class.cast(v1);
+				String s2 = String.class.cast(v2);
+				if ((s1 != null) && (s2 != null))
+					return s1.compareToIgnoreCase(s2);
+				else if ((s1 == null) && (s2 != null))
 					return -1;
-				else if ((v1 == null) && (v2 == null))
+				else if ((s1 == null) && (s2 == null))
 					return 0;
-				else if ((v1 != null) && (v2 == null))
+				else if ((s1 != null) && (s2 == null))
 					return 1;
-			} else if (type == CyAttributes.TYPE_FLOATING) {
-				Double v1 = data.getDoubleAttribute(o1.getIdentifier(), attribute);
-				Double v2 = data.getDoubleAttribute(o2.getIdentifier(), attribute);
-
-				if ((v1 != null) && (v2 != null))
-					return v1.compareTo(v2);
-				else if ((v1 == null) && (v2 != null))
-					return -1;
-				else if ((v1 == null) && (v2 == null))
-					return 0;
-				else if ((v1 != null) && (v2 == null))
-					return 1;
-			} else if (type == CyAttributes.TYPE_INTEGER) {
-				Integer v1 = data.getIntegerAttribute(o1.getIdentifier(), attribute);
-				Integer v2 = data.getIntegerAttribute(o2.getIdentifier(), attribute);
-
-				if ((v1 != null) && (v2 != null))
-					return v1.compareTo(v2);
-				else if ((v1 == null) && (v2 != null))
-					return -1;
-				else if ((v1 == null) && (v2 == null))
-					return 0;
-				else if ((v1 != null) && (v2 == null))
-					return 1;
-			} else if (type == CyAttributes.TYPE_BOOLEAN) {
-				Boolean v1 = data.getBooleanAttribute(o1.getIdentifier(), attribute);
-				Boolean v2 = data.getBooleanAttribute(o2.getIdentifier(), attribute);
-
-				if ((v1 != null) && (v2 != null)) {
-					if ((v1.booleanValue() && v2.booleanValue())
-					    || (!v1.booleanValue() && !v2.booleanValue()))
-						return 0;
-					else if (v1.booleanValue() && !v2.booleanValue())
-						return 1;
-					else if (!v1.booleanValue() && v2.booleanValue())
-						return -1;
-				} else if ((v1 == null) && (v2 != null))
-					return -1;
-				else if ((v1 == null) && (v2 == null))
-					return 0;
-				else if ((v1 != null) && (v2 == null))
-					return 1;
+				
+			} else {
+				return compareEvenIfNull(v1, v2);
 			}
 
-			return 0;
+			return 0; // can't happen anyway
+		}
+
+		public int compareEvenIfNull(T v1, T v2){
+			if ((v1 != null) && (v2 != null))
+				return v1.compareTo(v2);
+			else if ((v1 == null) && (v2 != null))
+				return -1;
+			else if ((v1 == null) && (v2 == null))
+				return 0;
+			else // if ((v1 != null) && (v2 == null)) // this is the only possibility
+				return 1;
 		}
 	}
 }

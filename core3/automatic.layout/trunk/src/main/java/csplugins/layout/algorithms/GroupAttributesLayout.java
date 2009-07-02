@@ -36,8 +36,7 @@
 
 package csplugins.layout.algorithms;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.layout.AbstractLayout;
@@ -85,10 +84,12 @@ public class GroupAttributesLayout extends AbstractLayout {
 	private double maxwidth = 5000.0;
 	private double minrad = 100.0;
 	private double radmult = 50.0;
+	@Tunable(description="The attribute to use for the layout")
 	private String attributeName;
+	@Tunable(description="The namespace of the attribute to use for the layout")
+	public String attributeNamespace;
+	
 	private byte attributeType;
-	private CyAttributes nodeAttributes;
-	private ModuleProperties layoutProperties;
 
 	/**
 	 * Creates a new GroupAttributesLayout object.
@@ -271,13 +272,20 @@ public class GroupAttributesLayout extends AbstractLayout {
 		taskMonitor.setStatus("Initializing");
 		initialize(); // Calls initialize_local
 
-		nodeAttributes = Cytoscape.getNodeAttributes();
-
-		attributeType = nodeAttributes.getType(attributeName);
-
-		Map<Comparable, List<CyNode>> partitionMap = new TreeMap<Comparable, List<CyNode>>();
+		CyDataTable dataTable = network.getCyDataTables("NODE").get(attributeNamespace);
+		Class<?> klass = dataTable.getColumnTypeMap().get(attributeName);
+		if (Comparable.class.isAssignableFrom(klass)){
+			Class<Comparable<?>>kasted = (Class<Comparable<?>>) klass;
+			doConstruct(kasted);
+		} else {
+			/* FIXME Error! */
+		}
+	}
+	/** Needed to allow usage of parametric types */
+	private <T extends Comparable<T>> void doConstruct(Class<T> klass){
+		Map<T, List<CyNode>> partitionMap = new TreeMap<T, List<CyNode>>();
 		List<CyNode> invalidNodes = new ArrayList<CyNode>();
-		makeDiscrete(partitionMap, invalidNodes);
+		makeDiscrete(partitionMap, invalidNodes, klass);
 
 		List<List<CyNode>> partitionList = sort(partitionMap);
 		partitionList.add(invalidNodes);
@@ -307,39 +315,13 @@ public class GroupAttributesLayout extends AbstractLayout {
 				offsetx += spacingx;
 		}
 	}
-
-	private void makeDiscrete(Map<Comparable, List<CyNode>> map, List<CyNode> invalidNodes) {
+	
+	private <T extends Comparable<T>> void makeDiscrete(Map<T, List<CyNode>> map, List<CyNode> invalidNodes, Class<T> klass) {
 		if (map == null)
 			return;
-
-		Iterator iterator = network.nodesIterator();
-
-		while (iterator.hasNext()) {
-			CyNode node = (CyNode) iterator.next();
-
-			Comparable key = null;
-
-			switch (attributeType) {
-				case CyAttributes.TYPE_INTEGER:
-					key = nodeAttributes.getIntegerAttribute(node.getIdentifier(), attributeName);
-
-					break;
-
-				case CyAttributes.TYPE_STRING:
-					key = nodeAttributes.getStringAttribute(node.getIdentifier(), attributeName);
-
-					break;
-
-				case CyAttributes.TYPE_FLOATING:
-					key = nodeAttributes.getDoubleAttribute(node.getIdentifier(), attributeName);
-
-					break;
-
-				case CyAttributes.TYPE_BOOLEAN:
-					key = nodeAttributes.getBooleanAttribute(node.getIdentifier(), attributeName);
-
-					break;
-			}
+		
+		for (CyNode node:network.getNodeList()){
+			T key = node.getCyRow(attributeNamespace).get(attributeName, klass);
 
 			if (key == null) {
 				if (invalidNodes != null)
@@ -353,17 +335,20 @@ public class GroupAttributesLayout extends AbstractLayout {
 		}
 	}
 
-	private List<List<CyNode>> sort(final Map<Comparable, List<CyNode>> map) {
+	private <T extends Comparable<T>> List<List<CyNode>> sort(final Map<T, List<CyNode>> map) {
 		if (map == null)
 			return null;
 
-		List<Comparable> keys = new ArrayList<Comparable>(map.keySet());
+		List<T> keys = new ArrayList<T>(map.keySet());
 		Collections.sort(keys);
 
 		Comparator<CyNode> comparator = new Comparator<CyNode>() {
 			public int compare(CyNode node1, CyNode node2) {
-				String a = node1.getIdentifier();
-				String b = node2.getIdentifier();
+				// FIXME: this code was originally comparing node1.getIdentifier() to node2.getIdentifier()
+				// I'm not sure that comparing the indices of the nodes gets the same effect
+				// on the other hand, nodes don't have a human-readable uid in 3.0
+				Integer a = Integer.valueOf(node1.getIndex());
+				Integer b = Integer.valueOf(node2.getIndex());
 
 				return a.compareTo(b);
 			}
@@ -371,7 +356,7 @@ public class GroupAttributesLayout extends AbstractLayout {
 
 		List<List<CyNode>> sortedlist = new ArrayList<List<CyNode>>(map.keySet().size());
 
-		for (Comparable key : keys) {
+		for (T key : keys) {
 			List<CyNode> partition = map.get(key);
 			Collections.sort(partition, comparator);
 			sortedlist.add(partition);
@@ -386,8 +371,8 @@ public class GroupAttributesLayout extends AbstractLayout {
 
 		if (partition.size() == 1) {
 			CyNode node = partition.get(0);
-			networkView.getNodeView(node).setXPosition(offsetx);
-			networkView.getNodeView(node).setYPosition(offsety);
+			networkView.getNodeView(node).setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, offsetx);
+			networkView.getNodeView(node).setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, offsety);
 
 			return 0.0;
 		}
@@ -403,8 +388,8 @@ public class GroupAttributesLayout extends AbstractLayout {
 		for (CyNode node : partition) {
 			double x = offsetx + radius + (radius * Math.cos(phi));
 			double y = offsety + radius + (radius * Math.sin(phi));
-			networkView.getNodeView(node).setXPosition(x);
-			networkView.getNodeView(node).setYPosition(y);
+			networkView.getNodeView(node).setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x);
+			networkView.getNodeView(node).setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y);
 			phi += phidelta;
 		}
 

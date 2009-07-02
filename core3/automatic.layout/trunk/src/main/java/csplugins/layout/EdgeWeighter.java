@@ -157,20 +157,17 @@ public class EdgeWeighter {
 
 	public void setWeight(LayoutEdge layoutEdge) {
 		CyEdge edge = layoutEdge.getEdge();
-		CyAttributes edgeAttributes = CyAttributesFactory.getCyAttributes("edge");
-		double eValue = 0.5;
+		CyRow row = edge.attrs();
+		double eValue = 0.5; // FIXME: shouldn't we expose the default edge weight somehow?
 
 		// System.out.println("Setting weight for "+layoutEdge+" using "+weightAttribute);
 
-		if ((weightAttribute != null)
-		    && edgeAttributes.hasAttribute(edge.getIdentifier(), weightAttribute)) {
-			if (edgeAttributes.getType(weightAttribute) == CyAttributes.TYPE_INTEGER) {
-				Integer val = edgeAttributes.getIntegerAttribute(edge.getIdentifier(),
-				                                                 weightAttribute);
+		if (weightAttribute != null) {
+		    if (row.contains(weightAttribute, Integer.class)) {
+				Integer val = row.get(weightAttribute, Integer.class);
 				eValue = (double) val.intValue();
-			} else {
-				Double val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(),
-				                                               weightAttribute);
+			} else if (row.contains(weightAttribute, Double.class)) {
+				Double val = row.get(weightAttribute, Double.class);
 				eValue = val.doubleValue();
 			}
 		}

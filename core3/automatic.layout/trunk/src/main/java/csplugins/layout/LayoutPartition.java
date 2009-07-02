@@ -628,13 +628,13 @@ public class LayoutPartition {
 		while (nodeViewIter.hasNext()) {
 			NodeView nv = (NodeView) nodeViewIter.next();
 			int node = nv.getNode().getRootGraphIndex();
-			nodesSeenMap.put(-node, m_NODE_HAS_NOT_BEEN_SEEN);
-			nodesToViews.put(-node, nv);
+			nodesSeenMap.put(node, m_NODE_HAS_NOT_BEEN_SEEN);
+			nodesToViews.put(node, nv);
 		}
 
 		for (CyEdge edge: (List<CyEdge>)network.edgesList()) {
 			int edgeIndex = edge.getRootGraphIndex();
-			edgesSeenMap.put(-edgeIndex, m_NODE_HAS_NOT_BEEN_SEEN);
+			edgesSeenMap.put(edgeIndex, m_NODE_HAS_NOT_BEEN_SEEN);
 		}
 
 		// OK, now traverse the graph
@@ -642,7 +642,7 @@ public class LayoutPartition {
 			int nodeIndex = node.getRootGraphIndex();
 
 			// Have we seen this already?
-			if (nodesSeenMap.get(-nodeIndex) == m_NODE_HAS_BEEN_SEEN)
+			if (nodesSeenMap.get(nodeIndex) == m_NODE_HAS_BEEN_SEEN)
 				continue;
 
 			// Nope, first time
@@ -651,7 +651,7 @@ public class LayoutPartition {
 			// Set the edge weighter
 			part.setEdgeWeighter(edgeWeighter);
 
-			nodesSeenMap.put(-nodeIndex, m_NODE_HAS_BEEN_SEEN);
+			nodesSeenMap.put(nodeIndex, m_NODE_HAS_BEEN_SEEN);
 
 			// Traverse through all connected nodes
 			traverse(network, networkView, nodesToViews, node, part);
@@ -697,8 +697,7 @@ public class LayoutPartition {
 	                             LayoutPartition partition) {
 		int nodeIndex = node.getRootGraphIndex();
 
-		// Get the nodeView
-		NodeView nv = (NodeView) nodesToViews.get(-nodeIndex);
+		View<CyNode> nv = (View<CyNode>) nodesToViews.get(nodeIndex);
 
 		// Add this node to the partition
 		partition.addNode(nv, false);
@@ -714,12 +713,12 @@ public class LayoutPartition {
 			int edgeIndex = incidentEdge.getRootGraphIndex();
 
 			// Have we already seen this edge?
-			if (edgesSeenMap.get(-edgeIndex) == m_NODE_HAS_BEEN_SEEN) {
+			if (edgesSeenMap.get(edgeIndex) == m_NODE_HAS_BEEN_SEEN) {
 				// Yes, continue since it means we *must* have seen both sides
 				continue;
 			}
 
-			edgesSeenMap.put(-edgeIndex, m_NODE_HAS_BEEN_SEEN);
+			edgesSeenMap.put(edgeIndex, m_NODE_HAS_BEEN_SEEN);
 
 			// Make sure we clean up after any previous layouts
 			EdgeView ev = networkView.getEdgeView(incidentEdge);
@@ -740,9 +739,9 @@ public class LayoutPartition {
 			int incidentNodeIndex = otherNode.getRootGraphIndex();
 
 			// Have we seen the connecting node yet?
-			if (nodesSeenMap.get(-incidentNodeIndex) == m_NODE_HAS_NOT_BEEN_SEEN) {
+			if (nodesSeenMap.get(incidentNodeIndex) == m_NODE_HAS_NOT_BEEN_SEEN) {
 				// Mark it as having been seen
-				nodesSeenMap.put(-incidentNodeIndex, m_NODE_HAS_BEEN_SEEN);
+				nodesSeenMap.put(incidentNodeIndex, m_NODE_HAS_BEEN_SEEN);
 
 				// Traverse through this one
 				traverse(network, networkView, nodesToViews, otherNode, partition);

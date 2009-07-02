@@ -47,7 +47,9 @@ import cytoscape.task.TaskMonitor;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,7 +81,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	private boolean[] depthPosSet;
 	private HashMap<Integer, Integer> nodeHeights;
 	private LinkedList<Integer>[] edgesFrom;
-	private NodeView[] nodeView;
+	//private NodeView[] nodeView;
+	private HashMap<Integer, View<CyNode>> nodeViews;
 	private HashMap<Integer, Integer> node2BiComp;
 	private boolean[] drawnBiComps;
 
@@ -135,22 +138,19 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			return;
 		}
 
-		nodeView = new NodeView[numNodes];
+		nodeViews = new HashMap<Integer, View<CyNode>>(numNodes);
 
 		int nextNode = 0;
-		HashMap<Integer, Integer> ginyIndex2Index = new HashMap<Integer, Integer>(numNodes * 2);
+		//HashMap<Integer, Integer> ginyIndex2Index = new HashMap<Integer, Integer>(numNodes * 2);
 
 		Iterator iter = partition.getNodeList().iterator(); /* all nodes */
 
 		while (iter.hasNext() && !canceled) {
-			NodeView nv = ((LayoutNode) (iter.next())).getNodeView();
-			Integer nodeIndexKey = Integer.valueOf(nv.getNode().getRootGraphIndex());
-
-			if (!ginyIndex2Index.containsKey(nodeIndexKey)) {
-				nodeView[nextNode] = nv;
-				ginyIndex2Index.put(nodeIndexKey, Integer.valueOf(nextNode));
-				nextNode++;
-			}
+			View<CyNode> nv = ((LayoutNode) (iter.next())).getNodeView();
+			
+			nodeViews.put(nextNode, nv);
+			nextNode++;
+			
 		}
 
 		if (canceled)
@@ -162,12 +162,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 		while (iter.hasNext()) {
 			LayoutEdge ev = (LayoutEdge) (iter.next());
-			Integer edgeFrom = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getSource().getNodeView()
-			                                                               .getNode()
-			                                                               .getRootGraphIndex()));
-			Integer edgeTo = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getTarget().getNodeView()
-			                                                             .getNode()
-			                                                             .getRootGraphIndex()));
+			Integer edgeFrom = ev.getEdge().getSource().getIndex();
+			Integer edgeTo = ev.getEdge().getTarget().getIndex();
 
 			if ((edgeFrom == null) || (edgeTo == null)) {
 				// Must be from an unselected node
@@ -191,8 +187,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		if (canceled)
 			return;
 
-		posSet = new boolean[nodeView.length]; // all false
-		depthPosSet = new boolean[nodeView.length]; // all false
+		posSet = new boolean[nodeViews.size()]; // all false
+		depthPosSet = new boolean[nodeViews.size()]; // all false
 
 		//System.out.println("plain component:\n" + graph.getNodecount());
 
@@ -249,8 +245,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		// setting nodes on inner circle 
 		for (int i = 0; i < bc[maxIndex].length; i++) {
 			//System.out.println(bc[maxIndex][i] + " " + part2NonPart[bc[maxIndex][i]] + "   ");
-			nodeView[bc[maxIndex][i]].setOffset(startX + (Math.cos(angle) * radius),
-			                                    startY - (Math.sin(angle) * radius));
+			setOffset(nodeViews.get(bc[maxIndex][i]), startX + (Math.cos(angle) * radius),
+			                                          startY - (Math.sin(angle) * radius));
 			posSet[bc[maxIndex][i]] = true;
 
 			angle += deltaAngle;
@@ -269,9 +265,9 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 		while (iter.hasNext() && !canceled) {
 			LayoutNode ln = (LayoutNode) (iter.next());
-			NodeView nv = ln.getNodeView();
-			double xPos = nv.getXPosition();
-			double yPos = nv.getYPosition();
+			View<CyNode> nv = ln.getNodeView();
+			double xPos = nv.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+			double yPos = nv.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 			ln.setX(xPos);
 			ln.setY(yPos);
 			partition.moveNodeToLocation(ln);
@@ -346,8 +342,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		innerDeltaAngle = (2 * Math.PI) / bc[compIndex].length;
 
 		if (firstTouched != -1) {
-			pointX = nodeView[firstTouched].getOffset().getX();
-			pointY = nodeView[firstTouched].getOffset().getY();
+			pointX = nodeViews.get(firstTouched).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+			pointY = nodeViews.get(firstTouched).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 			theAngle = Math.asin((startY - pointY) / Math.sqrt(((pointX - startX) * (pointX
 			                                                                        - startX))
 			                                                   + ((pointY - startY) * (pointY
@@ -400,8 +396,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			if (noOfNeighbours == 0)
 				continue;
 
-			pointX = nodeView[bc[compIndex][i]].getOffset().getX();
-			pointY = nodeView[bc[compIndex][i]].getOffset().getY();
+			pointX = nodeViews.get(bc[compIndex][i]).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+			pointY = nodeViews.get(bc[compIndex][i]).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 
 			theAngle = Math.asin((startY - pointY) / Math.sqrt(((pointX - startX) * (pointX
 			                                                                        - startX))
@@ -452,10 +448,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 							startAngle -= (2 * Math.PI);
 					}
 
-					nodeView[currentNeighbour].setOffset(startX
-					                                     + (Math.cos(startAngle) * outerRadius),
-					                                     startY
-					                                     - (Math.sin(startAngle) * outerRadius));
+					setOffset(nodeViews.get(currentNeighbour), startX + (Math.cos(startAngle) * outerRadius),
+					                                     	   startY - (Math.sin(startAngle) * outerRadius));
 					outerPositionsOwners[(startPos) % outerPositionsOwners.length] = currentNeighbour;
 					outerPositionsTaken[(startPos) % outerPositionsOwners.length] = (int) (theAngle / innerDeltaAngle);
 					startPos++;
@@ -490,8 +484,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 					continue;
 				}
 
-				pointX = nodeView[currentNeighbour].getOffset().getX();
-				pointY = nodeView[currentNeighbour].getOffset().getY();
+				pointX = nodeViews.get(currentNeighbour).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+				pointY = nodeViews.get(currentNeighbour).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 
 				theAngle = Math.asin((startY - pointY) / Math.sqrt(((pointX - startX) * (pointX
 				                                                                        - startX))
@@ -707,8 +701,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		if (node2BiComp.containsKey(Integer.valueOf(nodeID))
 		    && !drawnBiComps[node2BiComp.get(Integer.valueOf(nodeID)).intValue()]) {
 			int comp = node2BiComp.get(Integer.valueOf(nodeID)).intValue();
-			double centerX = nodeView[nodeID].getOffset().getX();
-			double centerY = nodeView[nodeID].getOffset().getY();
+			double centerX = nodeViews.get(nodeID).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+			double centerY = nodeViews.get(nodeID).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 			double radius = (48 * bc[comp].length) / (2 * Math.PI);
 			double deltaAngle = (2 * Math.PI) / bc[comp].length;
 			double currAngle = theAngle - Math.PI - deltaAngle;
@@ -732,8 +726,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 				if (posSet[bc[comp][i]])
 					continue;
 
-				nodeView[bc[comp][i]].setOffset(centerX + (Math.cos(currAngle) * radius),
-				                                centerY - (Math.sin(currAngle) * radius));
+				setOffset(nodeViews.get(bc[comp][i]), centerX + (Math.cos(currAngle) * radius),
+				                                      centerY - (Math.sin(currAngle) * radius));
 				posSet[bc[comp][i]] = true;
 
 				oneAtLeast = true;
@@ -744,10 +738,9 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			}
 
 			if (oneAtLeast) {
-				nodeView[nodeID].setOffset(nodeView[nodeID].getOffset().getX()
-				                           + (Math.cos(theAngle) * 3 * radius),
-				                           nodeView[nodeID].getOffset().getY()
-				                           - (Math.sin(theAngle) * 3 * radius));
+				setOffset(nodeViews.get(nodeID),
+						  nodeViews.get(nodeID).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION) + (Math.cos(theAngle) * 3 * radius),
+				          nodeViews.get(nodeID).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION) - (Math.sin(theAngle) * 3 * radius));
 
 				SetOuterCircle(comp, radius, centerX, centerY, nodeID);
 			}
@@ -829,31 +822,28 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			rTry = r;
 
 			double hlp = 100.0;
-			double startX = nodeView[nodeID].getOffset().getX();
-			double startY = nodeView[nodeID].getOffset().getY();
+			double startX = nodeViews.get(nodeID).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+			double startY = nodeViews.get(nodeID).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 
 			if (neighboursCount > 2) {
-				nodeView[nodeID].setOffset(startX + (Math.cos(theAngle) * r * ((min2 + 1) % 100)),
-				                           startY - (Math.sin(theAngle) * r * ((min2 + 1) % 100)));
-				startX = nodeView[nodeID].getOffset().getX();
-				startY = nodeView[nodeID].getOffset().getY();
+				setOffset(nodeViews.get(nodeID), startX + (Math.cos(theAngle) * r * ((min2 + 1) % 100)),
+				                                 startY - (Math.sin(theAngle) * r * ((min2 + 1) % 100)));
+				startX = nodeViews.get(nodeID).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+				startY = nodeViews.get(nodeID).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 
 				//System.out.println("theAngle = " + theAngle + ", startAngle = " + startAngle + ", remStartAngle = " + remStartAngle + ", deltaAngle = " + deltaAngle);
 				//System.out.println("min1Id = " + min1Id + ", min2Id" + min2Id + ", maxId" + maxId);
-				nodeView[min1Id].setOffset(startX + (Math.cos(remStartAngle) * r),
-				                           startY - (Math.sin(remStartAngle) * r));
-				nodeView[min2Id].setOffset(startX + (Math.cos(remStartAngle + deltaAngle) * r),
-				                           startY - (Math.sin(remStartAngle + deltaAngle) * r));
+				setOffset(nodeViews.get(min1Id), startX + (Math.cos(remStartAngle) * r),
+				                                 startY - (Math.sin(remStartAngle) * r));
+				setOffset(nodeViews.get(min2Id), startX + (Math.cos(remStartAngle + deltaAngle) * r),
+				                                 startY - (Math.sin(remStartAngle + deltaAngle) * r));
 
 				if (nodeHeights.get(Integer.valueOf(maxId)).intValue() > 8)
 					r = 256;
 
-				nodeView[maxId].setOffset(startX
-				                          + (Math.cos(remStartAngle
-				                                      - ((neighboursCount / 2) * deltaAngle)) * r),
-				                          startY
-				                          - (Math.sin(remStartAngle
-				                                      - ((neighboursCount / 2) * deltaAngle)) * r));
+				setOffset(nodeViews.get(maxId), 
+						  startX + (Math.cos(remStartAngle - ((neighboursCount / 2) * deltaAngle)) * r),
+				          startY - (Math.sin(remStartAngle - ((neighboursCount / 2) * deltaAngle)) * r));
 				//System.out.println("Ugao za maxID "
 				 //                  + (remStartAngle - ((neighboursCount / 2) * deltaAngle)));
 			}
@@ -874,8 +864,8 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 					if (((currentNeighbour != min1Id) && (currentNeighbour != min2Id)
 					    && (currentNeighbour != maxId)) || (neighboursCount <= 2)) {
-						nodeView[currentNeighbour].setOffset(startX + (Math.cos(startAngle) * r),
-						                                     startY - (Math.sin(startAngle) * r));
+						setOffset(nodeViews.get(currentNeighbour), startX + (Math.cos(startAngle) * r),
+						                                           startY - (Math.sin(startAngle) * r));
 
 						startAngle -= deltaAngle;
 
@@ -1063,9 +1053,9 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 					for (int k = j; k < (i - count); k++) {
 						if (outerPositionsOwners[(k + 1 + outerPositionsTaken.length) % outerPositionsTaken.length] > 0)
-							nodeView[outerPositionsOwners[(k + 1 + outerPositionsTaken.length) % outerPositionsTaken.length]]
-							.setOffset(startX + (Math.cos(outerDeltaAngle * k) * outerRadius),
-							           startY - (Math.sin(outerDeltaAngle * k) * outerRadius));
+							setOffset(nodeViews.get(outerPositionsOwners[(k + 1 + outerPositionsTaken.length) % outerPositionsTaken.length]),
+									  startX + (Math.cos(outerDeltaAngle * k) * outerRadius),
+							          startY - (Math.sin(outerDeltaAngle * k) * outerRadius));
 
 						outerPositionsOwners[(k + outerPositionsTaken.length) % outerPositionsTaken.length] = outerPositionsOwners[(k + 1 + outerPositionsTaken.length) % outerPositionsTaken.length];
 						outerPositionsTaken[(k + outerPositionsTaken.length) % outerPositionsTaken.length] = outerPositionsTaken[(k + 1 + outerPositionsTaken.length) % outerPositionsTaken.length];
@@ -1218,5 +1208,10 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	 */
 	public String getTitle() {
 		return new String("Circular Layout");
+	}
+	
+	private void setOffset(View<CyNode> nv, double x, double y){
+		nv.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x);
+		nv.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y);
 	}
 }

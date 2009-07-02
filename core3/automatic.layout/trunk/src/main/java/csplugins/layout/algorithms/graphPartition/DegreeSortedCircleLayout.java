@@ -3,9 +3,11 @@ package csplugins.layout.algorithms.graphPartition;
 
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-import cytoscape.Cytoscape;
+
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.work.UndoSupport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,8 +19,6 @@ import java.util.List;
  *
  */
 public class DegreeSortedCircleLayout extends AbstractGraphPartition {
-	private final static String DEGREE = "Degree";
-	
 	/**
 	 * Creates a new DegreeSortedCircleLayout object.
 	 */
@@ -63,16 +63,14 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 			return;
 
 		// sort the Nodes based on the degree
-		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		Collections.sort(nodes,
 		            new Comparator<LayoutNode>() {
 				public int compare(LayoutNode o1, LayoutNode o2) {
 					final CyNode node1 = o1.getNode();
 					final CyNode node2 = o2.getNode();
-					final int d1 = network.getDegree(node1.getRootGraphIndex());
-					final int d2 = network.getDegree(node2.getRootGraphIndex());
-					nodeAttr.setAttribute(node1.getIdentifier(), DEGREE, d1);
-					nodeAttr.setAttribute(node2.getIdentifier(), DEGREE, d2);
+					// FIXME: should allow parametrization of edge type? (expose as tunable)
+					final int d1 = network.getAdjacentEdgeList(node1, CyEdge.Type.ANY).size();
+					final int d2 = network.getAdjacentEdgeList(node2, CyEdge.Type.ANY).size();
 					return (d2 - d1);
 				}
 
@@ -99,6 +97,5 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 	
 	public void construct() {
 		super.construct();
-		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 	}
 }

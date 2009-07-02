@@ -45,11 +45,11 @@ import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ class HierarchyFlowLayoutOrderNode implements Comparable {
 	/**
 	 *
 	 */
-	public NodeView nodeView;
+	public View<CyNode> nodeView;
 
 	/**
 	 *
@@ -144,7 +144,7 @@ class HierarchyFlowLayoutOrderNode implements Comparable {
 	 * @param a_layer  DOCUMENT ME!
 	 * @param a_horizontalPosition  DOCUMENT ME!
 	 */
-	public HierarchyFlowLayoutOrderNode(NodeView a_nodeView, int a_componentNumber,
+	public HierarchyFlowLayoutOrderNode(View<CyNode> a_nodeView, int a_componentNumber,
 	                                    int a_componentSize, int a_layer, int a_horizontalPosition,
 	                                    int a_graphIndex) {
 		nodeView = a_nodeView;
@@ -295,7 +295,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			return;
 
 		/* construct node list with selected nodes first */
-		List selectedNodes = networkView.getSelectedNodes();
+		List selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
 		int numSelectedNodes = selectedNodes.size();
 
 		if (!selectedOnly)
@@ -306,34 +306,23 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			return;
 		}
 
-		final int numNodes = networkView.getNodeViewCount();
+		final int numNodes = networkView.getNodeViews().size();
 		final int numLayoutNodes = (numSelectedNodes < 1) ? numNodes : numSelectedNodes;
-		NodeView[] nodeView = new NodeView[numNodes];
-		int nextNode = 0;
-		HashMap<Integer, Integer> ginyIndex2Index = new HashMap<Integer, Integer>(numNodes * 2);
 
+		// maps node's index (.getIndex()) to View<CyNode> of given node
+		HashMap<Integer, View<CyNode>> index2NodeView = new HashMap<Integer, View<CyNode>>(numNodes);
+		
 		if (numSelectedNodes > 1) {
-			Iterator iter = selectedNodes.iterator();
-
-			while (iter.hasNext() && !canceled) {
-				nodeView[nextNode] = (NodeView) (iter.next());
-				ginyIndex2Index.put(Integer.valueOf(nodeView[nextNode].getNode().getRootGraphIndex()),
-				                    Integer.valueOf(nextNode));
-				nextNode++;
+			for (CyNode n: CyDataTableUtil.getNodesInState(network,"selected",true)){
+			    index2NodeView.put(n.getIndex(), networkView.getNodeView(n));
 			}
 		} else {
-			Iterator iter = networkView.getNodeViewsIterator(); /* all nodes */
-
-			while (iter.hasNext() && !canceled) {
-				NodeView nv = (NodeView) (iter.next());
-				Integer nodeIndexKey = Integer.valueOf(nv.getNode().getRootGraphIndex());
-
-				if (!ginyIndex2Index.containsKey(nodeIndexKey)) {
-					nodeView[nextNode] = nv;
-					ginyIndex2Index.put(nodeIndexKey, Integer.valueOf(nextNode));
-					nextNode++;
-				}
+			for (View<CyNode> nv: networkView.getNodeViews()){
+			    if (canceled)
+				return;
+			    index2NodeView.put(nv.getSource().getIndex(), nv);
 			}
+
 		}
 
 		if (canceled)
@@ -341,14 +330,12 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 		/* create edge list from edges between selected nodes */
 		LinkedList<Edge> edges = new LinkedList();
-		Iterator iter = networkView.getEdgeViewsIterator();
 
-		while (iter.hasNext()) {
-			EdgeView ev = (EdgeView) (iter.next());
-			Integer edgeFrom = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getEdge().getSource()
-			                                                               .getRootGraphIndex()));
-			Integer edgeTo = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getEdge().getTarget()
-			                                                             .getRootGraphIndex()));
+		for (View<CyEdge> ev: networkView.getEdgeViews()){
+		    // FIXME: much better would be to query adjacent edges of selected nodes...
+		    
+			Integer edgeFrom = ev.getSource().getSource().getIndex();
+			Integer edgeTo = ev.getSource().getTarget().getIndex();
 
 			if ((edgeFrom == null) || (edgeTo == null)) {
 				// Must be from an unselected node
@@ -403,7 +390,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		Graph[] reducedTmp = new Graph[component.length];
 		HashMap<Integer, Edge>[] dummy2Edge = new HashMap[component.length];
 		int[] dummyStartForComp = new int[component.length];
-		HashMap<Edge, EdgeView>[] myEdges2EdgeViews = new HashMap[component.length];
+		HashMap<Edge, View<CyEdge>>[] myEdges2EdgeViews = new HashMap[component.length];
 
 		for (x = 0; x < component.length; x++) {
 			/*
@@ -495,7 +482,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			reduced[x].setReduced(true);
 
 			int[] layerNew = new int[layerWithDummy.size()];
-			iter = layerWithDummy.iterator();
+			Iterator iter = layerWithDummy.iterator();
 
 			for (int i = 0; i < layerNew.length; i++)
 				layerNew[i] = ((Integer) iter.next()).intValue();
@@ -549,7 +536,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		for (int i = 0; i < reduced.length; i++) {
 			edge = reduced[i].GetEdges();
 
-			for (int j = 0; j < edge.length; j++) { // uzasna budzevina!!!!!!
+			for (int j = 0; j < edge.length; j++) { // uzasna budzevina!!!!!! // FIXME: what does this mean?
 
 				int from = -1;
 				int to = -1;
@@ -585,7 +572,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 		for (x = 0; x < resize; x++) {
 			if (x < numLayoutNodes)
-				flowLayoutOrder[x] = new HierarchyFlowLayoutOrderNode(nodeView[x], cI[x],
+				flowLayoutOrder[x] = new HierarchyFlowLayoutOrderNode(index2NodeView.get(x), cI[x],
 				                                                      reduced[cI[x]].getNodecount(),
 				                                                      layer[cI[x]][renumber[x]],
 				                                                      horizontalPosition[cI[x]][renumber[x]],
@@ -623,7 +610,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			HierarchyFlowLayoutOrderNode node = flowLayoutOrder[nodeIndex];
 			int currentComponent = node.componentNumber;
 			int currentLayer = node.layer;
-			NodeView currentView = node.nodeView;
+			View<CyNode> currentView = node.nodeView;
 
 			taskMonitor.setPercentCompleted(60 + ((40 * (nodeIndex + 1)) / resize));
 			taskMonitor.setStatus("layering nodes vertically");
@@ -694,8 +681,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			int currentRight;
 
 			if (currentView != null) {
-				currentBottom = startLayerY + (int) (currentView.getHeight());
-				currentRight = cleanLayerX + (int) (currentView.getWidth());
+				currentBottom = startLayerY + currentView.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE).intValue();
+				currentRight = cleanLayerX + currentView.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE).intValue(); 
 			} else {
 				currentBottom = startLayerY;
 				currentRight = cleanLayerX;
@@ -731,14 +718,9 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			flowLayoutOrder[i].xPos -= (minX - startComponentX);
 
 		/* Map edges to edge views in order to map dummy nodes to edge bends properly */
-		iter = networkView.getEdgeViewsIterator();
-
-		while (iter.hasNext()) {
-			EdgeView ev = (EdgeView) (iter.next());
-			Integer edgeFrom = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getEdge().getSource()
-			                                                               .getRootGraphIndex()));
-			Integer edgeTo = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getEdge().getTarget()
-			                                                             .getRootGraphIndex()));
+		for (View<CyEdge>ev: networkView.getEdgeViews()){
+			Integer edgeFrom = ev.getSource().getSource().getIndex();
+			Integer edgeTo = ev.getSource().getTarget().getIndex();
 
 			if ((edgeFrom == null) || (edgeTo == null)) {
 				// Must be from an unselected node
@@ -753,27 +735,27 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 				                                                             renumber[edgeTo.intValue()]);
 
 				if (myEdges2EdgeViews[cI[edgeFrom.intValue()]] == null)
-					myEdges2EdgeViews[cI[edgeFrom.intValue()]] = new HashMap<Edge, EdgeView>();
+					myEdges2EdgeViews[cI[edgeFrom.intValue()]] = new HashMap<Edge, View<CyEdge>>();
 
 				myEdges2EdgeViews[cI[edgeFrom.intValue()]].put(theEdge, ev);
 			}
 		}
 
-		/* Delete edge anchors */
-		iter = networkView.getEdgeViewsIterator();
-
-		while (iter.hasNext()) {
-			((EdgeView) iter.next()).getBend().removeAllHandles();
-		} /* Done removing edge anchors */
-		iter = networkView.getEdgeViewsIterator();
-		;
+//		/* Delete edge anchors */
+//		iter = networkView.getEdgeViewsIterator();
+//
+//		while (iter.hasNext()) {
+//			((EdgeView) iter.next()).getBend().removeAllHandles();
+//		} /* Done removing edge anchors */
+//		iter = networkView.getEdgeViewsIterator();
+//		;
 
 		for (nodeIndex = 0; nodeIndex < resize; nodeIndex++) {
 			HierarchyFlowLayoutOrderNode node = flowLayoutOrder[nodeIndex];
 
 			if (node.nodeView != null) {
-				NodeView currentView = node.nodeView;
-				currentView.setOffset(node.getXPos(), node.getYPos());
+				View<CyNode> currentView = node.nodeView;
+				//currentView.setOffset(node.getXPos(), node.getYPos()); // FIXME
 			}
 		}
 
@@ -782,24 +764,22 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 			if (node.nodeView == null) {
 				Edge theEdge = (Edge) dummy2Edge[cI[node.graphIndex]].get(Integer.valueOf(renumber[node.graphIndex]));
-				EdgeView ev = myEdges2EdgeViews[cI[node.graphIndex]].get(theEdge);
+				View<CyEdge> ev = myEdges2EdgeViews[cI[node.graphIndex]].get(theEdge);
 
 				if (ev != null) {
-					int source = ginyIndex2Index.get(ev.getEdge().getSource().getRootGraphIndex());
-					int target = ginyIndex2Index.get(ev.getEdge().getTarget().getRootGraphIndex());
-					double k = (nodeView[target].getYPosition() - nodeView[source].getYPosition()) / (nodeView[target]
-					                                                                                  .getXPosition()
-					                                                                                 - nodeView[source]
-					                                                                                   .getXPosition());
+					int source = ev.getSource().getSource().getIndex();
+					int target = ev.getSource().getTarget().getIndex();
+					double k = (getYPositionOf(index2NodeView, target) - getYPositionOf(index2NodeView, source)) / (
+							getXPositionOf(index2NodeView, target) - getXPositionOf(index2NodeView, source));
 
-					double xPos = nodeView[source].getXPosition();
+					double xPos = getXPositionOf(index2NodeView, source);
 
 					if (k != 0)
-						xPos += ((node.yPos - nodeView[source].getYPosition()) / k);
+						xPos += ((node.yPos - getYPositionOf(index2NodeView, source)) / k);
 
 					Point2D p2d = new Point2D.Double();
 					p2d.setLocation(xPos, node.yPos);
-					ev.getBend().addHandle(p2d);
+					// ev.getBend().addHandle(p2d); // FIXME edge bends
 				}
 			}
 		}
@@ -809,8 +789,9 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 			if (node.nodeView == null) {
 				Edge theEdge = dummy2Edge[cI[node.graphIndex]].get(Integer.valueOf(renumber[node.graphIndex]));
-				EdgeView ev = myEdges2EdgeViews[cI[node.graphIndex]].get(theEdge);
-
+				View<CyEdge> ev = myEdges2EdgeViews[cI[node.graphIndex]].get(theEdge);
+				/* FIXME: I assume this part is only about setting edge bends; since that part of the 3.0 api is not clear yet,
+				 * I'm commenting it all out.  (which might mean that this whole loop, from "for(nodeIndex..." could be commented out) 
 				if (ev != null) {
 					Point2D[] bends = ev.getBend().getDrawPoints();
 					for (int i = 0; i < bends.length; i++) {
@@ -823,11 +804,18 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 						}
 					}
 				}
+				*/
 			}
 		}
 
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("hierarchical layout complete");
+	}
+	private double getXPositionOf(HashMap<Integer, View<CyNode>> index2NodeView, int nodeIndex){
+		return index2NodeView.get(nodeIndex).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+	}
+	private double getYPositionOf(HashMap<Integer, View<CyNode>> index2NodeView, int nodeIndex){
+		return index2NodeView.get(nodeIndex).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 	}
 
 	/**
@@ -864,7 +852,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 					Integer neigh = (Integer) iterToHlp.next();
 					layerMin += (Math.abs(nodesBak2HFLON.get(neigh).xPos - curPos) / ((double) nodeHorizontalSpacing));
 
-					// mozda ako je ivica izmedju 2 dummy cvora da duplira daljinu
+					// mozda ako je ivica izmedju 2 dummy cvora da duplira daljinu // FIXME: translate to english
 				}
 
 				xHlp++;

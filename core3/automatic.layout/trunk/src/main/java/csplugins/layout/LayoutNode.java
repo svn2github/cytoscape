@@ -43,7 +43,7 @@ import java.util.List;
  * The LayoutNode class.  This class is used as a container for information
  * about the nodes in a layout.  In particular, it provides a convenient handle
  * to information about position, the node itself, the node view.  Many of
- * the methods of this class are wrappers for Node or NodeView methods, and
+ * the methods of this class are wrappers for Node or View<CyNode> methods, and
  * these are often wrapped by LayoutPartition methods.
  */
 public class LayoutNode {
@@ -73,7 +73,7 @@ public class LayoutNode {
 	/**
 	 * The main constructor for a LayoutNode.
 	 *
-	 * @param nodeView The NodeView of this node
+	 * @param nodeView The View<CyNode> of this node
 	 * @param index The index (usually in a node array) of this node
 	 */
 	public LayoutNode(NodeView nodeView, int index) {
@@ -96,10 +96,10 @@ public class LayoutNode {
 	}
 
 	/**
-	 * Accessor function to return the NodeView associated with
+	 * Accessor function to return the View<CyNode> associated with
 	 * this LayoutNode.
 	 *
-	 * @return    NodeView that is associated with this LayoutNode
+	 * @return    View<CyNode> that is associated with this LayoutNode
 	 */
 	public NodeView getNodeView() {
 		return this.nodeView;

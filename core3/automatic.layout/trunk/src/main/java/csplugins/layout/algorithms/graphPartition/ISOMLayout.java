@@ -216,7 +216,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 	}
 
 	/**
-	 * @return the closest NodeView to these coords.
+	 * @return the index of the closest NodeView to these coords.
 	 */
 	public int getClosestPosition(double x, double y) {
 		double minDistance = Double.MAX_VALUE;
