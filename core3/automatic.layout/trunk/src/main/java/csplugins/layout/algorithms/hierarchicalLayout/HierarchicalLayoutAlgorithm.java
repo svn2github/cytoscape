@@ -39,7 +39,7 @@
  **/
 package csplugins.layout.algorithms.hierarchicalLayout;
 
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyEdge;
@@ -283,7 +283,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	 * Main entry point for AbstractLayout classes
 	 */
 	public void construct() {
-		taskMonitor.setStatus("Initializing");
+		taskMonitor.setStatusMessage("Initializing");
 		initialize(); // Calls initialize_local
 		layout();
 	}
@@ -292,8 +292,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	 *  DOCUMENT ME!
 	 */
 	public void layout() {
-		taskMonitor.setPercentCompleted(0);
-		taskMonitor.setStatus("Capturing snapshot of network and selected nodes");
+		taskMonitor.setProgress(0.0);
+		taskMonitor.setStatusMessage("Capturing snapshot of network and selected nodes");
 
 		if (canceled)
 			return;
@@ -379,8 +379,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		}
 		System.out.println("Partitioning into components:\n");
 		*/
-		taskMonitor.setPercentCompleted(10);
-		taskMonitor.setStatus("Finding connected components");
+		taskMonitor.setProgress(0.1);
+		taskMonitor.setStatusMessage("Finding connected components");
 
 		if (canceled)
 			return;
@@ -411,16 +411,16 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			System.out.println(component[x].getReducedGraph());
 			System.out.println("layer assignment:\n");
 			*/
-			taskMonitor.setPercentCompleted(20 + ((40 * (x * 3)) / numComponents / 3));
-			taskMonitor.setStatus("making acyclic transitive reduction");
+			taskMonitor.setProgress((20 + ((40 * (x * 3)) / numComponents / 3))/100.0);
+			taskMonitor.setStatusMessage("making acyclic transitive reduction");
 			Thread.yield();
 
 			if (canceled)
 				return;
 
 			reducedTmp[x] = component[x].getReducedGraph();
-			taskMonitor.setPercentCompleted(20 + ((40 * ((x * 3) + 1)) / numComponents / 3));
-			taskMonitor.setStatus("layering nodes vertically");
+			taskMonitor.setProgress((20 + ((40 * ((x * 3) + 1)) / numComponents / 3))/100.0);
+			taskMonitor.setStatusMessage("layering nodes vertically");
 			Thread.yield();
 
 			if (canceled)
@@ -493,8 +493,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 			layer[x] = layerNew;
 
-			taskMonitor.setPercentCompleted(20 + ((40 * ((x * 3) + 2)) / numComponents / 3));
-			taskMonitor.setStatus("positioning nodes within layer");
+			taskMonitor.setProgress((20 + ((40 * ((x * 3) + 2)) / numComponents / 3))/100.0);
+			taskMonitor.setStatusMessage("positioning nodes within layer");
 			Thread.yield();
 
 			if (canceled)
@@ -564,8 +564,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		edges.toArray(edge);
 		graph = new Graph(resize, edge);
 
-		taskMonitor.setPercentCompleted(60);
-		taskMonitor.setStatus("Repositioning nodes in view");
+		taskMonitor.setProgress(0.6);
+		taskMonitor.setStatusMessage("Repositioning nodes in view");
 		Thread.yield();
 
 		if (canceled)
@@ -616,8 +616,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			int currentLayer = node.layer;
 			View<CyNode> currentView = node.nodeView;
 
-			taskMonitor.setPercentCompleted(60 + ((40 * (nodeIndex + 1)) / resize));
-			taskMonitor.setStatus("layering nodes vertically");
+			taskMonitor.setProgress((60 + ((40 * (nodeIndex + 1)) / resize))/100.0);
+			taskMonitor.setStatusMessage("layering nodes vertically");
 			Thread.yield();
 
 			if (canceled)
@@ -812,8 +812,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			}
 		}
 
-		taskMonitor.setPercentCompleted(100);
-		taskMonitor.setStatus("hierarchical layout complete");
+		taskMonitor.setProgress(1.0);
+		taskMonitor.setStatusMessage("hierarchical layout complete");
 	}
 	private double getXPositionOf(HashMap<Integer, View<CyNode>> index2NodeView, int nodeIndex){
 		return index2NodeView.get(nodeIndex).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);

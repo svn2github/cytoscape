@@ -67,18 +67,10 @@ import java.util.List;
  * @version 0.9
  */
 public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
-	private int euclideanLoop = 0;
-
 	/**
 	 * A small value used to avoid division by zero
 	   */
 	protected static double EPSILON = 0.0000001D;
-	private static final double[] DEFAULT_NODE_DISTANCE_SPRING_SCALARS = new double[] {
-	                                                                         1.0, 1.0, 1.0, 1.0
-	                                                                     };
-	private static final double[] DEFAULT_ANTICOLLISION_SPRING_SCALARS = new double[] {
-	                                                                         0.0, 1.0, 1.0, 1.0
-	                                                                     };
 
 	/**
 	 * The total number of layout passes
@@ -124,12 +116,6 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 * The Partition
 	 */
 	private LayoutPartition partition;
-
-	/**
-	 * This hashmap provides a quick way to get an index into
-	 * the LayoutNode array given a graph index.
-	 */
-	private HashMap nodeToLayoutNode;
 
 	/**
 	 * Profile data
@@ -375,16 +361,16 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		if (canceled)
 			return;
 
-		taskMonitor.setPercentCompleted(2);
-		taskMonitor.setStatus("Calculating node distances");
+		taskMonitor.setProgress(0.02);
+		taskMonitor.setStatusMessage("Calculating node distances");
 
 		int[][] nodeDistances = calculateNodeDistances();
 
 		if (canceled)
 			return;
 
-		taskMonitor.setPercentCompleted(4);
-		taskMonitor.setStatus("Calculating spring constants");
+		taskMonitor.setProgress(0.04);
+		taskMonitor.setStatusMessage("Calculating spring constants");
 
 		calculateSpringData(nodeDistances);
 
@@ -417,19 +403,18 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			partialsList.clear();
 			furthestNodePartials = null;
 
-			taskMonitor.setStatus("Calculating partial derivatives -- pass " + (m_layoutPass + 1)
+			taskMonitor.setStatusMessage("Calculating partial derivatives -- pass " + (m_layoutPass + 1)
 			                      + " of " + m_numLayoutPasses);
 
 			// partialProfile.start();
 
 			// Calculate all node distances.  Keep track of the furthest.
-			euclideanLoop = 0;
 			for (LayoutNode v: partition.getNodeList()) {
 
 				if (canceled)
 					return;
 
-				taskMonitor.setPercentCompleted((int) currentProgress);
+				taskMonitor.setProgress(currentProgress/100.0);
 
 				if (v.isLocked())
 					continue;
@@ -448,7 +433,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			}
 
 			// partialProfile.done("Partial time for pass "+(m_layoutPass+1)+" is ");
-			taskMonitor.setStatus("Executing spring logic -- pass " + (m_layoutPass + 1) + " of "
+			taskMonitor.setStatusMessage("Executing spring logic -- pass " + (m_layoutPass + 1) + " of "
 			                      + m_numLayoutPasses);
 
 			// springProfile.start();
@@ -459,7 +444,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 				if (canceled)
 					return;
 
-				taskMonitor.setPercentCompleted((int) currentProgress);
+				taskMonitor.setProgress(currentProgress/100.0);
 
 				furthestNodePartials = moveNode(furthestNodePartials, partialsList, potentialEnergy);
 				//    		System.out.println(furthestNodePartials.printPartial()+" (furthest) potentialEnergy = "+potentialEnergy[0]);
@@ -469,8 +454,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			// springProfile.done("Spring time for pass "+(m_layoutPass+1)+" is ");
 		}
 
-		taskMonitor.setPercentCompleted((int) percentCompletedAfterFinalPass);
-		taskMonitor.setStatus("Updating display");
+		taskMonitor.setProgress(percentCompletedAfterFinalPass/100.0);
+		taskMonitor.setStatusMessage("Updating display");
 
 		// Actually move the pieces around
 		// Note that we reset our min/max values before we start this

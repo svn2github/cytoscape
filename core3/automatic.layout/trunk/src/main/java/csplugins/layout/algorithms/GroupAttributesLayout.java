@@ -179,7 +179,7 @@ public class GroupAttributesLayout extends AbstractLayout {
 	 *  DOCUMENT ME!
 	 */
 	public void construct() {
-		taskMonitor.setStatus("Initializing");
+		taskMonitor.setStatusMessage("Initializing");
 		initialize(); // Calls initialize_local
 
 		CyDataTable dataTable = network.getCyDataTables("NODE").get(attributeNamespace);

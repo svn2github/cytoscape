@@ -41,6 +41,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.work.UndoSupport;
 import org.jgraph.JGraph;
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.ConnectionSet;
@@ -126,8 +128,8 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 	 *
 	 * @param layout_type  DOCUMENT ME!
 	 */
-	public JGraphLayoutWrapper(int layout_type) {
-		super();
+	public JGraphLayoutWrapper(UndoSupport undoSupport, int layout_type) {
+		super(undoSupport);
 		this.layout_type = layout_type;
 
 		switch (layout_type) {
@@ -292,8 +294,8 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		Map giny_j_node_map = new HashMap(); //PrimeFinder.nextPrime(network.getNodeCount()));
 		Map j_giny_edge_map = new HashMap(); //PrimeFinder.nextPrime(network.getEdgeCount()));
 
-		taskMonitor.setStatus("Executing Layout");
-		taskMonitor.setPercentCompleted((int) currentProgress);
+		taskMonitor.setStatusMessage("Executing Layout");
+		taskMonitor.setProgress(currentProgress/100.0);
 
 		// Construct Model and Graph
 		//
@@ -308,7 +310,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 
 		// update progress bar
 		currentProgress = 20;
-		taskMonitor.setPercentCompleted((int) currentProgress);
+		taskMonitor.setProgress(currentProgress/100.0);
 		percentProgressPerIter = 20 / (double) (networkView.getNodeViews().size());
 
 		// create Vertices
@@ -335,7 +337,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 
 			// update progress bar
 			currentProgress += percentProgressPerIter;
-			taskMonitor.setPercentCompleted((int) currentProgress);
+			taskMonitor.setProgress(currentProgress/100.0);
 		}
 
 		// update progress bar
@@ -372,7 +374,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 
 			// update progress bar
 			currentProgress += percentProgressPerIter;
-			taskMonitor.setPercentCompleted((int) currentProgress);
+			taskMonitor.setProgress(currentProgress/100.0);
 		}
 
 		layout.run(graph, cells.toArray());
@@ -383,7 +385,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 		                            .getAllDescendants(graph.getGraphLayoutCache().getRoots());
 
 		currentProgress = 80;
-		taskMonitor.setPercentCompleted((int) currentProgress);
+		taskMonitor.setProgress(currentProgress/100.0);
 		percentProgressPerIter = 20 / (double) (cellViews.length);
 
 		if (canceled)
@@ -402,7 +404,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 
 				// update progress bar
 				currentProgress += percentProgressPerIter;
-				taskMonitor.setPercentCompleted((int) currentProgress);
+				taskMonitor.setProgress(currentProgress/100.0);
 			}
 		}
 

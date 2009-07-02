@@ -43,6 +43,8 @@ import csplugins.layout.LayoutPartition;
 import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.UndoSupport;
+
 import prefuse.util.force.DragForce;
 import prefuse.util.force.EulerIntegrator;
 import prefuse.util.force.ForceItem;
@@ -113,8 +115,8 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	Map<LayoutNode,ForceItem> forceItems;
 
 	
-	public ForceDirectedLayout() {
-		super();
+	public ForceDirectedLayout(UndoSupport undo) {
+		super(undo);
 
 		if (edgeWeighter == null)
 			edgeWeighter = new EdgeWeighter();
@@ -174,7 +176,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 		// setTaskStatus(5); // This is a rough approximation, but probably good enough
 		if (taskMonitor != null) {
-			taskMonitor.setStatus("Initializing partition "+part.getPartitionNumber());
+			taskMonitor.setStatusMessage("Initializing partition "+part.getPartitionNumber());
 		}
 
 		// Figure out our starting point

@@ -6,6 +6,7 @@ import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.UndoSupport;
 import org.cytoscape.layout.AbstractLayout;
 
 import java.util.ArrayList;
@@ -31,8 +32,8 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	/**
 	 * Creates a new AbstractGraphPartition object.
 	 */
-	public AbstractGraphPartition() {
-		super();
+	public AbstractGraphPartition(UndoSupport undo) {
+		super(undo);
 	}
 
 	/**
@@ -88,9 +89,9 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 			// Calculate the nodes done for this partition
 			double nodesDone = current_size*(double)percent/100.;
 			// Calculate the percent done overall
-			double pDone = ((nodesDone+current_start)/total_nodes)*100.;
-			taskMonitor.setPercentCompleted((int)pDone);
-			taskMonitor.setStatus("Completed " + (int)pDone + "%");
+			double pDone = (nodesDone+current_start)/total_nodes;
+			taskMonitor.setProgress(pDone);
+			taskMonitor.setStatusMessage("Completed " + (int)pDone + "%");
 		}
 	}
 

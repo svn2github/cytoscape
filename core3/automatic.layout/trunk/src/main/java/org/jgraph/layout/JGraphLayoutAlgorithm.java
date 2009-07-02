@@ -20,7 +20,7 @@
  */
 package org.jgraph.layout;
 
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.work.TaskMonitor;
 import org.jgraph.JGraph;
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.GraphConstants;
@@ -155,7 +155,7 @@ public abstract class JGraphLayoutAlgorithm {
 		this.progress = progress;
 
 		if (taskMonitor != null)
-			taskMonitor.setPercentCompleted((int) progress);
+			taskMonitor.setProgress(progress/100.0);
 	}
 
 	/**

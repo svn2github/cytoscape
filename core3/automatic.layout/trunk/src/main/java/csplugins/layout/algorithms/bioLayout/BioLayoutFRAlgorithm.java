@@ -435,8 +435,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		// Calculate our edge weights
 		partition.calculateEdgeWeights();
 		// initProfile.done("Initialization completed in ");
-		taskMonitor.setStatus("Calculating new node positions");
-		taskMonitor.setPercentCompleted(1);
+		taskMonitor.setStatusMessage("Calculating new node positions");
+		taskMonitor.setProgress(0.01);
 
 		// Main algorithm
 		// iterProfile.start();
@@ -465,15 +465,15 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 				}
 			}
 
-			taskMonitor.setStatus("Calculating new node positions - " + iteration);
-			taskMonitor.setPercentCompleted((int) Math.rint((iteration * 100) / nIterations));
+			taskMonitor.setStatusMessage("Calculating new node positions - " + iteration);
+			taskMonitor.setProgress(iteration / nIterations);
 		}
 
 		// iterProfile.done("Iterations complete in ");
 		// System.out.println("Attraction calculation portion of iterations took "+attractProfile.getTotalTime()+"ms");
 		// System.out.println("Repulsion calculation portion of iterations took "+repulseProfile.getTotalTime()+"ms");
 		// System.out.println("Update portion of iterations took "+updateProfile.getTotalTime()+"ms");
-		taskMonitor.setStatus("Updating display");
+		taskMonitor.setStatusMessage("Updating display");
 
 		// Actually move the pieces around
 		// Note that we reset our min/max values before we start this
@@ -634,8 +634,6 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 /// v.disp := 0;
 		v.setDisp(0, 0);
 
-		double width = v.getWidth();
-		double height = v.getHeight();
 		double radius = v.getWidth() / 2;
 
 /// for u in V do
@@ -819,8 +817,6 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	private void calculateSize() {
 		// double spreadFactor = Math.max(spread_factor, edgeList.length/nodeList.length);
 		// LayoutNode v0 = (LayoutNode)nodeList.get(0); // Get the first vertex to get to the class variables
-		int nodeCount = partition.nodeCount();
-		int unLockedNodes = nodeCount - partition.lockedNodeCount();
 		double spreadFactor = spread_factor;
 		double averageWidth = partition.getWidth() / partition.nodeCount();
 		double averageHeight = partition.getHeight() / partition.nodeCount();
