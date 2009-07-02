@@ -12,8 +12,6 @@ public class BookmarkCyProperty implements CyProperty<Bookmarks> {
 	
 	public BookmarkCyProperty(Bookmarks bookmarks) {
 		this.bookmarks = bookmarks;
-		
-		System.out.println("============= Bookmark injection is OK==================");
 	}
 
 	public Bookmarks getProperties() {
