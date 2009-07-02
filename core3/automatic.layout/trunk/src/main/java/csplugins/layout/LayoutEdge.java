@@ -183,7 +183,7 @@ public class LayoutEdge {
 		if (v2 != null)
 			target = v2.getIdentifier();
 
-		return "Edge " + edge.getIdentifier() + " connecting " + source + " and " + target
+		return "Edge " + edge.getSUID() + " connecting " + source + " and " + target
 		       + " with weight " + weight;
 	}
 }

@@ -40,11 +40,9 @@ import cern.colt.map.OpenIntDoubleHashMap;
 import cern.colt.map.PrimeFinder;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
-
-import java.util.Iterator;
-
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 /**
  * Class that represents the Layout of a given graph.
@@ -71,32 +69,25 @@ public class Layout {
 	 * @param view  DOCUMENT ME!
 	 * @param load_current_values  DOCUMENT ME!
 	 */
-	public Layout(GraphView view, boolean load_current_values) {
-		this(view.getGraphPerspective());
+	public Layout(CyNetworkView view, boolean load_current_values) {
+		this(view.getSource());
 
 		// initialize current values
 		if (load_current_values) {
-			Iterator i = view.getNodeViewsIterator();
-
-			while (i.hasNext()) {
-				NodeView nv = (NodeView) i.next();
-				setX(nv, nv.getXPosition());
-				setY(nv, nv.getYPosition());
+			for (View<CyNode>nv: view.getNodeViews()){
+				setX(nv, nv.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION));
+				setY(nv, nv.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
 			}
 		}
 	}
 
 	/**
-	 * Apply the layout to a given GraphView
+	 * Apply the layout to a given CyNetworkView
 	 */
-	public void applyLayout(GraphView view) {
-		Iterator i = view.getNodeViewsIterator();
-
-		while (i.hasNext()) {
-			NodeView nv = (NodeView) i.next();
-			nv.setXPosition(getX(nv), false);
-			nv.setYPosition(getY(nv), false);
-			nv.setNodePosition(true);
+	public void applyLayout(CyNetworkView view) {
+		for (View<CyNode>nv: view.getNodeViews()){
+			nv.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, getX(nv));
+			nv.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, getY(nv));
 		}
 	}
 
@@ -134,7 +125,7 @@ public class Layout {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean setX(CyNode node, double x) {
-		return nodeXMap.put(node.getRootGraphIndex(), x);
+		return nodeXMap.put(node.getIndex(), x);
 	}
 
 	/**
@@ -146,7 +137,7 @@ public class Layout {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean setY(CyNode node, double y) {
-		return nodeYMap.put(node.getRootGraphIndex(), y);
+		return nodeYMap.put(node.getIndex(), y);
 	}
 
 	/**
@@ -157,8 +148,8 @@ public class Layout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setX(NodeView node, double x) {
-		return nodeXMap.put(node.getRootGraphIndex(), x);
+	public boolean setX(View<CyNode> node, double x) {
+		return nodeXMap.put(node.getSource().getIndex(), x);
 	}
 
 	/**
@@ -169,8 +160,8 @@ public class Layout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setY(NodeView node, double y) {
-		return nodeYMap.put(node.getRootGraphIndex(), y);
+	public boolean setY(View<CyNode> node, double y) {
+		return nodeYMap.put(node.getSource().getIndex(), y);
 	}
 
 	// get
@@ -204,7 +195,7 @@ public class Layout {
 	 * @return  DOCUMENT ME!
 	 */
 	public double getX(CyNode node) {
-		return nodeXMap.get(node.getRootGraphIndex());
+		return nodeXMap.get(node.getIndex());
 	}
 
 	/**
@@ -215,7 +206,7 @@ public class Layout {
 	 * @return  DOCUMENT ME!
 	 */
 	public double getY(CyNode node) {
-		return nodeYMap.get(node.getRootGraphIndex());
+		return nodeYMap.get(node.getIndex());
 	}
 
 	/**
@@ -225,8 +216,8 @@ public class Layout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public double getX(NodeView node) {
-		return nodeXMap.get(node.getRootGraphIndex());
+	public double getX(View<CyNode> node) {
+		return nodeXMap.get(node.getSource().getIndex());
 	}
 
 	/**
@@ -236,7 +227,7 @@ public class Layout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public double getY(NodeView node) {
-		return nodeYMap.get(node.getRootGraphIndex());
+	public double getY(View<CyNode> node) {
+		return nodeYMap.get(node.getSource().getIndex());
 	}
 }

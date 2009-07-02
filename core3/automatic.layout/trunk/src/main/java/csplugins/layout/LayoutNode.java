@@ -33,7 +33,8 @@
 package csplugins.layout;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class LayoutNode {
 	private double dispX;
 	private double dispY;
 	private CyNode node;
-	private NodeView nodeView;
+	private View<CyNode> nodeView;
 	private int index;
 	private boolean isLocked = false;
 	private ArrayList<LayoutNode> neighbors = null;
@@ -76,12 +77,12 @@ public class LayoutNode {
 	 * @param nodeView The View<CyNode> of this node
 	 * @param index The index (usually in a node array) of this node
 	 */
-	public LayoutNode(NodeView nodeView, int index) {
+	public LayoutNode(View<CyNode> nodeView, int index) {
 		this.nodeView = nodeView;
-		this.node = (CyNode) nodeView.getNode();
+		this.node = nodeView.getSource();
 		this.index = index;
-		this.x = nodeView.getXPosition();
-		this.y = nodeView.getYPosition();
+		this.x = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+		this.y = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 		this.neighbors = new ArrayList<LayoutNode>();
 	}
 
@@ -101,7 +102,7 @@ public class LayoutNode {
 	 *
 	 * @return    View<CyNode> that is associated with this LayoutNode
 	 */
-	public NodeView getNodeView() {
+	public View<CyNode> getNodeView() {
 		return this.nodeView;
 	}
 
@@ -306,7 +307,7 @@ public class LayoutNode {
 	 * @return        width of this node
 	 */
 	public double getWidth() {
-		return this.nodeView.getWidth();
+		return this.nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE);
 	}
 
 	/**
@@ -315,7 +316,7 @@ public class LayoutNode {
 	 * @return        height of this node
 	 */
 	public double getHeight() {
-		return this.nodeView.getHeight();
+		return this.nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE);
 	}
 
 	/**
@@ -350,11 +351,11 @@ public class LayoutNode {
 	 */
 	public void moveToLocation() {
 		if (isLocked) {
-			this.x = nodeView.getXPosition();
-			this.y = nodeView.getYPosition();
+			this.x = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+			this.y = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 		} else {
-			nodeView.setXPosition(this.x);
-			nodeView.setYPosition(this.y);
+			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, this.x);
+			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, this.y);
 		}
 	}
 
@@ -364,7 +365,7 @@ public class LayoutNode {
 	 * @return        String containing the node's identifier
 	 */
 	public String getIdentifier() {
-		return node.getIdentifier();
+		return String.valueOf(node.getSUID());
 	}
 
 	/**

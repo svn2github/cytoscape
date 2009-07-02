@@ -116,8 +116,8 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 			// Someone has programmatically locked a set of nodes -- construct
 			// the list of unlocked nodes
 			List<CyNode> unlockedNodes = new ArrayList();
-			for (CyNode node: (List<CyNode>)network.nodesList()) {
-				if (!isLocked(networkView.getNodeView(node.getRootGraphIndex()))) {
+			for (CyNode node: network.getNodeList()) {
+				if (!isLocked(networkView.getNodeView(node))) {
 					unlockedNodes.add(node);
 				}
 			}
