@@ -17,10 +17,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-
-import org.cytoscape.work.internal.tunables.utils.*;
-import org.cytoscape.work.*;
+import org.cytoscape.work.HandlerFactory;
+import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.Tunable.Param;
+import org.cytoscape.work.internal.tunables.utils.CollapsablePanel;
+import org.cytoscape.work.internal.tunables.utils.XorPanel;
 import org.cytoscape.work.spring.SpringTunableInterceptor;
 
 
@@ -34,7 +35,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	private JPanel panel = new JPanel();
 	private Object[] objs;
 	
-	
 	public GuiTunableInterceptor(HandlerFactory<Guihandler> factory) {
 		super( factory );
 		panelMap = new HashMap<java.util.List<Guihandler>,JPanel>();
@@ -45,10 +45,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			this.parent = (Component)o;
 		else throw new IllegalArgumentException("Not a JPanel");
 	}
-	
-	
-	//NEED TO ADD THE ResetValue()
-	
+		
 	public void handle(){
 		for(Guihandler h: lh)h.handleDependents();
 	}
@@ -73,8 +70,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			
 			// construct the gui
 			for (Guihandler gh : lh) {
-				//System.out.println("handler: " + gh.getName());
-		
 				// hook up dependency listeners
 				String dep = gh.getDependency();
 				if ( dep != null && !dep.equals("") ) {
@@ -116,8 +111,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 					if(g.equals(""))throw new IllegalArgumentException("The group's name cannot be set to \"\"");
 					groupNames = groupNames + g;
 					if ( !panels.containsKey(groupNames) ) {
-//						panels.put(g,createJPanel(g,gh,groupalignement.get(g)));			
-//						panels.get(lastGroup).add( panels.get(g), gh.getTunable().xorKey() );
 						panels.put(groupNames,createJPanel(g,gh,groupAlignement.get(g),groupTitles.get(g)));						
 						panels.get(lastGroup).add( panels.get(groupNames), gh.getTunable().xorKey() );
 					}

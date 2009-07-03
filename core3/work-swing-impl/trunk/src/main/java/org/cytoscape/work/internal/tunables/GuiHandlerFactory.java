@@ -1,18 +1,16 @@
 package org.cytoscape.work.internal.tunables;
 
+import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 
-import java.io.File;
-import java.io.InputStream;
-
-import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.property.bookmark.Bookmarks;
-import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.CyProperty;
-import org.cytoscape.work.Tunable;
+import org.cytoscape.property.bookmark.BookmarksUtil;
+import org.cytoscape.property.bookmark.*;
 import org.cytoscape.work.HandlerFactory;
+import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.BoundedFloat;
 import org.cytoscape.work.util.BoundedInteger;
@@ -23,7 +21,6 @@ import org.cytoscape.work.util.FlexiblyBoundedInteger;
 import org.cytoscape.work.util.FlexiblyBoundedLong;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
-
 
 /**
  * Provides a factory to create <code>Guihandler</code> depending on their type
@@ -37,7 +34,6 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 	private BookmarksUtil bkUtil;
 //	public FileUtil flUtil;
 //	public StreamUtil stUtil;
-	
 	
 	/**
 	 * creates a new GuiHandlerFactory object
