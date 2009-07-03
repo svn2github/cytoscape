@@ -119,7 +119,7 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 				writer.addDocument(createDocument(new Long(currid).toString(),
 						currow.getAllValues(),edgetypemap));
 			}
-			//it = network.edgesIterator();
+			// it = network.edgesIterator();
 			/*while (it.hasNext()) {
 				CyEdge currEdge = (CyEdge) it.next();
 				String currEdgeIdentifier = currEdge.getIdentifier();
