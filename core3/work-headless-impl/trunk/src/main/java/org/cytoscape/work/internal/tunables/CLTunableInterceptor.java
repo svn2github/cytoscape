@@ -10,6 +10,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.cytoscape.work.AbstractTunableInterceptor;
+import org.cytoscape.cmdline.launcher.CommandLineProvider;
 
 
 
@@ -18,9 +19,9 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 
 	private String[] args;
 	
-	public CLTunableInterceptor(String[] args) {
+	public CLTunableInterceptor(CommandLineProvider clp ) {
 		super(new CLHandlerFactory());
-		this.args = args;
+		this.args = clp.getCommandLineArgs();
 	}
 
 	public boolean createUI(Object ... objs) {

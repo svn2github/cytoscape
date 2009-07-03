@@ -14,12 +14,13 @@
 		for integration testing outside of an OSGi environment -->
 
 	<context:annotation-config/>
-	
+
+	<bean id="undoSupport" class="org.cytoscape.work.internal.UndoSupportImpl"/>
+
 	<bean name="headlessTaskManager" class="org.cytoscape.work.internal.task.HeadlessTaskManager"/>
-	
-	<bean name="clTaskFactoryInterceptor" class="org.cytoscape.work.internal.tunables.CLTaskFactoryInterceptor">
+
+	<bean name="tunableInterceptor" class="org.cytoscape.work.internal.tunables.CLTunableInterceptor">
 		<constructor-arg ref="commandLineProviderServiceRef"/>
-		<constructor-arg ref="headlessTaskManager"/>
 	</bean>
-	
+
 </beans>
