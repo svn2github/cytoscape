@@ -53,7 +53,7 @@ public abstract class AbstractFlexiblyBounded<N extends Comparable<N>> extends A
 	 * @param lowerStrict  Whether the lower bound is reachable
 	 * @param upperStrict  Whether the upper bound is reachable
 	 */
-	AbstractFlexiblyBounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
+	public AbstractFlexiblyBounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
 		super(lower,initValue,upper,lowerStrict,upperStrict);
 	}
 
@@ -124,6 +124,7 @@ public abstract class AbstractFlexiblyBounded<N extends Comparable<N>> extends A
 		lowerStrict = strict;		
 	}
 
+	
 	public abstract void setUpperBound(String s);
 	public abstract void setLowerBound(String s);
 }

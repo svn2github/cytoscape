@@ -36,20 +36,30 @@
 
 package org.cytoscape.work.util;
 
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
- * Allows an item of a list to be selected.
+ * List with items of type <code>T</code> : only 1 item can be selected
  *
- * @param <T>  type of item that will be listed
+ * @param <T>  type of items that will be listed
  */
 public class ListSingleSelection<T> extends ListSelection<T> {
+	
+	/**
+	 * The item that will be selected
+	 */
 	private T selected;
 
 	/**
-	 * Creates a new ListSingleSelection object.
+	 * Creates a new ListSingleSelection object
+	 * 
+	 * <p><pre>
+	 * <b>example</b> :
+	 * 
+	 * <code>ListSingleSelection<String> lss = new ListSingleSelection<String>("1","2","3","4")</code>
+	 * </pre></p>
 	 *
 	 * @param values array of <code>T</code> items that can be selected
 	 */
@@ -58,9 +68,22 @@ public class ListSingleSelection<T> extends ListSelection<T> {
 	}
 
 	/**
-	 * Creates a new ListSingleSelection object.
+	 * Creates a new ListSingleSelection object
 	 *
-	 * @param values  a list of <code>T</code> items that can be selected
+	 *<p><pre>
+	 *<b>example</b> :
+	 *
+	 *<code>
+	 *	java.util.List<String> list = new jave.util.ArrayList<String>();
+	 *	list.add("1");
+	 *	list.add("2");
+	 *	list.add("3");
+	 *	list.add("4");
+	 *
+	 *	ListSingleSelection<String> lss = new ListSingleSelection<String>(list);
+	 *</code>
+	 *</pre></p>
+	 * @param values  a list of <code>values</code> of type<code>T</code> that can be selected
 	 */
 	public ListSingleSelection(final List<T> values) {
 		super(values);
@@ -76,7 +99,7 @@ public class ListSingleSelection<T> extends ListSelection<T> {
 	}
 
 	/**
-	 *  Set the <code>T</code> item as selected in the ListSingleSelection object
+	 *  Set the <code>val</code> item of type <code>T</code> as selected in the ListSingleSelection
 	 *
 	 * @param val the selected item
 	 */

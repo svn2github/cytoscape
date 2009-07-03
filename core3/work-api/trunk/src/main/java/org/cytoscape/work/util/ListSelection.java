@@ -41,15 +41,15 @@ import java.util.List;
 
 
 /**
- * A ListSelection object.
- *
+ * A ListSelection object
+ * 
  * @param <T>  type of item that will be listed
  */
 class ListSelection<T> {
 
 	
 	/**
-	 * declares a List of items <code>T</code>
+	 * declares a List of items of type <code>T</code>
 	 */
 	protected final List<T> values;
 
@@ -57,7 +57,7 @@ class ListSelection<T> {
 	/**
 	 * Creates a new ListSelection object.
 	 *
-	 * @param values list of items that contains the one(s) that is(are) going to be selected
+	 * @param values list of items of type <code>T</code> that contains the one(s) that is(are) going to be selected
 	 */
 	public ListSelection(final List<T> values) {
 		if (values == null)

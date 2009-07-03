@@ -111,12 +111,12 @@ public @interface Tunable{
 	
 	
 	/**
-	 * To add a dependency between Tunables
+	 * To add a dependency between 2 or more <code>Tunables</code> 
 	 * 
-	 * The JPanel of the Tunable that depends on the other one will be activated only if the value which is required is set.<br>
-	 * <br>
 	 * <p><pre>
-	 * Here is an example of how to add dependencies between Tunables :
+	 * The <code>JPanel</code> of the <code>Tunable</code> that depends on the other one will be activated only if the value which is required is set.
+	 * 
+	 * Here is an example of how to add dependencies between <code>Tunables<code> :
 	 * 
 	 * <code>
 	 * 	<code>@Tunable(description="Type")</code>

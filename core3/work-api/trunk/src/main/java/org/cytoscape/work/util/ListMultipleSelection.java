@@ -43,16 +43,26 @@ import java.util.Arrays;
 
 
 /**
- * Allows several items from a list to be selected.
+ * List with items of type <code>T</code> : one or more items can be selected
  *
- * @param <T>  type of item that will be listed
+ * @param <T>  type of items that will be listed
  */
 public class ListMultipleSelection<T> extends ListSelection<T> {
+	
+	/**
+	 * The list of items that have been selected
+	 */
 	private List<T> selected;
 
 	/**
-	 * Creates a new ListMultipleSelection object.
+	 * Creates a new ListMultipleSelection object
 	 *
+	 *<p><pre>
+	 * <b>example</b> :
+	 * 
+	 * <code>ListMultipleSelection<String> lms = new ListMultipleSelection<String>("1","2","3","4")</code>
+	 * </pre></p>
+	 * 
 	 * @param values array of <code>T</code> items that can be selected
 	 */
 	public ListMultipleSelection(final T ... values) {
@@ -61,9 +71,23 @@ public class ListMultipleSelection<T> extends ListSelection<T> {
 	}
 
 	/**
-	 * Creates a new ListMultipleSelection object.
+	 * Creates a new ListMultipleSelection object
+	 * 
+	 * <p><pre>
+	 *<b>example</b> :
 	 *
-	 * @param values  list of <code>T</code> items that can be selected
+	 *<code>
+	 *	java.util.List<String> list = new jave.util.ArrayList<String>();
+	 *	list.add("1");
+	 *	list.add("2");
+	 *	list.add("3");
+	 *	list.add("4");
+	 *
+	 *	ListMultipleSelection<String> lss = new ListMultipleSelection<String>(list);
+	 *</code>
+	 *</pre></p>
+	 *
+	 * @param values  list of <code>values</code> of type<code>T</code> that can be selected
 	 */
 	public ListMultipleSelection(final List<T> values) {
 		super(values);

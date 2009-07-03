@@ -18,14 +18,51 @@ import java.util.List;
 
 public abstract class AbstractHandler implements Handler {
 
+	/**
+	 * Field that need to be intercepted
+	 */
 	protected Field f;
+	
+	/**
+	 * Method that need to be intercepted. This getter method(to get the value of another Object from the class) need to be coupled with the smethod or setter method(to set the value of this previous Object)
+	 * This method will be annotated as a <code>Tunable</code>
+	 */
 	protected Method gmethod;
+	
+	/**
+	 * Method that need to be intercepted. This setter method(to set the value of another Object(not annotated as <code>Tunable</code> from the class) need to be coupled with the gmethod or getter method(to get the value of this Object)
+	 * This method will be annotated as a <code>Tunable</code>
+	 */
 	protected Method smethod;
-	protected Method m;
+	//protected Method m;
+	
+	/**
+	 * Object that is contained in the Field <code>f</code>
+	 * 
+	 * To access to the Object <code>o</code>, use : <code>f.get(o)</code>
+	 */
 	protected Object o;
+	
+	/**
+	 * <code>Tunable</code> annotations of the Field <code>f</code> annotated as <code>Tunable</code>
+	 * 
+	 * To access to <code>Tunable</code>, use : <code>f.getAnnotation(Tunable.class)</code> 
+	 */
 	protected Tunable t;
+	
+	/**
+	 * <code>Tunable</code> annotations of the Method <code>gmethod</code>(getter method) annotated as <code>Tunable</code>
+	 */
 	protected Tunable tg;
+	
+	/**
+	 * <code>Tunable</code> annotations of the Method <code>smethod</code>(setter method) annotated as <code>Tunable</code>
+	 */
 	protected Tunable ts;
+	
+	/**
+	 * List of listeners that are applied to <code>Handlers</code>
+	 */
 	protected List<HandlerListener> listeners;
 	
 
@@ -43,21 +80,21 @@ public abstract class AbstractHandler implements Handler {
 	}
 
 	
-	/**
-	 * Handler for Methods values
-	 * @param m method that has been annotated
-	 * @param o object contained in <code>m</code>
-	 * @param t tunable associated to <code>m</code> 
-	 */
-	public AbstractHandler(Method m, Object o, Tunable t) {
-		this.m = m;
-		this.o = o;
-		this.t = t;
-	}
+//	/**
+//	 * Handler for Methods values
+//	 * @param m method that has been annotated
+//	 * @param o object contained in <code>m</code>
+//	 * @param t tunable associated to <code>m</code> 
+//	 */
+//	public AbstractHandler(Method m, Object o, Tunable t) {
+//		this.m = m;
+//		this.o = o;
+//		this.t = t;
+//	}
 
 	
 	/**
-	 * Handler for 2 Methods values
+	 * Handler for 2 Methods : <code>gmethod</code> and <code>smethod</code>
 	 * @param getmethod method that has been annotated as a <i>getter</i>
 	 * @param setmethod method that has been annotated as a <i>setter</i>
 	 * @param o object contained in methods
@@ -82,13 +119,13 @@ public abstract class AbstractHandler implements Handler {
 	}
 
 	
-	/**
-	 * To get <code>Method m</code>
-	 * @return method component from the handler
-	 */
-	public Method getMethod() {
-		return m;
-	}
+//	/**
+//	 * To get <code>Method m</code>
+//	 * @return method component from the handler
+//	 */
+//	public Method getMethod() {
+//		return m;
+//	}
 
 	/**
 	 * To get <code>Method gmethod</code>

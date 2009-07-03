@@ -43,11 +43,37 @@ package org.cytoscape.work.util;
  */
 public abstract class AbstractBounded<N extends Comparable<N>> {
 
+	/**
+	 * Initial Value of the Bounded Object that will be modified
+	 */
 	protected N value;
-
+	
+	/**
+	 * Value of the lower bound of the Bounded Object
+	 */
 	protected N lower;
+	
+	/**
+	 * Value of the upper bound of the Bounded Object
+	 */
 	protected N upper;
+	
+	/**
+	 * Whether or not the <code>value</code> could be set to the <code>upper</code> value
+	 * 
+	 * <p><pre>
+	 *  <code> if(upperstrict==true)</code> , then the <code>value</code> cannot be set to <code>upper</code>  
+	 *  </pre></p>
+	 */
 	protected boolean upperStrict;
+	
+	/**
+	 * Whether or not the <code>value</code> could be set to the <code>lower</code> value
+	 * 
+	 * <p><pre>
+	 *  <code> if(lowerstrict==true)</code> , then the <code>value</code> cannot be set to <code>lower</code>
+	 *  </pre></p>
+	 */
 	protected boolean lowerStrict;
 
 	/**
@@ -58,7 +84,7 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	 * @param lowerStrict	True means that the value cannot be equal to the lower bound
 	 * @param upperStrict	True means that the value cannot be equal to the upper bound
 	 */
-	AbstractBounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
+	 public AbstractBounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
 		if (lower == null)
 			throw new NullPointerException("lower bound is null!");
 
