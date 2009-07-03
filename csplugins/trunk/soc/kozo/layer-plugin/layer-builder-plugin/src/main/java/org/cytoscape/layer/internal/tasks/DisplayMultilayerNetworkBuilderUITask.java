@@ -4,7 +4,7 @@ import org.cytoscape.layer.internal.ui.LayerBuilderDialog;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
 
 public class DisplayMultilayerNetworkBuilderUITask implements Task {

@@ -19,7 +19,7 @@ import javax.swing.JDialog;
 
 import org.cytoscape.model.CyNetwork;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 /**
  * 

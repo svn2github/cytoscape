@@ -3,7 +3,7 @@ package org.cytoscape.layer.internal.tasks;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 
 public class BuildMultilayerNetworkTask implements Task {
 	private CyNetworkManager manager;

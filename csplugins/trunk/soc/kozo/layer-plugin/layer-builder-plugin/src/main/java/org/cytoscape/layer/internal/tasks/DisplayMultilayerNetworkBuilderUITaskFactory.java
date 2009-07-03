@@ -3,7 +3,7 @@ package org.cytoscape.layer.internal.tasks;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 
-import cytoscape.CyNetworkManager;
+import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
 
 public class DisplayMultilayerNetworkBuilderUITaskFactory implements TaskFactory {
