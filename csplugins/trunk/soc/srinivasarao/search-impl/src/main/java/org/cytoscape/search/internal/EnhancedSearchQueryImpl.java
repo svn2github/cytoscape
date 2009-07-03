@@ -66,7 +66,10 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 
 			// Define attribute fields in which the search is to be carried on
 			AttributeFields attFields = new AttributeFields(network);
-
+			/*String[] fields = attFields.getFields();
+			for(int i=0;i<fields.length;i++){
+				System.out.println("Field "+i+":"+fields[i] );
+			}*/
 			// Build an IndexSearcher using the in-memory index
 			searcher = new IndexSearcher(idx);
 			queryString = EnhancedSearchUtils.queryToLowerCase(queryString);

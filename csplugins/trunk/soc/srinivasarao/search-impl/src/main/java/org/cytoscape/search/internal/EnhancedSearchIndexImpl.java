@@ -157,10 +157,10 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 			String attrName = me.getKey();
 			String attrIndexingName = EnhancedSearchUtils.replaceWhitespace(attrName);
 			attrIndexingName = attrIndexingName.toLowerCase();
-			//System.out.println("Attribute Indexing Name:"+attrIndexingName);
+			System.out.print("Attribute Indexing Name:"+attrIndexingName+";");
 			//System.out.println(attrIndexingName + " " + me.getValue().toString());
 			String cname = typemap.get(attrName).getName();
-			//System.out.println(cname);
+			System.out.println(cname);
 			if(cname.equals("java.lang.Boolean")){
 				doc.add(new Field(attrIndexingName, me.getValue().toString(),
 						Field.Store.NO, Field.Index.NOT_ANALYZED));

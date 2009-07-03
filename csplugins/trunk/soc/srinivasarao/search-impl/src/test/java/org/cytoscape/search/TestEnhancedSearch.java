@@ -117,7 +117,7 @@ public class TestEnhancedSearch extends TestCase {
 		RAMDirectory idx = indexHandler.getIndex();
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQueryImpl(idx,cyNetwork);
 		
-		query="Official_HUGO_Symbol:b";
+		query="b";
 		queryHandler.executeQuery(query); // 56
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 1, hitCount);
