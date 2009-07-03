@@ -1,8 +1,14 @@
 package org.cytoscape.view.presentation.processing.internal.shape;
 
+import gestalt.p5.GestaltPlugIn;
+import gestalt.render.Drawable;
+import gestalt.shape.AbstractShape;
+import gestalt.shape.Cube;
+import gestalt.shape.DrawableFactory;
+
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.processing.PNodeView;
+import org.cytoscape.view.presentation.processing.P5NodePresentation;
 
 import processing.core.PApplet;
 
@@ -10,14 +16,16 @@ import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.*;
 
 public class ShapeFactory {
 	
-	private final PApplet p;
+	private final GestaltPlugIn p;
 	
-	public ShapeFactory(PApplet p) {
+	private final DrawableFactory factory;
+	
+	public ShapeFactory(GestaltPlugIn p) {
 		this.p = p;
+		this.factory = p.drawablefactory();
 	}
 	
-	public PNodeView getNodeShape(View<CyNode> view) {
-		
+	public P5NodePresentation getNodeShape(View<CyNode> view) {
 		
 		
 		/*
@@ -27,6 +35,8 @@ public class ShapeFactory {
 		final Number y = view.getVisualProperty(NODE_Y_LOCATION);
 		final Number z = view.getVisualProperty(NODE_Z_LOCATION);
 		
+		AbstractShape gNode = factory.cube();
+		gNode.position(x.floatValue(), y.floatValue(), z.floatValue());
 		
 		return null;
 	}

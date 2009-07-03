@@ -3,7 +3,7 @@ package org.cytoscape.view.presentation.processing;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 
-public interface PNodeView extends PViewObject {
+public interface P5NodePresentation extends P5Presentation<CyNode> {
 	
 	
 	/**

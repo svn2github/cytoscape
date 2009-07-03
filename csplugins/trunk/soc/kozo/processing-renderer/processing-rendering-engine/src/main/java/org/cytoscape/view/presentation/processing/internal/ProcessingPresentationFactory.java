@@ -19,7 +19,7 @@ import org.cytoscape.view.presentation.PresentationFactory;
 public class ProcessingPresentationFactory implements PresentationFactory,
 		NetworkViewChangedListener {
 	
-	private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(1920, 1080);
+	private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(800, 600);
 
 	public ProcessingPresentationFactory() {
 
@@ -33,8 +33,8 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 
 	public NetworkRenderer addPresentation(Object frame, CyNetworkView view) {
 		// Check parameter
-		if ( view == null )
-			throw new IllegalArgumentException("Cannot create presentation for null CyNetworkView.");
+//		if ( view == null )
+//			throw new IllegalArgumentException("Cannot create presentation for null CyNetworkView.");
 		
 		System.out.println("====== Creating Processing Dialog =========");
 		ProcessingNetworkRenderer presentation = null;
@@ -44,10 +44,10 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 			final Dimension size = c.getSize();
 			presentation = new ProcessingNetworkRenderer(DEFAULT_WINDOW_SIZE, view);
 			
-			String title = view.getVisualProperty(NETWORK_TITLE);
+			//String title = view.getVisualProperty(NETWORK_TITLE);
 			
 			JFrame window = (JFrame)frame;
-			window.setTitle(title);
+			//window.setTitle(title);
 			window.setLayout(new BorderLayout());
 			window.add(presentation, BorderLayout.CENTER);
 			presentation.init();
@@ -57,6 +57,7 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 			window.pack();
 			window.setLocationByPlatform(true);
 			window.setVisible(true);
+			window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			
 			System.out.println("* Creating Processing Dialog OK!!!!!");
 		}

@@ -77,7 +77,7 @@ public class ParticleManager {
 
 	}
 
-	public void manage(GL gl) {
+	public void draw(GL gl) {
 		VerletParticle p;
 		for (int i = 0; i < numP; i++) {
 			p = physics.particles.get(i);

@@ -10,7 +10,7 @@ import org.cytoscape.view.model.View;
  * @author kono
  *
  */
-public interface PEdgeView extends PViewObject {
+public interface PEdgeView extends P5Presentation {
 	
 	public View<CyEdge> getViewModel();
 

@@ -39,7 +39,7 @@ public class ParTest1 extends PApplet {
 		rotateY(rotX);
 		translate(-width / 2, -height / 2, -height / 2);
 		beginGL();
-		particleManager.manage(gl);
+		particleManager.draw(gl);
 		endGL();
 		// println(frameRate);
 	}
