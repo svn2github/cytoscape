@@ -152,7 +152,7 @@ public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
 	public void halt() {
 		this.interrupted = true;
 	}
-
+	
 	public void cancel() {
 		this.interrupted = true;
 	}

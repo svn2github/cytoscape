@@ -68,6 +68,11 @@ public class EnhancedSearchImpl implements EnhancedSearch {
 		//this.network = network;
 	}
 
+	public void addNetwork(CyNetwork network){
+		EnhancedSearchIndexImpl esi = new  EnhancedSearchIndexImpl(network);
+		setNetworkIndex(network,esi.getIndex());
+	}
+	
 	/**
 	 * Removes the specified network from the global index. To free up memory,
 	 * this method should be called whenever a network is destroyed.
