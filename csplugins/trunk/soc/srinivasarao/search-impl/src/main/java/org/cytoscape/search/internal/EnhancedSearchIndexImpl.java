@@ -80,8 +80,8 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 
 			// Fetch nodes and edges attributes
 			//CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-			CyDataTable nodetable = (CyDataTable)network.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-			
+			//CyDataTable nodetable = (CyDataTable)network.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
+			CyDataTable nodetable = (CyDataTable) network.getCyDataTables("NODE").get(CyNetwork.DEFAULT_ATTRS);
 			List<CyNode> nl = network.getNodeList();
 			
 			
@@ -104,8 +104,8 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 
 			// Index edge attributes
 			//CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-			CyDataTable edgetable = (CyDataTable)network.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-			
+			//CyDataTable edgetable = (CyDataTable)network.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
+			CyDataTable edgetable = (CyDataTable)network.getCyDataTables("EDGE").get(CyNetwork.DEFAULT_ATTRS);
 			List<CyEdge> el = network.getEdgeList();
 			Iterator<CyEdge> edgeit = el.iterator();
 			Map<String,Class<?>> edgetypemap = edgetable.getColumnTypeMap();
