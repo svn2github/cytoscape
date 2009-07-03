@@ -44,7 +44,14 @@ public interface EnhancedSearch {
 	String INDEX_SET = "INDEX_SET";
 
 	String REINDEX = "REINDEX";
-
+	
+	/**
+	 * Indexes a network and adds the index to the global index.
+	 * @param network
+	 */
+	
+	public void addNetwork(CyNetwork network);
+	
 	/**
 	 * Removes the specified network from the global index. To free up memory,
 	 * this method should be called whenever a network is destroyed.
