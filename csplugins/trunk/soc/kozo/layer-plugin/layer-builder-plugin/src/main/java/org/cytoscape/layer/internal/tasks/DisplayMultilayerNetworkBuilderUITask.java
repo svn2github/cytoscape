@@ -1,19 +1,24 @@
 package org.cytoscape.layer.internal.tasks;
 
+import java.util.Set;
+
 import org.cytoscape.layer.internal.ui.LayerBuilderDialog;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
 import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
+import org.cytoscape.model.CyNetwork;
 
 public class DisplayMultilayerNetworkBuilderUITask implements Task {
-	
+
 	// This should be injected.
 	private CyNetworkManager manager;
 	private CySwingApplication desktop;
-	
-	public DisplayMultilayerNetworkBuilderUITask(CySwingApplication desktop, CyNetworkManager manager) {
+	private TaskMonitor taskMonitor;
+
+	public DisplayMultilayerNetworkBuilderUITask(CySwingApplication desktop,
+			CyNetworkManager manager) {
 		this.manager = manager;
 		this.desktop = desktop;
 	}
@@ -22,13 +27,24 @@ public class DisplayMultilayerNetworkBuilderUITask implements Task {
 	 * Executes Task.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		LayerBuilderDialog dialog = new LayerBuilderDialog(desktop.getJFrame(), true, manager);
+
+		this.taskMonitor = taskMonitor;
+		taskMonitor.setProgress(-1.0);
+		taskMonitor.setStatusMessage("Building MultiLayer Network...");
+
+		Set<CyNetwork> targetNetworks = manager.getNetworkSet();
+		System.out
+				.println("* Show Dialog for Building MultiLayer Network for: "
+						+ targetNetworks);
+
+		LayerBuilderDialog dialog = new LayerBuilderDialog(desktop.getJFrame(),
+				true, manager, targetNetworks);
 		dialog.setTitle("Multilayer Network Builder");
 		dialog.setVisible(true);
 	}
 
 	public void cancel() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
