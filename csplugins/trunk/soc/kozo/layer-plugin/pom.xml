@@ -42,6 +42,26 @@
 		<module>layer-builder-plugin</module>
 	</modules>
 
+	<repositories>
+		<!-- SpringSource OSGi Bundle Repository -->
+		<repository>
+			<id>com.springsource.repository.bundles.release</id>
+			<name>SpringSource OSGi Bundle Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>SpringSource OSGi Bundle Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
 			<plugin>
