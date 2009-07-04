@@ -1,6 +1,8 @@
 package org.cytoscape.layer.internal;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.model.CyEdge;
@@ -49,44 +51,89 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			CyNetwork bottomLayer) {
 		// Connect them
 
+		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
+
 		// 1st Phase: add all nodes in the top layer
 		for (CyNode cyNode : topLayer.getNodeList()) {
+
+			String nodeName = cyNode.attrs().get("name", String.class);
+
 			CyNode newNode = layeredNetwork.addNode();
-			String name = cyNode.attrs().get("name", String.class);
-			newNode.attrs().set("name", name);
+			newNode.attrs().set("name", nodeName);
+
+			nodeMap.put(nodeName, newNode);
 		}
+
 		for (CyEdge edge : topLayer.getEdgeList()) {
-			CyEdge newEdge = layeredNetwork.addEdge(edge.getSource(), edge
-					.getTarget(), true);
-			String name = edge.attrs().get("name", String.class);
-			newEdge.attrs().set("name", name);
+
+			String edgeName = edge.attrs().get("name", String.class);
+			CyNode sourceNode = edge.getSource();
+			String sourceName = sourceNode.attrs().get("name", String.class);
+			CyNode targetNode = edge.getTarget();
+			String targetName = targetNode.attrs().get("name", String.class);
+
+			CyEdge newEdge = layeredNetwork.addEdge(nodeMap.get(sourceName),
+					nodeMap.get(targetName), true);
+			newEdge.attrs().set("name", edgeName);
+
 		}
+
 		// 2nd Phase: append nodes only included in connector
 		for (CyNode cyNode : connector.getNodeList()) {
-			if (layeredNetwork.containsNode(cyNode) == false) {
+
+			String nodeName = cyNode.attrs().get("name", String.class);
+
+			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
-				String name = cyNode.attrs().get("name", String.class);
-				newNode.attrs().set("name", name);
+				newNode.attrs().set("name", nodeName);
+				nodeMap.put(nodeName, newNode);
 			}
+
 		}
+
 		for (CyEdge edge : connector.getEdgeList()) {
-			CyEdge newEdge = layeredNetwork.addEdge(edge.getSource(), edge
-					.getTarget(), true);
-			String name = edge.attrs().get("name", String.class);
-			newEdge.attrs().set("name", name);
+
+			String edgeName = edge.attrs().get("name", String.class);
+			CyNode sourceNode = edge.getSource();
+			String sourceName = sourceNode.attrs().get("name", String.class);
+			CyNode targetNode = edge.getTarget();
+			String targetName = targetNode.attrs().get("name", String.class);
+
+			CyEdge newEdge = layeredNetwork.addEdge(nodeMap.get(sourceName),
+					nodeMap.get(targetName), true);
+			newEdge.attrs().set("name", edgeName);
+
 		}
+
 		// 3rd Phase: append nodes only included in bottom layer
 		for (CyNode cyNode : bottomLayer.getNodeList()) {
-			if (layeredNetwork.containsNode(cyNode) == false) {
+
+			String nodeName = cyNode.attrs().get("name", String.class);
+
+			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
-				String name=cyNode.attrs().get("name", String.class);
-				newNode.attrs().set("name", name);
+				newNode.attrs().set("name", nodeName);
+				nodeMap.put(nodeName, newNode);
 			}
+
 		}
-		for(CyEdge edge: bottomLayer.getEdgeList()){
-			CyEdge newEdge=layeredNetwork.addEdge(edge.getSource(), edge.getTarget(), true);
-			String name =edge.attrs().get("name", String.class);
-			newEdge.attrs().set("name", name);
+
+		for (CyEdge edge : bottomLayer.getEdgeList()) {
+
+			String edgeName = edge.attrs().get("name", String.class);
+			CyNode sourceNode = edge.getSource();
+			String sourceName = sourceNode.attrs().get("name", String.class);
+			CyNode targetNode = edge.getTarget();
+			String targetName = targetNode.attrs().get("name", String.class);
+
+			CyEdge newEdge = layeredNetwork.addEdge(nodeMap.get(sourceName),
+					nodeMap.get(targetName), true);
+			newEdge.attrs().set("name", edgeName);
+
 		}
+
+		nodeMap.clear();
+		nodeMap = null;
+
 	}
 }
