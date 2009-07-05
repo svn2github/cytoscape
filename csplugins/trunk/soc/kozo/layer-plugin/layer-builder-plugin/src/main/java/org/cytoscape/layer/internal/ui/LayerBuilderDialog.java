@@ -34,8 +34,11 @@ public class LayerBuilderDialog extends JDialog {
 	
 	private DefaultListModel availableNetworkListModel;
 
-	/** Creates new form NewJDialog 
-	 * @param targetNetworks */
+	/**
+	 * Creates new form NewJDialog
+	 * 
+	 * @param targetNetworks
+	 */
 
 	public LayerBuilderDialog(Frame parent, boolean modal,
 			CyNetworkManager manager, Set<CyNetwork> targetNetworks) {
