@@ -52,8 +52,8 @@ public class LayerBuilderDialog extends JDialog {
 		this.availableNetworkListModel = new DefaultListModel();
 		final Set<CyNetwork> availableNetworks = manager.getNetworkSet();
 
-		for (CyNetwork net : availableNetworks) {
-			availableNetworkListModel.addElement(net.toString());
+		for (CyNetwork cyNetwork : availableNetworks) {
+			availableNetworkListModel.addElement(cyNetwork.attrs().get("title", String.class));
 		}
 	}
 
