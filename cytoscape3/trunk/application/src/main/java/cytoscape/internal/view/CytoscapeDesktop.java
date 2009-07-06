@@ -63,6 +63,7 @@ import cytoscape.view.CytoPanel;
 import cytoscape.view.CytoPanelState;
 import cytoscape.view.CySwingApplication;
 import cytoscape.view.CyMenus;
+import cytoscape.view.CytoStatusBar;
 
 
 
@@ -109,7 +110,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	protected CytoPanelImp cytoPanelSouthWest; 
 
 	// Status Bar
-	protected JLabel statusBar;
+	protected CytoStatusBar statusBar;
 	protected JPanel main_panel;
 
 	private CytoscapeVersion version;
@@ -117,13 +118,14 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel , CytoscapeVersion version) {
+	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel , CytoscapeVersion version, CytoStatusBar statusBar) {
 		super("Cytoscape Desktop (New Session)");
 
 		this.cyMenus = cyMenus;
 		this.networkViewManager = networkViewManager;
 		this.networkPanel = networkPanel;
 		this.version = version;
+		this.statusBar = statusBar;
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
 
@@ -162,31 +164,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	}
 
 	private void initStatusBar(JPanel panel) {
-		statusBar = new JLabel();
-		statusBar.setBorder(new EmptyBorder(0, 7, 5, 7));
-		statusBar.setForeground(new Color(75, 75, 75));
-		panel.add(statusBar, BorderLayout.SOUTH);
-		setStatusBarMsg("Welcome to Cytoscape " + version.getFullVersion()
-		                + "              Right-click + drag  to  ZOOM" 
-						+ "             Middle-click + drag  to  PAN");
-	}
-
-	/**
-	 * Sets the Status Bar Message.
-	 *
-	 * @param msg
-	 *            Status Bar Message.
-	 */
-	public void setStatusBarMsg(String msg) {
-		statusBar.setText(msg);
-	}
-
-	/**
-	 * Clears the Status Bar Message.
-	 */
-	public void clearStatusBar() {
-		// By using mutiple white spaces, layout for the statusBar is preserved.
-		statusBar.setText("   ");
+		panel.add(statusBar.getPanel(), BorderLayout.SOUTH);
 	}
 
 	/**

@@ -76,6 +76,9 @@
 	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
 		interface="cytoscape.view.CyMenus" />
 
+	<osgi:service id="cytoStatusBarService" ref="cytoStatusBarImpl"
+		interface="cytoscape.view.CytoStatusBar" />
+
 	<osgi:service id="proxyHandlerService" ref="proxyHandler">
 		<osgi:interfaces>
 			<value>cytoscape.util.ProxyHandler</value>
