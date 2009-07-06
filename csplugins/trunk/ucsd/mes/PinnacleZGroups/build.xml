@@ -1,0 +1,91 @@
+<!--
+  ** build.xml - ant build file
+  ** Written by Samad Lotia
+  **
+  ** ################################
+  **
+  **          COMPILING ISSUES
+  **
+  ** If you're having trouble with compiling,
+  ** make sure to update the cytoscape.root.dir
+  ** and cytoscape.distro.dir properties.
+  **
+  ** ################################
+  -->
+
+<project name="PinnacleZPlugin" default="all" basedir=".">
+
+  <!-- ===================================================================	-->
+  <!-- Properties								-->
+  <!-- ===================================================================	-->
+
+  <property name="root.dir"			location="."/>
+  <property name="build.dir"			location="${root.dir}/build"/>
+  <property name="resources.dir"		location="${root.dir}/resources"/>
+  <property name="lib.dir"			location="${root.dir}/lib"/>
+
+  <!-- Project directories and files -->
+  <property name="project.src.dir"		location="${root.dir}/src"/>
+  <property name="project.jar"			location="${root.dir}/PinnacleZPlugin.jar"/>
+
+  <!-- Cytoscape directories and files needed for compiling -->
+  <property name="cytoscape.root.dir"		location="../../../../cytoscape"/>
+  <property name="cytoscape.lib.dir"		location="${cytoscape.root.dir}/lib"/>
+
+  <!-- Project jar properties -->
+  <property name="project.jar.main.class"	value="PinnacleZPlugin.PinnacleZPlugin"/>
+  <path id="project.jar.class.path">
+    <pathelement location="${lib.dir}/pinnaclez.jar"/>
+    <pathelement location="${cytoscape.root.dir}/cytoscape.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/cytoscape-task.jar"/>
+  </path>
+  
+  <!-- ===================================================================	-->
+  <!-- compile									-->
+  <!-- ===================================================================	-->
+
+  <target	name="compile"
+  		description="compile project's class files">
+
+    <mkdir dir="${build.dir}"/>
+    <javac	srcdir="${project.src.dir}"
+    		destdir="${build.dir}"
+		debug="yes"
+		classpathref="project.jar.class.path"/>
+    
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- jar									-->
+  <!-- ===================================================================	-->
+
+  <target	name="jar"
+  		depends="compile"
+		description="package all class files into a jar">
+    <unjar src="${lib.dir}/pinnaclez.jar" dest="${build.dir}"/>
+	<copy todir="${build.dir}/PinnacleZPlugin" file="${resources.dir}/plugin.props"/>
+    <jar jarfile="${project.jar}"
+    	 basedir="${build.dir}">
+    	<manifest>
+	      <attribute name="Cytoscape-Plugin" value="${project.jar.main.class}"/>
+   	 	</manifest>
+	</jar>
+  </target>
+  
+  <!-- ===================================================================	-->
+  <!-- all				                                      	-->
+  <!-- ===================================================================	-->
+  <target name="all" depends="jar"/>
+
+  <!-- ===================================================================	-->
+  <!-- clean 									-->
+  <!-- ===================================================================	-->
+  <target name="clean">
+  
+    <delete dir="${build.dir}"/>
+    <delete dir="${manifest.dir}"/>
+    <delete file="${project.jar}"/>
+    
+  </target>
+
+</project>
