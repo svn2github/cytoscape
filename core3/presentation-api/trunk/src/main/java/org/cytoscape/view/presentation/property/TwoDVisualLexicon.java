@@ -73,6 +73,10 @@ public abstract class TwoDVisualLexicon implements VisualLexicon {
 			NODE, 0.0, "NODE_X_LOCATION", "Node X Location");
 	public static final VisualProperty<Double> NODE_Y_LOCATION = new DoubleVisualProperty(
 			NODE, 0.0, "NODE_Y_LOCATION", "Node Y Location");
+	public static final VisualProperty<Double> NODE_X_SIZE = new DoubleVisualProperty(
+			NODE, 0.0, "NODE_X_SIZE", "Node X size (width)");
+	public static final VisualProperty<Double> NODE_Y_SIZE = new DoubleVisualProperty(
+			NODE, 0.0, "NODE_Y_SIZE", "Node y size (height)");
 	public static final VisualProperty<Boolean> NODE_VISIBLE = new BooleanVisualProperty(
 			NODE, true, "NODE_VISIBLE", "Node Visible");
 	public static final VisualProperty<Boolean> NODE_SELECTED = new BooleanVisualProperty(
@@ -115,6 +119,8 @@ public abstract class TwoDVisualLexicon implements VisualLexicon {
 		visualPropertySet.add(NODE_LABEL_COLOR);
 		visualPropertySet.add(NODE_X_LOCATION);
 		visualPropertySet.add(NODE_Y_LOCATION);
+		visualPropertySet.add(NODE_X_SIZE);
+		visualPropertySet.add(NODE_Y_SIZE);
 		visualPropertySet.add(NODE_VISIBLE);
 		visualPropertySet.add(NODE_SELECTED);
 		visualPropertySet.add(EDGE_COLOR);
