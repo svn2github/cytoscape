@@ -107,7 +107,7 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 	 */
 	public void loadTunables(Object obj) {
 		//System.out.println("looking at obj: " + obj.getClass().toString());
-		if (!handlerMap.containsKey(obj)) { //Deleted to get new Panels if we do it many times
+		//if (!handlerMap.containsKey(obj)) { //Deleted to get new Panels if we do it many times
 			LinkedHashMap<String, H> handlerList = new LinkedHashMap<String, H>();
 
 			// Find each public field in the class.
@@ -177,8 +177,8 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 			}
 
 			handlerMap.put(obj, handlerList);
-		}
-		else throw new IllegalArgumentException("THE COMMAND IS EMPTY\nProvide something!");
+		//}
+		//else throw new IllegalArgumentException("THE COMMAND IS EMPTY\nProvide something!");
 
 	}
 
