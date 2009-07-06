@@ -57,7 +57,9 @@ public class GroupPanel extends JPanel implements ListSelectionListener,
 	public static final int EXPANDED = 1;
 	public static final int COLLAPSED = 2;
 
-	
+	private String COLLAPSE_AS_MTEANODE = "Collapse as metanode";
+	private String EXPAND_METANODE = "Expand metanode";
+
 	public GroupPanel() {
 		super();
 
@@ -216,35 +218,43 @@ public class GroupPanel extends JPanel implements ListSelectionListener,
 
 	private void collapseAsMetaNode(CyGroup pGroup) {
 		
-		// check if the metaNode already existed, if it is, do nothing
+		// check if the metaNode already existed
 		MetaNode theMetaNode = MetaNode.getMetaNode(pGroup);
 		if (theMetaNode != null){
-			System.out.println("collapseAsMetaNode: already existed");
-			return;
+			if (theMetaNode.isCollapsed(Cytoscape.getCurrentNetworkView())){
+				// if the metaNode is collapsed, expand it	
+				theMetaNode.expand(recursive, Cytoscape.getCurrentNetworkView(), true);
+			}
+			else {
+				// if the metaNode is expanded, collapse it
+				theMetaNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());				
+			}			
 		}
 		else {
-			System.out.println("collapseAsMetaNode: create new metaNode");
-		}
-		
-		// from metaNodePlugin2.MetaNodePlugin2		
-		// Careful!  If one of the nodes is an expanded (but not hidden) metanode,
-		// we need to collapse it first
-		for (CyNode node: (List<CyNode>)new ArrayList(pGroup.getNodes())) {
-			MetaNode mn = MetaNode.getMetaNode(node);
-			if (mn == null) continue;
-			// Is this an expanded metanode?
-			if (mn.getCyGroup().getState() == EXPANDED) {
-				// Yes, collapse it
-				mn.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
+			// MetaNode does not exist yet, create one and collapse it
+
+			// from metaNodePlugin2.MetaNodePlugin2		
+			// Careful!  If one of the nodes is an expanded (but not hidden) metanode,
+			// we need to collapse it first
+			for (CyNode node: (List<CyNode>)new ArrayList(pGroup.getNodes())) {
+				MetaNode mn = MetaNode.getMetaNode(node);
+				if (mn == null) continue;
+				// Is this an expanded metanode?
+				if (mn.getCyGroup().getState() == EXPANDED) {
+					// Yes, collapse it
+					mn.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
+				}
 			}
+
+			MetaNode newNode = new MetaNode(pGroup);
+			//groupCreated(pGgroup);
+			newNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
+
+			registerWithGroupPanel();			
 		}
-
-		MetaNode newNode = new MetaNode(pGroup);
-		//groupCreated(pGgroup);
-		newNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
-
-		registerWithGroupPanel();
 		
+		// update the buttonText
+		btnCollapseAsMetaNode.setText(determineButtonText(pGroup));
 	}
 
 	
@@ -357,6 +367,15 @@ public class GroupPanel extends JPanel implements ListSelectionListener,
 			else {
 				btnCollapseAsMetaNode.setEnabled(true);
 				btnCreateNetworkView.setEnabled(true);
+								
+				
+				CyGroup group = (CyGroup) resultPanel.getTable().getModel()
+						.getValueAt(selected, 1);
+				
+				// Set button text based on the metaNode state
+				// change the text of button, either as  "Expand metaNode" or "Collapse as metaNode"
+				String buttonText = determineButtonText(group);
+				btnCollapseAsMetaNode.setText(buttonText);
 			}
 			
 			CyGroup group = (CyGroup) resultPanel.getTable().getModel()
@@ -364,5 +383,25 @@ public class GroupPanel extends JPanel implements ListSelectionListener,
 			network.setSelectedNodeState(group.getNodes(), true);
 			Cytoscape.getCurrentNetworkView().updateView();
 		}
+	}
+	
+
+	private String determineButtonText(CyGroup pGroup){
+		
+		String retText = this.COLLAPSE_AS_MTEANODE;
+		MetaNode theMetaNode = MetaNode.getMetaNode(pGroup);
+		
+		if (theMetaNode != null){
+			// If the metaNode already existed, change the text
+			//System.out.println("metaNode already existed");
+			if (theMetaNode.isCollapsed(Cytoscape.getCurrentNetworkView())){
+				retText = this.EXPAND_METANODE;				
+			}
+			else {
+				retText = this.COLLAPSE_AS_MTEANODE;
+			}
+		}
+
+		return retText;
 	}
 }
