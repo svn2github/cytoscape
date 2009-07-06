@@ -14,7 +14,7 @@ import giny.model.Node;
 
 import org.bridgedb.Xref;
 import org.bridgedb.DataSource;
-import org.bridgedb.IDMapper;
+import org.bridgedb.IDMapperStack;
 import org.bridgedb.IDMapperException;
 
 import java.util.List;
@@ -71,12 +71,8 @@ public class AttributeBasedIDMappingServiceImpl
 
         // id mapping
         updateTaskMonitor("Mapping IDs...");
-        Set<IDMapper> idMappers = IDMappingClientManager.getSelectedIDMappers();
-        Map<Xref, Set<Xref>>[] idMapping = new Map[idMappers.size()];
-        int imap=0;
-        for (IDMapper idMapper : idMappers) {
-            idMapping[imap] = idMapper.mapID(srcXrefs, tgtTypes);
-        }
+        IDMapperStack idMapperStack = IDMappingClientManager.selectedIDMapperStack();
+        Map<Xref, Set<Xref>> idMapping = idMapperStack.mapID(srcXrefs, tgtTypes);
 
         // define target attribute
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -169,7 +165,7 @@ public class AttributeBasedIDMappingServiceImpl
     }
 
     private Map<Node,Set<Xref>> getNodeTgtXrefs (Map<Node,Set<Xref>> mapNodeSrcXrefs,
-                                                 Map<Xref, Set<Xref>>[] idMappings) {
+                                                 Map<Xref, Set<Xref>> idMapping) {
         Map<Node,Set<Xref>> mapNodeTgtXrefs = new HashMap();
 
         for (Map.Entry<Node,Set<Xref>> entryNodeXrefs : mapNodeSrcXrefs.entrySet()) {
@@ -177,11 +173,9 @@ public class AttributeBasedIDMappingServiceImpl
             Set<Xref> tgtXrefs = new HashSet();
             Set<Xref> srcXrefs = entryNodeXrefs.getValue();
             for (Xref srcXref : srcXrefs) {
-                for (Map<Xref, Set<Xref>> idMapping : idMappings) {
-                    Set<Xref> xrefs = idMapping.get(srcXref);
-                    if (xrefs!=null) {
-                        tgtXrefs.addAll(xrefs);
-                    }
+                Set<Xref> xrefs = idMapping.get(srcXref);
+                if (xrefs!=null) {
+                    tgtXrefs.addAll(xrefs);
                 }
             }
 

@@ -28,7 +28,6 @@
         <pathelement location="lib/cytoscape.jar"/>
         <pathelement location="lib/cytoscape-task.jar"/>
       	<pathelement location="lib/BridgeDbCore.jar"/>
-        <pathelement location="lib/CheckTree.jar"/>
       </classpath>
     </javac>
   </target>
@@ -57,7 +56,6 @@
 
       <fileset dir= "${build.classes}" />
       <zipfileset src="lib/BridgeDbCore.jar" />
-      <zipfileset src="lib/CheckTree.jar" />
     </jar>
   </target>
   

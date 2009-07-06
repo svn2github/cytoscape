@@ -56,7 +56,8 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="sourceAttributeSelectionTable = new SourceAttributeSelectionTable();&#xa;sourceAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());&#xa;sourceScrollPane.setViewportView(sourceAttributeSelectionTable);&#xa;sourceAttributeSelectionTable.addRow();"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="Set&lt;DataSource&gt;[] supportedType = getSupportedType();"/>
+            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="sourceAttributeSelectionTable = new SourceAttributeSelectionTable();&#xa;sourceAttributeSelectionTable.setSupportedIDType(supportedType[0]);&#xa;sourceScrollPane.setViewportView(sourceAttributeSelectionTable);&#xa;sourceAttributeSelectionTable.addRow();"/>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
@@ -119,7 +120,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="targetAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();&#xa;targetAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());&#xa;targetAttributeSelectionTable.addRow();&#xa;destinationScrollPane.setViewportView(targetAttributeSelectionTable);"/>
+            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="targetAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();&#xa;targetAttributeSelectionTable.setSupportedIDType(supportedType[1]);&#xa;targetAttributeSelectionTable.addRow();&#xa;destinationScrollPane.setViewportView(targetAttributeSelectionTable);"/>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>

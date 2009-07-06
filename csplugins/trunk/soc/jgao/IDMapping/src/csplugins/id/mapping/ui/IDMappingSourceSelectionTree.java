@@ -154,7 +154,7 @@ class IDMappingSourceSelectionTree extends JTree {
         tree_Model = new DefaultTreeModel(rootNode);
         this.setModel(tree_Model);
 
-        for (IDMappingClient client : IDMappingClientManager.getAllClients()) {
+        for (IDMappingClient client : IDMappingClientManager.allClients()) {
             DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
             ClientType clientType = client.getClientType();
             if (clientType==ClientType.FILE) {

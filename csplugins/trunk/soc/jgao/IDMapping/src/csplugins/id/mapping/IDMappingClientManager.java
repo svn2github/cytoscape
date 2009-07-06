@@ -41,7 +41,8 @@ import java.util.Set;
 import java.util.HashSet;
 
 import org.bridgedb.DataSource;
-import org.bridgedb.IDMapper;
+//import org.bridgedb.IDMapper;
+import org.bridgedb.IDMapperStack;
 
 /**
  *
@@ -125,49 +126,29 @@ public class IDMappingClientManager {
         selectedClients.addAll(clients);
     }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Set<IDMappingClient> getAllClients() {
-        return new HashSet(clientNameMap.values());
-	}
-
     /**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Set<IDMappingClient> getSelectedClients() {
-		return selectedClients;
-	}
-
-    /**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Set<IDMapper> getAllIDMappers() {
-        Set<IDMapper> idMappers = new HashSet();
-        for (IDMappingClient client : clientNameMap.values()) {
-            idMappers.add(client.getIDMapper());
-        }
-        return idMappers;
-	}
-
-    /**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Set<IDMapper> getSelectedIDMappers() {
-		Set<IDMapper> idMappers = new HashSet();
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static IDMapperStack selectedIDMapperStack() {
+        IDMapperStack idMapperStack = new IDMapperStack();
         for (IDMappingClient client : selectedClients) {
-            idMappers.add(client.getIDMapper());
+            idMapperStack.addIDMapper(client.getIDMapper());
         }
-        return idMappers;
-	}
+        
+        return idMapperStack;
+    }
+
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static Set<IDMappingClient> allClients() {
+        return new HashSet(clientNameMap.values());
+    }
+
 
     /**
      *
@@ -249,29 +230,29 @@ public class IDMappingClientManager {
 		}
 	}
 
-    /**
-     *
-     * @return supported source ID types
-     */
-    public static Set<DataSource>  getSupportedSrcDataSources() {
-        Set<DataSource> ret = new HashSet();
-        for (IDMappingClient client : IDMappingClientManager.getAllClients()) {
-            IDMapper idMapper = client.getIDMapper();
-            ret.addAll(idMapper.getCapabilities().getSupportedSrcDataSources());
-        }
-        return ret;
-    }
-
-    /**
-     *
-     * @return supported target ID types
-     */
-    public static Set<DataSource> getSupportedTgtDataSources() {
-        Set<DataSource> ret = new HashSet();
-        for (IDMappingClient client : IDMappingClientManager.getAllClients()) {
-            IDMapper idMapper = client.getIDMapper();
-            ret.addAll(idMapper.getCapabilities().getSupportedTgtDataSources());
-        }
-        return ret;
-    }
+//    /**
+//     *
+//     * @return supported source ID types
+//     */
+//    public static Set<DataSource>  getSupportedSrcDataSources() {
+//        Set<DataSource> ret = new HashSet();
+//        for (IDMappingClient client : IDMappingClientManager.getAllClients()) {
+//            IDMapper idMapper = client.getIDMapper();
+//            ret.addAll(idMapper.getCapabilities().getSupportedSrcDataSources());
+//        }
+//        return ret;
+//    }
+//
+//    /**
+//     *
+//     * @return supported target ID types
+//     */
+//    public static Set<DataSource> getSupportedTgtDataSources() {
+//        Set<DataSource> ret = new HashSet();
+//        for (IDMappingClient client : IDMappingClientManager.getAllClients()) {
+//            IDMapper idMapper = client.getIDMapper();
+//            ret.addAll(idMapper.getCapabilities().getSupportedTgtDataSources());
+//        }
+//        return ret;
+//    }
 }

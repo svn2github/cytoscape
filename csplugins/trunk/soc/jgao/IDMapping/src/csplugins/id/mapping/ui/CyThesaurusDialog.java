@@ -44,6 +44,7 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
+import org.bridgedb.IDMapperStack;
 import org.bridgedb.DataSource;
 
 import javax.swing.AbstractListModel;
@@ -90,6 +91,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         java.awt.GridBagConstraints gridBagConstraints;
 
         javax.swing.JPanel sourcePanel = new javax.swing.JPanel();
+        Set<DataSource>[] supportedType = getSupportedType();
         javax.swing.JScrollPane sourceScrollPane = new javax.swing.JScrollPane();
         javax.swing.JPanel addRemoveSourcePanel = new javax.swing.JPanel();
         javax.swing.JPanel destinationPanel = new javax.swing.JPanel();
@@ -123,7 +125,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         sourceScrollPane.setMinimumSize(new java.awt.Dimension(300, 100));
 
         sourceAttributeSelectionTable = new SourceAttributeSelectionTable();
-        sourceAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
+        sourceAttributeSelectionTable.setSupportedIDType(supportedType[0]);
         sourceScrollPane.setViewportView(sourceAttributeSelectionTable);
         sourceAttributeSelectionTable.addRow();
 
@@ -162,7 +164,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         destinationScrollPane.setPreferredSize(new java.awt.Dimension(300, 100));
 
         targetAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();
-        targetAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
+        targetAttributeSelectionTable.setSupportedIDType(supportedType[1]);
         targetAttributeSelectionTable.addRow();
         destinationScrollPane.setViewportView(targetAttributeSelectionTable);
 
@@ -420,10 +422,11 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         srcConfDialog.setLocationRelativeTo(this);
         srcConfDialog.setVisible(true);
         if (!srcConfDialog.isCancelled()) {
-            sourceAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedSrcDataSources());
+            Set<DataSource>[] types = this.getSupportedType();
+            sourceAttributeSelectionTable.setSupportedIDType(types[0]);
             sourceAttributeSelectionTable.repaint();
 
-            targetAttributeSelectionTable.setSupportedIDType(IDMappingClientManager.getSupportedTgtDataSources());
+            targetAttributeSelectionTable.setSupportedIDType(types[1]);
             targetAttributeSelectionTable.repaint();
         }
     }//GEN-LAST:event_srcConfBtnActionPerformed
@@ -471,12 +474,13 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             return false;
         }
 
-        if (IDMappingClientManager.getSupportedSrcDataSources().isEmpty()) {
+        Set<DataSource>[] types = this.getSupportedType();
+        if (types[0].isEmpty()) {
             JOptionPane.showMessageDialog(this, "No source ID type available. Please configure the sources of ID mapping first.");
             return false;
         }
 
-        if (IDMappingClientManager.getSupportedTgtDataSources().isEmpty()) {
+        if (types[1].isEmpty()) {
             JOptionPane.showMessageDialog(this, "No target ID type available. Please configure the sources of ID mapping first.");
             return false;
         }
@@ -531,6 +535,14 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         OKBtn.setToolTipText(null);
 
         OKBtn.repaint();
+    }
+
+    private Set<DataSource>[] getSupportedType() {
+        Set<DataSource>[] ret = new Set[2];
+        IDMapperStack stack = IDMappingClientManager.selectedIDMapperStack();
+        ret[0] = stack.getCapabilities().getSupportedSrcDataSources();
+        ret[1] = stack.getCapabilities().getSupportedTgtDataSources();
+        return ret;
     }
 
     private void defineTgtAttributes(Map<String,Byte> attrNameType) {
