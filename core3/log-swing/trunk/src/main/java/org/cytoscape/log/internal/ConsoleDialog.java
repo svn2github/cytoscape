@@ -9,7 +9,11 @@ import javax.swing.text.*;
 import javax.swing.text.html.*;
 
 import org.apache.log4j.Level;
+import cytoscape.view.CytoStatusBar;
 
+/**
+ * @author Pasteur
+ */
 class ConsoleDialog extends JDialog
 {
 	final static String COLOR_PARITY_TRUE  = "ffffff";
@@ -31,17 +35,28 @@ class ConsoleDialog extends JDialog
 		LEVEL_TO_ICON_MAP.put(Level.TRACE.toInt(),	"console-info.png");
 		LEVEL_TO_ICON_MAP.put(Level.WARN.toInt(),	"console-warning.png");
 	}
+
+        static String getIcon(int level)
+        {
+		String path = LEVEL_TO_ICON_MAP.get(level);
+		if (path == null)
+			path = "console-info.png";
+		return path;
+        }
 	final static String BASE_HTML_PATH = "/consoledialogbase.html";
 
+	CytoStatusBar statusBar;
 	JEditorPane editorPane;
 	HTMLDocument document;
 	Element root;
 	boolean colorParity = true;
 	JScrollPane scrollPane;
 
-	public ConsoleDialog()
+	public ConsoleDialog(CytoStatusBar statusBar)
 	{
 		super((java.awt.Frame) null, "Console", false);
+		this.statusBar = statusBar;
+
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		setPreferredSize(new Dimension(650, 350));
 		setLayout(new BorderLayout());
@@ -64,15 +79,14 @@ class ConsoleDialog extends JDialog
 		public void actionPerformed(ActionEvent e)
 		{
 			clearConsole();
+			statusBar.setMessage(null, null);
 		}
 	}
 
 
 	void append(Level level, String message, String timeStamp)
 	{
-		String icon = LEVEL_TO_ICON_MAP.get(level.toInt());
-		if (icon == null)
-			icon = "console-info.png";
+		String icon = getIcon(level.toInt());
 		String bgColor = (colorParity ? COLOR_PARITY_TRUE : COLOR_PARITY_FALSE);
 		try
 		{

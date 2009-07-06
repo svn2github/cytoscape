@@ -18,4 +18,6 @@
 			<entry key="preferredMenu" value="Help"/>
 		</osgi:service-properties>
 	</osgi:service>
+
+	<osgi:reference id="cytoStatusBarRef" interface="cytoscape.view.CytoStatusBar"/>
 </beans>

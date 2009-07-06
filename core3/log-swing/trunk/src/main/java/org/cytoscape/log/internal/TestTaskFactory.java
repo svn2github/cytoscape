@@ -9,20 +9,28 @@ import org.apache.log4j.Level;
 
 public class TestTaskFactory implements TaskFactory
 {
+	Task task = new TestTask();
 	public Task getTask()
 	{
-		return new TestTask();
+		return task;
 	}
 }
 
 class TestTask implements Task
 {
+	int i = 0;
 	public void run(TaskMonitor taskMonitor)
 	{
 		Logger logger = Logger.getLogger("org.cytoscape.userlog");
-		logger.error("ghalib");
-		logger.warn("faiz");
-		logger.info("iqbal");
+		if (i == 0)
+			logger.error("Happiness is a warm gun");
+		else if (i == 1)
+			logger.warn("When I hold you in my arms");
+		else if (i == 2)
+			logger.info("And I put my finger on your trigger");
+		else if (i == 3)
+			logger.info("I know nobody can do me no harm, because...");
+		i = (i + 1) % 4;
 	}
 
 	public void cancel()

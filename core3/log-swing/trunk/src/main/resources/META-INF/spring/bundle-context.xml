@@ -17,6 +17,7 @@
 	<context:annotation-config />
 
 	<bean id="consoleTaskFactory" class="org.cytoscape.log.internal.ConsoleTaskFactory">
+		<constructor-arg ref="cytoStatusBarRef" />
 	</bean>
 
 	<bean id="testTaskFactory" class="org.cytoscape.log.internal.TestTaskFactory">
