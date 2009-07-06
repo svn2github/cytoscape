@@ -1,13 +1,16 @@
 package org.cytoscape.work;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 
 
 
 
-//@Retention(RetentionPolicy.RUNTIME)
-//@Target({ElementType.FIELD,ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)// makes this availabe for reflection
+@Target({ElementType.FIELD,ElementType.TYPE}) // says we're just looking at fields and  methods 
 
 /**
  * This interface describes the different parameters that can be used in the <code>@Tunable(...)</code> to display the GUI, add some dependencies...
@@ -28,7 +31,7 @@ public @interface Tunable{
 	/**
 	 * Description of the Tunable that will be displayed in the panel to identify it
 	 */
-	String description();
+	String description() default "";
 	
 	
 	
