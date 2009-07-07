@@ -55,7 +55,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.NodeShape;
@@ -119,11 +118,11 @@ public class ValueSelectDialog extends JDialog {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Select New Value");
-		mainPanel.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
-		                                                   new Color(Color.gray.getRed(),
-		                                                             Color.gray.getGreen(),
-		                                                             Color.gray.getBlue(), 100),
-		                                                   new Point2D.Double(.8d, 0), Color.WHITE));
+//		mainPanel.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
+//		                                                   new Color(Color.gray.getRed(),
+//		                                                             Color.gray.getGreen(),
+//		                                                             Color.gray.getBlue(), 100),
+//		                                                   new Point2D.Double(.8d, 0), Color.WHITE));
 		mainPanel.setTitle(type.getName());
 		mainPanel.setTitleFont(new java.awt.Font("SansSerif", 1, 14));
 

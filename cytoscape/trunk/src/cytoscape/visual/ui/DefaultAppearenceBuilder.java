@@ -50,7 +50,6 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -232,12 +231,12 @@ public class DefaultAppearenceBuilder extends JDialog {
 		                                              .add(0, 237, Short.MAX_VALUE));
 
 		jXTitledPanel1.setTitle("Default Visual Properties");
-		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
-		                                                        new Color(Color.gray.getRed(),
-		                                                                  Color.gray.getGreen(),
-		                                                                  Color.gray.getBlue(), 100),
-		                                                        new Point2D.Double(.8d, 0),
-		                                                        Color.WHITE));
+//		jXTitledPanel1.setTitlePainter(new BasicGradientPainter(new Point2D.Double(.2d, 0),
+//		                                                        new Color(Color.gray.getRed(),
+//		                                                                  Color.gray.getGreen(),
+//		                                                                  Color.gray.getBlue(), 100),
+//		                                                        new Point2D.Double(.8d, 0),
+//		                                                        Color.WHITE));
 		jXTitledPanel1.setTitleFont(new java.awt.Font("SansSerif", 1, 12));
 		jXTitledPanel1.setMinimumSize(new java.awt.Dimension(300, 27));
 		jXTitledPanel1.setPreferredSize(new java.awt.Dimension(300, 27));
