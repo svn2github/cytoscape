@@ -73,7 +73,7 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		for ( CLHandler h : lh )
 			h.handleLine( line );
 				
-		return false;
+		return true;
 	}
 
 	private static void printHelp(Options options) {
