@@ -21,6 +21,13 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser, Dockab
 	public NetworkBrowserImpl(AbstractTreeTableModel model) {
 		this.model = model;
 		initComponents();
+		
+		networkTreeTable.setTreeTableModel(model);
+		networkTreeTable.setRootVisible(true);
+//		networkTreeTable.getColumn("Network").setPreferredWidth(100);
+//		networkTreeTable.getColumn("Nodes").setPreferredWidth(45);
+//		networkTreeTable.getColumn("Edges").setPreferredWidth(45);
+		
 	}
 
 	/**
