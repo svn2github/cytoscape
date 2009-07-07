@@ -63,7 +63,6 @@ import cytoscape.view.CytoPanel;
 import cytoscape.view.CytoPanelState;
 import cytoscape.view.CySwingApplication;
 import cytoscape.view.CyMenus;
-import cytoscape.view.CytoStatusBar;
 
 
 
@@ -110,7 +109,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	protected CytoPanelImp cytoPanelSouthWest; 
 
 	// Status Bar
-	protected CytoStatusBar statusBar;
+	protected CytoStatusBarImpl statusBar;
 	protected JPanel main_panel;
 
 	private CytoscapeVersion version;
@@ -118,7 +117,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel , CytoscapeVersion version, CytoStatusBar statusBar) {
+	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel , CytoscapeVersion version, CytoStatusBarImpl statusBar) {
 		super("Cytoscape Desktop (New Session)");
 
 		this.cyMenus = cyMenus;

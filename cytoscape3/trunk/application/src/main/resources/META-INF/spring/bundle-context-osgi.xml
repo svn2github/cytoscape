@@ -52,6 +52,7 @@
 	<osgi:reference id="creditScreenServiceRef" interface="org.cytoscape.splash.CreditScreen">
 	</osgi:reference>
 
+
 	<!--
 		<osgi:reference id="fileUtil"
 		interface="org.cytoscape.work.util.FileUtil">
@@ -76,9 +77,6 @@
 	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
 		interface="cytoscape.view.CyMenus" />
 
-	<osgi:service id="cytoStatusBarService" ref="cytoStatusBarImpl"
-		interface="cytoscape.view.CytoStatusBar" />
-
 	<osgi:service id="proxyHandlerService" ref="proxyHandler">
 		<osgi:interfaces>
 			<value>cytoscape.util.ProxyHandler</value>
@@ -86,6 +84,9 @@
 			</value>
 		</osgi:interfaces>
 	</osgi:service>
+
+	<osgi:service id="cytoStatusBarService" ref="cytoStatusBarImpl"
+		interface="org.cytoscape.log.statusbar.CytoStatusBar" />
 
 	<osgi:service id="openBrowserService" ref="openBrowser"
 		interface="cytoscape.util.OpenBrowser" />
