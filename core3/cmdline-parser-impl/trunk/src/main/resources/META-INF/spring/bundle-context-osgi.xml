@@ -16,6 +16,9 @@
 
     <osgi:reference id="tunableInterceptorServiceRef"
         interface="org.cytoscape.work.TunableInterceptor" />
+        
+<!--    <osgi:reference id="taskFactoryServiceRef" interface="org.cytoscape.work.TaskFactory" depends-on="taskFactoryCLSet"/>-->
+    
 
     <!-- Set -->
     <osgi:set id="taskFactoryCLSet" interface="org.cytoscape.work.TaskFactory" 

@@ -27,34 +27,43 @@ class TFWrapper {
 	}
 	
    	Option getOption() {
-           return new Option(name.substring(0,3),false,name);
+           return new Option(name,false,name);
    	}
    	
    	String getName() { 
-		return "-"+name.substring(0, 3); 
+		return "-"+name;//.substring(0, 3); 
 	}
    	
-   	void checkFactory(CommandLine line,Map<String,List<String>> map, List<String> list) {
-       		
-   		System.out.println("\n \n ########### factory loaded = "+name+" ###########");
-       		String tFactoryName = getName();
-       		List<String> lst = new ArrayList<String>();	
-       		
-       		for(int i=0;i<map.get(tFactoryName).size();i++) {
-       			if(map.get(tFactoryName).get(i).contains(" ")) {
-           			int val = map.get(tFactoryName).get(i).indexOf(" ");
-           			lst.add(map.get(tFactoryName).get(i).substring(0, val));
-           			lst.add(map.get(tFactoryName).get(i).substring(val+1));
-       			}
-       			else{
-       				lst.add(map.get(tFactoryName).get(i).toString());
-       			}
-       		}
-       		executeTask(list.toArray(new String[lst.size()]));
+   	void checkFactory(CommandLine line,Map<String,List<String>> map, List<String> list) {	
+//   		System.out.println("\n \n ########### factory loaded = "+name+" ###########");
+//       		String tFactoryName = getName();
+//       		List<String> lst = new ArrayList<String>();	
+//       		
+//       		for(int i=0;i<map.get(tFactoryName).size();i++) {
+//       			if(map.get(tFactoryName).get(i).contains(" ")) {
+//           			int val = map.get(tFactoryName).get(i).indexOf(" ");
+//           			lst.add(map.get(tFactoryName).get(i).substring(0, val));
+//           			lst.add(map.get(tFactoryName).get(i).substring(val+1));
+//       			}
+//       			else{
+//       				lst.add(map.get(tFactoryName).get(i).toString());
+//       			}
+//       		}
+//
+//       		//creation of arguments
+//       		String[] args = new String[lst.size()];
+//       		for(int i=0;i<lst.size();i++)args[i]=lst.get(i);
+//       		
+//       		
+//       		System.out.println("#####arguments used are : ");
+//       		for(int i=0;i<args.length;i++)System.out.println(args[i]+" ");
+//       		System.out.println("\n\n");
+//       		
+//       		executeTask(list.toArray(new String[lst.size()]));
    	}
     	
-    	
-	private void executeTask(String[] argus) {
+    //set Public	
+	public void executeTask() {
    		Task task = factory.getTask();
    		ti.loadTunables(task);
    		if ( !ti.createUI(task) )
