@@ -37,5 +37,9 @@
 package org.cytoscape.cmdline.launcher;
 
 public interface CommandLineProvider {
-	String[] getCommandLineArgs();
+	String[] getCommandLineCompleteArgs();
+
+	//added
+	void setSpecificArgs(String[] arg);
+	String[] getSpecificArgs();
 }

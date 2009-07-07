@@ -47,6 +47,10 @@ public class CommandLineProviderImpl implements CommandLineProvider, BundleActiv
 	private String[] args;
 	private ServiceRegistration reg;
 
+	
+	//added field specificArgs
+	private String[] specificArgs;
+	
 	public CommandLineProviderImpl(String[] args) {
 		if ( args == null )
 			this.args = new String[0];
@@ -62,12 +66,28 @@ public class CommandLineProviderImpl implements CommandLineProvider, BundleActiv
 		if ( reg != null )
 			reg.unregister();
 	}
-
-	public String[] getCommandLineArgs() {
+	
+	
+	//name has been modified
+	public String[] getCommandLineCompleteArgs() {
 		String[] ret = new String[args.length];
 		System.arraycopy(args,0,ret,0,args.length);
 		return ret;
 	}
+	
+	
+	//added
+	public void setSpecificArgs(String[] arg){
+		this.specificArgs = arg;
+	}
+	public String[] getSpecificArgs(){
+		String[] ret = new String[specificArgs.length];
+		System.arraycopy(specificArgs,0,ret,0,specificArgs.length);
+		return ret;
+	}
+	
+	
+	
 }
 
 
