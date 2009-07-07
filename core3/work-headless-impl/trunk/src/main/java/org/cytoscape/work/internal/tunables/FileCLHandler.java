@@ -32,6 +32,8 @@ public class FileCLHandler extends AbstractCLHandler{
 		int ind = n.lastIndexOf(".")+1;		
 		String fc = n.substring(ind);
 
+		for(String st : line.getArgs())System.out.println(st);
+		
 		try {
 		if ( line.hasOption( fc ) ) {
 			if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
@@ -59,7 +61,10 @@ public class FileCLHandler extends AbstractCLHandler{
 		File currentValue = null;
 		
 		if(f!=null){
-			return new Option(fc, true,"-- "+t.description() +" --\n  current path file : "+file.getAbsolutePath());		
+			if(file!=null)
+				return new Option(fc, true,"-- " + t.description() + " --\n  current path file : " + file.getAbsolutePath());
+			else
+				return new Option(fc, true,"-- " + t.description() + " --\n  current path file : " + "");				
 		}
 		else if(gmethod!=null){
 			try{

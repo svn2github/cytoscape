@@ -69,12 +69,19 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 	public CLHandler getHandler(Field f, Object o, Tunable t) {
 		Class<?> type = f.getType();
 
-		if ( type == int.class || type == Integer.class )
-			return new IntCLHandler(f,o,t);
-		else if ( type == String.class )
+		if ( type == String.class )
 			return new StringCLHandler(f,o,t);
 		else if ( type == boolean.class || type == Boolean.class )
 			return new BooleanCLHandler(f,o,t);
+		
+		else if ( type == int.class || type == Integer.class )
+				return new IntCLHandler(f,o,t);
+		else if ( type == float.class || type == Float.class )
+			return new IntCLHandler(f,o,t);
+		else if ( type == long.class || type == Long.class )
+			return new IntCLHandler(f,o,t);
+		else if ( type == double.class || type == Double.class )
+			return new IntCLHandler(f,o,t);
 		
 		else if ( type == BoundedDouble.class )
 			return new BoundedCLHandler<BoundedDouble>(f,o,t);
@@ -98,7 +105,10 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return new ListSingleSelectionCLHandler<Object>(f,o,t);
 		else if ( type == ListMultipleSelection.class)
 			return new ListMultipleSelectionCLHandler<Object>(f,o,t);
-		else 
+		
+		else if ( type == File.class)
+			return new FileCLHandler(f,o,t);
+		else
 			return null;
 	}
 

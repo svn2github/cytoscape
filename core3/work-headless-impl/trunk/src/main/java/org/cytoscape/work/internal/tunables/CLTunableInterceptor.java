@@ -18,16 +18,18 @@ import org.cytoscape.cmdline.launcher.CommandLineProvider;
 public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 
 	private String[] args;
+	CommandLineProvider clp;
 	
 	public CLTunableInterceptor(CommandLineProvider clp ) {
 		super(new CLHandlerFactory());
-		this.args = clp.getCommandLineArgs();
+		this.clp = clp;
+		this.args = clp.getCommandLineCompleteArgs();
 	}
 
 	public boolean createUI(Object ... objs) {
 
 		List<CLHandler> lh = new ArrayList<CLHandler>();
-
+		
 		for (Object o : objs ) { 
 
 			if ( !handlerMap.containsKey(o) )
@@ -36,12 +38,16 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 			lh.addAll(handlerMap.get(o).values());
 		}
 
+		
+		//added
+		this.args = clp.getSpecificArgs();		
+		
 		Options options = new Options();
 
 		for ( CLHandler h : lh )
 			options.addOption( h.getOption() );
 //		options.addOption("h", "help", false, "Print this message.");
-		options.addOption("H", "fullHelp", false, "Display all the available Commands");
+		options.addOption("H", "fullHelp", false, "Display all the available Commands for this Task");
 
 		
         //Try to parse the command line
