@@ -63,7 +63,6 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 	@Tunable(description="The URL to load")
 	public URL url;
 	
-
 	StreamUtil streamUtil;
 
 	static String BAD_INTERNET_SETTINGS_MSG = "<html><p>Cytoscape has failed to connect to the URL. Please ensure that:</p><p><ol><li>the URL is correct,</li><li>your computer is able to connect to the Internet, and</li><li>your proxy settings are correct.</li></ol></p><p>The reason for the failure is: %s</html>";
