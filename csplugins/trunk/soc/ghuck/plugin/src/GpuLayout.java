@@ -29,6 +29,7 @@ import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+import cytoscape.CyNode;
 
 import giny.model.GraphPerspective;
 import giny.model.Node;
@@ -39,9 +40,7 @@ import javax.swing.JPanel;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.util.Iterator;
-
-
-
+import java.lang.reflect.Field;
 
 
 
@@ -51,14 +50,13 @@ import java.util.Iterator;
  * This plugin provides a GPU assited graph layout utility by calling CUDA C++ code
  */
 public class GpuLayout extends CytoscapePlugin {
-	
+
+    // Default values for algorithm parameters	
     private int coarseGraphSize         = 50;
     private int interpolationIterations = 50;
     private int levelConvergence        = 2;
     private int edgeLen                 = 5;
     private int initialNoIterations     = 300;
-
-    private int groupcount = 2;
 
     private LayoutProperties layoutProperties;
 
@@ -66,17 +64,7 @@ public class GpuLayout extends CytoscapePlugin {
     /**
      * 
      */
-    public GpuLayout() {
-	//  Show message on screen    
-	String message = "GPU Graph Layout Loaded!\n" 
-	    +  coarseGraphSize + "\n" 
-	    + interpolationIterations + "\n"  
-	    + levelConvergence + "\n"         
-	    + edgeLen + "\n"                  
-	    + initialNoIterations; 
-	// Use the CytoscapeDesktop as parent for a Swing dialog
-	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
-	
+    public GpuLayout() {	
 	// Add Layout to menu
 	CyLayouts.addLayout(new ForceDirected(), "GPU Assisted Layout");
     }
@@ -131,14 +119,14 @@ public class GpuLayout extends CytoscapePlugin {
 	}
 
 	/**
-	 *  
+	 * Overload updateSettings for using it without arguments
 	 */
 	public void updateSettings() {
 	    updateSettings(false);
 	}
 	
 	/**
-	 * 
+	 * Get new values from tunables and update parameters
 	 */
 	public void updateSettings(boolean force) {
 	    layoutProperties.updateValues();
@@ -169,15 +157,15 @@ public class GpuLayout extends CytoscapePlugin {
 		initialNoIterations = ((Integer) t5.getValue()).intValue();
 	    
 	    //  Show message on screen    
-	    String message = "Preferences updated\n" 
-		+  coarseGraphSize + "\n" 
-		+ interpolationIterations + "\n"  
-		+ levelConvergence + "\n"         
-		+ edgeLen + "\n"                  
-		+ initialNoIterations; 
+	    //  String message = "Preferences updated\n" 
+	    //	+  coarseGraphSize + "\n" 
+	    //  + interpolationIterations + "\n"  
+	    //  + levelConvergence + "\n"         
+	    //  + edgeLen + "\n"                  
+	    //  + initialNoIterations; 
 
 	    // Use the CytoscapeDesktop as parent for a Swing dialog
-	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+	    // JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
 	    
 	}
 	
@@ -193,50 +181,209 @@ public class GpuLayout extends CytoscapePlugin {
 	
 	
 	/**
-	 *  
+	 * Revert previous settings
 	 */
 	public void revertSettings() {
 	    layoutProperties.revertProperties();
 	}
 	
+
+	/**
+	 * Get layout properties
+	 */
 	public LayoutProperties getSettings() {
 	    return layoutProperties;
 	}
 	
 
 	/**
-	 *  
+	 * This function does the "heavy work", calling the native code
 	 */
 	public void construct() {
 
+	    // Show message on the task monitor
 	    taskMonitor.setStatus("Initializing");
-	    initialize(); // Calls initialize_local	      
-	    
-	    //  Show message on screen    
-	    String message = "Calculating Layout..."; 
 
-	    // Use the CytoscapeDesktop as parent for a Swing dialog
+	    // The completed percentage is indeterminable
+	    taskMonitor.setPercentCompleted(-1);
+
+	    // Calls initialize_local	      
+	    initialize(); 
+	    
+
+	    
+	    // Pack the arguments needed for calling native code
+	    
+	    // Get the number of edges and nodes
+	    int numNodes = network.getNodeCount();
+	    int numEdges = network.getEdgeCount();
+
+	    // Allocate memory for storing graph edges
+	    int[] AdjMatIndex = new int[numNodes + 1];
+	    int[] AdjMatVals  = new int[2 * numEdges];
+
+
+
+	    // Initialize mapping beetwen aliases and node's ID
+	    int[] node_map = new int[numNodes];
+
+	    // Create an iterator for processing the nodes
+	    Iterator<Node> it = network.nodesIterator();
+
+	    // Auxiliary variable to keep track of nodes aliases
+	    int alias = 0;
+
+	    // Iterate over the nodes
+	    while (it.hasNext()) {
+
+		// Get next node
+		Node node = (Node) it.next();
+
+		// Add alias and node ID to node_map
+		node_map[alias] = network.getIndex(node);
+
+		// Increment alias
+		alias++;
+	    }
+
+
+
+	    // Auxiliary variable used to keep track of the position in AdjMatVals
+	    int position = 0;
+	    	    
+	    // Iterate over all nodes
+	    for (alias = 0; alias < numNodes; alias++){
+
+		// Set AdjMatIndex[alias] to point to start of neighbors list of this node
+		AdjMatIndex[alias] = position;
+
+		// Get current node's index
+		int current_node_index = node_Alias2Index(node_map, alias);
+
+		// Get neighbors of node
+		int[] neighbors = network.neighborsArray(current_node_index);
+
+		// Process neighbors of node, adding them in AdjMatVals
+		for (int i = 0; i < neighbors.length; i++){
+		    int current_neighbor_index = neighbors[i];
+
+		    // Take into account both directed (in both directions) and undirected edges
+		    int multiplicity = network.getEdgeCount(current_node_index, current_neighbor_index, true) 
+			             + network.getEdgeCount(current_neighbor_index, current_node_index, false);
+
+		    // Add current_neighbor to AdjMatVals "multiplicity" times
+		    for (int j = 0; j < multiplicity; j++){
+
+			    // Add alias of current_neighbor to AjdMatVals
+			    AdjMatVals[position] = node_Index2Alias(node_map, current_neighbor_index);
+
+			    // Increment position
+			    position++;
+		    }
+		    
+		}
+		  			     			     			    			     
+	    }
+
+	    // Mark end of AdjMatIndex, so that you can now where ends AdjMatVals  
+	    AdjMatIndex[alias] = position;
+		
+
+	    //  Show message on screen    
+	    String message = "AdjMatIndex\n"; 
+	    for (int i = 0; i < AdjMatIndex.length; i++)
+		message = message + " " +AdjMatIndex[i];
+	    message = message + "\nAdhMatVals\n";
+	    for (int i = 0; i < AdjMatVals.length; i++)
+		message = message + " " +AdjMatVals[i];	    
 	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
 	    
-	    Iterator<Node> it = network.nodesIterator();
+
+	
+	    // Load static library with native code
 	    
-	    while (it.hasNext()) {
-		if (canceled)
-		    return;
+	    /*
+	    try {
+		System.loadLibrary("Prompt");
+	    }
+	    catch (UnsatisfiedLinkError error){
+		String message = "Static Library with Native Code not found\n Cannot Produce Layout\n"; 
+		// Use the CytoscapeDesktop as parent for a Swing dialog
+		JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+		return;
+	    }
+	    */
+
+	    // Reset the "sys_paths" field of the ClassLoader to null.
+	    Class clazz = ClassLoader.class;
+	    Field field;
+	    try {
+		field = clazz.getDeclaredField("sys_paths");
+		boolean accessible = field.isAccessible();
+		if (!accessible)
+		    field.setAccessible(true);
+		Object original = field.get(clazz);
+		// Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed value.
+		field.set(clazz, null);
+		try {
+		    // Change the value and load the library.
+		    System.setProperty("java.library.path", "/home/gerardo/Cytoscape_v2.6.2/plugins");
+		    System.loadLibrary("Prompt");
+		}
+		catch (UnsatisfiedLinkError error){
+		    message = "Static Library with Native Code not found\n Cannot Produce Layout\n"; 
+		    // Use the CytoscapeDesktop as parent for a Swing dialog
+		    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+		}
 		
-		double x = group_center_x[group_id] + (Math.random()-0.5)*group_width;
-				
-		Node node = (Node) it.next();
-		
-		//System.out.println(group_id);
-		
-		networkView.getNodeView(node).setXPosition(x);
-			}
+		finally {
+		    //Revert back the changes.
+		    field.set(clazz, original);
+		    field.setAccessible(accessible);
+		}
+	    }
+	    catch (Exception E){}
+
+
+
+
+	    // Call Native Code
+
+
+	    // Update node positions 
+	    //for (alias = 0; alias < numNodes; alias++){
+		//Get X and Y coordinates
+
+		// Update positions
+		//networkView.getNodeView(node).setXPosition(x);
+		//networkView.getNodeView(node).setYPosition(y);
+	    //}
 	}
 	
-	private double maxwidth = 5000.0;
+	private double H_SIZE = 1000.0;
+	private double V_SIZE = 1000.0;
 	
     }
+
+
+    /**
+     * Get the index of a node in node_map, given the alias
+     */
+    public int node_Alias2Index(int[] map, int alias){
+	    return (map[alias]);
+    }
+
+
+    /**
+     * Get the alias (ordinal value) of a node in a node_map
+     */
+    public int node_Index2Alias(int[] map, int index){
+	for (int i = 0; i < map.length; i++)
+	    if (map[i] == index)
+		return i;
+	return -1;
+    }
+
 }
 
 
