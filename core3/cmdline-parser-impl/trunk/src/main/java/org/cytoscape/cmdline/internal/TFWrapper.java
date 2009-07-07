@@ -1,12 +1,10 @@
 package org.cytoscape.cmdline.internal;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
-
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
@@ -31,7 +29,7 @@ class TFWrapper {
    	}
    	
    	String getName() { 
-		return "-"+name;//.substring(0, 3); 
+		return "-"+name;
 	}
    	
    	void checkFactory(CommandLine line,Map<String,List<String>> map, List<String> list) {	
@@ -62,12 +60,11 @@ class TFWrapper {
 //       		executeTask(list.toArray(new String[lst.size()]));
    	}
     	
-    //set Public	
 	public void executeTask() {
    		Task task = factory.getTask();
    		ti.loadTunables(task);
    		if ( !ti.createUI(task) )
-   			return;	
+   			return;
    		taskManager.execute(task);
 	}
 }

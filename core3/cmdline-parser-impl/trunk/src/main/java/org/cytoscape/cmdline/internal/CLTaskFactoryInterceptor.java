@@ -31,10 +31,8 @@ public class CLTaskFactoryInterceptor {
     CLTaskFactoryInterceptor(CommandLineProvider colipr, TaskFactoryGrabber tfg) {
     	this.clp = colipr;
 
-    	//clp instead of colipr
         args = clp.getCommandLineCompleteArgs();
-        taskMap = tfg.getTaskMap();
-        
+        taskMap = tfg.getTaskMap();    
         
         createTaskOptions();
         findTaskArguments();
