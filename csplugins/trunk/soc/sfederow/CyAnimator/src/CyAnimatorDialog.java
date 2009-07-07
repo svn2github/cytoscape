@@ -147,7 +147,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		controlPanel.add(playButton);
 		controlPanel.add(stopButton);
 		
-		//mainPanel.add(oldPanel);
+		mainPanel.add(oldPanel);
 		mainPanel.add(controlPanel);
 		mainPanel.add(framePanel);
 		
