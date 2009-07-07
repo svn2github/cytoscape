@@ -3,7 +3,7 @@ package org.cytoscape.log.internal;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskMonitor;
-import cytoscape.view.CytoStatusBar;
+import org.cytoscape.log.statusbar.CytoStatusBar;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;

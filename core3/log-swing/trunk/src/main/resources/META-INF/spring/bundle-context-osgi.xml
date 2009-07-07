@@ -19,5 +19,5 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:reference id="cytoStatusBarRef" interface="cytoscape.view.CytoStatusBar"/>
+	<osgi:reference id="cytoStatusBarRef" interface="org.cytoscape.log.statusbar.CytoStatusBar"/>
 </beans>

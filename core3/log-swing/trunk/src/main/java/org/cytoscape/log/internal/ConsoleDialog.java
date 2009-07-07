@@ -9,7 +9,7 @@ import javax.swing.text.*;
 import javax.swing.text.html.*;
 
 import org.apache.log4j.Level;
-import cytoscape.view.CytoStatusBar;
+import org.cytoscape.log.statusbar.CytoStatusBar;
 
 /**
  * @author Pasteur
