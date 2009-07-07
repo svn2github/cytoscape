@@ -2,5 +2,5 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Import-Package: *
+Import-Package: *;resolution:=optional
 Private-Package: org.cytoscape.log.internal.*

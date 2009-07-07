@@ -10,8 +10,10 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.log-swing</bundle.symbolicName>
-		<bundle.namespace>org.cytoscape.log</bundle.namespace>
+		<bundle.symbolicName>org.cytoscape.log-swing
+		</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.log
+		</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -19,7 +21,8 @@
 	<artifactId>log-swing</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
-	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
+	<name>${bundle.symbolicName}
+		[${bundle.namespace}]</name>
 
 	<packaging>bundle</packaging>
 
@@ -63,14 +66,18 @@
 				-->
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${bundle.symbolicName}
+						</Bundle-SymbolicName>
 						<Bundle-Version>${pom.version}</Bundle-Version>
 						<!--
 							| assume public classes are in the top package, and private
 							classes are under ".internal"
 						-->
-						<Export-Package>!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}"</Export-Package>
-						<Private-Package>${bundle.namespace}.internal.*</Private-Package>
+						<Export-Package>
+							!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}"
+						</Export-Package>
+						<Private-Package>${bundle.namespace}.internal.*
+						</Private-Package>
 						<!--
 							| each module can override these defaults in their osgi.bnd file
 						-->
@@ -84,7 +91,8 @@
 	<repositories>
 		<repository>
 			<id>ops4j.releasees</id>
-			<url>http://repository.ops4j.org/maven2/</url>
+			<url>http://repository.ops4j.org/maven2/
+			</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -98,8 +106,9 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.apache.log4j</groupId>
+			<artifactId>com.springsource.org.apache.log4j
+			</artifactId>
 			<version>1.2.15</version>
 		</dependency>
 	</dependencies>
