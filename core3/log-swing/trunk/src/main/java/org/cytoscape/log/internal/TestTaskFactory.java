@@ -9,16 +9,23 @@ import org.apache.log4j.Level;
 
 public class TestTaskFactory implements TaskFactory
 {
-	Task task = new TestTask();
+	int i = 0;
 	public Task getTask()
 	{
+		Task task = new TestTask(i);
+		i = (i + 1) % 4;
 		return task;
 	}
 }
 
 class TestTask implements Task
 {
-	int i = 0;
+	int i;
+	public TestTask(int i)
+	{
+		this.i = i;
+	}
+
 	public void run(TaskMonitor taskMonitor)
 	{
 		Logger logger = Logger.getLogger("org.cytoscape.userlog");
@@ -30,7 +37,6 @@ class TestTask implements Task
 			logger.info("And I put my finger on your trigger");
 		else if (i == 3)
 			logger.info("I know nobody can do me no harm, because...");
-		i = (i + 1) % 4;
 	}
 
 	public void cancel()

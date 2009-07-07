@@ -24,33 +24,10 @@ import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-
 /**
  * @author Pasteur
  */
 public class ConsoleTaskFactory implements TaskFactory
-{
-	final ConsoleTask task;
-
-	public ConsoleTaskFactory(CytoStatusBar statusBar)
-	{
-		BlockingQueue<LoggingEvent> internalQueue = new LinkedBlockingQueue<LoggingEvent>();
-		ExecutorService service = Executors.newFixedThreadPool(2, new LowPriorityDaemonThreadFactory());
-
-		StatusBarUpdater updater = new StatusBarUpdater(statusBar, internalQueue);
-		service.submit(updater);
-
-		task = new ConsoleTask(internalQueue, service, statusBar);
-		statusBar.addActionListener(task);
-	}
-
-	public Task getTask()
-	{
-		return task;
-	}
-}
-
-class ConsoleTask implements Task, ActionListener
 {
 	final BlockingQueue<LoggingEvent> internalQueue;
 	final ExecutorService service;
@@ -58,23 +35,23 @@ class ConsoleTask implements Task, ActionListener
 
 	ConsoleDialog dialog = null;
 
-	public ConsoleTask(BlockingQueue<LoggingEvent> internalQueue, ExecutorService service, CytoStatusBar statusBar)
+	public ConsoleTaskFactory(CytoStatusBar statusBar)
 	{
-		this.internalQueue = internalQueue;
-		this.service = service;
 		this.statusBar = statusBar;
+		internalQueue = new LinkedBlockingQueue<LoggingEvent>();
+		service = Executors.newFixedThreadPool(2, new LowPriorityDaemonThreadFactory());
+
+		StatusBarUpdater updater = new StatusBarUpdater(statusBar, internalQueue);
+		service.submit(updater);
+		statusBar.addActionListener(new ConsoleAction());
 	}
 
-	public void run(TaskMonitor taskMonitor)
+	public Task getTask()
 	{
-		actionPerformed(null);
+		return new ConsoleTask();
 	}
 
-	public void cancel()
-	{
-	}
-
-	public void actionPerformed(ActionEvent e)
+	ConsoleDialog getDialog()
 	{
 		if (dialog == null)
 		{
@@ -82,7 +59,27 @@ class ConsoleTask implements Task, ActionListener
 			ConsoleDialogUpdater updater = new ConsoleDialogUpdater(dialog, internalQueue);
 			service.submit(updater);
 		}
-		dialog.setVisible(true);
+		return dialog;
+	}
+
+	class ConsoleTask implements Task
+	{
+		public void run(TaskMonitor taskMonitor)
+		{
+			getDialog().setVisible(true);
+		}
+
+		public void cancel()
+		{
+		}
+	}
+
+	class ConsoleAction implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			getDialog().setVisible(true);
+		}
 	}
 }
 
@@ -132,7 +129,7 @@ class StatusBarUpdater implements Runnable
 		LEVEL_TO_ICON_MAP.put(Level.WARN.toInt(),	"/petit-warning.png");
 	}
 
-        ImageIcon getIcon(int level)
+	ImageIcon getIcon(int level)
         {
 		String path = LEVEL_TO_ICON_MAP.get(level);
 		if (path == null)
