@@ -12,6 +12,8 @@
 package org.cytoscape.layer.internal.ui;
 
 import java.awt.Frame;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.DefaultListModel;
@@ -26,6 +28,8 @@ import org.cytoscape.session.CyNetworkManager;
  * @author kozo
  */
 public class LayerBuilderDialog extends JDialog {
+	
+	private static final String NETWORK_TITLE = "name";
 
 	/*
 	 * Mandatory parameters
@@ -33,6 +37,9 @@ public class LayerBuilderDialog extends JDialog {
 	private CyNetworkManager manager;
 	
 	private DefaultListModel availableNetworkListModel;
+	private DefaultListModel layeredNetworkListModel;
+	
+	private Map<String, Long> title2IdMap;
 
 	/**
 	 * Creates new form NewJDialog
@@ -44,17 +51,26 @@ public class LayerBuilderDialog extends JDialog {
 			CyNetworkManager manager, Set<CyNetwork> targetNetworks) {
 		super(parent, modal);
 		this.manager = manager;
+		title2IdMap = new HashMap<String, Long>();
 		buildListModels();
 		initComponents();
+		
+		this.AvailableNetworkList.setModel(availableNetworkListModel);
+		this.layeredNetworkList.setModel(layeredNetworkListModel);
 	}
 
 	private void buildListModels() {
 		this.availableNetworkListModel = new DefaultListModel();
 		final Set<CyNetwork> availableNetworks = manager.getNetworkSet();
 
+		String title = null;
 		for (CyNetwork cyNetwork : availableNetworks) {
-			availableNetworkListModel.addElement(cyNetwork.attrs().get("title", String.class));
+			title = cyNetwork.attrs().get(NETWORK_TITLE, String.class);
+			availableNetworkListModel.addElement(title);
+			title2IdMap.put(title, cyNetwork.getSUID());
 		}
+		
+		layeredNetworkListModel = new DefaultListModel();
 	}
 
 	/**
@@ -70,9 +86,9 @@ public class LayerBuilderDialog extends JDialog {
 		TitlePanel = new javax.swing.JPanel();
 		TitleLabel = new javax.swing.JLabel();
 		DefineLayerPanel = new javax.swing.JPanel();
-		IntegratedNetworkPanel = new javax.swing.JPanel();
-		IntegratedNetworkScrollPane = new javax.swing.JScrollPane();
-		IntegratedNetworkList = new javax.swing.JList();
+		layeredNetworkPanel = new javax.swing.JPanel();
+		layeredNetworkScrollPane = new javax.swing.JScrollPane();
+		layeredNetworkList = new javax.swing.JList();
 		AvailableNetworkPanel = new javax.swing.JPanel();
 		AvailableNetworkScrollPane = new javax.swing.JScrollPane();
 		AvailableNetworkList = new javax.swing.JList();
@@ -120,11 +136,11 @@ public class LayerBuilderDialog extends JDialog {
 		DefineLayerPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Define Layers"));
 
-		IntegratedNetworkPanel.setBackground(new java.awt.Color(255, 255, 255));
-		IntegratedNetworkPanel.setBorder(javax.swing.BorderFactory
+		layeredNetworkPanel.setBackground(new java.awt.Color(255, 255, 255));
+		layeredNetworkPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Integrated Networks"));
 
-		IntegratedNetworkList.setModel(new javax.swing.AbstractListModel() {
+		layeredNetworkList.setModel(new javax.swing.AbstractListModel() {
 			String[] strings = { };
 
 			public int getSize() {
@@ -135,11 +151,11 @@ public class LayerBuilderDialog extends JDialog {
 				return strings[i];
 			}
 		});
-		IntegratedNetworkScrollPane.setViewportView(IntegratedNetworkList);
+		layeredNetworkScrollPane.setViewportView(layeredNetworkList);
 
 		org.jdesktop.layout.GroupLayout IntegratedNetworkPanelLayout = new org.jdesktop.layout.GroupLayout(
-				IntegratedNetworkPanel);
-		IntegratedNetworkPanel.setLayout(IntegratedNetworkPanelLayout);
+				layeredNetworkPanel);
+		layeredNetworkPanel.setLayout(IntegratedNetworkPanelLayout);
 		IntegratedNetworkPanelLayout
 				.setHorizontalGroup(IntegratedNetworkPanelLayout
 						.createParallelGroup(
@@ -149,7 +165,7 @@ public class LayerBuilderDialog extends JDialog {
 										.createSequentialGroup()
 										.addContainerGap()
 										.add(
-												IntegratedNetworkScrollPane,
+												layeredNetworkScrollPane,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												173, Short.MAX_VALUE)
 										.addContainerGap()));
@@ -161,7 +177,7 @@ public class LayerBuilderDialog extends JDialog {
 								IntegratedNetworkPanelLayout
 										.createSequentialGroup()
 										.add(
-												IntegratedNetworkScrollPane,
+												layeredNetworkScrollPane,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 												186,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -170,8 +186,6 @@ public class LayerBuilderDialog extends JDialog {
 		AvailableNetworkPanel.setBackground(new java.awt.Color(255, 255, 255));
 		AvailableNetworkPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Available Networks"));
-
-		AvailableNetworkList.setModel(availableNetworkListModel);
 
 		AvailableNetworkScrollPane.setViewportView(AvailableNetworkList);
 
@@ -276,7 +290,7 @@ public class LayerBuilderDialog extends JDialog {
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
 										.add(18, 18, 18)
 										.add(
-												IntegratedNetworkPanel,
+												layeredNetworkPanel,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -338,7 +352,7 @@ public class LayerBuilderDialog extends JDialog {
 																				11,
 																				11)
 																		.add(
-																				IntegratedNetworkPanel,
+																				layeredNetworkPanel,
 																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																				218,
 																				Short.MAX_VALUE)))
@@ -521,9 +535,9 @@ public class LayerBuilderDialog extends JDialog {
 	private javax.swing.JButton CancelButton;
 	private javax.swing.JPanel DefineLayerPanel;
 	private javax.swing.JButton GenerateIntegratedNetworkButton;
-	private javax.swing.JList IntegratedNetworkList;
-	private javax.swing.JPanel IntegratedNetworkPanel;
-	private javax.swing.JScrollPane IntegratedNetworkScrollPane;
+	private javax.swing.JList layeredNetworkList;
+	private javax.swing.JPanel layeredNetworkPanel;
+	private javax.swing.JScrollPane layeredNetworkScrollPane;
 	private javax.swing.JPanel LayerOrderPanel;
 	private javax.swing.JScrollPane LayerOrderScrollPane;
 	private javax.swing.JTable LayerOrderTable;
