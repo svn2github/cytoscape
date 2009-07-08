@@ -1,14 +1,13 @@
 package org.cytoscape.view.presentation.processing.internal;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import cytoscape.CyNetworkManager;
 
 public class CreatePresentationTask implements Task {
 

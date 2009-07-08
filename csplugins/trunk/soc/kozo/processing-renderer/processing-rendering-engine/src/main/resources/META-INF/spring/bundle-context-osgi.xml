@@ -6,7 +6,7 @@
 	default-lazy-init="false">
 
 	<osgi:reference id="cyNetworkManagerServiceRef"
-		interface="cytoscape.CyNetworkManager" />
+		interface="org.cytoscape.session.CyNetworkManager" />
 
 	<osgi:service id="createPresentationTaskFactoryService"
 		ref="createPresentationTaskFactory" interface="org.cytoscape.work.TaskFactory">

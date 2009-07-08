@@ -1,10 +1,10 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 
-import cytoscape.CyNetworkManager;
 
 public class CreatePresentationTaskFactory implements TaskFactory {
 	
