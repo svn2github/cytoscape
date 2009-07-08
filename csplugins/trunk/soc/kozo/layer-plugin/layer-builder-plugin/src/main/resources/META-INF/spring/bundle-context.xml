@@ -27,7 +27,8 @@
 
 	<bean id="displayMultilayerNetworkBuilderUITaskFactory"
 		class="org.cytoscape.layer.internal.tasks.DisplayMultilayerNetworkBuilderUITaskFactory">
-		<constructor-arg ref="cyNetworkManagerServicRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
 
 	<!-- this creates a LoadPropsInterceptor object -->

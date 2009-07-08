@@ -5,14 +5,18 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
+	<!-- Import required OSGi services -->
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.session.CyNetworkManager" />
 
-	<osgi:service id="ExampleServiceService" ref="ExampleService"
-		interface="org.cytoscape.work.TaskFactory">
+	<osgi:reference id="cySwingApplicationServiceRef"
+		interface="cytoscape.view.CySwingApplication" />
+
+	<osgi:service id="displayMultiLayerNetworkBuilderUITaskFactoryService"
+		ref="displayMultilayerNetworkBuilderUITaskFactory" interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Build Multi Layer Network ..." />
-			<entry key="preferredMenu" value="Plugins.Create Multylayer" />
+			<entry key="preferredMenu" value="Plugins.Create Layers for Processing Renderer" />
 		</osgi:service-properties>
 	</osgi:service>
 
