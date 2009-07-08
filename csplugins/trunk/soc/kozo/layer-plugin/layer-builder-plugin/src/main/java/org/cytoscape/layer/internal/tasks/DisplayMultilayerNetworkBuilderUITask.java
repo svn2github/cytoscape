@@ -15,6 +15,7 @@ public class DisplayMultilayerNetworkBuilderUITask implements Task {
 	// This should be injected.
 	private CyNetworkManager manager;
 	private CySwingApplication desktop;
+
 	private TaskMonitor taskMonitor;
 
 	public DisplayMultilayerNetworkBuilderUITask(CySwingApplication desktop,
@@ -29,14 +30,15 @@ public class DisplayMultilayerNetworkBuilderUITask implements Task {
 	public void run(TaskMonitor taskMonitor) throws Exception {
 
 		this.taskMonitor = taskMonitor;
-		taskMonitor.setProgress(-1.0);
-		taskMonitor.setStatusMessage("Building MultiLayer Network...");
+		this.taskMonitor.setProgress(-1.0);
+		this.taskMonitor.setStatusMessage("Building MultiLayer Network...");
 
-		Set<CyNetwork> targetNetworks = manager.getNetworkSet();
+		final Set<CyNetwork> targetNetworks = manager.getNetworkSet();
 		System.out
 				.println("* Show Dialog for Building MultiLayer Network for: "
-						+ targetNetworks);
+						+ targetNetworks.size());
 
+		System.out.println("Desktop = " + desktop);
 		LayerBuilderDialog dialog = new LayerBuilderDialog(desktop.getJFrame(),
 				true, manager, targetNetworks);
 		dialog.setTitle("Multilayer Network Builder");

@@ -13,6 +13,7 @@ public class DisplayMultilayerNetworkBuilderUITaskFactory implements TaskFactory
 
 	public DisplayMultilayerNetworkBuilderUITaskFactory(CySwingApplication desktop, CyNetworkManager netmgr) {
 		this.netmgr = netmgr;
+		this.desktop = desktop;
 	}
 
 	public Task getTask() {
