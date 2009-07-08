@@ -246,7 +246,9 @@ public class GpuLayout extends CytoscapePlugin {
 		alias++;
 	    }
 
-
+	    // Check whether it has been canceled by the user
+	    if (canceled)
+		return;
 
 	    // Auxiliary variable used to keep track of the position in AdjMatVals
 	    int position = 0;
@@ -299,21 +301,11 @@ public class GpuLayout extends CytoscapePlugin {
 	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
 	    
 
-	
-	    // Load static library with native code
-	    
-	    /*
-	    try {
-		System.loadLibrary("Prompt");
-	    }
-	    catch (UnsatisfiedLinkError error){
-		String message = "Static Library with Native Code not found\n Cannot Produce Layout\n"; 
-		// Use the CytoscapeDesktop as parent for a Swing dialog
-		JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+	    // Check whether it has been canceled by the user
+	    if (canceled)
 		return;
-	    }
-	    */
 
+	
 	    // Reset the "sys_paths" field of the ClassLoader to null.
 	    Class clazz = ClassLoader.class;
 	    Field field;
@@ -323,21 +315,26 @@ public class GpuLayout extends CytoscapePlugin {
 		if (!accessible)
 		    field.setAccessible(true);
 		Object original = field.get(clazz);
-		// Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed value.
+		// Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed value
 		field.set(clazz, null);
 		try {
 		    // Change the value and load the library.
 		    System.setProperty("java.library.path", "/home/gerardo/Cytoscape_v2.6.2/plugins");
-		    System.loadLibrary("Prompt");
+		    System.loadLibrary(GPU_LIBRARY);
 		}
 		catch (UnsatisfiedLinkError error){
 		    message = "Static Library with Native Code not found\n Cannot Produce Layout\n"; 
-		    // Use the CytoscapeDesktop as parent for a Swing dialog
 		    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
-		}
-		
+
+		    // Revert back the changes
+		    field.set(clazz, original);
+		    field.setAccessible(accessible);
+
+		    // Exit
+		    return;
+		}		
 		finally {
-		    //Revert back the changes.
+		    // Revert back the changes
 		    field.set(clazz, original);
 		    field.setAccessible(accessible);
 		}
@@ -362,7 +359,7 @@ public class GpuLayout extends CytoscapePlugin {
 	
 	private double H_SIZE = 1000.0;
 	private double V_SIZE = 1000.0;
-	
+	private String GPU_LIBRARY = "GPU_layout";
     }
 
 
@@ -383,6 +380,21 @@ public class GpuLayout extends CytoscapePlugin {
 		return i;
 	return -1;
     }
+
+    
+    // Native method that computes the layout and returns relative position of nodes
+    private native 
+	int[][] ComputeGpuLayout( int[] AdjMatIndexJ, 
+				  int[] AdjMatValsJ, 
+				  int coarseGraphSize, 
+				  int interpolationIterationsJ, 
+				  int levelConvergenceJ, 
+				  int edgeLenJ, 
+				  int initialNoIterationsJ,
+				  double hSizeJ,
+				  double vsizeJ
+				);
+    
 
 }
 

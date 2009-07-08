@@ -2,7 +2,7 @@
 <!-- Plugin build file     -->
 <!-- =================================================================== -->
 
-<project name="tutorial01" default="jar" basedir=".">
+<project name="GPU Layout Plugin" default="jar" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
@@ -20,7 +20,6 @@
     <property name="root.dir" value="."/>
     <property name="src.dir" value="${root.dir}/src"/>
     <property name="build.dir" value="${root.dir}/build"/>
-    <property name="images.dir" value="${root.dir}/images"/>
     <property name="manifest.dir" value="${root.dir}/manifest"/>
     <property name="lib.dir" value="${root.dir}/lib"/>
 
@@ -39,7 +38,6 @@
     <!-- Check the availability of some files -->  	
     <available file="${cytoscape.dir}/cytoscape.jar" property="cytoscape.present"/> 
     <available file="${root.dir}/plugin.props" property="plugin.prop.present"/>
-    <available file="${images.dir}" property="images.dir.present"/>
     <available file="${root.dir}/libPrompt.so" property="static.lib.present"/>
 
     <!-- Define the java class path -->
@@ -58,6 +56,7 @@
    <echo message="COMPILE ${plugin_name} ..."/>
     
     <mkdir dir="${build.dir}"/>
+
     <javac srcdir="${src.dir}"
            excludes="${excludes}"
            classpathref="project.class.path"
@@ -70,9 +69,22 @@
   </target>
 
   <!-- =================================================================== -->
+  <!-- Creates header for use it in native code                       -->
+  <!-- =================================================================== -->
+  <target name="javah" depends="compile"  >
+  <!--  
+    <echo message="Creating header for JNI..."/>
+
+    <javah class="GpuLayout"
+	   outputFile="GpuLayout.h"
+	   />
+    -->
+  </target>
+
+  <!-- =================================================================== -->
   <!-- Creates the plugin jar file                                           -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile, copy_plugin_prop, copy_images, copy_static_lib"  >
+  <target name="jar" depends="compile, copy_plugin_prop, copy_static_lib, javah"  >
   	
     <jar destfile="${project.jar}">
       <manifest> <attribute name="Cytoscape-Plugin" value="${plugin_class}"/> </manifest>
@@ -89,13 +101,6 @@
   <!-- If static.lib exist, copy it to build directory  -->	
   <target name="copy_static_lib" if="static.lib.present">
     <copy todir="${build.dir}/" file="${root.dir}/libPrompt.so"/>	
-  </target>
-
-  <!-- If there are any image files, copy them to build directory  -->	
-  <target name="copy_images" if="images.dir.present">
-    <copy todir="${build.dir}">
-      <fileset dir="${images.dir}"/> 
-    </copy>
   </target>
 
   <!-- =================================================================== -->
