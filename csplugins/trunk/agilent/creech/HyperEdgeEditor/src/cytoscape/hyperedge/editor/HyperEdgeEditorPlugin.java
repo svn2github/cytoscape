@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Mon Jul 24 06:36:19 2006
-* Modified:     Wed Jan 28 09:38:54 2009 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Jul 08 08:24:35 2009 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Jul 08 08:24:22 2009 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.66.
 * Fri Jan 23 10:35:10 2009 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.65.
 * Thu Sep 25 09:52:17 2008 (Michael L. Creech) creech@w235krbza760
@@ -116,7 +118,7 @@ import ding.view.NodeContextMenuListener;
  *
  */
 public class HyperEdgeEditorPlugin extends CytoscapePlugin {
-    private static final Double VERSION = 2.65;
+    private static final Double VERSION = 2.66;
 
     public HyperEdgeEditorPlugin() {
         initializeHyperEdgeEditor();
