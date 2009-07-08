@@ -482,7 +482,7 @@ public class LayerBuilderDialog extends JDialog {
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_CancelButtonActionPerformed
-		System.exit(0);
+		this.dispose();
 	}// GEN-LAST:event_CancelButtonActionPerformed
 
 	private void GenerateIntegratedNetworkButtonActionPerformed(
