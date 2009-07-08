@@ -5,19 +5,15 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<!--
-		<osgi:reference id="cyWriterManagerServiceRef"
-		interface="org.cytoscape.io.read.CyWriterManager"/> <osgi:reference
-		id="cySessionManagerServiceRef"
-		interface="org.cytoscape.session.CySessionManager"/>
-	
+	<osgi:reference id="cyNetworkManagerServiceRef"
+		interface="org.cytoscape.session.CyNetworkManager" />
 
-	<osgi:service id="ExampleServiceService" ref="ExampleService" interface="org.cytoscape.work.TaskFactory">
+	<osgi:service id="ExampleServiceService" ref="ExampleService"
+		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Build Multi Layer Network ..." />
 			<entry key="preferredMenu" value="Plugins.Create Multylayer" />
 		</osgi:service-properties>
 	</osgi:service>
 
--->
 </beans>

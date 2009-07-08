@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
@@ -17,15 +16,20 @@
             http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<!-- regular spring configuration file defining the beans for this
-		bundle. We've kept the osgi definitions in a separate 
-		configuration file so that this file can easily be used
-		for integration testing outside of an OSGi environment -->
+	<!--
+		regular spring configuration file defining the beans for this bundle.
+		We've kept the osgi definitions in a separate configuration file so
+		that this file can easily be used for integration testing outside of
+		an OSGi environment
+	-->
 
-	<context:annotation-config/>
+	<context:annotation-config />
+
+	<bean id="displayMultilayerNetworkBuilderUITaskFactory"
+		class="org.cytoscape.layer.internal.tasks.DisplayMultilayerNetworkBuilderUITaskFactory">
+		<constructor-arg ref="cyNetworkManagerServicRef" />
+	</bean>
 
 	<!-- this creates a LoadPropsInterceptor object -->
-	
-
 
 </beans>
