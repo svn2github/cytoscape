@@ -20,6 +20,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
+import org.cytoscape.layer.internal.tasks.BuildMultilayerNetworkTask;
 import org.cytoscape.model.CyNetwork;
 
 import org.cytoscape.session.CyNetworkManager;
@@ -36,6 +37,7 @@ public class LayerBuilderDialog extends JDialog {
 	 * Mandatory parameters
 	 */
 	private CyNetworkManager manager;
+	MultiLayerNetworkBuilder builder;
 	
 	private DefaultListModel availableNetworkListModel;
 	private DefaultListModel layeredNetworkListModel;
@@ -52,6 +54,8 @@ public class LayerBuilderDialog extends JDialog {
 			CyNetworkManager manager, Set<CyNetwork> targetNetworks, MultiLayerNetworkBuilder builder) {
 		super(parent, modal);
 		this.manager = manager;
+		this.builder = builder;
+		
 		title2IdMap = new HashMap<String, Long>();
 		buildListModels();
 		initComponents();
@@ -502,7 +506,15 @@ public class LayerBuilderDialog extends JDialog {
 
 	private void GenerateIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GenerateIntegratedNetworkButtonActionPerformed
-		// TODO add your handling code here:
+		
+		
+		//Setup
+		//builder.setSourceNetworks(layers, connectors);
+		
+		BuildMultilayerNetworkTask task = new BuildMultilayerNetworkTask(manager, builder);
+		
+		//Run
+		
 	}// GEN-LAST:event_GenerateIntegratedNetworkButtonActionPerformed
 
 	private void OptionButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_OptionButtonActionPerformed
