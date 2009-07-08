@@ -29,7 +29,14 @@
 		class="org.cytoscape.layer.internal.tasks.DisplayMultilayerNetworkBuilderUITaskFactory">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="multiLayerNetworkBuilder" />
 	</bean>
+
+	<bean id="multiLayerNetworkBuilder" class="org.cytoscape.layer.internal.MultiLayerNetworkBuilderImpl">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+	
+	
 
 	<!-- this creates a LoadPropsInterceptor object -->
 

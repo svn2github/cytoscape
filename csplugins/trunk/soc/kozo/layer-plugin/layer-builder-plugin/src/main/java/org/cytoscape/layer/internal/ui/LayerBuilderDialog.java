@@ -19,6 +19,7 @@ import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 
+import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.model.CyNetwork;
 
 import org.cytoscape.session.CyNetworkManager;
@@ -48,7 +49,7 @@ public class LayerBuilderDialog extends JDialog {
 	 */
 
 	public LayerBuilderDialog(Frame parent, boolean modal,
-			CyNetworkManager manager, Set<CyNetwork> targetNetworks) {
+			CyNetworkManager manager, Set<CyNetwork> targetNetworks, MultiLayerNetworkBuilder builder) {
 		super(parent, modal);
 		this.manager = manager;
 		title2IdMap = new HashMap<String, Long>();

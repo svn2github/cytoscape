@@ -136,4 +136,15 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		nodeMap = null;
 
 	}
+
+	public CyNetwork buildLayeredNetwork() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setSourceNetworks(List<CyNetwork> layers,
+			List<CyNetwork> connectors) {
+		// TODO Auto-generated method stub
+		
+	}
 }

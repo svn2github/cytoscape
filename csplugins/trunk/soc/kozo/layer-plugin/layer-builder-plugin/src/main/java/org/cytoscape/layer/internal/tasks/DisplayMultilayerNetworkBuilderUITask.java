@@ -2,6 +2,7 @@ package org.cytoscape.layer.internal.tasks;
 
 import java.util.Set;
 
+import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.layer.internal.ui.LayerBuilderDialog;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
@@ -15,13 +16,15 @@ public class DisplayMultilayerNetworkBuilderUITask implements Task {
 	// This should be injected.
 	private CyNetworkManager manager;
 	private CySwingApplication desktop;
+	private MultiLayerNetworkBuilder builder;
 
 	private TaskMonitor taskMonitor;
 
 	public DisplayMultilayerNetworkBuilderUITask(CySwingApplication desktop,
-			CyNetworkManager manager) {
+			CyNetworkManager manager, MultiLayerNetworkBuilder builder) {
 		this.manager = manager;
 		this.desktop = desktop;
+		this.builder = builder;
 	}
 
 	/**
@@ -40,7 +43,7 @@ public class DisplayMultilayerNetworkBuilderUITask implements Task {
 
 		System.out.println("Desktop = " + desktop);
 		LayerBuilderDialog dialog = new LayerBuilderDialog(desktop.getJFrame(),
-				true, manager, targetNetworks);
+				true, manager, targetNetworks, builder);
 		dialog.setTitle("Multilayer Network Builder");
 		dialog.setVisible(true);
 	}
