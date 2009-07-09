@@ -6,14 +6,14 @@
     default-lazy-init="false">
 
 	<osgi:service id="cyLayoutsService"
-		ref="cyLayouts" interface="org.cytoscape.layout.CyLayouts">
+		ref="cyLayouts" interface="org.cytoscape.view.layout.CyLayouts">
 	</osgi:service>
 
 	<osgi:service id="gridNodeLayoutService"
-		ref="gridNodeLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+		ref="gridNodeLayout" interface="org.cytoscape.view.layout.CyLayoutAlgorithm">
 	</osgi:service>
 
-    <osgi:set id="cyLayoutAlgorithmSet" interface="org.cytoscape.layout.CyLayoutAlgorithm" cardinality="0..N">
+    <osgi:set id="cyLayoutAlgorithmSet" interface="org.cytoscape.view.layout.CyLayoutAlgorithm" cardinality="0..N">
         <osgi:listener bind-method="addLayout" unbind-method="removeLayout" ref="cyLayouts"/>
     </osgi:set>
 
