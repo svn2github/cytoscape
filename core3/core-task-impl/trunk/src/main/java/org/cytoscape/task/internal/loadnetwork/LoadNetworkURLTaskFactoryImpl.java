@@ -39,7 +39,7 @@ package org.cytoscape.task.internal.loadnetwork;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 
-import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.view.model.CyNetworkViewFactory;

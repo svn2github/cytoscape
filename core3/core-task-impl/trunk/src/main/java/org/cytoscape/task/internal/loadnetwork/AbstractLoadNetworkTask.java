@@ -46,7 +46,7 @@ import java.io.IOException;
 
 import org.cytoscape.io.read.CyReader;
 import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
