@@ -12,6 +12,20 @@
 package org.cytoscape.layer.internal.ui;
 
 import java.awt.Frame;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +33,8 @@ import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
+import javax.swing.JList;
+import javax.swing.JTable;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.layer.internal.tasks.BuildMultilayerNetworkTask;
@@ -600,6 +616,91 @@ public class LayerBuilderDialog extends JDialog {
 	private javax.swing.JButton optionButton;
 	private javax.swing.JLabel titleLabel;
 	private javax.swing.JPanel titlePanel;
+
 	// End of variables declaration//GEN-END:variables
+
+	private class DraggableJList extends JList implements DragSourceListener,
+			DragGestureListener {
+
+		public void dragDropEnd(DragSourceDropEvent dsde) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void dragEnter(DragSourceDragEvent dsde) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void dragExit(DragSourceEvent dse) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void dragOver(DragSourceDragEvent dsde) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void dropActionChanged(DragSourceDragEvent dsde) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void dragGestureRecognized(DragGestureEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
+
+	private class RJLTransferable implements Transferable {
+
+		public Object getTransferData(DataFlavor flavor)
+				throws UnsupportedFlavorException, IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public DataFlavor[] getTransferDataFlavors() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public boolean isDataFlavorSupported(DataFlavor flavor) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+	}
+
+	private class DroppableJTable extends JTable implements DropTargetListener {
+
+		public void dragEnter(DropTargetDragEvent dtde) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void dragExit(DropTargetEvent dte) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void dragOver(DropTargetDragEvent dtde) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void drop(DropTargetDropEvent dtde) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void dropActionChanged(DropTargetDragEvent dtde) {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
 
 }
