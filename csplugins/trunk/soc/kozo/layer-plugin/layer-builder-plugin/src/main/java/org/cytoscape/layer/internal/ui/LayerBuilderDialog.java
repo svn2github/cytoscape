@@ -12,6 +12,7 @@
 package org.cytoscape.layer.internal.ui;
 
 import java.awt.Frame;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +23,6 @@ import javax.swing.JDialog;
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.layer.internal.tasks.BuildMultilayerNetworkTask;
 import org.cytoscape.model.CyNetwork;
-
 import org.cytoscape.session.CyNetworkManager;
 
 /**
@@ -30,7 +30,7 @@ import org.cytoscape.session.CyNetworkManager;
  * @author kozo
  */
 public class LayerBuilderDialog extends JDialog {
-	
+
 	private static final String NETWORK_TITLE = "name";
 
 	/*
@@ -38,10 +38,10 @@ public class LayerBuilderDialog extends JDialog {
 	 */
 	private CyNetworkManager manager;
 	MultiLayerNetworkBuilder builder;
-	
+
 	private DefaultListModel availableNetworkListModel;
 	private DefaultListModel layeredNetworkListModel;
-	
+
 	private Map<String, Long> title2IdMap;
 
 	/**
@@ -51,15 +51,16 @@ public class LayerBuilderDialog extends JDialog {
 	 */
 
 	public LayerBuilderDialog(Frame parent, boolean modal,
-			CyNetworkManager manager, Set<CyNetwork> targetNetworks, MultiLayerNetworkBuilder builder) {
+			CyNetworkManager manager, Set<CyNetwork> targetNetworks,
+			MultiLayerNetworkBuilder builder) {
 		super(parent, modal);
 		this.manager = manager;
 		this.builder = builder;
-		
+
 		title2IdMap = new HashMap<String, Long>();
 		buildListModels();
 		initComponents();
-		
+
 		this.AvailableNetworkList.setModel(availableNetworkListModel);
 		this.layeredNetworkList.setModel(layeredNetworkListModel);
 	}
@@ -74,7 +75,7 @@ public class LayerBuilderDialog extends JDialog {
 			availableNetworkListModel.addElement(title);
 			title2IdMap.put(title, cyNetwork.getSUID());
 		}
-		
+
 		layeredNetworkListModel = new DefaultListModel();
 	}
 
@@ -146,7 +147,7 @@ public class LayerBuilderDialog extends JDialog {
 				.createTitledBorder("Integrated Networks"));
 
 		layeredNetworkList.setModel(new javax.swing.AbstractListModel() {
-			String[] strings = { };
+			String[] strings = {};
 
 			public int getSize() {
 				return strings.length;
@@ -506,15 +507,15 @@ public class LayerBuilderDialog extends JDialog {
 
 	private void GenerateIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GenerateIntegratedNetworkButtonActionPerformed
-		
-		
-		//Setup
-		//builder.setSourceNetworks(layers, connectors);
-		
-		BuildMultilayerNetworkTask task = new BuildMultilayerNetworkTask(manager, builder);
-		
-		//Run
-		
+
+		// Setup
+		// builder.setSourceNetworks(layers, connectors);
+
+		BuildMultilayerNetworkTask task = new BuildMultilayerNetworkTask(
+				manager, builder);
+
+		// Run
+
 	}// GEN-LAST:event_GenerateIntegratedNetworkButtonActionPerformed
 
 	private void OptionButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_OptionButtonActionPerformed
@@ -524,21 +525,33 @@ public class LayerBuilderDialog extends JDialog {
 	private void MoveAllAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllAvailableNetworkButtonActionPerformed
 		// TODO add your handling code here:
+
+		Enumeration<?> availableNetworks = availableNetworkListModel.elements();
+
+		while (availableNetworks.hasMoreElements()) {
+			layeredNetworkListModel.addElement(availableNetworks.nextElement());
+		}
+
+		availableNetworkListModel.clear();
+
 	}// GEN-LAST:event_MoveAllAvailableNetworkButtonActionPerformed
 
 	private void MoveSelectedAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 		// TODO add your handling code here:
+
 	}// GEN-LAST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
 	private void MoveSelectedIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 		// TODO add your handling code here:
+
 	}// GEN-LAST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 
 	private void MoveAllIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllIntegratedNetworkButtonActionPerformed
 		// TODO add your handling code here:
+
 	}// GEN-LAST:event_MoveAllIntegratedNetworkButtonActionPerformed
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
