@@ -540,6 +540,15 @@ public class LayerBuilderDialog extends JDialog {
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 		// TODO add your handling code here:
 
+		int[] index = availableNetworkList.getSelectedIndices();
+		for (int i = 0; i < index.length; i++) {
+			layeredNetworkListModel.addElement(availableNetworkListModel
+					.getElementAt(index[i]));
+			availableNetworkListModel.removeElementAt(index[i]);
+		}
+
+		availableNetworkList.clearSelection();
+
 	}// GEN-LAST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
 	private void MoveSelectedIntegratedNetworkButtonActionPerformed(
