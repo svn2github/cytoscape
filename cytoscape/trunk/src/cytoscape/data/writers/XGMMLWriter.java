@@ -167,7 +167,8 @@ enum ObjectType {
  */
 public class XGMMLWriter {
 	// XML preamble information
-	private static final String XML_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
+    public static final String ENCODING = "UTF-8";
+	private static final String XML_STRING = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" standalone=\"yes\"?>";
 
 	private static final String[] NAMESPACES = {
 		"xmlns:dc=\"http://purl.org/dc/elements/1.1/\"",
@@ -213,6 +214,11 @@ public class XGMMLWriter {
 	 */
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
+	/**
+	 *
+	 */
+    public static final String ENCODE_PROPERTY = "cytoscape.encode.xgmml.attributes";
+
 	private CyAttributes nodeAttributes;
 	private CyAttributes edgeAttributes;
 	private CyAttributes networkAttributes;
@@ -229,7 +235,9 @@ public class XGMMLWriter {
 	private String indentString = "";
 	private Writer writer = null;
 
-	/**
+    private boolean doFullEncoding;
+
+    /**
 	 * Constructor.<br>
 	 * Initialize data objects to be saved in XGMML file.<br>
 	 *
@@ -258,6 +266,8 @@ public class XGMMLWriter {
 		// Create our indent string (480 blanks);
 		for (int i = 0; i < 20; i++) 
 			indentString += "                        ";
+
+        doFullEncoding = Boolean.valueOf(System.getProperty(ENCODE_PROPERTY, "true"));
 	}
 
 	/**
@@ -471,8 +481,10 @@ public class XGMMLWriter {
 			depth--; writeElement("</att>\n");
 		}
 
-		// Output the node graphics if we have a view
-		writeNodeGraphics(node, (NodeView)networkView.getNodeView(node));
+        if (networkView != null) {
+            // Output the node graphics if we have a view
+            writeNodeGraphics(node, (NodeView)networkView.getNodeView(node));
+        }
 
 		depth--;
 		writeElement("</node>\n");
@@ -657,8 +669,10 @@ public class XGMMLWriter {
 				writeAttribute(curEdge.getIdentifier(), edgeAttributes, edgeAttNames[att]);
 		}
 
-		// Write the edge graphics
-		writeEdgeGraphics(curEdge, (EdgeView)networkView.getEdgeView(curEdge));
+        if (networkView != null) {
+            // Write the edge graphics
+            writeEdgeGraphics(curEdge, (EdgeView)networkView.getEdgeView(curEdge));
+        }
 
 		depth--;
 		writeElement("</edge>\n");
@@ -1153,24 +1167,59 @@ public class XGMMLWriter {
 	 * @return the quoted string
 	 */
 	private String quote(String str) {
-		// Find and replace any "magic" characters
-		if (str.contains("&")) {
-			str = str.replaceAll("&", "&amp;");
-		}
-		if (str.contains("\"")) {
-			str = str.replaceAll("\"", "&quot;");
-		}
-		if (str.contains("'")) {
-			str = str.replaceAll("\'", "&apos;");
-		}
-		if (str.contains("<")) {
-			str = str.replaceAll("<", "&lt;");
-		}
-		if (str.contains(">")) {
-			str = str.replaceAll(">", "&gt;");
-		}
-		return "\""+str+"\"";
+		// Find and replace any "magic", control, non-printable etc. characters
+        // For maximum safety, everything other than printable ASCII (0x20 thru 0x7E) is converted into a character entity
+        
+        StringBuilder sb;
+        
+        sb = new StringBuilder(str.length());
+        sb.append('"');
+        for (int i = 0; i < str.length(); i++) {
+            char c;
+
+            c = str.charAt(i);
+            if ((c < ' ') || (c > '~'))
+            {
+                if (doFullEncoding) {
+                    sb.append("&#");
+                    sb.append(Integer.toHexString((int)c));
+                    sb.append(";");
+                }
+                else {
+                    sb.append(c);
+                }
+            }
+            else if (c == '"') {
+                sb.append("&quot;");
+            }
+            else if (c == '\'') {
+                sb.append("&apos;");
+            }
+            else if (c == '&') {
+                sb.append("&amp;");
+            }
+            else if (c == '<') {
+                sb.append("&lt;");
+            }
+            else if (c == '>') {
+                sb.append("&gt;");
+            }
+            else {
+                sb.append(c);
+            }
+        }
+        sb.append('"');
+
+		return sb.toString();
 	}
+
+    public boolean isDoFullEncoding() {
+        return doFullEncoding;
+    }
+
+    public void setDoFullEncoding(boolean doFullEnc) {
+        doFullEncoding = doFullEnc;
+    }
 
 	/**
 	 * Determines if object has key in multihashmap
