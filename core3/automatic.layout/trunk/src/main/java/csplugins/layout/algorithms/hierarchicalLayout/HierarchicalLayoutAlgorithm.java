@@ -759,7 +759,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 			if (node.nodeView != null) {
 				View<CyNode> currentView = node.nodeView;
-				//currentView.setOffset(node.getXPos(), node.getYPos()); // FIXME
+				currentView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, Double.valueOf((double)node.getXPos()));
+				currentView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, Double.valueOf((double)node.getYPos()));
 			}
 		}
 

@@ -75,7 +75,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * The total number of layout passes
 	 */
-	private int m_numLayoutPasses;
+	@Tunable(description="Number of layout passes", group="Algorithm settings")
+	public int m_numLayoutPasses = 10;
 
 	/**
 	 * The average number of iterations per Node
@@ -83,14 +84,14 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	@Tunable(description="Average number of iteratations for each node", group="Algorithm settings")
 	public double m_averageIterationsPerNode = 40;
 	@Tunable(description="Spring strength", group="Algorithm settings")
-	public double m_nodeDistanceStrengthConstant;
+	public double m_nodeDistanceStrengthConstant=15.0;
 	@Tunable(description="Spring rest length", group="Algorithm settings")
-	public double m_nodeDistanceRestLengthConstant;
+	public double m_nodeDistanceRestLengthConstant=45.0;
 	private double[] m_nodeDistanceSpringScalars;
 	@Tunable(description="Strength of a 'disconnected' spring", group="Algorithm settings")
-	public double m_disconnectedNodeDistanceSpringStrength;
+	public double m_disconnectedNodeDistanceSpringStrength=0.05;
 	@Tunable(description="Rest length of a 'disconnected' spring", group="Algorithm settings")
-	public double m_disconnectedNodeDistanceSpringRestLength;
+	public double m_disconnectedNodeDistanceSpringRestLength=2000.0;
 	@Tunable(description="Strength to apply to avoid collisions", group="Algorithm settings")
 	public double m_anticollisionSpringStrength;
 	private double[] m_anticollisionSpringScalars;
