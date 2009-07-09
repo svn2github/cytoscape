@@ -41,7 +41,7 @@ package csplugins.layout.algorithms.hierarchicalLayout;
 
 import cytoscape.CytoscapeInit;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayout;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;

@@ -50,7 +50,7 @@ import org.cytoscape.coreplugin.cpath.model.SearchResponse;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 import org.cytoscape.coreplugin.cpath.ui.Console;
 import org.cytoscape.coreplugin.cpath.util.CPathProperties;
-import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.GraphView;
 
 import javax.swing.*;

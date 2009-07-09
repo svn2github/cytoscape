@@ -43,7 +43,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyDataTable;
-import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 

@@ -39,7 +39,7 @@ package cytoscape.internal.layout.ui;
 import cytoscape.Cytoscape;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import java.awt.Container; 
 

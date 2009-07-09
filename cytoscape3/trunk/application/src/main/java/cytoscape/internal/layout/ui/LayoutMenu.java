@@ -41,7 +41,7 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyDataTableUtil;
-import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 
 import javax.swing.*;

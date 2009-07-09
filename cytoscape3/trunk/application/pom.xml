@@ -109,7 +109,7 @@
 
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>layout</artifactId>
+			<artifactId>layout-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 

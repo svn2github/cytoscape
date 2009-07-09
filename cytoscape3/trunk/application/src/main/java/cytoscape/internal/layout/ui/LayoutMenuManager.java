@@ -36,8 +36,8 @@
 */
 package cytoscape.internal.layout.ui;
 
-import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.work.TaskManager;
 import cytoscape.view.CyMenus;
 import org.cytoscape.session.CyNetworkManager;

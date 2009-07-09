@@ -36,7 +36,7 @@ import cytoscape.data.readers.GraphReader;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;

@@ -37,7 +37,7 @@ package org.mskcc.biopax_plugin.util.cytoscape;
 
 import cytoscape.Cytoscape;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;

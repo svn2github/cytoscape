@@ -45,7 +45,7 @@ import csplugins.layout.algorithms.graphPartition.AttributeCircleLayout;
 import csplugins.layout.algorithms.graphPartition.DegreeSortedCircleLayout;
 import csplugins.layout.algorithms.graphPartition.ISOMLayout;
 import csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutAlgorithm;
-import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

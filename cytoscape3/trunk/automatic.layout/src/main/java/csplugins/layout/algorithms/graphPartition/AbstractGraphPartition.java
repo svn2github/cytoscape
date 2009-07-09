@@ -5,7 +5,7 @@ import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayout;
 
 import java.util.ArrayList;
 import java.util.List;

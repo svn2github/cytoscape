@@ -38,7 +38,7 @@ package cytoscape.internal.layout.ui;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

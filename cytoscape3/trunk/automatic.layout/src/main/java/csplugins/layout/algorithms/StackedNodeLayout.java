@@ -37,7 +37,7 @@
 package csplugins.layout.algorithms;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayout;
 import org.cytoscape.view.NodeView;
 
 import java.util.Collection;

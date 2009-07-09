@@ -205,6 +205,8 @@
 				<configuration>
 					<!--  some example Pax-Runner settings -->
 					<provision>
+						<param>--log=NONE</param>
+						<param>--downloadFeedback=false</param>
 						<param>--platform=felix</param>
 						<param>--profiles=log</param>
 						<param>--noDownloadFeedback</param>
