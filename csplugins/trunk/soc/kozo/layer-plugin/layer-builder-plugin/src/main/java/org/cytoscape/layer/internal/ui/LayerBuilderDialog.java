@@ -552,6 +552,14 @@ public class LayerBuilderDialog extends JDialog {
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllIntegratedNetworkButtonActionPerformed
 		// TODO add your handling code here:
 
+		Enumeration<?> layeredNetworks = layeredNetworkListModel.elements();
+
+		while (layeredNetworks.hasMoreElements()) {
+			availableNetworkListModel.addElement(layeredNetworks.nextElement());
+		}
+
+		layeredNetworkListModel.clear();
+
 	}// GEN-LAST:event_MoveAllIntegratedNetworkButtonActionPerformed
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
