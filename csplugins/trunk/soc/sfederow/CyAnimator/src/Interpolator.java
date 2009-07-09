@@ -25,30 +25,10 @@ public class Interpolator {
 		//generateInterpolatedFrames(one, two, 10);
 	}
 
-	public CyFrame[] makeFrames(List<CyFrame> frameList, int framenum){
-	   /*
-		ArrayList<CyFrame> bigFrameList = new ArrayList<CyFrame>();
-		
-		for(int i=1; i<=frameList.size(); i++){
-			bigFrameList.add(frameList.get(i));
-			
-			cyFrameArray = interpolatePosition(frameList.get(i), frameList.get(i+1), framenum);
-	   		cyFrameArray = interpolateColor(frameList.get(i), frameList.get(i+1), framenum);
-		}
-		*/
-		
-		
-		CyFrame[] cyFrameArray = new CyFrame[framenum+2];
+	public CyFrame[] makeFrames(List<CyFrame> frameList, int framecount){
+		CyFrame[] cyFrameArray = new CyFrame[(frameList.size()-1)*framecount + 1];
 	   
-		int incr = (framenum-frameList.size())/(frameList.size()-1);
-		
-		//for(int i=0; i<frameList.size(); i++){
-			//cyFrameArray[incr*i] = frameList.get(i+1);
-		//}
-   		//cyFrameArray[0] = frameList.get(1);
-   		//cyFrameArray[framenum+1] = frameList.get(frameList.size());
-   		
-		for(int i=0; i<framenum+1; i++){
+		for(int i=0; i<cyFrameArray.length; i++){
    			cyFrameArray[i] = new CyFrame(frameList.get(1).currentNetwork);
    		}
 	   	
@@ -57,15 +37,15 @@ public class Interpolator {
 	   	for(int i=0; i < frameList.size()-1; i++){
 	   		
 	   		
-	   		end = start + incr + 1;
+	   		end = start + framecount;
 	   		cyFrameArray[start] = frameList.get(i);
-	   		//cyFrameArray[(i+1)*incr] = frameList.get(i+1);
+
 	   		cyFrameArray = interpolatePosition(frameList.get(i), frameList.get(i+1), start, end, cyFrameArray);
 	   		cyFrameArray = interpolateColor(frameList.get(i), frameList.get(i+1), start, end, cyFrameArray);
 	   	
 	   		start = end;
 	   	}
-	   	cyFrameArray[framenum+1] = frameList.get(frameList.size()-1);
+	   	cyFrameArray[end] = frameList.get(frameList.size()-1);
 	   	
 		return cyFrameArray;
 	}
@@ -165,7 +145,6 @@ public class Interpolator {
 				
 				
 			
-				
 				//System.out.println(k+"  "+xy[0]+"  "+xy[1]);
 				cyFrameArray[start+k].nodePosMap.put(node.getIdentifier(), xy);
 				//Paint oldpaint = frameOne.nodeColMap.get(node.getIdentifier());
@@ -201,8 +180,6 @@ public class Interpolator {
 	
 		for(Node node: nodeList){
 			
-			
-			double[] xyOne = frameOne.nodePosMap.get(node.getIdentifier());
 			
 			Paint colorOne = frameOne.nodeColMap.get(node.getIdentifier());
 		    Paint colorTwo = frameTwo.nodeColMap.get(node.getIdentifier());
@@ -254,12 +231,6 @@ public class Interpolator {
 			
 			for(int k=1; k<framenum+1; k++){
 				
-				double[] xy = new double[2];
-				
-				xy[0] = xyOne[0];
-				xy[1]= xyOne[1];
-				
-				
 				if(red1 < red2){	
 					rArray[k+1] = rArray[k] + rIncLen;
 				}else{
@@ -285,7 +256,7 @@ public class Interpolator {
 		        Paint col = new Color(rArray[k+1], gArray[k+1], bArray[k+1]);		
 				//cyFrameArray[k].nodePosMap.put(node.getIdentifier(), xy);
 				Paint oldpaint = frameOne.nodeColMap.get(node.getIdentifier());
-				cyFrameArray[k].nodeColMap.put(node.getIdentifier(), col);
+				cyFrameArray[start+k].nodeColMap.put(node.getIdentifier(), col);
 			
 			}	
 			

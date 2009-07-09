@@ -147,7 +147,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		controlPanel.add(playButton);
 		controlPanel.add(stopButton);
 		
-		mainPanel.add(oldPanel);
+		// mainPanel.add(oldPanel);
 		mainPanel.add(controlPanel);
 		mainPanel.add(framePanel);
 		
@@ -167,8 +167,6 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		String command = e.getActionCommand();
 		
-		System.out.println(command);
-		
 		if(command.equals("capture"))
 		{
 			frameList.add(captureCurrentFrame());
@@ -183,7 +181,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		} 
 		
 		if(command.equals("stop")){
-			
+			timer.stop();
 		}
 		
 		if(command.equals("rewind")){
@@ -223,7 +221,6 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 				  public void actionPerformed(ActionEvent evt) {
 			          if(i == frames.length){ return;}
 					  frames[i].display();
-			          System.out.println(i);
 					  i++;
 			      }
 			  };
@@ -282,29 +279,24 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	*/
 	public void play(){
 		
-		 int delay = 1000; //milliseconds
+		 int delay = 100; //milliseconds
 		  ActionListener taskPerformer = new ActionListener() {
 			  
 			  Interpolator lint = new Interpolator();
 			  int i = 0;
 			  
-			  int framenum = (frameList.size())+((frameList.size()-1)*10);
-			  CyFrame[] frames = lint.makeFrames(frameList, framenum); //lint.makeColorFrames(frameOne, frameTwo, 10);
+			  CyFrame[] frames = lint.makeFrames(frameList, 10); //lint.makeColorFrames(frameOne, frameTwo, 10);
 			
 			  
 			  public void actionPerformed(ActionEvent evt) {
-		          if(i == frames.length){ return;}
+		          if(i == frames.length){ i = 0;}
 				  frames[i].display();
-		          System.out.println(i);
 				  i++;
 		      }
 		  };
 		  
-		  Timer t = new Timer(delay, taskPerformer);
-	      t.start();
-		  //for(CyFrame frame: frameList){
-	      //frame.display();
-	   //}
+		  timer = new Timer(delay, taskPerformer);
+	      timer.start();
 	}
 	
 	public void updateThumbnails(){
