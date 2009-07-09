@@ -9,6 +9,68 @@
 		ref="forceDirectedLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
 	</osgi:service>
 
+	<osgi:service id="circularLayoutAlgorithmService"
+		ref="circularLayoutAlgorithm" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="hierarchicalLayoutAlgorithmService"
+		ref="hierarchicalLayoutAlgorithm" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="attributeCircleLayoutService"
+		ref="attributeCircleLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="degreeSortedCircleLayoutService"
+		ref="degreeSortedCircleLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="ISOMLayoutService"
+		ref="ISOMLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+	<osgi:service id="bioLayoutKKAlgorithmFALSEService"
+		ref="bioLayoutKKAlgorithmFALSE" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="bioLayoutKKAlgorithmTRUEService"
+		ref="bioLayoutKKAlgorithmTRUE" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="bioLayoutFRAlgorithmService"
+		ref="bioLayoutFRAlgorithm" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="jGraphAnnealingLayoutService"
+		ref="jGraphAnnealingLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+	<osgi:service id="jGraphMoenLayoutService"
+		ref="jGraphMoenLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="jGraphCircleGraphLayoutService"
+		ref="jGraphCircleGraphLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="jGraphRadialTreeLayoutService"
+		ref="jGraphRadialTreeLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="jGraphGEMLayoutService"
+		ref="jGraphGEMLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="jGraphSpringEmbeddedLayoutService"
+		ref="jGraphSpringEmbeddedLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="jGraphSugiyamaLayoutService"
+		ref="jGraphSugiyamaLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
+	<osgi:service id="jGraphTreeLayoutService"
+		ref="jGraphTreeLayout" interface="org.cytoscape.layout.CyLayoutAlgorithm">
+	</osgi:service>
+
     <osgi:reference id="undoSupportServiceRef"
                     interface="org.cytoscape.work.UndoSupport">
     </osgi:reference>
