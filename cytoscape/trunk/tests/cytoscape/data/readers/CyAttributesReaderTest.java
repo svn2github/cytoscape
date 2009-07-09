@@ -142,14 +142,11 @@ public class CyAttributesReaderTest extends TestCase {
 		assertEquals(3.7, value.doubleValue(), 0.01);
 	}
 
-	/**
-	 * Testing Reading of Simple Lists.
-	 * @throws IOException IO Errors.
-	 */
-	public void testReadSimpleLists() throws IOException {
+    private void checkReadSimpleLists(String fileToRead, char sep) throws IOException
+    {
 		String attributeName = "GO_molecular_function_level_4";
 		CyAttributes cyAttributes = new CyAttributesImpl();
-		File file = new File("testData/implicitStringArray.attribute");
+		File file = new File(fileToRead);
 		FileReader reader = new FileReader(file);
 		CyAttributesReader.loadAttributes(cyAttributes, reader);
 
@@ -163,15 +160,69 @@ public class CyAttributesReaderTest extends TestCase {
 		String value = (String) list.get(0);
 		assertEquals("intracellular", value);
 		value = (String) list.get(1);
-		assertEquals("clathrin adaptor", value);
+		assertEquals("clathrin" + sep + "adaptor", value);
 		value = (String) list.get(2);
-		assertEquals("intracellular transporter", value);
+		assertEquals("intracellular" + sep + "transporter", value);
 
 		//  Test the Last List
 		list = cyAttributes.getListAttribute("CDH3", attributeName);
 		assertEquals(1, list.size());
 		value = (String) list.get(0);
-		assertEquals("cell adhesion molecule", value);
+		assertEquals("cell" + sep + "adhesion" + sep + "molecule", value);
+    }
+
+	/**
+	 * Testing Reading of Simple Lists.
+	 * @throws IOException IO Errors.
+	 */
+	public void testReadSimpleLists1() throws IOException {
+        System.clearProperty(CyAttributesReader.DECODE_PROPERTY);
+        checkReadSimpleLists("testData/implicitStringArray.attribute", ' ');
+	}
+
+	/**
+	 * Testing Reading of Simple Lists.
+	 * @throws IOException IO Errors.
+	 */
+	public void testReadSimpleLists2() throws IOException {
+        System.clearProperty(CyAttributesReader.DECODE_PROPERTY);
+        checkReadSimpleLists("testData/implicitStringArrayEnc.attribute", ' ');
+	}
+
+	/**
+	 * Testing Reading of Simple Lists.
+	 * @throws IOException IO Errors.
+	 */
+	public void testReadSimpleLists3() throws IOException {
+        System.setProperty(CyAttributesReader.DECODE_PROPERTY, "false");
+        checkReadSimpleLists("testData/implicitStringArray.attribute", ' ');
+	}
+
+	/**
+	 * Testing Reading of Simple Lists.
+	 * @throws IOException IO Errors.
+	 */
+	public void testReadSimpleLists4() throws IOException {
+        System.setProperty(CyAttributesReader.DECODE_PROPERTY, "false");
+        checkReadSimpleLists("testData/implicitStringArrayEnc.attribute", '+');
+	}
+
+	/**
+	 * Testing Reading of Simple Lists.
+	 * @throws IOException IO Errors.
+	 */
+	public void testReadSimpleLists5() throws IOException {
+        System.setProperty(CyAttributesReader.DECODE_PROPERTY, "true");
+        checkReadSimpleLists("testData/implicitStringArray.attribute", ' ');
+	}
+
+	/**
+	 * Testing Reading of Simple Lists.
+	 * @throws IOException IO Errors.
+	 */
+	public void testReadSimpleLists6() throws IOException {
+        System.setProperty(CyAttributesReader.DECODE_PROPERTY, "true");
+        checkReadSimpleLists("testData/implicitStringArrayEnc.attribute", ' ');
 	}
 
 	/**

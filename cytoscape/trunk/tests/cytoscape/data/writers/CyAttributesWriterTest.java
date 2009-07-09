@@ -41,13 +41,10 @@ import cytoscape.data.CyAttributesImpl;
 
 import cytoscape.data.readers.CyAttributesReader;
 
-import cytoscape.data.writers.CyAttributesWriter;
-
 import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -108,16 +105,12 @@ public class CyAttributesWriterTest extends TestCase {
 		System.out.println("################## CyAttributesWriter2 Test end #######################");
 	}
 
-	/**
-	 * Tests Writing out of Lists.
-	 *
-	 * @throws IOException
-	 *             IO Error.
-	 */
-	public void testWriteSimpleLists() throws IOException {
-		
+    private void checkSimpleLists(char sep) throws IOException
+    {
+		StringWriter writer = new StringWriter();
+
 		System.out.println("################## CyAttributesWriter2 List Test start #######################");
-		
+
 		CyAttributes cyAttributes = new CyAttributesImpl();
 		File file = new File("testData/implicitStringArray.attribute");
 		FileReader reader = new FileReader(file);
@@ -131,7 +124,6 @@ public class CyAttributesWriterTest extends TestCase {
 
 		cyAttributes.setListAttribute("ABC_123", "GO_molecular_function_level_4", list);
 
-		StringWriter writer = new StringWriter();
 		CyAttributesWriter writer2 = new CyAttributesWriter(cyAttributes, "GO_molecular_function_level_4", writer);
 		writer2.writeAttributes();
 
@@ -143,7 +135,7 @@ public class CyAttributesWriterTest extends TestCase {
 			System.out.println("Line = " + line);
 			allLines.add(line);
 		}
-		
+
 		if(writer != null) {
 			writer.close();
 			writer = null;
@@ -156,16 +148,48 @@ public class CyAttributesWriterTest extends TestCase {
 		assertEquals(allLines.size(), lines.length);
 		assertTrue(allLines.contains("GO_molecular_function_level_4 (class=java.lang.String)"));
 		assertTrue(allLines.contains("HSD17B2 = (membrane::intracellular)"));
-		assertTrue(allLines.contains("E2F4 = (DNA binding)"));
-		assertTrue(allLines.contains("AP1G1 = (intracellular::clathrin adaptor::intracellular "
-		                             + "transporter)"));
+		assertTrue(allLines.contains("E2F4 = (DNA" + sep + "binding)"));
+		assertTrue(allLines.contains("AP1G1 = (intracellular::clathrin" + sep + "adaptor::intracellular" + sep + "transporter)"));
 		assertTrue(allLines.contains("ABC_123 = (Apple::Orange::Banana)"));
-		assertTrue(allLines.contains("CDH3 = (cell adhesion molecule)"));
+		assertTrue(allLines.contains("CDH3 = (cell" + sep + "adhesion" + sep + "molecule)"));
 
 		allLines = null;
 		lines = null;
-		
+
 		System.out.println("################## CyAttributesWriter2 List Test end #######################");
+    }
+
+	/**
+	 * Tests Writing out of Lists.
+	 *
+	 * @throws IOException
+	 *             IO Error.
+	 */
+	public void testWriteSimpleLists1() throws IOException {
+        System.clearProperty(CyAttributesWriter.ENCODE_PROPERTY);
+        checkSimpleLists('+');
+	}
+
+	/**
+	 * Tests Writing out of Lists.
+	 *
+	 * @throws IOException
+	 *             IO Error.
+	 */
+	public void testWriteSimpleLists2() throws IOException {
+        System.setProperty(CyAttributesWriter.ENCODE_PROPERTY, "false");
+        checkSimpleLists(' ');
+	}
+
+	/**
+	 * Tests Writing out of Lists.
+	 *
+	 * @throws IOException
+	 *             IO Error.
+	 */
+	public void testWriteSimpleLists3() throws IOException {
+        System.setProperty(CyAttributesWriter.ENCODE_PROPERTY, "true");
+        checkSimpleLists('+');
 	}
 
 	/**

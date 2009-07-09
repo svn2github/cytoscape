@@ -44,7 +44,10 @@ import java.util.StringTokenizer;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.writers.CyAttributesWriter;
 import cytoscape.logger.CyLogger;
+import java.net.URLDecoder;
+import java.text.MessageFormat;
 
 
 // I hate writing parsing code.  Grumble grumble grumble.
@@ -52,6 +55,22 @@ import cytoscape.logger.CyLogger;
  *
  */
 public class CyAttributesReader {
+    public static final String DECODE_PROPERTY = "cytoscape.decode.attributes";
+    private static final String badDecodeMessage =
+            "Trouble when decoding attribute value, first occurence line no. {0}" +
+            "\nIgnore if attributes file was created before 2.6.3 or wasn't creatad by Cytoscape." +
+            "\nUse -Dcytoscape.decode.attributes=false when starting Cytoscape to turn off decoding.";
+
+    private boolean badDecode;
+
+    private int lineNum;
+    private boolean doDecoding;
+
+    public CyAttributesReader() {
+		lineNum = 0;
+        doDecoding = Boolean.valueOf(System.getProperty(DECODE_PROPERTY, "true"));
+    }
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -60,9 +79,23 @@ public class CyAttributesReader {
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
-	public static void loadAttributes(CyAttributes cyAttrs, Reader fileIn)
+	public static void loadAttributes(CyAttributes cyAttrs, Reader fileIn) throws IOException {
+        CyAttributesReader ar = new CyAttributesReader();
+        ar.loadAttributesInternal(cyAttrs, fileIn);
+    }
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param cyAttrs DOCUMENT ME!
+	 * @param fileIn DOCUMENT ME!
+	 *
+	 * @throws IOException DOCUMENT ME!
+	 */
+	public void loadAttributesInternal(CyAttributes cyAttrs, Reader fileIn)
 	    throws IOException {
-		int lineNum = 0;
+
+        badDecode = false;
 
 		try {
 			final BufferedReader reader;
@@ -140,8 +173,10 @@ public class CyAttributesReader {
 				}
 
 				int inx = line.indexOf('=');
-				final String key = line.substring(0, inx).trim();
+				String key = line.substring(0, inx).trim();
 				String val = line.substring(inx + 1).trim();
+
+                key = decodeString(key);
 
 				if (firstLine && val.startsWith("(")) {
 					list = true;
@@ -152,50 +187,14 @@ public class CyAttributesReader {
 					val = val.substring(1).trim();
 					val = val.substring(0, val.length() - 1).trim();
 
-					// Home-grown parsing (ughh) to handle escape sequences.
+                    String[] elms = val.split("::");
 					final ArrayList elmsBuff = new ArrayList();
 
-					while (val.length() > 0) {
-						final StringBuilder elmBuff = new StringBuilder();
-						int inx2;
-
-						for (inx2 = 0; inx2 < val.length(); inx2++) {
-							char ch = val.charAt(inx2);
-
-							if (ch == ':') {
-								inx2++;
-								inx2++;
-
-								break;
-							} else if (ch == '\\') {
-								if ((inx2 + 1) < val.length()) {
-									inx2++;
-
-									char ch2 = val.charAt(inx2);
-
-									if (ch2 == 'n') {
-										elmBuff.append('\n');
-									} else if (ch2 == 't') {
-										elmBuff.append('\t');
-									} else if (ch2 == 'b') {
-										elmBuff.append('\b');
-									} else if (ch2 == 'r') {
-										elmBuff.append('\r');
-									} else if (ch2 == 'f') {
-										elmBuff.append('\f');
-									} else {
-										elmBuff.append(ch2);
-									}
-								} else {
-									/* val ends in '\' - just ignore it. */ }
-							} else {
-								elmBuff.append(ch);
-							}
-						}
-
-						elmsBuff.add(new String(elmBuff));
-						val = val.substring(inx2);
-					}
+                    for (String vs : elms) {
+                        vs = decodeString(vs);
+                        vs = decodeSlashEscapes(vs);
+                        elmsBuff.add(vs);
+                    }
 
 					if (firstLine) {
 						if (type < 0) {
@@ -244,41 +243,8 @@ public class CyAttributesReader {
 
 					cyAttrs.setListAttribute(key, attributeName, elmsBuff);
 				} else { // Not a list.
-					     // Do the escaping thing.
-
-					final StringBuilder elmBuff = new StringBuilder();
-					int inx2;
-
-					for (inx2 = 0; inx2 < val.length(); inx2++) {
-						char ch = val.charAt(inx2);
-
-						if (ch == '\\') {
-							if ((inx2 + 1) < val.length()) {
-								inx2++;
-
-								char ch2 = val.charAt(inx2);
-
-								if (ch2 == 'n') {
-									elmBuff.append('\n');
-								} else if (ch2 == 't') {
-									elmBuff.append('\t');
-								} else if (ch2 == 'b') {
-									elmBuff.append('\b');
-								} else if (ch2 == 'r') {
-									elmBuff.append('\r');
-								} else if (ch2 == 'f') {
-									elmBuff.append('\f');
-								} else {
-									elmBuff.append(ch2);
-								}
-							} else {
-								/* val ends in '\' - just ignore it. */ }
-						} else {
-							elmBuff.append(ch);
-						}
-					}
-
-					val = new String(elmBuff);
+                    val = decodeString(val);
+                    val = decodeSlashEscapes(val);
 
 					if (firstLine) {
 						if (type < 0) {
@@ -331,4 +297,64 @@ public class CyAttributesReader {
 			throw new IOException(message);
 		}
 	}
+
+    private String decodeString(String in) throws IOException {
+        if (doDecoding) {
+            try {
+                in = URLDecoder.decode(in, CyAttributesWriter.ENCODING_SCHEME);
+            }
+            catch (IllegalArgumentException iae) {
+                if (!badDecode) {
+                    CyLogger.getLogger(CyAttributesReader.class).info(MessageFormat.format(badDecodeMessage, lineNum), iae);
+                    badDecode = true;
+                }
+            }
+        }
+
+        return in;
+    }
+
+    private static String decodeSlashEscapes(String in) {
+        final StringBuilder elmBuff = new StringBuilder();
+        int inx2;
+
+        for (inx2 = 0; inx2 < in.length(); inx2++) {
+            char ch = in.charAt(inx2);
+
+            if (ch == '\\') {
+                if ((inx2 + 1) < in.length()) {
+                    inx2++;
+
+                    char ch2 = in.charAt(inx2);
+
+                    if (ch2 == 'n') {
+                        elmBuff.append('\n');
+                    } else if (ch2 == 't') {
+                        elmBuff.append('\t');
+                    } else if (ch2 == 'b') {
+                        elmBuff.append('\b');
+                    } else if (ch2 == 'r') {
+                        elmBuff.append('\r');
+                    } else if (ch2 == 'f') {
+                        elmBuff.append('\f');
+                    } else {
+                        elmBuff.append(ch2);
+                    }
+                } else {
+                    /* val ends in '\' - just ignore it. */ }
+            } else {
+                elmBuff.append(ch);
+            }
+        }
+
+        return elmBuff.toString();
+    }
+
+    public boolean isDoDecoding() {
+        return doDecoding;
+    }
+
+    public void setDoDecoding(boolean doDec) {
+        doDecoding = doDec;
+    }
 }
