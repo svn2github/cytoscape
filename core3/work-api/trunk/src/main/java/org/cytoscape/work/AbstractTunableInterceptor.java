@@ -180,8 +180,6 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 
 			handlerMap.put(obj, handlerList);
 		}
-		else throw new IllegalArgumentException("THE COMMAND IS EMPTY\nProvide something!");
-
 	}
 
 	/**
