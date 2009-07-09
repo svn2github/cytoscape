@@ -231,7 +231,7 @@ public class LayerBuilderDialog extends JDialog {
 		moveAllAvailableNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						MoveAllAvailableNetworkButtonActionPerformed(evt);
+						moveAllAvailableNetworkButtonActionPerformed(evt);
 					}
 				});
 
@@ -239,7 +239,7 @@ public class LayerBuilderDialog extends JDialog {
 		moveSelectedAvailableNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						MoveSelectedAvailableNetworkButtonActionPerformed(evt);
+						moveSelectedAvailableNetworkButtonActionPerformed(evt);
 					}
 				});
 
@@ -247,7 +247,7 @@ public class LayerBuilderDialog extends JDialog {
 		moveSelectedIntegratedNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						MoveSelectedIntegratedNetworkButtonActionPerformed(evt);
+						moveSelectedIntegratedNetworkButtonActionPerformed(evt);
 					}
 				});
 
@@ -255,7 +255,7 @@ public class LayerBuilderDialog extends JDialog {
 		moveAllIntegratedNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						MoveAllIntegratedNetworkButtonActionPerformed(evt);
+						moveAllIntegratedNetworkButtonActionPerformed(evt);
 					}
 				});
 
@@ -419,7 +419,7 @@ public class LayerBuilderDialog extends JDialog {
 		optionButton.setText("Options");
 		optionButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				OptionButtonActionPerformed(evt);
+				optionButtonActionPerformed(evt);
 			}
 		});
 
@@ -427,14 +427,14 @@ public class LayerBuilderDialog extends JDialog {
 		generateIntegratedNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						GenerateIntegratedNetworkButtonActionPerformed(evt);
+						generateIntegratedNetworkButtonActionPerformed(evt);
 					}
 				});
 
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				CancelButtonActionPerformed(evt);
+				cancelButtonActionPerformed(evt);
 			}
 		});
 
@@ -501,11 +501,11 @@ public class LayerBuilderDialog extends JDialog {
 		pack();
 	}// </editor-fold>//GEN-END:initComponents
 
-	private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_CancelButtonActionPerformed
+	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_CancelButtonActionPerformed
 		this.dispose();
 	}// GEN-LAST:event_CancelButtonActionPerformed
 
-	private void GenerateIntegratedNetworkButtonActionPerformed(
+	private void generateIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GenerateIntegratedNetworkButtonActionPerformed
 
 		// Setup
@@ -518,11 +518,11 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_GenerateIntegratedNetworkButtonActionPerformed
 
-	private void OptionButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_OptionButtonActionPerformed
+	private void optionButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_OptionButtonActionPerformed
 		// TODO add your handling code here:
 	}// GEN-LAST:event_OptionButtonActionPerformed
 
-	private void MoveAllAvailableNetworkButtonActionPerformed(
+	private void moveAllAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllAvailableNetworkButtonActionPerformed
 		// TODO add your handling code here:
 
@@ -536,7 +536,7 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_MoveAllAvailableNetworkButtonActionPerformed
 
-	private void MoveSelectedAvailableNetworkButtonActionPerformed(
+	private void moveSelectedAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 		// TODO add your handling code here:
 
@@ -551,13 +551,13 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
-	private void MoveSelectedIntegratedNetworkButtonActionPerformed(
+	private void moveSelectedIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 		// TODO add your handling code here:
 
 	}// GEN-LAST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 
-	private void MoveAllIntegratedNetworkButtonActionPerformed(
+	private void moveAllIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllIntegratedNetworkButtonActionPerformed
 		// TODO add your handling code here:
 
