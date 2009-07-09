@@ -253,7 +253,7 @@ public class Graph {
 			int edgeFrom = a_edge[x].getFrom();
 			int edgeTo = a_edge[x].getTo();
 
-			if ((edgeFrom < 0) || (edgeTo >= nodecount) || (edgeTo < 0) || (edgeTo >= nodecount)) {
+			if ((edgeFrom < 0) || (edgeFrom >= nodecount) || (edgeTo < 0) || (edgeTo >= nodecount)) {
 				throw new IllegalArgumentException("Edge refered to node outside of valid range: "
 				                                   + "From=" + edgeFrom + " To=" + edgeTo
 				                                   + " with nodecount=" + nodecount + "\n");
