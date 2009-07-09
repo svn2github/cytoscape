@@ -37,7 +37,7 @@ package org.cytoscape.search.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.Iterator;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.HitCollector;
@@ -48,7 +48,9 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.document.Document;
 
 import org.cytoscape.search.EnhancedSearchQuery;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.search.util.EnhancedSearchUtils;
 import org.cytoscape.search.util.CustomMultiFieldQueryParser;
 import org.cytoscape.search.util.AttributeFields;
@@ -56,7 +58,9 @@ import org.cytoscape.search.util.AttributeFields;
 public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 
 	private IdentifiersCollector hitCollector = null;
-
+	private ArrayList<CyNode> nodelist = null;
+	private ArrayList<CyEdge> edgelist = null;
+	
 	public EnhancedSearchQueryImpl(RAMDirectory index, CyNetwork net) {
 		super(index,net);
 	}
@@ -135,7 +139,51 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 			return null;
 		}
 	}
-
+	private void parseHits(){
+		ArrayList<String> al = hitCollector.getHits();
+		Iterator<String> it = al.iterator();
+		nodelist = new ArrayList<CyNode>();
+		edgelist = new ArrayList<CyEdge>();
+		while(it.hasNext()){
+			String currid = (String) it.next();
+			CyNode currNode = network.getNode((new Integer(currid)).intValue());
+			if(currNode!=null){
+				nodelist.add(currNode);
+			}
+			else{
+				CyEdge currEdge = network.getEdge((new Integer(currid)).intValue());
+				if (currEdge != null) {
+					edgelist.add(currEdge);
+				} else{
+					System.out.println("Unknown Identifier "+ currid);
+				}
+			}
+		}
+	}
+	public ArrayList<CyNode> getNodeHits(){
+		if(hitCollector!=null)
+		{
+			if(nodelist==null)
+			{
+				parseHits();
+			}
+			return nodelist;
+		}
+		else{
+			return null;	
+		}
+	}
+	public ArrayList<CyEdge> getEdgeHits(){
+		if(hitCollector!=null)
+		{
+			if(edgelist==null)
+				parseHits();
+			return edgelist;
+		}
+		else{
+			return null;
+		}
+	}
 }
 
 
