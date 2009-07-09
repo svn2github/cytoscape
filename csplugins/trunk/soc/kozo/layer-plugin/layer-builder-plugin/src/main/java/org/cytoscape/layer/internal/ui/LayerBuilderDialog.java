@@ -17,6 +17,7 @@ import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -24,6 +25,7 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
 import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
@@ -632,11 +634,15 @@ public class LayerBuilderDialog extends JDialog {
 			DragGestureListener {
 
 		DragSource dragSource;
+		Object dropTargetCell;
 		int draggedIndex = -1;
 
 		public void dragDropEnd(DragSourceDropEvent dsde) {
 			// TODO Auto-generated method stub
-
+			System.out.println("dragDropEnd()");
+			dropTargetCell = null;
+			draggedIndex = -1;
+			repaint();
 		}
 
 		public void dragEnter(DragSourceDragEvent dsde) {
@@ -700,8 +706,17 @@ public class LayerBuilderDialog extends JDialog {
 
 	private class DroppableJTable extends JTable implements DropTargetListener {
 
+		DropTarget dropTarget;
+
 		public void dragEnter(DropTargetDragEvent dtde) {
 			// TODO Auto-generated method stub
+			System.out.println("dragEnter");
+			if (dtde.getSource() != dropTarget)
+				dtde.rejectDrag();
+			else {
+				dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
+				System.out.println("accepted dragEnter");
+			}
 
 		}
 
