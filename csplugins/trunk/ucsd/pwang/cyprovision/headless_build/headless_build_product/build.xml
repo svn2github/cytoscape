@@ -1,0 +1,47 @@
+<project name="cytoscape.build" default="product-build">
+
+	<!-- Beginning of configuration section -->
+	
+	<property name="base" location="c:/eclipse35" />
+	<property name="baseLocation" location="${base}/eclipse" />
+	<property name="buildDirectory" location="./build" />
+	
+	<!-- End of configuration section -->
+	
+	<pathconvert property="equinoxLauncher">
+		<path>
+			<fileset dir="${baseLocation}/plugins" includes="**/*.jar" />
+		</path>
+		<regexpmapper from="(org\.eclipse\.equinox\.launcher)(_)(.*)\.jar" to="\0" />
+	</pathconvert>
+
+	<!--
+		This target actually executes the PDE Build process by launching the 
+		Eclipse antRunner application.
+	-->
+	<target name="product-build">	
+
+		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true" >
+			<arg value="-application" />
+			<arg value="org.eclipse.ant.core.antRunner" />
+			<arg value="-buildfile" />
+			<arg value="build_cy3_product.xml" />
+			<classpath>
+				<pathelement location="${baseLocation}/plugins/${equinoxLauncher}" />
+			</classpath>
+
+		</java>	
+	</target>
+
+	
+	<!-- This target is responsible for cleaning up the build-directory -->
+		<target name="clean">
+			<delete dir="${buildDirectory}" />
+		</target>
+		
+		<target name="init">
+		
+		
+		</target>
+
+</project>
