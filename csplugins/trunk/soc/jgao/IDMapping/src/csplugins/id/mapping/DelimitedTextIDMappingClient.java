@@ -35,8 +35,6 @@
 
 package csplugins.id.mapping;
 
-import csplugins.id.mapping.IDMappingClientManager.ClientType;
-
 import org.bridgedb.file.IDMapperText;
 
 import java.net.URL;
@@ -81,13 +79,5 @@ public class DelimitedTextIDMappingClient extends FileIDMappingClient {
                 idMapper.getURL().toString(),
                 idMapper);
         //TODO: set ModuleProperties
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ClientType getClientType() {
-        return ClientType.FILE;
     }
 }

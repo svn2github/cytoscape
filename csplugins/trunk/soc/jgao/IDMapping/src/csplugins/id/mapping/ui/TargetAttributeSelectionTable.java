@@ -74,7 +74,7 @@ import org.bridgedb.DataSource;
 public class TargetAttributeSelectionTable extends JTable{
     private IDTypeSelectionTableModel model;
 
-    private Set<DataSource> supportedIDType;
+    private Set<DataSourceWrapper> supportedIDType;
 
     private int rowCount;
     private List<JComboBox> idTypeComboBoxes;
@@ -152,7 +152,11 @@ public class TargetAttributeSelectionTable extends JTable{
         if (types==null) {
             throw new NullPointerException();
         }
-        supportedIDType = types;
+
+        supportedIDType = new TreeSet();
+        for (DataSource type : types) {
+            supportedIDType.add(new DataSourceWrapper(type));
+        }
 
         idTypeComboBoxes.clear();
         for (int i=0; i<rowCount; i++) {
@@ -170,8 +174,9 @@ public class TargetAttributeSelectionTable extends JTable{
 
         String attr = (String)destinationAttributes.get(row);
         if (attr.length()==0) {
-            DataSource type = (DataSource)idTypeComboBoxes.get(row).getSelectedItem();
-            attr = type.getFullName();
+            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(row).getSelectedItem();
+            DataSource ds = dsw.DataSource();
+            attr = ds.getFullName();
         }
 
         return attr;
@@ -184,7 +189,8 @@ public class TargetAttributeSelectionTable extends JTable{
 
         List<DataSource> ret = new Vector();
         for (int i=0; i<rowCount; i++) {
-            DataSource ds = (DataSource)idTypeComboBoxes.get(i).getSelectedItem();
+            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i).getSelectedItem();
+            DataSource ds = dsw.DataSource();
             ret.add(ds);
         }
         return ret;
@@ -217,7 +223,8 @@ public class TargetAttributeSelectionTable extends JTable{
         
         Map<DataSource, String> ret = new HashMap();
         for (int i=0; i<rowCount; i++) {
-            DataSource ds = (DataSource)idTypeComboBoxes.get(i).getSelectedItem();
+            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i).getSelectedItem();
+            DataSource ds = dsw.DataSource();
             String name = getAttrName(i);
             ret.put(ds, name);
         }

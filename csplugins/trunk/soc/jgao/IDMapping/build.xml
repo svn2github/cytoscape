@@ -56,6 +56,7 @@
 
       <fileset dir= "${build.classes}" />
       <zipfileset src="lib/BridgeDbCore.jar" />
+      <zipfileset src="lib/derby.jar" />
     </jar>
   </target>
   

@@ -37,68 +37,28 @@ package csplugins.id.mapping;
 
 import csplugins.id.mapping.IDMappingClientManager.ClientType;
 
-import cytoscape.util.ModuleProperties;
+import org.bridgedb.rdb.SimpleGdb;
+import org.bridgedb.rdb.SimpleGdbFactory;
+import org.bridgedb.rdb.DataDerby;
+import org.bridgedb.IDMapperException;
 
-import org.bridgedb.file.IDMapperFile;
 
 /**
  *
  * @author gjj
  */
-public abstract class FileIDMappingClient extends AbstractIDMappingClient {
-    // Default ID
-	protected static final String FILE_NAME = "file";
+public class PGDBIDMappingClient extends RDBIDMappingClient {
 
-	// Default Display Name
-	protected static final String FILE_DISPLAY_NAME = "File Web Service Cilent";
 
-    /**
-	 * Creates a new WebServiceClientImpl object.
-	 */
-	public FileIDMappingClient() {
-		this(FILE_NAME, FILE_DISPLAY_NAME);
-	}
+    public PGDBIDMappingClient(final String dbName) throws IDMapperException {
+        this (SimpleGdbFactory.createInstance(dbName, new DataDerby(), 0));
 
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 */
-	public FileIDMappingClient(final String serviceName, final String displayName) {
-		this(serviceName, displayName, null);
-	}
+    }
 
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 */
-	public FileIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperFile idMapper) {
-		this(serviceName, displayName, idMapper, null);
-	}
-
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 */
-	public FileIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperFile idMapper, final ModuleProperties props) {
-		super(serviceName, displayName, idMapper, props);
-
-	}
-
-    /**
-     *
-     * @return
-     */
-    public ClientType getClientType() {
-        return ClientType.FILE;
+    public PGDBIDMappingClient(final SimpleGdb idMapper) {
+        super(idMapper.getDbName(),
+                idMapper.getDbName(),
+                idMapper);
+        //TODO: set ModuleProperties
     }
 }

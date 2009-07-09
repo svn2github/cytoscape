@@ -39,24 +39,24 @@ import csplugins.id.mapping.IDMappingClientManager.ClientType;
 
 import cytoscape.util.ModuleProperties;
 
-import org.bridgedb.file.IDMapperFile;
+import org.bridgedb.rdb.IDMapperRdb;
 
 /**
  *
  * @author gjj
  */
-public abstract class FileIDMappingClient extends AbstractIDMappingClient {
+public abstract class RDBIDMappingClient extends AbstractIDMappingClient {
     // Default ID
-	protected static final String FILE_NAME = "file";
+	protected static final String RDB_NAME = "rdb";
 
 	// Default Display Name
-	protected static final String FILE_DISPLAY_NAME = "File Web Service Cilent";
+	protected static final String RDB_DISPLAY_NAME = "File Web Service Cilent";
 
     /**
 	 * Creates a new WebServiceClientImpl object.
 	 */
-	public FileIDMappingClient() {
-		this(FILE_NAME, FILE_DISPLAY_NAME);
+	public RDBIDMappingClient() {
+		this(RDB_NAME, RDB_DISPLAY_NAME);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public abstract class FileIDMappingClient extends AbstractIDMappingClient {
 	 * @param serviceName  DOCUMENT ME!
 	 * @param displayName  DOCUMENT ME!
 	 */
-	public FileIDMappingClient(final String serviceName, final String displayName) {
+	public RDBIDMappingClient(final String serviceName, final String displayName) {
 		this(serviceName, displayName, null);
 	}
 
@@ -76,8 +76,8 @@ public abstract class FileIDMappingClient extends AbstractIDMappingClient {
 	 * @param displayName  DOCUMENT ME!
 	 * @param props  DOCUMENT ME!
 	 */
-	public FileIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperFile idMapper) {
+	public RDBIDMappingClient(final String serviceName, final String displayName,
+	                           final IDMapperRdb idMapper) {
 		this(serviceName, displayName, idMapper, null);
 	}
 
@@ -88,8 +88,8 @@ public abstract class FileIDMappingClient extends AbstractIDMappingClient {
 	 * @param displayName  DOCUMENT ME!
 	 * @param props  DOCUMENT ME!
 	 */
-	public FileIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperFile idMapper, final ModuleProperties props) {
+	public RDBIDMappingClient(final String serviceName, final String displayName,
+	                           final IDMapperRdb idMapper, final ModuleProperties props) {
 		super(serviceName, displayName, idMapper, props);
 
 	}
@@ -99,6 +99,6 @@ public abstract class FileIDMappingClient extends AbstractIDMappingClient {
      * @return
      */
     public ClientType getClientType() {
-        return ClientType.FILE;
+        return ClientType.RDB;
     }
 }

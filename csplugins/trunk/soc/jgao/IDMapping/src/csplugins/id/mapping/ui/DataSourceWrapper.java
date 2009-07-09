@@ -31,37 +31,46 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
-package csplugins.id.mapping;
-
-import cytoscape.CyNetwork;
+package csplugins.id.mapping.ui;
 
 import org.bridgedb.DataSource;
-import org.bridgedb.IDMapperException;
-
-import java.util.Set;
-import java.util.Map;
 
 /**
  *
  * @author gjj
  */
-public interface AttributeBasedIDMappingService {
+class DataSourceWrapper implements Comparable {
+        private DataSource ds;
+        DataSourceWrapper(DataSource ds) {
+            this.ds = ds;
+        }
 
-    /**
-     * For each node in each network, given its attribute and the corresponding
-     * source id types, create new attributes of the destination type.
-     *
-     * @param networks
-     * @param mapSrcAttrIDTypes
-     *      key: source attribute
-     *      value: corresponding ID types
-     * @param MapTgtIDTypeAttrName
-     *      key: target ID type
-     *      value: attribute name
-     */
-    public void map(Set<CyNetwork> networks, Map<String,Set<DataSource>> mapSrcAttrIDTypes,
-            Map<DataSource, String> MapTgtIDTypeAttrName) throws IDMapperException;
-    
-}
+        DataSource DataSource() {
+            return ds;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            String fullName = ds.getFullName();
+            String sysCode = ds.getSystemCode();
+            if (sysCode!=null) {
+                sb.append(sysCode);
+                if (fullName!=null) {
+                    sb.append(":"+fullName);
+                }
+            } else {
+                if (fullName!=null) {
+                    sb.append(fullName);
+                }
+            }
+
+            return sb.toString();
+        }
+
+        public int compareTo(Object obj) {
+            return this.toString().compareTo(obj.toString());
+        }
+    }

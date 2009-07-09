@@ -50,11 +50,11 @@ import java.awt.event.ActionEvent;
  */
 public class CyThesaurusPlugin extends CytoscapePlugin {
     public CyThesaurusPlugin() {
-        Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new NetworkMergeAction());
+        Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new IDMappingAction());
     }
     
-    class NetworkMergeAction extends CytoscapeAction {
-        public NetworkMergeAction() {
+    class IDMappingAction extends CytoscapeAction {
+        public IDMappingAction() {
             super("CyThesaurus plugin"); //TODO rename
 	}
 

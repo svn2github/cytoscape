@@ -59,9 +59,6 @@
             </Component>
             <Component class="javax.swing.JRadioButton" name="localRadioButton">
               <Properties>
-                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                  <ComponentRef name="default"/>
-                </Property>
                 <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" value="Local   "/>
               </Properties>
@@ -71,9 +68,6 @@
             </Component>
             <Component class="javax.swing.JRadioButton" name="remoteRadioButton">
               <Properties>
-                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                  <ComponentRef name="default"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Remote/URL"/>
               </Properties>
               <Events>
@@ -196,9 +190,6 @@
                   <SubComponents>
                     <Component class="javax.swing.JCheckBox" name="tabTypeCheckBox">
                       <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="default"/>
-                        </Property>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="text" type="java.lang.String" value="Tab"/>
                       </Properties>
@@ -208,9 +199,6 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="commaTypeCheckBox">
                       <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="default"/>
-                        </Property>
                         <Property name="text" type="java.lang.String" value="Comma"/>
                       </Properties>
                       <Events>
@@ -219,9 +207,6 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="semiTypeCheckBox">
                       <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="default"/>
-                        </Property>
                         <Property name="text" type="java.lang.String" value="Semicolon"/>
                       </Properties>
                       <Events>
@@ -230,9 +215,6 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="spaceTypeCheckBox">
                       <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="default"/>
-                        </Property>
                         <Property name="text" type="java.lang.String" value="Space"/>
                       </Properties>
                       <Events>
@@ -283,9 +265,6 @@
                   <SubComponents>
                     <Component class="javax.swing.JCheckBox" name="tabIDCheckBox">
                       <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="default"/>
-                        </Property>
                         <Property name="text" type="java.lang.String" value="Tab"/>
                       </Properties>
                       <Events>
@@ -294,9 +273,6 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="commaIDCheckBox">
                       <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="default"/>
-                        </Property>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="text" type="java.lang.String" value="Comma"/>
                       </Properties>
@@ -306,9 +282,6 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="semiIDCheckBox">
                       <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="default"/>
-                        </Property>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="text" type="java.lang.String" value="Semicolon"/>
                       </Properties>
@@ -318,9 +291,6 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="spaceIDCheckBox">
                       <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="default"/>
-                        </Property>
                         <Property name="text" type="java.lang.String" value="Space"/>
                       </Properties>
                       <Events>

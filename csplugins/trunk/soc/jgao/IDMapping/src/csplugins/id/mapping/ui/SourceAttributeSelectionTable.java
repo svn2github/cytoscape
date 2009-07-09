@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import javax.swing.JTable;
@@ -74,7 +75,7 @@ import org.bridgedb.DataSource;
 public class SourceAttributeSelectionTable extends JTable{
     private IDTypeSelectionTableModel model;
 
-    private Set<DataSource> supportedIDType;
+    private Set<DataSourceWrapper> supportedIDType;
 
     //private List<JComboBox> networkComboBoxes;
     private List<JComboBox> attributeComboBoxes;
@@ -93,7 +94,7 @@ public class SourceAttributeSelectionTable extends JTable{
     public SourceAttributeSelectionTable() {
         super();
 
-        supportedIDType = new HashSet();
+        supportedIDType = new TreeSet();
         //networkComboBoxes = new Vector();
         attributeComboBoxes = new Vector();
         typeComboBoxes = new Vector();
@@ -147,11 +148,14 @@ public class SourceAttributeSelectionTable extends JTable{
             throw new NullPointerException();
         }
         
-        supportedIDType = types;
+        supportedIDType = new TreeSet();
+        for (DataSource type : types) {
+            supportedIDType.add(new DataSourceWrapper(type));
+        }
 
         typeComboBoxes.clear();
         for (int i=0; i<rowCount; i++) {
-            typeComboBoxes.add(new CheckComboBox(supportedIDType));
+            typeComboBoxes.add(new CheckComboBox(supportedIDType, true));
         }
         setColumnEditorAndCellRenderer();
         //fireTableDataChanged();
@@ -172,7 +176,13 @@ public class SourceAttributeSelectionTable extends JTable{
 
             Set<DataSource> types = null;
             if (!supportedIDType.isEmpty()) {
-                types = typeComboBoxes.get(i).getSelectedItem();
+                Set<DataSourceWrapper> dsws = typeComboBoxes.get(i).getSelectedItem();
+                if (dsws!=null) {
+                    types = new HashSet();
+                    for (DataSourceWrapper dsw : dsws) {
+                        types.add(dsw.DataSource());
+                    }
+                }
             }
             ret.put(attr, types);
         }
@@ -248,11 +258,15 @@ public class SourceAttributeSelectionTable extends JTable{
         //TODO remove in Cytoscape3
         attrs.add("ID");
         //TODO: modify if local attribute implemented
-        attrs.addAll(Arrays.asList(cytoscape.Cytoscape.getNodeAttributes().getAttributeNames()));
+        
+        List list = Arrays.asList(cytoscape.Cytoscape.getNodeAttributes().getAttributeNames());
+        Collections.sort(list);
+
+        attrs.addAll(list);
 
         attributeComboBoxes.add(new JComboBox(attrs));
 
-        CheckComboBox cc = new CheckComboBox(supportedIDType);
+        CheckComboBox cc = new CheckComboBox(supportedIDType, true);
         typeComboBoxes.add(cc);
 
         JButton button = new JButton("Remove");
@@ -396,7 +410,7 @@ public class SourceAttributeSelectionTable extends JTable{
     }
 
     // render checkcombobox
-    class ComboBoxTableCellRenderer implements TableCellRenderer {
+    private class ComboBoxTableCellRenderer implements TableCellRenderer {
         private DefaultTableCellRenderer defaultRenderer;
 
         public ComboBoxTableCellRenderer() {
@@ -423,7 +437,7 @@ public class SourceAttributeSelectionTable extends JTable{
         }
     }
 
-    class ButtonRenderer implements TableCellRenderer {
+    private class ButtonRenderer implements TableCellRenderer {
         private DefaultTableCellRenderer defaultRenderer;
 
         public ButtonRenderer() {

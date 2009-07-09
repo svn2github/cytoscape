@@ -210,8 +210,17 @@ class IDMappingSourceSelectionTree extends JTree {
 
     private void setupPopupMenu() {
         // popup menus
+        final JPopupMenu rootPopup = new JPopupMenu();
+        JMenuItem mi = new JMenuItem("Add an ID mapping source by connecting string...");
+        mi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addSourceByString();
+            }
+        });
+        rootPopup.add(mi);
+
         final JPopupMenu dbPopup = new JPopupMenu();
-        JMenuItem mi = new JMenuItem("Add an ID mapping database...");
+        mi = new JMenuItem("Add an ID mapping database...");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addDatabase();
@@ -237,7 +246,7 @@ class IDMappingSourceSelectionTree extends JTree {
         });
         filePopup.add(mi);
 
-        final ClientPopupMenu dbClientPopup = new ClientPopupMenu();
+        final TreeNodePopupMenu dbClientPopup = new TreeNodePopupMenu();
         mi = new JMenuItem("Delete");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -246,7 +255,7 @@ class IDMappingSourceSelectionTree extends JTree {
         });
         dbClientPopup.add(mi);
 
-        final ClientPopupMenu wsClientPopup = new ClientPopupMenu();
+        final TreeNodePopupMenu wsClientPopup = new TreeNodePopupMenu();
         mi = new JMenuItem("Delete");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -255,7 +264,7 @@ class IDMappingSourceSelectionTree extends JTree {
         });
         wsClientPopup.add(mi);
 
-        final ClientPopupMenu fileClientPopup = new ClientPopupMenu();
+        final TreeNodePopupMenu fileClientPopup = new TreeNodePopupMenu();
         mi = new JMenuItem("Delete");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -323,8 +332,36 @@ class IDMappingSourceSelectionTree extends JTree {
         });
     }
 
-    private void addDatabase() {
+    private void addSourceByString() {
         
+    }
+
+    private void addDatabase() {
+        RDBIDMappingClientConfigDialog dialog = new RDBIDMappingClientConfigDialog(parent, true);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        if (!dialog.isCancelled()) {
+            IDMappingClient client = dialog.getIDMappingClient();
+            if (client!=null) {
+                DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
+                IDMappingClientManager.registerClient(client);
+
+                dbTreeNode.add(clientNode);
+                clientNode.setAllowsChildren(false);
+
+                //expand path
+                this.expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,dbTreeNode}));
+
+                //set selected
+                TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,dbTreeNode,clientNode});
+                if (!selection_Model.isPathSelected(path, true)) {
+                    selection_Model.addSelectionPaths(new TreePath[] {path});
+                }
+                setSelectionPath(path);
+
+                tree_Model.reload(dbTreeNode);
+            }
+        }
     }
 
     private void addWebService() {
@@ -398,7 +435,7 @@ class IDMappingSourceSelectionTree extends JTree {
         }
     }
 
-    private class ClientPopupMenu extends JPopupMenu {
+    private class TreeNodePopupMenu extends JPopupMenu {
         private DefaultMutableTreeNode node;
 
         public void setTreeNode(final DefaultMutableTreeNode node) {

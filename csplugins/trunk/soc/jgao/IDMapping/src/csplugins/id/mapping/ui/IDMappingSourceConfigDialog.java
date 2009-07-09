@@ -148,11 +148,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         descScrollPane.setMinimumSize(new java.awt.Dimension(100, 100));
         descScrollPane.setPreferredSize(new java.awt.Dimension(100, 100));
 
-        descTextArea.setColumns(20);
-        descTextArea.setLineWrap(true);
-        descTextArea.setRows(5);
         descTextArea.setText(msg);
-        descTextArea.setWrapStyleWord(true);
         descTextArea.setMinimumSize(new java.awt.Dimension(300, 500));
         descTextArea.setPreferredSize(new java.awt.Dimension(300, 500));
         descScrollPane.setViewportView(descTextArea);

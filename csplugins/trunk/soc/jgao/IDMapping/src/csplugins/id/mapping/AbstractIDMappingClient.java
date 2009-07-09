@@ -32,12 +32,14 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package csplugins.id.mapping;
 
 import cytoscape.util.ModuleProperties;
 
 import java.io.Serializable;
 
+import org.bridgedb.Xref;
 import org.bridgedb.IDMapper;
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapperCapabilities;
@@ -166,30 +168,54 @@ public abstract class AbstractIDMappingClient implements Serializable, IDMapping
 	 * @return  DOCUMENT ME!
 	 */
 	public String getDescription() {
-		StringBuilder desc = new StringBuilder(this.getDisplayName());
-        desc.append("\nCapacities:\n");
+            StringBuilder desc = new StringBuilder(this.getDisplayName());
+            desc.append("\nCapacities:\n");
 
-        desc.append("* Supported source ID types:\n");
-        IDMapperCapabilities capabilities = idMapper.getCapabilities();
-        for (DataSource dataSource : capabilities.getSupportedSrcDataSources()) {
-            desc.append("    ");
-            desc.append(dataSource.toString());
+            desc.append("* Supported source ID types:\n");
+            IDMapperCapabilities capabilities = idMapper.getCapabilities();
+            for (DataSource dataSource : capabilities.getSupportedSrcDataSources()) {
+                desc.append("\t");
+                desc.append(getDescription(dataSource));
+            }
+
+            desc.append("* Supported target ID types:\n");
+            for (DataSource dataSource : capabilities.getSupportedTgtDataSources()) {
+                desc.append("\t");
+                desc.append(getDescription(dataSource));
+            }
+
+            desc.append("* Is free-text search supported?\n");
+            desc.append(capabilities.isFreeSearchSupported()? "    Yes":"    No");
             desc.append("\n");
-        }
 
-        desc.append("* Supported target ID types:\n");
-        for (DataSource dataSource : capabilities.getSupportedTgtDataSources()) {
-            desc.append("    ");
-            desc.append(dataSource.toString());
-            desc.append("\n");
-        }
-
-        desc.append("* Is free-text search supported?\n");
-        desc.append(capabilities.isFreeSearchSupported()? "    Yes":"    No");
-        desc.append("\n");
-
-        return desc.toString();
+            return desc.toString();
 	}
+
+        private String getDescription(DataSource dataSource) {
+            StringBuilder desc = new StringBuilder();
+            String sysName = dataSource.getSystemCode();
+            if (sysName!=null) {
+                desc.append(sysName);
+            }
+            desc.append("\t");
+
+            String fullName = dataSource.getFullName();
+            if (fullName!=null) {
+                desc.append(fullName);
+            }
+            desc.append("\t");
+
+            Xref example = dataSource.getExample();
+            if (example!=null) {
+                String id = example.getId();
+                if (id!=null) {
+                    desc.append(id);
+                }
+            }
+
+            desc.append("\n");
+            return desc.toString();
+        }
 	
 	public void setIDMapper(final IDMapper idMapper) {
 		this.idMapper = idMapper;

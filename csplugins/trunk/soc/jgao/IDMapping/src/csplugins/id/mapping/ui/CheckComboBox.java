@@ -49,7 +49,7 @@ import java.util.Vector;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * ComboBox containing checkbox
@@ -60,11 +60,15 @@ class CheckComboBox extends JComboBox {
    private Map<Object, Boolean> mapObjSelected;
 
    public CheckComboBox(final Set objs) {
-       resetObjs(objs);
+       this(objs, false);
+   }
+
+   public CheckComboBox(final Set objs, boolean selected) {
+       resetObjs(objs, selected);
    }
 
    public CheckComboBox(final Set objs, final Set selected) {
-       mapObjSelected = new HashMap();
+       mapObjSelected = new LinkedHashMap();
        for (Object obj : objs) {
            mapObjSelected.put(obj, selected.contains(obj));
        }
@@ -78,10 +82,10 @@ class CheckComboBox extends JComboBox {
        reset();
    }
 
-   public void resetObjs(final Set objs) {
-       mapObjSelected = new HashMap();
+   public void resetObjs(final Set objs, boolean selected) {
+       mapObjSelected = new LinkedHashMap();
        for (Object obj : objs) {
-           mapObjSelected.put(obj, false);
+           mapObjSelected.put(obj, selected);
        }
 
        reset();
@@ -117,7 +121,7 @@ class CheckComboBox extends JComboBox {
    private void initCBs() {
             cbs = new Vector<ObjCheckBox>();
 
-            boolean selectedAll = false;
+            boolean selectedAll = true;
             boolean selectedNone = true;
 
             ObjCheckBox cb;
