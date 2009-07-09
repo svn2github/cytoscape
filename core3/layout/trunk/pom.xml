@@ -8,13 +8,13 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.cytoscape.layout</bundle.symbolicName>
-    <bundle.namespace>org.cytoscape.layout</bundle.namespace>
+    <bundle.symbolicName>org.cytoscape.layout-api</bundle.symbolicName>
+    <bundle.namespace>org.cytoscape.view.layout</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
-  <artifactId>layout</artifactId>
+  <artifactId>layout-api</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>${bundle.symbolicName}</name>

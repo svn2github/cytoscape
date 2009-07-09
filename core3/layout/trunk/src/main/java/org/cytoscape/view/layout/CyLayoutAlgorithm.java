@@ -1,5 +1,5 @@
-/* vim :set ts=2:
-  File: LayoutAdapter.java
+/* vim: set ts=2:
+  File: CyLayoutAlgorithm.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -7,7 +7,7 @@
   - Institute for Systems Biology
   - University of California San Diego
   - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
+  - Institut Pasteur
   - Agilent Technologies
 
   This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.layout;
+package org.cytoscape.view.layout;
 
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkView;
@@ -42,27 +42,20 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyNode;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
- * LayoutAdapter provides a *very* minimal interface to implement a layout
- * algorithm.  It is meant to be used by graph readers and plugins that provide
- * their own node placement and whose layout approach should not be made
- * available outside of the reader or plugin's context.
- */
-abstract public class LayoutAdapter implements CyLayoutAlgorithm {
+ *
+  */
+public interface CyLayoutAlgorithm {
 
 	/**
 	 * This method performs the layout on the current network.
 	 *
 	 * @param networkView the CyNetworkView on which to perform the layout
 	 */
-	public void doLayout(CyNetworkView networkView) {
-		doLayout(networkView, null);
-	}
+	public void doLayout(CyNetworkView networkView);
 
 	/**
 	 * This method performs the layout on the current network, but assumes
@@ -71,14 +64,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @param networkView the CyNetworkView on which to perform the layout
 	 * @param monitor the task monitor to use
 	 */
-	public abstract void doLayout(CyNetworkView networkView, TaskMonitor monitor);
-
-	/**
-	 * Get the name of this layout.
-	 *
-	 * @return String representing the name of the layout.
-	 */
-	public String getName() {return "LayoutAdaptor";}
+	public void doLayout(CyNetworkView networkView, TaskMonitor monitor);
 
 	/**
 	 * Tests to see if this layout supports doing a layout on a subset of the
@@ -86,7 +72,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 *
 	 * @return true if layout supports layouts on a subset of the nodes
 	 */
-	public boolean supportsSelectedOnly() {return false;}
+	public boolean supportsSelectedOnly();
 
 	/**
 	 * Sets the "selectedOnly" flag
@@ -94,7 +80,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @param selectedOnly boolean value that tells the layout algorithm whether to
 	 * only layout the selected nodes
 	 */
-	public void setSelectedOnly(boolean selectedOnly) {}
+	public void setSelectedOnly(boolean selectedOnly);
 
 	/**
 	 * Tests to see if this layout supports doing a layout based on node attributes.
@@ -102,7 +88,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @return byte array of allowable attribute types or "null" if not supported.  If the
 	 *              first type is "-1", all types are supported
 	 */
-	public Set<Class<?>> supportsNodeAttributes() { return new HashSet<Class<?>>(); }
+	public Set<Class<?>> supportsNodeAttributes();
 
 	/**
 	 * Tests to see if this layout supports doing a layout based on edge attributes.
@@ -110,14 +96,14 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @return type array of allowable attribute types or "null" if not supported.  If the
 	 *              first type is "-1", all types are supported
 	 */
-	public Set<Class<?>> supportsEdgeAttributes() { return new HashSet<Class<?>>(); }
+	public Set<Class<?>> supportsEdgeAttributes();
 
 	/**
 	 * Sets the attribute to use for node- or edge- based attribute layouts
 	 *
 	 * @param attributeName String with the name of the attribute to use
 	 */
-	public void setLayoutAttribute(String attributeName) {}
+	public void setLayoutAttribute(String attributeName);
 
 	/**
 	 * This returns a (possibly empty) List of Strings that is used for
@@ -130,36 +116,48 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 *
 	 * @return List of Strings
 	 */
-	public List<String> getInitialAttributeList() {return new ArrayList<String>();}
+	public List<String> getInitialAttributeList();
 
 	/**
-	 *  DOCUMENT ME!
+	 * Get the name of this layout.
 	 *
-	 * @param nodes DOCUMENT ME!
+	 * @return String representing the name of the layout.
 	 */
-	public void lockNodes(View<CyNode>[] nodes) {}
+	public String getName();
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Lock this array of nodes.  Locking a node prevents the node
+	 * from being moved by layout algorithmes.
 	 *
-	 * @param v DOCUMENT ME!
+	 * @param nodes the array of nodes to lock
 	 */
-	public void lockNode(View<CyNode> v) {}
+	public void lockNodes(View<CyNode>[] nodes);
 
 	/**
-	 *  DOCUMENT ME!
+	 * Lock this node.  Locking a node prevents the node
+	 * from being moved by layout algorithmes.
 	 *
-	 * @param v DOCUMENT ME!
+	 * @param node the node to lock
 	 */
-	public void unlockNode(View<CyNode> v) {}
+	public void lockNode(View<CyNode> v);
 
 	/**
-	 *  DOCUMENT ME!
+	 * Unlock this node.  Unlocking a node allows the node
+	 * to be moved by a layout algorithmes.
+	 *
+	 * @param v the node to unlock
 	 */
-	public void unlockAllNodes() {}
+	public void unlockNode(View<CyNode> v);
 
 	/**
-	 *  DOCUMENT ME!
+	 * Unlock all of the nodes.  Unlocking a node allows the node
+	 * to be moved by a layout algorithmes.
+	 *
 	 */
-	public void halt() {}
+	public void unlockAllNodes();
+
+	/**
+	 * Can be used to stop the layout from running. 
+	 */
+	public void halt();
 }

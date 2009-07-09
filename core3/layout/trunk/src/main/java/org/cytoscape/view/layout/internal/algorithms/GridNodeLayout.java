@@ -34,12 +34,12 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.layout.internal.algorithms;
+package org.cytoscape.view.layout.internal.algorithms;
 
 import java.util.List;
 
-import org.cytoscape.layout.AbstractLayout;
-import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
