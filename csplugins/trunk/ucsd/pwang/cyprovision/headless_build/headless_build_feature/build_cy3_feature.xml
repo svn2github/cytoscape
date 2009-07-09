@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Build cytoscape feature" default="runBuild">
+
+	<!-- Define the location of Eclipse -->
+	<property name="base" location="c:/eclipse35" />
+	<property name="baseLocation" location="${base}/eclipse" />
+	
+	<!-- Define the location of cytoscape bundles and rootfiles -->	
+	<property name="cy3bundleDirectory" location="./cy3bundles" />
+	<property name="rootfilesDirectory" location="./rootfiles" />
+
+	
+	<!-- Do not change the following settings -->
+	<property name="builder" location="." />
+	<property name="buildDirectory" location="${builder}/build_feature" />
+
+	<!-- Identifier for the feature being built-->
+	<property name="topLevelElementId" value="cytoscape_product_feature" /> 
+	<property name="archivePrefix" value="cytoscape" />
+
+	<pathconvert property="pdeBuild">
+	<path>
+	  <fileset dir="${baseLocation}/plugins" includes="**/*build.xml" /> 
+	  </path>
+	  <regexpmapper from="(org\.eclipse\.pde\.build)(_)(.*)" to="\0" /> 
+	</pathconvert>	
+
+	
+	<import file= "${baseLocation}/plugins/${pdeBuild}"/>
+	
+	<target name="runBuild" depends="init,main" />
+	
+	<target name="init">
+	
+		<delete dir="${buildDirectory}" />
+		<mkdir dir="${buildDirectory}" />
+		
+		<record name="${buildDirectory}/${topLevelElementId}-build.log"
+			loglevel="verbose" />
+		<echoproperties />
+
+		<mkdir dir="${buildDirectory}/features/cytoscape_product_feature" />
+		<copy todir="${buildDirectory}/features/cytoscape_product_feature" file="feature.xml" />
+		<copyfile src="feature_build.properties" dest="${buildDirectory}/features/cytoscape_product_feature/build.properties"  />
+			
+		<mkdir dir="${buildDirectory}/plugins" />
+		<copy todir="${buildDirectory}/plugins" >
+			<fileset dir="${cy3bundleDirectory}">
+				<include name="**" />
+			</fileset>
+		</copy>
+		
+		<mkdir dir="${buildDirectory}/rootfiles" />
+		<copy todir="${buildDirectory}/rootfiles" >
+			<fileset dir="${rootfilesDirectory}">
+				<include name="**" />
+			</fileset>
+		</copy>
+		
+	</target>
+	
+</project>
