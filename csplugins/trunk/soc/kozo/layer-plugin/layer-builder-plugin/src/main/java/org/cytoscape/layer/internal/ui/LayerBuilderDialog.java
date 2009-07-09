@@ -686,10 +686,13 @@ public class LayerBuilderDialog extends JDialog {
 			object = o;
 		}
 
-		public Object getTransferData(DataFlavor flavor)
+		public Object getTransferData(DataFlavor df)
 				throws UnsupportedFlavorException, IOException {
 			// TODO Auto-generated method stub
-			return null;
+			if (isDataFlavorSupported(df))
+				return object;
+			else
+				throw new UnsupportedFlavorException(df);
 		}
 
 		public DataFlavor[] getTransferDataFlavors() {
@@ -697,7 +700,7 @@ public class LayerBuilderDialog extends JDialog {
 			return null;
 		}
 
-		public boolean isDataFlavorSupported(DataFlavor flavor) {
+		public boolean isDataFlavorSupported(DataFlavor df) {
 			// TODO Auto-generated method stub
 			return false;
 		}
