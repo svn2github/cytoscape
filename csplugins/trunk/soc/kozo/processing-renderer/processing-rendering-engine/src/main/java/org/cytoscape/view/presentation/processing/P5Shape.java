@@ -1,5 +1,7 @@
 package org.cytoscape.view.presentation.processing;
 
+import java.util.Collection;
+
 /**
  * 
  * Defines shape of object rendered in Processing.
@@ -9,7 +11,7 @@ package org.cytoscape.view.presentation.processing;
  * 
  * 
  */
-public interface ObjectShape {
+public interface P5Shape {
 
 	/**
 	 * Name of this shape, such as ellipse, rectangle, triangle, etc. This is
@@ -19,5 +21,7 @@ public interface ObjectShape {
 	 * 
 	 */
 	public String getDisplayName();
+	
+	public Collection<?> getCompatibleModels();
 	
 }

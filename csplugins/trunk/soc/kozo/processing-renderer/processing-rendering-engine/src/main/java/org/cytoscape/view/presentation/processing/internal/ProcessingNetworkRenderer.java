@@ -13,6 +13,7 @@ import gestalt.shape.Cube;
 import gestalt.shape.Plane;
 import gestalt.util.CameraMover;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ContainerEvent;
@@ -126,11 +127,15 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	private float _myCounter = 0;
 
+	
+	Cube cube;
 	public void setup() {
 		size(windowSize.width, windowSize.height, OPENGL);
 		hint(ENABLE_OPENGL_4X_SMOOTH);
 		frameRate(30);
 		smooth();
+		
+		
 		physics = new VerletPhysics();
 		physics.friction = 1000;
 		AABB boundingBox = new AABB(new Vec3D(0, 0, 0), new Vec3D(width,
@@ -140,75 +145,90 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 		/* create gestalt plugin */
 		gestalt = new GestaltPlugIn(this);
+		
+		//Set Custom DrawableFactory
+		gestalt.setDrawablefactoryRef(new CyDrawableFactoryImpl());
+		
+		cube = gestalt.drawablefactory().cube();
+		cube.scale(100, 200, 300);
+		cube.rotation(10, 30, 100);
+		cube.material().lit = true;
+		cube.material().color.set(1, 1);
+		//gestalt.bin(Gestalt.BIN_3D).add(cube);
+		
+		
+		
 
-		/* setup shadow map */
-		final int myShadowMapWidth = width;
-		final int myShadowMapHeight = height;
-		_myShadowMapExtension = new JoglShadowMap(gestalt.light(),
-				myShadowMapWidth, myShadowMapHeight, true, false);
-		gestalt.bin(Gestalt.BIN_FRAME_SETUP).add(_myShadowMapExtension);
-
-		/*
-		 * this is a workaround for a state issue between openl, processing and
-		 * gestalt
-		 */
-		GestaltPlugIn.SKIP_FIRST_FRAME = true;
-
-		/* create shapes and a floor */
-		mySphereA = new JoglSphere();
-		mySphereA.position().set(100, 50, -100);
-		mySphereA.scale().set(100, 100, 100);
-		mySphereA.material().lit = true;
-		mySphereA.material().color.set(0.5f, 0.5f, 0, 1);
-
-		mySphereB = new JoglSphere();
-		mySphereB.position().set(0, 100, 0);
-		mySphereB.scale().set(100, 100, 100);
-		mySphereB.material().lit = true;
-		mySphereB.material().color.set(1, 0, 0, 1);
-
-		mySphereC = new JoglSphere();
-		mySphereC.position().set(100, 350, 0);
-		mySphereC.scale().set(100, 100, 100);
-		mySphereC.material().lit = true;
-		mySphereC.material().color.set(1, 0.5f, 0, 1);
-
-		Plane myPlane = gestalt.drawablefactory().plane();
-		myPlane.scale().set(1000, 1000, 1);
-		myPlane.rotation().x = -Gestalt.PI_HALF;
-		myPlane.material().lit = true;
-		myPlane.material().color.set(1, 1);
-
-		/* add shapes to bins */
-		gestalt.bin(Gestalt.BIN_3D).add(mySphereA);
-		gestalt.bin(Gestalt.BIN_3D).add(mySphereB);
-		gestalt.bin(Gestalt.BIN_3D).add(mySphereC);
-		gestalt.bin(Gestalt.BIN_3D).add(myPlane);
-
-		/* add shapes to shadow extension */
-		_myShadowMapExtension.addShape(mySphereA);
-		_myShadowMapExtension.addShape(mySphereB);
-		_myShadowMapExtension.addShape(mySphereC);
-		_myShadowMapExtension.lightcamera.nearclipping = 100;
-		_myShadowMapExtension.lightcamera.farclipping = 5000;
-
-		/* light */
-		gestalt.light().enable = true;
-		gestalt.light().position().set(450, 720, 23);
-		gestalt.light().diffuse.set(1, 1, 1, 1);
-		gestalt.light().ambient.set(0, 0, 0, 1);
-
-		/* camera() */
-		gestalt.camera().position().set(-400, 1000, 1000);
-		gestalt.camera().setMode(Gestalt.CAMERA_MODE_LOOK_AT);
-
-		/* create a display for the shadowmap */
-		createShadowmapDisplay();
-
-		// /* remove all gestalt presets */
-		// RenderBin myRenderBin = new RenderBin();
-		// gestalt.setBinRef(myRenderBin);
-		// myRenderBin.add(new RawOpenGL());
+//		/* setup shadow map */
+//		final int myShadowMapWidth = width;
+//		final int myShadowMapHeight = height;
+//		_myShadowMapExtension = new JoglShadowMap(gestalt.light(),
+//				myShadowMapWidth, myShadowMapHeight, true, false);
+//		gestalt.bin(Gestalt.BIN_FRAME_SETUP).add(_myShadowMapExtension);
+//
+//		/*
+//		 * this is a workaround for a state issue between openl, processing and
+//		 * gestalt
+//		 */
+//		GestaltPlugIn.SKIP_FIRST_FRAME = true;
+//
+//		/* create shapes and a floor */
+//		mySphereA = new JoglSphere();
+//		mySphereA.position().set(100, 50, -100);
+//		mySphereA.scale().set(100, 100, 100);
+//		mySphereA.material().lit = true;
+//		mySphereA.material().color.set(0.5f, 0.5f, 0, 1);
+//
+//		mySphereB = new JoglSphere();
+//		mySphereB.position().set(0, 100, 0);
+//		mySphereB.scale().set(100, 100, 100);
+//		mySphereB.material().lit = true;
+//		mySphereB.material().color.set(1, 0, 0, 1);
+//
+//		mySphereC = new JoglSphere();
+//		mySphereC.position().set(100, 350, 0);
+//		mySphereC.scale().set(100, 100, 100);
+//		mySphereC.material().lit = true;
+//		mySphereC.material().color.set(1, 0.5f, 0, 1);
+//
+//		Plane myPlane = gestalt.drawablefactory().plane();
+//		myPlane.scale().set(1000, 1000, 1);
+//		myPlane.rotation().x = -Gestalt.PI_HALF;
+//		myPlane.material().lit = true;
+//		myPlane.material().color.set(1, 1);
+//
+//		/* add shapes to bins */
+//		gestalt.bin(Gestalt.BIN_3D).add(mySphereA);
+//		gestalt.bin(Gestalt.BIN_3D).add(mySphereB);
+//		gestalt.bin(Gestalt.BIN_3D).add(mySphereC);
+//		gestalt.bin(Gestalt.BIN_3D).add(myPlane);
+//
+//		/* add shapes to shadow extension */
+//		_myShadowMapExtension.addShape(mySphereA);
+//		_myShadowMapExtension.addShape(mySphereB);
+//		_myShadowMapExtension.addShape(mySphereC);
+//		_myShadowMapExtension.lightcamera.nearclipping = 100;
+//		_myShadowMapExtension.lightcamera.farclipping = 5000;
+//
+//		/* light */
+//		gestalt.light().enable = true;
+//		gestalt.light().position().set(450, 720, 23);
+//		gestalt.light().diffuse.set(1, 1, 1, 1);
+//		gestalt.light().ambient.set(0, 0, 0, 1);
+//
+//		/* camera() */
+//		gestalt.camera().position().set(-400, 1000, 1000);
+//		gestalt.camera().setMode(Gestalt.CAMERA_MODE_LOOK_AT);
+		
+		
+//
+//		/* create a display for the shadowmap */
+//		createShadowmapDisplay();
+//
+//		// /* remove all gestalt presets */
+//		// RenderBin myRenderBin = new RenderBin();
+//		// gestalt.setBinRef(myRenderBin);
+//		// myRenderBin.add(new RawOpenGL());
 
 	}
 
@@ -223,6 +243,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		gestalt.bin(Gestalt.BIN_2D_FOREGROUND).add(myDisplay);
 	}
 
+	
+	float rot = 0;
 	public void draw() {
 		
 		
@@ -230,20 +252,26 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		/* draw processing shape */
 		// rect(gestalt.event().mouseX, gestalt.event().mouseY, 50, 150);
 		/* clear screen */
-		background(255, 255, 0);
-		gl = gestalt.getGL();
-		gl.glViewport(0, 0, width, height);
-
-		/* move camera */
-		CameraMover.handleKeyEvent(gestalt.camera(), gestalt.event(), 1 / 60f);
-
-		/* bounce spheres */
-		_myCounter += 1 / 60f;
-		mySphereA.position().y += sin(_myCounter * 1.5f) * 2;
-		mySphereB.position().y += sin(_myCounter * 2.3f) * 4;
-		mySphereC.position().y += sin(_myCounter * 2.5f) * 3;
-		
-		
+//		background(255, 255, 0);
+//		gl = gestalt.getGL();
+//		gl.glViewport(0, 0, width, height);
+//
+//		/* move camera */
+//		CameraMover.handleKeyEvent(gestalt.camera(), gestalt.event(), 1 / 60f);
+//
+//		/* bounce spheres */
+//		_myCounter += 1 / 60f;
+//		mySphereA.position().y += sin(_myCounter * 1.5f) * 2;
+//		mySphereB.position().y += sin(_myCounter * 2.3f) * 4;
+//		mySphereC.position().y += sin(_myCounter * 2.5f) * 3;
+//		
+//		
+		rot +=0.1;
+		cube.position().x = mouseX - 60;
+        cube.position().y = mouseY;
+        cube.rotation().set(0, rot);
+        
+        cube.draw(gestalt.);
 		background(0);
 		
 		physics.update();

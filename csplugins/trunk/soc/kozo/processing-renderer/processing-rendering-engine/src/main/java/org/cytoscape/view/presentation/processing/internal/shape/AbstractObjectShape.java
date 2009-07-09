@@ -2,9 +2,9 @@ package org.cytoscape.view.presentation.processing.internal.shape;
 
 import gestalt.shape.AbstractShape;
 
-import org.cytoscape.view.presentation.processing.ObjectShape;
+import org.cytoscape.view.presentation.processing.P5Shape;
 
-public abstract class AbstractObjectShape extends AbstractShape implements ObjectShape {
+public abstract class AbstractObjectShape extends AbstractShape implements P5Shape {
 	
 	
 	// Human readable name of this shape.  This is mandatory and immutable.
