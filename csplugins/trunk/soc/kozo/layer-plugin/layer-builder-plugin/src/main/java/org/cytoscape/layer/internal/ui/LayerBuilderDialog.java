@@ -628,6 +628,17 @@ public class LayerBuilderDialog extends JDialog {
 	private javax.swing.JLabel titleLabel;
 	private javax.swing.JPanel titlePanel;
 
+	static DataFlavor localObjectFlavor;
+	static {
+		try {
+			localObjectFlavor = new DataFlavor(
+					DataFlavor.javaJVMLocalObjectMimeType);
+		} catch (ClassNotFoundException cnfe) {
+			cnfe.printStackTrace();
+		}
+	}
+	static DataFlavor[] supportedFlavors = { localObjectFlavor };
+
 	// End of variables declaration//GEN-END:variables
 
 	private class DraggableJList extends JList implements DragSourceListener,
@@ -638,7 +649,6 @@ public class LayerBuilderDialog extends JDialog {
 		int draggedIndex = -1;
 
 		public void dragDropEnd(DragSourceDropEvent dsde) {
-			// TODO Auto-generated method stub
 			System.out.println("dragDropEnd()");
 			dropTargetCell = null;
 			draggedIndex = -1;
@@ -666,7 +676,6 @@ public class LayerBuilderDialog extends JDialog {
 		}
 
 		public void dragGestureRecognized(DragGestureEvent dge) {
-			// TODO Auto-generated method stub
 			System.out.println("dragGestureRecognized");
 			Point clickPoint = dge.getDragOrigin();
 			int index = locationToIndex(clickPoint);
@@ -688,7 +697,6 @@ public class LayerBuilderDialog extends JDialog {
 
 		public Object getTransferData(DataFlavor df)
 				throws UnsupportedFlavorException, IOException {
-			// TODO Auto-generated method stub
 			if (isDataFlavorSupported(df))
 				return object;
 			else
@@ -696,13 +704,11 @@ public class LayerBuilderDialog extends JDialog {
 		}
 
 		public DataFlavor[] getTransferDataFlavors() {
-			// TODO Auto-generated method stub
-			return null;
+			return supportedFlavors;
 		}
 
 		public boolean isDataFlavorSupported(DataFlavor df) {
-			// TODO Auto-generated method stub
-			return false;
+			return (df.equals(localObjectFlavor));
 		}
 
 	}
@@ -712,7 +718,6 @@ public class LayerBuilderDialog extends JDialog {
 		DropTarget dropTarget;
 
 		public void dragEnter(DropTargetDragEvent dtde) {
-			// TODO Auto-generated method stub
 			System.out.println("dragEnter");
 			if (dtde.getSource() != dropTarget)
 				dtde.rejectDrag();
