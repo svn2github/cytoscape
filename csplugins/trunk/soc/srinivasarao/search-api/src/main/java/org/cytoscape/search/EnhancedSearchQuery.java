@@ -40,7 +40,9 @@ import java.util.ArrayList;
 
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.RAMDirectory;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 public abstract class EnhancedSearchQuery {
 
@@ -76,6 +78,10 @@ public abstract class EnhancedSearchQuery {
 	// hitCollector object may be null if this method is called before
 	// ExecuteQuery
 	abstract public ArrayList<String> getHits();
+	
+	abstract public ArrayList<CyNode> getNodeHits();
+
+	abstract public ArrayList<CyEdge> getEdgeHits();
 
 }
 
