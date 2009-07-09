@@ -7,7 +7,7 @@
 
 
 	<!-- Import services -->
-	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.layout.CyLayouts" />
+	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts" />
 
 	<osgi:reference id="cyNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
