@@ -36,7 +36,7 @@
 		id="cySessionManagerServiceRef"
 		interface="org.cytoscape.session.CySessionManager"/>
 	-->
-	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.layout.CyLayouts" />
+	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts" />
 
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.session.CyNetworkManager" />
