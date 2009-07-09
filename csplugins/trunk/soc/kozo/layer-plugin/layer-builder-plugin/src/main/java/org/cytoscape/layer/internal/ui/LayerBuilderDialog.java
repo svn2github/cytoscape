@@ -61,7 +61,7 @@ public class LayerBuilderDialog extends JDialog {
 		buildListModels();
 		initComponents();
 
-		this.AvailableNetworkList.setModel(availableNetworkListModel);
+		this.availableNetworkList.setModel(availableNetworkListModel);
 		this.layeredNetworkList.setModel(layeredNetworkListModel);
 	}
 
@@ -89,35 +89,35 @@ public class LayerBuilderDialog extends JDialog {
 	// desc="Generated Code">//GEN-BEGIN:initComponents
 	private void initComponents() {
 
-		TitlePanel = new javax.swing.JPanel();
-		TitleLabel = new javax.swing.JLabel();
-		DefineLayerPanel = new javax.swing.JPanel();
+		titlePanel = new javax.swing.JPanel();
+		titleLabel = new javax.swing.JLabel();
+		defineLayerPanel = new javax.swing.JPanel();
 		layeredNetworkPanel = new javax.swing.JPanel();
 		layeredNetworkScrollPane = new javax.swing.JScrollPane();
 		layeredNetworkList = new javax.swing.JList();
-		AvailableNetworkPanel = new javax.swing.JPanel();
-		AvailableNetworkScrollPane = new javax.swing.JScrollPane();
-		AvailableNetworkList = new javax.swing.JList();
-		MoveAllAvailableNetworkButton = new javax.swing.JButton();
-		MoveSelectedAvailableNetworkButton = new javax.swing.JButton();
-		MoveSelectedIntegratedNetworkButton = new javax.swing.JButton();
-		MoveAllIntegratedNetworkButton = new javax.swing.JButton();
-		LayerOrderPanel = new javax.swing.JPanel();
-		LayerOrderScrollPane = new javax.swing.JScrollPane();
-		LayerOrderTable = new javax.swing.JTable();
-		OptionButton = new javax.swing.JButton();
-		GenerateIntegratedNetworkButton = new javax.swing.JButton();
-		CancelButton = new javax.swing.JButton();
+		availableNetworkPanel = new javax.swing.JPanel();
+		availableNetworkScrollPane = new javax.swing.JScrollPane();
+		availableNetworkList = new javax.swing.JList();
+		moveAllAvailableNetworkButton = new javax.swing.JButton();
+		moveSelectedAvailableNetworkButton = new javax.swing.JButton();
+		moveSelectedIntegratedNetworkButton = new javax.swing.JButton();
+		moveAllIntegratedNetworkButton = new javax.swing.JButton();
+		layerOrderPanel = new javax.swing.JPanel();
+		layerOrderScrollPane = new javax.swing.JScrollPane();
+		layerOrderTable = new javax.swing.JTable();
+		optionButton = new javax.swing.JButton();
+		generateIntegratedNetworkButton = new javax.swing.JButton();
+		cancelButton = new javax.swing.JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-		TitlePanel.setBackground(new java.awt.Color(255, 255, 255));
+		titlePanel.setBackground(new java.awt.Color(255, 255, 255));
 
-		TitleLabel.setText("3D Layer Generator");
+		titleLabel.setText("3D Layer Generator");
 
 		org.jdesktop.layout.GroupLayout TitlePanelLayout = new org.jdesktop.layout.GroupLayout(
-				TitlePanel);
-		TitlePanel.setLayout(TitlePanelLayout);
+				titlePanel);
+		titlePanel.setLayout(TitlePanelLayout);
 		TitlePanelLayout
 				.setHorizontalGroup(TitlePanelLayout
 						.createParallelGroup(
@@ -127,7 +127,7 @@ public class LayerBuilderDialog extends JDialog {
 										.createSequentialGroup()
 										.addContainerGap()
 										.add(
-												TitleLabel,
+												titleLabel,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 												303,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -135,11 +135,11 @@ public class LayerBuilderDialog extends JDialog {
 		TitlePanelLayout.setVerticalGroup(TitlePanelLayout.createParallelGroup(
 				org.jdesktop.layout.GroupLayout.LEADING).add(
 				TitlePanelLayout.createSequentialGroup().addContainerGap().add(
-						TitleLabel,
+						titleLabel,
 						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 39,
 						Short.MAX_VALUE).addContainerGap()));
 
-		DefineLayerPanel.setBorder(javax.swing.BorderFactory
+		defineLayerPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Define Layers"));
 
 		layeredNetworkPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -189,15 +189,15 @@ public class LayerBuilderDialog extends JDialog {
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 										.addContainerGap(8, Short.MAX_VALUE)));
 
-		AvailableNetworkPanel.setBackground(new java.awt.Color(255, 255, 255));
-		AvailableNetworkPanel.setBorder(javax.swing.BorderFactory
+		availableNetworkPanel.setBackground(new java.awt.Color(255, 255, 255));
+		availableNetworkPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Available Networks"));
 
-		AvailableNetworkScrollPane.setViewportView(AvailableNetworkList);
+		availableNetworkScrollPane.setViewportView(availableNetworkList);
 
 		org.jdesktop.layout.GroupLayout AvailableNetworkPanelLayout = new org.jdesktop.layout.GroupLayout(
-				AvailableNetworkPanel);
-		AvailableNetworkPanel.setLayout(AvailableNetworkPanelLayout);
+				availableNetworkPanel);
+		availableNetworkPanel.setLayout(AvailableNetworkPanelLayout);
 		AvailableNetworkPanelLayout
 				.setHorizontalGroup(AvailableNetworkPanelLayout
 						.createParallelGroup(
@@ -207,7 +207,7 @@ public class LayerBuilderDialog extends JDialog {
 										.createSequentialGroup()
 										.addContainerGap()
 										.add(
-												AvailableNetworkScrollPane,
+												availableNetworkScrollPane,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 												159,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -222,37 +222,37 @@ public class LayerBuilderDialog extends JDialog {
 								AvailableNetworkPanelLayout
 										.createSequentialGroup()
 										.add(
-												AvailableNetworkScrollPane,
+												availableNetworkScrollPane,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												181, Short.MAX_VALUE)
 										.addContainerGap()));
 
-		MoveAllAvailableNetworkButton.setText(">>");
-		MoveAllAvailableNetworkButton
+		moveAllAvailableNetworkButton.setText(">>");
+		moveAllAvailableNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						MoveAllAvailableNetworkButtonActionPerformed(evt);
 					}
 				});
 
-		MoveSelectedAvailableNetworkButton.setText(">");
-		MoveSelectedAvailableNetworkButton
+		moveSelectedAvailableNetworkButton.setText(">");
+		moveSelectedAvailableNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						MoveSelectedAvailableNetworkButtonActionPerformed(evt);
 					}
 				});
 
-		MoveSelectedIntegratedNetworkButton.setText("<");
-		MoveSelectedIntegratedNetworkButton
+		moveSelectedIntegratedNetworkButton.setText("<");
+		moveSelectedIntegratedNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						MoveSelectedIntegratedNetworkButtonActionPerformed(evt);
 					}
 				});
 
-		MoveAllIntegratedNetworkButton.setText("<<");
-		MoveAllIntegratedNetworkButton
+		moveAllIntegratedNetworkButton.setText("<<");
+		moveAllIntegratedNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						MoveAllIntegratedNetworkButtonActionPerformed(evt);
@@ -260,8 +260,8 @@ public class LayerBuilderDialog extends JDialog {
 				});
 
 		org.jdesktop.layout.GroupLayout DefineLayerPanelLayout = new org.jdesktop.layout.GroupLayout(
-				DefineLayerPanel);
-		DefineLayerPanel.setLayout(DefineLayerPanelLayout);
+				defineLayerPanel);
+		defineLayerPanel.setLayout(DefineLayerPanelLayout);
 		DefineLayerPanelLayout
 				.setHorizontalGroup(DefineLayerPanelLayout
 						.createParallelGroup(
@@ -275,22 +275,22 @@ public class LayerBuilderDialog extends JDialog {
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.TRAILING)
 														.add(
-																MoveAllAvailableNetworkButton,
+																moveAllAvailableNetworkButton,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																77,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 														.add(
-																MoveSelectedAvailableNetworkButton,
+																moveSelectedAvailableNetworkButton,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																77,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 														.add(
-																MoveSelectedIntegratedNetworkButton,
+																moveSelectedIntegratedNetworkButton,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																77,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 														.add(
-																MoveAllIntegratedNetworkButton,
+																moveAllIntegratedNetworkButton,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																77,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -310,7 +310,7 @@ public class LayerBuilderDialog extends JDialog {
 														.createSequentialGroup()
 														.add(22, 22, 22)
 														.add(
-																AvailableNetworkPanel,
+																availableNetworkPanel,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -335,21 +335,21 @@ public class LayerBuilderDialog extends JDialog {
 																				48,
 																				48)
 																		.add(
-																				MoveAllAvailableNetworkButton)
+																				moveAllAvailableNetworkButton)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
 																		.add(
-																				MoveSelectedAvailableNetworkButton)
+																				moveSelectedAvailableNetworkButton)
 																		.add(
 																				43,
 																				43,
 																				43)
 																		.add(
-																				MoveSelectedIntegratedNetworkButton)
+																				moveSelectedIntegratedNetworkButton)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
 																		.add(
-																				MoveAllIntegratedNetworkButton))
+																				moveAllIntegratedNetworkButton))
 														.add(
 																DefineLayerPanelLayout
 																		.createSequentialGroup()
@@ -372,7 +372,7 @@ public class LayerBuilderDialog extends JDialog {
 														.createSequentialGroup()
 														.addContainerGap()
 														.add(
-																AvailableNetworkPanel,
+																availableNetworkPanel,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -380,19 +380,19 @@ public class LayerBuilderDialog extends JDialog {
 																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																Short.MAX_VALUE))));
 
-		LayerOrderPanel.setBorder(javax.swing.BorderFactory
+		layerOrderPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Define Layer Order"));
 
-		LayerOrderTable.setModel(new javax.swing.table.DefaultTableModel(
+		layerOrderTable.setModel(new javax.swing.table.DefaultTableModel(
 				new Object[][] { { null, null }, { null, null },
 						{ null, null }, { null, null }, { null, null },
 						{ null, null }, { null, null } }, new String[] {
 						"Horizontal Layer Network", "Inter Layer Network" }));
-		LayerOrderScrollPane.setViewportView(LayerOrderTable);
+		layerOrderScrollPane.setViewportView(layerOrderTable);
 
 		org.jdesktop.layout.GroupLayout LayerOrderPanelLayout = new org.jdesktop.layout.GroupLayout(
-				LayerOrderPanel);
-		LayerOrderPanel.setLayout(LayerOrderPanelLayout);
+				layerOrderPanel);
+		layerOrderPanel.setLayout(LayerOrderPanelLayout);
 		LayerOrderPanelLayout
 				.setHorizontalGroup(LayerOrderPanelLayout
 						.createParallelGroup(
@@ -402,7 +402,7 @@ public class LayerBuilderDialog extends JDialog {
 										.createSequentialGroup()
 										.addContainerGap()
 										.add(
-												LayerOrderScrollPane,
+												layerOrderScrollPane,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												531, Short.MAX_VALUE)
 										.addContainerGap()));
@@ -410,29 +410,29 @@ public class LayerBuilderDialog extends JDialog {
 				.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 				.add(
 						LayerOrderPanelLayout.createSequentialGroup().add(
-								LayerOrderScrollPane,
+								layerOrderScrollPane,
 								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 								99,
 								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 								.addContainerGap(14, Short.MAX_VALUE)));
 
-		OptionButton.setText("Options");
-		OptionButton.addActionListener(new java.awt.event.ActionListener() {
+		optionButton.setText("Options");
+		optionButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				OptionButtonActionPerformed(evt);
 			}
 		});
 
-		GenerateIntegratedNetworkButton.setText("Generate");
-		GenerateIntegratedNetworkButton
+		generateIntegratedNetworkButton.setText("Generate");
+		generateIntegratedNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						GenerateIntegratedNetworkButtonActionPerformed(evt);
 					}
 				});
 
-		CancelButton.setText("Cancel");
-		CancelButton.addActionListener(new java.awt.event.ActionListener() {
+		cancelButton.setText("Cancel");
+		cancelButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				CancelButtonActionPerformed(evt);
 			}
@@ -442,22 +442,22 @@ public class LayerBuilderDialog extends JDialog {
 				getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(TitlePanel,
+				org.jdesktop.layout.GroupLayout.LEADING).add(titlePanel,
 				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-				.add(DefineLayerPanel,
+				.add(defineLayerPanel,
 						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						Short.MAX_VALUE).add(LayerOrderPanel,
+						Short.MAX_VALUE).add(layerOrderPanel,
 						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 						Short.MAX_VALUE).add(
 						layout.createSequentialGroup().add(20, 20, 20).add(
-								OptionButton).addPreferredGap(
+								optionButton).addPreferredGap(
 								org.jdesktop.layout.LayoutStyle.RELATED, 226,
 								Short.MAX_VALUE).add(
-								GenerateIntegratedNetworkButton)
-								.add(32, 32, 32).add(CancelButton).add(39, 39,
+								generateIntegratedNetworkButton)
+								.add(32, 32, 32).add(cancelButton).add(39, 39,
 										39)));
 		layout
 				.setVerticalGroup(layout
@@ -467,21 +467,21 @@ public class LayerBuilderDialog extends JDialog {
 								layout
 										.createSequentialGroup()
 										.add(
-												TitlePanel,
+												titlePanel,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
 										.add(
-												DefineLayerPanel,
+												defineLayerPanel,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.UNRELATED)
 										.add(
-												LayerOrderPanel,
+												layerOrderPanel,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -492,10 +492,10 @@ public class LayerBuilderDialog extends JDialog {
 												layout
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(OptionButton)
+														.add(optionButton)
 														.add(
-																GenerateIntegratedNetworkButton)
-														.add(CancelButton))
+																generateIntegratedNetworkButton)
+														.add(cancelButton))
 										.addContainerGap()));
 
 		pack();
@@ -563,25 +563,25 @@ public class LayerBuilderDialog extends JDialog {
 	}// GEN-LAST:event_MoveAllIntegratedNetworkButtonActionPerformed
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JList AvailableNetworkList;
-	private javax.swing.JPanel AvailableNetworkPanel;
-	private javax.swing.JScrollPane AvailableNetworkScrollPane;
-	private javax.swing.JButton CancelButton;
-	private javax.swing.JPanel DefineLayerPanel;
-	private javax.swing.JButton GenerateIntegratedNetworkButton;
+	private javax.swing.JList availableNetworkList;
+	private javax.swing.JPanel availableNetworkPanel;
+	private javax.swing.JScrollPane availableNetworkScrollPane;
+	private javax.swing.JButton cancelButton;
+	private javax.swing.JPanel defineLayerPanel;
+	private javax.swing.JButton generateIntegratedNetworkButton;
 	private javax.swing.JList layeredNetworkList;
 	private javax.swing.JPanel layeredNetworkPanel;
 	private javax.swing.JScrollPane layeredNetworkScrollPane;
-	private javax.swing.JPanel LayerOrderPanel;
-	private javax.swing.JScrollPane LayerOrderScrollPane;
-	private javax.swing.JTable LayerOrderTable;
-	private javax.swing.JButton MoveAllAvailableNetworkButton;
-	private javax.swing.JButton MoveAllIntegratedNetworkButton;
-	private javax.swing.JButton MoveSelectedAvailableNetworkButton;
-	private javax.swing.JButton MoveSelectedIntegratedNetworkButton;
-	private javax.swing.JButton OptionButton;
-	private javax.swing.JLabel TitleLabel;
-	private javax.swing.JPanel TitlePanel;
+	private javax.swing.JPanel layerOrderPanel;
+	private javax.swing.JScrollPane layerOrderScrollPane;
+	private javax.swing.JTable layerOrderTable;
+	private javax.swing.JButton moveAllAvailableNetworkButton;
+	private javax.swing.JButton moveAllIntegratedNetworkButton;
+	private javax.swing.JButton moveSelectedAvailableNetworkButton;
+	private javax.swing.JButton moveSelectedIntegratedNetworkButton;
+	private javax.swing.JButton optionButton;
+	private javax.swing.JLabel titleLabel;
+	private javax.swing.JPanel titlePanel;
 	// End of variables declaration//GEN-END:variables
 
 }
