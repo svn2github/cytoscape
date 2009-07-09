@@ -2,5 +2,5 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Export-Package: ${bundle.symbolicName}
-Private-Package: ${bundle.symbolicName}.internal.*
+Export-Package: ${bundle.namespace}
+Private-Package: ${bundle.namespace}.internal.*
