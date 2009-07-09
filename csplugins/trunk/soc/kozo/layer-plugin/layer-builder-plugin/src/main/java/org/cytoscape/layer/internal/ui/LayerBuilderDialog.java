@@ -11,12 +11,15 @@
 
 package org.cytoscape.layer.internal.ui;
 
+import java.awt.Cursor;
 import java.awt.Frame;
+import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
@@ -110,7 +113,10 @@ public class LayerBuilderDialog extends JDialog {
 		defineLayerPanel = new javax.swing.JPanel();
 		layeredNetworkPanel = new javax.swing.JPanel();
 		layeredNetworkScrollPane = new javax.swing.JScrollPane();
-		layeredNetworkList = new javax.swing.JList();
+
+		// layeredNetworkList = new javax.swing.JList();
+		layeredNetworkList = new DraggableJList();
+
 		availableNetworkPanel = new javax.swing.JPanel();
 		availableNetworkScrollPane = new javax.swing.JScrollPane();
 		availableNetworkList = new javax.swing.JList();
@@ -603,7 +609,10 @@ public class LayerBuilderDialog extends JDialog {
 	private javax.swing.JButton cancelButton;
 	private javax.swing.JPanel defineLayerPanel;
 	private javax.swing.JButton generateIntegratedNetworkButton;
-	private javax.swing.JList layeredNetworkList;
+
+	// private javax.swing.JList layeredNetworkList;
+	private DraggableJList layeredNetworkList;
+
 	private javax.swing.JPanel layeredNetworkPanel;
 	private javax.swing.JScrollPane layeredNetworkScrollPane;
 	private javax.swing.JPanel layerOrderPanel;
@@ -621,6 +630,9 @@ public class LayerBuilderDialog extends JDialog {
 
 	private class DraggableJList extends JList implements DragSourceListener,
 			DragGestureListener {
+
+		DragSource dragSource;
+		int draggedIndex = -1;
 
 		public void dragDropEnd(DragSourceDropEvent dsde) {
 			// TODO Auto-generated method stub
@@ -647,14 +659,26 @@ public class LayerBuilderDialog extends JDialog {
 
 		}
 
-		public void dragGestureRecognized(DragGestureEvent arg0) {
+		public void dragGestureRecognized(DragGestureEvent dge) {
 			// TODO Auto-generated method stub
-
+			System.out.println("dragGestureRecognized");
+			Point clickPoint = dge.getDragOrigin();
+			int index = locationToIndex(clickPoint);
+			if (index == -1)
+				return;
+			Object target = getModel().getElementAt(index);
+			Transferable trans = new RJLTransferable(target);
+			draggedIndex = index;
+			dragSource.startDrag(dge, Cursor.getDefaultCursor(), trans, this);
 		}
-
 	}
 
 	private class RJLTransferable implements Transferable {
+		Object object;
+
+		public RJLTransferable(Object o) {
+			object = o;
+		}
 
 		public Object getTransferData(DataFlavor flavor)
 				throws UnsupportedFlavorException, IOException {
