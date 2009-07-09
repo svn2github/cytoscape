@@ -52,8 +52,8 @@ import java.util.Vector;
 
 import org.cytoscape.io.internal.read.AbstractNetworkReader;
 import org.cytoscape.io.internal.read.VisualStyleBuilder;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-import org.cytoscape.layout.LayoutAdapter;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.LayoutAdapter;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;

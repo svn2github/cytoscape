@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cytoscape.io.read.CyReader;
-import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 
