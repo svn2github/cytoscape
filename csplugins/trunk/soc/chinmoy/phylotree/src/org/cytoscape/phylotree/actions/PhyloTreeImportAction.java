@@ -75,6 +75,7 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 					cyNetwork.addNode(node1);
 					cyNetwork.addNode(node2);
 					
+					
 				}
 				
 

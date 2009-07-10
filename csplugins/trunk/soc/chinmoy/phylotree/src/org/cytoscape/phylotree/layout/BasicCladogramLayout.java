@@ -1,25 +1,98 @@
 package org.cytoscape.phylotree.layout;
 
+import cytoscape.Cytoscape;
+import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.AbstractLayout;
+import cytoscape.layout.Tunable;
+import cytoscape.data.CyAttributes;
+
+import java.awt.GridLayout;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+
+import javax.swing.JPanel;
+
 import giny.model.Node;
 import giny.model.Edge;
-
 public class BasicCladogramLayout extends AbstractLayout {
 
-
-	private int numLeavesVisited = 0;
-	static double LEAF_Y_DISTANCE = 50.0;
+	
+	static double LEAF_Y_DISTANCE = 100.0;
 	static double LEAF_X = 500.0;
 	static double INTERNAL_X_DISTANCE = 100.0;
 	
-	public BasicCladogramLayout(){
-
+	
+	private LayoutProperties layoutProperties;
+	
+	private boolean constantBranches; // Whether or not branch lengths are reflected
+	private int numLeavesVisited = 0;
+	private int layerNum = 0;
+	public BasicCladogramLayout()
+	{
 		super();
-		
+		layoutProperties = new LayoutProperties(getName());
+		initialize_properties();		
 	}
 
+	protected void initialize_properties()
+	{	
+		layoutProperties.add(new Tunable("constant_branches",
+		                                 "Constant Branch Lengths",
+		                                 Tunable.BOOLEAN, new Boolean(false)));
+
+		layoutProperties.initializeProperties();
+
+		updateSettings(true);
+	}
+	
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void updateSettings() {
+		updateSettings(false);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param force DOCUMENT ME!
+	 */
+	public void updateSettings(boolean force) {
+		layoutProperties.updateValues();
+
+		Tunable t = layoutProperties.get("constant_branches");
+		  if ((t != null) && (t.valueChanged() || force))
+		    constantBranches = ((Boolean) t.getValue()).booleanValue();
+		  
+						 
+	}
+
+	// UI for getting settings
+	/**
+	 * Get the settings panel for this layout
+	 */
+	public JPanel getSettingsPanel() {
+		JPanel panel = new JPanel(new GridLayout(0, 1));
+		panel.add(layoutProperties.getTunablePanel());
+		
+		return panel;
+	}
+
+	
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void revertSettings() {
+		layoutProperties.revertProperties();
+	}
+
+	public LayoutProperties getSettings() {
+		return layoutProperties;
+	}
+
+	
+	
 	/**
 	 * getName is used to construct property strings
 	 * for this layout.
@@ -36,11 +109,11 @@ public class BasicCladogramLayout extends AbstractLayout {
 		return "Basic Cladogram";
 	}
 	public void construct() {
-
-		//Find the root of the tree
+			
+		// Find the root of the tree
 		Node root = getTreeRoot();
 
-		//Traverse and position each node starting from the root
+		// Traverse and position each node starting from the root
 		traverse(root);
 
 	}
@@ -85,23 +158,30 @@ public class BasicCladogramLayout extends AbstractLayout {
 		// Find all outgoing edges
 		int[] outgoingEdgesArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
 
-		// Base case: if node is a leaf
-		if(outgoingEdgesArray.length == 0)
-		{
-			positionLeaf(node);
-		}
-			
-		else
+		
+		if(outgoingEdgesArray.length!=0)
 		{
 			// Traverse every child
 			for(int i = 0; i<outgoingEdgesArray.length; i++)	
 			{
 				Edge edge = network.getEdge(outgoingEdgesArray[i]);
+				
+				CyAttributes att = Cytoscape.getEdgeAttributes();
+				
+				Double length = att.getDoubleAttribute(edge.getIdentifier(), "branchLength");
+				System.out.println(length);
 				traverse(edge.getTarget());
 			}
 			// Traverse the parent last
 			positionInternalNode(node);
 		}
+		// Base case: if node is a leaf
+		else if(outgoingEdgesArray.length == 0)
+		{
+			positionLeaf(node);
+		}
+			
+	
 	}
 	
 	/**
@@ -122,30 +202,78 @@ public class BasicCladogramLayout extends AbstractLayout {
 	 */
 	private void positionInternalNode(Node node)
 	{
-		double childYSum = 0.0;
-		double numChildren = 0.0;
-		double childXNearest = Double.MAX_VALUE;
-		double childX = 0.0;
-		// Find all outgoing edges
-		int[] outgoingEdgesArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
+		layerNum = 1;
+		// Find the child horizontally nearest
+		// Get the leaves of the subtree rooted at node
+		List<Node> subtreeLeaves = new LinkedList<Node>();
+		getLeaves(node, subtreeLeaves);
 
-		// For each child, add up the Y positions to calculate the mean
-		for(int i = 0; i<outgoingEdgesArray.length; i++)	
-		{
-			Edge edge = network.getEdge(outgoingEdgesArray[i]);
-			Node child = edge.getTarget();
-			numChildren++;
-			childYSum = childYSum+networkView.getNodeView(child).getYPosition();
-			
-			// Also find smallest child X position, to find the nearest child
-			childX = networkView.getNodeView(child).getXPosition();
-			if(childX<childXNearest)
-				childXNearest = childX;
-		}
-		// Set the Y position as the mean of Y positions of the children
-		// Set the X position as a constant from the nearest child
-		networkView.getNodeView(node).setYPosition(childYSum/numChildren);
-		networkView.getNodeView(node).setXPosition(childXNearest-INTERNAL_X_DISTANCE);
+		// Find the vertical midpoint of the subtree rooted at node
+		double midpointY = findSubtreeYMidPoint(subtreeLeaves);
+		
+		// Set the positions
+		networkView.getNodeView(node).setYPosition(midpointY);
+		networkView.getNodeView(node).setXPosition(LEAF_X-((subtreeLeaves.size()-1))*INTERNAL_X_DISTANCE);
+		
 	}
-
+	
+	
+	/**
+	 * getLeaves(Node, List<Node>)
+	 * Recursively populates List with leaves on a path from Node
+	 */
+	private void getLeaves(Node node, List<Node> list)
+	{
+		// Get all children
+		int[] edges = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
+		for(int i = 0; i<edges.length; i++)
+		{
+			Edge e = network.getEdge(edges[i]);
+			Node child = e.getTarget();
+			if(network.getAdjacentEdgeIndicesArray(child.getRootGraphIndex(), false, false, true).length == 0)
+			{
+				// If child is a leaf, add to list
+				list.add(child);	
+			}
+			else
+			{	
+				// Otherwise, probe the subtree rooted at the child
+				layerNum++;
+				getLeaves(child,list);
+			}
+			
+		}
+	}
+	
+	
+	
+	/**
+	 * Find the vertical midpoint of a list of leaves
+	 */
+	private double findSubtreeYMidPoint(List<Node> leaves)
+	{
+		
+		Iterator<Node> it = leaves.iterator();
+		Node firstLeaf = it.next();
+		double highestY,lowestY;
+		highestY = lowestY = networkView.getNodeView(firstLeaf).getYPosition();
+		
+		while(it.hasNext())
+		{
+			Node leaf = it.next();
+			double leafY = networkView.getNodeView(leaf).getYPosition();
+			if(leafY<lowestY)
+			{
+				lowestY = leafY;
+				
+			}
+			if(leafY>highestY)
+			{
+				highestY = leafY;
+				
+			}	
+		}
+		return (highestY+lowestY)/2.0;
+	}
+	
 }
