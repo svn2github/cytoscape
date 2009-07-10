@@ -37,6 +37,8 @@ package csplugins.id.mapping;
 
 import csplugins.id.mapping.ui.CyThesaurusDialog;
 
+import org.bridgedb.bio.BioDataSource;
+
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
@@ -55,8 +57,8 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
     
     class IDMappingAction extends CytoscapeAction {
         public IDMappingAction() {
-            super("CyThesaurus plugin"); //TODO rename
-	}
+            super("CyThesaurus"); //TODO rename
+        }
 
         /**
          * This method is called when the user selects the menu item.
@@ -64,7 +66,7 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
         @Override
         public void actionPerformed(final ActionEvent ae) {
 //            prepare(); //TODO: remove in Cytoscape3
-            
+            BioDataSource.init();
             final CyThesaurusDialog dialog = new CyThesaurusDialog(Cytoscape.getDesktop(), true);
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setVisible(true);

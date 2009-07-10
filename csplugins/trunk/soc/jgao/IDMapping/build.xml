@@ -1,7 +1,7 @@
 
 
-<project name="IDMapping" default="jar" basedir=".">
-  <description>Builds, tests, and runs the project IDMapping.</description>
+<project name="CyThesaurus" default="jar" basedir=".">
+  <description>Builds, tests, and runs the project CyThesaurus.</description>
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
@@ -27,7 +27,8 @@
         <pathelement location="lib/giny.jar"/>
         <pathelement location="lib/cytoscape.jar"/>
         <pathelement location="lib/cytoscape-task.jar"/>
-      	<pathelement location="lib/BridgeDbCore.jar"/>
+      	<pathelement location="lib/bridgedb.jar"/>
+        <pathelement location="lib/bridgedb-bio.jar"/>
       </classpath>
     </javac>
   </target>
@@ -48,14 +49,15 @@
     <copy todir="${build.images}">
       <fileset dir="${images}"/>
     </copy>
-    <jar destfile="IDMappingPlugin.jar">
+    <jar destfile="CyThesaurus.jar">
       <manifest>
         <attribute name="Cytoscape-Plugin"
           value="csplugins.id.mapping.CyThesaurusPlugin" />
       </manifest>
 
       <fileset dir= "${build.classes}" />
-      <zipfileset src="lib/BridgeDbCore.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/bridgedb.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/bridgedb-bio.jar" excludes="META-INF/*"/>
       <zipfileset src="lib/derby.jar" excludes="META-INF/*"/>
     </jar>
   </target>

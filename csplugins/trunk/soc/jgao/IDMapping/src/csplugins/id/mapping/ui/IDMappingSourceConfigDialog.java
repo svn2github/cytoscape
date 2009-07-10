@@ -132,7 +132,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         sourceConfPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select sources of ID mappings"));
-        sourceConfPanel.setPreferredSize(new java.awt.Dimension(626, 400));
+        sourceConfPanel.setPreferredSize(new java.awt.Dimension(833, 542));
         sourceConfPanel.setLayout(new java.awt.GridBagLayout());
 
         sourceDescSplitPane.setPreferredSize(new java.awt.Dimension(600, 150));
@@ -145,12 +145,15 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
 
         sourceDescSplitPane.setLeftComponent(srcTreeScrollPane);
 
-        descScrollPane.setMinimumSize(new java.awt.Dimension(100, 100));
-        descScrollPane.setPreferredSize(new java.awt.Dimension(100, 100));
+        descScrollPane.setMinimumSize(new java.awt.Dimension(500, 500));
+        descScrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
 
+        descTextArea.setLineWrap(true);
+        descTextArea.setTabSize(4);
         descTextArea.setText(msg);
-        descTextArea.setMinimumSize(new java.awt.Dimension(300, 500));
-        descTextArea.setPreferredSize(new java.awt.Dimension(300, 500));
+        descTextArea.setWrapStyleWord(true);
+        descTextArea.setMinimumSize(new java.awt.Dimension(500, 500));
+        descTextArea.setPreferredSize(new java.awt.Dimension(500, 500));
         descScrollPane.setViewportView(descTextArea);
 
         sourceDescSplitPane.setRightComponent(descScrollPane);
