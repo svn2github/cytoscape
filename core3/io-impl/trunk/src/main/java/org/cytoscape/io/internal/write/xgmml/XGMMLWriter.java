@@ -138,7 +138,8 @@ enum ObjectType {
  */
 public class XGMMLWriter {
 	// XML preamble information
-	private static final String XML_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
+    public static final String ENCODING = "UTF-8";
+	private static final String XML_STRING = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" standalone=\"yes\"?>";
 
 	private static final String[] NAMESPACES = {
 		"xmlns:dc=\"http://purl.org/dc/elements/1.1/\"",
@@ -184,6 +185,11 @@ public class XGMMLWriter {
 	 */
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
 
+	/**
+	 *
+	 */
+    public static final String ENCODE_PROPERTY = "cytoscape.encode.xgmml.attributes";
+    
 	private CyNetwork network;
 	private CyNetworkView networkView;
 	private boolean isMixed;
@@ -195,6 +201,8 @@ public class XGMMLWriter {
 	private int depth = 0; // XML depth
 	private String indentString = "";
 	private Writer writer = null;
+
+    private boolean doFullEncoding;
 
 	/**
 	 * Constructor.<br>
@@ -219,6 +227,8 @@ public class XGMMLWriter {
 		// Create our indent string (480 blanks);
 		for (int i = 0; i < 20; i++) 
 			indentString += "                        ";
+
+        doFullEncoding = Boolean.valueOf(System.getProperty(ENCODE_PROPERTY, "true"));
 	}
 
 	/**
@@ -367,7 +377,7 @@ public class XGMMLWriter {
 		java.util.Date now = new java.util.Date();
 		java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		writeElement("<dc:date>"+df.format(now)+"</dc:date>\n");
-		writeElement("<dc:title>"+network.attrs().get("title",String.class)+"</dc:title>\n");
+		writeElement("<dc:title>"+encode(network.attrs().get("title",String.class))+"</dc:title>\n");
 		writeElement("<dc:source>http://www.cytoscape.org/</dc:source>\n");
 		writeElement("<dc:format>Cytoscape-XGMML</dc:format>\n");
 		depth--;
@@ -989,7 +999,7 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeAttributePair(String name, Object value) throws IOException {
-		writer.write(" "+name+"=\""+value.toString()+"\"");
+		writer.write(" "+name+"="+quote(value.toString()));
 	}
 
 	/**
@@ -1119,30 +1129,73 @@ public class XGMMLWriter {
 	 */
 
 	/**
+	 * encode returns a quoted string appropriate for use as an XML attribute
+	 *
+	 * @param str the string to encode
+	 * @return the encoded string
+	 */
+	private String encode(String str) {
+		// Find and replace any "magic", control, non-printable etc. characters
+        // For maximum safety, everything other than printable ASCII (0x20 thru 0x7E) is converted into a character entity
+
+        StringBuilder sb;
+
+        sb = new StringBuilder(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            char c;
+
+            c = str.charAt(i);
+            if ((c < ' ') || (c > '~'))
+            {
+                if (doFullEncoding) {
+                    sb.append("&#x");
+                    sb.append(Integer.toHexString((int)c));
+                    sb.append(";");
+                }
+                else {
+                    sb.append(c);
+                }
+            }
+            else if (c == '"') {
+                sb.append("&quot;");
+            }
+            else if (c == '\'') {
+                sb.append("&apos;");
+            }
+            else if (c == '&') {
+                sb.append("&amp;");
+            }
+            else if (c == '<') {
+                sb.append("&lt;");
+            }
+            else if (c == '>') {
+                sb.append("&gt;");
+            }
+            else {
+                sb.append(c);
+            }
+        }
+
+		return sb.toString();
+	}
+
+	/**
 	 * quote returns a quoted string appropriate for use as an XML attribute
 	 *
 	 * @param str the string to quote
 	 * @return the quoted string
 	 */
 	private String quote(String str) {
-		// Find and replace any "magic" characters
-		if (str.contains("&")) {
-			str = str.replaceAll("&", "&amp;");
-		}
-		if (str.contains("\"")) {
-			str = str.replaceAll("\"", "&quot;");
-		}
-		if (str.contains("'")) {
-			str = str.replaceAll("\'", "&apos;");
-		}
-		if (str.contains("<")) {
-			str = str.replaceAll("<", "&lt;");
-		}
-		if (str.contains(">")) {
-			str = str.replaceAll(">", "&gt;");
-		}
-		return "\""+str+"\"";
-	}
+        return '"' + encode(str) + '"';
+    }
+
+    public boolean isDoFullEncoding() {
+        return doFullEncoding;
+    }
+
+    public void setDoFullEncoding(boolean doFullEnc) {
+        doFullEncoding = doFullEnc;
+    }
 
 	/**
 	 * Determines if object has key in multihashmap
