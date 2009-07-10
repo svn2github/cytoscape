@@ -2,16 +2,12 @@ package org.cytoscape.work.internal.tunables;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,24 +28,30 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	private java.util.List<Guihandler> lh;
 	private boolean newValuesSet;
 	private JFrame frame = new JFrame("Set Parameters");
-	private JPanel panel = new JPanel();
 	private Object[] objs;
+	
 	
 	public GuiTunableInterceptor(HandlerFactory<Guihandler> factory) {
 		super( factory );
 		panelMap = new HashMap<java.util.List<Guihandler>,JPanel>();
 	}
 
+	
+	//set the parent JPanel that will contain the GUI
 	public void setParent(Object o) {
 		if(o instanceof JPanel)
 			this.parent = (Component)o;
 		else throw new IllegalArgumentException("Not a JPanel");
 	}
-		
+	
+	
+	//get the value(Handle) of the Tunable if its JPanel is enabled(Dependency)
 	public void handle(){
 		for(Guihandler h: lh)h.handleDependents();
 	}
 
+	
+	//Create the GUI
 	public boolean createUI(Object... proxyObjs) {
 		this.objs = convertSpringProxyObjs( proxyObjs );
 		lh = new ArrayList<Guihandler>();
@@ -68,7 +70,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			panels.put(MAIN,createJPanel(MAIN,null,null,Param.hidden));
 
 			
-			// construct the gui
+			// construct the GUI
 			for (Guihandler gh : lh) {
 				// hook up dependency listeners
 				String dep = gh.getDependency();
@@ -81,6 +83,8 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 					}
 				}
 
+				
+				//Get informations about the Groups and alignment from Tunables Annotations in order to create the proper GUI
 				Map<String,Param> groupAlignement = new HashMap<String,Param>();
 				Map<String,Param> groupTitles = new HashMap<String,Param>();
 				
@@ -104,7 +108,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 				
 				
 				
-				// find the proper group to put the handler panel in
+				// find the proper group to put the handler panel in given the Alignment/Group parameters
 				String lastGroup = MAIN;
 				String groupNames = null;
 				for ( String g : group ) {
@@ -125,19 +129,15 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		for ( Guihandler h : lh ) 
 			h.notifyDependents();
 
-		
+		//if no parent is defined, then create a new JDialog to display the Tunables' panels
 		if(parent==null){
 			displayOptionPanel();
-//			preparePanel();displayPanel();
 			return newValuesSet;
 		}
-		else{
-			int nbPanel = ((Container) parent).getComponentCount()-1;
-			JPanel buttonBox = (JPanel) ((Container) parent).getComponent(nbPanel);
-			((JPanel)parent).remove(nbPanel);
+		else{//else add them to the "parent" JPanel
+			((JPanel)parent).removeAll();
 			((JPanel)parent).add(panelMap.get(lh));
-			((JPanel)parent).add(buttonBox);
-			parent = null;
+			parent.repaint();
 			return true;
 		}
 	}
@@ -175,52 +175,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		if(groupTitle==Param.displayed || groupTitle==null) ret.setBorder(titleborder);
 		if(alignment==Param.vertical || alignment==null)ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
 		else if(alignment==Param.horizontal)ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
-		
-//		if(title!="" && title!=" "){
-//			if(alignment==Param.vertical || alignment==null){
-//				ret.setBorder(titleborder);
-//				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
-//			}
-//			else if(alignment==Param.horizontal){
-//				ret.setBorder(titleborder);
-//				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
-//			}
-//		}
-//		else {
-//			if(alignment==Param.vertical || alignment==null){
-//				ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
-//			}
-//			else if(alignment==Param.horizontal){
-//				
-//				ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
-//			}
-//		}
 		return ret;
 	}
 
-	
-	private void preparePanel(){
-		JPanel tunapanel = panelMap.get(lh);
-		JPanel buttonpanel = new JPanel();
-		JButton okbutton= new JButton("OK");
-		okbutton.setActionCommand("ok");
-		JButton cancelbutton = new JButton("Cancel");
-		cancelbutton.setActionCommand("cancel");
-		okbutton.addActionListener(new myAction());
-		cancelbutton.addActionListener(new myAction());
-		buttonpanel.add(okbutton);
-		buttonpanel.add(cancelbutton);
-		panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
-		panel.add(tunapanel);
-		panel.add(buttonpanel);
-		frame.setContentPane(panel);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocation(600, 500);
-	}
-	private void displayPanel(){
-		frame.setVisible(true);
-		frame.pack();
-	}
 	
 	private void displayOptionPanel(){
 		Object[] buttons = {"OK","Cancel"};
@@ -254,26 +211,26 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	}
 	
 	
-	private class myAction implements ActionListener{
-		public void actionPerformed(ActionEvent ae){
-			if(ae.getActionCommand().equals("ok")){
-				String valid = null;
-				for ( Guihandler h : lh )h.handleDependents();
-				
-				for(Object o : objs){
-					 Object[] interfaces = o.getClass().getInterfaces();
-					 for(int i=0;i<interfaces.length;i++){
-						if(interfaces[i].equals(TunableValidator.class)) valid=((TunableValidator)o).validate();
-					 }
-				}
-				if(valid==null){newValuesSet = true;frame.dispose();}
-				else{JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayPanel();}
-			}
-			else if(ae.getActionCommand().equals("cancel")){
-				newValuesSet = false;
-				frame.dispose();
-			}
-		}
-	}
+//	private class myAction implements ActionListener{
+//		public void actionPerformed(ActionEvent ae){
+//			if(ae.getActionCommand().equals("ok")){
+//				String valid = null;
+//				for ( Guihandler h : lh )h.handleDependents();
+//				
+//				for(Object o : objs){
+//					 Object[] interfaces = o.getClass().getInterfaces();
+//					 for(int i=0;i<interfaces.length;i++){
+//						if(interfaces[i].equals(TunableValidator.class)) valid=((TunableValidator)o).validate();
+//					 }
+//				}
+//				if(valid==null){newValuesSet = true;frame.dispose();}
+//				else{JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayPanel();}
+//			}
+//			else if(ae.getActionCommand().equals("cancel")){
+//				newValuesSet = false;
+//				frame.dispose();
+//			}
+//		}
+//	}
 
 }
