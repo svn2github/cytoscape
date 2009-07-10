@@ -107,8 +107,8 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 	 * @param obj A class that contains <code>Tunable</code> that need to be caught to interact with the users
 	 */
 	public void loadTunables(Object obj) {
-		//System.out.println("looking at obj: " + obj.getClass().toString());
-		if (!handlerMap.containsKey(obj)) { //Deleted to get new Panels if we do it many times
+		//System.out.println("looking at obj: " + obj.getClass().toString());		
+		if (!handlerMap.containsKey(obj)) {
 			LinkedHashMap<String, H> handlerList = new LinkedHashMap<String, H>();
 
 			// Find each public field in the class.
@@ -116,11 +116,12 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 				// See if the field is annotated as a Tunable.
 				if (field.isAnnotationPresent(Tunable.class)) {
 					try {
-						
+						//get the Tunables annotations
 						Tunable tunable = field.getAnnotation(Tunable.class);
-
+						//get a Handler for this type of Tunable
 						H handler = factory.getHandler(field, obj, tunable);
 
+						//add it to the list of Handlers
 						if (handler != null) {
 							handlerList.put(field.getName(), handler);
 						} else
@@ -138,10 +139,8 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 			Map<String, Tunable> getTunableMap = new HashMap<String,Tunable>();
 			Map<String, Tunable> setTunableMap = new HashMap<String,Tunable>();
 
-			
 			// Find each public method in the class.
-			for (Method method : obj.getClass().getMethods()) {
-	
+			for (Method method : obj.getClass().getMethods()) {	
 				// See if the method is annotated as a Tunable.
    				if (method.isAnnotationPresent(Tunable.class)) {
 					try {
