@@ -10,8 +10,9 @@ import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.map.PrimeFinder;
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
-import csplugins.layout.LayoutNode;
-import csplugins.layout.LayoutPartition;
+import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.LayoutNode;
+import org.cytoscape.view.layout.LayoutPartition;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;

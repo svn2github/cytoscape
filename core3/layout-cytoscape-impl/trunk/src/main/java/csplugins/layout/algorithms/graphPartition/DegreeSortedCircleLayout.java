@@ -1,8 +1,9 @@
 /* vim: set ts=2: */
 package csplugins.layout.algorithms.graphPartition;
 
-import csplugins.layout.LayoutNode;
-import csplugins.layout.LayoutPartition;
+import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.LayoutNode;
+import org.cytoscape.view.layout.LayoutPartition;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;

@@ -32,9 +32,9 @@
  */
 package csplugins.layout.algorithms.bioLayout;
 
-import csplugins.layout.EdgeWeighter;
-import csplugins.layout.LayoutPartition;
-import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
+import org.cytoscape.view.layout.EdgeWeighter;
+import org.cytoscape.view.layout.LayoutPartition;
+import org.cytoscape.view.layout.AbstractGraphPartition;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.UndoSupport;

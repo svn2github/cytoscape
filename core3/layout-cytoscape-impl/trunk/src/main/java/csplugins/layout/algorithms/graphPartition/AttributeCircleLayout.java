@@ -32,8 +32,9 @@
  */
 package csplugins.layout.algorithms.graphPartition;
 
-import csplugins.layout.LayoutNode;
-import csplugins.layout.LayoutPartition;
+import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.LayoutNode;
+import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.UndoSupport;

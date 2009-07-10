@@ -32,9 +32,9 @@
  */
 package csplugins.layout.algorithms.bioLayout;
 
-import csplugins.layout.LayoutEdge;
-import csplugins.layout.LayoutNode;
-import csplugins.layout.LayoutPartition;
+import org.cytoscape.view.layout.LayoutEdge;
+import org.cytoscape.view.layout.LayoutNode;
+import org.cytoscape.view.layout.LayoutPartition;
 import csplugins.layout.Profile;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.UndoSupport;

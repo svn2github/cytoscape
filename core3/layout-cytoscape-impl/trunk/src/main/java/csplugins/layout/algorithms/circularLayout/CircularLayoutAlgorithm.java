@@ -36,10 +36,10 @@
 
 package csplugins.layout.algorithms.circularLayout;
 
-import csplugins.layout.LayoutEdge;
-import csplugins.layout.LayoutNode;
-import csplugins.layout.LayoutPartition;
-import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
+import org.cytoscape.view.layout.LayoutEdge;
+import org.cytoscape.view.layout.LayoutNode;
+import org.cytoscape.view.layout.LayoutPartition;
+import org.cytoscape.view.layout.AbstractGraphPartition;
 import csplugins.layout.algorithms.hierarchicalLayout.Edge;
 import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 import org.cytoscape.work.TaskMonitor;
