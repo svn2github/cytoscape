@@ -27,19 +27,20 @@ public class Interpolator {
 
 	public CyFrame[] makeFrames(List<CyFrame> frameList){
 		if(frameList.size() == 0){ return null; }
-		int framecount = frameList.size();
-		for(CyFrame frame: frameList){ framecount = framecount + frame.intercount; }
-		CyFrame[] cyFrameArray = new CyFrame[framecount+2]; //(frameList.size()-1)*framecount + 1];
+		int framecount = 10; //frameList.size();
+		//for(CyFrame frame: frameList){ framecount = framecount + frame.intercount; }
+		CyFrame[] cyFrameArray = new CyFrame[(frameList.size()-1)*framecount + 1];
 	   
 		for(int i=0; i<cyFrameArray.length; i++){
    			cyFrameArray[i] = new CyFrame(frameList.get(0).currentNetwork);
    		}
 	   	
+		
 		int start = 0;
 		int end = 0;
 	   	for(int i=0; i < frameList.size()-1; i++){
 	   		
-	   		framecount = frameList.get(i).intercount;
+	   		//framecount = frameList.get(i).intercount;
 	   		end = start + framecount;
 	   		cyFrameArray[start] = frameList.get(i);
 
