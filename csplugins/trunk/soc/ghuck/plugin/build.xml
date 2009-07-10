@@ -39,6 +39,7 @@
     <available file="${cytoscape.dir}/cytoscape.jar" property="cytoscape.present"/> 
     <available file="${root.dir}/plugin.props" property="plugin.prop.present"/>
     <available file="${root.dir}/libGpuLayout.so" property="static.lib.present"/>
+    <available file="${root.dir}/License.txt" property="license.present"/>
 
     <!-- Define the java class path -->
     <path id="project.class.path">
@@ -84,7 +85,7 @@
   <!-- =================================================================== -->
   <!-- Creates the plugin jar file                                           -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile, copy_plugin_prop, copy_static_lib, javah"  >
+  <target name="jar" depends="compile, copy_plugin_prop, copy_static_lib, javah, copy_license"  >
   	
     <jar destfile="${project.jar}">
       <manifest> <attribute name="Cytoscape-Plugin" value="${plugin_class}"/> </manifest>
@@ -102,6 +103,12 @@
   <target name="copy_static_lib" if="static.lib.present">
     <copy todir="${build.dir}/" file="${root.dir}/libGpuLayout.so"/>	
   </target>
+
+  <!-- If License exist, copy it to build directory  -->	
+  <target name="copy_license" if="license.present">
+    <copy todir="${build.dir}/" file="${root.dir}/License.txt"/>	
+  </target>
+
 
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->

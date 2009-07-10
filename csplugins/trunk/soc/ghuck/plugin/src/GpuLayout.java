@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 **************************************************************************************/
-
-
 import java.awt.event.ActionEvent;
 
 import cytoscape.Cytoscape;
@@ -291,7 +289,7 @@ public class GpuLayout extends CytoscapePlugin {
 	    AdjMatIndex[alias] = position;
 		
 
-	    //  Show message on screen    
+	    //  Show message on screen with AdjMatIndex and AdjMatVals   
 	    /*String message2 = "AdjMatIndex\n"; 
 	    for (int i = 0; i < AdjMatIndex.length; i++)
 		message2 = message2 + " " +AdjMatIndex[i];
@@ -414,7 +412,9 @@ public class GpuLayout extends CytoscapePlugin {
     }
 
     
-    // Native method that computes the layout and returns relative position of nodes
+    /**
+     * Native method that computes the layout and returns position of nodes
+     */
     private native 
 	int[][] ComputeGpuLayout( int[] AdjMatIndexJ, 
 				  int[] AdjMatValsJ, 

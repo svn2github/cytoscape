@@ -1,4 +1,4 @@
-GpuLayout : GpuLayout.cu	
+GpuLayout : GpuLayout.cu 	
 	cp ../../build/GpuLayout.class ./
 	javah -d ../ GpuLayout
 	rm ./GpuLayout.class
