@@ -43,6 +43,7 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 			PhylipTreeImpl phylipParser = new PhylipTreeImpl(pFile);
 			
 			CyNetwork cyNetwork = Cytoscape.createNetwork(pFile.getName(), true);
+			
 			CyAttributes cyAttributes = Cytoscape.getEdgeAttributes();
 			
 			
@@ -62,15 +63,18 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 				{
 					PhylotreeEdge pEdge = edgeListIterator.next();
 
-					CyNode node2 = Cytoscape.getCyNode(pEdge.getSourceNode().getName(), true);
-					CyNode node1 = Cytoscape.getCyNode(pEdge.getTargetNode().getName(), true);
-						
-					CyEdge cyEdge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, "pp", true, false);
+					CyNode node1 = Cytoscape.getCyNode(pEdge.getSourceNode().getName(), true);
+					CyNode node2 = Cytoscape.getCyNode(pEdge.getTargetNode().getName(), true);
 					
+					CyEdge cyEdge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, "pp", true, true);
+				
 					// Get edge attributes and set them
 					List<Object> edgeAttributes = phylipParser.getEdgeAttribute(pEdge);
 					cyAttributes.setAttribute(cyEdge.getIdentifier(), "branchLength", (Double)edgeAttributes.get(0));
 					cyNetwork.addEdge(cyEdge);
+					cyNetwork.addNode(node1);
+					cyNetwork.addNode(node2);
+					
 				}
 				
 

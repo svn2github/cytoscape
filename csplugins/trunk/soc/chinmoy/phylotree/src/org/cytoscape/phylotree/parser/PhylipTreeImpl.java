@@ -65,69 +65,80 @@ public class PhylipTreeImpl implements Phylotree {
 		}
 
 	}
-	
+
 	private List<String> convertTreeStringToList(String treeString)
 	{
 		List<String> returnList = new LinkedList<String>();
 		// Split the tree string into a list
-				String [] substrings = treeString.split(":|,|;");
+		String [] substrings = treeString.split(":|,|;");
 
 
-				// Parse the input into a list ignoring ',' but adding names, lengths and parentheses
+		// Parse the input into a list ignoring ',' but adding names, lengths and parentheses
 
-				for(int i = 0; i<substrings.length; i++)
+		for(int i = 0; i<substrings.length; i++)
+		{
+			substrings[i] = substrings[i].trim();
+
+			// For every parenthesis encountered, add it to the list
+			if (substrings[i].charAt(0) == '(')
+			{
+				returnList.add("(");
+				for (int k = 1; k<substrings[i].length(); k++)
 				{
-					substrings[i] = substrings[i].trim();
-
-					// For every parenthesis encountered, add it to the list
-					if (substrings[i].charAt(0) == '(')
+					if(substrings[i].charAt(k) == '(')
 					{
-						returnList.add("(");
-						for (int k = 1; k<substrings[i].length(); k++)
-						{
-							if(substrings[i].charAt(k) == '(')
-							{
-								returnList.add("("); 
-							}
-							else
-							{
-								// Split the remainder of the string around the '(' if a name is encountered
-								// Add the name to the list 
-								String[] tempSub = substrings[i].split("\\(+");
-
-								returnList.add(tempSub[1]);
-								break;
-
-
-							}
-						}         
+						returnList.add("("); 
 					}
-
-					// For every name/length encountered, splice off the ')' and add it to the list
-					else if(substrings[i].charAt(0) != '(' && substrings[i].charAt(0) != ')')
+					else
 					{
-						String[] tempSub2 = substrings[i].split("\\)");
-						returnList.add(tempSub2[0]);
+						// Split the remainder of the string around the '(' if a name is encountered
+						String[] tempSub = substrings[i].split("\\(+");
+
+						// Split the remainder of the string around any ')' if encountered
+						String[] tempSub3 = tempSub[1].split("\\)+");
+
+						// Add the name to the list 
+
+						returnList.add(tempSub3[0]);
+						break;
+
+
 					}
+				}         
+			}
 
-					// For every ')' encountered add it to the list
-					if(substrings[i].charAt(substrings[i].length()-1)== ')')
-					{
+			// For every name/length encountered, splice off the ')' and add it to the list
+			else if(substrings[i].charAt(0) != '(' && substrings[i].charAt(0) != ')')
+			{
+				String[] tempSub2 = substrings[i].split("\\)+");
+
+				returnList.add(tempSub2[0]);
+
+
+			}
+
+			// For every ')' encountered add it to the list
+			if(substrings[i].charAt(substrings[i].length()-1)== ')')
+			{
+				for(int x = 0; x<substrings[i].length(); x++)
+				{
+					if(substrings[i].charAt(substrings[i].length()-1-x)==')')
 						returnList.add(")");
-					}
+
 				}
+			}
+		}
 
 
-	
 		return returnList;
 	}
 
 	private void readListIntoStack(List<String> list)
 	{
-		
+
 		Stack <String> stack = new Stack<String>();  
 		Stack<PhylipNode> parentNodeStack = new Stack<PhylipNode>();
-		
+
 		List<PhylipNode> childNodeList = new LinkedList<PhylipNode>();
 		// ChildNodeList records the children of a node for the purpose of creating edges.
 		// It is cleared after the edges for each node are created. 
@@ -260,13 +271,13 @@ public class PhylipTreeImpl implements Phylotree {
 	 */
 	private void parse()
 	{
-		
+
 		// Parse the treeStr into a list of subelements
 		List<String> list = convertTreeStringToList(treeStr);
 
 		// Traverse the list into node and edge lists using a stack
 		readListIntoStack(list);
-		 
+
 
 	}
 
@@ -297,9 +308,9 @@ public class PhylipTreeImpl implements Phylotree {
 		return retValue;
 	}
 
-/*	Return a list of all the edge attributes
- *  The order of attributes is {edgeLength,}
- */
+	/*	Return a list of all the edge attributes
+	 *  The order of attributes is {edgeLength,}
+	 */
 	public List<Object> getEdgeAttribute(PhylotreeEdge pEdge){
 
 		List<Object> edgeAttributes = new LinkedList<Object> ();
