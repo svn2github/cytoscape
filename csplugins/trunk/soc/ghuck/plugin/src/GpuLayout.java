@@ -313,11 +313,14 @@ public class GpuLayout extends CytoscapePlugin {
 		if (!accessible)
 		    field.setAccessible(true);
 		Object original = field.get(clazz);
+		// Get original PATH
+		String orig_path = System.getProperty("java.library.path");
+
 		// Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed value
 		field.set(clazz, null);
 		try {
 		    // Change the value and load the library.
-		    System.setProperty("java.library.path", CY_PLUGIN_PATH);
+		    System.setProperty("java.library.path", CY_PLUGIN_PATH + ":" + CUDA_LIB + ":" + orig_path);
 		    System.loadLibrary(GPU_LIBRARY);
 		}
 		catch (UnsatisfiedLinkError error){
@@ -390,6 +393,8 @@ public class GpuLayout extends CytoscapePlugin {
 	private double V_SIZE = 1000.0;
 	private String GPU_LIBRARY = "GpuLayout";
 	private String CY_PLUGIN_PATH = "/home/gerardo/Cytoscape_v2.6.2/plugins";
+	private String CUDA_LIB = "/usr/local/cuda/lib";
+
     }
 
 
