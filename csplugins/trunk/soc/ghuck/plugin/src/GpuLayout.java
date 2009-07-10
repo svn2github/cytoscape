@@ -292,14 +292,14 @@ public class GpuLayout extends CytoscapePlugin {
 		
 
 	    //  Show message on screen    
-	    String message = "AdjMatIndex\n"; 
+	    /*String message2 = "AdjMatIndex\n"; 
 	    for (int i = 0; i < AdjMatIndex.length; i++)
-		message = message + " " +AdjMatIndex[i];
-	    message = message + "\nAdhMatVals\n";
+		message2 = message2 + " " +AdjMatIndex[i];
+	    message2 = message2 + "\nAdhMatVals\n";
 	    for (int i = 0; i < AdjMatVals.length; i++)
-		message = message + " " +AdjMatVals[i];	    
-	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
-	    
+		message2 = message2 + " " +AdjMatVals[i];	    
+	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message2);
+	    */
 
 	    // Check whether it has been canceled by the user
 	    if (canceled)
@@ -319,12 +319,13 @@ public class GpuLayout extends CytoscapePlugin {
 		field.set(clazz, null);
 		try {
 		    // Change the value and load the library.
-		    System.setProperty("java.library.path", "/home/gerardo/Cytoscape_v2.6.2/plugins");
+		    System.setProperty("java.library.path", CY_PLUGIN_PATH);
 		    System.loadLibrary(GPU_LIBRARY);
 		}
 		catch (UnsatisfiedLinkError error){
-		    message = "Static Library with Native Code not found\n Cannot Produce Layout\n"; 
-		    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+		    String message = "Problem detected while loading Static Library with Native Code\n Cannot Produce Layout\n"
+			           + error.getMessage();
+		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
 
 		    // Revert back the changes
 		    field.set(clazz, original);
@@ -341,25 +342,56 @@ public class GpuLayout extends CytoscapePlugin {
 	    }
 	    catch (Exception E){}
 
+	    // Check whether it has been canceled by the user
+	    if (canceled)
+		return;
+
+	    // Show message on the task monitor
+	    taskMonitor.setStatus("Calling native code...");
+
+	    // Make native method call
+	    int[][]node_positions = ComputeGpuLayout( AdjMatIndex, 
+						      AdjMatVals, 
+						      coarseGraphSize, 
+						      interpolationIterations, 
+						      levelConvergence, 
+						      edgeLen, 
+						      initialNoIterations,
+						      H_SIZE,
+						      V_SIZE 
+						      );
+
+	    // Check whether it has been canceled by the user
+	    if (canceled)
+		return;
 
 
+	    // Update Node position
 
-	    // Call Native Code
+	    // Iterate over all nodes
+	    for (alias = 0; alias < numNodes; alias++){
 
+		// Get current node's index
+		int current_node_index = node_Alias2Index(node_map, alias);
 
-	    // Update node positions 
-	    //for (alias = 0; alias < numNodes; alias++){
-		//Get X and Y coordinates
+		// Get current node
+		Node node = network.getNode(current_node_index);
+		
+		// Set node's X and Y positions
+		networkView.getNodeView(node).setXPosition(node_positions[alias][0]);
+		networkView.getNodeView(node).setYPosition(node_positions[alias][1]);	     
 
-		// Update positions
-		//networkView.getNodeView(node).setXPosition(x);
-		//networkView.getNodeView(node).setYPosition(y);
-	    //}
+	    }
+
+	    // (UPDATE NODES?????) I don't know if that will be required..
+
+	    return;
 	}
 	
 	private double H_SIZE = 1000.0;
 	private double V_SIZE = 1000.0;
-	private String GPU_LIBRARY = "GPU_layout";
+	private String GPU_LIBRARY = "GpuLayout";
+	private String CY_PLUGIN_PATH = "/home/gerardo/Cytoscape_v2.6.2/plugins";
     }
 
 
@@ -386,7 +418,7 @@ public class GpuLayout extends CytoscapePlugin {
     private native 
 	int[][] ComputeGpuLayout( int[] AdjMatIndexJ, 
 				  int[] AdjMatValsJ, 
-				  int coarseGraphSize, 
+				  int coarseGraphSizeJ, 
 				  int interpolationIterationsJ, 
 				  int levelConvergenceJ, 
 				  int edgeLenJ, 
@@ -394,6 +426,8 @@ public class GpuLayout extends CytoscapePlugin {
 				  double hSizeJ,
 				  double vsizeJ
 				);
+    
+
     
 
 }

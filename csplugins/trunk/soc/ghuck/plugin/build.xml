@@ -38,7 +38,7 @@
     <!-- Check the availability of some files -->  	
     <available file="${cytoscape.dir}/cytoscape.jar" property="cytoscape.present"/> 
     <available file="${root.dir}/plugin.props" property="plugin.prop.present"/>
-    <available file="${root.dir}/libPrompt.so" property="static.lib.present"/>
+    <available file="${root.dir}/libGpuLayout.so" property="static.lib.present"/>
 
     <!-- Define the java class path -->
     <path id="project.class.path">
@@ -100,7 +100,7 @@
 
   <!-- If static.lib exist, copy it to build directory  -->	
   <target name="copy_static_lib" if="static.lib.present">
-    <copy todir="${build.dir}/" file="${root.dir}/libPrompt.so"/>	
+    <copy todir="${build.dir}/" file="${root.dir}/libGpuLayout.so"/>	
   </target>
 
   <!-- =================================================================== -->

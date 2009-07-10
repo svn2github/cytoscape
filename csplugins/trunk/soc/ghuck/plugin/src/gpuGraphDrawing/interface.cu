@@ -41,8 +41,8 @@ See license.h for more information.
 #include "kdNode.cu"
 #include "pkdNode.cu"
 #include "common.h"
-#include "readFile.cu"
-#include "writeOutput.cu"
+		       //#include "readFile.cu"
+		       //#include "writeOutput.cu"
 #include "scope.h"
 #include "display.h"
 
@@ -382,8 +382,8 @@ int calculateLayout (globalScope* scope)
 
   /*       END OF LAYOUT CALCULATION      */
   
-  printf ("Time for coarsening graph: %f\n", elapsed_coarsen);
-  printf ("Time for calculating layout: %f\n", elapsed_layout);
+  //printf ("Time for coarsening graph: %f\n", elapsed_coarsen);
+  //printf ("Time for calculating layout: %f\n", elapsed_layout);
   
   // Release resorces
   cudaFree (scope->AdjMatIndexD);
@@ -402,7 +402,7 @@ int calculateLayout (globalScope* scope)
   free (scope->rootFloat);
   free (scope->Disp);
 
-  writeOutput(&(scope->g));
+  // TODO: release gArray[]
 
   return 0;
 }

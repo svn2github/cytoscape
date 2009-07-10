@@ -26,12 +26,13 @@ See license.h for more information.
 // GpuGraphDrawing interface
 #include "interface.cu"
 
+#include <unistd.h>
 
 
 
-////////////////////////////////////////////////////////////////////////////////
-// 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+// Implementation of JNI call, it initializes the arguments and calls compute_layout()
+////////////////////////////////////////////////////////////////////////////////////////
 
 JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ComputeGpuLayout (JNIEnv*    env, 
 								jobject    thisJ, 
@@ -56,7 +57,7 @@ JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ComputeGpuLayout (JNIEnv*    env,
   // Set parameters
   scope->coarseGraphSize          = coarseGraphSizeJ;
   scope->interpolationIterations  = interpolationIterationsJ;
-  scope->levelConvergence         = evelConvergenceJ;
+  scope->levelConvergence         = levelConvergenceJ;
   scope->EDGE_LEN                 = EDGE_LENJ;
   scope->initialNoIterations      = initialNoIterationsJ;
 
@@ -68,8 +69,8 @@ JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ComputeGpuLayout (JNIEnv*    env,
   int nEdges = 0;
 
   // Get numNodes, numEdges
-  numNodes = env->getArrayLength(AdjMatIndexJ) - 1; //AdjMatIndexJ has an extra index for marking the end of AdjMatValsJ
-  numEdges = env->getArrayLength(AdjMatValsJ);
+  numNodes = env->GetArrayLength(AdjMatIndexJ) - 1; //AdjMatIndexJ has an extra index for marking the end of AdjMatValsJ
+  numEdges = env->GetArrayLength(AdjMatValsJ);
 
   // Initialize Graph
   initGraph(&(scope->g), numNodes); 
@@ -90,21 +91,21 @@ JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ComputeGpuLayout (JNIEnv*    env,
   // Copy temporary copies
   memcpy (scope->g.AdjMatIndex, temp_AdjMatIndex, (numNodes + 1) * sizeof(int));
   memcpy (scope->g.AdjMatVals,  temp_AdjMatVals,  (numEdges)     * sizeof(int));
+			
+  // Free graph in JVM
+  env->ReleaseIntArrayElements(AdjMatIndexJ, temp_AdjMatIndex, 0);
+  env->ReleaseIntArrayElements(AdjMatValsJ,  temp_AdjMatVals , 0);
 
   // Initialize node positions 
   for (int i = 0; i < numNodes; i++){
       scope->g.NodePos[i].x = (int)rand() % scope->g.screen_width;
       scope->g.NodePos[i].y = (int)rand() % scope->g.screen_hieght;
-    }
+  } 
 	 
   // Initialize edge lengths
   for (int i = 0; i < scope->g.AdjMatIndex[numNodes]; i++){
       scope->g.edgeLen[i] = scope->EDGE_LEN;
-    }			
-	
-			
-  // Free graph in JVM
-  env->ReleaseIntArrayElements
+  }			
 
 		
   // Calculate layout
@@ -114,10 +115,55 @@ JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ComputeGpuLayout (JNIEnv*    env,
   showGraph (scope, 0, NULL);
     
   // Wait
-  Sleep(3);
+  sleep(5);
 
-  // Save nodes positions 
+  // Create return object
+  jobjectArray result;
+  
+  // Get the class of float[]
+  jclass floatArrCls = env->FindClass("[F");
+  if (floatArrCls == NULL) {
+    return NULL;
+  }
+
+  // Result is an object of type float[][]
+  result = env->NewObjectArray(numNodes, floatArrCls, NULL);
+  if (result == NULL) {
+         return NULL; 
+  }
+  
+  // Allocate memory for each float[] (each one contains the coordinates of a single node) and copy node's position
+  for (int i = 0; i < numNodes; i++) {
+
+    // Temporary storage for positions
+    float tmp[2];
+
+    // Create a float[]
+    jfloatArray temp_float_arr = env->NewFloatArray(2);
+    if (temp_float_arr == NULL) {
+      return NULL; 
+    }
+
+    // Save X and Y positions
+    tmp[0] = scope->g.NodePos[i].x;
+    tmp[1] = scope->g.NodePos[i].y;
+
+    env->SetFloatArrayRegion(temp_float_arr, 0, 2, tmp);
+    env->SetObjectArrayElement(result, i, temp_float_arr);
+    env->DeleteLocalRef(temp_float_arr);
+  }
+	 
 
 
-  return NULL;
+
+  // Release resources
+  free (scope->g.NodePos);
+  free (scope->g.AdjMatIndex);
+  free (scope->g.AdjMatVals);
+  free (scope->g.edgeLen);
+
+
+
+  return result;
 }
+  

@@ -1,11 +1,15 @@
-gpuGraphDrawing : gpuGraphDrawing.o
-	g++ -o gpuGraphDrawing $(INC) $(LIB) gpuGraphDrawing.o -lglut -lcudart -lcudpp64
-
-gpuGraphDrawing.o : gpuGraphDrawing.cu
-	nvcc -c $(INC) -o gpuGraphDrawing.o gpuGraphDrawing.cu
+GpuLayout : GpuLayout.cu	
+	cp ../../build/GpuLayout.class ./
+	javah -d ../ GpuLayout
+	rm ./GpuLayout.class
+	nvcc --shared --compiler-options '-fPIC' -o libGpuLayout.so $(INC) $(LIB) GpuLayout.cu -lglut -lcudart -lcudpp64
+	cp libGpuLayout.so ../../
 
 clean :
-	rm gpuGraphDrawing gpuGraphDrawing.o
+	rm libGpuLayout.so 
+	rm *.linkinfo
+	rm ../*.h
+	rm ../../libGpuLayout.so
 
 CUDA := /usr/local/cuda
 

@@ -1,0 +1,9 @@
+Instructions for building the plugin:
+
+1- Modify line 27 of build.xml, so that it points to your cytoscape installation folder.
+
+2- Modify lines 14 and 16 of src/gpuGraphDrawing/Makefile, so that both CUDPP and CUDA variables point to the installation folders of CUDPP and CUDA.
+
+3- Modify line 394 of src/GpuLayout.java, so that CY_PLUGIN_PATH points to your cytoscape plugin folder.
+
+4- Run build.sh
