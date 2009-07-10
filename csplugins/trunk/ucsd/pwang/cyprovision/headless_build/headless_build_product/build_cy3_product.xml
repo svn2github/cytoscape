@@ -6,6 +6,8 @@
 	<property name="baseLocation" location="${base}/eclipse" />
 	<property name="buildDirectory" location="./build_product" />
 
+	<property name="p2.category.definition" value="file:C:/work_cy3/eclipse35_ws/headless_build_product/category.xml" />
+
 	<property name="product" location="./cytoscape300.product" />
 		
 	<property name="p2.gathering" value= "true" />
@@ -20,6 +22,7 @@
 	<property name="buildId" value= "CytoscapeBuild" />
 
 	<property name="pluginPath" location="target/cytoscape" />	
+	
 	<!-- End of configuration section -->
 	
 	<property file="build.properties" />
