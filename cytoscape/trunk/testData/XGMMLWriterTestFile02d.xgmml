@@ -14,9 +14,9 @@
       </rdf:Description>
     </rdf:RDF>
   </att>
-  <node label="node0" id="-1">
+  <node label="node0" id="-2">
     <att type="string" name="NODE_TYPE" value="DefaultNode"/>
     <att type="string" name="canonicalName" value="node0"/>
-    <att type="string" name="testString" value="This is a test string for&#x9;node0&#xA;"/>
+    <att type="string" name="testString" value="This is a test string for node0\nAnother sentence$&#xa9;&#xfef8;"/>
   </node>
 </graph>

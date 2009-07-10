@@ -16,7 +16,7 @@
   </att>
   <node label="node0" id="-2">
     <att type="string" name="NODE_TYPE" value="DefaultNode"/>
-    <att type="string" name="testString" value="This is a test string for\tnode0\n"/>
     <att type="string" name="canonicalName" value="node0"/>
+    <att type="string" name="testString" value="This is a test string for\tnode0\n"/>
   </node>
 </graph>

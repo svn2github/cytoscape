@@ -16,18 +16,18 @@
   </att>
   <node label="node0" id="-2">
     <att type="string" name="NODE_TYPE" value="DefaultNode"/>
-    <att type="string" name="testString" value="This is a test string for node0"/>
     <att type="string" name="canonicalName" value="node0"/>
+    <att type="string" name="testString" value="This is a test string for node0"/>
   </node>
   <node label="node1" id="-1">
     <att type="string" name="NODE_TYPE" value="DefaultNode"/>
-    <att type="string" name="testString" value="This is a test string for node1"/>
     <att type="string" name="canonicalName" value="node1"/>
+    <att type="string" name="testString" value="This is a test string for node1"/>
   </node>
   <edge label="node0 (DirectedEdge) node1" source="-2" target="-1">
     <att type="string" name="EDGE_TYPE" value="DirectedEdge"/>
-    <att type="string" name="testString" value="This is a test string for the edge"/>
-    <att type="string" name="interaction" value="DirectedEdge"/>
     <att type="string" name="canonicalName" value="node0 (DirectedEdge) node1"/>
+    <att type="string" name="interaction" value="DirectedEdge"/>
+    <att type="string" name="testString" value="This is a test string for the edge"/>
   </edge>
 </graph>

@@ -81,6 +81,7 @@ import java.math.BigInteger;
 import java.net.URISyntaxException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,6 +264,11 @@ public class XGMMLWriter {
 		nodeAttNames = nodeAttributes.getAttributeNames();
 		edgeAttNames = edgeAttributes.getAttributeNames();
 		networkAttNames = networkAttributes.getAttributeNames();
+
+        Arrays.sort(nodeAttNames);
+        Arrays.sort(edgeAttNames);
+        Arrays.sort(networkAttNames);
+
 		// Create our indent string (480 blanks);
 		for (int i = 0; i < 20; i++) 
 			indentString += "                        ";
