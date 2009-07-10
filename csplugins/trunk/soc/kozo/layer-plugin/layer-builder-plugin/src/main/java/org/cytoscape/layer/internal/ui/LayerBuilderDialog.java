@@ -17,7 +17,6 @@ import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -25,21 +24,19 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
 import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JList;
-import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.layer.internal.tasks.BuildMultilayerNetworkTask;
@@ -548,8 +545,8 @@ public class LayerBuilderDialog extends JDialog {
 
 	private void moveAllAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllAvailableNetworkButtonActionPerformed
-		// TODO add your handling code here:
 
+		// move list content
 		Enumeration<?> availableNetworks = availableNetworkListModel.elements();
 
 		while (availableNetworks.hasMoreElements()) {
@@ -558,41 +555,85 @@ public class LayerBuilderDialog extends JDialog {
 
 		availableNetworkListModel.clear();
 
+		// sync list content and table column
+		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
+		JComboBox connecterCb = new JComboBox(availableNetworkListModel
+				.toArray());
+		layerCb.setBorder(BorderFactory.createEmptyBorder());
+		connecterCb.setBorder(BorderFactory.createEmptyBorder());
+		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
+		TableColumn connectorCol = layerOrderTable.getColumnModel()
+				.getColumn(1);
+		layerCol.setCellEditor(new DefaultCellEditor(layerCb));
+		connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+
 	}// GEN-LAST:event_MoveAllAvailableNetworkButtonActionPerformed
 
 	private void moveSelectedAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedAvailableNetworkButtonActionPerformed
-		// TODO add your handling code here:
 
+		// move list content
 		int[] index = availableNetworkList.getSelectedIndices();
+
 		for (int i = 0; i < index.length; i++) {
 			layeredNetworkListModel.addElement(availableNetworkListModel
 					.getElementAt(index[i]));
+			// availableNetworkListModel.removeElementAt(index[i]);
+		}
+
+		for (int i = index.length - 1; i >= 0; i--) {
 			availableNetworkListModel.removeElementAt(index[i]);
 		}
 
 		availableNetworkList.clearSelection();
 
+		// sync list content and table column
+		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
+		JComboBox connecterCb = new JComboBox(availableNetworkListModel
+				.toArray());
+		layerCb.setBorder(BorderFactory.createEmptyBorder());
+		connecterCb.setBorder(BorderFactory.createEmptyBorder());
+		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
+		TableColumn connectorCol = layerOrderTable.getColumnModel()
+				.getColumn(1);
+		layerCol.setCellEditor(new DefaultCellEditor(layerCb));
+		connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+
 	}// GEN-LAST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
 	private void moveSelectedIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
-		// TODO add your handling code here:
 
+		// move list content
 		int[] index = layeredNetworkList.getSelectedIndices();
 		for (int i = 0; i < index.length; i++) {
 			availableNetworkListModel.addElement(layeredNetworkListModel
 					.getElementAt(index[i]));
+			// layeredNetworkListModel.removeElementAt(index[i]);
+		}
+
+		for (int i = index.length - 1; i >= 0; i--) {
 			layeredNetworkListModel.removeElementAt(index[i]);
 		}
 
 		layeredNetworkList.clearSelection();
 
+		// sync list content and table column
+		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
+		JComboBox connecterCb = new JComboBox(availableNetworkListModel
+				.toArray());
+		layerCb.setBorder(BorderFactory.createEmptyBorder());
+		connecterCb.setBorder(BorderFactory.createEmptyBorder());
+		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
+		TableColumn connectorCol = layerOrderTable.getColumnModel()
+				.getColumn(1);
+		layerCol.setCellEditor(new DefaultCellEditor(layerCb));
+		connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+
 	}// GEN-LAST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 
 	private void moveAllIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllIntegratedNetworkButtonActionPerformed
-		// TODO add your handling code here:
 
 		Enumeration<?> layeredNetworks = layeredNetworkListModel.elements();
 
@@ -601,6 +642,18 @@ public class LayerBuilderDialog extends JDialog {
 		}
 
 		layeredNetworkListModel.clear();
+
+		// sync list content and table column
+		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
+		JComboBox connecterCb = new JComboBox(availableNetworkListModel
+				.toArray());
+		layerCb.setBorder(BorderFactory.createEmptyBorder());
+		connecterCb.setBorder(BorderFactory.createEmptyBorder());
+		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
+		TableColumn connectorCol = layerOrderTable.getColumnModel()
+				.getColumn(1);
+		layerCol.setCellEditor(new DefaultCellEditor(layerCb));
+		connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
 
 	}// GEN-LAST:event_MoveAllIntegratedNetworkButtonActionPerformed
 
@@ -709,43 +762,6 @@ public class LayerBuilderDialog extends JDialog {
 
 		public boolean isDataFlavorSupported(DataFlavor df) {
 			return (df.equals(localObjectFlavor));
-		}
-
-	}
-
-	private class DroppableJTable extends JTable implements DropTargetListener {
-
-		DropTarget dropTarget;
-
-		public void dragEnter(DropTargetDragEvent dtde) {
-			System.out.println("dragEnter");
-			if (dtde.getSource() != dropTarget)
-				dtde.rejectDrag();
-			else {
-				dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
-				System.out.println("accepted dragEnter");
-			}
-
-		}
-
-		public void dragExit(DropTargetEvent dte) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void dragOver(DropTargetDragEvent dtde) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void drop(DropTargetDropEvent dtde) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void dropActionChanged(DropTargetDragEvent dtde) {
-			// TODO Auto-generated method stub
-
 		}
 
 	}
