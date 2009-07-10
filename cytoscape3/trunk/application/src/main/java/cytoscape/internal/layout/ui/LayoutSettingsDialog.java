@@ -194,7 +194,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			if (!(o instanceof String)) {
 				CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm)o;
 				ti.loadTunables(newLayout);
-				ti.setParent(mainPanel);
+				ti.setParent(algorithmPanel);
 				ti.createUI(newLayout);
 				pack();
 				currentLayout = newLayout; 
