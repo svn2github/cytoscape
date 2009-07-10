@@ -55,8 +55,8 @@
       </manifest>
 
       <fileset dir= "${build.classes}" />
-      <zipfileset src="lib/BridgeDbCore.jar" />
-      <zipfileset src="lib/derby.jar" />
+      <zipfileset src="lib/BridgeDbCore.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/derby.jar" excludes="META-INF/*"/>
     </jar>
   </target>
   

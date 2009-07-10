@@ -175,8 +175,7 @@ public class TargetAttributeSelectionTable extends JTable{
         String attr = (String)destinationAttributes.get(row);
         if (attr.length()==0) {
             DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(row).getSelectedItem();
-            DataSource ds = dsw.DataSource();
-            attr = ds.getFullName();
+            attr = dsw.toString();
         }
 
         return attr;

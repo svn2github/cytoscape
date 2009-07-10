@@ -44,7 +44,7 @@ import cytoscape.util.CytoscapeAction;
 import java.awt.event.ActionEvent;
 
 /**
- * Plugin to merge networks
+ * Plugin for attribute-based ID mapping
  * 
  * 
  */

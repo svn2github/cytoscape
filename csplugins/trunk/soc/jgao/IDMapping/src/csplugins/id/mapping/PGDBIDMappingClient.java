@@ -35,8 +35,6 @@
 
 package csplugins.id.mapping;
 
-import csplugins.id.mapping.IDMappingClientManager.ClientType;
-
 import org.bridgedb.rdb.SimpleGdb;
 import org.bridgedb.rdb.SimpleGdbFactory;
 import org.bridgedb.rdb.DataDerby;

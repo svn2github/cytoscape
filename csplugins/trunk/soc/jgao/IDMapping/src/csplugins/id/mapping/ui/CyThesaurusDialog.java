@@ -581,9 +581,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
     private SortedNetworkListModel unselectedNetworkData;
     // End of variables declaration//GEN-END:variables
 
-}
-
-class SortedNetworkListModel extends AbstractListModel {
+    private class SortedNetworkListModel extends AbstractListModel {
         // Using a SortedMap from String to network
         TreeMap<String,CyNetwork> model;
 
@@ -618,4 +616,7 @@ class SortedNetworkListModel extends AbstractListModel {
         public List<CyNetwork> getNetworkList() {
             return new Vector<CyNetwork>(model.values());
         }
+    }
 }
+
+
