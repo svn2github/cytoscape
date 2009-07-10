@@ -160,7 +160,7 @@ public class MCLCluster extends AbstractClusterAlgorithm implements TunableListe
 		Tunable attrTunable = new Tunable("attributeList",
 		                                  "Array sources",
 		                                  Tunable.LIST, 0,
-		                                  (Object)attributeArray, (Object)null, 0);
+		                                  (Object)attributeArray, new Integer(0), 0);
 
 		clusterProperties.add(attrTunable);
 
@@ -203,6 +203,7 @@ public class MCLCluster extends AbstractClusterAlgorithm implements TunableListe
 	}
 
 	public void updateSettings(boolean force) {
+		
 		clusterProperties.updateValues();
 		super.updateSettings(force);
 
@@ -256,9 +257,11 @@ public class MCLCluster extends AbstractClusterAlgorithm implements TunableListe
 			if (attributeArray.length == 1) {
 				dataAttribute = attributeArray[0];
 			} else {
-				dataAttribute = attributeArray[((Integer) t.getValue()).intValue()];
+				int index = ((Integer) t.getValue()).intValue();
+				if (index < 0) index = 0;
+				dataAttribute = attributeArray[index];
 			}
-			tunableChanged(t);
+			// tunableChanged(t);
 		}
 	}
 
@@ -272,6 +275,7 @@ public class MCLCluster extends AbstractClusterAlgorithm implements TunableListe
 			double[] span = getSpan(dataAttribute);
 
 			double range = span[1]-span[0];
+			if (range == 0) return;
 			edgeCutOffTunable.setUpperBound(span[1]);
 			edgeCutOffTunable.setLowerBound(span[0]);
 			edgeCutOffTunable.setValue(span[0]+(range/1000));
