@@ -8,7 +8,7 @@ import org.cytoscape.model.internal.ArrayGraph;
 
 import junit.framework.TestCase;
 
-public class TestEnhancedSearchIndex extends TestCase{
+public class EnhancedSearchIndexTest extends TestCase{
 	CyNetwork net = null;
 	EnhancedSearchIndex esi = null;
 	private TestEnhancedSearchIndex(EnhancedSearchIndex si){
