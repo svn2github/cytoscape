@@ -322,7 +322,6 @@
 		<module>phoebe.dnd</module>
 		<module>wrappers</module>
 		<module>application</module>
-		<module>linkout</module>
 		<!--
 			<module>webservice</module> <module>vizmap-gui</module>
 			<module>cpath</module>

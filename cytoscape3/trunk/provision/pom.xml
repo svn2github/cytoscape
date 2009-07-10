@@ -371,6 +371,20 @@
         <version>20071021</version>
     </dependency>
 
+	<!-- linkout plugin -->
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>linkout-impl</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+	<!-- A utility that allows you to register services dynamically -->
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>service-util</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+
 	</dependencies>
 
 </project>
