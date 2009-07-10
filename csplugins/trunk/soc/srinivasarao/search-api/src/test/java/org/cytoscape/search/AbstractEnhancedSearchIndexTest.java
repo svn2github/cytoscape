@@ -8,14 +8,10 @@ import org.cytoscape.model.internal.ArrayGraph;
 
 import junit.framework.TestCase;
 
-public class EnhancedSearchIndexTest extends TestCase{
-	CyNetwork net = null;
+public abstract class AbstractEnhancedSearchIndexTest extends TestCase{
 	EnhancedSearchIndex esi = null;
 	private TestEnhancedSearchIndex(EnhancedSearchIndex si){
 			esi = si;
-			net = new ArrayGraph(new DummyCyEventHelper());
-			CyNode n1 = net.addNode();
-			CyNode n2 = net.addNode();
 	}
 	public void testgetIndex(){
 		RAMDirectory rd = esi.getIndex();
