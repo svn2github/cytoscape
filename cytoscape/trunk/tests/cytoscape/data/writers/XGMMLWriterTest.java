@@ -43,6 +43,7 @@ import cytoscape.data.CyAttributesImpl;
 
 import cytoscape.data.readers.XGMMLReader;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import junit.framework.TestCase;
 
@@ -110,6 +111,29 @@ public class XGMMLWriterTest extends TestCase {
     public void testXGMMLWriterRoundTrip2cFullEncodingOff() throws IOException, URISyntaxException {
         System.setProperty(XGMMLWriter.ENCODE_PROPERTY, "false");
         compareRoundTrip("testData/XGMMLWriterTestFile02c.xgmml", "testData/XGMMLWriterTestFile02c.xgmml");
+    }
+
+    public void testXGMMLWriterBug0001938() throws IOException, URISyntaxException {
+        XGMMLReader r;
+        CyNetwork cn;
+        StringWriter sw;
+        XGMMLWriter w;
+        String xgmmls;
+        ByteArrayInputStream bais;
+
+        System.setProperty(XGMMLWriter.ENCODE_PROPERTY, "true");
+        cn = Cytoscape.createNetwork("<\"aw&ward\name\tstring>\"");
+
+        sw = new StringWriter();
+        w = new XGMMLWriter(cn, null);
+        w.write(sw);
+        sw.close();
+
+        xgmmls = sw.toString();
+        System.out.println(xgmmls);
+        bais = new ByteArrayInputStream(xgmmls.getBytes("US-ASCII"));
+        r = new XGMMLReader(bais);
+        cn = Cytoscape.createNetwork(r, false, null);
     }
 
     private void compareRoundTrip(String fileIn, String fileToCompare) throws IOException, URISyntaxException {

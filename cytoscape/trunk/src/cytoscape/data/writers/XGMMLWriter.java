@@ -334,7 +334,7 @@ public class XGMMLWriter {
 	 */
 	private void writePreamble() throws IOException {
 		writeElement(XML_STRING+"\n");
-		writeElement("<graph label=\""+network.getTitle()+"\" "); 
+		writeElement("<graph label="+quote(network.getTitle())+" ");
 		for (int ns = 0; ns < NAMESPACES.length; ns++)
 			writer.write(NAMESPACES[ns]+" ");
 		writer.write(" directed=\"1\">\n");
@@ -382,7 +382,7 @@ public class XGMMLWriter {
 		java.util.Date now = new java.util.Date();
 		java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		writeElement("<dc:date>"+df.format(now)+"</dc:date>\n");
-		writeElement("<dc:title>"+network.getTitle()+"</dc:title>\n");
+		writeElement("<dc:title>"+encode(network.getTitle())+"</dc:title>\n");
 		writeElement("<dc:source>http://www.cytoscape.org/</dc:source>\n");
 		writeElement("<dc:format>Cytoscape-XGMML</dc:format>\n");
 		depth--;
@@ -1032,7 +1032,7 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writeAttributePair(String name, Object value) throws IOException {
-		writer.write(" "+name+"=\""+value.toString()+"\"");
+		writer.write(" "+name+"="+quote(value.toString()));
 	}
 
 	/**
@@ -1161,19 +1161,18 @@ public class XGMMLWriter {
 	}
 
 	/**
-	 * quote returns a quoted string appropriate for use as an XML attribute
+	 * encode returns a quoted string appropriate for use as an XML attribute
 	 *
-	 * @param str the string to quote
-	 * @return the quoted string
+	 * @param str the string to encode
+	 * @return the encoded string
 	 */
-	private String quote(String str) {
+	private String encode(String str) {
 		// Find and replace any "magic", control, non-printable etc. characters
         // For maximum safety, everything other than printable ASCII (0x20 thru 0x7E) is converted into a character entity
         
         StringBuilder sb;
         
         sb = new StringBuilder(str.length());
-        sb.append('"');
         for (int i = 0; i < str.length(); i++) {
             char c;
 
@@ -1181,7 +1180,7 @@ public class XGMMLWriter {
             if ((c < ' ') || (c > '~'))
             {
                 if (doFullEncoding) {
-                    sb.append("&#");
+                    sb.append("&#x");
                     sb.append(Integer.toHexString((int)c));
                     sb.append(";");
                 }
@@ -1208,10 +1207,19 @@ public class XGMMLWriter {
                 sb.append(c);
             }
         }
-        sb.append('"');
 
 		return sb.toString();
 	}
+
+	/**
+	 * quote returns a quoted string appropriate for use as an XML attribute
+	 *
+	 * @param str the string to quote
+	 * @return the quoted string
+	 */
+	private String quote(String str) {
+        return '"' + encode(str) + '"';
+    }
 
     public boolean isDoFullEncoding() {
         return doFullEncoding;
