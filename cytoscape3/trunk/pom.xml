@@ -325,7 +325,7 @@
 		<module>linkout</module>
 		<!--
 			<module>webservice</module> <module>vizmap-gui</module>
-			<module>automatic.layout</module> <module>cpath</module>
+			<module>cpath</module>
 			<module>merge</module> <module>math.xform</module>
 			<module>psi.mi</module> <module>biopax</module>
 			<module>editor</module> 

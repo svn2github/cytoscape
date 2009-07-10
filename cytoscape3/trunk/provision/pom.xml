@@ -329,11 +329,48 @@
         <artifactId>editor-impl</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
+
+	<!-- cytoscape layouts -->
     <dependency>
         <groupId>org.cytoscape</groupId>
         <artifactId>layout-cytoscape-impl</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
+
+	<!-- jgraph layouts -->
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>layout-jgraph-impl</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>cytoscape-temp</groupId>
+        <artifactId>org.jgraph.jgraph</artifactId>
+        <version>5.10.0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>cytoscape-temp</groupId>
+        <artifactId>org.jgraph.jgraphpad</artifactId>
+        <version>5.10.0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>cytoscape-temp</groupId>
+        <artifactId>org.jgraph.layouts</artifactId>
+        <version>5.10.0.2</version>
+    </dependency>
+
+	<!-- prefuse layouts -->
+    <dependency>
+        <groupId>org.cytoscape</groupId>
+        <artifactId>layout-prefuse-impl</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>cytoscape-temp</groupId>
+        <artifactId>prefuse</artifactId>
+        <version>20071021</version>
+    </dependency>
+
 	</dependencies>
 
 </project>
