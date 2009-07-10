@@ -79,7 +79,7 @@ public class PhylipTreeImpl implements Phylotree {
 		{
 			substrings[i] = substrings[i].trim();
 
-	// For every parenthesis encountered, add it to the list
+			// For every parenthesis encountered, add it to the list
 			if (substrings[i].charAt(0) == '(')
 			{
 				returnList.add("(");
@@ -128,7 +128,6 @@ public class PhylipTreeImpl implements Phylotree {
 				}
 			}
 		}
-System.out.println(returnList);
 
 		return returnList;
 	}
