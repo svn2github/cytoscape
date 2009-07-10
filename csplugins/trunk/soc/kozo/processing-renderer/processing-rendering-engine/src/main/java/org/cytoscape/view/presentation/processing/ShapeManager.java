@@ -4,10 +4,10 @@ import java.util.Set;
 
 public interface ShapeManager {
 	
-	public Set<P5Shape> getAllShapes();
+	public Set<CyDrawable> getAllShapes();
 	
-	public Set<P5Shape> getNodeShapes();
+	public Set<CyDrawable> getNodeShapes();
 	
-	public Set<P5Shape> getEdgeShapes();
+	public Set<CyDrawable> getEdgeShapes();
 
 }

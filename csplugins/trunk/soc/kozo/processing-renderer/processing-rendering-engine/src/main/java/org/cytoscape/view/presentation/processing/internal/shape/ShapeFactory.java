@@ -24,15 +24,7 @@ public class ShapeFactory {
 
 	public P5Presentation<CyNode> getNodeShape(View<CyNode> view) {
 
-		/*
-		 * Parse view info
-		 */
-		final Number x = view.getVisualProperty(NODE_X_LOCATION);
-		final Number y = view.getVisualProperty(NODE_Y_LOCATION);
-		final Number z = view.getVisualProperty(NODE_Z_LOCATION);
-
-		AbstractShape gNode = factory.cube();
-		gNode.position(x.floatValue(), y.floatValue(), z.floatValue());
+	
 
 		return null;
 	}

@@ -271,7 +271,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
         cube.position().y = mouseY;
         cube.rotation().set(0, rot);
         
-        cube.draw(gestalt.);
+      
 		background(0);
 		
 		physics.update();

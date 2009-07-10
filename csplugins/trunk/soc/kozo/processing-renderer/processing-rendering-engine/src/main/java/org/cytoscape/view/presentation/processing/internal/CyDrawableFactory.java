@@ -1,4 +1,4 @@
-package org.cytoscape.view.presentation.processing;
+package org.cytoscape.view.presentation.processing.internal;
 
 import gestalt.render.Drawable;
 

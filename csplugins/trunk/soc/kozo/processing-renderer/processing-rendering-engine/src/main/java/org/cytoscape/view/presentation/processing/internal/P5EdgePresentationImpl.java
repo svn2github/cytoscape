@@ -9,7 +9,6 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.processing.P5Presentation;
-import org.cytoscape.view.presentation.processing.PresentationType;
 
 public class P5EdgePresentationImpl extends AbstractShape implements
 		P5Presentation<CyEdge>, Pickable {
@@ -19,10 +18,6 @@ public class P5EdgePresentationImpl extends AbstractShape implements
 		return null;
 	}
 
-	public PresentationType getPresentationType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public View<CyEdge> getViewModel() {
 		// TODO Auto-generated method stub

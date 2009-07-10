@@ -5,22 +5,22 @@ import gestalt.shape.AbstractShape;
 import java.util.Map;
 import java.util.Set;
 
-import org.cytoscape.view.presentation.processing.P5Shape;
+import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.ShapeManager;
 
 public class ShapeManagerImpl implements ShapeManager {
 
-	public Set<P5Shape> getAllShapes() {
+	public Set<CyDrawable> getAllShapes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<P5Shape> getEdgeShapes() {
+	public Set<CyDrawable> getEdgeShapes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<P5Shape> getNodeShapes() {
+	public Set<CyDrawable> getNodeShapes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -30,11 +30,11 @@ public class ShapeManagerImpl implements ShapeManager {
 	}
 
 	
-	public void addShape(P5Shape shape, Map props) {
+	public void addShape(CyDrawable shape, Map props) {
 		
 	}
 	
-	public void removeShape(P5Shape shape, Map props) {
+	public void removeShape(CyDrawable shape, Map props) {
 		
 	}
 }

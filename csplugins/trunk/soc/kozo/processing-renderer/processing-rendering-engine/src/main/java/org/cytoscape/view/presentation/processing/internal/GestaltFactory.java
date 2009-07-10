@@ -1,8 +1,9 @@
-package org.cytoscape.view.presentation.processing;
+package org.cytoscape.view.presentation.processing.internal;
 
 import gestalt.render.Drawable;
 
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.processing.P5Presentation;
 
 public interface GestaltFactory {	
 	public <T> P5Presentation<T> getPresentation(

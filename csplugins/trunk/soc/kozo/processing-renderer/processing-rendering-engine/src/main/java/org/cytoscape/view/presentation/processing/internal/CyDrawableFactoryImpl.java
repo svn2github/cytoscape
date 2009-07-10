@@ -3,7 +3,6 @@ package org.cytoscape.view.presentation.processing.internal;
 import gestalt.impl.jogl.shape.JoglDrawableFactory;
 import gestalt.render.Drawable;
 
-import org.cytoscape.view.presentation.processing.CyDrawableFactory;
 
 
 /**

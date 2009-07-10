@@ -2,6 +2,10 @@ package org.cytoscape.view.presentation.processing;
 
 import java.util.Collection;
 
+import javax.swing.Icon;
+
+import org.cytoscape.view.model.VisualLexicon;
+
 /**
  * 
  * Defines shape of object rendered in Processing.
@@ -11,7 +15,7 @@ import java.util.Collection;
  * 
  * 
  */
-public interface P5Shape {
+public interface CyDrawable {
 
 	/**
 	 * Name of this shape, such as ellipse, rectangle, triangle, etc. This is
@@ -22,6 +26,10 @@ public interface P5Shape {
 	 */
 	public String getDisplayName();
 	
-	public Collection<?> getCompatibleModels();
+	public Collection<Class<?>> getCompatibleModels();
+	
+	public Icon getIcon(int width, int height);
+	
+	public VisualLexicon getLexicon();
 	
 }
