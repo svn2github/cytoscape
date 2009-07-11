@@ -1,6 +1,8 @@
 package org.cytoscape.search;
 
-public abstract class AbstractEnhancedSearchQueryTest {
+import junit.framework.TestCase;
+
+public abstract class AbstractEnhancedSearchQueryTest extends TestCase{
 
 	abstract void testgetHitCount();
 	abstract void testgetHits();

@@ -9,8 +9,8 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.internal.ArrayGraph;
 
 public abstract class AbstractEnhancedSearchTest extends TestCase {
-	private EnhancedSearch es;
-	private CyNetwork net1 = null;
+	protected EnhancedSearch es;
+	protected CyNetwork net1 = null;
 	
 	protected void defaultSetup(){
 		net1 = new ArrayGraph(new DummyCyEventHelper());

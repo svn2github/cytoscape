@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.apache.lucene.store.RAMDirectory;
 
 public abstract class AbstractEnhancedSearchIndexTest extends TestCase{
-	EnhancedSearchIndex esi = null;
+	protected EnhancedSearchIndex esi = null;
 	
 	public void testgetIndex(){
 		RAMDirectory rd = esi.getIndex();
