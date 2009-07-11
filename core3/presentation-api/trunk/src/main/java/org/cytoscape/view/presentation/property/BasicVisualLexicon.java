@@ -50,4 +50,8 @@ public class BasicVisualLexicon implements VisualLexicon {
 
 		return propMap.get(objectType);
 	}
+
+	public void addVisualProperty(VisualProperty<?> prop) {
+		this.visualPropertySet.add(prop);
+	}
 }
