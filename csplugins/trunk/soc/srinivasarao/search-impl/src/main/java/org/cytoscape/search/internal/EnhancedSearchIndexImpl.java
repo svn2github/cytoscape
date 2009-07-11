@@ -93,13 +93,17 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 			// Index node attributes
 			//it = network.nodesIterator();
 			while (nodeit.hasNext()) {
-				long currid = (nodeit.next()).getSUID();
+				CyNode n1 = nodeit.next();
+				long currid = n1.getSUID();
 				CyRow currow = nodetable.getRow(currid);
 				
 				
 				//String currNodeIdentifier = currNode.getIdentifier();
-				writer.addDocument(createDocument(new Long(currid).toString(),
+				//writer.addDocument(createDocument(new Long(currid).toString(),
+				//		currow.getAllValues(),nodetypemap));
+				writer.addDocument(createDocument(new Integer(n1.getIndex()).toString(),
 						currow.getAllValues(),nodetypemap));
+				//System.out.println();
 			}
 
 			// Index edge attributes
@@ -111,13 +115,17 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 			Map<String,Class<?>> edgetypemap = edgetable.getColumnTypeMap();
 			
 			while (edgeit.hasNext()) {
-				long currid = (edgeit.next()).getSUID();
+				CyEdge e1 = edgeit.next();
+				long currid = e1.getSUID();
 				CyRow currow = edgetable.getRow(currid);
 				
 				
 				//String currNodeIdentifier = currNode.getIdentifier();
-				writer.addDocument(createDocument(new Long(currid).toString(),
+				//writer.addDocument(createDocument(new Long(currid).toString(),
+				//		currow.getAllValues(),edgetypemap));
+				writer.addDocument(createDocument(new Integer(e1.getIndex()).toString(),
 						currow.getAllValues(),edgetypemap));
+				//System.out.println();
 			}
 			//it = network.edgesIterator();
 			/*while (it.hasNext()) {
@@ -157,8 +165,7 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 			String attrIndexingName = EnhancedSearchUtils.replaceWhitespace(attrName);
 			attrIndexingName = attrIndexingName.toLowerCase();
 			//System.out.print("Attribute Indexing Name:"+attrIndexingName+";");
-			//if(me.getValue().toString()==null)
-				System.out.println(attrIndexingName + " " + me.getValue().toString());
+			//System.out.println(identifier + ":" + attrIndexingName + ":" + me.getValue().toString());
 			String cname = typemap.get(attrName).getName();
 			//System.out.println(cname);
 			if(cname.equals("java.lang.Boolean")){

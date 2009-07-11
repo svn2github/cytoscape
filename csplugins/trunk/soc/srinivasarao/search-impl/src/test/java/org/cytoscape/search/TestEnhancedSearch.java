@@ -39,7 +39,7 @@ package org.cytoscape.search;
 //import java.io.File;
 //import java.util.*;
 import junit.framework.TestCase;
-
+import org.cytoscape.search.internal.*;
 import org.apache.lucene.store.RAMDirectory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
@@ -48,8 +48,6 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.internal.ArrayGraph;
-import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
-import org.cytoscape.search.internal.EnhancedSearchQueryImpl;
 //import org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTask;
 //import org.cytoscape.io.internal.read.*;
 //import org.cytoscape.view.model.internal.ColumnOrientedNetworkViewFactoryImpl;
