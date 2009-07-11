@@ -40,14 +40,7 @@ import static org.cytoscape.model.GraphObject.NODE;
 
 import java.awt.Color;
 import java.awt.Paint;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
-import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 
 /**
@@ -55,13 +48,7 @@ import org.cytoscape.view.model.VisualProperty;
  * provides VisualProperties. With a 'VisualProperties as annotations' this
  * won't be needed.
  */
-public abstract class TwoDVisualLexicon implements VisualLexicon {
-
-	protected static final String[] OBJ_TYPE = { NODE, EDGE, NETWORK };
-
-	protected Map<String, Set<VisualProperty<?>>> propMap;
-
-	protected final Set<VisualProperty<?>> visualPropertySet;
+public class TwoDVisualLexicon extends BasicVisualLexicon {
 
 	public static final VisualProperty<? extends Paint> NODE_COLOR = new ColorVisualProperty(
 			NODE, Color.RED, "NODE_COLOR", "Node Color");
@@ -111,9 +98,8 @@ public abstract class TwoDVisualLexicon implements VisualLexicon {
 			NETWORK, "", "NETWORK_TITLE", "Network Title");
 
 	public TwoDVisualLexicon() {
-
-		visualPropertySet = new HashSet<VisualProperty<?>>();
-
+		super();
+		
 		visualPropertySet.add(NODE_COLOR);
 		visualPropertySet.add(NODE_LABEL);
 		visualPropertySet.add(NODE_LABEL_COLOR);
@@ -136,23 +122,4 @@ public abstract class TwoDVisualLexicon implements VisualLexicon {
 		visualPropertySet.add(NETWORK_BACKGROUND_COLOR);
 		visualPropertySet.add(NETWORK_TITLE);
 	}
-
-	public Set<VisualProperty<?>> getAllVisualProperties() {
-		return Collections.unmodifiableSet(visualPropertySet);
-	}
-
-	public Collection<VisualProperty<?>> getVisualProperties(String objectType) {
-		if (propMap == null) {
-			propMap = new HashMap<String, Set<VisualProperty<?>>>();
-
-			for (String type : OBJ_TYPE)
-				propMap.put(type, new HashSet<VisualProperty<?>>());
-
-			for (VisualProperty<?> vp : visualPropertySet)
-				propMap.get(vp.getObjectType()).add(vp);
-		}
-
-		return propMap.get(objectType);
-	}
-
 }

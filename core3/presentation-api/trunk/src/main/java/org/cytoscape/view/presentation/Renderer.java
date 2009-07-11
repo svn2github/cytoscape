@@ -10,7 +10,8 @@ import org.cytoscape.view.model.VisualLexicon;
  */
 public interface Renderer {
 	/**
-	 * Return a list of visual attributes this renderer can use
+	 * Return a list of Visual Properties which this renderer can draw.
+	 * 
 	 */
 	public VisualLexicon getVisualLexicon();
 }
