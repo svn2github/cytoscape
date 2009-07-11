@@ -59,4 +59,11 @@ public interface VisualLexicon {
 	 * @return DOCUMENT ME!
 	 */
 	public Collection<VisualProperty<?>> getVisualProperties(String objectType);
+	
+	/**
+	 * Used to add new Visual Property.
+	 * 
+	 * @param prop
+	 */
+	public void addVisualProperty(VisualProperty<?> prop);
 }
