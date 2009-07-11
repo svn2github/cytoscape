@@ -1,7 +1,5 @@
 package org.cytoscape.view.presentation.processing;
 
-import gestalt.render.Drawable;
-
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.Renderer;
 
@@ -21,33 +19,18 @@ import org.cytoscape.view.presentation.Renderer;
 public interface P5Presentation <T> extends Renderer {
 	
 	/**
-	 * Gte backend data structure for this presentation.
+	 * Get backend data structure for this presentation.
 	 * 
-	 * @return View Model of this object.
-	 * 
+	 * @return View Model of this object. 
 	 */
 	public View<T> getViewModel();
 	
-	/**
-	 * Set the View Model.
-	 * TODO: Is this necessary?  (Immutable?)
-	 * 
-	 * @param model
-	 */
-	public void setViewModel(View<T> model);
 	
 	/**
 	 * Get top-level Drawable Object.
 	 * 
-	 * @return
+	 * @return Gestalt's Drawable object with Cytoscape dependent properties.
 	 */
-	public Drawable getDrawable();
-	
-	/**
-	 * Set top-level Drawable Object.
-	 * 
-	 * @param drawable
-	 */
-	public void setDrawable(Drawable drawable);
+	public CyDrawable getCyDrawable();
 	
 }
