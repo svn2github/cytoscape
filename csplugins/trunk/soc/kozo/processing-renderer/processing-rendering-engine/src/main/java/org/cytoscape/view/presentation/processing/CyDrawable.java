@@ -6,8 +6,6 @@ import java.util.Collection;
 
 import javax.swing.Icon;
 
-import org.cytoscape.view.model.VisualLexicon;
-
 public interface CyDrawable extends Drawable {
 	
 	/**
@@ -25,13 +23,6 @@ public interface CyDrawable extends Drawable {
 	 * @return set of compatible data types.
 	 */
 	public Collection<Class<?>> getCompatibleModels();
-	
-	/**
-	 * Provides a set of visual properties compatible with this object.
-	 * 
-	 * @return VisualLexicon which contains compatible Visual Properties.
-	 */
-	public VisualLexicon getCompatibleVisualProperties();
 	
 	// Render Icon based on current state
 	public Icon getIcon(int width, int height);

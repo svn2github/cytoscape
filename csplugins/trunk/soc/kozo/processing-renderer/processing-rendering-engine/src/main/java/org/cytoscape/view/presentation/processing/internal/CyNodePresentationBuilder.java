@@ -28,7 +28,7 @@ public class CyNodePresentationBuilder {
 		if (value == null)
 			value = new GCube(lexicon);
 
-		VisualLexicon vpSet = value.getCompatibleVisualProperties();
+		VisualLexicon vpSet = lexicon.getSubLexicon(value.getClass());
 
 		// Customize Drawable
 		for (VisualProperty<?> vp : vpSet.getAllVisualProperties()) {

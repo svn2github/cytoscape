@@ -34,19 +34,23 @@ public class GCube extends JoglCube implements CyDrawable {
 	
 	private List<Class<?>> compatibleDataType;
 	
+	private static VisualLexicon sub;
+	
+	static {
+		sub = new BasicVisualLexicon();
+		sub.addVisualProperty(NODE_COLOR);
+		sub.addVisualProperty(NODE_X_LOCATION);
+		sub.addVisualProperty(NODE_Y_LOCATION);
+		sub.addVisualProperty(NODE_Z_LOCATION);
+	}
+	
 	public GCube(ProcessingVisualLexicon lexicon) {
 		super();
 		this.lexicon = lexicon;
 		compatibleDataType = new ArrayList<Class<?>>();
 		compatibleDataType.add(CyNode.class);
-		VisualLexicon sub = new BasicVisualLexicon();
 		
-		sub.addVisualProperty(NODE_COLOR);
-		sub.addVisualProperty(NODE_X_LOCATION);
-		sub.addVisualProperty(NODE_Y_LOCATION);
-		sub.addVisualProperty(NODE_Z_LOCATION);
-		
-		this.lexicon.registerSubLexicon(this, sub);
+		this.lexicon.registerSubLexicon(this.getClass(), sub);
 	}
 
 	public void draw(GLContext context) {
@@ -67,7 +71,7 @@ public class GCube extends JoglCube implements CyDrawable {
 	}
 
 	public VisualLexicon getCompatibleVisualProperties() {
-		return lexicon.getSubLexicon(this);
+		return lexicon.getSubLexicon(this.getClass());
 	}
 
 }

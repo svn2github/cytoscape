@@ -13,7 +13,7 @@ import org.cytoscape.view.presentation.property.ThreeDVisualLexicon;
 
 public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
 
-	private final Map<CyDrawable, VisualLexicon> lexiconMap;
+	private final Map<Class<? extends CyDrawable>, VisualLexicon> lexiconMap;
 	
 	public static final VisualProperty<? extends CyDrawable> NODE_STYLE = new CyDrawableVisualProperty(
 			NODE, null, "NODE_STYLE", "Node Style");
@@ -25,15 +25,15 @@ public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
 		this.visualPropertySet.add(NODE_STYLE);
 		this.visualPropertySet.add(EDGE_STYLE);
 		
-		lexiconMap = new HashMap<CyDrawable, VisualLexicon>();
+		lexiconMap = new HashMap<Class<? extends CyDrawable>, VisualLexicon>();
 	}
 
 
-	public VisualLexicon getSubLexicon(CyDrawable drawable) {
+	public VisualLexicon getSubLexicon(Class<? extends CyDrawable> drawable) {
 		return lexiconMap.get(drawable);
 	}
 
-	public void registerSubLexicon(CyDrawable drawable, VisualLexicon lexicon) {
+	public void registerSubLexicon(Class<? extends CyDrawable> drawable, VisualLexicon lexicon) {
 		this.lexiconMap.put(drawable, lexicon);
 	}
 
