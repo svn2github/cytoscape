@@ -1,6 +1,8 @@
 package org.cytoscape.view.presentation;
 
-import org.cytoscape.view.model.CyNetworkView;
+import java.awt.Container;
+
+import org.cytoscape.view.model.View;
 
 public interface PresentationFactory {
     /**
@@ -8,12 +10,12 @@ public interface PresentationFactory {
      * display.  It should also be sure to register said content as a transfer
      * (Drag 'n Drop) listener, if so desired.
      */
-    public NetworkRenderer addPresentation(Object frame, CyNetworkView view);
+    public <T extends View<?>> Renderer<T> addPresentation(Container presentationContainer, T view);
 
 	/**
  	 * 
 	 */
     public NavigationPresentation addNavigationPresentation(Object targetComponent, Object navBounds);
     
-    public NetworkRenderer createPresentation(CyNetworkView view);
+    public <T extends View<?>> Renderer<T> createPresentation(T view);
 }
