@@ -24,7 +24,7 @@ public interface Renderer<T extends View<?>> {
 	 * 
 	 * @return view model.
 	 */
-	public T getSourceView();
+	public T getViewModel();
 	
 	/**
 	 * Return a Visual Lexicon which contains compatible Visual Properties for
