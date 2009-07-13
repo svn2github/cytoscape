@@ -130,6 +130,12 @@ public class AllTests extends TestCase {
 			// instantiation of the class using the new class loader, 
 			// and add it to this test suite.
 			String sep = System.getProperty("file.separator");
+            // Separator for jar entries is "/" even for windows
+            // Adding special case for now.
+            // What's used needs checking for Macs
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                sep = "/";
+            }
 
 			for (int i = 0; i < testNames.size(); i++) {
 				String testname = (String) testNames.get(i);
