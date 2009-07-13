@@ -77,7 +77,7 @@ public abstract class EnhancedSearchQuery {
 
 	// hitCollector object may be null if this method is called before
 	// ExecuteQuery
-	abstract public ArrayList<String> getHits();
+	//abstract public ArrayList<String> getHits();
 	
 	abstract public ArrayList<CyNode> getNodeHits();
 
