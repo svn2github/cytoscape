@@ -37,8 +37,7 @@
 package org.cytoscape.search;
 
 import junit.framework.TestCase;
-import org.cytoscape.search.internal.*;
-import org.apache.lucene.document.NumberTools;
+
 import org.apache.lucene.store.RAMDirectory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
@@ -48,6 +47,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.internal.ArrayGraph;
+import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
+import org.cytoscape.search.internal.EnhancedSearchQueryImpl;
 
 public class TestEnhancedSearch extends TestCase {
 
@@ -94,7 +95,7 @@ public class TestEnhancedSearch extends TestCase {
 		r5.set("canonicalName", 7157);
 		
 		CyRow r6 = nodetable.getRow(n6.getSUID());
-		r6.set("Official HUGO Symbol","HMGB1");
+		r6.set("Official HUGO Symbol","TPGB1");
 		r6.set("canonicalName", 3146);
 		
 		CyEdge e1 = net.addEdge(n5, n3, true);
@@ -136,12 +137,12 @@ public class TestEnhancedSearch extends TestCase {
 	public void testSimpleQuery() throws Exception{
 		query="900";
 		//query="node.canonicalname:900 OR edge.interaction:non_core";
-		queryHandler.executeQuery(query); // 56
+		queryHandler.executeQuery(query); // 1
 		hitCount = queryHandler.getHitCount();
 		System.out.println(hitCount);
 		//System.out.println(queryHandler.getNodeHits().size());
 		//System.out.println(NumberTools.longToString(51246));
-		assertEquals(query, 2, hitCount);
+		assertEquals(query, 1, hitCount);
 		
 	}
 	/*
@@ -182,30 +183,31 @@ public class TestEnhancedSearch extends TestCase {
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 70, hitCount);
 	}
-
+	*/
 	// Queries on multiple attribute fields
 	public void testComplexQueries() throws Exception {
 
-		EnhancedSearchIndexImpl indexHandler = new EnhancedSearchIndexImpl(cyNetwork);
-		RAMDirectory idx = indexHandler.getIndex();
-		EnhancedSearchQuery queryHandler = new EnhancedSearchQueryImpl(idx,cyNetwork);
-
-		query = "GO_Biological_Process:\"water deprivation\" AND Gene_Title:aquaporin";
-		queryHandler.executeQuery(query); // 3
+		//query = "GO_Biological_Process:\"water deprivation\" AND Gene_Title:aquaporin";
+		query = "node.Official_HUGO_Symbol:ING5 OR node.canonicalName:51246";
+		queryHandler.executeQuery(query); // 2
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 3, hitCount);
+		assertEquals(query, 2, hitCount);
 
-		query = "Desiccation_Response:true NOT Chromosome:5";
-		queryHandler.executeQuery(query); // 20
+		//query = "Desiccation_Response:true NOT Chromosome:5";
+		//query = "NOT node.Official_HUGO_Symbol:KLF4";
+		query = "node.canonicalName:9314 NOT node.Official_HUGO_Symbol:SCOTIN";
+		queryHandler.executeQuery(query); // 1
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 20, hitCount);
+		System.out.println(hitCount);
+		assertEquals(query, 1, hitCount);
 
-		query = "GO_Biological_Process:stress AND (GO_Molecular_Function:peroxidase OR GO_Molecular_Function:catalase)";
-		queryHandler.executeQuery(query); // 4
+		//query = "GO_Biological_Process:stress AND (GO_Molecular_Function:peroxidase OR GO_Molecular_Function:catalase)";
+		query = "edge.interaction:non_core AND (edge.canonicalName:3146 OR edge.canonicalName:900)";
+		queryHandler.executeQuery(query); // 2
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 4, hitCount);
+		assertEquals(query, 2, hitCount);
 	}
-
+	/*
 	// Multiple values for same attribute
 	public void testFieldGrouping() throws Exception {
 
@@ -218,65 +220,40 @@ public class TestEnhancedSearch extends TestCase {
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 9, hitCount);
 	}
-
+*/
 	// Wildcards queries
 	public void testWildcardsQueries() throws Exception {
 
-		EnhancedSearchIndexImpl indexHandler = new EnhancedSearchIndexImpl(cyNetwork);
-		RAMDirectory idx = indexHandler.getIndex();
-		EnhancedSearchQuery queryHandler = new EnhancedSearchQueryImpl(idx,cyNetwork);
-
-		query = "Gene_Title:deHYdr*n";
-		queryHandler.executeQuery(query); // 4
+		//query = "Gene_Title:deHYdr*n";
+		query = "TP*";
+		queryHandler.executeQuery(query); // 2
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 4, hitCount);
+		assertEquals(query, 2, hitCount);
 	}
 
 	// Range queries
 	public void testRangeQueries() throws Exception {
 
-		EnhancedSearchIndexImpl indexHandler = new EnhancedSearchIndexImpl(cyNetwork);
-		RAMDirectory idx = indexHandler.getIndex();
-		EnhancedSearchQuery queryHandler = new EnhancedSearchQueryImpl(idx,cyNetwork);
-
-		query = "Chromosome:5";
-		queryHandler.executeQuery(query); // 39
+		query = "node.canonicalName:51246";
+		queryHandler.executeQuery(query); // 1
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 39, hitCount);
+		assertEquals(query, 1, hitCount);
 
-		query = "Chromosome:[4 TO 5]";
-		queryHandler.executeQuery(query); // 79
+		query = "node.canonicalName:[900 TO 52000]";
+		queryHandler.executeQuery(query); //5
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 79, hitCount);
+		assertEquals(query, 5, hitCount);
 
-		query = "weight:[0.95 TO 1]";
-		queryHandler.executeQuery(query); // 369
-		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 369, hitCount);
-
-		query = "weight:[-1 TO -0.95]";
-		queryHandler.executeQuery(query); // 30
-		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 30, hitCount);
-
-		query = "weight:[0.95 TO 1] OR weight:[-1 TO -0.95]";
-		queryHandler.executeQuery(query); // 399
-		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 399, hitCount);
 	}
 	
 	
 	// Queries with no results
 	public void testNoResultsQueries() throws Exception {
 	
-		EnhancedSearchIndexImpl indexHandler = new EnhancedSearchIndexImpl(cyNetwork);
-		RAMDirectory idx = indexHandler.getIndex();
-		EnhancedSearchQuery queryHandler = new EnhancedSearchQueryImpl(idx,cyNetwork);
-
-		query = "interaction:neg AND weight:[0.9 TO 0.95]";
+		query = "node.canonicalName:9314 AND edge.interaction:non_core";
 		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 0, hitCount);
 	}
-	*/
+	
 }

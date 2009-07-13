@@ -103,7 +103,7 @@ public class EnhancedSearchQueryTest extends AbstractEnhancedSearchQueryTest {
 	@Override
 	public void testgetNodeHits() {
 		// TODO Auto-generated method stub
-		String queryString = "node.Official HUGO Symbol:TP53";
+		String queryString = "node.Official_HUGO_Symbol:TP53";
 		esq.executeQuery(queryString);
 		ArrayList<CyNode> al = esq.getNodeHits();
 		assertEquals(al.size(),1);

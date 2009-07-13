@@ -106,7 +106,7 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 		try {
 			// Execute query
 			Query query = queryParser.parse(queryString);
-			System.out.println("ESQuery :" + query.toString());
+			//System.out.println("ESQuery :" + query.toString());
 			hitCollector = new IdentifiersCollector(searcher);
 			searcher.search(query, hitCollector);
 		} catch (ParseException pe) {
