@@ -2718,22 +2718,11 @@ public class DGraphView implements Renderer<CyNetworkView>, GraphView, Printable
 		return null;
 	}
 
-	public String getName() {
-		// TODO What kind of string should I return?
-		return "ding";
-	}
-
 	public VisualLexicon getVisualLexicon() {
 		return this.dingLexicon;
 	}
 
-	public CyNetwork getSourceNetwork() {
-		// TODO Auto-generated method stub
-		return m_perspective;
-	}
-
-	public CyNetworkView getSourceView() {
-		// TODO Auto-generated method stub
+	public CyNetworkView getViewModel() {
 		return cyNetworkView;
 	}
 }
