@@ -102,7 +102,7 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 				//writer.addDocument(createDocument(new Long(currid).toString(),
 				//		currow.getAllValues(),nodetypemap));
 				writer.addDocument(createDocument(new Integer(n1.getIndex()).toString(),
-						currow.getAllValues(),nodetypemap));
+						currow.getAllValues(),nodetypemap,"node"));
 				//System.out.println();
 			}
 
@@ -124,7 +124,7 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 				//writer.addDocument(createDocument(new Long(currid).toString(),
 				//		currow.getAllValues(),edgetypemap));
 				writer.addDocument(createDocument(new Integer(e1.getIndex()).toString(),
-						currow.getAllValues(),edgetypemap));
+						currow.getAllValues(),edgetypemap,"edge"));
 				//System.out.println();
 			}
 			//it = network.edgesIterator();
@@ -149,12 +149,15 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 	 * attribute fields
 	 */
 	private static Document createDocument(String identifier,
-			Map<String,Object> map,Map<String,Class<?>> typemap) {
+			Map<String,Object> map,Map<String,Class<?>> typemap,String indextype) {
 
 		Document doc = new Document();
 		doc.add(new Field(INDEX_FIELD, identifier, Field.Store.YES,
 				Field.Index.ANALYZED));
+		doc.add(new Field("Type", indextype, Field.Store.YES,
+				Field.Index.NO));
 
+		
 		//String[] attrNameArray = attributes.getAttributeNames();
 		Set<Map.Entry<String, Object>> keys = map.entrySet();
 		Iterator<Map.Entry<String,Object>> it = keys.iterator();
@@ -162,9 +165,9 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 		while(it.hasNext()){
 			Map.Entry<String,Object> me = it.next();
 			String attrName = me.getKey();
-			String attrIndexingName = EnhancedSearchUtils.replaceWhitespace(attrName);
+			String attrIndexingName = indextype + "." + EnhancedSearchUtils.replaceWhitespace(attrName);
 			attrIndexingName = attrIndexingName.toLowerCase();
-			//System.out.print("Attribute Indexing Name:"+attrIndexingName+";");
+			//System.out.println("Attribute Indexing Name:"+attrIndexingName+";");
 			//System.out.println(identifier + ":" + attrIndexingName + ":" + me.getValue().toString());
 			String cname = typemap.get(attrName).getName();
 			//System.out.println(cname);
@@ -185,7 +188,7 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 			else if(cname.equals("java.lang.String")){
 				String attrValue = (String)me.getValue();
 				doc.add(new Field(attrIndexingName, attrValue,
-						Field.Store.NO, Field.Index.ANALYZED));
+						Field.Store.YES, Field.Index.ANALYZED));
 			}
 			else if(cname.equals("java.util.List")){
 				List l = (List)me.getValue();

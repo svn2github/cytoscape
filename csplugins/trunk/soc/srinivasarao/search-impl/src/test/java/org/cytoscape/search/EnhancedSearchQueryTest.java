@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.RAMDirectory;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyDataTable;
@@ -96,37 +99,23 @@ public class EnhancedSearchQueryTest extends AbstractEnhancedSearchQueryTest {
 		esq.executeQuery(queryString);
 		assertEquals(esq.getHitCount(),2);
 	}
-
-	@Override
-	public void testgetHits() {
-		// TODO Auto-generated method stub
-		String queryString = "7157";
-		esq.executeQuery(queryString);
-		ArrayList<String> al = esq.getHits();
-		
-		assertEquals(al.size(),5);
-		assertTrue(al instanceof ArrayList);
-	}
 	
 	@Override
 	public void testgetNodeHits() {
 		// TODO Auto-generated method stub
-		String queryString = "canonicalname:900";
+		String queryString = "node.Official HUGO Symbol:TP53";
 		esq.executeQuery(queryString);
 		ArrayList<CyNode> al = esq.getNodeHits();
-		System.out.println("Test get Nodehits:" + al.size());
-		//assertEquals(al.size(),1);
+		assertEquals(al.size(),1);
 	}
 	
 	@Override
 	public void testgetEdgeHits() {
 		// TODO Auto-generated method stub
-		//String queryString = "canonicalName:7157";
-		String queryString = "canonicalName:900";
+		String queryString = "edge.canonicalName:7157";
 		esq.executeQuery(queryString);
 		ArrayList<CyEdge> al = esq.getEdgeHits();
-		System.out.println("Test EdgeHits:" + al.size());
-		//assertEquals(al.size(),5); 
+		assertEquals(al.size(),4); 
 	}
 	 
 }

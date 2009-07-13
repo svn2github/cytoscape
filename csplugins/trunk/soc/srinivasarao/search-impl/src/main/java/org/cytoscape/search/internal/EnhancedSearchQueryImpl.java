@@ -47,6 +47,7 @@ import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.document.Document;
 
+import org.cytoscape.search.EnhancedSearchIndex;
 import org.cytoscape.search.EnhancedSearchQuery;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -60,9 +61,9 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 	private IdentifiersCollector hitCollector = null;
 	private ArrayList<CyNode> nodelist = null;
 	private ArrayList<CyEdge> edgelist = null;
-	
+
 	public EnhancedSearchQueryImpl(RAMDirectory index, CyNetwork net) {
-		super(index,net);
+		super(index, net);
 	}
 
 	public void executeQuery(String queryString) {
@@ -70,13 +71,15 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 
 			// Define attribute fields in which the search is to be carried on
 			AttributeFields attFields = new AttributeFields(network);
-			/*String[] fields = attFields.getFields();
-			for(int i=0;i<fields.length;i++){
-				System.out.println("Field "+i+":"+fields[i] );
-			}*/
+			/*
+			 * String[] fields = attFields.getFields(); for(int
+			 * i=0;i<fields.length;i++){
+			 * System.out.println("Field "+i+":"+fields[i] ); }
+			 */
 			// Build an IndexSearcher using the in-memory index
 			searcher = new IndexSearcher(idx);
 			queryString = EnhancedSearchUtils.queryToLowerCase(queryString);
+			//queryString = EnhancedSearchUtils.replaceWhitespace(queryString);
 			//System.out.println("Query - " + queryString);
 			search(searcher, queryString, attFields);
 			searcher.close();
@@ -91,17 +94,19 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 	 * attributeName), search is carried out on all attribute fields. This
 	 * functionality is enabled with the use of MultiFieldQueryParser.
 	 */
-	private void search(Searcher searcher, String queryString, AttributeFields attFields)
-			throws IOException {
+	private void search(Searcher searcher, String queryString,
+			AttributeFields attFields) throws IOException {
 
 		// Build a Query object.
-		// CustomMultiFieldQueryParser is used to support range queries on numerical attribute fields.
-		CustomMultiFieldQueryParser queryParser = new CustomMultiFieldQueryParser(attFields, new StandardAnalyzer());
+		// CustomMultiFieldQueryParser is used to support range queries on
+		// numerical attribute fields.
+		CustomMultiFieldQueryParser queryParser = new CustomMultiFieldQueryParser(
+				attFields, new StandardAnalyzer());
 
 		try {
 			// Execute query
 			Query query = queryParser.parse(queryString);
-			System.out.println("ESQuery :"  + query.toString());
+			System.out.println("ESQuery :" + query.toString());
 			hitCollector = new IdentifiersCollector(searcher);
 			searcher.search(query, hitCollector);
 		} catch (ParseException pe) {
@@ -114,10 +119,11 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 			System.out.println(message);
 		} catch (Exception e) {
 			// Other types of exception may occur
-			System.out.println("Error during execution of query '" + queryString + "'");
+			System.out.println("Error during execution of query '"
+					+ queryString + "'");
 			String message = e.getMessage();
 			System.out.println(message);
-		}			
+		}
 	}
 
 	// hitCollector object may be null if this method is called before
@@ -132,60 +138,60 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 
 	// hitCollector object may be null if this method is called before
 	// ExecuteQuery
-	public ArrayList<String> getHits() {
+	/*private ArrayList<Document> getHits() {
 		if (hitCollector != null) {
 			return hitCollector.getHits();
 		} else {
 			return null;
 		}
-	}
-	private void parseHits(){
-		ArrayList<String> al = hitCollector.getHits();
-		Iterator<String> it = al.iterator();
+	}*/
+
+	private void parseHits() {
+		ArrayList<Document> al = hitCollector.getHits();
+		Iterator<Document> it = al.iterator();
 		nodelist = new ArrayList<CyNode>();
 		edgelist = new ArrayList<CyEdge>();
-		while(it.hasNext()){
-			String currid = (String) it.next();
-			CyNode currNode = network.getNode((new Integer(currid)).intValue());
-			if(currNode!=null){
-				nodelist.add(currNode);
-			}
-			else{
-				CyEdge currEdge = network.getEdge((new Integer(currid)).intValue());
+		while (it.hasNext()) {
+			Document currdoc = (Document) it.next();
+			String type = currdoc.get("Type");
+			if (type.equals("node")) {
+				CyNode currNode = network.getNode((new Integer(currdoc
+						.get(EnhancedSearchIndex.INDEX_FIELD))).intValue());
+				if (currNode != null) {
+					nodelist.add(currNode);
+				}
+			} else {
+				CyEdge currEdge = network.getEdge((new Integer(currdoc
+						.get(EnhancedSearchIndex.INDEX_FIELD))).intValue());
 				if (currEdge != null) {
 					edgelist.add(currEdge);
-				} else{
-					System.out.println("Unknown Identifier "+ currid);
 				}
 			}
 		}
+
 	}
-	public ArrayList<CyNode> getNodeHits(){
-		if(hitCollector!=null)
-		{
-			if(nodelist==null)
-			{
+
+	public ArrayList<CyNode> getNodeHits() {
+		if (hitCollector != null) {
+			if (nodelist == null) {
 				parseHits();
 			}
 			return nodelist;
-		}
-		else{
-			return null;	
+		} else {
+			return null;
 		}
 	}
-	public ArrayList<CyEdge> getEdgeHits(){
-		if(hitCollector!=null)
-		{
-			if(edgelist==null)
+
+	public ArrayList<CyEdge> getEdgeHits() {
+		if (hitCollector != null) {
+			if (edgelist == null)
 				parseHits();
 			return edgelist;
-		}
-		else{
+		} else {
 			return null;
 		}
 	}
 }
-
 
 class IdentifiersCollector extends HitCollector {
 
@@ -193,7 +199,8 @@ class IdentifiersCollector extends HitCollector {
 
 	private Searcher searcher;
 
-	public ArrayList<String> hitsIdentifiers = new ArrayList<String>();
+	// public ArrayList<String> hitsIdentifiers = new ArrayList<String>();
+	public ArrayList<Document> hitsIdentifiers = new ArrayList<Document>();
 
 	public IdentifiersCollector(Searcher searcher) {
 		this.searcher = searcher;
@@ -202,8 +209,9 @@ class IdentifiersCollector extends HitCollector {
 	public void collect(int id, float score) {
 		try {
 			Document doc = searcher.doc(id);
-			String currID = doc.get(INDEX_FIELD);
-			hitsIdentifiers.add(currID);
+			// String currID = doc.get(INDEX_FIELD);
+			// hitsIdentifiers.add(currID);
+			hitsIdentifiers.add(doc);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -213,9 +221,11 @@ class IdentifiersCollector extends HitCollector {
 		return hitsIdentifiers.size();
 	}
 
-	public ArrayList<String> getHits() {
+	/*
+	 * public ArrayList<String> getHits() { return hitsIdentifiers; }
+	 */
+	public ArrayList<Document> getHits() {
 		return hitsIdentifiers;
 	}
 
 }
-

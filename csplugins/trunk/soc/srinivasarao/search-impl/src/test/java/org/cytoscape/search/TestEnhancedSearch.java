@@ -36,75 +36,97 @@
 
 package org.cytoscape.search;
 
-//import java.io.File;
-//import java.util.*;
 import junit.framework.TestCase;
 import org.cytoscape.search.internal.*;
+import org.apache.lucene.document.NumberTools;
 import org.apache.lucene.store.RAMDirectory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.internal.ArrayGraph;
-//import org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTask;
-//import org.cytoscape.io.internal.read.*;
-//import org.cytoscape.view.model.internal.ColumnOrientedNetworkViewFactoryImpl;
-//import org.osgi.framework.*;
-//import cytoscape.CyNetworkManager;
-//import org.cytoscape.work.TaskMonitor;
-//import org.cytoscape.event.internal.CyEventHelperImpl;
-//import org.cytoscape.work.internal.task.*;
+
 public class TestEnhancedSearch extends TestCase {
 
 	String query = null;
 	int hitCount;
-//	private LoadNetworkFileTask lf;
-//	private CyNetworkManager netmgr;
-//	private TaskMonitor tm;
-	CyNetwork cyNetwork;
-	//private BundleContext bc;
+	private CyNetwork net;
+	private EnhancedSearchQuery queryHandler;
+	private RAMDirectory rd;
+	private EnhancedSearchIndex esi;
 	protected CyEventHelper helper;
 	// Load sample network and attributes into memory
-	public TestEnhancedSearch() {
-		helper = new DummyCyEventHelper();
-		//cyNetwork = new MGraph(helper);
-		cyNetwork = new ArrayGraph(new DummyCyEventHelper());
-		CyNode n1 = cyNetwork.addNode();
-		//System.out.println(tn.toString());
-		CyNode n2 = cyNetwork.addNode();
-		CyNode n3 = cyNetwork.addNode();
-		CyDataTable nodetable = (CyDataTable)cyNetwork.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
+	public void setUp(){
+		
+		net = new ArrayGraph(new DummyCyEventHelper());
+		CyNode n1 = net.addNode();
+		CyNode n2 = net.addNode();
+		CyNode n3 = net.addNode();
+		CyNode n4 = net.addNode();
+		CyNode n5 = net.addNode();
+		CyNode n6 = net.addNode();
+		
+		CyDataTable nodetable = (CyDataTable)net.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 		nodetable.createColumn("Official HUGO Symbol", String.class, true);
+		nodetable.createColumn("canonicalName", Integer.class, true);
+		
 		CyRow r1 = nodetable.getRow(n1.getSUID());
-		r1.set("Official HUGO Symbol","a");
+		r1.set("Official HUGO Symbol","ING5");
+		r1.set("canonicalName",84289);
+		
 		CyRow r2 = nodetable.getRow(n2.getSUID());
-		r2.set("Official HUGO Symbol","b");
+		r2.set("Official HUGO Symbol","CCNG1");
+		r2.set("canonicalName",900);
+		
 		CyRow r3 = nodetable.getRow(n3.getSUID());
-		r3.set("Official HUGO Symbol","c");
-/*	//	Timer timer = new Timer();
-//        tm = new ConsoleTaskMonitor(timer);
+		r3.set("Official HUGO Symbol","SCOTIN");
+		r3.set("canonicalName", 51246);
+		
+		CyRow r4 = nodetable.getRow(n4.getSUID());
+		r4.set("Official HUGO Symbol","KLF4");
+		r4.set("canonicalName", 9314);
+		
+		CyRow r5 = nodetable.getRow(n5.getSUID());
+		r5.set("Official HUGO Symbol","TP53");
+		r5.set("canonicalName", 7157);
+		
+		CyRow r6 = nodetable.getRow(n6.getSUID());
+		r6.set("Official HUGO Symbol","HMGB1");
+		r6.set("canonicalName", 3146);
+		
+		CyEdge e1 = net.addEdge(n5, n3, true);
+		CyEdge e2 = net.addEdge(n5, n4, true);
+		CyEdge e3 = net.addEdge(n2, n5, true);
+		CyEdge e4 = net.addEdge(n6, n5, true);
+		
+		CyDataTable edgetable = (CyDataTable)net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
+		edgetable.createColumn("canonicalName", String.class, true);
+		edgetable.createColumn("interaction", String.class, true);
+		
+		CyRow re1 = edgetable.getRow(e1.getSUID());
+		re1.set("canonicalName", "7157 (non_core) 51246");
+		re1.set("interaction","non_core");
+		
+		CyRow re2 = edgetable.getRow(e2.getSUID());
+		re2.set("canonicalName", "7157 (non_core) 9314");
+		re2.set("interaction","non_core");
+		
+		CyRow re3 = edgetable.getRow(e3.getSUID());
+		re3.set("canonicalName", "900 (non_core) 7157");
+		re3.set("interaction","non_core");
 
-		//cyNetwork = Cytoscape.createNetworkFromFile("testData/network.sif");
-		lf = new LoadNetworkFileTask(new CyReaderManagerImpl(), new ColumnOrientedNetworkViewFactoryImpl(), new CyLayoutsImpl(), netmgr , new Properties(), new CyNetworkNamingImpl() );
-		lf.file = new File("testData/network.sif");
-		lf.run(tm);
-		String[] noa = new String[7];
-		noa[0] = new File("testData/GOMolecularFunction.NA").getAbsolutePath();
-		noa[1] = new File("testData/GOCellularComponent.NA").getAbsolutePath();
-		noa[2] = new File("testData/GOBiologicalProcess.NA").getAbsolutePath();
-		noa[3] = new File("testData/GeneTitle.NA").getAbsolutePath();
-		noa[4] = new File("testData/DesiccationResponse.NA").getAbsolutePath();
-		noa[5] = new File("testData/Chromosome.NA").getAbsolutePath();
-		noa[6] = new File("testData/AGI.NA").getAbsolutePath();
-
-		String[] eda = new String[2];
-		eda[0] = new File("testData/weight.EA").getAbsolutePath();
-		eda[1] = new File("testData/interaction.EA").getAbsolutePath();
-
-		Cytoscape.loadAttributes(noa, eda);
-*/
+		CyRow re4 = edgetable.getRow(e4.getSUID());
+		re4.set("canonicalName", "3146 (non_core) 7157");
+		re4.set("interaction","non_core");
+		
+		esi = new EnhancedSearchIndexImpl(net);
+		rd = esi.getIndex();
+		queryHandler = new EnhancedSearchQueryImpl(rd, net);
+		
+		
 	}
 	public static void main(String[] args) throws Exception{
 		TestEnhancedSearch te = new TestEnhancedSearch();
@@ -112,19 +134,15 @@ public class TestEnhancedSearch extends TestCase {
 	}
 	
 	public void testSimpleQuery() throws Exception{
-		EnhancedSearchIndex indexHandler = new EnhancedSearchIndexImpl(cyNetwork);
-		RAMDirectory idx = indexHandler.getIndex();
-		EnhancedSearchQuery queryHandler = new EnhancedSearchQueryImpl(idx,cyNetwork);
-		
-		query="b";
+		query="900";
+		//query="node.canonicalname:900 OR edge.interaction:non_core";
 		queryHandler.executeQuery(query); // 56
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 1, hitCount);
-		if(hitCount == 1){
-			System.out.println("Yeah");
-		}else{
-			System.out.println("Nooooooooooooooooooo");
-		}
+		System.out.println(hitCount);
+		//System.out.println(queryHandler.getNodeHits().size());
+		//System.out.println(NumberTools.longToString(51246));
+		assertEquals(query, 2, hitCount);
+		
 	}
 	/*
 	// Simple queries
