@@ -187,13 +187,18 @@ public class XGMMLWriterTest extends TestCase {
         assertTrue("XGMMLWriter: No. of lines, expect " + linesExptd.length + ", got" + linesGot.length, linesExptd.length == linesGot.length);
 
         for (int i = 0; i < linesExptd.length; i++) {
+            String exptd;
+            String got;
+
+            exptd = linesExptd[i];
+            got = linesGot[i];
             // <dc:date> value will be different so skip this line
-            if (linesExptd[i].contains("<dc:date>")) {
+            if (exptd.contains("<dc:date>")) {
                 continue;
             }
-            System.out.println("Exp (" + linesExptd[i].length() + ")>" + linesExptd[i]);
-            System.out.println("Got (" + linesGot[i].length() + ")>" + linesGot[i]);
-            assertEquals(linesExptd[i], linesGot[i]);
+            System.out.println("Exp (" + exptd.length() + ")>" + exptd);
+            System.out.println("Got (" + got.length() + ")>" + got);
+            assertEquals("Line " + i + " {" + got + "} {" + exptd + "}", exptd, got);
         }
     }
 
