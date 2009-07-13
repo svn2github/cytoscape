@@ -49,7 +49,7 @@ import java.util.Properties;
 import javax.swing.event.MenuEvent;
 
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.NetworkRenderer;
+import org.cytoscape.view.presentation.Renderer;
 
 import org.cytoscape.session.CyNetworkManager;
 import cytoscape.util.CytoscapeAction;
@@ -86,7 +86,7 @@ public class PrintAction extends CytoscapeAction {
 	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		NetworkRenderer pres = cyNetworkMgr.getCurrentPresentation();
+		Renderer<CyNetworkView> pres = cyNetworkMgr.getCurrentPresentation();
 
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 

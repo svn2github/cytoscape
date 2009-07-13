@@ -51,8 +51,8 @@ import javax.swing.event.InternalFrameListener;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.NetworkRenderer;
 import org.cytoscape.view.presentation.PresentationFactory;
+import org.cytoscape.view.presentation.Renderer;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkViewAboutToBeDestroyedEvent;
@@ -75,7 +75,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	private final JDesktopPane desktopPane;
 
 	private final Map<Long, JInternalFrame> networkViewMap;
-	private final Map<Long, NetworkRenderer> presentationMap;
+	private final Map<Long, Renderer<CyNetworkView>> presentationMap;
 
 	private final Map<JInternalFrame, Long> componentMap;
 
@@ -121,7 +121,7 @@ public class NetworkViewManager implements InternalFrameListener,
 				null);
 
 		networkViewMap = new HashMap<Long, JInternalFrame>();
-		presentationMap = new HashMap<Long, NetworkRenderer>();
+		presentationMap = new HashMap<Long, Renderer<CyNetworkView>>();
 		componentMap = new HashMap<JInternalFrame, Long>();
 		currentViewId = null;
 	}
