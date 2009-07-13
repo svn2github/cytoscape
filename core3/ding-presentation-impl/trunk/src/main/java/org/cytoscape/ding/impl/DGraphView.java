@@ -98,7 +98,7 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.EdgeViewTaskFactory;
 import org.cytoscape.view.model.NodeViewTaskFactory;
 import org.cytoscape.view.model.EmptySpaceTaskFactory;
-import org.cytoscape.view.presentation.NetworkRenderer;
+import org.cytoscape.view.presentation.Renderer;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.UndoSupport;
 import org.cytoscape.work.TunableInterceptor;
@@ -109,55 +109,48 @@ import phoebe.PhoebeCanvasDroppable;
 
 /**
  * DING implementation of the GINY view.
- *
+ * 
  * Explain relationship to cytoscape.
- *
- * Throughout this code I am assuming that nodes or edges are never
- * removed from the underlying RootGraph. This assumption was made in the
- * old GraphView implementation. Removal from the RootGraph is the only
- * thing that can affect m_drawPersp and m_structPersp that is beyond our
- * control.
- *
+ * 
+ * Throughout this code I am assuming that nodes or edges are never removed from
+ * the underlying RootGraph. This assumption was made in the old GraphView
+ * implementation. Removal from the RootGraph is the only thing that can affect
+ * m_drawPersp and m_structPersp that is beyond our control.
+ * 
  * @author Nerius Landys
  */
-public class DGraphView implements NetworkRenderer, GraphView, Printable, PhoebeCanvasDroppable, ViewChangeListener {
+public class DGraphView implements Renderer<CyNetworkView>, GraphView, Printable,
+		PhoebeCanvasDroppable, ViewChangeListener {
 
-    private static enum ZOrder {
-        BACKGROUND_PANE,
-        NETWORK_PANE,
-        FOREGROUND_PANE;
-        int layer() {
-            if (this == BACKGROUND_PANE)
-                return -30000;
+	private static enum ZOrder {
+		BACKGROUND_PANE, NETWORK_PANE, FOREGROUND_PANE;
+		int layer() {
+			if (this == BACKGROUND_PANE)
+				return -30000;
 
-            if (this == NETWORK_PANE)
-                return 0;
+			if (this == NETWORK_PANE)
+				return 0;
 
-            if (this == FOREGROUND_PANE)
-                return 301;
+			if (this == FOREGROUND_PANE)
+				return 301;
 
-            return 0;
-        }
-    }
+			return 0;
+		}
+	}
 
 	static final float DEFAULT_ANCHOR_SIZE = 9.0f;
 	static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
 	static final Paint DEFAULT_ANCHOR_UNSELECTED_PAINT = Color.black;
 
 	/**
-	 * Enum to identify ding canvases - 
-	 * used in getCanvas(Canvas canvasId)
+	 * Enum to identify ding canvases - used in getCanvas(Canvas canvasId)
 	 */
 	public enum Canvas {
-		BACKGROUND_CANVAS,
-		NETWORK_CANVAS,
-		FOREGROUND_CANVAS;
+		BACKGROUND_CANVAS, NETWORK_CANVAS, FOREGROUND_CANVAS;
 	}
 
 	public enum ShapeType {
-		NODE_SHAPE,
-		LINE_TYPE,
-		ARROW_SHAPE;
+		NODE_SHAPE, LINE_TYPE, ARROW_SHAPE;
 	}
 
 	/**
@@ -166,8 +159,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	final Object m_lock = new Object();
 
 	/**
-	 * A common buffer object used to pass information about.
-	 * X-Y coords of the minimum bounding box?
+	 * A common buffer object used to pass information about. X-Y coords of the
+	 * minimum bounding box?
 	 */
 	final float[] m_extentsBuff = new float[4];
 
@@ -182,24 +175,23 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	CyNetwork m_perspective;
 
 	/**
-	 * Holds the NodeView data for the nodes that are visible.
-	 * This will change as nodes are hidden from the view.
+	 * Holds the NodeView data for the nodes that are visible. This will change
+	 * as nodes are hidden from the view.
 	 */
 	CySubNetwork m_drawPersp;
 
 	/**
 	 * Holds all of the NodeViews, regardless of whether they're visualized.
 	 */
-//	CyNetwork m_structPersp;
-
+	// CyNetwork m_structPersp;
 	/**
 	 * RTree used for querying node positions.
 	 */
 	SpacialIndex2D m_spacial;
 
 	/**
-	 * RTree used for querying Edge Handle positions.
-	 * Used by DNodeView, DEdgeView, and InnerCanvas.
+	 * RTree used for querying Edge Handle positions. Used by DNodeView,
+	 * DEdgeView, and InnerCanvas.
 	 */
 	SpacialIndex2D m_spacialA;
 
@@ -221,12 +213,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	/**
 	 *
 	 */
-	HashMap<Integer,NodeView> m_nodeViewMap;
+	HashMap<Integer, NodeView> m_nodeViewMap;
 
 	/**
 	 *
 	 */
-	HashMap<Integer,EdgeView> m_edgeViewMap;
+	HashMap<Integer, EdgeView> m_edgeViewMap;
 
 	/**
 	 *
@@ -339,24 +331,33 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	Paint m_lastTexturePaint = null;
 
 	CyNetworkView cyNetworkView;
-	
+
 	RootVisualLexicon rootLexicon;
 
-	Map<NodeViewTaskFactory,Map> nodeViewTFs; 
-	Map<EdgeViewTaskFactory,Map> edgeViewTFs;
-	Map<EmptySpaceTaskFactory,Map> emptySpaceTFs;
+	Map<NodeViewTaskFactory, Map> nodeViewTFs;
+	Map<EdgeViewTaskFactory, Map> edgeViewTFs;
+	Map<EmptySpaceTaskFactory, Map> emptySpaceTFs;
 
 	TunableInterceptor interceptor;
 	TaskManager manager;
-	
+
 	// Will be injected.
 	private VisualLexicon dingLexicon;
+
 	/**
 	 * Creates a new DGraphView object.
-	 *
-	 * @param perspective The graph model that we'll be creating a view for.
+	 * 
+	 * @param perspective
+	 *            The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo, SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc, VisualLexicon dingLexicon, Map<NodeViewTaskFactory,Map> nodeViewTFs, Map<EdgeViewTaskFactory,Map> edgeViewTFs, Map<EmptySpaceTaskFactory,Map> emptySpaceTFs, TunableInterceptor interceptor, TaskManager manager ) {
+	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory,
+			CyRootNetworkFactory cyRoot, UndoSupport undo,
+			SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
+			VisualLexicon dingLexicon,
+			Map<NodeViewTaskFactory, Map> nodeViewTFs,
+			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
+			Map<EmptySpaceTaskFactory, Map> emptySpaceTFs,
+			TunableInterceptor interceptor, TaskManager manager) {
 		m_perspective = view.getSource();
 		cyNetworkView = view;
 		rootLexicon = vpc;
@@ -369,54 +370,54 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		this.interceptor = interceptor;
 		this.manager = manager;
 
-		CyDataTable nodeCAM = dataFactory.createTable("node view",false);
-		nodeCAM.createColumn("hidden",Boolean.class,false);
+		CyDataTable nodeCAM = dataFactory.createTable("node view", false);
+		nodeCAM.createColumn("hidden", Boolean.class, false);
 		m_perspective.getNodeCyDataTables().put("VIEW", nodeCAM);
 
-		CyDataTable edgeCAM = dataFactory.createTable("edge view",false);
-		edgeCAM.createColumn("hidden",Boolean.class,false);
+		CyDataTable edgeCAM = dataFactory.createTable("edge view", false);
+		edgeCAM.createColumn("hidden", Boolean.class, false);
 		m_perspective.getEdgeCyDataTables().put("VIEW", edgeCAM);
 
-
 		// creating empty subnetworks
-		m_drawPersp = cyRoot.convert( m_perspective ).addSubNetwork(new ArrayList<CyNode>()); 
-		//m_structPersp = CyNetworkFactory.getInstance();
+		m_drawPersp = cyRoot.convert(m_perspective).addSubNetwork(
+				new ArrayList<CyNode>());
+		// m_structPersp = CyNetworkFactory.getInstance();
 
 		m_spacial = spacialFactory.createSpacialIndex2D();
-		m_spacialA = spacialFactory.createSpacialIndex2D(); 
+		m_spacialA = spacialFactory.createSpacialIndex2D();
 		m_nodeDetails = new DNodeDetails(this);
 		m_edgeDetails = new DEdgeDetails(this);
-		m_nodeViewMap = new HashMap<Integer,NodeView>();
-		m_edgeViewMap = new HashMap<Integer,EdgeView>();
+		m_nodeViewMap = new HashMap<Integer, NodeView>();
+		m_edgeViewMap = new HashMap<Integer, EdgeView>();
 		m_printLOD = new PrintLOD();
 		m_defaultNodeXMin = 0.0f;
 		m_defaultNodeYMin = 0.0f;
 		m_defaultNodeXMax = m_defaultNodeXMin + DNodeView.DEFAULT_WIDTH;
 		m_defaultNodeYMax = m_defaultNodeYMin + DNodeView.DEFAULT_HEIGHT;
 		m_networkCanvas = new InnerCanvas(m_lock, this, undo);
-		m_backgroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this, m_networkCanvas,
-		                                                 Color.white, true, true);
+		m_backgroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this,
+				m_networkCanvas, Color.white, true, true);
 		addViewportChangeListener(m_backgroundCanvas);
-		m_foregroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this, m_networkCanvas,
-		                                                 Color.white, true, false);
+		m_foregroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this,
+				m_networkCanvas, Color.white, true, false);
 		addViewportChangeListener(m_foregroundCanvas);
 		m_selectedNodes = new IntBTree();
 		m_selectedEdges = new IntBTree();
 		m_selectedAnchors = new IntBTree();
 
-
 		// from DingNetworkView
-		this.title = m_perspective.attrs().get("name",String.class);
+		this.title = m_perspective.attrs().get("name", String.class);
 
-		for ( CyNode nn : m_perspective.getNodeList() ) 
-			addNodeView( nn );
+		for (CyNode nn : m_perspective.getNodeList())
+			addNodeView(nn);
 
-		for ( CyEdge ee : m_perspective.getEdgeList() ) 
-			addEdgeView( ee );
+		for (CyEdge ee : m_perspective.getEdgeList())
+			addEdgeView(ee);
 
 		// read in visual properties from view obj
-		Collection<VisualProperty<?>> netVPs = rootLexicon.getVisualProperties(NETWORK);
-		for ( VisualProperty<?> vp : netVPs ) 
+		Collection<VisualProperty<?>> netVPs = rootLexicon
+				.getVisualProperties(NETWORK);
+		for (VisualProperty<?> vp : netVPs)
 			visualPropertySet(vp, cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this);
@@ -425,22 +426,20 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Returns the graph model that this view was created for.
-	 *
+	 * 
 	 * @return The GraphPerspective that the view was created for.
 	 */
 	public CyNetwork getGraphPerspective() {
-		return m_perspective; 
+		return m_perspective;
 	}
-	
+
 	public CyNetwork getNetwork() {
 		return m_perspective;
 	}
-	
-		
 
 	/**
 	 * Whether node selection is enabled.
-	 *
+	 * 
 	 * @return Whether node selection is enabled.
 	 */
 	public boolean nodeSelectionEnabled() {
@@ -449,7 +448,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Whether edge selection is enabled.
-	 *
+	 * 
 	 * @return Whether edge selection is enabled.
 	 */
 	public boolean edgeSelectionEnabled() {
@@ -480,7 +479,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 				m_selectedNodes.empty();
 
 				for (int i = 0; i < unselectedNodes.length; i++)
-					((DNodeView) getNodeView(unselectedNodes[i])).unselectInternal();
+					((DNodeView) getNodeView(unselectedNodes[i]))
+							.unselectInternal();
 
 				m_contentChanged = true;
 			}
@@ -490,7 +490,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 			final GraphViewChangeListener listener = m_lis[0];
 
 			if (listener != null) {
-				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(this, makeNodeList(unselectedNodes,this)));
+				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(
+						this, makeNodeList(unselectedNodes, this)));
 			}
 
 			// Update the view after listener events are fired because listeners
@@ -523,7 +524,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 				m_selectedEdges.empty();
 
 				for (int i = 0; i < unselectedEdges.length; i++)
-					((DEdgeView) getEdgeView(unselectedEdges[i])).unselectInternal();
+					((DEdgeView) getEdgeView(unselectedEdges[i]))
+							.unselectInternal();
 
 				m_contentChanged = true;
 			}
@@ -533,7 +535,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 			final GraphViewChangeListener listener = m_lis[0];
 
 			if (listener != null) {
-				listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(this, makeEdgeList(unselectedEdges,this)));
+				listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(
+						this, makeEdgeList(unselectedEdges, this)));
 			}
 
 			// Update the view after listener events are fired because listeners
@@ -544,18 +547,18 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Returns an array of selected node indices.
-	 *
+	 * 
 	 * @return An array of selected node indices.
 	 */
 	public int[] getSelectedNodeIndices() {
 		synchronized (m_lock) {
 			// all nodes from the btree
-			final IntEnumerator elms = m_selectedNodes.searchRange(Integer.MIN_VALUE,
-			                                                       Integer.MAX_VALUE, false);
+			final IntEnumerator elms = m_selectedNodes.searchRange(
+					Integer.MIN_VALUE, Integer.MAX_VALUE, false);
 			final int[] returnThis = new int[elms.numRemaining()];
 
 			for (int i = 0; i < returnThis.length; i++)
-				// GINY requires all node indices to be negative (why?), 
+				// GINY requires all node indices to be negative (why?),
 				// hence the bitwise complement here.
 				returnThis[i] = elms.nextInt();
 
@@ -565,20 +568,21 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Returns a list of selected node objects.
-	 *
+	 * 
 	 * @return A list of selected node objects.
 	 */
 	public List<CyNode> getSelectedNodes() {
 		synchronized (m_lock) {
 			// all nodes from the btree
-			final IntEnumerator elms = m_selectedNodes.searchRange(Integer.MIN_VALUE,
-			                                                       Integer.MAX_VALUE, false);
+			final IntEnumerator elms = m_selectedNodes.searchRange(
+					Integer.MIN_VALUE, Integer.MAX_VALUE, false);
 			final ArrayList<CyNode> returnThis = new ArrayList<CyNode>();
 
 			while (elms.numRemaining() > 0)
-				// GINY requires all node indices to be negative (why?), 
+				// GINY requires all node indices to be negative (why?),
 				// hence the bitwise complement here.
-				returnThis.add(m_nodeViewMap.get(Integer.valueOf(elms.nextInt())).getNode());
+				returnThis.add(m_nodeViewMap.get(
+						Integer.valueOf(elms.nextInt())).getNode());
 
 			return returnThis;
 		}
@@ -586,13 +590,13 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Returns an array of selected edge indices.
-	 *
+	 * 
 	 * @return An array of selected edge indices.
 	 */
 	public int[] getSelectedEdgeIndices() {
 		synchronized (m_lock) {
-			final IntEnumerator elms = m_selectedEdges.searchRange(Integer.MIN_VALUE,
-			                                                       Integer.MAX_VALUE, false);
+			final IntEnumerator elms = m_selectedEdges.searchRange(
+					Integer.MIN_VALUE, Integer.MAX_VALUE, false);
 			final int[] returnThis = new int[elms.numRemaining()];
 
 			for (int i = 0; i < returnThis.length; i++)
@@ -604,17 +608,18 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Returns a list of selected edge objects.
-	 *
+	 * 
 	 * @return A list of selected edge objects.
 	 */
 	public List<CyEdge> getSelectedEdges() {
 		synchronized (m_lock) {
-			final IntEnumerator elms = m_selectedEdges.searchRange(Integer.MIN_VALUE,
-			                                                       Integer.MAX_VALUE, false);
+			final IntEnumerator elms = m_selectedEdges.searchRange(
+					Integer.MIN_VALUE, Integer.MAX_VALUE, false);
 			final ArrayList<CyEdge> returnThis = new ArrayList<CyEdge>();
 
 			while (elms.numRemaining() > 0)
-				returnThis.add(m_edgeViewMap.get(Integer.valueOf(elms.nextInt())).getEdge());
+				returnThis.add(m_edgeViewMap.get(
+						Integer.valueOf(elms.nextInt())).getEdge());
 
 			return returnThis;
 		}
@@ -623,18 +628,20 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	/**
 	 * Add GraphViewChangeListener to linked list of GraphViewChangeListeners.
 	 * AAAAAARRRGGGGHHHHHH!!!!
-	 *
-	 * @param l GraphViewChangeListener to be added to the list.
+	 * 
+	 * @param l
+	 *            GraphViewChangeListener to be added to the list.
 	 */
 	public void addGraphViewChangeListener(GraphViewChangeListener l) {
 		m_lis[0] = GraphViewChangeListenerChain.add(m_lis[0], l);
 	}
 
 	/**
-	 * Remove GraphViewChangeListener from linked list of GraphViewChangeListeners.
-	 * AAAAAARRRGGGGHHHHHH!!!!
-	 *
-	 * @param l GraphViewChangeListener to be removed from the list.
+	 * Remove GraphViewChangeListener from linked list of
+	 * GraphViewChangeListeners. AAAAAARRRGGGGHHHHHH!!!!
+	 * 
+	 * @param l
+	 *            GraphViewChangeListener to be removed from the list.
 	 */
 	public void removeGraphViewChangeListener(GraphViewChangeListener l) {
 		m_lis[0] = GraphViewChangeListenerChain.remove(m_lis[0], l);
@@ -642,8 +649,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Sets the background color on the canvas.
-	 *
-	 * @param paint The Paint (color) to apply to the background.
+	 * 
+	 * @param paint
+	 *            The Paint (color) to apply to the background.
 	 */
 	public void setBackgroundPaint(Paint paint) {
 		synchronized (m_lock) {
@@ -651,14 +659,15 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 				m_backgroundCanvas.setBackground((Color) paint);
 				m_contentChanged = true;
 			} else {
-				System.out.println("DGraphView.setBackgroundPaint(), Color not found!");
+				System.out
+						.println("DGraphView.setBackgroundPaint(), Color not found!");
 			}
 		}
 	}
 
 	/**
 	 * Returns the background color on the canvas.
-	 *
+	 * 
 	 * @return The background color on the canvas.
 	 */
 	public Paint getBackgroundPaint() {
@@ -666,9 +675,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	/**
-	 * Returns the InnerCanvas object.  The InnerCanvas object is the actual component
-	 * that the network is rendered on.
-	 *
+	 * Returns the InnerCanvas object. The InnerCanvas object is the actual
+	 * component that the network is rendered on.
+	 * 
 	 * @return The InnerCanvas object.
 	 */
 	public Component getComponent() {
@@ -676,10 +685,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	/**
-	 * Adds a NodeView object to the GraphView. Creates NodeView if one doesn't already exist.
-	 *
-	 * @param nodeInx The index of the NodeView object to be added.
-	 *
+	 * Adds a NodeView object to the GraphView. Creates NodeView if one doesn't
+	 * already exist.
+	 * 
+	 * @param nodeInx
+	 *            The index of the NodeView object to be added.
+	 * 
 	 * @return The NodeView object that is added to the GraphView.
 	 */
 	public NodeView addNodeView(CyNode node) {
@@ -698,7 +709,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		final GraphViewChangeListener listener = m_lis[0];
 
 		if (listener != null) {
-			listener.graphViewChanged(new GraphViewNodesRestoredEvent(this, makeList( newView.getNode()) ));
+			listener.graphViewChanged(new GraphViewNodesRestoredEvent(this,
+					makeList(newView.getNode())));
 		}
 
 		return newView;
@@ -711,44 +723,44 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		final int nodeInx = node.getIndex();
 		final NodeView oldView = m_nodeViewMap.get(nodeInx);
 
-
 		if (oldView != null) {
 			return null;
 		}
 
-		m_drawPersp.addNode( node );
+		m_drawPersp.addNode(node);
 
-		//m_structPersp.restoreNode(nodeInx);
+		// m_structPersp.restoreNode(nodeInx);
 
 		final View<CyNode> nv = cyNetworkView.getNodeView(node);
 		final NodeView newView = new DNodeView(this, nodeInx, nv);
 		cyNetworkView.getNodeView(node).addViewChangeListener(newView);
 
 		m_nodeViewMap.put(nodeInx, newView);
-		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin, m_defaultNodeXMax,
-		                 m_defaultNodeYMax);
+		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
+				m_defaultNodeXMax, m_defaultNodeYMax);
 
 		// read in visual properties from view obj
-		Collection<VisualProperty<?>> nodeVPs = rootLexicon.getVisualProperties(NODE);
-		for ( VisualProperty<?> vp : nodeVPs ) 
+		Collection<VisualProperty<?>> nodeVPs = rootLexicon
+				.getVisualProperties(NODE);
+		for (VisualProperty<?> vp : nodeVPs)
 			newView.visualPropertySet(vp, nv.getVisualProperty(vp));
-		
 
 		return newView;
 	}
 
 	/**
 	 * Adds EdgeView to the GraphView.
-	 *
-	 * @param edgeInx The index of EdgeView to be added.
-	 *
+	 * 
+	 * @param edgeInx
+	 *            The index of EdgeView to be added.
+	 * 
 	 * @return The EdgeView that was added.
 	 */
 	public EdgeView addEdgeView(final CyEdge edge) {
 		NodeView sourceNode = null;
 		NodeView targetNode = null;
 		EdgeView edgeView = null;
-		if (edge == null) 
+		if (edge == null)
 			throw new NullPointerException("edge is null");
 
 		synchronized (m_lock) {
@@ -764,19 +776,20 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 			m_drawPersp.addEdge(edge);
 
-			//m_structPersp.restoreEdge(edgeInx);
+			// m_structPersp.restoreEdge(edgeInx);
 			View<CyEdge> ev = cyNetworkView.getEdgeView(edge);
-			edgeView = new DEdgeView(this, edgeInx,ev);
+			edgeView = new DEdgeView(this, edgeInx, ev);
 			cyNetworkView.getEdgeView(edge).addViewChangeListener(edgeView);
 
 			m_edgeViewMap.put(Integer.valueOf(edgeInx), edgeView);
 			m_contentChanged = true;
 
 			// read in visual properties from view obj
-			Collection<VisualProperty<?>> edgeVPs = rootLexicon.getVisualProperties(EDGE);
-			for ( VisualProperty<?> vp : edgeVPs ) 
+			Collection<VisualProperty<?>> edgeVPs = rootLexicon
+					.getVisualProperties(EDGE);
+			for (VisualProperty<?> vp : edgeVPs)
 				edgeView.visualPropertySet(vp, ev.getVisualProperty(vp));
-		
+
 		}
 
 		// Under no circumstances should we be holding m_lock when the listener
@@ -784,7 +797,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		final GraphViewChangeListener listener = m_lis[0];
 
 		if (listener != null) {
-			// Only fire this event if either of the nodes is new.  The node
+			// Only fire this event if either of the nodes is new. The node
 			// will be null if it already existed.
 			if ((sourceNode != null) || (targetNode != null)) {
 				int[] nodeInx;
@@ -794,26 +807,27 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 				} else if (targetNode == null) {
 					nodeInx = new int[] { sourceNode.getRootGraphIndex() };
 				} else {
-					nodeInx = new int[] {
-					              sourceNode.getRootGraphIndex(), targetNode.getRootGraphIndex()
-					          };
+					nodeInx = new int[] { sourceNode.getRootGraphIndex(),
+							targetNode.getRootGraphIndex() };
 				}
 
-				listener.graphViewChanged(new GraphViewNodesRestoredEvent(this, makeNodeList(nodeInx,this)));
+				listener.graphViewChanged(new GraphViewNodesRestoredEvent(this,
+						makeNodeList(nodeInx, this)));
 			}
 
-			listener.graphViewChanged(new GraphViewEdgesRestoredEvent(this, makeList( edgeView.getEdge())));
+			listener.graphViewChanged(new GraphViewEdgesRestoredEvent(this,
+					makeList(edgeView.getEdge())));
 		}
 
 		return edgeView;
 	}
 
-
 	/**
 	 * Removes a NodeView based on specified NodeView.
-	 *
-	 * @param nodeView The NodeView object to be removed.
-	 *
+	 * 
+	 * @param nodeView
+	 *            The NodeView object to be removed.
+	 * 
 	 * @return The NodeView object that was removed.
 	 */
 	public NodeView removeNodeView(NodeView nodeView) {
@@ -822,9 +836,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Removes a NodeView based on specified Node.
-	 *
-	 * @param node The Node object connected to the NodeView to be removed.
-	 *
+	 * 
+	 * @param node
+	 *            The Node object connected to the NodeView to be removed.
+	 * 
 	 * @return The NodeView object that was removed.
 	 */
 	public NodeView removeNodeView(CyNode node) {
@@ -833,9 +848,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Removes a NodeView based on a specified index.
-	 *
-	 * @param nodeInx The index of the NodeView to be removed.
-	 *
+	 * 
+	 * @param nodeInx
+	 *            The index of the NodeView to be removed.
+	 * 
 	 * @return The NodeView object that was removed.
 	 */
 	public NodeView removeNodeView(int nodeInx) {
@@ -844,26 +860,30 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		final CyNode nnode;
 
 		synchronized (m_lock) {
-			nnode = m_perspective.getNode( nodeInx );
+			nnode = m_perspective.getNode(nodeInx);
 
 			// We have to query edges in the m_structPersp, not m_drawPersp
 			// because what if the node is hidden?
-			hiddenEdgeInx = m_perspective.getAdjacentEdgeList(nnode, CyEdge.Type.ANY);
+			hiddenEdgeInx = m_perspective.getAdjacentEdgeList(nnode,
+					CyEdge.Type.ANY);
 
-			// This isn't an error. Only if the nodeInx is invalid will getAdjacentEdgeIndicesArray 
-			// return null. If there are no adjacent edges, then it will return an array of length 0.
-			if (hiddenEdgeInx == null) 
+			// This isn't an error. Only if the nodeInx is invalid will
+			// getAdjacentEdgeIndicesArray
+			// return null. If there are no adjacent edges, then it will return
+			// an array of length 0.
+			if (hiddenEdgeInx == null)
 				return null;
 
-			for ( CyEdge ee : hiddenEdgeInx )
+			for (CyEdge ee : hiddenEdgeInx)
 				removeEdgeViewInternal(ee.getIndex());
 
-			returnThis = (DNodeView) m_nodeViewMap.remove(Integer.valueOf(nodeInx));
+			returnThis = (DNodeView) m_nodeViewMap.remove(Integer
+					.valueOf(nodeInx));
 			returnThis.unselectInternal();
 
 			// If this node was hidden, it won't be in m_drawPersp.
 			m_drawPersp.removeNode(nnode);
-			//m_structPersp.removeNode(nodeInx);
+			// m_structPersp.removeNode(nodeInx);
 			m_nodeDetails.unregisterNode(nodeInx);
 
 			// If this node was hidden, it won't be in m_spacial.
@@ -878,10 +898,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 		if (listener != null) {
 			if (hiddenEdgeInx.size() > 0) {
-				listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this, hiddenEdgeInx));
+				listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this,
+						hiddenEdgeInx));
 			}
 
-			listener.graphViewChanged(new GraphViewNodesHiddenEvent(this, makeList(returnThis.getNode()))); 
+			listener.graphViewChanged(new GraphViewNodesHiddenEvent(this,
+					makeList(returnThis.getNode())));
 		}
 
 		return returnThis;
@@ -889,9 +911,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Removes an EdgeView based on an EdgeView.
-	 *
-	 * @param edgeView The EdgeView to be removed.
-	 *
+	 * 
+	 * @param edgeView
+	 *            The EdgeView to be removed.
+	 * 
 	 * @return The EdgeView that was removed.
 	 */
 	public EdgeView removeEdgeView(EdgeView edgeView) {
@@ -900,9 +923,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Removes an EdgeView based on an Edge.
-	 *
-	 * @param edge The Edge of the EdgeView to be removed.
-	 *
+	 * 
+	 * @param edge
+	 *            The Edge of the EdgeView to be removed.
+	 * 
 	 * @return The EdgeView that was removed.
 	 */
 	public EdgeView removeEdgeView(CyEdge edge) {
@@ -911,9 +935,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Removes an EdgeView based on an EdgeIndex.
-	 *
-	 * @param edgeInx The edge index of the EdgeView to be removed.
-	 *
+	 * 
+	 * @param edgeInx
+	 *            The edge index of the EdgeView to be removed.
+	 * 
 	 * @return The EdgeView that was removed.
 	 */
 	public EdgeView removeEdgeView(int edgeInx) {
@@ -931,7 +956,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 			final GraphViewChangeListener listener = m_lis[0];
 
 			if (listener != null) {
-				listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this, makeList(returnThis.getEdge())));
+				listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this,
+						makeList(returnThis.getEdge())));
 			}
 		}
 
@@ -942,7 +968,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	 * Should synchronize around m_lock.
 	 */
 	private DEdgeView removeEdgeViewInternal(int edgeInx) {
-		final DEdgeView returnThis = (DEdgeView) m_edgeViewMap.remove(Integer.valueOf(edgeInx));
+		final DEdgeView returnThis = (DEdgeView) m_edgeViewMap.remove(Integer
+				.valueOf(edgeInx));
 
 		CyEdge eedge = m_perspective.getEdge(edgeInx);
 
@@ -954,7 +981,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 		// If this edge view was hidden, it won't be in m_drawPersp.
 		m_drawPersp.removeEdge(eedge);
-		//m_structPersp.hideEdge(edgeInx);
+		// m_structPersp.hideEdge(edgeInx);
 		m_edgeDetails.unregisterEdge(edgeInx);
 
 		// m_selectedEdges.delete(edgeInx);
@@ -965,7 +992,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Long getIdentifier() {
@@ -974,8 +1001,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param id DOCUMENT ME!
+	 * 
+	 * @param id
+	 *            DOCUMENT ME!
 	 */
 	public void setIdentifier(Long id) {
 		m_identifier = id;
@@ -983,7 +1011,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public double getZoom() {
@@ -992,12 +1020,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param zoom DOCUMENT ME!
+	 * 
+	 * @param zoom
+	 *            DOCUMENT ME!
 	 */
 	public void setZoom(double zoom) {
 		synchronized (m_lock) {
-			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
+			m_networkCanvas.m_scaleFactor = checkZoom(zoom,
+					m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
 
@@ -1009,21 +1039,23 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	 */
 	public void fitContent() {
 		synchronized (m_lock) {
-			if (m_spacial.queryOverlap(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
-			                           Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
-			                           m_extentsBuff, 0, false).numRemaining() == 0) {
+			if (m_spacial.queryOverlap(Float.NEGATIVE_INFINITY,
+					Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY,
+					Float.POSITIVE_INFINITY, m_extentsBuff, 0, false)
+					.numRemaining() == 0) {
 				return;
 			}
 
 			m_networkCanvas.m_xCenter = (((double) m_extentsBuff[0]) + ((double) m_extentsBuff[2])) / 2.0d;
 			m_networkCanvas.m_yCenter = (((double) m_extentsBuff[1]) + ((double) m_extentsBuff[3])) / 2.0d;
-			final double zoom = Math.min(((double) m_networkCanvas.getWidth()) / 
-			                             (((double) m_extentsBuff[2]) - 
-			                              ((double) m_extentsBuff[0])), 
-			                              ((double) m_networkCanvas.getHeight()) / 
-			                             (((double) m_extentsBuff[3]) - 
-			                              ((double) m_extentsBuff[1])));
-			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
+			final double zoom = Math
+					.min(
+							((double) m_networkCanvas.getWidth())
+									/ (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
+							((double) m_networkCanvas.getHeight())
+									/ (((double) m_extentsBuff[3]) - ((double) m_extentsBuff[1])));
+			m_networkCanvas.m_scaleFactor = checkZoom(zoom,
+					m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
 
@@ -1040,8 +1072,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	/**
 	 * Returns an iterator of all node views, including those that are currently
 	 * hidden.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Iterator<NodeView> getNodeViewsIterator() {
 		synchronized (m_lock) {
@@ -1052,8 +1084,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	/**
 	 * Returns the count of all node views, including those that are currently
 	 * hidden.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getNodeViewCount() {
 		synchronized (m_lock) {
@@ -1064,8 +1096,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	/**
 	 * Returns the count of all edge views, including those that are currently
 	 * hidden.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getEdgeViewCount() {
 		synchronized (m_lock) {
@@ -1075,8 +1107,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
+	 * 
+	 * @param node
+	 *            DOCUMENT ME!
 	 * @return DOCUMENT ME!
 	 */
 	public NodeView getNodeView(CyNode node) {
@@ -1085,8 +1118,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param nodeInx DOCUMENT ME!
+	 * 
+	 * @param nodeInx
+	 *            DOCUMENT ME!
 	 * @return DOCUMENT ME!
 	 */
 	public NodeView getNodeView(int nodeInx) {
@@ -1098,12 +1132,13 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	/**
 	 * Returns a list of all edge views, including those that are currently
 	 * hidden.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<EdgeView> getEdgeViewsList() {
 		synchronized (m_lock) {
-			final ArrayList<EdgeView> returnThis = new ArrayList<EdgeView>(m_edgeViewMap.size());
+			final ArrayList<EdgeView> returnThis = new ArrayList<EdgeView>(
+					m_edgeViewMap.size());
 			final Iterator<EdgeView> values = m_edgeViewMap.values().iterator();
 
 			while (values.hasNext())
@@ -1118,15 +1153,18 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	 * directed, having oneNode as source and otherNode as target or 2.
 	 * undirected, having oneNode and otherNode as endpoints. Note that this
 	 * behaviour is similar to that of CyNetwork.edgesList(Node, Node).
-	 *
-	 * @param oneNode DOCUMENT ME!
-	 * @param otherNode DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @param oneNode
+	 *            DOCUMENT ME!
+	 * @param otherNode
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<EdgeView> getEdgeViewsList(CyNode oneNode, CyNode otherNode) {
 		synchronized (m_lock) {
-			List<CyEdge> edges = m_perspective.getConnectingEdgeList(oneNode, otherNode, CyEdge.Type.ANY);
+			List<CyEdge> edges = m_perspective.getConnectingEdgeList(oneNode,
+					otherNode, CyEdge.Type.ANY);
 
 			if (edges == null) {
 				return null;
@@ -1138,7 +1176,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 			while (it.hasNext()) {
 				CyEdge e = (CyEdge) it.next();
 				EdgeView ev = getEdgeView(e);
-				if ( ev != null )
+				if (ev != null)
 					returnThis.add(ev);
 			}
 
@@ -1149,30 +1187,35 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	/**
 	 * Similar to getEdgeViewsList(Node, Node), only that one has control of
 	 * whether or not to include undirected edges.
-	 *
-	 * @param oneNodeInx DOCUMENT ME!
-	 * @param otherNodeInx DOCUMENT ME!
-	 * @param includeUndirected DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @param oneNodeInx
+	 *            DOCUMENT ME!
+	 * @param otherNodeInx
+	 *            DOCUMENT ME!
+	 * @param includeUndirected
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public List<EdgeView> getEdgeViewsList(int oneNodeInx, int otherNodeInx, boolean includeUndirected) {
-		CyNode n1; 
+	public List<EdgeView> getEdgeViewsList(int oneNodeInx, int otherNodeInx,
+			boolean includeUndirected) {
+		CyNode n1;
 		CyNode n2;
-		synchronized(m_lock) {
+		synchronized (m_lock) {
 			n1 = m_perspective.getNode(oneNodeInx);
 			n2 = m_perspective.getNode(otherNodeInx);
 		}
-		return getEdgeViewsList(n1,n2);
+		return getEdgeViewsList(n1, n2);
 	}
 
 	/**
 	 * Returns an edge view with specified edge index whether or not the edge
 	 * view is hidden; null is returned if view does not exist.
-	 *
-	 * @param edgeInx DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @param edgeInx
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public EdgeView getEdgeView(int edgeInx) {
 		synchronized (m_lock) {
@@ -1183,8 +1226,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	/**
 	 * Returns an iterator of all edge views, including those that are currently
 	 * hidden.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Iterator<EdgeView> getEdgeViewsIterator() {
 		synchronized (m_lock) {
@@ -1194,10 +1237,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param edge
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public EdgeView getEdgeView(CyEdge edge) {
@@ -1206,8 +1249,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Alias to getEdgeViewCount().
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int edgeCount() {
 		return getEdgeViewCount();
@@ -1215,23 +1258,25 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * Alias to getNodeViewCount().
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int nodeCount() {
 		return getNodeViewCount();
 	}
 
 	/**
-	 * @param obj should be either a DEdgeView or a DNodeView.
-	 *
-	 * @return  DOCUMENT ME!
+	 * @param obj
+	 *            should be either a DEdgeView or a DNodeView.
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public boolean hideGraphObject(Object obj) {
 		return hideGraphObjectInternal(obj, true);
 	}
 
-	private boolean hideGraphObjectInternal(Object obj, boolean fireListenerEvents) {
+	private boolean hideGraphObjectInternal(Object obj,
+			boolean fireListenerEvents) {
 		if (obj instanceof DEdgeView) {
 			int edgeInx;
 			CyEdge edge;
@@ -1240,8 +1285,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 				edgeInx = ((DEdgeView) obj).getRootGraphIndex();
 				edge = ((DEdgeView) obj).getEdge();
 
-				edge.getCyRow("VIEW").set("hidden",true);
-				if ( !m_drawPersp.removeEdge( edge ) )
+				edge.getCyRow("VIEW").set("hidden", true);
+				if (!m_drawPersp.removeEdge(edge))
 					return false;
 
 				((DEdgeView) obj).unselectInternal();
@@ -1252,7 +1297,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 				final GraphViewChangeListener listener = m_lis[0];
 
 				if (listener != null) {
-					listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this, makeList(((DEdgeView) obj).getEdge()) ) );
+					listener.graphViewChanged(new GraphViewEdgesHiddenEvent(
+							this, makeList(((DEdgeView) obj).getEdge())));
 				}
 			}
 
@@ -1260,7 +1306,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		} else if (obj instanceof DNodeView) {
 			List<CyEdge> edges;
 			int nodeInx;
-			CyNode nnode; 
+			CyNode nnode;
 
 			synchronized (m_lock) {
 				final DNodeView nView = (DNodeView) obj;
@@ -1268,12 +1314,13 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 				nnode = m_perspective.getNode(nodeInx);
 				edges = m_drawPersp.getAdjacentEdgeList(nnode, CyEdge.Type.ANY);
 
-				if (edges == null || edges.size() <= 0 ) {
+				if (edges == null || edges.size() <= 0) {
 					return false;
 				}
 
-				for ( CyEdge ee : edges )
-					hideGraphObjectInternal(m_edgeViewMap.get(ee.getIndex()), false);
+				for (CyEdge ee : edges)
+					hideGraphObjectInternal(m_edgeViewMap.get(ee.getIndex()),
+							false);
 
 				nView.unselectInternal();
 				m_spacial.exists(nodeInx, m_extentsBuff, 0);
@@ -1282,7 +1329,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 				nView.m_hiddenXMax = m_extentsBuff[2];
 				nView.m_hiddenYMax = m_extentsBuff[3];
 				m_drawPersp.removeNode(nnode);
-				nnode.getCyRow("VIEW").set("hidden",true);
+				nnode.getCyRow("VIEW").set("hidden", true);
 				m_spacial.delete(nodeInx);
 				m_contentChanged = true;
 			}
@@ -1292,10 +1339,13 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 				if (listener != null) {
 					if (edges.size() > 0) {
-						listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this, edges));
+						listener
+								.graphViewChanged(new GraphViewEdgesHiddenEvent(
+										this, edges));
 					}
 
-					listener.graphViewChanged(new GraphViewNodesHiddenEvent(this, makeList(nnode)));
+					listener.graphViewChanged(new GraphViewNodesHiddenEvent(
+							this, makeList(nnode)));
 				}
 			}
 
@@ -1306,33 +1356,36 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	/**
-	 * @param obj should be either a DEdgeView or a DNodeView.
-	 *
-	 * @return  DOCUMENT ME!
+	 * @param obj
+	 *            should be either a DEdgeView or a DNodeView.
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public boolean showGraphObject(Object obj) {
 		return showGraphObjectInternal(obj, true);
 	}
 
-	private boolean showGraphObjectInternal(Object obj, boolean fireListenerEvents) {
+	private boolean showGraphObjectInternal(Object obj,
+			boolean fireListenerEvents) {
 		if (obj instanceof DNodeView) {
 			int nodeInx;
 			final DNodeView nView = (DNodeView) obj;
 
 			synchronized (m_lock) {
 				nodeInx = nView.getRootGraphIndex();
-				CyNode nnode = m_perspective.getNode(nodeInx); 
+				CyNode nnode = m_perspective.getNode(nodeInx);
 
-				if ( nnode == null) {
+				if (nnode == null) {
 					return false;
 				}
 
-				nnode.getCyRow("VIEW").set("hidden",false);
-				if (!m_drawPersp.addNode(nnode)) 
+				nnode.getCyRow("VIEW").set("hidden", false);
+				if (!m_drawPersp.addNode(nnode))
 					return false;
-					
-				m_spacial.insert(nodeInx, nView.m_hiddenXMin, nView.m_hiddenYMin,
-				                 nView.m_hiddenXMax, nView.m_hiddenYMax);
+
+				m_spacial.insert(nodeInx, nView.m_hiddenXMin,
+						nView.m_hiddenYMin, nView.m_hiddenXMax,
+						nView.m_hiddenYMax);
 				m_contentChanged = true;
 			}
 
@@ -1340,7 +1393,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 				final GraphViewChangeListener listener = m_lis[0];
 
 				if (listener != null) {
-					listener.graphViewChanged(new GraphViewNodesRestoredEvent(this, makeList( nView.getNode())));
+					listener.graphViewChanged(new GraphViewNodesRestoredEvent(
+							this, makeList(nView.getNode())));
 				}
 			}
 
@@ -1351,7 +1405,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 			CyEdge newEdge;
 
 			synchronized (m_lock) {
-				final CyEdge edge = m_perspective.getEdge(((DEdgeView) obj).getRootGraphIndex());
+				final CyEdge edge = m_perspective.getEdge(((DEdgeView) obj)
+						.getRootGraphIndex());
 
 				if (edge == null) {
 					return false;
@@ -1374,8 +1429,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 				newEdge = edge;
 
-				newEdge.getCyRow("VIEW").set("hidden",false);
-				if ( !m_drawPersp.addEdge( newEdge ) )
+				newEdge.getCyRow("VIEW").set("hidden", false);
+				if (!m_drawPersp.addEdge(newEdge))
 					return false;
 
 				m_contentChanged = true;
@@ -1386,14 +1441,19 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 				if (listener != null) {
 					if (sourceNode != null) {
-						listener.graphViewChanged(new GraphViewNodesRestoredEvent(this, makeList(sourceNode)));
+						listener
+								.graphViewChanged(new GraphViewNodesRestoredEvent(
+										this, makeList(sourceNode)));
 					}
 
 					if (targetNode != null) {
-						listener.graphViewChanged(new GraphViewNodesRestoredEvent(this, makeList(targetNode)));
+						listener
+								.graphViewChanged(new GraphViewNodesRestoredEvent(
+										this, makeList(targetNode)));
 					}
 
-					listener.graphViewChanged(new GraphViewEdgesRestoredEvent(this, makeList(newEdge)));
+					listener.graphViewChanged(new GraphViewEdgesRestoredEvent(
+							this, makeList(newEdge)));
 				}
 			}
 
@@ -1405,10 +1465,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param objects
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean hideGraphObjects(List<? extends GraphViewObject> objects) {
@@ -1422,10 +1482,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param objects
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean showGraphObjects(List<? extends GraphViewObject> objects) {
@@ -1437,22 +1497,23 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		return true;
 	}
 
-
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param nodeInx DOCUMENT ME!
-	 * @param data DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param nodeInx
+	 *            DOCUMENT ME!
+	 * @param data
+	 *            DOCUMENT ME!
 	 */
 	public void setAllNodePropertyData(int nodeInx, Object[] data) {
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param nodeInx
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Object[] getAllNodePropertyData(int nodeInx) {
@@ -1461,7 +1522,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param data
@@ -1472,10 +1533,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param edgeInx
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Object[] getAllEdgePropertyData(int edgeInx) {
@@ -1484,12 +1545,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Object getNodeObjectProperty(int nodeInx, int property) {
@@ -1498,14 +1559,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeObjectProperty(int nodeInx, int property, Object value) {
@@ -1514,12 +1575,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Object getEdgeObjectProperty(int edgeInx, int property) {
@@ -1528,14 +1589,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeObjectProperty(int edgeInx, int property, Object value) {
@@ -1544,12 +1605,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public double getNodeDoubleProperty(int nodeInx, int property) {
@@ -1558,14 +1619,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param val
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeDoubleProperty(int nodeInx, int property, double val) {
@@ -1574,12 +1635,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public double getEdgeDoubleProperty(int edgeInx, int property) {
@@ -1588,14 +1649,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param val
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeDoubleProperty(int edgeInx, int property, double val) {
@@ -1604,12 +1665,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public float getNodeFloatProperty(int nodeInx, int property) {
@@ -1618,14 +1679,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeFloatProperty(int nodeInx, int property, float value) {
@@ -1634,12 +1695,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public float getEdgeFloatProperty(int edgeInx, int property) {
@@ -1648,14 +1709,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeFloatProperty(int edgeInx, int property, float value) {
@@ -1664,10 +1725,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param nodeInx DOCUMENT ME!
-	 * @param property DOCUMENT ME!
-	 *
+	 * 
+	 * @param nodeInx
+	 *            DOCUMENT ME!
+	 * @param property
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean getNodeBooleanProperty(int nodeInx, int property) {
@@ -1676,11 +1739,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param nodeInx DOCUMENT ME!
-	 * @param property DOCUMENT ME!
-	 * @param val DOCUMENT ME!
-	 *
+	 * 
+	 * @param nodeInx
+	 *            DOCUMENT ME!
+	 * @param property
+	 *            DOCUMENT ME!
+	 * @param val
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeBooleanProperty(int nodeInx, int property, boolean val) {
@@ -1689,10 +1755,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param edgeInx DOCUMENT ME!
-	 * @param property DOCUMENT ME!
-	 *
+	 * 
+	 * @param edgeInx
+	 *            DOCUMENT ME!
+	 * @param property
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean getEdgeBooleanProperty(int edgeInx, int property) {
@@ -1701,11 +1769,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param edgeInx DOCUMENT ME!
-	 * @param property DOCUMENT ME!
-	 * @param val DOCUMENT ME!
-	 *
+	 * 
+	 * @param edgeInx
+	 *            DOCUMENT ME!
+	 * @param property
+	 *            DOCUMENT ME!
+	 * @param val
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeBooleanProperty(int edgeInx, int property, boolean val) {
@@ -1714,10 +1785,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param nodeInx DOCUMENT ME!
-	 * @param property DOCUMENT ME!
-	 *
+	 * 
+	 * @param nodeInx
+	 *            DOCUMENT ME!
+	 * @param property
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getNodeIntProperty(int nodeInx, int property) {
@@ -1726,11 +1799,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param nodeInx DOCUMENT ME!
-	 * @param property DOCUMENT ME!
-	 * @param value DOCUMENT ME!
-	 *
+	 * 
+	 * @param nodeInx
+	 *            DOCUMENT ME!
+	 * @param property
+	 *            DOCUMENT ME!
+	 * @param value
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeIntProperty(int nodeInx, int property, int value) {
@@ -1739,10 +1815,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param edgeInx DOCUMENT ME!
-	 * @param property DOCUMENT ME!
-	 *
+	 * 
+	 * @param edgeInx
+	 *            DOCUMENT ME!
+	 * @param property
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getEdgeIntProperty(int edgeInx, int property) {
@@ -1751,11 +1829,14 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param edgeInx DOCUMENT ME!
-	 * @param property DOCUMENT ME!
-	 * @param value DOCUMENT ME!
-	 *
+	 * 
+	 * @param edgeInx
+	 *            DOCUMENT ME!
+	 * @param property
+	 *            DOCUMENT ME!
+	 * @param value
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeIntProperty(int edgeInx, int property, int value) {
@@ -1764,10 +1845,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	// Auxillary methods specific to this GraphView implementation:
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param x DOCUMENT ME!
-	 * @param y DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param x
+	 *            DOCUMENT ME!
+	 * @param y
+	 *            DOCUMENT ME!
 	 */
 	public void setCenter(double x, double y) {
 		synchronized (m_lock) {
@@ -1781,12 +1864,13 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Point2D getCenter() {
 		synchronized (m_lock) {
-			return new Point2D.Double(m_networkCanvas.m_xCenter, m_networkCanvas.m_yCenter);
+			return new Point2D.Double(m_networkCanvas.m_xCenter,
+					m_networkCanvas.m_yCenter);
 		}
 	}
 
@@ -1795,109 +1879,108 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	 */
 	public void fitSelected() {
 		synchronized (m_lock) {
-			 IntEnumerator selectedElms = m_selectedNodes.searchRange(Integer.MIN_VALUE,
-			                                                               Integer.MAX_VALUE, false);
+			IntEnumerator selectedElms = m_selectedNodes.searchRange(
+					Integer.MIN_VALUE, Integer.MAX_VALUE, false);
 
-            // Only check for selected edges if we don't have selected nodes. 
-            if (selectedElms.numRemaining() == 0 && edgeSelectionEnabled()) {
-                selectedElms = getSelectedEdgeNodes();
-				if ( selectedElms.numRemaining() == 0 )
+			// Only check for selected edges if we don't have selected nodes.
+			if (selectedElms.numRemaining() == 0 && edgeSelectionEnabled()) {
+				selectedElms = getSelectedEdgeNodes();
+				if (selectedElms.numRemaining() == 0)
 					return;
-            }
-
+			}
 
 			float xMin = Float.POSITIVE_INFINITY;
 			float yMin = Float.POSITIVE_INFINITY;
 			float xMax = Float.NEGATIVE_INFINITY;
 			float yMax = Float.NEGATIVE_INFINITY;
-			
-			            
+
 			int leftMost = 0;
-            int rightMost = 0;
+			int rightMost = 0;
 
 			while (selectedElms.numRemaining() > 0) {
 				final int node = selectedElms.nextInt();
 				m_spacial.exists(node, m_extentsBuff, 0);
-                if ( m_extentsBuff[0] < xMin ) {
-                    xMin = m_extentsBuff[0];
-                    leftMost = node;
-                }
+				if (m_extentsBuff[0] < xMin) {
+					xMin = m_extentsBuff[0];
+					leftMost = node;
+				}
 
-                if ( m_extentsBuff[2] > xMax ) {
-                    xMax = m_extentsBuff[2];
-                    rightMost = node;
-                }
+				if (m_extentsBuff[2] > xMax) {
+					xMax = m_extentsBuff[2];
+					rightMost = node;
+				}
 
-                yMin = Math.min(yMin, m_extentsBuff[1]);
-                yMax = Math.max(yMax, m_extentsBuff[3]);
-            }
+				yMin = Math.min(yMin, m_extentsBuff[1]);
+				yMax = Math.max(yMax, m_extentsBuff[3]);
+			}
 
-            xMin = xMin - ( getLabelWidth(leftMost)/2 );
-            xMax = xMax + ( getLabelWidth(rightMost)/2 );
-
+			xMin = xMin - (getLabelWidth(leftMost) / 2);
+			xMax = xMax + (getLabelWidth(rightMost) / 2);
 
 			m_networkCanvas.m_xCenter = (((double) xMin) + ((double) xMax)) / 2.0d;
 			m_networkCanvas.m_yCenter = (((double) yMin) + ((double) yMax)) / 2.0d;
-			final double zoom = Math.min(((double) m_networkCanvas.getWidth()) / (((double) xMax)
-			                             - ((double) xMin)),
-			                             ((double) m_networkCanvas.getHeight()) / (((double) yMax)
-			                             - ((double) yMin)));
-			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
+			final double zoom = Math.min(((double) m_networkCanvas.getWidth())
+					/ (((double) xMax) - ((double) xMin)),
+					((double) m_networkCanvas.getHeight())
+							/ (((double) yMax) - ((double) yMin)));
+			m_networkCanvas.m_scaleFactor = checkZoom(zoom,
+					m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
 	}
-    /**
-     * @return An IntEnumerator listing the nodes that are endpoints of the 
-	 * currently selected edges.
-     */
-    private IntEnumerator getSelectedEdgeNodes() {
-        synchronized (m_lock) {
-            final IntEnumerator selectedEdges = m_selectedEdges.searchRange(Integer.MIN_VALUE,
-                        Integer.MAX_VALUE, false);
-                
-            final IntHash nodeIds = new IntHash();
 
-            while (selectedEdges.numRemaining() > 0) {
-                 final int edge = selectedEdges.nextInt();
-                 CyEdge currEdge = getEdgeView(edge).getEdge();
+	/**
+	 * @return An IntEnumerator listing the nodes that are endpoints of the
+	 *         currently selected edges.
+	 */
+	private IntEnumerator getSelectedEdgeNodes() {
+		synchronized (m_lock) {
+			final IntEnumerator selectedEdges = m_selectedEdges.searchRange(
+					Integer.MIN_VALUE, Integer.MAX_VALUE, false);
 
-                 CyNode source = currEdge.getSource();
-                 int sourceId = source.getIndex();
-                 nodeIds.put(sourceId);
+			final IntHash nodeIds = new IntHash();
 
-                 CyNode target = currEdge.getTarget();
-                 int targetId = target.getIndex();
-                 nodeIds.put(targetId);
-            }
-    
+			while (selectedEdges.numRemaining() > 0) {
+				final int edge = selectedEdges.nextInt();
+				CyEdge currEdge = getEdgeView(edge).getEdge();
+
+				CyNode source = currEdge.getSource();
+				int sourceId = source.getIndex();
+				nodeIds.put(sourceId);
+
+				CyNode target = currEdge.getTarget();
+				int targetId = target.getIndex();
+				nodeIds.put(targetId);
+			}
+
 			return nodeIds.elements();
-        }
-    }
-
+		}
+	}
 
 	private int getLabelWidth(int node) {
-		DNodeView x = ((DNodeView)getNodeView(node));
-		if ( x == null ) 
+		DNodeView x = ((DNodeView) getNodeView(node));
+		if (x == null)
 			return 0;
-		
+
 		String s = x.getText();
-		if ( s == null ) 
+		if (s == null)
 			return 0;
 
 		char[] lab = s.toCharArray();
-		if ( lab == null )
-			return 0; 
-
-		if ( m_networkCanvas.m_fontMetrics == null ) 
+		if (lab == null)
 			return 0;
 
-		return m_networkCanvas.m_fontMetrics.charsWidth( lab, 0, lab.length );
+		if (m_networkCanvas.m_fontMetrics == null)
+			return 0;
+
+		return m_networkCanvas.m_fontMetrics.charsWidth(lab, 0, lab.length);
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param lod DOCUMENT ME!
+	 * 
+	 * @param lod
+	 *            DOCUMENT ME!
 	 */
 	public void setGraphLOD(GraphLOD lod) {
 		synchronized (m_lock) {
@@ -1910,7 +1993,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public GraphLOD getGraphLOD() {
@@ -1919,8 +2002,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param textAsShape DOCUMENT ME!
+	 * 
+	 * @param textAsShape
+	 *            DOCUMENT ME!
 	 */
 	public void setPrintingTextAsShape(boolean textAsShape) {
 		synchronized (m_lock) {
@@ -1940,7 +2024,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	 * <p>
 	 * HINT: To perform a point query simply set xMin equal to xMax and yMin
 	 * equal to yMax.
-	 *
+	 * 
 	 * @param xMinimum
 	 *            a boundary of the query rectangle: the minimum X coordinate.
 	 * @param yMinimum
@@ -1958,16 +2042,16 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	 *            will be placed onto this stack; the stack is not emptied by
 	 *            this method initially.
 	 */
-	public void getNodesIntersectingRectangle(double xMinimum, double yMinimum, double xMaximum,
-	                                          double yMaximum, boolean treatNodeShapesAsRectangle,
-	                                          IntStack returnVal) {
+	public void getNodesIntersectingRectangle(double xMinimum, double yMinimum,
+			double xMaximum, double yMaximum,
+			boolean treatNodeShapesAsRectangle, IntStack returnVal) {
 		synchronized (m_lock) {
 			final float xMin = (float) xMinimum;
 			final float yMin = (float) yMinimum;
 			final float xMax = (float) xMaximum;
 			final float yMax = (float) yMaximum;
-			final SpacialEntry2DEnumerator under = m_spacial.queryOverlap(xMin, yMin, xMax, yMax,
-			                                                              null, 0, false);
+			final SpacialEntry2DEnumerator under = m_spacial.queryOverlap(xMin,
+					yMin, xMax, yMax, null, 0, false);
 			final int totalHits = under.numRemaining();
 
 			if (treatNodeShapesAsRectangle) {
@@ -1987,13 +2071,13 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 					// if it intersects one of the four query rectangle's
 					// corners.
 					if (((m_extentsBuff[0] < xMin) && (m_extentsBuff[1] < yMin))
-					    || ((m_extentsBuff[0] < xMin) && (m_extentsBuff[3] > yMax))
-					    || ((m_extentsBuff[2] > xMax) && (m_extentsBuff[3] > yMax))
-					    || ((m_extentsBuff[2] > xMax) && (m_extentsBuff[1] < yMin))) {
-						m_networkCanvas.m_grafx.getNodeShape(m_nodeDetails.shape(node),
-						                                     m_extentsBuff[0], m_extentsBuff[1],
-						                                     m_extentsBuff[2], m_extentsBuff[3],
-						                                     m_path);
+							|| ((m_extentsBuff[0] < xMin) && (m_extentsBuff[3] > yMax))
+							|| ((m_extentsBuff[2] > xMax) && (m_extentsBuff[3] > yMax))
+							|| ((m_extentsBuff[2] > xMax) && (m_extentsBuff[1] < yMin))) {
+						m_networkCanvas.m_grafx.getNodeShape(m_nodeDetails
+								.shape(node), m_extentsBuff[0],
+								m_extentsBuff[1], m_extentsBuff[2],
+								m_extentsBuff[3], m_path);
 
 						if ((w > 0) && (h > 0)) {
 							if (m_path.intersects(x, y, w, h)) {
@@ -2014,16 +2098,23 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param xMin DOCUMENT ME!
-	 * @param yMin DOCUMENT ME!
-	 * @param xMax DOCUMENT ME!
-	 * @param yMax DOCUMENT ME!
-	 * @param returnVal DOCUMENT ME!
+	 * 
+	 * @param xMin
+	 *            DOCUMENT ME!
+	 * @param yMin
+	 *            DOCUMENT ME!
+	 * @param xMax
+	 *            DOCUMENT ME!
+	 * @param yMax
+	 *            DOCUMENT ME!
+	 * @param returnVal
+	 *            DOCUMENT ME!
 	 */
-	public void queryDrawnEdges(int xMin, int yMin, int xMax, int yMax, IntStack returnVal) {
+	public void queryDrawnEdges(int xMin, int yMin, int xMax, int yMax,
+			IntStack returnVal) {
 		synchronized (m_lock) {
-			m_networkCanvas.computeEdgesIntersecting(xMin, yMin, xMax, yMax, returnVal);
+			m_networkCanvas.computeEdgesIntersecting(xMin, yMin, xMax, yMax,
+					returnVal);
 		}
 	}
 
@@ -2032,9 +2123,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	 */
 	public boolean getExtents(double[] extentsBuff) {
 		synchronized (m_lock) {
-			if (m_spacial.queryOverlap(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
-			                           Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
-			                           m_extentsBuff, 0, false).numRemaining() == 0) {
+			if (m_spacial.queryOverlap(Float.NEGATIVE_INFINITY,
+					Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY,
+					Float.POSITIVE_INFINITY, m_extentsBuff, 0, false)
+					.numRemaining() == 0) {
 				return false;
 			}
 
@@ -2049,8 +2141,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param coords DOCUMENT ME!
+	 * 
+	 * @param coords
+	 *            DOCUMENT ME!
 	 */
 	public void xformComponentToNodeCoords(double[] coords) {
 		synchronized (m_lock) {
@@ -2060,27 +2153,36 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param img DOCUMENT ME!
-	 * @param lod DOCUMENT ME!
-	 * @param bgPaint DOCUMENT ME!
-	 * @param xCenter DOCUMENT ME!
-	 * @param yCenter DOCUMENT ME!
-	 * @param scaleFactor DOCUMENT ME!
+	 * 
+	 * @param img
+	 *            DOCUMENT ME!
+	 * @param lod
+	 *            DOCUMENT ME!
+	 * @param bgPaint
+	 *            DOCUMENT ME!
+	 * @param xCenter
+	 *            DOCUMENT ME!
+	 * @param yCenter
+	 *            DOCUMENT ME!
+	 * @param scaleFactor
+	 *            DOCUMENT ME!
 	 */
-	public void drawSnapshot(Image img, GraphLOD lod, Paint bgPaint, double xCenter,
-	                         double yCenter, double scaleFactor) {
+	public void drawSnapshot(Image img, GraphLOD lod, Paint bgPaint,
+			double xCenter, double yCenter, double scaleFactor) {
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph( m_drawPersp, m_spacial, lod, m_nodeDetails,
-			                          m_edgeDetails, m_hash, new GraphGraphics(img, false),
-			                          bgPaint, xCenter, yCenter, scaleFactor);
+			GraphRenderer
+					.renderGraph(m_drawPersp, m_spacial, lod, m_nodeDetails,
+							m_edgeDetails, m_hash,
+							new GraphGraphics(img, false), bgPaint, xCenter,
+							yCenter, scaleFactor);
 		}
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
+	 * 
+	 * @param l
+	 *            DOCUMENT ME!
 	 */
 	public void addContentChangeListener(ContentChangeListener l) {
 		m_cLis[0] = ContentChangeListenerChain.add(m_cLis[0], l);
@@ -2088,8 +2190,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
+	 * 
+	 * @param l
+	 *            DOCUMENT ME!
 	 */
 	public void removeContentChangeListener(ContentChangeListener l) {
 		m_cLis[0] = ContentChangeListenerChain.remove(m_cLis[0], l);
@@ -2097,8 +2200,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
+	 * 
+	 * @param l
+	 *            DOCUMENT ME!
 	 */
 	public void addViewportChangeListener(ViewportChangeListener l) {
 		m_vLis[0] = ViewportChangeListenerChain.add(m_vLis[0], l);
@@ -2106,8 +2210,9 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param l DOCUMENT ME!
+	 * 
+	 * @param l
+	 *            DOCUMENT ME!
 	 */
 	public void removeViewportChangeListener(ViewportChangeListener l) {
 		m_vLis[0] = ViewportChangeListenerChain.remove(m_vLis[0], l);
@@ -2115,35 +2220,43 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param g DOCUMENT ME!
-	 * @param pageFormat DOCUMENT ME!
-	 * @param page DOCUMENT ME!
-	 *
+	 * 
+	 * @param g
+	 *            DOCUMENT ME!
+	 * @param pageFormat
+	 *            DOCUMENT ME!
+	 * @param page
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int print(Graphics g, PageFormat pageFormat, int page) {
 		if (page == 0) {
-			((Graphics2D) g).translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+			((Graphics2D) g).translate(pageFormat.getImageableX(), pageFormat
+					.getImageableY());
 
 			// make sure the whole image on the screen will fit to the printable
 			// area of the paper
-			double image_scale = Math.min(pageFormat.getImageableWidth() / m_networkCanvas.getWidth(),
-			                              pageFormat.getImageableHeight() / m_networkCanvas.getHeight());
+			double image_scale = Math.min(pageFormat.getImageableWidth()
+					/ m_networkCanvas.getWidth(), pageFormat
+					.getImageableHeight()
+					/ m_networkCanvas.getHeight());
 
 			if (image_scale < 1.0d) {
 				((Graphics2D) g).scale(image_scale, image_scale);
 			}
-			
+
 			// old school
-			//g.clipRect(0, 0, getComponent().getWidth(), getComponent().getHeight());
-			//getComponent().print(g);
-			
+			// g.clipRect(0, 0, getComponent().getWidth(),
+			// getComponent().getHeight());
+			// getComponent().print(g);
+
 			// from InternalFrameComponent
-            g.clipRect(0, 0, m_backgroundCanvas.getWidth(), m_backgroundCanvas.getHeight());
-            m_backgroundCanvas.print(g);
-            m_networkCanvas.print(g);
-            m_foregroundCanvas.print(g);
+			g.clipRect(0, 0, m_backgroundCanvas.getWidth(), m_backgroundCanvas
+					.getHeight());
+			m_backgroundCanvas.print(g);
+			m_networkCanvas.print(g);
+			m_foregroundCanvas.print(g);
 
 			return PAGE_EXISTS;
 		} else {
@@ -2152,10 +2265,10 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	/**
-	 * Method to return a reference to the network canvas.
-	 * This method existed before the addition of background
-	 * and foreground canvases, and it remains for backward compatibility.
-	 *
+	 * Method to return a reference to the network canvas. This method existed
+	 * before the addition of background and foreground canvases, and it remains
+	 * for backward compatibility.
+	 * 
 	 * @return InnerCanvas
 	 */
 	public InnerCanvas getCanvas() {
@@ -2163,11 +2276,11 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	/**
-	 * Method to return a reference to a DingCanvas object,
-	 * given a canvas id.
-	 *
-	 * @param canvasId Canvas
-	 * @return  DingCanvas
+	 * Method to return a reference to a DingCanvas object, given a canvas id.
+	 * 
+	 * @param canvasId
+	 *            Canvas
+	 * @return DingCanvas
 	 */
 	public DingCanvas getCanvas(Canvas canvasId) {
 		if (canvasId == Canvas.BACKGROUND_CANVAS) {
@@ -2183,14 +2296,18 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	/**
-	 * Method to return a reference to an Image object,
-	 * which represents the current network view.
-	 *
-	 * @param width Width of desired image.
-	 * @param height Height of desired image.
-	 * @param shrink Percent to shrink the network shown in the image. 
-	 * This doesn't shrink the image, just the network shown, as if the user zoomed out.
-	 * Can be between 0 and 1, if not it will default to 1.  
+	 * Method to return a reference to an Image object, which represents the
+	 * current network view.
+	 * 
+	 * @param width
+	 *            Width of desired image.
+	 * @param height
+	 *            Height of desired image.
+	 * @param shrink
+	 *            Percent to shrink the network shown in the image. This doesn't
+	 *            shrink the image, just the network shown, as if the user
+	 *            zoomed out. Can be between 0 and 1, if not it will default to
+	 *            1.
 	 * @return Image
 	 * @throws IllegalArgumentException
 	 */
@@ -2198,19 +2315,22 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 		// check args
 		if (width < 0 || height < 0) {
-			throw new IllegalArgumentException("DGraphView.createImage(int width, int height): " +
-											   "width and height arguments must be greater than zero");
+			throw new IllegalArgumentException(
+					"DGraphView.createImage(int width, int height): "
+							+ "width and height arguments must be greater than zero");
 		}
 
-		if ( shrink < 0 || shrink > 1.0 ) {
-			System.out.println("DGraphView.createImage(width,height,shrink) shrink is invalid: "
-			                   + shrink + "  using default of 1.0");
+		if (shrink < 0 || shrink > 1.0) {
+			System.out
+					.println("DGraphView.createImage(width,height,shrink) shrink is invalid: "
+							+ shrink + "  using default of 1.0");
 			shrink = 1.0;
 		}
 
 		// create image to return
-        Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);		
-        Graphics g = image.getGraphics();
+		Image image = new BufferedImage(width, height,
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics g = image.getGraphics();
 
 		// paint background canvas into image
 		Dimension dim = m_backgroundCanvas.getSize();
@@ -2221,8 +2341,8 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		// paint inner canvas (network)
 		dim = m_networkCanvas.getSize();
 		m_networkCanvas.setSize(width, height);
-        fitContent();
-		setZoom( getZoom() * shrink );
+		fitContent();
+		setZoom(getZoom() * shrink);
 		m_networkCanvas.paint(g);
 		m_networkCanvas.setSize(dim);
 
@@ -2238,7 +2358,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * utility that returns the nodeView that is located at input point
-	 *
+	 * 
 	 * @param pt
 	 */
 	public NodeView getPickedNodeView(Point2D pt) {
@@ -2251,10 +2371,13 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		xformComponentToNodeCoords(locn);
 
 		final IntStack nodeStack = new IntStack();
-		getNodesIntersectingRectangle((float) locn[0], (float) locn[1], (float) locn[0],
-		                              (float) locn[1],
-		                              (m_networkCanvas.getLastRenderDetail()
-		                              & GraphRenderer.LOD_HIGH_DETAIL) == 0, nodeStack);
+		getNodesIntersectingRectangle(
+				(float) locn[0],
+				(float) locn[1],
+				(float) locn[0],
+				(float) locn[1],
+				(m_networkCanvas.getLastRenderDetail() & GraphRenderer.LOD_HIGH_DETAIL) == 0,
+				nodeStack);
 
 		chosenNode = (nodeStack.size() > 0) ? nodeStack.peek() : 0;
 
@@ -2267,15 +2390,16 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param pt DOCUMENT ME!
+	 * 
+	 * @param pt
+	 *            DOCUMENT ME!
 	 * @return DOCUMENT ME!
 	 */
 	public EdgeView getPickedEdgeView(Point2D pt) {
 		EdgeView ev = null;
 		final IntStack edgeStack = new IntStack();
-		queryDrawnEdges((int) pt.getX(), (int) pt.getY(), (int) pt.getX(), (int) pt.getY(),
-		                edgeStack);
+		queryDrawnEdges((int) pt.getX(), (int) pt.getY(), (int) pt.getX(),
+				(int) pt.getY(), edgeStack);
 
 		int chosenEdge = 0;
 		chosenEdge = (edgeStack.size() > 0) ? edgeStack.peek() : 0;
@@ -2289,7 +2413,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public final float getAnchorSize() {
@@ -2298,7 +2422,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public final Paint getAnchorSelectedPaint() {
@@ -2307,7 +2431,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public final Paint getAnchorUnselectedPaint() {
@@ -2315,43 +2439,41 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	private double checkZoom(double zoom, double orig) {
-		if ( zoom > 0 ) 
+		if (zoom > 0)
 			return zoom;
-	
+
 		System.out.println("invalid zoom: " + zoom + "   using orig: " + orig);
 		return orig;
 	}
 
-
-
 	private String title;
 
-
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param title DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param title
+	 *            DOCUMENT ME!
 	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String getTitle() {
 		return title;
 	}
 
-
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param nodes DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param nodes
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(CyNode[] nodes) {
 		return setSelected(convertToViews(nodes));
@@ -2368,11 +2490,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param node_views DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param node_views
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(NodeView[] node_views) {
 		for (int i = 0; i < node_views.length; i++) {
@@ -2383,11 +2506,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param edges DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param edges
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(CyEdge[] edges) {
 		return setSelected(convertToViews(edges));
@@ -2404,11 +2528,12 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param edge_views DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param edge_views
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(EdgeView[] edge_views) {
 		for (int i = 0; i < edge_views.length; i++) {
@@ -2418,83 +2543,91 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		return true;
 	}
 
-
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List<NodeView> getNodeViewsList() {
 		ArrayList<NodeView> list = new ArrayList<NodeView>(getNodeViewCount());
-		for ( CyNode nn : getGraphPerspective().getNodeList() )
-			list.add( getNodeView(nn.getIndex()) );
+		for (CyNode nn : getGraphPerspective().getNodeList())
+			list.add(getNodeView(nn.getIndex()));
 
 		return list;
 	}
 
 	public void addTransferComponent(JComponent comp) {
-		m_networkCanvas.addTransferComponent(comp);		
+		m_networkCanvas.addTransferComponent(comp);
 	}
 
-    /**
-     * This method is used by freehep lib to export network as graphics.
-     */
-    public void print(Graphics g) {
-        m_backgroundCanvas.print(g);
-        m_networkCanvas.print(g);
-        m_foregroundCanvas.print(g);
-    }
+	/**
+	 * This method is used by freehep lib to export network as graphics.
+	 */
+	public void print(Graphics g) {
+		m_backgroundCanvas.print(g);
+		m_networkCanvas.print(g);
+		m_foregroundCanvas.print(g);
+	}
 
-    /**
-     * This method is used by BitmapExporter to export network as graphics (png, jpg, bmp)
-     */
-    public void printNoImposter(Graphics g) {
-        m_backgroundCanvas.print(g);
-        m_networkCanvas.printNoImposter(g);
-        m_foregroundCanvas.print(g);
-    }
+	/**
+	 * This method is used by BitmapExporter to export network as graphics (png,
+	 * jpg, bmp)
+	 */
+	public void printNoImposter(Graphics g) {
+		m_backgroundCanvas.print(g);
+		m_networkCanvas.printNoImposter(g);
+		m_foregroundCanvas.print(g);
+	}
 
-    /**
-     * Our implementation of Component setBounds().  If we don't do this, the
-     * individual canvas do not get rendered.
-     *
-     * @param x int
-     * @param y int
-     * @param width int
-     * @param height int
-     */
-    public void setBounds(int x, int y, int width, int height) {
-        // call reshape on each canvas
-        m_backgroundCanvas.setBounds(x, y, width, height);
-        m_networkCanvas.setBounds(x, y, width, height);
-        m_foregroundCanvas.setBounds(x, y, width, height);
-    }
+	/**
+	 * Our implementation of Component setBounds(). If we don't do this, the
+	 * individual canvas do not get rendered.
+	 * 
+	 * @param x
+	 *            int
+	 * @param y
+	 *            int
+	 * @param width
+	 *            int
+	 * @param height
+	 *            int
+	 */
+	public void setBounds(int x, int y, int width, int height) {
+		// call reshape on each canvas
+		m_backgroundCanvas.setBounds(x, y, width, height);
+		m_networkCanvas.setBounds(x, y, width, height);
+		m_foregroundCanvas.setBounds(x, y, width, height);
+	}
 
 	public void setSize(Dimension d) {
 		m_networkCanvas.setSize(d);
 	}
 
 	public Container getContainer(JLayeredPane jlp) {
-		return new InternalFrameComponent(jlp,this);
+		return new InternalFrameComponent(jlp, this);
 	}
 
-    public void addMouseListener(MouseListener m) {
+	public void addMouseListener(MouseListener m) {
 		m_networkCanvas.addMouseListener(m);
 	}
-    public void addMouseMotionListener(MouseMotionListener m) {
+
+	public void addMouseMotionListener(MouseMotionListener m) {
 		m_networkCanvas.addMouseMotionListener(m);
 	}
-    public void addKeyListener(KeyListener k) {
+
+	public void addKeyListener(KeyListener k) {
 		m_networkCanvas.addKeyListener(k);
 	}
 
-    public void removeMouseListener(MouseListener m) {
+	public void removeMouseListener(MouseListener m) {
 		m_networkCanvas.removeMouseListener(m);
 	}
-    public void removeMouseMotionListener(MouseMotionListener m) {
+
+	public void removeMouseMotionListener(MouseMotionListener m) {
 		m_networkCanvas.removeMouseMotionListener(m);
 	}
-    public void removeKeyListener(KeyListener k) {
+
+	public void removeKeyListener(KeyListener k) {
 		m_networkCanvas.removeKeyListener(k);
 	}
 
@@ -2512,55 +2645,55 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 		return nl;
 	}
 
-	static List<CyNode> makeNodeList(int[] nodeids,GraphView view) {
+	static List<CyNode> makeNodeList(int[] nodeids, GraphView view) {
 		List<CyNode> l = new ArrayList<CyNode>(nodeids.length);
-		for ( int nid : nodeids )
-			l.add( view.getNodeView(nid).getNode() );
+		for (int nid : nodeids)
+			l.add(view.getNodeView(nid).getNode());
 
 		return l;
 	}
 
-	static List<CyEdge> makeEdgeList(int[] edgeids,GraphView view) {
+	static List<CyEdge> makeEdgeList(int[] edgeids, GraphView view) {
 		List<CyEdge> l = new ArrayList<CyEdge>(edgeids.length);
-		for ( int nid : edgeids )
-			l.add( view.getEdgeView(nid).getEdge() );
+		for (int nid : edgeids)
+			l.add(view.getEdgeView(nid).getEdge());
 
 		return l;
 	}
 
 	public void visualPropertySet(VisualProperty<?> vp, Object o) {
-		if ( o == null )
+		if (o == null)
 			return;
 
-		if ( vp == DVisualLexicon.NETWORK_NODE_SELECTION ) {
-			boolean b = ((Boolean)o).booleanValue();
-			if ( b )
+		if (vp == DVisualLexicon.NETWORK_NODE_SELECTION) {
+			boolean b = ((Boolean) o).booleanValue();
+			if (b)
 				enableNodeSelection();
 			else
 				disableNodeSelection();
-		} else if ( vp == DVisualLexicon.NETWORK_EDGE_SELECTION ) {
-			boolean b = ((Boolean)o).booleanValue();
-			if ( b )
+		} else if (vp == DVisualLexicon.NETWORK_EDGE_SELECTION) {
+			boolean b = ((Boolean) o).booleanValue();
+			if (b)
 				enableEdgeSelection();
 			else
 				disableEdgeSelection();
-		} else if ( vp == TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR ) {
-			setBackgroundPaint((Paint)o);
-		} else if ( vp == TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION ) {
-			setCenter(((Double)o).doubleValue(),m_networkCanvas.m_yCenter);
-		} else if ( vp == TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION ) {
-			setCenter(m_networkCanvas.m_xCenter,((Double)o).doubleValue());
-		} else if ( vp == TwoDVisualLexicon.NETWORK_SCALE_FACTOR ) {
-			setZoom(((Double)o).doubleValue());
+		} else if (vp == TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR) {
+			setBackgroundPaint((Paint) o);
+		} else if (vp == TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION) {
+			setCenter(((Double) o).doubleValue(), m_networkCanvas.m_yCenter);
+		} else if (vp == TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION) {
+			setCenter(m_networkCanvas.m_xCenter, ((Double) o).doubleValue());
+		} else if (vp == TwoDVisualLexicon.NETWORK_SCALE_FACTOR) {
+			setZoom(((Double) o).doubleValue());
 		}
 	}
 
-	//////// The following implements Presentation API ////////////
-	
+	// ////// The following implements Presentation API ////////////
+
 	public Printable getPrintable() {
 		return this;
 	}
-	
+
 	public Image getImage() {
 		return null;
 	}
@@ -2572,7 +2705,7 @@ public class DGraphView implements NetworkRenderer, GraphView, Printable, Phoebe
 
 	public void setProperties(Properties props) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public Icon getDefaultIcon(VisualProperty<?> vp) {

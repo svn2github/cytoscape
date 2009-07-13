@@ -2,6 +2,7 @@
 package org.cytoscape.ding.impl;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,24 +12,25 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
 import org.cytoscape.ding.BirdsEyeView;
-import org.cytoscape.ding.GraphView;
 import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.EdgeViewTaskFactory;
+import org.cytoscape.view.model.EmptySpaceTaskFactory;
+import org.cytoscape.view.model.NodeViewTaskFactory;
 import org.cytoscape.view.model.RootVisualLexicon;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedListener;
-import org.cytoscape.view.model.NodeViewTaskFactory;
-import org.cytoscape.view.model.EdgeViewTaskFactory;
-import org.cytoscape.view.model.EmptySpaceTaskFactory;
 import org.cytoscape.view.presentation.NavigationPresentation;
-import org.cytoscape.view.presentation.NetworkRenderer;
 import org.cytoscape.view.presentation.PresentationFactory;
-import org.cytoscape.work.UndoSupport;
+import org.cytoscape.view.presentation.Renderer;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.UndoSupport;
 
 public class PresentationFactoryImpl implements PresentationFactory, NetworkViewChangedListener {
 
@@ -38,6 +40,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	private UndoSupport undo;
 	private RootVisualLexicon rootLexicon;
 	private VisualLexicon dingLexicon;
+	
 	private Map<CyNetworkView, DGraphView> viewMap;
 
 	private Map<NodeViewTaskFactory,Map> nodeViewTFs;
@@ -70,28 +73,32 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	/**
 	 * 
 	 */
-	public NetworkRenderer addPresentation(Object frame, CyNetworkView view) {
+	public <T extends View<?>> Renderer<T> addPresentation(Container presentationContainer, T view) {
 				
 		if ( view == null )
-			throw new IllegalArgumentException("Cannot create presentation for null CyNetworkView.");
+			throw new IllegalArgumentException("Cannot create presentation for null view model.");
 		
+		if ( view instanceof CyNetworkView == false )
+			throw new IllegalArgumentException("Ding accepts CyNetworkView only.");
+		
+		CyNetworkView targetView = (CyNetworkView) view;
 		DGraphView dgv = null;
-		if ( frame instanceof JComponent ) {
+		if ( presentationContainer instanceof JComponent ) {
 			
-			dgv = new DGraphView(view,dataTableFactory,rootNetworkFactory,undo,spacialFactory,
+			dgv = new DGraphView(targetView, dataTableFactory,rootNetworkFactory,undo,spacialFactory,
 					rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,emptySpaceTFs,ti,tm);
-			viewMap.put(view, dgv);
-			view.addViewChangeListener(dgv);
+			viewMap.put(targetView, dgv);
+			targetView.addViewChangeListener(dgv);
 			
-			if(frame instanceof JInternalFrame) {	
-				JInternalFrame inFrame = (JInternalFrame)frame;
+			if(presentationContainer instanceof JInternalFrame) {	
+				JInternalFrame inFrame = (JInternalFrame)presentationContainer;
 				JDesktopPane desktopPane = inFrame.getDesktopPane();
 	
 				// TODO - not sure this layered pane bit is optimal
 				inFrame.setContentPane( dgv.getContainer(inFrame.getLayeredPane()) );
 				dgv.addTransferComponent(desktopPane);
 			} else {
-				JComponent component = (JComponent) frame;
+				JComponent component = (JComponent) presentationContainer;
 				component.add(dgv.getComponent());
 			}
 			
@@ -99,7 +106,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 			throw new IllegalArgumentException("frame object is not of type JInternalFrame, which is invalid for this implementation of PresentationFactory");
 		}
 		
-		return dgv;
+		return (Renderer<T>) dgv;
 	}
 
 	public NavigationPresentation addNavigationPresentation(Object targetComponent, Object navBounds) {
@@ -176,8 +183,8 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 		emptySpaceTFs.remove(evtf);
 	}
 
-	public NetworkRenderer createPresentation(CyNetworkView view) {
-		return this.viewMap.get(view);
+	public <T extends View<?>> Renderer<T> createPresentation(T view) {
+		return (Renderer<T>) viewMap.get(view);
 	}
 
 }
