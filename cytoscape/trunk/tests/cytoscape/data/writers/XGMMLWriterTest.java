@@ -199,6 +199,9 @@ public class XGMMLWriterTest extends TestCase {
             if (exptd.contains("<node")) {
                 continue;
             }
+            if (exptd.contains("<edge")) {
+                continue;
+            }
             System.out.println("Exp (" + exptd.length() + ")>" + exptd);
             System.out.println("Got (" + got.length() + ")>" + got);
             assertEquals("Line " + i + " {" + got + "} {" + exptd + "}", exptd, got);
