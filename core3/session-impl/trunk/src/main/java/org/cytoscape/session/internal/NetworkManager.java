@@ -50,7 +50,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.NetworkRenderer;
+import org.cytoscape.view.presentation.Renderer;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkAboutToBeDestroyedEvent;
@@ -86,7 +86,7 @@ public class NetworkManager implements CyNetworkManager {
 
 	private CyNetwork currentNetwork;
 	private CyNetworkView currentNetworkView;
-	private NetworkRenderer currentPresentation;
+	private Renderer<CyNetworkView> currentPresentation;
 
 	public NetworkManager(final CyEventHelper eh) {
 		networkMap = new HashMap<Long, CyNetwork>();
@@ -419,11 +419,11 @@ public class NetworkManager implements CyNetworkManager {
 
 	}
 
-	public NetworkRenderer getCurrentPresentation() {
+	public Renderer<CyNetworkView> getCurrentPresentation() {
 		return currentPresentation;
 	}
 
-	public void setCurrentPresentation(NetworkRenderer renderer) {
+	public void setCurrentPresentation(Renderer<CyNetworkView> renderer) {
 		this.currentPresentation = renderer;		
 	}
 }
