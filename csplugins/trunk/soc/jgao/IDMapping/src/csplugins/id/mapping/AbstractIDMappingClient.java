@@ -37,12 +37,14 @@ package csplugins.id.mapping;
 
 import cytoscape.util.ModuleProperties;
 
+import java.util.Set;
 import java.io.Serializable;
 
 import org.bridgedb.Xref;
 import org.bridgedb.IDMapper;
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapperCapabilities;
+import org.bridgedb.IDMapperException;
 
 /**
  * Abstract class for all ID mapping clients.
@@ -171,21 +173,40 @@ public abstract class AbstractIDMappingClient implements Serializable, IDMapping
             StringBuilder desc = new StringBuilder(this.getDisplayName());
             desc.append("\nCapacities:\n");
 
-            desc.append("* Supported source ID types:\n");
+            desc.append(">> Supported source ID types:\n");
             IDMapperCapabilities capabilities = idMapper.getCapabilities();
-            for (DataSource dataSource : capabilities.getSupportedSrcDataSources()) {
-                desc.append("\t");
-                desc.append(getDescription(dataSource));
+
+            Set<DataSource> dss = null;
+            try {
+                dss = capabilities.getSupportedSrcDataSources();
+            } catch (IDMapperException ex) {
+                ex.printStackTrace();
             }
 
-            desc.append("* Supported target ID types:\n");
-            for (DataSource dataSource : capabilities.getSupportedTgtDataSources()) {
-                desc.append("\t");
-                desc.append(getDescription(dataSource));
+            if (dss!=null) {
+                for (DataSource ds : dss) {
+                    desc.append("\t");
+                    desc.append(getDescription(ds));
+                }
             }
 
-            desc.append("* Is free-text search supported?\n");
-            desc.append(capabilities.isFreeSearchSupported()? "    Yes":"    No");
+            desc.append(">> Supported target ID types:\n");
+            dss = null;
+            try {
+                dss = capabilities.getSupportedTgtDataSources();
+            } catch (IDMapperException ex) {
+                ex.printStackTrace();
+            }
+
+            if (dss!=null) {
+                for (DataSource ds : dss) {
+                    desc.append("\t");
+                    desc.append(getDescription(ds));
+                }
+            }
+
+            desc.append(">> Is free-text search supported?\n");
+            desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
             desc.append("\n");
 
             return desc.toString();

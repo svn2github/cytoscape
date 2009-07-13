@@ -46,6 +46,7 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.DataSource;
+import org.bridgedb.IDMapperException;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ListCellRenderer;
@@ -539,9 +540,17 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
     private Set<DataSource>[] getSupportedType() {
         Set<DataSource>[] ret = new Set[2];
+        ret[0] = new HashSet();
+        ret[1] = ret[0];
+
         IDMapperStack stack = IDMappingClientManager.selectedIDMapperStack();
-        ret[0] = stack.getCapabilities().getSupportedSrcDataSources();
-        ret[1] = stack.getCapabilities().getSupportedTgtDataSources();
+        try {
+            ret[0] = stack.getCapabilities().getSupportedSrcDataSources();
+            ret[1] = stack.getCapabilities().getSupportedTgtDataSources();
+        } catch (IDMapperException ex) {
+            ex.printStackTrace();
+        }
+
         return ret;
     }
 
