@@ -150,9 +150,8 @@ public class RootVisualLexiconImpl implements RootVisualLexicon {
 		return filterForObjectType(vpMap.values(), objectType);
 	}
 
-	public void addVisualProperty(VisualProperty<?> prop) {
-		// TODO Auto-generated method stub
-		
+	public void addVisualProperty(VisualProperty<?> vp) {
+		this.vpMap.put(vp.getIdString(), vp);
 	}
 
 }
