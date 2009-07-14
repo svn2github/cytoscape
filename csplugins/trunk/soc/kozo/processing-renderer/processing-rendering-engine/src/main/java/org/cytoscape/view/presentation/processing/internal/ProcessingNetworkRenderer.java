@@ -1,24 +1,20 @@
 package org.cytoscape.view.presentation.processing.internal;
 
 import gestalt.Gestalt;
-import gestalt.candidates.shadow.JoglShadowMap;
-import gestalt.candidates.shadow.JoglShadowMapDisplay;
 import gestalt.context.GLContext;
-import gestalt.impl.jogl.shape.JoglSphere;
-
 import gestalt.p5.GestaltPlugIn;
+import gestalt.render.Drawable;
 import gestalt.render.bin.RenderBin;
 import gestalt.shape.AbstractDrawable;
 import gestalt.shape.Cube;
 import gestalt.shape.Plane;
-import gestalt.util.CameraMover;
 
-import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
 import java.awt.print.Printable;
+import java.util.List;
 import java.util.Properties;
 
 import javax.media.opengl.GL;
@@ -26,21 +22,17 @@ import javax.media.opengl.glu.GLU;
 import javax.swing.Icon;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.NetworkRenderer;
-import org.cytoscape.view.presentation.processing.internal.particle.ParticleManager;
+import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.P5Renderer;
 
 import processing.core.PApplet;
-import processing.core.PFont;
-import processing.opengl.PGraphicsOpenGL;
-import toxi.geom.AABB;
-import toxi.geom.Vec3D;
-import toxi.physics.VerletPhysics;
 
 public class ProcessingNetworkRenderer extends PApplet implements
-		NetworkRenderer {
+		P5Renderer<CyNetwork> {
 
 	/*
 	 * Basic Processing settings
@@ -50,17 +42,16 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	private static final int FRAME_RATE = 30;
 
 	private Dimension windowSize;
-	private CyNetworkView view;
-	private CyNetwork network;
+	private View<CyNetwork> view;
 
-	private PGraphicsOpenGL pgl;
-	private GL gl;
 
 	// Gestalt plugin
 	private GestaltPlugIn gestalt;
 
 	//
 	GraphRenderer renderer;
+	
+	Drawable[] nodes; 
 
 	/**
 	 * Constructor. Create a PApplet component based on the size given as
@@ -68,16 +59,9 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	 * 
 	 * @param size
 	 */
-	public ProcessingNetworkRenderer(Dimension size, CyNetworkView view) {
+	public ProcessingNetworkRenderer(Container parent, View<CyNetwork> view) {
 		this.view = view;
-		this.windowSize = size;
-
-		
-	}
-
-	public Icon getDefaultIcon(VisualProperty vp) {
-		// TODO Auto-generated method stub
-		return null;
+		this.windowSize = parent.getSize();
 	}
 
 	public Image getImage(int width, int height) {
@@ -109,210 +93,107 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	ParticleManager particleManager;
-	VerletPhysics physics;
-	float rotX, rotY, zoom = 200;
-	AABB boundingBox;
-
-	private Cube cube1;
-
-	private JoglShadowMap _myShadowMapExtension;
-
-	private JoglSphere mySphereA;
-
-	private JoglSphere mySphereB;
-
-	private JoglSphere mySphereC;
-
-	private float _myCounter = 0;
-
 	
-	Cube cube;
-	public void setup() {
-		size(windowSize.width, windowSize.height, OPENGL);
-		hint(ENABLE_OPENGL_4X_SMOOTH);
-		frameRate(30);
-		smooth();
-		
-		
-		physics = new VerletPhysics();
-		physics.friction = 1000;
-		AABB boundingBox = new AABB(new Vec3D(0, 0, 0), new Vec3D(width,
-				height, height));
-		physics.worldBounds = boundingBox;
-		particleManager = new ParticleManager(1000, this, physics);
+	private Cube _myPlaneIn3D;
 
-		/* create gestalt plugin */
-		gestalt = new GestaltPlugIn(this);
-		
-		//Set Custom DrawableFactory
-		gestalt.setDrawablefactoryRef(new CyDrawableFactoryImpl());
-		
-		cube = gestalt.drawablefactory().cube();
-		cube.scale(100, 200, 300);
-		cube.rotation(10, 30, 100);
-		cube.material().lit = true;
-		cube.material().color.set(1, 1);
-		//gestalt.bin(Gestalt.BIN_3D).add(cube);
-		
-		
-		
+    private Plane _myPlaneIn2D;
 
-//		/* setup shadow map */
-//		final int myShadowMapWidth = width;
-//		final int myShadowMapHeight = height;
-//		_myShadowMapExtension = new JoglShadowMap(gestalt.light(),
-//				myShadowMapWidth, myShadowMapHeight, true, false);
-//		gestalt.bin(Gestalt.BIN_FRAME_SETUP).add(_myShadowMapExtension);
-//
-//		/*
-//		 * this is a workaround for a state issue between openl, processing and
-//		 * gestalt
-//		 */
-//		GestaltPlugIn.SKIP_FIRST_FRAME = true;
-//
-//		/* create shapes and a floor */
-//		mySphereA = new JoglSphere();
-//		mySphereA.position().set(100, 50, -100);
-//		mySphereA.scale().set(100, 100, 100);
-//		mySphereA.material().lit = true;
-//		mySphereA.material().color.set(0.5f, 0.5f, 0, 1);
-//
-//		mySphereB = new JoglSphere();
-//		mySphereB.position().set(0, 100, 0);
-//		mySphereB.scale().set(100, 100, 100);
-//		mySphereB.material().lit = true;
-//		mySphereB.material().color.set(1, 0, 0, 1);
-//
-//		mySphereC = new JoglSphere();
-//		mySphereC.position().set(100, 350, 0);
-//		mySphereC.scale().set(100, 100, 100);
-//		mySphereC.material().lit = true;
-//		mySphereC.material().color.set(1, 0.5f, 0, 1);
-//
-//		Plane myPlane = gestalt.drawablefactory().plane();
-//		myPlane.scale().set(1000, 1000, 1);
-//		myPlane.rotation().x = -Gestalt.PI_HALF;
-//		myPlane.material().lit = true;
-//		myPlane.material().color.set(1, 1);
-//
-//		/* add shapes to bins */
-//		gestalt.bin(Gestalt.BIN_3D).add(mySphereA);
-//		gestalt.bin(Gestalt.BIN_3D).add(mySphereB);
-//		gestalt.bin(Gestalt.BIN_3D).add(mySphereC);
-//		gestalt.bin(Gestalt.BIN_3D).add(myPlane);
-//
-//		/* add shapes to shadow extension */
-//		_myShadowMapExtension.addShape(mySphereA);
-//		_myShadowMapExtension.addShape(mySphereB);
-//		_myShadowMapExtension.addShape(mySphereC);
-//		_myShadowMapExtension.lightcamera.nearclipping = 100;
-//		_myShadowMapExtension.lightcamera.farclipping = 5000;
-//
-//		/* light */
-//		gestalt.light().enable = true;
-//		gestalt.light().position().set(450, 720, 23);
-//		gestalt.light().diffuse.set(1, 1, 1, 1);
-//		gestalt.light().ambient.set(0, 0, 0, 1);
-//
-//		/* camera() */
-//		gestalt.camera().position().set(-400, 1000, 1000);
-//		gestalt.camera().setMode(Gestalt.CAMERA_MODE_LOOK_AT);
-		
-		
-//
-//		/* create a display for the shadowmap */
-//		createShadowmapDisplay();
-//
-//		// /* remove all gestalt presets */
-//		// RenderBin myRenderBin = new RenderBin();
-//		// gestalt.setBinRef(myRenderBin);
-//		// myRenderBin.add(new RawOpenGL());
+    public void setup() {
+        /* setup p5 */
+        size(1900, 1000, OPENGL);
+        rectMode(CENTER);
+        stroke(122);
 
-	}
-
-	private void createShadowmapDisplay() {
-		JoglShadowMapDisplay myDisplay = new JoglShadowMapDisplay(
-				_myShadowMapExtension, width, height);
-		myDisplay.scale().scale(0.25f);
-		myDisplay.position().x = myDisplay.scale().x / 2;
-		myDisplay.position().y = myDisplay.scale().y / 2;
-		myDisplay.material().color.a = 0.75f;
-		myDisplay.material().depthtest = false;
-		gestalt.bin(Gestalt.BIN_2D_FOREGROUND).add(myDisplay);
-	}
-
-	
-	float rot = 0;
-	public void draw() {
-		
-		
-
-		/* draw processing shape */
-		// rect(gestalt.event().mouseX, gestalt.event().mouseY, 50, 150);
-		/* clear screen */
-//		background(255, 255, 0);
-//		gl = gestalt.getGL();
-//		gl.glViewport(0, 0, width, height);
-//
-//		/* move camera */
-//		CameraMover.handleKeyEvent(gestalt.camera(), gestalt.event(), 1 / 60f);
-//
-//		/* bounce spheres */
-//		_myCounter += 1 / 60f;
-//		mySphereA.position().y += sin(_myCounter * 1.5f) * 2;
-//		mySphereB.position().y += sin(_myCounter * 2.3f) * 4;
-//		mySphereC.position().y += sin(_myCounter * 2.5f) * 3;
-//		
-//		
-		rot +=0.1;
-		cube.position().x = mouseX - 60;
-        cube.position().y = mouseY;
-        cube.rotation().set(0, rot);
+        gestalt = new GestaltPlugIn(this);
+        gestalt.setDrawablefactoryRef(new CyDrawableFactoryImpl());
         
-      
-		background(0);
-		
-		physics.update();
-		camera(width / 2.0f, height / 2.0f, (height / 2.0f)
-				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
-				height / 2.0f, 0, 0, 1, 0);
-		translate(width / 2, height / 2, height / 2);
-		rotateX(rotY);
-		rotateY(rotX);
-		translate(-width / 2, -height / 2, -height / 2);
-		beginGL();
-		particleManager.draw(gl);
-		endGL();
-	}
-
-	public void beginGL() {
-		pgl = (PGraphicsOpenGL) g;
-		gl = pgl.beginGL();
-		gl.glViewport(0, 0, width, height);
-	}
-
-	public void endGL() {
-		pgl.endGL();
-	}
-
-	public void mouseDragged() {
-		if (mouseButton == RIGHT) {
-			zoom += (mouseY - pmouseY) * 2;
-		} else if (mouseButton == LEFT) {
-			rotX += (mouseX - pmouseX) * 0.01;
-			rotY -= (mouseY - pmouseY) * 0.01;
+        
+        nodes = new Drawable[view.getSource().getNodeCount()];
+		CyNetwork net = view.getSource();
+		List<CyNode> nodeList = net.getNodeList();
+		int i = 0;
+		Cube cube;
+		for(CyNode node: nodeList) {
+			cube = gestalt.drawablefactory().cube();
+			cube.position().x = width/2+random(0, width);
+	        cube.position().y = height/2+random(0, height);
+	        cube.position().z = random(-1500, 1500);
+	        cube.rotation(random(0, 10), random(0, 10), random(0, 10));
+	        cube.scale(random(30, 100), random(30, 100), random(30, 100));
+	        cube.material().getColor().set(random(0, 1), random(0, 1), random(0, 1), random(0, 1));
+	        cube.material().lit = true;
+//	        cube.material().wireframe = true;
+	        gestalt.bin(Gestalt.BIN_3D).add(cube);
+	        i++;
 		}
-	}
 
-	public CyNetwork getSourceNetwork() {
-		return network;
-	}
+        /* create planes */
+        _myPlaneIn3D = gestalt.drawablefactory().cube();
+        _myPlaneIn3D.scale().x = 50;
+        _myPlaneIn3D.scale().y = 150;
+        
+        gestalt.bin(Gestalt.BIN_3D).add(_myPlaneIn3D);
 
-	public CyNetworkView getSourceView() {
-		return view;
-	}
+        _myPlaneIn2D = gestalt.drawablefactory().plane();
+        _myPlaneIn2D.scale().x = 50;
+        _myPlaneIn2D.scale().y = 150;
+       
+        gestalt.bin(Gestalt.BIN_2D_FOREGROUND).add(_myPlaneIn2D);
+
+        gestalt.light().enable = true;
+        gestalt.light().position().set(width/2, height/2, 23);
+        gestalt.light().diffuse.set(1, 1, 1, 1);
+        gestalt.light().ambient.set(0, 0, 0, 1);
+        
+        /* camera() */
+//        gestalt.camera().position().set(0, 0, 2000);
+//        gestalt.camera().setMode(Gestalt.CAMERA_MODE_LOOK_AT);
+    }
+
+
+    public void draw() {
+        /* glue gestalt shapes to mouse */
+        _myPlaneIn3D.position().x = mouseX - 60;
+        _myPlaneIn3D.position().y = mouseY;
+
+        _myPlaneIn2D.position().x = mouseX + 60;
+        _myPlaneIn2D.position().y = mouseY;
+        
+        /* clear screen */
+        background(255, 128, 0);
+
+        /* draw processing shape */
+        //rect(gestalt.event().mouseX, gestalt.event().mouseY, 50, 150);
+    }
+	
+//	public void setup() {
+//		size(windowSize.width, windowSize.height, OPENGL);
+////		hint(ENABLE_OPENGL_4X_SMOOTH);
+////		frameRate(30);
+////		smooth();
+//
+//		/* create gestalt plugin */
+//		gestalt = new GestaltPlugIn(this);
+//		
+//		//Set Custom DrawableFactory
+//		//gestalt.setDrawablefactoryRef(new CyDrawableFactoryImpl());
+////		Cube cube = gestalt.drawablefactory().cube();
+////		cube.scale().x = 50;
+////	    cube.scale().y = 150;
+//	    gestalt.bin(Gestalt.BIN_3D).add(new RawOpenGL());
+//		System.out.println(" @@@@@@@@@@ Setup is OK.");
+//		
+//	
+//	}
+//
+//	long i = 0;
+//	public void draw() {
+//		System.out.println("Loop: " + i++);
+//      
+//		background(0);
+//	}
+//
+
 
 	private class RawOpenGL extends AbstractDrawable {
 
@@ -349,6 +230,24 @@ public class ProcessingNetworkRenderer extends PApplet implements
 			gl.glVertex3f(-1.0f, -1.0f, 0.0f);
 			gl.glEnd();
 		}
+	}
+
+	public Icon getDefaultIcon(VisualProperty<?> vp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public CyDrawable getCyDrawable() {
+		return null;
+	}
+
+	public Component getComponent() {
+		// TODO Auto-generated method stub
+		return this;
+	}
+
+	public View<CyNetwork> getViewModel() {
+		return view;
 	}
 
 }

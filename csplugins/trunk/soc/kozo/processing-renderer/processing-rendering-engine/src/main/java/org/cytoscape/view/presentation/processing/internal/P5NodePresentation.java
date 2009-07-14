@@ -1,15 +1,23 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import java.awt.Component;
+import java.awt.Image;
+import java.awt.print.Printable;
+import java.util.Properties;
+
+import javax.swing.Icon;
+
 import gestalt.context.GLContext;
 import gestalt.extension.picking.Pickable;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
-import org.cytoscape.view.presentation.processing.P5Presentation;
+import org.cytoscape.view.presentation.processing.P5Renderer;
 
-public class P5NodePresentation implements P5Presentation<CyNode>, Pickable {
+public class P5NodePresentation implements P5Renderer<CyNode>, Pickable {
 
 	private CyDrawable top;
 	private View<CyNode> viewModel;
@@ -53,6 +61,41 @@ public class P5NodePresentation implements P5Presentation<CyNode>, Pickable {
 	}
 
 	public VisualLexicon getVisualLexicon() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Icon getDefaultIcon(VisualProperty<?> vp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Image getImage(int width, int height) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Printable getPrintable() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Properties getProperties() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public View getSourceView() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setProperties(Properties props) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Component getComponent() {
 		// TODO Auto-generated method stub
 		return null;
 	}

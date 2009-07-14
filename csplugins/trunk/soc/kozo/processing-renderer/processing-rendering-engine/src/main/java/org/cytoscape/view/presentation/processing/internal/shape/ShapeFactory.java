@@ -9,7 +9,7 @@ import gestalt.shape.DrawableFactory;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.processing.P5Presentation;
+import org.cytoscape.view.presentation.processing.P5Renderer;
 
 public class ShapeFactory {
 
@@ -22,7 +22,7 @@ public class ShapeFactory {
 		this.factory = p.drawablefactory();
 	}
 
-	public P5Presentation<CyNode> getNodeShape(View<CyNode> view) {
+	public P5Renderer<CyNode> getNodeShape(View<CyNode> view) {
 
 	
 

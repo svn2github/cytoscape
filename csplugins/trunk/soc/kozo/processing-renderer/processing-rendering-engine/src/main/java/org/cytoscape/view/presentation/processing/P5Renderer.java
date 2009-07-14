@@ -1,5 +1,7 @@
 package org.cytoscape.view.presentation.processing;
 
+import java.awt.Component;
+
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.Renderer;
 
@@ -16,15 +18,7 @@ import org.cytoscape.view.presentation.Renderer;
  *
  * @param <T>
  */
-public interface P5Presentation <T> extends Renderer {
-	
-	/**
-	 * Get backend data structure for this presentation.
-	 * 
-	 * @return View Model of this object. 
-	 */
-	public View<T> getViewModel();
-	
+public interface P5Renderer <T> extends Renderer<View<T>> {
 	
 	/**
 	 * Get top-level Drawable Object.
@@ -33,4 +27,5 @@ public interface P5Presentation <T> extends Renderer {
 	 */
 	public CyDrawable getCyDrawable();
 	
+	public Component getComponent();
 }
