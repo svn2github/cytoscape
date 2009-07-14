@@ -69,7 +69,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 
 	protected Query getFieldQuery(String field, String queryText)
 			throws ParseException {
-		System.out.println("I am in field Query :" + field+ ":"+ queryText );
+		//System.out.println("I am in field Query :" + field+ ":"+ queryText );
 		if (attrFields.getType(field) == AttributeTypes.TYPE_INTEGER) {
 			try {
 				int num1 = Integer.parseInt(queryText);

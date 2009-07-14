@@ -106,6 +106,7 @@ public class AttributeFields {
 		System.arraycopy(nodeAttrNameArray, 0, fields, 1, numOfNodeAttributes);
 		System.arraycopy(edgeAttrNameArray, 0, fields, numOfNodeAttributes +1,
 				numOfEdgeAttributes);
+		/*
 		for(int i=1;i<=nodeAttrNameArray.length;i++)
 		{
 			fields[i]="node."+fields[i];
@@ -114,6 +115,7 @@ public class AttributeFields {
 		{
 			fields[i]="edge."+fields[i];
 		}
+		*/
 		// Define value types
 		String[] nodeAttrValueTypes = new String[numOfNodeAttributes];
 		for (int i = 0; i < numOfNodeAttributes; i++) {
@@ -143,11 +145,11 @@ public class AttributeFields {
 			fields[i] = EnhancedSearchUtils.replaceWhitespace(fields[i]);
 			fields[i] = fields[i].toLowerCase();
 		}
-		for(int i=0;i<fields.length;i++)
+		/*for(int i=0;i<fields.length;i++)
 		{
 			System.out.println(fields[i]+":"+types[i]);
 		}
-
+		*/
 	}
 
 
