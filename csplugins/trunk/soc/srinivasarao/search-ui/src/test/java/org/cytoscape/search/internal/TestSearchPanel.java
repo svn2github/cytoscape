@@ -14,7 +14,7 @@ public class TestSearchPanel {
 
 	private JFrame jf = new JFrame(); 
 	
-	private EnhancedSearchPanel esp = new EnhancedSearchPanel();
+	private SearchPanel esp = new SearchPanel();
 	
 	private CyNetwork net;
 	

@@ -19,7 +19,7 @@ import org.cytoscape.search.EnhancedSearch;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskManager;
 
-public class EnhancedSearchPanel extends JPanel {
+public class SearchPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JLabel searchLabel = null;
@@ -53,7 +53,7 @@ public class EnhancedSearchPanel extends JPanel {
 	/**
 	 * This is the default constructor
 	 */
-	public EnhancedSearchPanel() {
+	public SearchPanel() {
 		super();
 		initialize();
 	}
@@ -106,6 +106,7 @@ public class EnhancedSearchPanel extends JPanel {
 		this.add(searchLabel, null);
 		this.add(getSearchField(), null);
 		this.add(getSearchButton(), null);
+		createPopupMenu();
 	}
 
 	/**
