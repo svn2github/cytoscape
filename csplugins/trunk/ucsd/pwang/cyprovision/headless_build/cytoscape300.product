@@ -1,31 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Cytoscape" uid="org.cytoscape.product" id="cytoscape_product.cytoscape" application="org.cytoscape.product" version="3.0.0" useFeatures="true" includeLaunchers="false">
+<product name="Cytoscape" uid="org.cytoscape.product" id="cytoscape_product.product" application="cytoscape_product.application" version="3.0.0" useFeatures="true" includeLaunchers="false">
 
 
    <configIni use="default">
    </configIni>
 
-   <launcherArgs>
-      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}</programArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
-   </launcherArgs>
-
-   <windowImages/>
-
-
-   <launcher>
-      <solaris/>
-      <win useIco="false">
-         <bmp/>
-      </win>
-   </launcher>
-
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
