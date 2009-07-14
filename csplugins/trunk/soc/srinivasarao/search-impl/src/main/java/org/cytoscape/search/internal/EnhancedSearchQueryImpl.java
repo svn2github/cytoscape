@@ -106,7 +106,7 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 		try {
 			// Execute query
 			Query query = queryParser.parse(queryString);
-			//System.out.println("ESQuery :" + query.toString());
+			System.out.println("ESQuery :" + query.toString());
 			hitCollector = new IdentifiersCollector(searcher);
 			searcher.search(query, hitCollector);
 		} catch (ParseException pe) {
@@ -153,14 +153,15 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 		edgelist = new ArrayList<CyEdge>();
 		while (it.hasNext()) {
 			Document currdoc = (Document) it.next();
-			String type = currdoc.get("Type");
+			String type = currdoc.get("docType");
 			if (type.equals("node")) {
 				CyNode currNode = network.getNode((new Integer(currdoc
 						.get(EnhancedSearchIndex.INDEX_FIELD))).intValue());
 				if (currNode != null) {
 					nodelist.add(currNode);
 				}
-			} else {
+			} 
+			else if(type.equals("edge")){
 				CyEdge currEdge = network.getEdge((new Integer(currdoc
 						.get(EnhancedSearchIndex.INDEX_FIELD))).intValue());
 				if (currEdge != null) {

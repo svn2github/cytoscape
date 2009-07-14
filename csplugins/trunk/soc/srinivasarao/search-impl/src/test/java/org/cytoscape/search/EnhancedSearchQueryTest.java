@@ -103,7 +103,7 @@ public class EnhancedSearchQueryTest extends AbstractEnhancedSearchQueryTest {
 	@Override
 	public void testgetNodeHits() {
 		// TODO Auto-generated method stub
-		String queryString = "node.Official_HUGO_Symbol:TP53";
+		String queryString = "Official_HUGO_Symbol:TP53";
 		esq.executeQuery(queryString);
 		ArrayList<CyNode> al = esq.getNodeHits();
 		assertEquals(al.size(),1);
@@ -112,7 +112,7 @@ public class EnhancedSearchQueryTest extends AbstractEnhancedSearchQueryTest {
 	@Override
 	public void testgetEdgeHits() {
 		// TODO Auto-generated method stub
-		String queryString = "edge.canonicalName:7157";
+		String queryString = "canonicalName:7157";
 		esq.executeQuery(queryString);
 		ArrayList<CyEdge> al = esq.getEdgeHits();
 		assertEquals(al.size(),4); 

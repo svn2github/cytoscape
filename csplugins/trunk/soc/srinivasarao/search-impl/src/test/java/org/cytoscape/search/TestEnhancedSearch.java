@@ -104,23 +104,23 @@ public class TestEnhancedSearch extends TestCase {
 		CyEdge e4 = net.addEdge(n6, n5, true);
 		
 		CyDataTable edgetable = (CyDataTable)net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-		edgetable.createColumn("canonicalName", String.class, true);
+		edgetable.createColumn("EdgeName", String.class, true);
 		edgetable.createColumn("interaction", String.class, true);
 		
 		CyRow re1 = edgetable.getRow(e1.getSUID());
-		re1.set("canonicalName", "7157 (non_core) 51246");
+		re1.set("EdgeName", "7157 (non_core) 51246");
 		re1.set("interaction","non_core");
 		
 		CyRow re2 = edgetable.getRow(e2.getSUID());
-		re2.set("canonicalName", "7157 (non_core) 9314");
+		re2.set("EdgeName", "7157 (non_core) 9314");
 		re2.set("interaction","non_core");
 		
 		CyRow re3 = edgetable.getRow(e3.getSUID());
-		re3.set("canonicalName", "900 (non_core) 7157");
+		re3.set("EdgeName", "900 (non_core) 7157");
 		re3.set("interaction","non_core");
 
 		CyRow re4 = edgetable.getRow(e4.getSUID());
-		re4.set("canonicalName", "3146 (non_core) 7157");
+		re4.set("EdgeName", "3146 (non_core) 7157");
 		re4.set("interaction","non_core");
 		
 		esi = new EnhancedSearchIndexImpl(net);
@@ -188,21 +188,21 @@ public class TestEnhancedSearch extends TestCase {
 	public void testComplexQueries() throws Exception {
 
 		//query = "GO_Biological_Process:\"water deprivation\" AND Gene_Title:aquaporin";
-		query = "node.Official_HUGO_Symbol:ING5 OR node.canonicalName:51246";
+		query = "Official_HUGO_Symbol:ING5 OR canonicalName:51246";
 		queryHandler.executeQuery(query); // 2
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 2, hitCount);
 
 		//query = "Desiccation_Response:true NOT Chromosome:5";
 		//query = "NOT node.Official_HUGO_Symbol:KLF4";
-		query = "node.canonicalName:9314 NOT node.Official_HUGO_Symbol:SCOTIN";
+		query = "canonicalName:9314 NOT Official_HUGO_Symbol:SCOTIN";
 		queryHandler.executeQuery(query); // 1
 		hitCount = queryHandler.getHitCount();
 		System.out.println(hitCount);
 		assertEquals(query, 1, hitCount);
 
 		//query = "GO_Biological_Process:stress AND (GO_Molecular_Function:peroxidase OR GO_Molecular_Function:catalase)";
-		query = "edge.interaction:non_core AND (edge.canonicalName:3146 OR edge.canonicalName:900)";
+		query = "interaction:non_core AND (EdgeName:3146 OR EdgeName:900)";
 		queryHandler.executeQuery(query); // 2
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 2, hitCount);
@@ -234,12 +234,12 @@ public class TestEnhancedSearch extends TestCase {
 	// Range queries
 	public void testRangeQueries() throws Exception {
 
-		query = "node.canonicalName:51246";
+		query = "canonicalName:51246";
 		queryHandler.executeQuery(query); // 1
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 1, hitCount);
 
-		query = "node.canonicalName:[900 TO 52000]";
+		query = "canonicalName:[900 TO 52000]";
 		queryHandler.executeQuery(query); //5
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 5, hitCount);
@@ -250,7 +250,7 @@ public class TestEnhancedSearch extends TestCase {
 	// Queries with no results
 	public void testNoResultsQueries() throws Exception {
 	
-		query = "node.canonicalName:9314 AND edge.interaction:non_core";
+		query = "canonicalName:9314 AND interaction:non_core";
 		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 0, hitCount);

@@ -154,7 +154,7 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 		Document doc = new Document();
 		doc.add(new Field(INDEX_FIELD, identifier, Field.Store.YES,
 				Field.Index.ANALYZED));
-		doc.add(new Field("Type", indextype, Field.Store.YES,
+		doc.add(new Field("docType", indextype, Field.Store.YES,
 				Field.Index.NO));
 
 		
@@ -165,7 +165,8 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 		while(it.hasNext()){
 			Map.Entry<String,Object> me = it.next();
 			String attrName = me.getKey();
-			String attrIndexingName = indextype + "." + EnhancedSearchUtils.replaceWhitespace(attrName);
+			String attrIndexingName = EnhancedSearchUtils.replaceWhitespace(attrName);
+			//String attrIndexingName = indextype + "." + EnhancedSearchUtils.replaceWhitespace(attrName);
 			attrIndexingName = attrIndexingName.toLowerCase();
 			//System.out.println("Attribute Indexing Name:"+attrIndexingName+";");
 			//System.out.println(identifier + ":" + attrIndexingName + ":" + me.getValue().toString());
@@ -188,7 +189,7 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 			else if(cname.equals("java.lang.String")){
 				String attrValue = (String)me.getValue();
 				doc.add(new Field(attrIndexingName, attrValue,
-						Field.Store.YES, Field.Index.ANALYZED));
+						Field.Store.NO, Field.Index.ANALYZED));
 			}
 			else if(cname.equals("java.util.List")){
 				List l = (List)me.getValue();
