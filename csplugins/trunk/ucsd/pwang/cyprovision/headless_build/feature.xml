@@ -218,12 +218,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.pde.build"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.sat4j.core"
          download-size="0"
          install-size="0"
@@ -912,20 +906,6 @@
 
    <plugin
          id="phoebe.dnd"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.ui2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.ui2.sdk"
          download-size="0"
          install-size="0"
          version="0.0.0"
