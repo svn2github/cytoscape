@@ -1,5 +1,5 @@
 /*
- File: TaskTunableAction.java
+ File: NetworkTaskFactoryTunableAction.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -49,39 +49,19 @@ import org.cytoscape.work.TaskManager;
 
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.task.NetworkTaskFactory;
 
-public class TaskTunableAction extends CytoscapeAction {
+public class NetworkTaskFactoryTunableAction 
+	extends TaskFactoryTunableAction<NetworkTaskFactory> {
 
-	TaskFactory factory;
-	TunableInterceptor interceptor;
-	TaskManager manager;
-
-	public TaskTunableAction(TaskManager manager, TunableInterceptor interceptor, 
-	                  TaskFactory factory, Map serviceProps,
+	public NetworkTaskFactoryTunableAction(TaskManager manager, TunableInterceptor interceptor, 
+	                  NetworkTaskFactory factory, Map serviceProps,
 					  CyNetworkManager netmgr) {
-		super(serviceProps,netmgr);
-		this.manager = manager;
-		this.factory = factory;
-		this.interceptor = interceptor;
+		super(manager, interceptor, factory, serviceProps, netmgr);
 	}
 
 	public void actionPerformed(ActionEvent a) {
-		Task task = factory.getTask();
-
-		// load the tunables from the object 
-		interceptor.loadTunables(task);
-
-		// if the object implements the interface,
-		// give the object access to the handlers 
-		// created for the tunables
-	//	if ( task instanceof HandlerController )
-	//		((HandlerController)task).controlHandlers(interceptor.getHandlers(task));
-		
-		// create the UI based on the object
-		if ( !interceptor.createUI(task) )
-			return;	
-		
-		// execute the task in a separate thread
-		manager.execute(task);
+		factory.setNetwork( netmgr.getCurrentNetwork() );
+		super.actionPerformed(a);
 	}
 }

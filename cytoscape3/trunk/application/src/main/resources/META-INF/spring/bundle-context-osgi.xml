@@ -143,6 +143,19 @@
 			unbind-method="removeTaskFactory" ref="cytoscapeMenus" />
 	</osgi:set>
 
+	<osgi:set id="networkTaskFactorySet" interface="org.cytoscape.task.NetworkTaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addNetworkTaskFactory"
+			unbind-method="removeNetworkTaskFactory" ref="cytoscapeMenus" />
+	</osgi:set>
+
+	<osgi:set id="networkViewTaskFactorySet" 
+	          interface="org.cytoscape.task.NetworkViewTaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addNetworkViewTaskFactory"
+			unbind-method="removeNetworkViewTaskFactory" ref="cytoscapeMenus" />
+	</osgi:set>
+
 	<osgi:set id="presentationFactorySet"
 		interface="org.cytoscape.view.presentation.PresentationFactory"
 		cardinality="0..N">

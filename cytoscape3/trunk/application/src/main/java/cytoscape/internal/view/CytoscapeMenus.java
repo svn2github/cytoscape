@@ -43,7 +43,9 @@ import cytoscape.util.CyToolBar;
 
 import org.cytoscape.session.CyNetworkManager;
 
-import cytoscape.internal.task.TaskTunableAction;
+import cytoscape.internal.task.TaskFactoryTunableAction;
+import cytoscape.internal.task.NetworkTaskFactoryTunableAction;
+import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
 
 import cytoscape.view.CyMenus;
 
@@ -59,6 +61,8 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.task.NetworkViewTaskFactory;
 
 
 /**
@@ -242,18 +246,35 @@ public class CytoscapeMenus implements CyMenus {
 	}
 
 	public void addTaskFactory(TaskFactory factory, Map props) {
-		//System.out.println("addTaskFactory called");
-		try {
-			CyAction action = new TaskTunableAction(taskManager, interceptor, factory, props, netManager);
-			taskMap.put(factory,action);
-			addAction( action );
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Exception constructing TaskTunableAction");
-		}
+		addFactory( new TaskFactoryTunableAction<TaskFactory>(taskManager, interceptor, factory, props, netManager), factory, props );
+	}
+
+	public void addNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
+		addFactory( new NetworkTaskFactoryTunableAction(taskManager, interceptor, factory, props, netManager), factory, props );
+	}
+
+	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
+		addFactory( new NetworkViewTaskFactoryTunableAction(taskManager, interceptor, factory, props, netManager), factory, props );
 	}
 
 	public void removeTaskFactory(TaskFactory factory, Map props) {
+		removeFactory(factory,props);
+	}
+
+	public void removeNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
+		removeFactory(factory,props);
+	}
+
+	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
+		removeFactory(factory,props);
+	}
+	
+	private <F extends TaskFactory> void addFactory(CyAction action, F factory, Map props) {
+		taskMap.put(factory,action);
+		addAction( action );
+	}
+
+	private void removeFactory(TaskFactory factory, Map props) {
 		//System.out.println("removeTaskFactory called");
 		CyAction action = taskMap.remove(factory);
 		if ( action != null ) {
