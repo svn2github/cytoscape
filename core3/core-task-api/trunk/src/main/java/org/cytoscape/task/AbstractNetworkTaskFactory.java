@@ -45,7 +45,7 @@ public abstract class AbstractNetworkTaskFactory implements NetworkTaskFactory {
 
 	protected CyNetwork net;
 
-	public void setCyNetwork(final CyNetwork net) {
+	public void setNetwork(final CyNetwork net) {
 		if ( net == null )
 			throw new NullPointerException("CyNetwork is null");
 		this.net = net;
