@@ -113,8 +113,42 @@ public class ReorderableJList extends JList implements DragSourceListener,
 	}
 
 	public void drop(DropTargetDropEvent dtde) {
-		// TODO Auto-generated method stub
+		System.out.println("drop()!");
+		if (dtde.getSource() != dropTarget) {
+			System.out.println("rejecting for bad source ("
+					+ dtde.getSource().getClass().getName() + ")");
+			dtde.rejectDrop();
+			return;
+		}
+		Point dropPoint = dtde.getLocation();
+		int index = locationToIndex(dropPoint);
+		System.out.println("drop index is " + index);
+		boolean dropped = false;
+		try {
+			if ((index == -1) || (index == draggedIndex)) {
+				System.out.println("dropped onto self");
+				dtde.rejectDrop();
+				return;
+			}
+			dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+			System.out.println("accepted");
+			Object dragged = dtde.getTransferable().getTransferData(
+					localObjectFlavor);
 
+			System.out.println("drop " + draggedIndex + " to " + index);
+			boolean sourceBeforeTarget = (draggedIndex < index);
+			System.out.println("source is" + (sourceBeforeTarget ? "" : " not")
+					+ " before target");
+			System.out.println("insert at "
+					+ (sourceBeforeTarget ? index - 1 : index));
+			DefaultListModel mod = (DefaultListModel) getModel();
+			mod.remove(draggedIndex);
+			mod.add((sourceBeforeTarget ? index - 1 : index), dragged);
+			dropped = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		dtde.dropComplete(dropped);
 	}
 
 	public void dropActionChanged(DropTargetDragEvent dtde) {
