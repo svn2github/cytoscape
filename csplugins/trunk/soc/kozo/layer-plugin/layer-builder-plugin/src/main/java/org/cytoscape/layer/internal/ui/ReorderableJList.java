@@ -2,11 +2,16 @@ package org.cytoscape.layer.internal.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureRecognizer;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
@@ -17,8 +22,10 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.io.IOException;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
 public class ReorderableJList extends JList implements DragSourceListener,
@@ -42,12 +49,19 @@ public class ReorderableJList extends JList implements DragSourceListener,
 	public ReorderableJList() {
 		super();
 		setCellRenderer(new ReorderableListCellRenderer());
-
+		setModel(new DefaultListModel());
+		dragSource = new DragSource();
+		DragGestureRecognizer dgr = dragSource
+				.createDefaultDragGestureRecognizer(this,
+						DnDConstants.ACTION_MOVE, this);
+		dropTarget = new DropTarget(this, this);
 	}
 
 	public void dragDropEnd(DragSourceDropEvent dsde) {
-		// TODO Auto-generated method stub
-
+		System.out.println("dragDropEnd()");
+		dropTargetCell = null;
+		draggedIndex = -1;
+		repaint();
 	}
 
 	public void dragEnter(DragSourceDragEvent dsde) {
@@ -71,12 +85,16 @@ public class ReorderableJList extends JList implements DragSourceListener,
 	}
 
 	public void dragEnter(DropTargetDragEvent dtde) {
-		// TODO Auto-generated method stub
-
+		System.out.println("dragEnter");
+		if (dtde.getSource() != dropTarget) {
+			dtde.rejectDrag();
+		} else {
+			dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
+			System.out.println("accepted dragEnter");
+		}
 	}
 
 	public void dragExit(DropTargetEvent dte) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -105,8 +123,41 @@ public class ReorderableJList extends JList implements DragSourceListener,
 	}
 
 	public void dragGestureRecognized(DragGestureEvent dge) {
-		// TODO Auto-generated method stub
+		System.out.println("dragGestureRecognized");
+		Point clickPoint = dge.getDragOrigin();
+		int index = locationToIndex(clickPoint);
+		if (index == -1) {
+			return;
+		}
+		Object target = getModel().getElementAt(index);
+		Transferable trans = new RJLTransferable(target);
+		draggedIndex = index;
+		dragSource.startDrag(dge, Cursor.getDefaultCursor(), trans, this);
+	}
 
+	class RJLTransferable implements Transferable {
+		Object object;
+
+		public RJLTransferable(Object o) {
+			object = o;
+		}
+
+		public Object getTransferData(DataFlavor df)
+				throws UnsupportedFlavorException, IOException {
+			if (isDataFlavorSupported(df)) {
+				return object;
+			} else {
+				throw new UnsupportedFlavorException(df);
+			}
+		}
+
+		public DataFlavor[] getTransferDataFlavors() {
+			return supportedFlavors;
+		}
+
+		public boolean isDataFlavorSupported(DataFlavor df) {
+			return (df.equals(localObjectFlavor));
+		}
 	}
 
 	class ReorderableListCellRenderer extends DefaultListCellRenderer {
