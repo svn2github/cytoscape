@@ -18,7 +18,6 @@ import giny.model.Edge;
 public class BasicCladogramLayout extends AbstractLayout {
 
 
-	static double LEAF_Y_DISTANCE = 100.0;
 	static double LEAF_X = 500.0;
 	static double INTERNODE_DISTANCE = 100.0;
 
@@ -271,6 +270,7 @@ public class BasicCladogramLayout extends AbstractLayout {
 		if(constantBranch)
 		{networkView.getNodeView(node).setYPosition(midpointY,true);
 		networkView.getNodeView(node).setXPosition(LEAF_X-((subtreeLeaves.size()-1))*INTERNODE_DISTANCE, true);
+		
 		}
 		// Adjust the branchLengths
 		if(!constantBranch && network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false).length!=0)
@@ -321,6 +321,8 @@ public class BasicCladogramLayout extends AbstractLayout {
 		Node firstLeaf = it.next();
 		double highestY,lowestY;
 		highestY = lowestY = networkView.getNodeView(firstLeaf).getYPosition();
+		
+		
 
 		while(it.hasNext())
 		{
@@ -349,7 +351,6 @@ public class BasicCladogramLayout extends AbstractLayout {
 		Double length = 0.0;
 		if(incomingEdgesArray.length!=0)
 		{
-
 			Edge edge = network.getEdge(incomingEdgesArray[0]);
 
 			CyAttributes att = Cytoscape.getEdgeAttributes();
