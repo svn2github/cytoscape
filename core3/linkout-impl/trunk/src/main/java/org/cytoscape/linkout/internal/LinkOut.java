@@ -11,8 +11,9 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.NodeViewTaskFactory;
 import org.cytoscape.view.model.View;
+import org.cytoscape.task.AbstractNodeViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
@@ -282,18 +283,12 @@ public class LinkOut {
 	 */
 
 	// AJK: 06/11/09 task factory classes
-	private class LinkoutTaskFactory implements NodeViewTaskFactory {
+	private class LinkoutTaskFactory extends AbstractNodeViewTaskFactory {
 		private String link;
-		private View<CyNode> nodeView;
-
 		public LinkoutTaskFactory(String link) {
+			super();
 			this.link = link;
 		}
-
-		public void setNodeView(View<CyNode> v, CyNetworkView nv) {
-			this.nodeView = v;
-		}
-
 		public Task getTask() {
 			return new LinkoutTask(link, nodeView);
 		}
