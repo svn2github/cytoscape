@@ -1,6 +1,7 @@
 
 package org.cytoscape.editor.internal;
 
+import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
@@ -12,7 +13,7 @@ import org.cytoscape.model.CyNode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SIFInterpreterTask implements Task {
+public class SIFInterpreterTask extends AbstractNetworkViewTask {
 
 	private CyNetworkView view;
 	private CyNetwork network;
@@ -21,7 +22,7 @@ public class SIFInterpreterTask implements Task {
 	public String sifString;
 
 	public SIFInterpreterTask(CyNetworkView view) {
-		this.view = view;
+		super(view);
 		network = view.getSource();
 	}
 
@@ -126,9 +127,6 @@ public class SIFInterpreterTask implements Task {
 
 		//Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 */
-	}
-
-	public void cancel() {
 	}
 
 	private CyNode findNode(String name) {
