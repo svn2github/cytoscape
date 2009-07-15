@@ -39,31 +39,23 @@ package org.cytoscape.task.internal.zoom;
 
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_SCALE_FACTOR;
 
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.Task;
+import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.view.model.CyNetworkView;
 
-import org.cytoscape.session.CyNetworkManager;
 
-
-abstract class AbstractZoomTask implements Task {
+abstract class AbstractZoomTask extends AbstractNetworkViewTask {
 
 	protected double factor;
-	protected CyNetworkManager netmgr;
 
-	AbstractZoomTask(double factor, CyNetworkManager netmgr) {
+	AbstractZoomTask(CyNetworkView v, double factor) {
+		super(v);
 		this.factor = factor;
-		this.netmgr = netmgr;
 	}
 
 	public void run(TaskMonitor tm) {
-		CyNetworkView view = netmgr.getCurrentNetworkView();
-		if ( view != null ) {
-			view.setVisualProperty(NETWORK_SCALE_FACTOR, 
-				view.getVisualProperty(NETWORK_SCALE_FACTOR).doubleValue() * factor);
-			view.updateView();
-		}
+		view.setVisualProperty(NETWORK_SCALE_FACTOR, 
+		view.getVisualProperty(NETWORK_SCALE_FACTOR).doubleValue() * factor);
+		view.updateView();
 	}
-
-	public void cancel() {}
 }

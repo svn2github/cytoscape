@@ -193,7 +193,7 @@
 
 
 	<osgi:service id="selectFirstNeighborsNodeViewTaskFactoryService" ref="selectFirstNeighborsNodeViewTaskFactory"
-		interface="org.cytoscape.view.model.NodeViewTaskFactory">
+		interface="org.cytoscape.task.NodeViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Select First Neighbors" />
 			<entry key="preferredMenu" value="Select First Neighbors" />
@@ -202,7 +202,7 @@
 
 	<!-- show/hide -->
 	<osgi:service id="hideSelectedTaskFactoryService" ref="hideSelectedTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Hide selected nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
@@ -211,7 +211,7 @@
 	</osgi:service>
 
 	<osgi:service id="hideSelectedNodesTaskFactoryService" ref="hideSelectedNodesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Hide selected nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
@@ -220,7 +220,7 @@
 	</osgi:service>
 
 	<osgi:service id="hideSelectedEdgesTaskFactoryService" ref="hideSelectedEdgesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Hide selected edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
@@ -229,7 +229,7 @@
 	</osgi:service>
 
 	<osgi:service id="unHideAllTaskFactoryService" ref="unHideAllTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Show all nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
@@ -238,7 +238,7 @@
 	</osgi:service>
 
 	<osgi:service id="unHideAllNodesTaskFactoryService" ref="unHideAllNodesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Show all nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
@@ -247,7 +247,7 @@
 	</osgi:service>
 
 	<osgi:service id="unHideAllEdgesTaskFactoryService" ref="unHideAllEdgesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Show all edges" />
 			<entry key="preferredMenu" value="Select.Edges" />

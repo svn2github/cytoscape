@@ -37,19 +37,12 @@
 
 package org.cytoscape.task.internal.hide;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.task.AbstractNetworkViewTaskFactory;
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 
-public class UnHideAllNodesTaskFactory implements TaskFactory {
-
-	private CyNetworkManager netmgr;
-
-	public UnHideAllNodesTaskFactory(CyNetworkManager netmgr) {
-		this.netmgr = netmgr;	
-	}
+public class UnHideAllNodesTaskFactory extends AbstractNetworkViewTaskFactory {
 
 	public Task getTask() {
-		return new UnHideAllNodesTask(netmgr);
+		return new UnHideAllNodesTask(view);
 	} 
 }

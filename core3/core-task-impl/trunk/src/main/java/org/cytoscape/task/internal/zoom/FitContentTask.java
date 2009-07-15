@@ -37,26 +37,18 @@
 
 package org.cytoscape.task.internal.zoom;
 
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.Task;
+import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.view.model.CyNetworkView;
 
-public class FitContentTask implements Task {
+public class FitContentTask extends AbstractNetworkViewTask {
 
-	private CyNetworkManager netmgr;
-
-	public FitContentTask(CyNetworkManager netmgr) {
-		this.netmgr = netmgr;
+	public FitContentTask(CyNetworkView v) {
+		super(v);
 	}
 
 	public void run(TaskMonitor tm) {
-		CyNetworkView view = netmgr.getCurrentNetworkView();
-		if ( view != null ) {
-			view.fitContent();
-			view.updateView();
-		}
+		view.fitContent();
+		view.updateView();
 	}
-
-	public void cancel() {}
 }

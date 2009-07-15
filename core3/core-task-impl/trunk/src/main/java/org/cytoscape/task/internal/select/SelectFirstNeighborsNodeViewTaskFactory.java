@@ -39,21 +39,11 @@ package org.cytoscape.task.internal.select;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.NodeViewTaskFactory;
+import org.cytoscape.task.AbstractNodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 
-public class SelectFirstNeighborsNodeViewTaskFactory implements NodeViewTaskFactory {
-
-	private View<CyNode> nodeView;
-	private CyNetworkView netView;
-
-	public SelectFirstNeighborsNodeViewTaskFactory() { }
-
-	public void setNodeView(View<CyNode> nodeView, CyNetworkView netView) {
-		this.nodeView = nodeView;
-		this.netView = netView;
-	}
+public class SelectFirstNeighborsNodeViewTaskFactory extends AbstractNodeViewTaskFactory {
 
 	public Task getTask() {
 		return new SelectFirstNeighborsNodeViewTask(nodeView,netView);

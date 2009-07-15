@@ -37,19 +37,12 @@
 
 package org.cytoscape.task.internal.zoom;  
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.task.AbstractNetworkViewTaskFactory;  
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 
-public class ZoomOutTaskFactory implements TaskFactory {
-
-	private CyNetworkManager netmgr;
-
-	public ZoomOutTaskFactory(CyNetworkManager netmgr) {
-		this.netmgr = netmgr;
-	}
+public class ZoomOutTaskFactory extends AbstractNetworkViewTaskFactory {
 
 	public Task getTask() {
-		return new ZoomOutTask(netmgr);
+		return new ZoomOutTask(view);
 	} 
 }

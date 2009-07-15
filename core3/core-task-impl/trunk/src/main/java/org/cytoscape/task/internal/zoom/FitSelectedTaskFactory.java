@@ -37,19 +37,12 @@
 
 package org.cytoscape.task.internal.zoom;  
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.task.AbstractNetworkViewTaskFactory;  
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 
-public class FitSelectedTaskFactory implements TaskFactory {
-
-	private CyNetworkManager netmgr;
-
-	public FitSelectedTaskFactory(CyNetworkManager netmgr) {
-		this.netmgr = netmgr;
-	}
+public class FitSelectedTaskFactory extends AbstractNetworkViewTaskFactory {
 
 	public Task getTask() {
-		return new FitSelectedTask(netmgr);
+		return new FitSelectedTask(view);
 	} 
 }

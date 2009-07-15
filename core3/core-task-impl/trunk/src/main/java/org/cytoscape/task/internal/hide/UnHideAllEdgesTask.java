@@ -37,28 +37,25 @@
 
 package org.cytoscape.task.internal.hide;
 
-import org.cytoscape.session.CyNetworkManager;
-
+import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-public class UnHideAllEdgesTask extends AbstractHideTask {
+public class UnHideAllEdgesTask extends AbstractNetworkViewTask {
 
-	public UnHideAllEdgesTask(CyNetworkManager netmgr) {
-		super(netmgr);
+	public UnHideAllEdgesTask(CyNetworkView v) {
+		super(v);
 	}
 
 	public void run(TaskMonitor e) {
-		final CyNetwork curr = netmgr.getCurrentNetwork();
-		final CyNetworkView view = netmgr.getNetworkView( curr.getSUID() );
+		final CyNetwork curr = view.getSource();
 
 		HideUtils.setVisibleEdges( curr.getEdgeList(), true, view );
 
-        if ( view != null )
-            view.updateView();
+		view.updateView();
 	} 
 
 }
