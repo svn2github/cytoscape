@@ -95,9 +95,9 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.EdgeViewTaskFactory;
-import org.cytoscape.view.model.NodeViewTaskFactory;
-import org.cytoscape.view.model.EmptySpaceTaskFactory;
+import org.cytoscape.task.EdgeViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.view.presentation.Renderer;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.UndoSupport;
@@ -336,7 +336,7 @@ public class DGraphView implements Renderer<CyNetworkView>, GraphView, Printable
 
 	Map<NodeViewTaskFactory, Map> nodeViewTFs;
 	Map<EdgeViewTaskFactory, Map> edgeViewTFs;
-	Map<EmptySpaceTaskFactory, Map> emptySpaceTFs;
+	Map<NetworkViewTaskFactory, Map> emptySpaceTFs;
 
 	TunableInterceptor interceptor;
 	TaskManager manager;
@@ -356,7 +356,7 @@ public class DGraphView implements Renderer<CyNetworkView>, GraphView, Printable
 			VisualLexicon dingLexicon,
 			Map<NodeViewTaskFactory, Map> nodeViewTFs,
 			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
-			Map<EmptySpaceTaskFactory, Map> emptySpaceTFs,
+			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
 			TunableInterceptor interceptor, TaskManager manager) {
 		m_perspective = view.getSource();
 		cyNetworkView = view;

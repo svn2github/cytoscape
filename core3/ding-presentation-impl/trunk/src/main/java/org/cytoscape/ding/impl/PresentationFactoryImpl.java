@@ -16,10 +16,10 @@ import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
+import org.cytoscape.task.EdgeViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.EdgeViewTaskFactory;
-import org.cytoscape.view.model.EmptySpaceTaskFactory;
-import org.cytoscape.view.model.NodeViewTaskFactory;
 import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
@@ -45,7 +45,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 
 	private Map<NodeViewTaskFactory,Map> nodeViewTFs;
 	private Map<EdgeViewTaskFactory,Map> edgeViewTFs;
-	private Map<EmptySpaceTaskFactory,Map> emptySpaceTFs;
+	private Map<NetworkViewTaskFactory,Map> emptySpaceTFs;
 
 	private TunableInterceptor ti;
 	private TaskManager tm;
@@ -67,7 +67,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory,Map>();
 		edgeViewTFs = new HashMap<EdgeViewTaskFactory,Map>();
-		emptySpaceTFs = new HashMap<EmptySpaceTaskFactory,Map>();
+		emptySpaceTFs = new HashMap<NetworkViewTaskFactory,Map>();
 	}
 
 	/**
@@ -167,16 +167,16 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 		edgeViewTFs.remove(evtf);
 	}
 
-	public void addEmptySpaceTaskFactory(EmptySpaceTaskFactory evtf, Map props) {
-		System.out.println("addEmptySpaceTaskFactory");
+	public void addNetworkViewTaskFactory(NetworkViewTaskFactory evtf, Map props) {
+		System.out.println("addNetworkViewTaskFactory");
 		if ( evtf == null )
 			return;
 
 		emptySpaceTFs.put(evtf,props);
 	}
 
-	public void removeEmptySpaceTaskFactory(EmptySpaceTaskFactory evtf, Map props) {
-		System.out.println("removeEmptySpaceTaskFactory");
+	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory evtf, Map props) {
+		System.out.println("removeNetworkViewTaskFactory");
 		if ( evtf == null )
 			return;
 

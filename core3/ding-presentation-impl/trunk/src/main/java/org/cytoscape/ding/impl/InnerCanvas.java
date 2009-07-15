@@ -53,9 +53,9 @@ import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.ViewChangeEdit;
 import org.cytoscape.work.UndoSupport;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.NodeViewTaskFactory;
-import org.cytoscape.view.model.EdgeViewTaskFactory;
-import org.cytoscape.view.model.EmptySpaceTaskFactory;
+import org.cytoscape.task.NodeViewTaskFactory;
+import org.cytoscape.task.EdgeViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.Tunable;
@@ -804,10 +804,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 	private void createEmptySpaceMenu(int x, int y, String action) {
 		// build a menu of actions if more than factory exists
-		Collection<EmptySpaceTaskFactory> usableTFs = getPreferredActions(m_view.emptySpaceTFs,action);
+		Collection<NetworkViewTaskFactory> usableTFs = getPreferredActions(m_view.emptySpaceTFs,action);
 		if ( m_view.emptySpaceTFs.size() > 1 ) {
 			JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
-			for ( EmptySpaceTaskFactory nvtf : usableTFs ) {
+			for ( NetworkViewTaskFactory nvtf : usableTFs ) {
 				String pref = (String)(m_view.emptySpaceTFs.get( nvtf ).get("preferredMenu"));
 				nvtf.setNetworkView(m_view.cyNetworkView);
 				menu.add( createMenuItem( nvtf, pref ) );
@@ -815,7 +815,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			menu.show(this, x, y);
 		// execute the task directly if only one factory exists 
 		} else if ( usableTFs.size() == 1) {
-			EmptySpaceTaskFactory tf = usableTFs.iterator().next();
+			NetworkViewTaskFactory tf = usableTFs.iterator().next();
 			tf.setNetworkView(m_view.cyNetworkView);
 			executeTask(tf);
 		}

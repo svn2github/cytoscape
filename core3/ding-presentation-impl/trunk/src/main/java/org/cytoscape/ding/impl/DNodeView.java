@@ -1273,6 +1273,12 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		else if ( vp == TwoDVisualLexicon.NODE_SELECTED ) {
 			setSelected(((Boolean)o).booleanValue()); 
 		}
+		else if ( vp == TwoDVisualLexicon.NODE_VISIBLE ) {
+			if ( ((Boolean)o).booleanValue() )
+				m_view.showGraphObject(this);
+			else
+				m_view.hideGraphObject(this);
+		}
 		else if ( vp == TwoDVisualLexicon.NODE_COLOR ) { // unselected paint
 			setUnselectedPaint((Paint)o); 
 		}

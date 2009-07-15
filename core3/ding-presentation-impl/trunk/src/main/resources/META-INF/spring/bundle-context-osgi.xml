@@ -48,22 +48,22 @@
 		interface="org.cytoscape.view.model.VisualLexicon">
 	</osgi:service>
 
-	<osgi:set id="nodeViewTaskFactorySet" interface="org.cytoscape.view.model.NodeViewTaskFactory"
+	<osgi:set id="nodeViewTaskFactorySet" interface="org.cytoscape.task.NodeViewTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addNodeViewTaskFactory"
 			unbind-method="removeNodeViewTaskFactory" ref="dingPresentationFactory" />
 	</osgi:set>
 
-	<osgi:set id="edgeViewTaskFactorySet" interface="org.cytoscape.view.model.EdgeViewTaskFactory"
+	<osgi:set id="edgeViewTaskFactorySet" interface="org.cytoscape.task.EdgeViewTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addEdgeViewTaskFactory"
 			unbind-method="removeEdgeViewTaskFactory" ref="dingPresentationFactory" />
 	</osgi:set>
 
-    <osgi:set id="emptySpaceTaskFactorySet" interface="org.cytoscape.view.model.EmptySpaceTaskFactory"
+    <osgi:set id="emptySpaceTaskFactorySet" interface="org.cytoscape.task.NetworkViewTaskFactory"
 	        cardinality="0..N">
-        <osgi:listener bind-method="addEmptySpaceTaskFactory"
-            unbind-method="removeEmptySpaceTaskFactory" ref="dingPresentationFactory" />
+        <osgi:listener bind-method="addNetworkViewTaskFactory"
+            unbind-method="removeNetworkViewTaskFactory" ref="dingPresentationFactory" />
     </osgi:set>
 
 </beans>

@@ -1508,5 +1508,11 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 		else if (vp == TwoDVisualLexicon.EDGE_LABEL_COLOR) {
 			setTextPaint((Paint)o);
 		}
+        else if ( vp == TwoDVisualLexicon.NODE_VISIBLE ) {
+            if ( ((Boolean)o).booleanValue() )
+                m_view.showGraphObject(this);
+            else
+                m_view.hideGraphObject(this);
+        }
 	}
 }
