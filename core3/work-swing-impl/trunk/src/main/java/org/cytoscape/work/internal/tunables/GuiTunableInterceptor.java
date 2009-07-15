@@ -23,11 +23,10 @@ import org.cytoscape.work.spring.SpringTunableInterceptor;
 
 public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> {
 
-	private Component parent=null;
+	private Component parent = null;
 	private Map<java.util.List<Guihandler>,JPanel> panelMap;
 	private java.util.List<Guihandler> lh;
 	private boolean newValuesSet;
-	private JFrame frame = new JFrame("Set Parameters");
 	private Object[] objs;
 	
 	
@@ -45,9 +44,10 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	}
 	
 	
-	//get the value(Handle) of the Tunable if its JPanel is enabled(Dependency)
+	//get the value(Handle) of the Tunable if its JPanel is enabled(Dependency) and check if we have to validate the values of tunables
 	public void handle(){
 		for(Guihandler h: lh)h.handleDependents();
+		validateTunableInput();
 	}
 
 	
@@ -138,20 +138,20 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			((JPanel)parent).removeAll();
 			((JPanel)parent).add(panelMap.get(lh));
 			parent.repaint();
+			parent = null;
 			return true;
 		}
 	}
 	
 
 	private JPanel createJPanel(String title, Guihandler gh,Param alignment,Param groupTitle) {
-		if ( gh == null )
+		if ( gh == null ) 
 			return getSimplePanel(title,alignment,groupTitle);
 
 		// See if we need to create an XOR panel
 		if ( gh.getTunable().xorChildren() ) {
 			JPanel p = new XorPanel(title,gh);
 			return p;
-
 		} else {
 			// Figure out if the collapsable flag is set
 			for ( Param s : gh.getTunable().flag() ) {
@@ -162,20 +162,19 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 					return new CollapsablePanel(title,true);
 				}
 			}
-			
 			// We're not collapsable, so return a normal jpanel
 			return getSimplePanel(title,alignment,groupTitle);
 		}
 	}
 	private JPanel getSimplePanel(String title,Param alignment,Param groupTitle) {
-		JPanel ret = new JPanel();
+		JPanel outPanel = new JPanel();
 		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
 		titleborder.setTitleColor(Color.BLUE);
 		
-		if(groupTitle==Param.displayed || groupTitle==null) ret.setBorder(titleborder);
-		if(alignment==Param.vertical || alignment==null)ret.setLayout(new BoxLayout(ret,BoxLayout.PAGE_AXIS));
-		else if(alignment==Param.horizontal)ret.setLayout(new BoxLayout(ret,BoxLayout.LINE_AXIS));
-		return ret;
+		if(groupTitle == Param.displayed || groupTitle == null) outPanel.setBorder(titleborder);
+		if(alignment == Param.vertical || alignment == null) outPanel.setLayout(new BoxLayout(outPanel,BoxLayout.PAGE_AXIS));
+		else if(alignment == Param.horizontal)outPanel.setLayout(new BoxLayout(outPanel,BoxLayout.LINE_AXIS));
+		return outPanel;
 	}
 
 	
@@ -190,47 +189,36 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		    buttons,
 		    buttons[0]);
 		if ( n == JOptionPane.OK_OPTION ){
-			String valid = null;
 			for ( Guihandler h : lh )h.handleDependents();
-			for(Object o : objs){
-				 Object[] interfaces = o.getClass().getInterfaces();
-				 for(int i=0;i<interfaces.length;i++){
-					if(interfaces[i].equals(TunableValidator.class))valid=((TunableValidator)o).validate();
-				 }
-			}
-			if(valid==null){
-				newValuesSet = true;
-			}
-			else{
-				JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);
-				for(Guihandler h : lh)h.resetValue();
-				displayOptionPanel();
-			}
+			validateTunableInput();
 		}
 		else newValuesSet = false;
 	}
 	
 	
-//	private class myAction implements ActionListener{
-//		public void actionPerformed(ActionEvent ae){
-//			if(ae.getActionCommand().equals("ok")){
-//				String valid = null;
-//				for ( Guihandler h : lh )h.handleDependents();
-//				
-//				for(Object o : objs){
-//					 Object[] interfaces = o.getClass().getInterfaces();
-//					 for(int i=0;i<interfaces.length;i++){
-//						if(interfaces[i].equals(TunableValidator.class)) valid=((TunableValidator)o).validate();
-//					 }
-//				}
-//				if(valid==null){newValuesSet = true;frame.dispose();}
-//				else{JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);displayPanel();}
-//			}
-//			else if(ae.getActionCommand().equals("cancel")){
-//				newValuesSet = false;
-//				frame.dispose();
-//			}
-//		}
-//	}
+	private void validateTunableInput(){
+		String valid = null;
+		for(Object o : objs){
+			 Object[] interfaces = o.getClass().getInterfaces();
+			 for(int i=0;i<interfaces.length;i++){
+				if(interfaces[i].equals(TunableValidator.class))valid=((TunableValidator)o).validate();
+			 }
+		}
+		if(valid == null){
+			newValuesSet = true;
+		}
+		else{
+			JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);
+			for(Guihandler h : lh)h.resetValue();
+			if(parent == null)
+				displayOptionPanel();
+			else{
+				((JPanel)parent).removeAll();
+				((JPanel)parent).add(panelMap.get(lh));
+				parent.repaint();
+			}
+		}
+		parent = null;
+	}
 
 }
