@@ -18,18 +18,50 @@ import org.cytoscape.work.AbstractHandler;
 import org.cytoscape.work.Tunable; 
 
 
-
+/**
+ * Abstract handler for the creation of the GUI.
+ * <br>
+ * It provides the functions that are common to all types of Handlers
+ */
 public abstract class AbstractGuiHandler extends AbstractHandler implements Guihandler, ActionListener,ChangeListener,ListSelectionListener {
 
+	/**
+	 * <code>JPanel</code> that will contain the GUI object that represents in the best way the <code>Tunable</code> to the user 
+	 */
 	protected JPanel panel;
 
+	/**
+	 * <pre>
+	 * If this <code>Tunable</code> has a dependency on another <code>Tunable</code>, 
+	 * it represents the name of this dependency (i.e name of the other <code>Tunable</code>
+	 * </pre>
+	 */
     private String depName;
+    
+    /**
+     * <pre>
+     * Represents the state of the dependency :
+     * could be : "true, false, an item of a <code>ListSelection</code>, a value ..."
+     * </pre>
+     */
     private String depState;
 
+    
     private String depUnState;
     
+    
+    /**
+     * The list of dependencies between the <code>Guihandlers</code>
+     */
 	private List<Guihandler> deps;
 
+	/**
+	 * Constructs an Abstract GuiHandler
+	 * 
+	 * @param f Field that is intercepted
+	 * @param o Object that is contained in the Field <code>f</code>
+	 * @param t <code>Tunable</code> annotations of the Field <code>f</code> annotated as <code>Tunable</code>
+	 */
 	protected AbstractGuiHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
         String s = t.dependsOn();
@@ -50,26 +82,32 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 		panel = new JPanel();
 	}
 
+
 	public void actionPerformed(ActionEvent ae) {
-//		handle();
 		notifyDependents();
 	}
 
+	/**
+	 * Notify a change of state of a <code>Guihandler</code>
+	 */
 	public void stateChanged(ChangeEvent e){
-//		handle();
 		notifyDependents();
 	}
 	
+	/**
+	 * Notify a change during the selection of an item in the <code>ListSelection</code> objects
+	 */
     public void valueChanged(ListSelectionEvent le) {
     	boolean ok = le.getValueIsAdjusting();
     	if(!ok){
-//   		handle();
     		notifyDependents();
     	}
     }
 
 	
-	// notify dependencies that this object is changing
+	/**
+	 *  Notify dependencies that this object is changing
+	 */
 	public void notifyDependents() {
 		String state = getState();
 		String name = getName();
@@ -77,21 +115,43 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 		gh.checkDependency( name, state );
 	}
 
-	// add a dependency on this object 
+	/**
+	 *  Add a dependency on this object 
+	 */
 	public void addDependent(Guihandler gh) {
 		//System.out.println("adding " + gh.getName() + " dependent to " + this.getName() );
 		if ( !deps.contains(gh) )
 			deps.add(gh);
 	}
+	
 
+	/**
+	 * To get the name of the dependency of this <code>Guihandler</code>
+	 * @return the name of the dependency
+	 */
 	public String getDependency() {
 		return depName;
 	}
 
+	/**
+	 * Get the new "values" for the <code>Tunables</code> object that have been modified if their JPanel is enabled
+	 */
 	public void handleDependents(){
 		if(panel.isEnabled())handle();
 	}
 	
+	/**
+	 * To check the dependencies of this <code>Guihandler</code> with the others.
+	 * 
+	 * 
+	 * <p><pre>
+	 * Check the dependencies :
+	 * 
+	 *  - if there isn't any dependency, the JPanel container is enabled
+	 *  - if there is, enable or not the JPanel, depending on the name (<code>depName</code>) and the state(<code>depState</code>)
+	 *  of the dependencies of this <code>Guihandler</code>
+	 *  </pre></p>
+	 */
 	public void checkDependency(String name, String state) {
 		// if we don't depend on anything, then we should be enabled
 		if ( depName == null || depState == null ) {
@@ -128,6 +188,12 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
         return;
 	}
 
+	/**
+	 * Set enable or not a container and all the components that are in it
+	 * 
+	 * @param enable if we enable or not the container
+	 * @param c the container that will be enabled or not
+	 */
 	private void setEnabledContainer(boolean enable, Container c) {
 		c.setEnabled(enable);
 		for ( Component child : c.getComponents() ) {
@@ -138,6 +204,10 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 		}
 	}
 
+	/**
+	 * To get the name of the <code>Guihandler</code>
+	 * @return the name of the <code>Guihandler</code>
+	 */
 	public String getName() {
         if ( f != null ) {
             return f.getName();
@@ -147,6 +217,10 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
             return "";
 	}
 
+	/**
+	 * To get the <code>JPanel</code> container
+	 * @return the <code>JPanel</code> container of the <code>Guihandler</code>
+	 */
 	public JPanel getJPanel() {
 		return panel;
 	}
