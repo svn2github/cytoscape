@@ -288,23 +288,25 @@
 	<!-- destruction --> 
 	<osgi:service id="destroyNetworkTaskFactoryService" 
 	    ref="destroyNetworkTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkCollectionTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Destroy Network" />
 			<entry key="preferredMenu" value="Edit" />
 			<entry key="enableFor" value="network" />
 			<entry key="accelerator" value="cmd shift w"/>
+			<entry key="scope" value="limited"/>
 		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="destroyNetworkViewTaskFactoryService" 
 	    ref="destroyNetworkViewTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewCollectionTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Destroy View" />
 			<entry key="preferredMenu" value="Edit" />
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="accelerator" value="cmd w"/>
+			<entry key="scope" value="limited"/>
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -375,6 +377,7 @@
 			<entry key="title" value="Network Title..." />
 			<entry key="preferredMenu" value="Edit" />
 			<entry key="enableFor" value="network" />
+			<entry key="scope" value="limited"/>
 		</osgi:service-properties>
 	</osgi:service>
 

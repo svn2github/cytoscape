@@ -37,26 +37,25 @@
 package org.cytoscape.task.internal.destruction;
 
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.task.AbstractNetworkViewCollectionTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import java.util.List; 
+import java.util.Collection; 
 
 
-public class DestroyNetworkViewTask implements Task {
+public class DestroyNetworkViewTask extends AbstractNetworkViewCollectionTask {
 
 	private CyNetworkManager netmgr;
 
-	public DestroyNetworkViewTask(CyNetworkManager netmgr) {
+	public DestroyNetworkViewTask(Collection<CyNetworkView> views, CyNetworkManager netmgr) {
+		super(views);
 		this.netmgr = netmgr;
 	}
 
 	public void run(TaskMonitor tm) {
-		List<CyNetworkView> l = netmgr.getSelectedNetworkViews();
-		for ( CyNetworkView n : l )
+		for ( CyNetworkView n : networkViews )
 			netmgr.destroyNetworkView(n);
 	}
-
-	public void cancel() {} 
 }

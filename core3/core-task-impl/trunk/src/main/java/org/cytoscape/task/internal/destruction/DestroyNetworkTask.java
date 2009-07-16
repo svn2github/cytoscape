@@ -40,23 +40,22 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.task.AbstractNetworkCollectionTask;
 
-import java.util.List;
+import java.util.Collection;
 
 
-public class DestroyNetworkTask implements Task {
+public class DestroyNetworkTask extends AbstractNetworkCollectionTask {
 
 	private CyNetworkManager netmgr;
 
-	public DestroyNetworkTask(CyNetworkManager netmgr) {
+	public DestroyNetworkTask(Collection<CyNetwork> nets, CyNetworkManager netmgr) {
+		super(nets);
 		this.netmgr = netmgr;
 	}
 
 	public void run(TaskMonitor tm) {
-		List<CyNetwork> l = netmgr.getSelectedNetworks();
-		for ( CyNetwork n : l )
+		for ( CyNetwork n : networks )
 			netmgr.destroyNetwork(n);
 	}
-
-	public void cancel() {} 
 }

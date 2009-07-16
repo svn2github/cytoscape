@@ -40,16 +40,18 @@ package org.cytoscape.task.internal.destruction;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.task.AbstractNetworkViewCollectionTaskFactory;
 
-public class DestroyNetworkViewTaskFactory implements TaskFactory {
+public class DestroyNetworkViewTaskFactory extends AbstractNetworkViewCollectionTaskFactory {
 
 	private CyNetworkManager netmgr;
 
 	public DestroyNetworkViewTaskFactory(CyNetworkManager netmgr) {
+		super();
 		this.netmgr = netmgr;
 	}
 
 	public Task getTask() {
-		return new DestroyNetworkViewTask(netmgr);
+		return new DestroyNetworkViewTask(networkViews,netmgr);
 	} 
 }
