@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.ListModel;
@@ -12,9 +13,9 @@ import javax.swing.table.TableCellRenderer;
 public class ComboCellRenderer extends JComboBox implements TableCellRenderer {
 	private DefaultComboBoxModel model;
 
-	public ComboCellRenderer(JComboBox base) {
+	public ComboCellRenderer(DefaultListModel model) {
 		super();
-		this.initialize(base.getModel());
+		this.initialize(model);
 	}
 
 	public void initialize(ListModel listModel) {
