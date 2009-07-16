@@ -67,8 +67,8 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 				((JPanel)parent).removeAll();
 				((JPanel)parent).repaint();
 				parent = null;
-				return true;
 			}
+			return true;			
 		}
 
 		if ( !panelMap.containsKey( lh ) ) {
@@ -137,7 +137,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			h.notifyDependents();
 
 		//if no parent is defined, then create a new JDialog to display the Tunables' panels
-		if(parent==null){
+		if(parent == null){
 			displayOptionPanel();
 			return newValuesSet;
 		}
@@ -195,6 +195,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		    null,
 		    buttons,
 		    buttons[0]);
+		System.out.println("ACCESSSS");
 		if ( n == JOptionPane.OK_OPTION ){
 			for ( Guihandler h : lh )h.handleDependents();
 			validateTunableInput();
