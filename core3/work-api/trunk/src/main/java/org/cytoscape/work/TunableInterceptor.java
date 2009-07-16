@@ -67,6 +67,11 @@ public interface TunableInterceptor<T extends Handler> {
 	 * Use to apply the new values that have been modified to the original Objects.
 	 * This method will set the value for the Object of each <code>Guihandler</code> taken from the <code>Map</code> that is containing the <code>Handlers</code>.<br>
 	 * Important : the value of the <code>Guihandler</code> will be set only if its JPanel is valid.
+	 * @return boolean The success or failure of the validation of <code>Tunables</code>' values depending on <code>validate</code> method from <code>TunableValidator</code> interface.
+	 * <p><pre>
+	 * True if the validation of <code>Tunables</code> values is a success : the following tasks can then be executed
+	 * 
+	 * False if an exception is thrown(from <code>TunableValidator</code>) and so the tasks won't be performed
 	 */
-	void handle();
+	boolean handle();
 }

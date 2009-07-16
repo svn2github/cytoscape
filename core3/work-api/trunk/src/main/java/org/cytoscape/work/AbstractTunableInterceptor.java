@@ -201,5 +201,5 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 	 */
 	public abstract boolean createUI(Object... objs);
 	public abstract void setParent(Object o);
-	public abstract void handle();
+	public abstract boolean handle();
 }
