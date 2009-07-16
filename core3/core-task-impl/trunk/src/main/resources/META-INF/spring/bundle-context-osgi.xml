@@ -381,6 +381,16 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="createNetworkViewTaskFactoryService" ref="createNetworkViewTaskFactory"
+		interface="org.cytoscape.task.NetworkTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Create View" />
+			<entry key="preferredMenu" value="Edit" />
+			<entry key="enableFor" value="network" />
+			<entry key="scope" value="limited" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	<!--
 		<osgi:service id="newSessionTaskFactoryService"
 		ref="newSessionTaskFactory"

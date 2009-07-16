@@ -239,4 +239,10 @@
 	<bean id="editNetworkTitleTaskFactory" 
 	      class="org.cytoscape.task.internal.title.EditNetworkTitleTaskFactory">
 	</bean>
+
+	<bean id="createNetworkViewTaskFactory" 
+	      class="org.cytoscape.task.internal.creation.CreateNetworkViewTaskFactory">
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
 </beans>
