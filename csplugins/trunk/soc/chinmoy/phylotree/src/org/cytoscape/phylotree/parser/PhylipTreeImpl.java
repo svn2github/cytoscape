@@ -137,7 +137,6 @@ public class PhylipTreeImpl implements Phylotree {
       
     }
    
-    System.out.println(list);
     // Refine the list
     
     ListIterator<String> ite = list.listIterator();
@@ -212,7 +211,6 @@ public class PhylipTreeImpl implements Phylotree {
     }
    // list.add(";");
     
-    System.out.println(list);
     return list;
  }
 
@@ -347,7 +345,7 @@ public class PhylipTreeImpl implements Phylotree {
       childNode.nodeEdges.add(edge);
 
       //Used during development
-      System.out.println(edge.getSourceNode().getName()+"<-->"+edge.getTargetNode().getName()+":"+edgeLength);
+   //   System.out.println(edge.getSourceNode().getName()+"<-->"+edge.getTargetNode().getName()+":"+edgeLength);
 
 
      }
