@@ -1,6 +1,6 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -32,32 +32,33 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package cytoscape.internal.dialogs;
-
-
-import javax.swing.JFrame;
-import java.util.Properties;
-import org.cytoscape.event.CyEventHelper;
-import cytoscape.util.ProxyHandler;
-import cytoscape.dialogs.ProxyServerDialog;
-import cytoscape.dialogs.ProxyServerDialogFactory;
-
-/**
  */
-public class ProxyServerDialogFactoryImpl implements ProxyServerDialogFactory {
 
-	private CyEventHelper eh;
-	private ProxyHandler ph;
-	private Properties props;
+package cytoscape.internal.task;
 
-	public ProxyServerDialogFactoryImpl(Properties props, ProxyHandler ph, CyEventHelper eh) {
-		this.props = props;
-		this.ph = ph;
-		this.eh = eh;
+import java.awt.event.ActionEvent;
+
+import java.util.Map;
+
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.TaskManager;
+
+import cytoscape.util.CytoscapeAction;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.task.NetworkCollectionTaskFactory;
+
+public class NetworkCollectionTaskFactoryTunableAction 
+	extends TaskFactoryTunableAction<NetworkCollectionTaskFactory> {
+
+	public NetworkCollectionTaskFactoryTunableAction(TaskManager manager, TunableInterceptor interceptor, 
+	                  NetworkCollectionTaskFactory factory, Map serviceProps,
+					  CyNetworkManager netmgr) {
+		super(manager, interceptor, factory, serviceProps, netmgr);
 	}
 
-	public ProxyServerDialog getProxyServerDialog(JFrame parent) {
-		return new ProxyServerDialogImpl(parent,props,ph,eh);	
+	public void actionPerformed(ActionEvent a) {
+		factory.setNetworkCollection( netmgr.getSelectedNetworks() );
+		super.actionPerformed(a);
 	}
 }

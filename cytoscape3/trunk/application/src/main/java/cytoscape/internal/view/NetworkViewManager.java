@@ -50,6 +50,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRowListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.view.presentation.Renderer;
@@ -101,6 +102,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	//TODO: for now, use this as default.  But in the future, we should provide UI to select presentation.
 	private static final String DEFAULT_PRESENTATION = "ding";
 
+	private Map<CyNetwork,CyRowListener> nameListeners;
 	
 	/**
 	 * Creates a new NetworkViewManager object.
@@ -124,6 +126,8 @@ public class NetworkViewManager implements InternalFrameListener,
 		presentationMap = new HashMap<Long, Renderer<CyNetworkView>>();
 		componentMap = new HashMap<JInternalFrame, Long>();
 		currentViewId = null;
+
+		nameListeners = new HashMap<CyNetwork,CyRowListener>();
 	}
 	
 	/**
@@ -190,7 +194,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	 * @param network
 	 *            DOCUMENT ME!
 	 */
-	public void updateNetworkTitle(CyNetwork network) {
+	private void updateNetworkTitle(CyNetwork network) {
 		JInternalFrame frame = networkViewMap.get(network.getSUID());
 
 		frame.setTitle(network.attrs().get("name", String.class));
@@ -331,6 +335,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		System.out.println("NetworkViewManager - network view added: "
 				+ nvae.getNetworkView().getSource().getSUID());
 		createContainer(nvae.getNetworkView());
+
 	}
 
 	protected void removeView(CyNetworkView view) {
@@ -341,6 +346,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		}
 
 		networkViewMap.remove(view.getSource().getSUID());
+		nameListeners.remove(view.getSource());
 	}
 
 	/**
@@ -417,5 +423,22 @@ public class NetworkViewManager implements InternalFrameListener,
 		Long sourceNetwork = view.getSource().getSUID();
 		netmgr.setCurrentNetworkView(sourceNetwork);
 		netmgr.setCurrentPresentation(presentationMap.get(sourceNetwork));
+
+		updateNetworkTitle( view.getSource() );	
+
+		nameListeners.put(view.getSource(), new NetworkNameListener(view.getSource()) );
 	}
+
+    private class NetworkNameListener implements CyRowListener {
+        private CyNetwork net;
+        public NetworkNameListener(CyNetwork net) {
+            this.net = net;
+            net.attrs().addRowListener(this);
+        }
+        public void rowSet(String col, Object value) {
+            if ( "name".equals(col) ) {
+                updateNetworkTitle(net);
+            }
+        }
+    }
 }

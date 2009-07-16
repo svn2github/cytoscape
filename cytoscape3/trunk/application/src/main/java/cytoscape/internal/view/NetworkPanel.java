@@ -46,6 +46,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import javax.swing.InputMap;
 import javax.swing.JMenuItem;
@@ -66,6 +67,7 @@ import javax.swing.tree.TreePath;
 
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRowListener;
 import org.cytoscape.model.events.SelectedEdgesEvent;
 import org.cytoscape.model.events.SelectedEdgesListener;
 import org.cytoscape.model.events.SelectedNodesEvent;
@@ -76,6 +78,12 @@ import org.cytoscape.model.events.UnselectedNodesEvent;
 import org.cytoscape.model.events.UnselectedNodesListener;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TunableInterceptor;
+
+import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.task.NetworkViewCollectionTaskFactory;
+import org.cytoscape.task.NetworkCollectionTaskFactory;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkAboutToBeDestroyedEvent;
@@ -96,6 +104,12 @@ import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
 import cytoscape.xtask.CreateNetworkPresentationTaskFactory;
 
+import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
+import cytoscape.internal.task.NetworkTaskFactoryTunableAction;
+import cytoscape.internal.task.NetworkViewCollectionTaskFactoryTunableAction;
+import cytoscape.internal.task.NetworkCollectionTaskFactoryTunableAction;
+import cytoscape.internal.task.TaskFactoryTunableAction;
+
 /**
  *
  */
@@ -110,36 +124,33 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	private final NetworkTreeNode root;
 	private JPanel navigatorPanel;
 	private JPopupMenu popup;
-	private PopupActionListener popupActionListener;
-	private JMenuItem createViewItem;
-	private JMenuItem destroyViewItem;
-	private JMenuItem destroyNetworkItem;
-	private JMenuItem editNetworkTitle;
 	private JSplitPane split;
 	private final NetworkTreeTableModel treeTableModel;
 	private final CyNetworkManager netmgr;
-	private final NetworkViewManager viewmgr;
 	private Long currentNetId;
 	private final TaskManager taskManager;
 	private final CreateNetworkPresentationTaskFactory viewFactory;
 	private final CyNetworkNaming naming;
+	private Map<TaskFactory,JMenuItem> popupMap;
+	private final TunableInterceptor tunableInterceptor;
+	private Map<CyNetwork,CyRowListener> nameListeners;
+
 
 	/**
 	 * Constructor for the Network Panel.
 	 * 
 	 * @param desktop
 	 */
-	public NetworkPanel(final NetworkViewManager viewmgr,
-			final CyNetworkManager netmgr, final BirdsEyeViewHandler bird,
+	public NetworkPanel( final CyNetworkManager netmgr, final BirdsEyeViewHandler bird,
 			final TaskManager taskManager,
 			final CreateNetworkPresentationTaskFactory viewFactory,
-			CyNetworkNaming naming) {
+			CyNetworkNaming naming, final TunableInterceptor tunableInterceptor) {
 		super();
 		this.netmgr = netmgr;
-		this.viewmgr = viewmgr;
 		this.taskManager = taskManager;
 		this.viewFactory = viewFactory;
 		this.naming = naming;
+		this.tunableInterceptor = tunableInterceptor;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
@@ -147,6 +158,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		initialize();
 		setNavigator(bird.getBirdsEyeView());
 		currentNetId = null;
+		nameListeners = new HashMap<CyNetwork,CyRowListener>();
 
 		/*
 		 * Remove CTR-A for enabling select all function in the main window.
@@ -159,7 +171,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 				treeTable.setInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, map);
 			}
 		}
-
 	}
 
 	protected void initialize() {
@@ -190,41 +201,75 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 
 		add(split);
 
-		/*
-		 * this mouse listener listens for the right-click event and will show
-		 * the pop-up window when that occurrs
-		 */
+		// this mouse listener listens for the right-click event and will show
+		// the pop-up window when that occurrs
 		treeTable.addMouseListener(new PopupListener());
 
 		// create and populate the popup window
 		popup = new JPopupMenu();
-		editNetworkTitle = new JMenuItem(PopupActionListener.EDIT_TITLE);
-		createViewItem = new JMenuItem(PopupActionListener.CREATE_VIEW);
-		destroyViewItem = new JMenuItem(PopupActionListener.DESTROY_VIEW);
-		destroyNetworkItem = new JMenuItem(PopupActionListener.DESTROY_NETWORK);
-
-		// action listener which performs the tasks associated with the popup
-		// listener
-		popupActionListener = new PopupActionListener(this, netmgr,
-				taskManager, viewFactory, naming);
-		editNetworkTitle.addActionListener(popupActionListener);
-		createViewItem.addActionListener(popupActionListener);
-		destroyViewItem.addActionListener(popupActionListener);
-		destroyNetworkItem.addActionListener(popupActionListener);
-		popup.add(editNetworkTitle);
-		popup.add(createViewItem);
-		popup.add(destroyViewItem);
-		popup.add(destroyNetworkItem);
-	}
-	
-	public void addContextMenu(TaskFactory factory, Map props) {
-		System.out.println("\n\n\n-----> Adding context menu for network panel\n\n\n");
-	}
-	
-	public void removeContextMenu(TaskFactory factory, Map props) {
-		
+		popupMap = new HashMap<TaskFactory,JMenuItem>();
 	}
 
+	public void addTaskFactory(TaskFactory factory, Map props) {
+		JMenuItem item = new JMenuItem( new TaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		popupMap.put(factory,item);
+		popup.add(item);
+	}
+
+	public void removeTaskFactory(TaskFactory factory, Map props) {
+		JMenuItem item = popupMap.remove(factory);
+		if ( item != null ) 
+			popup.remove(item);
+	}
+
+	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
+		JMenuItem item = new JMenuItem( new NetworkCollectionTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		popupMap.put(factory,item);
+		popup.add(item);
+	}
+
+	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
+		JMenuItem item = popupMap.remove(factory);
+		if ( item != null ) 
+			popup.remove(item);
+	}
+
+	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
+		JMenuItem item = new JMenuItem( new NetworkViewCollectionTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		popupMap.put(factory,item);
+		popup.add(item);
+	}
+
+	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
+		JMenuItem item = popupMap.remove(factory);
+		if ( item != null ) 
+			popup.remove(item);
+	}
+
+	public void addNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
+		JMenuItem item = new JMenuItem( new NetworkTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		popupMap.put(factory,item);
+		popup.add(item);
+	}
+
+	public void removeNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
+		JMenuItem item = popupMap.remove(factory);
+		if ( item != null ) 
+			popup.remove(item);
+	}
+
+	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
+		JMenuItem item = new JMenuItem( new NetworkViewTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		popupMap.put(factory,item);
+		popup.add(item);
+	}
+
+	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
+		JMenuItem item = popupMap.remove(factory);
+		if ( item != null ) 
+			popup.remove(item);
+	}
+	
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -283,37 +328,35 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 * 
 	 * @param network
 	 */
-	public void updateTitle(final CyNetwork network) {
+	private void updateTitle(final CyNetwork network, final String name) {
 		// updates the title in the network panel
 		if (treeTable.getTree().getSelectionPath() != null) { // user has
 																// selected
 																// something
-			treeTableModel.setValueAt(
-					network.attrs().get("name", String.class), treeTable
+			treeTableModel.setValueAt( name, treeTable
 							.getTree().getSelectionPath()
 							.getLastPathComponent(), 0);
 		} else { // no selection, means the title has been changed
 					// programmatically
 			NetworkTreeNode node = getNetworkNode(network.getSUID());
-			treeTableModel.setValueAt(
-					network.attrs().get("name", String.class), node, 0);
+			treeTableModel.setValueAt( name, node, 0);
 		}
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
-		// updates the title in the networkViewMap
-		viewmgr.updateNetworkTitle(network);
 	}
 
 	public void handleEvent(NetworkAboutToBeDestroyedEvent nde) {
 		System.out.println("NetworkPanel: network about to be destroyed "
 				+ nde.getNetwork().getSUID());
 		removeNetwork(nde.getNetwork().getSUID());
+		nameListeners.remove(nde.getNetwork());
 	}
 
 	public void handleEvent(NetworkAddedEvent e) {
 		System.out.println("NetworkPanel: network added "
 				+ e.getNetwork().getSUID());
 		addNetwork(e.getNetwork().getSUID(), -1l);
+		nameListeners.put(e.getNetwork(),new NetworkNameListener(e.getNetwork()));
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
@@ -376,7 +419,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 * @param parent_id
 	 *            DOCUMENT ME!
 	 */
-	public void addNetwork(Long network_id, Long parent_id) {
+	private void addNetwork(Long network_id, Long parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
 			// System.out.println("NetworkPanel: addNetwork " + network_id);
@@ -643,7 +686,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 * click) it will pop up the menu with option for destroying view, creating
 	 * view, and destroying network (this is platform specific apparently)
 	 */
-	protected class PopupListener extends MouseAdapter {
+	private class PopupListener extends MouseAdapter {
 		/**
 		 * Don't know why you need both of these, but this is how they did it in
 		 * the example
@@ -679,28 +722,22 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 					CyNetwork cyNetwork = netmgr.getNetwork(networkID);
 
 					if (cyNetwork != null) {
-						/*
-						 * disable or enable specific options with respect to
-						 * the actual network that is selected
-						 */
-						if (netmgr.viewExists(networkID)) {
-							// disable the view creation item
-							createViewItem.setEnabled(false);
-							destroyViewItem.setEnabled(true);
-						} // end of if ()
-						else {
-							createViewItem.setEnabled(true);
-							destroyViewItem.setEnabled(false);
-						} /*
-						 * end of else let the actionlistener know which network
-						 * it should be operating on when (if) it is called
-						 */
-
-						popupActionListener.setActiveNetwork(cyNetwork);
-						// display the popup
 						popup.show(e.getComponent(), e.getX(), e.getY());
 					}
 				}
+			}
+		}
+	}
+
+	private class NetworkNameListener implements CyRowListener {
+		private CyNetwork net;
+		public NetworkNameListener(CyNetwork net) {
+			this.net = net;
+			net.attrs().addRowListener(this);
+		}
+		public void rowSet(String col, Object value) {
+			if ( "name".equals(col) ) {
+				updateTitle(net,(String)value);
 			}
 		}
 	}

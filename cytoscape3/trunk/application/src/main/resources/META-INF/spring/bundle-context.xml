@@ -61,12 +61,6 @@
 		<constructor-arg ref="cyOperatingContext" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
-	<bean name="proxyServerDialogFactory"
-		class="cytoscape.internal.dialogs.ProxyServerDialogFactoryImpl">
-		<constructor-arg ref="cytoscapeProperties" />
-		<constructor-arg ref="proxyHandler" />
-		<constructor-arg ref="cyEventHelperServiceRef" />
-	</bean>
 
 	<bean name="bookmarkDialogFactory" class="cytoscape.internal.dialogs.BookmarkDialogFactoryImpl">
 		<constructor-arg ref="bookmarkServiceRef" />
@@ -99,12 +93,12 @@
 	</bean>
 
 	<bean name="networkPanel" class="cytoscape.internal.view.NetworkPanel">
-		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="birdsEyeViewHandler" />
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="createNetworkPresentationTaskFactory" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
+		<constructor-arg ref="tunableInterceptorServiceRef" />
 	</bean>
 
 	<bean name="cytoStatusBarImpl" class="cytoscape.internal.view.CytoStatusBarImpl">
@@ -161,11 +155,6 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="bookmarkDialogFactory" />
-	</bean>
-	<bean id="proxyServerAction" class="cytoscape.actions.ProxyServerAction">
-		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="proxyServerDialogFactory" />
 	</bean>
 	<!--
 	<bean id="alphabeticalSelectionAction" class="cytoscape.actions.AlphabeticalSelectionAction">
