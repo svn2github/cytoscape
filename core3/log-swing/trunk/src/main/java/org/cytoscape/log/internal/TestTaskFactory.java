@@ -28,7 +28,7 @@ class TestTask implements Task
 
 	public void run(TaskMonitor taskMonitor)
 	{
-		Logger logger = Logger.getLogger("org.cytoscape.userlog");
+		Logger logger = Logger.getLogger("org.cytoscape.userlog2");
 		if (i == 0)
 			logger.error("Happiness is a warm gun");
 		else if (i == 1)

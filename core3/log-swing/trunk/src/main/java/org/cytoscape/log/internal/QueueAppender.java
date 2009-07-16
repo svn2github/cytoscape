@@ -8,6 +8,9 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Layout;
 
+/**
+ * @author Pasteur
+ */
 class QueueAppender extends AppenderSkeleton implements Appender
 {
 	final Queue<LoggingEvent> queue;

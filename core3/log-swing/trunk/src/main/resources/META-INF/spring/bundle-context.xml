@@ -18,6 +18,12 @@
 
 	<bean id="consoleTaskFactory" class="org.cytoscape.log.internal.ConsoleTaskFactory">
 		<constructor-arg ref="cytoStatusBarRef" />
+		<constructor-arg ref="cySwingApplicationRef" />
+	</bean>
+
+	<bean id="developerLogTaskFactory" class="org.cytoscape.log.internal.DeveloperLogTaskFactory">
+		<constructor-arg ref="cySwingApplicationRef" />
+		<constructor-arg ref="taskManagerRef" />
 	</bean>
 
 	<bean id="testTaskFactory" class="org.cytoscape.log.internal.TestTaskFactory">

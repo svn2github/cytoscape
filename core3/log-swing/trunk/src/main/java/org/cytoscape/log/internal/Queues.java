@@ -4,6 +4,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.spi.LoggingEvent;
 
+/**
+ * @author Pasteur
+ */
 class Queues
 {
 	static BlockingQueue<LoggingEvent> userLogQueue = new LinkedBlockingQueue<LoggingEvent>();

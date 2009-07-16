@@ -24,6 +24,8 @@ import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import cytoscape.view.CySwingApplication;
+
 /**
  * @author Pasteur
  */
@@ -32,12 +34,14 @@ public class ConsoleTaskFactory implements TaskFactory
 	final BlockingQueue<LoggingEvent> internalQueue;
 	final ExecutorService service;
 	final CytoStatusBar statusBar;
+	final CySwingApplication app;
 
 	ConsoleDialog dialog = null;
 
-	public ConsoleTaskFactory(CytoStatusBar statusBar)
+	public ConsoleTaskFactory(CytoStatusBar statusBar, CySwingApplication app)
 	{
 		this.statusBar = statusBar;
+		this.app = app;
 		internalQueue = new LinkedBlockingQueue<LoggingEvent>();
 		service = Executors.newFixedThreadPool(2, new LowPriorityDaemonThreadFactory());
 
@@ -55,7 +59,7 @@ public class ConsoleTaskFactory implements TaskFactory
 	{
 		if (dialog == null)
 		{
-			dialog = new ConsoleDialog(statusBar);
+			dialog = new ConsoleDialog(statusBar, app);
 			ConsoleDialogUpdater updater = new ConsoleDialogUpdater(dialog, internalQueue);
 			service.submit(updater);
 		}
@@ -83,40 +87,27 @@ public class ConsoleTaskFactory implements TaskFactory
 	}
 }
 
-class ConsoleDialogUpdater implements Runnable
+class ConsoleDialogUpdater extends QueueProcesser
 {
 	static DateFormat DATE_FORMATTER = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
 	final ConsoleDialog dialog;
-	final BlockingQueue<LoggingEvent> internalQueue;
 
 	public ConsoleDialogUpdater(ConsoleDialog dialog, BlockingQueue<LoggingEvent> internalQueue)
 	{
+		super(internalQueue);
 		this.dialog = dialog;
-		this.internalQueue = internalQueue;
 	}
 
-	public void run()
+	public void processEvent(LoggingEvent event)
 	{
-		while (true)
-		{
-			LoggingEvent event = null;
-			try
-			{
-				event = internalQueue.take();
-			}
-			catch (InterruptedException e)
-			{
-				break;
-			}
-			String message = event.getMessage().toString();
-			String timeStamp = DATE_FORMATTER.format(new Date(event.getTimeStamp()));
-			dialog.append(event.getLevel(), message, timeStamp);
-		}
+		String message = event.getMessage().toString();
+		String timeStamp = DATE_FORMATTER.format(new Date(event.getTimeStamp()));
+		dialog.append(event.getLevel(), message, timeStamp);
 	}
 }
 
-class StatusBarUpdater implements Runnable
+class StatusBarUpdater extends QueueProcesser
 {
 	static final Map<Integer,String> LEVEL_TO_ICON_MAP = new TreeMap<Integer,String>();
 	static
@@ -142,31 +133,16 @@ class StatusBarUpdater implements Runnable
 
 	public StatusBarUpdater(CytoStatusBar statusBar, BlockingQueue<LoggingEvent> internalQueue)
 	{
+		super(Queues.getUserLogQueue());
 		this.statusBar = statusBar;
 		this.internalQueue = internalQueue;
 	}
 
-	public void run()
+	public void processEvent(LoggingEvent event)
 	{
-		final BlockingQueue<LoggingEvent> queue = Queues.getUserLogQueue();
-
-		while (true)
-		{
-			LoggingEvent event = null;
-			try
-			{
-				event = queue.take();
-			}
-			catch (InterruptedException e)
-			{
-				break;
-			}
-
-			String message = event.getMessage().toString();
-			ImageIcon icon = getIcon(event.getLevel().toInt());
-			statusBar.setMessage(message, icon);
-
-			internalQueue.offer(event);
-		}
+		String message = event.getMessage().toString();
+		ImageIcon icon = getIcon(event.getLevel().toInt());
+		statusBar.setMessage(message, icon);
+		internalQueue.offer(event);
 	}
 }

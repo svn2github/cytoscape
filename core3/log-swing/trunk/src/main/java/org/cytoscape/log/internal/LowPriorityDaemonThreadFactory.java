@@ -2,6 +2,9 @@ package org.cytoscape.log.internal;
 
 import java.util.concurrent.ThreadFactory;
 
+/**
+ * @author Pasteur
+ */
 class LowPriorityDaemonThreadFactory implements ThreadFactory
 {
 	public Thread newThread(Runnable r)

@@ -10,14 +10,26 @@ import javax.swing.text.html.*;
 
 import org.apache.log4j.Level;
 import org.cytoscape.log.statusbar.CytoStatusBar;
+import cytoscape.view.CySwingApplication;
 
 /**
+ * Displays the Console's dialog.
+ * This class does not read the output of the user log;
+ * it only specifies the user interface.
  * @author Pasteur
  */
 class ConsoleDialog extends JDialog
 {
+	/**
+	 * Messages in the Console alternate background colors to improve readability.
+	 * The COLOR_PARITY variables specify the colors of the background.
+	 */
 	final static String COLOR_PARITY_TRUE  = "ffffff";
 	final static String COLOR_PARITY_FALSE = "eeeeee";
+
+	/**
+	 * The HTML template for each message in the Console.
+	 */
 	final static String ENTRY_TEMPLATE
 		= "<html><body bgcolor=\"#%s\">"
 		+ "<table border=0 width=\"100%%\" cellspacing=5>"
@@ -25,6 +37,10 @@ class ConsoleDialog extends JDialog
 		+ "<td><h3>%s</h3></td></tr>"
 		+ "<tr><td></td><td><font size=\"-2\" color=\"#555555\">"
 		+ "%s</font></td></tr></table></body></html>";
+	
+	/**
+	 * The icons to use for each log message level.
+	 */
 	static final Map<Integer,String> LEVEL_TO_ICON_MAP = new TreeMap<Integer,String>();
 	static
 	{
@@ -36,6 +52,10 @@ class ConsoleDialog extends JDialog
 		LEVEL_TO_ICON_MAP.put(Level.WARN.toInt(),	"console-warning.png");
 	}
 
+	/**
+	 * Retrieves the icon from LEVEL_TO_ICON_MAP, defaulting to "console-info" if
+	 * level is not found.
+	 */
         static String getIcon(int level)
         {
 		String path = LEVEL_TO_ICON_MAP.get(level);
@@ -43,8 +63,18 @@ class ConsoleDialog extends JDialog
 			path = "console-info.png";
 		return path;
         }
+
+	/**
+	 * The resource path to the base HTML file. When the Console is empty,
+	 * it displays the base HTML file.
+	 */
 	final static String BASE_HTML_PATH = "/consoledialogbase.html";
 
+	/**
+	 * A reference to the status bar is needed because
+	 * when the user clicks the Clear button,
+	 * this will also clear the status bar.
+	 */
 	CytoStatusBar statusBar;
 	JEditorPane editorPane;
 	HTMLDocument document;
@@ -52,9 +82,9 @@ class ConsoleDialog extends JDialog
 	boolean colorParity = true;
 	JScrollPane scrollPane;
 
-	public ConsoleDialog(CytoStatusBar statusBar)
+	public ConsoleDialog(CytoStatusBar statusBar, CySwingApplication app)
 	{
-		super((java.awt.Frame) null, "Console", false);
+		super(app.getJFrame(), "Console", false);
 		this.statusBar = statusBar;
 
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -103,6 +133,12 @@ class ConsoleDialog extends JDialog
 
 	void scrollToBottom()
 	{
+		// If we scroll the bottom immediately after
+		// we call document.insertBeforeEnd(), the scroll bar won't go to
+		// end because the scroll bar by then does not recognize the latest
+		// update to document. If we wrap the scrolling code in an
+		// invokeLater() call, this will ensure the scroll bar will move
+		// to the bottom.
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
