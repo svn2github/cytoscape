@@ -33,6 +33,6 @@ public class LoadPropsInterceptor extends SpringTunableInterceptor<PropHandler> 
 		return true;
 	}
 	
-	public void handle(){}
+	public boolean handle(){return false;}
 	public void setParent(Object o) {};
 }
