@@ -38,14 +38,15 @@ package org.cytoscape.view.layout.internal.algorithms;
 
 import java.util.List;
 
-import org.cytoscape.view.layout.AbstractLayout;
-import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.UndoSupport;
 
 
@@ -53,7 +54,7 @@ import org.cytoscape.work.UndoSupport;
  * The GridNodeLayout provides a very simple layout, suitable as
  * the default layout for Cytoscape data readers.
  */
-public class GridNodeLayout extends AbstractLayout {
+public class GridNodeLayout extends AbstractLayout implements TunableValidator{
 
 //	private ModuleProperties layoutProperties;
 
@@ -63,12 +64,17 @@ public class GridNodeLayout extends AbstractLayout {
 	@Tunable(description="Horizontal spacing between nodes")
 	public double nodeHorizontalSpacing = 80.0; 
 
+	
 	/**
 	 * Creates a new GridNodeLayout object.
 	 */
 	public GridNodeLayout(UndoSupport un) {
 		super(un);
 //		initProps();
+	}
+	
+	public void validate() throws java.io.IOException{
+		if(nodeVerticalSpacing == 30.0 )throw new java.io.IOException("This is a test : I don't want 30.0 for nodeVerticalSpacing value\nProvide something else!!!!");
 	}
 
 /*
