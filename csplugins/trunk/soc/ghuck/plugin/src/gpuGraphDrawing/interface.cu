@@ -134,6 +134,7 @@ graph* coarsen(graph *g, globalScope* scope)
   int		current = 0;
   int		left = g->numVertices;
   int		numParents = 0;
+
   rg->parent = (int*) calloc (g->numVertices, sizeof(int));
   
   while (left > 0){

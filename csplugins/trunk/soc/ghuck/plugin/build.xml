@@ -22,6 +22,7 @@
     <property name="build.dir" value="${root.dir}/build"/>
     <property name="manifest.dir" value="${root.dir}/manifest"/>
     <property name="lib.dir" value="${root.dir}/lib"/>
+    <property name="cuda_src.dir" value="${src.dir}/gpuGraphDrawing"/>
 
   	<!-- Define the Cytoscape directories -->
     <property name="cytoscape.dir" value="/home/gerardo/Cytoscape_v2.6.2"/>
@@ -69,23 +70,20 @@
            fork="${fork}"/>
   </target>
 
-  <!-- =================================================================== -->
-  <!-- Creates header for use it in native code                       -->
-  <!-- =================================================================== -->
-  <target name="javah" depends="compile"  >
-  <!--  
-    <echo message="Creating header for JNI..."/>
 
-    <javah class="GpuLayout"
-	   outputFile="GpuLayout.h"
-	   />
-    -->
+  <!-- =================================================================== -->
+  <!-- Executes "make" in gpuGraphDrawing, buiding static library     -->
+  <!-- =================================================================== -->
+  <target name="cuda_compile" depends="compile"  >
+    <echo message="Compiling CUDA's code..."/>
+    <exec executable="make" dir="${cuda_src.dir}"/>
   </target>
+
 
   <!-- =================================================================== -->
   <!-- Creates the plugin jar file                                           -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile, copy_plugin_prop, copy_static_lib, javah, copy_license"  >
+  <target name="jar" depends="compile, copy_plugin_prop, copy_static_lib, copy_license, cuda_compile"  >
   	
     <jar destfile="${project.jar}">
       <manifest> <attribute name="Cytoscape-Plugin" value="${plugin_class}"/> </manifest>
@@ -104,10 +102,21 @@
     <copy todir="${build.dir}/" file="${root.dir}/libGpuLayout.so"/>	
   </target>
 
-  <!-- If License exist, copy it to build directory  -->	
+  <!-- If License.txt exist, copy it to build directory  -->	
   <target name="copy_license" if="license.present">
     <copy todir="${build.dir}/" file="${root.dir}/License.txt"/>	
   </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Copy jar file and library to Cytoscape plugin folder           -->
+  <!-- =================================================================== -->
+  <target name="copy_jar" depends="jar">
+    <copy todir="${cytoscape.plugin.dir}/" file="${root.dir}/${project.jar}"/>
+    <copy todir="${cytoscape.plugin.dir}/" file="${root.dir}/libGpuLayout.so"/>
+  </target>
+
 
 
   <!-- =================================================================== -->
@@ -115,6 +124,9 @@
   <!-- =================================================================== -->
   <target name="clean" depends="init">
   	<delete dir="${build.dir}"/>
+	<exec executable="make" dir="${cuda_src.dir}">
+	  <arg line="clean"/>
+	</exec>
   </target>
 
 </project>

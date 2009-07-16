@@ -321,6 +321,7 @@ public class GpuLayout extends CytoscapePlugin {
 		try {
 		    // Change the value and load the library.
 		    System.setProperty("java.library.path", CY_PLUGIN_PATH + ":" + CUDA_LIB + ":" + orig_path);
+		    System.loadLibrary("cudart");
 		    System.loadLibrary(GPU_LIBRARY);
 		}
 		catch (UnsatisfiedLinkError error){
@@ -351,7 +352,7 @@ public class GpuLayout extends CytoscapePlugin {
 	    taskMonitor.setStatus("Calling native code...");
 
 	    // Make native method call
-	    int[][]node_positions = ComputeGpuLayout( AdjMatIndex, 
+	    float[][]node_positions = ComputeGpuLayout( AdjMatIndex, 
 						      AdjMatVals, 
 						      coarseGraphSize, 
 						      interpolationIterations, 
@@ -389,8 +390,8 @@ public class GpuLayout extends CytoscapePlugin {
 	    return;
 	}
 	
-	private double H_SIZE = 1000.0;
-	private double V_SIZE = 1000.0;
+	private double H_SIZE = 5000.0;
+	private double V_SIZE = 5000.0;
 	private String GPU_LIBRARY = "GpuLayout";
 	private String CY_PLUGIN_PATH = "/home/gerardo/Cytoscape_v2.6.2/plugins";
 	private String CUDA_LIB = "/usr/local/cuda/lib";
@@ -421,16 +422,16 @@ public class GpuLayout extends CytoscapePlugin {
      * Native method that computes the layout and returns position of nodes
      */
     private native 
-	int[][] ComputeGpuLayout( int[] AdjMatIndexJ, 
-				  int[] AdjMatValsJ, 
-				  int coarseGraphSizeJ, 
-				  int interpolationIterationsJ, 
-				  int levelConvergenceJ, 
-				  int edgeLenJ, 
-				  int initialNoIterationsJ,
-				  double hSizeJ,
-				  double vsizeJ
-				);
+	float[][] ComputeGpuLayout( int[] AdjMatIndexJ, 
+				    int[] AdjMatValsJ, 
+				    int coarseGraphSizeJ, 
+				    int interpolationIterationsJ, 
+				    int levelConvergenceJ, 
+				    int edgeLenJ, 
+				    int initialNoIterationsJ,
+				    double hSizeJ,
+				    double vsizeJ
+				    );
     
 
     

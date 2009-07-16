@@ -26,7 +26,7 @@ See license.h for more information.
 // GpuGraphDrawing interface
 #include "interface.cu"
 
-#include <unistd.h>
+//#include <unistd.h>
 
 
 
@@ -65,8 +65,6 @@ JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ComputeGpuLayout (JNIEnv*    env,
   // Set graph
   ////////////
   int numNodes,numEdges;
-  int index = 0;
-  int nEdges = 0;
 
   // Get numNodes, numEdges
   numNodes = env->GetArrayLength(AdjMatIndexJ) - 1; //AdjMatIndexJ has an extra index for marking the end of AdjMatValsJ
@@ -112,10 +110,13 @@ JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ComputeGpuLayout (JNIEnv*    env,
   calculateLayout (scope);
 	      
   // Show results in display
-  showGraph (scope, 0, NULL);
-    
-  // Wait
-  sleep(5);
+  /*  int argc = 1;
+  char **argv;
+  char aux[] = "";
+  argv[0] = aux;
+  showGraph (scope, argc, argv);
+  free (argv);
+  */
 
   // Create return object
   jobjectArray result;
@@ -145,8 +146,8 @@ JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ComputeGpuLayout (JNIEnv*    env,
     }
 
     // Save X and Y positions
-    tmp[0] = scope->g.NodePos[i].x;
-    tmp[1] = scope->g.NodePos[i].y;
+    tmp[0] = scope->g.NodePos[i].x * SCREEN_W / hSizeJ;
+    tmp[1] = scope->g.NodePos[i].y * SCREEN_H / vSizeJ;
 
     env->SetFloatArrayRegion(temp_float_arr, 0, 2, tmp);
     env->SetObjectArrayElement(result, i, temp_float_arr);

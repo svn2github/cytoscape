@@ -3,6 +3,9 @@ GpuLayout : GpuLayout.cu
 	javah -d ../ GpuLayout
 	rm ./GpuLayout.class
 	nvcc --shared --compiler-options '-fPIC' -o libGpuLayout.so $(INC) $(LIB) GpuLayout.cu -lglut -lcudart -lcudpp64
+
+	nvcc --compiler-options '-fPIC' -c -o GpuLayout.o $(INC) $(LIB) GpuLayout.cu -lglut -lcudart -lcudpp64
+
 	cp libGpuLayout.so ../../
 
 clean :
