@@ -2,6 +2,7 @@ package org.cytoscape.work.internal.tunables;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,14 +46,14 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	
 	
 	//get the value(Handle) of the Tunable if its JPanel is enabled(Dependency) and check if we have to validate the values of tunables
-	public void handle(){
+	public boolean handle(){
 		for(Guihandler h: lh)h.handleDependents();
-		validateTunableInput();
+		return validateTunableInput();
 	}
 
 	
 	//Create the GUI
-	public boolean createUI(Object... proxyObjs) {
+	public boolean createUI(Object... proxyObjs){
 		this.objs = convertSpringProxyObjs( proxyObjs );
 		lh = new ArrayList<Guihandler>();
 		for ( Object o : objs ) {
@@ -61,8 +62,14 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			lh.addAll( handlerMap.get(o).values() );
 		}
 
-		if ( lh.size() <= 0 )
-			return true;
+		if ( lh.size() <= 0 ){
+			if(parent != null){
+				((JPanel)parent).removeAll();
+				((JPanel)parent).repaint();
+				parent = null;
+				return true;
+			}
+		}
 
 		if ( !panelMap.containsKey( lh ) ) {
 			final String MAIN = " ";
@@ -196,29 +203,31 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	}
 	
 	
-	private void validateTunableInput(){
-		String valid = null;
+	private boolean validateTunableInput(){
 		for(Object o : objs){
-			 Object[] interfaces = o.getClass().getInterfaces();
-			 for(int i=0;i<interfaces.length;i++){
-				if(interfaces[i].equals(TunableValidator.class))valid=((TunableValidator)o).validate();
-			 }
-		}
-		if(valid == null){
-			newValuesSet = true;
-		}
-		else{
-			JOptionPane.showMessageDialog(new JFrame(),valid,"TunableValidator problem",JOptionPane.ERROR_MESSAGE);
-			for(Guihandler h : lh)h.resetValue();
-			if(parent == null)
-				displayOptionPanel();
-			else{
-				((JPanel)parent).removeAll();
-				((JPanel)parent).add(panelMap.get(lh));
-				parent.repaint();
-			}
-		}
-		parent = null;
-	}
+				Object[] interfaces = o.getClass().getInterfaces();
+				for(Object inter : interfaces){
+					if(inter.equals(TunableValidator.class)){
+						try {
+							((TunableValidator)o).validate();
+							if(parent == null)
+								displayOptionPanel();
+							else{
+								((JPanel)parent).removeAll();
+								((JPanel)parent).add(panelMap.get(lh));
+								parent.repaint();
+							}			
 
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(new JFrame(),e.toString(),"TunableValidator problem",JOptionPane.ERROR_MESSAGE);
+							e.printStackTrace();
+							return false;
+						}
+					}
+				}
+			}
+		parent = null;		
+		newValuesSet = true;
+		return true;
+	}
 }
