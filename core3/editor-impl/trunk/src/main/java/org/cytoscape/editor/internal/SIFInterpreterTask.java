@@ -15,14 +15,13 @@ import java.util.List;
 
 public class SIFInterpreterTask extends AbstractNetworkViewTask {
 
-	private CyNetworkView view;
 	private CyNetwork network;
 
 	@Tunable(description="Type in a nodes/edges expression in SIF format, e.g. A inhibits B")
 	public String sifString;
 
-	public SIFInterpreterTask(CyNetworkView view) {
-		super(view);
+	public SIFInterpreterTask(CyNetworkView v) {
+		super(v);
 		network = view.getSource();
 	}
 
