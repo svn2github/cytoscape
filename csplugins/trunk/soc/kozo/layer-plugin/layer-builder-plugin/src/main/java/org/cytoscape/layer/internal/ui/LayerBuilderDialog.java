@@ -11,20 +11,7 @@
 
 package org.cytoscape.layer.internal.ui;
 
-import java.awt.Cursor;
 import java.awt.Frame;
-import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +22,6 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JList;
 import javax.swing.table.TableColumn;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
@@ -114,7 +100,7 @@ public class LayerBuilderDialog extends JDialog {
 		layeredNetworkScrollPane = new javax.swing.JScrollPane();
 
 		// layeredNetworkList = new javax.swing.JList();
-		layeredNetworkList = new DraggableJList();
+		layeredNetworkList = new ReorderableJList();
 
 		availableNetworkPanel = new javax.swing.JPanel();
 		availableNetworkScrollPane = new javax.swing.JScrollPane();
@@ -666,7 +652,7 @@ public class LayerBuilderDialog extends JDialog {
 	private javax.swing.JButton generateIntegratedNetworkButton;
 
 	// private javax.swing.JList layeredNetworkList;
-	private DraggableJList layeredNetworkList;
+	private ReorderableJList layeredNetworkList;
 
 	private javax.swing.JPanel layeredNetworkPanel;
 	private javax.swing.JScrollPane layeredNetworkScrollPane;
@@ -681,89 +667,6 @@ public class LayerBuilderDialog extends JDialog {
 	private javax.swing.JLabel titleLabel;
 	private javax.swing.JPanel titlePanel;
 
-	static DataFlavor localObjectFlavor;
-	static {
-		try {
-			localObjectFlavor = new DataFlavor(
-					DataFlavor.javaJVMLocalObjectMimeType);
-		} catch (ClassNotFoundException cnfe) {
-			cnfe.printStackTrace();
-		}
-	}
-	static DataFlavor[] supportedFlavors = { localObjectFlavor };
-
 	// End of variables declaration//GEN-END:variables
-
-	private class DraggableJList extends JList implements DragSourceListener,
-			DragGestureListener {
-
-		DragSource dragSource;
-		Object dropTargetCell;
-		int draggedIndex = -1;
-
-		public void dragDropEnd(DragSourceDropEvent dsde) {
-			System.out.println("dragDropEnd()");
-			dropTargetCell = null;
-			draggedIndex = -1;
-			repaint();
-		}
-
-		public void dragEnter(DragSourceDragEvent dsde) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void dragExit(DragSourceEvent dse) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void dragOver(DragSourceDragEvent dsde) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void dropActionChanged(DragSourceDragEvent dsde) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void dragGestureRecognized(DragGestureEvent dge) {
-			System.out.println("dragGestureRecognized");
-			Point clickPoint = dge.getDragOrigin();
-			int index = locationToIndex(clickPoint);
-			if (index == -1)
-				return;
-			Object target = getModel().getElementAt(index);
-			Transferable trans = new RJLTransferable(target);
-			draggedIndex = index;
-			dragSource.startDrag(dge, Cursor.getDefaultCursor(), trans, this);
-		}
-	}
-
-	private class RJLTransferable implements Transferable {
-		Object object;
-
-		public RJLTransferable(Object o) {
-			object = o;
-		}
-
-		public Object getTransferData(DataFlavor df)
-				throws UnsupportedFlavorException, IOException {
-			if (isDataFlavorSupported(df))
-				return object;
-			else
-				throw new UnsupportedFlavorException(df);
-		}
-
-		public DataFlavor[] getTransferDataFlavors() {
-			return supportedFlavors;
-		}
-
-		public boolean isDataFlavorSupported(DataFlavor df) {
-			return (df.equals(localObjectFlavor));
-		}
-
-	}
 
 }
