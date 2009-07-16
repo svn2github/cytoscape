@@ -83,6 +83,6 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 	}
 
 
-	public void handle(){}
+	public boolean handle(){return false;}
 	public void setParent(Object o) {}
 }
