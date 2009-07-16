@@ -236,4 +236,7 @@
 		<constructor-arg ref="streamUtilRef" />
 	</bean>
 
+	<bean id="editNetworkTitleTaskFactory" 
+	      class="org.cytoscape.task.internal.title.EditNetworkTitleTaskFactory">
+	</bean>
 </beans>

@@ -369,6 +369,15 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="editNetworkTitleTaskFactoryService" ref="editNetworkTitleTaskFactory"
+		interface="org.cytoscape.task.NetworkTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Network Title..." />
+			<entry key="preferredMenu" value="Edit" />
+			<entry key="enableFor" value="network" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	<!--
 		<osgi:service id="newSessionTaskFactoryService"
 		ref="newSessionTaskFactory"
