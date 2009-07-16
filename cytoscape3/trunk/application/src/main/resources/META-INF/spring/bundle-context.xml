@@ -67,12 +67,6 @@
 		<constructor-arg ref="bookmarksUtilServiceRef" />
 	</bean>
 
-	<!-- Task Factories -->
-	<bean name="createNetworkPresentationTaskFactory" class="cytoscape.internal.xtask.CreateNetworkPresentationTaskFactoryImpl">
-		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-	</bean>
-
 	<!-- Menu bar -->
 	<bean name="cytoscapeMenus" class="cytoscape.internal.view.CytoscapeMenus">
 		<constructor-arg ref="taskManagerServiceRef" />
@@ -96,8 +90,6 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="birdsEyeViewHandler" />
 		<constructor-arg ref="taskManagerServiceRef" />
-		<constructor-arg ref="createNetworkPresentationTaskFactory" />
-		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="tunableInterceptorServiceRef" />
 	</bean>
 

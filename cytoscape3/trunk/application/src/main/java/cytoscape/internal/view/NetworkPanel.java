@@ -98,11 +98,9 @@ import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
-import org.cytoscape.session.CyNetworkNaming;
 import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
-import cytoscape.xtask.CreateNetworkPresentationTaskFactory;
 
 import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
 import cytoscape.internal.task.NetworkTaskFactoryTunableAction;
@@ -129,8 +127,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	private final CyNetworkManager netmgr;
 	private Long currentNetId;
 	private final TaskManager taskManager;
-	private final CreateNetworkPresentationTaskFactory viewFactory;
-	private final CyNetworkNaming naming;
 	private Map<TaskFactory,JMenuItem> popupMap;
 	private final TunableInterceptor tunableInterceptor;
 	private Map<CyNetwork,CyRowListener> nameListeners;
@@ -143,13 +139,10 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 */
 	public NetworkPanel( final CyNetworkManager netmgr, final BirdsEyeViewHandler bird,
 			final TaskManager taskManager,
-			final CreateNetworkPresentationTaskFactory viewFactory,
-			CyNetworkNaming naming, final TunableInterceptor tunableInterceptor) {
+			final TunableInterceptor tunableInterceptor) {
 		super();
 		this.netmgr = netmgr;
 		this.taskManager = taskManager;
-		this.viewFactory = viewFactory;
-		this.naming = naming;
 		this.tunableInterceptor = tunableInterceptor;
 
 		root = new NetworkTreeNode("Network Root", 0L);
