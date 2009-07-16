@@ -66,7 +66,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 			if(parent != null){
 				((JPanel)parent).removeAll();
 				((JPanel)parent).repaint();
-				parent = null;
+				//parent = null;
 			}
 			return true;			
 		}
@@ -195,7 +195,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		    null,
 		    buttons,
 		    buttons[0]);
-		System.out.println("ACCESSSS");
 		if ( n == JOptionPane.OK_OPTION ){
 			for ( Guihandler h : lh )h.handleDependents();
 			validateTunableInput();
@@ -211,17 +210,17 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 					if(inter.equals(TunableValidator.class)){
 						try {
 							((TunableValidator)o).validate();
-							if(parent == null)
-								displayOptionPanel();
-							else{
+
+/*							if(parent!=null){
 								((JPanel)parent).removeAll();
 								((JPanel)parent).add(panelMap.get(lh));
 								parent.repaint();
-							}			
-
+							}
+*/
 						} catch (Exception e) {
 							JOptionPane.showMessageDialog(new JFrame(),e.toString(),"TunableValidator problem",JOptionPane.ERROR_MESSAGE);
 							e.printStackTrace();
+							if(parent==null)displayOptionPanel();
 							return false;
 						}
 					}
