@@ -52,7 +52,7 @@ public class ProxySettingsTask implements Task, TunableValidator
 		this.streamUtil = streamUtil;
 	}
 
-	public String validate()
+	public void validate() throws Exception
 	{
 		storeProxySettings();
 
@@ -70,13 +70,9 @@ public class ProxySettingsTask implements Task, TunableValidator
 
 		revertProxySettings();
 
-		if (result == null)
+		if (result != null)
 		{
-			return null;
-		}
-		else
-		{
-			return String.format("Cytoscape was unable to connect to the internet because:\n\n%s", result.getMessage());
+			throw new Exception(String.format("Cytoscape was unable to connect to the internet because:\n\n%s", result.getMessage()));
 		}
 	}
 
