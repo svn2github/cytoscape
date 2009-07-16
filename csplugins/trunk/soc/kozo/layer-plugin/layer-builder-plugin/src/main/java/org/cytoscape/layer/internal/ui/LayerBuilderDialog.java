@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -395,6 +394,11 @@ public class LayerBuilderDialog extends JDialog {
 						{ null, null }, { null, null }, { null, null },
 						{ null, null }, { null, null } }, new String[] {
 						"Horizontal Layer Network", "Inter Layer Network" }));
+
+		ComboCellRenderer layerOrderTableRenderer = new ComboCellRenderer();
+		layerOrderTable.getColumnModel().getColumn(0).setCellRenderer(
+				layerOrderTableRenderer);
+
 		layerOrderScrollPane.setViewportView(layerOrderTable);
 
 		org.jdesktop.layout.GroupLayout LayerOrderPanelLayout = new org.jdesktop.layout.GroupLayout(
@@ -548,10 +552,10 @@ public class LayerBuilderDialog extends JDialog {
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
 		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
-		TableColumn connectorCol = layerOrderTable.getColumnModel()
-				.getColumn(1);
-		layerCol.setCellEditor(new DefaultCellEditor(layerCb));
-		connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+		// TableColumn connectorCol = layerOrderTable.getColumnModel()
+		// .getColumn(1);
+		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
+		// connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
 
 	}// GEN-LAST:event_MoveAllAvailableNetworkButtonActionPerformed
 
@@ -580,10 +584,10 @@ public class LayerBuilderDialog extends JDialog {
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
 		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
-		TableColumn connectorCol = layerOrderTable.getColumnModel()
-				.getColumn(1);
-		layerCol.setCellEditor(new DefaultCellEditor(layerCb));
-		connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+		// TableColumn connectorCol = layerOrderTable.getColumnModel()
+		// .getColumn(1);
+		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
+		// connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
 
 	}// GEN-LAST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
@@ -611,10 +615,10 @@ public class LayerBuilderDialog extends JDialog {
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
 		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
-		TableColumn connectorCol = layerOrderTable.getColumnModel()
-				.getColumn(1);
-		layerCol.setCellEditor(new DefaultCellEditor(layerCb));
-		connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+		// TableColumn connectorCol = layerOrderTable.getColumnModel()
+		// .getColumn(1);
+		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
+		// connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
 
 	}// GEN-LAST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 
@@ -636,10 +640,10 @@ public class LayerBuilderDialog extends JDialog {
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
 		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
-		TableColumn connectorCol = layerOrderTable.getColumnModel()
-				.getColumn(1);
-		layerCol.setCellEditor(new DefaultCellEditor(layerCb));
-		connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+		// TableColumn connectorCol = layerOrderTable.getColumnModel()
+		// .getColumn(1);
+		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
+		// connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
 
 	}// GEN-LAST:event_MoveAllIntegratedNetworkButtonActionPerformed
 
