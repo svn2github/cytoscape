@@ -54,7 +54,7 @@ public abstract class AbstractNetworkCollectionTask implements Task {
 		this.networks = networks;	
 	}
 
-	public abstract void run(TaskMonitor e);
+	public abstract void run(TaskMonitor e) throws Exception;
 
 	public void cancel() {}
 }

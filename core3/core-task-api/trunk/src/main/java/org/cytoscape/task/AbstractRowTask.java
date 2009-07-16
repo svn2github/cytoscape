@@ -52,7 +52,7 @@ public abstract class AbstractRowTask implements Task {
 		this.row = row;	
 	}
 
-	public abstract void run(TaskMonitor e);
+	public abstract void run(TaskMonitor e) throws Exception;
 
 	public void cancel() {}
 }

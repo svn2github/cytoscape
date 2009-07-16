@@ -59,7 +59,7 @@ public abstract class AbstractNodeViewTask implements Task {
 		this.netView = netView;	
 	}
 
-	public abstract void run(TaskMonitor e);
+	public abstract void run(TaskMonitor e) throws Exception;
 
 	public void cancel() {}
 }

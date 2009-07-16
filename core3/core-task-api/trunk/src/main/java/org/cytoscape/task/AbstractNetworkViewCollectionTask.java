@@ -52,7 +52,7 @@ public abstract class AbstractNetworkViewCollectionTask implements Task {
 		this.networkViews = networkViews;	
 	}
 
-	public abstract void run(TaskMonitor e);
+	public abstract void run(TaskMonitor e) throws Exception;
 
 	public void cancel() {}
 }

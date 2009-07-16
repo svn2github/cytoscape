@@ -52,7 +52,7 @@ public abstract class AbstractDataTableTask implements Task {
 		this.table = table;	
 	}
 
-	public abstract void run(TaskMonitor e);
+	public abstract void run(TaskMonitor e) throws Exception;
 
 	public void cancel() {}
 }

@@ -53,7 +53,7 @@ public abstract class AbstractNetworkViewTask implements Task {
 		this.view = view;	
 	}
 
-	public abstract void run(TaskMonitor e);
+	public abstract void run(TaskMonitor e) throws Exception;
 
 	public void cancel() {}
 }

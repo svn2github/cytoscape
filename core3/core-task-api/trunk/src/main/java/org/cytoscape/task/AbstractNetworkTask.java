@@ -53,7 +53,7 @@ public abstract class AbstractNetworkTask implements Task {
 		this.net = net;	
 	}
 
-	public abstract void run(TaskMonitor e);
+	public abstract void run(TaskMonitor e) throws Exception;
 
 	public void cancel() {}
 }
