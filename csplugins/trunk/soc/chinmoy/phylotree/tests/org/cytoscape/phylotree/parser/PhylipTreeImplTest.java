@@ -1,6 +1,6 @@
 package tests.org.cytoscape.phylotree.parser;
 
-import src.org.cytoscape.phylotree.parser.*;
+import org.cytoscape.phylotree.parser.*;
 
 import junit.framework.TestCase;
 

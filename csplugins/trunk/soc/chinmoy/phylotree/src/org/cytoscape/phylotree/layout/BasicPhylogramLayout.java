@@ -1,3 +1,5 @@
+//Updated
+
 package org.cytoscape.phylotree.layout;
 
 import cytoscape.Cytoscape;
@@ -15,7 +17,7 @@ import javax.swing.JPanel;
 
 import giny.model.Node;
 import giny.model.Edge;
-public class BasicCladogramLayout extends AbstractLayout {
+public class BasicPhylogramLayout extends AbstractLayout {
 
 
 	static double LEAF_X = 500.0;
@@ -28,7 +30,7 @@ public class BasicCladogramLayout extends AbstractLayout {
 	private boolean branchFlag = false;
 	private int numLeavesVisited = 0;
 	private int layerNum = 0;
-	public BasicCladogramLayout()
+	public BasicPhylogramLayout()
 	{
 		super();
 		layoutProperties = new LayoutProperties(getName());
