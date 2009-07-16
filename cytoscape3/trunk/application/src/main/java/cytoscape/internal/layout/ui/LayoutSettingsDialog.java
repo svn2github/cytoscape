@@ -110,8 +110,10 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			setVisible(false);
 		} else if (command.equals("execute")) {
 			ti.setParent(algorithmPanel);
-			ti.handle();
+			//handle the tunables, and check if the validation is true(true means execution of the task)
+			if(ti.handle())
 			tm.execute( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()) );
+			
 		} else {
 			// OK, initialize and display
 			initialize();
@@ -196,7 +198,9 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 				CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm)o;
 				ti.loadTunables(newLayout);
 				ti.setParent(algorithmPanel);
-				ti.createUI(newLayout);
+				try {
+					ti.createUI(newLayout);
+				} catch (Exception e1) {e1.printStackTrace();}
 				pack();
 				currentLayout = newLayout; 
 			}
