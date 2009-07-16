@@ -7,7 +7,7 @@
 
 
 	<osgi:service id="sifInterpreterTaskFactoryService" ref="sifInterpreterTaskFactory"
-		interface="org.cytoscape.view.model.EmptySpaceTaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
         <osgi:service-properties>
            <entry key="title" value="SIF Interpreter" />
            <entry key="preferredMenu" value="SIF Interpreter" />
