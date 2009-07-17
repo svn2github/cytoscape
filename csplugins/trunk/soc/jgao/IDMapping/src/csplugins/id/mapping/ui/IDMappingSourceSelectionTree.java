@@ -405,7 +405,14 @@ class IDMappingSourceSelectionTree extends JTree {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
         if (!dialog.isCancelled()) {
-            IDMappingClient client = dialog.getIDMappingClient();
+            IDMappingClient client = null;
+            try {
+                client = dialog.getIDMappingClient();
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parent, "Error: failed to add this file as source.");
+            }
+
             if (client!=null) {
                 DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
                 IDMappingClientManager.registerClient(client);

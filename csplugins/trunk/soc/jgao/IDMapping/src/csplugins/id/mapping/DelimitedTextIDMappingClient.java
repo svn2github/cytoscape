@@ -35,6 +35,7 @@
 
 package csplugins.id.mapping;
 
+import org.bridgedb.IDMapperException;
 import org.bridgedb.file.IDMapperText;
 
 import java.net.URL;
@@ -46,20 +47,20 @@ import java.net.URL;
 public class DelimitedTextIDMappingClient extends FileIDMappingClient {
 
     public DelimitedTextIDMappingClient(final URL url,
-            final char[] dataSourceDelimiters) {
+            final char[] dataSourceDelimiters) throws IDMapperException {
         this(url, dataSourceDelimiters, null);
     }
 
     public DelimitedTextIDMappingClient(final URL url,
             final char[] dataSourceDelimiters,
-            final char[] idDelimiters) {
+            final char[] idDelimiters) throws IDMapperException {
         this(url, dataSourceDelimiters, idDelimiters, false);
     }
 
     public DelimitedTextIDMappingClient(final URL url,
             final char[] dataSourceDelimiters,
             final char[] idDelimiters,
-            final boolean transitivity) {
+            final boolean transitivity) throws IDMapperException {
         this (new IDMapperText(url,
                                dataSourceDelimiters,
                                idDelimiters,

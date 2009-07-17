@@ -816,7 +816,7 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
         return sb.toString();
     }
 
-    public DelimitedTextIDMappingClient getIDMappingClient() {
+    public DelimitedTextIDMappingClient getIDMappingClient() throws IDMapperException {
         if (client!=null) {
             return client; // configure
         }
