@@ -42,6 +42,7 @@ import cytoscape.util.URLUtil;
 import cytoscape.util.CyFileFilter;
 
 import org.bridgedb.file.IDMapperText;
+import org.bridgedb.IDMapperException;
 
 import java.util.Vector;
 import java.util.Set;
@@ -494,18 +495,24 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         setVisible(false);
+        this.dispose();
 }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (verifyInput()) {
             if (client!=null) { // config
                 IDMapperText idMapper = (IDMapperText)client.getIDMapper();
-                idMapper.setDataSourceDelimiters(getTypeDelimiters());
-                idMapper.setIDDelimiters(getIDDelimiters());
+                try {
+                    idMapper.setDataSourceDelimiters(getTypeDelimiters());
+                    idMapper.setIDDelimiters(getIDDelimiters());
+                } catch (IDMapperException e) {
+                    e.printStackTrace();
+                }
                 idMapper.setTransitivity(transitivityCheckBox.isSelected());
             }
             cancelled = false;
             setVisible(false);
+            this.dispose();
         }
 }//GEN-LAST:event_okButtonActionPerformed
 
