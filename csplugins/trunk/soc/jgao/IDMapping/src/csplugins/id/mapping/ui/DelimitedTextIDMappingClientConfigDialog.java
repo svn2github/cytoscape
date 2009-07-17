@@ -502,12 +502,8 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
         if (verifyInput()) {
             if (client!=null) { // config
                 IDMapperText idMapper = (IDMapperText)client.getIDMapper();
-                try {
-                    idMapper.setDataSourceDelimiters(getTypeDelimiters());
-                    idMapper.setIDDelimiters(getIDDelimiters());
-                } catch (IDMapperException e) {
-                    e.printStackTrace();
-                }
+                idMapper.setDataSourceDelimiters(getTypeDelimiters());
+                idMapper.setIDDelimiters(getIDDelimiters());
                 idMapper.setTransitivity(transitivityCheckBox.isSelected());
             }
             cancelled = false;
