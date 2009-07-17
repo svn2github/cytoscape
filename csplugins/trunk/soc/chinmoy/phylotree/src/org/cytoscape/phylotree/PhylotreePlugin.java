@@ -6,7 +6,8 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutProperties;
 import org.cytoscape.phylotree.actions.PhyloTreeImportAction;
-import org.cytoscape.phylotree.layout.BasicCladogramLayout;
+import org.cytoscape.phylotree.layout.CladogramLayout;
+import org.cytoscape.phylotree.layout.PhylogramLayout;
 /**
  * 
  */
@@ -26,7 +27,9 @@ public class PhylotreePlugin extends CytoscapePlugin {
 		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) menuAction);
 
 		//(2) add another menu item: Layout->Phylotree layouts
-		CyLayouts.addLayout(new BasicCladogramLayout(), "PhyloTree Layouts");
+		CyLayouts.addLayout(new CladogramLayout(), "PhyloTree Layouts");
+
+		CyLayouts.addLayout(new PhylogramLayout(), "PhyloTree Layouts");
 	}
 	
 }

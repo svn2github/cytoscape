@@ -98,15 +98,15 @@ public class PhylogramLayout extends AbstractLayout {
 	 * for this layout.
 	 */
 	public  String getName() {
-		return "Basic Cladogram Layout";
+		return "Phylogram Layout";
 	}
 
 	/**
 	 * toString is used to get the user-visible name
-	 * of the layout
+	 * 1of the layout
 	 */
 	public  String toString(){
-		return "Basic Cladogram";
+		return "Phylogram";
 	}
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
