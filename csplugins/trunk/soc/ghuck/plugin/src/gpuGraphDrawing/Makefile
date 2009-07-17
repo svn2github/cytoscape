@@ -1,7 +1,7 @@
 GpuLayout : GpuLayout.cu 	
-	cp ../../build/GpuLayout.class ./
-	javah -d ../ GpuLayout
-	rm ./GpuLayout.class
+	cp -r ../../build/GpuLayout/ ./
+	javah -d ../ GpuLayout.ForceDirected
+	rm -r ./GpuLayout/
 	nvcc --shared --compiler-options '-fPIC' -o libGpuLayout.so $(INC) $(LIB) GpuLayout.cu -lglut -lcudart -lcudpp64
 
 	nvcc --compiler-options '-fPIC' -c -o GpuLayout.o $(INC) $(LIB) GpuLayout.cu -lglut -lcudart -lcudpp64

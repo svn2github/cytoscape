@@ -21,7 +21,7 @@ See license.h for more information.
 #include "license.h"
 
 // Header with JNI's function declaration
-#include "../GpuLayout.h" 
+#include "../GpuLayout_ForceDirected.h" 
 
 // GpuGraphDrawing interface
 #include "interface.cu"
@@ -34,7 +34,7 @@ See license.h for more information.
 // Implementation of JNI call, it initializes the arguments and calls compute_layout()
 ////////////////////////////////////////////////////////////////////////////////////////
 
-JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ComputeGpuLayout (JNIEnv*    env, 
+JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ForceDirected_ComputeGpuLayout (JNIEnv*    env, 
 								jobject    thisJ, 
 								jintArray  AdjMatIndexJ, 
 								jintArray  AdjMatValsJ, 

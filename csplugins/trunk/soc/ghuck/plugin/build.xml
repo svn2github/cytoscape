@@ -9,7 +9,7 @@
   <!-- =================================================================== -->
   <target name="init">
     <property name="plugin_name" value="GpuLayout"/>
-    <property name="plugin_class" value="GpuLayout"/>  	  	
+    <property name="plugin_class" value="GpuLayout.GpuLayout"/>  	  	
     <property name="project.jar" value="${plugin_name}.jar"/>  	
     <property name="version" value="0.1"/>
     <property name="year" value="2009"/>
@@ -98,7 +98,8 @@
   </target>
 
   <!-- If static.lib exist, copy it to build directory  -->	
-  <target name="copy_static_lib" if="static.lib.present">
+  <target name="copy_static_lib" depends="cuda_compile">
+    <echo message="copying static lib to build dir"/>
     <copy todir="${build.dir}/" file="${root.dir}/libGpuLayout.so"/>	
   </target>
 
