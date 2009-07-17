@@ -7,14 +7,16 @@ import cytoscape.layout.Tunable;
 import cytoscape.data.CyAttributes;
 
 import java.awt.GridLayout;
+import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JPanel;
-
+import javax.swing.JSlider;
 import giny.model.Node;
 import giny.model.Edge;
+import giny.view.Bend;
 public class PhylogramLayout extends AbstractLayout {
 
 
@@ -24,10 +26,20 @@ public class PhylogramLayout extends AbstractLayout {
 
 	private LayoutProperties layoutProperties;
 
-	private boolean constantBranches; // Whether or not branch lengths are reflected
-	private boolean branchFlag = false;
-	private int numLeavesVisited = 0;
-	private int layerNum = 0;
+	// Indicators of the type of cladogram preferred
+	private boolean rectangular = false;
+	private boolean slanted = false;
+	private boolean radial = false;
+	private boolean circular = false;
+
+	private int numLeavesVisited = 0; //
+
+	private Object lower = "0";
+	private Object upper = "100.0";
+	private String[] phylogramTypes = {"Rectangular", "Slanted", "Radial","Circular"};
+	
+	private double scalingFactor;
+
 	public PhylogramLayout()
 	{
 		super();
@@ -37,10 +49,17 @@ public class PhylogramLayout extends AbstractLayout {
 
 	protected void initialize_properties()
 	{	
-		layoutProperties.add(new Tunable("constant_branches",
-				"Ignore Branch Lengths",
-				Tunable.BOOLEAN, new Boolean(false)));
+		layoutProperties.add(new Tunable("phylogram_type",
+				"Type of Phylogram",
+				Tunable.LIST, new Integer(0), (Object)phylogramTypes,(Object) null, 0));
 
+//		layoutProperties.add(new Tunable("edge_scaling",
+//				"Edge Length Scaling Factor", Tunable.DOUBLE, new Double(scalingFactor), 
+//				(Object)10.0, (Object)200.0, Tunable.USESLIDER));
+		
+		layoutProperties.add(new Tunable("edge_scaling", "Edge scaling",
+                Tunable.DOUBLE, new Double(scalingFactor)));
+		
 		layoutProperties.initializeProperties();
 
 		updateSettings(true);
@@ -61,10 +80,41 @@ public class PhylogramLayout extends AbstractLayout {
 	public void updateSettings(boolean force) {
 		layoutProperties.updateValues();
 
-		Tunable t = layoutProperties.get("constant_branches");
-		if ((t != null) && (t.valueChanged() || force))
-			constantBranches = ((Boolean) t.getValue()).booleanValue();
-
+		Tunable t = layoutProperties.get("phylogram_type");
+		if ((t != null) && (t.valueChanged() || force)) {
+			if (((Integer) t.getValue()).intValue() == 0 && rectangular == false)
+			{
+				rectangular = true;
+				slanted = false;
+				radial = false;
+				circular = false;
+			}
+			else if (((Integer) t.getValue()).intValue() == 1 && slanted == false)
+			{
+				rectangular = false;
+				slanted = true;
+				radial = false;
+				circular = false;
+			}
+			else if (((Integer) t.getValue()).intValue() == 2 && radial == false)
+			{
+				rectangular = false;
+				slanted = false;
+				radial = true;
+				circular = false;
+			}
+			else if (((Integer) t.getValue()).intValue() == 3 && circular == false)
+			{
+				rectangular = false;
+				slanted = false;
+				radial = false;
+				circular = true;
+			}
+		}
+		
+		 t = layoutProperties.get("edge_scaling");
+		  if ((t != null) && (t.valueChanged() || force))
+		    scalingFactor = ((Double) t.getValue()).doubleValue();
 
 	}
 
@@ -76,6 +126,7 @@ public class PhylogramLayout extends AbstractLayout {
 		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(layoutProperties.getTunablePanel());
 
+		
 		return panel;
 	}
 
@@ -98,7 +149,7 @@ public class PhylogramLayout extends AbstractLayout {
 	 * for this layout.
 	 */
 	public  String getName() {
-		return "Phylogram Layout";
+		return "phylogram";
 	}
 
 	/**
@@ -106,7 +157,7 @@ public class PhylogramLayout extends AbstractLayout {
 	 * 1of the layout
 	 */
 	public  String toString(){
-		return "Phylogram";
+		return "Phylogram Layout";
 	}
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
@@ -115,24 +166,22 @@ public class PhylogramLayout extends AbstractLayout {
 		Node root = getTreeRoot();
 
 		
-		if(!constantBranches)
-			{
-				branchFlag = true;
-				constantBranches = true;
-			}
-		// Traverse and position each node starting from the root
+		
+		// Traverse and set each node's Y co-ordinate starting from the root
 		traverse(root);
 		
+		//Traverse and set each node's X co-ordinate starting form the root
 		
+		traversePreOrder(root);
 		
-		// If branch lengths are provided, update the network view
-		if(branchFlag)
+		// If rectangular format is preferred, edit the edge shape by adding corner nodes
+		if(rectangular || circular)
 		{
-			constantBranches = false;
-			branchFlag = false;
-			traversePreOrder(root);
-			
+
+			addRectangularBends();
+
 		}
+		
 
 	}
 
@@ -183,16 +232,26 @@ public class PhylogramLayout extends AbstractLayout {
 			for(int i = 0; i<outgoingEdgesArray.length; i++)	
 			{
 				Edge edge = network.getEdge(outgoingEdgesArray[i]);
-
+				networkView.getEdgeView(edge).clearBends();
+				
 				traverse(edge.getTarget());
 			}
 			// Traverse the parent last
-			positionInternalNode(node, constantBranches);
+			if(rectangular || slanted)
+				positionYInternalNode(node);
+			else if(radial||circular)
+				setAngleInternalNode(node);
+			
+			
+			
 		}
 		// Base case: if node is a leaf
 		else if(outgoingEdgesArray.length == 0)
 		{
-			positionLeaf(node, constantBranches);
+			if(rectangular || slanted)
+				positionYLeaf(node);
+			else if(radial||circular)
+				setAngleLeaf(node);
 		}
 
 
@@ -213,8 +272,12 @@ public class PhylogramLayout extends AbstractLayout {
 
 		if(outgoingEdgesArray.length!=0)
 		{
+			if(rectangular || slanted)
+				positionX(node);
+			else if(radial||circular)
+				setRadius(node);
 
-			positionInternalNode(node, constantBranches);
+			
 			// Traverse every child
 			for(int i = 0; i<outgoingEdgesArray.length; i++)	
 			{
@@ -227,7 +290,10 @@ public class PhylogramLayout extends AbstractLayout {
 		// Base case: if node is a leaf
 		else if(outgoingEdgesArray.length == 0)
 		{
-			positionLeaf(node, constantBranches);
+			if(rectangular || slanted)
+				positionX(node);
+			else if(radial||circular)
+				setRadius(node);
 
 		}
 
@@ -238,30 +304,19 @@ public class PhylogramLayout extends AbstractLayout {
 	 * positionLeaf(Node)
 	 * Positions the leaves
 	 */
-	private void positionLeaf(Node node, boolean constantBranch)
+	private void positionYLeaf(Node node)
 	{
 		numLeavesVisited++;
-		if(constantBranch)
-			{
-			networkView.getNodeView(node).setXPosition(LEAF_X,true);
-			networkView.getNodeView(node).setYPosition(INTERNODE_DISTANCE*numLeavesVisited, true);
-			}
-			// Adjust the branchLengths
-			if(!constantBranch && network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false).length!=0)
-			{	double branchLength = getBranchLength(node);
+		networkView.getNodeView(node).setYPosition(INTERNODE_DISTANCE * numLeavesVisited, true);
 				
-				applyBranchLengths(node,branchLength);
-				
-			}
 	}
 
 	/**
 	 * positionInternalNode(Node)
 	 * Positions the internal nodes
 	 */
-	private void positionInternalNode(Node node, boolean constantBranch)
+	private void positionYInternalNode(Node node)
 	{
-		layerNum = 1;
 		// Find the child horizontally nearest
 		// Get the leaves of the subtree rooted at node
 		List<Node> subtreeLeaves = new LinkedList<Node>();
@@ -271,21 +326,43 @@ public class PhylogramLayout extends AbstractLayout {
 		double midpointY = findSubtreeYMidPoint(subtreeLeaves);
 
 		// Set the positions
-		if(constantBranch)
-		{networkView.getNodeView(node).setYPosition(midpointY,true);
-		networkView.getNodeView(node).setXPosition(LEAF_X-((subtreeLeaves.size()-1))*INTERNODE_DISTANCE, true);
+		networkView.getNodeView(node).setYPosition(midpointY,true);
 		
-		}
-		// Adjust the branchLengths
-		if(!constantBranch && network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false).length!=0)
-			{	double branchLength = getBranchLength(node);
-			
-			applyBranchLengths(node,branchLength);
-			
-		}
+	}
+	
+	private void setAngleInternalNode(Node node)
+	{
+		
 	}
 
+	private void setAngleLeaf(Node node)
+	{
+		
+	}
 
+	private void positionX(Node node)
+	{
+		if(network.getInDegree(node,false) == 0)
+			networkView.getNodeView(node).setXPosition(0.0, false);
+		
+		int [] incomingEdgesArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false);
+		if(incomingEdgesArray.length>0)
+		{
+		Edge edge = network.getEdge(incomingEdgesArray[0]);
+		double parentX = networkView.getNodeView(edge.getSource()).getXPosition();
+		
+		double nodeX = parentX + (scalingFactor*getBranchLength(node));
+		
+		networkView.getNodeView(node).setXPosition(nodeX, false);
+		
+		}
+		
+	}
+	
+	private void setRadius(Node node)
+	{
+		
+	}
 	/**
 	 * getLeaves(Node, List<Node>)
 	 * Recursively populates List with leaves on a path from Node
@@ -306,7 +383,7 @@ public class PhylogramLayout extends AbstractLayout {
 			else
 			{	
 				// Otherwise, probe the subtree rooted at the child
-				layerNum++;
+				
 				getLeaves(child,list);
 			}
 
@@ -366,30 +443,84 @@ public class PhylogramLayout extends AbstractLayout {
 		return length;
 	}
 	
-	private void applyBranchLengths(Node node, double length)
+	/**
+	 * Adds the bends to make the edges look rectangular
+	 */
+	private void addRectangularBends()
 	{
-		double nodeXposition = networkView.getNodeView(node).getXPosition();
-		double nodeYposition = networkView.getNodeView(node).getYPosition();
-		int[] incomingEdgesArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false);
+		// Get all edges
 
-		// Scale the edge to find a new position for the node
-		if(incomingEdgesArray.length!=0)
+		List<Edge> allEdges = network.edgesList();
+		Iterator<Edge> edgesIterator = allEdges.iterator();
+
+		while(edgesIterator.hasNext())
 		{
 
-			Edge edge = network.getEdge(incomingEdgesArray[0]);
-			Node parent = edge.getSource();
-			
-			double parentXposition = networkView.getNodeView(parent).getXPosition();
-			double parentYposition = networkView.getNodeView(parent).getYPosition();
-			
-			double slope = -1*(parentYposition - nodeYposition) /(parentXposition - nodeXposition);
-			
-			length = length *INTERNODE_DISTANCE*3.0;
-			double scalingFactor = Math.sqrt((length*length)/((slope*slope)+1));
-		
+			Edge edge = edgesIterator.next();
 
-			networkView.getNodeView(node).setXPosition(parentXposition+(scalingFactor));
-			networkView.getNodeView(node).setYPosition(parentYposition-(scalingFactor*slope*2.0));
+			Node source = edge.getSource();
+			Node target = edge.getTarget();
+			// Check if the target is a reticulate node (indegree>1)
+			// If yes, don't bend the edge
+			if(network.getInDegree(target.getRootGraphIndex(), false) <= 1)
+			{
+				// For each edge, get the source node's X position
+				double cornerX = networkView.getNodeView(source).getXPosition(); 
+
+				// For each edge, get the target node's Y position
+				double cornerY = networkView.getNodeView(target).getYPosition();
+
+
+				if(rectangular)
+				{	
+					// Bend the edge
+					Bend rectangularBend = networkView.getEdgeView(edge).getBend();
+					rectangularBend.addHandle(new Point2D.Double(cornerX, cornerY));
+				}
+				else if(circular)
+				{
+					// Get the radius of the source
+					double radius = (INTERNODE_DISTANCE/2.0)*(getLevel(getTreeRoot()) - getLevel(source));
+					
+					// And the angle of the target
+					double angle = Math.atan2(networkView.getNodeView(target).getYPosition(), networkView.getNodeView(target).getXPosition());
+					
+					//Bend the edge
+					Bend circularBend = networkView.getEdgeView(edge).getBend();
+					
+					circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
+				}
+			}	
+
+
+
 		}
 	}
+	
+	/**
+	 * Find the level of the node (Leaves are level 0)
+	 * @param node - the node whose level is to be found
+	 * @return the level of the node
+	 */
+	private int getLevel(Node node)
+	{
+		if(network.getOutDegree(node, false) == 0)
+			return 0;
+		else
+		{
+			int max = 0;
+			int [] outGoingEdges = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
+			for (int i = 0; i < outGoingEdges.length; i++)
+			{
+				int level = getLevel(network.getEdge(outGoingEdges[i]).getTarget()); 
+				if(level > max)
+					max = level;
+
+			}
+
+			return max+1;
+		}
+	}
+
+	
 }
