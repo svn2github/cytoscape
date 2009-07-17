@@ -45,6 +45,10 @@
 			<fileset dir="${lib}" includes="*" />
 		</unzip>
 		<copy todir="build/org/cytoscape/view/ui/networkpanel" file="resources/plugin.props" />
+		<mkdir dir="build/org/cytoscape/view/ui/networkpanel/images"/>
+		<copy todir="build/org/cytoscape/view/ui/networkpanel/images">
+			<fileset dir="images"/>
+		</copy>
 		<jar jarfile="${jar}/${projectName}.jar">
 			<manifest>
 				<attribute name="Cytoscape-Plugin" value="org.cytoscape.view.ui.networkpanel.NetworkBrowserPlugin" />

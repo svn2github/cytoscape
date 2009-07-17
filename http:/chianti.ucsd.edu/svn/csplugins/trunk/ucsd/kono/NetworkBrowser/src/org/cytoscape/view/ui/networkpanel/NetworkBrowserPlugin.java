@@ -6,6 +6,8 @@ import java.util.List;
 import javax.swing.SwingConstants;
 
 import org.cytoscape.view.ui.networkpanel.internal.NetworkBrowserImpl;
+import org.cytoscape.view.ui.networkpanel.internal.NetworkTreeNode;
+import org.cytoscape.view.ui.networkpanel.internal.NetworkTreeTableModel;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
@@ -25,7 +27,7 @@ public class NetworkBrowserPlugin extends CytoscapePlugin {
 	
 	private NetworkBrowserImpl browser;
 	private DockingDesktop desk;
-	private DefaultTreeTableModel model;
+	private NetworkTreeTableModel model;
 	
 	public NetworkBrowserPlugin() {
 		
@@ -33,12 +35,14 @@ public class NetworkBrowserPlugin extends CytoscapePlugin {
 		browser = new NetworkBrowserImpl(model);
 		//desk = new DockingDesktop();
 		//desk.addDockable(browser);
-		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-		cytoPanel.add("Network Browser", browser);
+		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
+		cytoPanel.add("Network/Group Browser", browser);
 	}
 	
-	public DefaultTreeTableModel buildModel() {
-		DefaultTreeTableModel newModel = new DefaultTreeTableModel();
+	public NetworkTreeTableModel buildModel() {
+		NetworkTreeNode root = new NetworkTreeNode("Network Root", "root", 4);
+		NetworkTreeTableModel newModel = new NetworkTreeTableModel(root);
+		
 		final List<String> columnIDs = new ArrayList<String>();
 		columnIDs.add("Network");
 		columnIDs.add("Image");
@@ -47,9 +51,7 @@ public class NetworkBrowserPlugin extends CytoscapePlugin {
 		
 		newModel.setColumnIdentifiers(columnIDs);
 		
-		DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode();
-		root.setValueAt("Networks", 0);
-		newModel.setRoot(root);
+		
 		return newModel;
 	}
 	

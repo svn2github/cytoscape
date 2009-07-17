@@ -1,33 +1,57 @@
 package org.cytoscape.view.ui.networkpanel.internal;
 
-import java.awt.Component;
+import static cytoscape.Cytoscape.NETWORK_CREATED;
+import static cytoscape.Cytoscape.NETWORK_DESTROYED;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import org.cytoscape.view.ui.networkpanel.NetworkBrowser;
-import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
+import org.cytoscape.view.ui.networkpanel.internal.cellrenderer.NetworkImageCellRenderer;
+import org.cytoscape.view.ui.networkpanel.internal.cellrenderer.NetworkTreeCellRenderer;
 
 import com.vlsolutions.swing.docking.DockKey;
-import com.vlsolutions.swing.docking.Dockable;
 
-public class NetworkBrowserImpl extends JPanel implements NetworkBrowser, Dockable {
-	
-	
-	private AbstractTreeTableModel model;
+import cytoscape.CyNetwork;
+import cytoscape.CyNetworkTitleChange;
+import cytoscape.Cytoscape;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupChangeListener;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupChangeListener.ChangeType;
+import cytoscape.view.CytoscapeDesktop;
+
+public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
+		PropertyChangeListener, CyGroupChangeListener {
+
+	private NetworkTreeTableModel model;
 	private DockKey key = new DockKey("networkBrowser");
 
+	private static final int rowHeight = 110;
 
 	// Inject model
-	public NetworkBrowserImpl(AbstractTreeTableModel model) {
+	public NetworkBrowserImpl(NetworkTreeTableModel model) {
 		this.model = model;
 		initComponents();
-		
+
 		networkTreeTable.setTreeTableModel(model);
 		networkTreeTable.setRootVisible(true);
-//		networkTreeTable.getColumn("Network").setPreferredWidth(100);
-//		networkTreeTable.getColumn("Nodes").setPreferredWidth(45);
-//		networkTreeTable.getColumn("Edges").setPreferredWidth(45);
+		networkTreeTable.setTreeCellRenderer(new NetworkTreeCellRenderer());
+		networkTreeTable.getColumn(1).setCellRenderer(
+				new NetworkImageCellRenderer());
+		networkTreeTable.getColumn("Network").setMinWidth(200);
+		networkTreeTable.setRowHeight(rowHeight);
 		
+		// networkTreeTable.getColumn("Nodes").setPreferredWidth(45);
+		// networkTreeTable.getColumn("Edges").setPreferredWidth(45);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
+				this);
+		CyGroupManager.addGroupChangeListener(this);
+
 	}
 
 	/**
@@ -153,20 +177,62 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser, Dockab
 	private javax.swing.JButton selectButton;
 	private javax.swing.JToggleButton thumbnailButton;
 
-	// End of variables declaration
+	public void propertyChange(PropertyChangeEvent e) {
+		try {
+
+			if (e.getPropertyName() == NETWORK_CREATED) {
+
+				model.addNetwork((String) e.getNewValue(), (String) e
+						.getOldValue());
+				
+				networkTreeTable.collapsePath(new TreePath(new TreeNode[] { model.getRoot() }));
+
+				networkTreeTable.updateUI();
+//				TreePath path = new TreePath(dmtn.getPath());
+//				networkTreeTable.expandPath(path);
+//				networkTreeTable.scrollPathToVisible(path);
+				networkTreeTable.doLayout();
+				
+				
+				
+
+			} else if (e.getPropertyName() == NETWORK_DESTROYED) {
+				model.removeNetwork((String) e.getNewValue());
+			} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
+				if (e.getSource() != this)
+					model.focusNetworkNode((String) e.getNewValue());
+			} else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
+				CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e
+						.getNewValue();
+				String newID = cyNetworkTitleChange.getNetworkIdentifier();
+				// String newTitle = cyNetworkTitleChange.getNetworkTitle();
+				CyNetwork _network = Cytoscape.getNetwork(newID);
+				// Network "0" is the default and does not appear in the netowrk
+				// panel
+				if (_network != null && !_network.getIdentifier().equals("0"))
+					model.updateTitle(_network);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	public Object getModel() {
-		return model;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public Component getComponent() {
-		// TODO Auto-generated method stub
-		return this;
-	}
+	public void groupChanged(CyGroup group, ChangeType change) {
+		if (change == CyGroupChangeListener.ChangeType.GROUP_CREATED) {
+			model.groupCreated(group);
 
-	public DockKey getDockKey() {
-		// TODO Auto-generated method stub
-		return key;
+		} else if (change == CyGroupChangeListener.ChangeType.GROUP_DELETED) {
+			//groupRemoved(group);
+		} else if (change == CyGroupChangeListener.ChangeType.GROUP_MODIFIED) {
+			//groupChanged(group);
+		} else {
+			System.err.println("unsupported change type: " + change);
+		}
 	}
 
 }
