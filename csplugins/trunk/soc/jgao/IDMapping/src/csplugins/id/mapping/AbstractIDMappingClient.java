@@ -38,6 +38,8 @@ package csplugins.id.mapping;
 import cytoscape.util.ModuleProperties;
 
 import java.util.Set;
+import java.util.Vector;
+import java.util.Collections;
 import java.io.Serializable;
 
 import org.bridgedb.Xref;
@@ -184,9 +186,14 @@ public abstract class AbstractIDMappingClient implements Serializable, IDMapping
             }
 
             if (dss!=null) {
+                Vector<String> vec = new Vector(dss.size());
                 for (DataSource ds : dss) {
-                    desc.append("\t");
-                    desc.append(getDescription(ds));
+                    vec.add(getDescription(ds));
+                }
+
+                Collections.sort(vec);
+                for (String str : vec) {
+                    desc.append("\t"+str+"\n");
                 }
             }
 
@@ -199,9 +206,14 @@ public abstract class AbstractIDMappingClient implements Serializable, IDMapping
             }
 
             if (dss!=null) {
+                Vector<String> vec = new Vector(dss.size());
                 for (DataSource ds : dss) {
-                    desc.append("\t");
-                    desc.append(getDescription(ds));
+                    vec.add(getDescription(ds));
+                }
+
+                Collections.sort(vec);
+                for (String str : vec) {
+                    desc.append("\t"+str+"\n");
                 }
             }
 
@@ -234,7 +246,6 @@ public abstract class AbstractIDMappingClient implements Serializable, IDMapping
                 }
             }
 
-            desc.append("\n");
             return desc.toString();
         }
 	

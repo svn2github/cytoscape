@@ -44,7 +44,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import java.util.Set;
-import java.util.Vector;
 
 /**
  *
@@ -78,31 +77,8 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
                     }
                 }
 
-//                Vector<IDMappingClient> clients = new Vector();
-//                for (TreePath path : e.getPaths()) {
-//                    Object nodeObj = path.getLastPathComponent();
-//                    if (nodeObj instanceof DefaultMutableTreeNode) {
-//                        DefaultMutableTreeNode node = (DefaultMutableTreeNode)nodeObj;
-//                        Object clientObj = node.getUserObject();
-//                        if (clientObj instanceof IDMappingClient) {
-//                            IDMappingClient client = (IDMappingClient)clientObj;
-//                            clients.add(client);
-//                        }
-//                    }
-//                }
-//
-//                if (clients.isEmpty()) {
-//                    descTextArea.setText(msg);
-//                } else {
-//                    descTextArea.setText("");
-//                }
-//
-//                for (IDMappingClient client : clients) {
-//                    descTextArea.append("\n==================\n");
-//                    descTextArea.append(client.getDescription());
-//                }
-
                 descTextArea.repaint();//.repaint();
+                descScrollPane.repaint();
             }
         });
     }
@@ -120,7 +96,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         javax.swing.JPanel sourceConfPanel = new javax.swing.JPanel();
         javax.swing.JSplitPane sourceDescSplitPane = new javax.swing.JSplitPane();
         javax.swing.JScrollPane srcTreeScrollPane = new javax.swing.JScrollPane();
-        javax.swing.JScrollPane descScrollPane = new javax.swing.JScrollPane();
+        descScrollPane = new javax.swing.JScrollPane();
         descTextArea = new javax.swing.JTextArea();
         javax.swing.JPanel okPanel = new javax.swing.JPanel();
         cancelButton = new javax.swing.JButton();
@@ -148,12 +124,11 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         descScrollPane.setMinimumSize(new java.awt.Dimension(500, 500));
         descScrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
 
+        descTextArea.setEditable(false);
         descTextArea.setLineWrap(true);
         descTextArea.setTabSize(4);
         descTextArea.setText(msg);
         descTextArea.setWrapStyleWord(true);
-        descTextArea.setMinimumSize(new java.awt.Dimension(500, 500));
-        descTextArea.setPreferredSize(new java.awt.Dimension(500, 500));
         descScrollPane.setViewportView(descTextArea);
 
         sourceDescSplitPane.setRightComponent(descScrollPane);
@@ -228,6 +203,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
     private IDMappingSourceSelectionTree srcTree;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
+    private javax.swing.JScrollPane descScrollPane;
     private javax.swing.JTextArea descTextArea;
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables

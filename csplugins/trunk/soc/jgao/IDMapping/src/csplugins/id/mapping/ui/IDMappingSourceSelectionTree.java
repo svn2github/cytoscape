@@ -59,6 +59,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -229,10 +230,10 @@ class IDMappingSourceSelectionTree extends JTree {
         dbPopup.add(mi);
 
         final JPopupMenu wsPopup = new JPopupMenu();
-        mi = new JMenuItem("Add an ID mapping web service...");
+        mi = new JMenuItem("Add an ID mapping web service (BioMart)...");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addWebService();
+                addBiomart();
             }
         });
         wsPopup.add(mi);
@@ -364,8 +365,39 @@ class IDMappingSourceSelectionTree extends JTree {
         }
     }
 
-    private void addWebService() {
+    private void addBiomart() {
+        BiomartIDMappingClientConfigDialog dialog = new BiomartIDMappingClientConfigDialog(parent, true);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        if (!dialog.isCancelled()) {
+            IDMappingClient client = null;
+            try {
+                client = dialog.getIDMappingClient();
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parent, "Error: failed to add Biomart as source.");
+            }
 
+            if (client!=null) {
+                DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
+                IDMappingClientManager.registerClient(client);
+
+                wsTreeNode.add(clientNode);
+                clientNode.setAllowsChildren(false);
+
+                //expand path
+                this.expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,wsTreeNode}));
+
+                //set selected
+                TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,wsTreeNode,clientNode});
+                if (!selection_Model.isPathSelected(path, true)) {
+                    selection_Model.addSelectionPaths(new TreePath[] {path});
+                }
+                setSelectionPath(path);
+
+                tree_Model.reload(wsTreeNode);
+            }
+        }
     }
 
     private void addFile() {

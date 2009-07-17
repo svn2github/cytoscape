@@ -50,7 +50,7 @@ public abstract class RDBIDMappingClient extends AbstractIDMappingClient {
 	protected static final String RDB_NAME = "rdb";
 
 	// Default Display Name
-	protected static final String RDB_DISPLAY_NAME = "File Web Service Cilent";
+	protected static final String RDB_DISPLAY_NAME = "File ID Mapping Cilent";
 
     /**
 	 * Creates a new WebServiceClientImpl object.

@@ -39,24 +39,24 @@ import csplugins.id.mapping.IDMappingClientManager.ClientType;
 
 import cytoscape.util.ModuleProperties;
 
-import org.bridgedb.file.IDMapperFile;
+import org.bridgedb.webservice.IDMapperWebservice;
 
 /**
  *
  * @author gjj
  */
-public abstract class FileIDMappingClient extends AbstractIDMappingClient {
+public abstract class WebserviceIDMappingClient extends AbstractIDMappingClient {
     // Default ID
-	protected static final String FILE_NAME = "file";
+	protected static final String WS_NAME = "webservice";
 
 	// Default Display Name
-	protected static final String FILE_DISPLAY_NAME = "File ID Mapping Cilent";
+	protected static final String WS_DISPLAY_NAME = "File ID Mapping Cilent";
 
     /**
 	 * Creates a new WebServiceClientImpl object.
 	 */
-	public FileIDMappingClient() {
-		this(FILE_NAME, FILE_DISPLAY_NAME);
+	public WebserviceIDMappingClient() {
+		this(WS_NAME, WS_DISPLAY_NAME);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public abstract class FileIDMappingClient extends AbstractIDMappingClient {
 	 * @param serviceName  DOCUMENT ME!
 	 * @param displayName  DOCUMENT ME!
 	 */
-	public FileIDMappingClient(final String serviceName, final String displayName) {
+	public WebserviceIDMappingClient(final String serviceName, final String displayName) {
 		this(serviceName, displayName, null);
 	}
 
@@ -76,8 +76,8 @@ public abstract class FileIDMappingClient extends AbstractIDMappingClient {
 	 * @param displayName  DOCUMENT ME!
 	 * @param props  DOCUMENT ME!
 	 */
-	public FileIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperFile idMapper) {
+	public WebserviceIDMappingClient(final String serviceName, final String displayName,
+	                           final IDMapperWebservice idMapper) {
 		this(serviceName, displayName, idMapper, null);
 	}
 
@@ -88,8 +88,8 @@ public abstract class FileIDMappingClient extends AbstractIDMappingClient {
 	 * @param displayName  DOCUMENT ME!
 	 * @param props  DOCUMENT ME!
 	 */
-	public FileIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperFile idMapper, final ModuleProperties props) {
+	public WebserviceIDMappingClient(final String serviceName, final String displayName,
+	                           final IDMapperWebservice idMapper, final ModuleProperties props) {
 		super(serviceName, displayName, idMapper, props);
 
 	}
@@ -99,6 +99,6 @@ public abstract class FileIDMappingClient extends AbstractIDMappingClient {
      * @return
      */
     public ClientType getClientType() {
-        return ClientType.FILE;
+        return ClientType.WEBSERVICE;
     }
 }

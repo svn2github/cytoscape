@@ -155,7 +155,7 @@ public class SourceAttributeSelectionTable extends JTable{
 
         typeComboBoxes.clear();
         for (int i=0; i<rowCount; i++) {
-            typeComboBoxes.add(new CheckComboBox(supportedIDType, true));
+            typeComboBoxes.add(new CheckComboBox(supportedIDType, false));
         }
         setColumnEditorAndCellRenderer();
         //fireTableDataChanged();
@@ -266,7 +266,7 @@ public class SourceAttributeSelectionTable extends JTable{
 
         attributeComboBoxes.add(new JComboBox(attrs));
 
-        CheckComboBox cc = new CheckComboBox(supportedIDType, true);
+        CheckComboBox cc = new CheckComboBox(supportedIDType, false);
         typeComboBoxes.add(cc);
 
         JButton button = new JButton("Remove");
