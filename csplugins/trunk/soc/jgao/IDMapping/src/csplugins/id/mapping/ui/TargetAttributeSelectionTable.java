@@ -35,6 +35,7 @@
 
 package csplugins.id.mapping.ui;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 import java.util.List;
@@ -44,6 +45,7 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.HashSet;
+import java.util.Arrays;
 
 import java.awt.Component;
 import java.awt.event.MouseEvent;
@@ -172,13 +174,9 @@ public class TargetAttributeSelectionTable extends JTable{
             return null;
         }
 
-        String attr = (String)destinationAttributes.get(row);
-        if (attr.length()==0) {
-            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(row).getSelectedItem();
-            attr = dsw.toString();
-        }
+        List<String> names = getTgtAttrNames();
 
-        return attr;
+        return names.get(row);
     }
 
     public List<DataSource> getTgtIDTypes() {
@@ -196,10 +194,30 @@ public class TargetAttributeSelectionTable extends JTable{
     }
 
     public List<String> getTgtAttrNames() {
+        Set<String> usedName = new HashSet();
+        usedName.add("ID");
+        usedName.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+        usedName.addAll(destinationAttributes);
+
         List<String> ret = new Vector();
-        for (int i=0; i<rowCount; i++) {
-            String name = getAttrName(i);
-            ret.add(name);
+        for (int row=0; row<rowCount; row++) {
+            String attr = destinationAttributes.get(row);
+            if (attr.length()==0) {
+                DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(row).getSelectedItem();
+                attr = dsw.toString();
+
+                if (usedName.contains(attr)) {
+                    int num = 1;
+                    while (usedName.contains(attr+"."+num)) {
+                        num ++;
+                    }
+                    attr += "."+num;
+                }
+
+                usedName.add(attr);
+            }
+
+            ret.add(attr);
         }
         return ret;
     }
@@ -240,6 +258,11 @@ public class TargetAttributeSelectionTable extends JTable{
             ret.put(name, attrType);
         }
         return ret;
+    }
+
+    public void resetDestinationAttributeNames() {
+        java.util.Collections.fill(destinationAttributes, new String());
+        this.repaint();
     }
 
     protected void setColumnEditorAndCellRenderer() {
@@ -490,7 +513,24 @@ public class TargetAttributeSelectionTable extends JTable{
         public void setValueAt(Object value, int row, int col) {
             String colName = getColumnName(col);
             if (colName.compareTo(headerAttrName)==0 && row<rowCount) {
-                destinationAttributes.set(row, (String)value);
+                Set<String> usedName = new HashSet();
+                usedName.add("ID");
+                usedName.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+                usedName.addAll(destinationAttributes);
+                String str = (String)value;
+                if (usedName.contains(str)) {
+                    int num = 1;
+                    while (usedName.contains(str+"."+num)) {
+                        num ++;
+                    }
+                    destinationAttributes.set(row, str+"."+num);
+                } else {
+                    destinationAttributes.set(row, str);
+                }
+
+
+
+                
                 fireTableCellUpdated(row, col);
             }
         }

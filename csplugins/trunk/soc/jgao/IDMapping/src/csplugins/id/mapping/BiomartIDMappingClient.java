@@ -45,21 +45,9 @@ import org.bridgedb.IDMapperException;
  */
 public class BiomartIDMappingClient extends WebserviceIDMappingClient {
 
-    public BiomartIDMappingClient(final String dataset) throws IDMapperException {
-        this(dataset, null);
-    }
-
-    public BiomartIDMappingClient(final String dataset, final boolean transitivity) throws IDMapperException {
-        this(dataset, null, transitivity);
-    }
-
-    public BiomartIDMappingClient(final String dataset, final String baseURL) throws IDMapperException {
-        this(dataset, baseURL, false);
-    }
-
-    public BiomartIDMappingClient(final String dataset, final String baseURL,
-            final boolean transitivity) throws IDMapperException {
-        this(new IDMapperBiomart(dataset, baseURL, transitivity));
+   public BiomartIDMappingClient(final String dataset, final String baseURL,
+            final boolean filterTgt, final boolean transitivity) throws IDMapperException {
+        this(new IDMapperBiomart(dataset, baseURL, filterTgt, transitivity));
     }
 
     public BiomartIDMappingClient(final IDMapperBiomart idMapper) {

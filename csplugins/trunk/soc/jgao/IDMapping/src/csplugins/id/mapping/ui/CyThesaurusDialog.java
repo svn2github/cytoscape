@@ -458,8 +458,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         boolean succ = TaskManager.executeTask(task, jTaskConfig);
 
         if (succ) {
-            this.setVisible(false);
-            this.dispose();
+            // keep the dialog
+            targetAttributeSelectionTable.resetDestinationAttributeNames(); // rename the target attribute
+            //this.setVisible(false);
+            //this.dispose();
         } else {
             //Delete the new attributes
             CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();

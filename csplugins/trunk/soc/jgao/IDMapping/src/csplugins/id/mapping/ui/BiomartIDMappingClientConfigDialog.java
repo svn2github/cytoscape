@@ -99,6 +99,7 @@ public class BiomartIDMappingClientConfigDialog extends javax.swing.JDialog {
         optionCheckBox = new javax.swing.JCheckBox();
         advancedPanel = new javax.swing.JPanel();
         transitivityCheckBox = new javax.swing.JCheckBox();
+        filterTgtCheckBox = new javax.swing.JCheckBox();
         javax.swing.JPanel baseUrlPanel = new javax.swing.JPanel();
         baseUrlTextField = new javax.swing.JTextField();
         javax.swing.JButton baseUrlButton = new javax.swing.JButton();
@@ -191,6 +192,17 @@ public class BiomartIDMappingClientConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         advancedPanel.add(transitivityCheckBox, gridBagConstraints);
 
+        filterTgtCheckBox.setSelected(idMapper==null || idMapper.getIDOnlyForTgtDataSource());
+        filterTgtCheckBox.setText("Filter supported target source ID with IDs or accessions only");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        advancedPanel.add(filterTgtCheckBox, gridBagConstraints);
+
         baseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Base URL of BioMart"));
         baseUrlPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -213,7 +225,7 @@ public class BiomartIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         advancedPanel.add(baseUrlPanel, gridBagConstraints);
@@ -293,6 +305,7 @@ public class BiomartIDMappingClientConfigDialog extends javax.swing.JDialog {
                     idMapper.setDataset(ds.getName());
 
                 idMapper.setTransitivity(transitivityCheckBox.isSelected());
+                idMapper.setIDOnlyForTgtDataSource(filterTgtCheckBox.isSelected());
             }
             cancelled = false;
             setVisible(false);
@@ -430,8 +443,9 @@ public class BiomartIDMappingClientConfigDialog extends javax.swing.JDialog {
         String baseurl = baseUrlTextField.getText();
 
         boolean transitivity = transitivityCheckBox.isSelected();
+        boolean filterTgt = filterTgtCheckBox.isSelected();
 
-        return new BiomartIDMappingClient(dsname, baseurl, transitivity);
+        return new BiomartIDMappingClient(dsname, baseurl, filterTgt, transitivity);
     }
 
     public boolean isCancelled() {
@@ -449,6 +463,7 @@ public class BiomartIDMappingClientConfigDialog extends javax.swing.JDialog {
     private javax.swing.JButton cancelButton;
     private javax.swing.JComboBox chooseDBComboBox;
     private javax.swing.JComboBox chooseDatasetComboBox;
+    private javax.swing.JCheckBox filterTgtCheckBox;
     private javax.swing.JButton okButton;
     private javax.swing.JCheckBox optionCheckBox;
     private javax.swing.JCheckBox transitivityCheckBox;
