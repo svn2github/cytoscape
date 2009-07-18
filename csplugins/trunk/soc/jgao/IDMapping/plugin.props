@@ -13,7 +13,7 @@ pluginName=CyThesaurus
 pluginDescription=Provides utilities for mapping attributes of source ID types to new attributes of destination ID types. 
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.02
+pluginVersion=0.03
 
 # Compatible Cytoscape version. If there are more than one version, seperate by ",".
 cytoscapeVersion=2.6
@@ -31,7 +31,7 @@ projectURL=http://socrates2.cgl.ucsf.edu/GenMAPP/wiki/Google_Summer_of_Code_2009
 pluginAuthorsIntsitutions=Jianjiong Gao : U. Missouri
 
 # Date this plugin/plugin version was released
-releaseDate=July 10, 2009
+releaseDate=July 17, 2009
 
 # If this plugin is never meant to be downloaded except as part of a plugin (not common) add this property.  Default is "no"
 themeOnly=no
