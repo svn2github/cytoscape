@@ -25,8 +25,9 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	private List<CyNetwork> layers;
 	private List<CyNetwork> connectors;
 
-	public MultiLayerNetworkBuilderImpl(CyNetworkManager manager) {
+	public MultiLayerNetworkBuilderImpl(CyNetworkManager manager, CyNetworkFactory factory) {
 		this.manager = manager;
+		this.factory = factory;
 	}
 
 	public CyNetwork buildLayeredNetwork(List<CyNetwork> layers,
