@@ -12,8 +12,10 @@
 package org.cytoscape.layer.internal.ui;
 
 import java.awt.Frame;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +27,6 @@ import javax.swing.JDialog;
 import javax.swing.table.TableColumn;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
-import org.cytoscape.layer.internal.tasks.BuildMultilayerNetworkTask;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
 
@@ -522,11 +523,47 @@ public class LayerBuilderDialog extends JDialog {
 	private void generateIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GenerateIntegratedNetworkButtonActionPerformed
 
-		// Setup
-		// builder.setSourceNetworks(layers, connectors);
+		List<CyNetwork> layers = new ArrayList<CyNetwork>();
+		List<CyNetwork> connectors = new ArrayList<CyNetwork>();
 
-		BuildMultilayerNetworkTask task = new BuildMultilayerNetworkTask(
-				manager, builder);
+		// System.out.println(title2IdMap.get(layeredNetworkListModel
+		// .getElementAt(0)));
+		// System.out.println(title2IdMap.get(layeredNetworkListModel
+		// .getElementAt(1)));
+		// System.out.println(title2IdMap.get(layeredNetworkListModel
+		// .getElementAt(2)));
+
+		// System.out.println(manager.getNetwork(title2IdMap
+		// .get(layeredNetworkListModel.getElementAt(0))));
+		// System.out.println(manager.getNetwork(title2IdMap
+		// .get(layeredNetworkListModel.getElementAt(1))));
+		// System.out.println(manager.getNetwork(title2IdMap
+		// .get(layeredNetworkListModel.getElementAt(2))));
+
+		layers.add(manager.getNetwork(title2IdMap.get(layeredNetworkListModel
+				.getElementAt(0))));
+
+		connectors.add(manager.getNetwork(title2IdMap
+				.get(layeredNetworkListModel.getElementAt(1))));
+
+		layers.add(manager.getNetwork(title2IdMap.get(layeredNetworkListModel
+				.getElementAt(2))));
+
+		// Setup
+		builder.setSourceNetworks(layers, connectors);
+		System.out.println(builder.buildLayeredNetwork());
+		//
+		// if (builder.buildLayeredNetwork() != null) {
+		// System.out.println(builder.buildLayeredNetwork().getEdgeCount());
+		// System.out.println(builder.buildLayeredNetwork().getNodeCount());
+		// }
+
+		// System.out.println(builder.buildLayeredNetwork());
+
+		// manager.addNetwork(builder.buildLayeredNetwork());
+
+		// BuildMultilayerNetworkTask task = new BuildMultilayerNetworkTask(
+		// manager, builder);
 
 		// Run
 

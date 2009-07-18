@@ -9,7 +9,6 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
-
 import org.cytoscape.session.CyNetworkManager;
 
 /**
@@ -23,6 +22,8 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	private CyNetworkManager manager;
 	private CyNetwork layeredNetwork;
 	private CyNetworkFactory factory;
+	private List<CyNetwork> layers;
+	private List<CyNetwork> connectors;
 
 	public MultiLayerNetworkBuilderImpl(CyNetworkManager manager) {
 		this.manager = manager;
@@ -139,12 +140,12 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 	public CyNetwork buildLayeredNetwork() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.buildLayeredNetwork(layers, connectors);
 	}
 
 	public void setSourceNetworks(List<CyNetwork> layers,
 			List<CyNetwork> connectors) {
-		// TODO Auto-generated method stub
-		
+		this.layers = layers;
+		this.connectors = connectors;
 	}
 }
