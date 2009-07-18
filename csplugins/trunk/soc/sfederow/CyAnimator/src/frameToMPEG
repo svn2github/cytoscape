@@ -1,0 +1,11 @@
+package src;
+
+public class framesToMPEG {
+
+	public native void testConnection();
+	
+	static{
+		System.loadLibrary("test");
+	}
+	
+}
