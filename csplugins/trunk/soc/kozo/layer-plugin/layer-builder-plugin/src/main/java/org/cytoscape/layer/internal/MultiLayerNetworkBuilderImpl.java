@@ -25,7 +25,8 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	private List<CyNetwork> layers;
 	private List<CyNetwork> connectors;
 
-	public MultiLayerNetworkBuilderImpl(CyNetworkManager manager, CyNetworkFactory factory) {
+	public MultiLayerNetworkBuilderImpl(CyNetworkManager manager,
+			CyNetworkFactory factory) {
 		this.manager = manager;
 		this.factory = factory;
 	}
@@ -36,34 +37,41 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		layeredNetwork = factory.getInstance();
 		layeredNetwork.attrs().set("name", "Layered Network");
 
+		// HashSet cumulatedNodes = new HashSet();
+		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
+
 		// Connect layers here...
 		for (CyNetwork topLayer : layers) {
 			for (CyNetwork bottomLayer : layers) {
 				for (CyNetwork connector : connectors) {
-					connect(topLayer, bottomLayer, connector);
+					connect(topLayer, bottomLayer, connector, nodeMap);
 				}
 			}
 		}
+
+		nodeMap.clear();
+		nodeMap = null;
 
 		manager.addNetwork(layeredNetwork);
 		return layeredNetwork;
 	}
 
 	private void connect(CyNetwork topLayer, CyNetwork connector,
-			CyNetwork bottomLayer) {
+			CyNetwork bottomLayer, Map<String, CyNode> nodeMap) {
 		// Connect them
 
-		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
+		// Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
 
 		// 1st Phase: add all nodes in the top layer
 		for (CyNode cyNode : topLayer.getNodeList()) {
 
 			String nodeName = cyNode.attrs().get("name", String.class);
 
-			CyNode newNode = layeredNetwork.addNode();
-			newNode.attrs().set("name", nodeName);
-
-			nodeMap.put(nodeName, newNode);
+			if (nodeMap.containsKey(nodeName) == false) {
+				CyNode newNode = layeredNetwork.addNode();
+				newNode.attrs().set("name", nodeName);
+				nodeMap.put(nodeName, newNode);
+			}
 		}
 
 		for (CyEdge edge : topLayer.getEdgeList()) {
@@ -134,8 +142,8 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 		}
 
-		nodeMap.clear();
-		nodeMap = null;
+		// nodeMap.clear();
+		// nodeMap = null;
 
 	}
 

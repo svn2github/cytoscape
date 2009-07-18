@@ -551,7 +551,12 @@ public class LayerBuilderDialog extends JDialog {
 
 		// Setup
 		builder.setSourceNetworks(layers, connectors);
-		System.out.println(builder.buildLayeredNetwork());
+		manager.addNetwork(builder.buildLayeredNetwork());
+
+		// for (CyNode cyNode : builder.buildLayeredNetwork().getNodeList()) {
+		// System.out.println(cyNode.attrs().get("name", String.class));
+		// }
+
 		//
 		// if (builder.buildLayeredNetwork() != null) {
 		// System.out.println(builder.buildLayeredNetwork().getEdgeCount());
