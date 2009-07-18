@@ -44,7 +44,7 @@ import org.cytoscape.view.model.CyNetworkView;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
+import javax.swing.event.PopupMenuEvent;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 import java.util.LinkedList;
@@ -56,7 +56,7 @@ import cytoscape.internal.util.AcceleratorParser;
 /**
  *
  */
-public abstract class CytoscapeAction extends AbstractAction implements CyAction, MenuListener {
+public abstract class CytoscapeAction extends AbstractAction implements CyAction {
 	protected String preferredMenu = null;
 	protected String preferredButtonGroup = null;
 	protected Integer menuIndex = Integer.valueOf(-1);
@@ -138,32 +138,6 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 */
 	public String getName() {
 		return consoleName;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String actionHelp() {
-		return "";
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String[] completions() {
-		return new String[] {  };
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param argv DOCUMENT ME!
-	 */
-	public void takeArgs(String[] argv) {
 	}
 
 	// implements AbstractAction
@@ -331,11 +305,39 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 
 	/**
 	 * This method can be overridden by individual actions to set the state of menu items
-	 * based on whatever unique circumstances that menu option cares about. If not overridden,
-	 * this method does nothing.
+	 * based on whatever unique circumstances that menu option cares about. By default it
+	 * sets the state of the menu based on the "enableFor" property found in the properties used
+	 * to construct the action. The valid options for "enableFor" are "network", "networkAndView",
+	 * and "selectedNetworkObjs".
 	 * @param e The triggering event.
 	 */
-    public void menuSelected(MenuEvent e) {
+    public void menuSelected(MenuEvent e) { enableMenus(); }
+
+	/**
+	 * This method can be overridden by individual actions to set the state of menu items
+	 * based on whatever unique circumstances that menu option cares about. By default it
+	 * sets the state of the menu based on the "enableFor" property found in the properties used
+	 * to construct the action. The valid options for "enableFor" are "network", "networkAndView",
+	 * and "selectedNetworkObjs".
+	 * @param e The triggering event.
+	 */
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) { enableMenus(); }
+
+	/**
+	 * This method can be used at your discretion, but otherwise does nothing.  It exists
+	 * primarily to have access to menuSelected().
+	 * @param e The triggering event.
+	 */
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+
+	/**
+	 * This method can be used at your discretion, but otherwise does nothing.  It exists
+	 * primarily to have access to menuSelected().
+	 * @param e The triggering event.
+	 */
+	public void popupMenuCanceled(PopupMenuEvent e) {}
+
+	private void enableMenus() {
 		if ( enableFor == null || enableFor.equals("") )
 			setEnabled(true);
 		else if ( enableFor.equals("network") ) 
@@ -376,7 +378,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 			return;
 		}
 		
-		CyNetworkView v = netmgr.getCurrentNetworkView();
+		CyNetworkView v = netmgr.getNetworkView(n.getSUID());
 		if ( v == null )
 			setEnabled(false);
 		else

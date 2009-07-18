@@ -40,6 +40,7 @@ package cytoscape.util;
 import javax.swing.Action;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import javax.swing.event.PopupMenuListener;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
@@ -48,24 +49,28 @@ import java.util.List;
  * in CytoscapeAction so that CytoscapeActions can be registered
  * as Services. 
  */
-public interface CyAction extends Action, MenuListener {
+public interface CyAction extends Action, MenuListener, PopupMenuListener {
+
 	 void setName(String name);
 	 String getName();
-	 String actionHelp();
-	 String[] completions();
-	 void takeArgs(String[] argv);
-	 void actionPerformed(ActionEvent e);
-	 Object clone();
+
 	 boolean isInMenuBar();
+
 	 boolean isInToolBar();
+
 	 void setPreferredIndex(int index);
 	 Integer getPrefferedIndex();
+
 	 void setAcceleratorCombo(int key_code, int key_mods);
 	 boolean isAccelerated();
+
 	 int getKeyCode();
+
 	 int getKeyModifiers();
+
 	 String getPreferredMenu();
 	 void setPreferredMenu(String new_preferred);
+
 	 /**
 	  * Buttons will be grouped according to name.  Buttons are added 
 	  * sequentially to groups as the service is registered. Groups are
@@ -73,5 +78,6 @@ public interface CyAction extends Action, MenuListener {
 	  */
 	 String getPreferredButtonGroup();
 	 void setPreferredButtonGroup(String new_preferred);
+
 	 boolean useCheckBoxMenuItem();
-}	
+}

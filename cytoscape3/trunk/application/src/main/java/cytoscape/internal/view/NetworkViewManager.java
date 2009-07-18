@@ -197,8 +197,10 @@ public class NetworkViewManager implements InternalFrameListener,
 	private void updateNetworkTitle(CyNetwork network) {
 		JInternalFrame frame = networkViewMap.get(network.getSUID());
 
-		frame.setTitle(network.attrs().get("name", String.class));
-		frame.repaint();
+		if ( frame != null ) {
+			frame.setTitle(network.attrs().get("name", String.class));
+			frame.repaint();
+		}
 	}
 
 	/**

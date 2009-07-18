@@ -148,7 +148,7 @@ public class FilterHistoryJList extends JList {
 
 	// inner class provides filter-by-keystroke field
 	class FilterField extends JComponent implements DocumentListener, ActionListener {
-	private final static long serialVersionUID = 1202339875100770L;
+		private final static long serialVersionUID = 1202339875100770L;
 		LinkedList<String> prevSearches;
 		JTextField textField;
 		JButton prevSearchButton;
@@ -160,7 +160,7 @@ public class FilterHistoryJList extends JList {
 			textField = new JTextField(width);
 			textField.getDocument().addDocumentListener(this);
 			textField.addActionListener(this);
-			prevSearchButton = new JButton(new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_search.png")));
+			prevSearchButton = new JButton(new ImageIcon(this.getClass().getResource("/images/ximian/stock_search.png")));
 			prevSearchButton.setBorder(null);
 			prevSearchButton.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent me) {

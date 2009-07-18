@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import javax.swing.Action;
 import javax.swing.InputMap;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -101,6 +102,7 @@ import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
+import cytoscape.util.CyAction;
 
 import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
 import cytoscape.internal.task.NetworkTaskFactoryTunableAction;
@@ -128,6 +130,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	private Long currentNetId;
 	private final TaskManager taskManager;
 	private Map<TaskFactory,JMenuItem> popupMap;
+	private Map<TaskFactory,CyAction> popupActions;
 	private final TunableInterceptor tunableInterceptor;
 	private Map<CyNetwork,CyRowListener> nameListeners;
 
@@ -201,66 +204,65 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		// create and populate the popup window
 		popup = new JPopupMenu();
 		popupMap = new HashMap<TaskFactory,JMenuItem>();
+		popupActions = new HashMap<TaskFactory,CyAction>();
+	}
+
+	private void addFactory(TaskFactory factory, CyAction action) {
+		JMenuItem item = new JMenuItem( action );
+		popupMap.put(factory,item);
+		popupActions.put(factory,action);
+		popup.add(item);
+		popup.addPopupMenuListener(action);
+	}
+
+	private void removeFactory(TaskFactory factory) {
+		JMenuItem item = popupMap.remove(factory);
+		if ( item != null )
+			popup.remove(item);
+		CyAction action = popupActions.remove(factory);
+		if ( action != null ) 
+			popup.removePopupMenuListener(action);
 	}
 
 	public void addTaskFactory(TaskFactory factory, Map props) {
-		JMenuItem item = new JMenuItem( new TaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
-		popupMap.put(factory,item);
-		popup.add(item);
+		addFactory(factory, new TaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
 	}
 
 	public void removeTaskFactory(TaskFactory factory, Map props) {
-		JMenuItem item = popupMap.remove(factory);
-		if ( item != null ) 
-			popup.remove(item);
+		removeFactory(factory);
 	}
 
 	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		JMenuItem item = new JMenuItem( new NetworkCollectionTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
-		popupMap.put(factory,item);
-		popup.add(item);
+		addFactory(factory,new NetworkCollectionTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
 	}
 
 	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		JMenuItem item = popupMap.remove(factory);
-		if ( item != null ) 
-			popup.remove(item);
+		removeFactory(factory);
 	}
 
+
 	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		JMenuItem item = new JMenuItem( new NetworkViewCollectionTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
-		popupMap.put(factory,item);
-		popup.add(item);
+		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
 	}
 
 	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		JMenuItem item = popupMap.remove(factory);
-		if ( item != null ) 
-			popup.remove(item);
+		removeFactory(factory);
 	}
 
 	public void addNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
-		JMenuItem item = new JMenuItem( new NetworkTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
-		popupMap.put(factory,item);
-		popup.add(item);
+		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
-		JMenuItem item = popupMap.remove(factory);
-		if ( item != null ) 
-			popup.remove(item);
+		removeFactory(factory);
 	}
 
 	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
-		JMenuItem item = new JMenuItem( new NetworkViewTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
-		popupMap.put(factory,item);
-		popup.add(item);
+		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
 	}
 
 	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
-		JMenuItem item = popupMap.remove(factory);
-		if ( item != null ) 
-			popup.remove(item);
+		removeFactory(factory);
 	}
 	
 	/**
