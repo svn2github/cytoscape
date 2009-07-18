@@ -174,6 +174,11 @@
     	<type>test-jar</type>
     	<scope>test</scope>
     </dependency>
+    <dependency>
+    	<groupId>org.cytoscape</groupId>
+    	<artifactId>session-impl</artifactId>
+    	<version>1.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
 </project>

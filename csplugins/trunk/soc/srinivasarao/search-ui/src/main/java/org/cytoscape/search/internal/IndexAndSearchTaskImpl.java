@@ -162,6 +162,7 @@ public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
 	}
 	
 	public void run() {
+		System.out.println("I am in IndexandSearchTask");
 		EnhancedSearchFactoryImpl esf = new EnhancedSearchFactoryImpl();
 		final EnhancedSearch enhancedSearch = esf.getGlobalEnhancedSearchInstance();
 		
