@@ -37,6 +37,8 @@ package csplugins.id.mapping.ui;
 
 import csplugins.id.mapping.IDMappingClient;
 import csplugins.id.mapping.DelimitedTextIDMappingClient;
+import csplugins.id.mapping.WebserviceIDMappingClient;
+import csplugins.id.mapping.BiomartIDMappingClient;
 import csplugins.id.mapping.IDMappingClientManager;
 import csplugins.id.mapping.IDMappingClientManager.ClientType;
 
@@ -265,6 +267,14 @@ class IDMappingSourceSelectionTree extends JTree {
         });
         wsClientPopup.add(mi);
 
+        mi = new JMenuItem("Configure");
+        mi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                configWsClient(wsClientPopup.getTreeNode());
+            }
+        });
+        wsClientPopup.add(mi);
+
         final TreeNodePopupMenu fileClientPopup = new TreeNodePopupMenu();
         mi = new JMenuItem("Delete");
         mi.addActionListener(new java.awt.event.ActionListener() {
@@ -471,6 +481,21 @@ class IDMappingSourceSelectionTree extends JTree {
 //
 //                this.repaint();
 //            }
+        }
+    }
+
+    private void configWsClient(final DefaultMutableTreeNode node) {
+        if (node==null) return;
+        WebserviceIDMappingClient client = (WebserviceIDMappingClient)node.getUserObject();
+        if (client instanceof BiomartIDMappingClient) {
+            BiomartIDMappingClientConfigDialog dialog =
+                    new BiomartIDMappingClientConfigDialog(parent, true, (BiomartIDMappingClient)client);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+            if (!dialog.isCancelled()) {
+                TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,node});
+                setSelectionPath(path);
+            }
         }
     }
 
