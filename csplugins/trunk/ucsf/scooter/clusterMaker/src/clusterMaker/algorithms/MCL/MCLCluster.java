@@ -34,6 +34,8 @@ package clusterMaker.algorithms.MCL;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -53,10 +55,13 @@ import cytoscape.task.TaskMonitor;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.ui.ClusterViz;
+import clusterMaker.ui.HistogramDialog;
+import clusterMaker.ui.HistoChangeListener;
 
 // clusterMaker imports
 
-public class MCLCluster extends AbstractClusterAlgorithm implements TunableListener {
+public class MCLCluster extends AbstractClusterAlgorithm 
+                        implements TunableListener, ActionListener, HistoChangeListener {
 	
 	double inflation_parameter = 2.0;
 	int rNumber = 8;
@@ -175,12 +180,16 @@ public class MCLCluster extends AbstractClusterAlgorithm implements TunableListe
 
 		clusterProperties.add(new Tunable("edgeCutoffGroup",
 		                                  "Edge weight cutoff",
-		                                  Tunable.GROUP, new Integer(1)));
+		                                  Tunable.GROUP, new Integer(2)));
 
 		clusterProperties.add(new Tunable("edgeCutOff",
 		                                  "",
 		                                  Tunable.DOUBLE, new Double(0), 
 		                                  new Double(0), new Double(1), Tunable.USESLIDER));
+
+		clusterProperties.add(new Tunable("edgeHistogram",
+		                                  "Set Edge Cutoff Using Histogram",
+		                                  Tunable.BUTTON, "Edge Histogram", this, null, Tunable.IMMUTABLE));
 
 		clusterProperties.add(new Tunable("options_panel2",
 		                                  "Results options",
@@ -265,11 +274,55 @@ public class MCLCluster extends AbstractClusterAlgorithm implements TunableListe
 		}
 	}
 
+	public void actionPerformed(ActionEvent e) {
+		// Get the currently selected attribute
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		byte type = edgeAttributes.getType(dataAttribute);
+		System.out.println("attribute: "+dataAttribute);
+		List attrList = new ArrayList();
+		for (CyEdge edge: (List<CyEdge>)Cytoscape.getCurrentNetwork().edgesList()) {
+			if (edgeAttributes.hasAttribute(edge.getIdentifier(), dataAttribute)) {
+				attrList.add(edgeAttributes.getAttribute(edge.getIdentifier(), dataAttribute));
+			}
+		}
+
+		double dataArray[] = new double[attrList.size()];
+		int index = 0;
+		for (Object obj: attrList) {
+			if (type == CyAttributes.TYPE_FLOATING) {
+				dataArray[index] = ((Double)obj).doubleValue();
+			} else {
+				dataArray[index] = ((Integer)obj).doubleValue();
+			}
+			index++;
+		}
+		int nbins = 100;
+		if (dataArray.length < 100)
+			nbins = 10;
+		else if (dataArray.length > 10000)
+			nbins = 1000;
+		String title = "Histogram for "+dataAttribute+" edge attribute";
+		HistogramDialog histo = new HistogramDialog(title, dataArray, nbins);
+		histo.pack();
+		histo.setVisible(true);
+		histo.addHistoChangeListener(this);
+	}
+
+	public void histoValueChanged(double cutoffValue) {
+		Tunable edgeCutoff = clusterProperties.get("edgeCutOff");
+		edgeCutoff.setValue(cutoffValue);
+	}
+
 	public void tunableChanged(Tunable tunable) {
 		updateSettings(false);
 		Tunable edgeCutOffTunable = clusterProperties.get("edgeCutOff");
 		if (edgeCutOffTunable == null || dataAttribute == null) 
 			return;
+
+		if (dataAttribute != null) {
+			Tunable t = clusterProperties.get("edgeHistogram");
+			t.clearFlag(Tunable.IMMUTABLE);
+		}
 
 		try {
 			double[] span = getSpan(dataAttribute);
