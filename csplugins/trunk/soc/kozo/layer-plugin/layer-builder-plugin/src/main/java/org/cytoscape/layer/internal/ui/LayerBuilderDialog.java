@@ -257,7 +257,7 @@ public class LayerBuilderDialog extends JDialog {
 		moveSelectedAvailableNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						moveSelectedAvailableNetworkButtonActionPerformed(evt);
+						addSelectedAvailableNetworkButtonActionPerformed(evt);
 					}
 				});
 
@@ -265,7 +265,7 @@ public class LayerBuilderDialog extends JDialog {
 		moveSelectedIntegratedNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						moveSelectedIntegratedNetworkButtonActionPerformed(evt);
+						removeSelectedIntegratedNetworkButtonActionPerformed(evt);
 					}
 				});
 
@@ -609,7 +609,7 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_MoveAllAvailableNetworkButtonActionPerformed
 
-	private void moveSelectedAvailableNetworkButtonActionPerformed(
+	private void addSelectedAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
 		// move list content
@@ -627,6 +627,10 @@ public class LayerBuilderDialog extends JDialog {
 
 		availableNetworkList.clearSelection();
 
+		Object[] row = {"Layer1 <---> Layer2",  "Connector Network Name"};
+		layerConnectionTableModel.addRow(row);
+		
+		
 		// sync list content and table column
 		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
 		JComboBox connecterCb = new JComboBox(availableNetworkListModel
@@ -641,7 +645,7 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
-	private void moveSelectedIntegratedNetworkButtonActionPerformed(
+	private void removeSelectedIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 
 		// move list content
@@ -665,6 +669,8 @@ public class LayerBuilderDialog extends JDialog {
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
 		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(0);
+		
+		
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
