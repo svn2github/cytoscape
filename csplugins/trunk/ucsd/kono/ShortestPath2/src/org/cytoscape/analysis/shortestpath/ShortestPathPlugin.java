@@ -12,6 +12,8 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
 
+import org.cytoscape.analysis.shortestpath.internal.ShortestPathDialog;
+
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;

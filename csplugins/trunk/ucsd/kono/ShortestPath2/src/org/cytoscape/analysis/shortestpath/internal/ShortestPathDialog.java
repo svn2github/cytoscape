@@ -1,4 +1,4 @@
-package org.cytoscape.analysis.shortestpath;
+package org.cytoscape.analysis.shortestpath.internal;
 
 
 
@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 import javax.swing.WindowConstants.*;
 import javax.swing.border.*;
+
+import org.cytoscape.analysis.shortestpath.ShortestPath;
+
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.*;
