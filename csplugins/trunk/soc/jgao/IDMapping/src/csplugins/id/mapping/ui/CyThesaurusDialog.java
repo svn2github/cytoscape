@@ -425,10 +425,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         if (!srcConfDialog.isCancelled()) {
             Set<DataSource>[] types = this.getSupportedType();
             sourceAttributeSelectionTable.setSupportedIDType(types[0]);
-            sourceAttributeSelectionTable.repaint();
-
             targetAttributeSelectionTable.setSupportedIDType(types[1]);
-            targetAttributeSelectionTable.repaint();
         }
     }//GEN-LAST:event_srcConfBtnActionPerformed
 

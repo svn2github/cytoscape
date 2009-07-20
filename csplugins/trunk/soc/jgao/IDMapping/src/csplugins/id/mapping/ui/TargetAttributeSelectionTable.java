@@ -86,8 +86,8 @@ public class TargetAttributeSelectionTable extends JTable{
     private JButton addBtn;
 
     private final String headerIDType = "Target ID Type";
-    private final String headerAttrName = "New attribute name";
-    private final String headerAttrType = "Attribute type";
+    private final String headerAttrName = "Target New Attribute";
+    private final String headerAttrType = "Attribute Type";
     private final String headerBtn = " ";
 
     private final String stringAttrType = "String";
@@ -165,8 +165,10 @@ public class TargetAttributeSelectionTable extends JTable{
             idTypeComboBoxes.add(new JComboBox(new Vector(supportedIDType)));
         }
 
+        //TODO: select the id type previously selected
+
+        model.fireTableStructureChanged();
         setColumnEditorAndCellRenderer();
-        //fireTableDataChanged();
     }
 
     private String getAttrName(int row) {

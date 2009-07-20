@@ -11,9 +11,28 @@
     <property name="src" location="src"/>
     <property name="images" value="images"/>
     <property name="lib" location="lib"/>
+	<property name="cyrelease" value="lib"/>
+	<property name="cylib" value = "lib"/>
     <property name="build" location="build"/>
     <property name="build.classes" location="${build}/classes"/>
     <property name="build.images" location="${build.classes}/images"/>
+	
+	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+	<path id="classpath">
+		<fileset dir="${cylib}">
+			<include name="giny.jar"/>
+			<include name="cytoscape-task.jar"/>
+		</fileset>
+		<!-- include cytoscape.jar, which is it release directory top level -->
+		<fileset dir="${cyrelease}">
+			<include name="cytoscape.jar"/>
+		</fileset>
+		<fileset dir="${lib}">
+			<include name="bridgedb.jar"/>
+			<include name="bridgedb-bio.jar"/>
+		</fileset>
+	</path>
+	
   </target>
 
   <!-- =================================================================== -->
@@ -23,13 +42,7 @@
     <mkdir dir="${build}"/>
     <mkdir dir="${build.classes}"/>
     <javac srcdir="${src}" destdir="${build.classes}">
-      <classpath>
-        <pathelement location="lib/giny.jar"/>
-        <pathelement location="lib/cytoscape.jar"/>
-        <pathelement location="lib/cytoscape-task.jar"/>
-      	<pathelement location="lib/bridgedb.jar"/>
-        <pathelement location="lib/bridgedb-bio.jar"/>
-      </classpath>
+      <classpath refid="classpath"/>
     </javac>
   </target>
 

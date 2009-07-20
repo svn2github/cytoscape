@@ -87,7 +87,7 @@ public class SourceAttributeSelectionTable extends JTable{
 
     private int rowCount;
 
-    private final String colHeaderAtt = "Attribute";
+    private final String colHeaderAtt = "Key Attribute";
     private final String colHeaderSrc = "Source ID Type(s)";
     private final String colHeaderBtn = " ";
 
@@ -138,7 +138,7 @@ public class SourceAttributeSelectionTable extends JTable{
             }
         });
 
-        setPreferredColumnWidths(new double[]{0.4,0.5,0.1});
+        setPreferredColumnWidths(new double[]{0.5,0.4,0.1});
 
         setColumnEditorAndCellRenderer();
     }
@@ -157,8 +157,11 @@ public class SourceAttributeSelectionTable extends JTable{
         for (int i=0; i<rowCount; i++) {
             typeComboBoxes.add(new CheckComboBox(supportedIDType, false));
         }
+
+        //TODO: select the id type previously selected
+        
+        model.fireTableStructureChanged();
         setColumnEditorAndCellRenderer();
-        //fireTableDataChanged();
     }
 
     public Map<String,Set<DataSource>> getSourceNetAttrType() {
@@ -337,7 +340,7 @@ public class SourceAttributeSelectionTable extends JTable{
    }
 
     private class IDTypeSelectionTableModel extends AbstractTableModel {
-        private final String[] columnNames = {colHeaderAtt, colHeaderSrc, colHeaderBtn};
+        private final String[] columnNames = {colHeaderSrc, colHeaderAtt, colHeaderBtn};
 
         //@Override
         public int getColumnCount() {

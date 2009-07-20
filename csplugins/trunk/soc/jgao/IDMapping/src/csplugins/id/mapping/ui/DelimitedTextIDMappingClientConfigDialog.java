@@ -110,6 +110,7 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         textFilePanel = new javax.swing.JPanel();
         sourcePanel = new javax.swing.JPanel();
         javax.swing.JLabel typeLabel = new javax.swing.JLabel();
@@ -156,6 +157,7 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
         typeLabel.setText("File type:   ");
         sourcePanel.add(typeLabel);
 
+        buttonGroup1.add(localRadioButton);
         localRadioButton.setSelected(true);
         localRadioButton.setText("Local   ");
         localRadioButton.addActionListener(new java.awt.event.ActionListener() {
@@ -165,6 +167,7 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
         });
         sourcePanel.add(localRadioButton);
 
+        buttonGroup1.add(remoteRadioButton);
         remoteRadioButton.setText("Remote/URL");
         remoteRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -856,6 +859,7 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel advancedPanel;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton cancelButton;
     private javax.swing.JCheckBox commaIDCheckBox;
     private javax.swing.JCheckBox commaTypeCheckBox;
