@@ -17,6 +17,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.search.EnhancedSearch;
 import org.cytoscape.session.CyNetworkManager;
 
+
 public class SearchPanelImpl extends SearchPanel {
 
 	private static final long serialVersionUID = 1L;

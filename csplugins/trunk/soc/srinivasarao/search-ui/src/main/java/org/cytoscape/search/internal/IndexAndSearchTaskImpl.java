@@ -183,7 +183,6 @@ public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
 			}
 		}
 		
-
 		// Execute query
 	//	taskMonitor.setStatusMessage("Executing query");
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQueryImpl(idx,network);
