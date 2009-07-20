@@ -103,7 +103,8 @@
 			<version>1.2.15</version>
 		</dependency>
 
-		<!-- only if you want a shell! 
+
+<!--		 only if you want a shell! -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.shell</artifactId>
@@ -114,7 +115,7 @@
 			<artifactId>org.apache.felix.shell.tui</artifactId>
 			<version>1.2.0</version>
 		</dependency>
-		-->
+		
 
 		<!-- pax logging -->
 		<dependency>
@@ -157,6 +158,7 @@
 			<artifactId>viewmodel-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		
 
 		<!-- cytoscape task and tunable framework -->
 		<dependency>
@@ -170,12 +172,19 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-		<!-- task implementations -->
+
+		<!-- task implementations -->		
+			<dependency>
+				<groupId>org.cytoscape</groupId>
+				<artifactId>core-task-api</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+
 
 		<!-- session api and implementation -->
 		<dependency>
@@ -189,12 +198,14 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
+
 		<!-- the presentation api -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>presentation-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		
 
 		<!-- cytoscape io -->
 		<dependency>
@@ -208,6 +219,7 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
+
 		<!-- cytoscape vizmap -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -220,12 +232,14 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
+
 		<!-- layouts -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>layout</artifactId>
+			<artifactId>layout-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+
 
 		<!-- for properties -->
 		<dependency>
@@ -264,6 +278,7 @@
 			<version>1.0.0</version>
 		</dependency>
 
+
 		<!-- our command line parser -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -274,27 +289,25 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.lang</artifactId>
 			<version>2.4.0</version>
-		</dependency>
-
-		<!--  -->
+		</dependency>		  
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>cmdline-parser-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-		<!-- to control logging -->
-		<dependency>
-			<groupId>org.ops4j.pax.confman</groupId>
-			<artifactId>pax-confman-propsloader</artifactId>
-			<version>0.2.2</version>
-		</dependency>
 
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.configadmin</artifactId>
-			<version>1.0.10</version>
-		</dependency>
+		<!-- to control logging -->
+<!--		<dependency>-->
+<!--			<groupId>org.ops4j.pax.confman</groupId>-->
+<!--			<artifactId>pax-confman-propsloader</artifactId>-->
+<!--			<version>0.2.2</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.apache.felix</groupId>-->
+<!--			<artifactId>org.apache.felix.configadmin</artifactId>-->
+<!--			<version>1.0.10</version>-->
+<!--		</dependency>-->
 
 
 	</dependencies>
