@@ -528,10 +528,9 @@ public class TargetAttributeSelectionTable extends JTable{
                     destinationAttributes.set(row, str);
                 }
 
-
-
-                
-                fireTableCellUpdated(row, col);
+                this.fireTableDataChanged();
+            } else if (colName.compareTo(headerIDType)==0) {
+                this.fireTableDataChanged();
             }
         }
     }

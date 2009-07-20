@@ -118,7 +118,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         setTitle("CyThesaurus plugin");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        sourcePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select source network/attribute/IDType(s)"));
+        sourcePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select source attribute/IDType(s)"));
         sourcePanel.setMinimumSize(new java.awt.Dimension(500, 120));
         sourcePanel.setPreferredSize(new java.awt.Dimension(500, 140));
         sourcePanel.setLayout(new java.awt.GridBagLayout());
