@@ -14,6 +14,10 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.cytoscape.cmdline.launcher.CommandLineProvider;
 import org.cytoscape.work.TaskFactory;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkListener;
 
 
 public class CLTaskFactoryInterceptor {
@@ -28,17 +32,33 @@ public class CLTaskFactoryInterceptor {
     private CommandLineParser parser = new PosixParser();
     private CommandLine line = null;
 
+    long time = 0;
+    private TaskFactoryGrabber grabber;
+    
     CLTaskFactoryInterceptor(CommandLineProvider colipr, TaskFactoryGrabber tfg) {
     	this.clp = colipr;
+    	this.grabber = tfg;
+    	
+    	time = grabber.getDifference();
+    	while(grabber.getDifference()-time<100){
+    		time = grabber.getDifference();
+    		System.out.println("Number of factory loaded = " + grabber.getNumberTasks());
+    	}
 
-        args = clp.getCommandLineCompleteArgs();
-        taskMap = tfg.getTaskMap();    
-        
-        createTaskOptions();
+    	taskMap = tfg.getTaskMap();
+    	args = clp.getCommandLineCompleteArgs();
+
+    	createTaskOptions();
         findTaskArguments();
         parseTaskArguments();
         executeCommandLineArguments();
     }
+    
+//    private void executeParsingActions(){
+//        findTaskArguments();
+//        parseTaskArguments();
+//        executeCommandLineArguments();    	
+//    }
     
 
     private void createTaskOptions() {
@@ -179,4 +199,9 @@ public class CLTaskFactoryInterceptor {
         formatter.printHelp("java -Xmx512M -jar cytoscape.jar [Options]",
             "\nHere are the different taskFactories implemented :", options, "");
     }
+
+//	public void frameworkEvent(FrameworkEvent event) {
+//		if(event.getType() == FrameworkEvent.STARTED)
+//			executeParsingActions();
+//	}
 }
