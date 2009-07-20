@@ -24,7 +24,9 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.model.CyNetwork;
@@ -37,6 +39,8 @@ import org.cytoscape.session.CyNetworkManager;
 public class LayerBuilderDialog extends JDialog {
 
 	private static final String NETWORK_TITLE = "name";
+	
+	private static final String[] COLUMN_NAMES = {"Layers", "Connector Networks"};
 
 	/*
 	 * Mandatory parameters
@@ -48,6 +52,8 @@ public class LayerBuilderDialog extends JDialog {
 	private DefaultListModel layeredNetworkListModel;
 
 	private Map<String, Long> title2IdMap;
+	
+	private DefaultTableModel layerConnectionTableModel;
 
 	/**
 	 * Creates new form NewJDialog
@@ -61,6 +67,8 @@ public class LayerBuilderDialog extends JDialog {
 		super(parent, modal);
 		this.manager = manager;
 		this.builder = builder;
+		
+		this.layerConnectionTableModel = new DefaultTableModel(COLUMN_NAMES, 0);
 
 		title2IdMap = new HashMap<String, Long>();
 		buildListModels();
@@ -68,6 +76,8 @@ public class LayerBuilderDialog extends JDialog {
 
 		this.availableNetworkList.setModel(availableNetworkListModel);
 		this.layeredNetworkList.setModel(layeredNetworkListModel);
+		
+		this.layerConnectionTable.setModel(layerConnectionTableModel);
 	}
 
 	private void buildListModels() {
@@ -112,7 +122,7 @@ public class LayerBuilderDialog extends JDialog {
 		moveAllIntegratedNetworkButton = new javax.swing.JButton();
 		layerOrderPanel = new javax.swing.JPanel();
 		layerOrderScrollPane = new javax.swing.JScrollPane();
-		layerOrderTable = new javax.swing.JTable();
+		layerConnectionTable = new javax.swing.JTable();
 		optionButton = new javax.swing.JButton();
 		generateIntegratedNetworkButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
@@ -391,11 +401,6 @@ public class LayerBuilderDialog extends JDialog {
 		layerOrderPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Define Layer Order"));
 
-		layerOrderTable.setModel(new javax.swing.table.DefaultTableModel(
-				new Object[][] { { null, null }, { null, null },
-						{ null, null }, { null, null }, { null, null },
-						{ null, null }, { null, null } }, new String[] {
-						"Horizontal Layer Network", "Inter Layer Network" }));
 
 		DefaultCellEditor cellEditor = new DefaultCellEditor(
 				new ComboCellRenderer(layeredNetworkListModel));
@@ -403,7 +408,7 @@ public class LayerBuilderDialog extends JDialog {
 		// layerOrderTable.getColumnModel().getColumn(0).setCellRenderer(
 		// layerOrderTableRenderer);
 
-		layerOrderScrollPane.setViewportView(layerOrderTable);
+		layerOrderScrollPane.setViewportView(layerConnectionTable);
 
 		org.jdesktop.layout.GroupLayout LayerOrderPanelLayout = new org.jdesktop.layout.GroupLayout(
 				layerOrderPanel);
@@ -596,7 +601,7 @@ public class LayerBuilderDialog extends JDialog {
 				.toArray());
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
+		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(0);
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
@@ -628,7 +633,7 @@ public class LayerBuilderDialog extends JDialog {
 				.toArray());
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
+		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(0);
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
@@ -659,7 +664,7 @@ public class LayerBuilderDialog extends JDialog {
 				.toArray());
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
+		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(0);
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
@@ -684,7 +689,7 @@ public class LayerBuilderDialog extends JDialog {
 				.toArray());
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerOrderTable.getColumnModel().getColumn(0);
+		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(0);
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
@@ -707,7 +712,7 @@ public class LayerBuilderDialog extends JDialog {
 	private javax.swing.JScrollPane layeredNetworkScrollPane;
 	private javax.swing.JPanel layerOrderPanel;
 	private javax.swing.JScrollPane layerOrderScrollPane;
-	private javax.swing.JTable layerOrderTable;
+	private javax.swing.JTable layerConnectionTable;
 	private javax.swing.JButton moveAllAvailableNetworkButton;
 	private javax.swing.JButton moveAllIntegratedNetworkButton;
 	private javax.swing.JButton moveSelectedAvailableNetworkButton;
