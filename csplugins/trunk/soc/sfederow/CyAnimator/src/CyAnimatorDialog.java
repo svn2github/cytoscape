@@ -1,4 +1,4 @@
-package src;
+package CyAnimator;
 
 import giny.model.Node;
 import giny.view.*;
@@ -45,6 +45,11 @@ import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -52,11 +57,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 
-import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,8 +90,6 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	//private NodeView[] currentFrame;
 	private HashMap<String, double[]> posFrame;
 	private HashMap<String, Paint> colFrame;
-	private CyFrame frameOne;
-	private CyFrame frameTwo;
 	ArrayList<CyFrame> frameList = new ArrayList<CyFrame>();
 	ArrayList<CyNetworkView> viewList = new ArrayList<CyNetworkView>();
 	//private CyFrame[]
@@ -96,60 +99,46 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	
 	public CyAnimatorDialog(){
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-   	    //add as listener to CytoscapeDesktop
-	    Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		//add as listener to CytoscapeDesktop
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 		
-	    
-	    
-	    
-	    
 		initialize();
 	}
 	
 	public void initialize(){
 		
 		mainPanel = new JPanel();
-	    BoxLayout mainbox = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
+		BoxLayout mainbox = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
 		mainPanel.setLayout(mainbox);
 		
-        JPanel oldPanel = new JPanel();
-        //BoxLayout oldbox = new BoxLayout(oldPanel, BoxLayout.Y_AXIS);
+		JPanel oldPanel = new JPanel();
+		//BoxLayout oldbox = new BoxLayout(oldPanel, BoxLayout.Y_AXIS);
 		//oldPanel.setLayout(oldbox); 
-		
-		
-		
 		
 		captureButton = new JButton("Add Frame");
 		captureButton.addActionListener(this);
 		captureButton.setActionCommand("capture");
 		
-		
-		
 		java.net.URL playIconURL = CyAnimatorDialog.class.getResource("img/play.png");
 		 ImageIcon playIcon = new ImageIcon();
-	        if (playIconURL != null) {
-	            playIcon = new ImageIcon(playIconURL);
-	        }
-	        
-	        playButton = new JButton("Play");
-			playButton.addActionListener(this);
-			playButton.setActionCommand("play");    
-	        
-		
+		if (playIconURL != null) {
+			playIcon = new ImageIcon(playIconURL);
+		}
+
+		playButton = new JButton("Play");
+		playButton.addActionListener(this);
+		playButton.setActionCommand("play");    
+
 		stopButton = new JButton("Stop");
 		stopButton.addActionListener(this);
 		stopButton.setActionCommand("stop");
-		
+
 		pauseButton = new JButton("Pause");
 		pauseButton.addActionListener(this);
 		pauseButton.setActionCommand("pause");
 		
-		
-		//Tunable speedSlider = new Tunable("", "", 0, 10, 0, 20, );
+
 		speedSlider = new JSlider(1,2000);
-		//Map m = new Map();
-		
-		//speedSlider.;
 		
 		speedSlider.addChangeListener(new SliderListener());
 		
@@ -163,15 +152,10 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		controlPanel.add(stopButton);
 		controlPanel.add(speedSlider);
 		
-//<<<<<<< .mine
-		//mainPanel.add(oldPanel);
-//=======
-		// mainPanel.add(oldPanel);
-//>>>>>>> .r17303
 		mainPanel.add(controlPanel);
 		mainPanel.add(framePane);
 		
-		this.setSize(new Dimension(500,180));
+		this.setSize(new Dimension(500,220));
 		this.setLocation(900, 100);
 		
 		setContentPane(mainPanel);
@@ -236,11 +220,18 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		if(iMatch.matches()){
 			int inter = Integer.parseInt(iMatch.group(2));
 			if(inter == 0){
-				
+				String input = JOptionPane.showInputDialog("Enter the number of frames to interpolate over: ");
+				try {
+					inter = Integer.parseInt(input);
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(this, "Frame interpolation count must be an integer", 
+					                              "Integer parse error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 			}
 			for(CyFrame frame: frameList){
 				if(frame.getID().equals(iMatch.group(1))){
-					frame.intercount = inter;
+					frame.setInterCount(inter);
 					if(timer.isRunning()){ 
 						timer.stop();
 						makeTimer();
@@ -250,14 +241,17 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 					}
 				}
 			}
-			System.out.println(iMatch.group(2));
+			// System.out.println(iMatch.group(2));
 		}
 		if(dMatch.matches()){
+			List<CyFrame>remove = new ArrayList();
 			for(CyFrame frame: frameList){
 				if(frame.getID().equals(dMatch.group(1))){
-					frameList.remove(frame);
+					remove.add(frame);
 				}
 			}
+			for (CyFrame frame: remove)
+				frameList.remove(frame);
 			updateThumbnails();
 		}
 		
@@ -280,8 +274,9 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 
 			public void actionPerformed(ActionEvent evt) {
 				if(i == frames.length){ i = 0;}
+				// System.out.println("Frame: "+i);
 				frames[i].display();
-				System.out.println(timer.getDelay());
+				// System.out.println(timer.getDelay());
 				i++;
 			}
 		};
@@ -337,7 +332,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			//for(CyNetworkView view: viewList){
 
 
-			ImageIcon ic = new ImageIcon(frame.networkImage);
+			ImageIcon ic = new ImageIcon(frame.getFrameImage());
 
 			JButton lab = new JButton(ic);
 			lab.addActionListener(this);
@@ -350,10 +345,22 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			menuItem.addActionListener(this);
 			menuItem.setActionCommand(frame.getID()+"interpolate10_");
 			interpolateMenu.add(menuItem);
+
 			menuItem = new JMenuItem("20 Frames");
 			menuItem.addActionListener(this);
 			menuItem.setActionCommand(frame.getID()+"interpolate20_");
 			interpolateMenu.add(menuItem);
+
+			menuItem = new JMenuItem("50 Frames");
+			menuItem.addActionListener(this);
+			menuItem.setActionCommand(frame.getID()+"interpolate50_");
+			interpolateMenu.add(menuItem);
+
+			menuItem = new JMenuItem("100 Frames");
+			menuItem.addActionListener(this);
+			menuItem.setActionCommand(frame.getID()+"interpolate100_");
+			interpolateMenu.add(menuItem);
+
 			menuItem = new JMenuItem("Custom...");
 			menuItem.addActionListener(this);
 			menuItem.setActionCommand(frame.getID()+"interpolate0_");
@@ -394,16 +401,13 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
 		CyFrame frame = new CyFrame(currentNetwork);
 		
-		
-		//List<Node> nodeList = currentNetwork.nodesList();
-		
 		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
 		System.out.println("Current Network: "+currentNetwork.getIdentifier());
 		System.out.println("Current NetworkView: "+networkView.getIdentifier());
 		
 		
-		frame.populate(currentNetwork, networkView); 
-		frame.intercount = 30;
+		frame.populate(); // Initialize the frame
+		frame.setInterCount(30);
 		frame.setID(networkView.getIdentifier()+"_"+frameid);
 		frame.captureImage();
 		frameid++;

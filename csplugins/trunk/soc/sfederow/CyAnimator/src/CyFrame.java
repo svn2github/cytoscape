@@ -1,4 +1,4 @@
-package src;   
+package CyAnimator;   
 
 import giny.model.Node;
 import giny.view.NodeView;
@@ -6,106 +6,138 @@ import giny.model.Edge;
 import giny.view.EdgeView;
 
 import java.awt.Graphics2D;
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.*;
 import java.awt.Paint;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
+import cytoscape.visual.VisualStyle;
 
 public class CyFrame {
 	
 	private String frameid = "";
-	HashMap<String, double[]> nodePosMap;
-	HashMap<String, Paint> nodeColMap;
-	HashMap<String, float[]> nodeOpacityMap;
-	HashMap<String, float[]> nodeBorderMap;
+	private HashMap<String, double[]> nodePosMap;
+	private HashMap<String, Color> nodeColMap;
+	private HashMap<String, Integer> nodeOpacityMap;
+	private HashMap<String, Double> nodeBorderMap;
+
+	private HashMap<String, Integer> edgeOpacityMap;
+	private HashMap<String, Color> edgeColMap;
 	
-	HashMap<String, Paint> edgeColMap;
+	private Paint backgroundPaint = null;
+	private double zoom = 0;
 	
-	Paint backgroundPaint = null;
-	double zoom = 0;
+	private double xalign;
+	private double yalign;
 	
-	double xalign;
-	double yalign;
-	
-	CyNetworkView networkView = null;
-	CyNetwork currentNetwork = null;
-	Image networkImage = null;
-	List<Node> nodeList = null;
-	List<Edge> edgeList = null;
-	int intercount = 0;
+	private CyNetworkView networkView = null;
+	private CyNetwork currentNetwork = null;
+	private Image networkImage = null;
+	private Map<Node, NodeView> nodeMap = null;
+	private Map<Edge, EdgeView> edgeMap = null;
+	private VisualStyle vizStyle = null;
+	private List<Node> nodeList = null;
+	private List<Edge> edgeList = null;
+	private int intercount = 0;
 	
 	public CyFrame(CyNetwork currentNetwork){
 		nodePosMap = new HashMap<String, double[]>();
-		nodeColMap = new HashMap<String, Paint>();
-		nodeOpacityMap = new HashMap<String, float[]>();
-		edgeColMap = new HashMap<String, Paint>();
+		nodeColMap = new HashMap<String, Color>();
+		edgeMap = new HashMap();
+		nodeMap = new HashMap();
+		nodeOpacityMap = new HashMap<String, Integer>();
+		edgeOpacityMap = new HashMap<String, Integer>();
+		edgeColMap = new HashMap<String, Color>();
 		this.currentNetwork = currentNetwork;
-		nodeList = currentNetwork.nodesList();
-		edgeList = currentNetwork.edgesList();
 		networkView = Cytoscape.getCurrentNetworkView();
-		populate(currentNetwork, networkView);
-		
+
+		// Initialize our node view maps
+		Iterator<EdgeView> eviter = networkView.getEdgeViewsIterator();
+		while(eviter.hasNext()) {
+			EdgeView ev = eviter.next();
+			edgeMap.put(ev.getEdge(), ev);
+		}
+
+		// Initialize our edge view maps
+		Iterator<NodeView> nviter = networkView.getNodeViewsIterator();
+		while(nviter.hasNext()) {
+			NodeView nv = nviter.next();
+			nodeMap.put(nv.getNode(), nv);
+		}
+
+		// Remember the visual style
+		vizStyle = Cytoscape.getVisualMappingManager().getVisualStyle();
+
+		// Get our initial nodeList
+		nodeList = currentNetwork.nodesList();
+
+		// Get our initial edgeList
+		edgeList = currentNetwork.edgesList();
+	}
+
+	public void setNodeList(List<Node>nodeList) {
+		this.nodeList = nodeList;
+	}
+
+	public void setEdgeList(List<Edge>edgeList) {
+		this.edgeList = edgeList;
 	}
 	
-	//public CyFrame(CyNetwork currentNetwork, List<HashMap<String, double[]>> valuesList){
-		
- 	//}
-	
-	
-	public void populate(CyNetwork network, CyNetworkView networkView){
-		
-		nodeList = network.nodesList();
-		this.currentNetwork = network;
+	public void populate() {
 		backgroundPaint = networkView.getBackgroundPaint();
 		zoom = networkView.getZoom();
 		xalign = networkView.getComponent().getAlignmentX();
 		yalign = networkView.getComponent().getAlignmentY();
 		
 		for(Node node: nodeList)
-        {
+		{
+		
+			NodeView nodeView = networkView.getNodeView(node);
+			if(nodeView == null){ continue; }
+
+			double[] xy = new double[2];
+			xy[0] = nodeView.getXPosition();
+			xy[1] = nodeView.getYPosition();
 		   
-		   NodeView nodeView = networkView.getNodeView(node);
-		   if(nodeView == null){ continue; }
-		   
-		   double[] xy = new double[2];
-		   xy[0] = nodeView.getXPosition();
-		   xy[1] = nodeView.getYPosition();
-		   
-		   nodePosMap.put(node.getIdentifier(), xy);
-		   nodeColMap.put(node.getIdentifier(), nodeView.getUnselectedPaint());
-		   float[] trans = new float[1];
-		   trans[0] = nodeView.getTransparency();
-		  
-		   nodeOpacityMap.put(node.getIdentifier(), trans);
-		   
-		   //System.out.println(nodeView.getUnselectedPaint()+"    X: "+nodeView.getXPosition()+"    Y: "+nodeView.getYPosition());
+			nodePosMap.put(node.getIdentifier(), xy);
+			Color nodeColor = (Color)nodeView.getUnselectedPaint();
+			Integer trans = nodeColor.getAlpha();
+			nodeColMap.put(node.getIdentifier(), (Color)nodeView.getUnselectedPaint());
+			nodeOpacityMap.put(node.getIdentifier(), trans);
+			
+			//System.out.println(nodeView.getUnselectedPaint()+"    X: "+nodeView.getXPosition()+"    Y: "+nodeView.getYPosition());
 		   
 		}
+
 		for(Edge edge: edgeList)
 		{
 			EdgeView edgeView = networkView.getEdgeView(edge);
 			if(edgeView == null){  continue; }
-			Paint p = edgeView.getUnselectedPaint();
+			Color p = (Color)edgeView.getUnselectedPaint();
+			Integer trans = p.getAlpha();
 			
 			//if(edge == null || p == null){ return; }
 			edgeColMap.put(edge.getIdentifier(), p);
+			edgeOpacityMap.put(edge.getIdentifier(), trans);
 		
 		}
 	}
 	
-	public void captureImage(){
+	public void captureImage() {
 		
 		double scale = .35;
 		double wscale = .25;
 
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		
 		
 		
 		InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
@@ -123,33 +155,68 @@ public class CyFrame {
 	
 	}
 	
-	public void display(){
-		
-		
-		List<Node> nodeList = currentNetwork.nodesList();
-		
-		
-		
+	public void display() {
+
+		Cytoscape.getVisualMappingManager().setVisualStyle(vizStyle);
+
+
+		// First see if we have any views we need to remove
+		List<EdgeView> removeEdgeViews = new ArrayList();
+		Iterator<EdgeView> eviter = networkView.getEdgeViewsIterator();
+		while(eviter.hasNext()) {
+			EdgeView ev = eviter.next();
+			if (!edgeMap.containsKey(ev.getEdge()))
+				removeEdgeViews.add(ev);
+		}
+
+		for (EdgeView ev: removeEdgeViews)
+			networkView.removeEdgeView(ev);
+
+		// Initialize our edge view maps
+		List<NodeView> removeNodeViews = new ArrayList();
+		Iterator<NodeView> nviter = networkView.getNodeViewsIterator();
+		while(nviter.hasNext()) {
+			NodeView nv = nviter.next();
+			if (!nodeMap.containsKey(nv.getNode()))
+				removeNodeViews.add(nv);
+		}
+
+		for (NodeView nv: removeNodeViews)
+			networkView.removeNodeView(nv);
+
+
 		for(Node node: nodeList)
-        {
-			
+		{
+		
 			NodeView nodeView = networkView.getNodeView(node);
+			if (nodeView == null) {
+				addNodeView(networkView, nodeMap.get(node), node);
+				nodeView = networkView.getNodeView(node);
+				Cytoscape.getVisualMappingManager().vizmapNode(nodeView, networkView);
+			}
+			
 			double[] xy = nodePosMap.get(node.getIdentifier());
-			Paint p = nodeColMap.get(node.getIdentifier());
-			float[] trans = nodeOpacityMap.get(node.getIdentifier());
-			//System.out.println("DISPLAY: "+xy[0]+"  "+xy[1]);
+			Color p = nodeColMap.get(node.getIdentifier());
+			Integer trans = nodeOpacityMap.get(node.getIdentifier());
+			// System.out.println("DISPLAY "+node+": "+xy[0]+"  "+xy[1]+", trans = "+trans);
+
 			
 			nodeView.setXPosition(xy[0]);
 			nodeView.setYPosition(xy[1]);
-			nodeView.setTransparency(trans[0]);	
-			nodeView.setUnselectedPaint(p);
+			nodeView.setUnselectedPaint(new Color(p.getRed(), p.getGreen(), p.getBlue(), trans));
 			
-        }
-		for(Edge edge: edgeList)
+		}
+		for(Edge edge: getEdgeList())
 		{
 			EdgeView edgeView = networkView.getEdgeView(edge);
-			Paint p = edgeColMap.get(edge.getIdentifier());
-			edgeView.setUnselectedPaint(p);
+			if (edgeView == null) {
+				addEdgeView(networkView, edgeMap.get(edge), edge);
+				edgeView = networkView.getEdgeView(edge);
+			}
+			Color p = edgeColMap.get(edge.getIdentifier());
+			if (p == null || edgeView == null) continue;
+			Integer trans = edgeOpacityMap.get(edge.getIdentifier());
+			edgeView.setUnselectedPaint(new Color(p.getRed(), p.getGreen(), p.getBlue(), trans));
 		}
 		networkView.setBackgroundPaint(backgroundPaint);
 		networkView.setZoom(zoom);
@@ -158,10 +225,215 @@ public class CyFrame {
 		networkView.updateView();
 	}
 	
-	public String getID(){
+	public String getID() {
 		return frameid;
 	}
-	public void setID(String ID){
+
+	public void setID(String ID) {
 		frameid = ID;
 	}
+
+	/**
+	 * Return the CyNetwork for this frame
+	 *
+	 * @return the CyNetwork
+	 */
+	public CyNetwork getCurrentNetwork() {
+		return currentNetwork;
+	}
+
+	/**
+	 * Return the frame number for this frame
+	 *
+	 * @return the frame number
+	 */
+	public int getInterCount() {
+		return intercount;
+	}
+
+	/**
+	 * Set the frame number for this frame
+	 *
+	 * @param interCount the number of frames to interpret
+	 */
+	public void setInterCount(int intercount) {
+		this.intercount = intercount;
+	}
+
+	/**
+	 * Return the zoom value for this frame.
+	 *
+	 * @return zoom
+	 */
+	public double getZoom() {
+		return zoom;
+	}
+
+	/**
+	 * Set the zoom value for this frame.
+	 *
+	 * @param zoom set the zoom value
+	 */
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+	}
+
+	/**
+	 * Return the background color value for this frame.
+	 *
+	 * @return the background color
+	 */
+	public Paint getBackgroundPaint() {
+		return backgroundPaint;
+	}
+
+	/**
+	 * Set the background color value for this frame.
+	 *
+	 * @param bg set the background color
+	 */
+	public void setBackgroundPaint(Paint bg) {
+		backgroundPaint = bg;
+	}
+
+	/**
+	 * Get the node position for a node in this frame
+	 *
+	 * @param nodeID the ID of the node whose position to retrieve
+	 * @return the node position as a double array with two values
+	 */
+	public double[] getNodePosition(String nodeID) {
+		return nodePosMap.get(nodeID);
+	}
+
+	/**
+	 * Set the node position for a node in this frame
+	 *
+	 * @param nodeID the ID of the node whose position to retrieve
+	 * @param pos a 2 element double array with the x,y values for this node
+	 */
+	public void setNodePosition(String nodeID, double[] pos) {
+		nodePosMap.put(nodeID, pos);
+	}
+
+	/**
+	 * Get the node color for a node in this frame
+	 *
+	 * @param nodeID the ID of the node whose color to retrieve
+	 * @return the color 
+	 */
+	public Color getNodeColor(String nodeID) {
+		return nodeColMap.get(nodeID);
+	}
+
+	/**
+	 * Set the node color for a node in this frame
+	 *
+	 * @param nodeID the ID of the node whose color to retrieve
+	 * @param color the color for this node
+	 */
+	public void setNodeColor(String nodeID, Color color) {
+		nodeColMap.put(nodeID, color);
+	}
+
+	/**
+	 * Get the edge color for an edge in this frame
+	 *
+	 * @param edgeID the ID of the edge whose color to retrieve
+	 * @return the color 
+	 */
+	public Color getEdgeColor(String edgeID) {
+		return edgeColMap.get(edgeID);
+	}
+
+	/**
+	 * Set the edge color for a edge in this frame
+	 *
+	 * @param edge the ID of the edge whose color to retrieve
+	 * @param color the color for this edge
+	 */
+	public void setEdgeColor(String edgeID, Color color) {
+		edgeColMap.put(edgeID, color);
+	}
+
+	/**
+	 * Get the edge opacity for an edge in this frame
+	 *
+	 * @param edgeID the ID of the edge whose opacity to retrieve
+	 * @return the opacity 
+	 */
+	public Integer getEdgeOpacity(String edgeID) {
+		Integer opacity = edgeOpacityMap.get(edgeID);
+		return opacity;
+	}
+
+	/**
+	 * Set the edge opacity for an edge in this frame
+	 *
+	 * @param edge the ID of the edge whose opacity to retrieve
+	 * @param opacity the opacity for this edge
+	 */
+	public void setEdgeOpacity(String edgeID, Integer opacity) {
+		edgeOpacityMap.put(edgeID, opacity);
+	}
+
+	/**
+	 * Get the node opacity for a node in this frame
+	 *
+	 * @param nodeID the ID of the node whose opacity to retrieve
+	 * @return the opacity 
+	 */
+	public Integer getNodeOpacity(String nodeID) {
+		Integer opacity = nodeOpacityMap.get(nodeID);
+		return opacity;
+	}
+
+	/**
+	 * Set the node opacity for an node in this frame
+	 *
+	 * @param node the ID of the node whose opacity to retrieve
+	 * @param opacity the opacity for this node
+	 */
+	public void setNodeOpacity(String nodeID, Integer opacity) {
+		nodeOpacityMap.put(nodeID, opacity);
+	}
+
+	/**
+	 * Get the list of nodes in this frame
+	 *
+	 * @return the list of nodes
+	 */
+	public List<Node> getNodeList() {
+		return nodeList;
+	}
+
+	/**
+	 * Get the list of edges in this frame
+	 *
+	 * @return the list of edges
+	 */
+	public List<Edge> getEdgeList() {
+		return edgeList;
+	}
+
+	/**
+	 * Get the Image for this frame
+	 *
+	 * @return the image for this frame
+	 */
+	public Image getFrameImage() {
+		return this.networkImage;
+	}
+
+
+	// At some point, need to pull the information from nv
+	// and map it to the new nv.
+	private void addNodeView(CyNetworkView view, NodeView nv, Node node) {
+		view.addNodeView(node.getRootGraphIndex());
+	}
+
+	private void addEdgeView(CyNetworkView view, EdgeView ev, Edge edge) {
+		view.addEdgeView(edge.getRootGraphIndex());
+	}
+
 }

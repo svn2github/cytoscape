@@ -1,4 +1,4 @@
-package src;
+package CyAnimator;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
