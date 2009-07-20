@@ -81,7 +81,7 @@ public class Launcher {
 	        List<BundleActivator> list = new ArrayList<BundleActivator>();
 	        list.add(new AutoActivator(configProps)); // from config auto.start 
 	        list.add(new CommandLineProviderImpl(args)); 
-	        list.add(new FileInstall()); 
+	        list.add(new FileInstall());
 	        configProps.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, list);
 
 			// Create a case-insensitive property map.

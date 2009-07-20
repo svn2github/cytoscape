@@ -36,11 +36,12 @@
 
 package org.cytoscape.cmdline.launcher.internal;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.ServiceRegistration;
 import java.util.Hashtable;
+
 import org.cytoscape.cmdline.launcher.CommandLineProvider;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 public class CommandLineProviderImpl implements CommandLineProvider, BundleActivator {
 
@@ -59,7 +60,7 @@ public class CommandLineProviderImpl implements CommandLineProvider, BundleActiv
 	}
 
 	public void start(BundleContext bc) {
-		reg = bc.registerService(CommandLineProvider.class.getName(),this,new Hashtable());	
+		reg = bc.registerService(CommandLineProvider.class.getName(),this,new Hashtable());
 	}
 
 	public void stop(BundleContext bc) {
@@ -74,8 +75,7 @@ public class CommandLineProviderImpl implements CommandLineProvider, BundleActiv
 		System.arraycopy(args,0,ret,0,args.length);
 		return ret;
 	}
-	
-	
+		
 	//added
 	public void setSpecificArgs(String[] arg){
 		this.specificArgs = arg;
