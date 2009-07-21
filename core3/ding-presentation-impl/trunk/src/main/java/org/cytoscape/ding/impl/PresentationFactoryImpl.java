@@ -2,7 +2,6 @@
 package org.cytoscape.ding.impl;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +12,6 @@ import javax.swing.JPanel;
 
 import org.cytoscape.ding.BirdsEyeView;
 import org.cytoscape.model.CyDataTableFactory;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.task.EdgeViewTaskFactory;
@@ -27,7 +25,7 @@ import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.view.presentation.PresentationFactory;
-import org.cytoscape.view.presentation.Renderer;
+import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.UndoSupport;
@@ -73,7 +71,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	/**
 	 * 
 	 */
-	public <T extends View<?>> Renderer<T> addPresentation(Container presentationContainer, T view) {
+	public RenderingEngine addPresentation(Object presentationContainer, View<?> view) {
 				
 		if ( view == null )
 			throw new IllegalArgumentException("Cannot create presentation for null view model.");
@@ -106,7 +104,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 			throw new IllegalArgumentException("frame object is not of type JInternalFrame, which is invalid for this implementation of PresentationFactory");
 		}
 		
-		return (Renderer<T>) dgv;
+		return dgv;
 	}
 
 	public NavigationPresentation addNavigationPresentation(Object targetComponent, Object navBounds) {
@@ -182,9 +180,4 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 
 		emptySpaceTFs.remove(evtf);
 	}
-
-	public <T extends View<?>> Renderer<T> createPresentation(T view) {
-		return (Renderer<T>) viewMap.get(view);
-	}
-
 }

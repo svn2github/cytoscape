@@ -98,7 +98,7 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.view.presentation.Renderer;
+import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.UndoSupport;
 import org.cytoscape.work.TunableInterceptor;
@@ -119,7 +119,7 @@ import phoebe.PhoebeCanvasDroppable;
  * 
  * @author Nerius Landys
  */
-public class DGraphView implements Renderer<CyNetworkView>, GraphView, Printable,
+public class DGraphView implements RenderingEngine, GraphView, Printable,
 		PhoebeCanvasDroppable, ViewChangeListener {
 
 	private static enum ZOrder {
