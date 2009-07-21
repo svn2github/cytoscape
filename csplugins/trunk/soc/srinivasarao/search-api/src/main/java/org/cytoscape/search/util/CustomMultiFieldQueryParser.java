@@ -36,19 +36,13 @@
 
 package org.cytoscape.search.util;
 
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.document.NumberTools;
-import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.index.Term;
-
-import org.cytoscape.search.util.AttributeFields;
-import org.cytoscape.search.util.NumberUtils;
-//import cytoscape.data.CyAttributes;
-//import org.cytoscape.model.CyDataTable;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.RangeQuery;
 
 
 /**
@@ -57,7 +51,7 @@ import org.cytoscape.search.util.NumberUtils;
  * into structured strings preserving their numerical sorting order. Now, numerical values in query
  * should also be transformed so they can be properly compared to the values stored in the index.
  */
-public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
+public class CustomMultiFieldQueryParser extends NewMultiFieldQueryParser {
 
 	private AttributeFields attrFields;
 
