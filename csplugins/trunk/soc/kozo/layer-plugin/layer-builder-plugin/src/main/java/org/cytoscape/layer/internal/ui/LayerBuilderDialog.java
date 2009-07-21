@@ -40,7 +40,7 @@ public class LayerBuilderDialog extends JDialog {
 
 	private static final String NETWORK_TITLE = "name";
 	
-	private static final String[] COLUMN_NAMES = {"Layers", "Connector Networks"};
+	private static final String[] COLUMN_NAMES = {"Layer 1", "Layer 2", "Connector Networks"};
 
 	/*
 	 * Mandatory parameters
@@ -53,7 +53,7 @@ public class LayerBuilderDialog extends JDialog {
 
 	private Map<String, Long> title2IdMap;
 	
-	private DefaultTableModel layerConnectionTableModel;
+	private LayerConnectionTableModel layerConnectionTableModel;
 
 	/**
 	 * Creates new form NewJDialog
@@ -68,7 +68,7 @@ public class LayerBuilderDialog extends JDialog {
 		this.manager = manager;
 		this.builder = builder;
 		
-		this.layerConnectionTableModel = new DefaultTableModel(COLUMN_NAMES, 0);
+		this.layerConnectionTableModel = new LayerConnectionTableModel(COLUMN_NAMES);
 
 		title2IdMap = new HashMap<String, Long>();
 		buildListModels();
@@ -627,8 +627,9 @@ public class LayerBuilderDialog extends JDialog {
 
 		availableNetworkList.clearSelection();
 
-		Object[] row = {"Layer1 <---> Layer2",  "Connector Network Name"};
+		Long[] row = {1l,  2l, 3l};
 		layerConnectionTableModel.addRow(row);
+		layerConnectionTable.repaint();
 		
 		
 		// sync list content and table column
