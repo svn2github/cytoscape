@@ -12,8 +12,8 @@ import cytoscape.plugin.CytoscapePlugin;
 public class GroupResultsPlugin extends CytoscapePlugin 
 { 
 
-	private GroupPanel groupPanel; 
-	private CytoPanel cytoPanel; 
+	//private GroupPanel groupPanel; 
+	//private CytoPanel cytoPanel; 
 
 	public GroupResultsPlugin() {
 
@@ -21,9 +21,12 @@ public class GroupResultsPlugin extends CytoscapePlugin
 		// setting up node context menu listeners, etc.
 
 		// Add our interface to results CytoPanel 
-		groupPanel = new GroupPanel();
-		cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
-		cytoPanel.add("Module Finding Results", groupPanel);
+		//groupPanel = new GroupPanel();
+		//cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
+		//cytoPanel.add("Module Finding Results", groupPanel);
+		
+		new GroupHandler();
+		
 	}
 
 }
