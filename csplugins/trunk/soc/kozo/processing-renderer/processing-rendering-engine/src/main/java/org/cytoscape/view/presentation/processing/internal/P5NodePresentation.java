@@ -1,14 +1,14 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import gestalt.context.GLContext;
+import gestalt.extension.picking.Pickable;
+
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.print.Printable;
 import java.util.Properties;
 
 import javax.swing.Icon;
-
-import gestalt.context.GLContext;
-import gestalt.extension.picking.Pickable;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;

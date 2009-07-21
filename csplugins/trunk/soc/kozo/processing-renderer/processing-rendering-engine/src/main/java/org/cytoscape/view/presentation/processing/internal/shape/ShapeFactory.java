@@ -1,10 +1,6 @@
 package org.cytoscape.view.presentation.processing.internal.shape;
 
-import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
 import gestalt.p5.GestaltPlugIn;
-import gestalt.shape.AbstractShape;
 import gestalt.shape.DrawableFactory;
 
 import org.cytoscape.model.CyNode;

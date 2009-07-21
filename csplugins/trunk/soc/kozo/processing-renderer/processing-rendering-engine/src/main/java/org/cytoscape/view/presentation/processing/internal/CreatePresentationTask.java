@@ -31,9 +31,9 @@ public class CreatePresentationTask implements Task {
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		// TODO Auto-generated method stub
 		
-		this.taskMonitor = taskMonitor;
-		taskMonitor.setProgress(-1.0);
-		taskMonitor.setStatusMessage("Creating Processing Presentation...");
+//		this.taskMonitor = taskMonitor;
+//		taskMonitor.setProgress(-1.0);
+//		taskMonitor.setStatusMessage("Creating Processing Presentation...");
 		
 		CyNetwork targetNetwork = manager.getCurrentNetwork();
 		System.out.println("* Creating Processing presentation for: " + targetNetwork);
@@ -43,9 +43,7 @@ public class CreatePresentationTask implements Task {
 		
 		System.out.println("=======> Presentation OK");
 		
-		taskMonitor.setProgress(1.0);
-		
-
+		//taskMonitor.setProgress(1.0);
 	}
 
 }

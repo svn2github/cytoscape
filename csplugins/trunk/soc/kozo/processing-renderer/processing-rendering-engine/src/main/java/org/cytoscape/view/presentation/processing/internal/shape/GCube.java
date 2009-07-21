@@ -4,20 +4,24 @@ import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
-import gestalt.context.GLContext;
-import gestalt.impl.jogl.shape.JoglCube;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.media.opengl.GL;
 import javax.swing.Icon;
 
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
+
+import processing.core.PApplet;
+import processing.opengl.PGraphicsOpenGL;
+import toxi.geom.Rect;
 
 /**
  * Wrapper for JOGL-based Cube object.
@@ -25,14 +29,14 @@ import org.cytoscape.view.presentation.property.BasicVisualLexicon;
  * @author kono
  *
  */
-public class GCube extends JoglCube implements CyDrawable {
+public class GCube implements CyDrawable {
 
 	private static final long serialVersionUID = -3971892445041605908L;
 	private static final String DISPLAY_NAME = "Cube";
 	
 	private ProcessingVisualLexicon lexicon;
 	
-	private List<Class<?>> compatibleDataType;
+	private Set<Class<?>> compatibleDataType;
 	
 	private static VisualLexicon sub;
 	
@@ -44,20 +48,30 @@ public class GCube extends JoglCube implements CyDrawable {
 		sub.addVisualProperty(NODE_Z_LOCATION);
 	}
 	
+	
+	private PApplet p;
+	private GL gl;
+	private PGraphicsOpenGL pgl;
+	
+	public GCube(PApplet parent, View<?> view) {
+		this.p = parent;
+		this.pgl = (PGraphicsOpenGL) p.g;
+		gl = pgl.gl;
+		
+	}
+	
 	public GCube(ProcessingVisualLexicon lexicon) {
-		super();
+		
 		this.lexicon = lexicon;
-		compatibleDataType = new ArrayList<Class<?>>();
+		compatibleDataType = new HashSet<Class<?>>();
 		compatibleDataType.add(CyNode.class);
 		
 		this.lexicon.registerSubLexicon(this.getClass(), sub);
 	}
 
-	public void draw(GLContext context) {
-		super.draw(context);
-	}
 
-	public Collection<Class<?>> getCompatibleModels() {
+
+	public Set<Class<?>> getCompatibleModels() {
 		return compatibleDataType;
 	}
 
@@ -72,6 +86,15 @@ public class GCube extends JoglCube implements CyDrawable {
 
 	public VisualLexicon getCompatibleVisualProperties() {
 		return lexicon.getSubLexicon(this.getClass());
+	}
+
+	public void draw() {
+		p.box(20);
+	}
+
+	public List<CyDrawable> getChildren() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

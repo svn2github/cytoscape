@@ -1,6 +1,5 @@
 package org.cytoscape.view.presentation.processing.internal;
 
-import gestalt.render.Drawable;
 import gestalt.shape.DrawableFactory;
 
 import org.cytoscape.view.model.View;

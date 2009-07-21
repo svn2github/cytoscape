@@ -2,6 +2,9 @@ package org.cytoscape.view.presentation.processing.internal;
 
 import gestalt.impl.jogl.shape.JoglDrawableFactory;
 import gestalt.render.Drawable;
+import gestalt.shape.Cube;
+
+import org.cytoscape.view.presentation.processing.internal.shape.GCube;
 
 
 
@@ -19,6 +22,11 @@ public class CyDrawableFactoryImpl extends JoglDrawableFactory implements
 	}
 
 	public Drawable getDrawable(Class<? extends Drawable> type) {
+		return null;
+	}
+	
+	public Cube cube() {
+		System.out.println("@@@@@@@@@@ GCube");
 		return null;
 	}
 
