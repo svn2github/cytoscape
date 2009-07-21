@@ -142,7 +142,7 @@ public class TestEnhancedSearch extends TestCase {
 		System.out.println(hitCount);
 		//System.out.println(queryHandler.getNodeHits().size());
 		//System.out.println(NumberTools.longToString(51246));
-		assertEquals(query, 1, hitCount);
+		assertEquals(query, 2, hitCount);
 		
 	}
 	/*
