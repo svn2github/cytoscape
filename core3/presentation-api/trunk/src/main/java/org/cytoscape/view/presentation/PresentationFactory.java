@@ -1,21 +1,23 @@
 package org.cytoscape.view.presentation;
 
-import java.awt.Container;
-
 import org.cytoscape.view.model.View;
 
 public interface PresentationFactory {
-    /**
-     * This method should add whatever content it likes to the JInternalFrame for
-     * display.  It should also be sure to register said content as a transfer
-     * (Drag 'n Drop) listener, if so desired.
-     */
-    public <T extends View<?>> Renderer<T> addPresentation(Container presentationContainer, T view);
+	/**
+	 * A presentation can contain multiple view models. This enable developers
+	 * to render multiple View Models in the same display. For example, if
+	 * View<CyNetwork> and View<Decoration> are passed to this, both of them
+	 * will be rendered in a window, using same rendering engine.
+	 */
+	public RenderingEngine addPresentation(Object container, View<?> viewModel);
 
 	/**
- 	 * 
+	 * This method should be removed.
+	 * 
+	 * @param targetComponent
+	 * @param navBounds
+	 * @return
 	 */
-    public NavigationPresentation addNavigationPresentation(Object targetComponent, Object navBounds);
-    
-    public <T extends View<?>> Renderer<T> createPresentation(T view);
+	public NavigationPresentation addNavigationPresentation(
+			Object targetComponent, Object navBounds);
 }
