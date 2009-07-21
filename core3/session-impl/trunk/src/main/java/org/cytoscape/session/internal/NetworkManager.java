@@ -45,13 +45,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.Renderer;
+
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.Renderer;
-
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.session.events.NetworkAboutToBeDestroyedListener;
@@ -73,6 +72,8 @@ import org.cytoscape.session.events.SetSelectedNetworkViewsEvent;
 import org.cytoscape.session.events.SetSelectedNetworkViewsListener;
 import org.cytoscape.session.events.SetSelectedNetworksEvent;
 import org.cytoscape.session.events.SetSelectedNetworksListener;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.presentation.RenderingEngine;
 
 public class NetworkManager implements CyNetworkManager {
 
@@ -86,7 +87,7 @@ public class NetworkManager implements CyNetworkManager {
 
 	private CyNetwork currentNetwork;
 	private CyNetworkView currentNetworkView;
-	private Renderer<CyNetworkView> currentPresentation;
+	private RenderingEngine currentPresentation;
 
 	public NetworkManager(final CyEventHelper eh) {
 		networkMap = new HashMap<Long, CyNetwork>();
@@ -419,11 +420,11 @@ public class NetworkManager implements CyNetworkManager {
 
 	}
 
-	public Renderer<CyNetworkView> getCurrentPresentation() {
+	public RenderingEngine getCurrentPresentation() {
 		return currentPresentation;
 	}
 
-	public void setCurrentPresentation(Renderer<CyNetworkView> renderer) {
-		this.currentPresentation = renderer;		
+	public void setCurrentPresentation(RenderingEngine engine) {
+		this.currentPresentation = engine;		
 	}
 }
