@@ -36,13 +36,12 @@
  */
 package org.cytoscape.session;
 
-import org.cytoscape.model.CyNetwork;
-
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.Renderer;
-
 import java.util.List;
 import java.util.Set;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.presentation.RenderingEngine;
 
 
 /**
@@ -195,6 +194,6 @@ public interface CyNetworkManager {
 	 */
 	public void addNetworkView(CyNetworkView view);
 
-	public Renderer<CyNetworkView> getCurrentPresentation();
-	public void setCurrentPresentation(Renderer<CyNetworkView> renderer);
+	public RenderingEngine getCurrentPresentation();
+	public void setCurrentPresentation(RenderingEngine engine);
 }
