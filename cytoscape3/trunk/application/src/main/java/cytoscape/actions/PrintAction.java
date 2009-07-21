@@ -48,12 +48,10 @@ import java.util.Properties;
 
 import javax.swing.event.MenuEvent;
 
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.Renderer;
-
 import org.cytoscape.session.CyNetworkManager;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.view.presentation.RenderingEngine;
 
+import cytoscape.util.CytoscapeAction;
 
 /**
  *
@@ -71,7 +69,8 @@ public class PrintAction extends CytoscapeAction {
 	/**
 	 * Creates a new PrintAction object.
 	 */
-	public PrintAction(CyNetworkManager netmgr, Properties props, CyNetworkManager cyNetworkMgr) {
+	public PrintAction(CyNetworkManager netmgr, Properties props,
+			CyNetworkManager cyNetworkMgr) {
 		super(MENU_LABEL, netmgr);
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK);
@@ -81,18 +80,18 @@ public class PrintAction extends CytoscapeAction {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param e
 	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		Renderer<CyNetworkView> pres = cyNetworkMgr.getCurrentPresentation();
+		RenderingEngine engine = cyNetworkMgr.getCurrentPresentation();
 
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 
-		pres.setProperties(props);
+		engine.setProperties(props);
 
-		printJob.setPrintable(pres.getPrintable());
+		printJob.setPrintable(engine.getPrintable());
 
 		if (printJob.printDialog()) {
 			try {
@@ -104,9 +103,10 @@ public class PrintAction extends CytoscapeAction {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void menuSelected(MenuEvent e) {
 		enableForNetworkAndView();
