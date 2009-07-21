@@ -170,25 +170,6 @@ class DeveloperLogDialog extends JDialog
 		}
 	}
 
-	void addBunchOfLogEvents(int count)
-	{
-		java.text.DateFormat df = java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.MEDIUM);
-		String[] logs = { "org.cytoscape.yadda", "org.cytoscape.blah" };
-		String[] levels = { "debug", "warning", "info", "error" };
-		String[] threads = { "Main-0", "MyThread-0", "MyThread-1" };
-		String[] messages = { "Ghaalib", "Iqbaal", "Faiz" };
-		for (int i = 0; i < count; i++)
-		{
-			String[] entry = new String[5];
-			entry[0] = df.format(new Date(i * 60000L));
-			entry[1] = logs[i % logs.length];
-			entry[2] = levels[i % levels.length];
-			entry[3] = threads[i % threads.length];
-			entry[4] = messages[i % messages.length];
-			addLogEvent(entry);
-		}
-	}
-
 	/**
 	 * Gets the selected log
 	 * @return The currently selected fully-qualified log name, or <code>null</code> if the root is selected.
@@ -325,7 +306,7 @@ class DeveloperLogDialog extends JDialog
 
 	/**
 	 * Determines if a log event matches the following criteria:
-	 * a) Does the log event comes from the currently selected log?
+	 * a) Does the log event come from the currently selected log?
 	 * b) Does the log event match the specified regular expression?
 	 */
 	boolean logEventMatches(String[] event, int target, String log)
@@ -341,8 +322,8 @@ class DeveloperLogDialog extends JDialog
 
 	/**
 	 * Creates a new instance of <code>SolicitedLogEventsUpdater</code> and
-	 * executes it. If a SolicitedLogEventsUpdater is already running, this
-	 * will cancel it.
+	 * executes it. If a <code>SolicitedLogEventsUpdater</code> is already
+	 * running, this will cancel it.
 	 */
 	void refreshSnapshots()
 	{

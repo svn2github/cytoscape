@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadFactory;
 /**
  * @author Pasteur
  */
-class LowPriorityDaemonThreadFactory implements ThreadFactory
+public class LowPriorityDaemonThreadFactory implements ThreadFactory
 {
 	public Thread newThread(Runnable r)
 	{

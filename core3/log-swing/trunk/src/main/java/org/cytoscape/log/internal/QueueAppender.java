@@ -6,18 +6,22 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
 
 /**
  * @author Pasteur
  */
-class QueueAppender extends AppenderSkeleton implements Appender
+public class QueueAppender extends AppenderSkeleton implements Appender
 {
-	final Queue<LoggingEvent> queue;
+	final Queue<LoggingEvent> userLogQueue;
+	final Queue<LoggingEvent> statusBarQueue;
+	final Queue<LoggingEvent> developerLogQueue;
 
-	public QueueAppender(Queue<LoggingEvent> queue)
+	public QueueAppender(Queue<LoggingEvent> userLogQueue, Queue<LoggingEvent> statusBarQueue, Queue<LoggingEvent> developerLogQueue)
 	{
-		this.queue = queue;
+		this.userLogQueue = userLogQueue;
+		this.statusBarQueue = statusBarQueue;
+		this.developerLogQueue = developerLogQueue;
 	}
 
 	public void append(LoggingEvent event)
@@ -32,7 +36,15 @@ class QueueAppender extends AppenderSkeleton implements Appender
 			else if (result == Filter.DENY)
 				return;
 		}
-		queue.offer(event);
+
+		if (	event.getLevel().equals(Level.INFO) || 
+			event.getLevel().equals(Level.WARN))
+		{
+			userLogQueue.offer(event);
+			statusBarQueue.offer(event);
+		}
+		else
+			developerLogQueue.offer(event);
 	}
 
 	public boolean requiresLayout()

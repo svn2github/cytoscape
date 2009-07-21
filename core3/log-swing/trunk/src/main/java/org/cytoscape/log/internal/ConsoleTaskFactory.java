@@ -31,22 +31,23 @@ import cytoscape.view.CySwingApplication;
  */
 public class ConsoleTaskFactory implements TaskFactory
 {
-	final BlockingQueue<LoggingEvent> internalQueue;
-	final ExecutorService service;
+	final BlockingQueue<LoggingEvent> queue;
 	final CytoStatusBar statusBar;
 	final CySwingApplication app;
+	final ExecutorService service;
 
 	ConsoleDialog dialog = null;
 
-	public ConsoleTaskFactory(CytoStatusBar statusBar, CySwingApplication app)
+	public ConsoleTaskFactory(	BlockingQueue<LoggingEvent> queue,
+					CytoStatusBar statusBar,
+					CySwingApplication app,
+					ExecutorService service)
 	{
+		this.queue = queue;
 		this.statusBar = statusBar;
 		this.app = app;
-		internalQueue = new LinkedBlockingQueue<LoggingEvent>();
-		service = Executors.newFixedThreadPool(2, new LowPriorityDaemonThreadFactory());
+		this.service = service;
 
-		StatusBarUpdater updater = new StatusBarUpdater(statusBar, internalQueue);
-		service.submit(updater);
 		statusBar.addActionListener(new ConsoleAction());
 	}
 
@@ -60,7 +61,7 @@ public class ConsoleTaskFactory implements TaskFactory
 		if (dialog == null)
 		{
 			dialog = new ConsoleDialog(statusBar, app);
-			ConsoleDialogUpdater updater = new ConsoleDialogUpdater(dialog, internalQueue);
+			ConsoleDialogUpdater updater = new ConsoleDialogUpdater(dialog, queue);
 			service.submit(updater);
 		}
 		return dialog;
@@ -104,45 +105,5 @@ class ConsoleDialogUpdater extends QueueProcesser
 		String message = event.getMessage().toString();
 		String timeStamp = DATE_FORMATTER.format(new Date(event.getTimeStamp()));
 		dialog.append(event.getLevel(), message, timeStamp);
-	}
-}
-
-class StatusBarUpdater extends QueueProcesser
-{
-	static final Map<Integer,String> LEVEL_TO_ICON_MAP = new TreeMap<Integer,String>();
-	static
-	{
-		LEVEL_TO_ICON_MAP.put(Level.DEBUG.toInt(),	"/petit-info.png");
-		LEVEL_TO_ICON_MAP.put(Level.ERROR.toInt(),	"/petit-error.png");
-		LEVEL_TO_ICON_MAP.put(Level.FATAL.toInt(),	"/petit-error.png");
-		LEVEL_TO_ICON_MAP.put(Level.INFO.toInt(),	"/petit-info.png");
-		LEVEL_TO_ICON_MAP.put(Level.TRACE.toInt(),	"/petit-info.png");
-		LEVEL_TO_ICON_MAP.put(Level.WARN.toInt(),	"/petit-warning.png");
-	}
-
-	ImageIcon getIcon(int level)
-        {
-		String path = LEVEL_TO_ICON_MAP.get(level);
-		if (path == null)
-			path = "/petit-info.png";
-		return new ImageIcon(getClass().getResource(path));
-        }
-
-	final CytoStatusBar statusBar;
-	final BlockingQueue<LoggingEvent> internalQueue;
-
-	public StatusBarUpdater(CytoStatusBar statusBar, BlockingQueue<LoggingEvent> internalQueue)
-	{
-		super(Queues.getUserLogQueue());
-		this.statusBar = statusBar;
-		this.internalQueue = internalQueue;
-	}
-
-	public void processEvent(LoggingEvent event)
-	{
-		String message = event.getMessage().toString();
-		ImageIcon icon = getIcon(event.getLevel().toInt());
-		statusBar.setMessage(message, icon);
-		internalQueue.offer(event);
 	}
 }

@@ -25,14 +25,16 @@ import java.text.DateFormat;
 public class DeveloperLogTaskFactory implements TaskFactory
 {
 	final ExecutorService service;
+	final BlockingQueue<LoggingEvent> queue;
 	final CySwingApplication app;
 	final TaskManager manager;
 
 	DeveloperLogDialog dialog = null;
 
-	public DeveloperLogTaskFactory(CySwingApplication app, TaskManager manager)
+	public DeveloperLogTaskFactory(ExecutorService service, BlockingQueue<LoggingEvent> queue, CySwingApplication app, TaskManager manager)
 	{
-		service = Executors.newSingleThreadExecutor(new LowPriorityDaemonThreadFactory());
+		this.service = service;
+		this.queue = queue;
 		this.app = app;
 		this.manager = manager;
 	}
@@ -59,7 +61,7 @@ public class DeveloperLogTaskFactory implements TaskFactory
 		if (dialog == null)
 		{
 			dialog = new DeveloperLogDialog(app, manager);
-			DeveloperLogUpdater updater = new DeveloperLogUpdater(dialog);
+			DeveloperLogUpdater updater = new DeveloperLogUpdater(dialog, queue);
 			service.submit(updater);
 		}
 		return dialog;
@@ -68,13 +70,13 @@ public class DeveloperLogTaskFactory implements TaskFactory
 
 class DeveloperLogUpdater extends QueueProcesser
 {
-	static DateFormat DATE_FORMATTER = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+	static final DateFormat DATE_FORMATTER = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
 	final DeveloperLogDialog dialog;
 
-	public DeveloperLogUpdater(DeveloperLogDialog dialog)
+	public DeveloperLogUpdater(DeveloperLogDialog dialog, BlockingQueue<LoggingEvent> queue)
 	{
-		super(Queues.getDeveloperLogQueue());
+		super(queue);
 		this.dialog = dialog;
 	}
 

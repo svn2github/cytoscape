@@ -16,12 +16,42 @@
 
 	<context:annotation-config />
 
+	<bean id="threadFactory" class="org.cytoscape.log.internal.LowPriorityDaemonThreadFactory" />
+
+	<bean id="executorService" class="java.util.concurrent.Executors" factory-method="newCachedThreadPool">
+		<constructor-arg ref="threadFactory" />
+	</bean>
+
+	<bean id="userQueue" class="org.cytoscape.log.internal.BlockingQueueFactory" factory-method="newBlockingQueue" />
+	<bean id="statusBarQueue" class="org.cytoscape.log.internal.BlockingQueueFactory" factory-method="newBlockingQueue" />
+	<bean id="developerQueue" class="org.cytoscape.log.internal.BlockingQueueFactory" factory-method="newBlockingQueue" />
+
+	<bean id="rootAppender" class="org.cytoscape.log.internal.QueueAppender">
+		<constructor-arg ref="userQueue" />
+		<constructor-arg ref="statusBarQueue" />
+		<constructor-arg ref="developerQueue" />
+	</bean>
+
+	<bean id="log4jInitialization" class="org.cytoscape.log.internal.Log4jInit">
+		<constructor-arg ref="rootAppender" />
+	</bean>
+
+	<bean id="statusBarUpdater" class="org.cytoscape.log.internal.StatusBarUpdater" factory-method="executeStatusBarUpdater">
+		<constructor-arg ref="executorService" />
+		<constructor-arg ref="cytoStatusBarRef" />
+		<constructor-arg ref="statusBarQueue" />
+	</bean>
+
 	<bean id="consoleTaskFactory" class="org.cytoscape.log.internal.ConsoleTaskFactory">
+		<constructor-arg ref="userQueue" />
 		<constructor-arg ref="cytoStatusBarRef" />
 		<constructor-arg ref="cySwingApplicationRef" />
+		<constructor-arg ref="executorService" />
 	</bean>
 
 	<bean id="developerLogTaskFactory" class="org.cytoscape.log.internal.DeveloperLogTaskFactory">
+		<constructor-arg ref="executorService" />
+		<constructor-arg ref="developerQueue" />
 		<constructor-arg ref="cySwingApplicationRef" />
 		<constructor-arg ref="taskManagerRef" />
 	</bean>
@@ -29,18 +59,4 @@
 	<bean id="testTaskFactory" class="org.cytoscape.log.internal.TestTaskFactory">
 	</bean>
 
-	<!--
-	<bean id="log4jInitialization" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	  <property name="targetClass" value="org.springframework.util.Log4jConfigurer"/>
-	  <property name="targetMethod" value="initLogging"/>
-	  <property name="arguments">
-	    <list>
-	      <value>log4j-configuration.xml</value>
-	    </list>
-	  </property>
-	</bean>
-	-->
-
-	<bean id="log4jInitialization" class="org.cytoscape.log.internal.Log4jInit">
-	</bean>
 </beans>
