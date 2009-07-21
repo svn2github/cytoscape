@@ -429,7 +429,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	 */
 	public void viewportChanged(int w, int h, double newXCenter,
 			double newYCenter, double newScaleFactor) {
-
+		
 		Double vpX = this.getX1();
 		Double vpY = this.getY1();
 		Double vpW = this.getW1();
@@ -482,7 +482,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		viewportWidth = w;
 		viewportHeight = h;
 
-		//this.setBounds(this.getX1(), this.getY1(), this.getW1(), this.getH1());
+		this.setBounds(this.getX1(), this.getY1(), this.getW1(), this.getH1());
 	}
 
 	/**
@@ -953,7 +953,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 					((int) height + HANDLE_SIZE), BufferedImage.TYPE_INT_ARGB);
 		}
 
-		/*
+		
 		// update nodeView coordinates of Layout Region for Groups/xGMML export
 		Point2D[] corners = new Point2D[] { new Point2D.Double(x, y),
 				new Point2D.Double(x + width, y + height) };
@@ -967,6 +967,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 			nodeW1 = (newCorners[1].getX() - newCorners[0].getX());
 			nodeH1 = (newCorners[1].getY() - newCorners[0].getY());
 
+		/*
 			if (myGroup != null) {
 				CyNode groupNode = this.myGroup.getGroupNode();
 				CyAttributes attributes = Cytoscape.getNodeAttributes();
@@ -978,12 +979,14 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 						BubbleRouterPlugin.REGION_W_ATT, nodeW1);
 				attributes.setAttribute(groupNode.getIdentifier(),
 						BubbleRouterPlugin.REGION_H_ATT, nodeH1);
+			
 			}
+		*/	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		*/
+		
 	}
 
 	
