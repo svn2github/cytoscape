@@ -40,6 +40,7 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.util.Iterator;
 import java.lang.reflect.Field;
+import java.util.*;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -48,8 +49,15 @@ import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.LayoutEdge;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.EdgeWeighter;
+import csplugins.layout.algorithms.graphPartition.*;
 
-public class ForceDirected extends AbstractLayout{
+
+public class ForceDirected extends AbstractGraphPartition
+{
 
     private double H_SIZE = 5000.0;
     private double V_SIZE = 5000.0;
@@ -77,6 +85,12 @@ public class ForceDirected extends AbstractLayout{
 	layoutProperties = new LayoutProperties(getName());
 	initialize_properties();
     }
+
+    public boolean supportsSelectedOnly() {
+		return false;
+    }
+
+
     
     /**
      * Adds tunable objects for adjusting plugin parameters
@@ -196,13 +210,8 @@ public class ForceDirected extends AbstractLayout{
     /**
      * This function does the "heavy work", calling the native code
      */
-    public void construct() {
+    public void layoutPartion (LayoutPartition part) {
 	
-	//Show message on screen with AdjMatIndex and AdjMatVals   
-	/*String message3 = "GpuLayout Plugin started!\n"; 
-        JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message3);
-	*/
-
 	// Show message on the task monitor
 	taskMonitor.setStatus("Initializing");
 	
@@ -211,86 +220,74 @@ public class ForceDirected extends AbstractLayout{
 	
 	// Calls initialize_local	      
 	initialize(); 
-	
-	
-	
-	// Pack the arguments needed for calling native code
-	
+		
 	// Get the number of edges and nodes
-	int numNodes = network.getNodeCount();
-	int numEdges = network.getEdgeCount();
+	int numNodes = part.nodeCount();
+	int numEdges = part.edgeCount();
 	
-	// Allocate memory for storing graph edges
+	// Get node's list
+	List<LayoutNode> nodeList = part.getNodeList();
+
+	// Allocate memory for storing graph edges information (to be used as arguments for JNI call)
 	int[] AdjMatIndex = new int[numNodes + 1];
-	int[] AdjMatVals  = new int[2 * numEdges];
-	
-	
-	
-	// Initialize mapping beetwen aliases and node's ID
-	int[] node_map = new int[numNodes];
+	int[] AdjMatVals  = new int[2 * numEdges];	
 	
 	// Create an iterator for processing the nodes
-	Iterator<Node> it = network.nodesIterator();
+	Iterator<LayoutNode> it = nodeList.iterator();
 	
-	// Auxiliary variable to keep track of nodes aliases
-	int alias = 0;
-	
-	// Iterate over the nodes
-	while (it.hasNext()) {
+	// Auxiliary variables
+	int position = 0;
+	int currentNodePosition = 0;
+
+	// Iterate over all nodes
+	while (it.hasNext()){
 	    
 	    // Get next node
-	    Node node = (Node) it.next();
-	    
-	    // Add alias and node ID to node_map
-	    node_map[alias] = network.getIndex(node);
-	    
-	    // Increment alias
-	    alias++;
-	}
-	
-	// Check whether it has been canceled by the user
-	if (canceled)
-	    return;
-	
-	// Auxiliary variable used to keep track of the position in AdjMatVals
-	int position = 0;
-	
-	// Iterate over all nodes
-	for (alias = 0; alias < numNodes; alias++){
-	    
-	    // Set AdjMatIndex[alias] to point to start of neighbors list of this node
-	    AdjMatIndex[alias] = position;
-	    
-	    // Get current node's index
-	    int current_node_index = node_Alias2Index(node_map, alias);
+	    LayoutNode node = (LayoutNode) it.next();
+
+	    // Get index of node
+	    int currentNodeIndex = network.getIndex(node.getNode());
+
+	    // Set AdjMatIndex[current_node_index] to point to start of neighbors list of this node
+	    AdjMatIndex[currentNodePosition] = position;
 	    
 	    // Get neighbors of node
-	    int[] neighbors = network.neighborsArray(current_node_index);
+	    List<LayoutNode> neighbors = node.getNeighbors();
 	    
 	    // Process neighbors of node, adding them in AdjMatVals
-	    for (int i = 0; i < neighbors.length; i++){
-		int current_neighbor_index = neighbors[i];
+	    Iterator<LayoutNode> neighborsIterator = neighbors.iterator();
+	    while (neighborsIterator.hasNext() ){
+
+		// Get the next neighbor
+		LayoutNode currentNeighbor = (LayoutNode) neighborsIterator.next();
+
+		// Get the position in nodeList of neighbor
+		int currentNeighborPosition = nodeList.indexOf(currentNeighbor);
 		
+		// Get index of currentNeighbor
+		int currentNeighborIndex = network.getIndex(currentNeighbor.getNode());
+
 		// Take into account both directed (in both directions) and undirected edges
-		int multiplicity = network.getEdgeCount(current_node_index, current_neighbor_index, true) 
-		    + network.getEdgeCount(current_neighbor_index, current_node_index, false);
+		int multiplicity = network.getEdgeCount(currentNodeIndex, currentNeighborIndex, true) 
+		    + network.getEdgeCount(currentNeighborIndex, currentNodeIndex, false);
 		
 		// Add current_neighbor to AdjMatVals "multiplicity" times
 		for (int j = 0; j < multiplicity; j++){
 		    
 		    // Add alias of current_neighbor to AjdMatVals
-		    AdjMatVals[position] = node_Index2Alias(node_map, current_neighbor_index);
+		    AdjMatVals[position] = currentNeighborPosition;
 		    
 		    // Increment position
 		    position++;
-		}
-		
+		}	       
 	    }
 	    
+	    // Increment currentNodePosition
+	    currentNodePosition++;	    
 	}
 	
 	// Mark end of AdjMatIndex, so that you can now where ends AdjMatVals  
-	AdjMatIndex[alias] = position;
+	AdjMatIndex[currentNodePosition] = position;
 	
 	
 	//  Show message on screen with AdjMatIndex and AdjMatVals   
@@ -300,14 +297,13 @@ public class ForceDirected extends AbstractLayout{
 	message2 = message2 + "\nAdhMatVals\n";
 	for (int i = 0; i < AdjMatVals.length; i++)
 	  message2 = message2 + " " +AdjMatVals[i];	    
-	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message2);
+	  JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message2);
 	*/
-	
+	       
 	// Check whether it has been canceled by the user
 	if (canceled)
 	    return;
-	
-	
+		
 	// Reset the "sys_paths" field of the ClassLoader to null.
 	Class clazz = ClassLoader.class;
 	Field field;
@@ -375,50 +371,34 @@ public class ForceDirected extends AbstractLayout{
 	if (canceled)
 	    return;
 	
-	
 	// Update Node position
-	
+	part.resetNodes(); // reset the nodes so we get the new average location
+
 	// Iterate over all nodes
-	for (alias = 0; alias < numNodes; alias++){
+	currentNodePosition = 0;
+
+	// Create an iterator for processing the nodes
+	Iterator<LayoutNode> iterator2 = nodeList.iterator();
+
+	while (iterator2.hasNext()){
+	    
+	    // Get next node
+	    LayoutNode node = (LayoutNode) iterator2.next();
 		
-	    // Get current node's index
-	    int current_node_index = node_Alias2Index(node_map, alias);
-	    
-	    // Get current node
-	    Node node = network.getNode(current_node_index);
-	    
 	    // Set node's X and Y positions
-	    networkView.getNodeView(node).setXPosition(node_positions[alias][0]);
-	    networkView.getNodeView(node).setYPosition(node_positions[alias][1]);	     
-	    
+	    node.setX(node_positions[currentNodePosition][0]);
+	    node.setY(node_positions[currentNodePosition][1]);
+
+	    // Move node to desired location
+	    part.moveNodeToLocation(node);
+
+	    currentNodePosition++;
 	}
 	
-	// (UPDATE NODES?????) I don't know if that will be required..
-	
 	return;
-    }// Construct()
+    }// layoutPartion(LayoutPartition part)
     
     
-    
-    
-    /**
-     * Get the index of a node in node_map, given the alias
-     */
-    public int node_Alias2Index(int[] map, int alias){
-	    return (map[alias]);
-    }
-
-
-    /**
-     * Get the alias (ordinal value) of a node in a node_map
-     */
-    public int node_Index2Alias(int[] map, int index){
-	for (int i = 0; i < map.length; i++)
-	    if (map[i] == index)
-		return i;
-	return -1;
-    }
-
     
     /**
      * Native method that computes the layout and returns position of nodes

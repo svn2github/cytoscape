@@ -46,8 +46,13 @@
     <path id="project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement path="${java.class.path}/"/>
+      <fileset dir="${cytoscape.lib.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
+      <fileset dir="${cytoscape.plugin.dir}">
+        <include name="**/*.jar"/>
+      </fileset>
     </path>
-
   </target>
 
   <!-- =================================================================== -->
