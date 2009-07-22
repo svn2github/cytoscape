@@ -35,7 +35,7 @@ public class CyNodePresentationBuilder {
 
 		}
 
-		final P5Renderer<CyNode> presentation = new P5NodePresentation(
+		final P5Renderer<CyNode> presentation = new P5NodeRenderer(
 				nodeView, value);
 
 		return presentation;

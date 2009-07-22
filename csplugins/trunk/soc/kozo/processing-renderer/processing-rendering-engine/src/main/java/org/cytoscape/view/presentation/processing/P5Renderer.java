@@ -1,9 +1,7 @@
 package org.cytoscape.view.presentation.processing;
 
-import java.awt.Component;
-
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.Renderer;
+import org.cytoscape.view.presentation.VisualItemRenderer;
 
 /**
  * Base interface for all renderers.  This will be used by:
@@ -18,7 +16,7 @@ import org.cytoscape.view.presentation.Renderer;
  *
  * @param <T>
  */
-public interface P5Renderer <T> extends Renderer<View<T>> {
+public interface P5Renderer <T> extends VisualItemRenderer<View<T>> {
 	
 	/**
 	 * Get top-level Drawable Object.
@@ -27,5 +25,6 @@ public interface P5Renderer <T> extends Renderer<View<T>> {
 	 */
 	public CyDrawable getCyDrawable();
 	
-	public Component getComponent();
+	public void render(View<T> viewModel, CyDrawable drawable);
+	
 }

@@ -3,21 +3,21 @@ package org.cytoscape.view.presentation.processing;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.Icon;
-
 public interface CyDrawable {
 	
-	public void draw();
-	
-	public List<CyDrawable> getChildren();
-
 	/**
-	 * Name of this object. Can be anything.
-	 * 
-	 * @return Name of shape as string
+	 * Draw this object on canvas.
 	 * 
 	 */
-	public String getDisplayName();
+	public void draw();
+	
+	/**
+	 * Get all children of this drawable.
+	 * These visual objects will be painted automatically if draw() is called.
+	 * 
+	 * @return
+	 */
+	public List<CyDrawable> getChildren();
 
 	/**
 	 * Get compatible data type. For example, if this object accepts CyNode,
@@ -26,8 +26,5 @@ public interface CyDrawable {
 	 * @return set of compatible data types.
 	 */
 	public Set<Class<?>> getCompatibleModels();
-
-	// Render Icon based on current state
-	public Icon getIcon(int width, int height);
 
 }
