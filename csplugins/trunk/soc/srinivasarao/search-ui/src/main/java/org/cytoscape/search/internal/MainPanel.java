@@ -34,11 +34,11 @@ public class MainPanel extends JPanel {
 	private JRadioButton andButton = null;
 	private JButton searchButton = null;
 	private ButtonGroup resultGroup = null;
-	private ButtonGroup operatorGroup = null; 
+	private ButtonGroup operatorGroup = null;
 
 	private CyNetworkManager netmgr;
-	
-	private static final String ESP_LABEL = "ESP:  "; 
+
+	private static final String ESP_LABEL = "ESP:  ";
 
 	private static final String SEARCH_MENU_ITEM = "Search";
 
@@ -48,8 +48,7 @@ public class MainPanel extends JPanel {
 
 	private static final String REINDEX_TOOLTIP = "<html>"
 			+ "Refresh the network index and perform search." + "<br>"
-			+ "This option is useful after changes to attributes."
-			+ "</html>";
+			+ "This option is useful after changes to attributes." + "</html>";
 
 	/**
 	 * This is the default constructor
@@ -57,8 +56,8 @@ public class MainPanel extends JPanel {
 	public MainPanel(CyNetworkManager nm) {
 		super();
 		initialize();
-		this.netmgr=nm;
-		
+		this.netmgr = nm;
+
 	}
 
 	/**
@@ -74,16 +73,17 @@ public class MainPanel extends JPanel {
 		GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 		gridBagConstraints7.gridx = 1;
 		gridBagConstraints7.gridy = 2;
-		gridBagConstraints7.insets = new Insets(2,0,5,0);
+		gridBagConstraints7.insets = new Insets(2, 0, 5, 0);
 		GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 		gridBagConstraints6.gridx = 0;
 		gridBagConstraints6.gridy = 2;
 		gridBagConstraints6.insets = new Insets(2, 5, 5, 0);
 		GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-		gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints5.fill = GridBagConstraints.BOTH;
 		gridBagConstraints5.gridy = 1;
 		gridBagConstraints5.gridwidth = GridBagConstraints.REMAINDER;
 		gridBagConstraints5.weightx = 1.0;
+		gridBagConstraints5.weighty = 1.0;
 		gridBagConstraints5.insets = new Insets(0, 5, 0, 5);
 		gridBagConstraints5.gridx = 0;
 		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
@@ -95,27 +95,25 @@ public class MainPanel extends JPanel {
 		gridBagConstraints2.gridx = 2;
 		gridBagConstraints2.gridy = 0;
 		gridBagConstraints2.weightx = 1.0;
-		gridBagConstraints2.insets = new Insets(5,0,0,0);
+		gridBagConstraints2.insets = new Insets(5, 0, 0, 0);
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 		gridBagConstraints1.gridx = 1;
 		gridBagConstraints1.gridy = 0;
 		gridBagConstraints1.weightx = 1.0;
-		gridBagConstraints1.insets = new Insets(5,0,0,0);
+		gridBagConstraints1.insets = new Insets(5, 0, 0, 0);
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.insets = new Insets(5, 5, 0, 0);
-		
-		GridBagConstraints gc= new GridBagConstraints();
-		gc.gridx=0;
-		gc.gridy=4;
+
+		GridBagConstraints gc = new GridBagConstraints();
+		gc.gridx = 0;
+		gc.gridy = 4;
 		gc.fill = GridBagConstraints.BOTH;
 		gc.weightx = 1.0;
 		gc.weighty = 1.0;
-		
-		
-		
+
 		// gridBagConstraints.anchor=
 		// GridBagConstraints.BELOW_BASELINE_LEADING;
 		resultsLabel = new JLabel(ESP_LABEL);
@@ -133,7 +131,7 @@ public class MainPanel extends JPanel {
 		this.add(getSearchButton(), gridBagConstraints8);
 		createButtonGroups();
 		createPopupMenu();
-		this.add(Box.createRigidArea(null),gc);
+		this.add(Box.createRigidArea(null), gc);
 	}
 
 	/**
@@ -184,16 +182,16 @@ public class MainPanel extends JPanel {
 		if (searchField == null) {
 			searchField = new JTextField();
 			searchField.setMinimumSize(new Dimension(15, 20));
-			searchField
-					.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
-			searchField
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent e) {
-							SearchPanelFactory.getGlobalInstance(netmgr).performSearch(false);
-							searchField.setText(null);
-						}
-					});
+			searchField.setText(null);
+			searchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+			searchField.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					SearchPanelFactory.getGlobalInstance(netmgr).performSearch(
+							false);
+					searchField.setText(null);
+					SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
+				}
+			});
 		}
 		return searchField;
 	}
@@ -207,6 +205,7 @@ public class MainPanel extends JPanel {
 		if (orButton == null) {
 			orButton = new JRadioButton();
 			orButton.setText("OR");
+			orButton.setActionCommand("OR");
 		}
 		return orButton;
 	}
@@ -220,6 +219,7 @@ public class MainPanel extends JPanel {
 		if (andButton == null) {
 			andButton = new JRadioButton();
 			andButton.setText("AND");
+			andButton.setActionCommand("AND");
 		}
 		return andButton;
 	}
@@ -233,14 +233,14 @@ public class MainPanel extends JPanel {
 		if (searchButton == null) {
 			searchButton = new JButton();
 			searchButton.setText("Search");
-			searchButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent e) {
-							SearchPanelFactory.getGlobalInstance(netmgr).performSearch(false);
-							searchField.setText(null);
-						}
-					});
+			searchButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					SearchPanelFactory.getGlobalInstance(netmgr).performSearch(
+							false);
+					searchField.setText(null);
+					SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
+				}
+			});
 		}
 		return searchButton;
 	}
@@ -273,6 +273,10 @@ public class MainPanel extends JPanel {
 		return query;
 	}
 
+	public void setSearchText(String query) {
+		searchField.setText(query);
+	}
+
 	private void createPopupMenu() {
 		JMenuItem menuItem;
 
@@ -283,7 +287,8 @@ public class MainPanel extends JPanel {
 		menuItem = new JMenuItem(SEARCH_MENU_ITEM);
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SearchPanelFactory.getGlobalInstance(netmgr).performSearch(false);
+				SearchPanelFactory.getGlobalInstance(netmgr).performSearch(
+						false);
 				searchField.setText(null);
 			}
 		});
@@ -294,7 +299,8 @@ public class MainPanel extends JPanel {
 		menuItem = new JMenuItem(REINDEX_MENU_ITEM);
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SearchPanelFactory.getGlobalInstance(netmgr).performSearch(true);
+				SearchPanelFactory.getGlobalInstance(netmgr)
+						.performSearch(true);
 				System.out.println("Reindex");
 			}
 		});
@@ -307,8 +313,7 @@ public class MainPanel extends JPanel {
 	}
 
 	/**
-	 * Displays the popup menu on mouse right-click if search field is
-	 * enabled
+	 * Displays the popup menu on mouse right-click if search field is enabled
 	 */
 	class PopupListener extends MouseAdapter {
 		JPopupMenu popup;

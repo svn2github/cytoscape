@@ -12,6 +12,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.internal.ArrayGraph;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.internal.NetworkManager;
 
 public class TestStringAttributePanel {
 
@@ -21,9 +23,15 @@ public class TestStringAttributePanel {
 	
 	private CyNetwork net;
 	
+	private CyNetworkManager netmgr;
+	
 	public TestStringAttributePanel(){
 		setup();
-		sp = new StringAttributePanel(net,"canonicalName","NODE");
+		netmgr = new NetworkManager(new DummyCyEventHelper());
+		netmgr.addNetwork(net);
+		netmgr.setCurrentNetwork(net.getSUID());
+		
+		sp = new StringAttributePanel(netmgr,"canonicalName","NODE");
 		Timer timer = new Timer();
 		timer.schedule(new RunTimerTask(), 5000);
 	}
@@ -32,7 +40,7 @@ public class TestStringAttributePanel {
 	  {
 	    public final void run()
 	    {
-	      sp.getCheckedValues();
+	      System.out.println(sp.getCheckedValues());
 	    }
 	  }
 	
