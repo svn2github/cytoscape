@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,22 +35,30 @@
 
 package org.cytoscape.search.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.NumberTools;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.MultiPhraseQuery;
+import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RangeQuery;
 
-
 /**
- * This custom MultiFieldQueryParser is used to parse queries containing numerical values.
- * Lucene treats all attribute field values as strings. During indexing, numerical values were transformed
- * into structured strings preserving their numerical sorting order. Now, numerical values in query
- * should also be transformed so they can be properly compared to the values stored in the index.
+ * This custom MultiFieldQueryParser is used to parse queries containing
+ * numerical values. Lucene treats all attribute field values as strings. During
+ * indexing, numerical values were transformed into structured strings
+ * preserving their numerical sorting order. Now, numerical values in query
+ * should also be transformed so they can be properly compared to the values
+ * stored in the index.
  */
-public class CustomMultiFieldQueryParser extends NewMultiFieldQueryParser {
+public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 
 	private AttributeFields attrFields;
 
@@ -61,14 +68,36 @@ public class CustomMultiFieldQueryParser extends NewMultiFieldQueryParser {
 		this.attrFields = attrFields;
 	}
 
-	protected Query getFieldQuery(String field, String queryText)
+	protected Query getFieldQuery(String field, String queryText, int slop)
 			throws ParseException {
-		//System.out.println("I am in field Query :" + field+ ":"+ queryText );
+		// System.out.println("I am in field Query :" + field+ ":"+ queryText );
+		if (field == null) {
+			List<BooleanClause> clauses = new ArrayList<BooleanClause>();
+			for (int i = 0; i < fields.length; i++) {
+				Query q = getFieldQuery(fields[i], queryText);
+				if (q != null) {
+					// If the user passes a map of boosts
+					if (boosts != null) {
+						// Get the boost from the map and apply them
+						Float boost = (Float) boosts.get(fields[i]);
+						if (boost != null) {
+							q.setBoost(boost.floatValue());
+						}
+					}
+					applySlop(q, slop);
+					clauses.add(new BooleanClause(q,BooleanClause.Occur.SHOULD));
+				}
+			}
+			if (clauses.size() == 0) // happens for stopwords
+				return null;
+			return getBooleanQuery(clauses, true);
+		}
+
 		if (attrFields.getType(field) == AttributeTypes.TYPE_INTEGER) {
 			try {
 				int num1 = Integer.parseInt(queryText);
 				return super.getFieldQuery(field, NumberTools
-						.longToString(num1));
+						.longToString(num1),0);
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
 				// searched in each one of the fields. This exception occurs
@@ -79,7 +108,8 @@ public class CustomMultiFieldQueryParser extends NewMultiFieldQueryParser {
 		} else if (attrFields.getType(field) == AttributeTypes.TYPE_FLOATING) {
 			try {
 				double num1 = Double.parseDouble(queryText);
-				// Workaround: The commented statement below won't return the desired
+				// Workaround: The commented statement below won't return the
+				// desired
 				// search result, but inclusive range query does.
 				// return super.getFieldQuery(field, NumberUtils
 				// .double2sortableStr(num1));
@@ -93,8 +123,8 @@ public class CustomMultiFieldQueryParser extends NewMultiFieldQueryParser {
 				// throw new ParseException(e.getMessage());
 			}
 		}
-		
-		return super.getFieldQuery(field, queryText);
+
+		return super.getFieldQuery(field, queryText,0);
 	}
 
 	protected Query getRangeQuery(String field, String part1, String part2,
@@ -127,5 +157,13 @@ public class CustomMultiFieldQueryParser extends NewMultiFieldQueryParser {
 			}
 		}
 		return super.getRangeQuery(field, part1, part2, inclusive);
+	}
+
+	private void applySlop(Query q, int slop) {
+		if (q instanceof PhraseQuery) {
+			((PhraseQuery) q).setSlop(slop);
+		} else if (q instanceof MultiPhraseQuery) {
+			((MultiPhraseQuery) q).setSlop(slop);
+		}
 	}
 }
