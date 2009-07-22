@@ -135,7 +135,9 @@ public class RunMCL {
 		  /*Take -LOG of edge weight (E-Value) if so specified*/
 			if(takeNegLOG)
 				if(edgeWeight != 0.0)
-					edgeWeight = -1*Math.log(edgeWeight);
+					edgeWeight = -Math.log(edgeWeight);
+				else
+					edgeWeight = 500; // Assume 1e-500 as a reasonble upper bound
 
 			if (edgeCutoff != null && edgeWeight < edgeCutoff.doubleValue())
 				continue;

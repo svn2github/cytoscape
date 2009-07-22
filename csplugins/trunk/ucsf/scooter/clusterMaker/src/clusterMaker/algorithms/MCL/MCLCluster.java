@@ -278,7 +278,6 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		// Get the currently selected attribute
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		byte type = edgeAttributes.getType(dataAttribute);
-		System.out.println("attribute: "+dataAttribute);
 		List attrList = new ArrayList();
 		for (CyEdge edge: (List<CyEdge>)Cytoscape.getCurrentNetwork().edgesList()) {
 			if (edgeAttributes.hasAttribute(edge.getIdentifier(), dataAttribute)) {
@@ -294,6 +293,11 @@ public class MCLCluster extends AbstractClusterAlgorithm
 			} else {
 				dataArray[index] = ((Integer)obj).doubleValue();
 			}
+			if (takeNegLOG) {
+				if (dataArray[index] == 0)
+					dataArray[index] = 500; // Arbitrarily small value (1X10^-500)
+				} else 
+					dataArray[index] = -Math.log10(dataArray[index]);
 			index++;
 		}
 		int nbins = 100;
@@ -370,6 +374,7 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		byte type = edgeAttrs.getType(attr);
 		double lower = Double.MAX_VALUE;
 		double upper = Double.MIN_VALUE;
+		boolean zeroLog = false;
 		for (Object e: net.edgesList()) {
 			CyEdge edge = (CyEdge)e;
 			if (edgeAttrs.hasAttribute(edge.getIdentifier(), attr)) {
@@ -382,6 +387,10 @@ public class MCLCluster extends AbstractClusterAlgorithm
 				if (takeNegLOG) {
 					if (val < 0)
 						throw new ArithmeticException("Can't take log of negative values");
+					if (val == 0) {
+						zeroLog = true;
+						continue;
+					}
 					double nl = -Math.log10(val);
 					lower = Math.min(lower,nl);
 					upper = Math.max(upper,nl);
@@ -391,6 +400,8 @@ public class MCLCluster extends AbstractClusterAlgorithm
 				}
 			}
 		}
+		if (zeroLog)
+			upper = upper+10;	// Sort of arbitrary....
 		double[] d = new double[2];
 		d[0] = lower;
 		d[1] = upper;

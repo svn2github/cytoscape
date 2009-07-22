@@ -34,6 +34,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	private final int XSTART = 100;
 	private final int YEND = 50;
 	private final int NBINS = 100;
+	private final int NDIVS = 100;
 	private int mouseX;
 	private boolean boolShowLine = false;
 	private double binSize;
@@ -51,6 +52,10 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 			minValue = Math.min(minValue, graphData[i]);
 			maxValue = Math.max(maxValue, graphData[i]);
 		}
+		// Adjust min and max for esthetic purposes
+
+
+
 		listeners = new ArrayList();
 		createHistogram(graphData);
 		addMouseMotionListener(this);
@@ -172,6 +177,13 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 			// System.out.println("hitoArray["+nI+"] = "+histoArray[nI]); //REMOVE THIS LATER
 			test+=histoArray[nI]; //REMOVE THIS LATER
 		}
+
+		// Adjust histomax for esthetics
+		int histoMax2 = (int)Math.pow(10, Math.rint(Math.log10(histoMax)+.5));
+		if (histoMax < histoMax2/2)
+			histoMax = histoMax2/2;
+		else
+			histoMax = histoMax2;
 		// System.out.println("test = "+test); //REMOVE THIS LATER
 		// System.out.println("histoMax = "+histoMax); //REMOVE THIS LATER
 	}
@@ -187,22 +199,25 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	}
 
 	private void drawAxes(Graphics g, int height, int width) {
+		double yIncrement = height/NDIVS;
+		int xIncrement = (width-125)/NBINS;
+
+		int chartWidth = histoArray.length*xIncrement+100;
+
 		g.setColor(Color.black);
 		g.drawLine(XSTART,YEND,XSTART,height);
 		g.setColor(Color.green);
-		g.drawLine(XSTART,height,width,height);
+		g.drawLine(XSTART,height,chartWidth,height);
 		
 		
-		double yIncrement = (height-50)/(double)histoMax;
-		for(int nI=1;nI<=histoMax;nI++){
+		for(int nI=1;nI<=NDIVS;nI++){
 			if(nI%10==0)
 				g.setColor(Color.red);
 			else
 				g.setColor(Color.gray);
-			g.drawLine(XSTART-10,height-(int)(yIncrement*nI),width,height-(int)(yIncrement*nI));
+			g.drawLine(XSTART,height-(int)(yIncrement*nI),chartWidth, height-(int)(yIncrement*nI));
 		}
 		
-		int xIncrement = (width-125)/NBINS;
 		for(int nI=0; nI<=histoArray.length; nI++){
 			if(nI%10==0){
 				g.setColor(Color.black);
@@ -213,27 +228,26 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	}
 
 	private void drawLabels(Graphics g, int height, int width) {
-		g.setColor(Color.gray);
-		double yIncrement = (height-50)/(double)histoMax;
-		for(int nI=1;nI<=histoMax;nI++){
-			if(nI%10==0)
-				g.drawString(""+nI,70,height-(int)(yIncrement*nI)+5);
-		}
-		
+		double yIncrement = height/NDIVS;
 		int xIncrement = (width-125)/NBINS;
 		double binSize = (maxValue - minValue)/NBINS;
+
+		g.setColor(Color.gray);
+		// Handle esthetics. This doesn't work for 1,000's of values
+		for(int nI=1;nI<=100;nI++){
+			if(nI%10==0)
+				g.drawString(""+nI*histoMax/100,20,height-(int)(yIncrement*nI)+5);
+		}
 		
 		g.drawString(""+form.format(minValue),XSTART-25,height+20);
 		g.drawString(""+form.format(maxValue),XSTART-25+xIncrement*histoArray.length,height+20);
 		for(int nI=1; nI<histoArray.length; nI++){
 			if(nI%10==0)
-				g.drawString(""+form.format((minValue+(binSize*nI))),XSTART-25+xIncrement*nI,height+20);
+				g.drawString(""+form.format((minValue+(binSize*nI))),XSTART-20+xIncrement*nI,height+20);
 		}
 	}
 	
 	
-	// TODO: Change this method to use height and width.  You may need to scale the
-	// the font also.
 	private void drawData(Graphics g, int height, int width){
 		int nBlueChange = 100;
 		double yIncrement = (height-50)/(double)histoMax;
