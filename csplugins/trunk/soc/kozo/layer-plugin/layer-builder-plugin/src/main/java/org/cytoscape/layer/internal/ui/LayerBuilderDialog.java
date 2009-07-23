@@ -37,6 +37,9 @@ import org.cytoscape.session.CyNetworkManager;
 public class LayerBuilderDialog extends JDialog {
 
 	private static final String NETWORK_TITLE = "name";
+	private static final Integer LAYER1 = 0;
+	private static final Integer LAYER2 = 1;
+	private static final Integer CONNECTOR = 2;
 
 	private static final String[] COLUMN_NAMES = { "Layer 1", "Layer 2",
 			"Connector Networks" };
@@ -591,22 +594,37 @@ public class LayerBuilderDialog extends JDialog {
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllAvailableNetworkButtonActionPerformed
 
 		// move list content
-		Enumeration<?> availableNetworks = availableNetworkListModel.elements();
+		// Enumeration<?> availableNetworks =
+		// availableNetworkListModel.elements();
 
-		while (availableNetworks.hasMoreElements()) {
-			layeredNetworkListModel.addElement(availableNetworks.nextElement());
+		// while (availableNetworks.hasMoreElements()) {
+		// layeredNetworkListModel.addElement(availableNetworks.nextElement());
+		// }
+
+		for (int i = 0; i < availableNetworkListModel.size(); i++) {
+			layeredNetworkListModel
+					.addElement(availableNetworkListModel.get(i));
+			Long[] layerConnectionRow = new Long[layerConnectionTableModel
+					.getColumnCount()];
+			layerConnectionRow[LAYER1] = title2IdMap
+					.get(availableNetworkListModel.get(i));
+			layerConnectionRow[LAYER2] = title2IdMap
+					.get(availableNetworkListModel.get(i + 1));
+			layerConnectionRow[CONNECTOR] = null;
+			layerConnectionTableModel.addRow(layerConnectionRow);
 		}
 
 		availableNetworkListModel.clear();
 
 		// sync list content and table column
-		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
-		JComboBox connecterCb = new JComboBox(availableNetworkListModel
-				.toArray());
-		layerCb.setBorder(BorderFactory.createEmptyBorder());
-		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(
-				0);
+		// JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
+		// JComboBox connecterCb = new JComboBox(availableNetworkListModel
+		// .toArray());
+		// layerCb.setBorder(BorderFactory.createEmptyBorder());
+		// connecterCb.setBorder(BorderFactory.createEmptyBorder());
+		// TableColumn layerCol =
+		// layerConnectionTable.getColumnModel().getColumn(
+		// 0);
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
