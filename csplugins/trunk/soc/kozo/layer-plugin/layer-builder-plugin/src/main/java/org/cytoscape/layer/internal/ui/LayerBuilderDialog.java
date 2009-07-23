@@ -694,20 +694,8 @@ public class LayerBuilderDialog extends JDialog {
 		}
 
 		layeredNetworkListModel.clear();
-
-		// sync list content and table column
-		// JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
-		// JComboBox connecterCb = new JComboBox(availableNetworkListModel
-		// .toArray());
-		// layerCb.setBorder(BorderFactory.createEmptyBorder());
-		// connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		// TableColumn layerCol =
-		// layerConnectionTable.getColumnModel().getColumn(
-		// 0);
-		// TableColumn connectorCol = layerOrderTable.getColumnModel()
-		// .getColumn(1);
-		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
-		// connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+		layerConnectionTableModel.clearAllRow();
+		layerConnectionTable.repaint();
 
 	}// GEN-LAST:event_MoveAllIntegratedNetworkButtonActionPerformed
 
