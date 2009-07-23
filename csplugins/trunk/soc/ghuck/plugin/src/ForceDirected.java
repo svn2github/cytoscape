@@ -235,8 +235,8 @@ public class ForceDirected extends AbstractGraphPartition
 	List<LayoutNode> nodeList = part.getNodeList();
 
 	// Allocate memory for storing graph edges information (to be used as arguments for JNI call)
-	int[] AdjMatIndex = new int[numNodes + 1 + 100];
-	int[] AdjMatVals  = new int[2 * numEdges + 1000];	
+	int[] AdjMatIndex = new int[numNodes + 1];
+	int[] AdjMatVals  = new int[2 * numEdges];	
 	
 	// Create an iterator for processing the nodes
 	Iterator<LayoutNode> it = nodeList.iterator();
@@ -271,23 +271,24 @@ public class ForceDirected extends AbstractGraphPartition
 		int currentNeighborPosition = nodeList.indexOf(currentNeighbor);
 		
 		// Get index of currentNeighbor
-		int currentNeighborIndex = network.getIndex(currentNeighbor.getNode());
+		//int currentNeighborIndex = network.getIndex(currentNeighbor.getNode());
 
 		// Take into account both directed (in both directions) and undirected edges
-		int multiplicity = network.getEdgeCount(currentNodeIndex, currentNeighborIndex, true) 
-		    + network.getEdgeCount(currentNeighborIndex, currentNodeIndex, false);
+		//int multiplicity = network.getEdgeCount(currentNodeIndex, currentNeighborIndex, true) 
+		//    + network.getEdgeCount(currentNeighborIndex, currentNodeIndex, false);
 		
 		// Add current_neighbor to AdjMatVals "multiplicity" times
-		for (int j = 0; j < multiplicity; j++){
+		//for (int j = 0; j < multiplicity; j++){
 		    
-		    logger.debug("Adding node " + currentNeighborPosition + " as neighbor of node " + currentNodePosition + " in position " + position);
+		logger.debug("Adding node " + currentNeighborPosition + " as neighbor of node " + currentNodePosition + " in position " + position);
 
-		    // Add alias of current_neighbor to AjdMatVals
-		    AdjMatVals[position] = currentNeighborPosition;
+		// Add alias of current_neighbor to AjdMatVals
+		AdjMatVals[position] = currentNeighborPosition;
 		    
-		    // Increment position
-		    position++;
-		}	       
+		// Increment position
+		position++;
+		
+		//}	       
 	    }
 	    
 	    // Increment currentNodePosition
