@@ -48,6 +48,11 @@ import org.apache.felix.framework.util.StringMap;
 import org.apache.felix.main.AutoActivator;
 import org.apache.felix.main.Main;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 
 
 /**
@@ -56,6 +61,10 @@ import org.osgi.framework.BundleActivator;
  */
 public class Launcher {
 
+	
+	static ServiceReference serv;
+	static BundleContext context;
+	
 	/**
 	 * The main method. 
 	 *
@@ -76,22 +85,44 @@ public class Launcher {
 		// Copy framework properties from the system properties.
 		Main.copySystemProperties(configProps);
 
+		//install.
 		try {
 			// Create a list of bundles to start automatically.
 	        List<BundleActivator> list = new ArrayList<BundleActivator>();
 	        list.add(new AutoActivator(configProps)); // from config auto.start 
-	        list.add(new CommandLineProviderImpl(args)); 
 	        list.add(new FileInstall());
+	        list.add(new CommandLineProviderImpl(args));
 	        configProps.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, list);
-
 			// Create a case-insensitive property map.
 			Map configMap = new StringMap(configProps, false);
 
 			// Create an instance of the framework.
-			Felix m_felix = new Felix(configMap);
+			final Felix m_felix = new Felix(configMap);
 			m_felix.start();
 
-			//System.out.println("success!!!!");
+
+			m_felix.getBundleContext().addBundleListener(new BundleListener(){
+
+				long id;
+				
+				public void bundleChanged(BundleEvent event) {
+					if(event.getBundle().getSymbolicName().equals("org.cytoscape.cmdline-parser-impl")){
+						id=event.getBundle().getBundleId();
+//						System.out.println("id = " + id + "\n\n\n\n\n\n");
+					}
+					
+					if(event.getType()==BundleEvent.STARTED && !event.getBundle().getSymbolicName().equals("org.cytoscape.cmdline-parser-impl")){
+						try{
+							m_felix.getBundleContext().getBundle(id).stop();
+						}catch(Exception e){e.printStackTrace();}
+//						System.out.println("CMDLINE-PARSER-IMPL STOPPED!!!\n\n\n\n\n\n");
+					}
+				
+				}
+				
+			});
+			
+			
             // Wait for framework to stop to exit the VM.
             m_felix.waitForStop(0);
             System.exit(0);
