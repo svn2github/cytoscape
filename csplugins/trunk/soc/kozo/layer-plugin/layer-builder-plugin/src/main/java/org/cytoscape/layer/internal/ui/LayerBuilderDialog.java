@@ -19,12 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.table.TableColumn;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.model.CyNetwork;
@@ -668,19 +665,25 @@ public class LayerBuilderDialog extends JDialog {
 
 		layeredNetworkList.clearSelection();
 
-		// sync list content and table column
-		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
-		JComboBox connecterCb = new JComboBox(availableNetworkListModel
-				.toArray());
-		layerCb.setBorder(BorderFactory.createEmptyBorder());
-		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(
-				0);
+		layerConnectionTableModel.clearAllRow();
 
-		// TableColumn connectorCol = layerOrderTable.getColumnModel()
-		// .getColumn(1);
-		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
-		// connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+		if (layeredNetworkListModel.size() > 1) {
+			for (int i = 0; i < layeredNetworkListModel.size(); i++) {
+				Long[] layerConnectionRow = new Long[layerConnectionTableModel
+						.getColumnCount()];
+				layerConnectionRow[LAYER1] = title2IdMap
+						.get(layeredNetworkListModel.get(i));
+				layerConnectionRow[LAYER2] = title2IdMap
+						.get(layeredNetworkListModel.get(i + 1));
+				if (availableNetworkListModel.size() > 0) {
+					layerConnectionRow[CONNECTOR] = title2IdMap
+							.get(availableNetworkListModel.get(0));
+				}
+				layerConnectionTableModel.addRow(layerConnectionRow);
+			}
+		}
+
+		layerConnectionTable.repaint();
 
 	}// GEN-LAST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 
