@@ -593,14 +593,6 @@ public class LayerBuilderDialog extends JDialog {
 	private void addAllAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllAvailableNetworkButtonActionPerformed
 
-		// move list content
-		// Enumeration<?> availableNetworks =
-		// availableNetworkListModel.elements();
-
-		// while (availableNetworks.hasMoreElements()) {
-		// layeredNetworkListModel.addElement(availableNetworks.nextElement());
-		// }
-
 		for (int i = 0; i < availableNetworkListModel.size(); i++) {
 			layeredNetworkListModel
 					.addElement(availableNetworkListModel.get(i));
@@ -610,25 +602,12 @@ public class LayerBuilderDialog extends JDialog {
 					.get(availableNetworkListModel.get(i));
 			layerConnectionRow[LAYER2] = title2IdMap
 					.get(availableNetworkListModel.get(i + 1));
-			layerConnectionRow[CONNECTOR] = null;
+			// layerConnectionRow[CONNECTOR] = null;
 			layerConnectionTableModel.addRow(layerConnectionRow);
 		}
 
 		availableNetworkListModel.clear();
-
-		// sync list content and table column
-		// JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
-		// JComboBox connecterCb = new JComboBox(availableNetworkListModel
-		// .toArray());
-		// layerCb.setBorder(BorderFactory.createEmptyBorder());
-		// connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		// TableColumn layerCol =
-		// layerConnectionTable.getColumnModel().getColumn(
-		// 0);
-		// TableColumn connectorCol = layerOrderTable.getColumnModel()
-		// .getColumn(1);
-		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
-		// connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+		layerConnectionTable.repaint();
 
 	}// GEN-LAST:event_MoveAllAvailableNetworkButtonActionPerformed
 
@@ -650,22 +629,25 @@ public class LayerBuilderDialog extends JDialog {
 
 		availableNetworkList.clearSelection();
 
-		Long[] row = { 1l, 2l, 3l };
-		layerConnectionTableModel.addRow(row);
-		layerConnectionTable.repaint();
+		layerConnectionTableModel.clearAllRow();
 
-		// sync list content and table column
-		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
-		JComboBox connecterCb = new JComboBox(availableNetworkListModel
-				.toArray());
-		layerCb.setBorder(BorderFactory.createEmptyBorder());
-		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(
-				0);
-		// TableColumn connectorCol = layerOrderTable.getColumnModel()
-		// .getColumn(1);
-		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
-		// connectorCol.setCellEditor(new DefaultCellEditor(connecterCb));
+		if (layeredNetworkListModel.size() > 1) {
+			for (int i = 0; i < layeredNetworkListModel.size(); i++) {
+				Long[] layerConnectionRow = new Long[layerConnectionTableModel
+						.getColumnCount()];
+				layerConnectionRow[LAYER1] = title2IdMap
+						.get(layeredNetworkListModel.get(i));
+				layerConnectionRow[LAYER2] = title2IdMap
+						.get(layeredNetworkListModel.get(i + 1));
+				if (availableNetworkListModel.size() > 0) {
+					layerConnectionRow[CONNECTOR] = title2IdMap
+							.get(availableNetworkListModel.get(0));
+				}
+				layerConnectionTableModel.addRow(layerConnectionRow);
+			}
+		}
+
+		layerConnectionTable.repaint();
 
 	}// GEN-LAST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
@@ -714,13 +696,14 @@ public class LayerBuilderDialog extends JDialog {
 		layeredNetworkListModel.clear();
 
 		// sync list content and table column
-		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
-		JComboBox connecterCb = new JComboBox(availableNetworkListModel
-				.toArray());
-		layerCb.setBorder(BorderFactory.createEmptyBorder());
-		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(
-				0);
+		// JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
+		// JComboBox connecterCb = new JComboBox(availableNetworkListModel
+		// .toArray());
+		// layerCb.setBorder(BorderFactory.createEmptyBorder());
+		// connecterCb.setBorder(BorderFactory.createEmptyBorder());
+		// TableColumn layerCol =
+		// layerConnectionTable.getColumnModel().getColumn(
+		// 0);
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
