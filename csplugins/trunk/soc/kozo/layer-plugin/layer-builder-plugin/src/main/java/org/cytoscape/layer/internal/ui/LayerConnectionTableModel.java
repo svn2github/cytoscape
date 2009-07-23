@@ -6,10 +6,10 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 public class LayerConnectionTableModel extends AbstractTableModel {
-	
+
 	private List<Long[]> dataModel;
 	private Object[] columnNames;
-	
+
 	public LayerConnectionTableModel(Object[] columnNames) {
 		this.columnNames = columnNames;
 		dataModel = new ArrayList<Long[]>();
@@ -26,14 +26,14 @@ public class LayerConnectionTableModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		return dataModel.get(rowIndex)[columnIndex];
 	}
-	
+
 	public void setValueAt(Object value, int row, int col) {
-		if(value instanceof Long == false) {
+		if (value instanceof Long == false) {
 			throw new IllegalArgumentException("Invalid data type");
 		}
 		Long[] rowData = dataModel.get(row);
 		rowData[col] = (Long) value;
-		
+
 		fireTableDataChanged();
 	}
 
@@ -43,13 +43,18 @@ public class LayerConnectionTableModel extends AbstractTableModel {
 		else
 			return true;
 	}
-	
+
 	public String getColumnName(int col) {
 		return columnNames[col].toString();
 	}
-	
+
 	public void addRow(Long[] row) {
 		dataModel.add(row);
+		fireTableDataChanged();
+	}
+
+	public void clearAllRow() {
+		dataModel.clear();
 		fireTableDataChanged();
 	}
 
