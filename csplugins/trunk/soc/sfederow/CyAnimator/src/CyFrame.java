@@ -41,7 +41,7 @@ public class CyFrame {
 	
 	private CyNetworkView networkView = null;
 	private CyNetwork currentNetwork = null;
-	private Image networkImage = null;
+	private BufferedImage networkImage = null;
 	private Map<Node, NodeView> nodeMap = null;
 	private Map<Edge, EdgeView> edgeMap = null;
 	private VisualStyle vizStyle = null;
@@ -92,6 +92,10 @@ public class CyFrame {
 		this.edgeList = edgeList;
 	}
 	
+	/*
+	 * Captures all of the current visual settings for nodes and edges from a 
+	 * CyNetworkView and stores them in this frame.
+	 */
 	public void populate() {
 		backgroundPaint = networkView.getBackgroundPaint();
 		zoom = networkView.getZoom();
@@ -132,6 +136,10 @@ public class CyFrame {
 		}
 	}
 	
+	/*
+	 * Captures and stores a thumbnail image from the current CyNetworkView for
+	 * this frame.
+	 */
 	public void captureImage() {
 		
 		double scale = .35;
@@ -155,6 +163,10 @@ public class CyFrame {
 	
 	}
 	
+	/*
+	 * Cycles through the list of nodes and edges and updates the node and edge views 
+	 * based upon the visual data stored as part of the CyFrame.  
+	 */
 	public void display() {
 
 		Cytoscape.getVisualMappingManager().setVisualStyle(vizStyle);
@@ -199,7 +211,7 @@ public class CyFrame {
 			Color p = nodeColMap.get(node.getIdentifier());
 			Integer trans = nodeOpacityMap.get(node.getIdentifier());
 			// System.out.println("DISPLAY "+node+": "+xy[0]+"  "+xy[1]+", trans = "+trans);
-
+			//if(xy == null || nodeView == null){ continue; }
 			
 			nodeView.setXPosition(xy[0]);
 			nodeView.setYPosition(xy[1]);
@@ -224,7 +236,12 @@ public class CyFrame {
 		
 		networkView.updateView();
 	}
-	
+	/*
+	 * Return the frame ID for this frame
+	 * 
+	 * @return the frame ID
+	 * 
+	 */
 	public String getID() {
 		return frameid;
 	}
@@ -243,7 +260,7 @@ public class CyFrame {
 	}
 
 	/**
-	 * Return the frame number for this frame
+	 * Return the number of frames to be interpolated between this frame and the next.
 	 *
 	 * @return the frame number
 	 */
@@ -252,7 +269,7 @@ public class CyFrame {
 	}
 
 	/**
-	 * Set the frame number for this frame
+	 * Set the number of frames to be interpolated between this frame and the next.
 	 *
 	 * @param interCount the number of frames to interpret
 	 */
@@ -421,7 +438,7 @@ public class CyFrame {
 	 *
 	 * @return the image for this frame
 	 */
-	public Image getFrameImage() {
+	public BufferedImage getFrameImage() {
 		return this.networkImage;
 	}
 

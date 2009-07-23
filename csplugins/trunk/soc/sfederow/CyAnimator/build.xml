@@ -13,7 +13,7 @@
 	<!--  The directory containing library jar files -->	
 	<property name="cytoroot.dir" value="../cytoscape"/>
 	
-	
+        <property name="images.dir" value="img"/>	
 	<property name="release.dir" value="../cytoscape"/>
 
 	<property name="lib.dir" value = "../cytoscape/lib"/>
@@ -53,8 +53,15 @@
     		<mkdir dir="${build.dir}"/>
     		<mkdir dir="${build.classes}"/>
         <!-- copy over images -->
- 	
-  		<!-- <mkdir dir="${dist.dir}"/> -->
+ 	<copy file="${images.dir}/play.png" todir="${build.classes}/CyAnimator"/>
+  	<copy file="${images.dir}/pause.png" todir="${build.classes}/CyAnimator"/>
+        <copy file="${images.dir}/stop.png" todir="${build.classes}/CyAnimator"/>
+	<copy file="${images.dir}/fastForward.png" todir="${build.classes}/CyAnimator"/>
+        <copy file="${images.dir}/reverse.png" todir="${build.classes}/CyAnimator"/>
+        <copy file="${images.dir}/record.png" todir="${build.classes}/CyAnimator"/>
+
+ 
+        <!-- <mkdir dir="${dist.dir}"/> -->
 		<!-- <mkdir dir="${doc.dir}"/> -->
   	</target>
 
@@ -100,7 +107,6 @@
         </jar>
    		 
  		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
-
    		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins/core/"/>
 	</target>
 

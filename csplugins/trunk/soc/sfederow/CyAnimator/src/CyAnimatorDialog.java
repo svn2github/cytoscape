@@ -32,6 +32,11 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
 import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.IOException;
+import java.io.File;
 
 import java.sql.Time;
 
@@ -68,15 +73,15 @@ import java.util.regex.Pattern;
 public class CyAnimatorDialog extends JDialog implements ActionListener, java.beans.PropertyChangeListener {
 
 	
-	
-	private JButton captureFrameOne;
-	private JButton captureFrameTwo;
-	private JButton animateBetween;
-	private JButton returnFrame;
+
 	private JButton captureButton;
 	private JButton playButton;
 	private JButton stopButton;
 	private JButton pauseButton;
+	private JButton forwardButton;
+	private JButton backwardButton;
+	private JButton recordButton;
+	
 	private JMenuItem menuItem;
 	private JPanel mainPanel;
 	private JPopupMenu thumbnailMenu;
@@ -86,6 +91,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	private JPanel framePanel = new JPanel();
 	
 	private int fps = 10;
+	CyFrame[] frames = null;
 	
 	//private NodeView[] currentFrame;
 	private HashMap<String, double[]> posFrame;
@@ -119,26 +125,42 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		captureButton.addActionListener(this);
 		captureButton.setActionCommand("capture");
 		
-		java.net.URL playIconURL = CyAnimatorDialog.class.getResource("img/play.png");
-		 ImageIcon playIcon = new ImageIcon();
-		if (playIconURL != null) {
-			playIcon = new ImageIcon(playIconURL);
-		}
-
-		playButton = new JButton("Play");
+		ImageIcon playIcon = createImageIcon("play.png", "Play Button");
+		playButton = new JButton(playIcon);
 		playButton.addActionListener(this);
 		playButton.setActionCommand("play");    
 
-		stopButton = new JButton("Stop");
+		ImageIcon stopIcon = createImageIcon("stop.png", "Stop Button");
+		stopButton = new JButton(stopIcon);
 		stopButton.addActionListener(this);
 		stopButton.setActionCommand("stop");
 
-		pauseButton = new JButton("Pause");
+		ImageIcon pauseIcon = createImageIcon("pause.png", "Pause Button");
+		pauseButton = new JButton(pauseIcon);
 		pauseButton.addActionListener(this);
 		pauseButton.setActionCommand("pause");
 		
-
-		speedSlider = new JSlider(1,2000);
+		ImageIcon forwardIcon = createImageIcon("fastForward.png", "Step Forward Button");
+		forwardButton = new JButton(forwardIcon);
+		forwardButton.addActionListener(this);
+		forwardButton.setActionCommand("step forward");
+		forwardButton.setToolTipText("Step Forward One Frame");
+		
+		
+		ImageIcon backwardIcon = createImageIcon("reverse.png", "Step Backward Button");
+		backwardButton = new JButton(backwardIcon);
+		backwardButton.addActionListener(this);
+		backwardButton.setActionCommand("step backward");
+		backwardButton.setToolTipText("Step Backward One Frame");
+		
+		ImageIcon recordIcon = createImageIcon("record.png", "Record Animation");
+		recordButton = new JButton(recordIcon);
+		recordButton.addActionListener(this);
+		recordButton.setActionCommand("record");
+		recordButton.setToolTipText("Record Animation");
+		
+		
+		speedSlider = new JSlider(1,60);
 		
 		speedSlider.addChangeListener(new SliderListener());
 		
@@ -150,6 +172,9 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		controlPanel.add(playButton);
 		controlPanel.add(pauseButton);
 		controlPanel.add(stopButton);
+		controlPanel.add(backwardButton);
+		controlPanel.add(forwardButton);
+		controlPanel.add(recordButton);
 		controlPanel.add(speedSlider);
 		
 		mainPanel.add(controlPanel);
@@ -184,6 +209,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		if(command.equals("play")){
 			int fps = getFrameRate();
+			
 			if(timer == null){ return; }
 			//1000ms in a second, so divided by frames per second gives ms interval 
 			timer.setDelay(1000/fps);
@@ -201,6 +227,27 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			timer.stop();
 		}
 		
+		if(command.equals("step forward")){
+			if(timer == null){ return; }
+			timer.stop();
+			frameIndex++;
+			frames[frameIndex].display();
+		}
+		
+		if(command.equals("step backward")){
+			if(timer == null){ return; }
+			timer.stop();
+			frameIndex--;
+			frames[frameIndex].display();
+		}
+		
+		if(command.equals("record")){
+			try{
+				recordAnimation();
+			}catch (Exception excp) {
+				System.out.println(excp.getMessage()); 
+			}
+		}
 		
 		Pattern frameID = Pattern.compile(".*([0-9]+)$");
 		Pattern interpolateCount = Pattern.compile("(.*)interpolate([0-9]+)_$");
@@ -259,25 +306,32 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 	}
 	
+	int frameIndex = 0;
 	
 	public void makeTimer(){
 	
-
+		frameIndex = 0;
+		
+		Interpolator lint = new Interpolator();
+		frames = lint.makeFrames(frameList);
+		
 		int delay = 1000/30; //milliseconds
+		
+		
 		ActionListener taskPerformer = new ActionListener() {
 
-			Interpolator lint = new Interpolator();
-			int i = 0;
-
-			CyFrame[] frames = lint.makeFrames(frameList); //lint.makeColorFrames(frameOne, frameTwo, 10);
+			
+			//int frameIndex = 0;
+			
+			//CyFrame[] frames = lint.makeFrames(frameList); //lint.makeColorFrames(frameOne, frameTwo, 10);
 
 
 			public void actionPerformed(ActionEvent evt) {
-				if(i == frames.length){ i = 0;}
+				if(frameIndex == frames.length){ frameIndex = 0;}
 				// System.out.println("Frame: "+i);
-				frames[i].display();
+				frames[frameIndex].display();
 				// System.out.println(timer.getDelay());
-				i++;
+				frameIndex++;
 			}
 		};
 
@@ -323,7 +377,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		JButton rightArrow = new JButton(rightIcon);
 		//rightArrow.setIcon(rightIcon);
 		//rightArrow.setSize(new Dimension(200,200));
-		 */
+		*/ 
 		
 		menuList = new ArrayList<JPopupMenu>();
 		//mainPanel.remove(framePanel);
@@ -415,7 +469,20 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 	}
 	
+	public void recordAnimation() throws IOException {
 	
+		String curDir = System.getProperty("user.dir");
+		System.out.println(curDir);
+		
+		File file = new File("outputImages");
+		file.mkdir();
+		OutputStream imageStream = new FileOutputStream(file);
+		
+		for(int i=0; i<frames.length; i++){
+			String name = "Frame_"+i;
+			ImageIO.write(frames[i].getFrameImage(), name, imageStream);
+		}
+	}
 	
 	public void propertyChange ( PropertyChangeEvent e ) {
 		if(e.getPropertyName().equals("ATTRIBUTES_CHANGED")){
@@ -487,7 +554,15 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	    }
 	}
 	
-	
+	protected ImageIcon createImageIcon(String path, String description) {
+		java.net.URL imgURL = getClass().getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL, description);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
+	}
 
 	
 }
