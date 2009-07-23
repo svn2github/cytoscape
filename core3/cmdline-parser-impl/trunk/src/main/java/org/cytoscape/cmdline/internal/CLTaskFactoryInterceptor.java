@@ -39,11 +39,11 @@ public class CLTaskFactoryInterceptor {
     	this.clp = colipr;
     	this.grabber = tfg;
     	
-    	time = grabber.getDifference();
-    	while(grabber.getDifference()-time<100){
-    		time = grabber.getDifference();
-    		System.out.println("Number of factory loaded = " + grabber.getNumberTasks());
-    	}
+//    	time = grabber.getDifference();
+//    	while(grabber.getDifference()-time<100){
+//    		time = grabber.getDifference();
+//    		System.out.println("Number of factory loaded = " + grabber.getNumberTasks());
+//    	}
 
     	taskMap = tfg.getTaskMap();
     	args = clp.getCommandLineCompleteArgs();
