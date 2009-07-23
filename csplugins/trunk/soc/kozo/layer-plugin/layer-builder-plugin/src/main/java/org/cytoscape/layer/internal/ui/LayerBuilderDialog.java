@@ -24,9 +24,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.model.CyNetwork;
@@ -39,8 +37,9 @@ import org.cytoscape.session.CyNetworkManager;
 public class LayerBuilderDialog extends JDialog {
 
 	private static final String NETWORK_TITLE = "name";
-	
-	private static final String[] COLUMN_NAMES = {"Layer 1", "Layer 2", "Connector Networks"};
+
+	private static final String[] COLUMN_NAMES = { "Layer 1", "Layer 2",
+			"Connector Networks" };
 
 	/*
 	 * Mandatory parameters
@@ -52,8 +51,9 @@ public class LayerBuilderDialog extends JDialog {
 	private DefaultListModel layeredNetworkListModel;
 
 	private Map<String, Long> title2IdMap;
-	
+
 	private LayerConnectionTableModel layerConnectionTableModel;
+	private NetworkNameTableCellRenderer networkNameTableCellRenderer;
 
 	/**
 	 * Creates new form NewJDialog
@@ -67,8 +67,11 @@ public class LayerBuilderDialog extends JDialog {
 		super(parent, modal);
 		this.manager = manager;
 		this.builder = builder;
-		
-		this.layerConnectionTableModel = new LayerConnectionTableModel(COLUMN_NAMES);
+
+		this.layerConnectionTableModel = new LayerConnectionTableModel(
+				COLUMN_NAMES);
+		this.networkNameTableCellRenderer = new NetworkNameTableCellRenderer(
+				manager);
 
 		title2IdMap = new HashMap<String, Long>();
 		buildListModels();
@@ -76,8 +79,10 @@ public class LayerBuilderDialog extends JDialog {
 
 		this.availableNetworkList.setModel(availableNetworkListModel);
 		this.layeredNetworkList.setModel(layeredNetworkListModel);
-		
+
 		this.layerConnectionTable.setModel(layerConnectionTableModel);
+		this.layerConnectionTable.setDefaultRenderer(Object.class,
+				networkNameTableCellRenderer);
 	}
 
 	private void buildListModels() {
@@ -401,7 +406,6 @@ public class LayerBuilderDialog extends JDialog {
 		layerOrderPanel.setBorder(javax.swing.BorderFactory
 				.createTitledBorder("Define Layer Order"));
 
-
 		DefaultCellEditor cellEditor = new DefaultCellEditor(
 				new ComboCellRenderer(layeredNetworkListModel));
 		// ComboCellRenderer layerOrderTableRenderer = new ComboCellRenderer();
@@ -601,7 +605,8 @@ public class LayerBuilderDialog extends JDialog {
 				.toArray());
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(0);
+		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(
+				0);
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
@@ -627,18 +632,18 @@ public class LayerBuilderDialog extends JDialog {
 
 		availableNetworkList.clearSelection();
 
-		Long[] row = {1l,  2l, 3l};
+		Long[] row = { 1l, 2l, 3l };
 		layerConnectionTableModel.addRow(row);
 		layerConnectionTable.repaint();
-		
-		
+
 		// sync list content and table column
 		JComboBox layerCb = new JComboBox(layeredNetworkListModel.toArray());
 		JComboBox connecterCb = new JComboBox(availableNetworkListModel
 				.toArray());
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(0);
+		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(
+				0);
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
@@ -669,9 +674,9 @@ public class LayerBuilderDialog extends JDialog {
 				.toArray());
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(0);
-		
-		
+		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(
+				0);
+
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
@@ -696,7 +701,8 @@ public class LayerBuilderDialog extends JDialog {
 				.toArray());
 		layerCb.setBorder(BorderFactory.createEmptyBorder());
 		connecterCb.setBorder(BorderFactory.createEmptyBorder());
-		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(0);
+		TableColumn layerCol = layerConnectionTable.getColumnModel().getColumn(
+				0);
 		// TableColumn connectorCol = layerOrderTable.getColumnModel()
 		// .getColumn(1);
 		// layerCol.setCellEditor(new DefaultCellEditor(layerCb));
