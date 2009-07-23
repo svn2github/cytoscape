@@ -6,6 +6,6 @@ Instructions for building the plugin:
 
 3- Modify lines 395 and 396 of src/GpuLayout.java, so that CY_PLUGIN_PATH points to your cytoscape plugin folder, and CUDA_LIB points to your cuda/lib folder.
 
-4- Run build.sh
+4- Run "ant copy_jar" command on the plugin folder. This will automatically put the plugin in the cytoscape plugin folder.
 
-5- To use the plugin, copy GpuLayout.jar and libGpuLayout.so to your Cytoscape plugin folder.
+

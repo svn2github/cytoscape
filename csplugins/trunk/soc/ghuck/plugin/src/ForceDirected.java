@@ -29,6 +29,7 @@ import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 import cytoscape.CyNode;
+import cytoscape.logger.CyLogger;
 
 import giny.model.GraphPerspective;
 import giny.model.Node;
@@ -82,6 +83,10 @@ public class ForceDirected extends AbstractGraphPartition
      */
     public ForceDirected() {
 	super();
+
+	logger = CyLogger.getLogger(ForceDirected.class);
+	// logger.setDebug(true);
+
 	layoutProperties = new LayoutProperties(getName());
 	initialize_properties();
     }
@@ -212,8 +217,9 @@ public class ForceDirected extends AbstractGraphPartition
      */
     public void layoutPartion (LayoutPartition part) {
 	
+
 	// Show message on the task monitor
-	taskMonitor.setStatus("Initializing");
+	taskMonitor.setStatus("Initializing, partition: " + part.getPartitionNumber());
 	
 	// The completed percentage is indeterminable
 	taskMonitor.setPercentCompleted(-1);
@@ -229,8 +235,8 @@ public class ForceDirected extends AbstractGraphPartition
 	List<LayoutNode> nodeList = part.getNodeList();
 
 	// Allocate memory for storing graph edges information (to be used as arguments for JNI call)
-	int[] AdjMatIndex = new int[numNodes + 1];
-	int[] AdjMatVals  = new int[2 * numEdges];	
+	int[] AdjMatIndex = new int[numNodes + 1 + 100];
+	int[] AdjMatVals  = new int[2 * numEdges + 1000];	
 	
 	// Create an iterator for processing the nodes
 	Iterator<LayoutNode> it = nodeList.iterator();
@@ -256,7 +262,7 @@ public class ForceDirected extends AbstractGraphPartition
 	    
 	    // Process neighbors of node, adding them in AdjMatVals
 	    Iterator<LayoutNode> neighborsIterator = neighbors.iterator();
-	    while (neighborsIterator.hasNext() ){
+	    while (neighborsIterator.hasNext()){
 
 		// Get the next neighbor
 		LayoutNode currentNeighbor = (LayoutNode) neighborsIterator.next();
@@ -274,6 +280,8 @@ public class ForceDirected extends AbstractGraphPartition
 		// Add current_neighbor to AdjMatVals "multiplicity" times
 		for (int j = 0; j < multiplicity; j++){
 		    
+		    logger.debug("Adding node " + currentNeighborPosition + " as neighbor of node " + currentNodePosition + " in position " + position);
+
 		    // Add alias of current_neighbor to AjdMatVals
 		    AdjMatVals[position] = currentNeighborPosition;
 		    
@@ -303,7 +311,7 @@ public class ForceDirected extends AbstractGraphPartition
 	// Check whether it has been canceled by the user
 	if (canceled)
 	    return;
-		
+
 	// Reset the "sys_paths" field of the ClassLoader to null.
 	Class clazz = ClassLoader.class;
 	Field field;
@@ -339,7 +347,7 @@ public class ForceDirected extends AbstractGraphPartition
 	    finally {
 		// Revert back the changes
 		field.set(clazz, original);
-		field.setAccessible(accessible);
+		field.setAccessible(accessible);   
 	    }
 	}
 	catch (Exception exception){
@@ -353,7 +361,7 @@ public class ForceDirected extends AbstractGraphPartition
 	    return;
 	
 	// Show message on the task monitor
-	taskMonitor.setStatus("Calling native code...");
+	taskMonitor.setStatus("Calling native code... Partition: " + part.getPartitionNumber());
 	
 	// Make native method call
 	float[][]node_positions = ComputeGpuLayout( AdjMatIndex, 
@@ -372,10 +380,10 @@ public class ForceDirected extends AbstractGraphPartition
 	    return;
 	
 	// Update Node position
-	part.resetNodes(); // reset the nodes so we get the new average location
+	//part.resetNodes(); // reset the nodes so we get the new average location
 
 	// Iterate over all nodes
-	currentNodePosition = 0;
+	int currentNode = 0;
 
 	// Create an iterator for processing the nodes
 	Iterator<LayoutNode> iterator2 = nodeList.iterator();
@@ -386,16 +394,16 @@ public class ForceDirected extends AbstractGraphPartition
 	    LayoutNode node = (LayoutNode) iterator2.next();
 		
 	    // Set node's X and Y positions
-	    node.setX(node_positions[currentNodePosition][0]);
-	    node.setY(node_positions[currentNodePosition][1]);
+	    node.setX(node_positions[currentNode][0]);
+	    node.setY(node_positions[currentNode][1]);
 
 	    // Move node to desired location
 	    part.moveNodeToLocation(node);
 
-	    currentNodePosition++;
+	    currentNode++;
 	}
 	
-	return;
+	//return;
     }// layoutPartion(LayoutPartition part)
     
     
