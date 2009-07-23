@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import giny.model.Edge;
 import giny.model.Node;
 
 public class CircularCladogram extends AbstractLayout{
@@ -82,7 +84,7 @@ public class CircularCladogram extends AbstractLayout{
 	 * for this layout.
 	 */
 	public  String getName() {
-		return "radial_cladogram";
+		return "circular_cladogram";
 	}
 
 	/**
@@ -90,7 +92,7 @@ public class CircularCladogram extends AbstractLayout{
 	 * of the layout
 	 */
 	public  String toString(){
-		return "Radial Cladogram Layout";
+		return "Circular Cladogram Layout";
 	}
 
 
@@ -122,6 +124,21 @@ public class CircularCladogram extends AbstractLayout{
 				
 			
 		}
+		
+		// Bend each edge to make it look rectangular
+
+		List<Edge> allEdges = network.edgesList();
+		Iterator<Edge> edgesIterator = allEdges.iterator();
+
+		while(edgesIterator.hasNext())
+		{
+
+			Edge edge = edgesIterator.next();
+			
+			commonFunctions.addCircularBends(network, networkView, edge);
+		}
+
+
 	
 	}
 	

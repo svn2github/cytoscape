@@ -1,4 +1,5 @@
 package org.cytoscape.phylotree.layout;
+import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
@@ -9,6 +10,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import giny.model.Edge;
 import giny.model.Node;
+import giny.view.Bend;
 
 public class CommonFunctions {
 	
@@ -271,6 +273,60 @@ public class CommonFunctions {
 		return numLeaves;
 	}
 	
+	/**
+	 * Adds the bends to make the edges look rectangular
+	 */
+	public void addRectangularBends(CyNetwork network, CyNetworkView networkView, Edge edge)
+	{
+		
+			Node source = edge.getSource();
+			Node target = edge.getTarget();
+			
+			// Check if the target is a reticulate node (indegree>1)
+			// If yes, don't bend the edge
+			if(network.getInDegree(target.getRootGraphIndex(), false) <= 1 && source.getRootGraphIndex()!=target.getRootGraphIndex())
+			{
+				// For each edge, get the source node's X position
+				double cornerX = networkView.getNodeView(source).getXPosition(); 
+
+				// For each edge, get the target node's Y position
+				double cornerY = networkView.getNodeView(target).getYPosition();
+
+
+					// Bend the edge
+					Bend rectangularBend = networkView.getEdgeView(edge).getBend();
+					rectangularBend.addHandle(new Point2D.Double(cornerX, cornerY));
+			
+			}
+	}
 	
+	/**
+	 * Adds the bends to make the edges look circular
+	 */
+	public void addCircularBends(CyNetwork network, CyNetworkView networkView, Edge edge)
+	{
+		
+			Node source = edge.getSource();
+			Node target = edge.getTarget();
+			
+			// Check if the target is a reticulate node (indegree>1)
+			// If yes, don't bend the edge
+			if(network.getInDegree(target.getRootGraphIndex(), false) <= 1 && source.getRootGraphIndex()!=target.getRootGraphIndex())
+			{
+
+
+				// Get the radius of the source
+				double radius = 50.0*(getLevel(network, getTreeRoot(network)) - getLevel(network, source));
+				
+				// And the angle of the target
+				double angle = Math.atan2(networkView.getNodeView(target).getYPosition(), networkView.getNodeView(target).getXPosition());
+				
+				//Bend the edge
+				Bend circularBend = networkView.getEdgeView(edge).getBend();
+				
+				circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
+				
+			}
+	}
 	
 }

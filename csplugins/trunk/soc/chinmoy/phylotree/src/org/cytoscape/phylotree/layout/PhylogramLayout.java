@@ -11,6 +11,7 @@ import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.cytoscape.phylotree.layout.CommonFunctions;
 
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -39,6 +40,8 @@ public class PhylogramLayout extends AbstractLayout {
 	private String[] phylogramTypes = {"Rectangular", "Slanted", "Radial","Circular"};
 	
 	private double scalingFactor;
+	
+	private CommonFunctions commonFunctions; 
 
 	public PhylogramLayout()
 	{
@@ -58,7 +61,7 @@ public class PhylogramLayout extends AbstractLayout {
 //				(Object)10.0, (Object)200.0, Tunable.USESLIDER));
 		
 		layoutProperties.add(new Tunable("edge_scaling", "Edge scaling",
-                Tunable.DOUBLE, new Double(scalingFactor)));
+                Tunable.DOUBLE, new Double(scalingFactor = 100.0)));
 		
 		layoutProperties.initializeProperties();
 
@@ -162,23 +165,28 @@ public class PhylogramLayout extends AbstractLayout {
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
+		
+		// Intialize the common functions
+		commonFunctions = new CommonFunctions();
+		
+		
 		// Find the root of the tree
-		Node root = getTreeRoot();
-
+		Node root = commonFunctions.getTreeRoot(network);
 		
 		
 		// Traverse and set each node's Y co-ordinate starting from the root
-		traverse(root);
+		//List<Node> l = commonFunctions.postOrderTraverse(network, root);
+		
 		
 		//Traverse and set each node's X co-ordinate starting form the root
 		
-		traversePreOrder(root);
+		//List<Node> p = commonFunctions.preOrderTraverse(network, root);
 		
 		// If rectangular format is preferred, edit the edge shape by adding corner nodes
 		if(rectangular || circular)
 		{
 
-			addRectangularBends();
+//			addRectangularBends();
 
 		}
 		
@@ -187,118 +195,9 @@ public class PhylogramLayout extends AbstractLayout {
 
 	// Methods used by construct //
 
-	/**
-	 * getTreeRoot()
-	 * Finds the root of the tree and returns it
-	 */
-	private Node getTreeRoot()
-	{
-		// Get all nodes
-		List<Node> nodesList = network.nodesList();
-		Iterator <Node> nodesListIterator = nodesList.iterator();
-
-		while(nodesListIterator.hasNext())
-		{
-			Node node = nodesListIterator.next();
-
-			// Get all directed edges incident on the node 
-			int[] incomingEdgesArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false);
-
-			// If no incoming edges, it probably is the root of a tree
-			if(incomingEdgesArray.length == 0)
-				return node;
-		}
-
-		return null;
-
-	}
-
-	/**
-	 * traverse(Node)
-	 * Recursively performs a post-order traversal of tree from node arg
-	 * Invokes positioning methods for nodes
-	 */
-
-	private void traverse(Node node)
-	{
-
-		// Find all outgoing edges
-		int[] outgoingEdgesArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
-
-
-		if(outgoingEdgesArray.length!=0)
-		{
-			// Traverse every child
-			for(int i = 0; i<outgoingEdgesArray.length; i++)	
-			{
-				Edge edge = network.getEdge(outgoingEdgesArray[i]);
-				networkView.getEdgeView(edge).clearBends();
-				
-				traverse(edge.getTarget());
-			}
-			// Traverse the parent last
-			if(rectangular || slanted)
-				positionYInternalNode(node);
-			else if(radial||circular)
-				setAngleInternalNode(node);
-			
-			
-			
-		}
-		// Base case: if node is a leaf
-		else if(outgoingEdgesArray.length == 0)
-		{
-			if(rectangular || slanted)
-				positionYLeaf(node);
-			else if(radial||circular)
-				setAngleLeaf(node);
-		}
-
-
-	}
 	
-	/**
-	 * traversePreOrder(Node)
-	 * Recursively performs a post-order traversal of tree from node arg
-	 * Invokes positioning methods for nodes
-	 */
-
-	private void traversePreOrder(Node node)
-	{
-
-		// Find all outgoing edges
-		int[] outgoingEdgesArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
 
 
-		if(outgoingEdgesArray.length!=0)
-		{
-			if(rectangular || slanted)
-				positionX(node);
-			else if(radial||circular)
-				setRadius(node);
-
-			
-			// Traverse every child
-			for(int i = 0; i<outgoingEdgesArray.length; i++)	
-			{
-				Edge edge = network.getEdge(outgoingEdgesArray[i]);
-
-				traversePreOrder(edge.getTarget());
-			}
-			// Traverse the parent last
-		}
-		// Base case: if node is a leaf
-		else if(outgoingEdgesArray.length == 0)
-		{
-			if(rectangular || slanted)
-				positionX(node);
-			else if(radial||circular)
-				setRadius(node);
-
-		}
-
-
-	}
 
 	/**
 	 * positionLeaf(Node)
@@ -319,11 +218,10 @@ public class PhylogramLayout extends AbstractLayout {
 	{
 		// Find the child horizontally nearest
 		// Get the leaves of the subtree rooted at node
-		List<Node> subtreeLeaves = new LinkedList<Node>();
-		getLeaves(node, subtreeLeaves);
+		List<Node> subtreeLeaves = commonFunctions.getLeaves(network, node);
 
 		// Find the vertical midpoint of the subtree rooted at node
-		double midpointY = findSubtreeYMidPoint(subtreeLeaves);
+		double midpointY = commonFunctions.findSubtreeYMidPoint(networkView, subtreeLeaves);
 
 		// Set the positions
 		networkView.getNodeView(node).setYPosition(midpointY,true);
@@ -351,9 +249,9 @@ public class PhylogramLayout extends AbstractLayout {
 		Edge edge = network.getEdge(incomingEdgesArray[0]);
 		double parentX = networkView.getNodeView(edge.getSource()).getXPosition();
 		
-		double nodeX = parentX + (scalingFactor*getBranchLength(node));
+		double nodeX = parentX + (scalingFactor*commonFunctions.getBranchLength(network, node));
 		
-		networkView.getNodeView(node).setXPosition(nodeX, false);
+		networkView.getNodeView(node).setXPosition(nodeX, true);
 		
 		}
 		
@@ -363,85 +261,12 @@ public class PhylogramLayout extends AbstractLayout {
 	{
 		
 	}
-	/**
-	 * getLeaves(Node, List<Node>)
-	 * Recursively populates List with leaves on a path from Node
-	 */
-	private void getLeaves(Node node, List<Node> list)
-	{
-		// Get all children
-		int[] edges = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
-		for(int i = 0; i<edges.length; i++)
-		{
-			Edge e = network.getEdge(edges[i]);
-			Node child = e.getTarget();
-			if(network.getAdjacentEdgeIndicesArray(child.getRootGraphIndex(), false, false, true).length == 0)
-			{
-				// If child is a leaf, add to list
-				list.add(child);	
-			}
-			else
-			{	
-				// Otherwise, probe the subtree rooted at the child
-				
-				getLeaves(child,list);
-			}
-
-		}
-	}
+	
 
 
 
-	/**
-	 * Find the vertical midpoint of a list of leaves
-	 */
-	private double findSubtreeYMidPoint(List<Node> leaves)
-	{
 
-		Iterator<Node> it = leaves.iterator();
-		Node firstLeaf = it.next();
-		double highestY,lowestY;
-		highestY = lowestY = networkView.getNodeView(firstLeaf).getYPosition();
-		
-		
-
-		while(it.hasNext())
-		{
-			Node leaf = it.next();
-			double leafY = networkView.getNodeView(leaf).getYPosition();
-			if(leafY<lowestY)
-			{
-				lowestY = leafY;
-
-			}
-			if(leafY>highestY)
-			{
-				highestY = leafY;
-
-			}	
-		}
-		return (highestY+lowestY)/2.0;
-	}
-
-	private double getBranchLength(Node node)
-	{
-
-		// Find all outgoing edges
-		int[] incomingEdgesArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false);
-
-		Double length = 0.0;
-		if(incomingEdgesArray.length!=0)
-		{
-			Edge edge = network.getEdge(incomingEdgesArray[0]);
-
-			CyAttributes att = Cytoscape.getEdgeAttributes();
-			//Get length
-			length = att.getDoubleAttribute(edge.getIdentifier(), "branchLength");
-
-
-		}
-		return length;
-	}
+	
 	
 	/**
 	 * Adds the bends to make the edges look rectangular
@@ -460,9 +285,10 @@ public class PhylogramLayout extends AbstractLayout {
 
 			Node source = edge.getSource();
 			Node target = edge.getTarget();
+			
 			// Check if the target is a reticulate node (indegree>1)
 			// If yes, don't bend the edge
-			if(network.getInDegree(target.getRootGraphIndex(), false) <= 1)
+			if(network.getInDegree(target.getRootGraphIndex(), false) <= 1 && source.getRootGraphIndex()!=target.getRootGraphIndex())
 			{
 				// For each edge, get the source node's X position
 				double cornerX = networkView.getNodeView(source).getXPosition(); 
@@ -480,7 +306,7 @@ public class PhylogramLayout extends AbstractLayout {
 				else if(circular)
 				{
 					// Get the radius of the source
-					double radius = (INTERNODE_DISTANCE/2.0)*(getLevel(getTreeRoot()) - getLevel(source));
+					double radius = (INTERNODE_DISTANCE/2.0)*(commonFunctions.getLevel(network, commonFunctions.getTreeRoot(network)) - commonFunctions.getLevel(network, source));
 					
 					// And the angle of the target
 					double angle = Math.atan2(networkView.getNodeView(target).getYPosition(), networkView.getNodeView(target).getXPosition());
@@ -497,30 +323,5 @@ public class PhylogramLayout extends AbstractLayout {
 		}
 	}
 	
-	/**
-	 * Find the level of the node (Leaves are level 0)
-	 * @param node - the node whose level is to be found
-	 * @return the level of the node
-	 */
-	private int getLevel(Node node)
-	{
-		if(network.getOutDegree(node, false) == 0)
-			return 0;
-		else
-		{
-			int max = 0;
-			int [] outGoingEdges = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
-			for (int i = 0; i < outGoingEdges.length; i++)
-			{
-				int level = getLevel(network.getEdge(outGoingEdges[i]).getTarget()); 
-				if(level > max)
-					max = level;
 
-			}
-
-			return max+1;
-		}
-	}
-
-	
 }

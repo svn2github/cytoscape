@@ -93,6 +93,9 @@ public class PhylipTreeImpl implements Phylotree {
           word = word+str.charAt(i);
           i++;
           
+          if(i>=str.length())
+        	  break;
+          
         }
         
         // Add the word to the list
@@ -124,7 +127,7 @@ public class PhylipTreeImpl implements Phylotree {
       
 
       // End of the tree string
-      else if(str.charAt(i)==';')
+      else if(i<str.length() && str.charAt(i)==';')
         break;
       
       // Otherwise add the special character to the list
@@ -133,6 +136,9 @@ public class PhylipTreeImpl implements Phylotree {
           list.add(""+str.charAt(i));
         
         i++;
+        
+        if(i>=str.length())
+        	break;
       }
       
     }
