@@ -116,10 +116,10 @@ public class LayerBuilderDialog extends JDialog {
 		availableNetworkPanel = new javax.swing.JPanel();
 		availableNetworkScrollPane = new javax.swing.JScrollPane();
 		availableNetworkList = new javax.swing.JList();
-		moveAllAvailableNetworkButton = new javax.swing.JButton();
-		moveSelectedAvailableNetworkButton = new javax.swing.JButton();
-		moveSelectedIntegratedNetworkButton = new javax.swing.JButton();
-		moveAllIntegratedNetworkButton = new javax.swing.JButton();
+		addAllAvailableNetworkButton = new javax.swing.JButton();
+		addSelectedAvailableNetworkButton = new javax.swing.JButton();
+		removeSelectedIntegratedNetworkButton = new javax.swing.JButton();
+		removeAllIntegratedNetworkButton = new javax.swing.JButton();
 		layerOrderPanel = new javax.swing.JPanel();
 		layerOrderScrollPane = new javax.swing.JScrollPane();
 		layerConnectionTable = new javax.swing.JTable();
@@ -245,35 +245,35 @@ public class LayerBuilderDialog extends JDialog {
 												181, Short.MAX_VALUE)
 										.addContainerGap()));
 
-		moveAllAvailableNetworkButton.setText(">>");
-		moveAllAvailableNetworkButton
+		addAllAvailableNetworkButton.setText(">>");
+		addAllAvailableNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						moveAllAvailableNetworkButtonActionPerformed(evt);
+						addAllAvailableNetworkButtonActionPerformed(evt);
 					}
 				});
 
-		moveSelectedAvailableNetworkButton.setText(">");
-		moveSelectedAvailableNetworkButton
+		addSelectedAvailableNetworkButton.setText(">");
+		addSelectedAvailableNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						addSelectedAvailableNetworkButtonActionPerformed(evt);
 					}
 				});
 
-		moveSelectedIntegratedNetworkButton.setText("<");
-		moveSelectedIntegratedNetworkButton
+		removeSelectedIntegratedNetworkButton.setText("<");
+		removeSelectedIntegratedNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						removeSelectedIntegratedNetworkButtonActionPerformed(evt);
 					}
 				});
 
-		moveAllIntegratedNetworkButton.setText("<<");
-		moveAllIntegratedNetworkButton
+		removeAllIntegratedNetworkButton.setText("<<");
+		removeAllIntegratedNetworkButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						moveAllIntegratedNetworkButtonActionPerformed(evt);
+						removeAllIntegratedNetworkButtonActionPerformed(evt);
 					}
 				});
 
@@ -293,22 +293,22 @@ public class LayerBuilderDialog extends JDialog {
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.TRAILING)
 														.add(
-																moveAllAvailableNetworkButton,
+																addAllAvailableNetworkButton,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																77,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 														.add(
-																moveSelectedAvailableNetworkButton,
+																addSelectedAvailableNetworkButton,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																77,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 														.add(
-																moveSelectedIntegratedNetworkButton,
+																removeSelectedIntegratedNetworkButton,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																77,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 														.add(
-																moveAllIntegratedNetworkButton,
+																removeAllIntegratedNetworkButton,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																77,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -353,21 +353,21 @@ public class LayerBuilderDialog extends JDialog {
 																				48,
 																				48)
 																		.add(
-																				moveAllAvailableNetworkButton)
+																				addAllAvailableNetworkButton)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
 																		.add(
-																				moveSelectedAvailableNetworkButton)
+																				addSelectedAvailableNetworkButton)
 																		.add(
 																				43,
 																				43,
 																				43)
 																		.add(
-																				moveSelectedIntegratedNetworkButton)
+																				removeSelectedIntegratedNetworkButton)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
 																		.add(
-																				moveAllIntegratedNetworkButton))
+																				removeAllIntegratedNetworkButton))
 														.add(
 																DefineLayerPanelLayout
 																		.createSequentialGroup()
@@ -583,7 +583,7 @@ public class LayerBuilderDialog extends JDialog {
 		// TODO add your handling code here:
 	}// GEN-LAST:event_OptionButtonActionPerformed
 
-	private void moveAllAvailableNetworkButtonActionPerformed(
+	private void addAllAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllAvailableNetworkButtonActionPerformed
 
 		// move list content
@@ -679,7 +679,7 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 
-	private void moveAllIntegratedNetworkButtonActionPerformed(
+	private void removeAllIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllIntegratedNetworkButtonActionPerformed
 
 		Enumeration<?> layeredNetworks = layeredNetworkListModel.elements();
@@ -720,10 +720,10 @@ public class LayerBuilderDialog extends JDialog {
 	private javax.swing.JPanel layerOrderPanel;
 	private javax.swing.JScrollPane layerOrderScrollPane;
 	private javax.swing.JTable layerConnectionTable;
-	private javax.swing.JButton moveAllAvailableNetworkButton;
-	private javax.swing.JButton moveAllIntegratedNetworkButton;
-	private javax.swing.JButton moveSelectedAvailableNetworkButton;
-	private javax.swing.JButton moveSelectedIntegratedNetworkButton;
+	private javax.swing.JButton addAllAvailableNetworkButton;
+	private javax.swing.JButton removeAllIntegratedNetworkButton;
+	private javax.swing.JButton addSelectedAvailableNetworkButton;
+	private javax.swing.JButton removeSelectedIntegratedNetworkButton;
 	private javax.swing.JButton optionButton;
 	private javax.swing.JLabel titleLabel;
 	private javax.swing.JPanel titlePanel;
