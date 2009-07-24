@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
-	
 
-    <!-- Import Osgi references -->
-    <osgi:reference id="commandLineProviderServiceRef"
-        interface="org.cytoscape.cmdline.launcher.CommandLineProvider" />
 
     <osgi:reference id="taskManagerServiceRef"
         interface="org.cytoscape.work.TaskManager" />
 
     <osgi:reference id="tunableInterceptorServiceRef"
         interface="org.cytoscape.work.TunableInterceptor" />
-        
-<!--    <osgi:reference id="taskFactoryServiceRef" interface="org.cytoscape.work.TaskFactory" depends-on="taskFactoryCLSet"/>-->
-    
 
-    <!-- Set -->
+	<osgi:reference id="commandLineProviderServiceRef"
+		interface="org.cytoscape.cmdline.launcher.CommandLineProvider" />
+
     <osgi:set id="taskFactoryCLSet" interface="org.cytoscape.work.TaskFactory" 
               cardinality="1..N">
         <osgi:listener bind-method="addTaskFactory" unbind-method="removeTaskFactory" 
                        ref="taskFactoryGrabber" />
     </osgi:set>
 
+	<osgi:service id="parserStarterService" ref="parserStarter"
+		interface="org.springframework.osgi.context.event.OsgiBundleApplicationContextListener">
+	</osgi:service>
 </beans>

@@ -38,12 +38,19 @@ public class CLTaskFactoryInterceptor {
     CLTaskFactoryInterceptor(CommandLineProvider colipr, TaskFactoryGrabber tfg) {
     	this.clp = colipr;
     	this.grabber = tfg;
-    	
-//    	time = grabber.getDifference();
-//    	while(grabber.getDifference()-time<100){
-//    		time = grabber.getDifference();
-//    		System.out.println("Number of factory loaded = " + grabber.getNumberTasks());
-//    	}
+/*    
+		int stable = 0;
+		int numTasks = 0;
+    	while(stable < 100000) {
+			int tmpTasks = grabber.getNumberTasks();
+			if (numTasks == tmpTasks) {
+				stable++;
+			} else {
+				numTasks = tmpTasks;
+				stable = 0;
+			}
+		}
+		*/
 
     	taskMap = tfg.getTaskMap();
     	args = clp.getCommandLineCompleteArgs();
@@ -103,12 +110,7 @@ public class CLTaskFactoryInterceptor {
                     System.out.println("The Task \"" + argsString + "\" doesn't exist : Check the options");
                     printHelp(optionsOfTasks);
                     System.exit(0);
-                /*} else if (!argsString.startsWith("-")) {
-                    taskSpecificArgs.get(lastArg).get(lastIdx).concat(" " + argsString);
-                    taskSpecificArgs.get(lastArg).set(lastIdx,taskSpecificArgs.get(lastArg).get(lastIdx).concat(" " + argsString));
-                    lastIdx++;*/
-
-                    // taskArguments.add(lastArg);
+                    //System.out.println("SHOULD CALL EXIT - print options of tasks"); 
                 } else {
                 	tasksWithTheirArgs.get(lastArg).add(argsString);
                 }
@@ -147,6 +149,7 @@ public class CLTaskFactoryInterceptor {
             System.err.println("Parsing command line failed: " +pe.getMessage());
             printHelp(optionsOfTasks);
             System.exit(1);
+            //System.out.println("SHOULD CALL EXIT - parser failed"); 
         }
     }
 
@@ -155,6 +158,7 @@ public class CLTaskFactoryInterceptor {
             System.out.println("The General Help has been called");
             printHelp(optionsOfTasks);
             System.exit(0);
+            //System.out.println("SHOULD CALL EXIT - called general help"); 
         }
 
         for (String st : listOfChoosenTasks) {
@@ -190,6 +194,7 @@ public class CLTaskFactoryInterceptor {
         if (args.length == 0) {
             printHelp(optionsOfTasks);
             System.exit(0);
+            //System.out.println("SHOULD CALL EXIT - no args"); 
         }
     }
 
@@ -199,9 +204,4 @@ public class CLTaskFactoryInterceptor {
         formatter.printHelp("java -Xmx512M -jar cytoscape.jar [Options]",
             "\nHere are the different taskFactories implemented :", options, "");
     }
-
-//	public void frameworkEvent(FrameworkEvent event) {
-//		if(event.getType() == FrameworkEvent.STARTED)
-//			executeParsingActions();
-//	}
 }

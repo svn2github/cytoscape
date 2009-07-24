@@ -10,7 +10,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 
-class TFWrapper {	
+public class TFWrapper {	
 	TaskFactory factory;
 	TaskManager taskManager;
 	TunableInterceptor ti;
@@ -24,15 +24,15 @@ class TFWrapper {
 		System.out.println("Name of the task is :" + name);
 	}
 	
-   	Option getOption() {
+   	public Option getOption() {
            return new Option(name,false,name);
    	}
    	
-   	String getName() { 
+   	public String getName() { 
 		return "-"+name;
 	}
    	
-   	void checkFactory(CommandLine line,Map<String,List<String>> map, List<String> list) {	
+   	public void checkFactory(CommandLine line,Map<String,List<String>> map, List<String> list) {	
 //   		System.out.println("\n \n ########### factory loaded = "+name+" ###########");
 //       		String tFactoryName = getName();
 //       		List<String> lst = new ArrayList<String>();	

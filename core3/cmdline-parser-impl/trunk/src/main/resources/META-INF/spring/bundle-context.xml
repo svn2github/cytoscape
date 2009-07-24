@@ -3,10 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
-    http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+       http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+        http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util-2.5.xsd
+        http://www.springframework.org/schema/lang
+            http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+        http://www.springframework.org/schema/osgi
+            http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
 
 	<!-- regular spring configuration file defining the beans for this
 		bundle. We've kept the osgi definitions in a separate 
@@ -14,15 +23,15 @@
 		for integration testing outside of an OSGi environment -->
 
 	<context:annotation-config/>
-	
+
     <bean name="taskFactoryGrabber" class="org.cytoscape.cmdline.internal.TaskFactoryGrabber">
         <constructor-arg ref="taskManagerServiceRef"/>
         <constructor-arg ref="tunableInterceptorServiceRef"/>
     </bean>
-   
-    <bean name="clTaskFactoryInterceptor" class="org.cytoscape.cmdline.internal.CLTaskFactoryInterceptor">
-        <constructor-arg ref="commandLineProviderServiceRef"/>
-        <constructor-arg ref="taskFactoryGrabber"/>
-    </bean>
 
+	<bean id="parserStarter" 
+	      class="org.cytoscape.cmdline.internal.ParserStarter">
+		<constructor-arg ref="taskFactoryGrabber" />
+		<constructor-arg ref="commandLineProviderServiceRef" />
+	</bean>
 </beans>
