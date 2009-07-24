@@ -598,7 +598,7 @@ public class LayerBuilderDialog extends JDialog {
 		availableNetworkListModel.clear();
 		
 		// If only one network, return. 
-		if(availableNetworkListModel.size()>1)
+		if(layeredNetworkListModel.size()<2)
 			return;
 		
 		// Build table if necessary
