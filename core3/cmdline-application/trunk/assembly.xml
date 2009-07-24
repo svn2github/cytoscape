@@ -14,6 +14,7 @@
         <unpack>false</unpack>
 		<attachmentClassifier>jar-with-dependencies</attachmentClassifier>
 		<includeDependencies>false</includeDependencies>
+		<outputFileNameMapping>headless-cytoscape.${module.extension}</outputFileNameMapping>
       </binaries>
     </moduleSet>
     <moduleSet>
