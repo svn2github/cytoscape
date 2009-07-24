@@ -13,7 +13,6 @@ import javax.media.opengl.GL;
 import javax.swing.Icon;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon;
@@ -21,7 +20,7 @@ import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 
 import processing.core.PApplet;
 import processing.opengl.PGraphicsOpenGL;
-import toxi.geom.Rect;
+import toxi.geom.Vec3D;
 
 /**
  * Wrapper for JOGL-based Cube object.
@@ -29,7 +28,7 @@ import toxi.geom.Rect;
  * @author kono
  *
  */
-public class GCube implements CyDrawable {
+public class Cube extends Vec3D implements CyDrawable {
 
 	private static final long serialVersionUID = -3971892445041605908L;
 	private static final String DISPLAY_NAME = "Cube";
@@ -53,20 +52,33 @@ public class GCube implements CyDrawable {
 	private GL gl;
 	private PGraphicsOpenGL pgl;
 	
-	public GCube(PApplet parent, View<?> view) {
+	
+	private float size;
+	private float r, g, b, alpha;
+	 
+	
+	public Cube(PApplet parent) {
+		super();
 		this.p = parent;
-		this.pgl = (PGraphicsOpenGL) p.g;
-		gl = pgl.gl;
-		
+		size = 20;
 	}
 	
-	public GCube(ProcessingVisualLexicon lexicon) {
+	public Cube(ProcessingVisualLexicon lexicon) {
 		
 		this.lexicon = lexicon;
 		compatibleDataType = new HashSet<Class<?>>();
 		compatibleDataType.add(CyNode.class);
 		
 		this.lexicon.registerSubLexicon(this.getClass(), sub);
+		
+		r = 100;
+		g = 200;
+		b = 100;
+		alpha = 150;
+		
+		this.rotateX(p.random(p.PI));
+		this.rotateY(p.random(p.PI));
+		this.rotateZ(p.random(p.PI));
 	}
 
 
@@ -89,7 +101,10 @@ public class GCube implements CyDrawable {
 	}
 
 	public void draw() {
-		p.box(20);
+		p.pushMatrix();
+		p.translate(x, y, z);
+		p.box(size);
+		p.popMatrix();
 	}
 
 	public List<CyDrawable> getChildren() {

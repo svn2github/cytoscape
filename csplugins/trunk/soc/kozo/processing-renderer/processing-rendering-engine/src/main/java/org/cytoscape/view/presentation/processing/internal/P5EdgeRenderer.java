@@ -1,30 +1,30 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.*;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
-import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.*;
 
-import org.cytoscape.view.presentation.processing.internal.shape.Cube;
-import org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon;
-
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.VisualItemRenderer;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.internal.shape.Cube;
+import org.cytoscape.view.presentation.processing.internal.shape.Line;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 
 import processing.core.PApplet;
 
-public class P5NodeRenderer implements VisualItemRenderer<View<CyNode>> {
-
-	private PApplet p;
+public class P5EdgeRenderer implements VisualItemRenderer<View<CyEdge>>{
+	
+private PApplet p;
 	
 	private final VisualLexicon nodeLexicon;
 	
-	public P5NodeRenderer(PApplet p) {
+	public P5EdgeRenderer(PApplet p) {
 		this.p = p;
 		nodeLexicon = buildLexicon();
 	}
@@ -32,7 +32,7 @@ public class P5NodeRenderer implements VisualItemRenderer<View<CyNode>> {
 	private VisualLexicon buildLexicon() {
 		final VisualLexicon sub = new BasicVisualLexicon();
 		System.out.println("%%%%%%%%%%%%% Building VP1");
-		sub.addVisualProperty(NODE_COLOR);
+		sub.addVisualProperty(EDGE_COLOR);
 		
 		sub.addVisualProperty(NODE_X_LOCATION);
 		sub.addVisualProperty(NODE_Y_LOCATION);
@@ -52,11 +52,15 @@ public class P5NodeRenderer implements VisualItemRenderer<View<CyNode>> {
 		return nodeLexicon;
 	}
 
-	public CyDrawable render(View<CyNode> view) {
-		CyDrawable style = view.getVisualProperty(NODE_STYLE);
+	public CyDrawable render(View<CyEdge> view) {
+		CyDrawable style = view.getVisualProperty(EDGE_STYLE);
 		
 		if(style == null) 
-			style = new Cube(p);
+			style = new Line(p);
+		
+		view.getSource().getSource();
+		view.getSource().getTarget();
+		
 		
 		Cube cube = (Cube) style;
 		cube.x = view.getVisualProperty(NODE_X_LOCATION).floatValue();
