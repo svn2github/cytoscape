@@ -10,7 +10,7 @@ public class PhyloFileDialog extends JDialog{
 
 	PhyloTreeImportAction parent;
 	File selectedFile = null;
-	String format = "Phylip"; // this is the only supported format for now
+	String format = "phylip"; // default
 	   /** Creates new form PhyloFileDialog */
     public PhyloFileDialog(PhyloTreeImportAction pParent) {
         super(Cytoscape.getDesktop(), true);
@@ -18,7 +18,7 @@ public class PhyloFileDialog extends JDialog{
         initComponents();
         
         buttonGroup1.add(rbtPhylip);
-        buttonGroup1.add(rbtOther);
+        buttonGroup1.add(rbtPhyloXML);
         
         this.setTitle("Select Phylogenetic Tree File");
         this.setSize(400,200);
@@ -42,7 +42,7 @@ public class PhyloFileDialog extends JDialog{
         jPanel1 = new javax.swing.JPanel();
         lbFormat = new javax.swing.JLabel();
         rbtPhylip = new javax.swing.JRadioButton();
-        rbtOther = new javax.swing.JRadioButton();
+        rbtPhyloXML = new javax.swing.JRadioButton();
         pnlButtons = new javax.swing.JPanel();
         btnOK = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
@@ -85,20 +85,18 @@ public class PhyloFileDialog extends JDialog{
         rbtPhylip.setSelected(true);
         rbtPhylip.setText("Phylip");
         rbtPhylip.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        rbtPhylip.setEnabled(false);
         rbtPhylip.setMargin(new java.awt.Insets(0, 0, 0, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 20);
         jPanel1.add(rbtPhylip, gridBagConstraints);
 
-        rbtOther.setText("Other");
-        rbtOther.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        rbtOther.setEnabled(false);
-        rbtOther.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        rbtPhyloXML.setText("phyloXML");
+        rbtPhyloXML.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        rbtPhyloXML.setMargin(new java.awt.Insets(0, 0, 0, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
-        jPanel1.add(rbtOther, gridBagConstraints);
+        jPanel1.add(rbtPhyloXML, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
@@ -135,6 +133,8 @@ public class PhyloFileDialog extends JDialog{
         pack();
     }// </editor-fold>                        
 
+    
+    
     private void btnFileActionPerformed(java.awt.event.ActionEvent evt) {                                        
     	JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
 		chooser.setAcceptAllFileFilterUsed(false);
@@ -152,9 +152,18 @@ public class PhyloFileDialog extends JDialog{
     }                                         
 
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {                                      
+    	if (rbtPhyloXML.isSelected()){
+    		this.format = "phyloxml";
+    	}
+    	else if (rbtPhylip.isSelected()){
+    		this.format = "phylip";
+    	}
+    	
     	this.dispose();
+    	
        	parent.ImportTreeFromFile(this.selectedFile, this.format);	
     }                                     
+
     // Variables declaration - do not modify                     
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnFile;
@@ -164,8 +173,8 @@ public class PhyloFileDialog extends JDialog{
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lbFormat;
     private javax.swing.JPanel pnlButtons;
-    private javax.swing.JRadioButton rbtOther;
     private javax.swing.JRadioButton rbtPhylip;
+    private javax.swing.JRadioButton rbtPhyloXML;
     private javax.swing.JTextField tfFileName;
     // End of variables declaration                   
     
