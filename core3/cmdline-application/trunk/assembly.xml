@@ -21,12 +21,6 @@
         <include>org.cytoscape:cmdline-provision</include>
       </includes>
       <binaries>
-	  <!--
-        <outputDirectory>${artifactId}/load</outputDirectory>
-        <unpack>false</unpack>
-		-->
-	  <!--
-		-->
         <dependencySets>
           <dependencySet>
             <outputDirectory>${artifactId}/load</outputDirectory>
@@ -37,5 +31,29 @@
         </dependencySets>
       </binaries>
     </moduleSet>
+    <moduleSet>
+      <includes>
+        <include>org.cytoscape:cmdline-logging</include>
+      </includes>
+      <binaries>
+        <dependencySets>
+          <dependencySet>
+            <outputDirectory>${artifactId}/bundles</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+          </dependencySet>
+        </dependencySets>
+      </binaries>
+    </moduleSet>
   </moduleSets>
+      <fileSets>
+        <fileSet>
+          <directory>src/main/resources</directory>
+          <outputDirectory>${artifactId}</outputDirectory>
+          <includes>
+            <include>**</include>
+          </includes>
+       </fileSet>
+      </fileSets>
 </assembly>

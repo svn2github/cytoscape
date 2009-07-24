@@ -48,6 +48,7 @@
   <modules>
     <module>cmdline-launcher</module>
     <module>cmdline-provision</module>
+    <module>cmdline-logging</module>
   </modules>
 
 </project>

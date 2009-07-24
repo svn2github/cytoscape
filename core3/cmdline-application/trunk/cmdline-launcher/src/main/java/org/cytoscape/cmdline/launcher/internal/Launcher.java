@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.felix.fileinstall.FileInstall;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.framework.util.StringMap;
@@ -51,8 +50,7 @@ import org.osgi.framework.BundleActivator;
 
 
 /**
- * A class that launches Felix and automatically starts the FileInstall
- * bundle as well as starting a CommandLineProvider service. 
+ * A class that launches Felix and starts a CommandLineProvider service. 
  */
 public class Launcher {
 	
@@ -62,6 +60,9 @@ public class Launcher {
 	 * @param args The command line arguments. 
 	 */
 	public static void main(String[] args) {
+
+		// This sets a system level property so that no logs are spewed at startup
+		System.setProperty("org.ops4j.pax.logging.DefaultServiceLog.level","NONE");
 
 		// Tell felix where the config file is.
 		System.setProperty(Main.CONFIG_PROPERTIES_PROP, 
@@ -81,7 +82,6 @@ public class Launcher {
 			// Create a list of bundles to start automatically.
 	        List<BundleActivator> list = new ArrayList<BundleActivator>();
 	        list.add(new AutoActivator(configProps)); // from config auto.start 
-	        list.add(new FileInstall());
 	        list.add(new CommandLineProviderImpl(args));
 	        configProps.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, list);
 			// Create a case-insensitive property map.

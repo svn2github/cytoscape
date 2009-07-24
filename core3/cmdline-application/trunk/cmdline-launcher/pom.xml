@@ -104,11 +104,6 @@
       <artifactId>org.apache.felix.main</artifactId>
       <version>${felix.version}</version>
     </dependency>
-    <dependency>
-	  <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.fileinstall</artifactId>
-      <version>1.0.0</version>
-    </dependency>
   </dependencies>
 
 </project>

@@ -104,7 +104,7 @@
 		</dependency>
 
 
-<!--		 only if you want a shell! -->
+<!--		 only if you want a shell! 
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.shell</artifactId>
@@ -115,9 +115,10 @@
 			<artifactId>org.apache.felix.shell.tui</artifactId>
 			<version>1.2.0</version>
 		</dependency>
+-->
 		
 
-		<!-- pax logging -->
+		<!-- pax logging 
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-api</artifactId>
@@ -133,6 +134,7 @@
 			<artifactId>org.osgi.compendium</artifactId>
 			<version>1.2.0</version>
 		</dependency>
+		-->
 
 
 		<!-- cytoscape data model -->
