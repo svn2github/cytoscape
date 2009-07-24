@@ -39,12 +39,10 @@ package cytoscape.internal.dialogs;
 import java.awt.Frame;
 import org.cytoscape.event.CyEventHelper;
 import cytoscape.CyOperatingContext;
-import cytoscape.dialogs.PreferencesDialog;
-import cytoscape.dialogs.PreferencesDialogFactory;
 
 /**
  */
-public class PreferencesDialogFactoryImpl implements PreferencesDialogFactory {
+public class PreferencesDialogFactoryImpl {
 
 	private CyEventHelper eh;
 	private CyOperatingContext coc;
@@ -54,7 +52,7 @@ public class PreferencesDialogFactoryImpl implements PreferencesDialogFactory {
 		this.eh = eh;
 	}
 
-	public PreferencesDialog getPreferencesDialog(Frame parent) {
+	public PreferencesDialogImpl getPreferencesDialog(Frame parent) {
 		return new PreferencesDialogImpl(parent,coc,eh);	
 	}
 }

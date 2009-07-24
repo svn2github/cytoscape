@@ -38,7 +38,7 @@
 // $Revision: 12968 $
 // $Date: 2008-02-06 15:34:25 -0800 (Wed, 06 Feb 2008) $
 // $Author: mes $
-package cytoscape.actions;
+package cytoscape.internal.actions;
 
 import org.cytoscape.session.CyNetworkManager;
 import cytoscape.Cytoscape;

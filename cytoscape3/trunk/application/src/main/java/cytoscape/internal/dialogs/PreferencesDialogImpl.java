@@ -43,7 +43,6 @@ import org.cytoscape.view.vizmap.events.SaveVizmapPropsListener;
 
 import cytoscape.events.PreferencesUpdatedEvent;
 import cytoscape.events.PreferencesUpdatedListener;
-import cytoscape.dialogs.PreferencesDialog;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyOperatingContext;
@@ -69,7 +68,7 @@ import java.util.Properties;
 /**
  *
  */
-public class PreferencesDialogImpl extends JDialog implements PreferencesDialog {
+public class PreferencesDialogImpl extends JDialog {
 	private final static long serialVersionUID = 1202339873396288L;
 
 	int[] selection = null;
@@ -306,9 +305,9 @@ public class PreferencesDialogImpl extends JDialog implements PreferencesDialog 
 	}
 
 	class AddPropertyListener implements ActionListener {
-		PreferencesDialog callerRef = null;
+		PreferencesDialogImpl callerRef = null;
 
-		public AddPropertyListener(PreferencesDialog caller) {
+		public AddPropertyListener(PreferencesDialogImpl caller) {
 			super();
 			callerRef = caller;
 		}

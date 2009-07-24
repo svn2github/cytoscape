@@ -1,5 +1,5 @@
 /*
-  File: PreferenceAction.java
+  File: PrintAction.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,50 +33,82 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 //-------------------------------------------------------------------------
 // $Revision: 12984 $
 // $Date: 2008-02-08 13:12:37 -0800 (Fri, 08 Feb 2008) $
 // $Author: mes $
 //-------------------------------------------------------------------------
-package cytoscape.actions;
+package cytoscape.internal.actions;
+
+import java.awt.event.ActionEvent;
+import java.awt.print.PrinterJob;
+import java.util.Properties;
+
+import javax.swing.event.MenuEvent;
 
 import org.cytoscape.session.CyNetworkManager;
-import cytoscape.dialogs.PreferencesDialog;
-import cytoscape.dialogs.PreferencesDialogFactory;
+import org.cytoscape.view.presentation.RenderingEngine;
+
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CySwingApplication;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-
 
 /**
  *
  */
-public class PreferenceAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339870248574L;
+public class PrintAction extends CytoscapeAction {
+	private final static long serialVersionUID = 1202339870257629L;
+
 	/**
-	 * Creates a new PreferenceAction object.
+	 *
 	 */
-	private CySwingApplication desktop;
-	private PreferencesDialogFactory pdf;
-	public PreferenceAction(CySwingApplication desktop, CyNetworkManager netmgr, PreferencesDialogFactory pdf ) {
-		super("Properties...",netmgr);
-		this.desktop = desktop;
-		this.pdf = pdf;
-		System.out.println("PreferenceAction()...");
-		setPreferredMenu("Edit.Preferences");
+	public final static String MENU_LABEL = "Print...";
+	private Properties props;
+	private CyNetworkManager cyNetworkMgr;
+
+	/**
+	 * Creates a new PrintAction object.
+	 */
+	public PrintAction(CyNetworkManager netmgr, Properties props,
+			CyNetworkManager cyNetworkMgr) {
+		super(MENU_LABEL, netmgr);
+		setPreferredMenu("File");
+		setAcceleratorCombo(java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK);
+		this.props = props;
+		this.cyNetworkMgr = cyNetworkMgr;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		PreferencesDialog preferencesDialog = pdf.getPreferencesDialog(desktop.getJFrame()); 
-		preferencesDialog.showDialog();
-	} 
+		RenderingEngine engine = cyNetworkMgr.getCurrentPresentation();
+
+		PrinterJob printJob = PrinterJob.getPrinterJob();
+
+		engine.setProperties(props);
+
+		printJob.setPrintable(engine.getPrintable());
+
+		if (printJob.printDialog()) {
+			try {
+				printJob.print();
+			} catch (Exception exc) {
+				exc.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
+	 */
+	public void menuSelected(MenuEvent e) {
+		enableForNetworkAndView();
+	}
 }

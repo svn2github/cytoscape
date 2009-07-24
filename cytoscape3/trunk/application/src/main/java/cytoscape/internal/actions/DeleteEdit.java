@@ -1,5 +1,5 @@
 
-package cytoscape.actions;
+package cytoscape.internal.actions;
 
 import org.cytoscape.session.CyNetworkManager;
 import cytoscape.Cytoscape;

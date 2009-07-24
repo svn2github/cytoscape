@@ -1,6 +1,7 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ File: PreferenceAction.java
+
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -32,14 +33,50 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package cytoscape.dialogs;
+ */
 
-import java.awt.Frame;
+//-------------------------------------------------------------------------
+// $Revision: 7760 $
+// $Date: 2006-06-26 09:28:49 -0700 (Mon, 26 Jun 2006) $
+// $Author: mes $
+//-------------------------------------------------------------------------
+package cytoscape.internal.actions;
+
+import java.awt.event.ActionEvent;
+
+import org.cytoscape.session.CyNetworkManager;
+import cytoscape.internal.dialogs.BookmarkDialogImpl;
+import cytoscape.internal.dialogs.BookmarkDialogFactoryImpl;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CySwingApplication;
 
 /**
+ *
  */
-public interface PreferencesDialogFactory {
+public class BookmarkAction extends CytoscapeAction {
+	private final static long serialVersionUID = 120233986993206L;
+	private CySwingApplication desktop;
 
-	PreferencesDialog getPreferencesDialog(Frame parent);
+	private BookmarkDialogFactoryImpl bookmarkDialogFactory;
+	/**
+	 * Creates a new BookmarkAction object.
+	 */
+	public BookmarkAction(CySwingApplication desktop, CyNetworkManager netmgr, BookmarkDialogFactoryImpl bookmarkDialogFactory) {
+		super("Bookmarks...", netmgr);
+		this.bookmarkDialogFactory = bookmarkDialogFactory;
+		System.out.println("BookmarkAction()...");
+		setPreferredMenu("Edit.Preferences");
+		this.desktop = desktop;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param e
+	 *            DOCUMENT ME!
+	 */
+	public void actionPerformed(ActionEvent e) {
+		final BookmarkDialogImpl bookmarkDialog = bookmarkDialogFactory.getBookamrkDialog(desktop.getJFrame());
+		bookmarkDialog.showDialog();
+	}
 }

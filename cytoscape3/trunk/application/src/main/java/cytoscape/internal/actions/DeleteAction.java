@@ -26,7 +26,7 @@
  *  local variables.
  ********************************************************************************
  */
-package cytoscape.actions;
+package cytoscape.internal.actions;
 
 import org.cytoscape.session.CyNetworkManager;
 import java.awt.event.ActionEvent;

@@ -59,13 +59,11 @@ import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 
-import cytoscape.dialogs.BookmarkDialog;
-
 
 /**
  *
  */
-public class BookmarkDialogImpl extends JDialog implements BookmarkDialog, ActionListener,
+public class BookmarkDialogImpl extends JDialog implements ActionListener,
 		ListSelectionListener, ItemListener {
 
 	private String bookmarkCategory;
