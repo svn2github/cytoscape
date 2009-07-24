@@ -67,7 +67,17 @@
 			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>
+	
+	<osgi:service id="proxySettingsTaskFactoryService" ref="proxySettingsTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Proxy Settings..." />
+			<entry key="preferredMenu" value="Edit.Preferences" />
+		</osgi:service-properties>
+	</osgi:service>
 
+	
+	
 	<!-- selection -->
 	<osgi:service id="selectAllTaskFactoryService" ref="selectAllTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
@@ -310,10 +320,10 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<!-- zoom --> 
+	<!-- zoom  AND CHANGED THE INTERFACE--> 
 	<osgi:service id="zoomInTaskFactoryService" 
 	    ref="zoomInTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom In" />
@@ -326,7 +336,7 @@
 
 	<osgi:service id="zoomOutTaskFactoryService" 
 	    ref="zoomOutTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom Out" />
@@ -339,7 +349,7 @@
 
 	<osgi:service id="fitSelectedTaskFactoryService" 
 	    ref="fitSelectedTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom selected region" />
@@ -352,7 +362,7 @@
 
 	<osgi:service id="fitContentTaskFactoryService" 
 	    ref="fitContentTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom out to display all of current Network" />
@@ -363,13 +373,6 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="proxySettingsTaskFactoryService" ref="proxySettingsTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
-		<osgi:service-properties>
-			<entry key="title" value="Proxy Settings..." />
-			<entry key="preferredMenu" value="Edit.Preferences" />
-		</osgi:service-properties>
-	</osgi:service>
 
 	<osgi:service id="editNetworkTitleTaskFactoryService" ref="editNetworkTitleTaskFactory"
 		interface="org.cytoscape.task.NetworkTaskFactory">
