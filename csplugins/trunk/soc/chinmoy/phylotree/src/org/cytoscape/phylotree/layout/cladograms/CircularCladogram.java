@@ -125,7 +125,7 @@ public class CircularCladogram extends AbstractLayout{
 			
 		}
 		
-		// Bend each edge to make it look rectangular
+		// Bend each edge to make it look circular
 
 		List<Edge> allEdges = network.edgesList();
 		Iterator<Edge> edgesIterator = allEdges.iterator();

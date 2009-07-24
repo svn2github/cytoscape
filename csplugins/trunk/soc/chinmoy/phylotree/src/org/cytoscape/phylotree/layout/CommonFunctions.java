@@ -166,6 +166,26 @@ public class CommonFunctions {
 		return list;
 	}
 	
+	
+	public List<Node> getAncestors(CyNetwork network, Node node)
+	{
+		List<Node> list = new LinkedList<Node>();
+		
+		while(network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false).length>0)
+		{
+			int[] incomingEdges= network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false);
+		
+		if(incomingEdges.length>0)
+		{
+			Node ancestor = network.getEdge(incomingEdges[0]).getSource();
+			list.add(ancestor);
+			node = ancestor;
+		}
+		
+		}
+		return list;
+	}
+	
 	/**
 	 * Find the vertical midpoint of a list of leaves
 	 * @param networkView - the networkView containing the leaves
@@ -344,9 +364,12 @@ public class CommonFunctions {
 			if(network.getInDegree(target.getRootGraphIndex(), false) <= 1 && source.getRootGraphIndex()!=target.getRootGraphIndex())
 			{
 
-
+				
+				double sourceX = networkView.getNodeView(source).getXPosition();
+				double sourceY = networkView.getNodeView(source).getYPosition();
 				// Get the radius of the source
-				double radius = 50.0*(getLevel(network, getTreeRoot(network)) - getLevel(network, source));
+				double radius = Math.sqrt(sourceX*sourceX + sourceY*sourceY);
+				
 				
 				// And the angle of the target
 				double angle = Math.atan2(networkView.getNodeView(target).getYPosition(), networkView.getNodeView(target).getXPosition());
@@ -360,5 +383,6 @@ public class CommonFunctions {
 				
 			}
 	}
+	
 	
 }

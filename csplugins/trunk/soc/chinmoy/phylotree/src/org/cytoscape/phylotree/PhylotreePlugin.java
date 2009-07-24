@@ -12,6 +12,8 @@ import org.cytoscape.phylotree.layout.cladograms.SlantedCladogram;
 import org.cytoscape.phylotree.layout.cladograms.CircularCladogram;
 import org.cytoscape.phylotree.layout.phylograms.RectangularPhylogram;
 import org.cytoscape.phylotree.layout.phylograms.SlantedPhylogram;
+import org.cytoscape.phylotree.layout.phylograms.RadialPhylogram;
+import org.cytoscape.phylotree.layout.phylograms.CircularPhylogram;
 
 /**
  * 
@@ -40,6 +42,8 @@ public class PhylotreePlugin extends CytoscapePlugin {
 
 		CyLayouts.addLayout(new RectangularPhylogram(), "PhyloTree Layouts");
 		CyLayouts.addLayout(new SlantedPhylogram(), "PhyloTree Layouts");
+		CyLayouts.addLayout(new RadialPhylogram(), "PhyloTree Layouts");
+		CyLayouts.addLayout(new CircularPhylogram(), "PhyloTree Layouts");
 		
 		
 	}
