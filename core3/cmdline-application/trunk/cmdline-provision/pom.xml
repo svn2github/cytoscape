@@ -117,26 +117,6 @@
 		</dependency>
 -->
 		
-
-		<!-- pax logging 
-		<dependency>
-			<groupId>org.ops4j.pax.logging</groupId>
-			<artifactId>pax-logging-api</artifactId>
-			<version>1.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.logging</groupId>
-			<artifactId>pax-logging-service</artifactId>
-			<version>1.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-		-->
-
-
 		<!-- cytoscape data model -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -297,20 +277,6 @@
 			<artifactId>cmdline-parser-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-
-
-		<!-- to control logging -->
-<!--		<dependency>-->
-<!--			<groupId>org.ops4j.pax.confman</groupId>-->
-<!--			<artifactId>pax-confman-propsloader</artifactId>-->
-<!--			<version>0.2.2</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.felix</groupId>-->
-<!--			<artifactId>org.apache.felix.configadmin</artifactId>-->
-<!--			<version>1.0.10</version>-->
-<!--		</dependency>-->
-
 
 	</dependencies>
 </project>
