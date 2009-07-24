@@ -24,7 +24,7 @@ public class NetworkNameTableCellRenderer extends JLabel implements
 
 		String networkName = "?";
 
-		if (value instanceof Long) {
+		if (value != null && value instanceof Long) {
 			CyNetwork network = manager.getNetwork((Long) value);
 
 			// Get title here!
@@ -32,6 +32,8 @@ public class NetworkNameTableCellRenderer extends JLabel implements
 
 			this.setText(networkName);
 
+		} else if(value == null) {
+			this.setText("Undefined");
 		}
 
 		return this;

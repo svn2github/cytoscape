@@ -590,20 +590,35 @@ public class LayerBuilderDialog extends JDialog {
 	private void addAllAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllAvailableNetworkButtonActionPerformed
 
-		for (int i = 0; i < availableNetworkListModel.size(); i++) {
-			layeredNetworkListModel
-					.addElement(availableNetworkListModel.get(i));
-			Long[] layerConnectionRow = new Long[layerConnectionTableModel
-					.getColumnCount()];
+		// Move available networks to layer list
+		for (int i = 0; i < availableNetworkListModel.size(); i++)
+			layeredNetworkListModel.addElement(availableNetworkListModel.get(i));
+		
+		// Remove them from the available network list
+		availableNetworkListModel.clear();
+		
+		// If only one network, return. 
+		if(availableNetworkListModel.size()>1)
+			return;
+		
+		// Build table if necessary
+		for (int i = 0; i < layeredNetworkListModel.size()-1; i++) {
+			
+			final Long[] layerConnectionRow = new Long[layerConnectionTable.getColumnCount()];
+			
+			// These two columns represents a layer
 			layerConnectionRow[LAYER1] = title2IdMap
-					.get(availableNetworkListModel.get(i));
+					.get(layeredNetworkListModel.get(i));
 			layerConnectionRow[LAYER2] = title2IdMap
-					.get(availableNetworkListModel.get(i + 1));
-			// layerConnectionRow[CONNECTOR] = null;
+					.get(layeredNetworkListModel.get(i + 1));
+			
+			// By default, no connector is available.
+			layerConnectionRow[CONNECTOR] = null;
+			
+			// Add this row to the table
 			layerConnectionTableModel.addRow(layerConnectionRow);
 		}
 
-		availableNetworkListModel.clear();
 		layerConnectionTable.repaint();
 
 	}// GEN-LAST:event_MoveAllAvailableNetworkButtonActionPerformed
