@@ -196,7 +196,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		String command = e.getActionCommand();
 		
-		System.out.println(command);
+		//System.out.println(command);
 		
 		if(command.equals("capture"))
 		{
@@ -230,14 +230,22 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		if(command.equals("step forward")){
 			if(timer == null){ return; }
 			timer.stop();
-			frameIndex++;
+			
+			//check to see if we have reached the last frame
+			if(frameIndex == frames.length-1){ frameIndex = 0; }
+			else{ frameIndex++; }
+			
 			frames[frameIndex].display();
 		}
 		
 		if(command.equals("step backward")){
 			if(timer == null){ return; }
 			timer.stop();
-			frameIndex--;
+			
+			//check to see if we are back to the first frame
+			if(frameIndex == 0){ frameIndex = frames.length-1; }
+			else{ frameIndex--; }
+			
 			frames[frameIndex].display();
 		}
 		
@@ -350,7 +358,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		framePanel.setLayout(box);
 
 		MouseListener popupListener = new PopupListener();
-		MouseListener mouseOver = new MouseOver();
+		//MouseListener mouseOver = new MouseOver();
 		//Add listener to components that can bring up popup menus.
 		
 		//output.addMouseListener(popupListener);
@@ -382,6 +390,10 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		menuList = new ArrayList<JPopupMenu>();
 		//mainPanel.remove(framePanel);
 		int i = 0;
+		int totalFrameLength = 0;
+		DragAndDropManager dragnDrop = new DragAndDropManager(frameList.size());
+		
+		
 		for(CyFrame frame: frameList){
 			//for(CyNetworkView view: viewList){
 
@@ -392,6 +404,8 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			lab.addActionListener(this);
 			lab.setActionCommand(frame.getID());
 			//lab.setIcon(ic);
+			System.out.println(lab.getWidth());
+			totalFrameLength = totalFrameLength + lab.getWidth();
 			
 			thumbnailMenu = new JPopupMenu();
 			JMenu interpolateMenu = new JMenu("Interpolate");
@@ -431,14 +445,14 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			menuList.add(thumbnailMenu);
 			
 			//MouseListener 
-			lab.addMouseListener(mouseOver);
+			lab.addMouseListener(dragnDrop); //mouseOver);
 			lab.setName(i+"");
 			i++;
 			lab.addMouseListener(popupListener);
 			framePanel.add(lab);
 
 		}
-
+		dragnDrop.setFrameLength(totalFrameLength);
 		//framePanel.add(rightArrow);
 		//initialize();
 		framePane = new JScrollPane(framePanel);
@@ -474,13 +488,13 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		String curDir = System.getProperty("user.dir");
 		System.out.println(curDir);
 		
-		File file = new File("outputImages");
+		File file = new File(curDir+"/outputImages");
 		file.mkdir();
-		OutputStream imageStream = new FileOutputStream(file);
+		//OutputStream imageStream = new FileOutputStream(file);
 		
 		for(int i=0; i<frames.length; i++){
 			String name = "Frame_"+i;
-			ImageIO.write(frames[i].getFrameImage(), name, imageStream);
+			ImageIO.write(frames[i].getFrameImage(), name, file);
 		}
 	}
 	
@@ -504,8 +518,14 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	    }
 	}
 
-	class MouseOver extends MouseAdapter implements MouseListener{
-		int upperBound, lowerBound, leftBound, rightBound;
+	class DragAndDropManager extends MouseAdapter implements MouseListener{
+		int frameCount = 0;
+		int totalFrameLength = 0;
+		
+		
+		public DragAndDropManager(int frameCount){
+			this.frameCount = frameCount;
+		}
 		
 		
 		public void mousePressed(MouseEvent e) {
@@ -513,12 +533,12 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		}
 
 		public void mouseReleased(MouseEvent e) {
-			
+			System.out.println(e.paramString());
 		}
 
 		public void mouseEntered(MouseEvent e) {
 			//e.getComponent().
-			System.out.println(e.paramString());
+			//System.out.println(e.paramString());
 		}
 
 		public void mouseExited(MouseEvent e) {
@@ -528,9 +548,22 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		public void mouseClicked(MouseEvent e) {
 			//saySomething("Mouse clicked (# of clicks: "
 					//+ e.getClickCount() + ")", e);
+			System.out.println(e.getComponent().getName());
+			System.out.println("Frame Count: "+frameCount+"   Frame Length: "+totalFrameLength);
 		}
-
+		
+		/*
+		 * set the total length(in pixels) of all of the frames combined
+		 * 
+		 * @param the total frame length
+		 */
+		public void setFrameLength(int frameLength){
+			this.totalFrameLength = frameLength;
+		}
+		
 	}
+	
+	
 	
 	class PopupListener extends MouseAdapter {
 	    public void mousePressed(MouseEvent e) {
