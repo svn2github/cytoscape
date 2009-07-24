@@ -1,23 +1,19 @@
 <?xml version = "1.0"?>
-<project name="shortestPathPlugin2" default="all" basedir=".">
+<project name="ShortestPathPlugin2" default="all" basedir=".">
 
 	<property name="src" location="src" />
 	<property name="build" location="build" />
 	<property name="build.compiler" value="modern" />
 	<!-- path to Cytoscape under development (CVS) -->
 	<property name="cylib" location="../cytoscape" />
-	<property name="lib" location="lib" />
 	<property name="jar" location="jar" />
 	<property name="doc" location="doc" />
-	<property name="projectName" value="shortestPathPlugin2" />
+	<property name="projectName" value="ShortestPathPlugin2" />
 
 	<property name="cytoscape.plugin" value="${lib}/plugins" />
 
 	<path id="classpath">
 		<fileset dir="${cylib}">
-			<include name="**/*.jar" />
-		</fileset>
-		<fileset dir="${lib}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
@@ -40,20 +36,14 @@
 	</target>
 
 	<target name="jar" depends="compile" description="makes a jar for Cytoscape under development">
-		<mkdir dir="${jar}" />
-		<unzip dest="${build}">
-			<fileset dir="${lib}" includes="*" />
-		</unzip>
-		<copy todir="build/org/cytoscape/view/ui/networkpanel" file="resources/plugin.props" />
-		<mkdir dir="build/org/cytoscape/view/ui/networkpanel/images"/>
-		<copy todir="build/org/cytoscape/view/ui/networkpanel/images">
-			<fileset dir="images"/>
-		</copy>
-		<jar jarfile="${jar}/${projectName}.jar">
-			<manifest>
-				<attribute name="Cytoscape-Plugin" value="org.cytoscape.view.ui.networkpanel.NetworkBrowserPlugin" />
-			</manifest>
+		
+		<copy todir="build/org/cytoscape/analysis/shortestpath" file="resources/plugin.props" />
+		
+		<jar jarfile="build/${projectName}.jar">
 			<fileset dir="${build}" />
+			<manifest>
+				<attribute name="Cytoscape-Plugin" value="org.cytoscape.analysis.shortestpath.ShortestPathPlugin" />
+			</manifest>			
 		</jar>
 	</target>
 
@@ -71,7 +61,7 @@
 
 	<!-- Target to Run JavaDoc -->
 	<target name="doc" description="Runs JavaDoc.">
-		<javadoc packagenames="cytoscape.groups.results.*" sourcepath="src" source="1.5" destdir="doc" classpathref="classpath_release">
+		<javadoc packagenames="org.cytoscape.analysis.shortestpath.*" sourcepath="src" source="1.5" destdir="doc" classpathref="classpath_release">
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
 			<link href="http://csbi.sourceforge.net/API/" />
 			<link href="http://chianti.ucsd.edu/Cyto-2_4_1/javadoc/" />

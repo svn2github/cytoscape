@@ -10,15 +10,13 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
-import javax.swing.JOptionPane;
 
 import org.cytoscape.analysis.shortestpath.internal.ShortestPathDialog;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.view.CytoscapeDesktop;
 
 /**
  * Plugin for Cytoscape to find the shortest path between 2 nodes in a network.
@@ -56,6 +54,11 @@ public class ShortestPathPlugin extends CytoscapePlugin
 
 		// Now add our default
 		addMenuItem(menu, "Hop Distance");
+		
+		JMenuItem item = new JMenuItem("Search All");
+		SearchAllMenuActionListener va = new SearchAllMenuActionListener();
+		item.addActionListener(va);
+		menu.add(item);
 
 		//Finds all attributes that are integers or doubles, and adds them to list
 		for(int i = 0; i < attributeNames.length; i++)
@@ -93,6 +96,21 @@ public class ShortestPathPlugin extends CytoscapePlugin
 					d.pack();
 					d.setLocationRelativeTo(Cytoscape.getDesktop());
 					d.setVisible(true);
+				}
+			});
+		}
+	}
+	
+	private class SearchAllMenuActionListener extends AbstractAction {
+
+		public SearchAllMenuActionListener () {
+		}
+
+		public void actionPerformed(ActionEvent ev) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					ShortestPath alg = new ShortestPath();
+					alg.searchAll();
 				}
 			});
 		}

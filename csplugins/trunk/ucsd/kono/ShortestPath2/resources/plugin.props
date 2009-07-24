@@ -6,20 +6,20 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
-pluginName=networkBrowser
+pluginName=ShortestPath2
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Displays a list of groups created in a results panel.
+pluginDescription=Shortest Path plugin modified by Kei Ono
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=1.0
+pluginVersion=2.0
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Other
+pluginCategory=Analysis
 
 # -- The following properties are OPTIONAL -- #
 
@@ -31,4 +31,4 @@ projectURL=http://cytoscape.org
 pluginAuthorsIntsitutions=Keiichiro Ono:UCSD
 
 # Date this plugin/plugin version was released
-releaseDate=July 1, 2009
+releaseDate=July 20, 2009
