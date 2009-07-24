@@ -67,8 +67,8 @@ int main (int argc, char** argv)
   for (int i = 0; i < numNodes; i++){
     fout << "\tnode [\n";
     fout << "\t\tid " << i << endl;
-    fout << "\t\tlabel\n";
-    fout << "\t\t\"Node " << i << "\"]\n";
+    fout << "\t\tlabel Node " << i << "\"\n";
+    fout << "\t]\n";
   }
 
   // Go to start of second line
