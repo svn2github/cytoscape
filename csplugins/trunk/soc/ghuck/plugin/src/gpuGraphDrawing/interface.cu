@@ -319,12 +319,12 @@ int calculateLayout (globalScope* scope)
   
 
   /*      GRAPH COARSENING      */
-  printf("Coarsening graph...\n");
+  //printf("Coarsening graph...\n");
   
-  clock_t start, end_coarsen,end_layout;
-  double elapsed_layout,elapsed_coarsen;
+  //clock_t start, end_coarsen,end_layout;
+  //double elapsed_layout,elapsed_coarsen;
 
-  start = clock();
+  //start = clock();
   
   (scope->gArray)[0] = &(scope->g);
   createCoarseGraphs(&(scope->g), 0, scope);
@@ -333,17 +333,17 @@ int calculateLayout (globalScope* scope)
     (scope->numLevels)++;
   (scope->gArray)[scope->numLevels - 1]->level = 0;
   
-  end_coarsen = clock();
+  //end_coarsen = clock();
 
-  elapsed_coarsen = ((double) (end_coarsen - start)) / CLOCKS_PER_SEC;
+  //elapsed_coarsen = ((double) (end_coarsen - start)) / CLOCKS_PER_SEC;
 
   /*      END OF COARSENING      */
 
 
   /*      CALCULATE LAYOUTS      */
 
-  start = clock();
-  printf("Computing layout...\n");
+  //start = clock();
+  //printf("Computing layout...\n");
   
   for(int i = 0; i < (scope->numLevels); i++){
     
@@ -378,8 +378,8 @@ int calculateLayout (globalScope* scope)
       nextLevelInitialization(*(scope->gArray)[(scope->numLevels) - i - 2], scope->gArray[(scope->numLevels) - i - 1], scope);
   }
 
-  end_layout = clock();
-  elapsed_layout = ((double) (end_layout - start)) / CLOCKS_PER_SEC;
+  //end_layout = clock();
+  //elapsed_layout = ((double) (end_layout - start)) / CLOCKS_PER_SEC;
 
   /*       END OF LAYOUT CALCULATION      */
   

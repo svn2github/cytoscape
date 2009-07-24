@@ -67,7 +67,7 @@ int main (int argc, char** argv)
   for (int i = 0; i < numNodes; i++){
     fout << "\tnode [\n";
     fout << "\t\tid " << i << endl;
-    fout << "\t\tlabel Node " << i << "\"\n";
+    fout << "\t\tlabel \"Node " << i << "\"\n";
     fout << "\t]\n";
   }
 
@@ -95,8 +95,8 @@ int main (int argc, char** argv)
       // Write edge
       fout << "\tedge [\n";
       fout << "\t\tsource "      << i               << endl;
-      fout << "\t\tdestination " << destinationNode << endl;
-      fout << "\t\t\"Edge from node " << i << " to node " << destinationNode << "\"\n";
+      fout << "\t\ttarget " << destinationNode << endl;
+      fout << "\t\tlabel \"Edge from node " << i << " to node " << destinationNode << "\"\n";
       fout << "\t\t]\n";      
 
       p=strtok(NULL," ");

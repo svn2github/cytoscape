@@ -269,26 +269,14 @@ public class ForceDirected extends AbstractGraphPartition
 
 		// Get the position in nodeList of neighbor
 		int currentNeighborPosition = nodeList.indexOf(currentNeighbor);
-		
-		// Get index of currentNeighbor
-		//int currentNeighborIndex = network.getIndex(currentNeighbor.getNode());
-
-		// Take into account both directed (in both directions) and undirected edges
-		//int multiplicity = network.getEdgeCount(currentNodeIndex, currentNeighborIndex, true) 
-		//    + network.getEdgeCount(currentNeighborIndex, currentNodeIndex, false);
-		
-		// Add current_neighbor to AdjMatVals "multiplicity" times
-		//for (int j = 0; j < multiplicity; j++){
-		    
-		logger.debug("Adding node " + currentNeighborPosition + " as neighbor of node " + currentNodePosition + " in position " + position);
+			    
+		//logger.debug("Adding node " + currentNeighborPosition + " as neighbor of node " + currentNodePosition + " in position " + position);
 
 		// Add alias of current_neighbor to AjdMatVals
 		AdjMatVals[position] = currentNeighborPosition;
 		    
 		// Increment position
-		position++;
-		
-		//}	       
+		position++;				       
 	    }
 	    
 	    // Increment currentNodePosition
@@ -300,14 +288,14 @@ public class ForceDirected extends AbstractGraphPartition
 	
 	
 	//  Show message on screen with AdjMatIndex and AdjMatVals   
-	/*String message2 = "AdjMatIndex\n"; 
+	String message2 = "AdjMatIndex\n"; 
 	for (int i = 0; i < AdjMatIndex.length; i++)
 	    message2 = message2 + " " +AdjMatIndex[i];
 	message2 = message2 + "\nAdhMatVals\n";
 	for (int i = 0; i < AdjMatVals.length; i++)
 	  message2 = message2 + " " +AdjMatVals[i];	    
 	  JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message2);
-	*/
+	
 	       
 	// Check whether it has been canceled by the user
 	if (canceled)
