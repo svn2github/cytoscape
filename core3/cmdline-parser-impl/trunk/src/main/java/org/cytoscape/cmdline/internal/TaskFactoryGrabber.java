@@ -14,19 +14,16 @@ public class TaskFactoryGrabber {
 	private TunableInterceptor ti;
 	
 	public TaskFactoryGrabber(TaskManager tm, TunableInterceptor ti) throws InterruptedException {
-		System.out.println("Grabber Called");
 		this.tm = tm;
 		this.ti = ti;
 		taskMap = new HashMap<TaskFactory,TFWrapper>();
 	}
 
 	synchronized public void addTaskFactory(TaskFactory factory, Map props) {
-		System.out.println("addTaskFactory called");
 		taskMap.put(factory, new TFWrapper(factory,tm,ti));
 	}
 
 	synchronized public void removeTaskFactory(TaskFactory factory, Map props) {
-		System.out.println("removeTaskFactory called");
 		taskMap.remove(factory);
 	}	
 

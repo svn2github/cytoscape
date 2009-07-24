@@ -110,7 +110,6 @@ public class CLTaskFactoryInterceptor {
                     System.out.println("The Task \"" + argsString + "\" doesn't exist : Check the options");
                     printHelp(optionsOfTasks);
                     System.exit(0);
-                    //System.out.println("SHOULD CALL EXIT - print options of tasks"); 
                 } else {
                 	tasksWithTheirArgs.get(lastArg).add(argsString);
                 }
@@ -120,6 +119,7 @@ public class CLTaskFactoryInterceptor {
         
         
         //print the different parsed arguments
+		/*
         System.out.println("tasksWithTheirArgs :");
         for(String st : tasksWithTheirArgs.keySet())
         	System.out.println(st + " = " + tasksWithTheirArgs.get(st));
@@ -129,6 +129,7 @@ public class CLTaskFactoryInterceptor {
         for(String st : listOfChoosenTasks)
         	System.out.println(st);
         System.out.println("\n\n\n");
+		*/
         
         
         
@@ -149,7 +150,6 @@ public class CLTaskFactoryInterceptor {
             System.err.println("Parsing command line failed: " +pe.getMessage());
             printHelp(optionsOfTasks);
             System.exit(1);
-            //System.out.println("SHOULD CALL EXIT - parser failed"); 
         }
     }
 
@@ -158,14 +158,12 @@ public class CLTaskFactoryInterceptor {
             System.out.println("The General Help has been called");
             printHelp(optionsOfTasks);
             System.exit(0);
-            //System.out.println("SHOULD CALL EXIT - called general help"); 
         }
 
         for (String st : listOfChoosenTasks) {
             for (TFWrapper tf : taskMap.values()) {
                 if (st.equals(tf.getName())) {
 
-                	System.out.println("\n \n ########### factory loaded = "+tf.getName()+" ###########");
                 	String tFactoryName = tf.getName();
                		List<String> lst = new ArrayList<String>();	
                 	
@@ -194,7 +192,6 @@ public class CLTaskFactoryInterceptor {
         if (args.length == 0) {
             printHelp(optionsOfTasks);
             System.exit(0);
-            //System.out.println("SHOULD CALL EXIT - no args"); 
         }
     }
 
