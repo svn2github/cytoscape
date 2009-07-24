@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
@@ -54,6 +55,8 @@ public class LayerBuilderDialog extends JDialog {
 
 	private LayerConnectionTableModel layerConnectionTableModel;
 	private NetworkNameTableCellRenderer networkNameTableCellRenderer;
+	
+	private JComboBox comboBoxEditor;
 
 	/**
 	 * Creates new form NewJDialog
@@ -83,6 +86,11 @@ public class LayerBuilderDialog extends JDialog {
 		this.layerConnectionTable.setModel(layerConnectionTableModel);
 		this.layerConnectionTable.setDefaultRenderer(Object.class,
 				networkNameTableCellRenderer);
+		this.layerConnectionTable.getTableHeader().setReorderingAllowed(false);
+		this.comboBoxEditor = new JComboBox();
+		comboBoxEditor.addItem("Test1");
+		comboBoxEditor.addItem("Test2");
+		layerConnectionTable.getColumn("Connector Networks").setCellEditor(new DefaultCellEditor(comboBoxEditor));
 	}
 
 	private void buildListModels() {

@@ -28,9 +28,8 @@ public class LayerConnectionTableModel extends AbstractTableModel {
 	}
 
 	public void setValueAt(Object value, int row, int col) {
-		if (value instanceof Long == false) {
-			throw new IllegalArgumentException("Invalid data type");
-		}
+		if (value instanceof Long == false) return;
+		
 		Long[] rowData = dataModel.get(row);
 		rowData[col] = (Long) value;
 
