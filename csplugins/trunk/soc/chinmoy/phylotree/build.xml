@@ -49,6 +49,7 @@
     <path id="project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement path="${java.class.path}/"/>
+      <pathelement location="${cytoscape.lib.dir}/forester.jar"/>
     </path>
 
 	
@@ -61,11 +62,11 @@
     	<fileset dir="${cytoscape.dir}">
              <include name="cytoscape.jar"/>
         </fileset>
+    	<fileset dir="${lib.dir}">
+    		<include name="**/*.jar"/>
+    	</fileset>
     	<fileset dir="${cytoscape.lib.dir}">
-       		<include name="giny.jar"/>
-   		 	<include name="cytoscape-task.jar"/>
-   		 	<include name="violinstrings-1.0.2.jar"/>
-    		<include name="junit.jar"/>
+    		<include name="**/*.jar"/>
     	</fileset>
 
   	</path>
@@ -171,6 +172,7 @@
   	<delete dir="${build.dir}"/>
   </target>
 
+	
 </project>
 
 <!-- End of file -->
