@@ -273,6 +273,35 @@ public class CommonFunctions {
 		return numLeaves;
 	}
 	
+	public double getScalingFactor(CyNetwork network)
+	{
+	
+	
+		double factor = 1.0;
+		// Find the smallest edge
+		List<Edge> allEdges = network.edgesList();
+		Iterator<Edge> edgesIterator = allEdges.iterator();
+		
+		
+		double smallestLength = Double.MAX_VALUE;
+		while(edgesIterator.hasNext())
+		{
+
+			Edge edge = edgesIterator.next();
+			double length = getBranchLength(network, edge.getTarget());
+			if(length<smallestLength)
+				smallestLength = length;
+		}
+		
+		// Calculate the scaling factor
+		
+		while(smallestLength * factor <= 50.0)
+			factor *= 10.0;
+		
+		
+		return factor;		
+	}
+	
 	/**
 	 * Adds the bends to make the edges look rectangular
 	 */
@@ -295,6 +324,7 @@ public class CommonFunctions {
 
 					// Bend the edge
 					Bend rectangularBend = networkView.getEdgeView(edge).getBend();
+					networkView.getEdgeView(edge).clearBends();
 					rectangularBend.addHandle(new Point2D.Double(cornerX, cornerY));
 			
 			}
@@ -323,8 +353,10 @@ public class CommonFunctions {
 				
 				//Bend the edge
 				Bend circularBend = networkView.getEdgeView(edge).getBend();
-				
+				networkView.getEdgeView(edge).clearBends();
 				circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
+				
+				
 				
 			}
 	}
