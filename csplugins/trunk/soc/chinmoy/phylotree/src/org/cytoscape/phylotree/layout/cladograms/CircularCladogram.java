@@ -104,6 +104,17 @@ public class CircularCladogram extends AbstractLayout{
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 
+		// Remove bends
+
+		List<Edge> allEdges = network.edgesList();
+		Iterator<Edge> edgesIterator = allEdges.iterator();
+
+		while(edgesIterator.hasNext())
+		{
+
+			Edge edge = edgesIterator.next();
+			networkView.getEdgeView(edge).clearBends();
+		}
 		numLeavesVisited = 0;
 
 		// Obtain post order traversal of nodes starting from the root
@@ -128,8 +139,8 @@ public class CircularCladogram extends AbstractLayout{
 		
 		// Bend each edge to make it look circular
 
-		List<Edge> allEdges = network.edgesList();
-		Iterator<Edge> edgesIterator = allEdges.iterator();
+		allEdges = network.edgesList();
+		edgesIterator = allEdges.iterator();
 
 		while(edgesIterator.hasNext())
 		{
