@@ -369,6 +369,9 @@ public class CommonFunctions {
 				double sourceY = networkView.getNodeView(source).getYPosition();
 				// Get the radius of the source
 				double radius = Math.sqrt(sourceX*sourceX + sourceY*sourceY);
+
+				// And the angle of the source
+				double sourceAngle = Math.atan2(networkView.getNodeView(source).getYPosition(), networkView.getNodeView(source).getXPosition());
 				
 				
 				// And the angle of the target
@@ -376,10 +379,27 @@ public class CommonFunctions {
 				
 				//Bend the edge
 				Bend circularBend = networkView.getEdgeView(edge).getBend();
-				
 				circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
+				 
+					if(angle>sourceAngle)
+					{
+
+						circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle+0.25),radius*Math.sin(angle+0.25)));
+						circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle+0.5),radius*Math.sin(angle+0.5)));
+						//System.out.println(source.getIdentifier() + "-->" +target.getIdentifier());
+						
+					}
 				
+					else if(angle<sourceAngle)
+					{
 				
+				circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle-0.25),radius*Math.sin(angle-0.25)));
+				circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle-0.5),radius*Math.sin(angle-0.5)));
+			
+					
+				}
+				
+
 				
 			}
 	}

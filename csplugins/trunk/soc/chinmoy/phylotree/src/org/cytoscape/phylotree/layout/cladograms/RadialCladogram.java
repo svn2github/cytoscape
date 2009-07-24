@@ -153,7 +153,9 @@ public class RadialCladogram extends AbstractLayout{
 		// Get the planar co-ordinates from the polar co-ordinates
 		double nodeX = radius * Math.cos(angle);
 		double nodeY = radius * Math.sin(angle); 
-
+		
+		System.out.println(node.getIdentifier()+":"+angle);
+		
 		networkView.getNodeView(node).setXPosition(nodeX,true);
 		networkView.getNodeView(node).setYPosition(nodeY, true);	
 		
