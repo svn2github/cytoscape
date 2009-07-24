@@ -371,7 +371,7 @@ public class CommonFunctions {
 				double radius = Math.sqrt(sourceX*sourceX + sourceY*sourceY);
 
 				// And the angle of the source
-				double sourceAngle = Math.atan2(networkView.getNodeView(source).getYPosition(), networkView.getNodeView(source).getXPosition());
+				double sourceAngle = Math.atan2(sourceY, sourceX);
 				
 				
 				// And the angle of the target
@@ -379,30 +379,62 @@ public class CommonFunctions {
 				
 				//Bend the edge
 				Bend circularBend = networkView.getEdgeView(edge).getBend();
-				circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
-				 
-					if(angle>sourceAngle)
-					{
-
-						circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle+0.25),radius*Math.sin(angle+0.25)));
-						circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle+0.5),radius*Math.sin(angle+0.5)));
-						//System.out.println(source.getIdentifier() + "-->" +target.getIdentifier());
-						
-					}
+				Point2D handlePoint = new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle));
+				Point2D sourcePoint = new Point2D.Double(sourceX, sourceY);
+				circularBend.addHandle(handlePoint);
 				
-					else if(angle<sourceAngle)
-					{
+				// Algorithm to draw arcs:
 				
-				circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle-0.25),radius*Math.sin(angle-0.25)));
-				circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle-0.5),radius*Math.sin(angle-0.5)));
-			
-					
-				}
-				
-
+//				double distance = handlePoint.distance(sourcePoint);
+//				double handleInterval = 18.0;
+//				int iterations = 5;
+//				
+//					if(compareAngles(angle,sourceAngle)==0)
+//
+//					{
+//						for(int i = 0;i<iterations; i ++)
+//						{
+//							angle = angle+(Math.PI/handleInterval);
+//							circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
+//
+//						}
+//					}
+//					else if(compareAngles(angle,sourceAngle)==1)
+//					{
+//						for(int i =0; i<iterations; i++)
+//						{
+//							angle = angle-(Math.PI/handleInterval);
+//							circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
+//
+//						}
+//					}
 				
 			}
 	}
 	
+	
+	private int compareAngles(double angle1, double angle2)
+	{
+		int result = 2;
+		if((angle1>0 && angle2>0)|| (angle1<0 && angle2<0))
+		{
+			if(angle1>=angle2)
+				result = 1;
+			else if(angle1<angle2)
+				result = 0;
+		}
+		else if(angle1>=0 && angle2<0)
+		{
+			result = 1;
+		}
+		else if(angle1<0 && angle2>=0)
+		{
+			result = 0;
+		}
+		
+			return result;
+		
+	
+	}
 	
 }

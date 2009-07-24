@@ -115,6 +115,8 @@ public class CircularCladogram extends AbstractLayout{
 		{
 			Node node = it.next();
 			
+			System.out.println(node.getIdentifier()+": "+Math.atan2(networkView.getNodeView(node).getYPosition(), networkView.getNodeView(node).getXPosition()));
+			
 			// If leaf position it accordingly
 			if(network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true).length == 0)
 				positionLeaf(node);
@@ -139,6 +141,13 @@ public class CircularCladogram extends AbstractLayout{
 		}
 
 
+		it = postOrderNodes.iterator();
+		while(it.hasNext())
+		{
+			Node node = it.next();
+			
+			System.out.println(node.getIdentifier()+": "+Math.atan2(networkView.getNodeView(node).getYPosition(), networkView.getNodeView(node).getXPosition()));
+		}
 	
 	}
 	
