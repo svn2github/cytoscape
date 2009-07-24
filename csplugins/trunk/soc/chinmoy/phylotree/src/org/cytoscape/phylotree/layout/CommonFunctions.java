@@ -344,7 +344,7 @@ public class CommonFunctions {
 
 					// Bend the edge
 					Bend rectangularBend = networkView.getEdgeView(edge).getBend();
-					networkView.getEdgeView(edge).clearBends();
+					
 					rectangularBend.addHandle(new Point2D.Double(cornerX, cornerY));
 			
 			}
@@ -376,7 +376,7 @@ public class CommonFunctions {
 				
 				//Bend the edge
 				Bend circularBend = networkView.getEdgeView(edge).getBend();
-				networkView.getEdgeView(edge).clearBends();
+				
 				circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
 				
 				

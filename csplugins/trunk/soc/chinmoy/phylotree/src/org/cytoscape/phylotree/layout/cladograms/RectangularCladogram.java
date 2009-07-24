@@ -134,7 +134,7 @@ public class RectangularCladogram extends AbstractLayout{
 		{
 
 			Edge edge = edgesIterator.next();
-			
+			networkView.getEdgeView(edge).clearBends();
 			commonFunctions.addRectangularBends(network, networkView, edge);
 		}
 

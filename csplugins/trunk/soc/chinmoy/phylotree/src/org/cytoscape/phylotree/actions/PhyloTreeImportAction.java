@@ -16,6 +16,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Iterator;
 
+import cytoscape.layout.CyLayouts;
+
 public class PhyloTreeImportAction extends CytoscapeAction{
 	
 	public PhyloTreeImportAction(PhylotreePlugin p) {
@@ -84,7 +86,11 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 			cyAttributes.setUserEditable("branchLength", false);
 			cyAttributes.setUserVisible("branchLength", true);
 			
+			// Apply default layout
+			CyLayouts.getLayout("slanted_cladogram").doLayout();
 			
+			// Apply visual style
+			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, "phyloVizMap.props");
 			
 		}
 	}

@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import giny.model.Edge;
 import giny.model.Node;
 
 public class SlantedCladogram extends AbstractLayout{
@@ -102,7 +104,17 @@ public class SlantedCladogram extends AbstractLayout{
 
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
+		// Remove bends
 
+		List<Edge> allEdges = network.edgesList();
+		Iterator<Edge> edgesIterator = allEdges.iterator();
+
+		while(edgesIterator.hasNext())
+		{
+
+			Edge edge = edgesIterator.next();
+			networkView.getEdgeView(edge).clearBends();
+		}
 		numLeavesVisited = 0;
 
 		// Obtain post order traversal of nodes starting from the root

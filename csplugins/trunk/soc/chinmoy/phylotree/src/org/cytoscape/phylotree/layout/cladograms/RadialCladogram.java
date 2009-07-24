@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import giny.model.Edge;
 import giny.model.Node;
 
 public class RadialCladogram extends AbstractLayout{
@@ -97,7 +99,17 @@ public class RadialCladogram extends AbstractLayout{
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
+		// Remove bends
 
+		List<Edge> allEdges = network.edgesList();
+		Iterator<Edge> edgesIterator = allEdges.iterator();
+
+		while(edgesIterator.hasNext())
+		{
+
+			Edge edge = edgesIterator.next();
+			networkView.getEdgeView(edge).clearBends();
+		}
 
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);

@@ -117,6 +117,19 @@ public class SlantedPhylogram extends AbstractLayout{
 
 		// Intialize the common functions
 		commonFunctions = new CommonFunctions();
+		// Remove bends
+
+		List<Edge> allEdges = network.edgesList();
+		Iterator<Edge> edgesIterator = allEdges.iterator();
+
+		while(edgesIterator.hasNext())
+		{
+
+			Edge edge = edgesIterator.next();
+			networkView.getEdgeView(edge).clearBends();
+		}
+		
+		
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 		

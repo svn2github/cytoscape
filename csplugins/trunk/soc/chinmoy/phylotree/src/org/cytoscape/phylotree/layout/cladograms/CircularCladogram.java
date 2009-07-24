@@ -134,7 +134,7 @@ public class CircularCladogram extends AbstractLayout{
 		{
 
 			Edge edge = edgesIterator.next();
-			
+			networkView.getEdgeView(edge).clearBends();
 			commonFunctions.addCircularBends(network, networkView, edge);
 		}
 
