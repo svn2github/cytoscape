@@ -48,10 +48,6 @@ import org.apache.felix.framework.util.StringMap;
 import org.apache.felix.main.AutoActivator;
 import org.apache.felix.main.Main;
 import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
-import org.osgi.framework.ServiceReference;
 
 
 /**
@@ -59,10 +55,6 @@ import org.osgi.framework.ServiceReference;
  * bundle as well as starting a CommandLineProvider service. 
  */
 public class Launcher {
-
-	
-	static ServiceReference serv;
-	static BundleContext context;
 	
 	/**
 	 * The main method. 
@@ -99,58 +91,6 @@ public class Launcher {
 			final Felix m_felix = new Felix(configMap);
 			m_felix.start();
 
-
-			m_felix.getBundleContext().addBundleListener(new BundleListener(){
-
-				long id;
-				boolean firstBreak = false;
-				boolean secondBreak = false;
-				
-				public void bundleChanged(BundleEvent event) {
-					if(firstBreak && secondBreak){
-						if(event.getBundle().getSymbolicName().equals(m_felix.getBundleContext().getBundle(m_felix.getBundleContext().getBundles().length-1).getSymbolicName())){
-							long time0 = System.currentTimeMillis();
-							long time1 = System.currentTimeMillis()+100;
-							try{
-								long timediff = time1-time0;
-								System.out.println("\n\n\n\n Loading TaskFactories ... \n\n\n\n");
-								while(timediff<5000){
-									time1 = System.currentTimeMillis();
-									timediff = time1-time0;
-								}
-								m_felix.getBundleContext().getBundle(id).start();
-							}catch(Exception e){e.printStackTrace();}
-						}
-					}
-					
-					if(event.getBundle().getSymbolicName().equals("org.cytoscape.cmdline-parser-impl")){
-						id=event.getBundle().getBundleId();
-						try{
-							if(firstBreak && secondBreak){
-								m_felix.getBundleContext().getBundle(id).start();
-							}
-							else{
-								m_felix.getBundleContext().getBundle(id).stop();
-							}
-						}catch(Exception e){e.printStackTrace();}
-					}
-
-
-					if(event.getBundle().getSymbolicName().equals("org.cytoscape.core-task-impl") && event.getType()==BundleEvent.STARTED){
-						System.out.println("\n\n\n\n 2nd BREAKPOINT \n\n\n\n");
-						secondBreak=true;
-					}
-					
-					if(event.getBundle().getSymbolicName().equals("org.cytoscape.core-task-api") && event.getType()==BundleEvent.STARTED){
-						System.out.println("\n\n\n\n 1st BREAKPOINT \n\n\n\n");
-						firstBreak=true;
-					}
-				
-				}
-				
-			});
-			
-			
             // Wait for framework to stop to exit the VM.
             m_felix.waitForStop(0);
             System.exit(0);
