@@ -293,6 +293,12 @@ public class CommonFunctions {
 		return numLeaves;
 	}
 	
+	
+	/**
+	 * Calculates the optimum factor by which edges must be scaled to obtain an optimum view
+	 * @param network - the network from which the scaling factor is to be calculated
+	 * @return - the factor to be multiplied to the branchLengths to obtain the optimum view
+	 */
 	public double getScalingFactor(CyNetwork network)
 	{
 	
@@ -324,6 +330,9 @@ public class CommonFunctions {
 	
 	/**
 	 * Adds the bends to make the edges look rectangular
+	 * * @param network - the network on which the bends are to be added
+	 * @param networkView - the networkView on which bends are to be added
+	 * @param edge - the edge onto which bends are to be added
 	 */
 	public void addRectangularBends(CyNetwork network, CyNetworkView networkView, Edge edge)
 	{
@@ -352,6 +361,9 @@ public class CommonFunctions {
 	
 	/**
 	 * Adds the bends to make the edges look circular
+	 * @param network - the network on which the bends are to be added
+	 * @param networkView - the networkView on which bends are to be added
+	 * @param edge - the edge onto which bends are to be added
 	 */
 	public void addCircularBends(CyNetwork network, CyNetworkView networkView, Edge edge)
 	{
@@ -382,37 +394,52 @@ public class CommonFunctions {
 				Point2D handlePoint = new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle));
 				Point2D sourcePoint = new Point2D.Double(sourceX, sourceY);
 				circularBend.addHandle(handlePoint);
-				
+			
 				// Algorithm to draw arcs:
+				// Find the length of the chord from the source to the first handle in the bend
+				// Find the length of the segment that would produce an arc of the desired handleInterval
+				// Divide the length of the chord and the subSegment to calculate how many subSegments are required
+				// Number of subSegments on chord = number of handles to produce the arc from the bend
 				
-//				double distance = handlePoint.distance(sourcePoint);
-//				double handleInterval = 18.0;
-//				int iterations = 5;
-//				
-//					if(compareAngles(angle,sourceAngle)==0)
-//
-//					{
-//						for(int i = 0;i<iterations; i ++)
-//						{
-//							angle = angle+(Math.PI/handleInterval);
-//							circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
-//
-//						}
-//					}
-//					else if(compareAngles(angle,sourceAngle)==1)
-//					{
-//						for(int i =0; i<iterations; i++)
-//						{
-//							angle = angle-(Math.PI/handleInterval);
-//							circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
-//
-//						}
-//					}
+				double chordLength = handlePoint.distance(sourcePoint);
+				
+				double handleInterval = Math.PI/18.0;
+				double subSegmentLength = 2*radius*Math.sin(handleInterval/2.0);
+				
+				int iterations = (int)(chordLength/subSegmentLength);
+				
+					if(compareAngles(angle,sourceAngle)==0)
+
+					{
+						for(int i = 0;i<iterations; i ++)
+						{
+							angle = angle+(handleInterval);
+							circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
+
+						}
+					}
+					else if(compareAngles(angle,sourceAngle)==1)
+					{
+						for(int i =0; i<iterations; i++)
+						{
+							angle = angle-(handleInterval);
+							circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
+
+						}
+					}
 				
 			}
 	}
 	
 	
+	/**
+	 * Important for the functioning of addCircularBends
+	 * Given the angle of the initial handle in the bend(arc) and the angle of the source node
+	 * calculates which one is smaller
+	 * @param angle1 - the angle of the initial handle
+	 * @param angle2 - the angle of the source node
+	 * @return 1 if angle1 is smaller, 0 if angle2 is smaller, 2 if error
+	 */
 	private int compareAngles(double angle1, double angle2)
 	{
 		int result = 2;
@@ -425,11 +452,11 @@ public class CommonFunctions {
 		}
 		else if(angle1>=0 && angle2<0)
 		{
-			result = 1;
+			result = 0;
 		}
 		else if(angle1<0 && angle2>=0)
 		{
-			result = 0;
+			result = 1;
 		}
 		
 			return result;
