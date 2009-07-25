@@ -125,11 +125,11 @@
 	<bean id="exitAction" class="cytoscape.internal.actions.ExitAction">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
-	<bean id="undoAction" class="cytoscape.util.undo.UndoAction">
+	<bean id="undoAction" class="cytoscape.internal.actions.UndoAction">
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
-	<bean id="redoAction" class="cytoscape.util.undo.RedoAction">
+	<bean id="redoAction" class="cytoscape.internal.actions.RedoAction">
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
@@ -237,7 +237,7 @@
 	-->
 
 	<!-- Other stuff to be started -->
-	<bean id="undoMonitor" class="cytoscape.util.undo.UndoMonitor">
+	<bean id="undoMonitor" class="cytoscape.internal.util.undo.UndoMonitor">
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>

@@ -1,5 +1,6 @@
+
 /*
-  File: UndoMonitor.java
+  File: CyAbstractEdit.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,57 +35,41 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.util.undo;
 
-import org.cytoscape.work.UndoSupport;
+package cytoscape.util;
 
-import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
-import org.cytoscape.session.events.SetCurrentNetworkViewListener;
+import javax.swing.undo.AbstractUndoableEdit;
 
-import java.util.Properties;
-
-/**
- * This class monitors the undoable edit stack and implements whatever
- * discard policy we might have. Currently, we discard all edits if
- * the network view focus changes.
+/** 
+ * A small convenience class that can be used to create new edits.  All
+ * you should have to do is implement the undo() and redo() methods. The
+ * benefit is that you don't need to worry about setting up names.
  */
-public class UndoMonitor implements SetCurrentNetworkViewListener {
+public abstract class CyAbstractEdit extends AbstractUndoableEdit {
 
-	private UndoSupport undo;
-	private Properties props;
+		protected String desc;
 
-	public UndoMonitor(UndoSupport undo,Properties props) {
+		public CyAbstractEdit(String desc) {
+			this.desc = desc;
+		}
 
-		this.undo = undo;
-		this.props = props;
+		public String getPresentationName() {
+			return desc;
+		}
 
-		undo.getUndoManager().setLimit( getLimit() );
-	}
+		public String getRedoPresentationName() {
+			return "Redo: " + desc;
+		}
 
-    private int getLimit() {
-        int lim;
-        try {
-            lim = Integer.parseInt( props.getProperty("undo.limit") );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            lim = 10;
-        }
+		public String getUndoPresentationName() {
+			return "Undo: " + desc;
+		}
 
-        if ( lim < 0 )
-            lim = 10;
+		public void undo() {
+			super.undo();
+		}
 
-        return lim;
-    }
-
-	/**
- 	 * This method listens for changes to the current network and discards all edits
-   	 * when the network changes. 
-	 *
-	 * @param e The change event.
-	 */
-    public void handleEvent(SetCurrentNetworkViewEvent e) {
-		if ( e.getNetworkView() != null )
-			undo.getUndoManager().discardAllEdits();
-    }
+		public void redo() {
+			super.redo();
+		}
 }
-

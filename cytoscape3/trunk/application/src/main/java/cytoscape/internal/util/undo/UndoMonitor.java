@@ -1,5 +1,5 @@
 /*
-  File: UndoAction.java
+  File: UndoMonitor.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,64 +34,57 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.util.undo;
-
-import cytoscape.util.CytoscapeAction;
-import org.cytoscape.session.CyNetworkManager;
+package cytoscape.internal.util.undo;
 
 import org.cytoscape.work.UndoSupport;
 
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.undo.CannotUndoException;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewListener;
+
+import java.util.Properties;
 
 /**
- * An action that calls undo for the most recent edit in the
- * undoable edit stack.
+ * This class monitors the undoable edit stack and implements whatever
+ * discard policy we might have. Currently, we discard all edits if
+ * the network view focus changes.
  */
-public class UndoAction extends CytoscapeAction {
-	private final static long serialVersionUID = 1202339875212525L;
+public class UndoMonitor implements SetCurrentNetworkViewListener {
 
 	private UndoSupport undo;
+	private Properties props;
+
+	public UndoMonitor(UndoSupport undo,Properties props) {
+
+		this.undo = undo;
+		this.props = props;
+
+		undo.getUndoManager().setLimit( getLimit() );
+	}
+
+    private int getLimit() {
+        int lim;
+        try {
+            lim = Integer.parseInt( props.getProperty("undo.limit") );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            lim = 10;
+        }
+
+        if ( lim < 0 )
+            lim = 10;
+
+        return lim;
+    }
 
 	/**
-	 * Constructs the action.
+ 	 * This method listens for changes to the current network and discards all edits
+   	 * when the network changes. 
+	 *
+	 * @param e The change event.
 	 */
-	public UndoAction(UndoSupport undo,CyNetworkManager netmgr) {
-		super("Undo",netmgr);
-		setAcceleratorCombo(KeyEvent.VK_Z, ActionEvent.CTRL_MASK);
-		setPreferredMenu("Edit");
-		setEnabled(true);
-		this.undo = undo;
-	}
-
-    /**
-     * Tries to run undo() on the top edit of the edit stack.
-     * @param e The action event that triggers this method call.
-     */
-	public void actionPerformed(ActionEvent e) {
-		try {
-			if ( undo.getUndoManager().canUndo() )
-				undo.getUndoManager().undo();
-		} catch (CannotUndoException ex) {
-			System.out.println("Unable to undo: " + ex);
-			ex.printStackTrace();
-		}
-	}
-
-    /**
-     * Called when the menu that contains this action is clicked on.
-     * @param e The menu event that triggers this method call.
-     */
-	public void menuSelected(MenuEvent e) {
-		if (undo.getUndoManager().canUndo()) {
-			setEnabled(true);
-			putValue(Action.NAME, undo.getUndoManager().getUndoPresentationName());
-		} else {
-			setEnabled(false);
-			putValue(Action.NAME, "Undo");
-		}
-	}
+    public void handleEvent(SetCurrentNetworkViewEvent e) {
+		if ( e.getNetworkView() != null )
+			undo.getUndoManager().discardAllEdits();
+    }
 }
+

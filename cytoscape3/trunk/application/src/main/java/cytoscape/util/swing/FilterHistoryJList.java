@@ -34,8 +34,6 @@
 */
 package cytoscape.util.swing;
 
-import cytoscape.Cytoscape;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
