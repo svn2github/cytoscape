@@ -654,7 +654,7 @@ public class LayerBuilderDialog extends JDialog {
 		layerConnectionTableModel.clearAllRow();
 
 		if (layeredNetworkListModel.size() > 1) {
-			for (int i = 0; i < layeredNetworkListModel.size(); i++) {
+			for (int i = 0; i < layeredNetworkListModel.size() - 1; i++) {
 				Long[] layerConnectionRow = new Long[layerConnectionTableModel
 						.getColumnCount()];
 				layerConnectionRow[LAYER1] = title2IdMap
