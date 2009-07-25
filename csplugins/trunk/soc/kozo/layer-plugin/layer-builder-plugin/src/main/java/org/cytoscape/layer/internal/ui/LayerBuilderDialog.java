@@ -55,7 +55,7 @@ public class LayerBuilderDialog extends JDialog {
 
 	private LayerConnectionTableModel layerConnectionTableModel;
 	private NetworkNameTableCellRenderer networkNameTableCellRenderer;
-	
+
 	private JComboBox comboBoxEditor;
 
 	/**
@@ -88,9 +88,9 @@ public class LayerBuilderDialog extends JDialog {
 				networkNameTableCellRenderer);
 		this.layerConnectionTable.getTableHeader().setReorderingAllowed(false);
 		this.comboBoxEditor = new JComboBox();
-		comboBoxEditor.addItem("Test1");
-		comboBoxEditor.addItem("Test2");
-		layerConnectionTable.getColumn("Connector Networks").setCellEditor(new DefaultCellEditor(comboBoxEditor));
+		comboBoxEditor.addItem("Undefined");
+		layerConnectionTable.getColumn("Connector Networks").setCellEditor(
+				new DefaultCellEditor(comboBoxEditor));
 	}
 
 	private void buildListModels() {
@@ -600,29 +600,31 @@ public class LayerBuilderDialog extends JDialog {
 
 		// Move available networks to layer list
 		for (int i = 0; i < availableNetworkListModel.size(); i++)
-			layeredNetworkListModel.addElement(availableNetworkListModel.get(i));
-		
+			layeredNetworkListModel
+					.addElement(availableNetworkListModel.get(i));
+
 		// Remove them from the available network list
 		availableNetworkListModel.clear();
-		
-		// If only one network, return. 
-		if(layeredNetworkListModel.size()<2)
+
+		// If only one network, return.
+		if (layeredNetworkListModel.size() < 2)
 			return;
-		
+
 		// Build table if necessary
-		for (int i = 0; i < layeredNetworkListModel.size()-1; i++) {
-			
-			final Long[] layerConnectionRow = new Long[layerConnectionTable.getColumnCount()];
-			
+		for (int i = 0; i < layeredNetworkListModel.size() - 1; i++) {
+
+			final Long[] layerConnectionRow = new Long[layerConnectionTable
+					.getColumnCount()];
+
 			// These two columns represents a layer
 			layerConnectionRow[LAYER1] = title2IdMap
 					.get(layeredNetworkListModel.get(i));
 			layerConnectionRow[LAYER2] = title2IdMap
 					.get(layeredNetworkListModel.get(i + 1));
-			
+
 			// By default, no connector is available.
 			layerConnectionRow[CONNECTOR] = null;
-			
+
 			// Add this row to the table
 			layerConnectionTableModel.addRow(layerConnectionRow);
 		}
