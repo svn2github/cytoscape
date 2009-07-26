@@ -77,6 +77,69 @@ public class EisenCluster {
 	boolean adjustDiagonals = false;
 	boolean zeroMissing = false;
 
+	public static void updateAttributes(Matrix matrix, List<String>attrList, 
+	                                    String[] weightAttributes, Integer[] order,
+	                                    String cluster_type, 
+	                                    boolean adjustDiagonals, boolean zeroMissing) {
+		// Update the network attribute "HierarchicalCluster" and make it hidden
+		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+		List<String>params = new ArrayList();
+
+		if (zeroMissing)
+			params.add("zeroMissing");
+
+		netAttr.setAttribute(netID, CLUSTER_TYPE_ATTRIBUTE, cluster_type);
+
+		if (matrix.isTransposed()) {
+			netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
+		} else {
+			netAttr.setListAttribute(netID, CLUSTER_NODE_ATTRIBUTE, attrList);
+			if (matrix.isSymmetrical()) {
+				netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
+				netAttr.setAttribute(netID, CLUSTER_EDGE_ATTRIBUTE, weightAttributes[0]);
+				if (adjustDiagonals) {
+					params.add("diagonals="+matrix.getValue(0,0));
+				}
+			}
+		}
+		netAttr.setListAttribute(netID, CLUSTER_PARAMS_ATTRIBUTE, params);
+
+		String[] rowArray = matrix.getRowLabels();
+		ArrayList<String> orderList = new ArrayList();
+
+		String[] columnArray = matrix.getColLabels();
+		ArrayList<String>columnList = new ArrayList(columnArray.length);
+
+		for (int i = 0; i < order.length; i++) {
+			orderList.add(rowArray[order[i]]);
+			if (matrix.isSymmetrical())
+				columnList.add(rowArray[order[i]]);
+		}
+
+		if (!matrix.isSymmetrical()) {
+			for (int col = 0; col < columnArray.length; col++) {
+				columnList.add(columnArray[col]);
+			}
+		}
+
+		if (matrix.isTransposed()) {
+			// We did an Array cluster -- output the calculated array order
+			// and the actual node order
+			netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, orderList);
+
+			// Don't override the columnlist if a node order already exists
+			if (!netAttr.hasAttribute(netID, NODE_ORDER_ATTRIBUTE))
+				netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, columnList);
+		} else {
+			netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, orderList);
+			// Don't override the columnlist if a node order already exists
+			if (!netAttr.hasAttribute(netID, ARRAY_ORDER_ATTRIBUTE))
+				netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, columnList);
+		}
+
+	}
+
 	public EisenCluster(String weightAttributes[], DistanceMetric metric, 
 	                    ClusterMethod clusterMethod, CyLogger log, TaskMonitor monitor) {
 		this.logger = log;
@@ -199,7 +262,7 @@ public class EisenCluster {
 		// Now sort based on tree structure
 		Integer order[] = TreeSort(matrix, nodeList.length, nodeOrder, nodeCounts, nodeList);
 
-		updateAttributes(matrix, attrList, weightAttributes, order, "hierarchical");
+		updateAttributes(matrix, attrList, weightAttributes, order, "hierarchical", adjustDiagonals, zeroMissing);
 
 		// Finally, create the group hierarchy
 		// The root is the last entry in our nodeList
@@ -218,68 +281,6 @@ public class EisenCluster {
 		}
 
 		return "Complete";
-	}
-
-	public void updateAttributes(Matrix matrix, List<String>attrList, 
-	                             String[] weightAttributes, Integer[] order,
-	                             String cluster_type) {
-		// Update the network attribute "HierarchicalCluster" and make it hidden
-		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
-		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
-		List<String>params = new ArrayList();
-
-		if (zeroMissing)
-			params.add("zeroMissing");
-
-		netAttr.setAttribute(netID, CLUSTER_TYPE_ATTRIBUTE, cluster_type);
-
-		if (matrix.isTransposed()) {
-			netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
-		} else {
-			netAttr.setListAttribute(netID, CLUSTER_NODE_ATTRIBUTE, attrList);
-			if (matrix.isSymmetrical()) {
-				netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
-				netAttr.setAttribute(netID, CLUSTER_EDGE_ATTRIBUTE, weightAttributes[0]);
-				if (adjustDiagonals) {
-					params.add("diagonals="+matrix.getValue(0,0));
-				}
-			}
-		}
-		netAttr.setListAttribute(netID, CLUSTER_PARAMS_ATTRIBUTE, params);
-
-		String[] rowArray = matrix.getRowLabels();
-		ArrayList<String> orderList = new ArrayList();
-
-		String[] columnArray = matrix.getColLabels();
-		ArrayList<String>columnList = new ArrayList(columnArray.length);
-
-		for (int i = 0; i < order.length; i++) {
-			orderList.add(rowArray[order[i]]);
-			if (matrix.isSymmetrical())
-				columnList.add(rowArray[order[i]]);
-		}
-
-		if (!matrix.isSymmetrical()) {
-			for (int col = 0; col < columnArray.length; col++) {
-				columnList.add(columnArray[col]);
-			}
-		}
-
-		if (matrix.isTransposed()) {
-			// We did an Array cluster -- output the calculated array order
-			// and the actual node order
-			netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, orderList);
-
-			// Don't override the columnlist if a node order already exists
-			if (!netAttr.hasAttribute(netID, NODE_ORDER_ATTRIBUTE))
-				netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, columnList);
-		} else {
-			netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, orderList);
-			// Don't override the columnlist if a node order already exists
-			if (!netAttr.hasAttribute(netID, ARRAY_ORDER_ATTRIBUTE))
-				netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, columnList);
-		}
-
 	}
 
 	public void resetAttributes() {

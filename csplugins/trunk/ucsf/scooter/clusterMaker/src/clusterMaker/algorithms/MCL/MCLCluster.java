@@ -436,6 +436,9 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		if (edgeCutOff != null)
 			runMCL.setEdgeCutOff(edgeCutOff);
 
+		if (takeNegLOG)
+			runMCL.setTakeNegLog(true);
+
 		runMCL.run(monitor);
 
 		// Tell any listeners that we're done

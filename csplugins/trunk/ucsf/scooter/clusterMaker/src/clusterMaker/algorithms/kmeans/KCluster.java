@@ -137,7 +137,7 @@ public class KCluster {
     }
 
 		// Update the network attributes
-		EisenCluster.updateAttributes(matrix, attrList, weightAttributes, rowOrder, "kmeans");
+		EisenCluster.updateAttributes(matrix, attrList, weightAttributes, rowOrder, "kmeans", false, false);
 
 		return "Complete";
 	}

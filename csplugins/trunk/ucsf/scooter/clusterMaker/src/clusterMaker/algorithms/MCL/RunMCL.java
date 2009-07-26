@@ -64,7 +64,7 @@ public class RunMCL {
 		this.number_iterations = num_iterations;
 		this.clusteringThresh = clusteringThresh;
 		this.maxResidual = maxResidual;
-		this.takeNegLOG = takeNegLOG;
+		this.takeNegLOG = false;
 		this.logger = logger;
 		this.createNewNetwork = false;
 		this.selectedOnly = false;
@@ -84,6 +84,7 @@ public class RunMCL {
 	public void setDirectedEdges() { directedEdges = true; }
 	public void setAdjustLoops() { adjustLoops = true; }
 	public void setEdgeCutOff(Double e) { edgeCutoff = e; }
+	public void setTakeNegLog(boolean t) { takeNegLOG = t; }
 	
 	public void run(TaskMonitor monitor)
 	{
@@ -131,7 +132,7 @@ public class RunMCL {
 		
 			else
 				continue;
-		    
+
 		  /*Take -LOG of edge weight (E-Value) if so specified*/
 			if(takeNegLOG)
 				if(edgeWeight != 0.0)
@@ -139,8 +140,9 @@ public class RunMCL {
 				else
 					edgeWeight = 500; // Assume 1e-500 as a reasonble upper bound
 
-			if (edgeCutoff != null && edgeWeight < edgeCutoff.doubleValue())
+			if (edgeCutoff != null && edgeWeight < edgeCutoff.doubleValue()) {
 				continue;
+			}
 
 			if(edgeWeight < minEdgeWeight)
 				minEdgeWeight = edgeWeight;
