@@ -13,8 +13,7 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
-import cytoscape.Cytoscape;
-import cytoscape.util.CyAbstractEdit;
+import cytoscape.util.swing.CyAbstractEdit;
 
 
 /**
@@ -70,7 +69,7 @@ class DeleteEdit extends CyAbstractEdit {
 
 		CyNetworkView netView = netmgr.getNetworkView(net.getSUID());	
 		netView.updateView();
-        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
+        //Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
         deleteAction.setEnabled(false);
 	}
 
@@ -93,7 +92,7 @@ class DeleteEdit extends CyAbstractEdit {
 		}
 
 		netView.updateView();
-        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
+        //Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
         deleteAction.setEnabled(true);
 	}
 }
