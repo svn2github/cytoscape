@@ -671,14 +671,18 @@ public class LayerBuilderDialog extends JDialog {
 				}
 				layerConnectionTableModel.addRow(layerConnectionRow);
 			}
-		}
 
-		if (availableNetworkListModel.size() > 0) {
-			comboBoxEditor.removeAllItems();
-			comboBoxEditor.addItem("Undefined");
-			for (int i = 0; i < availableNetworkListModel.size(); i++) {
-				comboBoxEditor.addItem(availableNetworkListModel.get(i));
+			if (availableNetworkListModel.size() > 0) {
+				comboBoxEditor.removeAllItems();
+				comboBoxEditor.addItem("Undefined");
+				for (int i = 0; i < availableNetworkListModel.size(); i++) {
+					comboBoxEditor.addItem(availableNetworkListModel.get(i));
+				}
+			} else {
+				comboBoxEditor.removeAllItems();
+				comboBoxEditor.addItem("Undefined");
 			}
+
 		}
 
 		layerConnectionTable.repaint();
@@ -705,7 +709,7 @@ public class LayerBuilderDialog extends JDialog {
 		layerConnectionTableModel.clearAllRow();
 
 		if (layeredNetworkListModel.size() > 1) {
-			for (int i = 0; i < layeredNetworkListModel.size(); i++) {
+			for (int i = 0; i < layeredNetworkListModel.size() - 1; i++) {
 				Long[] layerConnectionRow = new Long[layerConnectionTableModel
 						.getColumnCount()];
 				layerConnectionRow[LAYER1] = title2IdMap
@@ -718,6 +722,10 @@ public class LayerBuilderDialog extends JDialog {
 				}
 				layerConnectionTableModel.addRow(layerConnectionRow);
 			}
+
+			// if (availableNetworkListModel.size() > 0) {
+			//				
+			// }
 		}
 
 		layerConnectionTable.repaint();
