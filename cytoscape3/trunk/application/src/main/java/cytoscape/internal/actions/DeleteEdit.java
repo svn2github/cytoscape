@@ -1,16 +1,20 @@
 
 package cytoscape.internal.actions;
 
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
+
+import java.util.Set;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.session.CyNetworkManager;
-import cytoscape.Cytoscape;
-import cytoscape.util.undo.CyAbstractEdit;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
-import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import java.util.Set;
+
+import cytoscape.Cytoscape;
+import cytoscape.util.CyAbstractEdit;
 
 
 /**
