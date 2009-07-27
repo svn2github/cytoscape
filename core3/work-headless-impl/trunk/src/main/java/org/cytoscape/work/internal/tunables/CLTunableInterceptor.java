@@ -13,8 +13,6 @@ import org.cytoscape.work.AbstractTunableInterceptor;
 import org.cytoscape.cmdline.launcher.CommandLineProvider;
 
 
-
-
 public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 
 	private String[] args;
@@ -39,14 +37,14 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		}
 
 		
-		//added
+		//to get the right arguments from the parser
 		this.args = clp.getSpecificArgs();		
 		
+		//create the options for all the handlers
 		Options options = new Options();
-
 		for ( CLHandler h : lh )
 			options.addOption( h.getOption() );
-//		options.addOption("h", "help", false, "Print this message.");
+		//add an "Help" option
 		options.addOption("H", "fullHelp", false, "Display all the available Commands for this Task");
 
 		
@@ -56,19 +54,18 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
         try {
             line = parser.parse(options, args);
         } catch (ParseException e) {
-            System.err.println("Parsing command line failed: " + e.getMessage());
-			printHelp(options);
+            System.err.println("Parsing command line failed: " + e.getMessage()+"\n");
+			printHelp(options,"Error in arguments of "+ objs[0].getClass().getSimpleName() + " -->  see options below",objs[0].getClass().getSimpleName());
             System.exit(1);
         }
 
         
-        //Print the Help if -h is requested
+        //Print the Help if -H is requested or if there is an error of parsing
         if (line.hasOption("H")) {
-        	System.out.println("The Help for "+ objs[0].getClass().getSimpleName()+" has been called");
-			printHelp(options);
+        	printHelp(options,"For the arguments of "+ objs[0].getClass().getSimpleName() + " -->  see options below",objs[0].getClass().getSimpleName());
 			System.exit(0);
         }
-        
+
         //Set the new tunables with the arguments parsed for options
 		for ( CLHandler h : lh )
 			h.handleLine( line );
@@ -76,10 +73,11 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		return true;
 	}
 
-	private static void printHelp(Options options) {
+	private static void printHelp(Options options,String info,String taskName) {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.setWidth(100);
-		formatter.printHelp("\njava -Xmx512M -jar cytoscape.jar [Options]","\nOptions", options,"\nRun : \"java -jar anntun.jar <command> --cmd\" to get detailed help on each command");
+		formatter.setWidth(110);
+		System.out.println(info);
+		formatter.printHelp("\njava -Xmx512M -jar headless-cytoscape.jar -"+ taskName + " -<option> -<arg>","\noptions:", options,"\nTip : run \"java -jar headless-cytoscape.jar -<task> -<option> --cmd\" to get detailed help on this option");
 	}
 
 
