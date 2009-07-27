@@ -723,9 +723,17 @@ public class LayerBuilderDialog extends JDialog {
 				layerConnectionTableModel.addRow(layerConnectionRow);
 			}
 
-			// if (availableNetworkListModel.size() > 0) {
-			//				
-			// }
+			if (availableNetworkListModel.size() > 0) {
+				comboBoxEditor.removeAllItems();
+				comboBoxEditor.addItem("Undefined");
+				for (int i = 0; i < availableNetworkListModel.size(); i++) {
+					comboBoxEditor.addItem(availableNetworkListModel.get(i));
+				}
+			} else {
+				comboBoxEditor.removeAllItems();
+				comboBoxEditor.addItem("Undefined");
+			}
+
 		}
 
 		layerConnectionTable.repaint();
