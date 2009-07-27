@@ -14,31 +14,27 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.cytoscape.cmdline.launcher.CommandLineProvider;
 import org.cytoscape.work.TaskFactory;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
 
 
 public class CLTaskFactoryInterceptor {
 	
 	CommandLineProvider clp;
-	
-    private String[] args;
     Map<TaskFactory, TFWrapper> taskMap;
     private Map<String, List<String>> tasksWithTheirArgs;
+    private String[] args;
     private List<String> listOfChoosenTasks;
     private Options optionsOfTasks;
     private CommandLineParser parser = new PosixParser();
     private CommandLine line = null;
-
-    long time = 0;
     private TaskFactoryGrabber grabber;
+    //private long time = 0;
     
     CLTaskFactoryInterceptor(CommandLineProvider colipr, TaskFactoryGrabber tfg) {
     	this.clp = colipr;
     	this.grabber = tfg;
-/*    
+
+    	
+    	/*    
 		int stable = 0;
 		int numTasks = 0;
     	while(stable < 100000) {
@@ -52,7 +48,7 @@ public class CLTaskFactoryInterceptor {
 		}
 		*/
 
-    	taskMap = tfg.getTaskMap();
+    	taskMap = grabber.getTaskMap();
     	args = clp.getCommandLineCompleteArgs();
 
     	createTaskOptions();
@@ -61,11 +57,6 @@ public class CLTaskFactoryInterceptor {
         executeCommandLineArguments();
     }
     
-//    private void executeParsingActions(){
-//        findTaskArguments();
-//        parseTaskArguments();
-//        executeCommandLineArguments();    	
-//    }
     
 
     private void createTaskOptions() {
@@ -94,22 +85,31 @@ public class CLTaskFactoryInterceptor {
 
         // iterate over args
         for (String argsString : args) {
+        	
 			// if the arg represents task, add it to the task argument list
             if (tasksWithTheirArgs.containsKey(argsString)) {
                 lastArg = argsString;
                 lastIdx = 0;
                 listOfChoosenTasks.add(lastArg);
-			// otherwise add it to the list of task specific args 
-            } else {
+                
+            }
+            else if(tasksWithTheirArgs.containsKey("-"+argsString)){
+            	printHelp(optionsOfTasks,"\nAdd \" - \" to "+ argsString + " or check the options below");
+            }
+            	
+            else { // otherwise add it to the list of task specific args
             	if (!argsString.startsWith("-")) {
-            		tasksWithTheirArgs.get(lastArg).get(lastIdx).concat(" " + argsString);
-            		tasksWithTheirArgs.get(lastArg).set(lastIdx,tasksWithTheirArgs.get(lastArg).get(lastIdx).concat(" " + argsString));
-                    lastIdx++;
+            		if(lastArg == null){
+            			printHelp(optionsOfTasks,"The Task \"" + argsString + "\" doesn't exist : Check the options below");
+            		}
+            		if(tasksWithTheirArgs.get(lastArg).size()!=0){
+            			//tasksWithTheirArgs.get(lastArg).get(lastIdx).concat(" " + argsString);
+            			tasksWithTheirArgs.get(lastArg).set(lastIdx,tasksWithTheirArgs.get(lastArg).get(lastIdx).concat(" " + argsString));
+            			lastIdx++;
+            		}
             	}
             	else if (lastArg == null) {
-                    System.out.println("The Task \"" + argsString + "\" doesn't exist : Check the options");
-                    printHelp(optionsOfTasks);
-                    System.exit(0);
+                    printHelp(optionsOfTasks,"The Task \"" + argsString + "\" doesn't exist : Check the options below");
                 } else {
                 	tasksWithTheirArgs.get(lastArg).add(argsString);
                 }
@@ -119,8 +119,7 @@ public class CLTaskFactoryInterceptor {
         
         
         //print the different parsed arguments
-		/*
-        System.out.println("tasksWithTheirArgs :");
+/*        System.out.println("tasksWithTheirArgs :");
         for(String st : tasksWithTheirArgs.keySet())
         	System.out.println(st + " = " + tasksWithTheirArgs.get(st));
         System.out.println("\n\n");
@@ -129,7 +128,7 @@ public class CLTaskFactoryInterceptor {
         for(String st : listOfChoosenTasks)
         	System.out.println(st);
         System.out.println("\n\n\n");
-		*/
+*/		
         
         
         
@@ -148,7 +147,7 @@ public class CLTaskFactoryInterceptor {
             line = parser.parse(optionsOfTasks,listOfChoosenTasks.toArray(new String[listOfChoosenTasks.size()]));
         } catch (ParseException pe) {
             System.err.println("Parsing command line failed: " +pe.getMessage());
-            printHelp(optionsOfTasks);
+            printHelp(optionsOfTasks,"");
             System.exit(1);
         }
     }
@@ -156,8 +155,7 @@ public class CLTaskFactoryInterceptor {
     private void executeCommandLineArguments() {
         if (line.hasOption("listTasks")) {
             System.out.println("The General Help has been called");
-            printHelp(optionsOfTasks);
-            System.exit(0);
+            printHelp(optionsOfTasks,"The General Help has been called");
         }
 
         for (String st : listOfChoosenTasks) {
@@ -165,40 +163,50 @@ public class CLTaskFactoryInterceptor {
                 if (st.equals(tf.getName())) {
 
                 	String tFactoryName = tf.getName();
-               		List<String> lst = new ArrayList<String>();	
-                	
-               		for(int i=0;i<tasksWithTheirArgs.get(tFactoryName).size();i++) {
-               			if(tasksWithTheirArgs.get(tFactoryName).get(i).contains(" ")) {
-                   			int val = tasksWithTheirArgs.get(tFactoryName).get(i).indexOf(" ");
-                   			lst.add(tasksWithTheirArgs.get(tFactoryName).get(i).substring(0, val));
-                   			lst.add(tasksWithTheirArgs.get(tFactoryName).get(i).substring(val+1));
-               			}
-               			else{
-               				lst.add(tasksWithTheirArgs.get(tFactoryName).get(i).toString());
-               			}
-               		}
-                	
+               		List<String> lst = new ArrayList<String>();
+               		
+                	if(tasksWithTheirArgs.get(tFactoryName).size()!=0){
+                		
+	               		for(int i=0;i<tasksWithTheirArgs.get(tFactoryName).size();i++) {
+	               			if(tasksWithTheirArgs.get(tFactoryName).get(i).contains(" ")) {
+	                   			int val = tasksWithTheirArgs.get(tFactoryName).get(i).indexOf(" ");
+	                   			lst.add(tasksWithTheirArgs.get(tFactoryName).get(i).substring(0, val));
+	                   			lst.add(tasksWithTheirArgs.get(tFactoryName).get(i).substring(val+1));
+	               			}
+	               			else{
+	               				lst.add(tasksWithTheirArgs.get(tFactoryName).get(i).toString());
+	               				//lst.add("-H");
+	               			}
+	               		}
+                	}
+                	else{
+                		lst.add("-H");
+                	}
+                		
+                		
               		//creation of arguments
                		String[] args = new String[lst.size()];
                		for(int i=0;i<lst.size();i++)args[i]=lst.get(i);
                		
                		clp.setSpecificArgs(args);
-               		tf.executeTask();                }
+               		tf.executeTask();      
+               	}
             }
         }
 
         
         
         if (args.length == 0) {
-            printHelp(optionsOfTasks);
-            System.exit(0);
+            printHelp(optionsOfTasks,"");
         }
     }
 
-    private static void printHelp(Options options) {
+    private static void printHelp(Options options,String instructions) {
         HelpFormatter formatter = new HelpFormatter();
-        System.out.println("\n");
-        formatter.printHelp("java -Xmx512M -jar cytoscape.jar [Options]",
-            "\nHere are the different taskFactories implemented :", options, "");
+        System.out.println(instructions);
+        formatter.printHelp("java -Xmx512M -jar headless-cytoscape.jar [Options]",
+            "\nHere are the different taskFactories implemented :\n", options, "");
+    	System.exit(0);
+
     }
 }
