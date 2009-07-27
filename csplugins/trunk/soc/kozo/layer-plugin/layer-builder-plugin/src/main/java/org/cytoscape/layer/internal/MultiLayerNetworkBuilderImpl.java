@@ -39,12 +39,13 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 		// HashSet cumulatedNodes = new HashSet();
 		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
+		Map<String, CyEdge> edgeMap = new HashMap<String, CyEdge>();
 
 		// Connect layers here...
 		for (CyNetwork topLayer : layers) {
 			for (CyNetwork bottomLayer : layers) {
 				for (CyNetwork connector : connectors) {
-					connect(topLayer, bottomLayer, connector, nodeMap);
+					connect(topLayer, bottomLayer, connector, nodeMap, edgeMap);
 				}
 			}
 		}
@@ -57,7 +58,8 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	}
 
 	private void connect(CyNetwork topLayer, CyNetwork connector,
-			CyNetwork bottomLayer, Map<String, CyNode> nodeMap) {
+			CyNetwork bottomLayer, Map<String, CyNode> nodeMap,
+			Map<String, CyEdge> edgeMap) {
 		// Connect them
 
 		// Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
@@ -82,9 +84,12 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			CyNode targetNode = edge.getTarget();
 			String targetName = targetNode.attrs().get("name", String.class);
 
-			CyEdge newEdge = layeredNetwork.addEdge(nodeMap.get(sourceName),
-					nodeMap.get(targetName), true);
-			newEdge.attrs().set("name", edgeName);
+			if (edgeMap.containsKey(edgeName) == false) {
+				CyEdge newEdge = layeredNetwork.addEdge(
+						nodeMap.get(sourceName), nodeMap.get(targetName), true);
+				newEdge.attrs().set("name", edgeName);
+				edgeMap.put(edgeName, newEdge);
+			}
 
 		}
 
@@ -109,9 +114,12 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			CyNode targetNode = edge.getTarget();
 			String targetName = targetNode.attrs().get("name", String.class);
 
-			CyEdge newEdge = layeredNetwork.addEdge(nodeMap.get(sourceName),
-					nodeMap.get(targetName), true);
-			newEdge.attrs().set("name", edgeName);
+			if (edgeMap.containsKey(edgeName) == false) {
+				CyEdge newEdge = layeredNetwork.addEdge(
+						nodeMap.get(sourceName), nodeMap.get(targetName), true);
+				newEdge.attrs().set("name", edgeName);
+				edgeMap.put(edgeName, newEdge);
+			}
 
 		}
 
@@ -136,9 +144,12 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			CyNode targetNode = edge.getTarget();
 			String targetName = targetNode.attrs().get("name", String.class);
 
-			CyEdge newEdge = layeredNetwork.addEdge(nodeMap.get(sourceName),
-					nodeMap.get(targetName), true);
-			newEdge.attrs().set("name", edgeName);
+			if (edgeMap.containsKey(edgeName) == false) {
+				CyEdge newEdge = layeredNetwork.addEdge(
+						nodeMap.get(sourceName), nodeMap.get(targetName), true);
+				newEdge.attrs().set("name", edgeName);
+				edgeMap.put(edgeName, newEdge);
+			}
 
 		}
 

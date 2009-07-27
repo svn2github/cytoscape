@@ -23,13 +23,14 @@ public class LayerConnectionTableModel extends AbstractTableModel {
 		return dataModel.size();
 	}
 
-	public Object getValueAt(int rowIndex, int columnIndex) {
+	public Long getValueAt(int rowIndex, int columnIndex) {
 		return dataModel.get(rowIndex)[columnIndex];
 	}
 
 	public void setValueAt(Object value, int row, int col) {
-		if (value instanceof Long == false) return;
-		
+		if (value instanceof Long == false)
+			return;
+
 		Long[] rowData = dataModel.get(row);
 		rowData[col] = (Long) value;
 

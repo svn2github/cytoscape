@@ -543,51 +543,21 @@ public class LayerBuilderDialog extends JDialog {
 		List<CyNetwork> layers = new ArrayList<CyNetwork>();
 		List<CyNetwork> connectors = new ArrayList<CyNetwork>();
 
-		// System.out.println(title2IdMap.get(layeredNetworkListModel
-		// .getElementAt(0)));
-		// System.out.println(title2IdMap.get(layeredNetworkListModel
-		// .getElementAt(1)));
-		// System.out.println(title2IdMap.get(layeredNetworkListModel
-		// .getElementAt(2)));
+		for (int i = 0; i < layeredNetworkListModel.getSize(); i++) {
+			layers.add(manager.getNetwork(title2IdMap
+					.get(layeredNetworkListModel.getElementAt(i))));
+		}
 
-		// System.out.println(manager.getNetwork(title2IdMap
-		// .get(layeredNetworkListModel.getElementAt(0))));
-		// System.out.println(manager.getNetwork(title2IdMap
-		// .get(layeredNetworkListModel.getElementAt(1))));
-		// System.out.println(manager.getNetwork(title2IdMap
-		// .get(layeredNetworkListModel.getElementAt(2))));
-
-		layers.add(manager.getNetwork(title2IdMap.get(layeredNetworkListModel
-				.getElementAt(0))));
-
-		connectors.add(manager.getNetwork(title2IdMap
-				.get(layeredNetworkListModel.getElementAt(1))));
-
-		layers.add(manager.getNetwork(title2IdMap.get(layeredNetworkListModel
-				.getElementAt(2))));
+		for (int i = 0; i < layerConnectionTableModel.getRowCount(); i++) {
+			connectors.add(manager.getNetwork(layerConnectionTableModel
+					.getValueAt(i, CONNECTOR)));
+		}
 
 		// Setup
 		builder.setSourceNetworks(layers, connectors);
 		manager.addNetwork(builder.buildLayeredNetwork());
 
-		// for (CyNode cyNode : builder.buildLayeredNetwork().getNodeList()) {
-		// System.out.println(cyNode.attrs().get("name", String.class));
-		// }
-
-		//
-		// if (builder.buildLayeredNetwork() != null) {
-		// System.out.println(builder.buildLayeredNetwork().getEdgeCount());
-		// System.out.println(builder.buildLayeredNetwork().getNodeCount());
-		// }
-
-		// System.out.println(builder.buildLayeredNetwork());
-
-		// manager.addNetwork(builder.buildLayeredNetwork());
-
-		// BuildMultilayerNetworkTask task = new BuildMultilayerNetworkTask(
-		// manager, builder);
-
-		// Run
+		this.dispose();
 
 	}// GEN-LAST:event_GenerateIntegratedNetworkButtonActionPerformed
 
