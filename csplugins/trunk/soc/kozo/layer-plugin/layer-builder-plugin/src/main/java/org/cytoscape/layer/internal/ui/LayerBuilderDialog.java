@@ -610,6 +610,10 @@ public class LayerBuilderDialog extends JDialog {
 		if (layeredNetworkListModel.size() < 2)
 			return;
 
+		layerConnectionTableModel.clearAllRow();
+		comboBoxEditor.removeAllItems();
+		comboBoxEditor.addItem("Undefined");
+
 		// Build table if necessary
 		for (int i = 0; i < layeredNetworkListModel.size() - 1; i++) {
 
