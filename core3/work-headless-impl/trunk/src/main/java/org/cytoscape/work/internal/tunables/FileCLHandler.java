@@ -35,19 +35,19 @@ public class FileCLHandler extends AbstractCLHandler{
 		for(String st : line.getArgs())System.out.println(st);
 		
 		try {
-		if ( line.hasOption( fc ) ) {
-			if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
-			if ( f != null ){
-				file = new File(line.getOptionValue(fc));
-				f.set(o,file);
+			if ( line.hasOption( fc ) ) {
+				if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
+				if ( f != null ){
+					file = new File(line.getOptionValue(fc));
+					f.set(o,file);
+				}
+				else if ( smethod != null ){
+					file = new File(line.getOptionValue(fc));
+					smethod.invoke(o,file);
+				}
+				else 
+					throw new Exception("no Field or Method to set!");
 			}
-			else if ( smethod != null ){
-				file = new File(line.getOptionValue(fc));
-				smethod.invoke(o,file);
-			}
-			else 
-				throw new Exception("no Field or Method to set!");
-		}
 		} catch(Exception e) {e.printStackTrace();}
 	}
 

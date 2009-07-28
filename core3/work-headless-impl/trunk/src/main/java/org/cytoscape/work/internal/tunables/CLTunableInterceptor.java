@@ -47,6 +47,10 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		//add an "Help" option
 		options.addOption("H", "fullHelp", false, "Display all the available Commands for this Task");
 
+		if(lh.size()==0)args = new String[0];
+		//for(String st : args)System.out.println(st);
+		
+		
 		
         //Try to parse the command line
         CommandLineParser parser = new PosixParser();

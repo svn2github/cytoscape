@@ -1,8 +1,10 @@
 package org.cytoscape.work.internal.tunables;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 
 import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.Tunable;
@@ -49,17 +51,21 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 		else if( type == BoundedDouble.class)
 			return new BoundedCLHandler<BoundedDouble>(gmethod,smethod,o,tg,ts);
 		
-		else if(type == FlexiblyBoundedInteger.class)
+		else if( type == FlexiblyBoundedInteger.class)
 			return new FlexiblyBoundedCLHandler<FlexiblyBoundedInteger>(gmethod,smethod,o,tg,ts);
-		else if(type == FlexiblyBoundedDouble.class)
+		else if( type == FlexiblyBoundedDouble.class)
 			return new FlexiblyBoundedCLHandler<FlexiblyBoundedDouble>(gmethod,smethod,o,tg,ts);
-		else if(type == ListSingleSelection.class)
+		else if( type == ListSingleSelection.class)
 			return new ListSingleSelectionCLHandler<Object>(gmethod,smethod,o,tg,ts);
-		else if(type == ListMultipleSelection.class)
+		else if( type == ListMultipleSelection.class)
 			return new ListMultipleSelectionCLHandler<Object>(gmethod,smethod,o,tg,ts);
 		
-		else if(type == File.class)
+		else if( type == File.class)
 			return new FileCLHandler(gmethod,smethod,o,tg,ts);
+		else if( type == URL.class)
+			return new URLCLHandler(gmethod,smethod,o,tg,ts);
+		else if( type == InputStream.class)
+			return new InputStreamCLHandler(gmethod,smethod,o,tg,ts);
 		else
 			return null;
 	}
@@ -108,6 +114,10 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 		
 		else if ( type == File.class)
 			return new FileCLHandler(f,o,t);
+		else if ( type == URL.class)
+			return new URLCLHandler(f,o,t);
+		else if( type == InputStream.class)
+			return new InputStreamCLHandler(f,o,t);
 		else
 			return null;
 	}
