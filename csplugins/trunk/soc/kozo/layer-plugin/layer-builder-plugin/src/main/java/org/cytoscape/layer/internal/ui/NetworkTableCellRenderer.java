@@ -9,13 +9,13 @@ import javax.swing.ListCellRenderer;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
 
-public class NetworkNameListCellRenderer extends JLabel implements
+public class NetworkTableCellRenderer extends JLabel implements
 		ListCellRenderer {
 
 	private CyNetworkManager manager;
 	private static final String NETWORK_TITLE = "name";
 
-	public NetworkNameListCellRenderer(CyNetworkManager manager) {
+	public NetworkTableCellRenderer(CyNetworkManager manager) {
 		this.manager = manager;
 	}
 

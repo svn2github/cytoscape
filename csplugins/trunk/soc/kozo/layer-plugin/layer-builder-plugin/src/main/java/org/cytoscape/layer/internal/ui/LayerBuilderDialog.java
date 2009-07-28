@@ -53,8 +53,8 @@ public class LayerBuilderDialog extends JDialog {
 
 	private Map<String, Long> title2IdMap;
 
-	private NetworkNameListCellRenderer networkNameListCellRenderer;
-	private NetworkNameComboCellRenderer networkNameComboCellRenderer;
+	private NetworkTableCellRenderer networkTableCellRenderer;
+	private NetworkListCellRenderer networkListCellRenderer;
 
 	private LayerConnectionTableModel layerConnectionTableModel;
 	private NetworkNameTableCellRenderer networkNameTableCellRenderer;
@@ -74,9 +74,9 @@ public class LayerBuilderDialog extends JDialog {
 		this.manager = manager;
 		this.builder = builder;
 
-		this.networkNameListCellRenderer = new NetworkNameListCellRenderer(
+		this.networkTableCellRenderer = new NetworkTableCellRenderer(
 				manager);
-		this.networkNameComboCellRenderer = new NetworkNameComboCellRenderer(
+		this.networkListCellRenderer = new NetworkListCellRenderer(
 				manager);
 
 		this.layerConnectionTableModel = new LayerConnectionTableModel(
@@ -89,16 +89,17 @@ public class LayerBuilderDialog extends JDialog {
 		initComponents();
 
 		this.availableNetworkList.setModel(availableNetworkListModel);
-		availableNetworkList.setCellRenderer(networkNameListCellRenderer);
+		availableNetworkList.setCellRenderer(networkTableCellRenderer);
 
 		this.layeredNetworkList.setModel(layeredNetworkListModel);
+		this.layeredNetworkList.setCellRenderer(networkListCellRenderer);
 
 		this.layerConnectionTable.setModel(layerConnectionTableModel);
 		this.layerConnectionTable.setDefaultRenderer(Object.class,
 				networkNameTableCellRenderer);
 		this.layerConnectionTable.getTableHeader().setReorderingAllowed(false);
 		this.comboBoxEditor = new JComboBox();
-		comboBoxEditor.setRenderer(networkNameComboCellRenderer);
+		comboBoxEditor.setRenderer(networkListCellRenderer);
 
 		comboBoxEditor.addItem("Undefined");
 		layerConnectionTable.getColumn("Connector Networks").setCellEditor(
