@@ -3,56 +3,128 @@ package org.cytoscape.view.ui.networkpanel.internal;
 import static cytoscape.Cytoscape.NETWORK_CREATED;
 import static cytoscape.Cytoscape.NETWORK_DESTROYED;
 
+import java.awt.Component;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.cytoscape.view.ui.networkpanel.NetworkBrowser;
-import org.cytoscape.view.ui.networkpanel.internal.cellrenderer.NetworkImageCellRenderer;
+import org.cytoscape.view.ui.networkpanel.NetworkBrowserPlugin;
 import org.cytoscape.view.ui.networkpanel.internal.cellrenderer.NetworkTreeCellRenderer;
+import org.jdesktop.swingx.JXTreeTable;
 
 import com.vlsolutions.swing.docking.DockKey;
+import com.vlsolutions.swing.docking.Dockable;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNetworkTitleChange;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupChangeListener;
 import cytoscape.groups.CyGroupManager;
-import cytoscape.groups.CyGroupChangeListener.ChangeType;
 import cytoscape.view.CytoscapeDesktop;
 
+
+/**
+ * Main browser window.
+ * This design is targeting for WXGA display or larger.
+ *  
+ * @author kono
+ *
+ */
 public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
-		PropertyChangeListener, CyGroupChangeListener {
+		PropertyChangeListener, CyGroupChangeListener, Dockable{
 
 	private NetworkTreeTableModel model;
 	private DockKey key = new DockKey("networkBrowser");
+	
+	private final ImageBrowser imageBrowser;
 
-	private static final int rowHeight = 110;
+	
+	
+	// Appearence of the table
+	private static final int rowHeight = 25;
+	private static final int NET_COL_WIDTH = 350;
+	private static final int OTHER_COL_WIDTH = 100;
+	
+	private MouseListener treeListener;
 
 	// Inject model
 	public NetworkBrowserImpl(NetworkTreeTableModel model) {
 		this.model = model;
 		initComponents();
+		
+		networkTableScrollPane.setViewportView(networkTreeTable);
 
 		networkTreeTable.setTreeTableModel(model);
+		networkTreeTable.getTableHeader().setReorderingAllowed(false);
+		
 		networkTreeTable.setRootVisible(true);
 		networkTreeTable.setTreeCellRenderer(new NetworkTreeCellRenderer());
-		networkTreeTable.getColumn(1).setCellRenderer(
-				new NetworkImageCellRenderer());
-		networkTreeTable.getColumn("Network").setMinWidth(200);
+		networkTreeTable.getColumn("Network").setMinWidth(NET_COL_WIDTH);
 		networkTreeTable.setRowHeight(rowHeight);
+		ImageIcon icon = new ImageIcon(NetworkBrowserPlugin.class.getResource(
+						"images/go1.png"));
+		JLabel label = new JLabel(icon);
+		infoTabbedPane.addTab("GO Distribution Plot", label);
 		
+//		NetworkImageBrowser chooser = new NetworkImageBrowser();
+		imageBrowser = new ImageBrowser();
+		mainSplitPane.setRightComponent(imageBrowser);
 		// networkTreeTable.getColumn("Nodes").setPreferredWidth(45);
 		// networkTreeTable.getColumn("Edges").setPreferredWidth(45);
+
+		networkTreeTable.addTreeSelectionListener(new TreeSelectionListener() {
+		    public void valueChanged(TreeSelectionEvent e) {
+		        int row = networkTreeTable.getSelectedRow();
+		        
+		        TreePath target = networkTreeTable.getPathForRow(row);
+		        
+		        if(target != null)
+		        	selectGroupNodes(target);
+
+		        imageBrowser.scrollToCenter(row-2);
+		        System.out.println("Selected 0-------->" + target);
+		        
+		    }
+		});
+		
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 		CyGroupManager.addGroupChangeListener(this);
 
 	}
+	
+	private void selectGroupNodes(TreePath path) {
+		Object node = path.getLastPathComponent();
+		if(node instanceof GroupTreeNode) {
+		
+			System.out.println("Node is CyGroup Node-------->" + node.getClass());
+			Object group = ((GroupTreeNode)node).getUserObject();
+			if(group instanceof CyGroup) {
+				
+				System.out.println("Got Group");
+				
+				List<CyNode> nodes = ((CyGroup) group).getNodes();
+				Cytoscape.getCurrentNetwork().unselectAllNodes();
+				Cytoscape.getCurrentNetwork().setSelectedNodeState(nodes, true);
+			}
+		}
+		
+		
+	}
+	
+	
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -63,92 +135,101 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">
 	private void initComponents() {
 
-		commandBar = new javax.swing.JToolBar();
-		selectButton = new javax.swing.JButton();
-		newButton = new javax.swing.JButton();
-		deleteButton = new javax.swing.JButton();
-		commandSeparator = new javax.swing.JToolBar.Separator();
-		thumbnailButton = new javax.swing.JToggleButton();
-		networkTableScrollPane = new javax.swing.JScrollPane();
-		networkTreeTable = new org.jdesktop.swingx.JXTreeTable();
 
-		commandBar.setFloatable(false);
-		commandBar.setRollover(true);
-		commandBar.setMargin(new java.awt.Insets(0, 10, 0, 10));
+        commandBar = new javax.swing.JToolBar();
+        selectButton = new javax.swing.JButton();
+        newButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        commandSeparator = new javax.swing.JToolBar.Separator();
+        thumbnailButton = new javax.swing.JToggleButton();
+        horizontalSplitPane = new javax.swing.JSplitPane();
+        mainSplitPane = new javax.swing.JSplitPane();
+        networkTableScrollPane = new javax.swing.JScrollPane();
+        infoTabbedPane = new javax.swing.JTabbedPane();
+        networkTreeTable = new JXTreeTable();
 
-		selectButton.setText("Select");
-		selectButton.setFocusable(false);
-		selectButton
-				.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		selectButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		selectButton.setPreferredSize(new java.awt.Dimension(50, 50));
-		selectButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		selectButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				selectButtonActionPerformed(evt);
-			}
-		});
-		commandBar.add(selectButton);
+        commandBar.setFloatable(false);
+        commandBar.setRollover(true);
+        commandBar.setMargin(new java.awt.Insets(0, 10, 0, 10));
 
-		newButton.setText("New");
-		newButton.setFocusable(false);
-		newButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		newButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		newButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				newButtonActionPerformed(evt);
-			}
-		});
-		commandBar.add(newButton);
+        selectButton.setText("Select");
+        selectButton.setFocusable(false);
+        selectButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        selectButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        selectButton.setPreferredSize(new java.awt.Dimension(50, 50));
+        selectButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        selectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectButtonActionPerformed(evt);
+            }
+        });
+        commandBar.add(selectButton);
 
-		deleteButton.setText("Delete");
-		deleteButton.setFocusable(false);
-		deleteButton
-				.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		deleteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		deleteButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				deleteButtonActionPerformed(evt);
-			}
-		});
-		commandBar.add(deleteButton);
-		commandBar.add(commandSeparator);
+        newButton.setText("New");
+        newButton.setFocusable(false);
+        newButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        newButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        newButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newButtonActionPerformed(evt);
+            }
+        });
+        commandBar.add(newButton);
 
-		thumbnailButton.setText("Show Icon");
-		thumbnailButton.setFocusable(false);
-		thumbnailButton
-				.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		thumbnailButton
-				.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		thumbnailButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				thumbnailButtonActionPerformed(evt);
-			}
-		});
-		commandBar.add(thumbnailButton);
+        deleteButton.setText("Delete");
+        deleteButton.setFocusable(false);
+        deleteButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        deleteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
+        commandBar.add(deleteButton);
+        commandBar.add(commandSeparator);
 
-		networkTableScrollPane.setViewportView(networkTreeTable);
+        thumbnailButton.setText("Show Icon");
+        thumbnailButton.setFocusable(false);
+        thumbnailButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        thumbnailButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        thumbnailButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thumbnailButtonActionPerformed(evt);
+            }
+        });
+        commandBar.add(thumbnailButton);
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
-				this);
-		this.setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(
-				networkTableScrollPane,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423,
-				Short.MAX_VALUE).add(commandBar,
-				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423,
-				Short.MAX_VALUE));
-		layout.setVerticalGroup(layout.createParallelGroup(
-				org.jdesktop.layout.GroupLayout.LEADING).add(
-				layout.createSequentialGroup().add(commandBar,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 45,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(
-								org.jdesktop.layout.LayoutStyle.RELATED).add(
-								networkTableScrollPane,
-								org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-								591, Short.MAX_VALUE)));
+        horizontalSplitPane.setDividerLocation(600);
+        horizontalSplitPane.setDoubleBuffered(true);
+        horizontalSplitPane.setOneTouchExpandable(true);
+
+        mainSplitPane.setDividerLocation(200);
+        mainSplitPane.setDividerSize(8);
+        mainSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        mainSplitPane.setDoubleBuffered(true);
+        mainSplitPane.setOneTouchExpandable(true);
+        mainSplitPane.setLeftComponent(networkTableScrollPane);
+        
+
+        horizontalSplitPane.setLeftComponent(mainSplitPane);
+        horizontalSplitPane.setRightComponent(infoTabbedPane);
+        
+        infoTabbedPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Attribute Detail"));
+
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(commandBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 784, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, horizontalSplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 784, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .add(commandBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(horizontalSplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE))
+        );
 	}// </editor-fold>
 
 	private void selectButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,14 +249,19 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 	}
 
 	// Variables declaration - do not modify
-	private javax.swing.JToolBar commandBar;
-	private javax.swing.JToolBar.Separator commandSeparator;
-	private javax.swing.JButton deleteButton;
-	private javax.swing.JScrollPane networkTableScrollPane;
-	private org.jdesktop.swingx.JXTreeTable networkTreeTable;
-	private javax.swing.JButton newButton;
-	private javax.swing.JButton selectButton;
-	private javax.swing.JToggleButton thumbnailButton;
+	// Variables declaration - do not modify
+    private javax.swing.JToolBar commandBar;
+    private javax.swing.JToolBar.Separator commandSeparator;
+    private javax.swing.JButton deleteButton;
+    private javax.swing.JSplitPane horizontalSplitPane;
+    private javax.swing.JTabbedPane infoTabbedPane;
+    private javax.swing.JSplitPane mainSplitPane;
+    private javax.swing.JScrollPane networkTableScrollPane;
+    private javax.swing.JButton newButton;
+    private javax.swing.JButton selectButton;
+    private javax.swing.JToggleButton thumbnailButton;
+	private JXTreeTable networkTreeTable;
+    // End of variables declaration
 
 	public void propertyChange(PropertyChangeEvent e) {
 		try {
@@ -225,6 +311,7 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 	public void groupChanged(CyGroup group, ChangeType change) {
 		if (change == CyGroupChangeListener.ChangeType.GROUP_CREATED) {
 			model.groupCreated(group);
+			imageBrowser.addGroup(group);
 
 		} else if (change == CyGroupChangeListener.ChangeType.GROUP_DELETED) {
 			//groupRemoved(group);
@@ -233,6 +320,21 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 		} else {
 			System.err.println("unsupported change type: " + change);
 		}
+	}
+
+	
+	
+	/////////////////// for Docking 
+	DockKey dockKey = new DockKey("networkBrowser");
+	
+	public Component getComponent() {
+		// TODO Auto-generated method stub
+		return this;
+	}
+
+	public DockKey getDockKey() {
+		// TODO Auto-generated method stub
+		return dockKey;
 	}
 
 }

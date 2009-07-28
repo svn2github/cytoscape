@@ -32,9 +32,6 @@ public class NetworkTreeTableModel extends DefaultTreeTableModel implements Tree
 	public NetworkTreeTableModel(NetworkTreeNode root) {
 		super(root);
 		treeNodeMap = new HashMap<String, MutableTreeTableNode>();
-		
-		
-		
 	}
 
 	
@@ -43,8 +40,9 @@ public class NetworkTreeTableModel extends DefaultTreeTableModel implements Tree
 		System.out.println("*** Adding Group: " + group.getGroupName());
 		MutableTreeTableNode node = treeNodeMap.get(Cytoscape.getCurrentNetwork().getIdentifier());
 		
-		NetworkTreeNode dmtn = new NetworkTreeNode(group.getGroupName(),
+		GroupTreeNode dmtn = new GroupTreeNode(Cytoscape.getCurrentNetwork(), group,
                 group.getGroupName(), this.getColumnCount());
+		dmtn.setValueAt(group.getNodes().size(), 1);
 		((AbstractMutableTreeTableNode)node).add(dmtn);
 		treeNodeMap.put(group.getGroupName(), dmtn);
 	}
@@ -96,9 +94,9 @@ public class NetworkTreeTableModel extends DefaultTreeTableModel implements Tree
 				System.out.println("====== After ROOT ADD: " + getRoot().getChildCount());
 			}
 		
-			dmtn.setValueAt(DEF,1);
-			dmtn.setValueAt(target.getNodeCount(),2);
-			dmtn.setValueAt(target.getEdgeCount(),3);
+			
+			dmtn.setValueAt(target.getNodeCount(),1);
+			dmtn.setValueAt(target.getEdgeCount(),2);
 			//
 			
 			// this is necessary because valueChanged is not fired above 

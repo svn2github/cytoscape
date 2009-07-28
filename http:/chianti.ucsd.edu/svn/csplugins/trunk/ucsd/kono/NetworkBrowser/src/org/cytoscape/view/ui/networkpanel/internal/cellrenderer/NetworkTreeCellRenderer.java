@@ -28,7 +28,7 @@ public class NetworkTreeCellRenderer extends DefaultTreeCellRenderer {
 			.getResource("images/bullet_green.png"));
 
 	private static final Color UC = new Color(0, 190, 0, 100);
-	
+
 	private final Map<TreeObjectType, Icon> iconMap;
 
 	public NetworkTreeCellRenderer() {
@@ -42,18 +42,11 @@ public class NetworkTreeCellRenderer extends DefaultTreeCellRenderer {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
 				row, hasFocus);
 
-		try {
-			if (value instanceof NetworkBrowserTreeNode && row != 0) {
-				System.out.println("----> type = "
-						+ ((NetworkBrowserTreeNode) value).getObjectType());
-
-				this.setIcon(iconMap.get(((NetworkBrowserTreeNode) value)
-						.getObjectType()));
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (value instanceof NetworkBrowserTreeNode && row != 0) {
+			this.setIcon(iconMap.get(((NetworkBrowserTreeNode) value)
+					.getObjectType()));
 		}
+
 		//
 		// if (hasView(value)) {
 		// setBackgroundNonSelectionColor(java.awt.Color.green.brighter());
@@ -69,9 +62,9 @@ public class NetworkTreeCellRenderer extends DefaultTreeCellRenderer {
 	private boolean hasView(Object value) {
 		if (value instanceof NetworkTreeNode) {
 			NetworkTreeNode node = (NetworkTreeNode) value;
-			setToolTipText(Cytoscape.getNetwork(node.getNetworkID()).getTitle());
+			setToolTipText(Cytoscape.getNetwork(node.getObjectID()).getTitle());
 
-			return Cytoscape.viewExists(node.getNetworkID());
+			return Cytoscape.viewExists(node.getObjectID());
 		}
 
 		return false;

@@ -5,22 +5,22 @@ import org.jdesktop.swingx.treetable.AbstractMutableTreeTableNode;
 public class NetworkTreeNode extends AbstractMutableTreeTableNode implements
 		NetworkBrowserTreeNode {
 
-	private String networkID;
+	private String id;
 
 	private final Object[] data;
 
 	public NetworkTreeNode(Object userobj, String id, int columnSize) {
-		super(userobj.toString());
-		networkID = id;
+		super(userobj);
+		this.id = id;
 		data = new Object[columnSize];
 	}
 
-	public void setNetworkID(String id) {
-		networkID = id;
+	public void setObjectID(String id) {
+		this.id = id;
 	}
 
-	public String getNetworkID() {
-		return networkID;
+	public String getObjectID() {
+		return id;
 	}
 
 	public TreeObjectType getObjectType() {
@@ -38,6 +38,7 @@ public class NetworkTreeNode extends AbstractMutableTreeTableNode implements
 			return data[i];
 	}
 
+	@Override
 	public void setValueAt(Object value, int colIndex) {
 		if (value != null && data.length > colIndex)
 			data[colIndex] = value;
