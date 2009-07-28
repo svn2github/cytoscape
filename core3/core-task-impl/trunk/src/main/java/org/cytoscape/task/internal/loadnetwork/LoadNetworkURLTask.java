@@ -102,5 +102,7 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
 		taskMonitor.setStatusMessage("Loading network...");
 		loadNetwork(reader);
+		System.out.println("\n\nNetwork " + url.getPath() + " is LOADED !!!\n\n");
+
 	}
 }

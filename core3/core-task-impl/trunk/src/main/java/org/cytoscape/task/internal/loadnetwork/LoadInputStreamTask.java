@@ -54,7 +54,7 @@ import org.cytoscape.session.CyNetworkNaming;
 public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 
 	@Tunable(description = "InputStream to load")
-	public InputStream is;
+	public InputStream inputstream;
 
 	public LoadInputStreamTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
 			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
@@ -65,20 +65,22 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 	 * Executes Task.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		if ( is == null ) {
+		if ( inputstream == null ) {
 			System.out.println("InputStream is null");
 			return;
 		}
 		this.taskMonitor = taskMonitor;
 		
-		reader = mgr.getReader(is, NETWORK);
+		reader = mgr.getReader(inputstream, NETWORK);
 
-		name = is.toString();
+		name = inputstream.toString();
 		
 		if (reader == null) {
 			uri = null;
 			System.out.println("The reader is null");
 		}
 		else loadNetwork(reader);
+		System.out.println("\n\nNetwork " + inputstream.toString() + " is LOADED !!!\n\n");
+
 	}
 }
