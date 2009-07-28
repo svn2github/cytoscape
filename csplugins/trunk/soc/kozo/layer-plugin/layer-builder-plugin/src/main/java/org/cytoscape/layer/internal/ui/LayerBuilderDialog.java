@@ -54,6 +54,7 @@ public class LayerBuilderDialog extends JDialog {
 	private Map<String, Long> title2IdMap;
 
 	private NetworkNameListCellRenderer networkNameListCellRenderer;
+	private NetworkNameComboCellRenderer networkNameComboCellRenderer;
 
 	private LayerConnectionTableModel layerConnectionTableModel;
 	private NetworkNameTableCellRenderer networkNameTableCellRenderer;
@@ -75,6 +76,8 @@ public class LayerBuilderDialog extends JDialog {
 
 		this.networkNameListCellRenderer = new NetworkNameListCellRenderer(
 				manager);
+		this.networkNameComboCellRenderer = new NetworkNameComboCellRenderer(
+				manager);
 
 		this.layerConnectionTableModel = new LayerConnectionTableModel(
 				COLUMN_NAMES);
@@ -95,6 +98,8 @@ public class LayerBuilderDialog extends JDialog {
 				networkNameTableCellRenderer);
 		this.layerConnectionTable.getTableHeader().setReorderingAllowed(false);
 		this.comboBoxEditor = new JComboBox();
+		comboBoxEditor.setRenderer(networkNameComboCellRenderer);
+
 		comboBoxEditor.addItem("Undefined");
 		layerConnectionTable.getColumn("Connector Networks").setCellEditor(
 				new DefaultCellEditor(comboBoxEditor));
