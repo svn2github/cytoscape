@@ -55,8 +55,7 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeVersion;
+import cytoscape.CytoscapeShutdown;
 import org.cytoscape.session.CyNetworkManager;
 
 import cytoscape.view.CytoPanel;
@@ -111,20 +110,19 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	// Status Bar
 	protected CytoStatusBarImpl statusBar;
 	protected JPanel main_panel;
-
-	private CytoscapeVersion version;
+	private final CytoscapeShutdown shutdown; 
 
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel , CytoscapeVersion version, CytoStatusBarImpl statusBar) {
+	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel , CytoStatusBarImpl statusBar, CytoscapeShutdown shut) {
 		super("Cytoscape Desktop (New Session)");
 
 		this.cyMenus = cyMenus;
 		this.networkViewManager = networkViewManager;
 		this.networkPanel = networkPanel;
-		this.version = version;
 		this.statusBar = statusBar;
+		this.shutdown = shut;
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
 
@@ -144,13 +142,13 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		initStatusBar(main_panel);
 		setJMenuBar(cyMenus.getMenuBar().getJMenuBar());
 
-		//don't automatically close window. Let Cytoscape.exit(returnVal)
-		//handle this, based upon user confirmation.
+		//don't automatically close window. Let shutdown.exit(returnVal)
+		//handle this
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 		addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent we) {
-					Cytoscape.exit(0);
+					shutdown.exit(0);
 				}
 			});
 

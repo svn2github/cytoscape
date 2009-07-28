@@ -29,9 +29,15 @@
 	</bean>
 
 	<!-- Cytoscape Version -->
-	<bean name="cytoscapeVersion" class="cytoscape.CytoscapeVersion">
+	<bean name="cytoscapeVersion" class="cytoscape.internal.CyVersion">
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
+
+	<!-- shutdown support -->
+	<bean name="cytoscapeShutdown" class="cytoscape.internal.ShutdownHandler">
+		<constructor-arg ref="cyEventHelperServiceRef" />
+	</bean>
+
 
 	<!-- Various Utilities -->
 	<bean name="proxyHandler" class="cytoscape.internal.util.ProxyHandlerImpl">
@@ -61,7 +67,6 @@
 		<constructor-arg ref="cyOperatingContext" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
-
 	<bean name="bookmarkDialogFactory" class="cytoscape.internal.dialogs.BookmarkDialogFactoryImpl">
 		<constructor-arg ref="bookmarkServiceRef" />
 		<constructor-arg ref="bookmarksUtilServiceRef" />
@@ -103,16 +108,23 @@
 		<constructor-arg ref="cytoscapeMenus" />
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkPanel" />
-		<constructor-arg ref="cytoscapeVersion" />
 		<constructor-arg ref="cytoStatusBarImpl" />
+		<constructor-arg ref="cytoscapeShutdown" />
 	</bean>
 
-	<!-- cyMain.  Currently working as a builder for application. -->
+	<!-- cyMain.  Currently working as a builder for application. 
 	<bean name="cyMain" class="cytoscape.CyMain">
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cytoscapeVersion" />
 		<constructor-arg ref="fileUtil" />
+	</bean>
+	-->
+	
+	<!-- session support -->
+	<bean id="sessionShutdownHandler" class="cytoscape.internal.SessionShutdownHandler">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
 	<!--
@@ -124,6 +136,7 @@
 	-->
 	<bean id="exitAction" class="cytoscape.internal.actions.ExitAction">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cytoscapeShutdown" />
 	</bean>
 	<bean id="undoAction" class="cytoscape.internal.actions.UndoAction">
 		<constructor-arg ref="undoSupportServiceRef" />

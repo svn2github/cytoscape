@@ -149,65 +149,7 @@ public abstract class Cytoscape {
 	// Test
 	protected static Object pcs2 = new Object();
 	protected static PropertyChangeSupport newPcs = new PropertyChangeSupport(pcs2);
-	protected static CySwingApplication defaultDesktop;
 
-	private static CyNetworkManager netmgr;
-
-
-	/**
-	 * Shuts down Cytoscape, after giving plugins time to react.
-	 *
-	 * @param returnVal
-	 *            The return value. Zero indicates success, non-zero otherwise.
-	 */
-	public static void exit(int returnVal) {
-			// prompt the user about saving modified files before quitting
-			if (confirmQuit()) {
-				try {
-					firePropertyChange(CYTOSCAPE_EXIT, null, "now");
-				} catch (Exception e) {
-					System.out.println("Errors on close, closed anyways.");
-				}
-
-				System.out.println("Cytoscape Exiting....");
-
-				System.exit(returnVal);
-			} else {
-				return;
-			}
-	}
-
-	/**
-	 * Prompt the user about saving modified files before quitting.
-	 */
-	private static boolean confirmQuit() {
-		final String msg = "Do you want to save your session?";
-		int networkCount = netmgr.getNetworkSet().size();
-
-		// If there is no network, just quit.
-		if (networkCount == 0) {
-			return true;
-		}
-
-		//
-		// Confirm user to save current session or not.
-		//
-		Object[] options = { "Yes, save and quit", "No, just quit", "Cancel" };
-		int n = JOptionPane.showOptionDialog(defaultDesktop.getJFrame(), msg,
-		                                     "Save Networks Before Quitting?",
-		                                     JOptionPane.YES_NO_OPTION,
-		                                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-		if (n == JOptionPane.NO_OPTION) {
-			return true;
-		} else if (n == JOptionPane.YES_OPTION) {
-			// TODO 
-			System.out.println("NOT implemented");
-			return true;
-		} else {
-			return false; // default if dialog box is closed
-		}
-	}
 
 	// --------------------//
 	// Root Graph Methods
@@ -232,24 +174,6 @@ public abstract class Cytoscape {
 	 */
 	public static PropertyChangeSupport getPropertyChangeSupport() {
 		return newPcs;
-	}
-
-
-	/**
-	 * Don't use this!.
-	 * TODO resolve how the desktop is accessed. 
-	 */
-	public static void setDesktop(CySwingApplication desk ) {
-		if ( desk != null )
-			defaultDesktop = desk;
-	}
-
-	/**
-	 * Don't use this!.
-	 */
-	static void setNetworkManager(CyNetworkManager nm) {
-		if ( nm != null )
-			netmgr = nm;	
 	}
 
 	/**

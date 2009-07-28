@@ -1,0 +1,74 @@
+
+/*
+ File: ShutdownHandler.java
+
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
+
+package cytoscape.internal;
+
+import cytoscape.events.CytoscapeShutdownEvent;
+import cytoscape.events.CytoscapeShutdownListener;
+import cytoscape.CytoscapeShutdown;
+import org.cytoscape.event.CyEventHelper;
+
+/**
+ * 
+ */
+public class ShutdownHandler implements CytoscapeShutdown {
+
+	private final CyEventHelper eh;
+	private	boolean actuallyShutdown;
+
+	public ShutdownHandler(CyEventHelper eh) {
+		this.eh = eh;
+	}
+
+	public void exit(int retVal) {
+		actuallyShutdown = true;
+		eh.fireSynchronousEvent( new CytoscapeShutdownEvent() {
+				public Object getSource() { return ShutdownHandler.this; }
+				public void abortShutdown(String why) { 
+					System.out.println("SHUTDOWN ABORTED: " + why);
+					actuallyShutdown = false; 
+				}
+			}, CytoscapeShutdownListener.class );
+
+		// TODO figure out a way to do a clean shutdown of the OSGi container.
+		if ( actuallyShutdown )
+			System.exit(retVal);
+		else
+			System.out.println("NOT shutting down, per listener instruction.");
+	}
+}

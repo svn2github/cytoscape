@@ -41,7 +41,7 @@
 package cytoscape.internal.actions;
 
 import org.cytoscape.session.CyNetworkManager;
-import cytoscape.Cytoscape;
+import cytoscape.CytoscapeShutdown;
 import cytoscape.util.CytoscapeAction;
 
 import java.awt.event.ActionEvent;
@@ -53,12 +53,14 @@ import java.awt.event.ActionEvent;
 public class ExitAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339869460858L;
 	protected int returnVal;
+	private final CytoscapeShutdown shutdown;
 
 	/**
 	 * Creates a new ExitAction object.
 	 */
-	public ExitAction(CyNetworkManager netmgr) {
+	public ExitAction(CyNetworkManager netmgr, CytoscapeShutdown shutdown) {
 		super("Quit",netmgr);
+		this.shutdown = shutdown;
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_Q, ActionEvent.CTRL_MASK);
 	}
@@ -69,6 +71,6 @@ public class ExitAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		Cytoscape.exit(returnVal);
+		shutdown.exit(returnVal);
 	}
 }

@@ -149,7 +149,7 @@ public class DeleteAction extends CytoscapeAction {
 		for ( CyEdge ed : edges )
 			cyNet.removeEdge(ed);
 
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNet);
+		//Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, cyNet);
 	}
 
     public void menuSelected(MenuEvent me) {

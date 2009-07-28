@@ -742,7 +742,8 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			if (cytoPanelContainer == null) {
 				System.out.println("CytoPanel::DockCytoPanel() -"
 				                   + "cytoPanelContainer reference has not been set!");
-				Cytoscape.exit(1);
+				// TODO Is this possibly right?
+				//Cytoscape.exit(1);
 			}
 
 			cytoPanelContainer.insertCytoPanel(this, compassDirection);

@@ -1,5 +1,6 @@
+
 /*
-  File: CytoscapeVersion.java
+  File: CytoscapeShutdown.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,43 +37,11 @@
  */
 package cytoscape;
 
-public interface CytoscapeVersion {
-	
-	/**
-	 * The full version as a string, for example "3.2.5".  Should
-	 * not include any other text or name.
-	 */
-	public String getVersion();
-
-	/**
-	 * The first of the three numbers defining the version of the 
-	 * software, meaning "3" if the version is "3.2.5". This number
-	 * changes only for comprehensive software changes and while APIs
-	 * may be similar between versions, they are not guaranteed to be
-	 * compatible.
-	 */
-	public int getMajorVersion(); 
-
-
-	/**
-	 * The second of the three numbers defining the version of the 
-	 * software, meaning "2" if the version is "3.2.5". This number
-	 * changes as new functionality or a new API is added to the software.  
-	 * Minor version APIs are guaranteed to be backwards compatibile for 
-	 * all previous versions within the major version (i.e. version 3.2
-	 * will be completely compatible with all 3.1.x, and 3.0.x code).
-	 */
-	public int getMinorVersion();
-
-
-	/**
-	 * The third of the three numbers defining the version of the 
-	 * software, meaning "5" if the version is "3.2.5". This number
-	 * changes as bug fixes are made and no new features or APIs should be 
-	 * added. Bug fix version APIs are guaranteed to be backwards 
-	 * compatibile for all previous versions within the major version 
-	 * (i.e. version 3.2.5 will be completely compatible with all 3.x 
-	 * versions of the code).
-	 */
-	public int getBugFixVersion();
+/**
+ * A service that will shutdown Cytoscape cleanly. Will fire a 
+ * CytoscapeShutdownEvent such that all CytoscapeShutdownListener will be
+ * notified before actually shutting down.
+ */
+public interface CytoscapeShutdown {
+	void exit(int retVal);
 }

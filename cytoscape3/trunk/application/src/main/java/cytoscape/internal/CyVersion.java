@@ -34,45 +34,58 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape;
+package cytoscape.internal;
 
-public interface CytoscapeVersion {
-	
-	/**
-	 * The full version as a string, for example "3.2.5".  Should
-	 * not include any other text or name.
-	 */
-	public String getVersion();
+import java.util.Properties;
+import cytoscape.CytoscapeVersion; 
 
-	/**
-	 * The first of the three numbers defining the version of the 
-	 * software, meaning "3" if the version is "3.2.5". This number
-	 * changes only for comprehensive software changes and while APIs
-	 * may be similar between versions, they are not guaranteed to be
-	 * compatible.
-	 */
-	public int getMajorVersion(); 
+/** 
+ * Identify the version of cytoscape. 
+ */
+public class CyVersion implements CytoscapeVersion {
 
+	private final int major;
+	private final int minor;
+	private final int bugfix;
+	private final String version;
 
-	/**
-	 * The second of the three numbers defining the version of the 
-	 * software, meaning "2" if the version is "3.2.5". This number
-	 * changes as new functionality or a new API is added to the software.  
-	 * Minor version APIs are guaranteed to be backwards compatibile for 
-	 * all previous versions within the major version (i.e. version 3.2
-	 * will be completely compatible with all 3.1.x, and 3.0.x code).
-	 */
-	public int getMinorVersion();
+	public CyVersion(Properties props) {
+		version = props.getProperty("cytoscape.version.number");
 
+		if ( !version.matches("^\\d+\\.\\d+\\.\\d+$") )
+			throw new IllegalArgumentException("Malformed version number:  must be of the form X.Y.Z where X,Y, and Z are positive integers.");
+
+		final String[] vers = version.split("\\.");
+		major = Integer.parseInt(vers[0]);
+		minor = Integer.parseInt(vers[1]);
+		bugfix = Integer.parseInt(vers[2]);
+	}
 
 	/**
-	 * The third of the three numbers defining the version of the 
-	 * software, meaning "5" if the version is "3.2.5". This number
-	 * changes as bug fixes are made and no new features or APIs should be 
-	 * added. Bug fix version APIs are guaranteed to be backwards 
-	 * compatibile for all previous versions within the major version 
-	 * (i.e. version 3.2.5 will be completely compatible with all 3.x 
-	 * versions of the code).
+	 * @inheritdoc
 	 */
-	public int getBugFixVersion();
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public int getMajorVersion() {
+		return major;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public int getMinorVersion() {
+		return minor;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public int getBugFixVersion() {
+		return bugfix;
+	}
 }
