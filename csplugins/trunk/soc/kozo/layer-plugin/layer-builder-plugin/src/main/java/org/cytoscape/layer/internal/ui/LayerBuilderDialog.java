@@ -53,6 +53,8 @@ public class LayerBuilderDialog extends JDialog {
 
 	private Map<String, Long> title2IdMap;
 
+	private NetworkNameListCellRenderer networkNameListCellRenderer;
+
 	private LayerConnectionTableModel layerConnectionTableModel;
 	private NetworkNameTableCellRenderer networkNameTableCellRenderer;
 
@@ -71,6 +73,9 @@ public class LayerBuilderDialog extends JDialog {
 		this.manager = manager;
 		this.builder = builder;
 
+		this.networkNameListCellRenderer = new NetworkNameListCellRenderer(
+				manager);
+
 		this.layerConnectionTableModel = new LayerConnectionTableModel(
 				COLUMN_NAMES);
 		this.networkNameTableCellRenderer = new NetworkNameTableCellRenderer(
@@ -81,6 +86,8 @@ public class LayerBuilderDialog extends JDialog {
 		initComponents();
 
 		this.availableNetworkList.setModel(availableNetworkListModel);
+		availableNetworkList.setCellRenderer(networkNameListCellRenderer);
+
 		this.layeredNetworkList.setModel(layeredNetworkListModel);
 
 		this.layerConnectionTable.setModel(layerConnectionTableModel);
@@ -99,8 +106,12 @@ public class LayerBuilderDialog extends JDialog {
 
 		String title = null;
 		for (CyNetwork cyNetwork : availableNetworks) {
+
 			title = cyNetwork.attrs().get(NETWORK_TITLE, String.class);
-			availableNetworkListModel.addElement(title);
+
+			// availableNetworkListModel.addElement(title);
+			availableNetworkListModel.addElement(cyNetwork.getSUID());
+
 			title2IdMap.put(title, cyNetwork.getSUID());
 		}
 
@@ -551,6 +562,8 @@ public class LayerBuilderDialog extends JDialog {
 		for (int i = 0; i < layerConnectionTableModel.getRowCount(); i++) {
 			connectors.add(manager.getNetwork(layerConnectionTableModel
 					.getValueAt(i, CONNECTOR)));
+			System.out.println(layerConnectionTableModel.getValueAt(i,
+					CONNECTOR));
 		}
 
 		// Setup
@@ -582,7 +595,7 @@ public class LayerBuilderDialog extends JDialog {
 
 		layerConnectionTableModel.clearAllRow();
 		comboBoxEditor.removeAllItems();
-		comboBoxEditor.addItem("Undefined");
+		// comboBoxEditor.addItem("Undefined");
 
 		// Build table if necessary
 		for (int i = 0; i < layeredNetworkListModel.size() - 1; i++) {
@@ -644,13 +657,13 @@ public class LayerBuilderDialog extends JDialog {
 
 			if (availableNetworkListModel.size() > 0) {
 				comboBoxEditor.removeAllItems();
-				comboBoxEditor.addItem("Undefined");
+				// comboBoxEditor.addItem("Undefined");
 				for (int i = 0; i < availableNetworkListModel.size(); i++) {
 					comboBoxEditor.addItem(availableNetworkListModel.get(i));
 				}
 			} else {
 				comboBoxEditor.removeAllItems();
-				comboBoxEditor.addItem("Undefined");
+				// comboBoxEditor.addItem("Undefined");
 			}
 
 		}
@@ -695,13 +708,13 @@ public class LayerBuilderDialog extends JDialog {
 
 			if (availableNetworkListModel.size() > 0) {
 				comboBoxEditor.removeAllItems();
-				comboBoxEditor.addItem("Undefined");
+				// comboBoxEditor.addItem("Undefined");
 				for (int i = 0; i < availableNetworkListModel.size(); i++) {
 					comboBoxEditor.addItem(availableNetworkListModel.get(i));
 				}
 			} else {
 				comboBoxEditor.removeAllItems();
-				comboBoxEditor.addItem("Undefined");
+				// comboBoxEditor.addItem("Undefined");
 			}
 
 		}
