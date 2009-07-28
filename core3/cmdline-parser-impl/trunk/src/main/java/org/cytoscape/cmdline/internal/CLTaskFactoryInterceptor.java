@@ -159,6 +159,7 @@ public class CLTaskFactoryInterceptor {
         }
 
         for (String st : listOfChoosenTasks) {
+        	System.out.println("Execution of " + st);
             for (TFWrapper tf : taskMap.values()) {
                 if (st.equals(tf.getName())) {
 
