@@ -66,7 +66,7 @@ import javax.swing.SwingConstants;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.Renderer;
+import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
@@ -560,7 +560,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 			if (value instanceof VisualProperty<?>) {
 				vp = (VisualProperty<?>) value;
 
-				Renderer presentation = cyNetworkManager.getCurrentPresentation();
+				RenderingEngine presentation = cyNetworkManager.getCurrentPresentation();
 				icon = presentation.getDefaultIcon(vp);
 			}
 			setText(vp.getDisplayName() + "  =  " + selectedStyle.getDefaultValue(vp));
