@@ -7,6 +7,7 @@ import java.util.Properties;
 import javax.swing.Icon;
 
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 
 
@@ -18,6 +19,13 @@ public interface RenderingEngine {
 	 * @return view models.
 	 */
 	public View<?> getViewModel();
+	
+	/**
+	 * Provide all compatible Visual Properties as a Visual Lexicon.
+	 * 
+	 * @return Visual Lexicon of this rendering engine.
+	 */
+	public VisualLexicon getVisualLexicon();
 	
 
 	/**
