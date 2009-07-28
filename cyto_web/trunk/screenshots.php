@@ -35,7 +35,7 @@
 	
 	<div class="item">
 		<a href="http://www.iscb.org/cms_addon/conferences/ismb2008/ismb2008_includes/images/vrs/3226_vrs_arc.jpg" target="_blank">
-			<img src="screenshots/interactome1_tm.png"/>
+			<img src="screenshots/interactome1_tm.jpg"/>
 		</a>
 	</div>
 	<div class="item">
@@ -50,7 +50,7 @@
 	</div>
 	<div class="item">
 		<a href="screenshots/network3.png" target="_blank">
-			<img src="screenshots/network2_tm.png"/>
+			<img src="screenshots/network3_tm.png"/>
 		</a>
 	</div>
 	<div class="item">
