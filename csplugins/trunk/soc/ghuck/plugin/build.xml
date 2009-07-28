@@ -116,11 +116,10 @@
 
 
   <!-- =================================================================== -->
-  <!-- Copy jar file and library to Cytoscape plugin folder           -->
+  <!-- Copy jar file to Cytoscape plugin folder                            -->
   <!-- =================================================================== -->
   <target name="copy_jar" depends="jar">
     <copy todir="${cytoscape.plugin.dir}/" file="${root.dir}/${project.jar}"/>
-    <copy todir="${cytoscape.plugin.dir}/" file="${root.dir}/libGpuLayout.so"/>
   </target>
 
 

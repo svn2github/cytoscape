@@ -32,7 +32,9 @@ import cytoscape.CyNode;
 
 import giny.model.GraphPerspective;
 import giny.model.Node;
-
+import java.io.*;
+import java.util.jar.*;
+import java.util.zip.*;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -41,6 +43,7 @@ import java.awt.Rectangle;
 import java.util.Iterator;
 import java.lang.reflect.Field;
 import GpuLayout.*; 
+
 
 
 
@@ -55,12 +58,48 @@ public class GpuLayout extends CytoscapePlugin {
      * Adds a menu entry and creates an instance of ForceDirected
      */
     public GpuLayout() {	
+
+	// Check whether the static library is already extracted in the plugins folder, if not, extract it
+	File staticLib = new File ("./plugins/libGpuLayout.so");
+	if (!staticLib.exists()){
+	    // Extract it
+	    try {
+		String home = getClass().getProtectionDomain().
+                    getCodeSource().getLocation().toString().
+                    substring(6);
+		JarFile jar = new JarFile("./plugins/GpuLayout.jar");
+		ZipEntry entry = jar.getEntry("libGpuLayout.so");
+		File efile = new File("./plugins/", entry.getName());
+		
+		InputStream in = 
+		    new BufferedInputStream(jar.getInputStream(entry));
+		OutputStream out = 
+		    new BufferedOutputStream(new FileOutputStream(efile));
+		byte[] buffer = new byte[2048];
+		for (;;)  {
+		    int nBytes = in.read(buffer);
+		    if (nBytes <= 0) break;
+		    out.write(buffer, 0, nBytes);
+		}
+		out.flush();
+		out.close();
+		in.close();
+	    }
+	    catch (Exception e) {
+		e.printStackTrace();
+		String message2 = "GpuLayout Plugin: Error While extracting Static libraty from jar file:\n" + e.getMessage(); 
+		JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message2);
+		return;
+	    }
+	   
+	    String message = "First time use of GpuLayout Plugin\nExtracted required library to plugins folder"; 
+	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+	}
+
+	
 	// Add Layout to menu
 	CyLayouts.addLayout(new ForceDirected(), "GPU Assisted Layout");
-
-        //Show message on screen with AdjMatIndex and AdjMatVals   
-	//String message2 = "GpuLayout Plugin loaded!\n"; 
-        //JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message2);
+	
 
     }
     

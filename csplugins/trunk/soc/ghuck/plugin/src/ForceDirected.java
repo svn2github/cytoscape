@@ -41,6 +41,7 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.util.Iterator;
 import java.lang.reflect.Field;
+import java.lang.Math;
 import java.util.*;
 
 import cytoscape.CyNetwork;
@@ -59,9 +60,9 @@ import csplugins.layout.algorithms.graphPartition.*;
 
 public class ForceDirected extends AbstractGraphPartition
 {
-
-    private double H_SIZE = 5000.0;
-    private double V_SIZE = 5000.0;
+    //private double UNIT_SIZE = 100.0;
+    private double H_SIZE = 1000.0;
+    private double V_SIZE = 1000.0;
     private String GPU_LIBRARY = "GpuLayout";
     private String CY_PLUGIN_PATH = "/home/gerardo/Cytoscape_v2.6.2/plugins";
     private String CUDA_LIB = "/usr/local/cuda/lib";
@@ -91,10 +92,12 @@ public class ForceDirected extends AbstractGraphPartition
 	initialize_properties();
     }
 
+    /**
+     * This plugin supports laying out only selected nodes
+     */
     public boolean supportsSelectedOnly() {
 		return false;
     }
-
 
     
     /**
@@ -104,11 +107,11 @@ public class ForceDirected extends AbstractGraphPartition
     protected void initialize_properties() {
 	
 	// Add new properties to layout 
-	layoutProperties.add(new Tunable("coarseGraphSize",         "Coarse Graph Size "           , Tunable.INTEGER, new Integer(50) ));
-	layoutProperties.add(new Tunable("interpolationIterations", "Interpolation Iterations "    , Tunable.INTEGER, new Integer(50) ));
-	layoutProperties.add(new Tunable("levelConvergence",        "Level Convergence "           , Tunable.INTEGER, new Integer(2)  ));
-	layoutProperties.add(new Tunable("edgeLen",                 "Ideal Edge Length "           , Tunable.INTEGER, new Integer(5)  ));
-	layoutProperties.add(new Tunable("initialNoIterations",     "Initial Number of Iterations ", Tunable.INTEGER, new Integer(300)));
+	layoutProperties.add(new Tunable("coarseGraphSize",         "Coarse Graph Size"           , Tunable.INTEGER, new Integer(50) ));
+	layoutProperties.add(new Tunable("interpolationIterations", "Interpolation Iterations"    , Tunable.INTEGER, new Integer(50) ));
+	layoutProperties.add(new Tunable("levelConvergence",        "Level Convergence"           , Tunable.INTEGER, new Integer(2)  ));
+	layoutProperties.add(new Tunable("edgeLen",                 "Ideal Edge Length"           , Tunable.INTEGER, new Integer(5)  ));
+	layoutProperties.add(new Tunable("initialNoIterations",     "Initial Number of Iterations", Tunable.INTEGER, new Integer(300)));
 	
 	// Initialize layout properties
 	layoutProperties.initializeProperties();
@@ -219,7 +222,7 @@ public class ForceDirected extends AbstractGraphPartition
 	
 
 	// Show message on the task monitor
-	taskMonitor.setStatus("Initializing, partition: " + part.getPartitionNumber());
+	taskMonitor.setStatus("Initializing: Partition: " + part.getPartitionNumber());
 	
 	// The completed percentage is indeterminable
 	taskMonitor.setPercentCompleted(-1);
@@ -248,6 +251,10 @@ public class ForceDirected extends AbstractGraphPartition
 	// Iterate over all nodes
 	while (it.hasNext()){
 	    
+	    // Check whether it has been canceled by the user
+	    if (canceled)
+		return;
+
 	    // Get next node
 	    LayoutNode node = (LayoutNode) it.next();
 
@@ -288,14 +295,14 @@ public class ForceDirected extends AbstractGraphPartition
 	
 	
 	//  Show message on screen with AdjMatIndex and AdjMatVals   
-	String message2 = "AdjMatIndex\n"; 
+	/*String message2 = "AdjMatIndex\n"; 
 	for (int i = 0; i < AdjMatIndex.length; i++)
 	    message2 = message2 + " " +AdjMatIndex[i];
 	message2 = message2 + "\nAdhMatVals\n";
 	for (int i = 0; i < AdjMatVals.length; i++)
 	  message2 = message2 + " " +AdjMatVals[i];	    
 	  JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message2);
-	
+	*/
 	       
 	// Check whether it has been canceled by the user
 	if (canceled)
@@ -345,12 +352,17 @@ public class ForceDirected extends AbstractGraphPartition
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message4);
 	}
 	
+	// Set H_SIZE and V_SIZE
+	//H_SIZE = 1000.0 + UNIT_SIZE * Math.log((double) numNodes);
+	//V_SIZE = 1000.0 + UNIT_SIZE * Math.log((double) numNodes);
+
+
 	// Check whether it has been canceled by the user
 	if (canceled)
-	    return;
-	
+	    return;      
+
 	// Show message on the task monitor
-	taskMonitor.setStatus("Calling native code... Partition: " + part.getPartitionNumber());
+	taskMonitor.setStatus("Calling native code: Partition: " + part.getPartitionNumber());
 	
 	// Make native method call
 	float[][]node_positions = ComputeGpuLayout( AdjMatIndex, 
