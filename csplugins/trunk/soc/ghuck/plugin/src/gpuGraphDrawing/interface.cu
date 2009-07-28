@@ -269,8 +269,6 @@ int calculateLayout (globalScope* scope)
   // Initialize device, using macro defined in "cutil.h"
   CUT_DEVICE_INIT();
 
-  printf ("device initialized!\n");
-  
   /*    Initializations    */
 
   // Number of Nodes

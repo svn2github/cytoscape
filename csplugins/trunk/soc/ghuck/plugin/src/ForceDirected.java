@@ -43,6 +43,7 @@ import java.util.Iterator;
 import java.lang.reflect.Field;
 import java.lang.Math;
 import java.util.*;
+import java.util.Map;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -60,12 +61,9 @@ import csplugins.layout.algorithms.graphPartition.*;
 
 public class ForceDirected extends AbstractGraphPartition
 {
-    //private double UNIT_SIZE = 100.0;
     private double H_SIZE = 1000.0;
     private double V_SIZE = 1000.0;
     private String GPU_LIBRARY = "GpuLayout";
-    private String CY_PLUGIN_PATH = "/home/gerardo/Cytoscape_v2.6.2/plugins";
-    private String CUDA_LIB = "/usr/local/cuda/lib";
      
     // Default values for algorithm parameters	
     private int coarseGraphSize         = 50;
@@ -73,6 +71,8 @@ public class ForceDirected extends AbstractGraphPartition
     private int levelConvergence        = 2;
     private int edgeLen                 = 5;
     private int initialNoIterations     = 300;
+
+    private String CUDA_PATH = "/usr/local/cuda/lib";
 
     private LayoutProperties layoutProperties;
 
@@ -112,6 +112,9 @@ public class ForceDirected extends AbstractGraphPartition
 	layoutProperties.add(new Tunable("levelConvergence",        "Level Convergence"           , Tunable.INTEGER, new Integer(2)  ));
 	layoutProperties.add(new Tunable("edgeLen",                 "Ideal Edge Length"           , Tunable.INTEGER, new Integer(5)  ));
 	layoutProperties.add(new Tunable("initialNoIterations",     "Initial Number of Iterations", Tunable.INTEGER, new Integer(300)));
+
+	layoutProperties.add(new Tunable("CUDA_PATH", "CUDA instalation folder", Tunable.STRING , new String("/usr/local/cuda")));
+	
 	
 	// Initialize layout properties
 	layoutProperties.initializeProperties();
@@ -173,19 +176,26 @@ public class ForceDirected extends AbstractGraphPartition
 	Tunable t5 = layoutProperties.get("initialNoIterations");
 	if ((t5 != null) && (t5.valueChanged() || force))
 	    initialNoIterations = ((Integer) t5.getValue()).intValue();
+
+	// Get initialNoIterations
+	Tunable t6 = layoutProperties.get("CUDA_PATH");
+	if ((t6 != null) && (t6.valueChanged() || force))
+	    CUDA_PATH =  t6.getValue().toString();
+
+
 	
-	  // Show message on screen    
-	  /*String message = "Preferences updated\n" 
-		+  coarseGraphSize + "\n" 
+	// Show message on screen    
+	/*
+	  String message = "Preferences updated\n" 
+	  +  coarseGraphSize + "\n" 
 	  + interpolationIterations + "\n"  
 	  + levelConvergence + "\n"         
 	  + edgeLen + "\n"                  
-	  + initialNoIterations; 
-	  */
-	
-	// Use the CytoscapeDesktop as parent for a Swing dialog
-	//JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
-	
+	  + initialNoIterations + "\n"
+	  + CUDA_PATH;
+	  
+	  JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+	*/
     }
     
     /**
@@ -219,7 +229,6 @@ public class ForceDirected extends AbstractGraphPartition
      * This function does the "heavy work", calling the native code
      */
     public void layoutPartion (LayoutPartition part) {
-	
 
 	// Show message on the task monitor
 	taskMonitor.setStatus("Initializing: Partition: " + part.getPartitionNumber());
@@ -293,17 +302,6 @@ public class ForceDirected extends AbstractGraphPartition
 	// Mark end of AdjMatIndex, so that you can now where ends AdjMatVals  
 	AdjMatIndex[currentNodePosition] = position;
 	
-	
-	//  Show message on screen with AdjMatIndex and AdjMatVals   
-	/*String message2 = "AdjMatIndex\n"; 
-	for (int i = 0; i < AdjMatIndex.length; i++)
-	    message2 = message2 + " " +AdjMatIndex[i];
-	message2 = message2 + "\nAdhMatVals\n";
-	for (int i = 0; i < AdjMatVals.length; i++)
-	  message2 = message2 + " " +AdjMatVals[i];	    
-	  JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message2);
-	*/
-	       
 	// Check whether it has been canceled by the user
 	if (canceled)
 	    return;
@@ -323,14 +321,19 @@ public class ForceDirected extends AbstractGraphPartition
 	    // Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed value
 	    field.set(clazz, null);
 	    try {
+
+		Map<String, String> env = System.getenv();
+
+
 		// Change the value and load the library.
-		System.setProperty("java.library.path", CY_PLUGIN_PATH + ":" + CUDA_LIB + ":" + orig_path);
+		System.setProperty("java.library.path", "./plugins" + ":" + CUDA_PATH + "/lib" + ":" + orig_path);
 		System.loadLibrary("cudart");
 		System.loadLibrary(GPU_LIBRARY);
 	    }
 	    catch (UnsatisfiedLinkError error){
-		String message = "Problem detected while loading Static Library with Native Code\nCannot Produce Layout\n"
-		    + error.getMessage();
+		String message = "Problem detected while loading Static Library with Native Code\nCannot Produce Layout\n"		    
+		    + error.getMessage() 
+		    + "\nPlease check that CUDA instalation folder is correctly set in the menu \"Layouts->Settings->GpuLayout(ForceDirected)\"";
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
 		
 		// Revert back the changes
@@ -351,11 +354,6 @@ public class ForceDirected extends AbstractGraphPartition
 		    + exception.getMessage();
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message4);
 	}
-	
-	// Set H_SIZE and V_SIZE
-	//H_SIZE = 1000.0 + UNIT_SIZE * Math.log((double) numNodes);
-	//V_SIZE = 1000.0 + UNIT_SIZE * Math.log((double) numNodes);
-
 
 	// Check whether it has been canceled by the user
 	if (canceled)

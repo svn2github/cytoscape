@@ -4,8 +4,8 @@ Instructions for building the plugin:
 
 2- Modify lines 14 and 16 of src/gpuGraphDrawing/Makefile, so that both CUDPP and CUDA variables point to the installation folders of CUDPP and CUDA.
 
-3- Modify lines 395 and 396 of src/GpuLayout.java, so that CY_PLUGIN_PATH points to your cytoscape plugin folder, and CUDA_LIB points to your cuda/lib folder.
+3- Run "ant copy_jar" command on the plugin folder. This will automatically put the plugin in the cytoscape plugin folder.
 
-4- Run "ant copy_jar" command on the plugin folder. This will automatically put the plugin in the cytoscape plugin folder.
+
 
 
