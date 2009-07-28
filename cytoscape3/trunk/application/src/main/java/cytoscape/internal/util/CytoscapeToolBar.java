@@ -44,8 +44,8 @@ import java.util.SortedMap;
 import java.util.List;
 import java.util.ArrayList;
 
-import cytoscape.util.CyToolBar;
-import cytoscape.util.CyAction;
+import cytoscape.view.CyToolBar;
+import cytoscape.view.CyAction;
 
 /**
  *

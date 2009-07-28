@@ -92,43 +92,43 @@
 
 	<!--
 		<osgi:service id="printActionService" ref="printAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 	-->
 	<osgi:service id="exitActionService" ref="exitAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 	<osgi:service id="undoActionService" ref="undoAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 	<osgi:service id="redoActionService" ref="redoAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 	<osgi:service id="deleteActionService" ref="deleteAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 	<osgi:service id="preferenceActionService" ref="preferenceAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 	<osgi:service id="bookmarkActionService" ref="bookmarkAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 	<!--
 		<osgi:service id="alphabeticalSelectionActionService"
-		ref="alphabeticalSelectionAction" interface="cytoscape.util.CyAction"
+		ref="alphabeticalSelectionAction" interface="cytoscape.view.CyAction"
 		/> <osgi:service id="bendSelectedEdgesActionService"
-		ref="bendSelectedEdgesAction" interface="cytoscape.util.CyAction" />
+		ref="bendSelectedEdgesAction" interface="cytoscape.view.CyAction" />
 		<osgi:service id="straightenSelectedEdgesActionService"
 		ref="straightenSelectedEdgesAction"
-		interface="cytoscape.util.CyAction" /> <osgi:service
+		interface="cytoscape.view.CyAction" /> <osgi:service
 		id="showGraphicsDetailsActionService" ref="showGraphicsDetailsAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 	-->
 	<osgi:service id="settingsActionService" ref="settingsAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 
 	<osgi:service id="cytoPanelWestActionService" ref="cytoPanelWestAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 	<osgi:service id="cytoPanelSouthActionService" ref="cytoPanelSouthAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 
 	<osgi:service id="cytoPanelEastActionService" ref="cytoPanelEastAction"
-		interface="cytoscape.util.CyAction" />
+		interface="cytoscape.view.CyAction" />
 
-	<osgi:set id="cyActionSet" interface="cytoscape.util.CyAction"
+	<osgi:set id="cyActionSet" interface="cytoscape.view.CyAction"
 		cardinality="0..N">
 		<osgi:listener bind-method="addAction" unbind-method="removeAction"
 			ref="cytoscapeMenus" />

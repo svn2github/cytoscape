@@ -34,7 +34,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.util;
+package cytoscape.view;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
@@ -54,7 +54,11 @@ import java.util.Map;
 import cytoscape.internal.util.AcceleratorParser;
 
 /**
- *
+ * An abstract implemenation of the CyAction interface.  Instead of using this
+ * class directly you should (strongly) consider implementing a 
+ * {@link org.cytoscape.work.TaskFactory}/{@link org.cytoscape.work.Task} pair. Doing
+ * so will allow your action to be used outside of a Swing specific application 
+ * (which the CyAction interface binds you to)!
  */
 public abstract class CytoscapeAction extends AbstractAction implements CyAction {
 	protected String preferredMenu = null;
@@ -72,7 +76,8 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	/**
 	 * Creates a new CytoscapeAction object.
 	 *
-	 * @param name  DOCUMENT ME!
+	 * @param name  The name of the action. 
+	 * @param netmgr The NetworkManger providing context for this action.
 	 */
 	public CytoscapeAction(String name, CyNetworkManager netmgr) {
 		super(name);
@@ -81,6 +86,13 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 		consoleName = consoleName.replaceAll(":. \'", "");
 	}
 
+	/**
+	 * Creates a new CytoscapeAction object.
+	 *
+	 * @param configProps A String-String Map of configuration metadata. This
+	 * will usually be the Map provided by the Spring service configuration.
+	 * @param netmgr The NetworkManger providing context for this action.
+	 */
 	public CytoscapeAction(Map configProps, CyNetworkManager netmgr) {
 
 		this((String)(configProps.get("title")), netmgr);

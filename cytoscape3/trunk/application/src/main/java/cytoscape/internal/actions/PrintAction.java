@@ -51,7 +51,7 @@ import javax.swing.event.MenuEvent;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.presentation.RenderingEngine;
 
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeAction;
 
 /**
  *

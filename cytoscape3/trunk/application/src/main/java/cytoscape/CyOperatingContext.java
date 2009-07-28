@@ -43,6 +43,8 @@ import java.util.Properties;
 import java.io.File;
 
 /**
+ * <b>WARNING</b> <i>Do not use this class as it will likely be
+ * refactored away!</i>
  * Basic access to Cytoscape's operating context. 
  */
 public interface CyOperatingContext {

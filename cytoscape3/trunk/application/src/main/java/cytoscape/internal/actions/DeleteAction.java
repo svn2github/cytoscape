@@ -48,7 +48,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.UndoSupport;
 
 import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeAction;
 
 
 /**

@@ -36,7 +36,7 @@
 
 package cytoscape.internal.actions;
 
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeAction;
 import cytoscape.view.CytoPanelName;
 import cytoscape.view.CytoPanelState;
 import cytoscape.view.CySwingApplication;

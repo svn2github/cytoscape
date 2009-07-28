@@ -47,7 +47,7 @@ import java.awt.event.ActionEvent;
 import org.cytoscape.session.CyNetworkManager;
 import cytoscape.internal.dialogs.BookmarkDialogImpl;
 import cytoscape.internal.dialogs.BookmarkDialogFactoryImpl;
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 
 /**

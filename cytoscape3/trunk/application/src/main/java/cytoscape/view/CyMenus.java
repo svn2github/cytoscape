@@ -38,13 +38,13 @@
 package cytoscape.view;
 
 import javax.swing.JMenu;
-import cytoscape.util.CyMenuBar;
-import cytoscape.util.CyToolBar;
-import cytoscape.util.CyAction;
 import java.util.Map;
 import org.cytoscape.work.TaskFactory;
 
 // TODO clean up the menus offered - these should match what's implemented
+/**
+ * A simplified API that provides access to Cytoscape's menu and toolbar system.
+ */
 public interface CyMenus { 
 
 	public CyMenuBar getMenuBar();

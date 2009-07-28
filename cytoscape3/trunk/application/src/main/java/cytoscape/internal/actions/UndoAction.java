@@ -36,7 +36,7 @@
 */
 package cytoscape.internal.actions;
 
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeAction;
 import org.cytoscape.session.CyNetworkManager;
 
 import org.cytoscape.work.UndoSupport;

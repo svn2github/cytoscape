@@ -42,7 +42,7 @@ package cytoscape.internal.actions;
 
 import org.cytoscape.session.CyNetworkManager;
 import cytoscape.CytoscapeShutdown;
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeAction;
 
 import java.awt.event.ActionEvent;
 

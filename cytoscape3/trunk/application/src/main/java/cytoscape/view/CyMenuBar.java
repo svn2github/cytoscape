@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.util;
+package cytoscape.view;
 
 
 import javax.swing.JMenu;
@@ -42,6 +42,10 @@ import javax.swing.JMenuBar;
 
 
 // TODO clean up this interface - too many redundant interfaces
+// Maybe this should just exist as hidden implementation?
+/**
+ * An interface that captures much of JMenuBar.
+ */
 public interface CyMenuBar { 
 
 	public void setDefaultMenuSpecifier(String menu_name);
@@ -56,6 +60,5 @@ public interface CyMenuBar {
 	public void setIdentifier(String new_identifier);
 	public String toString();
 	public JMenu createJMenu(String title);
-
 	public JMenuBar getJMenuBar();
 }

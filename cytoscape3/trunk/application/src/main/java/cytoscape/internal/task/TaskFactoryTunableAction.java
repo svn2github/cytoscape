@@ -47,7 +47,7 @@ import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
 //import org.cytoscape.work.HandlerController;
 
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeAction;
 import org.cytoscape.session.CyNetworkManager;
 
 public class TaskFactoryTunableAction<T extends TaskFactory> extends CytoscapeAction {

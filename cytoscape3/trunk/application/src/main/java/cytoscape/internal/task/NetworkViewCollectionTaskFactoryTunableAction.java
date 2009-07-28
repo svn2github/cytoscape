@@ -44,7 +44,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
 
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeAction;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
 

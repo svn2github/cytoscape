@@ -45,7 +45,7 @@ package cytoscape.internal.actions;
 import org.cytoscape.session.CyNetworkManager;
 import cytoscape.internal.dialogs.PreferencesDialogImpl;
 import cytoscape.internal.dialogs.PreferencesDialogFactoryImpl;
-import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 
 import javax.swing.*;

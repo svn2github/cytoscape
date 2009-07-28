@@ -102,7 +102,7 @@ import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
-import cytoscape.util.CyAction;
+import cytoscape.view.CyAction;
 
 import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
 import cytoscape.internal.task.NetworkTaskFactoryTunableAction;

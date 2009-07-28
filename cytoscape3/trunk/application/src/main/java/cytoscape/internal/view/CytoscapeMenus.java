@@ -37,9 +37,9 @@
 
 package cytoscape.internal.view;
 
-import cytoscape.util.CyAction;
-import cytoscape.util.CyMenuBar;
-import cytoscape.util.CyToolBar;
+import cytoscape.view.CyAction;
+import cytoscape.view.CyMenuBar;
+import cytoscape.view.CyToolBar;
 
 import org.cytoscape.session.CyNetworkManager;
 
