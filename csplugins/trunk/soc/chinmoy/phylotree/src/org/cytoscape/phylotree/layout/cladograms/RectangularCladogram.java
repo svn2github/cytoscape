@@ -95,7 +95,7 @@ public class RectangularCladogram extends AbstractLayout{
 		return "Rectangular Cladogram Layout";
 	}
 
-
+	
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
