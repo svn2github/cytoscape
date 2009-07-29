@@ -16,15 +16,15 @@
 
 	<context:annotation-config />
 
-	<bean id="threadFactory" class="org.cytoscape.log.internal.LowPriorityDaemonThreadFactory" />
-
 	<bean id="executorService" class="java.util.concurrent.Executors" factory-method="newCachedThreadPool">
-		<constructor-arg ref="threadFactory" />
+		<constructor-arg>
+			<bean class="org.cytoscape.log.internal.LowPriorityDaemonThreadFactory" />
+		</constructor-arg>
 	</bean>
 
-	<bean id="userQueue" class="org.cytoscape.log.internal.BlockingQueueFactory" factory-method="newBlockingQueue" />
-	<bean id="statusBarQueue" class="org.cytoscape.log.internal.BlockingQueueFactory" factory-method="newBlockingQueue" />
-	<bean id="developerQueue" class="org.cytoscape.log.internal.BlockingQueueFactory" factory-method="newBlockingQueue" />
+	<bean id="userQueue" class="java.util.concurrent.LinkedBlockingQueue" />
+	<bean id="statusBarQueue" class="java.util.concurrent.LinkedBlockingQueue" />
+	<bean id="developerQueue" class="java.util.concurrent.LinkedBlockingQueue" />
 
 	<bean id="rootAppender" class="org.cytoscape.log.internal.QueueAppender">
 		<constructor-arg ref="userQueue" />
@@ -32,7 +32,7 @@
 		<constructor-arg ref="developerQueue" />
 	</bean>
 
-	<bean id="log4jInitialization" class="org.cytoscape.log.internal.Log4jInit">
+	<bean id="log4jInitialization" class="org.cytoscape.log.internal.LogInit">
 		<constructor-arg ref="rootAppender" />
 	</bean>
 
@@ -55,8 +55,4 @@
 		<constructor-arg ref="cySwingApplicationRef" />
 		<constructor-arg ref="taskManagerRef" />
 	</bean>
-
-	<bean id="testTaskFactory" class="org.cytoscape.log.internal.TestTaskFactory">
-	</bean>
-
 </beans>

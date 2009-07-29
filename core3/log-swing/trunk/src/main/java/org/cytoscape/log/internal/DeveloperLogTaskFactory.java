@@ -6,16 +6,10 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import cytoscape.view.CySwingApplication;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Appender;
+import ch.qos.logback.classic.spi.LoggingEvent;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.Date;
 import java.text.DateFormat;
 
@@ -84,7 +78,7 @@ class DeveloperLogUpdater extends QueueProcesser
 	{
 		String[] formattedEvent = new String[5];
 		formattedEvent[0] = DATE_FORMATTER.format(new Date(event.getTimeStamp()));
-		formattedEvent[1] = event.getLogger().getName();
+		formattedEvent[1] = event.getLoggerRemoteView().getName();
 		formattedEvent[2] = event.getLevel().toString().toLowerCase();
 		formattedEvent[3] = event.getThreadName();
 		formattedEvent[4] = event.getMessage().toString();

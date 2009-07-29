@@ -5,18 +5,10 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.log.statusbar.CytoStatusBar;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Appender;
+import ch.qos.logback.classic.spi.LoggingEvent;
 
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.Date;
 import java.text.DateFormat;
 

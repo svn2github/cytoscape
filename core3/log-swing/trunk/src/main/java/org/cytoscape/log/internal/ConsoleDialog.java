@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
-import org.apache.log4j.Level;
+import ch.qos.logback.classic.Level;
 import org.cytoscape.log.statusbar.CytoStatusBar;
 import cytoscape.view.CySwingApplication;
 
@@ -44,19 +44,18 @@ class ConsoleDialog extends JDialog
 	static final Map<Integer,String> LEVEL_TO_ICON_MAP = new TreeMap<Integer,String>();
 	static
 	{
-		LEVEL_TO_ICON_MAP.put(Level.DEBUG.toInt(),	"console-info.png");
-		LEVEL_TO_ICON_MAP.put(Level.ERROR.toInt(),	"console-error.png");
-		LEVEL_TO_ICON_MAP.put(Level.FATAL.toInt(),	"console-error.png");
-		LEVEL_TO_ICON_MAP.put(Level.INFO.toInt(),	"console-info.png");
-		LEVEL_TO_ICON_MAP.put(Level.TRACE.toInt(),	"console-info.png");
-		LEVEL_TO_ICON_MAP.put(Level.WARN.toInt(),	"console-warning.png");
+		LEVEL_TO_ICON_MAP.put(Level.DEBUG_INTEGER,	"console-info.png");
+		LEVEL_TO_ICON_MAP.put(Level.ERROR_INTEGER,	"console-error.png");
+		LEVEL_TO_ICON_MAP.put(Level.INFO_INTEGER,	"console-info.png");
+		LEVEL_TO_ICON_MAP.put(Level.TRACE_INTEGER,	"console-info.png");
+		LEVEL_TO_ICON_MAP.put(Level.WARN_INTEGER,	"console-warning.png");
 	}
 
 	/**
 	 * Retrieves the icon from LEVEL_TO_ICON_MAP, defaulting to "console-info" if
 	 * level is not found.
 	 */
-        static String getIcon(int level)
+        static String getIcon(Integer level)
         {
 		String path = LEVEL_TO_ICON_MAP.get(level);
 		if (path == null)
@@ -116,7 +115,7 @@ class ConsoleDialog extends JDialog
 
 	void append(Level level, String message, String timeStamp)
 	{
-		String icon = getIcon(level.toInt());
+		String icon = getIcon(level.toInteger());
 		String bgColor = (colorParity ? COLOR_PARITY_TRUE : COLOR_PARITY_FALSE);
 		try
 		{

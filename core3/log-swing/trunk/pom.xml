@@ -89,14 +89,29 @@
 	</build>
 
 	<repositories>
-		<repository>
-			<id>ops4j.releasees</id>
-			<url>http://repository.ops4j.org/maven2/
-			</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+      <repository>                                                                                                                                                           
+          <id>cytoscape_snapshots</id>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <name>Cytoscape Snapshots</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+       </repository>
+       <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+       <repository>
+          <id>cytoscape_releases</id>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <name>Cytoscape Releases</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+       </repository>
 	</repositories>
 
 	<dependencies>
@@ -106,16 +121,24 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>com.springsource.org.apache.log4j
-			</artifactId>
-			<version>1.2.15</version>
-		</dependency>
-		<dependency>
 			<groupId>cytoscape</groupId>
 			<artifactId>application</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.api</artifactId>
+			<version>1.5.6</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>com.springsource.ch.qos.logback.classic</artifactId>
+			<version>0.9.15</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>com.springsource.ch.qos.logback.core</artifactId>
+			<version>0.9.15</version>
+		</dependency>
 	</dependencies>
-
 </project>
