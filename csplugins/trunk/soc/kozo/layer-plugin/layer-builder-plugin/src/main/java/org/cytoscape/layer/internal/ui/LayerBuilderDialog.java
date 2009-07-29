@@ -57,7 +57,6 @@ public class LayerBuilderDialog extends JDialog {
 	private NetworkListCellRenderer networkListCellRenderer;
 
 	private LayerConnectionTableModel layerConnectionTableModel;
-	private NetworkNameTableCellRenderer networkNameTableCellRenderer;
 
 	private JComboBox comboBoxEditor;
 
@@ -81,22 +80,21 @@ public class LayerBuilderDialog extends JDialog {
 
 		this.layerConnectionTableModel = new LayerConnectionTableModel(
 				COLUMN_NAMES);
-		this.networkNameTableCellRenderer = new NetworkNameTableCellRenderer(
-				manager);
+		
 
 		title2IdMap = new HashMap<String, Long>();
 		buildListModels();
 		initComponents();
 
 		this.availableNetworkList.setModel(availableNetworkListModel);
-		availableNetworkList.setCellRenderer(networkTableCellRenderer);
+		availableNetworkList.setCellRenderer(networkListCellRenderer);
 
 		this.layeredNetworkList.setModel(layeredNetworkListModel);
 		this.layeredNetworkList.setCellRenderer(networkListCellRenderer);
 
 		this.layerConnectionTable.setModel(layerConnectionTableModel);
 		this.layerConnectionTable.setDefaultRenderer(Object.class,
-				networkNameTableCellRenderer);
+				networkTableCellRenderer);
 		this.layerConnectionTable.getTableHeader().setReorderingAllowed(false);
 		this.comboBoxEditor = new JComboBox();
 		comboBoxEditor.setRenderer(networkListCellRenderer);
