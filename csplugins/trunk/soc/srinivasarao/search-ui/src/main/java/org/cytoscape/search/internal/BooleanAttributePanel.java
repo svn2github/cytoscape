@@ -22,9 +22,9 @@ public class BooleanAttributePanel extends JPanel {
 		super();
 		this.attrName = attrName;
 		initialize();
-		
+
 	}
-	
+
 	/**
 	 * This method initializes this
 	 * 
@@ -38,17 +38,17 @@ public class BooleanAttributePanel extends JPanel {
 		this.add(getFalseButton());
 	}
 
-	private JLabel getLabel(){
-		if(jLabel==null){
+	private JLabel getLabel() {
+		if (jLabel == null) {
 			jLabel = new JLabel();
 			jLabel.setText(attrName);
-			jLabel.setFont(new Font("TimesRoman",Font.BOLD,16));
+			jLabel.setFont(new Font("TimesRoman", Font.BOLD, 16));
 		}
 		return jLabel;
 	}
-	
-	private JCheckBox getTrueButton(){
-		if(trueButton==null){
+
+	private JCheckBox getTrueButton() {
+		if (trueButton == null) {
 			trueButton = new JCheckBox();
 			trueButton.setText("True");
 			trueButton.setActionCommand("True");
@@ -56,21 +56,21 @@ public class BooleanAttributePanel extends JPanel {
 		}
 		return trueButton;
 	}
-	
-	private JCheckBox getFalseButton(){
-		if(falseButton==null){
+
+	private JCheckBox getFalseButton() {
+		if (falseButton == null) {
 			falseButton = new JCheckBox();
 			falseButton.setText("False");
 			falseButton.setActionCommand("False");
-			falseButton.setFont(new Font("TimesRoman",Font.PLAIN,14));
+			falseButton.setFont(new Font("TimesRoman", Font.PLAIN, 14));
 		}
 		return falseButton;
 	}
-	
-	public void getCheckedValues(){
-		if(trueButton.isSelected())
+
+	public void getCheckedValues() {
+		if (trueButton.isSelected())
 			System.out.println("True Label checked");
-		if(falseButton.isSelected())
+		if (falseButton.isSelected())
 			System.out.println("False Label checked");
 	}
 }

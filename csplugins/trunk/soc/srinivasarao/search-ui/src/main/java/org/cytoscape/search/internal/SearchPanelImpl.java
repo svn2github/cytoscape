@@ -3,14 +3,11 @@ package org.cytoscape.search.internal;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.Box;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
@@ -25,12 +22,11 @@ public class SearchPanelImpl extends SearchPanel {
 	private static final long serialVersionUID = 1L;
 	private CyNetworkManager netmgr = null;
 	private MainPanel mp;
-	private HashMap<String, Object> attrMap = new HashMap<String, Object>(); // @jve:decl-index=0:
-	Map<String, Class<?>> typemap;
-	private JPanel attrPanel = null;
+	private RootPanel attrPanel = null;
 	private JScrollPane jsp = null;
 	private JSplitPane split = null;
-	private String[] attrList;
+	private String[] nodeattrList;
+	private String[] edgeattrList;
 
 	/**
 	 * This is the default constructor
@@ -58,52 +54,67 @@ public class SearchPanelImpl extends SearchPanel {
 		g1.weightx = 1.0;
 		g1.weighty = 1.0;
 		g1.anchor = GridBagConstraints.NORTHWEST;
-
 		mp = new MainPanel(netmgr);
-		attrPanel = new JPanel();
-		attrPanel.setLayout(new GridBagLayout());
+		attrPanel = new RootPanel();
 		CyNetwork net = netmgr.getCurrentNetwork();
 		CyDataTable nodetable = net.getCyDataTables("NODE").get(
 				CyNetwork.DEFAULT_ATTRS);
-		typemap = nodetable.getColumnTypeMap();
-		Set<String> keys = typemap.keySet();
+		Map<String, Class<?>> nodetypemap = nodetable.getColumnTypeMap();
+		Set<String> keys = nodetypemap.keySet();
 		Object[] arr = keys.toArray();
-		attrList = new String[arr.length];
+		nodeattrList = new String[arr.length];
 		for (int i = 0; i < arr.length; i++) {
-			attrList[i] = arr[i].toString();
+			nodeattrList[i] = arr[i].toString();
 		}
-		Arrays.sort(attrList);
-		for (int i = 0; i < attrList.length; i++) {
-
-			GridBagConstraints gc = new GridBagConstraints();
-			gc.gridx = 0;
-			gc.gridy = i;
-			gc.fill = GridBagConstraints.HORIZONTAL;
-			gc.weightx = 1.0;
-			gc.insets = new Insets(0, 0, 10, 0);
-			gc.anchor = GridBagConstraints.FIRST_LINE_START;
-			if (typemap.get(attrList[i]).getName() == AttributeTypes.TYPE_STRING
-					&& !attrList[i].equals("name")) {
-				StringAttributePanel temp = new StringAttributePanel(netmgr,
-						attrList[i], "NODE");
-				attrMap.put(attrList[i], temp);
-				attrPanel.add(temp, gc);
+		Arrays.sort(nodeattrList);
+		for (int i = 0; i < nodeattrList.length; i++) {
+			if (!nodeattrList[i].equals("name")) {
+				if (nodetypemap.get(nodeattrList[i]).getName() == AttributeTypes.TYPE_STRING) {
+					StringAttributePanel temp = new StringAttributePanel(
+							netmgr, nodeattrList[i], "NODE");
+					attrPanel.addPanel(temp);
+				} else if (nodetypemap.get(nodeattrList[i]).getName() == AttributeTypes.TYPE_INTEGER
+						|| nodetypemap.get(nodeattrList[i]).getName() == AttributeTypes.TYPE_DOUBLE) {
+					NumericAttributePanel temp = new NumericAttributePanel(
+							netmgr, nodeattrList[i], "NODE", nodetypemap.get(
+									nodeattrList[i]).getName());
+					attrPanel.addPanel(temp);
+				}
 			}
 		}
-		GridBagConstraints gc = new GridBagConstraints();
-		gc.gridx = 0;
-		gc.gridy = attrList.length;
-		gc.fill = GridBagConstraints.BOTH;
-		gc.weightx = 1.0;
-		gc.weighty = 1.0;
-		attrPanel.add(Box.createRigidArea(null), gc);
-		// attrPanel.setBorder(new LineBorder(Color.BLUE));
+		CyDataTable edgetable = net.getCyDataTables("EDGE").get(
+				CyNetwork.DEFAULT_ATTRS);
+		Map<String, Class<?>> edgetypemap = edgetable.getColumnTypeMap();
+		keys = edgetypemap.keySet();
+		Object[] edgearr = keys.toArray();
+		edgeattrList = new String[edgearr.length];
+		for (int i = 0; i < edgearr.length; i++) {
+			edgeattrList[i] = edgearr[i].toString();
+		}
+		Arrays.sort(edgeattrList);
+		for (int i = 0; i < edgeattrList.length; i++) {
+			if (!edgeattrList[i].equals("name")) {
+				if (edgetypemap.get(edgeattrList[i]).getName() == AttributeTypes.TYPE_STRING) {
+					StringAttributePanel temp = new StringAttributePanel(
+							netmgr, edgeattrList[i], "EDGE");
+					attrPanel.addPanel(temp);
+				} else if (edgetypemap.get(edgeattrList[i]).getName() == AttributeTypes.TYPE_INTEGER
+						|| edgetypemap.get(edgeattrList[i]).getName() == AttributeTypes.TYPE_DOUBLE) {
+					NumericAttributePanel temp = new NumericAttributePanel(
+							netmgr, edgeattrList[i], "EDGE", edgetypemap.get(
+									edgeattrList[i]).getName());
+					attrPanel.addPanel(temp);
+				}
+			}
+		}
+
 		jsp = new JScrollPane(attrPanel);
-		// jsp.setBorder(new LineBorder(Color.RED));
-		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mp, jsp);
+		split = new JSplitPane();
+		split.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		split.setTopComponent(mp);
+		split.setBottomComponent(jsp);
 		split.setMinimumSize(new Dimension(280, 200));
 		this.add(split, g1);
-		// this.add(split);
 	}
 
 	public void performSearch(boolean reindex) {
@@ -131,10 +142,10 @@ public class SearchPanelImpl extends SearchPanel {
 	public void updateSearchField() {
 		String query = null;
 		String operator = mp.getOperator();
-		for (int i = 0; i < attrList.length; i++) {
-			if (typemap.get(attrList[i]).getName() == AttributeTypes.TYPE_STRING) {
-				StringAttributePanel sp = (StringAttributePanel) attrMap
-						.get(attrList[i]);
+		List<BasicDraggablePanel> list = attrPanel.getPanelList();
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i) instanceof StringAttributePanel) {
+				StringAttributePanel sp = (StringAttributePanel) list.get(i);
 				if (sp != null) {
 					if (query == null) {
 						if (sp.getCheckedValues() != null)
@@ -148,21 +159,51 @@ public class SearchPanelImpl extends SearchPanel {
 					}
 				}
 			}
+
+			else if (list.get(i) instanceof NumericAttributePanel) {
+				NumericAttributePanel np = (NumericAttributePanel) list.get(i);
+				if (np != null) {
+					if (query == null) {
+						if (np.getQueryFromSearchBox() != null)
+							query = np.getQueryFromSearchBox();
+						else if (np.getQueryFromSearchBox() == null) {
+							if (np.rangeQuery() != null)
+								query = np.rangeQuery();
+						}
+
+					} else {
+						if (np.getQueryFromSearchBox() != null) {
+							query = query + " " + operator + " "
+									+ np.getQueryFromSearchBox();
+						} else if (np.getQueryFromSearchBox() == null) {
+							if (np.rangeQuery() != null)
+								query = query + " " + operator + " "
+										+ np.rangeQuery();
+						}
+					}
+				}
+			}
 		}
 		System.out.println(query);
 		mp.setSearchText(query);
 	}
-	
-	public void clearAll(){
-		for (int i = 0; i < attrList.length; i++) {
-			if (typemap.get(attrList[i]).getName() == AttributeTypes.TYPE_STRING) {
-				StringAttributePanel sp = (StringAttributePanel) attrMap
-						.get(attrList[i]);
+
+	public void clearAll() {
+		List<BasicDraggablePanel> list = attrPanel.getPanelList();
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i) instanceof StringAttributePanel) {
+				StringAttributePanel sp = (StringAttributePanel) list.get(i);
 				if (sp != null) {
-						sp.clearCheckBoxes();
+					sp.clearCheckBoxes();
+				}
+			}
+			
+			else if (list.get(i) instanceof NumericAttributePanel) {
+				NumericAttributePanel np = (NumericAttributePanel) list.get(i);
+				if (np != null) {
+					np.clearAll();
 				}
 			}
 		}
 	}
-	
 }

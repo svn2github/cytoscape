@@ -36,12 +36,12 @@
 package org.cytoscape.search.internal;
 
 import java.util.ArrayList;
-import org.apache.lucene.store.RAMDirectory; //import org.apache.lucene.search.*;
+import org.apache.lucene.store.RAMDirectory;
 
 import org.cytoscape.search.*;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode; //import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.work.TaskMonitor;
 
 public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
@@ -95,11 +95,7 @@ public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
 		if (interrupted) {
 			return;
 		}
-		/*
-		 * // Display results Cytoscape.getCurrentNetwork().unselectAllNodes();
-		 * Cytoscape.getCurrentNetwork().unselectAllEdges();
-		 * Cytoscape.getCurrentNetworkView().updateView();
-		 */
+
 		int hitCount = queryHandler.getHitCount();
 		if (hitCount == 0) {
 			System.out.println("No hits. ");
@@ -116,12 +112,6 @@ public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
 		int percentCompleted = (numCompleted * 100 / hitCount);
 		taskMonitor.setProgress(percentCompleted);
 
-		/*
-		 * // Refresh view to show selected nodes and edges
-		 * network.setSelectedNodeState(nodeList, true);
-		 * network.setSelectedEdgeState(edgeList, true);
-		 * Cytoscape.getCurrentNetworkView().updateView();
-		 */
 	}
 
 	/**
@@ -190,11 +180,7 @@ public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
 		if (interrupted) {
 			return;
 		}
-		/*
-		 * // Display results Cytoscape.getCurrentNetwork().unselectAllNodes();
-		 * Cytoscape.getCurrentNetwork().unselectAllEdges();
-		 * Cytoscape.getCurrentNetworkView().updateView();
-		 */
+
 		int hitCount = queryHandler.getHitCount();
 		if (hitCount == 0) {
 			System.out.println("No hits. ");
@@ -211,12 +197,6 @@ public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
 		int percentCompleted = (numCompleted * 100 / hitCount);
 		// taskMonitor.setProgress(percentCompleted);
 
-		/*
-		 * // Refresh view to show selected nodes and edges
-		 * network.setSelectedNodeState(nodeList, true);
-		 * network.setSelectedEdgeState(edgeList, true);
-		 * Cytoscape.getCurrentNetworkView().updateView();
-		 */
 	}
 
 }

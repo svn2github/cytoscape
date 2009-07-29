@@ -114,8 +114,6 @@ public class MainPanel extends JPanel {
 		gc.weightx = 1.0;
 		gc.weighty = 1.0;
 
-		// gridBagConstraints.anchor=
-		// GridBagConstraints.BELOW_BASELINE_LEADING;
 		resultsLabel = new JLabel(ESP_LABEL);
 		resultsLabel.setText("Results");
 		this.setSize(590, 493);
@@ -268,7 +266,6 @@ public class MainPanel extends JPanel {
 	}
 
 	public String getQuery() {
-		System.out.println("I am in Get Query");
 		String query = searchField.getText();
 		return query;
 	}

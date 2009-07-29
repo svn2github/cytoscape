@@ -44,12 +44,6 @@ import org.cytoscape.search.ReindexTask;
 
 public class ReindexTaskImpl extends ReindexTask implements Task {
 
-	//private CyNetwork network;
-
-	//private TaskMonitor taskMonitor;
-
-	//private boolean interrupted = false;
-
 	/**
 	 * Constructor.
 	 * 
@@ -67,7 +61,8 @@ public class ReindexTaskImpl extends ReindexTask implements Task {
 
 		this.taskMonitor = tm;
 		EnhancedSearchFactoryImpl esf = new EnhancedSearchFactoryImpl();
-		final EnhancedSearch enhancedSearch = esf.getGlobalEnhancedSearchInstance();
+		final EnhancedSearch enhancedSearch = esf
+				.getGlobalEnhancedSearchInstance();
 
 		// Index the given network or use existing index
 		RAMDirectory idx = null;
@@ -89,18 +84,19 @@ public class ReindexTaskImpl extends ReindexTask implements Task {
 	/**
 	 * DOCUMENT ME!
 	 */
-	
+
 	public void halt() {
 		this.interrupted = true;
 	}
-	
+
 	/**
 	 * DOCUMENT ME!
 	 */
-	
+
 	public void cancel() {
 		this.interrupted = true;
 	}
+
 	/**
 	 * Sets the TaskMonitor.
 	 * 
