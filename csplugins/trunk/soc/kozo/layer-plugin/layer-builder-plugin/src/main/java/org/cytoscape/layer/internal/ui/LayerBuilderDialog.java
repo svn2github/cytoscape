@@ -73,10 +73,8 @@ public class LayerBuilderDialog extends JDialog {
 		this.manager = manager;
 		this.builder = builder;
 
-		this.networkTableCellRenderer = new NetworkTableCellRenderer(
-				manager);
-		this.networkListCellRenderer = new NetworkListCellRenderer(
-				manager);
+		this.networkTableCellRenderer = new NetworkTableCellRenderer(manager);
+		this.networkListCellRenderer = new NetworkListCellRenderer(manager);
 
 		this.layerConnectionTableModel = new LayerConnectionTableModel(
 				COLUMN_NAMES);
@@ -599,7 +597,6 @@ public class LayerBuilderDialog extends JDialog {
 
 		layerConnectionTableModel.clearAllRow();
 		comboBoxEditor.removeAllItems();
-		// comboBoxEditor.addItem("Undefined");
 
 		// Build table if necessary
 		for (int i = 0; i < layeredNetworkListModel.size() - 1; i++) {
@@ -608,10 +605,9 @@ public class LayerBuilderDialog extends JDialog {
 					.getColumnCount()];
 
 			// These two columns represents a layer
-			layerConnectionRow[LAYER1] = title2IdMap
-					.get(layeredNetworkListModel.get(i));
-			layerConnectionRow[LAYER2] = title2IdMap
-					.get(layeredNetworkListModel.get(i + 1));
+			layerConnectionRow[LAYER1] = (Long) layeredNetworkListModel.get(i);
+			layerConnectionRow[LAYER2] = (Long) layeredNetworkListModel
+					.get(i + 1);
 
 			// By default, no connector is available.
 			layerConnectionRow[CONNECTOR] = null;
@@ -648,26 +644,24 @@ public class LayerBuilderDialog extends JDialog {
 			for (int i = 0; i < layeredNetworkListModel.size() - 1; i++) {
 				Long[] layerConnectionRow = new Long[layerConnectionTableModel
 						.getColumnCount()];
-				layerConnectionRow[LAYER1] = title2IdMap
-						.get(layeredNetworkListModel.get(i));
-				layerConnectionRow[LAYER2] = title2IdMap
-						.get(layeredNetworkListModel.get(i + 1));
+				layerConnectionRow[LAYER1] = (Long) layeredNetworkListModel
+						.get(i);
+				layerConnectionRow[LAYER2] = (Long) layeredNetworkListModel
+						.get(i + 1);
 				if (availableNetworkListModel.size() > 0) {
-					layerConnectionRow[CONNECTOR] = title2IdMap
-							.get(availableNetworkListModel.get(0));
+					layerConnectionRow[CONNECTOR] = (Long) availableNetworkListModel
+							.get(0);
 				}
 				layerConnectionTableModel.addRow(layerConnectionRow);
 			}
 
 			if (availableNetworkListModel.size() > 0) {
 				comboBoxEditor.removeAllItems();
-				// comboBoxEditor.addItem("Undefined");
 				for (int i = 0; i < availableNetworkListModel.size(); i++) {
 					comboBoxEditor.addItem(availableNetworkListModel.get(i));
 				}
 			} else {
 				comboBoxEditor.removeAllItems();
-				// comboBoxEditor.addItem("Undefined");
 			}
 
 		}
@@ -699,26 +693,24 @@ public class LayerBuilderDialog extends JDialog {
 			for (int i = 0; i < layeredNetworkListModel.size() - 1; i++) {
 				Long[] layerConnectionRow = new Long[layerConnectionTableModel
 						.getColumnCount()];
-				layerConnectionRow[LAYER1] = title2IdMap
-						.get(layeredNetworkListModel.get(i));
-				layerConnectionRow[LAYER2] = title2IdMap
-						.get(layeredNetworkListModel.get(i + 1));
+				layerConnectionRow[LAYER1] = (Long) layeredNetworkListModel
+						.get(i);
+				layerConnectionRow[LAYER2] = (Long) layeredNetworkListModel
+						.get(i + 1);
 				if (availableNetworkListModel.size() > 0) {
-					layerConnectionRow[CONNECTOR] = title2IdMap
-							.get(availableNetworkListModel.get(0));
+					layerConnectionRow[CONNECTOR] = (Long) availableNetworkListModel
+							.get(0);
 				}
 				layerConnectionTableModel.addRow(layerConnectionRow);
 			}
 
 			if (availableNetworkListModel.size() > 0) {
 				comboBoxEditor.removeAllItems();
-				// comboBoxEditor.addItem("Undefined");
 				for (int i = 0; i < availableNetworkListModel.size(); i++) {
 					comboBoxEditor.addItem(availableNetworkListModel.get(i));
 				}
 			} else {
 				comboBoxEditor.removeAllItems();
-				// comboBoxEditor.addItem("Undefined");
 			}
 
 		}
