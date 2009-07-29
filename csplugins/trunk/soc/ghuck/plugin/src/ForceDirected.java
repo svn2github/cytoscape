@@ -350,9 +350,10 @@ public class ForceDirected extends AbstractGraphPartition
 	    }
 	}
 	catch (Exception exception){
-	    	String message4 = "Problem detected while loading Static Library\nCannot Produce Layout\n"
+	    /*String message4 = "Problem detected while loading Static Library\nCannot Produce Layout\n"
 		    + exception.getMessage();
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message4);
+	    */
 	}
 
 	// Check whether it has been canceled by the user
