@@ -12,7 +12,7 @@ To build things:
 To run things:
 
 	% cd target/cmdline-application-1.0-SNAPSHOT-app.dir/cmdline-application/
-	% java -jar cmdline-launcher-1.0-SNAPSHOT-jar-with-dependencies.jar
+	% java -jar headless-cytoscape.jar
 
 All jars found in the "load" directory will attempt to be installed as OSGi 
 bundles.  You can dynamically add/remove jars from this directory and they 
