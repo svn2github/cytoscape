@@ -7,6 +7,7 @@ import giny.view.EdgeView;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +34,7 @@ public class Interpolator {
 
 		networkInterpolators.add(new interpolateNetworkZoom());
 		networkInterpolators.add(new interpolateNetworkColor());
-		//networkInterpolators.add(new interpolateNetworkPosition());
+		networkInterpolators.add(new interpolateNetworkCenter());
 	
 		//generateInterpolatedFrames(one, two, 10);
 	}
@@ -529,5 +530,48 @@ public class Interpolator {
 			}
 			return cyFrameArray;
 		}
-	}	
+	}
+	
+	class interpolateNetworkCenter implements FrameInterpolator {
+	
+		public interpolateNetworkCenter(){}
+		
+		public CyFrame[] interpolate(List valueList, CyFrame frameOne, CyFrame frameTwo, 
+                int start, int stop, CyFrame[] cyFrameArray){
+			
+			int framenum = (stop-start) - 1;
+			
+			double xone = frameOne.getCenterPoint().getX();
+			double yone = frameOne.getCenterPoint().getY();
+			
+			double xtwo = frameTwo.getCenterPoint().getX();
+			double ytwo = frameTwo.getCenterPoint().getY();
+			
+			double incrementLength = (xtwo - xone)/framenum;
+			double[] xArray = new double[framenum+2];
+			xArray[1] = xone;
+
+			for(int k=1; k<framenum+1; k++){
+
+				Point2D xy = new Point2D.Double(0, 0);
+				
+				xArray[k+1] = xArray[k] + incrementLength;
+				//xy.setLocation(xArray[k], arg1)[0] = xArray[k];
+
+				//Do the position interpolation
+				if((xtwo - xone) == 0){
+					xy.setLocation(xArray[k], yone);
+				}else{
+
+					double y = yone + ((xArray[k] - xone)*((ytwo-yone)/(xtwo -xone)));
+					xy.setLocation(xArray[k], y);
+				}
+
+				cyFrameArray[start+k].setCenterPoint(xy);
+			}
+			
+			return cyFrameArray;
+		}
+		
+	}
 }	

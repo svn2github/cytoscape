@@ -1,10 +1,26 @@
 package CyAnimator;   
 
+
+import cytoscape.*;
+
+import cytoscape.layout.*;
+
+import cytoscape.visual.*;
+
+import ding.view.EdgeContextMenuListener;
+
+import ding.view.NodeContextMenuListener;
+
+import giny.view.*;
+
+import java.util.*;
+
 import giny.model.Node;
 import giny.view.NodeView;
 import giny.model.Edge;
 import giny.view.EdgeView;
 
+import java.awt.geom.Point2D;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Image;
@@ -21,6 +37,8 @@ import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
 import cytoscape.visual.VisualStyle;
+
+import ding.view.DGraphView;
 
 public class CyFrame {
 	
@@ -48,6 +66,8 @@ public class CyFrame {
 	private List<Node> nodeList = null;
 	private List<Edge> edgeList = null;
 	private int intercount = 0;
+	private Point2D centerPoint = null;
+	private DGraphView dview = null; 
 	
 	public CyFrame(CyNetwork currentNetwork){
 		nodePosMap = new HashMap<String, double[]>();
@@ -59,7 +79,9 @@ public class CyFrame {
 		edgeColMap = new HashMap<String, Color>();
 		this.currentNetwork = currentNetwork;
 		networkView = Cytoscape.getCurrentNetworkView();
-
+		this.dview = (DGraphView)networkView;
+		this.centerPoint = dview.getCenter();
+		
 		// Initialize our node view maps
 		Iterator<EdgeView> eviter = networkView.getEdgeViewsIterator();
 		while(eviter.hasNext()) {
@@ -82,6 +104,8 @@ public class CyFrame {
 
 		// Get our initial edgeList
 		edgeList = currentNetwork.edgesList();
+		
+		
 	}
 
 	public void setNodeList(List<Node>nodeList) {
@@ -102,6 +126,8 @@ public class CyFrame {
 		xalign = networkView.getComponent().getAlignmentX();
 		yalign = networkView.getComponent().getAlignmentY();
 		
+		dview = (DGraphView)networkView;
+		
 		for(Node node: nodeList)
 		{
 		
@@ -111,7 +137,7 @@ public class CyFrame {
 			double[] xy = new double[2];
 			xy[0] = nodeView.getXPosition();
 			xy[1] = nodeView.getYPosition();
-		   
+		    centerPoint = dview.getCenter();
 			nodePosMap.put(node.getIdentifier(), xy);
 			Color nodeColor = (Color)nodeView.getUnselectedPaint();
 			Integer trans = nodeColor.getAlpha();
@@ -233,7 +259,14 @@ public class CyFrame {
 		networkView.setBackgroundPaint(backgroundPaint);
 		networkView.setZoom(zoom);
 		//networkView.getComponent().
+		dview = (DGraphView)networkView;
 		
+		//InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(networkView);
+		
+		dview.setCenter(centerPoint.getX(), centerPoint.getY());
+		
+		//dview.setBounds(x, y, Math.round(ifc.getWidth()), Math.round(ifc.getHeight()));
+		//ifc.setBounds(arg0, arg1, arg2, arg3)
 		networkView.updateView();
 	}
 	/*
@@ -442,7 +475,24 @@ public class CyFrame {
 		return this.networkImage;
 	}
 
+	/*
+	 * Get the center point for the frame
+	 * 
+	 * @return the center for this frame
+	 */
+	public Point2D getCenterPoint() {
+		return this.centerPoint;
+	}
 
+	/*
+	 * Set the center point of the frame
+	 * 
+	 * @param center point for a frame
+	 */
+	public void setCenterPoint(Point2D pnt) {
+		this.centerPoint = pnt;
+	}
+	
 	// At some point, need to pull the information from nv
 	// and map it to the new nv.
 	private void addNodeView(CyNetworkView view, NodeView nv, Node node) {
