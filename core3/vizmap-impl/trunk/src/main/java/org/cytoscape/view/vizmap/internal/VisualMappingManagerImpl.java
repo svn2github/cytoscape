@@ -172,7 +172,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 		return visualStyles;
 	}
 
-	public RootVisualLexicon getRoorVisualLexicon() {
+	public RootVisualLexicon getRootVisualLexicon() {
 		// TODO Auto-generated method stub
 		return null;
 	}
