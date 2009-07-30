@@ -16,7 +16,7 @@ import giny.model.Node;
 
 public class RadialCladogram extends AbstractLayout{
 	
-	static double BASE_RADIUS = 50.0;
+	static double BASE_RADIUS = 100.0;
 	
 	private LayoutProperties layoutProperties;
 	

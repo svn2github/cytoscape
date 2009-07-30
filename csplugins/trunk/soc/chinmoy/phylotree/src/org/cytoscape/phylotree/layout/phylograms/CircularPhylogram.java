@@ -16,7 +16,7 @@ import giny.model.Edge;
 
 public class CircularPhylogram extends AbstractLayout{
 
-	static double BASE_RADIUS = 500.0;
+	static double BASE_RADIUS = 1000.0;
 
 	private int numLeavesVisited = 0; //
 	private LayoutProperties layoutProperties;
@@ -75,9 +75,9 @@ public class CircularPhylogram extends AbstractLayout{
 		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(layoutProperties.getTunablePanel());
 
-		
 		return panel;
 	}
+	
 
 
 	/**
@@ -126,6 +126,9 @@ public class CircularPhylogram extends AbstractLayout{
 			Edge edge = edgesIterator.next();
 			networkView.getEdgeView(edge).clearBends();
 		}
+		
+
+		scalingFactor = commonFunctions.getScalingFactor(network);
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 		
@@ -193,7 +196,8 @@ public class CircularPhylogram extends AbstractLayout{
 			Node ancestor = it.next();
 			totalRadius = totalRadius + commonFunctions.getBranchLength(network, ancestor);
 		}
-		totalRadius = totalRadius+commonFunctions.getBranchLength(network, node);
+		
+		totalRadius = totalRadius+(commonFunctions.getBranchLength(network, node));
 		
 		// Reposition node
 		networkView.getNodeView(node).setXPosition(totalRadius*BASE_RADIUS*Math.cos(angle),true);

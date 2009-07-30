@@ -129,7 +129,8 @@ public class SlantedPhylogram extends AbstractLayout{
 			networkView.getEdgeView(edge).clearBends();
 		}
 		
-		
+
+		scalingFactor = commonFunctions.getScalingFactor(network);
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 		

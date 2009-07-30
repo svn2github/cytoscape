@@ -14,6 +14,8 @@ import org.cytoscape.phylotree.ui.PhyloFileDialog;
 import org.cytoscape.phylotree.parser.*;
 import org.forester.io.parsers.PhylogenyParserException;
 import org.forester.io.parsers.phyloxml.PhyloXmlParser;
+
+import org.forester.phylogeny.data.*;
 import org.forester.phylogeny.Phylogeny;
 import org.forester.phylogeny.PhylogenyNode;
 import org.forester.phylogeny.iterators.PhylogenyNodeIterator;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Map;
 
 import cytoscape.layout.CyLayouts;
 
@@ -49,7 +52,15 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 		}
 		else if (pFormat.equalsIgnoreCase("phyloxml")){
 			loadnetwork_phyloXML(pFile);
-		}		
+		}
+		
+
+		// Apply default layout
+		CyLayouts.getLayout("slanted_cladogram").doLayout();
+		
+		// Apply visual style
+		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, "phyloVizMap.props");
+		
 	}
 	
 	
@@ -97,11 +108,6 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 		cyAttributes.setUserEditable("branchLength", false);
 		cyAttributes.setUserVisible("branchLength", true);
 		
-		// Apply default layout
-		CyLayouts.getLayout("slanted_cladogram").doLayout();
-		
-		// Apply visual style
-		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, "phyloVizMap.props");
 
 	}
 	
@@ -115,28 +121,86 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 			trees = parser.parse();	
 		}
 		catch (PhylogenyParserException ppe){
-			// give some message here
+			System.out.println("PhloXML Parser error occured.");
 			return;
 		}
 		catch(IOException ioe){
-			// give some message here
+			System.out.println("I/O Error occured.");
 			return;
 		}
 
 		for (int i=0; i< trees.length; i++){
 			PhylogenyNodeIterator it = trees[i].iteratorLevelOrder();
-
+			
+			// Create a network
+			CyNetwork cyNetwork = Cytoscape.createNetwork(trees[i].getName(), true);
+			
+			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			
+			// Add network attributes
+			addNetworkAttributes(trees[i]);
+			
 			// process each node, get node, edge and attributes			
-			while (it.hasNext()){
+			while (it.hasNext())
+			{
 				PhylogenyNode node = (PhylogenyNode) it.next();
-				//String nodeName = node.getNodeName();
-				//NodeData nodeData = node.getNodeData(); // for attributes
-				//Node parent = node.getParent(); // for edge
+				PhylogenyNode parent = node.getParent(); // for edge
+				
+				// Add the node to the network
+				CyNode cyNode = Cytoscape.getCyNode(node.getNodeName(), true);
+				// Add the node's attributes
+				NodeData nodeData = node.getNodeData();
+				
+				cyNetwork.addNode(cyNode);
+				double length = 0.0;
+				
+				// If parent exists, add it as well as all edges connecting the two
+				if(parent!=null)
+				{
+					CyNode cyParent = Cytoscape.getCyNode(parent.getNodeName(), true);
+					// Add the parent's attributes
 
+					cyNetwork.addNode(cyParent);
+
+					
+					CyEdge cyEdge = Cytoscape.getCyEdge(cyParent, cyNode, Semantics.INTERACTION, "pp", true, true);
+					// Add the edge's attributes
+
+						length = node.getDistanceToParent();
+						System.out.println(length);
+					
+					
+					edgeAttributes.setAttribute(cyEdge.getIdentifier(), "branchLength", length);
+					cyNetwork.addEdge(cyEdge);
+
+				}
 			}
 		}
 
-		//build Cytoscape network here, create Cytoscape attributes here
+		
+	}
+	
+	private void addNetworkAttributes(Phylogeny phy )
+	{
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		
+		
+		
+		if(phy.getConfidence()!=null)
+			networkAttributes.setAttribute(phy.getName(),"Confidence",phy.getConfidence().getValue());
+		
+		if(phy.getDescription()!=null)
+			networkAttributes.setAttribute(phy.getName(),"Description",phy.getDescription());
+		
+		if(phy.getDistanceUnit()!=null)
+			networkAttributes.setAttribute(phy.getName(),"Distance Unit",phy.getDistanceUnit());
+		
+//		if(phy.getDescription()!=null)
+//			networkAttributes.setAttribute(phy.getName(),"Description",phy.getDescription());
+//		if(phy.getDescription()!=null)
+//			networkAttributes.setAttribute(phy.getName(),"Description",phy.getDescription());
+		
 		
 	}
 

@@ -16,7 +16,7 @@ import giny.model.Edge;
 
 public class RadialPhylogram extends AbstractLayout{
 
-	static double BASE_RADIUS = 500.0;
+	static double BASE_RADIUS = 1000.0;
 
 	private int numLeavesVisited = 0; //
 	private LayoutProperties layoutProperties;
@@ -127,7 +127,8 @@ public class RadialPhylogram extends AbstractLayout{
 			Edge edge = edgesIterator.next();
 			networkView.getEdgeView(edge).clearBends();
 		}
-		
+
+		scalingFactor = commonFunctions.getScalingFactor(network);
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 		

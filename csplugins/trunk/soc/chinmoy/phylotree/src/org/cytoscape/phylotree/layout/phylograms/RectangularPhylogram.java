@@ -119,13 +119,16 @@ public class RectangularPhylogram extends AbstractLayout{
 
 		List<Edge> allEdges = network.edgesList();
 		Iterator<Edge> edgesIterator = allEdges.iterator();
-
+		
 		while(edgesIterator.hasNext())
 		{
 
 			Edge edge = edgesIterator.next();
 			networkView.getEdgeView(edge).clearBends();
 		}
+
+		scalingFactor = commonFunctions.getScalingFactor(network);
+		
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 		

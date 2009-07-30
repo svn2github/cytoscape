@@ -321,8 +321,8 @@ public class CommonFunctions {
 		
 		// Calculate the scaling factor
 		
-		while(smallestLength * factor <= 50.0)
-			factor *= 10.0;
+		while(smallestLength * factor <= 50.0) //50
+			factor *= 10.0;                     //10
 		
 		
 		return factor;		
@@ -330,7 +330,7 @@ public class CommonFunctions {
 	
 	/**
 	 * Adds the bends to make the edges look rectangular
-	 * * @param network - the network on which the bends are to be added
+	 * @param network - the network on which the bends are to be added
 	 * @param networkView - the networkView on which bends are to be added
 	 * @param edge - the edge onto which bends are to be added
 	 */
