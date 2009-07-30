@@ -51,12 +51,15 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 					"Cannot create presentation for null view model.");
 
 		System.out.println("\n\n\n\n\n!!!!!!!!!! Calling: ");
-
-		final JFrame frame = (JFrame) target;
+		
 
 		final ProcessingNetworkRenderer rend = new ProcessingNetworkRenderer(
 				DEFAULT_WINDOW_SIZE, (CyNetworkView) view);
 		rend.init();
+		
+		if(target instanceof JFrame == false) return rend;
+		
+		final JFrame frame = (JFrame) target;
 		System.out.println("\n\n\n\n\n!!!!!!!!!! Init Done! ");
 		
 		EventQueue.invokeLater(new Runnable() {

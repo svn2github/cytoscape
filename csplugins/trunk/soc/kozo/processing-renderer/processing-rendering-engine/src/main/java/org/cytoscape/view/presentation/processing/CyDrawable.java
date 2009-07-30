@@ -3,6 +3,8 @@ package org.cytoscape.view.presentation.processing;
 import java.util.List;
 import java.util.Set;
 
+import org.cytoscape.view.model.View;
+
 public interface CyDrawable {
 	
 	/**
@@ -10,6 +12,8 @@ public interface CyDrawable {
 	 * 
 	 */
 	public void draw();
+	
+	public void setContext(View<?> viewModel);
 	
 	/**
 	 * Get all children of this drawable.

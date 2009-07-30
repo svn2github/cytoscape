@@ -1,17 +1,19 @@
 package org.cytoscape.view.presentation.processing.internal;
 
-import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.*;
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.EDGE_STYLE;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.VisualItemRenderer;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.EdgeItem;
 import org.cytoscape.view.presentation.processing.internal.shape.Cube;
 import org.cytoscape.view.presentation.processing.internal.shape.Line;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
@@ -24,8 +26,11 @@ private PApplet p;
 	
 	private final VisualLexicon nodeLexicon;
 	
-	public P5EdgeRenderer(PApplet p) {
+	private CyNetworkView networkView;
+	
+	public P5EdgeRenderer(PApplet p, CyNetworkView networkView) {
 		this.p = p;
+		this.networkView = networkView;
 		nodeLexicon = buildLexicon();
 	}
 	
@@ -55,20 +60,20 @@ private PApplet p;
 	public CyDrawable render(View<CyEdge> view) {
 		CyDrawable style = view.getVisualProperty(EDGE_STYLE);
 		
-		if(style == null) 
+		if(style == null || (style instanceof EdgeItem) == false) 
 			style = new Line(p);
 		
-		view.getSource().getSource();
-		view.getSource().getTarget();
+		// Extract source & target views
+		final CyNode source = view.getSource().getSource();
+		final CyNode target = view.getSource().getTarget();
+		View<CyNode> sourceView = networkView.getNodeView(source);
+		View<CyNode> targetView = networkView.getNodeView(target);
 		
+		((EdgeItem)style).setSource(sourceView);
+		((EdgeItem)style).setTarget(targetView);
 		
-		Cube cube = (Cube) style;
-		cube.x = view.getVisualProperty(NODE_X_LOCATION).floatValue();
-		cube.y = view.getVisualProperty(NODE_Y_LOCATION).floatValue();
-		cube.z = view.getVisualProperty(NODE_Z_LOCATION).floatValue();
+		style.setContext(view);
 		
-		return cube;
+		return style;
 	}
-
-
 }

@@ -1,22 +1,27 @@
 package org.cytoscape.view.presentation.processing.internal.shape;
 
+import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.*;
 import java.awt.Color;
+import java.awt.Paint;
 import java.util.List;
 import java.util.Set;
 
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.EdgeItem;
 
 import processing.core.PApplet;
 import toxi.geom.Vec3D;
 
-public class Line implements CyDrawable {
+public class Line implements CyDrawable, EdgeItem {
 	
 	private final PApplet p;
 	
+	// Start and end point of this line.
 	private Vec3D source;
 	private Vec3D target;
 	
-	private Color color;
+	private int r, g, b, alpha;
 	
 	public Line(PApplet p) {
 		this.p = p;
@@ -25,7 +30,7 @@ public class Line implements CyDrawable {
 	}
 
 	public void draw() {
-		p.stroke(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+		p.stroke(r, g, b, alpha);
 		p.line(source.x, source.y, source.z, target.x, target.y, target.z);		
 	}
 
@@ -37,6 +42,31 @@ public class Line implements CyDrawable {
 	public Set<Class<?>> getCompatibleModels() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setContext(View<?> viewModel) {
+		Paint edgePaint = viewModel.getVisualProperty(EDGE_COLOR);
+		
+		if(edgePaint instanceof Color) {
+			this.r = ((Color)edgePaint).getRed();
+			this.g = ((Color)edgePaint).getGreen();
+			this.b = ((Color)edgePaint).getBlue();
+			this.alpha = ((Color)edgePaint).getAlpha();
+			
+			System.out.println("Color of Edge = " + r +", " + g + ", " + b + ", alpha = " + alpha);
+		}
+	}
+
+	public void setSource(View<?> sourceView) {
+		source.x = sourceView.getVisualProperty(NODE_X_LOCATION).floatValue();
+		source.y = sourceView.getVisualProperty(NODE_Y_LOCATION).floatValue();
+		source.z = sourceView.getVisualProperty(NODE_Z_LOCATION).floatValue();
+	}
+
+	public void setTarget(View<?> targetView) {
+		target.x = targetView.getVisualProperty(NODE_X_LOCATION).floatValue();
+		target.y = targetView.getVisualProperty(NODE_Y_LOCATION).floatValue();
+		target.z = targetView.getVisualProperty(NODE_Z_LOCATION).floatValue();
 	}
 
 }

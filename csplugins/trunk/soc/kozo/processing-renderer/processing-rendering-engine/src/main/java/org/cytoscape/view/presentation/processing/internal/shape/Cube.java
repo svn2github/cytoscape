@@ -3,23 +3,23 @@ package org.cytoscape.view.presentation.processing.internal.shape;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_SIZE;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
 
+import java.awt.Color;
+import java.awt.Paint;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.media.opengl.GL;
 import javax.swing.Icon;
 
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.processing.CyDrawable;
-import org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon;
-import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 
 import processing.core.PApplet;
-import processing.opengl.PGraphicsOpenGL;
 import toxi.geom.Vec3D;
 
 /**
@@ -33,55 +33,26 @@ public class Cube extends Vec3D implements CyDrawable {
 	private static final long serialVersionUID = -3971892445041605908L;
 	private static final String DISPLAY_NAME = "Cube";
 	
-	private ProcessingVisualLexicon lexicon;
+	private static final int DEF_SIZE = 20;
 	
 	private Set<Class<?>> compatibleDataType;
 	
-	private static VisualLexicon sub;
-	
-	static {
-		sub = new BasicVisualLexicon();
-		sub.addVisualProperty(NODE_COLOR);
-		sub.addVisualProperty(NODE_X_LOCATION);
-		sub.addVisualProperty(NODE_Y_LOCATION);
-		sub.addVisualProperty(NODE_Z_LOCATION);
-	}
-	
+	private final VisualLexicon lexicon;
 	
 	private PApplet p;
-	private GL gl;
-	private PGraphicsOpenGL pgl;
-	
 	
 	private float size;
-	private float r, g, b, alpha;
+	private int r, g, b, alpha;
 	 
 	
-	public Cube(PApplet parent) {
+	public Cube(PApplet parent, VisualLexicon lexicon) {
 		super();
 		this.p = parent;
-		size = 20;
-	}
-	
-	public Cube(ProcessingVisualLexicon lexicon) {
-		
 		this.lexicon = lexicon;
+		
 		compatibleDataType = new HashSet<Class<?>>();
 		compatibleDataType.add(CyNode.class);
-		
-		this.lexicon.registerSubLexicon(this.getClass(), sub);
-		
-		r = 100;
-		g = 200;
-		b = 100;
-		alpha = 150;
-		
-		this.rotateX(p.random(p.PI));
-		this.rotateY(p.random(p.PI));
-		this.rotateZ(p.random(p.PI));
 	}
-
-
 
 	public Set<Class<?>> getCompatibleModels() {
 		return compatibleDataType;
@@ -96,13 +67,11 @@ public class Cube extends Vec3D implements CyDrawable {
 		return null;
 	}
 
-	public VisualLexicon getCompatibleVisualProperties() {
-		return lexicon.getSubLexicon(this.getClass());
-	}
-
 	public void draw() {
 		p.pushMatrix();
 		p.translate(x, y, z);
+		p.fill(r, g, b, alpha);
+		//p.fill(204, 102, 0);
 		p.box(size);
 		p.popMatrix();
 	}
@@ -110,6 +79,29 @@ public class Cube extends Vec3D implements CyDrawable {
 	public List<CyDrawable> getChildren() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setContext(View<?> viewModel) {
+		// Pick compatible lexicon only.
+		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue();
+		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();
+		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue();
+		
+		this.size = viewModel.getVisualProperty(NODE_X_SIZE).floatValue();
+		if(size <= 0)
+			size = DEF_SIZE;
+		
+		Paint color = viewModel.getVisualProperty(NODE_COLOR);
+		if(color instanceof Color) {
+			this.r = ((Color)color).getRed();
+			this.g = ((Color)color).getGreen();
+			this.b = ((Color)color).getBlue();
+			//this.alpha = ((Color)color).getAlpha();
+			this.alpha = 90;
+			System.out.println("Color of node = " + r +", " + g + ", " + b + ", alpha = " + alpha);
+		}
+		
+		
 	}
 
 }

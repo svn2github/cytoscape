@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCanvas;
+import javax.media.opengl.GLEventListener;
 import javax.swing.Icon;
 
 import org.cytoscape.model.CyEdge;
@@ -24,7 +27,10 @@ import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.internal.particle.ParticleManager;
 import org.cytoscape.view.presentation.processing.internal.shape.Cube;
 
+import com.sun.opengl.util.FPSAnimator;
+
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.opengl.PGraphicsOpenGL;
 import toxi.geom.AABB;
 import toxi.geom.Vec3D;
@@ -48,7 +54,10 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	private CyDrawable[] nodes;
 	private CyDrawable[] edges;
 
-	private P5NodeRenderer nodeRenderer;
+	private final P5NodeRenderer nodeRenderer;
+	private final P5EdgeRenderer edgeRenderer;
+	
+	private GLCanvas canvas;
 
 	/**
 	 * Constructor. Create a PApplet component based on the size given as
@@ -58,16 +67,13 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	 */
 	public ProcessingNetworkRenderer(Dimension size, CyNetworkView view) {
 		System.out.println("%%%%%%%%%%%%% Constructor called for P5");
-		try {
-			this.windowSize = size;
-			System.out.println("%%%%%%%%%%%%% Constructor called for P5: 1");
-			this.view = view;
-			System.out.println("%%%%%%%%%%%%% Constructor called for P5: 2");
-			this.nodeRenderer = new P5NodeRenderer(this);
-			System.out.println("%%%%%%%%%%%%% Constructor called for P5: 3");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+		this.windowSize = size;
+		System.out.println("%%%%%%%%%%%%% Constructor called for P5: 1");
+		this.view = view;
+		System.out.println("%%%%%%%%%%%%% Constructor called for P5: 2");
+		this.nodeRenderer = new P5NodeRenderer(this);
+		this.edgeRenderer = new P5EdgeRenderer(this, view);
 
 		System.out.println("\n\n\n\n\n\n!!!!!!!!!! Calling constructor: ");
 	}
@@ -108,9 +114,34 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	ParticleManager particleManager;
 	VerletPhysics physics;
 	float rotX, rotY, zoom = 200;
+	float transX, transY;
 	AABB boundingBox;
+	
+	PFont defFont;
 
-
+	class GLRenderer implements GLEventListener { 
+		  GL gl; 
+		 
+		  public void init(GLAutoDrawable drawable) { 
+		    this.gl = drawable.getGL(); 
+		    gl.glClearColor(1, 0, 0, 0);    
+		    canvas.setLocation(100, 80);     
+		  } 
+		 
+		  public void display(GLAutoDrawable drawable) { 
+		    gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT ); 
+		    gl.glColor3f(1, 1, 1);  
+		    gl.glRectf(-0.8f, 0.8f, frameCount%100/100f -0.8f, 0.7f); 
+		  } 
+		 
+		  public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) { 
+		  } 
+		 
+		  public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged) { 
+		  } 
+		}
+	
+	
 	public void setup() {
 		System.out.println("%%%%%%%%%%%%% Setup called for P5");
 		/* setup p5 */
@@ -118,44 +149,58 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		hint(ENABLE_OPENGL_4X_SMOOTH);
 		hint(ENABLE_NATIVE_FONTS);
 		noStroke();
-		
+
 		frameRate(30);
+		
+		defFont = createFont("SansSerif", 32);
+		textFont(defFont);
 
 		// Convert views to drawable
 		final List<View<CyNode>> nodeViews = view.getNodeViews();
 		nodes = new CyDrawable[nodeViews.size()];
-		for (int i = 0; i < nodes.length; i++) {
+		for (int i = 0; i < nodes.length; i++)
 			nodes[i] = nodeRenderer.render(nodeViews.get(i));
-		}
 
 		final List<View<CyEdge>> edgeViews = view.getEdgeViews();
 		edges = new CyDrawable[edgeViews.size()];
+		for (int i = 0; i < edges.length; i++)
+			edges[i] = edgeRenderer.render(edgeViews.get(i));
 
+		canvas = new GLCanvas(); 
+		  canvas.setSize(200, 200); 
+		  canvas.addGLEventListener(new GLRenderer()); 
+		  FPSAnimator animator = new FPSAnimator(canvas, 60); 
+		  animator.start(); 
+		 
+		  add(canvas); 
+		
+		
 		System.out.println("%%%%%%%%%%%%% Setup DONE for P5");
 	}
 
 	public void draw() {
-		background(0);
+		background(240);
 		lights();
 		
 		camera(width / 2.0f, height / 2.0f, (height / 2.0f)
 				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
 				height / 2.0f, 0, 0, 1, 0);
+		
 		translate(width / 2, height / 2, height / 2);
 		rotateX(rotY);
 		rotateY(rotX);
-		translate(-width / 2, -height / 2, -height / 2);
-		beginGL();		
+		translate(-width / 2 + transX, -height / 2 + transY, -height / 2);
+		beginGL();
 		for (CyDrawable node : nodes)
 			node.draw();
-
-		// for(CyDrawable edge: edges)
-		// edge.draw();
 		
+		for (CyDrawable edge : edges)
+			edge.draw();
 		endGL();
 		
+		fill(200, 0, 0);
+		text("Cytoscape Test", 100, 100, 0);
 		
-
 	}
 
 	public void beginGL() {
