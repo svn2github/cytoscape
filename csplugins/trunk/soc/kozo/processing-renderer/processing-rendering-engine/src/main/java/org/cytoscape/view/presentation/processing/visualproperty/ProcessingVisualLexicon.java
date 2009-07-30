@@ -1,8 +1,9 @@
 package org.cytoscape.view.presentation.processing.visualproperty;
 
-import static org.cytoscape.model.GraphObject.EDGE;
+import static org.cytoscape.model.GraphObject.*;
 import static org.cytoscape.model.GraphObject.NODE;
 
+import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,9 @@ public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
 			NODE, null, "NODE_STYLE", "Node Style");
 	public static final VisualProperty<? extends CyDrawable> EDGE_STYLE = new CyDrawableVisualProperty(
 			EDGE, null, "EDGE_STYLE", "Edge Style");	
+	
+	public static final VisualProperty<? extends Image> NETWORK_BACKGROUND_IMAGE = new ImageVisualProperty(
+			NETWORK, null, "NETWORK_BACKGROUND_IMAGE", "Network Background Image");	
 	
 	public ProcessingVisualLexicon() {
 		super();

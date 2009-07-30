@@ -18,8 +18,10 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.Pickable;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import toxi.geom.Vec3D;
 
 /**
@@ -28,13 +30,17 @@ import toxi.geom.Vec3D;
  * @author kono
  *
  */
-public class Cube extends Vec3D implements CyDrawable {
+public class Cube extends Vec3D implements CyDrawable, Pickable {
 
 	private static final long serialVersionUID = -3971892445041605908L;
 	private static final String DISPLAY_NAME = "Cube";
 	
 	private static final int DEF_SIZE = 20;
 	
+	private static final int OFFSET = 10;
+
+	
+	private boolean picked;
 	private Set<Class<?>> compatibleDataType;
 	
 	private final VisualLexicon lexicon;
@@ -49,6 +55,7 @@ public class Cube extends Vec3D implements CyDrawable {
 		super();
 		this.p = parent;
 		this.lexicon = lexicon;
+		this.picked = false;
 		
 		compatibleDataType = new HashSet<Class<?>>();
 		compatibleDataType.add(CyNode.class);
@@ -69,9 +76,9 @@ public class Cube extends Vec3D implements CyDrawable {
 
 	public void draw() {
 		p.pushMatrix();
+		p.noStroke();
 		p.translate(x, y, z);
 		p.fill(r, g, b, alpha);
-		//p.fill(204, 102, 0);
 		p.box(size);
 		p.popMatrix();
 	}
@@ -92,15 +99,42 @@ public class Cube extends Vec3D implements CyDrawable {
 			size = DEF_SIZE;
 		
 		Paint color = viewModel.getVisualProperty(NODE_COLOR);
-		if(color instanceof Color) {
+		if(picked) {
+			this.r = 0;
+			g = 250;
+			b = 0;
+			alpha = 255;
+			System.out.println("Color of PICKED node" + g); 
+		}else if(color instanceof Color) {
 			this.r = ((Color)color).getRed();
 			this.g = ((Color)color).getGreen();
 			this.b = ((Color)color).getBlue();
 			//this.alpha = ((Color)color).getAlpha();
 			this.alpha = 90;
-			System.out.println("Color of node = " + r +", " + g + ", " + b + ", alpha = " + alpha);
+			
 		}
 		
+		
+	}
+
+	public boolean isPicked() {
+		return picked;
+	}
+
+	public void pick(float cx, float cy) {
+		
+		final float distance = PApplet.dist(cx, cy, p.screenX(this.x, this.y, this.z), p.screenY(x, y, z));
+		System.out.println("Distance = " + distance);
+		if(distance < 200){
+			picked = true;
+			System.out.println("PICKED!!");
+			this.r = 0;
+			g = 250;
+			b = 0;
+			alpha = 255;
+			System.out.println("Color of PICKED node" + g); 
+		} else
+			picked = false;
 		
 	}
 

@@ -1,10 +1,9 @@
 package org.cytoscape.view.presentation.processing.internal;
 
-import gestalt.render.Drawable;
-
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.print.Printable;
 import java.util.List;
 import java.util.Properties;
@@ -24,17 +23,16 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.Pickable;
 import org.cytoscape.view.presentation.processing.internal.particle.ParticleManager;
-import org.cytoscape.view.presentation.processing.internal.shape.Cube;
-
-import com.sun.opengl.util.FPSAnimator;
 
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.opengl.PGraphicsOpenGL;
 import toxi.geom.AABB;
-import toxi.geom.Vec3D;
 import toxi.physics.VerletPhysics;
+
+import com.sun.opengl.util.FPSAnimator;
 
 public class ProcessingNetworkRenderer extends PApplet implements
 		RenderingEngine {
@@ -75,6 +73,15 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		this.nodeRenderer = new P5NodeRenderer(this);
 		this.edgeRenderer = new P5EdgeRenderer(this, view);
 
+		
+		this.addMouseWheelListener(new MouseWheelListener() {
+
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				zoom +=e.getWheelRotation()*100;
+				
+			}
+			
+		});
 		System.out.println("\n\n\n\n\n\n!!!!!!!!!! Calling constructor: ");
 	}
 
@@ -165,14 +172,6 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		edges = new CyDrawable[edgeViews.size()];
 		for (int i = 0; i < edges.length; i++)
 			edges[i] = edgeRenderer.render(edgeViews.get(i));
-
-		canvas = new GLCanvas(); 
-		  canvas.setSize(200, 200); 
-		  canvas.addGLEventListener(new GLRenderer()); 
-		  FPSAnimator animator = new FPSAnimator(canvas, 60); 
-		  animator.start(); 
-		 
-		  add(canvas); 
 		
 		
 		System.out.println("%%%%%%%%%%%%% Setup DONE for P5");
@@ -182,14 +181,18 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		background(240);
 		lights();
 		
-		camera(width / 2.0f, height / 2.0f, (height / 2.0f)
-				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
-				height / 2.0f, 0, 0, 1, 0);
+//		camera(width / 2.0f, height / 2.0f, (height / 2.0f)
+//				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
+//				height / 2.0f, 0, 0, 1, 0);
+		
+		camera(width / 2.0f, height / 2.0f, (height / 2.0f) / tan((float) (PI * 60.0 / 360.0)) + zoom, 
+				width / 2.0f, height / 2.0f, 0, 
+				0, 1, 0);
 		
 		translate(width / 2, height / 2, height / 2);
 		rotateX(rotY);
 		rotateY(rotX);
-		translate(-width / 2 + transX, -height / 2 + transY, -height / 2);
+		translate(-width / 2 + translateX, -height / 2 + translateY, -height / 2);
 		beginGL();
 		for (CyDrawable node : nodes)
 			node.draw();
@@ -213,14 +216,32 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		pgl.endGL();
 	}
 
+	float translateX = 0;
+	float translateY = 0;
 	public void mouseDragged() {
 		if (mouseButton == RIGHT) {
-			zoom += (mouseY - pmouseY) * 2;
-		} else if (mouseButton == LEFT) {
 			rotX += (mouseX - pmouseX) * 0.01;
 			rotY -= (mouseY - pmouseY) * 0.01;
+		} else if (mouseButton == LEFT) {
+			translateX += (mouseX - pmouseX) * 2;
+			translateY += (mouseY - pmouseY) * 2;
+		}
+//		else if (mouseButton == LEFT) {
+//			
+//		}
+	}
+	
+	public void mousePressed() {
+		if(mouseButton != CENTER) return;
+		
+		System.out.println("===Mouse Click");
+		for(int i=0; i<nodes.length; i++) {
+			if(nodes[i] instanceof Pickable) {
+				((Pickable) nodes[i]).pick(mouseX, mouseY);
+			}
 		}
 	}
+	
 
 	public Icon getDefaultIcon(VisualProperty<?> vp) {
 		// TODO Auto-generated method stub
