@@ -10,6 +10,9 @@ public class ThreeDVisualLexicon extends TwoDVisualLexicon {
 	public static final VisualProperty<Double> NODE_Z_LOCATION = new DoubleVisualProperty(
 			NODE, 0.0, "NODE_Z_LOCATION", "Node Z Location");
 	
+	public static final VisualProperty<Double> NODE_Z_SIZE = new DoubleVisualProperty(
+			NODE, 0.0, "NODE_Z_SIZE", "Node z size (depth)");
+	
 	public static final VisualProperty<Double> NETWORK_CENTER_Z_LOCATION = new DoubleVisualProperty(
 			NETWORK, 0.0, "NETWORK_CENTER_Z_LOCATION",
 			"Network Center Z Location");
