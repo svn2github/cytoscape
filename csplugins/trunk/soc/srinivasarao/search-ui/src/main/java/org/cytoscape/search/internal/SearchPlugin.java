@@ -23,6 +23,6 @@ public class SearchPlugin {
 	public void initPanel() {
 		SearchPanel esp = SearchPanelFactory.getGlobalInstance(netmgr);
 		desktop.getCytoPanel(SwingConstants.EAST).add(esp);
-
+		
 	}
 }

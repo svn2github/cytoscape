@@ -21,21 +21,25 @@ import java.util.Map;
 import javax.swing.Box;
 import javax.swing.JPanel;
 
+import org.cytoscape.session.CyNetworkManager;
+
 public class RootPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	ArrayList<BasicDraggablePanel> list;
+	CyNetworkManager netmgr = null;
 
 	/**
 	 * This is the default constructor
 	 */
-	public RootPanel() {
+	public RootPanel(CyNetworkManager nm) {
 		super();
 		this.setLayout(new GridBagLayout());
 		this.setTransferHandler(new DragAndDropTransferHandler());
 		this.setDropTarget(new DropTarget(RootPanel.this,
 				new BasicDraggablePanelDropTargetListener(RootPanel.this)));
 		list = new ArrayList<BasicDraggablePanel>();
+		this.netmgr = nm;
 	}
 
 	public void addPanel(Component c) {
@@ -48,6 +52,10 @@ public class RootPanel extends JPanel {
 
 	public List<BasicDraggablePanel> getPanelList() {
 		return list;
+	}
+
+	public CyNetworkManager getNetworkManager() {
+		return netmgr;
 	}
 
 	public void relayout() {
@@ -112,6 +120,7 @@ class BasicDraggablePanelDropTargetListener implements DropTargetListener {
 
 	// Could easily find uses for these, like cursor changes, etc.
 	public void dragEnter(DropTargetDragEvent dtde) {
+		
 	}
 
 	public void dragOver(DropTargetDragEvent dtde) {
@@ -129,10 +138,8 @@ class BasicDraggablePanelDropTargetListener implements DropTargetListener {
 
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
-		// TODO Auto-generated method stub
 		System.out
 				.println("Step 5 of 7: The user dropped the panel. The drop(...) method will compare the drops location with other panels and reorder the panels accordingly.");
-		// Needs to be implemented by Srinivas
 		this.searchPanel.setCursor(Cursor.getDefaultCursor());
 		DataFlavor flavor = null;
 		Object transferableObj = null;
@@ -178,5 +185,7 @@ class BasicDraggablePanelDropTargetListener implements DropTargetListener {
 		present.clear();
 		present.addAll(orderedPanels);
 		searchPanel.relayout();
+		SearchPanelFactory.getGlobalInstance(searchPanel.getNetworkManager())
+				.updateSearchField();
 	}
 }

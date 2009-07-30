@@ -49,6 +49,12 @@ public class MainPanel extends JPanel {
 	private static final String REINDEX_TOOLTIP = "<html>"
 			+ "Refresh the network index and perform search." + "<br>"
 			+ "This option is useful after changes to attributes." + "</html>";
+	
+	private static final String ESP_ENABLED_TOOLTIP = "<html>"
+        + "Enter search query and press return. " + "<br>"
+        + "Right click for more options." + "</html>";
+
+    private static final String ESP_DISABLED_TOOLTIP = "Please select or load a network to activate search functionality";
 
 	/**
 	 * This is the default constructor
@@ -57,9 +63,23 @@ public class MainPanel extends JPanel {
 		super();
 		initialize();
 		this.netmgr = nm;
-
+		if(netmgr.getCurrentNetwork()==null)
+			disableSearch();
 	}
 
+	public void disableSearch(){
+		searchField.setText("");
+		searchField.setEnabled(false);
+		searchField.setToolTipText(ESP_DISABLED_TOOLTIP);
+		searchButton.setEnabled(false);
+	}
+	
+	public void enableSearch(){
+		searchField.setEnabled(true);
+		searchButton.setEnabled(true);
+		searchField.setToolTipText(ESP_ENABLED_TOOLTIP);
+	}
+	
 	/**
 	 * This method initializes this
 	 * 

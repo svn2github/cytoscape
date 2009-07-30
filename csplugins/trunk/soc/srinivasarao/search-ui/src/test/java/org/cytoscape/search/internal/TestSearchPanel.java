@@ -1,6 +1,7 @@
 package org.cytoscape.search.internal;
 
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyDataTable;
@@ -35,6 +36,7 @@ public class TestSearchPanel {
 		jf.setTitle("Search Panel");
 		jf.setLocation(650, 130);
 		jf.setSize(300, 600);
+		jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		jf.setVisible(true);
 	}
 
