@@ -214,7 +214,7 @@ public class ForceDirected extends AbstractGraphPartition
      * Get the settings panel for this layout
      */
     public JPanel getSettingsPanel() {
-	JPanel panel = new JPanel(new GridLayout(0, 5));
+	JPanel panel = new JPanel(new GridLayout(1, 7));
 	panel.add(layoutProperties.getTunablePanel());
 	
 	return panel;
