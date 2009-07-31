@@ -40,6 +40,7 @@ import giny.model.Node;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.util.Iterator;
@@ -101,7 +102,7 @@ public class ForceDirected extends AbstractGraphPartition
      * This plugin supports laying out only selected nodes
      */
     public boolean supportsSelectedOnly() {
-		return false;
+		return true;
     }
 
     
@@ -120,7 +121,7 @@ public class ForceDirected extends AbstractGraphPartition
 
 	layoutProperties.add(new Tunable("CUDA_PATH", "CUDA instalation folder", Tunable.STRING , new String("/usr/local/cuda")));
 	
-	layoutProperties.add(new Tunable("nodeSize", "Final node size", Tunable.DOUBLE , new Double(2.0)));
+	layoutProperties.add(new Tunable("nodeSize", "Final node size\n(0 for no change in size)", Tunable.DOUBLE , new Double(2.0)));
 
 	// Initialize layout properties
 	layoutProperties.initializeProperties();
@@ -238,7 +239,7 @@ public class ForceDirected extends AbstractGraphPartition
 	
     
     /**
-     * This function does the "heavy work", calling the native code
+     * This function does the "heavy work" of the layout process
      */
     public void layoutPartion (LayoutPartition part) {
 
@@ -257,6 +258,12 @@ public class ForceDirected extends AbstractGraphPartition
 	
 	// Get node's list
 	List<LayoutNode> nodeList = part.getNodeList();
+
+	// Figure out our starting point if we are only laying out selected nodes
+	Dimension initialLocation = null;
+	if (selectedOnly) {
+	    initialLocation = part.getAverageLocation();
+	}
 
 	// Allocate memory for storing graph edges information (to be used as arguments for JNI call)
 	int[] AdjMatIndex = new int[numNodes + 1];
@@ -362,10 +369,6 @@ public class ForceDirected extends AbstractGraphPartition
 	    }
 	}
 	catch (Exception exception){
-	    /*String message4 = "Problem detected while loading Static Library\nCannot Produce Layout\n"
-		    + exception.getMessage();
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message4);
-	    */
 	}
 
 	// Check whether it has been canceled by the user
@@ -392,7 +395,7 @@ public class ForceDirected extends AbstractGraphPartition
 	    return;
 	
 	// Update Node position
-	//part.resetNodes(); // reset the nodes so we get the new average location
+	part.resetNodes(); // reset the nodes so we get the new average location
 
 	// Iterate over all nodes
 	int currentNode = 0;
@@ -418,12 +421,29 @@ public class ForceDirected extends AbstractGraphPartition
 	    part.moveNodeToLocation(node);
 
 	    // Change node's size
-	    appearance.applyAppearance(node.getNodeView());
+	    if (!node.isLocked() && nodeSize != 0.0)
+		appearance.applyAppearance(node.getNodeView());
 
 	    currentNode++;
 	}
 	
-	//return;
+	
+	// Not quite done, yet.  If we're only laying out selected nodes, we need
+	// to migrate the selected nodes back to their starting position
+	if (selectedOnly) {
+	    double xDelta = 0.0;
+	    double yDelta = 0.0;
+	    Dimension finalLocation = part.getAverageLocation();
+	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
+	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+	    for (LayoutNode v: part.getNodeList()) {
+		if (!v.isLocked()) {
+		    v.decrement(xDelta, yDelta);
+		    part.moveNodeToLocation(v);
+		}
+	    }
+	}
+
     }// layoutPartion(LayoutPartition part)
     
     
