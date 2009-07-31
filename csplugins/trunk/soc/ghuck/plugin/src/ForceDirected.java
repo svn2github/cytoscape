@@ -30,6 +30,9 @@ import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
 import cytoscape.CyNode;
 import cytoscape.logger.CyLogger;
+import cytoscape.visual.Appearance;
+import cytoscape.visual.VisualPropertyType;
+
 
 import giny.model.GraphPerspective;
 import giny.model.Node;
@@ -74,6 +77,8 @@ public class ForceDirected extends AbstractGraphPartition
 
     private String CUDA_PATH = "/usr/local/cuda/lib";
 
+    private double nodeSize = 2.0;
+
     private LayoutProperties layoutProperties;
 
 
@@ -115,7 +120,8 @@ public class ForceDirected extends AbstractGraphPartition
 
 	layoutProperties.add(new Tunable("CUDA_PATH", "CUDA instalation folder", Tunable.STRING , new String("/usr/local/cuda")));
 	
-	
+	layoutProperties.add(new Tunable("nodeSize", "Final node size", Tunable.DOUBLE , new Double(2.0)));
+
 	// Initialize layout properties
 	layoutProperties.initializeProperties();
 	
@@ -182,6 +188,11 @@ public class ForceDirected extends AbstractGraphPartition
 	if ((t6 != null) && (t6.valueChanged() || force))
 	    CUDA_PATH =  t6.getValue().toString();
 
+	// Get initialNoIterations
+	Tunable t7 = layoutProperties.get("nodeSize");
+	if ((t7 != null) && (t7.valueChanged() || force))
+	    nodeSize  = ((Double) t7.getValue()).doubleValue();
+
 
 	
 	// Show message on screen    
@@ -192,7 +203,8 @@ public class ForceDirected extends AbstractGraphPartition
 	  + levelConvergence + "\n"         
 	  + edgeLen + "\n"                  
 	  + initialNoIterations + "\n"
-	  + CUDA_PATH;
+	  + CUDA_PATH + "\n"
+	  + nodeSize;
 	  
 	  JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
 	*/
@@ -388,6 +400,11 @@ public class ForceDirected extends AbstractGraphPartition
 	// Create an iterator for processing the nodes
 	Iterator<LayoutNode> iterator2 = nodeList.iterator();
 
+	// Creates the appearance that we want to apply to nodes
+	Appearance appearance = new Appearance();
+
+	appearance.set(VisualPropertyType.NODE_SIZE, nodeSize);
+
 	while (iterator2.hasNext()){
 	    
 	    // Get next node
@@ -399,6 +416,9 @@ public class ForceDirected extends AbstractGraphPartition
 
 	    // Move node to desired location
 	    part.moveNodeToLocation(node);
+
+	    // Change node's size
+	    appearance.applyAppearance(node.getNodeView());
 
 	    currentNode++;
 	}
