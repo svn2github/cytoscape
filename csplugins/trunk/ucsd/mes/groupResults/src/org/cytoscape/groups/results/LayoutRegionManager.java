@@ -151,7 +151,7 @@ public class LayoutRegionManager {
 	 * @param region
 	 */
 	public static void addRegion(CyNetworkView view, LayoutRegion region) {
-		//addRegionForView(view, region);
+		addRegionForView(view, region);
 
 		// Grab ArbitraryGraphicsCanvas (a prefab canvas) and add the
 		// layout region
