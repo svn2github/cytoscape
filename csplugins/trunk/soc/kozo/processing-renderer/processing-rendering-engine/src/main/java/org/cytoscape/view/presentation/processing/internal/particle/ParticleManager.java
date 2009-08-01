@@ -52,23 +52,10 @@ public class ParticleManager {
 				indexBuffer.put(i * 2 + 1, rndChild);
 				VerletSpring newSpring = new VerletSpring(physics.particles
 						.get(rndChild), newParticle, REST_LENGTH, 0.5f);
-				// VerletConstrainedSpring2D newSpring = new
-				// VerletConstrainedSpring2D(physics.particles.get(rndChild),
-				// newParticle, REST_LENGTH, 0.5)
-				// newSpring.limit = 0.5;
 				physics.addSpring(newSpring);
 			}
 
 		}
-
-//		for (int i = 0; i < numP; i++) {
-//			VerletParticle p = physics.particles.get(i);
-//			for (int j = i + 1; j < numP; j++) {
-//				VerletParticle prevP = physics.particles.get(j);
-//				// physics.addSpring(new VerletMinDistanceSpring(prevP, p,
-//				// REST_LENGTH+100, 0.5));
-//			}
-//		}
 
 		int numberElements = numP * 3;
 		pointBuffer = ByteBuffer.allocateDirect(4 * numberElements).order(
@@ -100,26 +87,4 @@ public class ParticleManager {
 		
 		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
 	}
-	
-	private void drawPolygon(GL gl, int vIdx0, int vIdx1, int vIdx2, int vIdx3)
-	  // the polygon verticies come from the verts[] array
-	  {
-	    gl.glBegin(GL.GL_POLYGON);
-	      gl.glVertex3f( verts[vIdx0][0], verts[vIdx0][1], verts[vIdx0][2] );
-	      gl.glVertex3f( verts[vIdx1][0], verts[vIdx1][1], verts[vIdx1][2] );
-	      gl.glVertex3f( verts[vIdx2][0], verts[vIdx2][1], verts[vIdx2][2] );
-	      gl.glVertex3f( verts[vIdx3][0], verts[vIdx3][1], verts[vIdx3][2] );
-	    gl.glEnd();
-	  }
-	
-	private static final float[][] verts = { 
-		     {-1.0f,-1.0f, 1.0f},  // vertex 0
-		     {-1.0f, 1.0f, 1.0f},  // 1
-		     { 1.0f, 1.0f, 1.0f},  // 2
-		     { 1.0f,-1.0f, 1.0f},  // 3
-		     {-1.0f,-1.0f,-1.0f},  // 4
-		     {-1.0f, 1.0f,-1.0f},  // 5
-		     { 1.0f, 1.0f,-1.0f},  // 6
-		     { 1.0f,-1.0f,-1.0f},  // 7
-		  };
 }

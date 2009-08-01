@@ -30,6 +30,8 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.opengl.PGraphicsOpenGL;
 import toxi.geom.AABB;
+import toxi.geom.Vec3D;
+import toxi.physics.VerletParticle;
 import toxi.physics.VerletPhysics;
 
 import com.sun.opengl.util.FPSAnimator;
@@ -43,6 +45,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	// Mode of renderer. For now, it is set to non-OpenGL version.
 	private static final String MODE = P3D;
 	private static final int FRAME_RATE = 30;
+	
+	private float fontSize = 32;
 
 	private Dimension windowSize;
 	private CyNetworkView view;
@@ -54,8 +58,13 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	private final P5NodeRenderer nodeRenderer;
 	private final P5EdgeRenderer edgeRenderer;
-	
+
 	private GLCanvas canvas;
+
+	private ParticleManager particleManager;
+	private VerletPhysics physics;
+	private float rotX, rotY, zoom = 200;
+	private AABB boundingBox;
 
 	/**
 	 * Constructor. Create a PApplet component based on the size given as
@@ -73,14 +82,13 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		this.nodeRenderer = new P5NodeRenderer(this);
 		this.edgeRenderer = new P5EdgeRenderer(this, view);
 
-		
 		this.addMouseWheelListener(new MouseWheelListener() {
 
 			public void mouseWheelMoved(MouseWheelEvent e) {
-				zoom +=e.getWheelRotation()*100;
-				
+				zoom += e.getWheelRotation() * 100;
+
 			}
-			
+
 		});
 		System.out.println("\n\n\n\n\n\n!!!!!!!!!! Calling constructor: ");
 	}
@@ -118,37 +126,32 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	PGraphicsOpenGL pgl;
 	GL gl;
 
-	ParticleManager particleManager;
-	VerletPhysics physics;
-	float rotX, rotY, zoom = 200;
-	float transX, transY;
-	AABB boundingBox;
-	
 	PFont defFont;
 
-	class GLRenderer implements GLEventListener { 
-		  GL gl; 
-		 
-		  public void init(GLAutoDrawable drawable) { 
-		    this.gl = drawable.getGL(); 
-		    gl.glClearColor(1, 0, 0, 0);    
-		    canvas.setLocation(100, 80);     
-		  } 
-		 
-		  public void display(GLAutoDrawable drawable) { 
-		    gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT ); 
-		    gl.glColor3f(1, 1, 1);  
-		    gl.glRectf(-0.8f, 0.8f, frameCount%100/100f -0.8f, 0.7f); 
-		  } 
-		 
-		  public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) { 
-		  } 
-		 
-		  public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged) { 
-		  } 
+	class GLRenderer implements GLEventListener {
+		GL gl;
+
+		public void init(GLAutoDrawable drawable) {
+			this.gl = drawable.getGL();
+			gl.glClearColor(1, 0, 0, 0);
+			canvas.setLocation(100, 80);
 		}
-	
-	
+
+		public void display(GLAutoDrawable drawable) {
+			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+			gl.glColor3f(1, 1, 1);
+			gl.glRectf(-0.8f, 0.8f, frameCount % 100 / 100f - 0.8f, 0.7f);
+		}
+
+		public void reshape(GLAutoDrawable drawable, int x, int y, int width,
+				int height) {
+		}
+
+		public void displayChanged(GLAutoDrawable drawable,
+				boolean modeChanged, boolean deviceChanged) {
+		}
+	}
+
 	public void setup() {
 		System.out.println("%%%%%%%%%%%%% Setup called for P5");
 		/* setup p5 */
@@ -156,11 +159,17 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		hint(ENABLE_OPENGL_4X_SMOOTH);
 		hint(ENABLE_NATIVE_FONTS);
 		noStroke();
+		frameRate(FRAME_RATE);
 
-		frameRate(30);
-		
-		defFont = createFont("SansSerif", 32);
+		defFont = createFont("SansSerif", fontSize);
 		textFont(defFont);
+
+		// Particle simulator
+		physics = new VerletPhysics();
+		physics.friction = 1000;
+		AABB boundingBox = new AABB(new Vec3D(0, 0, 0), new Vec3D(width,
+				height, height));
+		physics.worldBounds = boundingBox;
 
 		// Convert views to drawable
 		final List<View<CyNode>> nodeViews = view.getNodeViews();
@@ -172,39 +181,68 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		edges = new CyDrawable[edgeViews.size()];
 		for (int i = 0; i < edges.length; i++)
 			edges[i] = edgeRenderer.render(edgeViews.get(i));
-		
-		
+
+		numP = nodes.length;
+		particleManager = new ParticleManager(numP, this, physics);
+
 		System.out.println("%%%%%%%%%%%%% Setup DONE for P5");
 	}
 
+	private int numP;
+
 	public void draw() {
-		background(240);
+		background(0);
+		physics.update();
 		lights();
-		
-//		camera(width / 2.0f, height / 2.0f, (height / 2.0f)
-//				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
-//				height / 2.0f, 0, 0, 1, 0);
-		
-		camera(width / 2.0f, height / 2.0f, (height / 2.0f) / tan((float) (PI * 60.0 / 360.0)) + zoom, 
-				width / 2.0f, height / 2.0f, 0, 
-				0, 1, 0);
-		
+
+		// camera(width / 2.0f, height / 2.0f, (height / 2.0f)
+		// / tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
+		// height / 2.0f, 0, 0, 1, 0);
+
+		camera(width / 2.0f, height / 2.0f, (height / 2.0f)
+				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
+				height / 2.0f, 0, 0, 1, 0);
+
 		translate(width / 2, height / 2, height / 2);
 		rotateX(rotY);
 		rotateY(rotX);
-		translate(-width / 2 + translateX, -height / 2 + translateY, -height / 2);
-		beginGL();
+		translate(-width / 2 + translateX, -height / 2 + translateY,
+				-height / 2);
+		
 		for (CyDrawable node : nodes)
 			node.draw();
-		
+
 		for (CyDrawable edge : edges)
 			edge.draw();
-		endGL();
-		
-		fill(200, 0, 0);
-		text("Cytoscape Test", 100, 100, 0);
-		
+
+		//particleManager.draw(gl);
+
+		camera();
+		beginGL();
+		gl.glClear(javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT);
+		((PGraphicsOpenGL)g).endGL();
+					
+		// 2D OpenGL UI
+		drawOverlay();
 	}
+
+	private void drawOverlay() {
+		fill(255, 255, 255, 90);
+		noStroke();
+		rect(10, height - 100, width-20, 90);
+		fill(255, 255, 255, 230);
+		text("Processing Renderer", 30, height-90+fontSize);
+		
+		fill(255, 255, 255, 90);
+		stroke(100, 100, 100, 200);
+		rect(10, 10, width-20, 30);
+		noStroke();
+		fill(255, 0, 0, 90);
+		rect(11, 11, width/3, 29);
+
+	}
+	
+	
 
 	public void beginGL() {
 		pgl = (PGraphicsOpenGL) g;
@@ -218,6 +256,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	float translateX = 0;
 	float translateY = 0;
+
 	public void mouseDragged() {
 		if (mouseButton == RIGHT) {
 			rotX += (mouseX - pmouseX) * 0.01;
@@ -226,22 +265,22 @@ public class ProcessingNetworkRenderer extends PApplet implements
 			translateX += (mouseX - pmouseX) * 2;
 			translateY += (mouseY - pmouseY) * 2;
 		}
-//		else if (mouseButton == LEFT) {
-//			
-//		}
+		// else if (mouseButton == LEFT) {
+		//			
+		// }
 	}
-	
+
 	public void mousePressed() {
-		if(mouseButton != CENTER) return;
-		
+		if (mouseButton != CENTER)
+			return;
+
 		System.out.println("===Mouse Click");
-		for(int i=0; i<nodes.length; i++) {
-			if(nodes[i] instanceof Pickable) {
+		for (int i = 0; i < nodes.length; i++) {
+			if (nodes[i] instanceof Pickable) {
 				((Pickable) nodes[i]).pick(mouseX, mouseY);
 			}
 		}
 	}
-	
 
 	public Icon getDefaultIcon(VisualProperty<?> vp) {
 		// TODO Auto-generated method stub
