@@ -146,16 +146,11 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	 * @param width
 	 * @param height
 	 */
-	public LayoutRegion(double x, double y, double width, double height,
-			String attName, ArrayList<Object> regionAttValues) {
+	public LayoutRegion(CyGroup group) {
 		super();
 
-		/**
-		 * Set attributeName and regionAttributeValues from dialog
-		 */
-		//this.setAttributeName(attName);
-		//this.setRegionAttributeValue(regionAttValues);
-
+		this.myGroup = group;
+				
 		myView = Cytoscape.getCurrentNetworkView();
 		// add ViewportChangeListener for accommodating pan/zoom
 		((DGraphView) myView).addViewportChangeListener(this);
@@ -163,19 +158,22 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		colorIndex = (++colorIndex % colors.length == 0) ? 0 : colorIndex;
 		this.paint = colors[colorIndex];
 		this.setColorIndex(colorIndex);
+		
+		nodeViews = new ArrayList<NodeView>();
+		Iterator<CyNode> it = myGroup.getNodeIterator();
+		while (it.hasNext()){
+			nodeViews.add(Cytoscape.getCurrentNetworkView().getNodeView(it.next()));
+		}
 
 		/**
-		 * Setbounds must come before populate nodeviews.
-		 * 
 		 * Note that coordinates are in terms of screen coordinates, not node
 		 * coordinates. Use double coordinates, to avoid roundoff errors
 		 * setBounds((int) x, (int) y, (int) width, (int) height);
 		 */
-		setBounds(x, y, width, height);
+		double[] region = getRectValues(myGroup);
+		setBounds(region[0], region[1], region[2], region[3]);
 		// add region to hashmap
 		LayoutRegionManager.addRegion(myView, this);
-
-		//populateNodeViews();
 	}
 
 	/**
@@ -195,7 +193,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		this.setMyGroup(group);
 		((DGraphView) myView).addViewportChangeListener(this);
 		LayoutRegionManager.addRegionFromFile(myView, this);
-
 	}
 
 	/**
@@ -210,6 +207,62 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 
 	}
 
+	
+	// Determine the screen coordinates of a region (rectangle:x,y,w,h),
+	// which covers all nodes in a given group 
+	private double[] getRectValues(CyGroup pGroup){
+
+		Iterator it = pGroup.getNodeIterator();
+		
+		CyNode node = (CyNode) it.next();
+		NodeView nv = Cytoscape.getCurrentNetworkView().getNodeView(node);
+		
+		double minX = Double.POSITIVE_INFINITY; 
+		double maxX = Double.NEGATIVE_INFINITY; 
+		double minY = Double.POSITIVE_INFINITY;
+		double maxY = Double.NEGATIVE_INFINITY;
+		
+		double scaleFactor = Cytoscape.getCurrentNetworkView().getZoom();	
+
+		DGraphView theView = (DGraphView) Cytoscape.getCurrentNetworkView();
+
+		double w = theView.getComponent().getBounds().getWidth();
+		double h = theView.getComponent().getBounds().getHeight();
+		
+		double xCenter = theView.getCenter().getX();
+		double yCenter = theView.getCenter().getY();
+		
+		while (it.hasNext()){
+			node = (CyNode) it.next();
+			nv = Cytoscape.getCurrentNetworkView().getNodeView(node);
+			
+			if (nv.getXPosition() < minX){
+				minX = nv.getXPosition();
+			}
+			if (nv.getXPosition() > maxX){
+				maxX = nv.getXPosition();
+			}
+			
+			if (nv.getYPosition() < minY){
+				minY = nv.getYPosition();
+			}
+			if (nv.getYPosition() > maxY){
+				maxY = nv.getYPosition();
+			}				
+		}
+				
+		double[] rectValues = new double[4];
+		
+		rectValues[0] = w/2 - (xCenter - minX)*scaleFactor;
+		rectValues[1] = h/2 - (yCenter - minY)*scaleFactor;
+		rectValues[2] = (maxX - minX)*scaleFactor;
+		rectValues[3] = (maxY - minY)*scaleFactor;
+
+		return rectValues;
+	}
+
+	
+	
 	/**
 	 * @return Color
 	 */
@@ -490,423 +543,13 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	 * logic is symmetrical with BRQuickFindConfigDialog.addSortTableModel().
 	 */
 	
-/*
+
 	public void populateNodeViews() {
-		Comparator<Object> comparator = new Comparator<Object>() {
-			public int compare(Object o1, Object o2) {
-				return o1.toString().compareToIgnoreCase(o2.toString());
-			}
-		};
 		
-		SortedSet<Object> selectedNodes = new TreeSet<Object>(comparator);
-		CyAttributes attribs = Cytoscape.getNodeAttributes();
-		Iterator it = Cytoscape.getCurrentNetwork().nodesIterator();
-		List<NodeView> nodeViews = new ArrayList<NodeView>();
-		while (it.hasNext()) {
-			Cytoscape.getCurrentNetwork().unselectAllNodes();
-			Node node = (Node) it.next();
-			nodeViews.add(Cytoscape.getCurrentNetworkView().getNodeView(node));
-			String val = null;
-			String terms[] = new String[1];
-			// add support for parsing List type attributes
-			if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
-				List valList = attribs.getListAttribute(node.getIdentifier(),
-						attributeName);
-				// iterate through all elements in the list
-				if (valList != null && valList.size() > 0) {
-					terms = new String[valList.size()];
-					for (int i = 0; i < valList.size(); i++) {
-						Object o = valList.get(i);
-						terms[i] = o.toString();
-					}
-				}
-				val = join(terms);
-			} else {
-				String valCheck = attribs.getStringAttribute(node
-						.getIdentifier(), attributeName);
-				if (valCheck != null && !valCheck.equals("")) {
-					val = valCheck;
-				}
-			}
 
-			// loop through elements in array below and match
-			if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
-				for (Object o : regionAttributeValues) {
-					if (val.indexOf(o.toString()) >= 0) {
-						selectedNodes.add(node);
-					}
-
-				}
-			} else if (regionAttributeValues.get(0).equals("unassigned")) {
-				selectedNodes.add(node);
-			}
-
-		}
-
-		Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedNodes, true);
-		System.out.println("Selected " + selectedNodes.size()
-				+ " nodes for layout in "
-				+ this.regionAttributeValues.toString());
-
-		// only run layout if some nodes are selected
-		if (selectedNodes.size() > 0) {
-
-			// for undo/redo
-			List<NodeView> selectedNodeViews = new ArrayList<NodeView>();
-			_selectedNodeViews = new NodeView[selectedNodes.size()];
-			_undoOffsets = new Point2D[selectedNodes.size()];
-			_redoOffsets = new Point2D[selectedNodes.size()];
-			_thisRegion = this;
-			int j = 0;
-			for (Object o : selectedNodes) {
-				Node n = (Node) o;
-				selectedNodeViews.add(Cytoscape.getCurrentNetworkView()
-						.getNodeView(n));
-				_selectedNodeViews[j] = Cytoscape.getCurrentNetworkView()
-						.getNodeView(n);
-				_undoOffsets[j] = _selectedNodeViews[j].getOffset();
-				j++;
-			}
-
-			HierarchicalLayoutListener hierarchicalListener = new HierarchicalLayoutListener();
-			System.out.println("Running hierarchical layout algorithm");
-			hierarchicalListener.actionPerformed(null);
-
-			NodeViewsTransformer.transform(Cytoscape.getCurrentNetworkView()
-					.getSelectedNodes(), new Rectangle2D.Double(x1
-					+ (HANDLE_SIZE / 2), y1 + (HANDLE_SIZE / 2), w1, h1));
-
-			// add automatic edge minimization following region routing
-			UnCrossAction.unCross(selectedNodeViews, false);
-
-			// Associate selected node views with region
-			List<NodeView> selectedNodeViewsList = new ArrayList<NodeView>();
-			for (int i = 0; i < _selectedNodeViews.length; i++) {
-				selectedNodeViewsList.add(_selectedNodeViews[i]);
-			}
-			this.setNodeViews(selectedNodeViewsList);
-
-			// add region to hashmap
-			LayoutRegionManager.addRegion(myView, this);
-
-			// Processes nodes to be excluded from new region
-			List<NodeView> excludedNodeViews = new ArrayList<NodeView>();
-
-			// collect NodeViews bounded by current region plus buffer
-			NodeAppearance appr = Cytoscape.getCurrentNetworkView()
-					.getVisualStyle().getNodeAppearanceCalculator()
-					.getDefaultAppearance();
-			Object defaultNodeWidthObj = appr
-					.get(VisualPropertyType.NODE_WIDTH);
-			Object defaultNodeHeightObj = appr
-					.get(VisualPropertyType.NODE_HEIGHT);
-			double defaultNodeWidth = Double.parseDouble(ObjectToString
-					.getStringValue(defaultNodeWidthObj));
-			double defaultNodeHeight = Double.parseDouble(ObjectToString
-					.getStringValue(defaultNodeHeightObj));
-
-			Rectangle2D boundsBuffer = this.getBounds();
-			boundsBuffer.setRect(this.getBounds().getMinX() - defaultNodeWidth
-					/ 2, this.getBounds().getMinY() - defaultNodeHeight / 2,
-					this.getBounds().getMaxX() - this.getBounds().getMinX()
-							+ defaultNodeWidth, this.getBounds().getMaxY()
-							- this.getBounds().getMinY() + defaultNodeHeight);
-			boundedNodeViews = NodeViewsTransformer.bounded(nodeViews,
-					boundsBuffer);
-			List<LayoutRegion> lr = LayoutRegionManager
-					.getRegionListForView(Cytoscape.getCurrentNetworkView());
-			for (NodeView nv : boundedNodeViews) {
-				boolean found = false;
-				for (LayoutRegion region : lr) {
-					List<NodeView> rnv = region.getNodeViews();
-					if (rnv.contains(nv)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					excludedNodeViews.add(nv);
-				}
-			}
-
-			// define boundary around all regions directly above, below or
-			// beside this region
-			double maxAllY = Double.NEGATIVE_INFINITY;
-			double maxAllX = Double.NEGATIVE_INFINITY;
-			double minAllY = Double.POSITIVE_INFINITY;
-			double minAllX = Double.POSITIVE_INFINITY;
-
-			for (LayoutRegion region : lr) {
-				double minRegionX = region.getX1();
-				double minRegionY = region.getY1();
-				double maxRegionX = minRegionX + region.getW1();
-				double maxRegionY = minRegionY + region.getH1();
-				double minThisX = this.getX1();
-				double minThisY = this.getY1();
-				double maxThisX = minThisX + this.getW1();
-				double maxThisY = minThisY + this.getH1();
-
-				if (maxRegionX > maxAllX
-						&& ((minRegionY >= minThisY && minRegionY <= maxThisY)
-								|| (maxRegionY >= minThisY && maxRegionY <= maxThisY) || (minRegionY <= minThisY && maxRegionY >= maxThisY))) {
-					maxAllX = maxRegionX;
-				}
-				if (maxRegionY > maxAllY
-						&& ((minRegionX >= minThisX && minRegionX <= maxThisX)
-								|| (maxRegionX >= minThisX && maxRegionX <= maxThisX) || (minRegionX <= minThisX && maxRegionX >= maxThisX))) {
-					maxAllY = maxRegionY;
-				}
-				if (minRegionX < minAllX
-						&& ((minRegionY >= minThisY && minRegionY <= maxThisY)
-								|| (maxRegionY >= minThisY && maxRegionY <= maxThisY) || (minRegionY <= minThisY && maxRegionY >= maxThisY))) {
-					minAllX = minRegionX;
-				}
-				if (minRegionY < minAllY
-						&& ((minRegionX >= minThisX && minRegionX <= maxThisX)
-								|| (maxRegionX >= minThisX && maxRegionX <= maxThisX) || (minRegionX <= minThisX && maxRegionX >= maxThisX))) {
-					minAllY = minRegionY;
-				}
-			}
-
-			// xform boundary around all regions
-			double[] topLeft = new double[2];
-			topLeft[0] = minAllX - defaultNodeWidth / 2;
-			topLeft[1] = minAllY - defaultNodeHeight / 2;
-			((DGraphView) Cytoscape.getCurrentNetworkView())
-					.xformComponentToNodeCoords(topLeft);
-			minAllX = topLeft[0];
-			minAllY = topLeft[1];
-			double[] bottomRight = new double[2];
-			bottomRight[0] = maxAllX + defaultNodeWidth / 2;
-			bottomRight[1] = maxAllY + defaultNodeHeight / 2;
-			((DGraphView) Cytoscape.getCurrentNetworkView())
-					.xformComponentToNodeCoords(bottomRight);
-			maxAllX = bottomRight[0];
-			maxAllY = bottomRight[1];
-
-			// determine closest edge per excludedNodeView and move node to
-			// mirror distance relative to new region
-			int countN = 0;
-			int countS = 0;
-			int countE = 0;
-			int countW = 0;
-			List<Double> pastN = new ArrayList<Double>();
-			List<Double> pastS = new ArrayList<Double>();
-			List<Double> pastE = new ArrayList<Double>();
-			List<Double> pastW = new ArrayList<Double>();
-			SortedSet<Object> excludedNodes = new TreeSet<Object>(comparator);
-
-			// for undo/redo
-			_excludedNodeViews = new NodeView[excludedNodeViews.size()];
-			_undoExcludedOffsets = new Point2D[excludedNodeViews.size()];
-			_redoExcludedOffsets = new Point2D[excludedNodeViews.size()];
-			int k = 0;
-
-			for (NodeView nv : excludedNodeViews) {
-				excludedNodes.add(nv.getNode());
-
-				// for undo/redo
-				_excludedNodeViews[k] = nv;
-				_undoExcludedOffsets[k] = _excludedNodeViews[k].getOffset();
-				k++;
-
-				double nvX = nv.getXPosition();
-				double nvY = nv.getYPosition();
-
-				// distance between node and boundary around all regions
-				double farNorth = nvY - minAllY;
-				double farSouth = maxAllY - nvY;
-				double farEast = nvX - minAllX;
-				double farWest = maxAllX - nvX;
-
-				if (farNorth < farSouth) {
-					if (farNorth < farEast) {
-						if (farNorth < farWest) {
-							countN = 0;
-							for (double pN : pastN) {
-								if (pN <= nvX + defaultNodeWidth / 2
-										&& pN >= nvX - defaultNodeWidth / 2) {
-									countN++;
-								}
-							}
-							nv.setYPosition(nvY
-									- (farNorth + countN * defaultNodeHeight));
-							pastN.add(nvX);
-						} else {
-							countW = 0;
-							for (double pW : pastW) {
-								if (pW <= nvY + defaultNodeHeight / 2
-										&& pW >= nvY - defaultNodeHeight / 2) {
-									countW++;
-								}
-							}
-							nv.setXPosition(nvX
-									+ (farWest + countW * defaultNodeWidth));
-							pastW.add(nvY);
-						}
-					} else if (farEast < farWest) {
-						countE = 0;
-						for (double pE : pastE) {
-							if (pE <= nvY + defaultNodeHeight / 2
-									&& pE >= nvY - defaultNodeHeight / 2) {
-								countE++;
-							}
-						}
-						nv.setXPosition(nvX
-								- (farEast + countE * defaultNodeWidth));
-						pastE.add(nvY);
-					} else {
-						countW = 0;
-						for (double pW : pastW) {
-							if (pW <= nvY + defaultNodeHeight / 2
-									&& pW >= nvY - defaultNodeHeight / 2) {
-								countW++;
-							}
-						}
-						nv.setXPosition(nvX
-								+ (farWest + countW * defaultNodeWidth));
-						pastW.add(nvY);
-					}
-
-				} else if (farSouth < farEast) {
-					if (farSouth < farWest) {
-						countS = 0;
-						for (double pS : pastN) {
-							if (pS <= nvX + defaultNodeWidth / 2
-									&& pS >= nvX - defaultNodeWidth / 2) {
-								countS++;
-							}
-						}
-						nv.setYPosition(nvY
-								+ (farSouth + countS * defaultNodeHeight));
-						pastS.add(nvX);
-					} else {
-						countW = 0;
-						for (double pW : pastW) {
-							if (pW <= nvY + defaultNodeHeight / 2
-									&& pW >= nvY - defaultNodeHeight / 2) {
-								countW++;
-							}
-						}
-						nv.setXPosition(nvX
-								+ (farWest + countW * defaultNodeWidth));
-						pastW.add(nvY);
-					}
-				} else if (farEast < farWest) {
-					countE = 0;
-					for (double pE : pastE) {
-						if (pE <= nvY + defaultNodeHeight / 2
-								&& pE >= nvY - defaultNodeHeight / 2) {
-							countE++;
-						}
-					}
-					nv
-							.setXPosition(nvX
-									- (farEast + countE * defaultNodeWidth));
-					pastE.add(nvY);
-				} else {
-					countW = 0;
-					for (double pW : pastW) {
-						if (pW <= nvY + defaultNodeHeight / 2
-								&& pW >= nvY - defaultNodeHeight / 2) {
-							countW++;
-						}
-					}
-					nv
-							.setXPosition(nvX
-									+ (farWest + countW * defaultNodeWidth));
-					pastW.add(nvY);
-				}
-			}
-
-			// redraw
-			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
-
-			// Secondary color for excluded nodes
-			Cytoscape.getCurrentNetwork().setSelectedNodeState(excludedNodes,
-					true);
-			for (NodeView nv : excludedNodeViews) {
-				GlobalAppearanceCalculator gac = Cytoscape
-						.getVisualMappingManager().getVisualStyle()
-						.getGlobalAppearanceCalculator();
-				;
-				nv.setSelectedPaint(gac.getDefaultNodeReverseSelectionColor());
-			}
-
-			// undo/redo facility
-			for (int l = 0; l < _selectedNodeViews.length; l++) {
-				_redoOffsets[l] = _selectedNodeViews[l].getOffset();
-			}
-
-			for (int l = 0; l < _excludedNodeViews.length; l++) {
-				_redoExcludedOffsets[l] = _excludedNodeViews[l].getOffset();
-			}
-
-			CyUndo.getUndoableEditSupport().postEdit(
-					new AbstractUndoableEdit() {
-
-						public String getPresentationName() {
-							return "Interactive Layout";
-						}
-
-						public String getRedoPresentationName() {
-
-							return "Redo: Layout Region";
-						}
-
-						public String getUndoPresentationName() {
-							return "Undo: Layout Region";
-						}
-
-						public void redo() {
-							for (int m = 0; m < _selectedNodeViews.length; m++) {
-								_selectedNodeViews[m].setOffset(_redoOffsets[m]
-										.getX(), _redoOffsets[m].getY());
-							}
-							for (int m = 0; m < _excludedNodeViews.length; m++) {
-								_excludedNodeViews[m].setOffset(_redoExcludedOffsets[m]
-										.getX(), _redoExcludedOffsets[m].getY());
-							}
-							// Add region to list of regions for this view
-							LayoutRegionManager.addRegion(Cytoscape
-									.getCurrentNetworkView(), _thisRegion);
-
-							// Grab ArbitraryGraphicsCanvas (a prefab canvas)
-							// and add the layout region
-							DGraphView view = (DGraphView) Cytoscape
-									.getCurrentNetworkView();
-							DingCanvas backgroundLayer = view
-									.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-							backgroundLayer.add(_thisRegion);
-
-						}
-
-						public void undo() {
-							for (int m = 0; m < _selectedNodeViews.length; m++) {
-								_selectedNodeViews[m].setOffset(_undoOffsets[m]
-										.getX(), _undoOffsets[m].getY());
-							}
-							for (int m = 0; m < _excludedNodeViews.length; m++) {
-								_excludedNodeViews[m].setOffset(_undoExcludedOffsets[m]
-										.getX(), _undoExcludedOffsets[m].getY());
-							}
-							// Add region to list of regions for this view
-							LayoutRegionManager.removeRegion(Cytoscape
-									.getCurrentNetworkView(), _thisRegion);
-
-							// Grab ArbitraryGraphicsCanvas (a prefab canvas)
-							// and add the layout region
-							DGraphView view = (DGraphView) Cytoscape
-									.getCurrentNetworkView();
-							DingCanvas backgroundLayer = view
-									.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-							backgroundLayer.remove(_thisRegion);
-						}
-					});
-		}
-
+		
 	}
-*/
+
 	public void setBounds(double x, double y, double width, double height,
 			boolean fromNode) {
 
@@ -1179,7 +822,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		return myGroup;
 	}
 
-	public void setMyGroup(CyGroup group) {
+	private void setMyGroup(CyGroup group) {
 		myGroup = group;
 	}
 }
