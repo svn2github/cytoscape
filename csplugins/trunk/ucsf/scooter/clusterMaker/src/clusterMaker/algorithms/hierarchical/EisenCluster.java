@@ -48,21 +48,13 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 
+import clusterMaker.ClusterMaker;
+
 // clusterMaker imports
 
 public class EisenCluster {
 	final static int IS = 0;
 	final static int JS = 1;
-
-	public final static String GROUP_ATTRIBUTE = "__clusterGroups";
-	public final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
-	public final static String CLUSTER_NODE_ATTRIBUTE = "__nodeClusters";
-	public final static String CLUSTER_ATTR_ATTRIBUTE = "__attrClusters";
-	public final static String CLUSTER_EDGE_ATTRIBUTE = "__clusterEdgeWeight";
-	public final static String NODE_ORDER_ATTRIBUTE = "__nodeOrder";
-	public final static String ARRAY_ORDER_ATTRIBUTE = "__arrayOrder";
-	public final static String CLUSTER_TYPE_ATTRIBUTE = "__clusterType";
-	public final static String CLUSTER_PARAMS_ATTRIBUTE = "__clusterParams";
 
 	// Instance variables
 	CyLogger logger;
@@ -89,21 +81,21 @@ public class EisenCluster {
 		if (zeroMissing)
 			params.add("zeroMissing");
 
-		netAttr.setAttribute(netID, CLUSTER_TYPE_ATTRIBUTE, cluster_type);
+		netAttr.setAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, cluster_type);
 
 		if (matrix.isTransposed()) {
-			netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
+			netAttr.setListAttribute(netID, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE, attrList);
 		} else {
-			netAttr.setListAttribute(netID, CLUSTER_NODE_ATTRIBUTE, attrList);
+			netAttr.setListAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE, attrList);
 			if (matrix.isSymmetrical()) {
-				netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
-				netAttr.setAttribute(netID, CLUSTER_EDGE_ATTRIBUTE, weightAttributes[0]);
+				netAttr.setListAttribute(netID, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE, attrList);
+				netAttr.setAttribute(netID, ClusterMaker.CLUSTER_EDGE_ATTRIBUTE, weightAttributes[0]);
 				if (adjustDiagonals) {
 					params.add("diagonals="+matrix.getValue(0,0));
 				}
 			}
 		}
-		netAttr.setListAttribute(netID, CLUSTER_PARAMS_ATTRIBUTE, params);
+		netAttr.setListAttribute(netID, ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE, params);
 
 		String[] rowArray = matrix.getRowLabels();
 		ArrayList<String> orderList = new ArrayList();
@@ -126,16 +118,16 @@ public class EisenCluster {
 		if (matrix.isTransposed()) {
 			// We did an Array cluster -- output the calculated array order
 			// and the actual node order
-			netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, orderList);
+			netAttr.setListAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE, orderList);
 
 			// Don't override the columnlist if a node order already exists
-			if (!netAttr.hasAttribute(netID, NODE_ORDER_ATTRIBUTE))
-				netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, columnList);
+			if (!netAttr.hasAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE))
+				netAttr.setListAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE, columnList);
 		} else {
-			netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, orderList);
+			netAttr.setListAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE, orderList);
 			// Don't override the columnlist if a node order already exists
-			if (!netAttr.hasAttribute(netID, ARRAY_ORDER_ATTRIBUTE))
-				netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, columnList);
+			if (!netAttr.hasAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE))
+				netAttr.setListAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE, columnList);
 		}
 
 	}
@@ -277,7 +269,7 @@ public class EisenCluster {
 				CyGroupManager.setGroupViewer(top, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
 			}
 			// Remember this in the _hierarchicalGroups attribute
-			netAttr.setListAttribute(netID, GROUP_ATTRIBUTE, groupNames);
+			netAttr.setListAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE, groupNames);
 		}
 
 		return "Complete";
@@ -289,31 +281,31 @@ public class EisenCluster {
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
 
 		// Remove the attributes that are lingering
-		if (netAttr.hasAttribute(netID, ARRAY_ORDER_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, ARRAY_ORDER_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, NODE_ORDER_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, NODE_ORDER_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, CLUSTER_ATTR_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, CLUSTER_ATTR_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, CLUSTER_NODE_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, CLUSTER_NODE_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, CLUSTER_EDGE_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, CLUSTER_EDGE_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, CLUSTER_TYPE_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, CLUSTER_TYPE_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, CLUSTER_PARAMS_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, CLUSTER_PARAMS_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_EDGE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_EDGE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE);
 
 		// See if we have any old groups in this network
-		if (netAttr.hasAttribute(netID, GROUP_ATTRIBUTE)) {
-			List<String>clList = (List<String>)netAttr.getListAttribute(netID, GROUP_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE)) {
+			List<String>clList = (List<String>)netAttr.getListAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE);
 			for (String groupName: clList) {
 				CyGroup group = CyGroupManager.findGroup(groupName);
 				// XXX FIXME XXX This doesn't seem to be working
 				if (group != null)
 					CyGroupManager.removeGroup(group);
 			}
-			netAttr.deleteAttribute(netID, GROUP_ATTRIBUTE);
+			netAttr.deleteAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE);
 		}
 	}
 

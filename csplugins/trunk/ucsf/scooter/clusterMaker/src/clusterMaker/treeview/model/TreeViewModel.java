@@ -53,7 +53,7 @@ import cytoscape.view.CyNetworkView;
 import clusterMaker.treeview.DataModel;
 import clusterMaker.treeview.model.TVModel;
 
-import clusterMaker.algorithms.hierarchical.EisenCluster;
+import clusterMaker.ClusterMaker;
 
 /**
  * The ClusterVizModel provides the data that links the results of a cluster run
@@ -84,11 +84,11 @@ public class TreeViewModel extends TVModel {
 
 		// Get the type of cluster
 		String clusterType = null;
-		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_TYPE_ATTRIBUTE))
-			clusterType = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_TYPE_ATTRIBUTE);
+		if (networkAttributes.hasAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_TYPE_ATTRIBUTE))
+			clusterType = networkAttributes.getStringAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
 
-		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_PARAMS_ATTRIBUTE))
-			clusterParams = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_PARAMS_ATTRIBUTE);
+		if (networkAttributes.hasAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE))
+			clusterParams = networkAttributes.getListAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE);
 
 		if (clusterParams != null) {
 			for (String param: clusterParams) {
@@ -101,7 +101,7 @@ public class TreeViewModel extends TVModel {
 		}
 		
 		// Gene annotations are just the list of node names
-		List<String>geneList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.NODE_ORDER_ATTRIBUTE);
+		List<String>geneList = networkAttributes.getListAttribute(network.getIdentifier(), ClusterMaker.NODE_ORDER_ATTRIBUTE);
 		String [][] gHeaders = new String[geneList.size()][4];
 		int headerNumber = 0;
 		for (String nodeName: geneList) {
@@ -115,7 +115,7 @@ public class TreeViewModel extends TVModel {
 
 
 		// Array annotations are the list of attributes we used (note: order matters)
-		List<String>arrayList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.ARRAY_ORDER_ATTRIBUTE);
+		List<String>arrayList = networkAttributes.getListAttribute(network.getIdentifier(), ClusterMaker.ARRAY_ORDER_ATTRIBUTE);
 		String [][] aHeaders = new String[arrayList.size()][2];
 		headerNumber = 0;
 		for (String attribute: arrayList) {
@@ -134,7 +134,7 @@ public class TreeViewModel extends TVModel {
 		if (geneList.get(0).equals(arrayList.get(0))) {
 
 			// Matrix is symmetrical.  Get the edge attribute
-			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_EDGE_ATTRIBUTE);
+			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_EDGE_ATTRIBUTE);
 			attribute = attribute.substring(5);
 			// System.out.println("Edge attribute is "+attribute);
 
@@ -217,8 +217,8 @@ public class TreeViewModel extends TVModel {
 		// what we clustered.  Note that the way we put this together really depends on whether we've done
 		// a som, kmeans, or hierarchical cluster
 
-		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE)) {
-			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE);
+		if (networkAttributes.hasAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_NODE_ATTRIBUTE)) {
+			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_NODE_ATTRIBUTE);
 			setGtrPrefix(getClusterHeaders());
 			String [][] gtrHeaders = new String[groupList.size()][getClusterHeaders().length];
 
@@ -231,8 +231,8 @@ public class TreeViewModel extends TVModel {
 
 		// If we're not a gene cluster, we need to transpose the matrix
 		// when we save it
-		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE)) {
-			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE);
+		if (networkAttributes.hasAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_ATTR_ATTRIBUTE)) {
+			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_ATTR_ATTRIBUTE);
 			setAtrPrefix(getClusterHeaders());
 			String [][] atrHeaders = new String[groupList.size()][getClusterHeaders().length];
 

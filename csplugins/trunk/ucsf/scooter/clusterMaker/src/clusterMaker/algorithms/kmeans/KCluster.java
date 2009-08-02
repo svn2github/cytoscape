@@ -53,6 +53,7 @@ import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 
 // clusterMaker imports
+import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.hierarchical.DistanceMetric;
 import clusterMaker.algorithms.hierarchical.EisenCluster;
 import clusterMaker.algorithms.hierarchical.Matrix;
@@ -127,7 +128,7 @@ public class KCluster {
 
 			CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 			String netID = Cytoscape.getCurrentNetwork().getIdentifier();
-			netAttr.setListAttribute(netID, EisenCluster.GROUP_ATTRIBUTE, groupNames);
+			netAttr.setListAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE, groupNames);
 		}
 
 		// Sort the appropriate list (Nodes or Attributes)
@@ -148,29 +149,29 @@ public class KCluster {
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
 
 		// See if we have any old groups in this network
-		if (netAttr.hasAttribute(netID, EisenCluster.GROUP_ATTRIBUTE)) {
-			List<String>clList = (List<String>)netAttr.getListAttribute(netID, EisenCluster.GROUP_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE)) {
+			List<String>clList = (List<String>)netAttr.getListAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE);
 			for (String groupName: clList) {
 				CyGroup group = CyGroupManager.findGroup(groupName);
 				if (group != null)
 					CyGroupManager.removeGroup(group);
 			}
-			netAttr.deleteAttribute(netID, EisenCluster.GROUP_ATTRIBUTE);
+			netAttr.deleteAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE);
 		}
 
 		// Clear of the other attributes
-		if (netAttr.hasAttribute(netID, EisenCluster.ARRAY_ORDER_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, EisenCluster.ARRAY_ORDER_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, EisenCluster.NODE_ORDER_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, EisenCluster.NODE_ORDER_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, EisenCluster.CLUSTER_ATTR_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, EisenCluster.CLUSTER_ATTR_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, EisenCluster.CLUSTER_NODE_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, EisenCluster.CLUSTER_NODE_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, EisenCluster.CLUSTER_EDGE_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, EisenCluster.CLUSTER_EDGE_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, EisenCluster.CLUSTER_TYPE_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, EisenCluster.CLUSTER_TYPE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_EDGE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_EDGE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
 	}
 
 	private static int kmeans(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, 

@@ -46,7 +46,6 @@ public class RunMCL {
 	final static String GROUP_ATTRIBUTE = "__MCLGroups";
 	protected int clusterCount = 0;
 	private boolean debug = false;
-	private boolean createNewNetwork = false;
 	private boolean createMetaNodes = false;
 	private boolean adjustLoops = false;
 	private boolean directedEdges = false;
@@ -66,7 +65,6 @@ public class RunMCL {
 		this.maxResidual = maxResidual;
 		this.takeNegLOG = false;
 		this.logger = logger;
-		this.createNewNetwork = false;
 		this.selectedOnly = false;
 		this.createMetaNodes = false;
 		this.adjustLoops = false;
@@ -78,7 +76,6 @@ public class RunMCL {
 
 	public void halt () { canceled = true; }
 
-	public void createNewNetwork() { createNewNetwork = true; }
 	public void selectedOnly() { selectedOnly = true; }
 	public void createMetaNodes() { createMetaNodes = true; }
 	public void setDirectedEdges() { directedEdges = true; }
@@ -168,14 +165,14 @@ public class RunMCL {
 
 		// normalizeWeights(matrix, minEdgeWeight, maxEdgeWeight);
 
-		// debugln("Initial matrix:");
-		// printMatrix(matrix);
+		debugln("Initial matrix:");
+		printMatrix(matrix);
 
 		// Normalize
 		normalize(matrix, clusteringThresh, false);
 
-		// debugln("Normalized matrix:");
-		// printMatrix(matrix);
+		debugln("Normalized matrix:");
+		printMatrix(matrix);
 
 		if (adjustLoops) {
 			// Adjust loops
@@ -242,6 +239,11 @@ public class RunMCL {
 		//Update node attributes in network to include clusters. Create cygroups from clustered nodes
 		logger.info("Created "+clusterCount+" clusters");
 		// debugln("Created "+clusterCount+" clusters:");
+		//
+		if (clusterCount == 0) {
+			logger.error("Created 0 clusters!!!!");
+			return;
+		}
 
 		int clusterNumber = 1;
 		HashMap<Cluster,Cluster> cMap = new HashMap();
@@ -274,11 +276,6 @@ public class RunMCL {
 		logger.info("Creating groups");
 
 		List<String> groupList = null;;
-
-		// Finally, if we're supposed to, create the new network
-		if (createNewNetwork) {
-		 	networkID = createClusteredNetwork(clusters);
-		}
 
 		if (createMetaNodes) {
 			// Now, create the groups
@@ -462,49 +459,6 @@ public class RunMCL {
 			}
 		}
 		return groupList;
-	}
-
-	private String createClusteredNetwork(Set<Cluster> cMap) {
-		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-
-		// Create the new network
-		CyNetwork net = Cytoscape.createNetwork(currentNetwork.getTitle()+"--clustered",currentNetwork,false);
-		HashMap<CyEdge,CyEdge> edgeMap = new HashMap();
-
-		for (Cluster cluster: cMap) {
-			// Get the list of nodes
-			List<CyNode> nodeList = clusterToNodes(cluster);
-			// Get the list of edges
-			List<CyEdge> edgeList = currentNetwork.getConnectingEdges(nodeList);
-			for (CyNode node: nodeList) { net.addNode(node); }
-			for (CyEdge edge: edgeList) { 
-				net.addEdge(edge); 
-				edgeMap.put(edge,edge);
-			}
-		}
-
-		// Create the network view
-		CyNetworkView view = Cytoscape.createNetworkView(net);
-
-		// OK, now we need to explicitly remove any edges from our old network
-		// that should not be in the new network (why is this necessary????)
-		// for (CyEdge edge: edges) {
-		// 	if (!edgeMap.containsKey(edge))
-		// 		net.hideEdge(edge);
-		// }
-
-		// Get the current visual mapper
-		VisualStyle vm = Cytoscape.getVisualMappingManager().getVisualStyle();
-		view.applyVizmapper(vm);
-
-		// If available, do a force-directed layout
-		CyLayoutAlgorithm alg = CyLayouts.getLayout("force-directed");
-		if (alg != null)
-			view.applyLayout(alg);
-
-		Cytoscape.setCurrentNetwork(net.getIdentifier());
-		Cytoscape.setCurrentNetworkView(view.getIdentifier());
-		return net.getIdentifier();
 	}
 
 	private void debugln(String message) {

@@ -55,13 +55,14 @@ import cytoscape.view.CytoscapeDesktop;
 import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.HeatMapView;
+import clusterMaker.ui.NewNetworkView;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.kmeans.KMeansCluster;
 import clusterMaker.algorithms.FORCE.CytoscapeFORCEmenu;
 import clusterMaker.algorithms.FORCE.FORCECluster;
 import clusterMaker.algorithms.MCL.MCLCluster;
-// import clusterMaker.algorithms.KMeansCluster;
+import clusterMaker.algorithms.glay.GLayCluster;
 // import clusterMaker.algorithms.SOMCluster;
 
 /**
@@ -72,6 +73,17 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 	static final double VERSION = 0.1;
 	HashMap<JMenuItem,ClusterViz> vizMenus;
 	HashMap<String, ClusterViz> vizMap;
+
+	public final static String GROUP_ATTRIBUTE = "__clusterGroups";
+	public final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
+	public final static String CLUSTER_NODE_ATTRIBUTE = "__nodeClusters";
+	public final static String CLUSTER_ATTR_ATTRIBUTE = "__attrClusters";
+	public final static String CLUSTER_EDGE_ATTRIBUTE = "__clusterEdgeWeight";
+	public final static String NODE_ORDER_ATTRIBUTE = "__nodeOrder";
+	public final static String ARRAY_ORDER_ATTRIBUTE = "__arrayOrder";
+	public final static String CLUSTER_TYPE_ATTRIBUTE = "__clusterType";
+	public final static String CLUSTER_ATTRIBUTE = "__clusterAttribute";
+	public final static String CLUSTER_PARAMS_ATTRIBUTE = "__clusterParams";
 
   /**
    * Create our action and add it to the plugins menu
@@ -85,6 +97,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		addClusterAlgorithm(menu, new KMeansCluster());
 		addClusterAlgorithm(menu, new FORCECluster());
 		addClusterAlgorithm(menu, new MCLCluster());
+		addClusterAlgorithm(menu, new GLayCluster());
 		// addClusterAlgorithm(new HOPACHCluster());
 		menu.addSeparator();
 
@@ -97,6 +110,12 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		HeatMapView viz = new HeatMapView();
 		JMenuItem item = new JMenuItem(viz.getName());
 		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz));
+		menu.add(item);
+
+		// Add the new network visualization
+		NewNetworkView viz2 = new NewNetworkView();
+		item = new JMenuItem(viz2.getName());
+		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz2));
 		menu.add(item);
 		
 		// Catch new network loaded and change events so we can update our visualization menus

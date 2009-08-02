@@ -71,8 +71,8 @@ import giny.view.GraphViewChangeListener;
 import giny.view.GraphViewChangeEvent;
 
 // ClusterMaker imports
+import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterProperties;
-import clusterMaker.algorithms.hierarchical.EisenCluster;
 
 // TreeView imports
 import clusterMaker.treeview.FileSet;
@@ -117,13 +117,13 @@ public class KnnView extends TreeView {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		String netId = network.getIdentifier();
-		if (networkAttributes.hasAttribute(netId, EisenCluster.CLUSTER_TYPE_ATTRIBUTE) &&
-		    !networkAttributes.getStringAttribute(netId, EisenCluster.CLUSTER_TYPE_ATTRIBUTE).equals("kmeans")) {
+		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE) &&
+		    !networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals("kmeans")) {
 			return false;
 		}
 
-		if (networkAttributes.hasAttribute(netId, EisenCluster.CLUSTER_NODE_ATTRIBUTE) ||
-		    networkAttributes.hasAttribute(netId, EisenCluster.CLUSTER_ATTR_ATTRIBUTE)) {
+		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_NODE_ATTRIBUTE) ||
+		    networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE)) {
 			return true;
 		}
 		return false;

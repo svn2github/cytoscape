@@ -59,8 +59,8 @@ import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.LinearNumberToColorInterpolator;
 import cytoscape.visual.mappings.ObjectMapping;
 
+import clusterMaker.ClusterMaker;
 import clusterMaker.treeview.dendroview.ColorExtractor;
-import clusterMaker.algorithms.hierarchical.EisenCluster;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -136,7 +136,7 @@ public class NetworkColorDialog extends JDialog
 		if (symmetric) {
 			CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 			CyNetwork network = Cytoscape.getCurrentNetwork();
-			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_EDGE_ATTRIBUTE);
+			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), ClusterMaker.CLUSTER_EDGE_ATTRIBUTE);
 			MapTask task = new MapTask(attribute.substring(5), "-heatMap", true);
 			TaskManager.executeTask( task, task.getDefaultTaskConfig() );
 			// createNewStyle(attribute.substring(5), "-heatMap", true, true);

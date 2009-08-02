@@ -76,9 +76,9 @@ import giny.view.GraphViewChangeListener;
 import giny.view.GraphViewChangeEvent;
 
 // ClusterMaker imports
+import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterProperties;
 import clusterMaker.algorithms.ClusterAlgorithm;
-import clusterMaker.algorithms.hierarchical.EisenCluster;
 
 // TreeView imports
 import clusterMaker.treeview.FileSet;
@@ -175,8 +175,8 @@ public class HeatMapView extends TreeViewApp implements Observer,
 		// Set the "cluster" attributes, as appropriate
 		// Clear the type attribute
 		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
-		if (netAttributes.hasAttribute(myNetwork.getIdentifier(),EisenCluster.CLUSTER_TYPE_ATTRIBUTE))
-			netAttributes.deleteAttribute(myNetwork.getIdentifier(),EisenCluster.CLUSTER_TYPE_ATTRIBUTE);
+		if (netAttributes.hasAttribute(myNetwork.getIdentifier(),ClusterMaker.CLUSTER_TYPE_ATTRIBUTE))
+			netAttributes.deleteAttribute(myNetwork.getIdentifier(),ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
 
 		// Set the node order to the sorted list of nodes
 		String [] nodeArray = null;
@@ -214,7 +214,7 @@ public class HeatMapView extends TreeViewApp implements Observer,
 		}
 		
 		Arrays.sort(nodeArray);
-		netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.NODE_ORDER_ATTRIBUTE,
+		netAttributes.setListAttribute(myNetwork.getIdentifier(),ClusterMaker.NODE_ORDER_ATTRIBUTE,
 			                             Arrays.asList(nodeArray));
 
 		// Now, figure out what type of attributes
@@ -225,15 +225,15 @@ public class HeatMapView extends TreeViewApp implements Observer,
 		// Edge attribute?
 		if (attributeArray.length == 1 && attributeArray[0].startsWith("edge.")) {
 			// Yes, symmetrical array
-			netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.ARRAY_ORDER_ATTRIBUTE,
+			netAttributes.setListAttribute(myNetwork.getIdentifier(),ClusterMaker.ARRAY_ORDER_ATTRIBUTE,
 			                               Arrays.asList(nodeArray));
-			netAttributes.setAttribute(myNetwork.getIdentifier(),EisenCluster.CLUSTER_EDGE_ATTRIBUTE, 
+			netAttributes.setAttribute(myNetwork.getIdentifier(),ClusterMaker.CLUSTER_EDGE_ATTRIBUTE, 
 			                           attributeArray[0]);
 		} else {
 			for (int i = 0; i < attributeArray.length; i++) {
 				attributeArray[i] = attributeArray[i].substring(5);
 			}
-			netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.ARRAY_ORDER_ATTRIBUTE,
+			netAttributes.setListAttribute(myNetwork.getIdentifier(),ClusterMaker.ARRAY_ORDER_ATTRIBUTE,
 			                               Arrays.asList(attributeArray));
 		}
 

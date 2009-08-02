@@ -52,11 +52,13 @@ import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
+import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.HistogramDialog;
 import clusterMaker.ui.HistoChangeListener;
+import clusterMaker.ui.NewNetworkView;
 
 // clusterMaker imports
 
@@ -104,7 +106,7 @@ public class MCLCluster extends AbstractClusterAlgorithm
 	}
 
 	public ClusterViz getVisualizer() {
-		return null;
+		return new NewNetworkView(true);
 	}
 
 	protected void initializeProperties() {
@@ -418,8 +420,6 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		//Cluster the nodes
 		runMCL = new RunMCL(clusterAttrName, dataAttribute, inflation_parameter, 
 		                           rNumber, clusteringThresh, maxResidual, logger);
-		if (createNewNetwork)
-			runMCL.createNewNetwork();
 
 		if (selectedOnly)
 			runMCL.selectedOnly();
@@ -440,6 +440,10 @@ public class MCLCluster extends AbstractClusterAlgorithm
 			runMCL.setTakeNegLog(true);
 
 		runMCL.run(monitor);
+
+		// Set up the appropriate attributes
+		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, "mcl");
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
