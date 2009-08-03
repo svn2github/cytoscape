@@ -127,7 +127,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager,
-			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper, VisualStyle defStyle) {
+			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
+			VisualStyle defStyle) {
 
 		super(desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
@@ -158,7 +159,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				"VizMapper\u2122", this);
 		// cytoscapeDesktop.getSwingPropertyChangeSupport()
 		// .addPropertyChangeListener(this);
-		
+
 		// Switch to the default style.
 		switchVS(defaultVS);
 	}
@@ -186,19 +187,17 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 	public void switchVS(VisualStyle style) {
 
-		System.out.println("######### Switching 1");
-
 		if (ignore)
 			return;
 
 		// If new VS name is the same, ignore.
 		if (style == null || style.equals(lastVS))
 			return;
-		System.out.println("######### Switching phase3.");
 
 		editorWindowManager.closeAllEditorWindows();
 
 		if (vizMapPropertySheetBuilder.getPropertyMap().containsKey(style)) {
+			System.out.println("######### Recalling visual mapping prop sheet");
 			final List<Property> props = vizMapPropertySheetBuilder
 					.getPropertyMap().get(style);
 
@@ -228,14 +227,22 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				propertySheetPanel.addProperty(unused.get(key));
 			}
 		} else {
+			System.out.println("######### Byuilding visual mapping prop sheet");
 			vizMapPropertySheetBuilder.setPropertyTable();
 			updateAttributeList();
 		}
 
 		// Apply style to the current network view.
-		vmm.setVisualStyle((VisualStyle) vsComboBox.getModel()
-				.getSelectedItem(), cyNetworkManager.getCurrentNetworkView());
+		final CyNetworkView currentView = cyNetworkManager
+				.getCurrentNetworkView();
 
+		if (currentView != null) {
+			vmm.setVisualStyle((VisualStyle) vsComboBox.getModel()
+					.getSelectedItem(), currentView);
+			style.apply(cyNetworkManager.getCurrentNetworkView());
+			cyNetworkManager.getCurrentNetworkView().updateView();
+		}
+		
 		/*
 		 * Draw default view
 		 */
