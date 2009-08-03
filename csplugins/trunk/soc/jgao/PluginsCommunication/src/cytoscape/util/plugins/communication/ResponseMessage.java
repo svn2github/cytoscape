@@ -36,16 +36,44 @@
 package cytoscape.util.plugins.communication;
 
 /**
- * A "messagedReceived" event gets fired whenever a plugin sends a message.
- * You can register a MessageListener with a plugin, so that the plugin will
- * be notified when a message sends to it.
+ * ResponseMessage is used to carries informations for reponses
  *
  * @author gjj
  */
-public interface MessageListener extends java.util.EventListener {
+public class ResponseMessage extends Message {
+    private static final String ID_OF_RESPOND_TO_MSG = "RESPOND_TO";
+
     /**
-     * Process the message when received.
-     * @param msg a {@link Message}
+     *
+     * @param responseId response message ID
+     * @param respondToId the ID of the message to be responded
+     * @param responder sender
+     * @param respondee receiver
+     * @param content message content
      */
-    public void messagedReceived(Message msg);
+    public ResponseMessage(final String responseId, final String respondToId,
+                final String responder, final String respondee, final Object content) {
+        super(responseId, assertNullString(responder), respondee,
+                    Message.MSG_TYPE_RESPONSE, content);
+
+        assertNullString(respondToId);
+
+        getMessageMap().put(ID_OF_RESPOND_TO_MSG, respondToId);
+    }
+
+    private static String assertNullString(final String str) {
+        if (str==null) {
+            throw new IllegalArgumentException("Null String argument");
+        }
+
+        return str;
+    }
+
+    /**
+     *
+     * @return the ID of the message to be responded
+     */
+    public String getRespondToId() {
+        return (String)getMessageMap().get(ID_OF_RESPOND_TO_MSG);
+    }
 }

@@ -39,6 +39,9 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
+ * Wrap the information of inter-plugin message in this class, such as message
+ * ID, message sender, message receiver, message type and message content. The
+ * API user can get the underlying map to add more information.
  *
  * @author gjj
  */
@@ -55,6 +58,17 @@ public class Message {
     public static final String MSG_TYPE_TEST = "TEST";
 
     private final Map map;
+
+    /**
+     * Copy constructor
+     * @param anotherMessage copy from
+     */
+    public Message(Message anotherMessage) {
+        if (anotherMessage==null) {
+            throw new IllegalArgumentException("Cannot copy from a null Message.");
+        }
+        map = new HashMap(anotherMessage.getMessageMap());
+    }
 
     /**
      * 
@@ -93,7 +107,11 @@ public class Message {
         return (String)map.get(MSG_ID);
     }
 
-    public Object getMessageMap() {
+    public void setId(String id) {
+        map.put(MSG_ID, id);
+    }
+
+    public Map getMessageMap() {
         return map;
     }
 }
