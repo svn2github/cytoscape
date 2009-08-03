@@ -68,10 +68,12 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		for (CyNode cyNode : topLayer.getNodeList()) {
 
 			String nodeName = cyNode.attrs().get("name", String.class);
+			Integer layerIndex = topLayer.attrs().get("layerIndex", Integer.class);
 
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
 				newNode.attrs().set("name", nodeName);
+				newNode.attrs().set("layerIndex", layerIndex);
 				nodeMap.put(nodeName, newNode);
 			}
 		}
@@ -97,10 +99,12 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		for (CyNode cyNode : connector.getNodeList()) {
 
 			String nodeName = cyNode.attrs().get("name", String.class);
+			Integer layerIndex = topLayer.attrs().get("layerIndex", Integer.class);
 
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
 				newNode.attrs().set("name", nodeName);
+				newNode.attrs().set("layerIndex", layerIndex);				
 				nodeMap.put(nodeName, newNode);
 			}
 
@@ -127,10 +131,12 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		for (CyNode cyNode : bottomLayer.getNodeList()) {
 
 			String nodeName = cyNode.attrs().get("name", String.class);
-
+			Integer layerIndex = topLayer.attrs().get("layerIndex", Integer.class);
+			
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
 				newNode.attrs().set("name", nodeName);
+				newNode.attrs().set("layerIndex", layerIndex);				
 				nodeMap.put(nodeName, newNode);
 			}
 
