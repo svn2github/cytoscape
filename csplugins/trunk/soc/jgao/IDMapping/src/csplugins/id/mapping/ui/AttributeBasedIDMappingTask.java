@@ -56,19 +56,22 @@ public class AttributeBasedIDMappingTask implements Task {
     private final AttributeBasedIDMappingServiceImpl service;
     
 	private TaskMonitor taskMonitor;
+        private boolean success;
 
 	/**
-	 * Creates a new ReadIDMappingFileTask object.
-	 *
-	 * @param idMapper  DOCUMENT ME!
-	 */
+         * 
+         * @param networks
+         * @param mapSrcAttrIDTypes
+         * @param MapTgtIDTypeAttrName
+         */
 	public AttributeBasedIDMappingTask(final Set<CyNetwork> networks,
                                        final Map<String,Set<DataSource>> mapSrcAttrIDTypes,
                                        final Map<DataSource, String> MapTgtIDTypeAttrName) {
 		this.networks = networks;
-        this.mapSrcAttrIDTypes = mapSrcAttrIDTypes;
-        this.MapTgtIDTypeAttrName = MapTgtIDTypeAttrName;
-        service = new AttributeBasedIDMappingServiceImpl();
+                this.mapSrcAttrIDTypes = mapSrcAttrIDTypes;
+                this.MapTgtIDTypeAttrName = MapTgtIDTypeAttrName;
+                service = new AttributeBasedIDMappingServiceImpl();
+                success = false;
 	}
 
 	/**
@@ -81,13 +84,20 @@ public class AttributeBasedIDMappingTask implements Task {
                         
                         service.map(networks, mapSrcAttrIDTypes, MapTgtIDTypeAttrName);
 
+
                 } catch (Exception e) {
                         taskMonitor.setPercentCompleted(100);
                         taskMonitor.setStatus("ID mapping failed.\n");
                         e.printStackTrace();
-                } 
+                }
+
+                success = true;
 
 	}
+
+        public boolean success() {
+            return success;
+        }
 
 
 	/**
@@ -95,8 +105,7 @@ public class AttributeBasedIDMappingTask implements Task {
 	 */
         //@Override
 	public void halt() {
-		// Task can not currently be halted.
-        service.interrupt();
+            service.interrupt();
 	}
 
 	/**

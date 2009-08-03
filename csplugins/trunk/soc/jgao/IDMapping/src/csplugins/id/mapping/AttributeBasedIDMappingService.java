@@ -63,5 +63,6 @@ public interface AttributeBasedIDMappingService {
      */
     public void map(Set<CyNetwork> networks, Map<String,Set<DataSource>> mapSrcAttrIDTypes,
             Map<DataSource, String> MapTgtIDTypeAttrName) throws IDMapperException;
-    
+
+    public String getReport();
 }

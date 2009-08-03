@@ -38,6 +38,7 @@ package csplugins.id.mapping;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.task.TaskMonitor;
 
 import giny.model.Node;
@@ -63,6 +64,7 @@ public class AttributeBasedIDMappingServiceImpl
         implements AttributeBasedIDMappingService{
     protected TaskMonitor taskMonitor;
     protected boolean interrupted;
+    protected String report;
 
     public void setTaskMonitor(TaskMonitor taskMonitor) {
         this.taskMonitor = taskMonitor;
@@ -71,7 +73,12 @@ public class AttributeBasedIDMappingServiceImpl
 
     public void interrupt() {
             interrupted = true;
+            report = "Aborted!";
      }
+
+    public String getReport() {
+        return report;
+    }
 
     /**
      * For each node in each network, given its attribute and the corresponding
@@ -105,19 +112,14 @@ public class AttributeBasedIDMappingServiceImpl
         Map<Xref, Set<Xref>> idMapping = idMapperStack.mapID(srcXrefs, tgtTypes);
 
         // define target attribute
-        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-        for (String attrName : MapTgtIDTypeAttrName.values()) {
-            byte attrType = nodeAttributes.getType(attrName);
-            if (attrType!=CyAttributes.TYPE_STRING && attrType!=CyAttributes.TYPE_SIMPLE_LIST) {
-                throw new java.lang.UnsupportedOperationException("Only String and List target attributes are supported.");
-            }
-        }
+        defineTgtAttributes(new HashSet(MapTgtIDTypeAttrName.values()));
 
         // set target attribute
         Map<Node,Set<Xref>> mapNodeTgtXrefs = getNodeTgtXrefs(mapNodeSrcXrefs, idMapping);
         setTgtAttribute(mapNodeTgtXrefs, MapTgtIDTypeAttrName);
 
-        updateTaskMonitor("IDMapping successful!",100);
+        report = "Identifiers mapped for "+mapNodeTgtXrefs.size()+" nodes (out of "+nodes.size()+")!";
+        updateTaskMonitor(report,100);
     }
 
     private Set<Node> nodesUnion(Set<CyNetwork> networks) {
@@ -159,6 +161,14 @@ public class AttributeBasedIDMappingServiceImpl
             for (Map.Entry<String,Set<DataSource>> entryAttrIDTypes : mapSrcAttrIDTypes.entrySet()) {
                 String attrName = entryAttrIDTypes.getKey();
                 Set<DataSource> dss = entryAttrIDTypes.getValue();
+
+                //TODO: remove this in Cy3
+                if (attrName.compareTo("ID")==0) {
+                    for (DataSource ds : dss) {
+                        xrefs.add(new Xref(nodeID, ds));
+                    }
+                    continue;
+                }
 
                 byte attrType = nodeAttributes.getType(attrName);
                 if (attrType == CyAttributes.TYPE_SIMPLE_LIST) {
@@ -202,6 +212,7 @@ public class AttributeBasedIDMappingServiceImpl
             Node node = entryNodeXrefs.getKey();
             Set<Xref> tgtXrefs = new HashSet();
             Set<Xref> srcXrefs = entryNodeXrefs.getValue();
+            //TODO: deal with ambiguity--same node, same attribute, different data source
             for (Xref srcXref : srcXrefs) {
                 Set<Xref> xrefs = idMapping.get(srcXref);
                 if (xrefs!=null) {
@@ -209,10 +220,34 @@ public class AttributeBasedIDMappingServiceImpl
                 }
             }
 
-            mapNodeTgtXrefs.put(node, tgtXrefs);
+            if (!tgtXrefs.isEmpty())
+                mapNodeTgtXrefs.put(node, tgtXrefs);
         }
 
         return mapNodeTgtXrefs;
+    }
+
+    private void defineTgtAttributes(Set<String> attrs) {
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        List<String> attrNames = java.util.Arrays.asList(nodeAttributes.getAttributeNames());
+
+        MultiHashMapDefinition mmapDef = nodeAttributes.getMultiHashMapDefinition();
+
+        for (String attr : attrs) {
+            if (attrNames.contains(attr)) {
+                // for existing attribute, check if its type is String or List
+                byte attrType = nodeAttributes.getType(attr);
+                if (attrType!=CyAttributes.TYPE_STRING && attrType!=CyAttributes.TYPE_SIMPLE_LIST) {
+                    throw new java.lang.UnsupportedOperationException("Only String and List target attributes are supported.");
+                }
+            } else {
+                // define the new attribute as List
+                byte[] keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
+                mmapDef.defineAttribute(attr,
+                                    MultiHashMapDefinition.TYPE_STRING,
+                                    keyTypes);
+            }
+        }
     }
 
     private void setTgtAttribute(Map<Node,Set<Xref>> mapNodeTgtXrefs,

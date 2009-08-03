@@ -89,18 +89,19 @@ class IDMappingSourceSelectionTree extends JTree {
         checkTreeManager = new CheckTreeManager(this, true, 
                 new TreePathSelectable() {
             public boolean isSelectable(TreePath path) {
-                if (path.getPathCount()>2) {
-                    return true;
-                } else if (path.getPathCount()==2) {
-                    return !((DefaultMutableTreeNode)path.getLastPathComponent()).isLeaf();
-                } else {
-                    return !(dbTreeNode.isLeaf() && wsTreeNode.isLeaf() && fileTreeNode.isLeaf());
-                }
+                return path.getPathCount()>2;
+//                if (path.getPathCount()>2) {
+//                    return true;
+//                } else if (path.getPathCount()==2) {
+//                    return !((DefaultMutableTreeNode)path.getLastPathComponent()).isLeaf();
+//                } else {
+//                    return !(dbTreeNode.isLeaf() && wsTreeNode.isLeaf() && fileTreeNode.isLeaf());
+//                }
             }
         });
         selection_Model = checkTreeManager.getSelectionModel();
         setupTree();
-        setupPopupMenu();
+        setupMouse();
     }
 
     public Set<IDMappingClient> getSelectedIDMapperClients() {
@@ -211,7 +212,7 @@ class IDMappingSourceSelectionTree extends JTree {
 
     }
 
-    private void setupPopupMenu() {
+    private void setupMouse() {
         // popup menus
         final JPopupMenu rootPopup = new JPopupMenu();
         JMenuItem mi = new JMenuItem("Add an ID mapping source by connecting string...");
@@ -232,10 +233,10 @@ class IDMappingSourceSelectionTree extends JTree {
         dbPopup.add(mi);
 
         final JPopupMenu wsPopup = new JPopupMenu();
-        mi = new JMenuItem("Add an ID mapping web service (BioMart)...");
+        mi = new JMenuItem("Add an ID mapping web service...");
         mi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addBiomart();
+                addWebservice();
             }
         });
         wsPopup.add(mi);
@@ -302,14 +303,30 @@ class IDMappingSourceSelectionTree extends JTree {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                popup(e);
-            }
-
-            private void popup(MouseEvent e) {                
-                if ( e.isPopupTrigger()) {
+                if (!popup(e)) {
                     int row = thisTree.getRowForLocation(e.getX(), e.getY());
                     if(row == -1)
                         return;
+                    thisTree.setSelectionRow(row);
+                    TreePath path = thisTree.getPathForLocation(e.getX(), e.getY());
+
+                    if (path.getPathCount()==2) {
+                        if (path.getLastPathComponent()==dbTreeNode) {
+                            addDatabase();
+                        } else if(path.getLastPathComponent()==wsTreeNode) {
+                            addWebservice();
+                        } else if(path.getLastPathComponent()==fileTreeNode) {
+                            addFile();
+                        }
+                    }
+                }
+            }
+
+            private boolean popup(MouseEvent e) {
+                if ( e.isPopupTrigger()) {
+                    int row = thisTree.getRowForLocation(e.getX(), e.getY());
+                    if(row == -1)
+                        return true;
                     thisTree.setSelectionRow(row);
                     TreePath path = thisTree.getPathForLocation(e.getX(), e.getY());
 
@@ -322,7 +339,7 @@ class IDMappingSourceSelectionTree extends JTree {
                             } else if(path.getLastPathComponent()==fileTreeNode) {
                                 filePopup.show((JComponent)e.getSource(), e.getX(), e.getY() );
                             }
-                            return;
+                            return true;
                         case 3:
                             if (path.getParentPath().getLastPathComponent()==dbTreeNode) {
                                 dbClientPopup.setTreeNode((DefaultMutableTreeNode)path.getLastPathComponent());
@@ -334,10 +351,12 @@ class IDMappingSourceSelectionTree extends JTree {
                                 fileClientPopup.setTreeNode((DefaultMutableTreeNode)path.getLastPathComponent());
                                 fileClientPopup.show((JComponent)e.getSource(), e.getX(), e.getY() );
                             }
-                            return;
+                            return true;
                         default:
-                            return;
+                            return true;
                     }
+                } else {
+                    return false;
                 }
             }
         });
@@ -375,8 +394,8 @@ class IDMappingSourceSelectionTree extends JTree {
         }
     }
 
-    private void addBiomart() {
-        BiomartIDMappingClientConfigDialog dialog = new BiomartIDMappingClientConfigDialog(parent, true);
+    private void addWebservice() {
+        WebserviceIDMappingClientConfigDialog dialog = new WebserviceIDMappingClientConfigDialog(parent, true);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
         if (!dialog.isCancelled()) {
@@ -411,7 +430,7 @@ class IDMappingSourceSelectionTree extends JTree {
     }
 
     private void addFile() {
-        DelimitedTextIDMappingClientConfigDialog dialog = new DelimitedTextIDMappingClientConfigDialog(parent, true);
+        FileIDMappingClientConfigDialog dialog = new FileIDMappingClientConfigDialog(parent, true);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
         if (!dialog.isCancelled()) {
@@ -459,8 +478,8 @@ class IDMappingSourceSelectionTree extends JTree {
         if (node==null) return;
         DelimitedTextIDMappingClient client = (DelimitedTextIDMappingClient)node.getUserObject();
 
-        DelimitedTextIDMappingClientConfigDialog dialog =
-                new DelimitedTextIDMappingClientConfigDialog(parent, true, client);
+        FileIDMappingClientConfigDialog dialog =
+                new FileIDMappingClientConfigDialog(parent, true, client);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
         if (!dialog.isCancelled()) {
@@ -488,8 +507,8 @@ class IDMappingSourceSelectionTree extends JTree {
         if (node==null) return;
         WebserviceIDMappingClient client = (WebserviceIDMappingClient)node.getUserObject();
         if (client instanceof BiomartIDMappingClient) {
-            BiomartIDMappingClientConfigDialog dialog =
-                    new BiomartIDMappingClientConfigDialog(parent, true, (BiomartIDMappingClient)client);
+            WebserviceIDMappingClientConfigDialog dialog =
+                    new WebserviceIDMappingClientConfigDialog(parent, true, (BiomartIDMappingClient)client);
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
             if (!dialog.isCancelled()) {

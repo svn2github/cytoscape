@@ -33,64 +33,26 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package csplugins.id.mapping.ui;
+package csplugins.id.mapping;
 
-import org.bridgedb.DataSource;
+import org.bridgedb.webservice.picr.IDMapperPicr;
+import org.bridgedb.IDMapperException;
 
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  *
  * @author gjj
  */
-class DataSourceWrapper implements Comparable {
-        private DataSource ds;
-        static private Map<DataSource, DataSourceWrapper> wrappers
-                = new HashMap();
+public class PICRIDMappingClient extends WebserviceIDMappingClient {
 
-        static DataSourceWrapper getInstance(DataSource ds) {
-            if (ds==null) {
-                return null;
-            }
-
-            DataSourceWrapper wrapper = wrappers.get(ds);
-            if (wrapper==null) {
-                wrapper = new DataSourceWrapper(ds);
-                wrappers.put(ds, wrapper);
-            }
-
-            return wrapper;
-        }
-
-        private DataSourceWrapper(DataSource ds) {
-            this.ds = ds;
-        }
-
-        DataSource DataSource() {
-            return ds;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            String fullName = ds.getFullName();
-            String sysCode = ds.getSystemCode();
-            if (sysCode!=null) {
-                sb.append(sysCode);
-                if (fullName!=null) {
-                    sb.append(":"+fullName);
-                }
-            } else {
-                if (fullName!=null) {
-                    sb.append(fullName);
-                }
-            }
-
-            return sb.toString();
-        }
-
-        public int compareTo(Object obj) {
-            return this.toString().compareTo(obj.toString());
-        }
+   public PICRIDMappingClient(final boolean onlyActive) throws IDMapperException {
+        this(new IDMapperPicr(onlyActive));
     }
+
+    public PICRIDMappingClient(final IDMapperPicr idMapper) {
+        super("PICR",
+                "PICR web service client",
+                idMapper);
+        //TODO: set ModuleProperties
+    }
+}

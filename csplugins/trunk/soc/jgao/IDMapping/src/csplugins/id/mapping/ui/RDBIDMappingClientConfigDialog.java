@@ -104,8 +104,8 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
         pgdbTextField = new javax.swing.JTextField();
         javax.swing.JButton pgdbButton = new javax.swing.JButton();
         javax.swing.JPanel okPanel = new javax.swing.JPanel();
-        cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("RDB ID Mapping Client Configuration");
@@ -176,14 +176,6 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-        okPanel.add(cancelButton);
-
         okButton.setText("   OK   ");
         okButton.setToolTipText("");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -192,6 +184,14 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
             }
         });
         okPanel.add(okButton);
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+        okPanel.add(cancelButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

@@ -91,8 +91,7 @@ class CheckComboBox extends JComboBox {
        reset();
    }
 
-   @Override
-   public Set getSelectedItem() {
+   public Object[] getSelectedItems() {
        Set ret = new HashSet();
        for (Map.Entry<Object,Boolean> entry : mapObjSelected.entrySet()) {
             Object obj = entry.getKey();
@@ -102,8 +101,20 @@ class CheckComboBox extends JComboBox {
                 ret.add(obj);
             }
         }
+
+       if (ret.isEmpty()) return null;
        
-       return ret;
+       return ret.toArray(new Object[ret.size()]);
+   }
+
+   public void setSelectedItems(Object[] objs) {
+       if (objs==null) return;
+
+       for (Object obj : objs) {
+           if (mapObjSelected.containsKey(obj)) {
+               mapObjSelected.put(obj, true);
+           }
+       }
    }
 
    private void reset() {
@@ -161,12 +172,12 @@ class CheckComboBox extends JComboBox {
                     mapObjSelected.put(cb.getObj(), false);
 
                     cbs.get(n-2).setSelected(false); //Select all
-                    cbs.get(n-1).setSelected(getSelectedItem().isEmpty());
+                    cbs.get(n-1).setSelected(getSelectedItems()==null);
                 } else {
                     cb.setSelected(true);
                     mapObjSelected.put(cb.getObj(), true);
 
-                    cbs.get(n-2).setSelected(getSelectedItem().size()==mapObjSelected.size()); // Select all
+                    cbs.get(n-2).setSelected(getSelectedItems()==null); // Select all
                     cbs.get(n-1).setSelected(false);
                 }
             } else if (index==n-2) {
@@ -238,7 +249,18 @@ class CheckComboBox extends JComboBox {
                     return cb;
             }
 
-            return defaultRenderer.getListCellRendererComponent(list, getSelectedItem().toString(), index, isSelected, cellHasFocus);
+            String str;
+            Object[] objs = getSelectedItems();
+            Vector<String> strs = new Vector();
+            if (objs==null) {
+                str = "Please select one or more ID types";
+            } else {
+                for (Object obj : objs) {
+                    strs.add(obj.toString());
+                }
+                str = strs.toString();
+            }
+            return defaultRenderer.getListCellRendererComponent(list, str, index, isSelected, cellHasFocus);
         }
     }
 

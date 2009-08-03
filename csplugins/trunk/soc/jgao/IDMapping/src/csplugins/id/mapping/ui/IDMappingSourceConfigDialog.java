@@ -99,12 +99,11 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         descScrollPane = new javax.swing.JScrollPane();
         descTextArea = new javax.swing.JTextArea();
         javax.swing.JPanel okPanel = new javax.swing.JPanel();
-        cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ID Mapping Source Configuration");
-        setMinimumSize(new java.awt.Dimension(600, 600));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         sourceConfPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select sources of ID mappings"));
@@ -151,14 +150,6 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
 
         okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-        okPanel.add(cancelButton);
-
         okButton.setText("   OK   ");
         okButton.setToolTipText("\"Select at least two networks to merge\"");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -167,6 +158,14 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
             }
         });
         okPanel.add(okButton);
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+        okPanel.add(cancelButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -195,10 +194,11 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         return cancelled;
     }
 
-    private static final String msg = "Right click on the tree node to " +
-            "add/delete/edit ID mapping sources.\n\nClick the checkboxes to " +
-            "select/unselect ID mapping sources to use.\n\nClick on a tree " +
-            "node of a ID mapping source for information about it.";
+    private static final String msg = "Click on a 2nd level tree node to " +
+            "add an ID mapping sources.\n\nClick on a tree node of a ID " +
+            "mapping source for information about it. \n\nRight click on a ID " +
+            "mapping source to edit/delete it.\n\nClick the checkboxes to " +
+            "select/unselect ID mapping sources to use.";
     private boolean cancelled = true;
     private IDMappingSourceSelectionTree srcTree;
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -157,7 +157,7 @@ public class TargetAttributeSelectionTable extends JTable{
 
         supportedIDType = new TreeSet();
         for (DataSource type : types) {
-            supportedIDType.add(new DataSourceWrapper(type));
+            supportedIDType.add(DataSourceWrapper.getInstance(type));
         }
 
         idTypeComboBoxes.clear();

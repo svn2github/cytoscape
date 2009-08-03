@@ -11,27 +11,26 @@
     <property name="src" location="src"/>
     <property name="images" value="images"/>
     <property name="lib" location="lib"/>
-	<property name="cyrelease" value="lib"/>
-	<property name="cylib" value = "lib"/>
+    <property name="cyrelease" value="../cytoscape"/>
+    <property name="cylib" value = "${cyrelease}/lib"/>
     <property name="build" location="build"/>
     <property name="build.classes" location="${build}/classes"/>
     <property name="build.images" location="${build.classes}/images"/>
 	
-	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
-	<path id="classpath">
-		<fileset dir="${cylib}">
-			<include name="giny.jar"/>
-			<include name="cytoscape-task.jar"/>
-		</fileset>
-		<!-- include cytoscape.jar, which is it release directory top level -->
-		<fileset dir="${cyrelease}">
-			<include name="cytoscape.jar"/>
-		</fileset>
-		<fileset dir="${lib}">
-			<include name="bridgedb.jar"/>
-			<include name="bridgedb-bio.jar"/>
-		</fileset>
-	</path>
+    <!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+    <path id="classpath">
+        <fileset dir="${cylib}">
+            <include name="*.jar"/>
+        </fileset>
+
+        <!-- include cytoscape.jar, which is it release directory top level -->
+        <fileset dir="${cyrelease}">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${lib}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
 	
   </target>
 
@@ -59,6 +58,7 @@
   <!-- =================================================================== -->
   <target name="jar" depends="compile">
     <copy file="plugin.props" todir="${build.classes}/csplugins/id/mapping" />
+    <copy file="resources/biomart_dataset_filter.txt" todir="${build.classes}/resources" />
     <copy todir="${build.images}">
       <fileset dir="${images}"/>
     </copy>
@@ -70,8 +70,10 @@
 
       <fileset dir= "${build.classes}" />
       <zipfileset src="lib/bridgedb.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/bridgedb-picr.jar" excludes="META-INF/*"/>
       <zipfileset src="lib/bridgedb-bio.jar" excludes="META-INF/*"/>
       <zipfileset src="lib/derby.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/cytoscape-plugins-comm.jar" excludes="META-INF/*"/>
     </jar>
   </target>
   

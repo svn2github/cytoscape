@@ -450,15 +450,16 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         jTaskConfig.displayCancelButton(false);
         jTaskConfig.displayStatus(true);
         jTaskConfig.setAutoDispose(false);
+        jTaskConfig.setMillisToPopup(0); // always pop the task
 
         // Execute Task in New Thread; pop open JTask Dialog Box.
-        boolean succ = TaskManager.executeTask(task, jTaskConfig);
+        TaskManager.executeTask(task, jTaskConfig);
+        boolean succ = task.success();
 
         if (succ) {
-            // keep the dialog
-            targetAttributeSelectionTable.resetDestinationAttributeNames(); // rename the target attribute
-            //this.setVisible(false);
-            //this.dispose();
+            this.setVisible(false);
+            this.dispose();
+            cancelled = false;
         } else {
             //Delete the new attributes
             CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -487,7 +488,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceNetAttrType();
         for (Set<DataSource> dss : mapSrcAttrIDTypes.values()) {
-            if (dss.isEmpty()) {
+            if (dss==null || dss.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please select at least one ID type for each source attribute.");
                 return false;
             }
@@ -576,8 +577,22 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         }
     }
 
+    public Map<String,Set<DataSource>> getMapSrcAttrIDTypes() {
+        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceNetAttrType();
+        return mapSrcAttrIDTypes;
+    }
+
+    public void setMapSrcAttrIDTypes(Map<String,Set<DataSource>> mapSrcAttrIDTypes) {
+        sourceAttributeSelectionTable.setSourceNetAttrType(mapSrcAttrIDTypes);
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
     private SourceAttributeSelectionTable sourceAttributeSelectionTable;
     private TargetAttributeSelectionTable targetAttributeSelectionTable;
+    private boolean cancelled = true;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton OKBtn;

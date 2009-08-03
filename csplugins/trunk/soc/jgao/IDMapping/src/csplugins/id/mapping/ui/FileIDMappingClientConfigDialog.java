@@ -63,15 +63,15 @@ import javax.swing.JOptionPane;
  *
  * @author gjj
  */
-public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialog {
+public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     // add a new client
-    public DelimitedTextIDMappingClientConfigDialog(java.awt.Dialog parent, boolean modal) {
+    public FileIDMappingClientConfigDialog(java.awt.Dialog parent, boolean modal) {
         this(parent, modal, null);
     }
 
     // configure an existing client
-    public DelimitedTextIDMappingClientConfigDialog(java.awt.Dialog parent,
+    public FileIDMappingClientConfigDialog(java.awt.Dialog parent,
             boolean modal, DelimitedTextIDMappingClient client) {
         super(parent, modal);
         initComponents();
@@ -111,6 +111,9 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
         java.awt.GridBagConstraints gridBagConstraints;
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        javax.swing.JPanel typePanel = new javax.swing.JPanel();
+        typeComboBox = new javax.swing.JComboBox();
+        delimitedTextPanel = new javax.swing.JPanel();
         textFilePanel = new javax.swing.JPanel();
         sourcePanel = new javax.swing.JPanel();
         javax.swing.JLabel typeLabel = new javax.swing.JLabel();
@@ -138,16 +141,33 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
         spaceIDCheckBox = new javax.swing.JCheckBox();
         otherIDCheckBox = new javax.swing.JCheckBox();
         otherIDTextField = new javax.swing.JTextField();
-        javax.swing.JPanel okPanel = new javax.swing.JPanel();
-        cancelButton = new javax.swing.JButton();
-        okButton = new javax.swing.JButton();
         javax.swing.JPanel previewPanel = new javax.swing.JPanel();
         javax.swing.JScrollPane previewScrollPane = new javax.swing.JScrollPane();
         previewTable = new javax.swing.JTable();
+        javax.swing.JPanel okPanel = new javax.swing.JPanel();
+        okButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add a ID Mapping Source From File");
         getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        typePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select file type"));
+        typePanel.setLayout(new javax.swing.BoxLayout(typePanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Delimiter Text File" }));
+        typePanel.add(typeComboBox);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        getContentPane().add(typePanel, gridBagConstraints);
+
+        delimitedTextPanel.setLayout(new java.awt.GridBagLayout());
 
         textFilePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Data source"));
         textFilePanel.setLayout(new java.awt.GridBagLayout());
@@ -213,7 +233,7 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(textFilePanel, gridBagConstraints);
+        delimitedTextPanel.add(textFilePanel, gridBagConstraints);
 
         opPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -396,34 +416,7 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(opPanel, gridBagConstraints);
-
-        okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
-
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-        okPanel.add(cancelButton);
-
-        okButton.setText("   OK   ");
-        okButton.setToolTipText("");
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okButtonActionPerformed(evt);
-            }
-        });
-        okPanel.add(okButton);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(okPanel, gridBagConstraints);
+        delimitedTextPanel.add(opPanel, gridBagConstraints);
 
         previewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("File preview"));
         previewPanel.setMinimumSize(new java.awt.Dimension(400, 200));
@@ -443,7 +436,42 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(previewPanel, gridBagConstraints);
+        delimitedTextPanel.add(previewPanel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        getContentPane().add(delimitedTextPanel, gridBagConstraints);
+
+        okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        okButton.setText("   OK   ");
+        okButton.setToolTipText("");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
+        okPanel.add(okButton);
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+        okPanel.add(cancelButton);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        getContentPane().add(okPanel, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -865,6 +893,7 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
     private javax.swing.JCheckBox commaTypeCheckBox;
     private javax.swing.JPanel delemiterIDPanel;
     private javax.swing.JPanel delemiterTypePanel;
+    private javax.swing.JPanel delimitedTextPanel;
     private javax.swing.JPanel delimiterPanel;
     private javax.swing.JRadioButton localRadioButton;
     private javax.swing.JButton okButton;
@@ -887,6 +916,7 @@ public class DelimitedTextIDMappingClientConfigDialog extends javax.swing.JDialo
     private javax.swing.JPanel textFilePanel;
     private javax.swing.JTextField textFileTextField;
     private javax.swing.JCheckBox transitivityCheckBox;
+    private javax.swing.JComboBox typeComboBox;
     // End of variables declaration//GEN-END:variables
 
 }

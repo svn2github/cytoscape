@@ -150,7 +150,7 @@ public class SourceAttributeSelectionTable extends JTable{
         
         supportedIDType = new TreeSet();
         for (DataSource type : types) {
-            supportedIDType.add(new DataSourceWrapper(type));
+            supportedIDType.add(DataSourceWrapper.getInstance(type));
         }
 
         typeComboBoxes.clear();
@@ -164,6 +164,24 @@ public class SourceAttributeSelectionTable extends JTable{
         setColumnEditorAndCellRenderer();
     }
 
+    public void setSourceNetAttrType(Map<String,Set<DataSource>> srcNetAttrType) {
+        if (srcNetAttrType==null) return;
+
+        this.clearRows();
+
+        for (Map.Entry<String,Set<DataSource>> entry : srcNetAttrType.entrySet()) {
+            String attr = entry.getKey();
+            Set<DataSource> dss = entry.getValue();
+            this.addRow(attr, dss);
+        }
+
+        if(this.rowCount==0) {
+            addRow();
+        }
+
+
+    }
+
     public Map<String,Set<DataSource>> getSourceNetAttrType() {
         Map<String,Set<DataSource>> ret = new HashMap();
 //        if (supportedIDType.isEmpty()) {
@@ -173,17 +191,17 @@ public class SourceAttributeSelectionTable extends JTable{
         for (int i=0; i<rowCount; i++) {
             String attr = (String)attributeComboBoxes.get(i).getSelectedItem();
             //TODO REMOVE IN CY3
-            if (attr.compareTo("ID")==0) {
-                attr = cytoscape.data.Semantics.CANONICAL_NAME;
-            }
+//            if (attr.compareTo("ID")==0) {
+//                attr = cytoscape.data.Semantics.CANONICAL_NAME;
+//            }
 
             Set<DataSource> types = null;
             if (!supportedIDType.isEmpty()) {
-                Set<DataSourceWrapper> dsws = typeComboBoxes.get(i).getSelectedItem();
+                Object[] dsws = typeComboBoxes.get(i).getSelectedItems();
                 if (dsws!=null) {
                     types = new HashSet();
-                    for (DataSourceWrapper dsw : dsws) {
-                        types.add(dsw.DataSource());
+                    for (Object dsw : dsws) {
+                        types.add(((DataSourceWrapper)dsw).DataSource());
                     }
                 }
             }
@@ -279,6 +297,56 @@ public class SourceAttributeSelectionTable extends JTable{
 
         setColumnEditorAndCellRenderer();
         fireTableDataChanged();
+    }
+
+    private void addRow(String attr, Set<DataSource> dss) {
+
+        Vector<String> attrs = new Vector<String>();
+        //TODO remove in Cytoscape3
+        attrs.add("ID");
+        //TODO: modify if local attribute implemented
+
+        List list = Arrays.asList(cytoscape.Cytoscape.getNodeAttributes().getAttributeNames());
+        Collections.sort(list);
+
+        attrs.addAll(list);
+
+        if (attr==null || !attrs.contains(attr)) return;
+
+        JComboBox cb = new JComboBox(attrs);
+        cb.setSelectedItem(attr);
+        attributeComboBoxes.add(cb);
+
+        CheckComboBox cc = new CheckComboBox(supportedIDType, false);
+        if (dss!=null) {
+            int n = dss.size();
+            if (n>0) {
+                DataSourceWrapper[] dsws = new DataSourceWrapper[n];
+                int i=0;
+                for (DataSource ds : dss) {
+                    dsws[i++] = DataSourceWrapper.getInstance(ds);
+                }
+                cc.setSelectedItems(dsws);
+            }
+        }
+        typeComboBoxes.add(cc);
+
+        JButton button = new JButton("Remove");
+        rmvBtns.add(button);
+
+        rowCount++;
+
+        setColumnEditorAndCellRenderer();
+        fireTableDataChanged();
+    }
+
+    public void clearRows() {
+        int[] rows = new int[rowCount];
+        for (int i=0; i<rowCount; i++) {
+            rows[i] = i;
+        }
+
+        removeRows(rows);
     }
 
     public void removeRows(final int[] rows) {
