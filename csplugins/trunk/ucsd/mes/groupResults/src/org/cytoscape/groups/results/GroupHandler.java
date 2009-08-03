@@ -142,6 +142,20 @@ public class GroupHandler implements MouseListener, MouseMotionListener, Propert
 
 	boolean handlerStarted = false;
 	
+	public static final String REGION_X_ATT = "__Region_x";
+
+	public static final String REGION_Y_ATT = "__Region_y";
+
+	public static final String REGION_W_ATT = "__Region_w";
+
+	public static final String REGION_H_ATT = "__Region_h";
+
+	private static final String REGION_NAME_ATT = "__Region_name";
+
+	private static final String REGION_COLORINT_ATT = "__Region_colorInt";
+
+	private static final String REGION_NETWORK_ATT = "__Region_network";
+
 	/**
 	 * String used to compare against os.name System property -
 	 * to determine if we are running on Windows platform.
