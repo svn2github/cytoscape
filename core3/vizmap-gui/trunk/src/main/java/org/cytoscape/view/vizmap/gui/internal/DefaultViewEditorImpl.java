@@ -62,6 +62,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
@@ -422,11 +423,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 	} // </editor-fold>
 
 	private <V> void listActionPerformed(MouseEvent e) {
-		if (e.getClickCount() == 1) {
-			V newValue = null;
-			final JList list = (JList) e.getSource();
-
-			VisualProperty<V> vp = (VisualProperty<V>) list.getSelectedValue();
+		V newValue = null;
+		final JList list = (JList) e.getSource();
+		final VisualProperty<V> vp = (VisualProperty<V>) list.getSelectedValue();
+		
+		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+			
 			try {
 				newValue = editorFactory.showVisualPropertyValueEditor(this,
 						vp, null);
@@ -455,6 +457,14 @@ public class DefaultViewEditorImpl extends JDialog implements
 			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 			mainView.updateView();
 			mainView.repaint();
+		} else if(SwingUtilities.isRightMouseButton(e)) {
+			if(vp != null) {
+				System.out.println("##### target value =======> " + vp.getDisplayName());
+				// Display Context menu here
+				
+				
+				
+			}
 		}
 	}
 
