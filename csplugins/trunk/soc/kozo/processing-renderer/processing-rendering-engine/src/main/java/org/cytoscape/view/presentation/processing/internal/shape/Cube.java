@@ -92,6 +92,12 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 		// Pick compatible lexicon only.
 		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue();
 		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();
+		
+		
+		if(p.random(1)> 0.5) {
+			viewModel.setVisualProperty(NODE_Z_LOCATION, 500d);
+		}
+		
 		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue();
 		
 		this.size = viewModel.getVisualProperty(NODE_X_SIZE).floatValue();
@@ -104,17 +110,12 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 			g = 250;
 			b = 0;
 			alpha = 255;
-			System.out.println("Color of PICKED node" + g); 
 		}else if(color instanceof Color) {
 			this.r = ((Color)color).getRed();
 			this.g = ((Color)color).getGreen();
 			this.b = ((Color)color).getBlue();
-			//this.alpha = ((Color)color).getAlpha();
-			this.alpha = 90;
-			
-		}
-		
-		
+			this.alpha = ((Color)color).getAlpha();			
+		}	
 	}
 
 	public boolean isPicked() {

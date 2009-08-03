@@ -156,8 +156,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		System.out.println("%%%%%%%%%%%%% Setup called for P5");
 		/* setup p5 */
 		size(windowSize.width, windowSize.width, OPENGL);
-		hint(ENABLE_OPENGL_4X_SMOOTH);
-		hint(ENABLE_NATIVE_FONTS);
+		//hint(ENABLE_OPENGL_4X_SMOOTH);
+		//hint(ENABLE_NATIVE_FONTS);
 		noStroke();
 		frameRate(FRAME_RATE);
 
@@ -265,21 +265,18 @@ public class ProcessingNetworkRenderer extends PApplet implements
 			translateX += (mouseX - pmouseX) * 2;
 			translateY += (mouseY - pmouseY) * 2;
 		}
-		// else if (mouseButton == LEFT) {
-		//			
-		// }
 	}
 
 	public void mousePressed() {
 		if (mouseButton != CENTER)
 			return;
 
-		System.out.println("===Mouse Click");
-		for (int i = 0; i < nodes.length; i++) {
-			if (nodes[i] instanceof Pickable) {
-				((Pickable) nodes[i]).pick(mouseX, mouseY);
-			}
-		}
+//		System.out.println("===Mouse Click");
+//		for (int i = 0; i < nodes.length; i++) {
+//			if (nodes[i] instanceof Pickable) {
+//				((Pickable) nodes[i]).pick(mouseX, mouseY);
+//			}
+//		}
 	}
 
 	public Icon getDefaultIcon(VisualProperty<?> vp) {
