@@ -232,22 +232,27 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		double xCenter = theView.getCenter().getX();
 		double yCenter = theView.getCenter().getY();
 		
+		double deltaX=0, deltaY=0;
+		
 		while (it.hasNext()){
 			node = (CyNode) it.next();
 			nv = Cytoscape.getCurrentNetworkView().getNodeView(node);
+		
+			deltaX = nv.getWidth()/2 + nv.getBorderWidth();
+			deltaY = nv.getHeight()/2 + nv.getBorderWidth();
 			
-			if (nv.getXPosition() < minX){
-				minX = nv.getXPosition();
+			if (nv.getXPosition()-deltaX < minX){
+				minX = nv.getXPosition()- deltaX;
 			}
-			if (nv.getXPosition() > maxX){
-				maxX = nv.getXPosition();
+			if (nv.getXPosition()+deltaX > maxX){
+				maxX = nv.getXPosition()+deltaX;
 			}
 			
-			if (nv.getYPosition() < minY){
-				minY = nv.getYPosition();
+			if (nv.getYPosition()-deltaY < minY){
+				minY = nv.getYPosition()-deltaY;
 			}
-			if (nv.getYPosition() > maxY){
-				maxY = nv.getYPosition();
+			if (nv.getYPosition()+deltaY > maxY){
+				maxY = nv.getYPosition()+deltaY;
 			}				
 		}
 				
@@ -260,7 +265,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 
 		return rectValues;
 	}
-
 	
 	
 	/**
