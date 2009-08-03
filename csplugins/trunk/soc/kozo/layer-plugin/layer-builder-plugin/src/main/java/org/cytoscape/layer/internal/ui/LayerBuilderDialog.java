@@ -568,8 +568,9 @@ public class LayerBuilderDialog extends JDialog {
 		List<CyNetwork> connectors = new ArrayList<CyNetwork>();
 
 		for (int i = 0; i < layeredNetworkListModel.getSize(); i++) {
-			layers.add(manager.getNetwork((Long) layeredNetworkListModel
-					.getElementAt(i)));
+			CyNetwork cyNetwork = manager.getNetwork((Long) layeredNetworkListModel.getElementAt(i));
+			cyNetwork.attrs().set("layerIndex", i);
+			layers.add(cyNetwork);
 		}
 
 		for (int i = 0; i < layerConnectionTableModel.getRowCount(); i++) {
