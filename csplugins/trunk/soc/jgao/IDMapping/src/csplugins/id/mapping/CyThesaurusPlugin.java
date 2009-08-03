@@ -35,12 +35,14 @@
 
 package csplugins.id.mapping;
 
+import csplugins.id.mapping.IDMappingClientManager;
 import csplugins.id.mapping.ui.CyThesaurusDialog;
 import csplugins.id.mapping.ui.IDMappingSourceConfigDialog;
 
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.IDMapperException;
+import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.bio.BioDataSource;
 
 import cytoscape.plugin.CytoscapePlugin;
@@ -51,6 +53,7 @@ import cytoscape.CyNetwork;
 import cytoscape.util.plugins.communication.PluginsCommunicationSupport;
 import cytoscape.util.plugins.communication.MessageListener;
 import cytoscape.util.plugins.communication.Message;
+import cytoscape.util.plugins.communication.ResponseMessage;
 
 import java.awt.event.ActionEvent;
 
@@ -132,7 +135,7 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
                 String msgType = msg.getType();
                 if (msgType==null) return;
 
-                Object response;
+                ResponseMessage response = null;;
                 if (msgType.compareTo(Message.MSG_TYPE_TEST)==0) {
                     response = testService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_MAPPING)==0) {
@@ -143,14 +146,11 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
                     response = mappingDialogService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_SUPPORTED_ID_TYPE)==0) {
                     response = supportedIdTypeService(msg);
-                } else {
-                    return;
                 }
 
                 // send respond message
-                String sender = msg.getSender();
-                if (sender!=null) {
-                    PluginsCommunicationSupport.sendMessage(null, pluginName, sender, Message.MSG_TYPE_RESPONSE, response);
+                if (response!=null) {
+                    PluginsCommunicationSupport.sendMessage(response);
                 }
             }
         };
@@ -164,22 +164,31 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
     private static final String TARGET_ATTR = "TARGET_ATTR";
     private static final String TARGET_ID_TYPE = "TARGET_ID_TYPE";
 
-    private static final String RESPONSE_REQUEST_ID = "REQUEST_ID";
     private static final String RESPONSE_SUCCESS = "SUCCESS";
     private static final String RESPONSE_REPORT = "REPORT";
     private static final String RESPONSE_SRC_ID_TYPE = "SRC_ID_TYPE";
     private static final String RESPONSE_TGT_ID_TYPE = "TGT_ID_TYPE";
 
-    private Object testService(Message msg) {
-        Map response = new HashMap();
-        response.put(RESPONSE_REQUEST_ID, msg.getId());
-        response.put(RESPONSE_SUCCESS, true);
-        return response;
+    private ResponseMessage createResponse(Message msg, Object responseContent) {
+        String sender = msg.getSender();
+        String msgId = msg.getId();
+        if (sender==null || msgId==null) {
+            return null;
+        }
+
+        String responseId = sender+"_"+msgId+"_"+pluginName+"_"+msgId;
+        return new ResponseMessage(responseId, msgId, pluginName, sender, responseContent);
     }
 
-    private Object supportedIdTypeService(Message msg) {
-        Map response = new HashMap();
-        response.put(RESPONSE_REQUEST_ID, msg.getId());
+    private ResponseMessage testService(Message msg) {
+        Map content = new HashMap();
+        content.put(RESPONSE_SUCCESS, true);
+
+        return createResponse(msg, content);
+    }
+
+    private ResponseMessage supportedIdTypeService(Message msg) {
+        Map content = new HashMap();
 
         Set<DataSource> srcDataSources;
         Set<DataSource> tgtDataSources;
@@ -189,55 +198,54 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
             tgtDataSources = stack.getCapabilities().getSupportedTgtDataSources();
         } catch (IDMapperException ex) {
             ex.printStackTrace();
-            response.put(RESPONSE_SUCCESS, false);
-            response.put(RESPONSE_REPORT, "\nIDMapperException:\n"+ex.getMessage());
-            return response;
+            content.put(RESPONSE_SUCCESS, false);
+            content.put(RESPONSE_REPORT, "\nIDMapperException:\n"+ex.getMessage());
+            return createResponse(msg, content);
         }
 
-        response.put(RESPONSE_SUCCESS, true);
+        content.put(RESPONSE_SUCCESS, true);
 
         String[] srcTypes = new String[srcDataSources.size()];
         int ids = 0;
         for(DataSource ds : srcDataSources) {
             srcTypes[ids++] = ds.getFullName();
         }
-        response.put(RESPONSE_SRC_ID_TYPE, srcTypes);
+        content.put(RESPONSE_SRC_ID_TYPE, srcTypes);
 
         String[] tgtTypes = new String[tgtDataSources.size()];
         ids = 0;
         for(DataSource ds : tgtDataSources) {
             srcTypes[ids++] = ds.getFullName();
         }
-        response.put(RESPONSE_TGT_ID_TYPE, tgtTypes);
+        content.put(RESPONSE_TGT_ID_TYPE, tgtTypes);
 
-        return response;
+        return createResponse(msg, content);
     }
 
-    private Object mappingSrcConfigDialogService(Message msg) {
+    private ResponseMessage mappingSrcConfigDialogService(Message msg) {
         IDMappingSourceConfigDialog srcConfDialog
-                = new IDMappingSourceConfigDialog(null, true);
-        srcConfDialog.setAlwaysOnTop(true);
+                = new IDMappingSourceConfigDialog(Cytoscape.getDesktop(), true);
         srcConfDialog.setVisible(true);
 
-        Map response = new HashMap();
-        response.put(RESPONSE_REQUEST_ID, msg.getId());
-        response.put(RESPONSE_SUCCESS, !srcConfDialog.isCancelled());
-        return response;
+        Map content = new HashMap();
+        content.put(RESPONSE_SUCCESS, !srcConfDialog.isCancelled());
+
+        return createResponse(msg, content);
     }
 
-    private Object mappingDialogService(Message msg) {
+    private ResponseMessage mappingDialogService(Message msg) {
         final CyThesaurusDialog dialog = new CyThesaurusDialog(Cytoscape.getDesktop(), true);
         dialog.setLocationRelativeTo(Cytoscape.getDesktop());
         dialog.setMapSrcAttrIDTypes(mapSrcAttrIDTypes);
         dialog.setVisible(true);
 
-        Map response = new HashMap();
-        response.put(RESPONSE_REQUEST_ID, msg.getId());
-        response.put(RESPONSE_SUCCESS, !dialog.isCancelled());
-        return response;
+        Map content = new HashMap();
+        content.put(RESPONSE_SUCCESS, !dialog.isCancelled());
+
+        return createResponse(msg, content);
     }
 
-    private Object mappingService(Message msg) {
+    private ResponseMessage mappingService(Message msg) {
         Object content = msg.getContent();
         boolean succ = true;
         StringBuilder error = new StringBuilder();
@@ -257,8 +265,14 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
             // parse networks
             Object obj = map.get(NETWORK_ID);
             if (obj==null) {
-                succ = false;
-                error.append("Message content does not contain field \"" + NETWORK_ID +"\"\n");
+                //succ = false;
+                //error.append("Message content does not contain field \"" + NETWORK_ID +"\"\n");
+                // maping id for all networks
+                networks.addAll(Cytoscape.getNetworkSet());
+                if (networks.isEmpty()) {
+                    succ = false;
+                    error.append("No network available\n");
+                }
             }else{
                 if (obj instanceof String) {
                     String netId = (String)obj;
@@ -326,70 +340,117 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
                 }
             }
 
-            Set<String> dataSources = new HashSet(DataSource.getFullNames());
-            // parse source type
-            obj = map.get(SOURCE_ID_TYPE);
-            if (obj==null) {
+            Set<DataSource> srcDataSources = null;
+            Set<DataSource> tgtDataSources = null;
+            try {
+                IDMapperCapabilities cap
+                      = IDMappingClientManager.selectedIDMapperStack().getCapabilities();
+                srcDataSources = cap.getSupportedSrcDataSources();
+                tgtDataSources = cap.getSupportedTgtDataSources();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (srcDataSources==null || srcDataSources.isEmpty()
+                        || tgtDataSources==null || tgtDataSources.isEmpty()) {
                 succ = false;
-                error.append("Message content does not contain field \"" + SOURCE_ID_TYPE +"\"\n");
-            }else{
-                if (obj instanceof String) {
-                    String type = (String)obj;
-                    if (dataSources.contains(type)) {
-                        srcTypes.add(DataSource.getByFullName(type));
-                    } else {
-                        succ = false;
-                        error.append("Source ID type "+type+" does not exist.\n");
-                    }
-                } else if (obj instanceof String[]) {
-                    String[] types = (String[])obj;
-                    for (String type : types) {
-                        if (dataSources.contains(type)) {
-                            srcTypes.add(DataSource.getByFullName(type));
+                error.append("No supported source or target id type");
+            } else {
+                // parse source type
+                obj = map.get(SOURCE_ID_TYPE);
+                if (obj==null) {
+                    srcTypes.addAll(srcDataSources);
+                }else{
+                    Set<String> dss = new HashSet();
+                    for (DataSource ds : srcDataSources) {
+                        String fullName = ds.getFullName();
+                        if (fullName!=null) {
+                            dss.add(fullName);
                         } else {
-                            error.append("Source ID type "+type+" does not exist.\n");
+                            //TODO: how to deal?
                         }
                     }
 
-                    if (srcAttrs.isEmpty()) {
+                    if (obj instanceof String) {
+                        String type = (String)obj;
+                        if (dss.contains(type)) {
+                            srcTypes.add(DataSource.getByFullName(type));
+                        } else {
+                            succ = false;
+                            error.append("Source ID type "+type+" does not exist.\n");
+                        }
+                    } else if (obj instanceof String[]) {
+                        String[] types = (String[])obj;
+                        for (String type : types) {
+                            if (dss.contains(type)) {
+                                srcTypes.add(DataSource.getByFullName(type));
+                            } else {
+                                error.append("Source ID type "+type+" does not exist.\n");
+                            }
+                        }
+
+                        if (srcAttrs.isEmpty()) {
+                            succ = false;
+                        }
+                    } else {
                         succ = false;
+                        error.append(SOURCE_ID_TYPE+" must be String or String[].\n");
                     }
-                } else {
-                    succ = false;
-                    error.append(SOURCE_ID_TYPE+" must be String or String[].\n");
                 }
-            }
 
-            //parse target attribute
-            obj = map.get(TARGET_ATTR);
-            if (obj==null || !(obj instanceof String)) {
-                succ = false;
-                error.append("Message content must contain a non-null \"" + TARGET_ATTR +"\"\n");
-            }else{
-                String attr = (String)obj;
-                if (attr.length()==0) {
+                //parse target id type
+                obj = map.get(TARGET_ID_TYPE);
+                if (obj==null || !(obj instanceof String)) {
                     succ = false;
-                    error.append(TARGET_ATTR+" cannot be empty.\n");
-                } else if (attr.compareTo("ID")==0) { //TODO: remove in cy3
-                    succ = false;
-                    error.append("Cannot save the target ids as node ID.\n");
-                } else {
-                    tgtAttr = attr;
+                    error.append("Message content must contain a non-null \"" + TARGET_ID_TYPE +"\"\n");
+                }else{
+                    Set<String> dss = new HashSet();
+                    for (DataSource ds : tgtDataSources) {
+                        String fullName = ds.getFullName();
+                        if (fullName!=null) {
+                            dss.add(fullName);
+                        } else {
+                            //TODO: how to deal?
+                        }
+                    }
+
+                    String type = (String)obj;
+                    if (dss.contains(type)) {
+                        tgtType = DataSource.getByFullName(type);
+                    } else {
+                        succ = false;
+                        error.append("Target ID type "+type+" does not exist.\n");
+                    }
                 }
-            }
 
-            //parse target id type
-            obj = map.get(TARGET_ID_TYPE);
-            if (obj==null || !(obj instanceof String)) {
-                succ = false;
-                error.append("Message content must contain a non-null \"" + TARGET_ID_TYPE +"\"\n");
-            }else{
-                String type = (String)obj;
-                if (dataSources.contains(type)) {
-                    srcTypes.add(DataSource.getByFullName(type));
-                } else {
+                //parse target attribute
+                obj = map.get(TARGET_ATTR);
+                if (obj==null) {
+                    if (succ) {
+                        // set default target attribute name
+                        String tgtTypeName = tgtType.getFullName();
+                        if (!attributes.contains(tgtTypeName)) {
+                            tgtAttr = tgtTypeName;
+                        } else {
+                            int i = 0;
+                            while (attributes.contains(tgtTypeName+"."+(++i))){}
+                            tgtAttr = tgtTypeName+"."+i;
+                        }
+                    }
+                } else if (!(obj instanceof String)) {
                     succ = false;
-                    error.append("Target ID type "+type+" does not exist.\n");
+                    error.append("Attribute name should be String.");
+                } else {
+                    String attr = (String)obj;
+                    if (attr.length()==0) {
+                        succ = false;
+                        error.append(TARGET_ATTR+" cannot be empty.\n");
+                    } else if (attr.compareTo("ID")==0) { //TODO: remove in cy3
+                        succ = false;
+                        error.append("Cannot save the target ids as node ID.\n");
+                    } else {
+                        tgtAttr = attr;
+                    }
                 }
             }
         }
@@ -406,7 +467,6 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
             Map<DataSource, String> MapTgtIDTypeAttrName = new HashMap();
             MapTgtIDTypeAttrName.put(tgtType, tgtAttr);
 
-
             try {
                 service.map(networks, mapAttrTypes, MapTgtIDTypeAttrName);
             } catch (Exception e) {
@@ -417,17 +477,17 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
         }
 
         // send respond message
-        Map response = new HashMap();
-        response.put(RESPONSE_REQUEST_ID, msg.getId());
+        Map responseContent = new HashMap();
         if (succ) {
-            response.put(RESPONSE_SUCCESS, true);
-            response.put(RESPONSE_REPORT, service.getReport()+"\nErrors:\n"+error);
+            responseContent.put(RESPONSE_SUCCESS, true);
+            responseContent.put(RESPONSE_REPORT, service.getReport());//+"\nErrors:\n"+error);
+            responseContent.put(TARGET_ATTR, tgtAttr);
         } else {
-            response.put(RESPONSE_SUCCESS, false);
-            response.put(RESPONSE_REPORT, "Errors:\n"+error);
+            responseContent.put(RESPONSE_SUCCESS, false);
+            responseContent.put(RESPONSE_REPORT, "Errors:\n"+error);
         }
 
-        return response;
+        return this.createResponse(msg, responseContent);
     }
 }
 

@@ -51,9 +51,18 @@ import java.util.Set;
  */
 public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
 
-    /** Creates new form IDMappingSourceConfigDialog */
+
+    public IDMappingSourceConfigDialog(javax.swing.JFrame parent, boolean modal) {
+        super(parent, modal);
+        init();
+    }
+
     public IDMappingSourceConfigDialog(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
+        init();
+    }
+
+    public void init() {
         initComponents();
         
         srcTree.addTreeSelectionListener(new TreeSelectionListener() {
