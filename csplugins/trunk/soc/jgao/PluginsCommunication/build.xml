@@ -1,0 +1,59 @@
+
+
+<project name="CytoscapePluginsCommunication" default="jar" basedir=".">
+  <description>Builds, tests, and runs the project CytoscapePluginsCommunication</description>
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init">
+    <tstamp/>
+    <property name="src" location="src"/>
+    <property name="cyrelease" value="../cytoscape"/>
+    <property name="build" location="build"/>
+    <property name="build.classes" location="${build}/classes"/>
+    <property name="jar.name" location="cytoscape-plugins-comm.jar"/>
+
+    <!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+    <path id="classpath">
+        <!-- include cytoscape.jar, which is it release directory top level -->
+        <fileset dir="${cyrelease}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the project                                                -->
+  <!-- =================================================================== -->
+  <target name="compile" depends="init">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build.classes}"/>
+    <javac srcdir="${src}" destdir="${build.classes}">
+      <classpath refid="classpath"/>
+    </javac>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init">
+    <echo message="delete ${build}"/>
+    <delete dir="${build}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the project jar file                                        -->
+  <!-- =================================================================== -->
+  <target name="jar" depends="compile">
+    <jar destfile="${jar.name}">
+      <fileset dir= "${build.classes}" />
+    </jar>
+    <copy file="${jar.name}" todir="D:\projects\CyThesaurus\lib" />
+  </target>
+
+</project>
+
+
+
