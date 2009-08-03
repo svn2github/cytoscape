@@ -88,7 +88,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	/**
 	 * particular value(s) associated with a layout region
 	 */
-	private ArrayList<Object> regionAttributeValues = new ArrayList<Object>();
+	//private ArrayList<Object> regionAttributeValues = new ArrayList<Object>();
 
 	/**
 	 * list of nodes associated with a layout region based on
@@ -184,7 +184,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 			ArrayList name, List<NodeView> nv, int color, CyNetworkView view,
 			CyGroup group) {
 		super();
-		this.setRegionAttributeValue(name);
+		//this.setRegionAttributeValue(name);
 		setBounds(x, y, width, height, true);
 		this.setNodeViews(nv);
 		this.paint = colors[color];
@@ -441,28 +441,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		attributeName = attName;
 	}
 
-	/**
-	 * Returns the list of values associated with a region as an object.
-	 * 
-	 * e.g., "[value1, value2, value3]"
-	 * 
-	 * @return Returns the regionAttributeValue.
-	 */
-	public Object getRegionAttributeValue() {
-		return this.regionAttributeValues;
-	}
-
-	/**
-	 * Could be used to allow user control over changing a regions attribute
-	 * value association
-	 * 
-	 * @param regionAttributeValue
-	 */
-	public void setRegionAttributeValue(ArrayList selected) {
-		for (Object o : selected) {
-			regionAttributeValues.add(o);
-		}
-	}
 
 	/**
 	 * Our implementation of ViewportChangeListener.
@@ -542,17 +520,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		this.setBounds(this.getX1(), this.getY1(), this.getW1(), this.getH1());
 	}
 
-	/**
-	 * Select all nodeViews with specified attribute value for attribute. Note:
-	 * logic is symmetrical with BRQuickFindConfigDialog.addSortTableModel().
-	 */
-	
-
-	public void populateNodeViews() {
-		
-
-		
-	}
 
 	public void setBounds(double x, double y, double width, double height,
 			boolean fromNode) {
@@ -581,7 +548,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 
 	public void setBounds(double x, double y, double width, double height) {
 
-		
 		// make room for handles
 		super.setBounds(((int) x - (HANDLE_SIZE / 2)),
 				((int) y - (HANDLE_SIZE / 2)), ((int) width + HANDLE_SIZE),
@@ -600,7 +566,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 					((int) height + HANDLE_SIZE), BufferedImage.TYPE_INT_ARGB);
 		}
 
-		
 		// update nodeView coordinates of Layout Region for Groups/xGMML export
 		Point2D[] corners = new Point2D[] { new Point2D.Double(x, y),
 				new Point2D.Double(x + width, y + height) };
@@ -614,30 +579,26 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 			nodeW1 = (newCorners[1].getX() - newCorners[0].getX());
 			nodeH1 = (newCorners[1].getY() - newCorners[0].getY());
 
-		/*
 			if (myGroup != null) {
 				CyNode groupNode = this.myGroup.getGroupNode();
 				CyAttributes attributes = Cytoscape.getNodeAttributes();
 				attributes.setAttribute(groupNode.getIdentifier(),
-						BubbleRouterPlugin.REGION_X_ATT, nodeX1);
+						GroupHandler.REGION_X_ATT, nodeX1);
 				attributes.setAttribute(groupNode.getIdentifier(),
-						BubbleRouterPlugin.REGION_Y_ATT, nodeY1);
+						GroupHandler.REGION_Y_ATT, nodeY1);
 				attributes.setAttribute(groupNode.getIdentifier(),
-						BubbleRouterPlugin.REGION_W_ATT, nodeW1);
+						GroupHandler.REGION_W_ATT, nodeW1);
 				attributes.setAttribute(groupNode.getIdentifier(),
-						BubbleRouterPlugin.REGION_H_ATT, nodeH1);
-			
+						GroupHandler.REGION_H_ATT, nodeH1);
 			}
-		*/	
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 
 	
-	
+
 	public void paint(Graphics g) {
 
 		// only paint if we have an image to paint onto
@@ -686,9 +647,9 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 					.getWidth(null)
 					- HANDLE_SIZE, image.getHeight(null) - HANDLE_SIZE);
 			image2D.setColor(new Color(0, 0, 0, 255));
-			if (regionAttributeValues != null) {
-				image2D.drawString(regionAttributeValues.toString(), 20, 20);
-			}
+			//if (regionAttributeValues != null) {
+				//image2D.drawString(regionAttributeValues.toString(), 20, 20);
+			//}
 
 			image2D.setColor(drawColor);
 
