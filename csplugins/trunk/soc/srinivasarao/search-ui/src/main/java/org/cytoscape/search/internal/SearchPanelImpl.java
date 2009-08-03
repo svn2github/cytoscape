@@ -166,18 +166,18 @@ public class SearchPanelImpl extends SearchPanel {
 				NumericAttributePanel np = (NumericAttributePanel) list.get(i);
 				if (np != null) {
 					if (query == null) {
-						if (np.getQueryFromSearchBox() != null)
-							query = np.getQueryFromSearchBox();
-						else if (np.getQueryFromSearchBox() == null) {
+						if (np.getQueryFromBox() != null)
+							query = np.getQueryFromBox();
+						else if (np.getQueryFromBox() == null) {
 							if (np.rangeQuery() != null)
 								query = np.rangeQuery();
 						}
 
 					} else {
-						if (np.getQueryFromSearchBox() != null) {
+						if (np.getQueryFromBox() != null) {
 							query = query + " " + operator + " "
-									+ np.getQueryFromSearchBox();
-						} else if (np.getQueryFromSearchBox() == null) {
+									+ np.getQueryFromBox();
+						} else if (np.getQueryFromBox() == null) {
 							if (np.rangeQuery() != null)
 								query = query + " " + operator + " "
 										+ np.rangeQuery();

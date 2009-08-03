@@ -40,7 +40,7 @@ public class TestNumericAttributePanel {
 	private class RunTimerTask extends TimerTask {
 		public final void run() {
 			System.out.println("Query: " + np.rangeQuery());
-			System.out.println("Query From Box: " + np.getQueryFromSearchBox());
+			System.out.println("Query From Box: " + np.getQueryFromBox());
 		}
 	}
 

@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JComboBox;
 
-public class SampleComboBox extends JComboBox {
+public class SearchComboBox extends JComboBox {
 
 	/**
 	 * 
@@ -18,7 +18,7 @@ public class SampleComboBox extends JComboBox {
 	 * This method initializes
 	 * 
 	 */
-	public SampleComboBox() {
+	public SearchComboBox() {
 		super();
 		initialize();
 	}
@@ -31,29 +31,20 @@ public class SampleComboBox extends JComboBox {
 		this.setSize(new Dimension(174, 24));
 		setEditable(true);
 		setMaximumRowCount(5);
-		this.addItem("Srinivas");
-		this.addItem("Nithin");
-		this.addItem("Hanuma");
-		this.addItem("Aditya");
-		this.addItem("Sai Krishna");
-		this.addItem("Kiran");
-		this.addItem("Kranthi");
-		this.addItem("Ganesh");
-		this.addItem("Harsha");
 		Component editor = this.getEditor().getEditorComponent();
 		editor.addKeyListener(new UserKeyListener(this));
 	}
+	
 }
 
 class UserKeyListener extends KeyAdapter {
-	private SampleComboBox box;
+	private SearchComboBox box;
 
-	public UserKeyListener(SampleComboBox b) {
+	public UserKeyListener(SearchComboBox b) {
 		this.box = b;
 	}
 
 	public void keyPressed(KeyEvent e) {
-		// System.out.println("I am in key listener");
 		if (e.getKeyCode() == KeyEvent.VK_DELETE
 				&& e.getModifiersEx() == KeyEvent.SHIFT_DOWN_MASK) {
 			System.out.println("Delete Key Pressed");

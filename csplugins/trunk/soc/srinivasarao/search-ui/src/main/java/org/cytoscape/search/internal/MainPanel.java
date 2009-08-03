@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -30,6 +31,7 @@ public class MainPanel extends JPanel {
 	private JRadioButton showButton = null;
 	private JRadioButton hideButton = null;
 	private JTextField searchField = null;
+	private JComboBox searchBox = null;
 	private JRadioButton orButton = null;
 	private JRadioButton andButton = null;
 	private JButton searchButton = null;
@@ -49,12 +51,12 @@ public class MainPanel extends JPanel {
 	private static final String REINDEX_TOOLTIP = "<html>"
 			+ "Refresh the network index and perform search." + "<br>"
 			+ "This option is useful after changes to attributes." + "</html>";
-	
-	private static final String ESP_ENABLED_TOOLTIP = "<html>"
-        + "Enter search query and press return. " + "<br>"
-        + "Right click for more options." + "</html>";
 
-    private static final String ESP_DISABLED_TOOLTIP = "Please select or load a network to activate search functionality";
+	private static final String ESP_ENABLED_TOOLTIP = "<html>"
+			+ "Enter search query and press return. " + "<br>"
+			+ "Right click for more options." + "</html>";
+
+	private static final String ESP_DISABLED_TOOLTIP = "Please select or load a network to activate search functionality";
 
 	/**
 	 * This is the default constructor
@@ -63,23 +65,23 @@ public class MainPanel extends JPanel {
 		super();
 		initialize();
 		this.netmgr = nm;
-		if(netmgr.getCurrentNetwork()==null)
+		if (netmgr.getCurrentNetwork() == null)
 			disableSearch();
 	}
 
-	public void disableSearch(){
+	public void disableSearch() {
 		searchField.setText("");
 		searchField.setEnabled(false);
 		searchField.setToolTipText(ESP_DISABLED_TOOLTIP);
 		searchButton.setEnabled(false);
 	}
-	
-	public void enableSearch(){
+
+	public void enableSearch() {
 		searchField.setEnabled(true);
 		searchButton.setEnabled(true);
 		searchField.setToolTipText(ESP_ENABLED_TOOLTIP);
 	}
-	
+
 	/**
 	 * This method initializes this
 	 * 
@@ -143,7 +145,7 @@ public class MainPanel extends JPanel {
 		this.add(getSelectButton(), gridBagConstraints1);
 		this.add(getShowButton(), gridBagConstraints2);
 		this.add(getHideButton(), gridBagConstraints3);
-		this.add(getSearchField(), gridBagConstraints5);
+		this.add(getSearchBox(), gridBagConstraints5);
 		this.add(getOrButton(), gridBagConstraints6);
 		this.add(getAndButton(), gridBagConstraints7);
 		this.add(getSearchButton(), gridBagConstraints8);
@@ -198,7 +200,9 @@ public class MainPanel extends JPanel {
 	 */
 	private JTextField getSearchField() {
 		if (searchField == null) {
-			searchField = new JTextField();
+			// searchField = new JTextField();
+			searchField = (JTextField) searchBox.getEditor()
+					.getEditorComponent();
 			searchField.setMinimumSize(new Dimension(15, 20));
 			searchField.setText(null);
 			searchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
@@ -214,6 +218,14 @@ public class MainPanel extends JPanel {
 		return searchField;
 	}
 
+	private JComboBox getSearchBox() {
+		if (searchBox == null) {
+			searchBox = new SearchComboBox();
+			getSearchField();
+		}
+		return searchBox;
+	}
+
 	/**
 	 * This method initializes orButton
 	 * 
@@ -224,6 +236,14 @@ public class MainPanel extends JPanel {
 			orButton = new JRadioButton();
 			orButton.setText("OR");
 			orButton.setActionCommand("OR");
+			orButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (orButton.isSelected()) {
+						SearchPanelFactory.getGlobalInstance(netmgr)
+								.updateSearchField();
+					}
+				}
+			});
 		}
 		return orButton;
 	}
@@ -238,6 +258,14 @@ public class MainPanel extends JPanel {
 			andButton = new JRadioButton();
 			andButton.setText("AND");
 			andButton.setActionCommand("AND");
+			andButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (andButton.isSelected()) {
+						SearchPanelFactory.getGlobalInstance(netmgr)
+								.updateSearchField();
+					}
+				}
+			});
 		}
 		return andButton;
 	}

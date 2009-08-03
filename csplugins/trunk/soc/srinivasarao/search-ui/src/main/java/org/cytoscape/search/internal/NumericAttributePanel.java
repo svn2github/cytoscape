@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
@@ -15,12 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.lucene.store.RAMDirectory;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.search.EnhancedSearchIndex;
-import org.cytoscape.search.EnhancedSearchQuery;
 import org.cytoscape.session.CyNetworkManager;
 
 public class NumericAttributePanel extends BasicDraggablePanel {
@@ -117,17 +114,22 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 			List<Integer> l = getIntAttrValues();
 			int[] values = new int[l.size()];
 			for (int i = 0; i < l.size(); i++)
-				values[i] = NumberUtils.toInt(((Integer) l.get(i)).toString());
-			minValue = NumberUtils.min(values);
-			maxValue = NumberUtils.max(values);
+				values[i] =  l.get(i).intValue();
+			Arrays.sort(values);
+			//minValue = NumberUtils.min(values);
+			minValue = values[0];
+			//maxValue = NumberUtils.max(values);
+			maxValue = values[values.length-1];
 		} else if (valType.equals("java.lang.Double")) {
 			List<Double> l1 = getDoubleAttrValues();
 			double[] values1 = new double[l1.size()];
 			for (int i = 0; i < l1.size(); i++)
-				values1[i] = NumberUtils.toDouble(((Double) l1.get(i))
-						.toString());
-			minValue = (int) NumberUtils.min(values1);
-			maxValue = ((int) NumberUtils.max(values1)) + 1;
+				values1[i] = l1.get(i).doubleValue();
+			Arrays.sort(values1);			
+			//minValue = (int) NumberUtils.min(values1);
+			minValue = (int) values1[0];
+			//maxValue = ((int) NumberUtils.max(values1)) + 1;
+			maxValue = (int)values1[values1.length-1] + 1;
 		}
 
 		rangeModel = new NumberRangeModel(minValue, maxValue, minValue,
@@ -173,7 +175,7 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 		return l;
 	}
 
-	public String getQueryFromSearchBox() {
+	public String getQueryFromBox() {
 		String res = "(";
 		if (attrQuery != null) {
 			res = res + attrQuery + ")";
