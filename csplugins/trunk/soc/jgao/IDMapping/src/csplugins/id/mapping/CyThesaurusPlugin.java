@@ -35,7 +35,6 @@
 
 package csplugins.id.mapping;
 
-import csplugins.id.mapping.IDMappingClientManager;
 import csplugins.id.mapping.ui.CyThesaurusDialog;
 import csplugins.id.mapping.ui.IDMappingSourceConfigDialog;
 
@@ -73,29 +72,7 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
         BioDataSource.init();
         Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new IDMappingAction());
         addService();
-
-//        Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new TestCyThesurrusServiceAction());
     }
-
-//    class TestCyThesurrusServiceAction extends CytoscapeAction {
-//
-//        public static final String testPluginName = "TestCyThesurrusServiceAction";
-//        public TestCyThesurrusServiceAction() {
-//            super(testPluginName); //TODO rename
-//        }
-//
-//        /**
-//         * This method is called when the user selects the menu item.
-//         */
-//        @Override
-//        public void actionPerformed(final ActionEvent ae) {
-//            String type = "MAPPING_DIALOG";
-//            String id = testPluginName + System.currentTimeMillis();
-//
-//            PluginsCommunicationSupport.sendMessage(id, testPluginName, pluginName, type);
-//
-//        }
-//    }
 
     public static final String pluginName = "CyThesaurus";
 
@@ -135,7 +112,7 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
                 String msgType = msg.getType();
                 if (msgType==null) return;
 
-                ResponseMessage response = null;;
+                ResponseMessage response = null;
                 if (msgType.compareTo(Message.MSG_TYPE_TEST)==0) {
                     response = testService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_MAPPING)==0) {
@@ -203,8 +180,6 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
             return createResponse(msg, content);
         }
 
-        content.put(RESPONSE_SUCCESS, true);
-
         String[] srcTypes = new String[srcDataSources.size()];
         int ids = 0;
         for(DataSource ds : srcDataSources) {
@@ -215,9 +190,11 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
         String[] tgtTypes = new String[tgtDataSources.size()];
         ids = 0;
         for(DataSource ds : tgtDataSources) {
-            srcTypes[ids++] = ds.getFullName();
+            tgtTypes[ids++] = ds.getFullName();
         }
         content.put(RESPONSE_TGT_ID_TYPE, tgtTypes);
+
+        content.put(RESPONSE_SUCCESS, true);
 
         return createResponse(msg, content);
     }
@@ -241,6 +218,10 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
 
         Map content = new HashMap();
         content.put(RESPONSE_SUCCESS, !dialog.isCancelled());
+
+        if (!dialog.isCancelled()) {
+            mapSrcAttrIDTypes = dialog.getMapSrcAttrIDTypes();
+        }
 
         return createResponse(msg, content);
     }

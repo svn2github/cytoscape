@@ -290,7 +290,11 @@ public class AttributeBasedIDMappingServiceImpl
                     if (attrType==CyAttributes.TYPE_SIMPLE_LIST) {
                         nodeAttributes.setListAttribute(nodeID, attrName, new Vector(ids));
                     } else if (attrType==CyAttributes.TYPE_STRING) {
-                        nodeAttributes.setAttribute(nodeID, attrName, ids.toString());
+                        // only returns the first ID
+                        //TODO: is that a way to get the "best" one?
+                        if (!ids.isEmpty()) {
+                            nodeAttributes.setAttribute(nodeID, attrName, ids.iterator().next());
+                        }
                     }
                 }
             }

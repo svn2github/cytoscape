@@ -101,8 +101,8 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         javax.swing.JPanel typeSourceConfPanel = new javax.swing.JPanel();
         javax.swing.JButton srcConfBtn = new javax.swing.JButton();
         javax.swing.JPanel OKPanel = new javax.swing.JPanel();
-        javax.swing.JButton cancelBtn = new javax.swing.JButton();
         OKBtn = new javax.swing.JButton();
+        javax.swing.JButton cancelBtn = new javax.swing.JButton();
         javax.swing.JPanel selectNetworkPanel = new javax.swing.JPanel();
         javax.swing.JScrollPane unselectedNetworkScrollPane = new javax.swing.JScrollPane();
         unselectedNetworkData = new SortedNetworkListModel();
@@ -210,14 +210,6 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(typeSourceConfPanel, gridBagConstraints);
 
-        cancelBtn.setText("Cancel");
-        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelBtnActionPerformed(evt);
-            }
-        });
-        OKPanel.add(cancelBtn);
-
         OKBtn.setText("   OK   ");
         OKBtn.setEnabled(false);
         OKBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -226,6 +218,14 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             }
         });
         OKPanel.add(OKBtn);
+
+        cancelBtn.setText("Cancel");
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelBtnActionPerformed(evt);
+            }
+        });
+        OKPanel.add(cancelBtn);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

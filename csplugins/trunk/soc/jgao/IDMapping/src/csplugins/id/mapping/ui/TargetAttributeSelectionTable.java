@@ -81,17 +81,17 @@ public class TargetAttributeSelectionTable extends JTable{
     private int rowCount;
     private List<JComboBox> idTypeComboBoxes;
     private List<String> destinationAttributes;
-    private List<JComboBox> attrTypeComboBoxes;
+    private List<JComboBox> oneIDOnlyComboBoxes;
     private List<JButton> rmvBtns;
     private JButton addBtn;
 
     private final String headerIDType = "Target ID Type";
     private final String headerAttrName = "Target New Attribute";
-    private final String headerAttrType = "Attribute Type";
+    private final String headerOneIDOnly = "Keep only one target ID?";
     private final String headerBtn = " ";
 
-    private final String stringAttrType = "String";
-    private final String listAttrType = "List";
+    private final String oneIDOnly = "Keep one ID only";
+    private final String multiIDs = "Keep multiple IDs";
 
     private java.awt.Color defBgColor = (new JScrollPane()).getBackground();
 
@@ -104,7 +104,7 @@ public class TargetAttributeSelectionTable extends JTable{
 
         destinationAttributes = new Vector();
         idTypeComboBoxes = new Vector();
-        attrTypeComboBoxes = new Vector();
+        oneIDOnlyComboBoxes = new Vector();
         rmvBtns = new Vector();
         addBtn = new JButton("Insert");
         addBtn.setBackground(defBgColor);
@@ -145,7 +145,7 @@ public class TargetAttributeSelectionTable extends JTable{
             }
         });
 
-        setPreferredColumnWidths(new double[]{0.3,0.3,0.15,0.15});
+        setPreferredColumnWidths(new double[]{0.3,0.3,0.3,0.1});
 
         setColumnEditorAndCellRenderer();
     }
@@ -188,7 +188,8 @@ public class TargetAttributeSelectionTable extends JTable{
 
         List<DataSource> ret = new Vector();
         for (int i=0; i<rowCount; i++) {
-            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i).getSelectedItem();
+            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i)
+                        .getSelectedItem();
             DataSource ds = dsw.DataSource();
             ret.add(ds);
         }
@@ -197,15 +198,17 @@ public class TargetAttributeSelectionTable extends JTable{
 
     public List<String> getTgtAttrNames() {
         Set<String> usedName = new HashSet();
-        usedName.add("ID");
-        usedName.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+        usedName.add("ID"); //TODO: remove Cy3
+        usedName.addAll(Arrays.asList(Cytoscape.getNodeAttributes()
+                    .getAttributeNames()));
         usedName.addAll(destinationAttributes);
 
         List<String> ret = new Vector();
         for (int row=0; row<rowCount; row++) {
             String attr = destinationAttributes.get(row);
             if (attr.length()==0) {
-                DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(row).getSelectedItem();
+                DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes
+                            .get(row).getSelectedItem();
                 attr = dsw.toString();
 
                 if (usedName.contains(attr)) {
@@ -227,8 +230,10 @@ public class TargetAttributeSelectionTable extends JTable{
     public List<Byte> getTgtAttrTypes() {
         List<Byte> ret = new Vector();
         for (int i=0; i<rowCount; i++) {
-            String type = (String) attrTypeComboBoxes.get(i).getSelectedItem();
-            byte attrType = type.compareTo(listAttrType)==0 ? CyAttributes.TYPE_SIMPLE_LIST : CyAttributes.TYPE_STRING;
+            boolean oneId = oneIDOnly.compareTo((String)oneIDOnlyComboBoxes
+                        .get(i).getSelectedItem())==0;
+            byte attrType = oneId ?
+                CyAttributes.TYPE_STRING : CyAttributes.TYPE_SIMPLE_LIST;
 
             ret.add(attrType);
         }
@@ -242,7 +247,8 @@ public class TargetAttributeSelectionTable extends JTable{
         
         Map<DataSource, String> ret = new HashMap();
         for (int i=0; i<rowCount; i++) {
-            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i).getSelectedItem();
+            DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i)
+                        .getSelectedItem();
             DataSource ds = dsw.DataSource();
             String name = getAttrName(i);
             ret.put(ds, name);
@@ -254,9 +260,11 @@ public class TargetAttributeSelectionTable extends JTable{
         Map<String,Byte> ret = new HashMap();
         for (int i=0; i<rowCount; i++) {
             String name = getAttrName(i);
-            String type = (String) attrTypeComboBoxes.get(i).getSelectedItem();
-            byte attrType = type.compareTo(listAttrType)==0 ? CyAttributes.TYPE_SIMPLE_LIST : CyAttributes.TYPE_STRING;
-
+            boolean oneId = oneIDOnly.compareTo((String)oneIDOnlyComboBoxes
+                        .get(i).getSelectedItem())==0;
+            byte attrType = oneId ?
+                CyAttributes.TYPE_STRING : CyAttributes.TYPE_SIMPLE_LIST;
+            
             ret.put(name, attrType);
         }
         return ret;
@@ -276,28 +284,34 @@ public class TargetAttributeSelectionTable extends JTable{
         TableColumn column = colModel.getColumn(iCol);
         RowTableCellEditor rowEditor = new RowTableCellEditor(this);
         for (int ir=0; ir<rowCount; ir++) {
-            rowEditor.setEditorAt(ir, new  DefaultCellEditor(idTypeComboBoxes.get(ir)));
+            rowEditor.setEditorAt(ir,
+                        new  DefaultCellEditor(idTypeComboBoxes.get(ir)));
         }
         column.setCellEditor(rowEditor);
 
         if (supportedIDType.isEmpty()) {
             column.setCellRenderer(new TableCellRenderer() {
-                private DefaultTableCellRenderer  defaultRenderer = new DefaultTableCellRenderer();
+                private DefaultTableCellRenderer  defaultRenderer
+                            = new DefaultTableCellRenderer();
                 
                 //@Override
-                public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-                        boolean isSelected, boolean hasFocus, int row, int column) {
-                    JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                public java.awt.Component getTableCellRendererComponent(
+                            JTable table, Object value, boolean isSelected,
+                            boolean hasFocus, int row, int column) {
+                    JLabel label = (JLabel) defaultRenderer
+                                .getTableCellRendererComponent(table, value,
+                                isSelected, hasFocus, row, column);
                     if (row<rowCount) {
                        if (isSelected) {
-                               label.setBackground(table.getSelectionBackground());
-                               label.setForeground(table.getSelectionForeground());
+                           label.setBackground(table.getSelectionBackground());
+                           label.setForeground(table.getSelectionForeground());
                        } else {
-                               label.setBackground(table.getBackground());
-                               label.setForeground(table.getForeground());
+                           label.setBackground(table.getBackground());
+                           label.setForeground(table.getForeground());
                        }
                        label.setText("No supported ID type");
-                       label.setToolTipText("Please select a non-empty ID mapping source first.");
+                       label.setToolTipText("Please select a non-empty ID " +
+                                   "mapping source first.");
                        return label;
                     } else if (row==rowCount) {
                         label.setBackground(defBgColor);
@@ -305,43 +319,51 @@ public class TargetAttributeSelectionTable extends JTable{
                         label.setText("");
                         return label;
                     } else {
-                        return defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                        return defaultRenderer.getTableCellRendererComponent(
+                                    table, value, isSelected, hasFocus, row,
+                                    column);
                     }
                 }
             });
         } else {
-            column.setCellRenderer(new ComboBoxTableCellRenderer());
+            column.setCellRenderer(new ComponentTableCellRenderer());
         }
 
         // headerAttrName
         iCol = colModel.getColumnIndex(headerAttrName);
         column = colModel.getColumn(iCol);
         column.setCellRenderer(new TableCellRenderer() {
-            private DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+            private DefaultTableCellRenderer defaultRenderer
+                        = new DefaultTableCellRenderer();
             //@Override
-            public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-                            boolean isSelected, boolean hasFocus, int row, int column) {
+            public java.awt.Component getTableCellRendererComponent(
+                        JTable table, Object value, boolean isSelected,
+                        boolean hasFocus, int row, int column) {
                 if (row==rowCount) {
-                    JLabel label = (JLabel) (new DefaultTableCellRenderer()).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    JLabel label = (JLabel) (new DefaultTableCellRenderer()).
+                                getTableCellRendererComponent(table, value,
+                                isSelected, hasFocus, row, column);
                     label.setBackground(defBgColor);
                     label.setForeground(defBgColor);
                     return label;
                 } else {
-                    return defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    return defaultRenderer.getTableCellRendererComponent(table,
+                                value, isSelected, hasFocus, row, column);
                 }
             }
         });
 
-        // ID type
-        iCol = colModel.getColumnIndex(headerAttrType);
+        // one id only
+        iCol = colModel.getColumnIndex(headerOneIDOnly);
         column = colModel.getColumn(iCol);
         rowEditor = new RowTableCellEditor(this);
         for (int ir=0; ir<rowCount; ir++) {
-            rowEditor.setEditorAt(ir, new  DefaultCellEditor(attrTypeComboBoxes.get(ir)));
+            rowEditor.setEditorAt(ir,
+                        new  DefaultCellEditor(oneIDOnlyComboBoxes.get(ir)));
         }
         column.setCellEditor(rowEditor);
 
-        column.setCellRenderer(new ComboBoxTableCellRenderer());
+        column.setCellRenderer(new ComponentTableCellRenderer());
 
         // button
         iCol = colModel.getColumnIndex(headerBtn);
@@ -358,8 +380,8 @@ public class TargetAttributeSelectionTable extends JTable{
         JComboBox cc = new  JComboBox(new Vector(supportedIDType));
         idTypeComboBoxes.add(cc);
 
-        cc = new JComboBox(new String[]{listAttrType,stringAttrType});
-        attrTypeComboBoxes.add(cc);
+        cc = new JComboBox(new String[]{multiIDs, oneIDOnly});
+        oneIDOnlyComboBoxes.add(cc);
 
         rowCount++;
 
@@ -383,7 +405,7 @@ public class TargetAttributeSelectionTable extends JTable{
 
             destinationAttributes.remove(row);
             idTypeComboBoxes.remove(row);
-            attrTypeComboBoxes.remove(row);
+            oneIDOnlyComboBoxes.remove(row);
             rmvBtns.remove(row);
         }
 
@@ -400,7 +422,7 @@ public class TargetAttributeSelectionTable extends JTable{
 
         destinationAttributes.remove(row);
         idTypeComboBoxes.remove(row);
-        attrTypeComboBoxes.remove(row);
+        oneIDOnlyComboBoxes.remove(row);
         rmvBtns.remove(row);
 
         rowCount--;
@@ -428,7 +450,7 @@ public class TargetAttributeSelectionTable extends JTable{
    }
 
     private class IDTypeSelectionTableModel extends AbstractTableModel {
-        private final String[] columnNames = {headerIDType,headerAttrName,headerAttrType,headerBtn};
+        private final String[] columnNames = {headerIDType,headerAttrName,headerOneIDOnly,headerBtn};
 
         //@Override
         public int getColumnCount() {
@@ -458,8 +480,8 @@ public class TargetAttributeSelectionTable extends JTable{
                     return getAttrName(row);
                 }
 
-                if (colName.compareTo(headerAttrType)==0) {
-                    return attrTypeComboBoxes.get(row);
+                if (colName.compareTo(headerOneIDOnly)==0) {
+                    return oneIDOnlyComboBoxes.get(row);
                 }
 
                 if (colName.compareTo(headerBtn)==0) {
@@ -480,7 +502,7 @@ public class TargetAttributeSelectionTable extends JTable{
 
         @Override
         public Class getColumnClass(int c) {
-                return String.class;
+            return String.class;
         }
 
         @Override
@@ -499,7 +521,7 @@ public class TargetAttributeSelectionTable extends JTable{
                     return true;
                 }
 
-                if (colName.compareTo(headerAttrType)==0) {
+                if (colName.compareTo(headerOneIDOnly)==0) {
                    return true;
                 }
 
@@ -513,10 +535,12 @@ public class TargetAttributeSelectionTable extends JTable{
 
         @Override
         public void setValueAt(Object value, int row, int col) {
+            if (row>=rowCount) return;
+
             String colName = getColumnName(col);
-            if (colName.compareTo(headerAttrName)==0 && row<rowCount) {
+            if (colName.compareTo(headerAttrName)==0) {
                 Set<String> usedName = new HashSet();
-                usedName.add("ID");
+                usedName.add("ID"); //TODO remove in Cy3
                 usedName.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
                 usedName.addAll(destinationAttributes);
                 String str = (String)value;
@@ -537,11 +561,11 @@ public class TargetAttributeSelectionTable extends JTable{
         }
     }
 
-    // render checkcombobox
-    class ComboBoxTableCellRenderer implements TableCellRenderer {
+    // render combobox
+    class ComponentTableCellRenderer implements TableCellRenderer {
         private DefaultTableCellRenderer defaultRenderer;
 
-        public ComboBoxTableCellRenderer() {
+        public ComponentTableCellRenderer() {
             defaultRenderer = new DefaultTableCellRenderer();
         }
 
