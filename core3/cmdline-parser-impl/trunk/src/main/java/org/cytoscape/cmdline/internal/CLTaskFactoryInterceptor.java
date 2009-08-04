@@ -21,40 +21,32 @@ public class CLTaskFactoryInterceptor {
 	CommandLineProvider clp;
     Map<TaskFactory, TFWrapper> taskMap;
     private Map<String, List<String>> tasksWithTheirArgs;
-    private String[] args;
-    private List<String> listOfChoosenTasks;
+    private String[] arguments;
+    private List<String> choosenTasks;
     private Options optionsOfTasks;
     private CommandLineParser parser = new PosixParser();
     private CommandLine line = null;
     private TaskFactoryGrabber grabber;
-    //private long time = 0;
+    private TaskExecutor executor;
+    
     
     CLTaskFactoryInterceptor(CommandLineProvider colipr, TaskFactoryGrabber tfg) {
     	this.clp = colipr;
     	this.grabber = tfg;
-
-    	
-    	/*    
-		int stable = 0;
-		int numTasks = 0;
-    	while(stable < 100000) {
-			int tmpTasks = grabber.getNumberTasks();
-			if (numTasks == tmpTasks) {
-				stable++;
-			} else {
-				numTasks = tmpTasks;
-				stable = 0;
-			}
-		}
-		*/
-
     	taskMap = grabber.getTaskMap();
-    	args = clp.getCommandLineCompleteArgs();
-
+    	arguments = clp.getCommandLineCompleteArgs();
+    	
+    	//Executor collects all the tasks, create a SuperTask, to launch them asynchronously
+    	executor = new TaskExecutor();
+    	
+    	//execute the methods
     	createTaskOptions();
         findTaskArguments();
         parseTaskArguments();
         executeCommandLineArguments();
+        
+        //Execute the SuperTask that has been created
+        executor.execute();
     }
     
     
@@ -78,44 +70,41 @@ public class CLTaskFactoryInterceptor {
     
 
     public void findTaskArguments() {
-    	listOfChoosenTasks = new ArrayList<String>();
-
+    	choosenTasks = new ArrayList<String>();
         int lastIdx = 0;
-        String lastArg = null;
+        String actualTask = null;
 
-        // iterate over args
-        for (String argsString : args) {
-        	
+        
+        for (String arg : arguments) {	
 			// if the arg represents task, add it to the task argument list
-            if (tasksWithTheirArgs.containsKey(argsString)) {
-                lastArg = argsString;
-                lastIdx = 0;
-                listOfChoosenTasks.add(lastArg);
-                
+       		if (tasksWithTheirArgs.containsKey(arg)) {
+       			actualTask = arg;
+       			lastIdx = 0;
+       			choosenTasks.add(actualTask);
+       		}
+            else if(tasksWithTheirArgs.containsKey("-"+arg)){
+            	printHelp(optionsOfTasks,"\nAdd \" - \" to "+ arg + " or check the options below");
             }
-            else if(tasksWithTheirArgs.containsKey("-"+argsString)){
-            	printHelp(optionsOfTasks,"\nAdd \" - \" to "+ argsString + " or check the options below");
-            }
-            	
-            else { // otherwise add it to the list of task specific args
-            	if (!argsString.startsWith("-")) {
-            		if(lastArg == null){
-            			printHelp(optionsOfTasks,"The Task \"" + argsString + "\" doesn't exist : Check the options below");
-            		}
-            		if(tasksWithTheirArgs.get(lastArg).size()!=0){
-            			//tasksWithTheirArgs.get(lastArg).get(lastIdx).concat(" " + argsString);
-            			tasksWithTheirArgs.get(lastArg).set(lastIdx,tasksWithTheirArgs.get(lastArg).get(lastIdx).concat(" " + argsString));
+
+            else if(actualTask == null){
+    			printHelp(optionsOfTasks,"The Task \"" + arg + "\" doesn't exist : Check the options below");
+    		}
+
+            else { 	// otherwise add it to the list of task specific args
+            	if (!arg.startsWith("-")) {
+            		if(tasksWithTheirArgs.get(actualTask).size()!=0){
+            			tasksWithTheirArgs.get(actualTask).set(lastIdx,tasksWithTheirArgs.get(actualTask).get(lastIdx).concat(" " + arg));
             			lastIdx++;
             		}
             	}
-            	else if (lastArg == null) {
-                    printHelp(optionsOfTasks,"The Task \"" + argsString + "\" doesn't exist : Check the options below");
-                } else {
-                	tasksWithTheirArgs.get(lastArg).add(argsString);
+                else {
+                	tasksWithTheirArgs.get(actualTask).add(arg);
                 }
             }
         }
 
+        executor.setNumberOfTasks(choosenTasks.size());
+        
         
         
         //print the different parsed arguments
@@ -134,19 +123,19 @@ public class CLTaskFactoryInterceptor {
         
         
         //add the general help for all task
-        for (String argsString : args) {
-            if (argsString.equals("-listTasks")) {
-            	tasksWithTheirArgs.get(argsString).add("-listTasks");
-            	listOfChoosenTasks.add("-listTasks");
+        for (String arg : arguments) {
+            if (arg.equals("-listTasks")) {
+            	tasksWithTheirArgs.get(arg).add("-listTasks");
+            	choosenTasks.add("-listTasks");
             }
         }
     }
 
     private void parseTaskArguments() {
         try {
-            line = parser.parse(optionsOfTasks,listOfChoosenTasks.toArray(new String[listOfChoosenTasks.size()]));
+            line = parser.parse(optionsOfTasks,choosenTasks.toArray(new String[choosenTasks.size()]));
         } catch (ParseException pe) {
-            System.err.println("Parsing command line failed: " +pe.getMessage());
+            System.err.println("Parsing command line failed: " + pe.getMessage());
             printHelp(optionsOfTasks,"");
             System.exit(1);
         }
@@ -158,24 +147,24 @@ public class CLTaskFactoryInterceptor {
             printHelp(optionsOfTasks,"The General Help has been called");
         }
 
-        for (String st : listOfChoosenTasks) {
+        for (String st : choosenTasks) {
         	System.out.println("Execution of " + st);
             for (TFWrapper tf : taskMap.values()) {
                 if (st.equals(tf.getName())) {
 
-                	String tFactoryName = tf.getName();
+                	String TFactoryName = tf.getName();
                		List<String> lst = new ArrayList<String>();
                		
-                	if(tasksWithTheirArgs.get(tFactoryName).size()!=0){
+                	if(tasksWithTheirArgs.get(TFactoryName).size()!=0){
                 		
-	               		for(int i=0;i<tasksWithTheirArgs.get(tFactoryName).size();i++) {
-	               			if(tasksWithTheirArgs.get(tFactoryName).get(i).contains(" ")) {
-	                   			int val = tasksWithTheirArgs.get(tFactoryName).get(i).indexOf(" ");
-	                   			lst.add(tasksWithTheirArgs.get(tFactoryName).get(i).substring(0, val));
-	                   			lst.add(tasksWithTheirArgs.get(tFactoryName).get(i).substring(val+1));
+	               		for(int i=0;i<tasksWithTheirArgs.get(TFactoryName).size();i++) {
+	               			if(tasksWithTheirArgs.get(TFactoryName).get(i).contains(" ")) {
+	                   			int val = tasksWithTheirArgs.get(TFactoryName).get(i).indexOf(" ");
+	                   			lst.add(tasksWithTheirArgs.get(TFactoryName).get(i).substring(0, val));
+	                   			lst.add(tasksWithTheirArgs.get(TFactoryName).get(i).substring(val+1));
 	               			}
 	               			else{
-	               				lst.add(tasksWithTheirArgs.get(tFactoryName).get(i).toString());
+	               				lst.add(tasksWithTheirArgs.get(TFactoryName).get(i).toString());
 	               				//lst.add("-H");
 	               			}
 	               		}
@@ -190,14 +179,15 @@ public class CLTaskFactoryInterceptor {
                		for(int i=0;i<lst.size();i++)args[i]=lst.get(i);
                		
                		clp.setSpecificArgs(args);
-               		tf.executeTask();      
+               		
+               		//Executor intercepts each task and store it in a SuperTask
+               		executor.intercept(tf.getT(),tf.getTI(),tf.getTM());
                	}
             }
         }
-
         
         
-        if (args.length == 0) {
+        if (arguments.length == 0) {
             printHelp(optionsOfTasks,"");
         }
     }

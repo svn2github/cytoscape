@@ -1,11 +1,6 @@
 package org.cytoscape.cmdline.internal;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
@@ -31,11 +26,23 @@ public class TFWrapper {
 		return "-"+name;
 	}
    	
-	public void executeTask() {
-   		Task task = factory.getTask();
-   		ti.loadTunables(task);
-   		if ( !ti.createUI(task) )
-   			return;
-   		taskManager.execute(task);
-	}
+   	public TunableInterceptor getTI(){
+   		return ti;
+   	}
+   	
+   	public TaskManager getTM(){
+   		return taskManager;
+   	}
+   	
+   	public TaskFactory getT(){
+   		return factory;
+   	}
+   	
+//	public void executeTask() {
+//   		Task task = factory.getTask();
+//   		ti.loadTunables(task);
+//   		if ( !ti.createUI(task) )
+//   			return;
+//   		taskManager.execute(task);
+//	}
 }
