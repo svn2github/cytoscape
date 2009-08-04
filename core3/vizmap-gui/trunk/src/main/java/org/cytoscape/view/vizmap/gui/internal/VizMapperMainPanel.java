@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.swing.ImageIcon;
@@ -194,7 +195,12 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		if (style == null || style.equals(lastVS))
 			return;
 
+		System.out.println("================== Switching Visual Style to " + style.getTitle() +" =====================");
+		
+		
 		editorWindowManager.closeAllEditorWindows();
+		
+		vizMapPropertySheetBuilder.setSelectedStyle(style);
 
 		if (vizMapPropertySheetBuilder.getPropertyMap().containsKey(style)) {
 			System.out.println("######### Recalling visual mapping prop sheet");
@@ -227,7 +233,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				propertySheetPanel.addProperty(unused.get(key));
 			}
 		} else {
-			System.out.println("######### Byuilding visual mapping prop sheet");
+			System.out.println("######### Building visual mapping prop sheet");
 			vizMapPropertySheetBuilder.setPropertyTable();
 			updateAttributeList();
 		}
@@ -345,13 +351,12 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 	public void updateAttributeList() {
 		// TODO: use new event listener to do this.
-		// vizMapPropertySheetBuilder.setAttrComboBox();
-		// final Set mappingTypes =
-		// vmm.getCalculatorCatalog().getMappingNames();
-		//
-		// // mappingTypeEditor.setAvailableValues(mappingTypes.toArray());
-		// spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "mappingTypeEditor",
-		// mappingTypes.toArray());
+		 vizMapPropertySheetBuilder.setAttrComboBox();
+//		 final Set mappingTypes = vmm.getCalculatorCatalog().getMappingNames();
+//		
+//		 // mappingTypeEditor.setAvailableValues(mappingTypes.toArray());
+//		 spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "mappingTypeEditor",
+//		 mappingTypes.toArray());
 	}
 
 	/*

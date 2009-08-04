@@ -38,7 +38,8 @@ public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 	}
 
 	public void handleEvent(ColumnCreatedEvent e) {
-		// TODO: implement this.
+		final String newAttributeName = e.getColumnName();
+		
 	}
 
 	private void initialize() {

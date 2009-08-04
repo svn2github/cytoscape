@@ -56,10 +56,13 @@ import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -77,6 +80,7 @@ import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListe
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
+import org.cytoscape.model.GraphObject;
 import org.cytoscape.session.CyNetworkManager;
 
 /**
@@ -111,6 +115,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private VisualStyle selectedStyle;
 	
 	private VisualMappingManager vmm;
+	
+	private JPopupMenu contextMenu;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -146,6 +152,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 				mainView.updateView();
 			}
 		});
+		
+		setupPopupMenu();
+	}
+	
+	private void setupPopupMenu() {
+		this.contextMenu = new JPopupMenu();
 	}
 
 	private void updateVisualPropertyLists() {
@@ -459,11 +471,32 @@ public class DefaultViewEditorImpl extends JDialog implements
 			mainView.repaint();
 		} else if(SwingUtilities.isRightMouseButton(e)) {
 			if(vp != null) {
+				
+				contextMenu.removeAll();
+				final CyNetworkView networkView = cyNetworkManager.getCurrentNetworkView();
+				
 				System.out.println("##### target value =======> " + vp.getDisplayName());
+				
+				final JMenuItem lockItemMenu = new JCheckBoxMenuItem("Lock this Visual Property") {
+					
+					public void ActionPerformed(ActionEvent e) {
+						boolean lock = false;
+						if(vp.getObjectType().equals(GraphObject.NETWORK)) {
+							lock = networkView.isValueLocked(vp);
+						} else if(vp.getObjectType().equals(GraphObject.NODE)) {
+							
+						}
+						
+						if(lock)
+							this.setSelected(false);
+						else
+							this.setSelected(true);
+					}
+					
+				};
+				contextMenu.add(lockItemMenu);
 				// Display Context menu here
-				
-				
-				
+				contextMenu.show(e.getComponent(), e.getX(), e.getY());
 			}
 		}
 	}

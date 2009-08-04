@@ -66,6 +66,7 @@ import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.event.SelectedVisualStyleSwitchedEventImpl;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 import org.cytoscape.view.vizmap.gui.theme.ColorManager;
@@ -169,6 +170,11 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	protected EditorWindowManager editorWindowManager;
 
 	protected CyNetworkManager cyNetworkManager;
+	
+	protected AttributeComboBoxPropertyEditor nodeAttributeEditor;
+	protected AttributeComboBoxPropertyEditor edgeAttributeEditor;
+	protected AttributeComboBoxPropertyEditor networkAttributeEditor;
+	
 
 	protected SwingPropertyChangeSupport spcs;
 	protected static final long serialVersionUID = -6839011300709287662L;
@@ -205,6 +211,8 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 		this.defaultVS = defStyle;
 		vmm.createVisualStyle(DEFAULT_VS_TITLE2);
+		
+		
 	}
 
 	private void initDefaultEditors() {

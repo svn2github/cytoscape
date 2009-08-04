@@ -206,9 +206,6 @@
 	</bean>
 
 	<!--  For property sheet table -->
-	<bean id="rendReg"
-		class="com.l2fprod.common.propertysheet.PropertyRendererRegistry" />
-	<bean id="editorReg" class="com.l2fprod.common.propertysheet.PropertyEditorRegistry" />
 	<bean id="emptyBoxRenderer" class="javax.swing.table.DefaultTableCellRenderer" />
 	<bean id="filledBoxRenderer" class="javax.swing.table.DefaultTableCellRenderer" />
 
@@ -226,8 +223,6 @@
 		class="org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder">
 		<constructor-arg ref="propertySheetPanel" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="rendReg" />
-		<constructor-arg ref="editorReg" />
 		<constructor-arg ref="editorManager" />
 		<constructor-arg ref="defaultViewPanel" />
 	</bean>
@@ -240,7 +235,6 @@
 	<bean id="editorWindowManager"
 		class="org.cytoscape.view.vizmap.gui.internal.EditorWindowManager">
 		<constructor-arg ref="editorManager" />
-		<constructor-arg ref="rendReg" />
 		<constructor-arg ref="propertySheetPanel" />
 	</bean>
 

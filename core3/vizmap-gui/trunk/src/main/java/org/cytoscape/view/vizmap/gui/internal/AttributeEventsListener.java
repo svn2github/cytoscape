@@ -1,9 +1,17 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.events.ColumnCreatedEvent;
+import org.cytoscape.model.events.ColumnDeletedEvent;
+import org.cytoscape.model.events.RowSetEvent;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
 public class AttributeEventsListener {
 
@@ -11,6 +19,8 @@ public class AttributeEventsListener {
 	private Class<?> filter;
 	private final CyDataTable attr;
 	private CyNetworkManager cyNetworkManager;
+	
+	private static final String NAME = "name";
 
 	/**
 	 * Constructor.
@@ -27,24 +37,24 @@ public class AttributeEventsListener {
 		this.cyNetworkManager = cyNetworkManager;
 
 		// populate our lists
-		//updateAttrList();
+		updateAttrList();
 	}
 
-//	/**
-//	 * Our implementation of MultiHashMapListener.attributeValueAssigned().
-//	 * 
-//	 * @param objectKey
-//	 *            String
-//	 * @param attributeName
-//	 *            String
-//	 * @param keyIntoValue
-//	 *            Object[]
-//	 * @param oldAttributeValue
-//	 *            Object
-//	 * @param newAttributeValue
-//	 *            Object
-//	 */
-//	public void handleEvent(RowSetEvent e) {
+	/**
+	 * Our implementation of MultiHashMapListener.attributeValueAssigned().
+	 * 
+	 * @param objectKey
+	 *            String
+	 * @param attributeName
+	 *            String
+	 * @param keyIntoValue
+	 *            Object[]
+	 * @param oldAttributeValue
+	 *            Object
+	 * @param newAttributeValue
+	 *            Object
+	 */
+	public void handleEvent(RowSetEvent e) {
 //		CyRow row = e.getSource();
 //		String attributeName = e.getColumnName();
 //
@@ -89,19 +99,19 @@ public class AttributeEventsListener {
 //
 //		if (repaint)
 //			targetComponent.repaint();
-//	}
-//
-//	/**
-//	 * Our implementation of MultiHashMapListener.allAttributeValuesRemoved()
-//	 * 
-//	 * @param objectKey
-//	 *            String
-//	 * @param attributeName
-//	 *            String
-//	 */
-//	public void handleEvent(ColumnDeletedEvent e) {
-//		String attributeName = e.getColumnName();
-//
+	}
+
+	/**
+	 * Our implementation of MultiHashMapListener.allAttributeValuesRemoved()
+	 * 
+	 * @param objectKey
+	 *            String
+	 * @param attributeName
+	 *            String
+	 */
+	public void handleEvent(ColumnDeletedEvent e) {
+		String attributeName = e.getColumnName();
+
 //		// we do not process network attributes
 //		if (attr == cyNetworkManager.getCurrentNetwork()
 //				.getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS))
@@ -136,24 +146,23 @@ public class AttributeEventsListener {
 //
 //		if (repaint)
 //			targetComponent.repaint();
-//	}
-//
-//	/**
-//	 * Method to populate attrEditorNames & numericalAttrEditorNames on object
-//	 * instantiation.
-//	 */
-//	private void updateAttrList() {
-//
-//		// Attribute Names
-//		if(attr== null) {
-//			// Add ID only.
-//			
-//			
-//		}
-//		final List<String> names = new ArrayList<String>(attr.getColumnTypeMap().keySet());
-//		Collections.sort(names);
-//		
-//		attrEditorNames.add("ID");
+	}
+
+	/**
+	 * Method to populate attrEditorNames & numericalAttrEditorNames on object
+	 * instantiation.
+	 */
+	private void updateAttrList() {
+
+		// Attribute Names
+		if(attr== null) {
+			
+		}
+		
+		final List<String> names = new ArrayList<String>(attr.getColumnTypeMap().keySet());
+		Collections.sort(names);
+		
+//		attrEditorNames.add(NAME);
 //
 //		byte type;
 //		Class<?> dataClass;
@@ -166,10 +175,10 @@ public class AttributeEventsListener {
 //				numericalAttrEditorNames.add(name);
 //			}
 //		}
-//	}
-//
-//	public void handleEvent(ColumnCreatedEvent e) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	}
+
+	public void handleEvent(ColumnCreatedEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -19,13 +19,13 @@ public class VizMapperProperty<T> extends DefaultProperty {
 		
 	}
 	
-	@Override public Class<T> getType() {
-		return getType();
-	}
-	
-	@Override public T getValue() {
-		return getValue();
-	}
+//	@Override public Class<T> getType() {
+//		return super.getType();
+//	}
+//	
+//	@Override public T getValue() {
+//		return 
+//	}
 	
 	/**
 	 * DOCUMENT ME!

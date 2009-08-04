@@ -41,6 +41,7 @@ import static org.cytoscape.model.GraphObject.NODE;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyEditor;
 
 import javax.swing.SwingUtilities;
 
@@ -64,7 +65,6 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	private VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	private PropertySheetPanel propertySheetPanel;
 	private EditorManager editorManager;
-	private PropertyEditorRegistry editorReg;
 
 	private VisualStyle selectedStyle;
 
@@ -80,11 +80,12 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	 */
 	public VizMapPropertySheetMouseAdapter(
 			VizMapPropertySheetBuilder sheetBuilder,
-			PropertySheetPanel propertySheetPanel, VisualStyle selectedStyle) {
+			PropertySheetPanel propertySheetPanel, VisualStyle selectedStyle, EditorManager editorManager) {
 
 		this.vizMapPropertySheetBuilder = sheetBuilder;
 		this.propertySheetPanel = propertySheetPanel;
 		this.selectedStyle = selectedStyle;
+		this.editorManager = editorManager;
 	}
 
 	/**
@@ -94,6 +95,10 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	 *            DOCUMENT ME!
 	 */
 	public void mouseClicked(MouseEvent e) {
+		
+		System.out.println("====================> mouse event: " + e.getSource());
+		
+		
 		int selected = propertySheetPanel.getTable().getSelectedRow();
 		/*
 		 * Adjust height if it's an legend icon.
@@ -128,20 +133,25 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 				newProp.setHiddenObject(vp);
 				newProp.setValue("Please select a value!");
 
+				
+				PropertyEditor editor = null;
 				if (vp.getObjectType().equals(NODE)) {
 					newProp.setCategory(vp.getObjectType());
-					editorReg.registerEditor(newProp, editorManager
-							.getDefaultComboBoxEditor("nodeAttrEditor"));
+					editor = editorManager.getDefaultComboBoxEditor("nodeAttrEditor");
+					((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(newProp, editor);
 				} else {
 					newProp.setCategory(EDGE);
-					editorReg.registerEditor(newProp, editorManager
-							.getDefaultComboBoxEditor("edgeAttrEditor"));
+					editor = editorManager
+					.getDefaultComboBoxEditor("edgeAttrEditor");
+					((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(newProp, editor);
 				}
 
 				mapProp.setDisplayName("Mapping Type");
 				mapProp.setValue("Please select a mapping type!");
-				editorReg.registerEditor(mapProp, editorManager
+				((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(mapProp, editorManager
 						.getDefaultComboBoxEditor("mappingTypeEditor"));
+				
+				System.out.println("====================> Registered: " + ((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).getEditor(newProp));
 
 				newProp.addSubProperty(mapProp);
 				mapProp.setParentProperty(newProp);

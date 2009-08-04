@@ -24,11 +24,14 @@ import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEventListener;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.theme.ColorManager;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 
 import com.l2fprod.common.propertysheet.Property;
+import com.l2fprod.common.propertysheet.PropertyEditorFactory;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
+import com.l2fprod.common.propertysheet.PropertyRendererFactory;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
@@ -54,9 +57,6 @@ public class VizMapPropertySheetBuilder implements
 
 	private DefaultViewPanel defViewPanel;
 
-	private PropertyRendererRegistry rendReg;
-	private PropertyEditorRegistry editorReg;
-
 	private DefaultTableCellRenderer emptyBoxRenderer;
 	private DefaultTableCellRenderer filledBoxRenderer;
 
@@ -79,15 +79,13 @@ public class VizMapPropertySheetBuilder implements
 
 	public VizMapPropertySheetBuilder(CyNetworkManager cyNetworkManager,
 			PropertySheetPanel propertySheetPanel,
-			PropertyRendererRegistry rendReg, 
-			PropertyEditorRegistry editorReg, 
 			EditorManager editorManager,
 			DefaultViewPanel defViewPanel) {
 		
 		this.cyNetworkManager = cyNetworkManager;
 		this.propertySheetPanel = propertySheetPanel;
-		this.rendReg = rendReg;
-		this.editorReg = editorReg;
+
+		this.editorManager = editorManager;
 		
 		propertyMap = new HashMap<VisualStyle, List<Property>>();
 
@@ -99,15 +97,17 @@ public class VizMapPropertySheetBuilder implements
 	}
 
 	public void setPropertyTable() {
-		if(selectedStyle == null)
+		
+		System.out.println("!!!!!!!!!!!! Current Style = " + selectedStyle);
+		if(selectedStyle == null || cyNetworkManager.getCurrentPresentation() == null)
 			return;
+		
+		System.out.println("!!!!!!!!!!!! Building property sheet");
 		
 		setPropertySheetAppearence();
 
 		for (Property item : propertySheetPanel.getProperties())
 			propertySheetPanel.removeProperty(item);
-
-		editorReg.registerDefaults();
 
 		/*
 		 * Add properties to the property sheet.
@@ -139,11 +139,16 @@ public class VizMapPropertySheetBuilder implements
 		// TODO: fix context menu
 		// propertySheetPanel.getTable().setComponentPopupMenu(
 		// menuMgr.getContextMenu());
+		
+		
+		//TODO: fix listener
 		propertySheetPanel.getTable().addMouseListener(
 				new VizMapPropertySheetMouseAdapter(this, propertySheetPanel,
-						null));
+						selectedStyle, editorManager));
+		
 
 		PropertySheetTable table = propertySheetPanel.getTable();
+		
 		table.setRowHeight(25);
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.setCategoryBackground(new Color(10, 10, 50, 20));
@@ -240,7 +245,7 @@ public class VizMapPropertySheetBuilder implements
 				final VizMapperProperty<?> calculatorTypeProp = vizMapPropertyBuilder
 						.buildProperty(mapping, cat, propertySheetPanel);
 
-				PropertyEditor editor = editorReg.getEditor(calculatorTypeProp);
+				PropertyEditor editor = ((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory()).getEditor(calculatorTypeProp);
 
 				if ((editor == null)
 						&& (calculatorTypeProp.getCategory().equals(
@@ -250,13 +255,14 @@ public class VizMapPropertySheetBuilder implements
 							.getHiddenObject();
 
 					if (type.getObjectType().equals(NODE)) {
-						editorReg
+						
+						((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory())
 								.registerEditor(
 										calculatorTypeProp,
 										editorManager
 												.getDefaultComboBoxEditor("nodeAttrEditor"));
 					} else {
-						editorReg
+						((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory())
 								.registerEditor(
 										calculatorTypeProp,
 										editorManager
@@ -275,7 +281,7 @@ public class VizMapPropertySheetBuilder implements
 
 		// TODO: Sort the unused list.
 		// Collections.sort(getUnusedVisualPropType());
-
+		
 		for (VisualProperty<?> type : getUnusedVisualPropType()) {
 			VizMapperProperty<VisualProperty<?>> prop = new VizMapperProperty<VisualProperty<?>>();
 			prop.setCategory(AbstractVizMapperPanel.CATEGORY_UNUSED);
@@ -357,7 +363,7 @@ public class VizMapPropertySheetBuilder implements
 				
 				//FIXME
 				//empRenderer.setForeground(colorMgr.getColor("UNUSED_COLOR"));
-				rendReg.registerRenderer(shownProp, empRenderer);
+				((PropertyRendererRegistry) this.propertySheetPanel.getTable().getRendererFactory()).registerRenderer(shownProp, empRenderer);
 			}
 		}
 		propertySheetPanel.repaint();
@@ -411,64 +417,62 @@ public class VizMapPropertySheetBuilder implements
 	public void setAttrComboBox() {
 		// Attribute Names
 		final List<String> names = new ArrayList<String>();
-
-		// CyDataTable attr = /* TODO */getTargetNetwork().getNodeCyDataTables()
-		// .get(CyNetwork.DEFAULT_ATTRS);
-		//
-		// // TODO remove the next line too!
-		// if (attr == null)
-		// return;
-		//
-		// Map<String, Class<?>> cols = attr.getColumnTypeMap();
-		// names.addAll(cols.keySet());
-		//
-		// Collections.sort(names);
-		//
-		// // nodeAttrEditor.setAvailableValues(names.toArray());
-		// spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "nodeAttrEditor",
-		// names
-		// .toArray());
-		//
-		// names.clear();
-		//
-		// for (String name : cols.keySet()) {
-		// Class<?> dataClass = cols.get(name);
-		//
-		// if ((dataClass == Integer.class) || (dataClass == Double.class))
-		// names.add(name);
-		// }
-		//
-		// Collections.sort(names);
-		// // nodeNumericalAttrEditor.setAvailableValues(names.toArray());
-		// spcs.firePropertyChange("UPDATE_AVAILABLE_VAL",
-		// "nodeNumericalAttrEditor", names.toArray());
-		//
-		// names.clear();
-		//
-		// attr = getTargetNetwork().getEdgeCyDataTables().get(
-		// CyNetwork.DEFAULT_ATTRS);
-		// cols = attr.getColumnTypeMap();
-		// names.addAll(cols.keySet());
-		// Collections.sort(names);
-		//
-		// // edgeAttrEditor.setAvailableValues(names.toArray());
-		// spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "edgeAttrEditor",
-		// names
-		// .toArray());
-		// names.clear();
-		//
-		// for (String name : cols.keySet()) {
-		// Class<?> dataClass = cols.get(name);
-		//
-		// if ((dataClass == Integer.class) || (dataClass == Double.class))
-		// names.add(name);
-		// }
-		//
-		// Collections.sort(names);
-		// // edgeNumericalAttrEditor.setAvailableValues(names.toArray());
-		// spcs.firePropertyChange("UPDATE_AVAILABLE_VAL",
-		// "edgeNumericalAttrEditor", names.toArray());
-		// propertySheetPanel.repaint();
+//
+//		 CyDataTable attr = /* TODO */getTargetNetwork().getNodeCyDataTables()
+//				.get(CyNetwork.DEFAULT_ATTRS);
+//
+//		// TODO remove the next line too!
+//		if (attr == null)
+//			return;
+//
+//		Map<String, Class<?>> cols = attr.getColumnTypeMap();
+//		names.addAll(cols.keySet());
+//
+//		Collections.sort(names);
+//
+//		// nodeAttrEditor.setAvailableValues(names.toArray());
+//		spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "nodeAttrEditor", names
+//				.toArray());
+//
+//		names.clear();
+//
+//		for (String name : cols.keySet()) {
+//			Class<?> dataClass = cols.get(name);
+//
+//			if ((dataClass == Integer.class) || (dataClass == Double.class))
+//				names.add(name);
+//		}
+//
+//		Collections.sort(names);
+//		// nodeNumericalAttrEditor.setAvailableValues(names.toArray());
+//		spcs.firePropertyChange("UPDATE_AVAILABLE_VAL",
+//				"nodeNumericalAttrEditor", names.toArray());
+//
+//		names.clear();
+//
+//		attr = getTargetNetwork().getEdgeCyDataTables().get(
+//				CyNetwork.DEFAULT_ATTRS);
+//		cols = attr.getColumnTypeMap();
+//		names.addAll(cols.keySet());
+//		Collections.sort(names);
+//
+//		// edgeAttrEditor.setAvailableValues(names.toArray());
+//		spcs.firePropertyChange("UPDATE_AVAILABLE_VAL", "edgeAttrEditor", names
+//				.toArray());
+//		names.clear();
+//
+//		for (String name : cols.keySet()) {
+//			Class<?> dataClass = cols.get(name);
+//
+//			if ((dataClass == Integer.class) || (dataClass == Double.class))
+//				names.add(name);
+//		}
+//
+//		Collections.sort(names);
+//		// edgeNumericalAttrEditor.setAvailableValues(names.toArray());
+//		spcs.firePropertyChange("UPDATE_AVAILABLE_VAL",
+//				"edgeNumericalAttrEditor", names.toArray());
+//		propertySheetPanel.repaint();
 	}
 
 	public VizMapPropertyBuilder getPropertyBuilder() {
@@ -477,6 +481,10 @@ public class VizMapPropertySheetBuilder implements
 
 	public List<VisualProperty<?>> getUnusedVisualPropType() {
 		return unusedVisualPropType;
+	}
+	
+	protected void setSelectedStyle(VisualStyle selectedStyle) {
+		this.selectedStyle = selectedStyle;
 	}
 
 	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {

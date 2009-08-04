@@ -18,14 +18,12 @@ public class EditorWindowManager {
 
 	private Map<VisualProperty, JDialog> editorWindowMap;
 
-	private PropertyRendererRegistry rendReg;
 	private EditorManager editorFactory;
 	private PropertySheetPanel propertySheetPanel;
 
-	public EditorWindowManager(PropertyRendererRegistry rendReg,
+	public EditorWindowManager(
 			EditorManager editorFactory, PropertySheetPanel propertySheetPanel) {
 		this.editorFactory = editorFactory;
-		this.rendReg = rendReg;
 		this.propertySheetPanel = propertySheetPanel;
 
 		editorWindowMap = new HashMap<VisualProperty, JDialog>();
