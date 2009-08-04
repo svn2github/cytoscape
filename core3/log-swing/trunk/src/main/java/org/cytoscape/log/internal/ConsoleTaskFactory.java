@@ -6,8 +6,9 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.log.statusbar.CytoStatusBar;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEvent;
 
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.Date;

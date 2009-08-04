@@ -1,7 +1,7 @@
 package org.cytoscape.log.internal;
 
 import java.util.concurrent.BlockingQueue;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * @author Pasteur
