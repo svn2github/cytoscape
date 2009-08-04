@@ -19,10 +19,9 @@ import org.cytoscape.work.TaskMonitor;
 /**
  * @author Pasteur
  */
-class DeveloperLogDialog extends JDialog
+class AdvancedLogViewer
 {
 	static final String[]	COLUMNS =		{ "Time",	"Log",	"Level",	"Thread",	"Message" };
-	static final int[]	COLUMN_WIDTHS =		{ 120,		250,	70,		90,		0 };
 
 	/**
 	 * Contains all log events (except those deleted with the Clear button) that were added with the
@@ -43,11 +42,6 @@ class DeveloperLogDialog extends JDialog
 	final DefaultMutableTreeNode logs = new DefaultMutableTreeNode("All Logs");
 
 	/**
-	 * A <code>TableModel</code> that just returns elements from <code>solicitedLogEvents</code>.
-	 */
-	final SolicitedLogEventsTableModel solicitedLogEventsTableModel = new SolicitedLogEventsTableModel();
-
-	/**
 	 * Used to execute instances of <code>SolicitedLogEventsUpdater</code>.
 	 */
 	final ExecutorService solicitedLogEventsUpdaterExecutor = Executors.newSingleThreadExecutor();
@@ -65,14 +59,16 @@ class DeveloperLogDialog extends JDialog
 	final TaskManager	taskManager;
 	final JTextField	filterTextField;
 	final JTree		logsTree;
-	final JTable		solicitedLogEventsTable;
+	final LogViewer		logViewer;
 	final JComboBox		filterTargetComboBox;
+	final JPanel		contents;
 
-	public DeveloperLogDialog(CySwingApplication app, TaskManager taskManager)
+	public AdvancedLogViewer(TaskManager taskManager, LogViewer logViewer)
 	{
-		super(app.getJFrame(), "Developer Log", false);
-		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		this.taskManager = taskManager;
+		this.logViewer = logViewer;
+		logViewer.clear();
+		contents = new JPanel();
 
 		filterTextField = new JTextField();
 		makeFilterTextFieldValid();
@@ -83,28 +79,16 @@ class DeveloperLogDialog extends JDialog
 		logsTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		logsTree.addTreeSelectionListener(new LogsTreeSelectionListener());
 
-		solicitedLogEventsTable = new ToolTipTable(solicitedLogEventsTableModel);
-		solicitedLogEventsTable.setFont(new Font("Monaco", Font.PLAIN, 10));
-		for (int columnIndex = 0; columnIndex < COLUMN_WIDTHS.length; columnIndex++)
-		{
-			if (COLUMN_WIDTHS[columnIndex] != 0)
-			{
-				solicitedLogEventsTable.getColumnModel().getColumn(columnIndex).setPreferredWidth(COLUMN_WIDTHS[columnIndex]);
-				solicitedLogEventsTable.getColumnModel().getColumn(columnIndex).setMaxWidth(COLUMN_WIDTHS[columnIndex]);
-			}
-		}
-
 		filterTargetComboBox = new JComboBox(COLUMNS);
 		filterTargetComboBox.addActionListener(new FilterTargetUpdater());
 
 		JScrollPane logsTreeScrollPane = new JScrollPane(logsTree);
-		JScrollPane solicitedLogEventsTableScrollPane = new JScrollPane(solicitedLogEventsTable);
 		JButton clearButton = new JButton("Clear");
 		clearButton.addActionListener(new ClearAction());
 		JButton exportButton = new JButton("Export...");
 		exportButton.addActionListener(new ExportAction());
 
-		getContentPane().setLayout(new GridBagLayout());
+		contents.setLayout(new GridBagLayout());
 		JPanel panel1 = new JPanel(new GridBagLayout());
 		JLabel element0 = new JLabel("Filter: ");
 		panel1.add(element0, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(4, 6, 4, 2), 0, 0));
@@ -112,41 +96,19 @@ class DeveloperLogDialog extends JDialog
 		JLabel element1 = new JLabel("from");
 		panel1.add(element1, new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(4, 4, 4, 2), 0, 0));
 		panel1.add(filterTargetComboBox, new GridBagConstraints(3, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(4, 4, 4, 2), 0, 0));
-		getContentPane().add(panel1, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		JSplitPane splitpane0 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, logsTreeScrollPane, solicitedLogEventsTableScrollPane);
+		contents.add(panel1, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		JSplitPane splitpane0 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, logsTreeScrollPane, logViewer.getComponent());
 		splitpane0.setResizeWeight(0.2);
-		getContentPane().add(splitpane0, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		contents.add(splitpane0, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 		JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		panel2.add(clearButton);
 		panel2.add(exportButton);
-		getContentPane().add(panel2, new GridBagConstraints(0, 2, 2, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-		pack();
+		contents.add(panel2, new GridBagConstraints(0, 2, 2, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 	}
 
-	/**
-	 * Displays a tool tip for each cell in the JTable. This is useful
-	 * if a column size is too small to contain the entire cell.
-	 */
-	class ToolTipTable extends JTable
+	public JComponent getComponent()
 	{
-		public ToolTipTable(TableModel model)
-		{
-			super(model);
-		}
-
-		public String getToolTipText(MouseEvent e)
-		{
-			java.awt.Point p = e.getPoint();
-			int row = rowAtPoint(p);
-			int col = columnAtPoint(p);
-
-			if (row < 0 || col < 0)
-				return null;
-
-			col = convertColumnIndexToModel(col);
-
-			return (String) getModel().getValueAt(row, col);
-		}
+		return contents;
 	}
 
 	/**
@@ -166,7 +128,7 @@ class DeveloperLogDialog extends JDialog
 		if (logEventMatches(event, filterTargetComboBox.getSelectedIndex(), getSelectedLog()))
 		{
 			solicitedLogEvents.add(event);
-			solicitedLogEventsTableModel.fireTableDataChanged();
+			logViewer.append(event[2].toUpperCase(), event[4], String.format("%s [%s] %s %s", event[0], event[3], event[2], event[1]));
 		}
 	}
 
@@ -247,33 +209,6 @@ class DeveloperLogDialog extends JDialog
 	}
 
 	/**
-	 * A <code>TableModel</code> that just returns elements from
-	 * <code>solicitedLogEvents</code>.
-	 */
-	class SolicitedLogEventsTableModel extends AbstractTableModel
-	{
-		public int getRowCount()
-		{
-			return solicitedLogEvents.size();
-		}
-
-		public int getColumnCount()
-		{
-			return COLUMNS.length;
-		}
-
-		public String getColumnName(int col)
-		{
-			return COLUMNS[col];
-		}
-
-		public Object getValueAt(int row, int col)
-		{
-			return solicitedLogEvents.get(row)[col];
-		}
-	}
-
-	/**
 	 * Updates <code>solicitedLogEvents</code> by filtering out <code>allLogEvents</code>.
 	 * This class uses <code>logEventMatches</code> to determine if the elements in
 	 * <code>allLogEvents</code> matches the criteria for being in <code>solicitedLogEvents</code>.
@@ -284,18 +219,19 @@ class DeveloperLogDialog extends JDialog
 
 		public void run()
 		{
+			logViewer.clear();
+			solicitedLogEvents.clear();
 			final int target = filterTargetComboBox.getSelectedIndex();
 			final String selectedPath = getSelectedLog();
-			solicitedLogEvents = new ArrayList<String[]>();
 			for (int i = 0; (i < allLogEvents.size()) && (!cancel); i++)
 			{
 				final String[] event = allLogEvents.get(i);
 				if (logEventMatches(event, target, selectedPath))
+				{
 					solicitedLogEvents.add(event);
+					logViewer.append(event[2].toUpperCase(), event[4], String.format("%s <b>%s</b> [%s] %s", event[0], event[1], event[3], event[2]));
+				}
 			}
-
-			if (!cancel)
-				solicitedLogEventsTableModel.fireTableDataChanged();
 		}
 
 		public void cancel()
@@ -325,7 +261,7 @@ class DeveloperLogDialog extends JDialog
 	 * executes it. If a <code>SolicitedLogEventsUpdater</code> is already
 	 * running, this will cancel it.
 	 */
-	void refreshSnapshots()
+	void refreshSolicitedLogEvents()
 	{
 		if (currentUpdater != null)
 			currentUpdater.cancel();
@@ -396,7 +332,7 @@ class DeveloperLogDialog extends JDialog
 				{
 					currentPattern = Pattern.compile(regex);
 					makeFilterTextFieldValid();
-					refreshSnapshots();
+					refreshSolicitedLogEvents();
 				}
 				catch (PatternSyntaxException e)
 				{
@@ -405,7 +341,7 @@ class DeveloperLogDialog extends JDialog
 			}
 			else
 			{
-				refreshSnapshots();
+				refreshSolicitedLogEvents();
 			}
 		}
 	}
@@ -414,7 +350,7 @@ class DeveloperLogDialog extends JDialog
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			refreshSnapshots();
+			refreshSolicitedLogEvents();
 		}
 	}
 
@@ -422,7 +358,7 @@ class DeveloperLogDialog extends JDialog
 	{
 		public void valueChanged(TreeSelectionEvent e)
 		{
-			refreshSnapshots();
+			refreshSolicitedLogEvents();
 		}
 	}
 
@@ -430,9 +366,12 @@ class DeveloperLogDialog extends JDialog
 	{
 		public void actionPerformed(ActionEvent e)
 		{
+			if (currentUpdater != null)
+				currentUpdater.cancel();
+
 			allLogEvents.removeAll(solicitedLogEvents);
-			solicitedLogEvents = new ArrayList<String[]>();
-			solicitedLogEventsTableModel.fireTableDataChanged();
+			solicitedLogEvents.clear();
+			logViewer.clear();
 		}
 	}
 

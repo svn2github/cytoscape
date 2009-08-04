@@ -1,16 +1,21 @@
 package org.cytoscape.log.internal;
 
 import java.util.Queue;
-import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Appender;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.LoggingEvent;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.Filter;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
  * @author Pasteur
  */
-public class QueueAppender extends AppenderBase<LoggingEvent> implements Appender<LoggingEvent>
+public class QueueAppender extends AppenderSkeleton implements Appender
 {
+	public static final LoggingEvent NULL_EVENT = new LoggingEvent(null, Logger.getRootLogger(), 0, null, null, null);
+
 	final Queue<LoggingEvent> userLogQueue;
 	final Queue<LoggingEvent> statusBarQueue;
 	final Queue<LoggingEvent> developerLogQueue;
@@ -22,8 +27,19 @@ public class QueueAppender extends AppenderBase<LoggingEvent> implements Appende
 		this.developerLogQueue = developerLogQueue;
 	}
 
-	protected void append(LoggingEvent event)
+	public void append(LoggingEvent event)
 	{
+		for (Filter	filter = getFirstFilter();
+				filter != null;
+				filter = filter.getNext())
+		{
+			final int result = filter.decide(event);
+			if (result == Filter.ACCEPT)
+				break;
+			else if (result == Filter.DENY)
+				return;
+		}
+
 		if (	event.getLevel().equals(Level.INFO) || 
 			event.getLevel().equals(Level.WARN))
 		{
@@ -32,5 +48,17 @@ public class QueueAppender extends AppenderBase<LoggingEvent> implements Appende
 		}
 
 		developerLogQueue.offer(event);
+	}
+
+	public boolean requiresLayout()
+	{
+		return false;
+	}
+
+	public void close()
+	{
+		userLogQueue.offer(NULL_EVENT);
+		statusBarQueue.offer(NULL_EVENT);
+		developerLogQueue.offer(NULL_EVENT);
 	}
 }

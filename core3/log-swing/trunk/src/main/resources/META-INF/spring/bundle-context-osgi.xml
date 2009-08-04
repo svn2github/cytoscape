@@ -4,13 +4,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
-
-	<!-- IMPORT SERVICES -->
-
-	<osgi:reference id="cytoStatusBarRef" interface="org.cytoscape.log.statusbar.CytoStatusBar"/>
-	<osgi:reference id="taskManagerRef" interface="org.cytoscape.work.TaskManager"/>
-	<osgi:reference id="cySwingApplicationRef" interface="cytoscape.view.CySwingApplication"/>
-	
 	<osgi:service id="consoleTaskFactoryService" ref="consoleTaskFactory"
  		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
@@ -19,14 +12,15 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<!-- EXPORT SERVICES -->
-
-	<osgi:service id="developerLogTaskFactoryService" ref="developerLogTaskFactory"
+	<osgi:service id="testTaskFactoryService" ref="testTaskFactory"
  		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Developer Log"/>
+			<entry key="title" value="Test"/>
 			<entry key="preferredMenu" value="Help"/>
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:reference id="cytoStatusBarRef" interface="org.cytoscape.log.statusbar.CytoStatusBar"/>
+	<osgi:reference id="taskManagerRef" interface="org.cytoscape.work.TaskManager"/>
+	<osgi:reference id="cySwingApplicationRef" interface="cytoscape.view.CySwingApplication"/>
 </beans>

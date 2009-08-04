@@ -22,15 +22,21 @@ public class DeveloperLogTaskFactory implements TaskFactory
 	final BlockingQueue<LoggingEvent> queue;
 	final CySwingApplication app;
 	final TaskManager manager;
+	final LogViewer logViewer;
 
 	DeveloperLogDialog dialog = null;
 
-	public DeveloperLogTaskFactory(ExecutorService service, BlockingQueue<LoggingEvent> queue, CySwingApplication app, TaskManager manager)
+	public DeveloperLogTaskFactory(	ExecutorService service,
+					BlockingQueue<LoggingEvent> queue,
+					CySwingApplication app,
+					TaskManager manager,
+					LogViewer logViewer)
 	{
 		this.service = service;
 		this.queue = queue;
 		this.app = app;
 		this.manager = manager;
+		this.logViewer = logViewer;
 	}
 
 	public Task getTask()
@@ -54,7 +60,7 @@ public class DeveloperLogTaskFactory implements TaskFactory
 	{
 		if (dialog == null)
 		{
-			dialog = new DeveloperLogDialog(app, manager);
+			dialog = new DeveloperLogDialog(app, manager, logViewer);
 			DeveloperLogUpdater updater = new DeveloperLogUpdater(dialog, queue);
 			service.submit(updater);
 		}

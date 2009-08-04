@@ -74,7 +74,7 @@
 							classes are under ".internal"
 						-->
 						<Export-Package>
-							!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}"
+							!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}",org.apache.commons.collections.*
 						</Export-Package>
 						<Private-Package>${bundle.namespace}.internal.*
 						</Private-Package>
@@ -126,19 +126,9 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>com.springsource.slf4j.api</artifactId>
-			<version>1.5.6</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>com.springsource.ch.qos.logback.classic</artifactId>
-			<version>0.9.15</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>com.springsource.ch.qos.logback.core</artifactId>
-			<version>0.9.15</version>
+			<groupId>org.apache.log4j</groupId>
+			<artifactId>com.springsource.org.apache.log4j</artifactId>
+			<version>1.2.15</version>
 		</dependency>
 	</dependencies>
 </project>

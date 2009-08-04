@@ -31,6 +31,9 @@ abstract class QueueProcesser implements Runnable
 				break;
 			}
 
+			if (event.equals(QueueAppender.NULL_EVENT))
+				break;
+
 			processEvent(event);
 		}
 	}
