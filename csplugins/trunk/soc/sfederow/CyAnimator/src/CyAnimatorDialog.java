@@ -41,6 +41,8 @@ import java.io.File;
 
 import java.sql.Time;
 
+import java.text.DecimalFormat;
+
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -603,8 +605,10 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		//OutputStream imageStream = new FileOutputStream(file);
 		
 		for(int i=0; i<frames.length; i++){
-			String name = "Frame_"+i;
-			ImageIO.write(frames[i].getFrameImage(), name, file);
+			DecimalFormat frame = new DecimalFormat("#000");
+			String name = curDir+"/outputImages/Frame_"+frame.format(i)+".png";
+			// ImageIO.write(frames[i].getFrameImage(), name, file);
+			frames[i].writeImage(name);
 		}
 	}
 	

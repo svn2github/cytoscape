@@ -26,6 +26,8 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.*;
 import java.awt.Paint;
+import java.io.IOException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,9 +36,13 @@ import java.util.Map;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.ding.DingNetworkView;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
 import cytoscape.visual.VisualStyle;
+
+import cytoscape.util.export.BitmapExporter;
+import cytoscape.util.export.Exporter;
 
 import ding.view.DGraphView;
 
@@ -65,6 +71,8 @@ public class CyFrame {
 	private VisualStyle vizStyle = null;
 	private List<Node> nodeList = null;
 	private List<Edge> edgeList = null;
+	private List<NodeView> nodeViewList = null;
+	private List<EdgeView> edgeViewList = null;
 	private int intercount = 0;
 	private Point2D centerPoint = null;
 	private DGraphView dview = null; 
@@ -81,12 +89,16 @@ public class CyFrame {
 		networkView = Cytoscape.getCurrentNetworkView();
 		this.dview = (DGraphView)networkView;
 		this.centerPoint = dview.getCenter();
+
+		nodeViewList = new ArrayList();
+		edgeViewList = new ArrayList();
 		
 		// Initialize our node view maps
 		Iterator<EdgeView> eviter = networkView.getEdgeViewsIterator();
 		while(eviter.hasNext()) {
 			EdgeView ev = eviter.next();
 			edgeMap.put(ev.getEdge(), ev);
+			edgeViewList.add(ev);
 		}
 
 		// Initialize our edge view maps
@@ -94,6 +106,7 @@ public class CyFrame {
 		while(nviter.hasNext()) {
 			NodeView nv = nviter.next();
 			nodeMap.put(nv.getNode(), nv);
+			nodeViewList.add(nv);
 		}
 
 		// Remember the visual style
@@ -106,14 +119,6 @@ public class CyFrame {
 		edgeList = currentNetwork.edgesList();
 		
 		
-	}
-
-	public void setNodeList(List<Node>nodeList) {
-		this.nodeList = nodeList;
-	}
-
-	public void setEdgeList(List<Edge>edgeList) {
-		this.edgeList = edgeList;
 	}
 	
 	/*
@@ -197,10 +202,14 @@ public class CyFrame {
 
 		Cytoscape.getVisualMappingManager().setVisualStyle(vizStyle);
 
+		// We want to use the current view in case we're interpolating
+		// across views
+		CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
+
 
 		// First see if we have any views we need to remove
 		List<EdgeView> removeEdgeViews = new ArrayList();
-		Iterator<EdgeView> eviter = networkView.getEdgeViewsIterator();
+		Iterator<EdgeView> eviter = currentView.getEdgeViewsIterator();
 		while(eviter.hasNext()) {
 			EdgeView ev = eviter.next();
 			if (!edgeMap.containsKey(ev.getEdge()))
@@ -208,11 +217,11 @@ public class CyFrame {
 		}
 
 		for (EdgeView ev: removeEdgeViews)
-			networkView.removeEdgeView(ev);
+			currentView.removeEdgeView(ev);
 
 		// Initialize our edge view maps
 		List<NodeView> removeNodeViews = new ArrayList();
-		Iterator<NodeView> nviter = networkView.getNodeViewsIterator();
+		Iterator<NodeView> nviter = currentView.getNodeViewsIterator();
 		while(nviter.hasNext()) {
 			NodeView nv = nviter.next();
 			if (!nodeMap.containsKey(nv.getNode()))
@@ -220,17 +229,17 @@ public class CyFrame {
 		}
 
 		for (NodeView nv: removeNodeViews)
-			networkView.removeNodeView(nv);
+			currentView.removeNodeView(nv);
 
 
 		for(Node node: nodeList)
 		{
 		
-			NodeView nodeView = networkView.getNodeView(node);
+			NodeView nodeView = currentView.getNodeView(node);
 			if (nodeView == null) {
-				addNodeView(networkView, nodeMap.get(node), node);
-				nodeView = networkView.getNodeView(node);
-				Cytoscape.getVisualMappingManager().vizmapNode(nodeView, networkView);
+				addNodeView(currentView, nodeMap.get(node), node);
+				nodeView = currentView.getNodeView(node);
+				Cytoscape.getVisualMappingManager().vizmapNode(nodeView, currentView);
 			}
 			
 			double[] xy = nodePosMap.get(node.getIdentifier());
@@ -246,20 +255,20 @@ public class CyFrame {
 		}
 		for(Edge edge: getEdgeList())
 		{
-			EdgeView edgeView = networkView.getEdgeView(edge);
+			EdgeView edgeView = currentView.getEdgeView(edge);
 			if (edgeView == null) {
-				addEdgeView(networkView, edgeMap.get(edge), edge);
-				edgeView = networkView.getEdgeView(edge);
+				addEdgeView(currentView, edgeMap.get(edge), edge);
+				edgeView = currentView.getEdgeView(edge);
 			}
 			Color p = edgeColMap.get(edge.getIdentifier());
 			if (p == null || edgeView == null) continue;
 			Integer trans = edgeOpacityMap.get(edge.getIdentifier());
 			edgeView.setUnselectedPaint(new Color(p.getRed(), p.getGreen(), p.getBlue(), trans));
 		}
-		networkView.setBackgroundPaint(backgroundPaint);
-		networkView.setZoom(zoom);
+		currentView.setBackgroundPaint(backgroundPaint);
+		currentView.setZoom(zoom);
 		//networkView.getComponent().
-		dview = (DGraphView)networkView;
+		dview = (DGraphView)currentView;
 		
 		//InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(networkView);
 		
@@ -267,8 +276,9 @@ public class CyFrame {
 		
 		//dview.setBounds(x, y, Math.round(ifc.getWidth()), Math.round(ifc.getHeight()));
 		//ifc.setBounds(arg0, arg1, arg2, arg3)
-		networkView.updateView();
+		currentView.updateView();
 	}
+
 	/*
 	 * Return the frame ID for this frame
 	 * 
@@ -467,12 +477,94 @@ public class CyFrame {
 	}
 
 	/**
+	 * Set the list of nodes in this frame
+	 *
+	 * @param nodeList the list of nodes
+	 */
+	public void setNodeList(List<Node>nodeList) {
+		this.nodeList = nodeList;
+	}
+
+	/**
+	 * Set the list of edges in this frame
+	 *
+	 * @param edgeList the list of edges
+	 */
+	public void setEdgeList(List<Edge>edgeList) {
+		this.edgeList = edgeList;
+	}
+
+	/**
+	 * Get the list of node views in this frame
+	 *
+	 * @return the list of node views
+	 */
+	public List<NodeView> getNodeViewList() {
+		return nodeViewList;
+	}
+
+	/**
+	 * Get the list of edge views in this frame
+	 *
+	 * @return the list of edge views
+	 */
+	public List<EdgeView> getEdgeViewList() {
+		return edgeViewList;
+	}
+
+	/**
+	 * Set the list of node views in this frame
+	 *
+	 * @param nodeViewList the list of node views
+	 */
+	public void setNodeViewList(List<NodeView>nodeViewList) {
+		this.nodeViewList = nodeViewList;
+	}
+
+	/**
+	 * Set the list of edge views in this frame
+	 *
+	 * @param edgeViewList the list of edges
+	 */
+	public void setEdgeViewList(List<EdgeView>edgeViewList) {
+		this.edgeViewList = edgeViewList;
+	}
+
+	/**
 	 * Get the Image for this frame
 	 *
 	 * @return the image for this frame
 	 */
 	public BufferedImage getFrameImage() {
 		return this.networkImage;
+	}
+
+	/**
+ 	 * Export a graphic image for this frame
+ 	 *
+ 	 * @param fileName the file to write the image to
+ 	 */
+	public void writeImage(String fileName) {
+		display();
+		CyNetworkView curView = Cytoscape.getCurrentNetworkView();
+		// Get the component to export
+		InternalFrameComponent ifc =
+		         Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(curView);
+
+		// Handle the exportTextAsShape property
+		DGraphView theViewToPrint = (DingNetworkView) curView;
+		boolean exportTextAsShape =
+		     new Boolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")).booleanValue();
+
+		theViewToPrint.setPrintingTextAsShape(exportTextAsShape);
+		Exporter exporter = new BitmapExporter("png", 5.0f);
+		try {
+			FileOutputStream outputFile = new FileOutputStream(fileName);
+			exporter.export(curView, outputFile);
+			outputFile.close();
+		} catch (IOException e) {
+			//
+		}
 	}
 
 	/*

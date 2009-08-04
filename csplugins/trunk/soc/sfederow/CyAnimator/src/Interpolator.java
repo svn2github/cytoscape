@@ -57,12 +57,12 @@ public class Interpolator {
 			framecount = frameList.get(i).getInterCount();
 			end = start + framecount;
 			cyFrameArray[start] = frameList.get(i);
-			List<Node> nodeList = nodeUnionize(frameList.get(i), frameList.get(i+1));
-			List<Edge> edgeList = edgeUnionize(frameList.get(i), frameList.get(i+1));
+			List<NodeView> nodeList = nodeViewUnionize(frameList.get(i), frameList.get(i+1));
+			List<EdgeView> edgeList = edgeViewUnionize(frameList.get(i), frameList.get(i+1));
 
 			for (int k = start+1; k < end; k++) {
-				cyFrameArray[k].setNodeList(nodeList);
-				cyFrameArray[k].setEdgeList(edgeList);
+				cyFrameArray[k].setNodeViewList(nodeList);
+				cyFrameArray[k].setEdgeViewList(edgeList);
 			}
 
 
@@ -87,10 +87,10 @@ public class Interpolator {
 	
 	
 	public CyFrame[] makeFrames(CyFrame frameOne, CyFrame frameTwo, int framenum) {
-		if(!frameOne.getCurrentNetwork().getIdentifier().equals(frameTwo.getCurrentNetwork().getIdentifier())){
+		// if(!frameOne.getCurrentNetwork().getIdentifier().equals(frameTwo.getCurrentNetwork().getIdentifier())){
 			//throw new Exception("Frames cannot be interpolated across different networks.");
-			System.out.println("Frames cannot be interpolated across different networks.");
-		}
+		// 	System.out.println("Frames cannot be interpolated across different networks.");
+		// }
 		
 		
 		CyNetwork currentNetwork = frameOne.getCurrentNetwork();
@@ -112,38 +112,38 @@ public class Interpolator {
 	}
 	
 	
-	public List<Node> nodeUnionize(CyFrame frameOne, CyFrame frameTwo){
+	public List<NodeView> nodeViewUnionize(CyFrame frameOne, CyFrame frameTwo){
 		
-		List<Node> list1 = frameOne.getNodeList();
-		List<Node> list2 = frameTwo.getNodeList();
-		Map<Node,Node> bigList = new HashMap<Node,Node>();	
+		List<NodeView> list1 = frameOne.getNodeViewList();
+		List<NodeView> list2 = frameTwo.getNodeViewList();
+		Map<NodeView,NodeView> bigList = new HashMap<NodeView,NodeView>();	
 		
-		for (Node node: list1) {
+		for (NodeView node: list1) {
 			bigList.put(node, node);
 		}
 
-		for (Node node: list2) {
+		for (NodeView node: list2) {
 			bigList.put(node, node);
 		}
 
-		return new ArrayList<Node>(bigList.keySet());
+		return new ArrayList<NodeView>(bigList.keySet());
 	}
 	
-	public List<Edge> edgeUnionize(CyFrame frameOne, CyFrame frameTwo){
+	public List<EdgeView> edgeViewUnionize(CyFrame frameOne, CyFrame frameTwo){
 		
-		List<Edge> list1 = frameOne.getEdgeList();
-		List<Edge> list2 = frameTwo.getEdgeList();
-		Map<Edge,Edge> bigList = new HashMap<Edge,Edge>();	
+		List<EdgeView> list1 = frameOne.getEdgeViewList();
+		List<EdgeView> list2 = frameTwo.getEdgeViewList();
+		Map<EdgeView,EdgeView> bigList = new HashMap<EdgeView,EdgeView>();	
 
-		for (Edge edge: list1) {
+		for (EdgeView edge: list1) {
 			bigList.put(edge, edge);
 		}
 
-		for (Edge edge: list2) {
+		for (EdgeView edge: list2) {
 			bigList.put(edge, edge);
 		}
 		
-		return new ArrayList<Edge>(bigList.keySet());
+		return new ArrayList<EdgeView>(bigList.keySet());
 		
 	}
 
@@ -239,7 +239,11 @@ public class Interpolator {
 
 			int framenum = (stop-start) - 1;
 
-			for (Node node: nodeList){
+			List<NodeView> nodeViewList = valueList;
+		
+			for(NodeView nv: nodeViewList){
+				
+				Node node = nv.getNode();
 
 				String nodeid = node.getIdentifier();
 				//Get the node positions and set up the position interpolation
@@ -299,18 +303,19 @@ public class Interpolator {
 		public CyFrame[] interpolate(List valueList, CyFrame frameOne, CyFrame frameTwo, 
 		                             int start, int stop, CyFrame[] cyFrameArray){
 
-			if(!frameOne.getCurrentNetwork().getIdentifier().equals(frameTwo.getCurrentNetwork().getIdentifier())){
-				System.out.println("Frames Cannot be interpolated across different networks.");
-			}
+			// if(!frameOne.getCurrentNetwork().getIdentifier().equals(frameTwo.getCurrentNetwork().getIdentifier())){
+			// 	System.out.println("Frames Cannot be interpolated across different networks.");
+			// }
 			
 			CyNetwork currentNetwork = frameOne.getCurrentNetwork();
 			
 			int framenum = (stop-start) - 1;
 			
-			List<Node> nodeList = valueList;
+			List<NodeView> nodeViewList = valueList;
 		
-			for(Node node: nodeList){
+			for(NodeView nv: nodeViewList){
 				
+				Node node = nv.getNode();
 				String nodeid = node.getIdentifier();
 				
 				Color colorOne = frameOne.getNodeColor(nodeid);
@@ -354,11 +359,12 @@ public class Interpolator {
 			
 			int framenum = (stop-start) - 1;	
 			CyNetwork currentNetwork = frameOne.getCurrentNetwork();
-			List<Node> nodeList = valueList;
-			
-			for(Node node: nodeList){
+			List<NodeView> nodeViewList = valueList;
+		
+			for(NodeView nv: nodeViewList){
 				
-			    String nodeid = node.getIdentifier();
+				Node node = nv.getNode();
+				String nodeid = node.getIdentifier();
 				
 				//Get the node transparencies and set up the transparency interpolation
 				Integer transOne = frameOne.getNodeOpacity(nodeid);
@@ -401,12 +407,16 @@ public class Interpolator {
 			
 			int framenum = (stop-start) - 1;	
 			CyNetwork currentNetwork = frameOne.getCurrentNetwork();
-			List<Edge> edgeList = valueList;
-			
-			for(Edge edge: edgeList){
+
+			List<EdgeView> edgeViewList = valueList;
+		
+			for(EdgeView ev: edgeViewList){
 				
-				Color colorOne = frameOne.getEdgeColor(edge.getIdentifier());
-			  Color colorTwo = frameTwo.getEdgeColor(edge.getIdentifier());
+				Edge edge = ev.getEdge();
+			  String edgeid = edge.getIdentifier();
+				
+				Color colorOne = frameOne.getEdgeColor(edgeid);
+			  Color colorTwo = frameTwo.getEdgeColor(edgeid);
 				if(colorOne == null && colorTwo == null){ continue; }
 
 				// Handle missing (or appearing) nodes
@@ -417,13 +427,13 @@ public class Interpolator {
 			
 				if (colorOne == colorTwo) {
 					for(int k=1; k<framenum+1; k++){
-						cyFrameArray[start+k].setEdgeColor(edge.getIdentifier(), colorOne);
+						cyFrameArray[start+k].setEdgeColor(edgeid, colorOne);
 					}	
 				} else {
 					Color[] paints = interpolateColor(colorOne, colorTwo, framenum);
 
 					for(int k=1; k<framenum+1; k++){
-						cyFrameArray[start+k].setEdgeColor(edge.getIdentifier(), paints[k]);
+						cyFrameArray[start+k].setEdgeColor(edgeid, paints[k]);
 					}
 				}
 			}
@@ -441,11 +451,12 @@ public class Interpolator {
 			
 			int framenum = (stop-start) - 1;	
 			CyNetwork currentNetwork = frameOne.getCurrentNetwork();
-			List<Edge> edgeList = valueList;
-			
-			for(Edge edge: edgeList){
+			List<EdgeView> edgeViewList = valueList;
+		
+			for(EdgeView ev: edgeViewList){
 				
-			    String edgeid = edge.getIdentifier();
+				Edge edge = ev.getEdge();
+			  String edgeid = edge.getIdentifier();
 				
 				//Get the node transparencies and set up the transparency interpolation
 				Integer transOne = frameOne.getEdgeOpacity(edgeid);
