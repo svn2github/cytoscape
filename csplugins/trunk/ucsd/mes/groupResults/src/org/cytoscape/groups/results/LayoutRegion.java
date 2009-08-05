@@ -790,4 +790,70 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	private void setMyGroup(CyGroup group) {
 		myGroup = group;
 	}
+	
+	// if a nodeView is moved outside the box, expand the box
+	public void expand(NodeView nv){
+		if (!nodeViews.contains(nv)){
+			return;
+		}
+
+		boolean shouldExpand = false;
+		
+		// Get the screen coordinate of the nodeView 
+		double[] screenXY = getScreenCoordinates(nv);
+
+		if (screenXY[0] < this.getX1()){
+			this.setW1(this.getW1()+ (this.x1 - screenXY[0]));
+			this.setX1(screenXY[0]);
+			shouldExpand = true;
+		}
+		if (screenXY[1]< this.getY1()){
+			this.setH1(this.getH1() + (this.getY1() - screenXY[1]));
+			this.setY1(screenXY[1]);
+			shouldExpand = true;
+		}
+		if (screenXY[2] > this.getX1() + this.getW1()){
+			this.setW1(screenXY[2] - this.getX1());
+			shouldExpand = true;
+		}
+		if (screenXY[3] > this.getY1() + this.getH1()){
+			this.setH1(screenXY[3]-this.getY1());
+			shouldExpand = true;
+		}
+		
+		if (shouldExpand){
+			this.setBounds(this.getX1(), this.getY1(), this.getW1(), this.getH1());
+		}		
+	}
+	
+	
+	private double[] getScreenCoordinates(NodeView nv){
+		// determine the min and max screen coordinates of the nodeView
+		DGraphView theView = (DGraphView) Cytoscape.getCurrentNetworkView();
+		double scaleFactor = Cytoscape.getCurrentNetworkView().getZoom();	
+
+		double w = theView.getComponent().getBounds().getWidth();
+		double h = theView.getComponent().getBounds().getHeight();
+		
+		double xCenter = theView.getCenter().getX();
+		double yCenter = theView.getCenter().getY();
+		
+		Double xMin = nv.getXPosition() - nv.getWidth()/2 - nv.getBorderWidth();
+		Double yMin = nv.getYPosition() - nv.getHeight()/2 - nv.getBorderWidth();
+		Double xMax = nv.getXPosition() + nv.getWidth()/2 + nv.getBorderWidth();
+		Double yMax = nv.getYPosition() + nv.getHeight()/2 + nv.getBorderWidth();
+		
+		double xMin_screen = w/2 - (xCenter - xMin)*scaleFactor;
+		double yMin_screen = h/2 - (yCenter - yMin)*scaleFactor;
+		double xMax_screen = w/2 + (xMax - xCenter)*scaleFactor;
+		double yMax_screen = h/2 + (yMax - yCenter)*scaleFactor;
+
+		double[] xy = new double[4];
+		xy[0] = xMin_screen;
+		xy[1] = yMin_screen;
+		xy[2] = xMax_screen;
+		xy[3] = yMax_screen;
+		
+		return xy;
+	}
 }

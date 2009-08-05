@@ -238,6 +238,38 @@ public class GroupHandler implements MouseListener, MouseMotionListener, Propert
 		if ( LayoutRegionManager.getNumRegionsForView
 						(Cytoscape.getCurrentNetworkView()) < 1) { return; }
 
+		CyNode node = dragOnNode(e); 
+		if ( node != null){
+			// drag on a node,
+			List groupList =   node.getGroups();
+			if (groupList == null || groupList.size() == 0){
+				// The node does not belong to a group, do nothing
+				return;
+			}
+			// The group belong to one or more groups
+			//System.out.println("drag on a node belong to group, expand their boxes");
+
+			List<LayoutRegion> regionList = LayoutRegionManager.getRegionListForView(Cytoscape.getCurrentNetworkView());
+			List<LayoutRegion> regions = new ArrayList<LayoutRegion>();
+			
+			for (int i=0; i< groupList.size(); i++){
+				for (int j=0; j< regionList.size(); j++){		
+					if (groupList.get(i)== regionList.get(j).getMyGroup()){
+						regions.add(regionList.get(j));
+					}
+				}
+			}
+			
+			// expand boxes if the nodeView moves outside the box
+			for (int i=0; i< regions.size(); i++){
+				System.out.println("region to be expand: "+ regions.get(i).getMyGroup().getGroupName());
+				regions.get(i).expand(Cytoscape.getCurrentNetworkView().getNodeView(node));
+			}
+
+			return;
+		}
+		
+		
 		onEdge = calculateOnEdge(e.getPoint(), pickedRegion);
 		
 		if (!dragging) {
@@ -437,6 +469,10 @@ public class GroupHandler implements MouseListener, MouseMotionListener, Propert
 			List regionList = LayoutRegionManager.getRegionListForView(Cytoscape
 					.getCurrentNetworkView());
 
+			if (regionList == null || regionList.size() == 0){
+				return;
+			}
+			
 			for (int i=0; i< regionList.size(); i++){
 				LayoutRegion theRegion = (LayoutRegion) regionList.get(i);
 				if (theRegion.isSelected()){
@@ -586,6 +622,15 @@ public class GroupHandler implements MouseListener, MouseMotionListener, Propert
 		System.out.println("groupChanged()");
 	}
 
+	
+	private CyNode dragOnNode(MouseEvent e){
+		DGraphView cView = (DGraphView)Cytoscape.getCurrentNetworkView();
+		NodeView nv = cView.getPickedNodeView(e.getPoint());
+		if (nv == null){
+			return null;
+		}
+		return (CyNode) nv.getNode();
+	}
 
 	/**
 	 * Determines which edge of region the cursor is over
