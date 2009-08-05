@@ -105,7 +105,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 				// throw new ParseException(e.getMessage());
 			}
 
-		} else if (attrFields.getType(field) == AttributeTypes.TYPE_FLOATING) {
+		} else if (attrFields.getType(field) == AttributeTypes.TYPE_DOUBLE) {
 			try {
 				double num1 = Double.parseDouble(queryText);
 				// Workaround: The commented statement below won't return the
@@ -145,7 +145,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 				throw new ParseException(e.getMessage());
 			}
 		}
-		if (attrFields.getType(field) == AttributeTypes.TYPE_FLOATING) {
+		if (attrFields.getType(field) == AttributeTypes.TYPE_DOUBLE) {
 			try {
 				double num1 = Double.parseDouble(part1);
 				double num2 = Double.parseDouble(part2);

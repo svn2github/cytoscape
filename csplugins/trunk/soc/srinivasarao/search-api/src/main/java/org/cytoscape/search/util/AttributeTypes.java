@@ -43,7 +43,7 @@ public class AttributeTypes {
 
 	public static String TYPE_INTEGER = "java.lang.Integer";
 	
-	public static String TYPE_FLOATING = "java.lang.Float";
+	public static String TYPE_DOUBLE = "java.lang.Double";
 	
 	public static String TYPE_LIST = "java.util.List";
 	
