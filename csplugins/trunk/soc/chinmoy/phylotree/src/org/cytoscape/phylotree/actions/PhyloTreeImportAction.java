@@ -23,6 +23,10 @@ import org.forester.phylogeny.Phylogeny;
 import org.forester.phylogeny.PhylogenyNode;
 import org.forester.phylogeny.iterators.PhylogenyNodeIterator;
 
+import org.cytoscape.phylotree.visualstyle.LevelColor;
+import org.cytoscape.phylotree.visualstyle.PhyloVisualStyle;
+import org.cytoscape.phylotree.visualstyle.PhyloVisualStyleManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -57,7 +61,8 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 			loadnetwork_phyloXML(pFile);
 		}
 		
-
+		PhyloVisualStyleManager phyloVSMan = new PhyloVisualStyleManager();
+		phyloVSMan.addVisualStyle(new LevelColor());
 		
 	}
 	
@@ -241,7 +246,7 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 		NodeData nodeData = node.getNodeData();
 	
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-	
+		nodeAttributes.setAttribute(nodeID, "Degree", 2);
 		
 		// Check and assign node attributes
 		
