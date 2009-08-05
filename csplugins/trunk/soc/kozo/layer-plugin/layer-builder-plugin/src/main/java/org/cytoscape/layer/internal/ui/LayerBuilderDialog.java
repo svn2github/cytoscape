@@ -569,7 +569,7 @@ public class LayerBuilderDialog extends JDialog {
 
 		for (int i = 0; i < layeredNetworkListModel.getSize(); i++) {
 			CyNetwork cyNetwork = manager.getNetwork((Long) layeredNetworkListModel.getElementAt(i));
-			cyNetwork.attrs().set("layerIndex", i);
+			cyNetwork.attrs().set("layerIndex", Integer.toString(i));
 			layers.add(cyNetwork);
 		}
 

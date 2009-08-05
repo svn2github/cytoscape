@@ -68,7 +68,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		for (CyNode cyNode : topLayer.getNodeList()) {
 
 			String nodeName = cyNode.attrs().get("name", String.class);
-			Integer layerIndex = topLayer.attrs().get("layerIndex", Integer.class);
+			String layerIndex = topLayer.attrs().get("layerIndex", String.class);
 
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
@@ -129,7 +129,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		for (CyNode cyNode : bottomLayer.getNodeList()) {
 
 			String nodeName = cyNode.attrs().get("name", String.class);
-			Integer layerIndex = bottomLayer.attrs().get("layerIndex", Integer.class);
+			String layerIndex = bottomLayer.attrs().get("layerIndex", String.class);
 			
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
