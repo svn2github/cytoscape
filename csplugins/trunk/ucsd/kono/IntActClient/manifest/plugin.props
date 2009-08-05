@@ -8,11 +8,11 @@ pluginName=IntActWSClient
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=<html><body>Web Service Client for IntAct Database.  <p>Users can import network data from IntAct interaction database.  This is a web service client and accessible from other plugins through WebServiceClientManager.</p>
+pluginDescription=<html><body>Web Service Client for IntAct Database.  <p>Users can import network data from IntAct interaction database.  This is a web service client and accessible from other plugins through WebServiceClientManager.  This is minor update (bug fix only).</p>
 </body></html>
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.60
+pluginVersion=0.61
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6

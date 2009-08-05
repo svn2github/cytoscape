@@ -337,7 +337,6 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 			nodeAttr.setAttribute(aID, "official symbol", aliasA.get(0));
 		
 		if (a.getAliases().size() != 0) {
-			
 
 			for (Alias ref : a.getAliases()) {
 				aliasA.add(ref.getName());
@@ -347,8 +346,9 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 		nodeAttr.setListAttribute(aID, "aliases", aliasA);
 
 		if (a.hasOrganism() && (a.getOrganism().getIdentifiers().size() != 0)) {
-			nodeAttr.setAttribute(aID, "species",
-			                      a.getOrganism().getIdentifiers().iterator().next().getText());
+			final String value = a.getOrganism().getIdentifiers().iterator().next().getText();
+			if(value != null)
+				nodeAttr.setAttribute(aID, "species", value);
 		}
 
 		return aID;
