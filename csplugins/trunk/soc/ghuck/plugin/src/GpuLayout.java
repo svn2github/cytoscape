@@ -61,7 +61,7 @@ public class GpuLayout extends CytoscapePlugin {
 
 	// Check whether the static library is already extracted in the plugins folder, if not, extract it
 	File staticLib = new File ("./plugins/libGpuLayout.so");
-	if (!staticLib.exists()){
+	if (!staticLib.exists() || isOldVersion()){
 	    // Extract it
 	    try {
 		String home = getClass().getProtectionDomain().
@@ -92,8 +92,8 @@ public class GpuLayout extends CytoscapePlugin {
 		return;
 	    }
 	   
-	    String message = "First time use of GpuLayout Plugin\nExtracted required library to plugins folder"; 
-	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+	    //String message = "First time use of GpuLayout Plugin\nExtracted required library to plugins folder"; 
+	    //JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
 	}
 
 	
@@ -101,6 +101,10 @@ public class GpuLayout extends CytoscapePlugin {
 	CyLayouts.addLayout(new ForceDirected(), "GPU Assisted Layout");
 	
 
+    }
+
+    boolean isOldVersion(){
+	return true;
     }
     
 

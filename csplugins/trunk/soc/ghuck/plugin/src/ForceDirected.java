@@ -78,8 +78,6 @@ public class ForceDirected extends AbstractGraphPartition
 
     private String CUDA_PATH = "/usr/local/cuda/lib";
 
-    private double nodeSize = 2.0;
-
     private LayoutProperties layoutProperties;
 
 
@@ -121,8 +119,6 @@ public class ForceDirected extends AbstractGraphPartition
 
 	layoutProperties.add(new Tunable("CUDA_PATH", "CUDA instalation folder", Tunable.STRING , new String("/usr/local/cuda")));
 	
-	layoutProperties.add(new Tunable("nodeSize", "Final node size\n(0 for no change in size)", Tunable.DOUBLE , new Double(2.0)));
-
 	// Initialize layout properties
 	layoutProperties.initializeProperties();
 	
@@ -189,12 +185,6 @@ public class ForceDirected extends AbstractGraphPartition
 	if ((t6 != null) && (t6.valueChanged() || force))
 	    CUDA_PATH =  t6.getValue().toString();
 
-	// Get initialNoIterations
-	Tunable t7 = layoutProperties.get("nodeSize");
-	if ((t7 != null) && (t7.valueChanged() || force))
-	    nodeSize  = ((Double) t7.getValue()).doubleValue();
-
-
 	
 	// Show message on screen    
 	/*
@@ -204,8 +194,7 @@ public class ForceDirected extends AbstractGraphPartition
 	  + levelConvergence + "\n"         
 	  + edgeLen + "\n"                  
 	  + initialNoIterations + "\n"
-	  + CUDA_PATH + "\n"
-	  + nodeSize;
+	  + CUDA_PATH + "\n";
 	  
 	  JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
 	*/
@@ -242,6 +231,10 @@ public class ForceDirected extends AbstractGraphPartition
      * This function does the "heavy work" of the layout process
      */
     public void layoutPartion (LayoutPartition part) {
+
+	// Check whether it has been canceled by the user
+	if (canceled)
+	    return;
 
 	// Show message on the task monitor
 	taskMonitor.setStatus("Initializing: Partition: " + part.getPartitionNumber());
@@ -393,7 +386,36 @@ public class ForceDirected extends AbstractGraphPartition
 	// Check whether it has been canceled by the user
 	if (canceled)
 	    return;
-	
+
+	// Find which ratio is required to 'scale up' the node positions so that nodes don't overlap
+	double upRatio = 0.0;
+	double actualRatio = 0.0;
+
+	for (LayoutEdge edge: part.getEdgeList()) {
+	    LayoutNode n1 = edge.getSource();
+	    LayoutNode n2 = edge.getTarget();
+
+	    double n1Size = Math.max(n1.getHeight(), n1.getWidth());
+	    double n2Size = Math.max(n1.getHeight(), n1.getWidth());
+
+	    int n1Index = nodeList.indexOf(n1);
+	    int n2Index = nodeList.indexOf(n2);
+
+	    double edgeSize = Math.sqrt(   Math.pow(node_positions[n1Index][0] - node_positions[n2Index][0], 2)
+				         + Math.pow(node_positions[n1Index][1] - node_positions[n2Index][1], 2)
+				       );
+
+	    
+	    // actualRatio = minimun_desired_length / actual_length
+	    actualRatio = (n1Size + n2Size) / edgeSize;
+
+	    // Update upRatio if necessary
+	    if (actualRatio > upRatio)
+		upRatio = actualRatio;
+	}
+
+	upRatio = 2 * upRatio / 3;
+
 	// Update Node position
 	part.resetNodes(); // reset the nodes so we get the new average location
 
@@ -403,10 +425,6 @@ public class ForceDirected extends AbstractGraphPartition
 	// Create an iterator for processing the nodes
 	Iterator<LayoutNode> iterator2 = nodeList.iterator();
 
-	// Creates the appearance that we want to apply to nodes
-	Appearance appearance = new Appearance();
-
-	appearance.set(VisualPropertyType.NODE_SIZE, nodeSize);
 
 	while (iterator2.hasNext()){
 	    
@@ -414,15 +432,11 @@ public class ForceDirected extends AbstractGraphPartition
 	    LayoutNode node = (LayoutNode) iterator2.next();
 		
 	    // Set node's X and Y positions
-	    node.setX(node_positions[currentNode][0]);
-	    node.setY(node_positions[currentNode][1]);
+	    node.setX(upRatio * node_positions[currentNode][0]);
+	    node.setY(upRatio * node_positions[currentNode][1]);
 
 	    // Move node to desired location
 	    part.moveNodeToLocation(node);
-
-	    // Change node's size
-	    if (!node.isLocked() && nodeSize != 0.0)
-		appearance.applyAppearance(node.getNodeView());
 
 	    currentNode++;
 	}
