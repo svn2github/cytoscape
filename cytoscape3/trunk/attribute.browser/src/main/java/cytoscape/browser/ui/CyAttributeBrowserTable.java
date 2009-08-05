@@ -35,7 +35,7 @@ import cytoscape.data.Semantics;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.util.OpenBrowser;
-import cytoscape.util.swing.ColumnResizer;
+import org.cytoscape.util.swing.ColumnResizer;
 import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;

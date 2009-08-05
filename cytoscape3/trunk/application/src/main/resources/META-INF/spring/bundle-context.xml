@@ -51,10 +51,6 @@
 		<constructor-arg ref="cyMainProps" />
 	</bean>
 	
-	<bean name="fileUtil" class="cytoscape.internal.util.FileUtilImpl">
-		<constructor-arg ref="streamUtilServiceRef" />
-	</bean>
-
 	<bean name="cyHelpBroker" class="cytoscape.internal.view.CyHelpBrokerImpl">
 	</bean>
 
@@ -112,15 +108,6 @@
 		<constructor-arg ref="cytoscapeShutdown" />
 	</bean>
 
-	<!-- cyMain.  Currently working as a builder for application. 
-	<bean name="cyMain" class="cytoscape.CyMain">
-		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="cytoscapeVersion" />
-		<constructor-arg ref="fileUtil" />
-	</bean>
-	-->
-	
 	<!-- session support -->
 	<bean id="sessionShutdownHandler" class="cytoscape.internal.SessionShutdownHandler">
 		<constructor-arg ref="cytoscapeDesktop" />

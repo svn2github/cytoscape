@@ -42,7 +42,7 @@ import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.*;
 import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.LABEL_FONT;
 import static cytoscape.io.table.ui.theme.ImportDialogIconSets.*;
 import cytoscape.util.URLUtil;
-import cytoscape.util.swing.ColumnResizer;
+import org.cytoscape.util.swing.ColumnResizer;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;

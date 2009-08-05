@@ -13,7 +13,7 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
-import cytoscape.util.swing.CyAbstractEdit;
+import org.cytoscape.util.swing.CyAbstractEdit;
 
 
 /**

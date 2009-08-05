@@ -9,7 +9,7 @@ import cytoscape.filters.InteractionFilter;
 import cytoscape.filters.NodeInteractionFilter;
 import cytoscape.filters.TopologyFilter;
 import cytoscape.filters.util.FilterUtil;
-import cytoscape.util.swing.DropDownMenuButton;
+import org.cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelListener;

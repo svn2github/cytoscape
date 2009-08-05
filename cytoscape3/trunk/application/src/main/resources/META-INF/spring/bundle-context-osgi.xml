@@ -52,13 +52,6 @@
 	</osgi:reference>
 
 
-	<!--
-		<osgi:reference id="fileUtil"
-		interface="org.cytoscape.work.util.FileUtil">
-	-->
-	<!--	</osgi:reference>-->
-
-
 	<!-- define services that application provides -->
 
 	<!-- Props are manages in this service -->
@@ -330,9 +323,6 @@
 
 	<osgi:service id="aboutDialogFactoryService" ref="aboutDialogFactory"
 		interface="cytoscape.dialogs.AboutDialogFactory" />
-
-	<osgi:service id="fileUtilService" ref="fileUtil"
-		interface="cytoscape.util.FileUtil" />
 
 	<osgi:service id="selectRegisterListenerService" ref="selectRegisterListener"
 		interface="org.cytoscape.session.events.NetworkViewAddedListener" />

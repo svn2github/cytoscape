@@ -24,13 +24,6 @@
 	<packaging>bundle</packaging>
 	<dependencies>
 	
-		<!-- GUI -->
-		<dependency>
-			<groupId>org.cytoscape.wrappers</groupId>
-			<artifactId>org.swinglabs.swing-layout</artifactId>
-			<version>1.0.3</version>
-		</dependency>
-
 		<!-- unit testing -->
 		<dependency>
 			<groupId>org.junit</groupId>
@@ -161,6 +154,11 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-util</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
