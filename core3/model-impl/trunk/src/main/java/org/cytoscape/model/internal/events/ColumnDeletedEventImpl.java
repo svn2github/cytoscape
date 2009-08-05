@@ -48,7 +48,7 @@ public class ColumnDeletedEventImpl extends AbstractAttrEvent implements ColumnD
 	/**
 	 *
 	 */
-	public ColumnDeletedEventImpl(CyDataTable source, String columnName, Object oldValue, Object newValue) {
-		super(source,columnName,oldValue,newValue);
+	public ColumnDeletedEventImpl(CyDataTable source, String columnName) {
+		super(source,columnName,null, null);
 	}
 }

@@ -48,7 +48,7 @@ public class ColumnCreatedEventImpl extends AbstractAttrEvent implements ColumnC
 	/**
 	 *
 	 */
-	public ColumnCreatedEventImpl(CyDataTable source, String columnName, Object oldValue, Object newValue) {
-		super(source,columnName,oldValue,newValue);
+	public ColumnCreatedEventImpl(CyDataTable source, String columnName) {
+		super(source,columnName,null,null);
 	}
 }

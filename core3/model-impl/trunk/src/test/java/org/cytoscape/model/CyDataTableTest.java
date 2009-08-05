@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,34 +31,61 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.model;
 
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.event.internal.CyEventHelperImpl;
 import org.cytoscape.model.internal.CyDataTableImpl;
-
-import java.awt.Color;
-
-import java.lang.RuntimeException;
-
-import java.util.*;
-
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.springframework.osgi.mock.MockBundleContext;
+import org.springframework.osgi.mock.MockServiceReference;
 
 /**
  * DOCUMENT ME!
  */
 public class CyDataTableTest extends AbstractCyDataTableTest {
 
+	private ServiceReference reference;
+	private BundleContext bundleContext;
+	private Object service;
+	
+	 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 */
 	public void setUp() {
-		mgr = new CyDataTableImpl(null, "homer", true, null);
+		
+		reference = new MockServiceReference();
+		
+		bundleContext = new MockBundleContext() {
+
+			public ServiceReference getServiceReference(String clazz) {
+				return reference;
+			}
+
+			public ServiceReference[] getServiceReferences(String clazz, String filter) 
+					throws InvalidSyntaxException {
+				return new ServiceReference[] { reference };
+			}
+			
+			public Object getService(ServiceReference ref) {
+			    if (reference == ref)
+			       return service;
+			    
+			    return null;
+			}
+		};
+		CyEventHelper helper = new CyEventHelperImpl(bundleContext);
+		mgr = new CyDataTableImpl(null, "homer", true, helper);
 		attrs = mgr.getRow(1);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 */
 	public void tearDown() {
 		mgr = null;
