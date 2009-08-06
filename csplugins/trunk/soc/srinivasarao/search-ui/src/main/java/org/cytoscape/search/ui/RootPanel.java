@@ -1,4 +1,4 @@
-package org.cytoscape.search.internal;
+package org.cytoscape.search.ui;
 
 import java.awt.Component;
 import java.awt.Cursor;

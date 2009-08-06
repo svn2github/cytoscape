@@ -1,4 +1,4 @@
-package org.cytoscape.search.internal;
+package org.cytoscape.search.ui;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

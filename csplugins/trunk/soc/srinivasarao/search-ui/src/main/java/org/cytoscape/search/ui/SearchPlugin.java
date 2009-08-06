@@ -1,4 +1,4 @@
-package org.cytoscape.search;
+package org.cytoscape.search.ui;
 
 
 public interface SearchPlugin {

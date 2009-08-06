@@ -1,8 +1,7 @@
-package org.cytoscape.search.internal;
+package org.cytoscape.search.ui;
 
 import javax.swing.SwingConstants;
 
-import org.cytoscape.search.SearchPlugin;
 import org.cytoscape.session.CyNetworkManager;
 
 import cytoscape.view.CySwingApplication;

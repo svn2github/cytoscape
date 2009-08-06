@@ -3,4 +3,4 @@
 #-----------------------------------------------------------------
 
 Import-Package: *
-Export-Package: ${bundle.namespace}.internal
+Export-Package: ${bundle.namespace},${bundle.namespace}.ui
