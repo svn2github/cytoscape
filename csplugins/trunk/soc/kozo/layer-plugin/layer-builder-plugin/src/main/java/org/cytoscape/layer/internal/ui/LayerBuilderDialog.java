@@ -26,6 +26,7 @@ import javax.swing.JDialog;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.session.CyNetworkManager;
 
 /**
@@ -35,6 +36,7 @@ import org.cytoscape.session.CyNetworkManager;
 public class LayerBuilderDialog extends JDialog {
 
 	private static final String NETWORK_TITLE = "name";
+	private static final String LAYER_NUMBER = "layerNumber";
 	private static final Integer LAYER1 = 0;
 	private static final Integer LAYER2 = 1;
 	private static final Integer CONNECTOR = 2;
@@ -569,7 +571,15 @@ public class LayerBuilderDialog extends JDialog {
 
 		for (int i = 0; i < layeredNetworkListModel.getSize(); i++) {
 			CyNetwork cyNetwork = manager.getNetwork((Long) layeredNetworkListModel.getElementAt(i));
-			cyNetwork.attrs().set("layerIndex", Integer.toString(i));
+			
+			for (CyNode cyNode : cyNetwork.getNodeList()) {
+
+				System.out.println(Integer.toString(i));
+				cyNode.attrs().set(LAYER_NUMBER, Integer.toString(i));
+				System.out.println(cyNode.attrs().get(LAYER_NUMBER, String.class));
+				
+			}
+			
 			layers.add(cyNetwork);
 		}
 

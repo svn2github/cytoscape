@@ -19,6 +19,11 @@ import org.cytoscape.session.CyNetworkManager;
  */
 public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
+	private static final String NETWORK_TITLE = "name";
+	private static final String NODE_TITLE = "name";
+	private static final String EDGE_TITLE = "name";
+	private static final String LAYER_NUMBER = "layerNumber";
+	
 	private CyNetworkManager manager;
 	private CyNetwork layeredNetwork;
 	private CyNetworkFactory factory;
@@ -35,7 +40,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			List<CyNetwork> connectors) {
 
 		layeredNetwork = factory.getInstance();
-		layeredNetwork.attrs().set("name", "Layered Network");
+		layeredNetwork.attrs().set(NETWORK_TITLE, "Layered Network");
 
 		// HashSet cumulatedNodes = new HashSet();
 		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
@@ -67,29 +72,29 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		// 1st Phase: add all nodes in the top layer
 		for (CyNode cyNode : topLayer.getNodeList()) {
 
-			String nodeName = cyNode.attrs().get("name", String.class);
-			String layerIndex = topLayer.attrs().get("layerIndex", String.class);
+			String nodeName = cyNode.attrs().get(NODE_TITLE, String.class);
+//			String layerNumber = cyNode.attrs().get(LAYER_NUMBER, String.class);
 
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
-				newNode.attrs().set("name", nodeName);
-				newNode.attrs().set("layerIndex", layerIndex);
+				newNode.attrs().set(NODE_TITLE, nodeName);
+//				newNode.attrs().set(LAYER_NUMBER, layerNumber);
 				nodeMap.put(nodeName, newNode);
 			}
 		}
 
 		for (CyEdge edge : topLayer.getEdgeList()) {
 
-			String edgeName = edge.attrs().get("name", String.class);
+			String edgeName = edge.attrs().get(NETWORK_TITLE, String.class);
 			CyNode sourceNode = edge.getSource();
-			String sourceName = sourceNode.attrs().get("name", String.class);
+			String sourceName = sourceNode.attrs().get(NODE_TITLE, String.class);
 			CyNode targetNode = edge.getTarget();
-			String targetName = targetNode.attrs().get("name", String.class);
+			String targetName = targetNode.attrs().get(NODE_TITLE, String.class);
 
 			if (edgeMap.containsKey(edgeName) == false) {
 				CyEdge newEdge = layeredNetwork.addEdge(
 						nodeMap.get(sourceName), nodeMap.get(targetName), true);
-				newEdge.attrs().set("name", edgeName);
+				newEdge.attrs().set(EDGE_TITLE, edgeName);
 				edgeMap.put(edgeName, newEdge);
 			}
 
@@ -98,11 +103,11 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		// 2nd Phase: append nodes only included in connector
 		for (CyNode cyNode : connector.getNodeList()) {
 
-			String nodeName = cyNode.attrs().get("name", String.class);
+			String nodeName = cyNode.attrs().get(NODE_TITLE, String.class);
 			
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
-				newNode.attrs().set("name", nodeName);
+				newNode.attrs().set(NODE_TITLE, nodeName);
 				nodeMap.put(nodeName, newNode);
 			}
 
@@ -110,16 +115,16 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 		for (CyEdge edge : connector.getEdgeList()) {
 
-			String edgeName = edge.attrs().get("name", String.class);
+			String edgeName = edge.attrs().get(EDGE_TITLE, String.class);
 			CyNode sourceNode = edge.getSource();
-			String sourceName = sourceNode.attrs().get("name", String.class);
+			String sourceName = sourceNode.attrs().get(NODE_TITLE, String.class);
 			CyNode targetNode = edge.getTarget();
-			String targetName = targetNode.attrs().get("name", String.class);
+			String targetName = targetNode.attrs().get(NODE_TITLE, String.class);
 
 			if (edgeMap.containsKey(edgeName) == false) {
 				CyEdge newEdge = layeredNetwork.addEdge(
 						nodeMap.get(sourceName), nodeMap.get(targetName), true);
-				newEdge.attrs().set("name", edgeName);
+				newEdge.attrs().set(EDGE_TITLE, edgeName);
 				edgeMap.put(edgeName, newEdge);
 			}
 
@@ -128,13 +133,13 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		// 3rd Phase: append nodes only included in bottom layer
 		for (CyNode cyNode : bottomLayer.getNodeList()) {
 
-			String nodeName = cyNode.attrs().get("name", String.class);
-			String layerIndex = bottomLayer.attrs().get("layerIndex", String.class);
+			String nodeName = cyNode.attrs().get(NODE_TITLE, String.class);
+//			String layerNumber = cyNode.attrs().get(LAYER_NUMBER, String.class);
 			
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
-				newNode.attrs().set("name", nodeName);
-				newNode.attrs().set("layerIndex", layerIndex);				
+				newNode.attrs().set(NODE_TITLE, nodeName);
+//				newNode.attrs().set(LAYER_NUMBER, layerNumber);				
 				nodeMap.put(nodeName, newNode);
 			}
 
@@ -142,16 +147,16 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 		for (CyEdge edge : bottomLayer.getEdgeList()) {
 
-			String edgeName = edge.attrs().get("name", String.class);
+			String edgeName = edge.attrs().get(EDGE_TITLE, String.class);
 			CyNode sourceNode = edge.getSource();
-			String sourceName = sourceNode.attrs().get("name", String.class);
+			String sourceName = sourceNode.attrs().get(NODE_TITLE, String.class);
 			CyNode targetNode = edge.getTarget();
-			String targetName = targetNode.attrs().get("name", String.class);
+			String targetName = targetNode.attrs().get(NODE_TITLE, String.class);
 
 			if (edgeMap.containsKey(edgeName) == false) {
 				CyEdge newEdge = layeredNetwork.addEdge(
 						nodeMap.get(sourceName), nodeMap.get(targetName), true);
-				newEdge.attrs().set("name", edgeName);
+				newEdge.attrs().set(EDGE_TITLE, edgeName);
 				edgeMap.put(edgeName, newEdge);
 			}
 
