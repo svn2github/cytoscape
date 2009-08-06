@@ -156,6 +156,9 @@ public class GroupHandler implements MouseListener, MouseMotionListener, Propert
 
 	private static final String REGION_NETWORK_ATT = "__Region_network";
 
+	private boolean nodeDragged = false;
+	private List<LayoutRegion> affectedRegions = null;
+	
 	/**
 	 * String used to compare against os.name System property -
 	 * to determine if we are running on Windows platform.
@@ -247,23 +250,24 @@ public class GroupHandler implements MouseListener, MouseMotionListener, Propert
 				return;
 			}
 			// The group belong to one or more groups
+			nodeDragged = true;
 			//System.out.println("drag on a node belong to group, expand their boxes");
 
 			List<LayoutRegion> regionList = LayoutRegionManager.getRegionListForView(Cytoscape.getCurrentNetworkView());
-			List<LayoutRegion> regions = new ArrayList<LayoutRegion>();
+			affectedRegions = new ArrayList<LayoutRegion>();
 			
 			for (int i=0; i< groupList.size(); i++){
 				for (int j=0; j< regionList.size(); j++){		
 					if (groupList.get(i)== regionList.get(j).getMyGroup()){
-						regions.add(regionList.get(j));
+						affectedRegions.add(regionList.get(j));
 					}
 				}
 			}
 			
 			// expand boxes if the nodeView moves outside the box
-			for (int i=0; i< regions.size(); i++){
-				System.out.println("region to be expand: "+ regions.get(i).getMyGroup().getGroupName());
-				regions.get(i).expand(Cytoscape.getCurrentNetworkView().getNodeView(node));
+			for (int i=0; i< affectedRegions.size(); i++){
+				//System.out.println("region to be expand: "+ affectedRegions.get(i).getMyGroup().getGroupName());
+				affectedRegions.get(i).expand(Cytoscape.getCurrentNetworkView().getNodeView(node));
 			}
 
 			return;
@@ -358,6 +362,13 @@ public class GroupHandler implements MouseListener, MouseMotionListener, Propert
 			dragging = false;
 		}
 
+		if (nodeDragged){
+			if (affectedRegions != null){
+				for (int i=0; i< affectedRegions.size(); i++){
+					affectedRegions.get(i).refresh(); // adjust the box size
+				}
+			}
+		}
 		// reset all flags
 		moving = false;
 		dragging = false;
@@ -365,6 +376,9 @@ public class GroupHandler implements MouseListener, MouseMotionListener, Propert
 		stretching = false;
 		regionToStretch = null;
 		edgeBeingStretched = NOT_ON_EDGE;
+		nodeDragged = false;
+		affectedRegions = null;
+		
 		((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 				.setSelecting(true);
 		((DGraphView) Cytoscape.getCurrentNetworkView()).enableNodeSelection();

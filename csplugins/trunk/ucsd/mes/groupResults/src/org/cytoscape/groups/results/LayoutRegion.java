@@ -856,4 +856,9 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 		
 		return xy;
 	}
+	
+	public void refresh(){
+		double[] region = getRectValues(myGroup);
+		setBounds(region[0], region[1], region[2], region[3]);
+	}
 }
