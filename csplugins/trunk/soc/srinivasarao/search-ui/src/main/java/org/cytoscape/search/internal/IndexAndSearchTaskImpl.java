@@ -44,8 +44,13 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.work.TaskMonitor;
 
-public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
+public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 
+	private CyNetwork network;
+	private String query;
+	private TaskMonitor taskMonitor;
+	private boolean interrupted = false;
+	
 	/**
 	 * Constructor.
 	 * 
@@ -55,7 +60,8 @@ public class IndexAndSearchTaskImpl extends IndexAndSearchTask {
 	 *            Query string.
 	 */
 	public IndexAndSearchTaskImpl(CyNetwork network, String query) {
-		super(network, query);
+		this.network = network;
+		this.query = query;
 	}
 
 	/**
