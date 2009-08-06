@@ -20,6 +20,6 @@ public class SearchPluginImpl implements SearchPlugin{
 
 	public void initPanel() {
 		SearchPanel esp = SearchPanelFactory.getGlobalInstance(netmgr);
-		desktop.getCytoPanel(SwingConstants.EAST).add(esp);
+		desktop.getCytoPanel(SwingConstants.EAST).add("Query Builder",esp);
 	}
 }
