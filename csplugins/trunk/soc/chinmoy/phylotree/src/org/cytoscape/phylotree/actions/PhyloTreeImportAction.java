@@ -23,7 +23,7 @@ import org.forester.phylogeny.Phylogeny;
 import org.forester.phylogeny.PhylogenyNode;
 import org.forester.phylogeny.iterators.PhylogenyNodeIterator;
 
-import org.cytoscape.phylotree.visualstyle.LevelColor;
+import org.cytoscape.phylotree.visualstyle.DepthwiseColor;
 import org.cytoscape.phylotree.visualstyle.PhyloVisualStyle;
 import org.cytoscape.phylotree.visualstyle.PhyloVisualStyleManager;
 
@@ -61,8 +61,9 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 			loadnetwork_phyloXML(pFile);
 		}
 		
+		// Add the phylogenetic tree specific visual styles
 		PhyloVisualStyleManager phyloVSMan = new PhyloVisualStyleManager();
-		phyloVSMan.addVisualStyle(new LevelColor());
+		phyloVSMan.addVisualStyle(new DepthwiseColor());
 		
 	}
 	
@@ -247,13 +248,7 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 	
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		
-		if(nodeID.equals("A")||nodeID.equals("B")||nodeID.equals("C"))
-			nodeAttributes.setAttribute(nodeID, "Degree", 1);
-		else if(nodeID.equals("Node0"))
-			nodeAttributes.setAttribute(nodeID, "Degree", 2);
-		else
-			nodeAttributes.setAttribute(nodeID, "Degree", 3);
-				
+
 		// Check and assign node attributes
 		
 		if(nodeData.isHasTaxonomy())

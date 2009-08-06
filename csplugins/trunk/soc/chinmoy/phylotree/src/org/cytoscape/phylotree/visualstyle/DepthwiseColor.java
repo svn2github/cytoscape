@@ -34,17 +34,17 @@ import java.util.List;
 import org.cytoscape.phylotree.layout.CommonFunctions;
 
 
-public class LevelColor implements PhyloVisualStyle {
+public class DepthwiseColor implements PhyloVisualStyle {
 	
 	public String getName()
 	{
-		return "LevelColor";
+		return "DepthwiseColor";
 	}
 	
 	public VisualStyle createStyle(CyNetwork network)
 	{
 		
-		// Add attributes defining node level
+		// Add attributes defining node depth
 		addDepthAttributes(network);
 		
 		NodeAppearanceCalculator nodeAppCalc = new NodeAppearanceCalculator();
@@ -53,7 +53,6 @@ public class LevelColor implements PhyloVisualStyle {
 		
 		// Set the background
 		globalAppCalc.setDefaultBackgroundColor(Color.BLACK);
-	//	globalAppCalc.setDefaultBackgroundColor(Color.WHITE);
 		
 
 		// Passthrough Mapping - set node label 
@@ -62,13 +61,7 @@ public class LevelColor implements PhyloVisualStyle {
 		
 		nodeAppCalc.setCalculator(nlc);
 
-		// Set node label color
-//		DiscreteMapping disColorMapping = new DiscreteMapping(Color.WHITE, ObjectMapping.NODE_MAPPING);
-//		disColorMapping.setControllingAttributeName("Level", network, false);
-//		Calculator labelColorCalculator = new BasicCalculator("Node Label Color Calculator", disColorMapping, VisualPropertyType.NODE_LABEL_COLOR);
-//		nodeAppCalc.setCalculator(labelColorCalculator);
-
-		
+		// Add node appearance specific settings
 		NodeAppearance nodeApp = new NodeAppearance();
 		nodeApp.set(VisualPropertyType.NODE_SHAPE, NodeShape.ELLIPSE);
 		nodeApp.set(VisualPropertyType.NODE_LABEL_COLOR, Color.WHITE);
@@ -78,7 +71,7 @@ public class LevelColor implements PhyloVisualStyle {
 		
 		nodeAppCalc.setDefaultAppearance(nodeApp);
 		
-		
+		// Add edge appearance specific settings
 		EdgeAppearance edgeApp = new EdgeAppearance();
 		edgeApp.set(VisualPropertyType.EDGE_LABEL_COLOR, Color.WHITE);
 		edgeApp.set(VisualPropertyType.EDGE_FONT_SIZE,20);
@@ -86,66 +79,19 @@ public class LevelColor implements PhyloVisualStyle {
 		edgeAppCalc.setDefaultAppearance(edgeApp);
 		
 		
-		// Discrete Mapping - set node shapes 
-//		DiscreteMapping disMapping = new DiscreteMapping(NodeShape.ELLIPSE, ObjectMapping.NODE_MAPPING);
-//		disMapping.setControllingAttributeName("Level", network, false);
-//		disMapping.putMapValue(new Integer(0), NodeShape.ELLIPSE);
-//		disMapping.putMapValue(new Integer(1), NodeShape.ELLIPSE);
-//		disMapping.putMapValue(new Integer(2), NodeShape.ELLIPSE);
-
-//		Calculator shapeCalculator = new BasicCalculator("Node Shape Calculator",
-	//	                                                  disMapping,VisualPropertyType.NODE_SHAPE);
-		//nodeAppCalc.setCalculator(shapeCalculator);
-
-
-//		// Continuous Mapping - set node color 
-//		ContinuousMapping continuousMapping = new ContinuousMapping(Color.WHITE, 
-//                                                            ObjectMapping.NODE_MAPPING);
-//		continuousMapping.setControllingAttributeName("ID", network, false);
-//
-//        Interpolator numToColor = new LinearNumberToColorInterpolator();
-//        continuousMapping.setInterpolator(numToColor);
-//
-//		Color underColor = Color.GRAY;
-//		Color minColor = Color.RED;
-//		Color midColor = Color.WHITE;
-//		Color maxColor = Color.GREEN;
-//		Color overColor = Color.BLUE;
-//
-//		// Create boundary conditions                     less than,   equals,  greater than
-//		BoundaryRangeValues bv0 = new BoundaryRangeValues(underColor, minColor, minColor);
-//		BoundaryRangeValues bv1 = new BoundaryRangeValues(midColor, midColor, midColor);
-//		BoundaryRangeValues bv2 = new BoundaryRangeValues(maxColor, maxColor, overColor);
-//
-//        // Set the attribute point values associated with the boundary values 
-//		continuousMapping.addPoint(0.0, bv0);
-//		continuousMapping.addPoint(1.0, bv1);
-//		continuousMapping.addPoint(2.0, bv2);
-//		
-//		Calculator nodeColorCalculator = new BasicCalculator("Example Node Color Calc", 
-//		                                                continuousMapping, 
-//													 VisualPropertyType.NODE_FILL_COLOR);
 		nodeAppCalc.setCalculator(createNodeColorCalculator(network));
-		
-
-		// Discrete Mapping - Set edge target arrow shape	
-//		DiscreteMapping arrowMapping = new DiscreteMapping(ArrowShape.NONE,
-//		                                                   ObjectMapping.EDGE_MAPPING);
-//		arrowMapping.setControllingAttributeName("interaction", network, false);
-//		arrowMapping.putMapValue("pp", ArrowShape.ARROW);
-//		arrowMapping.putMapValue("pd", ArrowShape.CIRCLE);
-//
-//		Calculator edgeArrowCalculator = new BasicCalculator("Example Edge Arrow Shape Calculator",
-//                                              arrowMapping, VisualPropertyType.EDGE_TGTARROW_SHAPE);
-//		edgeAppCalc.setCalculator(edgeArrowCalculator);
 		edgeAppCalc.setCalculator(createEdgeColorCalculator(network));
 
 		// Create the visual style 
-		VisualStyle visualStyle = new VisualStyle("LevelColor", nodeAppCalc, edgeAppCalc, globalAppCalc);
+		VisualStyle visualStyle = new VisualStyle("DepthwiseColor", nodeAppCalc, edgeAppCalc, globalAppCalc);
 
 		return visualStyle;
 	}
 
+	/**
+	 * Calculates the depth of each node and assigns as a hidden attribute to the node and the edge
+	 * @param network - the network to be manipulated
+	 */
 	private void addDepthAttributes(CyNetwork network)
 	{
 		// Get all nodes
@@ -166,17 +112,25 @@ public class LevelColor implements PhyloVisualStyle {
 			
 			nodeAttributes.setAttribute(node.getIdentifier(), "Depth", depth);
 			
+			
 			int [] edgeIndicesArray =network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true); 
 			for(int i = 0; i<edgeIndicesArray.length; i++)
 			{
 				Edge edge = network.getEdge(edgeIndicesArray[i]);
 				edgeAttributes.setAttribute(edge.getIdentifier(),"Depth", depth);
-				
 			}
 		}
 		
+		nodeAttributes.setUserVisible("Depth", false);
+		edgeAttributes.setUserVisible("Depth", false);
+		
 	}
 	
+	/**
+	 * Creates the calculator that assigns node color on a continuous gradient based on node depth
+	 * @param network - the network containing the nodes to be colored
+	 * @return - the node color calculator
+	 */
 	private Calculator createNodeColorCalculator(CyNetwork network) {
 		// Determine the min and max for degree
 		CyAttributes cyNodeAttrs = Cytoscape.getNodeAttributes();
@@ -213,18 +167,18 @@ public class LevelColor implements PhyloVisualStyle {
 		cm.setInterpolator(numToColor);
 		
 		// Power of the Sun
-		Color underColor = new Color(87,12,12);
-		Color minColor = new Color(91,33,15);
-		Color midColor = new Color(121,67,44);
-		Color maxColor = new Color(134,91,39);
-		Color overColor = new Color(151,136,53);
+//		Color underColor = new Color(87,12,12);
+//		Color minColor = new Color(91,33,15);
+//		Color midColor = new Color(121,67,44);
+//		Color maxColor = new Color(134,91,39);
+//		Color overColor = new Color(151,136,53);
 				
 		// Dark Knight
-//		Color underColor = new Color(8,33,75);
-//		Color minColor = new Color(30,55,98);
-//		Color midColor = new Color(55,82,127);
-//		Color maxColor = new Color(105,126,160);
-//		Color overColor = new Color(131,149,177);
+		Color underColor = new Color(8,33,75);
+		Color minColor = new Color(30,55,98);
+		Color midColor = new Color(55,82,127);
+		Color maxColor = new Color(105,126,160);
+		Color overColor = new Color(131,149,177);
 		
 		
 		// Froggy electric
@@ -248,6 +202,11 @@ public class LevelColor implements PhyloVisualStyle {
 		return new BasicCalculator("Node Color calcualtor", cm, VisualPropertyType.NODE_FILL_COLOR);			
 	}
 
+	/**
+	 * Creates a calculator for edge color
+	 * @param network - the network containing the edges
+	 * @return - the calculator for edge color
+	 */
 	private Calculator createEdgeColorCalculator(CyNetwork network) {
 		// Determine the min and max for degree
 		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
@@ -283,11 +242,11 @@ public class LevelColor implements PhyloVisualStyle {
 		Interpolator numToColor = new LinearNumberToColorInterpolator();
 		cm.setInterpolator(numToColor);
 
-		Color underColor = new Color(87,12,12);
-		Color minColor = new Color(91,33,15);
-		Color midColor = new Color(121,67,44);
-		Color maxColor = new Color(134,91,39);
-		Color overColor = new Color(151,136,53);
+		Color underColor = new Color(8,33,75);
+		Color minColor = new Color(30,55,98);
+		Color midColor = new Color(55,82,127);
+		Color maxColor = new Color(105,126,160);
+		Color overColor = new Color(131,149,177);
 		
 		BoundaryRangeValues bv0 = new BoundaryRangeValues(underColor, minColor, minColor);
 		BoundaryRangeValues bv1 = new BoundaryRangeValues(midColor, midColor, midColor);
