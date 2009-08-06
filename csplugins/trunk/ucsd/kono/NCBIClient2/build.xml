@@ -26,11 +26,11 @@
 		<property name="ncbiClient.root.dir" value="." />
 
 		<!-- You need to modify this line to point to Cytoscape directory.  -->
-		<property name="cytoscape.dir" value="${ncbiClient.root.dir}/../FRESH4" />
+		<property name="cytoscape.dir" value="${ncbiClient.root.dir}/../cytoscape" />
 
 		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
 		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
-		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.5.0" />
+		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.6.3" />
 
 		<!-- JUnit report directory -->
 		<property name="junit.report.dir" value="${ncbiClient.root.dir}/junit-reports" />
