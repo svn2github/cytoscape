@@ -272,6 +272,28 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Find the depth of the node (Root is depth 0)
+	 * @param node - the node whose depth is to be found
+	 * @return the depth of the node
+	 */
+	public int getDepth(CyNetwork network, Node node)
+	{
+		if(network.getInDegree(node, false) == 0)
+			{
+			return 0;
+			}
+		else
+		{
+			int [] incomingEdges = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false);
+			
+			int depth= getDepth(network, network.getEdge(incomingEdges[0]).getSource());
+				
+			
+
+			return depth+1;
+		}
+	}
+	/**
 	 * Calculate the number of leaves in the tree
 	 * @return - the number of leaves in the tree
 	 */

@@ -246,8 +246,14 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 		NodeData nodeData = node.getNodeData();
 	
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		nodeAttributes.setAttribute(nodeID, "Degree", 2);
 		
+		if(nodeID.equals("A")||nodeID.equals("B")||nodeID.equals("C"))
+			nodeAttributes.setAttribute(nodeID, "Degree", 1);
+		else if(nodeID.equals("Node0"))
+			nodeAttributes.setAttribute(nodeID, "Degree", 2);
+		else
+			nodeAttributes.setAttribute(nodeID, "Degree", 3);
+				
 		// Check and assign node attributes
 		
 		if(nodeData.isHasTaxonomy())
