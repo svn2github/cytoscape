@@ -1,13 +1,10 @@
 package org.cytoscape.search;
 
-import org.cytoscape.session.CyNetworkManager;
 
-import cytoscape.view.CySwingApplication;
+public interface SearchPlugin {
 
-public abstract class SearchPlugin {
-
-	protected CySwingApplication desktop;
-	protected CyNetworkManager netmgr;
+	//protected CySwingApplication desktop;
+	//protected CyNetworkManager netmgr;
 
 /*	public SearchPlugin(CySwingApplication desk, CyNetworkManager nm) {
 		this.desktop = desk;
@@ -16,5 +13,5 @@ public abstract class SearchPlugin {
 		System.out.println("I am in SearchPlugin of search-ui");
 	}
 */
-	abstract public void initPanel() ;
+	public void initPanel() ;
 }

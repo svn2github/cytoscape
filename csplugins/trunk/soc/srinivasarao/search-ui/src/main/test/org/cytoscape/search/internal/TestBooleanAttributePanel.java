@@ -5,6 +5,8 @@ import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
+import org.cytoscape.search.ui.BooleanAttributePanel;
+
 public class TestBooleanAttributePanel {
 
 	private JFrame jf = new JFrame();

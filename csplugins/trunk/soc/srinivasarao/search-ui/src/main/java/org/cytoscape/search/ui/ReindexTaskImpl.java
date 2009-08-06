@@ -41,6 +41,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.search.ReindexTask;
+import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
+import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
 
 public class ReindexTaskImpl extends ReindexTask implements Task {
 

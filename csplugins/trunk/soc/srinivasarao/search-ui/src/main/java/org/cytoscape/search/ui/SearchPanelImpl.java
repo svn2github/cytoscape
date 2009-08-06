@@ -14,6 +14,7 @@ import javax.swing.JSplitPane;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.search.EnhancedSearch;
+import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
 import org.cytoscape.search.util.AttributeTypes;
 import org.cytoscape.session.CyNetworkManager;
 

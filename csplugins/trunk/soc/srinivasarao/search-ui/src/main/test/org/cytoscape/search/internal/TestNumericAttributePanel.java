@@ -12,6 +12,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.internal.ArrayGraph;
+import org.cytoscape.search.ui.NumericAttributePanel;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.internal.NetworkManager;
 

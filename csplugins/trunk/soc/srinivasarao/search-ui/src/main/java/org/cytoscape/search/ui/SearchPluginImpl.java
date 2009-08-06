@@ -7,8 +7,11 @@ import org.cytoscape.session.CyNetworkManager;
 
 import cytoscape.view.CySwingApplication;
 
-public class SearchPluginImpl extends SearchPlugin{
+public class SearchPluginImpl implements SearchPlugin{
 
+	private CySwingApplication desktop;
+	private CyNetworkManager netmgr;
+	
 	public SearchPluginImpl(CySwingApplication desk, CyNetworkManager nm) {
 		this.desktop = desk;
 		this.netmgr = nm;

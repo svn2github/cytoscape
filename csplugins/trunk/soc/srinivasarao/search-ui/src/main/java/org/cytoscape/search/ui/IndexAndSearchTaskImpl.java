@@ -39,6 +39,9 @@ import java.util.ArrayList;
 import org.apache.lucene.store.RAMDirectory;
 
 import org.cytoscape.search.*;
+import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
+import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
+import org.cytoscape.search.internal.EnhancedSearchQueryImpl;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
