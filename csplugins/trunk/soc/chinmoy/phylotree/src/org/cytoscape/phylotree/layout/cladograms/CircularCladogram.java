@@ -15,22 +15,22 @@ import giny.model.Edge;
 import giny.model.Node;
 
 public class CircularCladogram extends AbstractLayout{
-	
+
 	static double BASE_RADIUS = 100.0;
-	
+
 	private LayoutProperties layoutProperties;
-	
+
 	CommonFunctions commonFunctions = new CommonFunctions();
-	
+
 	private int numLeavesVisited = 0; //
-	
+
 	public CircularCladogram()
 	{
 		super();
 		layoutProperties = new LayoutProperties(getName());
 		initialize_properties();		
 	}
-	
+
 	protected void initialize_properties()
 	{	
 		layoutProperties.initializeProperties();
@@ -44,7 +44,7 @@ public class CircularCladogram extends AbstractLayout{
 	public void updateSettings() {
 		updateSettings(false);
 	}
-	
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -100,67 +100,72 @@ public class CircularCladogram extends AbstractLayout{
 		BASE_RADIUS += radius;
 		construct();
 	}
-	
+
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
-		
 
-		// Find the root of the tree
-		Node root = commonFunctions.getTreeRoot(network);
+		// Verify that tree is indeed a tree
 
-		// Remove bends
-
-		List<Edge> allEdges = network.edgesList();
-		Iterator<Edge> edgesIterator = allEdges.iterator();
-
-		while(edgesIterator.hasNext())
+		if(commonFunctions.hasLeaf(network)&&commonFunctions.isTree(network))
 		{
+			// Find the root of the tree
+			Node root = commonFunctions.getTreeRoot(network);
 
-			Edge edge = edgesIterator.next();
-			networkView.getEdgeView(edge).clearBends();
+			// Remove bends
+
+			List<Edge> allEdges = network.edgesList();
+			Iterator<Edge> edgesIterator = allEdges.iterator();
+
+			while(edgesIterator.hasNext())
+			{
+
+				Edge edge = edgesIterator.next();
+				networkView.getEdgeView(edge).clearBends();
+			}
+			numLeavesVisited = 0;
+
+			// Obtain post order traversal of nodes starting from the root
+			List<Node> postOrderNodes = commonFunctions.postOrderTraverse(network, root);
+
+			// Position each node
+			Iterator<Node> it = postOrderNodes.iterator();
+			while(it.hasNext())
+			{
+				Node node = it.next();
+
+
+				// If leaf position it accordingly
+				if(network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true).length == 0)
+					positionLeaf(node);
+				else
+					positionInternalNode(node);
+
+
+
+			}
+
+			// Bend each edge to make it look circular
+
+			allEdges = network.edgesList();
+			edgesIterator = allEdges.iterator();
+
+			while(edgesIterator.hasNext())
+			{
+
+				Edge edge = edgesIterator.next();
+				networkView.getEdgeView(edge).clearBends();
+				commonFunctions.addCircularBends(network, networkView, edge);
+			}
+
 		}
-		numLeavesVisited = 0;
-
-		// Obtain post order traversal of nodes starting from the root
-		List<Node> postOrderNodes = commonFunctions.postOrderTraverse(network, root);
-
-		// Position each node
-		Iterator<Node> it = postOrderNodes.iterator();
-		while(it.hasNext())
-		{
-			Node node = it.next();
-			
-		
-			// If leaf position it accordingly
-			if(network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true).length == 0)
-				positionLeaf(node);
-			else
-				positionInternalNode(node);
-				
-				
-			
-		}
-		
-		// Bend each edge to make it look circular
-
-		allEdges = network.edgesList();
-		edgesIterator = allEdges.iterator();
-
-		while(edgesIterator.hasNext())
-		{
-
-			Edge edge = edgesIterator.next();
-			networkView.getEdgeView(edge).clearBends();
-			commonFunctions.addCircularBends(network, networkView, edge);
-		}
+		else
+			System.out.println("The "+getName()+" layout can only be applied to trees.");
 
 
-		
-	
 	}
-	
-	
+
+
 	/**
 	 * positionLeaf(Node)
 	 * Positions the leaves
@@ -179,9 +184,9 @@ public class CircularCladogram extends AbstractLayout{
 
 		networkView.getNodeView(node).setXPosition(nodeX,true);
 		networkView.getNodeView(node).setYPosition(nodeY, true);	
-		
+
 	}
-	
+
 	/**
 	 * positionInternalNode(Node)
 	 * Positions the internal nodes
@@ -225,7 +230,7 @@ public class CircularCladogram extends AbstractLayout{
 		double nodeX = radius * Math.cos(meanAngle); 
 		double nodeY = radius * Math.sin(meanAngle); 
 
-		
+
 		// Position
 		networkView.getNodeView(node).setXPosition(nodeX,true);
 		networkView.getNodeView(node).setYPosition(nodeY, true);
@@ -233,6 +238,6 @@ public class CircularCladogram extends AbstractLayout{
 
 	}
 
-	
+
 
 }

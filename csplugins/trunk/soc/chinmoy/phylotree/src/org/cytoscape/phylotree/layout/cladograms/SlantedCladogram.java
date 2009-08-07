@@ -105,7 +105,8 @@ public class SlantedCladogram extends AbstractLayout{
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
 
-
+		if(commonFunctions.hasLeaf(network)&&commonFunctions.isTree(network))
+		{
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 		// Remove bends
@@ -139,7 +140,10 @@ public class SlantedCladogram extends AbstractLayout{
 				
 			
 		}
-	
+	}
+	else
+		System.out.println("The "+getName()+" layout can only be applied to trees.");
+
 	}
 	
 	

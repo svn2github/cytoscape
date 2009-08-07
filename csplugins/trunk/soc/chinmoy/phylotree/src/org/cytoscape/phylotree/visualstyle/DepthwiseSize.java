@@ -116,9 +116,24 @@ public class DepthwiseSize implements PhyloVisualStyle {
 			{
 				Edge edge = network.getEdge(edgeIndicesArray[i]);
 				edgeAttributes.setAttribute(edge.getIdentifier(),"Depth", depth);
+				
 			}
 		}
 		
+		List<Edge> edgeList = network.edgesList();
+		Iterator<Edge> edgeListIterator = edgeList.iterator();
+		
+		while(edgeListIterator.hasNext())
+		{
+			Edge edge = edgeListIterator.next();
+			if(edge.getSource().getRootGraphIndex() == edge.getTarget().getRootGraphIndex())
+				{ 
+					int depth = nodeAttributes.getIntegerAttribute(edge.getSource().getIdentifier(), "Depth");
+					edgeAttributes.setAttribute(edge.getIdentifier(),"Depth",depth);
+				}
+		}
+		
+			
 		nodeAttributes.setUserVisible("Depth", false);
 		edgeAttributes.setUserVisible("Depth", false);
 		

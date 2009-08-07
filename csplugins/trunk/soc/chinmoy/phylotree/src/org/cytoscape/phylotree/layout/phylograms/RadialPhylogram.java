@@ -115,7 +115,8 @@ public class RadialPhylogram extends AbstractLayout{
 
 		// Intialize the common functions
 		commonFunctions = new CommonFunctions();
-
+		if(commonFunctions.hasLeaf(network)&&commonFunctions.isTree(network))
+		{
 		// Remove bends
 
 		List<Edge> allEdges = network.edgesList();
@@ -162,6 +163,9 @@ public class RadialPhylogram extends AbstractLayout{
 		}
 				
 		
+	}
+	else
+		System.out.println("The "+getName()+" layout can only be applied to trees.");
 
 
 	}

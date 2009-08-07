@@ -117,6 +117,9 @@ public class SlantedPhylogram extends AbstractLayout{
 
 		// Intialize the common functions
 		commonFunctions = new CommonFunctions();
+		
+		if(commonFunctions.hasLeaf(network)&&commonFunctions.isTree(network))
+		{
 		// Remove bends
 
 		List<Edge> allEdges = network.edgesList();
@@ -162,7 +165,10 @@ public class SlantedPhylogram extends AbstractLayout{
 			positionNodeX(node);
 			
 		}
-				
+		}
+		else
+			System.out.println("The "+getName()+" layout can only be applied to trees.");
+
 
 	}
 	

@@ -14,6 +14,37 @@ import giny.view.Bend;
 
 public class CommonFunctions {
 	
+	
+	public boolean hasLeaf(CyNetwork network)
+	{
+		// Get all nodes
+		List<Node> nodesList = network.nodesList();
+		Iterator <Node> nodesListIterator = nodesList.iterator();
+		while(nodesListIterator.hasNext())
+		{
+			Node node = nodesListIterator.next();
+			if(network.getOutDegree(node)==0)
+				return true;
+						
+		}
+		return false;
+	}
+	
+	public boolean isTree(CyNetwork network)
+	{
+		// Get all nodes
+		List<Node> nodesList = network.nodesList();
+		Iterator <Node> nodesListIterator = nodesList.iterator();
+		while(nodesListIterator.hasNext())
+		{
+			Node node = nodesListIterator.next();
+			if(network.getInDegree(node)==0||network.getInDegree(node)==1)
+				continue;
+			else
+				return false;
+		}
+		return true;
+	}
 	/**
 	 * getTreeRoot(network)
 	 * Finds the root of the tree and returns it
@@ -286,11 +317,16 @@ public class CommonFunctions {
 		{
 			int [] incomingEdges = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false);
 			
-			int depth= getDepth(network, network.getEdge(incomingEdges[0]).getSource());
-				
-			
+			int max = 0;
+			for (int i = 0; i < incomingEdges.length; i++)
+			{
+				int depth = getLevel(network, network.getEdge(incomingEdges[i]).getSource()); 
+				if(depth > max)
+					max = depth;
 
-			return depth+1;
+			}
+
+			return max+1;
 		}
 	}
 	/**

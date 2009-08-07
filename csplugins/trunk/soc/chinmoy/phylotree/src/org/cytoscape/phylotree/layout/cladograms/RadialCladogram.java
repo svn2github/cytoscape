@@ -104,6 +104,10 @@ public class RadialCladogram extends AbstractLayout{
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
+		
+		if(commonFunctions.hasLeaf(network)&&commonFunctions.isTree(network))
+		{
+		
 		// Remove bends
 
 		List<Edge> allEdges = network.edgesList();
@@ -139,7 +143,9 @@ public class RadialCladogram extends AbstractLayout{
 				
 			
 		}
-	
+	}
+	else
+		System.out.println("The "+getName()+" layout can only be applied to trees.");
 	}
 	
 	
