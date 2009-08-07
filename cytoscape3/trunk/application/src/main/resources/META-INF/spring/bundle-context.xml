@@ -40,10 +40,10 @@
 
 
 	<!-- Various Utilities -->
-	<bean name="proxyHandler" class="cytoscape.internal.util.ProxyHandlerImpl">
-		<constructor-arg ref="cytoscapeProperties" />
-		<constructor-arg ref="cyEventHelperServiceRef" />
-	</bean>
+<!--	<bean name="proxyHandler" class="cytoscape.internal.util.ProxyHandlerImpl">-->
+<!--		<constructor-arg ref="cytoscapeProperties" />-->
+<!--		<constructor-arg ref="cyEventHelperServiceRef" />-->
+<!--	</bean>-->
 	<bean name="openBrowser" class="cytoscape.internal.util.OpenBrowserImpl">
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>

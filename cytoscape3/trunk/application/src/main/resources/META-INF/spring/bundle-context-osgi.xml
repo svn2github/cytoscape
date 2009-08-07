@@ -69,13 +69,13 @@
 	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
 		interface="cytoscape.view.CyMenus" />
 
-	<osgi:service id="proxyHandlerService" ref="proxyHandler">
-		<osgi:interfaces>
-			<value>cytoscape.util.ProxyHandler</value>
-			<value>cytoscape.events.PreferencesUpdatedListener
-			</value>
-		</osgi:interfaces>
-	</osgi:service>
+<!--	<osgi:service id="proxyHandlerService" ref="proxyHandler">-->
+<!--		<osgi:interfaces>-->
+<!--			<value>cytoscape.util.ProxyHandler</value>-->
+<!--			<value>cytoscape.events.PreferencesUpdatedListener-->
+<!--			</value>-->
+<!--		</osgi:interfaces>-->
+<!--	</osgi:service>-->
 
 	<osgi:service id="cytoStatusBarService" ref="cytoStatusBarImpl"
 		interface="org.cytoscape.log.statusbar.CytoStatusBar" />
