@@ -212,7 +212,7 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 			CyLayouts.getLayout("slanted_cladogram").doLayout();
 
 			// Apply visual style
-			Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, "phyloVizMap.props");
+		//	Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, "phyloVizMap.props");
 		}
 
 
