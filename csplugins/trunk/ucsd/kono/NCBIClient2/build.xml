@@ -3,7 +3,7 @@
 			08/29/2007 Written by Keiichiro Ono (kono@ucsd.edu)       -->
 <!-- =================================================================== -->
 
-<project name="ncbiClient" default="ncbiClient" basedir=".">
+<project name="ncbiClient" default="ncbiClient" basedir="." xmlns:cxf="antlib:org.apache.cxf.ant.extensions">
 
 	<!-- =================================================================== -->
 	<!-- Initialization target                                               -->
@@ -73,9 +73,7 @@
 			<fileset dir="${ncbiClient.lib.dir}">
 				<include name="*.jar" />
 			</fileset>
-			<fileset dir="${ncbiClient.lib.dir}/axis-1_4/lib">
-							<include name="*.jar" />
-			</fileset>
+			
 			<fileset dir="${cytoscape.dir}">
 				<include name="*.jar" />
 			</fileset>
@@ -131,9 +129,7 @@
 				<exclude name="ncbiClient.jar" />
 				<exclude name="ncbiClientTest.jar" />
 			</fileset>
-			<fileset dir="${ncbiClient.lib.dir}/axis-1_4/lib">
-							<include name="*.jar" />
-			</fileset>
+			
 		</unjar>
 		<jar destfile="ncbiClient.jar" manifest="${ncbiClient.manifest.dir}/ncbiClient.manifest">
 			<fileset dir="${ncbiClient.classes.dir}" includes="**" />

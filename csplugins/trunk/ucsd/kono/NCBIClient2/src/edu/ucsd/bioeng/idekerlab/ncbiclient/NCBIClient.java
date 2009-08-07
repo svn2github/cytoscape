@@ -34,78 +34,34 @@
  */
 package edu.ucsd.bioeng.idekerlab.ncbiclient;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.webservice.AttributeImportQuery;
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
-import cytoscape.data.webservice.CyWebServiceEventListener;
-import cytoscape.data.webservice.CyWebServiceException;
-import cytoscape.data.webservice.DatabaseSearchResult;
-import cytoscape.data.webservice.NetworkImportWebServiceClient;
-import cytoscape.data.webservice.WebServiceClient;
-import cytoscape.data.webservice.WebServiceClientImplWithGUI;
-import cytoscape.data.webservice.WebServiceClientManager;
-import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-import cytoscape.data.webservice.util.NetworkExpansionMenu;
-
-import cytoscape.layout.Tunable;
-
-import cytoscape.util.ModulePropertiesImpl;
-
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
-
-import cytoscape.visual.VisualStyle;
-
-import cytoscape.visual.calculators.AbstractCalculator;
-import cytoscape.visual.calculators.EdgeCalculator;
-import cytoscape.visual.calculators.NodeCalculator;
-
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-
 import edu.ucsd.bioeng.idekerlab.ncbiclient.util.BioGRIDUtil;
-
 import giny.model.Edge;
 import giny.model.Node;
-
 import giny.view.NodeView;
-
-import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceLocator;
-import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceSoap;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.DbtagType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.EFetchRequest;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.EFetchResult;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.EntrezgeneType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.Entrezgene_typeType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.GeneCommentaryType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.GeneRefType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.GeneRef_dbType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.GeneRef_synType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.OtherSourceType;
-import gov.nih.nlm.ncbi.www.soap.eutils.efetch.PubType;
-import gov.nih.nlm.ncbi.www.soap.eutils.esearch.ESearchRequest;
-import gov.nih.nlm.ncbi.www.soap.eutils.esearch.ESearchResult;
-import gov.nih.nlm.ncbi.www.soap.eutils.esearch.IdListType;
+import gov.nih.ncbi.soap.eutils.gene.Dbtag;
+import gov.nih.ncbi.soap.eutils.gene.EFetchGeneService;
+import gov.nih.ncbi.soap.eutils.gene.EFetchRequest;
+import gov.nih.ncbi.soap.eutils.gene.EFetchResult;
+import gov.nih.ncbi.soap.eutils.gene.Entrezgene;
+import gov.nih.ncbi.soap.eutils.gene.GeneCommentary;
+import gov.nih.ncbi.soap.eutils.gene.GeneRef;
+import gov.nih.ncbi.soap.eutils.gene.OtherSource;
+import gov.nih.ncbi.soap.eutils.gene.Pub;
+import gov.nih.ncbi.soap.eutils.gene.Entrezgene.EntrezgeneType;
+import gov.nih.ncbi.soap.eutils.gene.GeneCommentary.GeneCommentaryType;
+import gov.nih.ncbi.soap.eutils.gene.GeneRef.GeneRefDb;
+import gov.nih.ncbi.soap.eutils.gene.GeneRef.GeneRefSyn;
+import gov.nih.nlm.ncbi.soap.eutils.EUtilsService;
+import gov.nih.nlm.ncbi.soap.eutils.EUtilsServiceSoap;
+import gov.nih.nlm.ncbi.soap.eutils.esearch.ESearchRequest;
+import gov.nih.nlm.ncbi.soap.eutils.esearch.ESearchResult;
+import gov.nih.nlm.ncbi.soap.eutils.esearch.IdListType;
 
 import java.awt.Color;
-
 import java.beans.PropertyChangeEvent;
-
 import java.rmi.RemoteException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -128,7 +84,38 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import javax.xml.rpc.ServiceException;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.webservice.AttributeImportQuery;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceEventListener;
+import cytoscape.data.webservice.CyWebServiceException;
+import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.NetworkImportWebServiceClient;
+import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.WebServiceClientImplWithGUI;
+import cytoscape.data.webservice.WebServiceClientManager;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
+import cytoscape.data.webservice.WebServiceClientManager.ClientType;
+import cytoscape.data.webservice.util.NetworkExpansionMenu;
+import cytoscape.layout.Tunable;
+import cytoscape.util.ModulePropertiesImpl;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.AbstractCalculator;
+import cytoscape.visual.calculators.EdgeCalculator;
+import cytoscape.visual.calculators.NodeCalculator;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
+
 
 
 /**
@@ -231,13 +218,11 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 		super(CLIENT_ID, DISPLAY_NAME,
 		      new ClientType[] { ClientType.NETWORK, ClientType.ATTRIBUTE }, null, null, null);
 
-		EUtilsServiceLocator service = new EUtilsServiceLocator();
+		EUtilsService service = new EUtilsService();
 
-		try {
-			clientStub = service.geteUtilsServiceSoap();
-		} catch (ServiceException e) {
-			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
-		}
+		
+		clientStub = service.getEUtilsServiceSoap();
+		
 
 		props = new ModulePropertiesImpl(clientID, "wsc");
 		props.add(new Tunable("timeout", "Timeout for search (sec.)", Tunable.INTEGER,
@@ -653,15 +638,17 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 		public void run() {
 			final EFetchRequest parameters = new EFetchRequest();
+			final EFetchGeneService geneService = new EFetchGeneService();
+			final gov.nih.ncbi.soap.eutils.gene.EUtilsServiceSoap geneServiceStub = geneService.getEUtilsServiceSoap();
+			
 			final StringBuilder builder = new StringBuilder();
-			parameters.setDb("gene");
 
-			for (String id : entrezID) {
+			for (String id : entrezID)
 				builder.append(id + ",");
-			}
 
 			String query = builder.toString();
 			parameters.setId(query.substring(0, query.length() - 1));
+		
 
 			EFetchResult res = null;
 
@@ -669,7 +656,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 			while (res == null) {
 				try {
-					res = clientStub.run_eFetch(parameters);
+					res = geneServiceStub.runEFetch(parameters);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					// e.printStackTrace();
@@ -693,15 +680,15 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 			}
 
 			// Create network from Interactions section
-			final int entryLen = res.getEntrezgeneSet().getEntrezgene().length;
+			final int entryLen = res.getEntrezgeneSet().getEntrezgene().size();
 			Node centerNode = null;
 			String interactionType = null;
 
 			// String sourceDB = null;
 			String otherGeneName = null;
 			String nodeid = null;
-			GeneCommentaryType[] gc = null;
-			GeneCommentaryType[] interactions = null;
+			List<GeneCommentary> gc = null;
+			List<GeneCommentary> interactions = null;
 
 			Node n1;
 
@@ -713,17 +700,15 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 					return;
 
 				// Get commentary section.
-				gc = res.getEntrezgeneSet().getEntrezgene()[i].getEntrezgene_comments()
-				                                              .getGeneCommentary();
+				 gc = res.getEntrezgeneSet().getEntrezgene().get(i).getEntrezgeneComments().getGeneCommentary();
 
-				for (GeneCommentaryType g : gc) {
-					if ((g.getGeneCommentary_heading() != null)
-					    && g.getGeneCommentary_heading().equals("Interactions")) {
+				for (GeneCommentary g : gc) {
+					if ((g.getGeneCommentaryHeading() != null)
+					    && g.getGeneCommentaryHeading().equals("Interactions")) {
 						// Interaction section found.
 						try {
-							centerNode = Cytoscape.getCyNode(res.getEntrezgeneSet().getEntrezgene()[i].getEntrezgene_trackInfo()
-							                                                                          .getGeneTrack()
-							                                                                          .getGeneTrack_geneid(),
+							centerNode = Cytoscape.getCyNode(res.getEntrezgeneSet().getEntrezgene().get(i).getEntrezgeneTrackInfo()
+							                                                                          .getGeneTrack().getGeneTrackGeneid().toString(),
 							                                 true);
 							System.out.println("Got Interactions for: "
 							                   + centerNode.getIdentifier());
@@ -734,24 +719,24 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 						nodeList.add(centerNode);
 
 						// Parse individual interactions.
-						interactions = g.getGeneCommentary_comment().getGeneCommentary();
+						interactions = g.getGeneCommentaryComment().getGeneCommentary();
 
-						for (GeneCommentaryType itr : interactions) {
-							interactionType = itr.getGeneCommentary_text();
+						for (GeneCommentary itr : interactions) {
+							interactionType = itr.getGeneCommentaryText();
 
 							if (interactionType == null) {
 								interactionType = DEF_ITR_TYPE;
 							}
 
-							if (itr.getGeneCommentary_comment().getGeneCommentary().length > 1) {
+							if (itr.getGeneCommentaryComment().getGeneCommentary().size() > 1) {
 								// Find node ID. If available, use Entrez Gene
 								// ID.
 								// If not, use the database-specific ID instead.
 								try {
-									nodeid = itr.getGeneCommentary_comment().getGeneCommentary(1)
-									            .getGeneCommentary_source().getOtherSource(0)
-									            .getOtherSource_src().getDbtag().getDbtag_tag()
-									            .getObjectId().getObjectId_id();
+									nodeid = itr.getGeneCommentaryComment().getGeneCommentary().get(1)
+									            .getGeneCommentarySource().getOtherSource().get(0)
+									            .getOtherSourceSrc().getDbtag().getDbtagTag()
+									            .getObjectId().getObjectIdId().toString();
 								} catch (NullPointerException npe) {
 									// This gene is not in NCBI DB.
 									// Use original database ID
@@ -761,9 +746,9 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 								n1 = Cytoscape.getCyNode(nodeid, true);
 								nodeList.add(n1);
 
-								final String dataSource = itr.getGeneCommentary_source()
-								                             .getOtherSource(0).getOtherSource_src()
-								                             .getDbtag().getDbtag_db();
+								final String dataSource = itr.getGeneCommentarySource()
+								                             .getOtherSource().get(0).getOtherSourceSrc()
+								                             .getDbtag().getDbtagDb();
 
 								List<Edge> eList2 = new ArrayList<Edge>();
 
@@ -801,14 +786,14 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 									// Add edge attributes
 									attrMap.put(new String[] { edgeID, "datasource" }, dataSource);
 
-									PubType[] pubmed = itr.getGeneCommentary_refs().getPub();
+									List<Pub> pubmed = itr.getGeneCommentaryRefs().getPub();
 
-									if ((pubmed != null) && (pubmed.length > 0)) {
+									if ((pubmed != null) && (pubmed.size() > 0)) {
 										String[] pmid = new String[] { edgeID, "PubMed ID" };
 										List<String> pmids = new ArrayList<String>();
 
-										for (PubType pub : pubmed) {
-											pmids.add(pub.getPub_pmid().getPubMedId());
+										for (Pub pub : pubmed) {
+											pmids.add(pub.getPubPmid().getPubMedId().toString());
 										}
 
 										attrMap.put(pmid, pmids);
@@ -841,13 +826,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 		public ESearchResult call() throws Exception {
 			ESearchResult result = null;
-
-			try {
-				result = clientStub.run_eSearch(query);
-			} catch (RemoteException re) {
-				new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
-			}
-
+			result = clientStub.runESearch(query);
 			return result;
 		}
 	}
@@ -867,7 +846,8 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 		public Object call() {
 			StringBuilder builder = new StringBuilder();
 			final EFetchRequest parameters = new EFetchRequest();
-			parameters.setDb("gene");
+			final EFetchGeneService geneService = new EFetchGeneService();
+			final gov.nih.ncbi.soap.eutils.gene.EUtilsServiceSoap geneServiceStub = geneService.getEUtilsServiceSoap();
 
 			int numIDs = 0;
 
@@ -892,7 +872,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 			while (res == null) {
 				try {
-					res = clientStub.run_eFetch(parameters);
+					res = geneServiceStub.runEFetch(parameters);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -917,9 +897,9 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 				}
 			}
 
-			final EntrezgeneType[] entries = res.getEntrezgeneSet().getEntrezgene();
+			final List<Entrezgene> entries = res.getEntrezgeneSet().getEntrezgene();
 
-			for (EntrezgeneType entry : entries) {
+			for (Entrezgene entry : entries) {
 				if ((canceled != null) && canceled) {
 					System.out.println("Operation canceled by user.");
 
@@ -927,8 +907,8 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 				}
 
 				// Current target gene ID
-				String entrezID = entry.getEntrezgene_trackInfo().getGeneTrack()
-				                       .getGeneTrack_geneid();
+				String entrezID = entry.getEntrezgeneTrackInfo().getGeneTrack()
+				                       .getGeneTrackGeneid().toString();
 
 				System.out.println("Extracting annotation for: " + entrezID);
 
@@ -936,17 +916,17 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 					// Extract summary
 					if (selectedAnn.contains(AnnotationCategory.SUMMARY)) {
 						// Species
-						String species = entry.getEntrezgene_source().getBioSource()
-						                      .getBioSource_org().getOrgRef().getOrgRef_taxname();
+						String species = entry.getEntrezgeneSource().getBioSource()
+						                      .getBioSourceOrg().getOrgRef().getOrgRefTaxname();
 						String[] sp = new String[] { entrezID, "Speices" };
 						attrMap.put(sp, species);
 
 						// General info
-						final GeneRefType geneRef = entry.getEntrezgene_gene().getGeneRef();
+						final GeneRef geneRef = entry.getEntrezgeneGene().getGeneRef();
 
 						if (geneRef != null) {
 							// Extract Official Symbol
-							final String officialSymbol = geneRef.getGeneRef_locus();
+							final String officialSymbol = geneRef.getGeneRefLocus();
 
 							if (officialSymbol != null) {
 								String[] os = new String[] { entrezID, "Official Symbol" };
@@ -954,7 +934,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 							}
 
 							// Extract Locus Tag
-							final String locusTag = geneRef.getGeneRef_locusTag();
+							final String locusTag = geneRef.getGeneRefLocusTag();
 
 							if (locusTag != null) {
 								String[] lt = new String[] { entrezID, "Locus Tag" };
@@ -962,7 +942,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 							}
 
 							// Extract Location
-							final String mapLoc = geneRef.getGeneRef_maploc();
+							final String mapLoc = geneRef.getGeneRefMaploc();
 
 							if (mapLoc != null) {
 								String[] ds = new String[] { entrezID, "Location" };
@@ -970,25 +950,26 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 							}
 
 							// Extract source DB and its ID
-							final GeneRef_dbType db = geneRef.getGeneRef_db();
+							final GeneRefDb db = geneRef.getGeneRefDb();
 
 							if ((db != null) && (db.getDbtag() != null)
-							    && (db.getDbtag().length != 0)) {
+							    && (db.getDbtag().size() != 0)) {
 								final List<String> dbNames = new ArrayList<String>();
 								final List<String> dbID = new ArrayList<String>();
 
 								String id;
 								String idStr;
 
-								for (DbtagType dbTag : db.getDbtag()) {
-									dbNames.add(dbTag.getDbtag_db());
-									id = dbTag.getDbtag_tag().getObjectId().getObjectId_id();
-									idStr = dbTag.getDbtag_tag().getObjectId().getObjectId_str();
+								for (Dbtag dbTag : db.getDbtag()) {
+									dbNames.add(dbTag.getDbtagDb());
+									
+									id = dbTag.getDbtagTag().getObjectId().getObjectIdStr();
+									idStr = dbTag.getDbtagTag().getObjectId().getObjectIdStr();
 
 									String[] singleID = new String[] {
 									                        entrezID,
 									                        
-									dbTag.getDbtag_db() + " ID"
+									dbTag.getDbtagDb() + " ID"
 									                    };
 
 									if (id != null) {
@@ -1007,13 +988,13 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 								attrMap.put(dbid, dbID);
 							}
 
-							final GeneRef_synType syn = geneRef.getGeneRef_syn();
+							final GeneRefSyn syn = geneRef.getGeneRefSyn();
 
-							if ((syn != null) && (syn.getGeneRef_syn_E() != null)
-							    && (syn.getGeneRef_syn_E().length != 0)) {
+							if ((syn != null) && (syn.getGeneRefSynE() != null)
+							    && (syn.getGeneRefSynE().size() != 0)) {
 								final List<String> synonyms = new ArrayList<String>();
 
-								for (String synonym : syn.getGeneRef_syn_E())
+								for (String synonym : syn.getGeneRefSynE())
 									synonyms.add(synonym);
 
 								String[] sy = new String[] { entrezID, "aliases" };
@@ -1021,22 +1002,22 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 							}
 
 							// Extract (official full name)
-							final String desc = geneRef.getGeneRef_desc();
+							final String desc = geneRef.getGeneRefDesc();
 
 							if (desc != null) {
 								String[] ds = new String[] { entrezID, "Description" };
 								attrMap.put(ds, desc);
 							}
 
-							final Entrezgene_typeType t = entry.getEntrezgene_type();
+							final EntrezgeneType t = entry.getEntrezgeneType();
 
-							if ((t != null) && (t.get_value() != null)) {
+							if ((t != null) && (t.getValue() != null)) {
 								String[] ds = new String[] { entrezID, "Gene Type" };
 								attrMap.put(ds, t.getValue().toString());
 							}
 
 							// Extract summary
-							final String summary = entry.getEntrezgene_summary();
+							final String summary = entry.getEntrezgeneSummary();
 
 							if (summary != null) {
 								String[] sm = new String[] { entrezID, "Summary" };
@@ -1049,11 +1030,11 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 						// Prot. info
 						List<String> proteinInfo = new ArrayList<String>();
 
-						if ((entry.getEntrezgene_prot() != null)
-						    && (entry.getEntrezgene_prot().getProtRef() != null)
-						    && (entry.getEntrezgene_prot().getProtRef().getProtRef_name() != null)) {
-							String[] pNames = entry.getEntrezgene_prot().getProtRef()
-							                       .getProtRef_name().getProtRef_name_E();
+						if ((entry.getEntrezgeneProt() != null)
+						    && (entry.getEntrezgeneProt().getProtRef() != null)
+						    && (entry.getEntrezgeneProt().getProtRef().getProtRefName() != null)) {
+							List<String> pNames = entry.getEntrezgeneProt().getProtRef()
+							                       .getProtRefName().getProtRefNameE();
 
 							for (String name : pNames)
 								proteinInfo.add(name);
@@ -1065,21 +1046,21 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 					//				final GeneCommentaryType[] geneProps = entry
 					//						.getEntrezgene_properties().getGeneCommentary();
-					if ((entry.getEntrezgene_properties() != null)
-					    && (entry.getEntrezgene_properties().getGeneCommentary() != null)) {
-						final GeneCommentaryType[] geneProps = entry.getEntrezgene_properties()
+					if ((entry.getEntrezgeneProperties() != null)
+					    && (entry.getEntrezgeneProperties().getGeneCommentary() != null)) {
+						final List<GeneCommentary> geneProps = entry.getEntrezgeneProperties()
 						                                            .getGeneCommentary();
 
-						for (GeneCommentaryType comment : geneProps) {
+						for (GeneCommentary comment : geneProps) {
 							if (selectedAnn.contains(AnnotationCategory.GO)
-							    && (comment.getGeneCommentary_heading() != null)
-							    && comment.getGeneCommentary_heading().equals("GeneOntology")) {
+							    && (comment.getGeneCommentaryHeading() != null)
+							    && comment.getGeneCommentaryHeading().equals("GeneOntology")) {
 								// Extract GO section
-								final GeneCommentaryType[] go = comment.getGeneCommentary_comment()
+								final List<GeneCommentary> go = comment.getGeneCommentaryComment()
 								                                       .getGeneCommentary();
 
-								for (GeneCommentaryType goCategory : go) {
-									GeneCommentaryType[] goTermsObject = goCategory.getGeneCommentary_comment()
+								for (GeneCommentary goCategory : go) {
+									List<GeneCommentary> goTermsObject = goCategory.getGeneCommentaryComment()
 									                                               .getGeneCommentary();
 
 									List<String> goTerms = new ArrayList<String>();
@@ -1094,29 +1075,29 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 									List<String> evidenceCodesComponent = new ArrayList<String>();
 									List<String> goTermIDsComponent = new ArrayList<String>();
 
-									for (GeneCommentaryType gt : goTermsObject) {
-										OtherSourceType[] oneTerm = gt.getGeneCommentary_source()
+									for (GeneCommentary gt : goTermsObject) {
+										List<OtherSource> oneTerm = gt.getGeneCommentarySource()
 										                              .getOtherSource();
 
-										if ((oneTerm != null) && (oneTerm.length != 0)) {
-											String goTerm = oneTerm[0].getOtherSource_anchor();
-											String goTermID = oneTerm[0].getOtherSource_src()
-											                            .getDbtag().getDbtag_tag()
+										if ((oneTerm != null) && (oneTerm.size() != 0)) {
+											String goTerm = oneTerm.get(0).getOtherSourceAnchor();
+											String goTermID = oneTerm.get(0).getOtherSourceSrc()
+											                            .getDbtag().getDbtagTag()
 											                            .getObjectId()
-											                            .getObjectId_id();
-											String evidence = oneTerm[0].getOtherSource_postText();
+											                            .getObjectIdId().toString();
+											String evidence = oneTerm.get(0).getOtherSourcePostText();
 
-											if (goCategory.getGeneCommentary_label()
+											if (goCategory.getGeneCommentaryLabel()
 											              .equals("Function")) {
 												goTerms.add(goTerm);
 												goTermIDs.add(goTermID);
 												evidenceCodes.add(evidence.split(": ")[1]);
-											} else if (goCategory.getGeneCommentary_label()
+											} else if (goCategory.getGeneCommentaryLabel()
 											                     .equals("Process")) {
 												goTermsProcess.add(goTerm);
 												goTermIDsProcess.add(goTermID);
 												evidenceCodesProcess.add(evidence.split(": ")[1]);
-											} else if (goCategory.getGeneCommentary_label()
+											} else if (goCategory.getGeneCommentaryLabel()
 											                     .equals("Component")) {
 												goTermsComponent.add(goTerm);
 												goTermIDsComponent.add(goTermID);
@@ -1163,13 +1144,13 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 						}
 					}
 
-					GeneCommentaryType[] commentary = entry.getEntrezgene_comments()
+					List<GeneCommentary> commentary = entry.getEntrezgeneComments()
 					                                       .getGeneCommentary();
 
 					final List<String> geneRIFs = new ArrayList<String>();
 					final List<String> geneRIFText = new ArrayList<String>();
 
-					for (GeneCommentaryType comment : commentary) {
+					for (GeneCommentary comment : commentary) {
 						// if (selectedAnn.contains(AnnotationCategory.MARKERS)
 						// && (comment.getGeneCommentary_heading() != null)
 						// &&
@@ -1178,18 +1159,18 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 						// // Extract Marker section
 						//						
 						if (selectedAnn.contains(AnnotationCategory.PATHWAY)
-						    && (comment.getGeneCommentary_heading() != null)
-						    && comment.getGeneCommentary_heading().equals("Pathways")) {
-							final GeneCommentaryType[] pathways = comment.getGeneCommentary_comment()
+						    && (comment.getGeneCommentaryHeading() != null)
+						    && comment.getGeneCommentaryHeading().equals("Pathways")) {
+							final List<GeneCommentary> pathways = comment.getGeneCommentaryComment()
 							                                             .getGeneCommentary();
 
 							List<String> pathwayNames = new ArrayList<String>();
 							List<String> pathwayLinks = new ArrayList<String>();
 
-							for (GeneCommentaryType p : pathways) {
-								String pName = p.getGeneCommentary_text();
-								String pLink = p.getGeneCommentary_source().getOtherSource(0)
-								                .getOtherSource_url();
+							for (GeneCommentary p : pathways) {
+								String pName = p.getGeneCommentaryText();
+								String pLink = p.getGeneCommentarySource().getOtherSource().get(0)
+								                .getOtherSourceUrl();
 								pathwayNames.add(pName);
 								pathwayLinks.add(pLink);
 							}
@@ -1200,18 +1181,18 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 							String[] pwl = new String[] { entrezID, "Pathway Link" };
 							attrMap.put(pwl, pathwayLinks);
 						} else if (selectedAnn.contains(AnnotationCategory.PHENOTYPE)
-						           && (comment.getGeneCommentary_heading() != null)
-						           && comment.getGeneCommentary_heading().equals("Phenotypes")) {
-							final GeneCommentaryType[] phenotypes = comment.getGeneCommentary_comment()
+						           && (comment.getGeneCommentaryHeading() != null)
+						           && comment.getGeneCommentaryHeading().equals("Phenotypes")) {
+							final List<GeneCommentary> phenotypes = comment.getGeneCommentaryComment()
 							                                               .getGeneCommentary();
 
 							List<String> phenotypeNames = new ArrayList<String>();
 							List<String> phenotypeIDs = new ArrayList<String>();
 
-							for (GeneCommentaryType p : phenotypes) {
-								String pName = p.getGeneCommentary_text();
-								String pID = p.getGeneCommentary_source().getOtherSource(0)
-								              .getOtherSource_anchor();
+							for (GeneCommentary p : phenotypes) {
+								String pName = p.getGeneCommentaryText();
+								String pID = p.getGeneCommentarySource().getOtherSource().get(0)
+								              .getOtherSourceAnchor();
 								phenotypeNames.add(pName);
 								phenotypeIDs.add(pID);
 							}
@@ -1222,19 +1203,19 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 							String[] pwl = new String[] { entrezID, "Phenotype ID" };
 							attrMap.put(pwl, phenotypeIDs);
 						} else if (selectedAnn.contains(AnnotationCategory.LINK)
-						           && (comment.getGeneCommentary_heading() != null)
-						           && comment.getGeneCommentary_heading().equals("Additional Links")) {
-							final GeneCommentaryType[] links = comment.getGeneCommentary_comment()
+						           && (comment.getGeneCommentaryHeading() != null)
+						           && comment.getGeneCommentaryHeading().equals("Additional Links")) {
+							final List<GeneCommentary> links = comment.getGeneCommentaryComment()
 							                                          .getGeneCommentary();
 
 							List<String> sourceName = new ArrayList<String>();
 							List<String> externalLink = new ArrayList<String>();
 
-							for (GeneCommentaryType p : links) {
-								String link = p.getGeneCommentary_source().getOtherSource(0)
-								               .getOtherSource_url();
-								String name = p.getGeneCommentary_source().getOtherSource(0)
-								               .getOtherSource_anchor();
+							for (GeneCommentary p : links) {
+								String link = p.getGeneCommentarySource().getOtherSource().get(0)
+								               .getOtherSourceUrl();
+								String name = p.getGeneCommentarySource().getOtherSource().get(0)
+								               .getOtherSourceAnchor();
 
 								if (link != null) {
 									externalLink.add(link);
@@ -1251,22 +1232,22 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 							String[] pwl = new String[] { entrezID, "Additional Links" };
 							attrMap.put(pwl, externalLink);
 						} else if (selectedAnn.contains(AnnotationCategory.PUBLICATION)
-						           && (comment.getGeneCommentary_refs() != null)
-						           && (comment.getGeneCommentary_type() != null)
-						           && (comment.getGeneCommentary_refs() != null)) {
-							final String comType = comment.getGeneCommentary_type().getValue()
+						           && (comment.getGeneCommentaryRefs() != null)
+						           && (comment.getGeneCommentaryType() != null)
+						           && (comment.getGeneCommentaryRefs() != null)) {
+							final String comType = comment.getGeneCommentaryType().getValue()
 							                              .toString();
 							List<String> pubMedIDs = new ArrayList<String>();
 
 							if (comType.equals("generif")) {
-								geneRIFText.add(comment.getGeneCommentary_text());
+								geneRIFText.add(comment.getGeneCommentaryText());
 							}
 
-							final PubType[] refs = comment.getGeneCommentary_refs().getPub();
+							final List<Pub> refs = comment.getGeneCommentaryRefs().getPub();
 							String pmid = null;
 
-							for (PubType ref : refs) {
-								pmid = ref.getPub_pmid().getPubMedId();
+							for (Pub ref : refs) {
+								pmid = ref.getPubPmid().getPubMedId().toString();
 
 								if ((pmid != null) && comType.equals("comment"))
 									pubMedIDs.add(pmid);
