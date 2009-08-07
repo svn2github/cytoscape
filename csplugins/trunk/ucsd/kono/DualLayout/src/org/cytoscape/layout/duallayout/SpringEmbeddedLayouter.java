@@ -54,7 +54,7 @@ public class SpringEmbeddedLayouter {
 	protected int nodeCount;
 	protected int edgeCount;
 	protected int layoutPass;
-	protected HashMap node2Species;
+	protected Map node2Species;
 	protected NodePairSet homologyPairSet;
 	protected HashMap node2Index;
 	protected Random rnd;
