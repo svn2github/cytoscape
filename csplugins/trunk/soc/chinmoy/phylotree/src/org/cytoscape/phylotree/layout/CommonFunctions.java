@@ -13,8 +13,12 @@ import giny.model.Node;
 import giny.view.Bend;
 
 public class CommonFunctions {
-	
-	
+
+
+	/**
+	 * @param network - the network to be probed
+	 * @return true if network has a leaf (node with outDegree = 0)
+	 */
 	public boolean hasLeaf(CyNetwork network)
 	{
 		// Get all nodes
@@ -25,11 +29,15 @@ public class CommonFunctions {
 			Node node = nodesListIterator.next();
 			if(network.getOutDegree(node)==0)
 				return true;
-						
+
 		}
 		return false;
 	}
-	
+
+	/**
+	 * @param network - the network to be probed
+	 * @return true if network is a tree (all nodes have inDegree = 1) 
+	 */
 	public boolean isTree(CyNetwork network)
 	{
 		// Get all nodes
@@ -72,7 +80,7 @@ public class CommonFunctions {
 		return null;
 
 	}
-	
+
 	/**
 	 * traverse(network, node)
 	 * Recursively performs a post-order traversal of tree from node arg
@@ -85,7 +93,7 @@ public class CommonFunctions {
 	{
 
 		List<Node> list = new LinkedList<Node>();
-		
+
 		// Find all outgoing edges
 		int[] outgoingEdgesArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
 
@@ -97,13 +105,13 @@ public class CommonFunctions {
 			{
 				Edge edge = network.getEdge(outgoingEdgesArray[i]);
 				//networkView.getEdgeView(edge).clearBends();
-				
+
 				list.addAll(postOrderTraverse(network, edge.getTarget()));
 			}
 			// Traverse the parent last
 			list.add(node);
 			return list;
-			
+
 		}
 		// Base case: if node is a leaf
 		else if(outgoingEdgesArray.length == 0)
@@ -115,9 +123,9 @@ public class CommonFunctions {
 		return null;
 	}
 
-	
-	
-	
+
+
+
 	/**
 	 * preOrderTraverse(network, Node)
 	 * Recursively performs a post-order traversal of tree from node arg
@@ -138,8 +146,8 @@ public class CommonFunctions {
 		if(outgoingEdgesArray.length!=0)
 		{
 			list.add(node);
-			
-			
+
+
 			// Traverse every child
 			for(int i = 0; i<outgoingEdgesArray.length; i++)	
 			{
@@ -152,15 +160,15 @@ public class CommonFunctions {
 		// Base case: if node is a leaf
 		else if(outgoingEdgesArray.length == 0)
 		{
-		
+
 			list.add(node);
 			return list;
 		}
 
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * getLeaves(network, Node)
 	 * Recursively populates List with leaves on a path from Node
@@ -171,7 +179,7 @@ public class CommonFunctions {
 	public List<Node> getLeaves(CyNetwork network, Node node)
 	{
 		List<Node> list = new LinkedList<Node>();
-		
+
 		// Get all children
 		int[] edges = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true);
 		for(int i = 0; i<edges.length; i++)
@@ -186,37 +194,37 @@ public class CommonFunctions {
 			else
 			{	
 				// Otherwise, probe the subtree rooted at the child
-				
+
 				list.addAll(getLeaves(network, child));
-				
+
 			}
-			
+
 
 		}
 
 		return list;
 	}
-	
-	
+
+
 	public List<Node> getAncestors(CyNetwork network, Node node)
 	{
 		List<Node> list = new LinkedList<Node>();
-		
+
 		while(network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false).length>0)
 		{
 			int[] incomingEdges= network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false);
-		
-		if(incomingEdges.length>0)
-		{
-			Node ancestor = network.getEdge(incomingEdges[0]).getSource();
-			list.add(ancestor);
-			node = ancestor;
-		}
-		
+
+			if(incomingEdges.length>0)
+			{
+				Node ancestor = network.getEdge(incomingEdges[0]).getSource();
+				list.add(ancestor);
+				node = ancestor;
+			}
+
 		}
 		return list;
 	}
-	
+
 	/**
 	 * Find the vertical midpoint of a list of leaves
 	 * @param networkView - the networkView containing the leaves
@@ -230,8 +238,8 @@ public class CommonFunctions {
 		Node firstLeaf = it.next();
 		double highestY,lowestY;
 		highestY = lowestY = networkView.getNodeView(firstLeaf).getYPosition();
-		
-		
+
+
 
 		while(it.hasNext())
 		{
@@ -250,7 +258,7 @@ public class CommonFunctions {
 		}
 		return (highestY+lowestY)/2.0;
 	}
-	
+
 	/**
 	 * Obtain the length of the edge incident onto the node
 	 * @param network - the network in which the node is situated
@@ -310,23 +318,17 @@ public class CommonFunctions {
 	public int getDepth(CyNetwork network, Node node)
 	{
 		if(network.getInDegree(node, false) == 0)
-			{
+		{
 			return 0;
-			}
+		}
 		else
 		{
 			int [] incomingEdges = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, true, false);
 			
-			int max = 0;
-			for (int i = 0; i < incomingEdges.length; i++)
-			{
-				int depth = getLevel(network, network.getEdge(incomingEdges[i]).getSource()); 
-				if(depth > max)
-					max = depth;
 
-			}
-
-			return max+1;
+			int depth = getDepth(network, network.getEdge(incomingEdges[0]).getSource()); 
+			
+			return depth+1;
 		}
 	}
 	/**
@@ -350,8 +352,8 @@ public class CommonFunctions {
 
 		return numLeaves;
 	}
-	
-	
+
+
 	/**
 	 * Calculates the optimum factor by which edges must be scaled to obtain an optimum view
 	 * @param network - the network from which the scaling factor is to be calculated
@@ -359,14 +361,14 @@ public class CommonFunctions {
 	 */
 	public double getScalingFactor(CyNetwork network)
 	{
-	
-	
+
+
 		double factor = 1.0;
 		// Find the smallest edge
 		List<Edge> allEdges = network.edgesList();
 		Iterator<Edge> edgesIterator = allEdges.iterator();
-		
-		
+
+
 		double smallestLength = Double.MAX_VALUE;
 		while(edgesIterator.hasNext())
 		{
@@ -376,16 +378,16 @@ public class CommonFunctions {
 			if(length<smallestLength)
 				smallestLength = length;
 		}
-		
+
 		// Calculate the scaling factor
-		
+
 		while(smallestLength * factor <= 50.0) //50
 			factor *= 10.0;                     //10
-		
-		
+
+
 		return factor;		
 	}
-	
+
 	/**
 	 * Adds the bends to make the edges look rectangular
 	 * @param network - the network on which the bends are to be added
@@ -394,29 +396,29 @@ public class CommonFunctions {
 	 */
 	public void addRectangularBends(CyNetwork network, CyNetworkView networkView, Edge edge)
 	{
-		
-			Node source = edge.getSource();
-			Node target = edge.getTarget();
-			
-			// Check if the target is a reticulate node (indegree>1)
-			// If yes, don't bend the edge
-			if(network.getInDegree(target.getRootGraphIndex(), false) <= 1 && source.getRootGraphIndex()!=target.getRootGraphIndex())
-			{
-				// For each edge, get the source node's X position
-				double cornerX = networkView.getNodeView(source).getXPosition(); 
 
-				// For each edge, get the target node's Y position
-				double cornerY = networkView.getNodeView(target).getYPosition();
+		Node source = edge.getSource();
+		Node target = edge.getTarget();
+
+		// Check if the target is a reticulate node (indegree>1)
+		// If yes, don't bend the edge
+		if(network.getInDegree(target.getRootGraphIndex(), false) <= 1 && source.getRootGraphIndex()!=target.getRootGraphIndex())
+		{
+			// For each edge, get the source node's X position
+			double cornerX = networkView.getNodeView(source).getXPosition(); 
+
+			// For each edge, get the target node's Y position
+			double cornerY = networkView.getNodeView(target).getYPosition();
 
 
-					// Bend the edge
-					Bend rectangularBend = networkView.getEdgeView(edge).getBend();
-					
-					rectangularBend.addHandle(new Point2D.Double(cornerX, cornerY));
-			
-			}
+			// Bend the edge
+			Bend rectangularBend = networkView.getEdgeView(edge).getBend();
+
+			rectangularBend.addHandle(new Point2D.Double(cornerX, cornerY));
+
+		}
 	}
-	
+
 	/**
 	 * Adds the bends to make the edges look circular
 	 * @param network - the network on which the bends are to be added
@@ -425,71 +427,71 @@ public class CommonFunctions {
 	 */
 	public void addCircularBends(CyNetwork network, CyNetworkView networkView, Edge edge)
 	{
-		
-			Node source = edge.getSource();
-			Node target = edge.getTarget();
-			
-			// Check if the target is a reticulate node (indegree>1)
-			// If yes, don't bend the edge
-			if(network.getInDegree(target.getRootGraphIndex(), false) <= 1 && source.getRootGraphIndex()!=target.getRootGraphIndex())
+
+		Node source = edge.getSource();
+		Node target = edge.getTarget();
+
+		// Check if the target is a reticulate node (indegree>1)
+		// If yes, don't bend the edge
+		if(network.getInDegree(target.getRootGraphIndex(), false) <= 1 && source.getRootGraphIndex()!=target.getRootGraphIndex())
+		{
+
+
+			double sourceX = networkView.getNodeView(source).getXPosition();
+			double sourceY = networkView.getNodeView(source).getYPosition();
+			// Get the radius of the source
+			double radius = Math.sqrt(sourceX*sourceX + sourceY*sourceY);
+
+			// And the angle of the source
+			double sourceAngle = Math.atan2(sourceY, sourceX);
+
+
+			// And the angle of the target
+			double angle = Math.atan2(networkView.getNodeView(target).getYPosition(), networkView.getNodeView(target).getXPosition());
+
+			//Bend the edge
+			Bend circularBend = networkView.getEdgeView(edge).getBend();
+			Point2D handlePoint = new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle));
+			Point2D sourcePoint = new Point2D.Double(sourceX, sourceY);
+			circularBend.addHandle(handlePoint);
+
+			// Algorithm to draw arcs:
+			// Find the length of the chord from the source to the first handle in the bend
+			// Find the length of the segment that would produce an arc of the desired handleInterval
+			// Divide the length of the chord and the subSegment to calculate how many subSegments are required
+			// Number of subSegments on chord = number of handles to produce the arc from the bend
+
+			double chordLength = handlePoint.distance(sourcePoint);
+
+			double handleInterval = Math.PI/18.0;
+			double subSegmentLength = 2*radius*Math.sin(handleInterval/2.0);
+
+			int iterations = (int)(chordLength/subSegmentLength);
+
+			if(compareAngles(angle,sourceAngle)==0)
+
 			{
+				for(int i = 0;i<iterations; i ++)
+				{
+					angle = angle+(handleInterval);
+					circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
 
-				
-				double sourceX = networkView.getNodeView(source).getXPosition();
-				double sourceY = networkView.getNodeView(source).getYPosition();
-				// Get the radius of the source
-				double radius = Math.sqrt(sourceX*sourceX + sourceY*sourceY);
-
-				// And the angle of the source
-				double sourceAngle = Math.atan2(sourceY, sourceX);
-				
-				
-				// And the angle of the target
-				double angle = Math.atan2(networkView.getNodeView(target).getYPosition(), networkView.getNodeView(target).getXPosition());
-				
-				//Bend the edge
-				Bend circularBend = networkView.getEdgeView(edge).getBend();
-				Point2D handlePoint = new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle));
-				Point2D sourcePoint = new Point2D.Double(sourceX, sourceY);
-				circularBend.addHandle(handlePoint);
-			
-				// Algorithm to draw arcs:
-				// Find the length of the chord from the source to the first handle in the bend
-				// Find the length of the segment that would produce an arc of the desired handleInterval
-				// Divide the length of the chord and the subSegment to calculate how many subSegments are required
-				// Number of subSegments on chord = number of handles to produce the arc from the bend
-				
-				double chordLength = handlePoint.distance(sourcePoint);
-				
-				double handleInterval = Math.PI/18.0;
-				double subSegmentLength = 2*radius*Math.sin(handleInterval/2.0);
-				
-				int iterations = (int)(chordLength/subSegmentLength);
-				
-					if(compareAngles(angle,sourceAngle)==0)
-
-					{
-						for(int i = 0;i<iterations; i ++)
-						{
-							angle = angle+(handleInterval);
-							circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
-
-						}
-					}
-					else if(compareAngles(angle,sourceAngle)==1)
-					{
-						for(int i =0; i<iterations; i++)
-						{
-							angle = angle-(handleInterval);
-							circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
-
-						}
-					}
-				
+				}
 			}
+			else if(compareAngles(angle,sourceAngle)==1)
+			{
+				for(int i =0; i<iterations; i++)
+				{
+					angle = angle-(handleInterval);
+					circularBend.addHandle(new Point2D.Double(radius*Math.cos(angle),radius*Math.sin(angle)));
+
+				}
+			}
+
+		}
 	}
-	
-	
+
+
 	/**
 	 * Important for the functioning of addCircularBends
 	 * Given the angle of the initial handle in the bend(arc) and the angle of the source node
@@ -516,10 +518,10 @@ public class CommonFunctions {
 		{
 			result = 1;
 		}
-		
-			return result;
-		
-	
+
+		return result;
+
+
 	}
-	
+
 }

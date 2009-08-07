@@ -109,7 +109,6 @@ public class DepthwiseColor implements PhyloVisualStyle {
 			Node node = nodeListIterator.next();
 			
 			int depth = cf.getDepth(network, node);
-			
 			nodeAttributes.setAttribute(node.getIdentifier(), "Depth", depth);
 			
 			

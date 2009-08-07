@@ -124,7 +124,7 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 
 
 		// Apply visual style
-		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, "phyloVizMap.props");
+		// Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, "phyloVizMap.props");
 
 	}
 
@@ -505,8 +505,12 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 		if(branchData.getBranchWidth()!=null)
 			edgeAttributes.setAttribute(edgeID, "branchLength", branchData.getBranchWidth().getValue());
 		else
-			edgeAttributes.setAttribute(edgeID, "branchLength", node.getDistanceToParent());
-
+		{
+			if(node.getDistanceToParent()>=0)
+				edgeAttributes.setAttribute(edgeID, "branchLength", node.getDistanceToParent());
+			else
+				edgeAttributes.setAttribute(edgeID, "branchLength", 0.0);
+		}
 		if(branchData.getBranchColor()!=null)
 			edgeAttributes.setAttribute(edgeID, "Color", branchData.getBranchColor().getValue().toString());
 
