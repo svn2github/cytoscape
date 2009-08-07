@@ -409,14 +409,14 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
+		if (Cytoscape.NETWORK_CREATED.equals(e.getPropertyName())) {
 			addNetwork((String) e.getNewValue(), (String) e.getOldValue());
-		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+		} else if (Cytoscape.NETWORK_DESTROYED.equals(e.getPropertyName())) {
 			removeNetwork((String) e.getNewValue());
-		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
+		} else if (CytoscapeDesktop.NETWORK_VIEW_FOCUSED.equals(e.getPropertyName())) {
 			if ( e.getSource() != this )
 				focusNetworkNode((String) e.getNewValue());
-		} else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
+		} else if (Cytoscape.NETWORK_TITLE_MODIFIED.equals(e.getPropertyName())) {
 			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
 			String newID = cyNetworkTitleChange.getNetworkIdentifier();
 			//String newTitle = cyNetworkTitleChange.getNetworkTitle();
@@ -661,16 +661,16 @@ class PopupActionListener implements ActionListener {
 		final String label = ((JMenuItem) ae.getSource()).getText();
 
 		// Figure out the appropriate action
-		if (label == DESTROY_VIEW) {
+		if (DESTROY_VIEW.equals(label)) {
 			Cytoscape.destroyNetworkView(cyNetwork);
 		} // end of if ()
-		else if (label == CREATE_VIEW) {
+		else if (CREATE_VIEW.equals(label)) {
 			CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork);
 		} // end of if ()
-		else if (label == DESTROY_NETWORK) {
+		else if (DESTROY_NETWORK.equals(label)) {
 			Cytoscape.destroyNetwork(cyNetwork);
 		} // end of if ()
-		else if (label == EDIT_TITLE) {
+		else if (EDIT_TITLE.equals(label)) {
 			CyNetworkNaming.editNetworkTitle(cyNetwork);
 			Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 		} // end of if ()

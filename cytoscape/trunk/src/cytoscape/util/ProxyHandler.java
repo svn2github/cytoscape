@@ -119,7 +119,7 @@ public class ProxyHandler implements PropertyChangeListener {
      * @param e DOCUMENT ME!
      */
     public void propertyChange(PropertyChangeEvent e) {
-        if (e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED) {
+        if (Cytoscape.PREFERENCES_UPDATED.equals(e.getPropertyName())) {
             Proxy savedProxy = proxyServer;
             loadProxyServer();
 

@@ -78,11 +78,11 @@ public class BirdsEyeViewAction extends CytoscapeAction implements PropertyChang
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if ((e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED)
-		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS)
-		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
+		if (CytoscapeDesktop.NETWORK_VIEW_FOCUSED.equals(e.getPropertyName())
+		    || (CytoscapeDesktop.NETWORK_VIEW_FOCUS.equals(e.getPropertyName()))
+		    || (CytoscapeDesktop.NETWORK_VIEW_DESTROYED.equals(e.getPropertyName()))) {
 			bev.changeView((DGraphView) Cytoscape.getCurrentNetworkView());
-		} else if ( e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED ) { 
+		} else if (Cytoscape.CYTOSCAPE_INITIALIZED.equals(e.getPropertyName())) {
 			actionPerformed(null);	
 		}
 	}

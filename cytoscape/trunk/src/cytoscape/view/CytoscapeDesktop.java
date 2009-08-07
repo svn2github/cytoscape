@@ -600,37 +600,37 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == NETWORK_VIEW_CREATED) {
+		if (NETWORK_VIEW_CREATED.equals(e.getPropertyName())) {
 			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEW_CREATED  " +
 			 //                   e.getSource().getClass().getName());
 			// add the new view to the GraphViewController
 			getGraphViewController().addGraphView((CyNetworkView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
+		} else if (NETWORK_VIEW_FOCUSED.equals(e.getPropertyName())) {
 			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEW_FOCUSED " +
 			 //                   e.getSource().getClass().getName());
 			// get focus event from NetworkViewManager
 			updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
+		} else if (NETWORK_VIEW_FOCUS.equals(e.getPropertyName())) {
 			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEW_FOCUS " +
 			 //                   e.getSource().getClass().getName());
 			// get Focus from NetworkPanel
 			updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == NETWORK_VIEWS_SELECTED) {
+		} else if (NETWORK_VIEWS_SELECTED.equals(e.getPropertyName())) {
 			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEWS_SELECTED " +
 			 //                   e.getSource().getClass().getName());
 			Cytoscape.setSelectedNetworkViews( (List<String>)(e.getNewValue()) );
 			Cytoscape.setSelectedNetworks( (List<String>)(e.getNewValue()) );
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
+		} else if (Cytoscape.NETWORK_CREATED.equals(e.getPropertyName())) {
 			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_CREATED " +
 			 //                   e.getSource().getClass().getName());
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+		} else if (Cytoscape.NETWORK_DESTROYED.equals(e.getPropertyName())) {
 			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_DESTROYED " +
 			 //                   e.getSource().getClass().getName());
 			// fire the event so that the NetworkPanel can catch it
@@ -648,7 +648,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 				if (result == JOptionPane.YES_OPTION)
 					Cytoscape.createNewSession();
 			}
-		} else if (e.getPropertyName() == NETWORK_VIEW_DESTROYED) {
+		} else if (NETWORK_VIEW_DESTROYED.equals(e.getPropertyName())) {
 			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEW_DESTROYED " +
 			 //                  e.getSource().getClass().getName());
 			// remove the view from the GraphViewController

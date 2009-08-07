@@ -55,7 +55,7 @@ public class VizMapBypassNetworkListener implements PropertyChangeListener {
 	 * @param evnt The event we're hearing.
 	 */
 	public void propertyChange(PropertyChangeEvent evnt) {
-		if (evnt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+		if (CytoscapeDesktop.NETWORK_VIEW_CREATED.equals(evnt.getPropertyName())) {
 			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener();
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
 

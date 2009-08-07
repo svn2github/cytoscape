@@ -211,7 +211,7 @@ public class OntologyServer implements PropertyChangeListener {
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
+		if (Cytoscape.NETWORK_DESTROYED.equals(e.getPropertyName())) {
 			/*
 			 * Remove network name from ontology server.
 			 */
