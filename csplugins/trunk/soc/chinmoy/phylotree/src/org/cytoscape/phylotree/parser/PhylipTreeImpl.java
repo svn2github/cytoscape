@@ -43,7 +43,7 @@ public class PhylipTreeImpl implements Phylotree {
  /* 
   * Reads a PHYLIP file and returns the tree in string format
   */
- private String getTreeTextFromFile(File pTreeFile){
+ public String getTreeTextFromFile(File pTreeFile){
   String retStr = null;
 
   try

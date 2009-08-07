@@ -94,7 +94,12 @@ public class RadialCladogram extends AbstractLayout{
 	public  String toString(){
 		return "Radial Cladogram Layout";
 	}
-
+	
+	public void construct(double radius)
+	{
+		BASE_RADIUS = radius;
+		construct();
+	}
 
 	public void construct() {
 		taskMonitor.setStatus("Initializing");

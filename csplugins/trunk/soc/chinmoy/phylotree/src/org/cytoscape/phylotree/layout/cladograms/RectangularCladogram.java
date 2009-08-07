@@ -94,7 +94,11 @@ public class RectangularCladogram extends AbstractLayout{
 	public  String toString(){
 		return "Rectangular Cladogram Layout";
 	}
-
+	public void construct(double distance)
+	{
+		INTERNODE_DISTANCE += distance;
+		construct();
+	}
 	
 	public void construct() {
 		taskMonitor.setStatus("Initializing");

@@ -95,11 +95,16 @@ public class CircularCladogram extends AbstractLayout{
 		return "Circular Cladogram Layout";
 	}
 
-
+	public void construct(double radius)
+	{
+		BASE_RADIUS += radius;
+		construct();
+	}
+	
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
-
+		
 
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);

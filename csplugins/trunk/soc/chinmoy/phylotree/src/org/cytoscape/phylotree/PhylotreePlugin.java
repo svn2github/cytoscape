@@ -43,22 +43,6 @@ public class PhylotreePlugin extends CytoscapePlugin {
 		
 		//(2) add another menu item: Layout->Phylotree layouts
 		
-		
-//		RectangularCladogram a = new RectangularCladogram();
-//		CyLayouts.addLayout(a,"Phylotree Layouts");
-//		
-//		Cytoscape.getDesktop().update(Cytoscape.getDesktop().getGraphics());
-//		
-//		JMenu j = Cytoscape.getDesktop().getCyMenus().getLayoutMenu();
-//		JMenuItem jt;
-//		
-//		for(int i = 0; i<j.getItemCount(); i++)
-//		{
-//			jt= j.getItem(i);
-//			if(jt!=null)
-//			System.out.println("Name: "+i+" "+jt.getText());
-//		}
-		
 		PhyloTreeLayoutAction layoutAction = new PhyloTreeLayoutAction(new RectangularCladogram());
 		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) layoutAction);
 		

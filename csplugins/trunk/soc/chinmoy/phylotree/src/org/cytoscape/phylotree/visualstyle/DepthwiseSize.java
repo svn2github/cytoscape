@@ -5,8 +5,6 @@ import cytoscape.visual.VisualStyle;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.visual.Appearance;
-import cytoscape.visual.ArrowShape;
 import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
@@ -19,7 +17,6 @@ import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.Interpolator;
 import cytoscape.visual.mappings.LinearNumberToColorInterpolator;
 import cytoscape.visual.mappings.ObjectMapping;
@@ -35,6 +32,8 @@ import org.cytoscape.phylotree.layout.CommonFunctions;
 
 
 public class DepthwiseSize implements PhyloVisualStyle {
+
+	static double MAX_SIZE = 135.0;
 	
 	public String getName()
 	{
@@ -68,21 +67,19 @@ public class DepthwiseSize implements PhyloVisualStyle {
 		nodeApp.set(VisualPropertyType.NODE_LABEL_POSITION, new LabelPosition(5,3,2,0,0));
 		nodeApp.set(VisualPropertyType.NODE_FONT_SIZE,20);
 		
-		
 		nodeAppCalc.setDefaultAppearance(nodeApp);
 		
 		// Add edge appearance specific settings
 		EdgeAppearance edgeApp = new EdgeAppearance();
 		edgeApp.set(VisualPropertyType.EDGE_LABEL_COLOR, Color.WHITE);
 		edgeApp.set(VisualPropertyType.EDGE_FONT_SIZE,20);
-		edgeApp.set(VisualPropertyType.EDGE_LINE_WIDTH,10);
+		edgeApp.set(VisualPropertyType.EDGE_LINE_WIDTH,5);
 		edgeAppCalc.setDefaultAppearance(edgeApp);
-		
 		
 		nodeAppCalc.setCalculator(createNodeColorCalculator(network));
 		nodeAppCalc.setCalculator(createNodeSizeCalculator(network));
 		edgeAppCalc.setCalculator(createEdgeColorCalculator(network));
-
+		
 		// Create the visual style 
 		VisualStyle visualStyle = new VisualStyle("DepthwiseSize", nodeAppCalc, edgeAppCalc, globalAppCalc);
 
@@ -300,7 +297,7 @@ public class DepthwiseSize implements PhyloVisualStyle {
 		// Set controlling Attribute
 		cm.setControllingAttributeName("Depth", Cytoscape.getCurrentNetwork(), false);
 		
-		Double underSize = 135.0;
+		Double underSize = MAX_SIZE;
 		Double minSize = 110.0;
 		Double midSize = 85.0;
 		Double maxSize = 60.0;

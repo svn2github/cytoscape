@@ -2,6 +2,8 @@ package org.cytoscape.phylotree.ui;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+
 import cytoscape.Cytoscape;
 import java.io.File;
 import org.cytoscape.phylotree.actions.PhyloTreeImportAction;
@@ -138,13 +140,16 @@ public class PhyloFileDialog extends JDialog{
     private void btnFileActionPerformed(java.awt.event.ActionEvent evt) {                                        
     	JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
 		chooser.setAcceptAllFileFilterUsed(false);
-		//chooser.addChoosableFileFilter(new TxtFileFilter());
+		
+		chooser.addChoosableFileFilter(new PhylipFileFilter());
+		chooser.addChoosableFileFilter(new PhyloXMLFileFilter());
 	    int returnVal = chooser.showOpenDialog(this);
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {
 	    	selectedFile = chooser.getSelectedFile();
+	    	tfFileName.setText(selectedFile.getName());	
 	    }
 	 
-	    tfFileName.setText(selectedFile.getName());	    
+	        
     }                                       
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {                                          
@@ -178,4 +183,76 @@ public class PhyloFileDialog extends JDialog{
     private javax.swing.JTextField tfFileName;
     // End of variables declaration                   
     
+    
+    // Inner classes - file filters for Phylip and phyloxml format
+    class PhylipFileFilter extends FileFilter{
+    	 //Accept all directories and all gif, jpg, tiff, or png files.
+        public boolean accept(File f) {
+            if (f.isDirectory()) {
+                return true;
+            }
+
+            String extension = getExtension(f);
+            if (extension != null) {
+                if (extension.equals("nh") || extension.equals("newick") || extension.equals("phy"))
+                {
+                        return true;
+                } 
+                else
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        //The description of this filter
+        public String getDescription() {
+            return "Newick and Phylip format files";
+        }
+     	
+    }
+    
+    class PhyloXMLFileFilter extends FileFilter{
+   	   public boolean accept(File f) {
+           if (f.isDirectory()) {
+               return true;
+           }
+
+           String extension = getExtension(f);
+           if (extension != null) {
+               if (extension.equals("phyloxml") || extension.equals("xml"))
+               {
+                       return true;
+               } 
+               else
+               {
+                   return false;
+               }
+           }
+
+           return false;
+       }
+
+       //The description of this filter
+       public String getDescription() {
+           return "PhyloXML format files";
+       }
+    	
+   }
+    
+    /*
+     * Get the extension of a file.
+     */
+    public String getExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 &&  i < s.length() - 1) {
+            ext = s.substring(i+1).toLowerCase();
+        }
+        return ext;
+    }
 }

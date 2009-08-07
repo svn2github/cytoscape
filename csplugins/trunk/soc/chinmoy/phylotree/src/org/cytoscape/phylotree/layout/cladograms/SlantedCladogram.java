@@ -95,7 +95,11 @@ public class SlantedCladogram extends AbstractLayout{
 	public  String toString(){
 		return "Slanted Cladogram Layout";
 	}
-
+	public void construct(double distance)
+	{
+		INTERNODE_DISTANCE += distance;
+		construct();
+	}
 
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
