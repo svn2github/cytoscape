@@ -4,7 +4,7 @@
 // $Date: 2004/03/18 08:16:56 $
 // $Author: rmkelley $xx
 //------------------------------------------------------------------------------
-package csplugins.ucsd.rmkelley.PathBlastBrowser.Layout;
+package org.cytoscape.layout.duallayout;
 
 //------------------------------------------------------------------------------
 import gnu.getopt.Getopt;

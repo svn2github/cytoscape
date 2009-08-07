@@ -1,4 +1,4 @@
-package csplugins.ucsd.rmkelley.PathBlastBrowser.Layout;
+package org.cytoscape.layout.duallayout;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
