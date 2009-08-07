@@ -23,6 +23,8 @@ import javax.swing.JTextField;
 
 import org.cytoscape.session.CyNetworkManager;
 
+import cytoscape.Cytoscape;
+
 public class MainPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -238,6 +240,7 @@ public class MainPanel extends JPanel {
 			orButton.setActionCommand("OR");
 			orButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					Cytoscape.getSwingPropertyChangeSupport().firePropertyChange(Cytoscape.NETWORK_LOADED,null,null);
 					if (orButton.isSelected()) {
 						SearchPanelFactory.getGlobalInstance(netmgr)
 								.updateSearchField();
