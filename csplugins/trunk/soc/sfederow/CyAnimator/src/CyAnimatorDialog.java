@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -127,11 +128,12 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		//add as listener to CytoscapeDesktop
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 		
-		
-		
 		initialize();
 	}
 	
+	/*
+	 * Create the control buttons, panels, and initialize the main JDialog.
+	 */
 	public void initialize(){
 		
 		mainPanel = new JPanel();
@@ -216,10 +218,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		
 	}
-	
-	public int getFrameRate(){
-		return 30;
-	}
+
 	
 	public void actionPerformed(ActionEvent e){
 		
@@ -232,13 +231,11 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			frameList.add(captureCurrentFrame());			
 			if(frameList.size() > 1){ makeTimer(); }
 			
-			//generateThumbnailList();
-			//generateMenuList();
 			updateThumbnails();
 		}
 		
 		if(command.equals("play")){
-			int fps = getFrameRate();
+			int fps = 30;
 			
 			if(timer == null){ return; }
 			//1000ms in a second, so divided by frames per second gives ms interval 
@@ -255,7 +252,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		if(command.equals("pause")){
 			if(timer == null){ return; }
 			timer.stop();
-			//updateThumbnails();
+			
 		}
 		
 		if(command.equals("step forward")){
@@ -290,23 +287,9 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			makeTimer();
 		}
 		
-		Pattern frameID = Pattern.compile(".*([0-9]+)$");
 		Pattern interpolateCount = Pattern.compile("(.*)interpolate([0-9]+)_$");
-		Pattern deleteFrame = Pattern.compile("(.*)delete_$");
-		Matcher fMatch = frameID.matcher(command);
 		Matcher iMatch = interpolateCount.matcher(command);
-		Matcher dMatch = deleteFrame.matcher(command);
-		
-		if(fMatch.matches()){
-		 	//System.out.println(Integer.parseInt(m.group(1)));
-			for(CyFrame frame: frameList){ 
-				if(frame.getID().equals(command)){//frameList.get(Integer.parseInt(m.group(1)));
-					frameIndex = Integer.parseInt(fMatch.group(1));
-					//frame.display();
-					//updateThumbnails();
-				}
-			}	
-		}
+				
 		if(iMatch.matches()){
 			int inter = Integer.parseInt(iMatch.group(2));
 			if(inter == 0){
@@ -315,38 +298,67 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 					inter = Integer.parseInt(input);
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(this, "Frame interpolation count must be an integer", 
-					                              "Integer parse error", JOptionPane.ERROR_MESSAGE);
+							"Integer parse error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
-			for(CyFrame frame: frameList){
-				if(frame.getID().equals(iMatch.group(1))){
-					frame.setInterCount(inter);
-					if(timer.isRunning()){ 
-						timer.stop();
-						makeTimer();
-						timer.start();
-					}else{
-						makeTimer();
-					}
-				}
-			}
-			// System.out.println(iMatch.group(2));
+
+			int index = thumbnailPopupIndex;
+
+			frameList.get(index).setInterCount(inter);
+			updateTimer();
 		}
-		if(dMatch.matches()){
+		
+		
+		if(command.equals("delete")){
 			List<CyFrame>remove = new ArrayList();
-			for(CyFrame frame: frameList){
-				if(frame.getID().equals(dMatch.group(1))){
-					remove.add(frame);
-				}
-			}
+
+			remove.add(frameList.get(thumbnailPopupIndex));
+				
+			
 			for (CyFrame frame: remove)
 				frameList.remove(frame);
 				
-			//generateThumbnailList();
-			//generateMenuList();
+			
 			updateThumbnails();
+			
+			updateTimer();
 		}
+		
+		
+		
+		if(command.equals("move right")){
+
+			int i = thumbnailPopupIndex;
+
+			if(i != frameList.size()-1){
+				CyFrame tmp = frameList.get(i+1);
+				frameList.set(i+1, frameList.get(i));
+				frameList.set(i, tmp);
+
+			}
+
+			updateThumbnails();
+			
+			updateTimer();
+		}
+		
+		if(command.equals("move left")){
+			int i = thumbnailPopupIndex;
+
+			if(i != 0){
+				CyFrame tmp = frameList.get(i-1);
+				frameList.set(i-1, frameList.get(i));
+				frameList.set(i, tmp);	
+			}	
+
+			updateThumbnails();
+			
+			updateTimer();
+		}
+		
+		
+		
 		
 		setVisible(true);
 		
@@ -366,12 +378,6 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		ActionListener taskPerformer = new ActionListener() {
 
-			
-			//int frameIndex = 0;
-			
-			//CyFrame[] frames = lint.makeFrames(frameList); //lint.makeColorFrames(frameOne, frameTwo, 10);
-
-
 			public void actionPerformed(ActionEvent evt) {
 				if(frameIndex == frames.length){ frameIndex = 0;}
 				// System.out.println("Frame: "+i);
@@ -384,77 +390,18 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 
 		timer = new Timer(delay, taskPerformer);
 		//updateThumbnails();
-		//timer.setDelay(delay);
-		//timer.start();
+		
 	}
-	
-/*	
-	public void generateThumbnailList(){
-		MouseListener popupListener = new PopupListener();
-		thumbnailList.clear();
 
-		for(CyFrame frame: frameList){
-
-			ImageIcon ic = new ImageIcon(frame.getFrameImage());
-
-			JButton thumbnailButton = new JButton(ic);
-			thumbnailButton.addMouseListener(dragnDrop);
-			thumbnailButton.addMouseListener(popupListener);
-			thumbnailButton.addActionListener(this);
-			thumbnailButton.setActionCommand(frame.getID());
-			
-			thumbnailList.add(thumbnailButton);
+	public void updateTimer(){
+		if(timer.isRunning()){ 
+			timer.stop();
+			makeTimer();
+			timer.start();
+		}else{
+			makeTimer();
 		}
 	}
-	
-	public void generateMenuList(){
-
-		MouseListener popupListener = new PopupListener();
-		menuList.clear();
-		JMenuItem menuItem = null;
-
-		for(CyFrame frame: frameList){
-			JPopupMenu thumbnailMenu = new JPopupMenu();
-			JMenu interpolateMenu = new JMenu("Interpolate");
-			menuItem = new JMenuItem("10 Frames");
-			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate10_");
-			interpolateMenu.add(menuItem);
-
-			menuItem = new JMenuItem("20 Frames");
-			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate20_");
-			interpolateMenu.add(menuItem);
-
-			menuItem = new JMenuItem("50 Frames");
-			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate50_");
-			interpolateMenu.add(menuItem);
-
-			menuItem = new JMenuItem("100 Frames");
-			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate100_");
-			interpolateMenu.add(menuItem);
-
-			menuItem = new JMenuItem("Custom...");
-			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate0_");
-			interpolateMenu.add(menuItem);
-
-			thumbnailMenu.add(interpolateMenu);
-
-			menuItem = new JMenuItem("Delete");
-			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"delete_");
-			menuItem.addMouseListener(popupListener);
-			//menuItem.set("delete_"+frame.getID());
-			thumbnailMenu.add(menuItem);
-			menuList.add(thumbnailMenu);
-
-		}
-	}
-*/
-	
 	/*
 	 * Takes the current frameList and cycles through it to create a JButton
 	 * for each frame with the corresponding thumbnail image.  It also creates
@@ -480,23 +427,8 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		int totalFrameWidth = 0;
 		//dragnDrop = new DragAndDropManager();
 		dragnDrop.setFrameCount(frameList.size());
-		//dragnDrop.setFrameCount(thumbnailList.size());
-		/*
-		for(JButton button: thumbnailList){
-			
-			Icon ic = button.getIcon();
-			totalFrameWidth = totalFrameWidth + ic.getIconWidth();
-			dragnDrop.setFrameHeight(ic.getIconHeight());
-			button.setName(i+"");
-			i++;
-			
-			System.out.println(totalFrameWidth);
-			framePanel.add(button);
-		}
-		*/
+	
 		for(CyFrame frame: frameList){
-			//for(CyNetworkView view: viewList){
-
 
 			ImageIcon ic = new ImageIcon(frame.getFrameImage());
 
@@ -504,7 +436,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			thumbnailButton.addMouseListener(dragnDrop);
 			thumbnailButton.addActionListener(this);
 			thumbnailButton.setActionCommand(frame.getID());
-			
+		
 			
 			
 			//System.out.println(ic.getIconWidth());
@@ -519,43 +451,65 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			JMenu interpolateMenu = new JMenu("Interpolate");
 			menuItem = new JMenuItem("10 Frames");
 			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate10_");
+			menuItem.setActionCommand(i+"interpolate10_");
+			//menuItem.setActionCommand(frame.getID()+"interpolate10_");
 			interpolateMenu.add(menuItem);
 
 			menuItem = new JMenuItem("20 Frames");
 			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate20_");
+			menuItem.setActionCommand(i+"interpolate20_");
+			//menuItem.setActionCommand(frame.getID()+"interpolate20_");
 			interpolateMenu.add(menuItem);
 
 			menuItem = new JMenuItem("50 Frames");
 			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate50_");
+			menuItem.setActionCommand(i+"interpolate50_");
+			//menuItem.setActionCommand(frame.getID()+"interpolate50_");
 			interpolateMenu.add(menuItem);
 
 			menuItem = new JMenuItem("100 Frames");
 			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate100_");
+			menuItem.setActionCommand(i+"interpolate100_");
+			//menuItem.setActionCommand(frame.getID()+"interpolate100_");
 			interpolateMenu.add(menuItem);
 
 			menuItem = new JMenuItem("Custom...");
 			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"interpolate0_");
+			menuItem.setActionCommand(i+"interpolate0_");
+			//menuItem.setActionCommand(frame.getID()+"interpolate0_");
 			interpolateMenu.add(menuItem);
 			
 			thumbnailMenu.add(interpolateMenu);
 			
 			menuItem = new JMenuItem("Delete");
 			menuItem.addActionListener(this);
-			menuItem.setActionCommand(frame.getID()+"delete_");
+			menuItem.setActionCommand("delete");
+			//menuItem.setActionCommand(frame.getID()+"delete_");
 			menuItem.addMouseListener(popupListener);
-			//menuItem.set("delete_"+frame.getID());
 			thumbnailMenu.add(menuItem);
+			
+			System.out.println("Update: "+frame.getID());
+			
+			menuItem = new JMenuItem("Move Right");
+			menuItem.addActionListener(this);
+			menuItem.setActionCommand("move right");
+			//menuItem.setActionCommand(frame.getID()+"mright_");
+			menuItem.addMouseListener(popupListener);
+			thumbnailMenu.add(menuItem);
+			
+			
+			
+			menuItem = new JMenuItem("Move Left");
+			menuItem.addActionListener(this);
+			menuItem.setActionCommand("move left");
+			//menuItem.setActionCommand(frame.getID()+"mleft_");
+			menuItem.addMouseListener(popupListener);
+			thumbnailMenu.add(menuItem);
+			
+			//menuItem.set("delete_"+frame.getID());
+			
 			menuList.add(thumbnailMenu);
 			
-			
-			 //mouseOver);
-			//thumbnailButton.addMouseListener(new releaseListener());
-			//thumbnailButton.addPropertyChangeListener(this);
 		
 			thumbnailButton.setName(i+"");
 			i++;
@@ -582,13 +536,11 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		CyFrame frame = new CyFrame(currentNetwork);
 		
 		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-		System.out.println("Current Network: "+currentNetwork.getIdentifier());
-		System.out.println("Current NetworkView: "+networkView.getIdentifier());
-		
 		
 		frame.populate(); // Initialize the frame
 		frame.setInterCount(30);
 		frame.setID(networkView.getIdentifier()+"_"+frameid);
+		System.out.println("Frame ID: "+frameid);
 		frame.captureImage();
 		frameid++;
 		return frame;
@@ -600,16 +552,17 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		String curDir = System.getProperty("user.dir");
 		System.out.println(curDir);
 		
-		File file = new File(curDir+"/outputImages");
+		File file = new File(curDir+"/outputImgs");
 		file.mkdir();
-		//OutputStream imageStream = new FileOutputStream(file);
 		
 		for(int i=0; i<frames.length; i++){
 			DecimalFormat frame = new DecimalFormat("#000");
-			String name = curDir+"/outputImages/Frame_"+frame.format(i)+".png";
-			// ImageIO.write(frames[i].getFrameImage(), name, file);
+			//String name = curDir+"/outputImgs/Frame_"+frame.format(i)+".png";
+			String name = curDir+"/outputImgs/Frame_"+frame.format(i)+".jpeg";
+			
+			
 			frames[i].writeImage(name);
-		}
+			}
 	}
 	
 	public void propertyChange ( PropertyChangeEvent e ) {
@@ -617,12 +570,8 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			//initialize();
 			setVisible(true);
 		}
-		//System.out.println("RRRRRRRRRRRr"+e.getPropertyName());
-		//updateThumbnails();
-		if(e.getPropertyName().equals("pause")){
-			System.out.println("hhhh");
-			updateThumbnails();
-		}
+		
+	
 	}
 	
 	public void focusGained(FocusEvent e){
@@ -632,13 +581,20 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	public void focusLost(FocusEvent e){
 		
 	}
+	
+	/*
+	 * Listens for changes to the slider which then adjusts the speed of animation
+	 */
 	class SliderListener implements ChangeListener {
 	    public void stateChanged(ChangeEvent e) {
 	        JSlider source = (JSlider)e.getSource();
 	        if (!source.getValueIsAdjusting()) {
+	        	
+	        	//fps is frames per second
 	            fps = (int)source.getValue();
 	            if(timer == null){ return; }
 	            System.out.println("FPS: "+fps);
+	            //timer delay is set in milliseconds, so 1000/fps gives delay per frame
 	            timer.setDelay(1000/fps);
 	            
 	        }    
@@ -670,7 +626,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			startX = e.getX();
 			startY = e.getY();
 				
-			this.currFrameIndex = Integer.parseInt(e.getComponent().getName());	
+			//this.currFrameIndex = Integer.parseInt(e.getComponent().getName());	
 		}
 		
 		
@@ -683,7 +639,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			//check to make sure the drag and drop is within 1.5 times the height 
 			//of the frame in either direction of the y coordinate
 			if(endY >= 0 && endY < frameHeight*1.5){
-				System.out.println("here");
+				
 			}
 			else{ 
 				if(endY < 0 && endY > frameHeight*-1.5){}
@@ -710,7 +666,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 				shuffleList(curr, curr+shiftInt);
 			}
 
-			System.out.println("release   X: "+e.getX()+"  Y: "+e.getY());
+			//System.out.println("release   X: "+e.getX()+"  Y: "+e.getY());
 			}
 		
 		 public void mouseDragged(MouseEvent e) {
@@ -772,9 +728,13 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 
 		public void mouseClicked(MouseEvent e) {
 			
-			this.currFrameIndex = Integer.parseInt(e.getComponent().getName());
-			frameList.get(currFrameIndex).display();
+			//Pattern frameID = Pattern.compile(".*([0-9]+)$");
+			//Matcher fMatch = frameID.matcher(e.getComponent().getName());
 			
+			this.currFrameIndex = Integer.parseInt(e.getComponent().getName());
+			//if(fMatch.matches()){
+				frameList.get(currFrameIndex).display();
+			//}
 		}
 		
 		/*
@@ -808,7 +768,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 	}
 	
-	
+	int thumbnailPopupIndex = 0;
 	
 	class PopupListener extends MouseAdapter {
 	    public void mousePressed(MouseEvent e) {
@@ -827,6 +787,8 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	        	
 	        	//System.out.println(e.getComponent().getName());
 	        	int currentIndex = Integer.parseInt(e.getComponent().getName());
+	        	thumbnailPopupIndex = currentIndex;
+	        	System.out.println("CI: "+currentIndex);
 	            menuList.get(currentIndex).show(e.getComponent(),
 	                       e.getX(), e.getY());
 	        }

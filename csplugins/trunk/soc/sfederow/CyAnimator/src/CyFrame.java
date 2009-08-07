@@ -550,21 +550,26 @@ public class CyFrame {
 		// Get the component to export
 		InternalFrameComponent ifc =
 		         Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(curView);
-
+		
 		// Handle the exportTextAsShape property
 		DGraphView theViewToPrint = (DingNetworkView) curView;
 		boolean exportTextAsShape =
 		     new Boolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")).booleanValue();
 
 		theViewToPrint.setPrintingTextAsShape(exportTextAsShape);
-		Exporter exporter = new BitmapExporter("png", 5.0f);
+		Exporter pngExporter = new BitmapExporter("png", 5.0f);
+		Exporter jpegExporter = new BitmapExporter("jpeg", 4.0f);
+		
 		try {
 			FileOutputStream outputFile = new FileOutputStream(fileName);
-			exporter.export(curView, outputFile);
+			//pngExporter.export(curView, outputFile);
+			jpegExporter.export(curView, outputFile);
 			outputFile.close();
 		} catch (IOException e) {
 			//
 		}
+		
+		System.out.println("written?");
 	}
 
 	/*
