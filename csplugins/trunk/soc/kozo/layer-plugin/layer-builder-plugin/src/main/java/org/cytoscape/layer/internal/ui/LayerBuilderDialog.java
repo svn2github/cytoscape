@@ -29,6 +29,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.session.CyNetworkManager;
 
+import static org.cytoscape.model.GraphObject.NODE;
+
 /**
  * 
  * @author kozo
@@ -574,20 +576,22 @@ public class LayerBuilderDialog extends JDialog {
 			
 			for (CyNode cyNode : cyNetwork.getNodeList()) {
 
-				System.out.println(Integer.toString(i));
+				cyNode.attrs().getDataTable().createColumn(LAYER_NUMBER, String.class, false);
 				cyNode.attrs().set(LAYER_NUMBER, Integer.toString(i));
-				System.out.println(cyNode.attrs().get(LAYER_NUMBER, String.class));
-				
+//				System.out.println(cyNode.attrs().get(LAYER_NUMBER, String.class));
+//				System.out.println("OK!");
 			}
 			
 			layers.add(cyNetwork);
+//			System.out.println("attribute append finished!");
+			
 		}
 
 		for (int i = 0; i < layerConnectionTableModel.getRowCount(); i++) {
 			connectors.add(manager.getNetwork(layerConnectionTableModel
 					.getValueAt(i, CONNECTOR)));
-			System.out.println(layerConnectionTableModel.getValueAt(i,
-					CONNECTOR));
+//			System.out.println(layerConnectionTableModel.getValueAt(i,
+//					CONNECTOR));
 		}
 
 		// Setup
