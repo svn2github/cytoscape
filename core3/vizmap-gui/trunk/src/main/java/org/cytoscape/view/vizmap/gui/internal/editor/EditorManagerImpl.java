@@ -40,11 +40,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
 /**
@@ -241,8 +243,17 @@ public class EditorManagerImpl implements EditorManager {
 	}
 
 	public <V> ValueEditor<V> getValueEditor(Class<V> dataType) {
-		// TODO Auto-generated method stub
 		return (ValueEditor<V>) this.valueEditors.get(dataType);
+	}
+
+	public PropertyEditor getDataTableComboBoxEditor(CyDataTable table,
+			String editorName) {
+		PropertyEditor editor = comboBoxEditors.get(editorName);
+		if (editor == null) {
+			editor = new AttributeComboBoxPropertyEditor(table);
+			comboBoxEditors.put(editorName, editor);
+		}
+		return editor;
 	}
 
 }

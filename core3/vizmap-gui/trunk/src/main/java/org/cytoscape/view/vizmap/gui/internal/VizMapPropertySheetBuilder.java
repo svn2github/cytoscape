@@ -288,7 +288,6 @@ public class VizMapPropertySheetBuilder implements
 			prop.setDisplayName(type.getDisplayName());
 			prop.setHiddenObject(type);
 			prop.setValue("Double-Click to create...");
-			// prop.setEditable(false);
 			propertySheetPanel.addProperty(prop);
 			propList.add(prop);
 		}

@@ -18,6 +18,7 @@
 	<osgi:service id="doubleValueEditorService" ref="doubleValueEditor" auto-export="interfaces"/>
 	<osgi:service id="integerValueEditorService" ref="integerValueEditor" auto-export="interfaces"/>
 	<osgi:service id="floatValueEditorService" ref="floatValueEditor" auto-export="interfaces"/>
+	<osgi:service id="stringValueEditorService" ref="stringValueEditor" auto-export="interfaces"/>
 
 
 

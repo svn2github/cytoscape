@@ -86,6 +86,9 @@
 	<bean id="floatClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.lang.Float" />
 	</bean>
+	<bean id="stringClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="java.lang.String" />
+	</bean>
 
 	<bean id="doubleValueEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
@@ -98,6 +101,11 @@
 	<bean id="floatValueEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
 		<constructor-arg ref="floatClass" />
+	</bean>
+	
+	<bean id="stringValueEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.StringValueEditor">
+		<constructor-arg ref="stringClass" />
 	</bean>
 
 
