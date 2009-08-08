@@ -25,6 +25,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.session.CyNetworkManager;
@@ -46,6 +47,8 @@ public class LayerBuilderDialog extends JDialog {
 	private static final String[] COLUMN_NAMES = { "Layer 1", "Layer 2",
 			"Connector Networks" };
 
+	private Map<String, CyDataTable> netAttrMgr;
+    	
 	/*
 	 * Mandatory parameters
 	 */
@@ -573,17 +576,18 @@ public class LayerBuilderDialog extends JDialog {
 
 		for (int i = 0; i < layeredNetworkListModel.getSize(); i++) {
 			CyNetwork cyNetwork = manager.getNetwork((Long) layeredNetworkListModel.getElementAt(i));
+
+			netAttrMgr = cyNetwork.getCyDataTables(NODE);
+			netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(LAYER_NUMBER, String.class, false);
 			
 			for (CyNode cyNode : cyNetwork.getNodeList()) {
-
-				cyNode.attrs().getDataTable().createColumn(LAYER_NUMBER, String.class, false);
 				cyNode.attrs().set(LAYER_NUMBER, Integer.toString(i));
-//				System.out.println(cyNode.attrs().get(LAYER_NUMBER, String.class));
-//				System.out.println("OK!");
+				System.out.println(cyNode.attrs().get(LAYER_NUMBER, String.class));
+				System.out.println("OK!");
 			}
 			
 			layers.add(cyNetwork);
-//			System.out.println("attribute append finished!");
+			System.out.println("attribute append finished!");
 			
 		}
 

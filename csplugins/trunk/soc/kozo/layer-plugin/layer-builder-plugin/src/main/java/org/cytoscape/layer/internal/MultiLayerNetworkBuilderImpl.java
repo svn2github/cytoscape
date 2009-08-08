@@ -1,10 +1,13 @@
 package org.cytoscape.layer.internal;
 
+import static org.cytoscape.model.GraphObject.NODE;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -24,6 +27,8 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	private static final String EDGE_TITLE = "name";
 	private static final String LAYER_NUMBER = "layerNumber";
 	
+	private Map<String, CyDataTable> netAttrMgr;
+	
 	private CyNetworkManager manager;
 	private CyNetwork layeredNetwork;
 	private CyNetworkFactory factory;
@@ -41,6 +46,10 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 		layeredNetwork = factory.getInstance();
 		layeredNetwork.attrs().set(NETWORK_TITLE, "Layered Network");
+
+		netAttrMgr = layeredNetwork.getCyDataTables(NODE);
+//		netAttrMgr = new HashMap<String, CyDataTable>();
+		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(LAYER_NUMBER, String.class, false);
 
 		// HashSet cumulatedNodes = new HashSet();
 		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
@@ -79,7 +88,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
 				newNode.attrs().set(NODE_TITLE, nodeName);
-				newNode.attrs().getDataTable().createColumn(LAYER_NUMBER, String.class, false);				
+//				newNode.attrs().getDataTable().createColumn(LAYER_NUMBER, String.class, false);				
 				newNode.attrs().set(LAYER_NUMBER, layerNumber);
 				nodeMap.put(nodeName, newNode);
 			}
@@ -142,7 +151,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
 				newNode.attrs().set(NODE_TITLE, nodeName);
-				newNode.attrs().getDataTable().createColumn(LAYER_NUMBER, String.class, false);				
+//				newNode.attrs().getDataTable().createColumn(LAYER_NUMBER, String.class, false);				
 				newNode.attrs().set(LAYER_NUMBER, layerNumber);				
 				nodeMap.put(nodeName, newNode);
 			}
