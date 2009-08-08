@@ -74,7 +74,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 			String nodeName = cyNode.attrs().get(NODE_TITLE, String.class);
 			String layerNumber = cyNode.attrs().get(LAYER_NUMBER, String.class);
-			System.out.println(layerNumber);
+//			System.out.println(layerNumber);
 
 			if (nodeMap.containsKey(nodeName) == false) {
 				CyNode newNode = layeredNetwork.addNode();
