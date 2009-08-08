@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.EdgeItem;
 
@@ -30,7 +31,13 @@ public class Line implements CyDrawable, EdgeItem {
 	}
 
 	public void draw() {
-		p.stroke(r, g, b, alpha);
+		if(source.z != target.z){
+			p.stroke(200, 0, 0, 70);
+			p.strokeWeight(1);
+		} else {
+			p.stroke(r, g, b, alpha);
+			p.strokeWeight(2);
+		}
 		p.line(source.x, source.y, source.z, target.x, target.y, target.z);		
 	}
 
@@ -51,9 +58,8 @@ public class Line implements CyDrawable, EdgeItem {
 			this.r = ((Color)edgePaint).getRed();
 			this.g = ((Color)edgePaint).getGreen();
 			this.b = ((Color)edgePaint).getBlue();
-			this.alpha = ((Color)edgePaint).getAlpha();
-			
-			System.out.println("Color of Edge = " + r +", " + g + ", " + b + ", alpha = " + alpha);
+			//this.alpha = ((Color)edgePaint).getAlpha();
+			this.alpha = 100;
 		}
 	}
 
@@ -67,6 +73,11 @@ public class Line implements CyDrawable, EdgeItem {
 		target.x = targetView.getVisualProperty(NODE_X_LOCATION).floatValue();
 		target.y = targetView.getVisualProperty(NODE_Y_LOCATION).floatValue();
 		target.z = targetView.getVisualProperty(NODE_Z_LOCATION).floatValue();
+	}
+
+	public void setContext(View<?> viewModel, VisualProperty<?> vp) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

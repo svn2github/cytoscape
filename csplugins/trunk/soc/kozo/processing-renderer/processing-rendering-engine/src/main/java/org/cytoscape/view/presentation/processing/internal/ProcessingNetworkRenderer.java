@@ -25,6 +25,7 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.Pickable;
 import org.cytoscape.view.presentation.processing.internal.particle.ParticleManager;
+import org.cytoscape.view.presentation.processing.internal.ui.Overlay;
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -45,8 +46,6 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	// Mode of renderer. For now, it is set to non-OpenGL version.
 	private static final String MODE = P3D;
 	private static final int FRAME_RATE = 30;
-	
-	private float fontSize = 32;
 
 	private Dimension windowSize;
 	private CyNetworkView view;
@@ -61,10 +60,15 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	private GLCanvas canvas;
 
+	private Overlay overlay;
+
 	private ParticleManager particleManager;
 	private VerletPhysics physics;
 	private float rotX, rotY, zoom = 200;
 	private AABB boundingBox;
+	
+	// Control
+	private boolean isOverlay = false;
 
 	/**
 	 * Constructor. Create a PApplet component based on the size given as
@@ -126,7 +130,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	PGraphicsOpenGL pgl;
 	GL gl;
 
-	PFont defFont;
+	
 
 	class GLRenderer implements GLEventListener {
 		GL gl;
@@ -156,13 +160,10 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		System.out.println("%%%%%%%%%%%%% Setup called for P5");
 		/* setup p5 */
 		size(windowSize.width, windowSize.width, OPENGL);
-		//hint(ENABLE_OPENGL_4X_SMOOTH);
-		//hint(ENABLE_NATIVE_FONTS);
+		// hint(ENABLE_OPENGL_4X_SMOOTH);
+		// hint(ENABLE_NATIVE_FONTS);
 		noStroke();
 		frameRate(FRAME_RATE);
-
-		defFont = createFont("SansSerif", fontSize);
-		textFont(defFont);
 
 		// Particle simulator
 		physics = new VerletPhysics();
@@ -184,6 +185,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 		numP = nodes.length;
 		particleManager = new ParticleManager(numP, this, physics);
+
+		overlay = new Overlay(this, view.getSource().attrs().get("name", String.class));
 
 		System.out.println("%%%%%%%%%%%%% Setup DONE for P5");
 	}
@@ -208,41 +211,24 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		rotateY(rotX);
 		translate(-width / 2 + translateX, -height / 2 + translateY,
 				-height / 2);
-		
+
 		for (CyDrawable node : nodes)
 			node.draw();
 
 		for (CyDrawable edge : edges)
 			edge.draw();
 
-		//particleManager.draw(gl);
+		// particleManager.draw(gl);
 
 		camera();
 		beginGL();
 		gl.glClear(javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT);
-		((PGraphicsOpenGL)g).endGL();
-					
+		((PGraphicsOpenGL) g).endGL();
+
 		// 2D OpenGL UI
-		drawOverlay();
+		if(isOverlay)
+			overlay.draw();
 	}
-
-	private void drawOverlay() {
-		fill(255, 255, 255, 90);
-		noStroke();
-		rect(10, height - 100, width-20, 90);
-		fill(255, 255, 255, 230);
-		text("Processing Renderer", 30, height-90+fontSize);
-		
-		fill(255, 255, 255, 90);
-		stroke(100, 100, 100, 200);
-		rect(10, 10, width-20, 30);
-		noStroke();
-		fill(255, 0, 0, 90);
-		rect(11, 11, width/3, 29);
-
-	}
-	
-	
 
 	public void beginGL() {
 		pgl = (PGraphicsOpenGL) g;
@@ -271,12 +257,20 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		if (mouseButton != CENTER)
 			return;
 
-//		System.out.println("===Mouse Click");
-//		for (int i = 0; i < nodes.length; i++) {
-//			if (nodes[i] instanceof Pickable) {
-//				((Pickable) nodes[i]).pick(mouseX, mouseY);
-//			}
-//		}
+		// System.out.println("===Mouse Click");
+		// for (int i = 0; i < nodes.length; i++) {
+		// if (nodes[i] instanceof Pickable) {
+		// ((Pickable) nodes[i]).pick(mouseX, mouseY);
+		// }
+		// }
+	}
+
+	@Override
+	public void keyPressed(){
+	  // if the key is between 'A'(65) and 'z'(122)
+	  if( key == 'o')
+		  isOverlay = !isOverlay;
+	    
 	}
 
 	public Icon getDefaultIcon(VisualProperty<?> vp) {

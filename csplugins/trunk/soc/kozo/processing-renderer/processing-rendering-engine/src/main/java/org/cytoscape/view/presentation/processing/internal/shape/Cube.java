@@ -1,7 +1,7 @@
 package org.cytoscape.view.presentation.processing.internal.shape;
 
-import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
+import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.*;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_SIZE;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
@@ -98,7 +98,7 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();
 		
 		if(p.random(1)> 0.5) {
-			viewModel.setVisualProperty(NODE_Z_LOCATION, 500d);
+			viewModel.setVisualProperty(NODE_Z_LOCATION, 2000d);
 		}
 		
 		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue();
@@ -108,6 +108,7 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 			size = DEF_SIZE;
 		
 		Paint color = viewModel.getVisualProperty(NODE_COLOR);
+		Double opacity = viewModel.getVisualProperty(NODE_OPACITY);
 		if(picked) {
 			this.r = 0;
 			g = 250;
@@ -117,7 +118,8 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 			this.r = ((Color)color).getRed();
 			this.g = ((Color)color).getGreen();
 			this.b = ((Color)color).getBlue();
-			this.alpha = ((Color)color).getAlpha();			
+			//this.alpha = opacity.intValue();		
+			this.alpha = 100;
 		}	
 	}
 	

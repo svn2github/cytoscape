@@ -19,6 +19,7 @@ import javax.swing.Icon;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.Pickable;
 
@@ -132,6 +133,11 @@ public class Rectangle extends Vec3D implements CyDrawable, Pickable {
 			System.out.println("Color of PICKED node" + g); 
 		} else
 			picked = false;
+	}
+
+	public void setContext(View<?> viewModel, VisualProperty<?> vp) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

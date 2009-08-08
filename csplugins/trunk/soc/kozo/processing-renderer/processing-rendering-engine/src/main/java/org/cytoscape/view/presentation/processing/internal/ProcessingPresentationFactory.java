@@ -21,7 +21,7 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 		NetworkViewChangedListener {
 
 	private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(1200,
-			1000);
+			900);
 
 	// private final Map<Class<?>, Class<? extends P5Renderer<?>>> rendererMap;
 

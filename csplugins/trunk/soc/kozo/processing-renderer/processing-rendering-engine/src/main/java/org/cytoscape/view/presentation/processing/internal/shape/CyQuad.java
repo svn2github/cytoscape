@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.Pickable;
 
@@ -43,6 +44,11 @@ public class CyQuad extends Quad implements CyDrawable, Pickable {
 	}
 
 	public void pick(float x, float y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setContext(View<?> viewModel, VisualProperty<?> vp) {
 		// TODO Auto-generated method stub
 		
 	}
