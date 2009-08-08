@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 
 public interface CyDrawable {
 	
@@ -13,7 +14,20 @@ public interface CyDrawable {
 	 */
 	public void draw();
 	
+	/**
+	 * Set all visual properties 
+	 * 
+	 * @param viewModel
+	 */
 	public void setContext(View<?> viewModel);
+	
+	/**
+	 * Set only specified visual property value.
+	 * 
+	 * @param viewModel
+	 * @param vp
+	 */
+	public void setContext(View<?> viewModel, VisualProperty<?> vp);
 	
 	/**
 	 * Get all children of this drawable.

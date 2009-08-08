@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.Icon;
@@ -17,6 +18,7 @@ import javax.swing.Icon;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.Pickable;
 
@@ -49,7 +51,9 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 	
 	private float size;
 	private int r, g, b, alpha;
-	 
+	
+	
+	private Map<VisualProperty<?>, Object> fieldMap;
 	
 	public Cube(PApplet parent, VisualLexicon lexicon) {
 		super();
@@ -93,7 +97,6 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue();
 		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();
 		
-		
 		if(p.random(1)> 0.5) {
 			viewModel.setVisualProperty(NODE_Z_LOCATION, 500d);
 		}
@@ -117,6 +120,15 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 			this.alpha = ((Color)color).getAlpha();			
 		}	
 	}
+	
+	public void setContext(View<?> viewModel, VisualProperty<?> vp) {
+		// If the VP is not in the context, ignore
+		if(lexicon.getAllVisualProperties().contains(vp) == false) return;
+		
+		// Extract value for the visual property
+		Object value = viewModel.getVisualProperty(vp);
+		
+	}
 
 	public boolean isPicked() {
 		return picked;
@@ -138,5 +150,7 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 			picked = false;
 		
 	}
+
+	
 
 }
