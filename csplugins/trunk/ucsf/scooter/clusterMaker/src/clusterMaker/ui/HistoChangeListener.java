@@ -5,6 +5,7 @@
  * @author
  * @version 1.00 2009/7/14
  */
+
 package clusterMaker.ui;
 
 public interface HistoChangeListener {

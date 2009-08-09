@@ -1,4 +1,4 @@
-/**
+ /**
  * @(#)Histogram.java
  *
  * Java class that implements a Histogram
@@ -13,6 +13,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.*;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.font.TextAttribute;
+import java.text.AttributedString;
+import java.text.AttributedCharacterIterator;
 
 import java.lang.Math;
 
@@ -24,50 +29,71 @@ import java.text.DecimalFormat;
 import javax.swing.JComponent;
 
 class Histogram extends JComponent implements MouseMotionListener, MouseListener{
+
+	// The histogram
 	private int[] histoArray;
-	private int histoMax = Integer.MIN_VALUE;
+
+	// Original data
 	private double[] graphData;
+
+	// Y scale values
+	private int histoMax = Integer.MIN_VALUE;
+	private int histoMin = 0;
+	private int histoMaxUp;
+
+	// X scale values
 	private double minValue = Double.MAX_VALUE;
 	private double maxValue = Double.MIN_VALUE;
 	private int low;
 	private int high;
+
 	private final int XSTART = 100;
 	private final int YEND = 50;
-	private final int NBINS = 100;
-	private final int NDIVS = 100;
+	private final int NBINS;
 	private int mouseX;
 	private boolean boolShowLine = false;
-	private double binSize;
 	private List<HistoChangeListener> listeners = null;
+	private Font adjSizeFont;
+	private int fontSize;
+	private double xInterval;
 
-
-	DecimalFormat form = new DecimalFormat("0.0##E0"); //rounds values for drawString
+	DecimalFormat form = new DecimalFormat("0.0E0"); //rounds values for drawString
 		
 	Histogram(double[] inputData, int nBins) {
 		super();
-		setPreferredSize(new Dimension(800,500));
+		NBINS = nBins;
+		setPreferredSize(new Dimension(1000,400));
 		histoArray = new int[NBINS];
 		this.graphData = inputData;
-		for (int i=0; i < graphData.length; i++) {
-			minValue = Math.min(minValue, graphData[i]);
-			maxValue = Math.max(maxValue, graphData[i]);
-		}
-		// Adjust min and max for esthetic purposes
-
-
-
 		listeners = new ArrayList();
+
 		createHistogram(graphData);
+
 		addMouseMotionListener(this);
 		addMouseListener(this);
+		fontSize = 5+ (int)(this.getPreferredSize().getWidth()/(NBINS));
+		if(fontSize>18)
+			fontSize=18;
+		adjSizeFont = new Font("Helvetica", Font.PLAIN, fontSize);
+		// System.out.println("fontSize = "+fontSize);
 	}
 
 	public void updateData(double[] graphData) {
 		// Trigger redraw
+		histoArray = new int[NBINS];
+		this.graphData = graphData;
+
+		createHistogram(graphData);
 	}
 
 	public void paint(Graphics g) {
 		super.paint(g);
+		fontSize = 3 +(int)(this.getPreferredSize().getWidth()/(NBINS));
+		if(fontSize>18)
+			fontSize=18;
+
+		adjSizeFont = new Font("Helvetica", Font.PLAIN, fontSize);
+		System.out.println("fontSize = "+fontSize);
 		drawGraph(g);
 		if(boolShowLine)
 			mouseLine(mouseX, g);
@@ -106,7 +132,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		int xIncrement = (width-125)/NBINS;
 		int histoMousePos = (e.getX()-XSTART)/xIncrement;
 		if(e.getX()>XSTART && e.getX()<(XSTART+xIncrement*histoArray.length) && boolShowLine){
-			double binValue = minValue+(binSize*histoMousePos);
+			double binValue = minValue+(xInterval*histoMousePos);
 			// System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+form.format((binValue)));
 			if (listeners.size() == 0) return;
 			for (HistoChangeListener listener: listeners)
@@ -115,10 +141,6 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 
 	}
 
-	//handle the rest of the wizard buttons in a similar fashion
-
-
-	
 	public void setBoolShowLine(boolean inShowLine){boolShowLine = inShowLine;}
 
 	/**
@@ -139,6 +161,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	public void removeHistoChangeListener(HistoChangeListener listener) {
 		listeners.remove(listener);
 	}
+
 			
 	private void mouseLine(int mX, Graphics g){
 		Dimension dim = getPreferredSize();
@@ -152,40 +175,75 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		g.setColor(Color.red);
 		g.drawLine(mX, YEND, mX, height);
 		g.setColor(Color.black);
-		g.drawString(form.format((minValue+(binSize*histoMousePos)))+" ("+histoArray[histoMousePos]+" values)",mX-50,YEND-5); //REMOVE THIS LATER
+		g.setFont(adjSizeFont);
+		g.drawString(toSciNotation(form.format((minValue+(xInterval*histoMousePos))).toString()," ("+histoArray[histoMousePos]+" values)"),mX-50,YEND-5);
 	}
 
 	private void createHistogram(double[] inputData){
-		histoMax = Integer.MIN_VALUE;
-		binSize = (maxValue - minValue)/NBINS;
-		// System.out.println("binSize = "+binSize);
+		calculateXScale();
+		
+		// Bin the data
 		for(double dataItr : inputData){
 			for(int nI=0; nI < NBINS; nI++){
 				if(dataItr==minValue){
 					histoArray[0]+=1;
 					break;
 				}
-				if(dataItr>minValue+binSize*nI && dataItr<=minValue+binSize*(nI+1) ){
+				if(dataItr>minValue+xInterval*nI && dataItr<=minValue+xInterval*(nI+1) ){
 					histoArray[nI]+=1;
 					break;
 				}
 			}
 		}
-		int test = 0; //REMOVE THIS LATER
-		for(int nI=0; nI<histoArray.length; nI++){ 
-			histoMax = Math.max(histoMax, histoArray[nI]);
-			// System.out.println("hitoArray["+nI+"] = "+histoArray[nI]); //REMOVE THIS LATER
-			test+=histoArray[nI]; //REMOVE THIS LATER
+		calculateYScale();
+	}
+
+	private void calculateXScale() {
+
+		// Calculate our minimum and maximum X values
+		for (int i=0; i < graphData.length; i++) {
+			minValue = Math.min(minValue, graphData[i]);
+			maxValue = Math.max(maxValue, graphData[i]);
 		}
 
-		// Adjust histomax for esthetics
-		int histoMax2 = (int)Math.pow(10, Math.rint(Math.log10(histoMax)+.5));
-		if (histoMax < histoMax2/2)
-			histoMax = histoMax2/2;
-		else
-			histoMax = histoMax2;
-		// System.out.println("test = "+test); //REMOVE THIS LATER
-		// System.out.println("histoMax = "+histoMax); //REMOVE THIS LATER
+		System.out.println("range = "+minValue+" - "+maxValue);
+
+		// Calculate our X scale
+		double range = maxValue - minValue;
+		double oomRange = Math.log10(range); //order of magnitude
+		// System.out.println("oomRange = "+oomRange);
+		oomRange = oomRange + (.5*oomRange/Math.abs(oomRange)); // Increase our oom by .5
+		// System.out.println("oomRange = "+oomRange);
+		oomRange = (int)(oomRange); //make it an integer
+
+		double high = (Math.rint((maxValue/Math.pow(10, oomRange))+.5)) * (Math.pow(10, oomRange)); // This is our initial high value
+
+		// System.out.println("high = "+high);
+		if (maxValue <= high/2) 
+			high = high/2; // A little fine-tuning
+
+		double low = (Math.rint((minValue/Math.pow(10, oomRange))-.5)) * Math.pow(10,oomRange);
+
+		if (minValue >= low/2) 
+			low = low/2;
+
+		xInterval = (high - low) / NBINS;
+		
+	}
+
+	private void calculateYScale() {
+		histoMin = 0;
+
+		// First, determine the max value
+		for(int nI=0; nI<histoArray.length; nI++){ 
+			histoMax = Math.max(histoMax, histoArray[nI]);
+		}
+
+		while(histoMax > histoMaxUp)
+			histoMaxUp += (int)(Math.pow(10,(int)(Math.log10(histoMax))));
+
+		if(histoMaxUp<10)
+			histoMaxUp = 10;
 	}
 	
 	private void drawGraph(Graphics g){
@@ -199,72 +257,124 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	}
 
 	private void drawAxes(Graphics g, int height, int width) {
-		double yIncrement = height/NDIVS;
+
 		int xIncrement = (width-125)/NBINS;
+		int maxX = xIncrement*NBINS+XSTART;
 
-		int chartWidth = histoArray.length*xIncrement+100;
-
+		// Draw the Y axis
 		g.setColor(Color.black);
 		g.drawLine(XSTART,YEND,XSTART,height);
-		g.setColor(Color.green);
-		g.drawLine(XSTART,height,chartWidth,height);
+
+		// Draw the X axis
+		g.drawLine(XSTART,height,maxX,height);
 		
-		
-		for(int nI=1;nI<=NDIVS;nI++){
-			if(nI%10==0)
+		// Draw the Y incremental lines
+		double yIncrement = (height-YEND)/(double)histoMaxUp;
+		for(int nI=1;nI<=histoMaxUp;nI++){
+			if(((double)nI%((double)histoMaxUp/10.0)) == 0.0){
 				g.setColor(Color.red);
-			else
-				g.setColor(Color.gray);
-			g.drawLine(XSTART,height-(int)(yIncrement*nI),chartWidth, height-(int)(yIncrement*nI));
-		}
-		
-		for(int nI=0; nI<=histoArray.length; nI++){
-			if(nI%10==0){
-				g.setColor(Color.black);
-				g.drawLine(XSTART+xIncrement*nI,height,100+xIncrement*nI,height+10);
+				g.drawLine(XSTART-5,(int)(height-(yIncrement*nI)),maxX,(int)(height-(yIncrement*nI)));
 			}
-				
+			else if(((double)nI%((double)histoMaxUp/20.0)) == 0.0){
+				g.setColor(Color.gray);
+				g.drawLine(XSTART,(int)(height-(yIncrement*nI)),maxX,(int)(height-(yIncrement*nI)));
+			}
+		}
+
+		g.setColor(Color.black);
+		for(int nI=0; nI<=NBINS; nI++){
+			if(nI%10==0){
+				g.drawLine(XSTART+xIncrement*nI,height,XSTART+xIncrement*nI,height+10);
+			}
 		}
 	}
 
 	private void drawLabels(Graphics g, int height, int width) {
-		double yIncrement = height/NDIVS;
-		int xIncrement = (width-125)/NBINS;
-		double binSize = (maxValue - minValue)/NBINS;
+		g.setColor(Color.black);
+		g.setFont(adjSizeFont);
+		FontMetrics metrics = g.getFontMetrics();
 
-		g.setColor(Color.gray);
-		// Handle esthetics. This doesn't work for 1,000's of values
-		for(int nI=1;nI<=100;nI++){
-			if(nI%10==0)
-				g.drawString(""+nI*histoMax/100,20,height-(int)(yIncrement*nI)+5);
+		// Draw the Y labels
+		double yIncrement = (height-YEND)/(double)histoMaxUp;
+		for(int nI=1;nI<=histoMaxUp;nI++){
+			String str = ""+nI;
+			int offset = 90-metrics.stringWidth(str);
+
+			if(nI%(histoMaxUp/10)==0)
+				g.drawString(str, offset, height-(int)(yIncrement*nI)+5);
 		}
-		
-		g.drawString(""+form.format(minValue),XSTART-25,height+20);
-		g.drawString(""+form.format(maxValue),XSTART-25+xIncrement*histoArray.length,height+20);
-		for(int nI=1; nI<histoArray.length; nI++){
-			if(nI%10==0)
-				g.drawString(""+form.format((minValue+(binSize*nI))),XSTART-20+xIncrement*nI,height+20);
+
+		// Now draw the X labels
+		int xIncrement = (width-125)/NBINS;
+		for(int nI=0; nI<=NBINS; nI++){
+			double value = low+(xInterval*nI);
+			String str = form.format(value);
+			int offset = XSTART+metrics.stringWidth(str)/2 - 50;
+			if (value == 0 || (value > 1 && value < 10))
+				offset += 20;
+
+			if(nI%20==0)
+				g.drawString(toSciNotation(str, ""),offset+xIncrement*nI,height+25);
+			if(nI%20==10)
+				g.drawString(toSciNotation(str, ""),offset+xIncrement*nI,height+30);
 		}
 	}
 	
 	
+	// TODO: Change this method to use height and width.  You may need to scale the
+	// the font also.
 	private void drawData(Graphics g, int height, int width){
 		int nBlueChange = 100;
-		double yIncrement = (height-50)/(double)histoMax;
+		double yIncrement = (height-50)/(double)(histoMaxUp);
 		//System.out.println("yIncrement = "+yIncrement);
 		int xIncrement = (width-125)/NBINS;
+		double xValue = low;
+		int histoIndex = 0;
 		
-		for(int nI=0; nI<histoArray.length; nI++){
-			g.setColor(new Color(0,0,nBlueChange));
-			g.fillRect(XSTART+xIncrement*nI, height-(int)(histoArray[nI]*yIncrement), xIncrement, (int)(histoArray[nI]*yIncrement));
-			g.setColor(Color.black);
-			g.drawRect(XSTART+xIncrement*nI, height-(int)(histoArray[nI]*yIncrement), xIncrement, (int)(histoArray[nI]*yIncrement));
+		for(int nI=0; nI<=NBINS; nI++){
+			if (xValue >= minValue) {
+				g.setColor(new Color(0,0,nBlueChange));
+				g.fillRect(XSTART+xIncrement*nI, (int)(height-(histoArray[histoIndex]*yIncrement)), xIncrement, (int)(histoArray[histoIndex]*yIncrement));
+				g.setColor(Color.black);
+				g.drawRect(XSTART+xIncrement*nI, (int)(height-(histoArray[histoIndex]*yIncrement)), xIncrement, (int)(histoArray[histoIndex]*yIncrement));
+				histoIndex++;
 
-			nBlueChange+=15;
-			if(nBlueChange >= 250)
-				nBlueChange = 100;
+				nBlueChange+=15;
+				if(nBlueChange >= 250)
+					nBlueChange = 100;
+			}
+			xValue += xInterval;
+		}
+	}
+	
+	private AttributedCharacterIterator toSciNotation(String d, String suffix){
+		String returnString = "";
+		for(int i=0; i<d.length(); i++){
+			if(d.charAt(i)== 'E')
+				break;
+			returnString+=d.charAt(i);
 		}
 
-	}
+		String exponent = "";
+		for(int i=d.length()-1; i>0; i--){
+			if(d.charAt(i)== 'E')
+				exponent+=d.substring(i+1,d.length());
+		}
 
+		AttributedString str;
+		if (Integer.parseInt(exponent) == 0) {
+			str = new AttributedString(returnString+suffix);
+		} else {
+			returnString += "x10";
+			int superOffset = returnString.length();
+			returnString += exponent;
+			int superEnd = returnString.length();
+
+			str = new AttributedString(returnString+suffix);
+			str.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER, superOffset, superEnd);
+		}
+
+		str.addAttribute(TextAttribute.FONT, adjSizeFont, 0, returnString.length());
+		return str.getIterator();
+	}
 }
