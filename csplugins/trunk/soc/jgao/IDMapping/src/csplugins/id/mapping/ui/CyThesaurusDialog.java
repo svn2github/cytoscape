@@ -447,7 +447,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         final JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());
         jTaskConfig.displayCloseButton(true);
-        jTaskConfig.displayCancelButton(false);
+        jTaskConfig.displayCancelButton(true);
         jTaskConfig.displayStatus(true);
         jTaskConfig.setAutoDispose(false);
         jTaskConfig.setMillisToPopup(0); // always pop the task
