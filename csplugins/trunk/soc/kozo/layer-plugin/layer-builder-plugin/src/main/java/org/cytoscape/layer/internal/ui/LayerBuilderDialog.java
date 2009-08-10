@@ -576,19 +576,7 @@ public class LayerBuilderDialog extends JDialog {
 
 		for (int i = 0; i < layeredNetworkListModel.getSize(); i++) {
 			CyNetwork cyNetwork = manager.getNetwork((Long) layeredNetworkListModel.getElementAt(i));
-
-			netAttrMgr = cyNetwork.getCyDataTables(NODE);
-			netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(LAYER_NUMBER, String.class, false);
-			
-			for (CyNode cyNode : cyNetwork.getNodeList()) {
-				cyNode.attrs().set(LAYER_NUMBER, Integer.toString(i));
-				System.out.println(cyNode.attrs().get(LAYER_NUMBER, String.class));
-				System.out.println("OK!");
-			}
-			
 			layers.add(cyNetwork);
-			System.out.println("attribute append finished!");
-			
 		}
 
 		for (int i = 0; i < layerConnectionTableModel.getRowCount(); i++) {
