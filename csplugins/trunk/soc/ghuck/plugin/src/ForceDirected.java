@@ -131,7 +131,7 @@ public class ForceDirected extends AbstractGraphPartition
      * for this layout.
      */
     public  String getName() {
-	return "Force Directed GPU Layout";
+	return "gpu-assisted-layout";
     }
     
     /**
@@ -139,7 +139,7 @@ public class ForceDirected extends AbstractGraphPartition
      * of the layout
      */
     public  String toString(){
-	return "Force Directed Layout";
+	return "Gpu Assisted Layout";
     }
     
     /**
@@ -414,7 +414,7 @@ public class ForceDirected extends AbstractGraphPartition
 		upRatio = actualRatio;
 	}
 
-	upRatio = 2 * upRatio / 3;
+	upRatio = 5 * upRatio / 9;
 
 	// Update Node position
 	part.resetNodes(); // reset the nodes so we get the new average location

@@ -10,7 +10,7 @@ pluginName=GpuLayout
 
 # Description used to give users information about the plugin such as what it does.
 # Html tags are encouraged for formatting purposes.
-pluginDescription=This plugin computes a graph force driven layout.<br>It uses the GPU to accelerate the layout process (you must have a CUDA compatible graphic card, with CUDA and CUDPP installed.<p>
+pluginDescription=This plugin computes a graph force driven layout.<br>It uses the GPU to accelerate the layout process (you must have a CUDA compatible graphic card, with installed).<p>
 
 # Plugin version number, this must be two numbers separated by a decimal.  Ex. 0.2, 14.03
 pluginVersion=0.02
