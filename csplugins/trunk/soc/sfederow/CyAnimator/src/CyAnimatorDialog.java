@@ -1,3 +1,15 @@
+/*
+ * File: CyFrame.java
+ * Google Summer of Code
+ * Written by Steve Federowicz with help from Scooter Morris
+ * 
+ * This contains all of the swing code for the GUI which is essentially just a thumbnail viewer
+ * accompanied by stop, play, pause, forwards, and backwards buttons.  It also contains a slider
+ * which is used to adjust the speed of the animations.  Each thumbnail is created by putting an
+ * ImageIcon onto a JButton.
+ * 
+ */
+
 package CyAnimator;
 
 import giny.model.Node;
@@ -112,17 +124,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	private FrameManager frameManager;
 	
 	int thumbnailPopupIndex = 0;
-	
-	//private int fps = 10;
-	//CyFrame[] frames = null;
-	
-	//private NodeView[] currentFrame;
-	//private HashMap<String, double[]> posFrame;
-	//private HashMap<String, Paint> colFrame;
 	ArrayList<CyFrame> frameList; // = new ArrayList<CyFrame>();
-	//ArrayList<CyNetworkView> viewList = new ArrayList<CyNetworkView>();
-	//private CyFrame[]
-	//private Timer timer;
 	       
 	
 	public CyAnimatorDialog(){
@@ -358,15 +360,17 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	 */
 	public void updateThumbnails(){
 
-		
+		//remove the framePane so that a new one can be made with the updated thumbnails
 		mainPanel.remove(framePane);
 		framePanel = new JPanel();
 		
+		//make a horizontal box layout
 		BoxLayout box = new BoxLayout(framePanel, BoxLayout.X_AXIS);
 		framePanel.setLayout(box);
 
 		MouseListener popupListener = new PopupListener();
 		
+		//update the frameList
  		frameList = frameManager.getKeyFrameList();
 		int i = 0;
 		
@@ -379,14 +383,15 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		for(CyFrame frame: frameList){
 
+			//get the thumbnail image
 			ImageIcon ic = new ImageIcon(frame.getFrameImage());
 
+			//put the image on the thumbnail button
 			JButton thumbnailButton = new JButton(ic);
 			thumbnailButton.addMouseListener(dragnDrop);
 			thumbnailButton.addActionListener(this);
 			thumbnailButton.setActionCommand(frame.getID());
 		
-			//System.out.println(ic.getIconWidth());
 			
 		    //for some reason thumbnailButton.getWidth() returns 0 so I had
 			//to improvise and use the icon width plus 13 pixels for the border. 
@@ -394,6 +399,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			dragnDrop.setFrameHeight(ic.getIconHeight());
 			
 			
+			//create a popupmenu for each thumbnail and add the menu items
 			thumbnailMenu = new JPopupMenu();
 			JMenu interpolateMenu = new JMenu("Interpolate");
 			menuItem = new JMenuItem("10 Frames");
@@ -420,7 +426,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			menuItem.addActionListener(this);
 			menuItem.setActionCommand("interpolate0_");
 			interpolateMenu.add(menuItem);
-			
+	
 			thumbnailMenu.add(interpolateMenu);
 			
 			menuItem = new JMenuItem("Delete");
@@ -429,7 +435,6 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			menuItem.addMouseListener(popupListener);
 			thumbnailMenu.add(menuItem);
 			
-			System.out.println("Update: "+frame.getID());
 			
 			menuItem = new JMenuItem("Move Right");
 			menuItem.addActionListener(this);
@@ -448,9 +453,10 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			
 			menuList.add(thumbnailMenu);
 			
-		
+			//set the name of the button to the integer position of the frame in the list
 			thumbnailButton.setName(i+"");
 			i++;
+		
 			thumbnailButton.addMouseListener(popupListener);
 			framePanel.add(thumbnailButton);
 			
@@ -459,8 +465,10 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		dragnDrop.setFrameWidth(totalFrameWidth);
 		
+		//recreate the scrollpane with the updated framePanel
 		framePane = new JScrollPane(framePanel);
 		
+		//add it to the main dialog panel
 		mainPanel.add(framePane);
 		
 	}

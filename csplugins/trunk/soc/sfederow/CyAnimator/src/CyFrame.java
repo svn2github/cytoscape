@@ -1,3 +1,16 @@
+/*
+ * File: CyFrame.java
+ * Google Summer of Code
+ * Written by Steve Federowicz with help from Scooter Morris
+ * 
+ * The CyFrame class is essentially a wrapper on a CyNetworkView. It works by having a populate() method which essentially extracts the
+ * necessary view data from the current CyNetworkView and stores it in the CyFrame. Each CyFrame also contains a display() method which
+ * updates the current network view based upon the visual data stored in that particular CyFrame. It also can hold an image of the network
+ * and contains a facility for writing this image to a file. 
+ * 
+ */
+
+
 package CyAnimator;   
 
 

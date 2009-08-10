@@ -1,3 +1,15 @@
+/*
+ * File: FrameManager.java
+ * Google Summer of Code
+ * Written by Steve Federowicz with help from Scooter Morris
+ * 
+ * FrameManager is the driving class for the animations which holds the list of key frames, creates and manages the timer, and essentially
+ * makes the animation. The primary function is to create a timer ( http://java.sun.com/j2se/1.4.2/docs/api/java/util/Timer.html) which
+ * fires an action command at a specified interval displaying each frame in the animation in rapid succession. There is also support
+ * for all of the standard, play, stop, pause, step forwards, step backwards commands along with code to set up the exporting of images.
+ */
+
+
 package CyAnimator;
 
 import java.awt.event.ActionEvent;
