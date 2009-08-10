@@ -39,7 +39,6 @@ import static org.cytoscape.model.GraphObject.NODE;
 public class LayerBuilderDialog extends JDialog {
 
 	private static final String NETWORK_TITLE = "name";
-	private static final String LAYER_NUMBER = "layerNumber";
 	private static final Integer LAYER1 = 0;
 	private static final Integer LAYER2 = 1;
 	private static final Integer CONNECTOR = 2;
@@ -582,8 +581,6 @@ public class LayerBuilderDialog extends JDialog {
 		for (int i = 0; i < layerConnectionTableModel.getRowCount(); i++) {
 			connectors.add(manager.getNetwork(layerConnectionTableModel
 					.getValueAt(i, CONNECTOR)));
-//			System.out.println(layerConnectionTableModel.getValueAt(i,
-//					CONNECTOR));
 		}
 
 		// Setup
