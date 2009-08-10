@@ -37,14 +37,16 @@ package cytoscape.util.plugins.communication;
 
 import cytoscape.Cytoscape;
 
-import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * PluginsCommunicationSupport provide inter-plugin communication for Cytoscape
@@ -100,27 +102,52 @@ import java.util.HashMap;
  * Note: only messages sent to the receiver will be listened, but if receiver is
  * is null, all of inter-plugin messages will be listened.
  * <p>
+ * <h3>Get receivers</h3>
+ * You can get receiver plugins who are listening the messages by calling
+ * {@link PluginsCommunicationSupport#getReceivers()}. Note: this method
+ * may not return all receivers. Only those who respond to
+ * {@link Message#MSG_TYPE_GET_RECEIVERS} will be returned.
+ * <p>
+ * <h3>Get message types a receiver listening to</h3>
+ * You can get all message types that a receiver is listening to by calling
+ * {@link PluginsCommunicationSupport#getMessageTypes(java.lang.String)}.
+ * Note: a receiver may not report all message types it is listening to.
+ * <p>
  * <h3>Send message and get response</h3>
  * You can also send the message and get the corresponding responses, using the
- * {@link PluginsCommunicationSupport#sendMessageAndGetResponses} method.
+ * {@link PluginsCommunicationSupport#sendMessageAndGetResponses(cytoscape.util.plugins.communication.Message)} method.
  *
  * @author gjj
  */
 public final class PluginsCommunicationSupport {
-    private static final String INTER_PLUGIN_COMMUNICATION = "INTER_PLUGIN_COMMUNICATION";
-    private static final Map<MessageListener, PropertyChangeListener> listenerMap = new HashMap();
+    private static final String INTER_PLUGIN_COMMUNICATION
+                = "INTER_PLUGIN_COMMUNICATION";
+
+    // Recode the map between MessageListener and PropertyChangeListener
+    // so that removing listener is possble
+    private static final Map<MessageListener, PropertyChangeListener>
+                listenerMap = new HashMap();
 
     private PluginsCommunicationSupport() {}
-    
+
+    /**
+     * Set a message of msgType from sender to receiver with no content.
+     * @param msgId
+     * @param sender
+     * @param receiver
+     * @param msgType
+     */
     public static void sendMessage(final String msgId, final String sender,
             final String receiver, final String msgType) {
         sendMessage(msgId, sender, receiver, msgType, null);
     }
 
     /**
-     * send a message between plugins
+     * send a message between plugins.
+     * @param msgId message ID
      * @param sender sender plugin name
      * @param receiver receiver plugin name
+     * @param msgType message type
      * @param content message content
      */
     public static void sendMessage(final String msgId, final String sender,
@@ -129,14 +156,12 @@ public final class PluginsCommunicationSupport {
     }
     
     /**
-     * send a message between plugins
-     * @param sender sender plugin name
-     * @param receiver receiver plugin name
-     * @param content message content
+     * send a message between plugins.
+     * @param msg a {@link Message}.
      */
     public static void sendMessage(final Message msg) {
         if (msg==null) {
-            throw new java.lang.IllegalArgumentException("Message cannot be null.");
+            throw new IllegalArgumentException("Message cannot be null.");
         }
 
         PropertyChangeSupport pcs = Cytoscape.getPropertyChangeSupport();
@@ -144,13 +169,34 @@ public final class PluginsCommunicationSupport {
     }
 
     /**
-     * Send the message and get the responses
+     * Send the message and get the responses.
+     * @param msgId message ID
+     * @param sender sender plugin name
+     * @param receiver receiver plugin name
+     * @param msgType message type
+     * @param content message content
+     * @return responses
+     */
+    public static List<ResponseMessage> sendMessageAndGetResponses(
+                final String msgId, final String sender, final String receiver,
+                final String msgType, final Object content) {
+        if (msgId==null || sender==null) {
+            throw new IllegalArgumentException("Neither messade id ir sender" +
+                        " can be null in order to get responses.");
+        }
+        return sendMessageAndGetResponses(new Message(msgId, sender, receiver,
+                    msgType, content));
+    }
+
+    /**
+     * Send the message and get the responses.
      * @param msg message to be sent
      * @return responses
      */
-    public static List<ResponseMessage> sendMessageAndGetResponses(final Message msg) {
+    public static List<ResponseMessage> sendMessageAndGetResponses(
+                final Message msg) {
         if (msg==null) {
-            throw new java.lang.IllegalArgumentException("Message cannot be null.");
+            throw new IllegalArgumentException("Message cannot be null.");
         }
 
         final Message msgCopy = new Message(msg);
@@ -195,7 +241,69 @@ public final class PluginsCommunicationSupport {
             // return response
             return rms;
         }
+    }
 
+    /**
+     * Get receiver plugins who are listening the messages. Note: this method
+     * may not return all receivers. Only those who respond to
+     * {@link Message#MSG_TYPE_GET_RECEIVERS} will be returned. 
+     * @return receivers who respond to {@link Message#MSG_TYPE_GET_RECEIVERS}.
+     */
+    public static Set<String> getReceivers() {
+        long l = System.currentTimeMillis();
+        String sender = "PluginsCommunicationSupport."+l;
+        String msgId = sender;
+        String receiver = null; //send to all
+        String type = Message.MSG_TYPE_GET_RECEIVERS;
+        List<ResponseMessage> responses = sendMessageAndGetResponses(msgId,
+                    sender, receiver, type, null);
+        Set<String> receivers = new HashSet();
+        if (responses!=null) {
+            for (ResponseMessage response : responses) {
+                String responser = response.getSender();
+                if (responser!=null) {
+                    receivers.add(responser);
+                }
+            }
+        }
+
+        return receivers;
+    }
+
+    /**
+     * Get all message types that a receiver is listening to . Note: a receiver
+     * may not report all message types it is listening to. A receiver should
+     * respond to {@link Message#MSG_TYPE_GET_MSG_TYPES} to provide this
+     * information. The response message should have a content of Map with a
+     * key of {@link Message#MSG_TYPE_GET_MSG_TYPES}.
+     * @param receiver a receiver plugin
+     * @return all supported message types from the receiver.
+     */
+    public static Set<String> getMessageTypes(final String receiver) {
+        if (receiver==null) {
+            throw new IllegalArgumentException("receiver cannot be null");
+        }
+
+        long l = System.currentTimeMillis();
+        String sender = "PluginsCommunicationSupport."+l;
+        String msgId = sender;
+        String type = Message.MSG_TYPE_GET_MSG_TYPES;
+        List<ResponseMessage> responses = sendMessageAndGetResponses(msgId,
+                    sender, receiver, type, null);
+        if (responses!=null) {
+            for (ResponseMessage response : responses) {
+                if (response.getSender().compareTo(receiver)!=0) continue;
+                Object obj = response.getContent();
+                if (obj==null || !(obj instanceof Map)) continue;
+                Map map = (Map)obj;
+                Object types = map.get(Message.MSG_TYPE_GET_MSG_TYPES);
+                if (obj!=null && types instanceof Set) {
+                    return (Set)types;
+                }
+            }
+        }
+
+        return new HashSet(0);
     }
 
     /**
@@ -215,7 +323,7 @@ public final class PluginsCommunicationSupport {
     public static void addMessageListener(final String receiver,
                 final MessageListener listener) {
         if (listener==null) {
-            throw new java.lang.IllegalArgumentException("listener cannot be null.");
+            throw new IllegalArgumentException("listener cannot be null.");
         }
 
         PropertyChangeSupport pcs = Cytoscape.getPropertyChangeSupport();

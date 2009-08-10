@@ -56,6 +56,8 @@ public class Message {
     public static final String MSG_TYPE_REQUEST = "REQUEST";
     public static final String MSG_TYPE_RESPONSE = "RESPONSE";
     public static final String MSG_TYPE_TEST = "TEST";
+    public static final String MSG_TYPE_GET_RECEIVERS = "GET_RECEIVERS";
+    public static final String MSG_TYPE_GET_MSG_TYPES = "GET_MSG_TYPES";
 
     private final Map map;
 
