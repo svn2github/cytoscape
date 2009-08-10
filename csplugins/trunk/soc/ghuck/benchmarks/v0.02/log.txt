@@ -1,0 +1,12 @@
+gpu-assisted-layout took 3006 ms to layout 3elt.gml
+force-directed took 29163 ms to layout 3elt.gml
+gpu-assisted-layout took 2621 ms to layout add20.gml
+force-directed took 9734 ms to layout add20.gml
+gpu-assisted-layout took 3705 ms to layout add32.gml
+force-directed took 34468 ms to layout add32.gml
+gpu-assisted-layout took 1434 ms to layout data.gml
+force-directed took 12639 ms to layout data.gml
+gpu-assisted-layout took 2226 ms to layout uk.gml
+force-directed took 31148 ms to layout uk.gml
+gpu-assisted-layout took 4736 ms to layout whitaker3.gml
+force-directed took 119245 ms to layout whitaker3.gml
