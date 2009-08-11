@@ -69,7 +69,6 @@ public class MCLCluster extends AbstractClusterAlgorithm
 	int rNumber = 8;
 	double clusteringThresh = 1e-15;
 	boolean takeNegLOG = false;
-	boolean createNewNetwork = false;
 	boolean createMetaNodes = false;
 	boolean selectedOnly = false;
 	boolean adjustLoops = true;
@@ -195,11 +194,7 @@ public class MCLCluster extends AbstractClusterAlgorithm
 
 		clusterProperties.add(new Tunable("options_panel2",
 		                                  "Results options",
-		                                  Tunable.GROUP, new Integer(2)));
-
-		// Whether or not to create a new network from the results
-		clusterProperties.add(new Tunable("createNewNetwork","Create a new network with independent clusters",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.GROUP, new Integer(1)));
 
 		// Whether or not to create a new network from the results
 		clusterProperties.add(new Tunable("createMetaNodes","Create meta nodes for clusters",
@@ -241,10 +236,6 @@ public class MCLCluster extends AbstractClusterAlgorithm
 		t = clusterProperties.get("createMetaNodes");
 		if ((t != null) && (t.valueChanged() || force))
 			createMetaNodes = ((Boolean) t.getValue()).booleanValue();
-
-		t = clusterProperties.get("createNewNetwork");
-		if ((t != null) && (t.valueChanged() || force))
-			createNewNetwork = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("selectedOnly");
 		if ((t != null) && (t.valueChanged() || force))
@@ -298,8 +289,9 @@ public class MCLCluster extends AbstractClusterAlgorithm
 			if (takeNegLOG) {
 				if (dataArray[index] == 0)
 					dataArray[index] = 500; // Arbitrarily small value (1X10^-500)
-				} else 
+				else 
 					dataArray[index] = -Math.log10(dataArray[index]);
+			}
 			index++;
 		}
 		int nbins = 100;
@@ -443,7 +435,10 @@ public class MCLCluster extends AbstractClusterAlgorithm
 
 		// Set up the appropriate attributes
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
-		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, "mcl");
+		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
+		                     ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, "mcl");
+		netAttr.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
+		                     ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttrName);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

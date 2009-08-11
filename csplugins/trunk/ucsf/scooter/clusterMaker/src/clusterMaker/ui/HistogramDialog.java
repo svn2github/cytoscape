@@ -172,8 +172,8 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 			scrollPanel = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
 			scrollPanel.addComponentListener(this);
 			scrollPanel.add(histo);
-			scrollPanel.setPreferredSize(new Dimension(dim.width, height));
-			histo.setPreferredSize(new Dimension(histoWidth, height));
+			scrollPanel.setPreferredSize(new Dimension(dim.width, histoDim.height));
+			histo.setPreferredSize(new Dimension(histoWidth, histoDim.height));
 			mainPanel.add(scrollPanel);
 		} else {
 			histo.setPreferredSize(new Dimension(dim.width, dim.height));
