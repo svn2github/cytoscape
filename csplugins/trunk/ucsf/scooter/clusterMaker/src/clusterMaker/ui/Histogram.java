@@ -12,9 +12,12 @@ package clusterMaker.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.RenderingHints;
+import java.awt.RenderingHints.Key;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.text.AttributedCharacterIterator;
@@ -74,7 +77,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		fontSize = 5+ (int)(this.getPreferredSize().getWidth()/(NBINS));
 		if(fontSize>18)
 			fontSize=18;
-		adjSizeFont = new Font("Helvetica", Font.PLAIN, fontSize);
+		adjSizeFont = new Font("Sans", Font.PLAIN, fontSize);
 		// System.out.println("fontSize = "+fontSize);
 	}
 
@@ -88,13 +91,19 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 
 	public void paint(Graphics g) {
 		super.paint(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+			                  RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setRenderingHint(RenderingHints.KEY_RENDERING,
+			                  RenderingHints.VALUE_RENDER_QUALITY);
+
 		fontSize = 3 +(int)(this.getPreferredSize().getWidth()/(NBINS));
 		if(fontSize>18)
 			fontSize=18;
 
-		adjSizeFont = new Font("Helvetica", Font.PLAIN, fontSize);
-		System.out.println("fontSize = "+fontSize);
-		drawGraph(g);
+		adjSizeFont = new Font("Sans", Font.PLAIN, fontSize);
+		// System.out.println("fontSize = "+fontSize);
+		drawGraph(g2);
 		if(boolShowLine)
 			mouseLine(mouseX, g);
 	}
@@ -181,15 +190,17 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 
 	private void createHistogram(double[] inputData){
 		calculateXScale();
+
+		// System.out.println("Creating histogram: low = "+low);
 		
 		// Bin the data
 		for(double dataItr : inputData){
 			for(int nI=0; nI < NBINS; nI++){
-				if(dataItr==minValue){
+				if(dataItr==low){
 					histoArray[0]+=1;
 					break;
 				}
-				if(dataItr>minValue+xInterval*nI && dataItr<=minValue+xInterval*(nI+1) ){
+				if(dataItr>low+xInterval*nI && dataItr<=low+xInterval*(nI+1) ){
 					histoArray[nI]+=1;
 					break;
 				}
@@ -205,8 +216,6 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 			minValue = Math.min(minValue, graphData[i]);
 			maxValue = Math.max(maxValue, graphData[i]);
 		}
-
-		System.out.println("range = "+minValue+" - "+maxValue);
 
 		// Calculate our X scale
 		double range = maxValue - minValue;
@@ -246,7 +255,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 			histoMaxUp = 10;
 	}
 	
-	private void drawGraph(Graphics g){
+	private void drawGraph(Graphics2D g){
 		Dimension dim = getPreferredSize();
 		int height = dim.height-100;
 		int width = dim.width;
@@ -256,7 +265,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		drawData(g, height, width);
 	}
 
-	private void drawAxes(Graphics g, int height, int width) {
+	private void drawAxes(Graphics2D g, int height, int width) {
 
 		int xIncrement = (width-125)/NBINS;
 		int maxX = xIncrement*NBINS+XSTART;
@@ -282,14 +291,14 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		}
 
 		g.setColor(Color.black);
-		for(int nI=0; nI<=NBINS; nI++){
+		for(int nI=0; nI<NBINS; nI++){
 			if(nI%10==0){
 				g.drawLine(XSTART+xIncrement*nI,height,XSTART+xIncrement*nI,height+10);
 			}
 		}
 	}
 
-	private void drawLabels(Graphics g, int height, int width) {
+	private void drawLabels(Graphics2D g, int height, int width) {
 		g.setColor(Color.black);
 		g.setFont(adjSizeFont);
 		FontMetrics metrics = g.getFontMetrics();
@@ -306,7 +315,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 
 		// Now draw the X labels
 		int xIncrement = (width-125)/NBINS;
-		for(int nI=0; nI<=NBINS; nI++){
+		for(int nI=0; nI<NBINS; nI++){
 			double value = low+(xInterval*nI);
 			String str = form.format(value);
 			int offset = XSTART+metrics.stringWidth(str)/2 - 50;
@@ -323,26 +332,26 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	
 	// TODO: Change this method to use height and width.  You may need to scale the
 	// the font also.
-	private void drawData(Graphics g, int height, int width){
+	private void drawData(Graphics2D g, int height, int width){
 		int nBlueChange = 100;
 		double yIncrement = (height-50)/(double)(histoMaxUp);
 		//System.out.println("yIncrement = "+yIncrement);
 		int xIncrement = (width-125)/NBINS;
 		double xValue = low;
-		int histoIndex = 0;
 		
-		for(int nI=0; nI<=NBINS; nI++){
-			if (xValue >= minValue) {
-				g.setColor(new Color(0,0,nBlueChange));
-				g.fillRect(XSTART+xIncrement*nI, (int)(height-(histoArray[histoIndex]*yIncrement)), xIncrement, (int)(histoArray[histoIndex]*yIncrement));
-				g.setColor(Color.black);
-				g.drawRect(XSTART+xIncrement*nI, (int)(height-(histoArray[histoIndex]*yIncrement)), xIncrement, (int)(histoArray[histoIndex]*yIncrement));
-				histoIndex++;
+		for(int nI=0; nI<NBINS; nI++){
+			double barHeight = histoArray[nI]*yIncrement;
 
-				nBlueChange+=15;
-				if(nBlueChange >= 250)
-					nBlueChange = 100;
+			if (barHeight > 0) {
+				g.setColor(new Color(0,0,nBlueChange));
+				g.fillRect(XSTART+xIncrement*nI, (int)(height-barHeight), xIncrement, (int)barHeight);
+				g.setColor(Color.black);
+				g.drawRect(XSTART+xIncrement*nI, (int)(height-barHeight), xIncrement, (int)barHeight);
 			}
+
+			nBlueChange+=15;
+			if(nBlueChange >= 250)
+				nBlueChange = 100;
 			xValue += xInterval;
 		}
 	}
@@ -364,6 +373,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		AttributedString str;
 		if (Integer.parseInt(exponent) == 0) {
 			str = new AttributedString(returnString+suffix);
+			str.addAttribute(TextAttribute.FONT, adjSizeFont, 0, returnString.length());
 		} else {
 			returnString += "x10";
 			int superOffset = returnString.length();
@@ -371,10 +381,10 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 			int superEnd = returnString.length();
 
 			str = new AttributedString(returnString+suffix);
+			str.addAttribute(TextAttribute.FONT, adjSizeFont, 0, returnString.length());
 			str.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER, superOffset, superEnd);
 		}
 
-		str.addAttribute(TextAttribute.FONT, adjSizeFont, 0, returnString.length());
 		return str.getIterator();
 	}
 }

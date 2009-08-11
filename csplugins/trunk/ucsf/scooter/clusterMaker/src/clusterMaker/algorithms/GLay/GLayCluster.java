@@ -69,7 +69,7 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 	}
 
 	public String getShortName() {return "GLay";};
-	public String getName() {return "GLay (community) cluster";};
+	public String getName() {return "Community cluster (GLay)";};
 
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
@@ -143,7 +143,7 @@ public class GLayCluster extends AbstractClusterAlgorithm  {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		// Sanity check all of our settings
 		if (debug)
-			logger.debug("Performing GLay clustering");
+			logger.debug("Performing community clustering (GLay)");
 
 		String clusterAttrName = network.getIdentifier()+"_cluster";
 
