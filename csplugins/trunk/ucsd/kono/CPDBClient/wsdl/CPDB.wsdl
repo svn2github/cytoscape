@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="CPDB_CS" targetNamespace="SOAP/CPDB"
+	xmlns:tns="SOAP/CPDB" xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+	<types>
+		<xsd:schema elementFormDefault="qualified" targetNamespace="SOAP/CPDB"
+			xmlns:tns="SOAP/CPDB" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+			<xsd:element name="evidenceInteractions">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="entities" type="xsd:string"
+							minOccurs="0" maxOccurs="unbounded" />
+						<xsd:element name="interactions" type="xsd:string"
+							minOccurs="0" maxOccurs="unbounded" />
+						<xsd:element name="exactMatchEntities" type="xsd:boolean"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="exactMatchInteractions" type="xsd:boolean"
+							minOccurs="0" maxOccurs="1" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="evidenceInteractionsResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="interactionAttributes" type="xsd:string"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+	</types>
+
+
+	<message name="evidenceInteractionsRequest">
+		<part name="arg" element="tns:evidenceInteractions" />
+	</message>
+	<message name="evidenceInteractionsResponse">
+		<part name="res" element="tns:evidenceInteractionsResponse" />
+	</message>
+
+
+	<!-- port -->
+	<portType name="CPDBportTp">
+		<operation name="evidenceInteractions">
+			<input name="evidenceInteractions_input" message="tns:evidenceInteractionsRequest" />
+			<output name="evidenceInteractions_output" message="tns:evidenceInteractionsResponse" />
+		</operation>
+	</portType>
+
+
+	<!-- binding -->
+	<binding name="CPDB_WS_http_binding" type="tns:CPDBportTp">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="evidenceInteractions">
+			<soap:operation soapAction="SOAP/CPDB#evidenceInteractions" />
+			<input name="evidenceInteractions_input">
+				<soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+					use="literal" />
+			</input>
+			<output name="evidenceInteractions_output">
+				<soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+					use="literal" />
+			</output>
+		</operation>
+	</binding>
+
+
+	<!-- service -->
+	<service name="CPDB">
+		<port name="CPDBport" binding="tns:CPDB_WS_http_binding">
+			<soap:address location="http://cpdb.molgen.mpg.de/csplugin" />
+		</port>
+	</service>
+
+</definitions>
