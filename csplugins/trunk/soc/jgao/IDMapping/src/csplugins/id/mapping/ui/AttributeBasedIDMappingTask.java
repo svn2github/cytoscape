@@ -35,7 +35,7 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.AttributeBasedIDMappingServiceImpl;
+import csplugins.id.mapping.AttributeBasedIDMappingImpl;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -53,7 +53,7 @@ public class AttributeBasedIDMappingTask implements Task {
 	private final Set<CyNetwork> networks;
     private final Map<String,Set<DataSource>> mapSrcAttrIDTypes;
     private final Map<DataSource, String> MapTgtIDTypeAttrName;
-    private final AttributeBasedIDMappingServiceImpl service;
+    private final AttributeBasedIDMappingImpl service;
     
 	private TaskMonitor taskMonitor;
         private boolean success;
@@ -70,7 +70,7 @@ public class AttributeBasedIDMappingTask implements Task {
 		this.networks = networks;
                 this.mapSrcAttrIDTypes = mapSrcAttrIDTypes;
                 this.MapTgtIDTypeAttrName = MapTgtIDTypeAttrName;
-                service = new AttributeBasedIDMappingServiceImpl();
+                service = new AttributeBasedIDMappingImpl();
                 success = false;
 	}
 

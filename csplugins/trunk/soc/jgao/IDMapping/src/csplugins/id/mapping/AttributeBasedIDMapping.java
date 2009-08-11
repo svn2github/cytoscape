@@ -1,4 +1,4 @@
-/* 
+/*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -31,60 +31,38 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 
 package csplugins.id.mapping;
 
-import csplugins.id.mapping.ui.CyThesaurusDialog;
-
-import cytoscape.Cytoscape;
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.util.CytoscapeAction;
+import cytoscape.CyNetwork;
 
 import org.bridgedb.DataSource;
-import org.bridgedb.bio.BioDataSource;
+import org.bridgedb.IDMapperException;
 
-import java.awt.event.ActionEvent;
-
-import java.util.Map;
 import java.util.Set;
+import java.util.Map;
 
 /**
- * Plugin for attribute-based ID mapping
- * 
- * 
+ *
+ * @author gjj
  */
-public class CyThesaurusPlugin extends CytoscapePlugin {
+public interface AttributeBasedIDMapping {
 
-    public CyThesaurusPlugin() {
-        BioDataSource.init();
-        Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new IDMappingAction());
-        IDMappingServiceSuppport.addService();
-    }
+    /**
+     * For each node in each network, given its attribute and the corresponding
+     * source id types, create new attributes of the destination type.
+     *
+     * @param networks
+     * @param mapSrcAttrIDTypes
+     *      key: source attribute
+     *      value: corresponding ID types
+     * @param MapTgtIDTypeAttrName
+     *      key: target ID type
+     *      value: attribute name
+     */
+    public void map(Set<CyNetwork> networks, Map<String,Set<DataSource>> mapSrcAttrIDTypes,
+            Map<DataSource, String> MapTgtIDTypeAttrName) throws IDMapperException;
 
-    static final String pluginName = "CyThesaurus";
-
-    static Map<String,Set<DataSource>> mapSrcAttrIDTypes = null;
-    
-    class IDMappingAction extends CytoscapeAction {
-
-        public IDMappingAction() {
-            super(pluginName); //TODO rename
-        }
-
-        /**
-         * This method is called when the user selects the menu item.
-         */
-        @Override
-        public void actionPerformed(final ActionEvent ae) {
-//            prepare(); //TODO: remove in Cytoscape3
-            final CyThesaurusDialog dialog = new CyThesaurusDialog(Cytoscape.getDesktop(), true);
-            dialog.setLocationRelativeTo(Cytoscape.getDesktop());
-            dialog.setMapSrcAttrIDTypes(mapSrcAttrIDTypes);
-            dialog.setVisible(true);
-            if (!dialog.isCancelled()) {
-                mapSrcAttrIDTypes = dialog.getMapSrcAttrIDTypes();
-            }
-        }
-    }
+    public String getReport();
 }
