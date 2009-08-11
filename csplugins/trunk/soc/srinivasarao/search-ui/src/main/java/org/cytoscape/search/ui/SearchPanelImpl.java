@@ -3,8 +3,6 @@ package org.cytoscape.search.ui;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +18,7 @@ import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
 import org.cytoscape.search.util.AttributeTypes;
 import org.cytoscape.session.CyNetworkManager;
 
-import cytoscape.Cytoscape;
-
-public class SearchPanelImpl extends SearchPanel implements
-		PropertyChangeListener {
+public class SearchPanelImpl extends SearchPanel {
 
 	private static final long serialVersionUID = 1L;
 	private CyNetworkManager netmgr = null;
@@ -41,30 +36,6 @@ public class SearchPanelImpl extends SearchPanel implements
 		super();
 		this.netmgr = nm;
 		initialize();
-		initListeners();
-	}
-
-	private void initListeners() {
-		System.out.println("I am init listeners");
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				this);
-		NetworkModifiedListener nml = new NetworkModifiedListener();
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(nml);
-		System.out.println("Listeners are initiated");
-		if (Cytoscape.getSwingPropertyChangeSupport()
-				.getPropertyChangeListeners() != null) {
-			System.out.println("Number of listeners for Network Creation:"
-					+ Cytoscape.getSwingPropertyChangeSupport()
-							.getPropertyChangeListeners().length);
-			if (Cytoscape.getSwingPropertyChangeSupport()
-					.getPropertyChangeListeners()[0].equals(this)) {
-				System.out.println("Yeah");
-			}
-			if (Cytoscape.getPropertyChangeSupport()
-					.getPropertyChangeListeners()[0].equals(nml)) {
-				System.out.println("YahooooooooooOO!!!!!!!!!!!!");
-			}
-		}
 	}
 
 	/**
@@ -85,6 +56,19 @@ public class SearchPanelImpl extends SearchPanel implements
 		g1.anchor = GridBagConstraints.NORTHWEST;
 		mp = new MainPanel(netmgr);
 		attrPanel = new RootPanel(netmgr);
+		initattrPanel();
+		jsp = new JScrollPane(attrPanel);
+		split = new JSplitPane();
+		split.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		split.setTopComponent(mp);
+		split.setBottomComponent(jsp);
+		split.setMinimumSize(new Dimension(280, 200));
+		this.add(split, g1);
+
+	}
+
+	public void initattrPanel() {
+
 		CyNetwork net = netmgr.getCurrentNetwork();
 		if (net != null) {
 			CyDataTable nodetable = net.getCyDataTables("NODE").get(
@@ -139,14 +123,14 @@ public class SearchPanelImpl extends SearchPanel implements
 			}
 		}
 
-		jsp = new JScrollPane(attrPanel);
-		split = new JSplitPane();
-		split.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		split.setTopComponent(mp);
-		split.setBottomComponent(jsp);
-		split.setMinimumSize(new Dimension(280, 200));
-		this.add(split, g1);
+	}
 
+	public RootPanel getattrPanel() {
+		return attrPanel;
+	}
+
+	public MainPanel getmainPanel() {
+		return mp;
 	}
 
 	public void performSearch(boolean reindex) {
@@ -237,35 +221,6 @@ public class SearchPanelImpl extends SearchPanel implements
 				}
 			}
 		}
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		// TODO Auto-generated method stub
-		System.out.println("I am in property change listener");
-		if (event.getPropertyName() != null) {
-			String propertyname = event.getPropertyName();
-			if (propertyname.equals(Cytoscape.NETWORK_CREATED)) {
-				System.out.println("Network Created");
-			} else if (propertyname.equals(Cytoscape.NETWORK_LOADED)) {
-				System.out.println("Network Loaded");
-			} else if (propertyname.equals(Cytoscape.NETWORK_MODIFIED)) {
-				System.out.println("Network Modified");
-			}
-		}
-	}
-}
-
-class NetworkModifiedListener implements PropertyChangeListener {
-
-	public NetworkModifiedListener() {
-		System.out.println("I am in Network Modified Listener Initialization");
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		// TODO Auto-generated method stub
-		System.out.println("I am in Network Modified Listener");
 	}
 
 }

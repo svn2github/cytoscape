@@ -240,7 +240,6 @@ public class MainPanel extends JPanel {
 			orButton.setActionCommand("OR");
 			orButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Cytoscape.getSwingPropertyChangeSupport().firePropertyChange(Cytoscape.NETWORK_LOADED,null,null);
 					if (orButton.isSelected()) {
 						SearchPanelFactory.getGlobalInstance(netmgr)
 								.updateSearchField();

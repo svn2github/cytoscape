@@ -95,7 +95,7 @@ public class BasicDraggablePanel extends JPanel implements Transferable {
 		if (dataflavor == null) {
 			dataflavor = new DataFlavor(
 					DataFlavor.javaJVMLocalObjectMimeType
-							+ ";class=org.cytoscape.search.internal.BasicDraggablePanel");
+							+ ";class=org.cytoscape.search.ui.BasicDraggablePanel");
 		}
 		return dataflavor;
 	}

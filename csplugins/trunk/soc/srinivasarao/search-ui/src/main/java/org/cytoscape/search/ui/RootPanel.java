@@ -57,7 +57,12 @@ public class RootPanel extends JPanel {
 	public CyNetworkManager getNetworkManager() {
 		return netmgr;
 	}
-
+	
+	public void clearAll(){
+		list.clear();
+		this.removeAll();
+	}
+	
 	public void relayout() {
 		GridBagConstraints gc = new GridBagConstraints();
 		gc.gridx = 0;

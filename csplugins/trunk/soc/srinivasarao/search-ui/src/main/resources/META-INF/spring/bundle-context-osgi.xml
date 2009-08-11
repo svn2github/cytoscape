@@ -19,6 +19,33 @@
 		interface="org.cytoscape.search.ui.SearchPlugin">
 	</osgi:service>
 
+	<osgi:service id="SearchPanelEventHandlerService" ref="SearchPanelEventHandlerImpl">
+		<osgi:interfaces>
+			<value>org.cytoscape.session.events.NetworkAddedListener
+			</value>
+			<value>org.cytoscape.session.events.SetCurrentNetworkListener
+			</value>
+			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener
+			</value>
+			<value>org.cytoscape.session.events.NetworkViewAddedListener
+			</value>
+			<value>
+				org.cytoscape.session.events.NetworkAboutToBeDestroyedListener
+			</value>
+			<value>
+				org.cytoscape.session.events.NetworkViewAboutToBeDestroyedListener
+			</value>
+		</osgi:interfaces>
+	</osgi:service>
+
+	<osgi:service id="HistoryHandlerService" ref="HistoryHandler">
+		<osgi:interfaces>
+			<value>org.cytoscape.session.SessionLoadedListener
+			</value>
+			<value>org.cytoscape.session.SessionSavedListener
+			</value>
+		</osgi:interfaces>
+	</osgi:service>
 
 	<!-- Import Services -->
 
@@ -29,5 +56,8 @@
 
 	<osgi:reference id="cytoscapeDesktopServiceRef"
 		interface="cytoscape.view.CySwingApplication" />
+
+	<osgi:reference id="EnhancedSearchService" interface="org.cytoscape.search.EnhancedSearch">
+	</osgi:reference>
 
 </beans>

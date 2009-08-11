@@ -15,4 +15,10 @@ public abstract class SearchPanel extends JPanel {
 
 	abstract public void clearAll();
 
+	abstract public RootPanel getattrPanel();
+	
+	abstract public MainPanel getmainPanel();
+
+	abstract public void initattrPanel();
+
 }
