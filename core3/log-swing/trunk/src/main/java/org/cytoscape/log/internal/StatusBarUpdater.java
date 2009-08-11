@@ -1,8 +1,7 @@
 package org.cytoscape.log.internal;
 
 import org.cytoscape.log.statusbar.CytoStatusBar;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Level;
+import org.ops4j.pax.logging.spi.PaxLoggingEvent;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,14 +14,14 @@ class StatusBarUpdater extends QueueProcesser
 	final CytoStatusBar statusBar;
 	final Map config;
 
-	public StatusBarUpdater(CytoStatusBar statusBar, BlockingQueue<LoggingEvent> queue, Map config)
+	public StatusBarUpdater(CytoStatusBar statusBar, BlockingQueue<PaxLoggingEvent> queue, Map config)
 	{
 		super(queue);
 		this.statusBar = statusBar;
 		this.config = config;
 	}
 
-	public void processEvent(LoggingEvent event)
+	public void processEvent(PaxLoggingEvent event)
 	{
 		String message = event.getMessage().toString();
 		String iconPath = config.get(event.getLevel().toString()).toString();
@@ -32,7 +31,7 @@ class StatusBarUpdater extends QueueProcesser
 
 	public static StatusBarUpdater executeStatusBarUpdater(	ExecutorService service,
 								CytoStatusBar statusBar,
-								BlockingQueue<LoggingEvent> queue,
+								BlockingQueue<PaxLoggingEvent> queue,
 								Map config)
 	{
 		StatusBarUpdater updater = new StatusBarUpdater(statusBar, queue, config);

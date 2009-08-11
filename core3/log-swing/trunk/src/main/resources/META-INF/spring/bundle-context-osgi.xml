@@ -4,6 +4,13 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
+
+	<osgi:service id="rootAppenderService" ref="rootAppender" interface="org.ops4j.pax.logging.spi.PaxAppender">
+		<osgi:service-properties>
+			<entry key="org.ops4j.pax.logging.appender.name" value="org.cytoscape.log-swing.main-appender"/>
+		</osgi:service-properties>
+	</osgi:service>
+
 	<osgi:service id="consoleTaskFactoryService" ref="consoleTaskFactory"
  		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>

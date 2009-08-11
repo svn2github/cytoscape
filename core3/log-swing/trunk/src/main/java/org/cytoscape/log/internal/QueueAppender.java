@@ -2,63 +2,35 @@ package org.cytoscape.log.internal;
 
 import java.util.Queue;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.ops4j.pax.logging.spi.PaxAppender;
+import org.ops4j.pax.logging.spi.PaxLoggingEvent;
 
 /**
  * @author Pasteur
  */
-public class QueueAppender extends AppenderSkeleton implements Appender
+public class QueueAppender implements PaxAppender
 {
-	public static final LoggingEvent NULL_EVENT = new LoggingEvent(null, Logger.getRootLogger(), 0, null, null, null);
+	final Queue<PaxLoggingEvent> userLogQueue;
+	final Queue<PaxLoggingEvent> statusBarQueue;
+	final Queue<PaxLoggingEvent> developerLogQueue;
 
-	final Queue<LoggingEvent> userLogQueue;
-	final Queue<LoggingEvent> statusBarQueue;
-	final Queue<LoggingEvent> developerLogQueue;
-
-	public QueueAppender(Queue<LoggingEvent> userLogQueue, Queue<LoggingEvent> statusBarQueue, Queue<LoggingEvent> developerLogQueue)
+	public QueueAppender(Queue<PaxLoggingEvent> userLogQueue, Queue<PaxLoggingEvent> statusBarQueue, Queue<PaxLoggingEvent> developerLogQueue)
 	{
 		this.userLogQueue = userLogQueue;
 		this.statusBarQueue = statusBarQueue;
 		this.developerLogQueue = developerLogQueue;
 	}
 
-	public void append(LoggingEvent event)
+	public void doAppend(PaxLoggingEvent event)
 	{
-		for (Filter	filter = getFirstFilter();
-				filter != null;
-				filter = filter.getNext())
-		{
-			final int result = filter.decide(event);
-			if (result == Filter.ACCEPT)
-				break;
-			else if (result == Filter.DENY)
-				return;
-		}
-
-		if (	event.getLevel().equals(Level.INFO) || 
-			event.getLevel().equals(Level.WARN))
-		{
+		System.out.println(String.format("PaxLoggingEvent (%d - %s): %s", event.getLevel().toInt(), event.getLevel().toString(), event.getMessage()));
+		//if (	event.getLevel().equals(Level.INFO) || 
+			//event.getLevel().equals(Level.WARN))
+		//{
 			userLogQueue.offer(event);
 			statusBarQueue.offer(event);
-		}
+		//}
 
 		developerLogQueue.offer(event);
-	}
-
-	public boolean requiresLayout()
-	{
-		return false;
-	}
-
-	public void close()
-	{
-		userLogQueue.offer(NULL_EVENT);
-		statusBarQueue.offer(NULL_EVENT);
-		developerLogQueue.offer(NULL_EVENT);
 	}
 }

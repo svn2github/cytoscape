@@ -81,10 +81,6 @@
 		<constructor-arg ref="advancedQueue" />
 	</bean>
 
-	<bean id="log4jInitialization" class="org.cytoscape.log.internal.Log4jInit">
-		<constructor-arg ref="rootAppender" />
-	</bean>
-
 	<bean id="statusBarUpdater" class="org.cytoscape.log.internal.StatusBarUpdater" factory-method="executeStatusBarUpdater">
 		<constructor-arg ref="executorService" />
 		<constructor-arg ref="cytoStatusBarRef" />

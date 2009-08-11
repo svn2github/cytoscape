@@ -6,7 +6,7 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.log.statusbar.CytoStatusBar;
 
-import org.apache.log4j.spi.LoggingEvent;
+import org.ops4j.pax.logging.spi.PaxLoggingEvent;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -25,8 +25,8 @@ import cytoscape.view.CySwingApplication;
  */
 public class ConsoleTaskFactory implements TaskFactory
 {
-	final BlockingQueue<LoggingEvent> simpleQueue;
-	final BlockingQueue<LoggingEvent> advancedQueue;
+	final BlockingQueue<PaxLoggingEvent> simpleQueue;
+	final BlockingQueue<PaxLoggingEvent> advancedQueue;
 	final ExecutorService service;
 	final CytoStatusBar statusBar;
 	final CySwingApplication app;
@@ -38,8 +38,8 @@ public class ConsoleTaskFactory implements TaskFactory
 	SimpleLogViewer simpleLogViewer = null;
 	AdvancedLogViewer advancedLogViewer = null;
 
-	public ConsoleTaskFactory(	BlockingQueue<LoggingEvent> simpleQueue,
-					BlockingQueue<LoggingEvent> advancedQueue,
+	public ConsoleTaskFactory(	BlockingQueue<PaxLoggingEvent> simpleQueue,
+					BlockingQueue<PaxLoggingEvent> advancedQueue,
 					ExecutorService service,
 					CytoStatusBar statusBar,
 					CySwingApplication app,
@@ -106,13 +106,13 @@ class SimpleUpdater extends QueueProcesser
 
 	final SimpleLogViewer simpleLogViewer;
 
-	public SimpleUpdater(SimpleLogViewer simpleLogViewer, BlockingQueue<LoggingEvent> internalQueue)
+	public SimpleUpdater(SimpleLogViewer simpleLogViewer, BlockingQueue<PaxLoggingEvent> internalQueue)
 	{
 		super(internalQueue);
 		this.simpleLogViewer = simpleLogViewer;
 	}
 
-	public void processEvent(LoggingEvent event)
+	public void processEvent(PaxLoggingEvent event)
 	{
 		String message = event.getMessage().toString();
 		String timeStamp = DATE_FORMATTER.format(new Date(event.getTimeStamp()));
@@ -126,17 +126,17 @@ class AdvancedUpdater extends QueueProcesser
 
 	final AdvancedLogViewer advancedLogViewer;
 
-	public AdvancedUpdater(AdvancedLogViewer advancedLogViewer, BlockingQueue<LoggingEvent> queue)
+	public AdvancedUpdater(AdvancedLogViewer advancedLogViewer, BlockingQueue<PaxLoggingEvent> queue)
 	{
 		super(queue);
 		this.advancedLogViewer = advancedLogViewer;
 	}
 
-	public void processEvent(LoggingEvent event)
+	public void processEvent(PaxLoggingEvent event)
 	{
 		String[] formattedEvent = new String[5];
 		formattedEvent[0] = DATE_FORMATTER.format(new Date(event.getTimeStamp()));
-		formattedEvent[1] = event.getLogger().getName();
+		formattedEvent[1] = event.getLoggerName();
 		formattedEvent[2] = event.getLevel().toString().toLowerCase();
 		formattedEvent[3] = event.getThreadName();
 		formattedEvent[4] = event.getMessage().toString();

@@ -1,18 +1,18 @@
 package org.cytoscape.log.internal;
 
 import java.util.concurrent.BlockingQueue;
-import org.apache.log4j.spi.LoggingEvent;
+import org.ops4j.pax.logging.spi.PaxLoggingEvent;
 
 /**
  * @author Pasteur
  */
 abstract class QueueProcesser implements Runnable
 {
-	public abstract void processEvent(LoggingEvent event);
+	public abstract void processEvent(PaxLoggingEvent event);
 
-	final BlockingQueue<LoggingEvent> queue;
+	final BlockingQueue<PaxLoggingEvent> queue;
 
-	public QueueProcesser(BlockingQueue<LoggingEvent> queue)
+	public QueueProcesser(BlockingQueue<PaxLoggingEvent> queue)
 	{
 		this.queue = queue;
 	}
@@ -21,7 +21,7 @@ abstract class QueueProcesser implements Runnable
 	{
 		while (true)
 		{
-			LoggingEvent event = null;
+			PaxLoggingEvent event = null;
 			try
 			{
 				event = queue.take();
@@ -30,10 +30,6 @@ abstract class QueueProcesser implements Runnable
 			{
 				break;
 			}
-
-			if (event.equals(QueueAppender.NULL_EVENT))
-				break;
-
 			processEvent(event);
 		}
 	}
