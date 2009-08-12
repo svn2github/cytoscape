@@ -83,39 +83,38 @@ public class BioDataServerUtil {
 		String sp = null;
 		String curLine = null;
 
-		while (null != (curLine = gaRd.readLine())) {
-			curLine.trim();
+        try {
+            while ((sp == null) && (null != (curLine = gaRd.readLine()))) {
+                curLine.trim();
 
-			// Skip comment
-			if (curLine.startsWith("!")) {
-				// do nothing
-				// logger.info("Comment: " + curLine);
-			} else {
-				StringTokenizer st = new StringTokenizer(curLine, "\t");
+                // Skip comment
+                if (curLine.startsWith("!")) {
+                    // do nothing
+                    // logger.info("Comment: " + curLine);
+                } else {
+                    StringTokenizer st = new StringTokenizer(curLine, "\t");
 
-				while (st.hasMoreTokens()) {
-					String curToken = st.nextToken();
+                    while ((sp == null) && (st.hasMoreTokens())) {
+                        String curToken = st.nextToken();
 
-					if (curToken.startsWith("taxon") || curToken.startsWith("Taxon")) {
-						st = new StringTokenizer(curToken, ":");
-						st.nextToken();
-						curToken = st.nextToken();
-						st = new StringTokenizer(curToken, "|");
-						curToken = st.nextToken();
-						// logger.info("Taxon ID found: " + curToken);
-						sp = curToken;
-						sp = taxIdToName(sp, taxRd);
-						taxRd.close();
-						gaRd.close();
-
-						return sp;
-					}
-				}
-			}
-		}
-
-		taxRd.close();
-		gaRd.close();
+                        if (curToken.startsWith("taxon") || curToken.startsWith("Taxon")) {
+                            st = new StringTokenizer(curToken, ":");
+                            st.nextToken();
+                            curToken = st.nextToken();
+                            st = new StringTokenizer(curToken, "|");
+                            curToken = st.nextToken();
+                            // logger.info("Taxon ID found: " + curToken);
+                            sp = curToken;
+                            sp = taxIdToName(sp, taxRd);
+                        }
+                    }
+                }
+            }
+        }
+        finally {
+            taxRd.close();
+            gaRd.close();
+        }
 
 		return sp;
 	}
@@ -278,25 +277,26 @@ public class BioDataServerUtil {
 			// and because pages may be cached:
 			htmlPageReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxonURL)));
 
-			while ((curLine = htmlPageReader.readLine()) != null) {
-				curLine.trim();
+            try {
+                while ((txName == null) && ((curLine = htmlPageReader.readLine()) != null)) {
+                    curLine.trim();
 
-				// logger.info("HTML:" + curLine);
-				if (curLine.startsWith("<title>Taxonomy")) {
-					logger.info("HTML:" + curLine);
+                    // logger.info("HTML:" + curLine);
+                    if (curLine.startsWith("<title>Taxonomy")) {
+                        logger.info("HTML:" + curLine);
 
-					StringTokenizer st = new StringTokenizer(curLine, "(");
-					st.nextToken();
-					curLine = st.nextToken();
-					st = new StringTokenizer(curLine, ")");
-					txName = st.nextToken().trim();
-					logger.info("Fetch result: NCBI code " + id + " is " + txName);
-
-					return txName;
-				}
-			}
-
-			htmlPageReader.close();
+                        StringTokenizer st = new StringTokenizer(curLine, "(");
+                        st.nextToken();
+                        curLine = st.nextToken();
+                        st = new StringTokenizer(curLine, ")");
+                        txName = st.nextToken().trim();
+                        logger.info("Fetch result: NCBI code " + id + " is " + txName);
+                    }
+                }
+            }
+            finally {
+                htmlPageReader.close();
+            }
 		} catch (IOException e) {
 			logger.error("Unable to get taxonomy "+id+" from NCBI: "+e.getMessage());
 		}

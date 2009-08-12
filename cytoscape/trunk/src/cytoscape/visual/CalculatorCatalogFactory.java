@@ -67,6 +67,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+import java.util.zip.ZipFile;
 
 
 /**
@@ -147,7 +148,13 @@ public abstract class CalculatorCatalogFactory {
     private static class VizMapListener
         implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent e) {
-            if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS) {
+            String pn = null;
+
+            if (e != null) {
+                pn = e.getPropertyName();
+            }
+
+            if (Cytoscape.SAVE_VIZMAP_PROPS.equals(pn)) {
                 /*
                  * This section is for saving VS in a vizmap.props file.
                  *
@@ -177,15 +184,15 @@ public abstract class CalculatorCatalogFactory {
                     	logger.error("Unable to save vizmap to: " + propertiesFile, e1);
 										}
                 }
-            } else if ((e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) ||
-                    (e.getPropertyName() == Cytoscape.VIZMAP_LOADED)) {
+            } else if ((Cytoscape.VIZMAP_RESTORED.equals(pn)) ||
+                    (Cytoscape.VIZMAP_LOADED.equals(pn))) {
                 /*
                  * This section is for restoring VS from a file.
                  */
 
                 // only clear the existing vizmap.props if we're restoring
                 // from a session file
-                if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED)
+                if (Cytoscape.VIZMAP_RESTORED.equals(pn))
                     vizmapProps.clear();
 
                 // get the new vizmap.props and apply it the existing properties
@@ -195,6 +202,7 @@ public abstract class CalculatorCatalogFactory {
 
                 try {
                     InputStream is = null;
+                    ZipFile zf = null;
 
                     if (vizmapSource.getClass() == URL.class)
                         // is = ((URL) vizmapSource).openStream();
@@ -204,8 +212,9 @@ public abstract class CalculatorCatalogFactory {
                     else if (vizmapSource.getClass() == String.class) {
                         // if its a RESTORED event the vizmap
                         // file will be in a zip file.
-                        if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) {
-                            is = ZipUtil.readFile((String) vizmapSource,
+                        if (Cytoscape.VIZMAP_RESTORED.equals(pn)) {
+                            zf = new ZipFile((String) vizmapSource);
+                            is = ZipUtil.readFile(zf,
                                     ".*vizmap.props");
 
                             // if its a LOADED event the vizmap file
@@ -215,8 +224,19 @@ public abstract class CalculatorCatalogFactory {
                     }
 
                     if (is != null) {
-                        vizmapProps.load(is);
-                        is.close();
+                        try {
+                            vizmapProps.load(is);
+                        }
+                        finally {
+                            try {
+                                if (zf != null) {
+                                    zf.close();
+                                }
+                            }
+                            finally {
+                                is.close();
+                            }
+                        }
                     }
                 } catch (FileNotFoundException e1) {
 										logger.error("Unable to open visual mapper file: "+e1.getMessage());

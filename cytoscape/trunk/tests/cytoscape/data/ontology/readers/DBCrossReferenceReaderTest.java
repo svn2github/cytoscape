@@ -146,14 +146,19 @@ public class DBCrossReferenceReaderTest extends TestCase {
 
 		InputStream is = uc.getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String s;
-		StringBuffer sb = new StringBuffer();
 
-		while ((s = reader.readLine()) != null) {
-			sb.append(s);
-		}
+        StringBuffer sb = new StringBuffer();
 
-		reader.close();
+        try {
+            String s;
+
+            while ((s = reader.readLine()) != null) {
+                sb.append(s);
+            }
+        }
+        finally {
+            reader.close();
+        }
 
 		return sb.toString();
 	}
