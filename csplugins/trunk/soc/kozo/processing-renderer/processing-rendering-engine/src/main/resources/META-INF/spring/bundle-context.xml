@@ -30,5 +30,10 @@
 	<bean id="processingPresentationFactory"
 		class="org.cytoscape.view.presentation.processing.internal.ProcessingPresentationFactory">
 	</bean>
+	
+	<bean id="visualStyleBuilder"
+		class="org.cytoscape.view.presentation.processing.internal.DefaultVisualStyleBuilder">
+		<constructor-arg ref="visualMappingManagerServiceRef" />
+	</bean>
 
 </beans>

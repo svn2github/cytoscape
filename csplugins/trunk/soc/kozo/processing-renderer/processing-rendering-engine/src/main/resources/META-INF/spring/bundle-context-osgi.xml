@@ -8,6 +8,9 @@
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.session.CyNetworkManager" />
 
+	<osgi:reference id="visualMappingManagerServiceRef"
+		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
+
 	<osgi:service id="createPresentationTaskFactoryService"
 		ref="createPresentationTaskFactory" interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
@@ -18,10 +21,13 @@
 
 
 	<!-- Export Processing Rendering Engine -->
-	<osgi:service id="processingPresentationFactoryService" ref="processingPresentationFactory">
+	<osgi:service id="processingPresentationFactoryService"
+		ref="processingPresentationFactory">
 		<osgi:interfaces>
-			<value>org.cytoscape.view.presentation.PresentationFactory</value>
-			<value>org.cytoscape.view.model.events.NetworkViewChangedListener</value>
+			<value>org.cytoscape.view.presentation.PresentationFactory
+			</value>
+			<value>org.cytoscape.view.model.events.NetworkViewChangedListener
+			</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="serviceType" value="presentationFactory" />

@@ -1,7 +1,9 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Paint;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.print.Printable;
@@ -37,6 +39,9 @@ import toxi.physics.VerletPhysics;
 
 import com.sun.opengl.util.FPSAnimator;
 
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR;
+
+
 public class ProcessingNetworkRenderer extends PApplet implements
 		RenderingEngine {
 
@@ -71,6 +76,9 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	
 	// Control
 	private boolean isOverlay = false;
+	
+	// Network Visuals
+	private Color bgColor;
 
 	/**
 	 * Constructor. Create a PApplet component based on the size given as
@@ -184,6 +192,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		edges = new CyDrawable[edgeViews.size()];
 		for (int i = 0; i < edges.length; i++)
 			edges[i] = edgeRenderer.render(edgeViews.get(i));
+		
+		renderNetworkVisualProperties();
 
 		numP = nodes.length;
 		particleManager = new ParticleManager(numP, this, physics);
@@ -193,10 +203,17 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		System.out.println("%%%%%%%%%%%%% Setup DONE for P5");
 	}
 
+	private void renderNetworkVisualProperties() {
+		bgColor = (Color) view.getVisualProperty(NETWORK_BACKGROUND_COLOR);
+		if(bgColor == null)
+			bgColor = Color.green;
+			
+	}
+	
 	private int numP;
 
 	public void draw() {
-		background(200);
+		background(bgColor.getRed(), bgColor.getGreen(), bgColor.getGreen());
 		physics.update();
 		lights();
 

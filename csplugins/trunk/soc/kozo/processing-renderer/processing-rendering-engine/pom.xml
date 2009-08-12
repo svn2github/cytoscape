@@ -59,12 +59,12 @@
 			<artifactId>physics</artifactId>
 			<version>0004-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
 			<artifactId>gestalt.gestalt-osgi</artifactId>
 			<version>0.0.1</version>
-			
+
 		</dependency>
 
 		<!-- Cytoscape Dependency -->
@@ -89,6 +89,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>default-mappings</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
