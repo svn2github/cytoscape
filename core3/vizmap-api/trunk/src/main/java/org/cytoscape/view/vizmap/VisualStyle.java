@@ -109,7 +109,7 @@ public interface VisualStyle {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public <V> V getDefaultValue(VisualProperty<V> vp);
+	public <V> V getDefaultValue(VisualProperty<? extends V> vp);
 
 	/**
 	 *  Setter for the default value of vp.
@@ -118,7 +118,7 @@ public interface VisualStyle {
 	 * @param vp DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
-	public <V> void setDefaultValue(VisualProperty<V> vp, V value);
+	public <V> void setDefaultValue(VisualProperty<? extends V> vp, V value);
 
 	/**
 	 * Apply this visual style to the view.
