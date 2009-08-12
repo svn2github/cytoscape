@@ -44,13 +44,18 @@
 			<artifactId>session-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>default-mappings</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
 		<!-- GUI -->
 		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>

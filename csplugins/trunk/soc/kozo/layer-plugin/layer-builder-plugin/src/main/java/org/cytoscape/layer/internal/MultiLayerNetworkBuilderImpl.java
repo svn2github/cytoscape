@@ -14,9 +14,11 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-//import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 
 /**
  * Build actual network here
@@ -30,6 +32,8 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	private static final String NODE_TITLE = "name";
 	private static final String EDGE_TITLE = "name";
 	private static final String LAYER_INDEX = "layer index";
+	
+	private static final String VISUAL_STYLE_TITLE = "Layer Style";
 		
 	private Map<String, CyDataTable> netAttrMgr;
 	
@@ -37,21 +41,22 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	private CyNetwork layeredNetwork;
 	private CyNetworkFactory factory;
 	
-	private VisualMappingManager visualMappingManager;
-	private VisualStyle visualStyle;
+	private VisualMappingManager vmm;
+	private VisualStyle layerVS;
 	
 	private List<CyNetwork> layers;
 	private List<CyNetwork> connectors;
 
 	public MultiLayerNetworkBuilderImpl(CyNetworkManager manager,
-			CyNetworkFactory factory) {
+			CyNetworkFactory factory, VisualMappingManager vmm) {
 		this.manager = manager;
 		this.factory = factory;
+		this.vmm = vmm;
 	}
 
 	public CyNetwork buildLayeredNetwork(List<CyNetwork> layers,
 			List<CyNetwork> connectors) {
-
+		
 		layeredNetwork = factory.getInstance();
 		layeredNetwork.attrs().set(NETWORK_TITLE, "Layered Network");
 
@@ -89,6 +94,9 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 		}
 
+		
+		buildVisualStyle();
+		
 		System.out.println("OK!");
 		
 		return layeredNetwork;
@@ -212,16 +220,26 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		this.connectors = connectors;
 	}
 
-	public void setVisualMappingManager(VisualMappingManager visualMappingManager){
-		this.visualMappingManager = visualMappingManager;
-	}
 	
-	public void setVisualStyle(){
-		this.visualStyle = visualMappingManager.getVisualStyle(manager.getCurrentNetworkView());
-	}
 	
-//	public void buildVisualStyle(){
-//		DiscreteMapping discreteMapping = new DiscreteMapping(LAYER_INDEX, String.class, NODE_Z_LOCATION); 
-//	}
+	public void buildVisualStyle(){
+		layerVS = vmm.createVisualStyle(VISUAL_STYLE_TITLE);
+		final DiscreteMapping<String, Double> index2zLocation = new DiscreteMapping<String, Double>(LAYER_INDEX, String.class, NODE_Z_LOCATION);
+		
+		CyNetworkView view = (CyNetworkView) manager.getCurrentPresentation().getViewModel();
+		
+		final List<View<CyNode>> nodeViews = view.getNodeViews();
+		
+		String indexString;
+		for(View<CyNode> nv: nodeViews) {
+			indexString = nv.getSource().attrs().get(LAYER_INDEX, String.class);
+			index2zLocation.putMapValue(indexString, Integer.parseInt(indexString) * 300d);
+		}
+		
+		layerVS.addVisualMappingFunction(index2zLocation);
+		
+		vmm.setVisualStyle(layerVS, view);
+		layerVS.apply(view);
+	}
 	
 }
