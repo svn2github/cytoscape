@@ -11,6 +11,9 @@
 		
 	<osgi:reference id ="cyNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
+		
+	<osgi:reference id ="visualMappingManagerServiceRef"
+		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
 
 	<osgi:reference id="cySwingApplicationServiceRef"
 		interface="cytoscape.view.CySwingApplication" />
