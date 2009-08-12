@@ -3,6 +3,10 @@ package org.cytoscape.layer.internal;
 import static org.cytoscape.model.GraphObject.NODE;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,15 +89,22 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 		System.out.println("layer index attribute test start!!");
 		
-		for (CyNode cyNode : layeredNetwork.getNodeList()){
+		try {
+			PrintWriter fout = new PrintWriter(new BufferedWriter(new FileWriter("nodeAttribute.txt")));
 			
-			System.out.println("NODE_NAME");
-			System.out.println(cyNode.attrs().get(NODE_TITLE, String.class));
-			System.out.println("NODE_LAYER_INDEX");
-			System.out.println(cyNode.attrs().get(LAYER_INDEX, String.class));
+			for (CyNode cyNode : layeredNetwork.getNodeList()){
+				
+				fout.println("NODE_NAME");
+				fout.println(cyNode.attrs().get(NODE_TITLE, String.class));
+				fout.println("NODE_LAYER_INDEX");
+				fout.println(cyNode.attrs().get(LAYER_INDEX, String.class));
 
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
 		
 		buildVisualStyle();
 		
@@ -240,6 +251,14 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		
 		vmm.setVisualStyle(layerVS, view);
 		layerVS.apply(view);
+		
+		// for test
+		for(View<CyNode> nv: nodeViews){
+			indexString = nv.getSource().attrs().get(LAYER_INDEX, String.class);
+			System.out.println(nv.getSource().attrs().get(NODE_TITLE, String.class));
+			System.out.println(nv.getVisualProperty(NODE_Z_LOCATION));
+//			System.out.println(index2zLocation.getMapValue(indexString));
+		}
 	}
 	
 }
