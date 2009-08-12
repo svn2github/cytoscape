@@ -45,7 +45,6 @@ Lip	pr	R02687
 DltA	pr	R02718
 DltC	pr	R02718
 YtjP	pr	R02734
-SpsL	pr	R02775
 SpsK	pr	R02777
 Csn	pr	R02833
 Dat	pr	R02851
@@ -106,7 +105,6 @@ MetE	pr	R04405
 MtnA	pr	R04420
 FolE	pr	R04639
 MetG	pr	R04773
-SpsK	pr	R04778
 YjcI	pr	R04944
 YjcI	pr	R04945
 YjcI	pr	R04946
@@ -123,7 +121,6 @@ UppP	pr	R05627
 IspD	pr	R05633
 Ipk	pr	R05634
 IspF	pr	R05637
-IspG	pr	R05883
 IspH	pr	R05884
 SpsJ	pr	R06513
 SpsL	pr	R06514
@@ -185,10 +182,6 @@ AcsA	pr	R00236
 AcsA	pr	R00316
 AcsA	pr	R00926
 AcsA	pr	R01354
-AcdA	pr	R04547
-MmgC	pr	R04547
-AcdA	pr	R04592
-MmgC	pr	R04592
 AcdA	pr	R06905
 MmgC	pr	R06905
 AcdA	pr	R08089
@@ -417,7 +410,6 @@ AbfA	pr	R01762
 Xsa	pr	R01762
 AdhB	pr	R00623
 AdhB	pr	R00754
-AdhB	pr	R04805
 AdhB	pr	R04880
 AdhB	pr	R05233
 AdhB	pr	R05234
@@ -463,9 +455,6 @@ DhaS	pr	R03869
 AldX	pr	R04065
 AldY	pr	R04065
 DhaS	pr	R04065
-AldX	pr	R04506
-AldY	pr	R04506
-DhaS	pr	R04506
 AldX	pr	R04903
 AldY	pr	R04903
 DhaS	pr	R04903
@@ -540,7 +529,6 @@ MelA	pr	R03634
 MelA	pr	R04019
 MelA	pr	R04470
 MelA	pr	R05549
-MelA	pr	R05961
 MenD	pr	R08165
 [NasDE]	pr	R00787
 [NasDE]	pr	R00789
@@ -823,7 +811,6 @@ YjbV	pr	R03471
 ThiD	pr	R04509
 YjbV	pr	R04509
 GalE	pr	R00291
-GalE	pr	R02984
 GlgC	pr	R00948
 GlgD	pr	R00948
 ThyA	pr	R02101
@@ -1095,7 +1082,6 @@ YjmD	pr	R03544
 IolS	pr	R03545
 YjmD	pr	R03545
 YrhA	pr	R03601
-LacA	pr	R03616
 GltX	pr	R03651
 Ggt	pr	R03867
 YwrD	pr	R03867
@@ -1149,7 +1135,6 @@ FabL	pr	R04724
 MetE	pr	R04771
 MetK	pr	R04771
 Fbp	pr	R04780
-GbsB	pr	R04805
 IolS	pr	R04810
 YjmD	pr	R04810
 IolS	pr	R04812
@@ -1206,10 +1191,6 @@ MraY	pr	R05630
 Dxs	pr	R05636
 MurG	pr	R05662
 Dxr	pr	R05688
-LytD	pr	R05963
-LytD	pr	R06004
-LacA	pr	R06010
-LeuA	pr	R06010
 BioI	pr	R06401
 UppS	pr	R06447
 MenA	pr	R06858
