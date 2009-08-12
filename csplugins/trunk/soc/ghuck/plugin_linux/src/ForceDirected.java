@@ -65,8 +65,10 @@ import csplugins.layout.algorithms.graphPartition.*;
 
 public class ForceDirected extends AbstractGraphPartition
 {
-    private double H_SIZE = 1000.0;
-    private double V_SIZE = 1000.0;
+    private String message;
+
+    private double H_SIZE = 10000.0;
+    private double V_SIZE = 10000.0;
     private String GPU_LIBRARY = "GpuLayout";
      
     // Default values for algorithm parameters	
@@ -188,7 +190,7 @@ public class ForceDirected extends AbstractGraphPartition
 	
 	// Show message on screen    
 	/*
-	  String message = "Preferences updated\n" 
+	  message = "Preferences updated\n" 
 	  +  coarseGraphSize + "\n" 
 	  + interpolationIterations + "\n"  
 	  + levelConvergence + "\n"         
@@ -343,7 +345,7 @@ public class ForceDirected extends AbstractGraphPartition
 		System.loadLibrary(GPU_LIBRARY);
 	    }
 	    catch (UnsatisfiedLinkError error){
-		String message = "Problem detected while loading Static Library with Native Code\nCannot Produce Layout\n"		    
+		message = "Problem detected while loading Static Library with Native Code\nCannot Produce Layout\n"		    
 		    + error.getMessage() 
 		    + "\nPlease check that CUDA instalation folder is correctly set in the menu \"Layouts->Settings->GpuLayout(ForceDirected)\"";
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
@@ -404,17 +406,31 @@ public class ForceDirected extends AbstractGraphPartition
 	    double edgeSize = Math.sqrt(   Math.pow(node_positions[n1Index][0] - node_positions[n2Index][0], 2)
 				         + Math.pow(node_positions[n1Index][1] - node_positions[n2Index][1], 2)
 				       );
-
+	    // Check if edgeSize is not zero
+	    if (edgeSize > 0){
 	    
-	    // actualRatio = minimun_desired_length / actual_length
-	    actualRatio = (n1Size + n2Size) / edgeSize;
+		// actualRatio = minimun_desired_length / actual_length
+		actualRatio = (n1Size + n2Size) / edgeSize;
+		
+		// Update upRatio if necessary
+		if (actualRatio > upRatio)
+		    upRatio = actualRatio;
+	    }
 
-	    // Update upRatio if necessary
-	    if (actualRatio > upRatio)
-		upRatio = actualRatio;
 	}
 
 	upRatio = 5 * upRatio / 9;
+
+	// Check whether the ratio is not zero
+	if (upRatio <= 0.0){   
+	    message = "Error while performing node positions scale-up\nCannot perform layout\nupRatio = " + upRatio;		    
+	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
+	    return;
+	}
+
+	message = "upRatio. = " + upRatio;		    
+	JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
+
 
 	// Update Node position
 	part.resetNodes(); // reset the nodes so we get the new average location

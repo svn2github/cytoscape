@@ -1,0 +1,2747 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<graph label="Amidohydrolase Superfamily--child" id="Amidohydrolase Superfamily--child" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.cs.rpi.edu/XGMML">
+    <att value="1.0" name="documentVersion"/>
+    <att name="networkMetadata">
+        <rdf:RDF>
+            <rdf:Description rdf:about="http://www.cytoscape.org/">
+                <dc:type>Protein-Protein Interaction</dc:type>
+                <dc:description>N/A</dc:description>
+                <dc:identifier>N/A</dc:identifier>
+                <dc:date>2007-01-16 13:29:50</dc:date>
+                <dc:title>Amidohydrolase Superfamily--child</dc:title>
+                <dc:source>http://www.cytoscape.org/</dc:source>
+                <dc:format>Cytoscape-XGMML</dc:format>
+            </rdf:Description>
+        </rdf:RDF>
+    </att>
+    <att value="#ffffff" name="backgroundColor"/>
+    <att type="real" value="1.051702522972862" name="GRAPH_VIEW_ZOOM" label="GRAPH_VIEW_ZOOM"/>
+    <att type="real" value="15421.0322265625" name="GRAPH_VIEW_CENTER_X" label="GRAPH_VIEW_CENTER_X"/>
+    <att type="real" value="17076.3984375" name="GRAPH_VIEW_CENTER_Y" label="GRAPH_VIEW_CENTER_Y"/>
+    <node name="base" label="gi15607371" id="-237">
+        <att type="string" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="unknown119" name="subgroup" label="subgroup"/>
+        <att type="string" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="uncharacterized amidohydrolase superfamily sequence" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi15607371 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MPELNTARGPIDTADLGVTLMHEHVFIMTTEIAQNYPEAWGDEDKRVAGAIARLGELKARGVDTIVDLTVIGLGRYIPRIARVAAATELNIVVATGLYTYNDVPFYFHYLGPGAQLDGPEIMTDMFVRDIEHGIADTGIKAGILKCATDEPGLTPGVERVLRAVAQAHKRTGAPISTHTHAGLRRGLDQQRIFAEEGVDLSRVVIGHCGDSTDVGYLEELIAAGSYLGMDRFGVDVISPFQDRVNIVARMCERGHADKMVLSHDACCYFDALPEELVPVAMPNWHYLHIHNDVIPALKQHGVTDEQLHTMLVDNPRRIFERQGGYQ" name="sequence" label="sequence"/>
+        <att type="string" value="gi15607371" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Mycobacterium tuberculosis" name="species" label="species"/>
+				<att type="list" name="testList" label="testList">
+					<att type="string" value="a"/>
+					<att type="string" value="b"/>
+					<att type="string" value="c"/>
+					<att type="string" value="d"/>
+				</att>
+        <graphics y="17276.904296875" x="15552.7587890625" width="5" outline="#000000" fill="#44f687" type="diamond" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi16131257" id="-442">
+        <att type="string" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="unknown119" name="subgroup" label="subgroup"/>
+        <att type="string" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="uncharacterized amidohydrolase superfamily sequence" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi16131257 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MSFDPTGYTLAHEHLHIDLSGFKNNVDCRLDQYAFICQEMNDLMTRGVRNVIEMTNRYMGRNAQFMLDVMRETGINVVACTGYYQDAFFPEHVATRSVQELAQEMVDEIEQGIDGTELKAGIIAEIGTSEGKITPLEEKVFIAAALAHNQTGRPISTHTSFSTMGLEQLALLQAHGVDLSRVTVGHCDLKDNLDNILKMIDLGAYVQFDTIGKNSYYPDEKRIAMLHALRDRGLLNRVMLSMDITRRSHLKANGGYGYDYLLTTFIPQLRQSGFSQADVDVMLRENPSQFFQ" name="sequence" label="sequence"/>
+        <att type="string" value="gi16131257" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Escherichia coli" name="species" label="species"/>
+        <graphics y="17028.453125" x="15130.9990234375" width="1" outline="#000000" fill="#44f687" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi15839610" id="-794">
+        <att type="string" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="unknown119" name="subgroup" label="subgroup"/>
+        <att type="string" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="uncharacterized amidohydrolase superfamily sequence" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi15839610 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MTLLHCGPARHRLRPSISDVPELNTARGPIDTADLGVTLMHEHVFIMTTEIAQNYPEAWGDEDKRVAGAIARLGELKARGVDTIVDLTVIGLGRYIPRIARVAAATELNIVVATGLYTYNDVPFYFHYLGPGAQLDGPEIMTDMFVRDIEHGIADTGIKAGILKCATDEPGLTPGVERVLRAVAQAHKRTGAPISTHTHAGLRRGLDQQRIFAEEGVDLSRVVIGHCGDSTDVGYLEELIAAGSYLGMDRFGVDVISPFQDRVNIVARMCERGHADKMVLSHDACCYFDALPEELVPVAMPNWHYLHIHNDVIPALKQHGVTDEQLHTMLVDNPRRIFERQGGYQ" name="sequence" label="sequence"/>
+        <att type="string" value="gi15839610" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Mycobacterium tuberculosis" name="species" label="species"/>
+        <graphics y="17131.873046875" x="15635.2470703125" width="1" outline="#000000" fill="#44f687" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi13786719" id="-214">
+        <att type="string" value="1I0B,1HZY,1I0D" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="phosphotriesterase like" name="subgroup" label="subgroup"/>
+        <att type="string" value="His55,His57,Lys169,His201,His230,Asp301" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" value="phosphotriesterase" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="phosphotriesterase" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi13786719 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="GDRINTVRGPITISEAGFTLTHEHICGSSAGFLRAWPEFFGSRKALAEKAVRGLRRARAAGVRTIVDVSTFDIGRDVSLLAEVSRAADVHIVAATGLWFDPPLSMRLRSVEELTQFFLREIQYGIEDTGIRAGIIKVATTGKATPFQELVLKAAARASLATGVPVTTHTAASQRDGEQQAAIFESEGLSPSRVCIGHSDDTDDLSYLTALAARGYLIGLDHIPHSAIGLEDNASASALLGIRSWQTRALLIKALIDQGYMKQILVSNDWLFGFSSYVTNIMDVMDRVNPDGMAFIPLRVIPFLREKGVPQETLAGITVTNPARFLSPTLRAS" name="sequence" label="sequence"/>
+        <att type="string" value="gi13786719" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Brevundimonas diminuta" name="species" label="species"/>
+        <graphics y="16946.54296875" x="15733.2724609375" width="1" outline="#000000" fill="#ff66ff" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi12084365" id="-411">
+        <att type="string" value="1EYW,1EZ2" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="phosphotriesterase like" name="subgroup" label="subgroup"/>
+        <att type="string" value="His55,His57,Lys169,His201,His230,Asp301" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" value="phosphotriesterase" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="phosphotriesterase" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi12084365 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="DRINTVRGPITISEAGFTLTHEHICGSSAGFLRAWPEFFGSRKALAEKAVRGLRRARAAGVRTIVDVSTFDIGRDVSLLAEVSRAADVHIVAATGLWFDPPLSMRLRSVEELTQFFLREIQYGIEDTGIRAGIIXVATTGKATPFQELVLKAAARASLATGVPVTTHTAASQRDGEQQAAIFESEGLSPSRVCIGHSDDTDDLSYLTALAARGYLIGLDHIPHSAIGLEDNASASALLGIRSWQTRALLIKALIDQGYMKQILVSNDWLFGFSSYVTNIMDVMDRVNPDGMAFIPLRVIPFLREKGVPQETLAGITVTNPARFLSPTLRAS" name="sequence" label="sequence"/>
+        <att type="string" value="gi12084365" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Brevundimonas diminuta" name="species" label="species"/>
+        <graphics y="16989.025390625" x="15700.1337890625" width="1" outline="#000000" fill="#ff66ff" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi15613153" id="-371">
+        <att type="string" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="unknown119" name="subgroup" label="subgroup"/>
+        <att type="string" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="uncharacterized amidohydrolase superfamily sequence" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi15613153 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MYIETVRGKIKPEEFGVCACHEHLHIDLSRIKNDSDTALVEVALVLSDLKSFVSHGGQAIVDVTNDGMGRDVEKLVVMSEALDLHIVASTGCYKDPFIPEEKQMWTREQFAEWMIDEIMYGISGTTVKPGVIGEIGSSLNEFKPVELELFYGAIEAAKTTKLPLSTHTTLGTLAMEQIRLFDSESLPLDQVIIGHQDLNDDDEQVLKVLSTGAYVALDTIGKENYRSDEARLNSLLLFLEKGYEDQLLLSSDVTRTSHLLVHGGQGYDVVLRSFIPKLRAKGADEATIQKLLVKTHKKHLASRKKAKRMTNEQSSILKNMTVEEATQLQHRLVDEISKEFSNNEFFQVGDVGLHPGYKRPKMTAKVEHVLQQTFDAEACALVRGSGTGAIRLVLSVLLEPGDACIVHTGPMYPTTKETFRMMGIQPVAVNFNKPQSILEALKHHEEAKVFFVQHARQQPTDTYDLREVIHYVKQHRPDLPIVVDDNYCAMKMKGIGVQYGADYSTFSGFKLLGPTGIGIILGKKSGVEQIHVRNYSGGGQVQGFEAHELVRSLVMAPVMLALQNQQVEELYTRLNQGEVKGLKQIYVTNSQSKNVIVELEKPIAEAVIRSAATYGAATYPVGAESRFELLPMIYRVSGTFLEKRPELKAYGLRINPMKASASTVIRILTCSLADAARDC" name="sequence" label="sequence"/>
+        <att type="string" value="gi15613153" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Bacillus halodurans" name="species" label="species"/>
+        <graphics y="16861.1015625" x="15070.08203125" width="1" outline="#000000" fill="#44f687" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi5542102" id="-870">
+        <att type="string" value="1BF6" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="unknown119" name="subgroup" label="subgroup"/>
+        <att type="string" value="His12,His13,Glu125,His158,His186,Asp243" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="uncharacterized amidohydrolase superfamily sequence" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi5542102 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="SFDPTGYTLAHEHLHIDLSGFKNNVDCRLDQYAFICQEMNDLMTRGVRNVIEMTNRYMGRNAQFMLDVMRETGINVVACTGYYQDAFFPEHVATRSVQELAQEMVDEIEQGIDGTELKAGIIAEIGTSEGKITPLEEKVFIAAALAHNQTGRPISTHTSFSTMGLEQLALLQAHGVDLSRVTVGHCDLKDNLDNILKMIDLGAYVQFDTIGKNSYYPDEKRIAMLHALRDRGLLNRVMLSMDITRRSHLKANGGYGYDYLLTTFIPQLRQSGFSQADVDVMLRENPSQFFQ" name="sequence" label="sequence"/>
+        <att type="string" value="gi5542102" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Escherichia coli" name="species" label="species"/>
+        <graphics y="17042.517578125" x="15179.97265625" width="1" outline="#000000" fill="#44f687" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi1310974" id="-851">
+        <att type="string" value="1PTA" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="phosphotriesterase like" name="subgroup" label="subgroup"/>
+        <att type="string" value="His55,His57,Lys169,His201,His230,Asp301" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" value="phosphotriesterase" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="phosphotriesterase" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi1310974 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="RINTVRGPITISEAGFTLTHEHICGSSAGFLRAWPEFFGSRKALAEKAVRGLRRARAAGVRTIVDVSTFDIGRDVSLLAEVSRAADVHIVAATGLWFDPPLSMRLRSVEELTQFFLREIQYGIEDTGIRAGIIKVATTGKATPFQELVLKAAARASLATGVPVTTHTAASQRDGEQQAAIFESEGLSPSRVCIGHSDDTDDLSYLTALAARGYLIGLDHIPHSAIALLGIRSWQTRALLIKALIDQGYMKQILVSNDWLFGFSSYVTNIMDVMDRVNPDGMAFIPLRVIPFLREKGVPQETLAGITVTNPARFLSPTL" name="sequence" label="sequence"/>
+        <att type="string" value="gi1310974" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Brevundimonas diminuta" name="species" label="species"/>
+        <graphics y="16891.935546875" x="15598.306640625" width="1" outline="#000000" fill="#ff66ff" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi2098312" id="-413">
+        <att type="string" value="1PSC" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="phosphotriesterase like" name="subgroup" label="subgroup"/>
+        <att type="string" value="His55,His57,Lys169,His201,His230,Asp301" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" value="phosphotriesterase" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="phosphotriesterase" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi2098312 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MQTRRVVLKSAAAAGTLLGGLAGCASVAGSIGTGDRINTVRGPITISEAGFTLTHEHICGSSAGFLRAWPEFFGSRKALAEKAVRGLRRARAAGVRTIVDVSTFDIGRDVSLLAEVSRAADVHIVAATGLWFDPPLSMRLRSVEELTQFFLREIQYGIEDTGIRAGIIKVATTGKATPFQELVLKAAARASLATGVPVTTHTAASQRDGEQQAAIFESEGLSPSRVCIGHSDDTDDLSYLTALAARGYLIGLDHIPHSAIGLEDNASASALLGIRSWQTRALLIKALIDQGYMKQILVSNDWLFGFSSYVTNIMDVMDRVNPDGMAFIPLRVIPFLREKGVPQETLAGITVTNPARFLSPTLRAS" name="sequence" label="sequence"/>
+        <att type="string" value="gi2098312" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Brevundimonas diminuta" name="species" label="species"/>
+        <graphics y="16963.32421875" x="15644.4365234375" width="1" outline="#000000" fill="#ff66ff" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi2392286" id="-866">
+        <att type="string" value="1DPM" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="phosphotriesterase like" name="subgroup" label="subgroup"/>
+        <att type="string" value="His55,His57,Lys169,His201,His230,Asp301" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" value="phosphotriesterase" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="phosphotriesterase" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi2392286 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="ARINTVRGPITISEAGFTLTHEHICGSSAGFLRAWPEFFGSRKALAEKAVRGLRRARAAGVRTIVDVSTFDIGRDVSLLAEVSRAADVHIVAATGLWFDPPLSMRLRSVEELTQFFLREIQYGIEDTGIRAGIIKVATTGKATPFQELVLKAAARASLATGVPVTTHTAASQRDGEQQAAIFESEGLSPSRVCIGHSDDTDDLSYLTALAARGYLIGLDHIPHSAIGLEDNASASALLGIRSWQTRALLIKALIDQGYMKQILVSNDWLFGFSSYVTNIMDVMDRVNPDGMAFIPLRVIPFLREKGVPQETLAGITVTNPARFLSPTLR" name="sequence" label="sequence"/>
+        <att type="string" value="gi2392286" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Brevundimonas diminuta" name="species" label="species"/>
+        <graphics y="16919.16015625" x="15571.5908203125" width="1" outline="#000000" fill="#ff66ff" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi15212234" id="-146">
+        <att type="string" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="phosphotriesterase like" name="subgroup" label="subgroup"/>
+        <att type="string" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" value="phosphotriesterase" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="phosphotriesterase" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi15212234 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MQTRRDALKSAAAITLLGGLAGCASMARPIGTGDLINTVRGPIPVSEAGFTLTHEHICGSSAGFLRAWPEFFGSRKALAEKAVRGLRHARSAGVQTIVDVSTFDIGRDVRLLAEVSRAADVHIVAATGLWFDPPLSMRMRSVEELTQFFLREIQHGIEDTGIRAGIIKVATTGKATPFQELVLKAAARASLATGVPVTTHTSASQRDGEQQAAIFESEGLSPSRVCIGHSDDTDDLSYLTGLAARGYLVGLDRMPYSAIGLEGNASALALFGTRSWQTRALLIKALIDRGYKDRILVSHDWLFGFSSYVTNIMDVMDRINPDGMAFVPLRVIPFLREKGVPPETLAGVTVANPARFLSPTVRAVVTRSETSRPAAPIPRQDTER" name="sequence" label="sequence"/>
+        <att type="string" value="gi15212234" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Agrobacterium tumefaciens" name="species" label="species"/>
+        <graphics y="16971.21875" x="15565.4345703125" width="1" outline="#000000" fill="#ff66ff" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi17977844" id="-737">
+        <att type="string" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="phosphotriesterase like" name="subgroup" label="subgroup"/>
+        <att type="string" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" value="phosphotriesterase" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="phosphotriesterase" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi17977844 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MQTRRVVLKSAAAAGTLLGRLAGCASVAGSIGTGDRINTVRGPITNSEAGFTLTHEHICGTSAGFLRAWQEFFGSRKALAEKAVRGLRRARAAGVRTIVDVSTFDIGRDVSLLAEVSMMVDVSLLAETGLWFDPPLSIGLRSVEELTQFFLREIQYGIEDTGIRAGIIKVATTGKATPFQELVLKAAARASLATGVPVTTHTAASQRDGEQQAAIFESEGLSPSRVCIGHSDDTDDLSYLTALAARGYLIGLDHIPHSAIGLEDNASASALLGIRSWQTRALLIKALIDQGYMKQILVSNDWLFGFSSYVTNIMDVMDRVNPDGMAFIPLRVIPFLREKGVPQETLAGITVTNPARFLSPTLRAS" name="sequence" label="sequence"/>
+        <att type="string" value="gi17977844" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Chryseobacterium balustinum" name="species" label="species"/>
+        <graphics y="16942.23828125" x="15673.6171875" width="1" outline="#000000" fill="#ff66ff" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi14719485" id="-491">
+        <att type="string" value="1JGM" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="phosphotriesterase like" name="subgroup" label="subgroup"/>
+        <att type="string" value="His55,His57,Lys169,His201,His230,Asp301" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" value="phosphotriesterase" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="phosphotriesterase" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi14719485 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="SIGTGDRINTVRGPITISEAGFTLTHEHICGSSAGFLRAWPEFFGSRKALAEKAVRGLRRARAAGVRTIVDVSTFDIGRDVSLLAEVSRAADVHIVAATGLWFDPPLSMRLRSVEELTQFFLREIQYGIEDTGIRAGIIXVATTGKATPFQELVLKAAARASLATGVPVTTHTAASQRDGEQQAAIFESEGLSPSRVCIGHSDDTDDLSYLTALAARGYLIGLDHIPHSAIGLEDNASASALLGIRSWQTRALLIKALIDQGYMKQILVSNDWLFGFSSYVTNIMDVMDRVNPDGMAFIPLRVIPFLREKGVPQETLAGITVTNPARFLSPTLRAS" name="sequence" label="sequence"/>
+        <att type="string" value="gi14719485" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Brevundimonas diminuta" name="species" label="species"/>
+        <graphics y="16883.22265625" x="15593.0126953125" width="1" outline="#000000" fill="#ff66ff" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi15805954" id="-475">
+        <att type="string" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="unknown119" name="subgroup" label="subgroup"/>
+        <att type="string" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="uncharacterized amidohydrolase superfamily sequence" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi15805954 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MTAQTVTGAVAAAQLGATLPHEHVIFGYPGYAGDVTLGPFDHAAALASCTETARALLARGIQTVVDATPNDCGRNPAFLREVSEATGLQILCATGFYYEGEGATTYFKFRASLGDAESEIYEMMRTEVTEGIAGTGIRAGVIKLASSRDAITPYEQLFFRAAARVQRETGVPIITHTQEGQQGPQQAELLTSLGADPARIMIGHMDGNTDPAYHRETLRHGVSIAFDRIGLQGMVGTPTDAERLSVLTTLLGEGYADRLLLSHDSIWHWLGRPPAIPEAALPAVKDWHPLHISDDILPDLRRRGITEEQVGQMTVGNPARLFG" name="sequence" label="sequence"/>
+        <att type="string" value="gi15805954" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Deinococcus radiodurans" name="species" label="species"/>
+        <graphics y="17291.6953125" x="15771.982421875" width="1" outline="#000000" fill="#44f687" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi15899258" id="-672">
+        <att type="string" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="unknown119" name="subgroup" label="subgroup"/>
+        <att type="string" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="uncharacterized amidohydrolase superfamily sequence" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi15899258 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MRIPLVGKDSIESKDIGFTLIHEHLRVFSEAVRQQWPHLYNEDEEFRNAVNEVKRAMQFGVKTIVDPTVMGLGRDIRFMEKVVKATGINLVAGTGIYIYIDLPFYFLNRSIDEIADLFIHDIKEGIQGTLNKAGFVKIAADEPGITKDVEKVIRAAAIANKETKVPIITHSNAHNNTGLEQQRILTEEGVDPGKILIGHLGDTDNIDYIKKIADKGSFIGLDRYGLDLFLPVDKRNETTLRLIKDGYSDKIMISHDYCCTIDWGTAKPEYKPKLAPRWSITLIFEDTIPFLKRNGVNEEVIATIFKENPKKFFS" name="sequence" label="sequence"/>
+        <att type="string" value="gi15899258" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Sulfolobus solfataricus" name="species" label="species"/>
+        <graphics y="17172.845703125" x="15558.6611328125" width="1" outline="#000000" fill="#44f687" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <node name="base" label="gi129176" id="-888">
+        <att type="string" value="1QW7" name="pdbFileName" label="pdbFileName"/>
+        <att type="string" value="phosphotriesterase like" name="subgroup" label="subgroup"/>
+        <att type="string" name="FunctionalResidues" label="FunctionalResidues"/>
+        <att type="string" value="phosphotriesterase" name="family" label="family"/>
+        <att type="string" value="protein" name="NodeType" label="NodeType"/>
+        <att type="string" value="phosphotriesterase" name="commonName" label="commonName"/>
+        <att type="string" value="PTE" name="PFAM Family" label="PFAM Family"/>
+        <att type="string" value="gi129176 " name="ALIASES" label="ALIASES"/>
+        <att type="string" value="MQTRRVVLKSAAAAGTLLGGLAGCASVAGSIGTGDRINTVRGPITISEAGFTLTHEHICGSSAGFLRAWPEFFGSRKALAEKAVRGLRRARAAGVRTIVDVSTFDIGRDVSLLAEVSRAADVHIVAATGLWFDPPLSMRLRSVEELTQFFLREIQYGIEDTGIRAGIIKVATTGKATPFQELVLKAAARASLATGVPVTTHTAASQRDGEQQAAIFESEGLSPSRVCIGHSDDTDDLSYLTALAARGYLIGLDHIPHSAIGLEDNASASALLGIRSWQTRALLIKALIDQGYMKQILVSNDWLFGFSSYVTNIMDVMDRVNPDGMAFIPLRVIPFLREKGVPQETLAGITVTNPARFLSPTLRAS" name="sequence" label="sequence"/>
+        <att type="string" value="gi129176" name="canonicalName" label="canonicalName"/>
+        <att type="string" value="Flavobacterium sp." name="species" label="species"/>
+        <graphics y="16883.6640625" x="15667.9521484375" width="1" outline="#000000" fill="#ff66ff" type="ellipse" w="35.0" h="35.0">
+            <att name="cytoscapeNodeGraphicsAttributes">
+                <att value="1.0" name="nodeTransparency"/>
+                <att value="Arial Bold-0-6" name="nodeLabelFont"/>
+                <att value="solid" name="borderLineType"/>
+            </att>
+        </graphics>
+    </node>
+    <edge label="gi15607371 (isrelated) gi16131257" id="gi15607371 (isrelated) gi16131257" target="-442" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi16131257" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="7.0E-21" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi16131257" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi5542102" id="gi15607371 (isrelated) gi5542102" target="-870" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi5542102" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-23" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi5542102" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi129176" id="gi15607371 (isrelated) gi129176" target="-888" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi129176" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-27" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi129176" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi17977844" id="gi15607371 (isrelated) gi17977844" target="-737" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi17977844" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-29" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi17977844" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi12084365" id="gi15607371 (isrelated) gi12084365" target="-411" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-29" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi13786719" id="gi15607371 (isrelated) gi13786719" target="-214" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-29" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi14719485" id="gi15607371 (isrelated) gi14719485" target="-491" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-29" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi1310974" id="gi15607371 (isrelated) gi1310974" target="-851" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-30" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi2392286" id="gi15607371 (isrelated) gi2392286" target="-866" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-30" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi15212234" id="gi15607371 (isrelated) gi15212234" target="-146" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi15212234" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-32" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi15212234" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi15899258" id="gi15607371 (isrelated) gi15899258" target="-672" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-58" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15607371 (isrelated) gi15839610" id="gi15607371 (isrelated) gi15839610" target="-794" source="-237">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15607371 (isrelated) gi15839610" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-172" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15607371 (isrelated) gi15839610" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi16131257 (isrelated) gi12084365" id="gi16131257 (isrelated) gi12084365" target="-411" source="-442">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi16131257 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="8.0E-16" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi16131257 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi16131257 (isrelated) gi14719485" id="gi16131257 (isrelated) gi14719485" target="-491" source="-442">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi16131257 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-16" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi16131257 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi16131257 (isrelated) gi15212234" id="gi16131257 (isrelated) gi15212234" target="-146" source="-442">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi16131257 (isrelated) gi15212234" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-16" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi16131257 (isrelated) gi15212234" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi16131257 (isrelated) gi1310974" id="gi16131257 (isrelated) gi1310974" target="-851" source="-442">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi16131257 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-17" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi16131257 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi16131257 (isrelated) gi15839610" id="gi16131257 (isrelated) gi15839610" target="-794" source="-442">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi16131257 (isrelated) gi15839610" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="9.0E-23" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi16131257 (isrelated) gi15839610" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi16131257 (isrelated) gi15899258" id="gi16131257 (isrelated) gi15899258" target="-672" source="-442">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi16131257 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-24" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi16131257 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi16131257 (isrelated) gi5542102" id="gi16131257 (isrelated) gi5542102" target="-870" source="-442">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi16131257 (isrelated) gi5542102" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-162" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi16131257 (isrelated) gi5542102" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi16131257 (isrelated) gi2392286" id="gi16131257 (isrelated) gi2392286" target="-866" source="-442">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi16131257 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="5.0E-16" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi16131257 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi16131257 (isrelated) gi13786719" id="gi16131257 (isrelated) gi13786719" target="-214" source="-442">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi16131257 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-16" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi16131257 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15839610 (isrelated) gi2392286" id="gi15839610 (isrelated) gi2392286" target="-866" source="-794">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15839610 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-34" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15839610 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15839610 (isrelated) gi12084365" id="gi15839610 (isrelated) gi12084365" target="-411" source="-794">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15839610 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="9.0E-34" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15839610 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15839610 (isrelated) gi14719485" id="gi15839610 (isrelated) gi14719485" target="-491" source="-794">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15839610 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="9.0E-34" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15839610 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15839610 (isrelated) gi1310974" id="gi15839610 (isrelated) gi1310974" target="-851" source="-794">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15839610 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-34" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15839610 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15839610 (isrelated) gi13786719" id="gi15839610 (isrelated) gi13786719" target="-214" source="-794">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15839610 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-34" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15839610 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15839610 (isrelated) gi15899258" id="gi15839610 (isrelated) gi15899258" target="-672" source="-794">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15839610 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-53" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15839610 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi12084365 (isrelated) gi2392286" id="gi12084365 (isrelated) gi2392286" target="-866" source="-411">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi12084365 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-173" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi12084365 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi12084365 (isrelated) gi1310974" id="gi12084365 (isrelated) gi1310974" target="-851" source="-411">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi12084365 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-158" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi12084365 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi12084365 (isrelated) gi14719485" id="gi12084365 (isrelated) gi14719485" target="-491" source="-411">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi12084365 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-162" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi12084365 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi12084365 (isrelated) gi13786719" id="gi12084365 (isrelated) gi13786719" target="-214" source="-411">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi12084365 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-171" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi12084365 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi15212234" id="gi15613153 (isrelated) gi15212234" target="-146" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi15212234" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="9.0E-17" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi15212234" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi15839610" id="gi15613153 (isrelated) gi15839610" target="-794" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi15839610" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="9.0E-15" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi15839610" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi129176" id="gi15613153 (isrelated) gi129176" target="-888" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi129176" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-15" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi129176" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi13786719" id="gi15613153 (isrelated) gi13786719" target="-214" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-15" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi2392286" id="gi15613153 (isrelated) gi2392286" target="-866" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="6.0E-16" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi12084365" id="gi15613153 (isrelated) gi12084365" target="-411" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="5.0E-16" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi1310974" id="gi15613153 (isrelated) gi1310974" target="-851" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-16" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi2098312" id="gi15613153 (isrelated) gi2098312" target="-413" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi2098312" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="4.0E-17" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi2098312" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi5542102" id="gi15613153 (isrelated) gi5542102" target="-870" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi5542102" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="6.0E-46" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi5542102" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi15607371" id="gi15613153 (isrelated) gi15607371" target="-237" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi15607371" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-13" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi15607371" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi14719485" id="gi15613153 (isrelated) gi14719485" target="-491" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="6.0E-14" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi17977844" id="gi15613153 (isrelated) gi17977844" target="-737" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi17977844" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-14" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi17977844" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi15899258" id="gi15613153 (isrelated) gi15899258" target="-672" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-17" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15613153 (isrelated) gi16131257" id="gi15613153 (isrelated) gi16131257" target="-442" source="-371">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15613153 (isrelated) gi16131257" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="9.0E-45" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15613153 (isrelated) gi16131257" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi5542102 (isrelated) gi12084365" id="gi5542102 (isrelated) gi12084365" target="-411" source="-870">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi5542102 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="5.0E-18" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi5542102 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi5542102 (isrelated) gi1310974" id="gi5542102 (isrelated) gi1310974" target="-851" source="-870">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi5542102 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-19" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi5542102 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi5542102 (isrelated) gi15839610" id="gi5542102 (isrelated) gi15839610" target="-794" source="-870">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi5542102 (isrelated) gi15839610" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="4.0E-25" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi5542102 (isrelated) gi15839610" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi5542102 (isrelated) gi2392286" id="gi5542102 (isrelated) gi2392286" target="-866" source="-870">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi5542102 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-18" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi5542102 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi5542102 (isrelated) gi15212234" id="gi5542102 (isrelated) gi15212234" target="-146" source="-870">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi5542102 (isrelated) gi15212234" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="6.0E-19" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi5542102 (isrelated) gi15212234" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi5542102 (isrelated) gi13786719" id="gi5542102 (isrelated) gi13786719" target="-214" source="-870">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi5542102 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-19" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi5542102 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi5542102 (isrelated) gi15899258" id="gi5542102 (isrelated) gi15899258" target="-672" source="-870">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi5542102 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="9.0E-27" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi5542102 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi5542102 (isrelated) gi14719485" id="gi5542102 (isrelated) gi14719485" target="-491" source="-870">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi5542102 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="5.0E-19" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi5542102 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi1310974 (isrelated) gi13786719" id="gi1310974 (isrelated) gi13786719" target="-214" source="-851">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi1310974 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-157" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi1310974 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi1310974 (isrelated) gi2392286" id="gi1310974 (isrelated) gi2392286" target="-866" source="-851">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi1310974 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-159" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi1310974 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi129176" id="gi2098312 (isrelated) gi129176" target="-888" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi129176" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-164" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi129176" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi16131257" id="gi2098312 (isrelated) gi16131257" target="-442" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi16131257" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-20" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi16131257" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi5542102" id="gi2098312 (isrelated) gi5542102" target="-870" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi5542102" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="6.0E-22" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi5542102" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi15899258" id="gi2098312 (isrelated) gi15899258" target="-672" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-32" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi15607371" id="gi2098312 (isrelated) gi15607371" target="-237" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi15607371" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-35" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi15607371" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi15839610" id="gi2098312 (isrelated) gi15839610" target="-794" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi15839610" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-35" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi15839610" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi15212234" id="gi2098312 (isrelated) gi15212234" target="-146" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi15212234" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-149" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi15212234" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi1310974" id="gi2098312 (isrelated) gi1310974" target="-851" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-154" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi17977844" id="gi2098312 (isrelated) gi17977844" target="-737" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi17977844" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-157" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi17977844" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi2392286" id="gi2098312 (isrelated) gi2392286" target="-866" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-159" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi12084365" id="gi2098312 (isrelated) gi12084365" target="-411" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-159" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi13786719" id="gi2098312 (isrelated) gi13786719" target="-214" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-161" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2098312 (isrelated) gi14719485" id="gi2098312 (isrelated) gi14719485" target="-491" source="-413">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2098312 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-165" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2098312 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi2392286 (isrelated) gi13786719" id="gi2392286 (isrelated) gi13786719" target="-214" source="-866">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi2392286 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-170" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi2392286 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15212234 (isrelated) gi14719485" id="gi15212234 (isrelated) gi14719485" target="-491" source="-146">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15212234 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-151" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15212234 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15212234 (isrelated) gi15899258" id="gi15212234 (isrelated) gi15899258" target="-672" source="-146">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15212234 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-33" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15212234 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15212234 (isrelated) gi15839610" id="gi15212234 (isrelated) gi15839610" target="-794" source="-146">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15212234 (isrelated) gi15839610" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-43" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15212234 (isrelated) gi15839610" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15212234 (isrelated) gi1310974" id="gi15212234 (isrelated) gi1310974" target="-851" source="-146">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15212234 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-143" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15212234 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15212234 (isrelated) gi12084365" id="gi15212234 (isrelated) gi12084365" target="-411" source="-146">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15212234 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-147" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15212234 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15212234 (isrelated) gi2392286" id="gi15212234 (isrelated) gi2392286" target="-866" source="-146">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15212234 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-147" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15212234 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15212234 (isrelated) gi13786719" id="gi15212234 (isrelated) gi13786719" target="-214" source="-146">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15212234 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-149" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15212234 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi15839610" id="gi17977844 (isrelated) gi15839610" target="-794" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi15839610" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-37" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi15839610" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi16131257" id="gi17977844 (isrelated) gi16131257" target="-442" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi16131257" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-17" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi16131257" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi5542102" id="gi17977844 (isrelated) gi5542102" target="-870" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi5542102" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-19" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi5542102" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi15899258" id="gi17977844 (isrelated) gi15899258" target="-672" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="6.0E-29" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi1310974" id="gi17977844 (isrelated) gi1310974" target="-851" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-146" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi2392286" id="gi17977844 (isrelated) gi2392286" target="-866" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-153" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi12084365" id="gi17977844 (isrelated) gi12084365" target="-411" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-153" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi13786719" id="gi17977844 (isrelated) gi13786719" target="-214" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-154" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi15212234" id="gi17977844 (isrelated) gi15212234" target="-146" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi15212234" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-155" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi15212234" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi17977844 (isrelated) gi14719485" id="gi17977844 (isrelated) gi14719485" target="-491" source="-737">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi17977844 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-157" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi17977844 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi14719485 (isrelated) gi1310974" id="gi14719485 (isrelated) gi1310974" target="-851" source="-491">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi14719485 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-155" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi14719485 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi14719485 (isrelated) gi2392286" id="gi14719485 (isrelated) gi2392286" target="-866" source="-491">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi14719485 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-161" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi14719485 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi14719485 (isrelated) gi13786719" id="gi14719485 (isrelated) gi13786719" target="-214" source="-491">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi14719485 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-165" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi14719485 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi15613153" id="gi15805954 (isrelated) gi15613153" target="-371" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi15613153" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="8.0E-17" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi15613153" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi16131257" id="gi15805954 (isrelated) gi16131257" target="-442" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi16131257" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-19" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi16131257" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi5542102" id="gi15805954 (isrelated) gi5542102" target="-870" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi5542102" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="4.0E-21" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi5542102" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi14719485" id="gi15805954 (isrelated) gi14719485" target="-491" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="7.0E-25" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi17977844" id="gi15805954 (isrelated) gi17977844" target="-737" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi17977844" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="5.0E-25" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi17977844" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi12084365" id="gi15805954 (isrelated) gi12084365" target="-411" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-25" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi1310974" id="gi15805954 (isrelated) gi1310974" target="-851" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="9.0E-28" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi2098312" id="gi15805954 (isrelated) gi2098312" target="-413" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi2098312" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="6.0E-28" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi2098312" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi15899258" id="gi15805954 (isrelated) gi15899258" target="-672" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-28" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi15212234" id="gi15805954 (isrelated) gi15212234" target="-146" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi15212234" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-30" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi15212234" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi15839610" id="gi15805954 (isrelated) gi15839610" target="-794" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi15839610" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="4.0E-40" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi15839610" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi15607371" id="gi15805954 (isrelated) gi15607371" target="-237" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi15607371" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="8.0E-42" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi15607371" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi2392286" id="gi15805954 (isrelated) gi2392286" target="-866" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="5.0E-26" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi129176" id="gi15805954 (isrelated) gi129176" target="-888" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi129176" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-26" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi129176" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15805954 (isrelated) gi13786719" id="gi15805954 (isrelated) gi13786719" target="-214" source="-475">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15805954 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="4.0E-26" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15805954 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15899258 (isrelated) gi12084365" id="gi15899258 (isrelated) gi12084365" target="-411" source="-672">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15899258 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-25" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15899258 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15899258 (isrelated) gi13786719" id="gi15899258 (isrelated) gi13786719" target="-214" source="-672">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15899258 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="9.0E-26" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15899258 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15899258 (isrelated) gi2392286" id="gi15899258 (isrelated) gi2392286" target="-866" source="-672">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15899258 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="3.0E-26" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15899258 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15899258 (isrelated) gi14719485" id="gi15899258 (isrelated) gi14719485" target="-491" source="-672">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15899258 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-26" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15899258 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi15899258 (isrelated) gi1310974" id="gi15899258 (isrelated) gi1310974" target="-851" source="-672">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi15899258 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="4.0E-27" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi15899258 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi16131257" id="gi129176 (isrelated) gi16131257" target="-442" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi16131257" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-17" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi16131257" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi5542102" id="gi129176 (isrelated) gi5542102" target="-870" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi5542102" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-19" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi5542102" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi15899258" id="gi129176 (isrelated) gi15899258" target="-672" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi15899258" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="8.0E-29" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi15899258" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi15839610" id="gi129176 (isrelated) gi15839610" target="-794" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi15839610" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="2.0E-35" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi15839610" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi15212234" id="gi129176 (isrelated) gi15212234" target="-146" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi15212234" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-150" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi15212234" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi1310974" id="gi129176 (isrelated) gi1310974" target="-851" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi1310974" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-151" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi1310974" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi12084365" id="gi129176 (isrelated) gi12084365" target="-411" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi12084365" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-157" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi12084365" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi2392286" id="gi129176 (isrelated) gi2392286" target="-866" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi2392286" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-157" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi2392286" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi17977844" id="gi129176 (isrelated) gi17977844" target="-737" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi17977844" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-158" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi17977844" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi14719485" id="gi129176 (isrelated) gi14719485" target="-491" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi14719485" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-160" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi14719485" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+    <edge label="gi129176 (isrelated) gi13786719" id="gi129176 (isrelated) gi13786719" target="-214" source="-888">
+        <att type="real" name="AlignmentScore" label="AlignmentScore"/>
+        <att type="real" name="AlignedResidues" label="AlignedResidues"/>
+        <att type="string" value="gi129176 (isrelated) gi13786719" name="XGMML Edge Label" label="XGMML Edge Label"/>
+        <att type="real" name="RMSD" label="RMSD"/>
+        <att type="real" value="1.0E-158" name="BlastEValue" label="BlastEValue"/>
+        <att type="string" value="isrelated" name="interaction" label="interaction"/>
+        <att type="string" value="gi129176 (isrelated) gi13786719" name="canonicalName" label="canonicalName"/>
+        <graphics width="1" fill="#0000ff">
+            <att name="cytoscapeEdgeGraphicsAttributes">
+                <att value="0" name="sourceArrow"/>
+                <att value="0" name="targetArrow"/>
+                <att value="Default-0-10" name="edgeLabelFont"/>
+                <att value="LINE_1" name="edgeLineType"/>
+                <att value="#000000" name="sourceArrowColor"/>
+                <att value="#000000" name="targetArrowColor"/>
+                <att value="STRAIGHT_LINES" name="curved"/>
+            </att>
+        </graphics>
+    </edge>
+</graph>

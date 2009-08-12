@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SAMPLE_DIR="/home/gerardo/samples"
+SAMPLE_DIR="/home/gerardo/samples/gml"
 OUTPUT_FOLDER="/home/gerardo/output_images"
 
 #mkdir $OUTPUT_FOLDER

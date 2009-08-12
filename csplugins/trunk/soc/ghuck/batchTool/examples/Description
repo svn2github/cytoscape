@@ -1,0 +1,82 @@
+Here are the commands that are currently supported that can be included in the script file:
+
+    * open sessionfile
+          o Open a session file
+    * import [network|node attributes|edge attribute] filename
+          o Import a network or attribute data
+    * layout layout-algorithm tunable1=value1 tunable2=value2 etc.
+          o Layout the network using the layout layout-algorithm with the tunables set to the appropriate values
+    * export [vizmap|node attributes|edge attributes] to filename
+          o Export the vizmap and node or edge attributes to a file
+    * export network as [XGMML, PSI-MI, GML, SIF, PDF, SVG, PNG, GIF, JPG] to filename
+          o Export a network as either a network data file or a graphics file
+    * save as filename
+          o Save a Cytoscape session file
+    * apply vizmap
+          o Apply vizmap map vizmap to the current network
+    * exit
+          o Exit Cytoscape
+
+Example (test.com):
+
+    import network pte.xgmml
+    import node attributes subgroup.noa
+    layout force-directed
+    export network as pdf to test.pdf zoom=10
+    exit
+
+You can execute this file by executing Cytoscape with the "-S" flag:
+
+    cytoscape.sh -S test.com
+
+
+Here are the tunables for some of the cytoscape layouts:
+
+force-directed (Force Directed):
+>
+>      "defaultSpringCoefficient", "Default Spring Coefficient"
+>      "defaultSpringLength", "Default Spring Length"
+>      "defaultNodeMass", "Default Node Mass"
+>      "numIterations", "Number of Iterations"
+>      "min_weight", "The minimum edge weight to consider"
+>      "max_weight", "The maximum edge weight to consider"
+>      "integrator", "Integration algorithm to use"
+>      "selected_only", "Only layout selected nodes"
+>      "edge_attribute", "The edge attribute that contains the weights"
+>
+>
+>  fruchterman-rheingold (Biolayout):
+>
+>      "partition", "Partition graph before layout"
+>      "randomize", "Randomize graph before layout"
+>      "min_weight", "The minimum edge weight to consider"
+>      "max_weight", "The maximum edge weight to consider"
+>      "selected_only", "Only layout selected nodes"
+>      "edge_attribute", "The edge attribute that contains the weights"
+>      "repulsion_multiplier", "Multiplier to calculate the repulsion force"
+>      "attraction_multiplier", "Divisor to calculate the attraction force"
+>      "gravity_multiplier", "Multiplier to calculate the gravity force"
+>      "iterations", "Number of iterations"
+>      "temperature", "Initial temperature"
+>      "spread_factor", "Amount of extra room for layout"
+>      "update_iterations", "Number of iterations before updating display"
+>      "conflict_avoidance", "Constant force applied to avoid conflicts"
+>      "max_distance_factor", "Percent of graph used for node repulsion calculations"
+>
+>  kamada-kawaii (Spring Embedded:
+>
+>      "partition", "Partition graph before layout"
+>      "randomize", "Randomize graph before layout"
+>      "min_weight", "The minimum edge weight to consider"
+>      "max_weight", "The maximum edge weight to consider"
+>      "selected_only", "Only layout selected nodes"
+>      "edge_attribute", "The edge attribute that contains the weights"
+>      "iterations_pernode", "Number of iteratations for each node"
+>      "layout_passes", "Number of layout passes"
+>      "distance_strength", "Spring strength"
+>      "rest_length", "Spring rest length"
+>      "disconnected_strength", "Strength of a 'disconnected' spring"
+>      "disconnected_rest_length", "Rest length of a 'disconnected' spring"
+>      "anticollisionStrength", "Strength to apply to avoid collisions"
+
+
