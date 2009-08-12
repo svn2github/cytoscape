@@ -181,8 +181,6 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 			String attrName, Class<K> attrType, VisualProperty<V> vp) {
 		
 		
-		
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

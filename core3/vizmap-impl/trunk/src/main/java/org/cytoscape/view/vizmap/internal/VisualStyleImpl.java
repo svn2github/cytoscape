@@ -146,7 +146,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @return  DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> V getDefaultValue(final VisualProperty<V> vp) {
+	public <V> V getDefaultValue(final VisualProperty<? extends V> vp) {
 		// Since setter checks type, this cast is always legal.
 		return (V) perVSDefaults.get(vp);
 	}
@@ -158,7 +158,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param vp DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
-	public <T> void setDefaultValue(final VisualProperty<T> vp, final T value) {
+	public <T> void setDefaultValue(final VisualProperty<? extends T> vp, final T value) {
 		perVSDefaults.put(vp, value);
 		System.out.print("!!!!! Setting Default: " + vp.getDisplayName() + " = " + value);
 		System.out.println("-----> Setting New Default: " + perVSDefaults.get(vp));
