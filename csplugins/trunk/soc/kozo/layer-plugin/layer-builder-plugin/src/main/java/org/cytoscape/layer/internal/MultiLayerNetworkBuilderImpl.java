@@ -1,6 +1,7 @@
 package org.cytoscape.layer.internal;
 
 import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 
 import java.util.HashMap;
 import java.util.List;
@@ -220,7 +221,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	}
 	
 	public void buildVisualStyle(){
-		DiscreteMapping discreteMapping = new DiscreteMapping(LAYER_INDEX, String.class, NODE_Z_VALUE); 
+		DiscreteMapping discreteMapping = new DiscreteMapping(LAYER_INDEX, String.class, NODE_Z_LOCATION); 
 	}
 	
 }
