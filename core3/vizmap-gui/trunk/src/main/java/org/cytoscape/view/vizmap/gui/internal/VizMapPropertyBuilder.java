@@ -56,6 +56,7 @@ import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
@@ -72,14 +73,17 @@ import org.cytoscape.session.CyNetworkManager;
  */
 public class VizMapPropertyBuilder {
 
-	private PropertyRendererRegistry rendReg;
-	private PropertyEditorRegistry editorReg;
-
 	private DefaultTableCellRenderer emptyBoxRenderer;
 	private DefaultTableCellRenderer filledBoxRenderer;
 
 	private EditorManager editorFactory;
 	private CyNetworkManager cyNetworkManager;
+
+	public VizMapPropertyBuilder(CyNetworkManager cyNetworkManager,
+			EditorManager editorFactory) {
+		this.cyNetworkManager = cyNetworkManager;
+		this.editorFactory = editorFactory;
+	}
 
 	/**
 	 * Build one property for one visual property.
@@ -114,10 +118,14 @@ public class VizMapPropertyBuilder {
 
 		if (attrName == null) {
 			calculatorTypeProp.setValue("Select Value");
-			rendReg.registerRenderer(calculatorTypeProp, emptyBoxRenderer);
+			((PropertyRendererRegistry) propertySheetPanel.getTable()
+					.getRendererFactory()).registerRenderer(calculatorTypeProp,
+					emptyBoxRenderer);
 		} else {
 			calculatorTypeProp.setValue(attrName);
-			rendReg.registerRenderer(calculatorTypeProp, filledBoxRenderer);
+			((PropertyRendererRegistry) propertySheetPanel.getTable()
+					.getRendererFactory()).registerRenderer(calculatorTypeProp,
+					filledBoxRenderer);
 		}
 
 		// TODO: is this correct?
@@ -131,8 +139,9 @@ public class VizMapPropertyBuilder {
 		mappingHeader.setParentProperty(calculatorTypeProp);
 		calculatorTypeProp.addSubProperty(mappingHeader);
 		// TODO: Should refactor factory.
-		editorReg.registerEditor(mappingHeader, editorFactory
-				.getDefaultComboBoxEditor("mappingTypeEditor"));
+		((PropertyEditorRegistry) propertySheetPanel.getTable()
+				.getEditorFactory()).registerEditor(mappingHeader,
+				editorFactory.getDefaultComboBoxEditor("mappingTypeEditor"));
 
 		CyDataTable attr = null;
 		Iterator<? extends GraphObject> it = null;
@@ -144,12 +153,14 @@ public class VizMapPropertyBuilder {
 				CyNetwork.DEFAULT_ATTRS);
 		if (vp.getObjectType().equals(NODE)) {
 			it = targetNetwork.getNodeList().iterator();
-			editorReg.registerEditor(calculatorTypeProp, editorFactory
-					.getDefaultComboBoxEditor("nodeAttrEditor"));
+			((PropertyEditorRegistry) propertySheetPanel.getTable()
+					.getEditorFactory()).registerEditor(calculatorTypeProp,
+					editorFactory.getDefaultComboBoxEditor("nodeAttrEditor"));
 		} else if (vp.getObjectType().equals(EDGE)) {
 			it = targetNetwork.getNodeList().iterator();
-			editorReg.registerEditor(calculatorTypeProp, editorFactory
-					.getDefaultComboBoxEditor("edgeAttrEditor"));
+			((PropertyEditorRegistry) propertySheetPanel.getTable()
+					.getEditorFactory()).registerEditor(calculatorTypeProp,
+					editorFactory.getDefaultComboBoxEditor("edgeAttrEditor"));
 		}
 
 		/*
@@ -172,9 +183,11 @@ public class VizMapPropertyBuilder {
 			final SortedSet<K> attrSet = new TreeSet<K>(attr.getColumnValues(
 					attrName, attrDataType));
 
-			//FIXME
-//			setDiscreteProps(vp, discMapping, attrSet, editorFactory.getVisualPropertyEditor(vp)
-//					, editorFactory.getVisualPropertyEditor(vp).getTableCellRenderer(10, 10), calculatorTypeProp);
+			// FIXME
+			setDiscreteProps(vp, discMapping, attrSet, editorFactory
+					.getVisualPropertyEditor(vp), editorFactory
+					.getVisualPropertyEditor(vp).getTableCellRenderer(10, 10),
+					calculatorTypeProp, propertySheetPanel);
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
 			int wi = propertySheetPanel.getTable().getCellRect(0, 1, true).width;
@@ -187,9 +200,13 @@ public class VizMapPropertyBuilder {
 			graphicalView.setParentProperty(calculatorTypeProp);
 			calculatorTypeProp.addSubProperty(graphicalView);
 
-			//FIXME
-//			TableCellRenderer crenderer = editorFactory.getVisualPropertyEditor(vp).getContinuousMappingEditor();
-//			rendReg.registerRenderer(graphicalView, crenderer);
+			// FIXME
+//			TableCellRenderer crenderer = editorFactory
+//					.getVisualPropertyEditor(vp).getContinuousMappingEditor();
+//			
+//			((PropertyRendererRegistry) propertySheetPanel.getTable()
+//					.getRendererFactory()).registerRenderer(graphicalView,
+//					crenderer);
 		} else if (visualMapping instanceof PassthroughMapping
 				&& (attrName != null)) {
 			// Passthrough
@@ -224,9 +241,13 @@ public class VizMapPropertyBuilder {
 		}
 
 		propertySheetPanel.addProperty(0, calculatorTypeProp);
-		propertySheetPanel.setRendererFactory(rendReg);
-		propertySheetPanel.setEditorFactory(editorReg);
-		
+		propertySheetPanel
+				.setRendererFactory(((PropertyRendererRegistry) propertySheetPanel
+						.getTable().getRendererFactory()));
+		propertySheetPanel
+				.setEditorFactory(((PropertyEditorRegistry) propertySheetPanel
+						.getTable().getEditorFactory()));
+
 		return calculatorTypeProp;
 	}
 
@@ -235,9 +256,10 @@ public class VizMapPropertyBuilder {
 	 * list should be created against all available attribute values.
 	 */
 	private <K, V> void setDiscreteProps(VisualProperty<V> vp,
-			Map<K, V> discMapping, Set<K> attrKeys, PropertyEditor editor,
-			TableCellRenderer rend, DefaultProperty parent) {
-		if (attrKeys == null)
+			Map<K, V> discMapping, SortedSet<K> attrSet,
+			VisualPropertyEditor<V> visualPropertyEditor,
+			TableCellRenderer rend, DefaultProperty parent, PropertySheetPanel propertySheetPanel) {
+		if (attrSet == null)
 			return;
 
 		V val = null;
@@ -246,7 +268,7 @@ public class VizMapPropertyBuilder {
 
 		final List<VizMapperProperty<V>> children = new ArrayList<VizMapperProperty<V>>();
 
-		for (K key : attrKeys) {
+		for (K key : attrSet) {
 			valProp = new VizMapperProperty<V>();
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
@@ -260,8 +282,12 @@ public class VizMapPropertyBuilder {
 				valProp.setType(val.getClass());
 
 			children.add(valProp);
-			rendReg.registerRenderer(valProp, rend);
-			editorReg.registerEditor(valProp, editor);
+			((PropertyRendererRegistry) propertySheetPanel.getTable()
+					.getRendererFactory()).registerRenderer(valProp, rend);
+			
+			//FIXME!!
+//			((PropertyEditorRegistry) propertySheetPanel.getTable()
+//					.getEditorFactory()).registerEditor(valProp, editor);
 
 			valProp.setValue(val);
 		}

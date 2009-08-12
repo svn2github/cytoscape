@@ -89,7 +89,7 @@ public class VizMapPropertySheetBuilder implements
 		
 		propertyMap = new HashMap<VisualStyle, List<Property>>();
 
-		vizMapPropertyBuilder = new VizMapPropertyBuilder();
+		vizMapPropertyBuilder = new VizMapPropertyBuilder(cyNetworkManager, editorManager);
 	}
 
 	public Map<VisualStyle, List<Property>> getPropertyMap() {
