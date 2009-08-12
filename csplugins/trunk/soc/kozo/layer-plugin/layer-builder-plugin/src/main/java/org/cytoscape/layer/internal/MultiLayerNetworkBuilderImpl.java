@@ -23,6 +23,10 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkView;
+
+import cytoscape.internal.view.NetworkViewManager;
 
 /**
  * Build actual network here
@@ -44,6 +48,8 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	private CyNetworkManager manager;
 	private CyNetwork layeredNetwork;
 	private CyNetworkFactory factory;
+	private CyNetworkViewFactory networkViewFactory;
+	private CyNetworkView networkView;
 	
 	private VisualMappingManager vmm;
 	private VisualStyle layerVS;
@@ -52,10 +58,11 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	private List<CyNetwork> connectors;
 
 	public MultiLayerNetworkBuilderImpl(CyNetworkManager manager,
-			CyNetworkFactory factory, VisualMappingManager vmm) {
+			CyNetworkFactory factory, VisualMappingManager vmm, CyNetworkViewFactory networkViewFactory) {
 		this.manager = manager;
 		this.factory = factory;
 		this.vmm = vmm;
+		this.networkViewFactory = networkViewFactory;
 	}
 
 	public CyNetwork buildLayeredNetwork(List<CyNetwork> layers,
@@ -86,6 +93,9 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		nodeMap = null;
 
 		manager.addNetwork(layeredNetwork);
+		
+		setNetworkView(layeredNetwork);
+		manager.addNetworkView(networkView);
 
 		System.out.println("layer index attribute test start!!");
 		
@@ -230,27 +240,28 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		this.layers = layers;
 		this.connectors = connectors;
 	}
-
-	
 	
 	public void buildVisualStyle(){
 		layerVS = vmm.createVisualStyle(VISUAL_STYLE_TITLE);
 		final DiscreteMapping<String, Double> index2zLocation = new DiscreteMapping<String, Double>(LAYER_INDEX, String.class, NODE_Z_LOCATION);
 		
-		CyNetworkView view = (CyNetworkView) manager.getCurrentPresentation().getViewModel();
+//		CyNetworkView view = (CyNetworkView) manager.getCurrentPresentation().getViewModel();
+//		CyNetworkView view = manager.getNetworkView(layeredNetwork.getSUID());
 		
-		final List<View<CyNode>> nodeViews = view.getNodeViews();
+		final List<View<CyNode>> nodeViews = networkView.getNodeViews();
 		
 		String indexString;
 		for(View<CyNode> nv: nodeViews) {
+			System.out.println(nv.getSource().attrs().get(NODE_TITLE, String.class));
 			indexString = nv.getSource().attrs().get(LAYER_INDEX, String.class);
+			System.out.println(indexString);
 			index2zLocation.putMapValue(indexString, Integer.parseInt(indexString) * 300d);
 		}
 		
 		layerVS.addVisualMappingFunction(index2zLocation);
 		
-		vmm.setVisualStyle(layerVS, view);
-		layerVS.apply(view);
+		vmm.setVisualStyle(layerVS, networkView);
+		layerVS.apply(networkView);
 		
 		// for test
 		for(View<CyNode> nv: nodeViews){
@@ -259,6 +270,10 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			System.out.println(nv.getVisualProperty(NODE_Z_LOCATION));
 //			System.out.println(index2zLocation.getMapValue(indexString));
 		}
+	}
+	
+	public void setNetworkView(CyNetwork cyNetwork){
+		this.networkView = networkViewFactory.getNetworkViewFor(cyNetwork);
 	}
 	
 }
