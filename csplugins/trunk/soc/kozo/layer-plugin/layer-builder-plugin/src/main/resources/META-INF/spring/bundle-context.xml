@@ -35,6 +35,7 @@
 	<bean id="multiLayerNetworkBuilder" class="org.cytoscape.layer.internal.MultiLayerNetworkBuilderImpl">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="visualMappingManagerServiceRef" />
 	</bean>
 	

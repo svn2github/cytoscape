@@ -8,11 +8,14 @@
 	<!-- Import required OSGi services -->
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.session.CyNetworkManager" />
-		
-	<osgi:reference id ="cyNetworkFactoryServiceRef"
+
+	<osgi:reference id="cyNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
+
+	<osgi:reference id="cyNetworkViewFactoryServiceRef"
+		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 		
-	<osgi:reference id ="visualMappingManagerServiceRef"
+	<osgi:reference id="visualMappingManagerServiceRef"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
 
 	<osgi:reference id="cySwingApplicationServiceRef"
