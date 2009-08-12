@@ -16,7 +16,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+//import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 
 /**
  * Build actual network here
@@ -220,8 +220,8 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		this.visualStyle = visualMappingManager.getVisualStyle(manager.getCurrentNetworkView());
 	}
 	
-	public void buildVisualStyle(){
-		DiscreteMapping discreteMapping = new DiscreteMapping(LAYER_INDEX, String.class, NODE_Z_LOCATION); 
-	}
+//	public void buildVisualStyle(){
+//		DiscreteMapping discreteMapping = new DiscreteMapping(LAYER_INDEX, String.class, NODE_Z_LOCATION); 
+//	}
 	
 }
