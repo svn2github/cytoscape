@@ -38,10 +38,12 @@ import java.awt.Component;
 import java.beans.PropertyEditor;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.cytoscape.model.CyDataTable;
-import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.model.events.ColumnCreatedEvent;
+import org.cytoscape.model.events.ColumnCreatedListener;
+import org.cytoscape.model.events.ColumnDeletedEvent;
+import org.cytoscape.model.events.ColumnDeletedListener;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
@@ -52,7 +54,7 @@ import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPr
 /**
  *
  */
-public class EditorManagerImpl implements EditorManager {
+public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, ColumnDeletedListener {
 
 	private final Map<VisualProperty<?>, VisualPropertyEditor<?>> editors;
 
@@ -254,6 +256,15 @@ public class EditorManagerImpl implements EditorManager {
 			comboBoxEditors.put(editorName, editor);
 		}
 		return editor;
+	}
+
+	public void handleEvent(ColumnCreatedEvent e) {
+		System.out.println("---------------> got column event: " + e.getColumnName());
+	}
+
+	public void handleEvent(ColumnDeletedEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -19,7 +19,9 @@
 	<osgi:service id="integerValueEditorService" ref="integerValueEditor" auto-export="interfaces"/>
 	<osgi:service id="floatValueEditorService" ref="floatValueEditor" auto-export="interfaces"/>
 	<osgi:service id="stringValueEditorService" ref="stringValueEditor" auto-export="interfaces"/>
-
+	
+	<!-- Export as Editor Manager -->
+	<osgi:service id="editorManagerService" ref="editorManager" auto-export="interfaces"/>
 
 
 	<!-- Import Desktop Service -->
