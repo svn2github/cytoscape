@@ -146,8 +146,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         typePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select web service type"));
         typePanel.setLayout(new javax.swing.BoxLayout(typePanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        ClientType[] types = new ClientType[]{ClientType.BIOMART};//TODO
-        //ClientType[] types = ClientType.values();
+        ClientType[] types = ClientType.values();
         typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(types));
         if (idMapper==null) {
 

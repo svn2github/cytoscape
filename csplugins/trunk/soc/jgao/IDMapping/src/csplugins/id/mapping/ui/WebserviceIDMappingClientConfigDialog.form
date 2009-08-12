@@ -48,7 +48,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="typeComboBoxActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="ClientType[] types = new ClientType[]{ClientType.BIOMART};//TODO &#xa;//ClientType[] types = ClientType.values();&#xa;typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(types));&#xa;if (idMapper==null) {&#xa;    &#xa;} else if (idMapper instanceof IDMapperBiomart) {&#xa;    typeComboBox.setSelectedItem(ClientType.BIOMART);&#xa;    typeComboBox.setEnabled(false);&#xa;} else if (idMapper instanceof IDMapperPicr) {&#xa;    typeComboBox.setSelectedItem(ClientType.PICR);&#xa;    typeComboBox.setEnabled(false);&#xa;}"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="ClientType[] types = ClientType.values();&#xa;typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(types));&#xa;if (idMapper==null) {&#xa;    &#xa;} else if (idMapper instanceof IDMapperBiomart) {&#xa;    typeComboBox.setSelectedItem(ClientType.BIOMART);&#xa;    typeComboBox.setEnabled(false);&#xa;} else if (idMapper instanceof IDMapperPicr) {&#xa;    typeComboBox.setSelectedItem(ClientType.PICR);&#xa;    typeComboBox.setEnabled(false);&#xa;}"/>
           </AuxValues>
         </Component>
       </SubComponents>

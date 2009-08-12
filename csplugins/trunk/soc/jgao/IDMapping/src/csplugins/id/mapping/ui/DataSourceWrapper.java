@@ -73,21 +73,16 @@ class DataSourceWrapper implements Comparable {
 
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder();
             String fullName = ds.getFullName();
+            if (fullName!=null)
+                return fullName;
+
             String sysCode = ds.getSystemCode();
             if (sysCode!=null) {
-                sb.append(sysCode);
-                if (fullName!=null) {
-                    sb.append(":"+fullName);
-                }
-            } else {
-                if (fullName!=null) {
-                    sb.append(fullName);
-                }
-            }
+                return sysCode;
+            } 
 
-            return sb.toString();
+            return null;
         }
 
         public int compareTo(Object obj) {

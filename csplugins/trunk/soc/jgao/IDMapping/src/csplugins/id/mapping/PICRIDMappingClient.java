@@ -35,7 +35,7 @@
 
 package csplugins.id.mapping;
 
-import org.bridgedb.webservice.picr.IDMapperPicr;
+import org.bridgedb.webservice.picr.IDMapperPicrRest;
 import org.bridgedb.IDMapperException;
 
 
@@ -46,10 +46,10 @@ import org.bridgedb.IDMapperException;
 public class PICRIDMappingClient extends WebserviceIDMappingClient {
 
    public PICRIDMappingClient(final boolean onlyActive) throws IDMapperException {
-        this(new IDMapperPicr(onlyActive));
+        this(new IDMapperPicrRest(onlyActive));
     }
 
-    public PICRIDMappingClient(final IDMapperPicr idMapper) {
+    public PICRIDMappingClient(final IDMapperPicrRest idMapper) {
         super("PICR",
                 "PICR web service client",
                 idMapper);
