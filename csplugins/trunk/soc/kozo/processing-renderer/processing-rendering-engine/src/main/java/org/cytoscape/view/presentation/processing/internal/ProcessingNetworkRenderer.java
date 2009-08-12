@@ -61,6 +61,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	private GLCanvas canvas;
 
 	private Overlay overlay;
+	
+	private final PFont DEF_FONT = createFont("SansSerif", 20);
 
 	private ParticleManager particleManager;
 	private VerletPhysics physics;
@@ -187,14 +189,14 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		particleManager = new ParticleManager(numP, this, physics);
 
 		overlay = new Overlay(this, view.getSource().attrs().get("name", String.class));
-
+		
 		System.out.println("%%%%%%%%%%%%% Setup DONE for P5");
 	}
 
 	private int numP;
 
 	public void draw() {
-		background(0);
+		background(200);
 		physics.update();
 		lights();
 
@@ -212,6 +214,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		translate(-width / 2 + translateX, -height / 2 + translateY,
 				-height / 2);
 
+		textFont(DEF_FONT);
 		for (CyDrawable node : nodes)
 			node.draw();
 

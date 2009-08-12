@@ -10,6 +10,7 @@ import java.util.Map;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.property.StringVisualProperty;
 import org.cytoscape.view.presentation.property.ThreeDVisualLexicon;
 
 public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
@@ -23,6 +24,7 @@ public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
 	
 	public static final VisualProperty<? extends Image> NETWORK_BACKGROUND_IMAGE = new ImageVisualProperty(
 			NETWORK, null, "NETWORK_BACKGROUND_IMAGE", "Network Background Image");	
+
 	
 	public ProcessingVisualLexicon() {
 		super();

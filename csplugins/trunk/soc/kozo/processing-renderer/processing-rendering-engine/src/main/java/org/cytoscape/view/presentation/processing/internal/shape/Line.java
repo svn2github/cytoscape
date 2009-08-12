@@ -80,4 +80,9 @@ public class Line implements CyDrawable, EdgeItem {
 		
 	}
 
+	public void addChild(CyDrawable child) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

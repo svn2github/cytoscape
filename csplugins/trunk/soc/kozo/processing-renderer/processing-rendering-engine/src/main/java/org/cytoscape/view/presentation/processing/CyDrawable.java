@@ -36,6 +36,8 @@ public interface CyDrawable {
 	 * @return
 	 */
 	public List<CyDrawable> getChildren();
+	
+	public void addChild(CyDrawable child);
 
 	/**
 	 * Get compatible data type. For example, if this object accepts CyNode,

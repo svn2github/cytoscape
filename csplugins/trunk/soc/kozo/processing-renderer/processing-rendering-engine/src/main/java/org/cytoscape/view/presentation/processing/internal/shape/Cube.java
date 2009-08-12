@@ -8,6 +8,7 @@ import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,8 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 	private float size;
 	private int r, g, b, alpha;
 	
+	private final List<CyDrawable> children;
+	
 	
 	private Map<VisualProperty<?>, Object> fieldMap;
 	
@@ -60,6 +63,10 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 		this.p = parent;
 		this.lexicon = lexicon;
 		this.picked = false;
+		
+		this.children = new ArrayList<CyDrawable>();
+		// Create children for label
+		this.children.add(new Text(p, lexicon));
 		
 		compatibleDataType = new HashSet<Class<?>>();
 		compatibleDataType.add(CyNode.class);
@@ -85,22 +92,21 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 		p.fill(r, g, b, alpha);
 		p.box(size);
 		p.popMatrix();
+		
+		for(CyDrawable child: children)
+			child.draw();
 	}
 
 	public List<CyDrawable> getChildren() {
 		// TODO Auto-generated method stub
-		return null;
+		return children;
 	}
 
 	public void setContext(View<?> viewModel) {
+		
 		// Pick compatible lexicon only.
 		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue();
-		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();
-		
-		if(p.random(1)> 0.5) {
-			viewModel.setVisualProperty(NODE_Z_LOCATION, 2000d);
-		}
-		
+		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();		
 		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue();
 		
 		this.size = viewModel.getVisualProperty(NODE_X_SIZE).floatValue();
@@ -120,7 +126,18 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 			this.b = ((Color)color).getBlue();
 			//this.alpha = opacity.intValue();		
 			this.alpha = 100;
-		}	
+		}
+		
+//		String text = viewModel.getVisualProperty(NODE_LABEL);
+//		if(text != null || text.length() != 0) {
+//			children.add(new Text(p, lexicon));
+//		}
+		
+		
+		
+		// Set values for children
+		for(CyDrawable child: children)
+			child.setContext(viewModel);
 	}
 	
 	public void setContext(View<?> viewModel, VisualProperty<?> vp) {
@@ -151,6 +168,11 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 		} else
 			picked = false;
 		
+	}
+
+	public void addChild(CyDrawable child) {
+		// TODO Auto-generated method stub
+		this.children.add(child);
 	}
 
 	

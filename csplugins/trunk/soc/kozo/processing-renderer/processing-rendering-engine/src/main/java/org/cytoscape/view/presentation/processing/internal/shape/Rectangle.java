@@ -140,4 +140,9 @@ public class Rectangle extends Vec3D implements CyDrawable, Pickable {
 		
 	}
 
+	public void addChild(CyDrawable child) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
