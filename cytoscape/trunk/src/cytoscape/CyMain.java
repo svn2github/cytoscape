@@ -379,11 +379,18 @@ public class CyMain implements CyInitParams {
 				try {
 					InputStream in = FileUtil.getInputStream(potentialProps[i]);
 
-					if (in != null)
-						props.load(in);
-					else
-						logger.info("Couldn't load property: "
-								+ potentialProps[i]);
+                    try {
+                        if (in != null)
+                            props.load(in);
+                        else
+                            logger.info("Couldn't load property: "
+                                    + potentialProps[i]);
+                    }
+                    finally {
+                        if (in != null) {
+                            in.close();
+                        }
+                    }
 				} catch (IOException e) {
 					logger.warn("Couldn't load property '"+ potentialProps[i] + "' from file: "+e.getMessage(), e);
 				}

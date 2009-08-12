@@ -44,9 +44,16 @@ public class PluginFileReader {
 
 		InputStream is = URLUtil.getInputStream(new URL(downloadUrl));
 
-		// would be nice to validate later
-		SAXBuilder Builder = new SAXBuilder(false);
-		document = Builder.build(is);
+        try {
+            // would be nice to validate later
+            SAXBuilder Builder = new SAXBuilder(false);
+            document = Builder.build(is);
+        }
+        finally {
+            if (is != null) {
+                is.close();
+            }
+        }
 
 		// don't use this xsd it's no longer valid
 		// InputStream is = URLUtil.getInputStream( new URL(downloadUrl) );

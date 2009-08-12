@@ -164,10 +164,16 @@ class SaveAsSifTask implements Task {
 				throw new IllegalArgumentException("Network is empty.");
 			}
 
+            CyNetwork netToSave = Cytoscape.getCurrentNetwork();
 			FileWriter f = new FileWriter(fileName);
-			CyNetwork netToSave = Cytoscape.getCurrentNetwork();
-			InteractionWriter.writeInteractions(netToSave, f, taskMonitor);
-			f.close();
+            try {
+                InteractionWriter.writeInteractions(netToSave, f, taskMonitor);
+            }
+            finally {
+                if (f != null) {
+                    f.close();
+                }
+            }
 
 			Object[] ret_val = new Object[3];
 			ret_val[0] = netToSave;

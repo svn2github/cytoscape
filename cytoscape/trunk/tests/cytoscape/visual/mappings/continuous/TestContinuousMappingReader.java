@@ -65,9 +65,16 @@ public class TestContinuousMappingReader extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testReader() throws Exception {
-		InputStream in = getDataFile();
 		Properties properties = new Properties();
-		properties.load(in);
+        InputStream in = getDataFile();
+        try {
+            properties.load(in);
+        }
+        finally {
+            if (in != null) {
+                in.close();
+            }
+        }
 
 		int size = properties.size();
 		assertEquals(17, size);

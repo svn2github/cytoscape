@@ -209,39 +209,45 @@ public class OBOFlatFileReader implements OntologyReader {
 		String val;
 		int colonInx;
 
-		while ((line = bufRd.readLine()) != null) {
-			// Read header
-			if (line.startsWith(TERM_TAG)) {
-				readEntry(bufRd);
+        try {
+            while ((line = bufRd.readLine()) != null) {
+                // Read header
+                if (line.startsWith(TERM_TAG)) {
+                    readEntry(bufRd);
 
-				break;
-			} else if (line.length() != 0) {
-				colonInx = line.indexOf(':');
+                    break;
+                } else if (line.length() != 0) {
+                    colonInx = line.indexOf(':');
 
-				if (colonInx == -1)
-					continue;
+                    if (colonInx == -1)
+                        continue;
 
-				key = line.substring(0, colonInx).trim();
-				val = line.substring(colonInx + 1).trim();
-				header.put(key, val);
-			}
-		}
+                    key = line.substring(0, colonInx).trim();
+                    val = line.substring(colonInx + 1).trim();
+                    header.put(key, val);
+                }
+            }
 
-		while ((line = bufRd.readLine()) != null) {
-			// Read header
-			if (line.startsWith(TERM_TAG)) {
-				readEntry(bufRd);
-			}
-		}
-
-		try {
-			if (inputStream != null) {
-				inputStream.close();
-			}
-		} catch (IOException ioe) {
-		} finally {
-			inputStream = null;
-		}
+            while ((line = bufRd.readLine()) != null) {
+                // Read header
+                if (line.startsWith(TERM_TAG)) {
+                    readEntry(bufRd);
+                }
+            }
+        }
+        finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (bufRd != null) {
+                    bufRd.close();
+                }
+            } catch (IOException ioe) {
+            } finally {
+                inputStream = null;
+            }
+        }
 
 		buildDag();
 		setAttributeDescriptions();

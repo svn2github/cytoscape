@@ -99,23 +99,21 @@ public class DBCrossReferenceReader {
 		BufferedReader bufRd = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream (resource)));
 		String line;
 
-		while ((line = bufRd.readLine()) != null) {
-			// Read header
-			if (line.startsWith(ABBREVIATION.toString())) {
-				int colonInx = line.indexOf(':');
-				String abb = line.substring(colonInx + 1).trim();
-				readEntry(abb, bufRd);
-			}
-		}
-
-		try {
-			if (bufRd != null) {
-				bufRd.close();
-			}
-		} catch (IOException ioe) {
-		} finally {
-			bufRd = null;
-		}
+        try {
+            while ((line = bufRd.readLine()) != null) {
+                // Read header
+                if (line.startsWith(ABBREVIATION.toString())) {
+                    int colonInx = line.indexOf(':');
+                    String abb = line.substring(colonInx + 1).trim();
+                    readEntry(abb, bufRd);
+                }
+            }
+        }
+        finally {
+            if (bufRd != null) {
+                bufRd.close();
+            }
+        }
 	}
 
 	/**

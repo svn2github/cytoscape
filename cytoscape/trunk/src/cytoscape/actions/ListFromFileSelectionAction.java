@@ -97,22 +97,27 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 		}
 
 		CyNetwork network = Cytoscape.getCurrentNetwork();
+        List fileNodes = new ArrayList();
 
 		try {
 			FileReader fin = new FileReader(name);
-			BufferedReader bin = new BufferedReader(fin);
-			List fileNodes = new ArrayList();
-			String s;
+            try {
+                BufferedReader bin = new BufferedReader(fin);
+                String s;
 
-			while ((s = bin.readLine()) != null) {
-				String trimName = s.trim();
+                while ((s = bin.readLine()) != null) {
+                    String trimName = s.trim();
 
-				if (trimName.length() > 0) {
-					fileNodes.add(trimName);
-				}
-			}
-
-			fin.close();
+                    if (trimName.length() > 0) {
+                        fileNodes.add(trimName);
+                    }
+                }
+            }
+            finally {
+                if (fin != null) {
+                    fin.close();
+                }
+            }
 
 			// loop through all the node of the graph
 			// selecting those in the file

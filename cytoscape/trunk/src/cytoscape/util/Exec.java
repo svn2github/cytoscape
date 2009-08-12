@@ -46,10 +46,6 @@ import java.io.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import java.lang.Process;
-import java.lang.Runtime;
-import java.lang.Runtime;
-
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -150,10 +146,8 @@ public class Exec {
 			// logger.info (" --> just before exec: \n\t" + getCmd ());
 			//Process process = runtime.exec (cmd);
 			Process process = runtime.exec(cmdSB.toString());
-			BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process
-			                                                                                                                                           .getInputStream()));
-			BufferedReader stderrReader = new BufferedReader(new InputStreamReader(process
-			                                                                                                                                             .getErrorStream()));
+			BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			BufferedReader stderrReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
 			if (stringToSendToStandardInput != null) {
 				// A PrintStream adds functionality to another output stream, namely the
@@ -167,8 +161,15 @@ public class Exec {
 				// the println methods is invoked, or a newline character or
 				// byte ('\n') is written.
 				PrintStream stdinWriter = new PrintStream(process.getOutputStream(), true);
-				stdinWriter.print(stringToSendToStandardInput);
-				stdinWriter.close();
+                try {
+                    stdinWriter.print(stringToSendToStandardInput);
+                }
+                finally {
+                    if (stdinWriter != null)
+                    {
+                        stdinWriter.close();
+                    }
+                }
 			}
 
 			try {
@@ -216,10 +217,8 @@ public class Exec {
 		Runtime runtime = Runtime.getRuntime();
 		Process process = runtime.exec(cmdSB.toString());
 
-		final BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process
-		                                                                                                                                                                                                                 .getInputStream()));
-		final BufferedReader stderrReader = new BufferedReader(new InputStreamReader(process
-		                                                                                                                                                                                                                   .getErrorStream()));
+		final BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		final BufferedReader stderrReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 		final StringBuffer stdoutSB = new StringBuffer();
 		final StringBuffer stderrSB = new StringBuffer();
 

@@ -106,8 +106,15 @@ public class TextJarReader {
 		char[] cBuffer = new char[1024];
 		int bytesRead;
 
-		while ((bytesRead = reader.read(cBuffer, 0, 1024)) != -1)
-			sb.append(new String(cBuffer, 0, bytesRead));
+        try {
+            while ((bytesRead = reader.read(cBuffer, 0, 1024)) != -1)
+                sb.append(new String(cBuffer, 0, bytesRead));
+        }
+        finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
 
 		return sb.length();
 	}

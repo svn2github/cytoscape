@@ -99,13 +99,18 @@ public class CyNetworkUtilities {
 			File file = new File(filename);
 			FileWriter fout = new FileWriter(file);
 
-			for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
-				CyNode node = (CyNode) i.next();
-				String nodeUID = node.getIdentifier();
-				fout.write(nodeUID + lineSep);
-			} // for i
-
-			fout.close();
+            try {
+                for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
+                    CyNode node = (CyNode) i.next();
+                    String nodeUID = node.getIdentifier();
+                    fout.write(nodeUID + lineSep);
+                } // for i
+            }
+            finally {
+                if (fout != null) {
+                    fout.close();
+                }
+            }
 
 			return true;
 		} catch (IOException e) {
@@ -138,15 +143,20 @@ public class CyNetworkUtilities {
 			File file = new File(filename);
 			FileWriter fout = new FileWriter(file);
 
-			for (Iterator i = network.nodesIterator(); i.hasNext();) {
-				CyNode node = (CyNode) i.next();
-				// String canonicalName = nodeAttributes.getCanonicalName(node);
-				//String canonicalName = nodeAttributes.getStringAttribute(node
-				//		.getIdentifier(), "canonicalName");
-				fout.write(node.getIdentifier() + lineSep);
-			} // for i
-
-			fout.close();
+            try {
+                for (Iterator i = network.nodesIterator(); i.hasNext();) {
+                    CyNode node = (CyNode) i.next();
+                    // String canonicalName = nodeAttributes.getCanonicalName(node);
+                    //String canonicalName = nodeAttributes.getStringAttribute(node
+                    //		.getIdentifier(), "canonicalName");
+                    fout.write(node.getIdentifier() + lineSep);
+                } // for i
+            }
+            finally {
+                if (fout != null) {
+                    fout.close();
+                }
+            }
 
 			return true;
 		} catch (IOException e) {

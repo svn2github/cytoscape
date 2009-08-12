@@ -234,9 +234,15 @@ class ExportAsGMLTask implements Task {
 		List list = new Vector();
 
 		GMLWriter gmlWriter = new GMLWriter();
-		gmlWriter.writeGML(network, view, list);
-		GMLParser.printList(list, fileWriter);
-		fileWriter.close();
+        try {
+            gmlWriter.writeGML(network, view, list);
+            GMLParser.printList(list, fileWriter);
+        }
+        finally {
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        }
 
 		Object[] ret_val = new Object[3];
 		ret_val[0] = network;

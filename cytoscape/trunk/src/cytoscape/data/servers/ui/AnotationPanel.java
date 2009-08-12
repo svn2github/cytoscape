@@ -514,12 +514,19 @@ public class AnotationPanel extends javax.swing.JPanel {
 			File annotationFile = (File) fileIt.next();
 			BufferedReader br = new BufferedReader(new FileReader(annotationFile));
 
-			while ((line = br.readLine()) != null) {
-				if (line.startsWith("!")) {
-					continue;
-				} else {
-				}
-			}
+            try {
+                while ((line = br.readLine()) != null) {
+                    if (line.startsWith("!")) {
+                        continue;
+                    } else {
+                    }
+                }
+            }
+            finally {
+                if (br != null) {
+                    br.close();
+                }
+            }
 		}
 
 		return speceisHash;
@@ -531,9 +538,15 @@ public class AnotationPanel extends javax.swing.JPanel {
 		BufferedReader br = new BufferedReader(new FileReader(previewTarget));
 		this.headerEditorPane.setContentType("text/plain");
 		this.headerEditorPane.setText("Loading annotation file...");
-		this.headerEditorPane.setText(getHeader(br));
-		buildPreviewTable(br);
-		br.close();
+        try {
+            this.headerEditorPane.setText(getHeader(br));
+            buildPreviewTable(br);
+        }
+        finally {
+            if (br != null) {
+                br.close();
+            }
+        }
 	}
 
 	private String getHeader(BufferedReader br) throws IOException {
@@ -576,7 +589,14 @@ public class AnotationPanel extends javax.swing.JPanel {
 			logger.warn("Failed to load taxonomy table!", e);
 		}
 
-		HashMap taxonMap = bdsu.getTaxonMap(spListReader);
+        try {
+            taxonMap = bdsu.getTaxonMap(spListReader);
+        }
+        finally {
+            if (spListReader != null) {
+                spListReader.close();
+            }
+        }
 		String[] taxonID = null;
 
 		boolean aspectErrorFlag = false;

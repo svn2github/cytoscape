@@ -384,7 +384,14 @@ public class GMLReader extends AbstractGraphReader {
 	 */
 	public void read() {
 		try {
-			keyVals = (new GMLParser(inputStream)).parseList();
+            try {
+                keyVals = (new GMLParser(inputStream)).parseList();
+            }
+            finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }
 		} catch (Exception io) {
 			logger.warn("Error reading GML file: "+io.getMessage(), io);
 

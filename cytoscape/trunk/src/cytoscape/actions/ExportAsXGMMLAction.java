@@ -269,7 +269,9 @@ class ExportAsXGMMLTask implements Task {
 		try {
 			writer.write(fileWriter);
 		} finally {
-			fileWriter.close();
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
 		}
 
 		final Object[] ret_val = new Object[3];

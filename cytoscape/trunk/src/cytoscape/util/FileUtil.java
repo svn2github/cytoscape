@@ -418,8 +418,15 @@ public abstract class FileUtil {
 		String line = null;
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
-		while ((line = br.readLine()) != null)
-			sb.append(line + lineSep);
+        try {
+            while ((line = br.readLine()) != null)
+                sb.append(line + lineSep);
+        }
+        finally {
+            if (br != null) {
+                br.close();
+            }
+        }
 
 		return sb.toString();
 	}

@@ -89,13 +89,18 @@ public class OntologyFlatFileReader {
 
 		String curLine = null;
 
-		while ((curLine = rd.readLine()) != null) {
-			extractedLines.add(curLine);
+        try {
+            while ((curLine = rd.readLine()) != null) {
+                extractedLines.add(curLine);
 
-			// CyLogger.getLogger().info( curLine );
-		}
-
-		rd.close();
+                // CyLogger.getLogger().info( curLine );
+            }
+        }
+        finally {
+    		if (rd != null) {
+                rd.close();
+            }
+        }
 
 		Object[] entireFile = extractedLines.toArray();
 		lines = new String[entireFile.length];

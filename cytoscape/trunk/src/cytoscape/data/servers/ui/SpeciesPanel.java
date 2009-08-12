@@ -172,7 +172,14 @@ public class SpeciesPanel extends JPanel {
 			spListReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
 			CyLogger.getLogger().info("Taxonomy table found in jar file...");
 
-			setSpList(spListReader);
+            try {
+                setSpList(spListReader);
+            }
+            finally {
+                if (spListReader != null) {
+                    spListReader.close();
+                }
+            }
 		} catch (IOException e) {
 			CyLogger.getLogger().warn("Unable to read taxonomy table from jar file: "+ taxURL.toString(),e);
 		}

@@ -269,8 +269,14 @@ public abstract class BookmarksUtil {
 
 		try {
 			FileOutputStream fos = new FileOutputStream(pBookmarkURL.getFile());
-			saveBookmark(theBookmarks, pCategoryName, pDataSource, fos);
-			fos.close();
+            try {
+                saveBookmark(theBookmarks, pCategoryName, pDataSource, fos);
+            }
+            finally {
+                if (fos != null) {
+                    fos.close();
+                }
+            }
 		} catch (JAXBException e) {
 			logger.error("Error converting bookmark: "+e.getMessage()); 
 			return false;

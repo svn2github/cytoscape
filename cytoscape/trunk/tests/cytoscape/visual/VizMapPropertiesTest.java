@@ -79,8 +79,14 @@ public class VizMapPropertiesTest extends TestCase {
 		try {
 			String propsFile = "testData/old_vizmap.props";
 			InputStream is = new FileInputStream(propsFile);
-			props.load(is);
-			is.close();
+            try {
+                props.load(is);
+            }
+            finally {
+                if (is != null) {
+                    is.close();
+                }
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 

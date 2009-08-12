@@ -106,8 +106,14 @@ public class MacAppConfig {
 		XMLOutputter outputter = new XMLOutputter(org.jdom.output.Format.getPrettyFormat());
 
 		FileWriter writer = new FileWriter(configFile);
-		outputter.output(doc, writer);
-		writer.close();
+        try {
+            outputter.output(doc, writer);
+        }
+        finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
 		CyLogger.getLogger().info("File is now updated with correct JARs:  " + configFile);
 	}
 
@@ -151,8 +157,15 @@ public class MacAppConfig {
 
 		try {
 			FileReader reader = new FileReader(configFile);
-			SAXBuilder saxBuilder = new SAXBuilder();
-			doc = saxBuilder.build(reader);
+            try {
+                SAXBuilder saxBuilder = new SAXBuilder();
+                doc = saxBuilder.build(reader);
+            }
+            finally {
+                if (reader != null) {
+                    reader.close();
+                }
+            }
 		} catch (FileNotFoundException e) {
 			CyLogger.getLogger().info("Cannot find:  " + configFile);
 			CyLogger.getLogger().info("Try running:  'ant mac' first.");

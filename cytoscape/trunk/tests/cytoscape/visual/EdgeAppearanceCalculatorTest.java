@@ -57,6 +57,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.util.FileUtil;
+import java.io.InputStream;
 
 /**
  * 
@@ -93,7 +94,15 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 			CyAttributesReader.loadAttributes(Cytoscape.getEdgeAttributes(),
 					new FileReader("testData/small.edgeAttr"));
 
-			props.load(FileUtil.getInputStream("testData/small.vizmap.props"));
+            InputStream is = FileUtil.getInputStream("testData/small.vizmap.props");
+            try {
+                props.load(is);
+            }
+            finally {
+                if (is != null) {
+                    is.close();
+                }
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

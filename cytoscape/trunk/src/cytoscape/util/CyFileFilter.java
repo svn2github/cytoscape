@@ -497,9 +497,9 @@ public class CyFileFilter extends FileFilter implements FilenameFilter {
 		try {
 			header = parseHeader(br);
 		} finally {
-			if(br!= null)
-				br.close();
-			br = null;
+			if(br != null) {
+                br.close();
+            }
 		}
 
 		return header;

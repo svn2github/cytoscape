@@ -63,7 +63,14 @@ public class CyAttributesReaderTest extends TestCase {
 		CyAttributes cyAttributes = new CyAttributesImpl();
 		File file = new File("testData/galFiltered.nodeAttrs1");
 		FileReader reader = new FileReader(file);
-		CyAttributesReader.loadAttributes(cyAttributes, reader);
+        try {
+            CyAttributesReader.loadAttributes(cyAttributes, reader);
+        }
+        finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
 
 		byte type = cyAttributes.getType(attributeName);
 		assertEquals(CyAttributes.TYPE_INTEGER, type);
@@ -93,7 +100,14 @@ public class CyAttributesReaderTest extends TestCase {
 		CyAttributes cyAttributes = new CyAttributesImpl();
 		File file = new File("testData/galFiltered.edgeAttrs2");
 		FileReader reader = new FileReader(file);
-		CyAttributesReader.loadAttributes(cyAttributes, reader);
+        try {
+            CyAttributesReader.loadAttributes(cyAttributes, reader);
+        }
+        finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
 
 		byte type = cyAttributes.getType("TestEdgeAttribute2");
 		assertEquals(CyAttributes.TYPE_INTEGER, type);
@@ -128,7 +142,14 @@ public class CyAttributesReaderTest extends TestCase {
 		//  All the integer values should therefore be stored as Doubles.
 		File file = new File("testData/explicitDouble.attribute");
 		FileReader reader = new FileReader(file);
-		CyAttributesReader.loadAttributes(cyAttributes, reader);
+        try {
+            CyAttributesReader.loadAttributes(cyAttributes, reader);
+        }
+        finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
 
 		byte type = cyAttributes.getType("Score");
 		assertEquals(CyAttributes.TYPE_FLOATING, type);
@@ -148,7 +169,14 @@ public class CyAttributesReaderTest extends TestCase {
 		CyAttributes cyAttributes = new CyAttributesImpl();
 		File file = new File(fileToRead);
 		FileReader reader = new FileReader(file);
-		CyAttributesReader.loadAttributes(cyAttributes, reader);
+        try {
+            CyAttributesReader.loadAttributes(cyAttributes, reader);
+        }
+        finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
 
 		byte type = cyAttributes.getType(attributeName);
 		assertEquals(CyAttributes.TYPE_SIMPLE_LIST, type);

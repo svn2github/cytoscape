@@ -131,14 +131,20 @@ public class TextHttpReader {
 		if (responseCode != HttpURLConnection.HTTP_OK)
 			throw new IOException("\nHTTP response code: " + responseCode);
 
-		BufferedReader theHTML = new BufferedReader(new InputStreamReader(urlConnection
-		                                                                                                                              .getInputStream()));
 		String thisLine;
+		BufferedReader theHTML = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
-		while ((thisLine = theHTML.readLine()) != null) {
-			result.append(thisLine);
-			result.append("\n");
-		}
+        try {
+            while ((thisLine = theHTML.readLine()) != null) {
+                result.append(thisLine);
+                result.append("\n");
+            }
+        }
+        finally {
+            if (theHTML != null) {
+                theHTML.close();
+            }
+        }
 
 		return result.toString();
 	} // getPage

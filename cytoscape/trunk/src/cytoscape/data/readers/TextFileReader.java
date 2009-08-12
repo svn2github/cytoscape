@@ -82,9 +82,16 @@ public class TextFileReader {
 		String newLineOfText;
 
 		try {
-			while ((newLineOfText = bufferedReader.readLine()) != null) {
-				strbuf.append(newLineOfText + "\n");
-			}
+            try {
+                while ((newLineOfText = bufferedReader.readLine()) != null) {
+                    strbuf.append(newLineOfText + "\n");
+                }
+            }
+            finally {
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+            }
 		} catch (IOException e) {
 			logger.warn("IO error reading from text file: "+e.getMessage(), e);
 

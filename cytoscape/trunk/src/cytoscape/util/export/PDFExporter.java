@@ -36,28 +36,36 @@ public class PDFExporter implements Exporter
 		try
 		{
 			PdfWriter writer = PdfWriter.getInstance(document, stream);
-			document.open();
-			PdfContentByte cb = writer.getDirectContent();
-			Graphics2D g = null;
-			if ( exportTextAsFont ) {
-				g = cb.createGraphics(pageSize.getWidth(), pageSize.getHeight(), new DefaultFontMapper());
-			} else {
-				g = cb.createGraphicsShapes(pageSize.getWidth(), pageSize.getHeight());
-			}
+            try {
+                document.open();
+                PdfContentByte cb = writer.getDirectContent();
+                Graphics2D g = null;
+                if ( exportTextAsFont ) {
+                    g = cb.createGraphics(pageSize.getWidth(), pageSize.getHeight(), new DefaultFontMapper());
+                } else {
+                    g = cb.createGraphicsShapes(pageSize.getWidth(), pageSize.getHeight());
+                }
 
-			double imageScale = Math.min(pageSize.getWidth()  / ((double) ifc.getWidth()),
-			                             pageSize.getHeight() / ((double) ifc.getHeight()));
-			g.scale(imageScale, imageScale);
-		
-			ifc.print(g);
-			g.dispose();
+                double imageScale = Math.min(pageSize.getWidth()  / ((double) ifc.getWidth()),
+                                             pageSize.getHeight() / ((double) ifc.getHeight()));
+                g.scale(imageScale, imageScale);
+
+                ifc.print(g);
+                g.dispose();
+            }
+            finally {
+                if (document != null) {
+                    document.close();
+                }
+                if (writer != null) {
+                    writer.close();
+                }
+            }
 		}
 		catch (DocumentException exp)
 		{
 			throw new IOException(exp.getMessage());
 		}
-
-		document.close();
 	}
 	
 	public void setExportTextAsFont(boolean pExportTextAsFont) {

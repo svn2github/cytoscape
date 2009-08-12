@@ -191,7 +191,14 @@ public class InteractionsReader extends AbstractGraphReader {
 		String rawText;
 
 		if (!is_zip) {
-			rawText = FileUtil.getInputString(inputStream);
+            try {
+                rawText = FileUtil.getInputString(inputStream);
+            }
+            finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }
 		} else {
 			rawText = zip_entry;
 		}

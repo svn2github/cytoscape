@@ -123,13 +123,18 @@ public class ThesaurusFlatFileReader {
 
 		String curLine = null;
 
-		while (null != (curLine = rd.readLine())) {
-			extractedLines.add(curLine);
+        try {
+            while (null != (curLine = rd.readLine())) {
+                extractedLines.add(curLine);
 
-			// CyLogger.getLogger().info( curLine );
-		}
-
-		rd.close();
+    			// CyLogger.getLogger().info( curLine );
+        	}
+        }
+        finally {
+            if (rd != null) {
+                rd.close();
+            }
+        }
 
 		Object[] entireFile = extractedLines.toArray();
 		lines = new String[entireFile.length];

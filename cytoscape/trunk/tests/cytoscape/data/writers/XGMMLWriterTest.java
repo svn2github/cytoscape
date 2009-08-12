@@ -56,11 +56,7 @@ import java.net.URISyntaxException;
 
 
 /**
- * Tests the CyAttributesWriter Class.
- *
- * Note 2/6/2008 by kono:
- *   This code tests CyAttributesWriter2, not the original one.
- *
+ * Tests the XGMMLWriter Class.
  */
 public class XGMMLWriterTest extends TestCase {
     public void testXGMMLWriterRoundTrip1() throws IOException, URISyntaxException {
@@ -174,13 +170,19 @@ public class XGMMLWriterTest extends TestCase {
         sb = new StringBuilder();
         fis = new FileInputStream(fileToCompare);
         isr = new InputStreamReader(fis, XGMMLWriter.ENCODING);
-        c = isr.read();
-        while (c != -1)
-        {
-            sb.append((char)c);
+        try {
             c = isr.read();
+            while (c != -1)
+            {
+                sb.append((char)c);
+                c = isr.read();
+            }
         }
-        isr.close();
+        finally {
+            if (isr != null) {
+                isr.close();
+            }
+        }
         content = sb.toString();
         System.out.println("Read " + content.getBytes(XGMMLWriter.ENCODING).length + " bytes");
 		linesExptd = content.split("\n");

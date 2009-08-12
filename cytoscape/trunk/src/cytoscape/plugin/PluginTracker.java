@@ -393,9 +393,15 @@ public class PluginTracker {
 		
 		try {
 			XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
-			FileWriter Writer = new FileWriter(installFile);
-			out.output(trackerDoc, Writer);
-			Writer.close();
+			FileWriter writer = new FileWriter(installFile);
+            try {
+                out.output(trackerDoc, writer);
+            }
+            finally {
+                if (writer != null) {
+                    writer.close();
+                }
+            }
 		} catch (java.io.IOException E) {
 			logger.warn("Error writing plugin status file "+E.toString());
 		}

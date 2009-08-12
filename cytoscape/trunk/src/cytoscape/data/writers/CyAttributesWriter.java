@@ -110,70 +110,74 @@ public class CyAttributesWriter {
 		else
 			className = "java.lang.String";
 
-		fileWriter.write(attributeName + " (class=" + className + ")" + newline);
+        try {
+            fileWriter.write(attributeName + " (class=" + className + ")" + newline);
 
-		final MultiHashMap attributeMap = cyAttributes.getMultiHashMap();
+            final MultiHashMap attributeMap = cyAttributes.getMultiHashMap();
 
-		if (attributeMap != null) {
-			final Iterator<String> keys = cyAttributes.getMultiHashMap().getObjectKeys(attributeName);
+            if (attributeMap != null) {
+                final Iterator<String> keys = cyAttributes.getMultiHashMap().getObjectKeys(attributeName);
 
-			String key;
-			Object value;
-			Iterator objIt;
-            String vs;
-			StringBuilder result = new StringBuilder();
+                String key;
+                Object value;
+                Iterator objIt;
+                String vs;
+                StringBuilder result = new StringBuilder();
 
-			while (keys.hasNext()) {
-				key = keys.next();
+                while (keys.hasNext()) {
+                    key = keys.next();
 
-				if (cyAttributes.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST)
-					value = cyAttributes.getListAttribute(key, attributeName);
-				else
-					value = cyAttributes.getAttribute(key, attributeName);
-					
-                key = encodeString(key);
+                    if (cyAttributes.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST)
+                        value = cyAttributes.getListAttribute(key, attributeName);
+                    else
+                        value = cyAttributes.getAttribute(key, attributeName);
 
-				if (value != null) {
-					if (value instanceof List) {
-						result.append(key + " = ");
+                    key = encodeString(key);
 
-						if (((Collection) value).size() > 0) {
-                            Object o;
+                    if (value != null) {
+                        if (value instanceof List) {
+                            result.append(key + " = ");
 
-							objIt = ((Collection) value).iterator();
-							result.append("(");
-                            o = objIt.next();
-                            vs = o.toString();
-                            vs = slashEncodeString(vs);
-                            vs = encodeString(vs);
-							result.append(vs);
+                            if (((Collection) value).size() > 0) {
+                                Object o;
 
-							while (objIt.hasNext()) {
-
+                                objIt = ((Collection) value).iterator();
+                                result.append("(");
                                 o = objIt.next();
                                 vs = o.toString();
                                 vs = slashEncodeString(vs);
                                 vs = encodeString(vs);
-								result.append("::" + vs);
+                                result.append(vs);
+
+                                while (objIt.hasNext()) {
+
+                                    o = objIt.next();
+                                    vs = o.toString();
+                                    vs = slashEncodeString(vs);
+                                    vs = encodeString(vs);
+                                    result.append("::" + vs);
+                                }
+                                result.append(")" + newline);
+                                fileWriter.write(result.toString());
+                                result = new StringBuilder();
                             }
-							result.append(")" + newline);
-							fileWriter.write(result.toString());
-							result = new StringBuilder();
-						}
-					} else {
-                        vs = value.toString();
-                        vs = slashEncodeString(vs);
-                        vs = encodeString(vs);
-						fileWriter.write(key + " = " + vs + newline);
+                        } else {
+                            vs = value.toString();
+                            vs = slashEncodeString(vs);
+                            vs = encodeString(vs);
+                            fileWriter.write(key + " = " + vs + newline);
+                        }
                     }
-				}
-			}
+                }
 
-			fileWriter.flush();
-		}
-
-		fileWriter.close();
-		fileWriter = null;
+                fileWriter.flush();
+            }
+        }
+        finally {
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        }
 	}
 
     private String encodeString(String in) throws UnsupportedEncodingException {

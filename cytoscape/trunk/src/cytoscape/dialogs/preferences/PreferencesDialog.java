@@ -135,10 +135,8 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 			if ((CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getOldValue())
 			    || (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getNewValue())) {
 				propName = "defaultSpeciesName";
-			} else if ((CytoscapeInit.getProperties().getProperty("defaultWebBrowser") == e
-			                                                                                                                     .getOldValue())
-			           || (CytoscapeInit.getProperties().getProperty("defaultWebBrowser") == e
-			                                                                                                                       .getNewValue())) {
+			} else if ((CytoscapeInit.getProperties().getProperty("defaultWebBrowser") == e.getOldValue())
+			           || (CytoscapeInit.getProperties().getProperty("defaultWebBrowser") == e.getNewValue())) {
 				propName = "defaultWebBrowser";
 			}
 
@@ -467,8 +465,15 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 				try {
 					File file = CytoscapeInit.getConfigFile("cytoscape.props");
 					FileOutputStream output = new FileOutputStream(file);
-					CytoscapeInit.getProperties().store(output, "Cytoscape Property File");
-					logger.info("wrote Cytoscape properties file to: " + file.getAbsolutePath());
+                    try {
+                        CytoscapeInit.getProperties().store(output, "Cytoscape Property File");
+                        logger.info("wrote Cytoscape properties file to: " + file.getAbsolutePath());
+                    }
+                    finally {
+                        if (output != null) {
+                            output.close();
+                        }
+                    }
 				} catch (Exception ex) {
 					logger.error("Could not write cytoscape.props file!", ex);
 				}

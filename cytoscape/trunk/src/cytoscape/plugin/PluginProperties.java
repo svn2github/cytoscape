@@ -58,7 +58,14 @@ public class PluginProperties extends Properties {
 	 */
 	PluginProperties(String fileName) throws IOException {
 		java.io.FileInputStream fis = new java.io.FileInputStream( new java.io.File(fileName) );
-		readPluginProperties(fis);
+        try {
+            readPluginProperties(fis);
+        }
+        finally {
+            if (fis != null) {
+                fis.close();
+            }
+        }
 	}
 	
 	/**

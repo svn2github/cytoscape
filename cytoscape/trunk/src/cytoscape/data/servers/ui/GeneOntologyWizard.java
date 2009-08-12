@@ -201,8 +201,14 @@ public class GeneOntologyWizard {
 			FileWriter fw = new FileWriter(autoManifest, append);
 			BufferedWriter br = new BufferedWriter(fw);
 			PrintWriter pw = new PrintWriter(br);
-			pw.println("species=" + species);
-			pw.close();
+            try {
+                pw.println("species=" + species);
+            }
+            finally {
+                if (pw != null) {
+                    pw.close();
+                }
+            }
 		} catch (Exception e) {
 			logger.warn("Unable to append species to: "+autoManifest,e);
 		}
@@ -250,14 +256,19 @@ public class GeneOntologyWizard {
 				manifestFullPath = parentPath + AUTO_MANIFEST;
 
 				PrintWriter wt = new PrintWriter(new BufferedWriter(new FileWriter(manifestFullPath)));
-				wt.println("flip=" + flip);
-				wt.println("obo=" + oboFile.getName());
+                try {
+                    wt.println("flip=" + flip);
+                    wt.println("obo=" + oboFile.getName());
 
-				for (int i = 0; i < gaList.length; i++) {
-					wt.println("gene_association=" + gaList[i].getName());
-				}
-
-				wt.close();
+                    for (int i = 0; i < gaList.length; i++) {
+                        wt.println("gene_association=" + gaList[i].getName());
+                    }
+                }
+                finally {
+                    if (wt != null) {
+                        wt.close();
+                    }
+                }
 			}
 
 			logger.info("Manifest Created.");
