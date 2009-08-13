@@ -219,18 +219,21 @@ public class BioDataServer {
 	//
 	protected boolean checkFileType(final BufferedReader br) throws IOException {
 		String curLine = null;
+        boolean rv;
 
-		while (null != (curLine = br.readLine())) {
-			if (curLine.startsWith(OBO_FILE) || curLine.startsWith(GENE_ASSOCIATION_FILE)) {
-				br.close();
+        rv = false;
+        try {
+    		while (!rv && (null != (curLine = br.readLine()))) {
+        		if (curLine.startsWith(OBO_FILE) || curLine.startsWith(GENE_ASSOCIATION_FILE)) {
+            		rv = true;
+                }
+            }
+        }
+        finally {
+            br.close();
+        }
 
-				return true;
-			}
-		}
-
-		br.close();
-
-		return false;
+		return rv;
 	}
 
 	// ----------------------------------------------------------------------------------------
@@ -390,30 +393,37 @@ public class BioDataServer {
 			// Reader for the ".obo" file
 			BufferedReader oboReader = new BufferedReader(new OboOntologyReader(new FileReader(filename)));
 
-			OntologyFlatFileReader reader = new OntologyFlatFileReader(oboReader);
-			list.add(reader.getOntology());
-			oboReader.close();
+            try {
+                OntologyFlatFileReader reader = new OntologyFlatFileReader(oboReader);
+                list.add(reader.getOntology());
+            }
+            finally {
+                oboReader.close();
+            }
 
 			BufferedReader oboReader2 = new BufferedReader(new OboOntologyReader2(new FileReader(filename)));
-			String line;
-			String[] parts = null;
+            try {
+                String line;
+                String[] parts = null;
 
-			while ((line = oboReader2.readLine()) != null) {
-				parts = line.split("=");
+                while ((line = oboReader2.readLine()) != null) {
+                    parts = line.split("=");
 
-				if (parts.length == 2) {
-					//logger.info("ID = " + parts[0] + ", " + parts[1]);
-					if (parts[1].equals("biological_process")) {
-						ontologyTypeMap.put(parts[0], "P");
-					} else if (parts[1].equals("molecular_function")) {
-						ontologyTypeMap.put(parts[0], "F");
-					} else if (parts[1].equals("cellular_component")) {
-						ontologyTypeMap.put(parts[0], "C");
-					}
-				}
-			}
-
-			oboReader2.close();
+                    if (parts.length == 2) {
+                        //logger.info("ID = " + parts[0] + ", " + parts[1]);
+                        if (parts[1].equals("biological_process")) {
+                            ontologyTypeMap.put(parts[0], "P");
+                        } else if (parts[1].equals("molecular_function")) {
+                            ontologyTypeMap.put(parts[0], "F");
+                        } else if (parts[1].equals("cellular_component")) {
+                            ontologyTypeMap.put(parts[0], "C");
+                        }
+                    }
+                }
+            }
+            finally {
+                oboReader2.close();
+            }
 		}
 
 		return (Ontology[]) list.toArray(new Ontology[0]);
@@ -488,33 +498,43 @@ public class BioDataServer {
 			                                                                               ontologyTypeMap,
 			                                                                               new FileReader(filename)));
 
-			BufferedReader ccRd = new BufferedReader(new CellularComponentAnnotationReader(taxonName,
-			                                                                               ontologyTypeMap,
-			                                                                               new FileReader(filename)));
+            try {
+                BufferedReader ccRd = new BufferedReader(new CellularComponentAnnotationReader(taxonName,
+                                                                                               ontologyTypeMap,
+                                                                                               new FileReader(filename)));
+                try {
+                    BufferedReader mfRd = new BufferedReader(new MolecularFunctionAnnotationReader(taxonName,
+                                                                                                   ontologyTypeMap,
+                                                                                                   new FileReader(filename)));
 
-			BufferedReader mfRd = new BufferedReader(new MolecularFunctionAnnotationReader(taxonName,
-			                                                                               ontologyTypeMap,
-			                                                                               new FileReader(filename)));
+                    try {
+                        AnnotationFlatFileReader bpReader = new AnnotationFlatFileReader(bpRd, thesaurus, flip);
+                        AnnotationFlatFileReader ccReader = new AnnotationFlatFileReader(ccRd, thesaurus, flip);
+                        AnnotationFlatFileReader mfReader = new AnnotationFlatFileReader(mfRd, thesaurus, flip);
 
-			AnnotationFlatFileReader bpReader = new AnnotationFlatFileReader(bpRd, thesaurus, flip);
-			AnnotationFlatFileReader ccReader = new AnnotationFlatFileReader(ccRd, thesaurus, flip);
-			AnnotationFlatFileReader mfReader = new AnnotationFlatFileReader(mfRd, thesaurus, flip);
+                        bpAnnotation = bpReader.getAnnotation();
+                        ccAnnotation = ccReader.getAnnotation();
+                        mfAnnotation = mfReader.getAnnotation();
 
-			bpAnnotation = bpReader.getAnnotation();
-			ccAnnotation = ccReader.getAnnotation();
-			mfAnnotation = mfReader.getAnnotation();
+                        bpAnnotation.setOntology(pickOntology(ontologies, bpAnnotation));
+                        ccAnnotation.setOntology(pickOntology(ontologies, ccAnnotation));
+                        mfAnnotation.setOntology(pickOntology(ontologies, mfAnnotation));
 
-			bpAnnotation.setOntology(pickOntology(ontologies, bpAnnotation));
-			ccAnnotation.setOntology(pickOntology(ontologies, ccAnnotation));
-			mfAnnotation.setOntology(pickOntology(ontologies, mfAnnotation));
-
-			server.addAnnotation(bpAnnotation);
-			server.addAnnotation(ccAnnotation);
-			server.addAnnotation(mfAnnotation);
-
-			bpRd.close();
-			ccRd.close();
-			mfRd.close();
+                        server.addAnnotation(bpAnnotation);
+                        server.addAnnotation(ccAnnotation);
+                        server.addAnnotation(mfAnnotation);
+                    }
+                    finally {
+                        mfRd.close();
+                    }
+                }
+                finally {
+                    ccRd.close();
+                }
+            }
+            finally {
+                bpRd.close();
+            }
 		}
 	} // loadAnnotationFiles2
 
@@ -587,12 +607,16 @@ public class BioDataServer {
 			BufferedReader thRd = new BufferedReader(new SynonymReader(taxonName,
 			                                                           new FileReader(filename)));
 
-			ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader(thRd, flip);
-			thesaurus = reader.getThesaurus();
+            try {
+                ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader(thRd, flip);
+                thesaurus = reader.getThesaurus();
 
-			//thesaurus.dump();
-			server.addThesaurus(thesaurus.getSpecies(), thesaurus);
-			thRd.close();
+                //thesaurus.dump();
+                server.addThesaurus(thesaurus.getSpecies(), thesaurus);
+            }
+            finally {
+                thRd.close();
+            }
 		}
 	} // loadThesaurusFiles
 

@@ -64,6 +64,7 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * @author skillcoy
@@ -997,8 +998,14 @@ public class PluginManager {
 		switch (Type) {
 		case JAR:
 			JarFile Jar = new JarFile(FileName);
-			PluginClassName = getManifestAttribute(Jar.getManifest());
-			Jar.close();
+            try {
+                PluginClassName = getManifestAttribute(Jar.getManifest());
+            }
+            finally {
+                if (Jar != null) {
+                    Jar.close();
+                }
+            }
 			break;
 
 		case ZIP:
@@ -1012,15 +1019,36 @@ public class PluginManager {
 								+ " does not contain any jar files or is not a zip file.");
 			}
 
-			for (ZipEntry Entry : Entries) {
-				String EntryName = Entry.getName();
+            ZipFile zf = null;
+            zf = new ZipFile(FileName);
+            try {
+                for (ZipEntry Entry : Entries) {
+                    String EntryName = Entry.getName();
 
-				InputStream is = ZipUtil.readFile(FileName, EntryName);
-				JarInputStream jis = new JarInputStream(is);
-				PluginClassName = getManifestAttribute(jis.getManifest());
-				jis.close();
-				is.close();
+                    InputStream is = ZipUtil.readFile(zf, EntryName);
+                    try {
+                        JarInputStream jis = new JarInputStream(is);
+                        try {
+                            PluginClassName = getManifestAttribute(jis.getManifest());
+                        }
+                        finally {
+                            if (jis != null) {
+                                jis.close();
+                            }
+                        }
+                    }
+                    finally {
+                        if (is != null) {
+                            is.close();
+                        }
+                    }
+                }
 			}
+            finally {
+                if (zf != null) {
+                    zf.close();
+                }
+            }
 		}
 		return PluginClassName;
 	}

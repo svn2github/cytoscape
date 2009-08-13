@@ -19,6 +19,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.URLUtil;
 import cytoscape.util.ZipUtil;
 import cytoscape.logger.CyLogger;
+import java.util.zip.ZipFile;
 
 /**
  * @author skillcoy
@@ -270,8 +271,14 @@ public class InstallablePlugin implements Installable {
 		switch (Type) {
 		case JAR:
 			JarFile Jar = new JarFile(FileName);
-			PluginClassName = getManifestAttribute(Jar.getManifest());
-			Jar.close();
+            try {
+                PluginClassName = getManifestAttribute(Jar.getManifest());
+            }
+            finally {
+                if (Jar != null) {
+                    Jar.close();
+                }
+            }
 			break;
 
 		case ZIP:
@@ -285,18 +292,38 @@ public class InstallablePlugin implements Installable {
 								+ " does not contain any jar files or is not a zip file.");
 			}
 
-			for (ZipEntry Entry : Entries) {
-				String EntryName = Entry.getName();
+            ZipFile zf = null;
 
-				InputStream is = ZipUtil.readFile(FileName, EntryName);
-				JarInputStream jis = new JarInputStream(is);
-				PluginClassName = getManifestAttribute(jis.getManifest());
-				jis.close();
-				is.close();
-			}
+            zf = new ZipFile(FileName);
+            try {
+                for (ZipEntry Entry : Entries) {
+                    String EntryName = Entry.getName();
+
+                    InputStream is = ZipUtil.readFile(zf, EntryName);
+                    try {
+                        JarInputStream jis = new JarInputStream(is);
+                        try {
+                            PluginClassName = getManifestAttribute(jis.getManifest());
+                        }
+                        finally {
+                            if (jis != null) {
+                                jis.close();
+                            }
+                        }
+                    }
+                    finally {
+                        if (is != null) {
+                            is.close();
+                        }
+                    }
+                }
+            }
+            finally {
+                zf.close();
+            }
 		}
-		;
-		return PluginClassName;
+
+        return PluginClassName;
 	}
 
 	/*

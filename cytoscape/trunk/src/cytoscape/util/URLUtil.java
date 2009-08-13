@@ -51,10 +51,6 @@ public class URLUtil {
 	private static final String JAR = ".jar";
 
 	private static int msConnectionTimeout = 2000;
-	/**
-	 * 
-	 */
-	public static boolean STOP = false;
 
 	/**
 	 * Gets the an input stream given a URL.
@@ -156,57 +152,71 @@ public class URLUtil {
 	 */
 	public static void download(String urlString, File downloadFile,
 			TaskMonitor taskMonitor) throws IOException {
-		URL url = new URL(urlString);
-		InputStream is = null;
-//		Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
-		int maxCount = 0; // -1 if unknown
-		int progressCount = 0;
-//		if (CytoProxyHandler == null) {
-			URLConnection conn = getURLConnection(url);
-			//URLConnection conn = url.openConnection();
-			// Ensure we are reading the real content from url,
-			// and not some out-of-date cached content:
-			//conn.setUseCaches(false);
-			maxCount = conn.getContentLength();
-			is = conn.getInputStream();
-//		} else {
-//			URLConnection conn = url.openConnection(CytoProxyHandler);
-//			// Ensure we are reading the real content from url,
-//			// and not some out-of-date cached content:
-//			conn.setUseCaches(false);
-//			conn.setConnectTimeout(msConnectionTimeout);
+        boolean stop = false;
+
+        try {
+    		URL url = new URL(urlString);
+        	InputStream is = null;
+//          Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
+    		int maxCount = 0; // -1 if unknown
+        	int progressCount = 0;
+//          if (CytoProxyHandler == null) {
+                URLConnection conn = getURLConnection(url);
+                //URLConnection conn = url.openConnection();
+                // Ensure we are reading the real content from url,
+                // and not some out-of-date cached content:
+                //conn.setUseCaches(false);
+                maxCount = conn.getContentLength();
+                is = conn.getInputStream();
+//  		} else {
+//      		URLConnection conn = url.openConnection(CytoProxyHandler);
+//          	// Ensure we are reading the real content from url,
+//              // and not some out-of-date cached content:
+//      		conn.setUseCaches(false);
+//          	conn.setConnectTimeout(msConnectionTimeout);
 //
-//			maxCount = conn.getContentLength();
-//			is = conn.getInputStream();
-//		}
-		FileOutputStream os = new FileOutputStream(downloadFile);
-		double percent = 0.0d;
-		byte[] buffer = new byte[1];
-		while (((is.read(buffer)) != -1) && !STOP) {
-			progressCount += buffer.length;
-			// Report on Progress
-			if (taskMonitor != null) {
-				percent = ((double) progressCount / maxCount) * 100.0;
-				if (maxCount == -1) { // file size unknown
-					percent = -1;
-				}
-				JTask jTask = (JTask) taskMonitor;
-				if (jTask.haltRequested()) { // abort
-					downloadFile = null;
-					taskMonitor.setStatus("Canceling the download ...");
-					taskMonitor.setPercentCompleted(100);
-					break;
-				}
-				taskMonitor.setPercentCompleted((int) percent);
-			}
-			os.write(buffer);
-		}
-		os.flush();
-		os.close();
-		is.close();
-		if (STOP) {
-			downloadFile.delete();
-		}
+//              maxCount = conn.getContentLength();
+//  			is = conn.getInputStream();
+//      	}
+            FileOutputStream os = new FileOutputStream(downloadFile);
+            try {
+                double percent = 0.0d;
+                byte[] buffer = new byte[1];
+                while (((is.read(buffer)) != -1) && !stop) {
+                    progressCount += buffer.length;
+                    // Report on Progress
+                    if (taskMonitor != null) {
+                        percent = ((double) progressCount / maxCount) * 100.0;
+                        if (maxCount == -1) { // file size unknown
+                            percent = -1;
+                        }
+                        JTask jTask = (JTask) taskMonitor;
+                        if (jTask.haltRequested()) { // abort
+                            stop = true;
+                            taskMonitor.setStatus("Canceling the download ...");
+                            taskMonitor.setPercentCompleted(100);
+                            break;
+                        }
+                        taskMonitor.setPercentCompleted((int) percent);
+                    }
+                    os.write(buffer);
+                }
+                os.flush();
+            }
+            finally {
+                if (os != null) {
+                    os.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+            }
+        }
+        finally {
+            if (stop) {
+                downloadFile.delete();
+            }
+        }
 	}
 
 	/**
@@ -220,10 +230,18 @@ public class URLUtil {
 		InputStream is = getInputStream(source);
 		StringBuffer buffer = new StringBuffer();
 		int c;
-		while ((c = is.read()) != -1) {
-			buffer.append((char) c);
-		}
-		is.close();
+
+        try {
+            while ((c = is.read()) != -1) {
+                buffer.append((char) c);
+            }
+        }
+        finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+
 		return buffer.toString();
 	}
 }

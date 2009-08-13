@@ -244,15 +244,20 @@ public class CytoscapeSessionWriter {
 		
 		zos = new ZipOutputStream(new FileOutputStream(sessionFileName)); 
 
-		for (CyNetwork network : networks)
-			zipNetwork(network);
-		zipCySession();
-		zipVizmapProps();
-		zipCytoscapeProps();
-		zipBookmarks();
-		zipFileListMap();
-
-		zos.close();
+        try {
+            for (CyNetwork network : networks)
+                zipNetwork(network);
+            zipCySession();
+            zipVizmapProps();
+            zipCytoscapeProps();
+            zipBookmarks();
+            zipFileListMap();
+        }
+        finally {
+            if (zos != null) {
+                zos.close();
+            }
+        }
 
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_SAVED, null, null);
 	}
@@ -336,10 +341,15 @@ public class CytoscapeSessionWriter {
 
 		zos.putNextEntry(new ZipEntry(sessionDir + VIZMAP_FILE) );
 
-		Writer writer = new OutputStreamWriter( zos );
-		CalculatorIO.storeCatalog(catalog, writer);
-
-		zos.closeEntry();
+        try {
+            Writer writer = new OutputStreamWriter( zos );
+            CalculatorIO.storeCatalog(catalog, writer);
+        }
+        finally {
+            if (zos != null) {
+                zos.closeEntry();
+            }
+        }
 	}
 
 	/**
@@ -349,9 +359,14 @@ public class CytoscapeSessionWriter {
 	
 		zos.putNextEntry(new ZipEntry(sessionDir + CYPROP_FILE) );
 
-		CytoscapeInit.getProperties().store(zos, "Cytoscape Property File");
-
-		zos.closeEntry();
+        try {
+            CytoscapeInit.getProperties().store(zos, "Cytoscape Property File");
+        }
+        finally {
+            if (zos != null) {
+                zos.closeEntry();
+            }
+        }
 	}
 
 	/**
@@ -361,10 +376,15 @@ public class CytoscapeSessionWriter {
 
 		zos.putNextEntry(new ZipEntry(sessionDir + BOOKMARKS_FILE) );
 
-		bookmarks = Cytoscape.getBookmarks();
-		BookmarksUtil.saveBookmark(bookmarks, zos);
-
-		zos.closeEntry();
+        try {
+            bookmarks = Cytoscape.getBookmarks();
+            BookmarksUtil.saveBookmark(bookmarks, zos);
+        }
+        finally {
+            if (zos != null) {
+                zos.closeEntry();
+            }
+        }
 	}
 
 	/**
@@ -380,18 +400,19 @@ public class CytoscapeSessionWriter {
 		String xgmmlFile = getValidFileName( network.getTitle() + XGMML_EXT );
 		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
 
-		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
-		Writer writer = new OutputStreamWriter(zos, "UTF-8");
-
-		// Write the XGMML file *without* our graphics attributes
-		// We'll let the Vizmapper handle those
-		XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);
-		xgmmlWriter.write(writer);
-
-		zos.closeEntry();
-
-		writer = null;
-		xgmmlWriter = null;
+		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile));
+        Writer writer = new OutputStreamWriter(zos, "UTF-8");
+        try {
+            // Write the XGMML file *without* our graphics attributes
+            // We'll let the Vizmapper handle those
+            XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view, true);
+            xgmmlWriter.write(writer);
+        }
+        finally {
+            if (zos != null) {
+                zos.closeEntry();
+            }
+        }
 	}
 
 	/**
@@ -418,10 +439,14 @@ public class CytoscapeSessionWriter {
 
 		zos.putNextEntry(new ZipEntry(sessionDir + CYSESSION_FILE_NAME) );
 
-		m.marshal(session, zos);
-
-		zos.closeEntry();
-		m = null;
+        try {
+            m.marshal(session, zos);
+        }
+        finally {
+            if (zos != null) {
+                zos.closeEntry();
+            }
+        }
 		session = null;
 	}
 
@@ -454,14 +479,25 @@ public class CytoscapeSessionWriter {
 					zos.putNextEntry(new ZipEntry( sessionDir + "plugins/" + pluginName + 
 					                               "/" + theFile.getName() ) );
 
-					// copy the file contents to the zip output stream
-					FileInputStream fileIS = new FileInputStream(theFile);
-					int numRead = 0;
-			        while ((numRead = fileIS.read(buf)) > -1)
-		            	zos.write(buf, 0, numRead);
-					fileIS.close();
-
-					zos.closeEntry();
+                    try {
+                        // copy the file contents to the zip output stream
+                        FileInputStream fileIS = new FileInputStream(theFile);
+                        try {
+                            int numRead = 0;
+                            while ((numRead = fileIS.read(buf)) > -1)
+                                zos.write(buf, 0, numRead);
+                        }
+                        finally {
+                            if (fileIS != null) {
+                                fileIS.close();
+                            }
+                        }
+                    }
+                    finally {
+                        if (zos != null) {
+                            zos.closeEntry();
+                        }
+                    }
 				}
 			}
 		}
