@@ -615,7 +615,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 			this.setVerticalAlignment(SwingConstants.CENTER);
 			this.setIconTextGap(55);
 
-			if (vp != null && vp.getType().equals(String.class))
+			if (vp != null && vp.getType()!= null && vp.getType().equals(String.class))
 				this.setToolTipText(vp.getDefault().toString());
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());

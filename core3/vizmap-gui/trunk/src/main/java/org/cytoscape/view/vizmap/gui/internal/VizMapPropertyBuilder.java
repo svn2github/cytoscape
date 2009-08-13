@@ -185,8 +185,7 @@ public class VizMapPropertyBuilder {
 
 			// FIXME
 			setDiscreteProps(vp, discMapping, attrSet, editorFactory
-					.getVisualPropertyEditor(vp), editorFactory
-					.getVisualPropertyEditor(vp).getTableCellRenderer(10, 10),
+					.getVisualPropertyEditor(vp),
 					calculatorTypeProp, propertySheetPanel);
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
@@ -257,8 +256,7 @@ public class VizMapPropertyBuilder {
 	 */
 	private <K, V> void setDiscreteProps(VisualProperty<V> vp,
 			Map<K, V> discMapping, SortedSet<K> attrSet,
-			VisualPropertyEditor<V> visualPropertyEditor,
-			TableCellRenderer rend, DefaultProperty parent, PropertySheetPanel propertySheetPanel) {
+			VisualPropertyEditor<V> visualPropertyEditor, DefaultProperty parent, PropertySheetPanel propertySheetPanel) {
 		if (attrSet == null)
 			return;
 
@@ -282,8 +280,10 @@ public class VizMapPropertyBuilder {
 				valProp.setType(val.getClass());
 
 			children.add(valProp);
-			((PropertyRendererRegistry) propertySheetPanel.getTable()
-					.getRendererFactory()).registerRenderer(valProp, rend);
+			
+			//FIXME!
+//			((PropertyRendererRegistry) propertySheetPanel.getTable()
+//					.getRendererFactory()).registerRenderer(valProp, rend);
 			
 			//FIXME!!
 //			((PropertyEditorRegistry) propertySheetPanel.getTable()
