@@ -19,4 +19,13 @@ public class ThreeDVisualLexicon extends TwoDVisualLexicon {
 	
 	public static final VisualProperty<Double> NETWORK_DEPTH = new DoubleVisualProperty(
 			NETWORK, 0.0, "NETWORK_DEPTH", "Network Depth");
+	
+	public ThreeDVisualLexicon() {
+		super();
+		
+		visualPropertySet.add(NODE_Z_LOCATION);
+		visualPropertySet.add(NODE_Z_SIZE);
+		visualPropertySet.add(NETWORK_CENTER_Z_LOCATION);
+		visualPropertySet.add(NETWORK_DEPTH);
+	}
 }
