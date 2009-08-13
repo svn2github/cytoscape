@@ -75,10 +75,16 @@
 	<bean id="advancedQueue" class="java.util.concurrent.LinkedBlockingQueue" />
 	<bean id="statusBarQueue" class="java.util.concurrent.LinkedBlockingQueue" />
 
-	<bean id="rootAppender" class="org.cytoscape.log.internal.QueueAppender">
-		<constructor-arg ref="simpleQueue" />
-		<constructor-arg ref="statusBarQueue" />
+	<bean id="advancedAppender" class="org.cytoscape.log.internal.AdvancedQueueAppender">
 		<constructor-arg ref="advancedQueue" />
+	</bean>
+
+	<bean id="simpleAppender" class="org.cytoscape.log.internal.SimpleQueueAppender">
+		<constructor-arg ref="simpleQueue" />
+	</bean>
+
+	<bean id="statusBarAppender" class="org.cytoscape.log.internal.StatusBarQueueAppender">
+		<constructor-arg ref="statusBarQueue" />
 	</bean>
 
 	<bean id="statusBarUpdater" class="org.cytoscape.log.internal.StatusBarUpdater" factory-method="executeStatusBarUpdater">

@@ -128,8 +128,14 @@ class AdvancedLogViewer
 		if (logEventMatches(event, filterTargetComboBox.getSelectedIndex(), getSelectedLog()))
 		{
 			solicitedLogEvents.add(event);
-			logViewer.append(event[2].toUpperCase(), event[4], String.format("%s [%s] %s %s", event[0], event[3], event[2], event[1]));
+			logViewer.append(event[2].toUpperCase(), event[4], formatEvent(event));
 		}
+	}
+
+	String formatEvent(String[] event)
+	{
+		//return String.format("%s, <b>Level:</b> %s, <b>Log:</b> %s, <b>Thread:</b> %s", event[0], event[2], event[1], event[3]);
+		return String.format("%s, Level: %s, Log: %s, Thread: %s", event[0], event[2], event[1], event[3]);
 	}
 
 	/**
@@ -229,7 +235,7 @@ class AdvancedLogViewer
 				if (logEventMatches(event, target, selectedPath))
 				{
 					solicitedLogEvents.add(event);
-					logViewer.append(event[2].toUpperCase(), event[4], String.format("%s <b>%s</b> [%s] %s", event[0], event[1], event[3], event[2]));
+					logViewer.append(event[2].toUpperCase(), event[4], formatEvent(event));
 				}
 			}
 		}

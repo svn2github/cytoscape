@@ -5,9 +5,21 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<osgi:service id="rootAppenderService" ref="rootAppender" interface="org.ops4j.pax.logging.spi.PaxAppender">
+	<osgi:service id="advancedAppenderService" ref="advancedAppender" interface="org.ops4j.pax.logging.spi.PaxAppender">
 		<osgi:service-properties>
-			<entry key="org.ops4j.pax.logging.appender.name" value="org.cytoscape.log-swing.main-appender"/>
+			<entry key="org.ops4j.pax.logging.appender.name" value="OrgCytoscapeLogSwingAdvancedAppender"/>
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="simpleAppenderService" ref="simpleAppender" interface="org.ops4j.pax.logging.spi.PaxAppender">
+		<osgi:service-properties>
+			<entry key="org.ops4j.pax.logging.appender.name" value="OrgCytoscapeLogSwingSimpleAppender"/>
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="statusBarAppenderService" ref="statusBarAppender" interface="org.ops4j.pax.logging.spi.PaxAppender">
+		<osgi:service-properties>
+			<entry key="org.ops4j.pax.logging.appender.name" value="OrgCytoscapeLogSwingStatusBarAppender"/>
 		</osgi:service-properties>
 	</osgi:service>
 
