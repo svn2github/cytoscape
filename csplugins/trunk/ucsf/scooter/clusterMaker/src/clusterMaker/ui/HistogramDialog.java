@@ -16,6 +16,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.ScrollPane;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -38,15 +40,24 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 	ScrollPane scrollPanel;
 	JButton zoomOutButton;
 	boolean isZoomed = false;
+	List<HistoChangeListener> changeListenerList = null;
 
 	public HistogramDialog(String title, double[] inputArray, int nBins) {
 		super();
 		this.inputArray = inputArray;
 		this.nBins = nBins;
 		this.currentBins = nBins;
+		this.changeListenerList = new ArrayList();
 		setTitle(title);
 
 		initializeOnce();
+	}
+
+	public void updateData(double[] inputArray) {
+		this.inputArray = inputArray;
+		if (histo != null) {
+			histo.updateData(inputArray);
+		}
 	}
 
 	//public double getCutoff() {}
@@ -143,11 +154,18 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 	}
 
 	public void addHistoChangeListener(HistoChangeListener h){
-		histo.addHistoChangeListener(h);
+		if (changeListenerList.contains(h)) return;
+		changeListenerList.add(h);
 	}
 	
 	public void removeHistoChangeListener(HistoChangeListener h){
-		histo.removeHistoChangeListener(h);
+		changeListenerList.remove(h);
+	}
+	
+	public void histoValueChanged(double bounds){
+		if (changeListenerList.size() == 0) return;
+		for (HistoChangeListener listener: changeListenerList)
+			listener.histoValueChanged(bounds);
 	}
 	
 	private void zoom(double[] inputArray, boolean zoomOut){
@@ -184,10 +202,6 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 		
 		// Trigger a relayout
 		pack();
-	}
-	
-	public void histoValueChanged(double bounds){
-		System.out.println("histoValueChanged to "+bounds);
 	}
     
 	/**

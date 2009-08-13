@@ -42,7 +42,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	// Y scale values
 	private int histoMax = Integer.MIN_VALUE;
 	private int histoMin = 0;
-	private int histoMaxUp;
+	private int histoMaxUp = 0;
 
 	// X scale values
 	private double minValue = Double.MAX_VALUE;
@@ -94,7 +94,12 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		histoArray = new int[NBINS];
 		this.graphData = graphData;
 
+		minValue = Double.MAX_VALUE;
+		maxValue = Double.MIN_VALUE;
+		histoMax = Integer.MIN_VALUE;
+		histoMaxUp = 0;
 		createHistogram(graphData);
+		this.repaint();
 	}
 
 	public void paintComponent(Graphics g) {
