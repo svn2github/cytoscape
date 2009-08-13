@@ -76,6 +76,8 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 			EDGE, "", "EDGE_LABEL", "Edge Label");
 	public static final VisualProperty<Double> EDGE_OPACITY = new DoubleVisualProperty(
 			EDGE, 255d, "EDGE_OPACITY", "Edge Opacity");
+	public static final VisualProperty<Double> EDGE_WIDTH = new DoubleVisualProperty(
+			EDGE, 1d, "EDGE_WIDTH", "Edge Width");
 	public static final VisualProperty<? extends Paint> EDGE_LABEL_COLOR = new ColorVisualProperty(
 			EDGE, Color.BLACK, "EDGE_LABEL_COLOR", "Edge Label Color");
 	public static final VisualProperty<Boolean> EDGE_VISIBLE = new BooleanVisualProperty(
@@ -114,6 +116,8 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		visualPropertySet.add(NODE_VISIBLE);
 		visualPropertySet.add(NODE_SELECTED);
 		visualPropertySet.add(EDGE_COLOR);
+		visualPropertySet.add(EDGE_OPACITY);
+		visualPropertySet.add(EDGE_WIDTH);
 		visualPropertySet.add(EDGE_LABEL);
 		visualPropertySet.add(EDGE_LABEL_COLOR);
 		visualPropertySet.add(EDGE_VISIBLE);
