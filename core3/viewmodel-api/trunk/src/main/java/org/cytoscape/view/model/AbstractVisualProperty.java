@@ -56,7 +56,11 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	public String getObjectType() { return  ot; }
 
 	@SuppressWarnings("unchecked")
-	public Class<T> getType() { return (Class<T>) def.getClass(); }
+	public Class<T> getType() { 
+		if(def != null)
+			return (Class<T>) def.getClass();
+		else return null;
+	}
 
 	public T getDefault() { return def; }
 
