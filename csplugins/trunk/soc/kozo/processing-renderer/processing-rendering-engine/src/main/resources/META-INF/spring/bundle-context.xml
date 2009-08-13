@@ -21,6 +21,8 @@
 
 	<context:annotation-config />
 
+	<bean id="pVisualLexicon" class="org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon" />
+
 	<bean id="createPresentationTaskFactory"
 		class="org.cytoscape.view.presentation.processing.internal.CreatePresentationTaskFactory">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
@@ -30,7 +32,7 @@
 	<bean id="processingPresentationFactory"
 		class="org.cytoscape.view.presentation.processing.internal.ProcessingPresentationFactory">
 	</bean>
-	
+
 	<bean id="visualStyleBuilder"
 		class="org.cytoscape.view.presentation.processing.internal.DefaultVisualStyleBuilder">
 		<constructor-arg ref="visualMappingManagerServiceRef" />

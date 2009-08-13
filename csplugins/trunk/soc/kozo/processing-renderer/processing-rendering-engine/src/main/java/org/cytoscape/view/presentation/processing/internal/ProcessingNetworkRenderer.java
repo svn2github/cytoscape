@@ -1,9 +1,10 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Paint;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.print.Printable;
@@ -11,9 +12,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCanvas;
-import javax.media.opengl.GLEventListener;
 import javax.swing.Icon;
 
 import org.cytoscape.model.CyEdge;
@@ -25,7 +23,6 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.processing.CyDrawable;
-import org.cytoscape.view.presentation.processing.Pickable;
 import org.cytoscape.view.presentation.processing.internal.particle.ParticleManager;
 import org.cytoscape.view.presentation.processing.internal.ui.Overlay;
 
@@ -34,12 +31,7 @@ import processing.core.PFont;
 import processing.opengl.PGraphicsOpenGL;
 import toxi.geom.AABB;
 import toxi.geom.Vec3D;
-import toxi.physics.VerletParticle;
 import toxi.physics.VerletPhysics;
-
-import com.sun.opengl.util.FPSAnimator;
-
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR;
 
 
 public class ProcessingNetworkRenderer extends PApplet implements
@@ -63,8 +55,6 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	private final P5NodeRenderer nodeRenderer;
 	private final P5EdgeRenderer edgeRenderer;
 
-	private GLCanvas canvas;
-
 	private Overlay overlay;
 	
 	private final PFont DEF_FONT = createFont("SansSerif", 20);
@@ -76,6 +66,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	
 	// Control
 	private boolean isOverlay = false;
+	private boolean freeze = false;
 	
 	// Network Visuals
 	private Color bgColor;
@@ -99,6 +90,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		this.addMouseWheelListener(new MouseWheelListener() {
 
 			public void mouseWheelMoved(MouseWheelEvent e) {
+				if(freeze) return;
+				
 				zoom += e.getWheelRotation() * 100;
 
 			}
@@ -142,36 +135,12 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	
 
-	class GLRenderer implements GLEventListener {
-		GL gl;
-
-		public void init(GLAutoDrawable drawable) {
-			this.gl = drawable.getGL();
-			gl.glClearColor(1, 0, 0, 0);
-			canvas.setLocation(100, 80);
-		}
-
-		public void display(GLAutoDrawable drawable) {
-			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-			gl.glColor3f(1, 1, 1);
-			gl.glRectf(-0.8f, 0.8f, frameCount % 100 / 100f - 0.8f, 0.7f);
-		}
-
-		public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-				int height) {
-		}
-
-		public void displayChanged(GLAutoDrawable drawable,
-				boolean modeChanged, boolean deviceChanged) {
-		}
-	}
-
 	public void setup() {
 		System.out.println("%%%%%%%%%%%%% Setup called for P5");
 		/* setup p5 */
 		size(windowSize.width, windowSize.width, OPENGL);
-		// hint(ENABLE_OPENGL_4X_SMOOTH);
-		// hint(ENABLE_NATIVE_FONTS);
+		hint(ENABLE_OPENGL_4X_SMOOTH);
+		hint(ENABLE_NATIVE_FONTS);
 		noStroke();
 		frameRate(FRAME_RATE);
 
@@ -201,6 +170,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		overlay = new Overlay(this, view.getSource().attrs().get("name", String.class));
 		
 		System.out.println("%%%%%%%%%%%%% Setup DONE for P5");
+		
 	}
 
 	private void renderNetworkVisualProperties() {
@@ -214,18 +184,14 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	public void draw() {
 		background(bgColor.getRed(), bgColor.getGreen(), bgColor.getGreen());
-		physics.update();
 		lights();
 
-		// camera(width / 2.0f, height / 2.0f, (height / 2.0f)
-		// / tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
-		// height / 2.0f, 0, 0, 1, 0);
-
+		
 		camera(width / 2.0f, height / 2.0f, (height / 2.0f)
 				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
 				height / 2.0f, 0, 0, 1, 0);
-
-		translate(width / 2, height / 2, height / 2);
+		
+//		translate(width / 2, height / 2, height / 2);
 		rotateX(rotY);
 		rotateY(rotX);
 		translate(-width / 2 + translateX, -height / 2 + translateY,
@@ -240,6 +206,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 		// particleManager.draw(gl);
 
+		
+		
 		camera();
 		beginGL();
 		gl.glClear(javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT);
@@ -264,6 +232,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	float translateY = 0;
 
 	public void mouseDragged() {
+		if(freeze) return;
+		
 		if (mouseButton == RIGHT) {
 			rotX += (mouseX - pmouseX) * 0.01;
 			rotY -= (mouseY - pmouseY) * 0.01;
@@ -290,6 +260,17 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	  // if the key is between 'A'(65) and 'z'(122)
 	  if( key == 'o')
 		  isOverlay = !isOverlay;
+	  else if( key == 'f') {
+		  // freeze
+		  freeze = !freeze;
+		  if(freeze) {
+			  fill(100, 100, 100, 100);
+			  rect(0, 0, width, height);
+			  noLoop();
+		  } else
+			  loop();
+		  
+	  }
 	    
 	}
 

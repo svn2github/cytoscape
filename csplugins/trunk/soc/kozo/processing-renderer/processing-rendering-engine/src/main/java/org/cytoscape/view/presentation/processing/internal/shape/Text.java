@@ -25,43 +25,43 @@ import org.cytoscape.view.presentation.processing.Pickable;
 
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PGraphics;
+import processing.core.PGraphics3D;
+import processing.core.PMatrix3D;
+import processing.opengl.PGraphicsOpenGL;
 import toxi.geom.Vec3D;
 
 public class Text extends Vec3D implements CyDrawable, Pickable {
 
-	
 	private static final int DEF_SIZE = 20;
-	
+
 	private static final int OFFSET = 10;
 
-	
 	private boolean picked;
 	private Set<Class<?>> compatibleDataType;
-	
+
 	private final VisualLexicon lexicon;
-	
+
 	private PApplet p;
-	
+
 	private float size;
 	private int r, g, b, alpha;
 	private String text;
-	
+
 	private float offsetX = 30;
 	private float offsetY = 0;
 	private float offsetZ = 0;
-	
+
 	private PFont font;
-	
-	
+
 	private Map<VisualProperty<?>, Object> fieldMap;
-	
+
 	public Text(PApplet parent, VisualLexicon lexicon) {
 		super();
 		this.p = parent;
 		this.lexicon = lexicon;
 		this.picked = false;
-		
-		
+
 		compatibleDataType = new HashSet<Class<?>>();
 		compatibleDataType.add(CyNode.class);
 		compatibleDataType.add(CyEdge.class);
@@ -71,16 +71,28 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 		return compatibleDataType;
 	}
 
-
 	public Icon getIcon(int width, int height) {
 		// TODO Implement icon renderer
 		return null;
 	}
 
 	public void draw() {
-		
+
+//		PGraphicsOpenGL graphics = (PGraphicsOpenGL) p.g;
+//		PMatrix3D m_inv = graphics.camera;
+//
+//		p.pushMatrix();
+//		p.applyMatrix(
+//				1, 0, 0, m_inv.m03, 
+//				0, 1, 0, m_inv.m13, 
+//				0, 0, 1, m_inv.m23, 
+//				m_inv.m30, m_inv.m31, m_inv.m32, m_inv.m33);
+//
+
 		p.fill(r, g, b, alpha);
-		p.text(text, x, y, z);
+		p.text(text, x,y, z);
+
+//		p.popMatrix();
 	}
 
 	public List<CyDrawable> getChildren() {
@@ -89,32 +101,37 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 	}
 
 	public void setContext(View<?> viewModel) {
-		
+
 		this.text = viewModel.getVisualProperty(NODE_LABEL);
-		
+
 		System.out.println("********************** Node Text = " + text);
-		
-		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue() + offsetX;
-		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue() + offsetY;
-		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue() + offsetZ;
-		
+
+		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue()
+				+ offsetX;
+		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue()
+				+ offsetY;
+		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue()
+				+ offsetZ;
+
+
 		Paint color = viewModel.getVisualProperty(NODE_LABEL_COLOR);
-		if(color instanceof Color) {
-			this.r = ((Color)color).getRed();
-			this.g = ((Color)color).getGreen();
-			this.b = ((Color)color).getBlue();
-			//this.alpha = opacity.intValue();		
+		if (color instanceof Color) {
+			this.r = ((Color) color).getRed();
+			this.g = ((Color) color).getGreen();
+			this.b = ((Color) color).getBlue();
+			// this.alpha = opacity.intValue();
 			this.alpha = 100;
-		}	
+		}
 	}
-	
+
 	public void setContext(View<?> viewModel, VisualProperty<?> vp) {
 		// If the VP is not in the context, ignore
-		if(lexicon.getAllVisualProperties().contains(vp) == false) return;
-		
+		if (lexicon.getAllVisualProperties().contains(vp) == false)
+			return;
+
 		// Extract value for the visual property
 		Object value = viewModel.getVisualProperty(vp);
-		
+
 	}
 
 	public boolean isPicked() {
@@ -122,27 +139,26 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 	}
 
 	public void pick(float cx, float cy) {
-		
-		final float distance = PApplet.dist(cx, cy, p.screenX(this.x, this.y, this.z), p.screenY(x, y, z));
+
+		final float distance = PApplet.dist(cx, cy, p.screenX(this.x, this.y,
+				this.z), p.screenY(x, y, z));
 		System.out.println("Distance = " + distance);
-		if(distance < 200){
+		if (distance < 200) {
 			picked = true;
 			System.out.println("PICKED!!");
 			this.r = 0;
 			g = 250;
 			b = 0;
 			alpha = 255;
-			System.out.println("Color of PICKED node" + g); 
+			System.out.println("Color of PICKED node" + g);
 		} else
 			picked = false;
-		
+
 	}
 
 	public void addChild(CyDrawable child) {
 		// TODO Auto-generated method stub
-		
-	}
 
-	
+	}
 
 }

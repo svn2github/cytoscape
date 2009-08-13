@@ -1,5 +1,6 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_OPACITY;
@@ -8,6 +9,7 @@ import java.awt.Color;
 
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 
 /**
@@ -29,7 +31,7 @@ public class DefaultVisualStyleBuilder {
 	private static final Color DEF_EDGE_COLOR = new Color(0, 30, 250);
 	private static final double DEF_EDGE_OPACITY = 150d;
 
-	private static final Color DEF_BACKGROUND_COLOR = new Color(255, 255, 255);
+	private static final Color DEF_BACKGROUND_COLOR = new Color(200, 200, 200);
 
 	private VisualStyle style;
 
@@ -45,13 +47,22 @@ public class DefaultVisualStyleBuilder {
 
 		final PassthroughMapping<String, String> labelMapping = new PassthroughMapping<String, String>(
 				NAME, String.class, NODE_LABEL);
+		
+		final DiscreteMapping<String, Double> randSize = new DiscreteMapping<String, Double>(
+				NAME, String.class, NODE_X_SIZE);
+		
+		final DiscreteMapping<String, Double> location = new DiscreteMapping<String, Double>(
+				NAME, String.class, NODE_Z_LOCATION);
+		
+		randSize.putMapValue("YMR043W", 100d);
+		location.putMapValue("YMR043W", 500d);
 
-		final PassthroughMapping<String, String> edgeLabelMapping = new PassthroughMapping<String, String>(
-				NAME, String.class, EDGE_LABEL);
 
 		style.addVisualMappingFunction(labelMapping);
-		style.addVisualMappingFunction(edgeLabelMapping);
-
+		style.addVisualMappingFunction(randSize);
+		style.addVisualMappingFunction(location);
+		
+		
 		style.setDefaultValue(NODE_COLOR, DEF_NODE_COLOR);
 		style.setDefaultValue(NODE_OPACITY, DEF_NODE_OPACITY);
 

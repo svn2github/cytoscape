@@ -109,6 +109,8 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();		
 		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue();
 		
+		System.out.println("Z location = " + this.z);
+		
 		this.size = viewModel.getVisualProperty(NODE_X_SIZE).floatValue();
 		if(size <= 0)
 			size = DEF_SIZE;

@@ -10,12 +10,15 @@ import java.util.Map;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.internal.shape.Cube;
 import org.cytoscape.view.presentation.property.StringVisualProperty;
 import org.cytoscape.view.presentation.property.ThreeDVisualLexicon;
 
 public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
 
 	private final Map<Class<? extends CyDrawable>, VisualLexicon> lexiconMap;
+	
+	private static final Cube cube = new Cube(null, null);
 	
 	public static final VisualProperty<? extends CyDrawable> NODE_STYLE = new CyDrawableVisualProperty(
 			NODE, null, "NODE_STYLE", "Node Style");
@@ -30,6 +33,7 @@ public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
 		super();
 		this.visualPropertySet.add(NODE_STYLE);
 		this.visualPropertySet.add(EDGE_STYLE);
+		this.visualPropertySet.add(NETWORK_BACKGROUND_IMAGE);
 		
 		lexiconMap = new HashMap<Class<? extends CyDrawable>, VisualLexicon>();
 	}
