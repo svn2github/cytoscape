@@ -209,8 +209,8 @@ public class CyFrame {
 		Graphics2D g = (Graphics2D) image.getGraphics();
 		g.scale(scale, scale);
 		
-		ifc.paint(g);
-		//ifc.print(g);
+		//ifc.paint(g);
+		ifc.print(g);
 		g.dispose();
 
 		networkImage = image;
