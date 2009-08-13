@@ -90,6 +90,11 @@ public class CyFrame {
 	private Point2D centerPoint = null;
 	private DGraphView dview = null; 
 	
+	/**
+	 * Creates this CyFrame by initializing and populating all of the fields.
+	 * 
+	 * @param currentNetwork
+	 */
 	public CyFrame(CyNetwork currentNetwork){
 		nodePosMap = new HashMap<String, double[]>();
 		nodeColMap = new HashMap<String, Color>();
@@ -146,41 +151,44 @@ public class CyFrame {
 		
 		dview = (DGraphView)networkView;
 		
-		for(Node node: nodeList)
-		{
+		for(Node node: nodeList){
 		
 			NodeView nodeView = networkView.getNodeView(node);
 			if(nodeView == null){ continue; }
-
+			
+			//stores the x and y position of the node
 			double[] xy = new double[2];
 			xy[0] = nodeView.getXPosition();
 			xy[1] = nodeView.getYPosition();
-		    centerPoint = dview.getCenter();
 			nodePosMap.put(node.getIdentifier(), xy);
+			
+			//grab color and opacity
 			Color nodeColor = (Color)nodeView.getUnselectedPaint();
 			Integer trans = nodeColor.getAlpha();
+			//store in respective hashmap
 			nodeColMap.put(node.getIdentifier(), (Color)nodeView.getUnselectedPaint());
 			nodeOpacityMap.put(node.getIdentifier(), trans);
 			
-			//System.out.println(nodeView.getUnselectedPaint()+"    X: "+nodeView.getXPosition()+"    Y: "+nodeView.getYPosition());
-		   
+			centerPoint = dview.getCenter();
+			
 		}
 
-		for(Edge edge: edgeList)
-		{
+		for(Edge edge: edgeList){
+			
 			EdgeView edgeView = networkView.getEdgeView(edge);
 			if(edgeView == null){  continue; }
+			
+			//grab color and opacity
 			Color p = (Color)edgeView.getUnselectedPaint();
 			Integer trans = p.getAlpha();
-			
-			//if(edge == null || p == null){ return; }
+			//store in respective hashmap
 			edgeColMap.put(edge.getIdentifier(), p);
 			edgeOpacityMap.put(edge.getIdentifier(), trans);
 		
 		}
 	}
 	
-	/*
+	/**
 	 * Captures and stores a thumbnail image from the current CyNetworkView for
 	 * this frame.
 	 */
@@ -200,7 +208,9 @@ public class CyFrame {
 
 		Graphics2D g = (Graphics2D) image.getGraphics();
 		g.scale(scale, scale);
-		ifc.print(g);
+		
+		ifc.paint(g);
+		//ifc.print(g);
 		g.dispose();
 
 		networkImage = image;
@@ -292,7 +302,7 @@ public class CyFrame {
 		currentView.updateView();
 	}
 
-	/*
+	/**
 	 * Return the frame ID for this frame
 	 * 
 	 * @return the frame ID
@@ -564,6 +574,7 @@ public class CyFrame {
 		InternalFrameComponent ifc =
 		         Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(curView);
 		
+	
 		// Handle the exportTextAsShape property
 		DGraphView theViewToPrint = (DingNetworkView) curView;
 		boolean exportTextAsShape =
@@ -585,7 +596,7 @@ public class CyFrame {
 		System.out.println("written?");
 	}
 
-	/*
+	/**
 	 * Get the center point for the frame
 	 * 
 	 * @return the center for this frame
@@ -594,7 +605,7 @@ public class CyFrame {
 		return this.centerPoint;
 	}
 
-	/*
+	/**
 	 * Set the center point of the frame
 	 * 
 	 * @param center point for a frame

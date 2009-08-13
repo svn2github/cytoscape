@@ -41,8 +41,8 @@ public class Interpolator {
 	
 	/*
 	 * These lists of FrameInterpolators define the set of visual properties
-	 * which will be 
-	 * 
+	 * which will be interpolated for and updated in the CyNetworkView during
+	 * the animation.
 	 */
 	List<FrameInterpolator> nodeInterpolators = new ArrayList<FrameInterpolator>();
 	List<FrameInterpolator> edgeInterpolators = new ArrayList<FrameInterpolator>();
@@ -65,7 +65,7 @@ public class Interpolator {
 		
 	}
 
-	/*
+	/**
 	 * This is the driver method which takes a list of key frames and runs the frames
 	 * in sets of two through the interpolators to generate the intermediate frames.
 	 * 
@@ -151,7 +151,7 @@ public class Interpolator {
 	}
 	
 	
-	/*
+	/**
 	 * Takes two CyFrames and returns a list of NodeViews which is the union of the list of 
 	 * NodeViews that are in each of the two frames.  This is done to accomodate the adding/deleting
 	 * of nodes between frames in animation as the union provides a complete set of nodes when
@@ -179,7 +179,7 @@ public class Interpolator {
 	}
 	
 	
-	/*
+	/**
 	 * Takes two CyFrames and returns the union of the EdgeView lists that are contained
 	 * within each frame.  This is to ensure that when edges are added/deleted they will
 	 * be able to be interpolated from one frame to the next instead of just instantly
@@ -209,7 +209,7 @@ public class Interpolator {
 	}
 
 	
-	/*
+	/**
 	 * This method performs a generic color interpolation and is used by many of the interpolators
 	 * to do their color interpolations.  It simply takes the absolute difference between the R, G, and B
 	 * values from the two colors, divides the difference by the number of intervals which will
@@ -315,7 +315,7 @@ public class Interpolator {
 	}
 
 	
-	/*
+	/**
 	 * Interpolates the node position, using the standard linear interpolation formula described
 	 * at http://en.wikipedia.org/wiki/Linear_interpolation. It essentially just finds the absolute
 	 * difference between the position of a node in frame one, and in frame two.  It then divides
@@ -331,7 +331,7 @@ public class Interpolator {
 			
 		}
 		
-		/*
+		/**
 		 * Performs the interpolation.
 		 *  
 		 * @param valueList is in this case a list of NodeViews
@@ -404,7 +404,7 @@ public class Interpolator {
 		}
 	}
 	
-	/*
+	/**
 	 * Fills in the interpolated color values for NodeViews.  Works by using the inner
 	 * interpolateColor() method.
 	 * 
@@ -416,7 +416,7 @@ public class Interpolator {
 		}
 		
 		
-		/*
+		/**
 		 * Performs the interpolation.
 		 *  
 		 * @param valueList is in this case a list of NodeViews
@@ -430,10 +430,6 @@ public class Interpolator {
 		public CyFrame[] interpolate(List valueList, CyFrame frameOne, CyFrame frameTwo, 
 		                             int start, int stop, CyFrame[] cyFrameArray){
 
-			// if(!frameOne.getCurrentNetwork().getIdentifier().equals(frameTwo.getCurrentNetwork().getIdentifier())){
-			// 	System.out.println("Frames Cannot be interpolated across different networks.");
-			// }
-			
 			CyNetwork currentNetwork = frameOne.getCurrentNetwork();
 			
 			int framenum = (stop-start) - 1;
@@ -474,7 +470,7 @@ public class Interpolator {
 	}
 	
 	
-	/*
+	/**
 	 * Interpolates node opacity by linearly incrementing or decrementing the opacity value. 
 	 * 
 	 */
@@ -485,7 +481,7 @@ public class Interpolator {
 		}
 		
 		
-		/*
+		/**
 		 * Performs the interpolation.
 		 *  
 		 * @param valueList is in this case a list of NodeViews
@@ -537,7 +533,7 @@ public class Interpolator {
 	}
 	
 	
-	/*
+	/**
 	 * Interpolates edgeColor using the interpolateColor() method.
 	 */
 	class interpolateEdgeColor implements FrameInterpolator {
@@ -546,7 +542,7 @@ public class Interpolator {
 			
 		}
 	
-		/*
+		/**
 		 * Performs the interpolation.
 		 *  
 		 * @param valueList is in this case a list of EdgeViews
@@ -597,7 +593,7 @@ public class Interpolator {
 	}
 		
 	
-	/*
+	/**
 	 * Linearly interpolates the edge opacity.
 	 */
 	class interpolateEdgeOpacity implements FrameInterpolator {
@@ -605,7 +601,7 @@ public class Interpolator {
 			
 		}
 		
-		/*
+		/**
 		 * Performs the interpolation.
 		 *  
 		 * @param valueList is in this case a list of EdgeViews
@@ -656,7 +652,7 @@ public class Interpolator {
 		}
 	}
 	
-	/*
+	/**
 	 * Linearly interpolates the network zoom.
 	 * 
 	 */
@@ -666,7 +662,7 @@ public class Interpolator {
 			
 		}
 	
-		/*
+		/**
 		 * Performs the interpolation.
 		 *  
 		 * @param valueList is not used in this case 
@@ -711,7 +707,7 @@ public class Interpolator {
 			
 		}
 	
-		/*
+		/**
 		 * Performs the interpolation.
 		 *  
 		 * @param valueList is not used in this case
@@ -742,7 +738,7 @@ public class Interpolator {
 	
 		public interpolateNetworkCenter(){}
 		
-		/*
+		/**
 		 * Performs the interpolation.
 		 *  
 		 * @param valueList is not used in this case

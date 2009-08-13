@@ -124,13 +124,16 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	private FrameManager frameManager;
 	
 	int thumbnailPopupIndex = 0;
-	ArrayList<CyFrame> frameList; // = new ArrayList<CyFrame>();
+	ArrayList<CyFrame> frameList;
 	       
 	
 	public CyAnimatorDialog(){
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		
 		//add as listener to CytoscapeDesktop
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+	
+		this.setTitle("CyAnimator");
 		frameManager = new FrameManager();
 		
 		
@@ -143,11 +146,12 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		framePanel = new JPanel();
 		
 		dragnDrop = new DragAndDropManager();
-		//timer = frameManage.getTimer();
+		
+		
 		initialize();
 	}
 	
-	/*
+	/**
 	 * Create the control buttons, panels, and initialize the main JDialog.
 	 */
 	public void initialize(){
@@ -351,7 +355,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	}
 
 	
-	/*
+	/**
 	 * Takes the current frameList and cycles through it to create a JButton
 	 * for each frame with the corresponding thumbnail image.  It also creates
 	 * a JPopupMenu for each frame in the frameList so that the right click controls
@@ -473,52 +477,12 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 	}
 	
-	/*
-	int frameid = 0;
-	
-	public CyFrame captureCurrentFrame(){
-		
-		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-		CyFrame frame = new CyFrame(currentNetwork);
-		
-		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-		
-		frame.populate(); // Initialize the frame
-		frame.setInterCount(30);
-		frame.setID(networkView.getIdentifier()+"_"+frameid);
-		System.out.println("Frame ID: "+frameid);
-		frame.captureImage();
-		frameid++;
-		return frame;
-		
-	}
-	
-	public void recordAnimation() throws IOException {
-	
-		String curDir = System.getProperty("user.dir");
-		System.out.println(curDir);
-		
-		File file = new File(curDir+"/outputImgs");
-		file.mkdir();
-		
-		for(int i=0; i<frames.length; i++){
-			DecimalFormat frame = new DecimalFormat("#000");
-			//String name = curDir+"/outputImgs/Frame_"+frame.format(i)+".png";
-			String name = curDir+"/outputImgs/Frame_"+frame.format(i)+".jpeg";
-			
-			
-			frames[i].writeImage(name);
-			}
-	}
-	*/
-	
+
 	public void propertyChange ( PropertyChangeEvent e ) {
 		if(e.getPropertyName().equals("ATTRIBUTES_CHANGED")){
 			//initialize();
 			setVisible(true);
 		}
-		
-	
 	}
 	
 	public void focusGained(FocusEvent e){
@@ -529,8 +493,8 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 	}
 	
-	/*
-	 * Listens for changes to the slider which then adjusts the speed of animation
+	/**
+	 * Listens for changes to the slider which then adjusts the speed of animation.
 	 */
 	class SliderListener implements ChangeListener {
 	    public void stateChanged(ChangeEvent e) {

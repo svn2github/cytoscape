@@ -49,7 +49,7 @@ public class FrameManager {
 		
 	}
 	
-	/*
+	/**
 	 * Creates a CyFrame from the current network and view.
 	 * 
 	 * @return CyFrame of the current CyNetworkView 
@@ -79,7 +79,7 @@ public class FrameManager {
 		
 	}
 	
-	/*
+	/**
 	 * Deletes a key frame from the key frame list.
 	 * 
 	 * @param index in keyFrameList of frame to be deleted
@@ -98,7 +98,7 @@ public class FrameManager {
 	}
 	
 	
-	/*
+	/**
 	 * Adds the current frame to the keyFrameList and creates a new timer or
 	 * updates the existing timer.
 	 */
@@ -113,7 +113,7 @@ public class FrameManager {
 	}
 	
 	
-	/*
+	/**
 	 * Creates a timer that fires continually at a delay set in milliseconds.
 	 * Each firing of the timer causes the next the frame in the array to be
 	 * displayed thus animating the array of CyFrames.  
@@ -146,7 +146,7 @@ public class FrameManager {
 	}
 
 	
-	/*
+	/**
 	 * Updates the timer by making a new one while also checking to see whether
 	 * or not the animation was already playing.
 	 */
@@ -161,7 +161,7 @@ public class FrameManager {
 	}
 	
 	
-	/*
+	/**
 	 * "Records" the animation in the sense that it dumps an image of each frame to 
 	 * a specified directory.  It also numbers the frames automatically so that they
 	 * can be easily compressed into a standard movie format.
@@ -190,7 +190,7 @@ public class FrameManager {
 		}
 	}
 	
-	/*
+	/**
 	 * Starts the the timer and plays the animation.
 	 */
 	public void play(){
@@ -200,7 +200,7 @@ public class FrameManager {
 		timer.start();
 	}
 	
-	/*
+	/**
 	 * Stops the timer and the animation.
 	 */
 	public void stop(){
@@ -209,7 +209,7 @@ public class FrameManager {
 		makeTimer();
 	}
 	
-	/*
+	/**
 	 * Pauses the timer and the animation.
 	 */
 	public void pause(){
@@ -217,7 +217,7 @@ public class FrameManager {
 		timer.stop();
 	}
 	
-	/*
+	/**
 	 * Steps forward one frame in the animation.
 	 */
 	public void stepForward(){
@@ -231,7 +231,7 @@ public class FrameManager {
 		frames[frameIndex].display();
 	}
 	
-	/*
+	/**
 	 * Steps backwards one frame in the animation.
 	 */
 	public void stepBackward(){
@@ -245,10 +245,20 @@ public class FrameManager {
 		frames[frameIndex].display();
 	}
 	
+	/**
+	 * Returns the key frame list.
+	 * 
+	 * @return
+	 */
 	public ArrayList<CyFrame> getKeyFrameList(){
 		return keyFrameList;
 	}
 	
+	/**
+	 * Sets the key frame list.
+	 * 
+	 * @param frameList
+	 */
 	public void setKeyFrameList(ArrayList<CyFrame> frameList){
 		keyFrameList = frameList;	
 		
@@ -259,6 +269,11 @@ public class FrameManager {
 		}
 	}
 	
+	/**
+	 * Returns the current timer.
+	 * 
+	 * @return
+	 */
 	public Timer getTimer(){
 		return timer;
 	}
