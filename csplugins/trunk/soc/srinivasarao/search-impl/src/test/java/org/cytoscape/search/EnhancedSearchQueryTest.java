@@ -97,6 +97,7 @@ public class EnhancedSearchQueryTest extends AbstractEnhancedSearchQueryTest {
 		// TODO Auto-generated method stub
 		String queryString = "9314" ;
 		esq.executeQuery(queryString);
+		System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
 		assertEquals(esq.getHitCount(),2);
 	}
 	
@@ -115,7 +116,7 @@ public class EnhancedSearchQueryTest extends AbstractEnhancedSearchQueryTest {
 		String queryString = "canonicalName:7157";
 		esq.executeQuery(queryString);
 		ArrayList<CyEdge> al = esq.getEdgeHits();
-		assertEquals(al.size(),4); 
+		assertEquals(al.size(),4);
 	}
 	 
 }
