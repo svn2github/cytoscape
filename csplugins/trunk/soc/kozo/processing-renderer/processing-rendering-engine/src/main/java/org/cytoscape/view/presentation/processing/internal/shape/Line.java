@@ -22,7 +22,9 @@ public class Line implements CyDrawable, EdgeItem {
 	private Vec3D source;
 	private Vec3D target;
 	
-	private int r, g, b, alpha;
+	private float r, g, b, alpha;
+	
+	private float strokeWidth = 1f;
 	
 	public Line(PApplet p) {
 		this.p = p;
@@ -32,11 +34,12 @@ public class Line implements CyDrawable, EdgeItem {
 
 	public void draw() {
 		if(source.z != target.z){
+			
 			p.stroke(200, 0, 0, 70);
-			p.strokeWeight(1);
+			p.strokeWeight(strokeWidth);
 		} else {
 			p.stroke(r, g, b, alpha);
-			p.strokeWeight(2);
+			p.strokeWeight(strokeWidth);
 		}
 		p.line(source.x, source.y, source.z, target.x, target.y, target.z);		
 	}
@@ -53,13 +56,12 @@ public class Line implements CyDrawable, EdgeItem {
 
 	public void setContext(View<?> viewModel) {
 		Paint edgePaint = viewModel.getVisualProperty(EDGE_COLOR);
-		
+		alpha = viewModel.getVisualProperty(EDGE_OPACITY).floatValue();
+		strokeWidth = viewModel.getVisualProperty(EDGE_WIDTH).floatValue();
 		if(edgePaint instanceof Color) {
 			this.r = ((Color)edgePaint).getRed();
 			this.g = ((Color)edgePaint).getGreen();
 			this.b = ((Color)edgePaint).getBlue();
-			//this.alpha = ((Color)edgePaint).getAlpha();
-			this.alpha = 100;
 		}
 	}
 
@@ -81,6 +83,11 @@ public class Line implements CyDrawable, EdgeItem {
 	}
 
 	public void addChild(CyDrawable child) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setDetailFlag(boolean flag) {
 		// TODO Auto-generated method stub
 		
 	}

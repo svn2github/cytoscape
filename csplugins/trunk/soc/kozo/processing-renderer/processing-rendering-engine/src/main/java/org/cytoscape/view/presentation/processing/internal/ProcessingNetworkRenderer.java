@@ -182,6 +182,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	
 	private int numP;
 
+	float rotXDelta = 0;
 	public void draw() {
 		background(bgColor.getRed(), bgColor.getGreen(), bgColor.getGreen());
 		lights();
@@ -191,9 +192,11 @@ public class ProcessingNetworkRenderer extends PApplet implements
 				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
 				height / 2.0f, 0, 0, 1, 0);
 		
-//		translate(width / 2, height / 2, height / 2);
+		translate(width / 2+ translateX, height / 2+ translateY, height / 2);
 		rotateX(rotY);
 		rotateY(rotX);
+		rotateZ(rotXDelta);
+		
 		translate(-width / 2 + translateX, -height / 2 + translateY,
 				-height / 2);
 
@@ -204,10 +207,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		for (CyDrawable edge : edges)
 			edge.draw();
 
-		// particleManager.draw(gl);
-
-		
-		
+		// Reser camera and draw overlay
 		camera();
 		beginGL();
 		gl.glClear(javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT);
@@ -216,6 +216,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		// 2D OpenGL UI
 		if(isOverlay)
 			overlay.draw();
+		
+		rotXDelta += 0.002f;
 	}
 
 	public void beginGL() {
@@ -269,6 +271,11 @@ public class ProcessingNetworkRenderer extends PApplet implements
 			  noLoop();
 		  } else
 			  loop();
+		  
+	  } else if( key == 'd') {
+		  // freeze
+		  for (CyDrawable node : nodes)
+				node.setDetailFlag(false);
 		  
 	  }
 	    

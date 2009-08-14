@@ -7,6 +7,7 @@ import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_OP
 
 import java.awt.Color;
 
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
@@ -22,6 +23,8 @@ public class DefaultVisualStyleBuilder {
 
 	// TODO: this attr name should be managed in model!!!
 	private static final String NAME = "name";
+	private static final String INTERACTION = "interaction";
+	
 
 	private static final String STYLE_TITLE = "Processing Default Style";
 
@@ -30,8 +33,11 @@ public class DefaultVisualStyleBuilder {
 
 	private static final Color DEF_EDGE_COLOR = new Color(0, 30, 250);
 	private static final double DEF_EDGE_OPACITY = 150d;
+	
+	private static final Color PP_COLOR = new Color(200, 20, 20);
+	private static final Color PD_COLOR = new Color(100, 200, 100);
 
-	private static final Color DEF_BACKGROUND_COLOR = new Color(200, 200, 200);
+	private static final Color DEF_BACKGROUND_COLOR = Color.white;
 
 	private VisualStyle style;
 
@@ -54,13 +60,20 @@ public class DefaultVisualStyleBuilder {
 		final DiscreteMapping<String, Double> location = new DiscreteMapping<String, Double>(
 				NAME, String.class, NODE_Z_LOCATION);
 		
-		randSize.putMapValue("YMR043W", 100d);
+		final DiscreteMapping<String, Color> interaction = new DiscreteMapping<String, Color>(
+				INTERACTION, String.class, (VisualProperty<Color>) EDGE_COLOR);
+		
+		randSize.putMapValue("YMR043W", 60d);
 		location.putMapValue("YMR043W", 500d);
+		
+		interaction.putMapValue("pp", PP_COLOR);
+		interaction.putMapValue("pd", PD_COLOR);
 
 
 		style.addVisualMappingFunction(labelMapping);
 		style.addVisualMappingFunction(randSize);
 		style.addVisualMappingFunction(location);
+		style.addVisualMappingFunction(interaction);
 		
 		
 		style.setDefaultValue(NODE_COLOR, DEF_NODE_COLOR);
@@ -68,6 +81,7 @@ public class DefaultVisualStyleBuilder {
 
 		style.setDefaultValue(EDGE_COLOR, DEF_EDGE_COLOR);
 		style.setDefaultValue(EDGE_OPACITY, DEF_EDGE_OPACITY);
+		style.setDefaultValue(EDGE_WIDTH, 3d);
 
 		style.setDefaultValue(NETWORK_BACKGROUND_COLOR, DEF_BACKGROUND_COLOR);
 

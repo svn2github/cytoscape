@@ -55,6 +55,8 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 	
 	private final List<CyDrawable> children;
 	
+	private boolean detail = true;
+	
 	
 	private Map<VisualProperty<?>, Object> fieldMap;
 	
@@ -90,11 +92,18 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 		p.noStroke();
 		p.translate(x, y, z);
 		p.fill(r, g, b, alpha);
+		//p.noFill();
+		//p.strokeWeight(1);
+		//p.sphereDetail(3);
+		//p.stroke(50, 100, 100, 50);
+		//p.sphere(size);
 		p.box(size);
 		p.popMatrix();
 		
-		for(CyDrawable child: children)
-			child.draw();
+//		if(detail) {
+			for(CyDrawable child: children)
+				child.draw();
+		
 	}
 
 	public List<CyDrawable> getChildren() {
@@ -108,8 +117,6 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue();
 		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();		
 		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue();
-		
-		System.out.println("Z location = " + this.z);
 		
 		this.size = viewModel.getVisualProperty(NODE_X_SIZE).floatValue();
 		if(size <= 0)
@@ -129,13 +136,6 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 			//this.alpha = opacity.intValue();		
 			this.alpha = 100;
 		}
-		
-//		String text = viewModel.getVisualProperty(NODE_LABEL);
-//		if(text != null || text.length() != 0) {
-//			children.add(new Text(p, lexicon));
-//		}
-		
-		
 		
 		// Set values for children
 		for(CyDrawable child: children)
@@ -175,6 +175,11 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 	public void addChild(CyDrawable child) {
 		// TODO Auto-generated method stub
 		this.children.add(child);
+	}
+
+	public void setDetailFlag(boolean flag) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

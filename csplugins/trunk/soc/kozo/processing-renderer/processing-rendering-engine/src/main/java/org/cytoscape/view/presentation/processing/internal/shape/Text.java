@@ -81,18 +81,14 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 //		PGraphicsOpenGL graphics = (PGraphicsOpenGL) p.g;
 //		PMatrix3D m_inv = graphics.camera;
 //
-//		p.pushMatrix();
 //		p.applyMatrix(
 //				1, 0, 0, m_inv.m03, 
 //				0, 1, 0, m_inv.m13, 
 //				0, 0, 1, m_inv.m23, 
 //				m_inv.m30, m_inv.m31, m_inv.m32, m_inv.m33);
 //
-
 		p.fill(r, g, b, alpha);
-		p.text(text, x,y, z);
-
-//		p.popMatrix();
+		p.text(text, x, y, z+30);
 	}
 
 	public List<CyDrawable> getChildren() {
@@ -103,8 +99,6 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 	public void setContext(View<?> viewModel) {
 
 		this.text = viewModel.getVisualProperty(NODE_LABEL);
-
-		System.out.println("********************** Node Text = " + text);
 
 		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue()
 				+ offsetX;
@@ -159,6 +153,11 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 	public void addChild(CyDrawable child) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setDetailFlag(boolean flag) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

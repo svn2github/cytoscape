@@ -58,4 +58,9 @@ public class CyQuad extends Quad implements CyDrawable, Pickable {
 		
 	}
 
+	public void setDetailFlag(boolean flag) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

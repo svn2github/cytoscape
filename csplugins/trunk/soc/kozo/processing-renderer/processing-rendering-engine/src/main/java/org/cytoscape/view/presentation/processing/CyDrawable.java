@@ -46,5 +46,7 @@ public interface CyDrawable {
 	 * @return set of compatible data types.
 	 */
 	public Set<Class<?>> getCompatibleModels();
+	
+	public void setDetailFlag(boolean flag);
 
 }
