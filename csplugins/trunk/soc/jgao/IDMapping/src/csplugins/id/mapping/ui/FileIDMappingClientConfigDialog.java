@@ -35,25 +35,26 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.DelimitedTextIDMappingClient;
+import csplugins.id.mapping.IDMapperClient;
+import csplugins.id.mapping.IDMapperClientImpl;
 
+import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.util.URLUtil;
-import cytoscape.util.CyFileFilter;
 
-import org.bridgedb.file.IDMapperText;
 import org.bridgedb.IDMapperException;
+import org.bridgedb.file.IDMapperText;
 
-import java.util.Vector;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.Vector;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.Reader;
-import java.io.BufferedReader;
 
 import java.net.URL;
 
@@ -72,7 +73,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     // configure an existing client
     public FileIDMappingClientConfigDialog(java.awt.Dialog parent,
-            boolean modal, DelimitedTextIDMappingClient client) {
+            boolean modal, IDMapperClient client) {
         super(parent, modal);
         initComponents();
 
@@ -532,9 +533,15 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (verifyInput()) {
             if (client!=null) { // config
-                client.setDataSourceDelimiters(getTypeDelimiters());
-                client.setIDDelimiters(getIDDelimiters());
-                client.setTransitivity(transitivityCheckBox.isSelected());
+//                client.setDataSourceDelimiters(getTypeDelimiters());
+//                client.setIDDelimiters(getIDDelimiters());
+//                client.setTransitivity(transitivityCheckBox.isSelected());
+                String connString = getConnectionString();
+                try {
+                    client.setConnectionString(connString);
+                } catch (IDMapperException e) {
+                    e.printStackTrace();
+                }
             }
             cancelled = false;
             setVisible(false);
@@ -636,7 +643,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
         }
 
         char[] typeDelimiters = getTypeDelimiters();
-        if(typeDelimiters==null) {
+        if(typeDelimiters==null || typeDelimiters.length==0) {
             JOptionPane.showMessageDialog(this, "Error: Please specify at least one type delimiter");
             return false;
         }
@@ -673,10 +680,6 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
         }
 
         int n = typeDelimiters.size();
-        if (n==0) {
-            return null;
-        }
-
         char[] ret = new char[n];
         int i = 0;
         for (char ch : typeDelimiters) {
@@ -744,10 +747,6 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
         }
 
         int n = idDelimiters.size();
-        if (n==0) {
-            return null;
-        }
-
         char[] ret = new char[n];
         int i = 0;
         for (char ch : idDelimiters) {
@@ -842,27 +841,42 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
         return sb.toString();
     }
 
-    public DelimitedTextIDMappingClient getIDMappingClient() throws IDMapperException {
+    public IDMapperClient getIDMappingClient() 
+            throws IDMapperException, ClassNotFoundException {
         if (client!=null) {
             return client; // configure
         }
-        
+
+        String url = textFileTextField.getText();
+
+        return new IDMapperClientImpl(getConnectionString(),
+                "org.bridgedb.file.IDMapperText", url);
+    }
+
+    private String getConnectionString() {
         char[] typeDelimiters = getTypeDelimiters();
         char[] idDelimiters = getIDDelimiters();
 
         //TODO: delimiters cannot be the same or contain each other for type and id
-        
-        URL url;
-        try {
-            url = new URL(textFileTextField.getText());
-        } catch (java.net.MalformedURLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
+
+        String url = textFileTextField.getText();
 
         boolean transitivity = transitivityCheckBox.isSelected();
+
+        StringBuilder connString = new StringBuilder("idmapper-text:");
+        for (char del : typeDelimiters) {
+            connString.append("dssep="+del+",");
+        }
+
+        for (char del : idDelimiters) {
+            connString.append("idsep="+del+",");
+        }
+
+        connString.append("transitivity="+(transitivity?"true":"false"));
+
+        connString.append("@"+url);
         
-        return new DelimitedTextIDMappingClient(url, typeDelimiters, idDelimiters, transitivity);
+        return connString.toString();
     }
 
     public boolean isCancelled() {
@@ -881,7 +895,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     private boolean isLocal = true;
     private boolean cancelled = true;
-    private final DelimitedTextIDMappingClient client;
+    private final IDMapperClient client;
     private int previewLimit = 100;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

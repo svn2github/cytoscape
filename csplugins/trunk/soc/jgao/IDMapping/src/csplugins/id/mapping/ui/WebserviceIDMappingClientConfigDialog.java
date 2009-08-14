@@ -35,14 +35,13 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.WebserviceIDMappingClient;
-import csplugins.id.mapping.BiomartIDMappingClient;
-import csplugins.id.mapping.PICRIDMappingClient;
+import csplugins.id.mapping.IDMapperClient;
+import csplugins.id.mapping.IDMapperClientImpl;
 
 import org.bridgedb.IDMapperException;
 import org.bridgedb.webservice.IDMapperWebservice;
 import org.bridgedb.webservice.IDMapperBiomart;
-import org.bridgedb.webservice.picr.IDMapperPicr;
+import org.bridgedb.webservice.picr.IDMapperPicrRest;
 import org.bridgedb.webservice.biomart.Database;
 import org.bridgedb.webservice.biomart.Dataset;
 import org.bridgedb.webservice.biomart.BiomartStub;
@@ -90,19 +89,20 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
     // configure a existing client
     public  WebserviceIDMappingClientConfigDialog(javax.swing.JDialog parent,
-            boolean modal, WebserviceIDMappingClient client) {
+            boolean modal, IDMapperClient client) {
         super(parent, modal);
         initMapTypePanel();
         this.client = client;
         if (client!=null) {
             idMapper = (IDMapperWebservice) client.getIDMapper();
+            if (idMapper instanceof IDMapperBiomart) {
+                connectBiomart();
+            }
         }        
 
         loadBiomartFilterFile();
         
         initComponents();
-
-
     }
 
     /** This method is called from within the constructor to
@@ -153,7 +153,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         } else if (idMapper instanceof IDMapperBiomart) {
             typeComboBox.setSelectedItem(ClientType.BIOMART);
             typeComboBox.setEnabled(false);
-        } else if (idMapper instanceof IDMapperPicr) {
+        } else if (idMapper instanceof IDMapperPicrRest) {
             typeComboBox.setSelectedItem(ClientType.PICR);
             typeComboBox.setEnabled(false);
         }
@@ -181,241 +181,236 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         chooseDBPanel.setPreferredSize(new java.awt.Dimension(400, 50));
         chooseDBPanel.setLayout(new javax.swing.BoxLayout(chooseDBPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        if (idMapper==null || idMapper instanceof IDMapperBiomart) {
+        if (idMapper==null) {
             chooseDBComboBox.setModel(new DefaultComboBoxModel(getVisibleDatabase()));
+        } else if (idMapper instanceof IDMapperBiomart) {
+            chooseDBComboBox.setModel(new DefaultComboBoxModel(new Database[] {
+                biomartStub.getDatabase(((IDMapperBiomart)idMapper).getMart())}));
+    chooseDBComboBox.setEnabled(false);
+    }
+    chooseDBComboBox.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            chooseDBComboBoxActionPerformed(evt);
         }
-        if (idMapper!=null && idMapper instanceof IDMapperBiomart) {
-            String dsname = ((IDMapperBiomart)idMapper).getDataset();
-            Dataset ds = biomartStub.getDataset(dsname);
-            if (ds!=null) {
-                Database db = ds.getDatabase();
-                chooseDBComboBox.setSelectedItem(db);
-            }
+    });
+    chooseDBPanel.add(chooseDBComboBox);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    biomartPanel.add(chooseDBPanel, gridBagConstraints);
+
+    chooseDatasetPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Choose a dataset"));
+    chooseDatasetPanel.setLayout(new javax.swing.BoxLayout(chooseDatasetPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+    if (idMapper==null) {
+        setDatasetsCombo();
+    } else if(idMapper instanceof IDMapperBiomart) {
+        Dataset ds = biomartStub.getDataset(((IDMapperBiomart)idMapper).getDataset());
+        chooseDatasetComboBox.setModel(new DefaultComboBoxModel(new Dataset[] {ds}));
+        chooseDatasetComboBox.setEnabled(false);
+    }
+    chooseDatasetPanel.add(chooseDatasetComboBox);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    biomartPanel.add(chooseDatasetPanel, gridBagConstraints);
+
+    biomartOpPanel.setLayout(new java.awt.GridBagLayout());
+
+    biomartOptionCheckBox.setSelected(idMapper!=null);
+    biomartOptionCheckBox.setText("Show advanced option");
+    biomartOptionCheckBox.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            biomartOptionCheckBoxActionPerformed(evt);
         }
-        chooseDBComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chooseDBComboBoxActionPerformed(evt);
-            }
-        });
-        chooseDBPanel.add(chooseDBComboBox);
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    biomartOpPanel.add(biomartOptionCheckBox, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        biomartPanel.add(chooseDBPanel, gridBagConstraints);
+    biomartAdvancedPanel.setLayout(new java.awt.GridBagLayout());
+    biomartAdvancedPanel.setVisible(biomartOptionCheckBox.isSelected());
 
-        chooseDatasetPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Choose a dataset"));
-        chooseDatasetPanel.setLayout(new javax.swing.BoxLayout(chooseDatasetPanel, javax.swing.BoxLayout.LINE_AXIS));
+    biomartTransitivityCheckBox.setSelected(idMapper!=null &&
+        idMapper instanceof IDMapperBiomart &&
+        ((IDMapperBiomart)idMapper).getTransitivity());
+    biomartTransitivityCheckBox.setText("Support transitivity of ID mappings");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    biomartAdvancedPanel.add(biomartTransitivityCheckBox, gridBagConstraints);
 
-        if (idMapper==null || idMapper instanceof IDMapperBiomart) {
-            setDatasetsCombo();
+    biomartFilterTgtCheckBox.setSelected(idMapper==null ||
+        !(idMapper instanceof IDMapperBiomart) ||
+        ((IDMapperBiomart)idMapper).getIDOnlyForTgtDataSource());
+    biomartFilterTgtCheckBox.setText("Filter supported target source ID with IDs or accessions only");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    biomartAdvancedPanel.add(biomartFilterTgtCheckBox, gridBagConstraints);
+
+    biomartBaseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Base URL of BioMart"));
+    biomartBaseUrlPanel.setLayout(new java.awt.GridBagLayout());
+
+    biomartBaseUrlTextField.setText(idMapper==null || !(idMapper instanceof IDMapperBiomart)?
+        biomartStub.defaultBaseURL:((IDMapperBiomart)idMapper).getBaseURL());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    biomartBaseUrlPanel.add(biomartBaseUrlTextField, gridBagConstraints);
+
+    biomartBaseUrlButton.setText("Change");
+    biomartBaseUrlButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            biomartBaseUrlButtonActionPerformed(evt);
         }
-        if (idMapper!=null && idMapper instanceof IDMapperBiomart) {
-            String dsname = ((IDMapperBiomart)idMapper).getDataset();
-            Dataset ds = biomartStub.getDataset(dsname);
-            if (ds!=null) {
-                chooseDatasetComboBox.setSelectedItem(ds);
-            }
+    });
+    biomartBaseUrlPanel.add(biomartBaseUrlButton, new java.awt.GridBagConstraints());
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    biomartAdvancedPanel.add(biomartBaseUrlPanel, gridBagConstraints);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    biomartOpPanel.add(biomartAdvancedPanel, gridBagConstraints);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    biomartPanel.add(biomartOpPanel, gridBagConstraints);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.weighty = 1.0;
+    getContentPane().add(biomartPanel, gridBagConstraints);
+
+    picrPanel.setVisible(typeComboBox.getSelectedItem()==ClientType.PICR);
+    picrPanel.setLayout(new java.awt.GridBagLayout());
+
+    picrOpPanel.setLayout(new java.awt.GridBagLayout());
+
+    picrOptionCheckBox.setSelected(idMapper!=null);
+    picrOptionCheckBox.setText("Show advanced option");
+    picrOptionCheckBox.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            picrOptionCheckBoxActionPerformed(evt);
         }
-        chooseDatasetPanel.add(chooseDatasetComboBox);
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    picrOpPanel.add(picrOptionCheckBox, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        biomartPanel.add(chooseDatasetPanel, gridBagConstraints);
+    picrAdvancedPanel.setLayout(new java.awt.GridBagLayout());
+    picrAdvancedPanel.setVisible(picrOptionCheckBox.isSelected());
 
-        biomartOpPanel.setLayout(new java.awt.GridBagLayout());
+    picrOnlyActiveCheckBox.setSelected(idMapper==null ||
+        !(idMapper instanceof IDMapperPicrRest) ||
+        ((IDMapperPicrRest)idMapper).getOnlyActive());
+    picrOnlyActiveCheckBox.setText("Use only active mappings (remove deleted mappings)");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    picrAdvancedPanel.add(picrOnlyActiveCheckBox, gridBagConstraints);
 
-        biomartOptionCheckBox.setText("Show advanced option");
-        biomartOptionCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                biomartOptionCheckBoxActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        biomartOpPanel.add(biomartOptionCheckBox, gridBagConstraints);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    picrOpPanel.add(picrAdvancedPanel, gridBagConstraints);
 
-        biomartAdvancedPanel.setLayout(new java.awt.GridBagLayout());
-        biomartAdvancedPanel.setVisible(biomartOptionCheckBox.isSelected());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    picrPanel.add(picrOpPanel, gridBagConstraints);
 
-        biomartTransitivityCheckBox.setSelected(idMapper!=null &&
-            idMapper instanceof IDMapperBiomart &&
-            ((IDMapperBiomart)idMapper).getTransitivity());
-        biomartTransitivityCheckBox.setText("Support transitivity of ID mappings");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        biomartAdvancedPanel.add(biomartTransitivityCheckBox, gridBagConstraints);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.weighty = 1.0;
+    getContentPane().add(picrPanel, gridBagConstraints);
 
-        biomartFilterTgtCheckBox.setSelected(idMapper==null ||
-            !(idMapper instanceof IDMapperBiomart) ||
-            ((IDMapperBiomart)idMapper).getIDOnlyForTgtDataSource());
-        biomartFilterTgtCheckBox.setText("Filter supported target source ID with IDs or accessions only");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        biomartAdvancedPanel.add(biomartFilterTgtCheckBox, gridBagConstraints);
+    okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        biomartBaseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Base URL of BioMart"));
-        biomartBaseUrlPanel.setLayout(new java.awt.GridBagLayout());
+    okButton.setText("   OK   ");
+    okButton.setToolTipText("");
+    okButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            okButtonActionPerformed(evt);
+        }
+    });
+    okPanel.add(okButton);
 
-        biomartBaseUrlTextField.setText(idMapper==null || !(idMapper instanceof IDMapperBiomart)?
-            biomartStub.defaultBaseURL:((IDMapperBiomart)idMapper).getBaseURL());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        biomartBaseUrlPanel.add(biomartBaseUrlTextField, gridBagConstraints);
+    cancelButton.setText("Cancel");
+    cancelButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            cancelButtonActionPerformed(evt);
+        }
+    });
+    okPanel.add(cancelButton);
 
-        biomartBaseUrlButton.setText("Change");
-        biomartBaseUrlButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                biomartBaseUrlButtonActionPerformed(evt);
-            }
-        });
-        biomartBaseUrlPanel.add(biomartBaseUrlButton, new java.awt.GridBagConstraints());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+    getContentPane().add(okPanel, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        biomartAdvancedPanel.add(biomartBaseUrlPanel, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        biomartOpPanel.add(biomartAdvancedPanel, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        biomartPanel.add(biomartOpPanel, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        getContentPane().add(biomartPanel, gridBagConstraints);
-
-        picrPanel.setVisible(typeComboBox.getSelectedItem()==ClientType.PICR);
-        picrPanel.setLayout(new java.awt.GridBagLayout());
-
-        picrOpPanel.setLayout(new java.awt.GridBagLayout());
-
-        picrOptionCheckBox.setText("Show advanced option");
-        picrOptionCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                picrOptionCheckBoxActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        picrOpPanel.add(picrOptionCheckBox, gridBagConstraints);
-
-        picrAdvancedPanel.setLayout(new java.awt.GridBagLayout());
-        picrAdvancedPanel.setVisible(picrOptionCheckBox.isSelected());
-
-        picrOnlyActiveCheckBox.setSelected(idMapper==null ||
-            !(idMapper instanceof IDMapperPicr) ||
-            ((IDMapperPicr)idMapper).getOnlyActive());
-        picrOnlyActiveCheckBox.setText("Use only active mappings");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        picrAdvancedPanel.add(picrOnlyActiveCheckBox, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        picrOpPanel.add(picrAdvancedPanel, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        picrPanel.add(picrOpPanel, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        getContentPane().add(picrPanel, gridBagConstraints);
-
-        okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
-
-        okButton.setText("   OK   ");
-        okButton.setToolTipText("");
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okButtonActionPerformed(evt);
-            }
-        });
-        okPanel.add(okButton);
-
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-        okPanel.add(cancelButton);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(okPanel, gridBagConstraints);
-
-        pack();
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void biomartOptionCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_biomartOptionCheckBoxActionPerformed
@@ -431,29 +426,16 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (verifyInput()) {
             if (idMapper!=null) { // config
-                if (idMapper instanceof IDMapperBiomart) {
-                    IDMapperBiomart bim = (IDMapperBiomart) idMapper;
-                    String baseUrl = biomartBaseUrlTextField.getText();
-                    if (bim.getBaseURL().compareTo(baseUrl)!=0) {
-                        try {
-                            bim.setBaseURL(baseUrl);
-                        } catch(Exception e) {
-                            e.printStackTrace();
-                            JOptionPane.showMessageDialog(this, "Configure failed.");
-                            return;
-                        }
-                    }
-
-                    Dataset ds = (Dataset) chooseDatasetComboBox.getSelectedItem();
-                    if (ds!=null)
-                        bim.setDataset(ds.getName());
-
-                    bim.setTransitivity(biomartTransitivityCheckBox.isSelected());
-                    bim.setIDOnlyForTgtDataSource(biomartFilterTgtCheckBox.isSelected());
-                } else if (idMapper instanceof IDMapperPicr) {
-                    IDMapperPicr imp = (IDMapperPicr) idMapper;
-                    imp.setOnlyActive(this.picrOnlyActiveCheckBox.isSelected());
+                String[] strs = this.getSettings();
+                String connStr = strs[0];
+                try {
+                    client.setConnectionString(connStr);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                    System.err.println(connStr);
+                    JOptionPane.showMessageDialog(this, "Error: failed to configure");
                 }
+
             }
             cancelled = false;
             setVisible(false);
@@ -519,7 +501,8 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_typeComboBoxActionPerformed
 
     private boolean verifyInput() {
-        if (biomartStub==null) {
+        if (typeComboBox.getSelectedItem()==ClientType.BIOMART &&
+                biomartStub==null) {
             JOptionPane.showMessageDialog(this, "Error: failed to connect to a Biomart.");
         }
 
@@ -602,27 +585,64 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         return true;
     }
 
-    public WebserviceIDMappingClient getIDMappingClient() throws IDMapperException {
+    public IDMapperClient getIDMappingClient()
+            throws ClassNotFoundException, IDMapperException {
         if (client!=null) {
             return client;
         }
 
-        if (typeComboBox.getSelectedItem()==ClientType.BIOMART) {
-            Dataset ds = (Dataset) chooseDatasetComboBox.getSelectedItem();
-            String dsname = ds.getName();
-            String baseurl = biomartBaseUrlTextField.getText();
+        String[] strs = getSettings();
+        String connStr = strs[0];
+        String className = strs[1];
+        String displayName = strs[2];
+
+        return new IDMapperClientImpl(connStr, className, displayName);
+
+    }
+
+    private String[] getSettings() {        
+        ClientType type = (ClientType) typeComboBox.getSelectedItem();
+        if (type==ClientType.BIOMART) {
+            String className = "org.bridgedb.webservice.IDMapperBiomart";
+
+            StringBuilder connString = new StringBuilder("idmapper-biomart:") ;
+            StringBuilder displayName = new StringBuilder("BioMart");
 
             boolean transitivity = biomartTransitivityCheckBox.isSelected();
+            connString.append("transitivity="+(transitivity?"true":"false"));
+
             boolean filterTgt = biomartFilterTgtCheckBox.isSelected();
+            connString.append(",id-type-filter="+(filterTgt?"true":"false"));
 
-            client = new BiomartIDMappingClient(dsname, baseurl, filterTgt, transitivity);
+            String baseurl = biomartBaseUrlTextField.getText();
+            connString.append("@"+baseurl+"?");
+            if (baseurl.compareTo(BiomartStub.defaultBaseURL)!=0) {
+                displayName.append("("+baseurl+")");
+            }
+
+            Database db = (Database) chooseDBComboBox.getSelectedItem();
+            String dbname = db.getName();
+            connString.append("mart="+dbname);
+            displayName.append("(mart="+dbname);
+
+            Dataset ds = (Dataset) chooseDatasetComboBox.getSelectedItem();
+            String dsname = ds.getName();
+            connString.append("&dataset="+dsname);
+            displayName.append(",dataset="+dsname+")");
+
+            return new String[]{connString.toString(), className, displayName.toString()};
         } else if (typeComboBox.getSelectedItem()==ClientType.PICR) {
+            String className = "org.bridgedb.webservice.picr.IDMapperPicrRest";
             boolean onlyActive = picrOnlyActiveCheckBox.isSelected();
-            client = new PICRIDMappingClient(onlyActive);
+            String connString = "idmapper-picr-rest:only-active="+(onlyActive?"true":"false");
+            String displayName = "PICR: Protein Identifier Cross-Reference Service";
+            return new String[]{connString, className, displayName};
+        }else {
+            throw new java.lang.IllegalStateException();
         }
-
-        return client;
     }
+
+    
 
     public boolean isCancelled() {
         return cancelled;
@@ -666,7 +686,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     private Set<String> databaseFilter = new HashSet();
 
     private BiomartStub biomartStub;
-    private WebserviceIDMappingClient client = null;
+    private IDMapperClient client = null;
     private IDMapperWebservice idMapper = null;
     private boolean cancelled = true;
     private Map<ClientType, javax.swing.JPanel> mapTypePanel;

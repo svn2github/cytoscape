@@ -108,7 +108,7 @@ public class AttributeBasedIDMappingImpl
 
         // id mapping
         updateTaskMonitor("Mapping IDs...");
-        IDMapperStack idMapperStack = IDMappingClientManager.selectedIDMapperStack();
+        IDMapperStack idMapperStack = IDMapperClientManager.selectedIDMapperStack();
         Map<Xref, Set<Xref>> idMapping = idMapperStack.mapID(srcXrefs, tgtTypes);
 
         // define target attribute

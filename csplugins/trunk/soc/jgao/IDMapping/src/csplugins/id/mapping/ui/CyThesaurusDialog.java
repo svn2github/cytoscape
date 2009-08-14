@@ -35,7 +35,7 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.IDMappingClientManager;
+import csplugins.id.mapping.IDMapperClientManager;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -544,7 +544,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         ret[0] = new HashSet();
         ret[1] = ret[0];
 
-        IDMapperStack stack = IDMappingClientManager.selectedIDMapperStack();
+        IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
         try {
             ret[0] = stack.getCapabilities().getSupportedSrcDataSources();
             ret[1] = stack.getCapabilities().getSupportedTgtDataSources();

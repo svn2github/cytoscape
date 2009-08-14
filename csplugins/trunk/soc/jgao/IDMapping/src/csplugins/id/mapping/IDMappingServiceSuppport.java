@@ -152,7 +152,7 @@ public class IDMappingServiceSuppport {
 
         Set<DataSource> srcDataSources;
         Set<DataSource> tgtDataSources;
-        IDMapperStack stack = IDMappingClientManager.selectedIDMapperStack();
+        IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
         try {
             srcDataSources = stack.getCapabilities().getSupportedSrcDataSources();
             tgtDataSources = stack.getCapabilities().getSupportedTgtDataSources();
@@ -308,7 +308,7 @@ public class IDMappingServiceSuppport {
             Set<DataSource> tgtDataSources = null;
             try {
                 IDMapperCapabilities cap
-                      = IDMappingClientManager.selectedIDMapperStack().getCapabilities();
+                      = IDMapperClientManager.selectedIDMapperStack().getCapabilities();
                 srcDataSources = cap.getSupportedSrcDataSources();
                 tgtDataSources = cap.getSupportedTgtDataSources();
             } catch (Exception e) {

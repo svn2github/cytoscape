@@ -35,15 +35,12 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.IDMappingClient;
-import csplugins.id.mapping.IDMappingClientManager;
+import csplugins.id.mapping.IDMapperClient;
 
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultMutableTreeNode;
-
-import java.util.Set;
 
 /**
  *
@@ -75,8 +72,8 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
                     if (nodeObj instanceof DefaultMutableTreeNode) {
                         DefaultMutableTreeNode node = (DefaultMutableTreeNode)nodeObj;
                         Object clientObj = node.getUserObject();
-                        if (clientObj instanceof IDMappingClient) {
-                            IDMappingClient client = (IDMappingClient)clientObj;
+                        if (clientObj instanceof IDMapperClient) {
+                            IDMapperClient client = (IDMapperClient)clientObj;
                             descTextArea.setText(client.getDescription());
                         } else {
                             descTextArea.setText(msg);

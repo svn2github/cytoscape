@@ -35,25 +35,31 @@
 
 package csplugins.id.mapping;
 
-import org.bridgedb.webservice.IDMapperBiomart;
+import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperException;
-
 
 /**
  *
  * @author gjj
  */
-public class BiomartIDMappingClient extends WebserviceIDMappingClient {
+public interface IDMapperClient {
 
-   public BiomartIDMappingClient(final String dataset, final String baseURL,
-            final boolean filterTgt, final boolean transitivity) throws IDMapperException {
-        this(new IDMapperBiomart(dataset, baseURL, filterTgt, transitivity));
-    }
+    public String getId(); // client id
 
-    public BiomartIDMappingClient(final IDMapperBiomart idMapper) {
-        super(idMapper.toString(),
-                idMapper.toString(),
-                idMapper);
-        //TODO: set ModuleProperties
-    }
+    public String getDisplayName();
+
+    public String getConnectionString();
+
+    public void setConnectionString(String connectionString) 
+            throws IDMapperException ;
+
+    public IDMapper getIDMapper();
+    
+    public String getClassString();
+
+    public String getDescription();
+
+    public boolean isSelected();
+
+    public void setSelected(boolean selected);
 }

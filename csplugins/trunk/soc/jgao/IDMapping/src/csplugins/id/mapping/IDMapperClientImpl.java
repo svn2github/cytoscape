@@ -31,21 +31,15 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package csplugins.id.mapping;
-
-import cytoscape.util.ModuleProperties;
-
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeListener;
 
 import java.util.Collections;
 import java.util.Set;
 import java.util.Vector;
 
-import java.io.Serializable;
-
+import org.bridgedb.BridgeDb;
 import org.bridgedb.DataSource;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperCapabilities;
@@ -53,166 +47,87 @@ import org.bridgedb.IDMapperException;
 import org.bridgedb.Xref;
 
 /**
- * Abstract class for all ID mapping clients.
- * All clients MUST extend this class.
  *
  * @author gjj
- *
  */
-public abstract class AbstractIDMappingClient implements Serializable, IDMappingClient {
-    // Default ID
-    protected static final String DEF_NAME = "default";
-
-    // Default Display Name
-    protected static final String DEF_DISPLAY_NAME = "Default Web Service Cilent";
-
-    protected static final String CLIENT_PROPERTY_NAME = "CyThesaurus.Client";
-
-    // Stub object.
-    protected IDMapper idMapper;
-
-    // Client ID.  This should be unique.
-    protected String clientID;
-
-    // Display Name for this client.
+public class IDMapperClientImpl implements IDMapperClient {
+    protected IDMapper mapper = null;
+    protected String connectionString;
+    protected String classString;
+    protected String id;
     protected String displayName;
-
-    // Properties for this client.  Will be used by Tunable.
-    protected ModuleProperties props;
-
-    protected boolean isSelected;
-
-    protected PropertyChangeSupport pcs;
+    protected boolean selected;
 
     protected static int clientNo = 0;
-    
-    public static final String SELECTED_CHANGED = "SELECTED_CHANGED";
 
-
-    /**
-     * Creates a new WebServiceClientImpl object.
-     */
-    public AbstractIDMappingClient() {
-            this(DEF_NAME, DEF_DISPLAY_NAME);
+    public IDMapperClientImpl(String connectionString, String classString)
+            throws ClassNotFoundException, IDMapperException{
+        this(connectionString, classString, null);
+        id = ""+clientNo;
+        displayName = ""+clientNo;
     }
 
-    /**
-     * Creates a new WebServiceClientImpl object.
-     *
-     * @param serviceName  DOCUMENT ME!
-     * @param displayName  DOCUMENT ME!
-     */
-    public AbstractIDMappingClient(final String serviceName, final String displayName) {
-            this(serviceName, displayName, null);
+    public IDMapperClientImpl(String connectionString, String classString,
+            String displayName)
+            throws ClassNotFoundException, IDMapperException {
+        this(connectionString, classString, displayName, null);
+        id = ""+clientNo;
     }
 
-    /**
-     * Creates a new WebServiceClientImpl object.
-     *
-     * @param serviceName  DOCUMENT ME!
-     * @param displayName  DOCUMENT ME!
-     * @param props  DOCUMENT ME!
-     */
-    public AbstractIDMappingClient(final String serviceName, final String displayName,
-                               final IDMapper idMapper) {
-            this(serviceName, displayName, idMapper, null);
+    public IDMapperClientImpl(String connectionString, String classString,
+            String displayName, String id)
+            throws ClassNotFoundException, IDMapperException {
+        this(connectionString, classString, displayName, id, true);
     }
 
-    /**
-     * Creates a new WebServiceClientImpl object.
-     *
-     * @param serviceName  DOCUMENT ME!
-     * @param displayName  DOCUMENT ME!
-     * @param props  DOCUMENT ME!
-     */
-    public AbstractIDMappingClient(final String serviceName, final String displayName,
-                                   final IDMapper idMapper, final ModuleProperties props) {
-            this.clientID = serviceName;
-            this.displayName = displayName;
-            this.props = props;
-            this.idMapper = idMapper;
+    public IDMapperClientImpl(String connectionString, String classString,
+            String displayName, String id, boolean selected)
+            throws ClassNotFoundException, IDMapperException {
+        this.classString = classString;
+        Class.forName(classString);
 
-            this.isSelected = true;
+        this.connectionString = connectionString;
+        mapper = BridgeDb.connect(connectionString);
 
-            pcs = new PropertyChangeSupport(this);
-            clientNo++;
+        this.id = id;
+        this.displayName = displayName;
+        this.selected = selected;
+        
+        clientNo++;
     }
 
-     public void addPropertyChangeListener(PropertyChangeListener l) {
-        pcs.addPropertyChangeListener(l);
-     }
+    public String getId() {
+        return id;
+    }
 
-     public void addPropertyChangeListener(String property,
-             PropertyChangeListener l) {
-        pcs.addPropertyChangeListener(property, l);
-     }
-
-     public void removePropertyChangeListener(PropertyChangeListener l) {
-        pcs.removePropertyChangeListener(l);
-     }
-
-     public void removePropertyChangeListener(String property,
-             PropertyChangeListener l) {
-        pcs.removePropertyChangeListener(property, l);
-     }
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
     public String getDisplayName() {
-            return displayName;
+        return displayName;
     }
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public String getClientID() {
-            return clientID;
-    }
-
-    /**
-     *  Client stub will be returned from this.
-     *  All services are accessible thorough this stub.
-     *
-     * @return  DOCUMENT ME!
-     */
     public IDMapper getIDMapper() {
-            return idMapper;
+        return mapper;
+    }
+    
+    public String getConnectionString() {
+        return connectionString;
     }
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public ModuleProperties getProps() {
-            return props;
+    public void setConnectionString(String connectionString)
+            throws IDMapperException {
+        this.connectionString = connectionString;
+        mapper = BridgeDb.connect(connectionString);
+    }
+    
+    public String getClassString() {
+        return classString;
     }
 
-    /**
-     *  DOCUMENT ME!
-     *
-     * @param props DOCUMENT ME!
-     */
-    protected void setProps(ModuleProperties props) {
-            this.props = props;
-    }
-
-    /**
-     *  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
     public String getDescription() {
         StringBuilder desc = new StringBuilder(this.getDisplayName());
         desc.append("\nCapacities:\n");
 
         desc.append(">> Supported source ID types:\n");
-        IDMapperCapabilities capabilities = idMapper.getCapabilities();
+        IDMapperCapabilities capabilities = mapper.getCapabilities();
 
         Set<DataSource> dss = null;
         try {
@@ -291,13 +206,10 @@ public abstract class AbstractIDMappingClient implements Serializable, IDMapping
     }
 
     public boolean isSelected() {
-        return isSelected;
+        return selected;
     }
 
-    public void setSelected(boolean isSelected) {
-        boolean old = this.isSelected;
-        this.isSelected = isSelected;
-        pcs.firePropertyChange(SELECTED_CHANGED, old, isSelected);
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
-
 }

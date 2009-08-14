@@ -48,7 +48,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="typeComboBoxActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="ClientType[] types = ClientType.values();&#xa;typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(types));&#xa;if (idMapper==null) {&#xa;    &#xa;} else if (idMapper instanceof IDMapperBiomart) {&#xa;    typeComboBox.setSelectedItem(ClientType.BIOMART);&#xa;    typeComboBox.setEnabled(false);&#xa;} else if (idMapper instanceof IDMapperPicr) {&#xa;    typeComboBox.setSelectedItem(ClientType.PICR);&#xa;    typeComboBox.setEnabled(false);&#xa;}"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="ClientType[] types = ClientType.values();&#xa;typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(types));&#xa;if (idMapper==null) {&#xa;    &#xa;} else if (idMapper instanceof IDMapperBiomart) {&#xa;    typeComboBox.setSelectedItem(ClientType.BIOMART);&#xa;    typeComboBox.setEnabled(false);&#xa;} else if (idMapper instanceof IDMapperPicrRest) {&#xa;    typeComboBox.setSelectedItem(ClientType.PICR);&#xa;    typeComboBox.setEnabled(false);&#xa;}"/>
           </AuxValues>
         </Component>
       </SubComponents>
@@ -101,8 +101,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chooseDBComboBoxActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="if (idMapper!=null &amp;&amp; idMapper instanceof IDMapperBiomart) {&#xa;    String dsname = ((IDMapperBiomart)idMapper).getDataset();&#xa;    Dataset ds = biomartStub.getDataset(dsname);&#xa;    if (ds!=null) {&#xa;        Database db = ds.getDatabase();&#xa;        chooseDBComboBox.setSelectedItem(db);&#xa;    }&#xa;}"/>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (idMapper==null || idMapper instanceof IDMapperBiomart) {&#xa;    chooseDBComboBox.setModel(new DefaultComboBoxModel(getVisibleDatabase()));&#xa;}"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (idMapper==null) {&#xa;    chooseDBComboBox.setModel(new DefaultComboBoxModel(getVisibleDatabase()));&#xa;} else if (idMapper instanceof IDMapperBiomart) {&#xa;    chooseDBComboBox.setModel(new DefaultComboBoxModel(new Database[] {&#xa;        biomartStub.getDatabase(((IDMapperBiomart)idMapper).getMart())}));&#xa;    chooseDBComboBox.setEnabled(false);&#xa;}"/>
               </AuxValues>
             </Component>
           </SubComponents>
@@ -134,7 +133,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (idMapper==null || idMapper instanceof IDMapperBiomart) {&#xa;    setDatasetsCombo();&#xa;}&#xa;if (idMapper!=null &amp;&amp; idMapper instanceof IDMapperBiomart) {&#xa;    String dsname = ((IDMapperBiomart)idMapper).getDataset();&#xa;    Dataset ds = biomartStub.getDataset(dsname);&#xa;    if (ds!=null) {&#xa;        chooseDatasetComboBox.setSelectedItem(ds);&#xa;    }&#xa;}"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (idMapper==null) {&#xa;    setDatasetsCombo();&#xa;} else if(idMapper instanceof IDMapperBiomart) {&#xa;    Dataset ds = biomartStub.getDataset(((IDMapperBiomart)idMapper).getDataset());&#xa;    chooseDatasetComboBox.setModel(new DefaultComboBoxModel(new Dataset[] {ds}));&#xa;    chooseDatasetComboBox.setEnabled(false);&#xa;}"/>
               </AuxValues>
             </Component>
           </SubComponents>
@@ -154,6 +153,9 @@
           <SubComponents>
             <Component class="javax.swing.JCheckBox" name="biomartOptionCheckBox">
               <Properties>
+                <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="idMapper!=null" type="code"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Show advanced option"/>
               </Properties>
               <Events>
@@ -287,6 +289,9 @@
           <SubComponents>
             <Component class="javax.swing.JCheckBox" name="picrOptionCheckBox">
               <Properties>
+                <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="idMapper!=null" type="code"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Show advanced option"/>
               </Properties>
               <Events>
@@ -313,9 +318,9 @@
                 <Component class="javax.swing.JCheckBox" name="picrOnlyActiveCheckBox">
                   <Properties>
                     <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="idMapper==null ||&#xa;    !(idMapper instanceof IDMapperPicr) ||&#xa;    ((IDMapperPicr)idMapper).getOnlyActive()" type="code"/>
+                      <Connection code="idMapper==null ||&#xa;    !(idMapper instanceof IDMapperPicrRest) ||&#xa;    ((IDMapperPicrRest)idMapper).getOnlyActive()" type="code"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Use only active mappings"/>
+                    <Property name="text" type="java.lang.String" value="Use only active mappings (remove deleted mappings)"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

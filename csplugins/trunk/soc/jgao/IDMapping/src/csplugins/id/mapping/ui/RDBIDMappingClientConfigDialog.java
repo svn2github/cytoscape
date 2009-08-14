@@ -35,11 +35,12 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.RDBIDMappingClient;
-import csplugins.id.mapping.PGDBIDMappingClient;
+import csplugins.id.mapping.IDMapperClient;
+import csplugins.id.mapping.IDMapperClientImpl;
 
 import org.bridgedb.IDMapperException;
 import org.bridgedb.rdb.IDMapperRdb;
+import org.bridgedb.rdb.SimpleGdb;
 
 import cytoscape.util.FileUtil;
 import cytoscape.util.CyFileFilter;
@@ -74,14 +75,14 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
     }
 
     public RDBIDMappingClientConfigDialog(javax.swing.JDialog parent, boolean modal,
-            RDBIDMappingClient client) {
+            IDMapperClient client) {
         super(parent, modal);
         initComponents();
         this.client = client;
         if (client!=null) {
-            if (client instanceof PGDBIDMappingClient) {
-                IDMapperRdb idMapper = (IDMapperRdb)client.getIDMapper();
-                //idMapper.
+            IDMapperRdb idMapper = (IDMapperRdb)client.getIDMapper();
+            if (idMapper instanceof SimpleGdb) {
+                //TODO: initialize
             }
         }
     }
@@ -227,26 +228,32 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
         }
 }//GEN-LAST:event_okButtonActionPerformed
 
-    public RDBIDMappingClient getIDMappingClient() {
+    public IDMapperClient getIDMappingClient()
+            throws ClassNotFoundException, IDMapperException {
         if (client!=null) {
             return client;
         }
         
-        PGDBIDMappingClient cl = null;
+        String[] strs = getSettings();
+        String connStr = strs[0];
+        String className = strs[1];
+        String displayName = strs[2];
+
+        return new IDMapperClientImpl(connStr, className, displayName);
+        
+    }
+
+    private String[] getSettings() {
+        String connString, className;
         DBType type = (DBType) nameComboBox.getSelectedItem();
         if (type==DBType.PGDB) {
-            String dbname = pgdbTextField.getText();
-            try{
-                cl = new PGDBIDMappingClient(dbname);
-            } catch (IDMapperException ex) {
-                ex.printStackTrace();
-            }
-
-            return cl;
+            String url = pgdbTextField.getText();
+            connString = "idmapper-pgdb:"+url;
+            className = "org.bridgedb.rdb.IDMapperRdb";
+            return new String[]{connString, className, url};
+        } else {
+            throw new java.lang.IllegalStateException();
         }
-
-        return null;
-        
     }
     
     private boolean verifyInput() {
@@ -273,7 +280,7 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
     }
 
     private boolean cancelled = true;
-    private RDBIDMappingClient client;
+    private IDMapperClient client;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

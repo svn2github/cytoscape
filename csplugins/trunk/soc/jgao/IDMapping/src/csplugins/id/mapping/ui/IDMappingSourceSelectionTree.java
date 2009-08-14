@@ -35,21 +35,14 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.IDMappingClient;
-import csplugins.id.mapping.DelimitedTextIDMappingClient;
-import csplugins.id.mapping.WebserviceIDMappingClient;
-import csplugins.id.mapping.BiomartIDMappingClient;
-import csplugins.id.mapping.IDMappingClientManager;
-import csplugins.id.mapping.IDMappingClientManager.ClientType;
+import csplugins.id.mapping.IDMapperClient;
+import csplugins.id.mapping.IDMapperClientManager;
 
 import csplugins.id.mapping.ui.checktree.CheckTreeManager;
 import csplugins.id.mapping.ui.checktree.CheckTreeSelectionModel;
 import csplugins.id.mapping.ui.checktree.TreePathSelectable;
 import csplugins.id.mapping.ui.checktree.SelectionChangeListener;
 import csplugins.id.mapping.ui.checktree.SelectionChangeEvent;
-
-import java.util.Set;
-import java.util.HashSet;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -65,11 +58,23 @@ import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import org.bridgedb.IDMapper;
+import org.bridgedb.file.IDMapperFile;
+import org.bridgedb.rdb.IDMapperRdb;
+import org.bridgedb.webservice.IDMapperWebservice;
+
 /**
  *
  * @author gjj
  */
 class IDMappingSourceSelectionTree extends JTree {
+    public enum ClientType {
+        FILE,
+        RDB,
+        WEBSERVICE,
+        OTHER;
+    }
+
     private final CheckTreeManager checkTreeManager;
     private DefaultTreeModel tree_Model;
     private final CheckTreeSelectionModel selection_Model;
@@ -87,6 +92,7 @@ class IDMappingSourceSelectionTree extends JTree {
     private final String file = "Local/remote Files";
 
     public IDMappingSourceSelectionTree(JDialog parent) {
+
         this.parent = parent;
 
         boolean dig = false;
@@ -112,8 +118,8 @@ class IDMappingSourceSelectionTree extends JTree {
                 if (nodeObj instanceof DefaultMutableTreeNode) {
                     DefaultMutableTreeNode clientNode = (DefaultMutableTreeNode)nodeObj;
                     Object clientObj = clientNode.getUserObject();
-                    if (clientObj instanceof IDMappingClient) {
-                        IDMappingClient client = (IDMappingClient)clientObj;
+                    if (clientObj instanceof IDMapperClient) {
+                        IDMapperClient client = (IDMapperClient)clientObj;
                         client.setSelected(selection_Model.isPathSelected(path, true));
                         modified = true;
                     } else {
@@ -190,9 +196,9 @@ class IDMappingSourceSelectionTree extends JTree {
         boolean expandWs = false;
         boolean expandDb = false;
 
-        for (IDMappingClient client : IDMappingClientManager.allClients()) {
+        for (IDMapperClient client : IDMapperClientManager.allClients()) {
             DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
-            ClientType clientType = client.getClientType();
+            ClientType clientType = getClientType(client);
             if (clientType==ClientType.FILE) {
                 fileTreeNode.add(clientNode);
                 if (client.isSelected()) {
@@ -245,6 +251,19 @@ class IDMappingSourceSelectionTree extends JTree {
             expandPath(treePath);
         }
 
+    }
+
+    private ClientType getClientType(IDMapperClient client) {
+        IDMapper mapper = client.getIDMapper();
+        if (mapper instanceof IDMapperWebservice) {
+            return ClientType.WEBSERVICE;
+        } else if (mapper instanceof IDMapperFile) {
+            return ClientType.FILE;
+        } else if(mapper instanceof IDMapperRdb) {
+            return ClientType.RDB;
+        } else {
+            return ClientType.OTHER;
+        }
     }
 
     private void setupMouse() {
@@ -406,9 +425,17 @@ class IDMappingSourceSelectionTree extends JTree {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
         if (!dialog.isCancelled()) {
-            IDMappingClient client = dialog.getIDMappingClient();
+            IDMapperClient client = null;
+            try {
+                client = dialog.getIDMappingClient();
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parent, "Failed to add database.");
+                return;
+            }
+
             if (client!=null) {
-                if (!IDMappingClientManager.registerClient(client)) {
+                if (!IDMapperClientManager.registerClient(client)) {
                     JOptionPane.showMessageDialog(parent, "This database has already been added as an ID mapping source.");
                     return;
                 }
@@ -439,7 +466,7 @@ class IDMappingSourceSelectionTree extends JTree {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
         if (!dialog.isCancelled()) {
-            IDMappingClient client = null;
+            IDMapperClient client = null;
             try {
                 client = dialog.getIDMappingClient();
             } catch (Exception e) {
@@ -448,7 +475,7 @@ class IDMappingSourceSelectionTree extends JTree {
             }
 
             if (client!=null) {
-                if (!IDMappingClientManager.registerClient(client)) {
+                if (!IDMapperClientManager.registerClient(client)) {
                     JOptionPane.showMessageDialog(parent, "This web service has already been added as an ID mapping source.");
                     return;
                 }
@@ -481,7 +508,7 @@ class IDMappingSourceSelectionTree extends JTree {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
         if (!dialog.isCancelled()) {
-            IDMappingClient client = null;
+            IDMapperClient client = null;
             try {
                 client = dialog.getIDMappingClient();
             } catch (Exception e) {
@@ -490,7 +517,7 @@ class IDMappingSourceSelectionTree extends JTree {
             }
 
             if (client!=null) {
-                if (!IDMappingClientManager.registerClient(client)) {
+                if (!IDMapperClientManager.registerClient(client)) {
                     JOptionPane.showMessageDialog(parent, "This file has already been added as an ID mapping source.");
                     return;
                 }
@@ -519,8 +546,8 @@ class IDMappingSourceSelectionTree extends JTree {
 
     private void removeClient(final DefaultMutableTreeNode node) {
         if (node==null) return;
-        IDMappingClient client = (IDMappingClient)node.getUserObject();
-        IDMappingClientManager.removeClient(client);
+        IDMapperClient client = (IDMapperClient)node.getUserObject();
+        IDMapperClientManager.removeClient(client.getId());
 
         TreeNode parentNode = node.getParent();
         node.removeFromParent();
@@ -530,7 +557,7 @@ class IDMappingSourceSelectionTree extends JTree {
 
     private void configTextClient(final DefaultMutableTreeNode node) {
         if (node==null) return;
-        DelimitedTextIDMappingClient client = (DelimitedTextIDMappingClient)node.getUserObject();
+        IDMapperClient client = (IDMapperClient)node.getUserObject();
 
         FileIDMappingClientConfigDialog dialog =
                 new FileIDMappingClientConfigDialog(parent, true, client);
@@ -545,17 +572,15 @@ class IDMappingSourceSelectionTree extends JTree {
 
     private void configWsClient(final DefaultMutableTreeNode node) {
         if (node==null) return;
-        WebserviceIDMappingClient client = (WebserviceIDMappingClient)node.getUserObject();
-        if (client instanceof BiomartIDMappingClient) {
-            WebserviceIDMappingClientConfigDialog dialog =
-                    new WebserviceIDMappingClientConfigDialog(parent, true, (BiomartIDMappingClient)client);
-            dialog.setLocationRelativeTo(this);
-            dialog.setVisible(true);
-            if (!dialog.isCancelled()) {
-                TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,node});
-                setSelectionPath(path);
-                modified = true;
-            }
+        IDMapperClient client = (IDMapperClient)node.getUserObject();
+        WebserviceIDMappingClientConfigDialog dialog =
+                new WebserviceIDMappingClientConfigDialog(parent, true, client);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        if (!dialog.isCancelled()) {
+            TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,node});
+            setSelectionPath(path);
+            modified = true;
         }
     }
 
