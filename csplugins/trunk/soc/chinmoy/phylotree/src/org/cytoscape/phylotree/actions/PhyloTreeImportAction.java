@@ -79,7 +79,7 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 		PhylipTreeImpl phylipParser = new PhylipTreeImpl(pFile);
 
 		CyNetwork cyNetwork = Cytoscape.createNetwork(pFile.getName(), true);
-
+		
 		CyAttributes cyEdgeAttributes = Cytoscape.getEdgeAttributes();
 		CyAttributes cyNodeAttributes = Cytoscape.getNodeAttributes();
 
@@ -92,7 +92,7 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 			PhylotreeNode pNode = nodeListIterator.next();
 
 			// Get edges
-			List<PhylotreeEdge> edgeList = phylipParser.getEdges(pNode);
+			List<PhylotreeEdge> edgeList = phylipParser.getOutgoingEdges(pNode);
 
 			// For each edge, create the two nodes connected if they do not exist
 			for(Iterator<PhylotreeEdge> edgeListIterator = edgeList.iterator(); edgeListIterator.hasNext();)
@@ -102,11 +102,16 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 				CyNode node1 = Cytoscape.getCyNode(pEdge.getSourceNode().getID(), true);
 				CyNode node2 = Cytoscape.getCyNode(pEdge.getTargetNode().getID(), true);
 				
+				node1.setIdentifier(""+node1.getRootGraphIndex());
+				node2.setIdentifier(""+node2.getRootGraphIndex());
+				
 				cyNodeAttributes.setAttribute(node1.getIdentifier(), "Name", pEdge.getSourceNode().getName());
 				cyNodeAttributes.setAttribute(node2.getIdentifier(), "Name", pEdge.getTargetNode().getName());
 				
 				
 				CyEdge cyEdge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, "pp", true, true);
+				cyEdge.setIdentifier(""+cyEdge.getRootGraphIndex());
+				
 				// Get edge attributes and set them
 				List<Object> edgeAttributes = phylipParser.getEdgeAttribute(pEdge);
 				cyEdgeAttributes.setAttribute(cyEdge.getIdentifier(), "branchLength", (Double)edgeAttributes.get(0));

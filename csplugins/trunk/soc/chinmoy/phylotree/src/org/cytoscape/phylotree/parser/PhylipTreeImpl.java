@@ -420,7 +420,7 @@ public class PhylipTreeImpl implements Phylotree {
   return nodeList;
  }
 
- // Get the edges for given node
+ // Get all the outgoingedges for given node
  public List<PhylotreeEdge> getEdges(PhylotreeNode pNode){
 
   // Obtain a list of edges for the node
@@ -434,7 +434,28 @@ public class PhylipTreeImpl implements Phylotree {
   {
    // A node could have multiple edges
    PhylipEdge pEdge = iterator.next();
-   retValue.add(pEdge);
+   
+	   retValue.add(pEdge);
+  }
+  return retValue;
+ }
+ 
+ // Get the outgoingedges for given node
+ public List<PhylotreeEdge> getOutgoingEdges(PhylotreeNode pNode){
+
+  // Obtain a list of edges for the node
+  PhylipNode phylipNode = (PhylipNode)pNode;
+  List<PhylipEdge> edges = phylipNode.nodeEdges;
+
+  // Add each edge to the vector to be returned
+  Vector<PhylotreeEdge> retValue = new Vector<PhylotreeEdge>();
+  Iterator<PhylipEdge> iterator = edges.iterator();
+  while(iterator.hasNext())
+  {
+   // A node could have multiple edges
+   PhylipEdge pEdge = iterator.next();
+   if(pEdge.getSourceNode().getID().equals(pNode.getID()))
+	   retValue.add(pEdge);
   }
   return retValue;
  }
