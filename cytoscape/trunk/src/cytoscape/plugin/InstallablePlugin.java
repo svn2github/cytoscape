@@ -26,6 +26,11 @@ import java.util.zip.ZipFile;
  * 
  */
 public class InstallablePlugin implements Installable {
+
+  // Bug 2055 changing regexp used to match jars
+  // Was "\\w+\\.jar", which seemed unecessarily restrictive
+  public static final String MATCH_JAR_REGEXP = ".*\\.jar$";
+
   private static CyLogger logger = CyLogger.getLogger(InstallablePlugin.class);
 
   private PluginInfo infoObj;
@@ -283,7 +288,7 @@ public class InstallablePlugin implements Installable {
 
 		case ZIP:
 			List<ZipEntry> Entries = ZipUtil
-					.getAllFiles(FileName, "\\w+\\.jar");
+					.getAllFiles(FileName, MATCH_JAR_REGEXP);
 			if (Entries.size() <= 0) {
 				String[] FilePath = FileName.split("/");
 				FileName = FilePath[FilePath.length - 1];
