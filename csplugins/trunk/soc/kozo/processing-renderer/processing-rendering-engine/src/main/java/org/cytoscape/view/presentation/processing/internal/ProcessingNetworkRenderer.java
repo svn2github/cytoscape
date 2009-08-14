@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.print.Printable;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -195,7 +196,6 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		translate(width / 2+ translateX, height / 2+ translateY, height / 2);
 		rotateX(rotY);
 		rotateY(rotX);
-		rotateZ(rotXDelta);
 		
 		translate(-width / 2 + translateX, -height / 2 + translateY,
 				-height / 2);
@@ -217,7 +217,6 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		if(isOverlay)
 			overlay.draw();
 		
-		rotXDelta += 0.002f;
 	}
 
 	public void beginGL() {
@@ -257,6 +256,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		// }
 	}
 
+	
+	private boolean captureFlag = false;
 	@Override
 	public void keyPressed(){
 	  // if the key is between 'A'(65) and 'z'(122)
@@ -272,11 +273,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		  } else
 			  loop();
 		  
-	  } else if( key == 'd') {
-		  // freeze
-		  for (CyDrawable node : nodes)
-				node.setDetailFlag(false);
-		  
+	  } else if( key == 'c') {
+		  saveFrame("capture-####.png");
 	  }
 	    
 	}
