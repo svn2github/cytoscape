@@ -60,6 +60,8 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 			NODE, 12d, "NODE_LABEL_SIZE", "Node Label Size");
 	public static final VisualProperty<? extends Paint> NODE_LABEL_COLOR = new ColorVisualProperty(
 			NODE, Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color");
+	public static final VisualProperty<Double> NODE_LABEL_OPACITY = new DoubleVisualProperty(
+			NODE, 255d, "NODE_LABEL_OPACITY", "Node Label Opacity");
 	public static final VisualProperty<Double> NODE_X_LOCATION = new DoubleVisualProperty(
 			NODE, 0.0, "NODE_X_LOCATION", "Node X Location");
 	public static final VisualProperty<Double> NODE_Y_LOCATION = new DoubleVisualProperty(
@@ -76,6 +78,8 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 			EDGE, Color.BLUE, "EDGE_COLOR", "Edge Color");
 	public static final VisualProperty<String> EDGE_LABEL = new StringVisualProperty(
 			EDGE, "", "EDGE_LABEL", "Edge Label");
+	public static final VisualProperty<Double> EDGE_LABEL_OPACITY = new DoubleVisualProperty(
+			EDGE, 255d, "EDGE_LABEL_OPACITY", "Edge Label Opacity");
 	public static final VisualProperty<Double> EDGE_OPACITY = new DoubleVisualProperty(
 			EDGE, 255d, "EDGE_OPACITY", "Edge Opacity");
 	public static final VisualProperty<Double> EDGE_WIDTH = new DoubleVisualProperty(
@@ -112,6 +116,7 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		visualPropertySet.add(NODE_LABEL);
 		visualPropertySet.add(NODE_LABEL_SIZE);
 		visualPropertySet.add(NODE_LABEL_COLOR);
+		visualPropertySet.add(NODE_LABEL_OPACITY);
 		visualPropertySet.add(NODE_X_LOCATION);
 		visualPropertySet.add(NODE_Y_LOCATION);
 		visualPropertySet.add(NODE_X_SIZE);
@@ -123,6 +128,7 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		visualPropertySet.add(EDGE_WIDTH);
 		visualPropertySet.add(EDGE_LABEL);
 		visualPropertySet.add(EDGE_LABEL_COLOR);
+		visualPropertySet.add(EDGE_LABEL_OPACITY);
 		visualPropertySet.add(EDGE_VISIBLE);
 		visualPropertySet.add(EDGE_SELECTED);
 		visualPropertySet.add(NETWORK_SCALE_FACTOR);
