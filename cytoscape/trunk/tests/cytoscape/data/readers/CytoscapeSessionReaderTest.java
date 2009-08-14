@@ -52,28 +52,37 @@ public class CytoscapeSessionReaderTest extends TestCase {
     // one of the PluginManager tests when run using "ant test"
     // All tests function undisturbed when run using "ant test-slow"
 //    public void testBug0001929a() throws Exception {
-//		CytoscapeSessionReader sr;
+//		  CytoscapeSessionReader sr;
 //
-//    	Cytoscape.buildOntologyServer();
-//    	sr = new CytoscapeSessionReader("testData/Bug1929TestA.cys", null);
+//    	  Cytoscape.buildOntologyServer();
+//    	  sr = new CytoscapeSessionReader("testData/Bug1929TestA.cys", null);
 //        sr.read();
 //    }
 //
 //    public void testBug0001929b() throws Exception {
-//		CytoscapeSessionReader sr;
+//		  CytoscapeSessionReader sr;
 //
 //        //new CytoscapeInit().init(null);
-//    	Cytoscape.buildOntologyServer();
-//    	sr = new CytoscapeSessionReader("testData/Bug1929TestB.cys", null);
+//    	  Cytoscape.buildOntologyServer();
+//    	  sr = new CytoscapeSessionReader("testData/Bug1929TestB.cys", null);
 //        sr.read();
 //    }
 //
 //    public void testBug0001929c() throws Exception {
-//		CytoscapeSessionReader sr;
+//		  CytoscapeSessionReader sr;
 //
 //        //new CytoscapeInit().init(null);
-//    	Cytoscape.buildOntologyServer();
-//    	sr = new CytoscapeSessionReader("testData/Bug1929TestC.cys", null);
+//    	  Cytoscape.buildOntologyServer();
+//    	  sr = new CytoscapeSessionReader("testData/Bug1929TestC.cys", null);
+//        sr.read();
+//    }
+//
+//    public void testBug0001929d() throws Exception {
+//        CytoscapeSessionReader sr;
+//
+//        //new CytoscapeInit().init(null);
+//    	  Cytoscape.buildOntologyServer();
+//    	  sr = new CytoscapeSessionReader("testData/Bug1929TestD.cys", null);
 //        sr.read();
 //    }
 }

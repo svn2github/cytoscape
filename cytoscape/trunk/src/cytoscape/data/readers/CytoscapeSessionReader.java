@@ -277,6 +277,7 @@ public class CytoscapeSessionReader {
                     // All other "/" are eliminated by CytoscapeSessionWriter.getValidFileName
                     // URLEncoding the remainder of entryName makes sure the URL is valid
                     // without the need to eliminate additional characters when creating the filename.
+                    // Spaces require special treatment, need to be encoded as "%20" not "+"
                     int sp;
                     String entryDir;
                     String entryRest;
@@ -289,7 +290,7 @@ public class CytoscapeSessionReader {
                         entryRest = entryRest.substring(sp + 1);
                     }
 
-                    URL networkURL = new URL("jar:" + sourceURL.toString() + "!/" + entryDir + URLEncoder.encode(entryRest, "UTF-8"));
+                    URL networkURL = new URL("jar:" + sourceURL.toString() + "!/" + entryDir + URLEncoder.encode(entryRest, "UTF-8").replace("+", "%20"));
                     networkURLs.put(entryName, networkURL);
                     networkCounter++;
                 } else if (entryName.endsWith(BOOKMARKS_FILE)) {
@@ -622,13 +623,18 @@ public class CytoscapeSessionReader {
 		                              .getComponents();
 
 		for (int i = 0; i < desktopFrames.length; i++) {
-			JInternalFrame frame = (JInternalFrame) desktopFrames[i];
-			NetworkFrame nFrame = (NetworkFrame) frameMap.get(frame.getTitle());
+            Component cmp;
 
-			if (nFrame != null) {
-				frame.setSize(nFrame.getWidth().intValue(), nFrame.getHeight().intValue());
-				frame.setLocation(nFrame.getX().intValue(), nFrame.getY().intValue());
-			}
+            cmp = desktopFrames[i];
+            if (cmp instanceof JInternalFrame) {
+                JInternalFrame frame = (JInternalFrame)cmp;
+                NetworkFrame nFrame = frameMap.get(frame.getTitle());
+
+                if (nFrame != null) {
+                    frame.setSize(nFrame.getWidth().intValue(), nFrame.getHeight().intValue());
+                    frame.setLocation(nFrame.getX().intValue(), nFrame.getY().intValue());
+                }
+            }
 		}
 	}
 
