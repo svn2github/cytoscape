@@ -1,14 +1,8 @@
 package org.cytoscape.phylotree;
 
 
-import java.awt.Component;
-import java.awt.PopupMenu;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 import cytoscape.Cytoscape;
-import cytoscape.layout.CyLayouts;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.phylotree.actions.PhyloTreeImportAction;
@@ -22,6 +16,9 @@ import org.cytoscape.phylotree.layout.phylograms.RectangularPhylogram;
 import org.cytoscape.phylotree.layout.phylograms.SlantedPhylogram;
 import org.cytoscape.phylotree.layout.phylograms.RadialPhylogram;
 import org.cytoscape.phylotree.layout.phylograms.CircularPhylogram;
+import org.cytoscape.phylotree.visualstyle.DepthwiseColor;
+import org.cytoscape.phylotree.visualstyle.DepthwiseSize;
+import org.cytoscape.phylotree.visualstyle.PhyloVisualStyleManager;
 
 /**
  * 
@@ -67,6 +64,8 @@ public class PhylotreePlugin extends CytoscapePlugin {
 		layoutAction = new PhyloTreeLayoutAction(new CircularPhylogram());
 		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) layoutAction);
 				
+		
+		
 		
 	}
 	

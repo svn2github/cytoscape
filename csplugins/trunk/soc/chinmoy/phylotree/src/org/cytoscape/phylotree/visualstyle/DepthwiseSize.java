@@ -37,7 +37,7 @@ public class DepthwiseSize implements PhyloVisualStyle {
 	
 	public String getName()
 	{
-		return "DepthwiseSize";
+		return "phylotree_DepthwiseSize";
 	}
 	
 	public VisualStyle createStyle(CyNetwork network)
@@ -55,7 +55,7 @@ public class DepthwiseSize implements PhyloVisualStyle {
 		
 
 		// Passthrough Mapping - set node label 
-		PassThroughMapping pm = new PassThroughMapping(new String(), "ID");
+		PassThroughMapping pm = new PassThroughMapping(new String(), "Name");
 		Calculator nlc = new BasicCalculator("Node Label Calculator",pm, VisualPropertyType.NODE_LABEL);
 		
 		nodeAppCalc.setCalculator(nlc);
@@ -81,7 +81,7 @@ public class DepthwiseSize implements PhyloVisualStyle {
 		edgeAppCalc.setCalculator(createEdgeColorCalculator(network));
 		
 		// Create the visual style 
-		VisualStyle visualStyle = new VisualStyle("DepthwiseSize", nodeAppCalc, edgeAppCalc, globalAppCalc);
+		VisualStyle visualStyle = new VisualStyle(getName(), nodeAppCalc, edgeAppCalc, globalAppCalc);
 
 		return visualStyle;
 	}
@@ -109,8 +109,7 @@ public class DepthwiseSize implements PhyloVisualStyle {
 			int depth = cf.getDepth(network, node);
 			
 			nodeAttributes.setAttribute(node.getIdentifier(), "Depth", depth);
-			
-			
+
 			int [] edgeIndicesArray =network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true); 
 			for(int i = 0; i<edgeIndicesArray.length; i++)
 			{

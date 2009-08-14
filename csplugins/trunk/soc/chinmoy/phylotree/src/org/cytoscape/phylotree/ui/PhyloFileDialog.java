@@ -13,6 +13,7 @@ public class PhyloFileDialog extends JDialog{
 	PhyloTreeImportAction parent;
 	File selectedFile = null;
 	String format = "phylip"; // default
+	
 	   /** Creates new form PhyloFileDialog */
     public PhyloFileDialog(PhyloTreeImportAction pParent) {
         super(Cytoscape.getDesktop(), true);

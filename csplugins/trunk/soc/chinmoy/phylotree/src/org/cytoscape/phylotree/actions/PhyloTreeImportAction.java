@@ -27,16 +27,12 @@ import org.cytoscape.phylotree.visualstyle.DepthwiseColor;
 import org.cytoscape.phylotree.visualstyle.DepthwiseSize;
 import org.cytoscape.phylotree.visualstyle.PhyloVisualStyleManager;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Iterator;
 
 
-import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 
 public class PhyloTreeImportAction extends CytoscapeAction{
@@ -66,6 +62,7 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 			loadnetwork_phyloXML(pFile);
 		}
 
+		//(3) Add visual styles
 		// Add the phylogenetic tree specific visual styles
 		PhyloVisualStyleManager phyloVSMan = new PhyloVisualStyleManager();
 		phyloVSMan.addVisualStyle(new DepthwiseSize());
@@ -83,8 +80,8 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 
 		CyNetwork cyNetwork = Cytoscape.createNetwork(pFile.getName(), true);
 
-		CyAttributes cyAttributes = Cytoscape.getEdgeAttributes();
-
+		CyAttributes cyEdgeAttributes = Cytoscape.getEdgeAttributes();
+		CyAttributes cyNodeAttributes = Cytoscape.getNodeAttributes();
 
 		// Get all nodes in the PHYLIP tree
 		List<PhylotreeNode> nodeList = phylipParser.getNodeList();
@@ -102,29 +99,35 @@ public class PhyloTreeImportAction extends CytoscapeAction{
 			{
 				PhylotreeEdge pEdge = edgeListIterator.next();
 
-				CyNode node1 = Cytoscape.getCyNode(pEdge.getSourceNode().getName(), true);
-				CyNode node2 = Cytoscape.getCyNode(pEdge.getTargetNode().getName(), true);
-
+				CyNode node1 = Cytoscape.getCyNode(pEdge.getSourceNode().getID(), true);
+				CyNode node2 = Cytoscape.getCyNode(pEdge.getTargetNode().getID(), true);
+				
+				cyNodeAttributes.setAttribute(node1.getIdentifier(), "Name", pEdge.getSourceNode().getName());
+				cyNodeAttributes.setAttribute(node2.getIdentifier(), "Name", pEdge.getTargetNode().getName());
+				
+				
 				CyEdge cyEdge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, "pp", true, true);
-
 				// Get edge attributes and set them
 				List<Object> edgeAttributes = phylipParser.getEdgeAttribute(pEdge);
-				cyAttributes.setAttribute(cyEdge.getIdentifier(), "branchLength", (Double)edgeAttributes.get(0));
+				cyEdgeAttributes.setAttribute(cyEdge.getIdentifier(), "branchLength", (Double)edgeAttributes.get(0));
 				cyNetwork.addEdge(cyEdge);
 				cyNetwork.addNode(node1);
 				cyNetwork.addNode(node2);
 			}
 		}
 
-		cyAttributes.setUserEditable("branchLength", false);
-		cyAttributes.setUserVisible("branchLength", true);
+		cyEdgeAttributes.setUserEditable("branchLength", false);
+		cyEdgeAttributes.setUserVisible("branchLength", true);
 
+		
+		
 		// Apply default layout
 		CyLayouts.getLayout("slanted_cladogram").doLayout();
 
 
 		// Apply visual style
 		// Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, "phyloVizMap.props");
+		
 
 	}
 

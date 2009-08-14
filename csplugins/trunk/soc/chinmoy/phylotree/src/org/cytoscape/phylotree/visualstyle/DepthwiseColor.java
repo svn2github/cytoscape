@@ -38,7 +38,7 @@ public class DepthwiseColor implements PhyloVisualStyle {
 	
 	public String getName()
 	{
-		return "DepthwiseColor";
+		return "phylotree_DepthwiseColor";
 	}
 	
 	public VisualStyle createStyle(CyNetwork network)
@@ -56,7 +56,7 @@ public class DepthwiseColor implements PhyloVisualStyle {
 		
 
 		// Passthrough Mapping - set node label 
-		PassThroughMapping pm = new PassThroughMapping(new String(), "ID");
+		PassThroughMapping pm = new PassThroughMapping(new String(), "Name");
 		Calculator nlc = new BasicCalculator("Node Label Calculator",pm, VisualPropertyType.NODE_LABEL);
 		
 		nodeAppCalc.setCalculator(nlc);
@@ -83,7 +83,7 @@ public class DepthwiseColor implements PhyloVisualStyle {
 		edgeAppCalc.setCalculator(createEdgeColorCalculator(network));
 
 		// Create the visual style 
-		VisualStyle visualStyle = new VisualStyle("DepthwiseColor", nodeAppCalc, edgeAppCalc, globalAppCalc);
+		VisualStyle visualStyle = new VisualStyle(getName(), nodeAppCalc, edgeAppCalc, globalAppCalc);
 
 		return visualStyle;
 	}
@@ -120,8 +120,7 @@ public class DepthwiseColor implements PhyloVisualStyle {
 			}
 		}
 		
-		nodeAttributes.setUserVisible("Depth", false);
-		edgeAttributes.setUserVisible("Depth", false);
+		
 		
 	}
 	
