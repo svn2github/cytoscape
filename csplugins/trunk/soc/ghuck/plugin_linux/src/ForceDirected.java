@@ -67,8 +67,8 @@ public class ForceDirected extends AbstractGraphPartition
 {
     private String message;
 
-    private double H_SIZE = 10000.0;
-    private double V_SIZE = 10000.0;
+    private double H_SIZE = 1000.0;
+    private double V_SIZE = 1000.0;
     private String GPU_LIBRARY = "GpuLayout";
      
     // Default values for algorithm parameters	
@@ -407,7 +407,7 @@ public class ForceDirected extends AbstractGraphPartition
 				         + Math.pow(node_positions[n1Index][1] - node_positions[n2Index][1], 2)
 				       );
 	    // Check if edgeSize is not zero
-	    if (edgeSize > 0){
+	    if (edgeSize > 0.0){
 	    
 		// actualRatio = minimun_desired_length / actual_length
 		actualRatio = (n1Size + n2Size) / edgeSize;
@@ -419,60 +419,111 @@ public class ForceDirected extends AbstractGraphPartition
 
 	}
 
-	upRatio = 5 * upRatio / 9;
+	//upRatio = 5 * upRatio / 9;
+	//upRatio = Math.min(upRatio, 100.0);
 
 	// Check whether the ratio is not zero
 	if (upRatio <= 0.0){   
-	    message = "Error while performing node positions scale-up\nCannot perform layout\nupRatio = " + upRatio;		    
+	    message = "Error while performing node positions scale-up\nIgnoring scaling upt\nupRatio = " + upRatio;		    
 	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
-	    return;
+	    upRatio = 1.0;
 	}
 
-	message = "upRatio. = " + upRatio;		    
-	JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
+	double oldUpRatio = upRatio;
 
+	logger.debug("upRatio = " + upRatio);		    
 
-	// Update Node position
-	part.resetNodes(); // reset the nodes so we get the new average location
+	//message = "upRatio = " + upRatio;
+	//JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
 
-	// Iterate over all nodes
-	int currentNode = 0;
+	boolean success = false;
 
-	// Create an iterator for processing the nodes
-	Iterator<LayoutNode> iterator2 = nodeList.iterator();
-
-
-	while (iterator2.hasNext()){
+	// Move nodes to their position
+	while (!success){
 	    
-	    // Get next node
-	    LayoutNode node = (LayoutNode) iterator2.next();
+	    try{
+		// We will keep track of the offset of the whole part so that we can eliminate it
+		double minX = node_positions[0][0];
+		double minY = node_positions[0][1];
 		
-	    // Set node's X and Y positions
-	    node.setX(upRatio * node_positions[currentNode][0]);
-	    node.setY(upRatio * node_positions[currentNode][1]);
+		// Get the 'offset' of the whole partition, so that we can eliminate it
+		for (int i = 0; i < numNodes; i++) {
+		    
+		    if ( node_positions[i][0] < minX)
+			minX = node_positions[i][0];
 
-	    // Move node to desired location
-	    part.moveNodeToLocation(node);
-
-	    currentNode++;
-	}
-	
-	
-	// Not quite done, yet.  If we're only laying out selected nodes, we need
-	// to migrate the selected nodes back to their starting position
-	if (selectedOnly) {
-	    double xDelta = 0.0;
-	    double yDelta = 0.0;
-	    Dimension finalLocation = part.getAverageLocation();
-	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
-	    for (LayoutNode v: part.getNodeList()) {
-		if (!v.isLocked()) {
-		    v.decrement(xDelta, yDelta);
-		    part.moveNodeToLocation(v);
+		    if ( node_positions[i][1] < minY)
+			minY = node_positions[i][1];
 		}
+
+		minX = upRatio * minX;
+		minY = upRatio * minY;
+
+		// Reset the nodes so we get the new average location
+		part.resetNodes(); 
+
+		// Iterate over all nodes
+		int currentNode = 0;
+		
+		// Create an iterator for processing the nodes
+		Iterator<LayoutNode> iterator2 = nodeList.iterator();
+		
+		
+		while (iterator2.hasNext()){
+		    
+		    // Get next node
+		    LayoutNode node = (LayoutNode) iterator2.next();
+		
+		    // Set node's X and Y positions
+		    node.setX(upRatio * node_positions[currentNode][0] - minX);
+		    node.setY(upRatio * node_positions[currentNode][1] - minY);
+
+		    //logger.debug("moving node " + currentNode + "to:\nX = " + (upRatio * node_positions[currentNode][0]) + "\nY = " + (upRatio * node_positions[currentNode][1]));
+		    
+		    // Move node to desired location
+		    part.moveNodeToLocation(node);
+		    
+		    currentNode++;
+		}
+	
+	
+		// Not quite done, yet.  If we're only laying out selected nodes, we need
+		// to migrate the selected nodes back to their starting position
+		if (selectedOnly) {
+		    double xDelta = 0.0;
+		    double yDelta = 0.0;
+		    Dimension finalLocation = part.getAverageLocation();
+		    xDelta = finalLocation.getWidth()  - initialLocation.getWidth();
+		    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+		    for (LayoutNode v: part.getNodeList()) {
+			if (!v.isLocked()) {
+			    v.decrement(xDelta, yDelta);
+			    part.moveNodeToLocation(v);
+			}
+		    }
+		}
+		
+		success = true;
+
 	    }
-	}
+	    catch(Exception excep){
+
+		upRatio = upRatio / 10.0;
+		if (upRatio <= 0.0){
+		    message = "Sorry, cannot produce layout";
+		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
+		    return;
+		}
+		success = false;
+	    }
+
+	}//while(!success)
+
+	/*if (oldUpRatio != upRatio){
+	    message = "Initial upRatio = " + oldUpRatio + "\nFinal upRatio = " + upRatio;
+	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
+	}*/
+
 
     }// layoutPartion(LayoutPartition part)
     
