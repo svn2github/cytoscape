@@ -2,7 +2,9 @@ package org.cytoscape.layer.internal;
 
 import static org.cytoscape.model.GraphObject.NODE;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
 
+import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
@@ -254,6 +257,8 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		layerVS = vmm.createVisualStyle(VISUAL_STYLE_TITLE);
 		final DiscreteMapping<String, Double> index2zLocation = new DiscreteMapping<String, Double>(
 				LAYER_INDEX, String.class, NODE_Z_LOCATION);
+		final DiscreteMapping<String, Color> index2color = new DiscreteMapping<String, Color>(
+				LAYER_INDEX, String.class, (VisualProperty<Color>) NODE_COLOR);
 
 		// CyNetworkView view = (CyNetworkView)
 		// manager.getCurrentPresentation().getViewModel();
@@ -275,6 +280,15 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			System.out.println(indexString);
 			index2zLocation.putMapValue(indexString, Integer
 					.parseInt(indexString) * 300d);
+			if (indexString.equals("0")) {
+				index2color.putMapValue(indexString, Color.red);
+			} else if (indexString.equals("1")) {
+				index2color.putMapValue(indexString, Color.green);
+			} else if (indexString.equals("2")) {
+				index2color.putMapValue(indexString, Color.blue);
+			} else if (indexString.equals("3")) {
+				index2color.putMapValue(indexString, Color.orange);
+			}
 		}
 
 		// } catch (IOException e) {
@@ -282,6 +296,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		// }
 
 		layerVS.addVisualMappingFunction(index2zLocation);
+		layerVS.addVisualMappingFunction(index2color);
 
 		vmm.setVisualStyle(layerVS, networkView);
 		layerVS.apply(networkView);
