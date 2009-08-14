@@ -35,48 +35,27 @@
 
 package org.cytoscape.search;
 
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-public abstract class ReindexTask implements Task {
+public interface ReindexTask extends Task {
 
-	protected CyNetwork network;
 
-	protected TaskMonitor taskMonitor;
-
-	protected boolean interrupted = false;
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param network
-	 *            Network to execute query on.
-	 */
-	protected ReindexTask(CyNetwork network) {
-		this.network = network;
-	}
-		/**
-	 * Constructor.
-	 * 
-	 * @param network
-	 *            Network to execute query on.
-	 */
 
 	/**
 	 * Executes Task: Reindex
 	 */
-	abstract public void run(TaskMonitor tm) ;
+	public void run(TaskMonitor tm) ;
 
 	/**
 	 * DOCUMENT ME!
 	 */
-	abstract public void halt();
+	public void halt();
 
 	/**
 	 * DOCUMENT ME!
 	 */
-	abstract public void cancel();
+	public void cancel();
 	/**
 	 * Sets the TaskMonitor.
 	 * 
@@ -85,7 +64,7 @@ public abstract class ReindexTask implements Task {
 	 * @throws IllegalThreadStateException
 	 *             Illegal Thread State.
 	 */
-	abstract public void setTaskMonitor(TaskMonitor taskMonitor)
+	public void setTaskMonitor(TaskMonitor taskMonitor)
 			throws IllegalThreadStateException;
 
 	/**
@@ -93,5 +72,5 @@ public abstract class ReindexTask implements Task {
 	 * 
 	 * @return Title of Task.
 	 */
-	abstract public String getTitle();
+	public String getTitle();
 }

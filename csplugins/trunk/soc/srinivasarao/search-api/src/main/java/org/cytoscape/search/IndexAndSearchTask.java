@@ -35,44 +35,22 @@
 
 package org.cytoscape.search;
 
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-public abstract class IndexAndSearchTask implements Task {
-
-	protected CyNetwork network;
-
-	protected String query;
-
-	protected TaskMonitor taskMonitor;
-
-	protected boolean interrupted = false;
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param network
-	 *            Network to execute query on.
-	 * @param query
-	 *            Query string.
-	 */
-	protected IndexAndSearchTask(CyNetwork network, String query) {
-		this.network = network;
-		this.query = query;
-	}
+public interface IndexAndSearchTask extends Task {
 
 	/**
 	 * Executes Task: IndexAndSearch
 	 */
-	abstract public void run(TaskMonitor tm);
+	public void run(TaskMonitor tm);
 
 	/**
 	 * DOCUMENT ME!
 	 */
-	abstract public void halt() ;
+	public void halt() ;
 
-	abstract public void cancel();
+	public void cancel();
 	/**
 	 * Sets the TaskMonitor.
 	 * 
@@ -81,13 +59,13 @@ public abstract class IndexAndSearchTask implements Task {
 	 * @throws IllegalThreadStateException
 	 *             Illegal Thread State.
 	 */
-	abstract public void setTaskMonitor(TaskMonitor taskMonitor)
+	public void setTaskMonitor(TaskMonitor taskMonitor)
 			throws IllegalThreadStateException ;
 	/**
 	 * Gets Title of Task.
 	 * 
 	 * @return Title of Task.
 	 */
-	abstract public String getTitle() ;
+	public String getTitle() ;
 
 }

@@ -35,18 +35,12 @@
 
 package org.cytoscape.search.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.NumberTools;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.MultiPhraseQuery;
-import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RangeQuery;
 
@@ -68,36 +62,26 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 		this.attrFields = attrFields;
 	}
 
-	protected Query getFieldQuery(String field, String queryText, int slop)
+	protected Query getFieldQuery(String field, String queryText)
 			throws ParseException {
 		// System.out.println("I am in field Query :" + field+ ":"+ queryText );
-		if (field == null) {
-			List<BooleanClause> clauses = new ArrayList<BooleanClause>();
-			for (int i = 0; i < fields.length; i++) {
-				Query q = getFieldQuery(fields[i], queryText);
-				if (q != null) {
-					// If the user passes a map of boosts
-					if (boosts != null) {
-						// Get the boost from the map and apply them
-						Float boost = (Float) boosts.get(fields[i]);
-						if (boost != null) {
-							q.setBoost(boost.floatValue());
-						}
-					}
-					applySlop(q, slop);
-					clauses.add(new BooleanClause(q,BooleanClause.Occur.SHOULD));
-				}
-			}
-			if (clauses.size() == 0) // happens for stopwords
-				return null;
-			return getBooleanQuery(clauses, true);
-		}
-
+		/*
+		 * if (field == null) { Vector<BooleanClause> clauses = new
+		 * Vector<BooleanClause>(); for (int i = 0; i < fields.length; i++) {
+		 * Query q = getFieldQuery(fields[i], queryText); if (q != null) { // If
+		 * the user passes a map of boosts if (boosts != null) { // Get the
+		 * boost from the map and apply them Float boost = (Float)
+		 * boosts.get(fields[i]); if (boost != null) {
+		 * q.setBoost(boost.floatValue()); } } applySlop(q, slop);
+		 * clauses.add(new BooleanClause(q,BooleanClause.Occur.SHOULD)); } } if
+		 * (clauses.size() == 0) // happens for stopwords return null; return
+		 * getBooleanQuery(clauses, true); }
+		 */
 		if (attrFields.getType(field) == AttributeTypes.TYPE_INTEGER) {
 			try {
 				int num1 = Integer.parseInt(queryText);
 				return super.getFieldQuery(field, NumberTools
-						.longToString(num1),0);
+						.longToString(num1), 0);
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
 				// searched in each one of the fields. This exception occurs
@@ -124,7 +108,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 			}
 		}
 
-		return super.getFieldQuery(field, queryText,0);
+		return super.getFieldQuery(field, queryText);
 	}
 
 	protected Query getRangeQuery(String field, String part1, String part2,
@@ -158,7 +142,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 		}
 		return super.getRangeQuery(field, part1, part2, inclusive);
 	}
-
+/*
 	private void applySlop(Query q, int slop) {
 		if (q instanceof PhraseQuery) {
 			((PhraseQuery) q).setSlop(slop);
@@ -166,4 +150,5 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 			((MultiPhraseQuery) q).setSlop(slop);
 		}
 	}
+*/
 }
