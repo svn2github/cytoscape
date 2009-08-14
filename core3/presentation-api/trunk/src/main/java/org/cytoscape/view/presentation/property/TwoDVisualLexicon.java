@@ -56,6 +56,8 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 			NODE, 255d, "NODE_OPACITY", "Node Opacity");
 	public static final VisualProperty<String> NODE_LABEL = new StringVisualProperty(
 			NODE, "", "NODE_LABEL", "Node Label");
+	public static final VisualProperty<Double> NODE_LABEL_SIZE = new DoubleVisualProperty(
+			NODE, 12d, "NODE_LABEL_SIZE", "Node Label Size");
 	public static final VisualProperty<? extends Paint> NODE_LABEL_COLOR = new ColorVisualProperty(
 			NODE, Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color");
 	public static final VisualProperty<Double> NODE_X_LOCATION = new DoubleVisualProperty(
@@ -108,6 +110,7 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		
 		visualPropertySet.add(NODE_COLOR);
 		visualPropertySet.add(NODE_LABEL);
+		visualPropertySet.add(NODE_LABEL_SIZE);
 		visualPropertySet.add(NODE_LABEL_COLOR);
 		visualPropertySet.add(NODE_X_LOCATION);
 		visualPropertySet.add(NODE_Y_LOCATION);
