@@ -31,45 +31,43 @@ import toxi.geom.Vec3D;
  * Wrapper for JOGL-based Cube object.
  * 
  * @author kono
- *
+ * 
  */
 public class Cube extends Vec3D implements CyDrawable, Pickable {
 
 	private static final long serialVersionUID = -3971892445041605908L;
 	private static final String DISPLAY_NAME = "Cube";
-	
+
 	private static final int DEF_SIZE = 20;
-	
+
 	private static final int OFFSET = 10;
 
-	
 	private boolean picked;
 	private Set<Class<?>> compatibleDataType;
-	
+
 	private final VisualLexicon lexicon;
-	
+
 	private PApplet p;
-	
+
 	private float size;
-	private int r, g, b, alpha;
-	
+	private float r, g, b, alpha;
+
 	private final List<CyDrawable> children;
-	
-	private boolean detail = true;
-	
-	
+
+	private boolean fastRendering = false;
+
 	private Map<VisualProperty<?>, Object> fieldMap;
-	
+
 	public Cube(PApplet parent, VisualLexicon lexicon) {
 		super();
 		this.p = parent;
 		this.lexicon = lexicon;
 		this.picked = false;
-		
+
 		this.children = new ArrayList<CyDrawable>();
 		// Create children for label
 		this.children.add(new Text(p, lexicon));
-		
+
 		compatibleDataType = new HashSet<Class<?>>();
 		compatibleDataType.add(CyNode.class);
 	}
@@ -88,22 +86,24 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 	}
 
 	public void draw() {
+		if (!fastRendering) {
+			for (CyDrawable child : children)
+				child.draw();
+			p.noStroke();
+			p.fill(r, g, b, alpha);
+
+		} else {
+			// Do not draw children, and use wireframe.
+			p.noFill();
+			p.strokeWeight(1f);
+			p.stroke(50, 100, 100, 50);
+		}
+
 		p.pushMatrix();
-		p.noStroke();
 		p.translate(x, y, z);
-		p.fill(r, g, b, alpha);
-		//p.noFill();
-		//p.strokeWeight(1);
-		//p.sphereDetail(3);
-		//p.stroke(50, 100, 100, 50);
-		//p.sphere(size);
 		p.box(size);
 		p.popMatrix();
-		
-//		if(detail) {
-			for(CyDrawable child: children)
-				child.draw();
-		
+
 	}
 
 	public List<CyDrawable> getChildren() {
@@ -112,43 +112,42 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 	}
 
 	public void setContext(View<?> viewModel) {
-		
+
 		// Pick compatible lexicon only.
 		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue();
-		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();		
+		this.y = viewModel.getVisualProperty(NODE_Y_LOCATION).floatValue();
 		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue();
-		
+
 		this.size = viewModel.getVisualProperty(NODE_X_SIZE).floatValue();
-		if(size <= 0)
+		if (size <= 0)
 			size = DEF_SIZE;
-		
-		Paint color = viewModel.getVisualProperty(NODE_COLOR);
-		Double opacity = viewModel.getVisualProperty(NODE_OPACITY);
-		if(picked) {
+
+		final Paint color = viewModel.getVisualProperty(NODE_COLOR);
+		if (picked) {
 			this.r = 0;
 			g = 250;
 			b = 0;
 			alpha = 255;
-		}else if(color instanceof Color) {
-			this.r = ((Color)color).getRed();
-			this.g = ((Color)color).getGreen();
-			this.b = ((Color)color).getBlue();
-			//this.alpha = opacity.intValue();		
-			this.alpha = 100;
+		} else if (color instanceof Color) {
+			this.r = ((Color) color).getRed();
+			this.g = ((Color) color).getGreen();
+			this.b = ((Color) color).getBlue();
+			this.alpha = viewModel.getVisualProperty(NODE_OPACITY).floatValue();
 		}
-		
+
 		// Set values for children
-		for(CyDrawable child: children)
+		for (CyDrawable child : children)
 			child.setContext(viewModel);
 	}
-	
+
 	public void setContext(View<?> viewModel, VisualProperty<?> vp) {
 		// If the VP is not in the context, ignore
-		if(lexicon.getAllVisualProperties().contains(vp) == false) return;
-		
+		if (lexicon.getAllVisualProperties().contains(vp) == false)
+			return;
+
 		// Extract value for the visual property
 		Object value = viewModel.getVisualProperty(vp);
-		
+
 	}
 
 	public boolean isPicked() {
@@ -156,20 +155,21 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 	}
 
 	public void pick(float cx, float cy) {
-		
-		final float distance = PApplet.dist(cx, cy, p.screenX(this.x, this.y, this.z), p.screenY(x, y, z));
+
+		final float distance = PApplet.dist(cx, cy, p.screenX(this.x, this.y,
+				this.z), p.screenY(x, y, z));
 		System.out.println("Distance = " + distance);
-		if(distance < 200){
+		if (distance < 200) {
 			picked = true;
 			System.out.println("PICKED!!");
 			this.r = 0;
 			g = 250;
 			b = 0;
 			alpha = 255;
-			System.out.println("Color of PICKED node" + g); 
+			System.out.println("Color of PICKED node" + g);
 		} else
 			picked = false;
-		
+
 	}
 
 	public void addChild(CyDrawable child) {
@@ -178,10 +178,7 @@ public class Cube extends Vec3D implements CyDrawable, Pickable {
 	}
 
 	public void setDetailFlag(boolean flag) {
-		// TODO Auto-generated method stub
-		
+		this.fastRendering = flag;
 	}
-
-	
 
 }

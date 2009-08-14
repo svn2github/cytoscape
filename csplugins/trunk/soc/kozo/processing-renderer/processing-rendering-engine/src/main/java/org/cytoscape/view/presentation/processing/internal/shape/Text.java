@@ -22,6 +22,7 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.Pickable;
+import org.cytoscape.view.presentation.processing.internal.ProcessingNetworkRenderer;
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -45,12 +46,12 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 	private PApplet p;
 
 	private float size;
-	private int r, g, b, alpha;
+	private float r, g, b, alpha;
 	private String text;
 
 	private float offsetX = 30;
 	private float offsetY = 0;
-	private float offsetZ = 0;
+	private float offsetZ = 30;
 
 	private PFont font;
 
@@ -88,7 +89,8 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 //				m_inv.m30, m_inv.m31, m_inv.m32, m_inv.m33);
 //
 		p.fill(r, g, b, alpha);
-		p.text(text, x, y, z+30);
+		p.textFont(((ProcessingNetworkRenderer)p).getDefaultFont(), size);
+		p.text(text, x, y, z);
 	}
 
 	public List<CyDrawable> getChildren() {
@@ -99,6 +101,7 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 	public void setContext(View<?> viewModel) {
 
 		this.text = viewModel.getVisualProperty(NODE_LABEL);
+		offsetX = viewModel.getVisualProperty(NODE_X_SIZE).floatValue()/2 + 15;
 
 		this.x = viewModel.getVisualProperty(NODE_X_LOCATION).floatValue()
 				+ offsetX;
@@ -107,14 +110,15 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 		this.z = viewModel.getVisualProperty(NODE_Z_LOCATION).floatValue()
 				+ offsetZ;
 
+		this.size = viewModel.getVisualProperty(NODE_LABEL_SIZE).floatValue();
 
-		Paint color = viewModel.getVisualProperty(NODE_LABEL_COLOR);
+		final Paint color = viewModel.getVisualProperty(NODE_LABEL_COLOR);
+		
 		if (color instanceof Color) {
 			this.r = ((Color) color).getRed();
 			this.g = ((Color) color).getGreen();
 			this.b = ((Color) color).getBlue();
-			// this.alpha = opacity.intValue();
-			this.alpha = 100;
+			this.alpha = viewModel.getVisualProperty(NODE_LABEL_OPACITY).floatValue();
 		}
 	}
 
@@ -134,20 +138,7 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 
 	public void pick(float cx, float cy) {
 
-		final float distance = PApplet.dist(cx, cy, p.screenX(this.x, this.y,
-				this.z), p.screenY(x, y, z));
-		System.out.println("Distance = " + distance);
-		if (distance < 200) {
-			picked = true;
-			System.out.println("PICKED!!");
-			this.r = 0;
-			g = 250;
-			b = 0;
-			alpha = 255;
-			System.out.println("Color of PICKED node" + g);
-		} else
-			picked = false;
-
+		
 	}
 
 	public void addChild(CyDrawable child) {

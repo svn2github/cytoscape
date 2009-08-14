@@ -37,6 +37,9 @@ import toxi.physics.VerletPhysics;
 
 public class ProcessingNetworkRenderer extends PApplet implements
 		RenderingEngine {
+	
+	// TODO: We need to remove this static strings!!
+	private static final String NAME = "name";
 
 	/*
 	 * Basic Processing settings
@@ -50,24 +53,40 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	GraphRenderer renderer;
 
+	// Drawables
 	private CyDrawable[] nodes;
 	private CyDrawable[] edges;
 
+	// These are singletons.
 	private final P5NodeRenderer nodeRenderer;
 	private final P5EdgeRenderer edgeRenderer;
 
+	// Overlay UI
 	private Overlay overlay;
 	
-	private final PFont DEF_FONT = createFont("SansSerif", 20);
+	// Default fonts
+	private final PFont DEF_FONT = createFont("SansSerif", 30);
 
+	// pan and locations
+	private float rotX, rotY, zoom = 200;
+	
+	// For extreme rendering mode (currently not in use)
 	private ParticleManager particleManager;
 	private VerletPhysics physics;
-	private float rotX, rotY, zoom = 200;
 	private AABB boundingBox;
 	
-	// Control
+	//////////////////////////
+	// Controls
+	//////////////////////////
+	
+	// Turn on/off overlay windows
 	private boolean isOverlay = false;
+	
+	// Stop/start loop
 	private boolean freeze = false;
+	
+	// Switch rendering mode
+	private boolean fastRendering = false;
 	
 	// Network Visuals
 	private Color bgColor;
@@ -79,10 +98,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	 * @param size
 	 */
 	public ProcessingNetworkRenderer(Dimension size, CyNetworkView view) {
-		System.out.println("%%%%%%%%%%%%% Constructor called for P5");
 
 		this.windowSize = size;
-		System.out.println("%%%%%%%%%%%%% Constructor called for P5: 1");
 		this.view = view;
 		System.out.println("%%%%%%%%%%%%% Constructor called for P5: 2");
 		this.nodeRenderer = new P5NodeRenderer(this);
@@ -98,7 +115,6 @@ public class ProcessingNetworkRenderer extends PApplet implements
 			}
 
 		});
-		System.out.println("\n\n\n\n\n\n!!!!!!!!!! Calling constructor: ");
 	}
 
 	public Image getImage(int width, int height) {
@@ -168,7 +184,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		numP = nodes.length;
 		particleManager = new ParticleManager(numP, this, physics);
 
-		overlay = new Overlay(this, view.getSource().attrs().get("name", String.class));
+		// Create Overlay Windows
+		overlay = new Overlay(this, view.getSource().attrs().get(NAME, String.class));
 		
 		System.out.println("%%%%%%%%%%%%% Setup DONE for P5");
 		
@@ -275,6 +292,10 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		  
 	  } else if( key == 'c') {
 		  saveFrame("capture-####.png");
+	  } else if( key == 'r') {
+		  fastRendering = !fastRendering;
+		  for (int i = 0; i < nodes.length; i++)
+				nodes[i].setDetailFlag(fastRendering);
 	  }
 	    
 	}
@@ -286,6 +307,10 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	public View<CyNetwork> getViewModel() {
 		return view;
+	}
+	
+	public PFont getDefaultFont(){
+		return DEF_FONT;
 	}
 
 }
