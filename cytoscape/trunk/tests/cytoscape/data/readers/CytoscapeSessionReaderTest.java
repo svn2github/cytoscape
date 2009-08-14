@@ -48,7 +48,7 @@ public class CytoscapeSessionReaderTest extends TestCase {
     public void testDummy() throws Exception {
     }
 
-    // These test work and pass, but are commented out because they disturb
+    // These tests work and pass, but are commented out because they disturb
     // one of the PluginManager tests when run using "ant test"
     // All tests function undisturbed when run using "ant test-slow"
 //    public void testBug0001929a() throws Exception {
