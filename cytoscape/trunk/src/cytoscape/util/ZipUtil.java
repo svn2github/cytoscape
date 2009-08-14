@@ -57,6 +57,8 @@ import java.util.zip.ZipOutputStream;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.Task;
 import cytoscape.task.ui.JTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Compression-related methods mainly for Session Writer.<br>
@@ -378,14 +380,20 @@ public class ZipUtil {
 	 */
 	public static List<ZipEntry> getAllFiles(String zipName, String fileNameRegEx) throws IOException {
 		List<ZipEntry> Matching = new ArrayList<ZipEntry>();
-		
+        Pattern p;
+		Matcher m;
+
+        p = Pattern.compile(fileNameRegEx);
+        m = p.matcher("");
+
 		ZipFile Zip = new ZipFile(zipName);
         try {
             Enumeration Entries = Zip.entries();
 
             while (Entries.hasMoreElements()) {
                 ZipEntry CurrentEntry = (ZipEntry) Entries.nextElement();
-                if (CurrentEntry.getName().matches(fileNameRegEx)) {
+                m.reset(CurrentEntry.getName());
+                if (m.matches()) {
                     Matching.add(CurrentEntry);
                 }
             }
