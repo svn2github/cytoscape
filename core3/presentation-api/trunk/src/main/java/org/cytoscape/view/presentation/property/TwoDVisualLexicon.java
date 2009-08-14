@@ -113,6 +113,7 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		super();
 		
 		visualPropertySet.add(NODE_COLOR);
+		visualPropertySet.add(NODE_OPACITY);
 		visualPropertySet.add(NODE_LABEL);
 		visualPropertySet.add(NODE_LABEL_SIZE);
 		visualPropertySet.add(NODE_LABEL_COLOR);
