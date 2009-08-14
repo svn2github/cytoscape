@@ -422,8 +422,9 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         IDMappingSourceConfigDialog srcConfDialog = new IDMappingSourceConfigDialog(this, true);
         srcConfDialog.setLocationRelativeTo(this);
         srcConfDialog.setVisible(true);
-        if (!srcConfDialog.isCancelled()) {
-            Set<DataSource>[] types = this.getSupportedType();
+
+        if (srcConfDialog.isModified()) {
+            Set<DataSource>[] types = getSupportedType();
             sourceAttributeSelectionTable.setSupportedIDType(types[0]);
             targetAttributeSelectionTable.setSupportedIDType(types[1]);
         }

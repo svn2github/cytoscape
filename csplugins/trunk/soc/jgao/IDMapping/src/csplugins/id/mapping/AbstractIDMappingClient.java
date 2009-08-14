@@ -37,16 +37,20 @@ package csplugins.id.mapping;
 
 import cytoscape.util.ModuleProperties;
 
+import java.beans.PropertyChangeSupport;
+import java.beans.PropertyChangeListener;
+
+import java.util.Collections;
 import java.util.Set;
 import java.util.Vector;
-import java.util.Collections;
+
 import java.io.Serializable;
 
-import org.bridgedb.Xref;
-import org.bridgedb.IDMapper;
 import org.bridgedb.DataSource;
+import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.IDMapperException;
+import org.bridgedb.Xref;
 
 /**
  * Abstract class for all ID mapping clients.
@@ -56,206 +60,244 @@ import org.bridgedb.IDMapperException;
  *
  */
 public abstract class AbstractIDMappingClient implements Serializable, IDMappingClient {
-	// Default ID
-	protected static final String DEF_NAME = "default";
+    // Default ID
+    protected static final String DEF_NAME = "default";
 
-	// Default Display Name
-	protected static final String DEF_DISPLAY_NAME = "Default Web Service Cilent";
+    // Default Display Name
+    protected static final String DEF_DISPLAY_NAME = "Default Web Service Cilent";
 
-	// Stub object.
-	protected IDMapper idMapper;
+    protected static final String CLIENT_PROPERTY_NAME = "CyThesaurus.Client";
 
-	// Client ID.  This should be unique.
-	protected String clientID;
+    // Stub object.
+    protected IDMapper idMapper;
 
-	// Display Name for this client.
-	protected String displayName;
+    // Client ID.  This should be unique.
+    protected String clientID;
 
-	// Properties for this client.  Will be used by Tunable.
-	protected ModuleProperties props;
+    // Display Name for this client.
+    protected String displayName;
 
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 */
-	public AbstractIDMappingClient() {
-		this(DEF_NAME, DEF_DISPLAY_NAME);
-	}
+    // Properties for this client.  Will be used by Tunable.
+    protected ModuleProperties props;
 
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 */
-	public AbstractIDMappingClient(final String serviceName, final String displayName) {
-		this(serviceName, displayName, null);
-	}
+    protected boolean isSelected;
 
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 */
-	public AbstractIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapper idMapper) {
-		this(serviceName, displayName, idMapper, null);
-	}
+    protected PropertyChangeSupport pcs;
 
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 */
-	public AbstractIDMappingClient(final String serviceName, final String displayName,
-	                               final IDMapper idMapper, final ModuleProperties props) {
-		this.clientID = serviceName;
-		this.displayName = displayName;
-		this.props = props;
-		this.idMapper = idMapper;
+    protected static int clientNo = 0;
+    
+    public static final String SELECTED_CHANGED = "SELECTED_CHANGED";
 
-		//WebServiceClientManager.getCyWebServiceEventSupport().addCyWebServiceEventListener(this);
-	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getDisplayName() {
-		return displayName;
-	}
+    /**
+     * Creates a new WebServiceClientImpl object.
+     */
+    public AbstractIDMappingClient() {
+            this(DEF_NAME, DEF_DISPLAY_NAME);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getClientID() {
-		return clientID;
-	}
+    /**
+     * Creates a new WebServiceClientImpl object.
+     *
+     * @param serviceName  DOCUMENT ME!
+     * @param displayName  DOCUMENT ME!
+     */
+    public AbstractIDMappingClient(final String serviceName, final String displayName) {
+            this(serviceName, displayName, null);
+    }
 
-	/**
-	 *  Client stub will be returned from this.
-	 *  All services are accessible thorough this stub.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public IDMapper getIDMapper() {
-		return idMapper;
-	}
+    /**
+     * Creates a new WebServiceClientImpl object.
+     *
+     * @param serviceName  DOCUMENT ME!
+     * @param displayName  DOCUMENT ME!
+     * @param props  DOCUMENT ME!
+     */
+    public AbstractIDMappingClient(final String serviceName, final String displayName,
+                               final IDMapper idMapper) {
+            this(serviceName, displayName, idMapper, null);
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public ModuleProperties getProps() {
-		return props;
-	}
+    /**
+     * Creates a new WebServiceClientImpl object.
+     *
+     * @param serviceName  DOCUMENT ME!
+     * @param displayName  DOCUMENT ME!
+     * @param props  DOCUMENT ME!
+     */
+    public AbstractIDMappingClient(final String serviceName, final String displayName,
+                                   final IDMapper idMapper, final ModuleProperties props) {
+            this.clientID = serviceName;
+            this.displayName = displayName;
+            this.props = props;
+            this.idMapper = idMapper;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param props DOCUMENT ME!
-	 */
-	public void setProps(ModuleProperties props) {
-		this.props = props;
-	}
+            this.isSelected = true;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getDescription() {
-            StringBuilder desc = new StringBuilder(this.getDisplayName());
-            desc.append("\nCapacities:\n");
+            pcs = new PropertyChangeSupport(this);
+            clientNo++;
+    }
 
-            desc.append(">> Supported source ID types:\n");
-            IDMapperCapabilities capabilities = idMapper.getCapabilities();
+     public void addPropertyChangeListener(PropertyChangeListener l) {
+        pcs.addPropertyChangeListener(l);
+     }
 
-            Set<DataSource> dss = null;
-            try {
-                dss = capabilities.getSupportedSrcDataSources();
-            } catch (IDMapperException ex) {
-                ex.printStackTrace();
-            }
+     public void addPropertyChangeListener(String property,
+             PropertyChangeListener l) {
+        pcs.addPropertyChangeListener(property, l);
+     }
 
-            if (dss!=null) {
-                Vector<String> vec = new Vector(dss.size());
-                for (DataSource ds : dss) {
-                    vec.add(getDescription(ds));
-                }
+     public void removePropertyChangeListener(PropertyChangeListener l) {
+        pcs.removePropertyChangeListener(l);
+     }
 
-                Collections.sort(vec);
-                for (String str : vec) {
-                    desc.append("\t"+str+"\n");
-                }
-            }
+     public void removePropertyChangeListener(String property,
+             PropertyChangeListener l) {
+        pcs.removePropertyChangeListener(property, l);
+     }
 
-            desc.append(">> Supported target ID types:\n");
-            dss = null;
-            try {
-                dss = capabilities.getSupportedTgtDataSources();
-            } catch (IDMapperException ex) {
-                ex.printStackTrace();
-            }
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String getDisplayName() {
+            return displayName;
+    }
 
-            if (dss!=null) {
-                Vector<String> vec = new Vector(dss.size());
-                for (DataSource ds : dss) {
-                    vec.add(getDescription(ds));
-                }
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String getClientID() {
+            return clientID;
+    }
 
-                Collections.sort(vec);
-                for (String str : vec) {
-                    desc.append("\t"+str+"\n");
-                }
-            }
+    /**
+     *  Client stub will be returned from this.
+     *  All services are accessible thorough this stub.
+     *
+     * @return  DOCUMENT ME!
+     */
+    public IDMapper getIDMapper() {
+            return idMapper;
+    }
 
-            desc.append(">> Is free-text search supported?\n");
-            desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
-            desc.append("\n");
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public ModuleProperties getProps() {
+            return props;
+    }
 
-            return desc.toString();
-	}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param props DOCUMENT ME!
+     */
+    protected void setProps(ModuleProperties props) {
+            this.props = props;
+    }
 
-        private String getDescription(DataSource dataSource) {
-            StringBuilder desc = new StringBuilder();
-            String sysName = dataSource.getSystemCode();
-            if (sysName!=null) {
-                desc.append(sysName);
-            }
-            desc.append("\t");
+    /**
+     *  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String getDescription() {
+        StringBuilder desc = new StringBuilder(this.getDisplayName());
+        desc.append("\nCapacities:\n");
 
-            String fullName = dataSource.getFullName();
-            if (fullName!=null) {
-                desc.append(fullName);
-            }
-            desc.append("\t");
+        desc.append(">> Supported source ID types:\n");
+        IDMapperCapabilities capabilities = idMapper.getCapabilities();
 
-            Xref example = dataSource.getExample();
-            if (example!=null) {
-                String id = example.getId();
-                if (id!=null) {
-                    desc.append(id);
-                }
-            }
-
-            return desc.toString();
+        Set<DataSource> dss = null;
+        try {
+            dss = capabilities.getSupportedSrcDataSources();
+        } catch (IDMapperException ex) {
+            ex.printStackTrace();
         }
-	
-	public void setIDMapper(final IDMapper idMapper) {
-		this.idMapper = idMapper;
-	}
+
+        if (dss!=null) {
+            Vector<String> vec = new Vector(dss.size());
+            for (DataSource ds : dss) {
+                vec.add(getDescription(ds));
+            }
+
+            Collections.sort(vec);
+            for (String str : vec) {
+                desc.append("\t"+str+"\n");
+            }
+        }
+
+        desc.append(">> Supported target ID types:\n");
+        dss = null;
+        try {
+            dss = capabilities.getSupportedTgtDataSources();
+        } catch (IDMapperException ex) {
+            ex.printStackTrace();
+        }
+
+        if (dss!=null) {
+            Vector<String> vec = new Vector(dss.size());
+            for (DataSource ds : dss) {
+                vec.add(getDescription(ds));
+            }
+
+            Collections.sort(vec);
+            for (String str : vec) {
+                desc.append("\t"+str+"\n");
+            }
+        }
+
+        desc.append(">> Is free-text search supported?\n");
+        desc.append(capabilities.isFreeSearchSupported()? "\tYes":"\tNo");
+        desc.append("\n");
+
+        return desc.toString();
+    }
+
+    private String getDescription(DataSource dataSource) {
+        StringBuilder desc = new StringBuilder();
+        String sysName = dataSource.getSystemCode();
+        if (sysName!=null) {
+            desc.append(sysName);
+        }
+        desc.append("\t");
+
+        String fullName = dataSource.getFullName();
+        if (fullName!=null) {
+            desc.append(fullName);
+        }
+        desc.append("\t");
+
+        Xref example = dataSource.getExample();
+        if (example!=null) {
+            String id = example.getId();
+            if (id!=null) {
+                desc.append(id);
+            }
+        }
+
+        return desc.toString();
+    }
 
     @Override
     public String toString() {
         return this.getDisplayName();
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        boolean old = this.isSelected;
+        this.isSelected = isSelected;
+        pcs.firePropertyChange(SELECTED_CHANGED, old, isSelected);
     }
 
 }

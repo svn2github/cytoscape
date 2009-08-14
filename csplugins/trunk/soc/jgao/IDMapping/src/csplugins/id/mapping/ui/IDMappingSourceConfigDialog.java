@@ -86,7 +86,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
                     }
                 }
 
-                descTextArea.repaint();//.repaint();
+                descTextArea.repaint();
                 descScrollPane.repaint();
             }
         });
@@ -109,7 +109,6 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         descTextArea = new javax.swing.JTextArea();
         javax.swing.JPanel okPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ID Mapping Source Configuration");
@@ -159,7 +158,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
 
         okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        okButton.setText("   OK   ");
+        okButton.setText("Close");
         okButton.setToolTipText("\"Select at least two networks to merge\"");
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -167,14 +166,6 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
             }
         });
         okPanel.add(okButton);
-
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-        okPanel.add(cancelButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -187,31 +178,30 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        setVisible(false);
-}//GEN-LAST:event_cancelButtonActionPerformed
-
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        Set<IDMappingClient> selectedClients = srcTree.getSelectedIDMapperClients();
-        IDMappingClientManager.setSelectedClients(selectedClients);
-
-        cancelled = false;
         setVisible(false);
+        this.dispose();
 }//GEN-LAST:event_okButtonActionPerformed
 
-    public boolean isCancelled() {
-        return cancelled;
+    public boolean isModified() {
+        return srcTree.isModified();
     }
+//    @Override
+//    public void dispose() {
+//        Set<IDMappingClient> selectedClients = srcTree.getSelectedIDMapperClients();
+//        for (IDMappingClient client : IDMappingClientManager.allClients()) {
+//            client.setSelected(selectedClients.contains(client));
+//        }
+//        super.dispose();
+//    }
 
     private static final String msg = "Click on a 2nd level tree node to " +
             "add an ID mapping sources.\n\nClick on a tree node of a ID " +
             "mapping source for information about it. \n\nRight click on a ID " +
             "mapping source to edit/delete it.\n\nClick the checkboxes to " +
             "select/unselect ID mapping sources to use.";
-    private boolean cancelled = true;
     private IDMappingSourceSelectionTree srcTree;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelButton;
     private javax.swing.JScrollPane descScrollPane;
     private javax.swing.JTextArea descTextArea;
     private javax.swing.JButton okButton;

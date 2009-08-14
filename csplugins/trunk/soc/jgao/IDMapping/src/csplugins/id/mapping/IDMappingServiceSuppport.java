@@ -188,7 +188,7 @@ public class IDMappingServiceSuppport {
         srcConfDialog.setVisible(true);
 
         Map content = new HashMap();
-        content.put(RESPONSE_SUCCESS, !srcConfDialog.isCancelled());
+        content.put(RESPONSE_SUCCESS, true);
 
         return createResponse(msg, content);
     }

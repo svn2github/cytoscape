@@ -50,46 +50,19 @@ public abstract class FileIDMappingClient extends AbstractIDMappingClient {
 	protected static final String FILE_NAME = "file";
 
 	// Default Display Name
-	protected static final String FILE_DISPLAY_NAME = "File ID Mapping Cilent";
-
-    /**
-	 * Creates a new WebServiceClientImpl object.
-	 */
-	public FileIDMappingClient() {
-		this(FILE_NAME, FILE_DISPLAY_NAME);
-	}
+	protected static final String FILE_DISPLAY_NAME
+                = "File ID Mapping Cilent";
 
 	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 */
-	public FileIDMappingClient(final String serviceName, final String displayName) {
-		this(serviceName, displayName, null);
-	}
-
-	/**
-	 * Creates a new WebServiceClientImpl object.
+	 * Creates a new FileIDMappingClient object.
 	 *
 	 * @param serviceName  DOCUMENT ME!
 	 * @param displayName  DOCUMENT ME!
 	 * @param props  DOCUMENT ME!
 	 */
-	public FileIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperFile idMapper) {
-		this(serviceName, displayName, idMapper, null);
-	}
-
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 */
-	public FileIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperFile idMapper, final ModuleProperties props) {
+	public FileIDMappingClient(final String serviceName, 
+                final String displayName, final IDMapperFile idMapper,
+                final ModuleProperties props) {
 		super(serviceName, displayName, idMapper, props);
 
 	}

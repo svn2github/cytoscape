@@ -35,16 +35,32 @@
 
 package csplugins.id.mapping;
 
+import cytoscape.layout.Tunable;
+
+import cytoscape.util.ModuleProperties;
+import cytoscape.util.ModulePropertiesImpl;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.bridgedb.IDMapperException;
 import org.bridgedb.file.IDMapperText;
-
-import java.net.URL;
 
 /**
  *
  * @author gjj
  */
 public class DelimitedTextIDMappingClient extends FileIDMappingClient {
+
+    protected static final String TEXT_CLIENT_PROPERTY_NAME 
+            = CLIENT_PROPERTY_NAME+".Text";
+
+    public static final String DATA_SOURCE_DELIMITER_CHANGED
+            = "DATA_SOURCE_DELIMITER_CHANGED";
+    public static final String ID_DELIMITER_CHANGED
+            = "ID_DELIMITER_CHANGED";
+    public static final String TRANSITIVITY_CHANGED
+            = "TRANSITIVITY_CHANGED";
 
     public DelimitedTextIDMappingClient(final URL url,
             final char[] dataSourceDelimiters) throws IDMapperException {
@@ -65,20 +81,111 @@ public class DelimitedTextIDMappingClient extends FileIDMappingClient {
                                dataSourceDelimiters,
                                idDelimiters,
                                transitivity));
-//        super(url.toString(),
-//              url.toString(),
-//              new IDMapperText(url,
-//                               dataSourceDelimiters,
-//                               idDelimiters,
-//                               transitivity));
-        //TODO: set ModuleProperties
+    }
 
+    public void setDataSourceDelimiters(final char[] dataSourceDelimiters) {
+        IDMapperText mapper = (IDMapperText)idMapper;
+        char[] old = mapper.getDataSourceDelimiters();
+        mapper.setDataSourceDelimiters(dataSourceDelimiters);
+        pcs.firePropertyChange(DATA_SOURCE_DELIMITER_CHANGED, old,
+                dataSourceDelimiters);
+    }
+
+    public void setIDDelimiters(final char[] idDelimiters) {
+        IDMapperText mapper = (IDMapperText)idMapper;
+        char[] old = mapper.getIDDelimiters();
+        mapper.setIDDelimiters(idDelimiters);
+        pcs.firePropertyChange(ID_DELIMITER_CHANGED, old,
+                idDelimiters);
+    }
+
+    public void setTransitivity(final boolean transitivity) {
+        IDMapperText mapper = (IDMapperText)idMapper;
+        boolean old = mapper.getTransitivity();
+        mapper.setTransitivity(transitivity);
+        pcs.firePropertyChange(ID_DELIMITER_CHANGED, old,
+                transitivity);
     }
 
     public DelimitedTextIDMappingClient(final IDMapperText idMapper) {
+        this(idMapper, null);
+
+        // set ModuleProperties
+        ModuleProperties properties = new ModulePropertiesImpl(
+                ""+clientNo, TEXT_CLIENT_PROPERTY_NAME);
+
+        properties.add(new Tunable("type", "Client type", Tunable.STRING, "Text"));
+        String url = idMapper.getURL().toString();
+        properties.add(new Tunable("url", "URL of the text file", Tunable.STRING,
+                url));
+
+        String dsDel = new String(idMapper.getIDDelimiters());
+        properties.add(new Tunable("data_source_delimiter",
+                "Delimiters between data sources", Tunable.STRING, dsDel));
+
+        if (idMapper.getIDDelimiters()!=null) {
+            String idDel = new String(idMapper.getIDDelimiters());
+            properties.add(new Tunable("id_delimiter",
+                    "Delimiters between identifiers", Tunable.STRING, idDel));
+        }
+
+        properties.add(new Tunable("transitivity", "Transitivity support",
+                Tunable.BOOLEAN, new Boolean(idMapper.getTransitivity())));
+
+        properties.add(new Tunable("selected", "is this client selected",
+                Tunable.BOOLEAN, new Boolean(isSelected())));
+
+
+
+        properties.initializeProperties();
+
+        setProps(properties);
+
+    }
+
+    public DelimitedTextIDMappingClient(final ModuleProperties properties)
+            throws IDMapperException, MalformedURLException {
+        this(propertiesToIDMapper(properties), properties);
+        Tunable t = properties.get("selected");
+        setSelected(t==null || (Boolean)t.getValue());
+    }
+
+    protected  DelimitedTextIDMappingClient(final IDMapperText idMapper,
+            final ModuleProperties properties) {
         super(idMapper.getURL().toString(),
                 idMapper.getURL().toString(),
-                idMapper);
-        //TODO: set ModuleProperties
+                idMapper, properties);
+    }
+
+    private static IDMapperText propertiesToIDMapper(
+            final ModuleProperties properties)  
+            throws IDMapperException, MalformedURLException {
+        Tunable t = properties.get("url");
+        assertNull(t, "Illegal properties: no URL.");
+        URL url = new URL(t.getValue().toString());
+
+        t = properties.get("data_source_delimiter");
+        assertNull(t, "Illegal properties: no data source delimiter.");
+        char[] dsDel = t.getValue().toString().toCharArray();
+
+        char[] idDel = null;
+        t = properties.get("id_delimiter");
+        if (t!=null) {
+            idDel = t.getValue().toString().toCharArray();
+        }
+
+        boolean transitivity = false;
+        t = properties.get("transitivity");
+        if (t!=null) {
+            transitivity = (Boolean)t.getValue();
+        }
+
+        return new IDMapperText(url, dsDel, idDel, transitivity);
+    }
+
+    private static void assertNull(Object obj, String msg) {
+        if (obj==null) {
+            throw new java.lang.IllegalArgumentException(msg);
+        }
     }
 }

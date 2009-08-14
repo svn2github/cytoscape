@@ -35,13 +35,14 @@
 
 package csplugins.id.mapping;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.bridgedb.DataSource;
-//import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperStack;
 
 /**
@@ -58,7 +59,6 @@ public class IDMappingClientManager {
 
     private static Map<String, IDMappingClient> clientNameMap;
     private static Map<String, IDMappingClient> clientIDMap;
-    private static Set<IDMappingClient> selectedClients;
 
     static {
         new IDMappingClientManager();
@@ -67,63 +67,50 @@ public class IDMappingClientManager {
     private IDMappingClientManager() {
         clientNameMap = new HashMap();
         clientIDMap = new HashMap();
-        selectedClients = new HashSet();
     }
 
     /**
-	 *  Register client to the manager.
-	 *
-	 * @param client DOCUMENT ME!
-	 */
-	public static void registerClient(final IDMappingClient client) {
-		registerClient(client, true);
-	}
+     *
+     * @param client
+     * @return true if registered.
+     */
+    public static boolean registerClient(final IDMappingClient client) {
+        return registerClient(client, false);
+    }
 
     /**
-	 *  Register client to the manager.
-	 *
-	 * @param client DOCUMENT ME!
-	 */
-	public static void registerClient(final IDMappingClient client, final boolean selected) {
-		if (client == null) {
-			return;
-		}
-
-		clientNameMap.put(client.getDisplayName(), client);
-		clientIDMap.put(client.getClientID(), client);
-        if (selected) {
-            selectedClients.add(client);
+     *  Register client to the manager.
+     *
+     * @param client DOCUMENT ME!
+     * @param replace indicate whether replace the existing client if client id
+     *                or display name is the same
+     * @return true if registered
+     */
+    public static boolean registerClient(final IDMappingClient client,
+            boolean replace) {
+        if (client == null) {
+            throw new IllegalArgumentException();
         }
-	}
 
-    public static boolean selectClient(final IDMappingClient client) {
-        String id = client.getClientID();
-        if (!clientIDMap.containsKey(id)) {
+        if (!replace && (getClient(client.getClientID())!=null ||
+                getClientByDisplayName(client.getDisplayName())!=null)) {
             return false;
         }
 
-        return selectedClients.add(client);
-    }
+        clientNameMap.put(client.getDisplayName(), client);
+        clientIDMap.put(client.getClientID(), client);
+        client.getProps().saveProperties();
 
-    public static boolean unselectClient(final IDMappingClient client) {
-        String id = client.getClientID();
-        if (!clientIDMap.containsKey(id)) {
-            return false;
+        if (client instanceof AbstractIDMappingClient) {
+            AbstractIDMappingClient cli = (AbstractIDMappingClient) client;
+            cli.addPropertyChangeListener(new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                    client.getProps().saveProperties();
+                }
+            });
         }
 
-        return selectedClients.remove(client);
-    }
-
-    public static void setSelectedClients(final Set<IDMappingClient> clients) {
-        for (IDMappingClient client : clients) {
-            String id = client.getClientID();
-            if (!clientIDMap.containsKey(id)) {
-                registerClient(client, false);
-            }
-        }
-
-        selectedClients.clear();
-        selectedClients.addAll(clients);
+        return true;
     }
 
     /**
@@ -133,8 +120,9 @@ public class IDMappingClientManager {
      */
     public static IDMapperStack selectedIDMapperStack() {
         IDMapperStack idMapperStack = new IDMapperStack();
-        for (IDMappingClient client : selectedClients) {
-            idMapperStack.addIDMapper(client.getIDMapper());
+        for (IDMappingClient client : clientNameMap.values()) {
+            if (client.isSelected())
+                idMapperStack.addIDMapper(client.getIDMapper());
         }
         
         return idMapperStack;
@@ -149,110 +137,72 @@ public class IDMappingClientManager {
         return new HashSet(clientNameMap.values());
     }
 
-
     /**
+     *  DOCUMENT ME!
      *
-     * @param client
-     * @return
+     * @param clientID DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
      */
-    public static boolean isClientSelected(final IDMappingClient client) {
-        return selectedClients.contains(client);
+    public static IDMappingClient getClient(String clientID) {
+        return clientIDMap.get(clientID);
     }
 
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param clientID DOCUMENT ME!
+     */
+    public static void removeClient(String clientID) {
+        if (clientID == null) {
+            return;
+        }
 
+        removeClient(clientIDMap.get(clientID));
+    }
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param clientID DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static IDMappingClient getClient(String clientID) {
-		return clientIDMap.get(clientID);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param clientID DOCUMENT ME!
-	 */
-	public static void removeClient(String clientID) {
-		if (clientID == null) {
-			return;
-		}
-
-		removeClient(clientIDMap.get(clientID));
-	}
-
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param clientID DOCUMENT ME!
-	 */
-	public static void removeClient(IDMappingClient client) {
-		if (client == null) {
-			return;
-		}
+    /**
+     *  DOCUMENT ME!
+     *
+     * @param clientID DOCUMENT ME!
+     */
+    public static void removeClient(IDMappingClient client) {
+        if (client == null) {
+            return;
+        }
 
         clientIDMap.remove(client.getClientID());
         clientNameMap.remove(client.getDisplayName());
-	}
+    }
 
     /**
-	 *  DOCUMENT ME!
-	 *
-	 * @param clientName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+     *  DOCUMENT ME!
+     *
+     * @param clientName DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public static IDMappingClient getClientByDisplayName(String clientName) {
-		return clientNameMap.get(clientName);
-	}
+        return clientNameMap.get(clientName);
+    }
 
-    /**
-	 *  DOCUMENT ME!
-	 *
-	 * @param clientName DOCUMENT ME!
-	 */
-	public static void removeClientByDisplayName(String clientName) {
-		if (clientName == null) {
-			return;
-		}
+/**
+     *  DOCUMENT ME!
+     *
+     * @param clientName DOCUMENT ME!
+     */
+    public static void removeClientByDisplayName(String clientName) {
+        if (clientName == null) {
+            return;
+        }
 
-		IDMappingClient cl = clientNameMap.get(clientName);
+        IDMappingClient cl = clientNameMap.get(clientName);
 
-		if (cl != null) {
-			clientIDMap.remove(clientName);
-			clientNameMap.remove(cl.getClientID());
-			cl = null;
-		}
-	}
+        if (cl != null) {
+            clientIDMap.remove(clientName);
+            clientNameMap.remove(cl.getClientID());
+            cl = null;
+        }
+    }
 
-//    /**
-//     *
-//     * @return supported source ID types
-//     */
-//    public static Set<DataSource>  getSupportedSrcDataSources() {
-//        Set<DataSource> ret = new HashSet();
-//        for (IDMappingClient client : IDMappingClientManager.getAllClients()) {
-//            IDMapper idMapper = client.getIDMapper();
-//            ret.addAll(idMapper.getCapabilities().getSupportedSrcDataSources());
-//        }
-//        return ret;
-//    }
-//
-//    /**
-//     *
-//     * @return supported target ID types
-//     */
-//    public static Set<DataSource> getSupportedTgtDataSources() {
-//        Set<DataSource> ret = new HashSet();
-//        for (IDMappingClient client : IDMappingClientManager.getAllClients()) {
-//            IDMapper idMapper = client.getIDMapper();
-//            ret.addAll(idMapper.getCapabilities().getSupportedTgtDataSources());
-//        }
-//        return ret;
-//    }
 }

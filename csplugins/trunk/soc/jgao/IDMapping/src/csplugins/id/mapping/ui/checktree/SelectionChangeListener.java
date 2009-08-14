@@ -10,5 +10,5 @@ package csplugins.id.mapping.ui.checktree;
  * @author gjj
  */
 public interface SelectionChangeListener extends java.util.EventListener {
-    void selectionChanged(SelectionChangeEvent e);
+    public void selectionChanged(SelectionChangeEvent e);
 }

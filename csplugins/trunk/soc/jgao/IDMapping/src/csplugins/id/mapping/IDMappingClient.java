@@ -81,23 +81,13 @@ public interface IDMappingClient {
     public IDMapper getIDMapper();
 
     /**
-     * 
-     * @param idMapper
+     * Get properties used by the Tunable.
+     *
+     * @return
      */
-    public void setIDMapper(IDMapper idMapper);
+    public ModuleProperties getProps();
 
-    /**
-	 * Get properties used by the Tunable.
-	 *
-	 * @return
-	 */
-	public ModuleProperties getProps();
+    public boolean isSelected();
 
-	/**
-	 * Set props used by Tunable.
-	 *
-	 * @param props Property.
-	 */
-	public void setProps(ModuleProperties props);
-
+    public void setSelected(boolean isSelected);
 }

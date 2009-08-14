@@ -45,6 +45,8 @@ import csplugins.id.mapping.IDMappingClientManager.ClientType;
 import csplugins.id.mapping.ui.checktree.CheckTreeManager;
 import csplugins.id.mapping.ui.checktree.CheckTreeSelectionModel;
 import csplugins.id.mapping.ui.checktree.TreePathSelectable;
+import csplugins.id.mapping.ui.checktree.SelectionChangeListener;
+import csplugins.id.mapping.ui.checktree.SelectionChangeEvent;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -72,6 +74,7 @@ class IDMappingSourceSelectionTree extends JTree {
     private DefaultTreeModel tree_Model;
     private final CheckTreeSelectionModel selection_Model;
     private final JDialog parent;
+    private boolean modified = false;
 
     private DefaultMutableTreeNode rootNode;
     private DefaultMutableTreeNode dbTreeNode;
@@ -86,7 +89,8 @@ class IDMappingSourceSelectionTree extends JTree {
     public IDMappingSourceSelectionTree(JDialog parent) {
         this.parent = parent;
 
-        checkTreeManager = new CheckTreeManager(this, true, 
+        boolean dig = false;
+        checkTreeManager = new CheckTreeManager(this, false,
                 new TreePathSelectable() {
             public boolean isSelectable(TreePath path) {
                 return path.getPathCount()>2;
@@ -99,45 +103,69 @@ class IDMappingSourceSelectionTree extends JTree {
 //                }
             }
         });
+        checkTreeManager.addSelectionChangeListener(new SelectionChangeListener() {
+            public void selectionChanged(SelectionChangeEvent e) {
+                Object source = e.getSource();
+                if (!(source instanceof TreePath)) return;
+                TreePath path = (TreePath)e.getSource();
+                Object nodeObj = path.getLastPathComponent();
+                if (nodeObj instanceof DefaultMutableTreeNode) {
+                    DefaultMutableTreeNode clientNode = (DefaultMutableTreeNode)nodeObj;
+                    Object clientObj = clientNode.getUserObject();
+                    if (clientObj instanceof IDMappingClient) {
+                        IDMappingClient client = (IDMappingClient)clientObj;
+                        client.setSelected(selection_Model.isPathSelected(path, true));
+                        modified = true;
+                    } else {
+                    //TODO if 2nd level can be selected
+                    }
+                }
+            }
+        });
+
         selection_Model = checkTreeManager.getSelectionModel();
         setupTree();
         setupMouse();
     }
 
-    public Set<IDMappingClient> getSelectedIDMapperClients() {
-        Set<IDMappingClient> ret = new HashSet<IDMappingClient>();
-        
-        TreePath[] checkedPaths = selection_Model.getSelectionPaths();
-        if (checkedPaths==null) {
-            return ret;
-        }
-
-        for (TreePath path : checkedPaths) {
-            Object nodeObj = path.getLastPathComponent();
-            if (nodeObj instanceof DefaultMutableTreeNode) {
-                DefaultMutableTreeNode clientNode = (DefaultMutableTreeNode)nodeObj;
-                Object clientObj = clientNode.getUserObject();
-                if (clientObj instanceof IDMappingClient) {
-                    ret.add((IDMappingClient)clientObj);
-                } else if (!clientNode.isLeaf()) {
-                    DefaultMutableTreeNode leaf = clientNode.getFirstLeaf();
-                    DefaultMutableTreeNode lastLeaf = clientNode.getLastLeaf();
-                    while (true) {
-                        clientObj = leaf.getUserObject();
-                        if (clientObj instanceof IDMappingClient) {
-                            ret.add((IDMappingClient)clientObj);
-                        }
-
-                        if (leaf==lastLeaf) break;
-
-                        leaf = leaf.getNextLeaf();
-                    } 
-                }
-            }
-        }
-
-        return ret;
+    public boolean isModified() {
+        return modified;
     }
+
+//    public Set<IDMappingClient> getSelectedIDMapperClients() {
+//        Set<IDMappingClient> ret = new HashSet<IDMappingClient>();
+//
+//        TreePath[] checkedPaths = selection_Model.getSelectionPaths();
+//        if (checkedPaths==null) {
+//            return ret;
+//        }
+//
+//        for (TreePath path : checkedPaths) {
+//            Object nodeObj = path.getLastPathComponent();
+//            if (nodeObj instanceof DefaultMutableTreeNode) {
+//                DefaultMutableTreeNode clientNode = (DefaultMutableTreeNode)nodeObj;
+//                Object clientObj = clientNode.getUserObject();
+//                if (clientObj instanceof IDMappingClient) {
+//                    ret.add((IDMappingClient)clientObj);
+//                } else if (!clientNode.isLeaf()) {
+//                    DefaultMutableTreeNode leaf = clientNode.getFirstLeaf();
+//                    DefaultMutableTreeNode lastLeaf = clientNode.getLastLeaf();
+//                    while (true) {
+//                        clientObj = leaf.getUserObject();
+//                        if (clientObj instanceof IDMappingClient) {
+//                            ret.add((IDMappingClient)clientObj);
+//                        }
+//
+//                        if (leaf==lastLeaf) break;
+//
+//                        leaf = leaf.getNextLeaf();
+//                    }
+//                }
+//            }
+//        }
+//
+//        return ret;
+//    }
 
     private void setupTree() {
         // set up tree
@@ -158,55 +186,62 @@ class IDMappingSourceSelectionTree extends JTree {
         tree_Model = new DefaultTreeModel(rootNode);
         this.setModel(tree_Model);
 
+        boolean expandFile = false;
+        boolean expandWs = false;
+        boolean expandDb = false;
+
         for (IDMappingClient client : IDMappingClientManager.allClients()) {
             DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
             ClientType clientType = client.getClientType();
             if (clientType==ClientType.FILE) {
                 fileTreeNode.add(clientNode);
-                if (IDMappingClientManager.isClientSelected(client)) {
+                if (client.isSelected()) {
+                    expandFile = true;
                     //expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode}));
                     //set selected
                     TreePath treePath = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,clientNode});
-                    if (!selection_Model.isPathSelected(treePath, true)) {
+                    //if (!selection_Model.isPathSelected(treePath, true)) {
                         selection_Model.addSelectionPaths(new TreePath[] {treePath});
-                    }
+                    //}
                 }
             } else if (clientType==ClientType.RDB) {
                 dbTreeNode.add(clientNode);
-                if (IDMappingClientManager.isClientSelected(client)) {
+                if (client.isSelected()) {
+                    expandDb = true;
                     //expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,dbTreeNode}));
                     //set selected
                     TreePath treePath = new TreePath(new DefaultMutableTreeNode[]{rootNode,dbTreeNode,clientNode});
-                    if (!selection_Model.isPathSelected(treePath, true)) {
+                    //if (!selection_Model.isPathSelected(treePath, true)) {
                         selection_Model.addSelectionPaths(new TreePath[] {treePath});
-                    }
+                    //}
                 }
             } else if (clientType==ClientType.WEBSERVICE) {
                 wsTreeNode.add(clientNode);
-                if (IDMappingClientManager.isClientSelected(client)) {
+                if (client.isSelected()) {
+                    expandWs = true;
                     //expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,wsTreeNode}));
                     //set selected
                     TreePath treePath = new TreePath(new DefaultMutableTreeNode[]{rootNode,wsTreeNode,clientNode});
-                    if (!selection_Model.isPathSelected(treePath, true)) {
+                    //if (!selection_Model.isPathSelected(treePath, true)) {
                         selection_Model.addSelectionPaths(new TreePath[] {treePath});
-                    }
+                    //}
                 }
             }
         }
 
-        // expand selected nodes
-        TreePath treePath = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode});
-        if (selection_Model.isPathSelected(treePath, true) || selection_Model.isPartiallySelected(treePath)) {
+        // expand selected nodes        
+        if (expandFile) {
+            TreePath treePath = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode});
             expandPath(treePath);
         }
 
-        treePath = new TreePath(new DefaultMutableTreeNode[]{rootNode,dbTreeNode});
-        if (selection_Model.isPathSelected(treePath, true) || selection_Model.isPartiallySelected(treePath)) {
+        if (expandDb) {
+            TreePath treePath = new TreePath(new DefaultMutableTreeNode[]{rootNode,dbTreeNode});
             expandPath(treePath);
         }
-
-        treePath = new TreePath(new DefaultMutableTreeNode[]{rootNode,wsTreeNode});
-        if (selection_Model.isPathSelected(treePath, true) || selection_Model.isPartiallySelected(treePath)) {
+        
+        if (expandWs) {
+            TreePath treePath = new TreePath(new DefaultMutableTreeNode[]{rootNode,wsTreeNode});
             expandPath(treePath);
         }
 
@@ -373,9 +408,12 @@ class IDMappingSourceSelectionTree extends JTree {
         if (!dialog.isCancelled()) {
             IDMappingClient client = dialog.getIDMappingClient();
             if (client!=null) {
-                DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
-                IDMappingClientManager.registerClient(client);
+                if (!IDMappingClientManager.registerClient(client)) {
+                    JOptionPane.showMessageDialog(parent, "This database has already been added as an ID mapping source.");
+                    return;
+                }
 
+                DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
                 dbTreeNode.add(clientNode);
                 clientNode.setAllowsChildren(false);
 
@@ -390,6 +428,8 @@ class IDMappingSourceSelectionTree extends JTree {
                 setSelectionPath(path);
 
                 tree_Model.reload(dbTreeNode);
+                
+                modified = true;
             }
         }
     }
@@ -408,8 +448,12 @@ class IDMappingSourceSelectionTree extends JTree {
             }
 
             if (client!=null) {
+                if (!IDMappingClientManager.registerClient(client)) {
+                    JOptionPane.showMessageDialog(parent, "This web service has already been added as an ID mapping source.");
+                    return;
+                }
+
                 DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
-                IDMappingClientManager.registerClient(client);
 
                 wsTreeNode.add(clientNode);
                 clientNode.setAllowsChildren(false);
@@ -425,8 +469,11 @@ class IDMappingSourceSelectionTree extends JTree {
                 setSelectionPath(path);
 
                 tree_Model.reload(wsTreeNode);
+
+                modified = true;
             }
         }
+        
     }
 
     private void addFile() {
@@ -443,8 +490,12 @@ class IDMappingSourceSelectionTree extends JTree {
             }
 
             if (client!=null) {
+                if (!IDMappingClientManager.registerClient(client)) {
+                    JOptionPane.showMessageDialog(parent, "This file has already been added as an ID mapping source.");
+                    return;
+                }
+
                 DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
-                IDMappingClientManager.registerClient(client);
 
                 fileTreeNode.add(clientNode);
                 clientNode.setAllowsChildren(false);
@@ -460,6 +511,8 @@ class IDMappingSourceSelectionTree extends JTree {
                 setSelectionPath(path);
                 
                 tree_Model.reload(fileTreeNode);
+                
+                modified = true;
             }
         }
     }
@@ -472,6 +525,7 @@ class IDMappingSourceSelectionTree extends JTree {
         TreeNode parentNode = node.getParent();
         node.removeFromParent();
         tree_Model.reload(parentNode);
+        modified = true;
     }
 
     private void configTextClient(final DefaultMutableTreeNode node) {
@@ -485,21 +539,7 @@ class IDMappingSourceSelectionTree extends JTree {
         if (!dialog.isCancelled()) {
             TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,node});
             setSelectionPath(path);
-//            if (client!=null) {
-//                DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
-//                IDMappingClientManager.registerClient(client);
-//                fileTreeNode.add(clientNode);
-//
-//                //expand path
-//                this.expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode}));
-//
-//                //set selected
-//                TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,clientNode});
-//                selectionModel.addSelectionPath(path);
-//                setSelectionPath(path);
-//
-//                this.repaint();
-//            }
+            modified = true;
         }
     }
 
@@ -514,6 +554,7 @@ class IDMappingSourceSelectionTree extends JTree {
             if (!dialog.isCancelled()) {
                 TreePath path = new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode,node});
                 setSelectionPath(path);
+                modified = true;
             }
         }
     }

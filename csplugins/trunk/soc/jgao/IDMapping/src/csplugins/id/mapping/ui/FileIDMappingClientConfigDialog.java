@@ -532,10 +532,9 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (verifyInput()) {
             if (client!=null) { // config
-                IDMapperText idMapper = (IDMapperText)client.getIDMapper();
-                idMapper.setDataSourceDelimiters(getTypeDelimiters());
-                idMapper.setIDDelimiters(getIDDelimiters());
-                idMapper.setTransitivity(transitivityCheckBox.isSelected());
+                client.setDataSourceDelimiters(getTypeDelimiters());
+                client.setIDDelimiters(getIDDelimiters());
+                client.setTransitivity(transitivityCheckBox.isSelected());
             }
             cancelled = false;
             setVisible(false);

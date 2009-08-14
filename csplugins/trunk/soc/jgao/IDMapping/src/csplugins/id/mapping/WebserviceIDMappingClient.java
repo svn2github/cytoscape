@@ -53,46 +53,46 @@ public abstract class WebserviceIDMappingClient extends AbstractIDMappingClient 
 	protected static final String WS_DISPLAY_NAME = "File ID Mapping Cilent";
 
     /**
-	 * Creates a new WebServiceClientImpl object.
-	 */
-	public WebserviceIDMappingClient() {
-		this(WS_NAME, WS_DISPLAY_NAME);
-	}
+     * Creates a new WebServiceClientImpl object.
+     */
+    public WebserviceIDMappingClient() {
+        this(WS_NAME, WS_DISPLAY_NAME);
+    }
 
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 */
-	public WebserviceIDMappingClient(final String serviceName, final String displayName) {
-		this(serviceName, displayName, null);
-	}
+    /**
+     * Creates a new WebServiceClientImpl object.
+     *
+     * @param serviceName  DOCUMENT ME!
+     * @param displayName  DOCUMENT ME!
+     */
+    public WebserviceIDMappingClient(final String serviceName, final String displayName) {
+        this(serviceName, displayName, null);
+    }
 
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 */
-	public WebserviceIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperWebservice idMapper) {
-		this(serviceName, displayName, idMapper, null);
-	}
+    /**
+     * Creates a new WebServiceClientImpl object.
+     *
+     * @param serviceName  DOCUMENT ME!
+     * @param displayName  DOCUMENT ME!
+     * @param props  DOCUMENT ME!
+     */
+    public WebserviceIDMappingClient(final String serviceName, final String displayName,
+                               final IDMapperWebservice idMapper) {
+        this(serviceName, displayName, idMapper, null);
+    }
 
-	/**
-	 * Creates a new WebServiceClientImpl object.
-	 *
-	 * @param serviceName  DOCUMENT ME!
-	 * @param displayName  DOCUMENT ME!
-	 * @param props  DOCUMENT ME!
-	 */
-	public WebserviceIDMappingClient(final String serviceName, final String displayName,
-	                           final IDMapperWebservice idMapper, final ModuleProperties props) {
-		super(serviceName, displayName, idMapper, props);
+    /**
+     * Creates a new WebServiceClientImpl object.
+     *
+     * @param serviceName  DOCUMENT ME!
+     * @param displayName  DOCUMENT ME!
+     * @param props  DOCUMENT ME!
+     */
+    public WebserviceIDMappingClient(final String serviceName, final String displayName,
+                               final IDMapperWebservice idMapper, final ModuleProperties props) {
+        super(serviceName, displayName, idMapper, props);
 
-	}
+    }
 
     /**
      *
