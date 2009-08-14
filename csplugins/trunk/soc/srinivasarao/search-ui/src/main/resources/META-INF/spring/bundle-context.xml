@@ -14,6 +14,7 @@
 	<bean name="SearchPlugin" class="org.cytoscape.search.ui.SearchPluginImpl">
 		<constructor-arg ref="cytoscapeDesktopServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
 
 	<bean name="SearchPanelEventHandlerImpl"

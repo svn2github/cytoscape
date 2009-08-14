@@ -33,24 +33,29 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.search.ui;
+package org.cytoscape.search.ui.tasks;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.lucene.store.RAMDirectory;
 
 import org.cytoscape.search.*;
 import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
 import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
 import org.cytoscape.search.internal.EnhancedSearchQueryImpl;
+import org.cytoscape.search.ui.SearchPanelFactory;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
 
 public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 
-	private CyNetwork network;
-	private String query;
+	private CyNetworkManager netmgr;
+	private String query = null;
 	private TaskMonitor taskMonitor;
 	private boolean interrupted = false;
 	
@@ -62,8 +67,8 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 	 * @param query
 	 *            Query string.
 	 */
-	public IndexAndSearchTaskImpl(CyNetwork network, String query) {
-		this.network = network;
+	public IndexAndSearchTaskImpl(CyNetworkManager nm, String query) {
+		this.netmgr = nm;
 		this.query = query;
 	}
 
@@ -72,7 +77,8 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 	 */
 	public void run(TaskMonitor tm) {
 		this.taskMonitor = tm;
-
+		final CyNetwork network = netmgr.getCurrentNetwork();
+		System.out.println("I am in IndexandSearchTask Service");
 		EnhancedSearchFactoryImpl esf = new EnhancedSearchFactoryImpl();
 		final EnhancedSearch enhancedSearch = esf
 				.getGlobalEnhancedSearchInstance();
@@ -121,6 +127,41 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 		int percentCompleted = (numCompleted * 100 / hitCount);
 		taskMonitor.setProgress(percentCompleted);
 
+		String result = SearchPanelFactory.getGlobalInstance(netmgr)
+				.getmainPanel().getResult();
+		System.out.println("Selected Option: " + result);
+
+		CyNetworkView view = netmgr.getCurrentNetworkView();
+		if (result.equals("Select")) {
+			SelectUtils.setSelectedNodes(nodeList, true);
+			SelectUtils.setSelectedEdges(edgeList, true);
+
+			if (view != null) {
+				view.updateView();
+			}
+
+		} else if (result.equals("Show")) {
+			if (view != null) {
+				List<CyNode> compnodelist = network.getNodeList();
+				for (CyNode n : nodeList) {
+					compnodelist.remove(n);
+				}
+				HideUtils.setVisibleNodes(compnodelist, false, view);
+
+				List<CyEdge> compedgelist = network.getEdgeList();
+				for (CyEdge e : edgeList) {
+					compedgelist.remove(e);
+				}
+				HideUtils.setVisibleEdges(compedgelist, false, view);
+			}
+
+		} else {
+			if (view != null) {
+				HideUtils.setVisibleNodes(nodeList, false, view);
+				HideUtils.setVisibleEdges(edgeList, false, view);
+			}
+		}
+
 	}
 
 	/**
@@ -155,57 +196,4 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 	public String getTitle() {
 		return "Searching the network";
 	}
-
-	public void run() {
-		System.out.println("I am in IndexandSearchTask");
-		EnhancedSearchFactoryImpl esf = new EnhancedSearchFactoryImpl();
-		final EnhancedSearch enhancedSearch = esf
-				.getGlobalEnhancedSearchInstance();
-
-		// Index the given network or use existing index
-		RAMDirectory idx = null;
-
-		String status = enhancedSearch.getNetworkIndexStatus(network);
-		if (status == EnhancedSearch.INDEX_SET) {
-			idx = enhancedSearch.getNetworkIndex(network);
-		} else {
-			// taskMonitor.setStatusMessage("Indexing network");
-			EnhancedSearchIndex indexHandler = new EnhancedSearchIndexImpl(
-					network);
-			idx = indexHandler.getIndex();
-			enhancedSearch.setNetworkIndex(network, idx);
-
-			if (interrupted) {
-				return;
-			}
-		}
-
-		// Execute query
-		// taskMonitor.setStatusMessage("Executing query");
-		EnhancedSearchQuery queryHandler = new EnhancedSearchQueryImpl(idx,
-				network);
-		queryHandler.executeQuery(query);
-
-		if (interrupted) {
-			return;
-		}
-
-		int hitCount = queryHandler.getHitCount();
-		if (hitCount == 0) {
-			System.out.println("No hits. ");
-			return;
-		}
-		System.out.println("There are " + hitCount + " hits.");
-		// taskMonitor.setStatusMessage("Displaying " + hitCount + " hits");
-
-		int numCompleted = 0;
-		ArrayList<CyNode> nodeList = queryHandler.getNodeHits();
-		numCompleted = 50;
-		ArrayList<CyEdge> edgeList = queryHandler.getEdgeHits();
-
-		int percentCompleted = (numCompleted * 100 / hitCount);
-		// taskMonitor.setProgress(percentCompleted);
-
-	}
-
 }

@@ -2,6 +2,8 @@ package org.cytoscape.search.ui;
 
 import javax.swing.JPanel;
 
+import org.cytoscape.work.TaskManager;
+
 public abstract class SearchPanel extends JPanel {
 
 	/**
@@ -20,5 +22,7 @@ public abstract class SearchPanel extends JPanel {
 	abstract public MainPanel getmainPanel();
 
 	abstract public void initattrPanel();
+	
+	abstract public void setTaskManager(TaskManager tm);
 
 }

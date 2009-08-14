@@ -3,4 +3,4 @@
 #-----------------------------------------------------------------
 
 Import-Package: *
-Export-Package: ${bundle.namespace}.ui,${bundle.namespace}.ui.event
+Export-Package: ${bundle.namespace}.ui,${bundle.namespace}.ui.event,${bundle.namespace}.ui.filter,${bundle.namespace}.ui.tasks

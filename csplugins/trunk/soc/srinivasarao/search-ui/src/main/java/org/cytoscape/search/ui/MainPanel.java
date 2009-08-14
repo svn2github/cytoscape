@@ -23,8 +23,6 @@ import javax.swing.JTextField;
 
 import org.cytoscape.session.CyNetworkManager;
 
-import cytoscape.Cytoscape;
-
 public class MainPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -165,6 +163,7 @@ public class MainPanel extends JPanel {
 		if (selectButton == null) {
 			selectButton = new JRadioButton();
 			selectButton.setText("Select");
+			selectButton.setActionCommand("Select");
 		}
 		return selectButton;
 	}
@@ -178,6 +177,7 @@ public class MainPanel extends JPanel {
 		if (showButton == null) {
 			showButton = new JRadioButton();
 			showButton.setText("Show");
+			showButton.setActionCommand("Show");
 		}
 		return showButton;
 	}
@@ -191,6 +191,7 @@ public class MainPanel extends JPanel {
 		if (hideButton == null) {
 			hideButton = new JRadioButton();
 			hideButton.setText("Hide");
+			hideButton.setActionCommand("Hide");
 		}
 		return hideButton;
 	}
@@ -307,6 +308,7 @@ public class MainPanel extends JPanel {
 
 	public String getResult() {
 		String res = resultGroup.getSelection().getActionCommand();
+		System.out.println("In getresult:" + res);
 		return res;
 	}
 

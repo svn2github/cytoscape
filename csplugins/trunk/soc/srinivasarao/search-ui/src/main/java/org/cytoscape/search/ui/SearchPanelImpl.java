@@ -15,8 +15,10 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.search.EnhancedSearch;
 import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
+import org.cytoscape.search.ui.tasks.IndexAndSearchTaskImpl;
 import org.cytoscape.search.util.AttributeTypes;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.work.TaskManager;
 
 public class SearchPanelImpl extends SearchPanel {
 
@@ -28,6 +30,7 @@ public class SearchPanelImpl extends SearchPanel {
 	private JSplitPane split = null;
 	private String[] nodeattrList;
 	private String[] edgeattrList;
+	private TaskManager taskmanager;
 
 	/**
 	 * This is the default constructor
@@ -36,6 +39,10 @@ public class SearchPanelImpl extends SearchPanel {
 		super();
 		this.netmgr = nm;
 		initialize();
+	}
+
+	public void setTaskManager(TaskManager tm) {
+		this.taskmanager = tm;
 	}
 
 	/**
@@ -147,9 +154,9 @@ public class SearchPanelImpl extends SearchPanel {
 			}
 
 			// Define a new IndexAndSearchTask
-			IndexAndSearchTaskImpl task = new IndexAndSearchTaskImpl(
-					currNetwork, query);
-			task.run();
+			IndexAndSearchTaskImpl task = new IndexAndSearchTaskImpl(netmgr,
+					query);
+			taskmanager.execute(task);
 			// Execute the task via the task manager
 			// tm.execute(task);
 		}
