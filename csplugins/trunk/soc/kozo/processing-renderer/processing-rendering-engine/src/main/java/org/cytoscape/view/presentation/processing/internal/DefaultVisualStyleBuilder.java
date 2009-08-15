@@ -28,10 +28,10 @@ public class DefaultVisualStyleBuilder {
 
 	private static final String STYLE_TITLE = "Processing Default Style";
 
-	private static final Color DEF_NODE_COLOR = new Color(0, 30, 250);
+	private static final Color DEF_NODE_COLOR = new Color(200, 200, 200);
 	private static final double DEF_NODE_OPACITY = 100d;
 
-	private static final Color DEF_EDGE_COLOR = new Color(0, 30, 250);
+	private static final Color DEF_EDGE_COLOR = new Color(50, 50, 50);
 	private static final double DEF_EDGE_OPACITY = 150d;
 	
 	private static final Color PP_COLOR = new Color(200, 20, 20);
@@ -66,8 +66,8 @@ public class DefaultVisualStyleBuilder {
 		randSize.putMapValue("YMR043W", 60d);
 		location.putMapValue("YMR043W", 500d);
 		
-		interaction.putMapValue("pp", PP_COLOR);
-		interaction.putMapValue("pd", PD_COLOR);
+		//interaction.putMapValue("pp", PP_COLOR);
+		//interaction.putMapValue("pd", PD_COLOR);
 
 
 		style.addVisualMappingFunction(labelMapping);
@@ -81,6 +81,7 @@ public class DefaultVisualStyleBuilder {
 		style.setDefaultValue(NODE_OPACITY, DEF_NODE_OPACITY);
 
 		style.setDefaultValue(EDGE_COLOR, DEF_EDGE_COLOR);
+		style.setDefaultValue(EDGE_SELECTED_COLOR, Color.red);
 		style.setDefaultValue(EDGE_OPACITY, DEF_EDGE_OPACITY);
 		style.setDefaultValue(EDGE_WIDTH, 3d);
 

@@ -2,6 +2,7 @@ package org.cytoscape.view.presentation.processing.internal.shape;
 
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.*;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_SELECTED_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_SIZE;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
@@ -57,6 +58,8 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 
 	private Map<VisualProperty<?>, Object> fieldMap;
 
+	private Color selected;
+
 	public Text(PApplet parent, VisualLexicon lexicon) {
 		super();
 		this.p = parent;
@@ -99,6 +102,9 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 	}
 
 	public void setContext(View<?> viewModel) {
+		
+		this.picked = ((CyNode)viewModel.getSource()).attrs().get("selected", Boolean.class);
+		this.selected = (Color) viewModel.getVisualProperty(NODE_SELECTED_COLOR);
 
 		this.text = viewModel.getVisualProperty(NODE_LABEL);
 		offsetX = viewModel.getVisualProperty(NODE_X_SIZE).floatValue()/2 + 15;
@@ -114,7 +120,12 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 
 		final Paint color = viewModel.getVisualProperty(NODE_LABEL_COLOR);
 		
-		if (color instanceof Color) {
+		if (picked) {
+			this.r = selected.getRed();
+			this.g = selected.getGreen();
+			this.b = selected.getBlue();
+			this.alpha = 200f;
+		} else if (color instanceof Color) {
 			this.r = ((Color) color).getRed();
 			this.g = ((Color) color).getGreen();
 			this.b = ((Color) color).getBlue();
