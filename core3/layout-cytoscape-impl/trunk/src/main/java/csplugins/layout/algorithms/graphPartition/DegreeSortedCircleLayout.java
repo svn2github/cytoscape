@@ -1,11 +1,14 @@
 /* vim: set ts=2: */
 package csplugins.layout.algorithms.graphPartition;
 
+import static org.cytoscape.model.GraphObject.NODE;
+
 import org.cytoscape.view.layout.AbstractGraphPartition;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
 
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.work.UndoSupport;
 
@@ -19,6 +22,8 @@ import java.util.List;
  *
  */
 public class DegreeSortedCircleLayout extends AbstractGraphPartition {
+	
+	private static final String DEGREE_ATTR_NAME = "degree";
 	/**
 	 * Creates a new DegreeSortedCircleLayout object.
 	 */
@@ -50,6 +55,11 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 	 * @param partition DOCUMENT ME!
 	 */
 	public void layoutPartion(LayoutPartition partition) {
+		// Create attribute
+		if(network.getCyDataTables(NODE).get(CyNetwork.DEFAULT_ATTRS).getUniqueColumns().contains(DEGREE_ATTR_NAME) == false) {
+			network.getCyDataTables(NODE).get(CyNetwork.DEFAULT_ATTRS).createColumn(DEGREE_ATTR_NAME,
+				Double.class, false);
+		}
 
     // just add the unlocked nodes
     List<LayoutNode> nodes = new ArrayList<LayoutNode>();
@@ -71,6 +81,11 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 					// FIXME: should allow parametrization of edge type? (expose as tunable)
 					final int d1 = network.getAdjacentEdgeList(node1, CyEdge.Type.ANY).size();
 					final int d2 = network.getAdjacentEdgeList(node2, CyEdge.Type.ANY).size();
+					
+					// Create Degree Attribute
+					node1.attrs().set(DEGREE_ATTR_NAME, (double)d1);
+					node2.attrs().set(DEGREE_ATTR_NAME, (double)d2);
+					
 					return (d2 - d1);
 				}
 
