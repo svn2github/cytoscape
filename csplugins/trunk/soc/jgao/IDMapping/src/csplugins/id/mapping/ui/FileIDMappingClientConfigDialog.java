@@ -36,7 +36,7 @@
 package csplugins.id.mapping.ui;
 
 import csplugins.id.mapping.IDMapperClient;
-import csplugins.id.mapping.IDMapperClientImpl;
+import csplugins.id.mapping.IDMapperClientImplTunables;
 
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
@@ -849,7 +849,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         String url = textFileTextField.getText();
 
-        return new IDMapperClientImpl(getConnectionString(),
+        return new IDMapperClientImplTunables(getConnectionString(),
                 "org.bridgedb.file.IDMapperText", url);
     }
 

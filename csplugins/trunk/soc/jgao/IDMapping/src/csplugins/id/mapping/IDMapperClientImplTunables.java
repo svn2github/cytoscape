@@ -35,6 +35,8 @@
 
 package csplugins.id.mapping;
 
+import cytoscape.layout.Tunable;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.Vector;
@@ -50,58 +52,104 @@ import org.bridgedb.Xref;
  *
  * @author gjj
  */
-public class IDMapperClientImpl implements IDMapperClient {
+public class IDMapperClientImplTunables implements IDMapperClient {
     protected IDMapper mapper = null;
-    protected String connectionString;
-    protected String classString;
-    protected String id;
-    protected String displayName;
-    protected boolean selected;
+
+    protected Tunable connectionString;
+    protected Tunable classString;
+    protected Tunable id;
+    protected Tunable displayName;
+    protected Tunable selected;
+
+    protected IDMapperClientProperties props;
 
     protected static int clientNo = 0;
 
-    public IDMapperClientImpl(String connectionString, String classString)
+    protected static final String CLIENT_ID = "id";
+    protected static final String CLIENT_DISPLAYNAME = "display-name";
+    protected static final String CLASS_STRING = "class-name";
+    protected static final String CONNECTION_STRING = "connection-string";
+    protected static final String SELECTED = "selected";
+
+    public IDMapperClientImplTunables(String connectionString, String classString)
             throws ClassNotFoundException, IDMapperException{
-        this(connectionString, classString, null);
-        id = ""+clientNo;
-        displayName = ""+clientNo;
+        this(connectionString, classString, ""+clientNo);
     }
 
-    public IDMapperClientImpl(String connectionString, String classString,
+    public IDMapperClientImplTunables(String connectionString, String classString,
             String displayName)
             throws ClassNotFoundException, IDMapperException {
-        this(connectionString, classString, displayName, null);
-        id = ""+clientNo;
+        this(connectionString, classString, displayName, ""+clientNo);
     }
 
-    public IDMapperClientImpl(String connectionString, String classString,
+    public IDMapperClientImplTunables(String connectionString, String classString,
             String displayName, String id)
             throws ClassNotFoundException, IDMapperException {
         this(connectionString, classString, displayName, id, true);
     }
 
-    public IDMapperClientImpl(String connectionString, String classString,
+    public IDMapperClientImplTunables(String connectionString, String classString,
             String displayName, String id, boolean selected)
             throws ClassNotFoundException, IDMapperException {
-        this.classString = classString;
         Class.forName(classString);
-
-        this.connectionString = connectionString;
         mapper = BridgeDb.connect(connectionString);
 
-        this.id = id;
-        this.displayName = displayName;
-        this.selected = selected;
+        props = new IDMapperClientProperties(id);
+
+        initilizeTunables(connectionString, classString, displayName, id,
+                selected);
+
+        props.saveProperties();
+        
+        clientNo++;
+    }
+
+    public IDMapperClientImplTunables(IDMapperClientProperties props)
+            throws ClassNotFoundException, IDMapperException {
+        this.props = props;
+
+        this.initilizeTunables("", "", ""+clientNo, ""+clientNo, true);
+
+        Class.forName(getClassString());
+        mapper = BridgeDb.connect(getConnectionString());
+
+        props.saveProperties();
 
         clientNo++;
     }
 
-     public String getId() {
-        return id;
+    public void initilizeTunables(String connectionString, String classString,
+            String displayName, String id, boolean selected) {
+        this.id = new Tunable(CLIENT_ID, "ID for client", Tunable.STRING, id);
+        props.add(this.id);
+
+        this.displayName = new Tunable(CLIENT_DISPLAYNAME,
+                    "Display name for client", Tunable.STRING, displayName);
+        props.add(this.displayName);
+
+        this.classString = new Tunable(CLASS_STRING,
+                    "ID mapper class name", Tunable.STRING, classString);
+        props.add(this.classString);
+
+        this.connectionString = new Tunable(CONNECTION_STRING,
+                    "Connection string of ID mapper", Tunable.STRING,
+                    connectionString);
+        props.add(this.connectionString);
+
+        this.selected = new Tunable(SELECTED,
+                    "Is this client selected", Tunable.BOOLEAN,
+                    selected);
+        props.add(this.selected);
+
+        props.initializeProperties(); // save to props or set to tunables
+    }
+
+    public String getId() {
+        return (String)id.getValue();
     }
 
     public String getDisplayName() {
-        return displayName;
+        return (String)displayName.getValue();
     }
 
     public IDMapper getIDMapper() {
@@ -109,17 +157,18 @@ public class IDMapperClientImpl implements IDMapperClient {
     }
     
     public String getConnectionString() {
-        return connectionString;
+        return (String)connectionString.getValue();
     }
 
     public void setConnectionString(String connectionString)
             throws IDMapperException {
-        this.connectionString = connectionString;
+        this.connectionString.setValue(connectionString);
         mapper = BridgeDb.connect(connectionString);
+        props.saveProperties(this.connectionString);
     }
     
     public String getClassString() {
-        return classString;
+        return (String)classString.getValue();
     }
 
     public String getDescription() {
@@ -205,11 +254,20 @@ public class IDMapperClientImpl implements IDMapperClient {
         return this.getDisplayName();
     }
 
+    public IDMapperClientProperties getProps() {
+        return props;
+    }
+
     public boolean isSelected() {
-        return selected;
+        return (Boolean)selected.getValue();
     }
 
     public void setSelected(boolean selected) {
-        this.selected = selected;
+        this.selected.setValue(selected);
+        props.saveProperties(this.selected);
+    }
+
+    public void close() {
+        props.release();
     }
 }

@@ -36,7 +36,7 @@
 package csplugins.id.mapping.ui;
 
 import csplugins.id.mapping.IDMapperClient;
-import csplugins.id.mapping.IDMapperClientImpl;
+import csplugins.id.mapping.IDMapperClientImplTunables;
 
 import org.bridgedb.IDMapperException;
 import org.bridgedb.rdb.IDMapperRdb;
@@ -239,7 +239,7 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
         String className = strs[1];
         String displayName = strs[2];
 
-        return new IDMapperClientImpl(connStr, className, displayName);
+        return new IDMapperClientImplTunables(connStr, className, displayName);
         
     }
 

@@ -46,6 +46,9 @@ import org.bridgedb.bio.BioDataSource;
 
 import java.awt.event.ActionEvent;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -60,6 +63,13 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
         BioDataSource.init();
         Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new IDMappingAction());
         IDMappingServiceSuppport.addService();
+
+        Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
+                Cytoscape.SESSION_LOADED, new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                IDMapperClientManager.reloadFromCytoscapeProperties();
+            }
+        });
     }
 
     static final String pluginName = "CyThesaurus";

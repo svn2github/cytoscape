@@ -37,12 +37,14 @@ package csplugins.id.mapping;
 
 import cytoscape.CytoscapeInit;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.bridgedb.IDMapperException;
 import org.bridgedb.IDMapperStack;
 
 /**
@@ -61,11 +63,51 @@ public class IDMapperClientManager {
     private IDMapperClientManager() {
         clientNameMap = new HashMap();
         clientIDMap = new HashMap();
-        init();
+        reloadFromCytoscapeProperties();
     }
 
-    private void init() {
+    public static void reloadFromCytoscapeProperties() {
+        clientNameMap.clear();
+        clientIDMap.clear();
+
         Properties props = CytoscapeInit.getProperties();
+
+        String prefix = IDMapperClientProperties.moduleName+".";
+
+        Set<String> propIds = new HashSet();
+
+        // Find all properties with this prefix
+        Enumeration iter = props.propertyNames();
+        while (iter.hasMoreElements()) {
+            String property = (String) iter.nextElement();
+
+            if (property.startsWith(prefix)) {
+                int start = prefix.length();
+                int end = property.indexOf('.', start);
+                if (end!=-1) {
+                    propIds.add(property.substring(start, end));
+                }
+            }
+        }
+
+        for (String pid : propIds) {
+            IDMapperClientProperties imcp = new IDMapperClientProperties(pid);
+            IDMapperClient client = null;
+            try {
+                client = new IDMapperClientImplTunables(imcp);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IDMapperException e) {
+                e.printStackTrace();
+            }
+
+            if (client == null) {
+                //imcp.release();
+            } else {
+                registerClient(client);
+            }
+
+        }
     }
 
     public static Set<IDMapperClient> allClients() {
@@ -96,51 +138,46 @@ public class IDMapperClientManager {
         return clientIDMap.get(clientId);
     }
 
-    public static void removeClient(String clientId) {
+    public static boolean removeClient(String clientId) {
         if (clientId == null) {
-            return;
+            return false;
         }
     
         IDMapperClient cl = clientIDMap.get(clientId);
-
-        if (cl != null) {
-            clientNameMap.remove(cl.getDisplayName());
-            clientIDMap.remove(clientId);
-            cl = null;
-        }
+        return removeClient(cl);
     }
     
     public static IDMapperClient getClientByDisplayName(String clientDisName) {
         return clientNameMap.get(clientDisName);
     }
 
-    public static void removeClientByDisplayName(String clientName) {
+    public static boolean removeClientByDisplayName(String clientName) {
         if (clientName == null) {
-            return;
+            return false;
         }
 
         IDMapperClient cl = clientNameMap.get(clientName);
-
-        if (cl != null) {
-            clientNameMap.remove(clientName);
-            clientIDMap.remove(cl.getId());
-            cl = null;
-        }
+        return removeClient(cl);
     }
 
-//    public static boolean selectClient(String clientId) {
-//        IDMapperClient client = getClient(clientId);
-//        if (client==null) return false;
-//
-//        return selectedClients.add(client);
-//    }
-//
-//    public static boolean unselectClient(String clientId) {
-//        IDMapperClient client = getClient(clientId);
-//        if (client==null) return false;
-//
-//        return selectedClients.remove(client);
-//    }
+    public static boolean removeClient(final IDMapperClient client) {
+        if (client == null) {
+            return false;
+        }
+
+        if (!clientIDMap.containsValue(client)) {
+            return false;
+        }
+
+        clientNameMap.remove(client.getDisplayName());
+        clientIDMap.remove(client.getId());
+
+        if (client instanceof IDMapperClientImplTunables) {
+            ((IDMapperClientImplTunables)client).close();
+        }
+        
+        return true;
+    }
 
     /**
      *
