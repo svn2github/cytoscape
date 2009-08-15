@@ -43,7 +43,6 @@ public class DepthwiseColor implements PhyloVisualStyle {
 	
 	public VisualStyle createStyle(CyNetwork network)
 	{
-		
 		// Add attributes defining node depth
 		addDepthAttributes(network);
 		
@@ -107,7 +106,8 @@ public class DepthwiseColor implements PhyloVisualStyle {
 		while(nodeListIterator.hasNext())
 		{
 			Node node = nodeListIterator.next();
-			
+		
+		//	System.out.println(node.getIdentifier());
 			int depth = cf.getDepth(network, node);
 			nodeAttributes.setAttribute(node.getIdentifier(), "Depth", depth);
 			

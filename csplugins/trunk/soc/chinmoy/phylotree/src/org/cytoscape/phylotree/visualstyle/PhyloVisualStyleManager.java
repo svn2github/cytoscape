@@ -1,11 +1,15 @@
 package org.cytoscape.phylotree.visualstyle;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import org.cytoscape.phylotree.layout.CommonFunctions;
 
 
 public class PhyloVisualStyleManager {
@@ -15,8 +19,12 @@ public class PhyloVisualStyleManager {
 		// get the network and view
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-
-		// get the VisualMappingManager and CalculatorCatalog
+		CommonFunctions cf = new CommonFunctions();
+		
+		if(cf.isTree(network))
+		{
+			// get the VisualMappingManager and CalculatorCatalog
+		
 		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = manager.getCalculatorCatalog();
 
@@ -27,12 +35,20 @@ public class PhyloVisualStyleManager {
 			vs = phyloVS.createStyle(network);
 			catalog.addVisualStyle(vs);
 		}
+		else
+		{
+			vs = phyloVS.createStyle(network);
+			
+		}
 		
 		networkView.setVisualStyle(vs.getName()); // not strictly necessary
 
 		// actually apply the visual style
 		manager.setVisualStyle(vs);
 		networkView.redrawGraph(true,true);
+		}
+		else
+			JOptionPane.showMessageDialog(new JFrame(), phyloVS.getName()+" visual style can only be applied to trees.", "Visual style error", JOptionPane.ERROR_MESSAGE);
 	}
 
 }
