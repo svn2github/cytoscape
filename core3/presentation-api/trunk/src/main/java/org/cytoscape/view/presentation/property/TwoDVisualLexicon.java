@@ -52,6 +52,8 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 
 	public static final VisualProperty<? extends Paint> NODE_COLOR = new ColorVisualProperty(
 			NODE, Color.RED, "NODE_COLOR", "Node Color");
+	public static final VisualProperty<? extends Paint> NODE_SELECTED_COLOR = new ColorVisualProperty(
+			NODE, Color.YELLOW, "NODE_SELECTED_COLOR", "Node Selected Color");
 	public static final VisualProperty<Double> NODE_OPACITY = new DoubleVisualProperty(
 			NODE, 255d, "NODE_OPACITY", "Node Opacity");
 	public static final VisualProperty<String> NODE_LABEL = new StringVisualProperty(
@@ -75,7 +77,9 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 	public static final VisualProperty<Boolean> NODE_SELECTED = new BooleanVisualProperty(
 			NODE, false, "NODE_SELECTED", "Node Selected");
 	public static final VisualProperty<? extends Paint> EDGE_COLOR = new ColorVisualProperty(
-			EDGE, Color.BLUE, "EDGE_COLOR", "Edge Color");
+			EDGE, Color.gray, "EDGE_COLOR", "Edge Color");
+	public static final VisualProperty<? extends Paint> EDGE_SELECTED_COLOR = new ColorVisualProperty(
+			EDGE, Color.yellow, "EDGE_SELECTED_COLOR", "Edge Selected Color");
 	public static final VisualProperty<String> EDGE_LABEL = new StringVisualProperty(
 			EDGE, "", "EDGE_LABEL", "Edge Label");
 	public static final VisualProperty<Double> EDGE_LABEL_OPACITY = new DoubleVisualProperty(
@@ -113,6 +117,7 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		super();
 		
 		visualPropertySet.add(NODE_COLOR);
+		visualPropertySet.add(NODE_SELECTED_COLOR);
 		visualPropertySet.add(NODE_OPACITY);
 		visualPropertySet.add(NODE_LABEL);
 		visualPropertySet.add(NODE_LABEL_SIZE);
@@ -125,6 +130,7 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		visualPropertySet.add(NODE_VISIBLE);
 		visualPropertySet.add(NODE_SELECTED);
 		visualPropertySet.add(EDGE_COLOR);
+		visualPropertySet.add(EDGE_SELECTED_COLOR);
 		visualPropertySet.add(EDGE_OPACITY);
 		visualPropertySet.add(EDGE_WIDTH);
 		visualPropertySet.add(EDGE_LABEL);
