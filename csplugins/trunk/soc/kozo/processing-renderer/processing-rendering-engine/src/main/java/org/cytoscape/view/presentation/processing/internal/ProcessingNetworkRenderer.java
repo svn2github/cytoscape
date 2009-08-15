@@ -26,6 +26,10 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.internal.particle.ParticleManager;
 import org.cytoscape.view.presentation.processing.internal.ui.Overlay;
+import org.cytoscape.view.vizmap.events.VisualStyleChangedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleChangedListener;
+import org.cytoscape.view.vizmap.events.VisualStyleSwitchedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleSwitchedListener;
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -36,7 +40,7 @@ import toxi.physics.VerletPhysics;
 
 
 public class ProcessingNetworkRenderer extends PApplet implements
-		RenderingEngine {
+		RenderingEngine, VisualStyleChangedListener, VisualStyleSwitchedListener {
 	
 	// TODO: We need to remove this static strings!!
 	private static final String NAME = "name";
@@ -311,6 +315,16 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	
 	public PFont getDefaultFont(){
 		return DEF_FONT;
+	}
+
+	public void handleEvent(VisualStyleChangedEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void handleEvent(VisualStyleSwitchedEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

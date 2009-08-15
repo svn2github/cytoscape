@@ -77,6 +77,7 @@ public class DefaultVisualStyleBuilder {
 		
 		
 		style.setDefaultValue(NODE_COLOR, DEF_NODE_COLOR);
+		style.setDefaultValue(NODE_SELECTED_COLOR, Color.red);
 		style.setDefaultValue(NODE_OPACITY, DEF_NODE_OPACITY);
 
 		style.setDefaultValue(EDGE_COLOR, DEF_EDGE_COLOR);
