@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.TreeSet;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,8 +77,9 @@ public class SourceAttributeSelectionTable extends JTable{
 
     private Set<DataSourceWrapper> supportedIDType;
 
-    //private List<JComboBox> networkComboBoxes;
-    private List<JComboBox> attributeComboBoxes;
+    private CheckComboBoxSelectionChangedListener idTypeSelectionChangedListener;
+
+    private List<JComboBox> attributeComboBoxes; //TODO: same attribute
     private List<CheckComboBox> typeComboBoxes;
     private List<JButton> rmvBtns;
     private JButton addBtn;
@@ -143,33 +144,43 @@ public class SourceAttributeSelectionTable extends JTable{
         setColumnEditorAndCellRenderer();
     }
 
+    void setIDTypeSelectionChangedListener(
+            CheckComboBoxSelectionChangedListener idTypeSelectionChangedListener) {
+        this.idTypeSelectionChangedListener = idTypeSelectionChangedListener;
+    }
+
     public void setSupportedIDType(final Set<DataSource> types) {
         if (types==null) {
             throw new NullPointerException();
         }
+
+        Map<String,Set<DataSource>> oldMap = this.getSourceAttrType();
         
         supportedIDType = new TreeSet();
         for (DataSource type : types) {
             supportedIDType.add(DataSourceWrapper.getInstance(type));
         }
 
-        typeComboBoxes.clear();
-        for (int i=0; i<rowCount; i++) {
-            typeComboBoxes.add(new CheckComboBox(supportedIDType, false));
-        }
+//        typeComboBoxes.clear();
+//        for (int i=0; i<rowCount; i++) {
+//            CheckComboBox cc = new CheckComboBox(supportedIDType, false);
+//            cc.addSelectionChangedListener(idTypeSelectionChangedListener);
+//            typeComboBoxes.add(cc);
+//        }
 
         //TODO: select the id type previously selected
+        this.setSourceAttrType(oldMap);
         
         model.fireTableStructureChanged();
         setColumnEditorAndCellRenderer();
     }
 
-    public void setSourceNetAttrType(Map<String,Set<DataSource>> srcNetAttrType) {
-        if (srcNetAttrType==null) return;
+    public void setSourceAttrType(Map<String,Set<DataSource>> srcAttrType) {
+        if (srcAttrType==null) return;
 
         this.clearRows();
 
-        for (Map.Entry<String,Set<DataSource>> entry : srcNetAttrType.entrySet()) {
+        for (Map.Entry<String,Set<DataSource>> entry : srcAttrType.entrySet()) {
             String attr = entry.getKey();
             Set<DataSource> dss = entry.getValue();
             this.addRow(attr, dss);
@@ -182,8 +193,8 @@ public class SourceAttributeSelectionTable extends JTable{
 
     }
 
-    public Map<String,Set<DataSource>> getSourceNetAttrType() {
-        Map<String,Set<DataSource>> ret = new HashMap();
+    public Map<String,Set<DataSource>> getSourceAttrType() {
+        Map<String,Set<DataSource>> ret = new LinkedHashMap();
 //        if (supportedIDType.isEmpty()) {
 //            return ret;
 //        }
@@ -197,15 +208,34 @@ public class SourceAttributeSelectionTable extends JTable{
 
             Set<DataSource> types = null;
             if (!supportedIDType.isEmpty()) {
-                Object[] dsws = typeComboBoxes.get(i).getSelectedItems();
-                if (dsws!=null) {
+            Object[] dsws = typeComboBoxes.get(i).getSelectedItems();
+            if (dsws!=null) {
                     types = new HashSet();
-                    for (Object dsw : dsws) {
-                        types.add(((DataSourceWrapper)dsw).DataSource());
-                    }
+                for (Object dsw : dsws) {
+                    types.add(((DataSourceWrapper)dsw).DataSource());
                 }
             }
+            }
             ret.put(attr, types);
+        }
+
+        return ret;
+    }
+
+    public Set<DataSource> getSelectedIDTypes() {
+        Set<DataSource> ret = new HashSet();
+
+        if (supportedIDType.isEmpty()) {
+            return ret;
+        }
+
+        for (int i=0; i<rowCount; i++) {
+            Object[] dsws = typeComboBoxes.get(i).getSelectedItems();
+            if (dsws!=null) {
+                for (Object dsw : dsws) {
+                    ret.add(((DataSourceWrapper)dsw).DataSource());
+                }
+            }
         }
 
         return ret;
@@ -285,9 +315,11 @@ public class SourceAttributeSelectionTable extends JTable{
 
         attrs.addAll(list);
 
-        attributeComboBoxes.add(new JComboBox(attrs));
+        JComboBox cb = new JComboBox(attrs);
+        attributeComboBoxes.add(cb);
 
         CheckComboBox cc = new CheckComboBox(supportedIDType, false);
+        cc.addSelectionChangedListener(idTypeSelectionChangedListener);
         typeComboBoxes.add(cc);
 
         JButton button = new JButton("Remove");
@@ -317,18 +349,16 @@ public class SourceAttributeSelectionTable extends JTable{
         cb.setSelectedItem(attr);
         attributeComboBoxes.add(cb);
 
-        CheckComboBox cc = new CheckComboBox(supportedIDType, false);
+        Set<DataSourceWrapper> selectedDsws = new HashSet();
         if (dss!=null) {
-            int n = dss.size();
-            if (n>0) {
-                DataSourceWrapper[] dsws = new DataSourceWrapper[n];
-                int i=0;
                 for (DataSource ds : dss) {
-                    dsws[i++] = DataSourceWrapper.getInstance(ds);
+                    DataSourceWrapper dsw = DataSourceWrapper.getInstance(ds);
+                    if (supportedIDType.contains(dsw))
+                        selectedDsws.add(dsw);
                 }
-                cc.setSelectedItems(dsws);
-            }
         }
+        CheckComboBox cc = new CheckComboBox(supportedIDType, selectedDsws);
+        cc.addSelectionChangedListener(idTypeSelectionChangedListener);
         typeComboBoxes.add(cc);
 
         JButton button = new JButton("Remove");

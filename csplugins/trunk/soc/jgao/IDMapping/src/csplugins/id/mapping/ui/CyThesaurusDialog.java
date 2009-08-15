@@ -63,6 +63,7 @@ import java.util.Vector;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -78,7 +79,25 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
     public CyThesaurusDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        postInit();
+    }
+
+    public void postInit() {
         updateOKButtonEnable();
+
+        sourceAttributeSelectionTable.setIDTypeSelectionChangedListener(
+                new CheckComboBoxSelectionChangedListener() {
+            public void selectionChanged(int idx) {
+                setSupportedTgtTypesInTable();
+            }
+        });
+        setSupportedSrcTypesInTable();
+        
+       // sourceAttributeSelectionTable.addRow();
+
+        setSupportedTgtTypesInTable();
+        targetAttributeSelectionTable.addRow();
+
     }
 
     /** This method is called from within the constructor to
@@ -92,7 +111,6 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         java.awt.GridBagConstraints gridBagConstraints;
 
         javax.swing.JPanel sourcePanel = new javax.swing.JPanel();
-        Set<DataSource>[] supportedType = getSupportedType();
         javax.swing.JScrollPane sourceScrollPane = new javax.swing.JScrollPane();
         javax.swing.JPanel addRemoveSourcePanel = new javax.swing.JPanel();
         javax.swing.JPanel destinationPanel = new javax.swing.JPanel();
@@ -126,9 +144,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         sourceScrollPane.setMinimumSize(new java.awt.Dimension(300, 100));
 
         sourceAttributeSelectionTable = new SourceAttributeSelectionTable();
-        sourceAttributeSelectionTable.setSupportedIDType(supportedType[0]);
         sourceScrollPane.setViewportView(sourceAttributeSelectionTable);
-        sourceAttributeSelectionTable.addRow();
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -165,8 +181,6 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         destinationScrollPane.setPreferredSize(new java.awt.Dimension(300, 100));
 
         targetAttributeSelectionTable = new csplugins.id.mapping.ui.TargetAttributeSelectionTable();
-        targetAttributeSelectionTable.setSupportedIDType(supportedType[1]);
-        targetAttributeSelectionTable.addRow();
         destinationScrollPane.setViewportView(targetAttributeSelectionTable);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -236,7 +250,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select networks"));
         selectNetworkPanel.setMinimumSize(new java.awt.Dimension(490, 100));
-        selectNetworkPanel.setPreferredSize(new java.awt.Dimension(700, 120));
+        selectNetworkPanel.setPreferredSize(new java.awt.Dimension(800, 120));
         selectNetworkPanel.setLayout(new java.awt.GridBagLayout());
 
         unselectedNetworkScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
@@ -424,9 +438,10 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         srcConfDialog.setVisible(true);
 
         if (srcConfDialog.isModified()) {
-            Set<DataSource>[] types = getSupportedType();
-            sourceAttributeSelectionTable.setSupportedIDType(types[0]);
-            targetAttributeSelectionTable.setSupportedIDType(types[1]);
+            this.srcTypes = null;
+            this.mapSrcTypeTgtTypes = null;
+            setSupportedSrcTypesInTable();
+            setSupportedTgtTypesInTable();
         }
     }//GEN-LAST:event_srcConfBtnActionPerformed
 
@@ -434,7 +449,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         if (!verifyUserInput()) return;
 
         Set<CyNetwork> networks = new HashSet(selectedNetworkData.getNetworkList());
-        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceNetAttrType();
+        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
         Map<DataSource, String> mapTgtIDTypeAttrName = targetAttributeSelectionTable.getMapIDTypeAttrName();
         Map<String,Byte> mapTgtAttrNameAttrType = targetAttributeSelectionTable.getMapAttrNameAttrType();
 
@@ -476,18 +491,17 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             return false;
         }
 
-        Set<DataSource>[] types = this.getSupportedType();
-        if (types[0].isEmpty()) {
+        if (getSupportedSrcTypes().isEmpty()) {
             JOptionPane.showMessageDialog(this, "No source ID type available. Please configure the sources of ID mapping first.");
             return false;
         }
 
-        if (types[1].isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No target ID type available. Please configure the sources of ID mapping first.");
-            return false;
-        }
+//        if (types[1].isEmpty()) {
+//            JOptionPane.showMessageDialog(this, "No target ID type available. Please configure the sources of ID mapping first.");
+//            return false;
+//        }
 
-        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceNetAttrType();
+        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
         for (Set<DataSource> dss : mapSrcAttrIDTypes.values()) {
             if (dss==null || dss.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please select at least one ID type for each source attribute.");
@@ -539,21 +553,82 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         OKBtn.repaint();
     }
 
-    private Set<DataSource>[] getSupportedType() {
-        Set<DataSource>[] ret = new Set[2];
-        ret[0] = new HashSet();
-        ret[1] = ret[0];
+    private Set<DataSource> srcTypes = null;
+    private Map<DataSource,Set<DataSource>> mapSrcTypeTgtTypes = null;
 
-        IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
-        try {
-            ret[0] = stack.getCapabilities().getSupportedSrcDataSources();
-            ret[1] = stack.getCapabilities().getSupportedTgtDataSources();
-        } catch (IDMapperException ex) {
-            ex.printStackTrace();
+    private Set<DataSource> getSupportedSrcTypes() {
+        if (srcTypes==null) {
+            srcTypes = new HashSet();
+
+            IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+            try {
+                srcTypes = stack.getCapabilities().getSupportedSrcDataSources();
+            } catch (IDMapperException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return srcTypes;
+    }
+
+    private Set<DataSource> getSupportedTgtTypes(Set<DataSource> srcDss) {
+        if (srcDss==null || srcDss.isEmpty())
+            return new HashSet();
+
+        if (mapSrcTypeTgtTypes==null) {
+            mapSrcTypeTgtTypes = new HashMap();
+
+            Set<DataSource> tgtDss = null;
+            IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+            try {
+                tgtDss = stack.getCapabilities().getSupportedTgtDataSources();
+
+                for (DataSource src : getSupportedSrcTypes()) {
+                    Set<DataSource> dss = new HashSet();
+                    for (DataSource tgt : tgtDss) {
+                        if (stack.getCapabilities().isMappingSupported(src, tgt)) {
+                            dss.add(tgt);
+                        }
+                    }
+                    mapSrcTypeTgtTypes.put(src, dss);
+                }
+            } catch (IDMapperException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        Set<DataSource> ret = new HashSet();
+        for (DataSource src : srcDss) {
+            ret.addAll(mapSrcTypeTgtTypes.get(src));
         }
 
         return ret;
     }
+
+    private void setSupportedSrcTypesInTable() {
+        sourceAttributeSelectionTable.setSupportedIDType(getSupportedSrcTypes());
+    }
+
+    private void setSupportedTgtTypesInTable() {
+        targetAttributeSelectionTable.setSupportedIDType(
+                getSupportedTgtTypes(sourceAttributeSelectionTable.getSelectedIDTypes()));
+    }
+
+//    private Set<DataSource>[] getSupportedType() {
+//        Set<DataSource>[] ret = new Set[2];
+//        ret[0] = new HashSet();
+//        ret[1] = ret[0];
+//
+//        IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+//        try {
+//            ret[0] = stack.getCapabilities().getSupportedSrcDataSources();
+//            ret[1] = stack.getCapabilities().getSupportedTgtDataSources();
+//        } catch (IDMapperException ex) {
+//            ex.printStackTrace();
+//        }
+//
+//        return ret;
+//    }
 
     private void defineTgtAttributes(Map<String,Byte> attrNameType) {
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -579,12 +654,13 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
     }
 
     public Map<String,Set<DataSource>> getMapSrcAttrIDTypes() {
-        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceNetAttrType();
+        Map<String,Set<DataSource>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();
         return mapSrcAttrIDTypes;
     }
 
     public void setMapSrcAttrIDTypes(Map<String,Set<DataSource>> mapSrcAttrIDTypes) {
-        sourceAttributeSelectionTable.setSourceNetAttrType(mapSrcAttrIDTypes);
+        sourceAttributeSelectionTable.setSourceAttrType(mapSrcAttrIDTypes);
+        this.setSupportedTgtTypesInTable();
     }
 
     public boolean isCancelled() {

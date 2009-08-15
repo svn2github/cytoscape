@@ -58,6 +58,8 @@ import java.util.LinkedHashMap;
 class CheckComboBox extends JComboBox {
    private List<ObjCheckBox> cbs;
    private Map<Object, Boolean> mapObjSelected;
+   private List<CheckComboBoxSelectionChangedListener> changedListeners
+           = new Vector();
 
    public CheckComboBox(final Set objs) {
        this(objs, false);
@@ -80,6 +82,17 @@ class CheckComboBox extends JComboBox {
    public CheckComboBox(Map<Object, Boolean> mapObjSelected) {
        this.mapObjSelected = mapObjSelected;
        reset();
+   }
+
+   public void addSelectionChangedListener (CheckComboBoxSelectionChangedListener l) {
+       if (l==null) {
+           return;
+       }
+       changedListeners.add(l);
+   }
+
+   public void removeSelectionChangedListener (CheckComboBoxSelectionChangedListener l) {
+       changedListeners.remove(l);
    }
 
    public void resetObjs(final Set objs, boolean selected) {
@@ -115,6 +128,8 @@ class CheckComboBox extends JComboBox {
                mapObjSelected.put(obj, true);
            }
        }
+
+       reset();
    }
 
    private void reset() {
@@ -210,6 +225,9 @@ class CheckComboBox extends JComboBox {
                     getUI().setPopupVisible(this, false);
             } else if (sel > 0) {
                     checkBoxSelectionChanged(sel-1);
+                    for (CheckComboBoxSelectionChangedListener l : changedListeners) {
+                        l.selectionChanged(sel-1);
+                    }
             }
 
             this.setSelectedIndex(-1); // clear selection
@@ -275,6 +293,11 @@ class CheckComboBox extends JComboBox {
             return obj;
         }
     }
+
+}
+
+interface CheckComboBoxSelectionChangedListener extends java.util.EventListener {
+    public void selectionChanged(int idx);
 }
 
 

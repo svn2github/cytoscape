@@ -39,6 +39,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.Map;
 import java.util.Set;
@@ -155,6 +156,8 @@ public class TargetAttributeSelectionTable extends JTable{
             throw new NullPointerException();
         }
 
+        List<DataSource> oldDss = this.getTgtIDTypes();
+
         supportedIDType = new TreeSet();
         for (DataSource type : types) {
             supportedIDType.add(DataSourceWrapper.getInstance(type));
@@ -162,7 +165,14 @@ public class TargetAttributeSelectionTable extends JTable{
 
         idTypeComboBoxes.clear();
         for (int i=0; i<rowCount; i++) {
-            idTypeComboBoxes.add(new JComboBox(new Vector(supportedIDType)));
+            JComboBox cb = new JComboBox(new Vector(supportedIDType));
+            if (oldDss!=null) {
+                DataSourceWrapper old = DataSourceWrapper.getInstance(oldDss.get(i));
+                if (supportedIDType.contains(old)) {
+                    cb.setSelectedItem(old);
+                }
+            }
+            idTypeComboBoxes.add(cb);
         }
 
         //TODO: select the id type previously selected
@@ -186,7 +196,7 @@ public class TargetAttributeSelectionTable extends JTable{
             return null;
         }
 
-        List<DataSource> ret = new Vector();
+        List<DataSource> ret = new ArrayList();
         for (int i=0; i<rowCount; i++) {
             DataSourceWrapper dsw = (DataSourceWrapper)idTypeComboBoxes.get(i)
                         .getSelectedItem();
@@ -203,7 +213,7 @@ public class TargetAttributeSelectionTable extends JTable{
                     .getAttributeNames()));
         usedName.addAll(destinationAttributes);
 
-        List<String> ret = new Vector();
+        List<String> ret = new ArrayList();
         for (int row=0; row<rowCount; row++) {
             String attr = destinationAttributes.get(row);
             if (attr.length()==0) {
@@ -228,7 +238,7 @@ public class TargetAttributeSelectionTable extends JTable{
     }
 
     public List<Byte> getTgtAttrTypes() {
-        List<Byte> ret = new Vector();
+        List<Byte> ret = new ArrayList();
         for (int i=0; i<rowCount; i++) {
             boolean oneId = oneIDOnly.compareTo((String)oneIDOnlyComboBoxes
                         .get(i).getSelectedItem())==0;
@@ -309,9 +319,10 @@ public class TargetAttributeSelectionTable extends JTable{
                            label.setBackground(table.getBackground());
                            label.setForeground(table.getForeground());
                        }
-                       label.setText("No supported ID type");
+                       label.setText("Select at least one SOURCE ID type.");
                        label.setToolTipText("Please select a non-empty ID " +
-                                   "mapping source first.");
+                                   "mapping source first and select at least one" +
+                                   " source ID type.");
                        return label;
                     } else if (row==rowCount) {
                         label.setBackground(defBgColor);

@@ -68,6 +68,7 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
                 Cytoscape.SESSION_LOADED, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 IDMapperClientManager.reloadFromCytoscapeProperties();
+                mapSrcAttrIDTypes = null;
             }
         });
     }
@@ -92,9 +93,9 @@ public class CyThesaurusPlugin extends CytoscapePlugin {
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setMapSrcAttrIDTypes(mapSrcAttrIDTypes);
             dialog.setVisible(true);
-            if (!dialog.isCancelled()) {
+            //if (!dialog.isCancelled()) {
                 mapSrcAttrIDTypes = dialog.getMapSrcAttrIDTypes();
-            }
+            //}
         }
     }
 }

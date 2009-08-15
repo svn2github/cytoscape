@@ -202,9 +202,9 @@ public class IDMappingServiceSuppport {
         Map content = new HashMap();
         content.put(RESPONSE_SUCCESS, !dialog.isCancelled());
 
-        if (!dialog.isCancelled()) {
+        //if (!dialog.isCancelled()) {
             CyThesaurusPlugin.mapSrcAttrIDTypes = dialog.getMapSrcAttrIDTypes();
-        }
+        //}
 
         return createResponse(msg, content);
     }
