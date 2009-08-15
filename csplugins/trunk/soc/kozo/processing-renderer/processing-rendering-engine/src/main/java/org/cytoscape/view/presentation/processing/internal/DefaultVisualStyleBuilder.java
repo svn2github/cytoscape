@@ -1,5 +1,6 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import static org.cytoscape.model.GraphObject.NODE;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL;
@@ -7,6 +8,7 @@ import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_OP
 
 import java.awt.Color;
 
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -38,6 +40,7 @@ public class DefaultVisualStyleBuilder {
 	private static final Color PD_COLOR = new Color(100, 200, 100);
 
 	private static final Color DEF_BACKGROUND_COLOR = Color.white;
+	private static final String DEGREE = null;
 
 	private VisualStyle style;
 
@@ -54,8 +57,8 @@ public class DefaultVisualStyleBuilder {
 		final PassthroughMapping<String, String> labelMapping = new PassthroughMapping<String, String>(
 				NAME, String.class, NODE_LABEL);
 		
-		final DiscreteMapping<String, Double> randSize = new DiscreteMapping<String, Double>(
-				NAME, String.class, NODE_X_SIZE);
+		final DiscreteMapping<Double, Double> randSize = new DiscreteMapping<Double, Double>(
+				DEGREE, Double.class, NODE_X_SIZE);
 		
 		final DiscreteMapping<String, Double> location = new DiscreteMapping<String, Double>(
 				NAME, String.class, NODE_Z_LOCATION);
@@ -63,7 +66,9 @@ public class DefaultVisualStyleBuilder {
 		final DiscreteMapping<String, Color> interaction = new DiscreteMapping<String, Color>(
 				INTERACTION, String.class, (VisualProperty<Color>) EDGE_COLOR);
 		
-		randSize.putMapValue("YMR043W", 60d);
+		randSize.putMapValue(1d, 10d);
+		randSize.putMapValue(2d, 100d);
+		randSize.putMapValue(3d, 200d);
 		location.putMapValue("YMR043W", 500d);
 		
 		//interaction.putMapValue("pp", PP_COLOR);
