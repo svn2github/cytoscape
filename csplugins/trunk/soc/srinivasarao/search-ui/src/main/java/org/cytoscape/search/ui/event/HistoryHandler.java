@@ -22,4 +22,5 @@ public class HistoryHandler implements SessionLoadedListener,
 		// restore session here
 		System.out.println("Session Loaded");
 	}
+	
 }

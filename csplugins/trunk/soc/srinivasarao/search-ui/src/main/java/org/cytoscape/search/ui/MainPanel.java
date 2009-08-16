@@ -1,6 +1,5 @@
 package org.cytoscape.search.ui;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,7 +12,6 @@ import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -31,7 +29,7 @@ public class MainPanel extends JPanel {
 	private JRadioButton showButton = null;
 	private JRadioButton hideButton = null;
 	private JTextField searchField = null;
-	private JComboBox searchBox = null;
+	private SearchComboBox searchBox = null;
 	private JRadioButton orButton = null;
 	private JRadioButton andButton = null;
 	private JButton searchButton = null;
@@ -42,11 +40,19 @@ public class MainPanel extends JPanel {
 
 	private static final String ESP_LABEL = "ESP:  ";
 
-	private static final String SEARCH_MENU_ITEM = "Search";
+	// private static final String SEARCH_MENU_ITEM = "Search";
 
 	private static final String REINDEX_MENU_ITEM = "Re-index and search";
 
-	private static final String SEARCH_TOOLTIP = "Perform search";
+	private static final String CLEAR_ALL_MENU_ITEM = "Clear All";
+
+	private static final String CLEAR_ALL_TOOLTIP = "Clears the Search Field and also the Query Builder";
+
+	private static final String CLEAR_HISTORY_TOOLTIP = "Clears the Search History";
+
+	private static final String CLEAR_HISTORY_MENU_ITEM = "Clear History";
+
+	// private static final String SEARCH_TOOLTIP = "Perform search";
 
 	private static final String REINDEX_TOOLTIP = "<html>"
 			+ "Refresh the network index and perform search." + "<br>"
@@ -71,6 +77,7 @@ public class MainPanel extends JPanel {
 
 	public void disableSearch() {
 		searchField.setText("");
+		searchBox.setSelectedItem(null);
 		searchField.setEnabled(false);
 		searchField.setToolTipText(ESP_DISABLED_TOOLTIP);
 		searchButton.setEnabled(false);
@@ -196,37 +203,30 @@ public class MainPanel extends JPanel {
 		return hideButton;
 	}
 
-	/**
-	 * This method initializes searchField
-	 * 
-	 * @return javax.swing.JTextField
-	 */
-	private JTextField getSearchField() {
-		if (searchField == null) {
-			// searchField = new JTextField();
+	public SearchComboBox getSearchBox() {
+		if (searchBox == null) {
+			searchBox = new SearchComboBox(netmgr);
 			searchField = (JTextField) searchBox.getEditor()
 					.getEditorComponent();
-			searchField.setMinimumSize(new Dimension(15, 20));
-			searchField.setText(null);
-			searchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 			searchField.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					SearchPanelFactory.getGlobalInstance(netmgr).performSearch(
 							false);
-					searchField.setText(null);
-					SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
+					// searchField.setText("");
+					// searchBox.setSelectedItem(null);
+					// SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
 				}
 			});
 		}
-		return searchField;
+		return searchBox;
 	}
 
-	private JComboBox getSearchBox() {
-		if (searchBox == null) {
-			searchBox = new SearchComboBox();
-			getSearchField();
-		}
-		return searchBox;
+	/**
+	 * 
+	 * @param item
+	 */
+	public void addtoHistory(String item) {
+		searchBox.addMenuItem(item);
 	}
 
 	/**
@@ -286,8 +286,9 @@ public class MainPanel extends JPanel {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					SearchPanelFactory.getGlobalInstance(netmgr).performSearch(
 							false);
-					searchField.setText(null);
-					SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
+					// searchField.setText("");
+					// searchBox.setSelectedItem(null);
+					// SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
 				}
 			});
 		}
@@ -326,22 +327,38 @@ public class MainPanel extends JPanel {
 		searchField.setText(query);
 	}
 
+	public void clearAll(){
+		andButton.setSelected(true);
+		selectButton.setSelected(true);
+		searchField.setText("");
+		searchBox.setSelectedItem(null);
+	}
+	
 	private void createPopupMenu() {
 		JMenuItem menuItem;
 
 		// Create the popup menu.
 		JPopupMenu popup = new JPopupMenu();
 
-		// Add 'search' menu item
-		menuItem = new JMenuItem(SEARCH_MENU_ITEM);
+		// Add 'Clear All' menu item
+		menuItem = new JMenuItem(CLEAR_ALL_MENU_ITEM);
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SearchPanelFactory.getGlobalInstance(netmgr).performSearch(
-						false);
-				searchField.setText(null);
+				clearAll();
+				SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
 			}
 		});
-		menuItem.setToolTipText(SEARCH_TOOLTIP);
+		menuItem.setToolTipText(CLEAR_ALL_TOOLTIP);
+		popup.add(menuItem);
+
+		// Add 'Clear History' menu item
+		menuItem = new JMenuItem(CLEAR_HISTORY_MENU_ITEM);
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				searchBox.clearAllItems();
+			}
+		});
+		menuItem.setToolTipText(CLEAR_HISTORY_TOOLTIP);
 		popup.add(menuItem);
 
 		// Add 'Reindex and search' menu item
@@ -350,7 +367,9 @@ public class MainPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				SearchPanelFactory.getGlobalInstance(netmgr)
 						.performSearch(true);
-				System.out.println("Reindex");
+				clearAll();
+				SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
+
 			}
 		});
 		menuItem.setToolTipText(REINDEX_TOOLTIP);

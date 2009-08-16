@@ -66,7 +66,12 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 		gridBagConstraints.insets = new Insets(5, 8, 5, 0);
 
 		jLabel = new JLabel();
-		jLabel.setText(attrName);
+		if(type.equals("NODE")){
+			jLabel.setText(attrName + " [N]");
+		}else{
+			jLabel.setText(attrName + " [E]");
+		}
+		//jLabel.setText(attrName);
 		jLabel.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (attrPanel.isVisible()) {

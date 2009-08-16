@@ -45,9 +45,10 @@ public class BasicDraggablePanel extends JPanel implements Transferable {
 			ex.printStackTrace(System.err);
 			return null;
 		}
-
+		
 		// For now, assume wants this class... see loadDnD
 		if (thisFlavor != null && flavor.equals(thisFlavor)) {
+			
 			return BasicDraggablePanel.this;
 		}
 
@@ -93,9 +94,10 @@ public class BasicDraggablePanel extends JPanel implements Transferable {
 	public static DataFlavor getDragAndDropPanelDataFlavor() throws Exception {
 		// TODO Auto-generated method stub
 		if (dataflavor == null) {
-			dataflavor = new DataFlavor(
-					DataFlavor.javaJVMLocalObjectMimeType
-							+ ";class=org.cytoscape.search.ui.BasicDraggablePanel");
+			//dataflavor = new DataFlavor(
+				//	DataFlavor.javaJVMLocalObjectMimeType
+					//		+ ";class=org.cytoscape.search.ui.BasicDraggablePanel");
+			dataflavor = new DataFlavor(BasicDraggablePanel.class,"BasicDraggablePanel");
 		}
 		return dataflavor;
 	}

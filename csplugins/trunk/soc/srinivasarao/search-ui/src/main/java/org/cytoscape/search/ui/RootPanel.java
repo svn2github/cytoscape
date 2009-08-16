@@ -57,12 +57,12 @@ public class RootPanel extends JPanel {
 	public CyNetworkManager getNetworkManager() {
 		return netmgr;
 	}
-	
-	public void clearAll(){
+
+	public void clearAll() {
 		list.clear();
 		this.removeAll();
 	}
-	
+
 	public void relayout() {
 		GridBagConstraints gc = new GridBagConstraints();
 		gc.gridx = 0;
@@ -125,7 +125,7 @@ class BasicDraggablePanelDropTargetListener implements DropTargetListener {
 
 	// Could easily find uses for these, like cursor changes, etc.
 	public void dragEnter(DropTargetDragEvent dtde) {
-		
+
 	}
 
 	public void dragOver(DropTargetDragEvent dtde) {
@@ -153,18 +153,17 @@ class BasicDraggablePanelDropTargetListener implements DropTargetListener {
 			flavor = BasicDraggablePanel.getDragAndDropPanelDataFlavor();
 			transferable = dtde.getTransferable();
 			// What does the Transferable support
+
 			if (transferable.isDataFlavorSupported(flavor)) {
 				transferableObj = dtde.getTransferable()
 						.getTransferData(flavor);
-
 			}
 
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("Exception here:" + e);
 			if (transferableObj == null)
 				return;
 		}
-
 		BasicDraggablePanel droppedPanel = (BasicDraggablePanel) transferableObj;
 
 		final int dropYLoc = dtde.getLocation().y;

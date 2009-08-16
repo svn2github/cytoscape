@@ -221,7 +221,7 @@ public class JRangeSlider extends JComponent implements MouseListener,
 	 * Listener that fires a change event when it receives change event from the
 	 * slider list model.
 	 */
-	protected class RangeSliderChangeListener implements ChangeListener {
+	protected class RangeSliderChangeListener implements ChangeListener,java.io.Serializable {
 		public void stateChanged(ChangeEvent e) {
 			fireChangeEvent();
 		}

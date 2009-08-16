@@ -33,18 +33,23 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.search.ui;
+package org.cytoscape.search.ui.tasks;
 
 import org.apache.lucene.store.RAMDirectory;
-import org.cytoscape.search.*;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.search.EnhancedSearch;
+import org.cytoscape.search.EnhancedSearchIndex;
 import org.cytoscape.search.ReindexTask;
 import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
 import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.work.TaskMonitor;
 
-public class ReindexTaskImpl extends ReindexTask implements Task {
+public class ReindexTaskImpl implements ReindexTask {
+
+	private CyNetworkManager netmgr;
+	private TaskMonitor taskMonitor;
+	private boolean interrupted = false;
 
 	/**
 	 * Constructor.
@@ -52,8 +57,8 @@ public class ReindexTaskImpl extends ReindexTask implements Task {
 	 * @param network
 	 *            Network to execute query on.
 	 */
-	public ReindexTaskImpl(CyNetwork network) {
-		super(network);
+	public ReindexTaskImpl(CyNetworkManager nm) {
+		this.netmgr = nm;
 	}
 
 	/**
@@ -61,11 +66,12 @@ public class ReindexTaskImpl extends ReindexTask implements Task {
 	 */
 	public void run(TaskMonitor tm) {
 
+		System.out.println("I am in Reindex Task");
 		this.taskMonitor = tm;
 		EnhancedSearchFactoryImpl esf = new EnhancedSearchFactoryImpl();
 		final EnhancedSearch enhancedSearch = esf
 				.getGlobalEnhancedSearchInstance();
-
+		CyNetwork network = netmgr.getCurrentNetwork();
 		// Index the given network or use existing index
 		RAMDirectory idx = null;
 

@@ -58,7 +58,7 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 	private String query = null;
 	private TaskMonitor taskMonitor;
 	private boolean interrupted = false;
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -78,13 +78,17 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 	public void run(TaskMonitor tm) {
 		this.taskMonitor = tm;
 		final CyNetwork network = netmgr.getCurrentNetwork();
-		System.out.println("I am in IndexandSearchTask Service");
 		EnhancedSearchFactoryImpl esf = new EnhancedSearchFactoryImpl();
 		final EnhancedSearch enhancedSearch = esf
 				.getGlobalEnhancedSearchInstance();
 
 		// Index the given network or use existing index
 		RAMDirectory idx = null;
+
+		//System.out.println("I am in IndexandSearchTask Service");
+
+		SearchPanelFactory.getGlobalInstance(netmgr).getmainPanel()
+				.addtoHistory(query);
 
 		String status = enhancedSearch.getNetworkIndexStatus(network);
 		if (status == EnhancedSearch.INDEX_SET) {
@@ -132,6 +136,14 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 		System.out.println("Selected Option: " + result);
 
 		CyNetworkView view = netmgr.getCurrentNetworkView();
+
+		// To unselect all the Nodes and Edges
+		SelectUtils.setSelectedNodes(network.getNodeList(), false);
+		SelectUtils.setSelectedEdges(network.getEdgeList(), false);
+		if (view != null) {
+			view.updateView();
+		}
+
 		if (result.equals("Select")) {
 			SelectUtils.setSelectedNodes(nodeList, true);
 			SelectUtils.setSelectedEdges(edgeList, true);

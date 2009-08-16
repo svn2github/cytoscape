@@ -66,16 +66,32 @@ public class SearchPanelEventHandlerImpl implements NetworkAddedListener,
 	public void handleEvent(NetworkAboutToBeDestroyedEvent event) {
 		// TODO Auto-generated method stub
 		es.removeNetworkIndex(event.getNetwork());
-		SearchPanelFactory.getGlobalInstance(netmgr).getmainPanel().setEnabled(
-				false);
-
+		if (event.getNetwork().equals(netmgr.getCurrentNetwork())) {
+			SearchPanelFactory.getGlobalInstance(netmgr).getmainPanel()
+					.setEnabled(false);
+			SearchPanelFactory.getGlobalInstance(netmgr).getmainPanel()
+					.disableSearch();
+			SearchPanelFactory.getGlobalInstance(netmgr).getattrPanel()
+					.clearAll();
+		}
 	}
 
 	@Override
 	public void handleEvent(NetworkViewAboutToBeDestroyedEvent event) {
 		// TODO Auto-generated method stub
-		if (event.getNetworkView().equals(netmgr.getCurrentNetworkView()))
+		System.out
+				.println("I am in SearchPanelEventHandler handle networkview destroyed event");
+		if (event.getNetworkView().equals(netmgr.getCurrentNetworkView())) {
 			SearchPanelFactory.getGlobalInstance(netmgr).getmainPanel()
 					.setEnabled(false);
+			SearchPanelFactory.getGlobalInstance(netmgr).getmainPanel()
+					.disableSearch();
+			SearchPanelFactory.getGlobalInstance(netmgr).getattrPanel()
+					.clearAll();
+			SearchPanelFactory.getGlobalInstance(netmgr).getattrPanel()
+					.validate();
+			SearchPanelFactory.getGlobalInstance(netmgr).getattrPanel()
+					.repaint();
+		}
 	}
 }

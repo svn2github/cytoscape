@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
@@ -32,7 +33,7 @@ public class StringAttributePanel extends BasicDraggablePanel {
 	private String type = null;
 	private JPanel attrPanel;
 	private int limit = 10;
-	private List<String> attrValues; // @jve:decl-index=0:
+	private ArrayList<String> attrValues = new ArrayList<String>();
 	private String attrQuery = null;
 
 	/**
@@ -103,7 +104,13 @@ public class StringAttributePanel extends BasicDraggablePanel {
 	private JLabel getLabel() {
 		if (jLabel == null) {
 			jLabel = new JLabel();
-			jLabel.setText(attrName);
+			jLabel = new JLabel();
+			if (type.equals("NODE")) {
+				jLabel.setText(attrName + " [N]");
+			} else {
+				jLabel.setText(attrName + " [E]");
+			}
+			// jLabel.setText(attrName);
 			jLabel.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					if (attrPanel.isVisible()) {
@@ -131,14 +138,33 @@ public class StringAttributePanel extends BasicDraggablePanel {
 						attrQuery = term;
 					} else {
 						attrQuery = attrQuery + " OR " + term;
-
 					}
 					SearchPanelFactory.getGlobalInstance(netmgr)
 							.updateSearchField();
 					stringField.setText(null);
 				}
 			});
+
+			stringField.addFocusListener(new java.awt.event.FocusAdapter() {
+				public void focusLost(java.awt.event.FocusEvent e) {
+					if (stringField.getText() == null
+							|| stringField.getText().equals("")) {
+						// System.out.println("Text is null");
+					} else {
+						String term = attrName + ":" + stringField.getText();
+						if (attrQuery == null) {
+							attrQuery = term;
+						} else {
+							attrQuery = attrQuery + " OR " + term;
+						}
+						SearchPanelFactory.getGlobalInstance(netmgr)
+								.updateSearchField();
+						stringField.setText(null);
+					}
+				}
+			});
 		}
+
 		return stringField;
 	}
 
@@ -146,8 +172,13 @@ public class StringAttributePanel extends BasicDraggablePanel {
 		final CyNetwork network = netmgr.getCurrentNetwork();
 		CyDataTable datatable = network.getCyDataTables(type).get(
 				CyNetwork.DEFAULT_ATTRS);
-		attrValues = datatable.getColumnValues(attrName, String.class);
-
+		List<String> nonuniquevalues = datatable.getColumnValues(attrName,
+				String.class);
+		for (String str : nonuniquevalues) {
+			if (!attrValues.contains(str)) {
+				attrValues.add(str);
+			}
+		}
 	}
 
 	public String getCheckedValues() {
@@ -179,14 +210,14 @@ public class StringAttributePanel extends BasicDraggablePanel {
 
 	}
 
-	public void clearCheckBoxes() {
+	public void clearAll() {
 		if (attrValues.size() <= limit) {
 			for (int i = 0; i < boxes.length; i++) {
 				boxes[i].setSelected(false);
 			}
 		} else {
 			stringField.setText(null);
-			attrQuery= null;
+			attrQuery = null;
 		}
 	}
 

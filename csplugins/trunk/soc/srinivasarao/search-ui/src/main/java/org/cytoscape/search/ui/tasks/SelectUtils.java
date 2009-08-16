@@ -5,15 +5,15 @@ import org.cytoscape.model.CyEdge;
 
 import java.util.Collection;
 
-abstract class SelectUtils {
+public abstract class SelectUtils {
 
-	static void setSelectedNodes(Collection<CyNode> nodes, boolean select) {
+	public static void setSelectedNodes(Collection<CyNode> nodes, boolean select) {
 		for (CyNode n : nodes) {
 			n.attrs().set("selected", select);
 		}
 	}
 
-	static void setSelectedEdges(Collection<CyEdge> edges, boolean select) {
+	public static void setSelectedEdges(Collection<CyEdge> edges, boolean select) {
 		for (CyEdge e : edges) {
 			e.attrs().set("selected", select);
 		}
