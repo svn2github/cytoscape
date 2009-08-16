@@ -107,7 +107,7 @@ public class AttributeBasedIDMappingImpl
         Set<DataSource> tgtTypes = MapTgtIDTypeAttrName.keySet();
 
         // id mapping
-        updateTaskMonitor("Mapping IDs...");
+        updateTaskMonitor("Mapping IDs...",-1);
         IDMapperStack idMapperStack = IDMapperClientManager.selectedIDMapperStack();
         Map<Xref, Set<Xref>> idMapping = idMapperStack.mapID(srcXrefs, tgtTypes);
 
