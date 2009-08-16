@@ -209,7 +209,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(destinationPanel, gridBagConstraints);
 
-        srcConfBtn.setText("Configure sources of ID mapping");
+        srcConfBtn.setText("ID Mapping Resources Configuration");
         srcConfBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 srcConfBtnActionPerformed(evt);

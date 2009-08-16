@@ -98,10 +98,8 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
         java.awt.GridBagConstraints gridBagConstraints;
 
         javax.swing.JPanel namePanel = new javax.swing.JPanel();
-        javax.swing.JLabel nameLabel = new javax.swing.JLabel();
         nameComboBox = new javax.swing.JComboBox();
         pgdbPanel = new javax.swing.JPanel();
-        javax.swing.JLabel pgdbLabel = new javax.swing.JLabel();
         pgdbTextField = new javax.swing.JTextField();
         javax.swing.JButton pgdbButton = new javax.swing.JButton();
         javax.swing.JPanel okPanel = new javax.swing.JPanel();
@@ -109,18 +107,11 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("RDB ID Mapping Client Configuration");
+        setTitle("RDB-based ID Mapping Resources Configuration");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
+        namePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Relational Database Type"));
         namePanel.setLayout(new java.awt.GridBagLayout());
-
-        nameLabel.setText("Name:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        namePanel.add(nameLabel, gridBagConstraints);
 
         nameComboBox.setModel(new DefaultComboBoxModel(DBType.values()));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -140,15 +131,8 @@ public class RDBIDMappingClientConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
         getContentPane().add(namePanel, gridBagConstraints);
 
-        pgdbPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select a PGDB file"));
+        pgdbPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("PGDB File"));
         pgdbPanel.setLayout(new java.awt.GridBagLayout());
-
-        pgdbLabel.setText("PGDB file:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        pgdbPanel.add(pgdbLabel, gridBagConstraints);
 
         pgdbTextField.setPreferredSize(new java.awt.Dimension(250, 20));
         gridBagConstraints = new java.awt.GridBagConstraints();

@@ -164,7 +164,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add/Configure a BioMart ID Mapping Source");
+        setTitle("Webservice-based ID Mapping Resources Configuration");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         typePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Web Service Type"));
@@ -448,7 +448,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
     synergizerPanel.add(chooseAuthorityPanel, gridBagConstraints);
 
-    chooseSpeciesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Choose a species"));
+    chooseSpeciesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Species"));
     chooseSpeciesPanel.setLayout(new javax.swing.BoxLayout(chooseSpeciesPanel, javax.swing.BoxLayout.LINE_AXIS));
 
     if (idMapper==null) {

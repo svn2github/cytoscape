@@ -150,10 +150,10 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add a ID Mapping Source From File");
+        setTitle("File-based ID Mapping Resources Configuration");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        typePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select file type"));
+        typePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("File Type"));
         typePanel.setLayout(new javax.swing.BoxLayout(typePanel, javax.swing.BoxLayout.LINE_AXIS));
 
         typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Delimiter Text File" }));
@@ -269,7 +269,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
         delimiterPanel.setPreferredSize(new java.awt.Dimension(900, 100));
         delimiterPanel.setLayout(new java.awt.GridBagLayout());
 
-        delemiterTypePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select delimiter between IDs of different types"));
+        delemiterTypePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Delimiters between IDs of different types"));
         delemiterTypePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         tabTypeCheckBox.setSelected(true);
@@ -332,7 +332,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         delimiterPanel.add(delemiterTypePanel, gridBagConstraints);
 
-        delemiterIDPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select delimiter between IDs of the same type"));
+        delemiterIDPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Delimiters between IDs of the same type"));
         delemiterIDPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         tabIDCheckBox.setText("Tab");

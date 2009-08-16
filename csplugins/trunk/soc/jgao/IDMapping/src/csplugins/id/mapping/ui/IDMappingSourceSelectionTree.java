@@ -89,7 +89,7 @@ class IDMappingSourceSelectionTree extends JTree {
     private final String root = "Sources of ID mapping";
     private final String db = "Databases";
     private final String ws = "Web Services";
-    private final String file = "Local/remote Files";
+    private final String file = "Local/Remote Files";
 
     public IDMappingSourceSelectionTree(JDialog parent) {
 

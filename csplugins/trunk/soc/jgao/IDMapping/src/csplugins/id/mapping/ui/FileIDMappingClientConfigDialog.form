@@ -7,7 +7,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
-    <Property name="title" type="java.lang.String" value="Add a ID Mapping Source From File"/>
+    <Property name="title" type="java.lang.String" value="File-based ID Mapping Resources Configuration"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -31,7 +31,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Select file type"/>
+            <TitledBorder title="File Type"/>
           </Border>
         </Property>
       </Properties>
@@ -224,7 +224,7 @@
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                            <TitledBorder title="Select delimiter between IDs of different types"/>
+                            <TitledBorder title="Delimiters between IDs of different types"/>
                           </Border>
                         </Property>
                       </Properties>
@@ -299,7 +299,7 @@
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                            <TitledBorder title="Select delimiter between IDs of the same type"/>
+                            <TitledBorder title="Delimiters between IDs of the same type"/>
                           </Border>
                         </Property>
                       </Properties>

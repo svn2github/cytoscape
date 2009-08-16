@@ -161,7 +161,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="srcConfBtn">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Configure sources of ID mapping"/>
+            <Property name="text" type="java.lang.String" value="ID Mapping Resources Configuration"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="srcConfBtnActionPerformed"/>
