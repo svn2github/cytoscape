@@ -288,7 +288,9 @@ public class AttributeBasedIDMappingImpl
                     byte attrType = mapAttrNameType.get(attrName);
                     Set<String> ids = entryDsIds.getValue();
                     if (attrType==CyAttributes.TYPE_SIMPLE_LIST) {
-                        nodeAttributes.setListAttribute(nodeID, attrName, new Vector(ids));
+                        List<String> values = new Vector(ids);
+                        java.util.Collections.sort(values);
+                        nodeAttributes.setListAttribute(nodeID, attrName, values);
                     } else if (attrType==CyAttributes.TYPE_STRING) {
                         // only returns the first ID
                         //TODO: is that a way to get the "best" one?

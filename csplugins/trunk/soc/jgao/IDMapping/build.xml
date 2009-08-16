@@ -33,7 +33,7 @@
             <include name="*.jar"/>
         </fileset>
         <fileset dir="${lib}">
-            <include name="cytoscape-plugins-comm.jar"/>
+            <include name="*.jar"/>
         </fileset>
     </path>
 	
@@ -89,6 +89,8 @@
       <zipfileset src="lib/bridgedb-bio.jar" excludes="META-INF/*"/>
       <zipfileset src="lib/derby.jar" excludes="META-INF/*"/>
       <zipfileset src="lib/cytoscape-plugins-comm.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/bridgedb-synergizer.jar" excludes="META-INF/*"/>
+      <zipfileset src="lib/synergizer-client.jar" excludes="META-INF/*"/>
     </jar>
   </target>
   

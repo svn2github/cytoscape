@@ -49,6 +49,8 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 
@@ -80,6 +82,8 @@ public class SourceAttributeSelectionTable extends JTable{
     private CheckComboBoxSelectionChangedListener idTypeSelectionChangedListener;
 
     private List<JComboBox> attributeComboBoxes; //TODO: same attribute
+    //private List<Integer> selectedIndex;
+
     private List<CheckComboBox> typeComboBoxes;
     private List<JButton> rmvBtns;
     private JButton addBtn;
@@ -98,6 +102,7 @@ public class SourceAttributeSelectionTable extends JTable{
         supportedIDType = new TreeSet();
         //networkComboBoxes = new Vector();
         attributeComboBoxes = new Vector();
+        //selectedIndex = new Vector();
         typeComboBoxes = new Vector();
         rmvBtns = new Vector();
         addBtn = new JButton("Insert");
@@ -316,6 +321,11 @@ public class SourceAttributeSelectionTable extends JTable{
         attrs.addAll(list);
 
         JComboBox cb = new JComboBox(attrs);
+//        cb.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                //TODO: check if the attribute has already been used
+//            }
+//        });
         attributeComboBoxes.add(cb);
 
         CheckComboBox cc = new CheckComboBox(supportedIDType, false);
