@@ -63,6 +63,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
 
 import org.bridgedb.DataSource;
 
@@ -81,8 +82,8 @@ public class SourceAttributeSelectionTable extends JTable{
 
     private CheckComboBoxSelectionChangedListener idTypeSelectionChangedListener;
 
-    private List<JComboBox> attributeComboBoxes; //TODO: same attribute
-    //private List<Integer> selectedIndex;
+    private List<JComboBox> attributeComboBoxes;
+    private List<String> selectedAttribute;
 
     private List<CheckComboBox> typeComboBoxes;
     private List<JButton> rmvBtns;
@@ -96,13 +97,15 @@ public class SourceAttributeSelectionTable extends JTable{
     private final String colHeaderSrc = "Source ID Type(s)";
     private final String colHeaderBtn = " ";
 
+    private Vector<String> attributes;
+
     public SourceAttributeSelectionTable() {
         super();
+        initializeAttibutes();
 
         supportedIDType = new TreeSet();
-        //networkComboBoxes = new Vector();
         attributeComboBoxes = new Vector();
-        //selectedIndex = new Vector();
+        selectedAttribute = new Vector();
         typeComboBoxes = new Vector();
         rmvBtns = new Vector();
         addBtn = new JButton("Insert");
@@ -147,6 +150,19 @@ public class SourceAttributeSelectionTable extends JTable{
         setPreferredColumnWidths(new double[]{0.5,0.4,0.1});
 
         setColumnEditorAndCellRenderer();
+
+    }
+
+    private void initializeAttibutes() {
+        attributes = new Vector<String>();
+        //TODO remove in Cytoscape3
+        attributes.add("ID");
+        //TODO: modify if local attribute implemented
+
+        List<String> list = Arrays.asList(cytoscape.Cytoscape.getNodeAttributes().getAttributeNames());
+        Collections.sort(list);
+
+        attributes.addAll(list);
     }
 
     void setIDTypeSelectionChangedListener(
@@ -166,14 +182,7 @@ public class SourceAttributeSelectionTable extends JTable{
             supportedIDType.add(DataSourceWrapper.getInstance(type));
         }
 
-//        typeComboBoxes.clear();
-//        for (int i=0; i<rowCount; i++) {
-//            CheckComboBox cc = new CheckComboBox(supportedIDType, false);
-//            cc.addSelectionChangedListener(idTypeSelectionChangedListener);
-//            typeComboBoxes.add(cc);
-//        }
-
-        //TODO: select the id type previously selected
+        //select the id type previously selected
         this.setSourceAttrType(oldMap);
         
         model.fireTableStructureChanged();
@@ -205,7 +214,7 @@ public class SourceAttributeSelectionTable extends JTable{
 //        }
         
         for (int i=0; i<rowCount; i++) {
-            String attr = (String)attributeComboBoxes.get(i).getSelectedItem();
+            String attr = (String)selectedAttribute.get(i);
             //TODO REMOVE IN CY3
 //            if (attr.compareTo("ID")==0) {
 //                attr = cytoscape.data.Semantics.CANONICAL_NAME;
@@ -309,54 +318,51 @@ public class SourceAttributeSelectionTable extends JTable{
     }
 
     public void addRow() {
-
-        Vector<String> attrs = new Vector<String>();
-        //TODO remove in Cytoscape3
-        attrs.add("ID");
-        //TODO: modify if local attribute implemented
-        
-        List list = Arrays.asList(cytoscape.Cytoscape.getNodeAttributes().getAttributeNames());
-        Collections.sort(list);
-
-        attrs.addAll(list);
-
-        JComboBox cb = new JComboBox(attrs);
-//        cb.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                //TODO: check if the attribute has already been used
-//            }
-//        });
-        attributeComboBoxes.add(cb);
-
-        CheckComboBox cc = new CheckComboBox(supportedIDType, false);
-        cc.addSelectionChangedListener(idTypeSelectionChangedListener);
-        typeComboBoxes.add(cc);
-
-        JButton button = new JButton("Remove");
-        rmvBtns.add(button);
-
-        rowCount++;
-
-        setColumnEditorAndCellRenderer();
-        fireTableDataChanged();
+        addRow(null, null);
     }
 
     private void addRow(String attr, Set<DataSource> dss) {
+        if (rowCount>=attributes.size()) {
+            JOptionPane.showMessageDialog(cytoscape.Cytoscape.getDesktop(),
+                    "All attributes have been used. Cannot add more.");
+            return;
+        }
+        
+        final JComboBox cb = new JComboBox(attributes);
+        cb.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //TODO: check if the attribute has already been used
+                String selected = (String)cb.getSelectedItem();
+                int i = 0;
+                int n = attributeComboBoxes.size();
+                while (i<n && attributeComboBoxes.get(i)!=cb)
+                    i++;
+                if (i==n) // should not happen
+                    return;
+                if (selected.compareTo(selectedAttribute.get(i))==0)
+                    return;
+                if (selectedAttribute.contains(selected)) {
+                    JOptionPane.showMessageDialog(cytoscape.Cytoscape.getDesktop(),
+                            "This attribute has already been selected.\n" +
+                            "Please selecte another one.");
+                    cb.setSelectedItem(selectedAttribute.get(i));
+                } else {
+                    selectedAttribute.set(i, selected);
+                }
+            }
+        });
 
-        Vector<String> attrs = new Vector<String>();
-        //TODO remove in Cytoscape3
-        attrs.add("ID");
-        //TODO: modify if local attribute implemented
-
-        List list = Arrays.asList(cytoscape.Cytoscape.getNodeAttributes().getAttributeNames());
-        Collections.sort(list);
-
-        attrs.addAll(list);
-
-        if (attr==null || !attrs.contains(attr)) return;
-
-        JComboBox cb = new JComboBox(attrs);
-        cb.setSelectedItem(attr);
+        if (attr!=null || !attributes.contains(attr)) {
+            for (String at : attributes) {
+                if (!selectedAttribute.contains(at)) {
+                    cb.setSelectedItem(at);
+                    break;
+                }
+            }
+        } else {
+            cb.setSelectedItem(attr);
+        }
+        selectedAttribute.add((String)cb.getSelectedItem());
         attributeComboBoxes.add(cb);
 
         Set<DataSourceWrapper> selectedDsws = new HashSet();
@@ -404,6 +410,7 @@ public class SourceAttributeSelectionTable extends JTable{
             }
 
             attributeComboBoxes.remove(row);
+            selectedAttribute.remove(row);
             typeComboBoxes.remove(row);
             rmvBtns.remove(row);
         }
@@ -415,18 +422,10 @@ public class SourceAttributeSelectionTable extends JTable{
     }
 
     public void removeRow(final int row) {
-        if (row<0 || row>rowCount) {
-            throw new java.lang.IndexOutOfBoundsException();
-        }
+        int[] rows = new int[1];
+        rows[0] = row;
 
-        attributeComboBoxes.remove(row);
-        typeComboBoxes.remove(row);
-        rmvBtns.remove(row);
-
-        rowCount--;
-
-        setColumnEditorAndCellRenderer();
-        fireTableDataChanged();
+        removeRows(rows);
     }
 
     void fireTableDataChanged() {

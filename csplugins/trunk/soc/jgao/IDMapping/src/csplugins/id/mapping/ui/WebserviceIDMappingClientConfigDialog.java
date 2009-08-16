@@ -38,6 +38,8 @@ package csplugins.id.mapping.ui;
 import csplugins.id.mapping.IDMapperClient;
 import csplugins.id.mapping.IDMapperClientImplTunables;
 
+import cytoscape.util.OpenBrowser;
+
 import org.bridgedb.IDMapperException;
 import org.bridgedb.webservice.IDMapperWebservice;
 import org.bridgedb.webservice.IDMapperBiomart;
@@ -127,6 +129,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 
         javax.swing.JPanel typePanel = new javax.swing.JPanel();
         typeComboBox = new javax.swing.JComboBox();
+        javax.swing.JButton infoButton = new javax.swing.JButton();
         biomartPanel = new javax.swing.JPanel();
         javax.swing.JPanel chooseDBPanel = new javax.swing.JPanel();
         chooseDBComboBox = new javax.swing.JComboBox();
@@ -187,6 +190,14 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             }
         });
         typePanel.add(typeComboBox);
+
+        infoButton.setText("Info");
+        infoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                infoButtonActionPerformed(evt);
+            }
+        });
+        typePanel.add(infoButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -702,6 +713,17 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
                 getSynergizerAuthorities()));
         setSynergizerSpecies();
     }//GEN-LAST:event_synergizerBaseUrlButtonActionPerformed
+
+    private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
+        ClientType type = (ClientType)typeComboBox.getSelectedItem();
+        if (type==ClientType.BIOMART) {
+            OpenBrowser.openURL("http://www.biomart.org/");
+        } else if (type==ClientType.PICR) {
+            OpenBrowser.openURL("http://www.ebi.ac.uk/Tools/picr/");
+        } else if (type==ClientType.SYNERGIZER) {
+            OpenBrowser.openURL("http://llama.med.harvard.edu/synergizer/translate/");
+        }
+    }//GEN-LAST:event_infoButtonActionPerformed
 
     private boolean verifyInput() {
         if (typeComboBox.getSelectedItem()==ClientType.BIOMART &&
