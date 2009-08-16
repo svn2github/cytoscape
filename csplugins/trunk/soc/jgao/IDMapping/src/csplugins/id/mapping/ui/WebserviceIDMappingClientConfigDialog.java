@@ -899,14 +899,12 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             }
 
             Database db = (Database) chooseDBComboBox.getSelectedItem();
-            String dbname = db.getName();
-            connString.append("mart="+dbname);
-            displayName.append("(mart="+dbname);
+            connString.append("mart="+db.getName());
+            displayName.append("(mart="+db.displayName());
 
             Dataset ds = (Dataset) chooseDatasetComboBox.getSelectedItem();
-            String dsname = ds.getName();
-            connString.append("&dataset="+dsname);
-            displayName.append(",dataset="+dsname+")");
+            connString.append("&dataset="+ds.getName());
+            displayName.append(",dataset="+ds.getDisplyName()+")");
 
             return new String[]{connString.toString(), className, displayName.toString()};
         } else if (type==ClientType.SYNERGIZER) {

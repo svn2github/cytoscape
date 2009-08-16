@@ -200,7 +200,8 @@ class IDMappingSourceSelectionTree extends JTree {
             DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
             ClientType clientType = getClientType(client);
             if (clientType==ClientType.FILE) {
-                fileTreeNode.add(clientNode);
+                //fileTreeNode.add(clientNode);
+                insertAlphabetically(fileTreeNode, clientNode);
                 if (client.isSelected()) {
                     expandFile = true;
                     //expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode}));
@@ -211,7 +212,8 @@ class IDMappingSourceSelectionTree extends JTree {
                     //}
                 }
             } else if (clientType==ClientType.RDB) {
-                dbTreeNode.add(clientNode);
+                //dbTreeNode.add(clientNode);
+                insertAlphabetically(dbTreeNode, clientNode);
                 if (client.isSelected()) {
                     expandDb = true;
                     //expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,dbTreeNode}));
@@ -222,7 +224,8 @@ class IDMappingSourceSelectionTree extends JTree {
                     //}
                 }
             } else if (clientType==ClientType.WEBSERVICE) {
-                wsTreeNode.add(clientNode);
+                //wsTreeNode.add(clientNode);
+                insertAlphabetically(wsTreeNode, clientNode);
                 if (client.isSelected()) {
                     expandWs = true;
                     //expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,wsTreeNode}));
@@ -441,7 +444,8 @@ class IDMappingSourceSelectionTree extends JTree {
                 }
 
                 DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
-                dbTreeNode.add(clientNode);
+                //dbTreeNode.add(clientNode);
+                insertAlphabetically(dbTreeNode, clientNode);
                 clientNode.setAllowsChildren(false);
 
                 //expand path
@@ -482,7 +486,8 @@ class IDMappingSourceSelectionTree extends JTree {
 
                 DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
 
-                wsTreeNode.add(clientNode);
+                //wsTreeNode.add(clientNode);
+                insertAlphabetically(wsTreeNode, clientNode);
                 clientNode.setAllowsChildren(false);
 
                 //expand path
@@ -524,7 +529,8 @@ class IDMappingSourceSelectionTree extends JTree {
 
                 DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
 
-                fileTreeNode.add(clientNode);
+//                fileTreeNode.add(clientNode);
+                insertAlphabetically(fileTreeNode, clientNode);
                 clientNode.setAllowsChildren(false);
                 
                 //expand path
@@ -582,6 +588,21 @@ class IDMappingSourceSelectionTree extends JTree {
             setSelectionPath(path);
             modified = true;
         }
+    }
+
+    private void insertAlphabetically(DefaultMutableTreeNode parent,
+            DefaultMutableTreeNode insertionNode) {
+        String insertionValue = insertionNode.getUserObject().toString();
+        int n = parent.getChildCount();
+        int i=0;
+        for (; i<n; i++) {
+            DefaultMutableTreeNode child = (DefaultMutableTreeNode) parent.getChildAt(i);
+            if (child.getUserObject().toString().compareTo(insertionValue)>0) {
+                break;
+            }
+        }
+
+        parent.insert(insertionNode, i);
     }
 
     private class TreeNodePopupMenu extends JPopupMenu {
