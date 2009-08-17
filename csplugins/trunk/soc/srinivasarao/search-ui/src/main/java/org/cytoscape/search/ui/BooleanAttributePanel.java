@@ -112,7 +112,6 @@ public class BooleanAttributePanel extends BasicDraggablePanel {
 
 	public String getCheckedValues() {
 		String str = "(";
-		String sel = null;
 		boolean select1 = false;
 		boolean select2 = false;
 		if (trueButton.isSelected()) {

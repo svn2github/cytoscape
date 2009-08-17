@@ -270,13 +270,16 @@ public class EdgeInteractionFilter extends JPanel {
 			}
 
 		}
-
+		CyNetworkView view = netmgr.getCurrentNetworkView();
 		// To Unselect all Nodes and Edges
 		SelectUtils.setSelectedNodes(network.getNodeList(), false);
 		SelectUtils.setSelectedEdges(network.getEdgeList(), false);
+		if (view != null) {
+			view.updateView();
+		}
 
 		SelectUtils.setSelectedEdges(resultedges, true);
-		CyNetworkView view = netmgr.getCurrentNetworkView();
+
 		if (view != null) {
 			view.updateView();
 		}

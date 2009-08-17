@@ -291,8 +291,8 @@ public class TopologyFilter extends JPanel {
 			}
 			// System.out.println(neighbourList.size());
 			if (neighbourList.size() >= noOfNeighbours) {
-				SelectUtils.setSelectedNodes(network.getNodeList(), false);
-				SelectUtils.setSelectedEdges(network.getEdgeList(), false);
+				//SelectUtils.setSelectedNodes(network.getNodeList(), false);
+				//SelectUtils.setSelectedEdges(network.getEdgeList(), false);
 
 				SelectUtils.setSelectedNodes(neighbourList, true);
 				if (view != null)
