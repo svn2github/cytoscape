@@ -5,6 +5,12 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+/**
+ * The TableModel class for JTable.
+ * 
+ * @author kozo
+ * 
+ */
 public class LayerConnectionTableModel extends AbstractTableModel {
 
 	private List<Long[]> dataModel;
