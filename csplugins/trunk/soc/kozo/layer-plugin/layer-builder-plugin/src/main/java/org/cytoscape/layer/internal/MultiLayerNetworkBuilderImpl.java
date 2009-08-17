@@ -5,10 +5,6 @@ import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
 
 import java.awt.Color;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +72,6 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(LAYER_INDEX,
 				String.class, false);
 
-		// HashSet cumulatedNodes = new HashSet();
 		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
 		Map<String, CyEdge> edgeMap = new HashMap<String, CyEdge>();
 
@@ -102,24 +97,6 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 		System.out.println("layer index attribute test start!!");
 
-		// try {
-		// PrintWriter fout = new PrintWriter(new BufferedWriter(new
-		// FileWriter("nodeAttribute.txt")));
-		//			
-		// for (CyNode cyNode : layeredNetwork.getNodeList()){
-		//				
-		// fout.println("NODE_NAME");
-		// fout.println(cyNode.attrs().get(NODE_TITLE, String.class));
-		// fout.println("NODE_LAYER_INDEX");
-		// fout.println(cyNode.attrs().get(LAYER_INDEX, String.class));
-		//
-		// }
-		//			
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-
 		buildVisualStyle();
 
 		System.out.println("OK!");
@@ -131,8 +108,6 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			CyNetwork bottomLayer, Map<String, CyNode> nodeMap,
 			Map<String, CyEdge> edgeMap, int topLayerIndex, int bottomLayerIndex) {
 		// Connect them
-
-		// Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
 
 		// 1st Phase: add all nodes in the top layer
 		for (CyNode cyNode : topLayer.getNodeList()) {
@@ -237,13 +212,9 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
 		}
 
-		// nodeMap.clear();
-		// nodeMap = null;
-
 	}
 
 	public CyNetwork buildLayeredNetwork() {
-		// TODO Auto-generated method stub
 		return this.buildLayeredNetwork(layers, connectors);
 	}
 
@@ -260,18 +231,9 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		final DiscreteMapping<String, Color> index2color = new DiscreteMapping<String, Color>(
 				LAYER_INDEX, String.class, (VisualProperty<Color>) NODE_COLOR);
 
-		// CyNetworkView view = (CyNetworkView)
-		// manager.getCurrentPresentation().getViewModel();
-		// CyNetworkView view =
-		// manager.getNetworkView(layeredNetwork.getSUID());
-
 		final List<View<CyNode>> nodeViews = networkView.getNodeViews();
 
 		String indexString;
-
-		// try {
-		// PrintWriter fout = new PrintWriter(new BufferedWriter(
-		// new FileWriter("node_layer_index.txt")));
 
 		for (View<CyNode> nv : nodeViews) {
 			System.out.println(nv.getSource().attrs().get(NODE_TITLE,
@@ -291,34 +253,11 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			}
 		}
 
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-
 		layerVS.addVisualMappingFunction(index2zLocation);
 		layerVS.addVisualMappingFunction(index2color);
 
 		vmm.setVisualStyle(layerVS, networkView);
 		layerVS.apply(networkView);
-
-		// for test
-
-		try {
-			PrintWriter fout = new PrintWriter(new BufferedWriter(
-					new FileWriter("node_z_location.txt")));
-
-			for (View<CyNode> nv : nodeViews) {
-				indexString = nv.getSource().attrs().get(LAYER_INDEX,
-						String.class);
-				fout.println(nv.getSource().attrs().get(NODE_TITLE,
-						String.class));
-				fout.println(nv.getVisualProperty(NODE_Z_LOCATION));
-				// System.out.println(index2zLocation.getMapValue(indexString));
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
 	}
 
