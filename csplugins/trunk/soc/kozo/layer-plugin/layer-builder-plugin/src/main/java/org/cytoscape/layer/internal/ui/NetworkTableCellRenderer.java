@@ -8,6 +8,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
 
+/**
+ * The Renderer class for JTable.
+ * 
+ * @author kozo
+ * 
+ */
+
 public class NetworkTableCellRenderer extends DefaultTableCellRenderer {
 
 	private static final long serialVersionUID = -7451409548228446195L;
@@ -23,7 +30,7 @@ public class NetworkTableCellRenderer extends DefaultTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
-		
+
 		String networkName = "Undefined";
 
 		if (value != null && value instanceof Long) {
@@ -31,7 +38,7 @@ public class NetworkTableCellRenderer extends DefaultTableCellRenderer {
 			networkName = network.attrs().get(NETWORK_TITLE, String.class);
 			this.setText(networkName);
 		}
-		
+
 		this.setText(networkName);
 
 		return this;
