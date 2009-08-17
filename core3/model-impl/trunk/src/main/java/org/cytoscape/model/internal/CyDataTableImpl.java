@@ -505,5 +505,14 @@ public class CyDataTableImpl implements CyDataTable {
 			if (list != null)
 				list.remove(rl);
 		}
+		
+		@Override
+		public String toString() {
+			final StringBuilder builder = new StringBuilder();
+			final Map<String, Object> allVal = getAllValues();
+			for(String key: getAllValues().keySet())
+				builder.append(key + " = " + allVal.get(key) + ", ");
+			return builder.toString();
+		}
 	}
 }
