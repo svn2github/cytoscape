@@ -28,6 +28,13 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
+/**
+ * The extended JList class to be able to reorder layer networks using drag and
+ * drop.
+ * 
+ * @author kozo
+ * 
+ */
 public class ReorderableJList extends JList implements DragSourceListener,
 		DropTargetListener, DragGestureListener {
 
