@@ -27,12 +27,11 @@ import javax.swing.JDialog;
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.session.CyNetworkManager;
 
-import static org.cytoscape.model.GraphObject.NODE;
-
 /**
+ * The JDialog class for setting which network as layers or connectors and layer
+ * order.
  * 
  * @author kozo
  */
@@ -47,7 +46,7 @@ public class LayerBuilderDialog extends JDialog {
 			"Connector Networks" };
 
 	private Map<String, CyDataTable> netAttrMgr;
-    	
+
 	/*
 	 * Mandatory parameters
 	 */
@@ -107,6 +106,11 @@ public class LayerBuilderDialog extends JDialog {
 				new DefaultCellEditor(comboBoxEditor));
 	}
 
+	/**
+	 * Build DefaultListModel for available networks from Cytoscape network
+	 * view.
+	 * 
+	 */
 	private void buildListModels() {
 		this.availableNetworkListModel = new DefaultListModel();
 		final Set<CyNetwork> availableNetworks = manager.getNetworkSet();
@@ -116,7 +120,6 @@ public class LayerBuilderDialog extends JDialog {
 
 			title = cyNetwork.attrs().get(NETWORK_TITLE, String.class);
 
-			// availableNetworkListModel.addElement(title);
 			availableNetworkListModel.addElement(cyNetwork.getSUID());
 
 			title2IdMap.put(title, cyNetwork.getSUID());
@@ -141,7 +144,6 @@ public class LayerBuilderDialog extends JDialog {
 		layerNetworkPanel = new javax.swing.JPanel();
 		layeredNetworkScrollPane = new javax.swing.JScrollPane();
 
-		// layeredNetworkList = new javax.swing.JList();
 		layeredNetworkList = new ReorderableJList();
 
 		availableNetworkPanel = new javax.swing.JPanel();
@@ -404,9 +406,6 @@ public class LayerBuilderDialog extends JDialog {
 
 		DefaultCellEditor cellEditor = new DefaultCellEditor(
 				new ComboCellRenderer(layeredNetworkListModel));
-		// ComboCellRenderer layerOrderTableRenderer = new ComboCellRenderer();
-		// layerOrderTable.getColumnModel().getColumn(0).setCellRenderer(
-		// layerOrderTableRenderer);
 
 		layerOrderScrollPane.setViewportView(layerConnectionTable);
 
@@ -563,10 +562,21 @@ public class LayerBuilderDialog extends JDialog {
 		pack();
 	}// </editor-fold>//GEN-END:initComponents
 
+	/**
+	 * Action listener for cancel button.
+	 * 
+	 * @param evt
+	 */
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_CancelButtonActionPerformed
 		this.dispose();
 	}// GEN-LAST:event_CancelButtonActionPerformed
 
+	/**
+	 * Button action listener for generating one CyNetwork connected all layers
+	 * and connectors.
+	 * 
+	 * @param evt
+	 */
 	private void generateIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GenerateIntegratedNetworkButtonActionPerformed
 
@@ -574,7 +584,8 @@ public class LayerBuilderDialog extends JDialog {
 		List<CyNetwork> connectors = new ArrayList<CyNetwork>();
 
 		for (int i = 0; i < layeredNetworkListModel.getSize(); i++) {
-			CyNetwork cyNetwork = manager.getNetwork((Long) layeredNetworkListModel.getElementAt(i));
+			CyNetwork cyNetwork = manager
+					.getNetwork((Long) layeredNetworkListModel.getElementAt(i));
 			layers.add(cyNetwork);
 		}
 
@@ -591,10 +602,20 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_GenerateIntegratedNetworkButtonActionPerformed
 
+	/**
+	 * Action listener for option button. Currently not implemented.
+	 * 
+	 * @param evt
+	 */
 	private void optionButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_OptionButtonActionPerformed
 		// TODO add your handling code here:
 	}// GEN-LAST:event_OptionButtonActionPerformed
 
+	/**
+	 * Button action lister to add all available networks to layer networks.
+	 * 
+	 * @param evt
+	 */
 	private void addAllAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllAvailableNetworkButtonActionPerformed
 
@@ -635,6 +656,12 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_MoveAllAvailableNetworkButtonActionPerformed
 
+	/**
+	 * Button action listener to add selected available networks to layer
+	 * networks.
+	 * 
+	 * @param evt
+	 */
 	private void addSelectedAvailableNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
@@ -685,6 +712,12 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_MoveSelectedAvailableNetworkButtonActionPerformed
 
+	/**
+	 * Button action listener to remove selected layer networks and bring back
+	 * to available networks.
+	 * 
+	 * @param evt
+	 */
 	private void removeSelectedIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 
@@ -734,6 +767,12 @@ public class LayerBuilderDialog extends JDialog {
 
 	}// GEN-LAST:event_MoveSelectedIntegratedNetworkButtonActionPerformed
 
+	/**
+	 * Button action listener to remove all layer networks and bring back to
+	 * available networks.
+	 * 
+	 * @param evt
+	 */
 	private void removeAllIntegratedNetworkButtonActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MoveAllIntegratedNetworkButtonActionPerformed
 
