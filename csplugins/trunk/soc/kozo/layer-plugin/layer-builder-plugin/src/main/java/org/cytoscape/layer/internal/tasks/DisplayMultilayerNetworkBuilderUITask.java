@@ -4,13 +4,19 @@ import java.util.Set;
 
 import org.cytoscape.layer.MultiLayerNetworkBuilder;
 import org.cytoscape.layer.internal.ui.LayerBuilderDialog;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
-import org.cytoscape.model.CyNetwork;
 
+/**
+ * Build task for display dialog to set networks for 3D layer visualization.
+ * 
+ * @author kozo
+ * 
+ */
 public class DisplayMultilayerNetworkBuilderUITask implements Task {
 
 	// This should be injected.
