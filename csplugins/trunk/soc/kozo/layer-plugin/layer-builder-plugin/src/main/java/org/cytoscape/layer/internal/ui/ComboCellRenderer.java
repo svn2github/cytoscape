@@ -10,9 +10,22 @@ import javax.swing.JTable;
 import javax.swing.ListModel;
 import javax.swing.table.TableCellRenderer;
 
+/**
+ * The renderer class for the combobox in JTable.
+ * 
+ * @author kozo
+ * 
+ */
+
 public class ComboCellRenderer extends JComboBox implements TableCellRenderer {
 	private DefaultComboBoxModel model;
 
+	/**
+	 * Creates a new ComboCellRenderer object.
+	 * 
+	 * @param model
+	 *            DefaultListModel
+	 */
 	public ComboCellRenderer(DefaultListModel model) {
 		super();
 		this.initialize(model);
