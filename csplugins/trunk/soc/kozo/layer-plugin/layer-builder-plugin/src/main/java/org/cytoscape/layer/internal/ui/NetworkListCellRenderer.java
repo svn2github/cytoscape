@@ -8,6 +8,12 @@ import javax.swing.JList;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
 
+/**
+ * The Renderer class for JList.
+ * 
+ * @author kozo
+ * 
+ */
 public class NetworkListCellRenderer extends DefaultListCellRenderer {
 
 	private static final long serialVersionUID = 2917055467421736292L;
