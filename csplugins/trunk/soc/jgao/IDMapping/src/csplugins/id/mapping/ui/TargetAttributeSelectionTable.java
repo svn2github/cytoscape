@@ -88,10 +88,10 @@ public class TargetAttributeSelectionTable extends JTable{
 
     private final String headerIDType = "Target ID Type";
     private final String headerAttrName = "Target New Attribute";
-    private final String headerOneIDOnly = "Single or all target ID(s)?";
+    private final String headerOneIDOnly = "All target ID(s) or first only?";
     private final String headerBtn = " ";
 
-    private final String oneIDOnly = "Keep single target ID only";
+    private final String oneIDOnly = "Keep the first target ID only";
     private final String multiIDs = "Keep all target IDs";
 
     private java.awt.Color defBgColor = (new JScrollPane()).getBackground();

@@ -48,13 +48,14 @@ import org.bridgedb.DataSource;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.IDMapperException;
 
-import java.util.List;
-import java.util.Vector;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Vector;
 
 /**
  *
@@ -272,7 +273,7 @@ public class AttributeBasedIDMappingImpl
                 DataSource ds = xref.getDataSource();
                 Set<String> ids = mapDsIds.get(ds);
                 if (ids==null) {
-                    ids = new HashSet();
+                    ids = new TreeSet(); // alphabetically
                     mapDsIds.put(ds, ids);
                 }
                 ids.add(xref.getId());
@@ -289,7 +290,6 @@ public class AttributeBasedIDMappingImpl
                     Set<String> ids = entryDsIds.getValue();
                     if (attrType==CyAttributes.TYPE_SIMPLE_LIST) {
                         List<String> values = new Vector(ids);
-                        java.util.Collections.sort(values);
                         nodeAttributes.setListAttribute(nodeID, attrName, values);
                     } else if (attrType==CyAttributes.TYPE_STRING) {
                         // only returns the first ID
