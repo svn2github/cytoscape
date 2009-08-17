@@ -16,7 +16,7 @@ import giny.model.Edge;
 
 public class CircularPhylogram extends AbstractLayout{
 
-	static double BASE_RADIUS = 1000.0;
+	static double BASE_RADIUS = 10.0;
 
 	private int numLeavesVisited = 0; //
 	private LayoutProperties layoutProperties;
@@ -36,7 +36,11 @@ public class CircularPhylogram extends AbstractLayout{
 	protected void initialize_properties()
 	{	
 		layoutProperties.add(new Tunable("edge_scaling", "Edge scaling",
-                Tunable.DOUBLE, new Double(scalingFactor = 100.0)));
+                Tunable.DOUBLE, new Double(scalingFactor = 35.0)));
+//		
+//		layoutProperties.add(new Tunable("edge_scaling", "Edge scaling", Tunable.STRING, 
+//				new Double(scalingFactor = 35.0), new Double(10.0),
+//				new Double(100.0), Tunable.USESLIDER));
 		
 		layoutProperties.initializeProperties();
 
@@ -106,13 +110,14 @@ public class CircularPhylogram extends AbstractLayout{
 	 * 1of the layout
 	 */
 	public  String toString(){
-		return "Circular Phylogram Layout";
+		return "Phylogram - Circular";
 	}
 
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
 
+		
 		// Intialize the common functions
 		commonFunctions = new CommonFunctions();
 		
@@ -130,8 +135,6 @@ public class CircularPhylogram extends AbstractLayout{
 			networkView.getEdgeView(edge).clearBends();
 		}
 		
-
-		scalingFactor = commonFunctions.getScalingFactor(network);
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 		
@@ -203,8 +206,9 @@ public class CircularPhylogram extends AbstractLayout{
 			totalRadius = totalRadius + commonFunctions.getBranchLength(network, ancestor);
 		}
 		
-		totalRadius = totalRadius+(commonFunctions.getBranchLength(network, node));
+		totalRadius = totalRadius+commonFunctions.getBranchLength(network, node);
 		
+		totalRadius = totalRadius*scalingFactor;
 		// Reposition node
 		networkView.getNodeView(node).setXPosition(totalRadius*BASE_RADIUS*Math.cos(angle),true);
 		networkView.getNodeView(node).setYPosition(totalRadius*BASE_RADIUS*Math.sin(angle),true);

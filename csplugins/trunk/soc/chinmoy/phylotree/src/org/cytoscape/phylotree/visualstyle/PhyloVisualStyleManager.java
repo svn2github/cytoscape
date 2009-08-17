@@ -5,11 +5,13 @@ import javax.swing.JOptionPane;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.layout.CyLayouts;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import org.cytoscape.phylotree.layout.CommonFunctions;
+import org.cytoscape.phylotree.layout.cladograms.CircularCladogram;
 
 
 public class PhyloVisualStyleManager {
@@ -30,21 +32,21 @@ public class PhyloVisualStyleManager {
 
 		// check to see if a visual style with this name already exists
 		VisualStyle vs = catalog.getVisualStyle(phyloVS.getName());
+		VisualStyle pvs;
+		
 		if (vs == null) {
 			// if not, create it and add it to the catalog
 			vs = phyloVS.createStyle(network);
 			catalog.addVisualStyle(vs);
+			manager.setVisualStyle(vs);
 		}
 		else
 		{
-			vs = phyloVS.createStyle(network);
+			pvs = phyloVS.createStyle(network);
+			manager.setVisualStyle(pvs);
 			
 		}
 		
-		networkView.setVisualStyle(vs.getName()); // not strictly necessary
-
-		// actually apply the visual style
-		manager.setVisualStyle(vs);
 		networkView.redrawGraph(true,true);
 		}
 		else

@@ -92,7 +92,7 @@ public class RectangularCladogram extends AbstractLayout{
 	 * of the layout
 	 */
 	public  String toString(){
-		return "Rectangular Cladogram Layout";
+		return "Cladogram - Rectangular";
 	}
 	public void construct(double distance)
 	{

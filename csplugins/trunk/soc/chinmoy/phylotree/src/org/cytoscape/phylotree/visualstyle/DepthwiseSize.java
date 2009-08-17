@@ -107,7 +107,7 @@ public class DepthwiseSize implements PhyloVisualStyle {
 			Node node = nodeListIterator.next();
 			
 			int depth = cf.getDepth(network, node);
-			
+
 			nodeAttributes.setAttribute(node.getIdentifier(), "Depth", depth);
 
 			int [] edgeIndicesArray =network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(), false, false, true); 
@@ -152,7 +152,7 @@ public class DepthwiseSize implements PhyloVisualStyle {
 
 		Iterator<Node> it = network.nodesIterator();
 		while (it.hasNext()) {
-			Node node = (Node) it.next();
+			Node node = it.next();
 			Integer value = cyNodeAttrs.getIntegerAttribute(node.getIdentifier(), "Depth");
 			if (value.intValue() < min) {
 				min = value.intValue();
@@ -173,7 +173,7 @@ public class DepthwiseSize implements PhyloVisualStyle {
 		
 		ContinuousMapping cm = new ContinuousMapping(defaultObj, ObjectMapping.NODE_MAPPING);
 		// Set controlling Attribute
-		cm.setControllingAttributeName("Depth", Cytoscape.getCurrentNetwork(), false);
+		cm.setControllingAttributeName("Depth", network, false);
 
 		Interpolator numToColor = new LinearNumberToColorInterpolator();
 		cm.setInterpolator(numToColor);

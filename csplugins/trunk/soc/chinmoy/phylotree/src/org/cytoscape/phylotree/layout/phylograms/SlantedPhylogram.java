@@ -38,7 +38,11 @@ public class SlantedPhylogram extends AbstractLayout{
 	protected void initialize_properties()
 	{	
 		layoutProperties.add(new Tunable("edge_scaling", "Edge scaling",
-                Tunable.DOUBLE, new Double(scalingFactor = 100.0)));
+                Tunable.DOUBLE, new Double(scalingFactor = 500.0)));
+		
+//		layoutProperties.add(new Tunable("edge_scaling", "Edge scaling", Tunable.STRING, 
+//				new Double(scalingFactor = 500.0), new Double(100.0),
+//				new Double(1000.0), Tunable.USESLIDER));
 		
 		layoutProperties.initializeProperties();
 
@@ -108,13 +112,12 @@ public class SlantedPhylogram extends AbstractLayout{
 	 * 1of the layout
 	 */
 	public  String toString(){
-		return "Slanted Phylogram Layout";
+		return "Phylogram - Slanted";
 	}
 
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
-
 		// Intialize the common functions
 		commonFunctions = new CommonFunctions();
 		
@@ -133,7 +136,6 @@ public class SlantedPhylogram extends AbstractLayout{
 		}
 		
 
-		scalingFactor = commonFunctions.getScalingFactor(network);
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 		

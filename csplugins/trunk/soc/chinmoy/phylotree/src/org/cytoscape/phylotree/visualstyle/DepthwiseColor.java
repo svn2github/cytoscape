@@ -5,8 +5,6 @@ import cytoscape.visual.VisualStyle;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.visual.Appearance;
-import cytoscape.visual.ArrowShape;
 import cytoscape.visual.EdgeAppearance;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.GlobalAppearanceCalculator;
@@ -19,7 +17,6 @@ import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.Interpolator;
 import cytoscape.visual.mappings.LinearNumberToColorInterpolator;
 import cytoscape.visual.mappings.ObjectMapping;

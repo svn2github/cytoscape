@@ -16,7 +16,7 @@ import giny.model.Edge;
 
 public class RadialPhylogram extends AbstractLayout{
 
-	static double BASE_RADIUS = 1000.0;
+	static double BASE_RADIUS = 10.0;
 
 	private int numLeavesVisited = 0; //
 	private LayoutProperties layoutProperties;
@@ -36,7 +36,11 @@ public class RadialPhylogram extends AbstractLayout{
 	protected void initialize_properties()
 	{	
 		layoutProperties.add(new Tunable("edge_scaling", "Edge scaling",
-                Tunable.DOUBLE, new Double(scalingFactor = 100.0)));
+                Tunable.DOUBLE, new Double(scalingFactor = 35.0)));
+		
+//		layoutProperties.add(new Tunable("edge_scaling", "Edge scaling", Tunable.STRING, 
+//				new Double(scalingFactor = 35.0), new Double(10.0),
+//				new Double(100.0), Tunable.USESLIDER));
 		
 		layoutProperties.initializeProperties();
 
@@ -106,13 +110,14 @@ public class RadialPhylogram extends AbstractLayout{
 	 * 1of the layout
 	 */
 	public  String toString(){
-		return "Radial Phylogram Layout";
+		return "Phylogram - Radial";
 	}
 
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize(); 
 
+		//BASE_RADIUS = scalingFactor;
 		// Intialize the common functions
 		commonFunctions = new CommonFunctions();
 		if(commonFunctions.hasLeaf(network)&&commonFunctions.isTree(network))
@@ -129,7 +134,6 @@ public class RadialPhylogram extends AbstractLayout{
 			networkView.getEdgeView(edge).clearBends();
 		}
 
-		scalingFactor = commonFunctions.getScalingFactor(network);
 		// Find the root of the tree
 		Node root = commonFunctions.getTreeRoot(network);
 		
@@ -185,9 +189,9 @@ public class RadialPhylogram extends AbstractLayout{
 		while(it.hasNext())
 		{
 			Node ancestor = it.next();
-			totalRadius = totalRadius + commonFunctions.getBranchLength(network, ancestor);
+			totalRadius = totalRadius + (scalingFactor*commonFunctions.getBranchLength(network, ancestor));
 		}
-		totalRadius = totalRadius+commonFunctions.getBranchLength(network, node);
+		totalRadius = totalRadius+(scalingFactor*commonFunctions.getBranchLength(network, node));
 		
 		// Reposition node
 		networkView.getNodeView(node).setXPosition(totalRadius*BASE_RADIUS*Math.cos(angle),true);

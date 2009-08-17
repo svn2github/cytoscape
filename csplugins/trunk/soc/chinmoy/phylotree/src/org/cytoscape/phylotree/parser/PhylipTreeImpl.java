@@ -1,6 +1,5 @@
 package org.cytoscape.phylotree.parser;
 
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.LinkedList;
@@ -383,36 +382,8 @@ public class PhylipTreeImpl implements Phylotree {
   // Traverse the list into node and edge lists using a stack
  readListIntoStack(list);
 
- processNodeIDs();
+ 
  }
-
- private void processNodeIDs()
- {
-	 Iterator<PhylotreeNode> it = nodeList.iterator();
-	 Hashtable<String, String> namesTable = new Hashtable<String, String>();
-	 Hashtable<String, Integer> indexTable = new Hashtable<String, Integer>();
-	 
-	 while(it.hasNext())
-	 {
-		 PhylipNode node = (PhylipNode) it.next();
-		 
-		 if(namesTable.containsValue(node.nodeName))
-			 {
-			 	int repeatIndex = indexTable.get(node.nodeName);
-			 	node.nodeID = node.nodeName+"_"+repeatIndex;
-			 	indexTable.put(node.nodeName, repeatIndex+1);
-			 }
-		 else
-			 {
-			 node.nodeID = node.nodeName;
-			 indexTable.put(node.nodeName, 0);
-			 }
-		 
-		 namesTable.put(node.nodeName, node.nodeName);
-		 
-	 }
- }
-
 
 
  // Interface methods
@@ -478,7 +449,6 @@ public class PhylipTreeImpl implements Phylotree {
  class PhylipNode implements PhylotreeNode {
   private String nodeName = null;
   private String nodeID = null;
-  private int repeatIndex = 1;
   public List<PhylipEdge> nodeEdges; // List of all edges connected to this node
 
   public PhylipNode(String pNodeName){
@@ -494,6 +464,10 @@ public class PhylipTreeImpl implements Phylotree {
   public String getID(){
 	  return nodeID;
   }
+  public void setID(String newID){
+	  nodeID = newID;
+  }
+  
  }
 
 

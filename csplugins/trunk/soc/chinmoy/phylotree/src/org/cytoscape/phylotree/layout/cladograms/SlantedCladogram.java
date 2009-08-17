@@ -93,7 +93,7 @@ public class SlantedCladogram extends AbstractLayout{
 	 * of the layout
 	 */
 	public  String toString(){
-		return "Slanted Cladogram Layout";
+		return "Cladogram - Slanted";
 	}
 	public void construct(double distance)
 	{

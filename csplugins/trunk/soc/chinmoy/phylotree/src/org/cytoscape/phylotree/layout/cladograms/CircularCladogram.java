@@ -92,7 +92,7 @@ public class CircularCladogram extends AbstractLayout{
 	 * of the layout
 	 */
 	public  String toString(){
-		return "Circular Cladogram Layout";
+		return "Cladogram - Circular";
 	}
 
 	public void construct(double radius)

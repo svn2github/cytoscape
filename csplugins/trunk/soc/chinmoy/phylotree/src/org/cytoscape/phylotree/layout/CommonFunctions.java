@@ -354,39 +354,39 @@ public class CommonFunctions {
 	}
 
 
-	/**
-	 * Calculates the optimum factor by which edges must be scaled to obtain an optimum view
-	 * @param network - the network from which the scaling factor is to be calculated
-	 * @return - the factor to be multiplied to the branchLengths to obtain the optimum view
-	 */
-	public double getScalingFactor(CyNetwork network)
-	{
-
-
-		double factor = 1.0;
-		// Find the smallest edge
-		List<Edge> allEdges = network.edgesList();
-		Iterator<Edge> edgesIterator = allEdges.iterator();
-
-
-		double smallestLength = Double.MAX_VALUE;
-		while(edgesIterator.hasNext())
-		{
-
-			Edge edge = edgesIterator.next();
-			double length = getBranchLength(network, edge.getTarget());
-			if(length<smallestLength)
-				smallestLength = length;
-		}
-
-		// Calculate the scaling factor
-
-		while(smallestLength * factor <= 50.0) //50
-			factor *= 10.0;                     //10
-
-
-		return factor;		
-	}
+//	/**
+//	 * Calculates the optimum factor by which edges must be scaled to obtain an optimum view
+//	 * @param network - the network from which the scaling factor is to be calculated
+//	 * @return - the factor to be multiplied to the branchLengths to obtain the optimum view
+//	 */
+//	public double getScalingFactor(CyNetwork network)
+//	{
+//
+//
+//		double factor = 1.0;
+//		// Find the smallest edge
+//		List<Edge> allEdges = network.edgesList();
+//		Iterator<Edge> edgesIterator = allEdges.iterator();
+//
+//
+//		double smallestLength = Double.MAX_VALUE;
+//		while(edgesIterator.hasNext())
+//		{
+//
+//			Edge edge = edgesIterator.next();
+//			double length = getBranchLength(network, edge.getTarget());
+//			if(length<smallestLength && length>0.0)
+//				smallestLength = length;
+//		}
+//
+//		// Calculate the scaling factor
+//
+//		while(smallestLength * factor <= 50.0) //50
+//			factor *= 10.0;                     //10
+//
+//
+//		return factor;		
+//	}
 
 	/**
 	 * Adds the bends to make the edges look rectangular
