@@ -67,15 +67,15 @@ public class ForceDirected extends AbstractGraphPartition
 {
     private String message;
 
-    private double H_SIZE = 1000.0;
-    private double V_SIZE = 1000.0;
+    private double H_SIZE = 10000.0;
+    private double V_SIZE = 10000.0;
     private String GPU_LIBRARY = "GpuLayout";
      
     // Default values for algorithm parameters	
     private int coarseGraphSize         = 50;
     private int interpolationIterations = 50;
     private int levelConvergence        = 2;
-    private int edgeLen                 = 5;
+    private double edgeLen              = 5.0;
     private int initialNoIterations     = 300;
 
     private String CUDA_PATH = "/usr/local/cuda/lib";
@@ -116,7 +116,7 @@ public class ForceDirected extends AbstractGraphPartition
 	layoutProperties.add(new Tunable("coarseGraphSize",         "Coarse Graph Size"           , Tunable.INTEGER, new Integer(50) ));
 	layoutProperties.add(new Tunable("interpolationIterations", "Interpolation Iterations"    , Tunable.INTEGER, new Integer(50) ));
 	layoutProperties.add(new Tunable("levelConvergence",        "Level Convergence"           , Tunable.INTEGER, new Integer(2)  ));
-	layoutProperties.add(new Tunable("edgeLen",                 "Ideal Edge Length"           , Tunable.INTEGER, new Integer(5)  ));
+	layoutProperties.add(new Tunable("edgeLen",                 "Ideal Edge Length"           , Tunable.DOUBLE, new Double(5)  ));
 	layoutProperties.add(new Tunable("initialNoIterations",     "Initial Number of Iterations", Tunable.INTEGER, new Integer(300)));
 
 	layoutProperties.add(new Tunable("CUDA_PATH", "CUDA instalation folder", Tunable.STRING , new String("/usr/local/cuda")));
@@ -175,7 +175,7 @@ public class ForceDirected extends AbstractGraphPartition
 	// Get edgeLen
 	Tunable t4 = layoutProperties.get("edgeLen");
 	if ((t4 != null) && (t4.valueChanged() || force))
-	    edgeLen = ((Integer) t4.getValue()).intValue();
+	    edgeLen = ((Double) t4.getValue()).doubleValue();
 	
 	// Get initialNoIterations
 	Tunable t5 = layoutProperties.get("initialNoIterations");
@@ -538,7 +538,7 @@ public class ForceDirected extends AbstractGraphPartition
 				    int coarseGraphSizeJ, 
 				    int interpolationIterationsJ, 
 				    int levelConvergenceJ, 
-				    int edgeLenJ, 
+				    double edgeLenJ, 
 				    int initialNoIterationsJ,
 				    double hSizeJ,
 				    double vsizeJ
