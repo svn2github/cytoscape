@@ -41,7 +41,7 @@ JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ForceDirected_ComputeGpuLayout (JN
 								jint       coarseGraphSizeJ, 
 								jint       interpolationIterationsJ, 
 								jint       levelConvergenceJ, 
-								jint       EDGE_LENJ, 
+								jdouble    EDGE_LENJ, 
 								jint       initialNoIterationsJ, 
 								jdouble    hSizeJ, 
 								jdouble    vSizeJ
@@ -80,7 +80,7 @@ JNIEXPORT jobjectArray JNICALL Java_GpuLayout_ForceDirected_ComputeGpuLayout (JN
   scope->g.NodePos     = (float2*) malloc (numNodes       * sizeof(float2) );
   scope->g.AdjMatIndex =    (int*) malloc ((numNodes + 1) * sizeof(int)    );
   scope->g.AdjMatVals  =    (int*) malloc (numEdges       * sizeof(int)    );
-  scope->g.edgeLen     =    (int*) malloc (numEdges       * sizeof(int)    );
+  scope->g.edgeLen     =  (float*) malloc (numEdges       * sizeof(float)  );
 
   // Get temporary copies of AdjMatIndex, AdjMatVals
   int *temp_AdjMatIndex = env->GetIntArrayElements(AdjMatIndexJ, NULL);

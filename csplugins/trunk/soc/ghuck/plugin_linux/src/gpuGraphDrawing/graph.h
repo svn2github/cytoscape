@@ -42,7 +42,7 @@ typedef struct
   float2  *NodePos;
   int	  *AdjMatIndex;
   int	  *AdjMatVals;
-  int	  *edgeLen;
+  float	  *edgeLen;
   int	  *parent;
   int	  *sun;
   int	  coolTimes;

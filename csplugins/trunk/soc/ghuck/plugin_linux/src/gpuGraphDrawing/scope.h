@@ -35,7 +35,7 @@ typedef struct _globalScope {
   dim3               threads,blocks; 
   int               *AdjMatIndexD;  
   int               *AdjMatValsD;  
-  int               *edgeLenD;  
+  float               *edgeLenD;  
   float2            *DispD, *Disp; 
   graph             *gArray[150];
   int	             numLevels;
@@ -50,8 +50,8 @@ typedef struct _globalScope {
   unsigned int       *nD;
   complexDevice      *OuterD;
 
-  int	EDGE_LEN;
-  int	initialNoIterations;
+  float EDGE_LEN;
+  int	 initialNoIterations;
 
 
 } globalScope;

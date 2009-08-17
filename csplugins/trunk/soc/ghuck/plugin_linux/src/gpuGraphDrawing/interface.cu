@@ -164,9 +164,9 @@ graph* coarsen(graph *g, globalScope* scope)
 
   int numEdges = 0;
   rg->NodePos     = (float2 *) malloc((numParents)*sizeof(float2));
-  rg->AdjMatIndex =  (int * )  calloc(numParents+1,sizeof(int));
-  rg->AdjMatVals  =  (int * )  calloc(g->numEdges,sizeof(int));
-  rg->edgeLen     =  (int * )  calloc(g->numEdges,sizeof(int));
+  rg->AdjMatIndex =  (int * )  calloc(numParents+1, sizeof(int));
+  rg->AdjMatVals  =  (int * )  calloc(g->numEdges,  sizeof(int));
+  rg->edgeLen     =  (float * )calloc(g->numEdges,  sizeof(float));
   
   for(int i = 0; i < numParents; i++){
     rg->NodePos[i].x = rand() % SCREEN_W;
@@ -299,7 +299,7 @@ int calculateLayout (globalScope* scope)
   cudaMalloc ((void**) &(scope->DispD),        numNodes                     * sizeof(float2) );
   cudaMalloc ((void**) &(scope->AdjMatIndexD), ((scope->g).numVertices + 1) * sizeof(int)    );
   cudaMalloc ((void**) &(scope->AdjMatValsD),  (scope->g).numEdges          * sizeof(int)    );
-  cudaMalloc ((void**) &(scope->edgeLenD),     (scope->g).numEdges          * sizeof(int)    );
+  cudaMalloc ((void**) &(scope->edgeLenD),     (scope->g).numEdges          * sizeof(float)  );
   
   // Initialize parameters for config (see CUDPP in cudpp.h)
   (scope->config).algorithm = CUDPP_SCAN;

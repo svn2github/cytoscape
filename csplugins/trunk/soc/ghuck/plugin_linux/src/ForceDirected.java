@@ -67,8 +67,8 @@ public class ForceDirected extends AbstractGraphPartition
 {
     private String message;
 
-    private double H_SIZE = 10000.0;
-    private double V_SIZE = 10000.0;
+    private double H_SIZE = 1000.0;
+    private double V_SIZE = 1000.0;
     private String GPU_LIBRARY = "GpuLayout";
      
     // Default values for algorithm parameters	

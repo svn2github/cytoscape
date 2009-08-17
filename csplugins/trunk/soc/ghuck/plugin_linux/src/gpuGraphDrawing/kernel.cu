@@ -38,7 +38,7 @@ texture<int> texInt;
 texture<int> texAdjMatD;
 texture<float> texFloat;
 texture<int> texAdjMatValsD;
-texture<int> texEdgeLenD;
+texture<float> texEdgeLenD;
 texture<float2> texNodePosD;
 
 __constant__ graph gd[1];
