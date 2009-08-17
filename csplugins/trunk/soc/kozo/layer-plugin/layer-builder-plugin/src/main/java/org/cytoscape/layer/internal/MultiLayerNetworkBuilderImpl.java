@@ -53,6 +53,18 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	private List<CyNetwork> layers;
 	private List<CyNetwork> connectors;
 
+	/**
+	 * Creates a new MultiLayerNetworkBuilderImpl object.
+	 * 
+	 * @param manager
+	 *            The network manager.
+	 * @param factory
+	 *            factory class to create CyNetwork.
+	 * @param vmm
+	 *            manager class to add visual mapping.
+	 * @param networkViewFactory
+	 *            factory class to create CyNetworkView.
+	 */
 	public MultiLayerNetworkBuilderImpl(CyNetworkManager manager,
 			CyNetworkFactory factory, VisualMappingManager vmm,
 			CyNetworkViewFactory networkViewFactory) {
@@ -62,6 +74,17 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		this.networkViewFactory = networkViewFactory;
 	}
 
+	/**
+	 * Build one network using layer network and connector network. The order of
+	 * list are represented as layer z location.
+	 * 
+	 * @param layers
+	 *            list of CyNetwork for layer.
+	 * @param connectors
+	 *            list of CyNetwork to connect layer networks.
+	 * @return CyNetwork one CyNetwork connected all layer and connector
+	 *         networks.
+	 */
 	public CyNetwork buildLayeredNetwork(List<CyNetwork> layers,
 			List<CyNetwork> connectors) {
 
@@ -104,10 +127,30 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		return layeredNetwork;
 	}
 
+	/**
+	 * Actual connecting fucntion to connect each set of two layer and one
+	 * connector network.
+	 * 
+	 * @param topLayer
+	 *            The higher CyNetwork to connect.
+	 * @param connector
+	 *            The CyNetwork to connect higher CyNetwork and lower CyNetwork.
+	 * @param bottomLayer
+	 *            The lower CyNetwork to connect.
+	 * @param nodeMap
+	 *            The Hashmap for preventing to create different nodes with same
+	 *            name.
+	 * @param edgeMap
+	 *            The Hashmap for preventing to create different edges connects
+	 *            same name nodes.
+	 * @param topLayerIndex
+	 *            The index for higher layer to identify which layer order.
+	 * @param bottomLayerIndex
+	 *            The index for lower layer to identify which layer order
+	 */
 	private void connect(CyNetwork topLayer, CyNetwork connector,
 			CyNetwork bottomLayer, Map<String, CyNode> nodeMap,
 			Map<String, CyEdge> edgeMap, int topLayerIndex, int bottomLayerIndex) {
-		// Connect them
 
 		// 1st Phase: add all nodes in the top layer
 		for (CyNode cyNode : topLayer.getNodeList()) {
@@ -224,6 +267,12 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 		this.connectors = connectors;
 	}
 
+	/**
+	 * Build visual style for represent layer order as node Z location.
+	 * Currently each layer's Z location separated evenly, and top 3 layer nodes
+	 * are color-coded. This part needs to be set interactively by users.
+	 * 
+	 */
 	public void buildVisualStyle() {
 		layerVS = vmm.createVisualStyle(VISUAL_STYLE_TITLE);
 		final DiscreteMapping<String, Double> index2zLocation = new DiscreteMapping<String, Double>(
@@ -248,7 +297,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 				index2color.putMapValue(indexString, Color.green);
 			} else if (indexString.equals("2")) {
 				index2color.putMapValue(indexString, Color.blue);
-			} else if (indexString.equals("3")) {
+			} else {
 				index2color.putMapValue(indexString, Color.orange);
 			}
 		}
