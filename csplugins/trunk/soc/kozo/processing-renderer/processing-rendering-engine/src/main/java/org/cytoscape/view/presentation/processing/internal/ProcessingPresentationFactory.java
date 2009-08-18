@@ -16,12 +16,19 @@ import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.view.presentation.PresentationFactory;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.processing.CyDrawableManager;
 
 public class ProcessingPresentationFactory implements PresentationFactory,
 		NetworkViewChangedListener {
 
 	private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(1200,
 			900);
+	
+	private final CyDrawableManager manager;
+	
+	public ProcessingPresentationFactory(CyDrawableManager manager) {
+		this.manager = manager;
+	}
 
 	// private final Map<Class<?>, Class<? extends P5Renderer<?>>> rendererMap;
 
@@ -54,7 +61,7 @@ public class ProcessingPresentationFactory implements PresentationFactory,
 		
 
 		final ProcessingNetworkRenderer rend = new ProcessingNetworkRenderer(
-				DEFAULT_WINDOW_SIZE, (CyNetworkView) view);
+				DEFAULT_WINDOW_SIZE, (CyNetworkView) view, manager);
 		rend.init();
 		
 		if(target instanceof JFrame == false) return rend;

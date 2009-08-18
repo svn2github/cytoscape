@@ -21,7 +21,8 @@
 
 	<context:annotation-config />
 
-	<bean id="pVisualLexicon" class="org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon" />
+	<bean id="pVisualLexicon"
+		class="org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon" />
 
 	<bean id="createPresentationTaskFactory"
 		class="org.cytoscape.view.presentation.processing.internal.CreatePresentationTaskFactory">
@@ -31,11 +32,29 @@
 
 	<bean id="processingPresentationFactory"
 		class="org.cytoscape.view.presentation.processing.internal.ProcessingPresentationFactory">
+		<constructor-arg ref="cyDrawableManager" />
 	</bean>
 
 	<bean id="visualStyleBuilder"
 		class="org.cytoscape.view.presentation.processing.internal.DefaultVisualStyleBuilder">
 		<constructor-arg ref="visualMappingManagerServiceRef" />
+	</bean>
+
+	<!-- For VizMap GUI: value editors -->
+	
+	
+	<!-- Drawable Manager -->
+	<bean id="cyDrawableManager" class="org.cytoscape.view.presentation.processing.internal.CyDrawableManagerImpl" />
+	
+	
+	<!-- Style Visual Property -->
+	<bean id="cyDrawableVisualProperty"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField">
+			<value>
+				org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.NODE_STYLE_CLASS
+			</value>
+		</property>
 	</bean>
 
 </beans>

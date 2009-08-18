@@ -24,6 +24,7 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.CyDrawableManager;
 import org.cytoscape.view.presentation.processing.internal.particle.ParticleManager;
 import org.cytoscape.view.presentation.processing.internal.ui.Overlay;
 import org.cytoscape.view.vizmap.events.VisualStyleChangedEvent;
@@ -33,6 +34,7 @@ import org.cytoscape.view.vizmap.events.VisualStyleSwitchedListener;
 
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PImage;
 import processing.opengl.PGraphicsOpenGL;
 import toxi.geom.AABB;
 import toxi.geom.Vec3D;
@@ -54,6 +56,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	private Dimension windowSize;
 	private CyNetworkView view;
+	
+	private CyDrawableManager manager;
 
 	GraphRenderer renderer;
 
@@ -70,7 +74,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	
 	// Default fonts
 	private final PFont DEF_FONT = createFont("SansSerif", 30);
-
+	
+	
 	// pan and locations
 	private float rotX, rotY, zoom = 200;
 	
@@ -101,13 +106,13 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	 * 
 	 * @param size
 	 */
-	public ProcessingNetworkRenderer(Dimension size, CyNetworkView view) {
-
+	public ProcessingNetworkRenderer(Dimension size, CyNetworkView view, CyDrawableManager manager) {
+		this.manager = manager;
 		this.windowSize = size;
 		this.view = view;
 		System.out.println("%%%%%%%%%%%%% Constructor called for P5: 2");
-		this.nodeRenderer = new P5NodeRenderer(this);
-		this.edgeRenderer = new P5EdgeRenderer(this, view);
+		this.nodeRenderer = new P5NodeRenderer(this, manager);
+		this.edgeRenderer = new P5EdgeRenderer(this, manager, view);
 
 		this.addMouseWheelListener(new MouseWheelListener() {
 
@@ -119,6 +124,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 			}
 
 		});
+		
+		manager.setFactoryParent(this);
 	}
 
 	public Image getImage(int width, int height) {

@@ -1,6 +1,7 @@
 package org.cytoscape.view.presentation.processing.internal;
 
-import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.EDGE_STYLE;
+import static org.cytoscape.model.GraphObject.EDGE;
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.EDGE_STYLE_CLASS;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
@@ -11,30 +12,25 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
-import org.cytoscape.view.presentation.VisualItemRenderer;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.CyDrawableManager;
 import org.cytoscape.view.presentation.processing.EdgeItem;
-import org.cytoscape.view.presentation.processing.internal.shape.Cube;
-import org.cytoscape.view.presentation.processing.internal.shape.Line;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 
 import processing.core.PApplet;
 
-public class P5EdgeRenderer implements VisualItemRenderer<View<CyEdge>>{
+public class P5EdgeRenderer extends AbstractRenderer<View<CyEdge>> {
 	
-private PApplet p;
 	
-	private final VisualLexicon nodeLexicon;
 	
 	private CyNetworkView networkView;
 	
-	public P5EdgeRenderer(PApplet p, CyNetworkView networkView) {
-		this.p = p;
+	public P5EdgeRenderer(PApplet p, CyDrawableManager manager, CyNetworkView networkView) {
+		super(p, manager);
 		this.networkView = networkView;
-		nodeLexicon = buildLexicon();
 	}
 	
-	private VisualLexicon buildLexicon() {
+	protected VisualLexicon buildLexicon() {
 		final VisualLexicon sub = new BasicVisualLexicon();
 		System.out.println("%%%%%%%%%%%%% Building VP1");
 		sub.addVisualProperty(EDGE_COLOR);
@@ -54,14 +50,20 @@ private PApplet p;
 	}
 
 	public VisualLexicon getVisualLexicon() {
-		return nodeLexicon;
+		return null;
 	}
 
 	public CyDrawable render(View<CyEdge> view) {
-		CyDrawable style = view.getVisualProperty(EDGE_STYLE);
 		
-		if(style == null || (style instanceof EdgeItem) == false) 
-			style = new Line(p);
+		// If Style property is available, use it.
+		Class<?> styleClass = view.getVisualProperty(EDGE_STYLE_CLASS);
+		
+		CyDrawable style = manager.getDrawable((Class<? extends CyDrawable>)styleClass);
+
+		// If not available, use the default CyDrawable, which is a cube.
+		if (style == null || (style instanceof EdgeItem) == false)
+			style = manager.getDefaultFactory(EDGE).getInstance();
+
 		
 		// Extract source & target views
 		final CyNode source = view.getSource().getSource();

@@ -34,11 +34,16 @@
 			<entry key="id" value="processing" />
 		</osgi:service-properties>
 	</osgi:service>
-	
-	
+
+
 	<!-- Export this Lexicon -->
 	<osgi:service id="pVisualLexiconService" ref="pVisualLexicon"
 		interface="org.cytoscape.view.model.VisualLexicon">
+	</osgi:service>
+
+	<!-- Export Drawable Manager -->
+	<osgi:service id="cyDrawableManagerService" ref="cyDrawableManager"
+		interface="org.cytoscape.view.presentation.processing.CyDrawableManager">
 	</osgi:service>
 
 

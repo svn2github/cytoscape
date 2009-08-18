@@ -1,20 +1,29 @@
 package org.cytoscape.view.presentation.processing.internal;
 
-import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.*;
+import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.NODE_STYLE_CLASS;
+import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
+import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_SIZE;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_SIZE;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_SIZE;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.processing.CyDrawable;
-import org.cytoscape.view.presentation.processing.internal.shape.Cube;
+import org.cytoscape.view.presentation.processing.CyDrawableManager;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 
 import processing.core.PApplet;
 
 public class P5NodeRenderer extends AbstractRenderer<View<CyNode>> {
-
-	public P5NodeRenderer(PApplet p) {
-		super(p);
+	
+	public P5NodeRenderer(PApplet p, CyDrawableManager manager) {
+		super(p, manager);
 	}
 
 	/**
@@ -38,12 +47,13 @@ public class P5NodeRenderer extends AbstractRenderer<View<CyNode>> {
 
 	public CyDrawable render(View<CyNode> view) {
 		// If Style property is available, use it.
-		CyDrawable style = view.getVisualProperty(NODE_STYLE);
+		Class<?> styleClass = view.getVisualProperty(NODE_STYLE_CLASS);
 		
+		CyDrawable style = manager.getDrawable((Class<? extends CyDrawable>)styleClass);
 
 		// If not available, use the default CyDrawable, which is a cube.
 		if (style == null)
-			style = new Cube(p, lexicon);
+			style = manager.getDefaultFactory(NODE).getInstance();
 
 		style.setContext(view);
 
