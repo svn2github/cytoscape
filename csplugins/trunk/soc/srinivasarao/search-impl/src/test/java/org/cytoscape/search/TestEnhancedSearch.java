@@ -60,6 +60,9 @@ public class TestEnhancedSearch extends TestCase {
 	private EnhancedSearchIndex esi;
 	protected CyEventHelper helper;
 	// Load sample network and attributes into memory
+	public TestEnhancedSearch(){
+		setUp();
+	}
 	public void setUp(){
 		
 		net = new ArrayGraph(new DummyCyEventHelper());
@@ -131,7 +134,9 @@ public class TestEnhancedSearch extends TestCase {
 	}
 	public static void main(String[] args) throws Exception{
 		TestEnhancedSearch te = new TestEnhancedSearch();
-		te.testSimpleQuery();
+		
+		//te.testSimpleQuery();
+		te.testComplexQueries();
 	}
 	
 	public void testSimpleQuery() throws Exception{
@@ -143,6 +148,12 @@ public class TestEnhancedSearch extends TestCase {
 		//System.out.println(queryHandler.getNodeHits().size());
 		//System.out.println(NumberTools.longToString(51246));
 		assertEquals(query, 2, hitCount);
+		
+		query = "non_core";
+		queryHandler.executeQuery(query); // 1
+		hitCount = queryHandler.getHitCount();
+		System.out.println(hitCount);
+		
 		
 	}
 	/*
@@ -188,7 +199,7 @@ public class TestEnhancedSearch extends TestCase {
 	public void testComplexQueries() throws Exception {
 
 		//query = "GO_Biological_Process:\"water deprivation\" AND Gene_Title:aquaporin";
-		query = "Official_HUGO_Symbol:ING5 OR canonicalName:51246";
+		query = "node.Official_HUGO_Symbol:ING5 OR canonicalName:51246";
 		queryHandler.executeQuery(query); // 2
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 2, hitCount);

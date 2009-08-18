@@ -157,9 +157,8 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 		Document doc = new Document();
 		doc.add(new Field(INDEX_FIELD, identifier, Field.Store.YES,
 				Field.Index.TOKENIZED));
-		doc
-				.add(new Field("docType", indextype, Field.Store.YES,
-						Field.Index.NO));
+		doc.add(new Field("doctype", indextype, Field.Store.YES,
+						Field.Index.UN_TOKENIZED));
 
 		// String[] attrNameArray = attributes.getAttributeNames();
 		Set<Map.Entry<String, Object>> keys = map.entrySet();

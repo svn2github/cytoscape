@@ -38,6 +38,9 @@ package org.cytoscape.search.internal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.HitCollector;
@@ -78,15 +81,69 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 			 */
 			// Build an IndexSearcher using the in-memory index
 			searcher = new IndexSearcher(idx);
+			System.out.println("Query Before- " + queryString);
+
+			queryString = replacePattern(queryString, "node");
+			queryString = replacePattern(queryString, "edge");
+
+			// queryString = EnhancedSearchUtils.replaceWhitespace(queryString);
 			queryString = EnhancedSearchUtils.queryToLowerCase(queryString);
-			//queryString = EnhancedSearchUtils.replaceWhitespace(queryString);
-			//System.out.println("Query - " + queryString);
+			System.out.println("Query After- " + queryString);
 			search(searcher, queryString, attFields);
 			searcher.close();
 
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
+	}
+
+	/**
+	 * 
+	 * @param queryString
+	 * @param identifier
+	 * @return
+	 */
+	private static String replacePattern(String queryString, String identifier) {
+
+		String pat = identifier + ".[\\S]*:";
+		Pattern p = Pattern.compile(pat);
+		Matcher m = p.matcher(queryString);
+
+		while (m.find()) {
+			// System.out.println(m.pattern());
+			// System.out.println("M.Group(): " + m.group());
+			String str = m.group();
+			String[] ss = str.split("\\.");
+
+			int end = m.end();
+			if (queryString.charAt(end) != '\"') {
+				Pattern temp = Pattern.compile("[\\S]*");
+				Matcher mt = temp.matcher(queryString.substring(end));
+
+				// System.out.println(queryString.substring(end));
+				if (mt.find()) {
+					// System.out.println("Small Match:" + mt.group());
+					String sm = mt.group();
+					queryString = queryString.replace(sm, sm + " AND doctype:"
+							+ identifier + ")");
+				}
+			} else {
+				Pattern temp = Pattern.compile("[^\"]*");
+				Matcher mt = temp.matcher(queryString.substring(end + 1));
+
+				// System.out.println("Match2:" + queryString.substring(end));
+				if (mt.find()) {
+					// System.out.println("Small Match2:" + mt.group());
+					String sm = mt.group();
+					queryString = queryString.replace(sm + "\"", sm
+							+ "\" AND doctype:" + identifier + ")");
+				}
+			}
+			queryString = queryString.replace(str, "(" + ss[1]);
+			// System.out.println(queryString.charAt(end));
+			// System.out.println(ss[1]);
+		}
+		return queryString;
 	}
 
 	/**
@@ -104,6 +161,7 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 				attFields, new StandardAnalyzer());
 
 		try {
+			//System.out.println("Before Calling Parse:" + queryString);
 			// Execute query
 			Query query = queryParser.parse(queryString);
 			System.out.println("ESQuery :" + query.toString());
@@ -138,13 +196,10 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 
 	// hitCollector object may be null if this method is called before
 	// ExecuteQuery
-	/*private ArrayList<Document> getHits() {
-		if (hitCollector != null) {
-			return hitCollector.getHits();
-		} else {
-			return null;
-		}
-	}*/
+	/*
+	 * private ArrayList<Document> getHits() { if (hitCollector != null) {
+	 * return hitCollector.getHits(); } else { return null; } }
+	 */
 
 	private void parseHits() {
 		ArrayList<Document> al = hitCollector.getHits();
@@ -153,15 +208,14 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 		edgelist = new ArrayList<CyEdge>();
 		while (it.hasNext()) {
 			Document currdoc = (Document) it.next();
-			String type = currdoc.get("docType");
+			String type = currdoc.get("doctype");
 			if (type.equals("node")) {
 				CyNode currNode = network.getNode((new Integer(currdoc
 						.get(EnhancedSearchIndex.INDEX_FIELD))).intValue());
 				if (currNode != null) {
 					nodelist.add(currNode);
 				}
-			} 
-			else if(type.equals("edge")){
+			} else if (type.equals("edge")) {
 				CyEdge currEdge = network.getEdge((new Integer(currdoc
 						.get(EnhancedSearchIndex.INDEX_FIELD))).intValue());
 				if (currEdge != null) {

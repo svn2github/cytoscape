@@ -1,12 +1,7 @@
 package org.cytoscape.search;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.RAMDirectory;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyDataTable;
@@ -14,8 +9,9 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.internal.*;
-import org.cytoscape.search.internal.*;
+import org.cytoscape.model.internal.ArrayGraph;
+import org.cytoscape.search.internal.EnhancedSearchIndexImpl;
+import org.cytoscape.search.internal.EnhancedSearchQueryImpl;
 
 public class EnhancedSearchQueryTest extends AbstractEnhancedSearchQueryTest {
 
@@ -99,6 +95,15 @@ public class EnhancedSearchQueryTest extends AbstractEnhancedSearchQueryTest {
 		esq.executeQuery(queryString);
 		System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
 		assertEquals(esq.getHitCount(),2);
+		
+		queryString = "node.canonicalName:51246";
+		//queryString = "canonicalName:51246 OR canonicalName:900";
+		esq.executeQuery(queryString);
+		System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
+		
+		queryString = "node.Official_HUGO_Symbol:ING5 OR canonicalName:51246";
+		esq.executeQuery(queryString);
+		System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
 	}
 	
 	@Override
