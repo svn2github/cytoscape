@@ -18,24 +18,16 @@ import org.cytoscape.view.presentation.processing.EdgeItem;
 import processing.core.PApplet;
 import toxi.geom.Vec3D;
 
-public class Line implements CyDrawable, EdgeItem {
-
-	private final PApplet p;
+public class Line extends AbstractCyDrawable implements EdgeItem {
 
 	// Start and end point of this line.
 	private Vec3D source;
 	private Vec3D target;
 
-	private float r, g, b, alpha;
-
 	private float strokeWidth = 1f;
 
-	private Boolean picked;
-
-	private Color selected;
-
 	public Line(PApplet p) {
-		this.p = p;
+		super(p);
 		this.source = new Vec3D();
 		this.target = new Vec3D();
 	}
@@ -48,31 +40,21 @@ public class Line implements CyDrawable, EdgeItem {
 		p.line(source.x, source.y, source.z, target.x, target.y, target.z);
 	}
 
-	public List<CyDrawable> getChildren() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Set<Class<?>> getCompatibleModels() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public void setContext(View<?> viewModel) {
 
-		this.picked = ((CyEdge) viewModel.getSource()).attrs().get("selected",
+		this.selected = ((CyEdge) viewModel.getSource()).attrs().get("selected",
 				Boolean.class);
-		this.selected = (Color) viewModel
+		this.selectedColor = (Color) viewModel
 				.getVisualProperty(EDGE_SELECTED_COLOR);
 
 		Paint edgePaint = viewModel.getVisualProperty(EDGE_COLOR);
 		alpha = viewModel.getVisualProperty(EDGE_OPACITY).floatValue();
 		strokeWidth = viewModel.getVisualProperty(EDGE_WIDTH).floatValue();
 
-		if (picked) {
-			this.r = selected.getRed();
-			this.g = selected.getGreen();
-			this.b = selected.getBlue();
+		if (selected) {
+			this.r = selectedColor.getRed();
+			this.g = selectedColor.getGreen();
+			this.b = selectedColor.getBlue();
 			this.alpha = 200f;
 		} else if (edgePaint instanceof Color) {
 			this.r = ((Color) edgePaint).getRed();
@@ -91,21 +73,6 @@ public class Line implements CyDrawable, EdgeItem {
 		target.x = targetView.getVisualProperty(NODE_X_LOCATION).floatValue();
 		target.y = targetView.getVisualProperty(NODE_Y_LOCATION).floatValue();
 		target.z = targetView.getVisualProperty(NODE_Z_LOCATION).floatValue();
-	}
-
-	public void setContext(View<?> viewModel, VisualProperty<?> vp) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void addChild(CyDrawable child) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setDetailFlag(boolean flag) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
