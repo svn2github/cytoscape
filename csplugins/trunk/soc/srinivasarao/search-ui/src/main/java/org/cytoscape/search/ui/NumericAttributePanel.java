@@ -31,8 +31,8 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 	private String attrName = null;
 	private String type = null;
 	private String valType = null;
-	private String attrQuery = null;  //  @jve:decl-index=0:
-	private NumberRangeModel rangeModel = null; // @jve:decl-index=0:
+	private String attrQuery = null;
+	private NumberRangeModel rangeModel = null;
 	private JRangeSliderExtended rangeSlider = null;
 	private int minValue = 0, maxValue = 0;
 

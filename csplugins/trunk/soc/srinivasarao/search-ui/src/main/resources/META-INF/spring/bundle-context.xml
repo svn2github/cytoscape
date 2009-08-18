@@ -24,6 +24,7 @@
 	</bean>
 
 	<bean name="HistoryHandler" class="org.cytoscape.search.ui.event.HistoryHandler">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
 </beans>
