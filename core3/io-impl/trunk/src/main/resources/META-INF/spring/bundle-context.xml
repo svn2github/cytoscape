@@ -15,6 +15,14 @@
 	default-lazy-init="true">
 
 	<context:annotation-config />
+	
+	<bean id="nodeTextDataTableReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
+		<constructor-arg ref="textDatatableFilter" />
+		<constructor-arg ref="nodeTextDataTableReader" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
 
 	<bean id="sifReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
 		<constructor-arg ref="sifFilter" />
@@ -27,6 +35,25 @@
 	<bean id="xgmmlReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
 		<constructor-arg ref="xgmmlFilter" />
 		<constructor-arg ref="xgmmlReader" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="textDatatableFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+		<constructor-arg index="0">
+			<set>
+				<value>txt</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Text data table files" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="TABLE" />
 		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
 			<ref bean="streamUtil"/>
 		</constructor-arg>
@@ -115,6 +142,18 @@
 	</bean>
 
 	<!-- Attribute Readers -->
+	<bean id="nodeTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg value="NODE" />
+	</bean>
+	<bean id="edgeTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg value="EDGE" />
+	</bean>
+	<bean id="networkTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg value="NETWORK" />
+	</bean>
 
 	<!-- Property Readers -->
 

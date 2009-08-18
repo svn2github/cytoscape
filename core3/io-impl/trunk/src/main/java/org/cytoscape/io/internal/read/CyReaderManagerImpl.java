@@ -108,6 +108,10 @@ public class CyReaderManagerImpl implements CyReaderManager {
 
 
 		for (CyReaderFactory factory : factories) {
+			
+			System.out.println("Checking factory ################# " + factory.getCyFileFilter().getDescription());
+			
+			
 			cff = factory.getCyFileFilter();
 
 			if (uri != null) {

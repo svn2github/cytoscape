@@ -15,7 +15,8 @@
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 	
-
+	<osgi:reference id="cyNetworkManagerServiceRef" interface="org.cytoscape.session.CyNetworkManager" />
+	
 	<!-- Export services -->
 	<osgi:service id="cyReaderManagerService" ref="cyReaderManager"
 		interface="org.cytoscape.io.read.CyReaderManager">
@@ -26,6 +27,16 @@
 
 
 	<!-- Exporting Reader Factory as OSGi Service -->
+	
+	<osgi:service id="nodeTextDataTableReaderFactoryService" ref="nodeTextDataTableReaderFactory"
+		interface="org.cytoscape.io.read.CyReaderFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="readerFactory" />
+			<entry key="readerId" value="nodeTextDataTableReader" />
+			<entry key="readerDescription" value="Text data table file reader for nodes" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	<osgi:service id="sifReaderFactoryService" ref="sifReaderFactory"
 		interface="org.cytoscape.io.read.CyReaderFactory">
 		<osgi:service-properties>
