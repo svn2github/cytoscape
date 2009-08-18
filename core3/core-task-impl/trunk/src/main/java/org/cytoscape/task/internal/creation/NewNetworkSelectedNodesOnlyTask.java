@@ -68,14 +68,17 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 	private final VisualMappingManager vmm;
 	private final CyNetworkNaming cyNetworkNaming;
 
-	public NewNetworkSelectedNodesOnlyTask(final CyRootNetworkFactory cyroot, final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr, final CyNetworkNaming cyNetworkNaming, final VisualMappingManager vmm) {
+	public NewNetworkSelectedNodesOnlyTask(final CyRootNetworkFactory cyroot,
+			final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
+			final CyNetworkNaming cyNetworkNaming,
+			final VisualMappingManager vmm) {
 		super(netmgr);
 		this.cyroot = cyroot;
 		this.cnvf = cnvf;
 		this.cyNetworkNaming = cyNetworkNaming;
 		this.vmm = vmm;
 	}
-	
+
 	public void run(TaskMonitor tm) {
 
 		CyNetwork current_network = netmgr.getCurrentNetwork();
@@ -86,37 +89,47 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 		CyNetworkView current_network_view = null;
 
 		if (netmgr.viewExists(current_network.getSUID())) {
-			current_network_view = netmgr.getNetworkView(current_network.getSUID());
+			current_network_view = netmgr.getNetworkView(current_network
+					.getSUID());
 		}
 
-		List<CyNode> nodes = CyDataTableUtil.getNodesInState(current_network, "selected", true);
+		List<CyNode> nodes = CyDataTableUtil.getNodesInState(current_network,
+				"selected", true);
 
 		Set<CyEdge> edges = new HashSet<CyEdge>();
 
 		for (CyNode n1 : nodes) {
 			for (CyNode n2 : nodes) {
-				edges.addAll(current_network.getConnectingEdgeList(n1, n2, CyEdge.Type.ANY));
+				edges.addAll(current_network.getConnectingEdgeList(n1, n2,
+						CyEdge.Type.ANY));
 			}
 		}
 
-		CySubNetwork new_network = cyroot.convert(current_network)
-		                                 .addSubNetwork(nodes, new ArrayList<CyEdge>(edges));
-		new_network.attrs().set("name", cyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
+		final CySubNetwork new_network = cyroot.convert(current_network)
+				.addSubNetwork(nodes, new ArrayList<CyEdge>(edges));
+		new_network.attrs().set("name",
+				cyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
 
+		netmgr.addNetwork(new_network);
+		
+		
 		CyNetworkView new_view = cnvf.getNetworkViewFor(new_network);
 
-		if (new_view == null) {
+		if (new_view == null)
 			return;
-		}
 
+		netmgr.addNetworkView(new_view);
+		
 		String vsName = "default";
 
 		// keep the node positions
 		if (current_network_view != null) {
 			for (CyNode node : new_network.getNodeList()) {
 				View<CyNode> nv = new_view.getNodeView(node);
-				nv.setVisualProperty(NODE_X_LOCATION, current_network_view.getNodeView(node).getVisualProperty(NODE_X_LOCATION));
-				nv.setVisualProperty(NODE_Y_LOCATION, current_network_view.getNodeView(node).getVisualProperty(NODE_Y_LOCATION));
+				nv.setVisualProperty(NODE_X_LOCATION, current_network_view
+						.getNodeView(node).getVisualProperty(NODE_X_LOCATION));
+				nv.setVisualProperty(NODE_Y_LOCATION, current_network_view
+						.getNodeView(node).getVisualProperty(NODE_Y_LOCATION));
 			}
 
 			// TODO NEED RENDERER
@@ -124,8 +137,8 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 
 			// Set visual style
 			VisualStyle newVS = vmm.getVisualStyle(current_network_view);
-			if (newVS != null) 
-				vmm.setVisualStyle(newVS,new_view);
+			if (newVS != null)
+				vmm.setVisualStyle(newVS, new_view);
 		}
 	}
 }

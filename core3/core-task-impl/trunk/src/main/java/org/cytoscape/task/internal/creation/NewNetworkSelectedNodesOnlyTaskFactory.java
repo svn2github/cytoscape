@@ -35,17 +35,15 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.task.internal.creation;  
-
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
-
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.session.CyNetworkNaming;
+package org.cytoscape.task.internal.creation;
 
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
 
 public class NewNetworkSelectedNodesOnlyTaskFactory implements TaskFactory {
 
@@ -55,11 +53,18 @@ public class NewNetworkSelectedNodesOnlyTaskFactory implements TaskFactory {
 	private CyNetworkNaming naming;
 	private VisualMappingManager vmm;
 
-	public NewNetworkSelectedNodesOnlyTaskFactory(CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf, CyNetworkManager netmgr, CyNetworkNaming naming, VisualMappingManager vmm) {
+	public NewNetworkSelectedNodesOnlyTaskFactory(CyRootNetworkFactory crnf,
+			CyNetworkViewFactory cnvf, CyNetworkManager netmgr,
+			CyNetworkNaming naming, VisualMappingManager vmm) {
 		this.netmgr = netmgr;
+		this.crnf = crnf;
+		this.cnvf = cnvf;
+		this.naming = naming;
+		this.vmm = vmm;
 	}
 
 	public Task getTask() {
-		return new NewNetworkSelectedNodesOnlyTask(crnf, cnvf, netmgr, naming, vmm);
-	} 
+		return new NewNetworkSelectedNodesOnlyTask(crnf, cnvf, netmgr, naming,
+				vmm);
+	}
 }
