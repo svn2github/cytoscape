@@ -68,6 +68,14 @@
 		</osgi:service-properties>
 	</osgi:service>
 	
+	<osgi:service id="loadDataTableTaskFactoryService" ref="loadDataTableTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Load Data Table from File..." />
+			<entry key="preferredMenu" value="File.Import" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	<osgi:service id="proxySettingsTaskFactoryService" ref="proxySettingsTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>

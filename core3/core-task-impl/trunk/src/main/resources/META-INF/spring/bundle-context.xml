@@ -25,6 +25,12 @@
 	<context:annotation-config/>
 
 	<!-- this creates a LoadPropsInterceptor object --> 
+	
+	<bean id="loadDataTableTaskFactory" 
+	      class="org.cytoscape.task.internal.loaddatatable.LoadDataTableTaskFactoryImpl">
+		<constructor-arg ref="cyReaderManagerServiceRef" />
+		<constructor-arg ref="cyPropertyServiceRef" />
+	</bean>
 	<bean id="loadNetworkFileTaskFactory" 
 	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTaskFactoryImpl">
 		<constructor-arg ref="cyReaderManagerServiceRef" />
