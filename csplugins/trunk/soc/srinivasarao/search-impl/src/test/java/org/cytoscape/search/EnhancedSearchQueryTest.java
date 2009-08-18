@@ -93,17 +93,19 @@ public class EnhancedSearchQueryTest extends AbstractEnhancedSearchQueryTest {
 		// TODO Auto-generated method stub
 		String queryString = "9314" ;
 		esq.executeQuery(queryString);
-		System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
+		//System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
 		assertEquals(esq.getHitCount(),2);
 		
 		queryString = "node.canonicalName:51246";
 		//queryString = "canonicalName:51246 OR canonicalName:900";
 		esq.executeQuery(queryString);
-		System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
+		assertEquals(esq.getHitCount(),1);
+		//System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
 		
 		queryString = "node.Official_HUGO_Symbol:ING5 OR canonicalName:51246";
 		esq.executeQuery(queryString);
-		System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
+		assertEquals(esq.getHitCount(),3);
+		//System.out.println("Enhanced Search Hit Count:"+esq.getHitCount());
 	}
 	
 	@Override
