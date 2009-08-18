@@ -64,7 +64,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 
 	protected Query getFieldQuery(String field, String queryText)
 			throws ParseException {
-		// System.out.println("I am in field Query :" + field+ ":"+ queryText );
+		//System.out.println("I am in field Query :" + field+ ":"+ queryText );
 		/*
 		 * if (field == null) { Vector<BooleanClause> clauses = new
 		 * Vector<BooleanClause>(); for (int i = 0; i < fields.length; i++) {
