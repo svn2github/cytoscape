@@ -1,14 +1,21 @@
 package org.cytoscape.phylotree.layout.cladograms;
 
 import org.cytoscape.phylotree.layout.CommonFunctions;
+
+import cytoscape.Cytoscape;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.AbstractLayout;
+import cytoscape.task.TaskMonitor;
 
 
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import giny.model.Edge;
@@ -28,7 +35,8 @@ public class CircularCladogram extends AbstractLayout{
 	{
 		super();
 		layoutProperties = new LayoutProperties(getName());
-		initialize_properties();		
+		initialize_properties();
+		
 	}
 
 	protected void initialize_properties()
@@ -59,10 +67,11 @@ public class CircularCladogram extends AbstractLayout{
 	 * Get the settings panel for this layout
 	 */
 	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
+//		JPanel panel = new JPanel(new GridLayout(0, 1));
+//		panel.add(layoutProperties.getTunablePanel());
+//
+//		return panel;
+		return null;
 	}
 
 
@@ -102,13 +111,14 @@ public class CircularCladogram extends AbstractLayout{
 	}
 
 	public void construct() {
-		taskMonitor.setStatus("Initializing");
-		initialize(); 
+		 
 
 		// Verify that tree is indeed a tree
-
+		taskMonitor.setStatus("Initializing");
+		initialize();
 		if(commonFunctions.hasLeaf(network)&&commonFunctions.isTree(network))
 		{
+			
 			// Find the root of the tree
 			Node root = commonFunctions.getTreeRoot(network);
 
@@ -160,8 +170,13 @@ public class CircularCladogram extends AbstractLayout{
 
 		}
 		else
-			System.out.println("The "+getName()+" layout can only be applied to trees.");
-
+		{
+			
+			commonFunctions.displayError(getName());
+			
+	
+		}
+		
 
 	}
 

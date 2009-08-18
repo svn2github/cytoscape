@@ -168,10 +168,13 @@ public class RadialPhylogram extends AbstractLayout{
 				
 		
 	}
-	else
-		System.out.println("The "+getName()+" layout can only be applied to trees.");
-
-
+		else
+		{
+			
+			commonFunctions.displayError(getName());
+			
+	
+		}
 	}
 	
 	

@@ -59,10 +59,11 @@ public class RectangularCladogram extends AbstractLayout{
 	 * Get the settings panel for this layout
 	 */
 	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
-
-		return panel;
+//		JPanel panel = new JPanel(new GridLayout(0, 1));
+//		panel.add(layoutProperties.getTunablePanel());
+//
+//		return panel;
+		return null;
 	}
 
 
@@ -155,10 +156,12 @@ public class RectangularCladogram extends AbstractLayout{
 		}
 		}
 		else
-			System.out.println("The "+getName()+" layout can only be applied to trees.");
-
-
-
+		{
+			
+			commonFunctions.displayError(getName());
+			
+	
+		}
 
 
 	}

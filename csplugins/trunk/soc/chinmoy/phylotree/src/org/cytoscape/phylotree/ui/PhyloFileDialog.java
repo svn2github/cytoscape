@@ -141,10 +141,6 @@ public class PhyloFileDialog extends JDialog{
     private void btnFileActionPerformed(java.awt.event.ActionEvent evt) {                                        
     	JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
 		chooser.setAcceptAllFileFilterUsed(false);
-		
-		chooser.addChoosableFileFilter(new PhylipFileFilter());
-		chooser.addChoosableFileFilter(new PhyloXMLFileFilter());
-		
 		if(rbtPhyloXML.isSelected())
 			chooser.setFileFilter(new PhyloXMLFileFilter());
 		else if(rbtPhylip.isSelected())

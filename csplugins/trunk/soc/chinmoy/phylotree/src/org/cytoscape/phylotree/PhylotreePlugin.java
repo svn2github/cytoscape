@@ -1,10 +1,13 @@
 package org.cytoscape.phylotree;
 
+import java.awt.Component;
 
-
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
 import cytoscape.layout.CyLayouts;
+import cytoscape.layout.ui.LayoutMenuManager;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.phylotree.actions.PhyloTreeImportAction;
@@ -22,6 +25,7 @@ import org.cytoscape.phylotree.layout.phylograms.CircularPhylogram;
  */
 public class PhylotreePlugin extends CytoscapePlugin {
 	
+	// Similar to root graph index in the root graph. Allows each CyNode to be created with a unique ID.
 	public static int universalNodeIndexCounter = -1;
 	/**
 	 * 
@@ -36,7 +40,7 @@ public class PhylotreePlugin extends CytoscapePlugin {
 		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) menuAction);
 
 		//(2) add another menu item: Layout->Phylotree layouts
-
+		// Add the layouts
 		CyLayouts.addLayout(new SlantedCladogram(), "Phylotree layouts");
 		CyLayouts.addLayout(new RectangularCladogram(), "Phylotree layouts");
 		CyLayouts.addLayout(new CircularCladogram(), "Phylotree layouts");
@@ -47,10 +51,8 @@ public class PhylotreePlugin extends CytoscapePlugin {
 		CyLayouts.addLayout(new CircularPhylogram(), "Phylotree layouts");
 		CyLayouts.addLayout(new RadialPhylogram(), "Phylotree layouts");
 
-		
-		
+
+					
 	}
-	
-	
 	
 }

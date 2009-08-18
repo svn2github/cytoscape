@@ -4,6 +4,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -522,6 +525,23 @@ public class CommonFunctions {
 		return result;
 
 
+	}
+	
+	/**
+	 * Displays an error message in a modeless JOptionPane
+	 * @param layoutName - the name of the layout to be displayed in the error message
+	 */
+	public void displayError(String layoutName)
+	{
+		final JOptionPane pane = new JOptionPane(
+				"The "+layoutName+" layout can only be applied to trees. \n" +
+				"Verify that the network does not contain any cycles.", JOptionPane.ERROR_MESSAGE);
+		
+		JDialog d = pane.createDialog(Cytoscape.getDesktop(), "Layout error");
+		d.setModal(false);
+		d.setVisible(true);
+		
+		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 
 }
