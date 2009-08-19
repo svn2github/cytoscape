@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.CyDrawableFactory;
@@ -14,6 +16,8 @@ import org.cytoscape.view.presentation.processing.CyDrawableManager;
 import org.cytoscape.view.presentation.processing.P5Shape;
 import org.cytoscape.view.presentation.processing.internal.drawable.CubeFactory;
 import org.cytoscape.view.presentation.processing.internal.drawable.LineFactory;
+import org.cytoscape.view.presentation.processing.internal.drawable.RectangleFactory;
+
 
 import processing.core.PApplet;
 
@@ -28,10 +32,14 @@ public class CyDrawableManagerImpl implements CyDrawableManager {
 	private final Map<Class<? extends CyDrawable>, CyDrawableFactory<?>> factoryMap;
 
 	private final Map<String, CyDrawableFactory<?>> defaultFactory;
+	
+	private final List<P5Shape> shapes;
 
 	public CyDrawableManagerImpl() {
+		
 		this.factoryMap = new HashMap<Class<? extends CyDrawable>, CyDrawableFactory<?>>();
 		this.defaultFactory = new HashMap<String, CyDrawableFactory<?>>();
+		this.shapes = new ArrayList<P5Shape>();
 
 		final CubeFactory nodeDefFactory = new CubeFactory();
 		final LineFactory edgeDefFactory = new LineFactory();
@@ -41,7 +49,17 @@ public class CyDrawableManagerImpl implements CyDrawableManager {
 
 		this.defaultFactory.put(NODE, nodeDefFactory);
 		this.defaultFactory.put(EDGE, edgeDefFactory);
-
+		
+		
+		// Add some drawables
+		RectangleFactory rectFactory = new RectangleFactory();
+		this.factoryMap.put(rectFactory.getDrawableClass(), rectFactory);
+		
+	
+		this.shapes.add(new P5Shape(nodeDefFactory.getDrawableClass().getSimpleName(), nodeDefFactory.getDrawableClass()));
+		this.shapes.add(new P5Shape(rectFactory.getDrawableClass().getSimpleName(), rectFactory.getDrawableClass()));
+		this.shapes.add(new P5Shape(edgeDefFactory.getDrawableClass().getSimpleName(), edgeDefFactory.getDrawableClass()));
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -60,6 +78,7 @@ public class CyDrawableManagerImpl implements CyDrawableManager {
 					"Factory cannot be null.");
 
 		this.factoryMap.put(factory.getDrawableClass(), factory);
+		this.shapes.add(new P5Shape(factory.getDrawableClass().getSimpleName(), factory.getDrawableClass()));
 	}
 
 	public CyDrawableFactory<?> getDefaultFactory(String objectType) {
@@ -73,11 +92,6 @@ public class CyDrawableManagerImpl implements CyDrawableManager {
 
 
 	public List<P5Shape> getP5Shapes() {
-		
-		final List<P5Shape> list = new ArrayList<P5Shape>();
-		for(Class<? extends CyDrawable> type :factoryMap.keySet()) {
-			list.add(new P5Shape(type.toString(), type));
-		}
-		return list;
+		return shapes;
 	}
 }

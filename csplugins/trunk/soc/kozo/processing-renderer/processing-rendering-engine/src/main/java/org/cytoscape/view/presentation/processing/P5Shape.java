@@ -6,7 +6,10 @@ public class P5Shape {
 	
 	public P5Shape(String name, Class<? extends CyDrawable> drawableType) {
 		this.name = name;
+		
+		System.out.println("============== Setting Class Type: " + drawableType);
 		this.drawableType = drawableType;
+		System.out.println("============== Setting Class Type Finished!!!!!!!!!!!!!: " + drawableType);
 	}
 	
 	public Class<? extends CyDrawable> getDrawableType() {
@@ -14,6 +17,11 @@ public class P5Shape {
 	}
 	
 	public String getName() {
+		return name;
+	}
+	
+	@Override
+	public String toString() {
 		return name;
 	}
 

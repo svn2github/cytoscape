@@ -1,6 +1,7 @@
 package org.cytoscape.view.presentation.processing;
 
 import java.util.List;
+import java.util.SortedSet;
 
 import processing.core.PApplet;
 

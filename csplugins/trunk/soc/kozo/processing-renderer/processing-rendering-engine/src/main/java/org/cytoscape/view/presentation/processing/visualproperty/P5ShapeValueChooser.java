@@ -1,7 +1,9 @@
 package org.cytoscape.view.presentation.processing.visualproperty;
 
 import java.awt.Component;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
@@ -20,19 +22,25 @@ public class P5ShapeValueChooser implements ValueEditor<P5Shape> {
 
 	public P5Shape showEditor(Component parent, P5Shape initialValue) {
 		
-		final List<P5Shape> optionList = manager.getP5Shapes();
-		final P5Shape[] options = new P5Shape[optionList.size()];
-		for(int i=0; i<optionList.size(); i++) {
-			options[i] = optionList.get(i);
+		final List<P5Shape> optionSet = manager.getP5Shapes();
+		final P5Shape[] options = new P5Shape[optionSet.size()];
+		
+		Iterator<P5Shape> itr = optionSet.iterator();
+		
+		int i=0;
+		while(itr.hasNext()) {
+			options[i] = itr.next();
+			i++;
 		}
 		
-		final Object val = JOptionPane.showInputDialog(parent,
+		final Object val = JOptionPane.showInputDialog(
+				parent,
                 "Please select Style",
                 "Select Style",
                JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
-                options[0]);
+                null);
 		
 		return (P5Shape) val;
 	}
