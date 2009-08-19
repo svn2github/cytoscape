@@ -22,9 +22,9 @@ public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
 	private final Map<Class<? extends CyDrawable>, VisualLexicon> lexiconMap;
 
 	public static final VisualProperty<P5Shape> NODE_STYLE = new P5ShapeVisualProperty(
-			NODE, null, "NODE_STYLE", "Node Style");
+			NODE, new P5Shape(Cube.class.getName(), Cube.class), "NODE_STYLE", "Node Style");
 	public static final VisualProperty<P5Shape> EDGE_STYLE = new P5ShapeVisualProperty(
-			EDGE, null, "EDGE_STYLE", "Edge Style");
+			EDGE, new P5Shape(Line.class.getName(), Line.class), "EDGE_STYLE", "Edge Style");
 
 	public static final VisualProperty<? extends Image> NETWORK_BACKGROUND_IMAGE = new ImageVisualProperty(
 			NETWORK, null, "NETWORK_BACKGROUND_IMAGE",
