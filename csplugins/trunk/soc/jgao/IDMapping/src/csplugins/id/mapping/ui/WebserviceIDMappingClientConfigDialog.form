@@ -113,7 +113,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chooseDBComboBoxActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (idMapper==null) {&#xa;    chooseDBComboBox.setModel(new DefaultComboBoxModel(getVisibleBiomart()));&#xa;} else if (idMapper instanceof IDMapperBiomart) {&#xa;    chooseDBComboBox.setModel(new DefaultComboBoxModel(new Database[] {&#xa;        biomartStub.getDatabase(((IDMapperBiomart)idMapper).getMart())}));&#xa;    chooseDBComboBox.setEnabled(false);&#xa;}"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (idMapper==null) {&#xa;    setChooseDBComboBox();&#xa;} else if (idMapper instanceof IDMapperBiomart) {&#xa;    String mart = ((IDMapperBiomart)idMapper).getMart();&#xa;    String martDisplay = biomartStub.martDisplayName(mart);&#xa;    mapMartDisplayName = new HashMap(1);&#xa;    mapMartDisplayName.put(martDisplay, mart);&#xa;    chooseDBComboBox.setModel(new DefaultComboBoxModel(new String[] {martDisplay}));&#xa;    chooseDBComboBox.setEnabled(false);&#xa;}"/>
               </AuxValues>
             </Component>
           </SubComponents>
@@ -145,7 +145,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (idMapper==null) {&#xa;    setDatasetsCombo();&#xa;} else if(idMapper instanceof IDMapperBiomart) {&#xa;    Dataset ds = biomartStub.getDataset(((IDMapperBiomart)idMapper).getDataset());&#xa;    chooseDatasetComboBox.setModel(new DefaultComboBoxModel(new Dataset[] {ds}));&#xa;    chooseDatasetComboBox.setEnabled(false);&#xa;}"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (idMapper==null) {&#xa;    setDatasetsCombo();&#xa;} else if(idMapper instanceof IDMapperBiomart) {&#xa;    String dataset = ((IDMapperBiomart)idMapper).getDataset();&#xa;    String display = biomartStub.datasetDisplayName(dataset);&#xa;    mapDatasetDisplayName = new HashMap(1);&#xa;    mapDatasetDisplayName.put(display, dataset);&#xa;    chooseDatasetComboBox.setModel(new DefaultComboBoxModel(new String[] {display}));&#xa;    chooseDatasetComboBox.setEnabled(false);&#xa;}"/>
               </AuxValues>
             </Component>
           </SubComponents>
@@ -191,19 +191,6 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JCheckBox" name="biomartTransitivityCheckBox">
-                  <Properties>
-                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="idMapper!=null &amp;&amp; &#xa;        idMapper instanceof IDMapperBiomart &amp;&amp;&#xa;        ((IDMapperBiomart)idMapper).getTransitivity()" type="code"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Support transitivity of ID mappings"/>
-                  </Properties>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                      <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="21" weightX="1.0" weightY="0.0"/>
-                    </Constraint>
-                  </Constraints>
-                </Component>
                 <Component class="javax.swing.JCheckBox" name="biomartFilterTgtCheckBox">
                   <Properties>
                     <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">

@@ -207,7 +207,9 @@ public class IDMapperClientImplTunables implements IDMapperClient {
 
         if (dss!=null) {
             Vector<String> vec = new Vector(dss.size());
+            int i=0;
             for (DataSource ds : dss) {
+                i++;
                 vec.add(getDescription(ds));
             }
 
@@ -226,6 +228,9 @@ public class IDMapperClientImplTunables implements IDMapperClient {
 
     private String getDescription(DataSource dataSource) {
         StringBuilder desc = new StringBuilder();
+        if (dataSource==null) {
+            System.err.print("wrong");
+        }
         String sysName = dataSource.getSystemCode();
         if (sysName!=null) {
             desc.append(sysName);

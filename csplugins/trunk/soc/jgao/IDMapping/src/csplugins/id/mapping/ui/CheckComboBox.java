@@ -47,7 +47,7 @@ import javax.swing.DefaultListCellRenderer;
 import java.util.List;
 import java.util.Vector;
 import java.util.Set;
-import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
@@ -105,7 +105,7 @@ class CheckComboBox extends JComboBox {
    }
 
    public Object[] getSelectedItems() {
-       Set ret = new HashSet();
+       Set ret = new TreeSet(); // alphabetically
        for (Map.Entry<Object,Boolean> entry : mapObjSelected.entrySet()) {
             Object obj = entry.getKey();
             Boolean selected = entry.getValue();
