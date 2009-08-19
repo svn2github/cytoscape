@@ -86,7 +86,7 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, 
 	 */
 	@SuppressWarnings("unchecked")
 	public void addValueEditor(ValueEditor<?> ve, Map properties) {
-		System.out.println("************* Got V Editor **************** " + ve.toString());
+		System.out.println("\n\n\n************* Got Value Editor " + ve.toString() + ", this is for " +   ve.getType() + "\n\n\n");
 		
 		this.valueEditors.put(ve.getType(), ve);
 	}

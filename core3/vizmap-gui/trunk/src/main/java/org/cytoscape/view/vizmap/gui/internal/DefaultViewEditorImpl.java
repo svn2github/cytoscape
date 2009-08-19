@@ -149,7 +149,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		// Listening to resize event.
 		this.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
-				mainView.updateView();
+				//mainView.updateView();
 			}
 		});
 		
@@ -187,7 +187,13 @@ public class DefaultViewEditorImpl extends JDialog implements
 		// lockSize();
 		// lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
 
-		mainView.updateView();
+		//mainView.updateView();
+		
+		updateVisualPropertyLists();
+		initComponents();
+		buildList();
+		
+		
 		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
@@ -204,7 +210,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		// mainView.updateBackgroungColor(vmm.getVisualStyle()
 		// .getGlobalAppearanceCalculator().getDefaultBackgroundColor());
 
-		mainView.updateView();
+		//mainView.updateView();
 
 		return mainView;
 	}
@@ -467,8 +473,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 			buildList();
 			cyNetworkManager.getCurrentNetworkView().updateView();
 			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-			mainView.updateView();
-			mainView.repaint();
+//			mainView.updateView();
+//			mainView.repaint();
 		} else if(SwingUtilities.isRightMouseButton(e)) {
 			if(vp != null) {
 				
@@ -552,8 +558,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 			list.setCellRenderer(renderer);
 		}
 
-		mainView.updateView();
-		mainView.repaint();
+//		mainView.updateView();
+//		mainView.repaint();
 	}
 
 	private void lockSize() {
@@ -657,7 +663,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	// }
 
 	public Component getDefaultView(VisualStyle vs) {
-		mainView.updateView();
+		//mainView.updateView();
 
 		return mainView;
 	}

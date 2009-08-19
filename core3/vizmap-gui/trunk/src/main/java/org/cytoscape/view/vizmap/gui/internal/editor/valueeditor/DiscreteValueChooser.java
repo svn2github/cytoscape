@@ -42,6 +42,8 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -71,13 +73,20 @@ public class DiscreteValueChooser<T> extends JDialog {
 	private final static long serialVersionUID = 1202339876950593L;
 	
 	private final VisualProperty<T> type;
+	
 	private Map<T, Icon> valueMap;
 	private List<T> orderedKeyList;
 	private T defaultValue;
 	private boolean canceled = false;
+	
+	public DiscreteValueChooser(VisualProperty<T> vp) {
+		this(vp, null, null);
+	}
 
 	/**
 	 * Creates a new DiscreteValueChooser object.
+	 * 
+	 * If List of discrete values and 
 	 *
 	 * @param vp  DOCUMENT ME!
 	 */
@@ -94,6 +103,12 @@ public class DiscreteValueChooser<T> extends JDialog {
 		this.defaultValue = defaultValue;
 	}
 
+	/**
+	 * This should be a listener for OSGi service.
+	 */
+	
+	
+	
 	/**
 	 * Static method to show dialog and get a value from user.
 	 *
