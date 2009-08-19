@@ -54,14 +54,15 @@ import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPr
 /**
  *
  */
-public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, ColumnDeletedListener {
+public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
+		ColumnDeletedListener {
 
 	private final Map<VisualProperty<?>, VisualPropertyEditor<?>> editors;
 
 	private final Map<String, PropertyEditor> comboBoxEditors;
-	
+
 	private final Map<VisualProperty<?>, Component> continuousEditors;
-	
+
 	private final Map<Class<?>, ValueEditor<?>> valueEditors;
 
 	/**
@@ -69,11 +70,11 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, 
 	 */
 	public EditorManagerImpl() {
 		continuousEditors = new HashMap<VisualProperty<?>, Component>();
-		
+
 		editors = new HashMap<VisualProperty<?>, VisualPropertyEditor<?>>();
 
 		comboBoxEditors = new HashMap<String, PropertyEditor>();
-		
+
 		valueEditors = new HashMap<Class<?>, ValueEditor<?>>();
 	}
 
@@ -86,8 +87,9 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, 
 	 */
 	@SuppressWarnings("unchecked")
 	public void addValueEditor(ValueEditor<?> ve, Map properties) {
-		System.out.println("\n\n\n************* Got Value Editor " + ve.toString() + ", this is for " +   ve.getType() + "\n\n\n");
-		
+		System.out.println("\n\n\n************* Got Value Editor "
+				+ ve.toString() + ", this is for " + ve.getType() + "\n\n\n");
+
 		this.valueEditors.put(ve.getType(), ve);
 	}
 
@@ -126,10 +128,22 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, 
 	public <V> V showVisualPropertyValueEditor(Component parentComponent,
 			VisualProperty<V> type, V initial) throws Exception {
 
-		ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type.getType());
-		
-		if(editor == null)
-			throw new IllegalStateException("No value editor for " + type.getDisplayName() + "is available.");
+		System.out
+				.println("\n\n\n\n============= Calling Value Editor =======================\n\n\n\n");
+
+		for (Class<?> key : valueEditors.keySet()) {
+			System.out.println("Key ====> " + key + ", val = "
+					+ valueEditors.get(key));
+		}
+
+		System.out.println("\n\n\n\n");
+
+		ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type
+				.getType());
+
+		if (editor == null)
+			throw new IllegalStateException("No value editor for "
+					+ type.getDisplayName() + "is available.");
 
 		return editor.showEditor(null, initial);
 	}
@@ -145,15 +159,15 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, 
 			VisualProperty<V> type) throws Exception {
 		final VisualPropertyEditor<?> editor = editors.get(type);
 		assert editor.getVisualProperty() == type;
-		
-		//TODO: design dialog state mamagement
-//		
-//		
-//		Component mappingEditor = editor.getContinuousMappingEditor();
-//		
-//		JDialog editorDialog = new JDialog();
-//		editorDialog.setModal(true);
-//		editorDialog.setLocationRelativeTo(parentComponent);
+
+		// TODO: design dialog state mamagement
+		//		
+		//		
+		// Component mappingEditor = editor.getContinuousMappingEditor();
+		//		
+		// JDialog editorDialog = new JDialog();
+		// editorDialog.setModal(true);
+		// editorDialog.setLocationRelativeTo(parentComponent);
 
 	}
 
@@ -163,71 +177,72 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, 
 		return (VisualPropertyEditor<V>) editors.get(vp);
 	}
 
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see org.cytoscape.vizmap.gui.editors.EditorFactory#getCellEditors()
-//	 */
-//	public List<PropertyEditor> getCellEditors() {
-//		List<PropertyEditor> ret = new ArrayList<PropertyEditor>();
-//
-//		for (VisualProperty<?> vp : editors.keySet())
-//			ret.add(editors.get(vp).getVisualPropertyEditor());
-//
-//		return ret;
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see
-//	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellEditor(
-//	 * org.cytoscape.viewmodel.VisualProperty)
-//	 */
-//	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type) {
-//		return 
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see
-//	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellRenderer
-//	 * (org.cytoscape.viewmodel.VisualProperty)
-//	 */
-//	public TableCellRenderer getDiscreteCellRenderer(VisualProperty type) {
-//		return findEditor(type,
-//				EditorDisplayer.MappingType.VisualPropertyEditor)
-//				.getCellRenderer(type, 0, 0);
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see
-//	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellEditor
-//	 * (org.cytoscape.viewmodel.VisualProperty)
-//	 */
-//	public PropertyEditor getContinuousCellEditor(VisualProperty type) {
-//		return findEditor(type,
-//				EditorDisplayer.MappingType.VisualPropertyEditor)
-//				.getVisualPropertyEditor();
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see
-//	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellRenderer
-//	 * (org.cytoscape.viewmodel.VisualProperty, int, int)
-//	 */
-//	public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
-//			int w, int h) {
-//		return findEditor(type,
-//				EditorDisplayer.MappingType.VisualPropertyEditor)
-//				.getCellRenderer(type, w, h);
-//	}
-//
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see org.cytoscape.vizmap.gui.editors.EditorFactory#getCellEditors()
+	// */
+	// public List<PropertyEditor> getCellEditors() {
+	// List<PropertyEditor> ret = new ArrayList<PropertyEditor>();
+	//
+	// for (VisualProperty<?> vp : editors.keySet())
+	// ret.add(editors.get(vp).getVisualPropertyEditor());
+	//
+	// return ret;
+	// }
+	//
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see
+	// * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellEditor(
+	// * org.cytoscape.viewmodel.VisualProperty)
+	// */
+	// public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type) {
+	// return
+	// }
+	//
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see
+	// * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellRenderer
+	// * (org.cytoscape.viewmodel.VisualProperty)
+	// */
+	// public TableCellRenderer getDiscreteCellRenderer(VisualProperty type) {
+	// return findEditor(type,
+	// EditorDisplayer.MappingType.VisualPropertyEditor)
+	// .getCellRenderer(type, 0, 0);
+	// }
+	//
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see
+	// * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellEditor
+	// * (org.cytoscape.viewmodel.VisualProperty)
+	// */
+	// public PropertyEditor getContinuousCellEditor(VisualProperty type) {
+	// return findEditor(type,
+	// EditorDisplayer.MappingType.VisualPropertyEditor)
+	// .getVisualPropertyEditor();
+	// }
+	//
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see
+	// *
+	// org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellRenderer
+	// * (org.cytoscape.viewmodel.VisualProperty, int, int)
+	// */
+	// public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
+	// int w, int h) {
+	// return findEditor(type,
+	// EditorDisplayer.MappingType.VisualPropertyEditor)
+	// .getCellRenderer(type, w, h);
+	// }
+	//
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -245,6 +260,17 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, 
 	}
 
 	public <V> ValueEditor<V> getValueEditor(Class<V> dataType) {
+
+		System.out
+				.println("\n\n\n\n============= Calling Value Editor =======================\n\n\n\n");
+
+		for (Class<?> key : valueEditors.keySet()) {
+			System.out.println("Key ====> " + key + ", val = "
+					+ valueEditors.get(key));
+		}
+
+		System.out.println("\n\n\n\n");
+
 		return (ValueEditor<V>) this.valueEditors.get(dataType);
 	}
 
@@ -259,12 +285,13 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener, 
 	}
 
 	public void handleEvent(ColumnCreatedEvent e) {
-		System.out.println("---------------> got column event: " + e.getColumnName());
+		System.out.println("---------------> got column event: "
+				+ e.getColumnName());
 	}
 
 	public void handleEvent(ColumnDeletedEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
