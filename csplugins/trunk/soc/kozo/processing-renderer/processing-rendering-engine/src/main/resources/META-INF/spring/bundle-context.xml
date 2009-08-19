@@ -41,20 +41,25 @@
 	</bean>
 
 	<!-- For VizMap GUI: value editors -->
-	
-	
+
+
 	<!-- Drawable Manager -->
-	<bean id="cyDrawableManager" class="org.cytoscape.view.presentation.processing.internal.CyDrawableManagerImpl" />
-	
-	
+	<bean id="cyDrawableManager"
+		class="org.cytoscape.view.presentation.processing.internal.CyDrawableManagerImpl" />
+
+
 	<!-- Style Visual Property -->
-	<bean id="cyDrawableVisualProperty"
-		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-		<property name="staticField">
-			<value>
-				org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.NODE_STYLE_CLASS
-			</value>
-		</property>
+
+	<!-- Editor for VizMap GUI -->
+
+
+	<bean id="p5ShapeValueChooser"
+		class="org.cytoscape.view.presentation.processing.visualproperty.P5ShapeValueChooser"
+		depends-on="editorManagerServiceRef">
+		<constructor-arg ref="cyDrawableManager" />
 	</bean>
+
+
+
 
 </beans>

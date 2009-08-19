@@ -3,12 +3,15 @@ package org.cytoscape.view.presentation.processing.internal;
 import static org.cytoscape.model.GraphObject.EDGE;
 import static org.cytoscape.model.GraphObject.NODE;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.CyDrawableFactory;
 import org.cytoscape.view.presentation.processing.CyDrawableManager;
+import org.cytoscape.view.presentation.processing.P5Shape;
 import org.cytoscape.view.presentation.processing.internal.drawable.CubeFactory;
 import org.cytoscape.view.presentation.processing.internal.drawable.LineFactory;
 
@@ -66,5 +69,15 @@ public class CyDrawableManagerImpl implements CyDrawableManager {
 	public void setFactoryParent(PApplet parent) {
 		for(CyDrawableFactory<?> factory: factoryMap.values())
 			factory.setPaernt(parent);
+	}
+
+
+	public List<P5Shape> getP5Shapes() {
+		
+		final List<P5Shape> list = new ArrayList<P5Shape>();
+		for(Class<? extends CyDrawable> type :factoryMap.keySet()) {
+			list.add(new P5Shape(type.toString(), type));
+		}
+		return list;
 	}
 }

@@ -10,7 +10,10 @@ import java.util.Map;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
+import org.cytoscape.view.presentation.processing.CyDrawableFactory;
+import org.cytoscape.view.presentation.processing.P5Shape;
 import org.cytoscape.view.presentation.processing.internal.drawable.Cube;
+import org.cytoscape.view.presentation.processing.internal.drawable.Line;
 import org.cytoscape.view.presentation.property.StringVisualProperty;
 import org.cytoscape.view.presentation.property.ThreeDVisualLexicon;
 
@@ -18,9 +21,9 @@ public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
 
 	private final Map<Class<? extends CyDrawable>, VisualLexicon> lexiconMap;
 
-	public static final VisualProperty<Class<?>> NODE_STYLE_CLASS = new ClassTypeVisualProperty(
+	public static final VisualProperty<P5Shape> NODE_STYLE = new P5ShapeVisualProperty(
 			NODE, null, "NODE_STYLE", "Node Style");
-	public static final VisualProperty<Class<?>> EDGE_STYLE_CLASS = new ClassTypeVisualProperty(
+	public static final VisualProperty<P5Shape> EDGE_STYLE = new P5ShapeVisualProperty(
 			EDGE, null, "EDGE_STYLE", "Edge Style");
 
 	public static final VisualProperty<? extends Image> NETWORK_BACKGROUND_IMAGE = new ImageVisualProperty(
@@ -29,8 +32,8 @@ public class ProcessingVisualLexicon extends ThreeDVisualLexicon {
 
 	public ProcessingVisualLexicon() {
 		super();
-		this.visualPropertySet.add(NODE_STYLE_CLASS);
-		this.visualPropertySet.add(EDGE_STYLE_CLASS);
+		this.visualPropertySet.add(NODE_STYLE);
+		this.visualPropertySet.add(EDGE_STYLE);
 		this.visualPropertySet.add(NETWORK_BACKGROUND_IMAGE);
 
 		lexiconMap = new HashMap<Class<? extends CyDrawable>, VisualLexicon>();

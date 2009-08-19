@@ -1,7 +1,7 @@
 package org.cytoscape.view.presentation.processing.internal;
 
 import static org.cytoscape.model.GraphObject.NODE;
-import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.NODE_STYLE_CLASS;
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.NODE_STYLE;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_SIZE;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
@@ -16,6 +16,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.CyDrawableManager;
+import org.cytoscape.view.presentation.processing.P5Shape;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 
 import processing.core.PApplet;
@@ -47,13 +48,13 @@ public class P5NodeRenderer extends AbstractRenderer<View<CyNode>> {
 
 	public CyDrawable render(View<CyNode> view) {
 		// If Style property is available, use it.
-		Class<?> styleClass = view.getVisualProperty(NODE_STYLE_CLASS);
-		
-		CyDrawable style = manager.getDrawable((Class<? extends CyDrawable>)styleClass);
-
-		// If not available, use the default CyDrawable, which is a cube.
-		if (style == null)
+		P5Shape shape = view.getVisualProperty(NODE_STYLE);
+		CyDrawable style = null;
+		if(shape == null)
 			style = manager.getDefaultFactory(NODE).getInstance();
+		else
+			style = manager.getDrawable(shape.getDrawableType());
+
 
 		style.setContext(view);
 

@@ -5,6 +5,9 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
+
+	<osgi:reference id="editorManagerServiceRef" interface="org.cytoscape.view.vizmap.gui.editor.EditorManager"/>
+	
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.session.CyNetworkManager" />
 
@@ -45,6 +48,8 @@
 	<osgi:service id="cyDrawableManagerService" ref="cyDrawableManager"
 		interface="org.cytoscape.view.presentation.processing.CyDrawableManager">
 	</osgi:service>
+	
+	<osgi:service id="p5ShapeValueChooserService" ref="p5ShapeValueChooser" auto-export="interfaces"/>
 
 
 </beans>

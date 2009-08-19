@@ -1,5 +1,7 @@
 package org.cytoscape.view.presentation.processing;
 
+import java.util.List;
+
 import processing.core.PApplet;
 
 public interface CyDrawableManager {
@@ -18,6 +20,8 @@ public interface CyDrawableManager {
 	 */
 	public CyDrawableFactory<?> getDefaultFactory(String objectType);
 
+	public List<P5Shape> getP5Shapes();
+	
 	public void setFactoryParent(PApplet parent);
 
 }
