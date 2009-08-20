@@ -51,8 +51,8 @@ public class CyDrawableManagerImpl implements CyDrawableManager {
 		this.defaultFactory.put(EDGE, edgeDefFactory);
 		
 		
-		// Add some drawables
-		RectangleFactory rectFactory = new RectangleFactory();
+		// Add some default drawables
+		final RectangleFactory rectFactory = new RectangleFactory();
 		this.factoryMap.put(rectFactory.getDrawableClass(), rectFactory);
 		
 	

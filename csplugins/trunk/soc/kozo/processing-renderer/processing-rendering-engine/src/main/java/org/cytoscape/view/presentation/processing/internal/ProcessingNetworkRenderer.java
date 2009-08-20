@@ -162,7 +162,6 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	GL gl;
 
 	
-
 	public void setup() {
 		System.out.println("%%%%%%%%%%%%% Setup called for P5");
 		/* setup p5 */
@@ -213,6 +212,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	float rotXDelta = 0;
 	public void draw() {
+		
 		background(bgColor.getRed(), bgColor.getGreen(), bgColor.getGreen());
 		lights();
 
@@ -239,12 +239,12 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		camera();
 		beginGL();
 		gl.glClear(javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT);
-		((PGraphicsOpenGL) g).endGL();
-
+		endGL();
+		
 		// 2D OpenGL UI
 		if(isOverlay)
 			overlay.draw();
-		
+
 	}
 
 	public void beginGL() {
