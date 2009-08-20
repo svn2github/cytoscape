@@ -3,6 +3,7 @@ package org.cytoscape.layer.internal;
 import static org.cytoscape.model.GraphObject.NODE;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 
 /**
  * Build actual network here
@@ -32,6 +34,7 @@ import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
  */
 public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 
+	private static final String NAME = "name";
 	private static final String NETWORK_TITLE = "name";
 	private static final String NODE_TITLE = "name";
 	private static final String EDGE_TITLE = "name";
@@ -275,6 +278,9 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 	 */
 	public void buildVisualStyle() {
 		layerVS = vmm.createVisualStyle(VISUAL_STYLE_TITLE);
+
+		final PassthroughMapping<String, String> labelMapping = new PassthroughMapping<String, String>(
+				NAME, String.class, NODE_LABEL);
 		final DiscreteMapping<String, Double> index2zLocation = new DiscreteMapping<String, Double>(
 				LAYER_INDEX, String.class, NODE_Z_LOCATION);
 		final DiscreteMapping<String, Color> index2color = new DiscreteMapping<String, Color>(
@@ -302,6 +308,7 @@ public class MultiLayerNetworkBuilderImpl implements MultiLayerNetworkBuilder {
 			}
 		}
 
+		layerVS.addVisualMappingFunction(labelMapping);
 		layerVS.addVisualMappingFunction(index2zLocation);
 		layerVS.addVisualMappingFunction(index2color);
 
