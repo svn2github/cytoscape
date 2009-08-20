@@ -129,7 +129,7 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
 			VisualProperty<V> type, V initial) throws Exception {
 
 		System.out
-				.println("\n\n\n\n============= Calling Value Editor =======================\n\n\n\n");
+				.println("\n\n\n\n============= Calling Value Editor =============  Target = " + type.getType() +"\n\n\n\n");
 
 		for (Class<?> key : valueEditors.keySet()) {
 			System.out.println("Key ====> " + key + ", val = "

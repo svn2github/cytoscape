@@ -149,6 +149,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 		// Listening to resize event.
 		this.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
+				defaultObjectTabbedPane.repaint();
+				mainView.repaint();
 				//mainView.updateView();
 			}
 		});
@@ -190,10 +192,10 @@ public class DefaultViewEditorImpl extends JDialog implements
 		//mainView.updateView();
 		
 		updateVisualPropertyLists();
-		initComponents();
+		//initComponents();
 		buildList();
 		
-		
+		repaint();
 		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
