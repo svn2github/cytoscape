@@ -212,10 +212,18 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	float rotXDelta = 0;
 	public void draw() {
-		
+		beginGL();
 		background(bgColor.getRed(), bgColor.getGreen(), bgColor.getGreen());
-		lights();
-
+		ambientLight(102, 102, 102);
+		lightSpecular(204, 204, 204); 
+		directionalLight(102, 102, 102, 0, 0, -1); 
+		specular(255, 255, 255); 
+		translate(30, 50, 0); 
+		//shininess(1.0); 
+		//translate(40, 0, 0); 
+		shininess(5.0f); 
+		
+		
 		
 		camera(width / 2.0f, height / 2.0f, (height / 2.0f)
 				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
@@ -237,7 +245,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 		// Reser camera and draw overlay
 		camera();
-		beginGL();
+		
 		gl.glClear(javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT);
 		endGL();
 		

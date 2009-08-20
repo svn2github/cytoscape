@@ -17,6 +17,7 @@ import org.cytoscape.view.presentation.processing.P5Shape;
 import org.cytoscape.view.presentation.processing.internal.drawable.CubeFactory;
 import org.cytoscape.view.presentation.processing.internal.drawable.LineFactory;
 import org.cytoscape.view.presentation.processing.internal.drawable.RectangleFactory;
+import org.cytoscape.view.presentation.processing.internal.drawable.SphereFactory;
 
 
 import processing.core.PApplet;
@@ -54,11 +55,16 @@ public class CyDrawableManagerImpl implements CyDrawableManager {
 		// Add some default drawables
 		final RectangleFactory rectFactory = new RectangleFactory();
 		this.factoryMap.put(rectFactory.getDrawableClass(), rectFactory);
+		final SphereFactory sphereFactory = new SphereFactory();
+		this.factoryMap.put(sphereFactory.getDrawableClass(), sphereFactory);
 		
-	
+		
 		this.shapes.add(new P5Shape(nodeDefFactory.getDrawableClass().getSimpleName(), nodeDefFactory.getDrawableClass()));
 		this.shapes.add(new P5Shape(rectFactory.getDrawableClass().getSimpleName(), rectFactory.getDrawableClass()));
+		this.shapes.add(new P5Shape(sphereFactory.getDrawableClass().getSimpleName(), sphereFactory.getDrawableClass()));
+		
 		this.shapes.add(new P5Shape(edgeDefFactory.getDrawableClass().getSimpleName(), edgeDefFactory.getDrawableClass()));
+		
 		
 	}
 

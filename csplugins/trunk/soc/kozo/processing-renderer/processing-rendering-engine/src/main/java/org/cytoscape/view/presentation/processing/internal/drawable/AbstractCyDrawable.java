@@ -24,7 +24,7 @@ public abstract class AbstractCyDrawable implements CyDrawable {
 	protected boolean selected = false;
 	protected boolean fastRendering = false;
 	
-	protected float size;
+	
 	protected float r, g, b, alpha;
 	protected Color selectedColor;
 
