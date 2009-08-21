@@ -62,16 +62,13 @@ public class IDMapperClientImpl implements IDMapperClient {
 
     public IDMapperClientImpl(String connectionString, String classString)
             throws ClassNotFoundException, IDMapperException{
-        this(connectionString, classString, null);
-        id = ""+clientNo;
-        displayName = ""+clientNo;
+        this(connectionString, classString, connectionString);
     }
 
     public IDMapperClientImpl(String connectionString, String classString,
             String displayName)
             throws ClassNotFoundException, IDMapperException {
-        this(connectionString, classString, displayName, null);
-        id = ""+clientNo;
+        this(connectionString, classString, displayName, ""+clientNo+"-"+System.currentTimeMillis()); 
     }
 
     public IDMapperClientImpl(String connectionString, String classString,

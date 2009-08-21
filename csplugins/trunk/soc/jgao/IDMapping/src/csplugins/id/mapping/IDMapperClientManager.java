@@ -37,6 +37,13 @@ package csplugins.id.mapping;
 
 import cytoscape.CytoscapeInit;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,16 +70,20 @@ public class IDMapperClientManager {
     private IDMapperClientManager() {
         clientNameMap = new HashMap();
         clientIDMap = new HashMap();
-        reloadFromCytoscapeProperties();
+        reloadFromCytoscapeSessionProperties();
     }
 
-    public static void reloadFromCytoscapeProperties() {
+    public static void reloadFromCytoscapeSessionProperties() {
+        //remove all of the current clients
         clientNameMap.clear();
         clientIDMap.clear();
+        
+        //removeAllClients(); // this cannot be used here. it will delete the
+                              // corresponding session properties
 
         Properties props = CytoscapeInit.getProperties();
 
-        String prefix = IDMapperClientProperties.moduleName+".";
+        String prefix = FinalStaticValues.CLIENT_SESSION_PROPS+".";
 
         Set<String> propIds = new HashSet();
 
@@ -108,6 +119,93 @@ public class IDMapperClientManager {
             }
 
         }
+    }
+
+    public static boolean reloadFromCytoscapeGlobalProperties() throws IOException{
+        String fileName = FinalStaticValues.CLIENT_GLOBAL_PROPS;
+        File file = cytoscape.CytoscapeInit.getConfigFile(fileName);
+        if (!file.exists()) {
+            // no default clients have been set
+            return false;
+        }
+
+        Set<IDMapperClient> clients = new HashSet();
+
+        BufferedReader in = new BufferedReader(new FileReader(file));
+        String line = in.readLine();
+        if (line==null) { //empty file
+            return false;
+        }
+
+        int nClients = Integer.parseInt(line);
+        for (int i=0; i<nClients; i++) {
+            String clientId = in.readLine();
+            String classStr = in.readLine();
+            String connStr = in.readLine();
+            String display = in.readLine();
+            boolean selected = Boolean.parseBoolean(in.readLine());
+            IDMapperClient client;
+            try {
+                client = new IDMapperClientImplTunables(connStr,
+                        classStr, display, clientId, selected);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                continue;
+            } catch (IDMapperException e) {
+                e.printStackTrace();
+                continue;
+            }
+
+            clients.add(client);
+        }
+
+//        clientNameMap.clear();
+//        clientIDMap.clear();
+        removeAllClients(); // remove all of the current clients
+
+        for (IDMapperClient client : clients) {
+            registerClient(client);
+        }
+
+        return true;
+    }
+
+    public static void saveCurrentToCytoscapeGlobalProperties() throws IOException {
+        String fileName = FinalStaticValues.CLIENT_GLOBAL_PROPS;
+        File file = cytoscape.CytoscapeInit.getConfigFile(fileName);
+        BufferedWriter out = new BufferedWriter(new FileWriter(file));
+
+        Set<IDMapperClient> clients = IDMapperClientManager.allClients();
+        out.write(Integer.toString(clients.size()));
+        out.newLine();
+
+        for (IDMapperClient client : clients) {
+            String clientId = client.getId();
+            out.write(clientId);
+            out.newLine();
+
+            String classStr = client.getClassString();
+            out.write(classStr);
+            out.newLine();
+
+            String connStr = client.getConnectionString();
+            out.write(connStr);
+            out.newLine();
+
+            String display = client.getDisplayName();
+            out.write(display);
+            out.newLine();
+
+            boolean selected = client.isSelected();
+            out.write(Boolean.toString(selected));
+            out.newLine();
+        }
+
+        out.close();
+    }
+
+    public static int countClients() {
+        return clientNameMap.size();
     }
 
     public static Set<IDMapperClient> allClients() {
@@ -177,6 +275,12 @@ public class IDMapperClientManager {
         }
         
         return true;
+    }
+
+    public static void removeAllClients() {
+        for (IDMapperClient client : allClients()) {
+            removeClient(client);
+        }
     }
 
     /**

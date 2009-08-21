@@ -36,7 +36,9 @@
 package csplugins.id.mapping.ui;
 
 import csplugins.id.mapping.IDMapperClient;
+import csplugins.id.mapping.IDMapperClientManager;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -104,11 +106,14 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         javax.swing.JScrollPane srcTreeScrollPane = new javax.swing.JScrollPane();
         descScrollPane = new javax.swing.JScrollPane();
         descTextArea = new javax.swing.JTextArea();
-        javax.swing.JPanel okPanel = new javax.swing.JPanel();
-        okButton = new javax.swing.JButton();
+        javax.swing.JPanel defaultPanel = new javax.swing.JPanel();
+        javax.swing.JButton loadDefaultButton = new javax.swing.JButton();
+        javax.swing.JButton saveAsDefaultButton = new javax.swing.JButton();
+        javax.swing.JPanel closePanel = new javax.swing.JPanel();
+        javax.swing.JButton closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("ID Mapping Resources Configuration");
+        setTitle("ID Mapping Source Configuration");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         sourceConfPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("ID Mapping Resources Configuration"));
@@ -153,16 +158,39 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(sourceConfPanel, gridBagConstraints);
 
-        okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
-
-        okButton.setText("Close");
-        okButton.setToolTipText("\"Select at least two networks to merge\"");
-        okButton.addActionListener(new java.awt.event.ActionListener() {
+        loadDefaultButton.setText("Load default resources");
+        loadDefaultButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okButtonActionPerformed(evt);
+                loadDefaultButtonActionPerformed(evt);
             }
         });
-        okPanel.add(okButton);
+        defaultPanel.add(loadDefaultButton);
+
+        saveAsDefaultButton.setText("Save current resources as default");
+        saveAsDefaultButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsDefaultButtonActionPerformed(evt);
+            }
+        });
+        defaultPanel.add(saveAsDefaultButton);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        getContentPane().add(defaultPanel, gridBagConstraints);
+
+        closePanel.setLayout(new javax.swing.BoxLayout(closePanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        closeButton.setText("Close");
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButtonActionPerformed(evt);
+            }
+        });
+        closePanel.add(closeButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -170,27 +198,47 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(okPanel, gridBagConstraints);
+        getContentPane().add(closePanel, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         setVisible(false);
         this.dispose();
-}//GEN-LAST:event_okButtonActionPerformed
+}//GEN-LAST:event_closeButtonActionPerformed
+
+    private void saveAsDefaultButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsDefaultButtonActionPerformed
+        try {
+            IDMapperClientManager.saveCurrentToCytoscapeGlobalProperties();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to save the current resources.");
+        }
+
+        JOptionPane.showMessageDialog(this, "The current resources has been save as default.");
+    }//GEN-LAST:event_saveAsDefaultButtonActionPerformed
+
+    private void loadDefaultButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDefaultButtonActionPerformed
+        int ret = JOptionPane.showConfirmDialog(this, "Are you sure to load the default resources?\n" +
+                "The current resources will be replaced with the default ones.", null, JOptionPane.YES_NO_OPTION);
+        if (ret==JOptionPane.NO_OPTION)
+            return;
+        
+        try {
+            IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load the default resources.");
+        }
+
+        srcTree.reload();
+        JOptionPane.showMessageDialog(this, "The default resources has been loaded.");
+    }//GEN-LAST:event_loadDefaultButtonActionPerformed
 
     public boolean isModified() {
         return srcTree.isModified();
     }
-//    @Override
-//    public void dispose() {
-//        Set<IDMappingClient> selectedClients = srcTree.getSelectedIDMapperClients();
-//        for (IDMappingClient client : IDMappingClientManager.allClients()) {
-//            client.setSelected(selectedClients.contains(client));
-//        }
-//        super.dispose();
-//    }
 
     private static final String msg = "Click on a 2nd level tree node to " +
             "add an ID mapping sources.\n\nClick on a tree node of a ID " +
@@ -201,7 +249,6 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane descScrollPane;
     private javax.swing.JTextArea descTextArea;
-    private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -22,8 +22,6 @@ import java.util.Properties;
 public class IDMapperClientProperties extends ModulePropertiesImpl 
         //implements TunableListener
 {
-    public static final String moduleName = "cythesaurus.client";
-
     /**
      * Constructor.
      *
@@ -32,7 +30,7 @@ public class IDMapperClientProperties extends ModulePropertiesImpl
      *                       list.
      */
     public IDMapperClientProperties(String propertyPrefix) {
-        super(propertyPrefix, moduleName);
+        super(propertyPrefix, FinalStaticValues.CLIENT_SESSION_PROPS);
     }
 
     /**

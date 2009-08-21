@@ -66,7 +66,7 @@ public class IDMappingServiceSuppport {
     private static final String MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG = "MAPPING_SRC_CONFIG_DIALOG";
     private static final String MSG_TYPE_REQUEST_MAPPING_DIALOG = "MAPPING_DIALOG";
     
-    private static final String pluginName = CyThesaurusPlugin.pluginName;
+    private static final String pluginName = FinalStaticValues.PLUGIN_NAME;
 
     static void addService() {
         MessageListener ml = new MessageListener() {

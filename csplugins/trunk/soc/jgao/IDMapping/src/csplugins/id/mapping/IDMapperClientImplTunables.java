@@ -73,13 +73,13 @@ public class IDMapperClientImplTunables implements IDMapperClient {
 
     public IDMapperClientImplTunables(String connectionString, String classString)
             throws ClassNotFoundException, IDMapperException{
-        this(connectionString, classString, ""+clientNo);
+        this(connectionString, classString, connectionString);
     }
 
     public IDMapperClientImplTunables(String connectionString, String classString,
             String displayName)
             throws ClassNotFoundException, IDMapperException {
-        this(connectionString, classString, displayName, ""+clientNo);
+        this(connectionString, classString, displayName, ""+clientNo+"-"+System.currentTimeMillis());
     }
 
     public IDMapperClientImplTunables(String connectionString, String classString,

@@ -46,8 +46,11 @@ import org.bridgedb.bio.BioDataSource;
 
 import java.awt.event.ActionEvent;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+import java.io.IOException;
 
 import java.util.Map;
 import java.util.Set;
@@ -57,30 +60,68 @@ import java.util.Set;
  * 
  * 
  */
-public class CyThesaurusPlugin extends CytoscapePlugin {
+public final class CyThesaurusPlugin extends CytoscapePlugin {
 
     public CyThesaurusPlugin() {
         BioDataSource.init();
-        Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new IDMappingAction());
+        listenToSessionEvent();
         IDMappingServiceSuppport.addService();
+        
+    }
 
-        Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
-                Cytoscape.SESSION_LOADED, new PropertyChangeListener() {
+    private void listenToSessionEvent() {
+        PropertyChangeSupport pcs = Cytoscape.getPropertyChangeSupport();
+
+        pcs.addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED,
+                new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                IDMapperClientManager.reloadFromCytoscapeProperties();
+                reloadClients();
+                mapSrcAttrIDTypes = null;
+                
+                // won't install until before cytoscape is initialized
+                installMenu();
+            }
+        });
+
+        pcs.addPropertyChangeListener(Cytoscape.SESSION_LOADED,
+                new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {                
+                reloadClients();
                 mapSrcAttrIDTypes = null;
             }
         });
     }
+    
+    private boolean installed = false;
+    private void installMenu() {
+        if (!installed) {
+            Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
+                        .add(new IDMappingAction());
+            installed = true;
+        } 
+    }
 
-    static final String pluginName = "CyThesaurus";
+    private void reloadClients() {
+        // reload the clients for this session
+        IDMapperClientManager.reloadFromCytoscapeSessionProperties();
+
+        if (IDMapperClientManager.countClients()==0) {
+            // load the default clients if no client
+            try {
+                IDMapperClientManager
+                        .reloadFromCytoscapeGlobalProperties();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     static Map<String,Set<DataSource>> mapSrcAttrIDTypes = null;
     
     class IDMappingAction extends CytoscapeAction {
 
         public IDMappingAction() {
-            super(pluginName); //TODO rename
+            super(FinalStaticValues.PLUGIN_NAME); //TODO rename
         }
 
         /**

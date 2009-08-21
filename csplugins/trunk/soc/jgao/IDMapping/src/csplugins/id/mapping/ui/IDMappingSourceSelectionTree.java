@@ -96,19 +96,14 @@ class IDMappingSourceSelectionTree extends JTree {
         this.parent = parent;
 
         boolean dig = false;
-        checkTreeManager = new CheckTreeManager(this, false,
+        checkTreeManager = new CheckTreeManager(this, dig,
                 new TreePathSelectable() {
             public boolean isSelectable(TreePath path) {
                 return path.getPathCount()>2;
-//                if (path.getPathCount()>2) {
-//                    return true;
-//                } else if (path.getPathCount()==2) {
-//                    return !((DefaultMutableTreeNode)path.getLastPathComponent()).isLeaf();
-//                } else {
-//                    return !(dbTreeNode.isLeaf() && wsTreeNode.isLeaf() && fileTreeNode.isLeaf());
-//                }
             }
         });
+
+        // set selected for clients
         checkTreeManager.addSelectionChangeListener(new SelectionChangeListener() {
             public void selectionChanged(SelectionChangeEvent e) {
                 Object source = e.getSource();
@@ -123,13 +118,18 @@ class IDMappingSourceSelectionTree extends JTree {
                         client.setSelected(selection_Model.isPathSelected(path, true));
                         modified = true;
                     } else {
-                    //TODO if 2nd level can be selected
+                        //TODO if 2nd level can be selected
                     }
                 }
             }
         });
 
         selection_Model = checkTreeManager.getSelectionModel();
+
+        reload();
+    }
+
+    public void reload() {
         setupTree();
         setupMouse();
     }
@@ -137,41 +137,6 @@ class IDMappingSourceSelectionTree extends JTree {
     public boolean isModified() {
         return modified;
     }
-
-//    public Set<IDMappingClient> getSelectedIDMapperClients() {
-//        Set<IDMappingClient> ret = new HashSet<IDMappingClient>();
-//
-//        TreePath[] checkedPaths = selection_Model.getSelectionPaths();
-//        if (checkedPaths==null) {
-//            return ret;
-//        }
-//
-//        for (TreePath path : checkedPaths) {
-//            Object nodeObj = path.getLastPathComponent();
-//            if (nodeObj instanceof DefaultMutableTreeNode) {
-//                DefaultMutableTreeNode clientNode = (DefaultMutableTreeNode)nodeObj;
-//                Object clientObj = clientNode.getUserObject();
-//                if (clientObj instanceof IDMappingClient) {
-//                    ret.add((IDMappingClient)clientObj);
-//                } else if (!clientNode.isLeaf()) {
-//                    DefaultMutableTreeNode leaf = clientNode.getFirstLeaf();
-//                    DefaultMutableTreeNode lastLeaf = clientNode.getLastLeaf();
-//                    while (true) {
-//                        clientObj = leaf.getUserObject();
-//                        if (clientObj instanceof IDMappingClient) {
-//                            ret.add((IDMappingClient)clientObj);
-//                        }
-//
-//                        if (leaf==lastLeaf) break;
-//
-//                        leaf = leaf.getNextLeaf();
-//                    }
-//                }
-//            }
-//        }
-//
-//        return ret;
-//    }
 
     private void setupTree() {
         // set up tree

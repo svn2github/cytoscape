@@ -107,7 +107,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
             }
         }        
 
-        loadBiomartFilterFile();
+        //loadBiomartFilterFile(); //turn off filtering
         
         initComponents();
 
