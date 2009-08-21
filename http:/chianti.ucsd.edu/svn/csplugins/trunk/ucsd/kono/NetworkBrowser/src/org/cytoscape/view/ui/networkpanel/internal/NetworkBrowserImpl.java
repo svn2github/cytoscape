@@ -94,7 +94,6 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 		        	selectGroupNodes(target);
 
 		        imageBrowser.scrollToCenter(row-2);
-		        System.out.println("Selected 0-------->" + target);
 		        
 		    }
 		});
