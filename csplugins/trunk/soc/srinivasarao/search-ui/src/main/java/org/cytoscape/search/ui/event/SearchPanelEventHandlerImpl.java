@@ -1,6 +1,7 @@
 package org.cytoscape.search.ui.event;
 
 import org.cytoscape.search.EnhancedSearch;
+import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
 import org.cytoscape.search.ui.RootPanel;
 import org.cytoscape.search.ui.SearchPanelFactory;
 import org.cytoscape.session.CyNetworkManager;
@@ -25,14 +26,17 @@ public class SearchPanelEventHandlerImpl implements NetworkAddedListener,
 	private CyNetworkManager netmgr;
 	private EnhancedSearch es;
 
-	public SearchPanelEventHandlerImpl(CyNetworkManager nm, EnhancedSearch es) {
+	public SearchPanelEventHandlerImpl(CyNetworkManager nm) {
 		this.netmgr = nm;
-		this.es = es;
+		// this.es = es;
+		EnhancedSearchFactoryImpl impl = new EnhancedSearchFactoryImpl();
+		this.es = impl.getGlobalEnhancedSearchInstance();
 	}
 
 	@Override
 	public void handleEvent(NetworkAddedEvent event) {
 		// TODO Auto-generated method stub
+		System.out.println("I am in NetworkAddedEvent");
 		if (es.getNetworkIndexStatus(event.getNetwork()) != EnhancedSearch.INDEX_SET
 				&& es.getNetworkIndexStatus(event.getNetwork()) != EnhancedSearch.REINDEX)
 			es.addNetwork(event.getNetwork());

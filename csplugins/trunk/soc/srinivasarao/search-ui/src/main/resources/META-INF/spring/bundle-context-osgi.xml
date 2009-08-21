@@ -57,7 +57,7 @@
 	<osgi:reference id="cytoscapeDesktopServiceRef"
 		interface="cytoscape.view.CySwingApplication" />
 
-	<osgi:reference id="EnhancedSearchService" interface="org.cytoscape.search.EnhancedSearch" />
+	<!-- <osgi:reference id="EnhancedSearchService" interface="org.cytoscape.search.EnhancedSearch" />-->
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
 

@@ -243,6 +243,16 @@ public class NodeInteractionFilter extends JPanel {
 		final CyNetwork network = netmgr.getCurrentNetwork();
 		String status = es.getNetworkIndexStatus(network);
 		RAMDirectory idx;
+		
+		CyNetworkView view = netmgr.getCurrentNetworkView();
+		// To unselect all nodes and Edges
+		SelectUtils.setSelectedNodes(network.getNodeList(), false);
+		SelectUtils.setSelectedEdges(network.getEdgeList(), false);
+		if (view != null)
+			view.updateView();
+		if(query==null || query.equals(""))
+			return;
+		
 		if (status == EnhancedSearch.INDEX_SET) {
 			idx = es.getNetworkIndex(network);
 		} else {
@@ -270,13 +280,8 @@ public class NodeInteractionFilter extends JPanel {
 				nodes.add(e.getTarget());
 			}
 		}
-		CyNetworkView view = netmgr.getCurrentNetworkView();
 		
-		// To unselect all nodes and Edges
-		SelectUtils.setSelectedNodes(network.getNodeList(), false);
-		SelectUtils.setSelectedEdges(network.getEdgeList(), false);
-		if (view != null)
-			view.updateView();
+		
 		
 		SelectUtils.setSelectedNodes(nodes, true);
 		

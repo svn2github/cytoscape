@@ -250,15 +250,32 @@ public class TopologyFilter extends JPanel {
 		System.out.println("Neighbours:" + numOfNeighbours);
 		System.out.println("Distance:" + withinDist);
 		System.out.println("Query:" + query);
+		final CyNetwork network = netmgr.getCurrentNetwork();
+		// To Unselect all Nodes and Edges
+		SelectUtils.setSelectedNodes(network.getNodeList(), false);
+		SelectUtils.setSelectedEdges(network.getEdgeList(), false);
+		CyNetworkView view = netmgr.getCurrentNetworkView();
+		if (view != null) {
+			view.updateView();
+		}
+		if (query == null || numOfNeighbours == null || withinDist == null) {
+			return;
+		}
+		if (query.equals("") || numOfNeighbours.equals("")
+				|| withinDist.equals("")) {
+			return;
+		}
+
 		// HashSet neighbourSet = new HashSet();
 		ArrayList<CyNode> neighbourList = new ArrayList<CyNode>();
 		int noOfNeighbours = Integer.parseInt(numOfNeighbours);
 		int distance = Integer.parseInt(withinDist);
-		final EnhancedSearch es = new EnhancedSearchFactoryImpl()
-				.getGlobalEnhancedSearchInstance();
-		final CyNetwork network = netmgr.getCurrentNetwork();
+		EnhancedSearchFactoryImpl esf = new EnhancedSearchFactoryImpl();
+		EnhancedSearch es = esf.getGlobalEnhancedSearchInstance();
+
 		String status = es.getNetworkIndexStatus(network);
-		RAMDirectory idx;
+		RAMDirectory idx = null;
+
 		if (status == EnhancedSearch.INDEX_SET) {
 			idx = es.getNetworkIndex(network);
 		} else {
@@ -272,14 +289,6 @@ public class TopologyFilter extends JPanel {
 				network);
 		queryHandler.executeQuery(query);
 
-		// To Unselect all Nodes and Edges
-		SelectUtils.setSelectedNodes(network.getNodeList(), false);
-		SelectUtils.setSelectedEdges(network.getEdgeList(), false);
-		CyNetworkView view = netmgr.getCurrentNetworkView();
-		if (view != null) {
-			view.updateView();
-		}
-
 		// ArrayList<CyEdge> edgelist = queryHandler.getEdgeHits();
 		ArrayList<CyNode> resultNodes = queryHandler.getNodeHits();
 		for (CyNode n : resultNodes) {
@@ -291,8 +300,8 @@ public class TopologyFilter extends JPanel {
 			}
 			// System.out.println(neighbourList.size());
 			if (neighbourList.size() >= noOfNeighbours) {
-				//SelectUtils.setSelectedNodes(network.getNodeList(), false);
-				//SelectUtils.setSelectedEdges(network.getEdgeList(), false);
+				// SelectUtils.setSelectedNodes(network.getNodeList(), false);
+				// SelectUtils.setSelectedEdges(network.getEdgeList(), false);
 
 				SelectUtils.setSelectedNodes(neighbourList, true);
 				if (view != null)

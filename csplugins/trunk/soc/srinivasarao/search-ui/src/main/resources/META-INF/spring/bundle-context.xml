@@ -20,7 +20,7 @@
 	<bean name="SearchPanelEventHandlerImpl"
 		class="org.cytoscape.search.ui.event.SearchPanelEventHandlerImpl">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="EnhancedSearchService" />
+		<!-- <constructor-arg ref="EnhancedSearchService" /> -->
 	</bean>
 
 	<bean name="HistoryHandler" class="org.cytoscape.search.ui.event.HistoryHandler">

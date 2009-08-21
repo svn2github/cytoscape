@@ -328,7 +328,7 @@ public class MainPanel extends JPanel {
 	}
 
 	public void clearAll(){
-		andButton.setSelected(true);
+		orButton.setSelected(true);
 		selectButton.setSelected(true);
 		searchField.setText("");
 		searchBox.setSelectedItem(null);

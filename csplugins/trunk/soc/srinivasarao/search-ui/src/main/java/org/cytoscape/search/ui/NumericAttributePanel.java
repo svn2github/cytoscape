@@ -31,7 +31,7 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 	private String attrName = null;
 	private String type = null;
 	private String valType = null;
-	private String attrQuery = null;
+	private String attrQuery = null; // @jve:decl-index=0:
 	private NumberRangeModel rangeModel = null;
 	private JRangeSliderExtended rangeSlider = null;
 	private int minValue = 0, maxValue = 0;
@@ -66,12 +66,12 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 		gridBagConstraints.insets = new Insets(5, 8, 5, 0);
 
 		jLabel = new JLabel();
-		if(type.equals("NODE")){
+		if (type.equals("NODE")) {
 			jLabel.setText(attrName + " [N]");
-		}else{
+		} else {
 			jLabel.setText(attrName + " [E]");
 		}
-		//jLabel.setText(attrName);
+		// jLabel.setText(attrName);
 		jLabel.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (attrPanel.isVisible()) {
@@ -113,28 +113,31 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 		gc.weightx = 1.0;
 		gc.fill = GridBagConstraints.HORIZONTAL;
 		attrPanel.add(Box.createHorizontalStrut(0), gc);
-
-		
+		System.out.println("Value Type:" + valType);
 		if (valType.equals("java.lang.Integer")) {
 			List<Integer> l = getIntAttrValues();
 			int[] values = new int[l.size()];
-			for (int i = 0; i < l.size(); i++)
-				values[i] =  l.get(i).intValue();
+			for (int i = 0; i < l.size(); i++) {
+				values[i] = l.get(i).intValue();
+				System.out.println("Numeric Attribute " + i + ":" + values[i]);
+			}
 			Arrays.sort(values);
-			//minValue = NumberUtils.min(values);
+			// minValue = NumberUtils.min(values);
 			minValue = values[0];
-			//maxValue = NumberUtils.max(values);
-			maxValue = values[values.length-1];
+			// maxValue = NumberUtils.max(values);
+			maxValue = values[values.length - 1];
 		} else if (valType.equals("java.lang.Double")) {
 			List<Double> l1 = getDoubleAttrValues();
 			double[] values1 = new double[l1.size()];
-			for (int i = 0; i < l1.size(); i++)
+			for (int i = 0; i < l1.size(); i++) {
 				values1[i] = l1.get(i).doubleValue();
-			Arrays.sort(values1);			
-			//minValue = (int) NumberUtils.min(values1);
+				System.out.println("Numeric Attribute " + i + ":" + values1[i]);
+			}
+			Arrays.sort(values1);
+			// minValue = (int) NumberUtils.min(values1);
 			minValue = (int) values1[0];
-			//maxValue = ((int) NumberUtils.max(values1)) + 1;
-			maxValue = (int)values1[values1.length-1] + 1;
+			// maxValue = ((int) NumberUtils.max(values1)) + 1;
+			maxValue = (int) values1[values1.length - 1] + 1;
 		}
 
 		rangeModel = new NumberRangeModel(minValue, maxValue, minValue,
@@ -180,6 +183,22 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 		return l;
 	}
 
+	public String getQuery() {
+		String complete = null;
+		if (getQueryFromBox() != null) {
+			complete = getQueryFromBox();
+		}
+		if (rangeQuery() != null) {
+			if (complete != null) {
+				complete = complete.substring(0, complete.lastIndexOf(")"))
+						+ " OR " + rangeQuery() + ")";
+			} else {
+				complete = "(" + rangeQuery() + ")";
+			}
+		}
+		return complete;
+	}
+
 	public String getQueryFromBox() {
 		String res = "(";
 		if (attrQuery != null) {
@@ -190,14 +209,13 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 	}
 
 	public String rangeQuery() {
-		if(rangeSlider.query!=null){
+		if (rangeSlider.query != null) {
 			return attrName + ":[" + rangeSlider.query + "]";
 		} else
 			return null;
 	}
-	
-	public void clearAll()
-	{
+
+	public void clearAll() {
 		jTextField.setText(null);
 		attrQuery = null;
 		rangeSlider.query = null;

@@ -23,8 +23,10 @@ import org.cytoscape.search.ReindexTask;
 import org.cytoscape.search.internal.EnhancedSearchFactoryImpl;
 import org.cytoscape.search.ui.tasks.IndexAndSearchTaskImpl;
 import org.cytoscape.search.ui.tasks.ReindexTaskImpl;
+import org.cytoscape.search.ui.tasks.SelectUtils;
 import org.cytoscape.search.util.AttributeTypes;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskManager;
 
 public class SearchPanelImpl extends SearchPanel {
@@ -87,19 +89,17 @@ public class SearchPanelImpl extends SearchPanel {
 
 		if (net != null) {
 
-			List<CyEdge> edgelist = net.getEdgeList();
-			for (CyEdge e : edgelist) {
-				System.out.println("In SearchPanelImpl:"
-						+ e.attrs().get("interaction", String.class));
-				Map<String, Object> all = e.attrs().getAllValues();
-				Iterator<Entry<String, Object>> it = all.entrySet().iterator();
-				while (it.hasNext()) {
-					Entry<String, Object> en = it.next();
-					System.out.println(en.getKey() + ":" + en.getValue());
-				}
-
-			}
-
+			/*
+			 * List<CyEdge> edgelist = net.getEdgeList(); for (CyEdge e :
+			 * edgelist) { System.out.println("In SearchPanelImpl:" +
+			 * e.attrs().get("interaction", String.class)); Map<String, Object>
+			 * all = e.attrs().getAllValues(); Iterator<Entry<String, Object>>
+			 * it = all.entrySet().iterator(); while (it.hasNext()) {
+			 * Entry<String, Object> en = it.next();
+			 * System.out.println(en.getKey() + ":" + en.getValue()); }
+			 * 
+			 * }
+			 */
 			CyDataTable nodetable = net.getCyDataTables("NODE").get(
 					CyNetwork.DEFAULT_ATTRS);
 			Map<String, Class<?>> nodetypemap = nodetable.getColumnTypeMap();
@@ -170,7 +170,32 @@ public class SearchPanelImpl extends SearchPanel {
 
 	public void performSearch(boolean reindex) {
 		String query = mp.getQuery();
-		System.out.println("In Perform Search before changing" + query);
+		if (query == null) {
+			if (netmgr.getCurrentNetwork() != null) {
+				final CyNetwork network = netmgr.getCurrentNetwork();
+				CyNetworkView view = netmgr.getCurrentNetworkView();
+				SelectUtils.setSelectedNodes(network.getNodeList(), false);
+				SelectUtils.setSelectedEdges(network.getEdgeList(), false);
+				if (view != null) {
+					view.updateView();
+				}
+
+				// Mark the network for reindexing, if requested
+				if (reindex) {
+					final EnhancedSearch enhancedSearch = new EnhancedSearchFactoryImpl()
+							.getGlobalEnhancedSearchInstance();
+					enhancedSearch.setNetworkIndexStatus(network,
+							EnhancedSearch.REINDEX);
+					ReindexTask task = new ReindexTaskImpl(netmgr);
+					taskmanager.execute(task);
+
+				}
+
+				return;
+			}
+
+		}
+		// System.out.println("In Perform Search before changing" + query);
 
 		// Handling queries of type #1 and #2 where 1 and 2 are queries from
 		// history
@@ -180,33 +205,31 @@ public class SearchPanelImpl extends SearchPanel {
 		while (m.find()) {
 			String match = m.group();
 			int num = new Integer(match.substring(1)).intValue();
-			//System.out.println("Match:" + match);
-			//System.out.println("Num:"+num);
-			//System.out.println("History:" + box.getQueryAt(num));
+			// System.out.println("Match:" + match);
+			// System.out.println("Num:"+num);
+			// System.out.println("History:" + box.getQueryAt(num));
 			query = query.replaceAll(match, box.getQueryAt(num));
 		}
-		System.out.println("In Perform Search after changing" + query);
+		// System.out.println("In Perform Search after changing" + query);
 
-		if (query.length() > 0) {
-			final CyNetwork currNetwork = netmgr.getCurrentNetwork();
-			// Mark the network for reindexing, if requested
-			if (reindex) {
-				final EnhancedSearch enhancedSearch = new EnhancedSearchFactoryImpl()
-						.getGlobalEnhancedSearchInstance();
-				enhancedSearch.setNetworkIndexStatus(currNetwork,
-						EnhancedSearch.REINDEX);
-				ReindexTask task = new ReindexTaskImpl(netmgr);
-				taskmanager.execute(task);
-
-			}
-
-			// Define a new IndexAndSearchTask
-			IndexAndSearchTaskImpl task = new IndexAndSearchTaskImpl(netmgr,
-					query);
+		final CyNetwork currNetwork = netmgr.getCurrentNetwork();
+		// Mark the network for reindexing, if requested
+		if (reindex) {
+			final EnhancedSearch enhancedSearch = new EnhancedSearchFactoryImpl()
+					.getGlobalEnhancedSearchInstance();
+			enhancedSearch.setNetworkIndexStatus(currNetwork,
+					EnhancedSearch.REINDEX);
+			ReindexTask task = new ReindexTaskImpl(netmgr);
 			taskmanager.execute(task);
-			// Execute the task via the task manager
-			// tm.execute(task);
+
 		}
+
+		// Define a new IndexAndSearchTask
+		IndexAndSearchTaskImpl task = new IndexAndSearchTaskImpl(netmgr, query);
+		taskmanager.execute(task);
+		// Execute the task via the task manager
+		// tm.execute(task);
+
 	}
 
 	public void updateSearchField() {
@@ -234,21 +257,13 @@ public class SearchPanelImpl extends SearchPanel {
 				NumericAttributePanel np = (NumericAttributePanel) list.get(i);
 				if (np != null) {
 					if (query == null) {
-						if (np.getQueryFromBox() != null)
-							query = np.getQueryFromBox();
-						else if (np.getQueryFromBox() == null) {
-							if (np.rangeQuery() != null)
-								query = np.rangeQuery();
+						if (np.getQuery() != null) {
+							query = np.getQuery();
 						}
-
 					} else {
-						if (np.getQueryFromBox() != null) {
+						if (np.getQuery() != null) {
 							query = query + " " + operator + " "
-									+ np.getQueryFromBox();
-						} else if (np.getQueryFromBox() == null) {
-							if (np.rangeQuery() != null)
-								query = query + " " + operator + " "
-										+ np.rangeQuery();
+									+ np.getQuery();
 						}
 					}
 				}
@@ -276,7 +291,7 @@ public class SearchPanelImpl extends SearchPanel {
 	}
 
 	public void clearAll() {
-		
+
 		mp.clearAll();
 		List<BasicDraggablePanel> list = attrPanel.getPanelList();
 		for (int i = 0; i < list.size(); i++) {
