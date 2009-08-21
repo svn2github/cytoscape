@@ -181,13 +181,16 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 				doc.add(new Field(attrIndexingName, me.getValue().toString(),
 						Field.Store.NO, Field.Index.UN_TOKENIZED));
 			} else if (cname.equals("java.lang.Integer")) {
+				//System.out.println(me.getValue());
 				String attrValue = NumberTools.longToString((Integer) me
 						.getValue());
 				doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO,
 						Field.Index.UN_TOKENIZED));
-			} else if (cname.equals("java.lang.Float")) {
-				String attrValue = NumberUtils.double2sortableStr((Float) me
+			} else if (cname.equals("java.lang.Double")) {
+				//System.out.print("In Indexing"+me.getValue());
+				String attrValue = NumberUtils.double2sortableStr((Double)me
 						.getValue());
+				//System.out.println(":"+attrValue);
 				doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO,
 						Field.Index.UN_TOKENIZED));
 			} else if (cname.equals("java.lang.String")) {

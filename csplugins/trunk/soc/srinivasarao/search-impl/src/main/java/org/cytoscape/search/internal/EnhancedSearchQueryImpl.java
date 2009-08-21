@@ -81,14 +81,14 @@ public class EnhancedSearchQueryImpl extends EnhancedSearchQuery {
 			 */
 			// Build an IndexSearcher using the in-memory index
 			searcher = new IndexSearcher(idx);
-			System.out.println("Query Before- " + queryString);
+			//System.out.println("Query Before- " + queryString);
 
 			queryString = replacePattern(queryString, "node");
 			queryString = replacePattern(queryString, "edge");
 
 			// queryString = EnhancedSearchUtils.replaceWhitespace(queryString);
 			queryString = EnhancedSearchUtils.queryToLowerCase(queryString);
-			System.out.println("Query After- " + queryString);
+			//System.out.println("Query After- " + queryString);
 			search(searcher, queryString, attFields);
 			searcher.close();
 
