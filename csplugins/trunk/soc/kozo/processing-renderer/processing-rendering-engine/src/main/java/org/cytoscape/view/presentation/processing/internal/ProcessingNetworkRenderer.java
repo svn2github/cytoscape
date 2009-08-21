@@ -8,7 +8,6 @@ import java.awt.Image;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.print.Printable;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -34,7 +33,7 @@ import org.cytoscape.view.vizmap.events.VisualStyleSwitchedListener;
 
 import processing.core.PApplet;
 import processing.core.PFont;
-import processing.core.PImage;
+import processing.core.PMatrix;
 import processing.opengl.PGraphicsOpenGL;
 import toxi.geom.AABB;
 import toxi.geom.Vec3D;
@@ -77,7 +76,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	
 	
 	// pan and locations
-	private float rotX, rotY, zoom = 200;
+	public float rotY, rotX, zoom = 100;
 	
 	// For extreme rendering mode (currently not in use)
 	private ParticleManager particleManager;
@@ -96,6 +95,8 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	
 	// Switch rendering mode
 	private boolean fastRendering = false;
+	
+	private boolean twoDMode = false;
 	
 	// Network Visuals
 	private Color bgColor;
@@ -160,7 +161,7 @@ public class ProcessingNetworkRenderer extends PApplet implements
 
 	PGraphicsOpenGL pgl;
 	GL gl;
-
+	PMatrix startMatrix;
 	
 	public void setup() {
 		System.out.println("%%%%%%%%%%%%% Setup called for P5");
@@ -198,54 +199,47 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		overlay = new Overlay(this, view.getSource().attrs().get(NAME, String.class));
 		
 		System.out.println("%%%%%%%%%%%%% Setup DONE for P5");
-		
+
 	}
 
 	private void renderNetworkVisualProperties() {
 		bgColor = (Color) view.getVisualProperty(NETWORK_BACKGROUND_COLOR);
 		if(bgColor == null)
 			bgColor = Color.green;
-			
 	}
 	
 	private int numP;
 
 	float rotXDelta = 0;
 	public void draw() {
-		beginGL();
 		background(bgColor.getRed(), bgColor.getGreen(), bgColor.getGreen());
-		ambientLight(102, 102, 102);
-		lightSpecular(204, 204, 204); 
-		directionalLight(102, 102, 102, 0, 0, -1); 
-		specular(255, 255, 255); 
-		translate(30, 50, 0); 
-		//shininess(1.0); 
-		//translate(40, 0, 0); 
-		shininess(5.0f); 
-		
-		
-		
+		lights();
+
 		camera(width / 2.0f, height / 2.0f, (height / 2.0f)
 				/ tan((float) (PI * 60.0 / 360.0)) + zoom, width / 2.0f,
 				height / 2.0f, 0, 0, 1, 0);
 		
 		translate(width / 2+ translateX, height / 2+ translateY, height / 2);
-		rotateX(rotY);
-		rotateY(rotX);
+		rotateX(rotX);
+		rotateY(rotY);
 		
 		translate(-width / 2 + translateX, -height / 2 + translateY,
 				-height / 2);
 
 		textFont(DEF_FONT);
+		
+		
+		for (CyDrawable edge : edges)
+			edge.draw();
+		
 		for (CyDrawable node : nodes)
 			node.draw();
 
-		for (CyDrawable edge : edges)
-			edge.draw();
+		
 
 		// Reser camera and draw overlay
 		camera();
-		
+		beginGL();
 		gl.glClear(javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT);
 		endGL();
 		
@@ -271,9 +265,9 @@ public class ProcessingNetworkRenderer extends PApplet implements
 	public void mouseDragged() {
 		if(freeze) return;
 		
-		if (mouseButton == RIGHT) {
-			rotX += (mouseX - pmouseX) * 0.01;
-			rotY -= (mouseY - pmouseY) * 0.01;
+		if (mouseButton == RIGHT && twoDMode == false) {
+			rotY += (mouseX - pmouseX) * 0.01;
+			rotX -= (mouseY - pmouseY) * 0.01;
 		} else if (mouseButton == LEFT) {
 			translateX += (mouseX - pmouseX) * 2;
 			translateY += (mouseY - pmouseY) * 2;
@@ -315,8 +309,16 @@ public class ProcessingNetworkRenderer extends PApplet implements
 		  fastRendering = !fastRendering;
 		  for (int i = 0; i < nodes.length; i++)
 				nodes[i].setDetailFlag(fastRendering);
+	  } else if( key == 'l') {
+		  twoDMode = !twoDMode;
+		  if(twoDMode) {
+			  System.out.println("2D mode");
+			 rotY = 0;
+			 rotX = 0;
+		  } else {
+			  System.out.println("3D mode");
+		  }
 	  }
-	    
 	}
 
 	public Icon getDefaultIcon(VisualProperty<?> vp) {

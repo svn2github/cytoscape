@@ -52,7 +52,7 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 
 	private float offsetX = 30;
 	private float offsetY = 0;
-	private float offsetZ = 30;
+	private float offsetZ = 0;
 
 	private PFont font;
 
@@ -91,6 +91,7 @@ public class Text extends Vec3D implements CyDrawable, Pickable {
 //				0, 0, 1, m_inv.m23, 
 //				m_inv.m30, m_inv.m31, m_inv.m32, m_inv.m33);
 //
+		
 		p.fill(r, g, b, alpha);
 		p.textFont(((ProcessingNetworkRenderer)p).getDefaultFont(), size);
 		p.text(text, x, y, z);

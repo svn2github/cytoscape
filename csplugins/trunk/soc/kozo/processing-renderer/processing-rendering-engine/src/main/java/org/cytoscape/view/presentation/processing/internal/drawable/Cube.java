@@ -1,6 +1,8 @@
 package org.cytoscape.view.presentation.processing.internal.drawable;
 
+import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.Pickable;
+import org.cytoscape.view.presentation.processing.internal.ProcessingNetworkRenderer;
 
 import processing.core.PApplet;
 
@@ -25,6 +27,7 @@ public class Cube extends AbstractSolidCyDrawable implements Pickable {
 		p.translate(location.x, location.y, location.z);
 		p.box(size);
 		p.popMatrix();
+		
 
 	}
 

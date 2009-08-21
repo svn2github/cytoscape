@@ -1,14 +1,19 @@
 package org.cytoscape.view.presentation.processing.internal;
 
-import static org.cytoscape.model.GraphObject.NODE;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_OPACITY;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_SELECTED_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_WIDTH;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_OPACITY;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_SELECTED_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_SIZE;
 
 import java.awt.Color;
 
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -66,14 +71,6 @@ public class DefaultVisualStyleBuilder {
 		final DiscreteMapping<String, Color> interaction = new DiscreteMapping<String, Color>(
 				INTERACTION, String.class, (VisualProperty<Color>) EDGE_COLOR);
 		
-		randSize.putMapValue(1d, 10d);
-		randSize.putMapValue(2d, 100d);
-		randSize.putMapValue(3d, 200d);
-		location.putMapValue("YMR043W", 500d);
-		
-		//interaction.putMapValue("pp", PP_COLOR);
-		//interaction.putMapValue("pd", PD_COLOR);
-
 
 		style.addVisualMappingFunction(labelMapping);
 		style.addVisualMappingFunction(randSize);
@@ -88,7 +85,7 @@ public class DefaultVisualStyleBuilder {
 		style.setDefaultValue(EDGE_COLOR, DEF_EDGE_COLOR);
 		style.setDefaultValue(EDGE_SELECTED_COLOR, Color.red);
 		style.setDefaultValue(EDGE_OPACITY, DEF_EDGE_OPACITY);
-		style.setDefaultValue(EDGE_WIDTH, 3d);
+		style.setDefaultValue(EDGE_WIDTH, 1d);
 
 		style.setDefaultValue(NETWORK_BACKGROUND_COLOR, DEF_BACKGROUND_COLOR);
 

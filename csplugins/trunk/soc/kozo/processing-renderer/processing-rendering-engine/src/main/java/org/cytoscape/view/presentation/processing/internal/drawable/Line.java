@@ -14,6 +14,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.EdgeItem;
+import org.cytoscape.view.presentation.processing.internal.ProcessingNetworkRenderer;
 
 import processing.core.PApplet;
 import toxi.geom.Vec3D;
@@ -36,8 +37,8 @@ public class Line extends AbstractCyDrawable implements EdgeItem {
 
 		p.stroke(r, g, b, alpha);
 		p.strokeWeight(strokeWidth);
-
 		p.line(source.x, source.y, source.z, target.x, target.y, target.z);
+		
 	}
 
 	public void setContext(View<?> viewModel) {

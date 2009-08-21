@@ -3,17 +3,17 @@ package org.cytoscape.view.presentation.processing.internal.drawable;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_SIZE;
 
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.processing.internal.ProcessingNetworkRenderer;
 
 import processing.core.PApplet;
 
 public class Rectangle extends AbstractSolidCyDrawable {
 
-	private float width;
-	private float height;
+	protected float width;
+	protected float height;
 
 	public Rectangle(PApplet parent) {
 		super(parent);
-		
 	}
 
 	public void draw() {

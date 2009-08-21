@@ -1,9 +1,14 @@
 package org.cytoscape.view.presentation.processing.internal.ui;
 
 import java.awt.Color;
+import java.net.URL;
+
+import javax.media.opengl.GL;
 
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PImage;
+import processing.opengl.PGraphicsOpenGL;
 
 public class Overlay {
 
@@ -31,6 +36,7 @@ public class Overlay {
 	private static final float PADDING = 10f;
 
 	// Sizes of window
+	
 
 	public Overlay(PApplet p, String title) {
 		this.p = p;
@@ -38,15 +44,16 @@ public class Overlay {
 
 		bigFont = this.p.createFont("SansSerif", L_FONT_SIZE);
 		smallFont = this.p.createFont("SansSerif", S_FONT_SIZE);
+		
+		
 	}
 
 	public void draw() {
 		drawInfoWindow();
-
 		// p.fill(255, 255, 255, 90);
 		// p.stroke(100, 100, 100, 200);
 		// p.rect(10, 10, p.width - 20, 30);
-		// p.noStroke();
+		p.noStroke();
 		// p.fill(255, 0, 0, 90);
 		// p.rect(11, 11, p.width / 3, 29);
 
