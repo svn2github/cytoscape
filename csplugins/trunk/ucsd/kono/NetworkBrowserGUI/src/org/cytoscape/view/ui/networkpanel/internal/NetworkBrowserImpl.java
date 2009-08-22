@@ -49,6 +49,8 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 	private DockKey key = new DockKey("networkBrowser");
 	
 	private final ImageBrowser imageBrowser;
+	
+	private final ModuleGraphicsPanel graphicsPanel;
 
 	
 	
@@ -73,10 +75,9 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 		networkTreeTable.setTreeCellRenderer(new NetworkTreeCellRenderer());
 		networkTreeTable.getColumn("Network").setMinWidth(NET_COL_WIDTH);
 		networkTreeTable.setRowHeight(rowHeight);
-		ImageIcon icon = new ImageIcon(NetworkBrowserPlugin.class.getResource(
-						"images/go1.png"));
-		JLabel label = new JLabel(icon);
-		infoTabbedPane.addTab("GO Distribution Plot", label);
+		
+		graphicsPanel = new ModuleGraphicsPanel();
+		infoTabbedPane.addTab("Module Overview", graphicsPanel);
 		
 //		NetworkImageBrowser chooser = new NetworkImageBrowser();
 		imageBrowser = new ImageBrowser();
@@ -213,7 +214,7 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
         horizontalSplitPane.setLeftComponent(mainSplitPane);
         horizontalSplitPane.setRightComponent(infoTabbedPane);
         
-        infoTabbedPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Attribute Detail"));
+        infoTabbedPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
