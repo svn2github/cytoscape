@@ -47,12 +47,12 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 
 	private NetworkTreeTableModel model;
 	private DockKey key = new DockKey("networkBrowser");
-	
-	private final ImageBrowser imageBrowser;
-	
+		
 	private final ModuleGraphicsPanel graphicsPanel;
-
+	private final ImageManager imageManager;
 	
+	private ModuleRelationPanel moduleRelation;
+
 	
 	// Appearence of the table
 	private static final int rowHeight = 25;
@@ -80,8 +80,9 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 		infoTabbedPane.addTab("Module Overview", graphicsPanel);
 		
 //		NetworkImageBrowser chooser = new NetworkImageBrowser();
-		imageBrowser = new ImageBrowser();
-		mainSplitPane.setRightComponent(imageBrowser);
+		imageManager = new ImageManager();
+		moduleRelation = new ModuleRelationPanel();
+		mainSplitPane.setRightComponent(moduleRelation);
 		// networkTreeTable.getColumn("Nodes").setPreferredWidth(45);
 		// networkTreeTable.getColumn("Edges").setPreferredWidth(45);
 
@@ -93,8 +94,6 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 		        
 		        if(target != null)
 		        	selectGroupNodes(target);
-
-		        imageBrowser.scrollToCenter(row-2);
 		        
 		    }
 		});
@@ -113,8 +112,10 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 			Object group = ((GroupTreeNode)node).getUserObject();
 			if(group instanceof CyGroup) {
 				
-				System.out.println("Got Group");
+				System.out.println("Got Group: Image = ");
+				graphicsPanel.setGraphics(imageManager.getImage((CyGroup) group));
 				
+				// Select group nodes
 				List<CyNode> nodes = ((CyGroup) group).getNodes();
 				Cytoscape.getCurrentNetwork().unselectAllNodes();
 				Cytoscape.getCurrentNetwork().setSelectedNodeState(nodes, true);
@@ -311,7 +312,7 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 	public void groupChanged(CyGroup group, ChangeType change) {
 		if (change == CyGroupChangeListener.ChangeType.GROUP_CREATED) {
 			model.groupCreated(group);
-			imageBrowser.addGroup(group);
+			imageManager.addGroup(group);
 
 		} else if (change == CyGroupChangeListener.ChangeType.GROUP_DELETED) {
 			//groupRemoved(group);
