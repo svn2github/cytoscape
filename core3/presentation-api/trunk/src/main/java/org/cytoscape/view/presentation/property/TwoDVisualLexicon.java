@@ -54,16 +54,11 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 			NODE, Color.RED, "NODE_COLOR", "Node Color");
 	public static final VisualProperty<? extends Paint> NODE_SELECTED_COLOR = new ColorVisualProperty(
 			NODE, Color.YELLOW, "NODE_SELECTED_COLOR", "Node Selected Color");
-	public static final VisualProperty<Double> NODE_OPACITY = new DoubleVisualProperty(
-			NODE, 255d, "NODE_OPACITY", "Node Opacity");
 	public static final VisualProperty<String> NODE_LABEL = new StringVisualProperty(
 			NODE, "", "NODE_LABEL", "Node Label");
-	public static final VisualProperty<Double> NODE_LABEL_SIZE = new DoubleVisualProperty(
-			NODE, 12d, "NODE_LABEL_SIZE", "Node Label Size");
+
 	public static final VisualProperty<? extends Paint> NODE_LABEL_COLOR = new ColorVisualProperty(
 			NODE, Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color");
-	public static final VisualProperty<Double> NODE_LABEL_OPACITY = new DoubleVisualProperty(
-			NODE, 255d, "NODE_LABEL_OPACITY", "Node Label Opacity");
 	public static final VisualProperty<Double> NODE_X_LOCATION = new DoubleVisualProperty(
 			NODE, 0.0, "NODE_X_LOCATION", "Node X Location");
 	public static final VisualProperty<Double> NODE_Y_LOCATION = new DoubleVisualProperty(
@@ -78,14 +73,8 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 			NODE, false, "NODE_SELECTED", "Node Selected");
 	public static final VisualProperty<? extends Paint> EDGE_COLOR = new ColorVisualProperty(
 			EDGE, Color.gray, "EDGE_COLOR", "Edge Color");
-	public static final VisualProperty<? extends Paint> EDGE_SELECTED_COLOR = new ColorVisualProperty(
-			EDGE, Color.yellow, "EDGE_SELECTED_COLOR", "Edge Selected Color");
 	public static final VisualProperty<String> EDGE_LABEL = new StringVisualProperty(
 			EDGE, "", "EDGE_LABEL", "Edge Label");
-	public static final VisualProperty<Double> EDGE_LABEL_OPACITY = new DoubleVisualProperty(
-			EDGE, 255d, "EDGE_LABEL_OPACITY", "Edge Label Opacity");
-	public static final VisualProperty<Double> EDGE_OPACITY = new DoubleVisualProperty(
-			EDGE, 255d, "EDGE_OPACITY", "Edge Opacity");
 	public static final VisualProperty<Double> EDGE_WIDTH = new DoubleVisualProperty(
 			EDGE, 1d, "EDGE_WIDTH", "Edge Width");
 	public static final VisualProperty<? extends Paint> EDGE_LABEL_COLOR = new ColorVisualProperty(
@@ -118,11 +107,8 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		
 		visualPropertySet.add(NODE_COLOR);
 		visualPropertySet.add(NODE_SELECTED_COLOR);
-		visualPropertySet.add(NODE_OPACITY);
 		visualPropertySet.add(NODE_LABEL);
-		visualPropertySet.add(NODE_LABEL_SIZE);
 		visualPropertySet.add(NODE_LABEL_COLOR);
-		visualPropertySet.add(NODE_LABEL_OPACITY);
 		visualPropertySet.add(NODE_X_LOCATION);
 		visualPropertySet.add(NODE_Y_LOCATION);
 		visualPropertySet.add(NODE_X_SIZE);
@@ -130,12 +116,9 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 		visualPropertySet.add(NODE_VISIBLE);
 		visualPropertySet.add(NODE_SELECTED);
 		visualPropertySet.add(EDGE_COLOR);
-		visualPropertySet.add(EDGE_SELECTED_COLOR);
-		visualPropertySet.add(EDGE_OPACITY);
 		visualPropertySet.add(EDGE_WIDTH);
 		visualPropertySet.add(EDGE_LABEL);
 		visualPropertySet.add(EDGE_LABEL_COLOR);
-		visualPropertySet.add(EDGE_LABEL_OPACITY);
 		visualPropertySet.add(EDGE_VISIBLE);
 		visualPropertySet.add(EDGE_SELECTED);
 		visualPropertySet.add(NETWORK_SCALE_FACTOR);
