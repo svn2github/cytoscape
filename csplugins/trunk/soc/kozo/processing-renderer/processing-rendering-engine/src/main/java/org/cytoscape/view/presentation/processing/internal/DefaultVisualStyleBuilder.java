@@ -1,14 +1,14 @@
 package org.cytoscape.view.presentation.processing.internal;
 
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.EDGE_OPACITY;
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.EDGE_SELECTED_COLOR;
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.NODE_OPACITY;
 import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_COLOR;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_OPACITY;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_SELECTED_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_WIDTH;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_OPACITY;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_SELECTED_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_SIZE;
 

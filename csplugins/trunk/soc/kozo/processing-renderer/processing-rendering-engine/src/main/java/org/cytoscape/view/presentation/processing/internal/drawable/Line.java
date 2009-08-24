@@ -1,20 +1,18 @@
 package org.cytoscape.view.presentation.processing.internal.drawable;
 
-import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.*;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_SELECTED_COLOR;
+import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_WIDTH;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.*;
 
 import java.awt.Color;
 import java.awt.Paint;
-import java.util.List;
-import java.util.Set;
 
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.processing.CyDrawable;
 import org.cytoscape.view.presentation.processing.EdgeItem;
-import org.cytoscape.view.presentation.processing.internal.ProcessingNetworkRenderer;
 
 import processing.core.PApplet;
 import toxi.geom.Vec3D;

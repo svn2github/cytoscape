@@ -1,7 +1,9 @@
 package org.cytoscape.view.presentation.processing.internal.drawable;
 
-import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.*;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
+import static org.cytoscape.view.presentation.processing.visualproperty.ProcessingVisualLexicon.*;
+import static org.cytoscape.view.presentation.property.ThreeDVisualLexicon.NODE_Z_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_SELECTED_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_SIZE;
@@ -27,10 +29,6 @@ import org.cytoscape.view.presentation.processing.internal.ProcessingNetworkRend
 
 import processing.core.PApplet;
 import processing.core.PFont;
-import processing.core.PGraphics;
-import processing.core.PGraphics3D;
-import processing.core.PMatrix3D;
-import processing.opengl.PGraphicsOpenGL;
 import toxi.geom.Vec3D;
 
 public class Text extends Vec3D implements CyDrawable, Pickable {
