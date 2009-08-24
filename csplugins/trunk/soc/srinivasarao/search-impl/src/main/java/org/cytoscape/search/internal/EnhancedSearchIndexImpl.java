@@ -158,9 +158,8 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 		doc.add(new Field(INDEX_FIELD, identifier, Field.Store.YES,
 				Field.Index.TOKENIZED));
 		doc.add(new Field("doctype", indextype, Field.Store.YES,
-						Field.Index.UN_TOKENIZED));
+				Field.Index.UN_TOKENIZED));
 
-		// String[] attrNameArray = attributes.getAttributeNames();
 		Set<Map.Entry<String, Object>> keys = map.entrySet();
 		Iterator<Map.Entry<String, Object>> it = keys.iterator();
 
@@ -169,102 +168,48 @@ public class EnhancedSearchIndexImpl extends EnhancedSearchIndex {
 			String attrName = me.getKey();
 			String attrIndexingName = EnhancedSearchUtils
 					.replaceWhitespace(attrName);
-			// String attrIndexingName = indextype + "." +
-			// EnhancedSearchUtils.replaceWhitespace(attrName);
 			attrIndexingName = attrIndexingName.toLowerCase();
 			// System.out.println("Attribute Indexing Name:"+attrIndexingName+";");
 			// System.out.println(identifier + ":" + attrIndexingName + ":" +
 			// me.getValue().toString());
-			String cname = typemap.get(attrName).getName();
-			// System.out.println(cname);
-			if (cname.equals("java.lang.Boolean")) {
-				doc.add(new Field(attrIndexingName, me.getValue().toString(),
-						Field.Store.NO, Field.Index.UN_TOKENIZED));
-			} else if (cname.equals("java.lang.Integer")) {
-				//System.out.println(me.getValue());
-				String attrValue = NumberTools.longToString((Integer) me
-						.getValue());
-				doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO,
-						Field.Index.UN_TOKENIZED));
-			} else if (cname.equals("java.lang.Double")) {
-				//System.out.print("In Indexing"+me.getValue());
-				String attrValue = NumberUtils.double2sortableStr((Double)me
-						.getValue());
-				//System.out.println(":"+attrValue);
-				doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO,
-						Field.Index.UN_TOKENIZED));
-			} else if (cname.equals("java.lang.String")) {
-				String attrValue = (String) me.getValue();
-				doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO,
-						Field.Index.TOKENIZED));
-			} else if (cname.equals("java.util.List")) {
-				List<?> l = (List<?>) me.getValue();
-				for (int i = 0; i < l.size(); i++) {
-					Object o = l.get(i);
-					doc.add(new Field(attrIndexingName, o.toString(),
+			if (me.getValue() != null) {
+				String cname = typemap.get(attrName).getName();
+				if (cname.equals("java.lang.Boolean")) {
+					doc.add(new Field(attrIndexingName, me.getValue()
+							.toString(), Field.Store.NO,
+							Field.Index.UN_TOKENIZED));
+				} else if (cname.equals("java.lang.Integer")) {
+					String attrValue = NumberTools.longToString((Integer) me
+							.getValue());
+					doc.add(new Field(attrIndexingName, attrValue,
+							Field.Store.NO, Field.Index.UN_TOKENIZED));
+				} else if (cname.equals("java.lang.Double")) {
+					String attrValue = NumberUtils
+							.double2sortableStr((Double) me.getValue());
+					doc.add(new Field(attrIndexingName, attrValue,
+							Field.Store.NO, Field.Index.UN_TOKENIZED));
+				} else if (cname.equals("java.lang.String")) {
+					String attrValue = (String) me.getValue();
+					doc.add(new Field(attrIndexingName, attrValue,
 							Field.Store.NO, Field.Index.TOKENIZED));
-				}
-			} else if (cname.equals("java.util.Map")) {
-				Iterator<?> mit = ((Map<?, ?>) me.getValue()).values()
-						.iterator();
-				while (mit.hasNext()) {
-					doc.add(new Field(attrIndexingName, mit.next().toString(),
-							Field.Store.NO, Field.Index.TOKENIZED));
+				} else if (cname.equals("java.util.List")) {
+					List<?> l = (List<?>) me.getValue();
+					for (int i = 0; i < l.size(); i++) {
+						Object o = l.get(i);
+						doc.add(new Field(attrIndexingName, o.toString(),
+								Field.Store.NO, Field.Index.TOKENIZED));
+					}
+				} else if (cname.equals("java.util.Map")) {
+					Iterator<?> mit = ((Map<?, ?>) me.getValue()).values()
+							.iterator();
+					while (mit.hasNext()) {
+						doc.add(new Field(attrIndexingName, mit.next()
+								.toString(), Field.Store.NO,
+								Field.Index.TOKENIZED));
+					}
 				}
 			}
 		}
-		/*
-		 * for (int i = 0; i < attrNameArray.length; i++) { String attrName =
-		 * attrNameArray[i];
-		 * 
-		 * boolean hasAttribute = attributes.hasAttribute(identifier, attrName);
-		 * if (hasAttribute) {
-		 * 
-		 * // Handle whitespace characters and case in attribute names String
-		 * attrIndexingName = EnhancedSearchUtils .replaceWhitespace(attrName);
-		 * attrIndexingName = attrIndexingName.toLowerCase();
-		 * 
-		 * 
-		 * byte valueType = attributes.getType(attrName);
-		 * 
-		 * if (valueType == CyAttributes.TYPE_BOOLEAN) { String attrValue =
-		 * attributes.getBooleanAttribute( identifier, attrName).toString();
-		 * doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO,
-		 * Field.Index.UN_TOKENIZED));
-		 * 
-		 * } else if (valueType == CyAttributes.TYPE_INTEGER) { String attrValue
-		 * = NumberTools.longToString(attributes.getIntegerAttribute(
-		 * identifier, attrName)); doc.add(new Field(attrIndexingName,
-		 * attrValue, Field.Store.NO, Field.Index.UN_TOKENIZED));
-		 * 
-		 * } else if (valueType == CyAttributes.TYPE_FLOATING) { String
-		 * attrValue =
-		 * NumberUtils.double2sortableStr(attributes.getDoubleAttribute(
-		 * identifier, attrName)); doc.add(new Field(attrIndexingName,
-		 * attrValue, Field.Store.NO, Field.Index.UN_TOKENIZED));
-		 * 
-		 * } else if (valueType == CyAttributes.TYPE_STRING) { String attrValue
-		 * = attributes.getStringAttribute( identifier, attrName); doc.add(new
-		 * Field(attrIndexingName, attrValue, Field.Store.NO,
-		 * Field.Index.TOKENIZED));
-		 * 
-		 * } else if (valueType == CyAttributes.TYPE_SIMPLE_LIST || valueType ==
-		 * CyAttributes.TYPE_SIMPLE_MAP) {
-		 * 
-		 * // Attributes of types TYPE_SIMPLE_LIST and TYPE_SIMPLE_MAP // may
-		 * have several values. // Create a document for each value. String[]
-		 * valueList = CyAttributesUtil.getAttributeValues( attributes,
-		 * identifier, attrName); if (valueList != null) {
-		 * 
-		 * for (int j = 0; j < valueList.length; j++) { String attrValue =
-		 * valueList[j];
-		 * 
-		 * doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO,
-		 * Field.Index.TOKENIZED)); } } } else if (valueType ==
-		 * CyAttributes.TYPE_COMPLEX) { // Do not index this field } }
-		 * 
-		 * }
-		 */
 		return doc;
 	}
 
