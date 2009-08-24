@@ -4,11 +4,9 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.search.EnhancedSearch;
 import org.cytoscape.search.ReindexTask;
@@ -170,7 +167,7 @@ public class SearchPanelImpl extends SearchPanel {
 
 	public void performSearch(boolean reindex) {
 		String query = mp.getQuery();
-		if (query == null) {
+		if (query == null || query.equals("")) {
 			if (netmgr.getCurrentNetwork() != null) {
 				final CyNetwork network = netmgr.getCurrentNetwork();
 				CyNetworkView view = netmgr.getCurrentNetworkView();
@@ -286,7 +283,7 @@ public class SearchPanelImpl extends SearchPanel {
 				}
 			}
 		}
-		System.out.println(query);
+		//System.out.println(query);
 		mp.setSearchText(query);
 	}
 

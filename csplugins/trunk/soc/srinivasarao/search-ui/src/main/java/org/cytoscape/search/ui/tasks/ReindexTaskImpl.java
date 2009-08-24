@@ -66,7 +66,7 @@ public class ReindexTaskImpl implements ReindexTask {
 	 */
 	public void run(TaskMonitor tm) {
 
-		System.out.println("I am in Reindex Task");
+		//System.out.println("I am in Reindex Task");
 		this.taskMonitor = tm;
 		EnhancedSearchFactoryImpl esf = new EnhancedSearchFactoryImpl();
 		final EnhancedSearch enhancedSearch = esf

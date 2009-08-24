@@ -34,7 +34,7 @@ public class StringAttributePanel extends BasicDraggablePanel {
 	private JPanel attrPanel;
 	private int limit = 10;
 	private ArrayList<String> attrValues = new ArrayList<String>();
-	private String attrQuery = null;
+	private String attrQuery = "";  //  @jve:decl-index=0:
 
 	/**
 	 * This is the default constructor
@@ -129,19 +129,23 @@ public class StringAttributePanel extends BasicDraggablePanel {
 			stringField = new JTextField();
 			stringField.setMinimumSize(new Dimension(150, 20));
 			stringField.setPreferredSize(new Dimension(170, 20));
-			stringField.setText(null);
+			stringField.setText("");
 			stringField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 			stringField.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					String term = attrName + ":" + stringField.getText();
-					if (attrQuery == null) {
-						attrQuery = term;
+					if (stringField.getText() == null
+							|| stringField.getText().equals("")) {
 					} else {
-						attrQuery = attrQuery + " OR " + term;
+						String term = attrName + ":" + stringField.getText();
+						if (attrQuery == null || attrQuery.equals("")) {
+							attrQuery = term;
+						} else {
+							attrQuery = attrQuery + " OR " + term;
+						}
+						SearchPanelFactory.getGlobalInstance(netmgr)
+								.updateSearchField();
+						stringField.setText("");
 					}
-					SearchPanelFactory.getGlobalInstance(netmgr)
-							.updateSearchField();
-					stringField.setText(null);
 				}
 			});
 
@@ -152,14 +156,14 @@ public class StringAttributePanel extends BasicDraggablePanel {
 						// System.out.println("Text is null");
 					} else {
 						String term = attrName + ":" + stringField.getText();
-						if (attrQuery == null) {
+						if (attrQuery == null || attrQuery.equals("")) {
 							attrQuery = term;
 						} else {
 							attrQuery = attrQuery + " OR " + term;
 						}
 						SearchPanelFactory.getGlobalInstance(netmgr)
 								.updateSearchField();
-						stringField.setText(null);
+						stringField.setText("");
 					}
 				}
 			});
@@ -201,11 +205,12 @@ public class StringAttributePanel extends BasicDraggablePanel {
 				return res;
 			}
 		} else {
-			if (attrQuery != null) {
+			if (attrQuery == null || attrQuery.equals("")) {
+				return null;
+			} else {
 				res = res + attrQuery + ")";
 				return res;
-			} else
-				return null;
+			}
 		}
 
 	}
@@ -216,8 +221,8 @@ public class StringAttributePanel extends BasicDraggablePanel {
 				boxes[i].setSelected(false);
 			}
 		} else {
-			stringField.setText(null);
-			attrQuery = null;
+			stringField.setText("");
+			attrQuery = "";
 		}
 	}
 

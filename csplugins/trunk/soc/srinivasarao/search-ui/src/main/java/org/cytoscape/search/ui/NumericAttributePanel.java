@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -87,39 +86,26 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 		attrPanel.setLayout(new GridBagLayout());
 		attrPanel.setVisible(false);
 		jTextField = this.getJTextField();
-		jTextField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String term = attrName + ":" + jTextField.getText();
-				if (attrQuery == null) {
-					attrQuery = term;
-				} else {
-					attrQuery = attrQuery + " OR " + term;
-
-				}
-				SearchPanelFactory.getGlobalInstance(netmgr)
-						.updateSearchField();
-				jTextField.setText(null);
-			}
-		});
-
 		GridBagConstraints gc = new GridBagConstraints();
 		gc.anchor = GridBagConstraints.WEST;
-		gc.insets = new Insets(0, 12, 4, 0);
+		gc.insets = new Insets(0, 12, 4, 10);
 		gc.gridx = 0;
 		gc.gridy = 0;
 		gc.weightx = 0;
+		gc.gridwidth = GridBagConstraints.REMAINDER;
+		gc.anchor = GridBagConstraints.EAST;
 		attrPanel.add(jTextField, gc);
-		gc.gridx = 1;
-		gc.weightx = 1.0;
-		gc.fill = GridBagConstraints.HORIZONTAL;
-		attrPanel.add(Box.createHorizontalStrut(0), gc);
-		System.out.println("Value Type:" + valType);
+		// gc.gridx = 1;
+		// gc.weightx = 1.0;
+		// gc.fill = GridBagConstraints.HORIZONTAL;
+		// attrPanel.add(Box.createHorizontalStrut(0), gc);
+		//System.out.println("Value Type:" + valType);
 		if (valType.equals("java.lang.Integer")) {
 			List<Integer> l = getIntAttrValues();
 			int[] values = new int[l.size()];
 			for (int i = 0; i < l.size(); i++) {
 				values[i] = l.get(i).intValue();
-				System.out.println("Numeric Attribute " + i + ":" + values[i]);
+				//System.out.println("Numeric Attribute " + i + ":" + values[i]);
 			}
 			Arrays.sort(values);
 			// minValue = NumberUtils.min(values);
@@ -131,7 +117,7 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 			double[] values1 = new double[l1.size()];
 			for (int i = 0; i < l1.size(); i++) {
 				values1[i] = l1.get(i).doubleValue();
-				System.out.println("Numeric Attribute " + i + ":" + values1[i]);
+				//System.out.println("Numeric Attribute " + i + ":" + values1[i]);
 			}
 			Arrays.sort(values1);
 			// minValue = (int) NumberUtils.min(values1);
@@ -157,12 +143,47 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 		gg.weightx = 1.0;
 
 		this.add(attrPanel, gg);
+		//rangeSlider.initPopup(new Integer(minValue).toString(), new Integer(
+			//	maxValue).toString());
+
 	}
 
 	private JTextField getJTextField() {
 		if (jTextField == null) {
 			jTextField = new JTextField();
 			jTextField.setPreferredSize(new Dimension(40, 20));
+
+			jTextField.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String term = attrName + ":" + jTextField.getText();
+					if (attrQuery == null) {
+						attrQuery = term;
+					} else {
+						attrQuery = attrQuery + " OR " + term;
+					}
+					SearchPanelFactory.getGlobalInstance(netmgr)
+							.updateSearchField();
+					jTextField.setText(null);
+				}
+			});
+
+			jTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+				public void focusLost(java.awt.event.FocusEvent e) {
+					String text = jTextField.getText();
+					if (text != null && !text.equals("")) {
+						String term = attrName + ":" + text;
+						if (attrQuery == null) {
+							attrQuery = term;
+						} else {
+							attrQuery = attrQuery + " OR " + term;
+
+						}
+						SearchPanelFactory.getGlobalInstance(netmgr)
+								.updateSearchField();
+						jTextField.setText(null);
+					}
+				}
+			});
 		}
 		return jTextField;
 	}
@@ -220,7 +241,7 @@ public class NumericAttributePanel extends BasicDraggablePanel {
 		attrQuery = null;
 		rangeSlider.query = null;
 		rangeSlider.setRange(minValue, maxValue);
-		rangeSlider.resetPopup();
+		// rangeSlider.resetPopup();
 	}
 
 }

@@ -70,12 +70,12 @@ public class SearchComboBox extends JComboBox {
 
 		this.removeItemAt(index);
 		queries.removeElementAt(index);
-		System.out.println("-------------------------------------------");
-		for (int i = 0; i < queries.size(); i++) {
-			System.out.println(queries.get(i));
-		}
-		System.out.println("-------------------------------------------");
-
+		/*
+		 * System.out.println("-------------------------------------------");
+		 * for (int i = 0; i < queries.size(); i++) {
+		 * System.out.println(queries.get(i)); }
+		 * System.out.println("-------------------------------------------");
+		 */
 	}
 
 	public void clearAllItems() {
@@ -112,10 +112,10 @@ class UserKeyListener extends KeyAdapter {
 		if (e.getKeyCode() == KeyEvent.VK_DELETE
 				|| e.getKeyCode() == KeyEvent.VK_BACK_SPACE
 				|| (e.getKeyCode() == KeyEvent.VK_X && e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK)) {
-			//System.out.println("BackSpace Key released");
+			// System.out.println("BackSpace Key released");
 
 			JTextField jf = (JTextField) box.getEditor().getEditorComponent();
-			System.out.println("Text:" + jf.getText());
+			//System.out.println("Text:" + jf.getText());
 			if (jf.getText().length() == 0) {
 				SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
 			}

@@ -23,7 +23,7 @@ public class SearchPluginImpl implements SearchPlugin {
 		this.taskmanager = tm;
 		tp = new TopologyPanel(netmgr);
 		initPanel();
-		System.out.println("I am in SearchPlugin of search-ui");
+		//System.out.println("I am in SearchPlugin of search-ui");
 	}
 
 	public void initPanel() {

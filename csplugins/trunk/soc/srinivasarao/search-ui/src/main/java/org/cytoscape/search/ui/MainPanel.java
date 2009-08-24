@@ -77,7 +77,6 @@ public class MainPanel extends JPanel {
 
 	public void disableSearch() {
 		searchField.setText("");
-		searchBox.setSelectedItem(null);
 		searchField.setEnabled(false);
 		searchField.setToolTipText(ESP_DISABLED_TOOLTIP);
 		searchButton.setEnabled(false);
@@ -213,7 +212,6 @@ public class MainPanel extends JPanel {
 					SearchPanelFactory.getGlobalInstance(netmgr).performSearch(
 							false);
 					// searchField.setText("");
-					// searchBox.setSelectedItem(null);
 					// SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
 				}
 			});
@@ -227,6 +225,7 @@ public class MainPanel extends JPanel {
 	 */
 	public void addtoHistory(String item) {
 		searchBox.addMenuItem(item);
+		searchBox.setSelectedItem(item);
 	}
 
 	/**
@@ -287,7 +286,6 @@ public class MainPanel extends JPanel {
 					SearchPanelFactory.getGlobalInstance(netmgr).performSearch(
 							false);
 					// searchField.setText("");
-					// searchBox.setSelectedItem(null);
 					// SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
 				}
 			});
@@ -309,7 +307,6 @@ public class MainPanel extends JPanel {
 
 	public String getResult() {
 		String res = resultGroup.getSelection().getActionCommand();
-		System.out.println("In getresult:" + res);
 		return res;
 	}
 
@@ -327,13 +324,12 @@ public class MainPanel extends JPanel {
 		searchField.setText(query);
 	}
 
-	public void clearAll(){
+	public void clearAll() {
 		orButton.setSelected(true);
 		selectButton.setSelected(true);
 		searchField.setText("");
-		searchBox.setSelectedItem(null);
 	}
-	
+
 	private void createPopupMenu() {
 		JMenuItem menuItem;
 
@@ -367,8 +363,8 @@ public class MainPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				SearchPanelFactory.getGlobalInstance(netmgr)
 						.performSearch(true);
-				clearAll();
-				SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
+				// clearAll();
+				// SearchPanelFactory.getGlobalInstance(netmgr).clearAll();
 
 			}
 		});

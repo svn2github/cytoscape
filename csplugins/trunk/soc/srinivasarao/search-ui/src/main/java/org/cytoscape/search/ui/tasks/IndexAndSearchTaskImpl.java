@@ -87,6 +87,8 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 
 		//System.out.println("I am in IndexandSearchTask Service");
 
+		System.out.println("Query:"+query);
+		
 		SearchPanelFactory.getGlobalInstance(netmgr).getmainPanel()
 				.addtoHistory(query);
 
@@ -133,7 +135,7 @@ public class IndexAndSearchTaskImpl implements IndexAndSearchTask {
 
 		String result = SearchPanelFactory.getGlobalInstance(netmgr)
 				.getmainPanel().getResult();
-		System.out.println("Selected Option: " + result);
+		//System.out.println("Selected Option: " + result);
 
 		CyNetworkView view = netmgr.getCurrentNetworkView();
 

@@ -58,6 +58,10 @@ import org.cytoscape.session.CyNetworkManager;
  */
 public class JRangeSliderExtended extends JRangeSlider implements
 		ChangeListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Dimension preferredSize;
 	private CyNetworkManager netmgr = null;
 	String query = null;
@@ -83,6 +87,7 @@ public class JRangeSliderExtended extends JRangeSlider implements
 		super(model, orientation, direction);
 		this.netmgr = nm;
 		addChangeListener(this);
+		
 	}
 
 	/**
@@ -149,6 +154,32 @@ public class JRangeSliderExtended extends JRangeSlider implements
 		this.popup = null;
 	}
 
+	public void initPopup(String lowStr, String highStr) {
+		if (popup == null) {
+			PopupFactory popupFactory = PopupFactory.getSharedInstance();
+			JPanel panel = new JPanel();
+			panel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
+			panel.setPreferredSize(getPreferredSize());
+			panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+			popupLow = new JLabel(lowStr);
+			popupLow.setBorder(new EmptyBorder(6, 2, 6, 2));
+			popupHigh = new JLabel(highStr);
+			popupHigh.setBorder(new EmptyBorder(6, 2, 6, 2));
+			panel.add(popupLow);
+			panel.add(Box.createHorizontalGlue());
+			panel.add(popupHigh);
+			popup = popupFactory.getPopup(this, panel, getLocationOnScreen().x,
+					getLocationOnScreen().y + getPreferredSize().height + 2);
+			popupDaemon = new PopupDaemon(this, 1000);
+			popup.show();
+		} else {
+			popupLow.setText(lowStr);
+			popupHigh.setText(highStr);
+			popupDaemon.restart();
+		}
+
+	}
+
 	/**
 	 * Upon state change, pop-up a tiny window with low-high.
 	 * 
@@ -166,17 +197,17 @@ public class JRangeSliderExtended extends JRangeSlider implements
 
 		String lowStr = null;
 		String highStr = null;
-		
+
 		String minStr = null;
 		String maxStr = null;
-		
+
 		if (low instanceof Integer) {
 			lowStr = Integer.toString((Integer) low);
 			highStr = Integer.toString((Integer) high);
-			
-			minStr = Integer.toString((Integer)min);
-			maxStr = Integer.toString((Integer)max);
-			
+
+			minStr = Integer.toString((Integer) min);
+			maxStr = Integer.toString((Integer) max);
+
 		} else {
 			if ((max.doubleValue() - min.doubleValue()) < .001) {
 				format = new DecimalFormat("0.###E0");
@@ -187,19 +218,19 @@ public class JRangeSliderExtended extends JRangeSlider implements
 			}
 			lowStr = format.format(low);
 			highStr = format.format(high);
-			
+
 			minStr = format.format(min);
 			maxStr = format.format(max);
 		}
 
 		if (isVisible()) {
-			if(lowStr.equals(minStr) && highStr.equals(maxStr))
+			if (lowStr.equals(minStr) && highStr.equals(maxStr))
 				query = null;
-			else{
+			else {
 				String term = lowStr + " TO " + highStr;
 				query = term;
 			}
-				
+
 			SearchPanelFactory.getGlobalInstance(netmgr).updateSearchField();
 
 			if (popup == null) {
@@ -225,7 +256,6 @@ public class JRangeSliderExtended extends JRangeSlider implements
 				popupHigh.setText(highStr);
 				popupDaemon.restart();
 			}
-
 		}
 	}
 }
@@ -267,6 +297,6 @@ class PopupDaemon implements ActionListener {
 	 *            ActionEvent Object.
 	 */
 	public void actionPerformed(ActionEvent e) {
-		slider.resetPopup();
+		// slider.resetPopup();
 	}
 }
