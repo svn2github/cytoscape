@@ -1,12 +1,18 @@
 package csplugins.mcode.internal.action;
 
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import csplugins.mcode.internal.MCODEAlgorithm;
 import csplugins.mcode.internal.MCODECluster;
 import csplugins.mcode.internal.MCODEUtil;
 import csplugins.mcode.internal.MClusterToCyGroup;
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.groups.CyGroup;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
@@ -123,15 +129,17 @@ public class MCODEScoreAndFindTask implements Task {
 			System.out.println("Found clusters: " + clusters.length);
 					
 			int clusterCount = clusters.length;
+			final Set<CyGroup> groups = new HashSet<CyGroup>();
 			for (int i = 0; i < clusterCount; i++) {
 				if (interrupted)
 					return;
 				clusters[i].setRank(i+1);
-				MClusterToCyGroup.convertToGroup(clusters[i]);				
+				groups.add(MClusterToCyGroup.convertToGroup(clusters[i]));				
 				taskMonitor.setPercentCompleted((i * 100) / clusters.length);
 			}
 			
 			completedSuccessfully = true;
+			Cytoscape.getSwingPropertyChangeSupport().firePropertyChange("MODULE_SEARCH_FINISHED", null, groups);
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO: ask Ethan if interrupt exception should be thrown from
