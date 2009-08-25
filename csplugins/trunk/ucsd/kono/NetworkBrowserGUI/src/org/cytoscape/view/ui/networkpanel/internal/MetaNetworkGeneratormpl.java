@@ -14,12 +14,12 @@ import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
 
 public class MetaNetworkGeneratormpl implements MetaNetworkGenerator {
-	
-	
+		
 
 	public CyNetwork generateMetaNetwrok(String metaNetName, CyNetwork parent, Set<CyGroup> groups) {
 		
 		String groupNodeName;
+
 		final List<CyNode> nodes = new ArrayList<CyNode>();
 		final List<CyEdge> edges = new ArrayList<CyEdge>();
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
@@ -30,12 +30,9 @@ public class MetaNetworkGeneratormpl implements MetaNetworkGenerator {
 			
 			groupNodeName = group.getGroupName();
 			node = Cytoscape.getCyNode(groupNodeName, true);
-			nodes.add(node);
-			
+			nodes.add(node);	
 		}
-		
 		
 		return Cytoscape.createNetwork(nodes, edges, metaNetName, parent, true);
 	}
-
 }
