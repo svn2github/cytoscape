@@ -8,9 +8,10 @@ import javax.swing.SwingConstants;
 import org.cytoscape.view.ui.networkpanel.internal.NetworkBrowserImpl;
 import org.cytoscape.view.ui.networkpanel.internal.NetworkTreeNode;
 import org.cytoscape.view.ui.networkpanel.internal.NetworkTreeTableModel;
-import org.cytoscape.view.ui.networkpanel.internal.VLDockTest;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesImpl;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.cytopanels.CytoPanel;
 
@@ -24,17 +25,22 @@ public class NetworkBrowserPlugin extends CytoscapePlugin {
 	
 	private NetworkBrowserImpl browser;
 	private NetworkTreeTableModel model;
-	
-	private VLDockTest frame;
+
+	// Attributes for groups
+	private static CyAttributes groupAttributes = new CyAttributesImpl();
+
+	public static CyAttributes getGroupAttributes() {
+		return groupAttributes;
+	}
 	
 	public NetworkBrowserPlugin() {
 		
 		model = buildModel();
 		browser = new NetworkBrowserImpl(model);
+		
 		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
 		cytoPanel.add("Network/Group Browser", browser);
         
-        System.out.println("--------Done!!!");
 	}
 	
 	public NetworkTreeTableModel buildModel() {
@@ -45,7 +51,7 @@ public class NetworkBrowserPlugin extends CytoscapePlugin {
 		columnIDs.add("Network");
 		columnIDs.add("Nodes");
 		columnIDs.add("Edges");
-		columnIDs.add("Attribute 1");
+		columnIDs.add("Score");
 		
 		newModel.setColumnIdentifiers(columnIDs);
 		

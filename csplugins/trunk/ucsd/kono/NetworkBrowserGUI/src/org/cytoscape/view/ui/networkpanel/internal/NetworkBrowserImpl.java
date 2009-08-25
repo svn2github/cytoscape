@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -17,6 +18,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import org.cytoscape.view.ui.networkpanel.MetaNetworkGenerator;
 import org.cytoscape.view.ui.networkpanel.NetworkBrowser;
 import org.cytoscape.view.ui.networkpanel.NetworkBrowserPlugin;
 import org.cytoscape.view.ui.networkpanel.internal.cellrenderer.NetworkTreeCellRenderer;
@@ -52,6 +54,8 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 	private final ImageManager imageManager;
 	
 	private ModuleRelationPanel moduleRelation;
+	
+	private MetaNetworkGenerator generator;
 
 	
 	// Appearence of the table
@@ -101,6 +105,8 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 		CyGroupManager.addGroupChangeListener(this);
+		
+		generator = new MetaNetworkGeneratormpl();
 
 	}
 	
@@ -108,7 +114,7 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 		Object node = path.getLastPathComponent();
 		if(node instanceof GroupTreeNode) {
 		
-			System.out.println("Node is CyGroup Node-------->" + node.getClass());
+			
 			Object group = ((GroupTreeNode)node).getUserObject();
 			if(group instanceof CyGroup) {
 				
@@ -119,6 +125,7 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 				List<CyNode> nodes = ((CyGroup) group).getNodes();
 				Cytoscape.getCurrentNetwork().unselectAllNodes();
 				Cytoscape.getCurrentNetwork().setSelectedNodeState(nodes, true);
+				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 			}
 		}
 		
@@ -298,6 +305,10 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 				// panel
 				if (_network != null && !_network.getIdentifier().equals("0"))
 					model.updateTitle(_network);
+			} else if(e.getPropertyName().equalsIgnoreCase("MODULE_SEARCH_FINISHED")) {
+				System.out.println("\n\n!!!!!!!! Search Finished !!!!!!!!\n\n");
+				
+				this.generator.generateMetaNetwrok("Module Map for " + Cytoscape.getCurrentNetwork().getTitle(),  Cytoscape.getCurrentNetwork(), (Set<CyGroup>) e.getNewValue());
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -311,8 +322,13 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 
 	public void groupChanged(CyGroup group, ChangeType change) {
 		if (change == CyGroupChangeListener.ChangeType.GROUP_CREATED) {
+			
+			System.err.println("\n\n=========== Got Group created event: " + change + "===========\n\n");
 			model.groupCreated(group);
 			imageManager.addGroup(group);
+			
+			networkTreeTable.updateUI();
+			networkTreeTable.doLayout();
 
 		} else if (change == CyGroupChangeListener.ChangeType.GROUP_DELETED) {
 			//groupRemoved(group);
