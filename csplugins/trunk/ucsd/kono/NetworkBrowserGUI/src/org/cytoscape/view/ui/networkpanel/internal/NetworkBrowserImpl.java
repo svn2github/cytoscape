@@ -4,15 +4,24 @@ import static cytoscape.Cytoscape.NETWORK_CREATED;
 import static cytoscape.Cytoscape.NETWORK_DESTROYED;
 
 import java.awt.Component;
+import java.awt.PopupMenu;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
@@ -34,6 +43,7 @@ import cytoscape.Cytoscape;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupChangeListener;
 import cytoscape.groups.CyGroupManager;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CytoscapeDesktop;
 
 
@@ -56,6 +66,11 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 	private ModuleRelationPanel moduleRelation;
 	
 	private MetaNetworkGenerator generator;
+	
+	private CyGroup selectedGroup = null;
+	
+	private ModuleOverviewPanel overview;
+	
 
 	
 	// Appearence of the table
@@ -86,7 +101,7 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 //		NetworkImageBrowser chooser = new NetworkImageBrowser();
 		imageManager = new ImageManager();
 		moduleRelation = new ModuleRelationPanel();
-		mainSplitPane.setRightComponent(moduleRelation);
+		
 		// networkTreeTable.getColumn("Nodes").setPreferredWidth(45);
 		// networkTreeTable.getColumn("Edges").setPreferredWidth(45);
 
@@ -102,12 +117,15 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 		    }
 		});
 		
+		networkTreeTable.addMouseListener(new MouseHandler());
+		
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
 				this);
 		CyGroupManager.addGroupChangeListener(this);
 		
 		generator = new MetaNetworkGeneratormpl();
-
+		overview = new ModuleOverviewPanel(generator);
+		mainSplitPane.setRightComponent(overview);
 	}
 	
 	private void selectGroupNodes(TreePath path) {
@@ -118,7 +136,7 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 			Object group = ((GroupTreeNode)node).getUserObject();
 			if(group instanceof CyGroup) {
 				
-				System.out.println("Got Group: Image = ");
+				selectedGroup = (CyGroup) group;
 				graphicsPanel.setGraphics(imageManager.getImage((CyGroup) group));
 				
 				// Select group nodes
@@ -126,6 +144,8 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 				Cytoscape.getCurrentNetwork().unselectAllNodes();
 				Cytoscape.getCurrentNetwork().setSelectedNodeState(nodes, true);
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+			} else {
+				selectedGroup = null;
 			}
 		}
 		
@@ -308,7 +328,8 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 			} else if(e.getPropertyName().equalsIgnoreCase("MODULE_SEARCH_FINISHED")) {
 				System.out.println("\n\n!!!!!!!! Search Finished !!!!!!!!\n\n");
 				
-				this.generator.generateMetaNetwrok("Module Map for " + Cytoscape.getCurrentNetwork().getTitle(),  Cytoscape.getCurrentNetwork(), (Set<CyGroup>) e.getNewValue());
+				this.generator.generateMetaNetwork("Module Map for " + Cytoscape.getCurrentNetwork().getTitle(),  Cytoscape.getCurrentNetwork(), (Set<CyGroup>) e.getNewValue());
+				this.overview.update();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -337,6 +358,66 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 		} else {
 			System.err.println("unsupported change type: " + change);
 		}
+	}
+	
+	
+	class MouseHandler implements MouseListener {
+		
+		JPopupMenu pop;
+		JMenuItem createSubNetwork;
+		
+		public MouseHandler() {
+			pop = new JPopupMenu("Right Click Menu");
+			createSubNetwork = new JMenuItem("Create network from group");
+			pop.add(createSubNetwork);
+			
+			createSubNetwork.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					createNetwork();
+				}
+
+				
+			});
+		}
+		
+		protected void createNetwork() {
+			if(selectedGroup != null) {
+				List<CyNode> nodes = selectedGroup.getNodes();
+
+				CyNetwork new_network = Cytoscape.createNetwork(nodes,
+				                                                selectedGroup.getInnerEdges(),
+				                                                selectedGroup.getGroupName(),
+				                                                Cytoscape.getCurrentNetwork());
+			}
+		}
+		
+		public void mouseClicked(MouseEvent e) {
+			 if(SwingUtilities.isRightMouseButton(e)){
+			      pop.show(e.getComponent(), e.getX(), e.getY());
+			  }
+		}
+
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
 	

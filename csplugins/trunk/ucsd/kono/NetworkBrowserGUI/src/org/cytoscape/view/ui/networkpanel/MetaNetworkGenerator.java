@@ -7,6 +7,12 @@ import cytoscape.groups.CyGroup;
 
 public interface MetaNetworkGenerator {
 	
+	public static final String NETWORK_NODE = "NETWORK NODE";
+	public static final String MODULE_NODE = "MODULE NODE";
+	
+	public static final String NODE_TYPE = "modules.node_type";
+	public static final String EXEC_COUNTER = "modules.run";
+	
 	/**
 	 * Create a network to represent a relationship between modules.
 	 * 
@@ -14,6 +20,8 @@ public interface MetaNetworkGenerator {
 	 * @param groups
 	 * @return
 	 */
-	public CyNetwork generateMetaNetwrok(String metaNetName, CyNetwork parent, Set<CyGroup> groups);
+	public CyNetwork generateMetaNetwork(String metaNetName, CyNetwork parent, Set<CyGroup> groups);
+	
+	public CyNetwork getMetaNetwork();
 
 }

@@ -14,25 +14,60 @@ import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
 
 public class MetaNetworkGeneratormpl implements MetaNetworkGenerator {
+	
+	private CyNetwork metaNetwork;
+	private List<CyNode> nodes;
+	private List<CyEdge> edges;
+	
+	private Integer run;
+	
+	
+	
+	final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+	
+	
+	public MetaNetworkGeneratormpl() {
+		nodes = new ArrayList<CyNode>();
+		edges = new ArrayList<CyEdge>();
+		metaNetwork = Cytoscape.getRootGraph().createNetwork(nodes, edges);
+		metaNetwork.setTitle("Meta Network");
+		run = 0;
+	}
 		
 
-	public CyNetwork generateMetaNetwrok(String metaNetName, CyNetwork parent, Set<CyGroup> groups) {
+	public CyNetwork generateMetaNetwork(String metaNetName, CyNetwork parent, Set<CyGroup> groups) {
+		try {
+		run++;
 		
 		String groupNodeName;
-
-		final List<CyNode> nodes = new ArrayList<CyNode>();
-		final List<CyEdge> edges = new ArrayList<CyEdge>();
-		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		
-		CyNode node;
 		
+		// Parent network
+		CyNode hubNode = Cytoscape.getCyNode("Network: " + parent.getTitle(), true);
+		nodeAttr.setAttribute(hubNode.getIdentifier(), NODE_TYPE, NETWORK_NODE);
+		
+		CyNode node = null;
+		CyEdge edge = null;
 		for(CyGroup group: groups) {
 			
 			groupNodeName = group.getGroupName();
 			node = Cytoscape.getCyNode(groupNodeName, true);
 			nodes.add(node);	
+			metaNetwork.addNode(node);
+			nodeAttr.setAttribute(node.getIdentifier(), NODE_TYPE, MODULE_NODE);
+			nodeAttr.setAttribute(node.getIdentifier(), EXEC_COUNTER, run);
+			edge = Cytoscape.getCyEdge(hubNode, node, "interaction", "part_of", true);
+			metaNetwork.addEdge(edge);
 		}
 		
-		return Cytoscape.createNetwork(nodes, edges, metaNetName, parent, true);
+		return metaNetwork;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public CyNetwork getMetaNetwork() {
+		return metaNetwork;
 	}
 }

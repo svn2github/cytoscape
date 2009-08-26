@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.SwingConstants;
 
+import org.cytoscape.view.ui.networkpanel.internal.ModuleOverviewPanel;
 import org.cytoscape.view.ui.networkpanel.internal.NetworkBrowserImpl;
 import org.cytoscape.view.ui.networkpanel.internal.NetworkTreeNode;
 import org.cytoscape.view.ui.networkpanel.internal.NetworkTreeTableModel;
