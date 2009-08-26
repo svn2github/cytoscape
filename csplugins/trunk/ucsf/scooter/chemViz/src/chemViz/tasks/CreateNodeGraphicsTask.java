@@ -119,7 +119,10 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 				CustomGraphic cg = graphMap.get(nv);
 				((DNodeView)nv).removeCustomGraphic(cg);
 				cg = drawImage(nv,viewMap.get(nv));
-				graphMap.put(nv, cg);
+				if (cg == null)
+					graphMap.remove(nv);
+				else
+					graphMap.put(nv, cg);
 			}
 			view.updateView();
 		}
@@ -156,6 +159,7 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 			if (viewMap.containsKey(nv)) continue;
 
 			CustomGraphic cg = drawImage(nv, compound);
+			if (cg == null) continue;
 
 			viewMap.put(nv, compound);
 			graphMap.put(nv, cg);
@@ -172,10 +176,12 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		// Get our width and height
 		double width = nv.getWidth();
 		double height = nv.getHeight();
-		// int dim = (int)(Math.min(width, height)*zoom);
+
+		BufferedImage image = (BufferedImage) cmpd.getImage((int)(width*zoom), (int)(height*zoom));
+		if (image == null) return null;
 
 		// Create the image
-		TexturePaint tp = new TexturePaint((BufferedImage)cmpd.getImage((int)(width*zoom),(int)(height*zoom)), new Rectangle2D.Double(0,0,width,height));
+		TexturePaint tp = new TexturePaint(image, new Rectangle2D.Double(0,0,width,height));
 
 		// Add it to the view
 		return ((DNodeView)nv).addCustomGraphic(new Rectangle2D.Double(0,0,width,height), tp, NodeDetails.ANCHOR_NORTHWEST);
