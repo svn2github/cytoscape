@@ -85,6 +85,7 @@ import chemViz.model.Compound.DescriptorType;
 import chemViz.ui.ChemInfoSettingsDialog;
 import chemViz.tasks.CreateAttributesTask;
 import chemViz.tasks.CreateCompoundTableTask;
+import chemViz.tasks.CreateNodeGraphicsTask;
 import chemViz.tasks.CreatePopupTask;
 import chemViz.tasks.TanimotoScorerTask;;
 
@@ -252,6 +253,7 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 			updateLinkOut(((EdgeView)context).getEdge());
 		} else {
 			addNodeDepictionMenus(menu, (NodeView)context);
+			addNodeGraphicsMenus(menu, (NodeView)context);
 			addNodeAttributesMenus(menu, (NodeView)context);
 			updateLinkOut(((NodeView)context).getNode());
 		}
@@ -270,6 +272,10 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 		addEdgeDepictionMenus(depict, null);
 		addNodeDepictionMenus(depict, null);
 		menu.add(depict);
+
+		JMenu graphics = new JMenu(systemProps.getProperty("chemViz.menu.nodegraphics"));
+		addNodeGraphicsMenus(graphics, null);
+		menu.add(graphics);
 	}
 
 	/**
@@ -361,6 +367,55 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 
 		depict.add(buildMenuItem("chemViz.menu.2ddepiction.selectedNodes",
 		                         "chemViz.menu.2ddepiction.selectedNodes"));
+
+		if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
+			depict.setEnabled(false);
+		}
+		menu.add(depict);
+
+		return;
+	}
+
+	/**
+	 * Builds the popup menu for node graphics
+	 * 
+	 * @param menu the menu we're going add our items to
+	 * @param nodeContext the NodeView this menu is for
+	 */
+	private void addNodeGraphicsMenus(JMenu menu, NodeView nodeContext) {
+		// Check and see if we have any node attributes
+		Collection<CyNode> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+
+		if (nodeContext == null) {
+			// Populating main menu
+			JMenuItem item = buildMenuItem("chemViz.menu.nodegraphics.allNodes",
+				                            "chemViz.menu.nodegraphics.allNodes");
+			if (!settingsDialog.hasNodeCompounds(null))
+				item.setEnabled(false);
+			menu.add(item);
+			if (selectedNodes != null && selectedNodes.size() > 0) {
+				item = buildMenuItem("chemViz.menu.nodegraphics.selectedNodes",
+			  	                   "chemViz.menu.nodegraphics.selectedNodes");
+				if (!settingsDialog.hasNodeCompounds(selectedNodes))
+					item.setEnabled(false);
+				menu.add(item);
+			}
+			return;
+		}
+
+		// Populating popup menu
+		JMenu depict = new JMenu(systemProps.getProperty("chemViz.menu.nodegraphics"));
+
+		depict.add(buildMenuItem("chemViz.menu.nodegraphics.thisNode",
+		                         "chemViz.menu.nodegraphics.thisNode"));
+
+		if (selectedNodes == null) selectedNodes = new ArrayList();
+
+		if (!selectedNodes.contains(nodeContext.getNode()))
+			selectedNodes.add((CyNode)nodeContext.getNode());
+
+		depict.add(buildMenuItem("chemViz.menu.nodegraphics.selectedNodes",
+		                         "chemViz.menu.nodegraphics.selectedNodes"));
 
 		if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
 			depict.setEnabled(false);
@@ -572,6 +627,16 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 			createTable(Cytoscape.getCurrentNetwork().getSelectedEdges(), settingsDialog);
 		} else if (cmd.equals("chemViz.menu.2ddepiction.allEdges")) {
 			createTable((Collection<GraphObject>)Cytoscape.getCurrentNetwork().edgesList(), settingsDialog);
+		} else if (cmd.equals("chemViz.menu.nodegraphics.thisNode")) {
+			// Bring up the popup-style of depiction
+			List<Node>nl = new ArrayList();
+			nl.add(nodeView.getNode());
+			addNodeGraphics(nl, settingsDialog);
+		} else if (cmd.equals("chemViz.menu.nodegraphics.selectedNodes")) {
+			// Bring up the compound table
+			addNodeGraphics(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog);
+		} else if (cmd.equals("chemViz.menu.nodegraphics.allNodes")) {
+			addNodeGraphics(Cytoscape.getCurrentNetwork().nodesList(), settingsDialog);
 		} else if (cmd.equals("chemViz.menu.similarity.tanimoto.selectedNodes")) {
 			createScoreTable(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog, false);
 		} else if (cmd.equals("chemViz.menu.similarity.tanimoto.allNodes")) {
@@ -610,6 +675,17 @@ public class ChemVizPlugin extends CytoscapePlugin implements
  	 */
 	private void createTable(Collection<GraphObject>selection, ChemInfoSettingsDialog dialog) {
 		CreateCompoundTableTask loader = new CreateCompoundTableTask(selection, dialog, dialog.getMaxCompounds());
+		TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+	}
+
+	/**
+ 	 * Add 2D depictions as custom node graphics
+ 	 *
+ 	 * @param selection the nodes we're going to pull the compounds from
+ 	 * @param dialog the settings dialog
+ 	 */
+	private void addNodeGraphics(Collection<Node>selection, ChemInfoSettingsDialog dialog) {
+		CreateNodeGraphicsTask loader = new CreateNodeGraphicsTask(selection, dialog);
 		TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 	}
 
