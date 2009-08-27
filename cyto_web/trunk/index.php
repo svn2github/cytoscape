@@ -34,6 +34,14 @@
 
 <div class="item">
 
+<h2>Cytoscape, Agilent, and UCSD in ...</h2>
+<div id="paragraph">
+<i><b><a href="images/CytoscapeDDN.pdf">Drug Discovery News</a></b></i>
+</div>
+</div>
+
+<div class="item">
+
 <h2><b><i>NEW!</i></b> Cytoscape 2.6.3</h2>
 <div id="paragraph">
 <b>This is an emergency release of Cytoscape specifically for Apple OS X.  This release
