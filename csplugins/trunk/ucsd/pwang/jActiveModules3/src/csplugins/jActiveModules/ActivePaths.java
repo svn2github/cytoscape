@@ -10,17 +10,16 @@ package csplugins.jActiveModules;
 //------------------------------------------------------------------------------
 import giny.model.Node;
 
-import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Vector;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
+import java.util.Set;
+import java.util.Vector;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -32,20 +31,13 @@ import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import csplugins.jActiveModules.dialogs.ConditionsVsPathwaysTable2;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
-import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupManager;
-import cytoscape.groups.CyGroupViewer;
-import cytoscape.groups.CyGroupViewer.ChangeType;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.data.ExpressionData;
 import cytoscape.data.SelectFilter;
-import cytoscape.data.mRNAMeasurement;
-import cytoscape.view.CyNetworkView;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
-import csplugins.jActiveModules.Component;
-//import cytoscape.data.CyNetworkFactory;
 
 //-----------------------------------------------------------------------------------
 public class ActivePaths implements ActivePathViewer, Runnable {
@@ -119,12 +111,15 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		activePaths = apf.findActivePaths();
 
 		Vector groupData = createGroupData();
-		
 	}
 
 	
 	//
 	private Vector<Object> createGroupData() {
+		
+		// This is for event
+		final Set<CyGroup> groups = new HashSet<CyGroup>();
+		
 		Vector<CyGroup> groupVect = new Vector<CyGroup>(); 
 		Double[] scores = new Double[activePaths.length]; 
 		Boolean[][] data = new Boolean[activePaths.length][activePaths[0].getConditions().length];
@@ -155,6 +150,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			
 			//
 			groupVect.add(theGroup);
+			groups.add(theGroup);
 			
 			// get score for this pathway
 			scores[i] = new Double(thePath.getScore());
@@ -184,6 +180,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		retVect.add(scores);
 		retVect.add(data);
 		
+		Cytoscape.getSwingPropertyChangeSupport().firePropertyChange("MODULE_SEARCH_FINISHED", null, groups);
 		return retVect;
 	}
 
