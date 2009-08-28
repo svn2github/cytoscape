@@ -54,7 +54,7 @@
       <td><img src="people_photos/annette.jpg"></img></td>
     <td><img src="people_photos/gary.jpg"></img></td>
     <td><img src="people_photos/bruce.jpg"></img></td>
-    <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
+    <td><img src="people_photos/ilya.jpg"></img></td>
     <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
   </tr>
 </table>
@@ -69,9 +69,9 @@
     <td>Ethan Cerami</td>
     <td>Mike Smoot</td>
     <td><a href="http://www.cytoscape.org/cgi-bin/moin.cgi/KeiichiroOno">Keiichiro Ono</a></td>
-    <td>Chris Workman</td>
     <td>Allan Kuchinsky</td>
     <td><a href="http://chianti.ucsd.edu/~slotia/">Samad Lotia</a></td>
+    <td>Mathieu Michaud</td>
     
   </tr>
   <tr>
@@ -80,10 +80,11 @@
      <td><img src="people_photos/ethan.jpg"></img></td>
      <td><img src="people_photos/mike.jpg"></img></td>
     <td><img src="people_photos/kei.jpg"></img></td>
-  <td><img src="people_photos/chris.jpg"></img></td>
     <td><img src="people_photos/allan.jpg"></img></td>
      <td><img src="people_photos/samad.jpg"></img></td>
+     <td><img src="people_photos/mathieu.jpg"></img></td>
   </tr>
+
   <tr><td colspan=6>&nbsp;</td></tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
@@ -105,6 +106,22 @@
      <td><img src="people_photos/sarah.jpg"></img></td>
   </tr>
 
+  <tr><td colspan=6>&nbsp;</td></tr>
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+    <td>Piet Molenaar</td>
+    <td>Maital Ashkenazi</td>
+    <td>Daniel Abel</td>
+    <td>Noel Ruddock</td>
+   </tr>
+
+    <tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+     <td><img src="people_photos/piet.jpg"></img></td>
+     <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
+     <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
+     <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
+  </tr>
   
 </table>
 <h2>Scientific Advisory Board:</h2>
@@ -145,38 +162,40 @@
 				<tbody>
 					<tr>
 						<td>
-    					Aditya Vailaya
-						<br>
-     					Melissa Cline
-						<br>
-						Guy Warner
-						<br>
-						Iliana Avila-Campillo
-						<br>
-						Nerius Landys
-						<br>
-						Rowan Christmas
-						<br>
-						Ryan Kelley
-						<br>
-						Rich Bonneau
-						<br>
-						Mark Anderson
-						<br>
-						Nada Amin
-						<br>
-						Larissa Kamenkovich
-						<br>
-						Andrew Markiel
-						<br>
-						Owen Ozier
-						<br>
-						Paul Shannon
-						<br>
-						Jonathan Wang
-						<br>
-						Robert Sheridan
-						<br>
+Chris Workman
+<br>
+Aditya Vailaya
+<br>
+Melissa Cline
+<br>
+Guy Warner
+<br>
+Iliana Avila-Campillo
+<br>
+Nerius Landys
+<br>
+Rowan Christmas
+<br>
+Ryan Kelley
+<br>
+Rich Bonneau
+<br>
+Mark Anderson
+<br>
+Nada Amin
+<br>
+Larissa Kamenkovich
+<br>
+Andrew Markiel
+<br>
+Owen Ozier
+<br>
+Paul Shannon
+<br>
+Jonathan Wang
+<br>
+Robert Sheridan
+<br>
 						</td>
 					</tr>
 				</tbody>
