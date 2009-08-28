@@ -80,6 +80,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	private JPanel tunablePanel;
 	private int maxCompounds = 0;
 	private double tcCutoff = 0.25;
+	private boolean showHyd = false;
 
 	public ChemInfoSettingsDialog() {
 		super(Cytoscape.getDesktop(), "ChemViz Plugin Settings Dialog", false);
@@ -178,6 +179,13 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		if ((t != null) && (t.valueChanged() || force)) {
 			tcCutoff = ((Double) t.getValue()).doubleValue();
 		}
+
+/*
+		t = properties.get("showHyd");
+		if ((t != null) && (t.valueChanged() || force)) {
+			showHyd = ((Boolean) t.getValue()).booleanValue();
+		}
+*/
 	}
 
 	public ChemInfoProperties getProperties() {
@@ -247,6 +255,10 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		return tcCutoff;
 	}
 
+	public boolean showHydrogens() {
+		return showHyd;
+	}
+
 	private List<String> getMatchingAttributes(CyAttributes attributes, List<String> compoundAttributes) {
 		// Get the names of all of the object attributes
 		String[] attrNames = attributes.getAttributeNames();
@@ -290,6 +302,12 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		                Tunable.DOUBLE, new Double(0.25));
 		properties.add(t);
 
+/*
+		t = new Tunable("showHyd",
+		                "Show hydrogens explicitly"
+		                Tunable.BOOLEAN, new Boolean(false));
+		properties.add(t);
+*/
 
 		List<String>possibleAttributes = getAllAttributes(Cytoscape.getNodeAttributes(), 
 		                                                  Cytoscape.getEdgeAttributes());

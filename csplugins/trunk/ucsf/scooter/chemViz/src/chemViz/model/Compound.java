@@ -751,7 +751,7 @@ public class Compound {
 			model.setShowAromaticity(true); 
 			model.setShowReactionBoxes(false);
 			model.setKekuleStructure(false);
-			model.setBackColor(new Color(255, 255, 255, 0));
+			model.setBackColor(Color.WHITE);
 
 			int renderWidth = width;
 			// if (renderWidth < 150) renderWidth = 150;
@@ -761,7 +761,7 @@ public class Compound {
 			ISimpleRenderer2D renderer = new Java2DRenderer(model);
 			bufferedImage = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D graphics = bufferedImage.createGraphics();
-			graphics.setColor(new Color(255, 0, 0, 0));
+			graphics.setColor(new Color(255, 255, 255, 0));
 			graphics.fillRect(0,0,renderWidth,renderHeight);
 			Rectangle2D bbox = new Rectangle2D.Double(0,0,renderWidth,renderHeight);
 

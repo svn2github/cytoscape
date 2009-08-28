@@ -110,6 +110,7 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 	private Properties systemProps = null;
 	private ChemInfoSettingsDialog settingsDialog = null; 
 	private Properties cytoProps;
+	private HashMap<CyNetworkView, CreateNodeGraphicsTask> customGraphicsMap = new HashMap();
 	
 	/**
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
@@ -126,6 +127,7 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 					.addNodeContextMenuListener(this);
 			((DGraphView) Cytoscape.getCurrentNetworkView())
 					.addEdgeContextMenuListener(this);
+
 		} catch (ClassCastException ccex) {
 			logger.error("Unable to setup network listeners: "+ccex.getMessage(), ccex);
 			return;
@@ -150,6 +152,16 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 		
 			cytoProps = CytoscapeInit.getProperties();
 			settingsDialog = new ChemInfoSettingsDialog();
+
+			// See if we've already got a network that has custom graphics
+			if (CreateNodeGraphicsTask.hasCustomGraphics(Cytoscape.getCurrentNetwork())) {
+				List<Node> selection = 
+				  CreateNodeGraphicsTask.getCustomGraphicsNodes(Cytoscape.getCurrentNetworkView());
+
+				CreateNodeGraphicsTask loader = new CreateNodeGraphicsTask(selection, settingsDialog, false);
+				TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+				customGraphicsMap.put(Cytoscape.getCurrentNetworkView(), loader);
+			}
 		} catch (Exception e) {
 			logger.error("Unable to initialize menus: "+e.getMessage(), e);
 		}
@@ -229,11 +241,26 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			CyNetworkView view = (CyNetworkView)evt.getNewValue();
 			// Add menu to the context dialog
-			((CyNetworkView) evt.getNewValue())
-					.addNodeContextMenuListener(this);
-			((CyNetworkView) evt.getNewValue())
-					.addEdgeContextMenuListener(this);
+			view.addNodeContextMenuListener(this);
+			view.addEdgeContextMenuListener(this);
+			// Check to see if this view has custom graphics
+			if (CreateNodeGraphicsTask.hasCustomGraphics(view.getNetwork())) {
+				List<Node> selection = 
+				  CreateNodeGraphicsTask.getCustomGraphicsNodes(view);
+
+				CreateNodeGraphicsTask loader = null;
+				if (customGraphicsMap.containsKey(view)) {
+					loader = customGraphicsMap.get(view);
+					loader.setSelection(selection);
+					loader.setRemove(false);
+				} else {
+					loader = new CreateNodeGraphicsTask(selection, settingsDialog, false);
+					customGraphicsMap.put(view, loader);
+				}
+				TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+			}
 		}
 	}
 
@@ -254,6 +281,7 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 		} else {
 			addNodeDepictionMenus(menu, (NodeView)context);
 			addNodeGraphicsMenus(menu, (NodeView)context);
+			addClearGraphicsMenus(menu, (NodeView)context);
 			addNodeAttributesMenus(menu, (NodeView)context);
 			updateLinkOut(((NodeView)context).getNode());
 		}
@@ -276,6 +304,10 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 		JMenu graphics = new JMenu(systemProps.getProperty("chemViz.menu.nodegraphics"));
 		addNodeGraphicsMenus(graphics, null);
 		menu.add(graphics);
+
+		JMenu cGraphics = new JMenu(systemProps.getProperty("chemViz.menu.clearnodegraphics"));
+		addClearGraphicsMenus(cGraphics, null);
+		menu.add(cGraphics);
 	}
 
 	/**
@@ -416,6 +448,55 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 
 		depict.add(buildMenuItem("chemViz.menu.nodegraphics.selectedNodes",
 		                         "chemViz.menu.nodegraphics.selectedNodes"));
+
+		if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
+			depict.setEnabled(false);
+		}
+		menu.add(depict);
+
+		return;
+	}
+
+	/**
+	 * Builds the popup menu for the commands to clear the node graphics
+	 * 
+	 * @param menu the menu we're going add our items to
+	 * @param nodeContext the NodeView this menu is for
+	 */
+	private void addClearGraphicsMenus(JMenu menu, NodeView nodeContext) {
+		// Check and see if we have any node attributes
+		Collection<CyNode> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+
+		if (nodeContext == null) {
+			// Populating main menu
+			JMenuItem item = buildMenuItem("chemViz.menu.clearnodegraphics.allNodes",
+				                            "chemViz.menu.clearnodegraphics.allNodes");
+			if (!settingsDialog.hasNodeCompounds(null))
+				item.setEnabled(false);
+			menu.add(item);
+			if (selectedNodes != null && selectedNodes.size() > 0) {
+				item = buildMenuItem("chemViz.menu.clearnodegraphics.selectedNodes",
+			  	                   "chemViz.menu.clearnodegraphics.selectedNodes");
+				if (!settingsDialog.hasNodeCompounds(selectedNodes))
+					item.setEnabled(false);
+				menu.add(item);
+			}
+			return;
+		}
+
+		// Populating popup menu
+		JMenu depict = new JMenu(systemProps.getProperty("chemViz.menu.clearnodegraphics"));
+
+		depict.add(buildMenuItem("chemViz.menu.clearnodegraphics.thisNode",
+		                         "chemViz.menu.clearnodegraphics.thisNode"));
+
+		if (selectedNodes == null) selectedNodes = new ArrayList();
+
+		if (!selectedNodes.contains(nodeContext.getNode()))
+			selectedNodes.add((CyNode)nodeContext.getNode());
+
+		depict.add(buildMenuItem("chemViz.menu.clearnodegraphics.selectedNodes",
+		                         "chemViz.menu.clearnodegraphics.selectedNodes"));
 
 		if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
 			depict.setEnabled(false);
@@ -637,6 +718,16 @@ public class ChemVizPlugin extends CytoscapePlugin implements
 			addNodeGraphics(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog);
 		} else if (cmd.equals("chemViz.menu.nodegraphics.allNodes")) {
 			addNodeGraphics(Cytoscape.getCurrentNetwork().nodesList(), settingsDialog);
+		} else if (cmd.equals("chemViz.menu.clearnodegraphics.thisNode")) {
+			// Bring up the popup-style of depiction
+			List<Node>nl = new ArrayList();
+			nl.add(nodeView.getNode());
+			removeNodeGraphics(nl, settingsDialog);
+		} else if (cmd.equals("chemViz.menu.clearnodegraphics.selectedNodes")) {
+			// Bring up the compound table
+			removeNodeGraphics(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog);
+		} else if (cmd.equals("chemViz.menu.clearnodegraphics.allNodes")) {
+			removeNodeGraphics((List<Node>)null, settingsDialog);
 		} else if (cmd.equals("chemViz.menu.similarity.tanimoto.selectedNodes")) {
 			createScoreTable(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog, false);
 		} else if (cmd.equals("chemViz.menu.similarity.tanimoto.allNodes")) {
@@ -685,7 +776,37 @@ public class ChemVizPlugin extends CytoscapePlugin implements
  	 * @param dialog the settings dialog
  	 */
 	private void addNodeGraphics(Collection<Node>selection, ChemInfoSettingsDialog dialog) {
-		CreateNodeGraphicsTask loader = new CreateNodeGraphicsTask(selection, dialog);
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		CreateNodeGraphicsTask loader = null;
+		if (customGraphicsMap.containsKey(view)) {
+			loader = customGraphicsMap.get(view);
+			loader.setSelection(selection);
+			loader.setRemove(false);
+		} else {
+			loader = new CreateNodeGraphicsTask(selection, dialog, false);
+			customGraphicsMap.put(view, loader);
+		}
+		TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+	}
+
+	/**
+ 	 * Remove 2D depictions from custom node graphics
+ 	 *
+ 	 * @param selection the nodes we're going to remove custom graphics from.  If this is null,
+ 	 * all custom graphics are cleared
+ 	 * @param dialog the settings dialog
+ 	 */
+	private void removeNodeGraphics(Collection<Node>selection, ChemInfoSettingsDialog dialog) {
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		CreateNodeGraphicsTask loader = null;
+		if (customGraphicsMap.containsKey(view)) {
+			loader = customGraphicsMap.get(view);
+			loader.setSelection(selection);
+			loader.setRemove(true);
+		} else {
+			loader = new CreateNodeGraphicsTask(selection, dialog, true);
+			customGraphicsMap.put(view, loader);
+		}
 		TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 	}
 

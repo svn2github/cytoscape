@@ -55,6 +55,7 @@ import ding.view.DNodeView;
 import ding.view.ViewportChangeListener;
 
 import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -79,7 +80,43 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 	ChemInfoSettingsDialog settingsDialog;
 	HashMap<NodeView, Compound> viewMap = null;
 	HashMap<NodeView, CustomGraphic> graphMap = null;
+	private static final String CustomGraphicsAttribute = "__has2DGraphics";
+	private boolean removeCustomGraphics = false;
 	double zoom = 0.0;
+	double lastX = 0.0;
+	double lastY = 0.0;
+
+	/**
+ 	 * This method will check to see if a network has custom graphics
+ 	 * 
+ 	 * @param network the network we're checking
+ 	 * @return <b>true</b> if the network has custom graphics, <b>false</b> otherwise
+ 	 */
+	public static boolean hasCustomGraphics(CyNetwork network) {
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+
+		if (!networkAttributes.hasAttribute(network.getIdentifier(), CustomGraphicsAttribute))
+			return false;
+
+		Boolean v = networkAttributes.getBooleanAttribute(network.getIdentifier(), 
+		                                                  CustomGraphicsAttribute);
+		if (v == null) return false;
+
+		return v.booleanValue();
+	}
+
+	public static List<Node> getCustomGraphicsNodes(CyNetworkView view) {
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		List<Node> nList = new ArrayList();
+		for (Object obj: view.getNetwork().nodesList()) {
+			Node node = (Node)obj;
+			if (nodeAttributes.hasAttribute(node.getIdentifier(), CustomGraphicsAttribute) &&
+			    nodeAttributes.getBooleanAttribute(node.getIdentifier(), CustomGraphicsAttribute)) {
+				nList.add(node);
+			}
+		}
+		return nList;
+	}
 
 	/**
  	 * Creates the task.
@@ -88,15 +125,24 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
  	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
  	 */
 	public CreateNodeGraphicsTask(Collection nodeSelection, 
-	                              ChemInfoSettingsDialog settingsDialog) {
+	                              ChemInfoSettingsDialog settingsDialog, boolean remove) {
 		this.nodeSelection = nodeSelection;
 		this.canceled = false;
 		this.compoundCount = 0;
 		this.settingsDialog = settingsDialog;
+		this.removeCustomGraphics = remove;
 	}
 
 	public String getTitle() {
 		return "Creating Custom Node Graphics";
+	}
+
+	public void setSelection(Collection selection) {
+		this.nodeSelection = selection;
+	}
+
+	public void setRemove(boolean remove) {
+		this.removeCustomGraphics = remove;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -110,30 +156,60 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 
 	public void viewportChanged(int w, int h, double xCenter, double yCenter, double scale) {
 		// System.out.println("viewport: size="+w+"x"+h+", center = "+xCenter+", "+yCenter+" scale = "+scale);
-		if (scale != zoom) {
-			zoom = scale;
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		double lastScale = zoom;
+		boolean needUpdate = false;
 
-			for (NodeView nv: viewMap.keySet()) {
-				// Future -- only update nodes within the viewport
-				CustomGraphic cg = graphMap.get(nv);
-				((DNodeView)nv).removeCustomGraphic(cg);
-				cg = drawImage(nv,viewMap.get(nv));
-				if (cg == null)
-					graphMap.remove(nv);
-				else
-					graphMap.put(nv, cg);
+		zoom = scale;
+
+		for (NodeView nv: viewMap.keySet()) {
+			// Future -- only update nodes within the viewport
+			if (!inViewport(nv, w, h, xCenter, yCenter, scale))
+				continue;
+			CustomGraphic cg = graphMap.get(nv);
+			((DNodeView)nv).removeCustomGraphic(cg);
+			cg = drawImage(nv,viewMap.get(nv));
+			if (cg == null)
+				graphMap.remove(nv);
+			else {
+				graphMap.put(nv, cg);
+				needUpdate = true;
 			}
-			view.updateView();
 		}
+		if (needUpdate) view.updateView();
 	}
 
 	/**
  	 * Runs the task -- this will get all of the compounds, and compute the requested attributes
  	 */
 	public void run() {
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 
-		List<Compound>cList = getCompounds(nodeSelection, Cytoscape.getNodeAttributes(),
+		if (removeCustomGraphics) {
+			for (NodeView nv: graphMap.keySet()) {
+				if (nodeSelection == null || nodeSelection.contains(nv.getNode())) {
+					// System.out.println("Removing cg for "+nv.getNode().getIdentifier());
+					CustomGraphic cg = graphMap.get(nv);
+					((DNodeView)nv).removeCustomGraphic(cg);
+					nodeAttributes.deleteAttribute(nv.getNode().getIdentifier(), 
+					                               CustomGraphicsAttribute); 
+					graphMap.remove(nv);
+					viewMap.remove(nv);
+				}
+			}
+
+			if (nodeSelection == null) {
+				networkAttributes.deleteAttribute(Cytoscape.getCurrentNetwork().getIdentifier(),
+				                                  CustomGraphicsAttribute);
+				((DGraphView)view).removeViewportChangeListener(this);
+			}
+			view.updateView();
+			return;
+		}
+
+		List<Compound>cList = getCompounds(nodeSelection, nodeAttributes,
 					   							             settingsDialog.getCompoundAttributes("node",AttriType.smiles),
 						   						             settingsDialog.getCompoundAttributes("node",AttriType.inchi));
 
@@ -143,7 +219,6 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		if (graphMap == null)
 			graphMap = new HashMap();
 
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		zoom = view.getZoom();
 
 		for (Compound compound: cList) {
@@ -163,13 +238,23 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 
 			viewMap.put(nv, compound);
 			graphMap.put(nv, cg);
+
+			// Update our node attribute
+			nodeAttributes.setAttribute(nv.getNode().getIdentifier(), 
+			                            CustomGraphicsAttribute,new Boolean(true));
 		}
+
 
 		view.updateView();
 
 		// If we added any custom graphics, we need to listen for changes to the view zoom
 		((DGraphView)view).addViewportChangeListener(this);
 
+		// Update our network attribute to indicate we have node graphics
+		networkAttributes.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
+		                               CustomGraphicsAttribute,new Boolean(true));
+		nodeAttributes.setUserVisible(CustomGraphicsAttribute, false);
+		networkAttributes.setUserVisible(CustomGraphicsAttribute, false);
 	}
 
 	private CustomGraphic drawImage(NodeView nv, Compound cmpd) {
@@ -184,6 +269,32 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		TexturePaint tp = new TexturePaint(image, new Rectangle2D.Double(0,0,width,height));
 
 		// Add it to the view
-		return ((DNodeView)nv).addCustomGraphic(new Rectangle2D.Double(0,0,width,height), tp, NodeDetails.ANCHOR_NORTHWEST);
+		return ((DNodeView)nv).addCustomGraphic(new Rectangle2D.Double(0,0,width,height), tp, 
+		                                        NodeDetails.ANCHOR_NORTHWEST);
+	}
+
+	private boolean inViewport(NodeView nv, int width, int height, 
+	                           double xCenter, double yCenter, double scale) {
+
+		double x = nv.getXPosition();
+		double y = nv.getYPosition();
+
+		double nodeWidth = nv.getWidth();
+		double nodeHeight = nv.getHeight();
+
+		double xMin = xCenter - ((double)width/(2.0*scale));
+		double xMax = xCenter + ((double)width/(2.0*scale));
+		double yMin = yCenter - ((double)height/(2.0*scale));
+		double yMax = yCenter + ((double)height/(2.0*scale));
+
+		// System.out.println("X range = "+xMin+"-"+xMax);
+		// System.out.println("Y range = "+yMin+"-"+yMax);
+		// System.out.println("Node is at: "+x+","+y+" and is "+nodeWidth+"x"+nodeHeight);
+
+		if ( (x+nodeWidth) < xMin || (x-nodeWidth) > xMax) return false;
+
+		if ( (y+nodeHeight) < yMin || (y-nodeHeight) > yMax) return false;
+
+		return true;
 	}
 }
