@@ -21,7 +21,7 @@ public interface MetaNetworkGenerator {
 	 * @return
 	 */
 	public CyNetwork generateMetaNetwork(String metaNetName, CyNetwork parent, Set<CyGroup> groups);
-	
+	public CyNetwork generateOverviewNetwork(CyNetwork parent, Set<CyGroup> groups);
 	public CyNetwork getMetaNetwork();
 
 }

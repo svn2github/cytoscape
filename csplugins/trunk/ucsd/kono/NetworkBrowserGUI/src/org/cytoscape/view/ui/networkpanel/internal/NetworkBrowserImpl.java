@@ -329,6 +329,7 @@ public class NetworkBrowserImpl extends JPanel implements NetworkBrowser,
 				System.out.println("\n\n!!!!!!!! Search Finished !!!!!!!!\n\n");
 				
 				this.generator.generateMetaNetwork("Module Map for " + Cytoscape.getCurrentNetwork().getTitle(),  Cytoscape.getCurrentNetwork(), (Set<CyGroup>) e.getNewValue());
+				this.generator.generateOverviewNetwork(Cytoscape.getCurrentNetwork(), (Set<CyGroup>) e.getNewValue());
 				this.overview.update();
 			}
 		} catch (Exception ex) {

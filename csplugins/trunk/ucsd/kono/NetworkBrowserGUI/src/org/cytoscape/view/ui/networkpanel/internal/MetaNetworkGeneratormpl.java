@@ -12,6 +12,9 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 
 public class MetaNetworkGeneratormpl implements MetaNetworkGenerator {
 	
@@ -65,6 +68,27 @@ public class MetaNetworkGeneratormpl implements MetaNetworkGenerator {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public CyNetwork generateOverviewNetwork(CyNetwork parent, Set<CyGroup> groups) {
+		List<CyNode> groupNodes = new ArrayList<CyNode>();
+		List<CyEdge> groupEdges = new ArrayList<CyEdge>();
+		
+		for(CyGroup group: groups) {
+			groupNodes.addAll(group.getNodes());
+			groupEdges.addAll(group.getInnerEdges());
+		}
+		
+		final CyNetwork overview = Cytoscape.createNetwork(groupNodes, groupEdges, "Module Overview for " + parent.getTitle(), parent, true);
+		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
+		Cytoscape.getNetworkView(overview.getIdentifier()).applyLayout(layout);
+		
+		for(CyGroup group: groups) {
+			CyGroupManager.createGroup("overview." + group.getGroupName(), group.getNodes(),
+				"moduleFinderView");
+		}
+		
+		return overview;
 	}
 	
 	public CyNetwork getMetaNetwork() {
