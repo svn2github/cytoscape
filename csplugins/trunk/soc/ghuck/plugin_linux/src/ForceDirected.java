@@ -418,14 +418,13 @@ public class ForceDirected extends AbstractGraphPartition
 	    }
 
 	}
-
-	//upRatio = 5 * upRatio / 9;
+	
+	//if (upRatio > 1000) 
+	//    upRatio =  Math.log(upRatio) + 1000;
 	//upRatio = Math.min(upRatio, 100.0);
 
 	// Check whether the ratio is not zero
-	if (upRatio <= 0.0){   
-	    message = "Error while performing node positions scale-up\nIgnoring scaling upt\nupRatio = " + upRatio;		    
-	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
+	if (upRatio < 1.0){   
 	    upRatio = 1.0;
 	}
 
@@ -447,7 +446,7 @@ public class ForceDirected extends AbstractGraphPartition
 		double minY = node_positions[0][1];
 		
 		// Get the 'offset' of the whole partition, so that we can eliminate it
-		for (int i = 0; i < numNodes; i++) {
+		for (int i = 1; i < numNodes; i++) {
 		    
 		    if ( node_positions[i][0] < minX)
 			minX = node_positions[i][0];
@@ -458,7 +457,7 @@ public class ForceDirected extends AbstractGraphPartition
 
 		minX = upRatio * minX;
 		minY = upRatio * minY;
-
+		
 		// Reset the nodes so we get the new average location
 		part.resetNodes(); 
 
