@@ -68,7 +68,7 @@ public class IDMapperClientImpl implements IDMapperClient {
     public IDMapperClientImpl(String connectionString, String classString,
             String displayName)
             throws ClassNotFoundException, IDMapperException {
-        this(connectionString, classString, displayName, ""+clientNo+"-"+System.currentTimeMillis()); 
+        this(connectionString, classString, displayName, ""+clientNo+"-"+System.currentTimeMillis());
     }
 
     public IDMapperClientImpl(String connectionString, String classString,
@@ -120,7 +120,11 @@ public class IDMapperClientImpl implements IDMapperClient {
     }
 
     public String getDescription() {
-        StringBuilder desc = new StringBuilder(this.getDisplayName());
+        StringBuilder desc = new StringBuilder();
+
+        desc.append("IDMapper: "+this.getClassString()+"\n");
+        desc.append("Connection String: "+this.getConnectionString()+"\n");
+
         desc.append("\nCapacities:\n");
 
         desc.append(">> Supported source ID types:\n");
@@ -145,7 +149,7 @@ public class IDMapperClientImpl implements IDMapperClient {
             }
         }
 
-        desc.append(">> Supported target ID types:\n");
+        desc.append("\n>> Supported target ID types:\n");
         dss = null;
         try {
             dss = capabilities.getSupportedTgtDataSources();

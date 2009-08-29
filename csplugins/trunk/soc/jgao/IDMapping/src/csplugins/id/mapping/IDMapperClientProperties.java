@@ -33,9 +33,34 @@ public class IDMapperClientProperties extends ModulePropertiesImpl
         super(propertyPrefix, FinalStaticValues.CLIENT_SESSION_PROPS);
     }
 
+    public IDMapperClientProperties(String propertyPrefix,
+            IDMapperClientProperties idMapperProps) {
+        super(propertyPrefix, FinalStaticValues.CLIENT_SESSION_PROPS);
+
+        for (Tunable tunable : idMapperProps.getTunables()) {
+            add(tunable);
+        }
+
+        initializeProperties(); // save to props or set to tunables
+
+//        String prefix = idMapperProps.getPrefix();
+//        Properties props = CytoscapeInit.getProperties();
+//
+//        // Find all properties with this prefix
+//        Enumeration iter = props.propertyNames();
+//
+//        while (iter.hasMoreElements()) {
+//            String property = (String) iter.nextElement();
+//
+//            if (property.startsWith(prefix)) {
+//                props.remove(property);
+//            }
+//        }
+    }
+
     /**
-     * saveProperties is used to add modified properties to the Cytoscape properties
-     * so they can be saved in the properties file.
+     * saveProperties is used to add modified properties to the Cytoscape
+     * properties so they can be saved in the properties file.
      *
      */
     public void saveProperties(Tunable tunable) {

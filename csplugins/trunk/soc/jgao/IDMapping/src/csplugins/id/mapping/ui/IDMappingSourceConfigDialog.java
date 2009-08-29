@@ -209,6 +209,11 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
 }//GEN-LAST:event_closeButtonActionPerformed
 
     private void saveAsDefaultButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsDefaultButtonActionPerformed
+        int ret = JOptionPane.showConfirmDialog(this, "Are you sure to replace the default resources with" +
+                " the current ones?", null, JOptionPane.YES_NO_OPTION);
+        if (ret==JOptionPane.NO_OPTION)
+            return;
+
         try {
             IDMapperClientManager.saveCurrentToCytoscapeGlobalProperties();
         } catch (Exception e) {
@@ -225,12 +230,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         if (ret==JOptionPane.NO_OPTION)
             return;
         
-        try {
-            IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load the default resources.");
-        }
+        IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
 
         srcTree.reload();
         JOptionPane.showMessageDialog(this, "The default resources has been loaded.");

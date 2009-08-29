@@ -60,27 +60,18 @@ import org.bridgedb.IDMapperStack;
  */
 public class IDMapperClientManager {
 
-    private static Map<String, IDMapperClient> clientNameMap;
-    private static Map<String, IDMapperClient> clientIDMap;
+    private static Map<String, IDMapperClient> clientConnectionStringMap;
 
     static {
         new IDMapperClientManager();
     }
 
     private IDMapperClientManager() {
-        clientNameMap = new HashMap();
-        clientIDMap = new HashMap();
-        reloadFromCytoscapeSessionProperties();
+        clientConnectionStringMap = new HashMap();
+        //reloadFromCytoscapeSessionProperties();
     }
 
     public static void reloadFromCytoscapeSessionProperties() {
-        //remove all of the current clients
-        clientNameMap.clear();
-        clientIDMap.clear();
-        
-        //removeAllClients(); // this cannot be used here. it will delete the
-                              // corresponding session properties
-
         Properties props = CytoscapeInit.getProperties();
 
         String prefix = FinalStaticValues.CLIENT_SESSION_PROPS+".";
@@ -101,11 +92,14 @@ public class IDMapperClientManager {
             }
         }
 
+        int i= 0;
         for (String pid : propIds) {
+            String newPId = ""+(i++)+"-"+System.currentTimeMillis();
             IDMapperClientProperties imcp = new IDMapperClientProperties(pid);
+
             IDMapperClient client = null;
             try {
-                client = new IDMapperClientImplTunables(imcp);
+                client = new IDMapperClientImplTunables(imcp, newPId);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (IDMapperException e) {
@@ -117,11 +111,20 @@ public class IDMapperClientManager {
             } else {
                 registerClient(client);
             }
-
         }
     }
 
-    public static boolean reloadFromCytoscapeGlobalProperties() throws IOException{
+    private static final String CLIENT_START = "#client start";
+    private static final String CLIENT_END = "#client end";
+    private static final String CLIENT_ID = "Client ID:\t";
+    private static final String CLIENT_CONN_STR = "Connection String:\t";
+    private static final String CLIENT_CLASS_PATH = "Class Path:\t";
+    private static final String CLIENT_DISPLAY_NAME = "Display Name:\t";
+    private static final String CLIENT_SELECTED = "Selected:\t";
+
+    public static boolean reloadFromCytoscapeGlobalProperties() {
+        removeAllClients(true); // remove all of the current clients
+
         String fileName = FinalStaticValues.CLIENT_GLOBAL_PROPS;
         File file = cytoscape.CytoscapeInit.getConfigFile(fileName);
         if (!file.exists()) {
@@ -131,37 +134,59 @@ public class IDMapperClientManager {
 
         Set<IDMapperClient> clients = new HashSet();
 
-        BufferedReader in = new BufferedReader(new FileReader(file));
-        String line = in.readLine();
-        if (line==null) { //empty file
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(file));
+
+            String clientId = null;
+            String classStr = null;
+            String connStr = null;
+            String display = null;
+            boolean selected = true;
+
+            String line;
+            while ((line=in.readLine())!=null) {
+                if (line.compareTo(CLIENT_START)==0) {
+                    clientId = null;
+                    classStr = null;
+                    connStr = null;
+                    display = null;
+                    selected = true;
+                } else if (line.compareTo(CLIENT_END)==0) {
+                    if (classStr!=null && connStr!=null) {
+                        IDMapperClient client;
+                        try {
+                            client = new IDMapperClientImplTunables(connStr,
+                                    classStr, display, clientId, selected);
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                            continue;
+                        } catch (IDMapperException e) {
+                            e.printStackTrace();
+                            continue;
+                        }
+
+                        clients.add(client);
+                    } else {
+                    // something is wrong with the file
+                    }
+                } else if (line.startsWith(CLIENT_ID)) {
+                    clientId = line.substring(CLIENT_ID.length());
+                } else if (line.startsWith(CLIENT_CONN_STR)) {
+                    connStr = line.substring(CLIENT_CONN_STR.length());
+                } else if (line.startsWith(CLIENT_CLASS_PATH)) {
+                    classStr = line.substring(CLIENT_CLASS_PATH.length());
+                } else if (line.startsWith(CLIENT_DISPLAY_NAME)) {
+                    display = line.substring(CLIENT_DISPLAY_NAME.length());
+                } else if (line.startsWith(CLIENT_SELECTED)) {
+                    selected = Boolean.parseBoolean(line.substring(
+                            CLIENT_SELECTED.length()));
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
-
-        int nClients = Integer.parseInt(line);
-        for (int i=0; i<nClients; i++) {
-            String clientId = in.readLine();
-            String classStr = in.readLine();
-            String connStr = in.readLine();
-            String display = in.readLine();
-            boolean selected = Boolean.parseBoolean(in.readLine());
-            IDMapperClient client;
-            try {
-                client = new IDMapperClientImplTunables(connStr,
-                        classStr, display, clientId, selected);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                continue;
-            } catch (IDMapperException e) {
-                e.printStackTrace();
-                continue;
-            }
-
-            clients.add(client);
-        }
-
-//        clientNameMap.clear();
-//        clientIDMap.clear();
-        removeAllClients(); // remove all of the current clients
 
         for (IDMapperClient client : clients) {
             registerClient(client);
@@ -176,28 +201,32 @@ public class IDMapperClientManager {
         BufferedWriter out = new BufferedWriter(new FileWriter(file));
 
         Set<IDMapperClient> clients = IDMapperClientManager.allClients();
-        out.write(Integer.toString(clients.size()));
-        out.newLine();
 
         for (IDMapperClient client : clients) {
+            out.write(CLIENT_START);
+            out.newLine();
+
             String clientId = client.getId();
-            out.write(clientId);
+            out.write(CLIENT_ID+clientId);
             out.newLine();
 
             String classStr = client.getClassString();
-            out.write(classStr);
+            out.write(CLIENT_CLASS_PATH+classStr);
             out.newLine();
 
             String connStr = client.getConnectionString();
-            out.write(connStr);
+            out.write(CLIENT_CONN_STR+connStr);
             out.newLine();
 
             String display = client.getDisplayName();
-            out.write(display);
+            out.write(CLIENT_DISPLAY_NAME+display);
             out.newLine();
 
             boolean selected = client.isSelected();
-            out.write(Boolean.toString(selected));
+            out.write(CLIENT_SELECTED+Boolean.toString(selected));
+            out.newLine();
+
+            out.write(CLIENT_END);
             out.newLine();
         }
 
@@ -205,16 +234,16 @@ public class IDMapperClientManager {
     }
 
     public static int countClients() {
-        return clientNameMap.size();
+        return clientConnectionStringMap.size();
     }
 
     public static Set<IDMapperClient> allClients() {
-        return new HashSet(clientNameMap.values());
+        return new HashSet(clientConnectionStringMap.values());
     }
 
     public static Set<IDMapperClient> selectedClients() {
         Set<IDMapperClient> clients = new HashSet();
-        for (IDMapperClient client : clientNameMap.values()) {
+        for (IDMapperClient client : clientConnectionStringMap.values()) {
             if (client.isSelected()) {
                 clients.add(client);
             }
@@ -232,45 +261,42 @@ public class IDMapperClientManager {
         return idMapperStack;
     }
     
-    public static IDMapperClient getClient(String clientId) {
-        return clientIDMap.get(clientId);
+    public static IDMapperClient getClient(String clientConnStr) {
+        return clientConnectionStringMap.get(clientConnStr);
     }
 
-    public static boolean removeClient(String clientId) {
-        if (clientId == null) {
+    public static boolean removeClient(String clientConnStr) {
+        return removeClient(clientConnStr, true);
+    }
+
+    public static boolean removeClient(String clientConnStr,
+            boolean removeSessionProps) {
+        if (clientConnStr == null) {
             return false;
         }
     
-        IDMapperClient cl = clientIDMap.get(clientId);
-        return removeClient(cl);
-    }
-    
-    public static IDMapperClient getClientByDisplayName(String clientDisName) {
-        return clientNameMap.get(clientDisName);
-    }
-
-    public static boolean removeClientByDisplayName(String clientName) {
-        if (clientName == null) {
-            return false;
-        }
-
-        IDMapperClient cl = clientNameMap.get(clientName);
-        return removeClient(cl);
+        IDMapperClient cl = clientConnectionStringMap.get(clientConnStr);
+        return removeClient(cl, removeSessionProps);
     }
 
     public static boolean removeClient(final IDMapperClient client) {
+        return removeClient(client, true);
+    }
+
+    public static boolean removeClient(final IDMapperClient client,
+            boolean removeSessionProps) {
         if (client == null) {
             return false;
         }
 
-        if (!clientIDMap.containsValue(client)) {
+        if (!clientConnectionStringMap.containsValue(client)) {
             return false;
         }
 
-        clientNameMap.remove(client.getDisplayName());
-        clientIDMap.remove(client.getId());
+        clientConnectionStringMap.remove(client.getConnectionString());
 
-        if (client instanceof IDMapperClientImplTunables) {
+        if (removeSessionProps &&
+                client instanceof IDMapperClientImplTunables) {
             ((IDMapperClientImplTunables)client).close();
         }
         
@@ -278,43 +304,25 @@ public class IDMapperClientManager {
     }
 
     public static void removeAllClients() {
+        removeAllClients(true);
+    }
+
+    public static void removeAllClients(boolean removeSessionProps) {
         for (IDMapperClient client : allClients()) {
-            removeClient(client);
+            removeClient(client, removeSessionProps);
         }
     }
 
     /**
      *
      * @param client
-     * @return true if registered.
      */
-    public static boolean registerClient(final IDMapperClient client) {
-        return registerClient(client, false);
-    }
-
-    /**
-     *  Register client to the manager.
-     *
-     * @param client DOCUMENT ME!
-     * @param replace indicate whether replace the existing client if client id
-     *                or display name is the same
-     * @return true if registered
-     */
-    public static boolean registerClient(final IDMapperClient client,
-            boolean replace) {
+    public static void registerClient(final IDMapperClient client) {
         if (client == null) {
             throw new IllegalArgumentException();
         }
 
-        if (!replace && (getClient(client.getId())!=null ||
-                getClientByDisplayName(client.getDisplayName())!=null)) {
-            return false;
-        }
-
-        clientNameMap.put(client.getDisplayName(), client);
-        clientIDMap.put(client.getId(), client);
-
-        return true;
+        clientConnectionStringMap.put(client.getConnectionString(), client);
     }
 
 }

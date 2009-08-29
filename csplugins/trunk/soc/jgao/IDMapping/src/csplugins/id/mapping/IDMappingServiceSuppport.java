@@ -62,7 +62,7 @@ import java.util.HashSet;
  */
 public class IDMappingServiceSuppport {
     private static final String MSG_TYPE_REQUEST_SUPPORTED_ID_TYPE = "REQUEST_SUPPORTED_ID_TYPE";
-    private static final String MSG_TYPE_REQUEST_MAPPING = "REQUEST_MAPPING";
+    private static final String MSG_TYPE_REQUEST_ATTRIBUTE_BASED_MAPPING = "REQUEST_ATTRIBUTE_BASED_MAPPING";
     private static final String MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG = "MAPPING_SRC_CONFIG_DIALOG";
     private static final String MSG_TYPE_REQUEST_MAPPING_DIALOG = "MAPPING_DIALOG";
     
@@ -81,8 +81,8 @@ public class IDMappingServiceSuppport {
                     response = responseToGetReceivers(msg);
                 } else if(msgType.compareTo(Message.MSG_TYPE_GET_MSG_TYPES)==0) {
                     response = responseToGetTypes(msg);
-                } else if (msgType.compareTo(MSG_TYPE_REQUEST_MAPPING)==0) {
-                    response = mappingService(msg);
+                } else if (msgType.compareTo(MSG_TYPE_REQUEST_ATTRIBUTE_BASED_MAPPING)==0) {
+                    response = attributeBasedMappingService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG)==0) {
                     response = mappingSrcConfigDialogService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_MAPPING_DIALOG)==0) {
@@ -104,10 +104,10 @@ public class IDMappingServiceSuppport {
     private static final String NETWORK_ID = "NETWORK_ID";
     private static final String SOURCE_ATTR = "SOURCE_ATTR";
     private static final String SOURCE_ID_TYPE = "SOURCE_ID_TYPE";
-    private static final String TARGET_ATTR = "TARGET_ATTR";
-    private static final String TARGET_ID_TYPE = "TARGET_ID_TYPE";
+    private static final String MAP_TARGET_ID_TYPE_ATTR = "MAP_TARGET_ID_TYPE_ATTR";
 
     private static final String RESPONSE_SUCCESS = "SUCCESS";
+    private static final String RESPONSE_IS_CANCELLED = "IS_CANCELLED";
     private static final String RESPONSE_REPORT = "REPORT";
     private static final String RESPONSE_SRC_ID_TYPE = "SRC_ID_TYPE";
     private static final String RESPONSE_TGT_ID_TYPE = "TGT_ID_TYPE";
@@ -138,7 +138,7 @@ public class IDMappingServiceSuppport {
         Map content = new HashMap();
         Set<String> supportedTypes = new HashSet();
         supportedTypes.add(Message.MSG_TYPE_TEST);
-        supportedTypes.add(MSG_TYPE_REQUEST_MAPPING);
+        supportedTypes.add(MSG_TYPE_REQUEST_ATTRIBUTE_BASED_MAPPING);
         supportedTypes.add(MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG);
         supportedTypes.add(MSG_TYPE_REQUEST_MAPPING_DIALOG);
         supportedTypes.add(MSG_TYPE_REQUEST_SUPPORTED_ID_TYPE);
@@ -163,17 +163,15 @@ public class IDMappingServiceSuppport {
             return createResponse(msg, content);
         }
 
-        String[] srcTypes = new String[srcDataSources.size()];
-        int ids = 0;
+        Set<String> srcTypes = new HashSet();
         for(DataSource ds : srcDataSources) {
-            srcTypes[ids++] = ds.getFullName();
+            srcTypes.add(ds.getFullName());
         }
         content.put(RESPONSE_SRC_ID_TYPE, srcTypes);
 
-        String[] tgtTypes = new String[tgtDataSources.size()];
-        ids = 0;
+        Set<String> tgtTypes = new HashSet();
         for(DataSource ds : tgtDataSources) {
-            tgtTypes[ids++] = ds.getFullName();
+            tgtTypes.add(ds.getFullName());
         }
         content.put(RESPONSE_TGT_ID_TYPE, tgtTypes);
 
@@ -200,16 +198,14 @@ public class IDMappingServiceSuppport {
         dialog.setVisible(true);
 
         Map content = new HashMap();
-        content.put(RESPONSE_SUCCESS, !dialog.isCancelled());
+        content.put(RESPONSE_IS_CANCELLED, dialog.isCancelled());
 
-        //if (!dialog.isCancelled()) {
-            CyThesaurusPlugin.mapSrcAttrIDTypes = dialog.getMapSrcAttrIDTypes();
-        //}
+        CyThesaurusPlugin.mapSrcAttrIDTypes = dialog.getMapSrcAttrIDTypes();
 
         return createResponse(msg, content);
     }
 
-    private static ResponseMessage mappingService(Message msg) {
+    private static ResponseMessage attributeBasedMappingService(Message msg) {
         Object content = msg.getContent();
         boolean succ = true;
         StringBuilder error = new StringBuilder();
@@ -218,8 +214,7 @@ public class IDMappingServiceSuppport {
         Set<CyNetwork> networks = new HashSet();
         Set<String> srcAttrs = new HashSet();
         Set<DataSource> srcTypes = new HashSet();
-        String tgtAttr = null;
-        DataSource tgtType = null;
+        Map<DataSource, String> tgtTypeAttr = new HashMap();
 
         if (content==null || !(content instanceof Map)) {
             succ = false;
@@ -247,8 +242,8 @@ public class IDMappingServiceSuppport {
                         succ = false;
                         error.append("Network "+netId+" does not exist.\n");
                     }
-                } else if (obj instanceof String[]) {
-                    String[] netIds = (String[])obj;
+                } else if (obj instanceof Set) {
+                    Set<String> netIds = (Set)obj;
                     for (String netId : netIds) {
                         CyNetwork net = Cytoscape.getNetwork(netId);
                         if (net!=null && net!=Cytoscape.getNullNetwork()) {
@@ -263,7 +258,7 @@ public class IDMappingServiceSuppport {
                     }
                 } else {
                     succ = false;
-                    error.append(NETWORK_ID + " must be String or String[].\n");
+                    error.append(NETWORK_ID + " must be Set<String>.\n");
                 }
             }
 
@@ -285,8 +280,8 @@ public class IDMappingServiceSuppport {
                         succ = false;
                         error.append("Node attribute "+attr+" does not exist.\n");
                     }
-                } else if (obj instanceof String[]) {
-                    String[] attrs = (String[])obj;
+                } else if (obj instanceof Set) {
+                    Set<String> attrs = (Set)obj;
                     for (String attr : attrs) {
                         if (attributes.contains(attr)) {
                             srcAttrs.add(attr);
@@ -300,7 +295,7 @@ public class IDMappingServiceSuppport {
                     }
                 } else {
                     succ = false;
-                    error.append(SOURCE_ATTR+" must be String or String[].\n");
+                    error.append(SOURCE_ATTR+" must be String or Set<String>.\n");
                 }
             }
 
@@ -343,17 +338,10 @@ public class IDMappingServiceSuppport {
                             succ = false;
                             error.append("Source ID type "+type+" does not exist.\n");
                         }
-                    } else if (obj instanceof String[]) {
-                        String[] types = (String[])obj;
-                        for (String type : types) {
-                            if (dss.contains(type)) {
-                                srcTypes.add(DataSource.getByFullName(type));
-                            } else {
-                                error.append("Source ID type "+type+" does not exist.\n");
-                            }
-                        }
+                    } else if (obj instanceof Set) {
+                        srcTypes = (Set)obj;
 
-                        if (srcAttrs.isEmpty()) {
+                        if (srcTypes.isEmpty()) {
                             succ = false;
                         }
                     } else {
@@ -363,10 +351,10 @@ public class IDMappingServiceSuppport {
                 }
 
                 //parse target id type
-                obj = map.get(TARGET_ID_TYPE);
-                if (obj==null || !(obj instanceof String)) {
+                obj = map.get(MAP_TARGET_ID_TYPE_ATTR);
+                if (obj==null || (!(obj instanceof Map) && !(obj instanceof Set))) {
                     succ = false;
-                    error.append("Message content must contain a non-null \"" + TARGET_ID_TYPE +"\"\n");
+                    error.append("Message content must contain a non-null \"" + MAP_TARGET_ID_TYPE_ATTR +"\"\n");
                 }else{
                     Set<String> dss = new HashSet();
                     for (DataSource ds : tgtDataSources) {
@@ -378,42 +366,47 @@ public class IDMappingServiceSuppport {
                         }
                     }
 
-                    String type = (String)obj;
-                    if (dss.contains(type)) {
-                        tgtType = DataSource.getByFullName(type);
-                    } else {
-                        succ = false;
-                        error.append("Target ID type "+type+" does not exist.\n");
-                    }
-                }
+                    if (obj instanceof Map) {
+                        Map<String, String> mapTypeAttr = (Map)obj;
+                        for (String type : mapTypeAttr.keySet()) {
+                            if (dss.contains(type)) {
+                                DataSource ds = DataSource.getByFullName(type);
+                                String attr = mapTypeAttr.get(type);
+                                tgtTypeAttr.put(ds, attr);
+                            } else {
+                                error.append("Target ID type "+type+" does not exist.\n");
+                            }
+                        }
 
-                //parse target attribute
-                obj = map.get(TARGET_ATTR);
-                if (obj==null) {
-                    if (succ) {
-                        // set default target attribute name
-                        String tgtTypeName = tgtType.getFullName();
-                        if (!attributes.contains(tgtTypeName)) {
-                            tgtAttr = tgtTypeName;
-                        } else {
-                            int i = 0;
-                            while (attributes.contains(tgtTypeName+"."+(++i))){}
-                            tgtAttr = tgtTypeName+"."+i;
+                    } else if (obj instanceof Set) { // only types
+                        Set<String> types = (Set)obj;
+                        for (String type : types) {
+                            if (dss.contains(type)) {
+                                DataSource ds = DataSource.getByFullName(type);
+                                Set<String> usedName = new HashSet();
+                                usedName.add("ID"); //TODO remove in Cy3
+                                usedName.addAll(java.util.Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+                                String attr;
+                                if (usedName.contains(type)) {
+                                    int num = 1;
+                                    while (usedName.contains(type+"."+num)) {
+                                        num ++;
+                                    }
+                                    attr = type+"."+num;
+                                } else {
+                                    attr = type;
+                                }
+                                tgtTypeAttr.put(ds, attr);
+                            } else {
+                                error.append("Target ID type "+type+" does not exist.\n");
+                            }
                         }
                     }
-                } else if (!(obj instanceof String)) {
-                    succ = false;
-                    error.append("Attribute name should be String.");
-                } else {
-                    String attr = (String)obj;
-                    if (attr.length()==0) {
+
+                    String type = (String)obj;
+                    if (tgtTypeAttr.isEmpty()) {
                         succ = false;
-                        error.append(TARGET_ATTR+" cannot be empty.\n");
-                    } else if (attr.compareTo("ID")==0) { //TODO: remove in cy3
-                        succ = false;
-                        error.append("Cannot save the target ids as node ID.\n");
-                    } else {
-                        tgtAttr = attr;
+                        error.append("Target ID type "+type+" does not exist.\n");
                     }
                 }
             }
@@ -428,11 +421,8 @@ public class IDMappingServiceSuppport {
                 mapAttrTypes.put(attr, srcTypes);
             }
 
-            Map<DataSource, String> MapTgtIDTypeAttrName = new HashMap();
-            MapTgtIDTypeAttrName.put(tgtType, tgtAttr);
-
             try {
-                service.map(networks, mapAttrTypes, MapTgtIDTypeAttrName);
+                service.map(networks, mapAttrTypes, tgtTypeAttr);
             } catch (Exception e) {
                 e.printStackTrace();
                 error.append(e.getMessage());
@@ -445,7 +435,11 @@ public class IDMappingServiceSuppport {
         if (succ) {
             responseContent.put(RESPONSE_SUCCESS, true);
             responseContent.put(RESPONSE_REPORT, service.getReport());//+"\nErrors:\n"+error);
-            responseContent.put(TARGET_ATTR, tgtAttr);
+            Map<String, String> mappedTypeAttr = new HashMap();
+            for (DataSource ds : tgtTypeAttr.keySet()) {
+                mappedTypeAttr.put(ds.getFullName(), tgtTypeAttr.get(ds));
+            }
+            responseContent.put(MAP_TARGET_ID_TYPE_ATTR, mappedTypeAttr);
         } else {
             responseContent.put(RESPONSE_SUCCESS, false);
             responseContent.put(RESPONSE_REPORT, "Errors:\n"+error);

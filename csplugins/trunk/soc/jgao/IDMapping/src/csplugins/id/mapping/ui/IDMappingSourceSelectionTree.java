@@ -296,7 +296,7 @@ class IDMappingSourceSelectionTree extends JTree {
                 configWsClient(wsClientPopup.getTreeNode());
             }
         });
-        wsClientPopup.add(mi);
+//        wsClientPopup.add(mi);
 
         final TreeNodePopupMenu fileClientPopup = new TreeNodePopupMenu();
         mi = new JMenuItem("Delete");
@@ -313,7 +313,7 @@ class IDMappingSourceSelectionTree extends JTree {
                 configTextClient(fileClientPopup.getTreeNode());
             }
         });
-        fileClientPopup.add(mi);
+//        fileClientPopup.add(mi);
 
         // hook the menus on the tree
         final JTree thisTree = this;
@@ -403,10 +403,12 @@ class IDMappingSourceSelectionTree extends JTree {
             }
 
             if (client!=null) {
-                if (!IDMapperClientManager.registerClient(client)) {
+                if (IDMapperClientManager.getClient(client.getConnectionString())!=null) {
                     JOptionPane.showMessageDialog(parent, "This database has already been added as an ID mapping source.");
                     return;
                 }
+
+                IDMapperClientManager.registerClient(client);
 
                 DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
                 //dbTreeNode.add(clientNode);
@@ -444,10 +446,12 @@ class IDMappingSourceSelectionTree extends JTree {
             }
 
             if (client!=null) {
-                if (!IDMapperClientManager.registerClient(client)) {
+                if (IDMapperClientManager.getClient(client.getConnectionString())!=null) {
                     JOptionPane.showMessageDialog(parent, "This web service has already been added as an ID mapping source.");
                     return;
                 }
+
+                IDMapperClientManager.registerClient(client);
 
                 DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
 
@@ -487,10 +491,12 @@ class IDMappingSourceSelectionTree extends JTree {
             }
 
             if (client!=null) {
-                if (!IDMapperClientManager.registerClient(client)) {
+                if (IDMapperClientManager.getClient(client.getConnectionString())!=null) {
                     JOptionPane.showMessageDialog(parent, "This file has already been added as an ID mapping source.");
                     return;
                 }
+
+                IDMapperClientManager.registerClient(client);
 
                 DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(client);
 
@@ -518,7 +524,7 @@ class IDMappingSourceSelectionTree extends JTree {
     private void removeClient(final DefaultMutableTreeNode node) {
         if (node==null) return;
         IDMapperClient client = (IDMapperClient)node.getUserObject();
-        IDMapperClientManager.removeClient(client.getId());
+        IDMapperClientManager.removeClient(client.getConnectionString());
 
         TreeNode parentNode = node.getParent();
         node.removeFromParent();

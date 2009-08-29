@@ -73,13 +73,13 @@ public class IDMapperClientImplTunables implements IDMapperClient {
 
     public IDMapperClientImplTunables(String connectionString, String classString)
             throws ClassNotFoundException, IDMapperException{
-        this(connectionString, classString, connectionString);
+        this(connectionString, classString, null);
     }
 
     public IDMapperClientImplTunables(String connectionString, String classString,
             String displayName)
             throws ClassNotFoundException, IDMapperException {
-        this(connectionString, classString, displayName, ""+clientNo+"-"+System.currentTimeMillis());
+        this(connectionString, classString, displayName, null);
     }
 
     public IDMapperClientImplTunables(String connectionString, String classString,
@@ -91,12 +91,20 @@ public class IDMapperClientImplTunables implements IDMapperClient {
     public IDMapperClientImplTunables(String connectionString, String classString,
             String displayName, String id, boolean selected)
             throws ClassNotFoundException, IDMapperException {
+        if (connectionString==null || classString==null) {
+            throw new IllegalArgumentException();
+        }
+
         Class.forName(classString);
         mapper = BridgeDb.connect(connectionString);
 
-        props = new IDMapperClientProperties(id);
+        String defId = id==null?""+clientNo+"-"+System.currentTimeMillis():id;
+        props = new IDMapperClientProperties(defId);
 
-        initilizeTunables(connectionString, classString, displayName, id,
+        initilizeTunables(connectionString,
+                classString,
+                displayName==null?connectionString:displayName,
+                defId,
                 selected);
 
         props.saveProperties();
@@ -104,21 +112,28 @@ public class IDMapperClientImplTunables implements IDMapperClient {
         clientNo++;
     }
 
-    public IDMapperClientImplTunables(IDMapperClientProperties props)
+    public IDMapperClientImplTunables(IDMapperClientProperties props, String newPropsId)
             throws ClassNotFoundException, IDMapperException {
         this.props = props;
 
-        this.initilizeTunables("", "", ""+clientNo, ""+clientNo, true);
+        String defId = ""+clientNo+"-"+System.currentTimeMillis();
+        this.initilizeTunables("", "", defId, defId, true);
+
+        if (newPropsId!=null) {
+            this.props = new IDMapperClientProperties(newPropsId, props);
+            this.props.initializeProperties();
+            props.release(); // release the old
+        }
 
         Class.forName(getClassString());
         mapper = BridgeDb.connect(getConnectionString());
 
-        props.saveProperties();
+        this.props.saveProperties();
 
         clientNo++;
     }
 
-    public void initilizeTunables(String connectionString, String classString,
+    private void initilizeTunables(String connectionString, String classString,
             String displayName, String id, boolean selected) {
         this.id = new Tunable(CLIENT_ID, "ID for client", Tunable.STRING, id);
         props.add(this.id);
