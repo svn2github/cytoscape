@@ -50,7 +50,6 @@
     <jar destfile="${jar.name}">
       <fileset dir= "${build.classes}" />
     </jar>
-    <copy file="${jar.name}" todir="D:\projects\CyThesaurus\lib" />
   </target>
 
 </project>
