@@ -150,7 +150,20 @@ public class CyThesaurusServiceMessageBasedClient
 
         for (ResponseMessage response : responses) {
             if (response.getSender().compareTo(receiver)==0) {
-                return true;
+                Object obj = response.getContent();
+                if (obj instanceof Map) {
+                    Map content = (Map) obj;
+                    obj = content.get(SUCCESS);
+                    if (obj instanceof Boolean) {
+                        boolean succ = (Boolean) obj;
+                        if (succ) {
+                            obj = content.get(IS_CANCELLED);
+                            if (obj instanceof Boolean) {
+                                return !((Boolean) obj);
+                            }
+                        }
+                    }
+                }
             }
         }
 

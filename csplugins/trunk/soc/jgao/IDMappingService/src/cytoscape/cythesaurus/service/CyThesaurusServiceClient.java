@@ -53,7 +53,7 @@ public interface CyThesaurusServiceClient {
 
     /**
      * Open the attribute configuration dialog.
-     * @return true if successfully requested; false, otherwise.
+     * @return true if configured; false, otherwise.
      */
     public boolean openAttributeConfigDialog();
 
