@@ -314,12 +314,18 @@ public class IDMapperClientManager {
     }
 
     /**
-     *
+     * Register a client. If there exists a client in the manager with the same
+     * connection string, that client will be replaced with the new client.
      * @param client
      */
     public static void registerClient(final IDMapperClient client) {
         if (client == null) {
             throw new IllegalArgumentException();
+        }
+
+        IDMapperClient oldClient = getClient(client.getConnectionString());
+        if (oldClient!=null) {
+            removeClient(oldClient);
         }
 
         clientConnectionStringMap.put(client.getConnectionString(), client);

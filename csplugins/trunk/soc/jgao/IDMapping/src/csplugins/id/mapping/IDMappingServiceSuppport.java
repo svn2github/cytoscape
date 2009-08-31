@@ -35,36 +35,64 @@
 
 package csplugins.id.mapping;
 
+import csplugins.id.mapping.IDMapperClient;
+
 import csplugins.id.mapping.ui.CyThesaurusDialog;
 import csplugins.id.mapping.ui.IDMappingSourceConfigDialog;
 
 import org.bridgedb.DataSource;
+import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.IDMapperCapabilities;
+import org.bridgedb.Xref;
 
-import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 
-import cytoscape.util.plugins.communication.PluginsCommunicationSupport;
-import cytoscape.util.plugins.communication.MessageListener;
 import cytoscape.util.plugins.communication.Message;
+import cytoscape.util.plugins.communication.MessageListener;
+import cytoscape.util.plugins.communication.PluginsCommunicationSupport;
 import cytoscape.util.plugins.communication.ResponseMessage;
 
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
  * @author gjj
  */
 public class IDMappingServiceSuppport {
-    private static final String MSG_TYPE_REQUEST_SUPPORTED_ID_TYPE = "REQUEST_SUPPORTED_ID_TYPE";
-    private static final String MSG_TYPE_REQUEST_ATTRIBUTE_BASED_MAPPING = "REQUEST_ATTRIBUTE_BASED_MAPPING";
+    private static final String MSG_TYPE_REQUEST_SUPPORTED_ID_TYPE = "SUPPORTED_ID_TYPE";
+    private static final String MSG_TYPE_REQUEST_ATTRIBUTE_BASED_MAPPING = "ATTRIBUTE_BASED_MAPPING";
+    private static final String MSG_TYPE_REQUEST_MAPPING_SERVICE = "MAPPING_SERVICE";
     private static final String MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG = "MAPPING_SRC_CONFIG_DIALOG";
     private static final String MSG_TYPE_REQUEST_MAPPING_DIALOG = "MAPPING_DIALOG";
+    private static final String MSG_TYPE_REQUEST_MAPPERS = "ID_MAPPERS";
+    private static final String MSG_TYPE_REQUEST_REGISTER_MAPPER = "REGISTER_ID_MAPPER";
+    private static final String MSG_TYPE_REQUEST_UNREGISTER_MAPPER = "UNREGISTER_ID_MAPPER";
+    private static final String MSG_TYPE_REQUEST_SELECT_MAPPER = "SELECT_ID_MAPPER";;
+    private static final String MSG_TYPE_REQUEST_ID_EXIST = "ID_EXIST";
+
+    private static final String NETWORK_ID = "NETWORK_ID";
+    private static final String SOURCE_ATTR = "SOURCE_ATTR";
+    private static final String SOURCE_ID_TYPE = "SOURCE_ID_TYPE";
+    private static final String MAP_TARGET_ID_TYPE_ATTR = "MAP_TARGET_ID_TYPE_ATTR";
+    private static final String SELECTED = "SELECTED";
+    private static final String CLASS_PATH = "CLASS_PATH";
+    private static final String CONNECTION_STRING = "CONNECTION_STRING";
+    private static final String DISPLAY_NAME = "DISPLAY_NAME";
+    private static final String SOURCE_ID = "SOURCE_ID";
+
+    private static final String SUCCESS = "SUCCESS";
+    private static final String IS_CANCELLED = "IS_CANCELLED";
+    private static final String REPORT = "REPORT";
+    private static final String TARGET_ID_TYPE = "TGT_ID_TYPE";
+    private static final String CLIENTS = "CLIENTS";
+    private static final String ID_EXISTS = "ID_EXISTS";
+    private static final String MAPPING_RESULT = "MAPPING_RESULT";
     
     private static final String pluginName = FinalStaticValues.PLUGIN_NAME;
 
@@ -78,9 +106,9 @@ public class IDMappingServiceSuppport {
                 if (msgType.compareTo(Message.MSG_TYPE_TEST)==0) {
                     response = testService(msg);
                 } else if(msgType.compareTo(Message.MSG_TYPE_GET_RECEIVERS)==0) {
-                    response = responseToGetReceivers(msg);
+                    response = getReceiversService(msg);
                 } else if(msgType.compareTo(Message.MSG_TYPE_GET_MSG_TYPES)==0) {
-                    response = responseToGetTypes(msg);
+                    response = getSupportedTypesService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_ATTRIBUTE_BASED_MAPPING)==0) {
                     response = attributeBasedMappingService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG)==0) {
@@ -89,8 +117,22 @@ public class IDMappingServiceSuppport {
                     response = mappingDialogService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_SUPPORTED_ID_TYPE)==0) {
                     response = supportedIdTypeService(msg);
+                } else if (msgType.compareTo(MSG_TYPE_REQUEST_MAPPERS)==0) {
+                    response = getIDMapperService(msg);
+                } else if (msgType.compareTo(MSG_TYPE_REQUEST_REGISTER_MAPPER)==0) {
+                    response = registerIDMapperService(msg);
+                } else if (msgType.compareTo(MSG_TYPE_REQUEST_SELECT_MAPPER)==0) {
+                    response = selectIDMapperService(msg);
+                } else if (msgType.compareTo(MSG_TYPE_REQUEST_ID_EXIST)==0) {
+                    response = idExistsService(msg);
+                } else if (msgType.compareTo(MSG_TYPE_REQUEST_MAPPING_SERVICE)==0) {
+                    response = mappingService(msg);
+                } else if (msgType.compareTo(MSG_TYPE_REQUEST_UNREGISTER_MAPPER)==0) {
+                    response = unregisterIDMapperService(msg);
                 }
 
+
+                
                 // send respond message
                 if (response!=null) {
                     PluginsCommunicationSupport.sendMessage(response);
@@ -100,17 +142,6 @@ public class IDMappingServiceSuppport {
 
         PluginsCommunicationSupport.addMessageListener(pluginName, ml);
     }
-
-    private static final String NETWORK_ID = "NETWORK_ID";
-    private static final String SOURCE_ATTR = "SOURCE_ATTR";
-    private static final String SOURCE_ID_TYPE = "SOURCE_ID_TYPE";
-    private static final String MAP_TARGET_ID_TYPE_ATTR = "MAP_TARGET_ID_TYPE_ATTR";
-
-    private static final String RESPONSE_SUCCESS = "SUCCESS";
-    private static final String RESPONSE_IS_CANCELLED = "IS_CANCELLED";
-    private static final String RESPONSE_REPORT = "REPORT";
-    private static final String RESPONSE_SRC_ID_TYPE = "SRC_ID_TYPE";
-    private static final String RESPONSE_TGT_ID_TYPE = "TGT_ID_TYPE";
 
     private static ResponseMessage createResponse(Message msg, Object responseContent) {
         String sender = msg.getSender();
@@ -125,16 +156,16 @@ public class IDMappingServiceSuppport {
 
     private static ResponseMessage testService(Message msg) {
         Map content = new HashMap();
-        content.put(RESPONSE_SUCCESS, true);
+        content.put(SUCCESS, true);
 
         return createResponse(msg, content);
     }
 
-    private static ResponseMessage responseToGetReceivers(Message msg) {
+    private static ResponseMessage getReceiversService(Message msg) {
         return createResponse(msg, null);
     }
 
-    private static ResponseMessage responseToGetTypes(Message msg) {
+    private static ResponseMessage getSupportedTypesService(Message msg) {
         Map content = new HashMap();
         Set<String> supportedTypes = new HashSet();
         supportedTypes.add(Message.MSG_TYPE_TEST);
@@ -142,7 +173,143 @@ public class IDMappingServiceSuppport {
         supportedTypes.add(MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG);
         supportedTypes.add(MSG_TYPE_REQUEST_MAPPING_DIALOG);
         supportedTypes.add(MSG_TYPE_REQUEST_SUPPORTED_ID_TYPE);
+        supportedTypes.add(MSG_TYPE_REQUEST_MAPPERS);
+        supportedTypes.add(MSG_TYPE_REQUEST_REGISTER_MAPPER);
+        supportedTypes.add(MSG_TYPE_REQUEST_ID_EXIST);
+        supportedTypes.add(MSG_TYPE_REQUEST_MAPPING_SERVICE);
+        supportedTypes.add(MSG_TYPE_REQUEST_UNREGISTER_MAPPER);
         content.put(Message.MSG_TYPE_GET_MSG_TYPES, supportedTypes);
+
+        return createResponse(msg, content);
+    }
+
+    private static ResponseMessage getIDMapperService(Message msg) {
+        Set<String> mappers = new HashSet();
+
+        Boolean selected = null; // by default all id mapping will be returned.
+        Object obj = msg.getContent();
+        if (obj!=null && obj instanceof Map) {
+            obj = ((Map)obj).get(SELECTED);
+            if (obj instanceof Boolean) {
+                selected = (Boolean)obj;
+            }
+        }
+
+        Set<IDMapperClient> clients = IDMapperClientManager.allClients();
+        for (IDMapperClient client : clients) {
+            if (selected==null || selected==client.isSelected()) {
+                mappers.add(client.getConnectionString());
+            }
+        }
+
+        Map content = new HashMap();
+        content.put(CLIENTS, mappers);
+        content.put(SUCCESS, true);
+
+        return createResponse(msg, content);
+    }
+
+    private static ResponseMessage registerIDMapperService(Message msg) {
+        String connStr = null;
+        String classPath = null;
+        String display = null;
+        Object obj = msg.getContent();
+        if (obj!=null && obj instanceof Map) {
+            Object obj1 = ((Map)obj).get(CLASS_PATH);
+            if (obj1 instanceof String) {
+                classPath = (String)obj1;
+            }
+
+            obj1 = ((Map)obj).get(CONNECTION_STRING);
+            if (obj1 instanceof String) {
+                connStr = (String)obj1;
+            }
+
+            obj1 = ((Map)obj).get(DISPLAY_NAME);
+            if (obj1 instanceof String) {
+                display = (String)obj1;
+            }
+        }
+
+        Map content = new HashMap();
+        if (connStr==null || classPath==null) {
+            content.put(SUCCESS, false);
+            content.put(REPORT, "Message content must contain " +
+                    "CONNECTION_STRING AND CLASS_PATH.");
+        } else {
+            IDMapperClient client = null;
+            try {
+                 client = new IDMapperClientImplTunables(connStr,
+                        classPath, display);
+            } catch (Exception e) {
+                e.printStackTrace();
+                content.put(SUCCESS, true);
+                content.put(REPORT, "Error: "+e.getMessage());
+            }
+
+            if (client!=null) {
+                IDMapperClientManager.registerClient(client);
+                content.put(SUCCESS, true);
+            }
+        }
+
+        return createResponse(msg, content);
+    }
+
+    private static ResponseMessage unregisterIDMapperService(Message msg) {
+        String connStr = null;
+        Object obj = msg.getContent();
+        if (obj!=null && obj instanceof Map) {
+            Object obj1 = ((Map)obj).get(CONNECTION_STRING);
+            if (obj1 instanceof String) {
+                connStr = (String)obj1;
+            }
+        }
+
+        Map content = new HashMap();
+        if (connStr==null) {
+            content.put(SUCCESS, false);
+            content.put(REPORT, "Message content must contain " +
+                    "CONNECTION_STRING.");
+        } else {
+            IDMapperClientManager.removeClient(connStr);
+            content.put(SUCCESS, true);
+        }
+
+        return createResponse(msg, content);
+    }
+
+    private static ResponseMessage selectIDMapperService(Message msg) {
+        String connStr = null;
+        Boolean selected = true; // select the id mapper by default
+        Object obj = msg.getContent();
+        if (obj!=null && obj instanceof Map) {
+            Object obj1 = ((Map)obj).get(CONNECTION_STRING);
+            if (obj1 instanceof String) {
+                connStr = (String)obj1;
+            }
+
+            obj1 = ((Map)obj).get(SELECTED);
+            if (obj1 instanceof Boolean) {
+                selected = (Boolean)obj1;
+            }
+        }
+
+        Map content = new HashMap();
+        if (connStr==null) {
+            content.put(SUCCESS, false);
+            content.put(REPORT, "Message content must contain " +
+                    "CONNECTION_STRING.");
+        } else {
+            IDMapperClient client = IDMapperClientManager.getClient(connStr);
+            if (client==null) {
+                content.put(SUCCESS, false);
+                content.put(REPORT, "No such ID mapper.");
+            } else {
+                client.setSelected(selected);
+                content.put(SUCCESS, true);
+            }
+        }
 
         return createResponse(msg, content);
     }
@@ -158,8 +325,8 @@ public class IDMappingServiceSuppport {
             tgtDataSources = stack.getCapabilities().getSupportedTgtDataSources();
         } catch (IDMapperException ex) {
             ex.printStackTrace();
-            content.put(RESPONSE_SUCCESS, false);
-            content.put(RESPONSE_REPORT, "\nIDMapperException:\n"+ex.getMessage());
+            content.put(SUCCESS, false);
+            content.put(REPORT, "\nIDMapperException:\n"+ex.getMessage());
             return createResponse(msg, content);
         }
 
@@ -167,15 +334,59 @@ public class IDMappingServiceSuppport {
         for(DataSource ds : srcDataSources) {
             srcTypes.add(ds.getFullName());
         }
-        content.put(RESPONSE_SRC_ID_TYPE, srcTypes);
+        content.put(SOURCE_ID_TYPE, srcTypes);
 
         Set<String> tgtTypes = new HashSet();
         for(DataSource ds : tgtDataSources) {
             tgtTypes.add(ds.getFullName());
         }
-        content.put(RESPONSE_TGT_ID_TYPE, tgtTypes);
+        content.put(TARGET_ID_TYPE, tgtTypes);
 
-        content.put(RESPONSE_SUCCESS, true);
+        content.put(SUCCESS, true);
+
+        return createResponse(msg, content);
+    }
+
+    private static ResponseMessage idExistsService(Message msg) {
+        String id = null;
+        String type = null;
+
+        Object obj = msg.getContent();
+        if (obj!=null && obj instanceof Map) {
+            Object obj1 = ((Map)obj).get(SOURCE_ID);
+            if (obj1 instanceof String) {
+                id = (String)obj1;
+            }
+
+            obj1 = ((Map)obj).get(SOURCE_ID_TYPE);
+            if (obj1 instanceof String) {
+                type = (String)obj1;
+            }
+        }
+
+        Map content = new HashMap();
+        if (id==null || type==null) {
+            content.put(SUCCESS, false);
+            content.put(REPORT, "Message content must contain " +
+                    "ID AND TYPE.");
+        } else {
+            if (!DataSource.getFullNames().contains(type)) {
+                content.put(SUCCESS, false);
+                content.put(REPORT, "Type \""+type+"\" does not exist.");
+            } else {
+                DataSource ds = DataSource.getByFullName(type);
+                IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+                boolean exist = false;
+                try {
+                    exist = stack.xrefExists(new Xref(id, ds));
+                    content.put(SUCCESS, true);
+                } catch (IDMapperException e) {
+                    e.printStackTrace();
+                    content.put(SUCCESS, false);
+                    content.put(REPORT, "Error: "+e.getMessage());
+                }
+            }
+        }
 
         return createResponse(msg, content);
     }
@@ -186,7 +397,7 @@ public class IDMappingServiceSuppport {
         srcConfDialog.setVisible(true);
 
         Map content = new HashMap();
-        content.put(RESPONSE_SUCCESS, true);
+        content.put(SUCCESS, true);
 
         return createResponse(msg, content);
     }
@@ -198,7 +409,7 @@ public class IDMappingServiceSuppport {
         dialog.setVisible(true);
 
         Map content = new HashMap();
-        content.put(RESPONSE_IS_CANCELLED, dialog.isCancelled());
+        content.put(IS_CANCELLED, dialog.isCancelled());
 
         CyThesaurusPlugin.mapSrcAttrIDTypes = dialog.getMapSrcAttrIDTypes();
 
@@ -339,7 +550,9 @@ public class IDMappingServiceSuppport {
                             error.append("Source ID type "+type+" does not exist.\n");
                         }
                     } else if (obj instanceof Set) {
-                        srcTypes = (Set)obj;
+                        for (String type : (Set<String>)obj) {
+                            srcTypes.add(DataSource.getByFullName(type));
+                        }
 
                         if (srcTypes.isEmpty()) {
                             succ = false;
@@ -403,10 +616,9 @@ public class IDMappingServiceSuppport {
                         }
                     }
 
-                    String type = (String)obj;
                     if (tgtTypeAttr.isEmpty()) {
                         succ = false;
-                        error.append("Target ID type "+type+" does not exist.\n");
+                        error.append("No target ID type.\n");
                     }
                 }
             }
@@ -433,18 +645,115 @@ public class IDMappingServiceSuppport {
         // send respond message
         Map responseContent = new HashMap();
         if (succ) {
-            responseContent.put(RESPONSE_SUCCESS, true);
-            responseContent.put(RESPONSE_REPORT, service.getReport());//+"\nErrors:\n"+error);
+            responseContent.put(SUCCESS, true);
+            responseContent.put(REPORT, service.getReport());//+"\nErrors:\n"+error);
             Map<String, String> mappedTypeAttr = new HashMap();
             for (DataSource ds : tgtTypeAttr.keySet()) {
                 mappedTypeAttr.put(ds.getFullName(), tgtTypeAttr.get(ds));
             }
             responseContent.put(MAP_TARGET_ID_TYPE_ATTR, mappedTypeAttr);
         } else {
-            responseContent.put(RESPONSE_SUCCESS, false);
-            responseContent.put(RESPONSE_REPORT, "Errors:\n"+error);
+            responseContent.put(SUCCESS, false);
+            responseContent.put(REPORT, "Errors:\n"+error);
         }
 
         return createResponse(msg, responseContent);
+    }
+
+    private static ResponseMessage mappingService(Message msg) {
+        Set<String> srcIDs = null;
+        String srcIDType = null;
+        String tgtIDType = null;
+
+        Object obj = msg.getContent();
+        if (obj!=null && obj instanceof Map) {
+            Object obj1 = ((Map)obj).get(SOURCE_ID);
+            if (obj1 instanceof String) {
+                srcIDs = new HashSet(1);
+                srcIDs.add((String)obj1);
+            } else if (obj1 instanceof Set) {
+                srcIDs = (Set<String>)obj1;
+            }
+
+            obj1 = ((Map)obj).get(SOURCE_ID_TYPE);
+            if (obj1 instanceof String) {
+                srcIDType = (String)obj1;
+            }
+
+            obj1 = ((Map)obj).get(TARGET_ID_TYPE);
+            if (obj1 instanceof String) {
+                tgtIDType = (String)obj1;
+            }
+        }
+
+        Map content = new HashMap();
+        if (srcIDs==null || srcIDType==null || tgtIDType==null) {
+            content.put(SUCCESS, false);
+            content.put(REPORT, "Message content must contain " +
+                    "Source_ID, SOURCE_ID_TYPE and TARGET_ID_TYPE.");
+        } else {
+            if (!DataSource.getFullNames().contains(srcIDType)) {
+                content.put(SUCCESS, false);
+                content.put(REPORT, "Source type \""+srcIDType+"\" does not exist.");
+            } else if (!DataSource.getFullNames().contains(tgtIDType)) {
+                content.put(SUCCESS, false);
+                content.put(REPORT, "Target type \""+tgtIDType+"\" does not exist.");
+            } else {
+                IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+                
+                IDMapperCapabilities caps = stack.getCapabilities();
+                DataSource srcDs = DataSource.getByFullName(srcIDType);
+                DataSource tgtDs = DataSource.getByFullName(tgtIDType);
+                boolean supported = false;
+                try {
+                    supported = caps.isMappingSupported(srcDs, tgtDs);
+                } catch (IDMapperException e) {
+                    e.printStackTrace();
+                    content.put(SUCCESS, false);
+                    content.put(REPORT, "Error: "+e.getMessage());
+                }
+
+                if (!supported) {
+                    content.put(SUCCESS, false);
+                    content.put(REPORT, "Mapping from \""+srcIDType+"\" to \""+tgtIDType+"\" is not supported.");
+                } else {
+                    Set<Xref> srcXrefs = new HashSet(srcIDs.size());
+                    for (String id : srcIDs) {
+                        srcXrefs.add(new Xref(id, srcDs));
+                    }
+
+                    Set<DataSource> tgtDataSources = new HashSet(1);
+                    tgtDataSources.add(tgtDs);
+
+                    Map<Xref,Set<Xref>> mapping = null;
+                    try {
+                        mapping = stack.mapID(srcXrefs, tgtDataSources);
+                    } catch (IDMapperException e) {
+                        e.printStackTrace();
+                        content.put(SUCCESS, false);
+                        content.put(REPORT, "Error: "+e.getMessage());
+                    }
+
+                    if (mapping!=null) {
+                        Map<String, Set<String>> result = new HashMap(mapping.size());
+                        for (Xref srcXref : mapping.keySet()) {
+                            Set<Xref> tgtXrefs = mapping.get(srcXref);
+                            if (tgtXrefs!=null) {
+                                Set<String> tgtIds = new HashSet();
+                                for (Xref tgtXref : tgtXrefs) {
+                                    tgtIds.add(tgtXref.getId());
+                                }
+                                result.put(srcXref.getId(), tgtIds);
+                            }
+                        }
+
+                        content.put(SUCCESS, true);
+                        content.put(MAPPING_RESULT, result);
+                    }
+                }
+            }
+        }
+
+        return createResponse(msg, content);
     }
 }
