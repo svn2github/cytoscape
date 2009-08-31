@@ -281,7 +281,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(jSeparator1, gridBagConstraints);
 
-        selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select network to merge"));
+        selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select networks to merge"));
         selectNetworkPanel.setMinimumSize(new java.awt.Dimension(490, 100));
         selectNetworkPanel.setPreferredSize(new java.awt.Dimension(490, 100));
         selectNetworkPanel.setLayout(new java.awt.GridBagLayout());
@@ -852,7 +852,7 @@ private void updataIdMappingButtonEnable() {
 }
 
 private void updateOKButtonEnable() {
-    int n = !advancedNetworkMergeCollapsiblePanel.isCollapsed()&&parameter.inNetworkMergeEnabled()?1:2;
+    int n = !advancedNetworkMergeCollapsiblePanel.isCollapsed()&&parameter.inNetworkMergeEnabled()&&getOperation()==Operation.UNION?1:2;
 
     if (selectedNetworkData.getSize()<n) {
         okButton.setToolTipText("Select at least "+n+" networks to merge");

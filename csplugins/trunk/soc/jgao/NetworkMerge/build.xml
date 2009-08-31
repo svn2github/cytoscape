@@ -11,10 +11,28 @@
     <property name="src" location="src"/>
     <property name="images" value="images"/>
     <property name="lib" location="lib"/>
+    <property name="lib" location="lib"/>
+    <property name="cyrelease" location="../cytoscape"/>
+    <property name="cylib" location="${cyrelease}/lib"/>
     <property name="build" location="build"/>
     <property name="build.classes" location="${build}/classes"/>
     <property name="build.images" location="${build.classes}/images"/>
   </target>
+
+  <!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+    <path id="classpath">
+        <fileset dir="${cylib}">
+            <include name="*.jar"/>
+        </fileset>
+
+        <!-- include cytoscape.jar, which is it release directory top level -->
+        <fileset dir="${cyrelease}">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${lib}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
 
   <!-- =================================================================== -->
   <!-- Compiles the project                                                -->
@@ -23,12 +41,7 @@
     <mkdir dir="${build}"/>
     <mkdir dir="${build.classes}"/>
     <javac srcdir="${src}" destdir="${build.classes}">
-      <classpath>
-        <pathelement location="lib/giny.jar"/>
-        <pathelement location="lib/cytoscape.jar"/>
-        <pathelement location="lib/cytoscape-task.jar"/>
-      	<pathelement location="lib/poi-3.1-FINAL-20080629.jar"/>
-      </classpath>
+      <classpath refid="classpath"/>
     </javac>
   </target>
 
