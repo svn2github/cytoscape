@@ -1,1 +1,1 @@
-nvcc --shared -o libGpuLayout.o GpuLayout.cu -I"\F:\Archivos de programa"\Java\jdk1.6.0_16\include"
+nvcc --shared -o libGpuLayout.o GpuLayout.cu -I "F:\Archivos de programa"\Java\jdk1.6.0_16\include" -I "F:\Archivos de programa\Java\jdk1.6.0_16\include\win32">
