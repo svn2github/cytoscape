@@ -64,7 +64,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
         BioDataSource.init();
         listenToSessionEvent();
         IDMappingServiceSuppport.addService();
-        
+        installMenu();
     }
 
     private void listenToSessionEvent() {
@@ -78,7 +78,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
                 mapSrcAttrIDTypes = null;
                 
                 // won't install before cytoscape is initialized
-                installMenu();
+                //installMenu();
             }
         });
 

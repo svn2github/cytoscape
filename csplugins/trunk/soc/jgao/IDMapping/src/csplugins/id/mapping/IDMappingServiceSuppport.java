@@ -398,6 +398,7 @@ public class IDMappingServiceSuppport {
 
         Map content = new HashMap();
         content.put(SUCCESS, true);
+        content.put(IS_CANCELLED, !srcConfDialog.isModified());
 
         return createResponse(msg, content);
     }
