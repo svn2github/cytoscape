@@ -325,7 +325,9 @@ public class Chimera {
 	}
 
 	public Iterator commandReply(String text) {
-		replyLog.clear();
+		synchronized (replyLog) {
+			replyLog.clear();
+		}
 		this.command(text);
 		return replyLog.iterator();
 	}
@@ -348,10 +350,7 @@ public class Chimera {
   			chimera.getOutputStream().write(text.getBytes());
   			chimera.getOutputStream().flush();
 			} catch (IOException e) {
-				// popup error dialog
-        JOptionPane.showMessageDialog(Cytoscape.getCurrentNetworkView().getComponent(),
-        		"Unable to execute command "+text, "Unable to execute command "+text,
-         		JOptionPane.ERROR_MESSAGE);
+				CyLogger.getLogger(Chimera.class).warning("Unable to execute command: "+text);
 			}
 
 			try {
@@ -534,10 +533,12 @@ public class Chimera {
 	private List getModelList() {
 		ArrayList<ChimeraModel>modelList = new ArrayList<ChimeraModel>();
 		Iterator modelIter = this.commandReply ("listm type molecule");
-		while (modelIter.hasNext()) {
-			String modelLine = (String)modelIter.next();
-			ChimeraModel chimeraModel = new ChimeraModel(modelLine);
-			modelList.add(chimeraModel);
+		synchronized (replyLog) {
+			while (modelIter.hasNext()) {
+				String modelLine = (String)modelIter.next();
+				ChimeraModel chimeraModel = new ChimeraModel(modelLine);
+				modelList.add(chimeraModel);
+			}
 		}
 		return modelList;
 	}
