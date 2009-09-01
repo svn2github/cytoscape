@@ -177,8 +177,6 @@ public class IDMappingDataImpl implements IDMappingData {
          * @param idMapping
          *      ID mapping--map from ID types to ID sets
          *
-         * @return true if successful; false otherwise
-         *
          * @throws NullPointerException if idMapping is null
          * @throws IllegalArgumentException if one of more types are not found
          */
@@ -193,6 +191,7 @@ public class IDMappingDataImpl implements IDMappingData {
                         throw new java.lang.IllegalArgumentException("One or more types do not exist. Add type first.");
                 }
 
+                // TODO: do not necessary to merge
                 // find the existing id mapping containing the ids to be added
                 HashSet<Map<String,Set<String>>> toMerge = new HashSet<Map<String,Set<String>>>();
                 Iterator<String> itType = types.iterator();

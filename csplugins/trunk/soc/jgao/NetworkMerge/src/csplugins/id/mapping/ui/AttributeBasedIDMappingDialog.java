@@ -39,6 +39,9 @@ package csplugins.id.mapping.ui;
 import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 import csplugins.id.mapping.model.AttributeBasedIDMappingDataImpl;
 
+import cytoscape.cythesaurus.service.CyThesaurusServiceClient;
+import cytoscape.cythesaurus.service.CyThesaurusServiceMessageBasedClient;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -82,7 +85,6 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
         optionButton = new javax.swing.JButton();
         previewButton = new javax.swing.JButton();
         javax.swing.JPanel okPanel = new javax.swing.JPanel();
-        cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -92,7 +94,7 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
         idMappingPane.setMinimumSize(new java.awt.Dimension(400, 200));
         idMappingPane.setPreferredSize(new java.awt.Dimension(600, 400));
 
-        idMappingFilePanel = new csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode);
+        idMappingFilePanel = new csplugins.id.mapping.ui.AttributeBasedIDMappingPanel(frame,this,selectedNetworkAttribute,isNode);
         idMappingPane.addTab("From file", idMappingFilePanel);
         //idMappingPane.addTab("From database", new csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode));
         //idMappingPane.addTab("From webservice", new csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode));
@@ -110,7 +112,7 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
 
         //optionDialog = new NetworkMergeOptionDialog(frame,true);
         //optionDialog.pack();
-        optionButton.setText("Options");
+        optionButton.setText("Configure ID Mapping Resources");
         optionButton.setToolTipText("Click to set up options");
         optionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -137,17 +139,8 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
 
         okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-        okPanel.add(cancelButton);
-
-        okButton.setText("   OK   ");
-        okButton.setToolTipText("\"Select at least two networks to merge\"");
-        okButton.setEnabled(false);
+        okButton.setText("Close");
+        okButton.setToolTipText("");
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
@@ -167,14 +160,13 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void optionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionButtonActionPerformed
-            IDMappingOptionDialog dialog = new IDMappingOptionDialog(frame,true);
-            dialog.setLocationRelativeTo(this);
-            dialog.setVisible(true);
+            CyThesaurusServiceClient client = new CyThesaurusServiceMessageBasedClient("AdvancedNetworkMerge");
+            if (!client.openMappingResourceConfigDialog()) {
+                //javax.swing.JOptionPane.showMessageDialog(this, "Failed to open the configuration dialog.");
+            } else {
+                idMappingFilePanel.mappingResourcesChanged();
+            }
     }//GEN-LAST:event_optionButtonActionPerformed
-
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-            setVisible(false);
-    }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
             cancelled = false;
@@ -186,7 +178,7 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
 
-            setOKButtonEnable();
+//            setOKButtonEnable();
     }//GEN-LAST:event_previewButtonActionPerformed
 
 public boolean isCancelled() {
@@ -197,21 +189,20 @@ public AttributeBasedIDMappingData getIDMapping() {
         return this.idMapping;
 }
 
-void setOKButtonEnable() {
-        if (idMapping.isEmpty()) {
-                okButton.setEnabled(false);
-                okButton.setToolTipText("No ID mapping has been imported.");
-        } else {
-                okButton.setEnabled(true);
-                okButton.setToolTipText(null);
-        }
-}
+//void setOKButtonEnable() {
+//        if (idMapping.isEmpty()) {
+//                okButton.setEnabled(false);
+//                okButton.setToolTipText("No ID mapping has been imported.");
+//        } else {
+//                okButton.setEnabled(true);
+//                okButton.setToolTipText(null);
+//        }
+//}
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelButton;
     private javax.swing.JTabbedPane idMappingPane;
-    private csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel idMappingFilePanel;
+    private csplugins.id.mapping.ui.AttributeBasedIDMappingPanel idMappingFilePanel;
     private javax.swing.JButton okButton;
     private javax.swing.JButton optionButton;
     //private NetworkMergeOptionDialog optionDialog;

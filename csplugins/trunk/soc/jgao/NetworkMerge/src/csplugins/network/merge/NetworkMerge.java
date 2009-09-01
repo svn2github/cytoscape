@@ -63,11 +63,11 @@ public interface NetworkMerge {
     }
     
     /**
-     * Merge networks into one
-     *
-     * @param networks Networks to be merged
-     * 
-     * @return merged Node
+     * Merge networks into one.
+     * @param networks networks to be merged
+     * @param op operation
+     * @param title title of the merged network
+     * @return the merged network.
      */
     public CyNetwork mergeNetwork(List<CyNetwork> networks, Operation op, String title);
 }

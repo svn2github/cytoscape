@@ -11,15 +11,13 @@
     <property name="src" location="src"/>
     <property name="images" value="images"/>
     <property name="lib" location="lib"/>
-    <property name="lib" location="lib"/>
     <property name="cyrelease" location="../cytoscape"/>
     <property name="cylib" location="${cyrelease}/lib"/>
     <property name="build" location="build"/>
     <property name="build.classes" location="${build}/classes"/>
     <property name="build.images" location="${build.classes}/images"/>
-  </target>
 
-  <!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+    <!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
     <path id="classpath">
         <fileset dir="${cylib}">
             <include name="*.jar"/>
@@ -33,6 +31,9 @@
             <include name="*.jar"/>
         </fileset>
     </path>
+  </target>
+
+  
 
   <!-- =================================================================== -->
   <!-- Compiles the project                                                -->
@@ -68,6 +69,8 @@
       </manifest>
 
       <fileset dir= "${build.classes}" />
+      <zipfileset src="${lib}/CyThesaurusService.jar" excludes="META-INF/*"/>
+
     </jar>
   </target>
   

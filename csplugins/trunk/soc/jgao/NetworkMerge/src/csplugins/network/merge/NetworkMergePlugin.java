@@ -78,6 +78,7 @@ public class NetworkMergePlugin extends CytoscapePlugin {
             final NetworkMergeFrame frame = new NetworkMergeFrame();
             frame.setLocationRelativeTo(Cytoscape.getDesktop());
             frame.setVisible(true);
+            //frame.setAlwaysOnTop(true);
         }
         
         //TODO: remove in Cytoscape3

@@ -33,8 +33,8 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel idMappingFilePanel;"/>
-        <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="idMappingFilePanel = new csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode);&#xa;idMappingPane.addTab(&quot;From file&quot;, idMappingFilePanel);&#xa;//idMappingPane.addTab(&quot;From database&quot;, new csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode));&#xa;//idMappingPane.addTab(&quot;From webservice&quot;, new csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode));"/>
+        <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private csplugins.id.mapping.ui.AttributeBasedIDMappingPanel idMappingFilePanel;"/>
+        <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="idMappingFilePanel = new csplugins.id.mapping.ui.AttributeBasedIDMappingPanel(frame,this,selectedNetworkAttribute,isNode);&#xa;idMappingPane.addTab(&quot;From file&quot;, idMappingFilePanel);&#xa;//idMappingPane.addTab(&quot;From database&quot;, new csplugins.id.mapping.ui.AttributeBasedIDMappingPanel(frame,this,selectedNetworkAttribute,isNode));&#xa;//idMappingPane.addTab(&quot;From webservice&quot;, new csplugins.id.mapping.ui.AttributeBasedIDMappingPanel(frame,this,selectedNetworkAttribute,isNode));"/>
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -55,7 +55,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="optionButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Options"/>
+            <Property name="text" type="java.lang.String" value="Configure ID Mapping Resources"/>
             <Property name="toolTipText" type="java.lang.String" value="Click to set up options"/>
           </Properties>
           <Events>
@@ -89,19 +89,10 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="cancelButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Cancel"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="javax.swing.JButton" name="okButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="   OK   "/>
-            <Property name="toolTipText" type="java.lang.String" value="&quot;Select at least two networks to merge&quot;"/>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="Close"/>
+            <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>

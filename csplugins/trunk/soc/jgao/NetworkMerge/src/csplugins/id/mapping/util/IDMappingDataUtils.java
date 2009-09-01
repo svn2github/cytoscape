@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Iterator;
 
 /**
@@ -133,7 +134,7 @@ public class IDMappingDataUtils {
                                 Iterator<String> itSrcType = potentialSrcTypes.iterator();
                                 while (itSrcType.hasNext()) {
                                         String srcType = itSrcType.next();
-                                        if (idMapper.idExistsInSrcIDType(srcID, srcType)) {
+                                        //if (idMapper.idExistsInSrcIDType(srcID, srcType)) {
                                                 //TODO if idGO found in several types, it's ambiguous
                                                 // for now, just take the first one
                                                 //use some ambiguity collector here
@@ -159,7 +160,7 @@ public class IDMappingDataUtils {
                                                 mapGOIDSrcType.put(idGO, srcID);
 
                                                 break;
-                                        }
+                                        //}
                                 }
                         }
                 }
@@ -228,7 +229,7 @@ public class IDMappingDataUtils {
                 }
 
                 //deep copy of the first
-                Map<String,Set<String>> overlappedMapTypeIDs = new HashMap<String,Set<String>>();
+                Map<String,Set<String>> overlappedMapTypeIDs = new TreeMap<String,Set<String>>();
                 Iterator<Map.Entry<String,Set<String>>> itEntryTypeIDs = mapTypeIDs.entrySet().iterator();
                 while (itEntryTypeIDs.hasNext()) {
                         Map.Entry<String,Set<String>> entryTypeIDs = itEntryTypeIDs.next();

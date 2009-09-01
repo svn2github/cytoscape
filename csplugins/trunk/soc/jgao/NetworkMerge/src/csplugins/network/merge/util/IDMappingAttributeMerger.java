@@ -58,12 +58,15 @@ import java.util.Arrays;
  */
 public class IDMappingAttributeMerger extends DefaultAttributeMerger {
 
+        protected final String tgtType;
         protected final AttributeBasedIDMappingData idMapping;
 
         public IDMappingAttributeMerger(final AttributeConflictCollector conflictCollector,
-                final AttributeBasedIDMappingData idMapping) {
+                final AttributeBasedIDMappingData idMapping,
+                final String tgtType) {
                 super(conflictCollector);
                 this.idMapping = idMapping;
+                this.tgtType = tgtType;
         }
 
         /**
@@ -82,45 +85,20 @@ public class IDMappingAttributeMerger extends DefaultAttributeMerger {
                                      final CyAttributes attrs) {
                 Map<String,Set<String>> mapTypeIDs = IDMappingDataUtils.getOverlappingIDMapping(idMapping, mapGOAttr);
                 if (mapTypeIDs==null||mapTypeIDs.isEmpty()) {
-                        super.mergeAttribute(mapGOAttr, toID, toAttrName, attrs);
+                        //super.mergeAttribute(mapGOAttr, toID, toAttrName, attrs);
                         return;
                 }
-//
-//                final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
-//
-//                Iterator<Map.Entry<String,String>> itEntryGOAttr = mapGOAttr.entrySet().iterator();
-//                while (itEntryGOAttr.hasNext()) {
-//                        Map.Entry<String,String> entryGOAttr = itEntryGOAttr.next();
-//                        String fromID = entryGOAttr.getKey();
-//                        String fromAttrName = entryGOAttr.getValue();
-//
-//                        if (!attrNames.contains(fromAttrName)||!attrNames.contains(toAttrName)) { // toAttrName must be defined before calling this method
-//                            throw new java.lang.IllegalArgumentException("'"+fromAttrName+"' or '"+toAttrName+"' not exists");
-//                        }
-//
-//                        if (!AttributeValueCastUtils.isAttributeTypeConvertable(fromAttrName,toAttrName,attrs)) {
-//                            throw new java.lang.IllegalArgumentException("'"+fromAttrName+"' cannot be converted to '"+toAttrName+"'");
-//                        }
-//
-//                        if (toID.compareTo(fromID)==0 && toAttrName.compareTo(fromAttrName)==0) {
-//                            //TODO: if local attribute is realized, process here
-//                            return;
-//                        }
-//
-//                        if (!attrs.hasAttribute(fromID, fromAttrName)) {
-//                            return;
-//                        }
-//                }
 
                 byte type2 = attrs.getType(toAttrName);
-                if (type2 == CyAttributes.TYPE_STRING) {
-                        //TODO how to select?
-                        String srcType = idMapping.getSrcIDType(toID, toAttrName);
-                        Set<String> ids = mapTypeIDs.get(srcType);
-                        if (ids==null) {
-                                ids = mapTypeIDs.values().iterator().next(); //pick one
-                        }
+                
+                if (type2 != CyAttributes.TYPE_STRING && type2 != CyAttributes.TYPE_SIMPLE_LIST)
+                    return;
 
+                Set<String> ids = mapTypeIDs.get(tgtType);
+                if (ids==null || ids.isEmpty())
+                    return;
+
+                if (type2 == CyAttributes.TYPE_STRING) {                                                
                         // if the common ids contains the same value as the current toNode
                         String value_ori = attrs.getStringAttribute(toID, toAttrName);
                         if (value_ori!=null && ids.contains(value_ori)) {
@@ -148,17 +126,8 @@ public class IDMappingAttributeMerger extends DefaultAttributeMerger {
                                 attrs.setAttribute(toID, toAttrName, ids.iterator().next());
                         }
                 } else if (type2==CyAttributes.TYPE_SIMPLE_LIST) {
-                        //TODO how to select?
-                        String srcType = idMapping.getSrcIDType(toID, toAttrName);
-                        Set<String> ids = mapTypeIDs.get(srcType);
-                        if (ids==null) {
-                                ids = mapTypeIDs.values().iterator().next(); //pick one
-                        }
-
                         attrs.setListAttribute(toID, toAttrName, new Vector(ids));
-                } else {
-                        super.mergeAttribute(mapGOAttr, toID, toAttrName, attrs);
-                }
+                } 
 
         }
 

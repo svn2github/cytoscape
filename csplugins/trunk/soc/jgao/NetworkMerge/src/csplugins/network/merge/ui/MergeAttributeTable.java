@@ -372,6 +372,7 @@ class MergeAttributeTable extends JTable{
             }//TODO: remove in Cytoscape3
             
             attributeMapping.addAttributes(netAttrMap, attr_merged, indexMatchingAttr);
+            attributeMapping.setMergedAttributeType(indexMatchingAttr, CyAttributes.TYPE_SIMPLE_LIST);
             update = true;
         } else {            
             Set<String> networks = matchingAttribute.getNetworkSet();

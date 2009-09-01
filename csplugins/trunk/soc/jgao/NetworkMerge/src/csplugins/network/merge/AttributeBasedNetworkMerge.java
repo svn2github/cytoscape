@@ -43,12 +43,15 @@ import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.util.AttributeMerger;
 import csplugins.network.merge.util.AttributeValueCastUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Arrays;
+import java.util.Collections;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -203,10 +206,22 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
         
         if (nodes.size()>1) { // if more than 1 nodes to be merged, assign the id 
                               // as the combination of all identifiers
+            List<String> nodeIds = new ArrayList(nodes.size());
+            nodeIds.add(id);
             while (itNode.hasNext()) {
                 final Node node = (Node) itNode.next();
-                id += "_"+node.getIdentifier();
+                nodeIds.add(node.getIdentifier());
             }
+
+            Collections.sort(nodeIds);
+
+            StringBuilder sb = new StringBuilder();
+            for (String nodeId : nodeIds) {
+                sb.append(nodeId+"-");
+            }
+            sb.deleteCharAt(sb.length()-1);
+
+            id = sb.toString();
 
             // if node with this id exist, get new one
             String appendix = "";

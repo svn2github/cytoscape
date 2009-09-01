@@ -78,14 +78,14 @@ import javax.swing.event.CellEditorListener;
 public class IDTypeSelectionTable extends JTable{
     private IDTypeSelectionTableModel model;
     private Frame frame;
-    private AttributeBasedIDMappingFilePanel parent;
+    private IDMappingDialog parent;
 
     private Set<String> supportedSrcIDType;
 
     private List<String[]> listNetIDTitleAttr;
 
     public IDTypeSelectionTable(final Frame frame,
-                                final AttributeBasedIDMappingFilePanel parent) {
+                                final IDMappingDialog parent) {
         super();
 
         this.frame = frame;
@@ -105,6 +105,8 @@ public class IDTypeSelectionTable extends JTable{
 
     public void setSupportedSrcIDType(final Set<String> types) {
             supportedSrcIDType = new TreeSet<String>(types);
+            model = new IDTypeSelectionTableModel();
+            setModel(model);
             setColumnEditorAndCellRenderer();
     }
 

@@ -36,21 +36,29 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.IDMapperFile;
+import cytoscape.data.CyAttributes;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
+import csplugins.id.mapping.IDMapper;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 
-import java.io.IOException;
+import csplugins.id.mapping.util.IDMappingDataUtils;
 
-
+import java.util.Set;
 
 /**
  *
  */
-public class ReadIDMappingFileTask implements Task {
-	private final IDMapperFile idMapper;
+public class ReadIDMappingTask implements Task {
+        private AttributeBasedIDMappingData idMapping;
+        private final IDMapper idMapper;
+        final Set<String> goIDs;
+        final CyAttributes cyAttributes;
+        final String attrName;
+        final Set<String> potentialSrcTypes;
+        final Set<String> tgtTypes;
 	private TaskMonitor taskMonitor;
 
 	/**
@@ -58,8 +66,20 @@ public class ReadIDMappingFileTask implements Task {
 	 *
 	 * @param idMapper  DOCUMENT ME!
 	 */
-	public ReadIDMappingFileTask(final IDMapperFile idMapper) {
-		this.idMapper = idMapper;
+	public ReadIDMappingTask(AttributeBasedIDMappingData idMapping,
+                                 final IDMapper idMapper,
+                                 final Set<String> goIDs,
+                                 final CyAttributes cyAttributes,
+                                 final String attrName,
+                                 final Set<String> potentialSrcTypes,
+                                 final Set<String> tgtTypes) {
+            this.idMapping = idMapping;
+            this.idMapper = idMapper;
+            this.goIDs = goIDs;
+            this.cyAttributes = cyAttributes;
+            this.attrName = attrName;
+            this.potentialSrcTypes = potentialSrcTypes;
+            this.tgtTypes = tgtTypes;
 	}
 
 	/**
@@ -68,16 +88,18 @@ public class ReadIDMappingFileTask implements Task {
         //@Override
 	public void run() {
                 try {
-                        taskMonitor.setStatus("Reading ID mapping from file.\n\nIt may take a while.\nPlease wait...");
-                        taskMonitor.setPercentCompleted(0);
+                        taskMonitor.setStatus("Mapping IDs.\n\nIt may take a while.\nPlease wait...");
+                        taskMonitor.setPercentCompleted(-1);
 
-                        idMapper.readIDMapping();
+                        IDMappingDataUtils.addAttributeBasedIDMappingFromIDMapper(
+                                idMapping, idMapper, goIDs, cyAttributes, attrName,
+                                potentialSrcTypes, tgtTypes);
 
                         taskMonitor.setPercentCompleted(100);
-                        taskMonitor.setStatus("Succesfully read ID mappings.\n");
+                        taskMonitor.setStatus("Succesfully mapped.\n");
                 } catch (Exception e) {
                         taskMonitor.setPercentCompleted(100);
-                        taskMonitor.setStatus("Reading ID mappings failed.\n");
+                        taskMonitor.setStatus("ID mapping failed.\n");
                         e.printStackTrace();
                 } 
 
@@ -110,6 +132,6 @@ public class ReadIDMappingFileTask implements Task {
 	 */
         //@Override
 	public String getTitle() {
-		return new String("Reading ID mapping from file");
+		return new String("ID mapping");
 	}
 }

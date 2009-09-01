@@ -61,18 +61,23 @@ import csplugins.network.merge.util.IDMappingAttributeMerger;
 import csplugins.id.mapping.ui.IDMappingPreviewDialog;
 import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 
-import cytoscape.data.Semantics;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.GraphSetUtils;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+
+import cytoscape.cythesaurus.service.CyThesaurusServiceClient;
+import cytoscape.cythesaurus.service.CyThesaurusServiceMessageBasedClient;
+
 import cytoscape.data.CyAttributes;
-import cytoscape.util.CyNetworkNaming;
+import cytoscape.data.Semantics;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.util.GraphSetUtils;
 
 import java.util.List;
 import java.util.Vector;
@@ -134,6 +139,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         idMapping = null;
+        tgtType = null;
         matchingAttribute = new MatchingAttributeImpl(Cytoscape.getNodeAttributes());
         nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());
         edgeAttributeMapping = new AttributeMappingImpl(Cytoscape.getEdgeAttributes());
@@ -211,7 +217,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         okButton = new javax.swing.JButton();
 
         setTitle("Network Merge");
-        setAlwaysOnTop(true);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         operationPanel.setMinimumSize(new java.awt.Dimension(211, 20));
@@ -588,14 +593,17 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
                 frame.setAlwaysOnTop(false);
 
                 final boolean isNode = true;
-                csplugins.id.mapping.ui.AttributeBasedIDMappingDialog dialog = new csplugins.id.mapping.ui.AttributeBasedIDMappingDialog(frame,true,selectedNetworkAttribute,isNode);
+                csplugins.id.mapping.ui.IDMappingDialog dialog = new csplugins.id.mapping.ui.IDMappingDialog(frame,true,selectedNetworkAttribute,isNode);
                 dialog.setLocationRelativeTo(frame);
                 dialog.setVisible(true);
+                dialog.setTgtType(tgtType);
                 if (!dialog.isCancelled()) {
                     idMapping = dialog.getIDMapping();
+                    tgtType = dialog.getTgtType();
                     if (idMapping!=null) {
                         if (idMapping.isEmpty()) {
                             idMapping = null;
+                            tgtType = null;
                         } else {
                             viewIDMappingButton.setEnabled(true);
                         }
@@ -753,6 +761,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
             dialog.setVisible(true);
             if (idMapping.isEmpty()) {
                     idMapping = null;
+                    tgtType = null;
                     viewIDMappingButton.setEnabled(false);
             }
     }//GEN-LAST:event_viewIDMappingButtonActionPerformed
@@ -788,7 +797,8 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
                                             getOperation(),
                                             mergeNodeAttributeTable.getMergedNetworkName(),
                                             conflictCollector,
-                                            idMapping);
+                                            idMapping,
+                                            tgtType);
 
                         // Configure JTask Dialog Pop-Up Box
                         final JTaskConfig jTaskConfig = new JTaskConfig();
@@ -839,8 +849,14 @@ private void addRemoveAttributeMapping(CyNetwork network, boolean isAdd) {
 }
 
 private void updataIdMappingButtonEnable() {
-    int n = parameter.inNetworkMergeEnabled()?1:2;
+    CyThesaurusServiceClient client = new CyThesaurusServiceMessageBasedClient("AdvanceNetworkMerge");
+    if (!client.isServiceAvailable()) {
+        importIDMappingButton.setToolTipText("Please install the CyThesaurus plugin first.");
+        importIDMappingButton.setEnabled(false);
+        return;
+    }
 
+    int n = parameter.inNetworkMergeEnabled()?1:2;
     if (selectedNetworkData.getSize()<n) {
         importIDMappingButton.setToolTipText("Select at least "+n+" networks to merge");
         importIDMappingButton.setEnabled(false);
@@ -931,6 +947,7 @@ private Operation getOperation() {
     private AttributeMapping edgeAttributeMapping;
     private MatchingAttribute matchingAttribute;
     private AttributeBasedIDMappingData idMapping;
+    private String tgtType;
 
     private Frame frame;
 
@@ -1058,8 +1075,9 @@ class NetworkMergeSessionTask implements Task {
     private List<CyNetwork> selectedNetworkList;
     private Operation operation;
     private String mergedNetworkName;
-    AttributeConflictCollector conflictCollector;
-    AttributeBasedIDMappingData idMapping;
+    private AttributeConflictCollector conflictCollector;
+    private AttributeBasedIDMappingData idMapping;
+    private final String tgtType;
     final private AttributeBasedNetworkMerge networkMerge ;
     private TaskMonitor taskMonitor;    
     private boolean cancelled;
@@ -1076,7 +1094,8 @@ class NetworkMergeSessionTask implements Task {
                              final Operation operation,
                              final String mergedNetworkName,
                              final AttributeConflictCollector conflictCollector,
-                             final AttributeBasedIDMappingData idMapping) {
+                             final AttributeBasedIDMappingData idMapping,
+                             final String tgtType) {
         this.parameter = parameter;
         this.matchingAttribute = matchingAttribute;
         this.nodeAttributeMapping = nodeAttributeMapping;
@@ -1086,6 +1105,7 @@ class NetworkMergeSessionTask implements Task {
         this.mergedNetworkName = mergedNetworkName;
         this.conflictCollector = conflictCollector;
         this.idMapping = idMapping;
+        this.tgtType = tgtType;
         cancelled = false;        
         
         final AttributeValueMatcher attributeValueMatcher;
@@ -1095,7 +1115,7 @@ class NetworkMergeSessionTask implements Task {
                 attributeMerger = new DefaultAttributeMerger(conflictCollector);
         } else {
                 attributeValueMatcher = new IDMappingAttributeValueMatcher(idMapping);
-                attributeMerger = new IDMappingAttributeMerger(conflictCollector,idMapping);
+                attributeMerger = new IDMappingAttributeMerger(conflictCollector,idMapping,tgtType);
         }
 
         networkMerge = new AttributeBasedNetworkMerge(

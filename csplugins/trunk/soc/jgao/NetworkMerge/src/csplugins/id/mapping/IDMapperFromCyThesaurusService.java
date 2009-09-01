@@ -1,4 +1,4 @@
-/* File: IDMapperText.java
+/* File: IDMapper.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,42 +36,23 @@
 
 package csplugins.id.mapping;
 
-import csplugins.id.mapping.model.IDMappingData;
-
-import csplugins.id.mapping.reader.IDMappingTableReader;
+import cytoscape.cythesaurus.service.CyThesaurusServiceClient;
+import cytoscape.cythesaurus.service.CyThesaurusServiceMessageBasedClient;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 
-import java.io.IOException;
-
-import java.net.URL;
-
-/**
- * class for ID mapping from Delimited text file
+/*
+ * Interface for ID mapping
  * 
  */ 
-public class IDMapperText implements IDMapperFile {
-        protected URL url;
-        protected IDMappingData idMappingList;
 
-        public IDMapperText(final URL url) {
-                this.url = url;
-                idMappingList = null;
-        }
+public class IDMapperFromCyThesaurusService implements IDMapper {
+    private CyThesaurusServiceClient cyThesaurusClient;
 
-        /**
-         * Read ID Mapping from file
-         *
-         */
-        //@Override
-        public void readIDMapping() throws IOException {
-                IDMappingTableReader reader = new IDMappingTableReader(url);
-                reader.readTable();
-                idMappingList = reader.getIDMappingList();
-        }
-
+    public IDMapperFromCyThesaurusService() {
+        cyThesaurusClient = new CyThesaurusServiceMessageBasedClient("AdvancedNetworkMergePlugin");
+    }
         /**
          * Supports one-to-one mapping and one-to-many mapping.
          *
@@ -87,17 +68,8 @@ public class IDMapperText implements IDMapperFile {
          *
          * @throws NullPointerException if ids or srcType or tgtType is null
          */
-        //@Override
-        public Map<String, Set<String>> mapID(final Set<String> ids,
-                                              final String srcType,
-                                              final String tgtType) {
-                if (ids==null || srcType==null || tgtType==null) {
-                        throw new java.lang.NullPointerException();
-                }
-                if (idMappingList==null) {
-                        return null;
-                }
-                return idMappingList.mapID(ids, srcType, tgtType);
+        public Map<String, Set<String>> mapID(Set<String> ids, String srcType, String tgtType) {
+            return cyThesaurusClient.mapID(ids, srcType, tgtType);
         }
 
         /**
@@ -110,37 +82,24 @@ public class IDMapperText implements IDMapperFile {
          * @return
          *      true if exists, false otherwise
          */
-        //@Override
-        public boolean idExistsInSrcIDType(final String srcID, final String srcType) {
-                return idMappingList.getIDMapping(srcType, srcID)!=null;
+        public boolean idExistsInSrcIDType(String srcID, String srcType) {
+            return cyThesaurusClient.idExists(srcID, srcType);
         }
 
-        /*
-        * @return supported source ID types
-        *
-        */
-        //@Override
+        /**
+         * @return supported source ID types
+         *
+         */
         public Set<String> getSupportedSrcIDTypes() {
-                if (idMappingList==null) {
-                        // TODO return null or empty Set?
-                        //return null;
-                        return new HashSet<String>(0);
-                }
-                return idMappingList.getIDTypes();
+            return cyThesaurusClient.supportedSrcIDTypes();
         }
 
-        /*
-        * @return supported target ID types
-        *
-        */
-        //@Override
+        /**
+         * @return supported target ID types
+         *
+         */
         public Set<String> getSupportedTgtIDTypes() {
-                if (idMappingList==null) {
-                        // TODO return null or empty Set?
-                        //return null;
-                        return new HashSet<String>(0);
-                }
-                return idMappingList.getIDTypes();
+            return cyThesaurusClient.supportedTgtIDTypes();
         }
-
 }
+

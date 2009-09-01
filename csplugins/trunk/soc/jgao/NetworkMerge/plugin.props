@@ -10,10 +10,10 @@ pluginName=AdvancedNetworkMerge
 
 # Description used to give users information about the plugin such as what it does.
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Provides utilities for merging networks by set operations (union, intersection and difference). Networks will be merged based on attribute values of nodes/edges. ID mapping can also be utilized for merging. <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Advanced_Network_Merge_and_ID_Mapping/MergeExamples">Click for tutorial</a>
+pluginDescription=Provides utilities for mapping attributes of source ID types to new attributes of destination ID types. <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/CyThesaurus_Plugin/ID_Mapping_Examples">Click for tutorial</a>.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=1.05
+pluginVersion=1.10
 
 # Compatible Cytoscape version. If there are more than one version, seperate by ",".
 cytoscapeVersion=2.6
@@ -28,10 +28,4 @@ projectURL=http://www.cytoscape.org/cgi-bin/moin.cgi/Advanced_Network_Merge_and_
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Jianjiong Gao : U. Missouri ; Keiichiro Ono : UCSD
-
-# Date this plugin/plugin version was released
-releaseDate=December 30, 2008
-
-# If this plugin is never meant to be downloaded except as part of a plugin (not common) add this property.  Default is "no"
-themeOnly=no
+pluginAuthorsInstitutions=Jianjiong Gao:U. of Missouri;Keiichiro Ono : UCSD
