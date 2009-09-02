@@ -572,7 +572,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         attributePanel.add(idmappingCheckBox, gridBagConstraints);
 
         idmappingLabel.setForeground(new java.awt.Color(255, 0, 51));
-        idmappingLabel.setText("If you want to map IDs between the matching attributes, please install CyThesaurus plugin version "+requiredCyThesaursServiceVersion+" or above.");
+        idmappingLabel.setText("If you want to map identifiers between the matching attributes, please install CyThesaurus plugin version "+requiredCyThesaursServiceVersion+" or above.");
         idmappingLabel.setVisible(!checkCyThesaurus);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -596,7 +596,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         advancedPanel.add(jSeparator3, gridBagConstraints);
 
-        mergeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("How to merge attributes"));
+        mergeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("How to merge attributes?"));
         mergeAttributePanel.setMinimumSize(new java.awt.Dimension(400, 200));
         mergeAttributePanel.setPreferredSize(new java.awt.Dimension(600, 200));
         mergeAttributePanel.setLayout(new javax.swing.BoxLayout(mergeAttributePanel, javax.swing.BoxLayout.LINE_AXIS));
