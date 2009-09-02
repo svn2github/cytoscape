@@ -52,6 +52,12 @@ public interface CyThesaurusServiceClient {
     public boolean isServiceAvailable();
 
     /**
+     * Get the version of CyThesaurus ID mapping service
+     * @return service Version
+     */
+    public double serviceVersion();
+
+    /**
      * Open the attribute configuration dialog.
      * @return true if configured; false, otherwise.
      */
@@ -114,6 +120,14 @@ public interface CyThesaurusServiceClient {
      * available.
      */
     public Set<String> supportedTgtIDTypes();
+
+    /**
+     * Check if it is supported to map from srcType to tgtType.
+     * @param srcType source type
+     * @param tgtType target type
+     * @return true if supported; false otherwise.
+     */
+    public boolean isMappingSupported(String srcType, String tgtType);
 
     /**
      * Attribute based ID mapping. IDs in the source attribute of the networks

@@ -54,7 +54,9 @@ public class CyThesaurusServiceMessageBasedClient
 
     private final String CYTHESAURUS = "CyThesaurus";
 
+    private final String MSG_TYPE_REQUEST_SERVICE_VERSION = "SERVICE_VERSION";
     private final String MSG_TYPE_REQUEST_SUPPORTED_ID_TYPE = "SUPPORTED_ID_TYPE";
+    private final String MSG_TYPE_REQUEST_CHECK_MAPPING_SUPPORTED = "CHECK_MAPPING_SUPPORTED";
     private final String MSG_TYPE_REQUEST_ATTRIBUTE_BASED_MAPPING = "ATTRIBUTE_BASED_MAPPING";
     private final String MSG_TYPE_REQUEST_MAPPING_SERVICE = "MAPPING_SERVICE";
     private final String MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG = "MAPPING_SRC_CONFIG_DIALOG";
@@ -65,6 +67,7 @@ public class CyThesaurusServiceMessageBasedClient
     private final String MSG_TYPE_REQUEST_SELECT_MAPPER = "SELECT_ID_MAPPER";;
     private final String MSG_TYPE_REQUEST_ID_EXIST = "ID_EXIST";
 
+    private final String VERSION = "VERSION";
     private final String NETWORK_ID = "NETWORK_ID";
     private final String SOURCE_ATTR = "SOURCE_ATTR";
     private final String SOURCE_ID_TYPE = "SOURCE_ID_TYPE";
@@ -73,8 +76,6 @@ public class CyThesaurusServiceMessageBasedClient
     private final String CLASS_PATH = "CLASS_PATH";
     private final String CONNECTION_STRING = "CONNECTION_STRING";
     private final String DISPLAY_NAME = "DISPLAY_NAME";
-    private final String ID = "ID";
-    private final String TYPE = "TYPE";
     private final String SOURCE_ID = "SOURCE_ID";
 
     private final String SUCCESS = "SUCCESS";
@@ -82,7 +83,6 @@ public class CyThesaurusServiceMessageBasedClient
     private final String REPORT = "REPORT";
     private final String TARGET_ID_TYPE = "TGT_ID_TYPE";
     private final String CLIENTS = "CLIENTS";
-    private final String ID_EXISTS = "ID_EXISTS";
     private final String MAPPING_RESULT = "MAPPING_RESULT";
     
     private final String requester;
@@ -117,6 +117,38 @@ public class CyThesaurusServiceMessageBasedClient
         }
 
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double serviceVersion() {
+        String receiver = CYTHESAURUS;
+        String msgType = this.MSG_TYPE_REQUEST_SERVICE_VERSION;
+        String msgId = requester+receiver+msgType+ System.currentTimeMillis();
+        Message msg = new Message(msgId , requester, receiver, msgType , null);
+        List<ResponseMessage> responses = PluginsCommunicationSupport.sendMessageAndGetResponses(msg);
+
+        for (ResponseMessage response : responses) {
+            if (response.getSender().compareTo(receiver)==0) {
+                Object obj = response.getContent();
+                if (obj instanceof Map) {
+                    Map content = (Map) obj;
+                    obj = content.get(SUCCESS);
+                    if (obj instanceof Boolean) {
+                        boolean succ = (Boolean) obj;
+                        if (succ) {
+                            obj = content.get(VERSION);
+                            if (obj instanceof Double) {
+                                return (Double) obj;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return -1;
     }
 
     /**
@@ -406,6 +438,39 @@ public class CyThesaurusServiceMessageBasedClient
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isMappingSupported(String srcType, String tgtType) {
+        if (srcType==null || tgtType==null)
+            return false;
+
+        String receiver = CYTHESAURUS;
+        String msgType = MSG_TYPE_REQUEST_CHECK_MAPPING_SUPPORTED; // request for ID mapping service
+        String msgId = requester+receiver+msgType+ System.currentTimeMillis();
+        Map content = new HashMap();
+        content.put(SOURCE_ID_TYPE, srcType);
+        content.put(TARGET_ID_TYPE, tgtType);
+
+        Message msg = new Message(msgId , requester, receiver, msgType , content);
+        List<ResponseMessage> responses = PluginsCommunicationSupport.sendMessageAndGetResponses(msg);
+
+        for (ResponseMessage response : responses) {
+            if (response.getSender().compareTo(receiver)==0) {
+                Object obj = response.getContent();
+                if (obj instanceof Map) {
+                    Map contentRes = (Map) obj;
+                    obj = contentRes.get(SUCCESS);
+                    if (obj instanceof Boolean) {
+                        return (Boolean) obj;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
