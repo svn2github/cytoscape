@@ -421,6 +421,7 @@ public class CyThesaurusServiceMessageBasedClient
         content.put(SOURCE_ATTR, srcAttrName);
         content.put(SOURCE_ID_TYPE, srcIDTypes); // set source ID type
         Map<String, String> tgtTypeAttr = new HashMap(1);
+        tgtTypeAttr.put(tgtIDType, tgtAttrName);
         content.put(MAP_TARGET_ID_TYPE_ATTR, tgtTypeAttr);
 
         Message msg = new Message(msgId , requester, receiver, msgType , content);
