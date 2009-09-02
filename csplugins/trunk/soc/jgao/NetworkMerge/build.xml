@@ -62,7 +62,7 @@
     <copy todir="${build.images}">
       <fileset dir="${images}"/>
     </copy>
-    <jar destfile="NetworkMerge.jar">
+    <jar destfile="AdvancedNetworkMerge.jar">
       <manifest>
         <attribute name="Cytoscape-Plugin"
           value="csplugins.network.merge.NetworkMergePlugin" />
