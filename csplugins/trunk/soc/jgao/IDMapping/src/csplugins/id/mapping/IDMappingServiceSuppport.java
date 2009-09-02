@@ -57,6 +57,7 @@ import cytoscape.util.plugins.communication.ResponseMessage;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,7 +66,9 @@ import java.util.Set;
  * @author gjj
  */
 public class IDMappingServiceSuppport {
+    private static final String MSG_TYPE_REQUEST_SERVICE_VERSION = "SERVICE_VERSION";
     private static final String MSG_TYPE_REQUEST_SUPPORTED_ID_TYPE = "SUPPORTED_ID_TYPE";
+    private static final String MSG_TYPE_REQUEST_CHECK_MAPPING_SUPPORTED = "CHECK_MAPPING_SUPPORTED";
     private static final String MSG_TYPE_REQUEST_ATTRIBUTE_BASED_MAPPING = "ATTRIBUTE_BASED_MAPPING";
     private static final String MSG_TYPE_REQUEST_MAPPING_SERVICE = "MAPPING_SERVICE";
     private static final String MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG = "MAPPING_SRC_CONFIG_DIALOG";
@@ -76,6 +79,7 @@ public class IDMappingServiceSuppport {
     private static final String MSG_TYPE_REQUEST_SELECT_MAPPER = "SELECT_ID_MAPPER";;
     private static final String MSG_TYPE_REQUEST_ID_EXIST = "ID_EXIST";
 
+    private static final String VERSION = "VERSION";
     private static final String NETWORK_ID = "NETWORK_ID";
     private static final String SOURCE_ATTR = "SOURCE_ATTR";
     private static final String SOURCE_ID_TYPE = "SOURCE_ID_TYPE";
@@ -91,10 +95,10 @@ public class IDMappingServiceSuppport {
     private static final String REPORT = "REPORT";
     private static final String TARGET_ID_TYPE = "TGT_ID_TYPE";
     private static final String CLIENTS = "CLIENTS";
-    private static final String ID_EXISTS = "ID_EXISTS";
     private static final String MAPPING_RESULT = "MAPPING_RESULT";
     
     private static final String pluginName = FinalStaticValues.PLUGIN_NAME;
+    private static double version = 1.01;
 
     static void addService() {
         MessageListener ml = new MessageListener() {
@@ -103,7 +107,9 @@ public class IDMappingServiceSuppport {
                 if (msgType==null) return;
 
                 ResponseMessage response = null;
-                if (msgType.compareTo(Message.MSG_TYPE_TEST)==0) {
+                if (msgType.compareTo(MSG_TYPE_REQUEST_SERVICE_VERSION)==0) {
+                    response = getServiceVersion(msg);
+                } else if (msgType.compareTo(Message.MSG_TYPE_TEST)==0) {
                     response = testService(msg);
                 } else if(msgType.compareTo(Message.MSG_TYPE_GET_RECEIVERS)==0) {
                     response = getReceiversService(msg);
@@ -129,10 +135,10 @@ public class IDMappingServiceSuppport {
                     response = mappingService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_UNREGISTER_MAPPER)==0) {
                     response = unregisterIDMapperService(msg);
+                } else if (msgType.compareTo(MSG_TYPE_REQUEST_CHECK_MAPPING_SUPPORTED)==0) {
+                    response = checkMappingSupportedService(msg);
                 }
 
-
-                
                 // send respond message
                 if (response!=null) {
                     PluginsCommunicationSupport.sendMessage(response);
@@ -168,6 +174,7 @@ public class IDMappingServiceSuppport {
     private static ResponseMessage getSupportedTypesService(Message msg) {
         Map content = new HashMap();
         Set<String> supportedTypes = new HashSet();
+        supportedTypes.add(MSG_TYPE_REQUEST_SERVICE_VERSION);
         supportedTypes.add(Message.MSG_TYPE_TEST);
         supportedTypes.add(MSG_TYPE_REQUEST_ATTRIBUTE_BASED_MAPPING);
         supportedTypes.add(MSG_TYPE_REQUEST_MAPPING_SRC_CONFIG_DIALOG);
@@ -178,7 +185,16 @@ public class IDMappingServiceSuppport {
         supportedTypes.add(MSG_TYPE_REQUEST_ID_EXIST);
         supportedTypes.add(MSG_TYPE_REQUEST_MAPPING_SERVICE);
         supportedTypes.add(MSG_TYPE_REQUEST_UNREGISTER_MAPPER);
+        supportedTypes.add(MSG_TYPE_REQUEST_CHECK_MAPPING_SUPPORTED);
         content.put(Message.MSG_TYPE_GET_MSG_TYPES, supportedTypes);
+
+        return createResponse(msg, content);
+    }
+
+    private static ResponseMessage getServiceVersion(Message msg) {
+        Map content = new HashMap();
+        content.put(VERSION, version);
+        content.put(SUCCESS, true);
 
         return createResponse(msg, content);
     }
@@ -309,6 +325,48 @@ public class IDMappingServiceSuppport {
                 client.setSelected(selected);
                 content.put(SUCCESS, true);
             }
+        }
+
+        return createResponse(msg, content);
+    }
+
+    private static ResponseMessage checkMappingSupportedService(Message msg) {
+        DataSource srcDs = null;
+        DataSource tgtDs = null;
+        List<String> dss = DataSource.getFullNames();
+        Object obj = msg.getContent();
+        if (obj!=null && obj instanceof Map) {
+            Object obj1 = ((Map)obj).get(SOURCE_ID_TYPE);
+            if (obj1 instanceof String) {
+                String ds = (String)obj1;
+                if (dss.contains(ds)) {
+                    srcDs = DataSource.getByFullName(ds);
+                }
+            }
+
+            obj1 = ((Map)obj).get(TARGET_ID_TYPE);
+            if (obj1 instanceof String) {
+                String ds = (String)obj1;
+                if (dss.contains(ds)) {
+                    tgtDs = DataSource.getByFullName(ds);
+                }
+            }
+        }
+
+        Map content = new HashMap();
+        if (srcDs==null || tgtDs==null) {
+            content.put(SUCCESS, false);
+            content.put(REPORT, "Message content did not contain " +
+                    "valid source/target ID types.");
+        } else {
+            IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+            boolean succ = false;
+            try {
+                succ = stack.getCapabilities().isMappingSupported(srcDs, tgtDs);
+            } catch (IDMapperException e) {
+                e.printStackTrace();
+            }
+            content.put(SUCCESS, succ);
         }
 
         return createResponse(msg, content);
