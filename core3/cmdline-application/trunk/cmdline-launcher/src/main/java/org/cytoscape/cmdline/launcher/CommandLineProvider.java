@@ -36,10 +36,30 @@
 
 package org.cytoscape.cmdline.launcher;
 
+/**
+ * Providers of the commandline arguments to other bundles through OSGi
+ * 
+ * @author pasteur
+ *
+ */
 public interface CommandLineProvider {
+	
+	/**
+	 * To get all the arguments from the commandline
+	 * @return the arguments
+	 */
 	String[] getCommandLineCompleteArgs();
 
-	//added
+	
+	/**
+	 * Set the arguments of a detected <code>TaskFactory</code> in order to parse and use them in another OSGi bundle
+	 * @param arg the specific arguments
+	 */
 	void setSpecificArgs(String[] arg);
-	String[] getSpecificArgs();
+	
+	/**
+	 * To get the specific arguments that have been set for each detected <code>TaskFactory</code>
+	 * @return the specific arguments
+	 */
+	String[] getSpecificArgs();	
 }

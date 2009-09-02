@@ -43,15 +43,35 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+
+/**
+ * Manager that provides the commandline arguments to other <i>OSGi bundles</i> for parsing and execution of <code>TaskFactories</code>
+ * 
+ * @author pasteur
+ *
+ */
 public class CommandLineProviderImpl implements CommandLineProvider, BundleActivator {
 
+	/**
+	 * commandline arguments
+	 */
 	private String[] args;
-	private ServiceRegistration reg;
-
 	
-	//added field specificArgs
+	/**
+	 * OSGi ServiceRegistry to register <code>CommandLineProviderImpl</code> as a service
+	 */
+	private ServiceRegistration reg;
+	
+	/**
+	 * specific commandline arguments for each detected <code>TaskFactory</code>
+	 */
 	private String[] specificArgs;
 	
+	/**
+	 * The commandline provider
+	 * 
+	 * @param args commandline arguments
+	 */
 	public CommandLineProviderImpl(String[] args) {
 		if ( args == null )
 			this.args = new String[0];
@@ -59,27 +79,48 @@ public class CommandLineProviderImpl implements CommandLineProvider, BundleActiv
 			this.args = args;
 	}
 
+	
+	/**
+	 * Method executed when the bundle is started : it registers <code>CommandLineProvider</code> as a service
+	 */
 	public void start(BundleContext bc) {
 		reg = bc.registerService(CommandLineProvider.class.getName(),this,new Hashtable());
 	}
 
+	/**
+	 * Method executed when the bundle is stopped : it deletes <code>CommandLineProvider</code> from the ServiceRegistry
+	 */
 	public void stop(BundleContext bc) {
 		if ( reg != null )
 			reg.unregister();
 	}
 	
 	
-	//name has been modified
+	/**
+	 * To get the commandline arguments
+	 * 
+	 * @return the commandline arguments
+	 */
 	public String[] getCommandLineCompleteArgs() {
 		String[] ret = new String[args.length];
 		System.arraycopy(args,0,ret,0,args.length);
 		return ret;
 	}
 		
-	//added
+	/**
+	 * To set the specific arguments of each <code>TaskFactory</code>
+	 * 
+	 * @param the specific arguments
+	 */
 	public void setSpecificArgs(String[] arg){
 		this.specificArgs = arg;
 	}
+	
+	/**
+	 * To get the specific arguments of a choosen <code>TaskFactory</code>
+	 * 
+	 * @return the specific arguments of a <code>TaskFactory</code>
+	 */
 	public String[] getSpecificArgs(){
 		String[] ret = new String[specificArgs.length];
 		System.arraycopy(specificArgs,0,ret,0,specificArgs.length);
