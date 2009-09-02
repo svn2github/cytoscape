@@ -134,6 +134,8 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         frame = this;
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
+        checkCyThesaurus = checkCyThesaurus();
+
         selectedNetworkAttributeIDType = null;
         tgtType = null;
         matchingAttribute = new MatchingAttributeImpl(Cytoscape.getNodeAttributes());
@@ -561,7 +563,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         attributePanel.add(attributeScrollPane, gridBagConstraints);
 
         idmappingCheckBox.setText("Map IDs between the matching attributes");
-        idmappingCheckBox.setVisible(cythesaurusClient.isServiceAvailable());
+        idmappingCheckBox.setVisible(checkCyThesaurus);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -570,8 +572,8 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         attributePanel.add(idmappingCheckBox, gridBagConstraints);
 
         idmappingLabel.setForeground(new java.awt.Color(255, 0, 51));
-        idmappingLabel.setText("If you want to map IDs between the matching attributes, please install CyThesaurus plugin.");
-        idmappingLabel.setVisible(!cythesaurusClient.isServiceAvailable());
+        idmappingLabel.setText("If you want to map IDs between the matching attributes, please install CyThesaurus plugin version "+requiredCyThesaursServiceVersion+" or above.");
+        idmappingLabel.setVisible(!checkCyThesaurus);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -806,6 +808,15 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
             this.updateOKButtonEnable();
     }//GEN-LAST:event_inNetworkMergeCheckBoxActionPerformed
 
+    private double requiredCyThesaursServiceVersion = 1.01;
+    private boolean checkCyThesaurus() {
+        CyThesaurusServiceClient client = new CyThesaurusServiceMessageBasedClient("AdvanceNetworkMerge");
+        if (!client.isServiceAvailable())
+            return false;
+
+        double version = client.serviceVersion();
+        return version >= requiredCyThesaursServiceVersion;
+    }
 /*
  * Call when adding or removing a network to/from selected network list
  * 
@@ -917,8 +928,8 @@ private Operation getOperation() {
     private CollapsiblePanel advancedOptionCollapsiblePanel;
 
     private NetworkMergeParameter parameter;
-
-    CyThesaurusServiceClient cythesaurusClient = new CyThesaurusServiceMessageBasedClient("AdvanceNetworkMerge");
+    
+    boolean checkCyThesaurus;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel advancedOptionCollapsiblePanelAgent;
