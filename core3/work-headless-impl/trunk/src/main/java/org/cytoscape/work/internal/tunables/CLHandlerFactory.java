@@ -19,13 +19,30 @@ import org.cytoscape.work.util.FlexiblyBoundedLong;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
-
+/**
+ * Factory that creates commandline <code>Handlers</code> for Objects defined in Field or by Methods, depending on their types
+ * 
+ * @author pasteur
+ *
+ */
 public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 
 	public CLHandler getHandler(Method m, Object o, Tunable t) {
 		return null;
 	}
 
+
+	/**
+	 * To get a <code>CLHandler</code> for Methods
+	 * 
+	 * @param gmethod Method that returns the value from the Object <code>o</code>
+	 * @param smethod Method that sets a value to the Object <code>o</code>
+	 * @param o Object whose value will be set and get by the methods
+	 * @param tg <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
+	 * @param ts <code>Tunable</code> annotations of the Method <code>smethod</code> annotated as <code>Tunable</code>
+	 * 
+	 * @return a specific <code>CLHandler</code> of a type
+	 */
 	public CLHandler getHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
 		Class<?>[] paramsTypes = smethod.getParameterTypes();
 		Class<?> returnType = gmethod.getReturnType();
@@ -39,17 +56,29 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 			return null;
 		}
 		
-		if( type == int.class || type == Integer.class)
-			return new IntCLHandler(gmethod,smethod,o,tg,ts);
-		else if( type == Boolean.class || type == boolean.class)
+		if( type == Boolean.class || type == boolean.class)
 			return new BooleanCLHandler(gmethod,smethod,o,tg,ts);
 		else if( type == String.class)
 			return new StringCLHandler(gmethod,smethod,o,tg,ts);
+		
+		
+		else if( type == int.class || type == Integer.class)
+			return new IntCLHandler(gmethod,smethod,o,tg,ts);
+		else if( type == float.class || type == Float.class)
+			return new FloatCLHandler(gmethod,smethod,o,tg,ts);
+		else if( type == long.class || type == Long.class)
+			return new LongCLHandler(gmethod,smethod,o,tg,ts);
+		else if( type == double.class || type == Double.class)
+			return new DoubleCLHandler(gmethod,smethod,o,tg,ts);
 		
 		else if( type == BoundedInteger.class)
 			return new BoundedCLHandler<BoundedInteger>(gmethod,smethod,o,tg,ts);
 		else if( type == BoundedDouble.class)
 			return new BoundedCLHandler<BoundedDouble>(gmethod,smethod,o,tg,ts);
+		else if( type == BoundedLong.class)
+			return new BoundedCLHandler<BoundedLong>(gmethod,smethod,o,tg,ts);
+		else if( type == BoundedFloat.class)
+			return new BoundedCLHandler<BoundedFloat>(gmethod,smethod,o,tg,ts);
 		
 		else if( type == FlexiblyBoundedInteger.class)
 			return new FlexiblyBoundedCLHandler<FlexiblyBoundedInteger>(gmethod,smethod,o,tg,ts);
@@ -72,6 +101,15 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 
 	
 	
+	/**
+	 * To get a <code>CLHandler</code> for a Field
+	 * 
+	 * @param f Field that is intercepted
+	 * @param o Object that is contained in the Field <code>f</code>
+	 * @param t <code>Tunable</code> annotations of the Field <code>f</code> annotated as <code>Tunable</code>
+	 * 
+	 * @return a specific <code>CLHandler</code> of a type
+	 */
 	public CLHandler getHandler(Field f, Object o, Tunable t) {
 		Class<?> type = f.getType();
 

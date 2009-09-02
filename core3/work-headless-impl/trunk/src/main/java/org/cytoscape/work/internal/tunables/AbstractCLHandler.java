@@ -8,22 +8,41 @@ import org.apache.commons.cli.Option;
 import org.cytoscape.work.AbstractHandler;
 import org.cytoscape.work.Tunable;
 
-
+/**
+ * Abstract handler for the creation of the user interface.
+ * <br>
+ * It provides the functions that are common to all types of Handlers
+ */
 public abstract class AbstractCLHandler extends AbstractHandler implements CLHandler {
 
-	public AbstractCLHandler(Field f, Object o, Tunable t) {
+	/**
+	 * Constructs an abstract commandline handler for <i>Field</i>
+	 * @param f Field that is intercepted
+	 * @param o Object that is contained in the Field <code>f</code>
+	 * @param t <code>Tunable</code> annotations of the Field <code>f</code> annotated as <code>Tunable</code>
+	 */
+	protected AbstractCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 	}
 
-	public AbstractCLHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
+	
+	/**
+	 * Constructs an abstract commandline handler for <i>Methods</i>
+	 * @param gmethod Method that returns the value from the Object <code>o</code>
+	 * @param smethod Method that sets a value to the Object <code>o</code>
+	 * @param o Object whose value will be set and get by the methods
+	 * @param tg <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
+	 * @param ts <code>Tunable</code> annotations of the Method <code>smethod</code> annotated as <code>Tunable</code>
+	 */
+	protected AbstractCLHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
 		super(gmethod,smethod,o,tg,ts);
 	}
 
-	
-//	public AbstractCLHandler(Method m, Object o, Tunable t) {
-//		super(m,o,t);
-//	}
 
+	/**
+	 * To get the name of the <code>CLHandler</code>
+	 * @return name of the <code>CLHandler</code>
+	 */
 	protected String getName() {
 		if ( f!=null ) {
 			String ns = f.getDeclaringClass().toString();
