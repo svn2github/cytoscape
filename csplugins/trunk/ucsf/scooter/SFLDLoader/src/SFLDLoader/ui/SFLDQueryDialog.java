@@ -126,12 +126,11 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 	static final int MIN_CUTOFF = -150;
 
 	public SFLDQueryDialog(List<Superfamily> superfamilies, String URLBase, CyLogger logger) {
-		super();	// Create the dialog
+		super(Cytoscape.getDesktop(), "SFLD Browse Interface");	// Create the dialog
 		this.superfamilies = superfamilies;
 		this.URLBase = URLBase;
 		this.logger = logger;
 
-		setTitle("SFLD Browse Interface");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		// Create the panel for the main content
