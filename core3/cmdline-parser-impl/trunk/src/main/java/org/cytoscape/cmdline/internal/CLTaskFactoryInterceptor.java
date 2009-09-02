@@ -16,21 +16,87 @@ import org.cytoscape.cmdline.launcher.CommandLineProvider;
 import org.cytoscape.work.TaskFactory;
 
 
+
+/**
+ * <p><pre>Interceptor of the <code>TaskFactories</code> : it will parse the arguments provided by the user through commandline
+ *  to detect the <code>TaskFactories</code> and their own arguments
+ *  </pre>
+ *  </p>
+ * 
+ * @author pasteur
+ *
+ */
 public class CLTaskFactoryInterceptor {
 	
-	CommandLineProvider clp;
-    Map<TaskFactory, TFWrapper> taskMap;
+	/**
+	 * Provider of the commandline arguments
+	 */
+	private CommandLineProvider clp;
+	
+	/**
+	 * Map that contains the TFWrappers to get the available <code>TaskFactories</code>
+	 */
+    private Map<TaskFactory, TFWrapper> taskMap;
+    
+    /**
+     * Arguments detected for each <code>TaskFactory</code>
+     */
     private Map<String, List<String>> tasksWithTheirArgs;
+    
+    /**
+     * commandline arguments
+     */
     private String[] arguments;
+    
+    /**
+     * <code>TaskFactories</code> that the user needs to execute
+     */
     private List<String> choosenTasks;
+    
+    /**
+     * The <code>Options</code> of the available <code>TaskFactories</code>
+     */
     private Options optionsOfTasks;
+    
+    /**
+     * Parser
+     */
     private CommandLineParser parser = new PosixParser();
+    
+    /**
+     * CommandLine : parsed arguments
+     */
     private CommandLine line = null;
+    
+    /**
+     * Grabber that contains the <code>Map</code> of available <code>TaskFactories</code>
+     */
     private TaskFactoryGrabber grabber;
+    
+    /**
+     * executor that will create a <code>SuperTask</code> to execute asynchronously the <code>Tasks</code>
+     */
     private TaskExecutor executor;
     
     
-    CLTaskFactoryInterceptor(CommandLineProvider colipr, TaskFactoryGrabber tfg) {
+    /**
+     * <p><pre>
+     * Interceptor does :
+     * <ul>
+     * <li> gets the arguments from the commandline</li>
+     * <li> gets the <code>Map</code> of the available <code>TaskFactories</code></li>
+     * <li> creates the options for each <code>TaskFactory</code></li>
+     * <li> detects the arguments for each selected <code>TaskFactory</code> from the commandline's arguments</li>
+     * <li> parses these arguments</li>
+     * <li> executes the selected <code>TaskFactories</code> by using their <i>parsed arguments</i></li>
+     * </ul>
+     * </pre></p>
+     * 
+     * 
+     * @param colipr provides the commandline arguments
+     * @param tfg grabber that contains all the <code>TFWrappers</code>
+     */
+    public CLTaskFactoryInterceptor(CommandLineProvider colipr, TaskFactoryGrabber tfg) {
     	this.clp = colipr;
     	this.grabber = tfg;
     	taskMap = grabber.getTaskMap();
@@ -44,13 +110,15 @@ public class CLTaskFactoryInterceptor {
         findTaskArguments();
         parseTaskArguments();
         executeCommandLineArguments();
-        
         //Execute the SuperTask that has been created
         executor.execute();
     }
     
     
 
+    /**
+     * creates an Option for each <code>TaskFactory</code>
+     */
     private void createTaskOptions() {
     	optionsOfTasks = new Options();
 
@@ -59,30 +127,35 @@ public class CLTaskFactoryInterceptor {
         	optionsOfTasks.addOption(tf.getOption());
         }
 
-        optionsOfTasks.addOption("listTasks", false, "Help = Display all the available taskFactories.");
+        //optionsOfTasks.addOption("listTasks", false, "Help = Display all the available taskFactories.");
 
         tasksWithTheirArgs = new HashMap<String, List<String>>();
 
         // for each task factory, create a list of strings
         for (Option opt : optionsOfTasks.getOptions())
+        	//tasksWithTheirArgs.put("-" + opt.getOpt().toString(),new ArrayList<String>());
         	tasksWithTheirArgs.put("-" + opt.getOpt().toString(),new ArrayList<String>());
     }
     
 
+    /**
+     * Find the arguments that are related to <code>TaskFactories</code>
+     */
     public void findTaskArguments() {
     	choosenTasks = new ArrayList<String>();
         int lastIdx = 0;
         String actualTask = null;
 
         
-        for (String arg : arguments) {	
+        for (String arg : arguments) {
 			// if the arg represents task, add it to the task argument list
        		if (tasksWithTheirArgs.containsKey(arg)) {
        			actualTask = arg;
        			lastIdx = 0;
        			choosenTasks.add(actualTask);
        		}
-            else if(tasksWithTheirArgs.containsKey("-"+arg)){
+            
+       		else if(tasksWithTheirArgs.containsKey("-"+arg)){
             	printHelp(optionsOfTasks,"\nAdd \" - \" to "+ arg + " or check the options below");
             }
 
@@ -90,6 +163,7 @@ public class CLTaskFactoryInterceptor {
     			printHelp(optionsOfTasks,"The Task \"" + arg + "\" doesn't exist : Check the options below");
     		}
 
+       		
             else { 	// otherwise add it to the list of task specific args
             	if (!arg.startsWith("-")) {
             		if(tasksWithTheirArgs.get(actualTask).size()!=0){
@@ -108,29 +182,29 @@ public class CLTaskFactoryInterceptor {
         
         
         //print the different parsed arguments
-/*        System.out.println("tasksWithTheirArgs :");
-        for(String st : tasksWithTheirArgs.keySet())
-        	System.out.println(st + " = " + tasksWithTheirArgs.get(st));
+/*  	System.out.println("tasksWithTheirArgs :");
+        for(String st : tasksWithTheirArgs.keySet())System.out.println(st + " = " + tasksWithTheirArgs.get(st));
         System.out.println("\n\n");
         
         System.out.println("listOfChoosenTasks :");
-        for(String st : listOfChoosenTasks)
-        	System.out.println(st);
+        for(String st : choosenTasks)System.out.println(st);
         System.out.println("\n\n\n");
-*/		
-        
-        
-        
+*/	        
         
         //add the general help for all task
         for (String arg : arguments) {
-            if (arg.equals("-listTasks")) {
-            	tasksWithTheirArgs.get(arg).add("-listTasks");
-            	choosenTasks.add("-listTasks");
+            if (arg.equals("-ListTasks")) {
+            	tasksWithTheirArgs.get(arg).add("-ListTasks");
+            	choosenTasks.add("-ListTasks");
             }
-        }
+		}
+
     }
 
+    
+    /**
+     * Parse the arguments that have been detected
+     */
     private void parseTaskArguments() {
         try {
             line = parser.parse(optionsOfTasks,choosenTasks.toArray(new String[choosenTasks.size()]));
@@ -141,14 +215,18 @@ public class CLTaskFactoryInterceptor {
         }
     }
 
+    
+    /**
+     * Executes the <code>TaskFactories</code> by using their arguments previously detected
+     */
     private void executeCommandLineArguments() {
-        if (line.hasOption("listTasks")) {
+    	if (line.hasOption("ListTasks")) {
             System.out.println("The General Help has been called");
             printHelp(optionsOfTasks,"The General Help has been called");
         }
 
+    	
         for (String st : choosenTasks) {
-        	System.out.println("Execution of " + st);
             for (TFWrapper tf : taskMap.values()) {
                 if (st.equals(tf.getName())) {
 
@@ -192,11 +270,18 @@ public class CLTaskFactoryInterceptor {
         }
     }
 
+    /**
+     * Display Help to the user when an error has been made in arguments
+     * 
+     * @param options all the options that are available
+     * @param instructions message to inform the user about his error
+     */
     private static void printHelp(Options options,String instructions) {
         HelpFormatter formatter = new HelpFormatter();
         System.out.println(instructions);
+        formatter.setWidth(140);
         formatter.printHelp("java -Xmx512M -jar headless-cytoscape.jar [Options]",
-            "\nHere are the different taskFactories implemented :\n", options, "");
+            "\nHere are the different taskFactories implemented :\n", options, "\nTo run multiple tasks : \" java -jar headless-cytoscape.jar -<task> -<option(s)> -<argument(s)>  -<task> -<option(s)> -<argument(s)> \"");
     	System.exit(0);
 
     }
