@@ -34,27 +34,10 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package csplugins.id.mapping.ui;
-
-import csplugins.id.mapping.model.AttributeBasedIDMappingDataImpl;
+package csplugins.network.merge.ui;
 
 import cytoscape.cythesaurus.service.CyThesaurusServiceClient;
 import cytoscape.cythesaurus.service.CyThesaurusServiceMessageBasedClient;
-
-
-import csplugins.id.mapping.IDMapper;
-import csplugins.id.mapping.IDMapperFromCyThesaurusService;
-import csplugins.id.mapping.model.AttributeBasedIDMappingData;
-
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-
-import giny.model.GraphObject;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -83,9 +66,7 @@ public class IDMappingDialog extends javax.swing.JDialog {
 
         cancelled = true;
 
-        this.idMapper = new IDMapperFromCyThesaurusService();
-
-        idMapping = new AttributeBasedIDMappingDataImpl();
+        cythesaurusClient = new CyThesaurusServiceMessageBasedClient("AdvencedNetworkMerge");
 
         initComponents();
     }
@@ -127,10 +108,12 @@ public class IDMappingDialog extends javax.swing.JDialog {
         toComboBox = new javax.swing.JComboBox();
         optionPanel = new javax.swing.JPanel();
         optionButton = new javax.swing.JButton();
-        goButton = new javax.swing.JButton();
+        javax.swing.JPanel okPanel = new javax.swing.JPanel();
+        okButton = new javax.swing.JButton();
+        javax.swing.JButton cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("ID Mapping");
+        setTitle("ID Mapping Configuration");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         idTypePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select ID type(s) for each attribute"));
@@ -142,7 +125,7 @@ public class IDMappingDialog extends javax.swing.JDialog {
         idTypeSelectionTable = new IDTypeSelectionTable(frame,this);
         //idTypeSelectionTable.setMinimumSize(new java.awt.Dimension(400, 100));
         //idTypeSelectionTable.setPreferredSize(new java.awt.Dimension(450, 200));
-        idTypeSelectionTable.setSupportedSrcIDType(idMapper.getSupportedSrcIDTypes());
+        idTypeSelectionTable.setSupportedSrcIDType(cythesaurusClient.supportedSrcIDTypes());
         idTypeScrollPane.setViewportView(idTypeSelectionTable);
 
         idTypePanel.add(idTypeScrollPane);
@@ -161,7 +144,7 @@ public class IDMappingDialog extends javax.swing.JDialog {
         toLabel.setText("Destination ID Type:");
         toPanel.add(toLabel);
 
-        String[] types = idMapper.getSupportedTgtIDTypes().toArray(new String[0]);
+        String[] types = cythesaurusClient.supportedTgtIDTypes().toArray(new String[0]);
         java.util.Arrays.sort(types);
         toComboBox.setModel(new javax.swing.DefaultComboBoxModel(types));
         toPanel.add(toComboBox);
@@ -194,19 +177,28 @@ public class IDMappingDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(optionPanel, gridBagConstraints);
 
-        goButton.setText("    OK    ");
-        goButton.setEnabled(false);
-        goButton.addActionListener(new java.awt.event.ActionListener() {
+        okButton.setText("   OK   ");
+        okButton.setEnabled(false);
+        okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                goButtonActionPerformed(evt);
+                okButtonActionPerformed(evt);
             }
         });
+        okPanel.add(okButton);
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+        okPanel.add(cancelButton);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(goButton, gridBagConstraints);
+        getContentPane().add(okPanel, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -216,8 +208,7 @@ public class IDMappingDialog extends javax.swing.JDialog {
             if (!client.openMappingResourceConfigDialog()) {
                 //javax.swing.JOptionPane.showMessageDialog(this, "Failed to open the configuration dialog.");
             } else {
-                this.idMapper = new IDMapperFromCyThesaurusService();
-                Set<String> srcTypes = idMapper.getSupportedSrcIDTypes();
+                Set<String> srcTypes = cythesaurusClient.supportedSrcIDTypes();
                 for (Map<String,Set<String>> mapAttrTypes : selectedNetworkAttributeIDType.values()) {
                     for (Set<String> types : mapAttrTypes.values()) {
                         types.retainAll(srcTypes);
@@ -225,7 +216,7 @@ public class IDMappingDialog extends javax.swing.JDialog {
                 }
                 idTypeSelectionTable.setSupportedSrcIDType(srcTypes);
 
-                String[] tgtTypes = idMapper.getSupportedTgtIDTypes().toArray(new String[0]);
+                String[] tgtTypes = cythesaurusClient.supportedTgtIDTypes().toArray(new String[0]);
                 java.util.Arrays.sort(tgtTypes);
                 String oldType = (String)toComboBox.getSelectedItem();
                 toComboBox.setModel(new javax.swing.DefaultComboBoxModel(tgtTypes));
@@ -233,66 +224,26 @@ public class IDMappingDialog extends javax.swing.JDialog {
             }
     }//GEN-LAST:event_optionButtonActionPerformed
 
-    private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
-        CyAttributes cyAttributes = isNode? Cytoscape.getNodeAttributes():Cytoscape.getEdgeAttributes();
-        Set<String> tgtTypes = new HashSet<String>();
-        tgtTypes.add(getTgtType());
-
-        final JTaskConfig jTaskConfig = new JTaskConfig();
-        jTaskConfig.setOwner(frame);
-        jTaskConfig.displayCloseButton(true);
-        jTaskConfig.displayCancelButton(false);
-        jTaskConfig.displayStatus(true);
-        jTaskConfig.setAutoDispose(true);
-        jTaskConfig.displayTimeElapsed(true);
-
-        Iterator<Map.Entry<String,Map<String,Set<String>>>> itEntryNetAttrTypes = selectedNetworkAttributeIDType.entrySet().iterator();
-        while (itEntryNetAttrTypes.hasNext()) {
-            Map.Entry<String,Map<String,Set<String>>> entryNetAttrTypes = itEntryNetAttrTypes.next();
-            String netID = entryNetAttrTypes.getKey();
-            CyNetwork network = Cytoscape.getNetwork(netID);
-
-            // get all identifiers of nodes/edges
-            Set<String> goIDs = new HashSet<String>();
-            Iterator<GraphObject> itGO = isNode? network.nodesIterator():network.edgesIterator();
-            while (itGO.hasNext()) {
-                goIDs.add(itGO.next().getIdentifier());
-            }
-
-            Map<String,Set<String>> mapAttrTypes = entryNetAttrTypes.getValue();
-            Iterator<Map.Entry<String,Set<String>>> itEntryAttrTypes = mapAttrTypes.entrySet().iterator();
-            while (itEntryAttrTypes.hasNext()) {
-                Map.Entry<String,Set<String>> entryAttrTypes = itEntryAttrTypes.next();
-                String attr = entryAttrTypes.getKey();
-                Set<String> potentialSrcTypes = entryAttrTypes.getValue();
-
-                ReadIDMappingTask task = new ReadIDMappingTask(idMapping,
-                        idMapper,
-                        goIDs,
-                        cyAttributes,
-                        attr,
-                        potentialSrcTypes,
-                        tgtTypes);
-                // Execute Task in New Thread; pop open JTask Dialog Box.
-                TaskManager.executeTask(task, jTaskConfig);
-                //if (nmTask.isCancelled()) return;
-            }
-        }
-
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         cancelled = false;
         this.setVisible(false);
         this.dispose();
-}//GEN-LAST:event_goButtonActionPerformed
+}//GEN-LAST:event_okButtonActionPerformed
 
-    Map<String,Map<String,Set<String>>> getSrcTypes() {
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.setVisible(false);
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    public Map<String,Map<String,Set<String>>> getSrcTypes() {
             return selectedNetworkAttributeIDType;
     }
 
     void updateGoButtonEnable() {
 
         if (getTgtType()==null) {
-                goButton.setToolTipText("No target ID type available");
-                goButton.setEnabled(false);
+                okButton.setToolTipText("No target ID type available");
+                okButton.setEnabled(false);
                 return;
         }
 
@@ -303,16 +254,16 @@ public class IDMappingDialog extends javax.swing.JDialog {
             Iterator<Set<String>> itTypes = mapAttrIDType.values().iterator();
             while (itTypes.hasNext()) {
                 if (itTypes.next().isEmpty()) {
-                        goButton.setToolTipText("Select at least one ID type for each attribute");
-                        goButton.setEnabled(false);
+                        okButton.setToolTipText("Select at least one ID type for each attribute");
+                        okButton.setEnabled(false);
                         return;
                 }
             }
         }
 
 
-        goButton.setToolTipText(null);
-        goButton.setEnabled(true);
+        okButton.setToolTipText(null);
+        okButton.setEnabled(true);
     }
 
     public String getTgtType() {
@@ -334,10 +285,6 @@ public boolean isCancelled() {
     return cancelled;
 }
 
-public AttributeBasedIDMappingData getIDMapping() {
-        return this.idMapping;
-}
-
 //void setOKButtonEnable() {
 //        if (idMapping.isEmpty()) {
 //                okButton.setEnabled(false);
@@ -350,10 +297,10 @@ public AttributeBasedIDMappingData getIDMapping() {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton goButton;
     private javax.swing.JPanel idTypePanel;
     private IDTypeSelectionTable idTypeSelectionTable;
     private javax.swing.JScrollPane idTypeScrollPane;
+    private javax.swing.JButton okButton;
     private javax.swing.JButton optionButton;
     //private NetworkMergeOptionDialog optionDialog;
     private javax.swing.JPanel optionPanel;
@@ -363,10 +310,8 @@ public AttributeBasedIDMappingData getIDMapping() {
 
         private boolean cancelled;
         private Frame frame;
-        private AttributeBasedIDMappingData idMapping;
         private boolean isNode;
 
         private Map<String,Map<String,Set<String>>> selectedNetworkAttributeIDType;
-        private IDMapper idMapper;
-        
+        private CyThesaurusServiceClient cythesaurusClient;
 }

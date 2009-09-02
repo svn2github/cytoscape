@@ -144,5 +144,8 @@ public class MatchingAttributeImpl implements MatchingAttribute {
     public Set<String> getNetworkSet() {
         return attributeForMatching.keySet();
     }
- 
+
+    public void clear() {
+        attributeForMatching.clear();
+    }
 }

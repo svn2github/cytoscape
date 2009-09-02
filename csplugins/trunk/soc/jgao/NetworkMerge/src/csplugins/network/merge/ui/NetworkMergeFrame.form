@@ -92,14 +92,14 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Please select networks to merge"/>
+            <TitledBorder title="Networks to merge"/>
           </Border>
         </Property>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[490, 100]"/>
         </Property>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[490, 100]"/>
+          <Dimension value="[490, 130]"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -135,6 +135,11 @@
           <SubComponents>
             <Component class="javax.swing.JList" name="unselectedNetworkList">
               <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                    <TitledBorder title="Available networks"/>
+                  </Border>
+                </Property>
                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                   <StringArray count="0"/>
                 </Property>
@@ -173,7 +178,7 @@
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="rightButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = unselectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }        &#xa;        &#xa;        if (getOperation()==Operation.DIFFERENCE &amp;&amp; selectedNetworkData.getSize()+indices.length&gt;2) {&#xa;            JOptionPane.showMessageDialog(frame,&quot;Difference operation only support two networks! If you need to replace the selected network, remove it first and select the new one.&quot;, &quot;Warning&quot;, JOptionPane.WARNING_MESSAGE );&#xa;            return;&#xa;        }&#xa;    &#xa;        for (int i= indices.length-1; i&gt;=0; i--) {&#xa;            CyNetwork removed = unselectedNetworkData.removeElement(indices[i]);&#xa;            selectedNetworkData.add(removed);&#xa;            addRemoveAttributeMapping(removed,true);&#xa;        }&#xa;    &#xa;        if (unselectedNetworkData.getSize()==0) {&#xa;            unselectedNetworkList.clearSelection();&#xa;            rightButton.setEnabled(false);&#xa;        } else {&#xa;            int minindex = unselectedNetworkList.getMinSelectionIndex();&#xa;            if (minindex&gt;= unselectedNetworkData.getSize()) {&#xa;                minindex = 0;&#xa;            }&#xa;            unselectedNetworkList.setSelectedIndex(minindex);&#xa;        }&#xa;&#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        updataIdMappingButtonEnable();&#xa;        updateOKButtonEnable();&#xa;        updateAttributeTable();&#xa;        updateMergeAttributeTable();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="rightButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = unselectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }        &#xa;        &#xa;        if (getOperation()==Operation.DIFFERENCE &amp;&amp; selectedNetworkData.getSize()+indices.length&gt;2) {&#xa;            JOptionPane.showMessageDialog(frame,&quot;Difference operation only support two networks! If you need to replace the selected network, remove it first and select the new one.&quot;, &quot;Warning&quot;, JOptionPane.WARNING_MESSAGE );&#xa;            return;&#xa;        }&#xa;    &#xa;        for (int i= indices.length-1; i&gt;=0; i--) {&#xa;            CyNetwork removed = unselectedNetworkData.removeElement(indices[i]);&#xa;            selectedNetworkData.add(removed);&#xa;            addRemoveAttributeMapping(removed,true);&#xa;        }&#xa;    &#xa;        if (unselectedNetworkData.getSize()==0) {&#xa;            unselectedNetworkList.clearSelection();&#xa;            rightButton.setEnabled(false);&#xa;        } else {&#xa;            int minindex = unselectedNetworkList.getMinSelectionIndex();&#xa;            if (minindex&gt;= unselectedNetworkData.getSize()) {&#xa;                minindex = 0;&#xa;            }&#xa;            unselectedNetworkList.setSelectedIndex(minindex);&#xa;        }&#xa;&#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        updateOKButtonEnable();&#xa;        updateAttributeTable();&#xa;        updateMergeAttributeTable();&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="leftButton">
@@ -184,7 +189,7 @@
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="leftButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = selectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }&#xa;    &#xa;        for (int i= indices.length-1; i&gt;=0; i--) {&#xa;            CyNetwork removed = selectedNetworkData.removeElement(indices[i]);&#xa;            unselectedNetworkData.add(removed);&#xa;            addRemoveAttributeMapping(removed,false);&#xa;        }&#xa;    &#xa;        if (selectedNetworkData.getSize()==0) {&#xa;            selectedNetworkList.clearSelection();&#xa;            leftButton.setEnabled(false);&#xa;        } else {&#xa;            int minindex = selectedNetworkList.getMinSelectionIndex();&#xa;            if (minindex&gt;= selectedNetworkData.getSize()) {&#xa;                minindex = 0;&#xa;            }&#xa;            selectedNetworkList.setSelectedIndex(minindex);&#xa;        }&#xa;      &#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        updataIdMappingButtonEnable();&#xa;        updateOKButtonEnable();&#xa;        updateAttributeTable();&#xa;        updateMergeAttributeTable();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="leftButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = selectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }&#xa;    &#xa;        for (int i= indices.length-1; i&gt;=0; i--) {&#xa;            CyNetwork removed = selectedNetworkData.removeElement(indices[i]);&#xa;            unselectedNetworkData.add(removed);&#xa;            addRemoveAttributeMapping(removed,false);&#xa;        }&#xa;    &#xa;        if (selectedNetworkData.getSize()==0) {&#xa;            selectedNetworkList.clearSelection();&#xa;            leftButton.setEnabled(false);&#xa;        } else {&#xa;            int minindex = selectedNetworkList.getMinSelectionIndex();&#xa;            if (minindex&gt;= selectedNetworkData.getSize()) {&#xa;                minindex = 0;&#xa;            }&#xa;            selectedNetworkList.setSelectedIndex(minindex);&#xa;        }&#xa;      &#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        updateOKButtonEnable();&#xa;        updateAttributeTable();&#xa;        updateMergeAttributeTable();&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
           </SubComponents>
@@ -210,6 +215,11 @@
           <SubComponents>
             <Component class="javax.swing.JList" name="selectedNetworkList">
               <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                    <TitledBorder title="Selected networks"/>
+                  </Border>
+                </Property>
                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                   <StringArray count="0"/>
                 </Property>
@@ -248,7 +258,7 @@
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="upButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = selectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }&#xa;    &#xa;        int imin = selectedNetworkList.getMinSelectionIndex();&#xa;        int imax = selectedNetworkList.getMaxSelectionIndex();&#xa;        &#xa;        if (imin&lt;1) return;&#xa;        &#xa;        CyNetwork removed = selectedNetworkData.removeElement(imin-1);&#xa;        selectedNetworkData.add(imax,removed);&#xa;        &#xa;        for (int ii=0; ii&lt;indices.length; ii++) {&#xa;            indices[ii]--;&#xa;        }        &#xa;        selectedNetworkList.setSelectedIndices(indices);&#xa;        &#xa;        updateUpDownButtonEnable();&#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        updataIdMappingButtonEnable();&#xa;        updateOKButtonEnable();&#xa;        updateAttributeTable();&#xa;        updateMergeAttributeTable();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="upButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = selectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }&#xa;    &#xa;        int imin = selectedNetworkList.getMinSelectionIndex();&#xa;        int imax = selectedNetworkList.getMaxSelectionIndex();&#xa;        &#xa;        if (imin&lt;1) return;&#xa;        &#xa;        CyNetwork removed = selectedNetworkData.removeElement(imin-1);&#xa;        selectedNetworkData.add(imax,removed);&#xa;        &#xa;        for (int ii=0; ii&lt;indices.length; ii++) {&#xa;            indices[ii]--;&#xa;        }        &#xa;        selectedNetworkList.setSelectedIndices(indices);&#xa;        &#xa;        updateUpDownButtonEnable();&#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        updateOKButtonEnable();&#xa;        updateAttributeTable();&#xa;        updateMergeAttributeTable();&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="downButton">
@@ -259,7 +269,7 @@
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="downButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = selectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }&#xa;    &#xa;        int imin = selectedNetworkList.getMinSelectionIndex();&#xa;        int imax = selectedNetworkList.getMaxSelectionIndex();&#xa;        &#xa;        if (imax&gt;=selectedNetworkData.getSize()-1) return;&#xa;        &#xa;        CyNetwork removed = selectedNetworkData.removeElement(imax+1);&#xa;        selectedNetworkData.add(imin,removed);&#xa;        &#xa;        for (int ii=0; ii&lt;indices.length; ii++) {&#xa;            indices[ii]++;&#xa;        }        &#xa;        selectedNetworkList.setSelectedIndices(indices);&#xa;        &#xa;        updateUpDownButtonEnable();&#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        updataIdMappingButtonEnable();&#xa;        updateOKButtonEnable();&#xa;        updateAttributeTable();&#xa;        updateMergeAttributeTable();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="downButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        int [] indices = selectedNetworkList.getSelectedIndices();&#xa;        if (indices == null || indices.length == 0) {&#xa;            return;&#xa;        }&#xa;    &#xa;        int imin = selectedNetworkList.getMinSelectionIndex();&#xa;        int imax = selectedNetworkList.getMaxSelectionIndex();&#xa;        &#xa;        if (imax&gt;=selectedNetworkData.getSize()-1) return;&#xa;        &#xa;        CyNetwork removed = selectedNetworkData.removeElement(imax+1);&#xa;        selectedNetworkData.add(imin,removed);&#xa;        &#xa;        for (int ii=0; ii&lt;indices.length; ii++) {&#xa;            indices[ii]++;&#xa;        }        &#xa;        selectedNetworkList.setSelectedIndices(indices);&#xa;        &#xa;        updateUpDownButtonEnable();&#xa;        selectedNetworkList.repaint();&#xa;        unselectedNetworkList.repaint();&#xa;        updateOKButtonEnable();&#xa;        updateAttributeTable();&#xa;        updateMergeAttributeTable();&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
           </SubComponents>
@@ -300,14 +310,8 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Please select an attribute for each network to match/identify nodes"/>
+                    <TitledBorder title="Matching attributes (attributes to match nodes between networks)"/>
                   </Border>
-                </Property>
-                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[400, 70]"/>
-                </Property>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[466, 73]"/>
                 </Property>
               </Properties>
               <Constraints>
@@ -316,7 +320,7 @@
                 </Constraint>
               </Constraints>
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
               <SubComponents>
                 <Container class="javax.swing.JScrollPane" name="attributeScrollPane">
                   <Properties>
@@ -332,44 +336,44 @@
                     <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="matchNodeTable.getModel().addTableModelListener(new TableModelListener() {&#xa;    public void tableChanged(TableModelEvent e) {&#xa;        mergeNodeAttributeTable.updateMatchingAttribute();&#xa;    }&#xa;});"/>
                     <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="attributeScrollPane.setViewportView(matchNodeTable);"/>
                   </AuxValues>
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                      <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="1.0" weightY="1.0"/>
+                    </Constraint>
+                  </Constraints>
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                 </Container>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="idMappingPanel">
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-              </AuxValues>
-              <Constraints>
-                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                  <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="22" weightX="0.0" weightY="0.0"/>
-                </Constraint>
-              </Constraints>
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                <Property name="alignment" type="int" value="0"/>
-                <Property name="horizontalGap" type="int" value="10"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JButton" name="importIDMappingButton">
+                <Component class="javax.swing.JCheckBox" name="idmappingCheckBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Import ID mapping"/>
-                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="Map IDs between the matching attributes"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="importIDMappingButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        Map&lt;String,Set&lt;String&gt;&gt; selectedNetworkAttribute = new HashMap&lt;String,Set&lt;String&gt;&gt;();&#xa;        Iterator&lt;Map.Entry&lt;String,String&gt;&gt; itEntry = matchingAttribute.getNetAttrMap().entrySet().iterator();&#xa;        while (itEntry.hasNext()) {&#xa;                Map.Entry&lt;String,String&gt; entry = itEntry.next();&#xa;                String netID = entry.getKey();&#xa;                String attr = entry.getValue();&#xa;                Set&lt;String&gt; attrs = new HashSet&lt;String&gt;(1);&#xa;                attrs.add(attr);&#xa;                selectedNetworkAttribute.put(netID,attrs);&#xa;        }&#xa;        &#xa;        boolean isFrameAlwaysOnTop = frame.isAlwaysOnTop();&#xa;        frame.setAlwaysOnTop(false);&#xa;        &#xa;        final boolean isNode = true;&#xa;        csplugins.id.mapping.ui.IDMappingDialog dialog = new csplugins.id.mapping.ui.IDMappingDialog(frame,true,selectedNetworkAttribute,isNode);&#xa;        dialog.setLocationRelativeTo(frame);&#xa;        dialog.setVisible(true);&#xa;        dialog.setTgtType(tgtType);&#xa;        if (!dialog.isCancelled()) {&#xa;            idMapping = dialog.getIDMapping();&#xa;            tgtType = dialog.getTgtType();&#xa;            if (idMapping!=null) {&#xa;                    if (idMapping.isEmpty()) {&#xa;                            idMapping = null;&#xa;                            tgtType = null;&#xa;                    } else {&#xa;                        viewIDMappingButton.setEnabled(true);&#xa;                    }&#xa;            }&#xa;        }&#xa;        frame.setAlwaysOnTop(isFrameAlwaysOnTop);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="idmappingCheckBox.setVisible(cythesaurusClient.isServiceAvailable());"/>
                   </AuxValues>
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                      <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="21" weightX="0.0" weightY="0.0"/>
+                    </Constraint>
+                  </Constraints>
                 </Component>
-                <Component class="javax.swing.JButton" name="viewIDMappingButton">
+                <Component class="javax.swing.JLabel" name="idmappingLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="View ID mapping"/>
-                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="33" green="0" red="ff" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="If you want to map IDs between the matching attributes, please install CyThesaurus plugin."/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="viewIDMappingButtonActionPerformed"/>
-                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="idmappingLabel.setVisible(!cythesaurusClient.isServiceAvailable());"/>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                      <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="21" weightX="0.0" weightY="0.0"/>
+                    </Constraint>
+                  </Constraints>
                 </Component>
               </SubComponents>
             </Container>
@@ -388,7 +392,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Please specify how to merge attributes"/>
+                    <TitledBorder title="How to merge attributes"/>
                   </Border>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -553,14 +557,6 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="cancelButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Cancel"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="cancelButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        setVisible(false);&#xa;        dispose();&#xa;    }&#xa;});"/>
-          </AuxValues>
-        </Component>
         <Component class="javax.swing.JButton" name="okButton">
           <Properties>
             <Property name="text" type="java.lang.String" value=" Merge "/>
@@ -569,6 +565,14 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="cancelButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Cancel"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="cancelButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        setVisible(false);&#xa;        dispose();&#xa;    }&#xa;});"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

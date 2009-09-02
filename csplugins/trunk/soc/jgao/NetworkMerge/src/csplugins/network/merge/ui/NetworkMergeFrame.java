@@ -53,13 +53,8 @@ import csplugins.network.merge.conflict.AttributeConflictCollector;
 import csplugins.network.merge.conflict.AttributeConflictCollectorImpl;
 import csplugins.network.merge.util.AttributeValueMatcher;
 import csplugins.network.merge.util.DefaultAttributeValueMatcher;
-import csplugins.network.merge.util.IDMappingAttributeValueMatcher;
 import csplugins.network.merge.util.AttributeMerger;
 import csplugins.network.merge.util.DefaultAttributeMerger;
-import csplugins.network.merge.util.IDMappingAttributeMerger;
-
-import csplugins.id.mapping.ui.IDMappingPreviewDialog;
-import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -69,6 +64,7 @@ import cytoscape.cythesaurus.service.CyThesaurusServiceMessageBasedClient;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.attr.MultiHashMapDefinition;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -138,7 +134,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         frame = this;
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        idMapping = null;
+        selectedNetworkAttributeIDType = null;
         tgtType = null;
         matchingAttribute = new MatchingAttributeImpl(Cytoscape.getNodeAttributes());
         nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());
@@ -162,7 +158,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         initComponents();
 
         updateOKButtonEnable();
-        updataIdMappingButtonEnable();
     }
 
     /** This method is called from within the constructor to
@@ -198,9 +193,8 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         attributePanel = new javax.swing.JPanel();
         matchNodeTable = new MatchNodeTable(matchingAttribute);
         attributeScrollPane = new javax.swing.JScrollPane();
-        javax.swing.JPanel idMappingPanel = new javax.swing.JPanel();
-        importIDMappingButton = new javax.swing.JButton();
-        viewIDMappingButton = new javax.swing.JButton();
+        idmappingCheckBox = new javax.swing.JCheckBox();
+        javax.swing.JLabel idmappingLabel = new javax.swing.JLabel();
         javax.swing.JSeparator jSeparator3 = new javax.swing.JSeparator();
         javax.swing.JPanel mergeAttributePanel = new javax.swing.JPanel();
         javax.swing.JTabbedPane mergeAttributeTabbedPane = new javax.swing.JTabbedPane();
@@ -213,8 +207,8 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         inNetworkMergeCheckBox = new javax.swing.JCheckBox();
         javax.swing.JSeparator jSeparator4 = new javax.swing.JSeparator();
         javax.swing.JPanel okPanel = new javax.swing.JPanel();
-        cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setTitle("Network Merge");
         getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -286,13 +280,14 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(jSeparator1, gridBagConstraints);
 
-        selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select networks to merge"));
+        selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Networks to merge"));
         selectNetworkPanel.setMinimumSize(new java.awt.Dimension(490, 100));
-        selectNetworkPanel.setPreferredSize(new java.awt.Dimension(490, 100));
+        selectNetworkPanel.setPreferredSize(new java.awt.Dimension(490, 130));
         selectNetworkPanel.setLayout(new java.awt.GridBagLayout());
 
         unselectedNetworkScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
 
+        unselectedNetworkList.setBorder(javax.swing.BorderFactory.createTitledBorder("Available networks"));
         for (Iterator<CyNetwork> it = Cytoscape.getNetworkSet().iterator(); it.hasNext(); ) {
             CyNetwork network = it.next();
             unselectedNetworkData.add(network);
@@ -369,7 +364,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
 
                 selectedNetworkList.repaint();
                 unselectedNetworkList.repaint();
-                updataIdMappingButtonEnable();
                 updateOKButtonEnable();
                 updateAttributeTable();
                 updateMergeAttributeTable();
@@ -405,7 +399,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
 
                 selectedNetworkList.repaint();
                 unselectedNetworkList.repaint();
-                updataIdMappingButtonEnable();
                 updateOKButtonEnable();
                 updateAttributeTable();
                 updateMergeAttributeTable();
@@ -422,6 +415,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         selectedNetworkScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
 
         selectedNetworkList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        selectedNetworkList.setBorder(javax.swing.BorderFactory.createTitledBorder("Selected networks"));
         selectedNetworkList.setCellRenderer(new ListCellRenderer() {
             private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
             public Component getListCellRendererComponent(
@@ -486,7 +480,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
                 updateUpDownButtonEnable();
                 selectedNetworkList.repaint();
                 unselectedNetworkList.repaint();
-                updataIdMappingButtonEnable();
                 updateOKButtonEnable();
                 updateAttributeTable();
                 updateMergeAttributeTable();
@@ -519,7 +512,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
                 updateUpDownButtonEnable();
                 selectedNetworkList.repaint();
                 unselectedNetworkList.repaint();
-                updataIdMappingButtonEnable();
                 updateOKButtonEnable();
                 updateAttributeTable();
                 updateMergeAttributeTable();
@@ -547,10 +539,8 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         advancedPanel.setPreferredSize(new java.awt.Dimension(690, 400));
         advancedPanel.setLayout(new java.awt.GridBagLayout());
 
-        attributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select an attribute for each network to match/identify nodes"));
-        attributePanel.setMinimumSize(new java.awt.Dimension(400, 70));
-        attributePanel.setPreferredSize(new java.awt.Dimension(466, 73));
-        attributePanel.setLayout(new javax.swing.BoxLayout(attributePanel, javax.swing.BoxLayout.LINE_AXIS));
+        attributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Matching attributes (attributes to match nodes between networks)"));
+        attributePanel.setLayout(new java.awt.GridBagLayout());
 
         attributeScrollPane.setMinimumSize(new java.awt.Dimension(100, 50));
         attributeScrollPane.setPreferredSize(new java.awt.Dimension(450, 50));
@@ -562,7 +552,32 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
 
         attributeScrollPane.setViewportView(matchNodeTable);
 
-        attributePanel.add(attributeScrollPane);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        attributePanel.add(attributeScrollPane, gridBagConstraints);
+
+        idmappingCheckBox.setText("Map IDs between the matching attributes");
+        idmappingCheckBox.setVisible(cythesaurusClient.isServiceAvailable());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        attributePanel.add(idmappingCheckBox, gridBagConstraints);
+
+        idmappingLabel.setForeground(new java.awt.Color(255, 0, 51));
+        idmappingLabel.setText("If you want to map IDs between the matching attributes, please install CyThesaurus plugin.");
+        idmappingLabel.setVisible(!cythesaurusClient.isServiceAvailable());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        attributePanel.add(idmappingLabel, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -571,64 +586,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         advancedPanel.add(attributePanel, gridBagConstraints);
-
-        idMappingPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
-
-        importIDMappingButton.setText("Import ID mapping");
-        importIDMappingButton.setEnabled(false);
-        importIDMappingButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Map<String,Set<String>> selectedNetworkAttribute = new HashMap<String,Set<String>>();
-                Iterator<Map.Entry<String,String>> itEntry = matchingAttribute.getNetAttrMap().entrySet().iterator();
-                while (itEntry.hasNext()) {
-                    Map.Entry<String,String> entry = itEntry.next();
-                    String netID = entry.getKey();
-                    String attr = entry.getValue();
-                    Set<String> attrs = new HashSet<String>(1);
-                    attrs.add(attr);
-                    selectedNetworkAttribute.put(netID,attrs);
-                }
-
-                boolean isFrameAlwaysOnTop = frame.isAlwaysOnTop();
-                frame.setAlwaysOnTop(false);
-
-                final boolean isNode = true;
-                csplugins.id.mapping.ui.IDMappingDialog dialog = new csplugins.id.mapping.ui.IDMappingDialog(frame,true,selectedNetworkAttribute,isNode);
-                dialog.setLocationRelativeTo(frame);
-                dialog.setVisible(true);
-                dialog.setTgtType(tgtType);
-                if (!dialog.isCancelled()) {
-                    idMapping = dialog.getIDMapping();
-                    tgtType = dialog.getTgtType();
-                    if (idMapping!=null) {
-                        if (idMapping.isEmpty()) {
-                            idMapping = null;
-                            tgtType = null;
-                        } else {
-                            viewIDMappingButton.setEnabled(true);
-                        }
-                    }
-                }
-                frame.setAlwaysOnTop(isFrameAlwaysOnTop);
-            }
-        });
-        idMappingPanel.add(importIDMappingButton);
-
-        viewIDMappingButton.setText("View ID mapping");
-        viewIDMappingButton.setEnabled(false);
-        viewIDMappingButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewIDMappingButtonActionPerformed(evt);
-            }
-        });
-        idMappingPanel.add(viewIDMappingButton);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        advancedPanel.add(idMappingPanel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -637,7 +594,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         advancedPanel.add(jSeparator3, gridBagConstraints);
 
-        mergeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please specify how to merge attributes"));
+        mergeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("How to merge attributes"));
         mergeAttributePanel.setMinimumSize(new java.awt.Dimension(400, 200));
         mergeAttributePanel.setPreferredSize(new java.awt.Dimension(600, 200));
         mergeAttributePanel.setLayout(new javax.swing.BoxLayout(mergeAttributePanel, javax.swing.BoxLayout.LINE_AXIS));
@@ -726,15 +683,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         okPanel.setDoubleBuffered(false);
         okPanel.setLayout(new javax.swing.BoxLayout(okPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setVisible(false);
-                dispose();
-            }
-        });
-        okPanel.add(cancelButton);
-
         okButton.setText(" Merge ");
         okButton.setEnabled(false);
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -743,6 +691,15 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
             }
         });
         okPanel.add(okButton);
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setVisible(false);
+                dispose();
+            }
+        });
+        okPanel.add(cancelButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -754,17 +711,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void viewIDMappingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewIDMappingButtonActionPerformed
-            IDMappingPreviewDialog dialog = new IDMappingPreviewDialog(frame,true,idMapping);
-            dialog.setLocationRelativeTo(frame);
-            dialog.setVisible(true);
-            if (idMapping.isEmpty()) {
-                    idMapping = null;
-                    tgtType = null;
-                    viewIDMappingButton.setEnabled(false);
-            }
-    }//GEN-LAST:event_viewIDMappingButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
             //this.setAlwaysOnTop(false);
@@ -781,9 +727,39 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
                         }
 
                 } else {
+                        if (this.idmappingCheckBox.isSelected()) {
+                            Map<String,Set<String>> selectedNetworkAttribute = new HashMap<String,Set<String>>();
+                            Iterator<Map.Entry<String,String>> itEntry = matchingAttribute.getNetAttrMap().entrySet().iterator();
+                            while (itEntry.hasNext()) {
+                                    Map.Entry<String,String> entry = itEntry.next();
+                                    String netID = entry.getKey();
+                                    String attr = entry.getValue();
+                                    Set<String> attrs = new HashSet<String>(1);
+                                    attrs.add(attr);
+                                    selectedNetworkAttribute.put(netID,attrs);
+                            }
 
+                            boolean isFrameAlwaysOnTop = frame.isAlwaysOnTop();
+                            frame.setAlwaysOnTop(false);
 
-                        //AttributeBasedIDMappingData idMapping = getIDMapping();
+                            final boolean isNode = true;
+                            csplugins.network.merge.ui.IDMappingDialog dialog = new csplugins.network.merge.ui.IDMappingDialog(frame,true,selectedNetworkAttribute,isNode);
+                            dialog.setLocationRelativeTo(frame);
+                            dialog.setVisible(true);
+                            dialog.setTgtType(tgtType);
+                            if (!dialog.isCancelled()) {
+                                selectedNetworkAttributeIDType = dialog.getSrcTypes();
+                                tgtType = dialog.getTgtType();
+                            } else {
+                                int ret = JOptionPane.showConfirmDialog(this, "Error: you have not configured how to mapping the attributes." +
+                                        "\nMerge network without mapping IDs?", "No ID mapping", JOptionPane.YES_NO_OPTION);
+                                if (ret==JOptionPane.NO_OPTION) {
+                                    frame.setAlwaysOnTop(isFrameAlwaysOnTop);
+                                    return;
+                                }
+                            }
+                            frame.setAlwaysOnTop(isFrameAlwaysOnTop);
+                        }
 
                         AttributeConflictCollector conflictCollector = new AttributeConflictCollectorImpl();
 
@@ -797,7 +773,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
                                             getOperation(),
                                             mergeNodeAttributeTable.getMergedNetworkName(),
                                             conflictCollector,
-                                            idMapping,
+                                            selectedNetworkAttributeIDType,
                                             tgtType);
 
                         // Configure JTask Dialog Pop-Up Box
@@ -815,7 +791,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
 
                         // conflict handling task
                         if (!conflictCollector.isEmpty()) {
-                                HandleConflictsTask hcTask = new HandleConflictsTask(conflictCollector, idMapping);
+                                HandleConflictsTask hcTask = new HandleConflictsTask(conflictCollector);
                                 TaskManager.executeTask(hcTask, jTaskConfig);
                         }
 
@@ -846,25 +822,6 @@ private void addRemoveAttributeMapping(CyNetwork network, boolean isAdd) {
         edgeAttributeMapping.removeNetwork(netID);
         matchingAttribute.removeNetwork(netID);
     }
-}
-
-private void updataIdMappingButtonEnable() {
-    CyThesaurusServiceClient client = new CyThesaurusServiceMessageBasedClient("AdvanceNetworkMerge");
-    if (!client.isServiceAvailable()) {
-        importIDMappingButton.setToolTipText("Please install the CyThesaurus plugin first.");
-        importIDMappingButton.setEnabled(false);
-        return;
-    }
-
-    int n = parameter.inNetworkMergeEnabled()?1:2;
-    if (selectedNetworkData.getSize()<n) {
-        importIDMappingButton.setToolTipText("Select at least "+n+" networks to merge");
-        importIDMappingButton.setEnabled(false);
-        return;
-    }
-    
-    importIDMappingButton.setToolTipText("Click to import ID mappings for matching nodes");
-    importIDMappingButton.setEnabled(true);
 }
 
 private void updateOKButtonEnable() {
@@ -946,7 +903,7 @@ private Operation getOperation() {
     private AttributeMapping nodeAttributeMapping;
     private AttributeMapping edgeAttributeMapping;
     private MatchingAttribute matchingAttribute;
-    private AttributeBasedIDMappingData idMapping;
+    private Map<String,Map<String,Set<String>>> selectedNetworkAttributeIDType;
     private String tgtType;
 
     private Frame frame;
@@ -961,6 +918,8 @@ private Operation getOperation() {
 
     private NetworkMergeParameter parameter;
 
+    CyThesaurusServiceClient cythesaurusClient = new CyThesaurusServiceMessageBasedClient("AdvanceNetworkMerge");
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel advancedOptionCollapsiblePanelAgent;
     private javax.swing.JPanel advancedPanel;
@@ -969,7 +928,7 @@ private Operation getOperation() {
     private javax.swing.JButton cancelButton;
     private javax.swing.JPanel collapsiblePanelAgent;
     private javax.swing.JButton downButton;
-    private javax.swing.JButton importIDMappingButton;
+    private javax.swing.JCheckBox idmappingCheckBox;
     private javax.swing.JCheckBox inNetworkMergeCheckBox;
     private javax.swing.JButton leftButton;
     private javax.swing.JButton okButton;
@@ -984,7 +943,6 @@ private Operation getOperation() {
     private javax.swing.JList unselectedNetworkList;
     private SortedNetworkListModel unselectedNetworkData;
     private javax.swing.JButton upButton;
-    private javax.swing.JButton viewIDMappingButton;
     // End of variables declaration//GEN-END:variables
 
 }
@@ -1076,7 +1034,7 @@ class NetworkMergeSessionTask implements Task {
     private Operation operation;
     private String mergedNetworkName;
     private AttributeConflictCollector conflictCollector;
-    private AttributeBasedIDMappingData idMapping;
+    private Map<String,Map<String,Set<String>>> selectedNetworkAttributeIDType;
     private final String tgtType;
     final private AttributeBasedNetworkMerge networkMerge ;
     private TaskMonitor taskMonitor;    
@@ -1094,7 +1052,7 @@ class NetworkMergeSessionTask implements Task {
                              final Operation operation,
                              final String mergedNetworkName,
                              final AttributeConflictCollector conflictCollector,
-                             final AttributeBasedIDMappingData idMapping,
+                             final Map<String,Map<String,Set<String>>> selectedNetworkAttributeIDType,
                              final String tgtType) {
         this.parameter = parameter;
         this.matchingAttribute = matchingAttribute;
@@ -1104,19 +1062,19 @@ class NetworkMergeSessionTask implements Task {
         this.operation = operation;
         this.mergedNetworkName = mergedNetworkName;
         this.conflictCollector = conflictCollector;
-        this.idMapping = idMapping;
+        this.selectedNetworkAttributeIDType = selectedNetworkAttributeIDType;
         this.tgtType = tgtType;
         cancelled = false;        
         
         final AttributeValueMatcher attributeValueMatcher;
         final AttributeMerger attributeMerger;
-        if (idMapping==null) {
+        //if (idMapping==null) {
                 attributeValueMatcher = new DefaultAttributeValueMatcher();
                 attributeMerger = new DefaultAttributeMerger(conflictCollector);
-        } else {
-                attributeValueMatcher = new IDMappingAttributeValueMatcher(idMapping);
-                attributeMerger = new IDMappingAttributeMerger(conflictCollector,idMapping,tgtType);
-        }
+//        } else {
+//                attributeValueMatcher = new IDMappingAttributeValueMatcher(idMapping);
+//                attributeMerger = new IDMappingAttributeMerger(conflictCollector,idMapping,tgtType);
+//        }
 
         networkMerge = new AttributeBasedNetworkMerge(
                             parameter,
@@ -1143,6 +1101,42 @@ class NetworkMergeSessionTask implements Task {
 
         try {  
             networkMerge.setTaskMonitor(taskMonitor);
+
+            if (selectedNetworkAttributeIDType!=null) {
+                taskMonitor.setStatus("Mapping IDs...");
+                taskMonitor.setPercentCompleted(-1);
+                CyThesaurusServiceClient client = new CyThesaurusServiceMessageBasedClient("AdvanceNetworkMerge");
+                if (!client.isServiceAvailable()) {
+                    taskMonitor.setStatus("CyThesaurs service is not available.");
+                    taskMonitor.setPercentCompleted(100);
+                    return;
+                }
+
+                defineTgtAttributes();
+
+                String mergedAttr = nodeAttributeMapping.getMergedAttribute(0);
+                for (String net : selectedNetworkAttributeIDType.keySet()) {
+                    Set<String> nets = new HashSet(1);
+                    nets.add(net);
+                    Map<String,Set<String>> mapAttrTypes = selectedNetworkAttributeIDType.get(net);
+                    for (String attr : mapAttrTypes.keySet()) {
+                        Set<String> types = mapAttrTypes.get(attr);
+                        if (!client.mapID(nets, attr, mergedAttr, types, tgtType)) {
+                            taskMonitor.setStatus("Failed to map IDs.");
+                            taskMonitor.setPercentCompleted(100);
+                            return;
+                        }
+                    }
+                }
+
+                matchingAttribute.clear();
+                for (String net : selectedNetworkAttributeIDType.keySet()) {
+                    matchingAttribute.putAttributeForMatching(net, mergedAttr);
+                    nodeAttributeMapping.setOriginalAttribute(net, mergedAttr, 0);
+                }
+
+            }
+
             CyNetwork mergedNetwork = networkMerge.mergeNetwork(
                                 selectedNetworkList,
                                 operation,
@@ -1189,6 +1183,36 @@ class NetworkMergeSessionTask implements Task {
         
     }
 
+    private void defineTgtAttributes() {
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        List<String> attrNames = java.util.Arrays.asList(nodeAttributes.getAttributeNames());
+
+        MultiHashMapDefinition mmapDef = nodeAttributes.getMultiHashMapDefinition();
+
+        String mergedAttr = nodeAttributeMapping.getMergedAttribute(0);
+        if (attrNames.contains(mergedAttr)) {
+            // for existing attribute, check if its type is String or List
+            byte attrType = nodeAttributes.getType(mergedAttr);
+            if (attrType!=CyAttributes.TYPE_STRING && attrType!=CyAttributes.TYPE_SIMPLE_LIST) {
+                throw new java.lang.UnsupportedOperationException("Only String and List target attributes are supported.");
+            }
+        } else {
+            byte attrType = nodeAttributeMapping.getMergedAttributeType(0);
+
+            if (attrType==CyAttributes.TYPE_SIMPLE_LIST) {
+                // define the new attribute as List
+                byte[] keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
+                mmapDef.defineAttribute(mergedAttr,
+                                MultiHashMapDefinition.TYPE_STRING,
+                                keyTypes);
+            } else {
+                mmapDef.defineAttribute(mergedAttr,
+                                MultiHashMapDefinition.TYPE_STRING,
+                                null);
+            }
+        }
+    }
+
     /**
      * Halts the Task: Not Currently Implemented.
      */
@@ -1222,7 +1246,6 @@ class NetworkMergeSessionTask implements Task {
 
 class HandleConflictsTask implements Task {
     private AttributeConflictCollector conflictCollector;
-    private AttributeBasedIDMappingData idMapping;
 
     private TaskMonitor taskMonitor;
 
@@ -1230,10 +1253,8 @@ class HandleConflictsTask implements Task {
      * Constructor.<br>
      *
      */
-    HandleConflictsTask(final AttributeConflictCollector conflictCollector,
-                        final AttributeBasedIDMappingData idMapping) {
+    HandleConflictsTask(final AttributeConflictCollector conflictCollector) {
         this.conflictCollector = conflictCollector;
-        this.idMapping = idMapping;
     }
 
     /**

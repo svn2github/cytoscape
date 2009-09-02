@@ -88,6 +88,8 @@ public interface MatchingAttribute {
      * 
      */
     public Set<String> getNetworkSet();
+
+    public void clear();
             
     //TODO: ID types of the attribute could be store here
 }

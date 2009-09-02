@@ -725,7 +725,10 @@ public class AttributeMappingImpl implements AttributeMapping {
         if (add) { //new
                 mergedAttributeTypes.add(index,type);
         } else {
-                this.mergedAttributeTypes.set(index, type);
+            final byte old = mergedAttributeTypes.get(index);
+            if (old==CyAttributes.TYPE_STRING || old==CyAttributes.TYPE_SIMPLE_LIST)
+                return;
+            this.mergedAttributeTypes.set(index, type);
         }
     }
 }
