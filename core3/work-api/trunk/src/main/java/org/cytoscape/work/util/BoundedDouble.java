@@ -37,7 +37,7 @@
 package org.cytoscape.work.util;
 
 /**
- * A bounded double object.
+ * A Double object which has <i>low</i> and <i>up</i> bounds
  */
 public class BoundedDouble extends AbstractBounded<Double> {
 

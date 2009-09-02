@@ -37,7 +37,7 @@
 package org.cytoscape.work.util;
 
 /**
- * A bounded Long object.
+ * A Long object which has <i>low</i> and <i>up</i> bounds
  */
 public class BoundedLong extends AbstractBounded<Long> {
 

@@ -37,7 +37,7 @@
 package org.cytoscape.work.util;
 
 /**
- * A bounded float object.
+ * A Float object which has <i>low</i> and <i>up</i> bounds
  */
 public class BoundedFloat extends AbstractBounded<Float> {
 

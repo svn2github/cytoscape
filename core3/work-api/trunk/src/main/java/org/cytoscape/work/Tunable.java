@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD,ElementType.TYPE}) // says we're just looking at fields and  methods 
 
 /**
+ * Annotation type that can be applied to a<i>Field</i> or <i>Method</i> in order to allow <code>TunableInterceptor</code> to catch it, and so use its value to create a proper interface for the user.
+ * 
  * This interface describes the different parameters that can be used in the <code>@Tunable(...)</code> to display the GUI, add some dependencies...
  * 
  * Here is an example of how to use it these <code>Tunable's</code> annotations :
