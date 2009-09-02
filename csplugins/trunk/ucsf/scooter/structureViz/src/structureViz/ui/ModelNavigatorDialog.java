@@ -110,7 +110,7 @@ public class ModelNavigatorDialog
 	 */
 	public ModelNavigatorDialog (Frame parent, Chimera object) {
 		// super(parent, false);
-		super();
+		super(Cytoscape.getDesktop(), "Cytoscape Molecular Structure Navigator");
 		chimeraObject = object;
 		initComponents();
 		status = false;
@@ -363,7 +363,6 @@ public class ModelNavigatorDialog
 	 */
 	private void initComponents() {
 		int modelCount = chimeraObject.getChimeraModels().size();
-		this.setTitle("Cytoscape Molecular Structure Navigator");
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
