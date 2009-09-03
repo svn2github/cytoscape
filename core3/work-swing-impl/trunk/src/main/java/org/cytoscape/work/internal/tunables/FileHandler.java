@@ -20,7 +20,7 @@ import cytoscape.Cytoscape;
 
 public class FileHandler extends AbstractGuiHandler {
 
-	File myFile;
+	private File file;
 	private JFileChooser fileChooser;
 	private JButton chooseButton;
 	private JButton importButton;
@@ -28,7 +28,6 @@ public class FileHandler extends AbstractGuiHandler {
 	private ImageIcon image;
 	private JLabel titleLabel;
 	private JSeparator titleSeparator;
-//	private InputStream is = null;
 	private MouseClic mc;
 //	FileUtil flUtil;
 	
@@ -57,7 +56,8 @@ public class FileHandler extends AbstractGuiHandler {
 			fileChooser.addChoosableFileFilter(new MyFilter("Session files (*.cys)",".cys"));
 		}
 		for(Param s :t.flag())if(s.equals(Param.attributes)){
-			fileChooser.addChoosableFileFilter(new MyFilter("Attributes files","attr"));
+			String[] attr = {"attr","attrs"};
+			fileChooser.addChoosableFileFilter(new MyFilter("Attributes files",attr));
 		}
 	
 		titleSeparator = new JSeparator();
@@ -79,7 +79,7 @@ public class FileHandler extends AbstractGuiHandler {
 		importButton.setEnabled(false);
 		
 		try{
-			this.myFile=(File)f.get(o);
+			this.file=(File)f.get(o);
 		}catch(Exception e){e.printStackTrace();}
 		
 				
@@ -120,6 +120,7 @@ public class FileHandler extends AbstractGuiHandler {
 		try{
 			f.set(o,new File(networkFileTextField.getText()));
 		}catch(Exception e){e.printStackTrace();}
+		System.out.println("File selected is : " + networkFileTextField.getText());
 	}
 
 
@@ -196,25 +197,40 @@ public class FileHandler extends AbstractGuiHandler {
     	}
     	
     	public boolean accept(File file){
-    		if (file.isDirectory()) return true; 
+    		if (file.isDirectory()) return true;
         
     		String fileName = file.getName().toLowerCase();
+
     		
     		if (extensions != null){
-    			boolean accept = false;
-    			for (int i=0; i<extensions.length; i++){
-    				if (fileName.endsWith(extensions[i])){
-    					accept = true;
-    				}
+    			//boolean accept = false;
+    			for(int i=0; i<extensions.length; i++){
+    				if (fileName.endsWith(extensions[i]))
+    					return true;//accept = true;
     			}
-    			return accept;
+    			
+    			for(int i=0;i<extensions.length;i++){
+    				if(fileName.contains(extensions[i]))
+    					return true;
+    			}
+    			//return accept;
     		}
-    		else if (extension.contains("attr")){
-//    		System.out.println("eee");
-    		return fileName.contains("attr");
+    		
+    		else if(extension != null){
+    			if(fileName.contains(extension))
+    				return true;
+    			else if (fileName.endsWith(extension))
+    				return true;
     		}
-    		else
-    			return fileName.endsWith(extension);
+
+    		else throw new IllegalArgumentException("No fileType specified");
+    		//else if (extension.contains("attr")|| extension.contains("Attr")){
+    		//System.out.println("Attribute type file detected");
+    		//return true;
+    		//}
+//    		else
+//    			return fileName.endsWith(extension);
+    		return false;
     	}
     	
     	
