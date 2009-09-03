@@ -324,18 +324,36 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 		// TODO
 		// s = new Rectangle(x, y, w, h);
-		if (this.shape == "Line") {
-			Point2D src = new Point2D.Double(this.centerX, this.centerY);
-			Point2D trgt = new Point2D.Double(this.width, this.height);
-			Point2D srcT = new Point2D.Double();
-			Point2D trgtT = new Point2D.Double();
+		if (this.shape == "VerticalDivider") {
+			Point2D src = new Point2D.Double(x, y);
+			Point2D trgt = new Point2D.Double(x, y + h);
+//			Point2D srcT = new Point2D.Double();
+//			Point2D trgtT = new Point2D.Double();
+//
+//			AffineTransform t = new AffineTransform();
+//			t.transform(src, srcT);
+//			t.transform(trgt, trgtT);
 
-			AffineTransform t = new AffineTransform();
-			t.transform(src, srcT);
-			t.transform(trgt, trgtT);
+			g2d.setColor(linecolor);
+			float dash[] = { 10.0f };
+			g2d.setStroke(new BasicStroke(3.0f, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
+			g2d.drawLine((int) src.getX(), (int) src.getY(), (int) trgt.getX(),
+					(int) trgt.getY());
+			
+		} else if (this.shape == "Membrane") {
+			Point2D src = new Point2D.Double(x, y);
+			Point2D trgt = new Point2D.Double(x + w, y);
 
-			g2d.drawLine((int) srcT.getX(), (int) srcT.getY(), (int) trgtT
-					.getX(), (int) trgtT.getY());
+			Point2D src2 = new Point2D.Double(x, y + h);
+			Point2D trgt2 = new Point2D.Double(x + w, y + h);
+
+			g2d.setColor(linecolor);
+			g2d.setStroke(new BasicStroke());
+			g2d.drawLine((int) src.getX(), (int) src.getY(), (int) trgt.getX(),
+					(int) trgt.getY());
+			g2d.drawLine((int) src2.getX(), (int) src2.getY(), (int) trgt2.getX(),
+					(int) trgt2.getY());
 
 		} else { // Rectangle, Oval
 			java.awt.Shape s = null;
@@ -353,6 +371,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.setColor(linecolor);
 			g2d.setStroke(new BasicStroke());
 			g2d.draw(s);
+			System.out.println("RECT: " + cx + "," + cy);
 
 			// region label
 			// int xLabelOffset = 5;
@@ -402,10 +421,11 @@ public class Region extends JComponent implements ViewportChangeListener {
 		double currentY;
 		double bufferX = MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
 		double bufferY = MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
-//		if (r.shape == "Oval") { // account for arcs beyond defining rectangle
-//			bufferX +=  r.width;
-//			bufferY +=  r.height;
-//		}
+		// if (r.shape == "Oval") { // account for arcs beyond defining
+		// rectangle
+		// bufferX += r.width;
+		// bufferY += r.height;
+		// }
 
 		// first calculate the min/max x and y for the list of *relevant*
 		// nodeviews
@@ -436,10 +456,9 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 * @param nodeViews
 	 *            the nodeViews to set
 	 */
-//	public void setNodeViews(List<NodeView> nodeViews) {
-//		this.nodeViews = nodeViews;
-//	}
-
+	// public void setNodeViews(List<NodeView> nodeViews) {
+	// this.nodeViews = nodeViews;
+	// }
 	public void removeFilteredNodeView(NodeView nv) {
 		this.filteredNodeViews.remove(nv);
 	}

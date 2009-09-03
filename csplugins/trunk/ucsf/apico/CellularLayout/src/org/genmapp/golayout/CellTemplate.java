@@ -88,7 +88,7 @@ public class CellTemplate {
 		CenterX = "6269.75";
 		CenterY = "2635.25";
 		Width = "8640.5";
-		Height = "380.5";
+		Height = "80.5";
 		ZOrder = "16384";
 		Rotation = "0.0";
 		cG = "#".concat(Color);
@@ -98,7 +98,7 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region b = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
+		Region b = new Region("Membrane", cG, xG, yG, wG, hG, zG, rG,
 				"plasma membrane"); //Should be "Line"
 
 		Color = "000000";
@@ -148,7 +148,7 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region e = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
+		Region e = new Region("VerticalDivider", cG, xG, yG, wG, hG, zG, rG,
 				"unassigned");
 
 		// SIZE UP REGIONS:
