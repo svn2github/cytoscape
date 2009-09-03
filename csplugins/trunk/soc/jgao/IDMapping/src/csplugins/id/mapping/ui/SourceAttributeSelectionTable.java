@@ -352,7 +352,7 @@ public class SourceAttributeSelectionTable extends JTable{
             }
         });
 
-        if (attr!=null || !attributes.contains(attr)) {
+        if (attr==null || !attributes.contains(attr)) {
             for (String at : attributes) {
                 if (!selectedAttribute.contains(at)) {
                     cb.setSelectedItem(at);
