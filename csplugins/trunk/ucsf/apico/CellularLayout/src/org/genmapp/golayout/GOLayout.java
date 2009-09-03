@@ -23,6 +23,7 @@ public class GOLayout extends CytoscapePlugin {
 	 * will worry about how to get it in the right menu, etc.
 	 */
 	public GOLayout() {
+
 		CyLayouts.addLayout(new CellAlgorithm(), "GO Layout");
 		CyLayouts.addLayout(new GOLayoutAlgorithm(), "GO Layout");
 		CyLayouts.addLayout(pa, "GO Layout");
@@ -52,6 +53,7 @@ public class GOLayout extends CytoscapePlugin {
 	
 	public static void createVisualStyle(CyNetworkView view){
 		PartitionNetworkVisualStyleFactory.createVisualStyle(view);
+
 	}
 
 	public class GOLayoutAlgorithm extends AbstractLayout {
@@ -126,6 +128,15 @@ public class GOLayout extends CytoscapePlugin {
 			return "Run All";
 		}
 
+		/**
+		* Gets the Task Title.
+		*
+		* @return human readable task title.
+		*/
+		public String getTitle() {
+			return new String("GO Layout: Do All");
+		}
+		
 		/**
 		 * Return true if we support performing our layout on a limited set of
 		 * nodes
