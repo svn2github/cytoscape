@@ -77,48 +77,39 @@ public class RegionManager {
 			if (i == -1) // if first region
 				break;
 			Region r = sra[i];
-			if (newRegion.getShape() == "Line") {
-				if (newRegion.getArea() == r.getArea()) {
+			if (newRegion.getArea() == r.getArea()) {
+				// if tie, then most elongated on top
+				int eRatio = (int) ((r.getRegionWidth() / r.getRegionHeight()) / (newRegion
+						.getRegionWidth() / newRegion.getRegionHeight()));
+				if (eRatio <= 1) { // tie break goes to newRegion
 					newRegion.setArea(newRegion.getArea() - 1);
+				} else {
+					r.setArea(newRegion.getArea() - 1);
 				}
-			} else { // ovals and rectangles
-				if (newRegion.getArea() == r.getArea()) {
-					// if tie, then most elongated on top
-					int eRatio = (int) ((r.getRegionWidth() / r
-							.getRegionHeight()) / (newRegion.getRegionWidth() / newRegion
-							.getRegionHeight()));
-					if (eRatio <= 1) { // tie break goes to newRegion
-						newRegion.setArea(newRegion.getArea() - 1);
+			}
+			if ((newLeft > r.getRegionLeft() && newLeft < r.getRegionRight())
+					|| (newRight > r.getRegionLeft() && newRight < r
+							.getRegionRight()) || newLeft < r.getRegionLeft()
+					&& newRight > r.getRegionRight()) {
+				if ((newTop > r.getRegionTop() && newTop < r.getRegionBottom())
+						|| (newBottom > r.getRegionTop() && newBottom < r
+								.getRegionBottom())
+						|| newTop < r.getRegionTop()
+						&& newBottom > r.getRegionBottom()) {
+					// If we got this far, it means one region is
+					// overlapping
+					// the other. Now we want to flag the smaller one so we
+					// know when and where to apply "oil & water" exclusion.
+					if (r.getArea() > newRegion.getArea()) {
+						newRegion.setRegionsOverlapped(r);
+						r.setOverlappingRegions(newRegion);
 					} else {
-						r.setArea(newRegion.getArea() - 1);
-					}
-				}
-				if ((newLeft > r.getRegionLeft() && newLeft < r
-						.getRegionRight())
-						|| (newRight > r.getRegionLeft() && newRight < r
-								.getRegionRight())
-						|| newLeft < r.getRegionLeft()
-						&& newRight > r.getRegionRight()) {
-					if ((newTop > r.getRegionTop() && newTop < r
-							.getRegionBottom())
-							|| (newBottom > r.getRegionTop() && newBottom < r
-									.getRegionBottom())
-							|| newTop < r.getRegionTop()
-							&& newBottom > r.getRegionBottom()) {
-						// If we got this far, it means one region is
-						// overlapping
-						// the other. Now we want to flag the smaller one so we
-						// know when and where to apply "oil & water" exclusion.
-						if (r.getArea() > newRegion.getArea()) {
-							newRegion.setRegionsOverlapped(r);
-							r.setOverlappingRegions(newRegion);
-						} else {
-							r.setRegionsOverlapped(newRegion);
-							newRegion.setOverlappingRegions(r);
-						}
+						r.setRegionsOverlapped(newRegion);
+						newRegion.setOverlappingRegions(r);
 					}
 				}
 			}
+
 		}
 		sortedRegionMap.put(newRegion.getArea(), newRegion);
 	}

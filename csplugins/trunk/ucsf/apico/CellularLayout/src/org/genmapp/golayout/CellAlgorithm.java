@@ -231,6 +231,9 @@ public class CellAlgorithm extends AbstractLayout {
 					- Math.floor((nodeCount / Math.floor(r.getFreeWidth()
 							/ distanceBetweenNodes - 1)) - 0.3)
 					* distanceBetweenNodes / 2;
+			if (r.getShape() == Region.MEMBRANE_LINE){
+				startY = r.getCenterY();
+			}
 			nextX = startX;
 			nextY = startY;
 
@@ -377,7 +380,7 @@ public class CellAlgorithm extends AbstractLayout {
 			}
 
 			// force directed, selected-only, then scale
-			if (r.getAttValue() != "plasma membrane" && filteredNodeViews.size() > 3) { //r.getShape() != "Line" 
+			if (r.getShape() != Region.MEMBRANE_LINE && filteredNodeViews.size() > 3) {  
 
 				//TODO: There must be a better way of deselecting all nodes!?
 				Collection allNodes = Cytoscape.getCyNodesList();

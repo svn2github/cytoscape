@@ -14,7 +14,7 @@ public class CellTemplate {
 	public static void buildRegionsFromTepmlate(double dbn) {
 
 		double distanceBetweenNodes = dbn;
-		
+
 		RegionManager.clearAll();
 
 		// Hard-coded templates
@@ -47,8 +47,8 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region a = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
-				"extracellular region");
+		Region a = new Region(Region.COMPARTMENT_RECT, cG, xG, yG, wG, hG, zG,
+				rG, "extracellular region");
 
 		Color = "000000";
 		CenterX = "2767.25";
@@ -64,8 +64,8 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region f = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
-				"mitochondrion");
+		Region f = new Region(Region.COMPARTMENT_RECT, cG, xG, yG, wG, hG, zG,
+				rG, "mitochondrion");
 
 		Color = "000000";
 		CenterX = "4987.25";
@@ -81,8 +81,8 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region g = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
-				"endoplasmic reticulum");
+		Region g = new Region(Region.COMPARTMENT_RECT, cG, xG, yG, wG, hG, zG,
+				rG, "endoplasmic reticulum");
 
 		Color = "000000";
 		CenterX = "6269.75";
@@ -98,8 +98,8 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region b = new Region("Membrane", cG, xG, yG, wG, hG, zG, rG,
-				"plasma membrane"); //Should be "Line"
+		Region b = new Region(Region.MEMBRANE_LINE, cG, xG, yG, wG, hG, zG, rG,
+				"plasma membrane");
 
 		Color = "000000";
 		CenterX = "8479.75";
@@ -115,7 +115,8 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region d = new Region("Oval", cG, xG, yG, wG, hG, zG, rG, "nucleus");
+		Region d = new Region(Region.COMPARTMENT_OVAL, cG, xG, yG, wG, hG, zG,
+				rG, "nucleus");
 
 		Color = "FFFFFF";
 		CenterX = "6269.75";
@@ -131,8 +132,8 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region c = new Region("Rectangle", cG, xG, yG, wG, hG, zG, rG,
-				"cytoplasm");
+		Region c = new Region(Region.COMPARTMENT_RECT, cG, xG, yG, wG, hG, zG,
+				rG, "cytoplasm");
 
 		Color = "999999";
 		CenterX = "12089.75";
@@ -148,7 +149,7 @@ public class CellTemplate {
 		hG = Double.parseDouble(Height);
 		zG = Integer.parseInt(ZOrder);
 		rG = Double.parseDouble(Rotation);
-		Region e = new Region("VerticalDivider", cG, xG, yG, wG, hG, zG, rG,
+		Region e = new Region(Region.UKNOWN, cG, xG, yG, wG, hG, zG, rG,
 				"unassigned");
 
 		// SIZE UP REGIONS:
@@ -243,13 +244,13 @@ public class CellTemplate {
 					|| ((freeB - freeT) < (distanceBetweenNodes * 2))) {
 				continue; // skip using inner of too thin or short
 			}
-			
-			//commented out to ignore finding unoverlapped area
-			//using layout and oil&water instead.
-//			r.setFreeCenterX((freeL + freeR) / 2);
-//			r.setFreeCenterY((freeT + freeB) / 2);
-//			r.setFreeWidth(freeR - freeL);
-//			r.setFreeHeight(freeB - freeT);
+
+			// commented out to ignore finding unoverlapped area
+			// using layout and oil&water instead.
+			// r.setFreeCenterX((freeL + freeR) / 2);
+			// r.setFreeCenterY((freeT + freeB) / 2);
+			// r.setFreeWidth(freeR - freeL);
+			// r.setFreeHeight(freeB - freeT);
 		}
 
 		// calculate the maximum scale factor among all regions
@@ -258,55 +259,30 @@ public class CellTemplate {
 		double minPanY = Double.MAX_VALUE;
 		for (Region r : allRegions) {
 			// max scale
-			if (r.getShape() == "Line") {
-				int col = r.getNodeCount(); // columns == count
-				// calculate available length
-				double scaleX;
-				scaleX = ((col + 1) * distanceBetweenNodes) / r.getLineLength();
-				if (scaleX > maxScaleFactor)
-					maxScaleFactor = scaleX;
-			} else { // Rectangle, Oval
-				int col = r.getColumns();
-				// System.out.println("col: " + r.getAttValue() + col);
-				double scaleX = ((col + 1) * distanceBetweenNodes)
-						/ r.getFreeWidth();
-				double scaleY = ((col + 1) * distanceBetweenNodes)
-						/ r.getFreeHeight();
-				double scaleAreaSqrt = Math.sqrt(scaleX * scaleY);
-				// System.out.println("scaleX,Y,Area: " + scaleX + "," + scaleY
-				// + "," + scaleAreaSqrt);
-				// use area to scale regions efficiently
-				if (scaleAreaSqrt > maxScaleFactor)
-					maxScaleFactor = scaleAreaSqrt;
-			}
+			int col = r.getColumns();
+			// System.out.println("col: " + r.getAttValue() + col);
+			double scaleX = ((col + 1) * distanceBetweenNodes)
+					/ r.getFreeWidth();
+			double scaleY = ((col + 1) * distanceBetweenNodes)
+					/ r.getFreeHeight();
+			double scaleAreaSqrt = Math.sqrt(scaleX * scaleY);
+			// System.out.println("scaleX,Y,Area: " + scaleX + "," + scaleY
+			// + "," + scaleAreaSqrt);
+			// use area to scale regions efficiently
+			if (scaleAreaSqrt > maxScaleFactor)
+				maxScaleFactor = scaleAreaSqrt;
 
 			// Allan hack!
 			maxScaleFactor *= 1.1;
 
-			// // min pan
-			// if (r.getShape() == "Line") {
-			// // don't bother
-			// } else { // Rectangle, Oval
-			// double x = r.getCenterX() - r.getRegionWidth() / 2;
-			// double y = r.getCenterY() - r.getRegionHeight() / 2;
-			// if (x < minPanX)
-			// minPanX = x;
-			// if (y < minPanY)
-			// minPanY = y;
-			// }
 		}
 
 		// apply max scale and min pan to all regions
 		for (Region r : allRegions) {
-			if (r.getShape() == "Line") {
-				r.setLineLength(r.getLineLength() * maxScaleFactor);
-				r.setFreeLength(r.getFreeLength() * maxScaleFactor);
-			} else { // Rectangle, Oval
-				r.setRegionWidth(r.getRegionWidth() * maxScaleFactor);
-				r.setRegionHeight(r.getRegionHeight() * maxScaleFactor);
-				r.setFreeWidth(r.getFreeWidth() * maxScaleFactor);
-				r.setFreeHeight(r.getFreeHeight() * maxScaleFactor);
-			}
+			r.setRegionWidth(r.getRegionWidth() * maxScaleFactor);
+			r.setRegionHeight(r.getRegionHeight() * maxScaleFactor);
+			r.setFreeWidth(r.getFreeWidth() * maxScaleFactor);
+			r.setFreeHeight(r.getFreeHeight() * maxScaleFactor);
 
 			// r.setCenterX(r.getCenterX() - minPanX);
 			// r.setCenterY(r.getCenterY() - minPanY);

@@ -30,7 +30,17 @@ import ding.view.ViewportChangeListener;
 public class Region extends JComponent implements ViewportChangeListener {
 
 	// shape and parameters from template
-	private String shape; // Line, Arc, Oval, Rectangle
+	private String shape; // Line, Oval, Rectangle
+	public static final String COMPARTMENT_RECT = "Rectangle"; // restricted
+																// syntax for
+																// ShapeRegistry
+																// .getShape()
+	public static final String COMPARTMENT_OVAL = "Oval"; // restricted syntax
+															// for
+															// ShapeRegistry.
+															// getShape()
+	public static final String MEMBRANE_LINE = "Line";
+	public static final String UKNOWN = "Vertical Divider";
 	private Color color;
 	private double centerX;
 	private double centerY;
@@ -123,7 +133,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 				* MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
 
 		// define free area inside of ovals
-		if (this.shape == "Oval") {
+		if (this.shape == COMPARTMENT_OVAL) {
 			Double x = 0.0d;
 			Double y = 0.0d;
 			Double a = 0.0d;
@@ -145,12 +155,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 			this.freeWidth = Math.abs(x - centerX) * 2;
 			this.freeHeight = Math.abs(y - centerY) * 2;
-		}
-
-		// adjust area for line shapes
-		if (this.shape == "Line") {
-			this.area = 0; // treat as 1D object
-			// this will force lines shapes to top of drawing order
 		}
 
 		// graphics
@@ -294,16 +298,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 				(getFreeBottom() - getFreeTop()));
 	}
 
-	// public java.awt.Shape getFreeVOutline() {
-	// Rectangle2D.Double r = getFreeVRectangle();
-	// r.width = r.width + 2;
-	// r.height = r.height + 2;
-	// AffineTransform f = new AffineTransform();
-	// f.rotate(this.rotation, getFreeCenterX(), getFreeCenterY());
-	// java.awt.Shape outline = f.createTransformedShape(r);
-	// return outline;
-	// }
-
 	public void doPaint(Graphics2D g2d) {
 
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle()))
@@ -314,25 +308,16 @@ public class Region extends JComponent implements ViewportChangeListener {
 				fillcolor.getBlue(), TRANSLUCENCY_LEVEL);
 		Color linecolor = this.color;
 
-		int sw = 1;
 		int x = b.x;
 		int y = b.y;
-		int w = b.width - sw - 1;
-		int h = b.height - sw - 1;
+		int w = b.width - 2;
+		int h = b.height - 2;
 		int cx = x + w / 2;
 		int cy = y + h / 2;
 
-		// TODO
-		// s = new Rectangle(x, y, w, h);
-		if (this.shape == "VerticalDivider") {
+		if (this.shape == UKNOWN) { // draw vertical divider
 			Point2D src = new Point2D.Double(x, y);
 			Point2D trgt = new Point2D.Double(x, y + h);
-//			Point2D srcT = new Point2D.Double();
-//			Point2D trgtT = new Point2D.Double();
-//
-//			AffineTransform t = new AffineTransform();
-//			t.transform(src, srcT);
-//			t.transform(trgt, trgtT);
 
 			g2d.setColor(linecolor);
 			float dash[] = { 10.0f };
@@ -340,8 +325,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 					BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
 			g2d.drawLine((int) src.getX(), (int) src.getY(), (int) trgt.getX(),
 					(int) trgt.getY());
-			
-		} else if (this.shape == "Membrane") {
+
+		} else if (this.shape == MEMBRANE_LINE) {
 			Point2D src = new Point2D.Double(x, y);
 			Point2D trgt = new Point2D.Double(x + w, y);
 
@@ -352,13 +337,16 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.setStroke(new BasicStroke());
 			g2d.drawLine((int) src.getX(), (int) src.getY(), (int) trgt.getX(),
 					(int) trgt.getY());
-			g2d.drawLine((int) src2.getX(), (int) src2.getY(), (int) trgt2.getX(),
-					(int) trgt2.getY());
+			g2d.drawLine((int) src2.getX(), (int) src2.getY(), (int) trgt2
+					.getX(), (int) trgt2.getY());
 
 		} else { // Rectangle, Oval
 			java.awt.Shape s = null;
 
-			s = ShapeRegistry.getShape(this.shape, x, y, w, h);
+			s = ShapeRegistry.getShape(this.shape, x, y, w, h); // Note
+																// restricted
+																// syntax for
+																// shape
 
 			AffineTransform t = new AffineTransform();
 			t.rotate(this.rotation, cx, cy);
@@ -371,7 +359,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.setColor(linecolor);
 			g2d.setStroke(new BasicStroke());
 			g2d.draw(s);
-			System.out.println("RECT: " + cx + "," + cy);
 
 			// region label
 			// int xLabelOffset = 5;
@@ -421,11 +408,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 		double currentY;
 		double bufferX = MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
 		double bufferY = MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
-		// if (r.shape == "Oval") { // account for arcs beyond defining
-		// rectangle
-		// bufferX += r.width;
-		// bufferY += r.height;
-		// }
 
 		// first calculate the min/max x and y for the list of *relevant*
 		// nodeviews
@@ -554,44 +536,35 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 * @return
 	 */
 	public double getRegionLeft() {
-		if (this.shape == "Line") {
-			return (Math.min(this.centerX, this.width));
-		} else { // Rectangle, Oval
-			return (this.centerX - this.width / 2);
-		}
+
+		return (this.centerX - this.width / 2);
+
 	}
 
 	/**
 	 * @return
 	 */
 	public double getRegionTop() {
-		if (this.shape == "Line") {
-			return (Math.min(this.centerY, this.height));
-		} else { // Rectangle, Oval
-			return (this.centerY - this.height / 2);
-		}
+
+		return (this.centerY - this.height / 2);
+
 	}
 
 	/**
 	 * @return
 	 */
 	public double getRegionRight() {
-		if (this.shape == "Line") {
-			return (Math.max(this.centerX, this.width));
-		} else { // Rectangle, Oval
-			return (this.centerX + this.width / 2);
-		}
+
+		return (this.centerX + this.width / 2);
+
 	}
 
 	/**
 	 * @return
 	 */
 	public double getRegionBottom() {
-		if (this.shape == "Line") {
-			return (Math.max(this.centerY, this.height));
-		} else { // Rectangle, Oval
-			return (this.centerY + this.height / 2);
-		}
+		return (this.centerY + this.height / 2);
+
 	}
 
 	/**
@@ -720,36 +693,10 @@ public class Region extends JComponent implements ViewportChangeListener {
 		return (freeCenterY + freeHeight / 2);
 	}
 
-	public double getLineLength() {
-		return (Math.sqrt(Math.pow((this.width - this.centerX), 2)
-				+ Math.pow((this.height - this.centerY), 2)));
-	}
 
 	public double getFreeLength() {
 		return (Math.sqrt(Math.pow((freeWidth - freeCenterX), 2)
 				+ Math.pow((freeHeight - freeCenterY), 2)));
-	}
-
-	public void setLineLength(Double l) {
-		Double oldLength = getLineLength();
-		Double halfDiff = (l - oldLength) / 2;
-		Double ratio = halfDiff / oldLength;
-		Double x = (this.width - this.centerX) * ratio;
-		Double y = (this.height - this.centerY) * ratio;
-		if (this.centerX < this.width) {
-			setCenterX((this.centerX - x));
-			setRegionWidth((this.width + x));
-		} else {
-			setCenterX((this.centerX + x));
-			setRegionWidth((this.width - x));
-		}
-		if (this.centerY < this.height) {
-			setCenterY((this.centerY - y));
-			setRegionHeight((this.height + y));
-		} else {
-			setCenterY((this.centerY + y));
-			setRegionHeight((this.height - y));
-		}
 	}
 
 	public void setFreeLength(Double l) {
