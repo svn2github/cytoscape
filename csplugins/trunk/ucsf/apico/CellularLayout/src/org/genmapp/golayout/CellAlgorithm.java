@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -21,6 +22,7 @@ import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+import cytoscape.visual.LabelPosition;
 
 /**
  * CellularLayoutAlgorithm will layout nodes according to a template of cellular
@@ -169,8 +171,6 @@ public class CellAlgorithm extends AbstractLayout {
 		for (int i = sra.length - 1; i >= 0; i--) { // count down from
 			// largest to smallest
 			Region r = sra[i];
-//			System.out.println("Sorted: "+
-//			 sra[i].getAttValue()+"="+sra[i].getArea());
 
 			// Place register nodes at region corners (for fit to screen)
 			for (int j = 0; j < 4; j++) {
@@ -179,12 +179,8 @@ public class CellAlgorithm extends AbstractLayout {
 				Cytoscape.getCurrentNetwork().addNode(regNode);
 				NodeView regNv = Cytoscape.getCurrentNetworkView().getNodeView(
 						regNode);
-				// regNv.getGraphView().disableNodeSelection();
 				nvRegList.add(regNv);
-				// regNv.setTransparency(100.0f); //maybe works on fill
-				// color only??
-				regNv.setHeight(0.1); // hack invisible! TODO: not
-				// working...
+				regNv.setHeight(0.1); 
 				regNv.setWidth(0.1);
 				Cytoscape.getNodeAttributes().setAttribute(regId,
 						"canonicalName", "");
@@ -201,8 +197,15 @@ public class CellAlgorithm extends AbstractLayout {
 					regNv.setOffset(r.getRegionLeft(), r.getRegionTop());
 					Cytoscape.getNodeAttributes().setAttribute(regId,
 							"canonicalName", r.getAttValue());
-					regNv.setLabelOffsetX(50.0);
-					regNv.setLabelOffsetY(50.0);
+					double length = r.getAttValue().length();
+					Cytoscape.getNodeAttributes().setAttribute(regId, "register_node_label_pos", length);
+					Cytoscape.getNodeAttributes().setAttribute(regId, "register_node_region_shape", r.getShape());
+					
+//					regNv.setLabelOffsetX(45.0 + length /2 );
+//					regNv.setLabelOffsetY(50.0);
+//					if (r.getShape() == Region.MEMBRANE_LINE){
+//						regNv.setLabelOffsetY(0);
+//					}
 					break;
 				case 1:
 					regNv.setOffset(r.getRegionLeft(), r.getRegionBottom());
