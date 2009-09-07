@@ -158,21 +158,9 @@ class UnCrossAction extends CytoscapeAction {
 
 		// warn if no nodeViewss are selected
 		if (nodeViews.size() <= 1) {
-//			JOptionPane
-//					.showMessageDialog(Cytoscape.getDesktop(),
-//							"You must first select some nodes in order to minimize edge crossings.");
-			//System.out.println("Uncross skipped! Too few nodes (one or fewer)");
 			return;
 
 		} else if (Cytoscape.getCurrentNetwork().getNodeCount() > UNCROSS_THRESHOLD) {
-//			if (calledByEndUser) {
-//				JOptionPane
-//						.showMessageDialog(
-//								Cytoscape.getDesktop(),
-//								"Sorry, this network is too large to run incremental edge cross miminization."
-//										+ "\nYou should one of the automated layout tools instead.");
-//			}
-			//System.out.println("Uncross skipped! Too many nodes in network (over " + UNCROSS_THRESHOLD + ")");
 			return;
 		}
 
@@ -183,7 +171,6 @@ class UnCrossAction extends CytoscapeAction {
 			Task unCrossTask = uncross.new UnCrossTask(nodeViews,
 					calledByEndUser);
 
-
 			JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
 			jTaskConfig.displayCloseButton(true);
@@ -193,7 +180,7 @@ class UnCrossAction extends CytoscapeAction {
 			jTaskConfig.setAutoDispose(true);
 
 			// Execute Task in New Thread; pops open JTask Dialog Box.
-			//TaskManager.executeTask(unCrossTask, jTaskConfig);
+			// TaskManager.executeTask(unCrossTask, jTaskConfig);
 		}
 
 	}
@@ -205,8 +192,10 @@ class UnCrossAction extends CytoscapeAction {
 
 		private List<NodeView> nodes;
 
-		// only implement undo/redo logic if we are called by the end user,
-		// rather than by another class
+		/*
+		 * only implement undo/redo logic if we are called by the end user, //
+		 * rather than by another class
+		 */
 		private boolean _calledByEndUser = true;
 
 		/**
@@ -262,8 +251,10 @@ class UnCrossAction extends CytoscapeAction {
 				_redoOffsets[m] = _nodeViews[m].getOffset();
 			}
 
-			// only implement undo/redo logic if we are called by the end user,
-			// rather than by another class
+			/*
+			 * only implement undo/redo logic if we are called by the end user,
+			 * rather than by another class
+			 */
 			if (_calledByEndUser) {
 				CyUndo.getUndoableEditSupport().postEdit(
 						new AbstractUndoableEdit() {
@@ -297,8 +288,10 @@ class UnCrossAction extends CytoscapeAction {
 						});
 			}
 
-			// redraw one last time, just in case we haven't
-			// been incrementally redrawing
+			/*
+			 * redraw one last time, just in case we haven't been incrementally
+			 * redrawing
+			 */
 			_view.redrawGraph(true, true);
 		}
 
@@ -611,7 +604,7 @@ class UnCrossAction extends CytoscapeAction {
 
 			// both lines are vertical and parallel (unless the same)
 			if ((dx1 == 0.0d) && (dx2 == 0.0d)) {
-				return null; 
+				return null;
 			}
 
 			double m1 = Double.NaN;

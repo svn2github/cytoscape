@@ -57,12 +57,16 @@ public class PartitionAlgorithm extends AbstractLayout {
 		layoutProperties = new LayoutProperties(getName());
 		layoutProperties.add(new Tunable("layoutName", "Layout to perform",
 				Tunable.STRING, "grid"));
-		// We've now set all of our tunables, so we can read the property
-		// file now and adjust as appropriate
+		/*
+		 * We've now set all of our tunables, so we can read the property file
+		 * now and adjust as appropriate
+		 */
 		layoutProperties.initializeProperties();
 
-		// Finally, update everything. We need to do this to update
-		// any of our values based on what we read from the property file
+		/*
+		 * Finally, update everything. We need to do this to update any of our
+		 * values based on what we read from the property file
+		 */
 		updateSettings(true);
 
 	}
@@ -169,8 +173,10 @@ public class PartitionAlgorithm extends AbstractLayout {
 		Collection values = attrMap.values();
 		ArrayList<Object> uniqueValueList = new ArrayList<Object>();
 
-		// key will be a List attribute value, so we need to pull out individual
-		// list items
+		/*
+		 * key will be a List attribute value, so we need to pull out individual
+		 * list items
+		 */
 		if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
 			for (Object o : values) {
 				List oList = (List) o;
@@ -209,12 +215,8 @@ public class PartitionAlgorithm extends AbstractLayout {
 		// now loop through all groups and set state to 'collapsed'
 		for (CyGroup g : groups) {
 			g.setState(2);
-			CyGroupManager.setGroupViewer(g, "metaNode", group_view, true); // set
-			// this
-			// false
-			// later
-			// for
-			// efficiency
+			// set this to false for efficiency
+			CyGroupManager.setGroupViewer(g, "metaNode", group_view, false); 
 		}
 
 		CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
@@ -253,8 +255,6 @@ public class PartitionAlgorithm extends AbstractLayout {
 			if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
 				List valList = attribs.getListAttribute(node.getIdentifier(),
 						attributeName);
-				// System.out.println ("Got values for node: " + node + " = " +
-				// valList);
 				// iterate through all elements in the list
 				if (valList != null && valList.size() > 0) {
 					terms = new String[valList.size()];
@@ -275,8 +275,6 @@ public class PartitionAlgorithm extends AbstractLayout {
 			if ((!(val == null) && (!val.equals("null")) && (val.length() > 0))) {
 
 				for (Object o : nodeAttributeValues) {
-					// System.out.println ("checking node value " + val +
-					// " against " + o.toString());
 					if (val.indexOf(o.toString()) >= 0) {
 						selectedNodes = attributeValueNodeMap.get(o);
 						if (selectedNodes == null) {
@@ -288,17 +286,15 @@ public class PartitionAlgorithm extends AbstractLayout {
 									selectedNodes);
 							valueFound = true;
 						}
-						// System.out.println ("selected nodes for value: " +
-						// o.toString() + " = " +
-						// selectedNodes);
 					}
 				}
 			}
 			if (!valueFound)
-			// put this node in 'unassigned' category
-			// but do we need to treat separately the case where there is a
-			// value not in the template
-			// from the case where there is no value?
+			/*
+			 * put this node in 'unassigned' category but do we need to treat
+			 * separately the case where there is a value not in the template
+			 * from the case where there is no value?
+			 */
 			{
 				selectedNodes = attributeValueNodeMap.get("unassigned");
 				if (selectedNodes == null) {
@@ -337,23 +333,17 @@ public class PartitionAlgorithm extends AbstractLayout {
 		if (Cytoscape.viewExists(current_network.getIdentifier())) {
 			current_network_view = Cytoscape.getNetworkView(current_network
 					.getIdentifier());
-		} // end of if ()
+		} 
 
 		List nodes = attributeValueNodeMap.get(attributeValue);
-		// System.out.println("Got nodes for attributeValue: " + attributeValue
-		// + " = " + nodes);
 		if (nodes == null) {
 			return;
 		}
 
 		CyNetwork new_network = Cytoscape.createNetwork(nodes, current_network
 				.getConnectingEdges(new ArrayList(nodes)),
-		// CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 				attributeValue, // for network title
-				current_network, (nodes.size() >= networkViewThreshhold)); // optional
-		// create
-		// network
-		// view
+				current_network, (nodes.size() >= networkViewThreshhold)); 
 
 		if (new_network.nodesList().size() >= networkViewThreshhold) {
 
@@ -368,13 +358,9 @@ public class PartitionAlgorithm extends AbstractLayout {
 
 			// apply layout
 			if (current_network_view != Cytoscape.getNullNetworkView()) {
-
-				// CyLayoutAlgorithm layout =
-				// CyLayouts.getLayout("force-directed");
 				System.out.println("Layout: " + new_view.getTitle());
 				CyLayoutAlgorithm layout = CyLayouts.getLayout(this.layoutName);
 				layout.doLayout(new_view);
-
 			}
 
 			// set graphics level of detail

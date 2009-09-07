@@ -30,15 +30,10 @@ import ding.view.ViewportChangeListener;
 public class Region extends JComponent implements ViewportChangeListener {
 
 	// shape and parameters from template
-	private String shape; // Line, Oval, Rectangle
-	public static final String COMPARTMENT_RECT = "Rectangle"; // restricted
-																// syntax for
-																// ShapeRegistry
-																// .getShape()
-	public static final String COMPARTMENT_OVAL = "Oval"; // restricted syntax
-															// for
-															// ShapeRegistry.
-															// getShape()
+	private String shape;
+	// restricted syntax on "Rectangle" and "Oval" for ShapeRegistry.getShape()
+	public static final String COMPARTMENT_RECT = "Rectangle";
+	public static final String COMPARTMENT_OVAL = "Oval";
 	public static final String MEMBRANE_LINE = "Line";
 	public static final String UKNOWN = "Vertical Divider";
 	private Color color;
@@ -125,8 +120,10 @@ public class Region extends JComponent implements ViewportChangeListener {
 		this.columns = (int) Math.sqrt(this.nodeCount);
 		this.freeCenterX = centerX;
 		this.freeCenterY = centerY;
-		// subtract proportional width and height
-		// for buffer around borders and region label
+		/*
+		 * subtract proportional width and height for buffer around borders and
+		 * region label
+		 */
 		this.freeWidth = width - 10
 				* MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
 		this.freeHeight = height - 20
@@ -298,6 +295,9 @@ public class Region extends JComponent implements ViewportChangeListener {
 				(getFreeBottom() - getFreeTop()));
 	}
 
+	/**
+	 * @param g2d
+	 */
 	public void doPaint(Graphics2D g2d) {
 
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle()))
@@ -343,10 +343,8 @@ public class Region extends JComponent implements ViewportChangeListener {
 		} else { // Rectangle, Oval
 			java.awt.Shape s = null;
 
-			s = ShapeRegistry.getShape(this.shape, x, y, w, h); // Note
-																// restricted
-																// syntax for
-																// shape
+			// Note restricted syntax for shape (e.g., "Rectangle"
+			s = ShapeRegistry.getShape(this.shape, x, y, w, h); 
 
 			AffineTransform t = new AffineTransform();
 			t.rotate(this.rotation, cx, cy);
@@ -360,37 +358,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.setStroke(new BasicStroke());
 			g2d.draw(s);
 
-			// region label
-			// int xLabelOffset = 5;
-			// int yLabelOffset = 15;
-			// //TODO: debugging free region
-			// Rectangle fb = relativeToBounds(
-			// viewportTransform(getFreeVRectangle())).getBounds();
-			// int fsw = 1;
-			// int fx = fb.x;
-			// int fy = fb.y;
-			// int fw = fb.width - fsw - 1;
-			// int fh = fb.height - fsw - 1;
-			// int fcx = fx + fw / 2;
-			// int fcy = fy + fh / 2;
-			//
-			// java.awt.Shape fs = null;
-			//
-			// fs = ShapeRegistry.getShape(this.shape, fx, fy, fw, fh);
-			//
-			// AffineTransform ft = new AffineTransform();
-			// ft.rotate(this.rotation, fcx, fcy);
-			// fs = ft.createTransformedShape(fs);
-			//
-			// g2d.setColor(Color.gray);
-			// Font font = new Font("Arial", Font.PLAIN, 10);
-			// g2d.setFont(font);
-			//
-			// g2d.draw(fs);
-
-			// g2d.setColor(Color.DARK_GRAY);
-			// g2d.setStroke(new BasicStroke());
-			// g2d.drawString(this.attValue, xLabelOffset, yLabelOffset);
 		}
 
 	}
@@ -409,8 +376,9 @@ public class Region extends JComponent implements ViewportChangeListener {
 		double bufferX = MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
 		double bufferY = MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
 
-		// first calculate the min/max x and y for the list of *relevant*
-		// nodeviews
+		/*
+		 * first calculate the min/max x and y for the list ofrelevant nodeviews
+		 */
 		Iterator<NodeView> it = nodeViews.iterator();
 		while (it.hasNext()) {
 			NodeView nv = it.next();
@@ -438,9 +406,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 * @param nodeViews
 	 *            the nodeViews to set
 	 */
-	// public void setNodeViews(List<NodeView> nodeViews) {
-	// this.nodeViews = nodeViews;
-	// }
+
 	public void removeFilteredNodeView(NodeView nv) {
 		this.filteredNodeViews.remove(nv);
 	}
@@ -692,7 +658,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 	public double getFreeBottom() {
 		return (freeCenterY + freeHeight / 2);
 	}
-
 
 	public double getFreeLength() {
 		return (Math.sqrt(Math.pow((freeWidth - freeCenterX), 2)

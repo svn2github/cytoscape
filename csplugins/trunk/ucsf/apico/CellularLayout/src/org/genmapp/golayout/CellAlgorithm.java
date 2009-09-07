@@ -41,12 +41,16 @@ public class CellAlgorithm extends AbstractLayout {
 		layoutProperties.add(new Tunable("nodeSpacing",
 				"Spacing between nodes", Tunable.DOUBLE, new Double(30.0)));
 
-		// We've now set all of our tunables, so we can read the property
-		// file now and adjust as appropriate
+		/*
+		 * We've now set all of our tunables, so we can read the property file
+		 * now and adjust as appropriate
+		 */
 		layoutProperties.initializeProperties();
 
-		// Finally, update everything. We need to do this to update
-		// any of our values based on what we read from the property file
+		/*
+		 * Finally, update everything. We need to do this to update any of our
+		 * values based on what we read from the property file
+		 */
 		updateSettings(true);
 
 	}
@@ -155,7 +159,7 @@ public class CellAlgorithm extends AbstractLayout {
 
 		// CREATE REGIONS:
 		CellTemplate.buildRegionsFromTepmlate(distanceBetweenNodes);
-		
+
 		// LAYOUT REGIONS:
 		double nextX = 0.0d;
 		double nextY = 0.0d;
@@ -180,7 +184,7 @@ public class CellAlgorithm extends AbstractLayout {
 				NodeView regNv = Cytoscape.getCurrentNetworkView().getNodeView(
 						regNode);
 				nvRegList.add(regNv);
-				regNv.setHeight(0.1); 
+				regNv.setHeight(0.1);
 				regNv.setWidth(0.1);
 				Cytoscape.getNodeAttributes().setAttribute(regId,
 						"canonicalName", "");
@@ -190,8 +194,9 @@ public class CellAlgorithm extends AbstractLayout {
 						false);
 				Cytoscape.getNodeAttributes().setUserEditable("register_node",
 						false);
-				lockNode(regNv); // lock against future layout; TODO:
-				// doesn't work!
+				// lock against future layout
+				// TODO: doesn't work!
+				lockNode(regNv);
 				switch (j) {
 				case 0:
 					regNv.setOffset(r.getRegionLeft(), r.getRegionTop());
@@ -201,32 +206,29 @@ public class CellAlgorithm extends AbstractLayout {
 							"region_name", r.getAttValue());
 					Cytoscape.getNodeAttributes().setUserVisible("region_name",
 							false);
-					Cytoscape.getNodeAttributes().setUserEditable("region_name",
-							false);
-
+					Cytoscape.getNodeAttributes().setUserEditable(
+							"region_name", false);
 					double length = r.getAttValue().length();
-					
+					/*
+					 * dynamically define discrete mapping for node label
+					 * position
+					 */
 					LabelPosition lp = new LabelPosition();
-					if (r.getShape() == Region.COMPARTMENT_OVAL){
+					if (r.getShape() == Region.COMPARTMENT_OVAL) {
 						lp.setOffsetX(r.getRegionWidth() / 2);
 					} else {
-						lp.setOffsetX(14 * length /2 + 10);
+						lp.setOffsetX(14 * length / 2 + 10);
 					}
-					if (r.getShape() == Region.MEMBRANE_LINE){
+					if (r.getShape() == Region.MEMBRANE_LINE) {
 						lp.setOffsetY(-15);
-					} else if (r.getShape() == Region.COMPARTMENT_OVAL){
+					} else if (r.getShape() == Region.COMPARTMENT_OVAL) {
 						lp.setOffsetY(40);
 					} else {
 						lp.setOffsetY(15);
 					}
 					lp.setJustify(1);
-					PartitionNetworkVisualStyleFactory.disMappingLabelPosition.putMapValue(r.getAttValue(), lp);
-					
-//					regNv.setLabelOffsetX(45.0 + length /2 );
-//					regNv.setLabelOffsetY(50.0);
-//					if (r.getShape() == Region.MEMBRANE_LINE){
-//						regNv.setLabelOffsetY(0);
-//					}
+					PartitionNetworkVisualStyleFactory.disMappingLabelPosition
+							.putMapValue(r.getAttValue(), lp);
 					break;
 				case 1:
 					regNv.setOffset(r.getRegionLeft(), r.getRegionBottom());
@@ -244,18 +246,19 @@ public class CellAlgorithm extends AbstractLayout {
 			nodeViews = r.getNodeViews();
 			nodeCount = r.getNodeCount();
 
-			// start x at left plus spacer
-			// start y at center minus half of the number of rows rounded
-			// down, e.g., if the linear layout of nodes is 2.8 times
-			// the width of the scaled region, then there will be 3 rows
-			// and you will want to shift up 1 row from center to start.
+			/*
+			 * start x at left plus spacer start y at center minus half of the
+			 * number of rows rounded down, e.g., if the linear layout of nodes
+			 * is 2.8 times the width of the scaled region, then there will be 3
+			 * rows and you will want to shift up 1 row from center to start.
+			 */
 			startX = r.getFreeCenterX() - r.getFreeWidth() / 2
 					+ distanceBetweenNodes;
 			startY = r.getCenterY()
 					- Math.floor((nodeCount / Math.floor(r.getFreeWidth()
 							/ distanceBetweenNodes - 1)) - 0.3)
 					* distanceBetweenNodes / 2;
-			if (r.getShape() == Region.MEMBRANE_LINE){
+			if (r.getShape() == Region.MEMBRANE_LINE) {
 				startY = r.getCenterY();
 			}
 			nextX = startX;
@@ -289,16 +292,18 @@ public class CellAlgorithm extends AbstractLayout {
 					CyNode newNode = Cytoscape.getCyNode(newId, true);
 
 					// copy attributes
-					// TODO: copy only the attribute relevant to the
-					// specific node so that populateNodeViews will work
-					// properly
+					/*
+					 * TODO: copy only the attribute relevant to the specific
+					 * node so that populateNodeViews will work properly
+					 */
 					CyAttributes attributes = Cytoscape.getNodeAttributes();
 					String[] atts = attributes.getAttributeNames();
 					for (String att : atts) {
+						/*
+						 * skip hidden attributes
+						 */
 						if (attributes.getUserVisible(att)
-								&& attributes.hasAttribute(oldId, att)) { // skip
-							// hidden
-							// attributes
+								&& attributes.hasAttribute(oldId, att)) { 
 							byte type = attributes.getType(att);
 							if (type == CyAttributes.TYPE_BOOLEAN) {
 								attributes.setAttribute(newId, att, attributes
@@ -350,7 +355,7 @@ public class CellAlgorithm extends AbstractLayout {
 					Cytoscape.getCurrentNetwork().addNode(newNode);
 					nv = Cytoscape.getCurrentNetworkView().getNodeView(newNode);
 					// adding new node to region nvList
-					r.addFilteredNodeView(nv); 
+					r.addFilteredNodeView(nv);
 				} else {
 					// no, then add to tracking list
 					nvSeen.put(nv, 1);
@@ -365,10 +370,6 @@ public class CellAlgorithm extends AbstractLayout {
 				// check for end of row
 				double fillRatio = ((colCount + 2) * distanceBetweenNodes)
 						/ r.getFreeWidth();
-				// System.out.println("Count: " + colCount + ","
-				// + remainingCount + "::" + fillRatio + "::"
-				// + fillPotential);
-
 				if (fillRatio >= 1) { // reached end of row
 					colCount = 0;
 					nextX = startX;
@@ -384,32 +385,30 @@ public class CellAlgorithm extends AbstractLayout {
 					nextX += distanceBetweenNodes;
 				}
 			}
-			
+
 			List<NodeView> filteredNodeViews = r.getFilteredNodeViews();
 
 			// Uncross edges
-			 if (filteredNodeViews.size() < 30 ){
-			 UnCrossAction.unCross(filteredNodeViews, false);
-				//System.out.println("Uncrossed edges!");
-			 }
-			 else {
-					//System.out.println("Uncross skipped: Too many nodes in region \"" + r.getAttValue() + "\"");
-			 }
+			if (filteredNodeViews.size() < 30) {
+				UnCrossAction.unCross(filteredNodeViews, false);
+			}
 			r.repaint();
-			
+
 			// transform nv list to node collection
 			Collection<Node> regionNodes = new ArrayList<Node>();
-			for (NodeView nv : filteredNodeViews){
+			for (NodeView nv : filteredNodeViews) {
 				regionNodes.add(nv.getNode());
 			}
 
 			// force directed, selected-only, then scale
-			if (r.getShape() != Region.MEMBRANE_LINE && filteredNodeViews.size() > 3) {  
+			if (r.getShape() != Region.MEMBRANE_LINE
+					&& filteredNodeViews.size() > 3) {
 
-				//TODO: There must be a better way of deselecting all nodes!?
+				// TODO: There must be a better way of deselecting all nodes!?
 				Collection allNodes = Cytoscape.getCyNodesList();
-				Cytoscape.getCurrentNetwork().setSelectedNodeState(allNodes, false);
-				
+				Cytoscape.getCurrentNetwork().setSelectedNodeState(allNodes,
+						false);
+
 				Cytoscape.getCurrentNetwork().setSelectedNodeState(regionNodes,
 						true);
 
@@ -445,8 +444,8 @@ public class CellAlgorithm extends AbstractLayout {
 				double unitY = layoutHeight / 2;
 				double layoutCenterX = west + unitX;
 				double layoutCenterY = north + unitY;
-				double regionUnitX = r.getFreeWidth() /2;
-				double regionUnitY = r.getFreeHeight() /2;
+				double regionUnitX = r.getFreeWidth() / 2;
+				double regionUnitY = r.getFreeHeight() / 2;
 
 				for (NodeView nv : filteredNodeViews) {
 					double nodeXunits = (nv.getXPosition() - layoutCenterX);
@@ -454,7 +453,9 @@ public class CellAlgorithm extends AbstractLayout {
 					double scaleX = nodeXunits / unitX;
 					double scaleY = nodeYunits / unitY;
 
-					nv.setOffset(r.getFreeCenterX() + regionUnitX * scaleX, r.getFreeCenterY() + regionUnitY * scaleY);
+					nv.setOffset(r.getFreeCenterX() + regionUnitX * scaleX, r
+							.getFreeCenterY()
+							+ regionUnitY * scaleY);
 				}
 
 				// cleanup
@@ -471,12 +472,16 @@ public class CellAlgorithm extends AbstractLayout {
 					nvToCheck.addAll(or.getFilteredNodeViews());
 					nvToCheck.removeAll(r.getFilteredNodeViews());
 
-					// returns node views that are within the bounds of this
-					// region
+					/*
+					 * returns node views that are within the bounds of this
+					 * region
+					 */
 					nvToMove = Region.bounded(nvToCheck, r);
 
-					// determine closest edge per excludedNodeView and move
-					// node to mirror distance relative to new region
+					/*
+					 * determine closest edge per excludedNodeView and move node
+					 * to mirror distance relative to new region
+					 */
 					int countN = 0;
 					int countS = 0;
 					int countE = 0;
@@ -487,12 +492,13 @@ public class CellAlgorithm extends AbstractLayout {
 					List<Double> pastW = new ArrayList<Double>();
 
 					for (NodeView nv : nvToMove) {
-						
+
 						double nvX = nv.getXPosition();
 						double nvY = nv.getYPosition();
 
-						// distance between node and boundary around all
-						// regions
+						/*
+						 * distance between node and boundary around all regions
+						 */
 						double bufferX = MFNodeAppearanceCalculator.FEATURE_NODE_WIDTH;
 						double bufferY = MFNodeAppearanceCalculator.FEATURE_NODE_HEIGHT;
 						double farNorth = nvY - (r.getRegionTop() - bufferY);
@@ -500,8 +506,10 @@ public class CellAlgorithm extends AbstractLayout {
 						double farWest = nvX - (r.getRegionLeft() - bufferX);
 						double farEast = (r.getRegionRight() + bufferX) - nvX;
 
-						// rule out directions where there is not enough
-						// room in overlapped region
+						/*
+						 * rule out directions where there is not enough room in
+						 * overlapped region
+						 */
 						if (!(((r.getRegionTop() - bufferY) - or.getFreeTop()) > bufferY)) {
 							farNorth = Double.MAX_VALUE;
 						}

@@ -34,8 +34,8 @@ public class PartitionNetworkVisualStyleFactory {
 	public static final String PartitionNetwork_VS = "MolecularFunction";
 
 	private static LabelPosition lp = new LabelPosition();
-	public static DiscreteMapping disMappingLabelPosition = new DiscreteMapping(lp,
-			"region_name", ObjectMapping.NODE_MAPPING);
+	public static DiscreteMapping disMappingLabelPosition = new DiscreteMapping(
+			lp, "region_name", ObjectMapping.NODE_MAPPING);
 
 	public static VisualStyle createVisualStyle(CyNetworkView view) {
 
@@ -69,8 +69,10 @@ public class PartitionNetworkVisualStyleFactory {
 			Collection values = attrMap.values();
 			List uniqueValueList = new ArrayList();
 
-			// key will be a List attribute value, so we need to pull out
-			// individual list items
+			/*
+			 * key will be a List attribute value, so we need to pull out
+			 * individual list items
+			 */
 			if (attribs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST) {
 				for (Object o : values) {
 					List oList = (List) o;
@@ -115,33 +117,10 @@ public class PartitionNetworkVisualStyleFactory {
 					VisualPropertyType.NODE_FONT_SIZE);
 			nac.setCalculator(fontCalculator);
 
-//			// COMPARTMENT_RECT
-//			LabelPosition lpRect = new LabelPosition();
-//			DiscreteMapping disMappingLabelPosition = new DiscreteMapping(lpRect,
-//					"register_node_region_shape", ObjectMapping.NODE_MAPPING);
-//			lpRect.setOffsetX(140);
-//			lpRect.setOffsetY(15);
-//			lpRect.setJustify(1);
-//			disMappingLabelPosition.putMapValue(Region.COMPARTMENT_RECT, lpRect);
-//			// COMPARTMENT_OVAL
-//			LabelPosition lpOval = new LabelPosition();
-////			lpOval.setOffsetX(130);
-////			lpOval.setOffsetY(50);
-////			lpOval.setJustify(Label.JUSTIFY_CENTER);
-//			lpOval.setLabelAnchor(Label.NORTH);
-//			disMappingLabelPosition.putMapValue(Region.COMPARTMENT_OVAL, lpOval);
-//			// MEMBRANE_LINE
-//			LabelPosition lpLine = new LabelPosition();
-//			lpLine.setOffsetX(120);
-//			lpLine.setOffsetY(-15);
-//			lpLine.setJustify(1);
-//			disMappingLabelPosition.putMapValue(Region.MEMBRANE_LINE, lpLine);
-//			// UNKNOWN
-//			LabelPosition lpUknown = new LabelPosition();
-//			lpUknown.setOffsetX(120);
-//			lpUknown.setOffsetY(15);
-//			lpUknown.setJustify(1);
-//			disMappingLabelPosition.putMapValue(Region.UKNOWN, lpUknown);
+			/*
+			 * disMappingLabelPosition is dynamically defined in CellAlgorithm
+			 * construct()
+			 */
 			Calculator posCalculator = new BasicCalculator(PartitionNetwork_VS,
 					disMappingLabelPosition,
 					VisualPropertyType.NODE_LABEL_POSITION);
@@ -182,10 +161,8 @@ public class PartitionNetworkVisualStyleFactory {
 					.getGlobalAppearanceCalculator();
 			// set edge opacity
 			gac.setDefaultBackgroundColor(Color.white);
-			// VisualStyle visualStyle = new VisualStyle(PartitionNetwork_VS,
-			// nodeAppCalc, edgeAppCalc, gac);
 			VisualPropertyType type = VisualPropertyType.EDGE_OPACITY;
-			type.setDefault(mfStyle, new Integer(200));
+			type.setDefault(mfStyle, new Integer(150));
 			type = VisualPropertyType.NODE_SHAPE;
 			type.setDefault(mfStyle, NodeShape.ELLIPSE);
 			mfStyle.setGlobalAppearanceCalculator(gac);
@@ -201,99 +178,6 @@ public class PartitionNetworkVisualStyleFactory {
 		Cytoscape.getVisualMappingManager().applyAppearances();
 
 		return mfStyle;
-
-		// VisualStyle clone = null;
-		// try {
-		// clone = (VisualStyle) currentStyle.clone();
-		// } catch (CloneNotSupportedException exc) {
-		// CyLogger.getLogger().warn("Clone not supported exception!");
-		// }
-
-		// ------------------------------ Set node color
-		// ---------------------------//
-
-		// ContinuousMapping colorMapping = new ContinuousMapping(Color.GRAY,
-		// ObjectMapping.NODE_MAPPING);
-		// colorMapping.setControllingAttributeName(CUM_SPECTRA, network,
-		// false);
-		//		
-		// colorMapping.addPoint (CUM_SPECTRA_LOW_POINT,
-		// new BoundaryRangeValues (LOW_COLOR, LOW_COLOR, LOW_COLOR));
-		// colorMapping.addPoint(CUM_SPECTRA_MID_POINT,
-		// new BoundaryRangeValues (MID_COLOR, MID_COLOR, MID_COLOR));
-		// colorMapping.addPoint(CUM_SPECTRA_HIGH_POINT,
-		// new BoundaryRangeValues (HIGH_COLOR, HIGH_COLOR, HIGH_COLOR));
-		//		
-		//		
-		// Calculator colorCalculator = new
-		// BasicCalculator("Spectrum Mill Color Calculator",
-		// colorMapping,
-		//	
-		/*
-		 * ContinuousMapping colorMapping = new ContinuousMapping(Color.GRAY,
-		 * ObjectMapping.NODE_MAPPING);
-		 * colorMapping.setControllingAttributeName(HEAT_NORMAL_RATIO, network,
-		 * false);
-		 * 
-		 * colorMapping.addPoint (HEAT_NORMAL_RATIO_LOW_POINT, new
-		 * BoundaryRangeValues (LOW_COLOR, LOW_COLOR, LOW_COLOR));
-		 * colorMapping.addPoint(HEAT_NORMAL_RATIO_MID_POINT, new
-		 * BoundaryRangeValues (MID_COLOR, MID_COLOR, MID_COLOR));
-		 * colorMapping.addPoint(HEAT_NORMAL_RATIO_HIGH_POINT, new
-		 * BoundaryRangeValues (HIGH_COLOR, HIGH_COLOR, HIGH_COLOR));
-		 * 
-		 * 
-		 * Calculator colorCalculator = new
-		 * BasicCalculator("Scaffold Color Calculator", colorMapping,
-		 * VisualPropertyType.NODE_FILL_COLOR);
-		 * nodeAppCalc.setCalculator(colorCalculator);
-		 */
-
-		// --------------------- Set the size of the nodes
-		// --------------------------//
-		/*
-		 * ContinuousMapping sizeMapping = new ContinuousMapping(MID_SIZE,
-		 * ObjectMapping.NODE_MAPPING);
-		 * sizeMapping.setControllingAttributeName(CUM_INTENSITY, network,
-		 * false);
-		 * 
-		 * sizeMapping.addPoint (CUM_INTENSITY_LOW_POINT, new
-		 * BoundaryRangeValues (LOW_SIZE, LOW_SIZE, LOW_SIZE));
-		 * sizeMapping.addPoint(CUM_INTENSITY_MID_POINT, new BoundaryRangeValues
-		 * (MID_SIZE, MID_SIZE, MID_SIZE));
-		 * sizeMapping.addPoint(CUM_INTENSITY_HIGH_POINT, new
-		 * BoundaryRangeValues (HIGH_SIZE, HIGH_SIZE, HIGH_SIZE));
-		 * 
-		 * 
-		 * Calculator sizeCalculator = new
-		 * BasicCalculator("Spectrum Mill Node Size Calculator", sizeMapping,
-		 * VisualPropertyType.NODE_SIZE);
-		 * nodeAppCalc.setCalculator(sizeCalculator);
-		 */
-		// ------------------------------ Set node shapes
-		// ---------------------------//
-		/*
-		 * DiscreteMapping disMapping = new DiscreteMapping(NodeShape.ELLIPSE,
-		 * ObjectMapping.NODE_MAPPING); //
-		 * disMapping.setControllingAttributeName(MOLECULAR_SPECIES, network,
-		 * false);
-		 * 
-		 * // disMapping.putMapValue(PROTEIN, NodeShape.ELLIPSE);
-		 * 
-		 * Calculator shapeCalculator = new
-		 * BasicCalculator("Node Shape Calculator", disMapping,
-		 * VisualPropertyType.NODE_SHAPE);
-		 * 
-		 * nodeAppCalc.setCalculator(shapeCalculator);
-		 */
-
-		// ------------------------- Create a visual style
-		// -------------------------------//
-		// GlobalAppearanceCalculator gac =
-		// vmManager.getVisualStyle().getGlobalAppearanceCalculator();
-		// -------------------------- set node color to encoding of Molecular
-		// Function ------ //
-
 	}
 
 }

@@ -27,29 +27,7 @@ public class GOLayout extends CytoscapePlugin {
 		CyLayouts.addLayout(new CellAlgorithm(), "GO Layout");
 		CyLayouts.addLayout(new GOLayoutAlgorithm(), "GO Layout");
 		CyLayouts.addLayout(pa, "GO Layout");
-		
-
-
-//		JMenuItem top = new JMenuItem("GO Layout");
-//		JMenu layoutMenu = Cytoscape.getDesktop().getCyMenus().getLayoutMenu();
-//		layoutMenu.add(top);
-//		JMenuItem partition = new JMenuItem("Partition");
-//		partition.addActionListener(new PartitionAction());
-//		top.add(partition);
-	
 	}
-	
-//	public class PartitionAction extends CytoscapeAction {
-//		
-//		public PartitionAction(){
-//			super("partitions");
-//		}
-//		
-//		public void actionPerformed(ActionEvent e){
-//		    pa.setLayoutName("grid");
-//			pa.doLayout();
-//		}
-//	}
 	
 	public static void createVisualStyle(CyNetworkView view){
 		PartitionNetworkVisualStyleFactory.createVisualStyle(view);
@@ -69,12 +47,16 @@ public class GOLayout extends CytoscapePlugin {
 			layoutProperties.add(new Tunable("nodeSpacing",
 					"Spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
 
-			// We've now set all of our tunables, so we can read the property
-			// file now and adjust as appropriate
+			/*
+			 * We've now set all of our tunables, so we can read the property
+			 * file now and adjust as appropriate
+			 */
 			layoutProperties.initializeProperties();
 
-			// Finally, update everything. We need to do this to update
-			// any of our values based on what we read from the property file
+			/*
+			 * Finally, update everything. We need to do this to update any of
+			 * our values based on what we read from the property file
+			 */
 			updateSettings(true);
 
 		}

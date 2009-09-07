@@ -162,7 +162,6 @@ public class CellTemplate {
 			Double comY = 0.0d;
 
 			List<Region> orList = r.getOverlappingRegions();
-			// does not include Line shapes
 			int orListSize = orList.size();
 			Double[][] xy = new Double[orListSize * 8][2];
 			int i = 0;
@@ -192,18 +191,9 @@ public class CellTemplate {
 				xy[i][0] = or.getRegionRight() - or.getRegionWidth() / 2;
 				xy[i][1] = or.getRegionTop();
 				i++;
-
-				// define center of overlapped region
-				// comX += or.getCenterX();
-				// comY += or.getCenterY();
 			}
-			// if (orListSize > 1) {
-			// comX = comX / orList.size();
-			// comY = comY / orList.size();
-			// } else {
 			comX = r.getCenterX();
 			comY = r.getCenterY();
-			// }
 			// check center against overlapping regions
 			boolean skip = false;
 			for (Region or : orList) {
@@ -223,9 +213,10 @@ public class CellTemplate {
 			Double freeT = r.getFreeTop();
 			Double freeB = r.getFreeBottom();
 
-			// shrink to fit free area around center
-			// adapted from ex2_1.m by E. Alpaydin, i2ml, Learning a
-			// rectangle
+			/*
+			 * Shrink to fit free area around center. Adapted from ex2_1.m by
+			 * E.Alpaydin, i2ml, Learning a rectangle
+			 */
 			for (i = 0; i < orListSize * 8; i++) {
 				Double x = xy[i][0];
 				Double y = xy[i][1];
@@ -244,13 +235,6 @@ public class CellTemplate {
 					|| ((freeB - freeT) < (distanceBetweenNodes * 2))) {
 				continue; // skip using inner of too thin or short
 			}
-
-			// commented out to ignore finding unoverlapped area
-			// using layout and oil&water instead.
-			// r.setFreeCenterX((freeL + freeR) / 2);
-			// r.setFreeCenterY((freeT + freeB) / 2);
-			// r.setFreeWidth(freeR - freeL);
-			// r.setFreeHeight(freeB - freeT);
 		}
 
 		// calculate the maximum scale factor among all regions
@@ -260,18 +244,14 @@ public class CellTemplate {
 		for (Region r : allRegions) {
 			// max scale
 			int col = r.getColumns();
-			// System.out.println("col: " + r.getAttValue() + col);
 			double scaleX = ((col + 1) * distanceBetweenNodes)
 					/ r.getFreeWidth();
 			double scaleY = ((col + 1) * distanceBetweenNodes)
 					/ r.getFreeHeight();
 			double scaleAreaSqrt = Math.sqrt(scaleX * scaleY);
-			// System.out.println("scaleX,Y,Area: " + scaleX + "," + scaleY
-			// + "," + scaleAreaSqrt);
 			// use area to scale regions efficiently
 			if (scaleAreaSqrt > maxScaleFactor)
 				maxScaleFactor = scaleAreaSqrt;
-
 			// Allan hack!
 			maxScaleFactor *= 1.1;
 
@@ -284,14 +264,8 @@ public class CellTemplate {
 			r.setFreeWidth(r.getFreeWidth() * maxScaleFactor);
 			r.setFreeHeight(r.getFreeHeight() * maxScaleFactor);
 
-			// r.setCenterX(r.getCenterX() - minPanX);
-			// r.setCenterY(r.getCenterY() - minPanY);
-
 			r.setCenterX(r.getCenterX() * maxScaleFactor);
 			r.setCenterY(r.getCenterY() * maxScaleFactor);
-
-			// r.setFreeCenterX(r.getFreeCenterX() - minPanX);
-			// r.setFreeCenterY(r.getFreeCenterY() - minPanY);
 
 			r.setFreeCenterX(r.getFreeCenterX() * maxScaleFactor);
 			r.setFreeCenterY(r.getFreeCenterY() * maxScaleFactor);

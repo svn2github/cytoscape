@@ -96,10 +96,11 @@ public class RegionManager {
 								.getRegionBottom())
 						|| newTop < r.getRegionTop()
 						&& newBottom > r.getRegionBottom()) {
-					// If we got this far, it means one region is
-					// overlapping
-					// the other. Now we want to flag the smaller one so we
-					// know when and where to apply "oil & water" exclusion.
+					/*
+					 * If we got this far, it means one region is overlapping
+					 * the other. Now we want to flag the smaller one so we know
+					 * when and where to apply "oil & water" exclusion.
+					 */
 					if (r.getArea() > newRegion.getArea()) {
 						newRegion.setRegionsOverlapped(r);
 						r.setOverlappingRegions(newRegion);
