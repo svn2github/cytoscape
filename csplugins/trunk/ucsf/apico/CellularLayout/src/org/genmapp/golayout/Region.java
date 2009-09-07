@@ -65,7 +65,7 @@ public class Region extends JComponent implements ViewportChangeListener {
 
 	// graphics
 	protected DGraphView dview = (DGraphView) Cytoscape.getCurrentNetworkView();
-	private static final int TRANSLUCENCY_LEVEL = (int) (255 * .10);
+	private static final int TRANSLUCENCY_LEVEL = (int) (255 * .70);
 
 	public Region(String shape, String color, double centerX, double centerY,
 			double width, double height, int zorder, double rotation,
@@ -303,9 +303,6 @@ public class Region extends JComponent implements ViewportChangeListener {
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle()))
 				.getBounds();
 
-		Color fillcolor = Color.blue;
-		Color fillColor = new Color(fillcolor.getRed(), fillcolor.getGreen(),
-				fillcolor.getBlue(), TRANSLUCENCY_LEVEL);
 		Color linecolor = this.color;
 
 		int x = b.x;
@@ -333,54 +330,48 @@ public class Region extends JComponent implements ViewportChangeListener {
 			Point2D src2 = new Point2D.Double(x, y + h);
 			Point2D trgt2 = new Point2D.Double(x + w, y + h);
 
-			g2d.setColor(linecolor);
-			g2d.setStroke(new BasicStroke());
+			g2d.setColor(new Color(205, 205, 185, 255));
+//			g2d.setStroke(new BasicStroke());
+			g2d.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_MITER, 10.0f, null, 0.0f));
 			g2d.drawLine((int) src.getX(), (int) src.getY(), (int) trgt.getX(),
 					(int) trgt.getY());
 			g2d.drawLine((int) src2.getX(), (int) src2.getY(), (int) trgt2
 					.getX(), (int) trgt2.getY());
 
-		} else { // Rectangle, Oval
+		} else if (this.shape == COMPARTMENT_RECT) {
 			java.awt.Shape s = null;
 
 			// Note restricted syntax for shape (e.g., "Rectangle"
-			s = ShapeRegistry.getShape(this.shape, x, y, w, h); 
+			s = ShapeRegistry.getShape(this.shape, x, y, w, h);
 
 			AffineTransform t = new AffineTransform();
 			t.rotate(this.rotation, cx, cy);
 			s = t.createTransformedShape(s);
 
-			// TODO
-			// g2d.setColor(fillcolor);
-			// g2d.fill(s);
-
 			g2d.setColor(linecolor);
 			g2d.setStroke(new BasicStroke());
 			g2d.draw(s);
 			/**
-			 *  AJK: 09022009
-			 *  now do fills for depth effect
+			 * AJK: 09022009 now do fills for depth effect
 			 * 
-			 */			
+			 */
+			// if (this.getRegionsOverlapped().size() > 0) {
+			g2d.setColor(new Color(205, 205, 185, TRANSLUCENCY_LEVEL));
+			g2d.fill3DRect(x, y, w, h, true);
+			// }
 
-	    	if (this.shape == "Oval")
-	    	{
+		} else if (this.shape == Region.COMPARTMENT_OVAL) {
+			// background "shadow" oval
+			g2d.setColor(new Color(0, 0, 0, 255));
+			g2d.fillOval(x, y, w, h);
+			// foreground oval
+			g2d.setColor(new Color(205, 205, 185, 255));
+			g2d.fillOval(x - 1, y - 1, w - 1, h - 1);
+		} else {
 
-		            g2d.setColor (new Color (205, 205, 205));
-		            g2d.fillOval(x, y, w, h);
-	    	}
-	    	else
-	    	{
-	            g2d.setColor(new Color (205, 205, 185, 175));
-				g2d.fill3DRect(x, y, w, h, true);
-	    	}
-	    	
-	    	/**
-	    	 * end depth effect
-	    	 */
+			// do nothing
 		}
-
-
 	}
 
 	/**
