@@ -5,12 +5,16 @@ import giny.model.RootGraph;
 import giny.view.NodeView;
 
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -22,16 +26,34 @@ import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.LabelPosition;
+import ding.view.DGraphView;
 
 /**
  * CellularLayoutAlgorithm will layout nodes according to a template of cellular
  * regions mapped by node attribute.
  */
-public class CellAlgorithm extends AbstractLayout {
+public class CellAlgorithm extends AbstractLayout implements
+MouseListener, MouseMotionListener, PropertyChangeListener {
 	public double distanceBetweenNodes = 30.0d;
 	LayoutProperties layoutProperties = null;
 
+	/**
+	 * Adds listeners: Mouse Mouse Motion Graph View Change
+	 * 
+	 * @see cytoscape.plugin.CytoscapePlugin#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent e) {
+
+		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
+					.addMouseListener(this);
+			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
+					.addMouseMotionListener(this);
+		}
+	}
+	
 	/**
 	 * Creates a new CellularLayoutAlgorithm object.
 	 */
@@ -303,7 +325,7 @@ public class CellAlgorithm extends AbstractLayout {
 						 * skip hidden attributes
 						 */
 						if (attributes.getUserVisible(att)
-								&& attributes.hasAttribute(oldId, att)) { 
+								&& attributes.hasAttribute(oldId, att)) {
 							byte type = attributes.getType(att);
 							if (type == CyAttributes.TYPE_BOOLEAN) {
 								attributes.setAttribute(newId, att, attributes
@@ -666,6 +688,7 @@ public class CellAlgorithm extends AbstractLayout {
 	private List<NodeView> nvRegList = new ArrayList<NodeView>();
 
 	public void mousePressed(MouseEvent e) {
+		System.out.println("Hello!");
 		for (NodeView nv : nvRegList) {
 			if (nv.isSelected())
 				nv.unselect();
@@ -677,6 +700,26 @@ public class CellAlgorithm extends AbstractLayout {
 			if (nv.isSelected())
 				nv.unselect();
 		}
+	}
+
+	public void keyPressed(KeyEvent e) {
+		if (e.isControlDown() && e.getKeyChar() == 'a') {
+			for (NodeView nv : nvRegList) {
+				if (nv.isSelected())
+					nv.unselect();
+			}
+
+		}
+	}
+
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
