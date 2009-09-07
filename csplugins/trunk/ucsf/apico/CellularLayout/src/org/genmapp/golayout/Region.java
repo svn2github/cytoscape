@@ -357,8 +357,29 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.setColor(linecolor);
 			g2d.setStroke(new BasicStroke());
 			g2d.draw(s);
+			/**
+			 *  AJK: 09022009
+			 *  now do fills for depth effect
+			 * 
+			 */			
 
+	    	if (this.shape == "Oval")
+	    	{
+
+		            g2d.setColor (new Color (205, 205, 205));
+		            g2d.fillOval(x, y, w, h);
+	    	}
+	    	else
+	    	{
+	            g2d.setColor(new Color (205, 205, 185, 175));
+				g2d.fill3DRect(x, y, w, h, true);
+	    	}
+	    	
+	    	/**
+	    	 * end depth effect
+	    	 */
 		}
+
 
 	}
 
