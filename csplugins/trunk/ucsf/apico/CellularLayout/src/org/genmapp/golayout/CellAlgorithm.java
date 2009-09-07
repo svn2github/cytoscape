@@ -197,9 +197,30 @@ public class CellAlgorithm extends AbstractLayout {
 					regNv.setOffset(r.getRegionLeft(), r.getRegionTop());
 					Cytoscape.getNodeAttributes().setAttribute(regId,
 							"canonicalName", r.getAttValue());
+					Cytoscape.getNodeAttributes().setAttribute(regId,
+							"region_name", r.getAttValue());
+					Cytoscape.getNodeAttributes().setUserVisible("region_name",
+							false);
+					Cytoscape.getNodeAttributes().setUserEditable("region_name",
+							false);
+
 					double length = r.getAttValue().length();
-					Cytoscape.getNodeAttributes().setAttribute(regId, "register_node_label_pos", length);
-					Cytoscape.getNodeAttributes().setAttribute(regId, "register_node_region_shape", r.getShape());
+					
+					LabelPosition lp = new LabelPosition();
+					if (r.getShape() == Region.COMPARTMENT_OVAL){
+						lp.setOffsetX(r.getRegionWidth() / 2);
+					} else {
+						lp.setOffsetX(14 * length /2 + 10);
+					}
+					if (r.getShape() == Region.MEMBRANE_LINE){
+						lp.setOffsetY(-15);
+					} else if (r.getShape() == Region.COMPARTMENT_OVAL){
+						lp.setOffsetY(40);
+					} else {
+						lp.setOffsetY(15);
+					}
+					lp.setJustify(1);
+					PartitionNetworkVisualStyleFactory.disMappingLabelPosition.putMapValue(r.getAttValue(), lp);
 					
 //					regNv.setLabelOffsetX(45.0 + length /2 );
 //					regNv.setLabelOffsetY(50.0);
@@ -369,10 +390,10 @@ public class CellAlgorithm extends AbstractLayout {
 			// Uncross edges
 			 if (filteredNodeViews.size() < 30 ){
 			 UnCrossAction.unCross(filteredNodeViews, false);
-				System.out.println("Uncrossed edges!");
+				//System.out.println("Uncrossed edges!");
 			 }
 			 else {
-					System.out.println("Uncross skipped: Too many nodes in region \"" + r.getAttValue() + "\"");
+					//System.out.println("Uncross skipped: Too many nodes in region \"" + r.getAttValue() + "\"");
 			 }
 			r.repaint();
 			

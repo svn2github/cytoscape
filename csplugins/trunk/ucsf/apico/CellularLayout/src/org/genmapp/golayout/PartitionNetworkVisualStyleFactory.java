@@ -1,5 +1,7 @@
 package org.genmapp.golayout;
 
+import giny.view.Label;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +32,10 @@ public class PartitionNetworkVisualStyleFactory {
 	 * 
 	 */
 	public static final String PartitionNetwork_VS = "MolecularFunction";
+
+	private static LabelPosition lp = new LabelPosition();
+	public static DiscreteMapping disMappingLabelPosition = new DiscreteMapping(lp,
+			"region_name", ObjectMapping.NODE_MAPPING);
 
 	public static VisualStyle createVisualStyle(CyNetworkView view) {
 
@@ -108,32 +114,34 @@ public class PartitionNetworkVisualStyleFactory {
 					PartitionNetwork_VS, disMappingFont,
 					VisualPropertyType.NODE_FONT_SIZE);
 			nac.setCalculator(fontCalculator);
-			// COMPARTMENT_RECT
-			LabelPosition lpRect = new LabelPosition();
-			DiscreteMapping disMappingLabelPosition = new DiscreteMapping(lpRect,
-					"register_node_region_shape", ObjectMapping.NODE_MAPPING);
-			lpRect.setOffsetX(140);
-			lpRect.setOffsetY(15);
-			lpRect.setJustify(1);
-			disMappingLabelPosition.putMapValue(Region.COMPARTMENT_RECT, lpRect);
-			// COMPARTMENT_OVAL
-			LabelPosition lpOval = new LabelPosition();
-			lpOval.setOffsetX(130);
-			lpOval.setOffsetY(50);
-			lpOval.setJustify(1);
-			disMappingLabelPosition.putMapValue(Region.COMPARTMENT_OVAL, lpOval);
-			// MEMBRANE_LINE
-			LabelPosition lpLine = new LabelPosition();
-			lpLine.setOffsetX(120);
-			lpLine.setOffsetY(-15);
-			lpLine.setJustify(1);
-			disMappingLabelPosition.putMapValue(Region.MEMBRANE_LINE, lpLine);
-			// UNKNOWN
-			LabelPosition lpUknown = new LabelPosition();
-			lpUknown.setOffsetX(120);
-			lpUknown.setOffsetY(15);
-			lpUknown.setJustify(1);
-			disMappingLabelPosition.putMapValue(Region.UKNOWN, lpUknown);
+
+//			// COMPARTMENT_RECT
+//			LabelPosition lpRect = new LabelPosition();
+//			DiscreteMapping disMappingLabelPosition = new DiscreteMapping(lpRect,
+//					"register_node_region_shape", ObjectMapping.NODE_MAPPING);
+//			lpRect.setOffsetX(140);
+//			lpRect.setOffsetY(15);
+//			lpRect.setJustify(1);
+//			disMappingLabelPosition.putMapValue(Region.COMPARTMENT_RECT, lpRect);
+//			// COMPARTMENT_OVAL
+//			LabelPosition lpOval = new LabelPosition();
+////			lpOval.setOffsetX(130);
+////			lpOval.setOffsetY(50);
+////			lpOval.setJustify(Label.JUSTIFY_CENTER);
+//			lpOval.setLabelAnchor(Label.NORTH);
+//			disMappingLabelPosition.putMapValue(Region.COMPARTMENT_OVAL, lpOval);
+//			// MEMBRANE_LINE
+//			LabelPosition lpLine = new LabelPosition();
+//			lpLine.setOffsetX(120);
+//			lpLine.setOffsetY(-15);
+//			lpLine.setJustify(1);
+//			disMappingLabelPosition.putMapValue(Region.MEMBRANE_LINE, lpLine);
+//			// UNKNOWN
+//			LabelPosition lpUknown = new LabelPosition();
+//			lpUknown.setOffsetX(120);
+//			lpUknown.setOffsetY(15);
+//			lpUknown.setJustify(1);
+//			disMappingLabelPosition.putMapValue(Region.UKNOWN, lpUknown);
 			Calculator posCalculator = new BasicCalculator(PartitionNetwork_VS,
 					disMappingLabelPosition,
 					VisualPropertyType.NODE_LABEL_POSITION);

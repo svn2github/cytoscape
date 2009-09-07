@@ -161,7 +161,7 @@ class UnCrossAction extends CytoscapeAction {
 //			JOptionPane
 //					.showMessageDialog(Cytoscape.getDesktop(),
 //							"You must first select some nodes in order to minimize edge crossings.");
-			System.out.println("Uncross skipped! Too few nodes (one or fewer)");
+			//System.out.println("Uncross skipped! Too few nodes (one or fewer)");
 			return;
 
 		} else if (Cytoscape.getCurrentNetwork().getNodeCount() > UNCROSS_THRESHOLD) {
@@ -172,7 +172,7 @@ class UnCrossAction extends CytoscapeAction {
 //								"Sorry, this network is too large to run incremental edge cross miminization."
 //										+ "\nYou should one of the automated layout tools instead.");
 //			}
-			System.out.println("Uncross skipped! Too many nodes in network (over " + UNCROSS_THRESHOLD + ")");
+			//System.out.println("Uncross skipped! Too many nodes in network (over " + UNCROSS_THRESHOLD + ")");
 			return;
 		}
 
