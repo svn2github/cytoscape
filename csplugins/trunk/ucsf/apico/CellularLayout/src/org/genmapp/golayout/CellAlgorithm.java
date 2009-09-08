@@ -34,25 +34,10 @@ import ding.view.DGraphView;
  * CellularLayoutAlgorithm will layout nodes according to a template of cellular
  * regions mapped by node attribute.
  */
-public class CellAlgorithm extends AbstractLayout implements
-MouseListener, MouseMotionListener, PropertyChangeListener {
+public class CellAlgorithm extends AbstractLayout  {
 	public double distanceBetweenNodes = 30.0d;
 	LayoutProperties layoutProperties = null;
 
-	/**
-	 * Adds listeners: Mouse Mouse Motion Graph View Change
-	 * 
-	 * @see cytoscape.plugin.CytoscapePlugin#propertyChange(java.beans.PropertyChangeEvent)
-	 */
-	public void propertyChange(PropertyChangeEvent e) {
-
-		if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
-			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
-					.addMouseListener(this);
-			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
-					.addMouseMotionListener(this);
-		}
-	}
 	
 	/**
 	 * Creates a new CellularLayoutAlgorithm object.
@@ -167,6 +152,11 @@ MouseListener, MouseMotionListener, PropertyChangeListener {
 		return panel;
 	}
 
+
+	// List used to unselect register nodes.
+	// TODO: This doesn't work with ^A or other non-mouse based selections...
+	private List<NodeView> nvRegList = new ArrayList<NodeView>();
+	
 	/**
 	 * The layout protocol...
 	 */
@@ -208,6 +198,7 @@ MouseListener, MouseMotionListener, PropertyChangeListener {
 				nvRegList.add(regNv);
 				regNv.setHeight(0.1);
 				regNv.setWidth(0.1);
+				
 				Cytoscape.getNodeAttributes().setAttribute(regId,
 						"canonicalName", "");
 				Cytoscape.getNodeAttributes().setAttribute(regId,
@@ -222,8 +213,8 @@ MouseListener, MouseMotionListener, PropertyChangeListener {
 				switch (j) {
 				case 0:
 					regNv.setOffset(r.getRegionLeft(), r.getRegionTop());
-					Cytoscape.getNodeAttributes().setAttribute(regId,
-							"canonicalName", r.getAttValue());
+					//Cytoscape.getNodeAttributes().setAttribute(regId,
+					//		"canonicalName", r.getAttValue());
 					Cytoscape.getNodeAttributes().setAttribute(regId,
 							"region_name", r.getAttValue());
 					Cytoscape.getNodeAttributes().setUserVisible("region_name",
@@ -669,57 +660,15 @@ MouseListener, MouseMotionListener, PropertyChangeListener {
 			}
 		}
 		Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
-	}
-
-	public void mouseClicked(MouseEvent e) {
-
-	}
-
-	public void mouseEntered(MouseEvent e) {
-
-	}
-
-	public void mouseExited(MouseEvent e) {
-
-	}
-
-	// List used to unselect register nodes.
-	// TODO: This doesn't work with ^A or other non-mouse based selections...
-	private List<NodeView> nvRegList = new ArrayList<NodeView>();
-
-	public void mousePressed(MouseEvent e) {
-		System.out.println("Hello!");
-		for (NodeView nv : nvRegList) {
-			if (nv.isSelected())
-				nv.unselect();
-		}
-	}
-
-	public void mouseReleased(MouseEvent e) {
-		for (NodeView nv : nvRegList) {
-			if (nv.isSelected())
-				nv.unselect();
-		}
-	}
-
-	public void keyPressed(KeyEvent e) {
-		if (e.isControlDown() && e.getKeyChar() == 'a') {
-			for (NodeView nv : nvRegList) {
-				if (nv.isSelected())
-					nv.unselect();
-			}
-
-		}
-	}
-
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
+		// destroy all register nodes
+		for (NodeView regNv : nvRegList){
+			Cytoscape.getCurrentNetwork().removeNode(regNv.getNode().getRootGraphIndex(), true);
+		}
 	}
 
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+
+
+
 
 }

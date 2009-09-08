@@ -118,8 +118,8 @@ public class PartitionNetworkVisualStyleFactory {
 			nac.setCalculator(fontCalculator);
 
 			/*
-			 * disMappingLabelPosition is dynamically defined in CellAlgorithm
-			 * construct()
+			 * disMappingLabelPosition is dynamically defined in
+			 * CellAlgorithm.construct()
 			 */
 			Calculator posCalculator = new BasicCalculator(PartitionNetwork_VS,
 					disMappingLabelPosition,

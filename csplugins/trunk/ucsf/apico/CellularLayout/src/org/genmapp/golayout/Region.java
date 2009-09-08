@@ -5,6 +5,7 @@ import giny.view.NodeView;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -300,6 +301,17 @@ public class Region extends JComponent implements ViewportChangeListener {
 	 */
 	public void doPaint(Graphics2D g2d) {
 
+		InnerCanvas canvas = dview.getCanvas();
+		AffineTransform f = canvas.getAffineTransform();
+		double affineScale  = f.getScaleX();
+		double scaledFontD  = affineScale * 30; 
+		int scaledFont = 1;
+		//protect again inverting matrix with zero value
+		if (scaledFontD > 0.5){
+			scaledFont = (int) Math.round(scaledFontD);
+		}
+		
+		
 		Rectangle b = relativeToBounds(viewportTransform(getVRectangle()))
 				.getBounds();
 
@@ -316,28 +328,60 @@ public class Region extends JComponent implements ViewportChangeListener {
 			Point2D src = new Point2D.Double(x, y);
 			Point2D trgt = new Point2D.Double(x, y + h);
 
+			double scaledWidthD = affineScale * 6;
+			float scaledWidth = (float) scaledWidthD;
+
 			g2d.setColor(linecolor);
 			float dash[] = { 10.0f };
-			g2d.setStroke(new BasicStroke(3.0f, BasicStroke.CAP_BUTT,
+			g2d.setStroke(new BasicStroke(scaledWidth, BasicStroke.CAP_BUTT,
 					BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
 			g2d.drawLine((int) src.getX(), (int) src.getY(), (int) trgt.getX(),
 					(int) trgt.getY());
 
+			double scaledOffsetD = affineScale * 30;
+			int scaledOffset = 1;
+			if (scaledOffsetD > 0.5) {
+				scaledOffset = (int) Math.round(scaledOffsetD);
+			}
+			
+			g2d.setColor(new Color(0,0,0,255));
+			Font font = new Font("Serif", Font.BOLD, scaledFont);
+			g2d.setFont(font);
+			g2d.drawString(this.attValue, scaledOffset, scaledOffset);
 		} else if (this.shape == MEMBRANE_LINE) {
 			Point2D src = new Point2D.Double(x, y);
 			Point2D trgt = new Point2D.Double(x + w, y);
 
 			Point2D src2 = new Point2D.Double(x, y + h);
 			Point2D trgt2 = new Point2D.Double(x + w, y + h);
-
+			
 			g2d.setColor(new Color(205, 205, 185, 255));
-//			g2d.setStroke(new BasicStroke());
-			g2d.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_BUTT,
+			
+			double scaledWidthD = affineScale * 10;
+			float scaledWidth = (float) scaledWidthD;
+			
+			g2d.setStroke(new BasicStroke(scaledWidth, BasicStroke.CAP_BUTT,
 					BasicStroke.JOIN_MITER, 10.0f, null, 0.0f));
 			g2d.drawLine((int) src.getX(), (int) src.getY(), (int) trgt.getX(),
 					(int) trgt.getY());
 			g2d.drawLine((int) src2.getX(), (int) src2.getY(), (int) trgt2
 					.getX(), (int) trgt2.getY());
+			
+			double scaledOffsetXD = affineScale * 30;
+			int scaledOffsetX = 1;
+			if (scaledOffsetXD > 0.5) {
+				scaledOffsetX = (int) Math.round(scaledOffsetXD);
+			}
+			double scaledOffsetYD = affineScale * 20;
+			int scaledOffsetY = 1;
+			if (scaledOffsetYD > 0.5) {
+				scaledOffsetY = (int) Math.round(scaledOffsetYD);
+			}
+			
+			g2d.setColor(new Color(0,0,0,255));
+			Font font = new Font("Serif", Font.BOLD, scaledFont);
+			g2d.setFont(font);
+			g2d.drawString(this.attValue, scaledOffsetX, scaledOffsetY);
 
 		} else if (this.shape == COMPARTMENT_RECT) {
 			java.awt.Shape s = null;
@@ -352,6 +396,18 @@ public class Region extends JComponent implements ViewportChangeListener {
 			g2d.setColor(linecolor);
 			g2d.setStroke(new BasicStroke());
 			g2d.draw(s);
+
+			
+			double scaledOffsetD = affineScale * 30;
+			int scaledOffset = 1;
+			if (scaledOffsetD > 0.5) {
+				scaledOffset = (int) Math.round(scaledOffsetD);
+			}
+			
+			g2d.setColor(new Color(0,0,0,255));
+			Font font = new Font("Serif", Font.BOLD, scaledFont);
+			g2d.setFont(font);
+			g2d.drawString(this.attValue, scaledOffset, scaledOffset);
 			/**
 			 * AJK: 09022009 now do fills for depth effect
 			 * 
@@ -368,6 +424,22 @@ public class Region extends JComponent implements ViewportChangeListener {
 			// foreground oval
 			g2d.setColor(new Color(205, 205, 185, 255));
 			g2d.fillOval(x - 1, y - 1, w - 1, h - 1);
+
+			double scaledOffsetXD = affineScale * (this.width /2 - 40);
+			int scaledOffsetX = 1;
+			if (scaledOffsetXD > 0.5) {
+				scaledOffsetX = (int) Math.round(scaledOffsetXD);
+			}
+			double scaledOffsetYD = affineScale * 40;
+			int scaledOffsetY = 1;
+			if (scaledOffsetYD > 0.5) {
+				scaledOffsetY = (int) Math.round(scaledOffsetYD);
+			}
+			
+			g2d.setColor(new Color(0,0,0,255));
+			Font font = new Font("Serif", Font.BOLD, scaledFont);
+			g2d.setFont(font);
+			g2d.drawString(this.attValue, scaledOffsetX, scaledOffsetY);
 		} else {
 
 			// do nothing
