@@ -2,8 +2,8 @@ package org.cytoscape.cmdline.internal;
 
 
 import org.cytoscape.cmdline.launcher.CommandLineProvider;
-
-import org.springframework.osgi.context.event.*;
+import org.springframework.osgi.context.event.OsgiBundleApplicationContextEvent;
+import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
 
 
 /**

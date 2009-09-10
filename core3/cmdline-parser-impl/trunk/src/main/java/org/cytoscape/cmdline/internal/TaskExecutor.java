@@ -15,9 +15,6 @@ import org.cytoscape.work.TunableInterceptor;
  */
 public class TaskExecutor{
 	
-	/**
-	 * 
-	 */
 	public	TaskExecutor(){};
 	
 	/**
@@ -28,7 +25,7 @@ public class TaskExecutor{
 	/**
 	 * Manager to execute the <code>Tasks</code>
 	 */
-	TaskManager tm;
+	private TaskManager tm;
 	
 	/**
 	 * Number of <code>Tasks</code>

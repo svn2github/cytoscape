@@ -46,7 +46,8 @@ public class TaskFactoryGrabber {
 	}
 
 	/**
-	 * Executed when <code>TaskFactory</code> interface is detected during the loading of all Cytoscape's packages : add the <code>TFWrapper</code> to the <code>Map</code> that stores them
+	 * Executed when <code>TaskFactory</code> interface is detected during the loading of all Cytoscape's packages :
+	 * It adds the <code>TFWrapper</code> to the <code>Map</code> that stores them
 	 * @param factory which has been detected
 	 * @param props
 	 */

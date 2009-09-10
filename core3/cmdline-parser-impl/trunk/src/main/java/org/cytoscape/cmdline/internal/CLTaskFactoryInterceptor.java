@@ -80,6 +80,8 @@ public class CLTaskFactoryInterceptor {
     
     
     /**
+     * Interceptor of <code>Task Factories</code> : see details
+     * 
      * <p><pre>
      * Interceptor does :
      * <ul>
