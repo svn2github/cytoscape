@@ -65,5 +65,6 @@ public class NewEmptyNetworkTask extends AbstractCreationTask {
 
 		netmgr.addNetwork(newNet);
 		netmgr.addNetworkView(view);
+		System.out.println("New empty network has been created");
 	}
 }

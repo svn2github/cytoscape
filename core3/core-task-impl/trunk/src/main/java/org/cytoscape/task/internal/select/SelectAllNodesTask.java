@@ -37,11 +37,9 @@
 
 package org.cytoscape.task.internal.select;
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
 
@@ -58,5 +56,8 @@ public class SelectAllNodesTask extends AbstractSelectTask {
 
         if ( v != null )
             v.updateView();
+        
+        System.out.println("All nodes of network \""+ n.getSUID() + "\" have been selected");
 	}
+
 }

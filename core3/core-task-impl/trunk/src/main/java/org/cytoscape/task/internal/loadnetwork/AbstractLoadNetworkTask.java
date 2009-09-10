@@ -42,6 +42,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Map;
 import java.util.Properties;
+import java.awt.Event;
 import java.io.IOException;
 
 import org.cytoscape.io.read.CyReader;
@@ -99,6 +100,7 @@ abstract class AbstractLoadNetworkTask implements Task {
 
 			taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
+			
 			final Map<Class<?>, Object> readData = reader.read();
 
 			CyNetwork cyNetwork = (CyNetwork) readData.get(CyNetwork.class);
@@ -115,6 +117,7 @@ abstract class AbstractLoadNetworkTask implements Task {
 			netmgr.addNetwork(cyNetwork);
 			netmgr.addNetworkView(view);
 
+			
 			if (cyNetwork != null) {
 				informUserOfGraphStats(cyNetwork);
 			} else {

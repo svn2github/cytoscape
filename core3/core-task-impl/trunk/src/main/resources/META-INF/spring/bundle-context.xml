@@ -63,6 +63,12 @@
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
 
+
+<!--To set the Current Network through another TaskFactory-->
+	<bean id="setCurrentNetworkTaskFactory" class="org.cytoscape.task.internal.loadnetwork.SetCurrentNetworkTaskFactoryImpl">
+		<constructor-arg ref="cyNetworkManagerServiceRef"/>
+	</bean>
+	
 	<bean id="selectAllTaskFactory" 
 	      class="org.cytoscape.task.internal.select.SelectAllTaskFactory">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />

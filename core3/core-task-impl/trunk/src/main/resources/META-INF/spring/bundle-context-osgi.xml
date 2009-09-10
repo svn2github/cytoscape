@@ -67,6 +67,7 @@
 			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>
+
 	
 	<osgi:service id="loadDataTableTaskFactoryService" ref="loadDataTableTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
@@ -401,6 +402,12 @@
 			<entry key="scope" value="limited" />
 		</osgi:service-properties>
 	</osgi:service>
+
+
+<!-- #####################	Task that set the imported network as the current one   ###################-->
+	<osgi:service id="setCurrentNetworkTaskFactoryService" ref="setCurrentNetworkTaskFactory" 
+			interface="org.cytoscape.work.TaskFactory"/>
+
 
 	<!--
 		<osgi:service id="newSessionTaskFactoryService"

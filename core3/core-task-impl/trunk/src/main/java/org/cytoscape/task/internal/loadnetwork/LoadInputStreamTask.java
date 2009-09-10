@@ -72,8 +72,9 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 		this.taskMonitor = taskMonitor;
 		
 		reader = mgr.getReader(inputstream, NETWORK);
-
+		
 		name = inputstream.toString();
+		
 		
 		if (reader == null) {
 			uri = null;

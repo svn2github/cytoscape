@@ -80,7 +80,6 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 			uri = null;
 		}
 		
-		System.out.println("\n\nNetwork " + file.getAbsolutePath() + " will be loaded !!!\n\n");
 		loadNetwork(reader);
 		System.out.println("\n\nNetwork " + file.getAbsolutePath() + " is LOADED !!!\n\n");
 	}
