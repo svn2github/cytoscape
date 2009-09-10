@@ -48,6 +48,9 @@ abstract public class AbstractNetworkReader implements CyReader {
 
 	public void cancel()
 	{
+		if (cancel)
+			throw new IllegalStateException("AbstractNetworkReader has already been cancelled");
+
 		cancel = true;
 		try
 		{

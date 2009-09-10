@@ -30,6 +30,9 @@ public abstract class AbstractDataTableReader implements CyReader {
 	}
 
 	public void cancel() {
+		if (cancel)
+			throw new IllegalStateException("AbstractDataTableReader has already been cancelled");
+
 		cancel = true;
 		try {
 			inputStream.close();
