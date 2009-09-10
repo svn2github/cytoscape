@@ -9,22 +9,19 @@ package org.cytoscape.work;
  * about any <code>Exception</code>s thrown during its
  * execution.
  *
- * <code>Task</code> is executed by calling a <code>TaskManager</code>'s
- * <code>execute</code> method. <code>TaskManager</code> will setup
- * the <code>Task</code>'s user interface, create a <code>TaskMonitor</code>
- * for the <code>Task</code> that allows the <code>Task</code> to modify
- * the user interface, and run the <code>Task</code> in its own thread.
+ * <code>Task</code>s are executed by calling a <code>TaskManager</code>'s
+ * <code>execute</code> method.
  *
  * <p>Some hints for writing a <code>Task</code>:</p>
- * <p><ul>
- *
+ * <p><ul><li><b>Exceptions:</b> 
+ * <ul>
  * <li>When an exception is thrown, the <code>Task</code>
  * should not catch it and set a status message or the progress,
  * even to provide explanatory messages for the user.
  * A <code>TaskManager</code> can disregard status message
  * and progress updates once an exception is thrown.
  * Any helpful user messages regarding the exception should
- * be contained solely in the exception.
+ * be contained solely in the exception.</li>
  *
  * <li>If a <code>Task</code> throws
  * a low level exception, it should catch it and throw
@@ -49,7 +46,7 @@ package org.cytoscape.work;
  * variable or incorrectly formatted parameter,
  * the <code>Task</code> should not
  * set the status message giving an explanation of the
- * error and exit. Instead, it should throw an exception.
+ * error and then exit. Instead, it should throw an exception.
  * <p>The wrong way:</p>
  * <p><pre><code>
  * public void run(TaskMonitor taskMonitor)
@@ -73,7 +70,9 @@ package org.cytoscape.work;
  * the <code>Task</code>'s user interface when the <code>Task</code> returns
  * before the user can read the message. Throwing an exception ensures 
  * the user will see the message.</li>
- *
+ * </ul>
+ * <li><b>Status Messages:</b>
+ * <ul>
  * <li>
  * The <code>Task</code>, when specifying its status message,
  * should describe what it will <i>do</i>, not what it has <i>done</i>.
@@ -145,24 +144,22 @@ package org.cytoscape.work;
  * initial progress is <code>0.0</code>, it is not necessary to do this
  * at the beginning of the <code>Task</code>.
  * </li>
- * </ul></p>
+ * </ul></ul></p>
  *
- * @author Samad Lotia
+ * @author Pasteur
  */
 public interface Task
 {
 	/**
-	 * This method is called by the <code>Task</code>'s own thread
-	 * created by <code>TaskManager</code>.
+	 * This method is called when the <code>Task</code> begins execution.
 	 *
-	 * If one has a <code>Task</code> object, this method should not be called,
-	 * since it will be called by the <code>TaskManager</code>.
+	 * This method should not be called by the programmer, as it will be called by the <code>TaskManager</code>.
 	 *
 	 * @param taskMonitor This is provided by <code>TaskManager</code>
 	 * to allow the <code>Task</code> to modify its user interface.
 	 *
 	 * @throws Exception The <code>Task</code> is at liberty to
-	 * throw any exceptions in <code>run</code>. The exception is
+	 * throw an exception in <code>run</code>. The exception is
 	 * caught by <code>TaskManager</code> and is displayed in the interface.
 	 * If a <code>Task</code> does not throw an exception,
 	 * the <code>Task</code> implementation does <i>not</i>
@@ -175,20 +172,19 @@ public interface Task
 	void run(TaskMonitor taskMonitor) throws Exception;
 
 	/**
-	 * This method is called when the user chooses to cancel the
+	 * This method is called by the <code>TaskManager</code> when the user chooses to cancel the
 	 * <code>Task</code>.
 	 *
-	 * If one has a <code>Task</code> object, this method should not be called,
-	 * since it might be called by the <code>TaskManager</code>.
+	 * <p>This method should not be called by the programmer, as it might be called by the <code>TaskManager</code>.</p>
 	 *
-	 * This method should inform the <code>Task</code> that it must
+	 * <p>This method should inform the <code>Task</code> that it must
 	 * terminate execution cleanly and do any necessary cleanup
-	 * work required.
+	 * work required.</p>
 	 *
-	 * <i>WARNING:</i> this method is called by a different
+	 * <p><i>WARNING:</i> this method is called by a different
 	 * thread than the thread executing <code>run</code>.
 	 * The programmer <i>must</i> be aware of
-	 * concurrency issues.
+	 * concurrency issues.</p>
 	 */
 	void cancel();
 }

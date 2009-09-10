@@ -6,23 +6,11 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * A class for having <code>ValuedTask</code>s to be executed
- * by <code>TaskManager</code>s. After the <code>ValuedTask</code>
- * has completed execution, one can retrieve the result by
- * calling the <code>get()</code> method.
+ * A class for wrapping <code>ValuedTask</code>s so they can be executed
+ * by a <code>TaskManager</code>.
  * This class is analogous to <code>java.util.concurrency.FutureTask</code>.
  * 
- * This class does not allow other threads
- * to run or cancel the <code>ValuedTask</code>.
- * That is to say, the programmer must not call this class's
- * <code>cancel</code> or <code>run</code> methods.
- * Only the <code>TaskManager</code>
- * may cancel it. This limitation was a conscious decision, since it
- * reduces the complexity of the API and its implementation.
- *
- * 
- *
- * Here is an example of how this class can be used:
+ * <p>Here is an example of how this class can be used:
  * <br>
  * <code>
  * ValuedTask&lt;Integer&gt; myValuedTask = ...;<br>
@@ -31,9 +19,9 @@ import java.util.concurrent.TimeoutException;
  * taskMonitor.execute(myValuedTaskExecutor);<br>
  * ...<br>
  * Integer result = myValuedTaskExecutor.get();<br>
- * </code>
+ * </code></p>
  *
- * @author Samad Lotia
+ * @author Pasteur
  */
 public class ValuedTaskExecutor<V> implements Task
 {
@@ -92,8 +80,8 @@ public class ValuedTaskExecutor<V> implements Task
 	}
 
 	/**
-	 * Do <i>not</i> call this method!
-	 * This will be called by the <code>TaskManager</code>.
+	 * This method will be called by the <code>TaskManager</code> and
+	 * should not be called by the programmer.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception
 	{
@@ -120,8 +108,8 @@ public class ValuedTaskExecutor<V> implements Task
 	}
 
 	/**
-	 * Do <i>not</i> call this method!
-	 * This will be called by the <code>TaskManager</code>.
+	 * This method might be called by the <code>TaskManager</code> and
+	 * should not be called by the programmer.
 	 */
 	public void cancel()
 	{
@@ -170,8 +158,8 @@ public class ValuedTaskExecutor<V> implements Task
 
 	/**
 	 * Retrieves the result produced by the <code>ValuedTask</code> if it
-	 * has finished execution, otherwise it waits the specified amount of
-	 * time until it finishes execution.
+	 * has finished execution, otherwise it waits a specified amount of
+	 * time to finish execution.
 	 *
 	 * This method will block until the <code>ValuedTask</code> has
 	 * finished--that is, its state is no longer

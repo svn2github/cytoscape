@@ -1,23 +1,22 @@
 package org.cytoscape.work;
 
 /**
- * An instance of this interface is provided by <code>TaskManager</code>
- * to a <code>Task</code> so that the
- * <code>Task</code> can modify its user interface during its execution.
+ * Used by <code>Task</code>s to modify its user interface.
+ *
+ * @author Pasteur
  */
 public interface TaskMonitor
 {
 	/**
-	 * Tells the <code>TaskManager</code> to set the title of the
-	 * <code>Task</code>.
+	 * Sets the title of the <code>Task</code>.
 	 * The title is a succinct description of the <code>Task</code>'s
-	 * purpose.
+	 * purpose. This method should only be called once and at the beginning
+	 * of the <code>run</code> method.
 	 */
 	public void setTitle(String title);
 
 	/**
-	 * Tells the <code>TaskManager</code> how much progress has been
-	 * completed by the <code>Task</code>.
+	 * Sets the progress completed by the <code>Task</code>.
 	 *
 	 * @param progress Must be between <code>0.0</code> and <code>1.0</code>.
 	 * A value of <code>0.0</code> specifies an indefinite progress bar.
@@ -25,8 +24,8 @@ public interface TaskMonitor
 	public void setProgress(double progress);
 
 	/**
-	 * Gives the <code>TaskManager</code> a description of what the
-	 * <code>Task</code> is currently doing.
+	 * Sets the status message that describes what <code>Task</code> is currently doing.
+	 * This method can be called throughout the course of the <code>run</code> method.
 	 */
 	public void setStatusMessage(String statusMessage);
 }

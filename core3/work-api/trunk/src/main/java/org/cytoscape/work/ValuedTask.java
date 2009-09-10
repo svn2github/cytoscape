@@ -8,18 +8,17 @@ package org.cytoscape.work;
  *
  * Because a <code>ValuedTask</code> cannot be executed by a
  * <code>TaskManager</code>, an instance of this interface is typically wrapped
- * by an instance of <code>ValuedTaskExecutor</code> so that it can be
+ * by an instance of <code>ValuedTaskExecutor</code> in order to be
  * executed by a <code>TaskManager</code>.
  *
- * @author Samad Lotia
+ * @author Pasteur
  */
 public interface ValuedTask<V>
 {
 	/**
-	 * This method is eventually called by the <code>ValuedTask</code>'s own thread
-	 * created by <code>TaskManager</code>.
+	 * This method contains the action of the <code>ValuedTask</code>.
 	 *
-	 * If one has a <code>ValuedTask</code> object, this method should not be called,
+	 * This method should not be called by the programmer,
 	 * since it will be called by the <code>TaskManager</code>.
 	 *
 	 * @return a useful result to be retrieved by another thread
@@ -29,7 +28,7 @@ public interface ValuedTask<V>
 	 * to allow the <code>ValuedTask</code> to modify its user interface.
 	 *
 	 * @throws Exception The <code>ValuedTask</code> is at liberty to
-	 * throw any exceptions in <code>run</code>. The exception is
+	 * throw an exception. The exception is
 	 * caught by <code>TaskManager</code> and the information contained
 	 * by the exception is displayed in the interface.
 	 */
@@ -39,17 +38,17 @@ public interface ValuedTask<V>
 	 * This method is called when the user chooses to cancel the
 	 * <code>Task</code>.
 	 *
-	 * If one has a <code>ValuedTask</code> object, this method should not be called,
+	 * This method should not be called by the programmer,
 	 * since it will be called by the <code>TaskManager</code>.
 	 *
-	 * This method should inform the <code>ValuedTask</code> that it must
+	 * <p>This method should inform the <code>run</code> method that it must
 	 * terminate execution cleanly and do any necessary cleanup
-	 * work required.
+	 * work required.</p>
 	 *
-	 * <i>WARNING:</i> this method is called by a different
+	 * <p><i>WARNING:</i> this method is called by a different
 	 * thread than the thread executing <code>run</code>.
 	 * The programmer <i>must</i> be aware of
-	 * concurrency issues.
+	 * concurrency issues.</p>
 	 */
 	void cancel();
 }

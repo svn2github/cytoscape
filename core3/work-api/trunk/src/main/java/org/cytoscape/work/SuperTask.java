@@ -4,7 +4,7 @@ package org.cytoscape.work;
  * Provides a means for nested subtasks to be
  * grouped together under one <code>SuperTask</code>.
  *
- * <p><code>SuperTask</code> behaves like this:</p>
+ * <p><code>SuperTask</code> behaves as follows:</p>
  * <ul>
  *
  * <li><b>Threads </b><code>SuperTask</code> executes all of its subtasks
@@ -34,7 +34,7 @@ package org.cytoscape.work;
  * and so on.</li>
  * </ul>
  *
- * @author Samad Lotia
+ * @author Pasteur
  */
 public class SuperTask implements Task
 {
@@ -50,9 +50,9 @@ public class SuperTask implements Task
 	 * <p>The constructor can take an array of <code>Task</code>s:</p>
 	 * <p><pre><code>
 	 * Task[] tasks = {
-	 *   new MyTask1(),
-	 *   new MyTask2(),
-	     new MyTask3()
+	 *  new MyTask1(),
+	 *  new MyTask2(),
+	 *  new MyTask3()
 	 * };
 	 * SuperTask superTask = new SuperTask("Example", tasks);
 	 * </code></pre></p>
